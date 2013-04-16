@@ -29,6 +29,7 @@ import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IInundationArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterBasin;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscLine;
@@ -120,11 +121,13 @@ import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPRailrdL;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPRapidsC;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPRestP;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPRigwellP;
+import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPRoadL;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPRuinsP;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPRunwayL;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPRunwayP;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPSeastrtL;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPStorageP;
+import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPSwampA;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPTeleL;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPThermalP;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPTowerP;
@@ -136,6 +139,7 @@ import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPTreesL;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPTunnelC;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPTunnelL;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPWatrcrsA;
+import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPWatrcrsL;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPWellsprP;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -792,14 +796,14 @@ public class VMAP1PlusPlusLoader extends ShapeFileLoader {
       }
 
       // Road Line Loading
-      // if (((listLayer.size() == 0) || (listLayer.contains("RoadL")))
-      // && (FileUtil.getNamedFileInDir(directory, "RoadL.shp") != null)) {
-      // this.loadLineStringClass(
-      // FileUtil.getNamedFileInDir(directory, "RoadL.shp")
-      // .getAbsolutePath(), VMAP1PPRoadL.class,
-      // PeaRepDataset.ROADS_POP, IRoadLine.FEAT_TYPE_NAME, null,
-      // PeaRepDbType.VMAP1PlusPlus);
-      // }
+      if (((listLayer.size() == 0) || (listLayer.contains("RoadL")))
+          && (FileUtil.getNamedFileInDir(directory, "RoadL.shp") != null)) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "RoadL.shp")
+                .getAbsolutePath(), VMAP1PPRoadL.class,
+            PeaRepDataset.ROADS_POP, IRoadLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.VMAP1PlusPlus);
+      }
 
       // Ruins Point Loading
       if (((listLayer.size() == 0) || (listLayer.contains("RuinsP")))
@@ -850,14 +854,14 @@ public class VMAP1PlusPlusLoader extends ShapeFileLoader {
       }
 
       // Swamp Area Loading
-      // if (((listLayer.size() == 0) || (listLayer.contains("SwampA")))
-      // && (FileUtil.getNamedFileInDir(directory, "SwampA.shp") != null)) {
-      // this.loadPolygonClass(
-      // FileUtil.getNamedFileInDir(directory, "SwampA.shp")
-      // .getAbsolutePath(), VMAP1PPSwampA.class,
-      // PeaRepDataset.LANDUSE_AREAS_POP, ISimpleLandUseArea.FEAT_TYPE_NAME,
-      // PeaRepDbType.VMAP1PlusPlus);
-      // }
+      if (((listLayer.size() == 0) || (listLayer.contains("SwampA")))
+          && (FileUtil.getNamedFileInDir(directory, "SwampA.shp") != null)) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "SwampA.shp")
+                .getAbsolutePath(), VMAP1PPSwampA.class,
+            PeaRepDataset.LANDUSE_AREAS_POP, ISimpleLandUseArea.FEAT_TYPE_NAME,
+            PeaRepDbType.VMAP1PlusPlus);
+      }
 
       // Breakwater / Groyne Line Loading
       if (((listLayer.size() == 0) || (listLayer.contains("TeleL")))
@@ -967,14 +971,14 @@ public class VMAP1PlusPlusLoader extends ShapeFileLoader {
       }
 
       // Water Line Loading
-      // if (((listLayer.size() == 0) || (listLayer.contains("WatrcrsL")))
-      // && (FileUtil.getNamedFileInDir(directory, "WatrcrsL.shp") != null)) {
-      // this.loadLineStringClass(
-      // FileUtil.getNamedFileInDir(directory, "WatrcrsL.shp")
-      // .getAbsolutePath(), VMAP1PPWatrcrsL.class,
-      // PeaRepDataset.WATER_LINES_POP, IWaterLine.FEAT_TYPE_NAME, null,
-      // PeaRepDbType.VMAP1PlusPlus);
-      // }
+      if (((listLayer.size() == 0) || (listLayer.contains("WatrcrsL")))
+          && (FileUtil.getNamedFileInDir(directory, "WatrcrsL.shp") != null)) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "WatrcrsL.shp")
+                .getAbsolutePath(), VMAP1PPWatrcrsL.class,
+            PeaRepDataset.WATER_LINES_POP, IWaterLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.VMAP1PlusPlus);
+      }
 
       // Well Point Loading
       if (((listLayer.size() == 0) || (listLayer.contains("WellP")))

@@ -285,6 +285,8 @@ public class ScaleMasterScheduler {
           .contains(elem.getDbName()))
         continue;
       // get the dataset related to the element
+      System.out.println(elem.getDbName());
+      System.out.println(CartAGenDoc.getInstance().getDatabases());
       CartAGenDataSet dataset = CartAGenDoc.getInstance().getDataset(
           elem.getDbName());
 
