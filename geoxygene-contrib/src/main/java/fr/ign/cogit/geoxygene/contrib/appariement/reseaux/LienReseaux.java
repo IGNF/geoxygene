@@ -56,7 +56,9 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
  * @author Sébastien Mustiere
  */
 public class LienReseaux extends Lien {
+  
   static Logger logger = Logger.getLogger(LienReseaux.class.getName());
+  
   /** Les Arc1 pointés par le lien */
   private List<Arc> arcs1 = new ArrayList<Arc>(0);
 

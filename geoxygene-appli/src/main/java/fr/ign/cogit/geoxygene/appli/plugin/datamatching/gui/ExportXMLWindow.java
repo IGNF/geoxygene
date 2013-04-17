@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.appli.plugin.datamatching.network;
+package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -16,8 +16,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamPluginNetworkDataMatching;
-
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
 
 /**
  * 
@@ -52,7 +51,7 @@ public class ExportXMLWindow extends JDialog {
     setTitle("Export des paramètres saisis au format XML");
     setIconImage(new ImageIcon(ExportXMLWindow.class.getResource("/images/icons/page_white_code.png")).getImage());
     setSize(800, 550);
-    setLocation(600, 150);
+    setLocation(400, 100);
     
     // initialize buttons panel
     initButtonPanel();

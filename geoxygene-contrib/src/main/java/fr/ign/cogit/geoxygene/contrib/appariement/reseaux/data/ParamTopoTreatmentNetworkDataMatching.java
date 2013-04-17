@@ -19,6 +19,12 @@
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 
 /**
@@ -26,76 +32,84 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
  * 
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "topologieSeuilFusionNoeuds",
+    "topologieSurfacesFusionNoeuds",
+    "topologieElimineNoeudsAvecDeuxArcs",
+    "topologieGraphePlanaire",
+    "topologieFusionArcsDoubles"
+})
+@XmlRootElement(name = "ParamTopoTreatmentNetworkDataMatching")
 public class ParamTopoTreatmentNetworkDataMatching {
   
-  private double topologieSeuilFusionNoeuds1 = -1;
-  private double topologieSeuilFusionNoeuds2 = -1;
-  private IPopulation<?> topologieSurfacesFusionNoeuds1;
-  private IPopulation<?> topologieSurfacesFusionNoeuds2;
-  private boolean topologieElimineNoeudsAvecDeuxArcs1;
-  private boolean topologieElimineNoeudsAvecDeuxArcs2;
-  private boolean topologieGraphePlanaire1;
-  private boolean topologieGraphePlanaire2;
-  private boolean topologieFusionArcsDoubles1;
-  private boolean topologieFusionArcsDoubles2;
+  @XmlElement(name = "TopologieSeuilFusionNoeuds")
+  private double topologieSeuilFusionNoeuds = -1;
+  
+  @XmlElement(name = "TopologieSurfacesFusionNoeuds")
+  private IPopulation<?> topologieSurfacesFusionNoeuds;
+  
+  @XmlElement(name = "TopologieElimineNoeudsAvecDeuxArcs")
+  private boolean topologieElimineNoeudsAvecDeuxArcs;
+  
+  @XmlElement(name = "TopologieGraphePlanaire")
+  private boolean topologieGraphePlanaire;
+  
+  @XmlElement(name = "TopologieFusionArcsDoubles")
+  private boolean topologieFusionArcsDoubles;
   
   /**
    * Constructor.
    */
   public ParamTopoTreatmentNetworkDataMatching() {
-    topologieSeuilFusionNoeuds1 = -1;
-    topologieSeuilFusionNoeuds2 = -1;
-    topologieSurfacesFusionNoeuds1 = null;
-    topologieSurfacesFusionNoeuds2 = null;
-    
-    topologieElimineNoeudsAvecDeuxArcs1 = false;
-    topologieElimineNoeudsAvecDeuxArcs2 = false;
-    topologieGraphePlanaire1 = false;
-    topologieGraphePlanaire2 = false;
-    
-    topologieFusionArcsDoubles1 = false;
-    topologieFusionArcsDoubles2 = false;
+    topologieSeuilFusionNoeuds = -1;
+    topologieSurfacesFusionNoeuds = null;
+    topologieElimineNoeudsAvecDeuxArcs = false;
+    topologieGraphePlanaire = false;
+    topologieFusionArcsDoubles = false;
   }
   
   
-  public double getTopologieSeuilFusionNoeuds1() {
-    return topologieSeuilFusionNoeuds1;
+  public double getTopologieSeuilFusionNoeuds() {
+    return topologieSeuilFusionNoeuds;
   }
   
-  public double getTopologieSeuilFusionNoeuds2() {
-    return topologieSeuilFusionNoeuds2;
+  public void setTopologieSeuilFusionNoeuds(double d) {
+    topologieSeuilFusionNoeuds = d;
   }
   
-  public IPopulation<?> getTopologieSurfacesFusionNoeuds1() {
-    return topologieSurfacesFusionNoeuds1;
+  public IPopulation<?> getTopologieSurfacesFusionNoeuds() {
+    return topologieSurfacesFusionNoeuds;
   }
   
-  public IPopulation<?> getTopologieSurfacesFusionNoeuds2() {
-    return topologieSurfacesFusionNoeuds2;
+  public void settopologieSurfacesFusionNoeuds(IPopulation<?> pop) {
+    topologieSurfacesFusionNoeuds = pop;
   }
   
-  public boolean getTopologieElimineNoeudsAvecDeuxArcs1() {
-    return topologieElimineNoeudsAvecDeuxArcs1;
+  public boolean getTopologieElimineNoeudsAvecDeuxArcs() {
+    return topologieElimineNoeudsAvecDeuxArcs;
   }
   
-  public boolean getTopologieElimineNoeudsAvecDeuxArcs2() {
-    return topologieElimineNoeudsAvecDeuxArcs2;
+  public void setTopologieElimineNoeudsAvecDeuxArcs(boolean b) {
+    topologieElimineNoeudsAvecDeuxArcs = b;
   }
   
-  public boolean getTopologieGraphePlanaire1() {
-    return topologieGraphePlanaire1;
+  public boolean getTopologieGraphePlanaire() {
+    return topologieGraphePlanaire;
   }
   
-  public boolean getTopologieGraphePlanaire2() {
-    return topologieGraphePlanaire2;
+  public void setTopologieGraphePlanaire(boolean b) {
+    topologieGraphePlanaire = b;
   }
   
-  public boolean getTopologieFusionArcsDoubles1() {
-    return topologieFusionArcsDoubles1;
+  public boolean getTopologieFusionArcsDoubles() {
+    return topologieFusionArcsDoubles;
   }
   
-  public boolean getTopologieFusionArcsDoubles2() {
-    return topologieFusionArcsDoubles2;
+  public void setTopologieFusionArcsDoubles(boolean b) {
+    topologieFusionArcsDoubles = b;
   }
+  
+  
 
 }

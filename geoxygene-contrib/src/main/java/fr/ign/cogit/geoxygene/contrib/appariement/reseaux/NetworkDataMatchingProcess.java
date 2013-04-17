@@ -33,6 +33,10 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopoTreatmentNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
@@ -46,20 +50,27 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * 
  *
  */
-public class NetworkDataMatching {
+public class NetworkDataMatchingProcess {
   
   /** logger. */
-  private static final Logger LOGGER = Logger.getLogger(NetworkDataMatching.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(NetworkDataMatchingProcess.class.getName());
 
-  /** Parameters. */
-  private ParametresApp paramApp;
+  /** Parameters, Dataset and Actions. */
+  private ParamNetworkDataMatching inputParam;
+  private DatasetNetworkDataMatching dataset1;
+  private DatasetNetworkDataMatching dataset2;
+  private boolean doRecalage;
   
   /**
    * Constructor.
    * @param paramApp
    */
-  public NetworkDataMatching(ParametresApp paramApp) {
-    this.paramApp = paramApp;
+  public NetworkDataMatchingProcess(ParamNetworkDataMatching param, DatasetNetworkDataMatching network1, DatasetNetworkDataMatching network2,
+      boolean doRecalage) {
+    this.inputParam = param;
+    this.dataset1 = network1;
+    this.dataset2 = network2;
+    this.doRecalage = doRecalage;
   }
   
   /**
@@ -68,6 +79,9 @@ public class NetworkDataMatching {
    * @return
    */
   public ResultNetworkDataMatching networkDataMatching() {
+    
+    // Temporaire
+    ParametresApp paramApp = inputParam.paramNDMToParamApp();
     
     // For result
     ResultNetworkDataMatching resultatAppariement = new ResultNetworkDataMatching();
@@ -94,25 +108,19 @@ public class NetworkDataMatching {
     if (LOGGER.isEnabledFor(Level.DEBUG)) {
       LOGGER.debug("creation of network 1 " + (new Time(System.currentTimeMillis())).toString());
     }
-    ReseauApp reseau1 = importData("Réseau 1",
-        paramApp.populationsArcs1, paramApp.populationsNoeuds1,
-        paramApp.populationsArcsAvecOrientationDouble, paramApp.attributOrientation1,
-        paramApp.orientationMap1, paramApp.distanceNoeudsMax,
-        paramApp.topologieGraphePlanaire1, paramApp.topologieSeuilFusionNoeuds1,
-        paramApp.topologieSurfacesFusionNoeuds1, paramApp.topologieElimineNoeudsAvecDeuxArcs1,
-        paramApp.topologieFusionArcsDoubles1);
+    ReseauApp reseau1 = importData("Réseau 1", dataset1,
+        inputParam.getParamDirectionNetwork1(),
+        inputParam.getParamDistance().getDistanceNoeudsMax(),
+        inputParam.getParamTopoNetwork1());
     
     // 
     if (LOGGER.isEnabledFor(Level.DEBUG)) {
       LOGGER.debug("creation of network 2 " + (new Time(System.currentTimeMillis())).toString());
     }
-    ReseauApp reseau2 = importData("Réseau 2",
-        paramApp.populationsArcs2, paramApp.populationsNoeuds2,
-        paramApp.populationsArcsAvecOrientationDouble, paramApp.attributOrientation2,
-        paramApp.orientationMap2, paramApp.distanceNoeudsMax,
-        paramApp.topologieGraphePlanaire2, paramApp.topologieSeuilFusionNoeuds2,
-        paramApp.topologieSurfacesFusionNoeuds2, paramApp.topologieElimineNoeudsAvecDeuxArcs2,
-        paramApp.topologieFusionArcsDoubles2);
+    ReseauApp reseau2 = importData("Réseau 2", dataset2,
+        inputParam.getParamDirectionNetwork2(),
+        inputParam.getParamDistance().getDistanceNoeudsMax(),
+        inputParam.getParamTopoNetwork2());
     
 //    resultatAppariement.setReseau1(reseau1);
 //    resultatAppariement.setReseau2(reseau2);
@@ -120,28 +128,38 @@ public class NetworkDataMatching {
     
     // ---------------------------------------------------------------------------------------------
     // NB: l'ordre dans lequel les projections sont faites n'est pas neutre
-    if (paramApp.projeteNoeuds2SurReseau1) {
+    if (inputParam.getParamProjNetwork2().getProjeteNoeuds1SurReseau2()) {
+    // if (paramApp.projeteNoeuds2SurReseau1) {
       if (LOGGER.isEnabledFor(Level.DEBUG)) {
         LOGGER.debug("Projection of network 2 onto network1 " + (new Time(System.currentTimeMillis())).toString());
       }
-      reseau1.projete(reseau2,
+      /*reseau1.projete(reseau2,
           paramApp.projeteNoeuds2SurReseau1DistanceNoeudArc,
           paramApp.projeteNoeuds2SurReseau1DistanceProjectionNoeud,
-          paramApp.projeteNoeuds2SurReseau1ImpassesSeulement);
+          paramApp.projeteNoeuds2SurReseau1ImpassesSeulement);*/
+      reseau1.projete(reseau2,
+          inputParam.getParamProjNetwork2().getProjeteNoeuds1SurReseau2DistanceNoeudArc(),
+          inputParam.getParamProjNetwork2().getProjeteNoeuds1SurReseau2DistanceProjectionNoeud(),
+          inputParam.getParamProjNetwork2().getProjeteNoeuds1SurReseau2ImpassesSeulement());
     }
-    if (paramApp.projeteNoeuds1SurReseau2) {
+    // if (paramApp.projeteNoeuds1SurReseau2) {
+    if (inputParam.getParamProjNetwork1().getProjeteNoeuds1SurReseau2()) {
       if (LOGGER.isEnabledFor(Level.DEBUG)) {
         LOGGER.debug("Projection of network 1 onto network2 " + (new Time(System.currentTimeMillis())).toString());
       }
-      reseau2.projete(reseau1,
+      /*reseau2.projete(reseau1,
           paramApp.projeteNoeuds1SurReseau2DistanceNoeudArc,
           paramApp.projeteNoeuds1SurReseau2DistanceProjectionNoeud,
-          paramApp.projeteNoeuds1SurReseau2ImpassesSeulement);
+          paramApp.projeteNoeuds1SurReseau2ImpassesSeulement);*/
+      reseau2.projete(reseau1,
+          inputParam.getParamProjNetwork1().getProjeteNoeuds1SurReseau2DistanceNoeudArc(),
+          inputParam.getParamProjNetwork1().getProjeteNoeuds1SurReseau2DistanceProjectionNoeud(),
+          inputParam.getParamProjNetwork1().getProjeteNoeuds1SurReseau2ImpassesSeulement());
     }
     if (LOGGER.isEnabledFor(Level.DEBUG)) {
       LOGGER.debug("Filling of edges and nodes attributes " + (new Time(System.currentTimeMillis())).toString());
     }
-    reseau1.instancieAttributsNuls(paramApp);
+    reseau1.instancieAttributsNuls(inputParam.getParamDistance().getDistanceNoeudsMax());
     reseau2.initialisePoids();
     
     if (LOGGER.isEnabledFor(Level.INFO)) {
@@ -187,7 +205,12 @@ public class NetworkDataMatching {
       LOGGER.debug("START OF EXPORT ");
     }
     
-    if (paramApp.debugBilanSurObjetsGeo) {
+    // Avant le nettoyage des liens
+    resultatAppariement.setReseau1(reseau1);
+    resultatAppariement.setReseau2(reseau2);
+    
+    // if (paramApp.debugBilanSurObjetsGeo) {
+    if (doRecalage) {
       
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Transformation of matching links to generic links");
@@ -198,16 +221,6 @@ public class NetworkDataMatching {
       Appariement.nettoyageLiens(reseau1, reseau2);
       resultatAppariement.setLiensGeneriques(liensGeneriques);
       
-      if (LOGGER.isInfoEnabled()) {
-        LOGGER.info("######## NETWORK MATCHING END #########");
-      }
-
-      // 
-      resultatAppariement.setReseau1(reseau1);
-      resultatAppariement.setReseau2(reseau2);
-      
-      // return resultat
-      return resultatAppariement;
     }
     
     if (LOGGER.isDebugEnabled()) {
@@ -219,10 +232,7 @@ public class NetworkDataMatching {
       LOGGER.info("######## NETWORK MATCHING END #########");
     }
     
-    resultatAppariement.setReseau1(reseau1);
-    resultatAppariement.setReseau2(reseau2);
-    
-    // return liens;
+    // Return ResultNetworkDataMatching
     return resultatAppariement;
   }
   
@@ -230,19 +240,21 @@ public class NetworkDataMatching {
   /**
    * Création d'une carte topo à partir des objets Géographiques initiaux.
    * 
-   * 
-   * 
-   * 
    * @return Le réseau créé
    */
   public static ReseauApp importData(String networkName,
-      List<IFeatureCollection<? extends IFeature>> populationsArcs,
-      List<IFeatureCollection<? extends IFeature>> populationsNoeuds,
-      boolean populationsArcsAvecOrientationDouble, String attributOrientation, 
-      Map<Object, Integer> orientationMap, float distanceNoeudsMax,
-      boolean topologieGraphePlanaire, double topologieSeuilFusionNoeuds,
-      IPopulation<?> topologieSurfacesFusionNoeuds, boolean topologieElimineNoeudsAvecDeuxArcs,
-      boolean topologieFusionArcsDoubles) {
+      DatasetNetworkDataMatching network1, ParamDirectionNetworkDataMatching direction,
+      float distanceNoeudsMax, ParamTopoTreatmentNetworkDataMatching topo) {
+    
+    boolean populationsArcsAvecOrientationDouble = direction.getOrientationDouble();
+    String attributOrientation = direction.getAttributOrientation();
+    Map<Integer, String> orientationMap = direction.getOrientationMap();
+    
+    boolean topologieGraphePlanaire = topo.getTopologieGraphePlanaire();
+    double topologieSeuilFusionNoeuds = topo.getTopologieSeuilFusionNoeuds();
+    IPopulation<?> topologieSurfacesFusionNoeuds = topo.getTopologieSurfacesFusionNoeuds();
+    boolean topologieElimineNoeudsAvecDeuxArcs = topo.getTopologieElimineNoeudsAvecDeuxArcs();
+    boolean topologieFusionArcsDoubles = topo.getTopologieFusionArcsDoubles();
     
     ReseauApp reseau = new ReseauApp(networkName);
     IPopulation<? extends IFeature> popArcApp = reseau.getPopArcs();
@@ -252,6 +264,7 @@ public class NetworkDataMatching {
     
     // /////////////////////////
     // import des arcs
+    List<IFeatureCollection<? extends IFeature>> populationsArcs = network1.getPopulationsArcs();
     Iterator<IFeatureCollection<? extends IFeature>> itPopArcs = null;
     itPopArcs = populationsArcs.iterator();
     LOGGER.info(populationsArcs.size() + " pops");
@@ -280,10 +293,11 @@ public class NetworkDataMatching {
             Object value = element.getAttribute(attribute);
             // System.out.println(attribute + " = " + value);
             if (orientationMap != null) {
-              Integer orientation = orientationMap.get(value);
+              // TODO a adpater
+              /*Integer orientation = orientationMap.get(value);
               if (orientation != null) {
                 arc.setOrientation(orientation.intValue());
-              }
+              }*/
             } else {
               if (value instanceof Number) {
                 Number v = (Number) value;
@@ -343,6 +357,7 @@ public class NetworkDataMatching {
     
     //    if (true) return reseau;
     // import des noeuds
+    List<IFeatureCollection<? extends IFeature>> populationsNoeuds = network1.getPopulationsNoeuds();
     Iterator<?> itPopNoeuds = null;
     itPopNoeuds = populationsNoeuds.iterator();
     while (itPopNoeuds.hasNext()) {

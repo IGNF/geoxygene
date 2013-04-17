@@ -24,7 +24,7 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  *******************************************************************************/
-package fr.ign.cogit.geoxygene.appli.plugin.datamatching.network;
+package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -111,7 +111,15 @@ public class DisplayParamPanel extends JToolBar {
    * @return
    */
   private JPanel getDatasetParamTab() {
-    FormLayout layout = new FormLayout(
+    
+    JPanel formPanel = new JPanel();
+    
+    formPanel.setLayout(new FlowLayout (FlowLayout.LEFT));
+    formPanel.add(new JLabel("<html>" + paramNetworkDataMatching.toString() + "</html>"));
+    
+    return formPanel;
+    
+    /*FormLayout layout = new FormLayout(
         "20dlu, pref, 20dlu, pref, 20dlu, pref, 20dlu, pref, 20dlu", // colonnes
         "10dlu, pref, pref, pref, pref, pref, pref, pref, pref, 40dlu");  // lignes
     CellConstraints cc = new CellConstraints();
@@ -119,16 +127,16 @@ public class DisplayParamPanel extends JToolBar {
     JPanel formPanel = new JPanel();
     formPanel.setLayout(layout);
     
-    /*
+    
     // Ligne 2 : PopRef
     formPanel.add(new JLabel("Pop ref : "), cc.xy(2, 3));
     formPanel.add(new JLabel(paramNetworkDataMatching.getParamDataset().getPopulationsArcs1().size() + ""), cc.xy(4, 3));
     
     // Ligne x : distanceNoeudsMax
     // Distance maximale autorisée entre deux noeuds appariés
-    */
     
-    return formPanel;
+    
+    return formPanel;*/
   }
   
   /**

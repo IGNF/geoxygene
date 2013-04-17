@@ -24,7 +24,7 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  *******************************************************************************/
-package fr.ign.cogit.geoxygene.appli.plugin.datamatching.network;
+package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,7 +43,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamFilenameNetworkDataMatching;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenameNetworkDataMatching;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 public class EditParamDatasetPanel extends JPanel {

@@ -1,8 +1,10 @@
-package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml;
+package fr.ign.cogit.geoxygene.appli.plugin.datamatching.xml;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamFilenameNetworkDataMatching;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenameNetworkDataMatching;
+
+
 
 /**
  * 

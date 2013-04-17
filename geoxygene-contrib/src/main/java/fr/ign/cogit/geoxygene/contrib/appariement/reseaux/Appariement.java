@@ -552,6 +552,7 @@ public abstract class Appariement {
   public static EnsembleDeLiens appariementNoeuds(final CarteTopo reseau1,
       final CarteTopo reseau2, final EnsembleDeLiens liensPreAppNN,
       final EnsembleDeLiens liensPreAppAA, final ParametresApp param) {
+    
     IPopulation<Groupe> groupesComp = reseau2.getPopGroupes();
     int nbSansHomologue = 0, nbNonTraite = 0, nbPlusieursNoeudsComplets = 0, nbPlusieursGroupesComplets = 0, nbNoeudNoeud = 0, nbNoeudGroupe = 0, nbNoeudGroupeIncertain = 0, nbNoeudNoeudIncertain = 0;
     EnsembleDeLiens liens = new EnsembleDeLiens(LienReseaux.class);
@@ -1360,11 +1361,14 @@ public abstract class Appariement {
   public static EnsembleDeLiens appariementArcs(final CarteTopo reseau1, final CarteTopo reseau2,
       final EnsembleDeLiens liensPreAppAA, final EnsembleDeLiens liensAppNoeuds,
       final ParametresApp param) {
+    
     List<Arc> tousArcs = new ArrayList<Arc>();
     int nbSansHomologuePbNoeud = 0, nbSansHomologuePbPCC = 0, nbOkUneSerie = 0, nbOkPlusieursSeries = 0, nbDouteuxPbNoeud = 0, nbDouteuxPbSens = 0, nbTot = 0;
     double longSansHomologuePbNoeud = 0, longSansHomologuePbPCC = 0, longOkUneSerie = 0, longOkPlusieursSeries = 0, longDouteuxPbNoeud = 0, longDouteuxPbSens = 0, longTot = 0;
+    
     EnsembleDeLiens liensArcsArcs = new EnsembleDeLiens(LienReseaux.class);
     liensArcsArcs.setNom(I18N.getString("Appariement.EdgeMatching")); //$NON-NLS-1$
+    
     // on étudie tous les arc ref, un par un, indépendamment les uns des autres
     for (Arc edge : reseau1.getPopArcs()) {
       LOGGER.debug("appariementArcs : Edge " + edge);
@@ -1898,9 +1902,7 @@ public abstract class Appariement {
     resNetwork2Edges.setNoMatchingNetworkElementLength(longSansCorresp);
     resNetwork2Edges.setDoubtfulNetworkElementNumber(nbDouteux);
     resNetwork2Edges.setDoubtfulNetworkElementLength(longDouteux);
-    System.out.println("-------------------------------------------------");
-    System.out.println(resNetwork2Edges.toString());
-    System.out.println("-------------------------------------------------");
+    Appariement.LOGGER.info(resNetwork2Edges.toString());
     resultatStatAppariement.setStatsEdgesOfNetwork2(resNetwork2Edges);
     
     // ////////// Controle global des noeuds comp //////////////

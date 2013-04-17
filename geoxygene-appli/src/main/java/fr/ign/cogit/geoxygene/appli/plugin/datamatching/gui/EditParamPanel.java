@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.plugin.datamatching.network;
+package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -45,7 +45,7 @@ import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.NetworkDataMatchingPlugin;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamPluginNetworkDataMatching;
+
 
 /**
  * GUI to load data and parameters for launching network data matching.

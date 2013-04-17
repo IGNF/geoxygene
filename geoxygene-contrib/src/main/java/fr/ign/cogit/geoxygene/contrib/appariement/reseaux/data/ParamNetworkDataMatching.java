@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
 
 /**
  * 
@@ -41,7 +42,11 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 @XmlType(name = "", propOrder = {
     "paramDirectionNetwork1",
     "paramDirectionNetwork2",
-    "paramDistance"
+    "paramDistance",
+    "paramTopoNetwork1",
+    "paramTopoNetwork2",
+    "paramProjNetwork1",
+    "paramProjNetwork2"
 })
 @XmlRootElement(name = "ParamNetworkDataMatching")
 public class ParamNetworkDataMatching {
@@ -55,8 +60,17 @@ public class ParamNetworkDataMatching {
   @XmlElement(name = "ParamDistance")
   private ParamDistanceNetworkDataMatching paramDistance = null;
   
-  // private ParamTopoTreatmentNetworkDataMatching paramTopoTreatment = null;
+  @XmlElement(name = "ParamTopoNetwork1")
+  private ParamTopoTreatmentNetworkDataMatching paramTopoNetwork1 = null;
   
+  @XmlElement(name = "ParamTopoNetwork2")
+  private ParamTopoTreatmentNetworkDataMatching paramTopoNetwork2 = null;
+  
+  @XmlElement(name = "ParamProjNetwork1")
+  private ParamProjectionNetworkDataMatching paramProjNetwork1 = null;
+  
+  @XmlElement(name = "ParamProjNetwork2")
+  private ParamProjectionNetworkDataMatching paramProjNetwork2 = null;
 
   /** A classic logger. */
   static Logger logger = Logger.getLogger(ParamNetworkDataMatching.class.getName());
@@ -65,11 +79,13 @@ public class ParamNetworkDataMatching {
    * Constructor.
    */
   public ParamNetworkDataMatching() {
-    
     paramDirectionNetwork1 = new ParamDirectionNetworkDataMatching();
     paramDirectionNetwork2 = new ParamDirectionNetworkDataMatching();
     paramDistance = new ParamDistanceNetworkDataMatching();
-    // paramTopoTreatment = new ParamTopoTreatmentNetworkDataMatching();
+    paramTopoNetwork1 = new ParamTopoTreatmentNetworkDataMatching();
+    paramTopoNetwork2 = new ParamTopoTreatmentNetworkDataMatching();
+    paramProjNetwork1 = new ParamProjectionNetworkDataMatching();
+    paramProjNetwork2 = new ParamProjectionNetworkDataMatching();
   }
   
   public ParamDirectionNetworkDataMatching getParamDirectionNetwork1() {
@@ -88,14 +104,6 @@ public class ParamNetworkDataMatching {
     paramDirectionNetwork2 = pdnm;
   }
   
-  /*public ParamFilenameNetworkDataMatching getParamDataset() {
-    return paramDataset;
-  }
-  
-  public void setParamDataset(ParamFilenameNetworkDataMatching paramDataset) {
-    this.paramDataset = paramDataset;
-  }*/
-  
   public ParamDistanceNetworkDataMatching getParamDistance() {
     return paramDistance;
   }
@@ -104,17 +112,42 @@ public class ParamNetworkDataMatching {
     this.paramDistance = paramDistance;
   }
   
-  /*public ParamTopoTreatmentNetworkDataMatching getParamTopoTreatment() {
-    return paramTopoTreatment;
+  public ParamTopoTreatmentNetworkDataMatching getParamTopoNetwork1() {
+    return paramTopoNetwork1;
   }
   
-  public void setParamTopoTreatment(ParamTopoTreatmentNetworkDataMatching paramTopoTreatment) {
-    this.paramTopoTreatment = paramTopoTreatment;
-  }*/
+  public void setParamTopoNetwork1(ParamTopoTreatmentNetworkDataMatching paramTopo) {
+    this.paramTopoNetwork1 = paramTopo;
+  }
+  
+  public ParamTopoTreatmentNetworkDataMatching getParamTopoNetwork2() {
+    return paramTopoNetwork2;
+  }
+  
+  public void setParamTopoNetwork2(ParamTopoTreatmentNetworkDataMatching paramTopo) {
+    this.paramTopoNetwork2 = paramTopo;
+  }
+  
+  public void setParamProjNetwork1(ParamProjectionNetworkDataMatching paramProj) {
+    paramProjNetwork1 = paramProj;
+  }
+  
+  public ParamProjectionNetworkDataMatching getParamProjNetwork1() {
+    return paramProjNetwork1;
+  }
+  
+  public void setParamProjNetwork2(ParamProjectionNetworkDataMatching paramProj) {
+    paramProjNetwork2 = paramProj;
+  }
+  
+  public ParamProjectionNetworkDataMatching getParamProjNetwork2() {
+    return paramProjNetwork2;
+  }
   
   /**
    * Transform new structure to old structure.
    * @return ParametresApp
+   * @deprecated
    */
   public ParametresApp paramNDMToParamApp() {
     
@@ -123,32 +156,24 @@ public class ParamNetworkDataMatching {
     
     // Set parameters
     
-    // Set dataset
-    //param.populationsArcs1 = paramDataset.getPopulationsArcs1();
-    //param.populationsArcs2 = paramDataset.getPopulationsArcs2();
-    //param.populationsNoeuds1 = paramDataset.getPopulationsNoeuds1();
-    //param.populationsNoeuds2 = paramDataset.getPopulationsNoeuds2();
-    
     // Set direction param
     param.populationsArcsAvecOrientationDouble = paramDirectionNetwork1.getOrientationDouble();
     param.attributOrientation1 = paramDirectionNetwork1.getAttributOrientation();
     param.attributOrientation2 = paramDirectionNetwork2.getAttributOrientation();
-    
-    
     if (paramDirectionNetwork1.getOrientationMap() != null) {
       Map<Object, Integer> orientationMap1 = new HashMap<Object, Integer>();
-      orientationMap1.put(paramDirectionNetwork1.getOrientationMap().get(1), 1);
-      orientationMap1.put(paramDirectionNetwork1.getOrientationMap().get(2), 2);
-      orientationMap1.put(paramDirectionNetwork1.getOrientationMap().get(-1), -1);
+      orientationMap1.put(paramDirectionNetwork1.getOrientationMap().get(OrientationInterface.SENS_DIRECT), OrientationInterface.SENS_DIRECT);
+      orientationMap1.put(paramDirectionNetwork1.getOrientationMap().get(OrientationInterface.DOUBLE_SENS), OrientationInterface.DOUBLE_SENS);
+      orientationMap1.put(paramDirectionNetwork1.getOrientationMap().get(OrientationInterface.SENS_INVERSE), OrientationInterface.SENS_INVERSE);
       param.orientationMap1 = orientationMap1;
     } else {
       param.orientationMap1 = null;
     }
     if (paramDirectionNetwork2.getOrientationMap() != null) {
       Map<Object, Integer> orientationMap2 = new HashMap<Object, Integer>();
-      orientationMap2.put(paramDirectionNetwork2.getOrientationMap().get(1), 1);
-      orientationMap2.put(paramDirectionNetwork2.getOrientationMap().get(2), 2);
-      orientationMap2.put(paramDirectionNetwork2.getOrientationMap().get(-1), -1);
+      orientationMap2.put(paramDirectionNetwork2.getOrientationMap().get(OrientationInterface.SENS_DIRECT), OrientationInterface.SENS_DIRECT);
+      orientationMap2.put(paramDirectionNetwork2.getOrientationMap().get(OrientationInterface.DOUBLE_SENS), OrientationInterface.DOUBLE_SENS);
+      orientationMap2.put(paramDirectionNetwork2.getOrientationMap().get(OrientationInterface.SENS_INVERSE), OrientationInterface.SENS_INVERSE);
       param.orientationMap2 = orientationMap2;
     } else {
       param.orientationMap2 = null;
@@ -161,32 +186,37 @@ public class ParamNetworkDataMatching {
     param.distanceNoeudsImpassesMax = paramDistance.getDistanceNoeudsImpassesMax(); 
     
     // Set topo treatment param
-    param.topologieGraphePlanaire1 = false;
-    param.topologieGraphePlanaire2 = false;
-    param.topologieFusionArcsDoubles1 = false;
-    param.topologieFusionArcsDoubles2 = false;
-    param.topologieSeuilFusionNoeuds2 = 0.1;
-    param.topologieSeuilFusionNoeuds1 = 0.1;
-    param.topologieSurfacesFusionNoeuds1 = null;
-    param.topologieSurfacesFusionNoeuds2 = null;
-    param.topologieElimineNoeudsAvecDeuxArcs1 = false;
-    param.topologieElimineNoeudsAvecDeuxArcs2 = false;
+    param.topologieGraphePlanaire1 = paramTopoNetwork1.getTopologieGraphePlanaire();
+    param.topologieFusionArcsDoubles1 = paramTopoNetwork1.getTopologieFusionArcsDoubles();
+    param.topologieSeuilFusionNoeuds1 = paramTopoNetwork1.getTopologieSeuilFusionNoeuds();
+    param.topologieSurfacesFusionNoeuds1 = paramTopoNetwork1.getTopologieSurfacesFusionNoeuds();
+    param.topologieElimineNoeudsAvecDeuxArcs1 = paramTopoNetwork1.getTopologieElimineNoeudsAvecDeuxArcs();
     
-    // A trier encore
+    param.topologieGraphePlanaire2 = paramTopoNetwork2.getTopologieGraphePlanaire();
+    param.topologieFusionArcsDoubles2 = paramTopoNetwork2.getTopologieFusionArcsDoubles();
+    param.topologieSeuilFusionNoeuds2 = paramTopoNetwork2.getTopologieSeuilFusionNoeuds();
+    param.topologieSurfacesFusionNoeuds2 = paramTopoNetwork2.getTopologieSurfacesFusionNoeuds();
+    param.topologieElimineNoeudsAvecDeuxArcs2 = paramTopoNetwork2.getTopologieElimineNoeudsAvecDeuxArcs();
+    
+    // Projection
+    param.projeteNoeuds1SurReseau2 = paramProjNetwork1.getProjeteNoeuds1SurReseau2();
+    param.projeteNoeuds1SurReseau2DistanceNoeudArc = paramProjNetwork1.getProjeteNoeuds1SurReseau2DistanceNoeudArc(); // 25
+    param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = paramProjNetwork1.getProjeteNoeuds1SurReseau2DistanceProjectionNoeud(); // 50
+    param.projeteNoeuds1SurReseau2ImpassesSeulement = paramProjNetwork1.getProjeteNoeuds1SurReseau2ImpassesSeulement();
+    
+    param.projeteNoeuds2SurReseau1 = paramProjNetwork2.getProjeteNoeuds1SurReseau2();;
+    param.projeteNoeuds2SurReseau1DistanceNoeudArc = paramProjNetwork2.getProjeteNoeuds1SurReseau2DistanceNoeudArc(); // 25
+    param.projeteNoeuds2SurReseau1DistanceProjectionNoeud = paramProjNetwork2.getProjeteNoeuds1SurReseau2DistanceProjectionNoeud(); // 50
+    param.projeteNoeuds2SurReseau1ImpassesSeulement = paramProjNetwork2.getProjeteNoeuds1SurReseau2ImpassesSeulement();
+    
+    // Variante
+    param.varianteForceAppariementSimple = false;  // true
+    param.varianteRedecoupageArcsNonApparies = false;   // true
     param.varianteFiltrageImpassesParasites = false;
-    param.projeteNoeuds1SurReseau2 = false;
-    param.projeteNoeuds1SurReseau2DistanceNoeudArc = 10; // 25
-    param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 25; // 50
-    param.projeteNoeuds2SurReseau1 = false;
-    param.projeteNoeuds2SurReseau1DistanceNoeudArc = 10; // 25
-    param.projeteNoeuds2SurReseau1DistanceProjectionNoeud = 25; // 50
-    param.projeteNoeuds2SurReseau1ImpassesSeulement = false;
-    param.varianteForceAppariementSimple = true;
-    param.varianteRedecoupageArcsNonApparies = true;
     
+    // Debug
     param.debugTirets = true;
     param.debugBilanSurObjetsGeo = false;
-    param.varianteRedecoupageArcsNonApparies = true;
     param.debugAffichageCommentaires = 2;
     param.debugBuffer = true;
     param.debugPasTirets = 10;
@@ -201,50 +231,43 @@ public class ParamNetworkDataMatching {
   public String toString() {
     
     StringBuffer buffer = new StringBuffer();
-    buffer.append("-----------------------------------------------------------" + "\n");
-    buffer.append("Parameters : " + "\n");
     
-    // Dataset
-    /*buffer.append("Paramètres spécifiant quelles données sont traitées : " + "\n");
-    buffer.append("   - Nombre de collection dans le réseau 1 : " + paramDataset.getPopulationsArcs1().size() + "\n");
-    for (int i = 0; i < paramDataset.getPopulationsArcs1().size(); i++) {
-      buffer.append("   - Nombre d'arcs de la " + i + "-ème collection du réseau 1 = " + paramDataset.getPopulationsArcs1().get(i).size() + "\n");
-    }
-    buffer.append("   - Nombre de collection dans le réseau 2 : " + paramDataset.getPopulationsArcs2().size() + "\n");
-    for (int i = 0; i < paramDataset.getPopulationsArcs2().size(); i++) {
-      buffer.append("   - Nombre d'arcs de la " + i + "-ème collection du réseau 2 = " + paramDataset.getPopulationsArcs2().get(i).size() + "\n");
-    }*/
+    buffer.append("Parameters : " + "<br/>");
     
     // Direction
-    buffer.append("Paramètres de prise en compte de l'orientation des arcs sur le terrain : " + "\n");
-    buffer.append("   - orientation double = " + paramDirectionNetwork1.getOrientationDouble() + "\n");
-    buffer.append("   - attribut de l'orientation simple du réseau 1 = " + paramDirectionNetwork1.getAttributOrientation() + "\n");
-    buffer.append("   - attribut de l'orientation simple du réseau 2 = " + paramDirectionNetwork2.getAttributOrientation() + "\n");
+    buffer.append("Paramètres de prise en compte de l'orientation des arcs sur le terrain : " + "<br/>");
+    buffer.append("   - orientation double = " + paramDirectionNetwork1.getOrientationDouble() + "<br/>");
+    buffer.append("   - attribut de l'orientation simple du réseau 1 = " + paramDirectionNetwork1.getAttributOrientation() + "<br/>");
+    buffer.append("   - attribut de l'orientation simple du réseau 2 = " + paramDirectionNetwork2.getAttributOrientation() + "<br/>");
     if (paramDirectionNetwork1.getOrientationMap() != null) {
-      buffer.append("   - valeurs de l'attribut d'orientation du réseau 1 = " + "\n");
+      buffer.append("   - valeurs de l'attribut d'orientation du réseau 1 = " + "<br/>");
       for (Object key : paramDirectionNetwork1.getOrientationMap().keySet()) {
-        buffer.append("      " + key + ", " + paramDirectionNetwork1.getOrientationMap().get(key) + "\n");
+        buffer.append("      " + key + ", " + paramDirectionNetwork1.getOrientationMap().get(key) + "<br/>");
       }
     }
     if (paramDirectionNetwork2.getOrientationMap() != null) {
-      buffer.append("   - valeurs de l'attribut d'orientation du réseau 2 = " + "\n");
+      buffer.append("   - valeurs de l'attribut d'orientation du réseau 2 = " + "<br/>");
       for (Object key : paramDirectionNetwork2.getOrientationMap().keySet()) {
-        buffer.append("      " + key + ", " + paramDirectionNetwork2.getOrientationMap().get(key) + "\n");
+        buffer.append("      " + key + ", " + paramDirectionNetwork2.getOrientationMap().get(key) + "<br/>");
       }
     }
     
     // Distance
-    buffer.append("Écarts de distance autorisés : " + "\n");
-    buffer.append("   - Distance maximale autorisée entre deux noeuds appariés = " + paramDistance.getDistanceNoeudsMax() + "\n");
-    buffer.append("   - Distance maximum autorisée entre les arcs des deux réseaux = " + paramDistance.getDistanceArcsMax() + "\n");
+    buffer.append("Écarts de distance autorisés : " + "<br/>");
+    buffer.append("   - Distance maximale autorisée entre deux noeuds appariés = " + paramDistance.getDistanceNoeudsMax() + "<br/>");
+    buffer.append("   - Distance maximum autorisée entre les arcs des deux réseaux = " + paramDistance.getDistanceArcsMax() + "<br/>");
     buffer.append("   - Distance minimum sous laquelle l'écart de distance pour divers arcs du réseaux 2 n'a plus aucun sens = " 
-        + paramDistance.getDistanceArcsMin() + "\n");
+        + paramDistance.getDistanceArcsMin() + "<br/>");
     buffer.append("   - Distance maximale autorisée entre deux noeuds appariés, quand le noeud du réseau 1 est une impasse uniquement = " 
-        + paramDistance.getDistanceNoeudsImpassesMax() + "\n");
+        + paramDistance.getDistanceNoeudsImpassesMax() + "<br/>");
     
-    // Topology treatment
+    // Topology 1
     
-    buffer.append("-----------------------------------------------------------" + "\n");
+    // Topology 2
+    
+    // Projection 1
+    
+    // Projection 2
     
     return buffer.toString();
   }

@@ -106,12 +106,22 @@ public class ReseauApp extends CarteTopo {
    * On affecte une taille par défaut à tous nouveaux sans taille.
    * La valeur affectée est param.distanceNoeudsMax.
    * @param param matching parameters
+   * @deprecated
    */
   public void instancieAttributsNuls(ParametresApp param) {
     for (Noeud node : this.getPopNoeuds()) {
       NoeudApp noeud = (NoeudApp) node;
       if (noeud.getTaille() == 0) {
         noeud.setTaille(param.distanceNoeudsMax);
+      }
+    }
+  }
+  
+  public void instancieAttributsNuls(float distanceNoeudsMax) {
+    for (Noeud node : this.getPopNoeuds()) {
+      NoeudApp noeud = (NoeudApp) node;
+      if (noeud.getTaille() == 0) {
+        noeud.setTaille(distanceNoeudsMax);
       }
     }
   }

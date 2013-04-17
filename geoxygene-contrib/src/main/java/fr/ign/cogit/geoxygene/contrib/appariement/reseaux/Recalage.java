@@ -47,20 +47,24 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  */
 public class Recalage {
   /**
-   * Recale la géométrie des arcs d'un graphe sur un autre graphe une fois que
-   * ceux-ci ont été appariés.
+   * Recale la géométrie des arcs d'un graphe sur un autre graphe une fois que ceux-ci ont été appariés.
+   * 
    * <p>
    * Un lien (correspondant) est gardé entre les nouveaux arcs et leurs correspondants dans le
    * réseau de référence (accessible par arc.getCorrespondants()),
+   * </p>
    * <p>
-   * IMPORTANT 1: ctARecaler doit être le réseau 1 dans l'appariement, et ctSurLaquelleRecaler le
-   * réseau 2.
+   * IMPORTANT 1: 
+   *    ctARecaler doit être le réseau 1 dans l'appariement, 
+   *    et ctSurLaquelleRecaler le réseau 2.
+   * </p>
    * <p>
    * IMPORTANT 2: pour garder les liens, l'appariement doit avoir été lancé avec le paramètre
    * debugBilanSurObjetsGeo à FALSE.
-   * <p>
-   * NB: méthode pour les cas relativement simples qui mérite sans doute d'être affinée.
-   * <p>
+   * </p>
+   * 
+   * <p>NB: méthode pour les cas relativement simples qui mérite sans doute d'être affinée.</p>
+   * 
    * @param ctARecaler
    *        Le réseau à recaler
    * @param ctSurLaquelleRecaler
@@ -72,8 +76,10 @@ public class Recalage {
    */
   public static CarteTopo recalage(ReseauApp ctARecaler,
       ReseauApp ctSurLaquelleRecaler, EnsembleDeLiens liens) {
+    
     CarteTopo ctRecale = new CarteTopo(
         I18N.getString("Recalage.CorrectedNetwork")); //$NON-NLS-1$
+    
     // On ajoute dans le réseau recalé les arcs sur lesquels on recale qui sont appariés.
     List<Noeud> noeudsCopies = new ArrayList<Noeud>(0);
     for (Arc a : ctSurLaquelleRecaler.getPopArcs()) {

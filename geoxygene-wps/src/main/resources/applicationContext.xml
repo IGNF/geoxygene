@@ -13,6 +13,7 @@
 	
 	<!-- DataMatching WPS -->
 	<bean id="networkDataMatchingProcess" class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.NetworkDataMatchingProcess" />
+	<bean id="ImportMatchedNetworkProcess" class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.ImportMatchedNetworkProcess" />
 
 	<!-- ========================================================================== -->
 	<!-- 	The PPIO -->

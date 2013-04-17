@@ -32,7 +32,6 @@ import org.geotools.process.factory.DescribeResult;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
@@ -64,7 +63,7 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
    * @param popComp
    * @return Results ResultatAppariement
    */
-  @DescribeResult(name = "popApp", description = "network Matched")
+  @DescribeResult(name = "popApp", description = "Network Matched")
   public ResultNetworkDataMatching execute(
       @DescribeParameter(name = "popRef", description = "Less detailed network") SimpleFeatureCollection popRef,
       @DescribeParameter(name = "popComp", description = "Comparison network") SimpleFeatureCollection popComp) {
@@ -98,7 +97,7 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
     // ParametresAppData paramAppData = null;
     // paramAppData = ParametresAppData.unmarshall(paramFilename);
 
-    ParametresApp param = new ParametresApp();
+    /*ParametresApp param = new ParametresApp();
 
     param.populationsArcs1.add(gPopRef);
     param.populationsArcs2.add(gPopComp);
@@ -130,7 +129,7 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
     try {
 
       LOGGER.info("Start network data matching");
-      NetworkDataMatching networkDataMatching = new NetworkDataMatching(param);
+      NetworkDataMatchingProcess networkDataMatching = new NetworkDataMatchingProcess(param);
       ResultNetworkDataMatching resultatAppariement = networkDataMatching.networkDataMatching();
       LOGGER.info("End network data matching");
 
@@ -171,7 +170,9 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
     } catch (Exception e) {
       e.printStackTrace();
       throw new ProcessException("Error during network data matching process");
-    }
+    }*/
+    
+    return null;
     
   }
   

@@ -69,7 +69,7 @@ public class ParamDirectionNetworkDataMatching {
    */
   public ParamDirectionNetworkDataMatching() {
     orientationDouble = true;
-    attributOrientation = null;
+    attributOrientation = "orientation";
     orientationMap = null;
     /*"sens_de_circulation";
     orientationMap = new HashMap<Integer, String>();

@@ -49,21 +49,23 @@ import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.network.DisplayToolBarNetworkDataMatching;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.network.EditParamPanel;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenameNetworkDataMatching;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayToolBarNetworkDataMatching;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.EditParamPanel;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.NetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.NetworkDataMatchingProcess;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamFilenameNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamPluginNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamProjectionNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopoTreatmentNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
@@ -160,6 +162,9 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
    */
   private void initializeParam() {
     
+    // -----------------------------------------------------------------------------------------
+    // Dataset
+    
     String filename1 = "D:\\DATA\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
     String filename2 = "D:\\DATA\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
     // String filename1 = "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau1.shp";
@@ -169,7 +174,9 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     // "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\ERM\\RoadL_Paris_2000.shp"
     // "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\Navstreets\\Streets.shp"
     
-    // Dataset  
+    // String filename1 = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\extrait-gps.shp";
+    // String filename2 = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\bduni_gps.shp";
+    
     ParamFilenameNetworkDataMatching paramFilename1 = new ParamFilenameNetworkDataMatching();
     paramFilename1.setListNomFichiersPopArcs(filename1);
     paramPlugin.setParamFilenameNetwork1(paramFilename1);
@@ -178,6 +185,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     paramFilename2.setListNomFichiersPopArcs(filename2);
     paramPlugin.setParamFilenameNetwork2(paramFilename2);
     
+    // -----------------------------------------------------------------------------------------
     // Param
     ParamNetworkDataMatching param = new ParamNetworkDataMatching();
     
@@ -194,7 +202,42 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     paramDistance.setDistanceArcsMin(distanceNoeudsMax);
     param.setParamDistance(paramDistance);
     
+    // Topologie
+    ParamTopoTreatmentNetworkDataMatching paramTopo1 = new ParamTopoTreatmentNetworkDataMatching();
+    paramTopo1.setTopologieGraphePlanaire(false);
+    paramTopo1.setTopologieFusionArcsDoubles(true);
+    paramTopo1.setTopologieSeuilFusionNoeuds(0.1);
+    paramTopo1.setTopologieElimineNoeudsAvecDeuxArcs(false);
+    param.setParamTopoNetwork1(paramTopo1);
+    
+    ParamTopoTreatmentNetworkDataMatching paramTopo2 = new ParamTopoTreatmentNetworkDataMatching();
+    paramTopo2.setTopologieGraphePlanaire(false);
+    paramTopo2.setTopologieFusionArcsDoubles(true);
+    paramTopo2.setTopologieSeuilFusionNoeuds(0.1);
+    paramTopo2.setTopologieElimineNoeudsAvecDeuxArcs(false);
+    param.setParamTopoNetwork1(paramTopo2);
+    
+    // Projection
+    ParamProjectionNetworkDataMatching paramProj1 = new ParamProjectionNetworkDataMatching();
+    paramProj1.setProjeteNoeuds1SurReseau2(true);
+    paramProj1.setProjeteNoeuds1SurReseau2DistanceNoeudArc(distanceNoeudsMax);
+    paramProj1.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(2 * distanceNoeudsMax);
+    param.setParamProjNetwork1(paramProj1);
+    
+    ParamProjectionNetworkDataMatching paramProj2 = new ParamProjectionNetworkDataMatching();
+    paramProj2.setProjeteNoeuds1SurReseau2(true);
+    paramProj2.setProjeteNoeuds1SurReseau2DistanceNoeudArc(distanceNoeudsMax);
+    paramProj2.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(2 * distanceNoeudsMax);
+    paramProj2.setProjeteNoeuds1SurReseau2ImpassesSeulement(true);
+    param.setParamProjNetwork2(paramProj2);
+    
+    //
     paramPlugin.setParamNetworkDataMatching(param);
+    
+    // -----------------------------------------------------------------------------------------
+    // Actions
+    paramPlugin.setDoRecalage(true);
+  
   }
 
   /**
@@ -218,46 +261,26 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       // -------------------------------------------------------------------------------
       
       // Parse new parameter object to old parameter
-      ParametresApp paramOld = paramPlugin.getParamNetworkDataMatching().paramNDMToParamApp();
+      // ParametresApp paramOld = paramPlugin.getParamNetworkDataMatching().paramNDMToParamApp();
+      // paramOld.populationsArcs1 = datasetNetwork1.getPopulationsArcs();
+      // paramOld.populationsArcs2 = datasetNetwork2.getPopulationsArcs();
       
-      paramOld.populationsArcs1 = datasetNetwork1.getPopulationsArcs();
-      paramOld.populationsArcs2 = datasetNetwork2.getPopulationsArcs();
-      
-      paramOld.topologieGraphePlanaire1 = false;  // true
-      paramOld.topologieFusionArcsDoubles1 = true;  // true
-      paramOld.topologieSeuilFusionNoeuds1 = 0.1;  // 0.1
-      
-      paramOld.topologieGraphePlanaire2 = false;  // true
-      paramOld.topologieFusionArcsDoubles2 = true;  // true
-      paramOld.topologieSeuilFusionNoeuds2 = 0.1;  // 0.1
-      
-      paramOld.varianteFiltrageImpassesParasites = false;
-      
-      float distanceNoeudsMax = 50;
-      
-      paramOld.projeteNoeuds1SurReseau2 = true;   // true
-      paramOld.projeteNoeuds1SurReseau2DistanceNoeudArc = distanceNoeudsMax;
-      paramOld.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 2 * distanceNoeudsMax;
-      paramOld.projeteNoeuds2SurReseau1 = true;   // true
-      paramOld.projeteNoeuds2SurReseau1DistanceNoeudArc = distanceNoeudsMax;
-      paramOld.projeteNoeuds2SurReseau1DistanceProjectionNoeud = 2 * distanceNoeudsMax;
-      paramOld.projeteNoeuds2SurReseau1ImpassesSeulement = true;
-      paramOld.topologieElimineNoeudsAvecDeuxArcs1=false;
-      paramOld.topologieElimineNoeudsAvecDeuxArcs2=false;
+      // paramOld.varianteFiltrageImpassesParasites = false;
       
       // moins detaille
-      paramOld.varianteForceAppariementSimple = false;
-      paramOld.varianteRedecoupageArcsNonApparies = false;
+      // paramOld.varianteForceAppariementSimple = false;
+      // paramOld.varianteRedecoupageArcsNonApparies = false;
       
-      paramOld.debugTirets = true;
-      paramOld.debugBilanSurObjetsGeo = true;
+      // paramOld.debugTirets = true;
+      // paramOld.debugBilanSurObjetsGeo = true;
       // paramOld.debugAffichageCommentaires = 1;
       
       // Log parameters
       LOGGER.info(paramPlugin.toString());
       
-      NetworkDataMatching networkDataMatching = new NetworkDataMatching(paramOld);
-      ResultNetworkDataMatching resultatAppariement = networkDataMatching.networkDataMatching();
+      NetworkDataMatchingProcess networkDataMatchingProcess = new NetworkDataMatchingProcess(paramPlugin.getParamNetworkDataMatching(),
+          datasetNetwork1, datasetNetwork2, paramPlugin.getDoRecalage());
+      ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();
       
       // Logs
       LOGGER.info("Nb arcs du réseau 1 calculés : " + resultatAppariement.getReseau1().getListeArcs().size()
