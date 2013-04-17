@@ -42,6 +42,7 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMaster;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.util.CRSConversion;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -122,6 +123,7 @@ public class ShapeFileExport {
       if (elem == null) {
         continue;
       }
+      this.dataset = CartAGenDoc.getInstance().getDataset(elem.getDbName());
       Class<?> classObj = elem.getClasses().iterator().next();
       // get the features to export
       IPopulation<IGeneObj> features = new Population<IGeneObj>();
