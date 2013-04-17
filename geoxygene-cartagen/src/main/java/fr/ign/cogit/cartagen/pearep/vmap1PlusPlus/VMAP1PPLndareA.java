@@ -27,6 +27,7 @@ public class VMAP1PPLndareA extends VMAP1PPFeature implements IMiscArea {
   // VMAP1PlusPlus attributes
   private String nam, status, src_date, upd_date;
   private long exs, originform, targetscal, scamax, scamin;
+  private double area;
 
   /**
    * @param type
@@ -38,6 +39,7 @@ public class VMAP1PPLndareA extends VMAP1PPFeature implements IMiscArea {
     this.setInitialGeom(polygon);
     this.setEliminated(false);
     this.setAttributeMap(attributes);//
+    this.setArea(polygon.area());
 
     this.src_date = (String) attributes.get("src_date");
     this.upd_date = (String) attributes.get("upd_date");
@@ -134,6 +136,14 @@ public class VMAP1PPLndareA extends VMAP1PPFeature implements IMiscArea {
 
   public void setExs(long exs) {
     this.exs = exs;
+  }
+
+  public double getArea() {
+    return area;
+  }
+
+  public void setArea(double area) {
+    this.area = area;
   }
 
 }

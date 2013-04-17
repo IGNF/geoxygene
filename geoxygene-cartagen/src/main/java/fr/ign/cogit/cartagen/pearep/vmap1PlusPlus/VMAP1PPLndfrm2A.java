@@ -30,6 +30,7 @@ public class VMAP1PPLndfrm2A extends VMAP1PPFeature implements
       upd_date, upd_info, v2i_f_code, valid_date, valid_info;
   private long fcsubtype, keep, obj_rmq, src_dim, src_name, upd_name,
       valid_stat, originform, targetscal;
+  private double area;
 
   /**
    * @param type
@@ -41,6 +42,7 @@ public class VMAP1PPLndfrm2A extends VMAP1PPFeature implements
     this.setInitialGeom(polygon);
     this.setEliminated(false);
     this.setAttributeMap(attributes);//
+    this.setArea(polygon.area());
 
     this.date_bdi = (String) attributes.get("date_bdi");
     this.f_code = (String) attributes.get("f_code");
@@ -245,6 +247,14 @@ public class VMAP1PPLndfrm2A extends VMAP1PPFeature implements
 
   public void setOriginform(long originform) {
     this.originform = originform;
+  }
+
+  public double getArea() {
+    return area;
+  }
+
+  public void setArea(double area) {
+    this.area = area;
   }
 
 }

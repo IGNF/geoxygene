@@ -30,6 +30,7 @@ public class VMAP1PPBuildA extends VMAP1PPFeature implements IBuildArea {
       natcon, status, functn;
   private long bfc, exs, fcsubtype, hgt, hwt, keep, obj_rmq, src_dim, src_name,
       upd_name, valid_stat, scamax, scamin, originform, targetscal;
+  private double area;
 
   /**
    * @param type
@@ -41,6 +42,7 @@ public class VMAP1PPBuildA extends VMAP1PPFeature implements IBuildArea {
     this.setInitialGeom(polygon);
     this.setEliminated(false);
     this.setAttributeMap(attributes);//
+    this.setArea(polygon.area());
 
     this.date_bdi = (String) attributes.get("date_bdi");
     this.f_code = (String) attributes.get("f_code");
@@ -343,6 +345,14 @@ public class VMAP1PPBuildA extends VMAP1PPFeature implements IBuildArea {
 
   public void setHwt(long hwt) {
     this.hwt = hwt;
+  }
+
+  public double getArea() {
+    return area;
+  }
+
+  public void setArea(double area) {
+    this.area = area;
   }
 
 }

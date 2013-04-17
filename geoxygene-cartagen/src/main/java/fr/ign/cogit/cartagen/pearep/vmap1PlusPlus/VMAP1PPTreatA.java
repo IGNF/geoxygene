@@ -29,6 +29,7 @@ public class VMAP1PPTreatA extends VMAP1PPFeature implements IWaterBasin {
       uid_, upd_date, upd_info, v2i_f_code, valid_date, valid_info, status;
   private long fcsubtype, keep, obj_rmq, src_dim, src_name, upd_name,
       valid_stat, originform, targetscal, catmfa, scamax, scamin;
+  private double area;
 
   /**
    * @param type
@@ -40,6 +41,7 @@ public class VMAP1PPTreatA extends VMAP1PPFeature implements IWaterBasin {
     this.setInitialGeom(polygon);
     this.setEliminated(false);
     this.setAttributeMap(attributes);//
+    this.setArea(polygon.area());
 
     this.date_bdi = (String) attributes.get("date_bdi");
     this.f_code = (String) attributes.get("f_code");
@@ -291,6 +293,14 @@ public class VMAP1PPTreatA extends VMAP1PPFeature implements IWaterBasin {
 
   public void setScamin(long scamin) {
     this.scamin = scamin;
+  }
+
+  public double getArea() {
+    return area;
+  }
+
+  public void setArea(double area) {
+    this.area = area;
   }
 
 }

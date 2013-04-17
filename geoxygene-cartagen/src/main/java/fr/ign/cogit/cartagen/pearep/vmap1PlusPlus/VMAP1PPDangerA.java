@@ -29,6 +29,7 @@ public class VMAP1PPDangerA extends VMAP1PPFeature implements IMiscArea {
       upd_date, upd_info, v2i_f_code, valid_date, valid_info, nam;
   private long cod, fcsubtype, keep, mcc, obj_rmq, src_dim, src_name, upd_name,
       valid_stat, vrr, originform, targetscal;
+  private double area;
 
   /**
    * @param type
@@ -40,6 +41,7 @@ public class VMAP1PPDangerA extends VMAP1PPFeature implements IMiscArea {
     this.setInitialGeom(polygon);
     this.setEliminated(false);
     this.setAttributeMap(attributes);//
+    this.setArea(polygon.area());
 
     this.date_bdi = (String) attributes.get("date_bdi");
     this.f_code = (String) attributes.get("f_code");
@@ -280,6 +282,14 @@ public class VMAP1PPDangerA extends VMAP1PPFeature implements IMiscArea {
 
   public void setCod(long cod) {
     this.cod = cod;
+  }
+
+  public double getArea() {
+    return area;
+  }
+
+  public void setArea(double area) {
+    this.area = area;
   }
 
 }

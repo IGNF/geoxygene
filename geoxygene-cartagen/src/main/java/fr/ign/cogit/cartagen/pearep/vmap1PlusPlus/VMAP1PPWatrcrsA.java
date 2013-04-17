@@ -29,6 +29,7 @@ public class VMAP1PPWatrcrsA extends VMAP1PPFeature implements IWaterArea {
       uid_, upd_date, upd_info, v2i_f_code, valid_date, valid_info, status;
   private long fcsubtype, hyc, keep, obj_rmq, src_dim, src_name, tid, upd_name,
       valid_stat, originform, targetscal, scamax, scamin;
+  private double area;
 
   /**
    * @param type
@@ -40,6 +41,7 @@ public class VMAP1PPWatrcrsA extends VMAP1PPFeature implements IWaterArea {
     this.setInitialGeom(polygon);
     this.setEliminated(false);
     this.setAttributeMap(attributes);//
+    this.setArea(polygon.area());
 
     this.date_bdi = (String) attributes.get("date_bdi");
     this.f_code = (String) attributes.get("f_code");
@@ -300,6 +302,14 @@ public class VMAP1PPWatrcrsA extends VMAP1PPFeature implements IWaterArea {
 
   public void setScamin(long scamin) {
     this.scamin = scamin;
+  }
+
+  public double getArea() {
+    return area;
+  }
+
+  public void setArea(double area) {
+    this.area = area;
   }
 
 }
