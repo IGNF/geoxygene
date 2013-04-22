@@ -60,6 +60,7 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefTriangle;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
+import fr.ign.cogit.cartagen.core.genericschema.road.ICycleWay;
 import fr.ign.cogit.cartagen.core.genericschema.road.IInterchange;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadArea;
@@ -1229,6 +1230,16 @@ public abstract class AbstractCreationFactory {
   public IMask createMask(ILineString line) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IMask");
+    return null;
+  }
+
+  // /////////////////
+  // CYCLE WAY
+  // /////////////////
+  @SuppressWarnings("unused")
+  public ICycleWay createCycleWay(ILineString line) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for ICycleWay");
     return null;
   }
 

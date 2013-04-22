@@ -4,9 +4,9 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObjPoint;
 
 public interface ITreePoint extends IGeneObjPoint {
 
-  public String getNature();
+  public String getName();
 
-  public void setNature(String nature);
+  public void setName(String name);
 
   public String getType();
 
