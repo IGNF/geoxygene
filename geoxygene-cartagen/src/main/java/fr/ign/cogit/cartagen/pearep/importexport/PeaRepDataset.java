@@ -4,6 +4,7 @@ import fr.ign.cogit.cartagen.core.genericschema.energy.IPipeLine;
 import fr.ign.cogit.cartagen.core.genericschema.harbour.IBerthingLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IDitchLine;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IInundationArea;
 import fr.ign.cogit.cartagen.core.genericschema.land.IWoodLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
@@ -23,6 +24,7 @@ public class PeaRepDataset extends CartAGenDataSet {
   public static final String WOODLINES_POP = "woodlines";
   public static final String SQUARE_POP = "squares";
   public static final String DITCH_LINE_POP = "ditchLines";
+  public static final String INUNDATION_POP = "inundationAreas";
   public static final String BRIDGE_LINE_POP = "bridgeLines";
   public static final String BRIDGE_POINT_POP = "bridgePoints";
   public static final String COAST_LINE_POP = "coastLines";
@@ -49,6 +51,8 @@ public class PeaRepDataset extends CartAGenDataSet {
       return PeaRepDataset.BUILD_LINE_POP;
     } else if (obj instanceof IBerthingLine) {
       return PeaRepDataset.BERTHING_LINES;
+    } else if (obj instanceof IInundationArea) {
+      return PeaRepDataset.INUNDATION_POP;
     }
     return super.getPopNameFromObj(obj);
   }
@@ -73,6 +77,8 @@ public class PeaRepDataset extends CartAGenDataSet {
       return PeaRepDataset.BUILD_LINE_POP;
     } else if (IBerthingLine.class.isAssignableFrom(classObj)) {
       return PeaRepDataset.BERTHING_LINES;
+    } else if (IInundationArea.class.isAssignableFrom(classObj)) {
+      return PeaRepDataset.INUNDATION_POP;
     }
     return super.getPopNameFromClass(classObj);
   }
@@ -165,6 +171,16 @@ public class PeaRepDataset extends CartAGenDataSet {
   public IPopulation<IBerthingLine> getBerthingLines() {
     return (IPopulation<IBerthingLine>) this.getCartagenPop(
         PeaRepDataset.BERTHING_LINES, IBerthingLine.FEAT_TYPE_NAME);
+  }
+
+  /**
+   * Gets the inundation areas of the dataset
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<IInundationArea> getInundationAreas() {
+    return (IPopulation<IInundationArea>) this.getCartagenPop(
+        PeaRepDataset.INUNDATION_POP, IInundationArea.FEAT_TYPE_NAME);
   }
 
 }

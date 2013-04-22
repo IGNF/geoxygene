@@ -14,6 +14,7 @@ import java.util.HashMap;
 import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
+import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -37,8 +38,7 @@ public class VMAP1PPDamL extends VMAP1PPFeature implements IBridgeLine {
    * @param type
    */
   public VMAP1PPDamL(ILineString lineString,
-      HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(lineString);
     this.setInitialGeom(lineString);
@@ -367,6 +367,30 @@ public class VMAP1PPDamL extends VMAP1PPFeature implements IBridgeLine {
 
   public void setHgt(long hgt) {
     this.hgt = hgt;
+  }
+
+  @Override
+  public INetworkSection getCrossedNetwork() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void setCrossedNetwork(INetworkSection section) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void setType(BridgeType type) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void setCrossedArea(IWaterArea area) {
+    // TODO Auto-generated method stub
+
   }
 
 }

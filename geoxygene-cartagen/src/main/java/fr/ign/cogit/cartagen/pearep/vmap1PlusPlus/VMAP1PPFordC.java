@@ -14,6 +14,7 @@ import java.util.HashMap;
 import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
+import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine.BridgeType;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
@@ -292,6 +293,18 @@ public class VMAP1PPFordC extends VMAP1PPFeature implements IBridgePoint {
   public IRoadLine getRoad() {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public void setCrossedNetwork(INetworkSection section) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void setRoad(IRoadLine road) {
+    // TODO Auto-generated method stub
+
   }
 
 }

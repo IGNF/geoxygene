@@ -224,6 +224,9 @@ public class ScaleMasterScheduler {
     this.availableProcesses.add(CollapseToPointProcess.getInstance());
     this.availableProcesses.add(RunwaySimplificationProcess.getInstance());
     this.availableProcesses.add(SkeletonizeProcess.getInstance());
+    this.availableProcesses.add(BridgeCollapseProcess.getInstance());
+    this.availableProcesses.add(VisvalingamWhyattProcess.getInstance());
+    this.availableProcesses.add(RaposoSimplifProcess.getInstance());
   }
 
   /**
@@ -355,7 +358,8 @@ public class ScaleMasterScheduler {
               features.add(objPop);
           }
         } catch (Exception e) {
-          JOptionPane.showMessageDialog(null, e.getStackTrace());
+          JOptionPane.showMessageDialog(null, e.getStackTrace(), e.getClass()
+              .getSimpleName(), JOptionPane.ERROR_MESSAGE);
         }
       }
     }

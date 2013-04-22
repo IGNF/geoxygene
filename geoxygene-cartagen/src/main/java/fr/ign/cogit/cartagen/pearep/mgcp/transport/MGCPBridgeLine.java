@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
+import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
@@ -14,6 +15,7 @@ public class MGCPBridgeLine extends MGCPFeature implements IBridgeLine {
 
   private BridgeType type;
   private IWaterArea crossedArea;
+  private INetworkSection crossedSection;
   private String upd_date, upd_info, cpyrt_note, src_info, txt, nfi, nfn,
       tier_note, nam, src_date, ace, ale, nos, wid, lc1, lc3, lc2, lc4, wd1,
       voi, hca, mvc, ohb;
@@ -402,6 +404,16 @@ public class MGCPBridgeLine extends MGCPFeature implements IBridgeLine {
 
   public void setCrossedArea(IWaterArea crossedArea) {
     this.crossedArea = crossedArea;
+  }
+
+  @Override
+  public INetworkSection getCrossedNetwork() {
+    return crossedSection;
+  }
+
+  @Override
+  public void setCrossedNetwork(INetworkSection section) {
+    this.crossedSection = section;
   }
 
 }

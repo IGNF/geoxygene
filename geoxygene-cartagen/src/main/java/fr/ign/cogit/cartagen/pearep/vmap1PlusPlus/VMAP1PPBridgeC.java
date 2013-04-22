@@ -427,4 +427,16 @@ public class VMAP1PPBridgeC extends VMAP1PPFeature implements IBridgePoint {
     return null;
   }
 
+  @Override
+  public void setCrossedNetwork(INetworkSection section) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void setRoad(IRoadLine road) {
+    // TODO Auto-generated method stub
+
+  }
+
 }

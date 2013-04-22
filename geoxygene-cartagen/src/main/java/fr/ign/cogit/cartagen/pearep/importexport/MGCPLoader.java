@@ -13,7 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.geotools.data.shapefile.shp.ShapefileException;
 
@@ -43,6 +45,7 @@ import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine;
+import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine.BridgeType;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildArea;
@@ -164,22 +167,6 @@ public class MGCPLoader extends ShapeFileLoader {
             FileUtil.getNamedFileInDir(directory, "LAP050.shp")
                 .getAbsolutePath(), MGCPPathLine.class,
             CartAGenDataSet.PATHS_POP, IPathLine.FEAT_TYPE_NAME, null,
-            PeaRepDbType.MGCPPlusPlus);
-      }
-      if (((listLayer.size() == 0) || (listLayer.contains("LAQ040")))
-          && (FileUtil.getNamedFileInDir(directory, "LAQ040.shp") != null)) {
-        this.loadLineStringClass(
-            FileUtil.getNamedFileInDir(directory, "LAQ040.shp")
-                .getAbsolutePath(), MGCPBridgeLine.class,
-            PeaRepDataset.BRIDGE_LINE_POP, IBridgeLine.FEAT_TYPE_NAME, null,
-            PeaRepDbType.MGCPPlusPlus);
-      }
-      if (((listLayer.size() == 0) || (listLayer.contains("LBH070")))
-          && (FileUtil.getNamedFileInDir(directory, "LBH070.shp") != null)) {
-        this.loadLineStringClass(
-            FileUtil.getNamedFileInDir(directory, "LBH070.shp")
-                .getAbsolutePath(), MGCPBridgeLine.class,
-            PeaRepDataset.BRIDGE_LINE_POP, IBridgeLine.FEAT_TYPE_NAME, null,
             PeaRepDbType.MGCPPlusPlus);
       }
 
@@ -511,7 +498,7 @@ public class MGCPLoader extends ShapeFileLoader {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "ABH090.shp")
                 .getAbsolutePath(), MGCPInundationArea.class,
-            CartAGenDataSet.WATER_AREAS_POP, IInundationArea.FEAT_TYPE_NAME,
+            PeaRepDataset.INUNDATION_POP, IInundationArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
 
@@ -760,6 +747,9 @@ public class MGCPLoader extends ShapeFileLoader {
             PeaRepDbType.MGCPPlusPlus);
       }
 
+      // bridge lines
+      this.loadBridgeLines(directory, listLayer);
+
     } catch (IllegalArgumentException e) {
       e.printStackTrace();
     } catch (SecurityException e) {
@@ -790,6 +780,81 @@ public class MGCPLoader extends ShapeFileLoader {
     this.setDataset(dataset);
     database.setGeneObjImpl(new GeneObjImplementation("mgcp++",
         MGCPFeature.class.getPackage(), MGCPFeature.class));
+  }
+
+  private void loadBridgeLines(File directory, List<String> listLayer)
+      throws ShapefileException, IllegalArgumentException, SecurityException,
+      IOException, InstantiationException, IllegalAccessException,
+      InvocationTargetException, NoSuchMethodException {
+
+    Set<IBridgeLine> bridges = new HashSet<IBridgeLine>();
+
+    if (((listLayer.size() == 0) || (listLayer.contains("LAQ040")))
+        && (FileUtil.getNamedFileInDir(directory, "LAQ040.shp") != null)) {
+      this.loadLineStringClass(
+          FileUtil.getNamedFileInDir(directory, "LAQ040.shp").getAbsolutePath(),
+          MGCPBridgeLine.class, PeaRepDataset.BRIDGE_LINE_POP,
+          IBridgeLine.FEAT_TYPE_NAME, null, PeaRepDbType.MGCPPlusPlus);
+      for (IBridgeLine bridge : ((PeaRepDataset) CartAGenDoc.getInstance()
+          .getCurrentDataset()).getBridgeLines()) {
+        bridge.setType(BridgeType.BRIDGE);
+        bridges.add(bridge);
+        Collection<IWaterArea> areas = CartAGenDoc.getInstance()
+            .getCurrentDataset().getWaterAreas().select(bridge.getGeom());
+        if (!areas.isEmpty()) {
+          Object area = areas.iterator().next();
+          bridge.setCrossedArea((IWaterArea) area);
+        }
+        Collection<IWaterLine> rivers = CartAGenDoc.getInstance()
+            .getCurrentDataset().getWaterLines().select(bridge.getGeom());
+        if (!rivers.isEmpty()) {
+          bridge.setCrossedNetwork(rivers.iterator().next());
+        }
+        Collection<IRoadLine> roads = CartAGenDoc.getInstance()
+            .getCurrentDataset().getRoads().select(bridge.getGeom());
+        if (!roads.isEmpty()) {
+          for (IRoadLine road : roads) {
+            if (bridge.getGeom().intersectsStrictement(road.getGeom())) {
+              bridge.setCrossedNetwork(road);
+              break;
+            }
+          }
+        }
+        Collection<IRailwayLine> rails = CartAGenDoc.getInstance()
+            .getCurrentDataset().getRailwayLines().select(bridge.getGeom());
+        if (!rails.isEmpty()) {
+          for (IRailwayLine rail : rails) {
+            if (bridge.getGeom().intersectsStrictement(rail.getGeom())) {
+              bridge.setCrossedNetwork(rail);
+              break;
+            }
+          }
+        }
+      }
+    }
+    if (((listLayer.size() == 0) || (listLayer.contains("LBH070")))
+        && (FileUtil.getNamedFileInDir(directory, "LBH070.shp") != null)) {
+      this.loadLineStringClass(
+          FileUtil.getNamedFileInDir(directory, "LBH070.shp").getAbsolutePath(),
+          MGCPBridgeLine.class, PeaRepDataset.BRIDGE_LINE_POP,
+          IBridgeLine.FEAT_TYPE_NAME, null, PeaRepDbType.MGCPPlusPlus);
+      for (IBridgeLine bridge : ((PeaRepDataset) CartAGenDoc.getInstance()
+          .getCurrentDataset()).getBridgeLines()) {
+        if (bridges.contains(bridge))
+          continue;
+        bridge.setType(BridgeType.FORD);
+        Collection<IWaterArea> areas = CartAGenDoc.getInstance()
+            .getCurrentDataset().getWaterAreas().select(bridge.getGeom());
+        if (!areas.isEmpty()) {
+          bridge.setCrossedArea(areas.iterator().next());
+        }
+        Collection<IWaterLine> rivers = CartAGenDoc.getInstance()
+            .getCurrentDataset().getWaterLines().select(bridge.getGeom());
+        if (!rivers.isEmpty()) {
+          bridge.setCrossedNetwork(rivers.iterator().next());
+        }
+      }
+    }
   }
 
   private void loadAirports(File directory) throws ShapefileException,

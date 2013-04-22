@@ -45,11 +45,8 @@ public class BridgePoint extends GeneObjPointDefault implements IBridgePoint {
     return road;
   }
 
-  public INetworkSection getCrossedSection() {
-    return crossedSection;
-  }
-
-  public void setCrossedSection(INetworkSection crossedSection) {
+  @Override
+  public void setCrossedNetwork(INetworkSection crossedSection) {
     this.crossedSection = crossedSection;
   }
 

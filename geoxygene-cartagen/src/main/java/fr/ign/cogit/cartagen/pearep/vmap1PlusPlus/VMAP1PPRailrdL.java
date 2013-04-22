@@ -40,8 +40,7 @@ public class VMAP1PPRailrdL extends VMAP1PPFeature implements IRailwayLine {
    * @param type
    */
   public VMAP1PPRailrdL(ILineString lineString,
-      HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(lineString);
     this.setInitialGeom(lineString);

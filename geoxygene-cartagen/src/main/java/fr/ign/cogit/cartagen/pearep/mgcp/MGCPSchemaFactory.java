@@ -20,6 +20,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea.TaxiwayType
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefField;
+import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirport;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirportPoint;
@@ -27,6 +28,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPBridgePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadNode;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -84,6 +86,11 @@ public class MGCPSchemaFactory extends AbstractCreationFactory {
 
   public MGCPAirportPoint createAirportPoint(IPoint geom) {
     return new MGCPAirportPoint(geom);
+  }
+
+  @Override
+  public IBridgePoint createBridgePoint(IPoint point) {
+    return new MGCPBridgePoint(point);
   }
 
 }

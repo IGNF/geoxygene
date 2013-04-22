@@ -64,6 +64,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
   public static String LAYER_WATER_LINE = "layerWaterLine";
   private LoadedLayer layerWaterArea;
   public static String LAYER_WATER_AREA = "layerWaterArea";
+  private LoadedLayer layerInundationArea;
+  public static String LAYER_INUNDATION_AREA = "layerInundationArea";
   private LoadedLayer layerIslands;
   public static String LAYER_ISLANDS = "layerIslands";
 
@@ -175,6 +177,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
       return this.layerPOI;
     } else if (layer.equals(LayerGroup.LAYER_BRIDGE_PT)) {
       return this.layerBridgePoint;
+    } else if (layer.equals(PeaRepLayerGroup.LAYER_INUNDATION_AREA)) {
+      return this.layerInundationArea;
     } else {
       return null;
     }
@@ -216,6 +220,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
 
     this.layerWaterLine = new LoadedLayer(dataSet.getWaterLines());
     this.layerWaterArea = new LoadedLayer(dataSet.getWaterAreas());
+    this.layerInundationArea = new LoadedLayer(
+        ((PeaRepDataset) dataSet).getInundationAreas());
     this.layerIslands = new LoadedLayer(dataSet.getIslands());
 
     this.layerRailwayLine = new LoadedLayer(dataSet.getRailwayLines());
@@ -261,7 +267,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     this.layerRoadLine = new LoadedLayer(dataSet.getRoads());
     this.layerBridgePoint = new LoadedLayer(dataSet.getBridgePoints());
     this.layerWaterLine = new LoadedLayer(dataSet.getWaterLines());
-
+    this.layerInundationArea = new LoadedLayer(
+        ((PeaRepDataset) dataSet).getInundationAreas());
     this.layerRailwayLine = new LoadedLayer(dataSet.getRailwayLines());
 
     this.layerElectricityLine = new LoadedLayer(dataSet.getElectricityLines());
@@ -340,6 +347,7 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     layerManager.addLayer(this.layerBridgePoint);
     layerManager.addLayer(this.layerWaterLine);
     layerManager.addLayer(this.layerWaterArea);
+    layerManager.addLayer(this.layerInundationArea);
     layerManager.addLayer(this.layerIslands);
     layerManager.addLayer(this.layerRailwayLine);
     layerManager.addLayer(this.layerElectricityLine);
@@ -482,6 +490,11 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
         GeneralisationLegend.SURFACE_EAU_COULEUR_CONTOUR,
         GeneralisationLegend.SURFACE_EAU_LARGEUR_CONTOUR, this), this.cVoirRH);
 
+    layerManager.addSymbolisedLayer(this.layerInundationArea, Symbolisation
+        .surface(GeneralisationLegend.SURFACE_EAU_COULEUR,
+            GeneralisationLegend.SURFACE_EAU_COULEUR_CONTOUR,
+            GeneralisationLegend.SURFACE_EAU_LARGEUR_CONTOUR, this),
+        this.cVoirRH);
     // reseau routier
 
     // to know if we are using the new loading function of Kusay or the old one

@@ -10,7 +10,11 @@ public interface IBridgePoint extends IGeneObjPoint {
 
   public INetworkSection getCrossedNetwork();
 
+  public void setCrossedNetwork(INetworkSection section);
+
   public IRoadLine getRoad();
+
+  public void setRoad(IRoadLine road);
 
   public static final String FEAT_TYPE_NAME = "BridgePoint"; //$NON-NLS-1$
 }

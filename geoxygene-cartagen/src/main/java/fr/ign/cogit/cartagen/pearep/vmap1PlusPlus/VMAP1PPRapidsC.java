@@ -37,7 +37,7 @@ public class VMAP1PPRapidsC extends VMAP1PPFeature implements IBridgePoint {
    * @param type
    */
   public VMAP1PPRapidsC(IPoint point, HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(point);
     this.setInitialGeom(point);
@@ -302,6 +302,18 @@ public class VMAP1PPRapidsC extends VMAP1PPFeature implements IBridgePoint {
 
   public void setHfc(long hfc) {
     this.hfc = hfc;
+  }
+
+  @Override
+  public void setCrossedNetwork(INetworkSection section) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void setRoad(IRoadLine road) {
+    // TODO Auto-generated method stub
+
   }
 
 }
