@@ -5,6 +5,8 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
 
 /**
@@ -56,6 +58,27 @@ public class SimpleHttpClient {
           throw new Exception("Connection failed");
       }
   }
+  
+  public void connectProxyIGN(String method) throws Exception {
+    try {
+      
+        // Set IGN Proxy
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("proxy.ign.fr", 3128));
+        
+        server = (HttpURLConnection) url.openConnection(proxy);
+        server.setDoInput(true);
+        server.setDoOutput(true);
+        server.setRequestMethod(method);
+        // server.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+        server.setRequestProperty("Content-type", "text/xml");
+        server.connect();
+    } catch (Exception e) {
+        throw new Exception("Connection failed");
+    }
+  }
+  
+  
+
   
   /**
    * Disconnect the client.
