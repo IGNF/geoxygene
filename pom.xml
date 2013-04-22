@@ -585,6 +585,7 @@
 		<module>geoxygene-contrib</module>
 		<module>geoxygene-io</module>
 		<module>geoxygene-util</module>
+		<module>geoxygene-wps</module>
 		<module>geoxygene-example</module>
 		<module>geoxygene-deprecated</module>
 		<module>geoxygene-schemageo</module>
