@@ -43,6 +43,8 @@ import javax.swing.JTabbedPane;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.NetworkDataMatchingPlugin;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
 
@@ -64,13 +66,13 @@ public class EditParamPanel extends JDialog implements ActionListener {
   private NetworkDataMatchingPlugin networkDataMatchingPlugin;
   private String action;
 
-  /** 4 buttons : launch, cancel, export and import XML parameters files. */
+  /** 2 buttons : launch, cancel. */
   private JButton launchButton = null;
   private JButton cancelButton = null;
-  private JButton exportXML = null;
 
   /** Tab Panels. */ 
   JPanel buttonPanel = null;
+  EditParamActionPanel actionPanel = null;
   EditParamDatasetPanel datasetPanel = null;
   EditParamDirectionPanel directionPanel = null;
   EditParamDistancePanel distancePanel = null;
@@ -91,25 +93,31 @@ public class EditParamPanel extends JDialog implements ActionListener {
         GeOxygeneApplication.class.getResource("/images/icons/wrench.png")).getImage());
     
     initButtonPanel();
-    datasetPanel = new EditParamDatasetPanel();
-    directionPanel = new EditParamDirectionPanel();
+    actionPanel = new EditParamActionPanel(this);
+    datasetPanel = new EditParamDatasetPanel(networkDataMatchingPlugin.getParamPlugin().getParamFilenameNetwork1(),
+        networkDataMatchingPlugin.getParamPlugin().getParamFilenameNetwork2());
+    directionPanel = new EditParamDirectionPanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamDirectionNetwork1(),
+        networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamDirectionNetwork2());
     distancePanel = new EditParamDistancePanel();
     topoTreatmentPanel = new JPanel();
     
     // Init tabbed panel
     JTabbedPane tabbedPane = new JTabbedPane();
     
-    tabbedPane.addTab("Données", datasetPanel);
+    tabbedPane.addTab("Appariement", actionPanel);
     tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
     
-    tabbedPane.addTab("Direction", directionPanel);
+    tabbedPane.addTab("Données", datasetPanel);
     tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
     
-    tabbedPane.addTab("Ecarts de distance", distancePanel);
+    tabbedPane.addTab("Direction", directionPanel);
     tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
     
-    tabbedPane.addTab("Traitements topologiques", topoTreatmentPanel);
+    tabbedPane.addTab("Ecarts de distance", distancePanel);
     tabbedPane.setMnemonicAt(3, KeyEvent.VK_4);
+    
+    tabbedPane.addTab("Traitements topologiques", topoTreatmentPanel);
+    tabbedPane.setMnemonicAt(4, KeyEvent.VK_5);
 
     // Init param panel
     getContentPane().setLayout(new BorderLayout());
@@ -128,17 +136,13 @@ public class EditParamPanel extends JDialog implements ActionListener {
     
     buttonPanel = new JPanel(); 
     
-    exportXML = new JButton("export XML");
-    exportXML.setToolTipText("Export parameters in XML files");
     launchButton = new JButton(I18N.getString("DataMatchingPlugin.Launch"));
     cancelButton = new JButton(I18N.getString("DataMatchingPlugin.Cancel"));
     
     launchButton.addActionListener(this);
     cancelButton.addActionListener(this);
-    exportXML.addActionListener(this);
     
     buttonPanel.setLayout(new FlowLayout (FlowLayout.CENTER)); 
-    buttonPanel.add(exportXML);
     buttonPanel.add(cancelButton);
     buttonPanel.add(launchButton);
     
@@ -153,58 +157,64 @@ public class EditParamPanel extends JDialog implements ActionListener {
     Object source = evt.getSource();
     
     if (source == launchButton) {
-      
       // Init action
       action = "LAUNCH";
-      
-      // Initialize all parameters
-      // First, set default value to parameters
-      // ParamPluginNetworkDataMatching paramPlugin = new ParamPluginNetworkDataMatching();
-      
-      // ParamNetworkDataMatching param = new ParamNetworkDataMatching();
-      
-      // Dataset
-      // paramPlugin.setParamDataset(datasetPanel.valideField());
-      
-      // Direction
-      // param.setParamDirectionNetwork1(directionPanel.valideField());
-      
-      // Ecart de distance
-      // param.setParamDistance(distancePanel.valideField());
-      
-      // Topo treatment
-      
-      // Set parameters values to plugin
-      // networkDataMatchingPlugin.setParamPlugin(paramPlugin);
-      
+      // Set parameters
+      setParameters();
       dispose();
-    
     } else if (source == cancelButton) {
       // Init action
       action = "CANCEL";
       // do nothing
       dispose();
-    } else if (source == exportXML) {
-      exportXML();
-    }
+    } 
   
+  }
+  
+  /**
+   * 
+   */
+  protected void setParameters() {
+    
+    // Initialize parameters
+    ParamPluginNetworkDataMatching paramPlugin = new ParamPluginNetworkDataMatching();
+    
+    // Dataset
+    ParamFilenamePopulationEdgesNetwork[] tabParamFile = datasetPanel.valideField();
+    paramPlugin.setParamFilenameNetwork1(tabParamFile[0]);
+    paramPlugin.setParamFilenameNetwork2(tabParamFile[1]);
+    
+    // ------------------------------------------------------------------------------------------
+
+    ParamNetworkDataMatching param = new ParamNetworkDataMatching();
+    
+    // Direction
+    ParamDirectionNetworkDataMatching[] tabParamDirection = this.directionPanel.valideField();
+    param.setParamDirectionNetwork1(tabParamDirection[0]);
+    param.setParamDirectionNetwork2(tabParamDirection[1]);
+    
+    // Ecart de distance
+    // param.setParamDistance(distancePanel.valideField());
+    
+    // Topo treatment
+    
+    
+    paramPlugin.setParamNetworkDataMatching(param);
+    
+    // ------------------------------------------------------------------------------------------
+    
+    // Set parameters values to plugin
+    networkDataMatchingPlugin.setParamPlugin(paramPlugin);
+    
+    
   }
 
   public String getAction() {
     return action;
   }
   
-  /**
-   * Display parameters in XML format for export.
-   */
-  private void exportXML() {
-    try {
-      
-      ExportXMLWindow w = new ExportXMLWindow(networkDataMatchingPlugin.getParamPlugin());
-    
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  public NetworkDataMatchingPlugin getNetworkDataMatchingPlugin() {
+    return networkDataMatchingPlugin;
   }
   
 }

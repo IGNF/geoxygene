@@ -31,38 +31,46 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenameNetworkDataMatching;
-import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
 
+/**
+ * 
+ * 
+ *
+ */
 public class EditParamDatasetPanel extends JPanel {
   
   /** Serial version UID. */
   private static final long serialVersionUID = 4791806011051504347L;
   
+  private ParamFilenamePopulationEdgesNetwork paramFilename1;
+  private ParamFilenamePopulationEdgesNetwork paramFilename2;
+  
   /** FileUploads Field for uploading Reference shape . */
-  JButton buttonRefShape = null;
-  JTextField filenameRefShape = null;
+  JButton buttonEdgesShape1 = null;
+  JComboBox listShapefileEdgesNetwork1 = null;
 
   /** FileUploads Field for uploading Comparative shape . */
-  JButton buttonCompShape = null;
-  JTextField filenameCompShape = null;
+  JButton buttonEdgesShape2 = null;
+  JComboBox listShapefileEdgesNetwork2 = null;
   
   /**
    * Constructor.
    */
-  public EditParamDatasetPanel() {
+  public EditParamDatasetPanel(ParamFilenamePopulationEdgesNetwork f1, ParamFilenamePopulationEdgesNetwork f2) {
+    
+    paramFilename1 = f1;
+    paramFilename2 = f2;
     
     // Initialize all fields
     initFields();
@@ -77,25 +85,32 @@ public class EditParamDatasetPanel extends JPanel {
   private void initFields() {
  
     // Init ref shape button import files
-    buttonRefShape = new JButton(I18N.getString("DataMatchingPlugin.Import"));
-    buttonRefShape.addActionListener(new ActionListener() {
+    buttonEdgesShape1 = new JButton(I18N.getString("DataMatchingPlugin.Import"));
+    buttonEdgesShape1.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        doUpload(buttonRefShape);
+        doUpload(buttonEdgesShape1);
       }
     });
     
     // Init comp shape button import files
-    buttonCompShape = new JButton(I18N.getString("DataMatchingPlugin.Import"));
-    buttonCompShape.addActionListener(new ActionListener() {
+    buttonEdgesShape2 = new JButton(I18N.getString("DataMatchingPlugin.Import"));
+    buttonEdgesShape2.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        doUpload(buttonCompShape);
+        doUpload(buttonEdgesShape2);
       }
     });
     
-    filenameRefShape = new JTextField(30);
-    filenameCompShape = new JTextField(30);
+    listShapefileEdgesNetwork1 = new JComboBox();
+    for (int i = 0; i < paramFilename1.getListNomFichiersPopArcs().size(); i++) {
+      listShapefileEdgesNetwork1.addItem(paramFilename1.getListNomFichiersPopArcs().get(i));
+    }
+    
+    listShapefileEdgesNetwork2 = new JComboBox();
+    for (int i = 0; i < paramFilename2.getListNomFichiersPopArcs().size(); i++) {
+      listShapefileEdgesNetwork2.addItem(paramFilename2.getListNomFichiersPopArcs().get(i));
+    }
   }
   
   /**
@@ -113,25 +128,22 @@ public class EditParamDatasetPanel extends JPanel {
     // fill:pref:grow
     FormLayout layout = new FormLayout(
         "40dlu, pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 40dlu",
-        "20dlu, pref, pref, 20dlu, pref, pref, 40dlu");
+        "20dlu, pref, 20dlu, pref, 20dlu, pref, pref, 40dlu");
     setLayout(layout);
     CellConstraints cc = new CellConstraints();
     
     // First Line : filenameRefShape
     add(labelRef, cc.xy(2, 2));
-    add(filenameRefShape, cc.xy(4, 2));
-    add(buttonRefShape, cc.xy(6, 2));
+    add(listShapefileEdgesNetwork1, cc.xy(4, 2));
+    add(buttonEdgesShape1, cc.xy(6, 2));
     add(labelShpExt1, cc.xy(8, 2));
 
     // Second Line
-    add(labelComp, cc.xy(2, 3));
-    add(filenameCompShape, cc.xy(4, 3));
-    add(buttonCompShape, cc.xy(6, 3));
-    add(labelShpExt2, cc.xy(8, 3));
+    add(labelComp, cc.xy(2, 4));
+    add(listShapefileEdgesNetwork2, cc.xy(4, 4));
+    add(buttonEdgesShape2, cc.xy(6, 4));
+    add(labelShpExt2, cc.xy(8, 4));
     
-    //
-    add(new JLabel("Ajouter le Recalage"), cc.xy(4, 5));
-    add(new JLabel("Enregistrer les résultats"), cc.xy(4, 6));
   }
   
   /**
@@ -141,11 +153,11 @@ public class EditParamDatasetPanel extends JPanel {
   private void doUpload(JButton typeButton) {
 
     JFileChooser jFileChooser = new JFileChooser();
-    // FIXME : utiliser le dernier répertoire ouvert par l'interface. 
+    // TODO : utiliser le dernier répertoire ouvert par l'interface. 
     jFileChooser.setCurrentDirectory(new File("D:\\Data\\Appariement\\ESPON-DB"));
-
+    
     // Crée un filtre qui n'accepte que les fichier shp ou les répertoires
-    if (typeButton.equals(buttonRefShape) || typeButton.equals(buttonCompShape)) {
+    if (typeButton.equals(buttonEdgesShape1) || typeButton.equals(buttonEdgesShape2)) {
       jFileChooser.setFileFilter(new FileFilter() {
         @Override
         public boolean accept(File f) {
@@ -160,19 +172,32 @@ public class EditParamDatasetPanel extends JPanel {
       });
     } 
     jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    jFileChooser.setMultiSelectionEnabled(false);
+    
+    // Multiple selection
+    jFileChooser.setMultiSelectionEnabled(true);
 
     // Show file dialog
     int returnVal = jFileChooser.showOpenDialog(this);
     
     // Initialize textField with the selectedFile
     if (returnVal == JFileChooser.APPROVE_OPTION) {
-      if (typeButton.equals(buttonRefShape)) {
-        filenameRefShape.setText(jFileChooser.getSelectedFile()
-            .getAbsolutePath());
-      } else if (typeButton.equals(buttonCompShape)) {
-        filenameCompShape.setText(jFileChooser.getSelectedFile()
-            .getAbsolutePath());
+      
+      if (typeButton.equals(buttonEdgesShape1)) {
+        
+        listShapefileEdgesNetwork1.removeAllItems();
+        for (int i = 0; i < jFileChooser.getSelectedFiles().length; i++) {
+          File f = jFileChooser.getSelectedFiles()[i];
+          listShapefileEdgesNetwork1.addItem(f.getAbsolutePath());
+        }
+        
+      } else if (typeButton.equals(buttonEdgesShape2)) {
+        
+        listShapefileEdgesNetwork2.removeAllItems();
+        for (int i = 0; i < jFileChooser.getSelectedFiles().length; i++) {
+          File f = jFileChooser.getSelectedFiles()[i];
+          listShapefileEdgesNetwork2.addItem(f.getAbsolutePath());
+        }
+        
       } 
     }
 
@@ -182,24 +207,28 @@ public class EditParamDatasetPanel extends JPanel {
    * Validation of all fields.
    * @return
    */
-  public ParamFilenameNetworkDataMatching valideField() {
+  public ParamFilenamePopulationEdgesNetwork[] valideField() {
     
     // 
-    ParamFilenameNetworkDataMatching paramDataset = new ParamFilenameNetworkDataMatching();
-    
-    /*if (filenameRefShape.getText() != null && !filenameRefShape.getText().equals("")) {
-      IPopulation<IFeature> popArcs1 = ShapefileReader.read(filenameRefShape.getText());
-      popArcs1.setNom("popArcs1");
-      paramDataset.addPopulationsArcs1(popArcs1);
+    ParamFilenamePopulationEdgesNetwork[] tabParamFilename = new ParamFilenamePopulationEdgesNetwork[2];
+    ParamFilenamePopulationEdgesNetwork paramDataset = new ParamFilenamePopulationEdgesNetwork();
+
+    int count = listShapefileEdgesNetwork1.getItemCount();
+    for (int i = 0; i < count; i++) {
+      String f = listShapefileEdgesNetwork1.getItemAt(i).toString();
+      paramDataset.addFilename(f);
     }
+    tabParamFilename[0] = paramDataset;
     
-    if (filenameCompShape.getText() != null && !filenameCompShape.getText().equals("")) {
-      IPopulation<IFeature> popArcs2 = ShapefileReader.read(filenameCompShape.getText());
-      popArcs2.setNom("popArcs2");
-      paramDataset.addPopulationsArcs2(popArcs2);
-    }*/
+    paramDataset = new ParamFilenamePopulationEdgesNetwork();
+    count = listShapefileEdgesNetwork2.getItemCount();
+    for (int i = 0; i < count; i++) {
+      String f = listShapefileEdgesNetwork2.getItemAt(i).toString();
+      paramDataset.addFilename(f);
+    }
+    tabParamFilename[1] = paramDataset;
     
-    return paramDataset;
+    return tabParamFilename;
   }
 
 }

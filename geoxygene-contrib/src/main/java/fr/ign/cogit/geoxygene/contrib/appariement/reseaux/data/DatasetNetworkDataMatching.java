@@ -15,7 +15,6 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 public class DatasetNetworkDataMatching {
   
   /** Classes d'arcs de la BD concernés par l'appariement. */
-  // @XmlJavaTypeAdapter(ListPopArcAdapter.class)
   private List<IFeatureCollection<? extends IFeature>> populationsArcs = null;
   
   /** Classes de noeuds de la BD concernés par l'appariement. */

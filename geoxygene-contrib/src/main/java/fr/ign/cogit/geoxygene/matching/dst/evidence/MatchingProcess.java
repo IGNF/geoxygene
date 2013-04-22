@@ -56,9 +56,11 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
  * répartira le conflit entierement sur l'hypothèse vide. TODO : Ajouter la
  * règle de Yager afin de permettre la répartition du conflit sur l'ensemble
  * total (ignorance complète) plutôt que sur toutes les hypothèses.
+ * 
  * @author Bertrand Dumenieu
  */
 public class MatchingProcess {
+  
   Logger logger = Logger.getLogger(MatchingProcess.class);
 
   Collection<Source> criteria;

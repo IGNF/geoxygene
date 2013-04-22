@@ -19,38 +19,44 @@
 
 package fr.ign.cogit.geoxygene.appli.plugin.datamatching.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- *
+ * Liste des shapefiles contenant les populations d'arcs du reseau.
+ * 
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "ParamFilenamePopulationEdgesNetwork", propOrder = {
     "listNomFichiersPopArcs"
 })
-@XmlRootElement(name = "ParamFilenameNetworkDataMatching")
-public class ParamFilenameNetworkDataMatching {
+public class ParamFilenamePopulationEdgesNetwork {
   
-  // TODO : faire une liste de fichier
-  @XmlElement(name = "ListNomFichiersPopArcs")
-  private String listNomFichiersPopArcs = null;
+  @XmlElement(type = String.class)
+  private List<String> listNomFichiersPopArcs = null;
 
   /**
    * Constructor.
    */
-  public ParamFilenameNetworkDataMatching() {
+  public ParamFilenamePopulationEdgesNetwork() {
+    listNomFichiersPopArcs = new ArrayList<String>();
   }
   
-  public void setListNomFichiersPopArcs(String f) {
-    listNomFichiersPopArcs = f;
+  public void setListNomFichiersPopArcs(List<String> listFile) {
+    listNomFichiersPopArcs = listFile;
   }
   
-  public String getListNomFichiersPopArcs() {
+  public void addFilename(String filename) {
+    listNomFichiersPopArcs.add(filename);
+  }
+  
+  public List<String> getListNomFichiersPopArcs() {
     return listNomFichiersPopArcs;
   }
   

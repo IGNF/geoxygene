@@ -32,7 +32,9 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -49,7 +51,7 @@ import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenameNetworkDataMatching;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayToolBarNetworkDataMatching;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.EditParamPanel;
@@ -65,12 +67,13 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNet
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamProjectionNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopoTreatmentNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
@@ -158,7 +161,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
   }
   
   /**
-   * 
+   * Initialize default parameters from an XML files.
    */
   private void initializeParam() {
     
@@ -177,12 +180,12 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     // String filename1 = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\extrait-gps.shp";
     // String filename2 = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\bduni_gps.shp";
     
-    ParamFilenameNetworkDataMatching paramFilename1 = new ParamFilenameNetworkDataMatching();
-    paramFilename1.setListNomFichiersPopArcs(filename1);
+    ParamFilenamePopulationEdgesNetwork paramFilename1 = new ParamFilenamePopulationEdgesNetwork();
+    paramFilename1.addFilename(filename1);
     paramPlugin.setParamFilenameNetwork1(paramFilename1);
     
-    ParamFilenameNetworkDataMatching paramFilename2 = new ParamFilenameNetworkDataMatching();
-    paramFilename2.setListNomFichiersPopArcs(filename2);
+    ParamFilenamePopulationEdgesNetwork paramFilename2 = new ParamFilenamePopulationEdgesNetwork();
+    paramFilename2.addFilename(filename2);
     paramPlugin.setParamFilenameNetwork2(paramFilename2);
     
     // -----------------------------------------------------------------------------------------
@@ -190,9 +193,19 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     ParamNetworkDataMatching param = new ParamNetworkDataMatching();
     
     // Direction
-    ParamDirectionNetworkDataMatching paramDirection = new ParamDirectionNetworkDataMatching();
-    paramDirection.setOrientationDouble(true);
-    param.setParamDirectionNetwork1(paramDirection);
+    ParamDirectionNetworkDataMatching paramDirection1 = new ParamDirectionNetworkDataMatching();
+    paramDirection1.setOrientationDouble(true);
+    param.setParamDirectionNetwork1(paramDirection1);
+    
+    ParamDirectionNetworkDataMatching paramDirection2 = new ParamDirectionNetworkDataMatching();
+    paramDirection2.setOrientationDouble(false);
+    paramDirection2.setAttributOrientation("SENS");
+    Map<Integer, String> orientationMap2 = new HashMap<Integer, String>();
+    orientationMap2.put(OrientationInterface.SENS_DIRECT, "Direct");
+    orientationMap2.put(OrientationInterface.SENS_INVERSE, "Inverse");
+    orientationMap2.put(OrientationInterface.DOUBLE_SENS, "Double");
+    paramDirection2.setOrientationMap(orientationMap2);
+    param.setParamDirectionNetwork2(paramDirection2);
     
     // Distance
     ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
@@ -203,18 +216,18 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     param.setParamDistance(paramDistance);
     
     // Topologie
-    ParamTopoTreatmentNetworkDataMatching paramTopo1 = new ParamTopoTreatmentNetworkDataMatching();
-    paramTopo1.setTopologieGraphePlanaire(false);
-    paramTopo1.setTopologieFusionArcsDoubles(true);
-    paramTopo1.setTopologieSeuilFusionNoeuds(0.1);
-    paramTopo1.setTopologieElimineNoeudsAvecDeuxArcs(false);
+    ParamTopologyTreatmentNetwork paramTopo1 = new ParamTopologyTreatmentNetwork();
+    paramTopo1.setGraphePlanaire(false);
+    paramTopo1.setFusionArcsDoubles(true);
+    paramTopo1.setSeuilFusionNoeuds(0.1);
+    paramTopo1.setElimineNoeudsAvecDeuxArcs(false);
     param.setParamTopoNetwork1(paramTopo1);
     
-    ParamTopoTreatmentNetworkDataMatching paramTopo2 = new ParamTopoTreatmentNetworkDataMatching();
-    paramTopo2.setTopologieGraphePlanaire(false);
-    paramTopo2.setTopologieFusionArcsDoubles(true);
-    paramTopo2.setTopologieSeuilFusionNoeuds(0.1);
-    paramTopo2.setTopologieElimineNoeudsAvecDeuxArcs(false);
+    ParamTopologyTreatmentNetwork paramTopo2 = new ParamTopologyTreatmentNetwork();
+    paramTopo2.setGraphePlanaire(false);
+    paramTopo2.setFusionArcsDoubles(true);
+    paramTopo2.setSeuilFusionNoeuds(0.1);
+    paramTopo2.setElimineNoeudsAvecDeuxArcs(false);
     param.setParamTopoNetwork1(paramTopo2);
     
     // Projection
@@ -253,10 +266,16 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       
       // -------------------------------------------------------------------------------
       // Dataset
-      IPopulation<IFeature> reseau1 = ShapefileReader.read(paramPlugin.getParamFilenameNetwork1().getListNomFichiersPopArcs());
-      datasetNetwork1.addPopulationsArcs(reseau1);
-      IPopulation<IFeature> reseau2 = ShapefileReader.read(paramPlugin.getParamFilenameNetwork2().getListNomFichiersPopArcs());
-      datasetNetwork2.addPopulationsArcs(reseau2);
+      for (int i = 0; i < paramPlugin.getParamFilenameNetwork1().getListNomFichiersPopArcs().size(); i++) {
+        String filename = paramPlugin.getParamFilenameNetwork1().getListNomFichiersPopArcs().get(i);
+        IPopulation<IFeature> reseau = ShapefileReader.read(filename);
+        datasetNetwork1.addPopulationsArcs(reseau);
+      }
+      for (int i = 0; i < paramPlugin.getParamFilenameNetwork2().getListNomFichiersPopArcs().size(); i++) {
+        String filename = paramPlugin.getParamFilenameNetwork2().getListNomFichiersPopArcs().get(i);
+        IPopulation<IFeature> reseau = ShapefileReader.read(filename);
+        datasetNetwork2.addPopulationsArcs(reseau);
+      }
       
       // -------------------------------------------------------------------------------
       
@@ -283,10 +302,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();
       
       // Logs
-      LOGGER.info("Nb arcs du réseau 1 calculés : " + resultatAppariement.getReseau1().getListeArcs().size()
+      /*LOGGER.info("Nb arcs du réseau 1 calculés : " + resultatAppariement.getReseau1().getListeArcs().size()
           + " >= " + reseau1.size());
       LOGGER.info("Nb arcs du réseau 2 calculés : " + resultatAppariement.getReseau2().getListeArcs().size()
-          + " >= " + reseau2.size());
+          + " >= " + reseau2.size());*/
       
       EnsembleDeLiens liens = resultatAppariement.getLinkDataSet();
       // if (paramOld.debugBilanSurObjetsGeo) {

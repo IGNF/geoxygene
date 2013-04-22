@@ -61,10 +61,10 @@ public class ParamNetworkDataMatching {
   private ParamDistanceNetworkDataMatching paramDistance = null;
   
   @XmlElement(name = "ParamTopoNetwork1")
-  private ParamTopoTreatmentNetworkDataMatching paramTopoNetwork1 = null;
+  private ParamTopologyTreatmentNetwork paramTopoNetwork1 = null;
   
   @XmlElement(name = "ParamTopoNetwork2")
-  private ParamTopoTreatmentNetworkDataMatching paramTopoNetwork2 = null;
+  private ParamTopologyTreatmentNetwork paramTopoNetwork2 = null;
   
   @XmlElement(name = "ParamProjNetwork1")
   private ParamProjectionNetworkDataMatching paramProjNetwork1 = null;
@@ -82,8 +82,8 @@ public class ParamNetworkDataMatching {
     paramDirectionNetwork1 = new ParamDirectionNetworkDataMatching();
     paramDirectionNetwork2 = new ParamDirectionNetworkDataMatching();
     paramDistance = new ParamDistanceNetworkDataMatching();
-    paramTopoNetwork1 = new ParamTopoTreatmentNetworkDataMatching();
-    paramTopoNetwork2 = new ParamTopoTreatmentNetworkDataMatching();
+    paramTopoNetwork1 = new ParamTopologyTreatmentNetwork();
+    paramTopoNetwork2 = new ParamTopologyTreatmentNetwork();
     paramProjNetwork1 = new ParamProjectionNetworkDataMatching();
     paramProjNetwork2 = new ParamProjectionNetworkDataMatching();
   }
@@ -112,19 +112,19 @@ public class ParamNetworkDataMatching {
     this.paramDistance = paramDistance;
   }
   
-  public ParamTopoTreatmentNetworkDataMatching getParamTopoNetwork1() {
+  public ParamTopologyTreatmentNetwork getParamTopoNetwork1() {
     return paramTopoNetwork1;
   }
   
-  public void setParamTopoNetwork1(ParamTopoTreatmentNetworkDataMatching paramTopo) {
+  public void setParamTopoNetwork1(ParamTopologyTreatmentNetwork paramTopo) {
     this.paramTopoNetwork1 = paramTopo;
   }
   
-  public ParamTopoTreatmentNetworkDataMatching getParamTopoNetwork2() {
+  public ParamTopologyTreatmentNetwork getParamTopoNetwork2() {
     return paramTopoNetwork2;
   }
   
-  public void setParamTopoNetwork2(ParamTopoTreatmentNetworkDataMatching paramTopo) {
+  public void setParamTopoNetwork2(ParamTopologyTreatmentNetwork paramTopo) {
     this.paramTopoNetwork2 = paramTopo;
   }
   
@@ -186,17 +186,17 @@ public class ParamNetworkDataMatching {
     param.distanceNoeudsImpassesMax = paramDistance.getDistanceNoeudsImpassesMax(); 
     
     // Set topo treatment param
-    param.topologieGraphePlanaire1 = paramTopoNetwork1.getTopologieGraphePlanaire();
-    param.topologieFusionArcsDoubles1 = paramTopoNetwork1.getTopologieFusionArcsDoubles();
-    param.topologieSeuilFusionNoeuds1 = paramTopoNetwork1.getTopologieSeuilFusionNoeuds();
-    param.topologieSurfacesFusionNoeuds1 = paramTopoNetwork1.getTopologieSurfacesFusionNoeuds();
-    param.topologieElimineNoeudsAvecDeuxArcs1 = paramTopoNetwork1.getTopologieElimineNoeudsAvecDeuxArcs();
+    param.topologieGraphePlanaire1 = paramTopoNetwork1.getGraphePlanaire();
+    param.topologieFusionArcsDoubles1 = paramTopoNetwork1.getFusionArcsDoubles();
+    param.topologieSeuilFusionNoeuds1 = paramTopoNetwork1.getSeuilFusionNoeuds();
+    param.topologieSurfacesFusionNoeuds1 = paramTopoNetwork1.getSurfacesFusionNoeuds();
+    param.topologieElimineNoeudsAvecDeuxArcs1 = paramTopoNetwork1.getElimineNoeudsAvecDeuxArcs();
     
-    param.topologieGraphePlanaire2 = paramTopoNetwork2.getTopologieGraphePlanaire();
-    param.topologieFusionArcsDoubles2 = paramTopoNetwork2.getTopologieFusionArcsDoubles();
-    param.topologieSeuilFusionNoeuds2 = paramTopoNetwork2.getTopologieSeuilFusionNoeuds();
-    param.topologieSurfacesFusionNoeuds2 = paramTopoNetwork2.getTopologieSurfacesFusionNoeuds();
-    param.topologieElimineNoeudsAvecDeuxArcs2 = paramTopoNetwork2.getTopologieElimineNoeudsAvecDeuxArcs();
+    param.topologieGraphePlanaire2 = paramTopoNetwork2.getGraphePlanaire();
+    param.topologieFusionArcsDoubles2 = paramTopoNetwork2.getFusionArcsDoubles();
+    param.topologieSeuilFusionNoeuds2 = paramTopoNetwork2.getSeuilFusionNoeuds();
+    param.topologieSurfacesFusionNoeuds2 = paramTopoNetwork2.getSurfacesFusionNoeuds();
+    param.topologieElimineNoeudsAvecDeuxArcs2 = paramTopoNetwork2.getElimineNoeudsAvecDeuxArcs();
     
     // Projection
     param.projeteNoeuds1SurReseau2 = paramProjNetwork1.getProjeteNoeuds1SurReseau2();

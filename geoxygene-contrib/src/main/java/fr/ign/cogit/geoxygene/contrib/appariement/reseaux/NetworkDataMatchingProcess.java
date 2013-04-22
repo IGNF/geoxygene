@@ -36,7 +36,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopoTreatmentNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
@@ -244,17 +244,17 @@ public class NetworkDataMatchingProcess {
    */
   public static ReseauApp importData(String networkName,
       DatasetNetworkDataMatching network1, ParamDirectionNetworkDataMatching direction,
-      float distanceNoeudsMax, ParamTopoTreatmentNetworkDataMatching topo) {
+      float distanceNoeudsMax, ParamTopologyTreatmentNetwork topo) {
     
     boolean populationsArcsAvecOrientationDouble = direction.getOrientationDouble();
     String attributOrientation = direction.getAttributOrientation();
     Map<Integer, String> orientationMap = direction.getOrientationMap();
     
-    boolean topologieGraphePlanaire = topo.getTopologieGraphePlanaire();
-    double topologieSeuilFusionNoeuds = topo.getTopologieSeuilFusionNoeuds();
-    IPopulation<?> topologieSurfacesFusionNoeuds = topo.getTopologieSurfacesFusionNoeuds();
-    boolean topologieElimineNoeudsAvecDeuxArcs = topo.getTopologieElimineNoeudsAvecDeuxArcs();
-    boolean topologieFusionArcsDoubles = topo.getTopologieFusionArcsDoubles();
+    boolean topologieGraphePlanaire = topo.getGraphePlanaire();
+    double topologieSeuilFusionNoeuds = topo.getSeuilFusionNoeuds();
+    IPopulation<?> topologieSurfacesFusionNoeuds = topo.getSurfacesFusionNoeuds();
+    boolean topologieElimineNoeudsAvecDeuxArcs = topo.getElimineNoeudsAvecDeuxArcs();
+    boolean topologieFusionArcsDoubles = topo.getFusionArcsDoubles();
     
     ReseauApp reseau = new ReseauApp(networkName);
     IPopulation<? extends IFeature> popArcApp = reseau.getPopArcs();
@@ -291,7 +291,7 @@ public class NetworkDataMatchingProcess {
             LOGGER.info("Populations avec orientation simple");
           } else {
             Object value = element.getAttribute(attribute);
-            // System.out.println(attribute + " = " + value);
+            System.out.println(attribute + " = " + value);
             if (orientationMap != null) {
               // TODO a adpater
               /*Integer orientation = orientationMap.get(value);

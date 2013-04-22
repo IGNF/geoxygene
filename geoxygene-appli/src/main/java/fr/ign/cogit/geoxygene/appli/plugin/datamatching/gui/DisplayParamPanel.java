@@ -42,7 +42,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopoTreatmentNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
 
 /**
  * 
@@ -57,7 +57,7 @@ public class DisplayParamPanel extends JToolBar {
   /** Parameter values. */
   private ParamNetworkDataMatching paramNetworkDataMatching = null;
   private ParamDirectionNetworkDataMatching paramDirection = null;
-  private ParamTopoTreatmentNetworkDataMatching paramTopo = null;
+  private ParamTopologyTreatmentNetwork paramTopo = null;
   
   /**
    * Constructor.

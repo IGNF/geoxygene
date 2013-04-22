@@ -116,23 +116,23 @@ public class CompareAppariement {
     
     // Topologie du réseau 1
     Assert.assertTrue("Comparaison de topologieGraphePlanaire1 : " + oldParam.topologieGraphePlanaire1 + " ? "
-        + newParam.getParamTopoNetwork1().getTopologieGraphePlanaire(), oldParam.topologieGraphePlanaire1 == newParam.getParamTopoNetwork1().getTopologieGraphePlanaire());
+        + newParam.getParamTopoNetwork1().getGraphePlanaire(), oldParam.topologieGraphePlanaire1 == newParam.getParamTopoNetwork1().getGraphePlanaire());
     Assert.assertTrue("Comparaison de topologieSeuilFusionNoeuds1 : " + oldParam.topologieSeuilFusionNoeuds1 + " ? "
-        + newParam.getParamTopoNetwork1().getTopologieSeuilFusionNoeuds(), oldParam.topologieSeuilFusionNoeuds1 == newParam.getParamTopoNetwork1().getTopologieSeuilFusionNoeuds());
+        + newParam.getParamTopoNetwork1().getSeuilFusionNoeuds(), oldParam.topologieSeuilFusionNoeuds1 == newParam.getParamTopoNetwork1().getSeuilFusionNoeuds());
     Assert.assertTrue("Comparaison de topologieFusionArcsDoubles1 : " + oldParam.topologieFusionArcsDoubles1 + " ? "
-        + newParam.getParamTopoNetwork1().getTopologieFusionArcsDoubles(), oldParam.topologieFusionArcsDoubles1 == newParam.getParamTopoNetwork1().getTopologieFusionArcsDoubles());
+        + newParam.getParamTopoNetwork1().getFusionArcsDoubles(), oldParam.topologieFusionArcsDoubles1 == newParam.getParamTopoNetwork1().getFusionArcsDoubles());
     Assert.assertTrue("Comparaison de topologieElimineNoeudsAvecDeuxArcs1 : " + oldParam.topologieElimineNoeudsAvecDeuxArcs1 + " ? "
-        + newParam.getParamTopoNetwork1().getTopologieElimineNoeudsAvecDeuxArcs(), oldParam.topologieElimineNoeudsAvecDeuxArcs1 == newParam.getParamTopoNetwork1().getTopologieElimineNoeudsAvecDeuxArcs());
+        + newParam.getParamTopoNetwork1().getElimineNoeudsAvecDeuxArcs(), oldParam.topologieElimineNoeudsAvecDeuxArcs1 == newParam.getParamTopoNetwork1().getElimineNoeudsAvecDeuxArcs());
     
     // Topologie du réseau 2
     Assert.assertTrue("Comparaison de topologieGraphePlanaire2 : " + oldParam.topologieGraphePlanaire2 + " ? "
-        + newParam.getParamTopoNetwork2().getTopologieGraphePlanaire(), oldParam.topologieGraphePlanaire2 == newParam.getParamTopoNetwork2().getTopologieGraphePlanaire());
+        + newParam.getParamTopoNetwork2().getGraphePlanaire(), oldParam.topologieGraphePlanaire2 == newParam.getParamTopoNetwork2().getGraphePlanaire());
     Assert.assertTrue("Comparaison de topologieSeuilFusionNoeuds2 : " + oldParam.topologieSeuilFusionNoeuds2 + " ? "
-        + newParam.getParamTopoNetwork2().getTopologieSeuilFusionNoeuds(), oldParam.topologieSeuilFusionNoeuds2 == newParam.getParamTopoNetwork2().getTopologieSeuilFusionNoeuds());
+        + newParam.getParamTopoNetwork2().getSeuilFusionNoeuds(), oldParam.topologieSeuilFusionNoeuds2 == newParam.getParamTopoNetwork2().getSeuilFusionNoeuds());
     Assert.assertTrue("Comparaison de topologieFusionArcsDoubles2 : " + oldParam.topologieFusionArcsDoubles2 + " ? "
-        + newParam.getParamTopoNetwork2().getTopologieFusionArcsDoubles(), oldParam.topologieFusionArcsDoubles2 == newParam.getParamTopoNetwork2().getTopologieFusionArcsDoubles());
+        + newParam.getParamTopoNetwork2().getFusionArcsDoubles(), oldParam.topologieFusionArcsDoubles2 == newParam.getParamTopoNetwork2().getFusionArcsDoubles());
     Assert.assertTrue("Comparaison de topologieElimineNoeudsAvecDeuxArcs2 : " + oldParam.topologieElimineNoeudsAvecDeuxArcs2 + " ? "
-        + newParam.getParamTopoNetwork2().getTopologieElimineNoeudsAvecDeuxArcs(), oldParam.topologieElimineNoeudsAvecDeuxArcs2 == newParam.getParamTopoNetwork2().getTopologieElimineNoeudsAvecDeuxArcs());
+        + newParam.getParamTopoNetwork2().getElimineNoeudsAvecDeuxArcs(), oldParam.topologieElimineNoeudsAvecDeuxArcs2 == newParam.getParamTopoNetwork2().getElimineNoeudsAvecDeuxArcs());
     
     // Projection des noeuds1 sur reseau2 
     Assert.assertTrue("Comparaison de projeteNoeuds1SurReseau2 : " + oldParam.projeteNoeuds1SurReseau2 + " ? "

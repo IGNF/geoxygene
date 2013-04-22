@@ -45,11 +45,11 @@ public class ParamPluginNetworkDataMatching {
   
   /** Fichiers qui contiennent les shapes du réseau 1. */
   @XmlElement(name = "ParamFilenameNetwork1")
-  private ParamFilenameNetworkDataMatching paramFilenameNetwork1 = null;
+  private ParamFilenamePopulationEdgesNetwork paramFilenameNetwork1 = null;
   
   /** Fichiers qui contiennent les shapes du réseau 2. */
   @XmlElement(name = "ParamFilenameNetwork2")
-  private ParamFilenameNetworkDataMatching paramFilenameNetwork2 = null;
+  private ParamFilenamePopulationEdgesNetwork paramFilenameNetwork2 = null;
   
   /** Paramètres pour l'appariement. */
   @XmlElement(name = "ParamNetworkDataMatching")
@@ -63,17 +63,17 @@ public class ParamPluginNetworkDataMatching {
    * Default constructor.
    */
   public ParamPluginNetworkDataMatching() {
-    paramFilenameNetwork1 = new ParamFilenameNetworkDataMatching();
-    paramFilenameNetwork2 = new ParamFilenameNetworkDataMatching();
+    paramFilenameNetwork1 = new ParamFilenamePopulationEdgesNetwork();
+    paramFilenameNetwork2 = new ParamFilenamePopulationEdgesNetwork();
     paramNetworkDataMatching = new ParamNetworkDataMatching();
     doRecalage = false;
   }
   
-  public ParamFilenameNetworkDataMatching getParamFilenameNetwork1() {
+  public ParamFilenamePopulationEdgesNetwork getParamFilenameNetwork1() {
     return paramFilenameNetwork1;
   }
   
-  public ParamFilenameNetworkDataMatching getParamFilenameNetwork2() {
+  public ParamFilenamePopulationEdgesNetwork getParamFilenameNetwork2() {
     return paramFilenameNetwork2;
   }
   
@@ -81,11 +81,11 @@ public class ParamPluginNetworkDataMatching {
     return paramNetworkDataMatching;
   }
   
-  public void setParamFilenameNetwork1(ParamFilenameNetworkDataMatching pf) {
+  public void setParamFilenameNetwork1(ParamFilenamePopulationEdgesNetwork pf) {
     paramFilenameNetwork1 = pf;
   }
   
-  public void setParamFilenameNetwork2(ParamFilenameNetworkDataMatching pf) {
+  public void setParamFilenameNetwork2(ParamFilenamePopulationEdgesNetwork pf) {
     paramFilenameNetwork2 = pf;
   }
   
