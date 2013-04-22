@@ -17,10 +17,13 @@ import fr.ign.cogit.cartagen.spatialanalysis.hexagonaltess.HexagonalTessellation
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 
 /**
@@ -117,6 +120,22 @@ public class RaposoSimplification {
     if (!points.get(points.size() - 1).equals(line.endPoint()))
       points.add(0, line.endPoint());
     return new GM_LineString(points);
+  }
+
+  /**
+   * Raposo simplification algorithm for a polygon. The algorithm is applied on
+   * outer ring and on each inner ring.
+   * @param polygon
+   * @return
+   */
+  public IPolygon simplify(IPolygon polygon) {
+    IPolygon newPol = new GM_Polygon(simplify(polygon.exteriorLineString()));
+    for (int i = 0; i < polygon.getInterior().size(); i++) {
+      ILineString hole = simplify(polygon.interiorLineString(i));
+      newPol.addInterior(new GM_Ring(hole));
+    }
+
+    return newPol;
   }
 
   public HexagonalTessellation getTess() {

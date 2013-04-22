@@ -25,11 +25,11 @@ import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.GeometryFactory;
  * @author GTouya
  * 
  */
-public class VisvilingamWhyatt {
+public class VisvalingamWhyatt {
 
   private double areaTolerance;
 
-  public VisvilingamWhyatt(double areaTolerance) {
+  public VisvalingamWhyatt(double areaTolerance) {
     this.areaTolerance = areaTolerance;
   }
 
