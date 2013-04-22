@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.util.misc;
+package fr.ign.cogit.geoxygene.misc;
 
 import java.awt.Desktop;
 import java.io.File;
