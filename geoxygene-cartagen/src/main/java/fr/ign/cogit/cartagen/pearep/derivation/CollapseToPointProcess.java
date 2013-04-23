@@ -17,7 +17,9 @@ import java.util.Set;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -31,7 +33,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
  */
 public class CollapseToPointProcess extends ScaleMasterGeneProcess {
 
-  private String className;
+  private Class<?> classObj;
   private static CollapseToPointProcess instance = null;
 
   protected CollapseToPointProcess() {
@@ -54,12 +56,7 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
       obj.eliminateBatch();
       IGeometry geom = obj.getGeom();
       IPoint centroid = geom.centroid().toGM_Point();
-      Class<?> classObj = null;
-      try {
-        classObj = Class.forName(className);
-      } catch (ClassNotFoundException e1) {
-        e1.printStackTrace();
-      }
+
       for (Method meth : CartagenApplication.getInstance().getCreationFactory()
           .getClass().getMethods()) {
         if (classObj.equals(meth.getReturnType())) {
@@ -105,13 +102,20 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
 
   @Override
   public void parameterise() {
-    this.className = (String) getParamValueFromName("class_name");
+    String themeName = (String) getParamValueFromName("theme");
+    ScaleMasterTheme theme = this.getScaleMaster().getThemeFromName(themeName);
+    CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
+        .getCartAGenDB();
+    Set<Class<?>> classes = new HashSet<Class<?>>();
+    classes.addAll(theme.getRelatedClasses());
+    this.classObj = db.getGeneObjImpl().filterClasses(classes).iterator()
+        .next();
   }
 
   @Override
   public Set<ProcessParameter> getDefaultParameters() {
     Set<ProcessParameter> params = new HashSet<ProcessParameter>();
-    params.add(new ProcessParameter("class_name", String.class, ""));
+    params.add(new ProcessParameter("theme", String.class, "waterl"));
 
     return params;
   }

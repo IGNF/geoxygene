@@ -158,4 +158,12 @@ public class ScaleMaster {
   public int newLineId() {
     return lineCounter.getAndIncrement();
   }
+
+  public ScaleMasterTheme getThemeFromName(String themeName) {
+    for (ScaleLine line : scaleLines) {
+      if (line.getTheme().getName().equals(themeName))
+        return line.getTheme();
+    }
+    return null;
+  }
 }

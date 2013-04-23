@@ -19,6 +19,7 @@ public abstract class ScaleMasterGeneProcess {
 
   private Set<ProcessParameter> parameters;
   private int scale;
+  private ScaleMaster scaleMaster;
 
   protected ScaleMasterGeneProcess() {
     parameters = new HashSet<ProcessParameter>();
@@ -38,6 +39,14 @@ public abstract class ScaleMasterGeneProcess {
 
   public int getScale() {
     return scale;
+  }
+
+  public ScaleMaster getScaleMaster() {
+    return scaleMaster;
+  }
+
+  public void setScaleMaster(ScaleMaster scaleMaster) {
+    this.scaleMaster = scaleMaster;
   }
 
   /**

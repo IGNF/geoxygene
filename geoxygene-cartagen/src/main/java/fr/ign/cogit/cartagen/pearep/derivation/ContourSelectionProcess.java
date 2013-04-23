@@ -118,10 +118,8 @@ public class ContourSelectionProcess extends ScaleMasterGeneProcess {
 
     // Preserve the lowest contour, and one contour every a given threshold
     int index = csThreshold;
-    System.out.println(listAltitudes);
     for (Double altitude : listAltitudes) {
       if (!(index == csThreshold)) {
-        System.out.println("altitude éliminée: " + altitude);
         for (IContourLine contourLine : contourFeatures) {
           if (contourLine.getAltitude() == altitude.doubleValue()) {
             contourLine.eliminateBatch();
@@ -129,7 +127,6 @@ public class ContourSelectionProcess extends ScaleMasterGeneProcess {
         }
       } else {
         index = 0;
-        System.out.println("altitude conservée: " + altitude);
       }
       index = index + 1;
     }

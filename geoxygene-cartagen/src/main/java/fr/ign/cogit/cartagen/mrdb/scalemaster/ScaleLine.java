@@ -129,6 +129,7 @@ public class ScaleLine {
       list = new ArrayList<ScaleMasterElement>();
     list.add(element);
     this.line.put(element.getInterval(), list);
+    element.setScaleLine(this);
   }
 
   /**

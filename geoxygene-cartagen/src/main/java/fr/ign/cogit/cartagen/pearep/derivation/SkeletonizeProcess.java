@@ -8,6 +8,8 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.genealgorithms.polygon.Skeletonize;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -37,12 +39,14 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
 
   @Override
   public void parameterise() {
-    try {
-      this.newClass = Class
-          .forName((String) getParamValueFromName("linear_class"));
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    }
+    String themeName = (String) getParamValueFromName("linear_theme");
+    ScaleMasterTheme theme = this.getScaleMaster().getThemeFromName(themeName);
+    CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
+        .getCartAGenDB();
+    Set<Class<?>> classes = new HashSet<Class<?>>();
+    classes.addAll(theme.getRelatedClasses());
+    this.newClass = db.getGeneObjImpl().filterClasses(classes).iterator()
+        .next();
     this.removeHoles = (Boolean) getParamValueFromName("remove_holes");
     this.widthMin = (Double) getParamValueFromName("width_min");
     this.sizeMin = (Double) getParamValueFromName("size_min");
@@ -87,11 +91,9 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
       for (ILineString newGeom : skeleton) {
         Constructor<?> constr = newClass.getConstructor(IGeometry.class);
         IGeneObj newObj = (IGeneObj) constr.newInstance(newGeom);
-
         pop.add(newObj);
       }
     }
-
   }
 
   @Override
@@ -102,7 +104,7 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
   @Override
   public Set<ProcessParameter> getDefaultParameters() {
     Set<ProcessParameter> params = new HashSet<ProcessParameter>();
-    params.add(new ProcessParameter("linear_class", String.class, ""));
+    params.add(new ProcessParameter("linear_theme", String.class, "waterl"));
     params.add(new ProcessParameter("remove_holes", Boolean.class, false));
     params.add(new ProcessParameter("width_min", Double.class, 20.0));
     params.add(new ProcessParameter("size_min", Double.class, 50000.0));

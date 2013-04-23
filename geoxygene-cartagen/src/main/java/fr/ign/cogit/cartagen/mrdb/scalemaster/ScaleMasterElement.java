@@ -10,11 +10,13 @@
 package fr.ign.cogit.cartagen.mrdb.scalemaster;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.util.Interval;
 import fr.ign.cogit.geoxygene.filter.Filter;
 
@@ -66,11 +68,7 @@ public class ScaleMasterElement {
    */
   private Filter ogcFilter;
   private ProcessPriority filterPriority;
-  /**
-   * The classes treated by this scale master element. These classes are a
-   * subset of the scale line classes.
-   */
-  private Set<Class<? extends IGeneObj>> classes;
+
   /**
    * The enrichments required to trigger the processes and filter of this
    * {@link ScaleMasterElement} instance.
@@ -126,14 +124,6 @@ public class ScaleMasterElement {
 
   public Filter getOgcFilter() {
     return ogcFilter;
-  }
-
-  public void setClasses(Set<Class<? extends IGeneObj>> classes) {
-    this.classes = classes;
-  }
-
-  public Set<Class<? extends IGeneObj>> getClasses() {
-    return classes;
   }
 
   public void setParameters(List<Map<String, Object>> parameters) {
@@ -247,5 +237,18 @@ public class ScaleMasterElement {
 
   public List<ScaleMasterEnrichment> getEnrichments() {
     return enrichments;
+  }
+
+  /**
+   * Get the classes related to {@code this} element using the theme of the
+   * scaleline and the db of {@code this} element.
+   * @return
+   */
+  public Set<Class<?>> getClasses() {
+    Set<Class<?>> classes = new HashSet<Class<?>>();
+    ScaleMasterTheme theme = this.getScaleLine().getTheme();
+    classes.addAll(theme.getRelatedClasses());
+    CartAGenDB db = CartAGenDoc.getInstance().getDatabases().get(dbName);
+    return db.getGeneObjImpl().filterClasses(classes);
   }
 }

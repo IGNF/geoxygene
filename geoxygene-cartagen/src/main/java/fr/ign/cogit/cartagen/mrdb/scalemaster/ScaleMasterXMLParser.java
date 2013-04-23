@@ -61,7 +61,6 @@ public class ScaleMasterXMLParser {
    * has the correct structure.
    * @return
    */
-  @SuppressWarnings("unchecked")
   public ScaleMaster parseScaleMaster(Collection<ScaleMasterTheme> themes)
       throws ParserConfigurationException, SAXException, IOException,
       DOMException, ClassNotFoundException {
@@ -131,8 +130,6 @@ public class ScaleMasterXMLParser {
             .getElementsByTagName("interval-max").item(0);
         Element dbName = (Element) scaleIntervalElement.getElementsByTagName(
             "db-name").item(0);
-        Element className = (Element) scaleIntervalElement
-            .getElementsByTagName("class-name").item(0);
 
         Interval<Integer> interval = new Interval<Integer>(
             Integer.valueOf(intervalMin.getChildNodes().item(0).getNodeValue()),
@@ -140,12 +137,6 @@ public class ScaleMasterXMLParser {
 
         ScaleMasterElement scaleMasterElement = new ScaleMasterElement(null,
             interval, dbName.getChildNodes().item(0).getNodeValue());
-
-        Set<Class<? extends IGeneObj>> classes = new HashSet<Class<? extends IGeneObj>>();
-        classes.add((Class<? extends IGeneObj>) Class.forName(className
-            .getChildNodes().item(0).getNodeValue()));
-
-        scaleMasterElement.setClasses(classes);
 
         List<String> listProcessesToApply = new ArrayList<String>();
         scaleMasterElement.setProcessesToApply(listProcessesToApply);

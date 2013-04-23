@@ -45,8 +45,15 @@ public class GaussianFilteringProcess extends ScaleMasterGeneProcess {
   @Override
   public void execute(IFeatureCollection<? extends IGeneObj> features) {
     for (IGeneObj obj : features) {
+      if (obj.isDeleted())
+        continue;
       ILineString ls = (ILineString) obj.getGeom();
-      IGeometry newGeom = GaussianFilter.gaussianFilter(ls, sigma, gThreshold);
+      IGeometry newGeom = null;
+      try {
+        newGeom = GaussianFilter.gaussianFilter(ls, sigma, gThreshold);
+      } catch (Exception e) {
+        // let initial geom if algorithm fails
+      }
       obj.setGeom(newGeom);
     }
   }

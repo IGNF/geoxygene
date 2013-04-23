@@ -104,12 +104,12 @@ public class ScaleMasterScheduler {
       IOException, DOMException, ClassNotFoundException {
     this.initLoggers();
     this.initThemes(themesFile);
-    this.initProcesses();
     this.initPreProcesses();
     XMLParser smParser = new XMLParser(scaleMasterXml);
     XMLParser paramParser = new XMLParser(parameterXml);
     this.scaleMaster = smParser.parseScaleMaster(this);
     paramParser.parseParameters(this);
+    this.initProcesses();
   }
 
   /**
@@ -120,9 +120,9 @@ public class ScaleMasterScheduler {
   public ScaleMasterScheduler(ScaleMaster scaleMaster,
       Set<ScaleMasterTheme> themes, int scale) {
     this.themes = themes;
+    this.scaleMaster = scaleMaster;
     this.initProcesses();
     this.initPreProcesses();
-    this.scaleMaster = scaleMaster;
     this.scale = scale;
   }
 
@@ -227,6 +227,8 @@ public class ScaleMasterScheduler {
     this.availableProcesses.add(BridgeCollapseProcess.getInstance());
     this.availableProcesses.add(VisvalingamWhyattProcess.getInstance());
     this.availableProcesses.add(RaposoSimplifProcess.getInstance());
+    for (ScaleMasterGeneProcess proc : availableProcesses)
+      proc.setScaleMaster(scaleMaster);
   }
 
   /**

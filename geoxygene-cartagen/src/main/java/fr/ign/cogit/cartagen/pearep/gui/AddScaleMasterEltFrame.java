@@ -17,7 +17,6 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,7 +29,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 
-import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement;
@@ -39,7 +37,6 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterEnrichment;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.util.Interval;
 import fr.ign.cogit.geoxygene.filter.Filter;
@@ -57,13 +54,11 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
       btnAddProcess, btnRemoveProcess;
   private JComboBox comboDbs, comboEnrich, comboProc;
   private JList jlistEnrichs, jlistProcess;
-  private Set<Class<? extends IGeneObj>> classes;
   private List<ScaleMasterEnrichment> enrichments;
   private List<ScaleMasterGeneProcess> processes;
   private Filter filter;
   private JTextField filterTxt;
   private JSlider slideFilter, slideProcess;
-  private JPanel pClasses;
   private ProcessParameterPanel pParameters;
   private Set<ProcessParameter> parameters;
   private List<ProcessPriority> processPriorities;
@@ -80,7 +75,6 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
           (Integer) this.spinMin.getValue(), (Integer) this.spinMax.getValue());
       ScaleMasterElement element = new ScaleMasterElement(this.line, interval,
           ((CartAGenDB) this.comboDbs.getSelectedItem()).getSourceDLM().name());
-      element.setClasses(this.classes);
       // add the filter to the element
       if (this.filter != null) {
         element.setOgcFilter(this.filter);
@@ -142,7 +136,6 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.parent = frame;
     this.line = line;
     this.parameters = new HashSet<ProcessParameter>();
-    this.classes = new HashSet<Class<? extends IGeneObj>>();
     this.processes = new ArrayList<ScaleMasterGeneProcess>();
     this.processPriorities = new ArrayList<ScaleMasterElement.ProcessPriority>();
     this.enrichments = new ArrayList<ScaleMasterEnrichment>();
@@ -177,18 +170,12 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     for (CartAGenDB db : CartAGenDoc.getInstance().getDatabases().values())
       cbModel.addElement(db);
     this.comboDbs = new JComboBox(cbModel);
-    this.comboDbs.addItemListener(this);
     comboDbs.setPreferredSize(new Dimension(80, 20));
     comboDbs.setMaximumSize(new Dimension(80, 20));
     comboDbs.setMinimumSize(new Dimension(80, 20));
-    pClasses = new JPanel();
-    pClasses.setLayout(new BoxLayout(pClasses, BoxLayout.X_AXIS));
-    updateClassPanelContent();
     pData.add(new JLabel(lblDb));
     pData.add(this.comboDbs);
-    pInterval.add(Box.createHorizontalGlue());
-    pData.add(new JLabel("Classes: "));
-    pData.add(pClasses);
+    pData.add(Box.createHorizontalGlue());
     pData.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     pData.setLayout(new BoxLayout(pData, BoxLayout.X_AXIS));
 
@@ -357,28 +344,9 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
       this.processes.add(proc);
     }
     this.processPriorities = elem.getProcessPriorities();
-    this.updateClassPanelContent();
     this.updateJList(jlistEnrichs);
     this.updateJList(jlistProcess);
     this.pack();
-  }
-
-  private void updateClassPanelContent() {
-    classes.clear();
-    this.pClasses.removeAll();
-    // get the implementation corresponding to the current DB (the one selected
-    // in the combo box).
-    GeneObjImplementation impl = ((CartAGenDB) this.comboDbs.getSelectedItem())
-        .getGeneObjImpl();
-    for (Class<? extends IGeneObj> classObj : this.line.getTheme()
-        .getRelatedClasses()) {
-      if (impl.containsClass(classObj)) {
-        // add a checkBox in the classes panel for this class
-        JCheckBox check = new JCheckBox(classObj.getSimpleName());
-        classes.add(classObj);
-        this.pClasses.add(check);
-      }
-    }
   }
 
   /**
@@ -427,17 +395,7 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
             .getSelectedItem()).getDefaultParameters());
       }
       updateParametersPanel();
-    } else if (e.getSource().equals(this.comboDbs)) {
-      updateClassPanelContent();
     }
-  }
-
-  public Set<Class<? extends IGeneObj>> getClasses() {
-    return classes;
-  }
-
-  public void setClasses(Set<Class<? extends IGeneObj>> classes) {
-    this.classes = classes;
   }
 
   public Filter getFilter() {
@@ -454,6 +412,22 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
 
   public void setFilterTxt(JTextField filterTxt) {
     this.filterTxt = filterTxt;
+  }
+
+  public ScaleLine getLine() {
+    return line;
+  }
+
+  public void setLine(ScaleLine line) {
+    this.line = line;
+  }
+
+  public JComboBox getComboDbs() {
+    return comboDbs;
+  }
+
+  public void setComboDbs(JComboBox comboDbs) {
+    this.comboDbs = comboDbs;
   }
 
   /**

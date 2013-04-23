@@ -20,6 +20,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.OGCFilterPanel;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.renderer.ClassSimpleNameListRenderer;
@@ -38,6 +39,7 @@ public class AddFilterToElementFrame extends JFrame implements ActionListener,
   private JButton btnBack, btnNext;
   private int level = 0;
   private final static int LEVELS = 2;
+  private CartAGenDB db;
 
   public AddFilterToElementFrame(AddScaleMasterEltFrame frame) {
     super();
@@ -47,9 +49,12 @@ public class AddFilterToElementFrame extends JFrame implements ActionListener,
     // ***********************************
     // a panel to define the queried class
     this.pClass = new JPanel();
+    this.db = (CartAGenDB) parentFrame.getComboDbs().getSelectedItem();
     DefaultListModel model = new DefaultListModel();
-    for (Class<?> classObj : this.parentFrame.getClasses()) {
-      model.addElement(classObj);
+    for (Class<?> classObj : this.parentFrame.getLine().getTheme()
+        .getRelatedClasses()) {
+      if (db.getGeneObjImpl().containsClass(classObj))
+        model.addElement(classObj);
     }
     this.classJList = new JList(model);
     this.classJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

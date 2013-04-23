@@ -150,7 +150,7 @@ public class ShapeFileExport {
     }
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
   public static <Feature extends IFeature> void write(
       IPopulation<Feature> featurePop, Class<? extends IGeometry> geomType,
       String shpName, String epsgIni, String epsgFin) {

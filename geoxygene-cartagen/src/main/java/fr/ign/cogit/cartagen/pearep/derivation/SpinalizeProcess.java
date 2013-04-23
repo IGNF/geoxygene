@@ -11,6 +11,9 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.genealgorithms.polygon.Spinalize;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -19,7 +22,7 @@ public class SpinalizeProcess extends ScaleMasterGeneProcess {
 
   static Logger logger = Logger.getLogger(SpinalizeProcess.class.getName());
 
-  // private Class<?> newClass;
+  private Class<?> newClass;
   private boolean removeHoles;
   private double lengthMin, overSample;
   private static SpinalizeProcess instance = null;
@@ -39,12 +42,14 @@ public class SpinalizeProcess extends ScaleMasterGeneProcess {
 
   @Override
   public void parameterise() {
-    // try {
-    // this.newClass = Class
-    // .forName((String) getParamValueFromName("linear_class"));
-    // } catch (ClassNotFoundException e) {
-    // e.printStackTrace();
-    // }
+    String themeName = (String) getParamValueFromName("linear_theme");
+    ScaleMasterTheme theme = this.getScaleMaster().getThemeFromName(themeName);
+    CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
+        .getCartAGenDB();
+    Set<Class<?>> classes = new HashSet<Class<?>>();
+    classes.addAll(theme.getRelatedClasses());
+    this.newClass = db.getGeneObjImpl().filterClasses(classes).iterator()
+        .next();
     this.removeHoles = (Boolean) getParamValueFromName("remove_holes");
     this.lengthMin = (Double) getParamValueFromName("length_min");
     this.overSample = (Double) getParamValueFromName("over_sample");
@@ -77,7 +82,7 @@ public class SpinalizeProcess extends ScaleMasterGeneProcess {
   @Override
   public Set<ProcessParameter> getDefaultParameters() {
     Set<ProcessParameter> params = new HashSet<ProcessParameter>();
-    // params.add(new ProcessParameter("linear_class", String.class, ""));
+    params.add(new ProcessParameter("linear_theme", String.class, "waterl"));
     params.add(new ProcessParameter("remove_holes", Boolean.class, true));
     params.add(new ProcessParameter("length_min", Double.class, 400.0));
     params.add(new ProcessParameter("over_sample", Double.class, 10.0));

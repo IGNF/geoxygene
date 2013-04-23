@@ -19,7 +19,6 @@ import javax.swing.border.Border;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement;
 
 public class ScaleMasterElementPanel extends JXPanel implements MouseListener {
@@ -160,14 +159,7 @@ public class ScaleMasterElementPanel extends JXPanel implements MouseListener {
     JPanel panel = new JPanel();
     ScaleMasterElement element = this.elements.get(this.panels.indexOf(source));
     JLabel lblDb = new JLabel(element.getDbName());
-    StringBuffer listClasses = new StringBuffer();
-    for (Class<? extends IGeneObj> classObj : element.getClasses()) {
-      listClasses.append(classObj.getSimpleName() + ", ");
-    }
-    listClasses.delete(listClasses.length() - 2, listClasses.length() - 1);
-    JLabel lblClasses = new JLabel(listClasses.toString());
     panel.add(lblDb);
-    panel.add(lblClasses);
     if (element.getOgcFilter() != null) {
       JLabel lblFilter = new JLabel(element.getOgcFilter().toString());
       panel.add(lblFilter);
