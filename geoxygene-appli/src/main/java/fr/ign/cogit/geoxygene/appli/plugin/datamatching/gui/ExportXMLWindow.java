@@ -50,7 +50,7 @@ public class ExportXMLWindow extends JDialog {
     setModal(true);
     setTitle("Export des paramètres saisis au format XML");
     setIconImage(new ImageIcon(ExportXMLWindow.class.getResource("/images/icons/page_white_code.png")).getImage());
-    setSize(800, 550);
+    setSize(800, 250);
     setLocation(400, 100);
     
     // initialize buttons panel
@@ -65,6 +65,8 @@ public class ExportXMLWindow extends JDialog {
     
     // Add events
     manageEvent();
+    
+    add(jspHtml);
     
     // Display panel
     pack();

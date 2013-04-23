@@ -376,6 +376,7 @@ public final class AppariementIO {
         // arc.addCorrespondant(element);
       }
     }
+
 //    if (true) return reseau;
     // import des noeuds
     Iterator<?> itPopNoeuds = null;
@@ -403,6 +404,7 @@ public final class AppariementIO {
         // else noeud.setTaille(tailleNoeud(element, paramApp));
       }
     }
+
     // Indexation spatiale des arcs et noeuds
     // On crée un dallage régulier avec en moyenne 20 objets par case
     if (AppariementIO.LOGGER.isDebugEnabled()) {
@@ -419,6 +421,7 @@ public final class AppariementIO {
         reseau.getPopArcs().getSpatialIndex());
     // Instanciation de la topologie
     // 1- création de la topologie arcs-noeuds, rendu du graphe planaire
+
     if ((ref && paramApp.topologieGraphePlanaire1)
         || (!ref && paramApp.topologieGraphePlanaire2)) {
       // cas où on veut une topologie planaire

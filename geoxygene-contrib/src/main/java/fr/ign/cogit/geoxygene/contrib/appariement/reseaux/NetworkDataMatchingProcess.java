@@ -133,10 +133,10 @@ public class NetworkDataMatchingProcess {
       if (LOGGER.isEnabledFor(Level.DEBUG)) {
         LOGGER.debug("Projection of network 2 onto network1 " + (new Time(System.currentTimeMillis())).toString());
       }
-      /*reseau1.projete(reseau2,
-          paramApp.projeteNoeuds2SurReseau1DistanceNoeudArc,
-          paramApp.projeteNoeuds2SurReseau1DistanceProjectionNoeud,
-          paramApp.projeteNoeuds2SurReseau1ImpassesSeulement);*/
+      //reseau1.projete(reseau2,
+      //    paramApp.projeteNoeuds2SurReseau1DistanceNoeudArc,
+      //    paramApp.projeteNoeuds2SurReseau1DistanceProjectionNoeud,
+      //    paramApp.projeteNoeuds2SurReseau1ImpassesSeulement);
       reseau1.projete(reseau2,
           inputParam.getParamProjNetwork2().getProjeteNoeuds1SurReseau2DistanceNoeudArc(),
           inputParam.getParamProjNetwork2().getProjeteNoeuds1SurReseau2DistanceProjectionNoeud(),
@@ -147,10 +147,10 @@ public class NetworkDataMatchingProcess {
       if (LOGGER.isEnabledFor(Level.DEBUG)) {
         LOGGER.debug("Projection of network 1 onto network2 " + (new Time(System.currentTimeMillis())).toString());
       }
-      /*reseau2.projete(reseau1,
-          paramApp.projeteNoeuds1SurReseau2DistanceNoeudArc,
-          paramApp.projeteNoeuds1SurReseau2DistanceProjectionNoeud,
-          paramApp.projeteNoeuds1SurReseau2ImpassesSeulement);*/
+      //reseau2.projete(reseau1,
+      //    paramApp.projeteNoeuds1SurReseau2DistanceNoeudArc,
+      //    paramApp.projeteNoeuds1SurReseau2DistanceProjectionNoeud,
+      //    paramApp.projeteNoeuds1SurReseau2ImpassesSeulement);
       reseau2.projete(reseau1,
           inputParam.getParamProjNetwork1().getProjeteNoeuds1SurReseau2DistanceNoeudArc(),
           inputParam.getParamProjNetwork1().getProjeteNoeuds1SurReseau2DistanceProjectionNoeud(),
@@ -291,9 +291,15 @@ public class NetworkDataMatchingProcess {
             LOGGER.info("Populations avec orientation simple");
           } else {
             Object value = element.getAttribute(attribute);
-            System.out.println(attribute + " = " + value);
+            // System.out.println(attribute + " = " + value);
             if (orientationMap != null) {
-              // TODO a adpater
+              for (int mapKey : orientationMap.keySet()) {
+                String valAttribut = orientationMap.get(mapKey);
+                if (valAttribut.equals(value)) {
+                  arc.setOrientation(mapKey);
+                  // System.out.println(attribute + " = " + value + " ? " + valAttribut);
+                }
+              }
               /*Integer orientation = orientationMap.get(value);
               if (orientation != null) {
                 arc.setOrientation(orientation.intValue());

@@ -79,6 +79,7 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
+import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 
 
 /**
@@ -168,7 +169,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     // -----------------------------------------------------------------------------------------
     // Dataset
     
-    String filename1 = "D:\\DATA\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+    /*String filename1 = "D:\\DATA\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
     String filename2 = "D:\\DATA\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
     // String filename1 = "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau1.shp";
     // String filename2 = "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau2.shp";
@@ -250,7 +251,80 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     // -----------------------------------------------------------------------------------------
     // Actions
     paramPlugin.setDoRecalage(true);
-  
+    */
+    
+    String filename1 = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\extrait-gps.shp";
+    String filename2 = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\bduni_gps.shp";
+    
+    ParamFilenamePopulationEdgesNetwork paramFilename1 = new ParamFilenamePopulationEdgesNetwork();
+    paramFilename1.addFilename(filename1);
+    paramPlugin.setParamFilenameNetwork1(paramFilename1);
+    
+    ParamFilenamePopulationEdgesNetwork paramFilename2 = new ParamFilenamePopulationEdgesNetwork();
+    paramFilename2.addFilename(filename2);
+    paramPlugin.setParamFilenameNetwork2(paramFilename2);
+    
+    // -----------------------------------------------------------------------------------------
+    // Param
+    ParamNetworkDataMatching param = new ParamNetworkDataMatching();
+    
+    // Direction
+    ParamDirectionNetworkDataMatching paramDirection1 = new ParamDirectionNetworkDataMatching();
+    paramDirection1.setOrientationDouble(true);
+    param.setParamDirectionNetwork1(paramDirection1);
+    
+    ParamDirectionNetworkDataMatching paramDirection2 = new ParamDirectionNetworkDataMatching();
+    paramDirection2.setOrientationDouble(true);
+    /*paramDirection2.setAttributOrientation("sens_de_circulation");
+    Map<Integer, String> orientationMap2 = new HashMap<Integer, String>();
+    orientationMap2.put(OrientationInterface.SENS_DIRECT, "Sens direct");
+    orientationMap2.put(OrientationInterface.SENS_INVERSE, "Sens inverse");
+    orientationMap2.put(OrientationInterface.DOUBLE_SENS, "Double sens");
+    paramDirection2.setOrientationMap(orientationMap2);*/
+    param.setParamDirectionNetwork2(paramDirection2);
+    
+    // Distance
+    ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
+    float distanceNoeudsMax = 50;
+    paramDistance.setDistanceNoeudsMax(distanceNoeudsMax);
+    paramDistance.setDistanceArcsMax(2 * distanceNoeudsMax);
+    paramDistance.setDistanceArcsMin(distanceNoeudsMax);
+    param.setParamDistance(paramDistance);
+    
+    // Topologie
+    ParamTopologyTreatmentNetwork paramTopo1 = new ParamTopologyTreatmentNetwork();
+    paramTopo1.setGraphePlanaire(false);
+    paramTopo1.setFusionArcsDoubles(false);
+    param.setParamTopoNetwork1(paramTopo1);
+    
+    ParamTopologyTreatmentNetwork paramTopo2 = new ParamTopologyTreatmentNetwork();
+    paramTopo2.setGraphePlanaire(false);
+    paramTopo2.setFusionArcsDoubles(false);
+    paramTopo2.setSeuilFusionNoeuds(0.1);
+    param.setParamTopoNetwork1(paramTopo2);
+    
+    // Projection
+    ParamProjectionNetworkDataMatching paramProj1 = new ParamProjectionNetworkDataMatching();
+    paramProj1.setProjeteNoeuds1SurReseau2(true);
+    paramProj1.setProjeteNoeuds1SurReseau2DistanceNoeudArc(distanceNoeudsMax);
+    paramProj1.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(2 * distanceNoeudsMax);
+    param.setParamProjNetwork1(paramProj1);
+    
+    ParamProjectionNetworkDataMatching paramProj2 = new ParamProjectionNetworkDataMatching();
+    paramProj2.setProjeteNoeuds1SurReseau2(true);
+    paramProj2.setProjeteNoeuds1SurReseau2DistanceNoeudArc(distanceNoeudsMax);
+    paramProj2.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(2 * distanceNoeudsMax);
+    paramProj2.setProjeteNoeuds1SurReseau2ImpassesSeulement(true);
+    param.setParamProjNetwork2(paramProj2);
+    
+    
+    
+    //
+    paramPlugin.setParamNetworkDataMatching(param);
+    
+    // -----------------------------------------------------------------------------------------
+    // Actions
+    paramPlugin.setDoRecalage(true);
   }
 
   /**
@@ -302,10 +376,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();
       
       // Logs
-      /*LOGGER.info("Nb arcs du réseau 1 calculés : " + resultatAppariement.getReseau1().getListeArcs().size()
-          + " >= " + reseau1.size());
+      LOGGER.info("Nb arcs du réseau 1 calculés : " + resultatAppariement.getReseau1().getListeArcs().size()
+          + " >= " + datasetNetwork1.getPopulationsArcs().size());
       LOGGER.info("Nb arcs du réseau 2 calculés : " + resultatAppariement.getReseau2().getListeArcs().size()
-          + " >= " + reseau2.size());*/
+          + " >= " + datasetNetwork2.getPopulationsArcs().size());
       
       EnsembleDeLiens liens = resultatAppariement.getLinkDataSet();
       // if (paramOld.debugBilanSurObjetsGeo) {
@@ -356,8 +430,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.trace("----------------------------------------------------------");
       LOGGER.trace("Enregistrement des résultats en fichier shape");
       
-      // ShapefileWriter.write(arcs, "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau1-Apparie.shp");
-      // ShapefileWriter.write(liens, "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\liens.shp");
+      ShapefileWriter.write(arcs, "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\reseau-apparie.shp");
+      ShapefileWriter.write(liens, "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\liens.shp");
       
       // ShapefileWriter.write(resultatAppariement.getReseau1().getPopArcs(), "D:\\Data\\Appariement\\SDET\\Res\\SDET-ArcTopo.shp");
       // ShapefileWriter.write(resultatAppariement.getReseau1().getPopNoeuds(), "D:\\Data\\Appariement\\SDET\\Res\\SDET-NoeudTopo.shp");
@@ -367,8 +441,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       
       LOGGER.trace("----------------------------------------------------------");
       
-      
-      this.application.getFrame().getDesktopPane().removeAll();
+      // A garder ??
+      // this.application.getFrame().getDesktopPane().removeAll();
       
       Dimension desktopSize = this.application.getFrame().getDesktopPane().getSize();
       int widthProjectFrame = desktopSize.width / 2;

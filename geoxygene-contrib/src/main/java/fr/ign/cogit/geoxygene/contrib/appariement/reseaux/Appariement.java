@@ -1728,10 +1728,10 @@ public abstract class Appariement {
       // ancienne version
       double poids = Distances.ecartSurface(arcComp.getGeometrie(), arcRef.getGeometrie());
       arcComp.setPoids(poids);
-      LOGGER.debug("ecartSurface");
-      LOGGER.debug(arcComp.getGeometrie());
-      LOGGER.debug(arcRef.getGeometrie());
-      LOGGER.debug("Poids = " + poids);
+      // LOGGER.debug("ecartSurface");
+      // LOGGER.debug(arcComp.getGeometrie());
+      // LOGGER.debug(arcRef.getGeometrie());
+      // LOGGER.debug("Poids = " + poids);
     }
   }
   

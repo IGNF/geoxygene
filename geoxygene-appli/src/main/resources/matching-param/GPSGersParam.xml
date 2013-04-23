@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ParamPluginNetworkDataMatching>
+    <ParamFilenameNetwork1>
+        <listNomFichiersPopArcs>D:\Data\Appariement\MesTests\EXTRAITS-GPS\extrait-gps.shp</listNomFichiersPopArcs>
+    </ParamFilenameNetwork1>
+    <ParamFilenameNetwork2>
+        <listNomFichiersPopArcs>D:\Data\Appariement\MesTests\EXTRAITS-GPS\bduni_gps.shp</listNomFichiersPopArcs>
+    </ParamFilenameNetwork2>
+    <DoRecalage>false</DoRecalage>
+    <ParamNetworkDataMatching>
+        <ParamDirectionNetwork1>
+            <OrientationDouble>true</OrientationDouble>
+        </ParamDirectionNetwork1>
+        <ParamDirectionNetwork2>
+            <OrientationDouble>false</OrientationDouble>
+            <AttributOrientation>sens_de_circulation</AttributOrientation>
+            <OrientationMap>
+                <item SENS="1">
+                    <ValeurAttribut>Sens direct</ValeurAttribut>
+                </item>
+                <item SENS="2">
+                    <ValeurAttribut>Double sens</ValeurAttribut>
+                </item>
+                <item SENS="-1">
+                    <ValeurAttribut>Sens inverse</ValeurAttribut>
+                </item>
+            </OrientationMap>
+        </ParamDirectionNetwork2>
+        <ParamDistance>
+            <DistanceNoeudsMax>150.0</DistanceNoeudsMax>
+            <DistanceArcsMax>100.0</DistanceArcsMax>
+            <DistanceArcsMin>30.0</DistanceArcsMin>
+            <DistanceNoeudsImpassesMax>-1.0</DistanceNoeudsImpassesMax>
+        </ParamDistance>
+        <ParamTopoNetwork1>
+            <SeuilFusionNoeuds>-1.0</SeuilFusionNoeuds>
+            <ElimineNoeudsAvecDeuxArcs>false</ElimineNoeudsAvecDeuxArcs>
+            <GraphePlanaire>false</GraphePlanaire>
+            <FusionArcsDoubles>false</FusionArcsDoubles>
+        </ParamTopoNetwork1>
+        <ParamTopoNetwork2>
+            <SeuilFusionNoeuds>-1.0</SeuilFusionNoeuds>
+            <ElimineNoeudsAvecDeuxArcs>false</ElimineNoeudsAvecDeuxArcs>
+            <GraphePlanaire>false</GraphePlanaire>
+            <FusionArcsDoubles>false</FusionArcsDoubles>
+        </ParamTopoNetwork2>
+        <ParamProjNetwork1>
+            <ProjeteNoeuds1SurReseau2>false</ProjeteNoeuds1SurReseau2>
+            <ProjeteNoeuds1SurReseau2DistanceNoeudArc>0.0</ProjeteNoeuds1SurReseau2DistanceNoeudArc>
+            <ProjeteNoeuds1SurReseau2DistanceProjectionNoeud>0.0</ProjeteNoeuds1SurReseau2DistanceProjectionNoeud>
+            <ProjeteNoeuds1SurReseau2ImpassesSeulement>false</ProjeteNoeuds1SurReseau2ImpassesSeulement>
+        </ParamProjNetwork1>
+        <ParamProjNetwork2>
+            <ProjeteNoeuds1SurReseau2>false</ProjeteNoeuds1SurReseau2>
+            <ProjeteNoeuds1SurReseau2DistanceNoeudArc>0.0</ProjeteNoeuds1SurReseau2DistanceNoeudArc>
+            <ProjeteNoeuds1SurReseau2DistanceProjectionNoeud>0.0</ProjeteNoeuds1SurReseau2DistanceProjectionNoeud>
+            <ProjeteNoeuds1SurReseau2ImpassesSeulement>false</ProjeteNoeuds1SurReseau2ImpassesSeulement>
+        </ParamProjNetwork2>
+    </ParamNetworkDataMatching>
+</ParamPluginNetworkDataMatching>

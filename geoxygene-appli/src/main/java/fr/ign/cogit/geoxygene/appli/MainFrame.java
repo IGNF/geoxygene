@@ -59,18 +59,35 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
+ * 
  * @author Julien Perret
  */
 public class MainFrame extends JFrame {
-  /**
-   * serial uid.
-   */
+  
+  /** serial uid. */
   private static final long serialVersionUID = 1L;
-  /**
-   * Logger of the application.
-   */
+  
+  /** Logger of the application. */
   private static Logger logger = Logger.getLogger(MainFrame.class.getName());
+  
+  /** The associated application. */
+  private GeOxygeneApplication application;
+  
+  /** The frame menu bar. */
+  private JMenuBar menuBar;
+  
+  /** The default width of the frame. */
+  private final int defaultFrameWidth = 800;
+  
+  /** The default height of the frame. */
+  private final int defaultFrameHeight = 800;
 
+  private static FileChooser fc = new FileChooser();
+  
+  /** The mode selector. */
+  private ModeSelector modeSelector = null;
+
+  
   /**
    * Get the application logger.
    * 
@@ -99,10 +116,7 @@ public class MainFrame extends JFrame {
     return this.desktopPane;
   }
 
-  /**
-   * The associated application.
-   */
-  private GeOxygeneApplication application;
+  
 
   /**
    * Get the associated application.
@@ -113,19 +127,13 @@ public class MainFrame extends JFrame {
     return this.application;
   }
 
-  /**
-   * The frame menu bar.
-   */
-  private JMenuBar menuBar;
+  
 
   public JMenuBar getmenuBar() {
     return this.menuBar;
   }
 
-  /**
-   * The mode selector.
-   */
-  private ModeSelector modeSelector = null;
+  
 
   /**
    * Return the current application mode.
@@ -136,16 +144,7 @@ public class MainFrame extends JFrame {
     return this.modeSelector;
   }
 
-  /**
-   * The default width of the frame.
-   */
-  private final int defaultFrameWidth = 800;
-  /**
-   * The default height of the frame.
-   */
-  private final int defaultFrameHeight = 800;
-
-  private static FileChooser fc = new FileChooser();
+  
 
   public static FileChooser getFilechooser() {
     return MainFrame.fc;
@@ -171,6 +170,7 @@ public class MainFrame extends JFrame {
     JMenu configurationMenu = new JMenu(
         I18N.getString("MainFrame.Configuration")); //$NON-NLS-1$
     JMenu helpMenu = new JMenu(I18N.getString("MainFrame.Help")); //$NON-NLS-1$
+    
     JMenuItem openFileMenuItem = new JMenuItem(
         I18N.getString("MainFrame.OpenFile")); //$NON-NLS-1$
     openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -197,6 +197,7 @@ public class MainFrame extends JFrame {
         }
       }
     });
+    
     JMenuItem newProjectFrameMenuItem = new JMenuItem(
         I18N.getString("MainFrame.NewProject")); //$NON-NLS-1$
     newProjectFrameMenuItem
@@ -301,6 +302,7 @@ public class MainFrame extends JFrame {
         th.start();
       }
     });
+    
     JMenuItem exitMenuItem = new JMenuItem(I18N.getString("MainFrame.Exit")); //$NON-NLS-1$
     exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
       @Override
@@ -309,6 +311,7 @@ public class MainFrame extends JFrame {
         MainFrame.this.getApplication().exit();
       }
     });
+    
     fileMenu.add(openFileMenuItem);
     fileMenu.add(newProjectFrameMenuItem);
     fileMenu.addSeparator();
@@ -519,8 +522,7 @@ public class MainFrame extends JFrame {
    * @return the newly created project frame
    */
   public final ProjectFrame newProjectFrame() {
-    ProjectFrame projectFrame = new ProjectFrame(this,
-        this.application.getIcon());
+    ProjectFrame projectFrame = new ProjectFrame(this, this.application.getIcon());
     projectFrame.setSize(this.desktopPane.getSize());
     projectFrame.setVisible(true);
     this.desktopPane.add(projectFrame, JLayeredPane.DEFAULT_LAYER);
@@ -532,4 +534,6 @@ public class MainFrame extends JFrame {
     projectFrame.setToolTipText(projectFrame.getTitle());
     return projectFrame;
   }
+
 }
+

@@ -2,10 +2,13 @@ package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileFilter;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -77,7 +80,10 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
     if (source == exportXML) {
       paramPanel.setParameters();
       exportXML();
+    } else if (source == importXML) {
+      doUpload(importXML);
     }
+    
   }
   
   /**
@@ -91,6 +97,39 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+  
+  /**
+   * Upload file. 
+   * @param typeButton 
+   */
+  private void doUpload(JButton typeButton) {
+    
+    JFileChooser jFileChooser = new JFileChooser();
+    
+    jFileChooser.setCurrentDirectory(new File("D:\\Data\\Appariement\\Param"));
+    
+    // Crée un filtre qui n'accepte que les fichier XML ou les répertoires
+    if (typeButton.equals(jFileChooser)) {
+      jFileChooser.setFileFilter(new FileFilter() {
+        @Override
+        public boolean accept(File f) {
+          return (f.isFile()
+              && (f.getAbsolutePath().endsWith(".xml") || f.getAbsolutePath()
+                  .endsWith(".XML")) || f.isDirectory());
+        }
+        @Override
+        public String getDescription() {
+          return "XMLfileReader";
+        }
+      });
+    } 
+    jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    
+    // Show file dialog
+    int returnVal = jFileChooser.showOpenDialog(this);
+    System.out.println("RETOUR = " + returnVal);
+    
   }
 
 }

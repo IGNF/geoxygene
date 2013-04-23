@@ -1501,7 +1501,7 @@ public class CarteTopo extends DataSet {
         continue;
       }
       Collection<Arc> closeEdges = this.getPopArcs().select(noeud.getGeom(), distanceMaxNoeudArc);
-      logger.debug("Project " + noeud.getGeometrie() + " selected " + closeEdges.size() + " edges");
+      // logger.debug("Project " + noeud.getGeometrie() + " selected " + closeEdges.size() + " edges");
       for (Arc arc : closeEdges) {
         if (arc.getGeometrie().startPoint().distance(noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud) {
           continue;
