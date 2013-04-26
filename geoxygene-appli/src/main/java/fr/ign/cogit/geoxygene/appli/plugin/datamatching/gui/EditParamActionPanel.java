@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,9 +19,13 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
   /** Serial version UID. */
   private static final long serialVersionUID = 4791806011051504347L;
   
-  /** 2 buttons : export and import XML parameters files. */
-  private JButton exportXML = null;
+  /** 1 button : import XML parameters files. */
   private JButton importXML = null;
+  
+  /** Actions */
+  private JCheckBox cbRecalage;
+  private JCheckBox cbExport;
+  private JCheckBox cbTransfert;
   
   private EditParamPanel paramPanel;
  
@@ -32,13 +37,13 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
     
     this.paramPanel = paramPanel;
     
-    exportXML = new JButton("export XML");
-    exportXML.setToolTipText("Export parameters in XML files");
-    exportXML.addActionListener(this);
-    
     importXML = new JButton("import XML");
     importXML.setToolTipText("Import parameters in XML files");
     importXML.addActionListener(this);
+    
+    cbRecalage = new JCheckBox();
+    cbExport = new JCheckBox();
+    cbTransfert = new JCheckBox();
     
     // Initialize the panel with all fields
     initPanel();
@@ -51,22 +56,31 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
   private void initPanel() {
     
     FormLayout layout = new FormLayout(
-        "40dlu, pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 40dlu",
-        "20dlu, pref, pref, 20dlu, pref, pref, pref, 20dlu, pref, 40dlu");
+        "40dlu, pref, 10dlu, pref, pref, 40dlu",
+        "20dlu, pref, pref, pref, 20dlu, pref, pref, 20dlu, pref, 40dlu");
     setLayout(layout);
     CellConstraints cc = new CellConstraints();
     
-    // Line 1 : titles
-    add(exportXML, cc.xy(2, 2));
-    add(importXML, cc.xy(2, 3));
+    // Action recalage
+    cbRecalage.setSelected(true);
+    add(cbRecalage, cc.xy(2, 2));
+    add(new JLabel("Ajouter le Recalage"), cc.xy(4, 2));
     
-    // Actions
-    add(new JLabel("Ajouter le Recalage"), cc.xy(4, 5));
-    add(new JLabel("Exporter les liens"), cc.xy(4, 6));
-    add(new JLabel("Transfert des attributs"), cc.xy(4, 7));
+    // Action export liens
+    cbExport.setSelected(false);
+    add(cbExport, cc.xy(2, 3));
+    add(new JLabel("Exporter les liens"), cc.xy(4, 3));
+    
+    // Action transfert des attributs
+    cbTransfert.setSelected(false);
+    add(cbTransfert, cc.xy(2, 4));
+    add(new JLabel("Transfert des attributs"), cc.xy(4, 4));
     
     // Enregistrer
-    add(new JLabel("Enregistrer les résultats"), cc.xy(4, 9));
+    add(new JLabel("Enregistrer les résultats"), cc.xy(4, 6));
+    
+    // import XML
+    add(importXML, cc.xy(5, 9));
     
   }
   
@@ -77,26 +91,10 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
   public void actionPerformed(ActionEvent evt) {
     Object source = evt.getSource();
     
-    if (source == exportXML) {
-      paramPanel.setParameters();
-      exportXML();
-    } else if (source == importXML) {
+    if (source == importXML) {
       doUpload(importXML);
     }
     
-  }
-  
-  /**
-   * Display parameters in XML format for export.
-   */
-  private void exportXML() {
-    try {
-      
-      ExportXMLWindow w = new ExportXMLWindow(paramPanel.getNetworkDataMatchingPlugin().getParamPlugin());
-    
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
   }
   
   /**
@@ -129,6 +127,27 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
     // Show file dialog
     int returnVal = jFileChooser.showOpenDialog(this);
     System.out.println("RETOUR = " + returnVal);
+    
+  }
+  
+  /**
+   * 
+   * @return
+   */
+  public Boolean[] valideField() {
+    
+    Boolean[] actions = new Boolean[3];
+    
+    Boolean recalage = cbRecalage.isSelected();
+    actions[0] = recalage;
+    
+    Boolean export = cbExport.isSelected();
+    actions[1] = export;
+    
+    Boolean transfert = cbTransfert.isSelected();
+    actions[2] = transfert;
+    
+    return actions;
     
   }
 

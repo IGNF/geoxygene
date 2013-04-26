@@ -61,9 +61,9 @@ public class EditParamDistancePanel extends JPanel implements ActionListener {
   /**
    * Constructor.
    */
-  public EditParamDistancePanel() {
+  public EditParamDistancePanel(ParamDistanceNetworkDataMatching distanceParam) {
     
-    paramDistance = new ParamDistanceNetworkDataMatching();
+    paramDistance = distanceParam;
     
     // Initialize all fields
     initFields();
@@ -87,7 +87,6 @@ public class EditParamDistancePanel extends JPanel implements ActionListener {
     fieldDistanceArcsMin.setText(Float.toString(paramDistance.getDistanceArcsMin()));
     
     fieldDistanceNoeudsImpassesMax = new JTextField(10);
-    
     
     impasseButton = new JCheckBox();
     impasseButton.addActionListener(this);

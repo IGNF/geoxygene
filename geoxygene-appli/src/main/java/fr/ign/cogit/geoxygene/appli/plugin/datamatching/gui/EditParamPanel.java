@@ -47,6 +47,8 @@ import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopula
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamProjectionNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
 
 
 /**
@@ -69,6 +71,9 @@ public class EditParamPanel extends JDialog implements ActionListener {
   /** 2 buttons : launch, cancel. */
   private JButton launchButton = null;
   private JButton cancelButton = null;
+  
+  /** 1 button : export parameters in XML files. */
+  private JButton exportXML = null;
 
   /** Tab Panels. */ 
   JPanel buttonPanel = null;
@@ -76,7 +81,9 @@ public class EditParamPanel extends JDialog implements ActionListener {
   EditParamDatasetPanel datasetPanel = null;
   EditParamDirectionPanel directionPanel = null;
   EditParamDistancePanel distancePanel = null;
-  JPanel topoTreatmentPanel = null;
+  EditParamTopoPanel topoTreatmentPanel = null;
+  EditParamProjectionPanel projectionPanel = null;
+  JPanel variante = null;
 
   /**
    * Constructor. Initialize the JDialog.
@@ -94,12 +101,23 @@ public class EditParamPanel extends JDialog implements ActionListener {
     
     initButtonPanel();
     actionPanel = new EditParamActionPanel(this);
+    
     datasetPanel = new EditParamDatasetPanel(networkDataMatchingPlugin.getParamPlugin().getParamFilenameNetwork1(),
         networkDataMatchingPlugin.getParamPlugin().getParamFilenameNetwork2());
+    
     directionPanel = new EditParamDirectionPanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamDirectionNetwork1(),
         networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamDirectionNetwork2());
-    distancePanel = new EditParamDistancePanel();
-    topoTreatmentPanel = new JPanel();
+    
+    distancePanel = new EditParamDistancePanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamDistance());
+    
+    topoTreatmentPanel = new EditParamTopoPanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamTopoNetwork1(),
+        networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamTopoNetwork2());
+    
+    projectionPanel = new EditParamProjectionPanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamProjNetwork1(),
+        networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamProjNetwork2());
+    
+    
+    variante = new JPanel();
     
     // Init tabbed panel
     JTabbedPane tabbedPane = new JTabbedPane();
@@ -118,6 +136,12 @@ public class EditParamPanel extends JDialog implements ActionListener {
     
     tabbedPane.addTab("Traitements topologiques", topoTreatmentPanel);
     tabbedPane.setMnemonicAt(4, KeyEvent.VK_5);
+    
+    tabbedPane.addTab("Surdécoupage", projectionPanel);
+    tabbedPane.setMnemonicAt(5, KeyEvent.VK_6);
+    
+    tabbedPane.addTab("Variantes", variante);
+    tabbedPane.setMnemonicAt(6, KeyEvent.VK_7);
 
     // Init param panel
     getContentPane().setLayout(new BorderLayout());
@@ -139,10 +163,15 @@ public class EditParamPanel extends JDialog implements ActionListener {
     launchButton = new JButton(I18N.getString("DataMatchingPlugin.Launch"));
     cancelButton = new JButton(I18N.getString("DataMatchingPlugin.Cancel"));
     
+    exportXML = new JButton("export XML");
+    exportXML.setToolTipText("Export parameters in XML files");
+    
     launchButton.addActionListener(this);
     cancelButton.addActionListener(this);
+    exportXML.addActionListener(this);
     
     buttonPanel.setLayout(new FlowLayout (FlowLayout.CENTER)); 
+    buttonPanel.add(exportXML);
     buttonPanel.add(cancelButton);
     buttonPanel.add(launchButton);
     
@@ -167,8 +196,24 @@ public class EditParamPanel extends JDialog implements ActionListener {
       action = "CANCEL";
       // do nothing
       dispose();
-    } 
+    } else if (source == exportXML) {
+      setParameters();
+      exportXML();
+    }
   
+  }
+  
+  /**
+   * Display parameters in XML format for export.
+   */
+  private void exportXML() {
+    try {
+      
+      ExportXMLWindow w = new ExportXMLWindow(networkDataMatchingPlugin.getParamPlugin());
+    
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
   
   /**
@@ -179,25 +224,42 @@ public class EditParamPanel extends JDialog implements ActionListener {
     // Initialize parameters
     ParamPluginNetworkDataMatching paramPlugin = new ParamPluginNetworkDataMatching();
     
+    // ------------------------------------------------------------------------------------------
+    
     // Dataset
     ParamFilenamePopulationEdgesNetwork[] tabParamFile = datasetPanel.valideField();
     paramPlugin.setParamFilenameNetwork1(tabParamFile[0]);
     paramPlugin.setParamFilenameNetwork2(tabParamFile[1]);
     
     // ------------------------------------------------------------------------------------------
+    
+    // Actions
+    Boolean[] tabActions = actionPanel.valideField();
+    paramPlugin.setDoRecalage(tabActions[0]);
+    
+    // ------------------------------------------------------------------------------------------
 
     ParamNetworkDataMatching param = new ParamNetworkDataMatching();
     
     // Direction
-    ParamDirectionNetworkDataMatching[] tabParamDirection = this.directionPanel.valideField();
+    ParamDirectionNetworkDataMatching[] tabParamDirection = directionPanel.valideField();
     param.setParamDirectionNetwork1(tabParamDirection[0]);
     param.setParamDirectionNetwork2(tabParamDirection[1]);
     
     // Ecart de distance
-    // param.setParamDistance(distancePanel.valideField());
+    param.setParamDistance(distancePanel.valideField());
     
     // Topo treatment
+    ParamTopologyTreatmentNetwork[] tabParamTopo = topoTreatmentPanel.valideField();
+    param.setParamTopoNetwork1(tabParamTopo[0]);
+    param.setParamTopoNetwork2(tabParamTopo[1]);
     
+    // Projection
+    ParamProjectionNetworkDataMatching[] tabParamProj = projectionPanel.valideField();
+    param.setParamProjNetwork1(tabParamProj[0]);
+    param.setParamProjNetwork2(tabParamProj[1]);
+    
+    // Variante
     
     paramPlugin.setParamNetworkDataMatching(param);
     

@@ -285,7 +285,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     
     // Distance
     ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
-    float distanceNoeudsMax = 50;
+    float distanceNoeudsMax = 20;
     paramDistance.setDistanceNoeudsMax(distanceNoeudsMax);
     paramDistance.setDistanceArcsMax(2 * distanceNoeudsMax);
     paramDistance.setDistanceArcsMin(distanceNoeudsMax);
@@ -293,14 +293,15 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     
     // Topologie
     ParamTopologyTreatmentNetwork paramTopo1 = new ParamTopologyTreatmentNetwork();
-    paramTopo1.setGraphePlanaire(false);
-    paramTopo1.setFusionArcsDoubles(false);
+    paramTopo1.setGraphePlanaire(true);
+    paramTopo1.setFusionArcsDoubles(true);
+    paramTopo1.setSeuilFusionNoeuds(0.1);
     param.setParamTopoNetwork1(paramTopo1);
     
     ParamTopologyTreatmentNetwork paramTopo2 = new ParamTopologyTreatmentNetwork();
     paramTopo2.setGraphePlanaire(false);
     paramTopo2.setFusionArcsDoubles(false);
-    paramTopo2.setSeuilFusionNoeuds(0.1);
+    // paramTopo2.setSeuilFusionNoeuds(0.1);
     param.setParamTopoNetwork1(paramTopo2);
     
     // Projection
