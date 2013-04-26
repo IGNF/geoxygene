@@ -431,14 +431,14 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.trace("----------------------------------------------------------");
       LOGGER.trace("Enregistrement des résultats en fichier shape");
       
-      ShapefileWriter.write(arcs, "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\reseau-apparie.shp");
-      ShapefileWriter.write(liens, "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\liens.shp");
+      String repResultat = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\R4\\";
       
-      // ShapefileWriter.write(resultatAppariement.getReseau1().getPopArcs(), "D:\\Data\\Appariement\\SDET\\Res\\SDET-ArcTopo.shp");
-      // ShapefileWriter.write(resultatAppariement.getReseau1().getPopNoeuds(), "D:\\Data\\Appariement\\SDET\\Res\\SDET-NoeudTopo.shp");
-      
-      // ShapefileWriter.write(resultatAppariement.getReseau2().getPopArcs(), "D:\\Data\\Appariement\\SDET\\Res\\BDUni-ArcTopo.shp");
-      // ShapefileWriter.write(resultatAppariement.getReseau2().getPopNoeuds(), "D:\\Data\\Appariement\\SDET\\Res\\BDUni-NoeudTopo.shp");
+      ShapefileWriter.write(arcs, repResultat + "ReseauApparie.shp");
+      ShapefileWriter.write(liens, repResultat + "Liens.shp");
+      ShapefileWriter.write(resultatAppariement.getReseau1().getPopArcs(), repResultat + "ArcTopoReseau1.shp");
+      ShapefileWriter.write(resultatAppariement.getReseau1().getPopNoeuds(), repResultat + "NoeudTopoReseau1.shp");
+      ShapefileWriter.write(resultatAppariement.getReseau2().getPopArcs(), repResultat + "ArcTopoReseau2.shp");
+      ShapefileWriter.write(resultatAppariement.getReseau2().getPopNoeuds(), repResultat + "NoeudTopoReseau2.shp");
       
       LOGGER.trace("----------------------------------------------------------");
       

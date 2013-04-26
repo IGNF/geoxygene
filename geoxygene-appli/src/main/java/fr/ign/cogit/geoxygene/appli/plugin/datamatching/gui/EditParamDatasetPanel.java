@@ -154,7 +154,7 @@ public class EditParamDatasetPanel extends JPanel {
 
     JFileChooser jFileChooser = new JFileChooser();
     // TODO : utiliser le dernier répertoire ouvert par l'interface. 
-    jFileChooser.setCurrentDirectory(new File("D:\\Data\\Appariement\\ESPON-DB"));
+    jFileChooser.setCurrentDirectory(new File("D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\D2\\EXTRAITS2-GPS"));
     
     // Crée un filtre qui n'accepte que les fichier shp ou les répertoires
     if (typeButton.equals(buttonEdgesShape1) || typeButton.equals(buttonEdgesShape2)) {
