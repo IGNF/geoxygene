@@ -15,28 +15,24 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.renderer.ClassSimpleNameListRenderer;
 
 public class AddScaleLineFrame extends JFrame implements ActionListener {
 
   /****/
   private static final long serialVersionUID = 5062507282487229799L;
-  private JButton btnOk, btnCancel, btnAdd;
+  private JButton btnOk, btnCancel;
   private JComboBox cbThemes;
   private JTextField txtTheme;
   private JList listClasses;
   private EditScaleMasterFrame frame;
 
   // internationalisation labels
-  private String frameTitle, lblOk, lblCancel, lblThemes, lblAdd, lblThemeName,
-      lblAddTheme;
+  private String frameTitle, lblOk, lblCancel, lblThemes;
 
   public AddScaleLineFrame(EditScaleMasterFrame frame) {
     super();
@@ -56,37 +52,6 @@ public class AddScaleLineFrame extends JFrame implements ActionListener {
     pLine.add(Box.createHorizontalGlue());
     pLine.setLayout(new BoxLayout(pLine, BoxLayout.X_AXIS));
 
-    // a panel to add a theme to existing themes
-    JPanel pThemes = new JPanel();
-    txtTheme = new JTextField();
-    txtTheme.setPreferredSize(new Dimension(100, 20));
-    txtTheme.setMaximumSize(new Dimension(100, 20));
-    txtTheme.setMinimumSize(new Dimension(100, 20));
-    listClasses = new JList(frame.getGeoClassesModel());
-    listClasses
-        .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    listClasses.setPreferredSize(new Dimension(120, 1000));
-    listClasses.setMaximumSize(new Dimension(120, 1000));
-    listClasses.setMinimumSize(new Dimension(120, 1000));
-    listClasses.setCellRenderer(new ClassSimpleNameListRenderer());
-    JScrollPane scroll = new JScrollPane(listClasses);
-    scroll.setPreferredSize(new Dimension(120, 120));
-    scroll.setMaximumSize(new Dimension(120, 120));
-    scroll.setMinimumSize(new Dimension(120, 120));
-    btnAdd = new JButton(lblAdd);
-    btnAdd.addActionListener(this);
-    btnAdd.setActionCommand("add");
-    pThemes.add(Box.createHorizontalGlue());
-    pThemes.add(new JLabel(this.lblThemeName + " : "));
-    pThemes.add(txtTheme);
-    pThemes.add(Box.createHorizontalGlue());
-    pThemes.add(scroll);
-    pThemes.add(Box.createHorizontalGlue());
-    pThemes.add(btnAdd);
-    pThemes.add(Box.createHorizontalGlue());
-    pThemes.setBorder(BorderFactory.createTitledBorder(lblAddTheme));
-    pThemes.setLayout(new BoxLayout(pThemes, BoxLayout.X_AXIS));
-
     // a panel for the buttons
     JPanel pButtons = new JPanel();
     btnOk = new JButton(lblOk);
@@ -101,7 +66,6 @@ public class AddScaleLineFrame extends JFrame implements ActionListener {
     pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
 
     this.getContentPane().add(pLine);
-    this.getContentPane().add(pThemes);
     this.getContentPane().add(pButtons);
     this.getContentPane().setLayout(
         new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -148,8 +112,8 @@ public class AddScaleLineFrame extends JFrame implements ActionListener {
     this.lblThemes = I18N.getString("AddScaleLineFrame.lblThemes");
     this.lblCancel = I18N.getString("MainLabels.lblCancel");
     this.lblOk = I18N.getString("MainLabels.lblOk");
-    this.lblAdd = I18N.getString("MainLabels.lblAdd");
-    this.lblThemeName = I18N.getString("AddScaleLineFrame.lblThemeName");
-    this.lblAddTheme = I18N.getString("AddScaleLineFrame.lblAddTheme");
+    I18N.getString("MainLabels.lblAdd");
+    I18N.getString("AddScaleLineFrame.lblThemeName");
+    I18N.getString("AddScaleLineFrame.lblAddTheme");
   }
 }

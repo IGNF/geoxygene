@@ -114,6 +114,7 @@ public class ScaleLine {
     this.scaleMaster = scaleMaster;
     this.line = new HashMap<Interval<Integer>, List<ScaleMasterElement>>();
     this.id = scaleMaster.newLineId();
+    this.scaleMaster.getScaleLines().add(this);
   }
 
   /**

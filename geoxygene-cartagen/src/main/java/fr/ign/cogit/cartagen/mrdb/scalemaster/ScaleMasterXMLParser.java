@@ -24,7 +24,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
@@ -131,9 +133,10 @@ public class ScaleMasterXMLParser {
         Element dbName = (Element) scaleIntervalElement.getElementsByTagName(
             "db-name").item(0);
 
-        Interval<Integer> interval = new Interval<Integer>(
-            Integer.valueOf(intervalMin.getChildNodes().item(0).getNodeValue()),
-            Integer.valueOf(intervalMax.getChildNodes().item(0).getNodeValue()));
+        Interval<Integer> interval = new Interval<Integer>(Double.valueOf(
+            intervalMin.getChildNodes().item(0).getNodeValue()).intValue(),
+            Double.valueOf(intervalMax.getChildNodes().item(0).getNodeValue())
+                .intValue());
 
         ScaleMasterElement scaleMasterElement = new ScaleMasterElement(null,
             interval, dbName.getChildNodes().item(0).getNodeValue());
@@ -306,6 +309,67 @@ public class ScaleMasterXMLParser {
           .getNodeValue()));
     }
     return ogcPropertyComparison;
+  }
+
+  public static String getPropertyComparisonElementName(
+      BinaryComparisonOpsType filter) {
+    if (filter instanceof PropertyIsEqualTo)
+      return "ogc:PropertyIsEqualTo";
+    if (filter instanceof PropertyIsGreaterThan)
+      return "ogc:PropertyIsGreaterThan";
+    if (filter instanceof PropertyIsGreaterThanOrEqualTo)
+      return "ogc:PropertyIsGreaterThanOrEqualTo";
+    if (filter instanceof PropertyIsLessThan)
+      return "ogc:PropertyIsLessThan";
+    if (filter instanceof PropertyIsLessThanOrEqualTo)
+      return "ogc:PropertyIsLessThanOrEqualTo";
+    if (filter instanceof PropertyIsNotEqualTo)
+      return "ogc:PropertyIsNotEqualTo";
+    if (filter instanceof PropertyIsNull)
+      return "ogc:PropertyIsNull";
+    if (filter instanceof PropertyIsLike)
+      return "ogc:PropertyIsLike";
+    return null;
+  }
+
+  public static String getBinaryLogicOpsElementName(BinaryLogicOpsType filter) {
+    if (filter instanceof And)
+      return "ogc:And";
+    if (filter instanceof Or)
+      return "ogc:Or";
+
+    return null;
+  }
+
+  public static void writeSimpleFilter(BinaryComparisonOpsType filter,
+      Element root, Document xmlDoc) {
+    Node n = null;
+    String elemName = getPropertyComparisonElementName(filter);
+    Element filterElem = xmlDoc.createElement(elemName);
+    root.appendChild(filterElem);
+    Element propElem = xmlDoc.createElement("ogc:PropertyName");
+    n = xmlDoc.createTextNode((filter).getPropertyName().getPropertyName());
+    propElem.appendChild(n);
+    filterElem.appendChild(propElem);
+    Element litElem = xmlDoc.createElement("ogc:Literal");
+    n = xmlDoc.createTextNode((filter).getLiteral().getValue());
+    litElem.appendChild(n);
+    filterElem.appendChild(litElem);
+  }
+
+  public static void writeComplexFilter(BinaryLogicOpsType filter,
+      Element root, Document xmlDoc) {
+    String elemName = getBinaryLogicOpsElementName(filter);
+    Element filterElem = xmlDoc.createElement(elemName);
+    root.appendChild(filterElem);
+
+    for (Filter subFilter : filter.getOps()) {
+      if (subFilter instanceof BinaryComparisonOpsType)
+        writeSimpleFilter((BinaryComparisonOpsType) subFilter, filterElem,
+            xmlDoc);
+      else if (subFilter instanceof BinaryLogicOpsType)
+        writeComplexFilter((BinaryLogicOpsType) subFilter, filterElem, xmlDoc);
+    }
   }
 
   @SuppressWarnings("unchecked")

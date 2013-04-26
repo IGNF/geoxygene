@@ -22,7 +22,8 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 /**
- * Encapsulate the Douglas&Peucker algorithm to be used inside a ScaleMaster2.0
+ * Encapsulate the Visvalingam-Whyatt algorithm to be used inside a
+ * ScaleMaster2.0
  * @author GTouya
  * 
  */

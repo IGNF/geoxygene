@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.util;
 
@@ -75,6 +75,8 @@ public class XMLUtil {
     StreamResult result = new StreamResult(file.toURI().getPath());
     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
     transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
+    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
+        "2");
 
     // Output to console for testing
     if (logger.isLoggable(Level.FINE))

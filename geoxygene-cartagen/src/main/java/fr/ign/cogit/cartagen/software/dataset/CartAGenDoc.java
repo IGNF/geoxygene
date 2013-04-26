@@ -493,7 +493,23 @@ public class CartAGenDoc {
    * @return
    */
   public CartAGenDataSet getDataset(String name1) {
-    return databases.get(name1).getDataSet();
+    if (databases.containsKey(name1))
+      return databases.get(name1).getDataSet();
+    return null;
+  }
+
+  /**
+   * Checks if there is a database that has a given {@link SourceDLM} type in
+   * the databases of {@code this}.
+   * @param source
+   * @return
+   */
+  public boolean containsSourceDLM(SourceDLM source) {
+    for (CartAGenDB db : databases.values()) {
+      if (db.getSourceDLM().equals(source))
+        return true;
+    }
+    return false;
   }
 
   /**

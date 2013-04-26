@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.util;
 
@@ -87,6 +87,48 @@ public class FileUtil {
         files.addAll(getAllFileNamesInDir(file));
       else
         files.add(file.getName());
+    }
+    return files;
+  }
+
+  /**
+   * Visits all files and directories in a given directory and gets the name of
+   * all files found.
+   * 
+   * @param dir the directory in which files are searched recursively.
+   * @param extension true if you the file extension to be included in the file
+   *          name, e.g. "road.shp".
+   * @param extensionFilter e.g. ".shp" to get only shapefiles, put null to
+   *          avoid filtering.
+   * @return
+   */
+  public static List<String> getAllFileNamesInDir(File dir, boolean extension,
+      String extensionFilter) {
+    ArrayList<String> files = new ArrayList<String>();
+    if (!dir.isDirectory()) {
+      String name = dir.getName();
+      String fileExt = name.substring(name.lastIndexOf("."));
+      if (extensionFilter != null)
+        if (!fileExt.equals(extensionFilter))
+          return files;
+      if (!extension)
+        name = name.substring(0, name.length() - fileExt.length());
+      files.add(name);
+      return files;
+    }
+    for (File file : dir.listFiles()) {
+      if (file.isDirectory())
+        files.addAll(getAllFileNamesInDir(file));
+      else {
+        String name = file.getName();
+        String fileExt = name.substring(name.lastIndexOf("."));
+        if (extensionFilter != null)
+          if (!fileExt.equals(extensionFilter))
+            continue;
+        if (!extension)
+          name = name.substring(0, name.length() - fileExt.length());
+        files.add(name);
+      }
     }
     return files;
   }
@@ -176,8 +218,8 @@ public class FileUtil {
       if (!file.getName().endsWith(".class")) {
         continue;
       }
-      if (file.getName().substring(0, file.getName().length() - 6).equals(
-          "GothicObjectDiffusion")) {
+      if (file.getName().substring(0, file.getName().length() - 6)
+          .equals("GothicObjectDiffusion")) {
         continue;
       }
 

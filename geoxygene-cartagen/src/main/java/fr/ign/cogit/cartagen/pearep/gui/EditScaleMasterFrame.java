@@ -2,6 +2,7 @@ package fr.ign.cogit.cartagen.pearep.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -13,9 +14,12 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,13 +29,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -51,14 +56,18 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
+import org.apache.log4j.Logger;
+import org.apache.xerces.dom.DocumentImpl;
 import org.jdesktop.swingx.JXColorSelectionButton;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.REPPointOfView;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMaster;
@@ -67,35 +76,39 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterEnrichment;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterXMLParser;
+import fr.ign.cogit.cartagen.pearep.PeaRepGeneralisation;
 import fr.ign.cogit.cartagen.pearep.derivation.XMLParser;
 import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.ScaleRulerPanel;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.ClassComparator;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.cartagen.util.FileUtil;
+import fr.ign.cogit.cartagen.util.Interval;
+import fr.ign.cogit.cartagen.util.XMLUtil;
 import fr.ign.cogit.cartagen.util.ontologies.OntologyUtil;
+import fr.ign.cogit.geoxygene.filter.BinaryComparisonOpsType;
+import fr.ign.cogit.geoxygene.filter.BinaryLogicOpsType;
 
 public class EditScaleMasterFrame extends JFrame implements ActionListener,
     ChangeListener, PropertyChangeListener, ItemListener, MouseListener {
 
   /****/
   private static final long serialVersionUID = 4975395667603478507L;
+  public static Logger logger = Logger.getLogger(EditScaleMasterFrame.class
+      .getName());
 
   private ScaleMaster current;
   private ScaleLine selectedLine;
   private OWLOntology ontology;
   private Set<ScaleMasterTheme> existingThemes = new HashSet<ScaleMasterTheme>();
-  private List<Class<?>> geoClasses;
   private Map<String, Color> dbHues;
   private Set<ScaleMasterEnrichment> enrichProcs;
   private Set<ScaleMasterGeneProcess> genProcs;
   private Set<ScaleMasterPreProcess> preProcs;
 
-  private JButton btnOk, btnCancel, btnApply, btnAddLine, btnAddElement,
-      btnEditElement;
+  private JButton btnOk, btnCancel, btnAddLine, btnAddElement, btnEditElement;
   private JTextField txtName;
   private JSpinner spMin, spMax;
   private JComboBox cbPtOfView, cbDbs;
@@ -105,9 +118,8 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   private Map<String, ScaleLineDisplayPanel> linePanels = new HashMap<String, ScaleLineDisplayPanel>();
 
   // internationalisation labels
-  private String frameTitle, lblCancel, lblOk, lblApply, lblAddLine,
-      lblAddElement, lblEditElement, lblName, lblPtOfView, lblMin, lblMax,
-      lblDbs;
+  private String frameTitle, lblCancel, lblOk, lblAddLine, lblAddElement,
+      lblEditElement, lblName, lblPtOfView, lblMin, lblMax, lblDbs;
 
   public EditScaleMasterFrame() throws OWLOntologyCreationException,
       ParserConfigurationException, SAXException, IOException,
@@ -115,21 +127,50 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     super();
     this.internationalisation();
     this.setTitle(this.frameTitle);
-    this.setIconImage(new ImageIcon(this.getClass().getResource(
-        "/images/icons/logo.jpg")).getImage());
+    this.setIconImage(new ImageIcon(this.getClass().getClassLoader()
+        .getResource("resources/images/icons/logo.jpg").getPath()
+        .replaceAll("%20", " ")).getImage());
     this.setSize(600, 500);
     this.setMaximumSize(new Dimension(700, 600));
     this.setOntology(OntologyUtil
         .getOntologyFromName("MapGeneralisationProcesses"));
     this.setGeoClasses();
-    this.dbHues = new HashMap<String, Color>();
-    DefaultComboBoxModel cbModel = new DefaultComboBoxModel();
-    for (CartAGenDB db : CartAGenDoc.getInstance().getDatabases().values()) {
-      this.dbHues.put(db.getSourceDLM().name(), Color.RED);
-      cbModel.addElement(db.getSourceDLM().name());
-    }
     this.current = new ScaleMaster();
     initThemes();
+
+    buildFrameComponents();
+  }
+
+  public EditScaleMasterFrame(File themeFile, boolean jar)
+      throws OWLOntologyCreationException, ParserConfigurationException,
+      SAXException, IOException, ClassNotFoundException {
+    super();
+    this.internationalisation();
+    this.setTitle(this.frameTitle);
+    this.setIconImage(new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
+        .getResource("images/icons/logo.jpg")).getImage());
+    this.setSize(600, 500);
+    this.setMaximumSize(new Dimension(700, 600));
+    if (jar)
+      try {
+        this.setGeoClassesJar();
+      } catch (URISyntaxException e) {
+        e.printStackTrace();
+      }
+    else
+      this.setGeoClasses();
+    this.current = new ScaleMaster();
+    initThemes(themeFile);
+    buildFrameComponents();
+  }
+
+  private void buildFrameComponents() {
+    this.dbHues = new HashMap<String, Color>();
+    DefaultComboBoxModel cbModel = new DefaultComboBoxModel();
+    this.dbHues.put(SourceDLM.MGCPPlusPlus.name(), Color.RED);
+    cbModel.addElement(SourceDLM.MGCPPlusPlus.name());
+    this.dbHues.put(SourceDLM.VMAP1PlusPlus.name(), Color.BLUE);
+    cbModel.addElement(SourceDLM.VMAP1PlusPlus.name());
 
     // a panel to define the scale master
     JPanel pDefinition = new JPanel();
@@ -228,11 +269,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.btnCancel = new JButton(this.lblCancel);
     this.btnCancel.addActionListener(this);
     this.btnCancel.setActionCommand("cancel");
-    this.btnApply = new JButton(this.lblApply);
-    this.btnApply.addActionListener(this);
-    this.btnApply.setActionCommand("apply");
     pButtons.add(this.btnOk);
-    pButtons.add(this.btnApply);
     pButtons.add(this.btnCancel);
     pButtons.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
@@ -245,7 +282,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     load.setActionCommand("load");
     load.addActionListener(this);
     ImageIcon iconeAide = new ImageIcon(EditScaleMasterFrame.class
-        .getResource("/images/icons/16x16/help.png").getPath()
+        .getClassLoader().getResource("images/icons/16x16/help.png").getPath()
         .replaceAll("%20", " "));
     JMenuItem aide = new JMenuItem(I18N.getString("MainLabels.lblHelp"),
         iconeAide);
@@ -258,6 +295,12 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     JMenuItem paramsMenuItem = new JMenuItem("Edition");
     paramsMenuItem.setActionCommand("params");
     paramsMenuItem.addActionListener(this);
+    JMenuItem paramsLoadMenuItem = new JMenuItem(
+        I18N.getString("MainLabels.lblLoad"));
+    paramsLoadMenuItem.setActionCommand("load-params");
+    paramsLoadMenuItem.addActionListener(this);
+    menuParams.add(paramsMenuItem);
+    menuParams.add(paramsLoadMenuItem);
     // the menu bar
     menuBar.add(menuFichier);
     menuBar.add(menuParams);
@@ -282,11 +325,22 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     if (e.getActionCommand().equals("cancel")) {
       this.setVisible(false);
     } else if (e.getActionCommand().equals("ok")) {
-      System.out.println(this.getRuler().getPixelAlign(75000));
-      // TODO apply and export to xml the current ScaleMaster
+      // apply and export to xml the current ScaleMaster
+      JFileChooser fc = new JFileChooser();
+      fc.setFileFilter(new XMLFileFilter());
+      int returnVal = fc.showSaveDialog(this);
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File xmlFile = fc.getSelectedFile();
+      try {
+        this.saveToXml(xmlFile);
+      } catch (TransformerException e1) {
+        e1.printStackTrace();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      }
       this.setVisible(false);
-    } else if (e.getActionCommand().equals("apply")) {
-      // TODO apply the lines to the current ScaleMaster
     } else if (e.getActionCommand().equals("params")) {
       EditPeaRepParamsFrame frame = new EditPeaRepParamsFrame();
       frame.setVisible(true);
@@ -322,7 +376,23 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       frame.setVisible(true);
       this.pack();
     } else if (e.getActionCommand().equals("help")) {
-      // TODO launch the frame documentation
+      // launch the frame documentation
+      if (Desktop.isDesktopSupported()) {
+        // On récupère l'instance du desktop :
+        Desktop desktop = Desktop.getDesktop();
+
+        // On vérifie que la fonction open est bien supportée :
+        if (desktop.isSupported(Desktop.Action.OPEN)) {
+
+          // Et on lance l'application associé au fichier pour l'ouvrir :
+          try {
+            desktop.open(new File("help/aide_module_IGN_v2.chm"));
+          } catch (IOException e1) {
+            e1.printStackTrace();
+          }
+        }
+      }
+
     } else if (e.getActionCommand().equals("load")) {
       // load a ScaleMaster previously stored in xml
       JFileChooser fc = new JFileChooser();
@@ -336,6 +406,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       try {
         this.current = new ScaleMasterXMLParser(xmlFile)
             .parseScaleMaster(existingThemes);
+
         // now update the frame components
         this.txtName.setText(this.current.getName());
         this.spMin.setValue(this.current.getGlobalRange().getMinimum());
@@ -356,6 +427,12 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
           jp.add(linePanel);
           this.getDisplayPanel().add(jp);
           for (ScaleMasterElement elem : elements) {
+            if (!CartAGenDoc.getInstance().containsSourceDLM(
+                SourceDLM.valueOf(elem.getDbName()))) {
+              this.dbHues.put(elem.getDbName(), Color.BLUE);
+              ((DefaultComboBoxModel) cbDbs.getModel()).addElement(elem
+                  .getDbName());
+            }
             line.addElement(elem);
             linePanel.updateElements();
             this.pack();
@@ -476,20 +553,94 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     }
   }
 
-  DefaultListModel getGeoClassesModel() {
-    DefaultListModel model = new DefaultListModel();
-    for (Class<?> classObj : this.geoClasses) {
-      model.addElement(classObj);
-    }
-    return model;
-  }
+  private void setGeoClassesJar() throws URISyntaxException {
+    this.enrichProcs = new HashSet<ScaleMasterEnrichment>();
+    this.genProcs = new HashSet<ScaleMasterGeneProcess>();
+    this.preProcs = new HashSet<ScaleMasterPreProcess>();
 
-  DefaultComboBoxModel getGeoClassesComboModel() {
-    DefaultComboBoxModel model = new DefaultComboBoxModel();
-    for (Class<?> classObj : this.geoClasses) {
-      model.addElement(classObj);
+    String jarPath = PeaRepGeneralisation.class.getProtectionDomain()
+        .getCodeSource().getLocation().toURI().getPath().substring(1);
+    String jarName = jarPath.substring(jarPath.lastIndexOf("/") + 1);
+
+    try {
+      JarInputStream jarFile = new JarInputStream(new FileInputStream(jarName));
+      JarEntry jarEntry;
+      while (true) {
+        jarEntry = jarFile.getNextJarEntry();
+        if (jarEntry == null) {
+          break;
+        }
+        if (!(jarEntry.getName().endsWith(".class")))
+          continue;
+        if (!jarEntry.getName().contains("cartagen"))
+          continue;
+        if (jarEntry.getName().substring(0, jarEntry.getName().length() - 6)
+            .equals("GothicObjectDiffusion")) {
+          continue;
+        }
+
+        // Try to create an instance of the object
+        Class<?> classObj = Class.forName(FileUtil
+            .changeFileNameToClassName(jarEntry.getName()));
+
+        if (classObj.isInterface()) {
+          continue;
+        }
+        if (classObj.isLocalClass()) {
+          continue;
+        }
+        if (classObj.isMemberClass()) {
+          continue;
+        }
+        if (classObj.isEnum()) {
+          continue;
+        }
+        if (Modifier.isAbstract(classObj.getModifiers())) {
+          continue;
+        }
+        // test if it's an available generalisation process class
+        if (ScaleMasterGeneProcess.class.isAssignableFrom(classObj)) {
+          ScaleMasterGeneProcess instance = (ScaleMasterGeneProcess) classObj
+              .getMethod("getInstance").invoke(null);
+          this.genProcs.add(instance);
+          continue;
+        }
+
+        // test if it's an enrichment process class
+        if (ScaleMasterEnrichment.class.isAssignableFrom(classObj)) {
+          ScaleMasterEnrichment instance = (ScaleMasterEnrichment) classObj
+              .getMethod("getInstance").invoke(null);
+          this.enrichProcs.add(instance);
+          continue;
+        }
+
+        // test if it's a pre-process class
+        if (ScaleMasterPreProcess.class.isAssignableFrom(classObj)) {
+          ScaleMasterPreProcess instance = (ScaleMasterPreProcess) classObj
+              .getMethod("getInstance").invoke(null);
+          this.preProcs.add(instance);
+          continue;
+        }
+      }
+      jarFile.close();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
+    } catch (SecurityException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
     }
-    return model;
+
   }
 
   /**
@@ -499,7 +650,6 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   private void setGeoClasses() {
     this.enrichProcs = new HashSet<ScaleMasterEnrichment>();
     this.genProcs = new HashSet<ScaleMasterGeneProcess>();
-    this.geoClasses = new ArrayList<Class<?>>();
     this.preProcs = new HashSet<ScaleMasterPreProcess>();
     // get the directory of the package of this class
     Package pack = this.getClass().getPackage();
@@ -553,6 +703,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
           ScaleMasterGeneProcess instance = (ScaleMasterGeneProcess) classObj
               .getMethod("getInstance").invoke(null);
           this.genProcs.add(instance);
+          continue;
         }
 
         // test if it's an enrichment process class
@@ -560,6 +711,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
           ScaleMasterEnrichment instance = (ScaleMasterEnrichment) classObj
               .getMethod("getInstance").invoke(null);
           this.enrichProcs.add(instance);
+          continue;
         }
 
         // test if it's a pre-process class
@@ -567,24 +719,8 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
           ScaleMasterPreProcess instance = (ScaleMasterPreProcess) classObj
               .getMethod("getInstance").invoke(null);
           this.preProcs.add(instance);
-        }
-
-        // test if the class inherits from IGeneObj
-        if (!IGeneObj.class.isAssignableFrom(classObj))
           continue;
-
-        // test if it is an implementation used in one of the opened DBs
-        boolean implementation = false;
-        for (CartAGenDB db : CartAGenDoc.getInstance().getDatabases().values()) {
-          if (db.getGeneObjImpl().containsClass(classObj)) {
-            implementation = true;
-            break;
-          }
         }
-        if (!implementation)
-          continue;
-
-        this.geoClasses.add(classObj);
 
       } catch (ClassNotFoundException cnfex) {
         cnfex.printStackTrace();
@@ -600,7 +736,6 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         e.printStackTrace();
       }
     }
-    Collections.sort(this.geoClasses, new ClassComparator());
   }
 
   /**
@@ -610,7 +745,6 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.frameTitle = I18N.getString("EditScaleMasterFrame.frameTitle");
     this.lblCancel = I18N.getString("MainLabels.lblCancel");
     this.lblOk = I18N.getString("MainLabels.lblOk");
-    this.lblApply = I18N.getString("MainLabels.lblApply");
     this.lblAddLine = I18N.getString("EditScaleMasterFrame.lblAddLine");
     this.lblAddElement = I18N.getString("EditScaleMasterFrame.lblAddElement");
     this.lblEditElement = I18N.getString("EditScaleMasterFrame.lblEditElement");
@@ -708,7 +842,21 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     }
     File xmlFile = fc.getSelectedFile();
     // now parse the xml file
-    XMLParser parser = new XMLParser(xmlFile);
+    initThemes(xmlFile);
+  }
+
+  /**
+   * Initialise the {@link ScaleMasterTheme} objects known by {@code this}.
+   * @throws ClassNotFoundException
+   * @throws IOException
+   * @throws SAXException
+   * @throws ParserConfigurationException
+   */
+  private void initThemes(File themesFile) throws ParserConfigurationException,
+      SAXException, IOException, ClassNotFoundException {
+
+    // now parse the xml file
+    XMLParser parser = new XMLParser(themesFile);
     this.existingThemes.addAll(parser.parseExistingThemes());
   }
 
@@ -744,5 +892,133 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         this.setVisible(false);
     }
 
+  }
+
+  /**
+   * Save the current ScaleMaster described in {@code this} frame to XML.
+   * @param file
+   * @throws IOException
+   * @throws TransformerException
+   */
+  private void saveToXml(File file) throws TransformerException, IOException {
+    Node n = null;
+    // ********************************************
+    // CREATION DU DOCUMENT XML
+    // Document (Xerces implementation only).
+    DocumentImpl xmlDoc = new DocumentImpl();
+    // Root element.
+    Element root = xmlDoc.createElement("pearep-scalemaster");
+
+    // WRITE GLOBAL INFO
+    Element nameElem = xmlDoc.createElement("name");
+    n = xmlDoc.createTextNode(this.txtName.getText());
+    nameElem.appendChild(n);
+    root.appendChild(nameElem);
+    Element povElem = xmlDoc.createElement("point-of-view");
+    n = xmlDoc.createTextNode(this.cbPtOfView.getSelectedItem().toString());
+    povElem.appendChild(n);
+    root.appendChild(povElem);
+    Element globalElem = xmlDoc.createElement("global-range");
+    root.appendChild(globalElem);
+    Element globalMinElem = xmlDoc.createElement("interval-min");
+    n = xmlDoc.createTextNode(String.valueOf(this.spMin.getValue()));
+    globalMinElem.appendChild(n);
+    globalElem.appendChild(globalMinElem);
+    Element globalMaxElem = xmlDoc.createElement("interval-max");
+    n = xmlDoc.createTextNode(String.valueOf(this.spMax.getValue()));
+    globalMaxElem.appendChild(n);
+    globalElem.appendChild(globalMaxElem);
+
+    // WRITE A LINE
+    for (ScaleLine line : current.getScaleLines()) {
+      Element lineElem = xmlDoc.createElement("scale-line");
+      lineElem.setAttribute("theme", line.getTheme().getName());
+      root.appendChild(lineElem);
+      List<Interval<Integer>> intervals = new ArrayList<Interval<Integer>>(line
+          .getLine().keySet());
+      Collections.sort(intervals);
+      for (Interval<Integer> interval : intervals) {
+        Element intervalElem = xmlDoc.createElement("scale-interval");
+        lineElem.appendChild(intervalElem);
+        Element minElem = xmlDoc.createElement("interval-min");
+        n = xmlDoc.createTextNode(String.valueOf(interval.getMinimum()));
+        minElem.appendChild(n);
+        intervalElem.appendChild(minElem);
+        Element maxElem = xmlDoc.createElement("interval-max");
+        n = xmlDoc.createTextNode(String.valueOf(interval.getMaximum()));
+        maxElem.appendChild(n);
+        intervalElem.appendChild(maxElem);
+        // get the element
+        ScaleMasterElement elem = line.getLine().get(interval).get(0);
+        Element dbNameElem = xmlDoc.createElement("db-name");
+        n = xmlDoc.createTextNode(elem.getDbName());
+        dbNameElem.appendChild(n);
+        intervalElem.appendChild(dbNameElem);
+
+        // the OGC filter for attribute selection
+        if (elem.getOgcFilter() != null) {
+          Element attrElem = xmlDoc.createElement("attribute-selection");
+          attrElem.setAttribute("priority",
+              String.valueOf(elem.getFilterPriority().ordinal()));
+          intervalElem.appendChild(attrElem);
+          if (elem.getOgcFilter() instanceof BinaryComparisonOpsType) {
+            // simple case
+            ScaleMasterXMLParser
+                .writeSimpleFilter(
+                    (BinaryComparisonOpsType) elem.getOgcFilter(), attrElem,
+                    xmlDoc);
+          } else if (elem.getOgcFilter() instanceof BinaryLogicOpsType) {
+            // case with multiple queries
+            ScaleMasterXMLParser.writeComplexFilter(
+                (BinaryLogicOpsType) elem.getOgcFilter(), attrElem, xmlDoc);
+          }
+        }
+
+        // the generalisation processes if exist
+        if (elem.getProcessesToApply().size() > 0) {
+          Element procsElem = xmlDoc.createElement("generalisation-processes");
+          intervalElem.appendChild(procsElem);
+          for (int i = 0; i < elem.getProcessesToApply().size(); i++) {
+            String proc = elem.getProcessesToApply().get(i);
+            Element procElem = xmlDoc.createElement("process");
+            procElem.setAttribute("priority",
+                String.valueOf(elem.getProcessPriorities().get(i).ordinal()));
+            procsElem.appendChild(procElem);
+            Element procNameElem = xmlDoc.createElement("name");
+            n = xmlDoc.createTextNode(proc);
+            procNameElem.appendChild(n);
+            procElem.appendChild(procNameElem);
+            if (elem.getParameters().get(i) != null) {
+              Element paramsElem = xmlDoc.createElement("params");
+              procElem.appendChild(paramsElem);
+              for (String param : elem.getParameters().get(i).keySet()) {
+                Element paramElem = xmlDoc.createElement("parameter");
+                paramElem.setAttribute("name", param);
+                Object value = elem.getParameters().get(i).get(param);
+                paramElem
+                    .setAttribute("type", value.getClass().getSimpleName());
+                n = xmlDoc.createTextNode(value.toString());
+                paramElem.appendChild(n);
+                paramsElem.appendChild(paramElem);
+              }
+            }
+          }
+        }
+
+        // the enrichments if exist
+        if (elem.getEnrichments().size() > 0) {
+          for (ScaleMasterEnrichment enrich : elem.getEnrichments()) {
+            Element enrichElem = xmlDoc.createElement("enrichment");
+            n = xmlDoc.createTextNode(enrich.getEnrichmentName());
+            enrichElem.appendChild(n);
+            intervalElem.appendChild(enrichElem);
+          }
+        }
+      }
+    }
+
+    // ECRITURE DU FICHIER
+    xmlDoc.appendChild(root);
+    XMLUtil.writeDocumentToXml(xmlDoc, file);
   }
 }

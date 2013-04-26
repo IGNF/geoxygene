@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.util;
 
@@ -15,7 +15,8 @@ package fr.ign.cogit.cartagen.util;
  * 
  * @param <T>
  */
-public class Interval<T extends Number> implements Cloneable {
+public class Interval<T extends Number> implements Cloneable,
+    Comparable<Interval<T>> {
 
   /**
    * Bound rules values.
@@ -365,8 +366,8 @@ public class Interval<T extends Number> implements Cloneable {
     } else if (destination == null) {
       throw new IllegalArgumentException("Destination interval cannot be null.");
     }
-    return Interval.project(number.doubleValue(), source.minimum(), source
-        .maximum(), destination.minimum(), destination.maximum());
+    return Interval.project(number.doubleValue(), source.minimum(),
+        source.maximum(), destination.minimum(), destination.maximum());
   }
 
   /**
@@ -398,6 +399,12 @@ public class Interval<T extends Number> implements Cloneable {
     double range2 = max2 - min2;
     double value2 = min2 + (range2 * (value1 - min1)) / range1;
     return value2;
+  }
+
+  @Override
+  public int compareTo(Interval<T> o) {
+    // compare the minimum values
+    return this.getMinimum().intValue() - o.getMinimum().intValue();
   }
 
 }
