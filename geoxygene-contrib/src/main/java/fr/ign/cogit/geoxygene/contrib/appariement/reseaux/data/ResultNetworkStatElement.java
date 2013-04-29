@@ -40,9 +40,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "totalNetworkElementNumber",
+    "totalNetworkElementLength",
     "correctMatchingNetworkElementNumber",
+    "correctedMatchingNetworkElementLength",
     "noMatchingNetworkElementNumber",
-    "doubtfulNetworkElementNumber"
+    "noMatchingNetworkElementLength",
+    "doubtfulNetworkElementNumber",
+    "doubtfulNetworkElementLength",
+    "networkElement"
 })
 @XmlRootElement(name = "ResultNetworkElement")
 public class ResultNetworkStatElement {

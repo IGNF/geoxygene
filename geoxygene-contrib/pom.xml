@@ -55,7 +55,7 @@
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
 		</dependency>
-		
+
 		<!-- GeOxygene -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -82,8 +82,15 @@
 			<classifier>COGIT</classifier>
 		</dependency>
 
+		<!-- xmlUnit -->
+		<dependency>
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
+			<version>1.4</version>
+		</dependency>
+
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
 			<id>opengeo</id>

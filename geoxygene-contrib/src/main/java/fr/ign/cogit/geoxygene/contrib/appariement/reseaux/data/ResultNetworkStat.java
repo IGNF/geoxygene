@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
     "statsEdgesOfNetwork1",
     "statsNodesOfNetwork1",
     "statsEdgesOfNetwork2",
-    "nodesEvaluationComp"
+    "statsNodesOfNetwork2"
 })
 @XmlRootElement(name = "ResultStatNetwork")
 public class ResultNetworkStat {
