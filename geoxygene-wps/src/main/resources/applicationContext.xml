@@ -5,20 +5,16 @@
 	<!-- ========================================================================== -->
 	<!-- 	WPS Service -->
 	<!-- ========================================================================== -->
-	<!-- Hello World example -->
-	<bean id="helloWPS" class="org.geoserver.wps.gs.HelloWPS" />
-
 	<!-- CarteTopo WPS  -->
 	<bean id="CreateFaces" class="fr.ign.cogit.geoxygene.wps.contrib.cartetopo.CreateFaces" />
 	
 	<!-- DataMatching WPS -->
 	<bean id="networkDataMatchingProcess" class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.NetworkDataMatchingProcess" />
-	<bean id="ImportMatchedNetworkProcess" class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.ImportMatchedNetworkProcess" />
 
 	<!-- ========================================================================== -->
 	<!-- 	The PPIO -->
 	<!-- ========================================================================== -->
-	<bean id="networkDataMatchingResultPPIO" 
-			class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.ppio.NetworkDataMatchingResultPPIO" />
+	<bean id="resultNetworkDataMatchingPPIO" 
+			class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.ppio.ResultNetworkDataMatchingPPIO" />
 
 </beans>

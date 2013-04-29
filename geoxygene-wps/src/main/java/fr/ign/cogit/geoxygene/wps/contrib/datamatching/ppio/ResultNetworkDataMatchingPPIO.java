@@ -37,15 +37,15 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.ResultatAppariemen
  * 
  * @version 1.6
  */
-public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
+public class ResultNetworkDataMatchingPPIO extends XStreamPPIO {
 
   /** LOGGER. */
-  private final static Logger LOGGER = Logger.getLogger(NetworkDataMatchingResultPPIO.class.getName());
+  private final static Logger LOGGER = Logger.getLogger(ResultNetworkDataMatchingPPIO.class.getName());
 
   /**
    * Default constructor.
    */
-  protected NetworkDataMatchingResultPPIO() {
+  protected ResultNetworkDataMatchingPPIO() {
     super(ResultNetworkDataMatching.class);
   }
 
@@ -65,14 +65,14 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
     xstream.marshal(obj, writer);*/
     
     // Get XML format for resultatAppariement
-    ResultatAppariementParser resultatAppariementParser = new ResultatAppariementParser();
+    /*ResultatAppariementParser resultatAppariementParser = new ResultatAppariementParser();
     String result = resultatAppariementParser.generateXMLResponse(((ResultNetworkDataMatching)obj));
     
     // Write out xml
     SaxWriter writer = new SaxWriter();
     writer.setContentHandler(handler);
     XStream xstream = new XStream();
-    xstream.marshal(result, writer);
+    xstream.marshal(result, writer);*/
     
     // Get XML format for resultatAppariement
     /*ResultatAppariementParser resultatAppariementParser = new ResultatAppariementParser();
