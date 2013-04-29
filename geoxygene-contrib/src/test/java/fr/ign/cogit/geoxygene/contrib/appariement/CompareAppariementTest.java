@@ -31,7 +31,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  * </ul> 
  *
  */
-public class CompareAppariement {
+public class CompareAppariementTest {
   
   /**
    * On compare avec le même jeu de données, l'ancien appariement et le nouveau.<br/>
@@ -42,7 +42,7 @@ public class CompareAppariement {
   @Test
   public void testFiltreNoeudsSimples() {
     
-    URL url = CompareAppariement.class.getResource("/data/");
+    URL url = CompareAppariementTest.class.getResource("/data/");
     
     // Réseaux
     IPopulation<IFeature> reseau1 = ShapefileReader.read(url.getPath() + "reseau1.shp");
@@ -50,6 +50,8 @@ public class CompareAppariement {
     
     // Résultats de l'appariement avec l'ancienne structure des objets
     ParametresApp paramApp = new ParametresApp();
+    paramApp.attributOrientation1 = null;
+    paramApp.attributOrientation2 = null;
     paramApp.debugBilanSurObjetsGeo = false;
     paramApp.populationsArcs1.add(reseau1);
     paramApp.populationsArcs2.add(reseau2);
@@ -87,7 +89,7 @@ public class CompareAppariement {
   @Test
   public void testDirectionReseau2() {
     
-    URL url = CompareAppariement.class.getResource("/data/");
+    URL url = CompareAppariementTest.class.getResource("/data/");
     
     // Réseaux
     IPopulation<IFeature> reseau1 = ShapefileReader.read(url.getPath() + "reseau1.shp");
@@ -99,7 +101,6 @@ public class CompareAppariement {
     paramApp.debugBilanSurObjetsGeo = false;
     paramApp.populationsArcs1.add(reseau1);
     paramApp.populationsArcs2.add(reseau2);
-    
     paramApp.populationsArcsAvecOrientationDouble = false;
     paramApp.attributOrientation2 = "SENS";
     Map<Object, Integer> orientationMap2 = new HashMap<Object, Integer>();
@@ -114,6 +115,9 @@ public class CompareAppariement {
     // ------------------------------------------------------------------------------------------
     // Résultats de l'appariement avec la nouvelle structure des objets
     ParamNetworkDataMatching param = new ParamNetworkDataMatching();
+    ParamDirectionNetworkDataMatching paramDirection1 = new ParamDirectionNetworkDataMatching();
+    paramDirection1.setAttributOrientation("orientation");
+    param.setParamDirectionNetwork1(paramDirection1);
     ParamDirectionNetworkDataMatching paramDirection2 = new ParamDirectionNetworkDataMatching();
     paramDirection2.setOrientationDouble(false);
     paramDirection2.setAttributOrientation("SENS");
@@ -250,25 +254,24 @@ public class CompareAppariement {
     if (newParam.getParamDirectionNetwork1().getOrientationDouble() != newParam.getParamDirectionNetwork2().getOrientationDouble()) {
       
       // Direction reseau 1
-      // Assert.assertTrue("Comparaison de populationsArcsAvecOrientationDouble r1 : " + oldParam.populationsArcsAvecOrientationDouble + " ? " + newParam.getParamDirectionNetwork1().getOrientationDouble(), 
-      //  oldParam.populationsArcsAvecOrientationDouble == newParam.getParamDirectionNetwork1().getOrientationDouble());
-      // Assert.assertTrue("Comparaison de attributOrientation1 : " + oldParam.attributOrientation1 + " ? " + newParam.getParamDirectionNetwork1().getAttributOrientation(), 
-      //  oldParam.attributOrientation1 == newParam.getParamDirectionNetwork1().getAttributOrientation());
+      Assert.assertTrue("Comparaison de attributOrientation1 : " + oldParam.attributOrientation1 + " ? " + newParam.getParamDirectionNetwork1().getAttributOrientation(), 
+        oldParam.attributOrientation1 == newParam.getParamDirectionNetwork1().getAttributOrientation());
       // + table de hachage
     
       // Direction reseau 2
-      Assert.assertTrue("Comparaison de populationsArcsAvecOrientationDouble r2 : " + oldParam.populationsArcsAvecOrientationDouble + " ? " + newParam.getParamDirectionNetwork2().getOrientationDouble(), 
-          oldParam.populationsArcsAvecOrientationDouble == newParam.getParamDirectionNetwork2().getOrientationDouble());
       Assert.assertTrue("Comparaison de attributOrientation2 : " + oldParam.attributOrientation2 + " ? " + newParam.getParamDirectionNetwork2().getAttributOrientation(), 
-          oldParam.attributOrientation2 == newParam.getParamDirectionNetwork2().getAttributOrientation());
+        oldParam.attributOrientation2 == newParam.getParamDirectionNetwork2().getAttributOrientation());
       // + table de hachage
       
     } else {
+      
+      // Un des 2 reseaux n'est pas en double sens
+      
       // Direction reseau 1
       Assert.assertTrue("Comparaison de populationsArcsAvecOrientationDouble r1 : " + oldParam.populationsArcsAvecOrientationDouble + " ? " + newParam.getParamDirectionNetwork1().getOrientationDouble(), 
         oldParam.populationsArcsAvecOrientationDouble == newParam.getParamDirectionNetwork1().getOrientationDouble());
-      //Assert.assertTrue("Comparaison de attributOrientation1 : " + oldParam.attributOrientation1 + " ? " + newParam.getParamDirectionNetwork1().getAttributOrientation(), 
-      //  oldParam.attributOrientation1 == newParam.getParamDirectionNetwork1().getAttributOrientation());
+      Assert.assertTrue("Comparaison de attributOrientation1 : " + oldParam.attributOrientation1 + " ? " + newParam.getParamDirectionNetwork1().getAttributOrientation(), 
+        oldParam.attributOrientation1 == newParam.getParamDirectionNetwork1().getAttributOrientation());
       // + table de hachage
     
       // Direction reseau 2

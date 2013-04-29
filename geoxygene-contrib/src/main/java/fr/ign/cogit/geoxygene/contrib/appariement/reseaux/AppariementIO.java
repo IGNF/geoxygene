@@ -310,7 +310,7 @@ public final class AppariementIO {
               : paramApp.attributOrientation2;
           Map<Object, Integer> orientationMap = (ref) ? paramApp.orientationMap1
               : paramApp.orientationMap2;
-          if (attribute == null || attribute.isEmpty()) {
+          if (attribute.isEmpty()) {
             arc.setOrientation(1);
           } else {
             Object value = element.getAttribute(attribute);
