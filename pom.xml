@@ -205,8 +205,6 @@
 	</contributors>
 
 	<build>
- 		<finalName>maven-integration-testing</finalName>
-        
         <filters>
             <filter>${main.basedir}/profiles/${build.profile.id}/config.properties</filter>
         </filters>
@@ -275,6 +273,7 @@
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.1.2</version>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
