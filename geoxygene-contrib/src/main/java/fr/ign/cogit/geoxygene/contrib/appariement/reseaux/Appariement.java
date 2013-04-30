@@ -603,8 +603,7 @@ public abstract class Appariement {
       Iterator<Noeud> itNoeudsComp = noeudsCompCandidats.iterator();
       while (itNoeudsComp.hasNext()) {
         NoeudApp noeudComp = (NoeudApp) itNoeudsComp.next();
-        int correspondance = noeudRef.correspCommunicants(noeudComp,
-            liensPreAppAA);
+        int correspondance = noeudRef.correspCommunicants(noeudComp, liensPreAppAA);
         if (correspondance == 1) {
           complets.add(noeudComp);
         }
