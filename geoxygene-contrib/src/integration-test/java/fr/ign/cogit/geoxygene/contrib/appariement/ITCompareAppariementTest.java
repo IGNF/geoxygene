@@ -17,6 +17,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
@@ -132,6 +133,67 @@ public class ITCompareAppariementTest {
     datasetNetwork1.addPopulationsArcs(reseau1);
     DatasetNetworkDataMatching datasetNetwork2 = new DatasetNetworkDataMatching();
     datasetNetwork2.addPopulationsArcs(reseau2);
+    NetworkDataMatchingProcess networkDataMatchingProcess = new NetworkDataMatchingProcess(param, datasetNetwork1, datasetNetwork2, false);
+    ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
+    EnsembleDeLiens edl2 = resultatAppariement2.getLinkDataSet();
+    
+    // -----------------------------------------------------------------------------------------------------------------------
+    // On peut déjà comparer les paramètres
+    compareParam(paramApp, param);
+    
+    // -----------------------------------------------------------------------------------------------------------------------
+    // On compare : bigre comment faire !!!
+    compareResultLien(edl1, edl2);
+    compareCarteTopo(cartesTopo, resultatAppariement2);  
+  
+  }
+  
+  /**
+   * On compare avec le même jeu de données, l'ancien appariement et le nouveau.<br/>
+   * - Les paramètres par défaut.<br/>
+   * - les 2 reseaux ont une topologie planaire 
+   * - Sans recalage <br/>
+   * 
+   */
+  @Test
+  public void testGraphePlanaire() {
+    
+    URL url = ITCompareAppariementTest.class.getResource("/data/");
+    
+    // Réseaux
+    IPopulation<IFeature> reseau1 = ShapefileReader.read(url.getPath() + "reseau1.shp");
+    IPopulation<IFeature> reseau2 = ShapefileReader.read(url.getPath() + "reseau2.shp");
+    
+    // ------------------------------------------------------------------------------------------
+    // Résultats de l'appariement avec l'ancienne structure des objets
+    ParametresApp paramApp = new ParametresApp();
+    paramApp.attributOrientation1 = null;
+    paramApp.attributOrientation2 = null;
+    paramApp.debugBilanSurObjetsGeo = false;
+    paramApp.populationsArcs1.add(reseau1);
+    paramApp.populationsArcs2.add(reseau2);
+    paramApp.topologieGraphePlanaire1 = true;
+    paramApp.topologieGraphePlanaire2 = true;
+    
+    List<ReseauApp> cartesTopo = new ArrayList<ReseauApp>();
+    EnsembleDeLiens edl1 = AppariementIO.appariementDeJeuxGeo(paramApp, cartesTopo);
+    
+    // ------------------------------------------------------------------------------------------
+    // Résultats de l'appariement avec la nouvelle structure des objets
+    ParamNetworkDataMatching param = new ParamNetworkDataMatching();
+    
+    DatasetNetworkDataMatching datasetNetwork1 = new DatasetNetworkDataMatching();
+    datasetNetwork1.addPopulationsArcs(reseau1);
+    DatasetNetworkDataMatching datasetNetwork2 = new DatasetNetworkDataMatching();
+    datasetNetwork2.addPopulationsArcs(reseau2);
+    
+    ParamTopologyTreatmentNetwork paramTopo1 = new ParamTopologyTreatmentNetwork();
+    paramTopo1.setGraphePlanaire(true);
+    param.setParamTopoNetwork1(paramTopo1);
+    ParamTopologyTreatmentNetwork paramTopo2 = new ParamTopologyTreatmentNetwork();
+    paramTopo2.setGraphePlanaire(true);
+    param.setParamTopoNetwork2(paramTopo2);
+    
     NetworkDataMatchingProcess networkDataMatchingProcess = new NetworkDataMatchingProcess(param, datasetNetwork1, datasetNetwork2, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
     EnsembleDeLiens edl2 = resultatAppariement2.getLinkDataSet();

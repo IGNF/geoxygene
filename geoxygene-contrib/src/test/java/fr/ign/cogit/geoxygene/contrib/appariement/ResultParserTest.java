@@ -14,67 +14,70 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStatElementInterface;
 
 /**
- * Tests sur le parsing des classes de résultats en XML.
- *    - Test 1 : quelques chiffres quelconques
- *    - Test 2 : classe vide
+ * Tests sur le parsing des classes de résultats en XML. - Test 1 : quelques
+ * chiffres quelconques - Test 2 : classe vide
  */
 public class ResultParserTest extends XMLTestCase {
-  
+
   /** LOGGER. */
   private final static Logger LOGGER = Logger.getLogger(ResultParserTest.class.getName());
-  
+
   @Test
-  public void test1() throws Exception {
-    
-      JAXBContext context = JAXBContext.newInstance(ResultNetworkStat.class);
-      Marshaller m = context.createMarshaller();
-      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-      
-      ResultNetworkStat resnet = new ResultNetworkStat();
-      // EDGES_OF_NETWORK_1
-      ResultNetworkStatElement res = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_OF_NETWORK_1);
-      res.setTotalNetworkElementNumber(621);
-      res.setTotalNetworkElementLength(5432.33);
-      res.setCorrectMatchingNetworkElementNumber(463);
-      res.setCorrectedMatchingNetworkElementLength(102.36);
-      res.setNoMatchingNetworkElementNumber(149);
-      res.setNoMatchingNetworkElementLength(40.002);
-      res.setDoubtfulNetworkElementNumber(9);
-      res.setDoubtfulNetworkElementLength(0.55);
-      resnet.setStatsEdgesOfNetwork1(res);
-      // EDGES_OF_NETWORK_2
-      res = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_OF_NETWORK_2);
-      res.setTotalNetworkElementNumber(1621);
-      res.setTotalNetworkElementLength(15432.33);
-      res.setCorrectMatchingNetworkElementNumber(1463);
-      res.setCorrectedMatchingNetworkElementLength(1102.36);
-      res.setNoMatchingNetworkElementNumber(1149);
-      res.setNoMatchingNetworkElementLength(140.002);
-      res.setDoubtfulNetworkElementNumber(19);
-      res.setDoubtfulNetworkElementLength(10.55);
-      resnet.setStatsEdgesOfNetwork2(res);
-      // NODES_OF_NETWORK_1
-      res = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_OF_NETWORK_1);
-      res.setTotalNetworkElementNumber(21);
-      res.setCorrectMatchingNetworkElementNumber(63);
-      res.setNoMatchingNetworkElementNumber(49);
-      res.setDoubtfulNetworkElementNumber(0);
-      resnet.setStatsNodesOfNetwork1(res);
-      // NODES_OF_NETWORK_2
-      res = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_OF_NETWORK_2);
-      res.setTotalNetworkElementNumber(12);
-      res.setCorrectMatchingNetworkElementNumber(24);
-      res.setNoMatchingNetworkElementNumber(36);
-      res.setDoubtfulNetworkElementNumber(48);
-      resnet.setStatsNodesOfNetwork2(res);
-      
-      // 
-      java.io.StringWriter xmlResult = new StringWriter();
-      m.marshal(resnet, xmlResult);
-      LOGGER.debug(xmlResult.toString());
-      
-      String xmlATrouver = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+  public void testResultNetworkStat1() throws Exception {
+
+    JAXBContext context = JAXBContext.newInstance(ResultNetworkStat.class);
+    Marshaller m = context.createMarshaller();
+    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+
+    ResultNetworkStat resnet = new ResultNetworkStat();
+    // EDGES_OF_NETWORK_1
+    ResultNetworkStatElement res = new ResultNetworkStatElement(
+        ResultNetworkStatElementInterface.EDGES_OF_NETWORK_1);
+    res.setTotalNetworkElementNumber(621);
+    res.setTotalNetworkElementLength(5432.33);
+    res.setCorrectMatchingNetworkElementNumber(463);
+    res.setCorrectedMatchingNetworkElementLength(102.36);
+    res.setNoMatchingNetworkElementNumber(149);
+    res.setNoMatchingNetworkElementLength(40.002);
+    res.setDoubtfulNetworkElementNumber(9);
+    res.setDoubtfulNetworkElementLength(0.55);
+    resnet.setStatsEdgesOfNetwork1(res);
+    // EDGES_OF_NETWORK_2
+    res = new ResultNetworkStatElement(
+        ResultNetworkStatElementInterface.EDGES_OF_NETWORK_2);
+    res.setTotalNetworkElementNumber(1621);
+    res.setTotalNetworkElementLength(15432.33);
+    res.setCorrectMatchingNetworkElementNumber(1463);
+    res.setCorrectedMatchingNetworkElementLength(1102.36);
+    res.setNoMatchingNetworkElementNumber(1149);
+    res.setNoMatchingNetworkElementLength(140.002);
+    res.setDoubtfulNetworkElementNumber(19);
+    res.setDoubtfulNetworkElementLength(10.55);
+    resnet.setStatsEdgesOfNetwork2(res);
+    // NODES_OF_NETWORK_1
+    res = new ResultNetworkStatElement(
+        ResultNetworkStatElementInterface.NODES_OF_NETWORK_1);
+    res.setTotalNetworkElementNumber(21);
+    res.setCorrectMatchingNetworkElementNumber(63);
+    res.setNoMatchingNetworkElementNumber(49);
+    res.setDoubtfulNetworkElementNumber(0);
+    resnet.setStatsNodesOfNetwork1(res);
+    // NODES_OF_NETWORK_2
+    res = new ResultNetworkStatElement(
+        ResultNetworkStatElementInterface.NODES_OF_NETWORK_2);
+    res.setTotalNetworkElementNumber(12);
+    res.setCorrectMatchingNetworkElementNumber(24);
+    res.setNoMatchingNetworkElementNumber(36);
+    res.setDoubtfulNetworkElementNumber(48);
+    resnet.setStatsNodesOfNetwork2(res);
+
+    //
+    java.io.StringWriter xmlResult = new StringWriter();
+    m.marshal(resnet, xmlResult);
+    LOGGER.debug(xmlResult.toString());
+
+    String xmlATrouver = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
         + "<ResultStatNetwork>\n"
         + "    <StatsEdgesOfNetwork1 NetworkElement=\"EdgesOfNetwork1\">\n"
         + "        <TotalNetworkElementNumber>621</TotalNetworkElementNumber>\n"
@@ -115,31 +118,30 @@ public class ResultParserTest extends XMLTestCase {
         + "        <NoMatchingNetworkElementLength>0.0</NoMatchingNetworkElementLength>\n"
         + "        <DoubtfulMatchingNumber>48</DoubtfulMatchingNumber>\n"
         + "        <DoubtfulNetworkElementLength>0.0</DoubtfulNetworkElementLength>\n"
-        + "    </StatsNodesOfNetwork2>\n"
-        + "</ResultStatNetwork>\n";
-      LOGGER.debug(xmlATrouver);
-      
-      // Compare 2 xmls
-      assertXMLEqual(xmlResult.toString(), xmlATrouver);
-   
+        + "    </StatsNodesOfNetwork2>\n" + "</ResultStatNetwork>\n";
+    LOGGER.debug(xmlATrouver);
+
+    // Compare 2 xmls
+    assertXMLEqual(xmlResult.toString(), xmlATrouver);
+
   }
-  
+
   @Test
-  public void test2() throws Exception {
-    
-      JAXBContext context = JAXBContext.newInstance(ResultNetworkStat.class);
-      Marshaller m = context.createMarshaller();
-      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-      
-      ResultNetworkStat resnet = new ResultNetworkStat();
-      
-      // 
-      java.io.StringWriter xmlResult = new StringWriter();
-      m.marshal(resnet, xmlResult);
-      LOGGER.debug(xmlResult.toString());
-      
-      String xmlATrouver = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+  public void testResultNetworkStat2() throws Exception {
+
+    JAXBContext context = JAXBContext.newInstance(ResultNetworkStat.class);
+    Marshaller m = context.createMarshaller();
+    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+
+    ResultNetworkStat resnet = new ResultNetworkStat();
+
+    //
+    java.io.StringWriter xmlResult = new StringWriter();
+    m.marshal(resnet, xmlResult);
+    LOGGER.debug(xmlResult.toString());
+
+    String xmlATrouver = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
         + "<ResultStatNetwork>\n"
         + "    <StatsEdgesOfNetwork1 NetworkElement=\"EdgesOfNetwork1\">\n"
         + "        <TotalNetworkElementNumber>0</TotalNetworkElementNumber>\n"
@@ -180,13 +182,28 @@ public class ResultParserTest extends XMLTestCase {
         + "        <NoMatchingNetworkElementLength>0.0</NoMatchingNetworkElementLength>\n"
         + "        <DoubtfulMatchingNumber>0</DoubtfulMatchingNumber>\n"
         + "        <DoubtfulNetworkElementLength>0.0</DoubtfulNetworkElementLength>\n"
-        + "    </StatsNodesOfNetwork2>\n"
-        + "</ResultStatNetwork>\n";
-      LOGGER.debug(xmlATrouver);
-      
-      // Compare 2 xmls
-      assertXMLEqual(xmlResult.toString(), xmlATrouver);
-   
+        + "    </StatsNodesOfNetwork2>\n" + "</ResultStatNetwork>\n";
+    LOGGER.debug(xmlATrouver);
+
+    // Compare 2 xmls
+    assertXMLEqual(xmlResult.toString(), xmlATrouver);
+
   }
+
+  /*@Test
+  public void testResultNetworkDataMatching1() throws Exception {
+
+    JAXBContext context = JAXBContext.newInstance(ResultNetworkDataMatching.class);
+    Marshaller m = context.createMarshaller();
+    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+
+    ResultNetworkDataMatching resnet = new ResultNetworkDataMatching();
+
+    //
+    java.io.StringWriter xmlResult = new StringWriter();
+    m.marshal(resnet, xmlResult);
+    LOGGER.debug(xmlResult.toString());
+  }*/
 
 }
