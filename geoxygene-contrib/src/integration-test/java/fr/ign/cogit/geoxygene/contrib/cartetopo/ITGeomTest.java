@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import org.postgis.PGgeometry;
 import org.postgresql.PGConnection;
 
-public class GeomTest {
+public class ITGeomTest {
   
   
   @Test

@@ -31,7 +31,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  * </ul> 
  *
  */
-public class CompareAppariementTest {
+public class ITCompareAppariementTest {
   
   /**
    * On compare avec le même jeu de données, l'ancien appariement et le nouveau.<br/>
@@ -42,7 +42,7 @@ public class CompareAppariementTest {
   @Test
   public void testFiltreNoeudsSimples() {
     
-    URL url = CompareAppariementTest.class.getResource("/data/");
+    URL url = ITCompareAppariementTest.class.getResource("/data/");
     
     // Réseaux
     IPopulation<IFeature> reseau1 = ShapefileReader.read(url.getPath() + "reseau1.shp");
@@ -89,7 +89,7 @@ public class CompareAppariementTest {
   @Test
   public void testDirectionReseau2() {
     
-    URL url = CompareAppariementTest.class.getResource("/data/");
+    URL url = ITCompareAppariementTest.class.getResource("/data/");
     
     // Réseaux
     IPopulation<IFeature> reseau1 = ShapefileReader.read(url.getPath() + "reseau1.shp");
