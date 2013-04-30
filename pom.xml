@@ -51,43 +51,43 @@
 	</scm>
 
 	<!-- =========================================================== -->
-	<!--  Properties                                                 -->
-	<!--                                                             -->
+	<!-- Properties -->
+	<!-- -->
 	<!-- =========================================================== -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
+
 		<jts.version>1.13</jts.version>
 		<log4j.version>1.2.16</log4j.version>
 		<geotools.version>8.4</geotools.version>
-		
+
 		<build.profile.id>cogit</build.profile.id>
 		<skip.unit.tests>false</skip.unit.tests>
-        <skip.integration.tests>true</skip.integration.tests>
-        <main.basedir>${project.basedir}</main.basedir>
+		<skip.integration.tests>true</skip.integration.tests>
+		<main.basedir>${project.basedir}</main.basedir>
 	</properties>
-	
+
 	<!-- =========================================================== -->
-	<!--  Profil                                                     -->
-	<!--                                                             -->
+	<!-- Profil -->
+	<!-- -->
 	<!-- =========================================================== -->
 	<profiles>
 		<profile>
-            <id>cogit</id>
-        </profile>
-        <profile>
-            <id>integration-test</id>
-            <properties>
-                <!-- Used to locate the profile specific configuration file. -->
-                <build.profile.id>integration-test</build.profile.id>
-                <!-- Only integration tests are run. -->
-                <skip.integration.tests>false</skip.integration.tests>
-                <skip.unit.tests>true</skip.unit.tests>
-            </properties>
-        </profile>
-    </profiles>
-	
-	
+			<id>cogit</id>
+		</profile>
+		<profile>
+			<id>integration-test</id>
+			<properties>
+				<!-- Used to locate the profile specific configuration file. -->
+				<build.profile.id>integration-test</build.profile.id>
+				<!-- Only integration tests are run. -->
+				<skip.integration.tests>false</skip.integration.tests>
+				<skip.unit.tests>true</skip.unit.tests>
+			</properties>
+		</profile>
+	</profiles>
+
+
 	<!-- =========================================================== -->
 	<!-- Developers and Contributors -->
 	<!-- =========================================================== -->
@@ -205,10 +205,10 @@
 	</contributors>
 
 	<build>
-        <filters>
-            <filter>${main.basedir}/profiles/${build.profile.id}/config.properties</filter>
-        </filters>
-		
+		<filters>
+			<filter>${main.basedir}/profiles/${build.profile.id}/config.properties</filter>
+		</filters>
+
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<resources>
@@ -234,6 +234,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.12</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>2.14.1</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -273,7 +278,7 @@
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.1.2</version>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -288,63 +293,61 @@
 					</archive>
 				</configuration>
 			</plugin>
-			
+
 			<!-- Used to add source directories to our build. -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <!-- States that the plugin's add-test-source goal is executed at generate-test-sources phase. -->
-                    <execution>
-                        <id>add-integration-test-sources</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Configures the source directory of integration tests. -->
-                            <sources>
-                                <source>src/integration-test/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<!-- States that the plugin's add-test-source goal is executed at generate-test-sources 
+						phase. -->
+					<execution>
+						<id>add-integration-test-sources</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<!-- Configures the source directory of integration tests. -->
+							<sources>
+								<source>src/integration-test/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-                    <!-- Skips unit tests if the value of skip.unit.tests property is true -->
-                    <skipTests>${skip.unit.tests}</skipTests>
-                    <!-- Excludes integration tests when unit tests are run.-->
-                    <excludes>
-                        <exclude>**/IT*.java</exclude>
-                    </excludes>
-                </configuration>
+					<!-- Skips unit tests if the value of skip.unit.tests property is true -->
+					<skipTests>${skip.unit.tests}</skipTests>
+					<!-- Excludes integration tests when unit tests are run. -->
+					<excludes>
+						<exclude>**/IT*.java</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
-			
+
 			<!-- Used for integration tests -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.12</version>
-                <executions>
-                    <!-- States that both integration-test and verify goals of the Failsafe Maven plugin are executed. -->
-                    <execution>
-                        <id>integration-tests</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Skips integration tests if the value of skip.integration.tests property is true -->
-                            <skipTests>${skip.integration.tests}</skipTests>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>integration-tests</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<skipTests>${skip.integration.tests}</skipTests>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
 			<plugin>
 				<groupId>de.akquinet.maven</groupId>
@@ -484,7 +487,7 @@
 			<id>Central</id>
 			<name>Central Repository</name>
 			<url>http://repo1.maven.org/maven2</url>
-		</repository>		
+		</repository>
 		<repository>
 			<id>osgeo-geotools</id>
 			<name>Open Source Geospatial Foundation Repository</name>
@@ -538,9 +541,9 @@
 
 
 	<!-- ==================================================================== -->
-	<!--  Centraliser la gestion des versions des dépendances                 --> 
-	<!--  sans ajouter de dépendances héritées par tous les projets fils      -->
-	<!--  =================================================================== -->
+	<!-- Centraliser la gestion des versions des dépendances -->
+	<!-- sans ajouter de dépendances héritées par tous les projets fils -->
+	<!-- =================================================================== -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

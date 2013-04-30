@@ -35,6 +35,7 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
@@ -64,7 +65,7 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
    * @return Results ResultatAppariement
    */
   @DescribeResult(name = "popApp", description = "Network Matched")
-  public ResultNetworkDataMatching execute(
+  public ResultNetworkStat execute(
       @DescribeParameter(name = "popRef", description = "Less detailed network") SimpleFeatureCollection popRef,
       @DescribeParameter(name = "popComp", description = "Comparison network") SimpleFeatureCollection popComp) {
       
@@ -172,7 +173,8 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
       throw new ProcessException("Error during network data matching process");
     }*/
     
-    return null;
+    ResultNetworkStat res = new ResultNetworkStat();
+    return res;
     
   }
   
