@@ -62,28 +62,36 @@ import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCommunicationStation;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCommunicationStationPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPControlTowerPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCranePoint;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCropLandArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPDryDockArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFlarePipePoint;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUse;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUseType;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPGrassLandArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLighthousePoint;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPMarshArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPMineralPile;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPNonCommunicationTowerPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPowerStationArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPowerStationPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPProcessingFacility;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPumpingStation;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPQuarryArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPReservoirArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSeaPlaneBasePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSettlement;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSettlementPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSettlingPond;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSmockestackPoint;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSoilSurfaceArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSquare;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPStadium;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPStorageDepot;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSwampArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPThicketArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPTidalWaterArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPTrainingWallArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPVehicleLot;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPWoodedArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirport;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayArea;
@@ -181,7 +189,7 @@ public class MGCPLoader extends ShapeFileLoader {
       }
       if (((listLayer.size() == 0) || (listLayer.contains("ABH080")))
           && (FileUtil.getNamedFileInDir(directory, "ABH080.shp") != null)) {
-        this.loadPolygonClassUnionMulti(
+        this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "ABH080.shp")
                 .getAbsolutePath(), MGCPLakeArea.class,
             CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
@@ -189,7 +197,7 @@ public class MGCPLoader extends ShapeFileLoader {
       }
       if (((listLayer.size() == 0) || (listLayer.contains("ABH140")))
           && (FileUtil.getNamedFileInDir(directory, "ABH140.shp") != null)) {
-        this.loadPolygonClassUnionMulti(
+        this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "ABH140.shp")
                 .getAbsolutePath(), MGCPRiverArea.class,
             CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
@@ -502,7 +510,19 @@ public class MGCPLoader extends ShapeFileLoader {
             PeaRepDbType.MGCPPlusPlus);
       }
 
-      // built-up areas loading
+      // landcover loading
+
+      // quarry areas
+      if (((listLayer.size() == 0) || (listLayer.contains("AAA012")))
+          && (FileUtil.getNamedFileInDir(directory, "AAA012.shp") != null)) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAA012.shp")
+                .getAbsolutePath(), MGCPQuarryArea.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // built-up areas
       if (((listLayer.size() == 0) || (listLayer.contains("AAL020")))
           && (FileUtil.getNamedFileInDir(directory, "AAL020.shp") != null)) {
         this.loadPolygonClass(
@@ -512,137 +532,98 @@ public class MGCPLoader extends ShapeFileLoader {
             ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
       }
 
-      // landcover loading
-      // quarry areas
-      if (((listLayer.size() == 0) || (listLayer.contains("AAA012")))
-          && (FileUtil.getNamedFileInDir(directory, "AAA012.shp") != null)) {
-        this.loadLandUseClass(
-            FileUtil.getNamedFileInDir(directory, "AAA012.shp")
-                .getAbsolutePath(), MGCPLandUse.class,
-            CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
-            MGCPLandUseType.QUARRY);
+      // tidal water areas
+      if (((listLayer.size() == 0) || (listLayer.contains("ABA040")))
+          && (FileUtil.getNamedFileInDir(directory, "ABA040.shp") != null)) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "ABA040.shp")
+                .getAbsolutePath(), MGCPTidalWaterArea.class,
+            CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
       }
 
-      // built-up areas
-      if (((listLayer.size() == 0) || (listLayer.contains("AAL020")))
-          && (FileUtil.getNamedFileInDir(directory, "AAL020.shp") != null)) {
-        this.loadLandUseClass(
-            FileUtil.getNamedFileInDir(directory, "AAL020.shp")
-                .getAbsolutePath(), MGCPLandUse.class,
-            CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
-            MGCPLandUseType.BUILT_UP);
-      }
-
-      // lake areas
-      if (((listLayer.size() == 0) || (listLayer.contains("ABH080")))
-          && (FileUtil.getNamedFileInDir(directory, "ABH080.shp") != null)) {
-        this.loadLandUseClass(
-            FileUtil.getNamedFileInDir(directory, "ABH080.shp")
-                .getAbsolutePath(), MGCPLandUse.class,
-            CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
-            MGCPLandUseType.LAKE);
-      }
+      // lake areas (dejà chargé)
 
       // reservoir areas
       if (((listLayer.size() == 0) || (listLayer.contains("ABH130")))
           && (FileUtil.getNamedFileInDir(directory, "ABH130.shp") != null)) {
-        this.loadLandUseClass(
+        this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "ABH130.shp")
-                .getAbsolutePath(), MGCPLandUse.class,
-            CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
-            MGCPLandUseType.RESERVOIR);
+                .getAbsolutePath(), MGCPReservoirArea.class,
+            CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
       }
 
-      // river areas
-      if (((listLayer.size() == 0) || (listLayer.contains("ABH140")))
-          && (FileUtil.getNamedFileInDir(directory, "ABH140.shp") != null)) {
-        this.loadLandUseClass(
-            FileUtil.getNamedFileInDir(directory, "ABH140.shp")
-                .getAbsolutePath(), MGCPLandUse.class,
-            CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
-            MGCPLandUseType.RIVER);
-      }
+      // river areas (déjà chargé)
 
       // soil surface areas
       if (((listLayer.size() == 0) || (listLayer.contains("ADA010")))
           && (FileUtil.getNamedFileInDir(directory, "ADA010.shp") != null)) {
-        this.loadLandUseClass(
+        this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "ADA010.shp")
-                .getAbsolutePath(), MGCPLandUse.class,
+                .getAbsolutePath(), MGCPSoilSurfaceArea.class,
             CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
-            MGCPLandUseType.SOIL_SURFACE);
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
       }
 
       // crop areas
       if (((listLayer.size() == 0) || (listLayer.contains("AEA010")))
           && (FileUtil.getNamedFileInDir(directory, "AEA010.shp") != null)) {
-        this.loadLandUseClass(
+        this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AEA010.shp")
-                .getAbsolutePath(), MGCPLandUse.class,
+                .getAbsolutePath(), MGCPCropLandArea.class,
             CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
-            MGCPLandUseType.CROP);
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
       }
 
       // grassland areas
       if (((listLayer.size() == 0) || (listLayer.contains("AEB010")))
           && (FileUtil.getNamedFileInDir(directory, "AEB010.shp") != null)) {
-        this.loadLandUseClass(
+        this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AEB010.shp")
-                .getAbsolutePath(), MGCPLandUse.class,
+                .getAbsolutePath(), MGCPGrassLandArea.class,
             CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
-            MGCPLandUseType.GRASSLAND);
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
       }
 
       // thicket areas
       if (((listLayer.size() == 0) || (listLayer.contains("AEB020")))
           && (FileUtil.getNamedFileInDir(directory, "AEB020.shp") != null)) {
-        this.loadLandUseClass(
+        this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AEB020.shp")
-                .getAbsolutePath(), MGCPLandUse.class,
+                .getAbsolutePath(), MGCPThicketArea.class,
             CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
-            MGCPLandUseType.THICKET);
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
       }
 
       // wooded areas
       if (((listLayer.size() == 0) || (listLayer.contains("AEC030")))
           && (FileUtil.getNamedFileInDir(directory, "AEC030.shp") != null)) {
-        this.loadLandUseClass(
+        this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AEC030.shp")
-                .getAbsolutePath(), MGCPLandUse.class,
+                .getAbsolutePath(), MGCPWoodedArea.class,
             CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
-            MGCPLandUseType.WOODED);
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
       }
 
       // marsh areas
       if (((listLayer.size() == 0) || (listLayer.contains("AED010")))
           && (FileUtil.getNamedFileInDir(directory, "AED010.shp") != null)) {
-        this.loadLandUseClass(
+        this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AED010.shp")
-                .getAbsolutePath(), MGCPLandUse.class,
+                .getAbsolutePath(), MGCPMarshArea.class,
             CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
-            MGCPLandUseType.MARSH);
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
       }
 
       // swamp areas
       if (((listLayer.size() == 0) || (listLayer.contains("AED020")))
           && (FileUtil.getNamedFileInDir(directory, "AED020.shp") != null)) {
-        this.loadLandUseClass(
+        this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AED020.shp")
-                .getAbsolutePath(), MGCPLandUse.class,
+                .getAbsolutePath(), MGCPSwampArea.class,
             CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
-            MGCPLandUseType.SWAMP);
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
       }
 
       // wood lines

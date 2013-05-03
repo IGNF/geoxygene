@@ -15,7 +15,9 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -45,8 +47,10 @@ import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.util.CRSConversion;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
@@ -61,6 +65,7 @@ public class ShapeFileExport {
   private CartAGenDataSet dataset;
   private ScaleMaster scaleMaster;
   private int finalScale;
+  private List<String> listThemesNotExport;
 
   public ShapeFileExport(File exportDir, CartAGenDataSet dataset,
       ScaleMaster scaleMaster, int finalScale) {
@@ -104,6 +109,37 @@ public class ShapeFileExport {
   }
 
   /**
+   * Export the generalised landuse data of the dataset as shapefiles (one
+   * shapefile per landuse class).
+   */
+  public void exportLanduseToShapefiles(
+      Map<IFeatureCollection<IFeature>, String> mapLanduseToExport) {
+
+    Iterator<IFeatureCollection<IFeature>> itFtCol = mapLanduseToExport
+        .keySet().iterator();
+    while (itFtCol.hasNext()) {
+      IFeatureCollection<IFeature> ftCol = itFtCol.next();
+      String ftColName = mapLanduseToExport.get(ftCol) + "_landuse";
+      // String ftColName = mapLanduseToExport.get(ftCol);
+      String shapeFileName = this.scaleMaster.getPointOfView().toString() + "_"
+          + this.finalScale + "_" + ftColName;
+      if (ShapeFileExport.logger.isLoggable(Level.FINE)) {
+        ShapeFileExport.logger.fine(shapeFileName);
+        ShapeFileExport.logger.fine(this.exportDir.getPath());
+      }
+      // write the shapefile
+      String projEpsg = ((PeaRepDB) this.dataset.getCartAGenDB()).getProjEpsg();
+      IPopulation<IFeature> popExport = new Population<IFeature>();
+      for (IFeature ft : ftCol) {
+        popExport.add(ft);
+      }
+      ShapeFileExport.write(popExport, IPolygon.class, this.exportDir.getPath()
+          + "\\" + shapeFileName, projEpsg, "4326");
+
+    }
+  }
+
+  /**
    * Export the generalised data of the dataset as shapefiles (one shapefile per
    * scale master line).
    */
@@ -112,6 +148,18 @@ public class ShapeFileExport {
     for (ScaleLine line : this.scaleMaster.getScaleLines()) {
       // one shapefile is exported per line
       // first get the name of the theme to create the name of the shapefile
+
+      // check if the theme is a landuse class
+      boolean notExport = false;
+      for (String landuseType : listThemesNotExport) {
+        if (line.getTheme().toString().equals(landuseType)) {
+          notExport = true;
+        }
+      }
+      // if it is a landuse class, it will be exported as a landuse class
+      if (notExport == true)
+        continue;
+
       String shapeFileName = this.scaleMaster.getPointOfView().toString() + "_"
           + this.finalScale + "_" + line.getTheme().getName();
       if (ShapeFileExport.logger.isLoggable(Level.FINE)) {
@@ -297,6 +345,14 @@ public class ShapeFileExport {
     vect.add(attrNames);
     vect.add(specs);
     return vect;
+  }
+
+  public List<String> getListThemesNotExport() {
+    return listThemesNotExport;
+  }
+
+  public void setListThemesNotExport(List<String> listThemesNotExport) {
+    this.listThemesNotExport = listThemesNotExport;
   }
 
 }
