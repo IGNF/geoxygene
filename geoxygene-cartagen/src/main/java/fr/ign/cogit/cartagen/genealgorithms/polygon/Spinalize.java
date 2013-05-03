@@ -24,6 +24,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopoFactory;
@@ -33,7 +34,6 @@ import fr.ign.cogit.geoxygene.contrib.delaunay.TriangulationJTS;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.generalisation.GaussianFilter;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
@@ -274,12 +274,37 @@ public class Spinalize {
       }
     }
 
+    IFeatureCollection<IFeature> ftColSkeletons = new FT_FeatureCollection<IFeature>();
     // Gaussian smoothing of selected arcs of the skeleton
     for (Arc arc : carteTopoCheminsClean.getPopArcs()) {
-      ILineString lsCheminClean = GaussianFilter.gaussianFilter(
-          new GM_LineString(arc.getCoord()), 30, 1);
-      skeletonLines.add(lsCheminClean);
+      // ILineString lsCheminClean = Filtering.DouglasPeuckerLineString(
+      // GaussianFilter.gaussianFilter(new GM_LineString(arc.getCoord()), 30,
+      // 1), 20);
+      // skeletonLines.add(lsCheminClean);
+      ftColSkeletons.add(arc);
     }
+
+    for (IPolygon poly : listPoly) {
+      IGeometry intersection = poly.intersection(ftColSkeletons
+          .getGeomAggregate());
+      if (intersection.isLineString()) {
+        ILineString ls = (ILineString) intersection;
+        // ILineString lsCheminClean = Filtering.DouglasPeuckerLineString(
+        // GaussianFilter.gaussianFilter(ls, 30, 1), 20);
+        // skeletonLines.add(lsCheminClean);
+        skeletonLines.add(ls);
+      }
+      if (intersection.isMultiCurve()) {
+        IMultiCurve<ILineString> multiLs = (IMultiCurve<ILineString>) intersection;
+        for (ILineString ls : multiLs.getList()) {
+          // ILineString lsCheminClean = Filtering.DouglasPeuckerLineString(
+          // GaussianFilter.gaussianFilter(ls, 30, 1), 20);
+          // skeletonLines.add(lsCheminClean);
+          skeletonLines.add(ls);
+        }
+      }
+    }
+
     return skeletonLines;
   }
 
@@ -337,8 +362,15 @@ public class Spinalize {
       IDirectPosition dpStart, IDirectPosition dpEnd,
       IFeatureCollection<IFeature> ftColVoronoi) {
 
+    IFeatureCollection<IFeature> ftColVoronoiClean = new FT_FeatureCollection<IFeature>();
+    for (IFeature ft : ftColVoronoi) {
+      if (!(ft.getGeom().coord().size() == 1)) {
+        ftColVoronoiClean.add(ft);
+      }
+    }
+
     // Generate the topology of the Voronoi diagram
-    CarteTopo carteTopo = CarteTopoFactory.newCarteTopo(ftColVoronoi);
+    CarteTopo carteTopo = CarteTopoFactory.newCarteTopo(ftColVoronoiClean);
     carteTopo.filtreNoeudsSimples();
     carteTopo.filtreNoeudsIsoles();
 
