@@ -15,6 +15,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.Box;
@@ -32,6 +37,7 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory;
+import fr.ign.cogit.cartagen.genealgorithms.landuse.LanduseSimplification;
 import fr.ign.cogit.cartagen.pearep.derivation.ScaleMasterScheduler;
 import fr.ign.cogit.cartagen.pearep.importexport.MGCPLoader;
 import fr.ign.cogit.cartagen.pearep.importexport.ShapeFileExport;
@@ -41,6 +47,7 @@ import fr.ign.cogit.cartagen.pearep.importexport.VMAP1PlusPlusLoader;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP2Loader;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPSchemaFactory;
+import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPSchemaFactory;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
@@ -48,6 +55,8 @@ import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolsUtil;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 
 /**
  * The class that contains the main application for generalisation in PEA REP
@@ -241,6 +250,7 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
 
       // *******************************************************
 
+      boolean vmap1ppDb = false;
       boolean vmapDb = false;
       boolean mgcpDb = false;
 
@@ -362,6 +372,10 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       // *******************************************************
       // set the SchemaFactory to the VMAP one
 
+      if (vmap1ppDb == true) {
+        CartagenApplication.getInstance().setCreationFactory(
+            new VMAP1PPSchemaFactory());
+      }
       if (vmapDb == true) {
         CartagenApplication.getInstance().setCreationFactory(
             new VMAPSchemaFactory());
@@ -378,7 +392,7 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       } catch (Exception e) {
         JOptionPane.showMessageDialog(null, e.getStackTrace());
       }
-      this.setProgress(70);
+      this.setProgress(60);
       // Sleep for up to one second.
       try {
         if (this.main.isStop()) {
@@ -386,6 +400,33 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
         }
         Thread.sleep(500);
       } catch (InterruptedException ignore) {
+      }
+
+      // *******************************************************
+      // trigger landuse generalisation
+      // get themes to be only exported by the landuse simplification process
+      List<String> listThemeLanduse = new ArrayList<String>();
+      Map<IFeatureCollection<IFeature>, String> mapFtColOut = new HashMap<IFeatureCollection<IFeature>, String>();
+      if (!(scheduler.getMapLanduseParamIn().isEmpty())) {
+        Map<IFeatureCollection<IFeature>, Map<String, Double>> mapFtColIn = scheduler
+            .getMapLanduseParamIn();
+        double dpFiltering = scheduler.getLanduseDpFilter();
+        GeneralisationTask.logger
+            .info("Début de la généralisation de l'occupation du sol");
+        try {
+          mapFtColOut = LanduseSimplification.landuseSimplify(mapFtColIn,
+              dpFiltering);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        Iterator<IFeatureCollection<IFeature>> itFtCol = mapFtColIn.keySet()
+            .iterator();
+        while (itFtCol.hasNext()) {
+          String nomTheme = mapFtColIn.get(itFtCol.next()).keySet().iterator()
+              .next();
+          listThemeLanduse.add(nomTheme);
+        }
+        this.setProgress(80);
       }
 
       // *******************************************************
@@ -397,7 +438,14 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       ShapeFileExport exportTool = new ShapeFileExport(new File(exportPath),
           doc.getCurrentDataset(), scheduler.getScaleMaster(),
           scheduler.getScale());
+      exportTool.setListThemesNotExport(listThemeLanduse);
       exportTool.exportToShapefiles();
+
+      // export generalised landuse
+      if (!mapFtColOut.isEmpty()) {
+        exportTool.exportLanduseToShapefiles(mapFtColOut);
+      }
+
       this.setProgress(100);
       // Sleep for up to one second.
       try {
