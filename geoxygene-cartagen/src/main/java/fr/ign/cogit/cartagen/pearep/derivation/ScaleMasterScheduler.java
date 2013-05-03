@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +42,10 @@ import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanar;
 import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.filter.BinaryLogicOpsType;
 import fr.ign.cogit.geoxygene.filter.Filter;
@@ -73,6 +78,9 @@ public class ScaleMasterScheduler {
    * in the root.
    */
   private String exportFolder;
+
+  private Map<IFeatureCollection<IFeature>, Map<String, Double>> mapLanduseParamIn = new HashMap<IFeatureCollection<IFeature>, Map<String, Double>>();
+  private Double landuseDpFilter;
 
   /**
    * Theme that can be used in the scalemasters.
@@ -224,9 +232,11 @@ public class ScaleMasterScheduler {
     this.availableProcesses.add(CollapseToPointProcess.getInstance());
     this.availableProcesses.add(RunwaySimplificationProcess.getInstance());
     this.availableProcesses.add(SkeletonizeProcess.getInstance());
+    this.availableProcesses.add(SpinalizeProcess.getInstance());
     this.availableProcesses.add(BridgeCollapseProcess.getInstance());
     this.availableProcesses.add(VisvalingamWhyattProcess.getInstance());
     this.availableProcesses.add(RaposoSimplifProcess.getInstance());
+    this.availableProcesses.add(LanduseSimplificationProcess.getInstance());
     for (ScaleMasterGeneProcess proc : availableProcesses)
       proc.setScaleMaster(scaleMaster);
   }
@@ -271,6 +281,9 @@ public class ScaleMasterScheduler {
 
   public void generalise() throws Exception {
 
+    Map<IFeatureCollection<IFeature>, Map<String, Double>> mapLanduseParameters = new HashMap<IFeatureCollection<IFeature>, Map<String, Double>>();
+    Double landuseDpFilter = 0.0;
+
     // loop on the lines of the ScaleMaster
     for (ScaleLine line : this.scaleMaster.getScaleLines()) {
       // get the element corresponding to final scale
@@ -290,8 +303,6 @@ public class ScaleMasterScheduler {
           .contains(elem.getDbName()))
         continue;
       // get the dataset related to the element
-      System.out.println(elem.getDbName());
-      System.out.println(CartAGenDoc.getInstance().getDatabases());
       CartAGenDataSet dataset = CartAGenDoc.getInstance().getDataset(
           elem.getDbName());
 
@@ -316,7 +327,7 @@ public class ScaleMasterScheduler {
       }
 
       // orders the processes and filter to apply
-      List<OrderedProcess> procList = this.orderProcesses(elem);
+      List<OrderedProcess> procList = this.orderProcesses(elem, features);
 
       // apply the processes in the priority order
       for (OrderedProcess orderedProc : procList) {
@@ -333,6 +344,9 @@ public class ScaleMasterScheduler {
         // apply the process
         // get the generalisation process name
         String procName = (String) orderedProc.getProcess();
+
+        // if (!(procName.equals("LanduseSimplify"))) {
+
         // get the generalisation process named procName
         ScaleMasterGeneProcess process = this.getProcessFromName(procName);
         // get the parameters
@@ -360,10 +374,35 @@ public class ScaleMasterScheduler {
               features.add(objPop);
           }
         } catch (Exception e) {
-          JOptionPane.showMessageDialog(null, e.getStackTrace(), e.getClass()
-              .getSimpleName(), JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(null, e.getStackTrace());
         }
+        //
+        // } else if (procName.equals("LanduseSimplify")) {
+        // // get the parameters
+        // Map<String, Object> parameters = elem.getParameters().get(
+        // elem.getProcessesToApply().indexOf(procName));
+        // String name = line.getTheme().toString();
+        // double areaMin = (Double) parameters.get("min_area");
+        // if (!(parameters.get("dp_filtering") == null)) {
+        // double dpFiltering = (Double) parameters.get("dp_filtering");
+        // landuseDpFilter = dpFiltering;
+        // }
+        // Map<String, Double> mapNameArea = new HashMap<String, Double>();
+        // mapNameArea.put(name, areaMin);
+        // IFeatureCollection<IFeature> ftCol = new
+        // FT_FeatureCollection<IFeature>();
+        // for (Object obj : features) {
+        // IFeature ft = (IFeature) obj;
+        // ftCol.add(ft);
+        // }
+        // mapLanduseParameters.put(ftCol, mapNameArea);
+        // }
       }
+      // if (!(mapLanduseParameters.isEmpty())) {
+      // setMapLanduseParamIn(mapLanduseParameters);
+      // setLanduseDpFilter(landuseDpFilter);
+      // this.logger.fine(elem.toString());
+      // }
     }
   }
 
@@ -391,10 +430,14 @@ public class ScaleMasterScheduler {
 
   /**
    * Order the processes and the filter to apply according to their priority.
+   * Remove landuse simplification processes from the list, and fill the landuse
+   * simplification process map when needed.
+   * @param features
    * @param elem
    * @return
    */
-  private List<OrderedProcess> orderProcesses(ScaleMasterElement elem) {
+  private List<OrderedProcess> orderProcesses(ScaleMasterElement elem,
+      IPopulation<IGeneObj> features) {
     List<OrderedProcess> procList = new ArrayList<OrderedProcess>();
     if (elem.getOgcFilter() != null) {
       procList.add(new OrderedProcess(elem.getFilterPriority(), elem
@@ -406,7 +449,53 @@ public class ScaleMasterScheduler {
     }
     Collections.sort(procList);
     Collections.reverse(procList);
+
+    // Remove landuse simplification processes from the list and fill the
+    // landuse simplification process map
+    Iterator<OrderedProcess> itProcess = procList.iterator();
+    while (itProcess.hasNext()) {
+      OrderedProcess orderedProc = itProcess.next();
+      if (!orderedProc.isFilter()) {
+        String procName = (String) orderedProc.getProcess();
+        if (procName.equals("LanduseSimplify")) {
+          fillLanduseSimplificationProcess(elem, orderedProc, features);
+          itProcess.remove();
+        }
+      }
+    }
+
     return procList;
+  }
+
+  /**
+   * Fill the landuse simplification process map.
+   * @param elem
+   * @param orderedProc
+   * @param features
+   */
+  private void fillLanduseSimplificationProcess(ScaleMasterElement elem,
+      OrderedProcess orderedProc, IPopulation<IGeneObj> features) {
+
+    // get the parameters
+    String procName = (String) orderedProc.getProcess();
+    Map<String, Object> parameters = elem.getParameters().get(
+        elem.getProcessesToApply().indexOf(procName));
+    String name = elem.getScaleLine().getTheme().toString();
+    double areaMin = (Double) parameters.get("min_area");
+    if (!(parameters.get("dp_filtering") == null)) {
+      double dpFiltering = (Double) parameters.get("dp_filtering");
+      this.landuseDpFilter = dpFiltering;
+    }
+    Map<String, Double> mapNameArea = new HashMap<String, Double>();
+    mapNameArea.put(name, areaMin);
+    IFeatureCollection<IFeature> ftCol = new FT_FeatureCollection<IFeature>();
+    for (Object obj : features) {
+      IFeature ft = (IFeature) obj;
+      ftCol.add(ft);
+    }
+    if (!(ftCol.isEmpty() && mapNameArea.isEmpty())) {
+      this.mapLanduseParamIn.put(ftCol, mapNameArea);
+    }
   }
 
   private String filterToString(Filter filter) {
@@ -478,4 +567,22 @@ public class ScaleMasterScheduler {
   public void setListLayersVmap1PlusPlus(List<String> listLayersVmap1PlusPlus) {
     this.listLayersVmap1PlusPlus = listLayersVmap1PlusPlus;
   }
+
+  public Map<IFeatureCollection<IFeature>, Map<String, Double>> getMapLanduseParamIn() {
+    return mapLanduseParamIn;
+  }
+
+  public void setMapLanduseParamIn(
+      Map<IFeatureCollection<IFeature>, Map<String, Double>> mapLanduseParamIn) {
+    this.mapLanduseParamIn = mapLanduseParamIn;
+  }
+
+  public Double getLanduseDpFilter() {
+    return landuseDpFilter;
+  }
+
+  public void setLanduseDpFilter(Double landuseDpFilter) {
+    this.landuseDpFilter = landuseDpFilter;
+  }
+
 }
