@@ -22,7 +22,7 @@ public class StyleEditionFrameTest {
     public void testBasicStyles() {
         
         LOGGER.info("Try to load BasicStyles.xml ");
-        StyledLayerDescriptor sld = StyledLayerDescriptor.unmarshall(StyleEditionFrame.class.getResourceAsStream("/sld/BasicStyles.xml"));
+        StyledLayerDescriptor sld = StyledLayerDescriptor.unmarshall(StyledLayerDescriptor.class.getResourceAsStream("BasicStyles.xml"));
         LOGGER.info("BasicStyles.xml loaded");
 
         Assert.assertTrue("Number of layers different to 5 : " + sld.getLayers().size(), 

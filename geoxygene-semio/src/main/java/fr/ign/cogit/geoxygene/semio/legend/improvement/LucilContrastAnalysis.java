@@ -168,7 +168,7 @@ public class LucilContrastAnalysis implements ContrastAnalysis {
    */
   public static void changerTeinteLUCIL(SymbolisedFeatureCollection familleCarto){
       ColorReferenceSystem crs = ColorReferenceSystem.unmarshall(
-        ColorReferenceSystem.class.getResource("/color/ColorReferenceSystem.xml").getPath());
+              ColorReferenceSystem.class.getResourceAsStream("ColorReferenceSystem.xml"));
       // On parcours l'ensemble des relations faisant intervenir la famille
       List<SemanticRelation> relations = familleCarto.getLegend().getRelations();
       

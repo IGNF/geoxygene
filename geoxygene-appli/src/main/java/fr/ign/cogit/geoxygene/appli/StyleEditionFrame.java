@@ -106,13 +106,11 @@ import fr.ign.cogit.geoxygene.style.TextSymbolizer;
  * 
  * @author Charlotte Hoarau
  */
-public class StyleEditionFrame extends JFrame implements ActionListener,
-    MouseListener, ChangeListener, ItemListener {
+public class StyleEditionFrame extends JFrame implements ActionListener, MouseListener, ChangeListener, ItemListener {
 
   private static final long serialVersionUID = 1L;
 
-  private static Logger logger = Logger.getLogger(StyleEditionFrame.class
-      .getName());
+  private static Logger logger = Logger.getLogger(StyleEditionFrame.class.getName());
 
   // Main GeOxygene application elements
   private LayerLegendPanel layerLegendPanel;
@@ -1311,9 +1309,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
    * @param args
    */
   public static void main(String[] args) {
-    StyledLayerDescriptor sld = StyledLayerDescriptor
-        .unmarshall(StyleEditionFrame.class
-            .getResource("/sld/BasicStyles.xml").getPath()); //$NON-NLS-1$
+    StyledLayerDescriptor sld = StyledLayerDescriptor.unmarshall(StyledLayerDescriptor.class.getResourceAsStream("BasicStyles.xml")); //$NON-NLS-1$
     GeOxygeneApplication geoxAppli = new GeOxygeneApplication();
     ProjectFrame frame = geoxAppli.getFrame().newProjectFrame();
     LayerFactory factory = new LayerFactory(frame.getSld());
@@ -1467,8 +1463,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       this.strokePanel2.setPreferredSize(new Dimension(420, 250));
 
       StyledLayerDescriptor sld = StyledLayerDescriptor
-          .unmarshall(StyleEditionFrame.class.getResource(
-              "/sld/BasicStyles.xml").getPath()); //$NON-NLS-1$
+          .unmarshall(StyledLayerDescriptor.class.getResourceAsStream("BasicStyles.xml")); //$NON-NLS-1$
       this.layer.getStyles().add(sld.getLayer("Basic Line").getStyles().get(0)); //$NON-NLS-1$
 
       this.strokeColor2 = ((LineSymbolizer) this.layer.getStyles().get(1)
