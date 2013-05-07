@@ -102,7 +102,7 @@ public abstract class AbstractLayerFactory implements LayerFactory {
   @Override
   public Style createStyle() {
     UserStyle style = new UserStyle();
-    style.setName("Style créé pour le layer " + this.name);//$NON-NLS-1$
+    style.setName(this.name);//$NON-NLS-1$
     if (this.borderStrokeColor != null) {
       AbstractLayerFactory.logger.debug("Creating border Feature Type Style");
       style.getFeatureTypeStyles().add(this.createBorderFeatureTypeStyle());

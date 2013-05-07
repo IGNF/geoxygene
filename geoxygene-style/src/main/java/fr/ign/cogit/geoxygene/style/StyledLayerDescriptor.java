@@ -594,7 +594,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
     // if(this.getLayer(layerName)==null){
     Layer layer = new NamedLayer(this, layerName);
     UserStyle style = new UserStyle();
-    style.setName("Style créé pour le layer " + layerName);//$NON-NLS-1$
+    style.setName(layerName);//$NON-NLS-1$
     FeatureTypeStyle fts = new FeatureTypeStyle();
     fts.getRules().add(
         this.createRule(geometryType, strokeColor, fillColor, opacity, opacity,
@@ -749,7 +749,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
       Color strokeColor, Color fillColor) {
     Layer layer = new NamedLayer(this, layerName);
     UserStyle style = new UserStyle();
-    style.setName("Style créé pour le layer " + layerName); //$NON-NLS-1$
+    style.setName(layerName); //$NON-NLS-1$
     FeatureTypeStyle fts = new FeatureTypeStyle();
     Rule rule = new Rule();
     Stroke stroke = new Stroke();

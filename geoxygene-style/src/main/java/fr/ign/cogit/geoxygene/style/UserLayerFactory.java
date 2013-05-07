@@ -18,7 +18,7 @@ public class UserLayerFactory extends AbstractLayerFactory implements LayerFacto
   }
   @Override
   public Layer createLayer() {
-    AbstractLayerFactory.logger.info("Create User Layer " + this.name);
+    // AbstractLayerFactory.logger.info("Create User Layer " + this.name);
     Layer layer = new UserLayer(this.collection, this.name);
     layer.getStyles().add(this.createStyle());
     return layer;
