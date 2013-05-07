@@ -85,48 +85,64 @@ import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "name",
-// "description",
+    // "description",
     // "environmentVariables",
     // "useSLDLibrary",
     "layers" })
 @XmlRootElement(name = "StyledLayerDescriptor")
-public class StyledLayerDescriptor implements FeatureCollectionListener{
-  static Logger logger = Logger
-      .getLogger(StyledLayerDescriptor.class.getName());
+public class StyledLayerDescriptor implements FeatureCollectionListener {
+  
+    static Logger logger = Logger.getLogger(StyledLayerDescriptor.class.getName());
 
-  @XmlElement(name = "Name")
-  protected String name;
-  // @XmlElement(name = "Description")
-  // protected Description description;
-  // @XmlElement(name = "EnvironmentVariables")
-  // protected EnvironmentVariables environmentVariables;
-  // @XmlElement(name = "UseSLDLibrary")
-  // protected List<UseSLDLibrary> useSLDLibrary;
-  @XmlAttribute(required = true)
-  protected String version;
-  @XmlTransient
-  private DataSet dataSet = null;
-  /**
-   * Constructeur vide.
-   */
-  public StyledLayerDescriptor() {
-    super();
-    this.dataSet = DataSet.getInstance();
-  }
-  /**
-   * @param dataSet
-   */
-  public StyledLayerDescriptor(DataSet dataSet) {
-      super();
-      this.dataSet = dataSet;
-  }
-  @XmlElements({ @XmlElement(name = "NamedLayer", type = NamedLayer.class),
-      @XmlElement(name = "UserLayer", type = UserLayer.class) })
-  private LinkedList<Layer> layers = new LinkedList<Layer>();
-
-  public List<Layer> getLayers() {
-    return this.layers;
-  }
+    @XmlElement(name = "Name")
+    protected String name;
+    
+    // @XmlElement(name = "Description")
+    // protected Description description;
+  
+    // @XmlElement(name = "EnvironmentVariables")
+    // protected EnvironmentVariables environmentVariables;
+    
+    // @XmlElement(name = "UseSLDLibrary")
+    // protected List<UseSLDLibrary> useSLDLibrary;
+    
+    @XmlAttribute(required = true)
+    protected String version;
+  
+    @XmlTransient
+    private DataSet dataSet = null;
+    
+    @XmlElements({ @XmlElement(name = "NamedLayer", type = NamedLayer.class),
+        @XmlElement(name = "UserLayer", type = UserLayer.class) })
+    private LinkedList<Layer> layers = new LinkedList<Layer>();
+  
+    /**
+     * Constructeur vide.
+     */
+    public StyledLayerDescriptor() {
+        super();
+        this.dataSet = DataSet.getInstance();
+    }
+  
+    /**
+     * @param dataSet
+     */
+    public StyledLayerDescriptor(DataSet dataSet) {
+        super();
+        this.dataSet = dataSet;
+    }
+  
+    public List<Layer> getLayers() {
+        return this.layers;
+    }
+    
+    /**
+     * Affecte la valeur de l'attribut layers.
+     * @param layers l'attribut layers à affecter
+     */
+    public void setLayers(LinkedList<Layer> layers) {
+      this.layers = layers;
+    }
 
   /**
    * Return the list of the colors of the layers of this SLD.
@@ -170,14 +186,6 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
       }
     }
     return exist;
-  }
-
-  /**
-   * Affecte la valeur de l'attribut layers.
-   * @param layers l'attribut layers à affecter
-   */
-  public void setLayers(LinkedList<Layer> layers) {
-    this.layers = layers;
   }
 
   @Override
@@ -289,28 +297,6 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
     for (int i = listeners.length - 1; i >= 0; i -= 1) {
       ((ChangeListener) listeners[i]).stateChanged(e);
     }
-  }
-
-  public static void main(String[] args) {
-    StyledLayerDescriptor sld = new StyledLayerDescriptor();
-    Layer layer = sld.createLayerRandomColor("Test", GM_Polygon.class); //$NON-NLS-1$
-    ThematicSymbolizer s = new ThematicSymbolizer();
-    DiagramSymbolizer d = new DiagramSymbolizer();
-    DiagramRadius r = new DiagramRadius();
-    r.setValue(15.0);
-    d.getDiagramSize().add(r);
-    d.setDiagramType("piechart"); //$NON-NLS-1$
-    ThematicClass t = new ThematicClass();
-    t.setClassLabel("sold"); //$NON-NLS-1$
-    t.setClassValue(new PropertyName("sold")); //$NON-NLS-1$
-    t.setFill(new Fill());
-    t.getFill().setFill(Color.blue);
-    d.getThematicClass().add(t);
-    s.getSymbolizers().add(d);
-    layer.getStyles().get(0).getFeatureTypeStyles().get(0).getRules().get(0)
-        .getSymbolizers().add(s);
-    sld.add(layer);
-    System.out.println(sld);
   }
 
   public static StyledLayerDescriptor unmarshall(InputStream stream) {
@@ -818,5 +804,5 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
       Layer l =this.layers.remove(row);
       this.layers.add(sldIndex, l);
       this.fireActionLayerMoved(row, sldIndex);
-}
+  }
 }
