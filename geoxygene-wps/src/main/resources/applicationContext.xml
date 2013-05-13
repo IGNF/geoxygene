@@ -14,7 +14,7 @@
 	<!-- ========================================================================== -->
 	<!-- 	The PPIO -->
 	<!-- ========================================================================== -->
-	<bean id="resultNetworkStatPPIO" 
-			class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.ppio.ResultNetworkStatPPIO" />
+	<bean id="networkDataMatchingResultPPIO" 
+			class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.ppio.NetworkDataMatchingResultPPIO" />
 
-</beans>
+</beans>	

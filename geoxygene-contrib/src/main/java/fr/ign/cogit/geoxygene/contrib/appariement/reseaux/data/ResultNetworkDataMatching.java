@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -51,18 +52,23 @@ import org.apache.log4j.Logger;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "resultStat"
+    "resultStat",
+    "networkMatched"
 })
 @XmlRootElement(name = "ResultNetworkDataMatching")
 public class ResultNetworkDataMatching {
   
   /** Cartes topo */
+  @XmlTransient
   private ReseauApp reseau1;
+  @XmlTransient
   private ReseauApp reseau2;
-  private String logCreateTopologicalMap1;
+  // private String logCreateTopologicalMap1;
   
   /** EnsembleDeLiens. */
+  @XmlTransient
   private EnsembleDeLiens linkDataSet;
+  @XmlTransient
   private EnsembleDeLiens liensGeneriques;
   
   /** Stat result. */
@@ -70,6 +76,7 @@ public class ResultNetworkDataMatching {
   private ResultNetworkStat resultStat;
   
   /** Network matched. */
+  @XmlElement(required = true)
   private SimpleFeatureCollection networkMatched;
   
   /** A classic logger. */
@@ -170,13 +177,13 @@ public class ResultNetworkDataMatching {
     return reseau2;
   }
   
-  public String getLogCreateTopologicalMap1() {
+  /*public String getLogCreateTopologicalMap1() {
     return logCreateTopologicalMap1;
   }
   
   public void setLogCreateTopologicalMap1(String log) {
     logCreateTopologicalMap1 = log;
-  }
+  }*/
   
   /**
    * Load the parameters from the specified stream.

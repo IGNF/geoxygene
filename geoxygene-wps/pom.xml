@@ -25,8 +25,11 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<main.basedir>..</main.basedir>
-		<!-- <path.geoserver>D:\MesProgrammes\GeoServer\GeoServer 2.2.4\webapps\geoserver\WEB-INF\lib\</path.geoserver> -->
-		<path.geoserver>D:\MesProgrammes\GeoServer\GeoServer2.3.0\webapps\geoserver\WEB-INF\lib</path.geoserver>
+		
+		<geoserver.extension.version>2.2.2</geoserver.extension.version> <!-- 2.3.0  -->
+		<!-- <path.geoserver>D:\MesProgrammes\GeoServer\GeoServer-2.3.1\webapps\geoserver\WEB-INF\lib</path.geoserver> -->
+		<!-- <path.geoserver>D:\MesProgrammes\GeoServer\GeoServer-2.2.5\webapps\geoserver\WEB-INF\lib</path.geoserver> -->
+		<path.geoserver>D:\MesProgrammes\GeoServer\GeoServer2.2.3\webapps\geoserver\WEB-INF\lib</path.geoserver>
 	</properties>
 
 	<build>
@@ -48,7 +51,7 @@
 		<dependency>
 			<groupId>org.geoserver.extension</groupId>
 			<artifactId>wps-core</artifactId>
-			<version>2.2.2</version>
+			<version>${geoserver.extension.version}</version>
 		</dependency>
 
 		<dependency>
@@ -92,8 +95,10 @@
 								<configuration>
 									<tasks>
 
-										<!-- echo>Stop geoserver</echo> <exec executable="D:\MesProgrammes\GeoServer\GeoServer2.2.3\bin\shutdown.bat" 
-											/ -->
+										<!-- 
+										<echo>Stop geoserver</echo> 
+										<exec executable="D:\MesProgrammes\GeoServer\GeoServer2.2.3\bin\shutdown.bat />" 
+										-->
 
 										<echo>Delete GeOxygene libraries</echo>
 										<delete
