@@ -29,10 +29,11 @@ public class CarteTopoFactory {
    * @return a topological map
    */
   public static CarteTopo newCarteTopo(String name,
-      IFeatureCollection<? extends IFeature> collection, double threshold) {
+      IFeatureCollection<? extends IFeature> collection, double threshold,
+      boolean infiniteFace) {
     // Initialisation d'une nouvelle CarteTopo
     CarteTopo carteTopo = new CarteTopo(name);
-    carteTopo.setBuildInfiniteFace(false);
+    carteTopo.setBuildInfiniteFace(infiniteFace);
     // Récupération des arcs de la carteTopo
     IPopulation<Arc> arcs = carteTopo.getPopArcs();
     // Import des arcs de la collection dans la carteTopo
@@ -78,7 +79,7 @@ public class CarteTopoFactory {
    */
   public static CarteTopo newCarteTopo(String name,
       IFeatureCollection<? extends IFeature> collection) {
-    return CarteTopoFactory.newCarteTopo(name, collection, 1.0);
+    return CarteTopoFactory.newCarteTopo(name, collection, 1.0, false);
   }
 
   /**
