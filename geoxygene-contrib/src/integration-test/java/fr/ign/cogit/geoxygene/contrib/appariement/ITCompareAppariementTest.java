@@ -12,7 +12,7 @@ import org.junit.Test;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.NetworkDataMatchingProcess;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
@@ -65,7 +65,7 @@ public class ITCompareAppariementTest {
     datasetNetwork1.addPopulationsArcs(reseau1);
     DatasetNetworkDataMatching datasetNetwork2 = new DatasetNetworkDataMatching();
     datasetNetwork2.addPopulationsArcs(reseau2);
-    NetworkDataMatchingProcess networkDataMatchingProcess = new NetworkDataMatchingProcess(param, datasetNetwork1, datasetNetwork2, false);
+    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
     EnsembleDeLiens edl2 = resultatAppariement2.getLinkDataSet();
     
@@ -133,7 +133,7 @@ public class ITCompareAppariementTest {
     datasetNetwork1.addPopulationsArcs(reseau1);
     DatasetNetworkDataMatching datasetNetwork2 = new DatasetNetworkDataMatching();
     datasetNetwork2.addPopulationsArcs(reseau2);
-    NetworkDataMatchingProcess networkDataMatchingProcess = new NetworkDataMatchingProcess(param, datasetNetwork1, datasetNetwork2, false);
+    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
     EnsembleDeLiens edl2 = resultatAppariement2.getLinkDataSet();
     
@@ -194,7 +194,7 @@ public class ITCompareAppariementTest {
     paramTopo2.setGraphePlanaire(true);
     param.setParamTopoNetwork2(paramTopo2);
     
-    NetworkDataMatchingProcess networkDataMatchingProcess = new NetworkDataMatchingProcess(param, datasetNetwork1, datasetNetwork2, false);
+    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
     EnsembleDeLiens edl2 = resultatAppariement2.getLinkDataSet();
     

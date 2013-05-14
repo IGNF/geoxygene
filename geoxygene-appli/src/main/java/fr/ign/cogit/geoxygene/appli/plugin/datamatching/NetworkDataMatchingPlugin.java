@@ -59,7 +59,7 @@ import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.EditParamPanel;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.NetworkDataMatchingProcess;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
@@ -372,7 +372,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       // Log parameters
       LOGGER.info(paramPlugin.toString());
       
-      NetworkDataMatchingProcess networkDataMatchingProcess = new NetworkDataMatchingProcess(paramPlugin.getParamNetworkDataMatching(),
+      NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(paramPlugin.getParamNetworkDataMatching(),
           datasetNetwork1, datasetNetwork2, paramPlugin.getDoRecalage());
       ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();
       

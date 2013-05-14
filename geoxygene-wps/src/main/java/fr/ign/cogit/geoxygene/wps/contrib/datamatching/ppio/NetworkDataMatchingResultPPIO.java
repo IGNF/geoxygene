@@ -69,6 +69,8 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
     ResultatAppariementParser resultatAppariementParser = new ResultatAppariementParser();
     String result = resultatAppariementParser.generateXMLResponse(((ResultNetworkDataMatching)obj));
     
+    System.out.println("--------------------------------------------------------------------------");
+    
     // Write out xml
     SaxWriter writer = new SaxWriter();
     writer.setContentHandler(handler);

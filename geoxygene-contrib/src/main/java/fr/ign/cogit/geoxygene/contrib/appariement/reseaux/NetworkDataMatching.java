@@ -50,10 +50,10 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * 
  *
  */
-public class NetworkDataMatchingProcess {
+public class NetworkDataMatching {
   
   /** logger. */
-  private static final Logger LOGGER = Logger.getLogger(NetworkDataMatchingProcess.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(NetworkDataMatching.class.getName());
 
   /** Parameters, Dataset and Actions. */
   private ParamNetworkDataMatching inputParam;
@@ -65,7 +65,7 @@ public class NetworkDataMatchingProcess {
    * Constructor.
    * @param paramApp
    */
-  public NetworkDataMatchingProcess(ParamNetworkDataMatching param, DatasetNetworkDataMatching network1, DatasetNetworkDataMatching network2,
+  public NetworkDataMatching(ParamNetworkDataMatching param, DatasetNetworkDataMatching network1, DatasetNetworkDataMatching network2,
       boolean doRecalage) {
     this.inputParam = param;
     this.dataset1 = network1;

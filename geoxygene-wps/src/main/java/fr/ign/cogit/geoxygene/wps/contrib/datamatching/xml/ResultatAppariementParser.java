@@ -123,6 +123,7 @@ public class ResultatAppariementParser {
       
       // Return the document
       return result.toString();
+    
     }
 
 }
