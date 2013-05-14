@@ -236,7 +236,6 @@ public class ScaleMasterScheduler {
     this.availableProcesses.add(BridgeCollapseProcess.getInstance());
     this.availableProcesses.add(VisvalingamWhyattProcess.getInstance());
     this.availableProcesses.add(RaposoSimplifProcess.getInstance());
-    this.availableProcesses.add(LanduseSimplificationProcess.getInstance());
     for (ScaleMasterGeneProcess proc : availableProcesses)
       proc.setScaleMaster(scaleMaster);
   }
