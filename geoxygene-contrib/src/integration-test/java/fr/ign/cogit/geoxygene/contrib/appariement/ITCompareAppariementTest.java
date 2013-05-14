@@ -41,7 +41,7 @@ public class ITCompareAppariementTest {
    * 
    */
   @Test
-  public void testFiltreNoeudsSimples() {
+  public void testAppariementDefaut() {
     
     URL url = ITCompareAppariementTest.class.getResource("/data/");
     

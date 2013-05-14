@@ -253,8 +253,11 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     paramPlugin.setDoRecalage(true);
     */
     
-    String filename1 = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\extrait-gps.shp";
-    String filename2 = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\bduni_gps.shp";
+    // String filename1 = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\extrait-gps.shp";
+    // String filename2 = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\bduni_gps.shp";
+    
+    String filename1 = "D:\\DATA\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+    String filename2 = "D:\\DATA\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
     
     ParamFilenamePopulationEdgesNetwork paramFilename1 = new ParamFilenamePopulationEdgesNetwork();
     paramFilename1.addFilename(filename1);
@@ -384,7 +387,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       
       EnsembleDeLiens liens = resultatAppariement.getLinkDataSet();
       // if (paramOld.debugBilanSurObjetsGeo) {
-        // liens = resultatAppariement.getLiensGeneriques();
+      // liens = resultatAppariement.getLiensGeneriques();
       //}
       
       ResultNetworkStat resultNetwork = resultatAppariement.getResultStat();
@@ -399,7 +402,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.info(resultNetwork.getStatsNodesOfNetwork2().toString());
       
       // Recalage
-      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), resultatAppariement.getReseau2(), liens);
+      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), resultatAppariement.getReseau2(), resultatAppariement.getLiensGeneriques());
       IPopulation<Arc> arcs = reseauRecale.getPopArcs();
       LOGGER.info(arcs.getNom());
   

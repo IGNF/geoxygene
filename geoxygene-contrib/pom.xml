@@ -17,6 +17,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<main.basedir>..</main.basedir>
+		<geoserver.extension.version>2.2.3</geoserver.extension.version>
 	</properties>
 
 <!-- 
@@ -83,6 +84,13 @@
 			<groupId>xmlunit</groupId>
 			<artifactId>xmlunit</artifactId>
 			<version>1.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.geoserver.extension</groupId>
+			<artifactId>wps-core</artifactId>
+			<version>${geoserver.extension.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
