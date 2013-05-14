@@ -53,7 +53,6 @@ import javax.xml.bind.annotation.XmlType;
 public class ResultNetworkStatElement {
   
   /** Total network element number. */
-  //@XmlJavaTypeAdapter(EvaluationAdapter.class)
   @XmlElement(name = "TotalNetworkElementNumber")
   private int totalNetworkElementNumber;
   

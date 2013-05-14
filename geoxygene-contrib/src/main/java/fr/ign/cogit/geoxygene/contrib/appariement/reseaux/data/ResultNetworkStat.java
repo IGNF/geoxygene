@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 // import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-// import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.EvaluationAdapter;
+
 
 /**
  *  Statistics results. Like : <ul>
@@ -48,7 +48,6 @@ import javax.xml.bind.annotation.XmlType;
 public class ResultNetworkStat {
   
   /** Edges evaluation of the less detailed network. */
-  // @XmlJavaTypeAdapter(EvaluationAdapter.class)
   @XmlElement(name = "StatsEdgesOfNetwork1")
   ResultNetworkStatElement statsEdgesOfNetwork1;
   

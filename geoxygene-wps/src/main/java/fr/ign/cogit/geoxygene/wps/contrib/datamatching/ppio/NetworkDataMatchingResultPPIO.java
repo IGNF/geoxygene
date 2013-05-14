@@ -29,7 +29,8 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkData
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElementInterface;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.ResultatAppariementParser;
+import fr.ign.cogit.geoxygene.wps.contrib.datamatching.xml.ResultatAppariementParser;
+
 
 /**
  * A PPIO to generate good looking xml for the network data mathing process
