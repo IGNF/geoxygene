@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.util.multicriteriadecision.ranking.electre3;
 
@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class ELECTREIIIPreOrder {
-  ////////////////////////////////////////////
-  //                Fields                  //
-  ////////////////////////////////////////////
+  // //////////////////////////////////////////
+  // Fields //
+  // //////////////////////////////////////////
 
   // All static fields //
 
@@ -28,13 +28,13 @@ public class ELECTREIIIPreOrder {
   // Private fields //
   private ArrayList<HashSet<ELECTREIIIAction>> preOrder;
 
-  ////////////////////////////////////////////
-  //           Static methods               //
-  ////////////////////////////////////////////
+  // //////////////////////////////////////////
+  // Static methods //
+  // //////////////////////////////////////////
 
-  ////////////////////////////////////////////
-  //           Public methods               //
-  ////////////////////////////////////////////
+  // //////////////////////////////////////////
+  // Public methods //
+  // //////////////////////////////////////////
 
   // Public constructors //
   public ELECTREIIIPreOrder(ArrayList<HashSet<ELECTREIIIAction>> preOrder) {
@@ -52,34 +52,46 @@ public class ELECTREIIIPreOrder {
   }
 
   // Other public methods //
-  public boolean outranks(ELECTREIIIAction a, ELECTREIIIAction b){
+  public boolean outranks(ELECTREIIIAction a, ELECTREIIIAction b) {
     int rankA = getActionOrder(a);
     int rankB = getActionOrder(b);
     return (rankA < rankB);
   }
-  
-  public int difference(ELECTREIIIAction a, ELECTREIIIAction b){
+
+  public boolean outranksOrEquality(ELECTREIIIAction a, ELECTREIIIAction b) {
+    int rankA = getActionOrder(a);
+    int rankB = getActionOrder(b);
+    return (rankA <= rankB);
+  }
+
+  public boolean equality(ELECTREIIIAction a, ELECTREIIIAction b) {
+    int rankA = getActionOrder(a);
+    int rankB = getActionOrder(b);
+    return (rankA == rankB);
+  }
+
+  public int difference(ELECTREIIIAction a, ELECTREIIIAction b) {
     int rankA = getActionOrder(a);
     int rankB = getActionOrder(b);
     return Math.abs(rankA - rankB);
   }
 
-  ////////////////////////////////////////////
-  //           Protected methods            //
-  ////////////////////////////////////////////
+  // //////////////////////////////////////////
+  // Protected methods //
+  // //////////////////////////////////////////
 
-  ////////////////////////////////////////////
-  //         Package visible methods        //
-  ////////////////////////////////////////////
+  // //////////////////////////////////////////
+  // Package visible methods //
+  // //////////////////////////////////////////
 
-  //////////////////////////////////////////
-  //           Private methods            //
-  //////////////////////////////////////////
-  private int getActionOrder(ELECTREIIIAction a){
-    for(int i=0;i<preOrder.size();i++){
-      if(preOrder.get(i).contains(a)) return i+1;
+  // ////////////////////////////////////////
+  // Private methods //
+  // ////////////////////////////////////////
+  private int getActionOrder(ELECTREIIIAction a) {
+    for (int i = 0; i < preOrder.size(); i++) {
+      if (preOrder.get(i).contains(a))
+        return i + 1;
     }
     return 0;
   }
 }
-
