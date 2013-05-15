@@ -9,6 +9,7 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.core.defaultschema.urban;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -497,8 +498,8 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
     }
     for (IRoadLine r : roads) {
       // counts the number of common vertices
-      int nbVertCom = CommonAlgorithmsFromCartAGen.getNbCommonVertices(line, r
-          .getGeom());
+      int nbVertCom = CommonAlgorithmsFromCartAGen.getNbCommonVertices(line,
+          r.getGeom());
       if (nbVertCom > 2 || (nbVertCom == r.getGeom().coord().size())) {
         r.eliminate();
         r.setDeleted(true);
@@ -518,8 +519,8 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
     builds.addAll(neighbour.getUrbanElements());
 
     // build a new GeOxygene object for the new aggregated block
-    IUrbanBlock aggrBlock = new UrbanBlock(new IlotImpl(newGeom), this
-        .getPartition(), this.getNet(), builds, blockRoads);
+    IUrbanBlock aggrBlock = new UrbanBlock(new IlotImpl(newGeom),
+        this.getPartition(), this.getNet(), builds, blockRoads);
 
     // fill the new block fields
     aggrBlock.getNeighbours().addAll(this.neighbours);
@@ -618,6 +619,12 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
      * .getAgentAgentFromGeneObj(this); return blockAgent.getInitialDensity();
      */
     return DensityMeasures.getBlockBuildingsDensity(this);
+  }
+
+  public String getDensityString() {
+    String masque = new String("#0.##");
+    DecimalFormat form = new DecimalFormat(masque);
+    return form.format(this.getDensity());
   }
 
   // modif Guillaume pour décorréler des agents
