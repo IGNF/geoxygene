@@ -188,6 +188,7 @@ public final class AppariementIO {
       AppariementIO.LOGGER.debug(I18N.getString("AppariementIO.StructuringEnd") //$NON-NLS-1$
           + new Time(System.currentTimeMillis()).toString());
     }
+    
     // APPARIEMENT
     if (AppariementIO.LOGGER.isInfoEnabled()) {
       AppariementIO.LOGGER.info(""); //$NON-NLS-1$
@@ -204,7 +205,7 @@ public final class AppariementIO {
     if (AppariementIO.LOGGER.isInfoEnabled()) {
       AppariementIO.LOGGER.info(I18N
           .getString("AppariementIO.NetworkMatchingFinished")); //$NON-NLS-1$
-      AppariementIO.LOGGER.info("  " + resultatAppariement.getLinkDataSet().size() + I18N.getString(//$NON-NLS-1$
+      AppariementIO.LOGGER.info("  " + resultatAppariement.getLiens().size() + I18N.getString(//$NON-NLS-1$
           "AppariementIO.MatchingLinksFound")); //$NON-NLS-1$
     }
     if (AppariementIO.LOGGER.isDebugEnabled()) {
@@ -212,6 +213,7 @@ public final class AppariementIO {
           .getString("AppariementIO.NetworkMatchingEnd") //$NON-NLS-1$
           + new Time(System.currentTimeMillis()).toString());
     }
+    
     // EXPORT
     if (AppariementIO.LOGGER.isInfoEnabled()) {
       AppariementIO.LOGGER.info(""); //$NON-NLS-1$
@@ -228,7 +230,7 @@ public final class AppariementIO {
             + new Time(System.currentTimeMillis()).toString());
       }
       EnsembleDeLiens liensGeneriques = LienReseaux.exportLiensAppariement(
-          resultatAppariement.getLinkDataSet(), reseauRef, paramApp);
+          resultatAppariement.getLiens(), reseauRef, paramApp);
       Appariement.nettoyageLiens(reseauRef, reseauComp);
       if (AppariementIO.LOGGER.isInfoEnabled()) {
         AppariementIO.LOGGER.info(I18N.getString("AppariementIO.MatchingEnd")); //$NON-NLS-1$
@@ -239,11 +241,12 @@ public final class AppariementIO {
       AppariementIO.LOGGER.debug(I18N.getString("AppariementIO.LinkGeometry") //$NON-NLS-1$
           + new Time(System.currentTimeMillis()).toString());
     }
-    LienReseaux.exportAppCarteTopo(resultatAppariement.getLinkDataSet(), paramApp);
+    LienReseaux.exportAppCarteTopo(resultatAppariement.getLiens(), paramApp);
     if (AppariementIO.LOGGER.isInfoEnabled()) {
       AppariementIO.LOGGER.info(I18N.getString("AppariementIO.MatchingEnd")); //$NON-NLS-1$
     }
-    return resultatAppariement.getLinkDataSet();
+    return resultatAppariement.getLiens();
+  
   }
   
   

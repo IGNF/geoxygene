@@ -301,7 +301,7 @@ public abstract class Appariement {
 
     // return liens_AppArcs;
     ResultNetworkDataMatching resultatAppariement = new ResultNetworkDataMatching();
-    resultatAppariement.setLinkDataSet(tousLiens);
+    resultatAppariement.setLiens(tousLiens);
     resultatAppariement.setResultStat(resStat);
     
     return resultatAppariement;

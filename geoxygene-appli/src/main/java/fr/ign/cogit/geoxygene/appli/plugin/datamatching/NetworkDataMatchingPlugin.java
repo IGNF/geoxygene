@@ -158,7 +158,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     application
         .getFrame()
         .getJMenuBar()
-        .add(menu, application.getFrame().getJMenuBar().getComponentCount() - 1);
+        .add(menu, application.getFrame().getJMenuBar().getComponentCount() - 2);
   }
   
   /**
@@ -329,6 +329,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     // -----------------------------------------------------------------------------------------
     // Actions
     paramPlugin.setDoRecalage(true);
+  
   }
 
   /**
@@ -385,26 +386,25 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.info("Nb arcs du réseau 2 calculés : " + resultatAppariement.getReseau2().getListeArcs().size()
           + " >= " + datasetNetwork2.getPopulationsArcs().size());
       
-      EnsembleDeLiens liens = resultatAppariement.getLinkDataSet();
-      // if (paramOld.debugBilanSurObjetsGeo) {
-      // liens = resultatAppariement.getLiensGeneriques();
-      //}
-      
+      EnsembleDeLiens liens = null;
+      CarteTopo reseauRecale = null;
+      IPopulation<Arc> arcs = null;
+      if (paramPlugin.getDoRecalage()) {
+          liens = resultatAppariement.getLiensGeneriques();
+          // Recalage
+          reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), resultatAppariement.getReseau2(), liens);
+          arcs = reseauRecale.getPopArcs();
+      } else {
+          // liens = resultatAppariement.getLiens();
+      }
+
+      // Statistic information
       ResultNetworkStat resultNetwork = resultatAppariement.getResultStat();
+      LOGGER.debug(resultNetwork.getStatsEdgesOfNetwork1().toString());
+      LOGGER.debug(resultNetwork.getStatsNodesOfNetwork1().toString());
+      LOGGER.debug(resultNetwork.getStatsEdgesOfNetwork2().toString());
+      LOGGER.debug(resultNetwork.getStatsNodesOfNetwork2().toString());
       
-      // Debug
-      // Liens
-      
-      // Log stats
-      LOGGER.info(resultNetwork.getStatsEdgesOfNetwork1().toString());
-      LOGGER.info(resultNetwork.getStatsNodesOfNetwork1().toString());
-      LOGGER.info(resultNetwork.getStatsEdgesOfNetwork2().toString());
-      LOGGER.info(resultNetwork.getStatsNodesOfNetwork2().toString());
-      
-      // Recalage
-      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), resultatAppariement.getReseau2(), resultatAppariement.getLiensGeneriques());
-      IPopulation<Arc> arcs = reseauRecale.getPopArcs();
-      LOGGER.info(arcs.getNom());
   
       // Split les multi
       for (Lien lien : liens) {
@@ -434,14 +434,13 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.trace("----------------------------------------------------------");
       LOGGER.trace("Enregistrement des résultats en fichier shape");
       
-      String repResultat = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\R4\\";
-      
-      ShapefileWriter.write(arcs, repResultat + "ReseauApparie.shp");
-      ShapefileWriter.write(liens, repResultat + "Liens.shp");
-      ShapefileWriter.write(resultatAppariement.getReseau1().getPopArcs(), repResultat + "ArcTopoReseau1.shp");
-      ShapefileWriter.write(resultatAppariement.getReseau1().getPopNoeuds(), repResultat + "NoeudTopoReseau1.shp");
-      ShapefileWriter.write(resultatAppariement.getReseau2().getPopArcs(), repResultat + "ArcTopoReseau2.shp");
-      ShapefileWriter.write(resultatAppariement.getReseau2().getPopNoeuds(), repResultat + "NoeudTopoReseau2.shp");
+      // String repResultat = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\R4\\";
+      // ShapefileWriter.write(arcs, repResultat + "ReseauApparie.shp");
+      // ShapefileWriter.write(liens, repResultat + "Liens.shp");
+      // ShapefileWriter.write(resultatAppariement.getReseau1().getPopArcs(), repResultat + "ArcTopoReseau1.shp");
+      // ShapefileWriter.write(resultatAppariement.getReseau1().getPopNoeuds(), repResultat + "NoeudTopoReseau1.shp");
+      // ShapefileWriter.write(resultatAppariement.getReseau2().getPopArcs(), repResultat + "ArcTopoReseau2.shp");
+      // ShapefileWriter.write(resultatAppariement.getReseau2().getPopNoeuds(), repResultat + "NoeudTopoReseau2.shp");
       
       LOGGER.trace("----------------------------------------------------------");
       
@@ -509,6 +508,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       l2 = p2.addUserLayer(datasetNetwork2.getPopulationsArcs().get(0), "Réseau 2", null);
       l2.getSymbolizer().getStroke().setColor(network2Color);
       l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
+      
       Layer l1bis = p2.addUserLayer(arcs, "Reseau 1 recale", null);
       l1bis.getSymbolizer().getStroke().setColor(matchedNetworkColor);
       l1bis.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);

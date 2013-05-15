@@ -40,7 +40,7 @@ public class ITRecalageAppariement extends XMLTestCase {
     @Test
     public void testAppariementDefautAvecRecalage() throws Exception {
         
-        URL url = ITCompareAppariementTest.class.getResource("/data/");
+        URL url = ITRecalageAppariement.class.getResource("/data/");
         
         // Réseaux
         IPopulation<IFeature> reseau1 = ShapefileReader.read(url.getPath() + "reseau1.shp");
@@ -99,17 +99,17 @@ public class ITRecalageAppariement extends XMLTestCase {
         encode.encode(output2, arcs2);
         
         // On compare : est-ce que le XML est comparable ????
-        // assertXMLEqual(output1.toString(), output2.toString());
+        assertXMLEqual(output1.toString(), output2.toString());
     }
     
     
-    public void test2() throws Exception {
+    /*public void test2() throws Exception {
         
         String xml1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><root><a></a><b></b></root>";
         
         String xml2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><root><b></b><a></a></root>";
         
         assertXMLEqual(xml1, xml2);
-    }
+    }*/
 
 }

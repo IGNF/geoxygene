@@ -194,7 +194,7 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
       LOGGER.debug("Start recalage");
       CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), 
           resultatAppariement.getReseau2(), 
-          resultatAppariement.getLinkDataSet());
+          resultatAppariement.getLiens());
       LOGGER.debug("End recalage");
 
       // Get arcs 

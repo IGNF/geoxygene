@@ -82,6 +82,9 @@ public class NetworkDataMatching {
     
     // Temporaire
     ParametresApp paramApp = inputParam.paramNDMToParamApp();
+    // + Dataset
+    paramApp.populationsArcs1 = dataset1.getPopulationsArcs();
+    paramApp.populationsArcs2 = dataset2.getPopulationsArcs();
     
     // For result
     ResultNetworkDataMatching resultatAppariement = new ResultNetworkDataMatching();
@@ -122,9 +125,9 @@ public class NetworkDataMatching {
         inputParam.getParamDistance().getDistanceNoeudsMax(),
         inputParam.getParamTopoNetwork2());
     
-//    resultatAppariement.setReseau1(reseau1);
-//    resultatAppariement.setReseau2(reseau2);
-//    if (true) return resultatAppariement;
+    //    resultatAppariement.setReseau1(reseau1);
+    //    resultatAppariement.setReseau2(reseau2);
+    //    if (true) return resultatAppariement;
     
     // ---------------------------------------------------------------------------------------------
     // NB: l'ordre dans lequel les projections sont faites n'est pas neutre
@@ -188,7 +191,7 @@ public class NetworkDataMatching {
     resultatAppariement = Appariement.appariementReseaux(reseau1, reseau2, paramApp);
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info("    Network Matching finished");
-      LOGGER.info("  " + resultatAppariement.getLinkDataSet().size() + "matching links found");
+      LOGGER.info("  " + resultatAppariement.getLiens().size() + "matching links found");
     }
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("    END OF NETWORK MATCHING");
@@ -205,7 +208,7 @@ public class NetworkDataMatching {
       LOGGER.debug("START OF EXPORT ");
     }
     
-    // Avant le nettoyage des liens
+    // Avant le nettoyage des liens ou maintenant ???
     resultatAppariement.setReseau1(reseau1);
     resultatAppariement.setReseau2(reseau2);
     
@@ -216,24 +219,26 @@ public class NetworkDataMatching {
         LOGGER.debug("Transformation of matching links to generic links");
       }
       
-      EnsembleDeLiens liensGeneriques = LienReseaux.exportLiensAppariement(
-          resultatAppariement.getLinkDataSet(), reseau1, paramApp);
+      EnsembleDeLiens liensGeneriques = LienReseaux.exportLiensAppariement(resultatAppariement.getLiens(), reseau1, paramApp);
       Appariement.nettoyageLiens(reseau1, reseau2);
       resultatAppariement.setLiensGeneriques(liensGeneriques);
       
-    }
+    } 
     
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Link geometry assignment");
+        LOGGER.debug("Link geometry assignment");
     }
-    LienReseaux.exportAppCarteTopo(resultatAppariement.getLinkDataSet(), paramApp);
-    
+    LienReseaux.exportAppCarteTopo(resultatAppariement.getLiens(), paramApp);
+        
     if (LOGGER.isInfoEnabled()) {
-      LOGGER.info("######## NETWORK MATCHING END #########");
+        LOGGER.info("######## NETWORK MATCHING END #########");
     }
     
-    // Return ResultNetworkDataMatching
+    
+    
+    // 
     return resultatAppariement;
+  
   }
   
   

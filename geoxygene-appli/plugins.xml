@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <GeOxygeneApplicationProperties>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.datamatching.NetworkDataMatchingPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.datamatching.DataMatchingPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.BezierCurvePlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.TINPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.CubicSplinePlugin</plugin>
@@ -9,5 +10,5 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.VoronoiDiagramJTSPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.SwingingArmPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.semio.SemioPlugin</plugin>
-    <lastOpenedFile>D:\DATA\Appariement\MesTests\T3\bdcarto_route.shp</lastOpenedFile>
+    <lastOpenedFile>E:\Workspace\geoxygene-cogit\modules\library\semiology\src\main\resources\proprietevisu\shp\UrbainMer\estran_25.shp</lastOpenedFile>
 </GeOxygeneApplicationProperties>

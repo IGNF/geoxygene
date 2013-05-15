@@ -210,16 +210,16 @@ public class ParamNetworkDataMatching {
     param.projeteNoeuds2SurReseau1ImpassesSeulement = paramProjNetwork2.getProjeteNoeuds1SurReseau2ImpassesSeulement();
     
     // Variante
-    param.varianteForceAppariementSimple = false;  // true
-    param.varianteRedecoupageArcsNonApparies = false;   // true
-    param.varianteFiltrageImpassesParasites = false;
+    // param.varianteForceAppariementSimple = false;  // true
+    // param.varianteRedecoupageArcsNonApparies = false;   // true
+    // param.varianteFiltrageImpassesParasites = false;
     
     // Debug
     param.debugTirets = true;
     param.debugBilanSurObjetsGeo = false;
-    param.debugAffichageCommentaires = 2;
-    param.debugBuffer = true;
-    param.debugPasTirets = 10;
+    // param.debugAffichageCommentaires = 2;
+    // param.debugBuffer = true;
+    // param.debugPasTirets = 10;
     
     return param;
   }

@@ -67,7 +67,7 @@ public class ResultNetworkDataMatching {
   
   /** EnsembleDeLiens. */
   @XmlTransient
-  private EnsembleDeLiens linkDataSet;
+  private EnsembleDeLiens liens;
   @XmlTransient
   private EnsembleDeLiens liensGeneriques;
   
@@ -86,7 +86,7 @@ public class ResultNetworkDataMatching {
    * Default constructor.
    */
   public ResultNetworkDataMatching() {
-    linkDataSet = null;
+    liens = null;
     liensGeneriques = null;
     networkMatched = null;
     resultStat = new ResultNetworkStat();
@@ -98,7 +98,7 @@ public class ResultNetworkDataMatching {
    * @param sfc  
    */
   public ResultNetworkDataMatching(EnsembleDeLiens edl, SimpleFeatureCollection sfc) {
-    linkDataSet = edl;
+    liens = edl;
     networkMatched = sfc;
     resultStat = new ResultNetworkStat();
   }
@@ -107,16 +107,16 @@ public class ResultNetworkDataMatching {
    * Return link data set.
    * @return EnsembleDeLiens
    */
-  public EnsembleDeLiens getLinkDataSet() {
-    return linkDataSet;
+  public EnsembleDeLiens getLiens() {
+    return liens;
   }
   
   /**
    * @param EnsembleDeLiens
    *          link data set to set.
    */
-  public void setLinkDataSet(EnsembleDeLiens edl) {
-    linkDataSet = edl;
+  public void setLiens(EnsembleDeLiens edl) {
+    liens = edl;
   }
   
   public EnsembleDeLiens getLiensGeneriques() {

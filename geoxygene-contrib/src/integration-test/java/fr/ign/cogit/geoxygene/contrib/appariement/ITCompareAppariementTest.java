@@ -67,7 +67,7 @@ public class ITCompareAppariementTest {
     datasetNetwork2.addPopulationsArcs(reseau2);
     NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
-    EnsembleDeLiens edl2 = resultatAppariement2.getLinkDataSet();
+    EnsembleDeLiens edl2 = resultatAppariement2.getLiens();
     
     // -----------------------------------------------------------------------------------------------------------------------
     // On peut déjà comparer les paramètres
@@ -135,7 +135,7 @@ public class ITCompareAppariementTest {
     datasetNetwork2.addPopulationsArcs(reseau2);
     NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
-    EnsembleDeLiens edl2 = resultatAppariement2.getLinkDataSet();
+    EnsembleDeLiens edl2 = resultatAppariement2.getLiens();
     
     // -----------------------------------------------------------------------------------------------------------------------
     // On peut déjà comparer les paramètres
@@ -205,7 +205,7 @@ public class ITCompareAppariementTest {
     datasetNetwork2.addPopulationsArcs(reseau2);
     NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
-    EnsembleDeLiens edl2 = resultatAppariement2.getLinkDataSet();
+    EnsembleDeLiens edl2 = resultatAppariement2.getLiens();
     
     // -----------------------------------------------------------------------------------------------------------------------
     // On peut déjà comparer les paramètres
@@ -287,7 +287,7 @@ public class ITCompareAppariementTest {
     datasetNetwork2.addPopulationsArcs(reseau2);
     NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
-    EnsembleDeLiens edl2 = resultatAppariement2.getLinkDataSet();
+    EnsembleDeLiens edl2 = resultatAppariement2.getLiens();
     
     // -----------------------------------------------------------------------------------------------------------------------
     // On peut déjà comparer les paramètres
@@ -348,7 +348,7 @@ public class ITCompareAppariementTest {
     
     NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
-    EnsembleDeLiens edl2 = resultatAppariement2.getLinkDataSet();
+    EnsembleDeLiens edl2 = resultatAppariement2.getLiens();
     
     // -----------------------------------------------------------------------------------------------------------------------
     // On peut déjà comparer les paramètres
