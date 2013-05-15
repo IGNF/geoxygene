@@ -31,7 +31,7 @@ public class GUIMainClassEclipse {
     doc.setName("PEA_REP");
     doc.setPostGisDb(PostgisDB.get("PEA_REP", true));
 
-    String jarPath = "E:\\Users\\gtouya\\Documents\\Projets\\PEA REP\\Module\\version2.0\\";
+    String jarPath = "C:\\Users\\Guillaume\\Documents\\travail\\PEA REP\\Module\\version2.0\\";
     String path = jarPath + "\\" + "ScaleMasterThemes.xml";
     File themesFile = new File(path);
 
