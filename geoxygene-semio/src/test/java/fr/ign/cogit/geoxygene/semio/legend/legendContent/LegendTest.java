@@ -10,7 +10,7 @@ public class LegendTest {
     public void xmlTest() {
         
         // Load file
-        Legend legend = Legend.unmarshall(LegendTest.class.getClassLoader().getResource("legendContent/Legend.xml").getPath());
+        Legend legend = Legend.unmarshall(LegendTest.class.getClassLoader().getResource("LegendExample.xml").getPath());
         
         // Check 
         Assert.assertTrue("Number of leaves : " + legend.getLeaves().size(), legend.getLeaves().size() == 21);
