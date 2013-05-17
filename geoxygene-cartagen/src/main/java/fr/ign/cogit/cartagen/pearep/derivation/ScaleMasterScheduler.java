@@ -304,6 +304,7 @@ public class ScaleMasterScheduler {
       // get the dataset related to the element
       CartAGenDataSet dataset = CartAGenDoc.getInstance().getDataset(
           elem.getDbName());
+      CartAGenDoc.getInstance().setCurrentDataset(dataset);
 
       // get the corresponding feature population
       Class<?> classObj = elem.getClasses().iterator().next();
