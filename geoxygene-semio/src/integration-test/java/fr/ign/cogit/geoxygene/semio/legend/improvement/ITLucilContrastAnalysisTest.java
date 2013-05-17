@@ -24,9 +24,9 @@ import fr.ign.cogit.geoxygene.style.UserLayerFactory;
  * 
  *
  */
-public class LucilContrastAnalysisTest {
+public class ITLucilContrastAnalysisTest {
     
-    private static Logger LOGGER = Logger.getLogger(LucilContrastAnalysisTest.class.getName());
+    private static Logger LOGGER = Logger.getLogger(ITLucilContrastAnalysisTest.class.getName());
     
     /**
      * Test Analyse des contrastes.
