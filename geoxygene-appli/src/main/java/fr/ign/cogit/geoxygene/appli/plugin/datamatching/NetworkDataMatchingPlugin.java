@@ -328,7 +328,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     
     // -----------------------------------------------------------------------------------------
     // Actions
-    paramPlugin.setDoRecalage(true);
+    paramPlugin.setDoRecalage(false);
   
   }
 
@@ -389,14 +389,20 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       EnsembleDeLiens liens = null;
       CarteTopo reseauRecale = null;
       IPopulation<Arc> arcs = null;
-      if (paramPlugin.getDoRecalage()) {
+      /*if (paramPlugin.getDoRecalage()) {
           liens = resultatAppariement.getLiensGeneriques();
           // Recalage
           reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), resultatAppariement.getReseau2(), liens);
           arcs = reseauRecale.getPopArcs();
       } else {
           // liens = resultatAppariement.getLiens();
-      }
+      }*/
+      
+      liens = resultatAppariement.getLiens();
+      // Recalage
+      reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), resultatAppariement.getReseau2(), liens);
+      arcs = reseauRecale.getPopArcs();
+      
 
       // Statistic information
       ResultNetworkStat resultNetwork = resultatAppariement.getResultStat();

@@ -373,7 +373,7 @@ public class Map {
 					collection.getLegend().setSymbol(new GraphicSymbol(layer, resolution));
 					// logger.info(collection.getName() + " : " + collection.getColor());
 					
-					//Getting the features of the symbolisedFeatureCollection
+					// Getting the features of the symbolisedFeatureCollection
 					FT_FeatureCollection<FT_Feature> layerFeatureCollection = 
 						(FT_FeatureCollection<FT_Feature>) layer.getFeatureCollection();
 					collection.setFeatureType(layerFeatureCollection.getFeatureType());
@@ -388,4 +388,39 @@ public class Map {
 		this.setSymbolisedFeatureCollections(collections);
 		this.setMapLegend(legend);
 	}
+	
+	@SuppressWarnings("unchecked")
+    public Map(List<Layer> layers, Legend legend){
+        List<SymbolisedFeatureCollection> collections = new ArrayList<SymbolisedFeatureCollection>();
+        
+        for (Layer layer : layers) {
+            logger.info("Nom du layer = " + layer.getName());
+            for (Style style : layer.getStyles()) {
+                
+                logger.info("Style name = " + style.getName() + " : " + style.getFeatureTypeStyles().size());
+                
+                for (Rule rule : style.getFeatureTypeStyles().get(0).getRules()) {
+
+                    logger.info("Rule name = " + rule.getName());
+                    SymbolisedFeatureCollection collection = new SymbolisedFeatureCollection();
+                    collection.setName(rule.getName());
+                    collection.setLegend(legend.getLeaf(layer.getName()));
+                    collection.getLegend().setSymbol(new GraphicSymbol(layer, 5));
+                    logger.info(collection.getName() + " : " + collection.getColor());
+                    
+                    // Getting the features of the symbolisedFeatureCollection
+                    FT_FeatureCollection<FT_Feature> layerFeatureCollection = (FT_FeatureCollection<FT_Feature>) layer.getFeatureCollection();
+                    collection.setFeatureType(layerFeatureCollection.getFeatureType());
+                    /*for (FT_Feature layerFeature : layerFeatureCollection) {
+                         SymbolisedFeatureDecorator feature = new SymbolisedFeatureDecorator(layerFeature);
+                         feature.setSymbolisedFeatureCollection(collection);
+                    }*/
+                    collections.add(collection);
+                }
+            }
+        }
+        this.setSymbolisedFeatureCollections(collections);
+        this.setMapLegend(legend);
+    }
+
 }

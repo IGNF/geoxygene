@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="ColorReferenceSystem" type="ColorReferenceSystem"/>
+
+  <xs:complexType name="ColorReferenceSystem">
+    <xs:sequence>
+      <xs:element name="Wheel" type="ColorWheel" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ColorWheel">
+    <xs:sequence>
+      <xs:element name="Saturation" type="xs:int"/>
+      <xs:element name="Slice" type="ColorSlice" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ColorSlice">
+    <xs:sequence>
+      <xs:element name="Hue" type="xs:string" minOccurs="0"/>
+      <xs:element name="Color" type="ColorimetricColor" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="IdSaturationParentWheel" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ColorimetricColor">
+    <xs:sequence>
+      <xs:element name="IdColor" type="xs:int"/>
+      <xs:element name="Hue" type="xs:string" minOccurs="0"/>
+      <xs:element name="Lightness" type="xs:int"/>
+      <xs:element name="UsualName" type="xs:string" minOccurs="0"/>
+      <xs:element name="CleCoul" type="xs:string" minOccurs="0"/>
+      <xs:element name="redRGB" type="xs:int"/>
+      <xs:element name="greenRGB" type="xs:int"/>
+      <xs:element name="blueRGB" type="xs:int"/>
+      <xs:element name="xScreen" type="xs:int"/>
+      <xs:element name="xScreen" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

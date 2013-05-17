@@ -168,7 +168,7 @@ public class LucilContrastAnalysis implements ContrastAnalysis {
    */
   public static void changerTeinteLUCIL(SymbolisedFeatureCollection familleCarto){
       ColorReferenceSystem crs = ColorReferenceSystem.unmarshall(
-              ColorReferenceSystem.class.getResourceAsStream("ColorReferenceSystem.xml"));
+              ColorReferenceSystem.class.getClassLoader().getResourceAsStream("color/ColorReferenceSystem.xml"));
       // On parcours l'ensemble des relations faisant intervenir la famille
       List<SemanticRelation> relations = familleCarto.getLegend().getRelations();
       
@@ -410,8 +410,8 @@ public class LucilContrastAnalysis implements ContrastAnalysis {
           ColorimetricColor referenceColor = famille.referenceRelatedFeatureCollection(relation).getColor();
           
           if (relation.getRelatedComponents().size()>4 && 
-              (referenceColor.getWheel(ColorReferenceSystem.COGITcrs).getidSaturation()==1
-                  ||referenceColor.getWheel(ColorReferenceSystem.COGITcrs).getidSaturation()==2)) {
+              (referenceColor.getWheel(ColorReferenceSystem.defaultColorRS()).getidSaturation()==1
+                  ||referenceColor.getWheel(ColorReferenceSystem.defaultColorRS()).getidSaturation()==2)) {
             logger.info("Pas assez de couleur dispo dans ce quartier pour cette relation d'ordre");
             //TODO changer toutes les couleur vers le quartier correspondant.
           } else {
@@ -431,6 +431,10 @@ public class LucilContrastAnalysis implements ContrastAnalysis {
     }
     logger.info("");
   }
+  
+  /**
+   * 
+   */
   public void homogenizeOrderedSymbolisedFeatureCollection2(){
     for (SemanticRelation relation : this.map.getMapLegend().getSRD().getRelations()) {
       if (relation.getType() == SemanticRelation.ORDER) {
@@ -452,7 +456,7 @@ public class LucilContrastAnalysis implements ContrastAnalysis {
     List<LegendComponent> components = relation.getRelatedComponents();
     int saturation = 
       ((LegendLeaf)components.get(0)).getSymbol()
-      .getColor().getWheel(ColorReferenceSystem.COGITcrs).getidSaturation();
+      .getColor().getWheel(ColorReferenceSystem.defaultColorRS()).getidSaturation();
     int nbFamille = relation.getRelatedComponents().size();
     ColorimetricColor hueColor = ((LegendLeaf)components.get(0)).getSymbol().getColor();
     if (saturation == 1 || saturation == 2){

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SemanticRelationDescriptor>
+	
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>Marshalling Area</Name>
+		</Layer>
+		<Layer>
+			<Name>Railroad</Name>
+		</Layer>
+	</Relation>
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>Marshalling Area</Name>
+		</Layer>
+		<Layer>
+			<Name>Station</Name>
+		</Layer>
+	</Relation>
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>Station</Name>
+		</Layer>
+		<Layer>
+			<Name>Railroad</Name>
+		</Layer>
+	</Relation>
+	
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>Water Point</Name>
+		</Layer>
+		<Layer>
+			<Name>River</Name>
+		</Layer>
+	</Relation>
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>Water Point</Name>
+		</Layer>
+		<Layer>
+			<Name>Sea</Name>
+		</Layer>
+	</Relation>
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>River</Name>
+		</Layer>
+		<Layer>
+			<Name>Sea</Name>
+		</Layer>
+	</Relation>
+	
+	<Relation>
+		<Type>3</Type>
+		<Layer>
+			<Name>Highway</Name>
+		</Layer>
+		<Layer>
+			<Name>Main Road</Name>
+		</Layer>
+		<Layer>
+			<Name>Other Road</Name>
+		</Layer>
+		<Layer>
+			<Name>Footpath</Name>
+		</Layer>
+	</Relation>
+	
+	<Relation>
+		<Type>3</Type>
+		<Layer>
+			<Name>High Landside</Name>
+		</Layer>
+		<Layer>
+			<Name>Medium Landside</Name>
+		</Layer>
+		<Layer>
+			<Name>Low Landside</Name>
+		</Layer>
+	</Relation>
+	
+	<Relation>
+		<Type>3</Type>
+		<Layer>
+			<Name>High Flooding</Name>
+		</Layer>
+		<Layer>
+			<Name>Medium Flooding</Name>
+		</Layer>
+		<Layer>
+			<Name>Low Flooding</Name>
+		</Layer>
+	</Relation>
+	
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>Water Point</Name>
+		</Layer>
+		<Layer>
+			<Name>Low Flooding</Name>
+		</Layer>
+	</Relation>
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>Water Point</Name>
+		</Layer>
+		<Layer>
+			<Name>Medium Flooding</Name>
+		</Layer>
+	</Relation>
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>Water Point</Name>
+		</Layer>
+		<Layer>
+			<Name>High Flooding</Name>
+		</Layer>
+	</Relation>
+	
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>River</Name>
+		</Layer>
+		<Layer>
+			<Name>Low Flooding</Name>
+		</Layer>
+	</Relation>
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>River</Name>
+		</Layer>
+		<Layer>
+			<Name>Medium Flooding</Name>
+		</Layer>
+	</Relation>
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>River</Name>
+		</Layer>
+		<Layer>
+			<Name>High Flooding</Name>
+		</Layer>
+	</Relation>
+	
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>Sea</Name>
+		</Layer>
+		<Layer>
+			<Name>Low Flooding</Name>
+		</Layer>
+	</Relation>
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>Sea</Name>
+		</Layer>
+		<Layer>
+			<Name>Medium Flooding</Name>
+		</Layer>
+	</Relation>
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>Sea</Name>
+		</Layer>
+		<Layer>
+			<Name>High Flooding</Name>
+		</Layer>
+	</Relation>
+	
+	<Relation>
+		<Type>1</Type>
+		<Layer>
+			<Name>Forest</Name>
+		</Layer>
+		<Layer>
+			<Name>Sport Ground</Name>
+		</Layer>
+	</Relation>
+	
+	<Relation>
+		<Type>2</Type>
+		<Layer>
+			<Name>Building</Name>
+		</Layer>
+		<Layer>
+			<Name>Background</Name>
+		</Layer>
+	</Relation>
+
+</SemanticRelationDescriptor>

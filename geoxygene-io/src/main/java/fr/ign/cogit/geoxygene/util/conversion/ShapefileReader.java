@@ -73,16 +73,16 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @author Bertrand Dumenieu
  */
 public class ShapefileReader implements Runnable {
-  private final static Logger logger = Logger.getLogger(ShapefileReader.class
-      .getName());
-  String shapefileName;
-  String populationName;
-  IDataSet dataset;
-  CoordinateReferenceSystem crs;
-  SchemaDefaultFeature schemaDefaultFeature;
-  FeatureSource<SimpleFeatureType, SimpleFeature> source;
-  IPopulation<IFeature> population;
-  Reader reader = null;
+  
+    private final static Logger logger = Logger.getLogger(ShapefileReader.class.getName());
+    String shapefileName;
+    String populationName;
+    IDataSet dataset;
+    CoordinateReferenceSystem crs;
+    SchemaDefaultFeature schemaDefaultFeature;
+    FeatureSource<SimpleFeatureType, SimpleFeature> source;
+    IPopulation<IFeature> population;
+    Reader reader = null;
 
   public Reader getReader() {
     return this.reader;

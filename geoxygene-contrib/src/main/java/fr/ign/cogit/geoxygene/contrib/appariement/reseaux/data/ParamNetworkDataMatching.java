@@ -217,11 +217,12 @@ public class ParamNetworkDataMatching {
     // Debug
     param.debugTirets = true;
     param.debugBilanSurObjetsGeo = false;
-    // param.debugAffichageCommentaires = 2;
-    // param.debugBuffer = true;
-    // param.debugPasTirets = 10;
+    param.debugAffichageCommentaires = 2;
+    param.debugBuffer = true;
+    param.debugPasTirets = 10;
     
     return param;
+  
   }
   
   

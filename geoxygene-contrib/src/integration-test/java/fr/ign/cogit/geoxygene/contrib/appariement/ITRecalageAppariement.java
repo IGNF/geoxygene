@@ -37,7 +37,7 @@ public class ITRecalageAppariement extends XMLTestCase {
      * 
      * @throws Exception
      */
-    @Test
+   /* @Test
     public void testAppariementDefautAvecRecalage() throws Exception {
         
         URL url = ITRecalageAppariement.class.getResource("/data/");
@@ -72,7 +72,7 @@ public class ITRecalageAppariement extends XMLTestCase {
         // On compare les GML des résultats du recalage
         compareCarteRecale(reseauRecale1, reseauRecale2);
         
-    }
+    }*/
     
     
     /**
@@ -103,13 +103,13 @@ public class ITRecalageAppariement extends XMLTestCase {
     }
     
     
-    /*public void test2() throws Exception {
+    public void test2() throws Exception {
         
         String xml1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><root><a></a><b></b></root>";
         
         String xml2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><root><b></b><a></a></root>";
         
         assertXMLEqual(xml1, xml2);
-    }*/
+    }
 
 }

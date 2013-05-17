@@ -186,7 +186,7 @@ public class ColorimetricColor {
     //Retrieving the initial color in the COGIT ColorReferenceSystem
     ColorimetricColor initColor = ColorReferenceSystem.searchColor(this.toColor());
     //Retrieving the saturation of the initial color in the COGIT ColorReferenceSystem
-    int initSaturation = initColor.getWheel(ColorReferenceSystem.COGITcrs).getidSaturation();
+    int initSaturation = initColor.getWheel(ColorReferenceSystem.defaultColorRS()).getidSaturation();
     if (saturation==initSaturation) return;
     
     //Retrieving the hue of the initial color

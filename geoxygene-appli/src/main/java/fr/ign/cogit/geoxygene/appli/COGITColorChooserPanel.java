@@ -150,7 +150,7 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel implements
     g.setColor(new Color(225, 225, 225));
     g.fillRect(0, 0, 1100, 450);
 
-    COGITColorChooserPanel.crs = ColorReferenceSystem.COGITcrs; //$NON-NLS-1$
+    COGITColorChooserPanel.crs = ColorReferenceSystem.defaultColorRS(); //$NON-NLS-1$
 
     // Creating the image of the main wheel (pure colors)
     // Création de l'image du cercle principal (Couleurs pures)

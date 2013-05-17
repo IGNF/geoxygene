@@ -19,6 +19,7 @@
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNet
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
@@ -85,6 +87,13 @@ public class NetworkDataMatching {
     // + Dataset
     paramApp.populationsArcs1 = dataset1.getPopulationsArcs();
     paramApp.populationsArcs2 = dataset2.getPopulationsArcs();
+    
+    /*List<ReseauApp> reseaux = new ArrayList<ReseauApp>();
+    ResultNetworkDataMatching resultNetworkDataMatching = AppariementIO.appariementDeJeuxGeo2(paramApp, reseaux);
+    resultNetworkDataMatching.setReseau1(reseaux.get(0));
+    resultNetworkDataMatching.setReseau2(reseaux.get(1));
+    
+    return resultNetworkDataMatching;*/
     
     // For result
     ResultNetworkDataMatching resultatAppariement = new ResultNetworkDataMatching();
@@ -213,7 +222,7 @@ public class NetworkDataMatching {
     resultatAppariement.setReseau2(reseau2);
     
     // if (paramApp.debugBilanSurObjetsGeo) {
-    if (doRecalage) {
+    /*if (doRecalage) {
       
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Transformation of matching links to generic links");
@@ -223,7 +232,7 @@ public class NetworkDataMatching {
       Appariement.nettoyageLiens(reseau1, reseau2);
       resultatAppariement.setLiensGeneriques(liensGeneriques);
       
-    } 
+    } */
     
     if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Link geometry assignment");
@@ -238,7 +247,7 @@ public class NetworkDataMatching {
     
     // 
     return resultatAppariement;
-  
+      
   }
   
   

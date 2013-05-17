@@ -1463,7 +1463,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
       this.strokePanel2.setPreferredSize(new Dimension(420, 250));
 
       StyledLayerDescriptor sld = StyledLayerDescriptor
-          .unmarshall(StyledLayerDescriptor.class.getResourceAsStream("BasicStyles.xml")); //$NON-NLS-1$
+          .unmarshall(StyledLayerDescriptor.class.getClassLoader().getResourceAsStream("sld/BasicStyles.xml")); //$NON-NLS-1$
       this.layer.getStyles().add(sld.getLayer("Basic Line").getStyles().get(0)); //$NON-NLS-1$
 
       this.strokeColor2 = ((LineSymbolizer) this.layer.getStyles().get(1)

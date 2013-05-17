@@ -265,20 +265,26 @@ public class ResultNetworkStatElement {
         + "Total : " + totalNetworkElementNumber + ", ";
 
     // Correct matched
-    returnString = returnString
-        + "Appariés : " + correctMatchingNetworkElementNumber 
-        + " (" + (correctMatchingNetworkElementNumber * 100 / totalNetworkElementNumber) + "%";
+    returnString = returnString + " (";
+    if (totalNetworkElementNumber > 0) {
+        returnString = returnString
+            + "Appariés : " + correctMatchingNetworkElementNumber 
+            + (correctMatchingNetworkElementNumber * 100 / totalNetworkElementNumber) + "%";
+    }
     if (totalNetworkElementLength > 0) {
-      returnString = returnString + ", "
-        + Math.round(correctedMatchingNetworkElementLength * 100 / totalNetworkElementLength) + "%long";
+        returnString = returnString + ", "
+            + Math.round(correctedMatchingNetworkElementLength * 100 / totalNetworkElementLength) + "%long";
     }
     returnString = returnString
         + "), ";
      
     // Not matched
-    returnString = returnString
-        + "Non appariés : " + noMatchingNetworkElementNumber 
-        + " (" + (noMatchingNetworkElementNumber * 100 / totalNetworkElementNumber) + "%";
+    returnString = returnString + " (";
+    if (totalNetworkElementNumber > 0) {
+        returnString = returnString
+            + "Non appariés : " + noMatchingNetworkElementNumber 
+            + (noMatchingNetworkElementNumber * 100 / totalNetworkElementNumber) + "%";
+    }
     if (totalNetworkElementLength > 0) {
       returnString = returnString + ", "
           + Math.round(noMatchingNetworkElementLength * 100 / totalNetworkElementLength) + "%long";
@@ -287,9 +293,12 @@ public class ResultNetworkStatElement {
         + "), ";
         
     // Doubtful matched
-    returnString = returnString
-        + "Incertains : " + doubtfulNetworkElementNumber
-        + " (" + (doubtfulNetworkElementNumber * 100 / totalNetworkElementNumber) + "%";
+    returnString = returnString + " (";
+    if (totalNetworkElementNumber > 0) {
+        returnString = returnString
+            + "Incertains : " + doubtfulNetworkElementNumber
+            + (doubtfulNetworkElementNumber * 100 / totalNetworkElementNumber) + "%";
+    }
     if (totalNetworkElementLength > 0) {
       returnString = returnString + ", "
           + Math.round(doubtfulNetworkElementLength * 100 / totalNetworkElementLength) + "%long";

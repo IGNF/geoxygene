@@ -84,8 +84,6 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
       if (menu == null) {
         menu = new JMenu(menuName);
       }
-      
-      
     
     JMenuItem menuItem = new JMenuItem(
         I18N.getString("DataMatchingPlugin.OpenDataMatchingEnvironment" //$NON-NLS-1$

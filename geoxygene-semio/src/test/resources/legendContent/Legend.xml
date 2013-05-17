@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Legend>
+	<Name>Legend</Name>
+	<legendRoot>
+		<Name>LegendRoot</Name>
+		<Component>
+			<Name>Transport</Name>
+			<Component>
+				<Name>Road theme</Name>
+				<Component>
+					<Name>Footpath</Name>
+				</Component>
+				<Component>
+					<Name>Other Road</Name>
+				</Component>
+				<Component>
+					<Name>Main Road</Name>
+				</Component>
+				<Component>
+					<Name>Highway</Name>
+				</Component>
+			</Component>
+			<Component>
+				<Name>Railway</Name>
+				<Component>
+					<Name>Marshalling area</Name>
+				</Component>
+				<Component>
+					<Name>Railroad</Name>
+				</Component>
+				<Component>
+					<Name>Station</Name>
+				</Component>
+			</Component>
+		</Component>
+		<Component>
+			<Name>Hydrography</Name>
+			<Component>
+				<Name>Water point</Name>
+			</Component>
+			<Component>
+				<Name>River</Name>
+			</Component>
+			<Component>
+				<Name>Sea</Name>
+			</Component>
+		</Component>
+		<Component>
+			<Name>Hazard</Name>
+			<Component>
+				<Name>Landside</Name>
+				<Component>
+					<Name>Low Landside</Name>
+				</Component>
+				<Component>
+					<Name>Medium Landside</Name>
+				</Component>
+				<Component>
+					<Name>High Landside</Name>
+				</Component>
+			</Component>
+			<Component>
+				<Name>Flooding</Name>
+				<Component>
+					<Name>Low Flooding</Name>
+				</Component>
+				<Component>
+					<Name>Medium Flooding</Name>
+				</Component>
+				<Component>
+					<Name>High Flooding</Name>
+				</Component>
+			</Component>
+		</Component>
+		<Component>
+			<Name>Building</Name>
+		</Component>
+		<Component>
+			<Name>Leisure</Name>
+			<Component>
+				<Name>Sport Ground</Name>
+			</Component>
+		</Component>
+		<Component>
+			<Name>Land Cover</Name>
+			<Component>
+				<Name>Building</Name>
+			</Component>
+			<Component>
+				<Name>Background</Name>
+			</Component>
+		</Component>
+		<Component>
+			<Name>Vegetation</Name>
+			<Component>
+				<Name>Forest</Name>
+			</Component>
+		</Component>
+	</legendRoot>
+</Legend>

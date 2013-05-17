@@ -1,0 +1,1999 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ColorReferenceSystem>
+    <Wheel>
+        <Saturation>0</Saturation>
+        <Slice>
+            <Hue>JAUNE</Hue>
+            <Color>
+                <IdColor>1</IdColor>
+                <Hue>JAUNE</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>JAUNE TRES CLAIR</UsualName>
+                <CleCoul>J1</CleCoul>
+                <redRGB>255</redRGB>
+                <greenRGB>255</greenRGB>
+                <blueRGB>204</blueRGB>
+                <xScreen>236</xScreen>
+                <yScreen>164</yScreen>
+            </Color>
+            <Color>
+                <IdColor>2</IdColor>
+                <Hue>JAUNE</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>JAUNE CLAIR</UsualName>
+                <CleCoul>J2</CleCoul>
+                <redRGB>255</redRGB>
+                <greenRGB>255</greenRGB>
+                <blueRGB>166</blueRGB>
+                <xScreen>247</xScreen>
+                <yScreen>153</yScreen>
+            </Color>
+            <Color>
+                <IdColor>3</IdColor>
+                <Hue>JAUNE</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>JAUNE MOYEN CLAIR</UsualName>
+                <CleCoul>J3</CleCoul>
+                <redRGB>255</redRGB>
+                <greenRGB>247</greenRGB>
+                <blueRGB>125</blueRGB>
+                <xScreen>258</xScreen>
+                <yScreen>142</yScreen>
+            </Color>
+            <Color>
+                <IdColor>4</IdColor>
+                <Hue>JAUNE</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>JAUNE PUR</UsualName>
+                <CleCoul>J4</CleCoul>
+                <redRGB>242</redRGB>
+                <greenRGB>229</greenRGB>
+                <blueRGB>2</blueRGB>
+                <xScreen>269</xScreen>
+                <yScreen>131</yScreen>
+            </Color>
+            <Color>
+                <IdColor>5</IdColor>
+                <Hue>JAUNE</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>JAUNE MOYEN FONCE</UsualName>
+                <CleCoul>J5</CleCoul>
+                <redRGB>224</redRGB>
+                <greenRGB>200</greenRGB>
+                <blueRGB>5</blueRGB>
+                <xScreen>280</xScreen>
+                <yScreen>120</yScreen>
+            </Color>
+            <Color>
+                <IdColor>6</IdColor>
+                <Hue>JAUNE</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>JAUNE FONCE</UsualName>
+                <CleCoul>J6</CleCoul>
+                <redRGB>191</redRGB>
+                <greenRGB>158</greenRGB>
+                <blueRGB>10</blueRGB>
+                <xScreen>291</xScreen>
+                <yScreen>109</yScreen>
+            </Color>
+            <Color>
+                <IdColor>7</IdColor>
+                <Hue>JAUNE</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>JAUNE TRES FONCE</UsualName>
+                <CleCoul>J7</CleCoul>
+                <redRGB>127</redRGB>
+                <greenRGB>88</greenRGB>
+                <blueRGB>12</blueRGB>
+                <xScreen>302</xScreen>
+                <yScreen>98</yScreen>
+            </Color>
+            <IdSaturationParentWheel>0</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>JAUNE ORANGE</Hue>
+            <Color>
+                <IdColor>71</IdColor>
+                <Hue>JAUNE ORANGE</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>JAUNE ORANGE TRES CLAIR</UsualName>
+                <CleCoul>JO1</CleCoul>
+                <redRGB>255</redRGB>
+                <greenRGB>242</greenRGB>
+                <blueRGB>210</blueRGB>
+                <xScreen>213</xScreen>
+                <yScreen>149</yScreen>
+            </Color>
+            <Color>
+                <IdColor>72</IdColor>
+                <Hue>JAUNE ORANGE</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>JAUNE ORANGE CLAIR</UsualName>
+                <CleCoul>JO2</CleCoul>
+                <redRGB>254</redRGB>
+                <greenRGB>226</greenRGB>
+                <blueRGB>161</blueRGB>
+                <xScreen>217</xScreen>
+                <yScreen>134</yScreen>
+            </Color>
+            <Color>
+                <IdColor>73</IdColor>
+                <Hue>JAUNE ORANGE</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>JAUNE ORANGE MOYEN CLAIR</UsualName>
+                <CleCoul>JO3</CleCoul>
+                <redRGB>254</redRGB>
+                <greenRGB>212</greenRGB>
+                <blueRGB>116</blueRGB>
+                <xScreen>221</xScreen>
+                <yScreen>119</yScreen>
+            </Color>
+            <Color>
+                <IdColor>74</IdColor>
+                <Hue>JAUNE ORANGE</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>JAUNE ORANGE PUR</UsualName>
+                <CleCoul>JO4</CleCoul>
+                <redRGB>249</redRGB>
+                <greenRGB>185</greenRGB>
+                <blueRGB>35</blueRGB>
+                <xScreen>225</xScreen>
+                <yScreen>104</yScreen>
+            </Color>
+            <Color>
+                <IdColor>75</IdColor>
+                <Hue>JAUNE ORANGE</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>JAUNE ORANGE MOYEN FONCE</UsualName>
+                <CleCoul>JO5</CleCoul>
+                <redRGB>240</redRGB>
+                <greenRGB>157</greenRGB>
+                <blueRGB>18</blueRGB>
+                <xScreen>229</xScreen>
+                <yScreen>89</yScreen>
+            </Color>
+            <Color>
+                <IdColor>76</IdColor>
+                <Hue>JAUNE ORANGE</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>JAUNE ORANGE FONCE</UsualName>
+                <CleCoul>JO6</CleCoul>
+                <redRGB>187</redRGB>
+                <greenRGB>105</greenRGB>
+                <blueRGB>12</blueRGB>
+                <xScreen>233</xScreen>
+                <yScreen>74</yScreen>
+            </Color>
+            <Color>
+                <IdColor>77</IdColor>
+                <Hue>JAUNE ORANGE</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>JAUNE ORANGE TRES FONCE</UsualName>
+                <CleCoul>JO7</CleCoul>
+                <redRGB>140</redRGB>
+                <greenRGB>75</greenRGB>
+                <blueRGB>18</blueRGB>
+                <xScreen>237</xScreen>
+                <yScreen>59</yScreen>
+            </Color>
+            <IdSaturationParentWheel>0</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>ORANGE</Hue>
+            <Color>
+                <IdColor>64</IdColor>
+                <Hue>ORANGE</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>ORANGE TRES CLAIR</UsualName>
+                <CleCoul>O1</CleCoul>
+                <redRGB>254</redRGB>
+                <greenRGB>237</greenRGB>
+                <blueRGB>222</blueRGB>
+                <xScreen>188</xScreen>
+                <yScreen>149</yScreen>
+            </Color>
+            <Color>
+                <IdColor>65</IdColor>
+                <Hue>ORANGE</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>ORANGE CLAIR</UsualName>
+                <CleCoul>O2</CleCoul>
+                <redRGB>253</redRGB>
+                <greenRGB>207</greenRGB>
+                <blueRGB>162</blueRGB>
+                <xScreen>184</xScreen>
+                <yScreen>134</yScreen>
+            </Color>
+            <Color>
+                <IdColor>66</IdColor>
+                <Hue>ORANGE</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>ORANGE MOYEN CLAIR</UsualName>
+                <CleCoul>O3</CleCoul>
+                <redRGB>253</redRGB>
+                <greenRGB>174</greenRGB>
+                <blueRGB>107</blueRGB>
+                <xScreen>180</xScreen>
+                <yScreen>119</yScreen>
+            </Color>
+            <Color>
+                <IdColor>67</IdColor>
+                <Hue>ORANGE</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>ORANGE PUR</UsualName>
+                <CleCoul>O4</CleCoul>
+                <redRGB>253</redRGB>
+                <greenRGB>141</greenRGB>
+                <blueRGB>60</blueRGB>
+                <xScreen>176</xScreen>
+                <yScreen>104</yScreen>
+            </Color>
+            <Color>
+                <IdColor>68</IdColor>
+                <Hue>ORANGE</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>ORANGE MOYEN FONCE</UsualName>
+                <CleCoul>O5</CleCoul>
+                <redRGB>254</redRGB>
+                <greenRGB>107</greenRGB>
+                <blueRGB>19</blueRGB>
+                <xScreen>172</xScreen>
+                <yScreen>89</yScreen>
+            </Color>
+            <Color>
+                <IdColor>69</IdColor>
+                <Hue>ORANGE</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>ORANGE FONCE</UsualName>
+                <CleCoul>O6</CleCoul>
+                <redRGB>217</redRGB>
+                <greenRGB>72</greenRGB>
+                <blueRGB>1</blueRGB>
+                <xScreen>168</xScreen>
+                <yScreen>74</yScreen>
+            </Color>
+            <Color>
+                <IdColor>70</IdColor>
+                <Hue>ORANGE</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>ORANGE TRES FONCE</UsualName>
+                <CleCoul>O7</CleCoul>
+                <redRGB>140</redRGB>
+                <greenRGB>45</greenRGB>
+                <blueRGB>4</blueRGB>
+                <xScreen>164</xScreen>
+                <yScreen>59</yScreen>
+            </Color>
+            <IdSaturationParentWheel>0</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>ROUGE</Hue>
+            <Color>
+                <IdColor>57</IdColor>
+                <Hue>ROUGE</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>ROUGE TRES CLAIR</UsualName>
+                <CleCoul>R1</CleCoul>
+                <redRGB>254</redRGB>
+                <greenRGB>230</greenRGB>
+                <blueRGB>219</blueRGB>
+                <xScreen>164</xScreen>
+                <yScreen>164</yScreen>
+            </Color>
+            <Color>
+                <IdColor>58</IdColor>
+                <Hue>ROUGE</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>ROUGE CLAIR</UsualName>
+                <CleCoul>R2</CleCoul>
+                <redRGB>252</redRGB>
+                <greenRGB>187</greenRGB>
+                <blueRGB>161</blueRGB>
+                <xScreen>153</xScreen>
+                <yScreen>153</yScreen>
+            </Color>
+            <Color>
+                <IdColor>59</IdColor>
+                <Hue>ROUGE</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>ROUGE MOYEN CLAIR</UsualName>
+                <CleCoul>R3</CleCoul>
+                <redRGB>252</redRGB>
+                <greenRGB>146</greenRGB>
+                <blueRGB>114</blueRGB>
+                <xScreen>142</xScreen>
+                <yScreen>142</yScreen>
+            </Color>
+            <Color>
+                <IdColor>60</IdColor>
+                <Hue>ROUGE</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>ROUGE PUR</UsualName>
+                <CleCoul>R4</CleCoul>
+                <redRGB>251</redRGB>
+                <greenRGB>106</greenRGB>
+                <blueRGB>74</blueRGB>
+                <xScreen>131</xScreen>
+                <yScreen>131</yScreen>
+            </Color>
+            <Color>
+                <IdColor>61</IdColor>
+                <Hue>ROUGE</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>ROUGE MOYEN FONCE</UsualName>
+                <CleCoul>R5</CleCoul>
+                <redRGB>239</redRGB>
+                <greenRGB>59</greenRGB>
+                <blueRGB>44</blueRGB>
+                <xScreen>120</xScreen>
+                <yScreen>120</yScreen>
+            </Color>
+            <Color>
+                <IdColor>62</IdColor>
+                <Hue>ROUGE</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>ROUGE FONCE</UsualName>
+                <CleCoul>R6</CleCoul>
+                <redRGB>203</redRGB>
+                <greenRGB>24</greenRGB>
+                <blueRGB>29</blueRGB>
+                <xScreen>109</xScreen>
+                <yScreen>109</yScreen>
+            </Color>
+            <Color>
+                <IdColor>63</IdColor>
+                <Hue>ROUGE</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>ROUGE TRES FONCE</UsualName>
+                <CleCoul>R7</CleCoul>
+                <redRGB>153</redRGB>
+                <greenRGB>0</greenRGB>
+                <blueRGB>13</blueRGB>
+                <xScreen>98</xScreen>
+                <yScreen>98</yScreen>
+            </Color>
+            <IdSaturationParentWheel>0</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>POURPRE</Hue>
+            <Color>
+                <IdColor>101</IdColor>
+                <Hue>POURPRE</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>POURPRE TRES CLAIR</UsualName>
+                <CleCoul>P1</CleCoul>
+                <redRGB>246</redRGB>
+                <greenRGB>239</greenRGB>
+                <blueRGB>244</blueRGB>
+                <xScreen>150</xScreen>
+                <yScreen>188</yScreen>
+            </Color>
+            <Color>
+                <IdColor>102</IdColor>
+                <Hue>POURPRE</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>POURPRE CLAIR</UsualName>
+                <CleCoul>P2</CleCoul>
+                <redRGB>245</redRGB>
+                <greenRGB>205</greenRGB>
+                <blueRGB>222</blueRGB>
+                <xScreen>135</xScreen>
+                <yScreen>184</yScreen>
+            </Color>
+            <Color>
+                <IdColor>103</IdColor>
+                <Hue>POURPRE</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>POURPRE MOYEN CLAIR</UsualName>
+                <CleCoul>P3</CleCoul>
+                <redRGB>237</redRGB>
+                <greenRGB>171</greenRGB>
+                <blueRGB>198</blueRGB>
+                <xScreen>120</xScreen>
+                <yScreen>180</yScreen>
+            </Color>
+            <Color>
+                <IdColor>104</IdColor>
+                <Hue>POURPRE</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>POURPRE PUR</UsualName>
+                <CleCoul>P4</CleCoul>
+                <redRGB>230</redRGB>
+                <greenRGB>138</greenRGB>
+                <blueRGB>176</blueRGB>
+                <xScreen>105</xScreen>
+                <yScreen>176</yScreen>
+            </Color>
+            <Color>
+                <IdColor>105</IdColor>
+                <Hue>POURPRE</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>POURPRE MOYEN FONCE</UsualName>
+                <CleCoul>P5</CleCoul>
+                <redRGB>218</redRGB>
+                <greenRGB>81</greenRGB>
+                <blueRGB>137</blueRGB>
+                <xScreen>90</xScreen>
+                <yScreen>172</yScreen>
+            </Color>
+            <Color>
+                <IdColor>106</IdColor>
+                <Hue>POURPRE</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>POURPRE FONCE</UsualName>
+                <CleCoul>P6</CleCoul>
+                <redRGB>196</redRGB>
+                <greenRGB>16</greenRGB>
+                <blueRGB>100</blueRGB>
+                <xScreen>75</xScreen>
+                <yScreen>168</yScreen>
+            </Color>
+            <Color>
+                <IdColor>107</IdColor>
+                <Hue>POURPRE</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>POURPRE TRES FONCE</UsualName>
+                <CleCoul>P7</CleCoul>
+                <redRGB>156</redRGB>
+                <greenRGB>1</greenRGB>
+                <blueRGB>75</blueRGB>
+                <xScreen>60</xScreen>
+                <yScreen>164</yScreen>
+            </Color>
+            <IdSaturationParentWheel>0</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>ROUGE VIOLET</Hue>
+            <Color>
+                <IdColor>50</IdColor>
+                <Hue>ROUGE VIOLET</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>ROUGE VIOLET TRES CLAIR</UsualName>
+                <CleCoul>RVi1</CleCoul>
+                <redRGB>246</redRGB>
+                <greenRGB>244</greenRGB>
+                <blueRGB>245</blueRGB>
+                <xScreen>150</xScreen>
+                <yScreen>213</yScreen>
+            </Color>
+            <Color>
+                <IdColor>51</IdColor>
+                <Hue>ROUGE VIOLET</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>ROUGE VIOLET CLAIR</UsualName>
+                <CleCoul>RVi2</CleCoul>
+                <redRGB>229</redRGB>
+                <greenRGB>212</greenRGB>
+                <blueRGB>223</blueRGB>
+                <xScreen>135</xScreen>
+                <yScreen>217</yScreen>
+            </Color>
+            <Color>
+                <IdColor>52</IdColor>
+                <Hue>ROUGE VIOLET</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>ROUGE VIOLET MOYEN CLAIR</UsualName>
+                <CleCoul>RVi3</CleCoul>
+                <redRGB>210</redRGB>
+                <greenRGB>188</greenRGB>
+                <blueRGB>212</blueRGB>
+                <xScreen>120</xScreen>
+                <yScreen>221</yScreen>
+            </Color>
+            <Color>
+                <IdColor>53</IdColor>
+                <Hue>ROUGE VIOLET</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>ROUGE VIOLET PUR</UsualName>
+                <CleCoul>RVi4</CleCoul>
+                <redRGB>193</redRGB>
+                <greenRGB>165</greenRGB>
+                <blueRGB>202</blueRGB>
+                <xScreen>105</xScreen>
+                <yScreen>225</yScreen>
+            </Color>
+            <Color>
+                <IdColor>54</IdColor>
+                <Hue>ROUGE VIOLET</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>ROUGE VIOLET MOYEN FONCE</UsualName>
+                <CleCoul>RVi5</CleCoul>
+                <redRGB>152</redRGB>
+                <greenRGB>112</greenRGB>
+                <blueRGB>167</blueRGB>
+                <xScreen>90</xScreen>
+                <yScreen>229</yScreen>
+            </Color>
+            <Color>
+                <IdColor>55</IdColor>
+                <Hue>ROUGE VIOLET</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>ROUGE VIOLET FONCE</UsualName>
+                <CleCoul>RVi6</CleCoul>
+                <redRGB>136</redRGB>
+                <greenRGB>64</greenRGB>
+                <blueRGB>153</blueRGB>
+                <xScreen>75</xScreen>
+                <yScreen>233</yScreen>
+            </Color>
+            <Color>
+                <IdColor>56</IdColor>
+                <Hue>ROUGE VIOLET</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>ROUGE VIOLET TRES FONCE</UsualName>
+                <CleCoul>RVi7</CleCoul>
+                <redRGB>129</redRGB>
+                <greenRGB>17</greenRGB>
+                <blueRGB>125</blueRGB>
+                <xScreen>60</xScreen>
+                <yScreen>237</yScreen>
+            </Color>
+            <IdSaturationParentWheel>0</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>VIOLET</Hue>
+            <Color>
+                <IdColor>43</IdColor>
+                <Hue>VIOLET</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>VIOLET TRES CLAIR</UsualName>
+                <CleCoul>Vi1</CleCoul>
+                <redRGB>242</redRGB>
+                <greenRGB>240</greenRGB>
+                <blueRGB>247</blueRGB>
+                <xScreen>164</xScreen>
+                <yScreen>236</yScreen>
+            </Color>
+            <Color>
+                <IdColor>44</IdColor>
+                <Hue>VIOLET</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>VIOLET CLAIR</UsualName>
+                <CleCoul>Vi2</CleCoul>
+                <redRGB>218</redRGB>
+                <greenRGB>218</greenRGB>
+                <blueRGB>235</blueRGB>
+                <xScreen>153</xScreen>
+                <yScreen>247</yScreen>
+            </Color>
+            <Color>
+                <IdColor>45</IdColor>
+                <Hue>VIOLET</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>VIOLET MOYEN CLAIR</UsualName>
+                <CleCoul>Vi3</CleCoul>
+                <redRGB>188</redRGB>
+                <greenRGB>189</greenRGB>
+                <blueRGB>220</blueRGB>
+                <xScreen>142</xScreen>
+                <yScreen>258</yScreen>
+            </Color>
+            <Color>
+                <IdColor>46</IdColor>
+                <Hue>VIOLET</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>VIOLET PUR</UsualName>
+                <CleCoul>Vi4</CleCoul>
+                <redRGB>158</redRGB>
+                <greenRGB>154</greenRGB>
+                <blueRGB>201</blueRGB>
+                <xScreen>131</xScreen>
+                <yScreen>269</yScreen>
+            </Color>
+            <Color>
+                <IdColor>47</IdColor>
+                <Hue>VIOLET</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>VIOLET MOYEN FONCE</UsualName>
+                <CleCoul>Vi5</CleCoul>
+                <redRGB>128</redRGB>
+                <greenRGB>125</greenRGB>
+                <blueRGB>186</blueRGB>
+                <xScreen>120</xScreen>
+                <yScreen>280</yScreen>
+            </Color>
+            <Color>
+                <IdColor>48</IdColor>
+                <Hue>VIOLET</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>VIOLET FONCE</UsualName>
+                <CleCoul>Vi6</CleCoul>
+                <redRGB>106</redRGB>
+                <greenRGB>81</greenRGB>
+                <blueRGB>163</blueRGB>
+                <xScreen>109</xScreen>
+                <yScreen>291</yScreen>
+            </Color>
+            <Color>
+                <IdColor>49</IdColor>
+                <Hue>VIOLET</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>VIOLET TRES FONCE</UsualName>
+                <CleCoul>Vi7</CleCoul>
+                <redRGB>74</redRGB>
+                <greenRGB>20</greenRGB>
+                <blueRGB>134</blueRGB>
+                <xScreen>98</xScreen>
+                <yScreen>302</yScreen>
+            </Color>
+            <IdSaturationParentWheel>0</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>BLEU VIOLET</Hue>
+            <Color>
+                <IdColor>36</IdColor>
+                <Hue>BLEU VIOLET</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>BLEU VIOLET TRES CLAIR</UsualName>
+                <CleCoul>BVi1</CleCoul>
+                <redRGB>228</redRGB>
+                <greenRGB>237</greenRGB>
+                <blueRGB>245</blueRGB>
+                <xScreen>188</xScreen>
+                <yScreen>250</yScreen>
+            </Color>
+            <Color>
+                <IdColor>37</IdColor>
+                <Hue>BLEU VIOLET</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>BLEU VIOLET CLAIR</UsualName>
+                <CleCoul>BVi2</CleCoul>
+                <redRGB>198</redRGB>
+                <greenRGB>211</greenRGB>
+                <blueRGB>231</blueRGB>
+                <xScreen>184</xScreen>
+                <yScreen>265</yScreen>
+            </Color>
+            <Color>
+                <IdColor>38</IdColor>
+                <Hue>BLEU VIOLET</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>BLEU VIOLET MOYEN CLAIR</UsualName>
+                <CleCoul>BVi3</CleCoul>
+                <redRGB>153</redRGB>
+                <greenRGB>178</greenRGB>
+                <blueRGB>213</blueRGB>
+                <xScreen>180</xScreen>
+                <yScreen>280</yScreen>
+            </Color>
+            <Color>
+                <IdColor>39</IdColor>
+                <Hue>BLEU VIOLET</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>BLEU VIOLET PUR</UsualName>
+                <CleCoul>BVi4</CleCoul>
+                <redRGB>121</redRGB>
+                <greenRGB>144</greenRGB>
+                <blueRGB>195</blueRGB>
+                <xScreen>176</xScreen>
+                <yScreen>295</yScreen>
+            </Color>
+            <Color>
+                <IdColor>40</IdColor>
+                <Hue>BLEU VIOLET</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>BLEU VIOLET MOYEN FONCE</UsualName>
+                <CleCoul>BVi5</CleCoul>
+                <redRGB>86</redRGB>
+                <greenRGB>115</greenRGB>
+                <blueRGB>180</blueRGB>
+                <xScreen>172</xScreen>
+                <yScreen>310</yScreen>
+            </Color>
+            <Color>
+                <IdColor>41</IdColor>
+                <Hue>BLEU VIOLET</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>BLEU VIOLET FONCE</UsualName>
+                <CleCoul>BVi6</CleCoul>
+                <redRGB>54</redRGB>
+                <greenRGB>72</greenRGB>
+                <blueRGB>158</blueRGB>
+                <xScreen>168</xScreen>
+                <yScreen>325</yScreen>
+            </Color>
+            <Color>
+                <IdColor>42</IdColor>
+                <Hue>BLEU VIOLET</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>BLEU VIOLET TRES FONCE</UsualName>
+                <CleCoul>BVi7</CleCoul>
+                <redRGB>17</redRGB>
+                <greenRGB>17</greenRGB>
+                <blueRGB>132</blueRGB>
+                <xScreen>164</xScreen>
+                <yScreen>340</yScreen>
+            </Color>
+            <IdSaturationParentWheel>0</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>BLEU</Hue>
+            <Color>
+                <IdColor>29</IdColor>
+                <Hue>BLEU</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>BLEU TRES CLAIR</UsualName>
+                <CleCoul>B1</CleCoul>
+                <redRGB>235</redRGB>
+                <greenRGB>243</greenRGB>
+                <blueRGB>248</blueRGB>
+                <xScreen>213</xScreen>
+                <yScreen>250</yScreen>
+            </Color>
+            <Color>
+                <IdColor>30</IdColor>
+                <Hue>BLEU</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>BLEU CLAIR</UsualName>
+                <CleCoul>B2</CleCoul>
+                <redRGB>194</redRGB>
+                <greenRGB>219</greenRGB>
+                <blueRGB>235</blueRGB>
+                <xScreen>217</xScreen>
+                <yScreen>265</yScreen>
+            </Color>
+            <Color>
+                <IdColor>31</IdColor>
+                <Hue>BLEU</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>BLEU MOYEN CLAIR</UsualName>
+                <CleCoul>B3</CleCoul>
+                <redRGB>158</redRGB>
+                <greenRGB>202</greenRGB>
+                <blueRGB>225</blueRGB>
+                <xScreen>221</xScreen>
+                <yScreen>280</yScreen>
+            </Color>
+            <Color>
+                <IdColor>32</IdColor>
+                <Hue>BLEU</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>BLEU PUR</UsualName>
+                <CleCoul>B4</CleCoul>
+                <redRGB>111</redRGB>
+                <greenRGB>173</greenRGB>
+                <blueRGB>209</blueRGB>
+                <xScreen>225</xScreen>
+                <yScreen>295</yScreen>
+            </Color>
+            <Color>
+                <IdColor>33</IdColor>
+                <Hue>BLEU</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>BLEU MOYEN FONCE</UsualName>
+                <CleCoul>B5</CleCoul>
+                <redRGB>67</redRGB>
+                <greenRGB>144</greenRGB>
+                <blueRGB>193</blueRGB>
+                <xScreen>229</xScreen>
+                <yScreen>310</yScreen>
+            </Color>
+            <Color>
+                <IdColor>34</IdColor>
+                <Hue>BLEU</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>BLEU FONCE</UsualName>
+                <CleCoul>B6</CleCoul>
+                <redRGB>32</redRGB>
+                <greenRGB>112</greenRGB>
+                <blueRGB>177</blueRGB>
+                <xScreen>233</xScreen>
+                <yScreen>325</yScreen>
+            </Color>
+            <Color>
+                <IdColor>35</IdColor>
+                <Hue>BLEU</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>BLEU TRES FONCE</UsualName>
+                <CleCoul>B7</CleCoul>
+                <redRGB>11</redRGB>
+                <greenRGB>73</greenRGB>
+                <blueRGB>157</blueRGB>
+                <xScreen>237</xScreen>
+                <yScreen>340</yScreen>
+            </Color>
+            <IdSaturationParentWheel>0</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>VERT BLEU</Hue>
+            <Color>
+                <IdColor>22</IdColor>
+                <Hue>VERT BLEU</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>VERT BLEU TRES CLAIR</UsualName>
+                <CleCoul>VB1</CleCoul>
+                <redRGB>231</redRGB>
+                <greenRGB>246</greenRGB>
+                <blueRGB>243</blueRGB>
+                <xScreen>236</xScreen>
+                <yScreen>236</yScreen>
+            </Color>
+            <Color>
+                <IdColor>23</IdColor>
+                <Hue>VERT BLEU</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>VERT BLEU CLAIR</UsualName>
+                <CleCoul>VB2</CleCoul>
+                <redRGB>197</redRGB>
+                <greenRGB>233</greenRGB>
+                <blueRGB>228</blueRGB>
+                <xScreen>247</xScreen>
+                <yScreen>247</yScreen>
+            </Color>
+            <Color>
+                <IdColor>24</IdColor>
+                <Hue>VERT BLEU</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>VERT BLEU MOYEN CLAIR</UsualName>
+                <CleCoul>VB3</CleCoul>
+                <redRGB>146</redRGB>
+                <greenRGB>213</greenRGB>
+                <blueRGB>201</blueRGB>
+                <xScreen>258</xScreen>
+                <yScreen>258</yScreen>
+            </Color>
+            <Color>
+                <IdColor>25</IdColor>
+                <Hue>VERT BLEU</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>VERT BLEU PUR</UsualName>
+                <CleCoul>VB4</CleCoul>
+                <redRGB>111</redRGB>
+                <greenRGB>198</greenRGB>
+                <blueRGB>186</blueRGB>
+                <xScreen>269</xScreen>
+                <yScreen>269</yScreen>
+            </Color>
+            <Color>
+                <IdColor>26</IdColor>
+                <Hue>VERT BLEU</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>VERT BLEU MOYEN FONCE</UsualName>
+                <CleCoul>VB5</CleCoul>
+                <redRGB>43</redRGB>
+                <greenRGB>170</greenRGB>
+                <blueRGB>162</blueRGB>
+                <xScreen>280</xScreen>
+                <yScreen>280</yScreen>
+            </Color>
+            <Color>
+                <IdColor>27</IdColor>
+                <Hue>VERT BLEU</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>VERT BLEU FONCE</UsualName>
+                <CleCoul>VB6</CleCoul>
+                <redRGB>0</redRGB>
+                <greenRGB>144</greenRGB>
+                <blueRGB>135</blueRGB>
+                <xScreen>291</xScreen>
+                <yScreen>291</yScreen>
+            </Color>
+            <Color>
+                <IdColor>28</IdColor>
+                <Hue>VERT BLEU</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>VERT BLEU TRES FONCE</UsualName>
+                <CleCoul>VB7</CleCoul>
+                <redRGB>1</redRGB>
+                <greenRGB>103</greenRGB>
+                <blueRGB>102</blueRGB>
+                <xScreen>302</xScreen>
+                <yScreen>302</yScreen>
+            </Color>
+            <IdSaturationParentWheel>0</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>VERT</Hue>
+            <Color>
+                <IdColor>15</IdColor>
+                <Hue>VERT</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>VERT TRES CLAIR</UsualName>
+                <CleCoul>V1</CleCoul>
+                <redRGB>237</redRGB>
+                <greenRGB>248</greenRGB>
+                <blueRGB>233</blueRGB>
+                <xScreen>250</xScreen>
+                <yScreen>213</yScreen>
+            </Color>
+            <Color>
+                <IdColor>16</IdColor>
+                <Hue>VERT</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>VERT CLAIR</UsualName>
+                <CleCoul>V2</CleCoul>
+                <redRGB>199</redRGB>
+                <greenRGB>233</greenRGB>
+                <blueRGB>192</blueRGB>
+                <xScreen>265</xScreen>
+                <yScreen>217</yScreen>
+            </Color>
+            <Color>
+                <IdColor>17</IdColor>
+                <Hue>VERT</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>VERT MOYEN CLAIR</UsualName>
+                <CleCoul>V3</CleCoul>
+                <redRGB>161</redRGB>
+                <greenRGB>217</greenRGB>
+                <blueRGB>155</blueRGB>
+                <xScreen>280</xScreen>
+                <yScreen>221</yScreen>
+            </Color>
+            <Color>
+                <IdColor>18</IdColor>
+                <Hue>VERT</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>VERT PUR</UsualName>
+                <CleCoul>V4</CleCoul>
+                <redRGB>116</redRGB>
+                <greenRGB>196</greenRGB>
+                <blueRGB>118</blueRGB>
+                <xScreen>295</xScreen>
+                <yScreen>225</yScreen>
+            </Color>
+            <Color>
+                <IdColor>19</IdColor>
+                <Hue>VERT</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>VERT MOYEN FONCE</UsualName>
+                <CleCoul>V5</CleCoul>
+                <redRGB>65</redRGB>
+                <greenRGB>171</greenRGB>
+                <blueRGB>93</blueRGB>
+                <xScreen>310</xScreen>
+                <yScreen>229</yScreen>
+            </Color>
+            <Color>
+                <IdColor>20</IdColor>
+                <Hue>VERT</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>VERT FONCE</UsualName>
+                <CleCoul>V6</CleCoul>
+                <redRGB>35</redRGB>
+                <greenRGB>140</greenRGB>
+                <blueRGB>69</blueRGB>
+                <xScreen>325</xScreen>
+                <yScreen>233</yScreen>
+            </Color>
+            <Color>
+                <IdColor>21</IdColor>
+                <Hue>VERT</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>VERT TRES FONCE</UsualName>
+                <CleCoul>V7</CleCoul>
+                <redRGB>0</redRGB>
+                <greenRGB>90</greenRGB>
+                <blueRGB>50</blueRGB>
+                <xScreen>340</xScreen>
+                <yScreen>237</yScreen>
+            </Color>
+            <IdSaturationParentWheel>0</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>JAUNE VERT</Hue>
+            <Color>
+                <IdColor>8</IdColor>
+                <Hue>JAUNE VERT</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>JAUNE VERT TRES CLAIR</UsualName>
+                <CleCoul>JV1</CleCoul>
+                <redRGB>242</redRGB>
+                <greenRGB>250</greenRGB>
+                <blueRGB>222</blueRGB>
+                <xScreen>250</xScreen>
+                <yScreen>188</yScreen>
+            </Color>
+            <Color>
+                <IdColor>9</IdColor>
+                <Hue>JAUNE VERT</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>JAUNE VERT CLAIR</UsualName>
+                <CleCoul>JV2</CleCoul>
+                <redRGB>217</redRGB>
+                <greenRGB>240</greenRGB>
+                <blueRGB>176</blueRGB>
+                <xScreen>265</xScreen>
+                <yScreen>184</yScreen>
+            </Color>
+            <Color>
+                <IdColor>10</IdColor>
+                <Hue>JAUNE VERT</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>JAUNE VERT MOYEN CLAIR</UsualName>
+                <CleCoul>JV3</CleCoul>
+                <redRGB>192</redRGB>
+                <greenRGB>229</greenRGB>
+                <blueRGB>140</blueRGB>
+                <xScreen>280</xScreen>
+                <yScreen>180</yScreen>
+            </Color>
+            <Color>
+                <IdColor>11</IdColor>
+                <Hue>JAUNE VERT</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>JAUNE VERT PUR</UsualName>
+                <CleCoul>JV4</CleCoul>
+                <redRGB>151</redRGB>
+                <greenRGB>201</greenRGB>
+                <blueRGB>85</blueRGB>
+                <xScreen>295</xScreen>
+                <yScreen>176</yScreen>
+            </Color>
+            <Color>
+                <IdColor>12</IdColor>
+                <Hue>JAUNE VERT</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>JAUNE VERT MOYEN FONCE</UsualName>
+                <CleCoul>JV5</CleCoul>
+                <redRGB>109</redRGB>
+                <greenRGB>167</greenRGB>
+                <blueRGB>64</blueRGB>
+                <xScreen>310</xScreen>
+                <yScreen>172</yScreen>
+            </Color>
+            <Color>
+                <IdColor>13</IdColor>
+                <Hue>JAUNE VERT</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>JAUNE VERT FONCE</UsualName>
+                <CleCoul>JV6</CleCoul>
+                <redRGB>77</redRGB>
+                <greenRGB>146</greenRGB>
+                <blueRGB>33</blueRGB>
+                <xScreen>325</xScreen>
+                <yScreen>168</yScreen>
+            </Color>
+            <Color>
+                <IdColor>14</IdColor>
+                <Hue>JAUNE VERT</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>JAUNE VERT TRES FONCE</UsualName>
+                <CleCoul>JV7</CleCoul>
+                <redRGB>39</redRGB>
+                <greenRGB>100</greenRGB>
+                <blueRGB>25</blueRGB>
+                <xScreen>340</xScreen>
+                <yScreen>164</yScreen>
+            </Color>
+            <IdSaturationParentWheel>0</IdSaturationParentWheel>
+        </Slice>
+    </Wheel>
+    <Wheel>
+        <Saturation>1</Saturation>
+        <Slice>
+            <Hue>JAUNE GRIS</Hue>
+            <Color>
+                <IdColor>108</IdColor>
+                <Hue>JAUNE GRIS</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>JAUNE GRIS TRES CLAIR</UsualName>
+                <CleCoul>JG1</CleCoul>
+                <redRGB>242</redRGB>
+                <greenRGB>242</greenRGB>
+                <blueRGB>211</blueRGB>
+                <xScreen>635</xScreen>
+                <yScreen>153</yScreen>
+            </Color>
+            <Color>
+                <IdColor>109</IdColor>
+                <Hue>JAUNE GRIS</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>JAUNE GRIS MOYEN CLAIR</UsualName>
+                <CleCoul>JG3</CleCoul>
+                <redRGB>236</redRGB>
+                <greenRGB>231</greenRGB>
+                <blueRGB>153</blueRGB>
+                <xScreen>648</xScreen>
+                <yScreen>146</yScreen>
+            </Color>
+            <Color>
+                <IdColor>110</IdColor>
+                <Hue>JAUNE GRIS</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>JAUNE GRIS MOYEN FONCE</UsualName>
+                <CleCoul>JG5</CleCoul>
+                <redRGB>190</redRGB>
+                <greenRGB>178</greenRGB>
+                <blueRGB>76</blueRGB>
+                <xScreen>661</xScreen>
+                <yScreen>139</yScreen>
+            </Color>
+            <Color>
+                <IdColor>111</IdColor>
+                <Hue>JAUNE GRIS</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>JAUNE GRIS TRES FONCE</UsualName>
+                <CleCoul>JG7</CleCoul>
+                <redRGB>118</redRGB>
+                <greenRGB>98</greenRGB>
+                <blueRGB>26</blueRGB>
+                <xScreen>674</xScreen>
+                <yScreen>132</yScreen>
+            </Color>
+            <IdSaturationParentWheel>1</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>ORANGE GRIS</Hue>
+            <Color>
+                <IdColor>128</IdColor>
+                <Hue>ORANGE GRIS</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>ORANGE GRIS TRES CLAIR</UsualName>
+                <CleCoul>OG1</CleCoul>
+                <redRGB>239</redRGB>
+                <greenRGB>229</greenRGB>
+                <blueRGB>219</blueRGB>
+                <xScreen>570</xScreen>
+                <yScreen>105</yScreen>
+            </Color>
+            <Color>
+                <IdColor>129</IdColor>
+                <Hue>ORANGE GRIS</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>ORANGE GRIS MOYEN CLAIR</UsualName>
+                <CleCoul>OG3</CleCoul>
+                <redRGB>210</redRGB>
+                <greenRGB>161</greenRGB>
+                <blueRGB>115</blueRGB>
+                <xScreen>574</xScreen>
+                <yScreen>90</yScreen>
+            </Color>
+            <Color>
+                <IdColor>130</IdColor>
+                <Hue>ORANGE GRIS</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>ORANGE GRIS MOYEN FONCE</UsualName>
+                <CleCoul>OG5</CleCoul>
+                <redRGB>182</redRGB>
+                <greenRGB>120</greenRGB>
+                <blueRGB>85</blueRGB>
+                <xScreen>578</xScreen>
+                <yScreen>75</yScreen>
+            </Color>
+            <Color>
+                <IdColor>131</IdColor>
+                <Hue>ORANGE GRIS</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>ORANGE GRIS TRES FONCE</UsualName>
+                <CleCoul>OG7</CleCoul>
+                <redRGB>133</redRGB>
+                <greenRGB>85</greenRGB>
+                <blueRGB>61</blueRGB>
+                <xScreen>582</xScreen>
+                <yScreen>60</yScreen>
+            </Color>
+            <IdSaturationParentWheel>1</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>ROUGE GRIS</Hue>
+            <Color>
+                <IdColor>124</IdColor>
+                <Hue>ROUGE GRIS</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>ROUGE GRIS TRES CLAIR</UsualName>
+                <CleCoul>RG1</CleCoul>
+                <redRGB>234</redRGB>
+                <greenRGB>220</greenRGB>
+                <blueRGB>213</blueRGB>
+                <xScreen>488</xScreen>
+                <yScreen>124</yScreen>
+            </Color>
+            <Color>
+                <IdColor>125</IdColor>
+                <Hue>ROUGE GRIS</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>ROUGE GRIS MOYEN CLAIR</UsualName>
+                <CleCoul>RG3</CleCoul>
+                <redRGB>231</redRGB>
+                <greenRGB>157</greenRGB>
+                <blueRGB>135</blueRGB>
+                <xScreen>478</xScreen>
+                <yScreen>112</yScreen>
+            </Color>
+            <Color>
+                <IdColor>126</IdColor>
+                <Hue>ROUGE GRIS</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>ROUGE GRIS MOYEN FONCE</UsualName>
+                <CleCoul>RG5</CleCoul>
+                <redRGB>178</redRGB>
+                <greenRGB>96</greenRGB>
+                <blueRGB>77</blueRGB>
+                <xScreen>468</xScreen>
+                <yScreen>100</yScreen>
+            </Color>
+            <Color>
+                <IdColor>127</IdColor>
+                <Hue>ROUGE GRIS</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>ROUGE GRIS TRES FONCE</UsualName>
+                <CleCoul>RG7</CleCoul>
+                <redRGB>114</redRGB>
+                <greenRGB>37</greenRGB>
+                <blueRGB>35</blueRGB>
+                <xScreen>458</xScreen>
+                <yScreen>88</yScreen>
+            </Color>
+            <IdSaturationParentWheel>1</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>POURPRE GRIS</Hue>
+            <Color>
+                <IdColor>132</IdColor>
+                <Hue>POURPRE GRIS</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>POURPRE GRIS TRES CLAIR</UsualName>
+                <CleCoul>PG1</CleCoul>
+                <redRGB>236</redRGB>
+                <greenRGB>228</greenRGB>
+                <blueRGB>236</blueRGB>
+                <xScreen>450</xScreen>
+                <yScreen>200</yScreen>
+            </Color>
+            <Color>
+                <IdColor>133</IdColor>
+                <Hue>POURPRE GRIS</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>POURPRE GRIS MOYEN CLAIR</UsualName>
+                <CleCoul>PG3</CleCoul>
+                <redRGB>209</redRGB>
+                <greenRGB>179</greenRGB>
+                <blueRGB>190</blueRGB>
+                <xScreen>435</xScreen>
+                <yScreen>200</yScreen>
+            </Color>
+            <Color>
+                <IdColor>134</IdColor>
+                <Hue>POURPRE GRIS</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>POURPRE GRIS MOYEN FONCE</UsualName>
+                <CleCoul>PG5</CleCoul>
+                <redRGB>183</redRGB>
+                <greenRGB>129</greenRGB>
+                <blueRGB>146</blueRGB>
+                <xScreen>420</xScreen>
+                <yScreen>200</yScreen>
+            </Color>
+            <Color>
+                <IdColor>135</IdColor>
+                <Hue>POURPRE GRIS</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>POURPRE GRIS TRES FONCE</UsualName>
+                <CleCoul>PG7</CleCoul>
+                <redRGB>142</redRGB>
+                <greenRGB>50</greenRGB>
+                <blueRGB>91</blueRGB>
+                <xScreen>405</xScreen>
+                <yScreen>200</yScreen>
+            </Color>
+            <IdSaturationParentWheel>1</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>VIOLET GRIS</Hue>
+            <Color>
+                <IdColor>120</IdColor>
+                <Hue>VIOLET GRIS</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>VIOLET GRIS TRES CLAIR</UsualName>
+                <CleCoul>ViG1</CleCoul>
+                <redRGB>238</redRGB>
+                <greenRGB>237</greenRGB>
+                <blueRGB>240</blueRGB>
+                <xScreen>494</xScreen>
+                <yScreen>278</yScreen>
+            </Color>
+            <Color>
+                <IdColor>121</IdColor>
+                <Hue>VIOLET GRIS</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>VIOLET GRIS MOYEN CLAIR</UsualName>
+                <CleCoul>ViG3</CleCoul>
+                <redRGB>180</redRGB>
+                <greenRGB>181</greenRGB>
+                <blueRGB>195</blueRGB>
+                <xScreen>484</xScreen>
+                <yScreen>290</yScreen>
+            </Color>
+            <Color>
+                <IdColor>122</IdColor>
+                <Hue>VIOLET GRIS</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>VIOLET GRIS MOYEN FONCE</UsualName>
+                <CleCoul>ViG5</CleCoul>
+                <redRGB>136</redRGB>
+                <greenRGB>133</greenRGB>
+                <blueRGB>155</blueRGB>
+                <xScreen>474</xScreen>
+                <yScreen>302</yScreen>
+            </Color>
+            <Color>
+                <IdColor>123</IdColor>
+                <Hue>VIOLET GRIS</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>VIOLET GRIS TRES FONCE</UsualName>
+                <CleCoul>ViG7</CleCoul>
+                <redRGB>96</redRGB>
+                <greenRGB>73</greenRGB>
+                <blueRGB>113</blueRGB>
+                <xScreen>464</xScreen>
+                <yScreen>314</yScreen>
+            </Color>
+            <IdSaturationParentWheel>1</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>BLEU GRIS</Hue>
+            <Color>
+                <IdColor>116</IdColor>
+                <Hue>BLEU GRIS</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>BLEU GRIS TRES CLAIR</UsualName>
+                <CleCoul>BG1</CleCoul>
+                <redRGB>224</redRGB>
+                <greenRGB>230</greenRGB>
+                <blueRGB>234</blueRGB>
+                <xScreen>580</xScreen>
+                <yScreen>292</yScreen>
+            </Color>
+            <Color>
+                <IdColor>117</IdColor>
+                <Hue>BLEU GRIS</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>BLEU GRIS MOYEN CLAIR</UsualName>
+                <CleCoul>BG3</CleCoul>
+                <redRGB>156</redRGB>
+                <greenRGB>180</greenRGB>
+                <blueRGB>193</blueRGB>
+                <xScreen>584</xScreen>
+                <yScreen>307</yScreen>
+            </Color>
+            <Color>
+                <IdColor>118</IdColor>
+                <Hue>BLEU GRIS</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>BLEU GRIS MOYEN FONCE</UsualName>
+                <CleCoul>BG5</CleCoul>
+                <redRGB>90</redRGB>
+                <greenRGB>128</greenRGB>
+                <blueRGB>151</blueRGB>
+                <xScreen>588</xScreen>
+                <yScreen>322</yScreen>
+            </Color>
+            <Color>
+                <IdColor>119</IdColor>
+                <Hue>BLEU GRIS</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>BLEU GRIS TRES FONCE</UsualName>
+                <CleCoul>BG7</CleCoul>
+                <redRGB>4</redRGB>
+                <greenRGB>52</greenRGB>
+                <blueRGB>84</blueRGB>
+                <xScreen>592</xScreen>
+                <yScreen>337</yScreen>
+            </Color>
+            <IdSaturationParentWheel>1</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>VERT GRIS</Hue>
+            <Color>
+                <IdColor>112</IdColor>
+                <Hue>VERT GRIS</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>VERT GRIS TRES CLAIR</UsualName>
+                <CleCoul>VG1</CleCoul>
+                <redRGB>229</redRGB>
+                <greenRGB>235</greenRGB>
+                <blueRGB>225</blueRGB>
+                <xScreen>635</xScreen>
+                <yScreen>243</yScreen>
+            </Color>
+            <Color>
+                <IdColor>113</IdColor>
+                <Hue>VERT GRIS</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>VERT GRIS MOYEN CLAIR</UsualName>
+                <CleCoul>VG3</CleCoul>
+                <redRGB>164</redRGB>
+                <greenRGB>194</greenRGB>
+                <blueRGB>157</blueRGB>
+                <xScreen>648</xScreen>
+                <yScreen>250</yScreen>
+            </Color>
+            <Color>
+                <IdColor>114</IdColor>
+                <Hue>VERT GRIS</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>VERT GRIS MOYEN FONCE</UsualName>
+                <CleCoul>VG5</CleCoul>
+                <redRGB>105</redRGB>
+                <greenRGB>157</greenRGB>
+                <blueRGB>107</blueRGB>
+                <xScreen>661</xScreen>
+                <yScreen>257</yScreen>
+            </Color>
+            <Color>
+                <IdColor>115</IdColor>
+                <Hue>VERT GRIS</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>VERT GRIS TRES FONCE</UsualName>
+                <CleCoul>VG7</CleCoul>
+                <redRGB>45</redRGB>
+                <greenRGB>84</greenRGB>
+                <blueRGB>55</blueRGB>
+                <xScreen>674</xScreen>
+                <yScreen>264</yScreen>
+            </Color>
+            <IdSaturationParentWheel>1</IdSaturationParentWheel>
+        </Slice>
+    </Wheel>
+    <Wheel>
+        <Saturation>2</Saturation>
+        <Slice>
+            <Hue>GRIS JAUNE</Hue>
+            <Color>
+                <IdColor>136</IdColor>
+                <Hue>GRIS JAUNE</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>GRIS JAUNE TRES CLAIR</UsualName>
+                <CleCoul>GJ1</CleCoul>
+                <redRGB>230</redRGB>
+                <greenRGB>230</greenRGB>
+                <blueRGB>216</blueRGB>
+                <xScreen>987</xScreen>
+                <yScreen>153</yScreen>
+            </Color>
+            <Color>
+                <IdColor>137</IdColor>
+                <Hue>GRIS JAUNE</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>GRIS JAUNE MOYEN CLAIR</UsualName>
+                <CleCoul>GJ3</CleCoul>
+                <redRGB>209</redRGB>
+                <greenRGB>207</greenRGB>
+                <blueRGB>179</blueRGB>
+                <xScreen>1000</xScreen>
+                <yScreen>146</yScreen>
+            </Color>
+            <Color>
+                <IdColor>138</IdColor>
+                <Hue>GRIS JAUNE</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>GRIS JAUNE MOYEN FONCE</UsualName>
+                <CleCoul>GJ5</CleCoul>
+                <redRGB>154</redRGB>
+                <greenRGB>150</greenRGB>
+                <blueRGB>104</blueRGB>
+                <xScreen>1013</xScreen>
+                <yScreen>139</yScreen>
+            </Color>
+            <Color>
+                <IdColor>139</IdColor>
+                <Hue>GRIS JAUNE</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>GRIS JAUNE TRES FONCE</UsualName>
+                <CleCoul>GJ7</CleCoul>
+                <redRGB>105</redRGB>
+                <greenRGB>99</greenRGB>
+                <blueRGB>72</blueRGB>
+                <xScreen>1026</xScreen>
+                <yScreen>132</yScreen>
+            </Color>
+            <IdSaturationParentWheel>2</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>GRIS ORANGE</Hue>
+            <Color>
+                <IdColor>156</IdColor>
+                <Hue>GRIS ORANGE</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>GRIS ORANGE TRES CLAIR</UsualName>
+                <CleCoul>GO1</CleCoul>
+                <redRGB>227</redRGB>
+                <greenRGB>223</greenRGB>
+                <blueRGB>218</blueRGB>
+                <xScreen>922</xScreen>
+                <yScreen>105</yScreen>
+            </Color>
+            <Color>
+                <IdColor>157</IdColor>
+                <Hue>GRIS ORANGE</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>GRIS ORANGE MOYEN CLAIR</UsualName>
+                <CleCoul>GO3</CleCoul>
+                <redRGB>188</redRGB>
+                <greenRGB>168</greenRGB>
+                <blueRGB>148</blueRGB>
+                <xScreen>926</xScreen>
+                <yScreen>90</yScreen>
+            </Color>
+            <Color>
+                <IdColor>158</IdColor>
+                <Hue>GRIS ORANGE</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>GRIS ORANGE MOYEN FONCE</UsualName>
+                <CleCoul>GO5</CleCoul>
+                <redRGB>155</redRGB>
+                <greenRGB>128</greenRGB>
+                <blueRGB>101</blueRGB>
+                <xScreen>930</xScreen>
+                <yScreen>75</yScreen>
+            </Color>
+            <Color>
+                <IdColor>159</IdColor>
+                <Hue>GRIS ORANGE</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>GRIS ORANGE TRES FONCE</UsualName>
+                <CleCoul>GO7</CleCoul>
+                <redRGB>111</redRGB>
+                <greenRGB>85</greenRGB>
+                <blueRGB>66</blueRGB>
+                <xScreen>934</xScreen>
+                <yScreen>60</yScreen>
+            </Color>
+            <IdSaturationParentWheel>2</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>GRIS ROUGE</Hue>
+            <Color>
+                <IdColor>152</IdColor>
+                <Hue>GRIS ROUGE</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>GRIS ROUGE TRES CLAIR</UsualName>
+                <CleCoul>GR1</CleCoul>
+                <redRGB>227</redRGB>
+                <greenRGB>222</greenRGB>
+                <blueRGB>219</blueRGB>
+                <xScreen>838</xScreen>
+                <yScreen>124</yScreen>
+            </Color>
+            <Color>
+                <IdColor>153</IdColor>
+                <Hue>GRIS ROUGE</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>GRIS ROUGE MOYEN CLAIR</UsualName>
+                <CleCoul>GR3</CleCoul>
+                <redRGB>175</redRGB>
+                <greenRGB>145</greenRGB>
+                <blueRGB>132</blueRGB>
+                <xScreen>828</xScreen>
+                <yScreen>112</yScreen>
+            </Color>
+            <Color>
+                <IdColor>154</IdColor>
+                <Hue>GRIS ROUGE</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>GRIS ROUGE MOYEN FONCE</UsualName>
+                <CleCoul>GR5</CleCoul>
+                <redRGB>126</redRGB>
+                <greenRGB>92</greenRGB>
+                <blueRGB>81</blueRGB>
+                <xScreen>818</xScreen>
+                <yScreen>100</yScreen>
+            </Color>
+            <Color>
+                <IdColor>155</IdColor>
+                <Hue>GRIS ROUGE</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>GRIS ROUGE TRES FONCE</UsualName>
+                <CleCoul>GR7</CleCoul>
+                <redRGB>78</redRGB>
+                <greenRGB>54</greenRGB>
+                <blueRGB>48</blueRGB>
+                <xScreen>808</xScreen>
+                <yScreen>88</yScreen>
+            </Color>
+            <IdSaturationParentWheel>2</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>GRIS POURPRE</Hue>
+            <Color>
+                <IdColor>160</IdColor>
+                <Hue>GRIS POURPRE</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>GRIS POURPRE TRES CLAIR</UsualName>
+                <CleCoul>GP1</CleCoul>
+                <redRGB>237</redRGB>
+                <greenRGB>235</greenRGB>
+                <blueRGB>236</blueRGB>
+                <xScreen>800</xScreen>
+                <yScreen>200</yScreen>
+            </Color>
+            <Color>
+                <IdColor>161</IdColor>
+                <Hue>GRIS POURPRE</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>GRIS POURPRE MOYEN CLAIR</UsualName>
+                <CleCoul>GP3</CleCoul>
+                <redRGB>201</redRGB>
+                <greenRGB>189</greenRGB>
+                <blueRGB>193</blueRGB>
+                <xScreen>785</xScreen>
+                <yScreen>200</yScreen>
+            </Color>
+            <Color>
+                <IdColor>162</IdColor>
+                <Hue>GRIS POURPRE</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>GRIS POURPRE MOYEN FONCE</UsualName>
+                <CleCoul>GP5</CleCoul>
+                <redRGB>152</redRGB>
+                <greenRGB>133</greenRGB>
+                <blueRGB>139</blueRGB>
+                <xScreen>770</xScreen>
+                <yScreen>200</yScreen>
+            </Color>
+            <Color>
+                <IdColor>163</IdColor>
+                <Hue>GRIS POURPRE</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>GRIS POURPRE TRES FONCE</UsualName>
+                <CleCoul>GP7</CleCoul>
+                <redRGB>107</redRGB>
+                <greenRGB>90</greenRGB>
+                <blueRGB>96</blueRGB>
+                <xScreen>755</xScreen>
+                <yScreen>200</yScreen>
+            </Color>
+            <IdSaturationParentWheel>2</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>GRIS VIOLET</Hue>
+            <Color>
+                <IdColor>148</IdColor>
+                <Hue>GRIS VIOLET</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>GRIS VIOLET TRES CLAIR</UsualName>
+                <CleCoul>GVi1</CleCoul>
+                <redRGB>239</redRGB>
+                <greenRGB>235</greenRGB>
+                <blueRGB>238</blueRGB>
+                <xScreen>843</xScreen>
+                <yScreen>278</yScreen>
+            </Color>
+            <Color>
+                <IdColor>149</IdColor>
+                <Hue>GRIS VIOLET</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>GRIS VIOLET MOYEN CLAIR</UsualName>
+                <CleCoul>GVi3</CleCoul>
+                <redRGB>190</redRGB>
+                <greenRGB>190</greenRGB>
+                <blueRGB>194</blueRGB>
+                <xScreen>833</xScreen>
+                <yScreen>290</yScreen>
+            </Color>
+            <Color>
+                <IdColor>150</IdColor>
+                <Hue>GRIS VIOLET</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>GRIS VIOLET MOYEN FONCE</UsualName>
+                <CleCoul>GVi5</CleCoul>
+                <redRGB>133</redRGB>
+                <greenRGB>132</greenRGB>
+                <blueRGB>137</blueRGB>
+                <xScreen>823</xScreen>
+                <yScreen>302</yScreen>
+            </Color>
+            <Color>
+                <IdColor>151</IdColor>
+                <Hue>GRIS VIOLET</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>GRIS VIOLET TRES FONCE</UsualName>
+                <CleCoul>GVi7</CleCoul>
+                <redRGB>90</redRGB>
+                <greenRGB>86</greenRGB>
+                <blueRGB>92</blueRGB>
+                <xScreen>813</xScreen>
+                <yScreen>314</yScreen>
+            </Color>
+            <IdSaturationParentWheel>2</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>GRIS BLEU</Hue>
+            <Color>
+                <IdColor>144</IdColor>
+                <Hue>GRIS BLEU</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>GRIS BLEU TRES CLAIR</UsualName>
+                <CleCoul>GB1</CleCoul>
+                <redRGB>226</redRGB>
+                <greenRGB>229</greenRGB>
+                <blueRGB>230</blueRGB>
+                <xScreen>932</xScreen>
+                <yScreen>292</yScreen>
+            </Color>
+            <Color>
+                <IdColor>145</IdColor>
+                <Hue>GRIS BLEU</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>GRIS BLEU MOYEN CLAIR</UsualName>
+                <CleCoul>GB3</CleCoul>
+                <redRGB>182</redRGB>
+                <greenRGB>190</greenRGB>
+                <blueRGB>191</blueRGB>
+                <xScreen>936</xScreen>
+                <yScreen>307</yScreen>
+            </Color>
+            <Color>
+                <IdColor>146</IdColor>
+                <Hue>GRIS BLEU</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>GRIS BLEU MOYEN FONCE</UsualName>
+                <CleCoul>GB5</CleCoul>
+                <redRGB>123</redRGB>
+                <greenRGB>139</greenRGB>
+                <blueRGB>142</blueRGB>
+                <xScreen>940</xScreen>
+                <yScreen>322</yScreen>
+            </Color>
+            <Color>
+                <IdColor>147</IdColor>
+                <Hue>GRIS BLEU</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>GRIS BLEU TRES FONCE</UsualName>
+                <CleCoul>GB7</CleCoul>
+                <redRGB>44</redRGB>
+                <greenRGB>66</greenRGB>
+                <blueRGB>71</blueRGB>
+                <xScreen>944</xScreen>
+                <yScreen>337</yScreen>
+            </Color>
+            <IdSaturationParentWheel>2</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>GRIS VERT</Hue>
+            <Color>
+                <IdColor>140</IdColor>
+                <Hue>GRIS VERT</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>GRIS VERT TRES CLAIR</UsualName>
+                <CleCoul>GV1</CleCoul>
+                <redRGB>232</redRGB>
+                <greenRGB>234</greenRGB>
+                <blueRGB>232</blueRGB>
+                <xScreen>987</xScreen>
+                <yScreen>243</yScreen>
+            </Color>
+            <Color>
+                <IdColor>141</IdColor>
+                <Hue>GRIS VERT</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>GRIS VERT MOYEN CLAIR</UsualName>
+                <CleCoul>GV3</CleCoul>
+                <redRGB>174</redRGB>
+                <greenRGB>183</greenRGB>
+                <blueRGB>171</blueRGB>
+                <xScreen>1000</xScreen>
+                <yScreen>250</yScreen>
+            </Color>
+            <Color>
+                <IdColor>142</IdColor>
+                <Hue>GRIS VERT</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>GRIS VERT MOYEN FONCE</UsualName>
+                <CleCoul>GV5</CleCoul>
+                <redRGB>126</redRGB>
+                <greenRGB>141</greenRGB>
+                <blueRGB>123</blueRGB>
+                <xScreen>1013</xScreen>
+                <yScreen>257</yScreen>
+            </Color>
+            <Color>
+                <IdColor>143</IdColor>
+                <Hue>GRIS VERT</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>GRIS VERT TRES FONCE</UsualName>
+                <CleCoul>GV7</CleCoul>
+                <redRGB>57</redRGB>
+                <greenRGB>70</greenRGB>
+                <blueRGB>54</blueRGB>
+                <xScreen>1026</xScreen>
+                <yScreen>264</yScreen>
+            </Color>
+            <IdSaturationParentWheel>2</IdSaturationParentWheel>
+        </Slice>
+    </Wheel>
+    <Wheel>
+        <Saturation>3</Saturation>
+        <Slice>
+            <Hue>NOIR GRIS BLANC</Hue>
+            <Color>
+                <IdColor>85</IdColor>
+                <Hue>BLANC</Hue>
+                <Lightness>0</Lightness>
+                <UsualName>BLANC</UsualName>
+                <CleCoul>Bl0</CleCoul>
+                <redRGB>255</redRGB>
+                <greenRGB>255</greenRGB>
+                <blueRGB>255</blueRGB>
+                <xScreen>890</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>78</IdColor>
+                <Hue>GRIS</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>GRIS TRES CLAIR</UsualName>
+                <CleCoul>G1</CleCoul>
+                <redRGB>247</redRGB>
+                <greenRGB>247</greenRGB>
+                <blueRGB>247</blueRGB>
+                <xScreen>850</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>79</IdColor>
+                <Hue>GRIS</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>GRIS CLAIR</UsualName>
+                <CleCoul>G2</CleCoul>
+                <redRGB>217</redRGB>
+                <greenRGB>217</greenRGB>
+                <blueRGB>217</blueRGB>
+                <xScreen>810</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>80</IdColor>
+                <Hue>GRIS</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>GRIS MOYEN CLAIR</UsualName>
+                <CleCoul>G3</CleCoul>
+                <redRGB>189</redRGB>
+                <greenRGB>189</greenRGB>
+                <blueRGB>189</blueRGB>
+                <xScreen>770</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>81</IdColor>
+                <Hue>GRIS</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>GRIS PUR</UsualName>
+                <CleCoul>G4</CleCoul>
+                <redRGB>150</redRGB>
+                <greenRGB>150</greenRGB>
+                <blueRGB>150</blueRGB>
+                <xScreen>730</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>82</IdColor>
+                <Hue>GRIS</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>GRIS MOYEN FONCE</UsualName>
+                <CleCoul>G5</CleCoul>
+                <redRGB>115</redRGB>
+                <greenRGB>115</greenRGB>
+                <blueRGB>115</blueRGB>
+                <xScreen>690</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>83</IdColor>
+                <Hue>GRIS</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>GRIS FONCE</UsualName>
+                <CleCoul>G6</CleCoul>
+                <redRGB>82</redRGB>
+                <greenRGB>82</greenRGB>
+                <blueRGB>82</blueRGB>
+                <xScreen>650</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>84</IdColor>
+                <Hue>GRIS</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>GRIS TRES FONCE</UsualName>
+                <CleCoul>G7</CleCoul>
+                <redRGB>37</redRGB>
+                <greenRGB>37</greenRGB>
+                <blueRGB>37</blueRGB>
+                <xScreen>610</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>86</IdColor>
+                <Hue>NOIR</Hue>
+                <Lightness>8</Lightness>
+                <UsualName>NOIR</UsualName>
+                <CleCoul>N8</CleCoul>
+                <redRGB>0</redRGB>
+                <greenRGB>0</greenRGB>
+                <blueRGB>0</blueRGB>
+                <xScreen>570</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <IdSaturationParentWheel>3</IdSaturationParentWheel>
+        </Slice>
+        <Slice>
+            <Hue>MARRON</Hue>
+            <Color>
+                <IdColor>94</IdColor>
+                <Hue>MARRON</Hue>
+                <Lightness>1</Lightness>
+                <UsualName>MARRON TRES CLAIR</UsualName>
+                <CleCoul>M1</CleCoul>
+                <redRGB>249</redRGB>
+                <greenRGB>244</greenRGB>
+                <blueRGB>217</blueRGB>
+                <xScreen>480</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>95</IdColor>
+                <Hue>MARRON</Hue>
+                <Lightness>2</Lightness>
+                <UsualName>MARRON CLAIR</UsualName>
+                <CleCoul>M2</CleCoul>
+                <redRGB>246</redRGB>
+                <greenRGB>227</greenRGB>
+                <blueRGB>175</blueRGB>
+                <xScreen>440</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>96</IdColor>
+                <Hue>MARRON</Hue>
+                <Lightness>3</Lightness>
+                <UsualName>MARRON MOYEN CLAIR</UsualName>
+                <CleCoul>M3</CleCoul>
+                <redRGB>226</redRGB>
+                <greenRGB>200</greenRGB>
+                <blueRGB>140</blueRGB>
+                <xScreen>400</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>97</IdColor>
+                <Hue>MARRON</Hue>
+                <Lightness>4</Lightness>
+                <UsualName>MARRON PUR</UsualName>
+                <CleCoul>M4</CleCoul>
+                <redRGB>216</redRGB>
+                <greenRGB>169</greenRGB>
+                <blueRGB>70</blueRGB>
+                <xScreen>360</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>98</IdColor>
+                <Hue>MARRON</Hue>
+                <Lightness>5</Lightness>
+                <UsualName>MARRON MOYEN FONCE</UsualName>
+                <CleCoul>M5</CleCoul>
+                <redRGB>181</redRGB>
+                <greenRGB>129</greenRGB>
+                <blueRGB>35</blueRGB>
+                <xScreen>320</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>99</IdColor>
+                <Hue>MARRON</Hue>
+                <Lightness>6</Lightness>
+                <UsualName>MARRON FONCE</UsualName>
+                <CleCoul>M6</CleCoul>
+                <redRGB>145</redRGB>
+                <greenRGB>100</greenRGB>
+                <blueRGB>10</blueRGB>
+                <xScreen>280</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <Color>
+                <IdColor>100</IdColor>
+                <Hue>MARRON</Hue>
+                <Lightness>7</Lightness>
+                <UsualName>MARRON TRES FONCE</UsualName>
+                <CleCoul>M7</CleCoul>
+                <redRGB>107</redRGB>
+                <greenRGB>79</greenRGB>
+                <blueRGB>8</blueRGB>
+                <xScreen>240</xScreen>
+                <yScreen>412</yScreen>
+            </Color>
+            <IdSaturationParentWheel>3</IdSaturationParentWheel>
+        </Slice>
+    </Wheel>
+</ColorReferenceSystem>
