@@ -16,6 +16,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -38,6 +40,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
+import fr.ign.cogit.cartagen.util.ReflectionUtil;
 import fr.ign.cogit.geoxygene.filter.And;
 import fr.ign.cogit.geoxygene.filter.BinaryComparisonOpsType;
 import fr.ign.cogit.geoxygene.filter.BinaryLogicOpsType;
@@ -338,10 +341,18 @@ public class OGCFilterPanel extends JPanel implements ActionListener,
     // a sub panel to define simple filters
     JPanel pSimple = new JPanel();
     // a combo box that contains the methods of the selected class
+    Collection<Class<?>> types = new HashSet<Class<?>>();
+    types.add(long.class);
+    types.add(String.class);
+    types.add(double.class);
+    types.add(int.class);
+    types.add(boolean.class);
+    types.add(float.class);
+    this.methodsList.addAll(ReflectionUtil.getAllGetters(filteredClass, types));
     MutableComboBoxModel cbModel = new DefaultComboBoxModel();
     for (int i = 0; i < this.methodsList.size(); i++) {
-      cbModel.addElement(this.methodsList.get(i).getName().replaceFirst("get",
-          ""));
+      cbModel.addElement(this.methodsList.get(i).getName()
+          .replaceFirst("get", ""));
     }
     this.cbMethods = new JComboBox(cbModel);
     this.cbMethods.setPreferredSize(new Dimension(90, 20));
@@ -376,8 +387,8 @@ public class OGCFilterPanel extends JPanel implements ActionListener,
     pSimple.add(Box.createHorizontalGlue());
     pSimple.add(this.btnCreateUnitary);
 
-    pSimple.setBorder(BorderFactory.createTitledBorder(BorderFactory
-        .createLineBorder(Color.BLACK), this.simpleTitle));
+    pSimple.setBorder(BorderFactory.createTitledBorder(
+        BorderFactory.createLineBorder(Color.BLACK), this.simpleTitle));
     pSimple.setLayout(new BoxLayout(pSimple, BoxLayout.X_AXIS));
 
     // *************************************
@@ -480,8 +491,8 @@ public class OGCFilterPanel extends JPanel implements ActionListener,
     this.pCompound.add(pCentre);
     this.pCompound.add(Box.createHorizontalGlue());
     this.pCompound.add(pRight);
-    this.pCompound.setBorder(BorderFactory.createTitledBorder(BorderFactory
-        .createLineBorder(Color.BLACK), this.compoundTitle));
+    this.pCompound.setBorder(BorderFactory.createTitledBorder(
+        BorderFactory.createLineBorder(Color.BLACK), this.compoundTitle));
     this.pCompound.setLayout(new BoxLayout(this.pCompound, BoxLayout.X_AXIS));
 
     // *************************************
@@ -496,10 +507,11 @@ public class OGCFilterPanel extends JPanel implements ActionListener,
     pExtend.setLayout(new BoxLayout(pExtend, BoxLayout.X_AXIS));
 
     // define a specific border to the panel
-    Border titled = BorderFactory.createTitledBorder(BorderFactory
-        .createEtchedBorder(EtchedBorder.LOWERED), this.borderTitle);
-    this.setBorder(BorderFactory.createCompoundBorder(titled, BorderFactory
-        .createEmptyBorder(5, 5, 5, 5)));
+    Border titled = BorderFactory.createTitledBorder(
+        BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
+        this.borderTitle);
+    this.setBorder(BorderFactory.createCompoundBorder(titled,
+        BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
     // define the panel layout
     this.add(pSimple);
@@ -517,24 +529,20 @@ public class OGCFilterPanel extends JPanel implements ActionListener,
   public void changeSelectedClass(Class<?> selectedClass) {
     this.filteredClass = selectedClass;
     this.methodsList.clear();
-    Method[] methods = selectedClass.getMethods();
-    for (Method methode : methods) {
-      if (methode.getName().startsWith("get")) {
-        Class<?> returnType = methode.getReturnType();
-        String valueType = returnType.getSimpleName();
-        if (returnType.isPrimitive()) {
-          if ((valueType.equals("int")) || (valueType.equals("double"))
-              || (valueType.equals("String")) || (valueType.equals("boolean"))) {
-            this.methodsList.add(methode);
-          }
-        }
-      }
-    }
+    Collection<Class<?>> types = new HashSet<Class<?>>();
+    types.add(long.class);
+    types.add(String.class);
+    types.add(double.class);
+    types.add(int.class);
+    types.add(boolean.class);
+    types.add(float.class);
+    this.methodsList.addAll(ReflectionUtil.getAllGetters(filteredClass, types));
     MutableComboBoxModel cbModel = new DefaultComboBoxModel();
     for (int i = 0; i < this.methodsList.size(); i++) {
-      cbModel.addElement(this.methodsList.get(i).getName().replaceFirst("get",
-          ""));
+      cbModel.addElement(this.methodsList.get(i).getName()
+          .replaceFirst("get", ""));
     }
+    System.out.println(methodsList);
     this.cbMethods.setModel(cbModel);
     this.parent.pack();
   }

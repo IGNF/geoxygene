@@ -9,7 +9,9 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.mrdb.scalemaster;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
@@ -117,4 +119,11 @@ public abstract class ScaleMasterGeneProcess {
     return buff.toString();
   }
 
+  public Map<String, Object> getParametersMap() {
+    Map<String, Object> paramsMap = new HashMap<String, Object>();
+    for (ProcessParameter param : parameters) {
+      paramsMap.put(param.getName(), param.getValue());
+    }
+    return paramsMap;
+  }
 }

@@ -10,6 +10,7 @@
 package fr.ign.cogit.cartagen.mrdb.scalemaster;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,5 +160,13 @@ public class ScaleLine {
         return this.line.get(interval).get(0);
     }
     return null;
+  }
+
+  public Collection<ScaleMasterElement> getAllElements() {
+    Collection<ScaleMasterElement> coln = new ArrayList<ScaleMasterElement>();
+    for (Interval<Integer> interval : this.line.keySet()) {
+      coln.addAll(this.line.get(interval));
+    }
+    return coln;
   }
 }

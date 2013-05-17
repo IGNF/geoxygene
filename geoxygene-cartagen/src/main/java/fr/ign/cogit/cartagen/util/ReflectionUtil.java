@@ -1,15 +1,16 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.util;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
@@ -155,5 +156,24 @@ public class ReflectionUtil {
         return true;
     }
     return false;
+  }
+
+  /**
+   * Return all getters of a given class that have their return type contained
+   * in the paramater collection of accepted types.
+   * @param classObj
+   * @param types
+   * @return
+   */
+  public static Collection<Method> getAllGetters(Class<?> classObj,
+      Collection<Class<?>> types) {
+    Collection<Method> methods = new HashSet<Method>();
+    for (Method meth : classObj.getMethods()) {
+      if (!meth.getName().startsWith("get"))
+        continue;
+      if (types.contains(meth.getReturnType()))
+        methods.add(meth);
+    }
+    return methods;
   }
 }
