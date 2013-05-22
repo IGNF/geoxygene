@@ -27,7 +27,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
  */
 public class RunwaySimplificationProcess extends ScaleMasterGeneProcess {
 
-  private boolean collapse = false, merge = true;
+  private boolean collapse = false, merge = true, linkToAirport = true;
   private static RunwaySimplificationProcess instance = null;
 
   protected RunwaySimplificationProcess() {
@@ -50,6 +50,10 @@ public class RunwaySimplificationProcess extends ScaleMasterGeneProcess {
         IAirportArea airport = ((IRunwayArea) obj).getAirport();
         if (treatedAirports.contains(airport))
           continue;
+        if (linkToAirport && airport.isEliminated()) {
+          obj.eliminateBatch();
+          continue;
+        }
         treatedAirports.add(airport);
         AirportTypification typif = new AirportTypification(airport);
         try {
@@ -80,6 +84,8 @@ public class RunwaySimplificationProcess extends ScaleMasterGeneProcess {
   public void parameterise() {
     this.merge = (Boolean) getParamValueFromName("fusion");
     this.collapse = (Boolean) getParamValueFromName("collapse");
+    if (this.hasParameter("link_to_airport"))
+      this.linkToAirport = (Boolean) getParamValueFromName("link_to_airport");
   }
 
   @Override
@@ -87,6 +93,7 @@ public class RunwaySimplificationProcess extends ScaleMasterGeneProcess {
     Set<ProcessParameter> params = new HashSet<ProcessParameter>();
     params.add(new ProcessParameter("fusion", Boolean.class, true));
     params.add(new ProcessParameter("collapse", Boolean.class, false));
+    params.add(new ProcessParameter("link_to_airport", Boolean.class, true));
     return params;
   }
 

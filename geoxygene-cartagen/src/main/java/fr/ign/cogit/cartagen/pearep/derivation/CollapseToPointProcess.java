@@ -36,6 +36,12 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
   private Class<?> classObj;
   private static CollapseToPointProcess instance = null;
 
+  /**
+   * Threshold on feature area: only features below this threshold are
+   * collapsed. If the value is -1, all features are collapsed.
+   */
+  private double areaThreshold = -1;
+
   protected CollapseToPointProcess() {
     // Exists only to defeat instantiation.
   }
@@ -55,6 +61,8 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
         continue;
       obj.eliminateBatch();
       IGeometry geom = obj.getGeom();
+      if (areaThreshold > -1 && geom.area() > areaThreshold)
+        continue;
       IPoint centroid = geom.centroid().toGM_Point();
 
       for (Method meth : CartagenApplication.getInstance().getCreationFactory()
@@ -102,6 +110,8 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
 
   @Override
   public void parameterise() {
+    if (this.hasParameter("area_min"))
+      areaThreshold = (Double) getParamValueFromName("area_min");
     String themeName = (String) getParamValueFromName("theme");
     ScaleMasterTheme theme = this.getScaleMaster().getThemeFromName(themeName);
     CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
@@ -116,7 +126,7 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
   public Set<ProcessParameter> getDefaultParameters() {
     Set<ProcessParameter> params = new HashSet<ProcessParameter>();
     params.add(new ProcessParameter("theme", String.class, "waterl"));
-
+    params.add(new ProcessParameter("area_min", Double.class, -1.0));
     return params;
   }
 
