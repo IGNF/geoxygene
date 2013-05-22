@@ -72,8 +72,8 @@ public class ColorShade {
    */
   public static Color[][] getColorShadeCOGIT() {
     ColorReferenceSystem crs = ColorReferenceSystem
-        .unmarshall(ColorReferenceSystem.class.getResource(
-            "/color/ColorReferenceSystem.xml").getPath());
+        .unmarshall(ColorReferenceSystem.class.getResourceAsStream(
+            "/color/ColorReferenceSystem.xml"));
 
     int nbSlices = crs.getSlices().size();
     Color[][] colorShadeCOGIT = new Color[nbSlices][];

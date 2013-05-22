@@ -114,7 +114,10 @@ public class LayersListTableListener extends MouseAdapter {
         // f.setVisible(true);
       }
 
-    } else if (e.isPopupTrigger() && this.layerTable.isEnabled()) {
+ //   } else if (e.isPopupTrigger() && this.layerTable.isEnabled()) {
+    } else   if ((e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) && e.getClickCount() == 1) {  
+    
+      
       // On affiche le menu correspondant au type de couche
       JPopupMenu jmenu = null;
 

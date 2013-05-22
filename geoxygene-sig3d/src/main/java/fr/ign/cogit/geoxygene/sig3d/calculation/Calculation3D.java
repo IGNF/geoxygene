@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import Jama.Matrix;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
@@ -18,11 +19,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -32,11 +33,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  * 
  * @version 0.1
  * 
- *
- * Classe permettant d'effectuer des calculs géométriques de base sur des
- * solides - calcul d'aire des surfaces - calcul de barycentre - calcul
- * d'envelope convexe - calcul des coordonnées inférieures et supérieures d'un
- * objet Basic calculations on solids
+ * 
+ *          Classe permettant d'effectuer des calculs géométriques de base sur
+ *          des solides - calcul d'aire des surfaces - calcul de barycentre -
+ *          calcul d'envelope convexe - calcul des coordonnées inférieures et
+ *          supérieures d'un objet Basic calculations on solids
  */
 public class Calculation3D {
 
@@ -174,6 +175,24 @@ public class Calculation3D {
     }
 
     return Double.NaN;
+  }
+
+  public static double area(List<ITriangle> lTri) {
+    double aireTot = 0;
+
+    for (ITriangle tri : lTri) {
+      IDirectPositionList lpoints = tri.coord();
+
+      Vecteur v1 = new Vecteur(lpoints.get(0), lpoints.get(1));
+      Vecteur v2 = new Vecteur(lpoints.get(0), lpoints.get(2));
+
+      Vecteur v3 = v1.prodVectoriel(v2);
+
+      aireTot = aireTot + v3.norme() * 0.5;
+
+    }
+
+    return aireTot;
   }
 
   /**

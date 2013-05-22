@@ -400,6 +400,8 @@ public class DTM extends AbstractDTM {
         }
 
       }
+      
+      br.close();
 
       this.stepX = this.echantillonage * cellsize;
       this.stepY = this.echantillonage * cellsize;
@@ -752,6 +754,8 @@ public class DTM extends AbstractDTM {
 
       }
 
+      br.close();
+      
       this.stepX = this.echantillonage * cellsize;
       this.stepY = this.echantillonage * cellsize;
       this.nX = ncols;
