@@ -34,8 +34,7 @@ public class VMAP1PPSeastrtL extends VMAP1PPFeature implements ISeawallLine {
    * @param type
    */
   public VMAP1PPSeastrtL(ILineString lineString,
-      HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(lineString);
     this.setInitialGeom(lineString);
@@ -310,6 +309,14 @@ public class VMAP1PPSeastrtL extends VMAP1PPFeature implements ISeawallLine {
 
   public void setWid(long wid) {
     this.wid = wid;
+  }
+
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
   }
 
 }

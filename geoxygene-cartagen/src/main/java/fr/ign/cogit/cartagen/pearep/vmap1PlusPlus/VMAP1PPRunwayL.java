@@ -37,8 +37,7 @@ public class VMAP1PPRunwayL extends VMAP1PPFeature implements IRunwayLine {
    * @param type
    */
   public VMAP1PPRunwayL(ILineString lineString,
-      HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(lineString);
     this.setInitialGeom(lineString);
@@ -370,6 +369,14 @@ public class VMAP1PPRunwayL extends VMAP1PPFeature implements IRunwayLine {
 
   public void setCatrun(long catrun) {
     this.catrun = catrun;
+  }
+
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
   }
 
 }

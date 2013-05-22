@@ -271,4 +271,12 @@ public class MGCPDitchLine extends MGCPFeature implements IDitchLine {
     this.cda = cda;
   }
 
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
+  }
+
 }

@@ -393,4 +393,12 @@ public class VMAP1PPDamL extends VMAP1PPFeature implements IBridgeLine {
 
   }
 
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
+  }
+
 }

@@ -258,4 +258,12 @@ public class VMAP1PPBluffL extends VMAP1PPFeature implements IReliefElementLine 
     this.hgt = hgt;
   }
 
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
+  }
+
 }

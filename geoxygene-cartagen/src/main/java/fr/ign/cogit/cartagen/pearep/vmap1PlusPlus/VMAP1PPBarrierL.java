@@ -331,4 +331,12 @@ public class VMAP1PPBarrierL extends VMAP1PPFeature implements IMiscLine {
     this.catfnc = catfnc;
   }
 
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
+  }
+
 }

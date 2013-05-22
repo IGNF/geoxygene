@@ -39,8 +39,7 @@ public class VMAP1PPTeleL extends VMAP1PPFeature implements IElectricityLine {
    * @param type
    */
   public VMAP1PPTeleL(ILineString lineString,
-      HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(lineString);
     this.setInitialGeom(lineString);

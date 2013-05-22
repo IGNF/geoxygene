@@ -56,4 +56,12 @@ public class MGCPRunwayLine extends MGCPFeature implements IRunwayLine {
     return (ILineString) this.geom;
   }
 
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
+  }
+
 }

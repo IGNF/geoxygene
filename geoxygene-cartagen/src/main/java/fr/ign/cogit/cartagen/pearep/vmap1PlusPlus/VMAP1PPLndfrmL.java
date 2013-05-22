@@ -35,8 +35,7 @@ public class VMAP1PPLndfrmL extends VMAP1PPFeature implements
    * @param type
    */
   public VMAP1PPLndfrmL(ILineString lineString,
-      HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(lineString);
     this.setInitialGeom(lineString);
@@ -264,6 +263,14 @@ public class VMAP1PPLndfrmL extends VMAP1PPFeature implements
 
   public void setWid(long wid) {
     this.wid = wid;
+  }
+
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
   }
 
 }

@@ -263,4 +263,12 @@ public class MGCPBuildLine extends MGCPFeature implements IBuildLine {
     this.fun = fun;
   }
 
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
+  }
+
 }

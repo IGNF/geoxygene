@@ -34,8 +34,7 @@ public class VMAP1PPPolbndL extends VMAP1PPFeature implements IAdminLimit {
    * @param type
    */
   public VMAP1PPPolbndL(ILineString lineString,
-      HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(lineString);
     this.setInitialGeom(lineString);

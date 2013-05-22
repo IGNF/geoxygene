@@ -41,8 +41,7 @@ public class VMAP1PPTunnelL extends VMAP1PPFeature implements IRoadLine {
    * @param type
    */
   public VMAP1PPTunnelL(ILineString lineString,
-      HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(lineString);
     this.setInitialGeom(lineString);

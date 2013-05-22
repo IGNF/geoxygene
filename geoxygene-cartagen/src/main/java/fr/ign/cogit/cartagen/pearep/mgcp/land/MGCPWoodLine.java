@@ -283,4 +283,12 @@ public class MGCPWoodLine extends MGCPFeature implements IWoodLine {
     this.tre = tre;
   }
 
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
+  }
+
 }

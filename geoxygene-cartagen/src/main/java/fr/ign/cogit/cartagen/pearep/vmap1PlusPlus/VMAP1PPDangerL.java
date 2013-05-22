@@ -27,15 +27,14 @@ public class VMAP1PPDangerL extends VMAP1PPFeature implements IMiscLine {
   // VMAP1PlusPlus attributes
   private String date_bdi, f_code, gfid_v2i, src_date, src_info, txt, uid_,
       upd_date, upd_info, v2i_f_code, valid_date, valid_info, nam;
-  private long cod, fcsubtype, keep, mcc, obj_rmq, src_dim, src_name, upd_name,
+  private long fcsubtype, keep, mcc, obj_rmq, src_dim, src_name, upd_name,
       valid_stat, vrr, originform, targetscal;
 
   /**
    * @param type
    */
   public VMAP1PPDangerL(ILineString lineString,
-      HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(lineString);
     this.setInitialGeom(lineString);
@@ -64,7 +63,7 @@ public class VMAP1PPDangerL extends VMAP1PPFeature implements IMiscLine {
     this.src_name = getLongAttribute("src_name");
     this.valid_stat = getLongAttribute("valid_stat");
     this.targetscal = getLongAttribute("targetscal");
-    this.cod = getLongAttribute("cod");
+    getLongAttribute("cod");
     this.mcc = getLongAttribute("mcc");
     this.vrr = getLongAttribute("vrr");
 
@@ -273,6 +272,14 @@ public class VMAP1PPDangerL extends VMAP1PPFeature implements IMiscLine {
 
   public void setVrr(long vrr) {
     this.vrr = vrr;
+  }
+
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
   }
 
 }

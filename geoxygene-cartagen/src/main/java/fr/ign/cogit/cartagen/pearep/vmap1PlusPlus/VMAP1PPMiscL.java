@@ -34,8 +34,7 @@ public class VMAP1PPMiscL extends VMAP1PPFeature implements IMiscLine {
    * @param type
    */
   public VMAP1PPMiscL(ILineString lineString,
-      HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(lineString);
     this.setInitialGeom(lineString);
@@ -252,6 +251,14 @@ public class VMAP1PPMiscL extends VMAP1PPFeature implements IMiscLine {
 
   public void setLoc(long loc) {
     this.loc = loc;
+  }
+
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
   }
 
 }

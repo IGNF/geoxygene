@@ -230,4 +230,12 @@ public class MGCPReliefElementLine extends MGCPFeature implements
     this.geoxObj = geoxObj;
   }
 
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
+  }
+
 }

@@ -34,8 +34,7 @@ public class VMAP1PPLandmrkL extends VMAP1PPFeature implements IMiscLine {
    * @param type
    */
   public VMAP1PPLandmrkL(ILineString lineString,
-      HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(lineString);
     this.setInitialGeom(lineString);
@@ -254,6 +253,14 @@ public class VMAP1PPLandmrkL extends VMAP1PPFeature implements IMiscLine {
 
   public void setOriginform(long originform) {
     this.originform = originform;
+  }
+
+  /**
+   * Get line length, useful to make OGC Filters on line length.
+   * @return
+   */
+  public double getLength() {
+    return this.getGeom().length();
   }
 
 }
