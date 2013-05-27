@@ -20,7 +20,7 @@
 package fr.ign.cogit.geoxygene.datatools.conversion;
 
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -42,7 +42,7 @@ public class IntegerSortedSetVarCharFieldConversion implements FieldConversion {
   public Object javaToSql(Object source) throws ConversionException {
     if (source instanceof SortedSet) {
       String s = ""; //$NON-NLS-1$
-      if (((List) source).isEmpty()) {
+      if (((Set<?>) source).isEmpty()) {
         return s;
       }
       SortedSet<Integer> dates = (SortedSet<Integer>) source;
