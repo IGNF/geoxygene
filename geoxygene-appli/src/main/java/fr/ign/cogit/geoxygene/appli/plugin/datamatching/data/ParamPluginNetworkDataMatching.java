@@ -38,6 +38,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataM
     "paramFilenameNetwork1",
     "paramFilenameNetwork2",
     "doRecalage",
+    "doLinkExport",
     "paramNetworkDataMatching"
 })
 @XmlRootElement(name = "ParamPluginNetworkDataMatching")
@@ -58,6 +59,10 @@ public class ParamPluginNetworkDataMatching {
   /** Action du recalage à faire en sortie de l'appariement. */
   @XmlElement(name = "DoRecalage")
   private boolean doRecalage = false;
+  
+  /** Export des liens d'appariement. */
+  @XmlElement(name = "DoLinkExport")
+  private boolean doLinkExport = false;
   
   /**
    * Default constructor.
@@ -101,4 +106,11 @@ public class ParamPluginNetworkDataMatching {
     return doRecalage;
   }
 
+  public void setDoLinkExport(boolean b) {
+    doLinkExport = b;
+  }
+    
+  public boolean getDoLinkExport() {
+    return doLinkExport;
+  }
 }

@@ -174,7 +174,8 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
 
       LOGGER.debug("Start network data matching");
       
-      NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, true);
+      NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2);
+      networkDataMatchingProcess.setActions(true, false);
       
       // On lance l'appariement
       ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();

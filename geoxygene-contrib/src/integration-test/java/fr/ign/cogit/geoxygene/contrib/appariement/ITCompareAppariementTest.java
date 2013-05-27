@@ -65,7 +65,8 @@ public class ITCompareAppariementTest {
     datasetNetwork1.addPopulationsArcs(reseau1);
     DatasetNetworkDataMatching datasetNetwork2 = new DatasetNetworkDataMatching();
     datasetNetwork2.addPopulationsArcs(reseau2);
-    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
+    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2);
+    networkDataMatchingProcess.setActions(false, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
     EnsembleDeLiens edl2 = resultatAppariement2.getLiens();
     
@@ -133,7 +134,8 @@ public class ITCompareAppariementTest {
     datasetNetwork1.addPopulationsArcs(reseau1);
     DatasetNetworkDataMatching datasetNetwork2 = new DatasetNetworkDataMatching();
     datasetNetwork2.addPopulationsArcs(reseau2);
-    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
+    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2);
+    networkDataMatchingProcess.setActions(false, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
     EnsembleDeLiens edl2 = resultatAppariement2.getLiens();
     
@@ -203,7 +205,8 @@ public class ITCompareAppariementTest {
     datasetNetwork1.addPopulationsArcs(reseau1);
     DatasetNetworkDataMatching datasetNetwork2 = new DatasetNetworkDataMatching();
     datasetNetwork2.addPopulationsArcs(reseau2);
-    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
+    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2);
+    networkDataMatchingProcess.setActions(false, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
     EnsembleDeLiens edl2 = resultatAppariement2.getLiens();
     
@@ -285,7 +288,8 @@ public class ITCompareAppariementTest {
     datasetNetwork1.addPopulationsArcs(reseau1);
     DatasetNetworkDataMatching datasetNetwork2 = new DatasetNetworkDataMatching();
     datasetNetwork2.addPopulationsArcs(reseau2);
-    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
+    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2);
+    networkDataMatchingProcess.setActions(false, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
     EnsembleDeLiens edl2 = resultatAppariement2.getLiens();
     
@@ -346,7 +350,8 @@ public class ITCompareAppariementTest {
     paramTopo2.setGraphePlanaire(true);
     param.setParamTopoNetwork2(paramTopo2);
     
-    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2, false);
+    NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2);
+    networkDataMatchingProcess.setActions(false, false);
     ResultNetworkDataMatching resultatAppariement2 = networkDataMatchingProcess.networkDataMatching();
     EnsembleDeLiens edl2 = resultatAppariement2.getLiens();
     

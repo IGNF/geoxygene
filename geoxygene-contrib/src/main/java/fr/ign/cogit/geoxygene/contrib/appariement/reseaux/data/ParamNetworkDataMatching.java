@@ -214,12 +214,16 @@ public class ParamNetworkDataMatching {
     // param.varianteRedecoupageArcsNonApparies = false;   // true
     // param.varianteFiltrageImpassesParasites = false;
     
+    // 
+    param.exportGeometrieLiens2vers1 = true;
+    
     // Debug
-    param.debugTirets = true;
-    param.debugBilanSurObjetsGeo = false;
     param.debugAffichageCommentaires = 2;
-    param.debugBuffer = true;
+    param.debugBilanSurObjetsGeo = false;
+    param.debugTirets = true;
     param.debugPasTirets = 10;
+    param.debugBuffer = true;
+    param.debugTailleBuffer = 10;
     
     return param;
   

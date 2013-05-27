@@ -301,6 +301,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
     UserLayerFactory factory = new UserLayerFactory();
     factory.setModel(this.getSld());
     factory.setName(name);
+    
     factory.setGeometryType(collection.getFeatureType().getGeometryType());
     factory.setCollection(collection);
     Layer layer = factory.createLayer();

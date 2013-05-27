@@ -194,4 +194,8 @@ public class GeOxygeneApplication {
   public GeOxygeneApplicationProperties getProperties() {
     return this.properties;
   }
+  
+  public URL getPropertiesFile() {
+      return propertiesFile;
+  }
 }

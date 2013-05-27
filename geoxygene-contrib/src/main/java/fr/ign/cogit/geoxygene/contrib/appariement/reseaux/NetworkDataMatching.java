@@ -62,17 +62,26 @@ public class NetworkDataMatching {
   private DatasetNetworkDataMatching dataset1;
   private DatasetNetworkDataMatching dataset2;
   private boolean doRecalage;
+  private boolean doLinkExport;
   
   /**
    * Constructor.
    * @param paramApp
    */
-  public NetworkDataMatching(ParamNetworkDataMatching param, DatasetNetworkDataMatching network1, DatasetNetworkDataMatching network2,
-      boolean doRecalage) {
+  public NetworkDataMatching(ParamNetworkDataMatching param, DatasetNetworkDataMatching network1, DatasetNetworkDataMatching network2) {
     this.inputParam = param;
     this.dataset1 = network1;
     this.dataset2 = network2;
-    this.doRecalage = doRecalage;
+  }
+  
+  /**
+   * Set Actions
+   * @param doRecalage
+   * @param doLinkExport
+   */
+  public void setActions(boolean doRecalage, boolean doLinkExport) {
+      this.doRecalage = doRecalage;
+      this.doLinkExport = false;
   }
   
   /**
@@ -222,7 +231,7 @@ public class NetworkDataMatching {
     resultatAppariement.setReseau2(reseau2);
     
     // if (paramApp.debugBilanSurObjetsGeo) {
-    /*if (doRecalage) {
+    if (doRecalage) {
       
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Transformation of matching links to generic links");
@@ -232,7 +241,7 @@ public class NetworkDataMatching {
       Appariement.nettoyageLiens(reseau1, reseau2);
       resultatAppariement.setLiensGeneriques(liensGeneriques);
       
-    } */
+    }
     
     if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Link geometry assignment");

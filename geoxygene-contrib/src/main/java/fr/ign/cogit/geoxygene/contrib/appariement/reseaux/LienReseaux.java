@@ -542,7 +542,7 @@ public class LienReseaux extends Lien {
    * <li>1/ Pour chaque noeud du réseau 1 apparié, cette géométrie est
    * constituée
    * <ul>
-   * <li>- d'un buffer entourant les objets homolgues dans le réseau,
+   * <li>- d'un buffer entourant les objets homologues dans le réseau,
    * <li>- d'un trait reliant le noeud à ce buffer.
    * </ul>
    * <li>2/ Pour chaque arc du réseau 1 apparié, cette géométrie est constituée
