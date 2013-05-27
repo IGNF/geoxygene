@@ -40,7 +40,7 @@ public class IntegerList2VarCharFieldConversion implements FieldConversion {
   public Object javaToSql(Object source) throws ConversionException {
     if (source instanceof List) {
       String s = ""; //$NON-NLS-1$
-      if (((List) source).isEmpty()) {
+      if (((List<?>) source).isEmpty()) {
         return s;
       }
       List<Integer> dates = (List<Integer>) source;
