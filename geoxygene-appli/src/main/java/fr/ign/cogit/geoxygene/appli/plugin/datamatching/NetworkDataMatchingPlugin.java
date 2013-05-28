@@ -46,6 +46,7 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
@@ -88,6 +89,7 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 
@@ -117,6 +119,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
   
   /** Displayed colors. */
   private final static Color nodeColor = new Color(255, 216, 0);
+  private final static Color liensGeneriquesColor = new Color(44, 66, 71);
   
   private final static Color linkColorOk = new Color(77, 146, 33);
   private final static Color linkColorNull = new Color(239, 59, 44);
@@ -346,7 +349,6 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
         IGeometry geom = lien.getGeom();
         if (geom instanceof GM_Aggregate<?>) {
           GM_MultiCurve<GM_LineString> multiCurve = new GM_MultiCurve<GM_LineString>();
-          //GM_MultiSurface<GM_Polygon> multiSurface = new GM_MultiSurface<GM_Polygon>();
           for (IGeometry lineGeom : ((GM_Aggregate<?>) geom).getList()) {
             if (lineGeom instanceof GM_LineString) {
               multiCurve.add((GM_LineString) lineGeom);
@@ -366,24 +368,20 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       }
       
       // Liens generiques
-      /*EnsembleDeLiens liensGeneriques = resultatAppariement.getLiensGeneriques();
+      EnsembleDeLiens liensGeneriques = resultatAppariement.getLiensGeneriques();
+      LOGGER.trace("Liens generiques = " + liensGeneriques.size());
       for (Lien lien : liensGeneriques) {
-          IGeometry geom = lien.getGeom();
-          if (geom instanceof GM_Aggregate<?>) {
-            GM_MultiCurve<GM_LineString> multiCurve = new GM_MultiCurve<GM_LineString>();
-            for (IGeometry lineGeom : ((GM_Aggregate<?>) geom).getList()) {
-              if (lineGeom instanceof GM_LineString) {
-                  // multiCurve.add((GM_LineString) lineGeom);
-              } else if (lineGeom instanceof GM_MultiCurve<?>) {
-                  // multiCurve.addAll(((GM_MultiCurve<GM_LineString>) lineGeom).getList());
-              } 
-            }
-            lien.setGeom(multiCurve);
+          
+          // On ajoute l'attribut "nature" qui vaut i*0.05 et qui est de type "double"
+          AttributeManager.addAttribute(lien, "nature", 34, "Double");
+          
+          LOGGER.trace("Nb d'attributs = " + lien.getFeatureType().getFeatureAttributes().size());
+          for (GF_AttributeType attribute : lien.getFeatureType().getFeatureAttributes()) {
+              String nomAttribut = attribute.getMemberName();
+              LOGGER.trace(nomAttribut);
           }
-        }*/
+      }
   
-      
-      
       LOGGER.trace("----------------------------------------------------------");
       LOGGER.trace("Enregistrement des résultats en fichier shape");
       // StockageLiens.stockageDesLiens(liens, 1, 2, 3);
@@ -463,9 +461,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       l2.getSymbolizer().getStroke().setColor(network2Color);
       l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       
-      Layer l1bis = p2.addUserLayer(arcs, "Reseau 1 recale", null);
+      Layer l1bis = p2.addUserLayer(arcs, "Réseau 1 recale", null);
       l1bis.getSymbolizer().getStroke().setColor(matchedNetworkColor);
       l1bis.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
+      
       p2.setSize(widthProjectFrame, heightProjectFrame);
       p2.setLocation(0, heightProjectFrame); 
       
@@ -481,7 +480,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       l1.getSymbolizer().getStroke().setColor(network1Color);
       l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       
-      Layer lp1 = p3.addUserLayer(resultatAppariement.getReseau1().getPopNoeuds(), "Réseau 1 - Noeuds", null);
+      // Layer lp1 = p3.addUserLayer(resultatAppariement.getReseau1().getPopNoeuds(), "Réseau 1 - Noeuds", null);
       // lp1.getSymbolizer().getStroke().setColor(network1Color);
       // lp1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       
@@ -526,7 +525,22 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       JMenuBar menuBar = new JMenuBar();
       p3.setJMenuBar(menuBar);   
       p3.getJMenuBar().add(resultToolBar, 0);
+      
+      // ---------------------------------------------------------------------------------
+      // Frame n°4
+      //    
+      ProjectFrame p4 = this.application.getFrame().newProjectFrame();
+      p4.getLayerViewPanel().setViewport(viewport);
+      viewport.getLayerViewPanels().add(p4.getLayerViewPanel());
+      p4.setTitle("Export liens");
+      
+      Layer l5 = p4.addUserLayer(liensGeneriques, "Liens generiques", null);
+      l5.getSymbolizer().getStroke().setColor(liensGeneriquesColor);
+      l5.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH * 3);
   
+      p4.setSize(widthProjectFrame, heightProjectFrame);
+      p4.setLocation(widthProjectFrame / 2, heightProjectFrame / 2);
+      
       // 
       LOGGER.info("Finished");
     }
