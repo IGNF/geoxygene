@@ -181,10 +181,16 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     // Filename
     // 
     // String filename1 = ParamParserTest.class.getClassLoader().getResource("data/reseau.shp").getPath();
-    String filename1 = application.getProperties().getLastOpenedFile();
+    // String filename1 = application.getProperties().getLastOpenedFile();
+    String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
     ParamFilenamePopulationEdgesNetwork paramFilename1 = new ParamFilenamePopulationEdgesNetwork();
     paramFilename1.addFilename(filename1);
     paramPlugin.setParamFilenameNetwork1(paramFilename1);
+    
+    String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
+    ParamFilenamePopulationEdgesNetwork paramFilename2 = new ParamFilenamePopulationEdgesNetwork();
+    paramFilename2.addFilename(filename2);
+    paramPlugin.setParamFilenameNetwork2(paramFilename2);
     
     // -----------------------------------------------------------------------------------------
     // Param
@@ -358,16 +364,29 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
           lien.setGeom(multiCurve);
         }
       }
+      
+      // Liens generiques
+      /*EnsembleDeLiens liensGeneriques = resultatAppariement.getLiensGeneriques();
+      for (Lien lien : liensGeneriques) {
+          IGeometry geom = lien.getGeom();
+          if (geom instanceof GM_Aggregate<?>) {
+            GM_MultiCurve<GM_LineString> multiCurve = new GM_MultiCurve<GM_LineString>();
+            for (IGeometry lineGeom : ((GM_Aggregate<?>) geom).getList()) {
+              if (lineGeom instanceof GM_LineString) {
+                  // multiCurve.add((GM_LineString) lineGeom);
+              } else if (lineGeom instanceof GM_MultiCurve<?>) {
+                  // multiCurve.addAll(((GM_MultiCurve<GM_LineString>) lineGeom).getList());
+              } 
+            }
+            lien.setGeom(multiCurve);
+          }
+        }*/
   
-      LOGGER.trace("----------------------------------------------------------");
-      LOGGER.trace("Taille popRef = " + datasetNetwork1.getPopulationsArcs().get(0).size());
-      LOGGER.trace("Taille popComp = " + datasetNetwork2.getPopulationsArcs().get(0).size());
-      LOGGER.trace("----------------------------------------------------------");
-  
-      // StockageLiens.stockageDesLiens(liens, 1, 2, 3);
+      
       
       LOGGER.trace("----------------------------------------------------------");
       LOGGER.trace("Enregistrement des résultats en fichier shape");
+      // StockageLiens.stockageDesLiens(liens, 1, 2, 3);
       
       // String repResultat = "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\R4\\";
       // ShapefileWriter.write(arcs, repResultat + "ReseauApparie.shp");
@@ -457,9 +476,15 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       p3.getLayerViewPanel().setViewport(viewport);
       viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
       p3.setTitle("Liens d'appariement");
+      
       l1 = p3.addUserLayer(datasetNetwork1.getPopulationsArcs().get(0), "Réseau 1", null);
       l1.getSymbolizer().getStroke().setColor(network1Color);
       l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
+      
+      Layer lp1 = p3.addUserLayer(resultatAppariement.getReseau1().getPopNoeuds(), "Réseau 1 - Noeuds", null);
+      // lp1.getSymbolizer().getStroke().setColor(network1Color);
+      // lp1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
+      
       l2 = p3.addUserLayer(datasetNetwork2.getPopulationsArcs().get(0), "Réseau 2", null);
       l2.getSymbolizer().getStroke().setColor(network2Color);
       l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);

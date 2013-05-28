@@ -238,7 +238,7 @@ public class NetworkDataMatching {
       }
       
       EnsembleDeLiens liensGeneriques = LienReseaux.exportLiensAppariement(resultatAppariement.getLiens(), reseau1, paramApp);
-      Appariement.nettoyageLiens(reseau1, reseau2);
+      // Appariement.nettoyageLiens(reseau1, reseau2);
       resultatAppariement.setLiensGeneriques(liensGeneriques);
       
     }
