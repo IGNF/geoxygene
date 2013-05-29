@@ -1,0 +1,13 @@
+!table
+!version 300
+!charset WindowsLatin1
+
+Definition Table
+File "0468_6740_5M.ecw"
+Type "RASTER"
+(468000.00,6740000.00) (0,0) Label "Pt 1",
+(473000.00,6740000.00) (1000,0) Label "Pt 2",
+(473000.00,6735000.00) (1000,1000) Label "Pt 3",
+(468000.00,6735000.00) (0,1000) Label "Pt 4"
+CoordSys Earth Projection 3, 33, "m", 3, 46.5, 44, 49, 700000, 6600000 Bounds (75000, 6000000) (1275000, 7200000)
+Units "m"

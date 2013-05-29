@@ -256,8 +256,7 @@ public class LienReseaux extends Lien {
   public static EnsembleDeLiens exportLiensAppariement(
       EnsembleDeLiens liensReseaux, ReseauApp ctRef, ParametresApp param) {
     
-    EnsembleDeLiens liensGeneriques;
-    liensGeneriques = new EnsembleDeLiens();
+    EnsembleDeLiens liensGeneriques = new EnsembleDeLiens();
     liensGeneriques.setNom(liensReseaux.getNom());
     
     // On compile toutes les populations du reseau 1 [resp. 2] dans une liste
@@ -272,7 +271,7 @@ public class LienReseaux extends Lien {
       
       LienReseaux lienReseau = (LienReseaux) itLiensReseaux.next();
       
-      // on récupère tous les objets des carte topo concernés
+      // On récupère tous les objets des cartes topo concernés
       Set<IFeature> objetsCT1PourUnLien = new HashSet<IFeature>(lienReseau.getArcs1());
       objetsCT1PourUnLien.addAll(lienReseau.getNoeuds1());
       Iterator<Groupe> itGroupes1 = lienReseau.getGroupes1().iterator();
@@ -298,11 +297,12 @@ public class LienReseaux extends Lien {
         Iterator<IFeature> itObjetsCT2PourUnLien = objetsCT2PourUnLien.iterator();
         Collection<IFeature> objets1 = LienReseaux.getCorrespondants(objetCT1, pops1);
         while (itObjetsCT2PourUnLien.hasNext()) {
+          
           IFeature objetCT2 = itObjetsCT2PourUnLien.next();
           Collection<IFeature> objets2 = LienReseaux.getCorrespondants(objetCT2, pops2);
+          
           if (objets1.isEmpty() && objets2.isEmpty()) {
-            // cas où il n'y a pas de correspondant dans les données de départ
-            // des 2 côtés
+            // cas où il n'y a pas de correspondant dans les données de départ des 2 côtés
             Lien lienG = liensGeneriques.nouvelElement();
             lienG.setEvaluation(lienReseau.getEvaluation());
             lienG.setCommentaire(I18N.getString("LienReseaux.NoCorrespondentInBothDatabases")); //$NON-NLS-1$
@@ -357,6 +357,8 @@ public class LienReseaux extends Lien {
               Lien lienG = liensGeneriques.nouvelElement();
               lienG.setEvaluation(lienReseau.getEvaluation());
               lienG.setCommentaire(""); //$NON-NLS-1$
+              lienG.setReference(Integer.toString(objet1.getId()));
+              lienG.setComparaison(Integer.toString(objet2.getId()));
               if (param.exportGeometrieLiens2vers1) {
                 lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet1, objet2));
               } else {

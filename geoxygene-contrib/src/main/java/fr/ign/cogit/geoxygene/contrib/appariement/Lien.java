@@ -637,6 +637,7 @@ public class Lien extends FT_Feature {
     }
     return geomRef;
   }
+  
   /**
    * Distance surfacique entre les surfaces du lien. Methode UNIQUEMENT valable
    * pour des liens pointant vers 1 ou n objets ref et com avec une géométrie
@@ -648,6 +649,7 @@ public class Lien extends FT_Feature {
     IMultiSurface<IOrientableSurface> geomComp = buildUnionGeometry(this.getObjetsComp());
     return Distances.distanceSurfaciqueRobuste(geomRef, geomComp);
   }
+  
   private double distanceSurfacique = -1;
   public final double getDistanceSurfacique() {
     if (this.distanceSurfacique == -1) {

@@ -58,8 +58,7 @@ import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
 public class NetworkDataMatchingProcess implements GeoServerProcess {
 
   /** LOGGER. */
-  private final static Logger LOGGER = Logger
-      .getLogger(NetworkDataMatchingProcess.class.getName());
+  private final static Logger LOGGER = Logger.getLogger(NetworkDataMatchingProcess.class.getName());
 
   /**
    * 

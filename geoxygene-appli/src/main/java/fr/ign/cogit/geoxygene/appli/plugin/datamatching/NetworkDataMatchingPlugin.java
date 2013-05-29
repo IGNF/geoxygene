@@ -82,6 +82,8 @@ import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
@@ -368,18 +370,50 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       }
       
       // Liens generiques
+      /*Population<DefaultFeature> collection2 = new Population<DefaultFeature>();
+      fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureType2 = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+      newFeatureType2.setTypeName("aaa");
+      newFeatureType2.setGeometryType(GM_LineString.class);
+      SchemaDefaultFeature schemaDefaultFeature2 = new SchemaDefaultFeature();
+      schemaDefaultFeature2.setNom("aaa");
+      schemaDefaultFeature2.setNomSchema("aaa");
+      schemaDefaultFeature2.setFeatureType(newFeatureType2);
+      collection.setFeatureType(newFeatureType2);
+      collection2.setFeatureType(newFeatureType2);*/
+      
       EnsembleDeLiens liensGeneriques = resultatAppariement.getLiensGeneriques();
       LOGGER.trace("Liens generiques = " + liensGeneriques.size());
       for (Lien lien : liensGeneriques) {
           
+          /*DefaultFeature defaultFeature = new DefaultFeature();
+          defaultFeature.setFeatureType(schemaDefaultFeature2.getFeatureType());
+          defaultFeature.setSchema(schemaDefaultFeature2);
+          defaultFeature.setGeom(lien.getGeom());*/
+          
+          LOGGER.trace("Objets reseau 1 comme chaine = " + lien.getObjetsRefAsString());
+          LOGGER.trace("Objets reseau 2 comme chaine = " + lien.getCorrespondantsAsString());
+          
           // On ajoute l'attribut "nature" qui vaut i*0.05 et qui est de type "double"
-          AttributeManager.addAttribute(lien, "nature", 34, "Double");
+          // AttributeManager.addAttribute(defaultFeature, "evaluation", "0.5", "Double");
+          // AttributeManager.addAttribute(defaultFeature, "objetsRef", "44", "String");
+          // AttributeManager.addAttribute(defaultFeature, "objetsComp", "33", "String");
+          
+          /*List<GF_AttributeType> listAttributs = lien.getFeatureType().getFeatureAttributes();
+          AttributeType aT = new AttributeType();
+          aT.setMemberName("objetsRef");
+          aT.setNomField("objetsRef");
+          aT.setValueType("String");
+          listAttributs.add(aT);
+          lien.getFeatureType().setFeatureAttributes(listAttributs);
           
           LOGGER.trace("Nb d'attributs = " + lien.getFeatureType().getFeatureAttributes().size());
           for (GF_AttributeType attribute : lien.getFeatureType().getFeatureAttributes()) {
               String nomAttribut = attribute.getMemberName();
+              String value = attribute.
               LOGGER.trace(nomAttribut);
-          }
+          }*/
+          
+          // collection2.add(defaultFeature);
       }
   
       LOGGER.trace("----------------------------------------------------------");
@@ -534,7 +568,15 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       viewport.getLayerViewPanels().add(p4.getLayerViewPanel());
       p4.setTitle("Export liens");
       
+      l1 = p4.addUserLayer(datasetNetwork1.getPopulationsArcs().get(0), "Réseau 1", null);
+      l1.getSymbolizer().getStroke().setColor(network1Color);
+      l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
+      l2 = p4.addUserLayer(datasetNetwork2.getPopulationsArcs().get(0), "Réseau 2", null);
+      l2.getSymbolizer().getStroke().setColor(network2Color);
+      l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
+      
       Layer l5 = p4.addUserLayer(liensGeneriques, "Liens generiques", null);
+      // Layer l5 = p4.addUserLayer(collection2, "Liens generiques", null);
       l5.getSymbolizer().getStroke().setColor(liensGeneriquesColor);
       l5.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH * 3);
   

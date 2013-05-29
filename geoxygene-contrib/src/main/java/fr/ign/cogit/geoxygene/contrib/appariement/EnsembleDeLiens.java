@@ -57,6 +57,7 @@ public class EnsembleDeLiens extends Population<Lien> {
    */
   public EnsembleDeLiens() {
     super(false, "Ensemble de liens", Lien.class, true); //$NON-NLS-1$
+    
     /** créer un featuretype pour les arcs */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
     AttributeType type = new AttributeType();
@@ -66,6 +67,15 @@ public class EnsembleDeLiens extends Population<Lien> {
     type.setMemberName(memberName);
     type.setValueType(valueType);
     newFeatureType.addFeatureAttribute(type);
+    
+    AttributeType type2 = new AttributeType();
+    String memberName2 = "commentaire"; //$NON-NLS-1$
+    String valueType2 = "String"; //$NON-NLS-1$
+    type2.setNomField(memberName2);
+    type2.setMemberName(memberName2);
+    type2.setValueType(valueType2);
+    newFeatureType.addFeatureAttribute(type2);
+    
     /** création d'un schéma associé au featureType */
     newFeatureType.setGeometryType(IMultiCurve.class);
     this.setFeatureType(newFeatureType);
