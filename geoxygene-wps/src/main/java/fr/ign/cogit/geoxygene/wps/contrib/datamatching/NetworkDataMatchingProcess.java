@@ -186,14 +186,14 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
       System.out.println(resultatAppariement.getResultStat().getStatsEdgesOfNetwork2().toString());
       System.out.println(resultatAppariement.getResultStat().getStatsNodesOfNetwork2().toString());
       
-      System.out.println("Nombre arcs reseau 1 = " + resultatAppariement.getReseau1().getPopArcs().size());
-      System.out.println("Nombre noeuds reseau 1 = " + resultatAppariement.getReseau1().getPopNoeuds().size());
-      System.out.println("Nombre arcs reseau 2 = " + resultatAppariement.getReseau2().getPopArcs().size());
-      System.out.println("Nombre noeuds reseau 2 = " + resultatAppariement.getReseau2().getPopNoeuds().size());
+      System.out.println("Nombre arcs reseau 1 = " + resultatAppariement.getReseauStat1().getReseauApp().getPopArcs().size());
+      System.out.println("Nombre noeuds reseau 1 = " + resultatAppariement.getReseauStat1().getReseauApp().getPopNoeuds().size());
+      System.out.println("Nombre arcs reseau 2 = " + resultatAppariement.getReseauStat2().getReseauApp().getPopArcs().size());
+      System.out.println("Nombre noeuds reseau 2 = " + resultatAppariement.getReseauStat2().getReseauApp().getPopNoeuds().size());
 
       LOGGER.debug("Start recalage");
-      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), 
-          resultatAppariement.getReseau2(), 
+      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseauStat1().getReseauApp(), 
+          resultatAppariement.getReseauStat2().getReseauApp(), 
           resultatAppariement.getLiens());
       LOGGER.debug("End recalage");
 

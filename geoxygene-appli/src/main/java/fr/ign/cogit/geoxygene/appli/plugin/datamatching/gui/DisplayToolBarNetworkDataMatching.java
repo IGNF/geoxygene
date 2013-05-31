@@ -39,6 +39,7 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
 
 /**
@@ -62,6 +63,7 @@ public class DisplayToolBarNetworkDataMatching extends JToolBar implements Actio
   private DisplayStatResultPanel tableauResultat = null;
   private DisplayParamPanel parameterPanel = null;
   
+  private ResultNetworkDataMatching resultNetworkMatcher = null;
   private ResultNetworkStat resultNetwork = null;
   private ParamNetworkDataMatching paramNetworkDataMatching = null;
 
@@ -70,10 +72,11 @@ public class DisplayToolBarNetworkDataMatching extends JToolBar implements Actio
    * 
    * @param projectFrame The ProjectFrame object which contains the Menu Bar.
    */
-  public DisplayToolBarNetworkDataMatching(ProjectFrame projectFrame, ResultNetworkStat resultNetwork, 
+  public DisplayToolBarNetworkDataMatching(ProjectFrame projectFrame, ResultNetworkDataMatching result, 
       ParamNetworkDataMatching paramNetworkDataMatching) {
     this.projectFrame = projectFrame;
-    this.resultNetwork = resultNetwork;
+    this.resultNetworkMatcher = result;
+    this.resultNetwork = result.getResultStat();
     this.paramNetworkDataMatching = paramNetworkDataMatching;
     
     init();
@@ -102,7 +105,7 @@ public class DisplayToolBarNetworkDataMatching extends JToolBar implements Actio
     add(btnLinks);
     
     parameterPanel = new DisplayParamPanel(paramNetworkDataMatching);
-    tableauResultat = new DisplayStatResultPanel(resultNetwork);
+    tableauResultat = new DisplayStatResultPanel(resultNetworkMatcher);
     
   }
 

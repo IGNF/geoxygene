@@ -60,10 +60,9 @@ public class ResultNetworkDataMatching {
   
   /** Cartes topo */
   @XmlTransient
-  private ReseauApp reseau1;
+  private ReseauAppStat reseauStat1;
   @XmlTransient
-  private ReseauApp reseau2;
-  // private String logCreateTopologicalMap1;
+  private ReseauAppStat reseauStat2;
   
   /** EnsembleDeLiens. */
   @XmlTransient
@@ -77,7 +76,7 @@ public class ResultNetworkDataMatching {
   
   /** Network matched. */
   @XmlElement(required = true)
-  private SimpleFeatureCollection networkMatched;
+  private SimpleFeatureCollection networkMatched; //  ???
   
   /** A classic logger. */
   static Logger logger = Logger.getLogger(ResultNetworkDataMatching.class.getName());
@@ -97,11 +96,11 @@ public class ResultNetworkDataMatching {
    * @param edl
    * @param sfc  
    */
-  public ResultNetworkDataMatching(EnsembleDeLiens edl, SimpleFeatureCollection sfc) {
+  /*public ResultNetworkDataMatching(EnsembleDeLiens edl, SimpleFeatureCollection sfc) {
     liens = edl;
     networkMatched = sfc;
     resultStat = new ResultNetworkStat();
-  }
+  }*/
   
   /**
    * Return link data set.
@@ -161,29 +160,21 @@ public class ResultNetworkDataMatching {
   
   
   
-  public void setReseau1(ReseauApp res) {
-    reseau1 = res;
+  public void setReseauStat1(ReseauAppStat resStat) {
+      reseauStat1 = resStat;
   }
   
-  public ReseauApp getReseau1() {
-    return reseau1;
+  public ReseauAppStat getReseauStat1() {
+    return reseauStat1;
   }
   
-  public void setReseau2(ReseauApp res) {
-    reseau2 = res;
+  public void setReseauStat2(ReseauAppStat resStat) {
+      reseauStat2 = resStat;
   }
   
-  public ReseauApp getReseau2() {
-    return reseau2;
+  public ReseauAppStat getReseauStat2() {
+    return reseauStat2;
   }
-  
-  /*public String getLogCreateTopologicalMap1() {
-    return logCreateTopologicalMap1;
-  }
-  
-  public void setLogCreateTopologicalMap1(String log) {
-    logCreateTopologicalMap1 = log;
-  }*/
   
   /**
    * Load the parameters from the specified stream.

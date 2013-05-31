@@ -378,20 +378,20 @@ public class ITCompareAppariementTest {
   private void compareCarteTopo(List<ReseauApp> listCarteTopo, ResultNetworkDataMatching resultatAppariement) {
     
     // Nombre d'arcs du reseau 1
-    Assert.assertTrue("Nb arcs carte topo reseau 1 = " + listCarteTopo.get(0).getListeArcs().size() + " ? " + resultatAppariement.getReseau1().getListeArcs().size(), 
-        listCarteTopo.get(0).getListeArcs().size() == resultatAppariement.getReseau1().getListeArcs().size());
+    Assert.assertTrue("Nb arcs carte topo reseau 1 = " + listCarteTopo.get(0).getListeArcs().size() + " ? " + resultatAppariement.getReseauStat1().getReseauApp().getListeArcs().size(), 
+        listCarteTopo.get(0).getListeArcs().size() == resultatAppariement.getReseauStat1().getReseauApp().getListeArcs().size());
     
     // Nombre de noeuds du reseau 1
-    Assert.assertTrue("Nb noeuds carte topo reseau 1 = " + listCarteTopo.get(0).getListeNoeuds().size() + " ? " + resultatAppariement.getReseau1().getListeNoeuds().size(), 
-        listCarteTopo.get(0).getListeNoeuds().size() == resultatAppariement.getReseau1().getListeNoeuds().size());
+    Assert.assertTrue("Nb noeuds carte topo reseau 1 = " + listCarteTopo.get(0).getListeNoeuds().size() + " ? " + resultatAppariement.getReseauStat1().getReseauApp().getListeNoeuds().size(), 
+        listCarteTopo.get(0).getListeNoeuds().size() == resultatAppariement.getReseauStat1().getReseauApp().getListeNoeuds().size());
     
     // Nombre d'arcs du reseau 2
-    Assert.assertTrue("Nb arcs carte topo reseau 2 = " + listCarteTopo.get(1).getListeArcs().size() + " ? " + resultatAppariement.getReseau2().getListeArcs().size(), 
-        listCarteTopo.get(1).getListeArcs().size() == resultatAppariement.getReseau2().getListeArcs().size());
+    Assert.assertTrue("Nb arcs carte topo reseau 2 = " + listCarteTopo.get(1).getListeArcs().size() + " ? " + resultatAppariement.getReseauStat2().getReseauApp().getListeArcs().size(), 
+        listCarteTopo.get(1).getListeArcs().size() == resultatAppariement.getReseauStat2().getReseauApp().getListeArcs().size());
     
     // Nombre de noeuds du reseau 2
-    Assert.assertTrue("Nb noeuds carte topo reseau 2 = " + listCarteTopo.get(1).getListeNoeuds().size() + " ? " + resultatAppariement.getReseau2().getListeNoeuds().size(), 
-        listCarteTopo.get(1).getListeNoeuds().size() == resultatAppariement.getReseau2().getListeNoeuds().size());
+    Assert.assertTrue("Nb noeuds carte topo reseau 2 = " + listCarteTopo.get(1).getListeNoeuds().size() + " ? " + resultatAppariement.getReseauStat2().getReseauApp().getListeNoeuds().size(), 
+        listCarteTopo.get(1).getListeNoeuds().size() == resultatAppariement.getReseauStat2().getReseauApp().getListeNoeuds().size());
     
   }
   

@@ -188,7 +188,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     // String filename1 = ParamParserTest.class.getClassLoader().getResource("data/reseau.shp").getPath();
     // String filename1 = application.getProperties().getLastOpenedFile();
     // String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
-    String filename1 = "D:\\Data\\Appariement\\Kusay\\CGDep84_extraction.shp";
+    // String filename1 = "D:\\Data\\Appariement\\Kusay\\CGDep84_extraction.shp";
+    String filename1 = "D:\\Data\\Appariement\\Kusay\\GGraph2.shp";
       
     ParamFilenamePopulationEdgesNetwork paramFilename1 = new ParamFilenamePopulationEdgesNetwork();
     paramFilename1.addFilename(filename1);
@@ -323,14 +324,14 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();
       
       // Logs
-      LOGGER.info("Nb arcs du réseau 1 calculés : " + resultatAppariement.getReseau1().getListeArcs().size()
+      LOGGER.info("Nb arcs du réseau 1 calculés : " + resultatAppariement.getReseauStat1().getReseauApp().getListeArcs().size()
           + " >= " + datasetNetwork1.getPopulationsArcs().size());
-      LOGGER.info("Nb arcs du réseau 2 calculés : " + resultatAppariement.getReseau2().getListeArcs().size()
+      LOGGER.info("Nb arcs du réseau 2 calculés : " + resultatAppariement.getReseauStat2().getReseauApp().getListeArcs().size()
           + " >= " + datasetNetwork2.getPopulationsArcs().size());
       
       EnsembleDeLiens liens = resultatAppariement.getLiens();
       // Recalage
-      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), resultatAppariement.getReseau2(), liens);
+      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseauStat1().getReseauApp(), resultatAppariement.getReseauStat2().getReseauApp(), liens);
       IPopulation<Arc> arcs = reseauRecale.getPopArcs();
       
       // Statistic information
@@ -470,8 +471,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       valeursClassement.add(I18N.getString("Appariement.Unmatched"));
 
       LOGGER.info("----");
-      LOGGER.info("Nombre d'arcs de la carte topo n°1 = " + resultatAppariement.getReseau1().getListeArcs().size());
-      LOGGER.info("Nombre de noeuds de la carte topo n°1 = " + resultatAppariement.getReseau1().getListeNoeuds().size());
+      LOGGER.info("Nombre d'arcs de la carte topo n°1 = " + resultatAppariement.getReseauStat1().getReseauApp().getListeArcs().size());
+      LOGGER.info("Nombre de noeuds de la carte topo n°1 = " + resultatAppariement.getReseauStat1().getReseauApp().getListeNoeuds().size());
       
       /*List<ReseauApp> cartesTopoReferenceValuees = AppariementIO
           .scindeSelonValeursResultatsAppariement(resultatAppariement.getReseau1(), valeursClassement);
@@ -514,16 +515,16 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
       p3.setTitle("Liens d'appariement");
       
-      l1 = p3.addUserLayer(resultatAppariement.getReseau1().getPopArcs(), "CT 1 - Arcs", null);
+      l1 = p3.addUserLayer(resultatAppariement.getReseauStat1().getReseauApp().getPopArcs(), "CT 1 - Arcs", null);
       l1.getSymbolizer().getStroke().setColor(network1Color);
       l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       
-      Layer lp1 = p3.addUserLayer(resultatAppariement.getReseau1().getPopNoeuds(), "CT 1 - Noeuds", null);
-      Layer lp2 = p3.addUserLayer(resultatAppariement.getReseau2().getPopNoeuds(), "CT 2 - Noeuds", null);
+      Layer lp1 = p3.addUserLayer(resultatAppariement.getReseauStat1().getReseauApp().getPopNoeuds(), "CT 1 - Noeuds", null);
+      Layer lp2 = p3.addUserLayer(resultatAppariement.getReseauStat2().getReseauApp().getPopNoeuds(), "CT 2 - Noeuds", null);
       // lp1.getSymbolizer().getStroke().setColor(network1Color);
       // lp1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       
-      l2 = p3.addUserLayer(resultatAppariement.getReseau2().getPopArcs(), "CT 2 - Arcs", null);
+      l2 = p3.addUserLayer(resultatAppariement.getReseauStat2().getReseauApp().getPopArcs(), "CT 2 - Arcs", null);
       l2.getSymbolizer().getStroke().setColor(network2Color);
       l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       
@@ -559,7 +560,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       p3.setSize(widthProjectFrame, heightProjectFrame * 2);
       p3.setLocation(widthProjectFrame, 0);
       
-      DisplayToolBarNetworkDataMatching resultToolBar = new DisplayToolBarNetworkDataMatching(p3, resultNetwork, 
+      DisplayToolBarNetworkDataMatching resultToolBar = new DisplayToolBarNetworkDataMatching(p3, resultatAppariement, 
           paramPlugin.getParamNetworkDataMatching());
       JMenuBar menuBar = new JMenuBar();
       p3.setJMenuBar(menuBar);   

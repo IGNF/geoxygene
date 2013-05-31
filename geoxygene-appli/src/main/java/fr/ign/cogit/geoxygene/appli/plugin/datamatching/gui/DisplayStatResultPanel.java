@@ -40,6 +40,8 @@ import javax.swing.JToolBar;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultCarteTopoStatElementInterface;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStatElement;
 
@@ -54,6 +56,7 @@ public class DisplayStatResultPanel extends JToolBar  {
   private static final long serialVersionUID = 1L;
   
   /** */
+  private ResultNetworkDataMatching resultNetworkMatcher;
   private ResultNetworkStat resultNetwork;
   
   /** . */
@@ -64,9 +67,10 @@ public class DisplayStatResultPanel extends JToolBar  {
    * Constructor.
    * @param res
    */
-  public DisplayStatResultPanel(ResultNetworkStat res){
+  public DisplayStatResultPanel(ResultNetworkDataMatching res){
     
-    resultNetwork = res;
+      resultNetworkMatcher = res;
+    resultNetwork = res.getResultStat();
     setOrientation(1);
     setPreferredSize(new Dimension(1800, 350));
     setMaximumSize(getPreferredSize());
@@ -83,7 +87,7 @@ public class DisplayStatResultPanel extends JToolBar  {
     
     FormLayout layout = new FormLayout(
         "20dlu, 20dlu, pref, 5dlu, pref, 5dlu, 20dlu, 30dlu, 20dlu, 20dlu, pref, 5dlu, pref, 5dlu, 20dlu, 30dlu, 20dlu", // colonnes
-        "20dlu, pref, 5dlu, pref, pref, pref, pref, 5dlu, pref, pref, pref, pref, 10dlu"  // lignes 
+        "20dlu, pref, 5dlu, pref, pref, pref, pref, 5dlu, pref, pref, pref, pref, 20dlu, pref, 10dlu"  // lignes 
         );
     CellConstraints cc = new CellConstraints();
     
@@ -228,6 +232,12 @@ public class DisplayStatResultPanel extends JToolBar  {
     formPanel.add(new JLabel(Integer.toString(nodesComp.getNoMatchingNetworkElementNumber())), cc.xy(13, 12));
     percentNbNon = (res2TotalNbNull * 100 / res2TotalNb);
     formPanel.add(new JLabel("(" + df.format(percentNbNon) + "%)"), cc.xy(15, 12));
+    
+
+    // Cartes TOPO
+    formPanel.add(new JLabel("Nb d'arcs bruts : "), cc.xy(3, 14));
+    formPanel.add(new JLabel(Integer.toString(resultNetworkMatcher.getReseauStat1()
+            .getResultCarteTopoEdge().getNbElementForType(ResultCarteTopoStatElementInterface.NB_BRUTS))), cc.xy(5, 14));
     
     // Add panel
     this.add(formPanel);

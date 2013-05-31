@@ -244,9 +244,11 @@ public class LienReseaux extends Lien {
   }
 
   /**
-   * Méthode qui renvoie en sortie des liens génériques (appariement.Lien, liens 1-1 uniquement) 
+   * Méthode qui renvoie en sortie des liens génériques .
+   *     appariement.Lien, liens 1-1 uniquement 
    *     correspondant aux lienReseaux en entrée. 
-   * Cette méthode crée une géoémtrie aux liens au passage.
+   * 
+   * Cette méthode crée une géométrie aux liens au passage.
    * 
    * @param liensReseaux
    * @param ctRef
@@ -301,7 +303,7 @@ public class LienReseaux extends Lien {
           IFeature objetCT2 = itObjetsCT2PourUnLien.next();
           Collection<IFeature> objets2 = LienReseaux.getCorrespondants(objetCT2, pops2);
           
-          if (objets1.isEmpty() && objets2.isEmpty()) {
+          /*if (objets1.isEmpty() && objets2.isEmpty()) {
             // cas où il n'y a pas de correspondant dans les données de départ des 2 côtés
             Lien lienG = liensGeneriques.nouvelElement();
             lienG.setEvaluation(lienReseau.getEvaluation());
@@ -312,7 +314,7 @@ public class LienReseaux extends Lien {
               lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objetCT2, objetCT1));
             }
             continue;
-          }
+          }*/
           /*if (objets1.isEmpty()) {
             // cas où il n'y a pas de correspondant dans les données de BD1
             Iterator<? extends IFeature> itObjets2 = objets2.iterator();
@@ -346,11 +348,18 @@ public class LienReseaux extends Lien {
               lienG.addObjetRef(objet1);
             }
             continue;
-          }
+          }*/
+          
           // cas où il y a des correspondants dans les deux BD
           Iterator<? extends IFeature> itObjets1 = objets1.iterator();
           while (itObjets1.hasNext()) {
             IFeature objet1 = itObjets1.next();
+            logger.trace("Type objet = " + objet1.getGeom().getClass().toString());
+            if( !(objet1 instanceof IPoint)) {
+                System.out.println("---+-+++-");
+                continue;
+            }
+            
             Iterator<? extends IFeature> itObjets2 = objets2.iterator();
             while (itObjets2.hasNext()) {
               IFeature objet2 = itObjets2.next();
@@ -367,7 +376,8 @@ public class LienReseaux extends Lien {
               lienG.addObjetRef(objet1);
               lienG.addObjetComp(objet2);
             }
-          }*/
+          
+          }
         }
       }
     }
