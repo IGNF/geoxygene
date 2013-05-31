@@ -330,8 +330,7 @@ public abstract class Appariement {
    * @param res network
    * @param liens links to empty
    */
-  private static void nettoyageLiens(final ReseauApp res,
-      final EnsembleDeLiens liens) {
+  private static void nettoyageLiens(final ReseauApp res, final EnsembleDeLiens liens) {
     for (Arc arc : res.getPopArcs()) {
       ((ArcApp) arc).getLiens().removeAll(liens.getElements());
     }

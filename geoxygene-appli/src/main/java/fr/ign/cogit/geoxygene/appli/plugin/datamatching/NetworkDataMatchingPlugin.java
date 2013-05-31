@@ -187,12 +187,16 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     // 
     // String filename1 = ParamParserTest.class.getClassLoader().getResource("data/reseau.shp").getPath();
     // String filename1 = application.getProperties().getLastOpenedFile();
-    String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+    // String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+    String filename1 = "D:\\Data\\Appariement\\Kusay\\CGDep84_extraction.shp";
+      
     ParamFilenamePopulationEdgesNetwork paramFilename1 = new ParamFilenamePopulationEdgesNetwork();
     paramFilename1.addFilename(filename1);
     paramPlugin.setParamFilenameNetwork1(paramFilename1);
     
-    String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
+    // String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
+    // String filename2 = "D:\\Data\\Appariement\\Kusay\\RIUV1BDCARTO_extractionV2.shp";
+    String filename2 = "D:\\Data\\Appariement\\Kusay\\RIUV1BDCARTO_extraction.shp";
     ParamFilenamePopulationEdgesNetwork paramFilename2 = new ParamFilenamePopulationEdgesNetwork();
     paramFilename2.addFilename(filename2);
     paramPlugin.setParamFilenameNetwork2(paramFilename2);
@@ -510,15 +514,16 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
       p3.setTitle("Liens d'appariement");
       
-      l1 = p3.addUserLayer(datasetNetwork1.getPopulationsArcs().get(0), "Réseau 1", null);
+      l1 = p3.addUserLayer(resultatAppariement.getReseau1().getPopArcs(), "CT 1 - Arcs", null);
       l1.getSymbolizer().getStroke().setColor(network1Color);
       l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       
-      // Layer lp1 = p3.addUserLayer(resultatAppariement.getReseau1().getPopNoeuds(), "Réseau 1 - Noeuds", null);
+      Layer lp1 = p3.addUserLayer(resultatAppariement.getReseau1().getPopNoeuds(), "CT 1 - Noeuds", null);
+      Layer lp2 = p3.addUserLayer(resultatAppariement.getReseau2().getPopNoeuds(), "CT 2 - Noeuds", null);
       // lp1.getSymbolizer().getStroke().setColor(network1Color);
       // lp1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       
-      l2 = p3.addUserLayer(datasetNetwork2.getPopulationsArcs().get(0), "Réseau 2", null);
+      l2 = p3.addUserLayer(resultatAppariement.getReseau2().getPopArcs(), "CT 2 - Arcs", null);
       l2.getSymbolizer().getStroke().setColor(network2Color);
       l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       

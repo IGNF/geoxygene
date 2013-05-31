@@ -313,7 +313,7 @@ public class LienReseaux extends Lien {
             }
             continue;
           }
-          if (objets1.isEmpty()) {
+          /*if (objets1.isEmpty()) {
             // cas où il n'y a pas de correspondant dans les données de BD1
             Iterator<? extends IFeature> itObjets2 = objets2.iterator();
             while (itObjets2.hasNext()) {
@@ -367,7 +367,7 @@ public class LienReseaux extends Lien {
               lienG.addObjetRef(objet1);
               lienG.addObjetComp(objet2);
             }
-          }
+          }*/
         }
       }
     }
