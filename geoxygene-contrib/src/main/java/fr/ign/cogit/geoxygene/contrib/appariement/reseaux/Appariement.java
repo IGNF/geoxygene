@@ -2085,7 +2085,7 @@ public abstract class Appariement {
         continue;
       }
       if (noeud.getResultatAppariement().startsWith(
-          I18N.getString("Appariement.Unmatched"))) { //$NON-NLS-1$
+          I18N.getString("Appariement.Matched"))) { //$NON-NLS-1$
         nbOK++;
         continue;
       }
