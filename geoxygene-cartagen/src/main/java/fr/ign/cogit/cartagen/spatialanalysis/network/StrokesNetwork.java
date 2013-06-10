@@ -1,16 +1,17 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.spatialanalysis.network;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
@@ -18,9 +19,9 @@ import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 
 public class StrokesNetwork {
 
-  private HashSet<Stroke> strokes;
-  private HashSet<ArcReseau> features;
-  private HashSet<ArcReseau> groupedFeatures;// set used to build the strokes
+  private Set<Stroke> strokes;
+  private Set<ArcReseau> features;
+  private Set<ArcReseau> groupedFeatures;// set used to build the strokes
   // (contains features already grouped in a stroke)
   /**
    * True if the attributes are looked for with declared getters on the class,
@@ -31,19 +32,19 @@ public class StrokesNetwork {
   private int id;
   private static AtomicInteger counter = new AtomicInteger();
 
-  public HashSet<Stroke> getStrokes() {
+  public Set<Stroke> getStrokes() {
     return this.strokes;
   }
 
-  public void setStrokes(HashSet<Stroke> strokes) {
+  public void setStrokes(Set<Stroke> strokes) {
     this.strokes = strokes;
   }
 
-  public HashSet<ArcReseau> getFeatures() {
+  public Set<ArcReseau> getFeatures() {
     return this.features;
   }
 
-  public void setFeatures(HashSet<ArcReseau> features) {
+  public void setFeatures(Set<ArcReseau> features) {
     this.features = features;
   }
 
@@ -55,11 +56,11 @@ public class StrokesNetwork {
     this.id = id;
   }
 
-  public HashSet<ArcReseau> getGroupedFeatures() {
+  public Set<ArcReseau> getGroupedFeatures() {
     return this.groupedFeatures;
   }
 
-  public void setGroupedFeatures(HashSet<ArcReseau> groupedFeatures) {
+  public void setGroupedFeatures(Set<ArcReseau> groupedFeatures) {
     this.groupedFeatures = groupedFeatures;
   }
 

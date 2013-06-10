@@ -25,7 +25,7 @@ import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.util.XMLUtil;
 
-public abstract class PeaRepDB extends ShapeFileDB {
+public class PeaRepDB extends ShapeFileDB {
 
   private List<String> loadedClasses;
   private String projEpsg;
@@ -66,8 +66,8 @@ public abstract class PeaRepDB extends ShapeFileDB {
 
     // The DataSet symbolisation scale
     Element scaleElem = (Element) root.getElementsByTagName("scale").item(0);
-    this.setSymboScale(Integer.valueOf(scaleElem.getChildNodes().item(0)
-        .getNodeValue()));
+    this.setSymboScale(Double.valueOf(
+        scaleElem.getChildNodes().item(0).getNodeValue()).intValue());
 
     // The DataSet system path
     Element systemPathElem = (Element) root.getElementsByTagName("system-path")

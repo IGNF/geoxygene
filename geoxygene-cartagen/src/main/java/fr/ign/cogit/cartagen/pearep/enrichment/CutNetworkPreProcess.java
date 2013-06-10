@@ -20,22 +20,31 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
-public class MakeNetworkPlanar extends ScaleMasterPreProcess {
+/**
+ * This pre-process is dedicated to network with features very long, thus prone
+ * to bugs in generalisation processes (e.g. the railroad network).
+ * @author GTouya
+ * 
+ */
+public class CutNetworkPreProcess extends ScaleMasterPreProcess {
 
-  private static MakeNetworkPlanar instance = null;
+  private static CutNetworkPreProcess instance = null;
+  private double maxLength = 2000.0;
 
-  public MakeNetworkPlanar() {
+  public CutNetworkPreProcess() {
     // Exists only to defeat instantiation.
   }
 
-  public static MakeNetworkPlanar getInstance() {
+  public static CutNetworkPreProcess getInstance() {
     if (instance == null) {
-      instance = new MakeNetworkPlanar();
+      instance = new CutNetworkPreProcess();
     }
     return instance;
   }
@@ -49,40 +58,48 @@ public class MakeNetworkPlanar extends ScaleMasterPreProcess {
       INetwork network = dataset.getDataSet().getNetworkFromClass(classObj);
       IPopulation<IGeneObj> iterable = new Population<IGeneObj>();
       iterable.addAll(pop);
-      CarteTopo carteTopo = new CarteTopo("make planar");
-      carteTopo.importClasseGeo(pop, true);
-      carteTopo.rendPlanaire(1.0);
       for (IGeneObj obj : iterable) {
         if (!(obj instanceof INetworkSection)) {
           continue;
         }
         INetworkSection section = (INetworkSection) obj;
         try {
-          // test if the section has been cut by topological map
-          if (section.getCorrespondants().size() == 1) {
+          // test if the section is short enough
+          if (section.getGeom().length() <= maxLength)
             continue;
-          }
 
-          // update the section geometry with the first edge of the
-          // topological
-          // map
-          section.setGeom(section.getCorrespondants().get(0).getGeom());
+          // cut the section every maxLength meters
+          boolean first = true;
+          ILineString geom = section.getGeom();
+          double currentLength = 0.0;
+          IDirectPositionList points = new DirectPositionList(geom.coord().get(
+              0));
+          for (int j = 1; j < geom.coord().size(); j++) {
+            currentLength += geom.coord().get(j)
+                .distance2D(geom.coord().get(j - 1));
+            points.add(geom.coord().get(j));
+            if (currentLength < maxLength)
+              continue;
 
-          // loop on the other edges to make new instances
-          Constructor<? extends IGeneObj> constr;
-
-          constr = classObj.getConstructor(ILineString.class);
-          for (int i = 1; i < section.getCorrespondants().size(); i++) {
-            ILineString newLine = (ILineString) section.getCorrespondants()
-                .get(i).getGeom();
-            INetworkSection newObj = (INetworkSection) constr
-                .newInstance(newLine);
-            newObj.setSymbolId(section.getSymbolId());
-            newObj.setImportance(section.getImportance());
-            // copy attributes
-            copyAttributes(newObj, section);
-            pop.add(newObj);
-            network.addSection(newObj);
+            ILineString newGeom = new GM_LineString(points);
+            if (first) {
+              section.setGeom(newGeom);
+              first = false;
+            } else {
+              Constructor<? extends IGeneObj> constr = classObj
+                  .getConstructor(ILineString.class);
+              INetworkSection newObj = (INetworkSection) constr
+                  .newInstance(newGeom);
+              newObj.setSymbolId(section.getSymbolId());
+              newObj.setImportance(section.getImportance());
+              // copy attributes
+              copyAttributes(newObj, section);
+              pop.add(newObj);
+              network.addSection(newObj);
+            }
+            points.clear();
+            points.add(geom.coord().get(j));
+            currentLength = 0.0;
           }
 
         } catch (SecurityException e1) {

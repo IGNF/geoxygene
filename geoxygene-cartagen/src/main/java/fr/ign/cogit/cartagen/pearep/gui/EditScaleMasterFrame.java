@@ -205,9 +205,9 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.spMax.setMaximumSize(new Dimension(80, 20));
     this.spMax.addChangeListener(this);
     this.cbDbs = new JComboBox(cbModel);
-    this.cbDbs.setPreferredSize(new Dimension(80, 20));
-    this.cbDbs.setMinimumSize(new Dimension(80, 20));
-    this.cbDbs.setMaximumSize(new Dimension(80, 20));
+    this.cbDbs.setPreferredSize(new Dimension(120, 20));
+    this.cbDbs.setMinimumSize(new Dimension(120, 20));
+    this.cbDbs.setMaximumSize(new Dimension(120, 20));
     this.cbDbs.addItemListener(this);
     this.colorBtn = new JXColorSelectionButton();
     this.colorBtn.setPreferredSize(new Dimension(25, 25));
@@ -440,9 +440,11 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
           for (ScaleMasterElement elem : elements) {
             if (!CartAGenDoc.getInstance().containsSourceDLM(
                 SourceDLM.valueOf(elem.getDbName()))) {
-              this.dbHues.put(elem.getDbName(), Color.BLUE);
-              ((DefaultComboBoxModel) cbDbs.getModel()).addElement(elem
-                  .getDbName());
+              if (!this.dbHues.containsKey(elem.getDbName())) {
+                this.dbHues.put(elem.getDbName(), Color.BLUE);
+                ((DefaultComboBoxModel) cbDbs.getModel()).addElement(elem
+                    .getDbName());
+              }
             }
             line.addElement(elem);
             linePanel.updateElements();

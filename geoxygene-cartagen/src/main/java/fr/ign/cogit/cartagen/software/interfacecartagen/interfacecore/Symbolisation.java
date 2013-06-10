@@ -16,6 +16,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -33,6 +34,8 @@ import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.SpecialPoint;
 import fr.ign.cogit.cartagen.software.dataset.SpecialPointType;
 import fr.ign.cogit.cartagen.software.interfacecartagen.AbstractLayerGroup;
+import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.HorizontalHatchTexture;
+import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.VerticalHatchTexture;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.geompool.ColouredFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -42,6 +45,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -182,16 +186,16 @@ public abstract class Symbolisation {
 
         // Computes the actual colour to use for line (/border) from the given
         // colour and transparency
-        Color lineActualColour = new Color(lineColour.getRed(), lineColour
-            .getGreen(), lineColour.getBlue(), lineTransparency);
+        Color lineActualColour = new Color(lineColour.getRed(),
+            lineColour.getGreen(), lineColour.getBlue(), lineTransparency);
 
         // Polygon case
         if ((obj.getGeom() instanceof IPolygon)
             || (obj.getGeom() instanceof IMultiSurface<?>)) {
           // Computes the actual colour to use to fill the polygon from the
           // given fill colour and transparency
-          Color fillActualColour = new Color(fillColour.getRed(), fillColour
-              .getGreen(), fillColour.getBlue(), fillTransparency);
+          Color fillActualColour = new Color(fillColour.getRed(),
+              fillColour.getGreen(), fillColour.getBlue(), fillTransparency);
           // Fills the polygon
           pv.draw(fillActualColour, obj.getGeom());
           // Draws the border of the polygon
@@ -266,16 +270,16 @@ public abstract class Symbolisation {
 
         // Computes the actual colour to use for line (/border) from the given
         // colour and transparency
-        Color lineActualColour = new Color(lineColour.getRed(), lineColour
-            .getGreen(), lineColour.getBlue(), lineTransparency);
+        Color lineActualColour = new Color(lineColour.getRed(),
+            lineColour.getGreen(), lineColour.getBlue(), lineTransparency);
 
         // Polygon case
         if ((obj.getGeom() instanceof IPolygon)
             || (obj.getGeom() instanceof IMultiSurface<?>)) {
           // Computes the actual colour to use to fill the polygon from the
           // given fill colour and transparency
-          Color fillActualColour = new Color(fillColour.getRed(), fillColour
-              .getGreen(), fillColour.getBlue(), fillTransparency);
+          Color fillActualColour = new Color(fillColour.getRed(),
+              fillColour.getGreen(), fillColour.getBlue(), fillTransparency);
           // Fills the polygon
           pv.draw(fillActualColour, obj.getGeom());
           // Draws the border of the polygon
@@ -580,6 +584,114 @@ public abstract class Symbolisation {
         largeurContourmm, CartagenApplication.getInstance().getLayerGroup());
   }
 
+  public static Symbolisation hatchedVerticalPolygon(
+      final Color couleurContour, final double largeurContourmm,
+      final Color hatchColor, final int hatchOffset, final int hatchBias,
+      final int hatchThickness) {
+    return new Symbolisation() {
+      @Override
+      public void draw(VisuPanel pv, IFeature obj) {
+        if (obj.isDeleted()) {
+          return;
+        }
+
+        IPolygon poly = (IPolygon) obj.getGeom();
+        int nb = poly.coord().size() + poly.getInterior().size();
+        int[] x = new int[nb], y = new int[nb];
+        // enveloppe exterieure
+        IRing ls = poly.getExterior();
+        int x0 = pv.coordToPixX(ls.coord().get(0).getX());
+        int y0 = pv.coordToPixY(ls.coord().get(0).getY());
+        for (int i = 0; i < ls.coord().size(); i++) {
+          x[i] = pv.coordToPixX(ls.coord().get(i).getX());
+          y[i] = pv.coordToPixY(ls.coord().get(i).getY());
+        }
+        // trous
+        int index = ls.coord().size();
+        for (int j = 0; j < poly.getInterior().size(); j++) {
+          ls = poly.getInterior(j);
+          for (int i = index; i < index + ls.coord().size(); i++) {
+            x[i] = pv.coordToPixX(ls.coord().get(i - index).getX());
+            y[i] = pv.coordToPixY(ls.coord().get(i - index).getY());
+          }// i
+          x[index + ls.coord().size()] = x0;
+          y[index + ls.coord().size()] = y0;
+          index += ls.coord().size() + 1;
+        }// j
+        Polygon pol = new Polygon(x, y, nb);
+
+        // dessin du contour
+        if (obj.getGeom() instanceof IPolygon) {
+          pv.drawLimit(couleurContour, (IPolygon) obj.getGeom(),
+              largeurContourmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+              BasicStroke.CAP_ROUND, BasicStroke.CAP_ROUND);
+        } else if (obj.getGeom() instanceof IMultiSurface<?>) {
+          pv.drawLimit(couleurContour, (IMultiSurface<?>) obj.getGeom(),
+              largeurContourmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+              BasicStroke.CAP_ROUND, BasicStroke.CAP_ROUND);
+        }
+
+        VerticalHatchTexture texture = new VerticalHatchTexture(pol,
+            hatchOffset, hatchBias, hatchColor, hatchThickness);
+        texture.apply(pv.getG2D());
+      }
+    };
+  }
+
+  public static Symbolisation hatchedHorizontalPolygon(
+      final Color couleurContour, final double largeurContourmm,
+      final Color hatchColor, final int hatchOffset, final int hatchBias,
+      final int hatchThickness) {
+    return new Symbolisation() {
+      @Override
+      public void draw(VisuPanel pv, IFeature obj) {
+        if (obj.isDeleted()) {
+          return;
+        }
+
+        IPolygon poly = (IPolygon) obj.getGeom();
+        int nb = poly.coord().size() + poly.getInterior().size();
+        int[] x = new int[nb], y = new int[nb];
+        // enveloppe exterieure
+        IRing ls = poly.getExterior();
+        int x0 = pv.coordToPixX(ls.coord().get(0).getX());
+        int y0 = pv.coordToPixY(ls.coord().get(0).getY());
+        for (int i = 0; i < ls.coord().size(); i++) {
+          x[i] = pv.coordToPixX(ls.coord().get(i).getX());
+          y[i] = pv.coordToPixY(ls.coord().get(i).getY());
+        }
+        // trous
+        int index = ls.coord().size();
+        for (int j = 0; j < poly.getInterior().size(); j++) {
+          ls = poly.getInterior(j);
+          for (int i = index; i < index + ls.coord().size(); i++) {
+            x[i] = pv.coordToPixX(ls.coord().get(i - index).getX());
+            y[i] = pv.coordToPixY(ls.coord().get(i - index).getY());
+          }// i
+          x[index + ls.coord().size()] = x0;
+          y[index + ls.coord().size()] = y0;
+          index += ls.coord().size() + 1;
+        }// j
+        Polygon pol = new Polygon(x, y, nb);
+
+        // dessin du contour
+        if (obj.getGeom() instanceof IPolygon) {
+          pv.drawLimit(couleurContour, (IPolygon) obj.getGeom(),
+              largeurContourmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+              BasicStroke.CAP_ROUND, BasicStroke.CAP_ROUND);
+        } else if (obj.getGeom() instanceof IMultiSurface<?>) {
+          pv.drawLimit(couleurContour, (IMultiSurface<?>) obj.getGeom(),
+              largeurContourmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+              BasicStroke.CAP_ROUND, BasicStroke.CAP_ROUND);
+        }
+
+        HorizontalHatchTexture texture = new HorizontalHatchTexture(pol,
+            hatchOffset, hatchBias, hatchColor, hatchThickness);
+        texture.apply(pv.getG2D());
+      }
+    };
+  }
+
   /**
    * lineraire avec largeur pixel
    * @return
@@ -655,8 +767,8 @@ public abstract class Symbolisation {
 
         // dessin de la ligne
         if (obj.getGeom() instanceof ILineString) {
-          pv.draw(couleur, (ILineString) obj.getGeom(), widthmm
-              * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+          pv.draw(couleur, (ILineString) obj.getGeom(),
+              widthmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
               BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, dashes);
         }
       }
@@ -690,8 +802,8 @@ public abstract class Symbolisation {
         float[] dots = new float[] { 0, dotSpacing, 0, dotSpacing };
         // dessin de la ligne
         if (obj.getGeom() instanceof ILineString) {
-          pv.draw(couleur, (ILineString) obj.getGeom(), widthmm
-              * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+          pv.draw(couleur, (ILineString) obj.getGeom(),
+              widthmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
               BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, dots);
         }
       }
@@ -728,8 +840,8 @@ public abstract class Symbolisation {
         // dessin de la ligne
         if (obj.getGeom() instanceof IPolygon) {
           ILineString outline = ((IPolygon) obj.getGeom()).exteriorLineString();
-          pv.draw(outlineColor, outline, widthmm
-              * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+          pv.draw(outlineColor, outline,
+              widthmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
               BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, dashes);
         } else if (obj.getGeom() instanceof IMultiSurface<?>) {
           int n = ((IMultiSurface<?>) obj.getGeom()).size();
@@ -737,8 +849,8 @@ public abstract class Symbolisation {
             IPolygon geom = (IPolygon) ((IMultiSurface<?>) obj.getGeom())
                 .get(i);
             ILineString outline = geom.exteriorLineString();
-            pv.draw(outlineColor, outline, widthmm
-                * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+            pv.draw(outlineColor, outline,
+                widthmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
                 BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, dashes);
           }
         }
@@ -774,8 +886,8 @@ public abstract class Symbolisation {
         // dessin de la ligne
         if (obj.getGeom() instanceof IPolygon) {
           ILineString outline = ((IPolygon) obj.getGeom()).exteriorLineString();
-          pv.draw(outlineColor, outline, widthmm
-              * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+          pv.draw(outlineColor, outline,
+              widthmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
               BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, dots);
         } else if (obj.getGeom() instanceof IMultiSurface<?>) {
           int n = ((IMultiSurface<?>) obj.getGeom()).size();
@@ -783,8 +895,8 @@ public abstract class Symbolisation {
             IPolygon geom = (IPolygon) ((IMultiSurface<?>) obj.getGeom())
                 .get(i);
             ILineString outline = geom.exteriorLineString();
-            pv.draw(outlineColor, outline, widthmm
-                * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+            pv.draw(outlineColor, outline,
+                widthmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
                 BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, dots);
           }
         }
@@ -819,13 +931,11 @@ public abstract class Symbolisation {
         // dessin de la ligne
         if (layerGroup.symbolisationDisplay) {
           if (obj.getGeom() instanceof ILineString) {
-            pv.draw(couleur, (ILineString) obj.getGeom(), largeurmm
-                * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, cap, join);
+            pv.draw(couleur, (ILineString) obj.getGeom(),
+                largeurmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, cap, join);
           } else if (obj.getGeom() instanceof IMultiCurve) {
-            pv
-                .draw(couleur, (IMultiCurve<ILineString>) obj.getGeom(),
-                    largeurmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, cap,
-                    join);
+            pv.draw(couleur, (IMultiCurve<ILineString>) obj.getGeom(),
+                largeurmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, cap, join);
           }
         } else if (obj.getGeom() instanceof ILineString) {
           pv.draw(couleur, (ILineString) obj.getGeom(),
@@ -941,8 +1051,8 @@ public abstract class Symbolisation {
 
         if (layerGroup.symbolisationDisplay) {
           if (obj.getGeom() instanceof IPoint) {
-            pv.drawCircle(couleur, ((IPoint) obj.getGeom()), largeurmm
-                * Legend.getSYMBOLISATI0N_SCALE() / 1000.0);
+            pv.drawCircle(couleur, ((IPoint) obj.getGeom()),
+                largeurmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0);
           } else if (obj.getGeom() instanceof IMultiPoint) {
             pv.drawCircle(couleur, ((IMultiPoint) obj.getGeom()), largeurmm
                 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0);
@@ -1051,9 +1161,9 @@ public abstract class Symbolisation {
                 - a - 3));
             lineString.addControlPoint(new DirectPosition(x - b - a - 3, y - c
                 - a - 3));
-            pv.drawLimit(Color.black, new GM_Polygon(lineString), 0.1 * Legend
-                .getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_ROUND,
-                BasicStroke.JOIN_ROUND);
+            pv.drawLimit(Color.black, new GM_Polygon(lineString),
+                0.1 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 
             pv.draw(sp.getSymbolColor(), new GM_Polygon(lineString));
             lineString = new GM_LineString();
@@ -1063,9 +1173,9 @@ public abstract class Symbolisation {
             lineString.addControlPoint(new DirectPosition(x + b, y + c));
             lineString
                 .addControlPoint(new DirectPosition(x + b + a, y + c + a));
-            pv.draw(Color.red, lineString, 0.1 * Legend
-                .getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_ROUND,
-                BasicStroke.JOIN_ROUND);
+            pv.draw(Color.red, lineString,
+                0.1 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 
             lineString.clearSegments();
             lineString = new GM_LineString();
@@ -1076,9 +1186,9 @@ public abstract class Symbolisation {
             lineString
                 .addControlPoint(new DirectPosition(x - b - a, y + c + a));
 
-            pv.draw(Color.red, lineString, 0.1 * Legend
-                .getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_ROUND,
-                BasicStroke.JOIN_ROUND);
+            pv.draw(Color.red, lineString,
+                0.1 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 
           } else if (sp.getPointType() == SpecialPointType.ROUNDABOUT) {
 
@@ -1098,25 +1208,25 @@ public abstract class Symbolisation {
             lineString.addControlPoint(new DirectPosition(x + c, y));
             lineString.addControlPoint(new DirectPosition(x, y + c));
             lineString.addControlPoint(new DirectPosition(x - c, y));
-            pv.drawLimit(Color.black, new GM_Polygon(lineString), 0.1 * Legend
-                .getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_ROUND,
-                BasicStroke.JOIN_ROUND);
+            pv.drawLimit(Color.black, new GM_Polygon(lineString),
+                0.1 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 
             pv.draw(sp.getSymbolColor(), new GM_Polygon(lineString));
 
             lineString = new GM_LineString();
             lineString.addControlPoint(new DirectPosition(x - c * 0.6, y));
             lineString.addControlPoint(new DirectPosition(x + c * 0.6, y));
-            pv.draw(Color.black, lineString, 0.07 * Legend
-                .getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_SQUARE,
-                BasicStroke.CAP_SQUARE);
+            pv.draw(Color.black, lineString,
+                0.07 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+                BasicStroke.CAP_SQUARE, BasicStroke.CAP_SQUARE);
 
             lineString = new GM_LineString();
             lineString.addControlPoint(new DirectPosition(x, y - c * 0.6));
             lineString.addControlPoint(new DirectPosition(x, y + c * 0.6));
-            pv.draw(Color.black, lineString, 0.07 * Legend
-                .getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_SQUARE,
-                BasicStroke.CAP_SQUARE);
+            pv.draw(Color.black, lineString,
+                0.07 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+                BasicStroke.CAP_SQUARE, BasicStroke.CAP_SQUARE);
 
           }
         }

@@ -1,4 +1,4 @@
-package fr.ign.cogit.cartagen.pearep.derivation;
+package fr.ign.cogit.cartagen.pearep.derivation.processes;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;

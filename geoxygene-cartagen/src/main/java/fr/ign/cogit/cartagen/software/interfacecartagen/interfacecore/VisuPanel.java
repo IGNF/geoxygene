@@ -224,7 +224,7 @@ public class VisuPanel extends JPanel implements Runnable, Printable {
   }
 
   // distance en m pour la selection
-  private double selectionDistance = 1;
+  private double selectionDistance = 5;
 
   public double getSelectionDistance() {
     return this.selectionDistance;
@@ -909,6 +909,34 @@ public class VisuPanel extends JPanel implements Runnable, Printable {
       double d = obj.getGeom().distance(pointClic);
 
       if (d <= this.selectionDistance) {
+        // ajout/suppression de l'objet a la selection
+        if (this.selectedObjects.contains(obj)) {
+          this.selectedObjects.remove(obj);
+        } else {
+          this.selectedObjects.add(obj);
+        }
+      }
+    }
+  }
+
+  /**
+   * ajoute a la selection les objets d'une liste dans une enveloppe.
+   * @param liste
+   * @param pointClic
+   */
+  public void addToSelection(IFeatureCollection<?> liste, IEnvelope env) {
+    // parcours des objets de la liste
+    for (IFeature obj : liste) {
+      if (obj.getGeom() == null || obj.getGeom().isEmpty()) {
+        continue;
+      }
+
+      // si l'objet est supprime, sortir
+      if (obj.isDeleted()) {
+        continue;
+      }
+
+      if (env.getGeom().intersects(obj.getGeom())) {
         // ajout/suppression de l'objet a la selection
         if (this.selectedObjects.contains(obj)) {
           this.selectedObjects.remove(obj);

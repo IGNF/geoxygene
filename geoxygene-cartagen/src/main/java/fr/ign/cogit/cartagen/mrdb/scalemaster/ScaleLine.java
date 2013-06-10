@@ -135,6 +135,23 @@ public class ScaleLine {
   }
 
   /**
+   * Remove a {@link ScaleMasterElement} instance in {@code this} line.
+   * @param element
+   */
+  public void removeElement(ScaleMasterElement element) {
+    Interval<Integer> interval = element.getInterval();
+    List<ScaleMasterElement> list = this.getElementListFromInterval(interval);
+    if (list == null)
+      list = new ArrayList<ScaleMasterElement>();
+    list.remove(element);
+    if (list.isEmpty())
+      this.line.remove(element.getInterval());
+    else
+      this.line.put(element.getInterval(), list);
+    element.setScaleLine(null);
+  }
+
+  /**
    * Get the current list of elements related to an interval in {@code this}.
    * @param interval
    * @return

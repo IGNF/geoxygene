@@ -93,6 +93,22 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
     this.setAttributeMap(null);
   }
 
+  /**
+   * The generic constructor used to correct road data.
+   * @param line
+   * @param attributes
+   * @param type
+   */
+  public MGCPRailwayLine(ILineString line) {
+    super();
+    this.geoxObj = new TronconFerreImpl(new ReseauImpl(), false, line);
+    this.setInitialGeom(line);
+    this.setEliminated(false);
+    this.deadEnd = false;
+    this.initialNode = null;
+    this.finalNode = null;
+  }
+
   @Override
   public int getImportance() {
     return importance;

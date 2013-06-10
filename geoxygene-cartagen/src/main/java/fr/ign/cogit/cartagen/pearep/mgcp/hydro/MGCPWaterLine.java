@@ -73,6 +73,20 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
   }
 
   /**
+   * The generic constructor used to correct road data.
+   * @param line
+   * @param attributes
+   * @param type
+   */
+  public MGCPWaterLine(ILineString line) {
+    super();
+    this.geoxObj = new TronconHydrographiqueImpl();
+    this.geoxObj.setGeom(geom);
+    this.setInitialGeom(geom);
+    this.setEliminated(false);
+  }
+
+  /**
    * @param type
    */
   public MGCPWaterLine(ILineString line, HashMap<String, Object> attributes,

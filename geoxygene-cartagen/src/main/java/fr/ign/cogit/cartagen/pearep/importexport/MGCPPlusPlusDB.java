@@ -13,6 +13,16 @@ import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 
 public class MGCPPlusPlusDB extends PeaRepDB {
 
+  private boolean loadSea = false;
+
+  public boolean isLoadSea() {
+    return loadSea;
+  }
+
+  public void setLoadSea(boolean loadSea) {
+    this.loadSea = loadSea;
+  }
+
   public MGCPPlusPlusDB(File file) throws ParserConfigurationException,
       SAXException, IOException, ClassNotFoundException {
     super(file);
@@ -29,7 +39,7 @@ public class MGCPPlusPlusDB extends PeaRepDB {
   @Override
   public void populateDataset(int scale) {
 
-    MGCPLoader loader = new MGCPLoader();
+    MGCPLoader loader = new MGCPLoader(loadSea);
     loader.setDataset(MGCPPlusPlusDB.this.getDataSet());
     try {
       loader.loadData(new File(this.getSystemPath()), this.getLoadedClasses());

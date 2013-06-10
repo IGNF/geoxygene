@@ -491,10 +491,10 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
         GeneralisationLegend.SURFACE_EAU_LARGEUR_CONTOUR, this), this.cVoirRH);
 
     layerManager.addSymbolisedLayer(this.layerInundationArea, Symbolisation
-        .surface(GeneralisationLegend.SURFACE_EAU_COULEUR,
+        .hatchedVerticalPolygon(
             GeneralisationLegend.SURFACE_EAU_COULEUR_CONTOUR,
-            GeneralisationLegend.SURFACE_EAU_LARGEUR_CONTOUR, this),
-        this.cVoirRH);
+            GeneralisationLegend.SURFACE_EAU_LARGEUR_CONTOUR,
+            GeneralisationLegend.SURFACE_EAU_COULEUR, 10, 10, 2), this.cVoirRH);
     // reseau routier
 
     // to know if we are using the new loading function of Kusay or the old one

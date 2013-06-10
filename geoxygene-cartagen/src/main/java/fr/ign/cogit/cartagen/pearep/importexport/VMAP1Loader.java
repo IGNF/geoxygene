@@ -34,7 +34,6 @@ import fr.ign.cogit.cartagen.pearep.vmap.transport.VMAPRoadLine;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.DigitalLandscapeModel;
-import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
@@ -208,7 +207,7 @@ public class VMAP1Loader extends ShapeFileLoader {
 
   public void createNewDb(SymbolGroup group, String name) {
     // create the new CartAGen dataset
-    ShapeFileDB database = new ShapeFileDB(name);
+    PeaRepDB database = new PeaRepDB(name);
     database.setSourceDLM(SourceDLM.VMAP1);
     database.setSymboScale(500000);
     database.setDocument(CartAGenDoc.getInstance());

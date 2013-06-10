@@ -333,6 +333,8 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.filterTxt.setEditable(true);
     this.filterTxt.setText(filter.toString());
     this.filterTxt.setEditable(false);
+    this.spinMin.setValue(elem.getInterval().getMinimum());
+    this.spinMax.setValue(elem.getInterval().getMaximum());
     for (String procName : elem.getProcessesToApply()) {
       ScaleMasterGeneProcess proc = null;
       for (int i = 0; i < comboProc.getModel().getSize(); i++) {

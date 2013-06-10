@@ -26,9 +26,9 @@ public class SelectElementFrame extends JFrame implements ActionListener {
     this.parent = parent;
     this.selectedLine = parent.getSelectedLine();
     combo = new JComboBox(selectedLine.getAllElements().toArray());
-    combo.setPreferredSize(new Dimension(140, 20));
-    combo.setPreferredSize(new Dimension(140, 20));
-    combo.setPreferredSize(new Dimension(140, 20));
+    combo.setPreferredSize(new Dimension(200, 20));
+    combo.setMinimumSize(new Dimension(200, 20));
+    combo.setMaximumSize(new Dimension(200, 20));
     JButton okButton = new JButton("OK");
     okButton.addActionListener(this);
     okButton.setActionCommand("ok");
@@ -36,11 +36,13 @@ public class SelectElementFrame extends JFrame implements ActionListener {
     this.add(okButton);
     this.getContentPane().setLayout(
         new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+    this.pack();
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getActionCommand().equals("ok")) {
+      selectedLine.removeElement((ScaleMasterElement) combo.getSelectedItem());
       AddScaleMasterEltFrame frame = new AddScaleMasterEltFrame(parent,
           selectedLine, (ScaleMasterElement) combo.getSelectedItem());
       frame.setVisible(true);

@@ -1,0 +1,19 @@
+To compute the triangulation package, do:
+
+Triangulation tri = new Triangulation(...);
+tri.compute();
+
+Segments and triangles are here:
+tri.getSegments();
+tri.getTriangles();
+
+To represent the input data, there are two possibilities:
+
+- use the TriangulationPointImpl, TriangulationSegmentImpl and
+TriangulationTriangleImpl classes implemented in the 'impl' package.
+
+- if you already have your point, segment and triangle classes and want to use the
+triangulation on them, make them implement respectivelly the TriangulationPoint,
+TriangulationSegment and TriangulationTriangle interfaces.
+You also need 2 factories implemeting respectivelly the TriangulationSegmentFactory
+and TriangulationTriangleFactory interfaces.

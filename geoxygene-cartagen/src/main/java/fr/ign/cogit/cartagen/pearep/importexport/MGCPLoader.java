@@ -130,6 +130,8 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 
 public class MGCPLoader extends ShapeFileLoader {
 
+  private boolean loadSea = true;
+
   /**
    * Default constructor
    * @param dataset
@@ -142,6 +144,13 @@ public class MGCPLoader extends ShapeFileLoader {
    * Default constructor
    */
   public MGCPLoader() {
+  }
+
+  /**
+   * Default constructor
+   */
+  public MGCPLoader(boolean loadSea) {
+    this.loadSea = loadSea;
   }
 
   @Override
@@ -533,13 +542,15 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // tidal water areas
-      if (((listLayer.size() == 0) || (listLayer.contains("ABA040")))
-          && (FileUtil.getNamedFileInDir(directory, "ABA040.shp") != null)) {
-        this.loadPolygonClass(
-            FileUtil.getNamedFileInDir(directory, "ABA040.shp")
-                .getAbsolutePath(), MGCPTidalWaterArea.class,
-            CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
-            PeaRepDbType.MGCPPlusPlus);
+      if (loadSea) {
+        if (((listLayer.size() == 0) || (listLayer.contains("ABA040")))
+            && (FileUtil.getNamedFileInDir(directory, "ABA040.shp") != null)) {
+          this.loadPolygonClass(
+              FileUtil.getNamedFileInDir(directory, "ABA040.shp")
+                  .getAbsolutePath(), MGCPTidalWaterArea.class,
+              CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
+              PeaRepDbType.MGCPPlusPlus);
+        }
       }
 
       // lake areas (dejà chargé)
