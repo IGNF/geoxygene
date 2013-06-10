@@ -395,6 +395,103 @@ public class CommonAlgorithmsFromCartAGen {
     return nb;
   }
 
+  public static LineConnectionInfo getLineConnectionInfo(ILineString line1,
+      ILineString line2) {
+    // search connection at the start point of line1
+    double angleS = -10.0;
+    int nbCommonNodes = 0;
+    if (line1.startPoint().equals(line2.startPoint())) {
+      nbCommonNodes++;
+      angleS = Angle.angleTroisPoints(line1.coord().get(1), line1.startPoint(),
+          line2.coord().get(1)).getValeur();
+    }
+    if (line1.startPoint().equals(line2.endPoint())) {
+      nbCommonNodes++;
+      angleS = Angle.angleTroisPoints(line1.coord().get(1), line1.startPoint(),
+          line2.coord().get(line2.numPoints() - 2)).getValeur();
+    }
+
+    // search connection at the end point of line1
+    double angleE = -10.0;
+    if (line1.endPoint().equals(line2.startPoint())) {
+      nbCommonNodes++;
+      angleE = Angle.angleTroisPoints(line1.coord().get(line1.numPoints() - 2),
+          line1.endPoint(), line2.coord().get(1)).getValeur();
+    }
+    if (line1.endPoint().equals(line2.endPoint())) {
+      nbCommonNodes++;
+      angleE = Angle.angleTroisPoints(line1.coord().get(line1.numPoints() - 2),
+          line1.endPoint(), line2.coord().get(line2.numPoints() - 2))
+          .getValeur();
+    }
+
+    // get the angles between -Pi & Pi
+    if (angleS > Math.PI)
+      angleS = angleS - 2 * Math.PI;
+    if (angleE > Math.PI)
+      angleE = angleE - 2 * Math.PI;
+
+    return new CommonAlgorithmsFromCartAGen().new LineConnectionInfo(
+        nbCommonNodes, angleS, angleE);
+  }
+
+  /**
+   * Class to group the information resulting from the function
+   * getLineConnectionInfo(ILineString line1, ILineString line2)
+   * @author GTouya
+   * 
+   */
+  public class LineConnectionInfo {
+    private int nbCommonNodes;
+    /**
+     * Angle between two edges connected to the starting node of geom1 . -10 if
+     * not connected.
+     */
+    private double angleS = -10.0;
+    /**
+     * Angle between two edges connected to the ending node of geom2. -10 if not
+     * connected
+     */
+    private double angleE = -10.0;
+
+    public LineConnectionInfo(int nbCommonNodes, double angleS, double angleE) {
+      super();
+      this.nbCommonNodes = nbCommonNodes;
+      this.angleS = angleS;
+      this.angleE = angleE;
+    }
+
+    public LineConnectionInfo(int nbCommonNodes) {
+      super();
+      this.nbCommonNodes = nbCommonNodes;
+    }
+
+    public int getNbCommonNodes() {
+      return nbCommonNodes;
+    }
+
+    public void setNbCommonNodes(int nbCommonNodes) {
+      this.nbCommonNodes = nbCommonNodes;
+    }
+
+    public double getAngleS() {
+      return angleS;
+    }
+
+    public void setAngleS(double angleS) {
+      this.angleS = angleS;
+    }
+
+    public double getAngleE() {
+      return angleE;
+    }
+
+    public void setAngleE(double angleE) {
+      this.angleE = angleE;
+    }
+
+  }
+
   /**
    * Check if a line geometry is crossing entirely a polygon (with 2
    * intersection points and passing through the polygon.
@@ -974,5 +1071,25 @@ public class CommonAlgorithmsFromCartAGen {
     }
 
     return CommonAlgorithms.rotation(longest, polygon.centroid(), orientation);
+  }
+
+  /**
+   * For a line and a subline of this line, returns true if vertices of both
+   * lines are in the same direction.
+   * @param line
+   * @param subLine
+   * @return
+   */
+  public static boolean areLinesSameDirection(ILineString line,
+      ILineString subLine) {
+    if (!line.contains(subLine))
+      return false;
+    IDirectPosition first = subLine.coord().get(0);
+    IDirectPosition second = subLine.coord().get(1);
+    int index1 = line.coord().getList().indexOf(first);
+    int index2 = line.coord().getList().indexOf(second);
+    if (index1 < index2)
+      return true;
+    return false;
   }
 }
