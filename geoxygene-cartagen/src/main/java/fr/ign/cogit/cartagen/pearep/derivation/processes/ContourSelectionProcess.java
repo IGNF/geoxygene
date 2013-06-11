@@ -35,7 +35,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 public class ContourSelectionProcess extends ScaleMasterGeneProcess {
 
   private int csThreshold;
-  private boolean startZero = false;
+  private boolean startZero = true;
   private static ContourSelectionProcess instance = null;
 
   public ContourSelectionProcess() {
@@ -143,7 +143,7 @@ public class ContourSelectionProcess extends ScaleMasterGeneProcess {
   public Set<ProcessParameter> getDefaultParameters() {
     Set<ProcessParameter> params = new HashSet<ProcessParameter>();
     params.add(new ProcessParameter("contour_selection", Integer.class, 2));
-    params.add(new ProcessParameter("start_zero", Boolean.class, false));
+    params.add(new ProcessParameter("start_zero", Boolean.class, true));
 
     return params;
   }
