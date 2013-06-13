@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory;
 import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
+import fr.ign.cogit.cartagen.core.genericschema.AbstractCreationFactory;
 
 /**
  * A {@link GeneObjImplementation} instance informs on a particular
@@ -19,6 +21,7 @@ public class GeneObjImplementation {
   private String name;
   private Package rootPackage;
   private Class<?> rootClass;
+  private AbstractCreationFactory creationFactory;
 
   public Class<?> getRootClass() {
     return rootClass;
@@ -45,21 +48,23 @@ public class GeneObjImplementation {
   }
 
   public GeneObjImplementation(String name, Package rootPackage,
-      Class<?> rootClass) {
+      Class<?> rootClass, AbstractCreationFactory creationFactory) {
     super();
     this.name = name;
     this.rootPackage = rootPackage;
     this.rootClass = rootClass;
+    this.creationFactory = creationFactory;
   }
 
   public static GeneObjImplementation getDefaultImplementation() {
-    return new GeneObjImplementation("default", GeneObjDefault.class
-        .getPackage(), GeneObjDefault.class);
+    return new GeneObjImplementation("default",
+        GeneObjDefault.class.getPackage(), GeneObjDefault.class,
+        new DefaultCreationFactory());
   }
 
   /**
-   * Filter a {@link Class} array to keep only those that are part of {@code
-   * this} implementation.
+   * Filter a {@link Class} array to keep only those that are part of
+   * {@code this} implementation.
    * @param classes
    * @return
    */
@@ -108,5 +113,13 @@ public class GeneObjImplementation {
     if (classObj.getPackage().getName().contains(rootPackage.getName()))
       return true;
     return false;
+  }
+
+  public AbstractCreationFactory getCreationFactory() {
+    return creationFactory;
+  }
+
+  public void setCreationFactory(AbstractCreationFactory creationFactory) {
+    this.creationFactory = creationFactory;
   }
 }
