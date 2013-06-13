@@ -356,7 +356,7 @@ public class LienReseaux extends Lien {
             IFeature objet1 = itObjets1.next();
             logger.trace("Type objet = " + objet1.getGeom().getClass().toString());
             if( !(objet1 instanceof IPoint)) {
-                System.out.println("---+-+++-");
+                // System.out.println("---+-+++-");
                 continue;
             }
             
