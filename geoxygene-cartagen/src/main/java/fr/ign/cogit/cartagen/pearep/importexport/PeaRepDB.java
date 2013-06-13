@@ -2,6 +2,7 @@ package fr.ign.cogit.cartagen.pearep.importexport;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import fr.ign.cogit.cartagen.core.genericschema.AbstractCreationFactory;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenEnrichment;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
@@ -120,8 +122,27 @@ public class PeaRepDB extends ShapeFileDB {
         "implementation-root-class").item(0);
     String className = implClassElem.getChildNodes().item(0).getNodeValue();
     Class<?> rootClass = Class.forName(className);
-    this.setGeneObjImpl(new GeneObjImplementation(implName, rootPackage,
-        rootClass));
+    Element factClassElem = (Element) implElem.getElementsByTagName(
+        "implementation-factory").item(0);
+    String factClassName = factClassElem.getChildNodes().item(0).getNodeValue();
+    Class<?> factClass = Class.forName(factClassName);
+    try {
+      this.setGeneObjImpl(new GeneObjImplementation(implName, rootPackage,
+          rootClass, (AbstractCreationFactory) factClass.getConstructor()
+              .newInstance()));
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
+    } catch (SecurityException e) {
+      e.printStackTrace();
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+    }
 
     // the persistent classes
     Element persistElem = (Element) root.getElementsByTagName("persistent")
@@ -233,6 +254,11 @@ public class PeaRepDB extends ShapeFileDB {
     n = xmlDoc.createTextNode(this.getGeneObjImpl().getRootClass().getName());
     implClassElem.appendChild(n);
     implElem.appendChild(implClassElem);
+    Element factClassElem = xmlDoc.createElement("implementation-factory");
+    n = xmlDoc.createTextNode(this.getGeneObjImpl().getCreationFactory()
+        .getClass().getName());
+    factClassElem.appendChild(n);
+    implElem.appendChild(factClassElem);
 
     // the persistent classes
     Element persistElem = xmlDoc.createElement("persistent");

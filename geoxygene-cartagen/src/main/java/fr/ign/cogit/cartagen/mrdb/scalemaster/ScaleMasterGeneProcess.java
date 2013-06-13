@@ -17,7 +17,8 @@ import java.util.Set;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 
-public abstract class ScaleMasterGeneProcess {
+public abstract class ScaleMasterGeneProcess implements
+    Comparable<ScaleMasterGeneProcess> {
 
   private Set<ProcessParameter> parameters;
   private int scale;
@@ -126,4 +127,10 @@ public abstract class ScaleMasterGeneProcess {
     }
     return paramsMap;
   }
+
+  @Override
+  public int compareTo(ScaleMasterGeneProcess o) {
+    return this.getProcessName().compareTo(o.getProcessName());
+  }
+
 }

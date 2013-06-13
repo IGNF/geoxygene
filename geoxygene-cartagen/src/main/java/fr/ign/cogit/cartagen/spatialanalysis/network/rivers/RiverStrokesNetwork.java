@@ -1,7 +1,12 @@
 package fr.ign.cogit.cartagen.spatialanalysis.network.rivers;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
@@ -26,6 +31,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
   private Set<NoeudHydrographique> sources, sinks;
   private Set<RiverIsland> simpleIslands;
   private Set<RiverIslandGroup> complexIslands;
+  private Map<ArcReseau, Integer> strahlerOrders;
 
   public RiverStrokesNetwork() {
     super();
@@ -33,6 +39,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     this.sinks = new HashSet<NoeudHydrographique>();
     this.simpleIslands = new HashSet<RiverIsland>();
     this.complexIslands = new HashSet<RiverIslandGroup>();
+    this.setStrahlerOrders(new HashMap<ArcReseau, Integer>());
   }
 
   public RiverStrokesNetwork(Collection<ArcReseau> features) {
@@ -41,6 +48,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     this.sinks = new HashSet<NoeudHydrographique>();
     this.simpleIslands = new HashSet<RiverIsland>();
     this.complexIslands = new HashSet<RiverIslandGroup>();
+    this.setStrahlerOrders(new HashMap<ArcReseau, Integer>());
   }
 
   public Set<NoeudHydrographique> getSources() {
@@ -73,6 +81,14 @@ public class RiverStrokesNetwork extends StrokesNetwork {
 
   public void setComplexIslands(Set<RiverIslandGroup> complexIslands) {
     this.complexIslands = complexIslands;
+  }
+
+  public Map<ArcReseau, Integer> getStrahlerOrders() {
+    return strahlerOrders;
+  }
+
+  public void setStrahlerOrders(Map<ArcReseau, Integer> strahlerOrders) {
+    this.strahlerOrders = strahlerOrders;
   }
 
   /**
@@ -164,7 +180,11 @@ public class RiverStrokesNetwork extends StrokesNetwork {
       RiverStroke stroke = new RiverStroke(this, section);
       this.getStrokes().add(stroke);
       this.getGroupedFeatures().add(section);
-      downstreamNodes.add((NoeudHydrographique) section.getNoeudFinal());
+      if (!downstreamNodes.contains((NoeudHydrographique) section
+          .getNoeudFinal()))
+        downstreamNodes.add((NoeudHydrographique) section.getNoeudFinal());
+      // compute Strahler orders
+      this.strahlerOrders.put(section, 1);
     }
 
     // ****************************
@@ -183,7 +203,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
 
       // check that all entering sections already belong to a stroke
       if (!allBelongToStroke(node.getArcsEntrants())) {
-        downstreamNodes.add(node);
+        downstreamNodes.add(0, node);
         counter++;
         continue;
       }
@@ -200,15 +220,75 @@ public class RiverStrokesNetwork extends StrokesNetwork {
 
         // now extends the continuing stroke with downstreamSection
         continuing.getFeatures().add(downstreamSection);
+        this.getGroupedFeatures().add(downstreamSection);
 
         // find the next node
-        downstreamNodes.add((NoeudHydrographique) downstreamSection
-            .getNoeudFinal());
-      } else {
+        if (!downstreamNodes.contains((NoeudHydrographique) downstreamSection
+            .getNoeudFinal()))
+          downstreamNodes.add((NoeudHydrographique) downstreamSection
+              .getNoeudFinal());
+
+        // compute Strahler order
+        List<Integer> orders = new ArrayList<Integer>();
+        for (ArcReseau arc : node.getArcsEntrants())
+          orders.add(this.strahlerOrders.get(arc));
+        this.strahlerOrders.put(downstreamSection,
+            computeStrahlerAtConfluence(orders));
+
+      } else if (node.getArcsSortants().size() > 1) {
         // braided stream case
-        // TODO
+        if (node.getArcsEntrants().size() == 1) {
+          // normal case
+          // the main branch has to be found
+          ArcReseau upStream = node.getArcsEntrants().iterator().next();
+          ArcReseau mainBranch = null;
+          double min = 1.0;
+          for (ArcReseau branch : node.getArcsSortants()) {
+            double angle = CommonAlgorithmsFromCartAGen.angleBetween2Lines(
+                (ILineString) upStream.getGeom(),
+                (ILineString) branch.getGeom());
+            if (Math.cos(angle) < min) {
+              min = Math.cos(angle);
+              mainBranch = branch;
+            }
+          }
+
+          // continue the upstream stroke with mainBranch
+          RiverStroke upstreamStroke = getUpstreamStrokes(node).iterator()
+              .next();
+          upstreamStroke.getFeatures().add(mainBranch);
+          this.getGroupedFeatures().add(mainBranch);
+          // find the next node
+          if (!downstreamNodes.contains((NoeudHydrographique) mainBranch
+              .getNoeudFinal()))
+            downstreamNodes.add(0,
+                (NoeudHydrographique) mainBranch.getNoeudFinal());
+          this.strahlerOrders
+              .put(mainBranch, this.strahlerOrders.get(upStream));
+
+          // build new RiverStrokes with remaining branches
+          Collection<ArcReseau> remainingBranches = new HashSet<ArcReseau>(
+              node.getArcsSortants());
+          remainingBranches.remove(mainBranch);
+          for (ArcReseau branch : remainingBranches) {
+            RiverStroke stroke = new RiverStroke(this, branch);
+            this.getStrokes().add(stroke);
+            this.getGroupedFeatures().add(branch);
+            if (!downstreamNodes.contains((NoeudHydrographique) branch
+                .getNoeudFinal()))
+              downstreamNodes.add(0,
+                  (NoeudHydrographique) branch.getNoeudFinal());
+            // compute Strahler orders
+            this.strahlerOrders.put(branch, 1);
+          }
+        } else {
+          // complex case with braids at a confluence point
+          // TODO
+        }
       }
     }
+    for (NoeudHydrographique n : downstreamNodes)
+      System.out.println("noeud restant : " + n);
   }
 
   /**
@@ -299,4 +379,15 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     return upstreamStrokes;
   }
 
+  private Integer computeStrahlerAtConfluence(List<Integer> orders) {
+    if (orders.size() == 1)
+      return orders.get(0);
+
+    Integer max = Collections.max(orders);
+    int nbMax = Collections.frequency(orders, max);
+    if (nbMax > 1)
+      return max + 1;
+    else
+      return max;
+  }
 }

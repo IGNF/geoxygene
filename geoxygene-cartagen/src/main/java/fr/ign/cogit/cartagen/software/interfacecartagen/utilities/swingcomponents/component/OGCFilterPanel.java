@@ -313,6 +313,7 @@ public class OGCFilterPanel extends JPanel implements ActionListener,
     if (unitary) {
       this.filter = this.getSimpleFilter();
     } else {
+      ((BinaryLogicOpsType) this.operator).getOps().addAll(filterOpList);
       this.filter = this.operator;
     }
   }

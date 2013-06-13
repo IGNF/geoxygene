@@ -9,6 +9,8 @@ import org.geotools.data.shapefile.shp.ShapefileException;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPFeature;
+import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPSchemaFactory;
+import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 
 public class VMAP1PlusPlusDB extends PeaRepDB {
@@ -17,18 +19,21 @@ public class VMAP1PlusPlusDB extends PeaRepDB {
       SAXException, IOException, ClassNotFoundException {
     super(file);
     this.setGeneObjImpl(new GeneObjImplementation("vmap1++",
-        VMAP1PPFeature.class.getPackage(), VMAP1PPFeature.class));
+        VMAP1PPFeature.class.getPackage(), VMAP1PPFeature.class,
+        new VMAP1PPSchemaFactory()));
   }
 
   public VMAP1PlusPlusDB(String name) {
     super(name);
     this.setGeneObjImpl(new GeneObjImplementation("vmap1++",
-        VMAP1PPFeature.class.getPackage(), VMAP1PPFeature.class));
+        VMAP1PPFeature.class.getPackage(), VMAP1PPFeature.class,
+        new VMAP1PPSchemaFactory()));
   }
 
   @Override
   public void populateDataset(int scale) {
-
+    CartagenApplication.getInstance().setCreationFactory(
+        this.getGeneObjImpl().getCreationFactory());
     VMAP1PlusPlusLoader loader = new VMAP1PlusPlusLoader();
     loader.setDataset(VMAP1PlusPlusDB.this.getDataSet());
     try {

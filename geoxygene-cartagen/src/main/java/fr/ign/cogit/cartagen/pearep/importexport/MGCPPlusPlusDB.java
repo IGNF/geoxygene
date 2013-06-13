@@ -9,6 +9,8 @@ import org.geotools.data.shapefile.shp.ShapefileException;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSchemaFactory;
+import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 
 public class MGCPPlusPlusDB extends PeaRepDB {
@@ -27,18 +29,19 @@ public class MGCPPlusPlusDB extends PeaRepDB {
       SAXException, IOException, ClassNotFoundException {
     super(file);
     this.setGeneObjImpl(new GeneObjImplementation("mgcp++", MGCPFeature.class
-        .getPackage(), MGCPFeature.class));
+        .getPackage(), MGCPFeature.class, new MGCPSchemaFactory()));
   }
 
   public MGCPPlusPlusDB(String name) {
     super(name);
     this.setGeneObjImpl(new GeneObjImplementation("mgcp++", MGCPFeature.class
-        .getPackage(), MGCPFeature.class));
+        .getPackage(), MGCPFeature.class, new MGCPSchemaFactory()));
   }
 
   @Override
   public void populateDataset(int scale) {
-
+    CartagenApplication.getInstance().setCreationFactory(
+        this.getGeneObjImpl().getCreationFactory());
     MGCPLoader loader = new MGCPLoader(loadSea);
     loader.setDataset(MGCPPlusPlusDB.this.getDataSet());
     try {

@@ -4,6 +4,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -42,7 +45,10 @@ public class AddScaleLineFrame extends JFrame implements ActionListener {
 
     // a panel to define a new line
     JPanel pLine = new JPanel();
-    cbThemes = new JComboBox(frame.getExistingThemes().toArray());
+    List<ScaleMasterTheme> listThemes = new ArrayList<ScaleMasterTheme>(
+        frame.getExistingThemes());
+    Collections.sort(listThemes);
+    cbThemes = new JComboBox(listThemes.toArray());
     cbThemes.setPreferredSize(new Dimension(120, 20));
     cbThemes.setMaximumSize(new Dimension(120, 20));
     cbThemes.setMinimumSize(new Dimension(120, 20));

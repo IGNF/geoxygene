@@ -77,6 +77,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.MGCPProcessingFacility;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPumpingStation;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPQuarryArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPReservoirArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSeaPlaneBasePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSettlement;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSettlementPoint;
@@ -771,7 +772,8 @@ public class MGCPLoader extends ShapeFileLoader {
     database.setType(new DigitalLandscapeModel());
     this.setDataset(dataset);
     database.setGeneObjImpl(new GeneObjImplementation("mgcp++",
-        MGCPFeature.class.getPackage(), MGCPFeature.class));
+        MGCPFeature.class.getPackage(), MGCPFeature.class,
+        new MGCPSchemaFactory()));
   }
 
   private void loadBridgeLines(File directory, List<String> listLayer)

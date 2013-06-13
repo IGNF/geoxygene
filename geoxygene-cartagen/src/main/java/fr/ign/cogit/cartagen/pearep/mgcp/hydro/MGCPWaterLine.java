@@ -27,6 +27,7 @@ import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.schemageo.api.hydro.TronconHydrographique;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Direction;
@@ -66,8 +67,8 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
 
   public MGCPWaterLine(IGeometry geom) {
     super();
-    this.geoxObj = new TronconHydrographiqueImpl();
-    this.geoxObj.setGeom(geom);
+    this.geoxObj = new TronconHydrographiqueImpl(new ReseauImpl(), false,
+        (ICurve) geom);
     this.setInitialGeom(geom);
     this.setEliminated(false);
   }
@@ -80,8 +81,7 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
    */
   public MGCPWaterLine(ILineString line) {
     super();
-    this.geoxObj = new TronconHydrographiqueImpl();
-    this.geoxObj.setGeom(geom);
+    this.geoxObj = new TronconHydrographiqueImpl(new ReseauImpl(), false, line);
     this.setInitialGeom(geom);
     this.setEliminated(false);
   }

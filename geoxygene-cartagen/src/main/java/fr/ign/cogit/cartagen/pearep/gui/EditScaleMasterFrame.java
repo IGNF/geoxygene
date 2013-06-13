@@ -80,7 +80,9 @@ import fr.ign.cogit.cartagen.pearep.PeaRepGeneralisation;
 import fr.ign.cogit.cartagen.pearep.derivation.XMLParser;
 import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPFeature;
+import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPSchemaFactory;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
@@ -108,7 +110,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   private Set<ScaleMasterTheme> existingThemes = new HashSet<ScaleMasterTheme>();
   private Map<String, Color> dbHues;
   private Set<ScaleMasterEnrichment> enrichProcs;
-  private Set<ScaleMasterGeneProcess> genProcs;
+  private List<ScaleMasterGeneProcess> genProcs;
   private Set<ScaleMasterPreProcess> preProcs;
 
   private JButton btnOk, btnCancel, btnAddLine, btnAddElement, btnEditElement;
@@ -176,11 +178,12 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     cbModel.addElement(SourceDLM.MGCPPlusPlus.name());
     implementations.add(new GeneObjImplementation(
         SourceDLM.MGCPPlusPlus.name(), MGCPFeature.class.getPackage(),
-        MGCPFeature.class));
+        MGCPFeature.class, new MGCPSchemaFactory()));
     this.dbHues.put(SourceDLM.VMAP1PlusPlus.name(), Color.BLUE);
     cbModel.addElement(SourceDLM.VMAP1PlusPlus.name());
     implementations.add(new GeneObjImplementation(SourceDLM.VMAP1PlusPlus
-        .name(), VMAP1PPFeature.class.getPackage(), VMAP1PPFeature.class));
+        .name(), VMAP1PPFeature.class.getPackage(), VMAP1PPFeature.class,
+        new VMAP1PPSchemaFactory()));
 
     // a panel to define the scale master
     JPanel pDefinition = new JPanel();
@@ -541,11 +544,11 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     return this.linePanels;
   }
 
-  public Set<ScaleMasterGeneProcess> getGenProcs() {
+  public List<ScaleMasterGeneProcess> getGenProcs() {
     return genProcs;
   }
 
-  public void setGenProcs(Set<ScaleMasterGeneProcess> genProcs) {
+  public void setGenProcs(List<ScaleMasterGeneProcess> genProcs) {
     this.genProcs = genProcs;
   }
 
@@ -569,7 +572,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
 
   private void setGeoClassesJar() throws URISyntaxException {
     this.enrichProcs = new HashSet<ScaleMasterEnrichment>();
-    this.genProcs = new HashSet<ScaleMasterGeneProcess>();
+    this.genProcs = new ArrayList<ScaleMasterGeneProcess>();
     this.preProcs = new HashSet<ScaleMasterPreProcess>();
 
     String jarPath = PeaRepGeneralisation.class.getProtectionDomain()
@@ -655,6 +658,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       e.printStackTrace();
     }
 
+    Collections.sort(this.genProcs);
   }
 
   /**
@@ -663,7 +667,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
    */
   private void setGeoClasses() {
     this.enrichProcs = new HashSet<ScaleMasterEnrichment>();
-    this.genProcs = new HashSet<ScaleMasterGeneProcess>();
+    this.genProcs = new ArrayList<ScaleMasterGeneProcess>();
     this.preProcs = new HashSet<ScaleMasterPreProcess>();
     // get the directory of the package of this class
     Package pack = this.getClass().getPackage();
@@ -750,6 +754,8 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         e.printStackTrace();
       }
     }
+
+    Collections.sort(this.genProcs);
   }
 
   /**

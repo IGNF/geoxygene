@@ -204,13 +204,13 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     scroll.setPreferredSize(new Dimension(120, 120));
     scroll.setMaximumSize(new Dimension(120, 120));
     scroll.setMinimumSize(new Dimension(120, 120));
-    pEnrich.add(scroll);
-    pInterval.add(Box.createHorizontalGlue());
     pEnrich.add(comboEnrich);
     pInterval.add(Box.createHorizontalGlue());
     pEnrich.add(btnAddEnrich);
     pInterval.add(Box.createHorizontalStrut(4));
     pEnrich.add(btnRemoveEnrich);
+    pInterval.add(Box.createHorizontalGlue());
+    pEnrich.add(scroll);
     pEnrich.setBorder(BorderFactory.createTitledBorder(lblEnrichments));
     pEnrich.setLayout(new BoxLayout(pEnrich, BoxLayout.X_AXIS));
 
@@ -233,14 +233,14 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.slideFilter.setPreferredSize(new Dimension(120, 50));
     this.slideFilter.setMaximumSize(new Dimension(120, 50));
     this.slideFilter.setMinimumSize(new Dimension(120, 50));
-    pFilter.add(filterTxt);
-    pInterval.add(Box.createHorizontalGlue());
     pFilter.add(new JLabel(this.lblPriority));
     pFilter.add(slideFilter);
     pInterval.add(Box.createHorizontalGlue());
     pFilter.add(btnAddFilter);
     pInterval.add(Box.createHorizontalStrut(4));
     pFilter.add(btnRemoveFilter);
+    pInterval.add(Box.createHorizontalGlue());
+    pFilter.add(filterTxt);
     pFilter.setBorder(BorderFactory.createTitledBorder(lblFilter));
     pFilter.setLayout(new BoxLayout(pFilter, BoxLayout.X_AXIS));
 
@@ -291,11 +291,11 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     pCurrentProc.add(pDescProc);
     pCurrentProc.add(pParameters);
     pCurrentProc.setLayout(new BoxLayout(pCurrentProc, BoxLayout.X_AXIS));
-    pProc.add(scroll2);
+    pProc.add(pCurrentProc);
     pInterval.add(Box.createHorizontalGlue());
     pProc.add(pBtns);
     pInterval.add(Box.createHorizontalGlue());
-    pProc.add(pCurrentProc);
+    pProc.add(scroll2);
     pProc.setBorder(BorderFactory.createTitledBorder(lblProcesses));
     pProc.setLayout(new BoxLayout(pProc, BoxLayout.X_AXIS));
 

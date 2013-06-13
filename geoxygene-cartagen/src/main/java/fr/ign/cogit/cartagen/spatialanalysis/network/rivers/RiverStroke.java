@@ -40,4 +40,15 @@ public class RiverStroke extends Stroke {
     return (ILineString) this.getFeatures().get(this.getFeatures().size() - 1)
         .getGeom();
   }
+
+  public void computeHortonOrder() {
+    this.hortonOrder = 1;
+    for (ArcReseau arc : getFeatures()) {
+      int strahler = ((RiverStrokesNetwork) this.getNetwork())
+          .getStrahlerOrders().get(arc);
+      if (strahler > this.hortonOrder)
+        this.hortonOrder = strahler;
+    }
+
+  }
 }

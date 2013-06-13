@@ -17,7 +17,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.geoxygene.filter.Filter;
 
-public class ScaleMasterTheme {
+public class ScaleMasterTheme implements Comparable<ScaleMasterTheme> {
 
   private String name, description;
   /**
@@ -140,6 +140,11 @@ public class ScaleMasterTheme {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  @Override
+  public int compareTo(ScaleMasterTheme o) {
+    return this.name.compareTo(o.name);
   }
 
 }

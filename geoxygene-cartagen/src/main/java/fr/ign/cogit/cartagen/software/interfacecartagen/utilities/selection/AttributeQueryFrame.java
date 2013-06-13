@@ -53,6 +53,7 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.OGCFilterPanel;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.RealLimitator;
@@ -375,6 +376,8 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
   @SuppressWarnings("unchecked")
   private void setGeoClasses() {
     this.geoClasses = new ArrayList<Class<?>>();
+    GeneObjImplementation impl = CartAGenDoc.getInstance().getCurrentDataset()
+        .getCartAGenDB().getGeneObjImpl();
     // get the directory of the package of this class
     Package pack = this.getClass().getPackage();
     String name = pack.getName();
@@ -425,7 +428,8 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
         }
         // test if the class inherits from IGeneObj
         if (IGeneObj.class.isAssignableFrom(classObj)) {
-          this.geoClasses.add(classObj);
+          if (impl.containsClass(classObj))
+            this.geoClasses.add(classObj);
         }
       } catch (ClassNotFoundException cnfex) {
         cnfex.printStackTrace();
