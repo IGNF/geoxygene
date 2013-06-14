@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
+import fr.ign.cogit.geoxygene.appli.plugin.cartetopo.gui.DialogTopoStructurePanel;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.EditParamPanel;
 
 /**
  * 
@@ -70,7 +72,8 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin, Action
     @Override
     public void actionPerformed(final ActionEvent e) {
         
-        System.out.println("Action");
+        // Launch parameter network data matching panel.
+        DialogTopoStructurePanel dialogTopoStructurePanel = new DialogTopoStructurePanel();
         
     }
 
