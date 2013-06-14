@@ -187,17 +187,22 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     // 
     // String filename1 = ParamParserTest.class.getClassLoader().getResource("data/reseau.shp").getPath();
     // String filename1 = application.getProperties().getLastOpenedFile();
-    // String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+    // bdcarto_route.shp
+    String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+    // String filename1 = "D:\\Data\\Appariement\\CG32\\Route\\Referentiel_ImaRoute_CG32.shp";
     // String filename1 = "D:\\Data\\Appariement\\Kusay\\CGDep84_extraction.shp";
-    String filename1 = "D:\\Data\\Appariement\\Kusay\\GGraph2.shp";
+    // String filename1 = "D:\\Data\\Appariement\\Kusay\\GGraph2.shp";
+    // String filename1 = "D:\\Data\\Appariement\\Kusay02\\comp.shp";
       
     ParamFilenamePopulationEdgesNetwork paramFilename1 = new ParamFilenamePopulationEdgesNetwork();
     paramFilename1.addFilename(filename1);
     paramPlugin.setParamFilenameNetwork1(paramFilename1);
     
-    // String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
+    String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
+    // String filename2 = "D:\\Data\\Appariement\\CG32\\Route\\bduni.shp";
     // String filename2 = "D:\\Data\\Appariement\\Kusay\\RIUV1BDCARTO_extractionV2.shp";
-    String filename2 = "D:\\Data\\Appariement\\Kusay\\RIUV1BDCARTO_extraction.shp";
+    // String filename2 = "D:\\Data\\Appariement\\Kusay\\RIUV1BDCARTO_extraction.shp";
+    // String filename2 = "D:\\Data\\Appariement\\Kusay02\\ref.shp";
     ParamFilenamePopulationEdgesNetwork paramFilename2 = new ParamFilenamePopulationEdgesNetwork();
     paramFilename2.addFilename(filename2);
     paramPlugin.setParamFilenameNetwork2(paramFilename2);
