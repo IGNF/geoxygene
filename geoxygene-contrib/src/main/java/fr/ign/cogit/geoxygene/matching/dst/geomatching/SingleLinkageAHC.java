@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.matching.dst.geoAppariement;
+package fr.ign.cogit.geoxygene.matching.dst.geomatching;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

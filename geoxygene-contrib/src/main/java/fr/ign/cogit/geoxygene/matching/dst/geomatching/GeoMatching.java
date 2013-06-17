@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.matching.dst.geoAppariement;
+package fr.ign.cogit.geoxygene.matching.dst.geomatching;
 
 import java.util.ArrayList;
 import java.util.Collection;

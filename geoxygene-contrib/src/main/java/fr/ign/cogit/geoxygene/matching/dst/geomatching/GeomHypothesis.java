@@ -19,7 +19,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.matching.dst.geoAppariement;
+package fr.ign.cogit.geoxygene.matching.dst.geomatching;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
