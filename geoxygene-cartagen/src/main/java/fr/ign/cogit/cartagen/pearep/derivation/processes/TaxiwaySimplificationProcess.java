@@ -62,7 +62,7 @@ public class TaxiwaySimplificationProcess extends ScaleMasterGeneProcess {
         treatedAirports.add(airport);
         AirportTypification typif = new AirportTypification(airport);
         try {
-          typif.merg;
+          // typif.merg;
         } catch (Exception e) {
           e.printStackTrace();
         }
