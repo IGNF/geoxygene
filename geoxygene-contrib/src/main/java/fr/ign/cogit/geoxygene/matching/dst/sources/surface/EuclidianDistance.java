@@ -34,7 +34,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
-import fr.ign.cogit.geoxygene.matching.dst.geoAppariement.GeoAppariement;
+import fr.ign.cogit.geoxygene.matching.dst.geoAppariement.GeoMatching;
 import fr.ign.cogit.geoxygene.matching.dst.geoAppariement.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geoAppariement.GeomHypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
@@ -57,7 +57,7 @@ public class EuclidianDistance extends GeoSource {
       EvidenceCodec codec) {
     List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
 //    List<byte[]> focalset = new ArrayList<byte[]>();
-    IFeature reference = GeoAppariement.getInstance().getReference();
+    IFeature reference = GeoMatching.getInstance().getReference();
 
     float sum = 0;
     for (GeomHypothesis h : candidates) {

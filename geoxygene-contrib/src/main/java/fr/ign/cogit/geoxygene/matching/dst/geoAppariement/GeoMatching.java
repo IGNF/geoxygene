@@ -45,13 +45,13 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  * @author Bertrand Dumenieu
  * 
  */
-public class GeoAppariement {
+public class GeoMatching {
 
   List<Hypothesis> candidates;
-  private static GeoAppariement singleton;
+  private static GeoMatching singleton;
   private IFeature reference;
 
-  public GeoAppariement() {
+  public GeoMatching() {
   }
 
   public EvidenceResult run(Collection<Source<Hypothesis>> criteria, IFeature reference,
@@ -104,9 +104,9 @@ public class GeoAppariement {
 //    return decisionOp.resolve();
   //}
 
-  public static GeoAppariement getInstance() {
+  public static GeoMatching getInstance() {
     if (singleton == null) {
-      singleton = new GeoAppariement();
+      singleton = new GeoMatching();
     }
     return singleton;
   }

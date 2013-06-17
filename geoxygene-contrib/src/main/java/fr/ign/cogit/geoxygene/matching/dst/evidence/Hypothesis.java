@@ -26,8 +26,8 @@
 package fr.ign.cogit.geoxygene.matching.dst.evidence;
 
 /**
+ * An hypothesis on which belief can be assigned.
  * @author Bertrand Dumenieu
- *
  */
 public interface Hypothesis {
 }
