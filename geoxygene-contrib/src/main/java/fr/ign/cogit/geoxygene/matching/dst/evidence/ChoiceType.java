@@ -20,6 +20,7 @@
 package fr.ign.cogit.geoxygene.matching.dst.evidence;
 
 /**
+ * Different decision methods.
  * @author Bertrand Dumenieu
  */
 public enum ChoiceType {

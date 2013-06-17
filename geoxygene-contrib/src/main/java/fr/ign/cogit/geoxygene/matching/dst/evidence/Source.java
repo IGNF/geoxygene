@@ -21,6 +21,7 @@ package fr.ign.cogit.geoxygene.matching.dst.evidence;
 
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 /**

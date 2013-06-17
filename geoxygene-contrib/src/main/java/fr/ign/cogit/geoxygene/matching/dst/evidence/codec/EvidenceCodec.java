@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.matching.dst.evidence;
+package fr.ign.cogit.geoxygene.matching.dst.evidence.codec;
 
 import java.util.List;
+
+import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
 
 /**
  * A codec takes hypotheses and encodes them as byte[]. It also decodes them.

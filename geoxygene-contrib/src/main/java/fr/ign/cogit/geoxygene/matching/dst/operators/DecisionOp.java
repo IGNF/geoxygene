@@ -33,8 +33,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
-import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
+import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
 

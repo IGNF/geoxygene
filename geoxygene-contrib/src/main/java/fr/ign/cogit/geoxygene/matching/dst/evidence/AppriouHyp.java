@@ -27,15 +27,21 @@ package fr.ign.cogit.geoxygene.matching.dst.evidence;
 
 
 /**
- * Hypothèse singleton
+ * Singleton hypothesis.
+ * <p>
+ * Hypothèse singleton.
  * @author Bertrand Dumenieu
- *
  */
 public class AppriouHyp implements Hypothesis {
 
+  /**
+   * 
+   */
   public Hypothesis content;
+  /**
+   * 
+   */
   public final AppriouType type;
-
   /**
    * @param type
    * @param content

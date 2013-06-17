@@ -19,13 +19,15 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.matching.dst.evidence;
+package fr.ign.cogit.geoxygene.matching.dst.evidence.codec;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
 
 /**
  * Encode et décode un hypothèse selon le comportement par défaut décrit dans

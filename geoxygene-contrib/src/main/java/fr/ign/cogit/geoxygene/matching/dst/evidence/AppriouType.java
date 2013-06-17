@@ -20,6 +20,7 @@
 package fr.ign.cogit.geoxygene.matching.dst.evidence;
 
 /**
+ * Different types of Appriou hypotheses.
  * @author Bertrand Dumenieu
  */
 public enum AppriouType {

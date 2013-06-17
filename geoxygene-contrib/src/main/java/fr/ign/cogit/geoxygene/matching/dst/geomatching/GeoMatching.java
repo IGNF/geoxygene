@@ -33,11 +33,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.matching.dst.evidence.DefaultCodec;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.MatchingProcess;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
+import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.DefaultCodec;
 import fr.ign.cogit.geoxygene.matching.dst.util.Combinations;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 

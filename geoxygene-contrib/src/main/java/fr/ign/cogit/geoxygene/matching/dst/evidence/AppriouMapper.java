@@ -33,17 +33,26 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  * @author Bertrand Dumenieu
  */
 public class AppriouMapper {
+  /**
+   * The logger.
+   */
   private Logger logger = Logger.getLogger(AppriouMapper.class);
 
+  /**
+   * Default constructor.
+   */
   public AppriouMapper() {
   }
 
   /**
+   * Map an hypothesis to a list of Apprio hypotheses: A, not A and Unknown for the given
+   * hypothesis.
    * @param h
-   * @return
+   *        the hypothesis
+   * @return a list of Apprio hypotheses
    */
   public List<AppriouHyp> mapToFocalised(Hypothesis h) {
-    List<AppriouHyp> hyps = new ArrayList<AppriouHyp>();
+    List<AppriouHyp> hyps = new ArrayList<AppriouHyp>(3);
     hyps.add(new AppriouHyp(AppriouType.A, h));
     hyps.add(new AppriouHyp(AppriouType.NOTA, h));
     hyps.add(new AppriouHyp(AppriouType.UNKNOWN, h));
@@ -62,38 +71,31 @@ public class AppriouMapper {
   public List<Pair<byte[], Float>> mapFocalisedToGlobal(int hypIndex, int hypsize,
       List<Pair<byte[], Float>> encoded) throws Exception {
     List<Pair<byte[], Float>> decodeds = new ArrayList<Pair<byte[], Float>>(encoded.size());
-
     for (Pair<byte[], Float> pair : encoded) {
+      byte[] decoded = new byte[hypsize];
       // Ensemble vide
       if (Arrays.equals(pair.getFirst(), new byte[] { 0, 0 })) {
-        byte[] decodedvoid = new byte[hypsize];
-        Arrays.fill(decodedvoid, (byte) 0);
-        decodeds.add(new Pair<byte[], Float>(decodedvoid, pair.getSecond()));
-      }
-      // Non apparié
-      else
+        Arrays.fill(decoded, (byte) 0);
+      } else {
+        // Non apparié
         if (Arrays.equals(pair.getFirst(), new byte[] { 0, 1 })) {
-          byte[] decodedNotApp = new byte[hypsize];
-          Arrays.fill(decodedNotApp, (byte) 1);
-          decodedNotApp[hypIndex] = (byte) 0;
-          decodeds.add(new Pair<byte[], Float>(decodedNotApp, pair.getSecond()));
-        }
-        // Apparié
-        else
+          Arrays.fill(decoded, (byte) 1);
+          decoded[hypIndex] = (byte) 0;
+        } else {
+          // Apparié
           if (Arrays.equals(pair.getFirst(), new byte[] { 1, 0 })) {
-            byte[] decodedApp = new byte[hypsize];
-            decodedApp[hypIndex] = (byte) 1;
-            decodeds.add(new Pair<byte[], Float>(decodedApp, pair.getSecond()));
-          }
-          // Inconnu
-          else
+            decoded[hypIndex] = (byte) 1;
+          } else {
+            // Inconnu
             if (Arrays.equals(pair.getFirst(), new byte[] { 1, 1 })) {
-              byte[] decodedUnknown = new byte[hypsize];
-              Arrays.fill(decodedUnknown, (byte) 1);
-              decodeds.add(new Pair<byte[], Float>(decodedUnknown, pair.getSecond()));
+              Arrays.fill(decoded, (byte) 1);
             } else {
               logger.error("Cannot decode focalised hypothesis " + pair.getFirst());
             }
+          }
+        }
+      }
+      decodeds.add(new Pair<byte[], Float>(decoded, pair.getSecond()));
     }
     return decodeds;
   }
