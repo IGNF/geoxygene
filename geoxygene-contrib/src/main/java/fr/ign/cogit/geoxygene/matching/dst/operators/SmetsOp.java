@@ -37,6 +37,9 @@ public class SmetsOp implements CombinationOp {
   Logger logger = Logger.getLogger(SmetsOp.class);
   private boolean worldclosed = true;
 
+  /**
+   * @param isworldclosed
+   */
   public SmetsOp(boolean isworldclosed) {
     this.worldclosed = isworldclosed;
   }
@@ -111,6 +114,11 @@ public class SmetsOp implements CombinationOp {
     return null;
   }
 
+  /**
+   * @param mass1
+   * @param mass2
+   * @return
+   */
   private List<Pair<byte[], Float>> smetsOp2mass(List<Pair<byte[], Float>> mass1,
       List<Pair<byte[], Float>> mass2) {
     if (logger.isDebugEnabled()) {
@@ -118,7 +126,6 @@ public class SmetsOp implements CombinationOp {
     }
     // Le résultat est une masse de croyance.
     List<Pair<byte[], Float>> massresult = new ArrayList<Pair<byte[], Float>>();
-
     // Fusion des masses
     for (Pair<byte[], Float> hypothesis1 : mass1) {
       for (Pair<byte[], Float> hypothesis2 : mass2) {
@@ -126,7 +133,6 @@ public class SmetsOp implements CombinationOp {
             hypothesis2.getFirst()), hypothesis1.getSecond() * hypothesis2.getSecond()));
       }
     }
-
     // Tri et suppression des doublons
     CombinationAlgos.sortKernel(massresult);
     CombinationAlgos.deleteDoubles(massresult);
@@ -139,5 +145,4 @@ public class SmetsOp implements CombinationOp {
     }
     return massresult;
   }
-
 }

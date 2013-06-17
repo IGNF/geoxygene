@@ -36,20 +36,26 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
 
 /**
+ * Matching process.
+ * <p> 
  * Processus d'appariement de données géographiques utilisant la théorie des
  * fonctions de croyance (voir Dempster67, Smets89). Si on fait l'hypothèse d'un
- * monde close ( = les hypothèses sont exclusives ET exhaustives), la
+ * monde clos ( = les hypothèses sont exclusives ET exhaustives), la
  * combinaison des croyances est effectuée à l'aide de l'opérateur conjonctif de
  * Dempster. Dans ce cas le conflit entre sources d'information est réparti
- * entre les différentes masses de croyances et sa valeure est stockée dans
+ * entre les différentes masses de croyances et sa valeur est stockée dans le
  * conflict. Dans le cas d'un monde ouvert on utilisera l'opérateur de Smets qui
- * répartira le conflit entierement sur l'hypothèse vide. TODO : Ajouter la
- * règle de Yager afin de permettre la répartition du conflit sur l'ensemble
- * total (ignorance complète) plutôt que sur toutes les hypothèses.
+ * répartira le conflit entièrement sur l'hypothèse vide.
+ * <p>
+ * @TODO : Ajouter la règle de Yager afin de permettre la répartition du conflit sur l'ensemble
+ *       total (ignorance complète) plutôt que sur toutes les hypothèses.
  * @author Bertrand Dumenieu
  */
 public class MatchingProcess {
 
+  /**
+   * 
+   */
   Logger logger = Logger.getLogger(MatchingProcess.class);
 
   Collection<Source<Hypothesis>> criteria;
@@ -61,6 +67,12 @@ public class MatchingProcess {
   EvidenceCodec codec;
   private boolean isworldclosed = true;
 
+  /**
+   * @param criteria
+   * @param candidates
+   * @param codec
+   * @param isworldclosed
+   */
   public MatchingProcess(Collection<Source<Hypothesis>> criteria, List<Hypothesis> candidates,
       EvidenceCodec codec, boolean isworldclosed) {
     this.logger.debug(candidates.size() + " candidates");
@@ -71,6 +83,9 @@ public class MatchingProcess {
     this.isworldclosed = isworldclosed;
   }
 
+  /**
+   * 
+   */
   public MatchingProcess() {
   }
 
@@ -79,9 +94,12 @@ public class MatchingProcess {
   }
 
   /**
-   * Effectue l'ensemble des opérations de fusion d'information et renvoie les
-   * potentiels de masse finaux. TODO : Placer le processus dans un thread
-   * séparé?
+   * Does the actual fusion of the information and returns the final mass potentials.
+   * <p>
+   * Effectue l'ensemble des opérations de fusion d'information et renvoie les potentiels de masse
+   * finaux.
+   * <p>
+   * @TODO : Placer le processus dans un thread séparé?
    * @throws Exception
    */
   public List<Pair<byte[], Float>> combinationProcess() throws Exception {
@@ -147,7 +165,7 @@ public class MatchingProcess {
   }
 
   /**
-   * @return
+   * @return true if the world is closed, false if it is open.
    */
   private boolean closedworld() {
     return this.isworldclosed;

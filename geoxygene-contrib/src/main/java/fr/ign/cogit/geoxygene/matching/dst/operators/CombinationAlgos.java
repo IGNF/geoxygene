@@ -1,24 +1,18 @@
 /*******************************************************************************
  * This file is part of the GeOxygene project source files.
- * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
  * specifications for the development and deployment of geographic (GIS)
  * applications. It is a open source contribution of the COGIT laboratory at the
  * Institut Géographique National (the French National Mapping Agency).
- * 
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or any later version.
- * 
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
@@ -40,13 +34,16 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
 
 /**
  * @author Bertrand Dumenieu
- * 
  */
 public final class CombinationAlgos {
   static Logger logger = Logger.getLogger(CombinationAlgos.class);
 
-  public static final byte[] combine(List<List<byte[]>> mass_sets)
-      throws Exception {
+  /**
+   * @param mass_sets
+   * @return
+   * @throws Exception
+   */
+  public static final byte[] combine(List<List<byte[]>> mass_sets) throws Exception {
     if (logger.isDebugEnabled()) {
       logger.debug("----COMBINING CORE----");
       for (List<byte[]> core : mass_sets) {
@@ -66,11 +63,12 @@ public final class CombinationAlgos {
           set1 = Utils.byteUnion(set1, set2);
         }
         cores.add(set1);
-      } else if (focalsets.size() == 1) {
-        cores.add(focalsets.get(0));
-      } else {
-        logger.error("Trying to combine a mass function with no focal sets");
-      }
+      } else
+        if (focalsets.size() == 1) {
+          cores.add(focalsets.get(0));
+        } else {
+          logger.error("Trying to combine a mass function with no focal sets");
+        }
     }
     // 2 : Calculer l'intersection des noyaux de chaque masse de croyance
     if (cores.size() > 1) {
@@ -81,18 +79,24 @@ public final class CombinationAlgos {
       }
       logger.debug("Combined core : " + Arrays.toString(core1));
       return core1;
-    } else if (cores.size() == 1) {
-      logger.debug("Combined core : " + Arrays.toString(cores.get(0)));
-      return cores.get(0);
-    } else {
-      logger.error("Combined core is null!");
-    }
+    } else
+      if (cores.size() == 1) {
+        logger.debug("Combined core : " + Arrays.toString(cores.get(0)));
+        return cores.get(0);
+      } else {
+        logger.error("Combined core is null!");
+      }
     throw new Exception("An error occured during the cores combination");
   }
 
-  public static List<Pair<byte[], Float>> conditionning(
-      List<Pair<byte[], Float>> masscore, byte[] conditionner,
-      boolean closedworld) {
+  /**
+   * @param masscore
+   * @param conditionner
+   * @param closedworld
+   * @return
+   */
+  public static List<Pair<byte[], Float>> conditionning(List<Pair<byte[], Float>> masscore,
+      byte[] conditionner, boolean closedworld) {
     if (masscore.size() == 1 && Utils.isEmpty(masscore.get(0).getFirst())) {
       logger.error("Conditionning only defined if there exist CinterB != void");
       return masscore;
@@ -101,19 +105,16 @@ public final class CombinationAlgos {
       logger.debug("Conditionner : " + Arrays.toString(conditionner));
       logger.debug("Core to condition:");
       for (Pair<byte[], Float> focal : masscore) {
-        logger.debug(focal.getSecond() + " "
-            + Arrays.toString(focal.getFirst()));
+        logger.debug(focal.getSecond() + " " + Arrays.toString(focal.getFirst()));
       }
     }
     List<Pair<byte[], Float>> conditionnedlist = new ArrayList<Pair<byte[], Float>>();
     Float k = 0.0f;
     for (Pair<byte[], Float> focal : masscore) {
-      byte[] intersection = Utils.byteIntersection(focal.getFirst(),
-          conditionner);
+      byte[] intersection = Utils.byteIntersection(focal.getFirst(), conditionner);
 
       if (!Utils.isEmpty(intersection)) {
-        conditionnedlist.add(new Pair<byte[], Float>(intersection, focal
-            .getSecond()));
+        conditionnedlist.add(new Pair<byte[], Float>(intersection, focal.getSecond()));
         k += focal.getSecond();
       }
 
@@ -137,13 +138,15 @@ public final class CombinationAlgos {
     if (logger.isDebugEnabled()) {
       logger.debug("Conditionned List:");
       for (Pair<byte[], Float> focal : conditionnedlist) {
-        logger.debug(focal.getSecond() + " "
-            + Arrays.toString(focal.getFirst()));
+        logger.debug(focal.getSecond() + " " + Arrays.toString(focal.getFirst()));
       }
     }
     return conditionnedlist;
   }
 
+  /**
+   * @param kernel
+   */
   public static void sortKernel(List<Pair<byte[], Float>> kernel) {
     Comparator<Pair<byte[], Float>> comparator = new Comparator<Pair<byte[], Float>>() {
       @Override
@@ -155,6 +158,9 @@ public final class CombinationAlgos {
     Collections.sort(kernel, comparator);
   }
 
+  /**
+   * @param conditionnedlist
+   */
   public static void deleteDoubles(List<Pair<byte[], Float>> conditionnedlist) {
     List<Pair<byte[], Float>> toremove = new ArrayList<Pair<byte[], Float>>(10);
     for (int i = 0; i < conditionnedlist.size() - 1; i++) {
@@ -188,11 +194,9 @@ public final class CombinationAlgos {
         }
         nb++;
       }
-      toSort
-          .add(new Pair<Integer, Float>(masspotentials.indexOf(src), sum / nb));
+      toSort.add(new Pair<Integer, Float>(masspotentials.indexOf(src), sum / nb));
     }
     Collections.sort(toSort, new Comparator<Pair<Integer, Float>>() {
-
       @Override
       public int compare(Pair<Integer, Float> o1, Pair<Integer, Float> o2) {
         return o1.getSecond().compareTo(o2.getSecond());

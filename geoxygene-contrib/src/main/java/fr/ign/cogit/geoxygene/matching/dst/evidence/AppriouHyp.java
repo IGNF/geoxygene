@@ -36,6 +36,10 @@ public class AppriouHyp implements Hypothesis {
   public Hypothesis content;
   public final AppriouType type;
 
+  /**
+   * @param type
+   * @param content
+   */
   public AppriouHyp(AppriouType type, Hypothesis content) {
     this.type = type;
     this.content = content;

@@ -30,5 +30,4 @@ package fr.ign.cogit.geoxygene.matching.dst.evidence;
  *
  */
 public interface Hypothesis {
-
 }
