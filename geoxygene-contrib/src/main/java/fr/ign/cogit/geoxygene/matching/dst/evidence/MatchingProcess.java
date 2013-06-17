@@ -1,24 +1,18 @@
 /*******************************************************************************
  * This file is part of the GeOxygene project source files.
- * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
  * specifications for the development and deployment of geographic (GIS)
  * applications. It is a open source contribution of the COGIT laboratory at the
  * Institut Géographique National (the French National Mapping Agency).
- * 
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or any later version.
- * 
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
@@ -31,11 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
@@ -56,14 +46,13 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
  * répartira le conflit entierement sur l'hypothèse vide. TODO : Ajouter la
  * règle de Yager afin de permettre la répartition du conflit sur l'ensemble
  * total (ignorance complète) plutôt que sur toutes les hypothèses.
- * 
  * @author Bertrand Dumenieu
  */
 public class MatchingProcess {
-  
+
   Logger logger = Logger.getLogger(MatchingProcess.class);
 
-  Collection<Source> criteria;
+  Collection<Source<Hypothesis>> criteria;
   // Cadre de discernement : stocke les candidats
   private List<Hypothesis> frame;
 
@@ -72,8 +61,8 @@ public class MatchingProcess {
   EvidenceCodec codec;
   private boolean isworldclosed = true;
 
-  public MatchingProcess(Collection<Source> criteria,
-      List<Hypothesis> candidates, EvidenceCodec codec, boolean isworldclosed) {
+  public MatchingProcess(Collection<Source<Hypothesis>> criteria, List<Hypothesis> candidates,
+      EvidenceCodec codec, boolean isworldclosed) {
     this.logger.debug(candidates.size() + " candidates");
     this.codec = codec;
     this.frame = Collections.unmodifiableList(candidates);
@@ -96,8 +85,8 @@ public class MatchingProcess {
    * @throws Exception
    */
   public List<Pair<byte[], Float>> combinationProcess() throws Exception {
-    logger.info("RUNNING MATCHING PROCESS UNDER "
-        + (this.closedworld() ? "CLOSED" : "OPEN") + " WORLD ASSUMPTION...");
+    logger.info("RUNNING MATCHING PROCESS UNDER " + (this.closedworld() ? "CLOSED" : "OPEN")
+        + " WORLD ASSUMPTION...");
     double start = System.currentTimeMillis();
     // ----------------EVALUATION------------------------
     // On récupère les éléments focaux de la masse de croyance et on ordonne la
@@ -110,7 +99,6 @@ public class MatchingProcess {
         sum += pair.getSecond();
       }
       if (1 - sum > 0.001) {
-
         logger
             .error("mass potential != 1("
                 + sum
@@ -125,8 +113,7 @@ public class MatchingProcess {
       CombinationAlgos.sortKernel(kernel);
       logger.debug("----HYPOTHESIS FOR FUNCTION " + src.getName() + "----");
       for (Pair<byte[], Float> focal : kernel) {
-        logger.debug(focal.getSecond() + " "
-            + Arrays.toString(focal.getFirst()));
+        logger.debug(focal.getSecond() + " " + Arrays.toString(focal.getFirst()));
       }
       this.beliefs.add(kernel);
     }
@@ -147,8 +134,7 @@ public class MatchingProcess {
               .debug("Warning : Non null empty hypothesis under closed world hypothesis! value : "
                   + massresult.get(0).getSecond());
         } else {
-          logger.debug("Empty hypothesis value : "
-              + massresult.get(0).getSecond());
+          logger.debug("Empty hypothesis value : " + massresult.get(0).getSecond());
         }
       }
     }

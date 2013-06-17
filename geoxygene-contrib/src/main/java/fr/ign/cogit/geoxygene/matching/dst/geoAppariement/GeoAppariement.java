@@ -54,7 +54,7 @@ public class GeoAppariement {
   public GeoAppariement() {
   }
 
-  public EvidenceResult run(Collection<Source> criteria, IFeature reference,
+  public EvidenceResult run(Collection<Source<Hypothesis>> criteria, IFeature reference,
       List<IFeature> candidates) throws Exception {
     
       //Création des hypothèses d'appariement.

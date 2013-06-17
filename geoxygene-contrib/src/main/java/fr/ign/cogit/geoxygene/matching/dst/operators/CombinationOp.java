@@ -36,6 +36,11 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  */
 public interface CombinationOp {
 
+  /**
+   * Combine the mass potentials.
+   * @param masspotentials mass potentials
+   * @return fused masses
+   */
   public List<Pair<byte[], Float>> combine(List<List<Pair<byte[], Float>>> masspotentials);
 
 }

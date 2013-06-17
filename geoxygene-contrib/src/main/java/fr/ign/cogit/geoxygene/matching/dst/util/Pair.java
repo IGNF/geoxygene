@@ -60,6 +60,7 @@ public class Pair<E ,V>{
     this.second = _second;
   }
   
+  @SuppressWarnings("unchecked")
   @Override
   public String toString() {
     String fstring = this.first.toString();

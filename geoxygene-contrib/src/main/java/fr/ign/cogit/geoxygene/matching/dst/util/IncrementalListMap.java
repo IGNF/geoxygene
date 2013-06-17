@@ -49,6 +49,7 @@ public class IncrementalListMap<E> implements AutoIncrementalList<E>, Iterable<E
     this.imap = new HashMap<Integer, E>();
   };
   
+  @SuppressWarnings("unchecked")
   public IncrementalListMap(IncrementalListMap<E> list){
     this.imap = (HashMap<Integer, E>) list.imap.clone();
     this.counter = list.counterValue();

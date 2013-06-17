@@ -43,11 +43,10 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
  * 
  */
 public final class CombinationAlgos {
-  static Logger logger = Logger.getLogger(DempsterOp.class);
+  static Logger logger = Logger.getLogger(CombinationAlgos.class);
 
   public static final byte[] combine(List<List<byte[]>> mass_sets)
       throws Exception {
-
     if (logger.isDebugEnabled()) {
       logger.debug("----COMBINING CORE----");
       for (List<byte[]> core : mass_sets) {
@@ -59,7 +58,6 @@ public final class CombinationAlgos {
     }
     // 1 : calculer l'union des éléments focaux de chaque masse de croyance.
     List<byte[]> cores = new ArrayList<byte[]>();
-
     for (List<byte[]> focalsets : mass_sets) {
       if (focalsets.size() > 1) {
         byte[] set1 = focalsets.get(0);
@@ -77,7 +75,7 @@ public final class CombinationAlgos {
     // 2 : Calculer l'intersection des noyaux de chaque masse de croyance
     if (cores.size() > 1) {
       byte[] core1 = cores.get(0);
-      for (int i = 0; i < cores.size() - 1; i++) {
+      for (int i = 1; i < cores.size() - 1; i++) {
         byte[] core2 = cores.get(i);
         core1 = Utils.byteIntersection(core1, core2);
       }

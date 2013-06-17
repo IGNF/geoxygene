@@ -51,7 +51,7 @@ public class CriteriaLoader {
    * @return
    */
 
-  public static Collection<Source> load(FactoryType type) {
+  public static Collection<Source<Hypothesis>> load(FactoryType type) {
     String path = CriteriaLoader.class.getPackage().toString();
     path = path.substring(0, path.lastIndexOf('.'));
     path+=".sources.";
@@ -70,9 +70,9 @@ public class CriteriaLoader {
    * @param path
    * @return
    */
-  private static Collection<Source> load(String path) {
-
-    Collection<Source> loadedSources = new HashSet<Source>();
+  @SuppressWarnings("unchecked")
+  private static Collection<Source<Hypothesis>> load(String path) {
+    Collection<Source<Hypothesis>> loadedSources = new HashSet<Source<Hypothesis>>();
     String realPath = path;
     realPath = path.replace('.', File.separatorChar);
     realPath = File.separatorChar + realPath;
@@ -84,8 +84,7 @@ public class CriteriaLoader {
       Class<?> clazz = null;
       try {
         clazz = Class.forName(classpath);
-        loadedSources.add((Source)clazz.newInstance());
-
+        loadedSources.add((Source<Hypothesis>)clazz.newInstance());
       } catch (ClassNotFoundException e) {
         System.out.println("Loading of class " + file.getName()
             + " failed : no class found");

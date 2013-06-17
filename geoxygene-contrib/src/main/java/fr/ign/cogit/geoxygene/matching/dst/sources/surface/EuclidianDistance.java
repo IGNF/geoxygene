@@ -56,7 +56,7 @@ public class EuclidianDistance extends GeoSource {
   public List<Pair<byte[], Float>> evaluate(List<GeomHypothesis> candidates,
       EvidenceCodec codec) {
     List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
-    List<byte[]> focalset = new ArrayList<byte[]>();
+//    List<byte[]> focalset = new ArrayList<byte[]>();
     IFeature reference = GeoAppariement.getInstance().getReference();
 
     float sum = 0;

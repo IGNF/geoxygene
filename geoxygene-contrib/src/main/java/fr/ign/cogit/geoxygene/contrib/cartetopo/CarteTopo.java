@@ -1145,7 +1145,12 @@ public class CarteTopo extends DataSet {
           CarteTopo.logger
               .error(I18N.getString("CarteTopo.EmptyGeometryEdge") + edge.getGeometrie().toString()); //$NON-NLS-1$
         } else {
-          nodedLineStrings = nodedLineStrings.union(edge.getGeometrie());
+          try {
+            nodedLineStrings = nodedLineStrings.union(edge.getGeometrie());
+          } catch (Exception e) {
+            CarteTopo.logger
+            .error("Crappy edge: " + edge.getGeometrie().toString()); //$NON-NLS-1$            
+          }
         }
       }
       listeInter.add(currentEdge); // on le rajoute pour la suite
