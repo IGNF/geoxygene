@@ -212,19 +212,19 @@ public class BufferComputing {
 
     // 1. Lengthen the line onto the buffer at the start of the line
     // first get the vector composed by the first two points of the line
-    Vector2D startVector = new Vector2D(line.getEndPoint(), line
-        .getStartPoint());
+    Vector2D startVector = new Vector2D(line.getEndPoint(),
+        line.getStartPoint());
     // then project the starting point on the buffer according to this vector
-    IDirectPosition buffPtStart = CommonAlgorithmsFromCartAGen.projection(line
-        .getStartPoint(), new GM_LineString(outerRing.getPositive().coord()),
-        startVector);
+    IDirectPosition buffPtStart = CommonAlgorithmsFromCartAGen.projection(
+        line.getStartPoint(),
+        new GM_LineString(outerRing.getPositive().coord()), startVector);
 
     // 2. Lengthen the line onto the buffer at the end of the line
     // first get the vector composed by the last two points of the line
     Vector2D endVector = new Vector2D(line.getStartPoint(), line.getEndPoint());
     // then project the starting point on the buffer according to this vector
-    IDirectPosition buffPtEnd = CommonAlgorithmsFromCartAGen.projection(line
-        .getEndPoint(), new GM_LineString(outerRing.getPositive().coord()),
+    IDirectPosition buffPtEnd = CommonAlgorithmsFromCartAGen.projection(
+        line.getEndPoint(), new GM_LineString(outerRing.getPositive().coord()),
         endVector);
 
     // 3. Build the half-buffer according to the side
@@ -418,11 +418,11 @@ public class BufferComputing {
     IPolygon buffer = (IPolygon) line.buffer(distance);
     IDirectPositionList coordList = new DirectPositionList();
     // get the start vertex index
-    int startId = getSideEndingPtsOfRoundPart(side, true, startPt, buffer
-        .getExterior(), distance);
+    int startId = getSideEndingPtsOfRoundPart(side, true, startPt,
+        buffer.getExterior(), distance);
     // get the end vertex index
-    int endId = getSideEndingPtsOfRoundPart(side, false, endPt, buffer
-        .getExterior(), distance);
+    int endId = getSideEndingPtsOfRoundPart(side, false, endPt,
+        buffer.getExterior(), distance);
     // now build the half offset buffer
     // begin with the buffer part
     IDirectPositionList outline = buffer.getExterior().coord();
@@ -431,7 +431,7 @@ public class BufferComputing {
         for (int i = startId; i <= endId; i++)
           coordList.add(outline.get(i));
       else {
-        for (int i = startId; i < outline.size() - 1; i++)
+        for (int i = startId; i < outline.size(); i++)
           coordList.add(outline.get(i));
         for (int i = 1; i <= endId; i++)
           coordList.add(outline.get(i));
@@ -443,7 +443,7 @@ public class BufferComputing {
       else {
         for (int i = startId; i >= 0; i--)
           coordList.add(outline.get(i));
-        for (int i = outline.size() - 2; i >= endId; i--)
+        for (int i = outline.size() - 1; i >= endId; i--)
           coordList.add(outline.get(i));
       }
     }
@@ -455,5 +455,29 @@ public class BufferComputing {
     coordList.add(outline.get(startId));
 
     return new GM_Polygon(new GM_LineString(coordList));
+  }
+
+  /**
+   * Builds a half offset line of a linestring.
+   * 
+   * @param side the side (related to line's initial point) on which the half
+   *          buffer is built
+   * @param line the line to be buffered
+   * @param distance the buffer distance
+   * @return
+   * @author GTouya
+   */
+  public static ILineString buildHalfOffsetLine(Side side, ILineString line,
+      double distance) {
+    IPolygon offsetBuffer = buildHalfOffsetBuffer(side, line, distance);
+    IDirectPositionList pts = offsetBuffer.coord();
+
+    for (IDirectPosition pt : line.coord())
+      pts.remove(pt);
+    // then remove the last point of the polygon
+    pts.remove(pts.size() - 1);
+
+    return new GM_LineString(pts);
+
   }
 }
