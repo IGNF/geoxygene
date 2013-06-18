@@ -32,7 +32,7 @@ package fr.ign.cogit.geoxygene.matching.dst.evidence;
  * Hypothèse singleton.
  * @author Bertrand Dumenieu
  */
-public class AppriouHyp implements Hypothesis {
+public class AppriouHypothesis implements Hypothesis {
 
   /**
    * 
@@ -46,7 +46,7 @@ public class AppriouHyp implements Hypothesis {
    * @param type
    * @param content
    */
-  public AppriouHyp(AppriouType type, Hypothesis content) {
+  public AppriouHypothesis(AppriouType type, Hypothesis content) {
     this.type = type;
     this.content = content;
   }

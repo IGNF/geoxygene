@@ -51,11 +51,11 @@ public class AppriouMapper {
    *        the hypothesis
    * @return a list of Apprio hypotheses
    */
-  public List<AppriouHyp> mapToFocalised(Hypothesis h) {
-    List<AppriouHyp> hyps = new ArrayList<AppriouHyp>(3);
-    hyps.add(new AppriouHyp(AppriouType.A, h));
-    hyps.add(new AppriouHyp(AppriouType.NOTA, h));
-    hyps.add(new AppriouHyp(AppriouType.UNKNOWN, h));
+  public List<AppriouHypothesis> mapToFocalised(Hypothesis h) {
+    List<AppriouHypothesis> hyps = new ArrayList<AppriouHypothesis>(3);
+    hyps.add(new AppriouHypothesis(AppriouType.A, h));
+    hyps.add(new AppriouHypothesis(AppriouType.NOTA, h));
+    hyps.add(new AppriouHypothesis(AppriouType.UNKNOWN, h));
     return hyps;
   }
 

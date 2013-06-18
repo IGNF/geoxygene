@@ -34,29 +34,31 @@ import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
  * [WILSON04].
  * @author Bertrand Dumenieu
  */
-public class DefaultCodec implements EvidenceCodec {
+public class DefaultCodec<H extends Hypothesis> implements EvidenceCodec<H> {
 
   Logger logger = Logger.getLogger(DefaultCodec.class);
   // L'ordre de la liste ne doit pas être modifié!.
-  private final List<Hypothesis> hypotheses;
+  private final List<H> hypotheses;
 
-  public DefaultCodec(List<Hypothesis> hyps) {
+  public DefaultCodec(List<H> hyps) {
     this.hypotheses = Collections.unmodifiableList(hyps);
   }
 
   @Override
-  public List<Hypothesis> decode(byte[] encoded) {
-    List<Hypothesis> decoded = new ArrayList<Hypothesis>();
+  public List<H> decode(byte[] encoded) {
+//    logger.info("decoding " + Arrays.toString(encoded));
+    List<H> decoded = new ArrayList<H>();
     for (int i = 0; i < encoded.length; i++) {
       if (encoded[i] == (byte) 1) {
+//        logger.info("\t adding " + i + " = " + this.hypotheses.get(i));
         decoded.add(this.hypotheses.get(i));
       }
     }
-    return hypotheses;
+    return decoded;
   }
 
   @Override
-  public byte[] encode(Hypothesis... hyps) {
+  public byte[] encode(H... hyps) {
     byte[] encoded = new byte[this.hypotheses.size()];
     for (int i = 0; i < hyps.length; i++) {
       if (!this.hypotheses.contains(hyps[i])) {

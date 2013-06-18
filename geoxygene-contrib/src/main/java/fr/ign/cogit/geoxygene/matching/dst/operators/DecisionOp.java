@@ -1,24 +1,18 @@
 /*******************************************************************************
  * This file is part of the GeOxygene project source files.
- * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
  * specifications for the development and deployment of geographic (GIS)
  * applications. It is a open source contribution of the COGIT laboratory at the
  * Institut Géographique National (the French National Mapping Agency).
- * 
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or any later version.
- * 
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
@@ -34,26 +28,37 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
+import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
 
 /**
  * @author Bertrand Dumenieu
- * 
  */
-public class DecisionOp {
-
+public class DecisionOp<H extends Hypothesis> {
   List<Pair<byte[], Float>> masspotentials;
   ChoiceType choice;
   boolean isChoiceOnSinglesOnly = true;
   private Logger logger = Logger.getLogger(DecisionOp.class);
   private float conflict = 0f;
-  private EvidenceCodec decoder;
+  private EvidenceCodec<H> decoder;
 
-  public DecisionOp(List<Pair<byte[], Float>> masspotentials, float conflict,
-      ChoiceType choice, EvidenceCodec decoder, boolean onsingles) {
-
+  /**
+   * DecisionOp constructor.
+   * @param masspotentials
+   *        masses
+   * @param conflict
+   *        conflict
+   * @param choice
+   *        type of choice
+   * @param decoder
+   *        a codec to decode the hypothesis
+   * @param onsingles
+   *        do we only want to choose between singles?
+   */
+  public DecisionOp(List<Pair<byte[], Float>> masspotentials, float conflict, ChoiceType choice,
+      EvidenceCodec<H> decoder, boolean onsingles) {
     this.masspotentials = masspotentials;
     this.choice = choice;
     this.isChoiceOnSinglesOnly = onsingles;
@@ -62,34 +67,41 @@ public class DecisionOp {
 
   }
 
-  public EvidenceResult resolve() {
-    EvidenceResult finalchoice = null;
+  /**
+   * Make a decision and return it.
+   * @return an evidence result.
+   */
+  public EvidenceResult<H> resolve() {
+    List<H> decoded = null;
     switch (choice) {
       case CREDIBILITY:
-        Pair<byte[], Float> maxbel = this.maxBelief(masspotentials,
-            this.isChoiceOnSinglesOnly);
-        finalchoice = new EvidenceResult(choice, conflict,decoder.decode(maxbel.getFirst()),maxbel.getSecond());
+        Pair<byte[], Float> maxbel = this.maxBelief(masspotentials, this.isChoiceOnSinglesOnly);
         logger.info("MAX CREDIBLE HYPOTHESIS : " + maxbel.getSecond() + " for "
             + Arrays.toString(maxbel.getFirst()));
+        decoded = decoder.decode(maxbel.getFirst());
+        return new EvidenceResult<H>(choice, conflict, decoded, maxbel.getSecond());
       case PLAUSIBILITY:
-        Pair<byte[], Float> maxpl = this.maxPlausible(masspotentials,
-            this.isChoiceOnSinglesOnly);
+        Pair<byte[], Float> maxpl = this.maxPlausible(masspotentials, this.isChoiceOnSinglesOnly);
         logger.info("MAX PLAUSIBLE HYPOTHESIS : " + maxpl.getSecond() + " for "
             + Arrays.toString(maxpl.getFirst()));
-        finalchoice = new EvidenceResult(choice, conflict, decoder.decode(maxpl
-            .getFirst()), maxpl.getSecond());
+        decoded = decoder.decode(maxpl.getFirst());
+        return new EvidenceResult<H>(choice, conflict, decoded, maxpl.getSecond());
 
       case PIGNISTIC:
-        Pair<byte[], Float> maxpig = this.maxPignistic(masspotentials,
-            this.isChoiceOnSinglesOnly);
-        logger.info("MAX PIGNISTIC HYPOTHESIS : " + maxpig.getSecond()
-            + " for " + Arrays.toString(maxpig.getFirst()));
-        finalchoice = new EvidenceResult(choice, conflict,
-            decoder.decode(maxpig.getFirst()), maxpig.getSecond());
+        Pair<byte[], Float> maxpig = this.maxPignistic(masspotentials, this.isChoiceOnSinglesOnly);
+        logger.info("MAX PIGNISTIC HYPOTHESIS : " + maxpig.getSecond() + " for "
+            + Arrays.toString(maxpig.getFirst()));
+        decoded = decoder.decode(maxpig.getFirst());
+        return new EvidenceResult<H>(choice, conflict, decoded, maxpig.getSecond());
     }
-    return finalchoice;
+    return null;
   }
 
+  /**
+   * @param hyp
+   * @param masspotentials
+   * @return
+   */
   private float credibility(byte[] hyp, List<Pair<byte[], Float>> masspotentials) {
     float credibility = 0.0f;
     for (Pair<byte[], Float> value : masspotentials) {
@@ -98,33 +110,37 @@ public class DecisionOp {
         credibility += value.getSecond();
       }
     }
-    logger.debug("Credibility : " + credibility + " for hypothesis"
-        + Arrays.toString(hyp));
+    logger.debug("Credibility : " + credibility + " for hypothesis" + Arrays.toString(hyp));
     return credibility;
   }
 
-  private float plausibility(byte[] hyp,
-      List<Pair<byte[], Float>> masspotentials) {
+  /**
+   * @param hyp
+   * @param masspotentials
+   * @return
+   */
+  private float plausibility(byte[] hyp, List<Pair<byte[], Float>> masspotentials) {
     float plausibility = 0.0f;
     for (Pair<byte[], Float> value : masspotentials) {
       if (!Utils.isEmpty(Utils.byteIntersection(hyp, value.getFirst()))) {
         plausibility += value.getSecond();
       }
     }
-    logger.debug("Plausibility : " + plausibility + " for hypothesis"
-        + Arrays.toString(hyp));
-
+    logger.debug("Plausibility : " + plausibility + " for hypothesis" + Arrays.toString(hyp));
     return plausibility;
   }
 
+  /**
+   * @param hyp
+   * @param masspotentials
+   * @return
+   */
   private float pignistic(byte[] hyp, List<Pair<byte[], Float>> masspotentials) {
     float pignistic = 0.0f;
-
     float mvoid = masspotentials.get(0).getSecond();
     if (!Utils.isEmpty(masspotentials.get(0).getFirst())) {
       mvoid = 0.0f;
     }
-
     for (Pair<byte[], Float> value : masspotentials) {
       if (!Utils.isEmpty(Utils.byteIntersection(hyp, value.getFirst()))) {
         int cardinal = 0;
@@ -136,14 +152,16 @@ public class DecisionOp {
         pignistic += value.getSecond() / (cardinal * (1 - mvoid));
       }
     }
-    logger.debug("Pignistic value : " + pignistic + " for hypothesis"
-        + Arrays.toString(hyp));
-
+    logger.debug("Pignistic value : " + pignistic + " for hypothesis" + Arrays.toString(hyp));
     return pignistic;
   }
 
-  private Pair<byte[], Float> maxBelief(
-      List<Pair<byte[], Float>> masspotentials, boolean onsingles) {
+  /**
+   * @param masspotentials
+   * @param onsingles
+   * @return
+   */
+  private Pair<byte[], Float> maxBelief(List<Pair<byte[], Float>> masspotentials, boolean onsingles) {
     float maxbelief = 0.0f;
     byte[] maxcredible = null;
     for (Pair<byte[], Float> hyp : masspotentials) {
@@ -166,8 +184,13 @@ public class DecisionOp {
     return new Pair<byte[], Float>(maxcredible, maxbelief);
   }
 
-  private Pair<byte[], Float> maxPlausible(
-      List<Pair<byte[], Float>> masspotentials, boolean onsingles) {
+  /**
+   * @param masspotentials
+   * @param onsingles
+   * @return
+   */
+  private Pair<byte[], Float> maxPlausible(List<Pair<byte[], Float>> masspotentials,
+      boolean onsingles) {
     float maxpl = 0.0f;
     byte[] maxplausible = null;
     for (Pair<byte[], Float> hyp : masspotentials) {
@@ -190,8 +213,13 @@ public class DecisionOp {
     return new Pair<byte[], Float>(maxplausible, maxpl);
   }
 
-  private Pair<byte[], Float> maxPignistic(
-      List<Pair<byte[], Float>> masspotentials, boolean onsingles) {
+  /**
+   * @param masspotentials
+   * @param onsingles
+   * @return
+   */
+  private Pair<byte[], Float> maxPignistic(List<Pair<byte[], Float>> masspotentials,
+      boolean onsingles) {
     float maxpig = 0.0f;
     byte[] maxpignistic = null;
     for (Pair<byte[], Float> hyp : masspotentials) {

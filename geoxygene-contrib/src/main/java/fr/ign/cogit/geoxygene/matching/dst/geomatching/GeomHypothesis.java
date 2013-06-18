@@ -49,4 +49,8 @@ public abstract class GeomHypothesis implements IFeature, Hypothesis {
   protected GeomHypothesis() {
     this.decoratedFeature = null;
   }
+  @Override
+  public String toString() {
+    return this.decoratedFeature.toString();
+  }
 }

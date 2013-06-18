@@ -30,25 +30,29 @@ import java.util.List;
  * Résultat d'un appariement. Il s'agit éventuellement d'une union d'hypothèses.
  * @author Bertrand Dumenieu
  */
-public class EvidenceResult {
+public class EvidenceResult<H extends Hypothesis> {
 
   private ChoiceType type;
   private float conflict;
-  private List<Hypothesis> finalhyps;
+  private List<H> finalhyps;
   private float finalvalue;
 
   /**
    * Creates a new result.
-   * @param decision the decision type used
-   * @param conflict the conflict
-   * @param hypothesis the list of hypotheses
-   * @param value the value
+   * @param decision
+   *        the decision type used
+   * @param conflict
+   *        the conflict
+   * @param hypothesis
+   *        the list of hypotheses
+   * @param value
+   *        the value
    */
-  public EvidenceResult(ChoiceType decision, float conflict, List<Hypothesis> hypothesis,
+  public EvidenceResult(ChoiceType decision, float conflict, List<H> hypothesis,
       float value) {
     this.type = decision;
     this.conflict = conflict;
-    this.finalhyps = new ArrayList<Hypothesis>(hypothesis);
+    this.finalhyps = new ArrayList<H>(hypothesis);
     this.finalvalue = value;
   }
 
@@ -56,21 +60,21 @@ public class EvidenceResult {
    * @return the type of decision used for this result.
    */
   public ChoiceType getDecisionType() {
-    return type;
+    return this.type;
   }
 
   /**
    * @return the conflict.
    */
   public float getConflict() {
-    return conflict;
+    return this.conflict;
   }
 
   /**
    * @return the hypotheses retained for this result.
    */
-  public List<Hypothesis> getHypothesis() {
-    return finalhyps;
+  public List<H> getHypothesis() {
+    return this.finalhyps;
   }
 
   /**
@@ -78,5 +82,14 @@ public class EvidenceResult {
    */
   public float getValue() {
     return finalvalue;
+  }
+
+  @Override
+  public String toString() {
+    String result = "";
+    for (Hypothesis h : this.finalhyps) {
+      result += h;
+    }
+    return result;
   }
 }

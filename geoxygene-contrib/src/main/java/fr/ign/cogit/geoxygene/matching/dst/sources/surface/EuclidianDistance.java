@@ -24,11 +24,8 @@ package fr.ign.cogit.geoxygene.matching.dst.sources.surface;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
-import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoMatching;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
@@ -43,19 +40,27 @@ public class EuclidianDistance extends GeoSource {
   /*
    * Seuil de distance en m
    */
-  private float seuil = 50f;
+  private float threshold = 50;
+
+  public float getThreshold() {
+    return this.threshold;
+  }
+
+  public void setThreshold(float t) {
+    this.threshold = t;
+  }
 
   @Override
-  public List<Pair<byte[], Float>> evaluate(List<GeomHypothesis> candidates, EvidenceCodec codec) {
+  public List<Pair<byte[], Float>> evaluate(GeomHypothesis reference,
+      List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
     List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
     // List<byte[]> focalset = new ArrayList<byte[]>();
-    IFeature reference = GeoMatching.getInstance().getReference();
-
+    // IFeature reference = GeoMatching.getInstance().getReference();
     float sum = 0;
     for (GeomHypothesis h : candidates) {
       float distance = (float) this.compute(reference.getGeom(), h.getGeom());
-      if (distance < seuil) {
-        byte[] encoded = codec.encode(new Hypothesis[] { h });
+      if (distance < this.threshold) {
+        byte[] encoded = codec.encode(new GeomHypothesis[] { h });
         weightedfocalset.add(new Pair<byte[], Float>(encoded, (distance == 0) ? 1 : 1 / distance));
         sum += distance;
       }
@@ -79,10 +84,5 @@ public class EuclidianDistance extends GeoSource {
   @Override
   public String getName() {
     return "Distance Euclidienne";
-  }
-
-  @Override
-  public String toString() {
-    return this.getName();
   }
 }

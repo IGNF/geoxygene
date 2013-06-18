@@ -34,7 +34,7 @@ public interface Source<T extends Hypothesis> {
    * @param codec a codec to transform the candidates to byte[].
    * @return a list of pairs of candidates and their corresponding masses.
    */
-  List<Pair<byte[], Float>> evaluate(final List<T> candidates, EvidenceCodec codec);
+  List<Pair<byte[], Float>> evaluate(final T ref, final List<T> candidates, EvidenceCodec<T> codec);
 
   /**
    * A source has a name.

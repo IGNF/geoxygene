@@ -53,8 +53,8 @@ public abstract class GeoSource implements Source<GeomHypothesis> {
    * @param encoded
    */
   @Override
-  public List<Pair<byte[], Float>> evaluate(final List<GeomHypothesis> candidates,
-      EvidenceCodec codec) {
+  public List<Pair<byte[], Float>> evaluate(GeomHypothesis reference, final List<GeomHypothesis> candidates,
+      EvidenceCodec<GeomHypothesis> codec) {
     return null;
   }
 }

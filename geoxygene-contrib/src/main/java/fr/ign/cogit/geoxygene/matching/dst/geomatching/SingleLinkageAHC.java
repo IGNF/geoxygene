@@ -278,7 +278,7 @@ public class SingleLinkageAHC {
    * @param newVertices
    * @return
    */
-  private Edge getShortestEdge(List<Vertex> newVertices) {
+  public Edge getShortestEdge(List<Vertex> newVertices) {
     for (Edge e : this.edges) {
       if ((newVertices.contains(e.initialVertex) && !newVertices
           .contains(e.finalVertex))

@@ -27,7 +27,7 @@ import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
  * A codec takes hypotheses and encodes them as byte[]. It also decodes them.
  * @author Bertrand Dumenieu
  */
-public interface EvidenceCodec {
+public interface EvidenceCodec<H extends Hypothesis> {
 
   /**
    * Encode une hypothèse du cadre de discernement, ou une liste d'hypothèse
@@ -35,7 +35,7 @@ public interface EvidenceCodec {
    * @param hyps
    * @return
    */
-  public byte[] encode(Hypothesis... hyps);
+  public byte[] encode(H... hyps);
 
-  public List<Hypothesis> decode(byte[] encoded);
+  public List<H> decode(byte[] encoded);
 }

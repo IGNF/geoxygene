@@ -46,71 +46,72 @@ public class SmetsOp implements CombinationOp {
 
   @Override
   public List<Pair<byte[], Float>> combine(List<List<Pair<byte[], Float>>> masspotentials) {
+    logger.info(masspotentials.size());
     if (masspotentials.size() == 1) {
       return masspotentials.get(0);
-    } else
-      if (masspotentials.size() >= 2) {
-        // 1 - Calculer le noyau combiné de toutes les masses de croyance;
-        List<List<byte[]>> cores = new ArrayList<List<byte[]>>();
-        for (List<Pair<byte[], Float>> massvalues : masspotentials) {
-          List<byte[]> core = new ArrayList<byte[]>();
-          for (Pair<byte[], Float> pair : massvalues) {
-            core.add(pair.getFirst());
-          }
-          cores.add(core);
+    }
+    if (masspotentials.size() >= 2) {
+      // 1 - Calculer le noyau combiné de toutes les masses de croyance;
+      List<List<byte[]>> cores = new ArrayList<List<byte[]>>();
+      for (List<Pair<byte[], Float>> massvalues : masspotentials) {
+        List<byte[]> core = new ArrayList<byte[]>();
+        for (Pair<byte[], Float> pair : massvalues) {
+          core.add(pair.getFirst());
         }
-        byte[] combined;
-        try {
-          combined = CombinationAlgos.combine(cores);
-          if (Utils.isEmpty(combined)) {
-            logger.info("Les masses de croyances sont en total désaccord...");
-            if (this.worldclosed) {
-              List<Pair<byte[], Float>> result = new ArrayList<Pair<byte[], Float>>();
-              result.add(new Pair<byte[], Float>(new byte[combined.length], 1.0f));
-            }
-          }
-          // 2 - Conditionnement des masses existantes par le noyau combiné.
-          List<List<Pair<byte[], Float>>> conditionnedMassPotentials = new ArrayList<List<Pair<byte[], Float>>>();
-          for (List<Pair<byte[], Float>> mass : masspotentials) {
-            List<Pair<byte[], Float>> conditionned = CombinationAlgos.conditionning(mass, combined,
-                this.worldclosed);
-            if (conditionned.isEmpty()) {
-              conditionnedMassPotentials.add(mass);
-              logger.error("CAS MAL GERE : MASSE CONDITIONNEE NON DEFINIE!");
-            } else {
-              conditionnedMassPotentials.add(conditionned);
-            }
-          }
-          // 3 - Trier les masses de croyance : on utilise l'heuristique simple de
-          // la longueur moyenne du coeur.
-          List<List<Pair<byte[], Float>>> orderedmass = CombinationAlgos
-              .orderMass(conditionnedMassPotentials);
-
-          // 4 - Fusion 2 à 2 des masses de croyances
-          try {
-            List<Pair<byte[], Float>> m1values = conditionnedMassPotentials.get(0);
-            for (int i = 1; i < orderedmass.size(); i++) {
-              List<Pair<byte[], Float>> m2values = conditionnedMassPotentials.get(i);
-              m1values = this.smetsOp2mass(m1values, m2values);
-            }
-            if (logger.isDebugEnabled()) {
-              logger.debug("---Result of all masses combination using Smets rule---");
-              for (Pair<byte[], Float> hyp : m1values) {
-                logger.debug("Value is " + hyp.getSecond() + "for combination "
-                    + Arrays.toString(hyp.getFirst()));
-              }
-            }
-            return m1values;
-          } catch (Exception e) {
-            logger
-                .error("Dammit captain, the combination of 2 masses bloody crashed! Maybe ya should"
-                    + " take a look at this damn report just below!");
-            e.printStackTrace();
-          }
-        } catch (Exception e1) {
-          e1.printStackTrace();
-        }
+        cores.add(core);
       }
+      byte[] combined;
+      try {
+        combined = CombinationAlgos.combine(cores);
+        if (Utils.isEmpty(combined)) {
+          logger.info("Les masses de croyances sont en total désaccord...");
+          if (this.worldclosed) {
+            List<Pair<byte[], Float>> result = new ArrayList<Pair<byte[], Float>>();
+            result.add(new Pair<byte[], Float>(new byte[combined.length], 1.0f));
+          }
+        }
+        // 2 - Conditionnement des masses existantes par le noyau combiné.
+        List<List<Pair<byte[], Float>>> conditionnedMassPotentials = new ArrayList<List<Pair<byte[], Float>>>();
+        for (List<Pair<byte[], Float>> mass : masspotentials) {
+          List<Pair<byte[], Float>> conditionned = CombinationAlgos.conditionning(mass, combined,
+              this.worldclosed);
+          if (conditionned.isEmpty()) {
+            conditionnedMassPotentials.add(mass);
+            logger.error("CAS MAL GERE : MASSE CONDITIONNEE NON DEFINIE!");
+          } else {
+            conditionnedMassPotentials.add(conditionned);
+          }
+        }
+        // 3 - Trier les masses de croyance : on utilise l'heuristique simple de
+        // la longueur moyenne du coeur.
+        List<List<Pair<byte[], Float>>> orderedmass = CombinationAlgos
+            .orderMass(conditionnedMassPotentials);
+
+        // 4 - Fusion 2 à 2 des masses de croyances
+        try {
+          List<Pair<byte[], Float>> m1values = conditionnedMassPotentials.get(0);
+          for (int i = 1; i < orderedmass.size(); i++) {
+            List<Pair<byte[], Float>> m2values = conditionnedMassPotentials.get(i);
+            m1values = this.smetsOp2mass(m1values, m2values);
+          }
+          if (logger.isDebugEnabled()) {
+            logger.debug("---Result of all masses combination using Smets rule---");
+            for (Pair<byte[], Float> hyp : m1values) {
+              logger.debug("Value is " + hyp.getSecond() + "for combination "
+                  + Arrays.toString(hyp.getFirst()));
+            }
+          }
+          return m1values;
+        } catch (Exception e) {
+          logger
+              .error("Dammit captain, the combination of 2 masses bloody crashed! Maybe ya should"
+                  + " take a look at this damn report just below!");
+          e.printStackTrace();
+        }
+      } catch (Exception e1) {
+        e1.printStackTrace();
+      }
+    }
     return null;
   }
 

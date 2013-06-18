@@ -38,34 +38,33 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
 
 /**
  * Matching process.
- * <p> 
- * Processus d'appariement de données géographiques utilisant la théorie des
- * fonctions de croyance (voir Dempster67, Smets89). Si on fait l'hypothèse d'un
- * monde clos ( = les hypothèses sont exclusives ET exhaustives), la
- * combinaison des croyances est effectuée à l'aide de l'opérateur conjonctif de
- * Dempster. Dans ce cas le conflit entre sources d'information est réparti
- * entre les différentes masses de croyances et sa valeur est stockée dans le
- * conflict. Dans le cas d'un monde ouvert on utilisera l'opérateur de Smets qui
- * répartira le conflit entièrement sur l'hypothèse vide.
+ * <p>
+ * Processus d'appariement de données géographiques utilisant la théorie des fonctions de croyance
+ * (voir Dempster67, Smets89). Si on fait l'hypothèse d'un monde clos ( = les hypothèses sont
+ * exclusives ET exhaustives), la combinaison des croyances est effectuée à l'aide de l'opérateur
+ * conjonctif de Dempster. Dans ce cas le conflit entre sources d'information est réparti entre les
+ * différentes masses de croyances et sa valeur est stockée dans le conflict. Dans le cas d'un monde
+ * ouvert on utilisera l'opérateur de Smets qui répartira le conflit entièrement sur l'hypothèse
+ * vide.
  * <p>
  * @TODO : Ajouter la règle de Yager afin de permettre la répartition du conflit sur l'ensemble
  *       total (ignorance complète) plutôt que sur toutes les hypothèses.
  * @author Bertrand Dumenieu
  */
-public class MatchingProcess {
+public class MatchingProcess<Hyp extends Hypothesis> {
 
   /**
    * 
    */
   Logger logger = Logger.getLogger(MatchingProcess.class);
 
-  Collection<Source<Hypothesis>> criteria;
+  Collection<Source<Hyp>> criteria;
   // Cadre de discernement : stocke les candidats
-  private List<Hypothesis> frame;
+  private List<Hyp> frame;
 
   // Map<Source<Hypothesis>, List<Pair<byte[], Float>>> beliefs;
   List<List<Pair<byte[], Float>>> beliefs;
-  EvidenceCodec codec;
+  EvidenceCodec<Hyp> codec;
   private boolean isworldclosed = true;
 
   /**
@@ -74,8 +73,8 @@ public class MatchingProcess {
    * @param codec
    * @param isworldclosed
    */
-  public MatchingProcess(Collection<Source<Hypothesis>> criteria, List<Hypothesis> candidates,
-      EvidenceCodec codec, boolean isworldclosed) {
+  public MatchingProcess(Collection<Source<Hyp>> criteria, List<Hyp> candidates,
+      EvidenceCodec<Hyp> codec, boolean isworldclosed) {
     this.logger.debug(candidates.size() + " candidates");
     this.codec = codec;
     this.frame = Collections.unmodifiableList(candidates);
@@ -103,15 +102,15 @@ public class MatchingProcess {
    * @TODO : Placer le processus dans un thread séparé?
    * @throws Exception
    */
-  public List<Pair<byte[], Float>> combinationProcess() throws Exception {
+  public List<Pair<byte[], Float>> combinationProcess(Hyp reference) throws Exception {
     logger.info("RUNNING MATCHING PROCESS UNDER " + (this.closedworld() ? "CLOSED" : "OPEN")
         + " WORLD ASSUMPTION...");
     double start = System.currentTimeMillis();
     // ----------------EVALUATION------------------------
     // On récupère les éléments focaux de la masse de croyance et on ordonne la
     // liste afin de permettre la combinaison de critères.
-    for (Source<Hypothesis> src : this.criteria) {
-      List<Pair<byte[], Float>> kernel = src.evaluate(frame, this.codec);
+    for (Source<Hyp> src : this.criteria) {
+      List<Pair<byte[], Float>> kernel = src.evaluate(reference, frame, this.codec);
       // On s'assure que sum(m(j)) = 1 sinon erreur.
       float sum = 0;
       for (Pair<byte[], Float> pair : kernel) {

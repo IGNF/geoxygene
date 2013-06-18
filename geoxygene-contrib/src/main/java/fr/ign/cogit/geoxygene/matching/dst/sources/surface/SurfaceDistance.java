@@ -24,11 +24,8 @@ package fr.ign.cogit.geoxygene.matching.dst.sources.surface;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
-import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoMatching;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
@@ -39,29 +36,37 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  * geographiques.
  * @author Julien Perret
  */
-public class DistanceSurfacique extends GeoSource {
+public class SurfaceDistance extends GeoSource {
 
-  private float seuil = 50;
+  private float threshold = 50;
 
-  public DistanceSurfacique() throws Exception {
+  public float getThreshold() {
+    return this.threshold;
+  }
+
+  public void setThreshold(float t) {
+    this.threshold = t;
+  }
+
+  public SurfaceDistance() throws Exception {
   }
 
   /**
    * Evaluation.
    */
   @Override
-  public List<Pair<byte[], Float>> evaluate(final List<GeomHypothesis> candidates,
-      EvidenceCodec codec) {
+  public List<Pair<byte[], Float>> evaluate(GeomHypothesis reference, final List<GeomHypothesis> candidates,
+      EvidenceCodec<GeomHypothesis> codec) {
     List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
-    IFeature reference = GeoMatching.getInstance().getReference();
+//    IFeature reference = GeoMatching.getInstance().getReference();
     float sum = 0;
     for (GeomHypothesis h : candidates) {
       // On ne traite que les objets qui intersectent la référence. La distance
       // surfacique est donc sensible aux problèmes de calage.
       if (reference.getGeom().intersects(h.getGeom())) {
         float distance = (float) this.compute(reference.getGeom(), h.getGeom());
-        if (distance < this.seuil) {
-          byte[] encoded = codec.encode(new Hypothesis[] { h });
+        if (distance < this.threshold) {
+          byte[] encoded = codec.encode(new GeomHypothesis[] { h });
           weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
           sum += distance;
         }
@@ -76,13 +81,11 @@ public class DistanceSurfacique extends GeoSource {
 
   @Override
   public String getName() {
-    return "Distance Surfacique";
+    return "Distance Surfacique";//TODO using I18N
   }
 
   private double compute(IGeometry geo1, IGeometry geo2) {
     double value = geo1.intersection(geo2).area() / geo1.union(geo2).area();
-    if (value > 1)
-      value = 1;
-    return (value == 0) ? 0 : value;
+    return Math.max(Math.min(value, 1d), 0d);
   }
 }
