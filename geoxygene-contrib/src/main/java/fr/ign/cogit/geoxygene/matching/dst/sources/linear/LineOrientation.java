@@ -19,12 +19,16 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.matching.dst.sources.surface;
+package fr.ign.cogit.geoxygene.matching.dst.sources.linear;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
+import fr.ign.cogit.geoxygene.distance.Frechet;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
@@ -32,13 +36,13 @@ import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 /**
- * Critère d'appariement distance surfacique pour l'appariement d'objets
+ * Critère d'appariement distance linéaire pour l'appariement d'objets
  * geographiques.
  * @author Julien Perret
  */
-public class SurfaceDistance extends GeoSource {
+public class LineOrientation extends GeoSource {
 
-  private float threshold = 0.1f;
+  private float threshold = 50;
 
   public float getThreshold() {
     return this.threshold;
@@ -48,7 +52,7 @@ public class SurfaceDistance extends GeoSource {
     this.threshold = t;
   }
 
-  public SurfaceDistance() throws Exception {
+  public LineOrientation() throws Exception {
   }
 
   /**
@@ -81,11 +85,13 @@ public class SurfaceDistance extends GeoSource {
 
   @Override
   public String getName() {
-    return "Distance Surfacique";//TODO using I18N
+    return "Orientation Générale";//TODO using I18N
   }
 
   private double compute(IGeometry geo1, IGeometry geo2) {
-    double value = geo1.intersection(geo2).area() / geo1.union(geo2).area();
-    return Math.max(Math.min(value, 1d), 0d);
+    //TODO add subsampling?
+    Angle a1 = Operateurs.directionPrincipale(geo1.coord());
+    Angle a2 = Operateurs.directionPrincipale(geo2.coord());
+    return Angle.ecart(a1, a2).getValeur();
   }
 }

@@ -40,7 +40,7 @@ public class EuclidianDistance extends GeoSource {
   /*
    * Seuil de distance en m
    */
-  private float threshold = 50;
+  private float threshold = 50f;
 
   public float getThreshold() {
     return this.threshold;
