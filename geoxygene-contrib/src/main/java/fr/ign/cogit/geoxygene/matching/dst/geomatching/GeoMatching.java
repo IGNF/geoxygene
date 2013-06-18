@@ -52,7 +52,8 @@ public class GeoMatching {
   }
 
   public EvidenceResult<GeomHypothesis> run(Collection<Source<GeomHypothesis>> criteria,
-      IFeature reference, List<IFeature> candidates, boolean closed) throws Exception {
+      IFeature reference, List<IFeature> candidates, ChoiceType choice, boolean closed)
+      throws Exception {
     // Création des hypothèses d'appariement.
     LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
     List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
@@ -72,53 +73,52 @@ public class GeoMatching {
         reference));
     CombinationAlgos.sortKernel(result);
     CombinationAlgos.deleteDoubles(result);
-    DecisionOp<GeomHypothesis> decisionOp = new DecisionOp<GeomHypothesis>(result, 0f,
-        ChoiceType.PIGNISTIC, codec, false);
+    DecisionOp<GeomHypothesis> decisionOp = new DecisionOp<GeomHypothesis>(result, 0f, choice,
+        codec, false);
     return decisionOp.resolve();
   }
+
+  // public EvidenceResult<GeomHypothesis> runAppriou(Collection<Source<GeomHypothesis>> criteria,
+  // IFeature reference, List<IFeature> candidates, boolean closed) throws Exception {
   // AppriouMapper mapper = new AppriouMapper();
   // List<List<Pair<byte[], Float>>> mapped = new ArrayList<List<Pair<byte[], Float>>>();
-  // for (Hypothesis candidate : candidates) {
+  // // Création des hypothèses d'appariement.
+  // LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
+  // List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
+  // for (List<IFeature> l : combinations) {
+  // if (l.size() == 1) {
+  // hypotheses.add(new SimpleGeomHypothesis(l.get(0)));
+  // } else
+  // if (l.size() > 1) {
+  // IFeature[] featarray = new IFeature[l.size()];
+  // hypotheses.add(new ComplexGeomHypothesis(l.toArray(featarray)));
+  // }
+  // }
+  // for (GeomHypothesis candidate : hypotheses) {
   // // Création des hypothèses focalisées A et !A. L'Hypothèse inconnue étant
   // // Teta, elle sera directement évaluée par les sources focalisées en tant
   // // qu'ensemble de 2Teta.
-  // this.reference = reference;
-  // List<Hypothesis> hyps = new ArrayList<Hypothesis>();
-  // Hypothesis hyp = new AppriouHyp(AppriouType.A, candidate);
-  // Hypothesis nothyp = new AppriouHyp(AppriouType.NOTA, candidate);
-  // hyps.add(hyp);
-  // hyps.add(nothyp);
-  // DefaultCodec codec = new DefaultCodec(hyps);
-  // MatchingProcess mp = new MatchingProcess(focalisedSources, hyps, codec,
-  // false);
-  // List<Pair<byte[], Float>> result = mp.combinationProcess();
-  // List<Pair<byte[], Float>> localresult = mapper.mapFocalisedToGlobal(
-  // candidates.indexOf(candidate), candidates.size(), result);
+  // // this.reference = reference;
+  // // List<Hypothesis> hyps = new ArrayList<Hypothesis>();
+  // // Hypothesis hyp = new AppriouHypothesis(AppriouType.A, candidate);
+  // // Hypothesis nothyp = new AppriouHypothesis(AppriouType.NOTA, candidate);
+  // // hyps.add(hyp);
+  // // hyps.add(nothyp);
+  // List<AppriouHypothesis> hyps = mapper.mapToFocalised(candidate);
+  // DefaultCodec<AppriouHypothesis> codec = new DefaultCodec<AppriouHypothesis>(hyps);
+  // MatchingProcess<AppriouHypothesis> mp = new MatchingProcess<AppriouHypothesis>(criteria,
+  // hyps, codec, closed);
+  // List<Pair<byte[], Float>> result = mp.combinationProcess(candidate);
+  // List<Pair<byte[], Float>> localresult = mapper.mapFocalisedToGlobal(candidates
+  // .indexOf(candidate), candidates.size(), result);
   // CombinationAlgos.sortKernel(localresult);
   // CombinationAlgos.deleteDoubles(localresult);
   // mapped.add(localresult);
   // }
   // DempsterOp op = new DempsterOp(true);
   // List<Pair<byte[], Float>> result = op.combine(mapped);
-  // DecisionOp decisionOp = new DecisionOp(result, op.conflict,
-  // ChoiceType.CREDIBILITY, new DefaultCodec(candidates), true);
+  // DecisionOp decisionOp = new DecisionOp(result, op.conflict, ChoiceType.CREDIBILITY,
+  // new DefaultCodec(candidates), true);
   // return decisionOp.resolve();
-  // }
-
-  // /**
-  // * @return
-  // */
-  // public static GeoMatching getInstance() {
-  // if (singleton == null) {
-  // singleton = new GeoMatching();
-  // }
-  // return singleton;
-  // }
-
-  // /**
-  // * @return
-  // */
-  // public IFeature getReference() {
-  // return this.reference;
   // }
 }

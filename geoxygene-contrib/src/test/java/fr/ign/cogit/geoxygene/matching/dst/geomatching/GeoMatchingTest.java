@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
 import fr.ign.cogit.geoxygene.matching.dst.sources.linear.LineOrientation;
@@ -28,7 +29,8 @@ public class GeoMatchingTest {
     List<IFeature> candidates = new ArrayList<IFeature>(vasserot.select(reference.getGeom()));
     boolean closed = false;
     System.out.println(candidates.size() + " candidates");
-    EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates, closed);
+    EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates,
+        ChoiceType.PIGNISTIC, closed);
     System.out.println("result = " + result);
     System.out.println("reference = " + reference.getGeom());
     System.out.println("value = " + result.getValue());
@@ -50,10 +52,12 @@ public class GeoMatchingTest {
     IPopulation<IFeature> vasserot = ShapefileReader
         .read("H:\\Data\\SIGPARIS\\rues\\vasserot\\test.shp");
     IFeature reference = bdtopo.get(1);
-    List<IFeature> candidates = new ArrayList<IFeature>(vasserot.select(reference.getGeom().buffer(20)));
+    List<IFeature> candidates = new ArrayList<IFeature>(vasserot.select(reference.getGeom().buffer(
+        20)));
     boolean closed = true;
     System.out.println(candidates.size() + " candidates");
-    EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates, closed);
+    EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates,
+        ChoiceType.PIGNISTIC, closed);
     System.out.println("result = " + result);
     System.out.println("reference = " + reference.getGeom());
     System.out.println("value = " + result.getValue());
