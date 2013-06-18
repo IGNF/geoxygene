@@ -94,4 +94,15 @@ public class ComplexGeomHypothesis extends SimpleGeomHypothesis {
       e.printStackTrace();
     }
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!ComplexGeomHypothesis.class.isAssignableFrom(o.getClass())) {
+      return false;
+    }
+    ComplexGeomHypothesis h = (ComplexGeomHypothesis) o;
+    return this.decoratedFeature.equals(h.decoratedFeature)
+        && this.fromfeatures.containsAll(h.fromfeatures)
+        && h.fromfeatures.containsAll(this.fromfeatures);
+  }
 }

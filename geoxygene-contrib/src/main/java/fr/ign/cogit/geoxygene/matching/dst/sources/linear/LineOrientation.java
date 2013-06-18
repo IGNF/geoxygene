@@ -24,11 +24,9 @@ package fr.ign.cogit.geoxygene.matching.dst.sources.linear;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
-import fr.ign.cogit.geoxygene.distance.Frechet;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
@@ -42,13 +40,13 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  */
 public class LineOrientation extends GeoSource {
 
-  private float threshold = 50;
+  private double threshold = Math.PI / 2;
 
-  public float getThreshold() {
+  public double getThreshold() {
     return this.threshold;
   }
 
-  public void setThreshold(float t) {
+  public void setThreshold(double t) {
     this.threshold = t;
   }
 
@@ -59,21 +57,22 @@ public class LineOrientation extends GeoSource {
    * Evaluation.
    */
   @Override
-  public List<Pair<byte[], Float>> evaluate(GeomHypothesis reference, final List<GeomHypothesis> candidates,
-      EvidenceCodec<GeomHypothesis> codec) {
+  public List<Pair<byte[], Float>> evaluate(GeomHypothesis reference,
+      final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
     List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
-//    IFeature reference = GeoMatching.getInstance().getReference();
+    // IFeature reference = GeoMatching.getInstance().getReference();
     float sum = 0;
     for (GeomHypothesis h : candidates) {
-      // On ne traite que les objets qui intersectent la référence. La distance
-      // surfacique est donc sensible aux problèmes de calage.
-      if (reference.getGeom().intersects(h.getGeom())) {
-        float distance = (float) this.compute(reference.getGeom(), h.getGeom());
-        if (distance < this.threshold) {
-          byte[] encoded = codec.encode(new GeomHypothesis[] { h });
-          weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
-          sum += distance;
-        }
+      double distance = this.compute(reference.getGeom(), h.getGeom());
+      if (distance >= this.threshold) {
+        distance = 0.5 * (distance - this.threshold) / (Math.PI - this.threshold);
+      } else {
+        distance = 0.5 * (this.threshold - distance) / this.threshold;
+      }
+      if (distance > 0) {
+        byte[] encoded = codec.encode(new GeomHypothesis[] { h });
+        weightedfocalset.add(new Pair<byte[], Float>(encoded, (float) distance));
+        sum += distance;
       }
     }
     for (Pair<byte[], Float> st : weightedfocalset) {
@@ -85,13 +84,17 @@ public class LineOrientation extends GeoSource {
 
   @Override
   public String getName() {
-    return "Orientation Générale";//TODO using I18N
+    return "Orientation Générale";// TODO using I18N
   }
 
   private double compute(IGeometry geo1, IGeometry geo2) {
-    //TODO add subsampling?
+    // TODO add subsampling?
     Angle a1 = Operateurs.directionPrincipale(geo1.coord());
     Angle a2 = Operateurs.directionPrincipale(geo2.coord());
-    return Angle.ecart(a1, a2).getValeur();
+    double result = Angle.ecart(a1, a2).getValeur();
+    System.out.println("l1 (" + a1.getValeur() + " ) = " + geo1);
+    System.out.println("l2 (" + a2.getValeur() + " ) = " + geo2);
+    System.out.println("result = " + result);
+    return result;
   }
 }

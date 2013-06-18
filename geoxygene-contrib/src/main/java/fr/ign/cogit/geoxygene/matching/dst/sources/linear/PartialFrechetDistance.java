@@ -32,6 +32,7 @@ import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /**
  * Critère d'appariement distance linéaire pour l'appariement d'objets
@@ -57,21 +58,17 @@ public class PartialFrechetDistance extends GeoSource {
    * Evaluation.
    */
   @Override
-  public List<Pair<byte[], Float>> evaluate(GeomHypothesis reference, final List<GeomHypothesis> candidates,
-      EvidenceCodec<GeomHypothesis> codec) {
+  public List<Pair<byte[], Float>> evaluate(GeomHypothesis reference,
+      final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
     List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
-//    IFeature reference = GeoMatching.getInstance().getReference();
     float sum = 0;
     for (GeomHypothesis h : candidates) {
-      // On ne traite que les objets qui intersectent la référence. La distance
-      // surfacique est donc sensible aux problèmes de calage.
-      if (reference.getGeom().intersects(h.getGeom())) {
-        float distance = (float) this.compute(reference.getGeom(), h.getGeom());
-        if (distance < this.threshold) {
-          byte[] encoded = codec.encode(new GeomHypothesis[] { h });
-          weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
-          sum += distance;
-        }
+      float distance = (float) this.compute(reference.getGeom(), h.getGeom());
+      if (distance < this.threshold) {
+        distance /= this.threshold;
+        byte[] encoded = codec.encode(new GeomHypothesis[] { h });
+        weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
+        sum += distance;
       }
     }
     for (Pair<byte[], Float> st : weightedfocalset) {
@@ -83,11 +80,15 @@ public class PartialFrechetDistance extends GeoSource {
 
   @Override
   public String getName() {
-    return "Distance Fréchet Partielle";//TODO using I18N
+    return "Distance Fréchet Partielle";// TODO using I18N
   }
 
   private double compute(IGeometry geo1, IGeometry geo2) {
-    double v = Frechet.partialFrechet((ILineString) geo1, (ILineString) geo2);
+    ILineString l1 = new GM_LineString(geo1.coord());
+    ILineString l2 = new GM_LineString(geo2.coord());
+    System.out.println("l1 = " + l1);
+    System.out.println("l2 = " + l2);
+    double v = Frechet.partialFrechet(l1, l2);
     return v;
   }
 }

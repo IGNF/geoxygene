@@ -53,4 +53,12 @@ public abstract class GeomHypothesis implements IFeature, Hypothesis {
   public String toString() {
     return this.decoratedFeature.toString();
   }
+  @Override
+  public boolean equals(Object o) {
+    if (!GeomHypothesis.class.isAssignableFrom(o.getClass())) {
+      return false;
+    }
+    GeomHypothesis h = (GeomHypothesis) o;
+    return this.decoratedFeature.equals(h.decoratedFeature);
+  }
 }
