@@ -818,10 +818,15 @@ public abstract class AbstractFeature implements IFeature {
     return false;
   }
 
-  @Override
-  public int hashCode() {
-    return this.getId();
-  }
+    /**
+     * XXX Le hashcode ne devrait pas être l'id, ceci pose des problèmes par exemple pour le 
+     * hashcode d'un set de feature, défini comme la somme des hashcode de ses composants.
+     * Ainsi, le set de feature [3,2,5] aura le même hashcode que le set [4,6] 
+     */
+//  @Override
+//  public int hashCode() {
+//    return this.getId();
+//  }
 
   /**
    * Renvoie la classe primitive correspondant à la classe donnée, null si le
