@@ -215,6 +215,7 @@ public abstract class AbstractFeature implements IFeature {
     }
     return result;
   }
+
   public int getSizeCorrespondants() {
     return this.correspondants.size();
   }
@@ -366,16 +367,19 @@ public abstract class AbstractFeature implements IFeature {
 
   @Override
   public Object getAttribute(GF_AttributeType attribute) {
-    if (attribute.getMemberName() != null && attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
+    if (attribute.getMemberName() != null
+        && attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
       return this.getGeom();
     }
-    if (attribute.getMemberName() != null && attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
+    if (attribute.getMemberName() != null
+        && attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
       AbstractFeature.logger
           .warn("WARNING : Pour Récupèrer la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
               + "la méthode IFeature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       return this.getTopo();
     }
-    if (attribute.getMemberName() != null && attribute.getMemberName().equals("id")) { //$NON-NLS-1$
+    if (attribute.getMemberName() != null
+        && attribute.getMemberName().equals("id")) { //$NON-NLS-1$
       return this.getId();
     }
     Object valeur = null;
@@ -383,7 +387,8 @@ public abstract class AbstractFeature implements IFeature {
     if (((AttributeType) attribute).getNomField().length() == 0) {
       nomFieldMaj = ((AttributeType) attribute).getNomField();
     } else {
-      nomFieldMaj = Character.toUpperCase(((AttributeType) attribute).getNomField().charAt(0))
+      nomFieldMaj = Character.toUpperCase(((AttributeType) attribute)
+          .getNomField().charAt(0))
           + ((AttributeType) attribute).getNomField().substring(1);
     }
     String nomGetFieldMethod = "get" + nomFieldMaj; //$NON-NLS-1$
@@ -486,7 +491,8 @@ public abstract class AbstractFeature implements IFeature {
         AbstractFeature.logger.warn("Empty Attribute Name");
         return;
       } else {
-        nomFieldMaj2 = Character.toUpperCase(((AttributeType) attribute).getNomField().charAt(0))
+        nomFieldMaj2 = Character.toUpperCase(((AttributeType) attribute)
+            .getNomField().charAt(0))
             + ((AttributeType) attribute).getNomField().substring(1);
       }
       String nomSetFieldMethod = "set" + nomFieldMaj2; //$NON-NLS-1$
@@ -518,7 +524,7 @@ public abstract class AbstractFeature implements IFeature {
   @Override
   @SuppressWarnings("unchecked")
   public List<? extends IFeature> getRelatedFeatures(GF_FeatureType ftt,
-          GF_AssociationRole role) {
+      GF_AssociationRole role) {
     List<IFeature> listResult = new ArrayList<IFeature>();
     if (AbstractFeature.logger.isDebugEnabled()) {
       AbstractFeature.logger.debug("\n**recherche des features en relation**");
@@ -533,8 +539,9 @@ public abstract class AbstractFeature implements IFeature {
         if (((AssociationRole) role).getNomFieldClasse().length() == 0) {
           nomFieldClasseMaj = ((AssociationRole) role).getNomFieldClasse();
         } else {
-          nomFieldClasseMaj = Character.toUpperCase(((AssociationRole) role).getNomFieldClasse()
-              .charAt(0)) + ((AssociationRole) role).getNomFieldClasse().substring(1);
+          nomFieldClasseMaj = Character.toUpperCase(((AssociationRole) role)
+              .getNomFieldClasse().charAt(0))
+              + ((AssociationRole) role).getNomFieldClasse().substring(1);
         }
         String nomGetMethod = "get" + nomFieldClasseMaj; //$NON-NLS-1$
         Method methodGetter = this.getClass().getDeclaredMethod(nomGetMethod,
@@ -562,8 +569,9 @@ public abstract class AbstractFeature implements IFeature {
         if (((AssociationRole) role).getNomFieldClasse().length() == 0) {
           nomFieldClasseMaj = ((AssociationRole) role).getNomFieldClasse();
         } else {
-          nomFieldClasseMaj = Character.toUpperCase(((AssociationRole) role).getNomFieldClasse()
-              .charAt(0)) + ((AssociationRole) role).getNomFieldClasse().substring(1);
+          nomFieldClasseMaj = Character.toUpperCase(((AssociationRole) role)
+              .getNomFieldClasse().charAt(0))
+              + ((AssociationRole) role).getNomFieldClasse().substring(1);
         }
         String nomGetMethod = "get" + nomFieldClasseMaj; //$NON-NLS-1$
         Method methodGetter = this.getClass().getDeclaredMethod(nomGetMethod,
@@ -818,15 +826,13 @@ public abstract class AbstractFeature implements IFeature {
     return false;
   }
 
-    /**
-     * XXX Le hashcode ne devrait pas être l'id, ceci pose des problèmes par exemple pour le 
-     * hashcode d'un set de feature, défini comme la somme des hashcode de ses composants.
-     * Ainsi, le set de feature [3,2,5] aura le même hashcode que le set [4,6] 
-     */
-//  @Override
-//  public int hashCode() {
-//    return this.getId();
-//  }
+  /**
+   * XXX HashCode might not be the feature id.
+   */
+  // @Override
+  // public int hashCode() {
+  // return this.getId();
+  // }
 
   /**
    * Renvoie la classe primitive correspondant à la classe donnée, null si le
