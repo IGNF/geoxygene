@@ -46,7 +46,6 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.contrib.algorithms.SwingingArmNonConvexHull;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
@@ -68,6 +67,8 @@ public class UrbanEnrichment {
 
   // Parameters for towns construction
   private static final double DISTANCE_BUFFER = 50.0;
+  private static final double DISTANCE_EROSION = 30.0;
+  private static final double SEUIL_DP = 10.0;
   private static final int DEFAUT_NB_QUADRANT_SEGMENT_BUFFER = 4;
 
   /**
@@ -166,26 +167,27 @@ public class UrbanEnrichment {
     }
 
     // // With union of buffers on buildings
-    // IGeometry union = UrbanAreaComputationJTS.calculTacheUrbaine(geoms,
-    // DISTANCE_BUFFER, DISTANCE_EROSION, quadrantSegments, SEUIL_DP);
+    IGeometry union = UrbanAreaComputationJTS.calculTacheUrbaine(geoms,
+        UrbanEnrichment.DISTANCE_BUFFER, UrbanEnrichment.DISTANCE_EROSION,
+        quadrantSegments, UrbanEnrichment.SEUIL_DP);
 
     // With swinging arm non convex hull on buildings
-    ArrayList<IDirectPosition> points = new ArrayList<IDirectPosition>();
-    for (IGeometry geom : geoms) {
-      int i = 0;
-      for (IDirectPosition dp : geom.coord()) {
-        if (dp.equals(geom.coord().get(0))) {
-          if (i > 0) {
-            continue;
-          }
-          i++;
-        }
-        points.add(dp);
-      }
-    }
-    IGeometry union = (new SwingingArmNonConvexHull(points, 200.0)).compute()
-        .buffer(UrbanEnrichment.DISTANCE_BUFFER, quadrantSegments,
-            BufferParameters.CAP_ROUND, BufferParameters.CAP_ROUND);
+    // ArrayList<IDirectPosition> points = new ArrayList<IDirectPosition>();
+    // for (IGeometry geom : geoms) {
+    // int i = 0;
+    // for (IDirectPosition dp : geom.coord()) {
+    // if (dp.equals(geom.coord().get(0))) {
+    // if (i > 0) {
+    // continue;
+    // }
+    // i++;
+    // }
+    // points.add(dp);
+    // }
+    // }
+    // IGeometry union = (new SwingingArmNonConvexHull(points, 200.0)).compute()
+    // .buffer(UrbanEnrichment.DISTANCE_BUFFER, quadrantSegments,
+    // BufferParameters.CAP_ROUND, BufferParameters.CAP_ROUND);
 
     if (UrbanEnrichment.logger.isInfoEnabled()) {
       UrbanEnrichment.logger.info("end of urban area computation");
