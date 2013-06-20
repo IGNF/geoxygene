@@ -27,12 +27,14 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
  */
 public class TaxiwaySimplificationProcess extends ScaleMasterGeneProcess {
 
-  private boolean collapse = false, merge = true, linkToAirport = true;
+  private boolean collapse = false, linkToAirport = true;
   /**
    * the taxiway parts that are less wide than minWidth are collapsed into
    * lines.
    */
   private double minWidth;
+  private double apronMinArea = 4000.0;
+  private double apronSegLength = 5.0;
   private static TaxiwaySimplificationProcess instance = null;
 
   protected TaxiwaySimplificationProcess() {
@@ -50,32 +52,26 @@ public class TaxiwaySimplificationProcess extends ScaleMasterGeneProcess {
   public void execute(IFeatureCollection<? extends IGeneObj> features) {
     parameterise();
     Set<IAirportArea> treatedAirports = new HashSet<IAirportArea>();
-    if (merge) {
-      for (IGeneObj obj : features) {
-        IAirportArea airport = ((IRunwayArea) obj).getAirport();
-        if (treatedAirports.contains(airport))
-          continue;
-        if (linkToAirport && airport.isEliminated()) {
-          obj.eliminateBatch();
-          continue;
-        }
-        treatedAirports.add(airport);
-        AirportTypification typif = new AirportTypification(airport);
-        try {
-          // typif.merg;
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
+
+    for (IGeneObj obj : features) {
+      IAirportArea airport = ((IRunwayArea) obj).getAirport();
+      if (treatedAirports.contains(airport))
+        continue;
+      if (linkToAirport && airport.isEliminated()) {
+        obj.eliminateBatch();
+        continue;
       }
-    }
-    if (collapse) {
-      for (IAirportArea airport : treatedAirports) {
-        AirportTypification typif = new AirportTypification(airport);
-        try {
-          typif.collapseRunways();
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
+      treatedAirports.add(airport);
+      AirportTypification typif = new AirportTypification(airport);
+      try {
+        typif.setOpenThreshTaxi(minWidth);
+        typif.setApronMinArea(apronMinArea);
+        typif.setApronSegLength(apronSegLength);
+        typif.simplifyAprons();
+        if (collapse)
+          typif.collapseThinTaxiways();
+      } catch (Exception e) {
+        e.printStackTrace();
       }
     }
   }
@@ -88,8 +84,10 @@ public class TaxiwaySimplificationProcess extends ScaleMasterGeneProcess {
   @Override
   public void parameterise() {
     this.minWidth = (Double) getParamValueFromName("min-width");
-    if (this.hasParameter("fusion"))
-      this.merge = (Boolean) getParamValueFromName("fusion");
+    if (this.hasParameter("apron-min-area"))
+      this.apronMinArea = (Double) getParamValueFromName("apron-min-area");
+    if (this.hasParameter("apron-seg-length"))
+      this.apronSegLength = (Double) getParamValueFromName("apron-seg-length");
     if (this.hasParameter("collapse"))
       this.collapse = (Boolean) getParamValueFromName("collapse");
     if (this.hasParameter("link_to_airport"))
@@ -100,7 +98,8 @@ public class TaxiwaySimplificationProcess extends ScaleMasterGeneProcess {
   public Set<ProcessParameter> getDefaultParameters() {
     Set<ProcessParameter> params = new HashSet<ProcessParameter>();
     params.add(new ProcessParameter("min-width", Double.class, 30.0));
-    params.add(new ProcessParameter("fusion", Boolean.class, true));
+    params.add(new ProcessParameter("apron-min-area", Double.class, 4000.0));
+    params.add(new ProcessParameter("apron-seg-length", Double.class, 10.0));
     params.add(new ProcessParameter("collapse", Boolean.class, false));
     params.add(new ProcessParameter("link_to_airport", Boolean.class, true));
     return params;

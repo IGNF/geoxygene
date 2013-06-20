@@ -25,9 +25,11 @@ import fr.ign.cogit.cartagen.graph.GraphPath;
 import fr.ign.cogit.cartagen.graph.INode;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
@@ -321,17 +323,22 @@ public class DeadEndGroup extends GeneObjDefault implements IDeadEndGroup {
    */
 
   public static HashSet<DeadEndGroup> buildFromRoads(
-      IFeatureCollection<IRoadLine> roads, IPolygon borderLine) {
+      IFeatureCollection<IRoadLine> roads, IGeometry border) {
 
     // Carte topo creation with road sections
     CarteTopo carteTopo = new CarteTopo("deadEnds");
     carteTopo.importClasseGeo(roads);
 
     // Addition of the city centre contour if existing
-    if (borderLine != null) {
+    ILineString borderLine = null;
+    if (border != null) {
       IFeatureCollection<DefaultFeature> contours = new FT_FeatureCollection<DefaultFeature>();
       DefaultFeature contourVille = new DefaultFeature();
-      contourVille.setGeom(borderLine.exteriorLineString());
+      if (border instanceof IPolygon)
+        borderLine = ((IPolygon) border).exteriorLineString();
+      else if (border instanceof ILineString)
+        borderLine = (ILineString) border;
+      contourVille.setGeom(borderLine);
       contours.add(contourVille);
       carteTopo.importClasseGeo(contours, true);
     }
@@ -348,11 +355,6 @@ public class DeadEndGroup extends GeneObjDefault implements IDeadEndGroup {
     // loop on the faces of the topological map
     for (Face f : carteTopo.getListeFaces()) {
 
-      // Exterior face of the dataset is not taken into account
-      if (borderLine != null && !borderLine.buffer(5.0).contains(f.getGeom())) {
-        continue;
-      }
-
       // first find out if the block is inside another block, to detect rackets
       HashSet<Face> neighFaces = new HashSet<Face>();
       for (Noeud n : f.noeuds()) {
@@ -361,6 +363,7 @@ public class DeadEndGroup extends GeneObjDefault implements IDeadEndGroup {
       if (carteTopo.getListeFaces().size() > 2 && neighFaces.size() < 3) {
         // it's a hole and all the roads intersecting the face are dead ends
         deadEnds.addAll(roads.select(f.getGeometrie()));
+        continue;
       }
 
       // loop on the roads to find the interior ones
@@ -370,14 +373,12 @@ public class DeadEndGroup extends GeneObjDefault implements IDeadEndGroup {
         }
         // Ne pas tenir compte des routes sortant de la ville
         if (borderLine != null
-            && arc.getCorrespondant(0).getGeom().intersects(
-                borderLine.exteriorLineString())) {
+            && arc.getCorrespondant(0).getGeom().intersects(borderLine)) {
           continue;
         }
         deadEnds.add((IRoadLine) arc.getCorrespondant(0));
       }
     }
-
     // now build the dead end groups from the dead end roads
     Stack<IRoadLine> deadEndStack = new Stack<IRoadLine>();
     deadEndStack.addAll(deadEnds);
@@ -512,8 +513,8 @@ public class DeadEndGroup extends GeneObjDefault implements IDeadEndGroup {
         }
         // Ne pas tenir compte des routes sortant de la ville
         if (borderLine != null
-            && arc.getCorrespondant(0).getGeom().intersects(
-                borderLine.exteriorLineString())) {
+            && arc.getCorrespondant(0).getGeom()
+                .intersects(borderLine.exteriorLineString())) {
           continue;
         }
         INetworkSection section = (INetworkSection) arc.getCorrespondant(0);

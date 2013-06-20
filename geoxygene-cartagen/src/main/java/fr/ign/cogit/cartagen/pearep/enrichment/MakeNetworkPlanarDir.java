@@ -15,18 +15,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
-import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 
@@ -125,24 +123,20 @@ public class MakeNetworkPlanarDir extends ScaleMasterPreProcess {
       }
 
       // build the network topology
-      popIter = new Population<IGeneObj>();
-      for (IGeneObj obj : pop) {
-        if (obj.isEliminated())
-          continue;
-        popIter.add(obj);
-      }
-      carteTopo = new CarteTopo("make topology");
-      carteTopo.importClasseGeo(popIter, true);
-      carteTopo.rendPlanaire(1.0);
-      IPopulation<IWaterNode> popWater = CartAGenDoc.getInstance()
-          .getCurrentDataset().getWaterNodes();
-      for (Noeud n : carteTopo.getPopNoeuds()) {
-        IWaterNode waterNode = CartagenApplication.getInstance()
-            .getCreationFactory().createWaterNode(n);
-        popWater.add(waterNode);
-        CartAGenDoc.getInstance().getCurrentDataset().getHydroNetwork()
-            .addNode(waterNode);
-      }
+      /*
+       * popIter = new Population<IGeneObj>(); for (IGeneObj obj : pop) { if
+       * (obj.isEliminated()) continue; popIter.add(obj); } carteTopo = new
+       * CarteTopo("make topology"); carteTopo.importClasseGeo(popIter, true);
+       * carteTopo.rendPlanaire(1.0); IPopulation<IWaterNode> popWater =
+       * CartAGenDoc.getInstance() .getCurrentDataset().getWaterNodes(); for
+       * (Noeud n : carteTopo.getPopNoeuds()) { IWaterNode waterNode =
+       * CartagenApplication.getInstance()
+       * .getCreationFactory().createWaterNode(n); popWater.add(waterNode);
+       * CartAGenDoc.getInstance().getCurrentDataset().getHydroNetwork()
+       * .addNode(waterNode); }
+       */
+      NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
+          .getCurrentDataset().getHydroNetwork(), false);
     }
   }
 

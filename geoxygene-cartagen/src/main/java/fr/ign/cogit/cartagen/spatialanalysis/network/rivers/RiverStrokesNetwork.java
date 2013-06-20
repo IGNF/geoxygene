@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Logger;
 
 import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
 import fr.ign.cogit.cartagen.spatialanalysis.network.StrokesNetwork;
@@ -28,6 +29,8 @@ import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFrom
 
 public class RiverStrokesNetwork extends StrokesNetwork {
 
+  private static Logger logger = Logger.getLogger(RiverStrokesNetwork.class
+      .getName());
   private Set<NoeudHydrographique> sources, sinks;
   private Set<RiverIsland> simpleIslands;
   private Set<RiverIslandGroup> complexIslands;
@@ -241,30 +244,8 @@ public class RiverStrokesNetwork extends StrokesNetwork {
           // normal case
           // the main branch has to be found
           ArcReseau upStream = node.getArcsEntrants().iterator().next();
-          ArcReseau mainBranch = null;
-          double min = 1.0;
-          for (ArcReseau branch : node.getArcsSortants()) {
-            double angle = CommonAlgorithmsFromCartAGen.angleBetween2Lines(
-                (ILineString) upStream.getGeom(),
-                (ILineString) branch.getGeom());
-            if (Math.cos(angle) < min) {
-              min = Math.cos(angle);
-              mainBranch = branch;
-            }
-          }
-
-          // continue the upstream stroke with mainBranch
-          RiverStroke upstreamStroke = getUpstreamStrokes(node).iterator()
-              .next();
-          upstreamStroke.getFeatures().add(mainBranch);
-          this.getGroupedFeatures().add(mainBranch);
-          // find the next node
-          if (!downstreamNodes.contains((NoeudHydrographique) mainBranch
-              .getNoeudFinal()))
-            downstreamNodes.add(0,
-                (NoeudHydrographique) mainBranch.getNoeudFinal());
-          this.strahlerOrders
-              .put(mainBranch, this.strahlerOrders.get(upStream));
+          ArcReseau mainBranch = manageBraidedConfluence(node, upStream,
+              downstreamNodes);
 
           // build new RiverStrokes with remaining branches
           Collection<ArcReseau> remainingBranches = new HashSet<ArcReseau>(
@@ -272,6 +253,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
           remainingBranches.remove(mainBranch);
           for (ArcReseau branch : remainingBranches) {
             RiverStroke stroke = new RiverStroke(this, branch);
+            stroke.setBraided(true);
             this.getStrokes().add(stroke);
             this.getGroupedFeatures().add(branch);
             if (!downstreamNodes.contains((NoeudHydrographique) branch
@@ -283,12 +265,60 @@ public class RiverStrokesNetwork extends StrokesNetwork {
           }
         } else {
           // complex case with braids at a confluence point
-          // TODO
+          Set<RiverStroke> upstreamStrokes = getUpstreamStrokes(node);
+          Collection<ArcReseau> remainingBranches = new HashSet<ArcReseau>(
+              node.getArcsSortants());
+          RiverStroke unbraided = getNonBraidedStroke(upstreamStrokes);
+
+          if (unbraided != null) {
+            upstreamStrokes.remove(unbraided);
+            ArcReseau mainBranch = manageBraidedConfluence(node,
+                unbraided.getLastFeat(), downstreamNodes);
+            remainingBranches.remove(mainBranch);
+          }
+          for (ArcReseau branch : remainingBranches) {
+            RiverStroke stroke = new RiverStroke(this, branch);
+            stroke.setBraided(true);
+            this.getStrokes().add(stroke);
+            this.getGroupedFeatures().add(branch);
+            if (!downstreamNodes.contains((NoeudHydrographique) branch
+                .getNoeudFinal()))
+              downstreamNodes.add(0,
+                  (NoeudHydrographique) branch.getNoeudFinal());
+            // compute Strahler orders
+            this.strahlerOrders.put(branch, 1);
+          }
         }
       }
     }
     for (NoeudHydrographique n : downstreamNodes)
-      System.out.println("noeud restant : " + n);
+      logger.fine("noeud restant : " + n);
+  }
+
+  private ArcReseau manageBraidedConfluence(NoeudHydrographique node,
+      ArcReseau upStream, Stack<NoeudHydrographique> downstreamNodes) {
+    ArcReseau mainBranch = null;
+    double min = 1.0;
+    for (ArcReseau branch : node.getArcsSortants()) {
+      double angle = CommonAlgorithmsFromCartAGen.angleBetween2Lines(
+          (ILineString) upStream.getGeom(), (ILineString) branch.getGeom());
+      if (Math.cos(angle) < min) {
+        min = Math.cos(angle);
+        mainBranch = branch;
+      }
+    }
+
+    // continue the upstream stroke with mainBranch
+    RiverStroke upstreamStroke = getUpstreamStrokes(node).iterator().next();
+    upstreamStroke.getFeatures().add(mainBranch);
+    this.getGroupedFeatures().add(mainBranch);
+    // find the next node
+    if (!downstreamNodes.contains((NoeudHydrographique) mainBranch
+        .getNoeudFinal()))
+      downstreamNodes.add(0, (NoeudHydrographique) mainBranch.getNoeudFinal());
+    this.strahlerOrders.put(mainBranch, this.strahlerOrders.get(upStream));
+
+    return mainBranch;
   }
 
   /**
@@ -306,6 +336,11 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     // if there is only one upstream river, it continues
     if (upstreamStrokes.size() == 1)
       return upstreamStrokes.iterator().next();
+
+    // first, make a decision on braided strokes
+    RiverStroke unbraidedStroke = getNonBraidedStroke(upstreamStrokes);
+    if (unbraidedStroke != null)
+      return unbraidedStroke;
 
     // first, make a decision on river name
     if (!downstreamSection.getNom().equals("")) {
@@ -347,6 +382,20 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     }
 
     return best;
+  }
+
+  private RiverStroke getNonBraidedStroke(Set<RiverStroke> upstreamStrokes) {
+    int nb = 0;
+    RiverStroke unbraided = null;
+    for (RiverStroke stroke : upstreamStrokes) {
+      if (stroke.isBraided())
+        continue;
+      unbraided = stroke;
+      nb++;
+    }
+    if (nb == 1)
+      return unbraided;
+    return null;
   }
 
   /**

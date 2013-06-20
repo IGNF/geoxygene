@@ -9,6 +9,7 @@ import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 public class RiverStroke extends Stroke {
 
   private int hortonOrder = 0;
+  private boolean isBraided = false;
 
   public RiverStroke(StrokesNetwork network, ArcReseau root) {
     super(network, root);
@@ -41,6 +42,14 @@ public class RiverStroke extends Stroke {
         .getGeom();
   }
 
+  /**
+   * Get the last section of the stroke.
+   * @return
+   */
+  public ArcReseau getLastFeat() {
+    return this.getFeatures().get(this.getFeatures().size() - 1);
+  }
+
   public void computeHortonOrder() {
     this.hortonOrder = 1;
     for (ArcReseau arc : getFeatures()) {
@@ -50,5 +59,13 @@ public class RiverStroke extends Stroke {
         this.hortonOrder = strahler;
     }
 
+  }
+
+  public boolean isBraided() {
+    return isBraided;
+  }
+
+  public void setBraided(boolean isBraided) {
+    this.isBraided = isBraided;
   }
 }

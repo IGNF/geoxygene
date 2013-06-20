@@ -20,6 +20,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea.TaxiwayType
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
+import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayNode;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefField;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
@@ -31,6 +32,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterNode;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPBridgePoint;
+import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayNode;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadNode;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -98,6 +100,11 @@ public class MGCPSchemaFactory extends AbstractCreationFactory {
   @Override
   public IWaterNode createWaterNode(Noeud noeud) {
     return new MGCPWaterNode(noeud);
+  }
+
+  @Override
+  public IRailwayNode createRailwayNode(Noeud noeud) {
+    return new MGCPRailwayNode(noeud);
   }
 
 }

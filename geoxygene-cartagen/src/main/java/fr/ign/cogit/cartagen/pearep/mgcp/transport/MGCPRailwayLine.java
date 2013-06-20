@@ -7,7 +7,6 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.network.NetworkSectionType;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
-import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
@@ -199,12 +198,12 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
 
   @Override
   public void setFinalNode(INetworkNode node) {
-    this.finalNode = (IRoadNode) node;
+    this.finalNode = node;
   }
 
   @Override
   public void setInitialNode(INetworkNode node) {
-    this.initialNode = (IRoadNode) node;
+    this.initialNode = node;
   }
 
   @Override

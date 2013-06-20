@@ -37,6 +37,7 @@ import fr.ign.cogit.cartagen.core.genericschema.hydro.IInundationArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterBasin;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterPoint;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.land.IWoodLine;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IBoundedArea;
@@ -113,6 +114,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterTreatmentBed;
 import fr.ign.cogit.cartagen.pearep.mgcp.land.MGCPWoodLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPContourLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPReliefElementLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.sea.MGCPShipWreckPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPBridgeLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPPathLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayLine;
@@ -743,6 +745,14 @@ public class MGCPLoader extends ShapeFileLoader {
       // bridge lines
       this.loadBridgeLines(directory, listLayer);
 
+      // Hydro features
+      if (((listLayer.size() == 0) || (listLayer.contains("PBD180")))
+          && (FileUtil.getNamedFileInDir(directory, "PBD180.shp") != null)) {
+        this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PBD180.shp")
+            .getAbsolutePath(), MGCPShipWreckPoint.class,
+            CartAGenDataSet.WATER_PT_POP, IWaterPoint.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
     } catch (IllegalArgumentException e) {
       e.printStackTrace();
     } catch (SecurityException e) {

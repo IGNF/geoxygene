@@ -7,7 +7,7 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.core.defaultschema.hydro;
+package fr.ign.cogit.cartagen.pearep.mgcp.transport;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,74 +19,71 @@ import javax.persistence.AccessType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.network.NetworkNode;
-import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterNode;
+import fr.ign.cogit.cartagen.core.genericschema.SymbolShape;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
+import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayNode;
 import fr.ign.cogit.cartagen.core.persistence.EncodedRelation;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
-import fr.ign.cogit.geoxygene.schemageo.api.hydro.NoeudHydrographique;
+import fr.ign.cogit.geoxygene.schemageo.api.ferre.NoeudFerre;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
-import fr.ign.cogit.geoxygene.schemageo.impl.hydro.NoeudHydrographiqueImpl;
+import fr.ign.cogit.geoxygene.schemageo.impl.ferre.NoeudFerreImpl;
 
-/*
- * ###### IGN / CartAGen ###### Title: WaterNode Description: Noeuds
- * hydrographiques Author: J. Renard Date: 18/09/2009
- */
-@Entity
 @Access(AccessType.PROPERTY)
-public class WaterNode extends NetworkNode implements IWaterNode {
+public class MGCPRailwayNode extends MGCPFeature implements IRailwayNode {
 
-  private NoeudHydrographique geoxObj;
+  private NoeudFerre geoxObj;
+  private Collection<INetworkSection> inSections, outSections;
 
   /**
    * Empty constructor used by EJB to load features from PostGIS
    */
-  public WaterNode() {
+  public MGCPRailwayNode() {
     super();
   }
 
   /**
    * Constructor
    */
-  public WaterNode(Noeud noeud) {
+  public MGCPRailwayNode(Noeud noeud) {
     // Topology links for entering network sections
-    this.setInSections(new HashSet<INetworkSection>());
+    this.inSections = new HashSet<INetworkSection>();
     for (Arc arc : noeud.getEntrants()) {
       IFeature feat = arc.getCorrespondant(0);
       if (!(feat instanceof INetworkSection)) {
         continue;
       }
       INetworkSection section = (INetworkSection) feat;
-      this.getInSections().add(section);
+      this.inSections.add(section);
       section.setFinalNode(this);
     }
 
     // Topology links for exiting network sections
-    this.setOutSections(new HashSet<INetworkSection>());
+    this.outSections = new HashSet<INetworkSection>();
     for (Arc arc : noeud.getSortants()) {
       IFeature feat = arc.getCorrespondant(0);
       if (!(feat instanceof INetworkSection)) {
         continue;
       }
       INetworkSection section = (INetworkSection) feat;
-      this.getOutSections().add(section);
+      this.outSections.add(section);
       section.setInitialNode(this);
     }
 
     this.setGeom(noeud.getGeom());
-    this.geoxObj = new NoeudHydrographiqueImpl();
+    this.geoxObj = new NoeudFerreImpl();
     this.geoxObj.setGeom(noeud.getGeom());
     for (INetworkSection section : this.getInSections()) {
       // links creation for GeOx objects
@@ -100,20 +97,32 @@ public class WaterNode extends NetworkNode implements IWaterNode {
     }
   }
 
-  public WaterNode(IPoint point) {
-    super(new Noeud(point));
+  public MGCPRailwayNode(IPoint point) {
+    this(new Noeud(point));
+    this.geoxObj = new NoeudFerreImpl();
+    this.geoxObj.setGeom(point);
+    for (INetworkSection section : this.getInSections()) {
+      // links creation for GeOx objects
+      this.geoxObj.getArcsEntrants().add((ArcReseau) section.getGeoxObj());
+      ((ArcReseau) section.getGeoxObj()).setNoeudFinal(this.geoxObj);
+    }
+    for (INetworkSection section : this.getOutSections()) {
+      // links creation for GeOx objects
+      this.geoxObj.getArcsSortants().add((ArcReseau) section.getGeoxObj());
+      ((ArcReseau) section.getGeoxObj()).setNoeudInitial(this.geoxObj);
+    }
   }
 
   @Override
   @Transient
   public double getWidth() {
-    return GeneralisationLegend.RES_EAU_LARGEUR;
+    return GeneralisationLegend.RES_FER_LARGEUR;
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
   public IPoint getGeom() {
-    return super.getGeom();
+    return (IPoint) super.getGeom();
   }
 
   @Override
@@ -141,13 +150,13 @@ public class WaterNode extends NetworkNode implements IWaterNode {
   @Override
   @Transient
   public Collection<INetworkSection> getInSections() {
-    return super.getInSections();
+    return this.inSections;
   }
 
   @Override
   @Transient
   public Collection<INetworkSection> getOutSections() {
-    return super.getOutSections();
+    return this.outSections;
   }
 
   private List<Integer> inSectionsIds = new ArrayList<Integer>();
@@ -160,7 +169,7 @@ public class WaterNode extends NetworkNode implements IWaterNode {
   @CollectionTable(name = "WaterInSectionIds", joinColumns = @JoinColumn(name = "finalNode"))
   @Column(name = "inSectionsIds")
   @Access(AccessType.FIELD)
-  @EncodedRelation(targetEntity = WaterLine.class, invClass = INetworkNode.class, methodName = "InSections", invMethodName = "FinalNode", nToM = false)
+  @EncodedRelation(targetEntity = MGCPRailwayLine.class, invClass = INetworkNode.class, methodName = "InSections", invMethodName = "FinalNode", nToM = false)
   public List<Integer> getInSectionsIds() {
     return this.inSectionsIds;
   }
@@ -174,9 +183,39 @@ public class WaterNode extends NetworkNode implements IWaterNode {
   @ElementCollection
   @CollectionTable(name = "WaterOutSectionIds", joinColumns = @JoinColumn(name = "initialNode"))
   @Column(name = "outSectionsIds")
-  @EncodedRelation(targetEntity = WaterLine.class, invClass = INetworkNode.class, methodName = "OutSections", invMethodName = "InitialNode", nToM = false)
+  @EncodedRelation(targetEntity = MGCPRailwayLine.class, invClass = INetworkNode.class, methodName = "OutSections", invMethodName = "InitialNode", nToM = false)
   public List<Integer> getOutSectionsIds() {
     return this.outSectionsIds;
+  }
+
+  @Override
+  public int getDegree() {
+    return this.getInSections().size() + this.getOutSections().size();
+  }
+
+  @Override
+  public SymbolShape getMaxWidthSymbol() {
+    return null;
+  }
+
+  @Override
+  public IDirectPosition getPosition() {
+    return this.getGeom().getPosition();
+  }
+
+  @Override
+  public int getSectionsMaxImportance() {
+    return 0;
+  }
+
+  @Override
+  public void setInSections(Collection<INetworkSection> inSections) {
+    this.inSections = inSections;
+  }
+
+  @Override
+  public void setOutSections(Collection<INetworkSection> outSections) {
+    this.outSections = outSections;
   }
 
 }

@@ -4,15 +4,18 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen.LineConnectionInfo;
 
@@ -147,6 +150,9 @@ public class OverlapConflict extends NetworkConflict {
       Collection<INetworkSection> features, Set<MinimumSeparation> minSeps) {
     Set<OverlapConflict> conflicts = new HashSet<OverlapConflict>();
     for (INetworkSection section : features) {
+      if (section.isEliminated())
+        continue;
+
       IFeatureCollection<INetworkSection> fc = new FT_FeatureCollection<INetworkSection>();
       fc.addAll(features);
       fc.remove(section);
@@ -159,6 +165,8 @@ public class OverlapConflict extends NetworkConflict {
       Collection<INetworkSection> neighbours = fc.select(env);
       Set<INetworkSection> overlapping = new HashSet<INetworkSection>();
       for (INetworkSection other : neighbours) {
+        if (other.isEliminated())
+          continue;
         double minSep = getMinSepBetween(section, other, minSeps);
         if (minSep == -1.0)
           continue;
@@ -174,6 +182,24 @@ public class OverlapConflict extends NetworkConflict {
         // checks connections
         if (section.getGeom().intersects(other.getGeom()))
           continue;
+
+        // checks that the conflict is not with an extreme node of the line that
+        // is connected to other network sections.
+        IDirectPosition nearestPt = CommonAlgorithms.getNearestPoint(
+            other.getGeom(), section.getGeom());
+        if (other.getGeom().startPoint().equals(nearestPt)) {
+          INetworkNode node = other.getInitialNode();
+          if (node.getDegree() > 1)
+            continue;
+        } else if (other.getGeom().endPoint().equals(nearestPt)) {
+          INetworkNode node = other.getFinalNode();
+          // case with a problem in enrichment
+          if (node == null)
+            continue;
+
+          if (node.getDegree() > 1)
+            continue;
+        }
 
         overlapping.add(other);
       }

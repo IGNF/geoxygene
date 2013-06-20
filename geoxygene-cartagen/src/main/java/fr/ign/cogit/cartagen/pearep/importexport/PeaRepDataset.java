@@ -5,6 +5,7 @@ import fr.ign.cogit.cartagen.core.genericschema.harbour.IBerthingLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IDitchLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IInundationArea;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterPoint;
 import fr.ign.cogit.cartagen.core.genericschema.land.IWoodLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
@@ -181,6 +182,16 @@ public class PeaRepDataset extends CartAGenDataSet {
   public IPopulation<IInundationArea> getInundationAreas() {
     return (IPopulation<IInundationArea>) this.getCartagenPop(
         PeaRepDataset.INUNDATION_POP, IInundationArea.FEAT_TYPE_NAME);
+  }
+
+  /**
+   * Gets the water points of the dataset
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<IWaterPoint> getWaterPoints() {
+    return (IPopulation<IWaterPoint>) this.getCartagenPop(
+        PeaRepDataset.WATER_PT_POP, IWaterPoint.FEAT_TYPE_NAME);
   }
 
 }

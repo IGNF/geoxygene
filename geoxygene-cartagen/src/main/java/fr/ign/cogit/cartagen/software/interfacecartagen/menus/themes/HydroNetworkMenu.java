@@ -40,6 +40,7 @@ public class HydroNetworkMenu extends JMenu {
   private JMenuItem mResHydroSelect = new JMenuItem(new SelectSectionsAction());
   public JCheckBoxMenuItem mVoirTauxSuperpositionRoutier = new JCheckBoxMenuItem(
       "Voir taux superposition routier");
+  public JCheckBoxMenuItem mIdHydroVoir = new JCheckBoxMenuItem("Display id");
 
   public HydroNetworkMenu(String title) {
     super(title);
@@ -49,6 +50,7 @@ public class HydroNetworkMenu extends JMenu {
 
     this.addSeparator();
 
+    this.add(this.mIdHydroVoir);
     this.add(this.mVoirTauxSuperpositionRoutier);
 
   }
@@ -78,8 +80,7 @@ public class HydroNetworkMenu extends JMenu {
     }
 
     public EnrichHydroNetAction() {
-      this
-          .putValue(Action.SHORT_DESCRIPTION, "Enrichment of the hydro network");
+      this.putValue(Action.SHORT_DESCRIPTION, "Enrichment of the hydro network");
       this.putValue(Action.NAME, "Enrichment");
     }
   }

@@ -728,6 +728,9 @@ public class LayerGroup extends AbstractLayerGroup {
         .getRoadNetMenu().mRoutierVoirSinuositeTroncons);
 
     // textes reseau hydrographique
+    layerManager.addSymbolisedLayer(this.layerWaterLine, Symbolisation
+        .texte("getId"),
+        DataThemesGUIComponent.getInstance().getHydroNetMenu().mIdHydroVoir);
 
     // taux superposition routier
 

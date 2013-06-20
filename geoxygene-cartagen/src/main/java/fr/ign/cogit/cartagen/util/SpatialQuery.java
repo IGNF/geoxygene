@@ -102,8 +102,8 @@ public class SpatialQuery {
     for (Class<?> classObj : classObjs) {
       String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME")
           .get(null);
-      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset().getCartagenPop(
-          popName));
+      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartagenPop(popName));
     }
     return pop.select(line);
   }
@@ -130,8 +130,8 @@ public class SpatialQuery {
       Class<?> classObj = Class.forName(className);
       String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME")
           .get(null);
-      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset().getCartagenPop(
-          popName));
+      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartagenPop(popName));
     }
     return pop.select(line);
   }
@@ -245,8 +245,8 @@ public class SpatialQuery {
       Class<?> classObj = Class.forName(className);
       String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME")
           .get(null);
-      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset().getCartagenPop(
-          popName));
+      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartagenPop(popName));
     }
     return pop.select(polygon);
   }
@@ -352,5 +352,20 @@ public class SpatialQuery {
     vect.add(nearest);
     vect.add(minDist);
     return vect;
+  }
+
+  public static IGeneObj selectContains(IGeometry geom,
+      IFeatureCollection<IGeneObj> features) {
+    Collection<IGeneObj> closeObjs = features.select(geom);
+    if (closeObjs.size() == 0) {
+      return null;
+    }
+
+    for (IGeneObj obj : closeObjs) {
+      if (obj.getGeom().contains(geom))
+        return obj;
+    }
+
+    return null;
   }
 }

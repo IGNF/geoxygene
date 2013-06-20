@@ -176,4 +176,25 @@ public class ReflectionUtil {
     }
     return methods;
   }
+
+  /**
+   * When working with String class names, returns true if a collection contains
+   * a given class name or the names of one superclass of the given class name.
+   * @param classNames
+   * @param className
+   * @return
+   * @throws ClassNotFoundException
+   */
+  public static boolean containsClassOrSuper(Collection<String> classNames,
+      String className) throws ClassNotFoundException {
+    if (classNames.contains(className))
+      return true;
+    Class<?> classToCompare = Class.forName(className);
+    for (String name : classNames) {
+      Class<?> currentClass = Class.forName(name);
+      if (currentClass.isAssignableFrom(classToCompare))
+        return true;
+    }
+    return false;
+  }
 }

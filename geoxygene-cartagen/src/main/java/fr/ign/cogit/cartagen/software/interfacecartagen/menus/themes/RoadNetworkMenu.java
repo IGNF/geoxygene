@@ -49,6 +49,7 @@ public class RoadNetworkMenu extends JMenu {
   private Logger logger = Logger.getLogger(RoadNetworkMenu.class.getName());
 
   private JMenuItem mResRoutierEnrich = new JMenuItem(new EnrichRoadNetAction());
+  private JMenuItem mNetworkFaces = new JMenuItem(new NetworkFacesAction());
   private JMenuItem mResRoutierSelect = new JMenuItem(
       new SelectSectionsAction());
   public JCheckBoxMenuItem mNoeudsResRoutierVoir = new JCheckBoxMenuItem(
@@ -79,6 +80,7 @@ public class RoadNetworkMenu extends JMenu {
     super(title);
 
     this.add(this.mResRoutierEnrich);
+    this.add(this.mNetworkFaces);
     this.add(this.mResRoutierSelect);
 
     this.addSeparator();
@@ -131,6 +133,24 @@ public class RoadNetworkMenu extends JMenu {
     public EnrichRoadNetAction() {
       this.putValue(Action.SHORT_DESCRIPTION, "Enrichment of the road network");
       this.putValue(Action.NAME, "Enrichment");
+    }
+  }
+
+  private class NetworkFacesAction extends AbstractAction {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      NetworkEnrichment.buildNetworkFaces(CartAGenDoc.getInstance()
+          .getCurrentDataset());
+    }
+
+    public NetworkFacesAction() {
+      this.putValue(Action.NAME, "Create network faces");
     }
   }
 

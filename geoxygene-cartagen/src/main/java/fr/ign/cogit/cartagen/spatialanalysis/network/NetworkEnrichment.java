@@ -21,6 +21,8 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
+import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
@@ -142,6 +144,13 @@ public class NetworkEnrichment {
         popWater.add(waterNode);
         CartAGenDoc.getInstance().getCurrentDataset().getHydroNetwork()
             .addNode(waterNode);
+      }
+
+      if (net.getSections().get(0) instanceof IRailwayLine) {
+        IRailwayNode railNode = CartagenApplication.getInstance()
+            .getCreationFactory().createRailwayNode(n);
+        CartAGenDoc.getInstance().getCurrentDataset().getRailwayNetwork()
+            .addNode(railNode);
       }
 
     }

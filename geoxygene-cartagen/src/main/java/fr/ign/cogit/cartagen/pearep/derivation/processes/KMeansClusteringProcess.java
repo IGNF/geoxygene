@@ -12,23 +12,20 @@ package fr.ign.cogit.cartagen.pearep.derivation.processes;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
-import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.spatialanalysis.clustering.DistanceClustering;
+import fr.ign.cogit.cartagen.spatialanalysis.clustering.KMeansCluster;
+import fr.ign.cogit.cartagen.spatialanalysis.clustering.KMeansClutering;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.hulls.PointsConvexHull;
 
 /**
  * Encapsulate a process that clusters point features by K-Means and then
@@ -38,14 +35,17 @@ import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.hulls.PointsConvexHu
  */
 public class KMeansClusteringProcess extends ScaleMasterGeneProcess {
 
-  private Class<?> classObj;
+  private boolean centroid = false;
   private static KMeansClusteringProcess instance = null;
 
   /**
-   * Threshold on clustering distance: two features below this threshold are
-   * grouped in a same cluster.
+   * The number of clusters remaining after KMeans.
    */
-  private double clusteringDistance = 50.0;
+  private int k = 1;
+  /**
+   * The ratio of remaining points.
+   */
+  private double shrink_ratio = 1.0;
 
   protected KMeansClusteringProcess() {
     // Exists only to defeat instantiation.
@@ -61,49 +61,56 @@ public class KMeansClusteringProcess extends ScaleMasterGeneProcess {
   @Override
   public void execute(IFeatureCollection<? extends IGeneObj> features) {
     parameterise();
-
+    // compute k
+    this.k = (int) Math.round(features.size() * shrink_ratio);
     // first cluster features
-    Set<Set<IGeneObj>> clusters = new DistanceClustering(features,
-        clusteringDistance).getClusters();
+    List<KMeansCluster> clusters = new KMeansClutering(features, k)
+        .getClusters();
 
     // then cover clusters
-    for (Set<IGeneObj> cluster : clusters) {
-      IDirectPositionList points = new DirectPositionList();
-      for (IGeneObj obj : cluster)
-        points.add(obj.getGeom().centroid());
-      IPolygon geom = PointsConvexHull.compute(points);
+    for (KMeansCluster cluster : clusters) {
+      cluster.computeCenter();
+      IGeneObj newCenter = cluster.getCenterNearest();
+      for (IGeneObj obj : cluster.getFeatures()) {
+        if (centroid || !obj.equals(newCenter))
+          obj.eliminateBatch();
+      }
 
-      for (Method meth : CartagenApplication.getInstance().getCreationFactory()
-          .getClass().getMethods()) {
-        if (classObj.equals(meth.getReturnType())) {
-          if (meth.getParameterTypes().length == 1
-              & (meth.getParameterTypes()[0].equals(IPolygon.class) || meth
-                  .getParameterTypes()[0].equals(IGeometry.class))) {
-            try {
-              IGeneObj newObj = (IGeneObj) meth.invoke(CartagenApplication
-                  .getInstance().getCreationFactory(), geom);
-              // add object to its dataset population
-              String ft = (String) classObj.getField("FEAT_TYPE_NAME")
-                  .get(null);
-              @SuppressWarnings("unchecked")
-              IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
-                  .getInstance()
-                  .getCurrentDataset()
-                  .getCartagenPop(
-                      CartAGenDoc.getInstance().getCurrentDataset()
-                          .getPopNameFromClass(classObj), ft);
-              pop.add(newObj);
+      if (centroid) {
+        Class<?> classObj = cluster.getFeaturesClass();
+        for (Method meth : CartagenApplication.getInstance()
+            .getCreationFactory().getClass().getMethods()) {
+          if (classObj.equals(meth.getReturnType())) {
+            if (meth.getParameterTypes().length == 1
+                & (meth.getParameterTypes()[0].equals(IPolygon.class) || meth
+                    .getParameterTypes()[0].equals(IGeometry.class))) {
+              try {
+                IGeneObj newObj = (IGeneObj) meth.invoke(CartagenApplication
+                    .getInstance().getCreationFactory(), cluster.getCenter()
+                    .toGM_Point());
+                // add object to its dataset population
+                String ft = (String) classObj.getField("FEAT_TYPE_NAME").get(
+                    null);
+                @SuppressWarnings("unchecked")
+                IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
+                    .getInstance()
+                    .getCurrentDataset()
+                    .getCartagenPop(
+                        CartAGenDoc.getInstance().getCurrentDataset()
+                            .getPopNameFromClass(classObj), ft);
+                pop.add(newObj);
 
-            } catch (IllegalArgumentException e) {
-              e.printStackTrace();
-            } catch (IllegalAccessException e) {
-              e.printStackTrace();
-            } catch (InvocationTargetException e) {
-              e.printStackTrace();
-            } catch (SecurityException e) {
-              e.printStackTrace();
-            } catch (NoSuchFieldException e) {
-              e.printStackTrace();
+              } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+              } catch (IllegalAccessException e) {
+                e.printStackTrace();
+              } catch (InvocationTargetException e) {
+                e.printStackTrace();
+              } catch (SecurityException e) {
+                e.printStackTrace();
+              } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+              }
             }
           }
         }
@@ -113,27 +120,21 @@ public class KMeansClusteringProcess extends ScaleMasterGeneProcess {
 
   @Override
   public String getProcessName() {
-    return "CoverByConvexHull";
+    return "KMeansClustering";
   }
 
   @Override
   public void parameterise() {
-    if (this.hasParameter("clustering_distance"))
-      clusteringDistance = (Double) getParamValueFromName("clustering_distance");
-    String themeName = (String) getParamValueFromName("theme");
-    ScaleMasterTheme theme = this.getScaleMaster().getThemeFromName(themeName);
-    CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
-        .getCartAGenDB();
-    Set<Class<?>> classes = new HashSet<Class<?>>();
-    classes.addAll(theme.getRelatedClasses());
-    this.classObj = db.getGeneObjImpl().filterClasses(classes).iterator()
-        .next();
+    if (this.hasParameter("shrink_ratio"))
+      shrink_ratio = (Double) getParamValueFromName("shrink_ratio");
+    if (this.hasParameter("centroid"))
+      centroid = (Boolean) getParamValueFromName("centroid");
   }
 
   @Override
   public Set<ProcessParameter> getDefaultParameters() {
     Set<ProcessParameter> params = new HashSet<ProcessParameter>();
-    params.add(new ProcessParameter("theme", String.class, ""));
+    params.add(new ProcessParameter("centroid", Boolean.class, false));
     params.add(new ProcessParameter("clustering_distance", Double.class, -1.0));
     return params;
   }
