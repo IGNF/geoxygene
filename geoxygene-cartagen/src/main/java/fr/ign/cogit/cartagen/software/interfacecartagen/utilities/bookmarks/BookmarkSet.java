@@ -56,6 +56,7 @@ public class BookmarkSet {
     super();
     this.currentDataset = dataset;
     this.currentView = view;
+    this.setBookmark = new HashSet<Bookmark>();
   }
 
   /**
@@ -64,15 +65,15 @@ public class BookmarkSet {
    */
   public void zoomToBookmark(Bookmark book) {
     // check that the bookmark is related to the current Dataset
-    if (!book.getDatasetName().equals(currentDataset.getName())) {
-      logger
+    if (!book.getDatasetName().equals(this.currentDataset.getName())) {
+      BookmarkSet.logger
           .warn("Bookmark Error : the bookmark is not related to the current dataset !");
       return;
     }
 
     // zoom to the bookmark
-    currentView.centerAndZoom(book.getExtent());
-    currentView.repaint();
+    this.currentView.centerAndZoom(book.getExtent());
+    this.currentView.repaint();
   }
 
   /**
@@ -82,7 +83,7 @@ public class BookmarkSet {
    */
   public HashSet<Bookmark> filterBookmarks(String dataset) {
     HashSet<Bookmark> filteredSet = new HashSet<Bookmark>();
-    for (Bookmark book : setBookmark) {
+    for (Bookmark book : this.setBookmark) {
       if (book.getDatasetName().equals(dataset)) {
         filteredSet.add(book);
       }
@@ -99,7 +100,7 @@ public class BookmarkSet {
    */
   public Bookmark buildNewBookmark() {
     // get the window coordinates
-    IEnvelope geom = currentView.getDisplayEnvelope();
+    IEnvelope geom = this.currentView.getDisplayEnvelope();
 
     // ask for the name of the Bookmark
     String bookName = JOptionPane.showInputDialog(null,
@@ -172,10 +173,10 @@ public class BookmarkSet {
         Double ymax = new Double(ymaxS);
 
         // create the Bookmark from XML data
-        Bookmark nouveau = new Bookmark(nomVersion, new GM_Envelope(xmin
-            .doubleValue(), xmax.doubleValue(), ymin.doubleValue(), ymax
-            .doubleValue()), nomBook);
-        setBookmark.add(nouveau);
+        Bookmark nouveau = new Bookmark(nomVersion, new GM_Envelope(
+            xmin.doubleValue(), xmax.doubleValue(), ymin.doubleValue(),
+            ymax.doubleValue()), nomBook);
+        this.setBookmark.add(nouveau);
       }// for j
     }// for i
   }
@@ -190,22 +191,21 @@ public class BookmarkSet {
   public void loadXmlBookmarks() throws ParserConfigurationException,
       SAXException, IOException {
     // initialisation
-    setBookmark = new HashSet<Bookmark>();
+    this.setBookmark = new HashSet<Bookmark>();
 
     // on choisit le fichier XML � importer
     JFileChooser fc = new JFileChooser();
     fc.setCurrentDirectory(new File("goth_dataroot"));
-    fc
-        .setDialogTitle("Ouvrir un fichier XML de mapspecs pour les Moindres carr�s");
+    fc.setDialogTitle("Ouvrir un fichier XML de mapspecs pour les Moindres carr�s");
     fc.setFileFilter(new XMLFileFilter());
-    int returnVal = fc.showOpenDialog(currentView);
+    int returnVal = fc.showOpenDialog(this.currentView);
     if (returnVal != JFileChooser.APPROVE_OPTION) {
       return;
     }
     // initialisation apr�s le choix du fichier
-    storingFile = fc.getSelectedFile();
+    this.storingFile = fc.getSelectedFile();
 
-    loadXmlBookmarks(storingFile);
+    this.loadXmlBookmarks(this.storingFile);
   }
 
   /**
@@ -219,13 +219,13 @@ public class BookmarkSet {
   public void saveToXml() throws IOException, TransformerException {
 
     // first check if storingFile is null
-    if (storingFile == null) {
+    if (this.storingFile == null) {
       JFileChooser fc = new JFileChooser();
-      int returnVal = fc.showSaveDialog(currentView);
+      int returnVal = fc.showSaveDialog(this.currentView);
       if (returnVal != JFileChooser.APPROVE_OPTION) {
         return;
       }
-      storingFile = fc.getSelectedFile();
+      this.storingFile = fc.getSelectedFile();
     }// if(fic==null)
 
     Node n = null;
@@ -236,7 +236,7 @@ public class BookmarkSet {
     // Root element.
     Element root = xmldoc.createElement("bookmark-set");
     // on extrait le set des versions
-    Set<String> datasets = extractAllDatasets();
+    Set<String> datasets = this.extractAllDatasets();
     // loop on the datasets
     for (String datasetName : datasets) {
       // create an element with this name
@@ -249,7 +249,7 @@ public class BookmarkSet {
       datasetElem.appendChild(dataNameElem);
 
       // get all the bookmarks of this dataset
-      HashSet<Bookmark> bookmarks = filterBookmarks(datasetName);
+      HashSet<Bookmark> bookmarks = this.filterBookmarks(datasetName);
       // loop on the bookmarks
       for (Bookmark book : bookmarks) {
         // create the bookmark element
@@ -288,7 +288,7 @@ public class BookmarkSet {
     }
 
     xmldoc.appendChild(root);
-    XMLUtil.writeDocumentToXml(xmldoc, storingFile);
+    XMLUtil.writeDocumentToXml(xmldoc, this.storingFile);
   }
 
   /**
@@ -475,15 +475,17 @@ public class BookmarkSet {
    */
   private Set<String> extractAllDatasets() {
     HashSet<String> datasets = new HashSet<String>();
-    for (Bookmark book : setBookmark)
-      if (!datasets.contains(book.getDatasetName()))
+    for (Bookmark book : this.setBookmark) {
+      if (!datasets.contains(book.getDatasetName())) {
         datasets.add(book.getDatasetName());
+      }
+    }
 
     return datasets;
   }
 
   public CartAGenDB getCurrentDataset() {
-    return currentDataset;
+    return this.currentDataset;
   }
 
   public void setCurrentDataset(CartAGenDB currentDataset) {
@@ -491,7 +493,7 @@ public class BookmarkSet {
   }
 
   public VisuPanel getCurrentView() {
-    return currentView;
+    return this.currentView;
   }
 
   public void setCurrentView(VisuPanel currentView) {
