@@ -79,6 +79,7 @@ public class GUIMainClass extends JFrame implements ActionListener {
     } catch (URISyntaxException e1) {
       e1.printStackTrace();
     }
+
     String path = jarPath + "\\" + "ScaleMasterThemes.xml";
     File themesFile = new File(path);
     GUIMainClass frame = new GUIMainClass(themesFile);
@@ -91,7 +92,7 @@ public class GUIMainClass extends JFrame implements ActionListener {
       if (rdScale.isSelected()) {
         EditScaleMasterFrame frame = null;
         try {
-          frame = new EditScaleMasterFrame(themesFile, false);
+          frame = new EditScaleMasterFrame(themesFile, true);
         } catch (OWLOntologyCreationException e1) {
           e1.printStackTrace();
         } catch (ParserConfigurationException e1) {

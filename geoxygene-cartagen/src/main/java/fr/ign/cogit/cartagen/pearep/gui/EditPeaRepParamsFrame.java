@@ -141,8 +141,8 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     txtExport.setPreferredSize(new Dimension(200, 20));
     txtExport.setMaximumSize(new Dimension(200, 20));
     txtExport.setMinimumSize(new Dimension(200, 20));
-    JButton btnOpenEx = new JButton(new ImageIcon(
-        "src/main/resources/images/browse.jpeg"));
+    JButton btnOpenEx = new JButton(new ImageIcon(EditScaleMasterFrame.class
+        .getClassLoader().getResource("images/browse.jpeg")));
     btnOpenEx.addActionListener(this);
     btnOpenEx.setActionCommand("open-export");
     pDefinition.add(Box.createHorizontalGlue());
@@ -180,8 +180,8 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     txtFolder.setPreferredSize(new Dimension(200, 20));
     txtFolder.setMaximumSize(new Dimension(200, 20));
     txtFolder.setMinimumSize(new Dimension(200, 20));
-    JButton btnOpen = new JButton(new ImageIcon(
-        "src/main/resources/images/browse.jpeg"));
+    JButton btnOpen = new JButton(new ImageIcon(EditScaleMasterFrame.class
+        .getClassLoader().getResource("images/browse.jpeg")));
     btnOpen.addActionListener(this);
     btnOpen.setActionCommand("open");
     pFolder.add(txtFolder);
@@ -189,9 +189,9 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     pFolder.setLayout(new BoxLayout(pFolder, BoxLayout.X_AXIS));
     cbType = new JComboBox(new SourceDLM[] { SourceDLM.MGCPPlusPlus,
         SourceDLM.VMAP1PlusPlus });
-    cbType.setPreferredSize(new Dimension(90, 20));
-    cbType.setMaximumSize(new Dimension(90, 20));
-    cbType.setMinimumSize(new Dimension(90, 20));
+    cbType.setPreferredSize(new Dimension(120, 20));
+    cbType.setMaximumSize(new Dimension(120, 20));
+    cbType.setMinimumSize(new Dimension(120, 20));
     pDb.add(cbType);
     pDb.add(pFolder);
     pDb.setLayout(new BoxLayout(pDb, BoxLayout.Y_AXIS));

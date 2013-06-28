@@ -36,7 +36,7 @@ public class GUIMainClassEclipse extends JFrame implements ActionListener {
 
     JPanel rdPanel = new JPanel();
     rdScale = new JRadioButton("Fichier ScaleMaster.xml");
-    rdScale = new JRadioButton("Fichier PeaRepParameters.xml");
+    rdParams = new JRadioButton("Fichier PeaRepParameters.xml");
     ButtonGroup bg = new ButtonGroup();
     bg.add(rdScale);
     bg.add(rdParams);
@@ -75,7 +75,7 @@ public class GUIMainClassEclipse extends JFrame implements ActionListener {
     String path = jarPath + "\\" + "ScaleMasterThemes.xml";
     File themesFile = new File(path);
 
-    GUIMainClass frame = new GUIMainClass(themesFile);
+    GUIMainClassEclipse frame = new GUIMainClassEclipse(themesFile);
     frame.setVisible(true);
   }
 
@@ -85,7 +85,7 @@ public class GUIMainClassEclipse extends JFrame implements ActionListener {
       if (rdScale.isSelected()) {
         EditScaleMasterFrame frame = null;
         try {
-          frame = new EditScaleMasterFrame(themesFile, true);
+          frame = new EditScaleMasterFrame(themesFile, false);
         } catch (OWLOntologyCreationException e1) {
           e1.printStackTrace();
         } catch (ParserConfigurationException e1) {

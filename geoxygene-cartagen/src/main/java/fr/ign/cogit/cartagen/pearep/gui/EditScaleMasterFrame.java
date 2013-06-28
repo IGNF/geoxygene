@@ -151,6 +151,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       throws OWLOntologyCreationException, ParserConfigurationException,
       SAXException, IOException, ClassNotFoundException {
     super();
+    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.internationalisation();
     this.setTitle(this.frameTitle);
     this.setIconImage(new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
@@ -578,7 +579,6 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     String jarPath = PeaRepGeneralisation.class.getProtectionDomain()
         .getCodeSource().getLocation().toURI().getPath().substring(1);
     String jarName = jarPath.substring(jarPath.lastIndexOf("/") + 1);
-
     try {
       JarInputStream jarFile = new JarInputStream(new FileInputStream(jarName));
       JarEntry jarEntry;
@@ -587,6 +587,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         if (jarEntry == null) {
           break;
         }
+
         if (!(jarEntry.getName().endsWith(".class")))
           continue;
         if (!jarEntry.getName().contains("cartagen"))
@@ -595,7 +596,6 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
             .equals("GothicObjectDiffusion")) {
           continue;
         }
-
         // Try to create an instance of the object
         Class<?> classObj = Class.forName(FileUtil
             .changeFileNameToClassName(jarEntry.getName()));
