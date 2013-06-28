@@ -17,7 +17,7 @@ import fr.ign.cogit.geoxygene.matching.dst.sources.surface.SurfaceDistance;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 public class GeoMatchingTest {
-  @Test
+  /*@Test
   public void testRunSurface() throws Exception {
     GeoMatching matching = new GeoMatching();
     Collection<Source<GeomHypothesis>> criteria = new ArrayList<Source<GeomHypothesis>>();
@@ -39,9 +39,9 @@ public class GeoMatchingTest {
     for (int i = 0; i < result.getHypothesis().size(); i++) {
       System.out.println("\tobj " + i + " = " + result.getHypothesis().get(i));
     }
-  }
+  }*/
 
-  @Test
+  /*@Test
   public void testRunLine() throws Exception {
     GeoMatching matching = new GeoMatching();
     Collection<Source<GeomHypothesis>> criteria = new ArrayList<Source<GeomHypothesis>>();
@@ -66,5 +66,5 @@ public class GeoMatchingTest {
     for (int i = 0; i < result.getHypothesis().size(); i++) {
       System.out.println("\tobj " + i + " = " + result.getHypothesis().get(i));
     }
-  }
+  }*/
 }
