@@ -5,6 +5,7 @@ package fr.ign.cogit.cartagen.leastsquares.core;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -225,6 +226,34 @@ public class LSScheduler {
 
     this.mapspec.getSelectedObjects().clear();
   }// setObjs()
+
+  /**
+   * <p>
+   * Récupère les objets à ajuster en fonction de la sélection et de l'option de
+   * sélection choisie dans les mapspecs.
+   * @throws ClassNotFoundException
+   * @throws NoSuchFieldException
+   * @throws IllegalAccessException
+   * @throws SecurityException
+   * @throws IllegalArgumentException
+   * 
+   */
+  public void setObjs(Collection<? extends IGeneObj> features)
+      throws IllegalArgumentException, SecurityException,
+      IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
+    for (IFeature obj : features) {
+      Class<?> classe = Class.forName(obj.getClass().getName());
+
+      // on vérifie dans quel type d'objets se situe la classe
+      if (this.mapspec.isFixedClass(classe)) {
+        this.getObjsFixes().add(obj);
+      } else if (this.mapspec.isRigidClass(classe)) {
+        this.getObjsRigides().add(obj);
+      } else if (this.mapspec.isMalleableClass(classe)) {
+        this.getObjsMalleables().add(obj);
+      }
+    }
+  }
 
   /**
    * <p>

@@ -100,6 +100,8 @@ public class BridgeCollapseProcess extends ScaleMasterGeneProcess {
           }
         }
       }
+      if (centroid == null)
+        continue;
       IBridgePoint bridgePt = CartagenApplication.getInstance()
           .getCreationFactory().createBridgePoint(centroid);
       CartAGenDoc.getInstance().getCurrentDataset().getBridgePoints()

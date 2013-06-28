@@ -72,6 +72,7 @@ public class ShapeFileExport {
     super();
     this.exportDir = exportDir;
     this.dataset = dataset;
+    this.listThemesNotExport = new ArrayList<String>();
     this.setScaleMaster(scaleMaster);
     this.setFinalScale(finalScale);
   }

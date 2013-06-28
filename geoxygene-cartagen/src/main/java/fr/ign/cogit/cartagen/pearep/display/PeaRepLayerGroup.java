@@ -89,6 +89,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
   public static String LAYER_RELIEF_TRIANGLE = "layerReliefTriangle";
   private LoadedLayer layerReliefElemLine;
   public static String LAYER_RELIEF_ELEM_LINE = "layerReliefElemLine";
+  private LoadedLayer layerEmbankment;
+  public static String LAYER_EMBANKMENT_LINE = "layerEmbankment";
 
   private LoadedLayer layerLandUseArea;
   public static String LAYER_LAND_USE_AREA = "layerLandUseArea";
@@ -183,6 +185,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
       return this.layerInundationArea;
     } else if (layer.equals(PeaRepLayerGroup.LAYER_WATER_POINT)) {
       return this.layerWaterPoint;
+    } else if (layer.equals(PeaRepLayerGroup.LAYER_EMBANKMENT_LINE)) {
+      return this.layerEmbankment;
     } else {
       return null;
     }
@@ -242,6 +246,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     this.layerReliefTriangle = new LoadedLayer(dataSet.getReliefField()
         .getTriangles());
     this.layerReliefElemLine = new LoadedLayer(dataSet.getReliefLines());
+    this.layerEmbankment = new LoadedLayer(
+        ((PeaRepDataset) dataSet).getEmbankmentLines());
 
     this.layerLandUseArea = new LoadedLayer(dataSet.getLandUseAreas());
 
@@ -289,6 +295,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     this.layerReliefTriangle = new LoadedLayer(dataSet.getReliefField()
         .getTriangles());
     this.layerReliefElemLine = new LoadedLayer(dataSet.getReliefLines());
+    this.layerEmbankment = new LoadedLayer(
+        ((PeaRepDataset) dataSet).getEmbankmentLines());
 
     this.layerLandUseArea = new LoadedLayer(dataSet.getLandUseAreas());
 
@@ -366,6 +374,7 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     layerManager.addLayer(this.layerDEMPixel);
     layerManager.addLayer(this.layerReliefTriangle);
     layerManager.addLayer(this.layerReliefElemLine);
+    layerManager.addLayer(this.layerEmbankment);
     layerManager.addLayer(this.layerLandUseArea);
     layerManager.addLayer(this.layerAdminUnit);
     layerManager.addLayer(this.layerAdminLimit);
@@ -466,6 +475,10 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     layerManager.addSymbolisedLayer(this.layerReliefElemLine, Symbolisation
         .ligne(GeneralisationLegend.RELIEF_ELEM_LINE_COULEUR,
             GeneralisationLegend.RELIEF_ELEM_LINE_LARGEUR, this),
+        this.cVoirReliefElem);
+    layerManager.addSymbolisedLayer(this.layerEmbankment, Symbolisation.ligne(
+        GeneralisationLegend.RELIEF_ELEM_LINE_COULEUR,
+        GeneralisationLegend.RELIEF_ELEM_LINE_LARGEUR, this),
         this.cVoirReliefElem);
 
     // ADMIN

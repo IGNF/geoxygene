@@ -149,6 +149,7 @@ public class OverlapConflict extends NetworkConflict {
   public static Set<OverlapConflict> searchOverlapConflictSimple(
       Collection<INetworkSection> features, Set<MinimumSeparation> minSeps) {
     Set<OverlapConflict> conflicts = new HashSet<OverlapConflict>();
+    Set<INetworkSection> conflictCenters = new HashSet<INetworkSection>();
     for (INetworkSection section : features) {
       if (section.isEliminated())
         continue;
@@ -156,6 +157,7 @@ public class OverlapConflict extends NetworkConflict {
       IFeatureCollection<INetworkSection> fc = new FT_FeatureCollection<INetworkSection>();
       fc.addAll(features);
       fc.remove(section);
+      fc.removeAll(conflictCenters);
       // first get the section envelope
       IEnvelope env = section.getGeom().envelope();
       // expand it a little bit
@@ -165,8 +167,10 @@ public class OverlapConflict extends NetworkConflict {
       Collection<INetworkSection> neighbours = fc.select(env);
       Set<INetworkSection> overlapping = new HashSet<INetworkSection>();
       for (INetworkSection other : neighbours) {
+
         if (other.isEliminated())
           continue;
+
         double minSep = getMinSepBetween(section, other, minSeps);
         if (minSep == -1.0)
           continue;
@@ -209,11 +213,20 @@ public class OverlapConflict extends NetworkConflict {
 
       // add section to the overlapping set
       overlapping.add(section);
+      conflictCenters.add(section);
 
       // add a new conflict
       conflicts.add(new OverlapConflict(overlapping));
     }
 
     return conflicts;
+  }
+
+  public boolean areInConflict(INetworkSection section1,
+      INetworkSection section2) {
+    if (this.getSections().contains(section1)
+        && this.getSections().contains(section2))
+      return true;
+    return false;
   }
 }

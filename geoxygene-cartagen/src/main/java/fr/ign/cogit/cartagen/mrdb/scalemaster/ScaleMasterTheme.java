@@ -15,6 +15,7 @@ import java.util.Set;
 import org.semanticweb.owlapi.model.OWLClass;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.geoxygene.filter.Filter;
 
 public class ScaleMasterTheme implements Comparable<ScaleMasterTheme> {
@@ -145,6 +146,13 @@ public class ScaleMasterTheme implements Comparable<ScaleMasterTheme> {
   @Override
   public int compareTo(ScaleMasterTheme o) {
     return this.name.compareTo(o.name);
+  }
+
+  public Class<?> getImplementationClasses(GeneObjImplementation impl) {
+    for (Class<? extends IGeneObj> relatedClass : relatedClasses)
+      if (impl.containsClass(relatedClass))
+        return relatedClass;
+    return null;
   }
 
 }

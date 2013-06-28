@@ -269,6 +269,96 @@ public class ScaleMasterXMLParser {
       }
 
       scaleMaster.getScaleLines().add(scaleLine);
+
+      // now parse the multi-themes line
+      Element multiElem = (Element) root.getElementsByTagName(
+          "multi-themes-processes").item(0);
+      if (multiElem != null) {
+        Map<String, List<ScaleMasterMultiElement>> line = new HashMap<String, List<ScaleMasterMultiElement>>();
+        for (int itProcess = 0; itProcess < multiElem.getElementsByTagName(
+            "multi-themes-process").getLength(); itProcess++) {
+          Element procElem = (Element) multiElem.getElementsByTagName(
+              "multi-themes-process").item(itProcess);
+          Element nameElem = (Element) procElem.getElementsByTagName("name")
+              .item(0);
+          String processName = nameElem.getChildNodes().item(0).getNodeValue();
+          List<ScaleMasterMultiElement> elements = new ArrayList<ScaleMasterMultiElement>();
+          for (int itElem = 0; itElem < procElem.getElementsByTagName(
+              "multi-themes-element").getLength(); itElem++) {
+            Element elemElem = (Element) procElem.getElementsByTagName(
+                "multi-themes-element").item(itElem);
+            Element intervalMin = (Element) elemElem.getElementsByTagName(
+                "interval-min").item(0);
+            Element intervalMax = (Element) elemElem.getElementsByTagName(
+                "interval-max").item(0);
+            Element dbNameElem = (Element) elemElem.getElementsByTagName(
+                "db-name").item(0);
+            String dbName = dbNameElem.getChildNodes().item(0).getNodeValue();
+            Set<ScaleMasterTheme> themesSet = new HashSet<ScaleMasterTheme>();
+            for (int itTheme = 0; itTheme < elemElem.getElementsByTagName(
+                "theme").getLength(); itTheme++) {
+              Element themeElem = (Element) elemElem.getElementsByTagName(
+                  "theme").item(itTheme);
+              String themeName = themeElem.getChildNodes().item(0)
+                  .getNodeValue();
+              for (ScaleMasterTheme th : themes) {
+                if (th.getName().equals(themeName)) {
+                  themesSet.add(th);
+                  break;
+                }
+              }
+            }
+
+            // parse the element parameters
+            Set<MultiThemeParameter> params = new HashSet<MultiThemeParameter>();
+            Element paramsElement = (Element) elemElem.getElementsByTagName(
+                "params").item(0);
+            for (int itParameter = 0; itParameter < paramsElement
+                .getElementsByTagName("parameter").getLength(); itParameter++) {
+              Element parameterElement = (Element) paramsElement
+                  .getElementsByTagName("parameter").item(itParameter);
+              Object value = null;
+              String type = parameterElement.getAttribute("type");
+              Class<?> typeClass = null;
+              if (type.equals("Double")) {
+                value = Double.valueOf(parameterElement.getChildNodes().item(0)
+                    .getNodeValue());
+                typeClass = Double.class;
+              }
+              if (type.equals("Integer")) {
+                value = Integer.valueOf(parameterElement.getChildNodes()
+                    .item(0).getNodeValue());
+                typeClass = Integer.class;
+              }
+              if (type.equals("Boolean")) {
+                value = Boolean.valueOf(parameterElement.getChildNodes()
+                    .item(0).getNodeValue());
+                typeClass = Boolean.class;
+              }
+              if (type.equals("String")) {
+                value = parameterElement.getChildNodes().item(0).getNodeValue();
+                typeClass = String.class;
+              }
+              String theme1 = parameterElement.getAttribute("theme1");
+              String theme2 = parameterElement.getAttribute("theme2");
+              String name = parameterElement.getAttribute("name");
+              params.add(new MultiThemeParameter(name, typeClass, value,
+                  theme1, theme2));
+            }
+            // compute the interval of the element
+            Interval<Integer> interval = new Interval<Integer>(Double.valueOf(
+                intervalMin.getChildNodes().item(0).getNodeValue()).intValue(),
+                Double.valueOf(
+                    intervalMax.getChildNodes().item(0).getNodeValue())
+                    .intValue());
+            // create the element object
+            ScaleMasterMultiElement element = new ScaleMasterMultiElement(
+                dbName, processName, params, interval, themesSet);
+            elements.add(element);
+          }
+          line.put(processName, elements);
+        }
+      }
     }
     return scaleMaster;
   }

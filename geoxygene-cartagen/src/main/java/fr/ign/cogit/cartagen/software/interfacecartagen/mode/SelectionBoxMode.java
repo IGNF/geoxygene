@@ -94,6 +94,8 @@ public class SelectionBoxMode extends AbstractMode implements PaintListener {
   @Override
   public void mouseReleased(final MouseEvent e) {
     if ((SwingUtilities.isLeftMouseButton(e))) {
+      if (!(e.getSource() instanceof VisuPanel))
+        return;
       VisuPanel pv = (VisuPanel) e.getSource();
       Point currentPoint = e.getPoint();
       IDirectPosition p = this.mainFrame.getVisuPanel().toModelDirectPosition(

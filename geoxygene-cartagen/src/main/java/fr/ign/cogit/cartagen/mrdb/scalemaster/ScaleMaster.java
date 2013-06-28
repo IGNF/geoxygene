@@ -56,6 +56,11 @@ public class ScaleMaster {
    */
   private CartAGenDB databases;
 
+  /**
+   * The line that contains multi-theme processes.
+   */
+  private ScaleMasterMultiLine multiLine;
+
   private AtomicInteger lineCounter = new AtomicInteger();
 
   /**
@@ -95,6 +100,14 @@ public class ScaleMaster {
 
   public void setDatabases(CartAGenDB databases) {
     this.databases = databases;
+  }
+
+  public ScaleMasterMultiLine getMultiLine() {
+    return multiLine;
+  }
+
+  public void setMultiLine(ScaleMasterMultiLine multiLine) {
+    this.multiLine = multiLine;
   }
 
   public String getName() {

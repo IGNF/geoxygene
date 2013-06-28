@@ -118,7 +118,7 @@ public class RaposoSimplification {
     if (!points.get(0).equals(line.startPoint()))
       points.add(0, line.startPoint());
     if (!points.get(points.size() - 1).equals(line.endPoint()))
-      points.add(0, line.endPoint());
+      points.add(line.endPoint());
     return new GM_LineString(points);
   }
 

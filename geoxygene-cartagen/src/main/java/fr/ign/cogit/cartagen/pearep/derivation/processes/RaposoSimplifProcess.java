@@ -79,8 +79,10 @@ public class RaposoSimplifProcess extends ScaleMasterGeneProcess {
 
   @Override
   public void parameterise() {
-    this.method1 = (Boolean) getParamValueFromName("use_method_1");
-    this.toblerRes = (Boolean) getParamValueFromName("use_tobler_resolution");
+    if (this.hasParameter("use_method_1"))
+      this.method1 = (Boolean) getParamValueFromName("use_method_1");
+    if (this.hasParameter("use_tobler_resolution"))
+      this.toblerRes = (Boolean) getParamValueFromName("use_tobler_resolution");
   }
 
   @Override

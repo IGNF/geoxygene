@@ -7,6 +7,7 @@ import fr.ign.cogit.cartagen.core.genericschema.hydro.IDitchLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IInundationArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterPoint;
 import fr.ign.cogit.cartagen.core.genericschema.land.IWoodLine;
+import fr.ign.cogit.cartagen.core.genericschema.relief.IEmbankmentLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildLine;
@@ -31,6 +32,7 @@ public class PeaRepDataset extends CartAGenDataSet {
   public static final String COAST_LINE_POP = "coastLines";
   public static final String BUILD_LINE_POP = "buildLines";
   public static final String BERTHING_LINES = "berthingLines";
+  public static final String EMBANKMENT_POP = "embankmentLines";
 
   @Override
   public String getPopNameFromObj(IFeature obj) {
@@ -54,6 +56,8 @@ public class PeaRepDataset extends CartAGenDataSet {
       return PeaRepDataset.BERTHING_LINES;
     } else if (obj instanceof IInundationArea) {
       return PeaRepDataset.INUNDATION_POP;
+    } else if (obj instanceof IEmbankmentLine) {
+      return PeaRepDataset.EMBANKMENT_POP;
     }
     return super.getPopNameFromObj(obj);
   }
@@ -80,6 +84,8 @@ public class PeaRepDataset extends CartAGenDataSet {
       return PeaRepDataset.BERTHING_LINES;
     } else if (IInundationArea.class.isAssignableFrom(classObj)) {
       return PeaRepDataset.INUNDATION_POP;
+    } else if (IEmbankmentLine.class.isAssignableFrom(classObj)) {
+      return PeaRepDataset.EMBANKMENT_POP;
     }
     return super.getPopNameFromClass(classObj);
   }
@@ -192,6 +198,16 @@ public class PeaRepDataset extends CartAGenDataSet {
   public IPopulation<IWaterPoint> getWaterPoints() {
     return (IPopulation<IWaterPoint>) this.getCartagenPop(
         PeaRepDataset.WATER_PT_POP, IWaterPoint.FEAT_TYPE_NAME);
+  }
+
+  /**
+   * Gets the embankment lines of the dataset
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<IEmbankmentLine> getEmbankmentLines() {
+    return (IPopulation<IEmbankmentLine>) this.getCartagenPop(
+        PeaRepDataset.EMBANKMENT_POP, IEmbankmentLine.FEAT_TYPE_NAME);
   }
 
 }

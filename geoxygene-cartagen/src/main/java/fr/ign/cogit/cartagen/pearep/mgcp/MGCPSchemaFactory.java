@@ -31,6 +31,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterNode;
+import fr.ign.cogit.cartagen.pearep.mgcp.sea.MGCPShipWreckArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPBridgePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayNode;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadNode;
@@ -105,6 +106,10 @@ public class MGCPSchemaFactory extends AbstractCreationFactory {
   @Override
   public IRailwayNode createRailwayNode(Noeud noeud) {
     return new MGCPRailwayNode(noeud);
+  }
+
+  public MGCPShipWreckArea createAirportPoint(IPolygon geom) {
+    return new MGCPShipWreckArea(geom);
   }
 
 }

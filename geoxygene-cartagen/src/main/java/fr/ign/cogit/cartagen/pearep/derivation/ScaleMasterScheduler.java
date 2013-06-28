@@ -31,24 +31,33 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.MultiThemeParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMaster;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterMultiElement;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterMultiProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterXMLParser;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.BridgeCollapseProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.CollapseToPointProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.ContourSelectionProcess;
+import fr.ign.cogit.cartagen.pearep.derivation.processes.DisplacementLSAProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.FilteringProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.GaussianFilteringProcess;
+import fr.ign.cogit.cartagen.pearep.derivation.processes.KMeansClusteringProcess;
+import fr.ign.cogit.cartagen.pearep.derivation.processes.PointsConvexHullProcess;
+import fr.ign.cogit.cartagen.pearep.derivation.processes.PointsNonConvexHullProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.PolygonSimplification;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RaposoSimplifProcess;
+import fr.ign.cogit.cartagen.pearep.derivation.processes.RiverStrokeSelectionProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RunwaySimplificationProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.SkeletonizeProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.SpinalizeProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.StrokeSelectionProcess;
+import fr.ign.cogit.cartagen.pearep.derivation.processes.TaxiwaySimplificationProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.UnionProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.VisvalingamWhyattProcess;
 import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanar;
@@ -102,6 +111,7 @@ public class ScaleMasterScheduler {
 
   private Set<ScaleMasterGeneProcess> availableProcesses;
   private Set<ScaleMasterPreProcess> availablePreProcesses;
+  private Set<ScaleMasterMultiProcess> availableMultiProcesses;
 
   private List<String> listLayersVmap2i;
   private List<String> listLayersVmap1;
@@ -249,8 +259,15 @@ public class ScaleMasterScheduler {
     this.availableProcesses.add(BridgeCollapseProcess.getInstance());
     this.availableProcesses.add(VisvalingamWhyattProcess.getInstance());
     this.availableProcesses.add(RaposoSimplifProcess.getInstance());
+    this.availableProcesses.add(KMeansClusteringProcess.getInstance());
+    this.availableProcesses.add(PointsConvexHullProcess.getInstance());
+    this.availableProcesses.add(PointsNonConvexHullProcess.getInstance());
+    this.availableProcesses.add(TaxiwaySimplificationProcess.getInstance());
+    this.availableProcesses.add(RiverStrokeSelectionProcess.getInstance());
     for (ScaleMasterGeneProcess proc : availableProcesses)
       proc.setScaleMaster(scaleMaster);
+    this.availableMultiProcesses = new HashSet<ScaleMasterMultiProcess>();
+    this.availableMultiProcesses.add(DisplacementLSAProcess.getInstance());
   }
 
   /**
@@ -293,9 +310,7 @@ public class ScaleMasterScheduler {
 
   public void generalise() throws Exception {
 
-    Map<IFeatureCollection<IFeature>, Map<String, Double>> mapLanduseParameters = new HashMap<IFeatureCollection<IFeature>, Map<String, Double>>();
-    Double landuseDpFilter = 0.0;
-
+    new HashMap<IFeatureCollection<IFeature>, Map<String, Double>>();
     // loop on the lines of the ScaleMaster
     for (ScaleLine line : this.scaleMaster.getScaleLines()) {
       // get the element corresponding to final scale
@@ -389,33 +404,63 @@ public class ScaleMasterScheduler {
         } catch (Exception e) {
           JOptionPane.showMessageDialog(null, e.getStackTrace());
         }
-        //
-        // } else if (procName.equals("LanduseSimplify")) {
-        // // get the parameters
-        // Map<String, Object> parameters = elem.getParameters().get(
-        // elem.getProcessesToApply().indexOf(procName));
-        // String name = line.getTheme().toString();
-        // double areaMin = (Double) parameters.get("min_area");
-        // if (!(parameters.get("dp_filtering") == null)) {
-        // double dpFiltering = (Double) parameters.get("dp_filtering");
-        // landuseDpFilter = dpFiltering;
-        // }
-        // Map<String, Double> mapNameArea = new HashMap<String, Double>();
-        // mapNameArea.put(name, areaMin);
-        // IFeatureCollection<IFeature> ftCol = new
-        // FT_FeatureCollection<IFeature>();
-        // for (Object obj : features) {
-        // IFeature ft = (IFeature) obj;
-        // ftCol.add(ft);
-        // }
-        // mapLanduseParameters.put(ftCol, mapNameArea);
-        // }
+
       }
-      // if (!(mapLanduseParameters.isEmpty())) {
-      // setMapLanduseParamIn(mapLanduseParameters);
-      // setLanduseDpFilter(landuseDpFilter);
-      // this.logger.fine(elem.toString());
-      // }
+    }
+
+    // Trigger the multi-line processes if necessary
+    // get the element corresponding to final scale
+    if (this.scaleMaster.getMultiLine() != null) {
+      for (ScaleMasterMultiElement elem : this.scaleMaster.getMultiLine()
+          .getElementsFromScale(this.scale)) {
+        // get the dataset related to the element
+        CartAGenDataSet dataset = CartAGenDoc.getInstance().getDataset(
+            elem.getDbName());
+        CartAGenDoc.getInstance().setCurrentDataset(dataset);
+
+        // get the corresponding feature population
+        IPopulation<IGeneObj> features = new Population<IGeneObj>();
+        for (ScaleMasterTheme theme : elem.getThemes()) {
+          Class<?> classObj = theme.getImplementationClasses(dataset
+              .getCartAGenDB().getGeneObjImpl());
+          IPopulation<IGeneObj> pop = dataset.getCartagenPop(dataset
+              .getPopNameFromClass(classObj));
+          if (pop == null) {
+            // these features have not been imported
+            continue;
+          }
+          for (IGeneObj obj : pop) {
+            if (classObj.isInstance(obj)) {
+              features.add(obj);
+            }
+          }
+        }
+
+        // get the generalisation process named procName
+        ScaleMasterMultiProcess process = this.getMultiProcessFromName(elem
+            .getProcessName());
+        for (MultiThemeParameter param : elem.getParams())
+          process.addParameter(param);
+        // parameterise the process
+        process.parameterise();
+
+        // execute the process on the features
+        try {
+          process.execute(features);
+          // update features
+          for (ScaleMasterTheme theme : elem.getThemes()) {
+            Class<?> classObj = theme.getImplementationClasses(dataset
+                .getCartAGenDB().getGeneObjImpl());
+            for (IGeneObj objPop : dataset.getCartagenPop(dataset
+                .getPopNameFromClass(classObj))) {
+              if (!features.contains(objPop))
+                features.add(objPop);
+            }
+          }
+        } catch (Exception e) {
+          JOptionPane.showMessageDialog(null, e.getStackTrace());
+        }
+      }
     }
   }
 
@@ -434,6 +479,15 @@ public class ScaleMasterScheduler {
 
   private ScaleMasterGeneProcess getProcessFromName(String procName) {
     for (ScaleMasterGeneProcess proc : this.availableProcesses) {
+      if (proc.getProcessName().equals(procName)) {
+        return proc;
+      }
+    }
+    return null;
+  }
+
+  private ScaleMasterMultiProcess getMultiProcessFromName(String procName) {
+    for (ScaleMasterMultiProcess proc : this.availableMultiProcesses) {
       if (proc.getProcessName().equals(procName)) {
         return proc;
       }

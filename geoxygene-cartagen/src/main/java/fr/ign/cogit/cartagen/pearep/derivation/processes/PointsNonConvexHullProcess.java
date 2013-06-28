@@ -67,11 +67,36 @@ public class PointsNonConvexHullProcess extends ScaleMasterGeneProcess {
     Set<Set<IGeneObj>> clusters = new DistanceClustering(features,
         clusteringDistance).getClusters();
 
+    // get the final population
+    String ft = null;
+    try {
+      ft = (String) classObj.getField("FEAT_TYPE_NAME").get(null);
+    } catch (IllegalArgumentException e1) {
+      e1.printStackTrace();
+    } catch (SecurityException e1) {
+      e1.printStackTrace();
+    } catch (IllegalAccessException e1) {
+      e1.printStackTrace();
+    } catch (NoSuchFieldException e1) {
+      e1.printStackTrace();
+    }
+    @SuppressWarnings("unchecked")
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
+        .getInstance()
+        .getCurrentDataset()
+        .getCartagenPop(
+            CartAGenDoc.getInstance().getCurrentDataset()
+                .getPopNameFromClass(classObj), ft);
+
     // then cover clusters
     for (Set<IGeneObj> cluster : clusters) {
       IDirectPositionList points = new DirectPositionList();
-      for (IGeneObj obj : cluster)
+      for (IGeneObj obj : cluster) {
         points.add(obj.getGeom().centroid());
+        obj.eliminateBatch();
+      }
+      if (cluster.size() < 3)
+        continue;
       IPolygon geom = (IPolygon) new DelaunayNonConvexHull(points,
           maxEdgeLength).compute();
 
@@ -85,15 +110,6 @@ public class PointsNonConvexHullProcess extends ScaleMasterGeneProcess {
               IGeneObj newObj = (IGeneObj) meth.invoke(CartagenApplication
                   .getInstance().getCreationFactory(), geom);
               // add object to its dataset population
-              String ft = (String) classObj.getField("FEAT_TYPE_NAME")
-                  .get(null);
-              @SuppressWarnings("unchecked")
-              IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
-                  .getInstance()
-                  .getCurrentDataset()
-                  .getCartagenPop(
-                      CartAGenDoc.getInstance().getCurrentDataset()
-                          .getPopNameFromClass(classObj), ft);
               pop.add(newObj);
 
             } catch (IllegalArgumentException e) {
@@ -103,8 +119,6 @@ public class PointsNonConvexHullProcess extends ScaleMasterGeneProcess {
             } catch (InvocationTargetException e) {
               e.printStackTrace();
             } catch (SecurityException e) {
-              e.printStackTrace();
-            } catch (NoSuchFieldException e) {
               e.printStackTrace();
             }
           }

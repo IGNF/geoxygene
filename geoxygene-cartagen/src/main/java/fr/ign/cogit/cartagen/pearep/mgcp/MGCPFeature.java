@@ -41,7 +41,11 @@ public abstract class MGCPFeature extends GeneObjDefault {
       return 0;
     if (val instanceof Double)
       return (Double) val;
-    else
+    else if (val instanceof String) {
+      if (!val.equals(""))
+        return new Double((String) val);
+    } else
       return new Double((Float) val);
+    return 0.0;
   }
 }

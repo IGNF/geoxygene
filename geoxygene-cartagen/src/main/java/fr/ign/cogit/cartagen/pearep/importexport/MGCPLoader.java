@@ -44,6 +44,7 @@ import fr.ign.cogit.cartagen.core.genericschema.misc.IBoundedArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscPoint;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
+import fr.ign.cogit.cartagen.core.genericschema.relief.IEmbankmentLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine.BridgeType;
@@ -113,6 +114,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterTreatmentBed;
 import fr.ign.cogit.cartagen.pearep.mgcp.land.MGCPWoodLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPContourLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPEmbankmentLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPReliefElementLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.sea.MGCPShipWreckPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPBridgeLine;
@@ -256,6 +258,14 @@ public class MGCPLoader extends ShapeFileLoader {
                 .getAbsolutePath(), MGCPReliefElementLine.class,
             CartAGenDataSet.RELIEF_LINES_POP,
             IReliefElementLine.FEAT_TYPE_NAME, null, PeaRepDbType.MGCPPlusPlus);
+      }
+      if (((listLayer.size() == 0) || (listLayer.contains("LDB090")))
+          && (FileUtil.getNamedFileInDir(directory, "LDB090.shp") != null)) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LDB090.shp")
+                .getAbsolutePath(), MGCPEmbankmentLine.class,
+            PeaRepDataset.EMBANKMENT_POP, IEmbankmentLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.MGCPPlusPlus);
       }
 
       // aero loading

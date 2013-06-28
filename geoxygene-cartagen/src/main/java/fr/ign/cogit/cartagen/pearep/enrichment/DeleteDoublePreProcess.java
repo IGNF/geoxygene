@@ -10,6 +10,9 @@
 package fr.ign.cogit.cartagen.pearep.enrichment;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
+import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
+import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -41,19 +44,29 @@ public class DeleteDoublePreProcess extends ScaleMasterPreProcess {
     for (Class<? extends IGeneObj> classObj : this.getProcessedClasses()) {
       IPopulation<IGeneObj> pop = dataset.getDataSet().getCartagenPop(
           dataset.getDataSet().getPopNameFromClass(classObj));
-
+      INetwork net = null;
+      if (IRoadLine.class.isAssignableFrom(classObj))
+        net = dataset.getDataSet().getRoadNetwork();
+      if (IWaterLine.class.isAssignableFrom(classObj))
+        net = dataset.getDataSet().getHydroNetwork();
       IPopulation<IGeneObj> iterable = new Population<IGeneObj>();
       iterable.addAll(pop);
+      IPopulation<IGeneObj> iterable2 = new Population<IGeneObj>();
+      iterable2.addAll(pop);
       for (IGeneObj obj : iterable) {
         if (obj.isEliminated())
           continue;
 
         // search for a double feature of obj
-        for (IGeneObj other : pop) {
+        for (IGeneObj other : iterable2) {
           if (other.equals(obj))
             continue;
-          if (other.getGeom().equals(obj.getGeom()))
+          if (other.getGeom().equals(obj.getGeom())) {
             other.eliminateBatch();
+            pop.remove(other);
+            if (net != null)
+              net.getSections().remove(other);
+          }
         }
       }
     }
