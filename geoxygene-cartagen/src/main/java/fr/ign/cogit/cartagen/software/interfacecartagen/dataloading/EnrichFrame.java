@@ -66,8 +66,8 @@ public class EnrichFrame extends JDialog implements ActionListener {
   private JCheckBox buildNetworkFaces;
   private JLabel espace2;
   private JCheckBox reset;
-  private SourceDLM sourceDlm;
-  private int scale;
+  private final SourceDLM sourceDlm;
+  private final int scale;
   private int version = 1;// version 1 pour l'ancien chargeur, version 2 pour le
 
   // nouveau chargeur
@@ -76,7 +76,7 @@ public class EnrichFrame extends JDialog implements ActionListener {
     return this.reset.isSelected();
   }
 
-  private JButton ok = new JButton("Valider");
+  private final JButton ok = new JButton("Valider");
 
   /**
    * Construction of the frame

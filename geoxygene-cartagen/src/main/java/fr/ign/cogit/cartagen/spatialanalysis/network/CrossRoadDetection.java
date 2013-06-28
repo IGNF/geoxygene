@@ -19,7 +19,6 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.PatteOie;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RondPoint;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -78,14 +77,13 @@ public class CrossRoadDetection {
    * @param roads
    * @param blocks
    */
-  public void detectRoundaboutsAndBranchingCartagen(
-      IFeatureCollection<IRoadLine> roads) {
+  public void detectRoundaboutsAndBranchingCartagen(CartAGenDataSet dataSet) {
 
     IFeatureCollection<TronconDeRoute> geoxRoads = new FT_FeatureCollection<TronconDeRoute>();
     IFeatureCollection<Ilot> geoxBlocks = new FT_FeatureCollection<Ilot>();
 
     // Construction of Geox roads
-    for (INetworkSection road : roads) {
+    for (INetworkSection road : dataSet.getRoads()) {
       if (!(road instanceof IRoadLine)) {
         continue;
       }
@@ -95,7 +93,7 @@ public class CrossRoadDetection {
     // construction of the topological map based on roads
     CarteTopo carteTopo = new CarteTopo("cartetopo");
     carteTopo.setBuildInfiniteFace(false);
-    carteTopo.importClasseGeo(roads, true);
+    carteTopo.importClasseGeo(dataSet.getRoads(), true);
     carteTopo.creeNoeudsManquants(1.0);
     carteTopo.fusionNoeuds(1.0);
     carteTopo.filtreDoublons(1.0);
@@ -113,19 +111,21 @@ public class CrossRoadDetection {
     this.detectRoundaboutsAndBranching(geoxRoads, geoxBlocks);
 
     // cartagen objects creations
-    CartAGenDataSet dataSet = CartAGenDoc.getInstance().getCurrentDataset();
-    IFeatureCollection<IRoadNode> nodes = this.getNodesFromRoadsCartAGen(roads);
+    // CartAGenDataSet dataSet = CartAGenDoc.getInstance().getCurrentDataset();
+    IFeatureCollection<IRoadNode> nodes = this
+        .getNodesFromRoadsCartAGen(dataSet.getRoads());
     // first the roundabouts
     for (RondPoint round : this.rounds) {
       dataSet.getRoundabouts().add(
           CartagenApplication.getInstance().getCreationFactory()
-              .createRoundAbout(round, roads, nodes));
+              .createRoundAbout(round, dataSet.getRoads(), nodes));
     }
     // then the branching crossroads
     Map<PatteOie, IBranchingCrossroad> mapForRel = new HashMap<PatteOie, IBranchingCrossroad>();
     for (PatteOie patte : this.branchs) {
       IBranchingCrossroad branch = CartagenApplication.getInstance()
-          .getCreationFactory().createBranchingCrossroad(patte, roads, nodes);
+          .getCreationFactory().createBranchingCrossroad(patte,
+              dataSet.getRoads(), nodes);
       dataSet.getBranchings().add(branch);
       mapForRel.put(patte, branch);
     }

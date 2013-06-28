@@ -60,12 +60,12 @@ public class NetworkEnrichment {
    * on sections, nodes and faces
    * @param net
    */
-  public static void enrichNetwork(INetwork net) {
+  public static void enrichNetwork(CartAGenDataSet dataset, INetwork net) {
 
     if (NetworkEnrichment.logger.isInfoEnabled()) {
       NetworkEnrichment.logger.info("topology creation for " + net);
     }
-    NetworkEnrichment.buildTopology(net, false);
+    NetworkEnrichment.buildTopology(dataset, net, false);
 
     if (NetworkEnrichment.logger.isDebugEnabled()) {
       NetworkEnrichment.logger.debug("nodes importance computation for " + net);
@@ -79,12 +79,13 @@ public class NetworkEnrichment {
    * @param net
    * @param deleted true if deleted sections of the network have to be included
    */
-  public static void enrichNetwork(INetwork net, boolean deleted) {
+  public static void enrichNetwork(CartAGenDataSet dataset, INetwork net,
+      boolean deleted) {
 
     if (NetworkEnrichment.logger.isInfoEnabled()) {
       NetworkEnrichment.logger.info("topology creation for " + net);
     }
-    NetworkEnrichment.buildTopology(net, deleted);
+    NetworkEnrichment.buildTopology(dataset, net, deleted);
 
     if (NetworkEnrichment.logger.isDebugEnabled()) {
       NetworkEnrichment.logger.debug("nodes importance computation for " + net);
@@ -99,7 +100,8 @@ public class NetworkEnrichment {
    * @param net
    * @param deleted true if deleted sections of the network have to be included
    */
-  public static void buildTopology(INetwork net, boolean deleted) {
+  public static void buildTopology(CartAGenDataSet dataset, INetwork net,
+      boolean deleted) {
 
     // if necessary
     NetworkEnrichment.destroyTopology(net);
@@ -129,11 +131,9 @@ public class NetworkEnrichment {
       if (net.getSections().get(0) instanceof IRoadLine) {
         IRoadNode roadNode = CartagenApplication.getInstance()
             .getCreationFactory().createRoadNode(n);
-        IPopulation<IRoadNode> popRoad = CartAGenDoc.getInstance()
-            .getCurrentDataset().getRoadNodes();
+        IPopulation<IRoadNode> popRoad = dataset.getRoadNodes();
         popRoad.add(roadNode);
-        CartAGenDoc.getInstance().getCurrentDataset().getRoadNetwork()
-            .addNode(roadNode);
+        dataset.getRoadNetwork().addNode(roadNode);
       }
 
       if (net.getSections().get(0) instanceof IWaterLine) {
@@ -142,8 +142,7 @@ public class NetworkEnrichment {
         IPopulation<IWaterNode> popWater = CartAGenDoc.getInstance()
             .getCurrentDataset().getWaterNodes();
         popWater.add(waterNode);
-        CartAGenDoc.getInstance().getCurrentDataset().getHydroNetwork()
-            .addNode(waterNode);
+        dataset.getHydroNetwork().addNode(waterNode);
       }
 
       if (net.getSections().get(0) instanceof IRailwayLine) {
@@ -313,7 +312,8 @@ public class NetworkEnrichment {
    * TRES LONG ET AUX RESLULTATS INCERTAINS !! !! LUI PREFERER LA NOUVELLES
    * VERSION CI-DESSOUS (NOM EN ANGLAIS) !!
    */
-  public static void agregerTronconsAnaloguesAdjacents(INetwork net) {
+  public static void agregerTronconsAnaloguesAdjacents(CartAGenDataSet dataset,
+      INetwork net) {
     INetworkSection at0, at1;
 
     // recupere un couple de troncons analogues adjacents
@@ -373,7 +373,7 @@ public class NetworkEnrichment {
       at1.eliminate();
 
       // construire topologie
-      NetworkEnrichment.buildTopology(net, false);
+      NetworkEnrichment.buildTopology(dataset, net, false);
 
       // aux suivants
       ats = NetworkEnrichment.getTronconsAnaloguesAdjacents(net);
@@ -425,7 +425,8 @@ public class NetworkEnrichment {
    * recomputing the topological map
    * @author JRenard
    */
-  public static void aggregateAnalogAdjacentSections(INetwork net) {
+  public static void aggregateAnalogAdjacentSections(CartAGenDataSet dataset,
+      INetwork net) {
 
     HashSet<INetworkSection> sectionsToRemove = new HashSet<INetworkSection>();
 
@@ -481,8 +482,8 @@ public class NetworkEnrichment {
 
       // Affectation of the new geometry to the first section and elimination of
       // the second section
-      sections.get(0).getGeom().coord()
-          .addAll(sections.get(1).getGeom().coord());
+      sections.get(0).getGeom().coord().addAll(
+          sections.get(1).getGeom().coord());
       sections.get(0).setInitialGeom(
           (ILineString) sections.get(0).getGeom().clone());
       sectionsToRemove.add(sections.get(1));
@@ -506,7 +507,7 @@ public class NetworkEnrichment {
     net.getNodes().clear();
 
     // Re-enrich the network with new aggregated sections
-    NetworkEnrichment.enrichNetwork(net);
+    NetworkEnrichment.enrichNetwork(dataset, net);
 
   }
 

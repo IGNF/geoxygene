@@ -762,4 +762,72 @@ public class LayerGroup extends AbstractLayerGroup {
     layerManager.removeLayer(loadedLayer);
 
   }
+  
+  /**
+   * to remove one layer
+   */
+
+  public void removeAllLayers(){
+	    layerBuilding.emptyDisplayCache();
+	
+	    layerTown.emptyDisplayCache();;
+	
+	    layerBlock.emptyDisplayCache();;
+
+	    layerUrbanAlignment.emptyDisplayCache();;
+
+
+	    layerRoadLine.emptyDisplayCache();;
+
+	    layerRoadNode.emptyDisplayCache();;
+
+	    layerPath.emptyDisplayCache();;
+
+
+	    layerWaterLine.emptyDisplayCache();
+
+	    layerWaterArea.emptyDisplayCache();
+
+	    layerIslands.emptyDisplayCache();
+
+
+	    layerRailwayLine.emptyDisplayCache();
+
+
+	    layerElectricityLine.emptyDisplayCache();
+
+
+	    layerContourLine.emptyDisplayCache();
+
+	    layerSpotHeight.emptyDisplayCache();
+
+	    layerDEMPixel.emptyDisplayCache();
+
+	    layerReliefTriangle.emptyDisplayCache();
+
+	    layerReliefElemLine.emptyDisplayCache();
+
+
+	    layerLandUseArea.emptyDisplayCache();
+
+
+	    layerAdminUnit.emptyDisplayCache();
+
+	    layerAdminLimit.emptyDisplayCache();
+
+
+	    layerMask.emptyDisplayCache();
+
+	    layerNetworkFace.emptyDisplayCache();
+
+	    layerSpecialPoint.emptyDisplayCache();
+
+	    layerAirports.emptyDisplayCache();
+
+	    layerRunways.emptyDisplayCache();
+
+	    layerPOI.emptyDisplayCache();
+
+
+  }
 }

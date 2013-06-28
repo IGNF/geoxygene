@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
@@ -26,8 +25,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 
 /**
  * 
- * @author K. Jaara 18 Avril 2011 des portions de code sont écrits par J.
- *         Girras
+ * @author K. Jaara 18 Avril 2011 des portions de code sont écrits par J. Girras
  * 
  */
 
@@ -38,7 +36,7 @@ public class InflectionPoints {
   /**
    * Linear section on which gaussian smoothing is performed
    */
-  private INetworkSection geneObj;
+  private final ILineString geom;
   // DirectPositionList dplPtsInflexionVirages=new DirectPositionList();
   private DirectPositionList jddPtsInflexion = new DirectPositionList();
 
@@ -59,12 +57,12 @@ public class InflectionPoints {
    * @param geoObj
    */
 
-  public InflectionPoints(INetworkSection geneObj) {
-    this.geneObj = geneObj;
+  public InflectionPoints(ILineString geom) {
+    this.geom = geom;
   }
 
   public DirectPositionList getPtsInflexion() {
-    return jddPtsInflexion;
+    return this.jddPtsInflexion;
   }
 
   public void setJddPtsInflexion(DirectPositionList jddPtsInflexion) {
@@ -79,7 +77,7 @@ public class InflectionPoints {
 
   public void compute2() {
 
-    ILineString lsInitiale = geneObj.getGeom();
+    ILineString lsInitiale = this.geom;
     ILineString lsLisse = Operateurs.resampling(lsInitiale, 1);
     // ILineString lsLisse = GaussianFilter.gaussianFilter(lsInitiale, 10, 1);
     // ILineString
@@ -102,7 +100,7 @@ public class InflectionPoints {
           lsInitiale, listSequenceFiltre);
 
       for (IDirectPosition directPosition : dplPointsInflexionLsLissee) {
-        jddPtsInflexion.add(directPosition.toGM_Point().getPosition());
+        this.jddPtsInflexion.add(directPosition.toGM_Point().getPosition());
         // dplPtsInflexionVirages.add(directPosition);
       }
 
@@ -122,7 +120,7 @@ public class InflectionPoints {
   public void compute() {
 
     this.jddPtsInflexion.clear();
-    ILineString lsInitialee = geneObj.getGeom();
+    ILineString lsInitialee = this.geom;
 
     ILineString lsInitiale = Operateurs.resampling(lsInitialee, 1);
     ILineString lsLisse = GaussianFilter.gaussianFilter(lsInitiale, 5, 1);
@@ -169,7 +167,7 @@ public class InflectionPoints {
         sumOfAngels -= differences.get(0);
 
         distances.remove(0);
-        System.out.println("olddiff=" + differences.get(0));
+        // System.out.println("olddiff=" + differences.get(0));
         differences.remove(0);
 
       }
@@ -184,9 +182,9 @@ public class InflectionPoints {
       differences.add(diff);
       sumOfAngels += diff;
       angel = newAngel;
-      System.out.println("sumOfAngels=" + sumOfAngels);
-      System.out.println("angel=" + newAngel);
-      System.out.println("diff=" + diff);
+      // System.out.println("sumOfAngels=" + sumOfAngels);
+      // System.out.println("angel=" + newAngel);
+      // System.out.println("diff=" + diff);
 
       /*
        * for(int k=0;k<angels.size();k++){ double diff2=newAngel-angels.get(k));
@@ -232,7 +230,8 @@ public class InflectionPoints {
         }
 
         if (maxDistancePointIndex >= 0)
-          jddPtsInflexion.add(lsInitiale.coord().get(maxDistancePointIndex));
+          this.jddPtsInflexion.add(lsInitiale.coord()
+              .get(maxDistancePointIndex));
 
         differences.clear();
         sumOfDistances = distances.get(distances.size() - 1);
@@ -376,8 +375,8 @@ public class InflectionPoints {
   }
 
   /**
-   * Détermine les points d'inflexions à partir de la lineString en entrée et
-   * de la liste de séquence de sommets consécutifs dans la même direction
+   * Détermine les points d'inflexions à partir de la lineString en entrée et de
+   * la liste de séquence de sommets consécutifs dans la même direction
    * @param lineString
    * @param listeSequence
    * @return

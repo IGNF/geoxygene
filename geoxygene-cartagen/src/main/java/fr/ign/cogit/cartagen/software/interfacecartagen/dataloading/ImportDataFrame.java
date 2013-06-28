@@ -79,10 +79,10 @@ public class ImportDataFrame extends JFrame implements ActionListener {
   public static String extentClass = null;
   public static boolean extentFile = false;
 
-  private JComboBox cbSourceDlm, cbType;
-  private JTextField txtZone, txtDataset, txtScale, txtPath, txtExtent;
-  private JButton btnBrowse;
-  private JRadioButton rbComputed, rbFile;
+  private final JComboBox cbSourceDlm, cbType;
+  private final JTextField txtZone, txtDataset, txtScale, txtPath, txtExtent;
+  private final JButton btnBrowse;
+  private final JRadioButton rbComputed, rbFile;
 
   public ImportDataFrame(boolean isInitial) {
 
@@ -250,67 +250,148 @@ public class ImportDataFrame extends JFrame implements ActionListener {
 
     } else if (e.getActionCommand().equals("OK")) {
 
-      if (!isInitial) {
+      if (!this.isInitial) {
+        this.importCurrentDataSet((SourceDLM) this.cbSourceDlm
+            .getSelectedItem(), Integer.parseInt(this.txtScale.getText()),
+            this.txtZone.getText(), this.txtDataset.getText(), this.txtPath
+                .getText(), this.txtExtent.getText(), this.rbFile.isSelected(),
+            this.cbType.getSelectedItem().equals("DLM"), true);
+      }// end of if(!isInitial
+      else {
+        this.importInitialDataSet((SourceDLM) this.cbSourceDlm
+            .getSelectedItem(), Integer.parseInt(this.txtScale.getText()),
+            this.txtZone.getText(), this.txtDataset.getText(), this.txtPath
+                .getText(), this.txtExtent.getText(), this.rbFile.isSelected(),
+            this.cbType.getSelectedItem().equals("DLM"));
 
-        this.sourceDlm = (SourceDLM) this.cbSourceDlm.getSelectedItem();
-        this.setScale(Integer.valueOf(this.txtScale.getText()));
-        CartAGenDoc.getInstance().setZone(
-            new DataSetZone(this.txtZone.getText(), null));
-        this.datasetName = this.txtDataset.getText();
-        this.filePath = this.txtPath.getText();
-        if (this.rbFile.isSelected()) {
-          ImportDataFrame.extentFile = true;
-          ImportDataFrame.extentClass = this.txtExtent.getText();
-        }
-        // create the new CartAGen dataset
-        ShapeFileDB database = new ShapeFileDB(this.datasetName);
-        database.setSourceDLM(this.sourceDlm);
-        database.setSymboScale(this.scale);
-        database.setSystemPath(this.filePath);
-        database.setDocument(CartAGenDoc.getInstance());
-        CartAGenDataSet dataset = new CartAGenDataSet();
-        CartAGenDoc.getInstance().addDatabase(this.datasetName, database);
-        CartAGenDoc.getInstance().setCurrentDataset(dataset);
-        database.setDataSet(dataset);
-        if (this.cbType.getSelectedItem().equals("DLM")) {
-          database.setType(new DigitalLandscapeModel());
-        } else {
-          database.setType(new DigitalCartographicModel());
-        }
+      }
 
-        // launch the import plug-in
+      CartagenApplication.getInstance().getFrame().getVisuPanel()
+          .zoomToFullExtent();
 
-        if (this.cbSourceDlm.getSelectedItem() == SourceDLM.SPECIAL_CARTAGEN) {
-          SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
-              SourceDLM.SPECIAL_CARTAGEN, scale);
-          CartAGenDoc.getInstance().getCurrentDataset().setSymbols(
-              SymbolList.getSymbolList(symbGroup));
+    }
 
-          LoadingFrame.cheminAbsolu = this.filePath;
-          DataLoadingConfig ccd = new DataLoadingConfig();
-          this.filePath = this.filePath.replace("\\", "/");
-          ccd.configuration(this.filePath);
-          CartagenApplication.getInstance().setCheminDonnees(this.filePath);
-          this.setVisible(false);
-          LoadingFrame loadingFrame = new LoadingFrame(new File(this.filePath));
-          if (loadingFrame.test()) {
-            EnrichFrame.getInstance().setVisible(true);
-            return;
-          }
-          loadingFrame.setVisible(true);
-        } else {
-          LoadingFrame.cheminAbsolu = this.filePath;
-          DataLoadingConfig ccd = new DataLoadingConfig();
-          this.filePath = this.filePath.replace("\\", "/");
-          ccd.configuration(this.filePath);
-          CartagenApplication.getInstance().setCheminDonnees(this.filePath);
+  }
 
-          this.setVisible(false);
-          // loadingFrameMultiBD.setVisible(true);
-          EnrichFrame enrichFrame = EnrichFrame.getInstance();
-          enrichFrame.setVersion(2);
-          enrichFrame.setVisible(true);
-        }
+  public void importInitialDataSet(SourceDLM source, int scale, String txtZone,
+      String txtDataset, String filePath, String txtExtent,
+      boolean rbFileSelected, boolean dlmSelected) {
+    CartagenApplication.getInstance().setCheminDonneesInitial(this.filePath);
+    this.setVisible(false);
+
+    this.sourceDlm = source;
+    this.setScale(scale);
+    CartAGenDoc.getInstance().setZone(new DataSetZone(txtZone, null));
+    this.datasetName = txtDataset;
+    this.filePath = filePath;
+    if (rbFileSelected) {
+      extentFile = true;
+      extentClass = txtExtent;
+    }
+    // create the new CartAGen dataset
+    ShapeFileDB database = new ShapeFileDB(this.datasetName);
+    database.setSourceDLM(this.sourceDlm);
+    database.setSymboScale(this.scale);
+    database.setSystemPath(this.filePath);
+    database.setDocument(CartAGenDoc.getInstance());
+    CartAGenDataSet dataset = new CartAGenDataSet();
+    CartagenApplication.getInstance().getDocument().addDatabase(
+        this.datasetName, database);
+    LoadingFrame.cheminAbsolu = this.filePath;
+    database.setDataSet(dataset);
+    if (dlmSelected) {
+      database.setType(new DigitalLandscapeModel());
+    } else {
+      database.setType(new DigitalCartographicModel());
+    }
+
+    SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(SourceDLM.BD_TOPO_V2,
+        scale);
+    dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
+
+    CartagenApplication.getInstance().loadData(this.filePath, this.sourceDlm,
+        scale, dataset);
+    // CartagenApplication.getInstance().loadDat(sourceDlm, scale);
+
+    CartAGenDoc.getInstance().setInitialDataset(dataset);
+
+    CartagenApplication.getInstance().getInitialLayerGroup().loadLayers(
+        dataset, true);
+    CartagenApplication.getInstance().getInitialLayerGroup()
+        .loadInterfaceWithLayers(
+            CartagenApplication.getInstance().getFrame().getLayerManager(),
+            CartagenApplication.getInstance().getDocument().getInitialDataset()
+                .getSymbols());
+  }
+
+  public void importCurrentDataSet(SourceDLM selectedItem, String filePath) {
+    this.importCurrentDataSet(selectedItem, Integer.parseInt(this.txtScale
+        .getText()), this.txtZone.getText(), this.txtDataset.getText(),
+        filePath, this.txtExtent.getText(), this.rbFile.isSelected(),
+        this.cbType.getSelectedItem().equals("DLM"), false);
+  }
+
+  public void importCurrentDataSet(SourceDLM selectedItem, int scale,
+      String txtZone, String txtDataset, String filePath, String txtExtent,
+      boolean rbFileSelected, boolean dlmSelected, boolean withEnrichement) {
+    this.sourceDlm = selectedItem;
+    this.setScale(scale);
+    CartAGenDoc.getInstance().setZone(new DataSetZone(txtZone, null));
+    this.datasetName = txtDataset;
+    this.filePath = filePath;
+    if (rbFileSelected) {
+      ImportDataFrame.extentFile = true;
+      ImportDataFrame.extentClass = txtExtent;
+    }
+    // create the new CartAGen dataset
+    ShapeFileDB database = new ShapeFileDB(this.datasetName);
+    database.setSourceDLM(this.sourceDlm);
+    database.setSymboScale(this.scale);
+    database.setSystemPath(this.filePath);
+    database.setDocument(CartAGenDoc.getInstance());
+    CartAGenDataSet dataset = new CartAGenDataSet();
+    CartAGenDoc.getInstance().addDatabase(this.datasetName, database);
+    CartAGenDoc.getInstance().setCurrentDataset(dataset);
+    database.setDataSet(dataset);
+    if (dlmSelected) {
+      database.setType(new DigitalLandscapeModel());
+    } else {
+      database.setType(new DigitalCartographicModel());
+    }
+
+    // launch the import plug-in
+
+    if (this.sourceDlm == SourceDLM.SPECIAL_CARTAGEN) {
+      SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
+          SourceDLM.SPECIAL_CARTAGEN, scale);
+      CartAGenDoc.getInstance().getCurrentDataset().setSymbols(
+          SymbolList.getSymbolList(symbGroup));
+
+      LoadingFrame.cheminAbsolu = this.filePath;
+      DataLoadingConfig ccd = new DataLoadingConfig();
+      this.filePath = this.filePath.replace("\\", "/");
+      ccd.configuration(this.filePath);
+      CartagenApplication.getInstance().setCheminDonnees(this.filePath);
+      this.setVisible(false);
+      LoadingFrame loadingFrame = new LoadingFrame(new File(this.filePath));
+      if (loadingFrame.test()) {
+        EnrichFrame.getInstance().setVisible(true);
+        return;
+      }
+      loadingFrame.setVisible(true);
+    } else {
+      LoadingFrame.cheminAbsolu = this.filePath;
+      DataLoadingConfig ccd = new DataLoadingConfig();
+      this.filePath = this.filePath.replace("\\", "/");
+      ccd.configuration(this.filePath);
+      CartagenApplication.getInstance().setCheminDonnees(this.filePath);
+
+      this.setVisible(false);
+      // loadingFrameMultiBD.setVisible(true);
+      if (withEnrichement) {
+        EnrichFrame enrichFrame = EnrichFrame.getInstance();
+        enrichFrame.setVersion(2);
+        enrichFrame.setVisible(true);
 
         CartagenApplication
             .getInstance()
@@ -323,69 +404,15 @@ public class ImportDataFrame extends JFrame implements ActionListener {
                 CartagenApplication.getInstance().getFrame().getLayerManager(),
                 dataset.getSymbols());
 
-        /*
-         * 
-         * CartagenApplication.getInstance().loadAndEnrichData2(sourceDlm,scale);
-         * CartagenApplication.getInstance().initGeneralisation();
-         */
-
-      }// end of if(!isInitial
-      else {
-        CartagenApplication.getInstance()
-            .setCheminDonneesInitial(this.filePath);
-        this.setVisible(false);
-
-        this.sourceDlm = (SourceDLM) this.cbSourceDlm.getSelectedItem();
-        this.setScale(Integer.valueOf(this.txtScale.getText()));
-        CartAGenDoc.getInstance().setZone(
-            new DataSetZone(this.txtZone.getText(), null));
-        this.datasetName = this.txtDataset.getText();
-        this.filePath = this.txtPath.getText();
-        if (this.rbFile.isSelected()) {
-          extentFile = true;
-          extentClass = this.txtExtent.getText();
-        }
-        // create the new CartAGen dataset
-        ShapeFileDB database = new ShapeFileDB(this.datasetName);
-        database.setSourceDLM(this.sourceDlm);
-        database.setSymboScale(this.scale);
-        database.setSystemPath(this.filePath);
-        database.setDocument(CartAGenDoc.getInstance());
-        CartAGenDataSet dataset = new CartAGenDataSet();
-        CartagenApplication.getInstance().getDocument().addDatabase(
-            this.datasetName, database);
-        LoadingFrame.cheminAbsolu = this.filePath;
-        database.setDataSet(dataset);
-        if (this.cbType.getSelectedItem().equals("DLM")) {
-          database.setType(new DigitalLandscapeModel());
-        } else {
-          database.setType(new DigitalCartographicModel());
-        }
-
-        SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
-            SourceDLM.BD_TOPO_V2, scale);
-        dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
-
-        CartagenApplication.getInstance().loadData(this.filePath, sourceDlm,
-            scale, dataset);
-        // CartagenApplication.getInstance().loadDat(sourceDlm, scale);
-
-        CartAGenDoc.getInstance().setInitialDataset(dataset);
-
-        CartagenApplication.getInstance().getInitialLayerGroup().loadLayers(
-            dataset, true);
-        CartagenApplication.getInstance().getInitialLayerGroup()
-            .loadInterfaceWithLayers(
-                CartagenApplication.getInstance().getFrame().getLayerManager(),
-                CartagenApplication.getInstance().getDocument()
-                    .getInitialDataset().getSymbols());
-
       }
 
-      CartagenApplication.getInstance().getFrame().getVisuPanel()
-          .zoomToFullExtent();
-
     }
+
+    /*
+     * 
+     * CartagenApplication.getInstance().loadAndEnrichData2(sourceDlm,scale);
+     * CartagenApplication.getInstance().initGeneralisation();
+     */
 
   }
 

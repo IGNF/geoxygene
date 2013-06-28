@@ -1192,9 +1192,10 @@ public abstract class Symbolisation {
 
           } else if (sp.getPointType() == SpecialPointType.ROUNDABOUT) {
 
-            pv.drawCircle(Color.red, new GM_Point(pt.getPosition()), 16);
+            pv.drawCircle(Color.red, new GM_Point(pt.getPosition()),
+                0.8 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0);
             pv.drawCircle(sp.getSymbolColor(), new GM_Point(pt.getPosition()),
-                13);
+                0.7 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0);
 
           }
 
@@ -1228,7 +1229,30 @@ public abstract class Symbolisation {
                 0.07 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
                 BasicStroke.CAP_SQUARE, BasicStroke.CAP_SQUARE);
 
+          } else if (sp.getPointType() == SpecialPointType.PLO) {
+            IDirectPosition p0 = new DirectPosition(
+                pt.getPosition().getX() - 3, pt.getPosition().getY() - 3);
+            IDirectPosition p1 = new DirectPosition(
+                pt.getPosition().getX() - 3, pt.getPosition().getY() + 3);
+            IDirectPosition p2 = new DirectPosition(
+                pt.getPosition().getX() + 3, pt.getPosition().getY() + 3);
+            IDirectPosition p3 = new DirectPosition(
+                pt.getPosition().getX() + 3, pt.getPosition().getY() - 3);
+
+            GM_LineString ls = new GM_LineString();
+            ls.addControlPoint(p0);
+            ls.addControlPoint(p1);
+            ls.addControlPoint(p2);
+            ls.addControlPoint(p3);
+            ls.addControlPoint(p0);
+
+            pv.draw(Color.white, ls);
+
+            pv.draw(sp.getSymbolColor(), ls, 0.15 * Legend
+                .getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_ROUND,
+                BasicStroke.JOIN_ROUND);
           }
+
         }
       }
 

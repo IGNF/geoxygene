@@ -135,7 +135,7 @@ public class ShapeFileClass implements GeographicClass {
       // build the specification String of the shapefile
       // specify the geometry type
       String specs = "geom:" + geomType; //$NON-NLS-1$
-      // now add the attributes to the specs
+      // now add the attributes to the specs 
       for (int j = 0; j < header.getNumFields(); j++) {
         specs += "," + header.getFieldName(j) + ":"
             + getFieldTypeFromChar(header.getFieldType(j));

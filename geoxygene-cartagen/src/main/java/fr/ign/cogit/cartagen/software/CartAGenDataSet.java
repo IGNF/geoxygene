@@ -31,6 +31,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
+import fr.ign.cogit.cartagen.core.defaultschema.road.RoadLineWithAttributes;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.admin.IAdminCapital;
 import fr.ign.cogit.cartagen.core.genericschema.admin.IAdminLimit;
@@ -678,8 +679,10 @@ public class CartAGenDataSet extends DataSet {
    */
   @SuppressWarnings("unchecked")
   public IPopulation<SpecialPoint> getSpecialPoints() {
-    return (IPopulation<SpecialPoint>) this
-        .getPopulation(CartAGenDataSet.SPECIAL_POINTS_POP);
+
+    return (IPopulation<SpecialPoint>) this.getCartagenPop(
+        CartAGenDataSet.SPECIAL_POINTS_POP, SpecialPoint.FEAT_TYPE_NAME);
+
   }
 
   /**
@@ -917,10 +920,8 @@ public class CartAGenDataSet extends DataSet {
 
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          IBuilding building = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createBuilding(
+          IBuilding building = CartagenApplication.getInstance()
+              .getCreationFactory().createBuilding(
                   new BatimentImpl(((IMultiSurface<?>) geom).get(i)));
           if (fields.containsKey("CARTAGEN_ID")) {
             building.setId((Integer) fields.get("CARTAGEN_ID"));
@@ -1069,7 +1070,7 @@ public class CartAGenDataSet extends DataSet {
   public boolean loadRoadLinesFromSHP(String chemin, SourceDLM sourceDlm,
       SymbolList symbols) throws IOException {
     if (sourceDlm.equals(SourceDLM.BD_TOPO_V2))
-      return this.loadRoadLinesBDTopoV2_25FromSHP(chemin, sourceDlm, symbols);
+      return this.loadRoadLinesShapeFile(chemin, sourceDlm, symbols);
     ShapefileReader shr = null;
     DbaseFileReader dbr = null;
     try {
@@ -1112,9 +1113,7 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IRoadLine tr = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
+        IRoadLine tr = CartagenApplication.getInstance().getCreationFactory()
             .createRoadLine(
                 new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
                     .getGeoxObj(), false, (ILineString) geom), importance,
@@ -1254,6 +1253,173 @@ public class CartAGenDataSet extends DataSet {
   }
 
   /**
+   * generic road loader
+   * @param chemin
+   * @param SymbolId
+   * @return
+   */
+
+  public boolean loadRoadLinesShapeFile(String chemin, SourceDLM sourceDlm,
+      SymbolList symbols) throws IOException {
+
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    try {
+      ShpFiles shpf = new ShpFiles(chemin + ".shp");
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.defaultCharset());
+    } catch (FileNotFoundException e) {
+      if (CartAGenDataSet.logger.isDebugEnabled()) {
+        CartAGenDataSet.logger.debug("fichier " + chemin + " non trouve.");
+      }
+      return false;
+    }
+
+    if (CartAGenDataSet.logger.isInfoEnabled()) {
+      CartAGenDataSet.logger.info("Loading: " + chemin);
+    }
+
+    FeatureType ft = new FeatureType();
+    // ft.setSchema(schema);
+
+    // Code récupéré de GeOxygene lecture SHP: recupere noms et types des
+    // attributs
+
+    for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
+
+      AttributeType att = new AttributeType();
+
+      att.setMemberName(dbr.getHeader().getFieldName(i));
+      att.setNomField(dbr.getHeader().getFieldName(i));
+      att.setValueType("String");
+
+      ft.addFeatureAttribute(att);
+
+    }
+
+    IPopulation<IRoadLine> pop = this.getRoads();
+
+    int j = 0;
+    while (shr.hasNext() && dbr.hasNext()) {
+      Record objet = shr.nextRecord();
+      // compute the symbol from the fields according to source DLM
+      Object[] champs = dbr.readEntry();
+      Map<String, Object> fields = new HashMap<String, Object>();
+      for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
+        fields.put(dbr.getHeader().getFieldName(i), champs[i]);
+      }
+
+      RoadSymbolResult result = SymbolsUtil.getRoadSymbolFromFields(sourceDlm,
+          symbols, fields);
+      int importance = result.importance;
+
+      // recupere la geometrie
+      IGeometry geom = null;
+      try {
+        geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
+      } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+      }
+
+      if (geom instanceof ILineString) {
+        IRoadLine tr = null;
+
+        if (sourceDlm != SourceDLM.BD_TOPO_V2)
+          tr = CartagenApplication.getInstance().getCreationFactory()
+              .createRoadLine(
+                  new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
+                      .getGeoxObj(), false, (ILineString) geom), importance,
+                  result.symbolId);
+        else {
+
+          tr = new RoadLineWithAttributes(
+
+          new TronconDeRouteImpl((Reseau) this.getRoadNetwork().getGeoxObj(),
+              false, (ILineString) geom), result.importance, result.symbolId);
+          tr.setFeatureType(ft);
+
+          for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
+            tr.setAttribute(ft.getFeatureAttributeI(i), champs[i]);
+          }
+
+          if (fields.containsKey("CARTAGEN_ID")) {
+            tr.setId((Integer) fields.get("CARTAGEN_ID"));
+          } else {
+            tr.setShapeId(j);
+          }
+
+          pop.add(tr);
+          this.getRoadNetwork().addSection(tr);
+        }
+
+        if (fields.containsKey("CARTAGEN_ID")) {
+          tr.setId((Integer) fields.get("CARTAGEN_ID"));
+        } else {
+          tr.setShapeId(j);
+        }
+        pop.add(tr);
+        this.getRoadNetwork().addSection(tr);
+
+      } else if (geom instanceof IMultiCurve<?>) {
+        for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
+
+          IRoadLine tr = null;
+          if (sourceDlm != SourceDLM.BD_TOPO_V2)
+            tr = CartagenApplication.getInstance().getCreationFactory()
+                .createRoadLine(
+                    new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
+                        .getGeoxObj(), false,
+                        (ILineString) ((IMultiCurve<?>) geom).get(i)),
+                    importance);
+
+          else {
+
+            tr = new RoadLineWithAttributes(new TronconDeRouteImpl(
+                (Reseau) this.getRoadNetwork()
+
+                .getGeoxObj(), false, (ILineString) ((IMultiCurve<?>) geom)
+                    .get(i)), result.importance, result.symbolId);
+
+            tr.setFeatureType(ft);
+            for (int k = 0; k < dbr.getHeader().getNumFields(); k++) {
+              tr.setAttribute(ft.getFeatureAttributeI(k), champs[k]);
+            }
+
+          }
+
+          if (fields.containsKey("CARTAGEN_ID")) {
+            tr.setId((Integer) fields.get("CARTAGEN_ID"));
+          } else {
+            tr.setShapeId(j);
+          }
+          pop.add(tr);
+          this.getRoadNetwork().addSection(tr);
+        }
+
+      }
+
+      else {
+        CartAGenDataSet.logger.error("ERREUR lors du chargement de shp "
+            + chemin + ". Type de geometrie " + geom.getClass().getName()
+            + " non gere.");
+      }
+      j++;
+    }
+    shr.close();
+    dbr.close();
+    CartagenApplication.getInstance().getLayerGroup().cVoirRR.setSelected(true);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRR.setEnabled(true);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRR.setSelected(true);
+    GeneralisationLeftPanelComplement.getInstance().cSelectRR.setEnabled(true);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRRInitial
+        .setEnabled(true);
+    GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
+    return true;
+
+  }
+
+  /**
    * Charge des troncons de route depuis un shapefile lineaire. recupere le
    * premier attribut qui doit etre entier et traduit l'imporance de chaque
    * troncon applique un filtre de dp a chaque geometrie
@@ -1316,9 +1482,7 @@ public class CartAGenDataSet extends DataSet {
 
       if (geom instanceof ILineString) {
 
-        IRoadLine tr = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
+        IRoadLine tr = CartagenApplication.getInstance().getCreationFactory()
             .createRoadLine(
                 new TronconDeRouteImpl((Reseau) this.getRoadNetwork(), false,
                     (ILineString) geom), 4, SymbolId);
@@ -1328,9 +1492,7 @@ public class CartAGenDataSet extends DataSet {
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
 
-          IRoadLine tr = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
+          IRoadLine tr = CartagenApplication.getInstance().getCreationFactory()
               .createRoadLine(
                   new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
                       .getGeoxObj(), false,
@@ -1366,241 +1528,201 @@ public class CartAGenDataSet extends DataSet {
    * @param symbols
    * @throws IOException
    */
-  public boolean loadRoadLinesBDTopoV2_25FromSHP(String chemin,
-      SourceDLM sourceDlm, SymbolList symbols) throws IOException {
-
-    ShapefileReader shr = null;
-    DbaseFileReader dbr = null;
-    try {
-      ShpFiles shpf = new ShpFiles(chemin + ".shp");
-      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
-      dbr = new DbaseFileReader(shpf, true, Charset.forName("ISO-8859-1"));
-    } catch (FileNotFoundException e) {
-      if (CartAGenDataSet.logger.isDebugEnabled()) {
-        CartAGenDataSet.logger.debug("fichier " + chemin + " non trouve.");
-      }
-      return false;
-    }
-
-    if (CartAGenDataSet.logger.isInfoEnabled()) {
-      CartAGenDataSet.logger.info("Loading: " + chemin);
-    }
-
-    // Code récupéré de GeOxygene lecture SHP: recupere noms et types des
-    // attributs
-
-    int nbFields = dbr.getHeader().getNumFields();
-    String[] fieldNames = new String[nbFields];
-    Class<?>[] fieldClasses = new Class<?>[nbFields];
-    for (int i = 0; i < nbFields; i++) {
-      fieldNames[i] = dbr.getHeader().getFieldName(i);
-      fieldClasses[i] = dbr.getHeader().getFieldClass(i);
-    }
-
-    IPopulation<IRoadLine> popRoadLines = this.getRoads();
-
-    while (shr.hasNext() && dbr.hasNext()) {
-
-      Record objet = shr.nextRecord();
-
-      // recupere le champ importance
-      Object[] champs = new Object[nbFields];
-
-      dbr.readEntry(champs);
-
-      /*
-       * RoadSymbolResult result =SymbolsUtil.getRoadSymbolFromFields(
-       * SourceDLM.BD_TOPO_V2, CartagenApplication.getSymbols(), champs,
-       * fieldNames);
-       */
-
-      Map<String, Object> fields = new HashMap<String, Object>();
-      for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
-        fields.put(dbr.getHeader().getFieldName(i), champs[i]);
-      }
-      RoadSymbolResult result = SymbolsUtil.getRoadSymbolFromFields(sourceDlm,
-          symbols, fields);
-
-      if (result.symbolId == -1) {
-        System.err
-            .println("symbolVarName do not exist in the symbols XML file");
-        continue; // erreur
-      }
-
-      // recupere la geometrie
-      IGeometry geom = null;
-      try {
-        geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
-      } catch (Exception e) {
-        e.printStackTrace();
-        return false;
-      }
-
-      if (geom instanceof ILineString) {
-        IRoadLine tr = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
-            .createRoadLine(
-                new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
-                    .getGeoxObj(), false, (ILineString) geom),
-                result.importance, result.symbolId);
-
-        popRoadLines.add(tr);
-        this.getRoadNetwork().addSection(tr);
-
-      } else if (geom instanceof IMultiCurve<?>) {
-        for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IRoadLine tr = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createRoadLine(
-                  new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
-                      .getGeoxObj(), false,
-                      (ILineString) ((IMultiCurve<?>) geom).get(i)),
-                  result.importance, result.symbolId);
-
-          popRoadLines.add(tr);
-          this.getRoadNetwork().addSection(tr);
-        }
-      } else {
-        CartAGenDataSet.logger.error("ERREUR lors du chargement de shp "
-            + chemin + ". Type de geometrie " + geom.getClass().getName()
-            + " non gere.");
-      }
-    }
-    shr.close();
-    dbr.close();
-    CartagenApplication.getInstance().getLayerGroup().cVoirRR.setSelected(true);
-    GeneralisationLeftPanelComplement.getInstance().cVoirRR.setEnabled(true);
-    GeneralisationLeftPanelComplement.getInstance().cVoirRR.setSelected(true);
-    GeneralisationLeftPanelComplement.getInstance().cSelectRR.setEnabled(true);
-    GeneralisationLeftPanelComplement.getInstance().cVoirRRInitial
-        .setEnabled(true);
-    GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
-    return true;
-  }
-
-  public boolean loadRoadLinesBDTopoVTemp_25FromSHP(String chemin,
-      SourceDLM sourceDlm, SymbolList symbols) throws IOException {
-
-    ShapefileReader shr = null;
-    DbaseFileReader dbr = null;
-    try {
-      ShpFiles shpf = new ShpFiles(chemin + ".shp");
-      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
-      dbr = new DbaseFileReader(shpf, true, Charset.forName("ISO-8859-1"));
-    } catch (FileNotFoundException e) {
-      if (CartAGenDataSet.logger.isDebugEnabled()) {
-        CartAGenDataSet.logger.debug("fichier " + chemin + " non trouve.");
-      }
-      return false;
-    }
-
-    if (CartAGenDataSet.logger.isInfoEnabled()) {
-      CartAGenDataSet.logger.info("Loading: " + chemin);
-    }
-
-    // Code récupéré de GeOxygene lecture SHP: recupere noms et types des
-    // attributs
-
-    int nbFields = dbr.getHeader().getNumFields();
-    String[] fieldNames = new String[nbFields];
-    Class<?>[] fieldClasses = new Class<?>[nbFields];
-    for (int i = 0; i < nbFields; i++) {
-      fieldNames[i] = dbr.getHeader().getFieldName(i);
-      fieldClasses[i] = dbr.getHeader().getFieldClass(i);
-    }
-
-    IPopulation<IRoadLine> popRoadLines = this.getRoads();
-
-    while (shr.hasNext() && dbr.hasNext()) {
-
-      Record objet = shr.nextRecord();
-
-      // recupere le champ importance
-      Object[] champs = new Object[nbFields];
-
-      dbr.readEntry(champs);
-
-      /*
-       * RoadSymbolResult result =SymbolsUtil.getRoadSymbolFromFields(
-       * SourceDLM.BD_TOPO_V2, CartagenApplication.getSymbols(), champs,
-       * fieldNames);
-       */
-
-      Map<String, Object> fields = new HashMap<String, Object>();
-      for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
-        fields.put(dbr.getHeader().getFieldName(i), champs[i]);
-      }
-      RoadSymbolResult result = SymbolsUtil.getRoadSymbolFromFields(sourceDlm,
-          symbols, fields);
-
-      if (result.symbolId == -1) {
-        System.err
-            .println("symbolVarName do not exist in the symbols XML file");
-        continue; // erreur
-      }
-
-      // recupere la geometrie
-      IGeometry geom = null;
-      try {
-        geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
-      } catch (Exception e) {
-        e.printStackTrace();
-        return false;
-      }
-
-      if (geom instanceof ILineString) {
-        IRoadLine tr = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
-            .createRoadLine(
-                new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
-                    .getGeoxObj(), false, (ILineString) geom),
-                result.importance, result.symbolId);
-
-        popRoadLines.add(tr);
-        this.getRoadNetwork().addSection(tr);
-
-      } else if (geom instanceof IMultiCurve<?>) {
-        for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IRoadLine tr = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createRoadLine(
-                  new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
-                      .getGeoxObj(), false,
-                      (ILineString) ((IMultiCurve<?>) geom).get(i)),
-                  result.importance, result.symbolId);
-
-          popRoadLines.add(tr);
-          this.getRoadNetwork().addSection(tr);
-        }
-      } else {
-        CartAGenDataSet.logger.error("ERREUR lors du chargement de shp "
-            + chemin + ". Type de geometrie " + geom.getClass().getName()
-            + " non gere.");
-      }
-    }
-    shr.close();
-    dbr.close();
-    CartagenApplication.getInstance().getLayerGroup().cVoirRR.setSelected(true);
-    GeneralisationLeftPanelComplement.getInstance().cVoirRR.setEnabled(true);
-    GeneralisationLeftPanelComplement.getInstance().cVoirRR.setSelected(true);
-    GeneralisationLeftPanelComplement.getInstance().cSelectRR.setEnabled(true);
-    GeneralisationLeftPanelComplement.getInstance().cVoirRRInitial
-        .setEnabled(true);
-    GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
-    return true;
-  }
-
-  /**
-   * Charge des troncons de route depuis un shapefile lineaire. Adapte a la
+  /*
+   * public boolean loadRoadLinesBDTopoV2_25FromSHP(String chemin, SourceDLM
+   * sourceDlm, SymbolList symbols) throws IOException {
+   * 
+   * ShapefileReader shr = null; DbaseFileReader dbr = null; try { ShpFiles shpf
+   * = new ShpFiles(chemin + ".shp"); shr = new ShapefileReader(shpf, true,
+   * false, new GeometryFactory()); dbr = new DbaseFileReader(shpf, true,
+   * Charset.forName("ISO-8859-1")); } catch (FileNotFoundException e) { if
+   * (CartAGenDataSet.logger.isDebugEnabled()) {
+   * CartAGenDataSet.logger.debug("fichier " + chemin + " non trouve."); }
+   * return false; }
+   * 
+   * if (CartAGenDataSet.logger.isInfoEnabled()) {
+   * CartAGenDataSet.logger.info("Loading: " + chemin); }
+   * 
+   * // SchemaDefaultFeature schema=new SchemaDefaultFeature(); FeatureType ft =
+   * new FeatureType(); // ft.setSchema(schema);
+   * 
+   * // Code récupéré de GeOxygene lecture SHP: recupere noms et types des //
+   * attributs
+   * 
+   * int nbFields = dbr.getHeader().getNumFields(); String[] fieldNames = new
+   * String[nbFields]; Class<?>[] fieldClasses = new Class<?>[nbFields]; for
+   * (int i = 0; i < nbFields; i++) { fieldNames[i] =
+   * dbr.getHeader().getFieldName(i); fieldClasses[i] =
+   * dbr.getHeader().getFieldClass(i); AttributeType att = new AttributeType();
+   * 
+   * att.setMemberName(fieldNames[i]); att.setNomField(fieldNames[i]);
+   * att.setValueType("String");
+   * 
+   * ft.addFeatureAttribute(att);
+   * 
+   * }
+   * 
+   * IPopulation<IRoadLine> popRoadLines = this.getRoads(); int j = 0; while
+   * (shr.hasNext() && dbr.hasNext()) {
+   * 
+   * Record objet = shr.nextRecord();
+   * 
+   * // read all the attributes Object[] champs = dbr.readEntry(); ;
+   * 
+   * 
+   * 
+   * Map<String, Object> fields = new HashMap<String, Object>(); for (int i = 0;
+   * i < dbr.getHeader().getNumFields(); i++) {
+   * fields.put(dbr.getHeader().getFieldName(i), champs[i]); } RoadSymbolResult
+   * result = SymbolsUtil.getRoadSymbolFromFields(sourceDlm, symbols, fields);
+   * 
+   * if (result.symbolId == -1) { System.err
+   * .println("symbolVarName do not exist in the symbols XML file"); continue;
+   * // erreur }
+   * 
+   * // recupere la geometrie IGeometry geom = null; try { geom =
+   * AdapterFactory.toGM_Object((Geometry) objet.shape()); } catch (Exception e)
+   * { e.printStackTrace(); return false; }
+   * 
+   * if (geom instanceof ILineString) {
+   * 
+   * RoadLineWithAttributes tr = new RoadLineWithAttributes(
+   * 
+   * new TronconDeRouteImpl((Reseau) this.getRoadNetwork().getGeoxObj(), false,
+   * (ILineString) geom), result.importance, result.symbolId);
+   * tr.setFeatureType(ft);
+   * 
+   * for (int j1 = 0; j1 < fields.size(); j1++) {
+   * 
+   * tr .setAttribute(fieldNames[j1], fields.get(fieldNames[j1] .toString()));
+   * 
+   * }
+   * 
+   * if (fields.containsKey("CARTAGEN_ID")) { tr.setId((Integer)
+   * fields.get("CARTAGEN_ID")); } else { tr.setShapeId(j); }
+   * 
+   * popRoadLines.add(tr); this.getRoadNetwork().addSection(tr);
+   * 
+   * } else if (geom instanceof IMultiCurve<?>) { for (int i = 0; i <
+   * ((IMultiCurve<?>) geom).size(); i++) {
+   * 
+   * RoadLineWithAttributes tr = new RoadLineWithAttributes( new
+   * TronconDeRouteImpl((Reseau) this.getRoadNetwork()
+   * 
+   * .getGeoxObj(), false, (ILineString) ((IMultiCurve<?>) geom) .get(i)),
+   * result.importance, result.symbolId);
+   * 
+   * 
+   * tr.setFeatureType(ft); for (int j1 = 0; j1 < fields.size(); j1++) {
+   * 
+   * tr.setAttribute(fieldNames[j1], fields.get(fieldNames[j1] .toString()));
+   * 
+   * }
+   * 
+   * if (fields.containsKey("CARTAGEN_ID")) { tr.setId((Integer)
+   * fields.get("CARTAGEN_ID")); } else { tr.setShapeId(j); }
+   * 
+   * popRoadLines.add(tr); this.getRoadNetwork().addSection(tr); } } else {
+   * CartAGenDataSet.logger.error("ERREUR lors du chargement de shp " + chemin +
+   * ". Type de geometrie " + geom.getClass().getName() + " non gere."); } j++;
+   * } shr.close(); dbr.close();
+   * CartagenApplication.getInstance().getLayerGroup(
+   * ).cVoirRR.setSelected(true);
+   * GeneralisationLeftPanelComplement.getInstance().cVoirRR.setEnabled(true);
+   * GeneralisationLeftPanelComplement.getInstance().cVoirRR.setSelected(true);
+   * GeneralisationLeftPanelComplement.getInstance().cSelectRR.setEnabled(true);
+   * GeneralisationLeftPanelComplement.getInstance().cVoirRRInitial
+   * .setEnabled(true);
+   * GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
+   * return true; }
+   * 
+   * public boolean loadRoadLinesBDTopoVTemp_25FromSHP(String chemin, SourceDLM
+   * sourceDlm, SymbolList symbols) throws IOException {
+   * 
+   * ShapefileReader shr = null; DbaseFileReader dbr = null; try { ShpFiles shpf
+   * = new ShpFiles(chemin + ".shp"); shr = new ShapefileReader(shpf, true,
+   * false, new GeometryFactory()); dbr = new DbaseFileReader(shpf, true,
+   * Charset.forName("ISO-8859-1")); } catch (FileNotFoundException e) { if
+   * (CartAGenDataSet.logger.isDebugEnabled()) {
+   * CartAGenDataSet.logger.debug("fichier " + chemin + " non trouve."); }
+   * return false; }
+   * 
+   * if (CartAGenDataSet.logger.isInfoEnabled()) {
+   * CartAGenDataSet.logger.info("Loading: " + chemin); }
+   * 
+   * // Code récupéré de GeOxygene lecture SHP: recupere noms et types des //
+   * attributs
+   * 
+   * int nbFields = dbr.getHeader().getNumFields(); String[] fieldNames = new
+   * String[nbFields]; Class<?>[] fieldClasses = new Class<?>[nbFields]; for
+   * (int i = 0; i < nbFields; i++) { fieldNames[i] =
+   * dbr.getHeader().getFieldName(i); fieldClasses[i] =
+   * dbr.getHeader().getFieldClass(i); }
+   * 
+   * IPopulation<IRoadLine> popRoadLines = this.getRoads();
+   * 
+   * while (shr.hasNext() && dbr.hasNext()) {
+   * 
+   * Record objet = shr.nextRecord();
+   * 
+   * // recupere le champ importance Object[] champs = new Object[nbFields];
+   * 
+   * dbr.readEntry(champs);
+   * 
+   * 
+   * 
+   * Map<String, Object> fields = new HashMap<String, Object>(); for (int i = 0;
+   * i < dbr.getHeader().getNumFields(); i++) {
+   * fields.put(dbr.getHeader().getFieldName(i), champs[i]); } RoadSymbolResult
+   * result = SymbolsUtil.getRoadSymbolFromFields(sourceDlm, symbols, fields);
+   * 
+   * if (result.symbolId == -1) { System.err
+   * .println("symbolVarName do not exist in the symbols XML file"); continue;
+   * // erreur }
+   * 
+   * // recupere la geometrie IGeometry geom = null; try { geom =
+   * AdapterFactory.toGM_Object((Geometry) objet.shape()); } catch (Exception e)
+   * { e.printStackTrace(); return false; }
+   * 
+   * if (geom instanceof ILineString) { IRoadLine tr =
+   * CartagenApplication.getInstance().getCreationFactory() .createRoadLine( new
+   * TronconDeRouteImpl((Reseau) this.getRoadNetwork() .getGeoxObj(), false,
+   * (ILineString) geom), result.importance, result.symbolId);
+   * 
+   * popRoadLines.add(tr); this.getRoadNetwork().addSection(tr);
+   * 
+   * } else if (geom instanceof IMultiCurve<?>) { for (int i = 0; i <
+   * ((IMultiCurve<?>) geom).size(); i++) { IRoadLine tr =
+   * CartagenApplication.getInstance().getCreationFactory() .createRoadLine( new
+   * TronconDeRouteImpl((Reseau) this.getRoadNetwork() .getGeoxObj(), false,
+   * (ILineString) ((IMultiCurve<?>) geom).get(i)), result.importance,
+   * result.symbolId);
+   * 
+   * popRoadLines.add(tr); this.getRoadNetwork().addSection(tr); } } else {
+   * CartAGenDataSet.logger.error("ERREUR lors du chargement de shp " + chemin +
+   * ". Type de geometrie " + geom.getClass().getName() + " non gere."); } }
+   * shr.close(); dbr.close();
+   * CartagenApplication.getInstance().getLayerGroup().
+   * cVoirRR.setSelected(true);
+   * GeneralisationLeftPanelComplement.getInstance().cVoirRR.setEnabled(true);
+   * GeneralisationLeftPanelComplement.getInstance().cVoirRR.setSelected(true);
+   * GeneralisationLeftPanelComplement.getInstance().cSelectRR.setEnabled(true);
+   * GeneralisationLeftPanelComplement.getInstance().cVoirRRInitial
+   * .setEnabled(true);
+   * GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
+   * return true; }
+   * 
+   * /** Charge des troncons de route depuis un shapefile lineaire. Adapte a la
    * BDTopo V2 pour de la symbo 25K
+   * 
    * @param chemin
+   * 
    * @param doug
+   * 
    * @param sourceDlm
+   * 
    * @param symbols
+   * 
    * @throws IOException
    */
   public boolean loadPathsBDTopoV2_25FromSHP(String chemin,
@@ -1675,9 +1797,7 @@ public class CartAGenDataSet extends DataSet {
 
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IPathLine tr = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
+          IPathLine tr = CartagenApplication.getInstance().getCreationFactory()
               .createPath((ILineString) ((IMultiCurve<?>) geom).get(i),
                   result.importance, result.symbolId);
 
@@ -1710,195 +1830,137 @@ public class CartAGenDataSet extends DataSet {
    * @param symbols
    * @throws IOException
    */
-  public boolean loadRoadLinesBDTopoV1_25FromSHP(String chemin, double doug,
-      SourceDLM sourceDlm, SymbolList symbols) throws IOException {
-
-    ShapefileReader shr = null;
-    DbaseFileReader dbr = null;
-    try {
-      ShpFiles shpf = new ShpFiles(chemin + ".shp");
-      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
-      dbr = new DbaseFileReader(shpf, true, Charset.forName("ISO-8859-1"));
-    } catch (FileNotFoundException e) {
-      if (CartAGenDataSet.logger.isDebugEnabled()) {
-        CartAGenDataSet.logger.debug("fichier " + chemin + " non trouve.");
-      }
-      return false;
-    }
-
-    if (CartAGenDataSet.logger.isInfoEnabled()) {
-      CartAGenDataSet.logger.info("Loading: " + chemin);
-    }
-
-    // Code récupéré de GeOxygene lecture SHP: recupere noms et types des
-    // attributs
-
-    int nbFields = dbr.getHeader().getNumFields();
-    String[] fieldNames = new String[nbFields];
-    Class<?>[] fieldClasses = new Class<?>[nbFields];
-    for (int i = 0; i < nbFields; i++) {
-      fieldNames[i] = dbr.getHeader().getFieldName(i);
-      fieldClasses[i] = dbr.getHeader().getFieldClass(i);
-    }
-
-    while (shr.hasNext() && dbr.hasNext()) {
-
-      Record objet = shr.nextRecord();
-
-      // recupere le champ importance
-      Object[] champs = new Object[nbFields];
-
-      dbr.readEntry(champs);
-
-      Map<String, Object> fields = new HashMap<String, Object>();
-      for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
-        fields.put(dbr.getHeader().getFieldName(i), champs[i]);
-      }
-      RoadSymbolResult result = SymbolsUtil.getRoadSymbolFromFields(sourceDlm,
-          symbols, fields);
-
-      // recupere la geometrie
-      IGeometry geom = null;
-      try {
-        geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
-      } catch (Exception e) {
-        e.printStackTrace();
-        return false;
-      }
-
-      if (geom instanceof ILineString) {
-        IRoadLine tr = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
-            .createRoadLine(
-                new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
-                    .getGeoxObj(), false, (ILineString) geom),
-                result.importance, result.symbolId);
-        this.getRoads().add(tr);
-        this.getRoadNetwork().addSection(tr);
-
-      } else if (geom instanceof IMultiCurve<?>) {
-        for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IRoadLine tr = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createRoadLine(
-                  new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
-                      .getGeoxObj(), false,
-                      (ILineString) ((IMultiCurve<?>) geom).get(i)),
-                  result.importance, result.symbolId);
-          this.getRoads().add(tr);
-          this.getRoadNetwork().addSection(tr);
-        }
-      } else {
-        CartAGenDataSet.logger.error("ERREUR lors du chargement de shp "
-            + chemin + ". Type de geometrie " + geom.getClass().getName()
-            + " non gere.");
-      }
-    }
-    shr.close();
-    dbr.close();
-    CartagenApplication.getInstance().getLayerGroup().cVoirRR.setSelected(true);
-    GeneralisationLeftPanelComplement.getInstance().cVoirRR.setEnabled(true);
-    GeneralisationLeftPanelComplement.getInstance().cVoirRR.setSelected(true);
-    GeneralisationLeftPanelComplement.getInstance().cSelectRR.setEnabled(true);
-    GeneralisationLeftPanelComplement.getInstance().cVoirRRInitial
-        .setEnabled(true);
-    GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
-    return true;
-  }
-
-  /**
-   * Charge des troncons de route depuis un shapefile lineaire. Adapte a la
+  /*
+   * public boolean loadRoadLinesBDTopoV1_25FromSHP(String chemin, double doug,
+   * SourceDLM sourceDlm, SymbolList symbols) throws IOException {
+   * 
+   * ShapefileReader shr = null; DbaseFileReader dbr = null; try { ShpFiles shpf
+   * = new ShpFiles(chemin + ".shp"); shr = new ShapefileReader(shpf, true,
+   * false, new GeometryFactory()); dbr = new DbaseFileReader(shpf, true,
+   * Charset.forName("ISO-8859-1")); } catch (FileNotFoundException e) { if
+   * (CartAGenDataSet.logger.isDebugEnabled()) {
+   * CartAGenDataSet.logger.debug("fichier " + chemin + " non trouve."); }
+   * return false; }
+   * 
+   * if (CartAGenDataSet.logger.isInfoEnabled()) {
+   * CartAGenDataSet.logger.info("Loading: " + chemin); }
+   * 
+   * // Code récupéré de GeOxygene lecture SHP: recupere noms et types des //
+   * attributs
+   * 
+   * int nbFields = dbr.getHeader().getNumFields(); String[] fieldNames = new
+   * String[nbFields]; Class<?>[] fieldClasses = new Class<?>[nbFields]; for
+   * (int i = 0; i < nbFields; i++) { fieldNames[i] =
+   * dbr.getHeader().getFieldName(i); fieldClasses[i] =
+   * dbr.getHeader().getFieldClass(i); }
+   * 
+   * while (shr.hasNext() && dbr.hasNext()) {
+   * 
+   * Record objet = shr.nextRecord();
+   * 
+   * // recupere le champ importance Object[] champs = new Object[nbFields];
+   * 
+   * dbr.readEntry(champs);
+   * 
+   * Map<String, Object> fields = new HashMap<String, Object>(); for (int i = 0;
+   * i < dbr.getHeader().getNumFields(); i++) {
+   * fields.put(dbr.getHeader().getFieldName(i), champs[i]); } RoadSymbolResult
+   * result = SymbolsUtil.getRoadSymbolFromFields(sourceDlm, symbols, fields);
+   * 
+   * // recupere la geometrie IGeometry geom = null; try { geom =
+   * AdapterFactory.toGM_Object((Geometry) objet.shape()); } catch (Exception e)
+   * { e.printStackTrace(); return false; }
+   * 
+   * if (geom instanceof ILineString) { IRoadLine tr =
+   * CartagenApplication.getInstance().getCreationFactory() .createRoadLine( new
+   * TronconDeRouteImpl((Reseau) this.getRoadNetwork() .getGeoxObj(), false,
+   * (ILineString) geom), result.importance, result.symbolId);
+   * this.getRoads().add(tr); this.getRoadNetwork().addSection(tr);
+   * 
+   * } else if (geom instanceof IMultiCurve<?>) { for (int i = 0; i <
+   * ((IMultiCurve<?>) geom).size(); i++) { IRoadLine tr =
+   * CartagenApplication.getInstance().getCreationFactory() .createRoadLine( new
+   * TronconDeRouteImpl((Reseau) this.getRoadNetwork() .getGeoxObj(), false,
+   * (ILineString) ((IMultiCurve<?>) geom).get(i)), result.importance,
+   * result.symbolId); this.getRoads().add(tr);
+   * this.getRoadNetwork().addSection(tr); } } else {
+   * CartAGenDataSet.logger.error("ERREUR lors du chargement de shp " + chemin +
+   * ". Type de geometrie " + geom.getClass().getName() + " non gere."); } }
+   * shr.close(); dbr.close();
+   * CartagenApplication.getInstance().getLayerGroup().
+   * cVoirRR.setSelected(true);
+   * GeneralisationLeftPanelComplement.getInstance().cVoirRR.setEnabled(true);
+   * GeneralisationLeftPanelComplement.getInstance().cVoirRR.setSelected(true);
+   * GeneralisationLeftPanelComplement.getInstance().cSelectRR.setEnabled(true);
+   * GeneralisationLeftPanelComplement.getInstance().cVoirRRInitial
+   * .setEnabled(true);
+   * GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
+   * return true; }
+   * 
+   * /** Charge des troncons de route depuis un shapefile lineaire. Adapte a la
    * BDCarto
+   * 
    * @param chemin
+   * 
    * @param doug
+   * 
    * @throws IOException
    */
-  public boolean loadRoadLinesBDCartoFromSHP(String chemin, double doug)
-      throws IOException {
-    ShapefileReader shr = null;
-    DbaseFileReader dbr = null;
-    try {
-      ShpFiles shpf = new ShpFiles(chemin + ".shp");
-      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
-      dbr = new DbaseFileReader(shpf, true, Charset.defaultCharset());
-    } catch (FileNotFoundException e) {
-      if (CartAGenDataSet.logger.isDebugEnabled()) {
-        CartAGenDataSet.logger.debug("fichier " + chemin + " non trouve.");
-      }
-      return false;
-    }
-
-    if (CartAGenDataSet.logger.isInfoEnabled()) {
-      CartAGenDataSet.logger.info("Loading: " + chemin);
-    }
-
-    IPopulation<IRoadLine> pop = this.getRoads();
-
-    while (shr.hasNext() && dbr.hasNext()) {
-      Record objet = shr.nextRecord();
-
-      // recupere le champ importance
-      Object[] champs = dbr.readEntry();
-      int importance = Integer.parseInt(champs[0].toString());
-
-      // recupere la geometrie
-      IGeometry geom = null;
-      try {
-        geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
-      } catch (Exception e) {
-        e.printStackTrace();
-        return false;
-      }
-
-      if (geom instanceof ILineString) {
-        IRoadLine tr = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
-            .createRoadLine(
-                new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
-                    .getGeoxObj(), false, (ILineString) geom), importance);
-        pop.add(tr);
-        this.getRoadNetwork().addSection(tr);
-
-      } else if (geom instanceof IMultiCurve<?>) {
-        for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IRoadLine tr = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createRoadLine(
-                  new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
-                      .getGeoxObj(), false,
-                      (ILineString) ((IMultiCurve<?>) geom).get(i)), importance);
-
-          pop.add(tr);
-          this.getRoadNetwork().addSection(tr);
-        }
-      } else {
-        CartAGenDataSet.logger.error("ERREUR lors du chargement de shp "
-            + chemin + ". Type de geometrie " + geom.getClass().getName()
-            + " non gere.");
-      }
-    }
-    shr.close();
-    dbr.close();
-    CartagenApplication.getInstance().getLayerGroup().cVoirRR.setSelected(true);
-    GeneralisationLeftPanelComplement.getInstance().cVoirRR.setEnabled(true);
-    GeneralisationLeftPanelComplement.getInstance().cVoirRR.setSelected(true);
-    GeneralisationLeftPanelComplement.getInstance().cSelectRR.setEnabled(true);
-    GeneralisationLeftPanelComplement.getInstance().cVoirRRInitial
-        .setEnabled(true);
-    GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
-    return true;
-  }
-
-  // ///////////////////////////////////////
-  // Hydro network
-  // ///////////////////////////////////////
-
-  /**
-   * Récupération de l'instance unique (singleton) de ReseauHydrographique.
+  /*
+   * public boolean loadRoadLinesBDCartoFromSHP(String chemin, double doug)
+   * throws IOException { ShapefileReader shr = null; DbaseFileReader dbr =
+   * null; try { ShpFiles shpf = new ShpFiles(chemin + ".shp"); shr = new
+   * ShapefileReader(shpf, true, false, new GeometryFactory()); dbr = new
+   * DbaseFileReader(shpf, true, Charset.defaultCharset()); } catch
+   * (FileNotFoundException e) { if (CartAGenDataSet.logger.isDebugEnabled()) {
+   * CartAGenDataSet.logger.debug("fichier " + chemin + " non trouve."); }
+   * return false; }
+   * 
+   * if (CartAGenDataSet.logger.isInfoEnabled()) {
+   * CartAGenDataSet.logger.info("Loading: " + chemin); }
+   * 
+   * IPopulation<IRoadLine> pop = this.getRoads();
+   * 
+   * while (shr.hasNext() && dbr.hasNext()) { Record objet = shr.nextRecord();
+   * 
+   * // recupere le champ importance Object[] champs = dbr.readEntry(); int
+   * importance = Integer.parseInt(champs[0].toString());
+   * 
+   * // recupere la geometrie IGeometry geom = null; try { geom =
+   * AdapterFactory.toGM_Object((Geometry) objet.shape()); } catch (Exception e)
+   * { e.printStackTrace(); return false; }
+   * 
+   * if (geom instanceof ILineString) { IRoadLine tr =
+   * CartagenApplication.getInstance().getCreationFactory() .createRoadLine( new
+   * TronconDeRouteImpl((Reseau) this.getRoadNetwork() .getGeoxObj(), false,
+   * (ILineString) geom), importance); pop.add(tr);
+   * this.getRoadNetwork().addSection(tr);
+   * 
+   * } else if (geom instanceof IMultiCurve<?>) { for (int i = 0; i <
+   * ((IMultiCurve<?>) geom).size(); i++) { IRoadLine tr = CartagenApplication
+   * .getInstance() .getCreationFactory() .createRoadLine( new
+   * TronconDeRouteImpl((Reseau) this.getRoadNetwork() .getGeoxObj(), false,
+   * (ILineString) ((IMultiCurve<?>) geom).get(i)), importance);
+   * 
+   * pop.add(tr); this.getRoadNetwork().addSection(tr); } } else {
+   * CartAGenDataSet.logger.error("ERREUR lors du chargement de shp " + chemin +
+   * ". Type de geometrie " + geom.getClass().getName() + " non gere."); } }
+   * shr.close(); dbr.close();
+   * CartagenApplication.getInstance().getLayerGroup().
+   * cVoirRR.setSelected(true);
+   * GeneralisationLeftPanelComplement.getInstance().cVoirRR.setEnabled(true);
+   * GeneralisationLeftPanelComplement.getInstance().cVoirRR.setSelected(true);
+   * GeneralisationLeftPanelComplement.getInstance().cSelectRR.setEnabled(true);
+   * GeneralisationLeftPanelComplement.getInstance().cVoirRRInitial
+   * .setEnabled(true);
+   * GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
+   * return true; }
+   * 
+   * // /////////////////////////////////////// // Hydro network //
+   * ///////////////////////////////////////
+   * 
+   * /** Récupération de l'instance unique (singleton) de ReseauHydrographique.
+   * 
    * @return instance unique (singleton) de ReseauHydrographique.
    */
   private INetwork hydroNetwork = null;
@@ -1966,9 +2028,7 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IWaterLine tr = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
+        IWaterLine tr = CartagenApplication.getInstance().getCreationFactory()
             .createWaterLine(
                 new TronconHydrographiqueImpl((Reseau) this.getHydroNetwork()
                     .getGeoxObj(), false, (ILineString) geom), 0);
@@ -1981,10 +2041,8 @@ public class CartAGenDataSet extends DataSet {
         this.getHydroNetwork().addSection(tr);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IWaterLine tr = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createWaterLine(
+          IWaterLine tr = CartagenApplication.getInstance()
+              .getCreationFactory().createWaterLine(
                   new TronconHydrographiqueImpl((Reseau) this.getHydroNetwork()
                       .getGeoxObj(), false,
                       (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
@@ -2139,10 +2197,8 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof IPolygon) {
-        IWaterArea surf = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
-            .createWaterArea(
+        IWaterArea surf = CartagenApplication.getInstance()
+            .getCreationFactory().createWaterArea(
                 new SurfaceDEauImpl((Reseau) this.getHydroNetwork()
                     .getGeoxObj(), (IPolygon) geom));
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2154,10 +2210,8 @@ public class CartAGenDataSet extends DataSet {
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
           IPolygon polygon = (IPolygon) ((IMultiSurface<?>) geom).get(i);
-          IWaterArea surf = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createWaterArea(
+          IWaterArea surf = CartagenApplication.getInstance()
+              .getCreationFactory().createWaterArea(
                   new SurfaceDEauImpl((Reseau) this.getHydroNetwork()
                       .getGeoxObj(), polygon));
           if (fields.containsKey("CARTAGEN_ID")) {
@@ -2324,10 +2378,8 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IRailwayLine tr = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
-            .createRailwayLine(
+        IRailwayLine tr = CartagenApplication.getInstance()
+            .getCreationFactory().createRailwayLine(
                 new TronconFerreImpl((Reseau) this.getRailwayNetwork()
                     .getGeoxObj(), false, (ILineString) geom), 0);
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2339,10 +2391,8 @@ public class CartAGenDataSet extends DataSet {
         this.getRailwayNetwork().addSection(tr);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IRailwayLine tr = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createRailwayLine(
+          IRailwayLine tr = CartagenApplication.getInstance()
+              .getCreationFactory().createRailwayLine(
                   new TronconFerreImpl((Reseau) this.getRailwayNetwork()
                       .getGeoxObj(), false,
                       (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
@@ -2511,10 +2561,8 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IElectricityLine tr = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
-            .createElectricityLine(
+        IElectricityLine tr = CartagenApplication.getInstance()
+            .getCreationFactory().createElectricityLine(
                 new ArcReseauImpl((Reseau) this.getElectricityNetwork()
                     .getGeoxObj(), false, (ILineString) geom), 0);
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2526,10 +2574,8 @@ public class CartAGenDataSet extends DataSet {
         this.getElectricityNetwork().addSection(tr);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IElectricityLine tr = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createElectricityLine(
+          IElectricityLine tr = CartagenApplication.getInstance()
+              .getCreationFactory().createElectricityLine(
                   new ArcReseauImpl((Reseau) this.getElectricityNetwork()
                       .getGeoxObj(), false,
                       (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
@@ -2713,10 +2759,8 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IContourLine cn = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
-            .createContourLine(
+        IContourLine cn = CartagenApplication.getInstance()
+            .getCreationFactory().createContourLine(
                 new CourbeDeNiveauImpl(this.getReliefField().getChampContinu(),
                     z, (ILineString) geom));
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2728,10 +2772,8 @@ public class CartAGenDataSet extends DataSet {
         this.getReliefField().addContourLine(cn);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IContourLine cn = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createContourLine(
+          IContourLine cn = CartagenApplication.getInstance()
+              .getCreationFactory().createContourLine(
                   new CourbeDeNiveauImpl(this.getReliefField()
                       .getChampContinu(), z,
                       (ILineString) ((IMultiCurve<?>) geom).get(i)));
@@ -2896,10 +2938,8 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IReliefElementLine line = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
-            .createReliefElementLine(
+        IReliefElementLine line = CartagenApplication.getInstance()
+            .getCreationFactory().createReliefElementLine(
                 new ElementCaracteristiqueDuReliefImpl(this.getReliefField()
                     .getChampContinu(), geom));
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2911,10 +2951,8 @@ public class CartAGenDataSet extends DataSet {
         this.getReliefField().addReliefElementLine(line);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IReliefElementLine line = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createReliefElementLine(
+          IReliefElementLine line = CartagenApplication.getInstance()
+              .getCreationFactory().createReliefElementLine(
                   new ElementCaracteristiqueDuReliefImpl(this.getReliefField()
                       .getChampContinu(), ((IMultiCurve<?>) geom).get(i)));
           if (fields.containsKey("CARTAGEN_ID")) {
@@ -3067,9 +3105,7 @@ public class CartAGenDataSet extends DataSet {
       double z = Double.parseDouble(champs[0].toString());
       // System.out.println("z="+z);
       if (geom instanceof IPoint) {
-        ISpotHeight pt = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
+        ISpotHeight pt = CartagenApplication.getInstance().getCreationFactory()
             .createSpotHeight(
                 new PointCoteImpl(this.getReliefField().getChampContinu(), z,
                     (IPoint) geom));
@@ -3082,10 +3118,8 @@ public class CartAGenDataSet extends DataSet {
         this.getReliefField().addSpotHeight(pt);
       } else if (geom instanceof IMultiPoint) {
         for (int i = 0; i < ((IMultiPoint) geom).size(); i++) {
-          ISpotHeight pt = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createSpotHeight(
+          ISpotHeight pt = CartagenApplication.getInstance()
+              .getCreationFactory().createSpotHeight(
                   new PointCoteImpl(this.getReliefField().getChampContinu(), z,
                       ((IMultiPoint) geom).get(i)));
           if (fields.containsKey("CARTAGEN_ID")) {
@@ -3314,9 +3348,7 @@ public class CartAGenDataSet extends DataSet {
         pop.add(tr);
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          IMask tr = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
+          IMask tr = CartagenApplication.getInstance().getCreationFactory()
               .createMask(
                   new GM_LineString(((IMultiSurface<?>) geom).get(i).coord()));
           CartagenApplication.getInstance().getFrame().getLayerManager()
@@ -3480,10 +3512,8 @@ public class CartAGenDataSet extends DataSet {
       }
       int type = 1;
       if (geom instanceof IPolygon) {
-        ISimpleLandUseArea area = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
-            .createSimpleLandUseArea(
+        ISimpleLandUseArea area = CartagenApplication.getInstance()
+            .getCreationFactory().createSimpleLandUseArea(
                 (IPolygon) CommonAlgorithms.filtreDouglasPeucker(geom, dp),
                 type);
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -3494,10 +3524,8 @@ public class CartAGenDataSet extends DataSet {
         pop.add(area);
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          ISimpleLandUseArea area = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createSimpleLandUseArea(
+          ISimpleLandUseArea area = CartagenApplication.getInstance()
+              .getCreationFactory().createSimpleLandUseArea(
                   (IPolygon) CommonAlgorithms.filtreDouglasPeucker(
                       ((IMultiSurface<?>) geom).get(i), dp), type);
           if (fields.containsKey("CARTAGEN_ID")) {
@@ -3578,10 +3606,8 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof IPolygon) {
-        ISimpleLandUseArea area = CartagenApplication
-            .getInstance()
-            .getCreationFactory()
-            .createSimpleLandUseArea(
+        ISimpleLandUseArea area = CartagenApplication.getInstance()
+            .getCreationFactory().createSimpleLandUseArea(
                 (IPolygon) CommonAlgorithms.filtreDouglasPeucker(geom, dp),
                 type);
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -3592,10 +3618,8 @@ public class CartAGenDataSet extends DataSet {
         pop.add(area);
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          ISimpleLandUseArea area = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
-              .createSimpleLandUseArea(
+          ISimpleLandUseArea area = CartagenApplication.getInstance()
+              .getCreationFactory().createSimpleLandUseArea(
                   (IPolygon) CommonAlgorithms.filtreDouglasPeucker(
                       ((IMultiSurface<?>) geom).get(i), dp), type);
           if (fields.containsKey("CARTAGEN_ID")) {
@@ -4103,9 +4127,7 @@ public class CartAGenDataSet extends DataSet {
         }
 
         if (geom instanceof ILineString) {
-          IRoadLine tr = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
+          IRoadLine tr = CartagenApplication.getInstance().getCreationFactory()
               .createRoadLine(
                   new TronconDeRouteImpl((Reseau) this.getRoadNetwork(), false,
                       (ILineString) geom), 4, symbolID);
@@ -4114,10 +4136,8 @@ public class CartAGenDataSet extends DataSet {
 
         } else if (geom instanceof IMultiCurve<?>) {
           for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-            IRoadLine tr = CartagenApplication
-                .getInstance()
-                .getCreationFactory()
-                .createRoadLine(
+            IRoadLine tr = CartagenApplication.getInstance()
+                .getCreationFactory().createRoadLine(
                     new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
                         .getGeoxObj(), false,
                         (ILineString) ((IMultiCurve<?>) geom).get(i)), 4,
@@ -4208,9 +4228,7 @@ public class CartAGenDataSet extends DataSet {
         }
 
         if (geom instanceof ILineString) {
-          IRoadLine tr = CartagenApplication
-              .getInstance()
-              .getCreationFactory()
+          IRoadLine tr = CartagenApplication.getInstance().getCreationFactory()
               .createRoadLine(
                   new TronconDeRouteImpl((Reseau) this.getRoadNetwork(), false,
                       (ILineString) geom), 4, symbolID);
@@ -4220,10 +4238,8 @@ public class CartAGenDataSet extends DataSet {
 
         } else if (geom instanceof IMultiCurve<?>) {
           for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-            IRoadLine tr = CartagenApplication
-                .getInstance()
-                .getCreationFactory()
-                .createRoadLine(
+            IRoadLine tr = CartagenApplication.getInstance()
+                .getCreationFactory().createRoadLine(
                     new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
                         .getGeoxObj(), false,
                         (ILineString) ((IMultiCurve<?>) geom).get(i)), 4,
@@ -4255,6 +4271,320 @@ public class CartAGenDataSet extends DataSet {
     GeneralisationLeftPanelComplement.getInstance().cVoirRRInitial
         .setEnabled(true);
     GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
+
+  }
+
+  public void deleteAllObjects() {
+
+    // Eliminates the objects and commits the Gothic cache
+    for (Layer lay : CartagenApplication.getInstance().getFrame()
+        .getLayerManager().getLayers()) {
+      if (lay instanceof LoadedLayer) {
+        if (((LoadedLayer) lay).getFeatures() == null)
+          continue;
+        for (IFeature feat : ((LoadedLayer) lay).getFeatures()) {
+          if (!(feat instanceof IGeneObj)) {
+            continue;
+          }
+          ((IGeneObj) feat).eliminate();
+        }
+      }
+    }
+
+    // Destructs the objects and empties the layers
+    for (Layer lay : CartagenApplication.getInstance().getFrame()
+        .getLayerManager().getLayers()) {
+      if (lay instanceof LoadedLayer) {
+        if (((LoadedLayer) lay).getFeatures() == null)
+          continue;
+        for (@SuppressWarnings("unused")
+        IFeature feat : ((LoadedLayer) lay).getFeatures()) {
+          feat = null;
+        }
+        ((LoadedLayer) lay).getFeatures().clear();
+      }
+      lay.emptyDisplayCache();
+    }
+
+    // Disable layers management
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirBati
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirBati.setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectBati
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectBati
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirBatiInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirBatiInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lBati.setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirBati
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirBati
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirVille
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirVille
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectVille
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectVille
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirVilleInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirVilleInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lVille.setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirVille
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirVille
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirIlot
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirIlot.setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectIlot
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectIlot
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirIlotInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirIlotInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lIlot.setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirIlot
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirIlot
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirAlign
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirAlign
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectAlign
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectAlign
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirAlignInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirAlignInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lAlign.setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirAlign
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirAlign
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirRR.setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRR.setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectRR
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectRR.setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRRInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRRInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirRR
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirRR
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirRF.setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRF.setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectRF
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectRF.setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRFInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRFInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lRF.setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirRF
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirRF
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirRH.setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRH.setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectRH
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectRH.setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRHInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRHInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lRH.setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirRH
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirRH
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirRE.setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirRE.setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectRE
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectRE.setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirREInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirREInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lRE.setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirRE
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirRE
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirCN.setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirCN.setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectCN
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectCN.setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirCNInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirCNInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lCN.setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirCN
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirCN
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirPointCote
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirPointCote
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectPointCote
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectPointCote
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirPointCoteInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirPointCoteInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lPointCote
+        .setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirPointCote
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirPointCote
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirOmbrageTransparent
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirOmbrageTransparent
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectOmbrageTransparent
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectOmbrageTransparent
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirOmbrageTransparentInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirOmbrageTransparentInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lOmbrageTransparent
+        .setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirOmbrageTransparent
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirOmbrageTransparent
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirMNTDegrade
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirMNTDegrade
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectMNTDegrade
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectMNTDegrade
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirMNTDegradeInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirMNTDegradeInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lMNTDegrade
+        .setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirMNTDegrade
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirMNTDegrade
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirHypsometrie
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirHypsometrie
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectHypsometrie
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectHypsometrie
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirHypsometrieInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirHypsometrieInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lHypsometrie
+        .setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirHypsometrie
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirHypsometrie
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirOccSol
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirOccSol
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectOccSol
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectOccSol
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirOccSolInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirOccSolInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lOccSol.setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirOccSol
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirOccSol
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirAdmin
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirAdmin
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectAdmin
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectAdmin
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirAdminInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirAdminInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lAdmin.setEnabled(false);
+    CartagenApplication.getInstance().getLayerGroup().cVoirAdmin
+        .setSelected(false);
+    CartagenApplication.getInstance().getInitialLayerGroup().cVoirAdmin
+        .setSelected(false);
+
+    GeneralisationLeftPanelComplement.getInstance().cVoirNetworkFaces
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirNetworkFaces
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectNetworkFaces
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cSelectNetworkFaces
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirNetworkFacesInitial
+        .setSelected(false);
+    GeneralisationLeftPanelComplement.getInstance().cVoirNetworkFacesInitial
+        .setEnabled(false);
+    GeneralisationLeftPanelComplement.getInstance().lNetworkFaces
+        .setEnabled(false);
+
+    /*
+     * 
+     * for (IPopulation<? extends IFeature> population : this.getPopulations())
+     * { for (IFeature ft : population) { ft.setDeleted(true); } }
+     */
 
   }
 

@@ -261,6 +261,10 @@ public class RoadLine extends NetworkSection implements IRoadLine {
     this.initialNode = (RoadNode) node;
   }
 
+  public void setGeoxObj(TronconDeRoute geoxObj) {
+    this.geoxObj = geoxObj;
+  }
+
   @Override
   @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public ILineString getGeom() {

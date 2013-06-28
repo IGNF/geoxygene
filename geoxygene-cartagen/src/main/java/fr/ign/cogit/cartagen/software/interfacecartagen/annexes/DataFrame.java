@@ -48,15 +48,16 @@ public class DataFrame extends JFrame {
     return CartagenApplication.getInstance().getFrameDonnees();
   }
 
-  private JTabbedPane panneauOnglets = new JTabbedPane();
-  private JPanel pChargement = new JPanel();
-  private JPanel pEnrichissement = new JPanel();
-  private JPanel pBati = new JPanel();
-  private JButton bEnrichissementBati = new JButton("Enrichissement bâti");
-  private JPanel pRoutier = new JPanel();
-  private JButton bEnrichissementRoutier = new JButton("Enrichissement routier");
-  private JPanel pHydro = new JPanel();
-  private JButton bEnrichissementHydro = new JButton(
+  private final JTabbedPane panneauOnglets = new JTabbedPane();
+  private final JPanel pChargement = new JPanel();
+  private final JPanel pEnrichissement = new JPanel();
+  private final JPanel pBati = new JPanel();
+  private final JButton bEnrichissementBati = new JButton("Enrichissement bâti");
+  private final JPanel pRoutier = new JPanel();
+  private final JButton bEnrichissementRoutier = new JButton(
+      "Enrichissement routier");
+  private final JPanel pHydro = new JPanel();
+  private final JButton bEnrichissementHydro = new JButton(
       "Enrichissement hydrographie");
 
   // private JPanel pRelief = new JPanel();
@@ -138,6 +139,7 @@ public class DataFrame extends JFrame {
                 .getNodes().size() == 0) {
               DataFrame.logger.info("Début enrichissement routier...");
               NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
+                  .getCurrentDataset(), CartAGenDoc.getInstance()
                   .getCurrentDataset().getRoadNetwork());
               DataFrame.logger.info("fin enrichissement routier");
             } else {
@@ -167,6 +169,7 @@ public class DataFrame extends JFrame {
                 .getNodes().size() == 0) {
               DataFrame.logger.info("Début enrichissement hydro...");
               NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
+                  .getCurrentDataset(), CartAGenDoc.getInstance()
                   .getCurrentDataset().getHydroNetwork());
               DataFrame.logger.info("fin enrichissement hydro");
             } else {

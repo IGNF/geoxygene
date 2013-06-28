@@ -93,7 +93,7 @@ public class CartagenApplication {
     return CartagenApplication.cartagenApplication;
   }
 
-  private double version = 0.13;
+  private final double version = 0.13;
 
   public double getVersion() {
     return this.version;
@@ -436,13 +436,13 @@ public class CartagenApplication {
     CartagenApplication.cartagenApplication.getFrameInit().repaint();
   }
 
-  private String cheminFichierConfigurationDonnees = "/configurationDonnees.xml";
+  private final String cheminFichierConfigurationDonnees = "/configurationDonnees.xml";
 
   public String getCheminFichierConfigurationChargementDonnees() {
     return this.cheminFichierConfigurationDonnees;
   }
 
-  private String cheminFichierConfigurationGeneralisation = "/configurationGeneralisation.xml";
+  private final String cheminFichierConfigurationGeneralisation = "/configurationGeneralisation.xml";
 
   public String getCheminFichierConfigurationGene() {
     return this.cheminFichierConfigurationGeneralisation;
@@ -556,12 +556,9 @@ public class CartagenApplication {
     // le document XML
     Document docXML = null;
     try {
-      docXML = DocumentBuilderFactory
-          .newInstance()
-          .newDocumentBuilder()
-          .parse(
-              CartagenApplication.class
-                  .getResourceAsStream(this.cheminFichierConfigurationDonnees));
+      docXML = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
+          CartagenApplication.class
+              .getResourceAsStream(this.cheminFichierConfigurationDonnees));
     } catch (FileNotFoundException e) {
       CartagenApplication.logger.error("Fichier non trouvé: "
           + this.cheminFichierConfigurationDonnees);
@@ -691,8 +688,18 @@ public class CartagenApplication {
       dataSet.getBuildings().initSpatialIndex(Tiling.class, false);
 
       progressFrame.setTextAndValue("Loading road network", 30);
-      if (dataSet.loadRoadLinesFromSHP(absolutePath + "/troncon_route",
-          sourceDlm, dataSet.getSymbols())) {
+      if (
+
+      dataSet.loadRoadLinesShapeFile(absolutePath + "/troncon_route",
+          sourceDlm, dataSet.getSymbols())
+      /*
+       * dataSet.loadRoadLinesFromSHP(absolutePath + "/troncon_route",
+       * sourceDlm, dataSet.getSymbols())
+       */
+
+      )
+
+      {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/troncon_route", IRoadLine.FEAT_TYPE_NAME);
@@ -704,8 +711,8 @@ public class CartagenApplication {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/troncon_cours_eau", IWaterLine.FEAT_TYPE_NAME);
       }
-      if (dataSet.loadWaterAreasFromSHP(absolutePath + "/surface_eau",
-          dataSet.getSymbols())) {
+      if (dataSet.loadWaterAreasFromSHP(absolutePath + "/surface_eau", dataSet
+          .getSymbols())) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/surface_eau", IWaterArea.FEAT_TYPE_NAME);
@@ -725,8 +732,8 @@ public class CartagenApplication {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/troncon_electrique", IElectricityLine.FEAT_TYPE_NAME);
       }
-      if (dataSet.loadContourLinesFromSHP(absolutePath + "/cn",
-          dataSet.getSymbols())) {
+      if (dataSet.loadContourLinesFromSHP(absolutePath + "/cn", dataSet
+          .getSymbols())) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/cn", IContourLine.FEAT_TYPE_NAME);
@@ -741,8 +748,8 @@ public class CartagenApplication {
       }
       dataSet.loadDEMPixelsFromSHP(absolutePath + "/mnt");
 
-      if (dataSet.loadSpotHeightsFromSHP(absolutePath + "/point_cote",
-          dataSet.getSymbols())) {
+      if (dataSet.loadSpotHeightsFromSHP(absolutePath + "/point_cote", dataSet
+          .getSymbols())) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/point_cote", ISpotHeight.FEAT_TYPE_NAME);
@@ -813,27 +820,6 @@ public class CartagenApplication {
 
   }
 
-  public void loadData_BDTopoV1(String absolutePath, int scale,
-      CartAGenDataSet dataSet) {
-    SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(SourceDLM.BD_TOPO_V1,
-        scale);
-    dataSet.setSymbols(SymbolList.getSymbolList(symbGroup));
-
-    try {
-      this.getDocument()
-          .getCurrentDataset()
-          .loadRoadLinesBDTopoV1_25FromSHP(
-              // absolutePath + "/A_RESEAU_ROUTIER/CHEMIN", 2.0);
-              absolutePath + "/troncon_route", 2.0, SourceDLM.BD_TOPO_V1,
-              this.getDocument().getCurrentDataset().getSymbols());
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    CartagenApplication.logger.info("tronçons chargés");
-  }
-
   public void loadData_BDTopoV2(String absolutePath, int scale,
       CartAGenDataSet dataSet) {
 
@@ -847,16 +833,16 @@ public class CartagenApplication {
     progressFrame.setTextAndValue("Loading road network", 0);
     ((ShapeFileDB) dataSet.getCartAGenDB()).setSystemPath(absolutePath);
     try {
-      if (dataSet.loadRoadLinesBDTopoV2_25FromSHP(absolutePath
-          + "/A_RESEAU_ROUTIER/ROUTE", SourceDLM.BD_TOPO_V2,
-          dataSet.getSymbols())) {
+      if (dataSet.loadRoadLinesShapeFile(absolutePath
+          + "/A_RESEAU_ROUTIER/ROUTE", SourceDLM.BD_TOPO_V2, dataSet
+          .getSymbols())) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/A_RESEAU_ROUTIER/ROUTE", IRoadLine.FEAT_TYPE_NAME);
       }
 
       if (dataSet.loadPathsBDTopoV2_25FromSHP(absolutePath
-          + "/A_RESEAU_ROUTIER/CHEMIN", SourceDLM.BD_TOPO_V2,
-          dataSet.getSymbols())) {
+          + "/A_RESEAU_ROUTIER/CHEMIN", SourceDLM.BD_TOPO_V2, dataSet
+          .getSymbols())) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/A_RESEAU_ROUTIER/CHEMIN", IPathLine.FEAT_TYPE_NAME);
       }
@@ -907,8 +893,8 @@ public class CartagenApplication {
           70);
 
       if (dataSet.loadRailwayLineFromSHP(absolutePath
-          + "/B_VOIES_FERREES_ET_AUTRES/TRONCON_VOIE_FERREE",
-          dataSet.getSymbols())) {
+          + "/B_VOIES_FERREES_ET_AUTRES/TRONCON_VOIE_FERREE", dataSet
+          .getSymbols())) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/B_VOIES_FERREES_ET_AUTRES/TRONCON_VOIE_FERREE",
             IRailwayLine.FEAT_TYPE_NAME);
@@ -957,35 +943,6 @@ public class CartagenApplication {
 
   }
 
-  private void loadData_BDCete1(String absolutePath, int scale,
-      CartAGenDataSet dataset) {
-
-    ProgressFrame progressFrame = new ProgressFrame(
-        "Data loading in progress...", true);
-    progressFrame.setVisible(true);
-
-    SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(SourceDLM.BD_Cete1,
-        scale);
-    dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
-
-    progressFrame.setTextAndValue("Loading road network", 0);
-
-    try {
-      dataset.loadRoadLinesFromSHPBasic(absolutePath + "/RESEAU_CG83_polyline",
-          0);// ,SourceDLM.BD_Cete1,dataset.getSymbols());
-
-      dataset.loadRoadLinesFromSHPBasic(absolutePath
-          + "/RESEAU_Etat_Var_polyline", 0);// ,SourceDLM.BD_Cete1,dataset.getSymbols());
-
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    progressFrame.dispose();
-
-  }
-
   public void loadData(String absolutePath, SourceDLM bdsource, int scale,
       CartAGenDataSet dataset) {
 
@@ -995,23 +952,12 @@ public class CartagenApplication {
 
     if (bdsource == SourceDLM.SPECIAL_CARTAGEN) {
       this.loadData_Special_Cartagen(absolutePath, bdsource, scale);
+
     } else if (bdsource == SourceDLM.BD_TOPO_V2) {
       this.loadData_BDTopoV2(absolutePath, scale, dataset);
-    } else if (bdsource == SourceDLM.BD_TOPO_V1) {
-      this.loadData_BDTopoV1(absolutePath, scale, dataset);
+
     } else if (bdsource == SourceDLM.BD_CARTO) {
       this.loadData_BDCarto(absolutePath, scale, dataset);
-
-    } else if (bdsource == SourceDLM.BD_Cete1) {
-      this.loadData_BDCete1(absolutePath, scale, dataset);
-
-    } else if (bdsource == SourceDLM.BD_OSInitial) {
-
-      this.loadData_BDOSInitial(absolutePath, scale, dataset);
-
-    } else if (bdsource == SourceDLM.BD_OSFinal) {
-
-      this.loadData_BDOSFinal(absolutePath, scale, dataset);
 
     }
 
@@ -1028,45 +974,6 @@ public class CartagenApplication {
         .activate();
     CartagenApplication.cartagenApplication.getFrame().getVisuPanel()
         .activateAutomaticRefresh();
-
-  }
-
-  private void loadData_BDOSInitial(String absolutePath, int scale,
-      CartAGenDataSet dataset) {
-
-    SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(SourceDLM.BD_OSInitial,
-        scale);
-    dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
-
-    ProgressFrame progressFrame = new ProgressFrame(
-        "Data loading in progress...", true);
-    progressFrame.setVisible(true);
-
-    progressFrame.setTextAndValue("Loading road network", 0);
-
-    dataset
-        .loadOSRoads(absolutePath + "/MAIA_NETWORK_LINK_FEAT_line", 0, "KEY");// ,SourceDLM.BD_Cete1,dataset.getSymbols());
-
-    progressFrame.dispose();
-
-  }
-
-  private void loadData_BDOSFinal(String absolutePath, int scale,
-      CartAGenDataSet dataset) {
-
-    SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(SourceDLM.BD_OSFinal,
-        scale);
-    dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
-
-    ProgressFrame progressFrame = new ProgressFrame(
-        "Data loading in progress...", true);
-    progressFrame.setVisible(true);
-
-    progressFrame.setTextAndValue("Loading road network", 0);
-
-    dataset.loadOSRoads(absolutePath + "/tout meridian", 0, "OSODR");// ,SourceDLM.BD_Cete1,dataset.getSymbols());
-
-    progressFrame.dispose();
 
   }
 
@@ -1101,7 +1008,8 @@ public class CartagenApplication {
         CartagenApplication.logger.info("road enrichment");
       }
       NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-          .getCurrentDataset().getRoadNetwork());
+          .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+          .getRoadNetwork());
 
     }
 
@@ -1149,7 +1057,8 @@ public class CartagenApplication {
         CartagenApplication.logger.info("hydrography enrichment");
       }
       NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-          .getCurrentDataset().getHydroNetwork());
+          .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+          .getHydroNetwork());
 
     }
 
@@ -1611,13 +1520,8 @@ public class CartagenApplication {
       CartagenApplication.getInstance().getFrame().getVisuPanel()
 
       .zoomToFullExtent();
-      CartAGenDoc
-          .getInstance()
-          .getCurrentDataset()
-          .getCartAGenDB()
-          .getDocument()
-          .getZone()
-          .setExtent(
+      CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
+          .getDocument().getZone().setExtent(
               new GM_Polygon(CartagenApplication.getInstance().getFrame()
                   .getVisuPanel().getEnvelope()));
 
@@ -1662,7 +1566,7 @@ public class CartagenApplication {
   private GeneObjImplementation geneObjImpl;
 
   public GeneObjImplementation getStandardImplementation() {
-    return geneObjImpl;
+    return this.geneObjImpl;
   }
 
   public void setStandardImplementation(GeneObjImplementation impl) {

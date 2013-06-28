@@ -85,8 +85,8 @@ public class LoaderUtil {
       // ||listefichiers[i].endsWith(".dbf")==true)
       // ||(listefichiers[i].endsWith(".shx")==true))
       {
-        listeFinaleDesFichiers.add(listefichier.substring(0,
-            listefichier.length() - 4));
+        listeFinaleDesFichiers.add(listefichier.substring(0, listefichier
+            .length() - 4));
       }
     }
     return listeFinaleDesFichiers;

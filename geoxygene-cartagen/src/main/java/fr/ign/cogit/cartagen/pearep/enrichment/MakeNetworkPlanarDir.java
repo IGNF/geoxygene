@@ -136,6 +136,7 @@ public class MakeNetworkPlanarDir extends ScaleMasterPreProcess {
        * .addNode(waterNode); }
        */
       NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
+          .getCurrentDataset(), CartAGenDoc.getInstance()
           .getCurrentDataset().getHydroNetwork(), false);
     }
   }

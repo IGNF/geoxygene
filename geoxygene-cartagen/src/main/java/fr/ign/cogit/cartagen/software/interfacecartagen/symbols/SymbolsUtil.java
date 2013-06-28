@@ -17,8 +17,7 @@ public class SymbolsUtil {
 
   public static SymbolGroup getSymbolGroup(SourceDLM sourceDlm, double scale) {
     // TODO
-    if (sourceDlm.equals(SourceDLM.BD_TOPO_V1)
-        || sourceDlm.equals(SourceDLM.BD_TOPO_V2)) {
+    if (sourceDlm.equals(SourceDLM.BD_TOPO_V2)) {
       if (scale < 35000 && scale >= 20000) {
         return SymbolGroup.BD_TOPO_25;
       }
@@ -33,9 +32,7 @@ public class SymbolsUtil {
   public static RoadSymbolResult getRoadSymbolFromFields(SourceDLM sourceDlm,
       SymbolList list, Map<String, Object> fields) {
 
-    if (sourceDlm.equals(SourceDLM.BD_TOPO_V1)) {
-      return SymbolsUtil.getRoadSymbolFromFieldsTopoV1(list, fields);
-    } else if (sourceDlm.equals(SourceDLM.BD_TOPO_V2)) {
+    if (sourceDlm.equals(SourceDLM.BD_TOPO_V2)) {
       return SymbolsUtil.getRoadSymbolFromFieldsTopoV2(list, fields);
     } else if (sourceDlm.equals(SourceDLM.BD_CARTO)) {
       return SymbolsUtil.getRoadSymbolFromFieldsCarto(list, fields);

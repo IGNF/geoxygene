@@ -82,8 +82,9 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-        .getCurrentDataset().getRoadNetwork(), deleted);
+    NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance().getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+        .getRoadNetwork(),  deleted);
+
 
     // get the eliminated features to compute strokes on
     HashMap<ArcReseau, IRoadLine> map = new HashMap<ArcReseau, IRoadLine>();

@@ -46,12 +46,16 @@ public class RoadNetworkMenu extends JMenu {
    */
   private static final long serialVersionUID = 1L;
 
-  private Logger logger = Logger.getLogger(RoadNetworkMenu.class.getName());
+  private final Logger logger = Logger.getLogger(RoadNetworkMenu.class
+      .getName());
 
-  private JMenuItem mResRoutierEnrich = new JMenuItem(new EnrichRoadNetAction());
-  private JMenuItem mNetworkFaces = new JMenuItem(new NetworkFacesAction());
-  private JMenuItem mResRoutierSelect = new JMenuItem(
-      new SelectSectionsAction());
+  private final JMenuItem mResRoutierEnrich = new JMenuItem(
+      new EnrichRoadNetAction());
+  private final JMenuItem mNetworkFaces = new JMenuItem(
+      new NetworkFacesAction());
+  private final JMenuItem mResRoutierSelect = new JMenuItem(
+
+  new SelectSectionsAction());
   public JCheckBoxMenuItem mNoeudsResRoutierVoir = new JCheckBoxMenuItem(
       "Display nodes");
   public JCheckBoxMenuItem mDegreNoeudsResRoutierVoir = new JCheckBoxMenuItem(
@@ -62,18 +66,18 @@ public class RoadNetworkMenu extends JMenu {
       "Display sections sinuosity value");
   public JCheckBoxMenuItem mRoutierVoirRouteDecalee = new JCheckBoxMenuItem(
       "Display offset road");
-  private JMenuItem mRoutierSupprimerImpasses = new JMenuItem(
+  private final JMenuItem mRoutierSupprimerImpasses = new JMenuItem(
       new DeleteDeadEndsAction());
-  private JMenuItem mRoutierDensifier = new JMenuItem(new DensifyAction());
-  private JMenuItem mRoutierAgregerTronconsAdjacentsAnalogues = new JMenuItem(
+  private final JMenuItem mRoutierDensifier = new JMenuItem(new DensifyAction());
+  private final JMenuItem mRoutierAgregerTronconsAdjacentsAnalogues = new JMenuItem(
       new AggregationAction());
-  private JMenuItem mRoutierDetectBranchings = new JMenuItem(
+  private final JMenuItem mRoutierDetectBranchings = new JMenuItem(
       new DetectBranchingsAction());
-  private JMenuItem mRoutierCollapseRoundabouts = new JMenuItem(
+  private final JMenuItem mRoutierCollapseRoundabouts = new JMenuItem(
       new CollapseRoundaboutsAction());
-  private JMenuItem mRoutierLissageGaussien = new JMenuItem(
+  private final JMenuItem mRoutierLissageGaussien = new JMenuItem(
       new GaussianSmoothingAction());
-  private JMenuItem mRoutierFiltrageCourbe = new JMenuItem(
+  private final JMenuItem mRoutierFiltrageCourbe = new JMenuItem(
       new CurvatureFilteringAction());
 
   public RoadNetworkMenu(String title) {
@@ -127,7 +131,8 @@ public class RoadNetworkMenu extends JMenu {
       RoadNetworkMenu.this.logger.info("Enrichment of "
           + CartAGenDoc.getInstance().getCurrentDataset().getRoadNetwork());
       NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-          .getCurrentDataset().getRoadNetwork());
+          .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+          .getRoadNetwork());
     }
 
     public EnrichRoadNetAction() {
@@ -280,7 +285,8 @@ public class RoadNetworkMenu extends JMenu {
                     .size());
           }
           NetworkEnrichment.aggregateAnalogAdjacentSections(CartAGenDoc
-              .getInstance().getCurrentDataset().getRoadNetwork());
+              .getInstance().getCurrentDataset(), CartAGenDoc.getInstance()
+              .getCurrentDataset().getRoadNetwork());
           if (RoadNetworkMenu.this.logger.isLoggable(Level.FINEST)) {
             RoadNetworkMenu.this.logger.finest("   final: nbTroncons="
                 + CartAGenDoc.getInstance().getCurrentDataset().getRoads()
@@ -312,7 +318,7 @@ public class RoadNetworkMenu extends JMenu {
     public void actionPerformed(ActionEvent e) {
       CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
       CrossRoadDetection detect = new CrossRoadDetection();
-      detect.detectRoundaboutsAndBranchingCartagen(dataset.getRoads());
+      detect.detectRoundaboutsAndBranchingCartagen(dataset);
       for (IRoundAbout round : dataset.getRoundabouts()) {
         CartagenApplication.getInstance().getFrame().getLayerManager()
             .addToGeometriesPool(round.getGeom());
@@ -380,9 +386,9 @@ public class RoadNetworkMenu extends JMenu {
             double symbolWidth = SectionSymbol.getUsedSymbolWidth(road) / 2;
             double sigma = 75.0 * symbolWidth;
 
-            ILineString filteredGeom = GaussianFilter.gaussianFilter(
-                road.getGeom(), sigma,
-                GeneralisationSpecifications.getRESOLUTION());
+            ILineString filteredGeom = GaussianFilter
+                .gaussianFilter(road.getGeom(), sigma,
+                    GeneralisationSpecifications.getRESOLUTION());
             road.setGeom(filteredGeom);
 
             if (RoadNetworkMenu.this.logger.isLoggable(Level.CONFIG)) {

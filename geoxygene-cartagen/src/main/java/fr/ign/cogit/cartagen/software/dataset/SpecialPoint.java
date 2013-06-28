@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.software.dataset;
 
@@ -15,14 +15,14 @@ package fr.ign.cogit.cartagen.software.dataset;
  */
 import java.awt.Color;
 
+import fr.ign.cogit.cartagen.core.defaultschema.GeneObjPointDefault;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
-import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 
 /**
  * to put any type of special points like accidents, intersectionriverRoad,
  * roundabout centers..
  */
-public class SpecialPoint extends DefaultFeature {
+public class SpecialPoint extends GeneObjPointDefault {
 
   SpecialPointType pointType;
   // a boolean to distinge the initial from the final special point
@@ -34,7 +34,7 @@ public class SpecialPoint extends DefaultFeature {
 
   @Override
   public IPoint getGeom() {
-    return (IPoint) super.getGeom();
+    return super.getGeom();
   }
 
   public static final String FEAT_TYPE_NAME = "SpecialPoint";

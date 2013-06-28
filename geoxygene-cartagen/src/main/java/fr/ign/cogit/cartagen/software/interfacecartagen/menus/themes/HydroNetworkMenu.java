@@ -34,10 +34,13 @@ public class HydroNetworkMenu extends JMenu {
    */
   private static final long serialVersionUID = 1L;
 
-  private Logger logger = Logger.getLogger(HydroNetworkMenu.class.getName());
+  private final Logger logger = Logger.getLogger(HydroNetworkMenu.class
+      .getName());
 
-  private JMenuItem mResHydroEnrich = new JMenuItem(new EnrichHydroNetAction());
-  private JMenuItem mResHydroSelect = new JMenuItem(new SelectSectionsAction());
+  private final JMenuItem mResHydroEnrich = new JMenuItem(
+      new EnrichHydroNetAction());
+  private final JMenuItem mResHydroSelect = new JMenuItem(
+      new SelectSectionsAction());
   public JCheckBoxMenuItem mVoirTauxSuperpositionRoutier = new JCheckBoxMenuItem(
       "Voir taux superposition routier");
   public JCheckBoxMenuItem mIdHydroVoir = new JCheckBoxMenuItem("Display id");
@@ -76,7 +79,8 @@ public class HydroNetworkMenu extends JMenu {
         }
         net.setSections(sections);
       }
-      NetworkEnrichment.enrichNetwork(net);
+      NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
+          .getCurrentDataset(), net);
     }
 
     public EnrichHydroNetAction() {

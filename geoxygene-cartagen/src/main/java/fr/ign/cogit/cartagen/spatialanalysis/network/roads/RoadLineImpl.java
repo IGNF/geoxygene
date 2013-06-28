@@ -280,6 +280,12 @@ public class RoadLineImpl extends TronconDeRouteImpl implements
     return text;
   }
 
+  @Override
+  public RoadLineImpl clone() {
+    return new RoadLineImpl(this.getReseau(), false, (ICurve) this.getGeom()
+        .clone());
+  }
+
   // //////////////////////////////////////////
   // Protected methods //
   // //////////////////////////////////////////
