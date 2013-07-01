@@ -12,18 +12,23 @@ package fr.ign.cogit.cartagen.genealgorithms.polygon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
@@ -405,6 +410,60 @@ public class Spinalize {
     }
     return listChemins;
 
+  }
+
+  /**
+   * Connect a linear network to the nearest node of a skeleton.
+   * @param skeleton
+   * @param network
+   * @param polygon
+   */
+  public static Set<ILineString> connectSkeletonToNetwork(
+      Set<ILineSegment> skeleton, Set<ILineString> network, IPolygon polygon) {
+    Set<ILineString> extendedSkeleton = new HashSet<ILineString>();
+    // first, find the intersection between the network and the polygon
+    Set<IPoint> intersections = new HashSet<IPoint>();
+    for (ILineString line : network) {
+      if (line.intersects(polygon)) {
+        if (line.intersection(polygon) instanceof IPoint)
+          intersections.add((IPoint) line.intersection(polygon));
+        else if (line.intersection(polygon) instanceof IMultiPoint) {
+          IMultiPoint inter = (IMultiPoint) line.intersection(polygon);
+          for (int i = 0; i < inter.getList().size(); i++) {
+            intersections.add(inter.get(i));
+          }
+        }
+      }
+    }
+
+    for (IPoint point : intersections) {
+      double distanceMin = Double.MAX_VALUE;
+      IDirectPosition dpMin = null;
+      for (ILineSegment segment : skeleton) {
+        extendedSkeleton.add(segment);
+        double distanceMinSegment;
+        IDirectPosition dpMinSegment = null;
+        IDirectPosition dpStart = segment.startPoint();
+        IDirectPosition dpEnd = segment.endPoint();
+        double distanceStart = point.getPosition().distance2D(dpStart);
+        double distanceEnd = point.getPosition().distance2D(dpEnd);
+        if (distanceStart > distanceEnd) {
+          distanceMinSegment = distanceEnd;
+          dpMinSegment = dpEnd;
+        } else {
+          distanceMinSegment = distanceStart;
+          dpMinSegment = dpStart;
+        }
+        if (distanceMinSegment < distanceMin) {
+          distanceMin = distanceMinSegment;
+          dpMin = dpMinSegment;
+        }
+      }
+      ILineString lsConnect = new GM_LineString(point.getPosition(), dpMin);
+      extendedSkeleton.add(lsConnect);
+    }
+
+    return extendedSkeleton;
   }
 
 }
