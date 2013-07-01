@@ -114,6 +114,8 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   private Set<ScaleMasterPreProcess> preProcs;
 
   private JButton btnOk, btnCancel, btnAddLine, btnAddElement, btnEditElement;
+  private JButton btnUp, btnDown, btnTop, btnBottom;
+  private ImageIcon iconUp, iconDown, iconTop, iconBottom;
   private JTextField txtName;
   private JSpinner spMin, spMax;
   private JComboBox cbPtOfView, cbDbs;
@@ -168,6 +170,14 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       this.setGeoClasses();
     this.current = new ScaleMaster();
     initThemes(themeFile);
+    this.iconUp = new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
+        .getResource("images/icons/16x16/chevron_haut.png"));
+    this.iconTop = new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
+        .getResource("images/icons/16x16/chevron_double_haut.png"));
+    this.iconDown = new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
+        .getResource("images/icons/16x16/chevron_bas.png"));
+    this.iconBottom = new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
+        .getResource("images/icons/16x16/chevron_double_bas.png"));
     buildFrameComponents();
   }
 
@@ -250,9 +260,29 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.btnEditElement = new JButton(this.lblEditElement);
     this.btnEditElement.addActionListener(this);
     this.btnEditElement.setActionCommand("edit");
+    this.btnUp = new JButton(iconUp);
+    this.btnUp.addActionListener(this);
+    this.btnUp.setActionCommand("up");
+    this.btnUp.setEnabled(false);
+    this.btnDown = new JButton(iconDown);
+    this.btnDown.addActionListener(this);
+    this.btnDown.setActionCommand("down");
+    this.btnDown.setEnabled(false);
+    this.btnTop = new JButton(iconTop);
+    this.btnTop.addActionListener(this);
+    this.btnTop.setActionCommand("top");
+    this.btnTop.setEnabled(false);
+    this.btnBottom = new JButton(iconBottom);
+    this.btnBottom.addActionListener(this);
+    this.btnBottom.setActionCommand("bottom");
+    this.btnBottom.setEnabled(false);
     pEdition.add(this.btnAddLine);
     pEdition.add(this.btnAddElement);
     pEdition.add(this.btnEditElement);
+    pEdition.add(this.btnUp);
+    pEdition.add(this.btnDown);
+    pEdition.add(this.btnTop);
+    pEdition.add(this.btnBottom);
     pEdition.setLayout(new BoxLayout(pEdition, BoxLayout.X_AXIS));
 
     // a panel to display the scale master
@@ -467,6 +497,40 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       } catch (ClassNotFoundException e1) {
         e1.printStackTrace();
       }
+    } else if (e.getActionCommand().equals("up")) {
+      int index = this.current.getScaleLines().indexOf(selectedLine);
+      this.current.getScaleLines().remove(index);
+      this.current.getScaleLines().add(index - 1, selectedLine);
+      Component comp = this.getDisplayPanel().getComponent(index + 1);
+      this.getDisplayPanel().remove(comp);
+      this.getDisplayPanel().add(comp, index);
+      this.pack();
+    } else if (e.getActionCommand().equals("down")) {
+      int index = this.current.getScaleLines().indexOf(selectedLine);
+      this.current.getScaleLines().remove(index);
+      this.current.getScaleLines().add(index + 1, selectedLine);
+      Component comp = this.getDisplayPanel().getComponent(index + 1);
+      this.getDisplayPanel().remove(comp);
+      this.getDisplayPanel().add(comp, index + 2);
+      this.pack();
+    } else if (e.getActionCommand().equals("top")) {
+      int index = this.current.getScaleLines().indexOf(selectedLine);
+      this.current.getScaleLines().remove(index);
+      this.current.getScaleLines().add(0, selectedLine);
+      Component comp = this.getDisplayPanel().getComponent(index + 1);
+      this.getDisplayPanel().remove(comp);
+      this.getDisplayPanel().add(comp, 1);
+      this.pack();
+    } else if (e.getActionCommand().equals("bottom")) {
+      int index = this.current.getScaleLines().indexOf(selectedLine);
+      this.current.getScaleLines().remove(index);
+      this.current.getScaleLines().add(this.current.getScaleLines().size(),
+          selectedLine);
+      Component comp = this.getDisplayPanel().getComponent(index + 1);
+      this.getDisplayPanel().remove(comp);
+      this.getDisplayPanel().add(comp,
+          this.getDisplayPanel().getComponentCount());
+      this.pack();
     }
   }
 
@@ -1028,4 +1092,21 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     }
     return null;
   }
+
+  public JButton getBtnUp() {
+    return btnUp;
+  }
+
+  public JButton getBtnDown() {
+    return btnDown;
+  }
+
+  public JButton getBtnTop() {
+    return btnTop;
+  }
+
+  public JButton getBtnBottom() {
+    return btnBottom;
+  }
+
 }

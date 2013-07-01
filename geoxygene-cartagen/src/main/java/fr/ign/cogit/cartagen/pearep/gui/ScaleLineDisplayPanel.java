@@ -153,10 +153,18 @@ public class ScaleLineDisplayPanel extends JPanel implements ActionListener {
         this.repaint();
         this.frame.resetAllToggles(this);
         this.frame.setSelectedLine(this.scaleLine);
+        this.frame.getBtnUp().setEnabled(true);
+        this.frame.getBtnDown().setEnabled(true);
+        this.frame.getBtnTop().setEnabled(true);
+        this.frame.getBtnBottom().setEnabled(true);
       } else {
         this.setOpaque(false);
         this.repaint();
         this.frame.setSelectedLine(null);
+        this.frame.getBtnUp().setEnabled(false);
+        this.frame.getBtnDown().setEnabled(false);
+        this.frame.getBtnTop().setEnabled(false);
+        this.frame.getBtnBottom().setEnabled(false);
       }
       this.frame.pack();
     }

@@ -9,8 +9,8 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.mrdb.scalemaster;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import fr.ign.cogit.cartagen.mrdb.MRDBPointOfView;
@@ -37,7 +37,7 @@ public class ScaleMaster {
   /**
    * The scale lines of {@code this} {@link ScaleMaster}.
    */
-  private Set<ScaleLine> scaleLines;
+  private List<ScaleLine> scaleLines;
 
   /**
    * The point of view adopted for {@code this} {@link ScaleMaster}
@@ -67,14 +67,14 @@ public class ScaleMaster {
    * Default constructor.
    */
   public ScaleMaster() {
-    this.scaleLines = new HashSet<ScaleLine>();
+    this.scaleLines = new ArrayList<ScaleLine>();
   }
 
-  public Set<ScaleLine> getScaleLines() {
+  public List<ScaleLine> getScaleLines() {
     return scaleLines;
   }
 
-  public void setScaleLines(Set<ScaleLine> scaleLines) {
+  public void setScaleLines(List<ScaleLine> scaleLines) {
     this.scaleLines = scaleLines;
   }
 

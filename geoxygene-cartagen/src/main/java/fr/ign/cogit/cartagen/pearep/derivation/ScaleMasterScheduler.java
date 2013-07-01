@@ -51,6 +51,7 @@ import fr.ign.cogit.cartagen.pearep.derivation.processes.KMeansClusteringProcess
 import fr.ign.cogit.cartagen.pearep.derivation.processes.PointsConvexHullProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.PointsNonConvexHullProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.PolygonSimplification;
+import fr.ign.cogit.cartagen.pearep.derivation.processes.RailwaySelectionProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RaposoSimplifProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RiverStrokeSelectionProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RunwaySimplificationProcess;
@@ -264,6 +265,7 @@ public class ScaleMasterScheduler {
     this.availableProcesses.add(PointsNonConvexHullProcess.getInstance());
     this.availableProcesses.add(TaxiwaySimplificationProcess.getInstance());
     this.availableProcesses.add(RiverStrokeSelectionProcess.getInstance());
+    this.availableProcesses.add(RailwaySelectionProcess.getInstance());
     for (ScaleMasterGeneProcess proc : availableProcesses)
       proc.setScaleMaster(scaleMaster);
     this.availableMultiProcesses = new HashSet<ScaleMasterMultiProcess>();
