@@ -28,6 +28,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -35,6 +36,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Rectangle;
+import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
@@ -330,87 +332,113 @@ public class Arc extends ElementCarteTopo {
 
   /**
    * Projete le point P sur l'arc et découpe l'arc en 2 avec ce noeud projeté.
-   * NB: si la projection tombe sur une extrémité de l'arc : ne fait rien. TODO
-   * ATTENTION : il reste du nettoyage à faire !!!
+   * NB: si la projection tombe sur une extrémité de l'arc : ne fait rien. 
+   * 
+   * TODO ATTENTION : il reste du nettoyage à faire !!!
    * @param n noeud projeté sur l'arc this afin de le découper
    */
   public List<Arc> projeteEtDecoupe(Noeud n) {
-    if (this.getCarteTopo() == null) {
-      return null;
-    }
-    final IDirectPositionList listePoints = this.getGeometrie().getControlPoint();
-    if (listePoints.size() < 2) {
-      return null;
-    }
-    IPopulation<Arc> popArcs = this.getCarteTopo().getPopArcs();
-    IDirectPositionList ptsAvant, ptsApres;
-    Arc arcAvant, arcApres;
-    int positionMin = 0;
-    int i;
-    IDirectPosition ptmin = Operateurs.projection(n.getGeometrie().getPosition(),
-        listePoints.get(0), listePoints.get(1));
-    double dmin = n.getGeometrie().getPosition().distance(ptmin);
-    for (i = 1; i < listePoints.size() - 1; i++) {
-      IDirectPosition pt = Operateurs.projection(n.getGeometrie().getPosition(),
-          listePoints.get(i), listePoints.get(i + 1));
-      double d = n.getGeometrie().getPosition().distance(pt);
-      if (d < dmin) {
-        ptmin = pt;
-        dmin = d;
-        positionMin = i;
+    
+      if (this.getCarteTopo() == null) {
+          return null;
       }
-    }
-    if (ptmin.distance(listePoints.get(0)) == 0) {
-      return null;
-    }
-    if (ptmin.distance(listePoints.get(listePoints.size() - 1)) == 0) {
-      return null;
-    }
-    // modification de la géométrie du noeud et de ses arcs
-    for (Arc arc : n.arcs()) {
-      if (arc.getGeometrie().getControlPoint(0)
-          .equals(n.getGeometrie().getPosition())) {
-        arc.getGeometrie().setControlPoint(0, ptmin);
-      } else {
-        arc.getGeometrie().setControlPoint(
-            arc.getGeometrie().sizeControlPoint() - 1, ptmin);
+    
+      final IDirectPositionList listePoints = this.getGeometrie().getControlPoint();
+      if (listePoints.size() < 2) {
+          return null;
       }
-    }
-    n.setGeometrie(new GM_Point(ptmin));
-    // création des nouveaux arcs
-    ptsAvant = new DirectPositionList();
-    ptsApres = new DirectPositionList();
-    for (i = 0; i <= positionMin; i++) {
-      ptsAvant.add(listePoints.get(i));
-    }
-    ptsAvant.add(ptmin);
-    arcAvant = popArcs.nouvelElement(new GM_LineString(ptsAvant, false));
-    if (ptmin.distance(listePoints.get(positionMin + 1)) != 0) {
-      ptsApres.add(ptmin);
-    }
-    for (i = positionMin + 1; i < listePoints.size(); i++) {
-      ptsApres.add(listePoints.get(i));
-    }
-    arcApres = popArcs.nouvelElement(new GM_LineString(ptsApres, false));
-    // instanciation de la topologie et des attributs
-    this.getNoeudIni().getSortants().remove(this);
-    arcAvant.setNoeudIni(this.getNoeudIni());
-    arcAvant.setNoeudFin(n);
-    arcAvant.setCorrespondants(this.getCorrespondants());
-    arcAvant.setOrientation(this.getOrientation());
-    arcApres.setNoeudIni(n);
-    this.getNoeudFin().getEntrants().remove(this);
-    arcApres.setNoeudFin(this.getNoeudFin());
-    arcApres.setCorrespondants(this.getCorrespondants());
-    arcApres.setOrientation(this.getOrientation());
-    // destruction de l'ancien arc
-    this.setNoeudIni(null);
-    this.setNoeudFin(null);
-    popArcs.enleveElement(this);
-    List<Arc> newEdges = new ArrayList<Arc>(2);
-    newEdges.add(arcAvant);
-    newEdges.add(arcApres);
-    return newEdges;
+    
+      IPopulation<Arc> popArcs = this.getCarteTopo().getPopArcs();
+      IDirectPositionList ptsAvant, ptsApres;
+      Arc arcAvant, arcApres;
+      int positionMin = 0;
+      int i;
+      
+      IDirectPosition ptmin = Operateurs.projection(n.getGeometrie().getPosition(),
+              listePoints.get(0), listePoints.get(1));
+      double dmin = n.getGeometrie().getPosition().distance(ptmin);
+    
+      for (i = 1; i < listePoints.size() - 1; i++) {
+          IDirectPosition pt = Operateurs.projection(n.getGeometrie().getPosition(),
+                  listePoints.get(i), listePoints.get(i + 1));
+          double d = n.getGeometrie().getPosition().distance(pt);
+          if (d < dmin) {
+              ptmin = pt;
+              dmin = d;
+              positionMin = i;
+          }
+      }
+      
+      if (ptmin.distance(listePoints.get(0)) == 0) {
+          return null;
+      }
+      
+      if (ptmin.distance(listePoints.get(listePoints.size() - 1)) == 0) {
+          return null;
+      }
+      
+      // modification de la géométrie du noeud et de ses arcs
+      for (Arc arc : n.arcs()) {
+          if (arc.getGeometrie().getControlPoint(0).equals(n.getGeometrie().getPosition())) {
+              arc.getGeometrie().setControlPoint(0, ptmin);
+          } else {
+              arc.getGeometrie().setControlPoint(
+                      arc.getGeometrie().sizeControlPoint() - 1, ptmin);
+          }
+      }
+      n.setGeometrie(new GM_Point(ptmin));
+    
+      // création des nouveaux arcs
+      ptsAvant = new DirectPositionList();
+      ptsApres = new DirectPositionList();
+      for (i = 0; i <= positionMin; i++) {
+          ptsAvant.add(listePoints.get(i));
+      }
+      ptsAvant.add(ptmin);
+      arcAvant = popArcs.nouvelElement(new GM_LineString(ptsAvant, false));
+      if (ptmin.distance(listePoints.get(positionMin + 1)) != 0) {
+          ptsApres.add(ptmin);
+      }
+      for (i = positionMin + 1; i < listePoints.size(); i++) {
+          ptsApres.add(listePoints.get(i));
+      }
+      arcApres = popArcs.nouvelElement(new GM_LineString(ptsApres, false));
+      // instanciation de la topologie et des attributs
+      this.getNoeudIni().getSortants().remove(this);
+      arcAvant.setNoeudIni(this.getNoeudIni());
+      arcAvant.setNoeudFin(n);
+      arcAvant.setCorrespondants(this.getCorrespondants());
+      arcAvant.setOrientation(this.getOrientation());
+      arcApres.setNoeudIni(n);
+      this.getNoeudFin().getEntrants().remove(this);
+      arcApres.setNoeudFin(this.getNoeudFin());
+      arcApres.setCorrespondants(this.getCorrespondants());
+      arcApres.setOrientation(this.getOrientation());
+      
+      // Transfert des attributs
+      arcAvant.setSchema(getSchema());
+      arcApres.setSchema(getSchema());
+      if (this.getFeatureType() != null && this.getFeatureType().getFeatureAttributes() != null) {
+          Object[] valAttribute = new Object[this.getFeatureType().getFeatureAttributes().size()];
+          for (int j = 0; j < this.getFeatureType().getFeatureAttributes().size(); j++) {
+              GF_AttributeType attributeType = this.getFeatureType().getFeatureAttributes().get(j);
+              String name = attributeType.getMemberName();
+              valAttribute[j] = this.getAttribute(name);
+          }
+          arcAvant.setAttributes(valAttribute);
+          arcApres.setAttributes(valAttribute);
+      }
+      
+      // Destruction de l'ancien arc
+      this.setNoeudIni(null);
+      this.setNoeudFin(null);
+      popArcs.enleveElement(this);
+      
+      List<Arc> newEdges = new ArrayList<Arc>(2);
+      newEdges.add(arcAvant);
+      newEdges.add(arcApres);
+      
+      return newEdges;
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////////

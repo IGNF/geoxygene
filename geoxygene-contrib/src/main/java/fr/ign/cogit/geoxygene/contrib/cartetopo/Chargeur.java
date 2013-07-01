@@ -302,8 +302,8 @@ public class Chargeur {
               // LOGGER.debug(value + " -> " + orientation);
               arc.setOrientation(orientation.intValue());
             } else {
-              Chargeur.logger.error(value + " not found in map for element "
-                  + element.getGeom());
+              Chargeur.logger.error(value + "(" + value.getClass() + ")" + " not found in map for attribute "
+                  + orientationAttribute + ", element = " + element.getGeom());
             }
           } else {
             if (value instanceof Number) {

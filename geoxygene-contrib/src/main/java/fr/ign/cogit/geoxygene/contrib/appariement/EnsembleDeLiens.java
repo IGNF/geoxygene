@@ -68,13 +68,21 @@ public class EnsembleDeLiens extends Population<Lien> {
     type.setValueType(valueType);
     newFeatureType.addFeatureAttribute(type);
     
-    AttributeType type2 = new AttributeType();
+    /*AttributeType type2 = new AttributeType();
     String memberName2 = "commentaire"; //$NON-NLS-1$
     String valueType2 = "String"; //$NON-NLS-1$
     type2.setNomField(memberName2);
     type2.setMemberName(memberName2);
     type2.setValueType(valueType2);
     newFeatureType.addFeatureAttribute(type2);
+    
+    AttributeType type3 = new AttributeType();
+    String memberName3 = "comparaison"; //$NON-NLS-1$
+    String valueType3 = "String"; //$NON-NLS-1$
+    type3.setNomField(memberName3);
+    type3.setMemberName(memberName3);
+    type3.setValueType(valueType3);
+    newFeatureType.addFeatureAttribute(type3);*/
     
     /** création d'un schéma associé au featureType */
     newFeatureType.setGeometryType(IMultiCurve.class);

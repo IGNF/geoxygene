@@ -77,7 +77,8 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 @Entity
 public class Population<Feat extends IFeature> extends
     FT_FeatureCollection<Feat> implements IPopulation<Feat> {
-  /** Identifiant. Correspond au "cogitID" des tables du SGBD. */
+  
+    /** Identifiant. Correspond au "cogitID" des tables du SGBD. */
   protected int id;
 
   @Override

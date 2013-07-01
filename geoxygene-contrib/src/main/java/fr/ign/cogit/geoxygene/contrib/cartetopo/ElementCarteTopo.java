@@ -19,38 +19,52 @@
 
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.contrib.I18N;
-import fr.ign.cogit.geoxygene.feature.AbstractFeature;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 
 /**
+ * 
  * Topological map element.
+ * 
  */
-public class ElementCarteTopo extends AbstractFeature {
-
-  public ElementCarteTopo() {
-    super();
-  }
-
-  public ElementCarteTopo(IGeometry geometry) {
-    super(geometry);
-  }
-
-  /**
-   * @return la carte topologique à laquelle appartient cet élément
-   */
-  public CarteTopo getCarteTopo() {
-    if (this.getPopulation() == null) {
-      AbstractFeature.getLogger().error(
-          I18N.getString("ElementCarteTopo.NoPopulation") + this); //$NON-NLS-1$
-      return null;
+public class ElementCarteTopo extends DefaultFeature {
+  
+    /** Logger. */
+    private static final Logger LOGGER = Logger.getLogger(ElementCarteTopo.class.getName());
+    
+    /**
+     * Default constructor.
+     */
+    public ElementCarteTopo() {
+        super();
     }
-    return (CarteTopo) this.getPopulation().getDataSet();
-  }
 
-  @Override
-  public ElementCarteTopo cloneGeom() throws CloneNotSupportedException {
+    /**
+     * 
+     * @param geometry
+     */
+    public ElementCarteTopo(IGeometry geometry) {
+        super(geometry);
+        System.out.println("Constructeur avec geometrie");
+    }
+    
 
-    return new ElementCarteTopo((IGeometry) this.getGeom().clone());
-  }
+    /**
+     * @return la carte topologique à laquelle appartient cet élément
+     */
+    public CarteTopo getCarteTopo() {
+        if (this.getPopulation() == null) {
+            LOGGER.error("This feature has no population " + this);
+            return null;
+        }
+        return (CarteTopo) this.getPopulation().getDataSet();
+    }
+
+    @Override
+    public ElementCarteTopo cloneGeom() throws CloneNotSupportedException {
+        return new ElementCarteTopo((IGeometry) this.getGeom().clone());
+    }
+
 }

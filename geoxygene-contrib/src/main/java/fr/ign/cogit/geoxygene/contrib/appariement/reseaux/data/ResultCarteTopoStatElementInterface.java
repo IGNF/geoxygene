@@ -38,5 +38,14 @@ public interface ResultCarteTopoStatElementInterface {
      */
     int NB_NOEUDS_ISOLES = 6;
 
+    /**
+     * Nombre d'éléments après filtre des noeuds simples (arcs incidents).
+     */
+    int NB_FILTRE_ARCS_INCIDENTS = 7;
+    
+    /**
+     * Nombre d'éléments après fusion des arcs en doubles.
+     */
+    int NB_FUSION_ARCS_DOUBLES = 8;
     
 }

@@ -478,7 +478,7 @@ public class Noeud extends ElementCarteTopo {
    */
   public Groupe plusCourtChemin(Noeud arrivee, double maxLongueur) {
     
-    Noeud.logger.debug("shortest path between " + this.getCoord() + " - " + arrivee.getCoord());
+    // Noeud.logger.debug("shortest path between " + this.getCoord() + " - " + arrivee.getCoord());
     
     List<Noeud> noeudsFinaux = new ArrayList<Noeud>(0);
     List<Arc> arcsFinaux = new ArrayList<Arc>(0);
@@ -552,7 +552,7 @@ public class Noeud extends ElementCarteTopo {
         }
         if (maxLongueur != 0) {
           if (plusProche.distance > maxLongueur) {
-            Noeud.logger.debug("Trop long, on s'arrête");
+            //Noeud.logger.debug("Trop long, on s'arrête");
             return null; // heuristique pour stopper la recherche
           }
         }
