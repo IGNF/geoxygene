@@ -15,6 +15,7 @@ import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.cartagen.core.genericschema.road.TronconDeRouteImplWithAttributes;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.schemageo.api.routier.TronconDeRoute;
