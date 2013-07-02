@@ -1,6 +1,5 @@
-package fr.ign.cogit.cartagen.core.genericschema.road;
+package fr.ign.cogit.cartagen.spatialanalysis.network.roads;
 
-import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RoadLineImpl;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
