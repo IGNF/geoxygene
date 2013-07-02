@@ -174,15 +174,18 @@ public class Arc extends ElementCarteTopo {
    * @return la liste des arcs créés
    */
   public List<Arc> projeteEtDecoupe(IPoint p, int first, int last) {
-    if (this.getCarteTopo() == null) {
-      return null;
-    }
-    final IDirectPositionList points = this.getGeometrie().getControlPoint();
-    if (points.size() < 2) {
-      return null;
-    }
-    // make sure to remove duplicates
-    this.setGeometrie(new GM_LineString(this.getGeometrie().getControlPoint(), false));
+      
+      if (this.getCarteTopo() == null) {
+          return null;
+      }
+      
+      final IDirectPositionList points = this.getGeometrie().getControlPoint();
+      if (points.size() < 2) {
+          return null;
+      }
+      
+      // make sure to remove duplicates
+      this.setGeometrie(new GM_LineString(this.getGeometrie().getControlPoint(), false));
     IPopulation<Noeud> popNoeuds = this.getCarteTopo().getPopNoeuds();
     IPopulation<Arc> popArcs = this.getCarteTopo().getPopArcs();
     IDirectPosition ptmin = null;
@@ -219,14 +222,15 @@ public class Arc extends ElementCarteTopo {
       ptsAvant.add(points.get(i));
     }
     ptsAvant.add(ptmin);
-    Arc arcAvant = popArcs.nouvelElement(new GM_LineString(ptsAvant, false));
-//    if (ptmin.distance(listePoints.get(positionMin + 1)) != 0) {
+    
+      Arc arcAvant = popArcs.nouvelElement(new GM_LineString(ptsAvant, false));
+      //    if (ptmin.distance(listePoints.get(positionMin + 1)) != 0) {
       ptsApres.add(ptmin);
-//    }
-    for (int i = positionMin + 1; i < points.size(); i++) {
-      ptsApres.add(points.get(i));
-    }
-    Arc arcApres = popArcs.nouvelElement(new GM_LineString(ptsApres, false));
+      //    }
+      for (int i = positionMin + 1; i < points.size(); i++) {
+          ptsApres.add(points.get(i));
+      }
+      Arc arcApres = popArcs.nouvelElement(new GM_LineString(ptsApres, false));
     // instanciation de la topologie et des attributs
     Noeud initialNode = this.getNoeudIni();
     initialNode.getSortants().remove(this);
@@ -240,14 +244,31 @@ public class Arc extends ElementCarteTopo {
     arcApres.setNoeudFin(finalNode);
     arcApres.setCorrespondants(this.getCorrespondants());
     arcApres.setOrientation(this.getOrientation());
-    // destruction de l'ancien arc
-    this.setNoeudIni(null);
-    this.setNoeudFin(null);
-    popArcs.enleveElement(this);
-    List<Arc> newEdges = new ArrayList<Arc>(2);
-    newEdges.add(arcAvant);
-    newEdges.add(arcApres);
-    return newEdges;
+      
+    // Transfert des attributs
+    arcAvant.setSchema(getSchema());
+    arcApres.setSchema(getSchema());
+    if (this.getFeatureType() != null && this.getFeatureType().getFeatureAttributes() != null) {
+        Object[] valAttribute = new Object[this.getFeatureType().getFeatureAttributes().size()];
+        for (int j = 0; j < this.getFeatureType().getFeatureAttributes().size(); j++) {
+            GF_AttributeType attributeType = this.getFeatureType().getFeatureAttributes().get(j);
+            String name = attributeType.getMemberName();
+            valAttribute[j] = this.getAttribute(name);
+        }
+        arcAvant.setAttributes(valAttribute);
+        arcApres.setAttributes(valAttribute);
+    }
+      
+      // destruction de l'ancien arc
+      this.setNoeudIni(null);
+      this.setNoeudFin(null);
+      popArcs.enleveElement(this);
+      
+      // return newEdges
+      List<Arc> newEdges = new ArrayList<Arc>(2);
+      newEdges.add(arcAvant);
+      newEdges.add(arcApres);
+      return newEdges;
   }
 
   /**

@@ -1814,6 +1814,7 @@ public class CarteTopo extends DataSet {
      */
     public void projete(CarteTopo ct, double distanceMaxNoeudArc, double distanceMaxProjectionNoeud,
             boolean impassesSeulement) {
+        
         if (!this.getPopArcs().hasSpatialIndex()) {
             int nb = (int) Math.sqrt(this.getPopArcs().size() / 20);
             if (nb == 0) {
@@ -1821,6 +1822,7 @@ public class CarteTopo extends DataSet {
             }
             this.getPopArcs().initSpatialIndex(Tiling.class, true, nb);
         }
+        
         for (Noeud noeud : ct.getPopNoeuds()) {
             if (impassesSeulement && (noeud.arcs().size() != 1)) {
                 continue;
