@@ -8,7 +8,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 
 /**
- * 
+ * Jeux de données : lineaires et ponctuels
  * 
  *
  */

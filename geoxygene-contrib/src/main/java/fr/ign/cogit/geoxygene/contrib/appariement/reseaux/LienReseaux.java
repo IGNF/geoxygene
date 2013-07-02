@@ -627,8 +627,7 @@ public class LienReseaux extends Lien {
         geomLien.add(ligne);
       }
       if (LienReseaux.logger.isDebugEnabled()) {
-        LienReseaux.logger
-            .debug(I18N.getString("LienReseaux.LinkGeometry") + geomLien); //$NON-NLS-1$
+        // LienReseaux.logger.debug(I18N.getString("LienReseaux.LinkGeometry") + geomLien); //$NON-NLS-1$
       }
       if (geomLien.coord().size() > 1) {
         return geomLien;

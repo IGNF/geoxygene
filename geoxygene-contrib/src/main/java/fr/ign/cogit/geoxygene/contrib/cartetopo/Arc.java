@@ -36,7 +36,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Rectangle;
-import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
@@ -246,8 +245,8 @@ public class Arc extends ElementCarteTopo {
     arcApres.setOrientation(this.getOrientation());
       
     // Transfert des attributs
-    arcAvant.setSchema(getSchema());
-    arcApres.setSchema(getSchema());
+    arcAvant.setSchema(this.getSchema());
+    arcApres.setSchema(this.getSchema());
     if (this.getFeatureType() != null && this.getFeatureType().getFeatureAttributes() != null) {
         Object[] valAttribute = new Object[this.getFeatureType().getFeatureAttributes().size()];
         for (int j = 0; j < this.getFeatureType().getFeatureAttributes().size(); j++) {
@@ -437,8 +436,8 @@ public class Arc extends ElementCarteTopo {
       arcApres.setOrientation(this.getOrientation());
       
       // Transfert des attributs
-      arcAvant.setSchema(getSchema());
-      arcApres.setSchema(getSchema());
+      arcAvant.setSchema(this.getSchema());
+      arcApres.setSchema(this.getSchema());
       if (this.getFeatureType() != null && this.getFeatureType().getFeatureAttributes() != null) {
           Object[] valAttribute = new Object[this.getFeatureType().getFeatureAttributes().size()];
           for (int j = 0; j < this.getFeatureType().getFeatureAttributes().size(); j++) {

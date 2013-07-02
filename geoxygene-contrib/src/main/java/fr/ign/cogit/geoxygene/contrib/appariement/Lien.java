@@ -36,7 +36,10 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
+import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
@@ -51,7 +54,35 @@ import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
  * @author Mustiere / IGN Laboratoire COGIT
  * @version 1.0
  */
-public class Lien extends FT_Feature {
+public class Lien extends DefaultFeature {
+    
+    public Lien() {
+        SchemaDefaultFeature schemaDefaultFeature = new SchemaDefaultFeature();
+        schemaDefaultFeature.setNom("lien");
+        schemaDefaultFeature.setNomSchema("lien");
+        this.setSchema(schemaDefaultFeature);
+        
+        FeatureType newFeatureType = new FeatureType();
+        AttributeType type = new AttributeType();
+        String memberName = "evaluation"; //$NON-NLS-1$
+        String valueType = "Double"; //$NON-NLS-1$
+        type.setNomField(memberName);
+        type.setMemberName(memberName);
+        type.setValueType(valueType);
+        newFeatureType.addFeatureAttribute(type);
+        
+        /*AttributeType type2 = new AttributeType();
+        String memberName2 = "commentaire"; //$NON-NLS-1$
+        String valueType2 = "String"; //$NON-NLS-1$
+        type2.setNomField(memberName2);
+        type2.setMemberName(memberName2);
+        type2.setValueType(valueType2);
+        newFeatureType.addFeatureAttribute(type2);*/
+        
+        this.setFeatureType(newFeatureType);
+    }
+    
+    
   /**
    * Les objets d'une BD pointés par le lien.
    */

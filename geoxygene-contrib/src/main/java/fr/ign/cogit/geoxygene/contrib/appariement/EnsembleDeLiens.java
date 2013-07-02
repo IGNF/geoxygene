@@ -56,37 +56,23 @@ public class EnsembleDeLiens extends Population<Lien> {
    * Constructor.
    */
   public EnsembleDeLiens() {
-    super(false, "Ensemble de liens", Lien.class, true); //$NON-NLS-1$
     
-    /** créer un featuretype pour les arcs */
-    fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
-    AttributeType type = new AttributeType();
-    String memberName = "evaluation"; //$NON-NLS-1$
-    String valueType = "Double"; //$NON-NLS-1$
-    type.setNomField(memberName);
-    type.setMemberName(memberName);
-    type.setValueType(valueType);
-    newFeatureType.addFeatureAttribute(type);
+      super(false, "Ensemble de liens", Lien.class, true); //$NON-NLS-1$
     
-    /*AttributeType type2 = new AttributeType();
-    String memberName2 = "commentaire"; //$NON-NLS-1$
-    String valueType2 = "String"; //$NON-NLS-1$
-    type2.setNomField(memberName2);
-    type2.setMemberName(memberName2);
-    type2.setValueType(valueType2);
-    newFeatureType.addFeatureAttribute(type2);
+      /** créer un featuretype pour les arcs */
+      fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+      AttributeType type = new AttributeType();
+      String memberName = "evaluation"; //$NON-NLS-1$
+      String valueType = "Double"; //$NON-NLS-1$
+      type.setNomField(memberName);
+      type.setMemberName(memberName);
+      type.setValueType(valueType);
+      newFeatureType.addFeatureAttribute(type);
     
-    AttributeType type3 = new AttributeType();
-    String memberName3 = "comparaison"; //$NON-NLS-1$
-    String valueType3 = "String"; //$NON-NLS-1$
-    type3.setNomField(memberName3);
-    type3.setMemberName(memberName3);
-    type3.setValueType(valueType3);
-    newFeatureType.addFeatureAttribute(type3);*/
-    
-    /** création d'un schéma associé au featureType */
-    newFeatureType.setGeometryType(IMultiCurve.class);
-    this.setFeatureType(newFeatureType);
+      /** création d'un schéma associé au featureType */
+      newFeatureType.setGeometryType(IMultiCurve.class);
+      this.setFeatureType(newFeatureType);
+  
   }
 
   /**
