@@ -55,7 +55,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
   }
 
   public Set<NoeudHydrographique> getSources() {
-    return sources;
+    return this.sources;
   }
 
   public void setSources(Set<NoeudHydrographique> sources) {
@@ -63,7 +63,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
   }
 
   public Set<NoeudHydrographique> getSinks() {
-    return sinks;
+    return this.sinks;
   }
 
   public void setSinks(Set<NoeudHydrographique> sinks) {
@@ -71,7 +71,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
   }
 
   public Set<RiverIsland> getSimpleIslands() {
-    return simpleIslands;
+    return this.simpleIslands;
   }
 
   public void setSimpleIslands(Set<RiverIsland> simpleIslands) {
@@ -79,7 +79,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
   }
 
   public Set<RiverIslandGroup> getComplexIslands() {
-    return complexIslands;
+    return this.complexIslands;
   }
 
   public void setComplexIslands(Set<RiverIslandGroup> complexIslands) {
@@ -87,7 +87,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
   }
 
   public Map<ArcReseau, Integer> getStrahlerOrders() {
-    return strahlerOrders;
+    return this.strahlerOrders;
   }
 
   public void setStrahlerOrders(Map<ArcReseau, Integer> strahlerOrders) {
@@ -101,18 +101,22 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     for (ArcReseau arc : this.getFeatures()) {
       // treat initial node
       NoeudHydrographique node = (NoeudHydrographique) arc.getNoeudInitial();
-      if (this.getSources().contains(node))
+      if (this.getSources().contains(node)) {
         continue;
-      if (node.getArcsEntrants().size() != 0)
+      }
+      if (node.getArcsEntrants().size() != 0) {
         continue;
+      }
       this.getSources().add(node);
 
       // treat final node
       node = (NoeudHydrographique) arc.getNoeudFinal();
-      if (this.getSinks().contains(node))
+      if (this.getSinks().contains(node)) {
         continue;
-      if (node.getArcsSortants().size() != 0)
+      }
+      if (node.getArcsSortants().size() != 0) {
         continue;
+      }
       this.getSinks().add(node);
     }
   }
@@ -128,8 +132,9 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     for (Face face : carteTopo.getListeFaces()) {
       if (face.getGeom().area() < areaThreshold) {
         Set<TronconHydrographique> outline = new HashSet<TronconHydrographique>();
-        for (Arc arc : face.arcs())
+        for (Arc arc : face.arcs()) {
           outline.add((TronconHydrographique) arc.getCorrespondant(0));
+        }
         this.getSimpleIslands().add(
             new RiverIsland((IPolygon) face.getGeom(), outline));
       }
@@ -183,9 +188,9 @@ public class RiverStrokesNetwork extends StrokesNetwork {
       RiverStroke stroke = new RiverStroke(this, section);
       this.getStrokes().add(stroke);
       this.getGroupedFeatures().add(section);
-      if (!downstreamNodes.contains((NoeudHydrographique) section
-          .getNoeudFinal()))
+      if (!downstreamNodes.contains(section.getNoeudFinal())) {
         downstreamNodes.add((NoeudHydrographique) section.getNoeudFinal());
+      }
       // compute Strahler orders
       this.strahlerOrders.put(section, 1);
     }
@@ -196,16 +201,18 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     int counter = 0;
     while (!downstreamNodes.isEmpty()) {
       // test to break the loop when it's stuck
-      if (counter == downstreamNodes.size())
+      if (counter == downstreamNodes.size()) {
         break;
+      }
 
       NoeudHydrographique node = downstreamNodes.pop();
 
-      if (this.getSinks().contains(node))
+      if (this.getSinks().contains(node)) {
         continue;
+      }
 
       // check that all entering sections already belong to a stroke
-      if (!allBelongToStroke(node.getArcsEntrants())) {
+      if (!this.allBelongToStroke(node.getArcsEntrants())) {
         downstreamNodes.add(0, node);
         counter++;
         continue;
@@ -219,24 +226,25 @@ public class RiverStrokesNetwork extends StrokesNetwork {
             .getArcsSortants().iterator().next();
         // get the upstream strokes and find the one that continues
         RiverStroke continuing = this.makeDecisionAtConfluence(node,
-            downstreamSection, getUpstreamStrokes(node));
+            downstreamSection, this.getUpstreamStrokes(node));
 
         // now extends the continuing stroke with downstreamSection
         continuing.getFeatures().add(downstreamSection);
         this.getGroupedFeatures().add(downstreamSection);
 
         // find the next node
-        if (!downstreamNodes.contains((NoeudHydrographique) downstreamSection
-            .getNoeudFinal()))
+        if (!downstreamNodes.contains(downstreamSection.getNoeudFinal())) {
           downstreamNodes.add((NoeudHydrographique) downstreamSection
               .getNoeudFinal());
+        }
 
         // compute Strahler order
         List<Integer> orders = new ArrayList<Integer>();
-        for (ArcReseau arc : node.getArcsEntrants())
+        for (ArcReseau arc : node.getArcsEntrants()) {
           orders.add(this.strahlerOrders.get(arc));
+        }
         this.strahlerOrders.put(downstreamSection,
-            computeStrahlerAtConfluence(orders));
+            this.computeStrahlerAtConfluence(orders));
 
       } else if (node.getArcsSortants().size() > 1) {
         // braided stream case
@@ -244,7 +252,7 @@ public class RiverStrokesNetwork extends StrokesNetwork {
           // normal case
           // the main branch has to be found
           ArcReseau upStream = node.getArcsEntrants().iterator().next();
-          ArcReseau mainBranch = manageBraidedConfluence(node, upStream,
+          ArcReseau mainBranch = this.manageBraidedConfluence(node, upStream,
               downstreamNodes);
 
           // build new RiverStrokes with remaining branches
@@ -256,23 +264,23 @@ public class RiverStrokesNetwork extends StrokesNetwork {
             stroke.setBraided(true);
             this.getStrokes().add(stroke);
             this.getGroupedFeatures().add(branch);
-            if (!downstreamNodes.contains((NoeudHydrographique) branch
-                .getNoeudFinal()))
+            if (!downstreamNodes.contains(branch.getNoeudFinal())) {
               downstreamNodes.add(0,
                   (NoeudHydrographique) branch.getNoeudFinal());
+            }
             // compute Strahler orders
             this.strahlerOrders.put(branch, 1);
           }
         } else {
           // complex case with braids at a confluence point
-          Set<RiverStroke> upstreamStrokes = getUpstreamStrokes(node);
+          Set<RiverStroke> upstreamStrokes = this.getUpstreamStrokes(node);
           Collection<ArcReseau> remainingBranches = new HashSet<ArcReseau>(
               node.getArcsSortants());
-          RiverStroke unbraided = getNonBraidedStroke(upstreamStrokes);
+          RiverStroke unbraided = this.getNonBraidedStroke(upstreamStrokes);
 
           if (unbraided != null) {
             upstreamStrokes.remove(unbraided);
-            ArcReseau mainBranch = manageBraidedConfluence(node,
+            ArcReseau mainBranch = this.manageBraidedConfluence(node,
                 unbraided.getLastFeat(), downstreamNodes);
             remainingBranches.remove(mainBranch);
           }
@@ -281,18 +289,19 @@ public class RiverStrokesNetwork extends StrokesNetwork {
             stroke.setBraided(true);
             this.getStrokes().add(stroke);
             this.getGroupedFeatures().add(branch);
-            if (!downstreamNodes.contains((NoeudHydrographique) branch
-                .getNoeudFinal()))
+            if (!downstreamNodes.contains(branch.getNoeudFinal())) {
               downstreamNodes.add(0,
                   (NoeudHydrographique) branch.getNoeudFinal());
+            }
             // compute Strahler orders
             this.strahlerOrders.put(branch, 1);
           }
         }
       }
     }
-    for (NoeudHydrographique n : downstreamNodes)
-      logger.fine("noeud restant : " + n);
+    for (NoeudHydrographique n : downstreamNodes) {
+      RiverStrokesNetwork.logger.fine("noeud restant : " + n);
+    }
   }
 
   private ArcReseau manageBraidedConfluence(NoeudHydrographique node,
@@ -307,15 +316,19 @@ public class RiverStrokesNetwork extends StrokesNetwork {
         mainBranch = branch;
       }
     }
+    if (mainBranch == null) {
+      return null;
+    }
 
     // continue the upstream stroke with mainBranch
-    RiverStroke upstreamStroke = getUpstreamStrokes(node).iterator().next();
+    RiverStroke upstreamStroke = this.getUpstreamStrokes(node).iterator()
+        .next();
     upstreamStroke.getFeatures().add(mainBranch);
     this.getGroupedFeatures().add(mainBranch);
     // find the next node
-    if (!downstreamNodes.contains((NoeudHydrographique) mainBranch
-        .getNoeudFinal()))
+    if (!downstreamNodes.contains(mainBranch.getNoeudFinal())) {
       downstreamNodes.add(0, (NoeudHydrographique) mainBranch.getNoeudFinal());
+    }
     this.strahlerOrders.put(mainBranch, this.strahlerOrders.get(upStream));
 
     return mainBranch;
@@ -334,19 +347,22 @@ public class RiverStrokesNetwork extends StrokesNetwork {
   private RiverStroke makeDecisionAtConfluence(NoeudHydrographique node,
       TronconHydrographique downstreamSection, Set<RiverStroke> upstreamStrokes) {
     // if there is only one upstream river, it continues
-    if (upstreamStrokes.size() == 1)
+    if (upstreamStrokes.size() == 1) {
       return upstreamStrokes.iterator().next();
+    }
 
     // first, make a decision on braided strokes
-    RiverStroke unbraidedStroke = getNonBraidedStroke(upstreamStrokes);
-    if (unbraidedStroke != null)
+    RiverStroke unbraidedStroke = this.getNonBraidedStroke(upstreamStrokes);
+    if (unbraidedStroke != null) {
       return unbraidedStroke;
+    }
 
     // first, make a decision on river name
     if (!downstreamSection.getNom().equals("")) {
       for (RiverStroke stroke : upstreamStrokes) {
-        if (downstreamSection.getNom().equals(stroke.getLastName()))
+        if (downstreamSection.getNom().equals(stroke.getLastName())) {
           return stroke;
+        }
       }
     }
 
@@ -362,12 +378,14 @@ public class RiverStrokesNetwork extends StrokesNetwork {
         maxLength = length;
       } else {
         double diff = length / maxLength;
-        if (diff < lengthDiff)
+        if (diff < lengthDiff) {
           lengthDiff = diff;
+        }
       }
     }
-    if (lengthDiff >= 0.25)
+    if (lengthDiff >= 0.25) {
       return longest;
+    }
 
     // arrived here, make difference on angle difference
     RiverStroke best = null;
@@ -388,13 +406,15 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     int nb = 0;
     RiverStroke unbraided = null;
     for (RiverStroke stroke : upstreamStrokes) {
-      if (stroke.isBraided())
+      if (stroke.isBraided()) {
         continue;
+      }
       unbraided = stroke;
       nb++;
     }
-    if (nb == 1)
+    if (nb == 1) {
       return unbraided;
+    }
     return null;
   }
 
@@ -405,8 +425,9 @@ public class RiverStrokesNetwork extends StrokesNetwork {
    */
   private boolean allBelongToStroke(Collection<ArcReseau> sections) {
     for (ArcReseau section : sections) {
-      if (!this.getGroupedFeatures().contains(section))
+      if (!this.getGroupedFeatures().contains(section)) {
         return false;
+      }
     }
     return true;
   }
@@ -421,22 +442,24 @@ public class RiverStrokesNetwork extends StrokesNetwork {
     for (Stroke str : this.getStrokes()) {
       Set<ArcReseau> feats = new HashSet<ArcReseau>(str.getFeatures());
       feats.retainAll(node.getArcsEntrants());
-      if (feats.size() != 0)
+      if (feats.size() != 0) {
         upstreamStrokes.add((RiverStroke) str);
+      }
     }
 
     return upstreamStrokes;
   }
 
   private Integer computeStrahlerAtConfluence(List<Integer> orders) {
-    if (orders.size() == 1)
+    if (orders.size() == 1) {
       return orders.get(0);
+    }
 
     Integer max = Collections.max(orders);
     int nbMax = Collections.frequency(orders, max);
-    if (nbMax > 1)
+    if (nbMax > 1) {
       return max + 1;
-    else
-      return max;
+    }
+    return max;
   }
 }

@@ -32,24 +32,29 @@ public class OverlapConflict extends NetworkConflict {
     final int prime = 31;
     int result = 1;
     result = prime * result
-        + ((getSections() == null) ? 0 : getSections().hashCode());
+        + ((this.getSections() == null) ? 0 : this.getSections().hashCode());
     return result;
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (this.getClass() != obj.getClass()) {
       return false;
+    }
     OverlapConflict other = (OverlapConflict) obj;
-    if (getSections() == null) {
-      if (other.getSections() != null)
+    if (this.getSections() == null) {
+      if (other.getSections() != null) {
         return false;
-    } else if (!getSections().equals(other.getSections()))
+      }
+    } else if (!this.getSections().equals(other.getSections())) {
       return false;
+    }
     return true;
   }
 
@@ -60,34 +65,38 @@ public class OverlapConflict extends NetworkConflict {
     double worstProxi = Double.MAX_VALUE;
     Set<INetworkSection> conflictSections = new HashSet<INetworkSection>();
     for (INetworkSection other : neighbours) {
-      double minSep = getMinSepBetween(section, other, minSeps);
+      double minSep = OverlapConflict.getMinSepBetween(section, other, minSeps);
       double minDist = (section.getWidth() * Legend.getSYMBOLISATI0N_SCALE() / 1000.0)
           + (other.getWidth() * Legend.getSYMBOLISATI0N_SCALE() / 1000.0)
           + minSep;
 
       // check that lines are close enough to have a conflict
-      if (!section.getGeom().buffer(minDist).intersects(other.getGeom()))
+      if (!section.getGeom().buffer(minDist).intersects(other.getGeom())) {
         continue;
+      }
 
       // compute the step of the buffer
       double circleStep = 0.0;
-      if ((2.0 * minDist - networkRes) > 0.0)
+      if ((2.0 * minDist - networkRes) > 0.0) {
         circleStep = (2.0 * Math
             .sqrt(networkRes * (2.0 * minDist - networkRes)));
-      else
+      } else {
         circleStep = (minDist / 3.5);
+      }
       // To respect the resolution it must be <
       // 2.sqrt(resolution(2.radius-resolution)
       circleStep = (circleStep / 3.0);
       int nSegments = (int) Math.round(Math.PI * minDist / circleStep);
 
-      if (worstProxi > minDist)
+      if (worstProxi > minDist) {
         worstProxi = minDist;
+      }
 
       IPolygon boundaryGeom = (IPolygon) other.getGeom().buffer(minDist,
           nSegments);
 
       // check lines connections
+      @SuppressWarnings("unused")
       LineConnectionInfo connectionInfo = CommonAlgorithmsFromCartAGen
           .getLineConnectionInfo(section.getGeom(), other.getGeom());
 
@@ -132,14 +141,15 @@ public class OverlapConflict extends NetworkConflict {
   public static double getMinSepBetween(INetworkSection section1,
       INetworkSection section2, Set<MinimumSeparation> minSeps) {
     for (MinimumSeparation minSep : minSeps) {
-      if (minSep.appliesTo(section1, section2))
+      if (minSep.appliesTo(section1, section2)) {
         return minSep.getMinSepMeters();
+      }
     }
     return -1.0;
   }
 
   public double getWorstProxi() {
-    return worstProxi;
+    return this.worstProxi;
   }
 
   public void setWorstProxi(double worstProxi) {
@@ -151,8 +161,9 @@ public class OverlapConflict extends NetworkConflict {
     Set<OverlapConflict> conflicts = new HashSet<OverlapConflict>();
     Set<INetworkSection> conflictCenters = new HashSet<INetworkSection>();
     for (INetworkSection section : features) {
-      if (section.isEliminated())
+      if (section.isEliminated()) {
         continue;
+      }
 
       IFeatureCollection<INetworkSection> fc = new FT_FeatureCollection<INetworkSection>();
       fc.addAll(features);
@@ -168,24 +179,29 @@ public class OverlapConflict extends NetworkConflict {
       Set<INetworkSection> overlapping = new HashSet<INetworkSection>();
       for (INetworkSection other : neighbours) {
 
-        if (other.isEliminated())
+        if (other.isEliminated()) {
           continue;
+        }
 
-        double minSep = getMinSepBetween(section, other, minSeps);
-        if (minSep == -1.0)
+        double minSep = OverlapConflict.getMinSepBetween(section, other,
+            minSeps);
+        if (minSep == -1.0) {
           continue;
+        }
 
         double minDist = (section.getWidth() * Legend.getSYMBOLISATI0N_SCALE() / 1000.0)
             + (other.getWidth() * Legend.getSYMBOLISATI0N_SCALE() / 1000.0)
             + minSep;
 
         // check that lines are close enough to have a conflict
-        if (!section.getGeom().buffer(minDist).intersects(other.getGeom()))
+        if (!section.getGeom().buffer(minDist).intersects(other.getGeom())) {
           continue;
+        }
 
         // checks connections
-        if (section.getGeom().intersects(other.getGeom()))
+        if (section.getGeom().intersects(other.getGeom())) {
           continue;
+        }
 
         // checks that the conflict is not with an extreme node of the line that
         // is connected to other network sections.
@@ -193,23 +209,27 @@ public class OverlapConflict extends NetworkConflict {
             other.getGeom(), section.getGeom());
         if (other.getGeom().startPoint().equals(nearestPt)) {
           INetworkNode node = other.getInitialNode();
-          if (node.getDegree() > 1)
+          if (node.getDegree() > 1) {
             continue;
+          }
         } else if (other.getGeom().endPoint().equals(nearestPt)) {
           INetworkNode node = other.getFinalNode();
           // case with a problem in enrichment
-          if (node == null)
+          if (node == null) {
             continue;
+          }
 
-          if (node.getDegree() > 1)
+          if (node.getDegree() > 1) {
             continue;
+          }
         }
 
         overlapping.add(other);
       }
 
-      if (overlapping.size() == 0)
+      if (overlapping.size() == 0) {
         continue;
+      }
 
       // add section to the overlapping set
       overlapping.add(section);
@@ -225,8 +245,9 @@ public class OverlapConflict extends NetworkConflict {
   public boolean areInConflict(INetworkSection section1,
       INetworkSection section2) {
     if (this.getSections().contains(section1)
-        && this.getSections().contains(section2))
+        && this.getSections().contains(section2)) {
       return true;
+    }
     return false;
   }
 }

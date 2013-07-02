@@ -31,15 +31,15 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
   }
 
   public static SkeletonizeProcess getInstance() {
-    if (instance == null) {
-      instance = new SkeletonizeProcess();
+    if (SkeletonizeProcess.instance == null) {
+      SkeletonizeProcess.instance = new SkeletonizeProcess();
     }
-    return instance;
+    return SkeletonizeProcess.instance;
   }
 
   @Override
   public void parameterise() {
-    String themeName = (String) getParamValueFromName("linear_theme");
+    String themeName = (String) this.getParamValueFromName("linear_theme");
     ScaleMasterTheme theme = this.getScaleMaster().getThemeFromName(themeName);
     CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
         .getCartAGenDB();
@@ -47,9 +47,9 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
     classes.addAll(theme.getRelatedClasses());
     this.newClass = db.getGeneObjImpl().filterClasses(classes).iterator()
         .next();
-    this.removeHoles = (Boolean) getParamValueFromName("remove_holes");
-    this.widthMin = (Double) getParamValueFromName("width_min");
-    this.sizeMin = (Double) getParamValueFromName("size_min");
+    this.removeHoles = (Boolean) this.getParamValueFromName("remove_holes");
+    this.widthMin = (Double) this.getParamValueFromName("width_min");
+    this.sizeMin = (Double) this.getParamValueFromName("size_min");
   }
 
   @Override
@@ -60,36 +60,42 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
         .getCurrentDataset()
         .getCartagenPop(
             CartAGenDoc.getInstance().getCurrentDataset()
-                .getPopNameFromClass(newClass));
+                .getPopNameFromClass(this.newClass));
     for (IGeneObj obj : features) {
-      if (obj.isDeleted())
+      if (obj.isDeleted()) {
         continue;
-      if (!(obj.getGeom() instanceof IPolygon))
+      }
+      if (!(obj.getGeom() instanceof IPolygon)) {
         continue;
-      if (obj.getGeom().area() > this.sizeMin)
+      }
+      if (obj.getGeom().area() > this.sizeMin) {
         continue;
-      IPolygon geom = (IPolygon) Filtering.DouglasPeucker(
-          (IPolygon) obj.getGeom(), 5.0);
+      }
+      IPolygon geom = (IPolygon) Filtering.DouglasPeucker(obj.getGeom(), 5.0);
       // the holes are removed from the polygonal geometry if necessary
-      if (removeHoles)
+      if (this.removeHoles) {
         geom = new GM_Polygon(geom.getExterior());
+      }
       // get the linear features, already existing that touch the polygon
       Set<ILineString> network = new HashSet<ILineString>();
-      for (IGeneObj objInter : pop.select(geom))
+      for (IGeneObj objInter : pop.select(geom)) {
         network.add((ILineString) objInter.getGeom());
+      }
       // compute the straight skeleton
       Set<ILineString> skeleton = Skeletonize.connectSkeletonToNetwork(
           Skeletonize.skeletonizeStraightSkeleton(geom), network,
           (IPolygon) obj.getGeom());
       double length = 0.0;
-      for (ILineString line : skeleton)
+      for (ILineString line : skeleton) {
         length += line.length();
+      }
       double width = geom.area() / length;
-      if (width > this.widthMin)
+      if (width > this.widthMin) {
         continue;
+      }
       obj.eliminateBatch();
       for (ILineString newGeom : skeleton) {
-        Constructor<?> constr = newClass.getConstructor(IGeometry.class);
+        Constructor<?> constr = this.newClass.getConstructor(IGeometry.class);
         IGeneObj newObj = (IGeneObj) constr.newInstance(newGeom);
         pop.add(newObj);
       }

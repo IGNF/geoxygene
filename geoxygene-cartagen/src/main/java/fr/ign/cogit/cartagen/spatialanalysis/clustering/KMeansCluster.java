@@ -26,7 +26,7 @@ public class KMeansCluster {
   }
 
   public int getId() {
-    return id;
+    return this.id;
   }
 
   public void setId(int id) {
@@ -34,7 +34,7 @@ public class KMeansCluster {
   }
 
   public Set<IGeneObj> getFeatures() {
-    return features;
+    return this.features;
   }
 
   public void setFeatures(Set<IGeneObj> features) {
@@ -42,25 +42,27 @@ public class KMeansCluster {
   }
 
   public IDirectPosition getCenter() {
-    return center;
+    return this.center;
   }
 
   public void setCenter(IDirectPosition center) {
     this.center = center;
   }
 
+  @Override
   public int hashCode() {
-    return id;
+    return this.id;
   }
 
   public int size() {
-    return getFeatures().size();
+    return this.getFeatures().size();
   }
 
   public void computeCenter() {
     IDirectPositionList ptList = new DirectPositionList();
-    for (IGeneObj obj : getFeatures())
+    for (IGeneObj obj : this.getFeatures()) {
       ptList.add(obj.getGeom().centroid());
+    }
     IMultiPoint geom = new GM_MultiPoint(ptList);
     this.center = geom.centroid();
     this.diameter = geom.envelope().width();
@@ -68,8 +70,9 @@ public class KMeansCluster {
 
   public IGeneObj getCenterNearest() {
     IFeatureCollection<IGeneObj> fc = new FT_FeatureCollection<IGeneObj>();
-    fc.addAll(features);
-    return SpatialQuery.selectNearest(center.toGM_Point(), fc, this.diameter);
+    fc.addAll(this.features);
+    return SpatialQuery.selectNearest(this.center.toGM_Point(), fc,
+        this.diameter);
   }
 
   public Class<?> getFeaturesClass() {

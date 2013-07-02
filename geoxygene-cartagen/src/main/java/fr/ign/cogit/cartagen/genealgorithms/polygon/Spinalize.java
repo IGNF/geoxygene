@@ -86,33 +86,32 @@ public class Spinalize {
       IDirectPositionList listPtsMed = new DirectPositionList();
       mapPtMedParPoly.put(polyRef, listPtsMed);
       for (IPolygon polyComp : listPoly) {
-        if (polyRef.equals(polyComp))
+        if (polyRef.equals(polyComp)) {
           continue;
-        else {
-          if (polyRef.intersects(polyComp)) {
-            if (polyRef.intersection(polyComp).isMultiCurve()) {
-              @SuppressWarnings("unchecked")
-              IMultiCurve<ILineString> multiLs = (IMultiCurve<ILineString>) polyRef
-                  .intersection(polyComp);
-              IFeatureCollection<IFeature> ftColLs = new FT_FeatureCollection<IFeature>();
-              for (ILineString ls : multiLs.getList()) {
-                ftColLs.add(new DefaultFeature(ls));
-              }
-              CarteTopo carteTopoLs = CarteTopoFactory.newCarteTopo(ftColLs);
-              carteTopoLs.filtreNoeudsSimples();
-              carteTopoLs.filtreNoeudsIsoles();
-              for (Arc arc : carteTopoLs.getPopArcs()) {
-                IDirectPosition dpMilieu = Operateurs.milieu((ILineString) arc
-                    .getGeometrie());
-                listPtsMed.add(dpMilieu);
-              }
+        }
+        if (polyRef.intersects(polyComp)) {
+          if (polyRef.intersection(polyComp).isMultiCurve()) {
+            @SuppressWarnings("unchecked")
+            IMultiCurve<ILineString> multiLs = (IMultiCurve<ILineString>) polyRef
+                .intersection(polyComp);
+            IFeatureCollection<IFeature> ftColLs = new FT_FeatureCollection<IFeature>();
+            for (ILineString ls : multiLs.getList()) {
+              ftColLs.add(new DefaultFeature(ls));
             }
-            if (polyRef.intersection(polyComp).isLineString()) {
-              ILineString ls = (ILineString) polyRef.intersection(polyComp);
-              listPtsMed.add(ls.centroid());
+            CarteTopo carteTopoLs = CarteTopoFactory.newCarteTopo(ftColLs);
+            carteTopoLs.filtreNoeudsSimples();
+            carteTopoLs.filtreNoeudsIsoles();
+            for (Arc arc : carteTopoLs.getPopArcs()) {
+              IDirectPosition dpMilieu = Operateurs.milieu(arc.getGeometrie());
+              listPtsMed.add(dpMilieu);
             }
-          } else
-            continue;
+          }
+          if (polyRef.intersection(polyComp).isLineString()) {
+            ILineString ls = (ILineString) polyRef.intersection(polyComp);
+            listPtsMed.add(ls.centroid());
+          }
+        } else {
+          continue;
         }
       }
     }
@@ -128,8 +127,8 @@ public class Spinalize {
       IPolygon poly = itPoly.next();
       IDirectPositionList dplist = mapPtMedParPoly.get(poly);
       if (!(poly.getExterior().coord().size() < 5)) {
-        IFeatureCollection<IFeature> ftColVoronoi = computeVoronoiDiagram(poly,
-            overSample);
+        IFeatureCollection<IFeature> ftColVoronoi = Spinalize
+            .computeVoronoiDiagram(poly, overSample);
         // Create a segment between the middle of adjacent borders and the
         // closest point of the Voronoi diagram
         for (IDirectPosition dp : dplist) {
@@ -174,10 +173,10 @@ public class Spinalize {
               }
             }
           }
-          ftColCheminsTotal.addAll(computeShortestPath(dpStart, dpEnd,
-              ftColVoronoi));
-          ftColCheminsTotal.addAll(computeShortestPath(dpEnd, dpStart,
-              ftColVoronoi));
+          ftColCheminsTotal.addAll(Spinalize.computeShortestPath(dpStart,
+              dpEnd, ftColVoronoi));
+          ftColCheminsTotal.addAll(Spinalize.computeShortestPath(dpEnd,
+              dpStart, ftColVoronoi));
 
           // For connected polygons
         } else if (dplist.size() > 0) {
@@ -195,10 +194,10 @@ public class Spinalize {
               }
             }
           }
-          ftColCheminsTotal.addAll(computeShortestPath(dpStart, dpEnd,
-              ftColVoronoi));
-          ftColCheminsTotal.addAll(computeShortestPath(dpEnd, dpStart,
-              ftColVoronoi));
+          ftColCheminsTotal.addAll(Spinalize.computeShortestPath(dpStart,
+              dpEnd, ftColVoronoi));
+          ftColCheminsTotal.addAll(Spinalize.computeShortestPath(dpEnd,
+              dpStart, ftColVoronoi));
 
           // ... and from the middle of each border with the most far away point
           // of the polygon geometry
@@ -213,10 +212,10 @@ public class Spinalize {
                 dpMedEnd = dpPoly;
               }
             }
-            ftColCheminsTotal.addAll(computeShortestPath(dpMedStart, dpMedEnd,
-                ftColVoronoi));
-            ftColCheminsTotal.addAll(computeShortestPath(dpMedEnd, dpMedStart,
-                ftColVoronoi));
+            ftColCheminsTotal.addAll(Spinalize.computeShortestPath(dpMedStart,
+                dpMedEnd, ftColVoronoi));
+            ftColCheminsTotal.addAll(Spinalize.computeShortestPath(dpMedEnd,
+                dpMedStart, ftColVoronoi));
           }
         }
         ftColVoronoiTotal.addAll(ftColVoronoi);
@@ -324,36 +323,35 @@ public class Spinalize {
 
     // Densification of the polygon contour
     IFeatureCollection<IFeature> ftColArcsVoronoi = new FT_FeatureCollection<IFeature>();
-    if (polygon.getExterior().coord().size() < 5)
-      return ftColArcsVoronoi;
-    else {
-      ILineString contourDense = LineDensification.densification(
-          new GM_LineString(polygon.getExterior().coord()), overSample);
-      polygon.setExterior(new GM_Ring(contourDense));
-
-      // Triangulation of the densified geometry using JTS
-      IFeatureCollection<IFeature> ftcolPoints = new FT_FeatureCollection<IFeature>();
-      for (IDirectPosition dp : polygon.coord()) {
-        ftcolPoints.add(new DefaultFeature(dp.toGM_Point()));
-      }
-      TriangulationJTS triangule = new TriangulationJTS("TriangulationJTS");
-      triangule.importAsNodes(ftcolPoints);
-      try {
-        triangule.triangule("v");
-      } catch (Exception e1) {
-        e1.printStackTrace();
-      }
-
-      // Compute Voronoi diagram
-      IPopulation<Arc> popArcVoronoi = triangule.getPopVoronoiEdges();
-      triangule.getVoronoiDiagram().filtreNoeudsSimples();
-      for (Arc arc : popArcVoronoi) {
-        if (arc.getGeom().within(polygon)) {
-          ftColArcsVoronoi.add(arc);
-        }
-      }
+    if (polygon.getExterior().coord().size() < 5) {
       return ftColArcsVoronoi;
     }
+    ILineString contourDense = LineDensification.densification(
+        new GM_LineString(polygon.getExterior().coord()), overSample);
+    polygon.setExterior(new GM_Ring(contourDense));
+
+    // Triangulation of the densified geometry using JTS
+    IFeatureCollection<IFeature> ftcolPoints = new FT_FeatureCollection<IFeature>();
+    for (IDirectPosition dp : polygon.coord()) {
+      ftcolPoints.add(new DefaultFeature(dp.toGM_Point()));
+    }
+    TriangulationJTS triangule = new TriangulationJTS("TriangulationJTS");
+    triangule.importAsNodes(ftcolPoints);
+    try {
+      triangule.triangule("v");
+    } catch (Exception e1) {
+      e1.printStackTrace();
+    }
+
+    // Compute Voronoi diagram
+    IPopulation<Arc> popArcVoronoi = triangule.getPopVoronoiEdges();
+    triangule.getVoronoiDiagram().filtreNoeudsSimples();
+    for (Arc arc : popArcVoronoi) {
+      if (arc.getGeom().within(polygon)) {
+        ftColArcsVoronoi.add(arc);
+      }
+    }
+    return ftColArcsVoronoi;
   }
 
   /**
@@ -396,6 +394,9 @@ public class Spinalize {
         noeudEnd = noeud;
       }
     }
+    if (noeudStart == null) {
+      return new FT_FeatureCollection<IFeature>();
+    }
 
     // Compute the shortest path between the two points (if possible)
     Groupe groupePCC = noeudStart.plusCourtChemin(noeudEnd, 0);
@@ -425,9 +426,9 @@ public class Spinalize {
     Set<IPoint> intersections = new HashSet<IPoint>();
     for (ILineString line : network) {
       if (line.intersects(polygon)) {
-        if (line.intersection(polygon) instanceof IPoint)
+        if (line.intersection(polygon) instanceof IPoint) {
           intersections.add((IPoint) line.intersection(polygon));
-        else if (line.intersection(polygon) instanceof IMultiPoint) {
+        } else if (line.intersection(polygon) instanceof IMultiPoint) {
           IMultiPoint inter = (IMultiPoint) line.intersection(polygon);
           for (int i = 0; i < inter.getList().size(); i++) {
             intersections.add(inter.get(i));

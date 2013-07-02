@@ -32,6 +32,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 public class Stroke extends AbstractFeature {
+  @SuppressWarnings("hiding")
   private static Logger logger = Logger.getLogger(Stroke.class.getName());
 
   private StrokesNetwork network;

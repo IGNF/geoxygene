@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 public class ELECTREIIIMethod {
 
+  @SuppressWarnings("unused")
   private static Logger logger = Logger.getLogger(ELECTREIIIMethod.class
       .getName());
 
@@ -58,7 +59,7 @@ public class ELECTREIIIMethod {
 
   // Getters and setters //
   public Set<ELECTREIIICriterion> getCriteria() {
-    return criteria;
+    return this.criteria;
   }
 
   // Other public methods //
@@ -69,15 +70,15 @@ public class ELECTREIIIMethod {
   public List<ELECTREIIIAction> decision() {
     // (see Figueira et al, 2005, p.146)
     // first compute pre-order Z1
-    ELECTREIIIPreOrder preOrderZ1 = computeZ1_bis();
+    ELECTREIIIPreOrder preOrderZ1 = this.computeZ1_bis();
     // then compute pre-order Z2
-    ELECTREIIIPreOrder preOrderZ2 = computeZ2_bis();
+    ELECTREIIIPreOrder preOrderZ2 = this.computeZ2_bis();
     // build the comparator
     ELECTREIIIComparator c = new ELECTREIIIComparator(preOrderZ1, preOrderZ2);
     // then sort the actions according to the comparator
-    Collections.sort(actions, c);
-    Collections.reverse(actions);
-    return actions;
+    Collections.sort(this.actions, c);
+    Collections.reverse(this.actions);
+    return this.actions;
   }
 
   // //////////////////////////////////////////
@@ -94,7 +95,7 @@ public class ELECTREIIIMethod {
   private double getConcordanceIndex(ELECTREIIIAction a, ELECTREIIIAction b) {
     double weightSum = 0.0;
     double sum = 0.0;
-    for (ELECTREIIICriterion criterion : criteria) {
+    for (ELECTREIIICriterion criterion : this.criteria) {
       double valueA = criterion.value(a.getParameters());
       double valueB = criterion.value(b.getParameters());
       if (criterion.isInScoalition(valueA, valueB)) {
@@ -134,7 +135,7 @@ public class ELECTREIIIMethod {
     // + concord);
     double credibility = concord;
     boolean isDiscordanceLesser = true;
-    for (ELECTREIIICriterion c : criteria) {
+    for (ELECTREIIICriterion c : this.criteria) {
       double discord = c.getDiscordanceIndex(c.value(a.getParameters()),
           c.value(b.getParameters()));
       // logger.debug("Action " + a + " outranks " + b
@@ -145,13 +146,14 @@ public class ELECTREIIIMethod {
         isDiscordanceLesser = false;
       }
     }
-    if (isDiscordanceLesser)
+    if (isDiscordanceLesser) {
       return concord;
+    }
     return credibility;
   }
 
   public boolean isPreferredTo(ELECTREIIIAction a, ELECTREIIIAction b) {
-    if (getCredibilityIndex(a, b) > this.credibilityThreshold) {
+    if (this.getCredibilityIndex(a, b) > this.credibilityThreshold) {
       return true;
     }
     return false;
@@ -167,10 +169,11 @@ public class ELECTREIIIMethod {
    * @return
    * @author GTouya
    */
+  @SuppressWarnings("unused")
   private ELECTREIIIPreOrder computeZ1() {
     ArrayList<HashSet<ELECTREIIIAction>> preOrder = new ArrayList<HashSet<ELECTREIIIAction>>();
     HashSet<ELECTREIIIAction> actionsLeft = new HashSet<ELECTREIIIAction>();
-    actionsLeft.addAll(actions);
+    actionsLeft.addAll(this.actions);
     while (!actionsLeft.isEmpty()) {
       HashSet<ELECTREIIIAction> bSetH = new HashSet<ELECTREIIIAction>();
       HashSet<ELECTREIIIAction> loopSet = new HashSet<ELECTREIIIAction>();
@@ -187,8 +190,9 @@ public class ELECTREIIIMethod {
             break;
           }
         }
-        if (add)
+        if (add) {
           bSetH.add(action);
+        }
       }
 
       // update the actionsLeft
@@ -209,10 +213,11 @@ public class ELECTREIIIMethod {
    * @return
    * @author GTouya
    */
+  @SuppressWarnings("unused")
   private ELECTREIIIPreOrder computeZ2() {
     ArrayList<HashSet<ELECTREIIIAction>> preOrder = new ArrayList<HashSet<ELECTREIIIAction>>();
     HashSet<ELECTREIIIAction> actionsLeft = new HashSet<ELECTREIIIAction>();
-    actionsLeft.addAll(actions);
+    actionsLeft.addAll(this.actions);
     while (!actionsLeft.isEmpty()) {
       HashSet<ELECTREIIIAction> bSetH = new HashSet<ELECTREIIIAction>();
       HashSet<ELECTREIIIAction> loopSet = new HashSet<ELECTREIIIAction>();
@@ -229,8 +234,9 @@ public class ELECTREIIIMethod {
             break;
           }
         }
-        if (add)
+        if (add) {
           bSetH.add(action);
+        }
       }
 
       // update the actionsLeft
@@ -244,9 +250,9 @@ public class ELECTREIIIMethod {
   private ELECTREIIIPreOrder computeZ1_bis() {
     ArrayList<HashSet<ELECTREIIIAction>> preOrder = new ArrayList<HashSet<ELECTREIIIAction>>();
     HashSet<ELECTREIIIAction> a = new HashSet<ELECTREIIIAction>();
-    a.addAll(actions);
+    a.addAll(this.actions);
 
-    classified(a, preOrder, true);
+    this.classified(a, preOrder, true);
 
     return new ELECTREIIIPreOrder(preOrder);
   }
@@ -254,9 +260,9 @@ public class ELECTREIIIMethod {
   private ELECTREIIIPreOrder computeZ2_bis() {
     ArrayList<HashSet<ELECTREIIIAction>> preOrder = new ArrayList<HashSet<ELECTREIIIAction>>();
     HashSet<ELECTREIIIAction> a = new HashSet<ELECTREIIIAction>();
-    a.addAll(actions);
+    a.addAll(this.actions);
 
-    classified(a, preOrder, false);
+    this.classified(a, preOrder, false);
 
     Collections.reverse(preOrder);
 
@@ -301,7 +307,7 @@ public class ELECTREIIIMethod {
     if (dN.size() == 1 || dN.size() == d.size()) {
       preOrder.add(0, dN);
     } else {
-      classified(dN, preOrder, descending);
+      this.classified(dN, preOrder, descending);
     }
 
     if (dN.size() != d.size()) {
@@ -309,7 +315,7 @@ public class ELECTREIIIMethod {
       dRemain.addAll(d);
       dRemain.removeAll(dN);
       ArrayList<HashSet<ELECTREIIIAction>> preOrderBis = new ArrayList<HashSet<ELECTREIIIAction>>();
-      classified(dRemain, preOrderBis, descending);
+      this.classified(dRemain, preOrderBis, descending);
       preOrder.addAll(preOrderBis);
     }
   }

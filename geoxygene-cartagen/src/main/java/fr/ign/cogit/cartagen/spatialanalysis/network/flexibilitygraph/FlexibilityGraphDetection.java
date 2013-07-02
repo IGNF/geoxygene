@@ -118,11 +118,11 @@ public class FlexibilityGraphDetection {
       Set<MinimumSeparation> minSeps) {
     this.sections = sections;
     this.minSeps = minSeps;
-    graphs = new HashSet<FlexibilityGraph>();
+    this.graphs = new HashSet<FlexibilityGraph>();
   }
 
   public double getConflictNodePropagationCoef() {
-    return conflictNodePropagationCoef;
+    return this.conflictNodePropagationCoef;
   }
 
   public void setConflictNodePropagationCoef(double conflictNodePropagationCoef) {
@@ -130,7 +130,7 @@ public class FlexibilityGraphDetection {
   }
 
   public double getConflictNodeMinCost() {
-    return conflictNodeMinCost;
+    return this.conflictNodeMinCost;
   }
 
   public void setConflictNodeMinCost(double conflictNodeMinCost) {
@@ -138,7 +138,7 @@ public class FlexibilityGraphDetection {
   }
 
   public double getConflictOverlapMinCost() {
-    return conflictOverlapMinCost;
+    return this.conflictOverlapMinCost;
   }
 
   public void setConflictOverlapMinCost(double conflictOverlapMinCost) {
@@ -146,7 +146,7 @@ public class FlexibilityGraphDetection {
   }
 
   public double getConflictNodeMinFlexibility() {
-    return conflictNodeMinFlexibility;
+    return this.conflictNodeMinFlexibility;
   }
 
   public void setConflictNodeMinFlexibility(double conflictNodeMinFlexibility) {
@@ -154,7 +154,7 @@ public class FlexibilityGraphDetection {
   }
 
   public double getConflictLineMinFlexibility() {
-    return conflictLineMinFlexibility;
+    return this.conflictLineMinFlexibility;
   }
 
   public void setConflictLineMinFlexibility(double conflictLineMinFlexibility) {
@@ -162,7 +162,7 @@ public class FlexibilityGraphDetection {
   }
 
   public double getCoalescenceMin() {
-    return coalescenceMin;
+    return this.coalescenceMin;
   }
 
   public void setCoalescenceMin(double coalescenceMin) {
@@ -170,7 +170,7 @@ public class FlexibilityGraphDetection {
   }
 
   public double getBendsShorteningMin() {
-    return bendsShorteningMin;
+    return this.bendsShorteningMin;
   }
 
   public void setBendsShorteningMin(double bendsShorteningMin) {
@@ -178,7 +178,7 @@ public class FlexibilityGraphDetection {
   }
 
   public double getBendsShorteningMax() {
-    return bendsShorteningMax;
+    return this.bendsShorteningMax;
   }
 
   public void setBendsShorteningMax(double bendsShorteningMax) {
@@ -186,7 +186,7 @@ public class FlexibilityGraphDetection {
   }
 
   public double getSearchDist() {
-    return searchDist;
+    return this.searchDist;
   }
 
   public void setSearchDist(double searchDist) {
@@ -194,7 +194,7 @@ public class FlexibilityGraphDetection {
   }
 
   public double getAddPointDist() {
-    return addPointDist;
+    return this.addPointDist;
   }
 
   public void setAddPointDist(double addPointDist) {
@@ -202,7 +202,7 @@ public class FlexibilityGraphDetection {
   }
 
   public int getIterationMax() {
-    return iterationMax;
+    return this.iterationMax;
   }
 
   public void setIterationMax(int iterationMax) {
@@ -210,7 +210,7 @@ public class FlexibilityGraphDetection {
   }
 
   public boolean isTreatShortLine() {
-    return treatShortLine;
+    return this.treatShortLine;
   }
 
   public void setTreatShortLine(boolean treatShortLine) {
@@ -218,7 +218,7 @@ public class FlexibilityGraphDetection {
   }
 
   public Set<FlexibilityGraph> getGraphs() {
-    return graphs;
+    return this.graphs;
   }
 
   public void setGraphs(Set<FlexibilityGraph> graphs) {
@@ -226,7 +226,7 @@ public class FlexibilityGraphDetection {
   }
 
   public Set<OverlapConflict> getOverlapConflicts() {
-    return overlapConflicts;
+    return this.overlapConflicts;
   }
 
   public void setOverlapConflicts(Set<OverlapConflict> conflicts) {
@@ -234,7 +234,7 @@ public class FlexibilityGraphDetection {
   }
 
   public Set<NodeConflict> getNodeConflicts() {
-    return nodeConflicts;
+    return this.nodeConflicts;
   }
 
   public void setNodeConflicts(Set<NodeConflict> nodeConflicts) {
@@ -242,7 +242,7 @@ public class FlexibilityGraphDetection {
   }
 
   public Set<HoleConflict> getHoleConflicts() {
-    return holeConflicts;
+    return this.holeConflicts;
   }
 
   public void setHoleConflicts(Set<HoleConflict> holeConflicts) {
@@ -250,7 +250,7 @@ public class FlexibilityGraphDetection {
   }
 
   public Set<CoalescenceConflict> getCoalConflicts() {
-    return coalConflicts;
+    return this.coalConflicts;
   }
 
   public void setCoalConflicts(Set<CoalescenceConflict> coalConflicts) {
@@ -258,7 +258,7 @@ public class FlexibilityGraphDetection {
   }
 
   public double getConflictOverlapSearchThresh() {
-    return conflictOverlapSearchThresh;
+    return this.conflictOverlapSearchThresh;
   }
 
   public void setConflictOverlapSearchThresh(double conflictOverlapSearchThresh) {
@@ -279,37 +279,43 @@ public class FlexibilityGraphDetection {
   public void searchConflicts(boolean overlap, boolean node, boolean hole,
       boolean coal) {
     // first search node conflicts if necessary
-    if (node)
+    if (node) {
       this.searchNodeConflicts();
+    }
     // then, loop on the sections
-    for (INetworkSection section : sections) {
-      if (overlap)
+    for (INetworkSection section : this.sections) {
+      if (overlap) {
         this.searchOverlapConflicts(section);
-      if (hole)
+      }
+      if (hole) {
         this.searchHoleConflicts(section);
-      if (coal)
+      }
+      if (coal) {
         this.searchCoalConflicts(section);
+      }
     }
   }
 
   private void searchOverlapConflicts(INetworkSection section) {
     IFeatureCollection<INetworkSection> fc = new FT_FeatureCollection<INetworkSection>();
-    fc.addAll(sections);
+    fc.addAll(this.sections);
     fc.remove(section);
     // first get the section envelope
     IEnvelope env = section.getGeom().envelope();
     // expand it a little bit
-    env = new GM_Envelope(env.minX() - conflictOverlapSearchThresh, env.maxX()
-        + conflictOverlapSearchThresh,
-        env.minY() - conflictOverlapSearchThresh, env.maxY()
-            + conflictOverlapSearchThresh);
+    env = new GM_Envelope(env.minX() - this.conflictOverlapSearchThresh,
+        env.maxX() + this.conflictOverlapSearchThresh, env.minY()
+            - this.conflictOverlapSearchThresh, env.maxY()
+            + this.conflictOverlapSearchThresh);
 
     Collection<INetworkSection> neighbours = fc.select(env);
     OverlapConflict conflict = OverlapConflict.computeConflictCost(section,
-        neighbours, minSeps, networkRes);
-    if (conflict != null)
-      if (conflict.getConflictCost() > this.conflictOverlapMinCost)
+        neighbours, this.minSeps, this.networkRes);
+    if (conflict != null) {
+      if (conflict.getConflictCost() > this.conflictOverlapMinCost) {
         this.overlapConflicts.add(conflict);
+      }
+    }
   }
 
   private void searchNodeConflicts() {
@@ -317,18 +323,20 @@ public class FlexibilityGraphDetection {
 
   }
 
-  private void searchHoleConflicts(INetworkSection section) {
+  private void searchHoleConflicts(
+      @SuppressWarnings("unused") INetworkSection section) {
     // TODO Auto-generated method stub
 
   }
 
-  private void searchCoalConflicts(INetworkSection section) {
+  private void searchCoalConflicts(
+      @SuppressWarnings("unused") INetworkSection section) {
     // TODO Auto-generated method stub
 
   }
 
   public Set<MinimumSeparation> getMinSeps() {
-    return minSeps;
+    return this.minSeps;
   }
 
   public void setMinSeps(Set<MinimumSeparation> minSeps) {
@@ -336,7 +344,7 @@ public class FlexibilityGraphDetection {
   }
 
   public double getNetworkRes() {
-    return networkRes;
+    return this.networkRes;
   }
 
   public void setNetworkRes(double networkRes) {

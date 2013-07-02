@@ -105,7 +105,8 @@ public class LanduseSimplification {
         }
       }
 
-      List<IPolygon> listPolyUnion = unionPolygones(listPoly);
+      List<IPolygon> listPolyUnion = LanduseSimplification
+          .unionPolygones(listPoly);
       for (IPolygon poly : listPolyUnion) {
         ftColPolyTotal.add(new DefaultFeature(poly));
       }
@@ -135,7 +136,7 @@ public class LanduseSimplification {
       }
     }
 
-    logger.info("Gestion des zones vides");
+    LanduseSimplification.logger.info("Gestion des zones vides");
     // Creation of an empty area (if the landcover is not complete)
     IFeatureCollection<IFeature> ftColEmptyZone = new FT_FeatureCollection<IFeature>();
     IPolygon polyEnveloppe = new GM_Polygon(ftColPolyTotal.getGeomAggregate()
@@ -159,14 +160,14 @@ public class LanduseSimplification {
         ftColEmptyZone.add(new DefaultFeature(geom));
       }
     }
-    if (!(ftColEmptyZone == null)) {
-      mapFtColOutTmp.put(ftColEmptyZone, "Zone_Vide");
-      ftColPolyBigs.addAll(ftColEmptyZone);
-    }
+    mapFtColOutTmp.put(ftColEmptyZone, "Zone_Vide");
+    ftColPolyBigs.addAll(ftColEmptyZone);
 
-    logger.info("Elimination des trous entièrement inclus");
+    LanduseSimplification.logger
+        .info("Elimination des trous entièrement inclus");
     // Elimination of entire holes in the polygons
-    List<IPolygon> listPolyUnionRemove = unionPolygones(listPolyRemove);
+    List<IPolygon> listPolyUnionRemove = LanduseSimplification
+        .unionPolygones(listPolyRemove);
     List<IRing> listRingRemoveUnion = new ArrayList<IRing>();
     for (IPolygon polygon : listPolyUnionRemove) {
       listRingRemoveUnion.add(polygon.getExterior());
@@ -213,7 +214,7 @@ public class LanduseSimplification {
       }
     }
 
-    logger.info("Gestion des trous en bordure de zone");
+    LanduseSimplification.logger.info("Gestion des trous en bordure de zone");
     // On prend le parti-pris de les conserver entièrement car ils font
     // peut-être partie
     // d'un polygone plus grand...
@@ -231,7 +232,7 @@ public class LanduseSimplification {
       }
     }
 
-    logger.info("Division des trous frontaliers");
+    LanduseSimplification.logger.info("Division des trous frontaliers");
     // Les trous localisés à la frontière entre 2 polygones ou plus sont divisés
     // et chaque partie est affectée aux polygones voisins
     IFeatureCollection<IFeature> ftColLsConserve = new FT_FeatureCollection<IFeature>();
@@ -255,7 +256,7 @@ public class LanduseSimplification {
         ftColLsConserve, 1.0, true);
     carteTopoLandCoverRaw.filtreNoeudsIsoles();
     carteTopoLandCoverRaw.filtreNoeudsSimples();
-    elimineFaceInfinie(carteTopoLandCoverRaw);
+    LanduseSimplification.elimineFaceInfinie(carteTopoLandCoverRaw);
     List<Arc> listArcsPCC = new ArrayList<Arc>();
     for (Face face : carteTopoLandCoverRaw.getPopFaces()) {
       if (face.getGeom().within(ftColPolyFrontierHoles.getGeomAggregate())) {
@@ -316,8 +317,10 @@ public class LanduseSimplification {
                 noeudEnd = noeud;
               }
             }
-            Groupe groupePCC = noeudStart.plusCourtChemin(noeudEnd, 0);
-            listArcsPCC.addAll(groupePCC.getListeArcs());
+            if (noeudStart != null) {
+              Groupe groupePCC = noeudStart.plusCourtChemin(noeudEnd, 0);
+              listArcsPCC.addAll(groupePCC.getListeArcs());
+            }
           }
         }
 
@@ -335,6 +338,9 @@ public class LanduseSimplification {
               noeudCentroid = noeud;
             }
           }
+          if (noeudCentroid == null) {
+            continue;
+          }
           for (Noeud noeud1 : popNoeudsToConnect) {
             Noeud noeudStart = null;
             Noeud noeudEnd = noeudCentroid;
@@ -345,8 +351,10 @@ public class LanduseSimplification {
                 }
               }
             }
-            Groupe groupePCC = noeudStart.plusCourtChemin(noeudEnd, 0);
-            listArcsPCC.addAll(groupePCC.getListeArcs());
+            if (noeudStart != null) {
+              Groupe groupePCC = noeudStart.plusCourtChemin(noeudEnd, 0);
+              listArcsPCC.addAll(groupePCC.getListeArcs());
+            }
           }
         }
       }
@@ -359,7 +367,7 @@ public class LanduseSimplification {
         "TopoMap", ftColLsConserveBorder, 1.0, true);
     carteTopoLandCoverBorder.filtreNoeudsIsoles();
     carteTopoLandCoverBorder.filtreNoeudsSimples();
-    elimineFaceInfinie(carteTopoLandCoverBorder);
+    LanduseSimplification.elimineFaceInfinie(carteTopoLandCoverBorder);
 
     // on vire l'arc le plus grand entre chaque polygone du trous
     // (cad qu'on affecte la face au polygone avec lequel elle partage la plus
@@ -400,7 +408,7 @@ public class LanduseSimplification {
         "TopoMap", ftColLandCoverFinal, 1.0, true);
     carteTopoLandCoverFinal.filtreNoeudsIsoles();
     carteTopoLandCoverFinal.filtreNoeudsSimples();
-    elimineFaceInfinie(carteTopoLandCoverFinal);
+    LanduseSimplification.elimineFaceInfinie(carteTopoLandCoverFinal);
 
     // Puis on la filtre avec Douglas-Peucker
     IFeatureCollection<IFeature> ftColLandCoverFinalFilter = new FT_FeatureCollection<IFeature>();
@@ -418,7 +426,8 @@ public class LanduseSimplification {
     carteTopoLandCoverFinalFilter.filtreNoeudsSimples();
     // elimineFaceInfinie(carteTopoLandCoverFinalFiltre);
 
-    logger.info("Export des classes d'occupation du sol généralisées");
+    LanduseSimplification.logger
+        .info("Export des classes d'occupation du sol généralisées");
     // Export sous forme de Map comprenant la ftCol et le nom de la classe
     Map<Face, String> mapFaceParLandUseType = new HashMap<Face, String>();
     for (Face face : carteTopoLandCoverFinalFilter.getPopFaces()) {
@@ -428,15 +437,15 @@ public class LanduseSimplification {
       while (itFtColOut.hasNext()) {
         IFeatureCollection<IFeature> ftColOut = itFtColOut.next();
         String nomFtCol = mapFtColOutTmp.get(ftColOut);
-        if (!(face.getGeom().intersects(ftColOut.getGeomAggregate())))
+        if (!(face.getGeom().intersects(ftColOut.getGeomAggregate()))) {
           continue;
-        if (face.getGeom().buffer(0).intersection(ftColOut.getGeomAggregate()) == null)
-          continue;
-        else {
-          double surface = face.getGeom().buffer(0)
-              .intersection(ftColOut.getGeomAggregate()).area();
-          mapSurfaceParFtCol.put(nomFtCol, surface);
         }
+        if (face.getGeom().buffer(0).intersection(ftColOut.getGeomAggregate()) == null) {
+          continue;
+        }
+        double surface = face.getGeom().buffer(0)
+            .intersection(ftColOut.getGeomAggregate()).area();
+        mapSurfaceParFtCol.put(nomFtCol, surface);
       }
       Iterator<String> itNomFtCol;
       itNomFtCol = mapSurfaceParFtCol.keySet().iterator();
@@ -491,6 +500,9 @@ public class LanduseSimplification {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
+      if (jtsGeom == null) {
+        continue;
+      }
       Polygon polygon = (Polygon) jtsGeom.buffer(0);
       // if (polygon.isValid() && polygon.getArea() != 0) {
       list.add(polygon);
@@ -505,6 +517,9 @@ public class LanduseSimplification {
     } catch (Exception e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
+    }
+    if (union == null) {
+      return listPolyUnion;
     }
     if (union.isMultiSurface()) {
       @SuppressWarnings("unchecked")

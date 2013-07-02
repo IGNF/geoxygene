@@ -32,6 +32,7 @@ public class RoadLineImpl extends TronconDeRouteImpl implements
   // //////////////////////////////////////////
 
   // All static fields //
+  @SuppressWarnings("hiding")
   private static Logger logger = Logger.getLogger(RoadLineImpl.class.getName());
   // Public fields //
 
@@ -230,8 +231,7 @@ public class RoadLineImpl extends TronconDeRouteImpl implements
           nomFieldMaj2 = attribute.getNomField();
         } else {
           nomFieldMaj2 = Character.toUpperCase(attribute.getNomField()
-              .charAt(0))
-              + attribute.getNomField().substring(1);
+              .charAt(0)) + attribute.getNomField().substring(1);
         }
         String nomSetFieldMethod = "set" + nomFieldMaj2;
         Method methodSetter = this.getClass().getDeclaredMethod(

@@ -62,7 +62,7 @@ public class AirportTypification {
   public void collapseRunways() throws Exception {
     IPopulation<IRunwayLine> pop = CartAGenDoc.getInstance()
         .getCurrentDataset().getRunwayLines();
-    for (IRunwayArea runway : airport.getRunwayAreas()) {
+    for (IRunwayArea runway : this.airport.getRunwayAreas()) {
       // first find the runway orientation
       double orient = new OrientationMeasure(runway.getGeom())
           .getGeneralOrientation();
@@ -71,29 +71,34 @@ public class AirportTypification {
       ILineString seg = CommonAlgorithmsFromCartAGen.getLongestInsideSegment(
           geom, orient);
       // eliminate the runway area
-      if (runwayAreaElim)
+      if (this.runwayAreaElim) {
         runway.eliminateBatch();
+      }
       // build a new runway line
       IRunwayLine line = CartagenApplication.getInstance().getCreationFactory()
           .createRunwayLine(seg);
       pop.add(line);
-      airport.getRunwayLines().add(line);
+      this.airport.getRunwayLines().add(line);
       // TODO add to a population ?
     }
   }
 
   public void mergeRunways() throws Exception {
     AdjacencyClustering clusters = new AdjacencyClustering(
-        airport.getRunwayAreas());
+        this.airport.getRunwayAreas());
     for (Set<IGeneObj> cluster : clusters.getClusters()) {
       IGeneObj remaining = null;
       List<Geometry> list = new ArrayList<Geometry>();
       for (IGeneObj obj : cluster) {
-        if (remaining == null)
+        if (remaining == null) {
           remaining = obj;
+        }
         list.add(JtsGeOxygene.makeJtsGeom(obj.getGeom()));
         obj.eliminate();
         this.airport.getRunwayAreas().remove(obj);
+      }
+      if (remaining == null) {
+        return;
       }
       // union of the geometries
       Geometry jtsUnion = JtsAlgorithms.union(list);
@@ -107,10 +112,11 @@ public class AirportTypification {
   }
 
   public void simplifyAprons() {
-    for (ITaxiwayArea taxi : airport.getTaxiwayAreas()) {
+    for (ITaxiwayArea taxi : this.airport.getTaxiwayAreas()) {
       // check to it's an apron
-      if (taxi.getType().equals(TaxiwayType.TAXIWAY))
+      if (taxi.getType().equals(TaxiwayType.TAXIWAY)) {
         continue;
+      }
       // check apron size1
       if (taxi.getGeom().area() < this.apronMinArea) {
         taxi.eliminateBatch();
@@ -118,7 +124,7 @@ public class AirportTypification {
       }
       // simplify feature
       IGeometry newGeom = SimplificationAlgorithm.simplification(
-          taxi.getGeom(), apronSegLength);
+          taxi.getGeom(), this.apronSegLength);
       taxi.setGeom(newGeom);
     }
   }
@@ -126,19 +132,20 @@ public class AirportTypification {
   @SuppressWarnings("unchecked")
   public void collapseThinTaxiways() {
     for (ITaxiwayArea taxi : new HashSet<ITaxiwayArea>(
-        airport.getTaxiwayAreas())) {
+        this.airport.getTaxiwayAreas())) {
       // only treat the Taxiways
-      if (taxi.getType().equals(TaxiwayType.APRON))
+      if (taxi.getType().equals(TaxiwayType.APRON)) {
         continue;
+      }
       // first 'open' the geometry to remove thin parts
       IGeometry newGeom = new MorphologyTransform(this.openThreshTaxi, 10)
           .opening(taxi.getGeom());
       if (newGeom != null) {
         IPolygon iniGeom = taxi.getGeom();
         // upadte new opened geometry
-        if (newGeom instanceof IPolygon)
+        if (newGeom instanceof IPolygon) {
           taxi.setGeom(newGeom);
-        else {
+        } else {
           boolean first = true;
           for (IOrientableSurface simple : new ArrayList<IOrientableSurface>(
               ((IMultiSurface<IOrientableSurface>) newGeom).getList())) {
@@ -155,7 +162,7 @@ public class AirportTypification {
             ITaxiwayArea newTaxi = CartagenApplication.getInstance()
                 .getCreationFactory()
                 .createTaxiwayArea((IPolygon) simple, taxi.getType());
-            airport.getTaxiwayAreas().add(newTaxi);
+            this.airport.getTaxiwayAreas().add(newTaxi);
           }
         }
         // then collapse the thin parts into ITaxiwayLine features
@@ -169,13 +176,14 @@ public class AirportTypification {
             // build a new taxiway line
             ITaxiwayLine line = CartagenApplication.getInstance()
                 .getCreationFactory().createTaxiwayLine(seg, taxi.getType());
-            airport.getTaxiwayLines().add(line);
+            this.airport.getTaxiwayLines().add(line);
           }
         } else if (thinParts instanceof IMultiSurface) {
           for (IOrientableSurface simple : ((IMultiSurface<IOrientableSurface>) thinParts)
               .getList()) {
-            if (simple.area() < 800.0)
+            if (simple.area() < 800.0) {
               continue;
+            }
             // then, the polygonal thin part is collapsed into a ITaxiwayLine.
             Set<ILineSegment> skeleton = Skeletonize
                 .skeletonizeStraightSkeleton((IPolygon) simple);
@@ -184,7 +192,7 @@ public class AirportTypification {
               // build a new taxiway line
               ITaxiwayLine line = CartagenApplication.getInstance()
                   .getCreationFactory().createTaxiwayLine(seg, taxi.getType());
-              airport.getTaxiwayLines().add(line);
+              this.airport.getTaxiwayLines().add(line);
             }
           }
         }
@@ -199,14 +207,14 @@ public class AirportTypification {
           // build a new taxiway line
           ITaxiwayLine line = CartagenApplication.getInstance()
               .getCreationFactory().createTaxiwayLine(seg, taxi.getType());
-          airport.getTaxiwayLines().add(line);
+          this.airport.getTaxiwayLines().add(line);
         }
       }
     }
   }
 
   public double getApronSegLength() {
-    return apronSegLength;
+    return this.apronSegLength;
   }
 
   public void setApronSegLength(double apronSegLength) {
@@ -214,7 +222,7 @@ public class AirportTypification {
   }
 
   public boolean isRunwayAreaElim() {
-    return runwayAreaElim;
+    return this.runwayAreaElim;
   }
 
   public void setRunwayAreaElim(boolean runwayAreaElim) {
@@ -222,7 +230,7 @@ public class AirportTypification {
   }
 
   public double getApronMinArea() {
-    return apronMinArea;
+    return this.apronMinArea;
   }
 
   public void setApronMinArea(double apronMinArea) {
@@ -230,7 +238,7 @@ public class AirportTypification {
   }
 
   public double getOpenThreshTaxi() {
-    return openThreshTaxi;
+    return this.openThreshTaxi;
   }
 
   public void setOpenThreshTaxi(double openThreshTaxi) {

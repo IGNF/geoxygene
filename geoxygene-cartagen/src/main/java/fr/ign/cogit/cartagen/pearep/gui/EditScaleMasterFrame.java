@@ -144,9 +144,9 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         .getOntologyFromName("MapGeneralisationProcesses"));
     this.setGeoClasses();
     this.current = new ScaleMaster();
-    initThemes();
+    this.initThemes();
 
-    buildFrameComponents();
+    this.buildFrameComponents();
   }
 
   public EditScaleMasterFrame(File themeFile, boolean jar)
@@ -160,16 +160,17 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         .getResource("images/icons/logo.jpg")).getImage());
     this.setSize(600, 500);
     this.setMaximumSize(new Dimension(700, 600));
-    if (jar)
+    if (jar) {
       try {
         this.setGeoClassesJar();
       } catch (URISyntaxException e) {
         e.printStackTrace();
       }
-    else
+    } else {
       this.setGeoClasses();
+    }
     this.current = new ScaleMaster();
-    initThemes(themeFile);
+    this.initThemes(themeFile);
     this.iconUp = new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
         .getResource("images/icons/16x16/chevron_haut.png"));
     this.iconTop = new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
@@ -178,7 +179,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         .getResource("images/icons/16x16/chevron_bas.png"));
     this.iconBottom = new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
         .getResource("images/icons/16x16/chevron_double_bas.png"));
-    buildFrameComponents();
+    this.buildFrameComponents();
   }
 
   private void buildFrameComponents() {
@@ -187,12 +188,12 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     DefaultComboBoxModel cbModel = new DefaultComboBoxModel();
     this.dbHues.put(SourceDLM.MGCPPlusPlus.name(), Color.RED);
     cbModel.addElement(SourceDLM.MGCPPlusPlus.name());
-    implementations.add(new GeneObjImplementation(
-        SourceDLM.MGCPPlusPlus.name(), MGCPFeature.class.getPackage(),
-        MGCPFeature.class, new MGCPSchemaFactory()));
+    this.implementations.add(new GeneObjImplementation(SourceDLM.MGCPPlusPlus
+        .name(), MGCPFeature.class.getPackage(), MGCPFeature.class,
+        new MGCPSchemaFactory()));
     this.dbHues.put(SourceDLM.VMAP1PlusPlus.name(), Color.BLUE);
     cbModel.addElement(SourceDLM.VMAP1PlusPlus.name());
-    implementations.add(new GeneObjImplementation(SourceDLM.VMAP1PlusPlus
+    this.implementations.add(new GeneObjImplementation(SourceDLM.VMAP1PlusPlus
         .name(), VMAP1PPFeature.class.getPackage(), VMAP1PPFeature.class,
         new VMAP1PPSchemaFactory()));
 
@@ -260,19 +261,19 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.btnEditElement = new JButton(this.lblEditElement);
     this.btnEditElement.addActionListener(this);
     this.btnEditElement.setActionCommand("edit");
-    this.btnUp = new JButton(iconUp);
+    this.btnUp = new JButton(this.iconUp);
     this.btnUp.addActionListener(this);
     this.btnUp.setActionCommand("up");
     this.btnUp.setEnabled(false);
-    this.btnDown = new JButton(iconDown);
+    this.btnDown = new JButton(this.iconDown);
     this.btnDown.addActionListener(this);
     this.btnDown.setActionCommand("down");
     this.btnDown.setEnabled(false);
-    this.btnTop = new JButton(iconTop);
+    this.btnTop = new JButton(this.iconTop);
     this.btnTop.addActionListener(this);
     this.btnTop.setActionCommand("top");
     this.btnTop.setEnabled(false);
-    this.btnBottom = new JButton(iconBottom);
+    this.btnBottom = new JButton(this.iconBottom);
     this.btnBottom.addActionListener(this);
     this.btnBottom.setActionCommand("bottom");
     this.btnBottom.setEnabled(false);
@@ -416,7 +417,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       }
 
       AddScaleMasterEltFrame frame = new AddScaleMasterEltFrame(this,
-          selectedLine);
+          this.selectedLine);
       frame.setVisible(true);
       this.pack();
     } else if (e.getActionCommand().equals("help")) {
@@ -450,7 +451,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       File xmlFile = fc.getSelectedFile();
       try {
         this.current = new ScaleMasterXMLParser(xmlFile)
-            .parseScaleMaster(existingThemes);
+            .parseScaleMaster(this.existingThemes);
 
         // now update the frame components
         this.txtName.setText(this.current.getName());
@@ -458,16 +459,18 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         this.spMax.setValue(this.current.getGlobalRange().getMaximum());
         this.cbPtOfView.setSelectedItem(this.current.getPointOfView());
         this.linePanels.clear();
-        for (int i = 1; i < this.getDisplayPanel().getComponentCount(); i++)
+        for (int i = 1; i < this.getDisplayPanel().getComponentCount(); i++) {
           this.getDisplayPanel().remove(i);
+        }
         for (ScaleLine line : this.current.getScaleLines()) {
           List<ScaleMasterElement> elements = new ArrayList<ScaleMasterElement>();
-          for (List<ScaleMasterElement> list : line.getLine().values())
+          for (List<ScaleMasterElement> list : line.getLine().values()) {
             elements.addAll(list);
+          }
           line.getLine().clear();
           ScaleLineDisplayPanel linePanel = new ScaleLineDisplayPanel(line,
-              ruler, this);
-          linePanels.put(line.getTheme().getName(), linePanel);
+              this.ruler, this);
+          this.linePanels.put(line.getTheme().getName(), linePanel);
           JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
           jp.add(linePanel);
           this.getDisplayPanel().add(jp);
@@ -476,7 +479,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
                 SourceDLM.valueOf(elem.getDbName()))) {
               if (!this.dbHues.containsKey(elem.getDbName())) {
                 this.dbHues.put(elem.getDbName(), Color.BLUE);
-                ((DefaultComboBoxModel) cbDbs.getModel()).addElement(elem
+                ((DefaultComboBoxModel) this.cbDbs.getModel()).addElement(elem
                     .getDbName());
               }
             }
@@ -494,38 +497,36 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         e1.printStackTrace();
       } catch (IOException e1) {
         e1.printStackTrace();
-      } catch (ClassNotFoundException e1) {
-        e1.printStackTrace();
       }
     } else if (e.getActionCommand().equals("up")) {
-      int index = this.current.getScaleLines().indexOf(selectedLine);
+      int index = this.current.getScaleLines().indexOf(this.selectedLine);
       this.current.getScaleLines().remove(index);
-      this.current.getScaleLines().add(index - 1, selectedLine);
+      this.current.getScaleLines().add(index - 1, this.selectedLine);
       Component comp = this.getDisplayPanel().getComponent(index + 1);
       this.getDisplayPanel().remove(comp);
       this.getDisplayPanel().add(comp, index);
       this.pack();
     } else if (e.getActionCommand().equals("down")) {
-      int index = this.current.getScaleLines().indexOf(selectedLine);
+      int index = this.current.getScaleLines().indexOf(this.selectedLine);
       this.current.getScaleLines().remove(index);
-      this.current.getScaleLines().add(index + 1, selectedLine);
+      this.current.getScaleLines().add(index + 1, this.selectedLine);
       Component comp = this.getDisplayPanel().getComponent(index + 1);
       this.getDisplayPanel().remove(comp);
       this.getDisplayPanel().add(comp, index + 2);
       this.pack();
     } else if (e.getActionCommand().equals("top")) {
-      int index = this.current.getScaleLines().indexOf(selectedLine);
+      int index = this.current.getScaleLines().indexOf(this.selectedLine);
       this.current.getScaleLines().remove(index);
-      this.current.getScaleLines().add(0, selectedLine);
+      this.current.getScaleLines().add(0, this.selectedLine);
       Component comp = this.getDisplayPanel().getComponent(index + 1);
       this.getDisplayPanel().remove(comp);
       this.getDisplayPanel().add(comp, 1);
       this.pack();
     } else if (e.getActionCommand().equals("bottom")) {
-      int index = this.current.getScaleLines().indexOf(selectedLine);
+      int index = this.current.getScaleLines().indexOf(this.selectedLine);
       this.current.getScaleLines().remove(index);
       this.current.getScaleLines().add(this.current.getScaleLines().size(),
-          selectedLine);
+          this.selectedLine);
       Component comp = this.getDisplayPanel().getComponent(index + 1);
       this.getDisplayPanel().remove(comp);
       this.getDisplayPanel().add(comp,
@@ -610,7 +611,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   }
 
   public List<ScaleMasterGeneProcess> getGenProcs() {
-    return genProcs;
+    return this.genProcs;
   }
 
   public void setGenProcs(List<ScaleMasterGeneProcess> genProcs) {
@@ -652,10 +653,12 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
           break;
         }
 
-        if (!(jarEntry.getName().endsWith(".class")))
+        if (!(jarEntry.getName().endsWith(".class"))) {
           continue;
-        if (!jarEntry.getName().contains("cartagen"))
+        }
+        if (!jarEntry.getName().contains("cartagen")) {
           continue;
+        }
         if (jarEntry.getName().substring(0, jarEntry.getName().length() - 6)
             .equals("GothicObjectDiffusion")) {
           continue;
@@ -869,7 +872,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   }
 
   public JSpinner getSpMin() {
-    return spMin;
+    return this.spMin;
   }
 
   public void setSpMin(JSpinner spMin) {
@@ -877,7 +880,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   }
 
   public JSpinner getSpMax() {
-    return spMax;
+    return this.spMax;
   }
 
   public void setSpMax(JSpinner spMax) {
@@ -885,7 +888,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   }
 
   public Set<GeneObjImplementation> getImplementations() {
-    return implementations;
+    return this.implementations;
   }
 
   public void setImplementations(Set<GeneObjImplementation> implementations) {
@@ -937,7 +940,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     }
     File xmlFile = fc.getSelectedFile();
     // now parse the xml file
-    initThemes(xmlFile);
+    this.initThemes(xmlFile);
   }
 
   /**
@@ -993,7 +996,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     globalElem.appendChild(globalMaxElem);
 
     // WRITE A LINE
-    for (ScaleLine line : current.getScaleLines()) {
+    for (ScaleLine line : this.current.getScaleLines()) {
       Element lineElem = xmlDoc.createElement("scale-line");
       lineElem.setAttribute("theme", line.getTheme().getName());
       root.appendChild(lineElem);
@@ -1087,26 +1090,27 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
 
   public GeneObjImplementation getImplFromName(String name) {
     for (GeneObjImplementation impl : this.implementations) {
-      if (impl.getName().equals(name))
+      if (impl.getName().equals(name)) {
         return impl;
+      }
     }
     return null;
   }
 
   public JButton getBtnUp() {
-    return btnUp;
+    return this.btnUp;
   }
 
   public JButton getBtnDown() {
-    return btnDown;
+    return this.btnDown;
   }
 
   public JButton getBtnTop() {
-    return btnTop;
+    return this.btnTop;
   }
 
   public JButton getBtnBottom() {
-    return btnBottom;
+    return this.btnBottom;
   }
 
 }

@@ -227,7 +227,7 @@ public class LayerGroup extends AbstractLayerGroup {
   @Override
   public LoadedLayer replaceOneLayer(LayerManager layerManager,
       CartAGenDataSet dataSet, String layerName) {
-    if (layerName.equals(LAYER_SPECIALPOINT)) {
+    if (layerName.equals(LayerGroup.LAYER_SPECIALPOINT)) {
       layerManager.removeLayer(this.layerSpecialPoint);
       this.layerSpecialPoint = new LoadedLayer(dataSet.getSpecialPoints());
       return this.layerSpecialPoint;
@@ -242,7 +242,7 @@ public class LayerGroup extends AbstractLayerGroup {
   public void loadInterfaceWithOneLayer(LayerManager layerManager,
       String layerName, AbstractButton b) {
 
-    if (layerName.equals(LAYER_SPECIALPOINT)) {
+    if (layerName.equals(LayerGroup.LAYER_SPECIALPOINT)) {
       this.layerSpecialPoint.emptyDisplayCache();
       layerManager.addLayer(this.layerSpecialPoint);
       AbstractButton accidentCheckbox = new JCheckBox();
@@ -261,7 +261,7 @@ public class LayerGroup extends AbstractLayerGroup {
   public void loadInterfaceWithOneLayer(LayerManager layerManager,
       String layerName, AbstractButton b, LoadedLayer loadedLayer) {
 
-    if (layerName.equals(LAYER_SPECIALPOINT)) {
+    if (layerName.equals(LayerGroup.LAYER_SPECIALPOINT)) {
       loadedLayer.emptyDisplayCache();
 
       layerManager.addLayer(this.layerSpecialPoint);
@@ -762,72 +762,63 @@ public class LayerGroup extends AbstractLayerGroup {
     layerManager.removeLayer(loadedLayer);
 
   }
-  
+
   /**
    * to remove one layer
    */
 
-  public void removeAllLayers(){
-	    layerBuilding.emptyDisplayCache();
-	
-	    layerTown.emptyDisplayCache();;
-	
-	    layerBlock.emptyDisplayCache();;
+  public void removeAllLayers() {
+    this.layerBuilding.emptyDisplayCache();
 
-	    layerUrbanAlignment.emptyDisplayCache();;
+    this.layerTown.emptyDisplayCache();
 
+    this.layerBlock.emptyDisplayCache();
 
-	    layerRoadLine.emptyDisplayCache();;
+    this.layerUrbanAlignment.emptyDisplayCache();
 
-	    layerRoadNode.emptyDisplayCache();;
+    this.layerRoadLine.emptyDisplayCache();
 
-	    layerPath.emptyDisplayCache();;
+    this.layerRoadNode.emptyDisplayCache();
 
+    this.layerPath.emptyDisplayCache();
 
-	    layerWaterLine.emptyDisplayCache();
+    this.layerWaterLine.emptyDisplayCache();
 
-	    layerWaterArea.emptyDisplayCache();
+    this.layerWaterArea.emptyDisplayCache();
 
-	    layerIslands.emptyDisplayCache();
+    this.layerIslands.emptyDisplayCache();
 
+    this.layerRailwayLine.emptyDisplayCache();
 
-	    layerRailwayLine.emptyDisplayCache();
+    this.layerElectricityLine.emptyDisplayCache();
 
+    this.layerContourLine.emptyDisplayCache();
 
-	    layerElectricityLine.emptyDisplayCache();
+    this.layerSpotHeight.emptyDisplayCache();
 
+    this.layerDEMPixel.emptyDisplayCache();
 
-	    layerContourLine.emptyDisplayCache();
+    this.layerReliefTriangle.emptyDisplayCache();
 
-	    layerSpotHeight.emptyDisplayCache();
+    this.layerReliefElemLine.emptyDisplayCache();
 
-	    layerDEMPixel.emptyDisplayCache();
+    this.layerLandUseArea.emptyDisplayCache();
 
-	    layerReliefTriangle.emptyDisplayCache();
+    this.layerAdminUnit.emptyDisplayCache();
 
-	    layerReliefElemLine.emptyDisplayCache();
+    this.layerAdminLimit.emptyDisplayCache();
 
+    this.layerMask.emptyDisplayCache();
 
-	    layerLandUseArea.emptyDisplayCache();
+    this.layerNetworkFace.emptyDisplayCache();
 
+    this.layerSpecialPoint.emptyDisplayCache();
 
-	    layerAdminUnit.emptyDisplayCache();
+    this.layerAirports.emptyDisplayCache();
 
-	    layerAdminLimit.emptyDisplayCache();
+    this.layerRunways.emptyDisplayCache();
 
-
-	    layerMask.emptyDisplayCache();
-
-	    layerNetworkFace.emptyDisplayCache();
-
-	    layerSpecialPoint.emptyDisplayCache();
-
-	    layerAirports.emptyDisplayCache();
-
-	    layerRunways.emptyDisplayCache();
-
-	    layerPOI.emptyDisplayCache();
-
+    this.layerPOI.emptyDisplayCache();
 
   }
 }

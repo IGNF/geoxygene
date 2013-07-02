@@ -65,7 +65,7 @@ public class ScaleMasterXMLParser {
    */
   public ScaleMaster parseScaleMaster(Collection<ScaleMasterTheme> themes)
       throws ParserConfigurationException, SAXException, IOException,
-      DOMException, ClassNotFoundException {
+      DOMException {
 
     ScaleMaster scaleMaster = new ScaleMaster();
 
@@ -114,8 +114,9 @@ public class ScaleMasterXMLParser {
 
       ScaleMasterTheme theme = null;
       for (ScaleMasterTheme th : themes) {
-        if (scaleLineElement.getAttribute("theme").equals(th.getName()))
+        if (scaleLineElement.getAttribute("theme").equals(th.getName())) {
           theme = th;
+        }
       }
       ScaleLine scaleLine = new ScaleLine(scaleMaster, theme);
 
@@ -400,30 +401,40 @@ public class ScaleMasterXMLParser {
 
   public static String getPropertyComparisonElementName(
       BinaryComparisonOpsType filter) {
-    if (filter instanceof PropertyIsEqualTo)
+    if (filter instanceof PropertyIsEqualTo) {
       return "ogc:PropertyIsEqualTo";
-    if (filter instanceof PropertyIsGreaterThan)
+    }
+    if (filter instanceof PropertyIsGreaterThan) {
       return "ogc:PropertyIsGreaterThan";
-    if (filter instanceof PropertyIsGreaterThanOrEqualTo)
+    }
+    if (filter instanceof PropertyIsGreaterThanOrEqualTo) {
       return "ogc:PropertyIsGreaterThanOrEqualTo";
-    if (filter instanceof PropertyIsLessThan)
+    }
+    if (filter instanceof PropertyIsLessThan) {
       return "ogc:PropertyIsLessThan";
-    if (filter instanceof PropertyIsLessThanOrEqualTo)
+    }
+    if (filter instanceof PropertyIsLessThanOrEqualTo) {
       return "ogc:PropertyIsLessThanOrEqualTo";
-    if (filter instanceof PropertyIsNotEqualTo)
+    }
+    if (filter instanceof PropertyIsNotEqualTo) {
       return "ogc:PropertyIsNotEqualTo";
-    if (filter instanceof PropertyIsNull)
+    }
+    if (filter instanceof PropertyIsNull) {
       return "ogc:PropertyIsNull";
-    if (filter instanceof PropertyIsLike)
+    }
+    if (filter instanceof PropertyIsLike) {
       return "ogc:PropertyIsLike";
+    }
     return null;
   }
 
   public static String getBinaryLogicOpsElementName(BinaryLogicOpsType filter) {
-    if (filter instanceof And)
+    if (filter instanceof And) {
       return "ogc:And";
-    if (filter instanceof Or)
+    }
+    if (filter instanceof Or) {
       return "ogc:Or";
+    }
 
     return null;
   }
@@ -431,7 +442,8 @@ public class ScaleMasterXMLParser {
   public static void writeSimpleFilter(BinaryComparisonOpsType filter,
       Element root, Document xmlDoc) {
     Node n = null;
-    String elemName = getPropertyComparisonElementName(filter);
+    String elemName = ScaleMasterXMLParser
+        .getPropertyComparisonElementName(filter);
     Element filterElem = xmlDoc.createElement(elemName);
     root.appendChild(filterElem);
     Element propElem = xmlDoc.createElement("ogc:PropertyName");
@@ -446,16 +458,18 @@ public class ScaleMasterXMLParser {
 
   public static void writeComplexFilter(BinaryLogicOpsType filter,
       Element root, Document xmlDoc) {
-    String elemName = getBinaryLogicOpsElementName(filter);
+    String elemName = ScaleMasterXMLParser.getBinaryLogicOpsElementName(filter);
     Element filterElem = xmlDoc.createElement(elemName);
     root.appendChild(filterElem);
 
     for (Filter subFilter : filter.getOps()) {
-      if (subFilter instanceof BinaryComparisonOpsType)
-        writeSimpleFilter((BinaryComparisonOpsType) subFilter, filterElem,
-            xmlDoc);
-      else if (subFilter instanceof BinaryLogicOpsType)
-        writeComplexFilter((BinaryLogicOpsType) subFilter, filterElem, xmlDoc);
+      if (subFilter instanceof BinaryComparisonOpsType) {
+        ScaleMasterXMLParser.writeSimpleFilter(
+            (BinaryComparisonOpsType) subFilter, filterElem, xmlDoc);
+      } else if (subFilter instanceof BinaryLogicOpsType) {
+        ScaleMasterXMLParser.writeComplexFilter((BinaryLogicOpsType) subFilter,
+            filterElem, xmlDoc);
+      }
     }
   }
 
@@ -488,6 +502,7 @@ public class ScaleMasterXMLParser {
       String descr = descrElem.getChildNodes().item(0).getNodeValue();
       Element conceptElem = (Element) themeElem.getElementsByTagName("concept")
           .item(0);
+      @SuppressWarnings("unused")
       String conceptName = conceptElem.getChildNodes().item(0).getNodeValue();
       // TODO use the ontology
       Element geomTypeElem = (Element) themeElem.getElementsByTagName(

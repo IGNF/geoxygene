@@ -618,6 +618,9 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
           break;
         }
       }
+      if (encodedAnnotation == null) {
+        return;
+      }
       // get its values
       Class<? extends IGeneObj> targetEntity = encodedAnnotation.targetEntity();
       String methodName = "get" + encodedAnnotation.methodName();
@@ -686,6 +689,10 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
         }
       }
 
+      if (encodedAnnotation == null || encoded1To1Annotation == null) {
+        return;
+      }
+
       if (m.isAnnotationPresent(EncodedRelation.class)) {
         // get its values
         Class<? extends IGeneObj> targetEntity = encodedAnnotation
@@ -730,7 +737,8 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
           }
           objs.add(obj);
           // now set the inverse relation
-          if (!encodedAnnotation.nToM() && encodedAnnotation.inverse()) {
+          if (inverseMethod != null && !encodedAnnotation.nToM()
+              && encodedAnnotation.inverse()) {
             inverseMethod.invoke(obj, this);
           }
         }
@@ -775,7 +783,7 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
           }
           obj = object;
           // now set the inverse relation
-          if (encoded1To1Annotation.inverse()) {
+          if (inverseMethod != null && encoded1To1Annotation.inverse()) {
             inverseMethod.invoke(obj, this);
           }
         }

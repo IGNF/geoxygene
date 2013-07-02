@@ -32,17 +32,17 @@ public class BridgePoint extends GeneObjPointDefault implements IBridgePoint {
 
   @Override
   public BridgeType getType() {
-    return type;
+    return this.type;
   }
 
   @Override
   public INetworkSection getCrossedNetwork() {
-    return crossedSection;
+    return this.crossedSection;
   }
 
   @Override
   public IRoadLine getRoad() {
-    return road;
+    return this.road;
   }
 
   @Override
@@ -54,13 +54,14 @@ public class BridgePoint extends GeneObjPointDefault implements IBridgePoint {
     this.type = type;
   }
 
+  @Override
   public void setRoad(IRoadLine road) {
     this.road = road;
   }
 
   @Override
   public IFeature getGeoxObj() {
-    return geoxObj;
+    return this.geoxObj;
   }
 
 }

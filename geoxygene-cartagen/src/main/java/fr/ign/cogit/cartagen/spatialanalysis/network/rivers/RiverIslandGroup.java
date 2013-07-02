@@ -25,19 +25,21 @@ public class RiverIslandGroup extends AbstractFeature {
 
   private void computeSections() {
     this.sections = new HashSet<TronconHydrographique>();
-    for (RiverIsland island : simpleIslands)
+    for (RiverIsland island : this.simpleIslands) {
       this.sections.addAll(island.getOutline());
+    }
   }
 
   private void computeGeom() {
     IGeometry geom = null;
-    for (RiverIsland island : simpleIslands) {
-      if (geom == null)
+    for (RiverIsland island : this.simpleIslands) {
+      if (geom == null) {
         geom = island.getGeom();
-      else
+      } else {
         geom = geom.union(island.getGeom());
+      }
     }
-    this.setGeom((IPolygon) geom);
+    this.setGeom(geom);
   }
 
   @Override
@@ -51,7 +53,7 @@ public class RiverIslandGroup extends AbstractFeature {
   }
 
   public Set<TronconHydrographique> getSections() {
-    return sections;
+    return this.sections;
   }
 
   public void setSections(Set<TronconHydrographique> sections) {
@@ -59,7 +61,7 @@ public class RiverIslandGroup extends AbstractFeature {
   }
 
   public Set<RiverIsland> getSimpleIslands() {
-    return simpleIslands;
+    return this.simpleIslands;
   }
 
   public void setSimpleIslands(Set<RiverIsland> simpleIslands) {
@@ -67,7 +69,7 @@ public class RiverIslandGroup extends AbstractFeature {
   }
 
   public Set<RiverStroke> getInStrokes() {
-    return inStrokes;
+    return this.inStrokes;
   }
 
   public void setInStrokes(Set<RiverStroke> inStrokes) {
@@ -75,7 +77,7 @@ public class RiverIslandGroup extends AbstractFeature {
   }
 
   public Set<RiverStroke> getOutStrokes() {
-    return outStrokes;
+    return this.outStrokes;
   }
 
   public void setOutStrokes(Set<RiverStroke> outStrokes) {

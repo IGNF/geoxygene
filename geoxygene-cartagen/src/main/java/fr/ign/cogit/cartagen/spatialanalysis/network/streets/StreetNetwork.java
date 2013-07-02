@@ -64,6 +64,7 @@ public class StreetNetwork extends AbstractFeature {
 
   // All static fields //
   public static String ROAD_TRAFFIC_ATTRIBUTE = "";
+  @SuppressWarnings("hiding")
   private static Logger logger = Logger
       .getLogger(StreetNetwork.class.getName());
   private static double sMinT = 3250.0;// 1 mm * 1.3 mm map at 1:50 000.
@@ -161,8 +162,8 @@ public class StreetNetwork extends AbstractFeature {
 
     // if the city is small, build its dual graph
     if (this.size.equals(CitySize.SMALL) && criteria.centrCrit) {
-      this.dualGraph = new DualGraph("city_" + this.id, false, this
-          .getNotDeadEndStrokes());
+      this.dualGraph = new DualGraph("city_" + this.id, false,
+          this.getNotDeadEndStrokes());
       this.dualGraph.computeCentralities();
     }
 
@@ -265,8 +266,8 @@ public class StreetNetwork extends AbstractFeature {
 
     // if the city is small, build its dual graph
     if (this.size.equals(CitySize.SMALL) && this.criteria.centrCrit) {
-      this.dualGraph = new DualGraph("city_" + this.id, false, this
-          .getNotDeadEndStrokes());
+      this.dualGraph = new DualGraph("city_" + this.id, false,
+          this.getNotDeadEndStrokes());
       this.dualGraph.computeCentralities();
     }
 
@@ -351,8 +352,8 @@ public class StreetNetwork extends AbstractFeature {
 
     // if the city is small, build its dual graph
     if (this.size.equals(CitySize.SMALL) && criteria.centrCrit) {
-      this.dualGraph = new DualGraph("city_" + this.id, false, this
-          .getNotDeadEndStrokes());
+      this.dualGraph = new DualGraph("city_" + this.id, false,
+          this.getNotDeadEndStrokes());
       this.dualGraph.computeCentralities();
     }
 
@@ -1091,9 +1092,9 @@ public class StreetNetwork extends AbstractFeature {
 
   /**
    * <p>
-   * Dans une ville, récupère les situations à traiter par agrégation.
-   * Celles représentant une structure (un rond-point, une patte d'oie ou une
-   * voie à chaussées séparées) ne sont pas traitées.
+   * Dans une ville, récupère les situations à traiter par agrégation. Celles
+   * représentant une structure (un rond-point, une patte d'oie ou une voie à
+   * chaussées séparées) ne sont pas traitées.
    * 
    */
   private HashSet<IUrbanBlock> getBlocksToTreat() {
@@ -1134,9 +1135,9 @@ public class StreetNetwork extends AbstractFeature {
   /**
    * <p>
    * Même chose que recupSitATraiter() mais prend aussi en compte la densité
-   * simulée en bâtiment pour déterminer les situations à traiter. Le
-   * critère de densité doit donc avoir été choisi. Utilise les seuils sMinT
-   * et sMinD issus de la thèse d'Anne Ruas.
+   * simulée en bâtiment pour déterminer les situations à traiter. Le critère de
+   * densité doit donc avoir été choisi. Utilise les seuils sMinT et sMinD issus
+   * de la thèse d'Anne Ruas.
    * 
    */
   private HashSet<IUrbanBlock> getBlocksToTreatBuilding() {
@@ -1237,9 +1238,9 @@ public class StreetNetwork extends AbstractFeature {
   /**
    * <p>
    * Pour une situation urbaine, détermine quel situation voisine (parmi celles
-   * à traiter) a le meilleur coût d'agrégation. Renvoie un VR contenant dans
-   * la valeur "meilleurVoisin" le GothicObject et dans la valeur "meilleurCout"
-   * le coût de son agrégation avec situation.
+   * à traiter) a le meilleur coût d'agrégation. Renvoie un VR contenant dans la
+   * valeur "meilleurVoisin" le GothicObject et dans la valeur "meilleurCout" le
+   * coût de son agrégation avec situation.
    * 
    * @param block
    * @param disolvableBlocks
@@ -1253,8 +1254,8 @@ public class StreetNetwork extends AbstractFeature {
     IUrbanBlock bestNeighbour = null;
 
     // get the neighbour city blocks of block
-    HashSet<IUrbanBlock> neighbourSet = new HashSet<IUrbanBlock>(block
-        .getNeighbours());
+    HashSet<IUrbanBlock> neighbourSet = new HashSet<IUrbanBlock>(
+        block.getNeighbours());
     StreetNetwork.logger.finer(block + " has " + neighbourSet.size()
         + " neighbours");
     // filter to keep only the disolvable neighbours
@@ -1387,8 +1388,8 @@ public class StreetNetwork extends AbstractFeature {
       // loop on the strokes to keep the ones between the 2 blocks
       for (IRoadStroke s : new HashSet<IRoadStroke>(strokesSet)) {
         // test the number of common vertices
-        if (CommonAlgorithmsFromCartAGen.getNbCommonVertices(geomLine, s
-            .getGeom()) <= 1) {
+        if (CommonAlgorithmsFromCartAGen.getNbCommonVertices(geomLine,
+            s.getGeom()) <= 1) {
           strokesSet.remove(s);
           continue;
         }
@@ -1464,8 +1465,8 @@ public class StreetNetwork extends AbstractFeature {
       HashSet<IRoadLine> copySet = new HashSet<IRoadLine>(localRoads);
       for (IRoadLine r : copySet) {
         // test geomLine intersection type with r.getGeom()
-        if (CommonAlgorithmsFromCartAGen.getNbCommonVertices(geomLine, r
-            .getGeom()) <= 1) {
+        if (CommonAlgorithmsFromCartAGen.getNbCommonVertices(geomLine,
+            r.getGeom()) <= 1) {
           localRoads.remove(r);
         }
       }
@@ -1473,8 +1474,7 @@ public class StreetNetwork extends AbstractFeature {
       // now compute the mean traffic estimation on the remaining roads
       ArrayList<Integer> list = new ArrayList<Integer>();
       for (IRoadLine r : localRoads) {
-        list
-            .add((Integer) r.getAttribute(StreetNetwork.ROAD_TRAFFIC_ATTRIBUTE));
+        list.add((Integer) r.getAttribute(StreetNetwork.ROAD_TRAFFIC_ATTRIBUTE));
       }
       traffic = Statistics.calculateMean(list);
     }
@@ -1560,8 +1560,8 @@ public class StreetNetwork extends AbstractFeature {
     // loop on the axes
     for (CityAxis axis : neighAxes) {
       // count the points in common in line and axis geometry
-      int n = CommonAlgorithmsFromCartAGen.getNbCommonVertices(line, axis
-          .getGeom());
+      int n = CommonAlgorithmsFromCartAGen.getNbCommonVertices(line,
+          axis.getGeom());
       if (line.coord().size() == 2 && n == 2) {
         return true;
       } else if (n < 3) {
