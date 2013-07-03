@@ -31,8 +31,11 @@ public abstract class MGCPFeature extends GeneObjDefault {
       return 0;
     if (val instanceof Long)
       return (Long) val;
-    else
+    else if (val instanceof Integer)
       return new Long((Integer) val);
+    else if (!((String) val).equals(""))
+      return new Long((String) val);
+    return 0;
   }
 
   public double getDoubleAttribute(String attrName) {

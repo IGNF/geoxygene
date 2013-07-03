@@ -31,6 +31,8 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMaster;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterXMLParser;
+import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
+import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 
 public class XMLParser {
 
@@ -204,6 +206,31 @@ public class XMLParser {
         }
         scheduler.setListLayersVmap1PlusPlus(listLayer);
       }
+    }
+
+    // parse data corrections
+    for (int i = 0; i < root.getElementsByTagName("pre-traitement").getLength(); i++) {
+      Element correctionElement = (Element) root.getElementsByTagName(
+          "pre-traitement").item(i);
+      Element nomElem = (Element) correctionElement.getElementsByTagName(
+          "nom-processus").item(0);
+      String nom = nomElem.getChildNodes().item(0).getNodeValue();
+      ScaleMasterPreProcess process = scheduler.getPreProcessFromName(nom);
+      if (process == null)
+        continue;
+      Element dbElem = (Element) correctionElement.getElementsByTagName(
+          "base-de-donnees").item(0);
+      String nomBD = dbElem.getChildNodes().item(0).getNodeValue();
+      Set<ScaleMasterTheme> themes = new HashSet<ScaleMasterTheme>();
+      for (int i1 = 0; i1 < correctionElement.getElementsByTagName("theme")
+          .getLength(); i1++) {
+        Element themeElem = (Element) root.getElementsByTagName("theme").item(
+            i1);
+        themes.add(scheduler.getThemeFromName(themeElem.getChildNodes().item(0)
+            .getNodeValue()));
+      }
+      scheduler.getCorrections().add(
+          new DataCorrection(process, themes, SourceDLM.valueOf(nomBD)));
     }
   }
 

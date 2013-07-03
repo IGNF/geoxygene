@@ -5,7 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,6 +42,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.pearep.derivation.XMLParser;
+import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
@@ -48,13 +54,15 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
   /****/
   private static final long serialVersionUID = 1L;
 
-  private JTextField txtExport, txtFolder, txtLayer;
+  private JTextField txtExport, txtFolder, txtLayer, txtTheme;
   private JSpinner spinScale;
   private List<DatabaseImport> dbs;
-  private JList jlistDbs, jlistLayers;
-  private JComboBox cbType;
+  private List<DataCorrectionInfo> corrections;
+  private JList jlistDbs, jlistLayers, jlistThemes, jlistCorrections;
+  private JComboBox cbType, cbTypeCorrection, cbPreProcess;
   private List<String> currentLayers;
   private List<String> shapefiles;
+  private List<String> availablePreProcesses;
 
   @Override
   public void actionPerformed(ActionEvent e) {
@@ -80,6 +88,8 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
       this.dbs.add(new DatabaseImport((SourceDLM) cbType.getSelectedItem(),
           currentLayers, txtFolder.getText()));
       updateDbsList();
+      this.currentLayers.clear();
+      this.updateLayersList();
     } else if (e.getActionCommand().equals("remove")) {
       this.dbs.remove(this.jlistDbs.getSelectedIndex());
       updateDbsList();
@@ -87,7 +97,8 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
       currentLayers.remove(this.jlistLayers.getSelectedValue());
       this.updateLayersList();
     } else if (e.getActionCommand().equals("add_layer")) {
-      currentLayers.add(this.txtLayer.getText());
+      if (!this.txtLayer.getText().equals(""))
+        currentLayers.add(this.txtLayer.getText());
       this.updateLayersList();
     } else if (e.getActionCommand().equals("open")) {
       // load a file previously stored in xml
@@ -116,6 +127,9 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     dbs = new ArrayList<EditPeaRepParamsFrame.DatabaseImport>();
     this.currentLayers = new ArrayList<String>();
     this.shapefiles = new ArrayList<String>();
+    this.corrections = new ArrayList<EditPeaRepParamsFrame.DataCorrectionInfo>();
+    this.availablePreProcesses = new ArrayList<String>();
+    this.initPreProcesses();
 
     // a panel for the buttons
     JPanel pButtons = new JPanel();
@@ -228,11 +242,56 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     pDatabase.add(pLayers);
     pDatabase.setLayout(new BoxLayout(pDatabase, BoxLayout.X_AXIS));
 
+    // a panel for data corrections
+    JPanel pDataCorrections = new JPanel();
+    cbTypeCorrection = new JComboBox(new SourceDLM[] { SourceDLM.MGCPPlusPlus,
+        SourceDLM.VMAP1PlusPlus });
+    cbTypeCorrection.setPreferredSize(new Dimension(120, 20));
+    cbTypeCorrection.setMaximumSize(new Dimension(120, 20));
+    cbTypeCorrection.setMinimumSize(new Dimension(120, 20));
+    cbPreProcess = new JComboBox(this.availablePreProcesses.toArray());
+    cbPreProcess.setPreferredSize(new Dimension(140, 20));
+    cbPreProcess.setMaximumSize(new Dimension(140, 20));
+    cbPreProcess.setMinimumSize(new Dimension(140, 20));
+    jlistThemes = new JList();
+    jlistThemes.setPreferredSize(new Dimension(80, 320));
+    jlistThemes.setMaximumSize(new Dimension(80, 320));
+    jlistThemes.setMinimumSize(new Dimension(80, 320));
+    jlistThemes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    jlistCorrections = new JList();
+    jlistCorrections.setPreferredSize(new Dimension(120, 120));
+    jlistCorrections.setMaximumSize(new Dimension(120, 120));
+    jlistCorrections.setMinimumSize(new Dimension(120, 120));
+    jlistCorrections.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    txtTheme = new JTextField();
+    txtTheme.setPreferredSize(new Dimension(100, 20));
+    txtTheme.setMaximumSize(new Dimension(100, 20));
+    txtTheme.setMinimumSize(new Dimension(100, 20));
+    JPanel pBtnsCorr = new JPanel();
+    // TODO
+    pBtnsCorr.setLayout(new BoxLayout(pBtnsCorr, BoxLayout.Y_AXIS));
+    JPanel pEditCorr = new JPanel();
+    // TODO
+    pEditCorr.setLayout(new BoxLayout(pEditCorr, BoxLayout.Y_AXIS));
+    pDataCorrections.add(new JScrollPane(jlistCorrections));
+    pDataCorrections.add(Box.createHorizontalGlue());
+    pDataCorrections.add(pBtnsCorr);
+    pDataCorrections.add(Box.createHorizontalGlue());
+    pDataCorrections.add(pEditCorr);
+    pDataCorrections.add(Box.createHorizontalGlue());
+    pDataCorrections.add(new JScrollPane(jlistThemes));
+    pDataCorrections.setBorder(BorderFactory.createTitledBorder(I18N
+        .getString("EditPeaRepParamsFrame.titleCorrections")));
+    pDataCorrections
+        .setLayout(new BoxLayout(pDataCorrections, BoxLayout.X_AXIS));
+
     // frame main setup
     this.getContentPane().add(Box.createVerticalGlue());
     this.getContentPane().add(pDefinition);
     this.getContentPane().add(Box.createVerticalGlue());
     this.getContentPane().add(pDatabase);
+    this.getContentPane().add(Box.createVerticalGlue());
+    this.getContentPane().add(pDataCorrections);
     this.getContentPane().add(Box.createVerticalGlue());
     this.getContentPane().add(pButtons);
     this.getContentPane().setLayout(
@@ -265,6 +324,77 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
       this.dbs.add(new DatabaseImport(type, layers, folder));
     }
     this.updateDbsList();
+
+    // TODO compléter pour les pré-traitements
+  }
+
+  private void initPreProcesses() {
+    // get the directory of the package of this class
+    Package pack = this.getClass().getPackage();
+    String name = pack.getName();
+    name = name.replace('.', '/');
+    if (!name.startsWith("/")) {
+      name = "/" + name;
+    }
+    URL pathName = this.getClass().getResource(name);
+    File directory = new File(pathName.getFile());
+    // get the parent directories to get fr.ign.cogit.cartagen package
+    while (!directory.getName().equals("cartagen")) {
+      directory = directory.getParentFile();
+    }
+    directory = FileUtil.getNamedFileInDir(directory, "pearep");
+    Collection<String> excluded = new HashSet<String>();
+    List<File> files = FileUtil.getAllFilesInDir(directory, excluded);
+    for (File file : files) {
+      if (!file.getName().endsWith(".class")) {
+        continue;
+      }
+
+      String path = file.getPath().substring(file.getPath().indexOf("fr"));
+      String classname = FileUtil.changeFileNameToClassName(path);
+      try {
+        // Try to create an instance of the object
+        Class<?> classObj = Class.forName(classname);
+        if (classObj.isInterface()) {
+          continue;
+        }
+        if (classObj.isLocalClass()) {
+          continue;
+        }
+        if (classObj.isMemberClass()) {
+          continue;
+        }
+        if (classObj.isEnum()) {
+          continue;
+        }
+        if (Modifier.isAbstract(classObj.getModifiers())) {
+          continue;
+        }
+
+        // test if it's a pre-process class
+        if (ScaleMasterPreProcess.class.isAssignableFrom(classObj)) {
+          ScaleMasterPreProcess instance = (ScaleMasterPreProcess) classObj
+              .getMethod("getInstance").invoke(null);
+          this.availablePreProcesses.add(instance.getPreProcessName());
+          continue;
+        }
+
+      } catch (ClassNotFoundException cnfex) {
+        cnfex.printStackTrace();
+      } catch (IllegalArgumentException e) {
+        e.printStackTrace();
+      } catch (SecurityException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (InvocationTargetException e) {
+        e.printStackTrace();
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      }
+    }
+
+    Collections.sort(this.availablePreProcesses);
   }
 
   private void saveToXml(File file) throws TransformerException, IOException {
@@ -316,6 +446,28 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     }
     root.appendChild(dbsElem);
 
+    // DATA CORRECTIONS
+    for (DataCorrectionInfo correction : this.corrections) {
+      Element correctionElem = xmlDoc.createElement("pre-traitement");
+      root.appendChild(correctionElem);
+      // name
+      Element nomElem = xmlDoc.createElement("nom-processus");
+      n = xmlDoc.createTextNode(correction.getProcessName());
+      nomElem.appendChild(n);
+      correctionElem.appendChild(nomElem);
+      // type
+      Element dbElem = xmlDoc.createElement("base-de-donnees");
+      n = xmlDoc.createTextNode(correction.getDbType().name());
+      dbElem.appendChild(n);
+      correctionElem.appendChild(dbElem);
+      for (String theme : correction.getThemes()) {
+        Element themeElem = xmlDoc.createElement("theme");
+        n = xmlDoc.createTextNode(theme);
+        themeElem.appendChild(n);
+        correctionElem.appendChild(themeElem);
+      }
+    }
+
     // ECRITURE DU FICHIER
     xmlDoc.appendChild(root);
     XMLUtil.writeDocumentToXml(xmlDoc, file);
@@ -358,13 +510,13 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
 
   class DatabaseImport {
     private SourceDLM dbType;
-    private List<String> layers;
+    private List<String> layers = new ArrayList<String>();
     private String folder;
 
     public DatabaseImport(SourceDLM dbType, List<String> layers, String folder) {
       super();
       this.dbType = dbType;
-      this.layers = layers;
+      this.layers.addAll(layers);
       this.setFolder(folder);
     }
 
@@ -404,5 +556,56 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     public void setFolder(String folder) {
       this.folder = folder;
     }
+  }
+
+  class DataCorrectionInfo {
+    private SourceDLM dbType;
+    private List<String> themes = new ArrayList<String>();
+    private String processName;
+
+    public DataCorrectionInfo(SourceDLM dbType, List<String> themes,
+        String processName) {
+      super();
+      this.dbType = dbType;
+      this.themes.addAll(themes);
+      this.setProcessName(processName);
+    }
+
+    public SourceDLM getDbType() {
+      return dbType;
+    }
+
+    public void setDbType(SourceDLM dbType) {
+      this.dbType = dbType;
+    }
+
+    public List<String> getThemes() {
+      return themes;
+    }
+
+    public void setThemes(List<String> themes) {
+      this.themes = themes;
+    }
+
+    @Override
+    public String toString() {
+      StringBuffer buff = new StringBuffer(processName + " ("
+          + dbType.toString());
+      for (String layer : themes) {
+        buff.append(layer);
+        buff.append(", ");
+      }
+      buff.append(")");
+      return buff.toString();
+    }
+
+    public String getProcessName() {
+      return processName;
+    }
+
+    public void setProcessName(String processName) {
+      this.processName = processName;
+    }
+
   }
 }

@@ -28,6 +28,7 @@ import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.data.shapefile.shp.ShapefileException;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.SchemaException;
@@ -197,6 +198,68 @@ public class ShapeFileExport {
           .toGeomClass(), this.exportDir.getPath() + "\\" + shapeFileName,
           projEpsg, "4326");
     }
+  }
+
+  /**
+   * Export the generalised data of the dataset as shapefiles (one shapefile per
+   * scale master line).
+   * @throws NoSuchFieldException
+   * @throws IOException
+   * @throws ShapefileException
+   */
+  public void exportToShapefiles(ScaleLine line) throws ShapefileException,
+      IOException, NoSuchFieldException {
+    // one shapefile is exported per line
+    // first get the name of the theme to create the name of the shapefile
+
+    // check if the theme is a landuse class
+    boolean notExport = false;
+    for (String landuseType : listThemesNotExport) {
+      if (line.getTheme().toString().equals(landuseType)) {
+        notExport = true;
+      }
+    }
+    // if it is a landuse class, it will be exported as a landuse class
+    if (notExport == true)
+      return;
+
+    String shapeFileName = this.scaleMaster.getPointOfView().toString() + "_"
+        + this.finalScale + "_" + line.getTheme().getName();
+    if (ShapeFileExport.logger.isLoggable(Level.FINE)) {
+      ShapeFileExport.logger.fine(shapeFileName);
+      ShapeFileExport.logger.fine(this.exportDir.getPath());
+    }
+    // get the element corresponding to final scale
+    ScaleMasterElement elem = line.getElementFromScale(this.finalScale);
+    if (elem == null) {
+      return;
+    }
+    this.dataset = CartAGenDoc.getInstance().getDataset(elem.getDbName());
+    Class<?> classObj = elem.getClasses().iterator().next();
+    CartAGenDoc.getInstance().setCurrentDataset(dataset);
+
+    // get the features to export
+    IPopulation<IGeneObj> features = new Population<IGeneObj>();
+    IPopulation<IGeneObj> pop = this.dataset.getCartagenPop(this.dataset
+        .getPopNameFromClass(classObj));
+    if (pop == null) {
+      // these features have not been imported
+      return;
+    }
+    for (IGeneObj obj : pop) {
+      if (classObj.isInstance(obj) && (!obj.isEliminated())) {
+        features.add(obj);
+      }
+    }
+    if (features.isEmpty()) {
+      return;
+    }
+
+    // write the shapefile
+    String projEpsg = ((PeaRepDB) this.dataset.getCartAGenDB()).getProjEpsg();
+    ShapeFileExport.write(features, line.getTheme().getGeometryType()
+        .toGeomClass(), this.exportDir.getPath() + "\\" + shapeFileName,
+        projEpsg, "4326");
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })

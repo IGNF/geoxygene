@@ -136,14 +136,14 @@ public class MakeNetworkPlanarDir extends ScaleMasterPreProcess {
        * .addNode(waterNode); }
        */
       NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-          .getCurrentDataset(), CartAGenDoc.getInstance()
-          .getCurrentDataset().getHydroNetwork(), false);
+          .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+          .getHydroNetwork(), false);
     }
   }
 
   @Override
   public String getPreProcessName() {
-    return "Make Network Planar";
+    return "MakeNetworkPlanarWithDirection";
   }
 
   private void copyAttributes(IGeneObj copie, IGeneObj original)

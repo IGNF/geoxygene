@@ -30,7 +30,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
  */
 public class RaposoSimplifProcess extends ScaleMasterGeneProcess {
 
-  private boolean method1, toblerRes;
+  private boolean method1 = true, toblerRes = true;
   private Double initialScale;
   private static RaposoSimplifProcess instance = null;
 

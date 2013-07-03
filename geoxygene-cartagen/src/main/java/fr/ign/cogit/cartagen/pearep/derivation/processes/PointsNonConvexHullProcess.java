@@ -97,6 +97,7 @@ public class PointsNonConvexHullProcess extends ScaleMasterGeneProcess {
       }
       if (cluster.size() < 3)
         continue;
+
       IPolygon geom = (IPolygon) new DelaunayNonConvexHull(points,
           maxEdgeLength).compute();
 

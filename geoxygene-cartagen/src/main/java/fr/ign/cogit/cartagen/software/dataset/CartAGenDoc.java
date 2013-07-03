@@ -532,8 +532,19 @@ public class CartAGenDoc {
   public void addDatabase(String name1, CartAGenDB database) {
     this.databases.put(name1, database);
   }
+
   /**
-   * delete the initial dataset.
+   * Get the first database that has a given {@link SourceDLM} type in the
+   * databases of {@code this}.
+   * @param source
+   * @return
    */
-  
+  public CartAGenDB getDatabaseFromSource(SourceDLM source) {
+    for (CartAGenDB db : databases.values()) {
+      if (db.getSourceDLM().equals(source))
+        return db;
+    }
+    return null;
+  }
+
 }

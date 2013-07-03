@@ -151,8 +151,8 @@ public class DelaunayNonConvexHull {
             triangle.getPoint1().getGeom())
             && ((IPolygon) hull).getExterior().intersects(
                 triangle.getPoint2().getGeom())) {
-          double length = triangle.getPoint1().getGeom().distance(
-              triangle.getPoint3().getGeom());
+          double length = triangle.getPoint1().getGeom()
+              .distance(triangle.getPoint3().getGeom());
           if (length > maxLength) {
             maxLength = length;
             triangleToSuppress = triangle;
@@ -163,8 +163,8 @@ public class DelaunayNonConvexHull {
             triangle.getPoint1().getGeom())
             && ((IPolygon) hull).getExterior().intersects(
                 triangle.getPoint3().getGeom())) {
-          double length = triangle.getPoint1().getGeom().distance(
-              triangle.getPoint3().getGeom());
+          double length = triangle.getPoint1().getGeom()
+              .distance(triangle.getPoint3().getGeom());
           if (length > maxLength) {
             maxLength = length;
             triangleToSuppress = triangle;
@@ -175,8 +175,8 @@ public class DelaunayNonConvexHull {
             triangle.getPoint3().getGeom())
             && ((IPolygon) hull).getExterior().intersects(
                 triangle.getPoint2().getGeom())) {
-          double length = triangle.getPoint3().getGeom().distance(
-              triangle.getPoint2().getGeom());
+          double length = triangle.getPoint3().getGeom()
+              .distance(triangle.getPoint2().getGeom());
           if (length > maxLength) {
             maxLength = length;
             triangleToSuppress = triangle;

@@ -61,7 +61,10 @@ import fr.ign.cogit.cartagen.pearep.derivation.processes.StrokeSelectionProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.TaxiwaySimplificationProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.UnionProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.VisvalingamWhyattProcess;
+import fr.ign.cogit.cartagen.pearep.enrichment.CutNetworkPreProcess;
+import fr.ign.cogit.cartagen.pearep.enrichment.DeleteDoublePreProcess;
 import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanar;
+import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanarDir;
 import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -78,8 +81,8 @@ public class ScaleMasterScheduler {
 
   private Logger logger = Logger
       .getLogger(ScaleMasterScheduler.class.getName());
-  public Logger traceLogger = Logger.getLogger("PeaRep.trace.scheduler");
-  public Logger errorLogger = Logger.getLogger("PeaRep.error.scheduler");
+  public static Logger traceLogger = Logger.getLogger("PeaRep.trace.scheduler");
+  public static Logger errorLogger = Logger.getLogger("PeaRep.error.scheduler");
 
   /**
    * The final generalisation scale for {@code this} scheduler.
@@ -113,6 +116,8 @@ public class ScaleMasterScheduler {
   private Set<ScaleMasterGeneProcess> availableProcesses;
   private Set<ScaleMasterPreProcess> availablePreProcesses;
   private Set<ScaleMasterMultiProcess> availableMultiProcesses;
+
+  private List<DataCorrection> corrections = new ArrayList<DataCorrection>();
 
   private List<String> listLayersVmap2i;
   private List<String> listLayersVmap1;
@@ -222,6 +227,14 @@ public class ScaleMasterScheduler {
     return this.vmap0Folder;
   }
 
+  public List<DataCorrection> getCorrections() {
+    return corrections;
+  }
+
+  public void setCorrections(List<DataCorrection> corrections) {
+    this.corrections = corrections;
+  }
+
   public Set<ScaleMasterTheme> getThemes() {
     return themes;
   }
@@ -277,17 +290,20 @@ public class ScaleMasterScheduler {
    */
   private void initPreProcesses() {
     this.availablePreProcesses = new HashSet<ScaleMasterPreProcess>();
+    this.availablePreProcesses.add(DeleteDoublePreProcess.getInstance());
     this.availablePreProcesses.add(MakeNetworkPlanar.getInstance());
+    this.availablePreProcesses.add(MakeNetworkPlanarDir.getInstance());
+    this.availablePreProcesses.add(CutNetworkPreProcess.getInstance());
   }
 
   private void initLoggers() throws SecurityException, IOException {
-    for (Handler handler : this.traceLogger.getHandlers()) {
+    for (Handler handler : ScaleMasterScheduler.traceLogger.getHandlers()) {
       if (handler instanceof FileHandler) {
         handler = new FileHandler("/trace_" + this.scale + "_"
             + new Date().toString() + ".log", 5000000, 1, true);
       }
     }
-    for (Handler handler : this.errorLogger.getHandlers()) {
+    for (Handler handler : ScaleMasterScheduler.errorLogger.getHandlers()) {
       if (handler instanceof FileHandler) {
         handler = new FileHandler("/log_erreurs_" + this.scale + "_"
             + new Date().toString() + ".log", 5000000, 1, true);
@@ -312,7 +328,14 @@ public class ScaleMasterScheduler {
 
   public void generalise() throws Exception {
 
-    new HashMap<IFeatureCollection<IFeature>, Map<String, Double>>();
+    // first, trigger the preprocesses to correct data
+    for (DataCorrection correction : corrections) {
+      ScaleMasterScheduler.traceLogger.info("début de la correction "
+          + correction.getProcess().getPreProcessName() + " des thèmes "
+          + correction.getThemes());
+      correction.triggerDataCorrection();
+    }
+
     // loop on the lines of the ScaleMaster
     for (ScaleLine line : this.scaleMaster.getScaleLines()) {
       // get the element corresponding to final scale
@@ -324,8 +347,8 @@ public class ScaleMasterScheduler {
         continue;
       }
       this.logger.fine(elem.toString());
-      this.traceLogger.info("début de la généralisation du thème "
-          + line.getTheme());
+      ScaleMasterScheduler.traceLogger
+          .info("début de la généralisation du thème " + line.getTheme());
 
       // test if the element relates to an existing database
       if (!CartAGenDoc.getInstance().getDatabases().keySet()
@@ -364,7 +387,7 @@ public class ScaleMasterScheduler {
         // test if the current process is the filter
         if (orderedProc.isFilter()) {
           // apply the OGCFilter and mark deleted features
-          this.traceLogger.info("Application du filtre "
+          ScaleMasterScheduler.traceLogger.info("Application du filtre "
               + this.filterToString((Filter) orderedProc.getProcess())
               + " sur " + elem.getClasses() + " de " + elem.getDbName());
           this.applyOGCFilter(elem, features);
@@ -391,8 +414,8 @@ public class ScaleMasterScheduler {
 
         // parameterise the process
         process.parameterise();
-        this.traceLogger.info("Application du processus " + procName
-            + " avec comme parametres " + parameters + " sur "
+        ScaleMasterScheduler.traceLogger.info("Application du processus "
+            + procName + " avec comme parametres " + parameters + " sur "
             + elem.getClasses() + " de " + elem.getDbName());
         // execute the process on the features
         try {
@@ -470,7 +493,7 @@ public class ScaleMasterScheduler {
    * Apply the OGCFilter and mark the deleted features of the population.
    * @param features
    */
-  private void applyOGCFilter(ScaleMasterElement elem,
+  protected void applyOGCFilter(ScaleMasterElement elem,
       IPopulation<IGeneObj> features) {
     for (IGeneObj obj : features) {
       if (!elem.getOgcFilter().evaluate(obj)) {
@@ -479,7 +502,7 @@ public class ScaleMasterScheduler {
     }
   }
 
-  private ScaleMasterGeneProcess getProcessFromName(String procName) {
+  protected ScaleMasterGeneProcess getProcessFromName(String procName) {
     for (ScaleMasterGeneProcess proc : this.availableProcesses) {
       if (proc.getProcessName().equals(procName)) {
         return proc;
@@ -488,7 +511,16 @@ public class ScaleMasterScheduler {
     return null;
   }
 
-  private ScaleMasterMultiProcess getMultiProcessFromName(String procName) {
+  protected ScaleMasterPreProcess getPreProcessFromName(String procName) {
+    for (ScaleMasterPreProcess proc : this.availablePreProcesses) {
+      if (proc.getPreProcessName().equals(procName)) {
+        return proc;
+      }
+    }
+    return null;
+  }
+
+  protected ScaleMasterMultiProcess getMultiProcessFromName(String procName) {
     for (ScaleMasterMultiProcess proc : this.availableMultiProcesses) {
       if (proc.getProcessName().equals(procName)) {
         return proc;
@@ -505,7 +537,7 @@ public class ScaleMasterScheduler {
    * @param elem
    * @return
    */
-  private List<OrderedProcess> orderProcesses(ScaleMasterElement elem,
+  protected List<OrderedProcess> orderProcesses(ScaleMasterElement elem,
       IPopulation<IGeneObj> features) {
     List<OrderedProcess> procList = new ArrayList<OrderedProcess>();
     if (elem.getOgcFilter() != null) {
@@ -542,7 +574,7 @@ public class ScaleMasterScheduler {
    * @param orderedProc
    * @param features
    */
-  private void fillLanduseSimplificationProcess(ScaleMasterElement elem,
+  protected void fillLanduseSimplificationProcess(ScaleMasterElement elem,
       OrderedProcess orderedProc, IPopulation<IGeneObj> features) {
 
     // get the parameters
