@@ -394,6 +394,73 @@ public class DeadEndGroup extends GeneObjDefault implements IDeadEndGroup {
   }
 
   /**
+   * Builds a set of dead end groups from a road network, using the faces method
+   * from Cécile Duchêne. The roads have to be structured as networks with
+   * nodes. A border line of the street network can be added to cut the outside
+   * sections
+   * 
+   * @param roads the roads in which dead ends are searched.
+   * @param borderLine the outline of the street network
+   * @return a set of DeadEndGroup objects
+   * @author GTouya
+   */
+
+  public static HashSet<DeadEndGroup> buildFromRoads(
+      IFeatureCollection<IRoadLine> roads, IGeometry border, CarteTopo carteTopo) {
+
+    // Addition of the city centre contour if existing
+    ILineString borderLine = null;
+    if (border instanceof IPolygon)
+      borderLine = ((IPolygon) border).exteriorLineString();
+    else if (border instanceof ILineString)
+      borderLine = (ILineString) border;
+
+    HashSet<DeadEndGroup> deadEndGroups = new HashSet<DeadEndGroup>();
+
+    // First get all the roads that belong to a dead end group
+    HashSet<IRoadLine> deadEnds = new HashSet<IRoadLine>();
+    // loop on the faces of the topological map
+    for (Face f : carteTopo.getListeFaces()) {
+
+      // first find out if the block is inside another block, to detect rackets
+      HashSet<Face> neighFaces = new HashSet<Face>();
+      for (Noeud n : f.noeuds()) {
+        neighFaces.addAll(n.faces());
+      }
+      if (carteTopo.getListeFaces().size() > 2 && neighFaces.size() < 3) {
+        // it's a hole and all the roads intersecting the face are dead ends
+        deadEnds.addAll(roads.select(f.getGeometrie()));
+        continue;
+      }
+
+      // loop on the roads to find the interior ones
+      for (Arc arc : f.getArcsPendants()) {
+        if (!(arc.getCorrespondant(0) instanceof IRoadLine)) {
+          continue;
+        }
+        // Ne pas tenir compte des routes sortant de la ville
+        if (borderLine != null
+            && arc.getCorrespondant(0).getGeom().intersects(borderLine)) {
+          continue;
+        }
+        deadEnds.add((IRoadLine) arc.getCorrespondant(0));
+      }
+    }
+    // now build the dead end groups from the dead end roads
+    Stack<IRoadLine> deadEndStack = new Stack<IRoadLine>();
+    deadEndStack.addAll(deadEnds);
+    while (!deadEndStack.isEmpty()) {
+      DeadEndGroup group = new DeadEndGroup(deadEndStack.pop(), deadEnds);
+
+      deadEndGroups.add(group);
+      deadEndStack.removeAll(group.features);
+    }
+
+    return deadEndGroups;
+
+  }
+
+  /**
    * Builds a set of dead end groups from a town, using the blocks inside the
    * town PAS AU POINT !
    * @param ITownAgent the town being computed

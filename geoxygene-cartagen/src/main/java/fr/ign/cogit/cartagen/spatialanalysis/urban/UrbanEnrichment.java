@@ -350,7 +350,7 @@ public class UrbanEnrichment {
 
       // Lien de la ville avec ses impasses
       HashSet<DeadEndGroup> deadEnds = DeadEndGroup.buildFromRoads(roads,
-          ville.getGeom());
+          ville.getGeom(), carteTopo);
       IFeatureCollection<DeadEndGroup> deadEndColl = new FT_FeatureCollection<DeadEndGroup>();
       for (DeadEndGroup deadEnd : deadEnds) {
         deadEndColl.add(deadEnd);
