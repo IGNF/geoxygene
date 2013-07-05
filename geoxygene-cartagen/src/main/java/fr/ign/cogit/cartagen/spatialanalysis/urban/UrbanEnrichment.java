@@ -242,6 +242,7 @@ public class UrbanEnrichment {
       contours.add(contour);
     }
     carteTopo.importClasseGeo(contours, true);
+    carteTopo.setBuildInfiniteFace(true);
 
     if (UrbanEnrichment.logger.isInfoEnabled()) {
       UrbanEnrichment.logger.info("creating nodes");
@@ -405,6 +406,9 @@ public class UrbanEnrichment {
 
     // parcours des faces de la carte topo
     for (Face face : carteTopo.getPopFaces().select(town.getGeom())) {
+      if (face.isInfinite())
+        continue;
+
       IPolygon polygone = face.getGeometrie();
 
       // verifie si le polygone appartient bien a la ville

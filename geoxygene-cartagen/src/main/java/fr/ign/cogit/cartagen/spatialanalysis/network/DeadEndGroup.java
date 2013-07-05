@@ -421,6 +421,8 @@ public class DeadEndGroup extends GeneObjDefault implements IDeadEndGroup {
     HashSet<IRoadLine> deadEnds = new HashSet<IRoadLine>();
     // loop on the faces of the topological map
     for (Face f : carteTopo.getListeFaces()) {
+      if (f.isInfinite())
+        continue;
 
       // first find out if the block is inside another block, to detect rackets
       HashSet<Face> neighFaces = new HashSet<Face>();
