@@ -58,7 +58,6 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.Ilot;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.IlotImpl;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 
 @Entity
@@ -99,6 +98,11 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
   private HashSet<IUrbanBlock> insideBlocks;
   private HashSet<IUrbanBlock> initialGeoxBlocks;
   private boolean edge = false;
+  /**
+   * true if the block is a hole inside another block. It means that the block
+   * is a part of a dead end group.
+   */
+  private boolean holeBlock;
   /**
    * The City Blocks have their own geometry as several can share the same
    * geoxygene object that is supposed to manage the geometry.
@@ -431,8 +435,9 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
   @Override
   public String toString() {
     String netName = "null";
-    if (this.net != null)
+    if (this.net != null) {
       netName = this.net.toString();
+    }
     return "City block " + this.getId() + " from " + netName;
   }
 
@@ -482,7 +487,6 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
         neighbour.getCityBlockGeom());
 
     Set<IRoadLine> blockRoads = new HashSet<IRoadLine>();
-    // TODO à modifier en décorrelant cette classe des agents
 
     // mark the between roads as eliminated
     IGeometry line = this.getCityBlockGeom().intersection(
@@ -574,16 +578,12 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
   @Override
   @Transient
   public boolean isHoleBlock() {
-    if (this.neighbours.size() != 1) {
-      return false;
-    }
-    // now test if geom is included in neighbour geom
-    IPolygon neighGeom = this.neighbours.iterator().next().getCityBlockGeom();
-    IPolygon neighNoHole = new GM_Polygon(neighGeom.exteriorLineString());
-    if (this.getCityBlockGeom().within(neighNoHole)) {
-      return true;
-    }
-    return false;
+    return holeBlock;
+  }
+
+  @Override
+  public void setHoleBlock(boolean holeBlock) {
+    this.holeBlock = holeBlock;
   }
 
   @Override
@@ -711,8 +711,9 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
 
   @Override
   public void restoreGeoxObjects() {
-    if (this.geoxObj == null)
+    if (this.geoxObj == null) {
       this.geoxObj = new IlotImpl(this.getGeom());
+    }
   }
 
   @Override

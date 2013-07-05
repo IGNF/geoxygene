@@ -53,6 +53,7 @@ import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.Ilot;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ArcReseauImpl;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.JTSAlgorithms;
@@ -64,7 +65,6 @@ public class StreetNetwork extends AbstractFeature {
 
   // All static fields //
   public static String ROAD_TRAFFIC_ATTRIBUTE = "";
-  @SuppressWarnings("hiding")
   private static Logger logger = Logger
       .getLogger(StreetNetwork.class.getName());
   private static double sMinT = 3250.0;// 1 mm * 1.3 mm map at 1:50 000.
@@ -205,7 +205,7 @@ public class StreetNetwork extends AbstractFeature {
 
     // build the blocks neighbourhood
     this.buildBlockNeighbourhood();
-    this.manageHoleBlocks();
+    this.computeHoleBlocks();
 
     if (criteria.centrCrit && !this.size.equals(CitySize.SMALL)) {
       this.buildGraphInPartitions();
@@ -309,7 +309,7 @@ public class StreetNetwork extends AbstractFeature {
 
     // build the blocks neighbourhood
     this.buildBlockNeighbourhood();
-    this.manageHoleBlocks();
+    this.computeHoleBlocks();
 
     if (this.criteria.centrCrit && !this.size.equals(CitySize.SMALL)) {
       this.buildGraphInPartitions();
@@ -395,7 +395,7 @@ public class StreetNetwork extends AbstractFeature {
 
     // build the blocks neighbourhood
     this.buildBlockNeighbourhood();
-    this.manageHoleBlocks();
+    this.computeHoleBlocks();
 
     if (criteria.centrCrit && !this.size.equals(CitySize.SMALL)) {
       this.buildGraphInPartitions();
@@ -859,7 +859,7 @@ public class StreetNetwork extends AbstractFeature {
 
     // build the blocks neighbourhood
     this.buildBlockNeighbourhood();
-    this.manageHoleBlocks();
+    this.computeHoleBlocks();
 
     if (this.criteria.centrCrit && !this.size.equals(CitySize.SMALL)) {
       this.buildGraphInPartitions();
@@ -1809,31 +1809,30 @@ public class StreetNetwork extends AbstractFeature {
 
   /**
    * <p>
-   * Traite les cas où des situations urbaines seraient des trous. Dans ce cas,
-   * la situation "trou" est agrégée à la situation englobante.
+   * Marque les cas où des situations urbaines seraient des trous. Ces trous
+   * seront généralisés différemment en tenant compte de la grappe d'impasses à
+   * laquelle ils appartiennent.
    * 
    */
-  private void manageHoleBlocks() {
+  private void computeHoleBlocks() {
     // loop on the city blocks
     for (IUrbanBlock block : new HashSet<IUrbanBlock>(this.cityBlocks)) {
 
-      // check if it's a hole in another block
-      if (!block.isHoleBlock()) {
+      if (block.getNeighbours().size() != 1) {
+        block.setHoleBlock(false);
         continue;
       }
-
-      IUrbanBlock neigh = block.getNeighbours().iterator().next();
-
-      // aggregate the hole to its containing block
-      IUrbanBlock newBlock = neigh.aggregateWithBlock(block);
-
-      // remove the block from the network set
-      this.cityBlocks.remove(block);
-      this.cityBlocks.remove(neigh);
-      this.cityBlocks.add(newBlock);
-
+      // now test if geom is included in neighbour geom
+      IPolygon neighGeom = block.getNeighbours().iterator().next()
+          .getCityBlockGeom();
+      IPolygon neighNoHole = new GM_Polygon(neighGeom.exteriorLineString());
+      if (block.getCityBlockGeom().within(neighNoHole)) {
+        block.setHoleBlock(true);
+        continue;
+      }
+      block.setHoleBlock(false);
     }
-  }// manageHoleBlocks
+  }
 
   /**
    * Build the City Axes of the street network. A city axis is either a long

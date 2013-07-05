@@ -91,6 +91,8 @@ public interface IUrbanBlock extends IGeneObjSurf {
 
   public boolean isHoleBlock();
 
+  public void setHoleBlock(boolean holeBlock);
+
   public Set<CityAxis> getAxes();
 
   public Set<IUrbanBlock> getInitialGeoxBlocks();

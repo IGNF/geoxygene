@@ -242,6 +242,8 @@ public class UrbanEnrichment {
       contours.add(contour);
     }
     carteTopo.importClasseGeo(contours, true);
+    // Set infinite face to true for face creation, because of a bug if not set.
+    // Intended to be removed when the bug is corrected
     carteTopo.setBuildInfiniteFace(true);
 
     if (UrbanEnrichment.logger.isInfoEnabled()) {
@@ -326,12 +328,9 @@ public class UrbanEnrichment {
 
       // Lien de la ville avec ses tronçons de route
       IFeatureCollection<IRoadLine> roads = new FT_FeatureCollection<IRoadLine>();
-      for (INetworkSection section : dataset.getRoads()) {
-        if (!(section instanceof IRoadLine)) {
-          continue;
-        }
+      for (IRoadLine section : dataset.getRoads()) {
         if (section.getGeom().intersects(ville.getGeom())) {
-          roads.add((IRoadLine) section);
+          roads.add(section);
         }
       }
       StreetNetwork net = new StreetNetwork(ville.getGeom(), roads,
@@ -406,12 +405,13 @@ public class UrbanEnrichment {
 
     // parcours des faces de la carte topo
     for (Face face : carteTopo.getPopFaces().select(town.getGeom())) {
-      if (face.isInfinite())
+      if (face.isInfinite()) {
         continue;
+      }
 
       IPolygon polygone = face.getGeometrie();
 
-      // verifie si le polygone appartient bien a la ville
+      // verifie si le polygone appartient a la ville
       if (!town.getGeom().buffer(5.0).contains(polygone)) {
         continue;
       }
@@ -508,8 +508,10 @@ public class UrbanEnrichment {
 
     // ajout les blocks au reseau de rues
     // MODIF Guillaume (complete build of the street network)
+    // FIXME à virer d'ici avec précuations pour le remoner au niveau au-dessus
+    // (i.e. dans les méthodes aui appellent buildBlocksInTown, juste après
+    // l'appel.
     town.getStreetNetwork().buildNetworkFromCityBlocks(cityBlocks);
-    // update the block agents as some city blocks may have been aggregated
 
   }
 
