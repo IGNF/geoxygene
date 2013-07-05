@@ -150,20 +150,24 @@ public class DefaultFeature extends AbstractFeature {
      * (métadonnées de niveau conceptuel)
      */
     String[] tabNoms;
-    for (Integer key : this.getSchema().getAttLookup().keySet()) {
-      tabNoms = this.getSchema().getAttLookup().get(key);
-      if ((tabNoms != null) && (tabNoms[1] != null) && (tabNoms[1].equals(nom))) {
-        return this.getAttribute(key.intValue());
+    if (this.getSchema() != null) {
+      for (Integer key : this.getSchema().getAttLookup().keySet()) {
+        tabNoms = this.getSchema().getAttLookup().get(key);
+        if ((tabNoms != null) && (tabNoms[1] != null)
+            && (tabNoms[1].equals(nom))) {
+          return this.getAttribute(key.intValue());
+        }
       }
-    }
-    /**
-     * si on n'a pas trouvé au niveau conceptuel, on regarde s'il correspond à
-     * un nom de colonne (métadonnées de niveau logique)
-     */
-    for (Integer key : this.getSchema().getAttLookup().keySet()) {
-      tabNoms = this.getSchema().getAttLookup().get(key);
-      if ((tabNoms != null) && (tabNoms[0] != null) && (tabNoms[0].equals(nom))) {
-        return this.getAttribute(key.intValue());
+      /**
+       * si on n'a pas trouvé au niveau conceptuel, on regarde s'il correspond à
+       * un nom de colonne (métadonnées de niveau logique)
+       */
+      for (Integer key : this.getSchema().getAttLookup().keySet()) {
+        tabNoms = this.getSchema().getAttLookup().get(key);
+        if ((tabNoms != null) && (tabNoms[0] != null)
+            && (tabNoms[0].equals(nom))) {
+          return this.getAttribute(key.intValue());
+        }
       }
     }
     if (AbstractFeature.getLogger().isDebugEnabled()) {
