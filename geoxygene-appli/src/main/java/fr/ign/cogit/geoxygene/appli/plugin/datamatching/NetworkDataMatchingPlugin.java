@@ -42,6 +42,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -188,7 +190,9 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     // String filename1 = ParamParserTest.class.getClassLoader().getResource("data/reseau.shp").getPath();
     // String filename1 = application.getProperties().getLastOpenedFile();
     // bdcarto_route.shp
-    String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+    // String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+    String filename1 = "D:\\Data\\Appariement\\ESPON_DB\\Test\\Reseau1.shp";
+      
     // String filename1 = "D:\\Data\\Appariement\\CG32\\Route\\Referentiel_ImaRoute_CG32.shp";
     // String filename1 = "D:\\Data\\Appariement\\Kusay\\CGDep84_extraction.shp";
     // String filename1 = "D:\\Data\\Appariement\\Kusay\\GGraph2.shp";
@@ -198,7 +202,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     paramFilename1.addFilename(filename1);
     paramPlugin.setParamFilenameNetwork1(paramFilename1);
     
-    String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
+    String filename2 = "D:\\Data\\Appariement\\ESPON_DB\\Test\\Reseau2.shp";
+    // String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
     // String filename2 = "D:\\Data\\Appariement\\CG32\\Route\\bduni.shp";
     // String filename2 = "D:\\Data\\Appariement\\Kusay\\RIUV1BDCARTO_extractionV2.shp";
     // String filename2 = "D:\\Data\\Appariement\\Kusay\\RIUV1BDCARTO_extraction.shp";
@@ -562,6 +567,13 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       link_doubtfull_layer.getSymbolizer().getStroke().setColor(linkColorDoubtfull);
       link_doubtfull_layer.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH_LINK);
       
+      /*try {
+          CoordinateReferenceSystem crs = CRS.decode("EPSG:32618");
+          ShapefileWriter.write(liensIncertains, "D:\\Data\\Appariement\\Haiti\\rond-point\\liens.shp", crs);
+      } catch (Exception e1) {
+          e1.printStackTrace();
+      }*/
+      
       p3.setSize(widthProjectFrame, heightProjectFrame * 2);
       p3.setLocation(widthProjectFrame, 0);
       
@@ -574,7 +586,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       // ---------------------------------------------------------------------------------
       // Frame n°4
       //    
-      ProjectFrame p4 = this.application.getFrame().newProjectFrame();
+      /*ProjectFrame p4 = this.application.getFrame().newProjectFrame();
       p4.getLayerViewPanel().setViewport(viewport);
       viewport.getLayerViewPanels().add(p4.getLayerViewPanel());
       p4.setTitle("Export liens");
@@ -592,7 +604,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       l5.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH * 3);
   
       p4.setSize(widthProjectFrame, heightProjectFrame);
-      p4.setLocation(widthProjectFrame / 2, heightProjectFrame / 2);
+      p4.setLocation(widthProjectFrame / 2, heightProjectFrame / 2);*/
       
       // 
       LOGGER.info("Finished");
