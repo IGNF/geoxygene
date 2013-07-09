@@ -7,10 +7,15 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
@@ -21,13 +26,20 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
  */
 public class LineDensification {
 
-  public static LineString densification(LineString ls, double pas) {
+  /**
+   * Puts x vertices in the line where x is the length divided by the step
+   * parameter. Be careful, this method does not preserve the initial vertices!
+   * @param ls
+   * @param step
+   * @return
+   */
+  public static LineString densification(LineString ls, double step) {
 
     // coordonnees de la ligne initiale
     Coordinate[] coords = ls.getCoordinates();
 
     // table des coordonnees densifiees
-    int nbPoints = (int) (ls.getLength() / pas);
+    int nbPoints = (int) (ls.getLength() / step);
     Coordinate[] coordsDens = new Coordinate[nbPoints + 1];
 
     if (nbPoints + 1 < coords.length)
@@ -50,7 +62,7 @@ public class LineDensification {
         coordsDens[iDens] = new Coordinate(coord0.x + dist * Math.cos(angle),
             coord0.y + dist * Math.sin(angle));
 
-        dist += pas;
+        dist += step;
         iDens++;
       }
       dist -= longueur;
@@ -65,9 +77,10 @@ public class LineDensification {
   public static ILineString densification(ILineString ls, double pas) {
     ILineString ls_ = null;
     try {
-      ls_ = (ILineString) AdapterFactory.toGM_Object(LineDensification
-          .densification((LineString) AdapterFactory.toGeometry(
-              new GeometryFactory(), ls), pas));
+      ls_ = (ILineString) AdapterFactory
+          .toGM_Object(LineDensification.densification(
+              (LineString) AdapterFactory.toGeometry(new GeometryFactory(), ls),
+              pas));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -97,4 +110,83 @@ public class LineDensification {
       return densification((ILineString) geom, pas);
     return geom;
   }
+
+  /**
+   * The line is densified with at least a vertex every step. When original
+   * segments are shorter than step, they are kept as they are. All initial
+   * vertices are preserved.
+   * @param ls
+   * @param step
+   * @return
+   */
+  public static ILineString densification2(ILineString ls, double step) {
+    IDirectPositionList pts = new DirectPositionList();
+    IDirectPosition previous = ls.startPoint();
+    pts.add(ls.startPoint());
+    for (int i = 1; i < ls.coord().size(); i++) {
+      IDirectPosition current = ls.coord().get(i);
+      double dist = previous.distance2D(current);
+      if (dist <= step) {
+        pts.add(current);
+        continue;
+      }
+      // arrived here, vertices have to be added
+      int nbAdded = new Double(Math.floor(dist / step)).intValue();
+      for (int j = 0; j < nbAdded; j++) {
+        // compute the coordinates of the new point
+        double length1 = (j + 1) * step;
+        double length2 = dist - ((j + 1) * step);
+        double k = length1 / length2;
+        double x = (previous.getX() + k * current.getX()) / (k + 1.0);
+        double y = (previous.getY() + k * current.getY()) / (k + 1.0);
+        pts.add(new DirectPosition(x, y));
+      }
+      // add the current vertex to the new vertices list
+      pts.add(current);
+      previous = current;
+    }
+
+    return new GM_LineString(pts);
+  }
+
+  /**
+   * The polygon ring is densified with at least a vertex every step. When
+   * original segments are shorter than step, they are kept as they are. All
+   * initial vertices are preserved.
+   * @param ls
+   * @param step
+   * @return
+   */
+  public static IPolygon densification2(IPolygon poly, double pas) {
+    IPolygon poly_ = null;
+    try {
+      ILineString densExt = densification2(poly.exteriorLineString(), pas);
+      poly_ = new GM_Polygon(densExt);
+      for (IRing ring : poly.getInterior()) {
+        ILineString densRing = densification2(
+            (ILineString) ring.getPrimitive(), pas);
+        poly_.addInterior(new GM_Ring(densRing));
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return poly_;
+  }
+
+  /**
+   * The geometry is densified with at least a vertex every step. When original
+   * segments are shorter than step, they are kept as they are. All initial
+   * vertices are preserved.
+   * @param ls
+   * @param step
+   * @return
+   */
+  public static IGeometry densification2(IGeometry geom, double pas) {
+    if (geom instanceof IPolygon)
+      return densification2((IPolygon) geom, pas);
+    if (geom instanceof ILineString)
+      return densification2((ILineString) geom, pas);
+    return geom;
+  }
+
 }

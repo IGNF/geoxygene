@@ -458,7 +458,8 @@ public class BufferComputing {
   }
 
   /**
-   * Builds a half offset line of a linestring.
+   * Builds a half offset line of a linestring. Be careful, this method return
+   * an empty linestring for the interior side of closed line.
    * 
    * @param side the side (related to line's initial point) on which the half
    *          buffer is built

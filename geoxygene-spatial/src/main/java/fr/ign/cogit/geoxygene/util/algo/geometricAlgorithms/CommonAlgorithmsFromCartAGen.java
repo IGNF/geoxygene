@@ -1092,4 +1092,19 @@ public class CommonAlgorithmsFromCartAGen {
       return true;
     return false;
   }
+
+  /**
+   * Open a ring at the vertex corresponding to the given index.
+   * @param ring
+   * @param index
+   * @return
+   */
+  public static ILineString openRingAtIndex(IRing ring, int index) {
+    IDirectPositionList list = new DirectPositionList();
+    for (int i = index; i < ring.coord().size() - 1; i++)
+      list.add(ring.coord().get(i));
+    for (int i = 0; i < index; i++)
+      list.add(ring.coord().get(i));
+    return new GM_LineString(list);
+  }
 }
