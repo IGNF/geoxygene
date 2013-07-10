@@ -32,6 +32,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
@@ -47,6 +49,9 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
  */
 
 public class GM_LineString extends GM_CurveSegment implements ILineString {
+    
+    /** Classic logger. */
+    private static Logger LOGGER = Logger.getLogger(GM_LineString.class.getName());
 
   /**
    * Points pour le dessin de la polyligne : séquence de DirectPosition. Le
@@ -143,8 +148,8 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
       this.addControlPoint(p, allowRepeated);
     }
     if (this.controlPoint.size() == 1) {
-      System.out.println("CREATING A LINE WITH A SINGLE POINT " + points.get(0));
-     return;// System.exit(0);
+        LOGGER.trace("CREATING A LINE WITH A SINGLE POINT " + points.get(0));
+        return;// System.exit(0);
     }
   }
 
