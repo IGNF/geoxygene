@@ -1837,7 +1837,7 @@ public class CarteTopo extends DataSet {
                 if (arc.getGeometrie().endPoint().distance(noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud) {
                     continue;
                 }
-                logger.debug("\t Splitting " + arc);
+                logger.trace("\t Splitting " + arc);
                 List<Arc> splitEdges = arc.projeteEtDecoupe(noeud.getGeometrie());
                 if (splitEdges == null) {
                     logger.error("ARC = " + arc);

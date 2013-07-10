@@ -259,7 +259,9 @@ public class NetworkDataMatching {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Link geometry assignment");
         }
-        LienReseaux.exportAppCarteTopo(resultatAppariement.getLiens(), paramApp);
+        EnsembleDeLiens liens = resultatAppariement.getLiens();
+        LienReseaux.exportAppCarteTopo(liens, paramApp);
+        resultatAppariement.setLiens(liens);
 
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("######## NETWORK MATCHING END #########");
