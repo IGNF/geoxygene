@@ -27,6 +27,8 @@
 
 package fr.ign.cogit.geoxygene.feature;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -58,6 +60,10 @@ import fr.ign.cogit.geoxygene.api.spatial.toporoot.ITopology;
  */
 
 public class DefaultFeature extends AbstractFeature {
+    
+    /** Logger. */
+    protected static final Logger LOGGER = Logger.getLogger(DefaultFeature.class.getName());
+    
   /**
    * Constructeur vide
    */
@@ -145,6 +151,7 @@ public class DefaultFeature extends AbstractFeature {
     if (nom.equals("id")) { //$NON-NLS-1$
       return this.getId();
     }
+    
     /**
      * on regarde en priorité si le nom correspond à un nom d'attributeType
      * (métadonnées de niveau conceptuel)
@@ -170,11 +177,8 @@ public class DefaultFeature extends AbstractFeature {
         }
       }
     }
-    if (AbstractFeature.getLogger().isDebugEnabled()) {
-      AbstractFeature
-          .getLogger()
-          .warn(
-              "!!! le nom '" + nom + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$//$NON-NLS-2$
+    if (LOGGER.isDebugEnabled()) {
+        LOGGER.warn("!!! le nom '" + nom + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$//$NON-NLS-2$
     }
     return null;
   }
@@ -231,27 +235,22 @@ public class DefaultFeature extends AbstractFeature {
       tabNoms = this.getSchema().getAttLookup().get(key);
       if ((tabNoms != null) && (tabNoms[0] != null)) {
         if (tabNoms[0].equals(nom)) {
-          if (AbstractFeature.getLogger().isDebugEnabled()) {
-            AbstractFeature.getLogger().debug(
-                "setAttribute " + nom + " =?= " + tabNoms[0]); //$NON-NLS-1$//$NON-NLS-2$
+          if (LOGGER.isDebugEnabled()) {
+              LOGGER.debug("setAttribute " + nom + " =?= " + tabNoms[0]); //$NON-NLS-1$//$NON-NLS-2$
           }
           this.setAttribute(key.intValue(), value);
           return;
         }
       }
     }
-    if (AbstractFeature.getLogger().isDebugEnabled()) {
-      AbstractFeature
-          .getLogger()
-          .warn(
-              "!!! le nom '" + nom + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$ //$NON-NLS-2$
+    if (LOGGER.isDebugEnabled()) {
+        LOGGER.warn("!!! le nom '" + nom + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$ //$NON-NLS-2$
       for (Integer key : this.getSchema().getAttLookup().keySet()) {
         tabNoms = this.getSchema().getAttLookup().get(key);
         if (tabNoms == null) {
-          AbstractFeature.getLogger().debug("Attribut " + key + " nul"); //$NON-NLS-1$ //$NON-NLS-2$
+          LOGGER.debug("Attribut " + key + " nul"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
-          AbstractFeature.getLogger().debug(
-              "Attribut " + key + " = " + tabNoms[0] + " - " + tabNoms[1]); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+          LOGGER.debug("Attribut " + key + " = " + tabNoms[0] + " - " + tabNoms[1]); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
         }
       }
     }
