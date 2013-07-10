@@ -1,3 +1,30 @@
+/*
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
+ */
+
 package fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms;
 
 import java.util.ArrayList;
@@ -118,6 +145,35 @@ public class CommonAlgorithmsFromCartAGen {
     if (vect2.getX() * vect1.getY() - vect2.getY() * vect1.getX() == 0.0)
       return position;
     return position - 1;
+  }
+
+  /**
+   * Inserts as a new vertex a point of the given line that is not already a
+   * vertex. The point has to be on the line. The line is modified and the index
+   * of the vertex before the insertion is returned
+   * @param line
+   * @param newVertex
+   * @return
+   */
+  public static int insertVertex(ILineString line, IDirectPosition newVertex) {
+    IDirectPositionList pts = new DirectPositionList();
+    pts.add(line.startPoint());
+    int index = 0;
+    List<Segment> segments = Segment.getSegmentList(line);
+    boolean added = false;
+    for (int i = 0; i < segments.size(); i++) {
+      Segment seg = segments.get(i);
+      if (!seg.contains(newVertex.toGM_Point()) || added) {
+        pts.add(seg.endPoint());
+        continue;
+      }
+      pts.add(newVertex);
+      pts.add(seg.endPoint());
+      added = true;
+      index = i;
+    }
+    line = new GM_LineString(pts);
+    return index;
   }
 
   /**
