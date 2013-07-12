@@ -93,7 +93,7 @@ public class CartagenApplication {
     return CartagenApplication.cartagenApplication;
   }
 
-  private final double version = 0.13;
+  private final double version = 1.1;
 
   public double getVersion() {
     return this.version;
