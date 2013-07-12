@@ -523,6 +523,9 @@
 			<id>jboss</id>
 			<name>jboss Repository</name>
 			<url>http://repository.jboss.org/maven2/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 
