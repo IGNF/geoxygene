@@ -65,7 +65,6 @@ import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.EditParamPanel;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
@@ -76,6 +75,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamProjectionNe
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
@@ -233,10 +233,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     
     // Distance
     ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
-    float distanceNoeudsMax = 20;
+    float distanceNoeudsMax = 50;
     paramDistance.setDistanceNoeudsMax(distanceNoeudsMax);
     paramDistance.setDistanceArcsMax(2 * distanceNoeudsMax);
-    paramDistance.setDistanceArcsMin(distanceNoeudsMax);
+    paramDistance.setDistanceArcsMin(1); // distanceNoeudsMax
     param.setParamDistance(paramDistance);
     
     // Topologie
@@ -247,10 +247,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     param.setParamTopoNetwork1(paramTopo1);
     
     ParamTopologyTreatmentNetwork paramTopo2 = new ParamTopologyTreatmentNetwork();
-    paramTopo2.setGraphePlanaire(false);
-    paramTopo2.setFusionArcsDoubles(false);
-    // paramTopo2.setSeuilFusionNoeuds(0.1);
-    param.setParamTopoNetwork1(paramTopo2);
+    paramTopo2.setGraphePlanaire(true);
+    paramTopo2.setFusionArcsDoubles(true);
+    paramTopo2.setSeuilFusionNoeuds(0.1);
+    param.setParamTopoNetwork2(paramTopo2);
     
     // Projection
     ParamProjectionNetworkDataMatching paramProj1 = new ParamProjectionNetworkDataMatching();
@@ -272,7 +272,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     // -----------------------------------------------------------------------------------------
     // Actions
     paramPlugin.setDoRecalage(true);
-  
+    paramPlugin.setDoLinkExport(true);
     
   }
 
@@ -456,7 +456,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       // Frame n°1
       // 
       ProjectFrame p1 = this.application.getFrame().newProjectFrame();
-      p1.setTitle("Reseau 1 + reseau 2");
+      p1.setTitle("Réseau 1 et réseau 2");
       Layer l1 = p1.addUserLayer(datasetNetwork1.getPopulationsArcs().get(0), "Réseau 1", null);
       l1.getSymbolizer().getStroke().setColor(network1Color);
       l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
@@ -473,7 +473,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       ProjectFrame p2 = this.application.getFrame().newProjectFrame();
       p2.getLayerViewPanel().setViewport(viewport);
       viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
-      p2.setTitle("Reseau 1 après recalage");
+      p2.setTitle("Réseau 1 après recalage");
       
       List<String> valeursClassement = new ArrayList<String>();
       valeursClassement.add(I18N.getString("Appariement.Matched"));
