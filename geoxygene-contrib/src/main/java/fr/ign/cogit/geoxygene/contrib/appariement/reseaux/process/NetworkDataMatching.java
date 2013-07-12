@@ -16,7 +16,7 @@
  * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
+package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process;
 
 import java.sql.Time;
 import java.util.Iterator;
@@ -34,6 +34,9 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
@@ -396,28 +399,6 @@ public class NetworkDataMatching {
                     }
                 }
                 arc.addCorrespondant(element);
-                // LOGGER.info("arc ajoute");
-                // Le code ci-dessous permet un import plus fin mais a été
-                // réalisé pour des données spécifiques et n'est pas encore
-                // codé très générique.
-                // Il est donc commenté dans cette version du code.
-                // element = (FT_Feature)itElements.next();
-                // if ( ref && paramApp.filtrageRef ) {
-                // if ( filtrageTroncon(element) ) continue;
-                // }
-                // if ( !ref && paramApp.filtrageComp ) {
-                // if ( filtrageTroncon(element) ) continue;
-                // }
-                // arc = (Arc_App)popArcApp.nouvelElement();
-                // GM_LineString ligne = new GM_LineString((DirectPositionList)
-                // element.getGeom().coord().clone());
-                // arc.setGeometrie(ligne);
-                // if ( paramApp.orientationConstante) {
-                // if (paramApp.orientationDouble) arc.setOrientation(2);
-                // else arc.setOrientation(1);
-                // }
-                // else arc.setOrientation(orientationTroncon(element));
-                // arc.addCorrespondant(element);
             }
         }
 
@@ -436,13 +417,6 @@ public class NetworkDataMatching {
                 noeud.setGeometrie(new GM_Point((IDirectPosition) ((GM_Point) element.getGeom()).getPosition().clone()));
                 noeud.addCorrespondant(element);
                 noeud.setTaille(distanceNoeudsMax);
-                // Le code ci-dessous permet un import plus fin mais a été
-                // réalisé pour des données spécifiques et n'est pas encore
-                // codé très générique.
-                // Il est donc commenté dans cette version du code.
-                // if ( paramApp.distanceNoeudsConstante )
-                // noeud.setTaille(paramApp.distanceNoeuds);
-                // else noeud.setTaille(tailleNoeud(element, paramApp));
             }
         }
 
@@ -508,7 +482,7 @@ public class NetworkDataMatching {
             reseau.filtreDoublons(0.1);
             reseau.filtreArcsDoublons();
             // Fin Ajout
-            reseau.rendPlanaire(0.1);
+            reseau.rendPlanaire2(0.1);
             reseau.filtreDoublons(0.1);
         } else {
             // cas où on ne veut pas nécessairement rendre planaire la

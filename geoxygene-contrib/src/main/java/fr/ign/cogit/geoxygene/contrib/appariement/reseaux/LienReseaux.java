@@ -32,6 +32,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.I18N;
@@ -244,7 +245,7 @@ public class LienReseaux extends Lien {
   }
 
   /**
-   * Méthode qui renvoie en sortie des liens génériques .
+   * Méthode qui renvoie en sortie des liens génériques.
    *     appariement.Lien, liens 1-1 uniquement 
    *     correspondant aux lienReseaux en entrée. 
    * 
@@ -304,7 +305,7 @@ public class LienReseaux extends Lien {
           Collection<IFeature> objets2 = LienReseaux.getCorrespondants(objetCT2, pops2);
           
           if (objets1.isEmpty() && objets2.isEmpty()) {
-            // cas où il n'y a pas de correspondant dans les données de départ des 2 côtés
+            // Cas où il n'y a pas de correspondant dans les données de départ des 2 côtés
             Lien lienG = liensGeneriques.nouvelElement();
             lienG.setEvaluation(lienReseau.getEvaluation());
             lienG.setCommentaire(I18N.getString("LienReseaux.NoCorrespondentInBothDatabases")); //$NON-NLS-1$
@@ -313,10 +314,12 @@ public class LienReseaux extends Lien {
             } else {
               lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objetCT2, objetCT1));
             }
+            // lienG.setAttribute("evaluation", lienReseau.getEvaluation());
             continue;
           }
+          
           if (objets1.isEmpty()) {
-            // cas où il n'y a pas de correspondant dans les données de BD1
+            // Cas où il n'y a pas de correspondant dans les données de BD1
             Iterator<? extends IFeature> itObjets2 = objets2.iterator();
             while (itObjets2.hasNext()) {
               IFeature objet2 = itObjets2.next();
@@ -329,11 +332,13 @@ public class LienReseaux extends Lien {
                 lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet2, objetCT1));
               }
               lienG.addObjetComp(objet2);
+              // lienG.setAttribute("evaluation", lienReseau.getEvaluation());
             }
             continue;
           }
+          
           if (objets2.isEmpty()) {
-            // cas où il n'y a pas de correspondant dans les données de BD2
+            // Cas où il n'y a pas de correspondant dans les données de BD2
             Iterator<? extends IFeature> itObjets1 = objets1.iterator();
             while (itObjets1.hasNext()) {
               IFeature objet1 = itObjets1.next();
@@ -346,37 +351,34 @@ public class LienReseaux extends Lien {
                 lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objetCT2, objet1));
               }
               lienG.addObjetRef(objet1);
+              // lienG.setAttribute("evaluation", lienReseau.getEvaluation());
             }
             continue;
           }
           
-          // cas où il y a des correspondants dans les deux BD
+          // Cas où il y a des correspondants dans les deux BD
           Iterator<? extends IFeature> itObjets1 = objets1.iterator();
           while (itObjets1.hasNext()) {
               IFeature objet1 = itObjets1.next();
-//            logger.trace("Type objet = " + objet1.getGeom().getClass().toString());
-//            if( !(objet1 instanceof IPoint)) {
-//                continue;
-//            }
-            
-            Iterator<? extends IFeature> itObjets2 = objets2.iterator();
-            while (itObjets2.hasNext()) {
-              IFeature objet2 = itObjets2.next();
-              Lien lienG = liensGeneriques.nouvelElement();
-              lienG.setEvaluation(lienReseau.getEvaluation());
-              lienG.setCommentaire(""); //$NON-NLS-1$
-              lienG.setReference(Integer.toString(objet1.getId()));
-              lienG.setComparaison(Integer.toString(objet2.getId()));
-              if (param.exportGeometrieLiens2vers1) {
-                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet1, objet2));
-              } else {
-                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet2, objet1));
+              Iterator<? extends IFeature> itObjets2 = objets2.iterator();
+              while (itObjets2.hasNext()) {
+                  IFeature objet2 = itObjets2.next();
+                  Lien lienG = liensGeneriques.nouvelElement();
+                  lienG.setEvaluation(lienReseau.getEvaluation());
+                  lienG.setCommentaire(""); //$NON-NLS-1$
+                  lienG.setReference(Integer.toString(objet1.getId()));
+                  lienG.setComparaison(Integer.toString(objet2.getId()));
+                  if (param.exportGeometrieLiens2vers1) {
+                      lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet1, objet2));
+                  } else {
+                      lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet2, objet1));
+                  }
+                  lienG.addObjetRef(objet1);
+                  lienG.addObjetComp(objet2);
+                  // lienG.setAttribute("evaluation", lienReseau.getEvaluation());
               }
-              lienG.addObjetRef(objet1);
-              lienG.addObjetComp(objet2);
-            }
-          
           }
+        
         }
       }
     }
@@ -392,48 +394,157 @@ public class LienReseaux extends Lien {
    * Renvoie les correspondants appartenant à une des FT_FeatureCollection de la
    * liste passée en parametre.
    */
-  private static Collection<IFeature> getCorrespondants(IFeature ft,
+  public static Collection<IFeature> getCorrespondants(IFeature ft,
       List<IFeatureCollection<? extends IFeature>> populations) {
-    List<IFeature> resultats = new ArrayList<IFeature>();
-    for (IFeatureCollection<? extends IFeature> pop : populations) {
-      resultats.addAll(ft.getCorrespondants(pop));
-    }
-    return resultats;
+    
+      List<IFeature> resultats = new ArrayList<IFeature>();
+      for (IFeatureCollection<? extends IFeature> pop : populations) {
+          resultats.addAll(ft.getCorrespondants(pop));
+      }
+      return resultats;
   }
   
-  /**
-   * Methode créant une géométrie au lien 1-1 en reliant les deux objets
-   * concerné par un simple trait.
-   */
-  private static IGeometry creeGeometrieLienSimple(IFeature obj1, IFeature obj2) {
-    /*if (LienReseaux.logger.isDebugEnabled()) {
-      LienReseaux.logger.debug(obj1 + " - " + obj2); //$NON-NLS-1$		
-    }*/
-    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
-    IDirectPosition DP2 = null;
-    if (obj2.getGeom() instanceof IPoint) {
-      IPoint point2 = (IPoint) obj2.getGeom();
-      DP2 = point2.getPosition();
-      points.add(DP2);
-    }
-    if (obj2.getGeom() instanceof ILineString) {
-      ILineString ligne2 = (ILineString) obj2.getGeom();
-      DP2 = Operateurs.milieu(ligne2);
-      points.add(DP2);
-    }
-    if (obj1.getGeom() instanceof IPoint) {
-      IPoint point1 = (IPoint) obj1.getGeom();
-      points.add(point1.getPosition());
-    }
-    if (obj1.getGeom() instanceof ILineString) {
-      ILineString ligne1 = (ILineString) obj1.getGeom();
-      points.add(Operateurs.projection(DP2, ligne1));
-    }
-    ILineString ligne = new GM_LineString(points);
-    /*if (LienReseaux.logger.isDebugEnabled()) {
-      LienReseaux.logger.debug(ligne);
-    }*/
-    return ligne;
+    /**
+     * Methode créant une géométrie au lien 1-1 en reliant les deux objets
+     * concerné par un simple trait.
+     */
+    public static IGeometry creeGeometrieLienSimple(IFeature obj1, IFeature obj2) {
+    
+        // POINT - POINT
+        if (obj2.getGeom() instanceof IPoint && obj1.getGeom() instanceof IPoint) {
+            List<IDirectPosition> points = new ArrayList<IDirectPosition>();
+            
+            IPoint point2 = (IPoint) obj2.getGeom();
+            IDirectPosition DP2 = point2.getPosition();
+            points.add(DP2);
+            
+            IPoint point1 = (IPoint) obj1.getGeom();
+            points.add(point1.getPosition());
+            
+            ILineString ligne = new GM_LineString(points);
+            return ligne;
+        }
+        
+        // POINT - LIGNE
+        if (obj2.getGeom() instanceof IPoint && obj1.getGeom() instanceof ILineString) {
+            List<IDirectPosition> points = new ArrayList<IDirectPosition>();
+            
+            IPoint point2 = (IPoint) obj2.getGeom();
+            IDirectPosition DP2 = point2.getPosition();
+            points.add(DP2);
+            
+            ILineString ligne1 = (ILineString) obj1.getGeom();
+            points.add(Operateurs.projection(DP2, ligne1));
+            
+            ILineString ligne = new GM_LineString(points);
+            return ligne;
+        }
+        
+        // LIGNE - POINT
+        if (obj2.getGeom() instanceof ILineString && obj1.getGeom() instanceof IPoint) {
+            List<IDirectPosition> points = new ArrayList<IDirectPosition>();
+        
+            ILineString ligne2 = (ILineString) obj2.getGeom();
+            IDirectPosition DP2 = Operateurs.milieu(ligne2);
+            points.add(DP2);
+            
+            IPoint point1 = (IPoint) obj1.getGeom();
+            points.add(point1.getPosition());
+            
+            ILineString ligne = new GM_LineString(points);
+            return ligne;
+        }
+        
+        // LIGNE - LIGNE
+        if (obj2.getGeom() instanceof ILineString && obj1.getGeom() instanceof ILineString) {
+            List<IDirectPosition> points = new ArrayList<IDirectPosition>();
+            
+            ILineString ligne2 = (ILineString) obj2.getGeom();
+            IDirectPosition DP2 = Operateurs.milieu(ligne2);
+            points.add(DP2);
+            
+            ILineString ligne1 = (ILineString) obj1.getGeom();
+            points.add(Operateurs.projection(DP2, ligne1));
+            
+            ILineString ligne = new GM_LineString(points);
+            return ligne;
+        }
+        
+        // POINT - MULTILIGNE
+        if (obj2.getGeom() instanceof IPoint && obj1.getGeom() instanceof IMultiCurve) {
+            // 
+            IMultiCurve multiligne = new GM_MultiCurve();
+            //
+            IPoint point2 = (IPoint) obj2.getGeom();
+            IDirectPosition DP2 = point2.getPosition();
+            //
+            for (IGeometry lineGeom1 : ((GM_Aggregate<?>) obj1.getGeom()).getList()) {
+                // 
+                List<IDirectPosition> points = new ArrayList<IDirectPosition>();
+                //
+                points.add(DP2);
+                // 
+                ILineString ligne1 = (ILineString) lineGeom1;
+                points.add(Operateurs.projection(DP2, ligne1));
+                // 
+                ILineString ligne = new GM_LineString(points);
+                multiligne.add(ligne);
+            }
+            return multiligne;
+        }
+        
+        // MULTILIGNE - POINT
+        if (obj2.getGeom() instanceof IMultiCurve && obj1.getGeom() instanceof IPoint) {
+            //
+            IMultiCurve multiligne = new GM_MultiCurve();
+            //
+            for (IGeometry lineGeom : ((GM_Aggregate<?>) obj2.getGeom()).getList()) {
+                // 
+                List<IDirectPosition> points = new ArrayList<IDirectPosition>();
+            
+                ILineString ligne2 = (ILineString) lineGeom;
+                IDirectPosition DP2 = Operateurs.milieu(ligne2);
+                points.add(DP2);
+                
+                IPoint point1 = (IPoint) obj1.getGeom();
+                points.add(point1.getPosition());
+                
+                ILineString ligne = new GM_LineString(points);
+                multiligne.add(ligne);
+            }
+            return multiligne;
+        }
+        
+        
+        // MULTILIGNE - MULTILIGNE
+        if (obj2.getGeom() instanceof IMultiCurve && obj1.getGeom() instanceof IMultiCurve) {
+            //
+            IMultiCurve multiligne = new GM_MultiCurve();
+            //
+            for (IGeometry lineGeom : ((GM_Aggregate<?>) obj2.getGeom()).getList()) {
+                ILineString ligne2 = (ILineString) lineGeom;
+                IDirectPosition DP2 = Operateurs.milieu(ligne2);
+                //
+                for (IGeometry lineGeom1 : ((GM_Aggregate<?>) obj1.getGeom()).getList()) {
+                    // 
+                    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
+                    //
+                    points.add(DP2);
+                    // 
+                    ILineString ligne1 = (ILineString) lineGeom1;
+                    points.add(Operateurs.projection(DP2, ligne1));
+                    // 
+                    ILineString ligne = new GM_LineString(points);
+                    multiligne.add(ligne);
+                }
+            }
+            return multiligne;
+        }
+    
+        // Cas non traité
+        logger.error("NON TRAITE : " + obj1.getGeom().getClass() + ", " + obj2.getGeom().getClass());
+        return null;
+    
   }
 
   // ////////////////////////////////////////////////////////////
@@ -454,12 +565,15 @@ public class LienReseaux extends Lien {
    */
   public static void exportAppCarteTopo(EnsembleDeLiens liensReseaux, ParametresApp param) {
     
-    // création de la géométrie des liens
+    // Création de la géométrie des liens
     for (Lien lien : liensReseaux) {
-      LienReseaux lienR = (LienReseaux) lien;
+        LienReseaux lienR = (LienReseaux) lien;
       
-      lienR.setGeom(lienR.creeGeometrieLien(param.debugTirets,
+        lienR.setGeom(lienR.creeGeometrieLien(param.debugTirets,
           param.debugPasTirets, param.debugBuffer, param.debugTailleBuffer));
+      
+        // lienR.setSchema(lien.getSchema());
+        // lienR.setAttribute("evaluation", lien.getEvaluation());
       
     }
     
@@ -588,6 +702,7 @@ public class LienReseaux extends Lien {
     GroupeApp groupeComp;
     GM_LineString ligne, chemin;
     GM_Aggregate<IGeometry> geomLien;
+    
     // LIEN D'UN NOEUD REF VERS DES NOEUDS COMP ET/OU DES GROUPES COMP
     if (this.getNoeuds1().size() == 1) {
       if (LienReseaux.logger.isDebugEnabled()) {
@@ -635,6 +750,7 @@ public class LienReseaux extends Lien {
       LienReseaux.logger.info(I18N.getString("LienReseaux.NodeLinkNotCreated")); //$NON-NLS-1$
       return null;
     }
+    
     // LIEN D'ARCS REF VERS DES ARCS OU DES GROUPES COMP
     Iterator<Arc> itArcsRef = this.getArcs1().iterator();
     geomLien = new GM_Aggregate<IGeometry>();

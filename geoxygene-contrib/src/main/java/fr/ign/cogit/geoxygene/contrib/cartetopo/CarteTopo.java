@@ -1352,7 +1352,7 @@ public class CarteTopo extends DataSet {
             return;
         }
         
-        System.out.println("Schema = " + this.getPopArcs().getFeatureType().getFeatureAttributes().size());
+        // System.out.println("Schema = " + this.getPopArcs().getFeatureType().getFeatureAttributes().size());
         
         List<IFeature> dejaTraites = new ArrayList<IFeature>();
         List<Arc> arcsEnleves = new ArrayList<Arc>(0);
