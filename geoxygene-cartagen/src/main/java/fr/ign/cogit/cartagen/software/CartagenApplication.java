@@ -556,9 +556,12 @@ public class CartagenApplication {
     // le document XML
     Document docXML = null;
     try {
-      docXML = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-          CartagenApplication.class
-              .getResourceAsStream(this.cheminFichierConfigurationDonnees));
+      docXML = DocumentBuilderFactory
+          .newInstance()
+          .newDocumentBuilder()
+          .parse(
+              CartagenApplication.class
+                  .getResourceAsStream(this.cheminFichierConfigurationDonnees));
     } catch (FileNotFoundException e) {
       CartagenApplication.logger.error("Fichier non trouvé: "
           + this.cheminFichierConfigurationDonnees);
@@ -711,8 +714,8 @@ public class CartagenApplication {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/troncon_cours_eau", IWaterLine.FEAT_TYPE_NAME);
       }
-      if (dataSet.loadWaterAreasFromSHP(absolutePath + "/surface_eau", dataSet
-          .getSymbols())) {
+      if (dataSet.loadWaterAreasFromSHP(absolutePath + "/surface_eau",
+          dataSet.getSymbols())) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/surface_eau", IWaterArea.FEAT_TYPE_NAME);
@@ -732,8 +735,8 @@ public class CartagenApplication {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/troncon_electrique", IElectricityLine.FEAT_TYPE_NAME);
       }
-      if (dataSet.loadContourLinesFromSHP(absolutePath + "/cn", dataSet
-          .getSymbols())) {
+      if (dataSet.loadContourLinesFromSHP(absolutePath + "/cn",
+          dataSet.getSymbols())) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/cn", IContourLine.FEAT_TYPE_NAME);
@@ -748,8 +751,8 @@ public class CartagenApplication {
       }
       dataSet.loadDEMPixelsFromSHP(absolutePath + "/mnt");
 
-      if (dataSet.loadSpotHeightsFromSHP(absolutePath + "/point_cote", dataSet
-          .getSymbols())) {
+      if (dataSet.loadSpotHeightsFromSHP(absolutePath + "/point_cote",
+          dataSet.getSymbols())) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/point_cote", ISpotHeight.FEAT_TYPE_NAME);
@@ -834,15 +837,15 @@ public class CartagenApplication {
     ((ShapeFileDB) dataSet.getCartAGenDB()).setSystemPath(absolutePath);
     try {
       if (dataSet.loadRoadLinesShapeFile(absolutePath
-          + "/A_RESEAU_ROUTIER/ROUTE", SourceDLM.BD_TOPO_V2, dataSet
-          .getSymbols())) {
+          + "/A_RESEAU_ROUTIER/ROUTE", SourceDLM.BD_TOPO_V2,
+          dataSet.getSymbols())) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/A_RESEAU_ROUTIER/ROUTE", IRoadLine.FEAT_TYPE_NAME);
       }
 
       if (dataSet.loadPathsBDTopoV2_25FromSHP(absolutePath
-          + "/A_RESEAU_ROUTIER/CHEMIN", SourceDLM.BD_TOPO_V2, dataSet
-          .getSymbols())) {
+          + "/A_RESEAU_ROUTIER/CHEMIN", SourceDLM.BD_TOPO_V2,
+          dataSet.getSymbols())) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/A_RESEAU_ROUTIER/CHEMIN", IPathLine.FEAT_TYPE_NAME);
       }
@@ -893,8 +896,8 @@ public class CartagenApplication {
           70);
 
       if (dataSet.loadRailwayLineFromSHP(absolutePath
-          + "/B_VOIES_FERREES_ET_AUTRES/TRONCON_VOIE_FERREE", dataSet
-          .getSymbols())) {
+          + "/B_VOIES_FERREES_ET_AUTRES/TRONCON_VOIE_FERREE",
+          dataSet.getSymbols())) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/B_VOIES_FERREES_ET_AUTRES/TRONCON_VOIE_FERREE",
             IRailwayLine.FEAT_TYPE_NAME);
@@ -1038,15 +1041,13 @@ public class CartagenApplication {
       GeneralisationLeftPanelComplement.getInstance().cVoirIlotInitial
           .setEnabled(true);
       GeneralisationLeftPanelComplement.getInstance().lIlot.setEnabled(true);
-      if (this.enrichissementBati) {
-        GeneralisationLeftPanelComplement.getInstance().cVoirAlign
-            .setEnabled(true);
-        GeneralisationLeftPanelComplement.getInstance().cSelectAlign
-            .setEnabled(true);
-        GeneralisationLeftPanelComplement.getInstance().cVoirAlignInitial
-            .setEnabled(true);
-        GeneralisationLeftPanelComplement.getInstance().lAlign.setEnabled(true);
-      }
+      GeneralisationLeftPanelComplement.getInstance().cVoirAlign
+          .setEnabled(true);
+      GeneralisationLeftPanelComplement.getInstance().cSelectAlign
+          .setEnabled(true);
+      GeneralisationLeftPanelComplement.getInstance().cVoirAlignInitial
+          .setEnabled(true);
+      GeneralisationLeftPanelComplement.getInstance().lAlign.setEnabled(true);
     }
 
     if (this.enrichissementHydro) {
@@ -1520,8 +1521,13 @@ public class CartagenApplication {
       CartagenApplication.getInstance().getFrame().getVisuPanel()
 
       .zoomToFullExtent();
-      CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
-          .getDocument().getZone().setExtent(
+      CartAGenDoc
+          .getInstance()
+          .getCurrentDataset()
+          .getCartAGenDB()
+          .getDocument()
+          .getZone()
+          .setExtent(
               new GM_Polygon(CartagenApplication.getInstance().getFrame()
                   .getVisuPanel().getEnvelope()));
 

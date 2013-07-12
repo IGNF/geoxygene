@@ -18,6 +18,7 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.menus.themes.LandUseMenu
 import fr.ign.cogit.cartagen.software.interfacecartagen.menus.themes.ReliefMenu;
 import fr.ign.cogit.cartagen.software.interfacecartagen.menus.themes.RoadNetworkMenu;
 import fr.ign.cogit.cartagen.software.interfacecartagen.menus.themes.TownMenu;
+import fr.ign.cogit.cartagen.software.interfacecartagen.menus.themes.UrbanAlignmentMenu;
 
 public class DataThemesGUIComponent extends JMenu {
 
@@ -34,8 +35,9 @@ public class DataThemesGUIComponent extends JMenu {
   private LandUseMenu landUseMenu;
   private RoadNetworkMenu roadNetMenu;
   private HydroNetworkMenu hydroNetMenu;
-  private BlockMenu blockMenu;
   private BuildingMenu buildingMenu;
+  private BlockMenu blockMenu;
+  private UrbanAlignmentMenu alignmentMenu;
   private TownMenu townMenu;
 
   /**
@@ -52,6 +54,7 @@ public class DataThemesGUIComponent extends JMenu {
     this.hydroNetMenu = new HydroNetworkMenu("Hydro Network");
     this.buildingMenu = new BuildingMenu("Building");
     this.blockMenu = new BlockMenu("Block");
+    this.alignmentMenu = new UrbanAlignmentMenu("Urban alignment");
     this.townMenu = new TownMenu("Town");
     this.add(this.reliefMenu);
     this.add(this.landUseMenu);
@@ -59,6 +62,7 @@ public class DataThemesGUIComponent extends JMenu {
     this.add(this.hydroNetMenu);
     this.add(this.buildingMenu);
     this.add(this.blockMenu);
+    this.add(this.alignmentMenu);
     this.add(this.townMenu);
 
     DataThemesGUIComponent.menu = this;
@@ -97,6 +101,14 @@ public class DataThemesGUIComponent extends JMenu {
     this.hydroNetMenu = hydroNetMenu;
   }
 
+  public BuildingMenu getBuildingMenu() {
+    return this.buildingMenu;
+  }
+
+  public void setBuildingMenu(BuildingMenu buildingMenu) {
+    this.buildingMenu = buildingMenu;
+  }
+
   public BlockMenu getBlockMenu() {
     return this.blockMenu;
   }
@@ -105,12 +117,12 @@ public class DataThemesGUIComponent extends JMenu {
     this.blockMenu = blockMenu;
   }
 
-  public BuildingMenu getBuildingMenu() {
-    return this.buildingMenu;
+  public UrbanAlignmentMenu getUrbanAlignmentMenu() {
+    return this.alignmentMenu;
   }
 
-  public void setBuildingMenu(BuildingMenu buildingMenu) {
-    this.buildingMenu = buildingMenu;
+  public void setUrbanAlignmentMenu(UrbanAlignmentMenu alignmentMenu) {
+    this.alignmentMenu = alignmentMenu;
   }
 
   public TownMenu getTownMenu() {

@@ -22,10 +22,13 @@ import javax.swing.JOptionPane;
 
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.software.GeneralisationSpecifications;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.generalisation.simplification.SimplificationAlgorithm;
+import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
 import fr.ign.cogit.geoxygene.util.algo.SmallestSurroundingRectangleComputation;
 
@@ -74,6 +77,8 @@ public class BuildingMenu extends JMenu {
   public JCheckBoxMenuItem mVoirLgPlusPetitCote = new JCheckBoxMenuItem(
       "Voir lg plus petit cote");
 
+  private JMenuItem mParametrisedDilatation = new JMenuItem(
+      new ParametrisedDilatationAction());
   private JMenuItem mDilatation = new JMenuItem(new DilatationAction());
   private JMenuItem mPPRE = new JMenuItem(new EnlargeToRectangleAction());
   private JMenuItem mPPREAireConstante = new JMenuItem(new ToRectangleAction());
@@ -118,6 +123,7 @@ public class BuildingMenu extends JMenu {
 
     this.addSeparator();
 
+    this.add(this.mParametrisedDilatation);
     this.add(this.mDilatation);
     this.add(this.mPPRE);
     this.add(this.mPPREAireConstante);
@@ -149,7 +155,7 @@ public class BuildingMenu extends JMenu {
     }
   }
 
-  private class DilatationAction extends AbstractAction {
+  private class ParametrisedDilatationAction extends AbstractAction {
 
     private static final long serialVersionUID = 1L;
 
@@ -192,11 +198,55 @@ public class BuildingMenu extends JMenu {
       th.start();
     }
 
-    public DilatationAction() {
+    public ParametrisedDilatationAction() {
       this.putValue(Action.SHORT_DESCRIPTION,
-          "Trigger dilatation algorithm on selected buildings");
-      this.putValue(Action.NAME, "Trigger dilatation");
+          "Trigger parametrised dilatation algorithm on selected buildings");
+      this.putValue(Action.NAME, "Trigger parametrised dilatation");
     }
+  }
+
+  private class DilatationAction extends AbstractAction {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      Thread th = new Thread(new Runnable() {
+        @Override
+        public void run() {
+          for (IFeature sel : CartagenApplication.getInstance().getFrame()
+              .getVisuPanel().selectedObjects) {
+            if (sel.isDeleted()) {
+              continue;
+            }
+            if (!(sel instanceof IBuilding)) {
+              continue;
+            }
+            IBuilding ab = (IBuilding) sel;
+            double area = ab.getGeom().area();
+            if (area < GeneralisationSpecifications.AIRE_SEUIL_SUPPRESSION_BATIMENT) {
+              ab.eliminate();
+            } else {
+              double aireMini = GeneralisationSpecifications.AIRE_MINIMALE_BATIMENT
+                  * Legend.getSYMBOLISATI0N_SCALE()
+                  * Legend.getSYMBOLISATI0N_SCALE() / 1000000.0;
+              if (area < aireMini) {
+                GM_Object geom = (GM_Object) CommonAlgorithms.homothetie(
+                    ab.getGeom(), Math.sqrt(aireMini / area));
+                ab.setGeom(geom);
+              }
+            }
+          }
+        }
+      });
+      th.start();
+    }
+
+    public DilatationAction() {
+      super();
+      this.putValue(Action.NAME, "Self dilatation of selected buildings");
+    }
+
   }
 
   private class EnlargeToRectangleAction extends AbstractAction {
