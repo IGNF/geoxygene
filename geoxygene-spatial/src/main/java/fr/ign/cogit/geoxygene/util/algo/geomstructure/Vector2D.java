@@ -164,4 +164,12 @@ public class Vector2D extends Vecteur {
     double newY = this.getX() * sin + this.getY() * cos;
     return new Vector2D(newX, newY);
   }
+
+  /**
+   * Returns the opposite of {@code this}, i.e. -{@code this}.
+   * @return
+   */
+  public Vector2D opposite() {
+    return new Vector2D(-this.getX(), -this.getY());
+  }
 }

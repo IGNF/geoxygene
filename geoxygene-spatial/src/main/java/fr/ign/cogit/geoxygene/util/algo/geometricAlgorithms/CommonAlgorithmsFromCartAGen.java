@@ -149,31 +149,28 @@ public class CommonAlgorithmsFromCartAGen {
 
   /**
    * Inserts as a new vertex a point of the given line that is not already a
-   * vertex. The point has to be on the line. The line is modified and the index
-   * of the vertex before the insertion is returned
+   * vertex. The point has to be on the line.
    * @param line
    * @param newVertex
    * @return
    */
-  public static int insertVertex(ILineString line, IDirectPosition newVertex) {
+  public static ILineString insertVertex(ILineString line,
+      IDirectPosition newVertex) {
     IDirectPositionList pts = new DirectPositionList();
     pts.add(line.startPoint());
-    int index = 0;
     List<Segment> segments = Segment.getSegmentList(line);
     boolean added = false;
     for (int i = 0; i < segments.size(); i++) {
       Segment seg = segments.get(i);
-      if (!seg.contains(newVertex.toGM_Point()) || added) {
+      if (!seg.containsPoint(newVertex) || added) {
         pts.add(seg.endPoint());
         continue;
       }
       pts.add(newVertex);
       pts.add(seg.endPoint());
       added = true;
-      index = i;
     }
-    line = new GM_LineString(pts);
-    return index;
+    return new GM_LineString(pts);
   }
 
   /**

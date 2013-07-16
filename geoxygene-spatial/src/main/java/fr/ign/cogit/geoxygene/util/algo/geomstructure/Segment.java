@@ -311,4 +311,16 @@ public class Segment extends GM_LineSegment {
       swappedSegments.add(segments.get(i));
     return swappedSegments;
   }
+
+  public boolean containsPoint(IDirectPosition point) {
+    if (coefA * point.getX() + coefB * point.getY() + coefC == 0.0)
+      return true;
+    return false;
+  }
+
+  public boolean containsPoint(IDirectPosition point, double tolerance) {
+    if (Math.abs(coefA * point.getX() + coefB * point.getY() + coefC) <= tolerance)
+      return true;
+    return false;
+  }
 }
