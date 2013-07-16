@@ -106,6 +106,15 @@ public class ScaleMasterTheme implements Comparable<ScaleMasterTheme> {
     this.setGeometryType(geometryType);
   }
 
+  /**
+   * Constructor of a theme with only its name.
+   * @param name
+   */
+  public ScaleMasterTheme(String name) {
+    super();
+    this.name = name;
+  }
+
   @SuppressWarnings("unchecked")
   public ScaleMasterTheme(String name, Object[] relatedClasses,
       GeometryType geometryType) {

@@ -1,9 +1,12 @@
-/*
- * Cr�� le 29 avr. 2008
+/*******************************************************************************
+ * This software is released under the licence CeCILL
  * 
- * Pour changer le mod�le de ce fichier g�n�r�, allez � :
- * Fen�tre&gt;Pr�f�rences&gt;Java&gt;G�n�ration de code&gt;Code et commentaires
- */
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.cartagen.leastsquares.core;
 
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.LineDensification;
 
 /**
  * @author G. Touya
@@ -24,6 +28,8 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
  *         l'orientation initiale d'un côté (ou d'un segment) de l'objet rigide.
  */
 public class LSSideOrientConstraint extends LSInternalConstraint {
+
+  private double weightFactor = 1.0;
 
   public static boolean appliesTo(LSPoint point) {
     if ((point.getTypeGeom().equals(GeometryType.POLYGON))
@@ -59,32 +65,36 @@ public class LSSideOrientConstraint extends LSInternalConstraint {
     } else {
       ligne = ((IPolygon) geom).exteriorLineString();
     }
+    if (sched.getObjsMalleables().contains(obj)
+        && ligne.coord().size() < this.sched.getMapObjPts().get(obj).size())
+      ligne = LineDensification.densification2(ligne, sched.getMapspec()
+          .getDensStep());
     for (int i = 0; i < ligne.numPoints(); i++) {
       IDirectPosition coord = ligne.coord().get(i);
-      if (!coord.equals(point.getIniPt())) {
+      if (!coord.equals2D(point.getIniPt(), 0.001)) {
         continue;
       }
 
       // si on est là, c'est le bon vertex
       // on marque le vertex suivant
       int nextIndex;
-      if (i + 1 > ligne.numPoints()) {
+      if (i + 1 >= ligne.numPoints()) {
         nextIndex = 0;
       } else {
         nextIndex = i + 1;
       }
-      // on r�cup�re les coordonn�es suivantes
+      // on récupère les coordonnées suivantes
       coordSuiv = ligne.coord().get(nextIndex);
       break;
     }
 
-    // on r�cup�re maintenant le MCPoint correspondant à ces coordonnées
+    // on récupère maintenant le LSPoint correspondant à ces coordonnées
     ArrayList<LSPoint> listePoints = this.sched.getMapObjPts().get(obj);
     LSPoint pointSuiv = null;
     Iterator<LSPoint> iter = listePoints.iterator();
     while (iter.hasNext()) {
       LSPoint pt = iter.next();
-      if (pt.getIniPt().equals(coordSuiv)) {
+      if (pt.getIniPt().equals2D(coordSuiv, 0.001)) {
         pointSuiv = pt;
       }
     }// while boucle sur setPoints
@@ -93,8 +103,10 @@ public class LSSideOrientConstraint extends LSInternalConstraint {
     systeme.setUnknowns(new Vector<LSPoint>());
     systeme.getUnknowns().addElement(point);
     systeme.getUnknowns().addElement(point);
-    systeme.getUnknowns().addElement(pointSuiv);
-    systeme.getUnknowns().addElement(pointSuiv);
+    if (!pointSuiv.isFixed()) {
+      systeme.getUnknowns().addElement(pointSuiv);
+      systeme.getUnknowns().addElement(pointSuiv);
+    }
 
     // construction du vecteur des contraintes
     systeme.setConstraints(new Vector<LSConstraint>());
@@ -116,15 +128,30 @@ public class LSSideOrientConstraint extends LSInternalConstraint {
     c = -a;
     b = (x2 - x1) / ((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
     d = -b;
-    systeme.initMatriceA(1, 4);
-    systeme.setA(0, 0, a);
-    systeme.setA(0, 1, b);
-    systeme.setA(0, 2, c);
-    systeme.setA(0, 3, d);
-    systeme.setNonNullValues(4);
+    if (!pointSuiv.isFixed()) {
+      systeme.initMatriceA(1, 4);
+      systeme.setA(0, 0, a);
+      systeme.setA(0, 1, b);
+      systeme.setA(0, 2, c);
+      systeme.setA(0, 3, d);
+      systeme.setNonNullValues(4);
+    } else {
+      systeme.initMatriceA(1, 2);
+      systeme.setA(0, 0, a);
+      systeme.setA(0, 1, b);
+      systeme.setObs(0,
+          orient - c * pointSuiv.getDeltaX() - d * pointSuiv.getDeltaY());
+      systeme.setNonNullValues(2);
+    }
     systeme.getConstraints().add(this);
+    this.weightFactor = point.getIniPt().distance2D(coordSuiv);
 
     return systeme;
+  }
+
+  @Override
+  public double getWeightFactor() {
+    return weightFactor;
   }
 
 }

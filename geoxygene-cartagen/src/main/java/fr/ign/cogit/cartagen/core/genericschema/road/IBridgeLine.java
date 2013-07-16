@@ -28,5 +28,9 @@ public interface IBridgeLine extends IGeneObjLin {
 
   public void setCrossedNetwork(INetworkSection section);
 
+  public INetworkSection getContainingNetwork();
+
+  public void setContainingNetwork(INetworkSection section);
+
   public static final String FEAT_TYPE_NAME = "BridgeLine"; //$NON-NLS-1$
 }

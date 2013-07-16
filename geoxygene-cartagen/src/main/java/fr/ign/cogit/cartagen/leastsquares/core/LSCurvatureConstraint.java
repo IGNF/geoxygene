@@ -1,9 +1,12 @@
-/*
- * Cr�� le 29 avr. 2008
+/*******************************************************************************
+ * This software is released under the licence CeCILL
  * 
- * Pour changer le mod�le de ce fichier g�n�r�, allez � :
- * Fen�tre&gt;Pr�f�rences&gt;Java&gt;G�n�ration de code&gt;Code et commentaires
- */
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.cartagen.leastsquares.core;
 
 import java.util.ArrayList;
@@ -24,12 +27,21 @@ import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.LineDensification;
  */
 public class LSCurvatureConstraint extends LSInternalConstraint {
 
+  private Double minSegLength;
+  /**
+   * Below 1.5 m, the weight of the stiffness constraint is amplified to avoid
+   * angle deformation of such small segments.
+   */
+  private double thresholdMinLength = 6.0;
+
   /**
    * True if the constraint is applicable on point.
    * @param point
    * @return
    */
   public static boolean appliesTo(LSPoint point) {
+    if (point.isFixed())
+      return false;
     if (!point.isPointIniFin()) {
       return true;
     }
@@ -57,21 +69,31 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
     // on commence par récupérer la géométrie
     IGeometry geom = obj.getGeom();
     ILineString ligne;
-    if (geom instanceof ILineString) {
-      ligne = LineDensification.densification((ILineString) geom, 50.0);
+    // test if densification is required
+    if (geom.coord().size() < this.sched.getMapObjPts().get(obj).size()) {
+      if (geom instanceof ILineString) {
+        ligne = LineDensification.densification2((ILineString) geom, sched
+            .getMapspec().getDensStep());
+      } else {
+        ligne = LineDensification.densification2(((IPolygon) geom)
+            .exteriorLineString(), sched.getMapspec().getDensStep());
+      }
     } else {
-      ligne = LineDensification.densification(
-          ((IPolygon) geom).exteriorLineString(), 50.0);
+      if (geom instanceof ILineString) {
+        ligne = (ILineString) geom;
+      } else {
+        ligne = ((IPolygon) geom).exteriorLineString();
+      }
     }
 
     for (int i = 0; i < ligne.numPoints(); i++) {
       IDirectPosition coord = ligne.coord().get(i);
-      if (!coord.equals(point.getIniPt())) {
+      if (!coord.equals2D(point.getIniPt(), 0.01)) {
         continue;
       }
 
-      // si on est l�, c'est le bon vertex
-      // on marque le vertex pr�c�dent
+      // si on est là, c'est le bon vertex
+      // on marque le vertex précédent
       int prevIndex, nextIndex;
       if (i == 0) {
         prevIndex = ligne.numPoints() - 2;
@@ -84,9 +106,9 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
       } else {
         nextIndex = i + 1;
       }
-      // on r�cup�re les coordonnées précédentes
+      // on récupère les coordonnées précédentes
       coordPrec = ligne.coord().get(prevIndex);
-      // on r�cup�re les coordonnées suivantes
+      // on récupère les coordonnées suivantes
       coordSuiv = ligne.coord().get(nextIndex);
       break;
     }
@@ -97,10 +119,10 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
     Iterator<LSPoint> iter = setPoints.iterator();
     while (iter.hasNext()) {
       LSPoint pt = iter.next();
-      if (pt.getIniPt().equals(coordPrec)) {
+      if (pt.getIniPt().equals2D(coordPrec, 0.01)) {
         pointPrec = pt;
       }
-      if (pt.getIniPt().equals(coordSuiv)) {
+      if (pt.getIniPt().equals2D(coordSuiv, 0.01)) {
         pointSuiv = pt;
       }
     }// while boucle sur setPoints
@@ -110,12 +132,18 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
     if (!pointPrec.isFixed()) {
       systeme.getUnknowns().addElement(pointPrec);
       systeme.getUnknowns().addElement(pointPrec);
+      minSegLength = point.getIniPt().distance2D(coordPrec);
     }
     systeme.getUnknowns().addElement(point);
     systeme.getUnknowns().addElement(point);
     if (!pointSuiv.isFixed()) {
       systeme.getUnknowns().addElement(pointSuiv);
       systeme.getUnknowns().addElement(pointSuiv);
+      if (minSegLength != null)
+        minSegLength = Math.min(minSegLength,
+            point.getIniPt().distance2D(coordSuiv));
+      else
+        minSegLength = point.getIniPt().distance2D(coordSuiv);
     }
 
     // construction du vecteur des contraintes
@@ -175,6 +203,12 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
       systeme.setA(2, 0, c2);
       systeme.setA(2, 1, d2);
       systeme.setNonNullValues(6);
+      systeme.setObs(0, -a * pointPrec.getDeltaX() - b * pointPrec.getDeltaY()
+          - e * pointSuiv.getDeltaX() - f * pointSuiv.getDeltaY());
+      systeme.setObs(1,
+          -a1 * pointPrec.getDeltaX() - b1 * pointPrec.getDeltaY());
+      systeme.setObs(2,
+          -a2 * pointSuiv.getDeltaX() - b2 * pointSuiv.getDeltaY());
     } else if (pointPrec.isFixed()) {
       systeme.initMatriceA(3, 4);
       systeme.setA(0, 0, c);
@@ -188,6 +222,9 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
       systeme.setA(2, 2, a2);
       systeme.setA(2, 3, b2);
       systeme.setNonNullValues(10);
+      systeme.setObs(0, -a * pointPrec.getDeltaX() - b * pointPrec.getDeltaY());
+      systeme.setObs(1,
+          -a1 * pointPrec.getDeltaX() - b1 * pointPrec.getDeltaY());
     } else if (pointSuiv.isFixed()) {
       systeme.initMatriceA(3, 4);
       systeme.setA(0, 0, a);
@@ -201,6 +238,9 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
       systeme.setA(2, 2, c2);
       systeme.setA(2, 3, d2);
       systeme.setNonNullValues(10);
+      systeme.setObs(0, -e * pointSuiv.getDeltaX() - f * pointSuiv.getDeltaY());
+      systeme.setObs(2,
+          -a2 * pointSuiv.getDeltaX() - b2 * pointSuiv.getDeltaY());
     } else {
       systeme.initMatriceA(3, 6);
       systeme.setA(0, 0, a);
@@ -221,6 +261,13 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
     }
 
     return systeme;
+  }
+
+  @Override
+  public double getWeightFactor() {
+    if (minSegLength < thresholdMinLength)
+      return super.getWeightFactor() * 10.0;
+    return super.getWeightFactor();
   }
 
 }

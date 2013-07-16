@@ -1,6 +1,12 @@
-/*
- * Créé le 6 avr. 2008
- */
+/*******************************************************************************
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.cartagen.leastsquares.core;
 
 import java.lang.reflect.InvocationTargetException;
@@ -291,7 +297,7 @@ public class LSScheduler {
       IGeometry geom = obj.getGeom();
       // si l'objet est de type malléable, on le densifie à un pas de 50 m
       if (this.getObjsMalleables().contains(obj)) {
-        geom = LineDensification.densification(geom, 50.0);
+        geom = LineDensification.densification2(geom, 50.0);
       }
       // cas d'un point
       if (geom instanceof IPoint) {
@@ -372,7 +378,7 @@ public class LSScheduler {
     }
     LSPoint point = new LSPoint(obj, pt, position, type, pointExtr, fixed,
         symbolWidth, this);
-
+    point.setFinalPt(pt);
     return point;
   }
 
@@ -406,7 +412,7 @@ public class LSScheduler {
         IGeometry geom = obj.getGeom();
         // si l'objet est de type malléable, on le densifie à un pas de 50 m
         if (this.getObjsMalleables().contains(obj)) {
-          geom = LineDensification.densification(geom, 50.0);
+          geom = LineDensification.densification2(geom, 50.0);
         }
 
         List<Segment> objSegments = new ArrayList<Segment>();
@@ -633,11 +639,15 @@ public class LSScheduler {
       Iterator<LSPoint> it = listePoints.iterator();
       while (it.hasNext()) {
         LSPoint point = it.next();
+
         // on calcule le systeme local du point
         point.calculeSystemeLocal();
+        if (point.getSystemeLocal().estVide())
+          continue;
         if (prems) {
           this.systemeGlobal = point.getSystemeLocal().copy();
-          prems = false;
+          if (this.systemeGlobal != null)
+            prems = false;
         } else {
           // on assemble le systeme global et point.systemeLocal
           EquationsSystem nouveau = this.systemeGlobal.assemble(point
@@ -672,8 +682,7 @@ public class LSScheduler {
         geomFin = this.construitNouveauPoint(obj, (IPoint) geomIni,
             mapInconnues);
       } else if (geomIni instanceof ILineString) {
-        geomFin = this.construitNouvelleLigne(obj, (ILineString) geomIni,
-            mapInconnues);
+        geomFin = this.construitNouvelleLigne(obj, mapInconnues);
       } else {
         geomFin = this.construitNouvelleSurface(obj, (IPolygon) geomIni,
             mapInconnues);
@@ -707,11 +716,11 @@ public class LSScheduler {
     IDirectPosition coordFinales = mapInconnues.get(pointLS);
 
     // on calcule les nouvelles coordonnées
-    double newX = coord.getX();
-    double newY = coord.getY();
+    double newX = pointLS.getFinalPt().getX();
+    double newY = pointLS.getFinalPt().getY();
     if (!pointLS.fixed) {
-      newX = newX + coordFinales.getX();
-      newY = newY + coordFinales.getY();
+      newX = pointLS.getIniPt().getX() + coordFinales.getX();
+      newY = pointLS.getIniPt().getY() + coordFinales.getY();
     }
     pointLS.setFinalPt(new DirectPosition(newX, newY));
     return pointLS.getFinalPt().toGM_Point();
@@ -723,25 +732,20 @@ public class LSScheduler {
    * l'ajustement par moindres carrés.
    * 
    */
-  protected ILineString construitNouvelleLigne(IFeature obj, ILineString geom,
+  protected ILineString construitNouvelleLigne(IFeature obj,
       Map<LSPoint, IDirectPosition> mapInconnues) {
     // on commence par construire la géométrie linéaire vide
     IDirectPositionList newPts = new DirectPositionList();
-    ILineString geomIni = geom;
-    if (this.getObjsMalleables().contains(obj)) {
-      geomIni = LineDensification.densification(geom, 50.0);
-    }
-    for (IDirectPosition vertex : geomIni.coord()) {
-      // on récupère le LSPoint correspondant
-      LSPoint point = this.getPointFromCoord(vertex, obj);
+
+    for (LSPoint point : this.getMapObjPts().get(obj)) {
       // on récupère les nouvelles coordonnées
       IDirectPosition coordFinales = mapInconnues.get(point);
       // on calcule les nouvelles coordonnées
-      double newX = point.getIniPt().getX();
-      double newY = point.getIniPt().getY();
+      double newX = point.getFinalPt().getX();
+      double newY = point.getFinalPt().getY();
       if (!point.fixed) {
-        newX = newX + coordFinales.getX();
-        newY = newY + coordFinales.getY();
+        newX = point.getIniPt().getX() + coordFinales.getX();
+        newY = point.getIniPt().getY() + coordFinales.getY();
       }
       point.setFinalPt(new DirectPosition(newX, newY));
       // on ajoute un vertex à ces coordonnées
@@ -766,8 +770,10 @@ public class LSScheduler {
     for (IRing inner : geomIni.getInterior()) {
       innerRings.add(inner);
     }
-    if (this.getObjsMalleables().contains(obj)) {
-      ringIni = LineDensification.densification(ringIni, 50.0);
+    if (this.getObjsMalleables().contains(obj)
+        && ringIni.coord().size() < this.getMapObjPts().get(obj).size()) {
+      ringIni = LineDensification.densification2(ringIni, this.getMapspec()
+          .getDensStep());
     }
 
     // loop on the vertices of initial geometry
@@ -782,11 +788,11 @@ public class LSScheduler {
         coordFinales = new DirectPosition(0.0, 0.0);
       }
       // on calcule les nouvelles coordonnées
-      double newX = point.getIniPt().getX();
-      double newY = point.getIniPt().getY();
+      double newX = point.getFinalPt().getX();
+      double newY = point.getFinalPt().getY();
       if (!point.fixed) {
-        newX = newX + coordFinales.getX();
-        newY = newY + coordFinales.getY();
+        newX = point.getIniPt().getX() + coordFinales.getX();
+        newY = point.getIniPt().getY() + coordFinales.getY();
       }
       point.setFinalPt(new DirectPosition(newX, newY));
       // on ajoute un vertex à ces coordonnées
@@ -813,7 +819,7 @@ public class LSScheduler {
         LSPoint point = this.getPointFromCoord(vertex, obj);
         // on récupère les nouvelles coordonnées
         IDirectPosition coordFinales = mapInconnues.get(point);
-        // on teste si le point �tait bien une inconnue
+        // on teste si le point était bien une inconnue
         if (coordFinales == null) {
           // dans ce cas, on ne bouge pas le point
           coordFinales = new DirectPosition(0.0, 0.0);
@@ -822,8 +828,8 @@ public class LSScheduler {
         double newX = point.getIniPt().getX();
         double newY = point.getIniPt().getY();
         if (!point.fixed) {
-          newX = newX + coordFinales.getX();
-          newY = newY + coordFinales.getY();
+          newX = point.getIniPt().getX() + coordFinales.getX();
+          newY = point.getIniPt().getY() + coordFinales.getY();
         }
         point.setFinalPt(new DirectPosition(newX, newY));
         // on ajoute un vertex � ces coordonn�es
@@ -1181,7 +1187,7 @@ public class LSScheduler {
    * @param obj
    * @return
    */
-  private double getSymbolWidth(IGeneObj obj) {
+  protected double getSymbolWidth(IGeneObj obj) {
     if ((obj instanceof INetworkSection) || (obj instanceof IContourLine)) {
       logger.finer(String.valueOf(((INetworkSection) obj).getWidth()
           * this.mapspec.getEchelle() / 2000.0));
@@ -1323,5 +1329,13 @@ public class LSScheduler {
 
   public void setMapObjGeom(Map<IFeature, IGeometry> mapObjGeom) {
     this.mapObjGeom = mapObjGeom;
+  }
+
+  public EquationsSystem getSystemeGlobal() {
+    return systemeGlobal;
+  }
+
+  public void setSystemeGlobal(EquationsSystem systemeGlobal) {
+    this.systemeGlobal = systemeGlobal;
   }
 }// class MCScheduler

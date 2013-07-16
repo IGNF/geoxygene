@@ -68,6 +68,7 @@ import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanarDir;
 import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -161,6 +162,16 @@ public class ScaleMasterScheduler {
     this.initProcesses();
     this.initPreProcesses();
     this.scale = scale;
+  }
+
+  /**
+   * A default constructor that builds an empty scheduler, with only the
+   * available processes and pre-processes. Useful for the GUI that helps
+   * editing xml files.
+   */
+  public ScaleMasterScheduler() {
+    this.initProcesses();
+    this.initPreProcesses();
   }
 
   public int getScale() {
@@ -336,24 +347,30 @@ public class ScaleMasterScheduler {
       correction.triggerDataCorrection();
     }
 
+    // sets the final scale
+    Legend.setSYMBOLISATI0N_SCALE(scale);
+
     // loop on the lines of the ScaleMaster
     for (ScaleLine line : this.scaleMaster.getScaleLines()) {
+
       // get the element corresponding to final scale
       ScaleMasterElement elem = line.getElementFromScale(this.scale);
+
       // case with a scale master without rule for the current final scale and
       // current line. No need to delete features as the export of this line
       // will be skipped.
       if (elem == null) {
         continue;
       }
+
       this.logger.fine(elem.toString());
       ScaleMasterScheduler.traceLogger
           .info("début de la généralisation du thème " + line.getTheme());
-
       // test if the element relates to an existing database
       if (!CartAGenDoc.getInstance().getDatabases().keySet()
           .contains(elem.getDbName()))
         continue;
+
       // get the dataset related to the element
       CartAGenDataSet dataset = CartAGenDoc.getInstance().getDataset(
           elem.getDbName());
@@ -364,6 +381,7 @@ public class ScaleMasterScheduler {
       IPopulation<IGeneObj> features = new Population<IGeneObj>();
       IPopulation<IGeneObj> pop = dataset.getCartagenPop(dataset
           .getPopNameFromClass(classObj));
+
       if (pop == null) {
         // these features have not been imported
         continue;
@@ -427,7 +445,8 @@ public class ScaleMasterScheduler {
               features.add(objPop);
           }
         } catch (Exception e) {
-          JOptionPane.showMessageDialog(null, e.getStackTrace());
+          JOptionPane.showMessageDialog(null, e.getStackTrace(), e.getClass()
+              .getSimpleName(), JOptionPane.ERROR_MESSAGE);
         }
 
       }

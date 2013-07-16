@@ -13,16 +13,11 @@ import fr.ign.cogit.cartagen.leastsquares.core.LSMovementConstraint;
 import fr.ign.cogit.cartagen.leastsquares.core.LSMovementDirConstraint;
 import fr.ign.cogit.cartagen.leastsquares.core.LSProximityConstraint;
 import fr.ign.cogit.cartagen.leastsquares.core.LSScheduler;
-import fr.ign.cogit.cartagen.leastsquares.core.MapspecsLS;
 import fr.ign.cogit.cartagen.leastsquares.core.LSScheduler.MatrixSolver;
+import fr.ign.cogit.cartagen.leastsquares.core.MapspecsLS;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.MultiThemeParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterMultiProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
-import fr.ign.cogit.cartagen.pearep.enrichment.CutNetworkPreProcess;
-import fr.ign.cogit.cartagen.pearep.enrichment.DeleteDoublePreProcess;
-import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanarDir;
-import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterLine;
-import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayLine;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
@@ -76,31 +71,7 @@ public class DisplacementLSAProcess extends ScaleMasterMultiProcess {
       throws Exception {
     // first, trigger enrichments
     try {
-      Set<Class<? extends IGeneObj>> classes = new HashSet<Class<? extends IGeneObj>>();
 
-      // remove double features in rivers
-      classes.clear();
-      classes.add(MGCPWaterLine.class);
-      DeleteDoublePreProcess processDbl = DeleteDoublePreProcess.getInstance();
-      processDbl.setProcessedClasses(classes);
-      processDbl.execute(CartAGenDoc.getInstance().getCurrentDataset()
-          .getCartAGenDB());
-
-      // make planar and enrich the river network
-      classes.clear();
-      classes.add(MGCPWaterLine.class);
-      MakeNetworkPlanarDir processRiver = MakeNetworkPlanarDir.getInstance();
-      processRiver.setProcessedClasses(classes);
-      processRiver.execute(CartAGenDoc.getInstance().getCurrentDataset()
-          .getCartAGenDB());
-
-      // cut the railroad network in smaller sections
-      classes.clear();
-      classes.add(MGCPRailwayLine.class);
-      CutNetworkPreProcess processCut = CutNetworkPreProcess.getInstance();
-      processCut.setProcessedClasses(classes);
-      processCut.execute(CartAGenDoc.getInstance().getCurrentDataset()
-          .getCartAGenDB());
       // enrich the rail network
       NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
           .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
@@ -132,9 +103,9 @@ public class DisplacementLSAProcess extends ScaleMasterMultiProcess {
       for (MinimumSeparation minSep : this.minSeps) {
         classesMalleables.add(minSep.getClass1().getName());
         classesMalleables.add(minSep.getClass2().getName());
-        contraintesExternes.put(new String[] {
-            LSProximityConstraint.class.getName(),
-            minSep.getClass1().getName(), minSep.getClass2().getName() },
+        contraintesExternes.put(
+            new String[] { LSProximityConstraint.class.getName(),
+                minSep.getClass1().getName(), minSep.getClass2().getName() },
             minSep.getMinSep());
       }
       Map<String, Double> poidsContraintes = new HashMap<String, Double>();

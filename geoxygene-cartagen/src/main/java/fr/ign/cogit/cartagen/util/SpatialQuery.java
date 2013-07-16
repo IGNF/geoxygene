@@ -243,10 +243,12 @@ public class SpatialQuery {
     IPopulation<IGeneObj> pop = new Population<IGeneObj>();
     for (String className : classNames) {
       Class<?> classObj = Class.forName(className);
-      String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME")
-          .get(null);
-      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset()
-          .getCartagenPop(popName));
+      pop.addAll(CartAGenDoc
+          .getInstance()
+          .getCurrentDataset()
+          .getCartagenPop(
+              CartAGenDoc.getInstance().getCurrentDataset()
+                  .getPopNameFromClass(classObj)));
     }
     return pop.select(polygon);
   }

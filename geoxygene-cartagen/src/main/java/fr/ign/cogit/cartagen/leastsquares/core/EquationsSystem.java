@@ -1,16 +1,19 @@
-/*
- * Cr�� le 26 mars 2008
+/*******************************************************************************
+ * This software is released under the licence CeCILL
  * 
- * Pour changer le mod�le de ce fichier g�n�r�, allez � :
- * Fen�tre&gt;Pr�f�rences&gt;Java&gt;G�n�ration de code&gt;Code et commentaires
- */
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.cartagen.leastsquares.core;
 
 import java.util.Map;
 import java.util.Vector;
 
 /**
- * @author moi
+ * @author gtouya
  * 
  *         Classe qui contient des systèmes d'équations linéaires représentées
  *         sous forme matricielle
@@ -27,7 +30,7 @@ public abstract class EquationsSystem {
   private int nonNullValues = 0;
 
   /**
-   * assemble deux syst�mes d'�quations en un nouveau. Au niveau des matrices,
+   * assemble deux systèmes d'équations en un nouveau. Au niveau des matrices,
    * cela se traduit par un changement de dimension (nouvelles inconnues et
    * nouvelles contraintes), un ajout potentiel d'inconnues dans le vecteur et
    * un agrandissement de la matrice (1,n) des observations.
@@ -87,14 +90,14 @@ public abstract class EquationsSystem {
   public abstract int getColumnNumber();
 
   /**
-   * R�cup�re le i�me �l�ment de la matrice (1,n) des observations
+   * Récupère le ième élément de la matrice (1,n) des observations
    * @param i
    * @return
    */
   public abstract double getObs(int i);
 
   /**
-   * R�cup�re l'�l�ment (i,j) de la matrice A du syst�me
+   * Récupère l'élément (i,j) de la matrice A du système
    * @param i
    * @param j
    * @return
@@ -102,7 +105,7 @@ public abstract class EquationsSystem {
   public abstract double getA(int i, int j);
 
   /**
-   * Affecte le i�me �l�ment de la matrice (1,n) des observations
+   * Affecte le ième élément de la matrice (1,n) des observations
    * @param i the row number
    * @param value the double value to put in the matrix
    * @return
@@ -110,7 +113,7 @@ public abstract class EquationsSystem {
   public abstract void setObs(int i, double value);
 
   /**
-   * Affecte l'�l�ment (i,j) de la matrice A du syst�me
+   * Affecte l'élément (i,j) de la matrice A du système
    * @param i the row number
    * @param j the column number
    * @param value the double value to put in the matrix
@@ -120,6 +123,11 @@ public abstract class EquationsSystem {
 
   public abstract void initMatriceA(int rows, int columns);
 
+  /**
+   * Initialise the (n,1) observation vector (the right part of the equation)
+   * with zeros.
+   * @param rows
+   */
   public abstract void initObservations(int rows);
 
   public abstract void clear();
@@ -137,5 +145,16 @@ public abstract class EquationsSystem {
     for (int i = 0; i < getRowNumber(); i++)
       vect.add(getObs(i));
     return vect;
+  }
+
+  @Override
+  public String toString() {
+    if (this.estVide())
+      return "Système vide";
+    StringBuffer buff = new StringBuffer("Système à " + getColumnNumber() / 2
+        + " inconnues et " + getRowNumber() + " équations:\n");
+    buff.append("inconnues: " + getUnknowns());
+    buff.append("contraintes: " + getConstraints());
+    return buff.toString();
   }
 }

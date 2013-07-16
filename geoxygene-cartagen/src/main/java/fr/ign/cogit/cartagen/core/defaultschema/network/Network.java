@@ -9,6 +9,9 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.core.defaultschema.network;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
@@ -138,6 +141,13 @@ public class Network extends GeneObjDefault implements INetwork {
   @Override
   public void removeFace(INetworkFace face) {
     this.faces.remove(face);
+  }
+
+  @Override
+  public void removeAllNodes() {
+    Set<INetworkNode> copySet = new HashSet<INetworkNode>(this.getNodes());
+    for (INetworkNode node : copySet)
+      this.removeNode(node);
   }
 
 }

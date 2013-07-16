@@ -1,9 +1,12 @@
-/*
- * Cr�� le 29 avr. 2008
+/*******************************************************************************
+ * This software is released under the licence CeCILL
  * 
- * Pour changer le mod�le de ce fichier g�n�r�, allez � :
- * Fen�tre&gt;Pr�f�rences&gt;Java&gt;G�n�ration de code&gt;Code et commentaires
- */
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.cartagen.leastsquares.core;
 
 import java.util.ArrayList;
@@ -26,7 +29,11 @@ import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.LineDensification;
  */
 public class LSMovementDirConstraint extends LSInternalConstraint {
 
+  private double weightFactor = 1.0;
+
   public static boolean appliesTo(LSPoint point) {
+    if (point.isFixed())
+      return false;
     if (!point.isPointIniFin()) {
       return true;
     }
@@ -54,16 +61,26 @@ public class LSMovementDirConstraint extends LSInternalConstraint {
     // on commence par récupérer la géométrie
     IGeometry geom = obj.getGeom();
     ILineString ligne;
-    if (geom instanceof ILineString) {
-      ligne = LineDensification.densification((ILineString) geom, 50.0);
+    // test if densification is required
+    if (geom.coord().size() < this.sched.getMapObjPts().get(obj).size()) {
+      if (geom instanceof ILineString) {
+        ligne = LineDensification.densification2((ILineString) geom, sched
+            .getMapspec().getDensStep());
+      } else {
+        ligne = LineDensification.densification2(((IPolygon) geom)
+            .exteriorLineString(), sched.getMapspec().getDensStep());
+      }
     } else {
-      ligne = LineDensification.densification(
-          ((IPolygon) geom).exteriorLineString(), 50.0);
+      if (geom instanceof ILineString) {
+        ligne = (ILineString) geom;
+      } else {
+        ligne = ((IPolygon) geom).exteriorLineString();
+      }
     }
 
     for (int i = 0; i < ligne.numPoints(); i++) {
       IDirectPosition coord = ligne.coord().get(i);
-      if (!coord.equals(point.getIniPt())) {
+      if (!coord.equals2D(point.getIniPt(), 0.01)) {
         continue;
       }
 
@@ -94,10 +111,10 @@ public class LSMovementDirConstraint extends LSInternalConstraint {
     Iterator<LSPoint> iter = listePoints.iterator();
     while (iter.hasNext()) {
       LSPoint pt = iter.next();
-      if (pt.getIniPt().equals(coordPrec)) {
+      if (pt.getIniPt().equals2D(coordPrec, 0.01)) {
         pointPrec = pt;
       }
-      if (pt.getIniPt().equals(coordSuiv)) {
+      if (pt.getIniPt().equals2D(coordSuiv, 0.01)) {
         pointSuiv = pt;
       }
     }// while boucle sur setPoints
@@ -139,6 +156,8 @@ public class LSMovementDirConstraint extends LSInternalConstraint {
       systeme.setA(0, 0, c);
       systeme.setA(0, 1, d);
       systeme.setNonNullValues(2);
+      systeme.setObs(0, -a * pointPrec.getDeltaX() - b * pointPrec.getDeltaY()
+          - e * pointSuiv.getDeltaX() - f * pointSuiv.getDeltaY());
     } else if (pointPrec.isFixed()) {
       systeme.initMatriceA(1, 4);
       systeme.setA(0, 0, c);
@@ -146,6 +165,7 @@ public class LSMovementDirConstraint extends LSInternalConstraint {
       systeme.setA(0, 2, e);
       systeme.setA(0, 3, f);
       systeme.setNonNullValues(4);
+      systeme.setObs(0, -a * pointPrec.getDeltaX() - b * pointPrec.getDeltaY());
     } else if (pointSuiv.isFixed()) {
       systeme.initMatriceA(1, 4);
       systeme.setA(0, 0, a);
@@ -153,6 +173,7 @@ public class LSMovementDirConstraint extends LSInternalConstraint {
       systeme.setA(0, 2, c);
       systeme.setA(0, 3, d);
       systeme.setNonNullValues(4);
+      systeme.setObs(0, -e * pointSuiv.getDeltaX() - f * pointSuiv.getDeltaY());
     } else {
       systeme.initMatriceA(1, 6);
       systeme.setA(0, 0, a);
@@ -165,6 +186,11 @@ public class LSMovementDirConstraint extends LSInternalConstraint {
     }
 
     return systeme;
+  }
+
+  @Override
+  public double getWeightFactor() {
+    return weightFactor;
   }
 
 }

@@ -41,6 +41,7 @@ public class XMLParser {
   private String exportFolder;
   private Map<String, String> mapPath;
   private Map<String, List<String>> mapLayers;
+  private List<DataCorrection> corrections = new ArrayList<DataCorrection>();
 
   public XMLParser(File xmlFile) {
     super();
@@ -215,7 +216,8 @@ public class XMLParser {
       Element nomElem = (Element) correctionElement.getElementsByTagName(
           "nom-processus").item(0);
       String nom = nomElem.getChildNodes().item(0).getNodeValue();
-      ScaleMasterPreProcess process = scheduler.getPreProcessFromName(nom);
+      ScaleMasterPreProcess process = new ScaleMasterScheduler()
+          .getPreProcessFromName(nom);
       if (process == null)
         continue;
       Element dbElem = (Element) correctionElement.getElementsByTagName(
@@ -226,11 +228,19 @@ public class XMLParser {
           .getLength(); i1++) {
         Element themeElem = (Element) root.getElementsByTagName("theme").item(
             i1);
-        themes.add(scheduler.getThemeFromName(themeElem.getChildNodes().item(0)
-            .getNodeValue()));
+        if (scheduler != null)
+          themes.add(scheduler.getThemeFromName(themeElem.getChildNodes()
+              .item(0).getNodeValue()));
+        else
+          themes.add(new ScaleMasterTheme(themeElem.getChildNodes().item(0)
+              .getNodeValue()));
       }
-      scheduler.getCorrections().add(
-          new DataCorrection(process, themes, SourceDLM.valueOf(nomBD)));
+      if (scheduler != null) {
+        scheduler.getCorrections().add(
+            new DataCorrection(process, themes, SourceDLM.valueOf(nomBD)));
+      } else
+        this.corrections.add(new DataCorrection(process, themes, SourceDLM
+            .valueOf(nomBD)));
     }
   }
 
@@ -324,6 +334,14 @@ public class XMLParser {
 
   public void setMapLayers(Map<String, List<String>> mapLayers) {
     this.mapLayers = mapLayers;
+  }
+
+  public List<DataCorrection> getCorrections() {
+    return corrections;
+  }
+
+  public void setCorrections(List<DataCorrection> corrections) {
+    this.corrections = corrections;
   }
 
 }

@@ -118,7 +118,7 @@ public class RailwaySelectionProcess extends ScaleMasterGeneProcess {
     network.buildStrokes(attributeNames, 112.5, 45.0, true);
     // select the strokes big enough
     for (Stroke stroke : network.getStrokes()) {
-      if (stroke.getLength() > this.lengthThreshold) {
+      if (stroke.getLength() < this.lengthThreshold) {
         for (ArcReseau arc : stroke.getFeatures()) {
           IRailwayLine rail = map.get(arc);
           if (rail != null)

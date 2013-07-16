@@ -112,6 +112,19 @@ public class RoadLine extends NetworkSection implements IRoadLine {
   }
 
   /**
+   * Default constructor, used when the network is made planar.
+   */
+  public RoadLine(ILineString line) {
+    super();
+    this.geoxObj = new TronconDeRouteImpl(new ReseauImpl(), false, line);
+    this.setInitialGeom(line);
+    this.setEliminated(false);
+    this.deadEnd = false;
+    this.initialNode = null;
+    this.finalNode = null;
+  }
+
+  /**
    * Default constructor, used by Hibernate.
    */
   public RoadLine() {
@@ -306,8 +319,8 @@ public class RoadLine extends NetworkSection implements IRoadLine {
 
   @Override
   public void restoreGeoxObjects() {
-    this.geoxObj = new TronconDeRouteImpl(new ReseauImpl(), false, this
-        .getGeom());
+    this.geoxObj = new TronconDeRouteImpl(new ReseauImpl(), false,
+        this.getGeom());
   }
 
   @Override

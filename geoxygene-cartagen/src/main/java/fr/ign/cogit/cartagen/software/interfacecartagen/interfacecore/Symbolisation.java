@@ -39,6 +39,7 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.VerticalHatchTex
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.geompool.ColouredFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
@@ -48,12 +49,14 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
+import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 
 /**
  * une symbolisation de couche. une instance de cette classe fournit une methode
@@ -740,6 +743,58 @@ public abstract class Symbolisation {
   }
 
   /**
+   * lineraire avec largeur pixel
+   * @return
+   */
+  public static Symbolisation vector(final Color couleur, final int largeur) {
+    return new Symbolisation() {
+      @Override
+      public void draw(VisuPanel pv, IFeature obj) {
+        if (obj.isDeleted()) {
+          return;
+        }
+
+        // verification du type de geometrie
+        if (!(obj.getGeom() instanceof ILineString)) {
+          Symbolisation.logger.warn("probleme dans le dessin de " + obj
+              + ". Mauvais type de geometrie: "
+              + obj.getGeom().getClass().getSimpleName());
+          return;
+        }
+
+        if (obj.getGeom().coord().size() != 2)
+          return;
+
+        // dessine une tête de flèche en (0, 0) qui pointe vers la droite.
+        double arrowLength = obj.getGeom().length() / 5;
+        double angle = new Vector2D(obj.getGeom().coord().get(0), obj.getGeom()
+            .coord().get(1)).direction().getValeur();
+        IDirectPositionList pts = new DirectPositionList();
+        pts.add(new DirectPosition(-arrowLength, arrowLength));
+        pts.add(new DirectPosition(0.0, 0.0));
+        pts.add(new DirectPosition(-arrowLength, -arrowLength));
+        ILineString arrowHead = new GM_LineString(pts);
+        ILineString arrowHeadRot = null;
+        try {
+          arrowHeadRot = CommonAlgorithms.rotation(arrowHead,
+              new DirectPosition(0.0, 0.0), angle);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        ILineString arrowHeadTrans = CommonAlgorithms.translation(arrowHeadRot,
+            obj.getGeom().coord().get(1).getX(), obj.getGeom().coord().get(1)
+                .getY());
+
+        // dessin de la ligne
+        pv.draw(couleur, (ILineString) obj.getGeom(), largeur,
+            BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        pv.draw(couleur, arrowHeadTrans, largeur, BasicStroke.CAP_ROUND,
+            BasicStroke.JOIN_ROUND);
+      }
+    };
+  }
+
+  /**
    * Provides a symbolisation for lines with dashes.
    * @param couleur
    * @param widthmm
@@ -1248,9 +1303,9 @@ public abstract class Symbolisation {
 
             pv.draw(Color.white, ls);
 
-            pv.draw(sp.getSymbolColor(), ls, 0.15 * Legend
-                .getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_ROUND,
-                BasicStroke.JOIN_ROUND);
+            pv.draw(sp.getSymbolColor(), ls,
+                0.15 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
           }
 
         }

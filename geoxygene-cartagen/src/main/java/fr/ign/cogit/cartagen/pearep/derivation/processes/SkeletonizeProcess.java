@@ -78,8 +78,10 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
       }
       // get the linear features, already existing that touch the polygon
       Set<ILineString> network = new HashSet<ILineString>();
-      for (IGeneObj objInter : pop.select(geom)) {
-        network.add((ILineString) objInter.getGeom());
+      if (pop != null) {
+        for (IGeneObj objInter : pop.select(geom)) {
+          network.add((ILineString) objInter.getGeom());
+        }
       }
       // compute the straight skeleton
       Set<ILineString> skeleton = Skeletonize.connectSkeletonToNetwork(

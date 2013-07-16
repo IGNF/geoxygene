@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.cartagen.leastsquares.core;
 
 import java.io.File;
@@ -54,7 +63,18 @@ public class MapspecsLS {
 
   // paramètres de sélection d'objets
   private SelectionType typeSelection;
-  private Collection<IFeature> selectedObjects;
+  private Collection<IFeature> selectedObjects = new HashSet<IFeature>();
+
+  /**
+   * The densification step to apply on malleable features
+   */
+  private double densStep = 50.0;
+  /**
+   * True if features have to be filtered by Douglas & Peucker algorithm after
+   * conflation to alter minor defects.
+   */
+  private boolean filter = false;
+  private double filterThreshold = 1.0;
 
   // constructeur
   public MapspecsLS() {
@@ -384,4 +404,27 @@ public class MapspecsLS {
     this.classesMalleables = classesMalleables;
   }
 
+  public double getDensStep() {
+    return densStep;
+  }
+
+  public void setDensStep(double densStep) {
+    this.densStep = densStep;
+  }
+
+  public boolean isFilter() {
+    return filter;
+  }
+
+  public void setFilter(boolean filter) {
+    this.filter = filter;
+  }
+
+  public double getFilterThreshold() {
+    return filterThreshold;
+  }
+
+  public void setFilterThreshold(double filterThreshold) {
+    this.filterThreshold = filterThreshold;
+  }
 }

@@ -67,7 +67,7 @@ public class AirportTypification {
       double orient = new OrientationMeasure(runway.getGeom())
           .getGeneralOrientation();
       // densify the runway geometry
-      IPolygon geom = LineDensification.densification(runway.getGeom(), 2.0);
+      IPolygon geom = LineDensification.densification2(runway.getGeom(), 2.0);
       ILineString seg = CommonAlgorithmsFromCartAGen.getLongestInsideSegment(
           geom, orient);
       // eliminate the runway area
@@ -94,7 +94,7 @@ public class AirportTypification {
           remaining = obj;
         }
         list.add(JtsGeOxygene.makeJtsGeom(obj.getGeom()));
-        obj.eliminate();
+        obj.eliminateBatch();
         this.airport.getRunwayAreas().remove(obj);
       }
       if (remaining == null) {

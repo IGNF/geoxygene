@@ -56,6 +56,27 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
   @Override
   public void execute(IFeatureCollection<? extends IGeneObj> features) {
     parameterise();
+    // get the population of points
+    String ft = null;
+    try {
+      ft = (String) classObj.getField("FEAT_TYPE_NAME").get(null);
+    } catch (IllegalArgumentException e1) {
+      e1.printStackTrace();
+    } catch (SecurityException e1) {
+      e1.printStackTrace();
+    } catch (IllegalAccessException e1) {
+      e1.printStackTrace();
+    } catch (NoSuchFieldException e1) {
+      e1.printStackTrace();
+    }
+    @SuppressWarnings("unchecked")
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
+        .getInstance()
+        .getCurrentDataset()
+        .getCartagenPop(
+            CartAGenDoc.getInstance().getCurrentDataset()
+                .getPopNameFromClass(classObj), ft);
+
     for (IGeneObj obj : features) {
       if (obj.isDeleted())
         continue;
@@ -75,15 +96,6 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
               IGeneObj newObj = (IGeneObj) meth.invoke(CartagenApplication
                   .getInstance().getCreationFactory(), centroid);
               // add object to its dataset population
-              String ft = (String) classObj.getField("FEAT_TYPE_NAME")
-                  .get(null);
-              @SuppressWarnings("unchecked")
-              IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
-                  .getInstance()
-                  .getCurrentDataset()
-                  .getCartagenPop(
-                      CartAGenDoc.getInstance().getCurrentDataset()
-                          .getPopNameFromClass(classObj), ft);
               pop.add(newObj);
 
             } catch (IllegalArgumentException e) {
@@ -93,8 +105,6 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
             } catch (InvocationTargetException e) {
               e.printStackTrace();
             } catch (SecurityException e) {
-              e.printStackTrace();
-            } catch (NoSuchFieldException e) {
               e.printStackTrace();
             }
           }

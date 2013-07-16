@@ -1,29 +1,30 @@
-/*
- * Cr�� le 29 avr. 2008
+/*******************************************************************************
+ * This software is released under the licence CeCILL
  * 
- * Pour changer le mod�le de ce fichier g�n�r�, allez � :
- * Fen�tre&gt;Pr�f�rences&gt;Java&gt;G�n�ration de code&gt;Code et commentaires
- */
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.cartagen.leastsquares.core;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Vector;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.LineDensification;
 
 /**
  * @author G. Touya
  * 
- *         Pour changer le mod�le de ce commentaire de type g�n�r�, allez � :
- *         Fen�tre&gt;Pr�f�rences&gt;Java&gt;G�n�ration de code&gt;Code et
- *         commentaires
+ *         A constraint specific to network intersections as such points are not
+ *         constrained by curvature and movement direction constraints.
+ * 
  */
 public class LSCrossingConstraint extends LSInternalConstraint {
+
+  private double weightFactor = 1.0;
 
   /**
    * True if the constraint is applicable on point.
@@ -37,7 +38,7 @@ public class LSCrossingConstraint extends LSInternalConstraint {
     return false;
   }
 
-  LSCrossingConstraint(LSPoint pt, LSScheduler scheduler) {
+  public LSCrossingConstraint(LSPoint pt, LSScheduler scheduler) {
     super(pt, scheduler);
   }
 
@@ -51,121 +52,205 @@ public class LSCrossingConstraint extends LSInternalConstraint {
   @Override
   public EquationsSystem calculeSystemeEquations(IFeature obj, LSPoint point) {
 
-    EquationsSystem systeme = this.sched.initSystemeLocal();
-    // on commence par récupérer le point précédent et le suivant
-    IDirectPosition coordPrec = null;
-    IDirectPosition coordSuiv = null;
-    // on commence par récupérer la géométrie
-    IGeometry geom = obj.getGeom();
-    ILineString ligne;
-    if (geom instanceof ILineString) {
-      ligne = (ILineString) geom;
-    } else {
-      ligne = ((IPolygon) geom).exteriorLineString();
-    }
-    for (int i = 0; i < ligne.numPoints(); i++) {
-      IDirectPosition coord = ligne.coord().get(i);
-      if (!coord.equals(point.getIniPt())) {
+    // ******************************************************************
+    // initialisation du système
+    EquationsSystem system = null;
+
+    // ******************************************************************
+    // on commence par faire une boucle sur tous les objets qui contiennent
+    // point
+    IFeature previous = null;
+    LSPoint previousPt = null;
+    double totalWeightFactor = 0.0;
+    for (IFeature feat : point.getObjs()) {
+      ILineString geom = (ILineString) LineDensification.densification2(
+          feat.getGeom(), this.sched.getMapspec().getDensStep());
+      if (previous == null) {
+        previous = feat;
+        if (point.getIniPt().equals(geom.coord().get(0)))
+          previousPt = sched.getPointFromCoord(geom.coord().get(1), feat);
+        else
+          previousPt = sched.getPointFromCoord(
+              geom.coord().get(geom.coord().size() - 2), feat);
         continue;
       }
+      // build a new system for this pair of features
+      EquationsSystem localSystem = initialiseSystem(point);
 
-      // si on est là, c'est le bon vertex
-      // on récupère les coordonnées précédentes
-      coordPrec = ligne.coord().get(i - 1);
-      // on récupère les coordonnées suivantes
-      coordSuiv = ligne.coord().get(i + 1);
-      break;
+      LSPoint currentPt = sched.getPointFromCoord(
+          geom.coord().get(geom.coord().size() - 2), feat);
+      if (point.getIniPt().equals(geom.coord().get(0)))
+        currentPt = sched.getPointFromCoord(geom.coord().get(1), feat);
+      // System.out.println("point courant: " + point);
+      // System.out.println("point prec: " + previousPt);
+      // System.out.println("point suiv: " + currentPt);
+      // now compute angle preservation constraint between previousPt, point and
+      // currentPt
+      // calcul des facteurs de l'équation sur les angles
+      double a = 0.0, b = 0.0, c = 0.0, d = 0.0, e = 0.0, f = 0.0;
+      double normeU = Math.sqrt((point.getIniPt().getX() - previousPt
+          .getIniPt().getX())
+          * (point.getIniPt().getX() - previousPt.getIniPt().getX())
+          + (point.getIniPt().getY() - previousPt.getIniPt().getY())
+          * (point.getIniPt().getY() - previousPt.getIniPt().getY()));
+      double normeW = Math.sqrt((currentPt.getIniPt().getX() - point.getIniPt()
+          .getX())
+          * (currentPt.getIniPt().getX() - point.getIniPt().getX())
+          + (currentPt.getIniPt().getY() - point.getIniPt().getY())
+          * (currentPt.getIniPt().getY() - point.getIniPt().getY()));
+      a = (point.getIniPt().getY() - currentPt.getIniPt().getY())
+          / (normeU * normeW);
+      b = (-point.getIniPt().getX() + currentPt.getIniPt().getX())
+          / (normeU * normeW);
+      c = (-previousPt.getIniPt().getY() + currentPt.getIniPt().getY())
+          / (normeU * normeW);
+      d = (previousPt.getIniPt().getX() - currentPt.getIniPt().getX())
+          / (normeU * normeW);
+      e = (previousPt.getIniPt().getY() - point.getIniPt().getY())
+          / (normeU * normeW);
+      f = (-previousPt.getIniPt().getX() + point.getIniPt().getX())
+          / (normeU * normeW);
+
+      if (!point.isFixed()) {
+        if (previousPt.isFixed() && currentPt.isFixed()) {
+          // update the unknowns vector: no additional unknown in this case.
+          // fill the matrix A
+          localSystem.initMatriceA(1, 2);
+          localSystem.setA(0, 0, c);
+          localSystem.setA(0, 1, d);
+          localSystem.setObs(0,
+              -a * previousPt.getDeltaX() - b * previousPt.getDeltaY() - e
+                  * currentPt.getDeltaX() - f * currentPt.getDeltaY());
+        } else if (previousPt.isFixed()) {
+          // update the unknowns vector
+          if (!localSystem.getUnknowns().contains(currentPt)) {
+            localSystem.getUnknowns().addElement(currentPt);
+            localSystem.getUnknowns().addElement(currentPt);
+          }
+          // fill the matrix A
+          localSystem.initMatriceA(1, 4);
+          localSystem.setA(0, 0, c);
+          localSystem.setA(0, 1, d);
+          localSystem.setA(0, 2, e);
+          localSystem.setA(0, 3, f);
+          localSystem.setObs(0,
+              -a * previousPt.getDeltaX() - b * previousPt.getDeltaY());
+        } else if (currentPt.isFixed()) {
+          // update the unknowns vector
+          if (!localSystem.getUnknowns().contains(previousPt)) {
+            localSystem.getUnknowns().addElement(previousPt);
+            localSystem.getUnknowns().addElement(previousPt);
+          }
+          // fill the matrix A
+          localSystem.initMatriceA(1, 4);
+          localSystem.setA(0, 0, c);
+          localSystem.setA(0, 1, d);
+          localSystem.setA(0, 2, a);
+          localSystem.setA(0, 3, b);
+          double obs = -e * currentPt.getDeltaX() - f * currentPt.getDeltaY();
+          localSystem.setObs(0, obs);
+        } else {
+          // update the unknowns vector
+          if (!localSystem.getUnknowns().contains(previousPt)) {
+            localSystem.getUnknowns().addElement(previousPt);
+            localSystem.getUnknowns().addElement(previousPt);
+          }
+          if (!localSystem.getUnknowns().contains(currentPt)) {
+            localSystem.getUnknowns().addElement(currentPt);
+            localSystem.getUnknowns().addElement(currentPt);
+          }
+          // fill the matrix A
+          localSystem.initMatriceA(1, 6);
+          localSystem.setA(0, 2, a);
+          localSystem.setA(0, 3, b);
+          localSystem.setA(0, 0, c);
+          localSystem.setA(0, 1, d);
+          localSystem.setA(0, 4, e);
+          localSystem.setA(0, 5, f);
+        }
+      } else {
+        if (previousPt.isFixed() && currentPt.isFixed()) {
+          // all points are fixed there, so no equation added
+          localSystem = null;
+        } else if (previousPt.isFixed()) {
+          // update the unknowns vector
+          if (!localSystem.getUnknowns().contains(currentPt)) {
+            localSystem.getUnknowns().addElement(currentPt);
+            localSystem.getUnknowns().addElement(currentPt);
+          }
+          // fill the matrix A
+          localSystem.initMatriceA(1, 2);
+          localSystem.setA(0, 0, e);
+          localSystem.setA(0, 1, f);
+          localSystem.setObs(0,
+              -a * previousPt.getDeltaX() - b * previousPt.getDeltaY() - c
+                  * point.getDeltaX() - d * point.getDeltaY());
+        } else if (currentPt.isFixed()) {
+          // update the unknowns vector
+          if (!localSystem.getUnknowns().contains(previousPt)) {
+            localSystem.getUnknowns().addElement(previousPt);
+            localSystem.getUnknowns().addElement(previousPt);
+          }
+          // fill the matrix A
+          localSystem.initMatriceA(1, 2);
+          localSystem.setA(0, 0, a);
+          localSystem.setA(0, 1, b);
+          double obs = -e * currentPt.getDeltaX() - f * currentPt.getDeltaY()
+              - c * point.getDeltaX() - d * point.getDeltaY();
+          localSystem.setObs(0, obs);
+        } else {
+          // update the unknowns vector
+          if (!localSystem.getUnknowns().contains(previousPt)) {
+            localSystem.getUnknowns().addElement(previousPt);
+            localSystem.getUnknowns().addElement(previousPt);
+          }
+          if (!localSystem.getUnknowns().contains(currentPt)) {
+            localSystem.getUnknowns().addElement(currentPt);
+            localSystem.getUnknowns().addElement(currentPt);
+          }
+          // fill the matrix A
+          localSystem.initMatriceA(1, 4);
+          localSystem.setA(0, 0, a);
+          localSystem.setA(0, 1, b);
+          localSystem.setA(0, 2, e);
+          localSystem.setA(0, 3, f);
+          double obs = -c * point.getDeltaX() - d * point.getDeltaY();
+          localSystem.setObs(0, obs);
+        }
+      }
+      if (system == null)
+        system = localSystem;
+      else
+        system = system.assemble(localSystem);
+      previousPt = currentPt;
+      previous = feat;
+      totalWeightFactor += previousPt.getIniPt().distance2D(point.getIniPt())
+          * currentPt.getIniPt().distance2D(point.getIniPt());
     }
+    this.weightFactor = totalWeightFactor / (point.getObjs().size() - 1);
+    // System.out.println("observations du système: " + system.getObsVector());
+    // System.out.println(system);
+    return system;
+  }
 
-    // on récupère maintenant les LSPoint correspondant à ces coordonnées
-    ArrayList<LSPoint> setPoints = this.sched.getMapObjPts().get(obj);
-    LSPoint pointPrec = null, pointSuiv = null;
-    Iterator<LSPoint> iter = setPoints.iterator();
-    while (iter.hasNext()) {
-      LSPoint pt = iter.next();
-      if (pt.getIniPt().equals(coordPrec)) {
-        pointPrec = pt;
-      }
-      if (pt.getIniPt().equals(coordSuiv)) {
-        pointSuiv = pt;
-      }
-    }// while boucle sur setPoints
-
+  private EquationsSystem initialiseSystem(LSPoint point) {
+    EquationsSystem systeme = this.sched.initSystemeLocal();
     // construction du vecteur des inconnues
     systeme.setUnknowns(new Vector<LSPoint>());
-    systeme.getUnknowns().addElement(pointPrec);
-    systeme.getUnknowns().addElement(pointPrec);
-    systeme.getUnknowns().addElement(point);
-    systeme.getUnknowns().addElement(point);
-    systeme.getUnknowns().addElement(pointSuiv);
-    systeme.getUnknowns().addElement(pointSuiv);
-
+    if (!point.isFixed()) {
+      systeme.getUnknowns().addElement(point);
+      systeme.getUnknowns().addElement(point);
+    }
     // construction du vecteur des contraintes
     systeme.setConstraints(new Vector<LSConstraint>());
-    for (int i = 0; i < 3; i++) {
-      systeme.getConstraints().add(this);
-    }
-
-    // construction de la matrice des observations
-    // c'est une matrice (4,1) contenant deux 0
-    systeme.initObservations(3);
-
-    // calcul des facteurs de l'�quation sur les angles
-    double a = 0.0, b = 0.0, c = 0.0, d = 0.0, e = 0.0, f = 0.0;
-    double normeU = Math.sqrt((point.getIniPt().getX() - pointPrec.getIniPt()
-        .getX())
-        * (point.getIniPt().getX() - pointPrec.getIniPt().getX())
-        + (point.getIniPt().getY() - pointPrec.getIniPt().getY())
-        * (point.getIniPt().getY() - pointPrec.getIniPt().getY()));
-    double normeW = Math.sqrt((pointSuiv.getIniPt().getX() - point.getIniPt()
-        .getX())
-        * (pointSuiv.getIniPt().getX() - point.getIniPt().getX())
-        + (pointSuiv.getIniPt().getY() - point.getIniPt().getY())
-        * (pointSuiv.getIniPt().getY() - point.getIniPt().getY()));
-    a = (point.getIniPt().getY() - pointSuiv.getIniPt().getY())
-        / (normeU * normeW);
-    b = (-point.getIniPt().getX() + pointSuiv.getIniPt().getX())
-        / (normeU * normeW);
-    c = (-pointPrec.getIniPt().getY() + pointSuiv.getIniPt().getY())
-        / (normeU * normeW);
-    d = (pointPrec.getIniPt().getX() - pointSuiv.getIniPt().getX())
-        / (normeU * normeW);
-    e = (pointPrec.getIniPt().getY() - point.getIniPt().getY())
-        / (normeU * normeW);
-    f = (-pointPrec.getIniPt().getX() + point.getIniPt().getX())
-        / (normeU * normeW);
-
-    // calcul des facteurs pour les �quations sur les longueurs
-    double a1 = 0.0, b1 = 0.0, c1 = 0.0, d1 = 0.0;
-    double a2 = 0.0, b2 = 0.0, c2 = 0.0, d2 = 0.0;
-    a1 = (pointPrec.getIniPt().getX() - point.getIniPt().getX()) / normeU;
-    b1 = (pointPrec.getIniPt().getY() - point.getIniPt().getY()) / normeU;
-    c1 = (point.getIniPt().getX() - pointPrec.getIniPt().getX()) / normeU;
-    d1 = (point.getIniPt().getY() - pointPrec.getIniPt().getY()) / normeU;
-    a2 = (pointSuiv.getIniPt().getX() - point.getIniPt().getX()) / normeW;
-    b2 = (pointSuiv.getIniPt().getY() - point.getIniPt().getY()) / normeW;
-    c2 = (point.getIniPt().getX() - pointSuiv.getIniPt().getX()) / normeW;
-    d2 = (point.getIniPt().getY() - pointSuiv.getIniPt().getY()) / normeW;
-
-    // construction de la matrice A
-    systeme.initMatriceA(3, 6);
-    systeme.setA(0, 0, a);
-    systeme.setA(0, 1, b);
-    systeme.setA(0, 2, c);
-    systeme.setA(0, 3, d);
-    systeme.setA(0, 4, e);
-    systeme.setA(0, 5, f);
-    systeme.setA(1, 0, a1);
-    systeme.setA(1, 1, b1);
-    systeme.setA(1, 2, c1);
-    systeme.setA(1, 3, d1);
-    systeme.setA(2, 4, a2);
-    systeme.setA(2, 5, b2);
-    systeme.setA(2, 2, c2);
-    systeme.setA(2, 3, d2);
-    systeme.setNonNullValues(14);
-
+    systeme.getConstraints().add(this);
+    systeme.initObservations(1);
     return systeme;
+  }
+
+  @Override
+  public double getWeightFactor() {
+    return weightFactor;
   }
 
 }

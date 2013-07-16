@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.genealgorithms.polygon.Skeletonize;
 import fr.ign.cogit.cartagen.genealgorithms.polygon.Spinalize;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
@@ -173,7 +172,7 @@ public class SpinalizeProcess extends ScaleMasterGeneProcess {
       // connect the skeleton to the network
       if (setSegment.size() == 0)
         continue;
-      Set<ILineString> skeleton = Skeletonize.connectSkeletonToNetwork(
+      Set<ILineString> skeleton = Spinalize.connectSkeletonToNetwork(
           setSegment, network, geom);
       double length = 0.0;
       for (ILineString line : listSkeletonSelect)

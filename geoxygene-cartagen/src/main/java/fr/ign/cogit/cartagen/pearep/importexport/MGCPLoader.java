@@ -841,8 +841,8 @@ public class MGCPLoader extends ShapeFileLoader {
           for (IRoadLine road : roads) {
             if (bridge.getGeom().intersectsStrictement(road.getGeom())) {
               bridge.setCrossedNetwork(road);
-              break;
-            }
+            } else
+              bridge.setContainingNetwork(road);
           }
         }
         Collection<IRailwayLine> rails = CartAGenDoc.getInstance()
@@ -851,7 +851,8 @@ public class MGCPLoader extends ShapeFileLoader {
           for (IRailwayLine rail : rails) {
             if (bridge.getGeom().intersectsStrictement(rail.getGeom())) {
               bridge.setCrossedNetwork(rail);
-              break;
+            } else {
+              bridge.setCrossedNetwork(rail);
             }
           }
         }
@@ -893,6 +894,7 @@ public class MGCPLoader extends ShapeFileLoader {
           CartAGenDataSet.AIRPORT_AREA_POP, IAirportArea.FEAT_TYPE_NAME,
           PeaRepDbType.MGCPPlusPlus);
     }
+
     // then load runways
     if (FileUtil.getNamedFileInDir(directory, "AGB055.shp") != null) {
       loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB055.shp")
@@ -927,6 +929,8 @@ public class MGCPLoader extends ShapeFileLoader {
     // finally builds the airport complex object
     IPopulation<IGeneObj> runPop = CartAGenDoc.getInstance()
         .getCurrentDataset().getCartagenPop(CartAGenDataSet.RUNWAY_AREA_POP);
+    System.out.println(CartAGenDoc.getInstance().getCurrentDataset()
+        .getCartAGenDB().getName());
     for (IGeneObj airport : CartAGenDoc.getInstance().getCurrentDataset()
         .getCartagenPop(CartAGenDataSet.AIRPORT_AREA_POP)) {
       Collection<IGeneObj> inside = runPop.select(airport.getGeom());

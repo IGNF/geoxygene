@@ -51,6 +51,8 @@ public interface INetwork extends IGeneObj {
 
   public void removeNode(INetworkNode node);
 
+  public void removeAllNodes();
+
   /**
    * @return Faces of the network
    */

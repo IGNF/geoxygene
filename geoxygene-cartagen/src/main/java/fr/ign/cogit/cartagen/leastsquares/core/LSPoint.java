@@ -1,9 +1,12 @@
-/*
- * Cr�� le 23 avr. 2008
+/*******************************************************************************
+ * This software is released under the licence CeCILL
  * 
- * Pour changer le mod�le de ce fichier g�n�r�, allez � :
- * Fen�tre&gt;Pr�f�rences&gt;Java&gt;G�n�ration de code&gt;Code et commentaires
- */
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.cartagen.leastsquares.core;
 
 import java.lang.reflect.Constructor;
@@ -16,6 +19,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
@@ -76,8 +82,9 @@ public class LSPoint extends AbstractFeature {
   }
 
   public boolean isCrossing() {
-    // TODO
-    // A REMPLIR SI ON VEUT UTILISER CONTRAINTE DE CROISEMENT
+    if (isPointIniFin())
+      if (objs.size() > 1)
+        return true;
     return false;
   }
 
@@ -129,7 +136,7 @@ public class LSPoint extends AbstractFeature {
 
   /**
    * <p>
-   * On remplit le syst�me local par l'assemblage en syst�me des contraintes
+   * On remplit le système local par l'assemblage en système des contraintes
    * internes sur ce point.
    * 
    */
@@ -372,7 +379,7 @@ public class LSPoint extends AbstractFeature {
    * @throws InstantiationException
    * 
    */
-  void setContraintesInternes(MapspecsLS mapspecs, LSScheduler sched)
+  public void setContraintesInternes(MapspecsLS mapspecs, LSScheduler sched)
       throws ClassNotFoundException, SecurityException, NoSuchMethodException,
       IllegalArgumentException, IllegalAccessException,
       InvocationTargetException, InstantiationException {
@@ -623,7 +630,9 @@ public class LSPoint extends AbstractFeature {
 
   @Override
   public String toString() {
-    return this.objs.toString() + "\n" + this.getIniPt().toString();
+    return "id: " + id + " " + this.objs.toString() + "\n"
+        + "position initiale: " + this.getIniPt().toString() + "\n"
+        + "position finale: " + this.getFinalPt().toString();
   }
 
   /**
@@ -644,8 +653,10 @@ public class LSPoint extends AbstractFeature {
     IFeature obj = test.iterator().next();
     // on calcule l'écart de vertices entre les deux points
     IGeometry geom = obj.getGeom();
-    if (sched.getObjsMalleables().contains(obj)) {
-      geom = LineDensification.densification((ILineString) geom, 50.0);
+    if (sched.getObjsMalleables().contains(obj)
+        && geom.coord().size() < this.sched.getMapObjPts().get(obj).size()) {
+      geom = LineDensification.densification2((ILineString) geom, sched
+          .getMapspec().getDensStep());
     }
     if (geom instanceof ILineString) {
       int ecart = 0;
@@ -778,11 +789,11 @@ public class LSPoint extends AbstractFeature {
    * @return
    */
   public Vector2D getVecteurDepl() {
-    // cas o� le point n'a pas encore �t� d�plac�
+    // cas où le point n'a pas encore été déplacé
     if (this.getFinalPt() == null) {
       return new Vector2D(0.0, 0.0);
     }
-    // cas g�n�ral
+    // cas général
     return new Vector2D(this.getFinalPt().getX() - this.getIniPt().getX(), this
         .getFinalPt().getY() - this.getIniPt().getY());
   }
@@ -794,4 +805,28 @@ public class LSPoint extends AbstractFeature {
         this.pointIniFin, this.fixed, this.symbolWidth, this.sched);
   }
 
+  @Override
+  public IGeometry getGeom() {
+    return this.getIniPt().toGM_Point();
+  }
+
+  @Override
+  @Id
+  @GeneratedValue
+  public int getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(int Id) {
+    this.id = Id;
+  }
+
+  public double getDeltaX() {
+    return this.getFinalPt().getX() - this.getIniPt().getX();
+  }
+
+  public double getDeltaY() {
+    return this.getFinalPt().getY() - this.getIniPt().getY();
+  }
 }

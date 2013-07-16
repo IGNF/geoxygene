@@ -1,9 +1,12 @@
-/*
- * Créé le 17 mai 2008
+/*******************************************************************************
+ * This software is released under the licence CeCILL
  * 
- * Pour changer le mod�le de ce fichier g�n�r�, allez � :
- * Fen�tre&gt;Pr�f�rences&gt;Java&gt;G�n�ration de code&gt;Code et commentaires
- */
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.cartagen.leastsquares.core;
 
 import java.util.Collection;
@@ -23,6 +26,17 @@ import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.LineDensification;
  * 
  */
 public class LSCoalescenceConstraint extends LSExternalConstraint {
+
+  /**
+   * True if the constraint is applicable on point.
+   * @param point
+   * @return
+   */
+  public static boolean appliesTo(LSPoint point) {
+    if (point.isFixed())
+      return false;
+    return true;
+  }
 
   /**
    * @param pt
@@ -51,12 +65,12 @@ public class LSCoalescenceConstraint extends LSExternalConstraint {
    */
   @Override
   public EquationsSystem calculeSystemeEquations() {
-    double distance = this.seuilSep * this.sched.getMapspec().getEchelle() / 1000.0
-        + 2 * this.getPoint().getSymbolWidth();
+    double distance = this.seuilSep * this.sched.getMapspec().getEchelle()
+        / 1000.0 + 2 * this.getPoint().getSymbolWidth();
     Set<LSPoint> verticesConflits = this.rechercheConflitsCoal(distance,
         this.sched);
 
-    // on calcule le nouveau syst�me d'�quation
+    // on calcule le nouveau système d'équation
     EquationsSystem nouveau = null;
     boolean first = true;
     Iterator<LSPoint> iter = verticesConflits.iterator();
@@ -81,10 +95,16 @@ public class LSCoalescenceConstraint extends LSExternalConstraint {
 
     // construction du vecteur des inconnues
     systeme.setUnknowns(new Vector<LSPoint>());
-    systeme.getUnknowns().addElement(this.getPoint());
-    systeme.getUnknowns().addElement(this.getPoint());
-    systeme.getUnknowns().addElement(point2);
-    systeme.getUnknowns().addElement(point2);
+    if (!this.getPoint().isFixed()) {
+      systeme.getUnknowns().addElement(this.getPoint());
+      systeme.getUnknowns().addElement(this.getPoint());
+    }
+    if (!point2.isFixed()) {
+      systeme.getUnknowns().addElement(point2);
+      systeme.getUnknowns().addElement(point2);
+    }
+    if (systeme.getUnknowns().size() == 0)
+      return null;
 
     // construction de la matrice des observations
     // c'est une matrice (1,1)
@@ -100,7 +120,7 @@ public class LSCoalescenceConstraint extends LSExternalConstraint {
         * (this.getPoint().getIniPt().getX() - point2.getIniPt().getX())
         + (this.getPoint().getIniPt().getY() - point2.getIniPt().getY())
         * (this.getPoint().getIniPt().getY() - point2.getIniPt().getY()));
-    // on calcule dist_min, la constante de l'�quation
+    // on calcule dist_min, la constante de l'équation
     double dist_min = 0.0;
     if (normeW < (this.seuilSep * this.sched.getMapspec().getEchelle() / 1000.0
         + this.getPoint().getSymbolWidth() + point2.getSymbolWidth())) {
@@ -109,7 +129,7 @@ public class LSCoalescenceConstraint extends LSExternalConstraint {
     }
     systeme.setObs(0, dist_min);
 
-    // calcul des facteurs de l'�quation sur les angles
+    // calcul des facteurs de l'équation sur les angles
     double a = 0.0, b = 0.0, c = 0.0, d = 0.0;
     a = (this.getPoint().getIniPt().getX() - point2.getIniPt().getX()) / normeW;
     b = (this.getPoint().getIniPt().getY() - point2.getIniPt().getY()) / normeW;
@@ -117,6 +137,21 @@ public class LSCoalescenceConstraint extends LSExternalConstraint {
     d = (point2.getIniPt().getY() - this.getPoint().getIniPt().getY()) / normeW;
 
     // construction de la matrice A
+    if (this.getPoint().isFixed()) {
+      systeme.initMatriceA(1, 2);
+      systeme.setA(0, 0, c);
+      systeme.setA(0, 1, d);
+      systeme.setNonNullValues(2);
+      systeme.setObs(0, dist_min - a * this.getPoint().getDeltaX() - b
+          * this.getPoint().getDeltaY());
+    } else if (point2.isFixed()) {
+      systeme.initMatriceA(1, 2);
+      systeme.setA(0, 0, a);
+      systeme.setA(0, 1, b);
+      systeme.setNonNullValues(2);
+      systeme.setObs(0,
+          dist_min - c * point2.getDeltaX() - d * point2.getDeltaY());
+    }
     systeme.initMatriceA(1, 4);
     systeme.setA(0, 0, a);
     systeme.setA(0, 1, b);
@@ -130,8 +165,8 @@ public class LSCoalescenceConstraint extends LSExternalConstraint {
   /**
    * <p>
    * Recherche les conflits potentiels de coalescence. Ce sont les vertices qui
-   * sont � plus de 2 fois la distance selon la g�om�trie mais � moins de 1,5
-   * fois la distance "� vol d'oiseau".
+   * sont à plus de 2 fois la distance selon la géométrie mais à moins de 1,5
+   * fois la distance "à vol d'oiseau".
    * 
    */
   public Set<LSPoint> rechercheConflitsCoal(double distance, LSScheduler sched) {
@@ -145,8 +180,9 @@ public class LSCoalescenceConstraint extends LSExternalConstraint {
       return verticesConflits;
     }
 
-    IGeometry geom = LineDensification.densification((ILineString) this
-        .getObj().getGeom(), 50.0);
+    IGeometry geom = (ILineString) this.getObj().getGeom();
+    if (geom.coord().size() < this.sched.getMapObjPts().get(getObj()).size())
+      geom = LineDensification.densification2(geom, 50.0);
 
     // on filtre pour ne garder que ceux liés à obj
     for (IFeature vertex : ptsProches) {
@@ -163,8 +199,8 @@ public class LSCoalescenceConstraint extends LSExternalConstraint {
       int index1 = CommonAlgorithmsFromCartAGen
           .getNearestVertexPositionFromPoint(geom, this.getPoint().getIniPt());
       int index2 = CommonAlgorithmsFromCartAGen
-          .getNearestVertexPositionFromPoint(geom, ((LSPoint) vertex)
-              .getIniPt());
+          .getNearestVertexPositionFromPoint(geom,
+              ((LSPoint) vertex).getIniPt());
       double dist1 = CommonAlgorithmsFromCartAGen.getLineDistanceToIndex(
           (ILineString) geom, index1);
       double dist2 = CommonAlgorithmsFromCartAGen.getLineDistanceToIndex(

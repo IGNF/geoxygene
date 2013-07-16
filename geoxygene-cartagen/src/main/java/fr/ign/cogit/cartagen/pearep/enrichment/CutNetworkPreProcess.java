@@ -121,7 +121,7 @@ public class CutNetworkPreProcess extends ScaleMasterPreProcess {
 
   @Override
   public String getPreProcessName() {
-    return "Make Network Planar";
+    return "CutNetworkLongSections";
   }
 
   private void copyAttributes(IGeneObj copie, IGeneObj original)

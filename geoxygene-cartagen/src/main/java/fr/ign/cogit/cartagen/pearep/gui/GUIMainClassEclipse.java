@@ -99,7 +99,7 @@ public class GUIMainClassEclipse extends JFrame implements ActionListener {
         }
         frame.setVisible(true);
       } else if (rdParams.isSelected()) {
-        EditPeaRepParamsFrame frame = new EditPeaRepParamsFrame();
+        EditPeaRepParamsFrame frame = new EditPeaRepParamsFrame(false);
         frame.setVisible(true);
       }
       this.setVisible(false);

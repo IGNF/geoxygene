@@ -4,9 +4,12 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +17,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -41,6 +46,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
+import fr.ign.cogit.cartagen.pearep.PeaRepGeneralisation;
+import fr.ign.cogit.cartagen.pearep.derivation.DataCorrection;
 import fr.ign.cogit.cartagen.pearep.derivation.XMLParser;
 import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
@@ -60,7 +68,7 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
   private List<DataCorrectionInfo> corrections;
   private JList jlistDbs, jlistLayers, jlistThemes, jlistCorrections;
   private JComboBox cbType, cbTypeCorrection, cbPreProcess;
-  private List<String> currentLayers;
+  private List<String> currentLayers, currentThemes;
   private List<String> shapefiles;
   private List<String> availablePreProcesses;
 
@@ -118,10 +126,46 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
         this.txtExport.setText(fc.getSelectedFile().getPath());
         this.pack();
       }
+    } else if (e.getActionCommand().equals("add_corr")) {
+      DataCorrectionInfo info = new DataCorrectionInfo(
+          (SourceDLM) cbTypeCorrection.getSelectedItem(), currentThemes,
+          (String) cbPreProcess.getSelectedItem());
+      this.corrections.add(info);
+      this.updateCorrList();
+      this.currentThemes.clear();
+      this.updateThemesList();
+      this.txtTheme.setText("");
+      this.pack();
+    } else if (e.getActionCommand().equals("remove_corr")) {
+      DataCorrectionInfo info = (DataCorrectionInfo) jlistCorrections
+          .getSelectedValue();
+      this.corrections.remove(info);
+      this.updateCorrList();
+      this.pack();
+    } else if (e.getActionCommand().equals("add_theme")) {
+      if (!txtTheme.getText().equals("")) {
+        this.currentThemes.add(txtTheme.getText());
+        this.updateThemesList();
+        this.pack();
+      }
+    } else if (e.getActionCommand().equals("remove_theme")) {
+      String selected = (String) jlistThemes.getSelectedValue();
+      this.currentThemes.remove(selected);
+      this.updateThemesList();
+      this.pack();
+    } else if (e.getActionCommand().equals("load")) {
+      JFileChooser fc = new JFileChooser();
+      fc.setFileFilter(new XMLFileFilter());
+      int returnVal = fc.showOpenDialog(this);
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File xmlFile = fc.getSelectedFile();
+      updateFrame(xmlFile);
     }
   }
 
-  public EditPeaRepParamsFrame() {
+  public EditPeaRepParamsFrame(boolean jar) {
     super();
     this.setTitle(I18N.getString("EditPeaRepParamsFrame.frameTitle"));
     dbs = new ArrayList<EditPeaRepParamsFrame.DatabaseImport>();
@@ -129,17 +173,30 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     this.shapefiles = new ArrayList<String>();
     this.corrections = new ArrayList<EditPeaRepParamsFrame.DataCorrectionInfo>();
     this.availablePreProcesses = new ArrayList<String>();
-    this.initPreProcesses();
+    this.currentThemes = new ArrayList<String>();
+    if (jar)
+      try {
+        this.initPreProcessesJar();
+      } catch (URISyntaxException e) {
+        e.printStackTrace();
+      }
+    else
+      this.initPreProcesses();
+    this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
     // a panel for the buttons
     JPanel pButtons = new JPanel();
     JButton btnSave = new JButton(I18N.getString("MainLabels.lblSave"));
     btnSave.addActionListener(this);
     btnSave.setActionCommand("save");
+    JButton btnLoad = new JButton(I18N.getString("MainLabels.lblLoad"));
+    btnLoad.addActionListener(this);
+    btnLoad.setActionCommand("load");
     JButton btnCancel = new JButton(I18N.getString("MainLabels.lblCancel"));
     btnCancel.addActionListener(this);
     btnCancel.setActionCommand("cancel");
     pButtons.add(btnSave);
+    pButtons.add(btnLoad);
     pButtons.add(btnCancel);
     pButtons.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
@@ -250,9 +307,9 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     cbTypeCorrection.setMaximumSize(new Dimension(120, 20));
     cbTypeCorrection.setMinimumSize(new Dimension(120, 20));
     cbPreProcess = new JComboBox(this.availablePreProcesses.toArray());
-    cbPreProcess.setPreferredSize(new Dimension(140, 20));
-    cbPreProcess.setMaximumSize(new Dimension(140, 20));
-    cbPreProcess.setMinimumSize(new Dimension(140, 20));
+    cbPreProcess.setPreferredSize(new Dimension(160, 20));
+    cbPreProcess.setMaximumSize(new Dimension(160, 20));
+    cbPreProcess.setMinimumSize(new Dimension(160, 20));
     jlistThemes = new JList();
     jlistThemes.setPreferredSize(new Dimension(80, 320));
     jlistThemes.setMaximumSize(new Dimension(80, 320));
@@ -268,10 +325,36 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     txtTheme.setMaximumSize(new Dimension(100, 20));
     txtTheme.setMinimumSize(new Dimension(100, 20));
     JPanel pBtnsCorr = new JPanel();
-    // TODO
+    JButton btnAddCorr = new JButton(
+        I18N.getString("EditPeaRepParamsFrame.lblAddPreProcess"));
+    btnAddCorr.addActionListener(this);
+    btnAddCorr.setActionCommand("add_corr");
+    JButton btnRemoveCorr = new JButton(
+        I18N.getString("EditPeaRepParamsFrame.lblRemovePreProcess"));
+    btnRemoveCorr.addActionListener(this);
+    btnRemoveCorr.setActionCommand("remove_corr");
+    pBtnsCorr.add(btnAddCorr);
+    pBtnsCorr.add(btnRemoveCorr);
     pBtnsCorr.setLayout(new BoxLayout(pBtnsCorr, BoxLayout.Y_AXIS));
     JPanel pEditCorr = new JPanel();
-    // TODO
+    JPanel pBtnsThemes = new JPanel();
+    JButton btnAddTheme = new JButton(
+        I18N.getString("EditPeaRepParamsFrame.lblAddTheme"));
+    btnAddTheme.addActionListener(this);
+    btnAddTheme.setActionCommand("add_theme");
+    JButton btnRemoveTheme = new JButton(
+        I18N.getString("EditPeaRepParamsFrame.lblRemoveTheme"));
+    btnRemoveTheme.addActionListener(this);
+    btnRemoveTheme.setActionCommand("remove_theme");
+    pBtnsThemes.add(btnAddTheme);
+    pBtnsThemes.add(btnRemoveTheme);
+    pBtnsThemes.setLayout(new BoxLayout(pBtnsThemes, BoxLayout.X_AXIS));
+    pEditCorr.add(cbPreProcess);
+    pEditCorr.add(Box.createVerticalGlue());
+    pEditCorr.add(cbTypeCorrection);
+    pEditCorr.add(Box.createVerticalGlue());
+    pEditCorr.add(txtTheme);
+    pEditCorr.add(pBtnsThemes);
     pEditCorr.setLayout(new BoxLayout(pEditCorr, BoxLayout.Y_AXIS));
     pDataCorrections.add(new JScrollPane(jlistCorrections));
     pDataCorrections.add(Box.createHorizontalGlue());
@@ -299,11 +382,15 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     this.pack();
   }
 
-  public EditPeaRepParamsFrame(File file) {
-    this();
+  public EditPeaRepParamsFrame(File file, boolean jar) {
+    this(jar);
+    updateFrame(file);
+  }
+
+  private void updateFrame(File xmlFile) {
 
     // update the frame fields with the loaded file
-    XMLParser xmlParser = new XMLParser(file);
+    XMLParser xmlParser = new XMLParser(xmlFile);
     try {
       xmlParser.parseParameters(null);
     } catch (ParserConfigurationException e) {
@@ -325,7 +412,15 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     }
     this.updateDbsList();
 
-    // TODO compléter pour les pré-traitements
+    // preprocesses
+    for (DataCorrection correction : xmlParser.getCorrections()) {
+      List<String> themes = new ArrayList<String>();
+      for (ScaleMasterTheme theme : correction.getThemes())
+        themes.add(theme.getName());
+      this.corrections.add(new DataCorrectionInfo(correction.getDbType(),
+          themes, correction.getProcess().getPreProcessName()));
+      this.updateCorrList();
+    }
   }
 
   private void initPreProcesses() {
@@ -392,6 +487,77 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
       } catch (NoSuchMethodException e) {
         e.printStackTrace();
       }
+    }
+
+    Collections.sort(this.availablePreProcesses);
+  }
+
+  private void initPreProcessesJar() throws URISyntaxException {
+
+    String jarPath = PeaRepGeneralisation.class.getProtectionDomain()
+        .getCodeSource().getLocation().toURI().getPath().substring(1);
+    String jarName = jarPath.substring(jarPath.lastIndexOf("/") + 1);
+    try {
+      JarInputStream jarFile = new JarInputStream(new FileInputStream(jarName));
+      JarEntry jarEntry;
+      while (true) {
+        jarEntry = jarFile.getNextJarEntry();
+        if (jarEntry == null) {
+          break;
+        }
+        if (!(jarEntry.getName().contains("pearep"))) {
+          continue;
+        }
+        if (!(jarEntry.getName().endsWith(".class"))) {
+          continue;
+        }
+
+        // Try to create an instance of the object
+        Class<?> classObj = Class.forName(FileUtil
+            .changeFileNameToClassName(jarEntry.getName()));
+
+        if (classObj.isInterface()) {
+          continue;
+        }
+        if (classObj.isLocalClass()) {
+          continue;
+        }
+        if (classObj.isMemberClass()) {
+          continue;
+        }
+        if (classObj.isEnum()) {
+          continue;
+        }
+        if (Modifier.isAbstract(classObj.getModifiers())) {
+          continue;
+        }
+
+        // test if it's a pre-process class
+        if (ScaleMasterPreProcess.class.isAssignableFrom(classObj)) {
+          ScaleMasterPreProcess instance = (ScaleMasterPreProcess) classObj
+              .getMethod("getInstance").invoke(null);
+          this.availablePreProcesses.add(instance.getPreProcessName());
+          continue;
+        }
+
+      }
+      jarFile.close();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
+    } catch (SecurityException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
     }
 
     Collections.sort(this.availablePreProcesses);
@@ -505,6 +671,30 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     for (String layer : this.currentLayers)
       model.addElement(layer);
     this.jlistLayers.setModel(model);
+    this.pack();
+  }
+
+  /**
+   * Update the content of the {@link JList} jlistCorrections according to the
+   * list of corrections stored in {@code this}.
+   */
+  private void updateCorrList() {
+    DefaultListModel model = new DefaultListModel();
+    for (DataCorrectionInfo db : this.corrections)
+      model.addElement(db);
+    this.jlistCorrections.setModel(model);
+    this.pack();
+  }
+
+  /**
+   * Update the content of the {@link JList} jlistThemes according to the list
+   * of current themes stored in {@code this}.
+   */
+  private void updateThemesList() {
+    DefaultListModel model = new DefaultListModel();
+    for (String theme : this.currentThemes)
+      model.addElement(theme);
+    this.jlistThemes.setModel(model);
     this.pack();
   }
 

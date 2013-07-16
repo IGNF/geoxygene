@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.cartagen.leastsquares.core;
 
 import java.util.HashSet;
@@ -8,7 +17,7 @@ import java.util.logging.Logger;
 import Jama.Matrix;
 
 /**
- * @author moi
+ * @author gtouya
  * 
  *         Implémentation Jama de {@link EquationsSystem}. Classe qui contient
  *         des systèmes d'équations linéaires représentées sous forme
@@ -268,10 +277,7 @@ public class JamaEquationsSystem extends EquationsSystem {
       LSConstraint contrainte = this.getConstraints().get(i);
       Double poidsContr = poids.get(contrainte.getClass().getName());
       poidsContr *= contrainte.getWeightFactor();
-      // on vérifie si la contrainte porte sur un point fixe
-      if (contrainte.getPoint().isFixed()) {
-        poidsContr = new Double(20.0);
-      }
+
       matricePoids.set(i, i, poidsContr.doubleValue());
     }// for i, boucle sur le vecteur des contraintes
 

@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.cartagen.leastsquares.core;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,7 +37,7 @@ public abstract class LSConstraint {
 
   /**
    * Cette méthode renvoie le poids relatif de cette contrainte par rapport aux
-   * autres contraintes de cette classe. Renvoie 1 par d�faut ce qui signifie
+   * autres contraintes de cette classe. Renvoie 1 par défaut ce qui signifie
    * que toutes les contraintes ont le même poids.
    * @return
    */

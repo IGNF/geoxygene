@@ -124,6 +124,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   private ScaleRulerPanel ruler;
   private Map<String, ScaleLineDisplayPanel> linePanels = new HashMap<String, ScaleLineDisplayPanel>();
   private Set<GeneObjImplementation> implementations;
+  private boolean jar = true;
 
   // internationalisation labels
   private String frameTitle, lblCancel, lblOk, lblAddLine, lblAddElement,
@@ -153,6 +154,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       throws OWLOntologyCreationException, ParserConfigurationException,
       SAXException, IOException, ClassNotFoundException {
     super();
+    this.jar = jar;
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.internationalisation();
     this.setTitle(this.frameTitle);
@@ -387,7 +389,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       }
       this.setVisible(false);
     } else if (e.getActionCommand().equals("params")) {
-      EditPeaRepParamsFrame frame = new EditPeaRepParamsFrame();
+      EditPeaRepParamsFrame frame = new EditPeaRepParamsFrame(jar);
       frame.setVisible(true);
     } else if (e.getActionCommand().equals("load-params")) {
       // load a file previously stored in xml
@@ -398,7 +400,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         return;
       }
       File xmlFile = fc.getSelectedFile();
-      EditPeaRepParamsFrame frame = new EditPeaRepParamsFrame(xmlFile);
+      EditPeaRepParamsFrame frame = new EditPeaRepParamsFrame(xmlFile, jar);
       frame.setVisible(true);
     } else if (e.getActionCommand().equals("edit")) {
       // edit a ScaleMasterElement in the selected line

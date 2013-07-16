@@ -501,7 +501,7 @@ public class VMAP1PlusPlusLoader extends ShapeFileLoader {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "LakeresA.shp")
                 .getAbsolutePath(), VMAP1PPLakeresA.class,
-            PeaRepDataset.WATER_AREAS_POP, ISimpleLandUseArea.FEAT_TYPE_NAME,
+            PeaRepDataset.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
             PeaRepDbType.VMAP1PlusPlus);
       }
 

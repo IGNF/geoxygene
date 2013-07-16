@@ -25,6 +25,7 @@ import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 public class VMAP1PPDamL extends VMAP1PPFeature implements IBridgeLine {
 
   private AutreConstruction geoxObj;
+  private INetworkSection containingSection;
 
   // VMAP1PlusPlus attributes
   private String date_bdi, f_code, gfid_v2i, v2i_nam, ohb, src_date, src_info,
@@ -399,6 +400,16 @@ public class VMAP1PPDamL extends VMAP1PPFeature implements IBridgeLine {
    */
   public double getLength() {
     return this.getGeom().length();
+  }
+
+  @Override
+  public INetworkSection getContainingNetwork() {
+    return containingSection;
+  }
+
+  @Override
+  public void setContainingNetwork(INetworkSection section) {
+    this.containingSection = section;
   }
 
 }

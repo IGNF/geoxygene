@@ -13,15 +13,14 @@ import java.util.HashMap;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class VMAP1PPLakeresA extends VMAP1PPFeature implements
-    ISimpleLandUseArea {
+public class VMAP1PPLakeresA extends VMAP1PPFeature implements IWaterArea {
 
   private AutreConstruction geoxObj;
 
@@ -36,7 +35,7 @@ public class VMAP1PPLakeresA extends VMAP1PPFeature implements
    * @param type
    */
   public VMAP1PPLakeresA(IPolygon polygon, HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(polygon);
     this.setInitialGeom(polygon);
@@ -286,18 +285,6 @@ public class VMAP1PPLakeresA extends VMAP1PPFeature implements
 
   public void setOriginform(long originform) {
     this.originform = originform;
-  }
-
-  @Override
-  public int getType() {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public void setType(int type) {
-    // TODO Auto-generated method stub
-
   }
 
   public long getHyc() {

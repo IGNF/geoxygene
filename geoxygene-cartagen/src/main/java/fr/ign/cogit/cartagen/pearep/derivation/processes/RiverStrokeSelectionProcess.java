@@ -17,9 +17,6 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
-import fr.ign.cogit.cartagen.pearep.enrichment.DeleteDoublePreProcess;
-import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanarDir;
-import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterLine;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
 import fr.ign.cogit.cartagen.spatialanalysis.network.rivers.RiverStroke;
@@ -55,30 +52,6 @@ public class RiverStrokeSelectionProcess extends ScaleMasterGeneProcess {
   public void execute(IFeatureCollection<? extends IGeneObj> features) {
     this.parameterise();
 
-    Set<Class<? extends IGeneObj>> classes = new HashSet<Class<? extends IGeneObj>>();
-    // remove double features in rivers
-    classes.clear();
-    classes.add(MGCPWaterLine.class);
-    DeleteDoublePreProcess processDbl = DeleteDoublePreProcess.getInstance();
-    processDbl.setProcessedClasses(classes);
-    try {
-      processDbl.execute(CartAGenDoc.getInstance().getCurrentDataset()
-          .getCartAGenDB());
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    // make planar and enrich the river network
-    classes.clear();
-    classes.add(MGCPWaterLine.class);
-    MakeNetworkPlanarDir processRiver = MakeNetworkPlanarDir.getInstance();
-    processRiver.setProcessedClasses(classes);
-    try {
-      processRiver.execute(CartAGenDoc.getInstance().getCurrentDataset()
-          .getCartAGenDB());
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
     HashMap<ArcReseau, IWaterLine> map = new HashMap<ArcReseau, IWaterLine>();
     HashSet<ArcReseau> arcs = new HashSet<ArcReseau>();
     for (IWaterLine feat : CartAGenDoc.getInstance().getCurrentDataset()
