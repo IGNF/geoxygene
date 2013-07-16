@@ -72,5 +72,6 @@ public class BufferComputingTest {
     ILineString line6 = new GM_LineString(list6);
     Assert.assertTrue(line6.equals(BufferComputing.buildHalfOffsetLine(
         Side.RIGHT, line5, 5.0)));
+
   }
 }
