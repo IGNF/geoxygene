@@ -412,15 +412,16 @@ public class CartagenApplication {
     CartagenApplication.cartagenApplication.getFrameInit().repaint();
     /*
      * Kusay moved it to be during the data loading
-     * CartagenApplication.cartagenApplication .getLayerGroup() .loadLayers(
-     * this.getDocument().getCurrentDataset(),
-     * CartagenApplication.getInstance().getLayerGroup().symbolisationDisplay);
-     * CartagenApplication.cartagenApplication.getLayerGroup()
-     * .loadInterfaceWithLayers(
-     * CartagenApplication.getInstance().getFrame().getLayerManager
-     * (),CartagenApplication
-     * .getInstance().getDocument().getCurrentDataset().getSymbols());
      */
+    CartagenApplication.cartagenApplication.getLayerGroup().loadLayers(
+        this.getDocument().getCurrentDataset(),
+        CartagenApplication.getInstance().getLayerGroup().symbolisationDisplay);
+    CartagenApplication.cartagenApplication.getLayerGroup()
+        .loadInterfaceWithLayers(
+            CartagenApplication.getInstance().getFrame().getLayerManager(),
+            CartagenApplication.getInstance().getDocument().getCurrentDataset()
+                .getSymbols());
+
     CartagenApplication.cartagenApplication.getFrameInit().isGood(
         CartagenApplication.cartagenApplication.getFrameInit().lblLayersIcon);
     CartagenApplication.cartagenApplication.getFrameInit().repaint();
