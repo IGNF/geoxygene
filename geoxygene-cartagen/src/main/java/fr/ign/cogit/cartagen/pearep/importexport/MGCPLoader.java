@@ -164,7 +164,6 @@ public class MGCPLoader extends ShapeFileLoader {
   public void loadData(File directory, List<String> listLayer)
       throws ShapefileException, IOException {
     try {
-
       // Chargement dans l'ordre alphabétique (JFG)
 
       if (((listLayer.size() == 0) || (listLayer.contains("LAP030")))

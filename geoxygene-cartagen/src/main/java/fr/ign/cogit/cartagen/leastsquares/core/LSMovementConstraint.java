@@ -59,7 +59,7 @@ public class LSMovementConstraint extends LSInternalConstraint {
     systeme.initObservations(2);
 
     // construction de la matrice A
-    // ici, les �quations sont simples : Delta(x) = 0 et Delta(y) = 0
+    // ici, les équations sont simples : Delta(x) = 0 et Delta(y) = 0
     systeme.initMatriceA(2, 2);
     systeme.setA(0, 0, 1.0);
     systeme.setA(1, 1, 1.0);

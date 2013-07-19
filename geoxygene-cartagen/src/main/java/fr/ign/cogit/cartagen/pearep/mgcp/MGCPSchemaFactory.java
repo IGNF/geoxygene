@@ -18,6 +18,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea.TaxiwayType;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayNode;
@@ -30,6 +31,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.energy.MGCPElectricityLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterNode;
 import fr.ign.cogit.cartagen.pearep.mgcp.sea.MGCPShipWreckArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPBridgePoint;
@@ -110,6 +112,11 @@ public class MGCPSchemaFactory extends AbstractCreationFactory {
 
   public MGCPShipWreckArea createAirportPoint(IPolygon geom) {
     return new MGCPShipWreckArea(geom);
+  }
+
+  @Override
+  public IElectricityLine createElectricityLine(ILineString line, int importance) {
+    return new MGCPElectricityLine(line, importance);
   }
 
 }

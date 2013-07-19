@@ -304,4 +304,12 @@ public class PeaRepDB extends ShapeFileDB {
     this.loadedClasses = loadedClasses;
   }
 
+  public boolean isDbFile(File file) {
+    int indexPt = file.getName().lastIndexOf(".");
+    String extension = file.getName().substring(indexPt + 1);
+    if (!extension.equals("shp"))
+      return false;
+    return true;
+  }
+
 }

@@ -242,6 +242,13 @@ public interface IGeneObj extends IGraphLinkableFeature, IFeature {
   public String getDbName();
 
   /**
+   * Copy all the attributes of obj in {@code this} if they belong to the same
+   * class.
+   * @param obj
+   */
+  public void copyAttributes(IGeneObj obj);
+
+  /**
    * get the SupportObj which is assciated
    */
   // public BDSupportObj getBDSupportObj();
@@ -290,9 +297,9 @@ public interface IGeneObj extends IGraphLinkableFeature, IFeature {
   /**
    * This method is only useful for the persistence of IGeneObj. To avoid using
    * EJB with GeOxygene objects, the GeOxygene object related to a IGeneObj
-   * object is transient, so it has to be restored. It is restored using {@code
-   * this} geometry and attributes. The GeOxygene object relations are not
-   * restored by this method but by restoreGeoxRelations().
+   * object is transient, so it has to be restored. It is restored using
+   * {@code this} geometry and attributes. The GeOxygene object relations are
+   * not restored by this method but by restoreGeoxRelations().
    */
   void restoreGeoxObjects();
 

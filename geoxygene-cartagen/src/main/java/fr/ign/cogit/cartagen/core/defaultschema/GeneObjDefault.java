@@ -805,4 +805,9 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
   public void restoreGeoxRelations() {
     // do nothing as this geoxObj is null
   }
+
+  @Override
+  public void copyAttributes(IGeneObj obj) {
+    // do not copy anything as a default method.
+  }
 }
