@@ -49,6 +49,7 @@ public class Noeud extends ElementCarteTopo {
    */
   public Noeud() {
   }
+
   /**
    * Constructor.
    * @param point a point
@@ -56,6 +57,7 @@ public class Noeud extends ElementCarteTopo {
   public Noeud(IPoint point) {
     this.setGeom(point);
   }
+
   /**
    * Constructor.
    * @param p a position
@@ -326,6 +328,8 @@ public class Noeud extends ElementCarteTopo {
     itArcs = arcsSortants.iterator();
     while (itArcs.hasNext()) {
       arc = itArcs.next();
+      if (arc.getCoord().size() < 2)
+        continue;
       angle = new Angle(arc.getCoord().get(0), arc.getCoord().get(1));
       arcs.add(arc);
       angles.add(angle);
@@ -335,6 +339,8 @@ public class Noeud extends ElementCarteTopo {
     itArcs = arcsEntrants.iterator();
     while (itArcs.hasNext()) {
       arc = itArcs.next();
+      if (arc.getCoord().size() < 2)
+        continue;
       angle = new Angle(arc.getCoord().get(arc.getCoord().size() - 1), arc
           .getCoord().get(arc.getCoord().size() - 2));
       arcs.add(arc);
@@ -477,9 +483,10 @@ public class Noeud extends ElementCarteTopo {
    *         contient le noeud de départ et le noeud d'arrivée.
    */
   public Groupe plusCourtChemin(Noeud arrivee, double maxLongueur) {
-    
-    // Noeud.logger.debug("shortest path between " + this.getCoord() + " - " + arrivee.getCoord());
-    
+
+    // Noeud.logger.debug("shortest path between " + this.getCoord() + " - " +
+    // arrivee.getCoord());
+
     List<Noeud> noeudsFinaux = new ArrayList<Noeud>(0);
     List<Arc> arcsFinaux = new ArrayList<Arc>(0);
     List<Noeud> noeudsVoisins = new ArrayList<Noeud>(0);
@@ -491,9 +498,9 @@ public class Noeud extends ElementCarteTopo {
     Arc arcVoisin;
     Noeud noeudVoisin, plusProche, suivant;
     double dist;
-    
+
     try {
-      
+
       if (this.getCarteTopo() == null) {
         Noeud.logger.error("ATTENTION : le noeud " + this
             + " ne fait pas partie d'une carte topo");
@@ -501,7 +508,7 @@ public class Noeud extends ElementCarteTopo {
             .error("            Impossible de calculer un plus court chemin");
         return null;
       }
-      
+
       if (this.getCarteTopo().getPopGroupes() == null) {
         Noeud.logger.error("ATTENTION : le noeud " + this
             + " fait partie d'une carte topo sans population de groupes");
@@ -509,8 +516,9 @@ public class Noeud extends ElementCarteTopo {
             .error("            Impossible de calculer un plus court chemin");
         return null;
       }
-      
-      Groupe plusCourtChemin = this.getCarteTopo().getPopGroupes().nouvelElement();
+
+      Groupe plusCourtChemin = this.getCarteTopo().getPopGroupes()
+          .nouvelElement();
 
       if (this == arrivee) {
         Noeud.logger.debug("node is arrival");
@@ -518,11 +526,12 @@ public class Noeud extends ElementCarteTopo {
         this.addGroupe(plusCourtChemin);
         return plusCourtChemin;
       }
-      
+
       this.distance = 0;
-      this.chercheArcsNoeudsVoisins(noeudsVoisins, distancesVoisins, arcsVoisins);
+      this.chercheArcsNoeudsVoisins(noeudsVoisins, distancesVoisins,
+          arcsVoisins);
       // logger.info("voisins " + noeudsVoisins.size());
-      
+
       for (i = 0; i < noeudsVoisins.size(); i++) {
         noeudVoisin = noeudsVoisins.get(i);
         arcVoisin = arcsVoisins.get(i);
@@ -552,7 +561,7 @@ public class Noeud extends ElementCarteTopo {
         }
         if (maxLongueur != 0) {
           if (plusProche.distance > maxLongueur) {
-            //Noeud.logger.debug("Trop long, on s'arrête");
+            // Noeud.logger.debug("Trop long, on s'arrête");
             return null; // heuristique pour stopper la recherche
           }
         }
