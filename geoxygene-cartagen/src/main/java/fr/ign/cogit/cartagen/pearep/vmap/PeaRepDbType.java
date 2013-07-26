@@ -10,5 +10,5 @@
 package fr.ign.cogit.cartagen.pearep.vmap;
 
 public enum PeaRepDbType {
-  VMAP2i, VMAP1, VMAP0, MGCPPlusPlus, VMAP1PlusPlus;
+  VMAP2i, VMAP1, VMAP0, MGCPPlusPlus, VMAP1PlusPlus, SHOM;
 }
