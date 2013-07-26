@@ -117,6 +117,10 @@ public class XMLParser {
             .item(0);
         scheduler.setVmap2iFolder(folderElem.getChildNodes().item(0)
             .getNodeValue());
+        Element partitionSizeElem = (Element) bdElem.getElementsByTagName(
+            "partition-size").item(0);
+        scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
+            .getChildNodes().item(0).getNodeValue()));
 
         // /Modif
         List<String> listLayer = new ArrayList<String>();
@@ -134,6 +138,10 @@ public class XMLParser {
             .item(0);
         scheduler.setVmap1Folder(folderElem.getChildNodes().item(0)
             .getNodeValue());
+        Element partitionSizeElem = (Element) bdElem.getElementsByTagName(
+            "partition-size").item(0);
+        scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
+            .getChildNodes().item(0).getNodeValue()));
 
         // /Modif
         List<String> listLayer = new ArrayList<String>();
@@ -151,6 +159,10 @@ public class XMLParser {
             .item(0);
         scheduler.setVmap0Folder(folderElem.getChildNodes().item(0)
             .getNodeValue());
+        Element partitionSizeElem = (Element) bdElem.getElementsByTagName(
+            "partition-size").item(0);
+        scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
+            .getChildNodes().item(0).getNodeValue()));
 
         // /Modif
         List<String> listLayer = new ArrayList<String>();
@@ -174,6 +186,10 @@ public class XMLParser {
         else
           this.mapPath.put(nom, folderElem.getChildNodes().item(0)
               .getNodeValue());
+        Element partitionSizeElem = (Element) bdElem.getElementsByTagName(
+            "partition-size").item(0);
+        scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
+            .getChildNodes().item(0).getNodeValue()));
 
         // /Modif
         List<String> listLayer = new ArrayList<String>();
@@ -195,6 +211,10 @@ public class XMLParser {
             .item(0);
         scheduler.setVmap1PlusPlusFolder(folderElem.getChildNodes().item(0)
             .getNodeValue());
+        Element partitionSizeElem = (Element) bdElem.getElementsByTagName(
+            "partition-size").item(0);
+        scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
+            .getChildNodes().item(0).getNodeValue()));
 
         // /Modif
         List<String> listLayer = new ArrayList<String>();
@@ -207,6 +227,29 @@ public class XMLParser {
         }
         scheduler.setListLayersVmap1PlusPlus(listLayer);
       }
+
+      else if (nom.equals("SHOM")) {
+        Element folderElem = (Element) bdElem.getElementsByTagName("chemin")
+            .item(0);
+        scheduler.setShomFolder(folderElem.getChildNodes().item(0)
+            .getNodeValue());
+        Element partitionSizeElem = (Element) bdElem.getElementsByTagName(
+            "partition-size").item(0);
+        scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
+            .getChildNodes().item(0).getNodeValue()));
+
+        // /Modif
+        List<String> listLayer = new ArrayList<String>();
+        for (int itLayer = 0; itLayer < bdElem.getElementsByTagName("layer")
+            .getLength(); itLayer++) {
+          Element layerElement = (Element) bdElem.getElementsByTagName("layer")
+              .item(itLayer);
+          listLayer.add(layerElement.getChildNodes().item(0).getNodeValue()
+              .toString());
+        }
+        scheduler.setListLayersShom(listLayer);
+      }
+
     }
 
     // parse data corrections
