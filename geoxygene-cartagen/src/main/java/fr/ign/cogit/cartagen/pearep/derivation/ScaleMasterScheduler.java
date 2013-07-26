@@ -99,7 +99,7 @@ public class ScaleMasterScheduler {
    * can be filled by the parameters XML file.
    */
   private String vmap2iFolder, vmap1Folder, vmap0Folder, mgcpPlusPlusFolder,
-      vmap1PlusPlusFolder;
+      vmap1PlusPlusFolder, shomFolder;
   /**
    * The folder where export shapefiles are generated. If null, export is made
    * in the root.
@@ -125,6 +125,9 @@ public class ScaleMasterScheduler {
   private List<String> listLayersVmap0;
   private List<String> listLayersMgcpPlusPlus;
   private List<String> listLayersVmap1PlusPlus;
+  private List<String> listLayersShom;
+
+  private double partitionSize;
 
   /**
    * A constructor from the XML configuration files describing the ScaleMaster
@@ -573,11 +576,15 @@ public class ScaleMasterScheduler {
     // Remove landuse simplification processes from the list and fill the
     // landuse simplification process map
     Iterator<OrderedProcess> itProcess = procList.iterator();
+
     while (itProcess.hasNext()) {
       OrderedProcess orderedProc = itProcess.next();
+
       if (!orderedProc.isFilter()) {
+
         String procName = (String) orderedProc.getProcess();
         if (procName.equals("LanduseSimplify")) {
+
           fillLanduseSimplificationProcess(elem, orderedProc, features);
           itProcess.remove();
         }
@@ -703,6 +710,30 @@ public class ScaleMasterScheduler {
 
   public void setLanduseDpFilter(Double landuseDpFilter) {
     this.landuseDpFilter = landuseDpFilter;
+  }
+
+  public String getShomFolder() {
+    return shomFolder;
+  }
+
+  public void setShomFolder(String shomFolder) {
+    this.shomFolder = shomFolder;
+  }
+
+  public List<String> getListLayersShom() {
+    return listLayersShom;
+  }
+
+  public void setListLayersShom(List<String> listLayersShom) {
+    this.listLayersShom = listLayersShom;
+  }
+
+  public double getPartitionSize() {
+    return partitionSize;
+  }
+
+  public void setPartitionSize(double partitionSize) {
+    this.partitionSize = partitionSize;
   }
 
 }
