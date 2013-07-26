@@ -11,7 +11,7 @@ package fr.ign.cogit.cartagen.software.dataset;
 
 public enum SourceDLM {
 
-  SPECIAL_CARTAGEN, BD_TOPO_V2, BD_CARTO, BD_Cete1, BD_OSInitial, BD_OSFinal, VMAP2i, VMAP1, VMAP0, MGCPPlusPlus, VMAP1PlusPlus, OpenStreetMap;
+  SPECIAL_CARTAGEN, BD_TOPO_V2, BD_CARTO, BD_Cete1, BD_OSInitial, BD_OSFinal, VMAP2i, VMAP1, VMAP0, MGCPPlusPlus, VMAP1PlusPlus, OpenStreetMap, SHOM;
 
   /**
    * Get the scale related to source DLM. Can be useful to compute a radical
