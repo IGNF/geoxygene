@@ -149,10 +149,8 @@ public class LanduseSimplification {
         .getGeomAggregate().convexHull().coord()));
 
     IGeometry geom = polyEnveloppe;
-    System.out.println("geom : " + geom.toString());
     for (IFeature ft : ftColPolyTotal) {
       IPolygon poly = (IPolygon) ft.getGeom().buffer(0);
-      // System.out.println("poly : " + poly.toString());
       if (!(geom.difference(poly) == null)) {
         geom = geom.difference(poly);
       }
@@ -507,11 +505,6 @@ public class LanduseSimplification {
       if (!(ftColExport.isEmpty())) {
         mapFtColOut.put(ftColExport, typeOCS);
       }
-    }
-
-    System.out.println("Border holes...");
-    for (IFeature iFeature : ftColBorderHoles) {
-      System.out.println(iFeature.toString());
     }
 
     return mapFtColOut;
