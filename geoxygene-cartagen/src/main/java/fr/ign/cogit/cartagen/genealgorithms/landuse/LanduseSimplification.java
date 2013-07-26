@@ -97,11 +97,11 @@ public class LanduseSimplification {
           IMultiSurface<IPolygon> multiPoly = (IMultiSurface<IPolygon>) ft
               .getGeom();
           for (IPolygon polygon : multiPoly.getList()) {
-            listPoly.add(polygon);
+            listPoly.add((IPolygon) polygon.buffer(0));
           }
         } else if (ft.getGeom().isPolygon()) {
           IPolygon polygon = (IPolygon) ft.getGeom();
-          listPoly.add(polygon);
+          listPoly.add((IPolygon) polygon.buffer(0));
         }
       }
 
@@ -139,12 +139,23 @@ public class LanduseSimplification {
     LanduseSimplification.logger.info("Gestion des zones vides");
     // Creation of an empty area (if the landcover is not complete)
     IFeatureCollection<IFeature> ftColEmptyZone = new FT_FeatureCollection<IFeature>();
-    IPolygon polyEnveloppe = new GM_Polygon(ftColPolyTotal.getGeomAggregate()
-        .envelope());
+
+    // Solution 1 : on utilise une envelope rectangulaire horizontale...
+    // IPolygon polyEnveloppe = new GM_Polygon(ftColPolyTotal.getGeomAggregate()
+    // .envelope());
+
+    // Solution 2 : on utilise l'enveloppe convexe...
+    IPolygon polyEnveloppe = new GM_Polygon(new GM_LineString(ftColPolyTotal
+        .getGeomAggregate().convexHull().coord()));
+
     IGeometry geom = polyEnveloppe;
+    System.out.println("geom : " + geom.toString());
     for (IFeature ft : ftColPolyTotal) {
-      IPolygon poly = (IPolygon) ft.getGeom();
-      geom = geom.difference(poly);
+      IPolygon poly = (IPolygon) ft.getGeom().buffer(0);
+      // System.out.println("poly : " + poly.toString());
+      if (!(geom.difference(poly) == null)) {
+        geom = geom.difference(poly);
+      }
     }
     if (geom.isMultiSurface()) {
       if (!(geom.isEmpty())) {
@@ -224,10 +235,16 @@ public class LanduseSimplification {
     itFeature = ftColPolyFrontierHoles.iterator();
     while (itFeature.hasNext()) {
       IFeature ft = itFeature.next();
-      ILineString ls = new GM_LineString(ftColPolyConserve.envelope().getGeom()
-          .coord());
+      // envelope rectangulaire horizontale ...
+      // ILineString ls = new
+      // GM_LineString(ftColPolyConserve.envelope().getGeom()
+      // .coord());
+      // envelope convexe...
+      ILineString ls = new GM_LineString(ftColPolyConserve.getGeomAggregate()
+          .convexHull().coord());
+
       if (ft.getGeom().intersects(ls)) {
-        ftColBorderHoles.add(ft);
+        ftColBorderHoles.add(new DefaultFeature(ft.getGeom()));
         itFeature.remove();
       }
     }
@@ -241,8 +258,13 @@ public class LanduseSimplification {
       ILineString lsExt = new GM_LineString(poly.exteriorCoord());
       ftColLsConserve.add(new DefaultFeature(lsExt));
     }
-    ftColLsConserve.add(new DefaultFeature(new GM_LineString(ftColPolyConserve
-        .envelope().getGeom().coord())));
+
+    ftColLsConserve.add(new DefaultFeature(new GM_LineString(ftColPolyTotal
+        .getGeomAggregate().convexHull().coord())));
+
+    // ftColLsConserve.add(new DefaultFeature(new
+    // GM_LineString(ftColPolyConserve
+    // .envelope().getGeom().coord())));
 
     Iterator<IFeature> itLs;
     itLs = ftColLsConserve.iterator();
@@ -252,11 +274,12 @@ public class LanduseSimplification {
         itLs.remove();
       }
     }
+
     CarteTopo carteTopoLandCoverRaw = CarteTopoFactory.newCarteTopo("TopoMap",
         ftColLsConserve, 1.0, true);
     carteTopoLandCoverRaw.filtreNoeudsIsoles();
     carteTopoLandCoverRaw.filtreNoeudsSimples();
-    LanduseSimplification.elimineFaceInfinie(carteTopoLandCoverRaw);
+    // LanduseSimplification.elimineFaceInfinie(carteTopoLandCoverRaw);
     List<Arc> listArcsPCC = new ArrayList<Arc>();
     for (Face face : carteTopoLandCoverRaw.getPopFaces()) {
       if (face.getGeom().within(ftColPolyFrontierHoles.getGeomAggregate())) {
@@ -300,6 +323,7 @@ public class LanduseSimplification {
           arc.setOrientation(2);
           arc.setPoids(arc.getGeometrie().length());
         }
+
         // Cas n°1: le trou est frontalier avec seulement 2 polygones
         // On calcule le chemin à travers la triangulation et le
         // contour entre les 2 noeuds à connecter
@@ -424,7 +448,7 @@ public class LanduseSimplification {
     // .newCarteTopo(ftColLandCoverFinalFilter);
     carteTopoLandCoverFinalFilter.filtreNoeudsIsoles();
     carteTopoLandCoverFinalFilter.filtreNoeudsSimples();
-    // elimineFaceInfinie(carteTopoLandCoverFinalFiltre);
+    LanduseSimplification.elimineFaceInfinie(carteTopoLandCoverFinalFilter);
 
     LanduseSimplification.logger
         .info("Export des classes d'occupation du sol généralisées");
@@ -443,6 +467,10 @@ public class LanduseSimplification {
         if (face.getGeom().buffer(0).intersection(ftColOut.getGeomAggregate()) == null) {
           continue;
         }
+        if (!(face.getGeom().isValid())) {
+          continue;
+        }
+
         double surface = face.getGeom().buffer(0)
             .intersection(ftColOut.getGeomAggregate()).area();
         mapSurfaceParFtCol.put(nomFtCol, surface);
@@ -465,6 +493,7 @@ public class LanduseSimplification {
 
     Map<IFeatureCollection<IFeature>, String> mapFtColOut = new HashMap<IFeatureCollection<IFeature>, String>();
     for (String typeOCS : listTypeOCS) {
+
       Iterator<Face> itFace;
       itFace = mapFaceParLandUseType.keySet().iterator();
       IFeatureCollection<IFeature> ftColExport = new FT_FeatureCollection<IFeature>();
@@ -478,6 +507,11 @@ public class LanduseSimplification {
       if (!(ftColExport.isEmpty())) {
         mapFtColOut.put(ftColExport, typeOCS);
       }
+    }
+
+    System.out.println("Border holes...");
+    for (IFeature iFeature : ftColBorderHoles) {
+      System.out.println(iFeature.toString());
     }
 
     return mapFtColOut;
@@ -504,10 +538,10 @@ public class LanduseSimplification {
         continue;
       }
       Polygon polygon = (Polygon) jtsGeom.buffer(0);
-      // if (polygon.isValid() && polygon.getArea() != 0) {
-      list.add(polygon);
-      // } else
-      // continue;
+      if (polygon.isValid() && polygon.getArea() != 0) {
+        list.add(jtsGeom.buffer(0));
+      } else
+        continue;
 
     }
     Geometry jtsUnion = JtsAlgorithms.union(list);
