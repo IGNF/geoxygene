@@ -33,6 +33,7 @@ import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
 import fr.ign.cogit.cartagen.util.FileUtil;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 
 public class VMAP0Loader extends ShapeFileLoader {
 
@@ -46,8 +47,7 @@ public class VMAP0Loader extends ShapeFileLoader {
   }
 
   @Override
-  public void loadData(File directory, List<String> listLayer)
-      throws ShapefileException, IOException {
+  public void loadData(File directory, List<String> listLayer) throws Exception {
     // TODO Auto-generated method stub
     try {
 
@@ -175,6 +175,13 @@ public class VMAP0Loader extends ShapeFileLoader {
     database.setDataSet(dataset);
     database.setType(new DigitalLandscapeModel());
     this.setDataset(dataset);
+  }
+
+  @Override
+  public void loadDataPartition(File directory, List<String> listLayer,
+      IPolygon envelope) throws ShapefileException, IOException, Exception {
+    // TODO Auto-generated method stub
+
   }
 
 }

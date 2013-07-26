@@ -138,6 +138,8 @@ public class ShapeFileExport {
       ShapeFileExport.write(popExport, IPolygon.class, this.exportDir.getPath()
           + "\\" + shapeFileName, projEpsg, "4326");
 
+      // Ajout pour gérer la partition
+      ftCol.clear();
     }
   }
 
@@ -175,6 +177,7 @@ public class ShapeFileExport {
       }
       this.dataset = CartAGenDoc.getInstance().getDataset(elem.getDbName());
       Class<?> classObj = elem.getClasses().iterator().next();
+
       // get the features to export
       IPopulation<IGeneObj> features = new Population<IGeneObj>();
       IPopulation<IGeneObj> pop = this.dataset.getCartagenPop(this.dataset

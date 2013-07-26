@@ -31,6 +31,7 @@ import org.geotools.data.shapefile.shp.ShapefileReader.Record;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
@@ -49,6 +50,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.JTSAlgorithms;
+import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 
 public abstract class ShapeFileLoader {
 
@@ -72,9 +74,22 @@ public abstract class ShapeFileLoader {
    *          load
    * @throws IOException
    * @throws ShapefileException
+   * @throws Exception
    */
   public abstract void loadData(File directory, List<String> listLayer)
-      throws ShapefileException, IOException;
+      throws ShapefileException, IOException, Exception;
+
+  /**
+   * Load the shapefiles inside the given directory in {@code this} dataset.
+   * @param directory the path of the directory containing the shapefiles to
+   *          load
+   * @throws IOException
+   * @throws ShapefileException
+   * @throws Exception
+   */
+  public abstract void loadDataPartition(File directory,
+      List<String> listLayer, IPolygon envelope) throws ShapefileException,
+      IOException, Exception;
 
   /**
    * Get the attributes of shapefile stream entry and put them in a map.
@@ -97,27 +112,20 @@ public abstract class ShapeFileLoader {
     return fields;
   }
 
+  // A modifier (dupliquer les méthodes....)
+
   /**
    * Generic method to load VMAP ILineString classes from shapefiles.
    * @param path
    * @param geneObjClass
    * @param nomPopulation
    * @param net
-   * @throws ShapefileException
-   * @throws IOException
-   * @throws IllegalArgumentException
-   * @throws InstantiationException
-   * @throws IllegalAccessException
-   * @throws InvocationTargetException
-   * @throws SecurityException
-   * @throws NoSuchMethodException
+   * @throws Exception
    */
   @SuppressWarnings("unchecked")
   public void loadLineStringClass(String path, Class<?> geneObjClass,
       String nomPopulation, String featureTypeName, INetwork net,
-      PeaRepDbType type) throws ShapefileException, IOException,
-      IllegalArgumentException, InstantiationException, IllegalAccessException,
-      InvocationTargetException, SecurityException, NoSuchMethodException {
+      PeaRepDbType type) throws Exception {
     ShapefileReader shr = null;
     DbaseFileReader dbr = null;
     try {
@@ -184,6 +192,7 @@ public abstract class ShapeFileLoader {
       // build the line string object
       Constructor<?> constructor = geneObjClass.getConstructor(
           ILineString.class, HashMap.class, PeaRepDbType.class);
+      geom = geom.buffer(0);
       if (geom instanceof ILineString) {
         IGeneObj tr = (IGeneObj) constructor
             .newInstance(geom, attributes, type);
@@ -192,7 +201,8 @@ public abstract class ShapeFileLoader {
         if (net != null) {
           net.addSection((INetworkSection) tr);
         }
-      } else {
+      }
+      if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
           IGeneObj tr = (IGeneObj) constructor.newInstance(
               ((IMultiCurve<?>) geom).get(i), attributes, type);
@@ -295,6 +305,100 @@ public abstract class ShapeFileLoader {
         }
       }
       attributes.clear();
+    }
+    shr.close();
+    dbr.close();
+  }
+
+  @SuppressWarnings("unchecked")
+  public void loadSedimentologyClass(String path, Class<?> geneObjClass,
+      String nomPopulation, String featureTypeName, PeaRepDbType type,
+      String typeValue) throws ShapefileException, IOException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException,
+      InvocationTargetException, SecurityException, NoSuchMethodException {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    try {
+      ShpFiles shpf = new ShpFiles(path);
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.forName("ISO-8859-1"));
+    } catch (FileNotFoundException e) {
+      if (ShapeFileLoader.logger.isLoggable(Level.FINEST)) {
+        ShapeFileLoader.logger.finest("fichier " + path + " non trouve.");
+      }
+      return;
+    }
+
+    if (ShapeFileLoader.logger.isLoggable(Level.INFO)) {
+      ShapeFileLoader.logger.info("Loading: " + path);
+    }
+
+    // get the road population of the dataset
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataset()
+        .getCartagenPop(nomPopulation, featureTypeName);
+
+    // case of an empty shapefile: return!
+    if (!shr.hasNext()) {
+      shr.close();
+      dbr.close();
+      return;
+    }
+
+    // Get the Lat/Long coordinates of the first object of the population
+    // and compute the associated utm zone
+    Record object1 = shr.nextRecord();
+    Geometry geomJTS1 = (Geometry) object1.shape();
+    if (this.projEpsg == null) {
+      String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
+          geomJTS1.getCentroid().getY());
+      this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    } else {
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    }
+    shr.close();
+    ShpFiles shpf = new ShpFiles(path);
+    shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+
+    // loop on the shapefile records
+    while (shr.hasNext() && dbr.hasNext()) {
+      Record object = shr.nextRecord();
+
+      // get the record attributes
+      Map<String, Object> attributes = this.getShapeFileFields(dbr);
+
+      if (attributes.get("TYPEVALE").equals(typeValue)) {
+
+        // get the record geometry
+        IGeometry geom = null;
+        try {
+          // coordinates transformation
+          Geometry geomJTS = (Geometry) object.shape();
+          geom = CRSConversion.changeCRS(geomJTS, "4326", this.projEpsg, false,
+              true);
+        } catch (Exception e) {
+          e.printStackTrace();
+          return;
+        }
+
+        // build the line string object
+        Constructor<?> constructor = geneObjClass.getConstructor(
+            IPolygon.class, HashMap.class, PeaRepDbType.class);
+        if (geom instanceof IPolygon) {
+          IGeneObj tr = (IGeneObj) constructor.newInstance(geom, attributes,
+              type);
+
+          pop.add(tr);
+        } else {
+          for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
+            IGeneObj tr = (IGeneObj) constructor.newInstance(
+                ((IMultiSurface<?>) geom).get(i), attributes, type);
+
+            pop.add(tr);
+          }
+        }
+        attributes.clear();
+      }
     }
     shr.close();
     dbr.close();
@@ -571,6 +675,611 @@ public abstract class ShapeFileLoader {
     dbr.close();
   }
 
+  /**
+   * Generic method to load VMAP ILineString classes from shapefiles.
+   * @param path
+   * @param geneObjClass
+   * @param nomPopulation
+   * @param net
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
+  public void loadLineStringClassPartition(String path, Class<?> geneObjClass,
+      String nomPopulation, String featureTypeName, INetwork net,
+      PeaRepDbType type, IPolygon envelope) throws Exception {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    try {
+      ShpFiles shpf = new ShpFiles(path);
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.forName("ISO-8859-1"));
+    } catch (FileNotFoundException e) {
+      if (ShapeFileLoader.logger.isLoggable(Level.FINEST)) {
+        ShapeFileLoader.logger.finest("fichier " + path + " non trouve.");
+      }
+      return;
+    }
+
+    if (ShapeFileLoader.logger.isLoggable(Level.INFO)) {
+      ShapeFileLoader.logger.info("Loading: " + path);
+    }
+
+    // get the road population of the dataset
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataset()
+        .getCartagenPop(nomPopulation, featureTypeName);
+
+    // case of an empty shapefile: return!
+    if (!shr.hasNext()) {
+      shr.close();
+      dbr.close();
+      return;
+    }
+
+    // Get the Lat/Long coordinates of the first object of the population
+    // and compute the associated utm zone
+    Record object1 = shr.nextRecord();
+    Geometry geomJTS1 = (Geometry) object1.shape();
+    if (this.projEpsg == null) {
+      String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
+          geomJTS1.getCentroid().getY());
+      this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    } else {
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    }
+    shr.close();
+    ShpFiles shpf = new ShpFiles(path);
+    shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+
+    // loop on the shapefile records
+    while (shr.hasNext() && dbr.hasNext()) {
+      Record object = shr.nextRecord();
+
+      // Prise en compte du partitionnement
+      // test si l'objet intersecte la cellule
+      Geometry geomJTS = (Geometry) object.shape();
+      Polygon poly = (Polygon) JtsGeOxygene.makeJtsGeom(envelope);
+      if (geomJTS.intersects(poly)) {
+        geomJTS = geomJTS.intersection(poly);
+      } else
+        continue;
+
+      // get the record attributes
+      Map<String, Object> attributes = this.getShapeFileFields(dbr);
+
+      // get the record geometry
+      IGeometry geom = null;
+      try {
+        // coordinates transformation
+        // Geometry geomJTS = (Geometry) object.shape();
+        geom = CRSConversion.changeCRS(geomJTS, "4326", this.projEpsg, false,
+            true);
+      } catch (Exception e) {
+        e.printStackTrace();
+        return;
+      }
+
+      // build the line string object
+      Constructor<?> constructor = geneObjClass.getConstructor(
+          ILineString.class, HashMap.class, PeaRepDbType.class);
+      geom = geom.buffer(0);
+      if (geom instanceof ILineString) {
+        IGeneObj tr = (IGeneObj) constructor
+            .newInstance(geom, attributes, type);
+
+        pop.add(tr);
+        if (net != null) {
+          net.addSection((INetworkSection) tr);
+        }
+      }
+      if (geom instanceof IMultiCurve<?>) {
+        for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
+          IGeneObj tr = (IGeneObj) constructor.newInstance(
+              ((IMultiCurve<?>) geom).get(i), attributes, type);
+
+          pop.add(tr);
+          if (net != null) {
+            net.addSection((INetworkSection) tr);
+          }
+        }
+      }
+      attributes.clear();
+    }
+    shr.close();
+    dbr.close();
+  }
+
+  @SuppressWarnings("unchecked")
+  public void loadPolygonClassPartition(String path, Class<?> geneObjClass,
+      String nomPopulation, String featureTypeName, PeaRepDbType type,
+      IPolygon envelope) throws Exception {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    try {
+      ShpFiles shpf = new ShpFiles(path);
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.forName("ISO-8859-1"));
+    } catch (FileNotFoundException e) {
+      if (ShapeFileLoader.logger.isLoggable(Level.FINEST)) {
+        ShapeFileLoader.logger.finest("fichier " + path + " non trouve.");
+      }
+      return;
+    }
+
+    if (ShapeFileLoader.logger.isLoggable(Level.INFO)) {
+      ShapeFileLoader.logger.info("Loading: " + path);
+    }
+
+    // get the road population of the dataset
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataset()
+        .getCartagenPop(nomPopulation, featureTypeName);
+
+    // case of an empty shapefile: return!
+    if (!shr.hasNext()) {
+      shr.close();
+      dbr.close();
+      return;
+    }
+
+    // Get the Lat/Long coordinates of the first object of the population
+    // and compute the associated utm zone
+    Record object1 = shr.nextRecord();
+    Geometry geomJTS1 = (Geometry) object1.shape();
+    if (this.projEpsg == null) {
+      String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
+          geomJTS1.getCentroid().getY());
+      this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    } else {
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    }
+    shr.close();
+    ShpFiles shpf = new ShpFiles(path);
+    shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+
+    // loop on the shapefile records
+    while (shr.hasNext() && dbr.hasNext()) {
+      Record object = shr.nextRecord();
+
+      // Prise en compte du partitionnement
+      // test si l'objet intersecte la cellule
+      Geometry geomJTS = (Geometry) object.shape();
+      Polygon poly = (Polygon) JtsGeOxygene.makeJtsGeom(envelope);
+      if (geomJTS.intersects(poly)) {
+        geomJTS = geomJTS.intersection(poly);
+      } else
+        continue;
+
+      // get the record attributes
+      Map<String, Object> attributes = this.getShapeFileFields(dbr);
+
+      // get the record geometry
+      IGeometry geom = null;
+      try {
+        // coordinates transformation
+        // Geometry geomJTS = (Geometry) object.shape();
+        geom = CRSConversion.changeCRS(geomJTS, "4326", this.projEpsg, false,
+            true);
+      } catch (Exception e) {
+        e.printStackTrace();
+        return;
+      }
+
+      // build the line string object
+      Constructor<?> constructor = geneObjClass.getConstructor(IPolygon.class,
+          HashMap.class, PeaRepDbType.class);
+      if (geom instanceof IPolygon) {
+        IGeneObj tr = (IGeneObj) constructor
+            .newInstance(geom, attributes, type);
+
+        pop.add(tr);
+      } else {
+        for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
+          IGeneObj tr = (IGeneObj) constructor.newInstance(
+              ((IMultiSurface<?>) geom).get(i), attributes, type);
+
+          pop.add(tr);
+        }
+      }
+      attributes.clear();
+    }
+    shr.close();
+    dbr.close();
+  }
+
+  @SuppressWarnings("unchecked")
+  public void loadSedimentologyClassPartition(String path,
+      Class<?> geneObjClass, String nomPopulation, String featureTypeName,
+      PeaRepDbType type, String typeValue, IPolygon envelope) throws Exception {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    try {
+      ShpFiles shpf = new ShpFiles(path);
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.forName("ISO-8859-1"));
+    } catch (FileNotFoundException e) {
+      if (ShapeFileLoader.logger.isLoggable(Level.FINEST)) {
+        ShapeFileLoader.logger.finest("fichier " + path + " non trouve.");
+      }
+      return;
+    }
+
+    if (ShapeFileLoader.logger.isLoggable(Level.INFO)) {
+      ShapeFileLoader.logger.info("Loading: " + path);
+    }
+
+    // get the road population of the dataset
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataset()
+        .getCartagenPop(nomPopulation, featureTypeName);
+
+    // case of an empty shapefile: return!
+    if (!shr.hasNext()) {
+      shr.close();
+      dbr.close();
+      return;
+    }
+
+    // Get the Lat/Long coordinates of the first object of the population
+    // and compute the associated utm zone
+    Record object1 = shr.nextRecord();
+    Geometry geomJTS1 = (Geometry) object1.shape();
+    if (this.projEpsg == null) {
+      String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
+          geomJTS1.getCentroid().getY());
+      this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    } else {
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    }
+    shr.close();
+    ShpFiles shpf = new ShpFiles(path);
+    shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+
+    // loop on the shapefile records
+    while (shr.hasNext() && dbr.hasNext()) {
+      Record object = shr.nextRecord();
+
+      // get the record attributes
+      Map<String, Object> attributes = this.getShapeFileFields(dbr);
+
+      if (attributes.get("TYPEVALE").equals(typeValue)) {
+
+        // Prise en compte du partitionnement
+        // test si l'objet intersecte la cellule
+        Geometry geomJTS = (Geometry) object.shape();
+        Polygon poly = (Polygon) JtsGeOxygene.makeJtsGeom(envelope);
+        if (geomJTS.intersects(poly)) {
+          geomJTS = geomJTS.intersection(poly);
+        } else
+          continue;
+
+        // get the record geometry
+        IGeometry geom = null;
+        try {
+          // coordinates transformation
+          // Geometry geomJTS = (Geometry) object.shape();
+          geom = CRSConversion.changeCRS(geomJTS, "4326", this.projEpsg, false,
+              true);
+        } catch (Exception e) {
+          e.printStackTrace();
+          return;
+        }
+
+        // build the line string object
+        Constructor<?> constructor = geneObjClass.getConstructor(
+            IPolygon.class, HashMap.class, PeaRepDbType.class);
+        if (geom instanceof IPolygon) {
+          IGeneObj tr = (IGeneObj) constructor.newInstance(geom, attributes,
+              type);
+
+          pop.add(tr);
+        } else {
+          for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
+            IGeneObj tr = (IGeneObj) constructor.newInstance(
+                ((IMultiSurface<?>) geom).get(i), attributes, type);
+
+            pop.add(tr);
+          }
+        }
+        attributes.clear();
+      }
+    }
+    shr.close();
+    dbr.close();
+  }
+
+  @SuppressWarnings("unchecked")
+  public void loadLandUseClassPartition(String path, Class<?> geneObjClass,
+      String nomPopulation, String featureTypeName, PeaRepDbType type,
+      MGCPLandUseType landUseType, IPolygon envelope) throws Exception {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    try {
+      ShpFiles shpf = new ShpFiles(path);
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.forName("ISO-8859-1"));
+    } catch (FileNotFoundException e) {
+      if (ShapeFileLoader.logger.isLoggable(Level.FINEST)) {
+        ShapeFileLoader.logger.finest("fichier " + path + " non trouve.");
+      }
+      return;
+    }
+
+    if (ShapeFileLoader.logger.isLoggable(Level.INFO)) {
+      ShapeFileLoader.logger.info("Loading: " + path);
+    }
+
+    // case of an empty shapefile: return!
+    if (!shr.hasNext()) {
+      shr.close();
+      dbr.close();
+      return;
+    }
+
+    // get the road population of the dataset
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataset()
+        .getCartagenPop(nomPopulation, featureTypeName);
+
+    // Get the Lat/Long coordinates of the first object of the population
+    // and compute the associated utm zone
+    Record object1 = shr.nextRecord();
+    Geometry geomJTS1 = (Geometry) object1.shape();
+    if (this.projEpsg == null) {
+      String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
+          geomJTS1.getCentroid().getY());
+      this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    } else {
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    }
+    shr.close();
+    ShpFiles shpf = new ShpFiles(path);
+    shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+
+    // loop on the shapefile records
+    while (shr.hasNext() && dbr.hasNext()) {
+      Record object = shr.nextRecord();
+
+      // Prise en compte du partitionnement
+      // test si l'objet intersecte la cellule
+      Geometry geomJTS = (Geometry) object.shape();
+      Polygon poly = (Polygon) JtsGeOxygene.makeJtsGeom(envelope);
+      if (geomJTS.intersects(poly)) {
+        geomJTS = geomJTS.intersection(poly);
+      } else
+        continue;
+
+      // get the record attributes
+      Map<String, Object> attributes = this.getShapeFileFields(dbr);
+
+      // get the record geometry
+      IGeometry geom = null;
+      try {
+        // coordinates transformation
+        // Geometry geomJTS = (Geometry) object.shape();
+        geom = CRSConversion.changeCRS(geomJTS, "4326", this.projEpsg, false,
+            true);
+      } catch (Exception e) {
+        e.printStackTrace();
+        return;
+      }
+
+      // build the line string object
+      Constructor<?> constructor = geneObjClass.getConstructor(IPolygon.class,
+          HashMap.class, PeaRepDbType.class);
+      if (geom instanceof IPolygon) {
+        IGeneObj tr = (IGeneObj) constructor
+            .newInstance(geom, attributes, type);
+        ((MGCPLandUse) tr).setLandUseType(landUseType);
+        pop.add(tr);
+      } else {
+        for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
+          IGeneObj tr = (IGeneObj) constructor.newInstance(
+              ((IMultiSurface<?>) geom).get(i), attributes, type);
+          ((MGCPLandUse) tr).setLandUseType(landUseType);
+          pop.add(tr);
+        }
+      }
+      attributes.clear();
+    }
+    shr.close();
+    dbr.close();
+  }
+
+  @SuppressWarnings("unchecked")
+  public void loadPolygonClassUnionMultiPartition(String path,
+      Class<?> geneObjClass, String nomPopulation, String featureTypeName,
+      PeaRepDbType type, IPolygon envelope) throws Exception {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    try {
+      ShpFiles shpf = new ShpFiles(path);
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.forName("ISO-8859-1"));
+    } catch (FileNotFoundException e) {
+      if (ShapeFileLoader.logger.isLoggable(Level.FINEST)) {
+        ShapeFileLoader.logger.finest("fichier " + path + " non trouve.");
+      }
+      return;
+    }
+
+    if (ShapeFileLoader.logger.isLoggable(Level.INFO)) {
+      ShapeFileLoader.logger.info("Loading: " + path);
+    }
+
+    // case of an empty shapefile: return!
+    if (!shr.hasNext()) {
+      shr.close();
+      dbr.close();
+      return;
+    }
+
+    // get the road population of the dataset
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataset()
+        .getCartagenPop(nomPopulation, featureTypeName);
+
+    // Get the Lat/Long coordinates of the first object of the population
+    // and compute the associated utm zone
+    Record object1 = shr.nextRecord();
+    Geometry geomJTS1 = (Geometry) object1.shape();
+    if (this.projEpsg == null) {
+      String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
+          geomJTS1.getCentroid().getY());
+      this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    } else {
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    }
+
+    // loop on the shapefile records
+    while (shr.hasNext() && dbr.hasNext()) {
+      Record object = shr.nextRecord();
+
+      // Prise en compte du partitionnement
+      // test si l'objet intersecte la cellule
+      Geometry geomJTS = (Geometry) object.shape();
+      Polygon poly = (Polygon) JtsGeOxygene.makeJtsGeom(envelope);
+      if (geomJTS.intersects(poly)) {
+        geomJTS = geomJTS.intersection(poly);
+      } else
+        continue;
+
+      // get the record attributes
+      Map<String, Object> attributes = this.getShapeFileFields(dbr);
+
+      // get the record geometry
+      IGeometry geom = null;
+      try {
+        // coordinates transformation
+        // Geometry geomJTS = (Geometry) object.shape();
+
+        geom = CRSConversion.changeCRS(geomJTS, "4326", this.projEpsg, false,
+            true);
+      } catch (Exception e) {
+        e.printStackTrace();
+        return;
+      }
+
+      // build the line string object
+      Constructor<?> constructor = geneObjClass.getConstructor(IPolygon.class,
+          HashMap.class, PeaRepDbType.class);
+      if (geom instanceof IPolygon) {
+        IGeneObj tr = (IGeneObj) constructor
+            .newInstance(geom, attributes, type);
+
+        pop.add(tr);
+      } else {
+        Collection<IGeometry> coln = new HashSet<IGeometry>();
+        coln.add(geom);
+        IPolygon geomUnion = JTSAlgorithms.unionAdjacentPolygons(coln)
+            .iterator().next();
+        IGeneObj tr = (IGeneObj) constructor.newInstance(geomUnion, attributes,
+            type);
+
+        pop.add(tr);
+      }
+      attributes.clear();
+    }
+
+    shr.close();
+    dbr.close();
+  }
+
+  @SuppressWarnings("unchecked")
+  public void loadPointClassPartition(String path, Class<?> geneObjClass,
+      String nomPopulation, String featureTypeName, PeaRepDbType type,
+      IPolygon envelope) throws Exception {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    try {
+      ShpFiles shpf = new ShpFiles(path);
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.forName("ISO-8859-1"));
+    } catch (FileNotFoundException e) {
+      if (ShapeFileLoader.logger.isLoggable(Level.FINEST)) {
+        ShapeFileLoader.logger.finest("fichier " + path + " non trouve.");
+      }
+      return;
+    }
+
+    if (ShapeFileLoader.logger.isLoggable(Level.INFO)) {
+      ShapeFileLoader.logger.info("Loading: " + path);
+    }
+
+    // case of an empty shapefile: return!
+    if (!shr.hasNext()) {
+      shr.close();
+      dbr.close();
+      return;
+    }
+
+    // get the road population of the dataset
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataset()
+        .getCartagenPop(nomPopulation, featureTypeName);
+
+    // Get the Lat/Long coordinates of the first object of the population
+    // and compute the associated utm zone
+    Record object1 = shr.nextRecord();
+    Geometry geomJTS1 = (Geometry) object1.shape();
+    if (this.projEpsg == null) {
+      String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
+          geomJTS1.getCentroid().getY());
+      this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    } else {
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
+    }
+
+    // loop on the shapefile records
+    while (shr.hasNext() && dbr.hasNext()) {
+      Record object = shr.nextRecord();
+
+      // Prise en compte du partitionnement
+      // test si l'objet intersecte la cellule
+      Geometry geomJTS = (Geometry) object.shape();
+      Polygon poly = (Polygon) JtsGeOxygene.makeJtsGeom(envelope);
+      if (geomJTS.intersects(poly)) {
+        geomJTS = geomJTS.intersection(poly);
+      } else
+        continue;
+
+      // get the record attributes
+      Map<String, Object> attributes = this.getShapeFileFields(dbr);
+
+      // get the record geometry
+      IGeometry geom = null;
+      try {
+        // coordinates transformation
+        // Geometry geomJTS = (Geometry) object.shape();
+        geom = CRSConversion.changeCRS(geomJTS, "4326", this.projEpsg, false,
+            true);
+      } catch (Exception e) {
+        e.printStackTrace();
+        return;
+      }
+
+      // build the line string object
+      Constructor<?> constructor = geneObjClass.getConstructor(IPoint.class,
+          HashMap.class, PeaRepDbType.class);
+      if (geom instanceof IPoint) {
+        IGeneObj tr = (IGeneObj) constructor
+            .newInstance(geom, attributes, type);
+
+        pop.add(tr);
+      } else {
+        for (int i = 0; i < ((IMultiPoint) geom).size(); i++) {
+          IGeneObj tr = (IGeneObj) constructor.newInstance(
+              ((IMultiPoint) geom).get(i), attributes);
+
+          pop.add(tr);
+        }
+      }
+      attributes.clear();
+    }
+    shr.close();
+    dbr.close();
+  }
+
   public void setProjEpsg(String projEpsg) {
     this.projEpsg = projEpsg;
   }
@@ -717,7 +1426,6 @@ public abstract class ShapeFileLoader {
     }
 
     zoneUtm = zone.concat(hemis);
-    System.out.println("Zone UTM = " + zoneUtm);
 
     return zoneUtm;
   }
