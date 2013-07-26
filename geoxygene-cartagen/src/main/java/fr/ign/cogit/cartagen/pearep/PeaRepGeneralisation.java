@@ -40,12 +40,14 @@ import fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory;
 import fr.ign.cogit.cartagen.genealgorithms.landuse.LanduseSimplification;
 import fr.ign.cogit.cartagen.pearep.derivation.ScaleMasterScheduler;
 import fr.ign.cogit.cartagen.pearep.importexport.MGCPLoader;
+import fr.ign.cogit.cartagen.pearep.importexport.SHOMLoader;
 import fr.ign.cogit.cartagen.pearep.importexport.ShapeFileExport;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP0Loader;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP1Loader;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP1PlusPlusLoader;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP2Loader;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSchemaFactory;
+import fr.ign.cogit.cartagen.pearep.shom.SHOMSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPSchemaFactory;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
@@ -164,6 +166,7 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
   private static String VMAP2i_DATASET = "VMAP2i";
   private static String MGCPPlusPlus_DATASET = "MGCPPlusPlus";
   private static String VMAP1PlusPlus_DATASET = "VMAP1PlusPlus";
+  private static String SHOM_DATASET = "SHOM";
   private static Logger logger = Logger.getLogger(PeaRepGeneralisation.class
       .getName());
 
@@ -256,6 +259,7 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       boolean vmap1ppDb = false;
       boolean vmapDb = false;
       boolean mgcpDb = false;
+      boolean shomDb = false;
 
       // then, import all available databases
       SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
@@ -289,6 +293,25 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
           e1.printStackTrace();
         } catch (IOException e1) {
           GeneralisationTask.logger.severe("Problem during MGCP loading");
+          e1.printStackTrace();
+        }
+      }
+
+      if (scheduler.getShomFolder() != null) {
+        shomDb = true;
+        SHOMLoader shomLoader = new SHOMLoader(symbGroup,
+            GeneralisationTask.SHOM_DATASET);
+        try {
+          shomLoader.loadData(new File(scheduler.getShomFolder()),
+              scheduler.getListLayersMgcpPlusPlus());
+          System.out.println(scheduler.getShomFolder());
+          System.out.println(scheduler.getListLayersMgcpPlusPlus());
+
+        } catch (ShapefileException e1) {
+          GeneralisationTask.logger.severe("Problem during SHOM loading");
+          e1.printStackTrace();
+        } catch (IOException e1) {
+          GeneralisationTask.logger.severe("Problem during SHOM loading");
           e1.printStackTrace();
         }
       }
@@ -386,6 +409,10 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       if (mgcpDb == true) {
         CartagenApplication.getInstance().setCreationFactory(
             new MGCPSchemaFactory());
+      }
+      if (shomDb == true) {
+        CartagenApplication.getInstance().setCreationFactory(
+            new SHOMSchemaFactory());
       }
 
       // *******************************************************
