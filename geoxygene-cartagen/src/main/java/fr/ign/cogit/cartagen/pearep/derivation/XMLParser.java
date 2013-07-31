@@ -188,8 +188,9 @@ public class XMLParser {
               .getNodeValue());
         Element partitionSizeElem = (Element) bdElem.getElementsByTagName(
             "partition-size").item(0);
-        scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
-            .getChildNodes().item(0).getNodeValue()));
+        if (partitionSizeElem != null)
+          scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
+              .getChildNodes().item(0).getNodeValue()));
 
         // /Modif
         List<String> listLayer = new ArrayList<String>();
@@ -213,8 +214,9 @@ public class XMLParser {
             .getNodeValue());
         Element partitionSizeElem = (Element) bdElem.getElementsByTagName(
             "partition-size").item(0);
-        scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
-            .getChildNodes().item(0).getNodeValue()));
+        if (partitionSizeElem != null)
+          scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
+              .getChildNodes().item(0).getNodeValue()));
 
         // /Modif
         List<String> listLayer = new ArrayList<String>();
@@ -235,8 +237,9 @@ public class XMLParser {
             .getNodeValue());
         Element partitionSizeElem = (Element) bdElem.getElementsByTagName(
             "partition-size").item(0);
-        scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
-            .getChildNodes().item(0).getNodeValue()));
+        if (partitionSizeElem != null)
+          scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
+              .getChildNodes().item(0).getNodeValue()));
 
         // /Modif
         List<String> listLayer = new ArrayList<String>();
