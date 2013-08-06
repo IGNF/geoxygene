@@ -31,9 +31,9 @@ public abstract class MGCPFeature extends GeneObjDefault {
       return 0;
     if (val instanceof Long)
       return (Long) val;
-    else if (val instanceof Integer)
+    if (val instanceof Integer)
       return new Long((Integer) val);
-    else if (!((String) val).equals(""))
+    if (!((String) val).equals(""))
       return new Long((String) val);
     return 0;
   }
@@ -44,11 +44,18 @@ public abstract class MGCPFeature extends GeneObjDefault {
       return 0;
     if (val instanceof Double)
       return (Double) val;
-    else if (val instanceof String) {
+    if (val instanceof String) {
       if (!val.equals(""))
         return new Double((String) val);
     } else
       return new Double((Float) val);
     return 0.0;
+  }
+
+  public String getStringAttribute(String attrName) {
+    Object val = getAttributeMap().get(attrName);
+    if (val == null)
+      return "";
+    return val.toString();
   }
 }

@@ -45,40 +45,40 @@ public class MGCPBuiltUpArea extends MGCPFeature implements ISimpleLandUseArea {
     this.setAttributeMap(attributes);//
 
     this.acc = getLongAttribute("acc");
-    this.ace = (String) attributes.get("ace");
+    this.ace = getStringAttribute("ace");
     this.ace_eval = getLongAttribute("ace_eval");
-    this.ale = (String) attributes.get("ale");
+    this.ale = getStringAttribute("ale");
     this.ale_eval = getLongAttribute("ale_eval");
 
-    this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.nam = (String) attributes.get("nam");
-    this.src_date = (String) attributes.get("src_date");
-    this.src_info = (String) attributes.get("src_info");
+    this.cpyrt_note = getStringAttribute("cpyrt_note");
+    this.nam = getStringAttribute("nam");
+    this.src_date = getStringAttribute("src_date");
+    this.src_info = getStringAttribute("src_info");
     this.src_name = getLongAttribute("src_name");
     this.fcsubtype = getLongAttribute("fcsubtype");
     this.originform = getLongAttribute("originform");
     this.targetscal = getLongAttribute("targetscal");
-    this.txt = (String) attributes.get("txt");
-    this.tier_note = (String) attributes.get("tier_note");
-    this.uid = (String) attributes.get("uid");
-    this.upd_date = (String) attributes.get("upd_date");
+    this.txt = getStringAttribute("txt");
+    this.tier_note = getStringAttribute("tier_note");
+    this.uid = getStringAttribute("uid");
+    this.upd_date = getStringAttribute("upd_date");
     this.upd_name = getLongAttribute("upd_name");
-    this.upd_info = (String) attributes.get("upd_info");
-    this.valid_date = (String) attributes.get("valid_date");
-    this.valid_info = (String) attributes.get("valid_info");
+    this.upd_info = getStringAttribute("upd_info");
+    this.valid_date = getStringAttribute("valid_date");
+    this.valid_info = getStringAttribute("valid_info");
     this.valid_stat = getLongAttribute("valid_stat");
 
     this.zval_type = getLongAttribute("zval_type");
-    this.pfh = (String) attributes.get("pfh");
+    this.pfh = getStringAttribute("pfh");
 
     this.bac = getLongAttribute("bac");
-    this.dmr = (String) attributes.get("dmr");
-    this.dms = (String) attributes.get("dms");
+    this.dmr = getStringAttribute("dmr");
+    this.dms = getStringAttribute("dms");
     this.fun = getLongAttribute("fun");
     this.fuc = getLongAttribute("fuc");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
-    this.hgt = (String) attributes.get("hgt");
+    this.nfi = getStringAttribute("nfi");
+    this.nfn = getStringAttribute("nfn");
+    this.hgt = getStringAttribute("hgt");
     this.ppt = getLongAttribute("ppt");
     this.smc = getLongAttribute("smc");
     this.ord = getLongAttribute("ord");

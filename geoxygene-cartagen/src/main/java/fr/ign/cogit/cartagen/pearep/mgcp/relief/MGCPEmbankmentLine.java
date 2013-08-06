@@ -53,22 +53,22 @@ public class MGCPEmbankmentLine extends MGCPFeature implements IEmbankmentLine {
     this.cet = getLongAttribute("cet");
     this.objectid = getLongAttribute("objectid");
 
-    this.upd_date = (String) attributes.get("upd_date");
-    this.upd_info = (String) attributes.get("upd_info");
-    this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.src_info = (String) attributes.get("src_info");
-    this.txt = (String) attributes.get("txt");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
-    this.tier_note = (String) attributes.get("tier_note");
-    this.nam = (String) attributes.get("nam");
-    this.src_date = (String) attributes.get("src_date");
-    this.ace = (String) attributes.get("ace");
-    this.ale = (String) attributes.get("ale");
-    this.valid_info = (String) attributes.get("valid_info");
-    this.valid_date = (String) attributes.get("valid_date");
-    this.wid = (String) attributes.get("wid");
-    this.date_bdi = (String) attributes.get("date_bdi");
+    this.upd_date = getStringAttribute("upd_date");
+    this.upd_info = getStringAttribute("upd_info");
+    this.cpyrt_note = getStringAttribute("cpyrt_note");
+    this.src_info = getStringAttribute("src_info");
+    this.txt = getStringAttribute("txt");
+    this.nfi = getStringAttribute("nfi");
+    this.nfn = getStringAttribute("nfn");
+    this.tier_note = getStringAttribute("tier_note");
+    this.nam = getStringAttribute("nam");
+    this.src_date = getStringAttribute("src_date");
+    this.ace = getStringAttribute("ace");
+    this.ale = getStringAttribute("ale");
+    this.valid_info = getStringAttribute("valid_info");
+    this.valid_date = getStringAttribute("valid_date");
+    this.wid = getStringAttribute("wid");
+    this.date_bdi = getStringAttribute("date_bdi");
     this.setAttributeMap(null);
   }
 

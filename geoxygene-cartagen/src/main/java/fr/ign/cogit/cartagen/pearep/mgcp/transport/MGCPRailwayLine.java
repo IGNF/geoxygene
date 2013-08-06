@@ -57,30 +57,30 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
     this.fun = getLongAttribute("fun");
     if (attributes.containsKey("loc"))
       this.loc = getLongAttribute("loc");
-    this.ltn = (String) attributes.get("ltn");
+    this.ltn = getStringAttribute("ltn");
     if (attributes.containsKey("rir"))
       this.rir = getLongAttribute("rir");
-    this.nam = (String) attributes.get("nam");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
-    this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.tier_note = (String) attributes.get("tier_note");
-    this.src_info = (String) attributes.get("src_info");
-    this.src_date = (String) attributes.get("src_date");
-    this.upd_date = (String) attributes.get("upd_date");
-    this.upd_info = (String) attributes.get("upd_info");
-    this.txt = (String) attributes.get("txt");
+    this.nam = getStringAttribute("nam");
+    this.nfi = getStringAttribute("nfi");
+    this.nfn = getStringAttribute("nfn");
+    this.cpyrt_note = getStringAttribute("cpyrt_note");
+    this.tier_note = getStringAttribute("tier_note");
+    this.src_info = getStringAttribute("src_info");
+    this.src_date = getStringAttribute("src_date");
+    this.upd_date = getStringAttribute("upd_date");
+    this.upd_info = getStringAttribute("upd_info");
+    this.txt = getStringAttribute("txt");
     this.src_name = getLongAttribute("src_name");
     if (attributes.containsKey("uid"))
       this.uid = getLongAttribute("uid");
     this.ale_eval = getLongAttribute("ale_eval");
     this.ace_eval = getLongAttribute("ace_eval");
-    this.ale = (String) attributes.get("ale");
+    this.ale = getStringAttribute("ale");
     this.zval_type = getLongAttribute("zval_type");
-    this.gaw = (String) attributes.get("gaw");
+    this.gaw = getStringAttribute("gaw");
     if (attributes.containsKey("rta"))
       this.rta = getLongAttribute("rta");
-    this.ace = (String) attributes.get("ace");
+    this.ace = getStringAttribute("ace");
     this.rgc = getLongAttribute("rgc");
     this.rra = getLongAttribute("rra");
     if (attributes.containsKey("rrc"))

@@ -66,15 +66,15 @@ public class MGCPBuildPoint extends MGCPFeature implements IBuildPoint {
     this.ssr = getLongAttribute("ssr");
     this.caa = getLongAttribute("caa");
 
-    this.aoo = (String) attributes.get("aoo");
-    this.name = (String) attributes.get("nam");
-    this.hgt = (String) attributes.get("hgt");
-    this.len = (String) attributes.get("len_");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
-    this.voi = (String) attributes.get("voi");
-    this.wid = (String) attributes.get("wid");
-    this.zv2 = (String) attributes.get("zv2");
+    this.aoo = getStringAttribute("aoo");
+    this.name = getStringAttribute("nam");
+    this.hgt = getStringAttribute("hgt");
+    this.len = getStringAttribute("len_");
+    this.nfi = getStringAttribute("nfi");
+    this.nfn = getStringAttribute("nfn");
+    this.voi = getStringAttribute("voi");
+    this.wid = getStringAttribute("wid");
+    this.zv2 = getStringAttribute("zv2");
     this.setAttributeMap(null);
   }
 

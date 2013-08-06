@@ -51,12 +51,15 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
   private INetworkNode finalNode;
   private Direction direction;
   private boolean deadEnd = false;
-  private String nam = "";
   private int importance;
   private NetworkSectionType type;
 
-  private long acc, dir, wcc, hyp, loc, prc, smc, tid, nvs;
-  private String nfi, nfn, wid, lbv, rbv;
+  private long acc, ace_eval, ale_eval, cda, dir, fcsubtype, hyp, loc, prc,
+      shl, shr, smc, src_name, tid, upd_name, valid_stat, wcc, wst, zval_type,
+      scamax, scamin, originform, targetscal, fun, nvs, catcan;
+  private String ace, ale, cpyrt_note, date_bdi, lbv, nam, nfi, nfn, rbv,
+      src_date, src_info, tier_note, txt, uid, upd_date, upd_info, valid_date,
+      valid_info, wid, status, hgt;
 
   /**
    * Empty constructor used by EJB to load features from PostGIS
@@ -100,23 +103,65 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
 
     // attributes present in Mgcp++
     this.acc = getLongAttribute("acc");
+    this.ace_eval = getLongAttribute("ace_eval");
+    this.ale_eval = getLongAttribute("ale_eval");
+    if (attributes.containsKey("cda"))
+      this.cda = getLongAttribute("cda");
     this.dir = getLongAttribute("dir");
-    this.wcc = getLongAttribute("wcc");
+    this.fcsubtype = getLongAttribute("fcsubtype");
+    if (attributes.containsKey("fun"))
+      this.fun = getLongAttribute("fun");
+
     this.hyp = getLongAttribute("hyp");
     this.loc = getLongAttribute("loc");
     if (attributes.containsKey("nvs"))
       this.nvs = getLongAttribute("nvs");
-    this.nam = (String) attributes.get("nam");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
     this.prc = getLongAttribute("prc");
+    if (attributes.containsKey("shl"))
+      this.shl = getLongAttribute("shl");
+    if (attributes.containsKey("shr"))
+      this.shr = getLongAttribute("shr");
     this.smc = getLongAttribute("smc");
-    this.tid = getLongAttribute("tid");
-    this.wid = (String) attributes.get("wid");
-    if (attributes.containsKey("lbv"))
-      this.lbv = (String) attributes.get("lbv");
-    if (attributes.containsKey("rbv"))
-      this.rbv = (String) attributes.get("rbv");
+    this.src_name = getLongAttribute("src_name");
+    if (attributes.containsKey("tid"))
+      this.tid = getLongAttribute("tid");
+    this.upd_name = getLongAttribute("upd_name");
+    this.valid_stat = getLongAttribute("valid_stat");
+    if (attributes.containsKey("wcc"))
+      this.wcc = getLongAttribute("wcc");
+    if (attributes.containsKey("wst"))
+      this.wst = getLongAttribute("wst");
+    this.zval_type = getLongAttribute("zval_type");
+    if (attributes.containsKey("catcan"))
+      this.catcan = getLongAttribute("catcan");
+    this.scamax = getLongAttribute("scamax");
+    this.scamin = getLongAttribute("scamin");
+    this.originform = getLongAttribute("originform");
+    this.targetscal = getLongAttribute("targetscal");
+
+    this.ace = getStringAttribute("ace");
+    this.ale = getStringAttribute("ale");
+    this.cpyrt_note = getStringAttribute("cpyrt_note");
+    this.date_bdi = getStringAttribute("date_bdi");
+    if (attributes.containsKey("hgt"))
+      this.hgt = getStringAttribute("hgt");
+    this.lbv = getStringAttribute("lbv");
+    this.nam = getStringAttribute("nam");
+    this.nfi = getStringAttribute("nfi");
+    this.nfn = getStringAttribute("nfn");
+    this.rbv = getStringAttribute("rbv");
+    this.src_date = getStringAttribute("src_date");
+    this.src_info = getStringAttribute("src_info");
+    this.tier_note = getStringAttribute("tier_note");
+    this.txt = getStringAttribute("txt");
+    this.uid = getStringAttribute("uid");
+    this.upd_date = getStringAttribute("upd_date");
+    this.upd_info = getStringAttribute("upd_info");
+    this.valid_date = getStringAttribute("valid_date");
+    this.valid_info = getStringAttribute("valid_info");
+    this.wid = getStringAttribute("wid");
+    this.status = getStringAttribute("status");
+
     this.setAttributeMap(null);
   }
 
@@ -360,14 +405,6 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
     this.type = type;
   }
 
-  public long getNvs() {
-    return nvs;
-  }
-
-  public void setNvs(long nvs) {
-    this.nvs = nvs;
-  }
-
   public String getLbv() {
     return lbv;
   }
@@ -382,6 +419,270 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
 
   public void setRbv(String rbv) {
     this.rbv = rbv;
+  }
+
+  public long getAce_eval() {
+    return ace_eval;
+  }
+
+  public void setAce_eval(long ace_eval) {
+    this.ace_eval = ace_eval;
+  }
+
+  public long getAle_eval() {
+    return ale_eval;
+  }
+
+  public void setAle_eval(long ale_eval) {
+    this.ale_eval = ale_eval;
+  }
+
+  public long getCda() {
+    return cda;
+  }
+
+  public void setCda(long cda) {
+    this.cda = cda;
+  }
+
+  public long getFcsubtype() {
+    return fcsubtype;
+  }
+
+  public void setFcsubtype(long fcsubtype) {
+    this.fcsubtype = fcsubtype;
+  }
+
+  public long getShl() {
+    return shl;
+  }
+
+  public void setShl(long shl) {
+    this.shl = shl;
+  }
+
+  public long getShr() {
+    return shr;
+  }
+
+  public void setShr(long shr) {
+    this.shr = shr;
+  }
+
+  public long getSrc_name() {
+    return src_name;
+  }
+
+  public void setSrc_name(long src_name) {
+    this.src_name = src_name;
+  }
+
+  public long getUpd_name() {
+    return upd_name;
+  }
+
+  public void setUpd_name(long upd_name) {
+    this.upd_name = upd_name;
+  }
+
+  public long getValid_stat() {
+    return valid_stat;
+  }
+
+  public void setValid_stat(long valid_stat) {
+    this.valid_stat = valid_stat;
+  }
+
+  public long getWst() {
+    return wst;
+  }
+
+  public void setWst(long wst) {
+    this.wst = wst;
+  }
+
+  public long getZval_type() {
+    return zval_type;
+  }
+
+  public void setZval_type(long zval_type) {
+    this.zval_type = zval_type;
+  }
+
+  public long getScamax() {
+    return scamax;
+  }
+
+  public void setScamax(long scamax) {
+    this.scamax = scamax;
+  }
+
+  public long getScamin() {
+    return scamin;
+  }
+
+  public void setScamin(long scamin) {
+    this.scamin = scamin;
+  }
+
+  public long getOriginform() {
+    return originform;
+  }
+
+  public void setOriginform(long originform) {
+    this.originform = originform;
+  }
+
+  public long getTargetscal() {
+    return targetscal;
+  }
+
+  public void setTargetscal(long targetscal) {
+    this.targetscal = targetscal;
+  }
+
+  public String getAce() {
+    return ace;
+  }
+
+  public void setAce(String ace) {
+    this.ace = ace;
+  }
+
+  public String getAle() {
+    return ale;
+  }
+
+  public void setAle(String ale) {
+    this.ale = ale;
+  }
+
+  public String getCpyrt_note() {
+    return cpyrt_note;
+  }
+
+  public void setCpyrt_note(String cpyrt_note) {
+    this.cpyrt_note = cpyrt_note;
+  }
+
+  public String getDate_bdi() {
+    return date_bdi;
+  }
+
+  public void setDate_bdi(String date_bdi) {
+    this.date_bdi = date_bdi;
+  }
+
+  public String getSrc_date() {
+    return src_date;
+  }
+
+  public void setSrc_date(String src_date) {
+    this.src_date = src_date;
+  }
+
+  public String getSrc_info() {
+    return src_info;
+  }
+
+  public void setSrc_info(String src_info) {
+    this.src_info = src_info;
+  }
+
+  public String getTier_note() {
+    return tier_note;
+  }
+
+  public void setTier_note(String tier_note) {
+    this.tier_note = tier_note;
+  }
+
+  public String getTxt() {
+    return txt;
+  }
+
+  public void setTxt(String txt) {
+    this.txt = txt;
+  }
+
+  public String getUid() {
+    return uid;
+  }
+
+  public void setUid(String uid) {
+    this.uid = uid;
+  }
+
+  public String getUpd_date() {
+    return upd_date;
+  }
+
+  public void setUpd_date(String upd_date) {
+    this.upd_date = upd_date;
+  }
+
+  public String getUpd_info() {
+    return upd_info;
+  }
+
+  public void setUpd_info(String upd_info) {
+    this.upd_info = upd_info;
+  }
+
+  public String getValid_date() {
+    return valid_date;
+  }
+
+  public void setValid_date(String valid_date) {
+    this.valid_date = valid_date;
+  }
+
+  public String getValid_info() {
+    return valid_info;
+  }
+
+  public void setValid_info(String valid_info) {
+    this.valid_info = valid_info;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public long getFun() {
+    return fun;
+  }
+
+  public void setFun(long fun) {
+    this.fun = fun;
+  }
+
+  public long getNvs() {
+    return nvs;
+  }
+
+  public void setNvs(long nvs) {
+    this.nvs = nvs;
+  }
+
+  public long getCatcan() {
+    return catcan;
+  }
+
+  public void setCatcan(long catcan) {
+    this.catcan = catcan;
+  }
+
+  public String getHgt() {
+    return hgt;
+  }
+
+  public void setHgt(String hgt) {
+    this.hgt = hgt;
   }
 
 }

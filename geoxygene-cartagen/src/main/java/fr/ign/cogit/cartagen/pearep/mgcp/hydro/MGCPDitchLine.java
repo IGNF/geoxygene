@@ -17,10 +17,12 @@ import fr.ign.cogit.geoxygene.schemageo.impl.occSol.ElementIsoleImpl;
 public class MGCPDitchLine extends MGCPFeature implements IDitchLine {
 
   private ElementIsole geoxObj;
-  private String upd_date, upd_info, cpyrt_note, src_info, txt, nfi, nfn,
-      tier_note, nam, src_date, ace, ale, rbv, lbv, wid;
-  private long acc, ace_eval, ale_eval, uid, upd_name, src_name, zval_type,
-      hyp, cda;
+  private String ace, ale, cpyrt_note, date_bdi, lbv, nam, nfi, nfn, rbv,
+      src_date, src_info, txt, upd_date, upd_info, valid_date, valid_info,
+      tier_note, wid;
+  private long acc, ace_eval, ale_eval, cda, dir, fcsubtype, fun, hyp, loc,
+      smc, src_name, uid, upd_name, valid_stat, zval_type, originform,
+      targetscal;
 
   /**
    * @param type
@@ -38,28 +40,40 @@ public class MGCPDitchLine extends MGCPFeature implements IDitchLine {
     this.acc = getLongAttribute("acc");
     this.ace_eval = getLongAttribute("ace_eval");
     this.ale_eval = getLongAttribute("ale_eval");
+    this.cda = getLongAttribute("cda");
+    this.dir = getLongAttribute("dir");
+    this.fcsubtype = getLongAttribute("fcsubtype");
+    this.fun = getLongAttribute("fun");
+    this.hyp = getLongAttribute("hyp");
+    this.loc = getLongAttribute("loc");
+    this.smc = getLongAttribute("smc");
+    this.src_name = getLongAttribute("src_name");
+    this.valid_stat = getLongAttribute("valid_stat");
+    this.originform = getLongAttribute("originform");
+    this.targetscal = getLongAttribute("targetscal");
     if (attributes.containsKey("uid"))
       this.uid = getLongAttribute("uid");
-    this.src_name = getLongAttribute("src_name");
     this.zval_type = getLongAttribute("zval_type");
-    this.hyp = getLongAttribute("hyp");
-    this.cda = getLongAttribute("cda");
-    this.upd_date = (String) attributes.get("upd_date");
-    this.upd_info = (String) attributes.get("upd_info");
-    this.cpyrt_note = (String) attributes.get("cpyrt_note");
     this.upd_name = getLongAttribute("upd_name");
-    this.src_info = (String) attributes.get("src_info");
-    this.txt = (String) attributes.get("txt");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
-    this.tier_note = (String) attributes.get("tier_note");
-    this.nam = (String) attributes.get("nam");
-    this.src_date = (String) attributes.get("src_date");
-    this.ace = (String) attributes.get("ace");
-    this.ale = (String) attributes.get("ale");
-    this.rbv = (String) attributes.get("rbv");
-    this.lbv = (String) attributes.get("lbv");
-    this.wid = (String) attributes.get("wid");
+
+    this.ace = getStringAttribute("ace");
+    this.ale = getStringAttribute("ale");
+    this.cpyrt_note = getStringAttribute("cpyrt_note");
+    this.date_bdi = getStringAttribute("date_bdi");
+    this.nam = getStringAttribute("nam");
+    this.nfi = getStringAttribute("nfi");
+    this.nfn = getStringAttribute("nfn");
+    this.rbv = getStringAttribute("rbv");
+    this.lbv = getStringAttribute("lbv");
+    this.src_date = getStringAttribute("src_date");
+    this.src_info = getStringAttribute("src_info");
+    this.txt = getStringAttribute("txt");
+    this.upd_date = getStringAttribute("upd_date");
+    this.upd_info = getStringAttribute("upd_info");
+    this.valid_date = getStringAttribute("valid_date");
+    this.valid_info = getStringAttribute("valid_info");
+    this.tier_note = getStringAttribute("tier_note");
+    this.wid = getStringAttribute("wid");
     this.setAttributeMap(null);
   }
 
@@ -277,6 +291,94 @@ public class MGCPDitchLine extends MGCPFeature implements IDitchLine {
    */
   public double getLength() {
     return this.getGeom().length();
+  }
+
+  public String getDate_bdi() {
+    return date_bdi;
+  }
+
+  public void setDate_bdi(String date_bdi) {
+    this.date_bdi = date_bdi;
+  }
+
+  public String getValid_date() {
+    return valid_date;
+  }
+
+  public void setValid_date(String valid_date) {
+    this.valid_date = valid_date;
+  }
+
+  public String getValid_info() {
+    return valid_info;
+  }
+
+  public void setValid_info(String valid_info) {
+    this.valid_info = valid_info;
+  }
+
+  public long getDir() {
+    return dir;
+  }
+
+  public void setDir(long dir) {
+    this.dir = dir;
+  }
+
+  public long getFcsubtype() {
+    return fcsubtype;
+  }
+
+  public void setFcsubtype(long fcsubtype) {
+    this.fcsubtype = fcsubtype;
+  }
+
+  public long getFun() {
+    return fun;
+  }
+
+  public void setFun(long fun) {
+    this.fun = fun;
+  }
+
+  public long getLoc() {
+    return loc;
+  }
+
+  public void setLoc(long loc) {
+    this.loc = loc;
+  }
+
+  public long getValid_stat() {
+    return valid_stat;
+  }
+
+  public void setValid_stat(long valid_stat) {
+    this.valid_stat = valid_stat;
+  }
+
+  public long getOriginform() {
+    return originform;
+  }
+
+  public void setOriginform(long originform) {
+    this.originform = originform;
+  }
+
+  public long getSmc() {
+    return smc;
+  }
+
+  public void setSmc(long smc) {
+    this.smc = smc;
+  }
+
+  public long getTargetscal() {
+    return targetscal;
+  }
+
+  public void setTargetscal(long targetscal) {
+    this.targetscal = targetscal;
   }
 
 }

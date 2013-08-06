@@ -42,33 +42,33 @@ public class MGCPQuarryArea extends MGCPFeature implements ISimpleLandUseArea {
     this.setAttributeMap(attributes);//
 
     this.acc = getLongAttribute("acc");
-    this.ace = (String) attributes.get("ace");
+    this.ace = getStringAttribute("ace");
     this.ace_eval = getLongAttribute("ace_eval");
-    this.ale = (String) attributes.get("ale");
+    this.ale = getStringAttribute("ale");
     this.ale_eval = getLongAttribute("ale_eval");
-    this.nfi = (String) attributes.get("nfi");
-    this.date_bdi = (String) attributes.get("date_bdi");
-    this.pfd = (String) attributes.get("pfd");
+    this.nfi = getStringAttribute("nfi");
+    this.date_bdi = getStringAttribute("date_bdi");
+    this.pfd = getStringAttribute("pfd");
 
-    this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.nfn = (String) attributes.get("nfn");
-    this.nam = (String) attributes.get("nam");
-    this.src_date = (String) attributes.get("src_date");
-    this.src_info = (String) attributes.get("src_info");
+    this.cpyrt_note = getStringAttribute("cpyrt_note");
+    this.nfn = getStringAttribute("nfn");
+    this.nam = getStringAttribute("nam");
+    this.src_date = getStringAttribute("src_date");
+    this.src_info = getStringAttribute("src_info");
     this.src_name = getLongAttribute("src_name");
     this.coe = getLongAttribute("coe");
     this.fcsubtype = getLongAttribute("fcsubtype");
     this.originform = getLongAttribute("originform");
     this.targetscal = getLongAttribute("targetscal");
-    this.txt = (String) attributes.get("txt");
-    this.tier_note = (String) attributes.get("tier_note");
-    this.uid = (String) attributes.get("uid");
-    this.upd_date = (String) attributes.get("upd_date");
+    this.txt = getStringAttribute("txt");
+    this.tier_note = getStringAttribute("tier_note");
+    this.uid = getStringAttribute("uid");
+    this.upd_date = getStringAttribute("upd_date");
     this.upd_name = getLongAttribute("upd_name");
-    this.upd_info = (String) attributes.get("upd_info");
+    this.upd_info = getStringAttribute("upd_info");
     this.zval_type = getLongAttribute("zval_type");
-    this.pfh = (String) attributes.get("pfh");
-    this.rbv = (String) attributes.get("rbv");
+    this.pfh = getStringAttribute("pfh");
+    this.rbv = getStringAttribute("rbv");
     this.ppo = getLongAttribute("ppo");
     this.smc = getLongAttribute("smc");
 

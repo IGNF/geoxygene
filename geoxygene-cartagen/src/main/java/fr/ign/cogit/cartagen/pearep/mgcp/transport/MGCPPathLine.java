@@ -31,10 +31,11 @@ public class MGCPPathLine extends MGCPFeature implements IPathLine {
   private int importance;
   private NetworkSectionType networkSectionType = NetworkSectionType.UNKNOWN;
 
-  private String upd_date, upd_info, cpyrt_note, src_info, txt, wd1, nfi, nfn,
-      tier_note, nam, src_date, ace, ale;
-  private long acc, ace_eval, ale_eval, uid, upd_name, src_name, zval_type,
-      wtc;
+  private String ace, ale, cpyrt_note, date_bdi, nam, nfi, nfn, src_date,
+      src_info, tier_note, txt, upd_date, upd_info, valid_date, valid_info,
+      wd1, wid;
+  private long acc, ace_eval, ale_eval, coe, fcsubtype, fun, smc, src_name,
+      trs, uid, upd_name, valid_stat, wtc, zval_type, originform, targetscale;
 
   /**
    * @param type
@@ -51,37 +52,44 @@ public class MGCPPathLine extends MGCPFeature implements IPathLine {
     this.setAttributeMap(attributes);
 
     // attributes present in Mgcp++
-    Object accAttr = attributes.get("acc");
-    if (accAttr instanceof Long)
-      this.acc = (Long) accAttr;
-    else
-      this.acc = new Long((Integer) accAttr);
-    Object ace_evalAttr = attributes.get("ace_eval");
-    if (ace_evalAttr instanceof Long)
-      this.ace_eval = (Long) ace_evalAttr;
-    else
-      this.ace_eval = new Long((Integer) ace_evalAttr);
-    this.ale_eval = getLongAttribute("ale_eval");
-    if (attributes.containsKey("uid"))
-      this.uid = getLongAttribute("uid");
-    this.src_name = getLongAttribute("src_name");
-    this.zval_type = getLongAttribute("zval_type");
-    if (attributes.containsKey("wd1"))
-      this.wd1 = (String) attributes.get("wd1");
-    this.upd_date = (String) attributes.get("upd_date");
-    this.upd_info = (String) attributes.get("upd_info");
-    this.wtc = getLongAttribute("wtc");
-    this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.upd_name = getLongAttribute("upd_name");
-    this.src_info = (String) attributes.get("src_info");
-    this.txt = (String) attributes.get("txt");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
-    this.tier_note = (String) attributes.get("tier_note");
-    this.nam = (String) attributes.get("nam");
-    this.src_date = (String) attributes.get("src_date");
     this.ace = (String) attributes.get("ace");
     this.ale = (String) attributes.get("ale");
+    this.cpyrt_note = (String) attributes.get("cpyrt_note");
+    this.date_bdi = (String) attributes.get("date_bdi");
+    this.nam = (String) attributes.get("nam");
+    this.nfi = (String) attributes.get("nfi");
+    this.nfn = (String) attributes.get("nfn");
+    this.src_date = (String) attributes.get("src_date");
+    this.src_info = (String) attributes.get("src_info");
+    this.tier_note = (String) attributes.get("tier_note");
+    this.txt = (String) attributes.get("txt");
+    this.upd_date = (String) attributes.get("upd_date");
+    this.upd_info = (String) attributes.get("upd_info");
+    this.valid_date = (String) attributes.get("valid_date");
+    this.valid_info = (String) attributes.get("valid_info");
+    if (attributes.containsKey("wd1"))
+      this.wd1 = (String) attributes.get("wd1");
+    if (attributes.containsKey("wid"))
+      this.wid = (String) attributes.get("wid");
+    this.zval_type = getLongAttribute("zval_type");
+
+    this.acc = getLongAttribute("acc");
+    this.ace_eval = getLongAttribute("ace_eval");
+    this.ale_eval = getLongAttribute("ale_eval");
+    this.coe = getLongAttribute("coe");
+    this.fcsubtype = getLongAttribute("fcsubtype");
+    this.fun = getLongAttribute("fun");
+    this.smc = getLongAttribute("smc");
+    this.src_name = getLongAttribute("src_name");
+    if (attributes.containsKey("trs"))
+      this.trs = getLongAttribute("trs");
+    this.uid = getLongAttribute("uid");
+    this.upd_name = getLongAttribute("upd_name");
+    this.valid_stat = getLongAttribute("valid_stat");
+    this.wtc = getLongAttribute("wtc");
+    this.zval_type = getLongAttribute("zval_type");
+    this.originform = getLongAttribute("originform");
+    this.targetscale = getLongAttribute("targetscale");
 
     this.computeImportance();
     this.setAttributeMap(null);
@@ -376,6 +384,102 @@ public class MGCPPathLine extends MGCPFeature implements IPathLine {
 
   public void setZval_type(long zval_type) {
     this.zval_type = zval_type;
+  }
+
+  public String getDate_bdi() {
+    return date_bdi;
+  }
+
+  public void setDate_bdi(String date_bdi) {
+    this.date_bdi = date_bdi;
+  }
+
+  public String getValid_date() {
+    return valid_date;
+  }
+
+  public void setValid_date(String valid_date) {
+    this.valid_date = valid_date;
+  }
+
+  public String getValid_info() {
+    return valid_info;
+  }
+
+  public void setValid_info(String valid_info) {
+    this.valid_info = valid_info;
+  }
+
+  public long getFcsubtype() {
+    return fcsubtype;
+  }
+
+  public void setFcsubtype(long fcsubtype) {
+    this.fcsubtype = fcsubtype;
+  }
+
+  public long getFun() {
+    return fun;
+  }
+
+  public void setFun(long fun) {
+    this.fun = fun;
+  }
+
+  public long getSmc() {
+    return smc;
+  }
+
+  public void setSmc(long smc) {
+    this.smc = smc;
+  }
+
+  public long getTrs() {
+    return trs;
+  }
+
+  public void setTrs(long trs) {
+    this.trs = trs;
+  }
+
+  public long getValid_stat() {
+    return valid_stat;
+  }
+
+  public void setValid_stat(long valid_stat) {
+    this.valid_stat = valid_stat;
+  }
+
+  public long getOriginform() {
+    return originform;
+  }
+
+  public void setOriginform(long originform) {
+    this.originform = originform;
+  }
+
+  public long getTargetscale() {
+    return targetscale;
+  }
+
+  public void setTargetscale(long targetscale) {
+    this.targetscale = targetscale;
+  }
+
+  public String getWid() {
+    return wid;
+  }
+
+  public void setWid(String wid) {
+    this.wid = wid;
+  }
+
+  public long getCoe() {
+    return coe;
+  }
+
+  public void setCoe(long coe) {
+    this.coe = coe;
   }
 
 }

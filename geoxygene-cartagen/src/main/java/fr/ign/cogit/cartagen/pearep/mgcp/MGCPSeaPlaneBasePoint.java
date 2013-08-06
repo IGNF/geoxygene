@@ -51,20 +51,20 @@ public class MGCPSeaPlaneBasePoint extends MGCPFeature implements IMiscPoint {
     this.upd_name = getLongAttribute("upd_name");
     this.zval_type = getLongAttribute("zval_type");
 
-    this.ace = (String) attributes.get("ace");
-    this.ale = (String) attributes.get("ale");
-    this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.iko = (String) attributes.get("iko");
-    this.nam = (String) attributes.get("nam");
-    this.src_date = (String) attributes.get("src_date");
-    this.src_info = (String) attributes.get("src_info");
-    this.tier_note = (String) attributes.get("tier_note");
-    this.txt = (String) attributes.get("txt");
-    this.uid = (String) attributes.get("uid");
-    this.upd_date = (String) attributes.get("upd_date");
-    this.upd_info = (String) attributes.get("upd_info");
-    this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.zva = (String) attributes.get("zva");
+    this.ace = getStringAttribute("ace");
+    this.ale = getStringAttribute("ale");
+    this.cpyrt_note = getStringAttribute("cpyrt_note");
+    this.iko = getStringAttribute("iko");
+    this.nam = getStringAttribute("nam");
+    this.src_date = getStringAttribute("src_date");
+    this.src_info = getStringAttribute("src_info");
+    this.tier_note = getStringAttribute("tier_note");
+    this.txt = getStringAttribute("txt");
+    this.uid = getStringAttribute("uid");
+    this.upd_date = getStringAttribute("upd_date");
+    this.upd_info = getStringAttribute("upd_info");
+    this.cpyrt_note = getStringAttribute("cpyrt_note");
+    this.zva = getStringAttribute("zva");
     this.setAttributeMap(null);
   }
 

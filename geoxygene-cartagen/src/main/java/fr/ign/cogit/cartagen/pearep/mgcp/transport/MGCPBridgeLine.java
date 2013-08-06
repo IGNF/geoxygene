@@ -43,7 +43,7 @@ public class MGCPBridgeLine extends MGCPFeature implements IBridgeLine {
     this.zval_type = getLongAttribute("zval_type");
     this.trs = getLongAttribute("trs");
     if (attributes.containsKey("nos")) {
-      this.nos = (String) attributes.get("nos");
+      this.nos = getStringAttribute("nos");
       this.type = BridgeType.BRIDGE;
     }
     if (attributes.containsKey("rst")) {
@@ -58,39 +58,39 @@ public class MGCPBridgeLine extends MGCPFeature implements IBridgeLine {
       this.smc = getLongAttribute("smc");
     if (attributes.containsKey("fun"))
       this.fun = getLongAttribute("fun");
-    this.upd_date = (String) attributes.get("upd_date");
-    this.upd_info = (String) attributes.get("upd_info");
-    this.cpyrt_note = (String) attributes.get("cpyrt_note");
+    this.upd_date = getStringAttribute("upd_date");
+    this.upd_info = getStringAttribute("upd_info");
+    this.cpyrt_note = getStringAttribute("cpyrt_note");
     this.upd_name = getLongAttribute("upd_name");
-    this.src_info = (String) attributes.get("src_info");
-    this.txt = (String) attributes.get("txt");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
-    this.tier_note = (String) attributes.get("tier_note");
-    this.nam = (String) attributes.get("nam");
-    this.src_date = (String) attributes.get("src_date");
-    this.ace = (String) attributes.get("ace");
-    this.ale = (String) attributes.get("ale");
+    this.src_info = getStringAttribute("src_info");
+    this.txt = getStringAttribute("txt");
+    this.nfi = getStringAttribute("nfi");
+    this.nfn = getStringAttribute("nfn");
+    this.tier_note = getStringAttribute("tier_note");
+    this.nam = getStringAttribute("nam");
+    this.src_date = getStringAttribute("src_date");
+    this.ace = getStringAttribute("ace");
+    this.ale = getStringAttribute("ale");
     if (attributes.containsKey("wid"))
-      this.wid = (String) attributes.get("wid");
+      this.wid = getStringAttribute("wid");
     if (attributes.containsKey("lc1"))
-      this.lc1 = (String) attributes.get("lc1");
+      this.lc1 = getStringAttribute("lc1");
     if (attributes.containsKey("lc2"))
-      this.lc2 = (String) attributes.get("lc2");
+      this.lc2 = getStringAttribute("lc2");
     if (attributes.containsKey("lc3"))
-      this.lc3 = (String) attributes.get("lc3");
+      this.lc3 = getStringAttribute("lc3");
     if (attributes.containsKey("lc4"))
-      this.lc4 = (String) attributes.get("lc4");
+      this.lc4 = getStringAttribute("lc4");
     if (attributes.containsKey("voi"))
-      this.voi = (String) attributes.get("voi");
+      this.voi = getStringAttribute("voi");
     if (attributes.containsKey("wd1"))
-      this.wd1 = (String) attributes.get("wd1");
+      this.wd1 = getStringAttribute("wd1");
     if (attributes.containsKey("hca"))
-      this.hca = (String) attributes.get("hca");
+      this.hca = getStringAttribute("hca");
     if (attributes.containsKey("mvc"))
-      this.mvc = (String) attributes.get("mvc");
+      this.mvc = getStringAttribute("mvc");
     if (attributes.containsKey("ohb"))
-      this.ohb = (String) attributes.get("ohb");
+      this.ohb = getStringAttribute("ohb");
     this.setAttributeMap(null);
   }
 

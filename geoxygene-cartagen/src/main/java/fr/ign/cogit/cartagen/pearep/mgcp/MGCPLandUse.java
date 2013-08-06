@@ -46,23 +46,23 @@ public class MGCPLandUse extends MGCPFeature implements ISimpleLandUseArea {
     this.setAttributeMap(attributes);//
 
     this.acc = getLongAttribute("acc");
-    this.ace = (String) attributes.get("ace");
+    this.ace = getStringAttribute("ace");
     this.ace_eval = getLongAttribute("ace_eval");
-    this.ale = (String) attributes.get("ale");
+    this.ale = getStringAttribute("ale");
     this.ale_eval = getLongAttribute("ale_eval");
-    this.nfi = (String) attributes.get("nfi");
-    this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.nfn = (String) attributes.get("nfn");
-    this.nam = (String) attributes.get("nam");
-    this.src_date = (String) attributes.get("src_date");
-    this.src_info = (String) attributes.get("src_info");
+    this.nfi = getStringAttribute("nfi");
+    this.cpyrt_note = getStringAttribute("cpyrt_note");
+    this.nfn = getStringAttribute("nfn");
+    this.nam = getStringAttribute("nam");
+    this.src_date = getStringAttribute("src_date");
+    this.src_info = getStringAttribute("src_info");
     this.src_name = getLongAttribute("src_name");
-    this.txt = (String) attributes.get("txt");
-    this.tier_note = (String) attributes.get("tier_note");
-    this.uid = (String) attributes.get("uid");
-    this.upd_date = (String) attributes.get("upd_date");
+    this.txt = getStringAttribute("txt");
+    this.tier_note = getStringAttribute("tier_note");
+    this.uid = getStringAttribute("uid");
+    this.upd_date = getStringAttribute("upd_date");
     this.upd_name = getLongAttribute("upd_name");
-    this.upd_info = (String) attributes.get("upd_info");
+    this.upd_info = getStringAttribute("upd_info");
     this.zval_type = getLongAttribute("zval_type");
 
     if (attributes.containsKey("bac"))
@@ -75,10 +75,10 @@ public class MGCPLandUse extends MGCPFeature implements ISimpleLandUseArea {
       this.csp = getLongAttribute("csp");
     ;
     if (attributes.containsKey("dmb"))
-      this.dmb = (String) attributes.get("dmb");
+      this.dmb = getStringAttribute("dmb");
     ;
     if (attributes.containsKey("dmt"))
-      this.dmt = (String) attributes.get("dmt");
+      this.dmt = getStringAttribute("dmt");
     ;
     if (attributes.containsKey("ffp"))
       this.ffp = getLongAttribute("ffp");
@@ -93,7 +93,7 @@ public class MGCPLandUse extends MGCPFeature implements ISimpleLandUseArea {
       this.fun = getLongAttribute("fun");
     ;
     if (attributes.containsKey("hgt"))
-      this.hgt = (String) attributes.get("hgt");
+      this.hgt = getStringAttribute("hgt");
     ;
     if (attributes.containsKey("hyp"))
       this.hyp = getLongAttribute("hyp");
@@ -105,22 +105,22 @@ public class MGCPLandUse extends MGCPFeature implements ISimpleLandUseArea {
       this.iss = getLongAttribute("iss");
     ;
     if (attributes.containsKey("lbv"))
-      this.lbv = (String) attributes.get("lbv");
+      this.lbv = getStringAttribute("lbv");
     ;
     if (attributes.containsKey("na2"))
-      this.na2 = (String) attributes.get("na2");
+      this.na2 = getStringAttribute("na2");
     ;
     if (attributes.containsKey("ord"))
       this.ord = getLongAttribute("ord");
     ;
     if (attributes.containsKey("pfh"))
-      this.pfh = (String) attributes.get("pfh");
+      this.pfh = getStringAttribute("pfh");
     ;
     if (attributes.containsKey("ppo"))
       this.ppo = getLongAttribute("ppo");
     ;
     if (attributes.containsKey("rbv"))
-      this.rbv = (String) attributes.get("rbv");
+      this.rbv = getStringAttribute("rbv");
     ;
     if (attributes.containsKey("scc"))
       this.scc = getLongAttribute("scc");
@@ -150,7 +150,7 @@ public class MGCPLandUse extends MGCPFeature implements ISimpleLandUseArea {
       this.wcc = getLongAttribute("wcc");
 
     if (attributes.containsKey("wid"))
-      this.wid = (String) attributes.get("wid");
+      this.wid = getStringAttribute("wid");
 
     if (attributes.containsKey("wle"))
       this.wle = getLongAttribute("wle");

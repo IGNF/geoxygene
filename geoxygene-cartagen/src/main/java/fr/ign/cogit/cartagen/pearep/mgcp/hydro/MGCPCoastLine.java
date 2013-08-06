@@ -19,10 +19,14 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
 public class MGCPCoastLine extends MGCPFeature implements ICoastLine {
 
   private TronconLaisse geoxObj;
-  private String upd_date, upd_info, cpyrt_note, src_info, txt, nfi, nfn,
-      tier_note, nam, src_date, ace, ale;
-  private long acc, ace_eval, ale_eval, uid, upd_name, src_name, zval_type,
-      asc, slt;
+
+  private long acc, ace_eval, ale_eval, asc, exs, fcsubtype, hyp, slt,
+      src_name, upd_name, valid_stat, vdc, zval_type, scamax, scamin,
+      originform, targetscal;
+
+  private String ace, ale, cpyrt_note, date_bdi, nam, nfi, nfn, rbv, src_date,
+      src_info, tier_note, txt, uid, upd_date, upd_info, valid_date,
+      valid_info;
 
   /**
    * @param type
@@ -40,26 +44,37 @@ public class MGCPCoastLine extends MGCPFeature implements ICoastLine {
     this.acc = getLongAttribute("acc");
     this.ace_eval = getLongAttribute("ace_eval");
     this.ale_eval = getLongAttribute("ale_eval");
-    if (attributes.containsKey("uid"))
-      this.uid = getLongAttribute("uid");
-    this.src_name = getLongAttribute("src_name");
-    this.zval_type = getLongAttribute("zval_type");
     if (attributes.containsKey("asc"))
       this.asc = getLongAttribute("asc");
+    this.exs = getLongAttribute("exs");
+    this.fcsubtype = getLongAttribute("fcsubtype");
+    this.hyp = getLongAttribute("hyp");
+    this.valid_stat = getLongAttribute("valid_stat");
+    this.vdc = getLongAttribute("vdc");
+    if (attributes.containsKey("uid"))
+      this.uid = getStringAttribute("uid");
+    this.src_name = getLongAttribute("src_name");
+    this.zval_type = getLongAttribute("zval_type");
     this.slt = getLongAttribute("slt");
-    this.upd_date = (String) attributes.get("upd_date");
-    this.upd_info = (String) attributes.get("upd_info");
-    this.cpyrt_note = (String) attributes.get("cpyrt_note");
+
+    this.upd_date = getStringAttribute("upd_date");
+    this.upd_info = getStringAttribute("upd_info");
+    this.cpyrt_note = getStringAttribute("cpyrt_note");
     this.upd_name = getLongAttribute("upd_name");
-    this.src_info = (String) attributes.get("src_info");
-    this.txt = (String) attributes.get("txt");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
-    this.tier_note = (String) attributes.get("tier_note");
-    this.nam = (String) attributes.get("nam");
-    this.src_date = (String) attributes.get("src_date");
-    this.ace = (String) attributes.get("ace");
-    this.ale = (String) attributes.get("ale");
+    this.src_info = getStringAttribute("src_info");
+    this.txt = getStringAttribute("txt");
+    this.nfi = getStringAttribute("nfi");
+    this.nfn = getStringAttribute("nfn");
+    this.tier_note = getStringAttribute("tier_note");
+    this.nam = getStringAttribute("nam");
+    this.src_date = getStringAttribute("src_date");
+    this.ace = getStringAttribute("ace");
+    this.ale = getStringAttribute("ale");
+    this.date_bdi = getStringAttribute("date_bdi");
+    this.rbv = getStringAttribute("rbv");
+    this.valid_date = getStringAttribute("valid_date");
+    this.valid_info = getStringAttribute("valid_info");
+
     this.setAttributeMap(null);
   }
 
@@ -199,14 +214,6 @@ public class MGCPCoastLine extends MGCPFeature implements ICoastLine {
     this.ale_eval = ale_eval;
   }
 
-  public long getUid() {
-    return uid;
-  }
-
-  public void setUid(long uid) {
-    this.uid = uid;
-  }
-
   public long getUpd_name() {
     return upd_name;
   }
@@ -245,6 +252,118 @@ public class MGCPCoastLine extends MGCPFeature implements ICoastLine {
 
   public void setSlt(long slt) {
     this.slt = slt;
+  }
+
+  public long getExs() {
+    return exs;
+  }
+
+  public void setExs(long exs) {
+    this.exs = exs;
+  }
+
+  public long getFcsubtype() {
+    return fcsubtype;
+  }
+
+  public void setFcsubtype(long fcsubtype) {
+    this.fcsubtype = fcsubtype;
+  }
+
+  public long getHyp() {
+    return hyp;
+  }
+
+  public void setHyp(long hyp) {
+    this.hyp = hyp;
+  }
+
+  public long getValid_stat() {
+    return valid_stat;
+  }
+
+  public void setValid_stat(long valid_stat) {
+    this.valid_stat = valid_stat;
+  }
+
+  public long getVdc() {
+    return vdc;
+  }
+
+  public void setVdc(long vdc) {
+    this.vdc = vdc;
+  }
+
+  public long getScamax() {
+    return scamax;
+  }
+
+  public void setScamax(long scamax) {
+    this.scamax = scamax;
+  }
+
+  public long getScamin() {
+    return scamin;
+  }
+
+  public void setScamin(long scamin) {
+    this.scamin = scamin;
+  }
+
+  public long getOriginform() {
+    return originform;
+  }
+
+  public void setOriginform(long originform) {
+    this.originform = originform;
+  }
+
+  public long getTargetscal() {
+    return targetscal;
+  }
+
+  public void setTargetscal(long targetscal) {
+    this.targetscal = targetscal;
+  }
+
+  public String getDate_bdi() {
+    return date_bdi;
+  }
+
+  public void setDate_bdi(String date_bdi) {
+    this.date_bdi = date_bdi;
+  }
+
+  public String getRbv() {
+    return rbv;
+  }
+
+  public void setRbv(String rbv) {
+    this.rbv = rbv;
+  }
+
+  public String getUid() {
+    return uid;
+  }
+
+  public void setUid(String uid) {
+    this.uid = uid;
+  }
+
+  public String getValid_date() {
+    return valid_date;
+  }
+
+  public void setValid_date(String valid_date) {
+    this.valid_date = valid_date;
+  }
+
+  public String getValid_info() {
+    return valid_info;
+  }
+
+  public void setValid_info(String valid_info) {
+    this.valid_info = valid_info;
   }
 
 }
