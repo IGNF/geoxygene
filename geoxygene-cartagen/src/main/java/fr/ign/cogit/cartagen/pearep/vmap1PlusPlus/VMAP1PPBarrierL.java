@@ -43,22 +43,22 @@ public class VMAP1PPBarrierL extends VMAP1PPFeature implements IMiscLine {
     this.setEliminated(false);
     this.setAttributeMap(attributes);//
 
-    this.date_bdi = (String) attributes.get("date_bdi");
-    this.f_code = (String) attributes.get("f_code");
-    this.gfid_v2i = (String) attributes.get("gfid_v2i");
-    this.src_date = (String) attributes.get("src_date");
-    this.src_info = (String) attributes.get("src_info");
-    this.txt = (String) attributes.get("txt");
-    this.uid_ = (String) attributes.get("uid_");
-    this.upd_date = (String) attributes.get("upd_date");
-    this.upd_info = (String) attributes.get("upd_info");
-    this.v2i_f_code = (String) attributes.get("v2i_f_code");
-    this.valid_date = (String) attributes.get("valid_date");
-    this.valid_info = (String) attributes.get("valid_info");
-    this.src_info = (String) attributes.get("src_info");
-    this.nam = (String) attributes.get("nam");
-    this.status = (String) attributes.get("status");
-    this.natcon = (String) attributes.get("natcon");
+    this.date_bdi = getStringAttribute("date_bdi");
+    this.f_code = getStringAttribute("f_code");
+    this.gfid_v2i = getStringAttribute("gfid_v2i");
+    this.src_date = getStringAttribute("src_date");
+    this.src_info = getStringAttribute("src_info");
+    this.txt = getStringAttribute("txt");
+    this.uid_ = getStringAttribute("uid_");
+    this.upd_date = getStringAttribute("upd_date");
+    this.upd_info = getStringAttribute("upd_info");
+    this.v2i_f_code = getStringAttribute("v2i_f_code");
+    this.valid_date = getStringAttribute("valid_date");
+    this.valid_info = getStringAttribute("valid_info");
+    this.src_info = getStringAttribute("src_info");
+    this.nam = getStringAttribute("nam");
+    this.status = getStringAttribute("status");
+    this.natcon = getStringAttribute("natcon");
 
     this.fcsubtype = getLongAttribute("fcsubtype");
     this.keep = getLongAttribute("keep");

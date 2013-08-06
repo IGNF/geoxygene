@@ -36,7 +36,7 @@ public class VMAP1PPRoadL extends VMAP1PPFeature implements IRoadLine {
       status;
   private long acc, exs, fcsubtype, keep, loc, ltn, med, rst, rtt, obj_rmq,
       src_dim, src_name, scamax, scamin, upd_name, use_, valid_stat,
-      originform, targetscal, wd1, wtc;
+      originform, targetscal, wd1, wtc, idapp;
 
   /**
    * @param type
@@ -50,22 +50,22 @@ public class VMAP1PPRoadL extends VMAP1PPFeature implements IRoadLine {
     this.setEliminated(false);
     this.setAttributeMap(attributes);//
 
-    this.date_bdi = (String) attributes.get("date_bdi");
-    this.f_code = (String) attributes.get("f_code");
-    this.gfid_v2i = (String) attributes.get("gfid_v2i");
-    this.src_date = (String) attributes.get("src_date");
-    this.src_info = (String) attributes.get("src_info");
-    this.txt = (String) attributes.get("txt");
-    this.uid_ = (String) attributes.get("uid_");
-    this.upd_date = (String) attributes.get("upd_date");
-    this.upd_info = (String) attributes.get("upd_info");
-    this.v2i_f_code = (String) attributes.get("v2i_f_code");
-    this.valid_date = (String) attributes.get("valid_date");
-    this.valid_info = (String) attributes.get("valid_info");
-    this.src_info = (String) attributes.get("src_info");
-    this.nam = (String) attributes.get("nam");
-    this.status = (String) attributes.get("status");
-    this.natcon = (String) attributes.get("natcon");
+    this.date_bdi = getStringAttribute("date_bdi");
+    this.f_code = getStringAttribute("f_code");
+    this.gfid_v2i = getStringAttribute("gfid_v2i");
+    this.src_date = getStringAttribute("src_date");
+    this.src_info = getStringAttribute("src_info");
+    this.txt = getStringAttribute("txt");
+    this.uid_ = getStringAttribute("uid_");
+    this.upd_date = getStringAttribute("upd_date");
+    this.upd_info = getStringAttribute("upd_info");
+    this.v2i_f_code = getStringAttribute("v2i_f_code");
+    this.valid_date = getStringAttribute("valid_date");
+    this.valid_info = getStringAttribute("valid_info");
+    this.src_info = getStringAttribute("src_info");
+    this.nam = getStringAttribute("nam");
+    this.status = getStringAttribute("status");
+    this.natcon = getStringAttribute("natcon");
 
     this.fcsubtype = getLongAttribute("fcsubtype");
     this.keep = getLongAttribute("keep");
@@ -88,6 +88,8 @@ public class VMAP1PPRoadL extends VMAP1PPFeature implements IRoadLine {
     this.use_ = getLongAttribute("use_");
     this.wd1 = getLongAttribute("wd1");
     this.wtc = getLongAttribute("wtc");
+
+    this.idapp = getLongAttribute("idapp");
 
     this.setAttributeMap(null);
 
@@ -504,6 +506,14 @@ public class VMAP1PPRoadL extends VMAP1PPFeature implements IRoadLine {
 
   public void setNatcon(String natcon) {
     this.natcon = natcon;
+  }
+
+  public long getIdapp() {
+    return idapp;
+  }
+
+  public void setIdapp(long idapp) {
+    this.idapp = idapp;
   }
 
 }

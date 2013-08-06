@@ -46,23 +46,23 @@ public class VMAP1PPDamL extends VMAP1PPFeature implements IBridgeLine {
     this.setEliminated(false);
     this.setAttributeMap(attributes);//
 
-    this.date_bdi = (String) attributes.get("date_bdi");
-    this.f_code = (String) attributes.get("f_code");
-    this.gfid_v2i = (String) attributes.get("gfid_v2i");
-    this.nam = (String) attributes.get("nam");
-    this.src_date = (String) attributes.get("src_date");
-    this.src_info = (String) attributes.get("src_info");
-    this.txt = (String) attributes.get("txt");
-    this.uid_ = (String) attributes.get("uid_");
-    this.upd_date = (String) attributes.get("upd_date");
-    this.upd_info = (String) attributes.get("upd_info");
-    this.v2i_f_code = (String) attributes.get("v2i_f_code");
-    this.valid_date = (String) attributes.get("valid_date");
-    this.valid_info = (String) attributes.get("valid_info");
-    this.src_info = (String) attributes.get("src_info");
-    this.v2i_nam = (String) attributes.get("v2i_nam");
-    this.ohb = (String) attributes.get("ohb");
-    this.catdam = (String) attributes.get("catdam");
+    this.date_bdi = getStringAttribute("date_bdi");
+    this.f_code = getStringAttribute("f_code");
+    this.gfid_v2i = getStringAttribute("gfid_v2i");
+    this.nam = getStringAttribute("nam");
+    this.src_date = getStringAttribute("src_date");
+    this.src_info = getStringAttribute("src_info");
+    this.txt = getStringAttribute("txt");
+    this.uid_ = getStringAttribute("uid_");
+    this.upd_date = getStringAttribute("upd_date");
+    this.upd_info = getStringAttribute("upd_info");
+    this.v2i_f_code = getStringAttribute("v2i_f_code");
+    this.valid_date = getStringAttribute("valid_date");
+    this.valid_info = getStringAttribute("valid_info");
+    this.src_info = getStringAttribute("src_info");
+    this.v2i_nam = getStringAttribute("v2i_nam");
+    this.ohb = getStringAttribute("ohb");
+    this.catdam = getStringAttribute("catdam");
 
     this.exs = getLongAttribute("exs");
     this.fcsubtype = getLongAttribute("fcsubtype");

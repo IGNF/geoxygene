@@ -41,10 +41,10 @@ public class VMAP1PPLndareA extends VMAP1PPFeature implements IMiscArea {
     this.setAttributeMap(attributes);//
     this.setArea(polygon.area());
 
-    this.src_date = (String) attributes.get("src_date");
-    this.upd_date = (String) attributes.get("upd_date");
-    this.nam = (String) attributes.get("nam");
-    this.status = (String) attributes.get("status");
+    this.src_date = getStringAttribute("src_date");
+    this.upd_date = getStringAttribute("upd_date");
+    this.nam = getStringAttribute("nam");
+    this.status = getStringAttribute("status");
     this.originform = getLongAttribute("originform");
     this.targetscal = getLongAttribute("targetscal");
     this.scamax = getLongAttribute("scamax");

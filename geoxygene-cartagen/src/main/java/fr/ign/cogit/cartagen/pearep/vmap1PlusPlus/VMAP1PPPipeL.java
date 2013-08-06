@@ -49,23 +49,23 @@ public class VMAP1PPPipeL extends VMAP1PPFeature implements IPipeLine {
     this.setEliminated(false);
     this.setAttributeMap(attributes);//
 
-    this.date_bdi = (String) attributes.get("date_bdi");
-    this.f_code = (String) attributes.get("f_code");
-    this.gfid_v2i = (String) attributes.get("gfid_v2i");
-    this.src_date = (String) attributes.get("src_date");
-    this.src_info = (String) attributes.get("src_info");
-    this.txt = (String) attributes.get("txt");
-    this.uid_ = (String) attributes.get("uid_");
-    this.upd_date = (String) attributes.get("upd_date");
-    this.upd_info = (String) attributes.get("upd_info");
-    this.v2i_f_code = (String) attributes.get("v2i_f_code");
-    this.valid_date = (String) attributes.get("valid_date");
-    this.valid_info = (String) attributes.get("valid_info");
-    this.src_info = (String) attributes.get("src_info");
-    this.catpip = (String) attributes.get("catpip");
-    this.nam = (String) attributes.get("nam");
-    this.prodct = (String) attributes.get("prodct");
-    this.status = (String) attributes.get("status");
+    this.date_bdi = getStringAttribute("date_bdi");
+    this.f_code = getStringAttribute("f_code");
+    this.gfid_v2i = getStringAttribute("gfid_v2i");
+    this.src_date = getStringAttribute("src_date");
+    this.src_info = getStringAttribute("src_info");
+    this.txt = getStringAttribute("txt");
+    this.uid_ = getStringAttribute("uid_");
+    this.upd_date = getStringAttribute("upd_date");
+    this.upd_info = getStringAttribute("upd_info");
+    this.v2i_f_code = getStringAttribute("v2i_f_code");
+    this.valid_date = getStringAttribute("valid_date");
+    this.valid_info = getStringAttribute("valid_info");
+    this.src_info = getStringAttribute("src_info");
+    this.catpip = getStringAttribute("catpip");
+    this.nam = getStringAttribute("nam");
+    this.prodct = getStringAttribute("prodct");
+    this.status = getStringAttribute("status");
 
     this.fcsubtype = getLongAttribute("fcsubtype");
     this.keep = getLongAttribute("keep");
@@ -81,9 +81,9 @@ public class VMAP1PPPipeL extends VMAP1PPFeature implements IPipeLine {
     this.scamin = getLongAttribute("scamin");
     this.exs = getLongAttribute("exs");
 
-    this.burdep = (Double) attributes.get("burdep");
-    this.drval1 = (Double) attributes.get("drval1");
-    this.drval2 = (Double) attributes.get("drval2");
+    this.burdep = getDoubleAttribute("burdep");
+    this.drval1 = getDoubleAttribute("drval1");
+    this.drval2 = getDoubleAttribute("drval2");
 
     this.setAttributeMap(null);//
   }
