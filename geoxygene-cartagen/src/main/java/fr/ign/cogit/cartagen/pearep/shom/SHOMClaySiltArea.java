@@ -39,10 +39,10 @@ public class SHOMClaySiltArea extends SHOMFeature implements ISimpleLandUseArea 
     this(poly);
     this.setAttributeMap(attributes);//
 
-    this.typevale = (String) attributes.get("TYPEVALE");
-    this.ref_bdss = (String) attributes.get("REF_BDSS");
+    this.typevale = getStringAttribute("TYPEVALE");
+    this.ref_bdss = getStringAttribute("REF_BDSS");
 
-    this.codesed = (Double) attributes.get("CodeSed");
+    this.codesed = getDoubleAttribute("CodeSed");
 
     this.setAttributeMap(null);
   }

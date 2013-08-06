@@ -51,4 +51,11 @@ public abstract class SHOMFeature extends GeneObjDefault {
       return new Double((Float) val);
     return 0.0;
   }
+
+  public String getStringAttribute(String attrName) {
+    Object val = getAttributeMap().get(attrName);
+    if (val == null)
+      return "";
+    return val.toString();
+  }
 }

@@ -16,7 +16,8 @@ import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
-public class SHOMVaseGravelArea extends SHOMFeature implements ISimpleLandUseArea {
+public class SHOMVaseGravelArea extends SHOMFeature implements
+    ISimpleLandUseArea {
 
   // VMAP attributes
   private String typevale, ref_bdss;
@@ -39,10 +40,10 @@ public class SHOMVaseGravelArea extends SHOMFeature implements ISimpleLandUseAre
     this(poly);
     this.setAttributeMap(attributes);//
 
-    this.typevale = (String) attributes.get("TYPEVALE");
-    this.ref_bdss = (String) attributes.get("REF_BDSS");
+    this.typevale = getStringAttribute("TYPEVALE");
+    this.ref_bdss = getStringAttribute("REF_BDSS");
 
-    this.codesed = (Double) attributes.get("CodeSed");
+    this.codesed = getDoubleAttribute("CodeSed");
 
     this.setAttributeMap(null);
   }
