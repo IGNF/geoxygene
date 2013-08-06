@@ -37,8 +37,8 @@ public class VMAPBuiltUpArea extends VMAPFeature implements ISimpleLandUseArea {
       PeaRepDbType type) {
     this(poly);
 
-    this.fCode = (String) attributes.get("f_code");
-    this.name = (String) attributes.get("nam");
+    this.fCode = getStringAttribute("f_code");
+    this.name = getStringAttribute("nam");
 
     if (type.equals(PeaRepDbType.VMAP2i)) {
       this.bac = (Integer) attributes.get("bac");
@@ -47,8 +47,8 @@ public class VMAPBuiltUpArea extends VMAPFeature implements ISimpleLandUseArea {
       this.dms = (Integer) attributes.get("dms");
       this.exs = (Integer) attributes.get("exs");
       this.fuc = (Integer) attributes.get("fuc");
-      this.nfi = (String) attributes.get("nfi");
-      this.nfn = (String) attributes.get("nfn");
+      this.nfi = getStringAttribute("nfi");
+      this.nfn = getStringAttribute("nfn");
       this.pht = (Integer) attributes.get("pht");
       this.ppt = (Integer) attributes.get("ppt");
       this.smc = (Integer) attributes.get("smc");

@@ -32,8 +32,8 @@ public class VMAPAdminUnit extends VMAPFeature implements ISimpleAdminUnit {
     super();
     this.setInitialGeom(poly);
     this.setEliminated(false);
-    this.fCode = (String) attributes.get("f_code");
-    this.name = (String) attributes.get("nam");
+    this.fCode = getStringAttribute("f_code");
+    this.name = getStringAttribute("nam");
     this.cod = (Integer) attributes.get("cod");
     this.use = (Integer) attributes.get("use");
   }

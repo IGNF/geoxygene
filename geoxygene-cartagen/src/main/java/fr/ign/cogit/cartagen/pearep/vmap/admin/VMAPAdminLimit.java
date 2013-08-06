@@ -42,12 +42,12 @@ public class VMAPAdminLimit extends VMAPFeature implements IAdminLimit {
     this.geoxObj.setGeom(line);
     this.setInitialGeom(line);
     this.setEliminated(false);
-    this.fCode = (String) attributes.get("f_code");
-    this.nm3 = (String) attributes.get("nm3");
+    this.fCode = getStringAttribute("f_code");
+    this.nm3 = getStringAttribute("nm3");
     this.acc = (Integer) attributes.get("acc");
     this.bst = (Integer) attributes.get("bst");
     this.use = (Integer) attributes.get("use");
-    this.nm4 = (String) attributes.get("nm4");
+    this.nm4 = getStringAttribute("nm4");
   }
 
   @Override

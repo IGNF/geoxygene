@@ -78,7 +78,7 @@ public class VMAPContourLine extends VMAPFeature implements IContourLine {
         * GeneralisationLegend.CN_EQUIDISTANCE_MAITRESSE == this.getAltitude()) {
       this.isMaster = true;
     }
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
     this.setAltitude((Integer) attributes.get("zv2"));
 
     if (type.equals(PeaRepDbType.VMAP2i)) {

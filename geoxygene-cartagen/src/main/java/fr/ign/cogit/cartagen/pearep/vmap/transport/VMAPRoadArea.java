@@ -48,7 +48,7 @@ public class VMAPRoadArea extends VMAPFeature implements IRoadArea {
     this.tuc = (Integer) attributes.get("tuc");
     this.exs = (Integer) attributes.get("exs");
     this.smc = (Integer) attributes.get("smc");
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
   }
 
   @Override

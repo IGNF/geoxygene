@@ -64,7 +64,7 @@ public class VMAPPath extends VMAPFeature implements IPathLine {
     this.initialNode = null;
     this.finalNode = null;
     this.wid = (Integer) attributes.get("wid");
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
     this.acc = (Integer) attributes.get("acc");
     this.exs = (Integer) attributes.get("exs");
     if (attributes.containsKey("tuc")) {

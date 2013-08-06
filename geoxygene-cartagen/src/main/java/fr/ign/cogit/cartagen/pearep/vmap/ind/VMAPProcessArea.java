@@ -47,11 +47,11 @@ public class VMAPProcessArea extends VMAPFeature implements IBuildArea,
     this.smc = (Integer) attributes.get("smc");
     this.exs = (Integer) attributes.get("exs");
     this.hgt = (Integer) attributes.get("hgt");
-    this.fCode = (String) attributes.get("f_code");
-    this.name = (String) attributes.get("nam");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
-    this.voi = (String) attributes.get("voi");
+    this.fCode = getStringAttribute("f_code");
+    this.name = getStringAttribute("nam");
+    this.nfi = getStringAttribute("nfi");
+    this.nfn = getStringAttribute("nfn");
+    this.voi = getStringAttribute("voi");
   }
 
   @Override

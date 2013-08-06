@@ -49,11 +49,11 @@ public class VMAPCommPoint extends VMAPFeature implements IMiscPoint {
     this.nst = (Integer) attributes.get("nst");
     this.wid = (Integer) attributes.get("wid");
     this.z = (Integer) attributes.get("zv2");
-    this.fCode = (String) attributes.get("f_code");
-    this.name = (String) attributes.get("nam");
-    this.nfn = (String) attributes.get("nfn");
-    this.nfi = (String) attributes.get("nfi");
-    this.voi = (String) attributes.get("voi");
+    this.fCode = getStringAttribute("f_code");
+    this.name = getStringAttribute("nam");
+    this.nfn = getStringAttribute("nfn");
+    this.nfi = getStringAttribute("nfi");
+    this.voi = getStringAttribute("voi");
   }
 
   @Override

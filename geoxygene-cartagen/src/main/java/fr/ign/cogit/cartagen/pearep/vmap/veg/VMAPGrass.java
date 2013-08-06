@@ -36,7 +36,7 @@ public class VMAPGrass extends VMAPFeature implements ISimpleLandUseArea {
     this.dmb = (Integer) attributes.get("dmb");
     this.pfh = (Integer) attributes.get("pfh");
     this.smc = (Integer) attributes.get("smc");
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
   }
 
   @Override

@@ -35,7 +35,7 @@ public class VMAPCrop extends VMAPFeature implements ISimpleLandUseArea {
     this.cod = (Integer) attributes.get("cod");
     this.ftc = (Integer) attributes.get("ftc");
     this.veg = (Integer) attributes.get("veg");
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
   }
 
   @Override

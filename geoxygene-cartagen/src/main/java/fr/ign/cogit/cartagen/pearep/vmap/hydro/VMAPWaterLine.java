@@ -101,9 +101,9 @@ public class VMAPWaterLine extends VMAPFeature implements IWaterLine {
     this.setEliminated(false);
 
     // attributes present in Vmap2i, Vmap1 and Vmap0
-    this.fCode = (String) attributes.get("f_code_des");
+    this.fCode = getStringAttribute("f_code_des");
     this.hyc = (Integer) attributes.get("hyc");
-    this.name = (String) attributes.get("nam");
+    this.name = getStringAttribute("nam");
 
     if (type.equals(PeaRepDbType.VMAP2i)) {
       this.acc = (Integer) attributes.get("acc");
@@ -111,8 +111,8 @@ public class VMAPWaterLine extends VMAPFeature implements IWaterLine {
       this.exs = (Integer) attributes.get("exs");
       this.hfc = (Integer) attributes.get("hfc");
       this.loc = (Integer) attributes.get("loc");
-      this.nfi = (String) attributes.get("nfi");
-      this.nfn = (String) attributes.get("nfn");
+      this.nfi = getStringAttribute("nfi");
+      this.nfn = getStringAttribute("nfn");
       this.prc = (Integer) attributes.get("prc");
       this.smc = (Integer) attributes.get("smc");
       this.tid = (Integer) attributes.get("tid");

@@ -31,13 +31,13 @@ public class VMAPMiscPopArea extends VMAPFeature implements IMiscArea {
     this.setInitialGeom(poly);
     this.setEliminated(false);
     this.setGeom(poly);
-    this.fCode = (String) attributes.get("f_code");
-    this.name = (String) attributes.get("nam");
+    this.fCode = getStringAttribute("f_code");
+    this.name = getStringAttribute("nam");
     this.cod = (Integer) attributes.get("cod");
     this.fuc = (Integer) attributes.get("fuc");
     this.nas = (Integer) attributes.get("nas");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
+    this.nfi = getStringAttribute("nfi");
+    this.nfn = getStringAttribute("nfn");
     this.pfh = (Integer) attributes.get("pfh");
     this.smc = (Integer) attributes.get("smc");
     this.stl = (Integer) attributes.get("stl");

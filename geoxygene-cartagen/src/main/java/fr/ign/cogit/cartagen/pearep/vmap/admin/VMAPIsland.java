@@ -33,13 +33,13 @@ public class VMAPIsland extends VMAPFeature implements IRiverSimpleIsland {
     this.setInitialGeom(poly);
     this.setEliminated(false);
     this.setGeom(poly);
-    this.fCode = (String) attributes.get("f_code");
-    this.name = (String) attributes.get("nam");
+    this.fCode = getStringAttribute("f_code");
+    this.name = getStringAttribute("nam");
     this.cod = (Integer) attributes.get("cod");
     this.mcc = (Integer) attributes.get("mcc");
     this.mcs = (Integer) attributes.get("mcs");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
+    this.nfi = getStringAttribute("nfi");
+    this.nfn = getStringAttribute("nfn");
     this.prc = (Integer) attributes.get("prc");
     this.smc = (Integer) attributes.get("smc");
   }

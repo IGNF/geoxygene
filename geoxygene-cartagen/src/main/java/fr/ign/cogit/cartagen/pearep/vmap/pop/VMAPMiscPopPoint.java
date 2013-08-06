@@ -47,10 +47,10 @@ public class VMAPMiscPopPoint extends VMAPFeature implements IMiscPoint {
     this.pfh = (Integer) attributes.get("pfh");
     this.ppt = (Integer) attributes.get("ppt");
     this.stl = (Integer) attributes.get("stl");
-    this.fCode = (String) attributes.get("f_code");
-    this.name = (String) attributes.get("nam");
-    this.nfn = (String) attributes.get("nfn");
-    this.nfi = (String) attributes.get("nfi");
+    this.fCode = getStringAttribute("f_code");
+    this.name = getStringAttribute("nam");
+    this.nfn = getStringAttribute("nfn");
+    this.nfi = getStringAttribute("nfi");
   }
 
   @Override

@@ -37,8 +37,8 @@ public class VMAPRunwayArea extends VMAPFeature implements IRunwayArea {
     this.setInitialGeom(poly);
     this.setEliminated(false);
     this.setGeom(poly);
-    this.fCode = (String) attributes.get("f_code");
-    this.name = (String) attributes.get("nam");
+    this.fCode = getStringAttribute("f_code");
+    this.name = getStringAttribute("nam");
     this.cod = (Integer) attributes.get("cod");
     this.exs = (Integer) attributes.get("exs");
     this.aoo = (Integer) attributes.get("aoo");

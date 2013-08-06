@@ -81,7 +81,7 @@ public class VMAPRoadLine extends VMAPFeature implements IRoadLine {
     this.finalNode = null;
 
     // attributes present in Vmap2i, Vmap1 and Vmap0
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
     this.acc = (Integer) attributes.get("acc");
     this.exs = (Integer) attributes.get("exs");
     this.med = (Integer) attributes.get("med");
@@ -93,9 +93,9 @@ public class VMAPRoadLine extends VMAPFeature implements IRoadLine {
       this.ltn = (Integer) attributes.get("ltn");
       this.coe = (Integer) attributes.get("coe");
       this.hgt = (Integer) attributes.get("hgt");
-      this.name = (String) attributes.get("nam");
-      this.nfi = (String) attributes.get("nfi");
-      this.nfn = (String) attributes.get("nfn");
+      this.name = getStringAttribute("nam");
+      this.nfi = getStringAttribute("nfi");
+      this.nfn = getStringAttribute("nfn");
       this.rst = (Integer) attributes.get("rst");
       this.smc = (Integer) attributes.get("smc");
       this.tuc = (Integer) attributes.get("tuc");
@@ -107,7 +107,7 @@ public class VMAPRoadLine extends VMAPFeature implements IRoadLine {
     if (type.equals(PeaRepDbType.VMAP1)) {
       this.loc = (Integer) attributes.get("loc");
       this.ltn = (Integer) attributes.get("ltn");
-      this.name = (String) attributes.get("nam");
+      this.name = getStringAttribute("nam");
       this.rst = (Integer) attributes.get("rst");
       this.use = (Integer) attributes.get("use");
       this.wtc = (Integer) attributes.get("wtc");

@@ -38,26 +38,26 @@ public class VMAPBuildPoint extends VMAPFeature implements IBuildPoint {
     this.setInitialGeom(point);
     this.setEliminated(false);
 
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
     this.aoo = (Integer) attributes.get("aoo");
     this.bfc = (Integer) attributes.get("bfc");
     this.exs = (Integer) attributes.get("exs");
     this.hgt = (Integer) attributes.get("hgt");
     this.hwt = (Integer) attributes.get("hwt");
-    this.name = (String) attributes.get("nam");
+    this.name = getStringAttribute("nam");
     this.wid = (Integer) attributes.get("wid");
 
     if (type.equals(PeaRepDbType.VMAP2i)) {
       this.acc = (Integer) attributes.get("acc");
       this.coe = (Integer) attributes.get("coe");
       this.len = (Integer) attributes.get("len");
-      this.nfi = (String) attributes.get("nfi");
-      this.nfn = (String) attributes.get("nfn");
+      this.nfi = getStringAttribute("nfi");
+      this.nfn = getStringAttribute("nfn");
       this.smc = (Integer) attributes.get("smc");
       this.ssr = (Integer) attributes.get("ssr");
       this.z = (Integer) attributes.get("zv2");
       this.use = (Integer) attributes.get("use");
-      this.voi = (String) attributes.get("voi");
+      this.voi = getStringAttribute("voi");
 
     }
     if (type.equals(PeaRepDbType.VMAP1)) {

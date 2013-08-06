@@ -69,7 +69,7 @@ public class VMAPSpotHeight extends VMAPFeature implements ISpotHeight {
     this.ela = (Integer) attributes.get("ela");
     this.mcc = (Integer) attributes.get("mcc");
     this.setZv2((Integer) attributes.get("zv2"));
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
   }
 
   @Override

@@ -51,8 +51,8 @@ public class VMAPStoragePoint extends VMAPFeature implements IMiscPoint {
     this.use = (Integer) attributes.get("use");
     this.wid = (Integer) attributes.get("wid");
     this.z = (Integer) attributes.get("zv2");
-    this.fCode = (String) attributes.get("f_code");
-    this.voi = (String) attributes.get("voi");
+    this.fCode = getStringAttribute("f_code");
+    this.voi = getStringAttribute("voi");
   }
 
   @Override

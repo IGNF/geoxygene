@@ -74,14 +74,14 @@ public class VMAPWaterPoint extends VMAPFeature implements IWaterPoint {
     this.geoxObj.setGeom(point);
     this.setInitialGeom(point);
     this.setEliminated(false);
-    this.name = (String) attributes.get("nam");
+    this.name = getStringAttribute("nam");
     this.acc = (Integer) attributes.get("acc");
     this.hyc = (Integer) attributes.get("hyc");
     this.swt = (Integer) attributes.get("swt");
     this.scc = (Integer) attributes.get("scc");
-    this.fCode = (String) attributes.get("f_code");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
+    this.fCode = getStringAttribute("f_code");
+    this.nfi = getStringAttribute("nfi");
+    this.nfn = getStringAttribute("nfn");
   }
 
   @Override

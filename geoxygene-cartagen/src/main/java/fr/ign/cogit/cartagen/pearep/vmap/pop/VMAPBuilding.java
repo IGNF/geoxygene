@@ -41,23 +41,23 @@ public class VMAPBuilding extends VMAPFeature implements IBuilding {
     this.setInitialGeom(poly);
     this.setEliminated(false);
 
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
     this.bfc = (Integer) attributes.get("bfc");
     this.exs = (Integer) attributes.get("exs");
     this.setHgt((Integer) attributes.get("hgt"));
     this.hwt = (Integer) attributes.get("hwt");
-    this.name = (String) attributes.get("nam");
+    this.name = getStringAttribute("nam");
 
     if (type.equals(PeaRepDbType.VMAP2i)) {
       this.cod = (Integer) attributes.get("cod");
       this.coe = (Integer) attributes.get("coe");
       this.len = (Integer) attributes.get("len");
-      this.nfi = (String) attributes.get("nfi");
-      this.nfn = (String) attributes.get("nfn");
+      this.nfi = getStringAttribute("nfi");
+      this.nfn = getStringAttribute("nfn");
       this.smc = (Integer) attributes.get("smc");
       this.ssr = (Integer) attributes.get("ssr");
       this.use = (Integer) attributes.get("use");
-      this.voi = (String) attributes.get("voi");
+      this.voi = getStringAttribute("voi");
       this.wid = (Integer) attributes.get("wid");
       this.z = (Integer) attributes.get("zv2");
     }

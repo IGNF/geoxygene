@@ -62,9 +62,9 @@ public class VMAPWaterArea extends VMAPFeature implements IWaterArea {
     this.setEliminated(false);
 
     // attributes present in Vmap2i, Vmap1 and Vmap0
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
     this.hyc = (Integer) attributes.get("hyc");
-    this.name = (String) attributes.get("nam");
+    this.name = getStringAttribute("nam");
 
     // attributes present in lakeresa
     if (attributes.containsKey("scc"))
@@ -83,8 +83,8 @@ public class VMAPWaterArea extends VMAPFeature implements IWaterArea {
       if (attributes.containsKey("hfc"))
         this.hfc = (Integer) attributes.get("hfc");
       this.loc = (Integer) attributes.get("loc");
-      this.nfi = (String) attributes.get("nfi");
-      this.nfn = (String) attributes.get("nfn");
+      this.nfi = getStringAttribute("nfi");
+      this.nfn = getStringAttribute("nfn");
       this.prc = (Integer) attributes.get("prc");
       if (attributes.containsKey("rtp"))
         this.rtp = (Integer) attributes.get("rtp");

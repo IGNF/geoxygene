@@ -41,7 +41,7 @@ public class VMAPLandFormPoint extends VMAPFeature implements
     this.setEliminated(false);
     this.acc = (Integer) attributes.get("acc");
     this.hgt = (Integer) attributes.get("hgt");
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
   }
 
   @Override

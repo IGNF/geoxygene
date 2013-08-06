@@ -49,8 +49,8 @@ public class VMAPTower extends VMAPFeature implements IMiscPoint {
     this.tuc = (Integer) attributes.get("tuc");
     this.wid = (Integer) attributes.get("wid");
     this.z = (Integer) attributes.get("zv2");
-    this.fCode = (String) attributes.get("f_code");
-    this.voi = (String) attributes.get("voi");
+    this.fCode = getStringAttribute("f_code");
+    this.voi = getStringAttribute("voi");
   }
 
   @Override

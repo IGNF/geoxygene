@@ -71,7 +71,7 @@ public class VMAPBluffLine extends VMAPFeature implements IReliefElementLine {
     this.smc = (Integer) attributes.get("smc");
     this.sgc = (Integer) attributes.get("sgc");
     this.wid = (Integer) attributes.get("wid");
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
   }
 
   @Override

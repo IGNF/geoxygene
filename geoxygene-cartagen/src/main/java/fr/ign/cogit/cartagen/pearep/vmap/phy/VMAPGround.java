@@ -36,7 +36,7 @@ public class VMAPGround extends VMAPFeature implements ISimpleLandUseArea {
     this.smc = (Integer) attributes.get("smc");
     this.srd = (Integer) attributes.get("srd");
     this.swc = (Integer) attributes.get("swc");
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
   }
 
   @Override

@@ -36,7 +36,7 @@ public class VMAPSwamp extends VMAPFeature implements ISimpleLandUseArea {
     this.dmt = (Integer) attributes.get("dmt");
     this.veg = (Integer) attributes.get("veg");
     this.smc = (Integer) attributes.get("smc");
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
   }
 
   @Override

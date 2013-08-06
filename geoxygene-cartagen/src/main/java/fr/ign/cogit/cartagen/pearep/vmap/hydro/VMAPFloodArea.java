@@ -42,7 +42,7 @@ public class VMAPFloodArea extends VMAPFeature implements IWaterArea {
     this.geoxObj.setGeom(poly);
     this.setInitialGeom(poly);
     this.setEliminated(false);
-    this.fCode = (String) attributes.get("f_code");
+    this.fCode = getStringAttribute("f_code");
     this.cod = (Integer) attributes.get("cod");
     this.exs = (Integer) attributes.get("exs");
   }

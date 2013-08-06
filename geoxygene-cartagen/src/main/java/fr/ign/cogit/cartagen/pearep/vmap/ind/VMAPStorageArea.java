@@ -52,8 +52,8 @@ public class VMAPStorageArea extends VMAPFeature implements IBuildArea,
     this.ssc = (Integer) attributes.get("ssc");
     this.use = (Integer) attributes.get("use");
     this.z = (Integer) attributes.get("zv2");
-    this.fCode = (String) attributes.get("f_code");
-    this.voi = (String) attributes.get("voi");
+    this.fCode = getStringAttribute("f_code");
+    this.voi = getStringAttribute("voi");
   }
 
   @Override
