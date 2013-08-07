@@ -127,7 +127,16 @@ public class ScaleMasterScheduler {
   private List<String> listLayersVmap1PlusPlus;
   private List<String> listLayersShom;
 
+  /**
+   * The cell cize (°) used to perform a generalisation with partition.
+   */
   private double partitionSize;
+
+  /**
+   * Take into account the databases of lower level of detail in the
+   * generalization process
+   */
+  private boolean isAware;
 
   /**
    * A constructor from the XML configuration files describing the ScaleMaster
@@ -451,8 +460,15 @@ public class ScaleMasterScheduler {
           JOptionPane.showMessageDialog(null, e.getStackTrace(), e.getClass()
               .getSimpleName(), JOptionPane.ERROR_MESSAGE);
         }
-
       }
+
+      if (isAware == true) {
+        ScaleMasterScheduler.traceLogger
+            .info("Application du processus de generalisation consciente sur "
+                + elem.getClasses() + " de " + elem.getDbName());
+        generalizeAware(line, elem, classObj, pop);
+      }
+
     }
 
     // Trigger the multi-line processes if necessary
@@ -625,6 +641,63 @@ public class ScaleMasterScheduler {
     }
   }
 
+  /**
+   * Generalize by taking account of lower levels of detail.
+   * @param ftCol
+   */
+  protected void generalizeAware(ScaleLine line, ScaleMasterElement elem,
+      Class<?> classObj, IPopulation<IGeneObj> pop) {
+
+    // Get the generalized population
+    IPopulation<IGeneObj> featuresOut = new Population<IGeneObj>();
+    for (IGeneObj obj : pop) {
+      if (classObj.isInstance(obj) && (!obj.isEliminated())) {
+        featuresOut.add(obj);
+      }
+    }
+
+    // Get the elements with lower level of details
+    ScaleMasterElement elemSup = null;
+    for (ScaleMasterElement element : line.getAllElements()) {
+      if (!element.getDbName().equals(elem.getDbName())) {
+        if (element.getInterval().getMinimum() >= elem.getInterval()
+            .getMaximum()) {
+          elemSup = element;
+        }
+      }
+    }
+
+    // Get the population with lower level of details
+    CartAGenDataSet datasetSup = CartAGenDoc.getInstance().getDataset(
+        elemSup.getDbName());
+    IPopulation<IGeneObj> popSup = datasetSup.getCartagenPop(datasetSup
+        .getPopNameFromClass(classObj));
+
+    // cancel the elimination of objects present in the database with lower
+    // level of detail
+    for (IFeature ftSup : popSup) {
+      String idappSup = ftSup.getAttribute("idapp").toString();
+      if (!(idappSup.equals("0"))) {
+        boolean deleted = true;
+        for (IFeature ftOut : featuresOut) {
+          String idappOut = ftOut.getAttribute("idapp").toString();
+          if (idappOut == idappSup) {
+            deleted = false;
+          }
+        }
+        if (deleted == true) {
+          for (IGeneObj obj : pop) {
+            String idappInf = obj.getAttribute("idapp").toString();
+            if (idappInf.equals(idappSup)) {
+              obj.cancelElimination();
+              // featuresOut.add(obj);
+            }
+          }
+        }
+      }
+    }
+  }
+
   private String filterToString(Filter filter) {
     String strAff = "";
     if (filter != null) {
@@ -734,6 +807,14 @@ public class ScaleMasterScheduler {
 
   public void setPartitionSize(double partitionSize) {
     this.partitionSize = partitionSize;
+  }
+
+  public boolean isAware() {
+    return isAware;
+  }
+
+  public void setAware(boolean isAware) {
+    this.isAware = isAware;
   }
 
 }
