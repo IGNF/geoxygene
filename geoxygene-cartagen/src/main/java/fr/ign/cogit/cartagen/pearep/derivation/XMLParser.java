@@ -192,6 +192,14 @@ public class XMLParser {
           scheduler.setPartitionSize(Double.valueOf(partitionSizeElem
               .getChildNodes().item(0).getNodeValue()));
 
+        Element awareElem = (Element) bdElem.getElementsByTagName("aware")
+            .item(0);
+        if (awareElem != null) {
+          if (awareElem.getChildNodes().item(0).getNodeValue().equals("true")) {
+            scheduler.setAware(true);
+          }
+        }
+
         // /Modif
         List<String> listLayer = new ArrayList<String>();
         for (int itLayer = 0; itLayer < bdElem.getElementsByTagName("layer")
