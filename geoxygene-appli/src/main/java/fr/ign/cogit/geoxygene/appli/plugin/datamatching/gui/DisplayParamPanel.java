@@ -40,13 +40,16 @@ import javax.swing.JToolBar;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
 
 /**
  * 
- * 
+ * //formPanel.setLayout(new FlowLayout (FlowLayout.LEFT));
+ * //formPanel.add(new JLabel("<html>" + paramNetworkDataMatching.toString() + "</html>"));
  *
  */
 public class DisplayParamPanel extends JToolBar {
@@ -55,25 +58,27 @@ public class DisplayParamPanel extends JToolBar {
   private static final long serialVersionUID = 1L;
   
   /** Parameter values. */
-  private ParamNetworkDataMatching paramNetworkDataMatching = null;
-  private ParamDirectionNetworkDataMatching paramDirection = null;
-  private ParamTopologyTreatmentNetwork paramTopo = null;
+  private ParamPluginNetworkDataMatching paramPlugin = null;
+  private ParamNetworkDataMatching paramNetworkDataMatching = null; 
+  // private ParamDirectionNetworkDataMatching paramDirection = null;
+  // private ParamTopologyTreatmentNetwork paramTopo = null;
   
   /**
    * Constructor.
    * @param frame
    */
-  public DisplayParamPanel(ParamNetworkDataMatching paramNetworkDataMatching){
+  public DisplayParamPanel(ParamPluginNetworkDataMatching paramPlugin){
     
     /** Initialize all parameters objects. */
-    this.paramNetworkDataMatching = paramNetworkDataMatching;
-    paramDirection = this.paramNetworkDataMatching.getParamDirectionNetwork1();
+    this.paramPlugin = paramPlugin;
+    paramNetworkDataMatching = paramPlugin.getParamNetworkDataMatching();
+    // paramDirection = this.paramNetworkDataMatching.getParamDirectionNetwork1();
     // paramTopo = this.paramNetworkDataMatching.getParamTopoTreatment();
     
     /** Initialize and configure panel. */
     setOrientation(1);
-    setPreferredSize(new Dimension(1800, 350));
-    setMaximumSize(getPreferredSize());
+    // setPreferredSize(new Dimension(1800, 350));
+    // setMaximumSize(getPreferredSize());
     setLayout(new FlowLayout(FlowLayout.LEFT));
     
     /** Diplay panel. */
@@ -98,8 +103,12 @@ public class DisplayParamPanel extends JToolBar {
     tabbedPane.addTab("Ecarts de distance", getDistanceParamTab());
     tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
     
-    //tabbedPane.addTab("Traitements topologiques", getTraitementTopoParamTab());
-    //tabbedPane.setMnemonicAt(3, KeyEvent.VK_4);
+    tabbedPane.addTab("Traitements topologiques", getTraitementTopoParamTab());
+    tabbedPane.setMnemonicAt(3, KeyEvent.VK_4);
+    
+    tabbedPane.addTab("Surdécoupage", getSurdecoupageParamTab());
+    tabbedPane.setMnemonicAt(3, KeyEvent.VK_4);
+    
     
     this.add(tabbedPane);
     
@@ -112,31 +121,42 @@ public class DisplayParamPanel extends JToolBar {
    */
   private JPanel getDatasetParamTab() {
     
+    FormLayout layout = new FormLayout(
+            "20dlu, pref, 5dlu, pref, pref, 20dlu, pref, pref, 20dlu", // colonnes
+            "10dlu, pref, 10dlu, pref, pref, pref, pref, pref, pref, pref, 40dlu");  // lignes
+    CellConstraints cc = new CellConstraints();
+              
     JPanel formPanel = new JPanel();
+    formPanel.setLayout(layout);
+        
+    formPanel.add(new JLabel("Reseau 1"), cc.xy(5, 2));
+    formPanel.add(new JLabel("Reseau 2"), cc.xy(8, 2));
+        
+    formPanel.add(new JLabel("Arc(s) : "), cc.xy(2, 6));
     
-    formPanel.setLayout(new FlowLayout (FlowLayout.LEFT));
-    formPanel.add(new JLabel("<html>" + paramNetworkDataMatching.toString() + "</html>"));
+    String edgeNetwork1 = "<ul>";
+    for (int i = 0; i < paramPlugin.getParamFilenameNetwork1().getListNomFichiersPopArcs().size(); i++) {
+        edgeNetwork1 = edgeNetwork1 + "<li>"
+                + paramPlugin.getParamFilenameNetwork1().getListNomFichiersPopArcs().get(i)
+                + "</li>";
+    }
+    edgeNetwork1 = edgeNetwork1 + "</ul>";
+    formPanel.add(new JLabel("<html>" + edgeNetwork1 + "</html>"), cc.xy(5,  6));
+    
+    String edgeNetwork2 = "<ul>";
+    for (int i = 0; i < paramPlugin.getParamFilenameNetwork2().getListNomFichiersPopArcs().size(); i++) {
+        edgeNetwork2 = edgeNetwork2 + "<li>"
+                + paramPlugin.getParamFilenameNetwork2().getListNomFichiersPopArcs().get(i)
+                + "</li>";
+    }
+    edgeNetwork2 = edgeNetwork2 + "</ul>";
+    formPanel.add(new JLabel("<html>" + edgeNetwork2 + "</html>"), cc.xy(8,  6));
+    
+    
+    formPanel.add(new JLabel("Noeud(s) : "), cc.xy(2, 8));
     
     return formPanel;
     
-    /*FormLayout layout = new FormLayout(
-        "20dlu, pref, 20dlu, pref, 20dlu, pref, 20dlu, pref, 20dlu", // colonnes
-        "10dlu, pref, pref, pref, pref, pref, pref, pref, pref, 40dlu");  // lignes
-    CellConstraints cc = new CellConstraints();
-    
-    JPanel formPanel = new JPanel();
-    formPanel.setLayout(layout);
-    
-    
-    // Ligne 2 : PopRef
-    formPanel.add(new JLabel("Pop ref : "), cc.xy(2, 3));
-    formPanel.add(new JLabel(paramNetworkDataMatching.getParamDataset().getPopulationsArcs1().size() + ""), cc.xy(4, 3));
-    
-    // Ligne x : distanceNoeudsMax
-    // Distance maximale autorisée entre deux noeuds appariés
-    
-    
-    return formPanel;*/
   }
   
   /**
@@ -146,76 +166,48 @@ public class DisplayParamPanel extends JToolBar {
   private JPanel getDirectionParamTab() {
     
     FormLayout layout = new FormLayout(
-        "20dlu, pref, 20dlu, pref, 20dlu, pref, 20dlu, pref, 20dlu", // colonnes
-        "10dlu, pref, pref, pref, pref, pref, pref, pref, pref, 40dlu");  // lignes
+        "20dlu, pref, 5dlu, pref, pref, 20dlu, pref, pref, 20dlu", // colonnes
+        "10dlu, pref, 10dlu, pref, pref, pref, pref, pref, pref, pref, 40dlu");  // lignes
     CellConstraints cc = new CellConstraints();
-    
+          
     JPanel formPanel = new JPanel();
     formPanel.setLayout(layout);
     
-    // Ligne 1 
-    /*if (paramDirection.getPopulationsArcsAvecOrientationDouble()) {
-      // Double
-      JLabel labelDoubleSens = new JLabel("Tous les axes sont en double sens");
-      labelDoubleSens.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 1));
-      labelDoubleSens.setForeground(Color.BLUE);
-      formPanel.add(labelDoubleSens, cc.xyw(2, 2, 4));
-      
-      // Simple
-      formPanel.add(new JLabel("Tous les axes sont en simple sens"), cc.xyw(2, 3, 4));
-      
-      // A la demande
-      formPanel.add(new JLabel("Définir le sens de l'axe suivant la valeur d'un attribut"), cc.xyw(2, 4, 4));
-   
-    } else if (paramDirection.getAttributOrientation1().isEmpty()) {
-      // Double
-      formPanel.add(new JLabel("Tous les axes sont en double sens"), cc.xyw(2, 2, 4));
-      
-      // Simple
-      JLabel labelSimpleSens = new JLabel("Tous les axes sont en simple sens");
-      labelSimpleSens.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 1));
-      labelSimpleSens.setForeground(Color.BLUE);
-      formPanel.add(labelSimpleSens, cc.xyw(2, 3, 4));
-      
-      // A la demande
-      formPanel.add(new JLabel("Définir le sens de l'axe suivant la valeur d'un attribut"), cc.xyw(2, 4, 4));
+    formPanel.add(new JLabel("Reseau 1"), cc.xy(5, 2));
+    formPanel.add(new JLabel("Reseau 2"), cc.xy(8, 2));
     
+    formPanel.add(new JLabel("Nom de l'attribut : "), cc.xy(2, 6));
+    formPanel.add(new JLabel("Valeur de l'attribut pour 'Sens direct' : "), cc.xy(2, 7));
+    formPanel.add(new JLabel("Valeur de l'attribut pour 'Sens inverse' : "), cc.xy(2, 8));
+    formPanel.add(new JLabel("Valeur de l'attribut pour 'Double sens' : "), cc.xy(2, 9));
+    
+    // Line 2 : double sens
+    if (paramNetworkDataMatching.getParamDirectionNetwork1().getOrientationDouble()) {
+        formPanel.add(new JLabel("Tous les axes sont en double sens"), cc.xyw(4, 4, 3));
     } else {
-      // Double
-      formPanel.add(new JLabel("Tous les axes sont en double sens"), cc.xyw(2, 2, 4));
-      
-      // Simple
-      formPanel.add(new JLabel("Tous les axes sont en simple sens"), cc.xyw(2, 3, 4));
-      
-      // A la demande
-      JLabel labelDemande = new JLabel("Définir le sens de l'axe suivant la valeur d'un attribut");
-      labelDemande.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 1));
-      labelDemande.setForeground(Color.BLUE);
-      formPanel.add(labelDemande, cc.xyw(2, 4, 4));
+        formPanel.add(new JLabel("Définir le sens de l'axe suivant la valeur d'un attribut"), cc.xyw(4, 5, 3));
+        
+        formPanel.add(new JLabel(paramNetworkDataMatching.getParamDirectionNetwork1().getAttributOrientation()), cc.xy(5, 6));
+        formPanel.add(new JLabel(paramNetworkDataMatching.getParamDirectionNetwork1()
+                .getOrientationMap().get(OrientationInterface.SENS_DIRECT)), cc.xy(5, 7));
+        formPanel.add(new JLabel(paramNetworkDataMatching.getParamDirectionNetwork1()
+                .getOrientationMap().get(OrientationInterface.SENS_INVERSE)), cc.xy(5, 8));
+        formPanel.add(new JLabel(paramNetworkDataMatching.getParamDirectionNetwork1()
+                .getOrientationMap().get(OrientationInterface.DOUBLE_SENS)), cc.xy(5, 9));
     }
-    
-    
-    formPanel.add(new JLabel("Reseau 1"), cc.xy(6, 5));
-    formPanel.add(new JLabel("Reseau 2"), cc.xy(8, 5));
-    
-    formPanel.add(new JLabel("Nom de l'attribut : "), cc.xy(4, 6));
-    formPanel.add(new JLabel(paramDirection.getAttributOrientation1()), cc.xy(6, 6));
-    formPanel.add(new JLabel(paramDirection.getAttributOrientation2()), cc.xy(8, 6));
-    
-    formPanel.add(new JLabel("Valeur de l'attribut pour 'Sens direct' : "), cc.xy(4, 7));
-    formPanel.add(new JLabel("Valeur de l'attribut pour 'Sens inverse' : "), cc.xy(4, 8));
-    formPanel.add(new JLabel("Valeur de l'attribut pour 'Double sens' : "), cc.xy(4, 9));
-    
-    if (paramDirection.getOrientationMap1() != null) {
-      formPanel.add(new JLabel(paramDirection.getOrientationMap1().get(ParamInterface.SENS_DIRECT).toString()), cc.xy(6, 7));
-      formPanel.add(new JLabel(paramDirection.getOrientationMap1().get(ParamInterface.SENS_INVERSE).toString()), cc.xy(6, 8));
-      formPanel.add(new JLabel(paramDirection.getOrientationMap1().get(ParamInterface.DOUBLE_SENS).toString()), cc.xy(6, 9));
+    if (paramNetworkDataMatching.getParamDirectionNetwork2().getOrientationDouble()) {
+        formPanel.add(new JLabel("Tous les axes sont en double sens"), cc.xyw(7, 4, 3));
+    } else {
+        formPanel.add(new JLabel("Définir le sens de l'axe suivant la valeur d'un attribut"), cc.xyw(7, 5, 3));
+        
+        formPanel.add(new JLabel(paramNetworkDataMatching.getParamDirectionNetwork2().getAttributOrientation()), cc.xy(8, 6));
+        formPanel.add(new JLabel(paramNetworkDataMatching.getParamDirectionNetwork2()
+                .getOrientationMap().get(OrientationInterface.SENS_DIRECT)), cc.xy(8, 7));
+        formPanel.add(new JLabel(paramNetworkDataMatching.getParamDirectionNetwork2()
+                .getOrientationMap().get(OrientationInterface.SENS_INVERSE)), cc.xy(8, 8));
+        formPanel.add(new JLabel(paramNetworkDataMatching.getParamDirectionNetwork2()
+                .getOrientationMap().get(OrientationInterface.DOUBLE_SENS)), cc.xy(8, 9));
     }
-    if (paramDirection.getOrientationMap2() != null) {
-      formPanel.add(new JLabel(paramDirection.getOrientationMap2().get(ParamInterface.SENS_DIRECT).toString()), cc.xy(8, 7));
-      formPanel.add(new JLabel(paramDirection.getOrientationMap2().get(ParamInterface.SENS_INVERSE).toString()), cc.xy(8, 8));
-      formPanel.add(new JLabel(paramDirection.getOrientationMap2().get(ParamInterface.DOUBLE_SENS).toString()), cc.xy(8, 9));
-    }*/
     
     return formPanel;
   }
@@ -225,104 +217,158 @@ public class DisplayParamPanel extends JToolBar {
    * @return
    */
   private JPanel getDistanceParamTab() {
-    FormLayout layout = new FormLayout(
-        "20dlu, pref, 20dlu, pref, 20dlu, pref, 20dlu, pref, 20dlu", // colonnes
-        "10dlu, pref, pref, pref, pref, pref, pref, pref, pref, 40dlu");  // lignes
+    
+      FormLayout layout = new FormLayout(
+              "40dlu, pref, 5dlu, pref, pref, pref, 40dlu",  // colonnes
+              "20dlu, pref, 10dlu, pref, 10dlu, pref, 10dlu, pref, 40dlu");  // lignes
     CellConstraints cc = new CellConstraints();
     
     JPanel formPanel = new JPanel();
     formPanel.setLayout(layout);
+    
+    // Ligne 1
+    formPanel.add(new JLabel("Distance maximale entre deux noeuds : "), cc.xy(2, 2));
+    formPanel.add(new JLabel(Float.toString(paramNetworkDataMatching.getParamDistance().getDistanceNoeudsMax())), cc.xy(5, 2));
+    formPanel.add(new JLabel(" m"), cc.xy(6, 2));
+    
+    // Ligne 2
+    formPanel.add(new JLabel("Distance maximum autorisée entre les arcs des deux réseaux : "), cc.xy(2, 4));
+    formPanel.add(new JLabel(Float.toString(paramNetworkDataMatching.getParamDistance().getDistanceArcsMax())), cc.xy(5, 4));
+    formPanel.add(new JLabel(" m"), cc.xy(6, 4));
+    
+    // Ligne 3
+    formPanel.add(new JLabel("<html>Distance minimum sous laquelle l'écart de distance<br/>pour divers arcs du "
+        + " réseaux 2 (distance vers les arcs du réseau 1)<br/>n'a plus aucun sens : "), cc.xy(2, 6));
+    formPanel.add(new JLabel(Float.toString(paramNetworkDataMatching.getParamDistance().getDistanceArcsMin())), cc.xy(5, 6));
+    formPanel.add(new JLabel(" m"), cc.xy(6, 6));
+    
+    // Ligne 4
+    formPanel.add(new JLabel("<html>Distance maximale autorisée entre deux noeuds appariés,<br/>quand le noeud du "
+        + " réseau 1 est une impasse uniquement :<br/>"
+        + "Ce paramètre peut ne pas être pris en compte.</html>"), cc.xy(2, 8));
+    // add(impasseButton, cc.xy(4, 8));
+    formPanel.add(new JLabel(Float.toString(paramNetworkDataMatching.getParamDistance().getDistanceNoeudsImpassesMax())), cc.xy(5, 8));
+    formPanel.add(new JLabel(" m"), cc.xy(6, 8));
     
     return formPanel;
   }
   
-  /**
-   * TRAITEMENTS TOPOLOGIQUES A L'IMPORT.
-   * 
-   * @return
-   */
-  /*private JPanel getTraitementTopoParamTab() {
+   /**
+    * TRAITEMENTS TOPOLOGIQUES A L'IMPORT.
+    * 
+    * @return
+    */
+    private JPanel getTraitementTopoParamTab() {
     
-    FormLayout layout = new FormLayout(
-        "20dlu, pref, 20dlu, pref, 20dlu, pref, 20dlu", // colonnes
-        "20dlu, pref, 20dlu, pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 40dlu");  // lignes
-    CellConstraints cc = new CellConstraints();
-    
-    JPanel formPanel = new JPanel();
-    formPanel.setLayout(layout);
-    
-    // Ligne Titre
-    formPanel.add(new JLabel("Reseau 1"), cc.xy(4, 2));
-    formPanel.add(new JLabel("Reseau 2"), cc.xy(6, 2));
-    
-    // Ligne 1
-    formPanel.add(new JLabel("Les noeuds proches du réseau sont fusionnés en un seul noeud : "), cc.xy(2, 4));
-    if (paramTopo.getTopologieSeuilFusionNoeuds1() < 0) {
-      formPanel.add(new JLabel("Non"), cc.xy(4, 4));
-    } else {
-      formPanel.add(new JLabel(Double.toString(paramTopo.getTopologieSeuilFusionNoeuds1())), cc.xy(4, 4));
+        FormLayout layout = new FormLayout(
+              "40dlu, pref, 20dlu, pref, pref, pref, pref, 20dlu, pref, pref, pref, pref, 40dlu",  // colonnes
+              "20dlu, pref, 10dlu, pref, pref, pref, pref, 40dlu");   // lignes
+        CellConstraints cc = new CellConstraints();
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(layout);
+      
+        // Line 1 : titles
+        formPanel.add(new JLabel("Reseau 1"), cc.xyw(5, 2, 3));
+        formPanel.add(new JLabel("Reseau 2"), cc.xyw(10, 2, 3));
+          
+        // -------------------------------------------------------------------------
+          
+        // Ligne 2
+        formPanel.add(new JLabel("Seuil fusion des noeuds : "), cc.xy(2, 4));
+        formPanel.add(new JLabel (Double.toString(paramNetworkDataMatching.getParamTopoNetwork1().getSeuilFusionNoeuds())), cc.xyw(4, 4, 4));
+        formPanel.add(new JLabel (Double.toString(paramNetworkDataMatching.getParamTopoNetwork2().getSeuilFusionNoeuds())), cc.xyw(9, 4, 4));
+          
+        // Ligne 3
+        formPanel.add(new JLabel("Graphe planaire : "), cc.xy(2, 5));
+        if (paramNetworkDataMatching.getParamTopoNetwork1().getGraphePlanaire()) {
+            formPanel.add(new JLabel("oui"), cc.xy(5,  5));
+        } else {
+            formPanel.add(new JLabel("non"), cc.xy(7,  5));
+        }
+        if (paramNetworkDataMatching.getParamTopoNetwork2().getGraphePlanaire()) {
+            formPanel.add(new JLabel("oui"), cc.xy(10,  5));
+        } else {
+            formPanel.add(new JLabel("non"), cc.xy(12,  5));
+        }
+        
+        // Ligne 4
+        formPanel.add(new JLabel("Éliminer les noeuds qui n'ont que 2 arcs incidents et fusionner ces arcs ?"), cc.xy(2, 6));
+        if (paramNetworkDataMatching.getParamTopoNetwork1().getElimineNoeudsAvecDeuxArcs()) {
+            formPanel.add(new JLabel("oui"), cc.xy(5,  6));
+        } else {
+            formPanel.add(new JLabel("non"), cc.xy(7,  6));
+        }
+        if (paramNetworkDataMatching.getParamTopoNetwork2().getElimineNoeudsAvecDeuxArcs()) {
+            formPanel.add(new JLabel("oui"), cc.xy(10,  6));
+        } else {
+            formPanel.add(new JLabel("non"), cc.xy(12,  6));
+        }
+        
+        // Ligne 5
+        formPanel.add(new JLabel("Fusion des arcs doubles : "), cc.xy(2, 7));
+        if (paramNetworkDataMatching.getParamTopoNetwork1().getFusionArcsDoubles()) {
+            formPanel.add(new JLabel("oui"), cc.xy(5,  7));
+        } else {
+            formPanel.add(new JLabel("non"), cc.xy(7,  7));
+        }
+        if (paramNetworkDataMatching.getParamTopoNetwork2().getFusionArcsDoubles()) {
+            formPanel.add(new JLabel("oui"), cc.xy(10,  7));
+        } else {
+            formPanel.add(new JLabel("non"), cc.xy(12,  7));
+        }
+      
+        return formPanel;
     }
-    if (paramTopo.getTopologieSeuilFusionNoeuds2() < 0) {
-      formPanel.add(new JLabel("Non"), cc.xy(6, 4));
-    } else {
-      formPanel.add(new JLabel(Double.toString(paramTopo.getTopologieSeuilFusionNoeuds2())), cc.xy(6, 4));
+  
+    private JPanel getSurdecoupageParamTab() {
+        
+        FormLayout layout = new FormLayout(
+                "20dlu, 40dlu, pref, 10dlu, pref, pref, pref, pref, 20dlu, pref, pref, pref, pref, 20dlu", // colonnes
+                "20dlu, pref, 10dlu, pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 40dlu");  // lignes
+        CellConstraints cc = new CellConstraints();
+          
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(layout);
+        
+        // Line 1 : titles
+        formPanel.add(new JLabel("Reseau 1"), cc.xyw(6, 2, 3));
+        formPanel.add(new JLabel("Reseau 2"), cc.xyw(11, 2, 3));
+        
+        // Line 2
+        formPanel.add(new JLabel("Projeter les noeuds du réseau 1 sur le réseau 2 pour découper ce dernier : "), cc.xyw(2, 4, 2));
+        // formPanel.add(jcYesProjection1, cc.xy(5, 4));
+        formPanel.add(new JLabel("oui"), cc.xy(6, 4));
+        // formPanel.add(jcNoProjection1, cc.xy(7, 4));
+        formPanel.add(new JLabel("non"), cc.xy(8, 4));
+        
+        // formPanel.add(jcYesProjection2, cc.xy(10, 4));
+        formPanel.add(new JLabel("oui"), cc.xy(11, 4));
+        // formPanel.add(jcNoProjection2, cc.xy(12, 4));
+        formPanel.add(new JLabel("non"), cc.xy(13, 4));
+        
+        // Line 3
+        formPanel.add(new JLabel("Distance de la projection des noeuds 2 sur le réseau 1 : "), cc.xy(3, 6));
+        // formPanel.add(distanceNoeudArc1, cc.xyw(5, 6, 4));
+        // formPanel.add(distanceNoeudArc2, cc.xyw(10, 6, 4));
+        
+        // Line 4
+        formPanel.add(new JLabel("Distance min entre la projection d'un noeud sur un arc : "), cc.xy(3, 8));
+        // formPanel.add(distanceProjectionNoeud1, cc.xyw(5, 8, 4));
+        // formPanel.add(distanceProjectionNoeud2, cc.xyw(10, 8, 4));
+        
+        // Line 5
+        formPanel.add(new JLabel("On ne projete que les impasses du réseau 1 sur le réseau 2 : "), cc.xy(3, 10));
+        // formPanel.add(jcYesImpasseSeulement1, cc.xy(5, 10));
+        formPanel.add(new JLabel("oui"), cc.xy(6, 10));
+        // formPanel.add(jcNoImpasseSeulement1, cc.xy(7, 10));
+        formPanel.add(new JLabel("non"), cc.xy(8, 10));
+        
+        // formPanel.add(jcYesImpasseSeulement2, cc.xy(10, 10));
+        formPanel.add(new JLabel("oui"), cc.xy(11, 10));
+        // formPanel.add(jcNoImpasseSeulement2, cc.xy(12, 10));
+        formPanel.add(new JLabel("non"), cc.xy(13, 10));
+        
+        return formPanel;
     }
-    
-    // Ligne 2
-    formPanel.add(new JLabel("<html>Doit-on eliminer pour l'appariement, les noeuds du réseau qui n'ont que 2 "
-        + "arcs incidents<br/>et fusionner ces arcs ? : </html>"), cc.xy(2, 6));
-    if (paramTopo.getTopologieElimineNoeudsAvecDeuxArcs1()) {
-      formPanel.add(new JLabel("Oui"), cc.xy(4, 6));
-    } else {
-      formPanel.add(new JLabel("Non"), cc.xy(4, 6));
-    }
-    if (paramTopo.getTopologieElimineNoeudsAvecDeuxArcs2()) {
-      formPanel.add(new JLabel("Oui"), cc.xy(6, 6));
-    } else {
-      formPanel.add(new JLabel("Non"), cc.xy(6, 6));
-    }
-    
-    // Ligne 3
-    formPanel.add(new JLabel("Doit-on rendre le réseau planaire ? "), cc.xy(2, 8));
-    if (paramTopo.getTopologieGraphePlanaire1()) {
-      formPanel.add(new JLabel("Oui"), cc.xy(4, 8));
-    } else {
-      formPanel.add(new JLabel("Non"), cc.xy(4, 8));
-    }
-    if (paramTopo.getTopologieGraphePlanaire2()) {
-      formPanel.add(new JLabel("Oui"), cc.xy(6, 8));
-    } else {
-      formPanel.add(new JLabel("Non"), cc.xy(6, 8));
-    }
-    
-    // Ligne 4
-    formPanel.add(new JLabel("Fusion des arcs doubles : "), cc.xy(2, 10));
-    if (paramTopo.getTopologieFusionArcsDoubles1()) {
-      formPanel.add(new JLabel("Oui"), cc.xy(4, 10));
-    } else {
-      formPanel.add(new JLabel("Non"), cc.xy(4, 10));
-    }
-    if (paramTopo.getTopologieFusionArcsDoubles2()) {
-      formPanel.add(new JLabel("Oui"), cc.xy(6, 10));
-    } else {
-      formPanel.add(new JLabel("Non"), cc.xy(6, 10));
-    }
-    
-    // Ligne 5
-    formPanel.add(new JLabel("<html>Les noeuds du réseau contenus dans une même surface de la population en "
-        + " paramètre<br/>seront fusionés en un seul noeud pour l'appariement</html>"), cc.xy(2, 12));
-    if (paramTopo.getTopologieSurfacesFusionNoeuds1() != null) {
-      formPanel.add(new JLabel("Oui"), cc.xy(4, 12));
-    } else {
-      formPanel.add(new JLabel("Aucune surface"), cc.xy(4, 12));
-    }
-    if (paramTopo.getTopologieSurfacesFusionNoeuds2() != null) {
-      formPanel.add(new JLabel("Oui"), cc.xy(6, 12));
-    } else {
-      formPanel.add(new JLabel("Aucune surface"), cc.xy(6, 12));
-    }
-    
-    return formPanel;
-  }*/
 
 }

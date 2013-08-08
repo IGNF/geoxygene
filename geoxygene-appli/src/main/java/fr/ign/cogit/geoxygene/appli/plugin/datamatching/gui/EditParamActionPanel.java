@@ -4,11 +4,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.filechooser.FileFilter;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -26,6 +28,10 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
   private JCheckBox cbRecalage;
   private JCheckBox cbExport;
   private JCheckBox cbTransfert;
+  
+  private JRadioButton rbExportGeometrieLiens2vers1;
+  private JRadioButton rbExportGeometrieLiens1vers2;
+  
   
   private EditParamPanel paramPanel;
  
@@ -45,6 +51,22 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
     cbExport = new JCheckBox();
     cbTransfert = new JCheckBox();
     
+    ButtonGroup groupe1 = new ButtonGroup();
+    
+    rbExportGeometrieLiens2vers1 = new JRadioButton("");
+    rbExportGeometrieLiens2vers1.addActionListener(this);
+    //if (paramDirection1.getOrientationDouble()) {
+    rbExportGeometrieLiens2vers1.setSelected(true);
+    //}
+    groupe1.add(rbExportGeometrieLiens2vers1);
+    
+    rbExportGeometrieLiens1vers2 = new JRadioButton("");
+    rbExportGeometrieLiens1vers2.addActionListener(this);
+    //if (paramDirection1.getOrientationDouble()) {
+     rbExportGeometrieLiens1vers2.setSelected(false);
+    //}
+    groupe1.add(rbExportGeometrieLiens1vers2);
+    
     // Initialize the panel with all fields
     initPanel();
   }
@@ -56,8 +78,8 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
   private void initPanel() {
     
     FormLayout layout = new FormLayout(
-        "40dlu, pref, 10dlu, pref, pref, 40dlu",
-        "20dlu, pref, pref, pref, 20dlu, pref, pref, 20dlu, pref, 40dlu");
+        "40dlu, pref, 10dlu, pref, pref, 10dlu, pref, 40dlu",
+        "20dlu, pref, pref, pref, pref, pref, 20dlu, pref, pref, 20dlu, pref, 40dlu");
     setLayout(layout);
     CellConstraints cc = new CellConstraints();
     
@@ -69,18 +91,21 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
     // Action export liens
     cbExport.setSelected(false);
     add(cbExport, cc.xy(2, 3));
-    add(new JLabel("Exporter les liens"), cc.xy(4, 3));
+    add(new JLabel("Exporter les liens, la géométrie des liens est calculée : "), cc.xy(4, 3));
+    
+    // exportGeometrieLiens2vers1
+    add(rbExportGeometrieLiens2vers1, cc.xy(5, 4));
+    add(new JLabel("des objets 2 vers les objets 1"), cc.xy(7, 4));
+    add(rbExportGeometrieLiens1vers2, cc.xy(5, 5));
+    add(new JLabel("des objets 1 vers les objets 2"), cc.xy(7, 5));
     
     // Action transfert des attributs
     cbTransfert.setSelected(false);
-    add(cbTransfert, cc.xy(2, 4));
-    add(new JLabel("Transfert des attributs"), cc.xy(4, 4));
+    add(cbTransfert, cc.xy(2, 6));
+    add(new JLabel("Transfert des attributs"), cc.xy(4, 6));
     
-    // Enregistrer
-    add(new JLabel("Enregistrer les résultats"), cc.xy(4, 6));
-    
-    // import XML
-    add(importXML, cc.xy(5, 9));
+    // Import XML
+    add(importXML, cc.xyw(5, 11, 3));
     
   }
   

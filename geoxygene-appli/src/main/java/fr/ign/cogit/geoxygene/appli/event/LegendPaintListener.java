@@ -24,16 +24,24 @@ import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 
+/**
+ * 
+ * 
+ *
+ */
 public class LegendPaintListener implements PaintListener {
-  protected static Logger LOGGER = Logger.getLogger(LegendPaintListener.class.getName());
+  
+    private static Logger LOGGER = Logger.getLogger(LegendPaintListener.class.getName());
 
-  @Override
-  public void paint(final LayerViewPanel layerViewPanel, Graphics graphics) {
-    List<List<Rule>> rulesWithLegendGraphics = new ArrayList<List<Rule>>(0);
-    List<List<Style>> stylesWithLegendGraphics = new ArrayList<List<Style>>(0);
-    for (Layer layer : layerViewPanel.getProjectFrame().getSld().getLayers()) {
-      List<Rule> layerRulesWithLegendGraphics = new ArrayList<Rule>(0);
-      List<Style> layerStylesWithLegendGraphics = new ArrayList<Style>(0);
+    @Override
+    public void paint(final LayerViewPanel layerViewPanel, Graphics graphics) {
+    
+        List<List<Rule>> rulesWithLegendGraphics = new ArrayList<List<Rule>>(0);
+        List<List<Style>> stylesWithLegendGraphics = new ArrayList<List<Style>>(0);
+    
+        for (Layer layer : layerViewPanel.getProjectFrame().getSld().getLayers()) {
+            List<Rule> layerRulesWithLegendGraphics = new ArrayList<Rule>(0);
+            List<Style> layerStylesWithLegendGraphics = new ArrayList<Style>(0);
       for (Style style : layer.getStyles()) {
         for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
           for (Rule rule : fts.getRules()) {
@@ -89,13 +97,21 @@ public class LegendPaintListener implements PaintListener {
               .stringWidth(title));
           maxHeight += graphics.getFontMetrics().getHeight();
           for (Rule rule : rules) {
-            maxLineWidth = Math.max(maxLineWidth, graphics.getFontMetrics()
-                .stringWidth(rule.getTitle())
+              
+              String titre = "";
+              if (rule.getTitle() != null) {
+                      titre = rule.getTitle();
+                  
+              maxLineWidth = Math.max(maxLineWidth, graphics.getFontMetrics()
+                .stringWidth(titre)
                 + 2
                 * shift
                 + (int) rule.getLegendGraphic().getGraphic().getWidth());
-            maxHeight += Math.max((int) rule.getLegendGraphic().getGraphic()
+            
+              maxHeight += Math.max((int) rule.getLegendGraphic().getGraphic()
                 .getSize(), graphics.getFontMetrics().getHeight());
+                  }
+              
           }
           // maxHeight += graphics.getFontMetrics().getHeight();
         }
@@ -157,16 +173,21 @@ public class LegendPaintListener implements PaintListener {
           graphics.drawString(title, textBaseLine, textCurrentLine);
           textCurrentLine += graphics.getFontMetrics().getHeight();
           for (Rule rule : list) {
+              String titre = "";
+              if (rule.getTitle() != null) {
+                  titre = rule.getTitle();
+              
             this.paint(rule.getLegendGraphic().getGraphic(),
                 (Graphics2D) graphics, textBaseLine + shift
                     + (int) rule.getLegendGraphic().getGraphic().getSize() / 2,
                 textCurrentLine
                     - (int) rule.getLegendGraphic().getGraphic().getSize() / 2);
-            graphics.drawString(rule.getTitle(), textBaseLine + shift + shift
+            graphics.drawString(titre, textBaseLine + shift + shift
                 + (int) rule.getLegendGraphic().getGraphic().getSize(),
                 textCurrentLine);
             textCurrentLine += Math.max((int) rule.getLegendGraphic()
                 .getGraphic().getSize(), graphics.getFontMetrics().getHeight());
+              }
           }
           // textCurrentLine += graphics.getFontMetrics().getHeight();
         }

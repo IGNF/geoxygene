@@ -190,8 +190,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     // String filename1 = ParamParserTest.class.getClassLoader().getResource("data/reseau.shp").getPath();
     // String filename1 = application.getProperties().getLastOpenedFile();
     // bdcarto_route.shp
-    // String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
-    String filename1 = "D:\\Data\\Appariement\\ESPON_DB\\Test\\Reseau1.shp";
+    String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+    // String filename1 = "D:\\Data\\Appariement\\ESPON_DB\\Test\\Reseau1.shp";
       
     // String filename1 = "D:\\Data\\Appariement\\CG32\\Route\\Referentiel_ImaRoute_CG32.shp";
     // String filename1 = "D:\\Data\\Appariement\\Kusay\\CGDep84_extraction.shp";
@@ -202,8 +202,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     paramFilename1.addFilename(filename1);
     paramPlugin.setParamFilenameNetwork1(paramFilename1);
     
-    String filename2 = "D:\\Data\\Appariement\\ESPON_DB\\Test\\Reseau2.shp";
-    // String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
+    // String filename2 = "D:\\Data\\Appariement\\ESPON_DB\\Test\\Reseau2.shp";
+    String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
     // String filename2 = "D:\\Data\\Appariement\\CG32\\Route\\bduni.shp";
     // String filename2 = "D:\\Data\\Appariement\\Kusay\\RIUV1BDCARTO_extractionV2.shp";
     // String filename2 = "D:\\Data\\Appariement\\Kusay\\RIUV1BDCARTO_extraction.shp";
@@ -578,7 +578,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       p3.setLocation(widthProjectFrame, 0);
       
       DisplayToolBarNetworkDataMatching resultToolBar = new DisplayToolBarNetworkDataMatching(p3, resultatAppariement, 
-          paramPlugin.getParamNetworkDataMatching());
+          paramPlugin);
       JMenuBar menuBar = new JMenuBar();
       p3.setJMenuBar(menuBar);   
       p3.getJMenuBar().add(resultToolBar, 0);

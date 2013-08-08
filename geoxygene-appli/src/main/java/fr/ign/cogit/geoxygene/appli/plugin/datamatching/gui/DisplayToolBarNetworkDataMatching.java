@@ -38,6 +38,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
@@ -65,6 +66,7 @@ public class DisplayToolBarNetworkDataMatching extends JToolBar implements Actio
   
   private ResultNetworkDataMatching resultNetworkMatcher = null;
   private ResultNetworkStat resultNetwork = null;
+  private ParamPluginNetworkDataMatching paramPlugin = null;
   private ParamNetworkDataMatching paramNetworkDataMatching = null;
 
   /**
@@ -73,11 +75,13 @@ public class DisplayToolBarNetworkDataMatching extends JToolBar implements Actio
    * @param projectFrame The ProjectFrame object which contains the Menu Bar.
    */
   public DisplayToolBarNetworkDataMatching(ProjectFrame projectFrame, ResultNetworkDataMatching result, 
-      ParamNetworkDataMatching paramNetworkDataMatching) {
+          ParamPluginNetworkDataMatching param) {
     this.projectFrame = projectFrame;
     this.resultNetworkMatcher = result;
     this.resultNetwork = result.getResultStat();
-    this.paramNetworkDataMatching = paramNetworkDataMatching;
+    this.paramPlugin = param;
+    
+    this.paramNetworkDataMatching = paramPlugin.getParamNetworkDataMatching();
     
     init();
   }
@@ -104,7 +108,10 @@ public class DisplayToolBarNetworkDataMatching extends JToolBar implements Actio
     btnLinks.setToolTipText("Bientôt disponible");
     add(btnLinks);
     
-    parameterPanel = new DisplayParamPanel(paramNetworkDataMatching);
+    // Enregistrer les résultats
+    
+    
+    parameterPanel = new DisplayParamPanel(paramPlugin);
     tableauResultat = new DisplayStatResultPanel(resultNetworkMatcher);
     
   }

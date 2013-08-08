@@ -192,7 +192,7 @@ public class ImportAsEdgesPlugin implements GeOxygeneApplicationPlugin, ActionLi
     }
     
     
-    ShapefileWriter.write(collection, "/home/BDumenieu/Bureau/network.shp");
+    // ShapefileWriter.write(collection, "/home/BDumenieu/Bureau/network.shp");
       
   }
 
