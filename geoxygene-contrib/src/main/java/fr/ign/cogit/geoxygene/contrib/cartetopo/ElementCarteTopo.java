@@ -47,7 +47,7 @@ public class ElementCarteTopo extends DefaultFeature {
      */
     public ElementCarteTopo(IGeometry geometry) {
         super(geometry);
-        System.out.println("Constructeur avec geometrie");
+        LOGGER.trace("Constructeur avec geometrie");
     }
     
 

@@ -340,13 +340,16 @@ public class Face extends ElementCarteTopo {
   public double surface() {
     return this.getGeometrie().area();
   }
-  private double surface = -1;
+  
+  private double surface = -1; 
   public double getSurface() {
     if (surface == -1) {
       this.surface = this.surface();
     }
     return this.surface;
   }
+  
+  
   protected String arcsUtilises = ""; //$NON-NLS-1$
   protected String arcsIgnores = ""; //$NON-NLS-1$
 

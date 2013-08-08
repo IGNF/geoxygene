@@ -26,6 +26,11 @@ import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 
+/**
+ * 
+ * 
+ *
+ */
 public class ExportAttribut {
     
     /** LOGGER. */

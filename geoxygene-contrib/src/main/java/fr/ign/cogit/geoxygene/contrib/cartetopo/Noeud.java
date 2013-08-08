@@ -38,7 +38,9 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 /**
  * Nodes of topological map.
  * <p>
- * Classe des noeuds de la carte topo. Les arcs ont pour géométrie un GM_Point.
+ * Classe des noeuds de la carte topo. Les noeuds ont pour géométrie un GM_Point.
+ * </p>
+ * 
  * @author Sébastien Mustière
  * @author Olivier Bonin
  * @version 1.0

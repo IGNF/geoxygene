@@ -121,4 +121,22 @@ public class ParamDistanceNetworkDataMatching {
     this.distanceArcsMin = distanceArcsMin;
   }
   
+  /**
+   * 
+   */
+  public String toString() {
+      
+      StringBuffer buffer = new StringBuffer();
+      
+      buffer.append("Écarts de distance autorisés : " + "<br/>");
+      buffer.append("   - Distance maximale autorisée entre deux noeuds appariés = " + getDistanceNoeudsMax() + "<br/>");
+      buffer.append("   - Distance maximum autorisée entre les arcs des deux réseaux = " + getDistanceArcsMax() + "<br/>");
+      buffer.append("   - Distance minimum sous laquelle l'écart de distance pour divers arcs du réseaux 2 n'a plus aucun sens = " 
+          + getDistanceArcsMin() + "<br/>");
+      buffer.append("   - Distance maximale autorisée entre deux noeuds appariés, quand le noeud du réseau 1 est une impasse uniquement = " 
+          + getDistanceNoeudsImpassesMax() + "<br/>");
+  
+      return buffer.toString();
+  }
+  
 }

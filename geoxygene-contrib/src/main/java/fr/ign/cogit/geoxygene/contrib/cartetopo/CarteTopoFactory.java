@@ -9,6 +9,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /**
  * Simple factory for topological map creation.
+ * 
  * @author Eric Grosso
  * @author Julien Perret
  */

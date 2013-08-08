@@ -53,18 +53,19 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  */
 
 public class Arc extends ElementCarteTopo {
-  static Logger logger = Logger.getLogger(Arc.class.getName());
+  
+    private static Logger logger = Logger.getLogger(Arc.class.getName());
 
-  public Arc() {
-    super();
-  }
+    public Arc() {
+        super();
+    }
 
-  public Arc(Noeud ini, Noeud fin) {
-    super(new GM_LineString(new DirectPositionList(Arrays.asList(ini
-        .getGeometrie().getPosition(), fin.getGeometrie().getPosition()))));
-    this.setNoeudIni(ini);
-    this.setNoeudFin(fin);
-  }
+    public Arc(Noeud ini, Noeud fin) {
+        super(new GM_LineString(new DirectPositionList(Arrays.asList(ini
+                .getGeometrie().getPosition(), fin.getGeometrie().getPosition()))));
+        this.setNoeudIni(ini);
+        this.setNoeudFin(fin);
+    }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////////
   // géométrie

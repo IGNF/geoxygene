@@ -29,14 +29,15 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 
 /**
  * Classe représentant un cycle dans une carte topologique.
- * @author Julien Perret
  * 
+ * @author Julien Perret
  */
 public class Cycle {
-  protected List<Arc> arcs;
-  protected List<Boolean> orientationsArcs;
-  protected ILineString geometrie;
-  protected boolean aGauche;
+  
+    protected List<Arc> arcs;
+    protected List<Boolean> orientationsArcs;
+    protected ILineString geometrie;
+    protected boolean aGauche;
 
   /**
    * Construit un cycle
@@ -158,6 +159,7 @@ public class Cycle {
         .get(0).getFaceGauche() : this.getArcs().get(0).getFaceDroite());
     return listeFacesExterieuresDuCycle;
   }
+  
   @Override
   public String toString() {
     String result = "Cycle " + (this.aGauche ? "(left) " : "(right) ") + this.arcs.size() + "\n";
