@@ -368,6 +368,12 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.nuiton.jrst</groupId>
+				<artifactId>maven-jrst-plugin</artifactId>
+				<version>1.1.1</version>
+			</plugin>
+			
 		</plugins>
 	</build>
 
@@ -493,18 +499,15 @@
 			<name>Open Source Geospatial Foundation Repository</name>
 			<url>http://download.osgeo.org/webdav/geotools/</url>
 		</repository>
-		<!--
 		<repository>
-			<id>osgeo</id>
-			<name>Open Source Geospatial Foundation Repository</name>
-			<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/osgeo</url>
+			<id>mathplot</id>
+			<url>http://igetdb.sourceforge.net/maven2-repository/</url>
 		</repository>
-		<repository>
-			<id>apache-releases</id>
-			<name>Apache Releases Repository</name>
-			<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/apache-releases</url>
-		</repository>
-		-->
+		<!-- <repository> <id>osgeo</id> <name>Open Source Geospatial Foundation 
+			Repository</name> <url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/osgeo</url> 
+			</repository> <repository> <id>apache-releases</id> <name>Apache Releases 
+			Repository</name> <url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/apache-releases</url> 
+			</repository> -->
 		<repository>
 			<id>Cemagref</id>
 			<url>http://trac.clermont.cemagref.fr/nexus/content/groups/public/</url>
@@ -676,7 +679,7 @@
 		<module>geoxygene-cartagen</module>
 		<module>geoxygene-contrib</module>
 		<module>geoxygene-database</module>
-		<module>geoxygene-deprecated</module>
+		<!-- <module>geoxygene-deprecated</module> -->
 		<module>geoxygene-example</module>
 		<module>geoxygene-feature</module>
 		<module>geoxygene-filter</module>
