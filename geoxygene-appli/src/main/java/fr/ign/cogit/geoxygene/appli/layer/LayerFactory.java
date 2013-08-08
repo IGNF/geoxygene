@@ -17,7 +17,7 @@
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package fr.ign.cogit.geoxygene.appli;
+package fr.ign.cogit.geoxygene.appli.layer;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -42,6 +42,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.feature.FT_Coverage;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
@@ -81,7 +82,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  * @author Bertrand Dumenieu
  *
  */
-public class LayerFactory{
+public class LayerFactory {
     private static  Logger logger = Logger.getLogger(LayerFactory.class.getName());
 
     public enum LayerType {
@@ -398,17 +399,22 @@ public class LayerFactory{
     public Layer createLayer(String layerName,
         Class<? extends IGeometry> geometryType, Color strokeColor,
         Color fillColor, float opacity, float strokeWidth) {
-      LayerFactory.logger.info("create Layer " + layerName + " " + geometryType + " " + strokeColor + " " + fillColor + " " + opacity + " " + strokeWidth);
-      Layer layer = new NamedLayer(this.model, layerName);
-      UserStyle style = new UserStyle();
-      style.setName("Style créé pour le layer " + layerName);//$NON-NLS-1$
-      FeatureTypeStyle fts = new FeatureTypeStyle();
-      fts.getRules().add(
+      
+        LayerFactory.logger.info("create Layer " + layerName + " " + geometryType + " " + strokeColor + " " + fillColor + " " + opacity + " " + strokeWidth);
+      
+        Layer layer = new NamedLayer(this.model, layerName);
+        
+        UserStyle style = new UserStyle();
+        style.setName("Style créé pour le layer " + layerName);//$NON-NLS-1$
+        
+        FeatureTypeStyle fts = new FeatureTypeStyle();
+        fts.getRules().add(
               LayerFactory.createRule(geometryType, strokeColor, fillColor, opacity, opacity,
               strokeWidth));
-      style.getFeatureTypeStyles().add(fts);
-      layer.getStyles().add(style);
-      return layer;
+        style.getFeatureTypeStyles().add(fts);
+        layer.getStyles().add(style);
+        
+        return layer;
     }
 
     /**

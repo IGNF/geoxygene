@@ -85,6 +85,7 @@ public class LayerStylesPanel extends JPanel {
     this.layer = new WeakReference<Layer>(aLayer);
     this.setBackground(Color.white);
   }
+  
   @Override
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
@@ -148,6 +149,7 @@ public class LayerStylesPanel extends JPanel {
     // restore the initial color
     g.setColor(originalColor);
   }
+  
   /**
    * Paint a line symbolizer at the given position.
    * @param symbolizer the symbolizer
@@ -168,11 +170,13 @@ public class LayerStylesPanel extends JPanel {
         * (columnsWidth + this.margin) + this.margin, currentRow
         * (rowHeight + this.margin) + rowHeight / 2);
   }
+  
   @Override
   public void setBounds(int x, int y, int w, int h) {
     super.setBounds(x, y, w, h);
     this.validate();
   }
+  
   /**
    * @param symbolizer
    * @param g2
@@ -216,6 +220,7 @@ public class LayerStylesPanel extends JPanel {
               - onlineImage.getHeight(null) / 2, null);
     }
   }
+  
   /**
    * @param symbolizer
    * @param g2
