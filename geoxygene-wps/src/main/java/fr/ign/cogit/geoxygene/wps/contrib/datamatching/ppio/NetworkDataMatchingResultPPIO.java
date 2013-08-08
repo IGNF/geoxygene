@@ -36,6 +36,10 @@ import fr.ign.cogit.geoxygene.wps.contrib.datamatching.xml.ResultatAppariementPa
  * A PPIO to generate good looking xml for the network data mathing process
  * results. -
  * 
+ * 
+ *   
+ * }
+ * 
  * @version 1.6
  */
 public class NetworkDataMatchingResultPPIO extends XStreamPPIO {

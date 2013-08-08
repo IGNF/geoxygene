@@ -6,15 +6,21 @@
 	<!-- 	WPS Service -->
 	<!-- ========================================================================== -->
 	<!-- CarteTopo WPS  -->
-	<bean id="CreateFaces" class="fr.ign.cogit.geoxygene.wps.contrib.cartetopo.CreateFaces" />
+	<bean id="CreateFaces"                class="fr.ign.cogit.geoxygene.wps.contrib.cartetopo.CreateFaces" />
 	
 	<!-- DataMatching WPS -->
 	<bean id="networkDataMatchingProcess" class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.NetworkDataMatchingProcess" />
+	<bean id="appariementReseau1Process"  class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.AppariementReseau1Process" />
+	<bean id="distanceProcess"            class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.DistanceProcess" />
+	
 
 	<!-- ========================================================================== -->
 	<!-- 	The PPIO -->
 	<!-- ========================================================================== -->
 	<bean id="networkDataMatchingResultPPIO" 
 			class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.ppio.NetworkDataMatchingResultPPIO" />
+			
+	<bean id="paramDistanceNetworkDataMatchingPPIO"
+	       class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.ppio.ParamDistanceNetworkDataMatchingPPIO" />
 
 </beans>	
