@@ -1303,32 +1303,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
     }
   }
 
-  /**
-   * Main method of the class. Just used to test the edition frame width
-   * different kinds of style.
-   * @param args
-   */
-  public static void main(String[] args) {
-    StyledLayerDescriptor sld = StyledLayerDescriptor.unmarshall(StyledLayerDescriptor.class.getResourceAsStream("BasicStyles.xml")); //$NON-NLS-1$
-    GeOxygeneApplication geoxAppli = new GeOxygeneApplication();
-    ProjectFrame frame = geoxAppli.getFrame().newProjectFrame();
-    LayerFactory factory = new LayerFactory(frame.getSld());
-    Layer layerPoly = factory.createLayer("Polygon", GM_Polygon.class); //$NON-NLS-1$
-    layerPoly.setStyles(sld.getLayer("Polygon").getStyles()); //$NON-NLS-1$
-
-    Layer layerLine = factory.createLayer("Simple Line", GM_LineString.class); //$NON-NLS-1$
-    layerLine.setStyles(sld.getLayer("Basic Line").getStyles()); //$NON-NLS-1$
-
-    Layer layerLine2 = factory.createLayer("Double Line", GM_LineString.class); //$NON-NLS-1$
-    layerLine2.setStyles(sld.getLayer("Line with contour").getStyles()); //$NON-NLS-1$
-
-    Layer layerLine3 = factory
-        .createLayer("Dasharay Line", GM_LineString.class); //$NON-NLS-1$
-    layerLine3.setStyles(sld.getLayer("Line Dasharray").getStyles()); //$NON-NLS-1$
-
-    Layer layerPoint = factory.createLayer("Point", GM_Point.class); //$NON-NLS-1$
-    layerPoint.setStyles(sld.getLayer("Point").getStyles()); //$NON-NLS-1$
-  }
+  
 
   @Override
   public void actionPerformed(ActionEvent e) {
