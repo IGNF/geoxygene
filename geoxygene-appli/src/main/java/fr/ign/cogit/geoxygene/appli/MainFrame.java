@@ -21,43 +21,22 @@ package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.print.PrinterJob;
 import java.beans.PropertyVetoException;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.DefaultDesktopManager;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDesktopPane;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLayeredPane;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
-import fr.ign.cogit.geoxygene.appli.event.CoordPaintListener;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
  * 
