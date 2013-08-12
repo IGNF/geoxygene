@@ -1,5 +1,6 @@
 package fr.ign.cogit.geoxygene.jdbc.postgis;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,18 +10,26 @@ import org.apache.log4j.Level;
 import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 
 /**
  * 
- * 
+ * TODO : implements Runnable ?
  * @author Marie-Dominique Van Damme
  */
 public class PostgisReader {
@@ -63,7 +72,7 @@ public class PostgisReader {
             /**
              * Parcours de features du fichier et création de Default features équivalents.
              */
-            // ShapefileReader.read(reader, schemaDefaultFeature, population);
+            PostgisReader.read(reader, schemaDefaultFeature, population);
         
         } catch (Exception e) {
             LOGGER.log(Level.ERROR, e.toString());
@@ -116,29 +125,83 @@ public class PostgisReader {
             AttributeType type = new AttributeType();
             String nomField = reader.getFieldName(i);
             String memberName = reader.getFieldName(i);
-            /*String valueType = reader.getFieldClass(i).getSimpleName();
+            String valueType = reader.getFieldClass(i).getSimpleName();
             type.setNomField(nomField);
             type.setMemberName(memberName);
             type.setValueType(valueType);
             newFeatureType.addFeatureAttribute(type);
             attLookup.put(new Integer(i), new String[] { nomField, memberName });
-            ShapefileReader.logger.log(Level.FINE, I18N.getString("ShapefileReader.AddingAttribute") + i //$NON-NLS-1$
-                    + " = " + nomField); */
+            LOGGER.log(Level.DEBUG, "AddingAttribute " + i + " = " + nomField);
         }
+        
         // Création d'un schéma associé au featureType 
-        /*newFeatureType.setGeometryType((reader.getShapeType() == null) ? GM_Object.class : reader.getShapeType());
-        ShapefileReader.logger.log(Level.FINE, "shapeType = " + reader.getShapeType() //$NON-NLS-1$
-                + I18N.getString("ShapefileReader.GeometryType") //$NON-NLS-1$
-                + newFeatureType.getGeometryType());
+        newFeatureType.setGeometryType((reader.getShapeType() == null) ? GM_Object.class : reader.getShapeType());
+        LOGGER.log(Level.TRACE, "shapeType = " + reader.getShapeType() + "GeometryType" + newFeatureType.getGeometryType());
         schemaDefaultFeature.setFeatureType(newFeatureType);
         newFeatureType.setSchema(schemaDefaultFeature);
         schemaDefaultFeature.setAttLookup(attLookup);
         population.setFeatureType(newFeatureType);
         for (GF_AttributeType fa : newFeatureType.getFeatureAttributes()) {
-            ShapefileReader.logger.log(Level.FINE, "FeatureAttibute = " //$NON-NLS-1$
-                    + fa.getMemberName() + "-" + fa.getValueType()); //$NON-NLS-1$
-        }*/
+            LOGGER.log(Level.TRACE, "FeatureAttibute = " + fa.getMemberName() + "-" + fa.getValueType());
+        }
+        
+        // 
         return reader;
     }
+    
+    /**
+     * Lit la collection de features GeoTools <code> source </code> et crée des
+     * default features correspondant en utilisant le schéma <code> schema
+     * </code> et les ajoute à la population <code> population </code>.
+     * @param schema schéma des features à créer
+     * @param population population à laquelle ajouter les features créés
+     * @throws IOException renvoie une exception en cas d'erreur de lecture
+     */
+    public static void read(PGReader reader, SchemaDefaultFeature schema, IPopulation<IFeature> population) throws IOException {
+      
+        for (int indexFeature = 0; indexFeature < reader.getNbFeatures(); indexFeature++) {
+        
+            DefaultFeature defaultFeature = new DefaultFeature();
+            defaultFeature.setFeatureType(schema.getFeatureType());
+            defaultFeature.setSchema(schema);
+            defaultFeature.setAttributes(reader.fieldValues[indexFeature]);
+            Class<? extends IGeometry> geometryType = schema.getFeatureType().getGeometryType();
+        
+            try {
+                if (reader.geometries[indexFeature] == null) {
+                    LOGGER.log(Level.WARN, "null geometry for object " + indexFeature);
+                    LOGGER.log(Level.WARN, "NullGeometryObjectIGnored");
+                } else {
+                    IGeometry geometry = AdapterFactory.toGM_Object(reader.geometries[indexFeature]);
+                    if (!geometryType.isAssignableFrom(geometry.getClass())) {
+                        // LOGGER.log(Level.TRACE, "Geometry of type " + geometry.getClass().getSimpleName() + " instead of "
+                        //        + geometryType.getSimpleName());
+                        // TODO make it more robust: a lot of assumptions here
+                        if (geometry instanceof GM_MultiSurface<?>) {
+                            geometry = ((GM_MultiSurface<?>) geometry).get(0);
+                        } else {
+                            if (geometry instanceof GM_MultiCurve<?>) {
+                                geometry = ((GM_MultiCurve<?>) geometry).get(0);
+                            } else {
+                                if (geometry instanceof GM_MultiPoint) {
+                                    geometry = ((GM_MultiPoint) geometry).get(0);
+                                }
+                            }
+                        }
+                    }
+                    defaultFeature.setGeom(geometry);
+                    defaultFeature.setId(indexFeature);
+                    population.add(defaultFeature);
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.ERROR, "ProblemWhileConvertingGeometry");
+            }
+        }
+        
+        LOGGER.log(Level.DEBUG, population.size() + " features created for " + reader.getNbFeatures());
+          
+    }
+    
+   
 
 }

@@ -12,7 +12,7 @@ public class DistanceProcess implements GeoServerProcess {
     @DescribeResult(name = "paramDistance", description = "Ok !!")
     public ParamDistanceNetworkDataMatching execute() {
         
-        // On ne fait rien, on renvoie juste un xml ....
+        // On ne fait rien, on renvoit juste un xml ....
         
         ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
         

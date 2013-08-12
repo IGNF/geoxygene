@@ -78,6 +78,13 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-database</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
 		
 		<!-- JGoodies Forms framework helps you lay out and implement elegant Swing panels quickly and consistently -->
 		<dependency>

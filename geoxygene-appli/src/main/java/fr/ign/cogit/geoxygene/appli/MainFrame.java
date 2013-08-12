@@ -36,6 +36,7 @@ import javax.swing.JMenuBar;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.appli.gui.FileChooser;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
 
 /**

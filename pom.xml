@@ -682,7 +682,6 @@
 		<module>geoxygene-cartagen</module>
 		<module>geoxygene-contrib</module>
 		<module>geoxygene-database</module>
-		<module>geoxygene-jdbc</module>
 		<!-- <module>geoxygene-deprecated</module> -->
 		<module>geoxygene-example</module>
 		<module>geoxygene-feature</module>

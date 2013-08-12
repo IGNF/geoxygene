@@ -41,6 +41,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.appli.gui.FileChooser;
 import fr.ign.cogit.geoxygene.appli.plugin.semio.toolbar.SpecificationToolBar;
 import fr.ign.cogit.geoxygene.semio.legend.improvement.BasicStopCriteria;
 import fr.ign.cogit.geoxygene.semio.legend.improvement.LucilContrastAnalysis;
@@ -52,7 +53,6 @@ import fr.ign.cogit.geoxygene.semio.legend.mapContent.SymbolisedFeatureCollectio
 import fr.ign.cogit.geoxygene.semio.legend.metadata.SemanticRelationDescriptor;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.GraphicSymbol;
 
-import fr.ign.cogit.geoxygene.appli.FileChooser;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.Viewport;

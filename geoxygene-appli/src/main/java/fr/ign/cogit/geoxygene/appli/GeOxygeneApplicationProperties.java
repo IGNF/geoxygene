@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -19,131 +20,141 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.OrientationMapAdapter;
+import fr.ign.cogit.geoxygene.jdbc.param.ConnectionParam;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "GeOxygeneApplicationProperties")
 public class GeOxygeneApplicationProperties {
-  static Logger logger = Logger.getLogger(GeOxygeneApplicationProperties.class
-      .getName());
-  @XmlElements(@XmlElement(name = "plugin", type = String.class))
-  private List<String> plugins = new ArrayList<String>();
+  
+    /** Logger. */
+    static Logger logger = Logger.getLogger(GeOxygeneApplicationProperties.class.getName());
+  
+    @XmlElements(@XmlElement(name = "plugin", type = String.class))
+    private List<String> plugins = new ArrayList<String>();
+    
+    private String lastOpenedFile = ""; //$NON-NLS-1$
+    
+    @XmlElement(name = "ConnectionParam")
+    private ConnectionParam connectionParam = new ConnectionParam();
 
-  public List<String> getPlugins() {
-    return this.plugins;
-  }
-
-  private String lastOpenedFile = ""; //$NON-NLS-1$
-
-  public String getLastOpenedFile() {
-    return this.lastOpenedFile;
-  }
-
-  public void setLastOpenedFile(String lastOpenedFile) {
-    this.lastOpenedFile = lastOpenedFile;
-  }
-
-  /**
-   * Load the properties from the specified stream.
-   * 
-   * @param stream stream to load the properties from
-   * @return the properties loaded from the specified stream
-   */
-  public static GeOxygeneApplicationProperties unmarshall(InputStream stream) {
-    try {
-      JAXBContext context = JAXBContext
-          .newInstance(GeOxygeneApplicationProperties.class);
-      Unmarshaller m = context.createUnmarshaller();
-      GeOxygeneApplicationProperties properties = (GeOxygeneApplicationProperties) m
-          .unmarshal(stream);
-      return properties;
-    } catch (JAXBException e) {
-      e.printStackTrace();
+    /**
+     * Return plugin list.
+     * @return List<String>
+     */
+    public List<String> getPlugins() {
+        return this.plugins;
     }
-    return new GeOxygeneApplicationProperties();
-  }
 
-  /**
-   * Load the properties from the specified file.
-   * 
-   * @param fileName file to load the properties from
-   * @return the properties loaded from the specified file
-   */
-  public static GeOxygeneApplicationProperties unmarshall(String fileName) {
-    try {
-      return GeOxygeneApplicationProperties.unmarshall(new FileInputStream(
-          fileName));
-    } catch (FileNotFoundException e) {
-      GeOxygeneApplicationProperties.logger
-          .error("File " + fileName + " could not be found"); //$NON-NLS-1$//$NON-NLS-2$
-      return new GeOxygeneApplicationProperties();
+    /** 
+     * Return last opened file.
+     * @return string
+     */
+    public String getLastOpenedFile() {
+        return this.lastOpenedFile;
     }
-  }
+    
+    /**
+     * Return connection list.
+     * @return List<String>
+     */
+    public ConnectionParam getConnectionParam() {
+        return this.connectionParam;
+    }
 
-  /**
-   * Save the properties using the specified writer.
-   * 
-   * @param writer writer to save the properties into
-   */
-  public void marshall(Writer writer) {
-    try {
-      JAXBContext context = JAXBContext
-          .newInstance(GeOxygeneApplicationProperties.class);
-      Marshaller m = context.createMarshaller();
-      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-      m.marshal(this, writer);
-    } catch (JAXBException e) {
-      e.printStackTrace();
+    /**
+     * Set last opened file.
+     * @param lastOpenedFile
+     */
+    public void setLastOpenedFile(String lastOpenedFile) {
+        this.lastOpenedFile = lastOpenedFile;
     }
-  }
 
-  /**
-   * Save the properties using the specified stream.
-   * 
-   * @param stream stream to save the properties into
-   */
-  public void marshall(OutputStream stream) {
-    try {
-      JAXBContext context = JAXBContext
-          .newInstance(GeOxygeneApplicationProperties.class);
-      Marshaller m = context.createMarshaller();
-      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-      m.marshal(this, stream);
-      stream.close();
-    } catch (JAXBException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
+    /**
+     * Load the properties from the specified stream.
+     * 
+     * @param stream stream to load the properties from
+     * @return the properties loaded from the specified stream
+     */
+    public static GeOxygeneApplicationProperties unmarshall(InputStream stream) {
+        try {
+            JAXBContext context = JAXBContext.newInstance(GeOxygeneApplicationProperties.class);
+            Unmarshaller m = context.createUnmarshaller();
+            GeOxygeneApplicationProperties properties = (GeOxygeneApplicationProperties) m.unmarshal(stream);
+            return properties;
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        return new GeOxygeneApplicationProperties();
     }
-  }
 
-  /**
-   * Save the properties in the specified file.
-   * 
-   * @param fileName name of the file to save the properties into
-   */
-  public void marshall(String fileName) {
-    try {
-      this.marshall(new FileOutputStream(fileName));
-    } catch (FileNotFoundException e) {
-      GeOxygeneApplicationProperties.logger
-          .error("File " + fileName + " could not be written to"); //$NON-NLS-1$//$NON-NLS-2$
+    /**
+     * Load the properties from the specified file.
+     * 
+     * @param fileName file to load the properties from
+     * @return the properties loaded from the specified file
+     */
+    public static GeOxygeneApplicationProperties unmarshall(String fileName) {
+        try {
+            return GeOxygeneApplicationProperties.unmarshall(new FileInputStream(fileName));
+        } catch (FileNotFoundException e) {
+            GeOxygeneApplicationProperties.logger
+                .error("File " + fileName + " could not be found"); //$NON-NLS-1$//$NON-NLS-2$
+            return new GeOxygeneApplicationProperties();
+        }
     }
-  }
 
-  public static void main(String[] args) {
-    GeOxygeneApplicationProperties newPlugins = new GeOxygeneApplicationProperties();
-    newPlugins.getPlugins().add("test1"); //$NON-NLS-1$
-    String fileName = GeOxygeneApplication.class.getResource("/plugins.xml") //$NON-NLS-1$
-        .getFile();
-    System.out.println(fileName);
-    newPlugins.marshall(fileName);
-    GeOxygeneApplicationProperties plugins = GeOxygeneApplicationProperties
-        .unmarshall(GeOxygeneApplication.class
-            .getResource("/plugins.xml").getFile()); //$NON-NLS-1$
-    for (String plugin : plugins.getPlugins()) {
-      System.out.println(plugin);
+    /**
+     * Save the properties using the specified writer.
+     * 
+     * @param writer writer to save the properties into
+     */
+    public void marshall(Writer writer) {
+        try {
+            JAXBContext context = JAXBContext.newInstance(GeOxygeneApplicationProperties.class);
+            Marshaller m = context.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            m.marshal(this, writer);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
     }
-  }
+
+    /**
+     * Save the properties using the specified stream.
+     * 
+     * @param stream stream to save the properties into
+     */
+    public void marshall(OutputStream stream) {
+        try {
+            JAXBContext context = JAXBContext.newInstance(GeOxygeneApplicationProperties.class);
+            Marshaller m = context.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            m.marshal(this, stream);
+            stream.close();
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Save the properties in the specified file.
+     * 
+     * @param fileName name of the file to save the properties into
+     */
+    public void marshall(String fileName) {
+        try {
+            this.marshall(new FileOutputStream(fileName));
+        } catch (FileNotFoundException e) {
+            GeOxygeneApplicationProperties.logger.error("File " + fileName + " could not be written to");
+        }
+    }
+
+    
 }

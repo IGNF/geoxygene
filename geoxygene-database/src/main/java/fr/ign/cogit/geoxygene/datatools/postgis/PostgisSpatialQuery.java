@@ -32,7 +32,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
@@ -150,6 +152,48 @@ public class PostgisSpatialQuery {
       e.printStackTrace();
     }
   }
+  
+    /**
+     * intialisation des metadonnees
+     * 
+     * @param metadataList
+     * @param conn
+     */
+    public static Map<Integer, Map<String, String>> getTables(Connection conn) {
+    
+        Map<Integer, Map<String, String>> resultat = null;
+        
+        try {
+            // recupere les objets de la table geometrique
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm
+                    .executeQuery(" SELECT F_TABLE_SCHEMA as schema, F_TABLE_NAME as table, TYPE as type, "
+                            + "            F_GEOMETRY_COLUMN as geometry_colum, SRID as srid "
+                            + " FROM GEOMETRY_COLUMNS");
+
+            int cpt = 0;
+            resultat = new HashMap<Integer, Map<String, String>>();
+            // Parcours des objets de la table geometrique
+            while (rs.next()) {
+                // recupere nom table geometrique
+                Map<String, String> row = new HashMap<String, String>();
+                row.put("schema", rs.getString("schema"));
+                row.put("table", rs.getString("table"));
+                row.put("type", rs.getString("type"));
+                row.put("geometry_colum", rs.getString("geometry_colum"));
+                row.put("srid", rs.getString("srid"));
+                resultat.put(cpt, row);
+                cpt++;
+            }
+            rs.close();
+            stm.close();
+        
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return resultat;
+    }
 
   /**
    * chargement d'objets par zones

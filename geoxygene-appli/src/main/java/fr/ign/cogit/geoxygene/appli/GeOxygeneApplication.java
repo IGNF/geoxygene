@@ -132,49 +132,55 @@ public class GeOxygeneApplication {
   private GeOxygeneApplicationProperties properties = null;
   private URL propertiesFile = null;
 
-  /**
-   * Initialize the application plugins.
-   */
-  private void initializeProperties() {
-    try {
-      this.propertiesFile = new URL("file", "", "./plugins.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
+  
+    /**
+     * Initialize the application plugins.
+     */
+    private void initializeProperties() {
+        try {
+            this.propertiesFile = new URL("file", "", "./plugins.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        this.properties = GeOxygeneApplicationProperties.unmarshall(this.propertiesFile.getFile());
+        
+        // Last opened file.
+        if (this.properties.getLastOpenedFile() != null) {
+            MainFrame.getFilechooser().setPreviousDirectory(new File(this.properties.getLastOpenedFile()));
+        }
+    
+        // Plugins
+        for (String pluginName : this.properties.getPlugins()) {
+            try {
+                Class<?> pluginClass = Class.forName(pluginName);
+                GeOxygeneApplicationPlugin plugin = (GeOxygeneApplicationPlugin) pluginClass
+                        .newInstance();
+                plugin.initialize(this);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        // Connection database
+        // System.out.println("Nb connections = " + this.properties.getConnectionParam().getDatabase());
     }
-    this.properties = GeOxygeneApplicationProperties
-        .unmarshall(this.propertiesFile.getFile());
-    if (this.properties.getLastOpenedFile() != null) {
-      MainFrame.getFilechooser().setPreviousDirectory(
-          new File(this.properties.getLastOpenedFile()));
-    }
-    for (String pluginName : this.properties.getPlugins()) {
-      try {
-        Class<?> pluginClass = Class.forName(pluginName);
-        GeOxygeneApplicationPlugin plugin = (GeOxygeneApplicationPlugin) pluginClass
-            .newInstance();
-        plugin.initialize(this);
-      } catch (ClassNotFoundException e) {
-        e.printStackTrace();
-      } catch (InstantiationException e) {
-        e.printStackTrace();
-      } catch (IllegalAccessException e) {
-        e.printStackTrace();
-      }
-    }
-  }
 
-  /**
-   * Exit the application.
-   */
-  public final void exit() {
-    File previous = MainFrame.getFilechooser().getPreviousDirectory();
-    if (previous != null) {
-      this.properties.setLastOpenedFile(previous.getAbsolutePath());
-      this.properties.marshall(this.propertiesFile.getFile());
+    /**
+     * Exit the application.
+     */
+    public final void exit() {
+        File previous = MainFrame.getFilechooser().getPreviousDirectory();
+        if (previous != null) {
+            this.properties.setLastOpenedFile(previous.getAbsolutePath());
+            this.properties.marshall(this.propertiesFile.getFile());
+        }
+        this.frame.setVisible(false);
+        this.frame.dispose();
     }
-    this.frame.setVisible(false);
-    this.frame.dispose();
-  }
 
   /**
    * Main GeOxygene Application.

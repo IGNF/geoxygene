@@ -71,6 +71,8 @@ import javax.swing.table.TableColumn;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.appli.gui.AddPostgisLayer;
+import fr.ign.cogit.geoxygene.appli.gui.AttributeTable;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.SldListener;
@@ -119,8 +121,11 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
      */
   JTable layersTable = null;
 
-  JButton plusButton = new JButton(new ImageIcon(this.getClass().getResource(
-      "/images/icons/16x16/plus.png"))); //$NON-NLS-1$
+  JButton addShapeButton = new JButton(new ImageIcon(this.getClass().getResource(
+      "/images/icons/16x16/page_white_add.png"))); //$NON-NLS-1$
+  JButton addPostgisButton = new JButton(new ImageIcon(this.getClass().getResource(
+          "/images/icons/16x16/database_add.png"))); //$NON-NLS-1$
+  
   JButton topButton = new JButton(new ImageIcon(this.getClass().getResource(
       "/images/icons/16x16/top.png"))); //$NON-NLS-1$
   JButton upButton = new JButton(new ImageIcon(this.getClass().getResource(
@@ -129,10 +134,12 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       "/images/icons/16x16/down.png"))); //$NON-NLS-1$
   JButton bottomButton = new JButton(new ImageIcon(this.getClass().getResource(
       "/images/icons/16x16/bottom.png"))); //$NON-NLS-1$
+  
   JButton minusButton = new JButton(new ImageIcon(this.getClass().getResource(
-      "/images/icons/16x16/minus.png"))); //$NON-NLS-1$
+      "/images/icons/16x16/delete.png"))); //$NON-NLS-1$
   JButton attributeButton = new JButton(new ImageIcon(this.getClass()
-      .getResource("/images/icons/16x16/editAttributes.png"))); //$NON-NLS-1$
+      .getResource("/images/icons/16x16/table.png"))); //$NON-NLS-1$
+  
   JPopupMenu popupMenu = new JPopupMenu();
   JMenuItem newLayerMenuItem = new JMenuItem(
       I18N.getString("LayerLegendPanel.CreateLayer")); //$NON-NLS-1$
@@ -181,7 +188,10 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
 
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-    this.plusButton.setMargin(new Insets(0, 0, 0, 0));
+    this.addShapeButton.setMargin(new Insets(0, 0, 0, 0));
+    this.addPostgisButton.setMargin(new Insets(0, 0, 0, 0));
+    
+    
     this.topButton.setMargin(new Insets(0, 0, 0, 0));
     this.upButton.setMargin(new Insets(0, 0, 0, 0));
     this.downButton.setMargin(new Insets(0, 0, 0, 0));
@@ -189,7 +199,11 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     this.minusButton.setMargin(new Insets(0, 0, 0, 0));
     this.attributeButton.setMargin(new Insets(0, 0, 0, 0));
     panel.add(Box.createHorizontalGlue());
-    panel.add(this.plusButton);
+    panel.add(this.addShapeButton);
+    panel.add(Box.createHorizontalGlue());
+    panel.add(this.addPostgisButton);
+    
+    
     panel.add(Box.createHorizontalGlue());
     panel.add(this.topButton);
     panel.add(Box.createHorizontalGlue());
@@ -206,8 +220,10 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     this.add(panel);
     this.minusButton.addActionListener(this);
     this.minusButton.setActionCommand("remove"); //$NON-NLS-1$
-    this.plusButton.addActionListener(this);
-    this.plusButton.setActionCommand("add"); //$NON-NLS-1$
+    this.addShapeButton.addActionListener(this);
+    this.addShapeButton.setActionCommand("addShp"); //$NON-NLS-1$
+    this.addPostgisButton.addActionListener(this);
+    this.addPostgisButton.setActionCommand("addPg"); //$NON-NLS-1$
     this.topButton.addActionListener(this);
     this.topButton.setActionCommand("top"); //$NON-NLS-1$
     this.bottomButton.addActionListener(this);
@@ -439,7 +455,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     this.editMenuItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        displayAttrbuteTable();
+        displayAttributeTable();
       }
     });
     this.update();
@@ -572,12 +588,19 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     }
   }
 
-  private void displayAttrbuteTable() {
+  private void displayAttributeTable() {
     AttributeTable ta = new AttributeTable(LayerLegendPanel.this
         .getLayerViewPanel().getProjectFrame(),
         I18N.getString("LayerLegendPanel.EditAttributes"), //$NON-NLS-1$
         LayerLegendPanel.this.getLayerViewPanel().getFeatures());
     ta.setVisible(true);
+    ta.setIconImage(new ImageIcon(
+            AttributeTable.class.getResource("/images/icons/16x16/table.png")).getImage());
+  }
+  
+  private void displayAddPostgisLayer() {
+      AddPostgisLayer addPostgisLayerPanel = new AddPostgisLayer(this);
+      addPostgisLayerPanel.setSize(600, 500);
   }
 
   /**
@@ -914,9 +937,13 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    if (e.getActionCommand().equals("add")) { //$NON-NLS-1$
+    if (e.getActionCommand().equals("addShp")) { //$NON-NLS-1$
       this.parent.askAndAddNewLayer();
       return;
+    }
+    if (e.getActionCommand().equals("addPg")) { //$NON-NLS-1$
+        this.displayAddPostgisLayer();
+        return;
     }
     if (e.getActionCommand().equals("remove")) { //$NON-NLS-1$
       this.removeSelectedLayers();
@@ -939,7 +966,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       return;
     }
     if (e.getActionCommand().equals("attributes")) { //$NON-NLS-1$
-      this.displayAttrbuteTable();
+      this.displayAttributeTable();
       return;
     }
     if (e.getID() == 3) { // rendering starts
