@@ -1,7 +1,6 @@
 package fr.ign.cogit.geoxygene.appli.gui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -64,12 +62,6 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
     
     private PgLayerTableModel modele = new PgLayerTableModel();
     private JTable tableau;
-    // private final List<RowTable> rowTable = new ArrayList<RowTable>();
-    /*private final String[] rowHeader = {I18N.getString("AddPostgisLayer.schema"), 
-            I18N.getString("AddPostgisLayer.table"), 
-            I18N.getString("AddPostgisLayer.type"), 
-            I18N.getString("AddPostgisLayer.geometryColumn"), 
-            I18N.getString("AddPostgisLayer.srid")};*/
     
     /** Different buttons. */
     private JButton connectBt;

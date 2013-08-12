@@ -24,7 +24,9 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import com.vividsolutions.jts.geom.Geometry;
 
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
@@ -264,12 +266,12 @@ public class PGReader {
         if (typeGeometry.equals("MultiLineString")) {
             return GM_MultiCurve.class;
         }
-        /* if (type.isPointType()) {
+        if (typeGeometry.equals("Point")) {
             return GM_Point.class;
         }
-        if (type.isMultiPointType()) {
+        if (typeGeometry.equals("MultiPoint")) {
             return GM_MultiPoint.class;
-        } */
+        }
         return GM_MultiSurface.class;
     }
 
