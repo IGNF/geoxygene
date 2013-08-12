@@ -169,7 +169,8 @@ public class PostgisSpatialQuery {
             ResultSet rs = stm
                     .executeQuery(" SELECT F_TABLE_SCHEMA as schema, F_TABLE_NAME as table, TYPE as type, "
                             + "            F_GEOMETRY_COLUMN as geometry_colum, SRID as srid "
-                            + " FROM GEOMETRY_COLUMNS");
+                            + " FROM GEOMETRY_COLUMNS"
+                            + " ORDER BY 1, 2 ");
 
             int cpt = 0;
             resultat = new HashMap<Integer, Map<String, String>>();

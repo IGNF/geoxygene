@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.appli.event.CoordPaintListener;
+import fr.ign.cogit.geoxygene.appli.gui.AddPostgisLayer;
 import fr.ign.cogit.geoxygene.appli.gui.FileChooser;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -234,6 +235,17 @@ public class GeOxgeneMenuBar extends JMenuBar {
         
         JMenu fileMenu = new JMenu(I18N.getString("MainFrame.File")); //$NON-NLS-1$
         
+        // New Project
+        JMenuItem newProjectFrameMenuItem = new JMenuItem(
+                I18N.getString("MainFrame.NewProject")); //$NON-NLS-1$
+        newProjectFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                    mainFrame.newProjectFrame();
+            }
+        });
+        fileMenu.add(newProjectFrameMenuItem);
+        
         // Open File
         JMenuItem openFileMenuItem = new JMenuItem(
                 I18N.getString("MainFrame.OpenFile")); //$NON-NLS-1$
@@ -263,16 +275,31 @@ public class GeOxgeneMenuBar extends JMenuBar {
             });
         fileMenu.add(openFileMenuItem);
         
-        // New Project
-        JMenuItem newProjectFrameMenuItem = new JMenuItem(
-                I18N.getString("MainFrame.NewProject")); //$NON-NLS-1$
-        newProjectFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        // New Connection
+        JMenuItem newPgLayerMenuItem = new JMenuItem(
+                I18N.getString("MainFrame.NewPgLayer")); //$NON-NLS-1$
+        newPgLayerMenuItem.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                    mainFrame.newProjectFrame();
+              ProjectFrame projectFrame = (ProjectFrame) mainFrame.getDesktopPane().getSelectedFrame();
+              if (projectFrame == null) {
+                  if (mainFrame.getDesktopPane().getAllFrames().length != 0) {
+                    // TODO ask the user in which frame (s)he
+                    // wants to load into?
+                    projectFrame = (ProjectFrame) mainFrame.getDesktopPane()
+                        .getAllFrames()[0];
+                  } else {
+                    // TODO create a new project frame?
+                    MainFrame.getLogger().info(
+                        I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+                    return;
+                  }
+              }
+              AddPostgisLayer addPostgisLayerPanel = new AddPostgisLayer(projectFrame.getLayerLegendPanel());
+              addPostgisLayerPanel.setSize(600, 500);
             }
         });
-        fileMenu.add(newProjectFrameMenuItem);
+        fileMenu.add(newPgLayerMenuItem);
         
         // separator
         fileMenu.addSeparator();
