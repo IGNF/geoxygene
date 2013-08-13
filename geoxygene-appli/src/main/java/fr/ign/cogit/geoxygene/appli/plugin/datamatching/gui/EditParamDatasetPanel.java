@@ -26,10 +26,12 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -40,6 +42,7 @@ import javax.swing.filechooser.FileFilter;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
 
@@ -177,7 +180,11 @@ public class EditParamDatasetPanel extends JPanel {
     jFileChooser.setMultiSelectionEnabled(true);
 
     // Show file dialog
-    int returnVal = jFileChooser.showOpenDialog(this);
+    // int returnVal = jFileChooser.showOpenDialog(this);
+    Frame window=new Frame();
+    window.setIconImage(new ImageIcon(
+            GeOxygeneApplication.class.getResource("/images/icons/16x16/page_white_add.png")).getImage());
+    int returnVal = jFileChooser.showOpenDialog(window);
     
     // Initialize textField with the selectedFile
     if (returnVal == JFileChooser.APPROVE_OPTION) {

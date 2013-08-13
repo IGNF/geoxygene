@@ -1,10 +1,12 @@
 package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -15,6 +17,8 @@ import javax.swing.filechooser.FileFilter;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 
 public class EditParamActionPanel extends JPanel implements ActionListener {
   
@@ -150,8 +154,11 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
     jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     
     // Show file dialog
-    int returnVal = jFileChooser.showOpenDialog(this);
-    System.out.println("RETOUR = " + returnVal);
+    Frame window=new Frame();
+    window.setIconImage(new ImageIcon(
+            GeOxygeneApplication.class.getResource("/images/icons/16x16/page_white_add.png")).getImage());
+    int returnVal = jFileChooser.showOpenDialog(window);
+    // System.out.println("RETOUR = " + returnVal);
     
   }
   

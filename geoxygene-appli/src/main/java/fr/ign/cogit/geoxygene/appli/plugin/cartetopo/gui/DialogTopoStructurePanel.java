@@ -1,5 +1,6 @@
 package fr.ign.cogit.geoxygene.appli.plugin.cartetopo.gui;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -284,7 +285,11 @@ public class DialogTopoStructurePanel extends JDialog implements ActionListener 
       jFileChooser.setMultiSelectionEnabled(true);
 
       // Show file dialog
-      int returnVal = jFileChooser.showOpenDialog(this);
+      // int returnVal = jFileChooser.showOpenDialog(this);
+      Frame window=new Frame();
+      window.setIconImage(new ImageIcon(
+              GeOxygeneApplication.class.getResource("/images/icons/16x16/page_white_add.png")).getImage());
+      int returnVal = jFileChooser.showOpenDialog(window);
       
       // Initialize textField with the selectedFile
       if (returnVal == JFileChooser.APPROVE_OPTION) {
