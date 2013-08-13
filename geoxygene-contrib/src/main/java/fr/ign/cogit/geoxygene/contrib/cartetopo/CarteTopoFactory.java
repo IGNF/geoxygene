@@ -14,7 +14,8 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  * @author Julien Perret
  */
 public class CarteTopoFactory {
-  static Logger logger = Logger.getLogger(CarteTopoFactory.class);
+  public static Logger logger = Logger.getLogger(CarteTopoFactory.class
+      .getName());
 
   /**
    * Create a topological map from a feature collection, a name and a threshold.
