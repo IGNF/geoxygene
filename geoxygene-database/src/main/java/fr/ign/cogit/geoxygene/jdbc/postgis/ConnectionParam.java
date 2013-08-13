@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.jdbc.param;
+package fr.ign.cogit.geoxygene.jdbc.postgis;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

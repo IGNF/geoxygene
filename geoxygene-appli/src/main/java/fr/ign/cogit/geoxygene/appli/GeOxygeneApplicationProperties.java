@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.OrientationMapAdapter;
-import fr.ign.cogit.geoxygene.jdbc.param.ConnectionParam;
+import fr.ign.cogit.geoxygene.jdbc.postgis.ConnectionParam;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "GeOxygeneApplicationProperties")
@@ -72,6 +72,10 @@ public class GeOxygeneApplicationProperties {
      */
     public void setLastOpenedFile(String lastOpenedFile) {
         this.lastOpenedFile = lastOpenedFile;
+    }
+    
+    public void setConnectionParam(ConnectionParam param) {
+        this.connectionParam = param;
     }
 
     /**

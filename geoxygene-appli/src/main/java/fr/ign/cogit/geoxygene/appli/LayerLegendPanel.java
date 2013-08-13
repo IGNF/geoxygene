@@ -127,13 +127,13 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
           "/images/icons/16x16/database_add.png"))); //$NON-NLS-1$
   
   JButton topButton = new JButton(new ImageIcon(this.getClass().getResource(
-      "/images/icons/16x16/top.png"))); //$NON-NLS-1$
+      "/images/icons/16x16/arrow_top.png"))); //$NON-NLS-1$
   JButton upButton = new JButton(new ImageIcon(this.getClass().getResource(
-      "/images/icons/16x16/up.png"))); //$NON-NLS-1$
+      "/images/icons/16x16/arrow_up.png"))); //$NON-NLS-1$
   JButton downButton = new JButton(new ImageIcon(this.getClass().getResource(
-      "/images/icons/16x16/down.png"))); //$NON-NLS-1$
+      "/images/icons/16x16/arrow_down.png"))); //$NON-NLS-1$
   JButton bottomButton = new JButton(new ImageIcon(this.getClass().getResource(
-      "/images/icons/16x16/bottom.png"))); //$NON-NLS-1$
+      "/images/icons/16x16/arrow_bottom.png"))); //$NON-NLS-1$
   
   JButton minusButton = new JButton(new ImageIcon(this.getClass().getResource(
       "/images/icons/16x16/delete.png"))); //$NON-NLS-1$
@@ -188,16 +188,23 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
 
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-    this.addShapeButton.setMargin(new Insets(0, 0, 0, 0));
-    this.addPostgisButton.setMargin(new Insets(0, 0, 0, 0));
     
+    this.addShapeButton.setMargin(new Insets(0, 0, 0, 0));
+    this.addShapeButton.setToolTipText(I18N.getString("MainFrame.OpenFile"));
+    this.addPostgisButton.setMargin(new Insets(0, 0, 0, 0));
+    this.addPostgisButton.setToolTipText(I18N.getString("MainFrame.NewPgLayer"));
     
     this.topButton.setMargin(new Insets(0, 0, 0, 0));
+    this.topButton.setToolTipText(I18N.getString("LayerLegendPanel.Top"));
     this.upButton.setMargin(new Insets(0, 0, 0, 0));
+    this.upButton.setToolTipText(I18N.getString("LayerLegendPanel.Up"));
     this.downButton.setMargin(new Insets(0, 0, 0, 0));
+    this.downButton.setToolTipText(I18N.getString("LayerLegendPanel.Down"));
     this.bottomButton.setMargin(new Insets(0, 0, 0, 0));
+    this.bottomButton.setToolTipText(I18N.getString("LayerLegendPanel.Bottom"));
     this.minusButton.setMargin(new Insets(0, 0, 0, 0));
     this.attributeButton.setMargin(new Insets(0, 0, 0, 0));
+    this.attributeButton.setToolTipText(I18N.getString("LayerLegendPanel.EditAttributes"));
     panel.add(Box.createHorizontalGlue());
     panel.add(this.addShapeButton);
     panel.add(Box.createHorizontalGlue());

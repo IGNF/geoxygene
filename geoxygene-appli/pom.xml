@@ -92,6 +92,7 @@
 			<artifactId>forms</artifactId>
 			<version>1.0.5</version>
 		</dependency>
+		
 	</dependencies>
 
 </project>

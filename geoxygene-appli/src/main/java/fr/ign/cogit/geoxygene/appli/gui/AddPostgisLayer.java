@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ import fr.ign.cogit.geoxygene.appli.GeOxygeneApplicationProperties;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.LayerLegendPanel;
 import fr.ign.cogit.geoxygene.datatools.postgis.PostgisSpatialQuery;
-import fr.ign.cogit.geoxygene.jdbc.param.ConnectionParam;
+import fr.ign.cogit.geoxygene.jdbc.postgis.ConnectionParam;
 import fr.ign.cogit.geoxygene.jdbc.postgis.PostgisReader;
 
 
@@ -52,13 +53,13 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
     private Logger LOGGER = Logger.getLogger(AddPostgisLayer.class.getName());
     
     private LayerLegendPanel layerLegendPanel;
-    private GeOxygeneApplicationProperties properties;
+    private ConnectionParam connectionParam;
     
     private JPanel loadPanel = null;
     private JPanel layerPanel = null;
     
     /** List of connections. */
-    private JComboBox connectionList;
+    protected JComboBox connectionList;
     
     private PgLayerTableModel modele = new PgLayerTableModel();
     private JTable tableau;
@@ -79,7 +80,8 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
     public AddPostgisLayer(LayerLegendPanel layerLegendPanel) {
         
         this.layerLegendPanel = layerLegendPanel;
-        this.properties = layerLegendPanel.getLayerViewPanel().getProjectFrame().getMainFrame().getApplication().getProperties();
+        this.connectionParam = layerLegendPanel.getLayerViewPanel().getProjectFrame().getMainFrame()
+                .getApplication().getProperties().getConnectionParam();
         
         setModal(true);
         setTitle(I18N.getString("AddPostgisLayer.title"));
@@ -113,7 +115,10 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
         } else if (source == addLayerBt) {
             // 
             loadShape();
-            
+        } else if (source == editConnectionBt) {
+            // 
+            EditPostgisConnection editPostgisConnection = new EditPostgisConnection(this, connectionParam);
+            editPostgisConnection.setSize(600, 500);
         } else if (source == closeBt) {
             dispose();
         }
@@ -133,8 +138,8 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
         loadPanel.setLayout(layout);
         CellConstraints cc = new CellConstraints();
         
-        ConnectionParam param = properties.getConnectionParam();
-        String name = "jdbc:postgresql://" + param.getHost() + ":" + param.getPort() + "/" + param.getDatabase();
+        String name = "jdbc:postgresql://" + connectionParam.getHost() + ":" + connectionParam.getPort() 
+                + "/" + connectionParam.getDatabase();
         Object[] elements = new Object[]{name};
         connectionList = new JComboBox(elements);
         
@@ -142,7 +147,6 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
         connectBt.addActionListener(this);
         editConnectionBt = new JButton(I18N.getString("AddPostgisLayer.Edit"));
         editConnectionBt.addActionListener(this);
-        editConnectionBt.setEnabled(false);
         newConnectionBt = new JButton(I18N.getString("AddPostgisLayer.New"));
         newConnectionBt.addActionListener(this);
         newConnectionBt.setEnabled(false);
@@ -211,10 +215,9 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
                 modele.removePgLayer(i);
             }
             
-            ConnectionParam param = properties.getConnectionParam();
             Connection connection = DriverManager.getConnection(
-                    "jdbc:postgresql://" + param.getHost() + ":" + param.getPort() 
-                    + "/" + param.getDatabase(), param.getUser(), param.getPasswd());
+                    "jdbc:postgresql://" + connectionParam.getHost() + ":" + connectionParam.getPort() 
+                    + "/" + connectionParam.getDatabase(), connectionParam.getUser(), connectionParam.getPasswd());
             Map<Integer, Map<String, String>> resultat = PostgisSpatialQuery.getTables(connection);
             connection.close();
             
@@ -245,14 +248,13 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
             javax.swing.JOptionPane.showMessageDialog(null, I18N.getString("AddPostgisLayer.OneTable"));
         } else {
         
-            ConnectionParam param = properties.getConnectionParam();
             Map<String,String> params = new HashMap<String,String>();
-            params.put("dbtype", param.getDbtype());
-            params.put("host", param.getHost());
-            params.put("port", param.getPort());
-            params.put("database", param.getDatabase());
-            params.put("user", param.getUser());
-            params.put("passwd", param.getPasswd());
+            params.put("dbtype", connectionParam.getDbtype());
+            params.put("host", connectionParam.getHost());
+            params.put("port", connectionParam.getPort());
+            params.put("database", connectionParam.getDatabase());
+            params.put("user", connectionParam.getUser());
+            params.put("passwd", connectionParam.getPasswd());
             
             try {
                 
@@ -278,6 +280,14 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
             dispose();
             
         }
+    }
+    
+    public void setConnectionParam(ConnectionParam cp) {
+        connectionParam = cp;
+    }
+    
+    public LayerLegendPanel getLayerLegendPanel() {
+        return layerLegendPanel;
     }
 
 }
