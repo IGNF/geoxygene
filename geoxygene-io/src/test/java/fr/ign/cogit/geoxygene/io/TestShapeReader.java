@@ -27,7 +27,7 @@ public class TestShapeReader {
             // Assert.fail();
             e.printStackTrace();
         }*/
-        AssertTrue(true);
+        Assert.assertTrue(true);
         
     }
 
