@@ -30,7 +30,7 @@ package fr.ign.cogit.geoxygene.console;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import fr.ign.cogit.geoxygene.util.I18N;
+import fr.ign.cogit.geoxygene.appli.I18N;
 
 /**
  * GeOxygene Console.

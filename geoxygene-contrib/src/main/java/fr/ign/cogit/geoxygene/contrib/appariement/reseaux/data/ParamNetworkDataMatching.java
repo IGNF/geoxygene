@@ -46,7 +46,8 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
     "paramTopoNetwork1",
     "paramTopoNetwork2",
     "paramProjNetwork1",
-    "paramProjNetwork2"
+    "paramProjNetwork2",
+    "paramVarianteGeneralProcess"
 })
 @XmlRootElement(name = "ParamNetworkDataMatching")
 public class ParamNetworkDataMatching {
@@ -72,6 +73,9 @@ public class ParamNetworkDataMatching {
   @XmlElement(name = "ParamProjNetwork2")
   private ParamProjectionNetworkDataMatching paramProjNetwork2 = null;
 
+  @XmlElement(name = "ParamVarianteGeneralProcess")
+  private ParamVarianteGeneralProcess paramVarianteGeneralProcess = null;
+
   /** A classic logger. */
   static Logger logger = Logger.getLogger(ParamNetworkDataMatching.class.getName());
   
@@ -86,6 +90,7 @@ public class ParamNetworkDataMatching {
     paramTopoNetwork2 = new ParamTopologyTreatmentNetwork();
     paramProjNetwork1 = new ParamProjectionNetworkDataMatching();
     paramProjNetwork2 = new ParamProjectionNetworkDataMatching();
+    paramVarianteGeneralProcess = new ParamVarianteGeneralProcess();
   }
   
   public ParamDirectionNetworkDataMatching getParamDirectionNetwork1() {
@@ -143,6 +148,16 @@ public class ParamNetworkDataMatching {
   public ParamProjectionNetworkDataMatching getParamProjNetwork2() {
     return paramProjNetwork2;
   }
+  
+  public void setParamVarianteGeneralProcess(ParamVarianteGeneralProcess paramVariante) {
+      paramVarianteGeneralProcess = paramVariante;
+  }
+  
+  public ParamVarianteGeneralProcess getParamVarianteGeneralProcess() {
+      return paramVarianteGeneralProcess;
+  }
+  
+  
   
   /**
    * Transform new structure to old structure.
@@ -210,9 +225,13 @@ public class ParamNetworkDataMatching {
     param.projeteNoeuds2SurReseau1ImpassesSeulement = paramProjNetwork2.getProjeteNoeuds1SurReseau2ImpassesSeulement();
     
     // Variante
-    // param.varianteForceAppariementSimple = false;  // true
-    // param.varianteRedecoupageArcsNonApparies = false;   // true
-    // param.varianteFiltrageImpassesParasites = false;
+    param.varianteForceAppariementSimple = paramVarianteGeneralProcess.getForceAppariementSimple(); // false
+    param.varianteRedecoupageArcsNonApparies = paramVarianteGeneralProcess.getRedecoupageArcsNonApparies();
+    param.varianteChercheRondsPoints = paramVarianteGeneralProcess.getChercheRondsPoints();
+    param.varianteFiltrageImpassesParasites = paramVarianteGeneralProcess.getFiltrageImpassesParasites();
+    param.varianteRedecoupageNoeudsNonApparies = paramVarianteGeneralProcess.getRedecoupageNoeudsNonApparies();
+    param.varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc = paramVarianteGeneralProcess.getDistanceNoeudArc();
+    param.varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud = paramVarianteGeneralProcess.getDistanceProjectionNoeud();
     
     // 
     param.exportGeometrieLiens2vers1 = true;
@@ -276,40 +295,5 @@ public class ParamNetworkDataMatching {
     
     return buffer.toString();
   }
-  
-  /**
-   * Load the parameters from the specified stream.
-   * 
-   * @param stream stream to load the parameters from
-   * @return the parameters loaded from the specified stream
-   */
-  /*public static ResultNetworkDataMatching unmarshall(InputStream stream) {
-    try {
-      JAXBContext context = JAXBContext.newInstance(ResultNetworkDataMatching.class);
-      Unmarshaller m = context.createUnmarshaller();
-      ResultNetworkDataMatching parametresAppData = (ResultNetworkDataMatching) m.unmarshal(stream);
-      return parametresAppData;
-    } catch (JAXBException e) {
-      e.printStackTrace();
-    }
-    return new ResultNetworkDataMatching();
-  }*/
-  
-  /**
-   * Load the parameters. 
-   * If file does not exist, create new empty XML.
-   * 
-   * @param fileName XML parameter file to load
-   * @return ParametresAppData loaded
-   */
-  /*public static ResultNetworkDataMatching unmarshall(String fileName) {
-    try {
-      return ResultNetworkDataMatching.unmarshall(new FileInputStream(fileName));
-    } catch (FileNotFoundException e) {
-      //ResultNetworkDataMatching.LOGGER
-       //   .error("File " + fileName + " could not be read");
-      return new ResultNetworkDataMatching();
-    }
-  }*/
   
 }

@@ -266,6 +266,9 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     paramProj2.setProjeteNoeuds1SurReseau2ImpassesSeulement(true);
     param.setParamProjNetwork2(paramProj2);
     
+    // Variante
+    // default param
+    
     //
     paramPlugin.setParamNetworkDataMatching(param);
     
@@ -448,8 +451,11 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       // A garder ??
       // this.application.getFrame().getDesktopPane().removeAll();
       
-      Dimension desktopSize = this.application.getFrame().getDesktopPane().getSize();
+      this.application.getFrame().newDesktopFrame("Appariement réseau.");
+      
+      Dimension desktopSize = this.application.getFrame().getSize();
       int widthProjectFrame = desktopSize.width / 2;
+      LOGGER.debug("WIDTH = " + widthProjectFrame);
       int heightProjectFrame = desktopSize.height / 2;
   
       // ---------------------------------------------------------------------------------

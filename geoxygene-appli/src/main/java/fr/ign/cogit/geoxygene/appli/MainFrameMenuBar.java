@@ -1,12 +1,9 @@
 package fr.ign.cogit.geoxygene.appli;
 
-import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.print.PrinterJob;
 import java.io.File;
@@ -14,6 +11,7 @@ import java.util.Set;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -28,7 +26,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.appli.event.CoordPaintListener;
 import fr.ign.cogit.geoxygene.appli.gui.AddPostgisLayer;
 import fr.ign.cogit.geoxygene.appli.gui.FileChooser;
-import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.style.Layer;
 
@@ -36,14 +33,14 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * File, view, configuration and help menu in GeOxygene main frame.
  * 
  */
-public class GeOxgeneMenuBar extends JMenuBar {
+public class MainFrameMenuBar extends JMenuBar {
     
     private MainFrame mainFrame;
     
     public static FileChooser fc = new FileChooser();
     
     /** Logger of the application. */
-    private static Logger LOGGER = Logger.getLogger(GeOxgeneMenuBar.class.getName());
+    private static Logger LOGGER = Logger.getLogger(MainFrameMenuBar.class.getName());
     
     /** serial version uid. */
     private static final long serialVersionUID = -6860364246334166387L;
@@ -52,7 +49,7 @@ public class GeOxgeneMenuBar extends JMenuBar {
      * Constructor.
      * @param frame
      */
-    public GeOxgeneMenuBar(MainFrame frame) {
+    public MainFrameMenuBar(MainFrame frame) {
         
         super();
         
@@ -235,9 +232,24 @@ public class GeOxgeneMenuBar extends JMenuBar {
         
         JMenu fileMenu = new JMenu(I18N.getString("MainFrame.File")); //$NON-NLS-1$
         
+        // New Desktop
+        JMenuItem newDesktopFrameMenuItem = new JMenuItem(
+                I18N.getString("MainFrame.NewDesktop"),  //$NON-NLS-1$
+                new ImageIcon(
+                        GeOxygeneApplication.class.getResource("/images/icons/tab_add.png")));  
+        newDesktopFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                mainFrame.newDesktopFrame(null);
+            }
+        });
+        fileMenu.add(newDesktopFrameMenuItem);
+        
         // New Project
         JMenuItem newProjectFrameMenuItem = new JMenuItem(
-                I18N.getString("MainFrame.NewProject")); //$NON-NLS-1$
+                I18N.getString("MainFrame.NewProject"),  //$NON-NLS-1$
+                new ImageIcon(
+                        GeOxygeneApplication.class.getResource("/images/icons/application_add.png"))); 
         newProjectFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -248,7 +260,9 @@ public class GeOxgeneMenuBar extends JMenuBar {
         
         // Open File
         JMenuItem openFileMenuItem = new JMenuItem(
-                I18N.getString("MainFrame.OpenFile")); //$NON-NLS-1$
+                I18N.getString("MainFrame.OpenFile"), //$NON-NLS-1$
+                new ImageIcon(
+                        GeOxygeneApplication.class.getResource("/images/icons/16x16/page_white_add.png"))); 
         
         openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
               @Override
@@ -262,7 +276,7 @@ public class GeOxgeneMenuBar extends JMenuBar {
                         .getAllFrames()[0];
                   } else {
                     // TODO create a new project frame?
-                    MainFrame.getLogger().info(
+                    LOGGER.info(
                         I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
                     return;
                   }
@@ -277,7 +291,9 @@ public class GeOxgeneMenuBar extends JMenuBar {
         
         // New Connection
         JMenuItem newPgLayerMenuItem = new JMenuItem(
-                I18N.getString("MainFrame.NewPgLayer")); //$NON-NLS-1$
+                I18N.getString("MainFrame.NewPgLayer"),  //$NON-NLS-1$
+                new ImageIcon(
+                        GeOxygeneApplication.class.getResource("/images/icons/16x16/database_add.png")));
         newPgLayerMenuItem.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -290,7 +306,7 @@ public class GeOxgeneMenuBar extends JMenuBar {
                         .getAllFrames()[0];
                   } else {
                     // TODO create a new project frame?
-                    MainFrame.getLogger().info(
+                    LOGGER.info(
                         I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
                     return;
                   }
@@ -306,7 +322,9 @@ public class GeOxgeneMenuBar extends JMenuBar {
         
         // Save as Shp
         JMenuItem saveAsShpMenuItem = new JMenuItem(
-                I18N.getString("MainFrame.SaveAsShp")); //$NON-NLS-1$
+                I18N.getString("MainFrame.SaveAsShp"),  //$NON-NLS-1$
+                new ImageIcon(
+                        GeOxygeneApplication.class.getResource("/images/icons/disk.png"))); 
         saveAsShpMenuItem.addActionListener(new java.awt.event.ActionListener() {
         
             @Override
@@ -341,7 +359,9 @@ public class GeOxgeneMenuBar extends JMenuBar {
         
         // 
         JMenuItem saveAsImageMenuItem = new JMenuItem(
-                I18N.getString("MainFrame.SaveAsImage")); //$NON-NLS-1$
+                I18N.getString("MainFrame.SaveAsImage"), //$NON-NLS-1$
+                new ImageIcon(
+                        GeOxygeneApplication.class.getResource("/images/icons/image.png"))); 
             saveAsImageMenuItem.addActionListener(new java.awt.event.ActionListener() {
               @Override
               public void actionPerformed(final ActionEvent e) {
@@ -367,7 +387,9 @@ public class GeOxgeneMenuBar extends JMenuBar {
             });
         fileMenu.add(saveAsImageMenuItem);
         
-        JMenuItem printMenu = new JMenuItem(I18N.getString("MainFrame.Print")); //$NON-NLS-1$
+        JMenuItem printMenu = new JMenuItem(I18N.getString("MainFrame.Print"), //$NON-NLS-1$
+                new ImageIcon(
+                        GeOxygeneApplication.class.getResource("/images/icons/printer.png"))); 
         printMenu.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent arg0) {

@@ -49,6 +49,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNet
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamProjectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamVarianteGeneralProcess;
 
 
 /**
@@ -83,7 +84,7 @@ public class EditParamPanel extends JDialog implements ActionListener {
   EditParamDistancePanel distancePanel = null;
   EditParamTopoPanel topoTreatmentPanel = null;
   EditParamProjectionPanel projectionPanel = null;
-  JPanel variante = null;
+  EditParamVariantePanel variante = null;
 
   /**
    * Constructor. Initialize the JDialog.
@@ -116,8 +117,7 @@ public class EditParamPanel extends JDialog implements ActionListener {
     projectionPanel = new EditParamProjectionPanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamProjNetwork1(),
         networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamProjNetwork2());
     
-    
-    variante = new JPanel();
+    variante = new EditParamVariantePanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamVarianteGeneralProcess());
     
     // Init tabbed panel
     JTabbedPane tabbedPane = new JTabbedPane();
@@ -149,7 +149,7 @@ public class EditParamPanel extends JDialog implements ActionListener {
     getContentPane().add(buttonPanel, BorderLayout.SOUTH);
     
     pack();
-    setLocation(500, 250);
+    setLocation(250, 250);
     setVisible(true);
   }
   
@@ -260,7 +260,11 @@ public class EditParamPanel extends JDialog implements ActionListener {
     param.setParamProjNetwork2(tabParamProj[1]);
     
     // Variante
+    ParamVarianteGeneralProcess paramVariante = variante.valideField();
+    param.setParamVarianteGeneralProcess(paramVariante);
     
+    
+    //
     paramPlugin.setParamNetworkDataMatching(param);
     
     // ------------------------------------------------------------------------------------------

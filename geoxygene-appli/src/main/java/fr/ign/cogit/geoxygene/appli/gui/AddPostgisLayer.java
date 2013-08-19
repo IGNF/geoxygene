@@ -1,16 +1,17 @@
 package fr.ign.cogit.geoxygene.appli.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -20,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 
 import org.apache.log4j.Logger;
@@ -92,14 +94,16 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
         initLoadPanel();
         initLayerPanel();
         
-        // Init param panel
-        JSplitPane splitPane = new JSplitPane(
-                JSplitPane.VERTICAL_SPLIT,
-                loadPanel, layerPanel);
-        splitPane.setOneTouchExpandable(true);
-        
-        getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(splitPane, BorderLayout.CENTER);
+        // dispaly panel
+        FormLayout layout = new FormLayout(
+                "20dlu, pref, 20dlu",  // colonnes
+                "10dlu, pref, pref, 20dlu");  // lignes
+        getContentPane().setLayout(layout);
+        // add(loadPanel, BorderLayout.NORTH);
+        // add(layerPanel, BorderLayout.SOUTH);
+        CellConstraints cc = new CellConstraints();
+        add(loadPanel, cc.xy(2, 2));
+        add(layerPanel, cc.xy(2, 3));
         
         pack();
         setVisible(true);
@@ -131,10 +135,13 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
     private void initLoadPanel() {
         
         loadPanel = new JPanel();
+        loadPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder("Connections"),
+                BorderFactory.createEmptyBorder(10, 0, 0, 0)));
         
         FormLayout layout = new FormLayout(
-                "20dlu, pref, 10dlu, pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 20dlu",  // colonnes
-                "10dlu, pref, 10dlu, pref, 10dlu, pref, 20dlu");  // lignes
+                "20dlu, pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 20dlu",  // colonnes
+                "10dlu, pref, 10dlu, pref, 20dlu");  // lignes
         loadPanel.setLayout(layout);
         CellConstraints cc = new CellConstraints();
         
@@ -155,23 +162,27 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
         delConnectionBt.setEnabled(false);
         
         // Ligne 1
-        loadPanel.add(new JLabel(I18N.getString("AddPostgisLayer.Connection") + " : "), cc.xy(2, 2));
+        // loadPanel.add(new JLabel(I18N.getString("AddPostgisLayer.Connection") + " : "), cc.xy(2, 2));
         
         // Ligne 2
-        loadPanel.add(connectionList, cc.xyw(4, 4, 7));
+        loadPanel.add(connectionList, cc.xyw(2, 2, 7));
         
         // Ligne 3
-        loadPanel.add(connectBt, cc.xy(4, 6));
-        loadPanel.add(editConnectionBt, cc.xy(6, 6));
-        loadPanel.add(newConnectionBt, cc.xy(8, 6));
-        loadPanel.add(delConnectionBt, cc.xy(10, 6));
+        loadPanel.add(connectBt, cc.xy(2, 4));
+        loadPanel.add(editConnectionBt, cc.xy(4, 4));
+        loadPanel.add(newConnectionBt, cc.xy(6, 4));
+        loadPanel.add(delConnectionBt, cc.xy(8, 4));
     }
     
     /**
      * Display all tables for one connection
      */
     private void initLayerPanel() {
+        
         layerPanel = new JPanel();
+        layerPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(""),
+                BorderFactory.createEmptyBorder(10, 0, 0, 0)));
         FormLayout layout = new FormLayout(
                 "20dlu, 200dlu, pref, 5dlu, pref, 5dlu, pref, 20dlu",  // colonnes
                 "20dlu, pref, pref, 20dlu, pref, 30dlu");  // lignes

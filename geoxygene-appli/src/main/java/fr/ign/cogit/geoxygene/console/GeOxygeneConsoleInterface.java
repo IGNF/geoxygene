@@ -37,12 +37,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import fr.ign.cogit.geoxygene.util.console.ExportData;
-import fr.ign.cogit.geoxygene.util.console.JavaToSql;
-import fr.ign.cogit.geoxygene.util.console.ManageData;
-import fr.ign.cogit.geoxygene.util.console.MappingTool;
-import fr.ign.cogit.geoxygene.util.console.SqlToJava;
-
 /**
  * 
  * @author Thierry Badard & Arnaud Braun & Eric Grosso
