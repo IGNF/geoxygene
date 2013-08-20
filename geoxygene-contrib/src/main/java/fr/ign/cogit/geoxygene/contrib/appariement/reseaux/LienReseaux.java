@@ -46,6 +46,8 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
@@ -571,9 +573,36 @@ public class LienReseaux extends Lien {
       
         lienR.setGeom(lienR.creeGeometrieLien(param.debugTirets,
           param.debugPasTirets, param.debugBuffer, param.debugTailleBuffer));
-      
+        
         // lienR.setSchema(lien.getSchema());
         // lienR.setAttribute("evaluation", lien.getEvaluation());
+        
+        /////////////////////////////////////////
+        // Récupération des objets pointés par le lien
+        
+        // Liens vers les objets de référence
+        List<IFeature> tousobjetsRef = new ArrayList<IFeature>();
+        tousobjetsRef.addAll(lienR.getArcs1());
+        tousobjetsRef.addAll(lienR.getNoeuds1());
+        Iterator<Groupe> itGroupe = lienR.getGroupes1().iterator();
+        while (itGroupe.hasNext()) {
+            Groupe groupe = itGroupe.next();
+            tousobjetsRef.addAll(groupe.getListeArcs());
+            tousobjetsRef.addAll(groupe.getListeNoeuds());
+        }
+        lienR.setObjetsRef(tousobjetsRef);
+        
+        // Liens vers les objets de comparaison
+        List<IFeature> tousobjetsComp = new ArrayList<IFeature>();
+        tousobjetsComp.addAll(lienR.getArcs2());
+        tousobjetsComp.addAll(lienR.getNoeuds2());
+        itGroupe = lienR.getGroupes2().iterator();
+        while (itGroupe.hasNext()) {
+            Groupe groupe = itGroupe.next();
+            tousobjetsComp.addAll(groupe.getListeArcs());
+            tousobjetsComp.addAll(groupe.getListeNoeuds());
+        }
+        lienR.setObjetsComp(tousobjetsComp);
       
     }
     
@@ -584,17 +613,17 @@ public class LienReseaux extends Lien {
     //
     // liensGeneriques = new EnsembleDeLiens();
     // liensGeneriques.setNom(liensReseaux.getNom());
-    //
     // itLiens = liensReseaux.getElements().iterator();
     // while (itLiens.hasNext()) {
-    // lienR = (LienReseaux) itLiens.next();
-    // lienG = (Lien)liensGeneriques.nouvelElement();
-    // lienG.setEvaluation(lienR.getEvaluation());
+    //     lienR = (LienReseaux) itLiens.next();
+    //     
+    //     lienG = (Lien)liensGeneriques.nouvelElement();
+    //     lienG.setEvaluation(lienR.getEvaluation());
     //
-    // /////////////////////////////////////////
-    // // Récupération des objets pointés par le lien
+    //     /////////////////////////////////////////
+    //     // Récupération des objets pointés par le lien
     //
-    // // Liens vers les objets de référence
+    //     // Liens vers les objets de référence
     // tousobjetsRef = new ArrayList<FT_Feature>();
     // tousobjetsRef.addAll(lienR.getArcs1());
     // tousobjetsRef.addAll(lienR.getNoeuds1());
