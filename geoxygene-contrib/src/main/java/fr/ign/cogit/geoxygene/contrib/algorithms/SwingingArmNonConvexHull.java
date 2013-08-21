@@ -49,30 +49,30 @@ public class SwingingArmNonConvexHull {
    */
   public IGeometry compute() {
     if (this.points.isEmpty()) {
-      if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
+      if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
         SwingingArmNonConvexHull.logger
-            .trace("No points to construct the hull"); //$NON-NLS-1$
+            .debug("No points to construct the hull"); //$NON-NLS-1$
       }
       return null;
     }
-    if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
+    if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
       SwingingArmNonConvexHull.logger
-          .trace("Computation of the non-convex hull using Swinging Arm method with radius=" //$NON-NLS-1$
+          .debug("Computation of the non-convex hull using Swinging Arm method with radius=" //$NON-NLS-1$
               + this.radius);
     }
     // Swinging arm clockwise
-    if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
-      SwingingArmNonConvexHull.logger.trace("clockwise"); //$NON-NLS-1$
+    if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
+      SwingingArmNonConvexHull.logger.debug("clockwise"); //$NON-NLS-1$
     }
     IGeometry clockWise = this.swingingArmCompute(-1.0);
     // Swinging arm anticlockwise
-    if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
-      SwingingArmNonConvexHull.logger.trace("anticlockwise"); //$NON-NLS-1$
+    if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
+      SwingingArmNonConvexHull.logger.debug("anticlockwise"); //$NON-NLS-1$
     }
     IGeometry antiClockWise = this.swingingArmCompute(1.0);
     // Union of the two geometries
-    if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
-      SwingingArmNonConvexHull.logger.trace("union of the two hulls"); //$NON-NLS-1$
+    if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
+      SwingingArmNonConvexHull.logger.debug("union of the two hulls"); //$NON-NLS-1$
     }
     if (!clockWise.isValid() || !antiClockWise.isValid()) {
       return null;
@@ -95,9 +95,9 @@ public class SwingingArmNonConvexHull {
   private IGeometry swingingArmCompute(double direction) {
     // if there is no point, return a null hull
     if (this.points.isEmpty()) {
-      if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
+      if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
         SwingingArmNonConvexHull.logger
-            .trace("No points to construct the hull"); //$NON-NLS-1$
+            .debug("No points to construct the hull"); //$NON-NLS-1$
       }
       return null;
     }
@@ -301,8 +301,8 @@ public class SwingingArmNonConvexHull {
         }
       }
     }
-    if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
-      SwingingArmNonConvexHull.logger.trace("non-convex-hull containing " //$NON-NLS-1$
+    if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
+      SwingingArmNonConvexHull.logger.debug("non-convex-hull containing " //$NON-NLS-1$
           + nbConnexComponents + " connex components"); //$NON-NLS-1$
     }
     return hull;

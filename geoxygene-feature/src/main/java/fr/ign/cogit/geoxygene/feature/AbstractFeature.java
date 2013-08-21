@@ -400,30 +400,30 @@ public abstract class AbstractFeature implements IFeature {
         valeur = methodGetter.invoke(this, (Object[]) null);
         return valeur;
       } catch (SecurityException e) {
-        if (AbstractFeature.logger.isTraceEnabled()) {
+        if (AbstractFeature.logger.isDebugEnabled()) {
           AbstractFeature.logger
-              .trace("SecurityException pendant l'appel de la méthode "
+              .debug("SecurityException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       } catch (IllegalArgumentException e) {
-        if (AbstractFeature.logger.isTraceEnabled()) {
+        if (AbstractFeature.logger.isDebugEnabled()) {
           AbstractFeature.logger
-              .trace("IllegalArgumentException pendant l'appel de la méthode "
+              .debug("IllegalArgumentException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       } catch (NoSuchMethodException e) {
-        // if (logger.isTraceEnabled())
-        // logger.trace("La m�thode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
+        // if (logger.isDebugEnabled())
+        // logger.debug("La m�thode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
       } catch (IllegalAccessException e) {
-        if (AbstractFeature.logger.isTraceEnabled()) {
+        if (AbstractFeature.logger.isDebugEnabled()) {
           AbstractFeature.logger
-              .trace("IllegalAccessException pendant l'appel de la méthode "
+              .debug("IllegalAccessException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       } catch (InvocationTargetException e) {
-        if (AbstractFeature.logger.isTraceEnabled()) {
+        if (AbstractFeature.logger.isDebugEnabled()) {
           AbstractFeature.logger
-              .trace("InvocationTargetException pendant l'appel de la méthode "
+              .debug("InvocationTargetException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       }
@@ -439,30 +439,30 @@ public abstract class AbstractFeature implements IFeature {
         valeur = methodGetter.invoke(this, (Object[]) null);
         return valeur;
       } catch (SecurityException e) {
-        if (AbstractFeature.logger.isTraceEnabled()) {
+        if (AbstractFeature.logger.isDebugEnabled()) {
           AbstractFeature.logger
-              .trace("SecurityException pendant l'appel de la méthode "
+              .debug("SecurityException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       } catch (IllegalArgumentException e) {
-        if (AbstractFeature.logger.isTraceEnabled()) {
+        if (AbstractFeature.logger.isDebugEnabled()) {
           AbstractFeature.logger
-              .trace("IllegalArgumentException pendant l'appel de la méthode "
+              .debug("IllegalArgumentException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       } catch (NoSuchMethodException e) {
-        // if (logger.isTraceEnabled())
-        // logger.trace("La méthode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
+        // if (logger.isDebugEnabled())
+        // logger.debug("La méthode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
       } catch (IllegalAccessException e) {
-        if (AbstractFeature.logger.isTraceEnabled()) {
+        if (AbstractFeature.logger.isDebugEnabled()) {
           AbstractFeature.logger
-              .trace("IllegalAccessException pendant l'appel de la méthode "
+              .debug("IllegalAccessException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       } catch (InvocationTargetException e) {
-        if (AbstractFeature.logger.isTraceEnabled()) {
+        if (AbstractFeature.logger.isDebugEnabled()) {
           AbstractFeature.logger
-              .trace("InvocationTargetException pendant l'appel de la méthode "
+              .debug("InvocationTargetException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       }

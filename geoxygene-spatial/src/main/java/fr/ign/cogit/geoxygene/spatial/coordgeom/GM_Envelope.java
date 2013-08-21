@@ -182,9 +182,9 @@ public class GM_Envelope implements IEnvelope {
       double val = theMin + (theMax - theMin) / 2;
       if (!Double.isNaN(val)) {
         result.setCoordinate(i, val);
-        if (GM_Envelope.logger.isTraceEnabled()) {
+        if (GM_Envelope.logger.isDebugEnabled()) {
           GM_Envelope.logger
-              .trace("Center " + i + " " + theMin + " " + theMax + " = " + (theMin + (theMax - theMin) / 2)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+              .debug("Center " + i + " " + theMin + " " + theMax + " = " + (theMin + (theMax - theMin) / 2)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
       }
     }

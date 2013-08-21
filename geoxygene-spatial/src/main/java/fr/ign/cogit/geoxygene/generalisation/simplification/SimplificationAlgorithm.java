@@ -38,13 +38,13 @@ public class SimplificationAlgorithm {
   public static IGeometry simplification(IPolygon poly, double seuil) {
     IPolygon poly_ = (IPolygon) poly.clone();
 
-    if (SimplificationAlgorithm.logger.isTraceEnabled()) {
+    if (SimplificationAlgorithm.logger.isDebugEnabled()) {
       SimplificationAlgorithm.logger
-          .trace("recupere les cotes plus petits que le seuil");
+          .debug("recupere les cotes plus petits que le seuil");
     }
     ArrayList<PolygonSegment> cps = PolygonSegment.getSmallest(poly_, seuil);
-    if (SimplificationAlgorithm.logger.isTraceEnabled()) {
-      SimplificationAlgorithm.logger.trace("nb=" + cps.size());
+    if (SimplificationAlgorithm.logger.isDebugEnabled()) {
+      SimplificationAlgorithm.logger.debug("nb=" + cps.size());
     }
 
     // essayer de supprimer des cotes trop courts tant qu'il y en a
@@ -149,22 +149,22 @@ public class SimplificationAlgorithm {
    */
   public static LineString simplification(LinearRing lr, double seuil) {
 
-    if (SimplificationAlgorithm.logger.isTraceEnabled()) {
-      SimplificationAlgorithm.logger.trace("recupere les cotes trop courts, < "
+    if (SimplificationAlgorithm.logger.isDebugEnabled()) {
+      SimplificationAlgorithm.logger.debug("recupere les cotes trop courts, < "
           + seuil);
     }
     LinearRing lr_ = (LinearRing) lr.clone();
     ArrayList<LineStringSegment> cotesTropCourts = LineStringSegment
         .getSmallest(lr_, seuil);
-    if (SimplificationAlgorithm.logger.isTraceEnabled()) {
-      SimplificationAlgorithm.logger.trace("  nb=" + cotesTropCourts.size());
+    if (SimplificationAlgorithm.logger.isDebugEnabled()) {
+      SimplificationAlgorithm.logger.debug("  nb=" + cotesTropCourts.size());
     }
 
     // tant qu'il y a des cotes trop courts, tente de les supprimer
     while (cotesTropCourts.size() > 0) {
-      if (SimplificationAlgorithm.logger.isTraceEnabled()) {
+      if (SimplificationAlgorithm.logger.isDebugEnabled()) {
         SimplificationAlgorithm.logger
-            .trace("tente suppression de l'un des cotes trop court");
+            .debug("tente suppression de l'un des cotes trop court");
       }
 
       boolean coteSupprime = false;
@@ -172,8 +172,8 @@ public class SimplificationAlgorithm {
         resultatSuppressionCoteLigne res = SimplificationAlgorithm
             .suppressionCote(lr_, cls);
         if (res.ok) {
-          if (SimplificationAlgorithm.logger.isTraceEnabled()) {
-            SimplificationAlgorithm.logger.trace("   succes");
+          if (SimplificationAlgorithm.logger.isDebugEnabled()) {
+            SimplificationAlgorithm.logger.debug("   succes");
           }
           lr_ = res.lr;
           coteSupprime = true;
@@ -182,8 +182,8 @@ public class SimplificationAlgorithm {
         }
       }
       if (!coteSupprime) {
-        if (SimplificationAlgorithm.logger.isTraceEnabled()) {
-          SimplificationAlgorithm.logger.trace("   echec");
+        if (SimplificationAlgorithm.logger.isDebugEnabled()) {
+          SimplificationAlgorithm.logger.debug("   echec");
         }
         break;
       }
@@ -231,8 +231,8 @@ public class SimplificationAlgorithm {
         && Math.abs(angle) >= Math.PI / 2
             - SimplificationAlgorithm.SEUIL_COTES_ORTHOGONAUX) {
       // cotes presque orthogonaux: les prolonger
-      if (SimplificationAlgorithm.logger.isTraceEnabled()) {
-        SimplificationAlgorithm.logger.trace("cotes presque orthogonaux");
+      if (SimplificationAlgorithm.logger.isDebugEnabled()) {
+        SimplificationAlgorithm.logger.debug("cotes presque orthogonaux");
       }
 
       // calcul de l'intersection
@@ -280,9 +280,9 @@ public class SimplificationAlgorithm {
       // cotes presque paralleles
       // on est en presence d'un petit depassement
       // tente de projeter a_ et b_ respectivement sur (b,b_) et (a,a_)
-      if (SimplificationAlgorithm.logger.isTraceEnabled()) {
+      if (SimplificationAlgorithm.logger.isDebugEnabled()) {
         SimplificationAlgorithm.logger
-            .trace("cotes presque paralleles: petit depassement");
+            .debug("cotes presque paralleles: petit depassement");
       }
 
       if (a_ == b_) {
@@ -369,9 +369,9 @@ public class SimplificationAlgorithm {
       // cotes presque paralleles, petit decrochement
       // supprime les trois cotes et les remplace par un nouveau qui moyenne les
       // 3 precedents
-      if (SimplificationAlgorithm.logger.isTraceEnabled()) {
+      if (SimplificationAlgorithm.logger.isDebugEnabled()) {
         SimplificationAlgorithm.logger
-            .trace("cotes presque paralleles: petit decrochement");
+            .debug("cotes presque paralleles: petit decrochement");
       }
 
       // calcul de la direction du nouveau cote: (a_,a)+(b,b_)
@@ -427,8 +427,8 @@ public class SimplificationAlgorithm {
 
     else {
       // aucune simplification possible
-      if (SimplificationAlgorithm.logger.isTraceEnabled()) {
-        SimplificationAlgorithm.logger.trace("pas de simplification");
+      if (SimplificationAlgorithm.logger.isDebugEnabled()) {
+        SimplificationAlgorithm.logger.debug("pas de simplification");
       }
       return new resultatSuppressionCoteLigne(null, false);
     }

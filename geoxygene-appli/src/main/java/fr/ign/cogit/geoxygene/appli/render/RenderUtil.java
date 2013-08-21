@@ -994,10 +994,10 @@ public final class RenderUtil {
       if (shape != null) {
         shapes.add(shape);
       } else {
-//        if (AbstractSymbolizer.logger.isTraceEnabled()) {
-//          AbstractSymbolizer.logger.trace("null shape for " + polygon); //$NON-NLS-1$
+//        if (AbstractSymbolizer.logger.isDebugEnabled()) {
+//          AbstractSymbolizer.logger.debug("null shape for " + polygon); //$NON-NLS-1$
 //          AbstractSymbolizer.logger
-//              .trace("ring = " + polygon.exteriorLineString()); //$NON-NLS-1$
+//              .debug("ring = " + polygon.exteriorLineString()); //$NON-NLS-1$
 //        }
       }
       for (IRing ring : polygon.getInterior()) {
@@ -1005,9 +1005,9 @@ public final class RenderUtil {
         if (shape != null) {
           shapes.add(shape);
         } else {
-//          if (AbstractSymbolizer.logger.isTraceEnabled()) {
-//            AbstractSymbolizer.logger.trace("null shape for " + polygon); //$NON-NLS-1$
-//            AbstractSymbolizer.logger.trace("ring = " + ring); //$NON-NLS-1$
+//          if (AbstractSymbolizer.logger.isDebugEnabled()) {
+//            AbstractSymbolizer.logger.debug("null shape for " + polygon); //$NON-NLS-1$
+//            AbstractSymbolizer.logger.debug("ring = " + ring); //$NON-NLS-1$
 //          }
         }
       }

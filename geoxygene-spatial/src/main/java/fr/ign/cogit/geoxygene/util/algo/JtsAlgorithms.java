@@ -964,9 +964,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
       JtsAlgorithms.fireActionPerformed(new ActionEvent(
           JtsAlgorithms.singleton, 1, I18N
               .getString("JtsAlgorithms.UnionIterationAction"), iteration++)); //$NON-NLS-1$
-      if (JtsAlgorithms.logger.isTraceEnabled()) {
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
         JtsAlgorithms.logger
-            .trace("Union (" + iteration + "/" + nbIteration + ")"); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+            .debug("Union (" + iteration + "/" + nbIteration + ")"); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
       }
       TreeSet<Geometry> treeSet = new TreeSet<Geometry>(comparator);
       treeSet.addAll(newGeometryCollection);
@@ -1042,8 +1042,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
       JtsAlgorithms.fireActionPerformed(new ActionEvent(
           JtsAlgorithms.singleton, 3, I18N
               .getString("JtsAlgorithms.UnionDetailIterationAction"), ++count)); //$NON-NLS-1$
-      if (JtsAlgorithms.logger.isTraceEnabled()) {
-        JtsAlgorithms.logger.trace(" " + (count) + " - " + size + " features"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger.debug(" " + (count) + " - " + size + " features"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
       }
     }
     if (groupSize - count % groupSize != 0) {
@@ -1089,9 +1089,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
       JtsAlgorithms.fireActionPerformed(new ActionEvent(
           JtsAlgorithms.singleton, 1, I18N
               .getString("JtsAlgorithms.UnionIterationAction"), iteration++)); //$NON-NLS-1$
-      if (JtsAlgorithms.logger.isTraceEnabled()) {
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
         JtsAlgorithms.logger
-            .trace("Union (" + iteration + "/" + nbIteration + ")"); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+            .debug("Union (" + iteration + "/" + nbIteration + ")"); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
       }
       TreeSet<Geometry> treeSet = new TreeSet<Geometry>(comparator);
       treeSet.addAll(newGeometryCollection);
@@ -1131,8 +1131,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
       JtsAlgorithms.fireActionPerformed(new ActionEvent(
           JtsAlgorithms.singleton, 3, I18N
               .getString("JtsAlgorithms.UnionDetailIterationAction"), ++count)); //$NON-NLS-1$
-      if (JtsAlgorithms.logger.isTraceEnabled()) {
-        JtsAlgorithms.logger.trace(" " + (count) + " - " + size + " features"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger.debug(" " + (count) + " - " + size + " features"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
       }
     }
     if (groupSize - count % groupSize != 0) {

@@ -132,13 +132,13 @@ public class OrientationMeasure {
       this.calculerContributionsCotesOrientation();
     }
 
-    if (OrientationMeasure.logger.isTraceEnabled()) {
-      OrientationMeasure.logger.trace("contributions:");
+    if (OrientationMeasure.logger.isDebugEnabled()) {
+      OrientationMeasure.logger.debug("contributions:");
       String st = "";
       for (int i = 1; i < this.contributionsCotesOrientation.length; i++) {
         st += (int) this.contributionsCotesOrientation[i] + "  ";
       }
-      OrientationMeasure.logger.trace(st);
+      OrientationMeasure.logger.debug(st);
     }
 
     // recupere l'index de la contribution maximale
@@ -224,8 +224,8 @@ public class OrientationMeasure {
     for (int i = 1; i < coord.length; i++) {
       c2 = coord[i];
 
-      if (OrientationMeasure.logger.isTraceEnabled()) {
-        OrientationMeasure.logger.trace("contribution de cote (" + c1 + ", "
+      if (OrientationMeasure.logger.isDebugEnabled()) {
+        OrientationMeasure.logger.debug("contribution de cote (" + c1 + ", "
             + c2 + ")");
       }
 
@@ -238,15 +238,15 @@ public class OrientationMeasure {
       if (orientation < 0) {
         orientation += 0.5 * Math.PI;
       }
-      if (OrientationMeasure.logger.isTraceEnabled()) {
-        OrientationMeasure.logger.trace("   orientation (en deg): "
+      if (OrientationMeasure.logger.isDebugEnabled()) {
+        OrientationMeasure.logger.debug("   orientation (en deg): "
             + orientation * 180 / Math.PI);
       }
 
       // calcul du plus petit index d'angle pour lesquels le cote contribue
       index = (int) (orientation / pasOrientation);
-      if (OrientationMeasure.logger.isTraceEnabled()) {
-        OrientationMeasure.logger.trace("   index: " + index);
+      if (OrientationMeasure.logger.isDebugEnabled()) {
+        OrientationMeasure.logger.debug("   index: " + index);
       }
 
       // ajout des contributions

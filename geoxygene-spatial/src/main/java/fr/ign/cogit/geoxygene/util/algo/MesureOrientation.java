@@ -178,11 +178,11 @@ public class MesureOrientation {
 		//calcul des contributions des cotes
 		if (contributionsCotesOrientation==null) calculerContributionsCotesOrientation();
 
-		if (logger.isTraceEnabled()) {
-			logger.trace("contributions:");
+		if (logger.isDebugEnabled()) {
+			logger.debug("contributions:");
 			String st="";
 			for(int i=1; i<contributionsCotesOrientation.length; i++) st+= ((int)contributionsCotesOrientation[i])+"  ";
-			logger.trace(st);
+			logger.debug(st);
 		}
 
 		//recupere l'index de la contribution maximale
@@ -224,7 +224,7 @@ public class MesureOrientation {
 	 * @param poly polygone évalué
 	 */
 	public void calculerContributionsCotesOrientation(Polygon poly){
-		if (logger.isTraceEnabled()) logger.trace("calcul des contributions des cotes a l'orientation moyenne des cotes de "+poly);
+		if (logger.isDebugEnabled()) logger.debug("calcul des contributions des cotes a l'orientation moyenne des cotes de "+poly);
 
 		//initialise la table des contributions
 		contributionsCotesOrientation=new double[NB_ORIENTATIONS_TESTEES];
@@ -270,12 +270,12 @@ public class MesureOrientation {
 			for(int i=1; i<coord.length; i++) {
 				c2=coord[i];
 
-				if (logger.isTraceEnabled()) logger.trace("contribution de cote ("+c1+", "+c2+")");
+				if (logger.isDebugEnabled()) logger.debug("contribution de cote ("+c1+", "+c2+")");
 
 				//calcul de l'orientation à PI/2 pres entre c1 et c2
 				if (c1.x==c2.x) orientation=0.0; else orientation=Math.atan( ((c1.y-c2.y)/(c1.x-c2.x)) );
 				if (orientation<0) orientation+=0.5*Math.PI;
-				if (logger.isTraceEnabled()) logger.trace("   orientation (en deg): "+orientation*180/Math.PI);
+				if (logger.isDebugEnabled()) logger.debug("   orientation (en deg): "+orientation*180/Math.PI);
 
 				// Calcul de l'angle entre l'arète courante et l'angle auquel on est en train d'associer un poids
 				double alpha = Math.abs(orientationTestee-orientation);

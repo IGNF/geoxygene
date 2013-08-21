@@ -228,8 +228,8 @@ public class RoadNetworkTextfileReader {
       }
       population.setCenter(new DirectPosition((maxX + minX) / 2,
           (maxY + minY) / 2));
-      if (RoadNetworkTextfileReader.logger.isTraceEnabled()) {
-        RoadNetworkTextfileReader.logger.trace(I18N
+      if (RoadNetworkTextfileReader.logger.isDebugEnabled()) {
+        RoadNetworkTextfileReader.logger.debug(I18N
             .getString("ShapefileReader.SpatialIndexInitialised") //$NON-NLS-1$
             + minX + "," + maxX + "," //$NON-NLS-1$ //$NON-NLS-2$
             + minY + "," + maxY); //$NON-NLS-1$

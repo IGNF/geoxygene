@@ -44,8 +44,8 @@ public class SingleLinkageAHC {
       this.insertElement(element);
     }
     for (int i = 0; i < this.vertices.size(); i++) {
-      if (SingleLinkageAHC.logger.isTraceEnabled()) {
-        SingleLinkageAHC.logger.trace(i + " "
+      if (SingleLinkageAHC.logger.isDebugEnabled()) {
+        SingleLinkageAHC.logger.debug(i + " "
             + this.edges.size());
       }
       for (int j = i + 1; j < this.vertices.size(); j++) {

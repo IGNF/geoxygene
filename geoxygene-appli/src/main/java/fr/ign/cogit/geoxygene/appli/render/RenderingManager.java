@@ -122,15 +122,15 @@ public class RenderingManager {
                   RenderingManager.this.getRunnableQueue().wait(
                       RenderingManager.DAEMON_MAXIMUM_WAITING_TIME);
                 } catch (InterruptedException ie) {
-                  if (RenderingManager.getLogger().isTraceEnabled()) {
-                    RenderingManager.getLogger().trace(ie.getMessage());
+                  if (RenderingManager.getLogger().isDebugEnabled()) {
+                    RenderingManager.getLogger().debug(ie.getMessage());
                     // ie.printStackTrace();
                   }
                 }
               }
               runnable = RenderingManager.this.getRunnableQueue().poll();
-              if (RenderingManager.getLogger().isTraceEnabled()) {
-                RenderingManager.getLogger().trace(
+              if (RenderingManager.getLogger().isDebugEnabled()) {
+                RenderingManager.getLogger().debug(
                     RenderingManager.this.getRunnableQueue().size()
                         + " runnables in the queue" //$NON-NLS-1$
                 );
@@ -146,8 +146,8 @@ public class RenderingManager {
             }
           }
         } finally {
-          if (RenderingManager.getLogger().isTraceEnabled()) {
-            RenderingManager.getLogger().trace("Deamon thread finished"); //$NON-NLS-1$
+          if (RenderingManager.getLogger().isDebugEnabled()) {
+            RenderingManager.getLogger().debug("Deamon thread finished"); //$NON-NLS-1$
           }
           // RenderingManager.this.getLayerViewPanel().superRepaint();
         }
@@ -317,8 +317,8 @@ public class RenderingManager {
   }
 
   public void repaint() {
-    if (RenderingManager.LOGGER.isTraceEnabled()) {
-      RenderingManager.LOGGER.trace(this.getRenderers().size() + " renderers"); //$NON-NLS-1$
+    if (RenderingManager.LOGGER.isDebugEnabled()) {
+      RenderingManager.LOGGER.debug(this.getRenderers().size() + " renderers"); //$NON-NLS-1$
     }
     // we check if there is still something being rendererd
     // the fastest way is to check for renderers in the queue
@@ -336,15 +336,15 @@ public class RenderingManager {
     if (this.selectionRenderer != null
         && (this.selectionRenderer.isRendering() || !this.selectionRenderer
             .isRendered())) {
-      if (RenderingManager.LOGGER.isTraceEnabled()) {
-        RenderingManager.LOGGER.trace("Renderer " //$NON-NLS-1$
+      if (RenderingManager.LOGGER.isDebugEnabled()) {
+        RenderingManager.LOGGER.debug("Renderer " //$NON-NLS-1$
             + this.selectionRenderer.isRendering() + " - " //$NON-NLS-1$
             + this.selectionRenderer.isRendered());
       }
       return;
     }
-    if (RenderingManager.LOGGER.isTraceEnabled()) {
-      RenderingManager.LOGGER.trace("Repaint"); //$NON-NLS-1$
+    if (RenderingManager.LOGGER.isDebugEnabled()) {
+      RenderingManager.LOGGER.debug("Repaint"); //$NON-NLS-1$
     }
     // nothing is being rendered, we can actually repaint the panel
     RenderingManager.this.getLayerViewPanel().superRepaint();

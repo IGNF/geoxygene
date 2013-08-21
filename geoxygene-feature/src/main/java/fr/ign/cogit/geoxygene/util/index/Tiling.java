@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -401,8 +402,8 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
     } else {
       this.xmin = this.xmax = this.ymin = this.ymax = 0;
     }
-    if (Tiling.logger.isTraceEnabled()) {
-      Tiling.logger.trace("envelope = " + this.xmin + "," + this.xmax + "," //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    if (Tiling.logger.isEnabledFor(Level.TRACE)) {
+      Tiling.logger.log(Level.TRACE, "envelope = " + this.xmin + "," + this.xmax + "," //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
           + this.ymin + "," + this.ymax + " - size = " + this.size); //$NON-NLS-1$ //$NON-NLS-2$
     }
     // calcul de dX et dY

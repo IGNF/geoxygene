@@ -176,7 +176,7 @@ public class ReseauApp extends CarteTopo {
           Arc currentEdge = this.getPopArcs().get(indexArc);
           
           if (arcsEnleves.contains(currentEdge) || dejaTraites.contains(currentEdge)) {
-              // CarteTopo.logger.trace("Already handled or removed");
+              // CarteTopo.logger.debug("Already handled or removed");
               // si on a déjà traité l'arc ou qu'on l'a déjà découpé, passer
               // au suivant
               continue;
@@ -191,7 +191,7 @@ public class ReseauApp extends CarteTopo {
           selection.removeAll(arcsEnleves);
           // selection.removeAll(dejaTraites); // ADDED
           
-          CarteTopo.logger.trace(selection.size() + " Edges intersected");
+          CarteTopo.logger.debug(selection.size() + " Edges intersected");
           List<Arc> listeInter = new ArrayList<Arc>(0);
           // On construit un multipoint contenant les extrémités de l'arc courant
           GM_MultiPoint frontiereArc = new GM_MultiPoint();
@@ -202,15 +202,15 @@ public class ReseauApp extends CarteTopo {
           for (Arc arcSel : selection) {
               // On construit un multipoint contenant les extrémités de l'arc
               // de la sélection
-              if (CarteTopo.logger.isTraceEnabled()) {
-                  CarteTopo.logger.trace("Treating selected edge " + arcSel); //$NON-NLS-1$
+              if (CarteTopo.logger.isDebugEnabled()) {
+                  CarteTopo.logger.debug("Treating selected edge " + arcSel); //$NON-NLS-1$
               }
               GM_MultiPoint frontiereArcSel = new GM_MultiPoint();
               frontiereArcSel.add(new GM_Point(arcSel.getGeometrie().startPoint()));
               frontiereArcSel.add(new GM_Point(arcSel.getGeometrie().endPoint()));
               // on calcule l'intersection de l'arc courant avec l'arc de la sélection
               IGeometry intersection = arcSel.getGeometrie().intersection(currentEdge.getGeometrie());
-              CarteTopo.logger.trace("Intersection " + intersection); //$NON-NLS-1$
+              CarteTopo.logger.debug("Intersection " + intersection); //$NON-NLS-1$
              
               // si l'intersection trouvée fait partie des extrémités des 2 arcs,
               // alors on passe à l'arc suivant
@@ -344,15 +344,15 @@ public class ReseauApp extends CarteTopo {
                           }
                       }
                   }
-                  if (CarteTopo.logger.isTraceEnabled()) {
-                      CarteTopo.logger.trace(I18N.getString("CarteTopo.NewEdge") + " " + arcNouveau); //$NON-NLS-1$
+                  if (CarteTopo.logger.isDebugEnabled()) {
+                      CarteTopo.logger.debug(I18N.getString("CarteTopo.NewEdge") + " " + arcNouveau); //$NON-NLS-1$
                   }
               }
               
               // 2: on virera les arcs initiaux qui ont été découpés
               for (Arc arcSel : listeInter) {
-                  if (CarteTopo.logger.isTraceEnabled()) {
-                      CarteTopo.logger.trace(I18N.getString("CarteTopo.IntersectionFound") + arcSel); //$NON-NLS-1$
+                  if (CarteTopo.logger.isDebugEnabled()) {
+                      CarteTopo.logger.debug(I18N.getString("CarteTopo.IntersectionFound") + arcSel); //$NON-NLS-1$
                   }
                   arcSel.setCorrespondants(new ArrayList<IFeature>(0));
                   arcsEnleves.add(arcSel);

@@ -625,17 +625,17 @@ public class Population<Feat extends IFeature> extends
       return;
     }
     try {
-      if (FT_FeatureCollection.logger.isTraceEnabled()) {
-        FT_FeatureCollection.logger.trace("debut"); //$NON-NLS-1$
+      if (FT_FeatureCollection.logger.isDebugEnabled()) {
+        FT_FeatureCollection.logger.debug("debut"); //$NON-NLS-1$
       }
       IFeatureCollection<Feat> coll = DataSet.db.loadAllFeatures((FeatureType) this
           .getFeatureType());
-      if (FT_FeatureCollection.logger.isTraceEnabled()) {
-        FT_FeatureCollection.logger.trace("milieu"); //$NON-NLS-1$
+      if (FT_FeatureCollection.logger.isDebugEnabled()) {
+        FT_FeatureCollection.logger.debug("milieu"); //$NON-NLS-1$
       }
       this.addUniqueCollection(coll);
-      if (FT_FeatureCollection.logger.isTraceEnabled()) {
-        FT_FeatureCollection.logger.trace("fin"); //$NON-NLS-1$
+      if (FT_FeatureCollection.logger.isDebugEnabled()) {
+        FT_FeatureCollection.logger.debug("fin"); //$NON-NLS-1$
       }
 
     } catch (Exception e) {

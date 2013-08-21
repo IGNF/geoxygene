@@ -42,13 +42,13 @@ public class SmallestSurroundingRectangleComputation {
    */
   public static Polygon getSSR(Geometry geom) {
 
-    if (SmallestSurroundingRectangleComputation.logger.isTraceEnabled()) {
+    if (SmallestSurroundingRectangleComputation.logger.isDebugEnabled()) {
       SmallestSurroundingRectangleComputation.logger
-          .trace("SSR computation of " + geom);
+          .debug("SSR computation of " + geom);
     }
-    if (SmallestSurroundingRectangleComputation.logger.isTraceEnabled()) {
+    if (SmallestSurroundingRectangleComputation.logger.isDebugEnabled()) {
       SmallestSurroundingRectangleComputation.logger
-          .trace("Convex hull computation");
+          .debug("Convex hull computation");
     }
     Geometry hull_ = geom.convexHull();
 
@@ -81,9 +81,9 @@ public class SmallestSurroundingRectangleComputation {
 
       Polygon rect = (Polygon) CommonAlgorithms.rotation(convHull,
           rotationCenter, -1.0 * angle).getEnvelope();
-      if (SmallestSurroundingRectangleComputation.logger.isTraceEnabled()) {
+      if (SmallestSurroundingRectangleComputation.logger.isDebugEnabled()) {
         SmallestSurroundingRectangleComputation.logger
-            .trace("   rectangle hull try: " + rect);
+            .debug("   rectangle hull try: " + rect);
       }
 
       // compute the rectangle area

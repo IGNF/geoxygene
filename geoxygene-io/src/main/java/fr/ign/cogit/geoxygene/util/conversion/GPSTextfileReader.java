@@ -247,8 +247,8 @@ public class GPSTextfileReader {
       }
       population.setCenter(new DirectPosition((maxX + minX) / 2,
           (maxY + minY) / 2));
-      if (GPSTextfileReader.logger.isTraceEnabled()) {
-        GPSTextfileReader.logger.trace(I18N
+      if (GPSTextfileReader.logger.isDebugEnabled()) {
+        GPSTextfileReader.logger.debug(I18N
             .getString("ShapefileReader.SpatialIndexInitialised") //$NON-NLS-1$
             + minX + "," + maxX + "," //$NON-NLS-1$ //$NON-NLS-2$
             + minY + "," + maxY); //$NON-NLS-1$

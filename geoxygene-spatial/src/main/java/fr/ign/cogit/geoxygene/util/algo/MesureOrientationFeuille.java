@@ -171,7 +171,7 @@ public class MesureOrientationFeuille {
 			//calcul de l'orientation à PI/2 pres entre c1 et c2
 			if (c1.x==c2.x) orientation=0.0; else orientation=Math.atan( ((c1.y-c2.y)/(c1.x-c2.x)) );
 			if (orientation<0) orientation+=0.5*Math.PI;
-			if (logger.isTraceEnabled()) logger.trace("   orientation (en deg): "+orientation*180/Math.PI);
+			if (logger.isDebugEnabled()) logger.debug("   orientation (en deg): "+orientation*180/Math.PI);
 			listeOrientations.add(orientation);
 			// Calcul de la longueur de l'arète
 			lg=c1.distance(c2);
@@ -275,11 +275,11 @@ public class MesureOrientationFeuille {
 		if (contributionsOrientation==null) calculerContributionsOrientation();
 
 		/*
-		if (logger.isTraceEnabled()) {
-			logger.trace("contributions:");
+		if (logger.isDebugEnabled()) {
+			logger.debug("contributions:");
 			String st="";
 			for(int i=1; i<contributionsOrientation.length; i++) st+= ((int)contributionsOrientation[i])+"  ";
-			logger.trace(st);
+			logger.debug(st);
 		}
 		*/
 
@@ -322,7 +322,7 @@ public class MesureOrientationFeuille {
 
 				//Récupération de l'orientation
 				orientation=listeOrientations.get(i);
-				// if (logger.isTraceEnabled()) logger.trace("   orientation (en deg): "+orientation*180/Math.PI);
+				// if (logger.isDebugEnabled()) logger.debug("   orientation (en deg): "+orientation*180/Math.PI);
 
 				// Calcul de l'angle entre l'arète courante et l'angle auquel on est en train d'associer un poids
 				double alpha = Math.abs(orientationTestee-orientation);

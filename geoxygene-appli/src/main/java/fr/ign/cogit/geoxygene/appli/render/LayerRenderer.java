@@ -237,14 +237,10 @@ public class LayerRenderer implements Renderer {
   @Override
   public final void copyTo(final Graphics2D graphics) {
     if (this.getImage() != null) {
-      /*
-       * if (logger.isTraceEnabled()) { logger.trace("drawImage"); //$NON-NLS-1$
-       * }
-       */
       graphics.drawImage(this.getImage(), 0, 0, null);
     } else {
-      if (LayerRenderer.logger.isTraceEnabled()) {
-        LayerRenderer.logger.trace("this.getImage() = null"); //$NON-NLS-1$
+      if (LayerRenderer.logger.isDebugEnabled()) {
+        LayerRenderer.logger.debug("this.getImage() = null"); //$NON-NLS-1$
       }
     }
   }
@@ -301,8 +297,8 @@ public class LayerRenderer implements Renderer {
           // ( used by isRendering() )
           LayerRenderer.this.setRendering(false);
           LayerRenderer.this.setRendered(true);
-          if (LayerRenderer.logger.isTraceEnabled()) {
-            LayerRenderer.logger.trace("Renderer " //$NON-NLS-1$
+          if (LayerRenderer.logger.isDebugEnabled()) {
+            LayerRenderer.logger.debug("Renderer " //$NON-NLS-1$
                 + LayerRenderer.this.getLayer().getName() + " finished"); //$NON-NLS-1$
           }
           //FIXME Is this operation really useful or is a patch?

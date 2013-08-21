@@ -665,8 +665,8 @@ public abstract class Operateurs {
    * @param geometries : Linestrings à fusionner
    */
   public static ILineString compileArcs(List<ILineString> geometries) {
-    if (Operateurs.logger.isTraceEnabled()) {
-      Operateurs.logger.trace("compile geometries");
+    if (Operateurs.logger.isDebugEnabled()) {
+      Operateurs.logger.debug("compile geometries");
       for (ILineString l : geometries) {
         Operateurs.logger.trace("\t" + l);  
       }

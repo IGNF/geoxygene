@@ -394,8 +394,8 @@ public class ChargeurTriangulation extends Chargeur {
       Collection<? extends IFeature> features, AbstractTriangulation carte)
       throws Exception {
     NoeudDelaunay noeud;
-    if (ChargeurTriangulation.logger.isTraceEnabled()) {
-      ChargeurTriangulation.logger.trace(I18N
+    if (ChargeurTriangulation.logger.isDebugEnabled()) {
+      ChargeurTriangulation.logger.debug(I18N
           .getString("ChargeurTriangulation.ImportPolygonCentroids")); //$NON-NLS-1$
     }
     for (IFeature objGeo : features) {
@@ -403,8 +403,8 @@ public class ChargeurTriangulation extends Chargeur {
         IPoint p = new GM_Point(objGeo.getGeom().centroid());
         noeud = (NoeudDelaunay) carte.getPopNoeuds().nouvelElement(p);
         noeud.addCorrespondant(objGeo);
-        if (ChargeurTriangulation.logger.isTraceEnabled()) {
-          ChargeurTriangulation.logger.trace(I18N
+        if (ChargeurTriangulation.logger.isDebugEnabled()) {
+          ChargeurTriangulation.logger.debug(I18N
               .getString("ChargeurTriangulation.ImportedCentroid") + p); //$NON-NLS-1$
         }
       } else {
@@ -412,15 +412,15 @@ public class ChargeurTriangulation extends Chargeur {
           IPoint p = new GM_Point(objGeo.getGeom().centroid());
           noeud = (NoeudDelaunay) carte.getPopNoeuds().nouvelElement(p);
           noeud.addCorrespondant(objGeo);
-          if (ChargeurTriangulation.logger.isTraceEnabled()) {
-            ChargeurTriangulation.logger.trace(I18N
+          if (ChargeurTriangulation.logger.isDebugEnabled()) {
+            ChargeurTriangulation.logger.debug(I18N
                 .getString("ChargeurTriangulation.ImportedCentroid") + p); //$NON-NLS-1$
           }
         }
       }
     }
-    if (ChargeurTriangulation.logger.isTraceEnabled()) {
-      ChargeurTriangulation.logger.trace(I18N
+    if (ChargeurTriangulation.logger.isDebugEnabled()) {
+      ChargeurTriangulation.logger.debug(I18N
           .getString("ChargeurTriangulation.ImportedPolygonCentroids")); //$NON-NLS-1$
     }
   }
