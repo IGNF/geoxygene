@@ -273,106 +273,109 @@ public class Chargeur {
       Map<Object, Integer> orientationMap, String filterAttribute,
       Map<Object, Boolean> filterMap, String groundPositionAttribute,
       double tolerance) {
-    // import des arcs
-    for (IFeature element : edges) {
-      boolean filter = true;
-      if (filterMap != null) {
-        Object value = element.getAttribute(filterAttribute);
-        if (value != null) {
-          Boolean filterValue = filterMap.get(value);
-          if (filterValue != null) {
-            filter = filterValue.booleanValue();
-          } else {
-            filter = false;
-          }
-        }
-      }
-      if (filter) {
-        Arc arc = map.getPopArcs().nouvelElement();
-        ILineString ligne = new GM_LineString((IDirectPositionList) element
-            .getGeom().coord().clone());
-        arc.setGeometrie(ligne);
-        if (orientationAttribute == null || orientationAttribute.isEmpty()) {
-          arc.setOrientation(2);
-        } else {
-          Object value = element.getAttribute(orientationAttribute);
-          if (orientationMap != null) {
-            Integer orientation = orientationMap.get(value);
-            if (orientation != null) {
-              // LOGGER.debug(value + " -> " + orientation);
-              arc.setOrientation(orientation.intValue());
-            } else {
-              Chargeur.logger.error(value + "(" + value.getClass() + ")" + " not found in map for attribute "
-                  + orientationAttribute + ", element = " + element.getGeom());
-            }
-          } else {
-            if (value instanceof Number) {
-              Number v = (Number) value;
-              arc.setOrientation(v.intValue());
-            } else {
-              if (value instanceof String) {
-                String v = (String) value;
-                try {
-                  arc.setOrientation(Integer.parseInt(v));
-                } catch (Exception e) {
-                  e.printStackTrace();
-                }
-              } else {
-                Chargeur.logger
-                    .error("Attribute "
-                        + orientationAttribute
-                        + " is neither Number nor String. It can't be used as an orientation");
+    
+      // import des arcs
+      for (IFeature element : edges) {
+          boolean filter = true;
+          if (filterMap != null) {
+              Object value = element.getAttribute(filterAttribute);
+              if (value != null) {
+                  Boolean filterValue = filterMap.get(value);
+                  if (filterValue != null) {
+                      filter = filterValue.booleanValue();
+                  } else {
+                      filter = false;
+                  }
               }
-            }
           }
-        }
-        arc.addCorrespondant(element);
-        arc.setPoids(arc.getGeometrie().length());
-      }
-    }
-    // initialisation de l'index au besoin
-    // si on peut, on prend les mêmes paramètres que le dallage des arcs
-    if (!map.getPopNoeuds().hasSpatialIndex()) {
-      if (map.getPopArcs().hasSpatialIndex()) {
-        map.getPopNoeuds().initSpatialIndex(map.getPopArcs().getSpatialIndex());
-        map.getPopNoeuds().getSpatialIndex().setAutomaticUpdate(true);
-      } else {
-        IEnvelope enveloppe = map.getPopArcs().envelope();
-        int nb = (int) Math.sqrt(map.getPopArcs().size() / 20);
-        if (nb == 0) {
-          nb = 1;
-        }
-        map.getPopNoeuds().initSpatialIndex(Tiling.class, true, enveloppe, nb);
-      }
-    }
-    for (Arc arc : map.getPopArcs()) {
-      IDirectPosition p1 = arc.getGeometrie().getControlPoint(0);
-      IDirectPosition p2 = arc.getGeometrie().getControlPoint(
-          arc.getGeometrie().sizeControlPoint() - 1);
-      int posSol = 0;
-      if (groundPositionAttribute != null) {
-        posSol = Integer.parseInt(arc.getCorrespondant(0)
-            .getAttribute(groundPositionAttribute).toString());
-      }
-      Collection<Noeud> candidates = map.getPopNoeuds().select(p1, tolerance);
-      if (candidates.isEmpty()) {
-        Noeud n1 = map.getPopNoeuds().nouvelElement(p1.toGM_Point());
-        arc.setNoeudIni(n1);
-        n1.setDistance(posSol);
-      } else {
-        for (Noeud n : candidates) {
-          if (n.getDistance() == posSol) {
-            arc.setNoeudIni(n);
-            break;
+      
+          if (filter) {
+              Arc arc = map.getPopArcs().nouvelElement();
+              ILineString ligne = new GM_LineString((IDirectPositionList) element.getGeom().coord().clone());
+              arc.setGeometrie(ligne);
+              if (orientationAttribute == null || orientationAttribute.isEmpty()) {
+                  arc.setOrientation(2);
+              } else {
+                  Object value = element.getAttribute(orientationAttribute);
+                  if (orientationMap != null) {
+                      Integer orientation = orientationMap.get(value);
+                      if (orientation != null) {
+                          // LOGGER.debug(value + " -> " + orientation);
+                          arc.setOrientation(orientation.intValue());
+                      } else {
+                          Chargeur.logger.error(value + "(" + value.getClass() + ")" + " not found in map for attribute "
+                                  + orientationAttribute + ", element = " + element.getGeom());
+                      }
+                  } else {
+                      if (value instanceof Number) {
+                          Number v = (Number) value;
+                          arc.setOrientation(v.intValue());
+                      } else {
+                          if (value instanceof String) {
+                              String v = (String) value;
+                              try {
+                                  arc.setOrientation(Integer.parseInt(v));
+                              } catch (Exception e) {
+                                  e.printStackTrace();
+                              }
+                          } else {
+                              Chargeur.logger.error("Attribute "
+                                      + orientationAttribute
+                                      + " is neither Number nor String. It can't be used as an orientation");
+                          }
+                      }
+                  }
+              }
+              arc.addCorrespondant(element);
+              arc.setPoids(arc.getGeometrie().length());
           }
-        }
-        if (arc.getNoeudIni() == null) {
-          Noeud n1 = map.getPopNoeuds().nouvelElement(p1.toGM_Point());
-          arc.setNoeudIni(n1);
-          n1.setDistance(posSol);
-        }
+      } // fin de la boucle sur edges
+    
+      // initialisation de l'index au besoin
+      // si on peut, on prend les mêmes paramètres que le dallage des arcs
+      if (!map.getPopNoeuds().hasSpatialIndex()) {
+          if (map.getPopArcs().hasSpatialIndex()) {
+              map.getPopNoeuds().initSpatialIndex(map.getPopArcs().getSpatialIndex());
+              map.getPopNoeuds().getSpatialIndex().setAutomaticUpdate(true);
+          } else {
+              IEnvelope enveloppe = map.getPopArcs().envelope();
+              int nb = (int) Math.sqrt(map.getPopArcs().size() / 20);
+              if (nb == 0) {
+                  nb = 1;
+              }
+              map.getPopNoeuds().initSpatialIndex(Tiling.class, true, enveloppe, nb);
+          }
       }
-      candidates = map.getPopNoeuds().select(p2, tolerance);
+      
+      //
+      for (Arc arc : map.getPopArcs()) {
+          IDirectPosition p1 = arc.getGeometrie().getControlPoint(0);
+          IDirectPosition p2 = arc.getGeometrie().getControlPoint(
+                  arc.getGeometrie().sizeControlPoint() - 1);
+          int posSol = 0;
+          if (groundPositionAttribute != null) {
+              posSol = Integer.parseInt(arc.getCorrespondant(0)
+                      .getAttribute(groundPositionAttribute).toString());
+          }
+          Collection<Noeud> candidates = map.getPopNoeuds().select(p1, tolerance);
+          if (candidates.isEmpty()) {
+              Noeud n1 = map.getPopNoeuds().nouvelElement(p1.toGM_Point());
+              arc.setNoeudIni(n1);
+              n1.setDistance(posSol);
+          } else {
+              for (Noeud n : candidates) {
+                  if (n.getDistance() == posSol) {
+                      arc.setNoeudIni(n);
+                      break;
+                  }
+              }
+              if (arc.getNoeudIni() == null) {
+                  Noeud n1 = map.getPopNoeuds().nouvelElement(p1.toGM_Point());
+                  arc.setNoeudIni(n1);
+                  n1.setDistance(posSol);
+              }
+          }
+          candidates = map.getPopNoeuds().select(p2, tolerance);
       if (candidates.isEmpty()) {
         Noeud n1 = map.getPopNoeuds().nouvelElement(p2.toGM_Point());
         arc.setNoeudFin(n1);
@@ -415,4 +418,5 @@ public class Chargeur {
     }
     map.enleveNoeuds(toRemove);
   }
+
 }

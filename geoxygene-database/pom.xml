@@ -85,6 +85,12 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.apache</groupId>
 			<artifactId>ojb</artifactId>
 			<version>1.0.rc6</version>

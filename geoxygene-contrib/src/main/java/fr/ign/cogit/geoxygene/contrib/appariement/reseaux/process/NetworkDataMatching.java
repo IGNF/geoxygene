@@ -141,21 +141,20 @@ public class NetworkDataMatching {
         if (LOGGER.isEnabledFor(Level.DEBUG)) {
             LOGGER.debug("creation of network 1 " + (new Time(System.currentTimeMillis())).toString());
         }
-        
-        ReseauAppStat reseau1Stat = importAsEdges("Réseau 1", dataset1, inputParam.getParamDirectionNetwork1(), inputParam
+        ReseauAppStat reseau1Stat = importAsEdgesAndNodes("Réseau 1", dataset1, inputParam.getParamDirectionNetwork1(), inputParam
                 .getParamDistance().getDistanceNoeudsMax());
-        reseau1Stat = importData(reseau1Stat, inputParam.getParamTopoNetwork1());
+        reseau1Stat = importData(reseau1Stat, inputParam.getParamTopoNetwork1(), false,
+                inputParam.getParamDistance().getDistanceNoeudsImpassesMax());
         ReseauApp reseau1 = reseau1Stat.getReseauApp();
         
         //
         if (LOGGER.isEnabledFor(Level.DEBUG)) {
             LOGGER.debug("creation of network 2 " + (new Time(System.currentTimeMillis())).toString());
         }
-        /*ReseauAppStat reseau2Stat = importData("Réseau 2", dataset2, inputParam.getParamDirectionNetwork2(), inputParam
-                .getParamDistance().getDistanceNoeudsMax(), inputParam.getParamTopoNetwork2());*/
-        ReseauAppStat reseau2Stat = importAsEdges("Réseau 2", dataset2, inputParam.getParamDirectionNetwork2(), inputParam
+        ReseauAppStat reseau2Stat = importAsEdgesAndNodes("Réseau 2", dataset2, inputParam.getParamDirectionNetwork2(), inputParam
                 .getParamDistance().getDistanceNoeudsMax());
-        reseau2Stat = importData(reseau2Stat, inputParam.getParamTopoNetwork2());
+        reseau2Stat = importData(reseau2Stat, inputParam.getParamTopoNetwork2(), 
+                inputParam.getParamVarianteGeneralProcess().getChercheRondsPoints(), -1);
         ReseauApp reseau2 = reseau2Stat.getReseauApp();
 
         // resultatAppariement.setReseau1(reseau1);
@@ -282,7 +281,7 @@ public class NetworkDataMatching {
      * @param direction
      * @return
      */
-    public static ReseauAppStat importAsEdges(String networkName, DatasetNetworkDataMatching network1,
+    public static ReseauAppStat importAsEdgesAndNodes(String networkName, DatasetNetworkDataMatching network1,
             ParamDirectionNetworkDataMatching direction, float distanceNoeudsMax) {
 
         boolean populationsArcsAvecOrientationDouble = direction.getOrientationDouble();
@@ -331,6 +330,8 @@ public class NetworkDataMatching {
                 ArcApp arc = (ArcApp) popArcApp.nouvelElement();
                 ILineString ligne = new GM_LineString((IDirectPositionList) element.getGeom().coord().clone());
                 arc.setGeometrie(ligne);
+                arc.setPoids(ligne.length());
+                arc.addCorrespondant(element);
                 
                 // Transfert des attributs
                 arc.setSchema(schemaDefaultFeature);
@@ -377,9 +378,8 @@ public class NetworkDataMatching {
                                     try {
                                         arc.setOrientation(Integer.parseInt(v));
                                     } catch (Exception e) {
-                                        // FIXME Pretty specfific to BDTOPO
-                                        // Schema... no time to
-                                        // make it better
+                                        // FIXME Pretty specfific to BDTOPO Schema
+                                        // ... no time to make it better
                                         if (v.equalsIgnoreCase("direct")) {
                                             arc.setOrientation(1);
                                         } else {
@@ -398,7 +398,7 @@ public class NetworkDataMatching {
                         }
                     }
                 }
-                arc.addCorrespondant(element);
+                
             }
         }
 
@@ -442,7 +442,8 @@ public class NetworkDataMatching {
      * 
      * @return Le réseau créé
      */
-    public static ReseauAppStat importData(ReseauAppStat reseauAppStat, ParamTopologyTreatmentNetwork topo) {
+    public static ReseauAppStat importData(ReseauAppStat reseauAppStat, ParamTopologyTreatmentNetwork topo, boolean chercheRondPoint,
+            float distanceNoeudsImpassesMax) {
 
         // Get param
         boolean topologieGraphePlanaire = topo.getGraphePlanaire();
@@ -558,26 +559,30 @@ public class NetworkDataMatching {
         LOGGER.info("**********************************");
 
         // 6 - On crée la topologie de faces
-        /*
-         * if (!ref && paramApp.varianteChercheRondsPoints) { if
-         * (LOGGER.isDebugEnabled()) {
-         * LOGGER.debug("    Face topology creation"); }
-         * reseau.creeTopologieFaces(); }
-         * 
-         * LOGGER.info(popArcApp.size() + " arcs");
-         * LOGGER.info(popNoeudApp.size() + " noeuds");
-         * LOGGER.info("**********************************");
-         * 
-         * // 7 - On double la taille de recherche pour les impasses if
-         * (paramApp.distanceNoeudsImpassesMax >= 0) { if (ref) { if
-         * (LOGGER.isDebugEnabled()) {
-         * LOGGER.debug("    Doubling of search radius for nodes around deadends"
-         * ); } Iterator<?> itNoeuds =
-         * reseau.getPopNoeuds().getElements().iterator(); while
-         * (itNoeuds.hasNext()) { NoeudApp noeud2 = (NoeudApp) itNoeuds.next();
-         * if (noeud2.arcs().size() == 1) {
-         * noeud2.setTaille(paramApp.distanceNoeudsImpassesMax); } } } }
-         */
+        // suppression du test (!ref)
+        if (chercheRondPoint) { 
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("    Face topology creation"); 
+            }
+            reseau.creeTopologieFaces(); 
+        }
+        LOGGER.info(popArcApp.size() + " arcs");
+        LOGGER.info(popNoeudApp.size() + " noeuds");
+        LOGGER.info("**********************************");
+         
+        // 7 - On double la taille de recherche pour les impasses 
+        if (distanceNoeudsImpassesMax >= 0) { 
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("    Doubling of search radius for nodes around deadends"); 
+            } 
+            Iterator<?> itNoeuds = reseau.getPopNoeuds().getElements().iterator(); 
+            while (itNoeuds.hasNext()) { 
+                NoeudApp noeud2 = (NoeudApp) itNoeuds.next();
+                if (noeud2.arcs().size() == 1) {
+                    noeud2.setTaille(distanceNoeudsImpassesMax); 
+                } 
+            }
+        }
 
         LOGGER.info(popArcApp.size() + " arcs");
         LOGGER.info(popNoeudApp.size() + " noeuds");
