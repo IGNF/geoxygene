@@ -75,6 +75,8 @@ public class KMeansClutering {
       moveMax = 0;
       newClusters = computeClusters(centersList);
       for (int i = 0; i < k; i++) {
+        if (newClusters.get(i).getCenter() == null)
+          continue;
         newClusters.get(i).computeCenter();
         double dist = centersList.get(i).distance2D(
             newClusters.get(i).getCenter());

@@ -5,12 +5,16 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -58,6 +62,7 @@ import javax.swing.event.ChangeListener;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.batik.ext.swing.GridBagConstants;
 import org.apache.log4j.Logger;
 import org.apache.xerces.dom.DocumentImpl;
 import org.jdesktop.swingx.JXColorSelectionButton;
@@ -139,8 +144,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.setIconImage(new ImageIcon(this.getClass().getClassLoader()
         .getResource("resources/images/icons/logo.jpg").getPath()
         .replaceAll("%20", " ")).getImage());
-    this.setSize(600, 500);
-    this.setMaximumSize(new Dimension(700, 600));
+    this.setSize(1200, 700);
     this.setOntology(OntologyUtil
         .getOntologyFromName("MapGeneralisationProcesses"));
     this.setGeoClasses();
@@ -155,13 +159,11 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       SAXException, IOException, ClassNotFoundException {
     super();
     this.jar = jar;
-    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.internationalisation();
     this.setTitle(this.frameTitle);
     this.setIconImage(new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
-        .getResource("images/icons/logo.jpg")).getImage());
-    this.setSize(600, 500);
-    this.setMaximumSize(new Dimension(700, 600));
+        .getResource("resources/images/icons/logo.jpg")).getImage());
+    this.setSize(1200, 700);
     if (jar) {
       try {
         this.setGeoClassesJar();
@@ -174,13 +176,13 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.current = new ScaleMaster();
     this.initThemes(themeFile);
     this.iconUp = new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
-        .getResource("images/icons/16x16/chevron_haut.png"));
+        .getResource("resources/images/icons/16x16/chevron_haut.png"));
     this.iconTop = new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
-        .getResource("images/icons/16x16/chevron_double_haut.png"));
+        .getResource("resources/images/icons/16x16/chevron_double_haut.png"));
     this.iconDown = new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
-        .getResource("images/icons/16x16/chevron_bas.png"));
+        .getResource("resources/images/icons/16x16/chevron_bas.png"));
     this.iconBottom = new ImageIcon(EditScaleMasterFrame.class.getClassLoader()
-        .getResource("images/icons/16x16/chevron_double_bas.png"));
+        .getResource("resources/images/icons/16x16/chevron_double_bas.png"));
     this.buildFrameComponents();
   }
 
@@ -248,6 +250,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     pDefinition.add(Box.createHorizontalGlue());
     pDefinition.add(new JLabel(this.lblDbs + " : "));
     pDefinition.add(this.cbDbs);
+    pDefinition.add(Box.createRigidArea(new Dimension(10, 0)));
     pDefinition.add(this.colorBtn);
     pDefinition.add(Box.createHorizontalGlue());
     pDefinition.setLayout(new BoxLayout(pDefinition, BoxLayout.X_AXIS));
@@ -290,7 +293,6 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
 
     // a panel to display the scale master
     this.pDisplay = new JPanel();
-    this.pDisplay.setPreferredSize(new Dimension(1200, 800));
     this.pDisplay.setMinimumSize(new Dimension(1200, 600));
     this.ruler = new ScaleRulerPanel(5);
     this.ruler.addMouseListener(this);
@@ -306,7 +308,6 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         BorderFactory.createEmptyBorder(5, 5, 5, 5)));
     this.pDisplay.setLayout(new BoxLayout(this.pDisplay, BoxLayout.Y_AXIS));
     JScrollPane scrollDisplay = new JScrollPane(this.pDisplay);
-    scrollDisplay.setPreferredSize(new Dimension(1200, 400));
 
     // a panel for the buttons
     JPanel pButtons = new JPanel();
@@ -329,8 +330,8 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     load.setActionCommand("load");
     load.addActionListener(this);
     ImageIcon iconeAide = new ImageIcon(EditScaleMasterFrame.class
-        .getClassLoader().getResource("images/icons/16x16/help.png").getPath()
-        .replaceAll("%20", " "));
+        .getClassLoader().getResource("resources/images/icons/16x16/help.png")
+        .getPath().replaceAll("%20", " "));
     JMenuItem aide = new JMenuItem(I18N.getString("MainLabels.lblHelp"),
         iconeAide);
     aide.setActionCommand("help");
@@ -354,23 +355,31 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     menuBar.setAlignmentX(Component.LEFT_ALIGNMENT);
 
     this.setJMenuBar(menuBar);
-    this.getContentPane().add(Box.createVerticalGlue());
-    this.getContentPane().add(pDefinition);
-    this.getContentPane().add(Box.createVerticalGlue());
-    this.getContentPane().add(pEdition);
-    this.getContentPane().add(Box.createVerticalGlue());
-    this.getContentPane().add(scrollDisplay);
-    this.getContentPane().add(Box.createVerticalGlue());
-    this.getContentPane().add(pButtons);
-    this.getContentPane().setLayout(
-        new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-    this.pack();
+    this.getContentPane().setLayout(new GridBagLayout());
+    this.getContentPane().add(
+        pDefinition,
+        new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstants.CENTER,
+            GridBagConstants.HORIZONTAL, new Insets(2, 2, 2, 2), 1, 1));
+    this.getContentPane().add(
+        pEdition,
+        new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0, GridBagConstants.CENTER,
+            GridBagConstants.HORIZONTAL, new Insets(2, 2, 2, 2), 1, 1));
+    this.getContentPane().add(
+        scrollDisplay,
+        new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0, GridBagConstants.CENTER,
+            GridBagConstants.BOTH, new Insets(2, 2, 2, 2), 1, 1));
+    this.getContentPane().add(
+        pButtons,
+        new GridBagConstraints(0, 3, 1, 1, 1.0, 0.0, GridBagConstants.CENTER,
+            GridBagConstants.HORIZONTAL, new Insets(2, 2, 2, 2), 1, 1));
+
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getActionCommand().equals("cancel")) {
       this.setVisible(false);
+      this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     } else if (e.getActionCommand().equals("ok")) {
       // apply and export to xml the current ScaleMaster
       JFileChooser fc = new JFileChooser();
@@ -388,6 +397,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         e1.printStackTrace();
       }
       this.setVisible(false);
+      this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     } else if (e.getActionCommand().equals("params")) {
       EditPeaRepParamsFrame frame = new EditPeaRepParamsFrame(jar);
       frame.setVisible(true);
@@ -409,7 +419,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       }
       SelectElementFrame frame = new SelectElementFrame(this);
       frame.setVisible(true);
-      this.pack();
+      this.validate();
     } else if (e.getActionCommand().equals("add-line")) {
       AddScaleLineFrame frame = new AddScaleLineFrame(this);
       frame.setVisible(true);
@@ -421,7 +431,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       AddScaleMasterEltFrame frame = new AddScaleMasterEltFrame(this,
           this.selectedLine);
       frame.setVisible(true);
-      this.pack();
+      this.validate();
     } else if (e.getActionCommand().equals("help")) {
       // launch the frame documentation
       if (Desktop.isDesktopSupported()) {
@@ -487,10 +497,10 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
             }
             line.addElement(elem);
             linePanel.updateElements();
-            this.pack();
+            this.validate();
           }
         }
-        this.pack();
+        this.validate();
       } catch (DOMException e1) {
         e1.printStackTrace();
       } catch (ParserConfigurationException e1) {
@@ -507,7 +517,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       Component comp = this.getDisplayPanel().getComponent(index + 1);
       this.getDisplayPanel().remove(comp);
       this.getDisplayPanel().add(comp, index);
-      this.pack();
+      this.validate();
     } else if (e.getActionCommand().equals("down")) {
       int index = this.current.getScaleLines().indexOf(this.selectedLine);
       this.current.getScaleLines().remove(index);
@@ -515,7 +525,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       Component comp = this.getDisplayPanel().getComponent(index + 1);
       this.getDisplayPanel().remove(comp);
       this.getDisplayPanel().add(comp, index + 2);
-      this.pack();
+      this.validate();
     } else if (e.getActionCommand().equals("top")) {
       int index = this.current.getScaleLines().indexOf(this.selectedLine);
       this.current.getScaleLines().remove(index);
@@ -523,7 +533,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       Component comp = this.getDisplayPanel().getComponent(index + 1);
       this.getDisplayPanel().remove(comp);
       this.getDisplayPanel().add(comp, 1);
-      this.pack();
+      this.validate();
     } else if (e.getActionCommand().equals("bottom")) {
       int index = this.current.getScaleLines().indexOf(this.selectedLine);
       this.current.getScaleLines().remove(index);
@@ -533,7 +543,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       this.getDisplayPanel().remove(comp);
       this.getDisplayPanel().add(comp,
           this.getDisplayPanel().getComponentCount());
-      this.pack();
+      this.validate();
     }
   }
 
@@ -541,10 +551,10 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   public void stateChanged(ChangeEvent e) {
     if (e.getSource().equals(this.spMin)) {
       this.ruler.updateMinBound((Integer) this.spMin.getValue());
-      this.pack();
+      this.validate();
     } else if (e.getSource().equals(this.spMax)) {
       this.ruler.updateMaxBound((Integer) this.spMax.getValue());
-      this.pack();
+      this.validate();
     }
   }
 

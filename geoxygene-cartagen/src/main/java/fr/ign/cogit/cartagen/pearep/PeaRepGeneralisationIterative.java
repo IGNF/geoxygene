@@ -102,7 +102,6 @@ public class PeaRepGeneralisationIterative implements PropertyChangeListener,
     frame.setSize(400, 150);
 
     // Display the window.
-    frame.pack();
     frame.setVisible(true);
 
     PeaRepGeneralisationIterative main = new PeaRepGeneralisationIterative(
@@ -154,6 +153,9 @@ class GeneralisationIterativeTask extends SwingWorker<Void, Void> {
   private static String SCALE_MASTER_FILE = "ScaleMaster.xml";
   private static String PARAMETER_FILE = "PeaRepParameters.xml";
   private static String THEMES_FILE = "ScaleMasterThemes.xml";
+  private static String VMAP0_DATASET = "VMAP0";
+  private static String VMAP1_DATASET = "VMAP1";
+  private static String VMAP2i_DATASET = "VMAP2i";
   private static String MGCPPlusPlus_DATASET = "MGCPPlusPlus";
   private static String VMAP1PlusPlus_DATASET = "VMAP1PlusPlus";
   private static Logger logger = Logger

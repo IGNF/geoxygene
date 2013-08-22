@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -34,7 +35,9 @@ public class GUIMainClass extends JFrame implements ActionListener {
   public GUIMainClass(File themesFile) {
     super("Choisissez l'interface d'édition à ouvrir");
     this.themesFile = themesFile;
-    this.setSize(200, 200);
+    this.setSize(450, 120);
+    this.setIconImage(new ImageIcon(GUIMainClass.class.getClassLoader()
+        .getResource("resources/images/icons/logo.jpg")).getImage());
 
     JPanel rdPanel = new JPanel();
     rdScale = new JRadioButton("Fichier ScaleMaster.xml");
@@ -54,7 +57,6 @@ public class GUIMainClass extends JFrame implements ActionListener {
     this.add(okButton);
     this.getContentPane().setLayout(
         new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-    this.pack();
   }
 
   /**
@@ -83,6 +85,8 @@ public class GUIMainClass extends JFrame implements ActionListener {
     String path = jarPath + "\\" + "ScaleMasterThemes.xml";
     File themesFile = new File(path);
     GUIMainClass frame = new GUIMainClass(themesFile);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setResizable(false);
     frame.setVisible(true);
   }
 
@@ -104,9 +108,15 @@ public class GUIMainClass extends JFrame implements ActionListener {
         } catch (ClassNotFoundException e1) {
           e1.printStackTrace();
         }
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
       } else if (rdParams.isSelected()) {
         EditPeaRepParamsFrame frame = new EditPeaRepParamsFrame(true);
+        // THALES - FC : On positionne la sortie sur la fermeture de la frame
+        // ici
+        // sinon les frames ouvertes par d'autres frames font que l'application
+        // entière se ferme.
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
       }
       this.setVisible(false);

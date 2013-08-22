@@ -64,8 +64,12 @@ public class KMeansCluster {
       ptList.add(obj.getGeom().centroid());
     }
     IMultiPoint geom = new GM_MultiPoint(ptList);
-    this.center = geom.centroid();
-    this.diameter = geom.envelope().width();
+    if (!geom.isEmpty()) {
+      System.out.println(geom.toString());
+      this.center = geom.centroid();
+      System.out.println(geom.centroid().toString());
+      this.diameter = geom.envelope().width();
+    }
   }
 
   public IGeneObj getCenterNearest() {

@@ -67,7 +67,9 @@ public class AddFilterToElementFrame extends JFrame implements ActionListener {
     this.getContentPane().add(pButtons);
     this.getContentPane().setLayout(
         new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-    this.pack();
+    this.setSize(700, 230);
+    this.setLocationRelativeTo(this.parentFrame);
+    this.validate();
   }
 
   @Override

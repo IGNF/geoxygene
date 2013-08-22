@@ -2,6 +2,9 @@ package fr.ign.cogit.cartagen.pearep.gui;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -19,6 +22,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import org.apache.batik.ext.swing.GridBagConstants;
 
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
@@ -52,11 +57,13 @@ public class AddScaleLineFrame extends JFrame implements ActionListener {
     cbThemes.setPreferredSize(new Dimension(120, 20));
     cbThemes.setMaximumSize(new Dimension(120, 20));
     cbThemes.setMinimumSize(new Dimension(120, 20));
-    pLine.add(Box.createHorizontalGlue());
-    pLine.add(new JLabel(this.lblThemes + " : "));
-    pLine.add(cbThemes);
-    pLine.add(Box.createHorizontalGlue());
-    pLine.setLayout(new BoxLayout(pLine, BoxLayout.X_AXIS));
+    pLine.setLayout(new GridBagLayout());
+    pLine.add(new JLabel(this.lblThemes + " : "), new GridBagConstraints(0, 0,
+        1, 1, 0.0, 0.0, GridBagConstants.WEST, GridBagConstants.NONE,
+        new Insets(2, 2, 2, 2), 1, 1));
+    pLine.add(cbThemes, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0,
+        GridBagConstants.CENTER, GridBagConstants.HORIZONTAL, new Insets(2, 2,
+            2, 2), 1, 1));
 
     // a panel for the buttons
     JPanel pButtons = new JPanel();
@@ -66,16 +73,20 @@ public class AddScaleLineFrame extends JFrame implements ActionListener {
     btnCancel = new JButton(lblCancel);
     btnCancel.addActionListener(this);
     btnCancel.setActionCommand("cancel");
-    pButtons.add(btnOk);
-    pButtons.add(btnCancel);
     pButtons.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
+    pButtons.add(btnOk);
+    pButtons.add(Box.createRigidArea(new Dimension(10, 0)));
+    pButtons.add(btnCancel);
 
     this.getContentPane().add(pLine);
     this.getContentPane().add(pButtons);
     this.getContentPane().setLayout(
         new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-    this.pack();
+    this.setMinimumSize(new Dimension(500, 120));
+    this.setSize(500, 120);
+    this.setResizable(false);
+    this.setLocationRelativeTo(this.frame);
   }
 
   @Override
@@ -89,7 +100,7 @@ public class AddScaleLineFrame extends JFrame implements ActionListener {
       JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
       jp.add(linePanel);
       frame.getDisplayPanel().add(jp);
-      frame.pack();
+      frame.getDisplayPanel().validate();
       this.setVisible(false);
     } else if (e.getActionCommand().equals("cancel")) {
       this.setVisible(false);
@@ -98,7 +109,7 @@ public class AddScaleLineFrame extends JFrame implements ActionListener {
           new ScaleMasterTheme(txtTheme.getText(), listClasses
               .getSelectedValues(), null));
       this.updateCombo();
-      this.pack();
+      this.validate();
     }
   }
 

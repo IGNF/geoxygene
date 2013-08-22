@@ -75,8 +75,8 @@ public class SHOMLoader extends ShapeFileLoader {
   private IPolygon envelopeTotale;
   private List<IPolygon> cellsGrid;
 
-  private String nameLayer = "Iroise_sedim";
-  private String nameShp = "Iroise_sedim.shp";
+  private String nameLayer = "Iroise_sedim_extract";
+  private String nameShp = "Iroise_sedim_extract.shp";
 
   /**
    * Default constructor

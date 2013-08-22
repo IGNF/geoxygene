@@ -77,7 +77,7 @@ public class MGCPContourLine extends MGCPFeature implements IContourLine {
       PeaRepDbType type) {
     super();
     this.geoxObj = new CourbeDeNiveauImpl(new ChampContinuImpl(),
-        Integer.valueOf(getStringAttribute("zv2")), line);
+        Integer.valueOf((String) attributes.get("zv2")), line);
     this.setInitialGeom(line);
     this.setEliminated(false);
     this.setAttributeMap(attributes);//

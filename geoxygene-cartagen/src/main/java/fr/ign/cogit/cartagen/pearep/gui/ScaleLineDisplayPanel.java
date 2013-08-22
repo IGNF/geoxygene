@@ -166,7 +166,7 @@ public class ScaleLineDisplayPanel extends JPanel implements ActionListener {
         this.frame.getBtnTop().setEnabled(false);
         this.frame.getBtnBottom().setEnabled(false);
       }
-      this.frame.pack();
+      this.frame.validate();
     }
   }
 

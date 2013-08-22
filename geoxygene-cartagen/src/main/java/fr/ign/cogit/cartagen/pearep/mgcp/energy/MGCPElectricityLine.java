@@ -2,7 +2,6 @@ package fr.ign.cogit.cartagen.pearep.mgcp.energy;
 
 import java.util.HashMap;
 
-import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
@@ -396,37 +395,37 @@ public class MGCPElectricityLine extends MGCPFeature implements
     this.tst = tst;
   }
 
-  @Override
-  public void copyAttributes(IGeneObj obj) {
-    if (!(obj instanceof MGCPElectricityLine))
-      return;
-    MGCPElectricityLine other = (MGCPElectricityLine) obj;
-    this.acc = other.getAcc();
-    this.ace_eval = other.getAce_eval();
-    this.ale_eval = other.getAle_eval();
-    this.uid = other.getUid();
-    this.src_name = other.getSrc_name();
-    this.zval_type = other.getZval_type();
-    this.hgt = other.getHgt();
-    this.pfh = other.getPfh();
-    this.voi = other.getVoi();
-    this.owo = other.getOwo();
-    this.kva = other.getKva();
-    this.tst = other.getTst();
-    this.upd_date = other.getUpd_date();
-    this.upd_info = other.getUpd_info();
-    this.fun = other.getFun();
-    this.cpyrt_note = other.getCpyrt_note();
-    this.upd_name = other.getUpd_name();
-    this.src_info = other.getSrc_info();
-    this.txt = other.getTxt();
-    this.nfi = other.getNfi();
-    this.nfn = other.getNfn();
-    this.tier_note = other.getTier_note();
-    this.nam = other.getNam();
-    this.src_date = other.getSrc_date();
-    this.ace = other.getAce();
-    this.ale = other.getAle();
-  }
+  // @Override
+  // public void copyAttributes(IGeneObj obj) {
+  // if (!(obj instanceof MGCPElectricityLine))
+  // return;
+  // MGCPElectricityLine other = (MGCPElectricityLine) obj;
+  // this.acc = other.getAcc();
+  // this.ace_eval = other.getAce_eval();
+  // this.ale_eval = other.getAle_eval();
+  // this.uid = other.getUid();
+  // this.src_name = other.getSrc_name();
+  // this.zval_type = other.getZval_type();
+  // this.hgt = other.getHgt();
+  // this.pfh = other.getPfh();
+  // this.voi = other.getVoi();
+  // this.owo = other.getOwo();
+  // this.kva = other.getKva();
+  // this.tst = other.getTst();
+  // this.upd_date = other.getUpd_date();
+  // this.upd_info = other.getUpd_info();
+  // this.fun = other.getFun();
+  // this.cpyrt_note = other.getCpyrt_note();
+  // this.upd_name = other.getUpd_name();
+  // this.src_info = other.getSrc_info();
+  // this.txt = other.getTxt();
+  // this.nfi = other.getNfi();
+  // this.nfn = other.getNfn();
+  // this.tier_note = other.getTier_note();
+  // this.nam = other.getNam();
+  // this.src_date = other.getSrc_date();
+  // this.ace = other.getAce();
+  // this.ale = other.getAle();
+  // }
 
 }

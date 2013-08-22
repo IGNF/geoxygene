@@ -1,13 +1,17 @@
 package fr.ign.cogit.cartagen.pearep.gui;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+
+import org.apache.batik.ext.swing.GridBagConstants;
 
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement;
@@ -22,7 +26,7 @@ public class SelectElementFrame extends JFrame implements ActionListener {
   private ScaleLine selectedLine;
 
   public SelectElementFrame(EditScaleMasterFrame parent) {
-    super(I18N.getString("EditScaleMasterFrame.lblEditElt"));
+    super(I18N.getString("EditScaleMasterFrame.lblEditElement"));
     this.parent = parent;
     this.selectedLine = parent.getSelectedLine();
     combo = new JComboBox(selectedLine.getAllElements().toArray());
@@ -32,11 +36,20 @@ public class SelectElementFrame extends JFrame implements ActionListener {
     JButton okButton = new JButton("OK");
     okButton.addActionListener(this);
     okButton.setActionCommand("ok");
-    this.add(combo);
-    this.add(okButton);
-    this.getContentPane().setLayout(
-        new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-    this.pack();
+    this.getContentPane().setLayout(new GridBagLayout());
+    this.getContentPane().add(
+        combo,
+        new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstants.CENTER,
+            GridBagConstants.HORIZONTAL, new Insets(2, 2, 2, 2), 1, 1));
+    this.getContentPane().add(
+        okButton,
+        new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstants.CENTER,
+            GridBagConstants.NONE, new Insets(2, 2, 2, 2), 1, 1));
+    this.setSize(300, 100);
+    this.setMinimumSize(new Dimension(300, 100));
+    this.setResizable(false);
+    this.setLocationRelativeTo(this.parent);
+    this.validate();
   }
 
   @Override

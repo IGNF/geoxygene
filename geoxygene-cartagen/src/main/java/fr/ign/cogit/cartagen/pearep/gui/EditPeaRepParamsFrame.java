@@ -1,8 +1,12 @@
 package fr.ign.cogit.cartagen.pearep.gui;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,8 +25,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -40,6 +42,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.batik.ext.swing.GridBagConstants;
 import org.apache.xerces.dom.DocumentImpl;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.w3c.dom.Element;
@@ -90,9 +93,10 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
         e1.printStackTrace();
       }
       setVisible(false);
-    } else if (e.getActionCommand().equals("cancel"))
+    } else if (e.getActionCommand().equals("cancel")) {
       this.setVisible(false);
-    else if (e.getActionCommand().equals("add")) {
+      this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+    } else if (e.getActionCommand().equals("add")) {
       this.dbs.add(new DatabaseImport((SourceDLM) cbType.getSelectedItem(),
           currentLayers, txtFolder.getText()));
       updateDbsList();
@@ -124,7 +128,7 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
       int returnVal = fc.showOpenDialog(this);
       if (returnVal == JFileChooser.APPROVE_OPTION) {
         this.txtExport.setText(fc.getSelectedFile().getPath());
-        this.pack();
+        this.validate();
       }
     } else if (e.getActionCommand().equals("add_corr")) {
       DataCorrectionInfo info = new DataCorrectionInfo(
@@ -135,24 +139,24 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
       this.currentThemes.clear();
       this.updateThemesList();
       this.txtTheme.setText("");
-      this.pack();
+      this.validate();
     } else if (e.getActionCommand().equals("remove_corr")) {
       DataCorrectionInfo info = (DataCorrectionInfo) jlistCorrections
           .getSelectedValue();
       this.corrections.remove(info);
       this.updateCorrList();
-      this.pack();
+      this.validate();
     } else if (e.getActionCommand().equals("add_theme")) {
       if (!txtTheme.getText().equals("")) {
         this.currentThemes.add(txtTheme.getText());
         this.updateThemesList();
-        this.pack();
+        this.validate();
       }
     } else if (e.getActionCommand().equals("remove_theme")) {
       String selected = (String) jlistThemes.getSelectedValue();
       this.currentThemes.remove(selected);
       this.updateThemesList();
-      this.pack();
+      this.validate();
     } else if (e.getActionCommand().equals("load")) {
       JFileChooser fc = new JFileChooser();
       fc.setFileFilter(new XMLFileFilter());
@@ -174,6 +178,12 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     this.corrections = new ArrayList<EditPeaRepParamsFrame.DataCorrectionInfo>();
     this.availablePreProcesses = new ArrayList<String>();
     this.currentThemes = new ArrayList<String>();
+    this.setSize(1200, 700);
+    this.setIconImage(new ImageIcon(EditPeaRepParamsFrame.class
+        .getClassLoader().getResource("resources/images/icons/logo.jpg"))
+        .getImage());
+
+    this.setMinimumSize(new Dimension(1200, 700));
     if (jar)
       try {
         this.initPreProcessesJar();
@@ -182,10 +192,8 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
       }
     else
       this.initPreProcesses();
-    this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
     // a panel for the buttons
-    JPanel pButtons = new JPanel();
     JButton btnSave = new JButton(I18N.getString("MainLabels.lblSave"));
     btnSave.addActionListener(this);
     btnSave.setActionCommand("save");
@@ -195,11 +203,18 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     JButton btnCancel = new JButton(I18N.getString("MainLabels.lblCancel"));
     btnCancel.addActionListener(this);
     btnCancel.setActionCommand("cancel");
-    pButtons.add(btnSave);
-    pButtons.add(btnLoad);
-    pButtons.add(btnCancel);
+    JPanel pButtons = new JPanel();
     pButtons.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
+    pButtons.setLayout(new GridBagLayout());
+    pButtons.add(btnSave, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pButtons.add(btnLoad, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pButtons.add(btnCancel, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
 
     // a panel for the output scale and the export folder
     JPanel pDefinition = new JPanel();
@@ -213,20 +228,27 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     txtExport.setMaximumSize(new Dimension(200, 20));
     txtExport.setMinimumSize(new Dimension(200, 20));
     JButton btnOpenEx = new JButton(new ImageIcon(EditScaleMasterFrame.class
-        .getClassLoader().getResource("images/browse.jpeg")));
+        .getClassLoader().getResource("resources/images/browse.jpeg")));
     btnOpenEx.addActionListener(this);
     btnOpenEx.setActionCommand("open-export");
-    pDefinition.add(Box.createHorizontalGlue());
-    pDefinition.add(new JLabel(I18N.getString("EditPeaRepParamsFrame.scale")));
-    pDefinition.add(spinScale);
-    pDefinition.add(Box.createHorizontalGlue());
-    pDefinition.add(new JLabel(I18N
-        .getString("EditPeaRepParamsFrame.exportFolder")));
-    pDefinition.add(txtExport);
-    pDefinition.add(btnOpenEx);
-    pDefinition.add(Box.createHorizontalGlue());
-    pDefinition.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    pDefinition.setLayout(new BoxLayout(pDefinition, BoxLayout.X_AXIS));
+
+    pDefinition.setLayout(new GridBagLayout());
+    pDefinition.add(new JLabel(I18N.getString("EditPeaRepParamsFrame.scale")),
+        new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstants.WEST,
+            GridBagConstants.NONE, new Insets(2, 2, 2, 2), 1, 1));
+    pDefinition.add(spinScale, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pDefinition.add(
+        new JLabel(I18N.getString("EditPeaRepParamsFrame.exportFolder")),
+        new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstants.WEST,
+            GridBagConstants.NONE, new Insets(2, 2, 2, 2), 1, 1));
+    pDefinition.add(txtExport, new GridBagConstraints(3, 0, 1, 1, 1.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2, 2, 2,
+            2), 1, 1));
+    pDefinition.add(btnOpenEx, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
 
     // a panel for databases import
     JPanel pDatabase = new JPanel();
@@ -235,37 +257,39 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     jlistDbs.setMaximumSize(new Dimension(120, 120));
     jlistDbs.setMinimumSize(new Dimension(120, 120));
     jlistDbs.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    JPanel pAddRemove = new JPanel();
     JButton btnAdd = new JButton(I18N.getString("MainLabels.lblAdd"));
     btnAdd.addActionListener(this);
     btnAdd.setActionCommand("add");
     JButton btnRemove = new JButton(I18N.getString("MainLabels.lblRemove"));
     btnRemove.addActionListener(this);
     btnRemove.setActionCommand("remove");
-    pAddRemove.add(btnAdd);
-    pAddRemove.add(btnRemove);
-    pAddRemove.setLayout(new BoxLayout(pAddRemove, BoxLayout.Y_AXIS));
-    JPanel pDb = new JPanel();
-    JPanel pFolder = new JPanel();
     txtFolder = new JTextField();
     txtFolder.setPreferredSize(new Dimension(200, 20));
     txtFolder.setMaximumSize(new Dimension(200, 20));
     txtFolder.setMinimumSize(new Dimension(200, 20));
     JButton btnOpen = new JButton(new ImageIcon(EditScaleMasterFrame.class
-        .getClassLoader().getResource("images/browse.jpeg")));
+        .getClassLoader().getResource("resources/images/browse.jpeg")));
     btnOpen.addActionListener(this);
     btnOpen.setActionCommand("open");
-    pFolder.add(txtFolder);
-    pFolder.add(btnOpen);
-    pFolder.setLayout(new BoxLayout(pFolder, BoxLayout.X_AXIS));
+
     cbType = new JComboBox(new SourceDLM[] { SourceDLM.MGCPPlusPlus,
         SourceDLM.VMAP1PlusPlus });
     cbType.setPreferredSize(new Dimension(120, 20));
     cbType.setMaximumSize(new Dimension(120, 20));
     cbType.setMinimumSize(new Dimension(120, 20));
-    pDb.add(cbType);
-    pDb.add(pFolder);
-    pDb.setLayout(new BoxLayout(pDb, BoxLayout.Y_AXIS));
+
+    JPanel pDb = new JPanel();
+    pDb.setLayout(new GridBagLayout());
+    pDb.add(cbType, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pDb.add(txtFolder, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2, 2, 2,
+            2), 1, 1));
+    pDb.add(btnOpen, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+
     jlistLayers = new JList();
     jlistLayers.setPreferredSize(new Dimension(80, 320));
     jlistLayers.setMaximumSize(new Dimension(80, 320));
@@ -283,24 +307,38 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     txtLayer.setMaximumSize(new Dimension(100, 20));
     txtLayer.setMinimumSize(new Dimension(100, 20));
     AutoCompleteDecorator.decorate(txtLayer, shapefiles, false);
-    pLayers.add(txtLayer);
-    pLayers.add(btnAddLayer);
-    pLayers.add(btnRemoveLayer);
-    pLayers.setLayout(new BoxLayout(pLayers, BoxLayout.Y_AXIS));
+    pLayers.setLayout(new GridBagLayout());
+    pLayers.add(txtLayer, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2, 2, 2,
+            2), 1, 1));
+    pLayers.add(btnAddLayer, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pLayers.add(btnRemoveLayer, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
 
-    pDatabase.add(jlistDbs);
-    pDatabase.add(Box.createHorizontalGlue());
-    pDatabase.add(pAddRemove);
-    pDatabase.add(Box.createHorizontalGlue());
-    pDatabase.add(pDb);
-    pDatabase.add(Box.createHorizontalGlue());
-    pDatabase.add(new JScrollPane(jlistLayers));
-    pDatabase.add(Box.createHorizontalGlue());
-    pDatabase.add(pLayers);
-    pDatabase.setLayout(new BoxLayout(pDatabase, BoxLayout.X_AXIS));
+    pDatabase.setLayout(new GridBagLayout());
+    pDatabase.add(pDb, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2, 2, 2,
+            2), 1, 1));
+    pDatabase.add(pLayers, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2, 2, 2,
+            2), 1, 1));
+    pDatabase.add(new JScrollPane(jlistLayers), new GridBagConstraints(0, 2, 1,
+        1, 1.0, 1.0, GridBagConstants.WEST, GridBagConstants.BOTH, new Insets(
+            2, 2, 2, 2), 1, 1));
+    pDatabase.add(btnAdd, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
+        GridBagConstants.CENTER, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pDatabase.add(new JScrollPane(jlistDbs), new GridBagConstraints(2, 2, 1, 1,
+        1.0, 1.0, GridBagConstants.WEST, GridBagConstants.BOTH, new Insets(2,
+            2, 2, 2), 1, 1));
+    pDatabase.add(btnRemove, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
 
     // a panel for data corrections
-    JPanel pDataCorrections = new JPanel();
     cbTypeCorrection = new JComboBox(new SourceDLM[] { SourceDLM.MGCPPlusPlus,
         SourceDLM.VMAP1PlusPlus });
     cbTypeCorrection.setPreferredSize(new Dimension(120, 20));
@@ -324,7 +362,6 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     txtTheme.setPreferredSize(new Dimension(100, 20));
     txtTheme.setMaximumSize(new Dimension(100, 20));
     txtTheme.setMinimumSize(new Dimension(100, 20));
-    JPanel pBtnsCorr = new JPanel();
     JButton btnAddCorr = new JButton(
         I18N.getString("EditPeaRepParamsFrame.lblAddPreProcess"));
     btnAddCorr.addActionListener(this);
@@ -333,11 +370,18 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
         I18N.getString("EditPeaRepParamsFrame.lblRemovePreProcess"));
     btnRemoveCorr.addActionListener(this);
     btnRemoveCorr.setActionCommand("remove_corr");
-    pBtnsCorr.add(btnAddCorr);
-    pBtnsCorr.add(btnRemoveCorr);
-    pBtnsCorr.setLayout(new BoxLayout(pBtnsCorr, BoxLayout.Y_AXIS));
-    JPanel pEditCorr = new JPanel();
-    JPanel pBtnsThemes = new JPanel();
+    JPanel pBtnsCorr = new JPanel();
+    pBtnsCorr.setLayout(new GridBagLayout());
+    pBtnsCorr.add(cbPreProcess, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2, 2, 2,
+            2), 1, 1));
+    pBtnsCorr.add(cbTypeCorrection, new GridBagConstraints(0, 1, 1, 1, 1.0,
+        0.0, GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2,
+            2, 2, 2), 1, 1));
+    pBtnsCorr.add(btnAddCorr, new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2, 2, 2,
+            2), 1, 1));
+
     JButton btnAddTheme = new JButton(
         I18N.getString("EditPeaRepParamsFrame.lblAddTheme"));
     btnAddTheme.addActionListener(this);
@@ -346,40 +390,59 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
         I18N.getString("EditPeaRepParamsFrame.lblRemoveTheme"));
     btnRemoveTheme.addActionListener(this);
     btnRemoveTheme.setActionCommand("remove_theme");
-    pBtnsThemes.add(btnAddTheme);
-    pBtnsThemes.add(btnRemoveTheme);
-    pBtnsThemes.setLayout(new BoxLayout(pBtnsThemes, BoxLayout.X_AXIS));
-    pEditCorr.add(cbPreProcess);
-    pEditCorr.add(Box.createVerticalGlue());
-    pEditCorr.add(cbTypeCorrection);
-    pEditCorr.add(Box.createVerticalGlue());
-    pEditCorr.add(txtTheme);
-    pEditCorr.add(pBtnsThemes);
-    pEditCorr.setLayout(new BoxLayout(pEditCorr, BoxLayout.Y_AXIS));
-    pDataCorrections.add(new JScrollPane(jlistCorrections));
-    pDataCorrections.add(Box.createHorizontalGlue());
-    pDataCorrections.add(pBtnsCorr);
-    pDataCorrections.add(Box.createHorizontalGlue());
-    pDataCorrections.add(pEditCorr);
-    pDataCorrections.add(Box.createHorizontalGlue());
-    pDataCorrections.add(new JScrollPane(jlistThemes));
+
+    JPanel pEditCorr = new JPanel();
+    pEditCorr.setLayout(new GridBagLayout());
+    pEditCorr.add(txtTheme, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2, 2, 2,
+            2), 1, 1));
+    pEditCorr.add(btnAddTheme, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pEditCorr.add(btnRemoveTheme, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+
+    JPanel pDataCorrections = new JPanel();
     pDataCorrections.setBorder(BorderFactory.createTitledBorder(I18N
         .getString("EditPeaRepParamsFrame.titleCorrections")));
-    pDataCorrections
-        .setLayout(new BoxLayout(pDataCorrections, BoxLayout.X_AXIS));
+    pDataCorrections.setLayout(new GridBagLayout());
+    pDataCorrections.add(pEditCorr, new GridBagConstraints(0, 0, 1, 1, 1.0,
+        0.0, GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2,
+            2, 2, 2), 1, 1));
+    pDataCorrections.add(new JScrollPane(jlistThemes), new GridBagConstraints(
+        0, 1, 1, 1, 1.0, 1.0, GridBagConstants.WEST, GridBagConstants.BOTH,
+        new Insets(2, 2, 2, 2), 1, 1));
+    pDataCorrections.add(pBtnsCorr, new GridBagConstraints(1, 1, 1, 1, 1.0,
+        1.0, GridBagConstants.WEST, GridBagConstants.BOTH, new Insets(2, 2, 2,
+            2), 1, 1));
+    pDataCorrections.add(new JScrollPane(jlistCorrections),
+        new GridBagConstraints(2, 1, 1, 1, 1.0, 1.0, GridBagConstants.WEST,
+            GridBagConstants.BOTH, new Insets(2, 2, 2, 2), 1, 1));
+    pDataCorrections.add(btnRemoveCorr, new GridBagConstraints(3, 1, 1, 1, 0.0,
+        0.0, GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2,
+            2), 1, 1));
 
     // frame main setup
-    this.getContentPane().add(Box.createVerticalGlue());
-    this.getContentPane().add(pDefinition);
-    this.getContentPane().add(Box.createVerticalGlue());
-    this.getContentPane().add(pDatabase);
-    this.getContentPane().add(Box.createVerticalGlue());
-    this.getContentPane().add(pDataCorrections);
-    this.getContentPane().add(Box.createVerticalGlue());
-    this.getContentPane().add(pButtons);
-    this.getContentPane().setLayout(
-        new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-    this.pack();
+    this.getContentPane().setLayout(new GridBagLayout());
+    this.getContentPane().add(
+        pDefinition,
+        new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstants.CENTER,
+            GridBagConstants.HORIZONTAL, new Insets(2, 2, 2, 2), 1, 1));
+    this.getContentPane().add(
+        pDatabase,
+        new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstants.CENTER,
+            GridBagConstants.BOTH, new Insets(2, 2, 2, 2), 1, 1));
+    this.getContentPane().add(
+        pDataCorrections,
+        new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0, GridBagConstants.CENTER,
+            GridBagConstants.BOTH, new Insets(2, 2, 2, 2), 1, 1));
+    this.getContentPane().add(
+        pButtons,
+        new GridBagConstraints(0, 3, 1, 1, 1.0, 0.0, GridBagConstants.CENTER,
+            GridBagConstants.HORIZONTAL, new Insets(2, 2, 2, 2), 1, 1));
+
+    this.validate();
   }
 
   public EditPeaRepParamsFrame(File file, boolean jar) {
@@ -659,7 +722,7 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     for (DatabaseImport db : this.dbs)
       model.addElement(db);
     this.jlistDbs.setModel(model);
-    this.pack();
+    this.validate();
   }
 
   /**
@@ -671,7 +734,7 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     for (String layer : this.currentLayers)
       model.addElement(layer);
     this.jlistLayers.setModel(model);
-    this.pack();
+    this.validate();
   }
 
   /**
@@ -683,7 +746,7 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     for (DataCorrectionInfo db : this.corrections)
       model.addElement(db);
     this.jlistCorrections.setModel(model);
-    this.pack();
+    this.validate();
   }
 
   /**
@@ -695,7 +758,7 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     for (String theme : this.currentThemes)
       model.addElement(theme);
     this.jlistThemes.setModel(model);
-    this.pack();
+    this.validate();
   }
 
   class DatabaseImport {

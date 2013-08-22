@@ -1,6 +1,9 @@
 package fr.ign.cogit.cartagen.pearep.gui;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -8,11 +11,11 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -28,6 +31,8 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
+
+import org.apache.batik.ext.swing.GridBagConstants;
 
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
@@ -93,7 +98,7 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
       ScaleLineDisplayPanel panel = this.parent.getLinePanels().get(
           this.line.getTheme().getName());
       panel.updateElements();
-      this.parent.pack();
+      this.parent.validate();
       this.setVisible(false);
     } else if (e.getActionCommand().equals("cancel")) {
       this.setVisible(false);
@@ -105,13 +110,15 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
       fillParametersValues();
       ScaleMasterGeneProcess processToAdd = (ScaleMasterGeneProcess) comboProc
           .getSelectedItem();
-      for (ProcessParameter param : parameters)
-        processToAdd.addParameter(param);
-      this.processes.add(processToAdd);
-      processPriorities
-          .add(ProcessPriority.values()[slideProcess.getValue() - 1]);
-      comboProc.setSelectedItem(null);
-      updateJList(jlistProcess);
+      if (processToAdd != null) {
+        for (ProcessParameter param : parameters)
+          processToAdd.addParameter(param);
+        this.processes.add(processToAdd);
+        processPriorities
+            .add(ProcessPriority.values()[slideProcess.getValue() - 1]);
+        comboProc.setSelectedItem(null);
+        updateJList(jlistProcess);
+      }
     } else if (e.getActionCommand().equals("addFilter")) {
       // open a frame to define the filter
       AddFilterToElementFrame frame = new AddFilterToElementFrame(this);
@@ -143,47 +150,55 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.enrichments = new ArrayList<ScaleMasterEnrichment>();
 
     // a panel for the definition of the interval
-    JPanel pInterval = new JPanel();
     this.spinMin = new JSpinner(new SpinnerNumberModel(25000,
         ((Integer) this.parent.getSpMin().getValue()).intValue(),
         ((Integer) this.parent.getSpMax().getValue()).intValue(), 1000));
-    spinMin.setPreferredSize(new Dimension(80, 20));
-    spinMin.setMaximumSize(new Dimension(80, 20));
-    spinMin.setMinimumSize(new Dimension(80, 20));
+    spinMin.setPreferredSize(new Dimension(100, 20));
+    spinMin.setMaximumSize(new Dimension(100, 20));
+    spinMin.setMinimumSize(new Dimension(100, 20));
     this.spinMax = new JSpinner(new SpinnerNumberModel(250000,
         ((Integer) this.parent.getSpMin().getValue()).intValue(),
         ((Integer) this.parent.getSpMax().getValue()).intValue(), 1000));
-    spinMax.setPreferredSize(new Dimension(80, 20));
-    spinMax.setMaximumSize(new Dimension(80, 20));
-    spinMax.setMinimumSize(new Dimension(80, 20));
-    pInterval.add(new JLabel(this.lblInterval));
-    pInterval.add(Box.createHorizontalGlue());
-    pInterval.add(new JLabel(this.lblMinScale));
-    pInterval.add(this.spinMin);
-    pInterval.add(Box.createHorizontalGlue());
-    pInterval.add(new JLabel(this.lblMaxScale));
-    pInterval.add(this.spinMax);
-    pInterval.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    pInterval.setLayout(new BoxLayout(pInterval, BoxLayout.X_AXIS));
+    spinMax.setPreferredSize(new Dimension(100, 20));
+    spinMax.setMaximumSize(new Dimension(100, 20));
+    spinMax.setMinimumSize(new Dimension(100, 20));
+    JPanel pInterval = new JPanel();
+    pInterval.setLayout(new GridBagLayout());
+    pInterval.add(new JLabel(this.lblInterval), new GridBagConstraints(0, 0, 1,
+        1, 0.0, 0.0, GridBagConstants.WEST, GridBagConstants.NONE, new Insets(
+            2, 2, 2, 2), 1, 1));
+    pInterval.add(new JLabel(this.lblMinScale), new GridBagConstraints(1, 0, 1,
+        1, 1.0, 0.0, GridBagConstants.EAST, GridBagConstants.NONE, new Insets(
+            2, 2, 2, 2), 1, 1));
+    pInterval.add(this.spinMin, new GridBagConstraints(2, 0, 1, 1, 1.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pInterval.add(new JLabel(this.lblMaxScale), new GridBagConstraints(3, 0, 1,
+        1, 1.0, 0.0, GridBagConstants.EAST, GridBagConstants.NONE, new Insets(
+            2, 2, 2, 2), 1, 1));
+    pInterval.add(this.spinMax, new GridBagConstraints(4, 0, 1, 1, 1.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
 
     // a panel for the definition of the used DB and the classes
-    JPanel pData = new JPanel();
     DefaultComboBoxModel cbModel = new DefaultComboBoxModel();
     cbModel.addElement(SourceDLM.MGCPPlusPlus.name());
     cbModel.addElement(SourceDLM.VMAP1PlusPlus.name());
     this.comboDbs = new JComboBox(cbModel);
-    comboDbs.setPreferredSize(new Dimension(80, 20));
-    comboDbs.setMaximumSize(new Dimension(80, 20));
-    comboDbs.setMinimumSize(new Dimension(80, 20));
-    pData.add(new JLabel(lblDb));
-    pData.add(this.comboDbs);
-    pData.add(Box.createHorizontalGlue());
-    pData.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    pData.setLayout(new BoxLayout(pData, BoxLayout.X_AXIS));
+    comboDbs.setPreferredSize(new Dimension(200, 20));
+    comboDbs.setMaximumSize(new Dimension(200, 20));
+    comboDbs.setMinimumSize(new Dimension(200, 20));
+    JPanel pData = new JPanel();
+    pData.setLayout(new GridBagLayout());
+    pData.add(new JLabel(lblDb + " :"), new GridBagConstraints(0, 0, 1, 1, 0.0,
+        0.0, GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2,
+            2), 1, 1));
+    pData.add(this.comboDbs, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
 
     // the panels for enrichments, the filter and the processes
     // First, the enrichment panel
-    JPanel pEnrich = new JPanel();
     this.btnAddEnrich = new JButton(this.lblAdd);
     this.btnAddEnrich.addActionListener(this);
     this.btnAddEnrich.setActionCommand("addEnrich");
@@ -197,22 +212,22 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     jlistEnrichs = new JList();
     jlistEnrichs
         .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    jlistEnrichs.setPreferredSize(new Dimension(120, 1000));
-    jlistEnrichs.setMaximumSize(new Dimension(120, 1000));
-    jlistEnrichs.setMinimumSize(new Dimension(120, 1000));
     JScrollPane scroll = new JScrollPane(jlistEnrichs);
-    scroll.setPreferredSize(new Dimension(120, 120));
-    scroll.setMaximumSize(new Dimension(120, 120));
-    scroll.setMinimumSize(new Dimension(120, 120));
-    pEnrich.add(comboEnrich);
-    pInterval.add(Box.createHorizontalGlue());
-    pEnrich.add(btnAddEnrich);
-    pInterval.add(Box.createHorizontalStrut(4));
-    pEnrich.add(btnRemoveEnrich);
-    pInterval.add(Box.createHorizontalGlue());
-    pEnrich.add(scroll);
+    JPanel pEnrich = new JPanel();
     pEnrich.setBorder(BorderFactory.createTitledBorder(lblEnrichments));
-    pEnrich.setLayout(new BoxLayout(pEnrich, BoxLayout.X_AXIS));
+    pEnrich.setLayout(new GridBagLayout());
+    pEnrich.add(comboEnrich, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
+        GridBagConstants.CENTER, GridBagConstants.HORIZONTAL, new Insets(2, 2,
+            2, 2), 1, 1));
+    pEnrich.add(btnAddEnrich, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pEnrich.add(btnRemoveEnrich, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pEnrich.add(scroll, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0,
+        GridBagConstants.CENTER, GridBagConstants.BOTH, new Insets(2, 2, 2, 2),
+        1, 1));
 
     // Then, the filter panel
     JPanel pFilter = new JPanel();
@@ -230,74 +245,96 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.slideFilter = new JSlider(1, 5, 3);
     this.slideFilter.setPaintTicks(true);
     this.slideFilter.setMajorTickSpacing(1);
+    Hashtable<Integer, JLabel> table = new Hashtable<Integer, JLabel>();
+    table.put(1, new JLabel("-"));
+    table.put(5, new JLabel("+"));
+    this.slideFilter.setLabelTable(table);
+    this.slideFilter.setPaintLabels(true);
     this.slideFilter.setPreferredSize(new Dimension(120, 50));
     this.slideFilter.setMaximumSize(new Dimension(120, 50));
     this.slideFilter.setMinimumSize(new Dimension(120, 50));
-    pFilter.add(new JLabel(this.lblPriority));
-    pFilter.add(slideFilter);
-    pInterval.add(Box.createHorizontalGlue());
-    pFilter.add(btnAddFilter);
-    pInterval.add(Box.createHorizontalStrut(4));
-    pFilter.add(btnRemoveFilter);
-    pInterval.add(Box.createHorizontalGlue());
-    pFilter.add(filterTxt);
     pFilter.setBorder(BorderFactory.createTitledBorder(lblFilter));
-    pFilter.setLayout(new BoxLayout(pFilter, BoxLayout.X_AXIS));
+    pFilter.setLayout(new GridBagLayout());
+    pFilter.add(new JLabel(this.lblPriority + " :"), new GridBagConstraints(0,
+        1, 1, 1, 0.0, 0.0, GridBagConstants.WEST, GridBagConstants.NONE,
+        new Insets(2, 2, 2, 2), 1, 1));
+    pFilter.add(slideFilter, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+        GridBagConstants.CENTER, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pFilter.add(btnAddFilter, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+        GridBagConstants.CENTER, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pFilter.add(filterTxt, new GridBagConstraints(3, 1, 1, 1, 1.0, 0.0,
+        GridBagConstants.CENTER, GridBagConstants.HORIZONTAL, new Insets(2, 2,
+            2, 2), 1, 1));
+    pFilter.add(btnRemoveFilter, new GridBagConstraints(4, 1, 1, 1, 0.0, 0.0,
+        GridBagConstants.CENTER, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
 
     // Finally, the processes panel
-    JPanel pProc = new JPanel();
-    JPanel pBtns = new JPanel();
     this.btnAddProcess = new JButton(this.lblAdd);
     this.btnAddProcess.addActionListener(this);
     this.btnAddProcess.setActionCommand("addProc");
     this.btnRemoveProcess = new JButton(this.lblRemove);
     this.btnRemoveProcess.addActionListener(this);
     this.btnRemoveProcess.setActionCommand("removeProc");
-    pBtns.add(btnAddProcess);
-    pBtns.add(btnRemoveProcess);
-    pBtns.setLayout(new BoxLayout(pBtns, BoxLayout.Y_AXIS));
+    JPanel pBtns = new JPanel();
+    pBtns.setLayout(new GridBagLayout());
+    pBtns.add(btnAddProcess, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pBtns.add(btnRemoveProcess, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
     jlistProcess = new JList();
     jlistProcess
         .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    jlistProcess.setPreferredSize(new Dimension(140, 1000));
-    jlistProcess.setMaximumSize(new Dimension(140, 1000));
-    jlistProcess.setMinimumSize(new Dimension(140, 1000));
     JScrollPane scroll2 = new JScrollPane(jlistProcess);
-    scroll2.setPreferredSize(new Dimension(140, 120));
-    scroll2.setMaximumSize(new Dimension(140, 120));
-    scroll2.setMinimumSize(new Dimension(140, 120));
     JPanel pCurrentProc = new JPanel();
     // comboProc et slideProcess
-    JPanel pDescProc = new JPanel();
     this.comboProc = new JComboBox(this.parent.getProcComboModel());
     this.comboProc.setPreferredSize(new Dimension(140, 20));
     this.comboProc.setMaximumSize(new Dimension(140, 20));
     this.comboProc.setMinimumSize(new Dimension(140, 20));
     this.comboProc.addItemListener(this);
     this.slideProcess = new JSlider(1, 5, 3);
+    this.slideProcess.setLabelTable(table);
     this.slideProcess.setPaintTicks(true);
+    this.slideProcess.setPaintLabels(true);
     this.slideProcess.setMajorTickSpacing(1);
     this.slideProcess.setPreferredSize(new Dimension(120, 50));
     this.slideProcess.setMaximumSize(new Dimension(120, 50));
     this.slideProcess.setMinimumSize(new Dimension(120, 50));
-    pDescProc.add(comboProc);
-    pDescProc.add(slideProcess);
-    pDescProc.setLayout(new BoxLayout(pDescProc, BoxLayout.Y_AXIS));
     // pParameters panel
     this.pParameters = new ProcessParameterPanel();
-    this.comboProc.setSelectedIndex(0);
+    if (this.comboProc.getItemCount() > 0)
+      this.comboProc.setSelectedIndex(0);
+    else
+      this.comboProc.setSelectedIndex(-1);
     this.updateParametersPanel();
     this.pParameters.setLayout(new BoxLayout(pParameters, BoxLayout.Y_AXIS));
-    pCurrentProc.add(pDescProc);
-    pCurrentProc.add(pParameters);
-    pCurrentProc.setLayout(new BoxLayout(pCurrentProc, BoxLayout.X_AXIS));
-    pProc.add(pCurrentProc);
-    pInterval.add(Box.createHorizontalGlue());
-    pProc.add(pBtns);
-    pInterval.add(Box.createHorizontalGlue());
-    pProc.add(scroll2);
+    pCurrentProc.setLayout(new GridBagLayout());
+    pCurrentProc.add(comboProc, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2, 2, 2,
+            2), 1, 1));
+    pCurrentProc.add(pParameters, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0,
+        GridBagConstants.CENTER, GridBagConstants.BOTH, new Insets(2, 2, 2, 2),
+        1, 1));
+    JPanel pProc = new JPanel();
     pProc.setBorder(BorderFactory.createTitledBorder(lblProcesses));
-    pProc.setLayout(new BoxLayout(pProc, BoxLayout.X_AXIS));
+    pProc.setLayout(new GridBagLayout());
+    pProc.add(pCurrentProc, new GridBagConstraints(0, 0, 1, 2, 1.0, 1.0,
+        GridBagConstants.CENTER, GridBagConstants.BOTH, new Insets(2, 2, 2, 2),
+        1, 1));
+    pProc.add(slideProcess, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.CENTER, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pProc.add(pBtns, new GridBagConstraints(1, 1, 1, 1, 0.0, 1.0,
+        GridBagConstants.CENTER, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pProc.add(scroll2, new GridBagConstraints(2, 0, 1, 2, 1.0, 1.0,
+        GridBagConstants.CENTER, GridBagConstants.BOTH, new Insets(2, 2, 2, 2),
+        1, 1));
 
     // a panel for the buttons
     JPanel pButtons = new JPanel();
@@ -307,21 +344,46 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.btnCancel = new JButton(this.lblCancel);
     this.btnCancel.addActionListener(this);
     this.btnCancel.setActionCommand("cancel");
-    pButtons.add(this.btnOk);
-    pButtons.add(this.btnCancel);
     pButtons.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
+    pButtons.setLayout(new GridBagLayout());
+    pButtons.add(this.btnOk, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.CENTER, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+    pButtons.add(this.btnCancel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+        GridBagConstants.CENTER, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
 
     // final layout of the frame
-    this.getContentPane().add(pInterval);
-    this.getContentPane().add(pData);
-    this.getContentPane().add(pEnrich);
-    this.getContentPane().add(pFilter);
-    this.getContentPane().add(pProc);
-    this.getContentPane().add(pButtons);
-    this.getContentPane().setLayout(
-        new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-    this.pack();
+    this.getContentPane().setLayout(new GridBagLayout());
+    this.getContentPane().add(
+        pInterval,
+        new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstants.WEST,
+            GridBagConstants.HORIZONTAL, new Insets(2, 2, 2, 2), 1, 1));
+    this.getContentPane().add(
+        pData,
+        new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0, GridBagConstants.WEST,
+            GridBagConstants.HORIZONTAL, new Insets(2, 2, 2, 2), 1, 1));
+    this.getContentPane().add(
+        pEnrich,
+        new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0, GridBagConstants.CENTER,
+            GridBagConstants.BOTH, new Insets(2, 2, 2, 2), 1, 1));
+    this.getContentPane().add(
+        pFilter,
+        new GridBagConstraints(0, 3, 1, 1, 1.0, 0.0, GridBagConstants.WEST,
+            GridBagConstants.HORIZONTAL, new Insets(2, 2, 2, 2), 1, 1));
+    this.getContentPane().add(
+        pProc,
+        new GridBagConstraints(0, 4, 1, 1, 1.0, 1.0, GridBagConstants.CENTER,
+            GridBagConstants.BOTH, new Insets(2, 2, 2, 2), 1, 1));
+    this.getContentPane().add(
+        pButtons,
+        new GridBagConstraints(0, 5, 1, 1, 1.0, 0.0, GridBagConstants.CENTER,
+            GridBagConstants.HORIZONTAL, new Insets(2, 2, 2, 2), 1, 1));
+
+    this.setSize(400, 400);
+    this.setMinimumSize(new Dimension(700, 700));
+    this.setLocationRelativeTo(this.parent);
+    this.validate();
   }
 
   public AddScaleMasterEltFrame(EditScaleMasterFrame frame, ScaleLine line,
@@ -350,7 +412,8 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.processPriorities = elem.getProcessPriorities();
     this.updateJList(jlistEnrichs);
     this.updateJList(jlistProcess);
-    this.pack();
+    this.setSize(300, 150);
+    this.validate();
   }
 
   /**
@@ -369,7 +432,7 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
   private void updateParametersPanel() {
     this.pParameters.clear();
     this.pParameters.update(this.parameters);
-    this.pack();
+    this.validate();
   }
 
   /**
@@ -387,7 +450,7 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
       model.addElement(classObj);
     }
     list.setModel(model);
-    this.parent.pack();
+    this.parent.validate();
   }
 
   @Override

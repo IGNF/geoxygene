@@ -9,6 +9,10 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.pearep;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -20,10 +24,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -32,6 +36,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.batik.ext.swing.GridBagConstants;
 import org.geotools.data.shapefile.shp.ShapefileException;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
@@ -40,14 +45,12 @@ import fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory;
 import fr.ign.cogit.cartagen.genealgorithms.landuse.LanduseSimplification;
 import fr.ign.cogit.cartagen.pearep.derivation.ScaleMasterScheduler;
 import fr.ign.cogit.cartagen.pearep.importexport.MGCPLoader;
-import fr.ign.cogit.cartagen.pearep.importexport.SHOMLoader;
 import fr.ign.cogit.cartagen.pearep.importexport.ShapeFileExport;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP0Loader;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP1Loader;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP1PlusPlusLoader;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP2Loader;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSchemaFactory;
-import fr.ign.cogit.cartagen.pearep.shom.SHOMSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPSchemaFactory;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
@@ -88,32 +91,55 @@ public class PeaRepGeneralisation implements PropertyChangeListener,
     // load dlls
     System.loadLibrary("triangulation");
 
-    // create a progress bar
     JFrame frame = new JFrame("Progression de la généralisation");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     // Create and set up the content pane.
     JPanel newContentPane = new JPanel();
+
+    // create a progress bar
     JProgressBar progressBar = new JProgressBar(0, 100);
     progressBar.setValue(0);
     progressBar.setStringPainted(true);
+    final Label labelMessage = new Label("", Label.LEFT);
     JButton stopBtn = new JButton("Stop");
     stopBtn.setActionCommand("stop");
-    newContentPane.add(Box.createVerticalGlue());
-    newContentPane.add(progressBar);
-    newContentPane.add(Box.createVerticalGlue());
-    newContentPane.add(stopBtn);
-    newContentPane.add(Box.createVerticalGlue());
-    newContentPane.setLayout(new BoxLayout(newContentPane, BoxLayout.Y_AXIS));
+    newContentPane.setLayout(new GridBagLayout());
+    newContentPane.add(progressBar, new GridBagConstraints(0, 0, 1, 1, 1.0,
+        0.0, GridBagConstants.CENTER, GridBagConstants.HORIZONTAL, new Insets(
+            2, 2, 2, 2), 1, 1));
+    newContentPane.add(labelMessage, new GridBagConstraints(0, 1, 1, 1, 1.0,
+        0.0, GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2,
+            2, 2, 2), 1, 1));
+    newContentPane.add(stopBtn, new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0,
+        GridBagConstants.SOUTH, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
     newContentPane.setOpaque(true); // content panes must be opaque
     frame.setContentPane(newContentPane);
-    frame.setSize(400, 150);
+    frame.setSize(600, 150);
+    frame.setResizable(false);
 
     // Display the window.
-    frame.pack();
     frame.setVisible(true);
-
     PeaRepGeneralisation main = new PeaRepGeneralisation(frame, progressBar);
+    Handler logHandler = new Handler() {
+      @Override
+      public void publish(LogRecord record) {
+        if (!isLoggable(record))
+          return;
+        labelMessage.setText(record.getMessage());
+      }
+
+      @Override
+      public void flush() {
+      }
+
+      @Override
+      public void close() throws SecurityException {
+      }
+    };
+    Logger.getLogger("PeaRep.trace.scheduler").addHandler(logHandler);
+    GeneralisationTask.logger.addHandler(logHandler);
     GeneralisationTask task = new GeneralisationTask(main);
     task.addPropertyChangeListener(main);
     stopBtn.addActionListener(main);
@@ -166,8 +192,7 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
   private static String VMAP2i_DATASET = "VMAP2i";
   private static String MGCPPlusPlus_DATASET = "MGCPPlusPlus";
   private static String VMAP1PlusPlus_DATASET = "VMAP1PlusPlus";
-  private static String SHOM_DATASET = "SHOM";
-  private static Logger logger = Logger.getLogger(PeaRepGeneralisation.class
+  public static Logger logger = Logger.getLogger(PeaRepGeneralisation.class
       .getName());
 
   public GeneralisationTask(PeaRepGeneralisation main) {
@@ -182,6 +207,7 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
   public Void doInBackground() {
     try {
       // Initialize progress property.
+      logger.info("Initialisation");
       this.setProgress(0);
       int progress = 0;
 
@@ -197,6 +223,7 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       doc.setName("PEA_REP");
       doc.setPostGisDb(PostgisDB.get("PEA_REP", true));
       progress += 5;
+      logger.info("Lecture des fichiers de configuration");
       this.setProgress(progress);
       // Sleep for up to one second.
       try {
@@ -244,6 +271,8 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       if (scheduler == null) {
         return null;
       }
+
+      logger.info("Chargement des données VMAP2i");
       this.setProgress(10);
       // Sleep for up to one second.
       try {
@@ -259,7 +288,6 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       boolean vmap1ppDb = false;
       boolean vmapDb = false;
       boolean mgcpDb = false;
-      boolean shomDb = false;
 
       // then, import all available databases
       SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
@@ -281,6 +309,17 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
         }
       }
 
+      logger.info("Chargement des données MGCP");
+      this.setProgress(20);
+      // Sleep for up to one second.
+      try {
+        if (this.main.isStop()) {
+          this.setProgress(100);
+        }
+        Thread.sleep(500);
+      } catch (InterruptedException ignore) {
+      }
+
       if (scheduler.getMgcpPlusPlusFolder() != null) {
         mgcpDb = true;
         MGCPLoader mgcpLoader = new MGCPLoader(symbGroup,
@@ -297,26 +336,8 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
         }
       }
 
-      if (scheduler.getShomFolder() != null) {
-        shomDb = true;
-        SHOMLoader shomLoader = new SHOMLoader(symbGroup,
-            GeneralisationTask.SHOM_DATASET);
-        try {
-          shomLoader.loadData(new File(scheduler.getShomFolder()),
-              scheduler.getListLayersMgcpPlusPlus());
-          System.out.println(scheduler.getShomFolder());
-          System.out.println(scheduler.getListLayersMgcpPlusPlus());
-
-        } catch (ShapefileException e1) {
-          GeneralisationTask.logger.severe("Problem during SHOM loading");
-          e1.printStackTrace();
-        } catch (IOException e1) {
-          GeneralisationTask.logger.severe("Problem during SHOM loading");
-          e1.printStackTrace();
-        }
-      }
-
-      this.setProgress(20);
+      logger.info("Chargement des données VMAP1");
+      this.setProgress(30);
       // Sleep for up to one second.
       try {
         if (this.main.isStop()) {
@@ -359,7 +380,9 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
           e1.printStackTrace();
         }
       }
-      this.setProgress(30);
+
+      logger.info("Chargement des données VMAP0");
+      this.setProgress(40);
       // Sleep for up to one second.
       try {
         if (this.main.isStop()) {
@@ -385,7 +408,9 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
           e1.printStackTrace();
         }
       }
-      this.setProgress(40);
+
+      logger.info("Initialisation des schémas de données");
+      this.setProgress(50);
       // Sleep for up to one second.
       try {
         if (this.main.isStop()) {
@@ -410,11 +435,17 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
         CartagenApplication.getInstance().setCreationFactory(
             new MGCPSchemaFactory());
       }
-      if (shomDb == true) {
-        CartagenApplication.getInstance().setCreationFactory(
-            new SHOMSchemaFactory());
-      }
 
+      logger.info("Début de la généralisation");
+      this.setProgress(60);
+      // Sleep for up to one second.
+      try {
+        if (this.main.isStop()) {
+          this.setProgress(100);
+        }
+        Thread.sleep(500);
+      } catch (InterruptedException ignore) {
+      }
       // *******************************************************
       // trigger the generalisation
       try {
@@ -422,7 +453,9 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       } catch (Exception e) {
         JOptionPane.showMessageDialog(null, e.getStackTrace());
       }
-      this.setProgress(60);
+
+      logger.info("Début de la simplification OCS");
+      this.setProgress(70);
       // Sleep for up to one second.
       try {
         if (this.main.isStop()) {
@@ -457,6 +490,17 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
           listThemeLanduse.add(nomTheme);
         }
         this.setProgress(80);
+      }
+
+      logger.info("Début de l'export");
+      this.setProgress(90);
+      // Sleep for up to one second.
+      try {
+        if (this.main.isStop()) {
+          this.setProgress(100);
+        }
+        Thread.sleep(500);
+      } catch (InterruptedException ignore) {
       }
 
       // *******************************************************
