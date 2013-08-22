@@ -19,14 +19,10 @@
 
 package fr.ign.cogit.geoxygene.appli;
 
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -48,7 +44,6 @@ import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -56,8 +51,6 @@ import javax.swing.plaf.basic.BasicButtonUI;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-
-import com.vividsolutions.jts.geom.Dimension;
 
 import fr.ign.cogit.geoxygene.appli.gui.FileChooser;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
@@ -265,6 +258,23 @@ public class MainFrame extends JFrame {
         
         tabbedPane.setTabComponentAt(index,
                 new ButtonTabComponent(tabbedPane));
+    }
+    
+
+    /**
+     * 
+     * @param desktopName
+     * @param frame
+     */
+    public final void addFrameInDesktop(String desktopName, JInternalFrame frame) {
+        LOGGER.log(Level.DEBUG, "New frame");
+        // Add ProjectFrame to the selected tabbedPane
+        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+            if (tabbedPane.getTitleAt(i).equals(desktopName)) {
+                JDesktopPane currentDesktop = ((JDesktopPane) this.tabbedPane.getComponentAt(i));
+                currentDesktop.add(frame);
+            }
+        }
     }
 
 }

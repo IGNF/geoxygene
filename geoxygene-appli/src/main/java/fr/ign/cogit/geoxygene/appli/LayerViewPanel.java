@@ -73,37 +73,71 @@ import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
  * @author Julien Perret
  */
 public class LayerViewPanel extends JPanel implements Printable, SldListener {
-  /**
-   * logger.
-   */
-  private static Logger logger = Logger.getLogger(LayerViewPanel.class
-      .getName());
-  /**
-   * serial uid.
-   */
-  private static final long serialVersionUID = 1L;
+  
+    /** logger. */
+    private static Logger logger = Logger.getLogger(LayerViewPanel.class.getName());
+    
+    /** Serial uid. */
+    private static final long serialVersionUID = 1L;
 
-  protected Set<PaintListener> overlayListeners = new HashSet<PaintListener>(0);
+    protected Set<PaintListener> overlayListeners = new HashSet<PaintListener>(0);
+    
+    /** Private viewport. Use getter or setter. */
+    private Viewport viewport = null;
+    
+    /** Model */
+    // private StyledLayerDescriptor sldmodel;
 
-  public void addPaintListener(PaintListener listener) {
-    this.overlayListeners.add(listener);
-  }
+    /** Rendering manager. */
+    private RenderingManager renderingManager = new RenderingManager(this);
 
-  public void paintOverlays(final Graphics graphics) {
-    for (PaintListener listener : this.overlayListeners) {
-      listener.paint(this, graphics);
+    /** Private selected features. Use getter and setter. */
+    private Set<IFeature> selectedFeatures = new HashSet<IFeature>(0);
+  
+    private ProjectFrame projectFrame = null;
+    
+    private boolean recording = false;
+    
+    private String recordFileName = ""; //$NON-NLS-1$
+    
+    private int recordIndex = 0;
+    
+    /**
+     * Taille d'un pixel en mètres (la longueur d'un coté de pixel de l'écran)
+     * utilisé pour le calcul de l'echelle courante de la vue. Elle est calculée à
+     * partir de la résolution de l'écran en DPI. Par exemple si la résolution est
+     * 90DPI, c'est: 90 pix/inch = 1/90 inch/pix = 0.0254/90 meter/pix.
+     */
+    private final static double METERS_PER_PIXEL = 0.02540005 / 
+            Toolkit.getDefaultToolkit().getScreenResolution();
+    
+    /**
+     * Default Constructor.
+     */
+    public LayerViewPanel(final ProjectFrame frame) {
+        super();
+        this.projectFrame = frame;
+        this.viewport = new Viewport(this);
+        this.addPaintListener(new ScalePaintListener());
+        this.addPaintListener(new CompassPaintListener());
+        this.addPaintListener(new LegendPaintListener());
+        this.setDoubleBuffered(true);
+        this.setOpaque(true);
+        this.setBackground(Color.WHITE);
     }
-  }
+    
+    
+    public void addPaintListener(PaintListener listener) {
+        this.overlayListeners.add(listener);
+    }
 
-  /**
-   * Model
-   */
-  // private StyledLayerDescriptor sldmodel;
+    public void paintOverlays(final Graphics graphics) {
+        for (PaintListener listener : this.overlayListeners) {
+            listener.paint(this, graphics);
+        }
+    }
 
-  /**
-   * Rendering manager.
-   */
-  private RenderingManager renderingManager = new RenderingManager(this);
+  
 
   /**
    * @return The rendering manager handling the rendering of the layers
@@ -119,19 +153,13 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
     this.renderingManager = manager;
   }
 
-  /**
-   * Private viewport. Use getter or setter.
-   */
-  private Viewport viewport = null;
+  
 
   public void setViewport(Viewport viewport) {
     this.viewport = viewport;
   }
 
-  /**
-   * Private selected features. Use getter and setter.
-   */
-  private Set<IFeature> selectedFeatures = new HashSet<IFeature>(0);
+  
 
   /**
    * The viewport of the panel.
@@ -142,26 +170,13 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
     return this.viewport;
   }
 
-  private ProjectFrame projectFrame = null;
+  
 
   public ProjectFrame getProjectFrame() {
     return this.projectFrame;
   }
 
-  /**
-   * Default Constructor.
-   */
-  public LayerViewPanel(final ProjectFrame frame) {
-    super();
-    this.projectFrame = frame;
-    this.viewport = new Viewport(this);
-    this.addPaintListener(new ScalePaintListener());
-    this.addPaintListener(new CompassPaintListener());
-    this.addPaintListener(new LegendPaintListener());
-    this.setDoubleBuffered(true);
-    this.setOpaque(true);
-    this.setBackground(Color.WHITE);
-  }
+  
 
   @Override
   public final void repaint() {
@@ -274,14 +289,7 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
     return LayerViewPanel.METERS_PER_PIXEL;
   }
 
-  /**
-   * Taille d'un pixel en mètres (la longueur d'un coté de pixel de l'écran)
-   * utilisé pour le calcul de l'echelle courante de la vue. Elle est calculée à
-   * partir de la résolution de l'écran en DPI. Par exemple si la résolution est
-   * 90DPI, c'est: 90 pix/inch = 1/90 inch/pix = 0.0254/90 meter/pix.
-   */
-  private final static double METERS_PER_PIXEL = 0.02540005 / Toolkit
-      .getDefaultToolkit().getScreenResolution();
+  
 
   /**
    * Dispose of the panel and its rendering manager.
@@ -386,7 +394,7 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
     }
   }
 
-  private boolean recording = false;
+  
 
   public boolean isRecording() {
     return this.recording;
@@ -396,7 +404,7 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
     this.recording = b;
   }
 
-  private String recordFileName = ""; //$NON-NLS-1$
+  
 
   public String getRecordFileName() {
     return this.recordFileName;
@@ -407,7 +415,7 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
     this.recordIndex = 0;
   }
 
-  private int recordIndex = 0;
+  
 
   // public void setModel(StyledLayerDescriptor sld) {
   // this.sldmodel = sld;
