@@ -178,7 +178,7 @@
 			<id>jfgirres</id>
 			<name>Jean-François Girres</name>
 			<email>jean-francois.girres(at)ign.fr</email>
-			<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Jean-Fran%E7ois&nom=Girres</url>
+			<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Jean-Francois&amp;nom=Girres</url>
 			<organization>Laboratoire COGIT, IGN</organization>
 			<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
 		</developer>
