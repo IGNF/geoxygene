@@ -62,12 +62,32 @@
 		<!-- GeOxygene -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-spatial</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-feature</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-database</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-io</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -99,20 +119,10 @@
 			<version>4.01</version>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>geoxygene-util</artifactId>
-			<version>${project.version}</version>
+			<groupId>jfreechart</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>${jfreechart.version}</version>
 		</dependency>
 	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>opengeo</id>
-			<url>http://repo.opengeo.org</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 
 </project>
