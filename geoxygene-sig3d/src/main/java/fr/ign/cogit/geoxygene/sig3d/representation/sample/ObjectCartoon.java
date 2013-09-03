@@ -29,7 +29,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.sig3d.conversion.ConversionJava3DGeOxygene;
+import fr.ign.cogit.geoxygene.sig3d.convert.java3d.ConversionJava3DGeOxygene;
 import fr.ign.cogit.geoxygene.sig3d.representation.ConstantRepresentation;
 import fr.ign.cogit.geoxygene.sig3d.representation.Default3DRep;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;

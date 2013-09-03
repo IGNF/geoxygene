@@ -17,7 +17,7 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
-import fr.ign.cogit.geoxygene.sig3d.conversion.Extrusion2DObject;
+import fr.ign.cogit.geoxygene.sig3d.convert.transform.Extrusion2DObject;
 import fr.ign.cogit.geoxygene.sig3d.representation.basic.Object1d;
 import fr.ign.cogit.geoxygene.sig3d.representation.toponym.BasicToponym3D;
 import fr.ign.cogit.geoxygene.sig3d.semantic.DTM;

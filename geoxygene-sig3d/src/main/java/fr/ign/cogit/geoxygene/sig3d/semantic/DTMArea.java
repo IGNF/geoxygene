@@ -93,6 +93,14 @@ public class DTMArea extends DTM {
 
     IGeometry geom = feat.getGeom();
 
+
+    return calcul3DArea(geom);
+  }
+  
+  
+  
+  public double calcul3DArea(IGeometry geom) throws Exception{
+    double area = -1;
     if (geom instanceof GM_OrientableSurface
         || geom instanceof GM_MultiSurface<?>) {
       // On la convertit en JTS
@@ -122,8 +130,9 @@ public class DTMArea extends DTM {
       // Type de géométrie non reconnue
       logger.warn("Geomtrie non reconnue" + geom.getClass().toString());
     }
-
+    
     return area;
+    
   }
 
   /**

@@ -9,9 +9,8 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-
 /**
  * 
  *        This software is released under the licence CeCILL
@@ -44,7 +43,7 @@ public class DissimilarityCalculationDialog extends JDialog {
    * @param title the frame title.
    */
   public DissimilarityCalculationDialog(final String title,
-      DirectPositionList dpl1, DirectPositionList dpl2) {
+      IDirectPositionList dpl1, IDirectPositionList dpl2) {
 
     super();
     final XYSeries series = new XYSeries("Objet 1");

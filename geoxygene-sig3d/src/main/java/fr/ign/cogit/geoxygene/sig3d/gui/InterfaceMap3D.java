@@ -978,6 +978,7 @@ public class InterfaceMap3D extends JPanel {
 
       BufferedImage bufImage = new BufferedImage(this.getSize().width,
           this.getSize().height, BufferedImage.TYPE_INT_RGB);
+      
       this.paint(bufImage.createGraphics());
 
       File fichier = new File(path, fileName);

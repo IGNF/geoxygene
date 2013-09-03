@@ -22,13 +22,13 @@ import org.jfree.ui.RefineryUtilities;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
 import fr.ign.cogit.geoxygene.sig3d.calculation.Calculation3D;
 import fr.ign.cogit.geoxygene.sig3d.calculation.Indicator;
 import fr.ign.cogit.geoxygene.sig3d.calculation.ShapeIndicator;
 import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
 import fr.ign.cogit.geoxygene.sig3d.gui.window.result.DissimilarityCalculationDialog;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 
 /**
@@ -347,8 +347,8 @@ public class DissimilarityMenu extends JPanel implements ActionListener {
       data.write("Distance entre centres de gravité;" + dp1.distance(dp2)
           + "\n");
 
-      DirectPositionList dpl = ind.getFinalPoints();
-      DirectPositionList dpl2 = ind2.getFinalPoints();
+      IDirectPositionList dpl = ind.getFinalPoints();
+      IDirectPositionList dpl2 = ind2.getFinalPoints();
 
       int nbValeurs = dpl.size();
 

@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.sig3d.conversion;
+package fr.ign.cogit.geoxygene.sig3d.convert.java3d;
 
 import java.util.ArrayList;
 import java.util.List;

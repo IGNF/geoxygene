@@ -21,7 +21,8 @@ import javax.swing.JSplitPane;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.LayerFactory;
+
+import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;

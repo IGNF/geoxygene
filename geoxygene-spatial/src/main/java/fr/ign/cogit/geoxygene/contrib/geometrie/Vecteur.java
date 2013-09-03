@@ -73,6 +73,10 @@ public class Vecteur {
   public Vecteur(IDirectPosition dp1) {
     this.coord = dp1;
   }
+  
+  public Vecteur(double x, double y){
+    this.coord = new DirectPosition(x,y);
+  }
 
   /** Initialise le vecteur dp1 -> dp2 (a dp2-dp1) */
   public Vecteur(IDirectPosition dp1, IDirectPosition dp2) {

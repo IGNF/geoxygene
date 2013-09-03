@@ -20,4 +20,4 @@
  * 
  * Package containing conversions functions between Java3D et GeOxygene
  */
-package fr.ign.cogit.geoxygene.sig3d.conversion;
+package fr.ign.cogit.geoxygene.sig3d.convert;

@@ -501,6 +501,14 @@
 			<url>https://dionysos2.ign.fr/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
+			<id>OpenGeo</id>
+			<name>OpenGeo Repository</name>
+			<url>http://repo.opengeo.org/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
 			<id>Central</id>
 			<name>Central Repository</name>
 			<url>http://repo1.maven.org/maven2</url>

@@ -22,7 +22,7 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
-import fr.ign.cogit.geoxygene.sig3d.conversion.Extrusion3DObject;
+import fr.ign.cogit.geoxygene.sig3d.convert.transform.Extrusion3DObject;
 import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
 import fr.ign.cogit.geoxygene.sig3d.gui.window.representation.choice.RepresentationWindow;
 import fr.ign.cogit.geoxygene.sig3d.gui.window.representation.choice.RepresentationWindowFactory;

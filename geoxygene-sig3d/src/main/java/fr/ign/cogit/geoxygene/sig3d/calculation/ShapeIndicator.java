@@ -1,8 +1,6 @@
 package fr.ign.cogit.geoxygene.sig3d.calculation;
 
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -10,24 +8,19 @@ import Jama.Matrix;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
-import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
-import fr.ign.cogit.geoxygene.sig3d.tetraedrisation.Tetraedrisation;
+import fr.ign.cogit.geoxygene.sig3d.distribution.EquiSurfaceDistribution;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -37,13 +30,13 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  * 
  * @version 0.1
  * 
- *
- * Classe permettant de calculer une distance qui permettra d'établir La
- * ressemblance entre 2 objets selon la méthode Shape Distributions Osada and
- * al[2002] Shape Distributions ROBERT OSADA, THOMAS FUNKHOUSER, BERNARD
- * CHAZELLE, and DAVID DOBKIN Princeton University Class wich calculate the
- * dissimilarity measure between 2 solids TODO faire exporter les statistiques
- * dans l'interface
+ * 
+ *          Classe permettant de calculer une distance qui permettra d'établir
+ *          La ressemblance entre 2 objets selon la méthode Shape Distributions
+ *          Osada and al[2002] Shape Distributions ROBERT OSADA, THOMAS
+ *          FUNKHOUSER, BERNARD CHAZELLE, and DAVID DOBKIN Princeton University
+ *          Class wich calculate the dissimilarity measure between 2 solids
+ *          
  * 
  */
 public class ShapeIndicator {
@@ -55,15 +48,7 @@ public class ShapeIndicator {
   public final static int TYPE_AREA = 2;
   public final static int TYPE_ANGLE = 3;
 
-  // Il s'agit des triangles formant la surface de l'objet à mesurer
-  private List<IOrientableSurface> lTriangles;
-
-  // Il s'agit des aires cumulés des différents triangles
-  // airesCumulees[i] = somme des ieme premiers triangles
-  // airesCumulees[n-1] = aire de la surface enblobant le corps
-  private double[] accumulatedArea;
-
-  // Il s'agit des valeurs exrèmes et médiane (longueur, surface ou volume en
+  // Il s'agit des valeurs extrêmes et médiane (longueur, surface ou volume en
   // fonction de la mesure choisie)
   private double valMin = Double.POSITIVE_INFINITY;
   private double valMax = 0.0;
@@ -71,11 +56,11 @@ public class ShapeIndicator {
 
   // Il s'agit du nombre d'échantillons et de classes permettant d'afficher la
   // mesure finale
-  public final int nbSamples = 256 * 256;//512 * 512;
+  public final int nbSamples = 256 * 256;// 512 * 512;
   public final int nbClasses = 128;// 512;
-  public final int nbVertices = 16;//32;
+  public final int nbVertices = 16;// 32;
 
-  // Il s'agit du tableau contenant les différents àchantillons
+  // Il s'agit du tableau contenant les différents échantillons
   private double[] lSamples = new double[this.nbSamples];
 
   // il s'agit de la largeur de valeurs d'une classe
@@ -85,67 +70,27 @@ public class ShapeIndicator {
   private double[] classValue = new double[this.nbClasses];
 
   // Il s'agit de spoints que l'on gardera au final
-  private DirectPositionList finalPoints;
+  private IDirectPositionList finalPoints;
 
-  /**
-   * @return il s'agit des points utilisés dans le diagram représentant la trace
-   *         de l'objet
-   */
-  public DirectPositionList getFinalPoints() {
-
-    return this.finalPoints;
-  }
-
-  /**
-   * Constructeur permettant d'initialiser le calcul
-   * 
-   * @param solid le solide dont on calcule la trace
-   */
-  public ShapeIndicator(ISolid solid) {
-
-    this(solid.getFacesList());
-
-  }
+  private EquiSurfaceDistribution eq;
 
   public ShapeIndicator(IFeature feat) {
     this(feat.getGeom());
   }
 
-  @SuppressWarnings("unchecked")
   public ShapeIndicator(IGeometry geom) {
 
-    if (geom instanceof ISolid) {
-
-      init(((ISolid) geom).getFacesList());
-
-    } else if (geom instanceof IMultiSurface<?>) {
-
-      init(((IMultiSurface<IOrientableSurface>) geom).getList());
-      
-    } else if (geom instanceof IPolygon) {
-      
-      
-      List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
-      lOS.add((IPolygon)geom);
-
-      init(lOS);
-      
-      
-    } else {
-
-      logger.warn("Bad classe : ShapeIndicator initialisation : "
-          + geom.getClass());
-    }
+    eq = new EquiSurfaceDistribution(geom);
+    finalPoints = new DirectPositionList();
 
   }
 
-  public ShapeIndicator(IMultiSurface<IOrientableSurface> gms) {
-    this(gms.getList());
-  }
-
-  public ShapeIndicator(List<IOrientableSurface> lOS) {
-    init(lOS);
-
+  /**
+   * @return il s'agit des points utilisés dans le diagram représentant la trace
+   *         de l'objet
+   */
+  public IDirectPositionList getFinalPoints() {
+    return this.finalPoints;
   }
 
   /**
@@ -171,7 +116,7 @@ public class ShapeIndicator {
 
     }
 
-    // Les histogrammes sont prêt, il faut maintenant calculer les points de
+    // Les histogrammes sont prêts, il faut maintenant calculer les points de
     // la fonction
 
     int nbClasseParSommet = this.nbClasses / this.nbVertices;
@@ -202,14 +147,13 @@ public class ShapeIndicator {
     // Remplissage de la tablea d'échantillons
     for (int i = 0; i < this.nbSamples; i++) {
 
-      DirectPositionList lPointsAlea = new DirectPositionList();
+      IDirectPositionList lPointsAlea = new DirectPositionList();
 
       // Détermination de 2 points aléatoirement tirés sur la surface du
       // volume
       for (int j = 0; j < 2; j++) {
 
-        IOrientableSurface trianglATester = this.randomTriangle();
-        lPointsAlea.add(this.randomPointOnTriangles(trianglATester));
+        lPointsAlea.add(eq.sample());
 
       }
 
@@ -250,8 +194,7 @@ public class ShapeIndicator {
       // On détermine 3 points aléatoires sur la surface du volume
       for (int j = 0; j < 3; j++) {
 
-        IOrientableSurface trianglATester = this.randomTriangle();
-        lPointsAlea.add(this.randomPointOnTriangles(trianglATester));
+        lPointsAlea.add(eq.sample());
 
       }
 
@@ -300,8 +243,7 @@ public class ShapeIndicator {
       // Pour former un tétraèdre
       for (int j = 0; j < 4; j++) {
 
-        IOrientableSurface trianglATester = this.randomTriangle();
-        lPointsAlea.add(this.randomPointOnTriangles(trianglATester));
+        lPointsAlea.add(eq.sample());
 
       }
 
@@ -345,128 +287,6 @@ public class ShapeIndicator {
     }
     // On calcule les statistiques
     this.computeStatistics();
-
-  }
-
-  /**
-   * Fonction permettant de tirer aléatoirement un triangle sur une surface
-   * triangulée en prenant compte de l'aire
-   * 
-   * @return
-   */
-
-  private IOrientableSurface randomTriangle() {
-
-    // Tout d'abord on choisit aléatoirement un triangle
-    // Sur la surface du volume (aléatoirement pondéré par l'aire des
-    // triangles)
-    int nbEleme = this.accumulatedArea.length - 1;
-    double max = this.accumulatedArea[nbEleme];
-
-    double alea = max * Math.random();
-
-    int i = 0;
-    // On choisit l'indice correspondant
-    while (this.accumulatedArea[i] < alea) {
-      i++;
-
-    }
-
-    // On retourne la valeur correspondante à cet indice
-    IOrientableSurface surf = this.lTriangles.get(i);
-
-    return surf;
-
-  }
-
-  /**
-   * Fonction permettant de retourner un point tiré aléatoirement sur la surface
-   * d'un triangle
-   * 
-   * @param triangle
-   * @return un point tiré aléatoirement sur le triangle
-   */
-  private DirectPosition randomPointOnTriangles(IOrientableSurface triangle) {
-    IDirectPositionList pTriangle = triangle.coord();
-
-    IDirectPosition p1 = pTriangle.get(0);
-    IDirectPosition p2 = pTriangle.get(1);
-    IDirectPosition p3 = pTriangle.get(2);
-
-    // On prend 2 indices au hasard
-
-    // AleaX représente la position du point entre p1 et l'axe p2p3
-    double aleaX = Math.random();
-
-    // Aléa y présente la position de ce point le long de l'axe p2p3
-    double aleaY = Math.random();
-
-    // Cette méthode est conseillé dans l'article dont est issue la mesure
-
-    DirectPosition pointFinal = new DirectPosition(p1.getX()
-        * (1 - Math.sqrt(aleaX)) + p2.getX() * Math.sqrt(aleaX) * (1 - aleaY)
-        + p3.getX() * aleaY * Math.sqrt(aleaX), p1.getY()
-        * (1 - Math.sqrt(aleaX)) + p2.getY() * Math.sqrt(aleaX) * (1 - aleaY)
-        + p3.getY() * aleaY * Math.sqrt(aleaX), p1.getZ()
-        * (1 - Math.sqrt(aleaX)) + p2.getZ() * Math.sqrt(aleaX) * (1 - aleaY)
-        + p3.getZ() * aleaY * Math.sqrt(aleaX));
-
-    return pointFinal;
-
-  }
-
-  // Initialisation avant le calcul de la fonction de caractérisation
-  private void init(List<IOrientableSurface> lOS) {
-
-    boolean b = Util.containOnlyTriangleFaces(lOS);
-
-    if (b) {
-
-    } else {
-
-      try {
-        Tetraedrisation tet = new Tetraedrisation(new GM_Solid(lOS));
-
-        tet.tetraedriseWithConstraint(true);
-
-        this.init(tet.getTriangles());
-      } catch (Exception e) {
-
-        e.printStackTrace();
-      }
-    }
-
-    this.finalPoints = new DirectPositionList();
-
-    // On récupère les triangls formant la surface du solide
-    this.lTriangles = lOS;
-
-    int nbTriangles = this.lTriangles.size();
-
-    // calcul des aires cumulées qui permettront de choisir les points
-    // aléatoires
-    this.accumulatedArea = new double[nbTriangles];
-
-    for (int i = 0; i < this.lTriangles.size(); i++) {
-      IDirectPositionList lDP = this.lTriangles.get(i).coord();
-
-      Vecteur v1 = new Vecteur(lDP.get(0), lDP.get(1));
-      Vecteur v2 = new Vecteur(lDP.get(0), lDP.get(2));
-
-      Vecteur v3 = v1.prodVectoriel(v2);
-
-      double aire = v3.norme() * 0.5;
-
-      // Nous avons 2 points à tester, nous pouvons calculer la longeur
-      if (i != 0) {
-        this.accumulatedArea[i] = aire + this.accumulatedArea[i - 1];
-
-        continue;
-      }
-
-      this.accumulatedArea[i] = aire;
-
-    }
 
   }
 
@@ -591,8 +411,8 @@ public class ShapeIndicator {
   public double compareWith(ShapeIndicator sh) {
     double diff = 0;
 
-    DirectPositionList dpl1 = this.getFinalPoints();
-    DirectPositionList dpl2 = sh.getFinalPoints();
+    IDirectPositionList dpl1 = this.getFinalPoints();
+    IDirectPositionList dpl2 = sh.getFinalPoints();
 
     int nbPoints = dpl1.size();
 
