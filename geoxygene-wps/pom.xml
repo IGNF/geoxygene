@@ -84,7 +84,7 @@
 
 	<profiles>
 		<profile>
-			<id>local</id>
+			<id>geoserver</id>
 			<build>
 				<plugins>
 					<plugin>

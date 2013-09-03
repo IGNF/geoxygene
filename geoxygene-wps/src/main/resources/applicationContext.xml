@@ -6,7 +6,8 @@
 	<!-- 	WPS Service -->
 	<!-- ========================================================================== -->
 	<!-- CarteTopo WPS  -->
-	<bean id="CreateFaces"                class="fr.ign.cogit.geoxygene.wps.contrib.cartetopo.CreateFaces" />
+	<bean id="CreateFaces"   class="fr.ign.cogit.geoxygene.wps.contrib.cartetopo.CreateFaces" />
+	<bean id="ImportAsEdges" class="fr.ign.cogit.geoxygene.wps.contrib.cartetopo.ImportAsEdgesProcess" />
 	
 	<!-- DataMatching WPS -->
 	<bean id="networkDataMatchingProcess" class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.NetworkDataMatchingProcess" />
@@ -23,4 +24,15 @@
 	<bean id="paramDistanceNetworkDataMatchingPPIO"
 	       class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.ppio.ParamDistanceNetworkDataMatchingPPIO" />
 
-</beans>	
+
+	<!-- ========================================================================== -->
+	<!-- 	Process Factory -->
+	<!-- ========================================================================== -->
+    <bean id="cogitProcessFactory" class="fr.ign.cogit.geoxygene.wps.SpringBeanProcessFactory">
+    	<constructor-arg index="0" value="My Custom WPS Processes"/>
+        <constructor-arg index="1" value="mywps"/>
+        <constructor-arg index="2" value="fr.ign.cogit.geoxygene.wps.COGITProcess"/>
+	</bean>
+
+
+</beans>

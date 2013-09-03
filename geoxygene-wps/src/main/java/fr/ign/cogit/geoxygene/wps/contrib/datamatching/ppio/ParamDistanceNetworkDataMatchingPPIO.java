@@ -1,13 +1,11 @@
 package fr.ign.cogit.geoxygene.wps.contrib.datamatching.ppio;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.apache.log4j.Logger;
-
-import org.geoserver.wps.ppio.XStreamPPIO;
-import org.xml.sax.ContentHandler;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.SaxWriter;
+import org.geoserver.wps.ppio.CDataPPIO;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
 
@@ -15,7 +13,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetw
  * 
  *
  */
-public class ParamDistanceNetworkDataMatchingPPIO extends XStreamPPIO {
+public class ParamDistanceNetworkDataMatchingPPIO extends CDataPPIO {
     
     /** LOGGER. */
     private final static Logger LOGGER = Logger.getLogger(ParamDistanceNetworkDataMatchingPPIO.class.getName());
@@ -24,33 +22,50 @@ public class ParamDistanceNetworkDataMatchingPPIO extends XStreamPPIO {
      * Default constructor.
      */
     protected ParamDistanceNetworkDataMatchingPPIO() {
-        super(ParamDistanceNetworkDataMatching.class);
+        super(ParamDistanceNetworkDataMatching.class, ParamDistanceNetworkDataMatching.class, "text/xml");
     }
     
-    
-    public void encode(Object object, ContentHandler handler) throws Exception {
+    @Override
+    public void encode(Object value, OutputStream os) throws IOException {
         
-        LOGGER.info("------------------------------------------------------------------------");
-        LOGGER.info("Start encoding the result for output");
+        LOGGER.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        LOGGER.debug("[ParamDistanceNetworkDataMatchingPPIO] ENCODE ");
+        LOGGER.debug("Start encoding the result for output");
         
-        SaxWriter writer = new SaxWriter();
+        /*SaxWriter writer = new SaxWriter();
         writer.setContentHandler(handler);
         XStream xstream = new XStream();
-        xstream.marshal((ParamDistanceNetworkDataMatching)object, writer);
+        xstream.marshal((ParamDistanceNetworkDataMatching)object, writer);*/
         
-        // throw new UnsupportedOperationException("Unsupported Operation.");
+        throw new UnsupportedOperationException("Unsupported Operation.");
     }
     
-    
+    @Override
     public Object decode(InputStream input) throws Exception {
         
-        System.out.println("------------------------------------------------------------------------");
-        System.out.println("Start decoding the parameter for input.");
-        
-        // System.out.println("Valeur de l'input = " + input.toString());
+        LOGGER.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        LOGGER.debug("[ParamDistanceNetworkDataMatchingPPIO] DECODE InputStream ");
+        LOGGER.debug("Start decoding the parameter for input.");
         
         ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
         return paramDistance;
     }
     
+    @Override
+    public Object decode(String input) throws Exception {
+        
+        LOGGER.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        LOGGER.debug("[ParamDistanceNetworkDataMatchingPPIO] DECODE String ");
+        LOGGER.debug(input);
+        ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
+        return paramDistance;
+    }
+    
+    
+    @Override
+    public String getFileExtension() {
+        return "xml";
+    }
+    
 }
+
