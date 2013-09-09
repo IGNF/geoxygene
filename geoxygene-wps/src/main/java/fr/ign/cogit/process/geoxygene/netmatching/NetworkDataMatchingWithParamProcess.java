@@ -18,7 +18,7 @@ import fr.ign.cogit.process.geoxygene.GeoxygeneProcess;
 
 /**
  * 
- * 
+ * @author MDVan-Damme
  */
 @DescribeProcess(title = "AppariementRéseaux", description = "Appariement")
 public class NetworkDataMatchingWithParamProcess implements GeoxygeneProcess {

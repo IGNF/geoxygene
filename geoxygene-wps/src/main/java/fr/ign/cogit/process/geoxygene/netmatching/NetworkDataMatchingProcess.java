@@ -53,6 +53,7 @@ import fr.ign.cogit.process.geoxygene.GeoxygeneProcess;
 /**
  * Network data matching process.
 * 
+* @author MDVan-Damme
 * @version 1.6
 */
 @DescribeProcess(title = "NetworkDataMatching", description = "Do network data matching")

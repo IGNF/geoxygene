@@ -12,4 +12,10 @@
 	       class="fr.ign.cogit.process.geoxygene.netmatching.ppio.ParamDistanceNetworkDataMatchingPPIO" />
 
 
+
+    <!-- ========================================================================== -->
+    <!--    The Filtering processes -->
+    <!-- ========================================================================== -->
+    <bean id="geoxygeneFilter" class="fr.ign.cogit.process.geoxygene.GeoxygeneFilter" />
+
 </beans>

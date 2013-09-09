@@ -6,7 +6,7 @@ import org.geotools.text.Text;
 /**
  * 
  * 
- *
+ * @author MDVan-Damme
  */
 public class GeoxygeneProcessFactory extends AnnotatedBeanProcessFactory {
 
