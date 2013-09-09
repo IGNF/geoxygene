@@ -175,6 +175,10 @@ public class ElectricityLineTypification {
           line.eliminateBatch();
           continue;
         }
+        if (newLine.isEmpty()) {
+          line.eliminateBatch();
+          continue;
+        }
         if (newLine instanceof ILineString) {
           line.setGeom(newLine);
         } else if (newLine instanceof IMultiCurve<?>) {
@@ -183,6 +187,8 @@ public class ElectricityLineTypification {
             ILineString simple = (ILineString) ((IMultiCurve<IOrientableCurve>) newLine)
                 .get(i);
             if (simple == null)
+              continue;
+            if (simple.isEmpty())
               continue;
             if (first) {
               first = false;

@@ -53,7 +53,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EtchedBorder;
@@ -121,7 +120,6 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   private JButton btnOk, btnCancel, btnAddLine, btnAddElement, btnEditElement;
   private JButton btnUp, btnDown, btnTop, btnBottom;
   private ImageIcon iconUp, iconDown, iconTop, iconBottom;
-  private JTextField txtName;
   private JSpinner spMin, spMax;
   private JComboBox cbPtOfView, cbDbs;
   private JXColorSelectionButton colorBtn;
@@ -133,7 +131,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
 
   // internationalisation labels
   private String frameTitle, lblCancel, lblOk, lblAddLine, lblAddElement,
-      lblEditElement, lblName, lblPtOfView, lblMin, lblMax, lblDbs;
+      lblEditElement, lblPtOfView, lblMin, lblMax, lblDbs;
 
   public EditScaleMasterFrame() throws OWLOntologyCreationException,
       ParserConfigurationException, SAXException, IOException,
@@ -203,10 +201,6 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
 
     // a panel to define the scale master
     JPanel pDefinition = new JPanel();
-    this.txtName = new JTextField();
-    this.txtName.setPreferredSize(new Dimension(80, 20));
-    this.txtName.setMinimumSize(new Dimension(80, 20));
-    this.txtName.setMaximumSize(new Dimension(80, 20));
     this.cbPtOfView = new JComboBox(REPPointOfView.values());
     this.cbPtOfView.setPreferredSize(new Dimension(80, 20));
     this.cbPtOfView.setMinimumSize(new Dimension(80, 20));
@@ -235,9 +229,6 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.colorBtn.setBackground(this.dbHues.get(this.cbDbs.getSelectedItem()
         .toString()));
     this.colorBtn.addPropertyChangeListener(this);
-    pDefinition.add(Box.createHorizontalGlue());
-    pDefinition.add(new JLabel(this.lblName + " : "));
-    pDefinition.add(this.txtName);
     pDefinition.add(Box.createHorizontalGlue());
     pDefinition.add(new JLabel(this.lblPtOfView + " : "));
     pDefinition.add(this.cbPtOfView);
@@ -314,10 +305,14 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.btnOk = new JButton(this.lblOk);
     this.btnOk.addActionListener(this);
     this.btnOk.setActionCommand("ok");
+    JButton btnLoad = new JButton(I18N.getString("MainLabels.lblLoad"));
+    btnLoad.addActionListener(this);
+    btnLoad.setActionCommand("load");
     this.btnCancel = new JButton(this.lblCancel);
     this.btnCancel.addActionListener(this);
     this.btnCancel.setActionCommand("cancel");
     pButtons.add(this.btnOk);
+    pButtons.add(btnLoad);
     pButtons.add(this.btnCancel);
     pButtons.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
@@ -338,20 +333,8 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     aide.addActionListener(this);
     menuFichier.add(load);
     menuFichier.add(aide);
-    // a ScaleMasterParameters menu
-    JMenu menuParams = new JMenu("ScaleMasterParameters");
-    JMenuItem paramsMenuItem = new JMenuItem("Edition");
-    paramsMenuItem.setActionCommand("params");
-    paramsMenuItem.addActionListener(this);
-    JMenuItem paramsLoadMenuItem = new JMenuItem(
-        I18N.getString("MainLabels.lblLoad"));
-    paramsLoadMenuItem.setActionCommand("load-params");
-    paramsLoadMenuItem.addActionListener(this);
-    menuParams.add(paramsMenuItem);
-    menuParams.add(paramsLoadMenuItem);
     // the menu bar
     menuBar.add(menuFichier);
-    menuBar.add(menuParams);
     menuBar.setAlignmentX(Component.LEFT_ALIGNMENT);
 
     this.setJMenuBar(menuBar);
@@ -466,7 +449,6 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
             .parseScaleMaster(this.existingThemes);
 
         // now update the frame components
-        this.txtName.setText(this.current.getName());
         this.spMin.setValue(this.current.getGlobalRange().getMinimum());
         this.spMax.setValue(this.current.getGlobalRange().getMaximum());
         this.cbPtOfView.setSelectedItem(this.current.getPointOfView());
@@ -847,7 +829,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.lblAddLine = I18N.getString("EditScaleMasterFrame.lblAddLine");
     this.lblAddElement = I18N.getString("EditScaleMasterFrame.lblAddElement");
     this.lblEditElement = I18N.getString("EditScaleMasterFrame.lblEditElement");
-    this.lblName = I18N.getString("EditScaleMasterFrame.lblName");
+    I18N.getString("EditScaleMasterFrame.lblName");
     this.lblPtOfView = I18N.getString("EditScaleMasterFrame.lblPtOfView");
     this.lblMin = I18N.getString("EditScaleMasterFrame.lblMin");
     this.lblMax = I18N.getString("EditScaleMasterFrame.lblMax");
@@ -988,10 +970,6 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     Element root = xmlDoc.createElement("pearep-scalemaster");
 
     // WRITE GLOBAL INFO
-    Element nameElem = xmlDoc.createElement("name");
-    n = xmlDoc.createTextNode(this.txtName.getText());
-    nameElem.appendChild(n);
-    root.appendChild(nameElem);
     Element povElem = xmlDoc.createElement("point-of-view");
     n = xmlDoc.createTextNode(this.cbPtOfView.getSelectedItem().toString());
     povElem.appendChild(n);

@@ -61,6 +61,10 @@ public class BridgeCollapseProcess extends ScaleMasterGeneProcess {
           && bridge.getContainingNetwork().isEliminated())
         bridge.eliminateBatch();
 
+      // then when the containing network has not been imported
+      if (bridge.getContainingNetwork() == null)
+        bridge.eliminateBatch();
+
       // get the intersecting river area
       boolean collapse = false;
       if (bridge.getCrossedArea() == null)

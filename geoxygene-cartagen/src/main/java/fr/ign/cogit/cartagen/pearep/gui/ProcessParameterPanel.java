@@ -103,7 +103,9 @@ public class ProcessParameterPanel extends JPanel {
     txtField.setMaximumSize(new Dimension(100, 20));
     txtField.setMinimumSize(new Dimension(100, 20));
     txtField.setDocument(new RealLimitator());
-    txtField.setText(String.valueOf(((Double) param.getValue()).doubleValue()));
+    if (param.getValue() != null)
+      txtField
+          .setText(String.valueOf(((Double) param.getValue()).doubleValue()));
     panel.add(new JLabel(param.getName() + " = "));
     panel.add(txtField);
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));

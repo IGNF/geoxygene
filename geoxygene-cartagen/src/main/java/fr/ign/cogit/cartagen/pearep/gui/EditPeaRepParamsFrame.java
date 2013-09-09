@@ -25,6 +25,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -39,6 +40,8 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -60,7 +63,8 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponent
 import fr.ign.cogit.cartagen.util.FileUtil;
 import fr.ign.cogit.cartagen.util.XMLUtil;
 
-public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
+public class EditPeaRepParamsFrame extends JFrame implements ActionListener,
+    ListSelectionListener {
 
   /****/
   private static final long serialVersionUID = 1L;
@@ -180,8 +184,7 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     this.currentThemes = new ArrayList<String>();
     this.setSize(1200, 700);
     this.setIconImage(new ImageIcon(EditPeaRepParamsFrame.class
-        .getClassLoader().getResource("resources/images/icons/logo.jpg"))
-        .getImage());
+        .getClassLoader().getResource("images/icons/logo.jpg")).getImage());
 
     this.setMinimumSize(new Dimension(1200, 700));
     if (jar)
@@ -228,7 +231,7 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     txtExport.setMaximumSize(new Dimension(200, 20));
     txtExport.setMinimumSize(new Dimension(200, 20));
     JButton btnOpenEx = new JButton(new ImageIcon(EditScaleMasterFrame.class
-        .getClassLoader().getResource("resources/images/browse.jpeg")));
+        .getClassLoader().getResource("images/browse.jpeg")));
     btnOpenEx.addActionListener(this);
     btnOpenEx.setActionCommand("open-export");
 
@@ -257,28 +260,38 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     jlistDbs.setMaximumSize(new Dimension(120, 120));
     jlistDbs.setMinimumSize(new Dimension(120, 120));
     jlistDbs.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    jlistDbs.addListSelectionListener(this);
     JButton btnAdd = new JButton(I18N.getString("MainLabels.lblAdd"));
     btnAdd.addActionListener(this);
     btnAdd.setActionCommand("add");
     JButton btnRemove = new JButton(I18N.getString("MainLabels.lblRemove"));
     btnRemove.addActionListener(this);
     btnRemove.setActionCommand("remove");
+    JPanel pDb = new JPanel();
+    JPanel pFolder = new JPanel();
     txtFolder = new JTextField();
     txtFolder.setPreferredSize(new Dimension(200, 20));
     txtFolder.setMaximumSize(new Dimension(200, 20));
     txtFolder.setMinimumSize(new Dimension(200, 20));
     JButton btnOpen = new JButton(new ImageIcon(EditScaleMasterFrame.class
-        .getClassLoader().getResource("resources/images/browse.jpeg")));
+        .getClassLoader().getResource("images/browse.jpeg")));
     btnOpen.addActionListener(this);
     btnOpen.setActionCommand("open");
-
+    pFolder.add(new JLabel(I18N
+        .getString("EditPeaRepParamsFrame.lblDataFolder")));
+    pFolder.add(txtFolder);
+    pFolder.add(btnOpen);
+    pFolder.setLayout(new BoxLayout(pFolder, BoxLayout.X_AXIS));
+    JPanel pDataType = new JPanel();
     cbType = new JComboBox(new SourceDLM[] { SourceDLM.MGCPPlusPlus,
         SourceDLM.VMAP1PlusPlus });
     cbType.setPreferredSize(new Dimension(120, 20));
     cbType.setMaximumSize(new Dimension(120, 20));
     cbType.setMinimumSize(new Dimension(120, 20));
-
-    JPanel pDb = new JPanel();
+    pDataType.add(new JLabel(I18N
+        .getString("EditPeaRepParamsFrame.lblDataModel")));
+    pDataType.add(cbType);
+    pDataType.setLayout(new BoxLayout(pDataType, BoxLayout.X_AXIS));
     pDb.setLayout(new GridBagLayout());
     pDb.add(cbType, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
         GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
@@ -289,12 +302,16 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     pDb.add(btnOpen, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
         GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
         1, 1));
-
+    JPanel pListLayers = new JPanel();
     jlistLayers = new JList();
     jlistLayers.setPreferredSize(new Dimension(80, 320));
     jlistLayers.setMaximumSize(new Dimension(80, 320));
     jlistLayers.setMinimumSize(new Dimension(80, 320));
     jlistLayers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    pListLayers.add(new JLabel(I18N
+        .getString("EditPeaRepParamsFrame.lblListLayers")));
+    pListLayers.add(new JScrollPane(jlistLayers));
+    pListLayers.setLayout(new BoxLayout(pListLayers, BoxLayout.Y_AXIS));
     JPanel pLayers = new JPanel();
     JButton btnAddLayer = new JButton(I18N.getString("MainLabels.lblAdd"));
     btnAddLayer.addActionListener(this);
@@ -302,13 +319,18 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     JButton btnRemoveLayer = new JButton(I18N.getString("MainLabels.lblRemove"));
     btnRemoveLayer.addActionListener(this);
     btnRemoveLayer.setActionCommand("remove_layer");
+    JPanel pLayer = new JPanel();
     txtLayer = new JTextField();
     txtLayer.setPreferredSize(new Dimension(100, 20));
     txtLayer.setMaximumSize(new Dimension(100, 20));
     txtLayer.setMinimumSize(new Dimension(100, 20));
     AutoCompleteDecorator.decorate(txtLayer, shapefiles, false);
+    pLayer
+        .add(new JLabel(I18N.getString("EditPeaRepParamsFrame.lblLayerName")));
+    pLayer.add(txtLayer);
+    pLayer.setLayout(new BoxLayout(pLayer, BoxLayout.X_AXIS));
     pLayers.setLayout(new GridBagLayout());
-    pLayers.add(txtLayer, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
+    pLayers.add(pLayer, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
         GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2, 2, 2,
             2), 1, 1));
     pLayers.add(btnAddLayer, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
@@ -325,9 +347,9 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
     pDatabase.add(pLayers, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
         GridBagConstants.WEST, GridBagConstants.HORIZONTAL, new Insets(2, 2, 2,
             2), 1, 1));
-    pDatabase.add(new JScrollPane(jlistLayers), new GridBagConstraints(0, 2, 1,
-        1, 1.0, 1.0, GridBagConstants.WEST, GridBagConstants.BOTH, new Insets(
-            2, 2, 2, 2), 1, 1));
+    pDatabase.add(pListLayers, new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0,
+        GridBagConstants.WEST, GridBagConstants.BOTH, new Insets(2, 2, 2, 2),
+        1, 1));
     pDatabase.add(btnAdd, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
         GridBagConstants.CENTER, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
         1, 1));
@@ -860,5 +882,19 @@ public class EditPeaRepParamsFrame extends JFrame implements ActionListener {
       this.processName = processName;
     }
 
+  }
+
+  @Override
+  public void valueChanged(ListSelectionEvent e) {
+    if (!e.getValueIsAdjusting()) {
+      // get the list
+      JList list = (JList) e.getSource();
+      if (list.isSelectionEmpty())
+        return;
+      DatabaseImport db = (DatabaseImport) list.getSelectedValue();
+      this.currentLayers.clear();
+      this.currentLayers.addAll(db.layers);
+      updateLayersList();
+    }
   }
 }

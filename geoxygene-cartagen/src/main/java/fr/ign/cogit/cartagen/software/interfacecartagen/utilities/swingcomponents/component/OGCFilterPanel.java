@@ -14,9 +14,12 @@ import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -26,6 +29,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -65,7 +69,7 @@ import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
  * 
  */
 public class OGCFilterPanel extends JPanel implements ActionListener,
-    ListSelectionListener {
+    ListSelectionListener, ItemListener {
 
   /**
    * 
@@ -91,6 +95,7 @@ public class OGCFilterPanel extends JPanel implements ActionListener,
   private JTextArea txtArea;
   private JPanel pCompound;
   private String[] typeOp = { "==", ">", ">=", "<", "<=", "<>", "Null", "Like" };
+  private JCheckBox chkCreated = new JCheckBox();
 
   // internationalisation
   private String borderTitle, simpleTitle, compoundTitle;
@@ -102,8 +107,10 @@ public class OGCFilterPanel extends JPanel implements ActionListener,
   public void actionPerformed(ActionEvent e) {
     if (e.getActionCommand().equals("createU")) {
       this.createFilter(true);
+      chkCreated.setSelected(true);
     } else if (e.getActionCommand().equals("createC")) {
       this.createFilter(false);
+      chkCreated.setSelected(true);
     } else if (e.getActionCommand().equals("add")) {
       if (this.operator instanceof BinaryLogicOpsType) {
         if (this.filterOpList.size() < 2) {
@@ -350,11 +357,14 @@ public class OGCFilterPanel extends JPanel implements ActionListener,
     types.add(boolean.class);
     types.add(float.class);
     this.methodsList.addAll(ReflectionUtil.getAllGetters(filteredClass, types));
-    MutableComboBoxModel cbModel = new DefaultComboBoxModel();
+    List<String> listMethods = new ArrayList<String>();
     for (int i = 0; i < this.methodsList.size(); i++) {
-      cbModel.addElement(this.methodsList.get(i).getName()
-          .replaceFirst("get", ""));
+      listMethods
+          .add(this.methodsList.get(i).getName().replaceFirst("get", ""));
     }
+    Collections.sort(listMethods);
+    MutableComboBoxModel cbModel = new DefaultComboBoxModel(
+        listMethods.toArray());
     this.cbMethods = new JComboBox(cbModel);
     this.cbMethods.setPreferredSize(new Dimension(90, 20));
     this.cbMethods.setMaximumSize(new Dimension(90, 20));
@@ -365,6 +375,7 @@ public class OGCFilterPanel extends JPanel implements ActionListener,
     this.cbOps.setPreferredSize(new Dimension(60, 20));
     this.cbOps.setMaximumSize(new Dimension(60, 20));
     this.cbOps.setMinimumSize(new Dimension(60, 20));
+    this.cbOps.addItemListener(this);
     // a text field
     this.txtValue = new JTextField();
     this.txtValue.setPreferredSize(new Dimension(90, 20));
@@ -626,6 +637,22 @@ public class OGCFilterPanel extends JPanel implements ActionListener,
     return strAff;
   }
 
+  public JButton getBtnCreateUnitary() {
+    return btnCreateUnitary;
+  }
+
+  public JButton getBtnCreateCompound() {
+    return btnCreateCompound;
+  }
+
+  public JCheckBox getChkCreated() {
+    return chkCreated;
+  }
+
+  public void setChkCreated(JCheckBox chkCreated) {
+    this.chkCreated = chkCreated;
+  }
+
   /**
    * This methods internationalise all labels of the panel.
    */
@@ -645,6 +672,14 @@ public class OGCFilterPanel extends JPanel implements ActionListener,
     this.lblUnitList = I18N.getString("OGCFilterPanel.lblUnitList");
     this.lblAddUnit = I18N.getString("OGCFilterPanel.lblAddUnit");
     this.lblModify = I18N.getString("OGCFilterPanel.lblModify");
+  }
+
+  @Override
+  public void itemStateChanged(ItemEvent e) {
+    if (cbOps.getSelectedItem().equals("Null"))
+      this.txtValue.setEnabled(false);
+    else
+      this.txtValue.setEnabled(true);
   }
 
 }

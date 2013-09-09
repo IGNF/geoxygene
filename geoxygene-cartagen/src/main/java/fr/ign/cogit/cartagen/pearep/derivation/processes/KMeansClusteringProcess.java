@@ -135,7 +135,7 @@ public class KMeansClusteringProcess extends ScaleMasterGeneProcess {
   public Set<ProcessParameter> getDefaultParameters() {
     Set<ProcessParameter> params = new HashSet<ProcessParameter>();
     params.add(new ProcessParameter("centroid", Boolean.class, false));
-    params.add(new ProcessParameter("clustering_distance", Double.class, -1.0));
+    params.add(new ProcessParameter("shrink_ratio", Double.class, 1.0));
     return params;
   }
 

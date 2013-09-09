@@ -82,14 +82,15 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance().getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
-        .getRoadNetwork(),  deleted);
-
+    NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
+        .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+        .getRoadNetwork(), deleted);
 
     // get the eliminated features to compute strokes on
     HashMap<ArcReseau, IRoadLine> map = new HashMap<ArcReseau, IRoadLine>();
     // first get the road features not yet selected
-    for (IGeneObj obj : features) {
+    for (IGeneObj obj : CartAGenDoc.getInstance().getCurrentDataset()
+        .getRoadNetwork().getSections()) {
       if (((INetworkSection) obj).getInitialNode() == null) {
         obj.eliminateBatch();
         continue;
@@ -110,11 +111,13 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
         map.put((ArcReseau) obj.getGeoxObj(), (IRoadLine) obj);
       }
     }
+
     // then compute the strokes
     RoadStrokesNetwork network = new RoadStrokesNetwork(map.keySet());
     HashSet<String> attributeNames = new HashSet<String>();
     if (this.attributeName != null) {
-      attributeNames.add(this.attributeName);
+      if (this.attributeName != "")
+        attributeNames.add(this.attributeName);
     }
     network.buildStrokes(attributeNames, 112.5, 45.0, true);
     // select the strokes big enough

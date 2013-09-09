@@ -3,10 +3,13 @@ package fr.ign.cogit.cartagen.pearep.gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.HashMap;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -44,7 +47,20 @@ public class AddFilterToElementFrame extends JFrame implements ActionListener {
     }
 
     this.filterPanel = new OGCFilterPanel(this, selectedClass);
-
+    ItemListener listener = new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+        if (((JCheckBox) e.getSource()).isSelected()) {
+          parentFrame.setFilter(filterPanel.getFilter());
+          parentFrame.getFilterTxt().setEditable(true);
+          parentFrame.getFilterTxt()
+              .setText(filterPanel.getFilter().toString());
+          parentFrame.getFilterTxt().setEditable(false);
+          setVisible(false);
+        }
+      }
+    };
+    this.filterPanel.getChkCreated().addItemListener(listener);
     // ***********************************
     // a panel for the buttons
     JPanel pButtons = new JPanel();

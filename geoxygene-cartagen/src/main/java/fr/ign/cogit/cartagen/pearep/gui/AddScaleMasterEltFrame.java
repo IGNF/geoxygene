@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -31,6 +32,8 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.apache.batik.ext.swing.GridBagConstants;
 
@@ -46,7 +49,7 @@ import fr.ign.cogit.cartagen.util.Interval;
 import fr.ign.cogit.geoxygene.filter.Filter;
 
 public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
-    ItemListener {
+    ItemListener, ListSelectionListener {
 
   /****/
   private static final long serialVersionUID = 4360672319562183279L;
@@ -55,7 +58,7 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
   private JSpinner spinMin, spinMax;
   private JButton btnOk, btnCancel;
   private JButton btnAddEnrich, btnRemoveEnrich, btnAddFilter, btnRemoveFilter,
-      btnAddProcess, btnRemoveProcess;
+      btnAddProcess, btnRemoveProcess, btnEditProcess;
   private JComboBox comboDbs, comboEnrich, comboProc;
   private JList jlistEnrichs, jlistProcess;
   private List<ScaleMasterEnrichment> enrichments;
@@ -135,6 +138,25 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     } else if (e.getActionCommand().equals("removeEnrich")) {
       this.enrichments.remove(jlistEnrichs.getSelectedValue());
       this.updateJList(jlistEnrichs);
+    } else if (e.getActionCommand().equals("editProc")) {
+      ScaleMasterGeneProcess proc = (ScaleMasterGeneProcess) jlistProcess
+          .getSelectedValue();
+      this.processes.remove(proc);
+      this.processPriorities.remove(jlistProcess.getSelectedIndex());
+      fillParametersValues();
+      for (ProcessParameter param : proc.getParameters()) {
+        for (ProcessParameter param2 : this.parameters) {
+          if (param.getName().equals(param2.getName())) {
+            param.setValue(param2.getValue());
+            break;
+          }
+        }
+      }
+      this.processes.add(proc);
+      processPriorities
+          .add(ProcessPriority.values()[slideProcess.getValue() - 1]);
+      comboProc.setSelectedItem(null);
+      updateJList(jlistProcess);
     }
   }
 
@@ -278,6 +300,11 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.btnRemoveProcess = new JButton(this.lblRemove);
     this.btnRemoveProcess.addActionListener(this);
     this.btnRemoveProcess.setActionCommand("removeProc");
+    this.btnEditProcess = new JButton(I18N.getString("MainLabels.lblEdit"));
+    this.btnEditProcess.addActionListener(this);
+    this.btnEditProcess.setActionCommand("editProc");
+    this.btnEditProcess.setEnabled(false);
+
     JPanel pBtns = new JPanel();
     pBtns.setLayout(new GridBagLayout());
     pBtns.add(btnAddProcess, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
@@ -286,9 +313,14 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     pBtns.add(btnRemoveProcess, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
         GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
         1, 1));
+    pBtns.add(btnEditProcess, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
+        GridBagConstants.WEST, GridBagConstants.NONE, new Insets(2, 2, 2, 2),
+        1, 1));
+
     jlistProcess = new JList();
     jlistProcess
         .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    jlistProcess.addListSelectionListener(this);
     JScrollPane scroll2 = new JScrollPane(jlistProcess);
     JPanel pCurrentProc = new JPanel();
     // comboProc et slideProcess
@@ -354,6 +386,7 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
         1, 1));
 
     // final layout of the frame
+
     this.getContentPane().setLayout(new GridBagLayout());
     this.getContentPane().add(
         pInterval,
@@ -363,10 +396,11 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
         pData,
         new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0, GridBagConstants.WEST,
             GridBagConstants.HORIZONTAL, new Insets(2, 2, 2, 2), 1, 1));
-    this.getContentPane().add(
-        pEnrich,
-        new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0, GridBagConstants.CENTER,
-            GridBagConstants.BOTH, new Insets(2, 2, 2, 2), 1, 1));
+    /*
+     * this.getContentPane().add( pEnrich, new GridBagConstraints(0, 2, 1, 1,
+     * 1.0, 1.0, GridBagConstants.CENTER, GridBagConstants.BOTH, new Insets(2,
+     * 2, 2, 2), 1, 1));
+     */
     this.getContentPane().add(
         pFilter,
         new GridBagConstraints(0, 3, 1, 1, 1.0, 0.0, GridBagConstants.WEST,
@@ -393,12 +427,15 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.enrichments = elem.getEnrichments();
     this.filter = elem.getOgcFilter();
     this.filterTxt.setEditable(true);
-    this.filterTxt.setText(filter.toString());
+    if (filter != null)
+      this.filterTxt.setText(filter.toString());
     this.filterTxt.setEditable(false);
     this.spinMin.setValue(elem.getInterval().getMinimum());
     this.spinMax.setValue(elem.getInterval().getMaximum());
+    int j = 0;
     for (String procName : elem.getProcessesToApply()) {
       ScaleMasterGeneProcess proc = null;
+      Map<String, Object> paramsMap = null;
       for (int i = 0; i < comboProc.getModel().getSize(); i++) {
         ScaleMasterGeneProcess procI = (ScaleMasterGeneProcess) comboProc
             .getModel().getElementAt(i);
@@ -407,7 +444,14 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
           break;
         }
       }
+      proc.setParameters(proc.getDefaultParameters());
+      paramsMap = elem.getParameters().get(j);
+      // update the parameters
+      for (ProcessParameter param : proc.getParameters()) {
+        param.setValue(paramsMap.get(param.getName()));
+      }
       this.processes.add(proc);
+      j++;
     }
     this.processPriorities = elem.getProcessPriorities();
     this.updateJList(jlistEnrichs);
@@ -524,5 +568,29 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.lblOk = I18N.getString("MainLabels.lblOk");
     this.lblAdd = I18N.getString("MainLabels.lblAdd");
     this.lblRemove = I18N.getString("MainLabels.lblRemove");
+  }
+
+  @Override
+  public void valueChanged(ListSelectionEvent e) {
+    if (e.getValueIsAdjusting())
+      return;
+    if (((JList) e.getSource()).getSelectedValue() == null)
+      this.btnEditProcess.setEnabled(false);
+    else {
+      ScaleMasterGeneProcess proc = (ScaleMasterGeneProcess) ((JList) e
+          .getSource()).getSelectedValue();
+      this.btnEditProcess.setEnabled(true);
+      for (int i = 0; i < this.comboProc.getItemCount(); i++) {
+        if (((ScaleMasterGeneProcess) this.comboProc.getItemAt(i))
+            .getProcessName().equals(proc.getProcessName())) {
+          this.comboProc.setSelectedIndex(i);
+          break;
+        }
+      }
+      for (ProcessParameter param : this.parameters) {
+        param.setValue(proc.getParamValueFromName(param.getName()));
+      }
+      updateParametersPanel();
+    }
   }
 }
