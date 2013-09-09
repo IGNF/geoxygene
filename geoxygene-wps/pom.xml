@@ -25,28 +25,10 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<main.basedir>..</main.basedir>
-		
-		<geoserver.extension.version>2.2.3</geoserver.extension.version> <!-- 2.2.3  -->
-		<!-- <path.geoserver>D:\MesProgrammes\GeoServer\GeoServer-2.3.1\webapps\geoserver\WEB-INF\lib</path.geoserver> -->
-		<!-- <path.geoserver>D:\MesProgrammes\GeoServer\GeoServer-2.2.5\webapps\geoserver\WEB-INF\lib</path.geoserver> -->
-		<!-- <path.geoserver>D:\MesProgrammes\GeoServer\GeoServer-2.2.3\webapps\geoserver\WEB-INF\lib</path.geoserver> -->
-		<path.geoserver>D:\MesProgrammes\GeoServer\GeoServer-2.2.3\webapps\geoserver\WEB-INF\lib</path.geoserver>
-	</properties>
 
-	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-			</testResource>
-		</testResources>
-	</build>
+		<geoserver.extension.version>2.3.5</geoserver.extension.version>
+		<path.geoserver>D:\MesProgrammes\GeoServer\GeoServer-2.3.5\GeoServer 2.3.5\webapps\geoserver\WEB-INF\lib</path.geoserver>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -96,10 +78,8 @@
 								<configuration>
 									<tasks>
 
-										<!-- 
-										<echo>Stop geoserver</echo> 
-										<exec executable="D:\MesProgrammes\GeoServer\GeoServer2.2.3\bin\shutdown.bat />" 
-										-->
+										<!-- <echo>Stop geoserver</echo> <exec executable="D:\MesProgrammes\GeoServer\GeoServer2.2.3\bin\shutdown.bat 
+											/>" -->
 
 										<echo>Delete GeOxygene libraries</echo>
 										<delete

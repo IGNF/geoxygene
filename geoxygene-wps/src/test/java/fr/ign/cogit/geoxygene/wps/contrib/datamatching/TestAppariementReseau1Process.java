@@ -73,7 +73,7 @@ public class TestAppariementReseau1Process {
         
         result.append("</wps:Execute>");
         
-        try {
+        /*try {
             
             String serviceAppariement = "http://127.0.0.1:8094/geoserver/wps/";
              
@@ -98,7 +98,7 @@ public class TestAppariementReseau1Process {
         } catch (Exception e) {
             e.printStackTrace();
             // throw e;
-        }
+        }*/
         
         Assert.assertTrue(true);
     }
