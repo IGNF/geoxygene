@@ -285,7 +285,17 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>Attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>
@@ -375,6 +385,18 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			
+			<!-- A lancer : mvn eclipse:eclipse -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+					<useProjectReferences>true</useProjectReferences> <!-- default true -->
+				</configuration>
 			</plugin>
 			
 			<!--
@@ -701,7 +723,7 @@
 		<module>geoxygene-cartagen</module>
 		<module>geoxygene-contrib</module>
 		<module>geoxygene-database</module>
-		<!-- <module>geoxygene-deprecated</module> -->
+		<module>geoxygene-deprecated</module>
 		<module>geoxygene-example</module>
 		<module>geoxygene-feature</module>
 		<module>geoxygene-filter</module>
