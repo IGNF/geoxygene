@@ -177,6 +177,9 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
      * Initialize default parameters from an XML files.
      */
     private void initializeParam() {
+        
+        String filename1 = "D:\\Data\\Appariement\\ESPON_DB\\Test02\\Reseau1.shp";
+        String filename2 = "D:\\Data\\Appariement\\ESPON_DB\\Test02\\Reseau2.shp";
 
         // Filename
         //
@@ -184,7 +187,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         // ParamParserTest.class.getClassLoader().getResource("data/reseau.shp").getPath();
         // String filename1 = application.getProperties().getLastOpenedFile();
         // bdcarto_route.shp
-        String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+        // String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
         // String filename1 =
         // "D:\\Data\\Appariement\\ESPON_DB\\Test\\Reseau1.shp";
 
@@ -201,7 +204,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
 
         // String filename2 =
         // "D:\\Data\\Appariement\\ESPON_DB\\Test\\Reseau2.shp";
-        String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
+        // String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
         // String filename2 = "D:\\Data\\Appariement\\CG32\\Route\\bduni.shp";
         // String filename2 =
         // "D:\\Data\\Appariement\\Kusay\\RIUV1BDCARTO_extractionV2.shp";
