@@ -11,6 +11,8 @@
 	<bean id="ParamDistanceNetworkDataMatchingPPIO"
 	       class="fr.ign.cogit.process.geoxygene.netmatching.ppio.ParamDistanceNetworkDataMatchingPPIO" />
 
+    <bean id="CarteTopoResultPPIO"
+           class="fr.ign.cogit.process.geoxygene.cartetopo.ppio.CarteTopoResultPPIO" />
 
 
     <!-- ========================================================================== -->
