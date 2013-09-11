@@ -118,7 +118,7 @@ public class DTMWindow extends JDialog implements ActionListener,
     jLNomCouche.setBounds(10, 10, 140, 20);
     this.add(jLNomCouche);
 
-    this.jTFLayerName = new JTextField(Messages.getString("3DGIS.DTM")); //$NON-NLS-1$
+    this.jTFLayerName = new JTextField(Messages.getString("3DGIS.DTM")+ (++CountLayer.COUNT)); //$NON-NLS-1$
     this.jTFLayerName.setBounds(150, 10, 230, 20);
     this.add(this.jTFLayerName);
 

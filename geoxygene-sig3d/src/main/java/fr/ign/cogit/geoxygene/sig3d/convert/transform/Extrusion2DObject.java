@@ -344,6 +344,9 @@ public class Extrusion2DObject {
         // On ajoute les faces sup et inf à la liste des faces formant
         // l'objet
         pLFacet.add(poly);
+        
+        //On inverse la face inférieure
+
         pLFacet.add(poly2);
 
         // On renvoie l'objet

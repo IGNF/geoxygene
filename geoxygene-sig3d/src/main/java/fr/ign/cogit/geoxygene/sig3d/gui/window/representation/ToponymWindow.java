@@ -171,7 +171,7 @@ public class ToponymWindow extends JDialog implements ActionListener {
     labelNom.setText(Messages.getString("FenetreAjoutCouche.Titre"));
     this.add(labelNom);
 
-    this.jTFNom = new JTextField(Messages.getString("3DGIS.LayerName"));
+    this.jTFNom = new JTextField(Messages.getString("3DGIS.LayerName")+ (++CountLayer.COUNT));
     this.jTFNom.setBounds(200, 10, 220, 20);
     this.jTFNom.setVisible(true);
     this.jTFNom.addActionListener(this);

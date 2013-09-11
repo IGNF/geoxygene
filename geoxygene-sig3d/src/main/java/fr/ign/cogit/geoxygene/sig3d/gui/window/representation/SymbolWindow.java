@@ -160,7 +160,7 @@ public class SymbolWindow extends JDialog implements ActionListener,
     labelNom.setText(Messages.getString("3DGIS.LayerName")); //$NON-NLS-1$
     this.add(labelNom);
 
-    this.jTFName = new JTextField(Messages.getString("3DGIS.LayerName")); //$NON-NLS-1$
+    this.jTFName = new JTextField(Messages.getString("3DGIS.LayerName")+ (++CountLayer.COUNT)); //$NON-NLS-1$
     this.jTFName.setBounds(200, 10, 220, 20);
     this.jTFName.setVisible(true);
     this.jTFName.addActionListener(this);

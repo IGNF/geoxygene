@@ -105,7 +105,7 @@ public class BuildingModWindow extends JDialog implements ActionListener {
     labelNom.setText(Messages.getString("3DGIS.LayerName")); //$NON-NLS-1$
     this.add(labelNom);
 
-    this.jTFName = new JTextField(Messages.getString("3DGIS.LayerName")); //$NON-NLS-1$
+    this.jTFName = new JTextField(Messages.getString("3DGIS.LayerName") + (++CountLayer.COUNT)); //$NON-NLS-1$
     this.jTFName.setBounds(160, 10, 100, 20);
     this.jTFName.setVisible(true);
     this.add(this.jTFName);
