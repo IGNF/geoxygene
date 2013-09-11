@@ -9,6 +9,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import fr.ign.cogit.geoxygene.sig3d.Messages;
+import fr.ign.cogit.geoxygene.sig3d.gui.dd.FileTransferHandler;
 import fr.ign.cogit.geoxygene.sig3d.gui.table.layerstable.LayersListTable;
 
 /**
@@ -48,6 +49,8 @@ public class ContentPanel extends JPanel {
    */
   public ContentPanel(MainWindow mainWindow) {
     super();
+    
+    this.setTransferHandler(new FileTransferHandler(mainWindow.getInterfaceMap3D()));
     // On crée le lien entre le panneau gauche et l'application
     ContentPanel.mainWindow = mainWindow;
     // définition d'un nouveau Panneau

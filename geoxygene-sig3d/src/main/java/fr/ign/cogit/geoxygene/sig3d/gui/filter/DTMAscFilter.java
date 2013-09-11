@@ -26,7 +26,7 @@ import java.io.File;
 
 import javax.swing.filechooser.FileFilter;
 
-public class MNTASCFilter extends FileFilter {
+public class DTMAscFilter extends FileFilter {
 
   /**
    * Acceptation du fichier

@@ -19,7 +19,7 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
 import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
 import fr.ign.cogit.geoxygene.sig3d.gui.filter.CITYGMLFilter;
-import fr.ign.cogit.geoxygene.sig3d.gui.filter.MNTASCFilter;
+import fr.ign.cogit.geoxygene.sig3d.gui.filter.DTMAscFilter;
 import fr.ign.cogit.geoxygene.sig3d.gui.filter.SHPFilter;
 import fr.ign.cogit.geoxygene.sig3d.gui.window.representation.DTMWindow;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
@@ -175,7 +175,7 @@ public class LoadingWindow extends JDialog implements ActionListener {
 
       } else if (formatChoisi.equalsIgnoreCase(Messages.getString("3DGIS.DTM"))) { //$NON-NLS-1$
 
-        filtre = new MNTASCFilter();
+        filtre = new DTMAscFilter();
 
       } else {
 
