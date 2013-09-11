@@ -2,18 +2,21 @@
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
 	<modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>fr.ign.cogit</groupId>
-    <artifactId>geoxygene</artifactId>
-    <version>1.6-SNAPSHOT</version>
-  </parent>
-  
-  <artifactId>geoxygene-pea-rep</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <name>geoxygene-pea-rep</name>
-  
-  	<licenses>
+
+	<parent>
+		<groupId>fr.ign.cogit</groupId>
+		<artifactId>geoxygene</artifactId>
+		<version>1.6-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>geoxygene-pea-rep</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>PEA REP</name>
+	<description>cadre d'un projet PEAREP (plan d'études amont de la direction générale de l'armement</description>
+
+	<licenses>
 		<license>
 			<name>CeCILL C License</name>
 			<url>http://www.cecill.info/</url>
@@ -21,11 +24,33 @@
 		</license>
 	</licenses>
 	
-  	<properties>
+	<developers>
+        <developer>
+            <id>gtouya</id>
+            <name>Guillaume Touya</name>
+            <email>guillaume.touya(at)gmail.com</email>
+            <url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Guillaume&amp;nom=Touya</url>
+            <organization>Laboratoire COGIT, IGN</organization>
+            <organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
+            <roles>
+                <role>Administrator</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>jfgirres</id>
+            <name>Jean-François Girres</name>
+            <email>jean-francois.girres(at)ign.fr</email>
+            <url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Jean-Francois&amp;nom=Girres</url>
+            <organization>Laboratoire COGIT, IGN</organization>
+            <organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
+        </developer>
+    </developers>
+
+	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<main.basedir>..</main.basedir>
 	</properties>
-	
+
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
@@ -43,7 +68,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
 				<configuration>
 					<compilerVersion>1.6</compilerVersion>
 					<source>1.6</source>
@@ -56,41 +80,118 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.4.3</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>resources</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3</version>
-			</plugin>
 		</plugins>
 	</build>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-    	<groupId>fr.ign.cogit</groupId>
-    	<artifactId>geoxygene-cartagen</artifactId>
-    	<version>1.6-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+
+		<!-- GeOxygene -->
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-api</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-spatial</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-feature</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-filter</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-style</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-io</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-contrib</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-cartagen</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-schemageo</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vividsolutions</groupId>
+			<artifactId>jts</artifactId>
+		</dependency>
+
+		<!-- geotools -->
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-main</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-opengis</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-api</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-shapefile</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-referencing</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.semanticweb</groupId>
+			<artifactId>owlapi</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.5.6-Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+			<version>1.0.1.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.swinglabs</groupId>
+			<artifactId>swingx</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+	</dependencies>
+
 </project>
