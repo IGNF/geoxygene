@@ -4,6 +4,7 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.datamatching.NetworkDataMatchingPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.TopologieReseauPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.ImportAsEdgesPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.ShortestPathTreePlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.BezierCurvePlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.TINPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.CubicSplinePlugin</plugin>
