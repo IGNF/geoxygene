@@ -30,19 +30,13 @@ public class TriangulationModel extends Triangulation {
     this.setPersistant(false);
     this.getPopulations().clear();
 
-    Population<EdgeSpecific> edges = new Population<EdgeSpecific>(false,
-        I18N.getString("CarteTopo.Edge"), //$NON-NLS-1$
-        EdgeSpecific.class, true);
+    Population<EdgeSpecific> edges = new Population<EdgeSpecific>(false, "Edge", EdgeSpecific.class, true);
     this.addPopulation(edges);
 
-    Population<NodeSpecific> nodes = new Population<NodeSpecific>(false,
-        I18N.getString("CarteTopo.Node"), //$NON-NLS-1$
-        NodeSpecific.class, true);
+    Population<NodeSpecific> nodes = new Population<NodeSpecific>(false, "Node", NodeSpecific.class, true);
     this.addPopulation(nodes);
 
-    Population<TriangleSpecific> faces = new Population<TriangleSpecific>(
-        false, I18N.getString("CarteTopo.Face"), //$NON-NLS-1$
-        TriangleSpecific.class, true);
+    Population<TriangleSpecific> faces = new Population<TriangleSpecific>(false, "Face", TriangleSpecific.class, true);
     this.addPopulation(faces);
   }
 

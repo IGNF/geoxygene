@@ -81,8 +81,7 @@ public class MinimalSpanningTreeTriangulation {
 
     List<Cluster> clusters = new ArrayList<Cluster>();
     @SuppressWarnings("unchecked")
-    List<NodeSpecific> nodes = ((Population<NodeSpecific>) this.triangulationModel
-        .getPopulation(I18N.getString("CarteTopo.Node"))).getElements(); //$NON-NLS-1$
+    List<NodeSpecific> nodes = ((Population<NodeSpecific>) this.triangulationModel.getPopulation("Node")).getElements();
 
     Cluster cluster = null;
     List<NodeSpecific> adjacentNodes;

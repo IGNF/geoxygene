@@ -80,8 +80,7 @@ public class ReseauApp extends CarteTopo {
     this.setNom(nom_logique);
     this.setPersistant(false);
     
-    Population<ArcApp> arcs = new Population<ArcApp>(false,
-        I18N.getString("CarteTopo.Edge"), ArcApp.class, true); //$NON-NLS-1$
+    Population<ArcApp> arcs = new Population<ArcApp>(false, "Edge", ArcApp.class, true);
     
     /** créer un featuretype pour les arcs */
     FeatureType featureType = new FeatureType();
@@ -90,8 +89,7 @@ public class ReseauApp extends CarteTopo {
     featureType.setGeometryType(GM_LineString.class);
     arcs.setFeatureType(featureType);
     this.addPopulation(arcs);
-    Population<NoeudApp> noeuds = new Population<NoeudApp>(false,
-        I18N.getString("CarteTopo.Node"), NoeudApp.class, true); //$NON-NLS-1$
+    Population<NoeudApp> noeuds = new Population<NoeudApp>(false, "Node", NoeudApp.class, true);
     
     /** créer un featuretype pour les noeuds */
     featureType = new FeatureType();
@@ -100,8 +98,7 @@ public class ReseauApp extends CarteTopo {
     featureType.setGeometryType(GM_Point.class);
     noeuds.setFeatureType(featureType);
     this.addPopulation(noeuds);
-    Population<FaceApp> faces = new Population<FaceApp>(false,
-        I18N.getString("CarteTopo.Face"), FaceApp.class, true); //$NON-NLS-1$
+    Population<FaceApp> faces = new Population<FaceApp>(false, "Face", FaceApp.class, true);
     
     /** créer un featuretype pour les faces */
     featureType = new FeatureType();
@@ -110,8 +107,7 @@ public class ReseauApp extends CarteTopo {
     featureType.setGeometryType(GM_Polygon.class);
     faces.setFeatureType(featureType);
     this.addPopulation(faces);
-    Population<GroupeApp> groupes = new Population<GroupeApp>(false,
-        I18N.getString("CarteTopo.Group"), GroupeApp.class, false); //$NON-NLS-1$
+    Population<GroupeApp> groupes = new Population<GroupeApp>(false, "Group", GroupeApp.class, false);
     this.addPopulation(groupes);
   }
 

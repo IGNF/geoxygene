@@ -486,8 +486,7 @@ public class Noeud extends ElementCarteTopo {
    */
   public Groupe plusCourtChemin(Noeud arrivee, double maxLongueur) {
 
-    // Noeud.logger.debug("shortest path between " + this.getCoord() + " - " +
-    // arrivee.getCoord());
+    // Noeud.logger.debug("shortest path between " + this.getCoord() + " - " + arrivee.getCoord());
 
     List<Noeud> noeudsFinaux = new ArrayList<Noeud>(0);
     List<Arc> arcsFinaux = new ArrayList<Arc>(0);
@@ -504,34 +503,33 @@ public class Noeud extends ElementCarteTopo {
     try {
 
       if (this.getCarteTopo() == null) {
-        Noeud.logger.error("ATTENTION : le noeud " + this
-            + " ne fait pas partie d'une carte topo");
-        Noeud.logger
-            .error("            Impossible de calculer un plus court chemin");
+        Noeud.logger.error("ATTENTION : le noeud " + this + " ne fait pas partie d'une carte topo");
+        Noeud.logger.error("            Impossible de calculer un plus court chemin");
         return null;
       }
 
       if (this.getCarteTopo().getPopGroupes() == null) {
         Noeud.logger.error("ATTENTION : le noeud " + this
             + " fait partie d'une carte topo sans population de groupes");
-        Noeud.logger
-            .error("            Impossible de calculer un plus court chemin");
+        Noeud.logger.error("            Impossible de calculer un plus court chemin");
         return null;
       }
 
-      Groupe plusCourtChemin = this.getCarteTopo().getPopGroupes()
-          .nouvelElement();
-
+      Groupe plusCourtChemin = this.getCarteTopo().getPopGroupes().nouvelElement();
+      
+      // Schema - Attribut
+      plusCourtChemin.setSchema(this.getSchema());
+      
+      
       if (this == arrivee) {
-        Noeud.logger.debug("node is arrival");
-        plusCourtChemin.addNoeud(this);
-        this.addGroupe(plusCourtChemin);
-        return plusCourtChemin;
+          Noeud.logger.debug("node is arrival");
+          plusCourtChemin.addNoeud(this);
+          this.addGroupe(plusCourtChemin);
+          return plusCourtChemin;
       }
 
       this.distance = 0;
-      this.chercheArcsNoeudsVoisins(noeudsVoisins, distancesVoisins,
-          arcsVoisins);
+      this.chercheArcsNoeudsVoisins(noeudsVoisins, distancesVoisins, arcsVoisins);
       // logger.info("voisins " + noeudsVoisins.size());
 
       for (i = 0; i < noeudsVoisins.size(); i++) {
@@ -567,8 +565,7 @@ public class Noeud extends ElementCarteTopo {
             return null; // heuristique pour stopper la recherche
           }
         }
-        plusProche.chercheArcsNoeudsVoisins(noeudsVoisins, distancesVoisins,
-            arcsVoisins);
+        plusProche.chercheArcsNoeudsVoisins(noeudsVoisins, distancesVoisins, arcsVoisins);
         // logger.info("voisins " + noeudsVoisins.size());
         for (i = 0; i < noeudsVoisins.size(); i++) {
           noeudVoisin = noeudsVoisins.get(i);

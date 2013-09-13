@@ -58,6 +58,7 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -124,22 +125,26 @@ public class CarteTopo extends DataSet {
     /** Population des arcs de la carte topo. */
     @SuppressWarnings("unchecked")
     public IPopulation<Arc> getPopArcs() {
-        return (IPopulation<Arc>) this.getPopulation(I18N.getString("CarteTopo.Edge"));} //$NON-NLS-1$
+        return (IPopulation<Arc>) this.getPopulation("Edge");
+    }
 
     /** Population des noeuds de la carte topo. */
     @SuppressWarnings("unchecked")
     public IPopulation<Noeud> getPopNoeuds() {
-        return (IPopulation<Noeud>) this.getPopulation(I18N.getString("CarteTopo.Node"));} //$NON-NLS-1$
+        return (IPopulation<Noeud>) this.getPopulation("Node");
+    }
 
     /** Population des faces de la carte topo. */
     @SuppressWarnings("unchecked")
     public IPopulation<Face> getPopFaces() {
-        return (IPopulation<Face>) this.getPopulation(I18N.getString("CarteTopo.Face"));} //$NON-NLS-1$
+        return (IPopulation<Face>) this.getPopulation("Face");
+    }
 
     /** Population des groupes de la carte topo. */
     @SuppressWarnings("unchecked")
     public IPopulation<Groupe> getPopGroupes() {
-        return (IPopulation<Groupe>) this.getPopulation(I18N.getString("CarteTopo.Group"));} //$NON-NLS-1$
+        return (IPopulation<Groupe>) this.getPopulation("Group");
+    }
 
     /**
      * Liste des noeuds de la carte topo. Surcharge de
@@ -242,17 +247,13 @@ public class CarteTopo extends DataSet {
         // ojb
         this.setNom(nomLogique);
         this.setPersistant(false);
-        this.addPopulation(new Population<Arc>(false,
-                I18N.getString("CarteTopo.Edge"), fr.ign.cogit.geoxygene.contrib.cartetopo.Arc.class, true)); //$NON-NLS-1$
-        this.addPopulation(new Population<Noeud>(false,
-                I18N.getString("CarteTopo.Node"), fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud.class, true)); //$NON-NLS-1$
-        this.addPopulation(new Population<Face>(false,
-                I18N.getString("CarteTopo.Face"), fr.ign.cogit.geoxygene.contrib.cartetopo.Face.class, true)); //$NON-NLS-1$
-        this.addPopulation(new Population<Groupe>(false,
-                I18N.getString("CarteTopo.Group"), fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe.class, false)); //$NON-NLS-1$
+        this.addPopulation(new Population<Arc>(false, "Edge", fr.ign.cogit.geoxygene.contrib.cartetopo.Arc.class, true));
+        this.addPopulation(new Population<Noeud>(false, "Node", fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud.class, true));
+        this.addPopulation(new Population<Face>(false, "Face", fr.ign.cogit.geoxygene.contrib.cartetopo.Face.class, true));
+        this.addPopulation(new Population<Groupe>(false, "Group", fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe.class, false));
         /** créer un featuretype pour les arcs */
-        fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType arcFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
-        arcFeatureType.setTypeName(I18N.getString("CarteTopo.Edge"));
+        FeatureType arcFeatureType = new FeatureType();
+        arcFeatureType.setTypeName("Edge");
         AttributeType orientationType = new AttributeType("orient", "orientation", "Integer");
         arcFeatureType.addFeatureAttribute(orientationType);
         AttributeType weightType = new AttributeType("poids", "poids", "Double");
@@ -268,7 +269,7 @@ public class CarteTopo extends DataSet {
         this.getPopArcs().setFeatureType(arcFeatureType);
         /** créer un featuretype pour les noeuds */
         fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType noeudFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
-        noeudFeatureType.setTypeName(I18N.getString("CarteTopo.Node"));
+        noeudFeatureType.setTypeName("Node");
         AttributeType distanceType = new AttributeType("distance", "distance", "Double");
         noeudFeatureType.addFeatureAttribute(distanceType);
         noeudFeatureType.addFeatureAttribute(idType);
@@ -278,7 +279,7 @@ public class CarteTopo extends DataSet {
         /** créer un featuretype pour les faces */
         fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType faceFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
         /** création d'un schéma associé au featureType */
-        faceFeatureType.setTypeName(I18N.getString("CarteTopo.Face"));
+        faceFeatureType.setTypeName("Face");
         AttributeType infiniteType = new AttributeType("infinite", "infinite", "Boolean");
         faceFeatureType.addFeatureAttribute(infiniteType);
         AttributeType correspondantsType = new AttributeType("corres", "correspondantsAsString", "String");
@@ -2942,6 +2943,7 @@ public class CarteTopo extends DataSet {
         this.enleveArc(a);
     }
 
+    
     public Groupe shortestPath(IDirectPosition x1, IDirectPosition x2, Arc a1, Arc a2, double max) {
         Noeud n1 = a1.getNoeudIni();
         boolean a1Split = false;

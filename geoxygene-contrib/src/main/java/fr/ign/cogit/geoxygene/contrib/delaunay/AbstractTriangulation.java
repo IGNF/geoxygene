@@ -23,17 +23,11 @@ public abstract class AbstractTriangulation extends CarteTopo {
     this.setPersistant(false);
     // nécessaire pour ojb
     this.ojbConcreteClass = this.getClass().getName();
-    Population<ArcDelaunay> arcs = new Population<ArcDelaunay>(false,
-        I18N.getString("CarteTopo.Edge"), //$NON-NLS-1$
-        ArcDelaunay.class, true);
+    Population<ArcDelaunay> arcs = new Population<ArcDelaunay>(false, "Edge", ArcDelaunay.class, true);
     this.addPopulation(arcs);
-    Population<NoeudDelaunay> noeuds = new Population<NoeudDelaunay>(false,
-        I18N.getString("CarteTopo.Node"), //$NON-NLS-1$
-        NoeudDelaunay.class, true);
+    Population<NoeudDelaunay> noeuds = new Population<NoeudDelaunay>(false, "Node", NoeudDelaunay.class, true);
     this.addPopulation(noeuds);
-    Population<TriangleDelaunay> faces = new Population<TriangleDelaunay>(
-        false, I18N.getString("CarteTopo.Face"), //$NON-NLS-1$
-        TriangleDelaunay.class, true);
+    Population<TriangleDelaunay> faces = new Population<TriangleDelaunay>(false, "Face", TriangleDelaunay.class, true);
     this.addPopulation(faces);
     this.voronoiDiagram = new CarteTopo(this.getNom() + "_voronoiDiagram");
   }
