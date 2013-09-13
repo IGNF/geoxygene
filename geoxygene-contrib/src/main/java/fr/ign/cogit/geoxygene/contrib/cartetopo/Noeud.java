@@ -517,7 +517,7 @@ public class Noeud extends ElementCarteTopo {
 
       Groupe plusCourtChemin = this.getCarteTopo().getPopGroupes().nouvelElement();
       
-      // Schema - Attribut
+      // Schema ??? - Quels attributs ???
       plusCourtChemin.setSchema(this.getSchema());
       
       

@@ -23,12 +23,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
@@ -39,7 +37,6 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ICurveSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -56,7 +53,6 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -77,12 +73,15 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * <p>
  * English: a topological map is an oriented graph, with arcs sorted around the
  * nodes;
+ * 
  * @author Sébastien Mustière
  * @author Olivier Bonin
  * @author Julien Perret
  */
 public class CarteTopo extends DataSet {
-    protected static Logger logger = Logger.getLogger(CarteTopo.class.getName());
+    
+    /** Logger. */
+    protected final static Logger logger = Logger.getLogger(CarteTopo.class.getName());
 
     protected EventListenerList listenerList = new EventListenerList();
 
@@ -243,14 +242,15 @@ public class CarteTopo extends DataSet {
      * @param nomLogique nom de la carte topo
      */
     public CarteTopo(String nomLogique) {
-        this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour
-        // ojb
+        
+        this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour ojb
         this.setNom(nomLogique);
         this.setPersistant(false);
         this.addPopulation(new Population<Arc>(false, "Edge", fr.ign.cogit.geoxygene.contrib.cartetopo.Arc.class, true));
         this.addPopulation(new Population<Noeud>(false, "Node", fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud.class, true));
         this.addPopulation(new Population<Face>(false, "Face", fr.ign.cogit.geoxygene.contrib.cartetopo.Face.class, true));
         this.addPopulation(new Population<Groupe>(false, "Group", fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe.class, false));
+        
         /** créer un featuretype pour les arcs */
         FeatureType arcFeatureType = new FeatureType();
         arcFeatureType.setTypeName("Edge");
@@ -267,8 +267,9 @@ public class CarteTopo extends DataSet {
         /** création d'un schéma associé au featureType */
         arcFeatureType.setGeometryType(GM_LineString.class);
         this.getPopArcs().setFeatureType(arcFeatureType);
+        
         /** créer un featuretype pour les noeuds */
-        fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType noeudFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+        FeatureType noeudFeatureType = new FeatureType();
         noeudFeatureType.setTypeName("Node");
         AttributeType distanceType = new AttributeType("distance", "distance", "Double");
         noeudFeatureType.addFeatureAttribute(distanceType);
@@ -276,8 +277,9 @@ public class CarteTopo extends DataSet {
         /** création d'un schéma associé au featureType */
         noeudFeatureType.setGeometryType(GM_Point.class);
         this.getPopNoeuds().setFeatureType(noeudFeatureType);
+        
         /** créer un featuretype pour les faces */
-        fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType faceFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+        FeatureType faceFeatureType = new FeatureType();
         /** création d'un schéma associé au featureType */
         faceFeatureType.setTypeName("Face");
         AttributeType infiniteType = new AttributeType("infinite", "infinite", "Boolean");

@@ -101,8 +101,7 @@ public class GroupeApp extends Groupe {
    * notion d'entrée / sortie est relative au préappariement d'arcs et au noeud
    * ref passé en paramètre. La liste en sortie contient des NoeudApp
    */
-  public List<Noeud> noeudsEntree(NoeudApp noeudref,
-      EnsembleDeLiens liensPreappArcs) {
+  public List<Noeud> noeudsEntree(NoeudApp noeudref, EnsembleDeLiens liensPreappArcs) {
     List<Arc> arcsRef = new ArrayList<Arc>();
     List<Arc> arcs = new ArrayList<Arc>();
     List<Arc> arcsOK = new ArrayList<Arc>();

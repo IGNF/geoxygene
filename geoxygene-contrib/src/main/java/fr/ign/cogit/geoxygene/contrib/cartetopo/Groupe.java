@@ -31,74 +31,84 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
  * d'arcs et de faces.
  * <p>
  * English: a group is a set of nodes/arcs/faces of a topological map.
+ * 
+ * // /////////////////////////////////////////////////
+ * // Pour les relations de composition :
+ * // - un groupe contient PLUSIEURS noeuds, arcs et faces
+ * // - un groupe appartient à UNE carte topo
+ * // /////////////////////////////////////////////////
+ * 
  * @author Sébastien Mustière
  * @author Olivier Bonin
  * @version 1.0
  */
 public class Groupe extends ElementCarteTopo {
-  private double length = 0.0;
-
-  public double getLength() {
-    return this.length;
-  }
-
-  public void setLength(double length) {
-    this.length = length;
-  }
-
-  public Groupe() {
-  }
-
-  // /////////////////////////////////////////////////
-  // Pour les relations de composition :
-  // - un groupe contient PLUSIEURS noeuds, arcs et faces
-  // - un groupe appartient à UNE carte topo
-  // /////////////////////////////////////////////////
-
-  /* Noeuds composants du groupe */
-  private List<Noeud> listeNoeuds = new ArrayList<Noeud>(0);
-
-  /** Renvoie la liste des noeuds de self */
-  public List<Noeud> getListeNoeuds() {
-    return this.listeNoeuds;
-  }
-
-  /** Définit la liste des noeuds de self */
-  public void setListeNoeuds(List<Noeud> liste) {
-    this.listeNoeuds = liste;
-  }
-
-  /** Ajoute un noeud à self */
-  public void addNoeud(Noeud noeud) {
-    this.addNoeud(noeud, true);
-  }
-
-  /** Ajoute un noeud à self */
-  public void addNoeud(Noeud noeud, boolean addGroupToNode) {
-    if (noeud != null && !this.listeNoeuds.contains(noeud)) {
-      this.listeNoeuds.add(noeud);
-      if (addGroupToNode && !noeud.getListeGroupes().contains(this)) {
-        noeud.addGroupe(this);
-      }
+    
+    private double length = 0.0;
+    /** Noeuds composants du groupe. */
+    private List<Noeud> listeNoeuds = new ArrayList<Noeud>(0);
+    /** Arcs composants du groupe. */
+    private List<Arc> listeArcs = new ArrayList<Arc>(0);
+    /** Faces composants du groupe. */
+    private List<Face> listeFaces = new ArrayList<Face>(0);
+    
+    /**
+     * Default constructor
+     */
+    public Groupe() {
     }
-  }
+  
+    
+    
 
-  /** Ajoute une liste de noeuds à self **/
-  public void addAllNoeuds(List<Noeud> liste) {
-    this.addAllNoeuds(liste, true);
-  }
-
-  /** Ajoute une liste de noeuds à self **/
-  public void addAllNoeuds(List<Noeud> liste, boolean addGroupToNodes) {
-    Iterator<Noeud> itObj = liste.iterator();
-    while (itObj.hasNext()) {
-      Noeud objet = itObj.next();
-      this.addNoeud(objet, addGroupToNodes);
+    public double getLength() {
+        return this.length;
     }
-  }
 
-  /* Arcs composants du groupe */
-  private List<Arc> listeArcs = new ArrayList<Arc>(0);
+    public void setLength(double length) {
+        this.length = length;
+    }
+
+    /** Renvoie la liste des noeuds de self. */
+    public List<Noeud> getListeNoeuds() {
+        return this.listeNoeuds;
+    }
+
+    /** Définit la liste des noeuds de self. */
+    public void setListeNoeuds(List<Noeud> liste) {
+        this.listeNoeuds = liste;
+    }
+
+    /** Ajoute un noeud à self. */
+    public void addNoeud(Noeud noeud) {
+        this.addNoeud(noeud, true);
+    }
+
+    /** Ajoute un noeud à self. */
+    public void addNoeud(Noeud noeud, boolean addGroupToNode) {
+        if (noeud != null && !this.listeNoeuds.contains(noeud)) {
+            this.listeNoeuds.add(noeud);
+            if (addGroupToNode && !noeud.getListeGroupes().contains(this)) {
+                noeud.addGroupe(this);
+            }
+        }
+    }
+
+    /** Ajoute une liste de noeuds à self **/
+    public void addAllNoeuds(List<Noeud> liste) {
+        this.addAllNoeuds(liste, true);
+    }
+
+    /** Ajoute une liste de noeuds à self **/
+    public void addAllNoeuds(List<Noeud> liste, boolean addGroupToNodes) {
+        Iterator<Noeud> itObj = liste.iterator();
+        while (itObj.hasNext()) {
+            Noeud objet = itObj.next();
+            this.addNoeud(objet, addGroupToNodes);
+        }
+    }
+
+  
 
   /** Renvoie la liste des arcs de self */
   public List<Arc> getListeArcs() {
@@ -137,8 +147,7 @@ public class Groupe extends ElementCarteTopo {
     }
   }
 
-  /* Faces composants du groupe */
-  private List<Face> listeFaces = new ArrayList<Face>(0);
+  
 
   /** Renvoie la liste des faces de self */
   public List<Face> getListeFaces() {
