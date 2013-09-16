@@ -147,7 +147,7 @@ public interface IPopulation<Feat extends IFeature> extends
    * élément déjà existant.
    * @param signature
    * @param param
-   * @return
+   * @return Feature
    */
   public abstract Feat nouvelElement(Class<?>[] signature, Object[] param);
 

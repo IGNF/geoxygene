@@ -154,7 +154,7 @@ public interface IDirectPosition {
   /**
    * Calcul de la distance entre deux directPosition
    * @param d
-   * @return
+   * @return double
    */
   public abstract double distance(IDirectPosition d);
 

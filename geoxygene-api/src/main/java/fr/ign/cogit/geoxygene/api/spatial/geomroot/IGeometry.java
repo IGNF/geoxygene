@@ -62,7 +62,7 @@ public interface IGeometry {
    * serait possible : le but serait de supporter des méthodes d'indexation qui
    * n'utilisent pas les rectangles minimaux englobants.
    * 
-   * @return
+   * @return IPolygon
    */
   public abstract IPolygon mbRegion();
 
@@ -126,7 +126,7 @@ public interface IGeometry {
    * @param nSegments
    * @param endCapStyle
    * @param joinStyle
-   * @return
+   * @return IGeometry
    */
   public IGeometry buffer(double distance, int nSegments, int endCapStyle,
       int joinStyle);

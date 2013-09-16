@@ -9,20 +9,20 @@ public interface IParametricCurveSurface extends ISurfacePatch {
 
   /**
    * @param t
-   * @return
+   * @return ICurve
    */
   public abstract ICurve horizontalCurve(double t);
 
   /**
    * @param s
-   * @return
+   * @return ICurve
    */
   public abstract ICurve verticalCurve(double s);
 
   /**
    * @param s
    * @param t
-   * @return
+   * @return IDirectPosition
    */
   public abstract IDirectPosition surface(double s, double t);
 

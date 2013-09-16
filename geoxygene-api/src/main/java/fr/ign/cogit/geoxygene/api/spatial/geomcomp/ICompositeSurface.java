@@ -103,7 +103,7 @@ public interface ICompositeSurface extends IComposite, IOrientableSurface {
    * n'est pas dans la norme.
    * 
    * @param tolerance
-   * @return
+   * @return boolean
    */
   boolean validate(double tolerance);
 }
