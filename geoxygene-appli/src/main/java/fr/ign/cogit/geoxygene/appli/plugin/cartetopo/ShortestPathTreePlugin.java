@@ -5,8 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JMenu;
@@ -28,14 +26,17 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
-import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.LineSymbolizer;
+import fr.ign.cogit.geoxygene.style.Mark;
+import fr.ign.cogit.geoxygene.style.PointSymbolizer;
+import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, ActionListener {
@@ -73,7 +74,7 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
         }
 
         // Add network data matching menu item to the menu.
-        JMenuItem menuItem = new JMenuItem("Plus court chemin");
+        JMenuItem menuItem = new JMenuItem("Shortest path tree");
         menuItem.addActionListener(this);
         menu.add(menuItem);
 
@@ -208,44 +209,86 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
     @Override
     public void actionPerformed(final ActionEvent e) {
 
-        initCarteTopo2();
+        initCarteTopo1();
 
         try {
 
             Dimension desktopSize = this.application.getFrame().getSize();
             int widthProjectFrame = desktopSize.width / 2;
-            int heightProjectFrame = desktopSize.height / 2;
+            int heightProjectFrame = desktopSize.height;
 
             // Graph Frame
             ProjectFrame p1 = this.application.getFrame().newProjectFrame();
             // p1.setMaximum(true);
             p1.setLocation(0, 0);
-            p1.setSize(widthProjectFrame, heightProjectFrame);
+            p1.setSize(widthProjectFrame, heightProjectFrame - 200);
             p1.setTitle("A weighted graph");
-
-            Layer lp = p1.addUserLayer(ct2.getPopNoeuds(), "Noeuds", null);
-            // lp.getSymbolizer().getStroke().setColor(new Color(255, 216, 0));
-            // lp.getSymbolizer().getStroke().setStrokeWidth(1);
-
+            
             Layer la = p1.addUserLayer(ct2.getPopArcs(), "Arcs", null);
-            la.getSymbolizer().getStroke().setColor(new Color(240, 157, 18));
-            la.getSymbolizer().getStroke().setStrokeWidth(2);
+            // la.getSymbolizer().getStroke().setColor(new Color(240, 157, 18));
+            // la.getSymbolizer().getStroke().setStrokeWidth(2);
+            
+            LineSymbolizer lineSymbolizer = (LineSymbolizer) la.getStyles().get(0).getSymbolizer();
+            lineSymbolizer.getStroke().setColor(new Color(106, 81, 163));
+            lineSymbolizer.getStroke().setStrokeOpacity(1.0f);
+            lineSymbolizer.getStroke().setStrokeWidth((float) 2);
+            lineSymbolizer.setUnitOfMeasure(Symbolizer.METRE);
 
+            StyledLayerDescriptor sld = StyledLayerDescriptor
+                    .unmarshall(StyledLayerDescriptor.class.getClassLoader().getResourceAsStream("sld/BasicStyles.xml")); //$NON-NLS-1$
+            la.getStyles().add(sld.getLayer("Basic Line").getStyles().get(0));
+            LineSymbolizer lineSymbolizer2 = (LineSymbolizer) la.getStyles().get(1).getSymbolizer();
+            
+            lineSymbolizer2.getStroke().setColor(new Color(255, 255, 255));
+            lineSymbolizer2.getStroke().setStrokeOpacity(1.0f);
+            lineSymbolizer2.getStroke().setStrokeWidth((float)0.5);
+            lineSymbolizer2.setUnitOfMeasure(Symbolizer.METRE);
+            
+            Layer lp = p1.addUserLayer(ct2.getPopNoeuds(), "Point", null);
+            PointSymbolizer pointSymbolizer = (PointSymbolizer) lp.getStyles().get(0).getSymbolizer();
+            Mark mark = pointSymbolizer.getGraphic().getMarks().get(0);
+            mark.getFill().setColor(new Color(67, 144, 193));
+            mark.getFill().setFillOpacity(1.0f);
+            mark.getStroke().setColor(new Color(35, 140, 69));
+            mark.getStroke().setStrokeOpacity(0.8f);
+            mark.getStroke().setStrokeWidth((float) 2);
+            mark.setWellKnownName("circle");
+            pointSymbolizer.setUnitOfMeasure(Symbolizer.METRE);
+            pointSymbolizer.getGraphic().setSize(6);
+            
             Viewport viewport = p1.getLayerViewPanel().getViewport();
-
+            
+            // ----------------------------------------------------------------------------------------
+            
             // Shortest path tree Frame
             ProjectFrame p2 = this.application.getFrame().newProjectFrame();
-            p2.setSize(widthProjectFrame, heightProjectFrame);
+            p2.setSize(widthProjectFrame - 50, heightProjectFrame - 200);
             p2.setLocation(widthProjectFrame, 0);
             p2.getLayerViewPanel().setViewport(viewport);
             p2.setTitle("Shortest Path Tree");
             viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
 
-            p2.addUserLayer(ct2.getPopNoeuds(), "Noeuds", null);
-
-            Layer lppc = p2.addUserLayer(getShortestPathTree(root, 10), "Arcs", null);
-            lppc.getSymbolizer().getStroke().setColor(new Color(239, 59, 44));
-            lppc.getSymbolizer().getStroke().setStrokeWidth(2);
+            Population<Arc> popArc = getShortestPathTree(root, 10);
+            Layer lppc = p2.addUserLayer(popArc, "Arcs", null);
+            lppc.getSymbolizer().getStroke().setColor(new Color(0, 0, 0));
+            lppc.getSymbolizer().getStroke().setStrokeWidth(1);
+            
+            Population<Noeud> popRoot = new Population<Noeud>("root");
+            popRoot.add(root);
+            System.out.println("-------------------------------------------------------------------");
+            Layer lr = p2.addUserLayer(popRoot, "Root", null);
+            System.out.println("-------------------------------------------------------------------");
+            /*pointSymbolizer = (PointSymbolizer) lr.getStyles().get(0).getSymbolizer();
+            mark = pointSymbolizer.getGraphic().getMarks().get(0);
+            mark.getFill().setColor(new Color(67, 144, 193));
+            mark.getFill().setFillOpacity(1.0f);
+            mark.getStroke().setColor(new Color(35, 140, 69));
+            mark.getStroke().setStrokeOpacity(0.8f);
+            mark.getStroke().setStrokeWidth((float) 2);
+            mark.setWellKnownName("star");
+            pointSymbolizer.setUnitOfMeasure(Symbolizer.METRE);
+            pointSymbolizer.getGraphic().setSize(6);*/
+            
 
         } catch (Exception ex) {
         }
