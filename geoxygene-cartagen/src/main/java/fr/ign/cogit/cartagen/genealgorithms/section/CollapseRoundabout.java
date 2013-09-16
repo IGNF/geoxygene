@@ -18,6 +18,8 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.NoeudReseau;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 public class CollapseRoundabout {
@@ -80,15 +82,27 @@ public class CollapseRoundabout {
         geom.addControlPoint(0, centroid);
         node.getOutSections().add(road);
         road.setInitialNode(node);
+
+        // update the GeOx objects topology
+        ((ArcReseau) road.getGeoxObj()).setNoeudInitial((NoeudReseau) node
+            .getGeoxObj());
+        ((NoeudReseau) node.getGeoxObj()).getArcsSortants().add(
+            ((ArcReseau) road.getGeoxObj()));
       } else {
         // the centroid is added at the end of the road geometry
         geom.addControlPoint(centroid);
         node.getInSections().add(road);
         road.setFinalNode(node);
+        // update the GeOx objects topology
+        ((ArcReseau) road.getGeoxObj()).setNoeudFinal((NoeudReseau) node
+            .getGeoxObj());
+        ((NoeudReseau) node.getGeoxObj()).getArcsEntrants().add(
+            ((ArcReseau) road.getGeoxObj()));
       }
 
       // update the road geometry
       road.setGeom(geom);
+
     }
 
     // delete the internal roads
@@ -100,8 +114,8 @@ public class CollapseRoundabout {
     // from collapsing
     // TODO Declenche une exception dans certains cas A REVOIR !!!!
     try {
-      this.roundabout.getAntecedents().iterator().next().addResultingObject(
-          node);
+      this.roundabout.getAntecedents().iterator().next()
+          .addResultingObject(node);
     } catch (Exception e) {
       e.printStackTrace();
     }
