@@ -37,108 +37,106 @@ import fr.ign.cogit.geoxygene.filter.expression.Literal;
  * @author Julien Perret
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Graphic", propOrder = { "marks", "opacity", "size",
-    "rotation", "externalGraphics" })
+@XmlType(name = "Graphic", propOrder = { "marks", "opacity", "size", "rotation", "externalGraphics" })
 public class Graphic {
 
-  @XmlElement(name = "ExternalGraphic")
-  private List<ExternalGraphic> externalGraphics = new ArrayList<ExternalGraphic>(
-      0);
+    @XmlElement(name = "ExternalGraphic")
+    private List<ExternalGraphic> externalGraphics = new ArrayList<ExternalGraphic>(0);
 
-  /**
-   * Renvoie la valeur de l'attribut externalGraphics.
-   * @return la valeur de l'attribut externalGraphics
-   */
-  public List<ExternalGraphic> getExternalGraphics() {
-    return this.externalGraphics;
-  }
+    /**
+     * Renvoie la valeur de l'attribut externalGraphics.
+     * @return la valeur de l'attribut externalGraphics
+     */
+    public List<ExternalGraphic> getExternalGraphics() {
+        return this.externalGraphics;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut externalGraphics.
-   * @param externalGraphics l'attribut externalGraphics à affecter
-   */
-  public void setExternalGraphics(List<ExternalGraphic> externalGraphics) {
-    this.externalGraphics = externalGraphics;
-  }
+    /**
+     * Affecte la valeur de l'attribut externalGraphics.
+     * @param externalGraphics l'attribut externalGraphics à affecter
+     */
+    public void setExternalGraphics(List<ExternalGraphic> externalGraphics) {
+        this.externalGraphics = externalGraphics;
+    }
 
-  @XmlElement(name = "Mark")
-  private List<Mark> marks = new ArrayList<Mark>(0);
+    @XmlElement(name = "Mark")
+    private List<Mark> marks = new ArrayList<Mark>(0);
 
-  /**
-   * Renvoie la valeur de l'attribut marks.
-   * @return la valeur de l'attribut marks
-   */
-  public List<Mark> getMarks() {
-    return this.marks;
-  }
+    /**
+     * Renvoie la valeur de l'attribut marks.
+     * @return la valeur de l'attribut marks
+     */
+    public List<Mark> getMarks() {
+        return this.marks;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut marks.
-   * @param marks l'attribut marks à affecter
-   */
-  public void setMarks(List<Mark> marks) {
-    this.marks = marks;
-  }
+    /**
+     * Affecte la valeur de l'attribut marks.
+     * @param marks l'attribut marks à affecter
+     */
+    public void setMarks(List<Mark> marks) {
+        this.marks = marks;
+    }
 
-  private float opacity = 1.0f;
+    private float opacity = 1.0f;
 
-  /**
-   * Renvoie la valeur de l'attribut opacity.
-   * @return la valeur de l'attribut opacity
-   */
-  public float getOpacity() {
-    return this.opacity;
-  }
+    /**
+     * Renvoie la valeur de l'attribut opacity.
+     * @return la valeur de l'attribut opacity
+     */
+    public float getOpacity() {
+        return this.opacity;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut opacity.
-   * @param opacity l'attribut opacity à affecter
-   */
-  public void setOpacity(float opacity) {
-    this.opacity = opacity;
-  }
+    /**
+     * Affecte la valeur de l'attribut opacity.
+     * @param opacity l'attribut opacity à affecter
+     */
+    public void setOpacity(float opacity) {
+        this.opacity = opacity;
+    }
 
-  @XmlElement(name = "Size")
-  private float size = 6.0f;
+    @XmlElement(name = "Size")
+    private float size = 6.0f;
 
-  /**
-   * Renvoie la valeur de l'attribut size.
-   * @return la valeur de l'attribut size
-   */
-  public float getSize() {
-    return this.size;
-  }
+    /**
+     * Renvoie la valeur de l'attribut size.
+     * @return la valeur de l'attribut size
+     */
+    public float getSize() {
+        return this.size;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut size.
-   * @param size l'attribut size à affecter
-   */
-  public void setSize(float size) {
-    this.size = size;
-  }
+    /**
+     * Affecte la valeur de l'attribut size.
+     * @param size l'attribut size à affecter
+     */
+    public void setSize(float size) {
+        this.size = size;
+    }
 
-  @XmlElementRefs( { @XmlElementRef })
-  @XmlElementWrapper(name="Rotation")
-  private Expression[] rotation = new Expression[] {new Literal("0")};
+    @XmlElementRefs({ @XmlElementRef })
+    @XmlElementWrapper(name = "Rotation")
+    private Expression[] rotation = new Expression[] { new Literal("0") };
 
-  /**
-   * Renvoie la valeur de l'attribut rotation.
-   * @return la valeur de l'attribut rotation
-   */
-  public Expression getRotation() {
-    return this.rotation[0];
-  }
+    /**
+     * Renvoie la valeur de l'attribut rotation.
+     * @return la valeur de l'attribut rotation
+     */
+    public Expression getRotation() {
+        return this.rotation[0];
+    }
 
-  /**
-   * Affecte la valeur de l'attribut rotation.
-   * @param rotation l'attribut rotation à affecter
-   */
-  public void setRotation(Expression rotation) {
-    this.rotation[0] = rotation;
-  }
+    /**
+     * Affecte la valeur de l'attribut rotation.
+     * @param rotation l'attribut rotation à affecter
+     */
+    public void setRotation(Expression rotation) {
+        this.rotation[0] = rotation;
+    }
 
-  public float getWidth() {
-    // TODO handle external graphics width according to aspect ratio
-    return this.size;
-  }
+    public float getWidth() {
+        // TODO handle external graphics width according to aspect ratio
+        return this.size;
+    }
 }

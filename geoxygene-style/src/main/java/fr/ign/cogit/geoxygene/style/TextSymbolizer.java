@@ -23,176 +23,113 @@ import javax.xml.bind.annotation.XmlElement;
 
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 
-
 /**
  * @author Julien Perret
  */
 public class TextSymbolizer extends AbstractSymbolizer {
-  @Override
-  public boolean isTextSymbolizer() {
-    return true;
-  }
-
-  @XmlElement(name = "Label")
-  private Label label;
-
-  /**
-   * Renvoie la valeur de l'attribut label.
-   * @return la valeur de l'attribut label
-   */
-  public String getLabel() {
-    return this.label == null ? null : this.label.getPropertyName().toString();
-  }
-
-  /**
-   * Affecte la valeur de l'attribut label.
-   * @param label l'attribut label à affecter
-   */
-  public void setLabel(String label) {
-    if (this.label == null) {
-      this.label = new Label();
-      this.label.setPropertyName(new PropertyName());
-    }
-    this.label.getPropertyName().setPropertyName(label);
-  }
+    
+    @XmlElement(name = "Label")
+    private Label label;
+    
+    @XmlElement(name = "Font")
+    private Font font;
   
-  @XmlElement(name = "Font")
-  private Font font;
+    @XmlElement(name = "LabelPlacement")
+    private LabelPlacement labelPlacement;
 
-  /**
-   * Renvoie la valeur de l'attribut font.
-   * @return la valeur de l'attribut font
-   */
-  public Font getFont() {
-    return this.font;
-  }
+    @XmlElement(name = "Halo")
+    private Halo halo;
+    
+    @XmlElement(name = "Fill")
+    private Fill fill;
+    
+    @Override
+    public boolean isTextSymbolizer() {
+        return true;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut font.
-   * @param font l'attribut font à affecter
-   */
-  public void setFont(Font font) {
-    this.font = font;
-  }
+    /**
+     * Renvoie la valeur de l'attribut label.
+     * @return la valeur de l'attribut label
+     */
+    public String getLabel() {
+        return this.label == null ? null : this.label.getPropertyName().toString();
+    }
 
-  @XmlElement(name = "LabelPlacement")
-  private LabelPlacement labelPlacement;
+    /**
+     * Affecte la valeur de l'attribut label.
+     * @param label l'attribut label à affecter
+     */
+    public void setLabel(String label) {
+        if (this.label == null) {
+            this.label = new Label();
+            this.label.setPropertyName(new PropertyName());
+        }
+        this.label.getPropertyName().setPropertyName(label);
+    }
 
-  /**
-   * Renvoie la valeur de l'attribut labelPlacement.
-   * @return la valeur de l'attribut labelPlacement
-   */
-  public LabelPlacement getLabelPlacement() {
-    return this.labelPlacement;
-  }
+    /**
+     * Renvoie la valeur de l'attribut font.
+     * @return la valeur de l'attribut font
+     */
+    public Font getFont() {
+        return this.font;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut labelPlacement.
-   * @param labelPlacement l'attribut labelPlacement à affecter
-   */
-  public void setLabelPlacement(LabelPlacement labelPlacement) {
-    this.labelPlacement = labelPlacement;
-  }
+    /**
+     * Affecte la valeur de l'attribut font.
+     * @param font l'attribut font à affecter
+     */
+    public void setFont(Font font) {
+        this.font = font;
+    }
 
-  @XmlElement(name = "Halo")
-  private Halo halo;
+    /**
+     * Renvoie la valeur de l'attribut labelPlacement.
+     * @return la valeur de l'attribut labelPlacement
+     */
+    public LabelPlacement getLabelPlacement() {
+        return this.labelPlacement;
+    }
 
-  /**
-   * Renvoie la valeur de l'attribut halo.
-   * @return la valeur de l'attribut halo
-   */
-  public Halo getHalo() {
-    return this.halo;
-  }
+    /**
+     * Affecte la valeur de l'attribut labelPlacement.
+     * @param labelPlacement l'attribut labelPlacement à affecter
+     */
+    public void setLabelPlacement(LabelPlacement labelPlacement) {
+        this.labelPlacement = labelPlacement;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut halo.
-   * @param halo l'attribut halo à affecter
-   */
-  public void setHalo(Halo halo) {
-    this.halo = halo;
-  }
+    /**
+     * Renvoie la valeur de l'attribut halo.
+     * @return la valeur de l'attribut halo
+     */
+    public Halo getHalo() {
+        return this.halo;
+    }
 
-  @XmlElement(name = "Fill")
-  private Fill fill;
+    /**
+     * Affecte la valeur de l'attribut halo.
+     * @param halo l'attribut halo à affecter
+     */
+    public void setHalo(Halo halo) {
+        this.halo = halo;
+    }
 
-  /**
-   * Renvoie la valeur de l'attribut fill.
-   * @return la valeur de l'attribut fill
-   */
-  public Fill getFill() {
-    return this.fill;
-  }
+    /**
+     * Renvoie la valeur de l'attribut fill.
+     * @return la valeur de l'attribut fill
+     */
+    public Fill getFill() {
+        return this.fill;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut fill.
-   * @param fill l'attribut fill à affecter
-   */
-  public void setFill(Fill fill) {
-    this.fill = fill;
-  }
+    /**
+     * Affecte la valeur de l'attribut fill.
+     * @param fill l'attribut fill à affecter
+     */
+    public void setFill(Fill fill) {
+        this.fill = fill;
+    }
 
-//  @Override
-//  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
-//    if (this.getLabel() == null) {
-//      return;
-//    }
-//    try {
-//      Shape shape = viewport.toShape(feature.getGeom());
-//      if (shape == null) {
-//        return;
-//      }
-//      String text = (String) feature.getAttribute(this.getLabel());
-//      this.paint(text, shape, graphics);
-//    } catch (NoninvertibleTransformException e) {
-//      e.printStackTrace();
-//    }
-//  }
-//
-//  public void paint(String text, Shape shape, Graphics2D graphics) {
-//    Color fillColor = Color.black;
-//    if (this.getFill() != null) {
-//      fillColor = this.getFill().getColor();
-//    }
-//    java.awt.Font awtFont = null;
-//    if (this.getFont() != null) {
-//      awtFont = this.getFont().toAwfFont();
-//    }
-//    if (awtFont == null) {
-//      awtFont = new java.awt.Font("Default", java.awt.Font.PLAIN, 10); //$NON-NLS-1$
-//    }
-//    Color haloColor = null;
-//    float haloRadius = 1.0f;
-//    if (this.getHalo() != null) {
-//      if (this.getHalo().getFill() != null) {
-//        haloColor = this.getHalo().getFill().getColor();
-//      } else {
-//        haloColor = Color.white;
-//      }
-//      haloRadius = this.getHalo().getRadius();
-//    }
-//    if (text == null) {
-//      return;
-//    }
-//    // Find the size of string s in font f in the current Graphics context g.
-//    graphics.setFont(awtFont);
-//    // Center text horizontally and vertically
-//
-//    FontRenderContext frc = graphics.getFontRenderContext();
-//    GlyphVector gv = awtFont.createGlyphVector(frc, text);
-//    // halo
-//    if (haloColor != null) {
-//      Shape textShape = gv.getOutline();// TODO reposition on the shape
-//      graphics.setColor(haloColor);
-//      graphics.setStroke(new BasicStroke(haloRadius, BasicStroke.CAP_ROUND,
-//          BasicStroke.JOIN_ROUND));
-//      graphics.draw(textShape);
-//    }
-//    graphics.setColor(fillColor);
-//    graphics
-//        .drawGlyphVector(gv, (float) (shape.getBounds2D().getMinX() + shape
-//            .getBounds2D().getMaxX()) / 2, (float) (shape.getBounds2D()
-//            .getMinY() + shape.getBounds2D().getMaxY()) / 2);// TODO reposition
-//                                                             // on the shape
-//  }
 }

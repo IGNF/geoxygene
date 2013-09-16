@@ -27,63 +27,60 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ColorMap {
-  @XmlElement(name = "PropertyName")
-  String propertyName = null;
+    
+    @XmlElement(name = "PropertyName")
+    String propertyName = null;
+    
+    @XmlElement(name = "Interpolate")
+    Interpolate interpolate = null;
 
-  @XmlTransient
-  public String getPropertyName() {
-    return this.propertyName;
-  }
-
-  public void setPropertyName(String propertyName) {
-    this.propertyName = propertyName;
-  }
-
-  @XmlElement(name = "Interpolate")
-  Interpolate interpolate = null;
-
-  public Interpolate getInterpolate() {
-    return this.interpolate;
-  }
-
-  public void setInterpolate(Interpolate interpolate) {
-    this.interpolate = interpolate;
-  }
-
-  public int getColor(double value) {
-    if (this.interpolate != null) {
-      InterpolationPoint previous = null;
-      for (InterpolationPoint point : this.interpolate.getInterpolationPoint()) {
-        if (value <= point.getData()) {
-          if (previous == null) {
-            return point.getColor().getRGB();
-          }
-          return this.interpolateColor(value, previous.getData(),
-              previous.getColor(), point.getData(), point.getColor()).getRGB();
-        }
-        previous = point;
-      }
-      return previous.getColor().getRGB();
+    @XmlTransient
+    public String getPropertyName() {
+        return this.propertyName;
     }
-    return 0;
-  }
 
-  private Color interpolateColor(double value, double data1, Color color1,
-      double data2, Color color2) {
-    double r1 = color1.getRed();
-    double g1 = color1.getGreen();
-    double b1 = color1.getBlue();
-    double r2 = color2.getRed();
-    double g2 = color2.getGreen();
-    double b2 = color2.getBlue();
-    return new Color(
-        (float) this.interpolate(value, data1, r1, data2, r2) / 255f,
-        (float) this.interpolate(value, data1, g1, data2, g2) / 255f,
-        (float) this.interpolate(value, data1, b1, data2, b2) / 255f);
-  }
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
+    }
 
-  private double interpolate(double value, double data1, double value1,
-      double data2, double value2) {
-    return value1 + (value - data1) * (value2 - value1) / (data2 - data1);
-  }
+    public Interpolate getInterpolate() {
+        return this.interpolate;
+    }
+
+    public void setInterpolate(Interpolate interpolate) {
+        this.interpolate = interpolate;
+    }
+
+    public int getColor(double value) {
+        if (this.interpolate != null) {
+            InterpolationPoint previous = null;
+            for (InterpolationPoint point : this.interpolate.getInterpolationPoint()) {
+                if (value <= point.getData()) {
+                    if (previous == null) {
+                        return point.getColor().getRGB();
+                    }
+                    return this.interpolateColor(value, previous.getData(), previous.getColor(), point.getData(),
+                            point.getColor()).getRGB();
+                }
+                previous = point;
+            }
+            return previous.getColor().getRGB();
+        }
+        return 0;
+    }
+
+    private Color interpolateColor(double value, double data1, Color color1, double data2, Color color2) {
+        double r1 = color1.getRed();
+        double g1 = color1.getGreen();
+        double b1 = color1.getBlue();
+        double r2 = color2.getRed();
+        double g2 = color2.getGreen();
+        double b2 = color2.getBlue();
+        return new Color((float) this.interpolate(value, data1, r1, data2, r2) / 255f, (float) this.interpolate(value,
+                data1, g1, data2, g2) / 255f, (float) this.interpolate(value, data1, b1, data2, b2) / 255f);
+    }
+
+    private double interpolate(double value, double data1, double value1, double data2, double value2) {
+        return value1 + (value - data1) * (value2 - value1) / (data2 - data1);
+    }
 }

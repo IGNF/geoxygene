@@ -28,97 +28,44 @@ import javax.xml.bind.annotation.XmlElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PointSymbolizer extends AbstractSymbolizer {
-  @Override
-  public boolean isPointSymbolizer() {
-    return true;
-  }
+    
+    @XmlElement(name = "Graphic")
+    private Graphic graphic = null;
+    
+    @XmlElement(name = "ColorMap")
+    private ColorMap colorMap = null;
+    
+    @XmlElement(name = "CategorizedMap")
+    private CategorizedMap categorizedMap = null;
+    
+    
+    @Override
+    public boolean isPointSymbolizer() {
+        return true;
+    }
 
-  @XmlElement(name = "Graphic")
-  private Graphic graphic = null;
+    public Graphic getGraphic() {
+        return this.graphic;
+    }
 
-  public Graphic getGraphic() {
-    return this.graphic;
-  }
+    public void setGraphic(Graphic graphic) {
+        this.graphic = graphic;
+    }
 
-  public void setGraphic(Graphic graphic) {
-    this.graphic = graphic;
-  }
+    public ColorMap getColorMap() {
+        return this.colorMap;
+    }
 
+    public void setColorMap(ColorMap colorMap) {
+        this.colorMap = colorMap;
+    }
 
-  @XmlElement(name = "ColorMap")
-  ColorMap colorMap = null;
+    public CategorizedMap getCategorizedMap() {
+        return this.categorizedMap;
+    }
 
-  public ColorMap getColorMap() {
-    return this.colorMap;
-  }
+    public void setCategorizedMap(CategorizedMap categorizedMap) {
+        this.categorizedMap = categorizedMap;
+    }
 
-  public void setColorMap(ColorMap colorMap) {
-    this.colorMap = colorMap;
-  }
-  
-  @XmlElement(name = "CategorizedMap")
-  CategorizedMap categorizedMap = null;
-
-  public CategorizedMap getCategorizedMap() {
-    return this.categorizedMap;
-  }
-
-  public void setCategorizedMap(CategorizedMap categorizedMap) {
-    this.categorizedMap = categorizedMap;
-  }
-
-//  @Override
-//  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
-//    if (this.getGraphic() == null) {
-//      return;
-//    }
-//    Point2D point;
-//    IGeometry geometry = feature.getGeom();
-//    if (this.getGeometryPropertyName() != null
-//        && !this.getGeometryPropertyName().equalsIgnoreCase("geom")) { //$NON-NLS-1$
-//      geometry = (IGeometry) feature.getAttribute(this
-//          .getGeometryPropertyName());
-//    }
-//    if (geometry == null) {
-//      return;
-//    }
-//    try {
-//      point = viewport.toViewPoint(geometry.centroid());
-//    } catch (NoninvertibleTransformException e) {
-//      e.printStackTrace();
-//      return;
-//    }
-//    for (Mark mark : this.getGraphic().getMarks()) {
-//      Shape markShape = mark.toShape();
-//      float size = this.getGraphic().getSize();
-//      double scale = 1;
-//      if (!this.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
-//        try {
-//          scale = viewport.getModelToViewTransform().getScaleX();
-//        } catch (NoninvertibleTransformException e) {
-//          e.printStackTrace();
-//        }
-//      }
-//      size *= scale;
-//      AffineTransform at = AffineTransform.getTranslateInstance(point.getX(),
-//          point.getY());
-//      at.rotate(this.getGraphic().getRotation());
-//      at.scale(size, size);
-//      markShape = at.createTransformedShape(markShape);
-//
-//      graphics.setColor((mark.getFill() == null) ? Color.gray : mark.getFill()
-//          .getColor());
-//      graphics.fill(markShape);
-//      graphics.setStroke(mark.getStroke().toAwtStroke((float) scale));
-//      graphics.setColor((mark.getStroke() == null) ? Color.black : mark
-//          .getStroke().getColor());
-//      graphics.draw(markShape);
-//    }
-//    for (ExternalGraphic theGraphic : this.getGraphic().getExternalGraphics()) {
-//      Image onlineImage = theGraphic.getOnlineResource();
-//      graphics.drawImage(onlineImage,
-//          (int) point.getX() - onlineImage.getWidth(null) / 2,
-//          (int) point.getY() - onlineImage.getHeight(null) / 2, null);
-//    }
-//  }
 }

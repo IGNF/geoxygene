@@ -32,53 +32,53 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FeatureTypeStyle {
 
-  @XmlElement(name = "Rule")
-  private List<Rule> rules = new ArrayList<Rule>();
+    private String name;
 
-  /**
-   * Renvoie la valeur de l'attribut rules.
-   * @return la valeur de l'attribut rules
-   */
-  public List<Rule> getRules() {
-    return this.rules;
-  }
+    @XmlElement(name = "Rule")
+    private List<Rule> rules = new ArrayList<Rule>();
 
-  /**
-   * Affecte la valeur de l'attribut rules.
-   * @param rules l'attribut rules à affecter
-   */
-  public void setRules(List<Rule> rules) {
-    this.rules = rules;
-  }
-
-  private String name;
-
-  /**
-   * Renvoie la valeur de l'attribut name.
-   * @return la valeur de l'attribut name
-   */
-  public String getName() {
-    return this.name;
-  }
-
-  /**
-   * Affecte la valeur de l'attribut name.
-   * @param name l'attribut name à affecter
-   */
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  @Override
-  public String toString() {
-    String result = "FeatureTypeStyle " + this.getName() + "\n"; //$NON-NLS-1$//$NON-NLS-2$
-    for (Rule rule : this.getRules()) {
-      result += "\t" + rule + "\n"; //$NON-NLS-1$//$NON-NLS-2$
+    /**
+     * Renvoie la valeur de l'attribut rules.
+     * @return la valeur de l'attribut rules
+     */
+    public List<Rule> getRules() {
+        return this.rules;
     }
-    return result;
-  }
 
-  public Symbolizer getSymbolizer() {
-    return this.getRules().get(0).getSymbolizers().get(0);
-  }
+    /**
+     * Affecte la valeur de l'attribut rules.
+     * @param rules l'attribut rules à affecter
+     */
+    public void setRules(List<Rule> rules) {
+        this.rules = rules;
+    }
+
+    /**
+     * Renvoie la valeur de l'attribut name.
+     * @return la valeur de l'attribut name
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Affecte la valeur de l'attribut name.
+     * @param name l'attribut name à affecter
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        String result = "FeatureTypeStyle " + this.getName() + "\n"; //$NON-NLS-1$//$NON-NLS-2$
+        for (Rule rule : this.getRules()) {
+            result += "\t" + rule + "\n"; //$NON-NLS-1$//$NON-NLS-2$
+        }
+        return result;
+    }
+
+    public Symbolizer getSymbolizer() {
+        return this.getRules().get(0).getSymbolizers().get(0);
+    }
 }

@@ -30,33 +30,34 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CategorizedMap {
-  @XmlElement(name = "PropertyName")
-  String propertyName = null;
-
-  @XmlTransient
-  public String getPropertyName() {
-    return this.propertyName;
-  }
-
-  public void setPropertyName(String propertyName) {
-    this.propertyName = propertyName;
-  }
-  
-  @XmlTransient
-  private Map<Object, Color> usedColors = new HashMap<Object, Color>();
     
-  public int getColor(Object value) {
-    Color color = this.usedColors.get(value);
-    if (color == null) {
-      Random randomGenerator = new Random();
-      int red = randomGenerator.nextInt(255);
-      int green = randomGenerator.nextInt(255);
-      int blue = randomGenerator.nextInt(255);
-      color = new Color(red,green,blue);
-      this.usedColors.put(value, color);
-    }    
-    return color.getRGB();
+    @XmlElement(name = "PropertyName")
+    String propertyName = null;
     
-  }
-  
+    @XmlTransient
+    private Map<Object, Color> usedColors = new HashMap<Object, Color>();
+
+    @XmlTransient
+    public String getPropertyName() {
+        return this.propertyName;
+    }
+
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
+    }
+
+    public int getColor(Object value) {
+        Color color = this.usedColors.get(value);
+        if (color == null) {
+            Random randomGenerator = new Random();
+            int red = randomGenerator.nextInt(255);
+            int green = randomGenerator.nextInt(255);
+            int blue = randomGenerator.nextInt(255);
+            color = new Color(red, green, blue);
+            this.usedColors.put(value, color);
+        }
+        return color.getRGB();
+
+    }
+
 }

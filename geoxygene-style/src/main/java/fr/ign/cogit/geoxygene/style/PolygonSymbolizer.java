@@ -58,8 +58,6 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
         this.fill = fill;
     }
 
-    
-
     public ColorMap getColorMap() {
         return this.colorMap;
     }
@@ -68,8 +66,6 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
         this.colorMap = colorMap;
     }
   
-    
-
     public CategorizedMap getCategorizedMap() {
         return this.categorizedMap;
     }
@@ -77,6 +73,5 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     public void setCategorizedMap(CategorizedMap categorizedMap) {
         this.categorizedMap = categorizedMap;
     }
-
 
 }
