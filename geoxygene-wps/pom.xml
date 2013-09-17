@@ -24,8 +24,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<main.basedir>..</main.basedir>
-
 		<geoserver.extension.version>2.3.5</geoserver.extension.version>
 		<path.geoserver>D:\MesProgrammes\GeoServer\GeoServer-2.3.5\GeoServer 2.3.5\webapps\geoserver\WEB-INF\lib</path.geoserver>
 	</properties>

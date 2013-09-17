@@ -35,11 +35,13 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.style.Displacement;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
+import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.Graphic;
 import fr.ign.cogit.geoxygene.style.GraphicFill;
 import fr.ign.cogit.geoxygene.style.GraphicStroke;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
+import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Shadow;
 import fr.ign.cogit.geoxygene.style.Style;
@@ -61,6 +63,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     SLDDemoApplication application = new SLDDemoApplication();
     ProjectFrame projectFrame = application.getFrame().newProjectFrame();
 
+    // =======================================================================================
     Layer layer = projectFrame.getSld().createLayer("Vegetation", //$NON-NLS-1$
         GM_Polygon.class, new Color(0.5f, 1.f, 0.5f), Color.green, 1f, 4);
     PolygonSymbolizer symbolizer = (PolygonSymbolizer) layer.getSymbolizer();
@@ -82,9 +85,10 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(0, 100, 0, 100))));
     projectFrame.getDataSet().addPopulation(pop);
     projectFrame.getSld().add(layer);
-
+ 
+    // =======================================================================================
     Layer layer2 = projectFrame.getSld().createLayer("Batiment", //$NON-NLS-1$
-        GM_Polygon.class, Color.blue, Color.gray, 1f, 2);
+    GM_Polygon.class, Color.blue, Color.gray, 1f, 2);
     layer2.getStyles().get(0).setGroup("default"); //$NON-NLS-1$
     PolygonSymbolizer symbolizer2 = (PolygonSymbolizer) layer2.getSymbolizer();
     Shadow shadow = new Shadow();
@@ -104,28 +108,29 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     projectFrame.getDataSet().addPopulation(pop2);
     projectFrame.getSld().add(layer2);
 
-    Layer layer3 = projectFrame.getSld().createLayer("Route", //$NON-NLS-1$
-        GM_LineString.class, Color.red, Color.red, 1f, 4);
+    // =======================================================================================
+    Layer layer3 = projectFrame.getSld().createLayer("Route", GM_LineString.class, Color.red, Color.red, 1f, 4);
     LineSymbolizer symbolizer3 = (LineSymbolizer) layer3.getSymbolizer();
-
     GraphicStroke graphicStroke = new GraphicStroke();
-    Graphic graphicCircle = new Graphic();
-    graphicCircle.setSize(10);
-    ExternalGraphic externalGraphicCircle = new ExternalGraphic();
-    URL urlCircle = SLDDemoApplication.class.getResource("/images/circle.png"); //$NON-NLS-1$
-    externalGraphicCircle.setHref(urlCircle.toString());
-    externalGraphicCircle.setFormat("png"); //$NON-NLS-1$
-    graphicCircle.getExternalGraphics().add(externalGraphicCircle);
-    graphicStroke.getGraphics().add(graphicCircle);
+    Graphic graphicStar = new Graphic(); 
+    Mark markStar = new Mark();
+    markStar.setWellKnownName("circle"); //$NON-NLS-1$
+    graphicStar.setSize(20f); 
+    Fill fillStar = new Fill();
+    fillStar.setColor(new Color(1.f,0.4f,0.4f)); 
+    markStar.setFill(fillStar);
+    graphicStar.getMarks().add(markStar);
+    graphicStroke.getGraphics().add(graphicStar);
+    
+    //Graphic graphicCircle = new Graphic();
+    //graphicCircle.setSize(10);
+    //ExternalGraphic externalGraphicCircle = new ExternalGraphic();
+    //URL urlCircle = SLDDemoApplication.class.getResource("/images/circle.png"); //$NON-NLS-1$
+    //externalGraphicCircle.setHref(urlCircle.toString());
+    //externalGraphicCircle.setFormat("png"); //$NON-NLS-1$
+    //graphicCircle.getExternalGraphics().add(externalGraphicCircle);
+    //graphicStroke.getGraphics().add(graphicCircle);
 
-    /*
-     * Graphic graphicStar = new Graphic(); Mark markStar = new Mark();
-     * markStar.setWellKnownName("star"); //$NON-NLS-1$
-     * graphicStar.setSize(20f); Fill fillStar = new Fill();
-     * fillStar.setColor(new Color(1.f,0.4f,0.4f)); markStar.setFill(fillStar);
-     * graphicStar.getMarks().add(markStar);
-     * graphicStroke.getGraphics().add(graphicStar);
-     */
     symbolizer3.getStroke().setGraphicType(graphicStroke);
 
     Population<DefaultFeature> pop3 = new Population<DefaultFeature>("Route"); //$NON-NLS-1$
@@ -135,6 +140,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     projectFrame.getDataSet().addPopulation(pop3);
     projectFrame.getSld().add(layer3);
 
+    // =======================================================================================
     Layer layer4 = projectFrame.getSld().createLayer("Chemin", //$NON-NLS-1$
         GM_LineString.class, Color.red, Color.red, 1f, 4);
     LineSymbolizer symbolizer4 = (LineSymbolizer) layer4.getSymbolizer();
@@ -150,13 +156,6 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     externalGraphic.setFormat("png"); //$NON-NLS-1$
     graphicCircles.getExternalGraphics().add(externalGraphic);
     graphicFill2.getGraphics().add(graphicCircles);
-    /*
-     * Mark mark = new Mark(); mark.setWellKnownName("circle"); //$NON-NLS-1$
-     * graphicCircle.setSize(10f); Fill fill = new Fill(); fill.setColor(new
-     * Color(0.8f,0.2f,0.4f)); mark.setFill(fill);
-     * graphicCircle.getMarks().add(mark);
-     * graphicFill2.getGraphics().add(graphicCircle);
-     */
     symbolizer4.getStroke().setGraphicType(graphicFill2);
 
     Population<DefaultFeature> pop4 = new Population<DefaultFeature>("Chemin"); //$NON-NLS-1$

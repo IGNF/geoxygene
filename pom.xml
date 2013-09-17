@@ -62,10 +62,8 @@
 		<geotools.version>8.4</geotools.version>
 		<jfreechart.version>1.0.0</jfreechart.version>
 
-		<build.profile.id>cogit</build.profile.id>
 		<skip.unit.tests>false</skip.unit.tests>
 		<skip.integration.tests>true</skip.integration.tests>
-		<main.basedir>${project.basedir}</main.basedir>
 	</properties>
 
 	<!-- =========================================================== -->
@@ -79,8 +77,6 @@
 		<profile>
 			<id>integration-test</id>
 			<properties>
-				<!-- Used to locate the profile specific configuration file. -->
-				<build.profile.id>integration-test</build.profile.id>
 				<!-- Only integration tests are run. -->
 				<skip.integration.tests>false</skip.integration.tests>
 				<skip.unit.tests>true</skip.unit.tests>
@@ -214,9 +210,6 @@
 	</contributors>
 
 	<build>
-		<filters>
-			<filter>${main.basedir}/profiles/${build.profile.id}/config.properties</filter>
-		</filters>
 
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
@@ -232,39 +225,16 @@
 			</testResource>
 		</testResources>
 
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.12</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-failsafe-plugin</artifactId>
-					<version>2.14.1</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
 				<configuration>
 					<compilerVersion>1.6</compilerVersion>
 					<source>1.6</source>
 					<complianceLevel>1.6</complianceLevel>
 					<target>1.6</target>
-					<encoding>${project.build.sourceEncoding}</encoding>
-					<excludes>
-						<exclude>fr/ign/cogit/geoxygene/datatools/oracle/*.java</exclude>
-					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -273,14 +243,8 @@
 				<version>2.4.3</version>
 				<configuration>
 					<encoding>${project.build.sourceEncoding}</encoding>
+					<includeEmptyDirs>true</includeEmptyDirs>
 				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>resources</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -302,7 +266,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3</version>
-				<!-- A specifier dans le bon package -->
+				<!-- A specifier dans le bon package 
 				<configuration>
 					<archive>
 						<manifest>
@@ -311,7 +275,7 @@
 							<mainClass>fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</mainClass>
 						</manifest>
 					</archive>
-				</configuration>
+				</configuration>  -->
 			</plugin>
 
 			<!-- Used to add source directories to our build. -->
@@ -341,6 +305,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.16</version>
 				<configuration>
 					<!-- Skips unit tests if the value of skip.unit.tests property is true -->
 					<skipTests>${skip.unit.tests}</skipTests>
@@ -355,6 +320,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.14.1</version>
 				<executions>
 					<execution>
 						<id>integration-tests</id>
@@ -513,8 +479,13 @@
 
 	<repositories>
 		<repository>
-			<id>snapshots</id>
-			<name>Nexus Snapshots Repository</name>
+			<id>Central</id>
+			<name>Central Repository</name>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+		<repository>
+			<id>cogit-snapshots</id>
+			<name>Cogit Snapshots Repository</name>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
@@ -524,17 +495,26 @@
 			<url>https://dionysos2.ign.fr/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
+			<id>cogit-releases</id>
+			<name>Cogit Releases Repository</name>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/releases</url>
+		</repository>
+		<repository>
 			<id>OpenGeo</id>
 			<name>OpenGeo Repository</name>
 			<url>http://repo.opengeo.org/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
-		</repository>
-		<repository>
-			<id>Central</id>
-			<name>Central Repository</name>
-			<url>http://repo1.maven.org/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
 		</repository>
 		<repository>
 			<id>osgeo-geotools</id>
@@ -548,19 +528,9 @@
 			<id>mathplot</id>
 			<url>http://igetdb.sourceforge.net/maven2-repository/</url>
 		</repository>
-		<!-- <repository> <id>osgeo</id> <name>Open Source Geospatial Foundation 
-			Repository</name> <url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/osgeo</url> 
-			</repository> <repository> <id>apache-releases</id> <name>Apache Releases 
-			Repository</name> <url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/apache-releases</url> 
-			</repository> -->
 		<repository>
 			<id>Cemagref</id>
 			<url>http://trac.clermont.cemagref.fr/nexus/content/groups/public/</url>
-		</repository>
-		<repository>
-			<id>Cogit-releases</id>
-			<name>Cogit-releases Repository</name>
-			<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/releases</url>
 		</repository>
 		<repository>
 			<id>hibernatespatial</id>
@@ -609,11 +579,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>jama</groupId>
-			<artifactId>jama</artifactId>
-			<version>1.0.2</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>batik-awt-util</artifactId>
 			<version>1.7</version>
@@ -648,27 +613,11 @@
 			<artifactId>fop</artifactId>
 			<version>0.95</version>
 		</dependency>
-		<dependency>
-			<groupId>java3d</groupId>
-			<artifactId>vecmath</artifactId>
-			<version>1.5.2</version>
-		</dependency>
-		<dependency>
-			<groupId>jfree</groupId>
-			<artifactId>jfreechart</artifactId>
-			<version>${jfreechart.version}</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
 			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>jgraph</groupId>
-			<artifactId>jgraph</artifactId>
-			<version>5.13.0.0</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.solr</groupId>

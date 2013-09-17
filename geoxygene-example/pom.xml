@@ -17,7 +17,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<main.basedir>..</main.basedir>
 	</properties>
 	
 	<build>
@@ -36,11 +35,53 @@
 	</build>
 	
 	<dependencies>
+	    <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-appli</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>geoxygene-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>geoxygene-spatial</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>geoxygene-feature</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>geoxygene-style</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>geoxygene-contrib</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>geoxygene-database</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+		
+		<dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-opengis</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
 	</dependencies>
 
 </project>
