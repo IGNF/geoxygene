@@ -730,6 +730,43 @@ public class CommonAlgorithmsFromCartAGen {
   }
 
   /**
+   * Projection of a point on a line according to the orthogonal of a direction
+   * given by a vector. The closest projected point is kept.
+   * 
+   * @param point
+   * @param line
+   * @param direction
+   * @return
+   * @author GTouya
+   */
+  public static IDirectPosition projectionOrtho(IDirectPosition point,
+      ILineString line, Vector2D direction) {
+    // checks that the direction is not the null vector
+    if (direction.isNull())
+      return null;
+
+    // compute both orthogonal directions
+    Vector2D ortho1 = direction.rotate(-Math.PI / 2);
+    Vector2D ortho2 = direction.rotate(Math.PI / 2);
+
+    // get the projected points
+    IDirectPosition proj1 = projection(point, line, ortho1);
+    IDirectPosition proj2 = projection(point, line, ortho2);
+
+    // if one is null, return the other
+    if (proj1 == null)
+      return proj2;
+    if (proj2 == null)
+      return proj1;
+
+    // now, return the closest one
+    if (proj1.distance2D(point) < proj2.distance2D(point))
+      return proj1;
+    else
+      return proj2;
+  }
+
+  /**
    * Return the simple surface with the biggest area in a multi surface
    * geometry.
    * @param multi

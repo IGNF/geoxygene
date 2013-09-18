@@ -13,6 +13,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
+import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 
 public class CommonAlgorithmsFromCartagenTest {
 
@@ -108,6 +109,29 @@ public class CommonAlgorithmsFromCartagenTest {
     ILineString line3 = CommonAlgorithmsFromCartAGen.insertVertex(line1,
         newVertex);
     Assert.assertTrue(line2.equals(line3));
+  }
+
+  @Test
+  public void testProjectionOrtho() {
+    IDirectPosition point = new DirectPosition(1.0, 1.0);
+    Vector2D direction = new Vector2D(0.0, 1.0);
+    IDirectPositionList list = new DirectPositionList();
+    IDirectPositionList list2 = new DirectPositionList();
+    IDirectPosition p1 = new DirectPosition(2.0, 0.0);
+    IDirectPosition p2 = new DirectPosition(2.0, 1.0);
+    IDirectPosition p3 = new DirectPosition(2.0, 4.0);
+    list.add(p1);
+    list.add(p2);
+    list.add(p3);
+    list2.add(p1);
+    list2.add(p3);
+    ILineString line = new GM_LineString(list);
+    ILineString line2 = new GM_LineString(list2);
+    IDirectPosition proj = CommonAlgorithmsFromCartAGen.projectionOrtho(point,
+        line, direction);
+    Assert.assertTrue(proj.equals(new DirectPosition(2.0, 1.0)));
+    Assert.assertTrue(CommonAlgorithmsFromCartAGen.projectionOrtho(point,
+        line2, direction).equals(new DirectPosition(2.0, 1.0)));
   }
 
 }
