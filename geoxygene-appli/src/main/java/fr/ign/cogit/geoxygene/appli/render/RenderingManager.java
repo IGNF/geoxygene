@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
@@ -35,18 +36,11 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * @author Julien Perret
  */
 public class RenderingManager {
-  /**
-   * The logger.
-   */
-  private static final Logger LOGGER = Logger.getLogger(RenderingManager.class
-      .getName());
+  
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(RenderingManager.class.getName());
 
-  /**
-   * @return The logger
-   */
-  public static Logger getLogger() {
-    return RenderingManager.LOGGER;
-  }
+  
 
   /**
    * The managed {@link LayerViewPanel} panel.
@@ -122,15 +116,15 @@ public class RenderingManager {
                   RenderingManager.this.getRunnableQueue().wait(
                       RenderingManager.DAEMON_MAXIMUM_WAITING_TIME);
                 } catch (InterruptedException ie) {
-                  if (RenderingManager.getLogger().isDebugEnabled()) {
-                    RenderingManager.getLogger().debug(ie.getMessage());
+                    if (LOGGER.isEnabledFor(Level.ERROR)) {
+                    LOGGER.error(ie.getMessage());
                     // ie.printStackTrace();
                   }
                 }
               }
               runnable = RenderingManager.this.getRunnableQueue().poll();
-              if (RenderingManager.getLogger().isDebugEnabled()) {
-                RenderingManager.getLogger().debug(
+                            if (LOGGER.isEnabledFor(Level.TRACE)) {
+                LOGGER.trace(
                     RenderingManager.this.getRunnableQueue().size()
                         + " runnables in the queue" //$NON-NLS-1$
                 );
@@ -146,8 +140,8 @@ public class RenderingManager {
             }
           }
         } finally {
-          if (RenderingManager.getLogger().isDebugEnabled()) {
-            RenderingManager.getLogger().debug("Deamon thread finished"); //$NON-NLS-1$
+            if (LOGGER.isEnabledFor(Level.TRACE)) {
+            LOGGER.trace("Deamon thread finished"); //$NON-NLS-1$
           }
           // RenderingManager.this.getLayerViewPanel().superRepaint();
         }
