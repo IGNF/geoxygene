@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor version="1.0.0">
+    <NamedLayer>
+        <Name>troncon</Name>
+        <UserStyle>
+            <Title>troncon</Title>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>troncon1</Name>
+                    <Filter>
+                        <PropertyIsEqualTo>
+                            <PropertyName>nb</PropertyName>
+                            <Literal>1</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#FF0000</CssParameter>
+                            <CssParameter name="stroke-dasharray">25 25 0 0 0 0</CssParameter>
+                            <CssParameter name="stroke-linejoin">round</CssParameter>
+                            <CssParameter name="stroke-linecap">butt</CssParameter>
+                            <CssParameter name="stroke-width">1</CssParameter>
+                        </Stroke>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>troncon2</Name>
+                    <Filter>
+                        <PropertyIsEqualTo>
+                            <PropertyName>nb</PropertyName>
+                            <Literal>2</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#00FF00</CssParameter>
+                            <CssParameter name="stroke-dasharray">25 25 0 0 0 0</CssParameter>
+                            <CssParameter name="stroke-linejoin">round</CssParameter>
+                            <CssParameter name="stroke-linecap">butt</CssParameter>
+                            <CssParameter name="stroke-width">2</CssParameter>
+                        </Stroke>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>troncon3</Name>
+                    <Filter>
+                        <PropertyIsEqualTo>
+                            <PropertyName>nb</PropertyName>
+                            <Literal>3</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#0000FF</CssParameter>
+                            <CssParameter name="stroke-dasharray">25 25 0 0 0 0</CssParameter>
+                            <CssParameter name="stroke-linejoin">round</CssParameter>
+                            <CssParameter name="stroke-linecap">butt</CssParameter>
+                            <CssParameter name="stroke-width">3</CssParameter>
+                        </Stroke>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+</StyledLayerDescriptor>

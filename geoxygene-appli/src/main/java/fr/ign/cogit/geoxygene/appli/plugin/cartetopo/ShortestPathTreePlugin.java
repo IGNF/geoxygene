@@ -235,7 +235,7 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
             lineSymbolizer.setUnitOfMeasure(Symbolizer.METRE);
 
             StyledLayerDescriptor sld = StyledLayerDescriptor
-                    .unmarshall(StyledLayerDescriptor.class.getClassLoader().getResourceAsStream("sld/BasicStyles.xml")); //$NON-NLS-1$
+                    .unmarshall(StyledLayerDescriptor.class.getClassLoader().getResourceAsStream("sld/BasicStyles.xml"));
             la.getStyles().add(sld.getLayer("Basic Line").getStyles().get(0));
             LineSymbolizer lineSymbolizer2 = (LineSymbolizer) la.getStyles().get(1).getSymbolizer();
             
@@ -272,6 +272,11 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
             Layer lppc = p2.addUserLayer(popArc, "Arcs", null);
             lppc.getSymbolizer().getStroke().setColor(new Color(0, 0, 0));
             lppc.getSymbolizer().getStroke().setStrokeWidth(1);
+            
+            StyledLayerDescriptor sldSPT = StyledLayerDescriptor
+                    .unmarshall(StyledLayerDescriptor.class.getClassLoader().getResourceAsStream("sld/shortestpathtree.xml"));
+            lppc.setStyles(sldSPT.getLayer("troncon").getStyles());
+            application.getFrame().getSelectedProjectFrame().getLayerViewPanel().repaint();
             
             Population<Noeud> popRoot = new Population<Noeud>("root");
             popRoot.add(root);
