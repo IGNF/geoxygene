@@ -27,15 +27,14 @@
 package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
 
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.text.DecimalFormat;
 
+import javax.swing.ImageIcon;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JToolBar;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -50,10 +49,12 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat
  * 
  *  
  */
-public class DisplayStatResultPanel extends JToolBar  {
+public class DisplayStatResultPanel extends JInternalFrame  {
   
   /** SerialVersionUID. */
   private static final long serialVersionUID = 1L;
+  
+  private JPanel formPanel;
   
   /** */
   private ResultNetworkDataMatching resultNetworkMatcher;
@@ -67,16 +68,32 @@ public class DisplayStatResultPanel extends JToolBar  {
    * Constructor.
    * @param res
    */
-  public DisplayStatResultPanel(ResultNetworkDataMatching res){
+  public DisplayStatResultPanel(ResultNetworkDataMatching res, int width) {
+      
+      super("Résultat.", true, true, true, true);
+      
+      setToolTipText(this.getTitle());
+      getDesktopIcon().setToolTipText(this.getTitle());
+      setFrameIcon(new ImageIcon(
+              DisplayStatResultPanel.class.getResource("/images/icons/sum.png")));
+      setLocation(width, 0);
+      setSize(width, 400);
+      
+      getContentPane().setLayout(new BorderLayout());
     
       resultNetworkMatcher = res;
-    resultNetwork = res.getResultStat();
-    setOrientation(1);
-    setPreferredSize(new Dimension(1800, 350));
-    setMaximumSize(getPreferredSize());
-    setLayout(new FlowLayout());
+      resultNetwork = res.getResultStat();
+      // setOrientation(1);
+      // setPreferredSize(new Dimension(1800, 350));
+      // setMaximumSize(getPreferredSize());
+      // setLayout(new FlowLayout());
     
-    displayResult();
+      displayResult();
+      
+      getContentPane().add(formPanel, BorderLayout.CENTER);
+    
+      pack();
+      setVisible(true);
     
   }
   
@@ -91,7 +108,7 @@ public class DisplayStatResultPanel extends JToolBar  {
         );
     CellConstraints cc = new CellConstraints();
     
-    JPanel formPanel = new JPanel();
+    formPanel = new JPanel();
     formPanel.setLayout(layout);
     
     // Element Network 
@@ -105,10 +122,10 @@ public class DisplayStatResultPanel extends JToolBar  {
     // Ligne 1 : titles
     JLabel network1Label = new JLabel("Network 1");
     network1Label.setForeground(network1Color);
-    network1Label.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 1));
+    //network1Label.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 1));
     formPanel.add(network1Label, cc.xyw(2, 2, 4));
     JLabel network2Label = new JLabel("Network 2");
-    network2Label.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 1));
+    //network2Label.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 1));
     network2Label.setForeground(network2Color);
     formPanel.add(network2Label, cc.xyw(10, 2, 4));
     

@@ -50,7 +50,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
@@ -59,10 +58,10 @@ import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayToolBarNetworkDataMatching;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayParamPanel;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayStatResultPanel;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.EditParamPanel;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.LinkTabPanel;
-
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
@@ -178,8 +177,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
      */
     private void initializeParam() {
         
-        String filename1 = "D:\\Data\\Appariement\\ESPON_DB\\Test02\\Reseau1.shp";
-        String filename2 = "D:\\Data\\Appariement\\ESPON_DB\\Test02\\Reseau2.shp";
+        // String filename1 = "D:\\Data\\Appariement\\ESPON_DB\\Test02\\Reseau1.shp";
+        // String filename2 = "D:\\Data\\Appariement\\ESPON_DB\\Test02\\Reseau2.shp";
+        String filename1 = "D:\\Data\\Appariement\\MesTests\\T5\\Res1.shp";
+        String filename2 = "D:\\Data\\Appariement\\MesTests\\T5\\Res2.shp";
 
         // Filename
         //
@@ -226,21 +227,17 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
 
         ParamDirectionNetworkDataMatching paramDirection2 = new ParamDirectionNetworkDataMatching();
         paramDirection2.setOrientationDouble(true);
-        /*
-         * paramDirection2.setAttributOrientation("sens_de_circulation");
-         * Map<Integer, String> orientationMap2 = new HashMap<Integer,
-         * String>(); orientationMap2.put(OrientationInterface.SENS_DIRECT,
-         * "Sens direct");
-         * orientationMap2.put(OrientationInterface.SENS_INVERSE,
-         * "Sens inverse");
-         * orientationMap2.put(OrientationInterface.DOUBLE_SENS, "Double sens");
-         * paramDirection2.setOrientationMap(orientationMap2);
-         */
-        param.setParamDirectionNetwork2(paramDirection2);
+        // paramDirection2.setAttributOrientation("DIR_TRAVEL");
+        // Map<Integer, String> orientationMap2 = new HashMap<Integer, String>(); 
+        // orientationMap2.put(OrientationInterface.SENS_DIRECT, "T");
+        // orientationMap2.put(OrientationInterface.SENS_INVERSE, "F");
+        // orientationMap2.put(OrientationInterface.DOUBLE_SENS, "B");
+        // paramDirection2.setOrientationMap(orientationMap2);
+        // param.setParamDirectionNetwork2(paramDirection2);
 
         // Distance
         ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
-        float distanceNoeudsMax = 50;
+        float distanceNoeudsMax = 100;
         paramDistance.setDistanceNoeudsMax(distanceNoeudsMax);
         paramDistance.setDistanceArcsMax(2 * distanceNoeudsMax);
         paramDistance.setDistanceArcsMin(1); // distanceNoeudsMax
@@ -653,11 +650,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         p3.setSize(widthProjectFrame, heightProjectFrame * 2);
         p3.setLocation(widthProjectFrame, 0);
 
-        DisplayToolBarNetworkDataMatching resultToolBar = new DisplayToolBarNetworkDataMatching(p3,
-                resultatAppariement, paramPlugin);
-        JMenuBar menuBar = new JMenuBar();
-        p3.setJMenuBar(menuBar);
-        p3.getJMenuBar().add(resultToolBar, 0);
+        
 
         // ---------------------------------------------------------------------------------
         // Frame n°4
@@ -688,7 +681,9 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
 
         // Test : ajout 
         this.application.getFrame().newDesktopFrame("Résultat.");
-        this.application.getFrame().addFrameInDesktop("Résultat.", new LinkTabPanel(liens));
+        this.application.getFrame().addFrameInDesktop("Résultat.", new LinkTabPanel(liens, widthProjectFrame));
+        this.application.getFrame().addFrameInDesktop("Résultat.", new DisplayStatResultPanel(resultatAppariement, widthProjectFrame));
+        this.application.getFrame().addFrameInDesktop("Résultat.", new DisplayParamPanel(paramPlugin, widthProjectFrame));
         
         //
         LOGGER.info("Finished");

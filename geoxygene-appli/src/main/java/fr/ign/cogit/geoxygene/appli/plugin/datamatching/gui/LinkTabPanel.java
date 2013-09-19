@@ -42,16 +42,17 @@ public class LinkTabPanel extends JInternalFrame implements ActionListener {
      * Constructor.
      * @param liens
      */
-    public LinkTabPanel(EnsembleDeLiens liens) {
+    public LinkTabPanel(EnsembleDeLiens liens, int width) {
         
-        super("Résultat.", true, true, true, true);
+        super("Détail des liens.", true, true, true, true);
         
         // Setting the tool tip text to the frame and its sub components
         setToolTipText(this.getTitle());
         getDesktopIcon().setToolTipText(this.getTitle());
-        setLocation(0, 0);
+        setLocation(0, 400);
+        this.setSize(width * 2, 400);
         setFrameIcon(new ImageIcon(
-                GeOxygeneApplication.class.getResource("/images/icons/link.png")));
+                LinkTabPanel.class.getResource("/images/icons/link.png")));
         
         // Initialize panel
         initTableauPanel(liens);

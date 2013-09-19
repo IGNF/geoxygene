@@ -26,24 +26,20 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 
+import javax.swing.ImageIcon;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
 
 /**
@@ -52,10 +48,12 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
  * //formPanel.add(new JLabel("<html>" + paramNetworkDataMatching.toString() + "</html>"));
  *
  */
-public class DisplayParamPanel extends JToolBar {
+public class DisplayParamPanel extends JInternalFrame {
   
   /** SerialVersionUID. */
   private static final long serialVersionUID = 1L;
+  
+  JTabbedPane tabbedPane;
   
   /** Parameter values. */
   private ParamPluginNetworkDataMatching paramPlugin = null;
@@ -67,22 +65,38 @@ public class DisplayParamPanel extends JToolBar {
    * Constructor.
    * @param frame
    */
-  public DisplayParamPanel(ParamPluginNetworkDataMatching paramPlugin){
+  public DisplayParamPanel(ParamPluginNetworkDataMatching paramPlugin, int widthProjectFrame) {
+      
+      super("Paramètres.", true, true, true, true);
+      
+      setToolTipText(this.getTitle());
+      getDesktopIcon().setToolTipText(this.getTitle());
+      setLocation(0, 0);
+      setSize(widthProjectFrame, 400);
+      setFrameIcon(new ImageIcon(
+              DisplayParamPanel.class.getResource("/images/icons/wrench.png")));
+      
+      getContentPane().setLayout(new BorderLayout());
     
-    /** Initialize all parameters objects. */
-    this.paramPlugin = paramPlugin;
-    paramNetworkDataMatching = paramPlugin.getParamNetworkDataMatching();
-    // paramDirection = this.paramNetworkDataMatching.getParamDirectionNetwork1();
-    // paramTopo = this.paramNetworkDataMatching.getParamTopoTreatment();
+      /** Initialize all parameters objects. */
+      this.paramPlugin = paramPlugin;
+      paramNetworkDataMatching = paramPlugin.getParamNetworkDataMatching();
+      // paramDirection = this.paramNetworkDataMatching.getParamDirectionNetwork1();
+      // paramTopo = this.paramNetworkDataMatching.getParamTopoTreatment();
     
-    /** Initialize and configure panel. */
-    setOrientation(1);
-    // setPreferredSize(new Dimension(1800, 350));
-    // setMaximumSize(getPreferredSize());
-    setLayout(new FlowLayout(FlowLayout.LEFT));
+      /** Initialize and configure panel. */
+      // setOrientation(1);
+      // setPreferredSize(new Dimension(1800, 350));
+      // setMaximumSize(getPreferredSize());
+      // setLayout(new FlowLayout(FlowLayout.LEFT));
     
-    /** Diplay panel. */
-    displayParam();
+      /** Diplay panel. */
+      displayParam();
+    
+      getContentPane().add(tabbedPane, BorderLayout.CENTER);
+    
+      pack();
+      setVisible(true);
     
   }
   
@@ -92,7 +106,7 @@ public class DisplayParamPanel extends JToolBar {
   private void displayParam() {
     
     // Init tabbed panel
-    JTabbedPane tabbedPane = new JTabbedPane();
+    tabbedPane = new JTabbedPane();
     
     tabbedPane.addTab("Données", getDatasetParamTab());
     tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
