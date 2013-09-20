@@ -5,7 +5,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -26,8 +28,10 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -172,7 +176,7 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
         ReseauApp reseau = new ReseauApp("Réseau muni d'une topologie réseau");
         IPopulation<? extends IFeature> popArc = reseau.getPopArcs();
         
-        IFeatureCollection<? extends IFeature> populationsArcs = ShapefileReader.read("D:\\Data\\Appariement\\ESPON_DB\\Test02\\Reseau2.shp");
+        IFeatureCollection<? extends IFeature> populationsArcs = ShapefileReader.read("D:\\DATA\\Appariement\\MesTests\\T3\\bdtopo_route.shp");
         for (IFeature element : populationsArcs) {
             ArcApp arc = (ArcApp) popArc.nouvelElement();
             ILineString ligne = new GM_LineString((IDirectPositionList) element.getGeom().coord().clone());
@@ -209,7 +213,7 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
     @Override
     public void actionPerformed(final ActionEvent e) {
 
-        initCarteTopo1();
+        initCarteTopo2();
 
         try {
 
@@ -268,7 +272,7 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
             p2.setTitle("Shortest Path Tree");
             viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
 
-            Population<Arc> popArc = getShortestPathTree(root, 10);
+            Population<DefaultFeature> popArc = getShortestPathTree(root, 10);
             Layer lppc = p2.addUserLayer(popArc, "Arcs", null);
             lppc.getSymbolizer().getStroke().setColor(new Color(0, 0, 0));
             lppc.getSymbolizer().getStroke().setStrokeWidth(1);
@@ -305,18 +309,26 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
      * @param root
      * @return
      */
-    private Population<Arc> getShortestPathTree(Noeud root, double maxlongueur) {
+    private Population<DefaultFeature> getShortestPathTree(Noeud root, double maxlongueur) {
 
         // On prépare le retour
-        Population<Arc> popSPTree = new Population<Arc>(false, "popSPTree", Arc.class, true);
+        Population<DefaultFeature> popSPTree = new Population<DefaultFeature>(false, "popSPTree", Arc.class, true);
         FeatureType newFeatureType = new FeatureType();
         newFeatureType.setTypeName("Shortest path tree");
         newFeatureType.setGeometryType(GM_LineString.class);
+        
+        AttributeType nbPassage = new AttributeType("nb", "integer");
+        newFeatureType.addFeatureAttribute(nbPassage);
+        
         SchemaDefaultFeature schemaDefaultFeature = new SchemaDefaultFeature();
         schemaDefaultFeature.setNom("spTree");
         schemaDefaultFeature.setNomSchema("spTree");
         schemaDefaultFeature.setFeatureType(newFeatureType);
         popSPTree.setFeatureType(newFeatureType);
+        
+        Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>(0);
+        attLookup.put(new Integer(0), new String[] { nbPassage.getNomField(), nbPassage.getMemberName() });
+        schemaDefaultFeature.setAttLookup(attLookup);
 
         System.out.println("Nb noeuds = " + ct2.getListeNoeuds().size());
         
@@ -324,13 +336,27 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
         // int cpt = 0;
         for (Noeud noeud : ct2.getListeNoeuds()) {
             if (!noeud.equals(root)) {
-                // System.out.print("*");cpt++;
-                // if ((cpt%100) == 0) {System.out.println("");}
                 Groupe gpResult = root.plusCourtChemin(noeud, maxlongueur);
                 if (gpResult != null) {
                     List<Arc> listArc = gpResult.getListeArcs();
                     for (int i = 0; i < listArc.size(); i++) {
-                        Arc arc = listArc.get(i);
+                    	DefaultFeature arc = listArc.get(i);
+                        arc.setSchema(schemaDefaultFeature);
+                        
+                        int nb = 0;
+                        
+                        // on cherche l'arc 
+                        boolean trouve = false;
+                        for (DefaultFeature feat : popSPTree.getElements()) {
+                        	if (feat.equals(arc)) {
+                        		trouve = true;
+                        		nb = (Integer) feat.getAttribute("nb");
+                        	}
+                        }
+                        nb++;
+                        
+                        Object[] attributes = new Object[] { nb };
+                        arc.setAttributes(attributes);
                         popSPTree.add(arc);
                     }
                 }

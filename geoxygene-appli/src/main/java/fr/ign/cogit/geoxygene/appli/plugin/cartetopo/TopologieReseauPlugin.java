@@ -31,7 +31,6 @@ import fr.ign.cogit.geoxygene.appli.plugin.cartetopo.data.ParamDoingTopologicalS
 import fr.ign.cogit.geoxygene.appli.plugin.cartetopo.gui.DialogTopoStructurePanel;
 import fr.ign.cogit.geoxygene.appli.plugin.cartetopo.gui.TestPanel;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayToolBarNetworkDataMatching;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.EditParamPanel;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultCarteTopoStatElement;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultCarteTopoStatElementInterface;
