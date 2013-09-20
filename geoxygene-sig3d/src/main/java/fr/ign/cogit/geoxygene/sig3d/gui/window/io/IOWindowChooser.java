@@ -24,7 +24,7 @@ public class IOWindowChooser {
     CITYGMLFilter cgmfilter = new CITYGMLFilter();
 
     if (cgmfilter.accept(f)) {
-      new CityGMLLoadingWindow(imp, f.getAbsolutePath());
+      (new CityGMLLoadingWindow(imp, f.getAbsolutePath())).setVisible(true);
     }
     
     //MNTAsc
