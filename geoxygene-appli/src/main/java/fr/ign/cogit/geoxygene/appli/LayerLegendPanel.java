@@ -617,7 +617,10 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
    */
   public Layer getLayer(int row) {
     return this.getModel().getLayerAt(row);
-
+  }
+  
+  public int getLayerCount() {
+      return this.layersTable.getRowCount();
   }
 
   /**
