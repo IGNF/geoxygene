@@ -297,8 +297,8 @@ public class LayerRenderer implements Renderer {
           // ( used by isRendering() )
           LayerRenderer.this.setRendering(false);
           LayerRenderer.this.setRendered(true);
-          if (LayerRenderer.logger.isDebugEnabled()) {
-            LayerRenderer.logger.debug("Renderer " //$NON-NLS-1$
+          if (LayerRenderer.logger.isTraceEnabled()) {
+            LayerRenderer.logger.trace("Renderer " //$NON-NLS-1$
                 + LayerRenderer.this.getLayer().getName() + " finished"); //$NON-NLS-1$
           }
           //FIXME Is this operation really useful or is a patch?

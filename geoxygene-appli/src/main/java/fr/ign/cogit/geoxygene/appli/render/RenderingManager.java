@@ -311,8 +311,8 @@ public class RenderingManager {
   }
 
   public void repaint() {
-    if (RenderingManager.LOGGER.isDebugEnabled()) {
-      RenderingManager.LOGGER.debug(this.getRenderers().size() + " renderers"); //$NON-NLS-1$
+    if (RenderingManager.LOGGER.isTraceEnabled()) {
+      RenderingManager.LOGGER.trace(this.getRenderers().size() + " renderers"); //$NON-NLS-1$
     }
     // we check if there is still something being rendererd
     // the fastest way is to check for renderers in the queue
@@ -322,7 +322,7 @@ public class RenderingManager {
     // then we check if there is still a renderer working
     for (Renderer r : this.getRenderers()) {
       if (r.isRendering() || !r.isRendered()) {
-        RenderingManager.LOGGER.debug("Renderer " + r.isRendering() + " - " //$NON-NLS-1$ //$NON-NLS-2$
+        RenderingManager.LOGGER.trace("Renderer " + r.isRendering() + " - " //$NON-NLS-1$ //$NON-NLS-2$
             + r.isRendered());
         return;
       }
@@ -330,15 +330,15 @@ public class RenderingManager {
     if (this.selectionRenderer != null
         && (this.selectionRenderer.isRendering() || !this.selectionRenderer
             .isRendered())) {
-      if (RenderingManager.LOGGER.isDebugEnabled()) {
-        RenderingManager.LOGGER.debug("Renderer " //$NON-NLS-1$
+      if (RenderingManager.LOGGER.isTraceEnabled()) {
+        RenderingManager.LOGGER.trace("Renderer " //$NON-NLS-1$
             + this.selectionRenderer.isRendering() + " - " //$NON-NLS-1$
             + this.selectionRenderer.isRendered());
       }
       return;
     }
-    if (RenderingManager.LOGGER.isDebugEnabled()) {
-      RenderingManager.LOGGER.debug("Repaint"); //$NON-NLS-1$
+    if (RenderingManager.LOGGER.isTraceEnabled()) {
+      RenderingManager.LOGGER.trace("Repaint"); //$NON-NLS-1$
     }
     // nothing is being rendered, we can actually repaint the panel
     RenderingManager.this.getLayerViewPanel().superRepaint();
