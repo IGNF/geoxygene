@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.contrib.leastsquares.conflation;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.contrib.conflation.ConflationVector;
 import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSPoint;
 import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 
@@ -13,20 +14,29 @@ import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 public class DisplacementVector {
 
   private LSPoint pointIni, conflatedPoint;
-  private IDirectPosition iniPos, conflPos;
-  private Vector2D vector;
+  private ConflationVector conflationVector;
+
+  public ConflationVector getConflationVector() {
+    return conflationVector;
+  }
+
+  public void setConflationVector(ConflationVector conflationVector) {
+    this.conflationVector = conflationVector;
+  }
 
   public DisplacementVector(LSPoint pointIni, LSPoint conflatedPoint,
       Vector2D vector) {
     super();
     this.pointIni = pointIni;
     this.setConflatedPoint(conflatedPoint);
-    this.vector = vector;
-    this.conflPos = conflatedPoint.getIniPt();
+    IDirectPosition conflPos = conflatedPoint.getIniPt();
+    IDirectPosition iniPos = null;
     if (pointIni == null)
-      this.iniPos = vector.opposite().translate(conflPos);
+      iniPos = vector.opposite().translate(conflPos);
     else
-      this.iniPos = pointIni.getIniPt();
+      iniPos = pointIni.getIniPt();
+    this.conflationVector = new ConflationVector(iniPos, vector);
+
   }
 
   public LSPoint getPointIni() {
@@ -35,14 +45,6 @@ public class DisplacementVector {
 
   public void setPointIni(LSPoint point) {
     this.pointIni = point;
-  }
-
-  public Vector2D getVector() {
-    return vector;
-  }
-
-  public void setVector(Vector2D vector) {
-    this.vector = vector;
   }
 
   public LSPoint getConflatedPoint() {
@@ -59,10 +61,7 @@ public class DisplacementVector {
    * @return
    */
   public Vector2D linearProjection() {
-    double dist = iniPos.distance2D(conflPos);
-    double newNorm = vector.norme() - dist / (4 * vector.norme());
-    Vector2D vect = vector.changeNorm(newNorm);
-    return vect;
+    return this.conflationVector.linearProjection();
   }
 
   /**
@@ -71,10 +70,7 @@ public class DisplacementVector {
    * @return
    */
   public Vector2D inverseSquareProjection() {
-    double dist = iniPos.distance2D(conflPos);
-    double newNorm = vector.norme() / (dist * dist);
-    Vector2D vect = vector.changeNorm(newNorm);
-    return vect;
+    return this.conflationVector.inverseSquareProjection();
   }
 
 }

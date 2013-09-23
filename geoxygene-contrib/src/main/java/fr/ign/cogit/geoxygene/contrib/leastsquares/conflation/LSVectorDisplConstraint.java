@@ -54,7 +54,7 @@ public abstract class LSVectorDisplConstraint extends LSExternalConstraint {
 
   @Override
   public double getWeightFactor() {
-    return vector.getVector().norme();
+    return vector.getConflationVector().getVector().norme();
   }
 
 }
