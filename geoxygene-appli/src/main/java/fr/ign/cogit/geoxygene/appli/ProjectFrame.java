@@ -449,7 +449,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
   }
 
   public void removeLayers(List<Layer> toRemove) {
-    System.out.println("removing +" + toRemove.size() + "+layers"); //$NON-NLS-1$ //$NON-NLS-2$
+    logger.trace("removing +" + toRemove.size() + "+layers"); //$NON-NLS-1$ //$NON-NLS-2$
     this.sld.remove(toRemove);
     for (Layer layer : toRemove) {
       this.layerViewPanel.getRenderingManager().removeLayer(layer);
