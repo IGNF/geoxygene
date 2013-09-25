@@ -11,10 +11,12 @@
 package fr.ign.cogit.cartagen.genealgorithms.landuse;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -71,7 +73,7 @@ public class LanduseSimplification {
    */
   public static Map<IFeatureCollection<IFeature>, String> landuseSimplify(
       Map<IFeatureCollection<IFeature>, Map<String, Double>> mapFtColIn,
-      double dpFilter) {
+      double dpFilter, Map<String, String> themeReclassification) {
 
     List<String> listTypeOCS = new ArrayList<String>();
     Map<IFeatureCollection<IFeature>, String> mapFtColOutTmp = new HashMap<IFeatureCollection<IFeature>, String>();
@@ -490,6 +492,7 @@ public class LanduseSimplification {
     }
 
     Map<IFeatureCollection<IFeature>, String> mapFtColOut = new HashMap<IFeatureCollection<IFeature>, String>();
+    Map<String, IFeatureCollection<IFeature>> reclassifiedFeats = new HashMap<String, IFeatureCollection<IFeature>>();
     for (String typeOCS : listTypeOCS) {
 
       Iterator<Face> itFace;
@@ -503,8 +506,41 @@ public class LanduseSimplification {
         }
       }
       if (!(ftColExport.isEmpty())) {
-        mapFtColOut.put(ftColExport, typeOCS);
+        if (themeReclassification.containsKey(typeOCS)) {
+          typeOCS = themeReclassification.get(typeOCS);
+          if (reclassifiedFeats.containsKey(typeOCS)) {
+            reclassifiedFeats.get(typeOCS).addAll(ftColExport);
+          } else
+            reclassifiedFeats.put(typeOCS, ftColExport);
+        } else
+          mapFtColOut.put(ftColExport, typeOCS);
       }
+    }
+
+    // ajout reclassification en fin de processus : les objets collés ayant le
+    // même type d'occupation du sol final sont agrégés.
+    for (String typeOCS : reclassifiedFeats.keySet()) {
+      IFeatureCollection<IFeature> ft = reclassifiedFeats.get(typeOCS);
+      IFeatureCollection<IFeature> outputFt = new FT_FeatureCollection<IFeature>();
+      Stack<IFeature> stack = new Stack<IFeature>();
+      stack.addAll(ft);
+      while (!ft.isEmpty()) {
+        IFeature feat = stack.pop();
+        ft.remove(feat);
+        Collection<IFeature> neighbours = ft.select(feat.getGeom());
+        if (neighbours.size() > 0) {
+          stack.removeAll(neighbours);
+          ft.removeAll(neighbours);
+          IGeometry newGeom = feat.getGeom();
+          for (IFeature neigh : neighbours) {
+            newGeom = newGeom.union(neigh.getGeom());
+          }
+          feat.setGeom(newGeom);
+          stack.push(feat);
+        } else
+          outputFt.add(feat);
+      }
+      mapFtColOut.put(outputFt, typeOCS);
     }
 
     return mapFtColOut;
@@ -524,7 +560,6 @@ public class LanduseSimplification {
       try {
         jtsGeom = JtsGeOxygene.makeJtsGeom(poly);
       } catch (Exception e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
       }
       if (jtsGeom == null) {
@@ -542,7 +577,6 @@ public class LanduseSimplification {
     try {
       union = JtsGeOxygene.makeGeOxygeneGeom(jtsUnion);
     } catch (Exception e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     if (union == null) {

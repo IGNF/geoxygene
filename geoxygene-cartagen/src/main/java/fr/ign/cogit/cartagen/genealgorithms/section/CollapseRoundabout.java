@@ -114,8 +114,9 @@ public class CollapseRoundabout {
     // from collapsing
     // TODO Declenche une exception dans certains cas A REVOIR !!!!
     try {
-      this.roundabout.getAntecedents().iterator().next()
-          .addResultingObject(node);
+      if (!this.roundabout.getAntecedents().isEmpty())
+        this.roundabout.getAntecedents().iterator().next()
+            .addResultingObject(node);
     } catch (Exception e) {
       e.printStackTrace();
     }

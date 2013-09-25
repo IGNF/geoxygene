@@ -22,6 +22,7 @@ import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
@@ -30,6 +31,8 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 
@@ -132,6 +135,7 @@ public class ElectricityLineTypification {
     private Set<IElectricityLine> components;
     private IPolygon geom;
     private IElectricityLine rootLine;
+    private Set<IElectricityLine> cutParts;
 
     public Set<IElectricityLine> getComponents() {
       return components;
@@ -154,6 +158,7 @@ public class ElectricityLineTypification {
       super();
       this.setRootLine(rootLine);
       this.components = components;
+      this.cutParts = new HashSet<IElectricityLine>();
       buildGeom();
     }
 
@@ -169,8 +174,13 @@ public class ElectricityLineTypification {
           continue;
         if (line.equals(rootLine))
           continue;
-        IGeometry inter = line.getGeom().intersection(geom);
-        IGeometry newLine = line.getGeom().difference(inter);
+        IGeometry newLine = null;
+        try {
+          newLine = line.getGeom().difference(geom);
+        } catch (Exception e) {
+          line.eliminateBatch();
+          continue;
+        }
         if (newLine == null) {
           line.eliminateBatch();
           continue;
@@ -179,8 +189,24 @@ public class ElectricityLineTypification {
           line.eliminateBatch();
           continue;
         }
+        if (!newLine.isValid()) {
+          line.eliminateBatch();
+          continue;
+        }
         if (newLine instanceof ILineString) {
+          // the difference JTS function sometimes produces geometries with null
+          // vertices
+          if (newLine.coord().contains(null)) {
+            IDirectPositionList cleanCoords = new DirectPositionList();
+            for (IDirectPosition pt : newLine.coord()) {
+              if (pt == null)
+                continue;
+              cleanCoords.add(pt);
+            }
+            newLine = new GM_LineString(cleanCoords);
+          }
           line.setGeom(newLine);
+          this.cutParts.add(line);
         } else if (newLine instanceof IMultiCurve<?>) {
           boolean first = true;
           for (int i = 0; i < ((IMultiCurve<IOrientableCurve>) newLine).size(); i++) {
@@ -195,11 +221,21 @@ public class ElectricityLineTypification {
               line.setGeom(simple);
               continue;
             }
+            if (simple.coord().contains(null)) {
+              IDirectPositionList cleanCoords = new DirectPositionList();
+              for (IDirectPosition pt : simple.coord()) {
+                if (pt == null)
+                  continue;
+                cleanCoords.add(pt);
+              }
+              simple = new GM_LineString(cleanCoords);
+            }
             // create a new feature
             IElectricityLine newFeat = CartagenApplication.getInstance()
                 .getCreationFactory().createElectricityLine(simple, 0);
             electricityNet.getSections().add(newFeat);
             this.components.add(newFeat);
+            this.cutParts.add(newFeat);
           }
         }
       }
@@ -214,13 +250,25 @@ public class ElectricityLineTypification {
     }
 
     private void reconnectComponents() {
-      for (IElectricityLine line : components) {
-        if (line.isEliminated())
-          continue;
-        if (line.equals(rootLine))
-          continue;
+      if (rootLine.getGeom() == null)
+        return;
+      if (rootLine.getGeom().coord().contains(null)) {
+        IDirectPositionList cleanCoords = new DirectPositionList();
+        for (IDirectPosition pt : rootLine.getGeom().coord()) {
+          if (pt == null)
+            continue;
+          cleanCoords.add(pt);
+        }
+        rootLine.setGeom(new GM_LineString(cleanCoords));
+      }
+      for (IElectricityLine line : cutParts) {
+
+        if (!line.getGeom().isValid())
+          line.eliminateBatch();
+
         IGeometry inter = line.getGeom().intersection(geom);
         if (inter instanceof IPoint) {
+
           // first, find the connection point
           Vector2D vect = new Vector2D(line.getGeom().coord().get(1), line
               .getGeom().coord().get(0));
@@ -232,6 +280,11 @@ public class ElectricityLineTypification {
           }
           IDirectPosition lastPt = CommonAlgorithmsFromCartAGen.projection(
               ((IPoint) inter).getPosition(), rootLine.getGeom(), vect);
+          if (lastPt == null)
+            lastPt = CommonAlgorithmsFromCartAGen.projectionOrtho(
+                ((IPoint) inter).getPosition(), rootLine.getGeom(), vect);
+          if (lastPt == null)
+            continue;
           // then, extend line to this connection point
           if (((IPoint) inter).getPosition().equals2D(
               line.getGeom().endPoint(), 0.001)) {
@@ -241,21 +294,30 @@ public class ElectricityLineTypification {
           }
         } else if (inter instanceof IMultiPoint) {
           for (int i = 0; i < ((IMultiPoint) inter).size(); i++) {
+            IPoint simple = ((IMultiPoint) inter).get(i);
+            if (simple == null)
+              continue;
             // first, find the connection point
             Vector2D vect = new Vector2D(line.getGeom().coord().get(1), line
                 .getGeom().coord().get(0));
-            if (((IPoint) inter).getPosition().equals2D(
-                line.getGeom().endPoint(), 0.001)) {
+
+            if (!simple.getPosition().equals2D(line.getGeom().coord().get(0),
+                0.001)) {
               int length = line.getGeom().coord().size();
               vect = new Vector2D(line.getGeom().coord().get(length - 2), line
                   .getGeom().coord().get(length - 1));
             }
-            IPoint simple = ((IMultiPoint) inter).get(i);
+
             IDirectPosition lastPt = CommonAlgorithmsFromCartAGen.projection(
                 simple.getPosition(), rootLine.getGeom(), vect);
+            if (lastPt == null)
+              lastPt = CommonAlgorithmsFromCartAGen.projectionOrtho(
+                  simple.getPosition(), rootLine.getGeom(), vect);
+            if (lastPt == null)
+              continue;
             // then, extend line to this connection point
-            if (((IPoint) inter).getPosition().equals2D(
-                line.getGeom().endPoint(), 0.001)) {
+            if (!simple.getPosition().equals2D(line.getGeom().coord().get(0),
+                0.001)) {
               line.getGeom().addControlPoint(lastPt);
             } else {
               line.getGeom().addControlPoint(0, lastPt);
@@ -271,6 +333,14 @@ public class ElectricityLineTypification {
 
     public void setRootLine(IElectricityLine rootLine) {
       this.rootLine = rootLine;
+    }
+
+    public Set<IElectricityLine> getCutParts() {
+      return cutParts;
+    }
+
+    public void setCutParts(Set<IElectricityLine> cutParts) {
+      this.cutParts = cutParts;
     }
   }
 }
