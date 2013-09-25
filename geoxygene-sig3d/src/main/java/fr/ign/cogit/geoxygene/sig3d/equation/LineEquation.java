@@ -88,7 +88,7 @@ public class LineEquation {
    * 
    * @return
    */
-  public DirectPosition valueAt(double t) {
+  public IDirectPosition valueAt(double t) {
 
     return new DirectPosition(this.a1 * t + this.a0, this.b1 * t + this.b0,
         this.c1 * t + this.c0);
@@ -131,6 +131,22 @@ public class LineEquation {
 
     return eq.intersectionLinePlan(dp, dp2);
 
+  }
+  
+  
+  public double distance(IDirectPosition dp){
+    
+    
+    
+    IDirectPosition dpLine = valueAt(0);
+    
+    
+    Vecteur v = new Vecteur(dp,dpLine);
+    
+    return v.prodVectoriel(this.getVecteur()).norme() / this.getVecteur().norme();
+    
+    
+    
   }
 
   /**
