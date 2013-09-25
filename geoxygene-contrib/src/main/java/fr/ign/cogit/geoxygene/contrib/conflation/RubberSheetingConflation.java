@@ -25,7 +25,7 @@ public class RubberSheetingConflation {
   private IFeatureCollection<? extends IFeature> featsToConflate;
   private Set<ConflationVector> conflationVectors;
   private Map<IFeature, IGeometry> conflatedGeoms;
-  private double distanceThreshold = 0.005;
+  private double distanceThreshold = 0.0005;
 
   public RubberSheetingConflation(
       IFeatureCollection<? extends IFeature> featsToConflate,
@@ -137,7 +137,7 @@ public class RubberSheetingConflation {
    * @param point
    * @return
    */
-  private Vector2D computeAggregatedVector(IDirectPosition point) {
+  public Vector2D computeAggregatedVector(IDirectPosition point) {
     Vector2D vectFinal = null;
     double numerateurX = 0.0;
     double denominateur = 0.0;
@@ -147,6 +147,7 @@ public class RubberSheetingConflation {
       // on calcule la distance entre le point et le vecteur de conflation
       // (ancré à un point).
       double dist = vect.getIniPos().distance2D(point);
+
       // on teste si le vecteur est assez près pour être pris en compte
       if (vect.getVector().norme() / (dist * dist) < distanceThreshold)
         continue;

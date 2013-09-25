@@ -63,4 +63,10 @@ public class ConflationVector {
     return vect;
   }
 
+  @Override
+  public String toString() {
+    return this.iniPos.toString() + " (" + vector.getX() + ", " + vector.getY()
+        + ")";
+  }
+
 }
