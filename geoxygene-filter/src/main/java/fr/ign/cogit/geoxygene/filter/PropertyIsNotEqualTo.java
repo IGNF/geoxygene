@@ -46,4 +46,9 @@ public class PropertyIsNotEqualTo extends BinaryComparisonOpsType {
     }
     return property.equals(this.getLiteral());
   }
+
+  @Override
+  public String toString() {
+    return this.getPropertyName() + " <> " + this.getLiteral().toString(); //$NON-NLS-1$
+  }
 }
