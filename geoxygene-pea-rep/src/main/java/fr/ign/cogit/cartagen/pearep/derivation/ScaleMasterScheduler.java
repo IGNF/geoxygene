@@ -45,6 +45,7 @@ import fr.ign.cogit.cartagen.pearep.derivation.processes.BridgeCollapseProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.CollapseToPointProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.ContourSelectionProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.DisplacementLSAProcess;
+import fr.ign.cogit.cartagen.pearep.derivation.processes.ElectricTypificationProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.FilteringProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.GaussianFilteringProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.KMeansClusteringProcess;
@@ -54,6 +55,7 @@ import fr.ign.cogit.cartagen.pearep.derivation.processes.PolygonSimplification;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RailwaySelectionProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RaposoSimplifProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RiverStrokeSelectionProcess;
+import fr.ign.cogit.cartagen.pearep.derivation.processes.RoundaboutCollapseProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RunwaySimplificationProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.SkeletonizeProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.SpinalizeProcess;
@@ -108,6 +110,7 @@ public class ScaleMasterScheduler {
 
   private Map<IFeatureCollection<IFeature>, Map<String, Double>> mapLanduseParamIn = new HashMap<IFeatureCollection<IFeature>, Map<String, Double>>();
   private Double landuseDpFilter;
+  private Map<String, String> landuseReclass = new HashMap<String, String>();
 
   /**
    * Theme that can be used in the scalemasters.
@@ -302,6 +305,8 @@ public class ScaleMasterScheduler {
     this.availableProcesses.add(TaxiwaySimplificationProcess.getInstance());
     this.availableProcesses.add(RiverStrokeSelectionProcess.getInstance());
     this.availableProcesses.add(RailwaySelectionProcess.getInstance());
+    this.availableProcesses.add(RoundaboutCollapseProcess.getInstance());
+    this.availableProcesses.add(ElectricTypificationProcess.getInstance());
     for (ScaleMasterGeneProcess proc : availableProcesses)
       proc.setScaleMaster(scaleMaster);
     this.availableMultiProcesses = new HashSet<ScaleMasterMultiProcess>();
@@ -404,13 +409,13 @@ public class ScaleMasterScheduler {
         }
       }
 
+      // orders the processes and filter to apply
+      List<OrderedProcess> procList = this.orderProcesses(elem, features);
+
       // test if there are features for this theme in the dbs
       if (features.size() == 0) {
         continue;
       }
-
-      // orders the processes and filter to apply
-      List<OrderedProcess> procList = this.orderProcesses(elem, features);
 
       // apply the processes in the priority order
       for (OrderedProcess orderedProc : procList) {
@@ -577,6 +582,7 @@ public class ScaleMasterScheduler {
    */
   protected List<OrderedProcess> orderProcesses(ScaleMasterElement elem,
       IPopulation<IGeneObj> features) {
+
     List<OrderedProcess> procList = new ArrayList<OrderedProcess>();
     if (elem.getOgcFilter() != null) {
       procList.add(new OrderedProcess(elem.getFilterPriority(), elem
@@ -618,7 +624,6 @@ public class ScaleMasterScheduler {
    */
   protected void fillLanduseSimplificationProcess(ScaleMasterElement elem,
       OrderedProcess orderedProc, IPopulation<IGeneObj> features) {
-
     // get the parameters
     String procName = (String) orderedProc.getProcess();
     Map<String, Object> parameters = elem.getParameters().get(
@@ -628,6 +633,12 @@ public class ScaleMasterScheduler {
     if (!(parameters.get("dp_filtering") == null)) {
       double dpFiltering = (Double) parameters.get("dp_filtering");
       this.landuseDpFilter = dpFiltering;
+    }
+    if (parameters.get("final_theme") != null) {
+      String finalTheme = (String) parameters.get("final_theme");
+      if (!finalTheme.equals(""))
+        this.landuseReclass.put(elem.getScaleLine().getTheme().getName(),
+            finalTheme);
     }
     Map<String, Double> mapNameArea = new HashMap<String, Double>();
     mapNameArea.put(name, areaMin);
@@ -815,6 +826,14 @@ public class ScaleMasterScheduler {
 
   public void setAware(boolean isAware) {
     this.isAware = isAware;
+  }
+
+  public Map<String, String> getLanduseReclass() {
+    return landuseReclass;
+  }
+
+  public void setLanduseReclass(Map<String, String> landuseReclass) {
+    this.landuseReclass = landuseReclass;
   }
 
 }

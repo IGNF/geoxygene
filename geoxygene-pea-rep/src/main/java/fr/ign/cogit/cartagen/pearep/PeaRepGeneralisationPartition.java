@@ -159,9 +159,6 @@ class GeneralisationPartitionTask extends SwingWorker<Void, Void> {
   private static String SCALE_MASTER_FILE = "ScaleMaster.xml";
   private static String PARAMETER_FILE = "PeaRepParameters.xml";
   private static String THEMES_FILE = "ScaleMasterThemes.xml";
-  private static String VMAP0_DATASET = "VMAP0";
-  private static String VMAP1_DATASET = "VMAP1";
-  private static String VMAP2i_DATASET = "VMAP2i";
   private static String MGCPPlusPlus_DATASET = "MGCPPlusPlus";
   private static String VMAP1PlusPlus_DATASET = "VMAP1PlusPlus";
   private static String SHOM_DATASET = "SHOM";
@@ -263,7 +260,6 @@ class GeneralisationPartitionTask extends SwingWorker<Void, Void> {
       // *******************************************************
 
       boolean vmap1ppDb = false;
-      boolean vmapDb = false;
       boolean mgcpDb = false;
       boolean shomDb = false;
 
@@ -415,11 +411,13 @@ class GeneralisationPartitionTask extends SwingWorker<Void, Void> {
             Map<IFeatureCollection<IFeature>, Map<String, Double>> mapFtColIn = scheduler
                 .getMapLanduseParamIn();
             double dpFiltering = scheduler.getLanduseDpFilter();
+            Map<String, String> themeReclassification = scheduler
+                .getLanduseReclass();
             GeneralisationPartitionTask.logger
                 .info("Début de la généralisation de l'occupation du sol");
             try {
               mapFtColOut = LanduseSimplification.landuseSimplify(mapFtColIn,
-                  dpFiltering);
+                  dpFiltering, themeReclassification);
             } catch (Exception e) {
               e.printStackTrace();
             }
@@ -516,11 +514,13 @@ class GeneralisationPartitionTask extends SwingWorker<Void, Void> {
             Map<IFeatureCollection<IFeature>, Map<String, Double>> mapFtColIn = scheduler
                 .getMapLanduseParamIn();
             double dpFiltering = scheduler.getLanduseDpFilter();
+            Map<String, String> themeReclassification = scheduler
+                .getLanduseReclass();
             GeneralisationPartitionTask.logger
                 .info("Début de la généralisation de l'occupation du sol");
             try {
               mapFtColOut = LanduseSimplification.landuseSimplify(mapFtColIn,
-                  dpFiltering);
+                  dpFiltering, themeReclassification);
             } catch (Exception e) {
               e.printStackTrace();
             }
@@ -579,6 +579,7 @@ class GeneralisationPartitionTask extends SwingWorker<Void, Void> {
         for (IPolygon cell : listCellsShom) {
 
           shomDb = true;
+          System.out.println("on a chargé les données SHOM");
           SHOMLoader shomLoader = new SHOMLoader(symbGroup,
               GeneralisationPartitionTask.SHOM_DATASET);
           try {
@@ -617,13 +618,14 @@ class GeneralisationPartitionTask extends SwingWorker<Void, Void> {
           if (!(scheduler.getMapLanduseParamIn().isEmpty())) {
             Map<IFeatureCollection<IFeature>, Map<String, Double>> mapFtColIn = scheduler
                 .getMapLanduseParamIn();
-
+            Map<String, String> themeReclassification = scheduler
+                .getLanduseReclass();
             double dpFiltering = scheduler.getLanduseDpFilter();
             GeneralisationPartitionTask.logger
                 .info("Début de la généralisation de l'occupation du sol");
             try {
               mapFtColOut = LanduseSimplification.landuseSimplify(mapFtColIn,
-                  dpFiltering);
+                  dpFiltering, themeReclassification);
             } catch (Exception e) {
               e.printStackTrace();
             }

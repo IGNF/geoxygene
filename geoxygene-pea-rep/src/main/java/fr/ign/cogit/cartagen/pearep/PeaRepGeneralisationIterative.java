@@ -153,9 +153,6 @@ class GeneralisationIterativeTask extends SwingWorker<Void, Void> {
   private static String SCALE_MASTER_FILE = "ScaleMaster.xml";
   private static String PARAMETER_FILE = "PeaRepParameters.xml";
   private static String THEMES_FILE = "ScaleMasterThemes.xml";
-  private static String VMAP0_DATASET = "VMAP0";
-  private static String VMAP1_DATASET = "VMAP1";
-  private static String VMAP2i_DATASET = "VMAP2i";
   private static String MGCPPlusPlus_DATASET = "MGCPPlusPlus";
   private static String VMAP1PlusPlus_DATASET = "VMAP1PlusPlus";
   private static Logger logger = Logger
@@ -345,11 +342,13 @@ class GeneralisationIterativeTask extends SwingWorker<Void, Void> {
         Map<IFeatureCollection<IFeature>, Map<String, Double>> mapFtColIn = scheduler
             .getMapLanduseParamIn();
         double dpFiltering = scheduler.getLanduseDpFilter();
+        Map<String, String> themeReclassification = scheduler
+            .getLanduseReclass();
         GeneralisationIterativeTask.logger
             .info("Début de la généralisation de l'occupation du sol");
         try {
           mapFtColOut = LanduseSimplification.landuseSimplify(mapFtColIn,
-              dpFiltering);
+              dpFiltering, themeReclassification);
         } catch (Exception e) {
           e.printStackTrace();
         }

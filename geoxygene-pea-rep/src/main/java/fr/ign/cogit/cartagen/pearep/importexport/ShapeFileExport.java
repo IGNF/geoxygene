@@ -186,6 +186,7 @@ public class ShapeFileExport {
         // these features have not been imported
         continue;
       }
+
       for (IGeneObj obj : pop) {
         if (classObj.isInstance(obj) && (!obj.isEliminated())) {
           features.add(obj);

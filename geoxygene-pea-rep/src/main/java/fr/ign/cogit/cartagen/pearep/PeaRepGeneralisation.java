@@ -45,6 +45,7 @@ import fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory;
 import fr.ign.cogit.cartagen.genealgorithms.landuse.LanduseSimplification;
 import fr.ign.cogit.cartagen.pearep.derivation.ScaleMasterScheduler;
 import fr.ign.cogit.cartagen.pearep.importexport.MGCPLoader;
+import fr.ign.cogit.cartagen.pearep.importexport.SHOMLoader;
 import fr.ign.cogit.cartagen.pearep.importexport.ShapeFileExport;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP0Loader;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP1Loader;
@@ -192,6 +193,7 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
   private static String VMAP2i_DATASET = "VMAP2i";
   private static String MGCPPlusPlus_DATASET = "MGCPPlusPlus";
   private static String VMAP1PlusPlus_DATASET = "VMAP1PlusPlus";
+  private static String SHOM_DATASET = "SHOM";
   public static Logger logger = Logger.getLogger(PeaRepGeneralisation.class
       .getName());
 
@@ -408,7 +410,20 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
           e1.printStackTrace();
         }
       }
-
+      if (scheduler.getShomFolder() != null) {
+        SHOMLoader shomLoader = new SHOMLoader(symbGroup,
+            GeneralisationTask.SHOM_DATASET);
+        try {
+          shomLoader.loadData(new File(scheduler.getShomFolder()),
+              new ArrayList<String>());
+        } catch (ShapefileException e1) {
+          GeneralisationTask.logger.severe("Problem during SHOM loading");
+          e1.printStackTrace();
+        } catch (IOException e1) {
+          GeneralisationTask.logger.severe("Problem during SHOM loading");
+          e1.printStackTrace();
+        }
+      }
       logger.info("Initialisation des schémas de données");
       this.setProgress(50);
       // Sleep for up to one second.
@@ -473,12 +488,14 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       if (!(scheduler.getMapLanduseParamIn().isEmpty())) {
         Map<IFeatureCollection<IFeature>, Map<String, Double>> mapFtColIn = scheduler
             .getMapLanduseParamIn();
+        Map<String, String> themeReclassification = scheduler
+            .getLanduseReclass();
         double dpFiltering = scheduler.getLanduseDpFilter();
         GeneralisationTask.logger
             .info("Début de la généralisation de l'occupation du sol");
         try {
           mapFtColOut = LanduseSimplification.landuseSimplify(mapFtColIn,
-              dpFiltering);
+              dpFiltering, themeReclassification);
         } catch (Exception e) {
           e.printStackTrace();
         }

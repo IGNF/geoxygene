@@ -18,9 +18,6 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
-import fr.ign.cogit.cartagen.pearep.enrichment.DeleteDoublePreProcess;
-import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanar;
-import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayLine;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
@@ -58,35 +55,10 @@ public class RailwaySelectionProcess extends ScaleMasterGeneProcess {
   public void execute(IFeatureCollection<? extends IGeneObj> features) {
     this.parameterise();
 
-    // do the road enrichment
-    Set<Class<? extends IGeneObj>> classes = new HashSet<Class<? extends IGeneObj>>();
-    // remove double features in roads
-    classes.clear();
-    classes.add(MGCPRailwayLine.class);
-    DeleteDoublePreProcess processDblRoad = DeleteDoublePreProcess
-        .getInstance();
-    processDblRoad.setProcessedClasses(classes);
-    try {
-      processDblRoad.execute(CartAGenDoc.getInstance().getCurrentDataset()
-          .getCartAGenDB());
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
     // make planar and enrich the road network
-    classes.clear();
-    classes.add(MGCPRailwayLine.class);
-    MakeNetworkPlanar process = MakeNetworkPlanar.getInstance();
-    process.setProcessedClasses(classes);
-    try {
-      process.execute(CartAGenDoc.getInstance().getCurrentDataset()
-          .getCartAGenDB());
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
     NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
         .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
-        .getRailwayNetwork(), true);
+        .getRailwayNetwork(), false);
 
     PropertyIsNotEqualTo filter = new PropertyIsNotEqualTo();
     filter.setLiteral(new Literal("0"));
@@ -121,8 +93,9 @@ public class RailwaySelectionProcess extends ScaleMasterGeneProcess {
       if (stroke.getLength() < this.lengthThreshold) {
         for (ArcReseau arc : stroke.getFeatures()) {
           IRailwayLine rail = map.get(arc);
-          if (rail != null)
+          if (rail != null) {
             rail.eliminateBatch();
+          }
         }
       }
     }

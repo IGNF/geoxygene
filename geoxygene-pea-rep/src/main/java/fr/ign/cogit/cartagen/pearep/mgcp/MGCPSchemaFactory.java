@@ -9,8 +9,12 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.pearep.mgcp;
 
+import java.util.Collection;
+
 import fr.ign.cogit.cartagen.core.defaultschema.network.Network;
 import fr.ign.cogit.cartagen.core.defaultschema.relief.ReliefField;
+import fr.ign.cogit.cartagen.core.defaultschema.road.BranchingCrossRoad;
+import fr.ign.cogit.cartagen.core.defaultschema.road.RoundAbout;
 import fr.ign.cogit.cartagen.core.genericschema.AbstractCreationFactory;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
@@ -21,10 +25,14 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
+import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayNode;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefField;
+import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
+import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
+import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirport;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirportPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
@@ -37,6 +45,8 @@ import fr.ign.cogit.cartagen.pearep.mgcp.sea.MGCPShipWreckArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPBridgePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayNode;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadNode;
+import fr.ign.cogit.cartagen.spatialanalysis.network.roads.PatteOie;
+import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RondPoint;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
@@ -49,6 +59,10 @@ public class MGCPSchemaFactory extends AbstractCreationFactory {
   @Override
   public IRoadNode createRoadNode(Noeud noeud) {
     return new MGCPRoadNode(noeud);
+  }
+
+  public IRoadNode createRoadNode(IPoint point) {
+    return new MGCPRoadNode(point);
   }
 
   @Override
@@ -117,6 +131,39 @@ public class MGCPSchemaFactory extends AbstractCreationFactory {
   @Override
   public IElectricityLine createElectricityLine(ILineString line, int importance) {
     return new MGCPElectricityLine(line, importance);
+  }
+
+  // BranchingCrossroad
+
+  @Override
+  public IBranchingCrossroad createBranchingCrossroad() {
+    return new BranchingCrossRoad();
+  }
+
+  @Override
+  public IBranchingCrossroad createBranchingCrossroad(PatteOie geoxObj,
+      Collection<IRoadLine> roads, Collection<IRoadNode> nodes) {
+    return new BranchingCrossRoad(geoxObj, roads, nodes);
+  }
+
+  // RoundAbout
+
+  @Override
+  public IRoundAbout createRoundAbout() {
+    return new RoundAbout();
+  }
+
+  @Override
+  public IRoundAbout createRoundAbout(RondPoint geoxObj,
+      Collection<IRoadLine> roads, Collection<IRoadNode> nodes) {
+    return new RoundAbout(geoxObj, roads, nodes);
+  }
+
+  @Override
+  public IRoundAbout createRoundAbout(IPolygon geom,
+      Collection<IRoadLine> externalRoads, Collection<IRoadLine> internalRoads,
+      Collection<INetworkNode> initialNodes) {
+    return new RoundAbout(geom, externalRoads, internalRoads, initialNodes);
   }
 
 }

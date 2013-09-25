@@ -85,6 +85,8 @@ import fr.ign.cogit.cartagen.pearep.derivation.XMLParser;
 import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSchemaFactory;
+import fr.ign.cogit.cartagen.pearep.shom.SHOMFeature;
+import fr.ign.cogit.cartagen.pearep.shom.SHOMSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPSchemaFactory;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -193,11 +195,16 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.implementations.add(new GeneObjImplementation(SourceDLM.MGCPPlusPlus
         .name(), MGCPFeature.class.getPackage(), MGCPFeature.class,
         new MGCPSchemaFactory()));
-    this.dbHues.put(SourceDLM.VMAP1PlusPlus.name(), Color.BLUE);
+    this.dbHues.put(SourceDLM.VMAP1PlusPlus.name(), Color.GREEN);
     cbModel.addElement(SourceDLM.VMAP1PlusPlus.name());
     this.implementations.add(new GeneObjImplementation(SourceDLM.VMAP1PlusPlus
         .name(), VMAP1PPFeature.class.getPackage(), VMAP1PPFeature.class,
         new VMAP1PPSchemaFactory()));
+    this.dbHues.put(SourceDLM.SHOM.name(), Color.BLUE);
+    cbModel.addElement(SourceDLM.SHOM.name());
+    this.implementations.add(new GeneObjImplementation(SourceDLM.SHOM.name(),
+        SHOMFeature.class.getPackage(), SHOMFeature.class,
+        new SHOMSchemaFactory()));
 
     // a panel to define the scale master
     JPanel pDefinition = new JPanel();

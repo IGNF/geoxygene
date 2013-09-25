@@ -33,6 +33,7 @@ import fr.ign.cogit.cartagen.pearep.shom.SHOMGravelArea;
 import fr.ign.cogit.cartagen.pearep.shom.SHOMGravelPebbleArea;
 import fr.ign.cogit.cartagen.pearep.shom.SHOMGravelSandArea;
 import fr.ign.cogit.cartagen.pearep.shom.SHOMGravelVaseArea;
+import fr.ign.cogit.cartagen.pearep.shom.SHOMLandArea;
 import fr.ign.cogit.cartagen.pearep.shom.SHOMPebbleArea;
 import fr.ign.cogit.cartagen.pearep.shom.SHOMPebbleGravelArea;
 import fr.ign.cogit.cartagen.pearep.shom.SHOMPebbleSandArea;
@@ -71,7 +72,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 public class SHOMLoader extends ShapeFileLoader {
 
-  private boolean loadLand = true;
+  private boolean loadLand = false;
   private IPolygon envelopeTotale;
   private List<IPolygon> cellsGrid;
 
@@ -268,14 +269,13 @@ public class SHOMLoader extends ShapeFileLoader {
         // SHOMUndefinedArea.class, CartAGenDataSet.LANDUSE_AREAS_POP,
         // IMiscArea.FEAT_TYPE_NAME, PeaRepDbType.SHOM, "NFSTF");
         //
-        // if (loadLand) {
-        // // land area
-        // this.loadSedimentologyClass(
-        // FileUtil.getNamedFileInDir(directory, pathLayer)
-        // .getAbsolutePath(), SHOMLandArea.class,
-        // CartAGenDataSet.LANDUSE_AREAS_POP, IMiscArea.FEAT_TYPE_NAME,
-        // PeaRepDbType.SHOM, "NFTC");
-        // }
+        if (loadLand) {
+          // land area
+          this.loadSedimentologyClass(
+              FileUtil.getNamedFileInDir(directory, nameShp).getAbsolutePath(),
+              SHOMLandArea.class, CartAGenDataSet.LANDUSE_AREAS_POP,
+              IMiscArea.FEAT_TYPE_NAME, PeaRepDbType.SHOM, "NFTC");
+        }
 
       }
 
@@ -356,8 +356,9 @@ public class SHOMLoader extends ShapeFileLoader {
     database.setDataSet(dataset);
     database.setType(new DigitalLandscapeModel());
     this.setDataset(dataset);
-    database.setGeneObjImpl(new GeneObjImplementation("shom", SHOMFeature.class
-        .getPackage(), SHOMFeature.class, new SHOMSchemaFactory()));
+    database.setGeneObjImpl(new GeneObjImplementation(SourceDLM.SHOM.name(),
+        SHOMFeature.class.getPackage(), SHOMFeature.class,
+        new SHOMSchemaFactory()));
   }
 
   @Override
