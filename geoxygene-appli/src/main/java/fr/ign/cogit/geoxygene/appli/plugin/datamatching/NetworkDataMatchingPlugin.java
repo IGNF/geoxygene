@@ -58,10 +58,11 @@ import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayLinkGeomPanel;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayParamPanel;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayStatResultPanel;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.EditParamPanel;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.LinkTabPanel;
+import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayLinkPanel;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
@@ -237,7 +238,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
 
         // Distance
         ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
-        float distanceNoeudsMax = 100;
+        float distanceNoeudsMax = 150;
         paramDistance.setDistanceNoeudsMax(distanceNoeudsMax);
         paramDistance.setDistanceArcsMax(2 * distanceNoeudsMax);
         paramDistance.setDistanceArcsMin(1); // distanceNoeudsMax
@@ -281,8 +282,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
 
         // -----------------------------------------------------------------------------------------
         // Actions
-        paramPlugin.setDoRecalage(true);
-        paramPlugin.setDoLinkExport(true);
+        paramPlugin.setDoRecalage(false);
+        paramPlugin.setDoLinkExport(false);
 
     }
 
@@ -679,11 +680,16 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
          * p4.setLocation(widthProjectFrame / 2, heightProjectFrame / 2);
          */
 
+        
         // Test : ajout 
         this.application.getFrame().newDesktopFrame("Résultat.");
-        this.application.getFrame().addFrameInDesktop("Résultat.", new LinkTabPanel(liens, widthProjectFrame));
-        this.application.getFrame().addFrameInDesktop("Résultat.", new DisplayStatResultPanel(resultatAppariement, widthProjectFrame));
-        this.application.getFrame().addFrameInDesktop("Résultat.", new DisplayParamPanel(paramPlugin, widthProjectFrame));
+        DisplayLinkGeomPanel geomLinkPanel = new DisplayLinkGeomPanel(application.getFrame(), liens);
+        this.application.getFrame().addFrameInDesktop("Résultat.", new DisplayLinkPanel(geomLinkPanel, liens));
+        this.application.getFrame().addFrameInDesktop("Résultat.", new DisplayStatResultPanel(resultatAppariement));
+        this.application.getFrame().addFrameInDesktop("Résultat.", new DisplayParamPanel(paramPlugin));
+        this.application.getFrame().addFrameInDesktop("Résultat.", geomLinkPanel);
+        
+        
         
         //
         LOGGER.info("Finished");

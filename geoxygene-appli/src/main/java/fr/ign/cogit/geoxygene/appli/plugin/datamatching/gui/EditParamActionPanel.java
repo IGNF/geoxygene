@@ -52,6 +52,11 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
     importXML.addActionListener(this);
     
     cbRecalage = new JCheckBox();
+    if (paramPanel.getNetworkDataMatchingPlugin().getParamPlugin().getDoRecalage()) {
+    	cbRecalage.setSelected(true);
+    } else {
+    	cbRecalage.setSelected(false);
+    }
     cbExport = new JCheckBox();
     cbTransfert = new JCheckBox();
     
@@ -88,7 +93,6 @@ public class EditParamActionPanel extends JPanel implements ActionListener {
     CellConstraints cc = new CellConstraints();
     
     // Action recalage
-    cbRecalage.setSelected(true);
     add(cbRecalage, cc.xy(2, 2));
     add(new JLabel("Ajouter le Recalage"), cc.xy(4, 2));
     

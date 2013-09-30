@@ -65,14 +65,14 @@ public class DisplayParamPanel extends JInternalFrame {
    * Constructor.
    * @param frame
    */
-  public DisplayParamPanel(ParamPluginNetworkDataMatching paramPlugin, int widthProjectFrame) {
+  public DisplayParamPanel(ParamPluginNetworkDataMatching paramPlugin) {
       
       super("Paramètres.", true, true, true, true);
       
       setToolTipText(this.getTitle());
       getDesktopIcon().setToolTipText(this.getTitle());
       setLocation(0, 0);
-      setSize(widthProjectFrame, 400);
+      setSize(400, 400);
       setFrameIcon(new ImageIcon(
               DisplayParamPanel.class.getResource("/images/icons/wrench.png")));
       

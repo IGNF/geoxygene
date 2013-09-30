@@ -1,8 +1,6 @@
 package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,14 +9,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
@@ -26,8 +24,11 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 
-
-public class LinkTabPanel extends JInternalFrame implements ActionListener {
+/**
+ * 
+ *
+ */
+public class DisplayLinkPanel extends JInternalFrame  {
     
     /** Default serial ID. */
     private static final long serialVersionUID = 1L;
@@ -35,47 +36,41 @@ public class LinkTabPanel extends JInternalFrame implements ActionListener {
     private JPanel tableauPanel;
     private LienAppariementTableModel modele = new LienAppariementTableModel();
     private JTable tableau;
-    
-    private JPanel viewLienPanel;
+    private DisplayLinkGeomPanel geomLinkPanel;
     
     /**
      * Constructor.
      * @param liens
      */
-    public LinkTabPanel(EnsembleDeLiens liens, int width) {
+    public DisplayLinkPanel(DisplayLinkGeomPanel gLP, EnsembleDeLiens liens) {
         
         super("Détail des liens.", true, true, true, true);
+        
+        geomLinkPanel = gLP;
         
         // Setting the tool tip text to the frame and its sub components
         setToolTipText(this.getTitle());
         getDesktopIcon().setToolTipText(this.getTitle());
         setLocation(0, 400);
-        this.setSize(width * 2, 400);
-        setFrameIcon(new ImageIcon(
-                LinkTabPanel.class.getResource("/images/icons/link.png")));
+        this.setSize(400, 400);
+        setFrameIcon(new ImageIcon(DisplayLinkPanel.class.getResource("/images/icons/link.png")));
         
         // Initialize panel
         initTableauPanel(liens);
-        initViewLienPanel();
         
         getContentPane().setLayout(new BorderLayout());
-        JSplitPane splitPane = new JSplitPane();
-        splitPane.setBorder(null);
-        getContentPane().add(splitPane, BorderLayout.CENTER);
-        splitPane.add(this.tableauPanel, JSplitPane.LEFT);
-        splitPane.add(this.viewLienPanel, JSplitPane.RIGHT);
-        splitPane.setDividerLocation(600);
+        
+        getContentPane().add(tableauPanel, BorderLayout.CENTER);
         
         pack();
         setVisible(true);
         
     }
     
-    
-    private void initViewLienPanel() {
-        viewLienPanel = new JPanel();
-    }
-    
+    /**
+     * 
+     * @param liens
+     */
     private void initTableauPanel(EnsembleDeLiens liens) {
         tableauPanel = new JPanel();
         tableauPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -90,9 +85,27 @@ public class LinkTabPanel extends JInternalFrame implements ActionListener {
         
         tableau = new JTable(modele);
         tableau.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        tableau.getColumnModel().getColumn(4).setPreferredWidth(400);
         
+        tableau.getSelectionModel().addListSelectionListener(
+                new ListSelectionListener() {
+                    public void valueChanged(ListSelectionEvent event) {
+                        int viewRow = tableau.getSelectedRow();
+                        if (viewRow >= 0) {
+                            // javax.swing.JOptionPane.showMessageDialog(null, tableau.getRowCount());
+                            // int modelRow = tableau.convertRowIndexToModel(viewRow);
+                            /*javax.swing.JOptionPane.showMessageDialog(null, String.format("Selected Row in view: %d. " +
+                                    "Selected Row in model: %d.", 
+                                    viewRow, modelRow));*/
+                            String cellValue = String.valueOf( tableau.getValueAt(viewRow, 0) );
+                            geomLinkPanel.displayLink(cellValue);
+                            // javax.swing.JOptionPane.showMessageDialog(null,cellValue);
+                            // String cellValue = String.valueOf( tableau.getValueAt(row, column) );
+                        }
+                    }
+                }
+        );
         
+        //tableau.getColumnModel().getColumn(4).setPreferredWidth(400);
         tableauPanel.add(tableau.getTableHeader(), cc.xy(2, 2));
         tableauPanel.add(new JScrollPane(tableau), cc.xy(2, 3));
         
@@ -156,10 +169,10 @@ public class LinkTabPanel extends JInternalFrame implements ActionListener {
         }
     }
     
-    @Override
+    /*@Override
     public void actionPerformed(ActionEvent e) {
-      
-    }
+        
+    }*/
     
     
     private String arcsToString (List<Arc> arcs) {

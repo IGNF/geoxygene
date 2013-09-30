@@ -68,7 +68,7 @@ public class DisplayStatResultPanel extends JInternalFrame  {
    * Constructor.
    * @param res
    */
-  public DisplayStatResultPanel(ResultNetworkDataMatching res, int width) {
+  public DisplayStatResultPanel(ResultNetworkDataMatching res) {
       
       super("Résultat.", true, true, true, true);
       
@@ -76,8 +76,8 @@ public class DisplayStatResultPanel extends JInternalFrame  {
       getDesktopIcon().setToolTipText(this.getTitle());
       setFrameIcon(new ImageIcon(
               DisplayStatResultPanel.class.getResource("/images/icons/sum.png")));
-      setLocation(width, 0);
-      setSize(width, 400);
+      setLocation(400, 0);
+      setSize(400, 400);
       
       getContentPane().setLayout(new BorderLayout());
     
