@@ -60,7 +60,6 @@ import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionEvent;
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionListener;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.DataSet;
-import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
@@ -69,10 +68,6 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
-import fr.ign.cogit.geoxygene.style.thematic.DiagramRadius;
-import fr.ign.cogit.geoxygene.style.thematic.DiagramSymbolizer;
-import fr.ign.cogit.geoxygene.style.thematic.ThematicClass;
-import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 
 /**
  * Descripteur de couches stylisées. Implémente la norme OGC 02-070 sur les
@@ -85,9 +80,6 @@ import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "name",
-    // "description",
-    // "environmentVariables",
-    // "useSLDLibrary",
     "layers" })
 @XmlRootElement(name = "StyledLayerDescriptor")
 public class StyledLayerDescriptor implements FeatureCollectionListener {
@@ -96,16 +88,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
 
     @XmlElement(name = "Name")
     protected String name;
-    
-    // @XmlElement(name = "Description")
-    // protected Description description;
-  
-    // @XmlElement(name = "EnvironmentVariables")
-    // protected EnvironmentVariables environmentVariables;
-    
-    // @XmlElement(name = "UseSLDLibrary")
-    // protected List<UseSLDLibrary> useSLDLibrary;
-    
+        
     @XmlAttribute(required = true)
     protected String version;
   
@@ -725,7 +708,6 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
   }
 
   /**
-   * TODO
    * @param layerName
    * @param wellKnownText
    * @param strokeColor
