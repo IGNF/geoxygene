@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -20,11 +19,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.OrientationMapAdapter;
 import fr.ign.cogit.geoxygene.jdbc.postgis.ConnectionParam;
 
 @XmlAccessorType(XmlAccessType.FIELD)

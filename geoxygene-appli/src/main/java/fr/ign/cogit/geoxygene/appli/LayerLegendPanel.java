@@ -270,7 +270,6 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     TableCellRenderer renderer = new JComponentTableCellRenderer();
 
     // Case à cocher
-    int width = this.getWidth();
     TableColumn col = this.layersTable.getColumnModel().getColumn(0);
     col.setMinWidth(22);
     col.setMaxWidth(22);

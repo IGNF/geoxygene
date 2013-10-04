@@ -305,13 +305,14 @@ class ButtonTabComponent extends JPanel {
          
         //make JLabel read titles from JTabbedPane
         JLabel label = new JLabel() {
-            public String getText() {
-                int i = pane.indexOfTabComponent(ButtonTabComponent.this);
-                if (i != -1) {
-                    return pane.getTitleAt(i);
-                }
-                return null;
-            }
+          private static final long serialVersionUID = 1L;
+          public String getText() {
+              int i = pane.indexOfTabComponent(ButtonTabComponent.this);
+              if (i != -1) {
+                  return pane.getTitleAt(i);
+              }
+              return null;
+          }
         };
          
         add(label);
