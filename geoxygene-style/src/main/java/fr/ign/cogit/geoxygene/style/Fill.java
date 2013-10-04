@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
+import fr.ign.cogit.geoxygene.style.texture.Texture;
+
 /**
  * @author Julien Perret
  */
@@ -59,7 +61,25 @@ public class Fill {
   public void setGraphicFill(GraphicFill graphicFill) {
     this.graphicFill = graphicFill;
   }
+  
+  private Texture texture = null;
+  
+  /**
+   * Renvoie la texture.
+   * @return la texture.
+   */
+  public Texture getTexture() {
+    return this.texture;
+  }
 
+  /**
+   * Affecte la texture.
+   * @param texture la texture.
+   */
+  public void setTexture(Texture texture) {
+    this.texture = texture;
+  }
+  
   @XmlElements({ @XmlElement(name = "SvgParameter", type = SvgParameter.class),
       @XmlElement(name = "CssParameter", type = SvgParameter.class) })
   private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>();

@@ -42,11 +42,14 @@ import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.log4j.Logger;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.renderer.lite.gridcoverage2d.GridCoverageRenderer;
 import org.geotools.styling.StyleBuilder;
 
+import com.jhlabs.image.LinearColormap;
+import com.jhlabs.image.TextureFilter;
 import com.vividsolutions.jts.geom.Envelope;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -101,9 +104,11 @@ import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.TextSymbolizer;
+import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTexture;
 import fr.ign.cogit.geoxygene.style.thematic.DiagramSymbolizer;
 import fr.ign.cogit.geoxygene.style.thematic.ThematicClass;
 import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
+import fr.ign.cogit.geoxygene.util.ColorUtil;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 
 /**
@@ -116,7 +121,8 @@ public final class RenderUtil {
    */
   private RenderUtil() {
   }
-  
+  private static final Logger logger = Logger.getLogger(RenderUtil.class);
+
   /**
    * Draw a geometry on the given graphics.
    * @param geometry the geometry
@@ -192,7 +198,7 @@ public final class RenderUtil {
     }
   }
   
-  public static void paint(Symbolizer symbolizer, IFeature feature, Viewport viewport, Graphics2D graphics, double opacity) {
+  public static void paint(Symbolizer symbolizer, IFeature feature, Viewport viewport, Graphics2D graphics, double opacity, BufferedImage img) {
       if (PointSymbolizer.class.isAssignableFrom(symbolizer.getClass())) {
           paint((PointSymbolizer) symbolizer, feature, viewport, graphics, opacity);
           return;
@@ -202,7 +208,7 @@ public final class RenderUtil {
           return;
       }
       if (PolygonSymbolizer.class.isAssignableFrom(symbolizer.getClass())) {
-          paint((PolygonSymbolizer) symbolizer, feature, viewport, graphics, opacity);
+          paint((PolygonSymbolizer) symbolizer, feature, viewport, graphics, opacity, img);
           return;
       }
       if (RasterSymbolizer.class.isAssignableFrom(symbolizer.getClass())) {
@@ -267,12 +273,6 @@ public final class RenderUtil {
         return;
       }
       Point2D point;
-//      IGeometry geometry = feature.getGeom();
-//      if (symbolizer.getGeometryPropertyName() != null
-//          && !symbolizer.getGeometryPropertyName().equalsIgnoreCase("geom")) { //$NON-NLS-1$
-//        geometry = (IGeometry) feature.getAttribute(symbolizer
-//            .getGeometryPropertyName());
-//      }
       IGeometry geometry = getGeometry(symbolizer.getGeometryPropertyName(), feature);
       if (geometry == null) {
         return;
@@ -303,7 +303,7 @@ public final class RenderUtil {
 
         if (symbolizer.getColorMap() != null) {
           try {
-            graphics.setColor(getColorWithOpacity(new Color(symbolizer.getColorMap().getColor(
+            graphics.setColor(ColorUtil.getColorWithOpacity(new Color(symbolizer.getColorMap().getColor(
                 (Double.parseDouble(feature.getAttribute(
                     symbolizer.getColorMap().getPropertyName()).toString())))), opacity));
           } catch (NumberFormatException e) {
@@ -311,22 +311,22 @@ public final class RenderUtil {
         } else if (symbolizer.getCategorizedMap() != null) {
           Object value = feature.getAttribute(symbolizer.getCategorizedMap().getPropertyName());
           int rgb = symbolizer.getCategorizedMap().getColor(value);
-          graphics.setColor(getColorWithOpacity(new Color(rgb), opacity));
+          graphics.setColor(ColorUtil.getColorWithOpacity(new Color(rgb), opacity));
         } else {
           Color color = (mark.getFill() == null) ? Color.gray : mark.getFill()
                     .getColor();
-          graphics.setColor(getColorWithOpacity(color, opacity));
+          graphics.setColor(ColorUtil.getColorWithOpacity(color, opacity));
         }
         graphics.fill(markShape);
         
         graphics.setStroke(mark.getStroke().toAwtStroke((float) scale));
         if (symbolizer.getColorMap() != null || symbolizer.getCategorizedMap() != null) {
           Color color = Color.black;
-          graphics.setColor(getColorWithOpacity(color, opacity));
+          graphics.setColor(ColorUtil.getColorWithOpacity(color, opacity));
         } else {
           Color color = (mark.getStroke() == null) ? Color.black : mark
                 .getStroke().getColor();
-          graphics.setColor(getColorWithOpacity(color, opacity));
+          graphics.setColor(ColorUtil.getColorWithOpacity(color, opacity));
         }
         graphics.draw(markShape);
       }
@@ -357,13 +357,8 @@ public final class RenderUtil {
     }
     return (IGeometry) feature.getAttribute(propertyName);
   }
+  
   public static void paint(LineSymbolizer symbolizer, IFeature feature, Viewport viewport, Graphics2D graphics, double opacity) {
-//    IGeometry geometry = feature.getGeom();
-//    if (symbolizer.getGeometryPropertyName() != null
-//        && !symbolizer.getGeometryPropertyName().equalsIgnoreCase("geom")) { //$NON-NLS-1$
-//      geometry = (IGeometry) feature.getAttribute(symbolizer
-//          .getGeometryPropertyName());
-//    }
     IGeometry geometry = getGeometry(symbolizer.getGeometryPropertyName(), feature);
     if (geometry == null) {
       return;
@@ -384,19 +379,24 @@ public final class RenderUtil {
     if (symbolizer.getStroke().getGraphicType() == null) {
       List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, false);
       if (shapes != null) {
+        // ColorMap
         if (symbolizer.getColorMap() != null) {
           try {
-            graphics.setColor(getColorWithOpacity(new Color(symbolizer.getColorMap().getColor(
+            Color c = new Color(symbolizer.getColorMap().getColor(
                 (Double.parseDouble(feature.getAttribute(
-                    symbolizer.getColorMap().getPropertyName()).toString())))), opacity));
+                    symbolizer.getColorMap().getPropertyName()).toString()))));
+            graphics.setColor(ColorUtil.getColorWithOpacity(c, opacity));
           } catch (NumberFormatException e) {
+            e.printStackTrace();
           }
+        //Categorized Map
         } else if (symbolizer.getCategorizedMap() != null) {
           Object value = feature.getAttribute(symbolizer.getCategorizedMap().getPropertyName());
           int rgb = symbolizer.getCategorizedMap().getColor(value);
-          graphics.setColor(getColorWithOpacity(new Color(rgb), opacity));
+          graphics.setColor(ColorUtil.getColorWithOpacity(new Color(rgb), opacity));
+        
         } else {
-          graphics.setColor(getColorWithOpacity(symbolizer.getStroke().getColor(), opacity));
+          graphics.setColor(ColorUtil.getColorWithOpacity(symbolizer.getStroke().getColor(), opacity));
         }
         for (Shape shape : shapes) {
           graphics.draw(shape);
@@ -411,7 +411,7 @@ public final class RenderUtil {
             .getGraphicType()).getGraphics();
         for (Graphic graphic : graphicList) {
           for (Shape shape : shapes) {
-            graphicFillLineString(symbolizer, shape, graphic, viewport, graphics, opacity);
+            graphicFillLineString(shape, graphic, viewport, graphics, opacity);
           }
         }
       } else {
@@ -422,7 +422,7 @@ public final class RenderUtil {
                   .getGraphicType()).getGraphics();
           for (Graphic graphic : graphicList) {
             for (Shape shape : shapes) {
-              graphicStrokeLineString(symbolizer, shape, graphic, viewport, graphics, opacity);
+              graphicStrokeLineString(shape, graphic, viewport, graphics, opacity);
             }
           }
         }
@@ -458,11 +458,11 @@ public final class RenderUtil {
             symbolizer.getPerpendicularOffset() * scaleSymbolizerUOMToDataUOM);
         List<Shape> shapes = new ArrayList<Shape>();
         for (ILineString l : offsetCurve) {
-          shapes.addAll(getLineStringShapeList(symbolizer, l, viewport, fill, scaleSymbolizerUOMToDataUOM));
+          shapes.addAll(getLineStringShapeList(symbolizer.getStroke().getStrokeWidth(), l, viewport, fill, scaleSymbolizerUOMToDataUOM));
         }
         return shapes;
       }
-      return getLineStringShapeList(symbolizer, curve, viewport, fill, scaleSymbolizerUOMToDataUOM);
+      return getLineStringShapeList(symbolizer.getStroke().getStrokeWidth(), curve, viewport, fill, scaleSymbolizerUOMToDataUOM);
     }
     if (geometry.isMultiCurve()) {
       List<Shape> shapes = new ArrayList<Shape>();
@@ -471,11 +471,80 @@ public final class RenderUtil {
           IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(
               (ILineString) line, symbolizer.getPerpendicularOffset() * scaleSymbolizerUOMToDataUOM);
           for (ILineString l : offsetCurve) {
-            shapes.addAll(getLineStringShapeList(symbolizer, l, viewport, fill, scaleSymbolizerUOMToDataUOM));
+            shapes.addAll(getLineStringShapeList(symbolizer.getStroke().getStrokeWidth(), l, viewport, fill, scaleSymbolizerUOMToDataUOM));
           }
         } else {
-          shapes.addAll(getLineStringShapeList(symbolizer, line, viewport, fill, scaleSymbolizerUOMToDataUOM));
+          shapes.addAll(getLineStringShapeList(symbolizer.getStroke().getStrokeWidth(), line, viewport, fill, scaleSymbolizerUOMToDataUOM));
         }
+      }
+      return shapes;
+    }
+    if (geometry.isMultiSurface()) {
+      List<Shape> shapes = new ArrayList<Shape>();
+      for (IOrientableSurface surface : ((IMultiSurface<IOrientableSurface>) geometry)
+          .getList()) {
+        try {
+          Shape shape = viewport.toShape(fill ? surface.buffer(symbolizer.getStroke()
+              .getStrokeWidth() / 2) : surface);
+          if (shape != null) {
+            shapes.add(shape);
+          }
+        } catch (NoninvertibleTransformException e) {
+          e.printStackTrace();
+        }
+      }
+      return shapes;
+    }
+    return null;
+  }
+  
+  /**
+   * @param geometry a geometry
+   * @param viewport the viewport in which to view it
+   * @param fill true if the stroke width should be used to build the shapes, ie
+   *          if they will be used for graphic fill
+   * @return the list of awt shapes corresponding to the given geometry
+   */
+  @SuppressWarnings("unchecked")
+  private static List<Shape> getShapeList(PolygonSymbolizer symbolizer, IGeometry geometry, Viewport viewport,
+      boolean fill) {
+    double scaleSymbolizerUOMToDataUOM = 1;
+    if (symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
+      try {
+        scaleSymbolizerUOMToDataUOM = 1 / viewport.getModelToViewTransform().getScaleX();
+      } catch (NoninvertibleTransformException e) {
+        e.printStackTrace();
+      }
+    }
+    if (ICurve.class.isAssignableFrom(geometry.getClass())
+        || IPolygon.class.isAssignableFrom(geometry.getClass())) {
+      ICurve curve = ((ICurve.class.isAssignableFrom(geometry
+          .getClass())) ? ((ICurve) geometry)
+          : ((IPolygon) geometry).exteriorLineString());
+      //TODO Integrate again the perpendicular offset when it will be integrated in PolygonSymbolizer
+//      if (symbolizer.getPerpendicularOffset() != 0) {
+//        IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(curve,
+//            symbolizer.getPerpendicularOffset() * scaleSymbolizerUOMToDataUOM);
+//        List<Shape> shapes = new ArrayList<Shape>();
+//        for (ILineString l : offsetCurve) {
+//          shapes.addAll(getLineStringShapeList(symbolizer, l, viewport, fill, scaleSymbolizerUOMToDataUOM));
+//        }
+//        return shapes;
+//      }
+      return getLineStringShapeList(symbolizer.getStroke().getStrokeWidth(), curve, viewport, fill, scaleSymbolizerUOMToDataUOM);
+    }
+    if (geometry.isMultiCurve()) {
+      List<Shape> shapes = new ArrayList<Shape>();
+      for (IOrientableCurve line : (IMultiCurve<IOrientableCurve>) geometry) {
+//        if (symbolizer.getPerpendicularOffset() != 0) {
+//          IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(
+//              (ILineString) line, symbolizer.getPerpendicularOffset() * scaleSymbolizerUOMToDataUOM);
+//          for (ILineString l : offsetCurve) {
+//            shapes.addAll(getLineStringShapeList(symbolizer, l, viewport, fill, scaleSymbolizerUOMToDataUOM));
+//          }
+//        } else {
+          shapes.addAll(getLineStringShapeList(symbolizer.getStroke().getStrokeWidth(), line, viewport, fill, scaleSymbolizerUOMToDataUOM));
+//        }
       }
       return shapes;
     }
@@ -507,12 +576,11 @@ public final class RenderUtil {
    * @param scale scale to go from the symbolizer's uom to the data uom
    * @return
    */
-  private static List<Shape> getLineStringShapeList(LineSymbolizer symbolizer, IOrientableCurve line,
+  private static List<Shape> getLineStringShapeList(float strokeWidth, IOrientableCurve line,
       Viewport viewport, boolean fill, double scale) {
     List<Shape> shapes = new ArrayList<Shape>();
     try {
-      Shape shape = viewport.toShape(fill ? line.buffer(symbolizer.getStroke()
-          .getStrokeWidth() * 0.5 * scale) : line);
+      Shape shape = viewport.toShape(fill ? line.buffer(strokeWidth * 0.5 * scale) : line);
       if (shape != null) {
         shapes.add(shape);
       }
@@ -526,7 +594,7 @@ public final class RenderUtil {
   private static void paintShadow(LineSymbolizer symbolizer, IGeometry geometry, Viewport viewport,
       Graphics2D graphics, double opacity) {
     if (symbolizer.getShadow() != null) {
-      Color shadowColor = getColorWithOpacity(symbolizer.getShadow().getColor(), opacity);
+      Color shadowColor = ColorUtil.getColorWithOpacity(symbolizer.getShadow().getColor(), opacity);
       double translate_x = -5;
       double translate_y = -5;
       if (symbolizer.getShadow().getDisplacement() != null) {
@@ -566,7 +634,7 @@ public final class RenderUtil {
     }
   }
 
-  private static void graphicFillLineString(LineSymbolizer symbolizer, Shape shape, Graphic graphic,
+  private static void graphicFillLineString(Shape shape, Graphic graphic,
       Viewport viewport, Graphics2D graphics, double opacity) {
     if (shape == null || viewport == null || graphic == null) {
       return;
@@ -576,11 +644,11 @@ public final class RenderUtil {
     for (ExternalGraphic external : graphic.getExternalGraphics()) {
       if (external.getFormat().contains("png") || external.getFormat().contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
         Image image = external.getOnlineResource();
-        graphicFillLineString(symbolizer, shape, image, size, graphics, opacity);
+        graphicFillLineString(shape, image, size, graphics, opacity);
       } else {
         if (external.getFormat().contains("svg")) { //$NON-NLS-1$
           GraphicsNode node = external.getGraphicsNode();
-          graphicFillLineString(symbolizer, shape, node, size, graphics, opacity);
+          graphicFillLineString(shape, node, size, graphics, opacity);
         }
       }
       return;
@@ -588,7 +656,7 @@ public final class RenderUtil {
     List<Shape> shapes = new ArrayList<Shape>(graphic.getMarks().size());
     for (Mark mark : graphic.getMarks()) {
       shapes.add(mark.toShape());
-      graphics.setColor(getColorWithOpacity(mark.getFill().getColor(), opacity));
+      graphics.setColor(ColorUtil.getColorWithOpacity(mark.getFill().getColor(), opacity));
     }
     double width = shape.getBounds2D().getWidth();
     double height = shape.getBounds2D().getHeight();
@@ -610,7 +678,7 @@ public final class RenderUtil {
     }
   }
 
-  private static void graphicFillLineString(LineSymbolizer symbolizer, Shape shape, GraphicsNode node,
+  private static void graphicFillLineString(Shape shape, GraphicsNode node,
       float size, Graphics2D graphics, double opacity) {
     AffineTransform translate = AffineTransform.getTranslateInstance(-node
         .getBounds().getMinX(), -node.getBounds().getMinY());
@@ -618,10 +686,10 @@ public final class RenderUtil {
     BufferedImage buff = new BufferedImage((int) node.getBounds().getWidth(),
         (int) node.getBounds().getHeight(), BufferedImage.TYPE_INT_ARGB);
     node.paint((Graphics2D) buff.getGraphics());
-    graphicFillLineString(symbolizer, shape, buff, size, graphics, opacity);
+    graphicFillLineString(shape, buff, size, graphics, opacity);
   }
 
-  private static void graphicFillLineString(LineSymbolizer symbolizer, Shape shape, Image image, float size,
+  private static void graphicFillLineString(Shape shape, Image image, float size,
       Graphics2D graphics, double opacity) {
     Double width = new Double(Math.max(1, shape.getBounds2D().getWidth()));
     Double height = new Double(Math.max(1, shape.getBounds2D().getHeight()));
@@ -648,21 +716,20 @@ public final class RenderUtil {
     buff.flush();
   }
 
-  private static void graphicStrokeLineString(LineSymbolizer symbolizer, Shape shape, Graphic graphic,
+  private static void graphicStrokeLineString(Shape shape, Graphic graphic,
       Viewport viewport, Graphics2D graphics, double opacity) {
     if (shape == null || viewport == null || graphic == null) {
       return;
     }
     float size = graphic.getSize();
-    // graphics.setClip(shape);
     for (ExternalGraphic external : graphic.getExternalGraphics()) {
       if (external.getFormat().contains("png") || external.getFormat().contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
         Image image = external.getOnlineResource();
-        graphicStrokeLineString(symbolizer, shape, image, size, graphics, opacity);
+        graphicStrokeLineString(shape, image, size, graphics, opacity);
       } else {
         if (external.getFormat().contains("svg")) { //$NON-NLS-1$
           GraphicsNode node = external.getGraphicsNode();
-          graphicStrokeLineString(symbolizer, shape, node, size, graphics, opacity);
+          graphicStrokeLineString(shape, node, size, graphics, opacity);
         }
       }
       return;
@@ -670,9 +737,9 @@ public final class RenderUtil {
     List<Shape> shapes = new ArrayList<Shape>();
     for (Mark mark : graphic.getMarks()) {
       shapes.add(mark.toShape());
-      graphics.setColor(getColorWithOpacity(mark.getFill().getColor(), opacity));
+      graphics.setColor(ColorUtil.getColorWithOpacity(mark.getFill().getColor(), opacity));
     }
-    List<AffineTransform> transforms = getGraphicStrokeLineStringTransforms(symbolizer, shape, size, 1, 1);
+    List<AffineTransform> transforms = getGraphicStrokeLineStringTransforms(shape, size, 1, 1);
     for (AffineTransform t : transforms) {
       for (Shape markShape : shapes) {
         Shape tranlatedShape = t.createTransformedShape(markShape);
@@ -681,12 +748,12 @@ public final class RenderUtil {
     }
   }
 
-  private static void graphicStrokeLineString(LineSymbolizer symbolizer, Shape shape, GraphicsNode node,
+  private static void graphicStrokeLineString(Shape shape, GraphicsNode node,
       float size, Graphics2D graphics, double opacity) {
     double width = node.getBounds().getWidth();
     double height = node.getBounds().getHeight();
     List<AffineTransform> transforms = 
-        getGraphicStrokeLineStringTransforms(symbolizer, shape, size, width, height);
+        getGraphicStrokeLineStringTransforms(shape, size, width, height);
     for (AffineTransform t : transforms) {
       AffineTransform tr = AffineTransform.getTranslateInstance(-node
           .getBounds().getMinX(), -node.getBounds().getMinY());
@@ -696,10 +763,10 @@ public final class RenderUtil {
     }
   }
 
-  private static void graphicStrokeLineString(LineSymbolizer symbolizer, Shape shape, Image image, float size,
+  private static void graphicStrokeLineString(Shape shape, Image image, float size,
       Graphics2D graphics, double opacity) {
     List<AffineTransform> transforms = 
-        getGraphicStrokeLineStringTransforms(symbolizer, shape, size,
+        getGraphicStrokeLineStringTransforms(shape, size,
             image.getWidth(null), image.getHeight(null));
     for (AffineTransform t : transforms) {
       graphics.drawImage(image, t, null);
@@ -707,7 +774,7 @@ public final class RenderUtil {
   }
 
   private static List<AffineTransform> getGraphicStrokeLineStringTransforms(
-          LineSymbolizer symbolizer, Shape shape, float size, double width, double height) {
+          Shape shape, float size, double width, double height) {
     List<AffineTransform> transforms = new ArrayList<AffineTransform>();
     double shapeHeight = size;
     double factor = shapeHeight / height;
@@ -745,12 +812,16 @@ public final class RenderUtil {
     return transforms;
   }
   
-  public static void paint(PolygonSymbolizer symbolizer, IFeature feature, Viewport viewport, Graphics2D graphics, double opacity) {
+  public static void paint(PolygonSymbolizer symbolizer, IFeature feature, Viewport viewport, Graphics2D graphics, double opacity, BufferedImage img) {
+    IGeometry geometry = getGeometry(symbolizer.getGeometryPropertyName(), feature);
+    if (geometry == null) {
+      return;
+    }
     if (feature.getGeom() == null || viewport == null) {
       return;
     }
     if (symbolizer.getShadow() != null) {
-      Color shadowColor = getColorWithOpacity(symbolizer.getShadow().getColor(), opacity);
+      Color shadowColor = ColorUtil.getColorWithOpacity(symbolizer.getShadow().getColor(), opacity);
       double translate_x = -5;
       double translate_y = -5;
       if (symbolizer.getShadow().getDisplacement() != null) {
@@ -783,13 +854,13 @@ public final class RenderUtil {
         }
       }
       for (Shape shape : shapes) {
-        fillPolygon(symbolizer, shape, viewport, graphics, opacity);
+        fillShadow(symbolizer, shape, viewport, graphics, opacity);
       }
     }
     Color fillColor = null;
     float fillOpacity = 1f;
     if (symbolizer.getFill() != null) {
-      fillColor = getColorWithOpacity(symbolizer.getFill().getColor(), opacity);
+      fillColor = ColorUtil.getColorWithOpacity(symbolizer.getFill().getColor(), opacity);
       fillOpacity = symbolizer.getFill().getFillOpacity() * (float) opacity;
     }
     if (symbolizer.getColorMap() != null
@@ -797,13 +868,13 @@ public final class RenderUtil {
       double value = Double.parseDouble(feature.getAttribute(
           symbolizer.getColorMap().getPropertyName()).toString());
       int rgb = symbolizer.getColorMap().getColor(value);
-      fillColor = getColorWithOpacity(new Color(rgb), opacity);
+      fillColor = ColorUtil.getColorWithOpacity(new Color(rgb), opacity);
       symbolizer.getStroke().setStroke(Color.BLACK);
     }
     if (symbolizer.getCategorizedMap() != null) {
       Object value = feature.getAttribute(symbolizer.getCategorizedMap().getPropertyName());
       int rgb = symbolizer.getCategorizedMap().getColor(value);
-      fillColor = getColorWithOpacity(new Color(rgb), opacity);
+      fillColor = ColorUtil.getColorWithOpacity(new Color(rgb), opacity);
       symbolizer.getStroke().setStroke(Color.BLACK);
     }
     if (fillColor != null && fillOpacity > 0f) {
@@ -834,14 +905,19 @@ public final class RenderUtil {
         }
       }
       for (Shape shape : shapes) {
-        if (symbolizer.getFill() == null || symbolizer.getFill().getGraphicFill() == null) {
+        if (symbolizer.getFill() != null && 
+            (symbolizer.getFill().getGraphicFill() == null && symbolizer.getFill().getTexture() == null)) {
           fillPolygon(symbolizer, shape, viewport, graphics, opacity);
         } else {
-          List<Graphic> graphicList = symbolizer.getFill().getGraphicFill()
-              .getGraphics();
-          for (Graphic graphic : graphicList) {
-            double rotation = Double.parseDouble(graphic.getRotation().evaluate(feature).toString());
-            graphicFillPolygon(symbolizer, shape, graphic, viewport, graphics, opacity, rotation);
+          if (symbolizer.getFill().getGraphicFill() != null){
+            List<Graphic> graphicList = symbolizer.getFill().getGraphicFill()
+                .getGraphics();
+            for (Graphic graphic : graphicList) {
+              double rotation = Double.parseDouble(graphic.getRotation().evaluate(feature).toString());
+              graphicFillPolygon(symbolizer, shape, graphic, viewport, graphics, opacity, rotation);
+            }
+          } else if (symbolizer.getFill().getTexture() != null) {
+            texturePolygon(symbolizer, shape, graphics, img);
           }
         }
       }
@@ -854,7 +930,7 @@ public final class RenderUtil {
       } else if (symbolizer.getStroke().getStrokeLineJoin() == BasicStroke.JOIN_ROUND) {
           symbolizer.getStroke().setStrokeLineCap(BasicStroke.CAP_ROUND);
       } else {
-//        AbstractSymbolizer.logger.error("Stroke Line Join undefined."); //$NON-NLS-1$
+        RenderUtil.logger.error("Stroke Line Join undefined."); //$NON-NLS-1$
       }
       float strokeOpacity = symbolizer.getStroke().getStrokeOpacity();
       if (symbolizer.getStroke().getGraphicType() == null && strokeOpacity > 0f) {
@@ -870,7 +946,7 @@ public final class RenderUtil {
         BasicStroke bs = (BasicStroke) symbolizer.getStroke().toAwtStroke(
             (float) scale);
         // Solid color
-        Color color = getColorWithOpacity(symbolizer.getStroke().getColor(), opacity);
+        Color color = ColorUtil.getColorWithOpacity(symbolizer.getStroke().getColor(), opacity);
         graphics.setColor(color);
         if (feature.getGeom().isPolygon()) {
           drawPolygon(symbolizer, (GM_Polygon) feature.getGeom(), viewport, graphics,
@@ -883,10 +959,56 @@ public final class RenderUtil {
             }
           }
         }
+      } else {
+        if (symbolizer.getStroke().getGraphicType().getClass()
+            .isAssignableFrom(GraphicFill.class)) {
+          List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, true);
+          // GraphicFill
+          List<Graphic> graphicList = ((GraphicFill) symbolizer.getStroke()
+              .getGraphicType()).getGraphics();
+          for (Graphic graphic : graphicList) {
+            for (Shape shape : shapes) {
+              graphicFillLineString(shape, graphic, viewport, graphics, opacity);
+            }
+          }
+        } else {
+          // GraphicStroke
+          List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, false);
+          if (shapes != null) {
+            List<Graphic> graphicList = ((GraphicStroke) symbolizer.getStroke()
+                    .getGraphicType()).getGraphics();
+            for (Graphic graphic : graphicList) {
+              for (Shape shape : shapes) {
+                graphicStrokeLineString(shape, graphic, viewport, graphics, opacity);
+              }
+            }
+          }
+        }
       }
     }
   }
+  
+  private static void texturePolygon(
+      PolygonSymbolizer symbolizer, Shape shape, Graphics2D graphics, BufferedImage img) {
+    if (PerlinNoiseTexture.class.isAssignableFrom(symbolizer.getFill().getTexture().getClass())) {
+      PerlinNoiseTexture texture = (PerlinNoiseTexture)symbolizer.getFill().getTexture();
+      TextureFilter filter = new TextureFilter();
+      filter.setColormap(
+          new LinearColormap(
+              texture.getColor1().getRGB(),
+              texture.getColor2().getRGB()));
+      filter.setScale(texture.getScale());
 
+      BufferedImage imgTexture = new BufferedImage(
+          img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+      imgTexture.setData(img.getData());
+      
+      filter.filter(imgTexture, imgTexture);
+      graphics.setClip(shape);
+      graphics.drawImage(imgTexture, null, null);
+    }
+  }
+  
   private static void graphicFillPolygon(PolygonSymbolizer symbolizer, Shape shape, Graphic graphic,
       Viewport viewport, Graphics2D graphics, double opacity, double rotation) {
     if (shape == null || viewport == null || graphic == null) {
@@ -923,7 +1045,7 @@ public final class RenderUtil {
       BufferedImage buff = new BufferedImage(markShapeSize, markShapeSize,
           BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = (Graphics2D) buff.getGraphics();
-      g.setColor(getColorWithOpacity(mark.getFill().getColor(), opacity));
+      g.setColor(ColorUtil.getColorWithOpacity(mark.getFill().getColor(), opacity));
       g.fill(tranlatedShape);
       graphicFillPolygon(symbolizer, shape, buff, size, graphics, opacity);
     }
@@ -982,6 +1104,13 @@ public final class RenderUtil {
     graphics.fill(shape);
    
   }
+  
+  private static void fillShadow(PolygonSymbolizer symbolizer, Shape shape, Viewport viewport, Graphics2D graphics, double opacity) {
+    if (shape == null || viewport == null) {
+      return;
+    }
+    graphics.fill(shape);
+  }
 
   private static void drawPolygon(PolygonSymbolizer symbolizer, GM_Polygon polygon, Viewport viewport,
       Graphics2D graphics, BasicStroke stroke, double opacity) {
@@ -993,22 +1122,11 @@ public final class RenderUtil {
       Shape shape = viewport.toShape(polygon.getExterior());
       if (shape != null) {
         shapes.add(shape);
-      } else {
-//        if (AbstractSymbolizer.logger.isDebugEnabled()) {
-//          AbstractSymbolizer.logger.debug("null shape for " + polygon); //$NON-NLS-1$
-//          AbstractSymbolizer.logger
-//              .debug("ring = " + polygon.exteriorLineString()); //$NON-NLS-1$
-//        }
       }
       for (IRing ring : polygon.getInterior()) {
         shape = viewport.toShape(ring);
         if (shape != null) {
           shapes.add(shape);
-        } else {
-//          if (AbstractSymbolizer.logger.isDebugEnabled()) {
-//            AbstractSymbolizer.logger.debug("null shape for " + polygon); //$NON-NLS-1$
-//            AbstractSymbolizer.logger.debug("ring = " + ring); //$NON-NLS-1$
-//          }
         }
       }
     } catch (NoninvertibleTransformException e) {
@@ -1016,24 +1134,11 @@ public final class RenderUtil {
     }
     for (Shape shape : shapes) {
       Shape outline = stroke.createStrokedShape(shape);
-//      graphics.draw(shape);
-      graphics.setColor(getColorWithOpacity(symbolizer.getStroke().getColor(), opacity));
+      graphics.setColor(ColorUtil.getColorWithOpacity(symbolizer.getStroke().getColor(), opacity));
       graphics.fill(outline);
     }
   }
-  /**
-   * A color with the specified opacity applied to the given color.
- * @param color the input color
- * @param opacity the opacity
- * @return a new color with the specified opacity applied to the given color
- */
-private static Color getColorWithOpacity(Color color, double opacity) {
-      float[] symbolizerColorComponenents = color.getComponents(null);
-      return new Color(symbolizerColorComponenents[0],
-              symbolizerColorComponenents[1],
-              symbolizerColorComponenents[2],
-              symbolizerColorComponenents[3] * (float) opacity);
-  }
+
   /**
    * @param obj The FT_coverage to render
    * This method shall be reworked.
@@ -1079,9 +1184,9 @@ private static Color getColorWithOpacity(Color color, double opacity) {
   @SuppressWarnings("unchecked")
   public static void paint(TextSymbolizer symbolizer, String text, IGeometry geometry, Viewport viewport, Graphics2D graphics, double opacity) {
     // Initialize the color with which to actually paint the text
-    Color fillColor = getColorWithOpacity(Color.black, opacity);
+    Color fillColor = ColorUtil.getColorWithOpacity(Color.black, opacity);
     if (symbolizer.getFill() != null) {
-      fillColor = getColorWithOpacity(symbolizer.getFill().getColor(), opacity);
+      fillColor = ColorUtil.getColorWithOpacity(symbolizer.getFill().getColor(), opacity);
     }
     //The scale
     double scaleUOMToPixels = 1;
@@ -1109,11 +1214,11 @@ private static Color getColorWithOpacity(Color color, double opacity) {
     }
     graphics.setFont(awtFont);
     // Initialize the color for the halo around the text
-    Color haloColor = getColorWithOpacity(Color.WHITE, opacity);
+    Color haloColor = ColorUtil.getColorWithOpacity(Color.WHITE, opacity);
     float haloRadius = 1.0f;
     if (symbolizer.getHalo() != null) {
       if (symbolizer.getHalo().getFill() != null) {
-        haloColor = getColorWithOpacity(symbolizer.getHalo().getFill().getColor(), opacity);
+        haloColor = ColorUtil.getColorWithOpacity(symbolizer.getHalo().getFill().getColor(), opacity);
       }
       haloRadius = symbolizer.getHalo().getRadius();
     }
@@ -1173,7 +1278,6 @@ private static Color getColorWithOpacity(Color color, double opacity) {
       Viewport viewport, Graphics2D graphics, double scale) throws NoninvertibleTransformException {
     if (linePlacement.isGeneralizeLine()) {
       // we have to generalize the geometry first
-//      double sigma = 20;
       double sigma = graphics.getFontMetrics().getMaxAdvance() / scale;
       geometry = GaussianFilter.gaussianFilter(new GM_LineString(geometry.coord()), sigma, 1.0);
     }
@@ -1321,7 +1425,6 @@ private static Color getColorWithOpacity(Color color, double opacity) {
           }
           size = maxDistance;
           if (maxNode == null) {
-//            AbstractSymbolizer.logger.info(feature.getGeom());
             return;
           }
           position = maxNode.getGeometrie().getPosition();
@@ -1348,15 +1451,11 @@ private static Color getColorWithOpacity(Color color, double opacity) {
         for (ThematicClass thematicClass : s.getThematicClass()) {
           double value = ((Number) thematicClass.getClassValue().evaluate(
               feature)).doubleValue();
-          // AbstractSymbolizer.logger.info(thematicClass.getClassLabel() + " "
-          // + value);
           if (value == 0) {
             continue;
           }
           double arcAngle = 3.6 * value;
-          // AbstractSymbolizer.logger.info("\t" + startAngle + " - " +
-          // arcAngle);
-          graphics.setColor(getColorWithOpacity(thematicClass.getFill().getColor(), opacity));
+          graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass.getFill().getColor(), opacity));
           graphics.fillArc((int) (point.getX() - size),
               (int) (point.getY() - size), (int) (2 * size), (int) (2 * size),
               (int) startAngle, (int) arcAngle);

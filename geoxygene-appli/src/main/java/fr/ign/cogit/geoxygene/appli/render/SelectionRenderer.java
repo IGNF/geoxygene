@@ -421,7 +421,7 @@ public class SelectionRenderer implements Renderer {
    */
   private void render(final IFeature feature, final BufferedImage theImage) {
       RenderUtil.paint(this.symbolizer, feature, this.getLayerViewPanel().getViewport(),
-        (Graphics2D) theImage.getGraphics(), 1.0f);// FIXME OPACITY FIX
+        (Graphics2D) theImage.getGraphics(), 1.0f, theImage);// FIXME OPACITY FIX
   }
 
   /**
