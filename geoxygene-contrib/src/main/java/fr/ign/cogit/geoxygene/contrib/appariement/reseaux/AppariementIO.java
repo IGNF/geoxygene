@@ -54,17 +54,13 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @author Mustiere - IGN / Laboratoire COGIT
  */
 public final class AppariementIO {
-  /**
-   * Private constructor. Not used: this is a utilitary class.
-   */
-  private AppariementIO() {
-  }
+  
+    /** Private constructor. Not used: this is a utilitary class. */
+    private AppariementIO() {
+    }
 
-  /**
-   * Static logger.
-   */
-  private static final Logger LOGGER = Logger.getLogger(AppariementIO.class
-      .getName());
+    /** Static logger. */
+    private static final Logger LOGGER = Logger.getLogger(AppariementIO.class.getName());
 
   /**
    * Lancement de l'appariement de réseaux sur des objets Géographiques : 1-

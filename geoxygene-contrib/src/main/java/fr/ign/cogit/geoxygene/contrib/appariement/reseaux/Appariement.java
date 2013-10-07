@@ -1475,11 +1475,8 @@ public abstract class Appariement {
           // cas 4b : on a trouvé un pcc dans un seul sens,
           // et c'est normal
           lien.setEvaluation(1);
-          arcRef.setResultatAppariement(I18N.getString("Appariement." + //$NON-NLS-1$
-              "MatchedWithAnEdge" + //$NON-NLS-1$
-              "OrASuccessionOfEdges")); //$NON-NLS-1$
-          pccMin2.setResultatAppariementGlobal(I18N.getString("Appariement." + //$NON-NLS-1$
-              "MatchedWithARefEdge")); //$NON-NLS-1$
+          arcRef.setResultatAppariement("Matched with an edge or a succession of edges.");
+          pccMin2.setResultatAppariementGlobal("Matched with a ref edge.");
           nbOkUneSerie++;
           longOkUneSerie = longOkUneSerie + arcRef.longueur();
         } else {
@@ -1526,11 +1523,8 @@ public abstract class Appariement {
           // cas 4a : on a trouvé un pcc dans un seul sens,
           // et c'est normal
           lien.setEvaluation(1);
-          arcRef.setResultatAppariement(I18N.getString("Appariement." + //$NON-NLS-1$
-              "MatchedWithAnEdgeOrA" + //$NON-NLS-1$
-              "SuccessionOfEdges")); //$NON-NLS-1$
-          pccMin1.setResultatAppariementGlobal(I18N.getString("Appariement." + //$NON-NLS-1$
-              "MatchedWithARefEdge")); //$NON-NLS-1$
+          arcRef.setResultatAppariement("Matched with an edge or a succession of edges");
+          pccMin1.setResultatAppariementGlobal("Matched with a ref edge");
           nbOkUneSerie++;
           longOkUneSerie = longOkUneSerie + arcRef.longueur();
         } else {

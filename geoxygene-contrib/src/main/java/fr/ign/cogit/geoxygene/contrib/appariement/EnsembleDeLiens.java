@@ -464,10 +464,13 @@ public class EnsembleDeLiens extends Population<Lien> {
 
   /**
    * Crée une liste de population en fonction des seuils sur l'evaluation passés
-   * en paramètre. Exemple: si la liste en entree contient 2 "Double" (0.5, 1),
-   * alors renvoie 3 populations avec les liens ayant respectivement leur
-   * évaluation... 0: inférieur à 0.5 (strictement) 1: entre 0.5 et 1
-   * (strictement sur 1) 2: supérieur ou égal à 1
+   * en paramètre. 
+   * Exemple: si la liste en entree contient 2 "Double" (0.5, 1), alors renvoie 3 populations avec les liens 
+   * ayant respectivement leur évaluation... 
+   *      0: inférieur à 0.5 (strictement) 
+   *      1: entre 0.5 et 1 (strictement sur 1) 
+   *      2: supérieur ou égal à 1
+   * 
    * @param valeursClassement sorting values
    * @return a list of sets of links
    */
