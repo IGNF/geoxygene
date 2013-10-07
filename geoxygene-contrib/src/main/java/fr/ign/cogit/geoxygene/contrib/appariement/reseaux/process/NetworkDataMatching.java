@@ -281,7 +281,7 @@ public class NetworkDataMatching {
      * @param direction
      * @return
      */
-    public static ReseauAppStat importAsEdgesAndNodes(String networkName, DatasetNetworkDataMatching network1,
+    public static ReseauAppStat importAsEdgesAndNodes(String networkName, DatasetNetworkDataMatching network,
             ParamDirectionNetworkDataMatching direction, float distanceNoeudsMax) {
 
         boolean populationsArcsAvecOrientationDouble = direction.getOrientationDouble();
@@ -302,14 +302,14 @@ public class NetworkDataMatching {
         LOGGER.info(popNoeudApp.size() + " noeuds");
         
         // Ajout du schema 
-        DefaultFeature featureRef = (DefaultFeature) network1.getPopulationsArcs().get(0).get(0);
+        DefaultFeature featureRef = (DefaultFeature) network.getPopulationsArcs().get(0).get(0);
         SchemaDefaultFeature schemaDefaultFeature = featureRef.getSchema();
         FeatureType newFeatureType = (FeatureType) featureRef.getFeatureType();
         popArcApp.setFeatureType(newFeatureType);
 
         // /////////////////////////
         // import des arcs
-        List<IFeatureCollection<? extends IFeature>> populationsArcs = network1.getPopulationsArcs();
+        List<IFeatureCollection<? extends IFeature>> populationsArcs = network.getPopulationsArcs();
         Iterator<IFeatureCollection<? extends IFeature>> itPopArcs = null;
         itPopArcs = populationsArcs.iterator();
         LOGGER.info(populationsArcs.size() + " pops");
@@ -345,8 +345,10 @@ public class NetworkDataMatching {
 
                 // Gestion de la direction
                 if (populationsArcsAvecOrientationDouble) {
+                    LOGGER.info("Population " + networkName + " avec direction double sens");
                     arc.setOrientation(2);
                 } else {
+                    LOGGER.info("Population " + networkName + " avec direction dynamique");
                     String attribute = attributOrientation;
                     if (attribute.isEmpty()) {
                         arc.setOrientation(1);
@@ -357,10 +359,11 @@ public class NetworkDataMatching {
                         if (orientationMap != null) {
                             for (int mapKey : orientationMap.keySet()) {
                                 String valAttribut = orientationMap.get(mapKey);
-                                if (valAttribut.equals(value)) {
+                                LOGGER.info("Population " + networkName + " - " + attribute + " = " +
+                                        value + " ? " + valAttribut);
+                                if (valAttribut.equals(value.toString())) {
                                     arc.setOrientation(mapKey);
-                                    // System.out.println(attribute + " = " +
-                                    // value + " ? " + valAttribut);
+                                    LOGGER.info("Population " + networkName + " - orientation arc = " + mapKey);
                                 }
                             }
                             /*
@@ -404,7 +407,7 @@ public class NetworkDataMatching {
 
         // if (true) return reseau;
         // import des noeuds
-        List<IFeatureCollection<? extends IFeature>> populationsNoeuds = network1.getPopulationsNoeuds();
+        List<IFeatureCollection<? extends IFeature>> populationsNoeuds = network.getPopulationsNoeuds();
         Iterator<?> itPopNoeuds = null;
         itPopNoeuds = populationsNoeuds.iterator();
         while (itPopNoeuds.hasNext()) {
