@@ -14,6 +14,7 @@ import fr.ign.cogit.geoxygene.generalisation.Filtering;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 
 public class MorphologyTransform {
@@ -297,7 +298,42 @@ public class MorphologyTransform {
    */
   private IPolygon lineLeftDilatationFromPolyCentr(ILineString line,
       IPolygon polyToSum) {
-    // TODO
+    // Use convex hull
+    polyToSum = (IPolygon) polyToSum.convexHull();
+
+    // Create return area for each point of the line.
+    IDirectPosition pointA = line.getControlPoint(0);
+    IDirectPosition pointB = line.getControlPoint(1);
+    IDirectPosition pointC = line.getControlPoint(2);
+
+    double dX = pointB.getX() - pointA.getX();
+    double dY = pointB.getY() - pointA.getY();
+
+    double theta = Math.atan2(dY, dY) - Math.PI / 2;
+
+    // for each vector, create an area representing the dillatation
+
+    // get the constrained point of polyToSum
+
+    // construct the area
+
+    // the segment is
+
     return null;
+  }
+
+  private IDirectPosition getFarestPoint(IPolygon polygon, double angle) {
+    IPolygon rotation = CommonAlgorithms.rotation(polygon, angle);
+    IDirectPosition toReturn = null;
+    for (IDirectPosition toCompare : rotation.coord()) {
+      if (toReturn == null) {
+        toReturn = toCompare;
+      } else if (toReturn.getX() < toCompare.getX()) {
+        toReturn = toCompare;
+      }
+      // TODO when egal
+
+    }
+    return toReturn;
   }
 }
