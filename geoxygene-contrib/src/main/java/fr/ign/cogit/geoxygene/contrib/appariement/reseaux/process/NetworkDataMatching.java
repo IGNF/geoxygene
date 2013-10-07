@@ -345,25 +345,25 @@ public class NetworkDataMatching {
 
                 // Gestion de la direction
                 if (populationsArcsAvecOrientationDouble) {
-                    LOGGER.info("Population " + networkName + " avec direction double sens");
+                    LOGGER.trace("Population " + networkName + " avec direction double sens");
                     arc.setOrientation(2);
                 } else {
-                    LOGGER.info("Population " + networkName + " avec direction dynamique");
+                    LOGGER.trace("Population " + networkName + " avec direction dynamique");
                     String attribute = attributOrientation;
                     if (attribute.isEmpty()) {
                         arc.setOrientation(1);
-                        LOGGER.info("Populations avec orientation simple");
+                        LOGGER.trace("Populations avec orientation simple");
                     } else {
                         Object value = element.getAttribute(attribute);
                         // System.out.println(attribute + " = " + value);
                         if (orientationMap != null) {
                             for (int mapKey : orientationMap.keySet()) {
                                 String valAttribut = orientationMap.get(mapKey);
-                                LOGGER.info("Population " + networkName + " - " + attribute + " = " +
+                                LOGGER.trace("Population " + networkName + " - " + attribute + " = " +
                                         value + " ? " + valAttribut);
                                 if (valAttribut.equals(value.toString())) {
                                     arc.setOrientation(mapKey);
-                                    LOGGER.info("Population " + networkName + " - orientation arc = " + mapKey);
+                                    LOGGER.trace("Population " + networkName + " - orientation arc = " + mapKey);
                                 }
                             }
                             /*
@@ -381,7 +381,7 @@ public class NetworkDataMatching {
                                     try {
                                         arc.setOrientation(Integer.parseInt(v));
                                     } catch (Exception e) {
-                                        // FIXME Pretty specfific to BDTOPO Schema
+                                        // FIXME Pretty specific to BDTOPO Schema
                                         // ... no time to make it better
                                         if (v.equalsIgnoreCase("direct")) {
                                             arc.setOrientation(1);
