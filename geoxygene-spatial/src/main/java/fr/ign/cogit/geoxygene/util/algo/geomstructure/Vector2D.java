@@ -172,4 +172,14 @@ public class Vector2D extends Vecteur {
   public Vector2D opposite() {
     return new Vector2D(-this.getX(), -this.getY());
   }
+
+  /**
+   * Return the vector as a segment from a given starting point.
+   * @param point
+   * @return
+   */
+  public ILineSegment toGeom(IDirectPosition point) {
+    IDirectPosition end = this.translate(point);
+    return new GM_LineSegment(point, end);
+  }
 }
