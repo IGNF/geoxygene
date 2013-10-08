@@ -22,6 +22,9 @@ package fr.ign.cogit.geoxygene.appli.example;
 
 import java.awt.Color;
 import java.awt.geom.NoninvertibleTransformException;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
@@ -42,6 +45,7 @@ import fr.ign.cogit.geoxygene.style.GraphicFill;
 import fr.ign.cogit.geoxygene.style.GraphicStroke;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
+import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Shadow;
 import fr.ign.cogit.geoxygene.style.Style;
@@ -76,6 +80,14 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     exampleGraphicFill_Line();
     exampleTexture();
     
+    FileWriter fichier;
+    try {
+      fichier = new FileWriter ("./src/main/resources/sld/GraphicMark.xml");
+      projectFrame.getSld().marshall(fichier);
+    } catch (IOException e1) {
+      e1.printStackTrace();
+    }
+    
     try {
       projectFrame.getLayerViewPanel().getViewport().zoomToFullExtent();
     } catch (NoninvertibleTransformException e) {
@@ -94,6 +106,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     Graphic graphicTree = new Graphic();
     graphicTree.setSize(10);
     
+    //Exemples avec des GraphicFill de type image
     ExternalGraphic tree = new ExternalGraphic();
     URL url = SLDDemoApplication.class.getResource("/images/herbes.png"); //$NON-NLS-1$
     tree.setHref(url.toString());
@@ -105,7 +118,19 @@ public class SLDDemoApplication extends GeOxygeneApplication {
 //    cogitLogo.setFormat("gif"); //$NON-NLS-1$
 //    graphicTree.getExternalGraphics().add(cogitLogo);
     
-    graphicFill.getGraphics().add(graphicTree);
+//    graphicFill.getGraphics().add(graphicTree);
+
+    //Exemple avec un graphic de type Mark
+//    Graphic graphicStar = new Graphic();
+//    graphicStar.setSize(8f);
+    Mark markStar = new Mark();
+    markStar.setWellKnownName("star"); //$NON-NLS-1$
+//    Fill fillStar = new Fill();
+//    fillStar.setColor(new Color(1.f,0.4f,0.4f));
+//    markStar.setFill(fillStar);
+//    graphicStar.getMarks().add(markStar);
+//    graphicFill.getGraphics().add(graphicStar);
+    
     symbolizer.getFill().setGraphicFill(graphicFill);
     Population<DefaultFeature> pop = new Population<DefaultFeature>(
         "GraphicFill_Polygon"); //$NON-NLS-1$
