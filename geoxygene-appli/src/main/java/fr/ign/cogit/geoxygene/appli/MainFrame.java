@@ -306,6 +306,7 @@ class ButtonTabComponent extends JPanel {
         //make JLabel read titles from JTabbedPane
         JLabel label = new JLabel() {
           private static final long serialVersionUID = 1L;
+          @Override
           public String getText() {
               int i = pane.indexOfTabComponent(ButtonTabComponent.this);
               if (i != -1) {
@@ -354,6 +355,7 @@ class ButtonTabComponent extends JPanel {
             addActionListener(this);
         }
  
+        @Override
         public void actionPerformed(ActionEvent e) {
             int i = pane.indexOfTabComponent(ButtonTabComponent.this);
             if (i != -1) {
@@ -362,12 +364,14 @@ class ButtonTabComponent extends JPanel {
         }
  
         //we don't want to update UI for this button
+        @Override
         public void updateUI() {
         }
  
     }
  
     private final static MouseListener buttonMouseListener = new MouseAdapter() {
+        @Override
         public void mouseEntered(MouseEvent e) {
             Component component = e.getComponent();
             if (component instanceof AbstractButton) {
@@ -376,6 +380,7 @@ class ButtonTabComponent extends JPanel {
             }
         }
  
+        @Override
         public void mouseExited(MouseEvent e) {
             Component component = e.getComponent();
             if (component instanceof AbstractButton) {
