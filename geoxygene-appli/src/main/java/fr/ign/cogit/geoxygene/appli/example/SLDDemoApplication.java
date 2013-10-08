@@ -73,12 +73,12 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     projectFrame = application.getFrame().newProjectFrame();
     
     exampleGraphicFill_Fill_Polygon();
-    exampleGraphicFill_Stroke_Polygon();
-    exampleGraphicStroke_Stroke_Polygon();
-    exampleShadow();
-    exampleGraphicStroke_Line();
-    exampleGraphicFill_Line();
-    exampleTexture();
+//    exampleGraphicFill_Stroke_Polygon();
+//    exampleGraphicStroke_Stroke_Polygon();
+//    exampleShadow();
+//    exampleGraphicStroke_Line();
+//    exampleGraphicFill_Line();
+//    exampleTexture();
     
     FileWriter fichier;
     try {
@@ -107,11 +107,11 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     graphicTree.setSize(10);
     
     //Exemples avec des GraphicFill de type image
-    ExternalGraphic tree = new ExternalGraphic();
-    URL url = SLDDemoApplication.class.getResource("/images/herbes.png"); //$NON-NLS-1$
-    tree.setHref(url.toString());
-    tree.setFormat("png"); //$NON-NLS-1$
-    graphicTree.getExternalGraphics().add(tree);
+//    ExternalGraphic tree = new ExternalGraphic();
+//    URL url = SLDDemoApplication.class.getResource("/images/herbes.png"); //$NON-NLS-1$
+//    tree.setHref(url.toString());
+//    tree.setFormat("png"); //$NON-NLS-1$
+//    graphicTree.getExternalGraphics().add(tree);
     
 //    ExternalGraphic cogitLogo = new ExternalGraphic();
 //    cogitLogo.setHref("http://recherche.ign.fr/labos/cogit/img/LOGO_COGIT.gif"); //$NON-NLS-1$
@@ -121,15 +121,15 @@ public class SLDDemoApplication extends GeOxygeneApplication {
 //    graphicFill.getGraphics().add(graphicTree);
 
     //Exemple avec un graphic de type Mark
-//    Graphic graphicStar = new Graphic();
-//    graphicStar.setSize(8f);
+    Graphic graphicStar = new Graphic();
+    graphicStar.setSize(8f);
     Mark markStar = new Mark();
     markStar.setWellKnownName("star"); //$NON-NLS-1$
-//    Fill fillStar = new Fill();
-//    fillStar.setColor(new Color(1.f,0.4f,0.4f));
-//    markStar.setFill(fillStar);
-//    graphicStar.getMarks().add(markStar);
-//    graphicFill.getGraphics().add(graphicStar);
+    Fill fillStar = new Fill();
+    fillStar.setColor(new Color(1.f,0.4f,0.4f));
+    markStar.setFill(fillStar);
+    graphicStar.getMarks().add(markStar);
+    graphicFill.getGraphics().add(graphicStar);
     
     symbolizer.getFill().setGraphicFill(graphicFill);
     Population<DefaultFeature> pop = new Population<DefaultFeature>(
