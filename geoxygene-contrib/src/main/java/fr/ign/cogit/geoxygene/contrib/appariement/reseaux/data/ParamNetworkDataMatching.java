@@ -164,6 +164,7 @@ public class ParamNetworkDataMatching {
    * @return ParametresApp
    * @deprecated
    */
+  @Deprecated
   public ParametresApp paramNDMToParamApp() {
     
     // Create old object paramApp
@@ -252,6 +253,7 @@ public class ParamNetworkDataMatching {
   /**
    * Display all parameters (value or info)
    */
+  @Override
   public String toString() {
     
     StringBuffer buffer = new StringBuffer();

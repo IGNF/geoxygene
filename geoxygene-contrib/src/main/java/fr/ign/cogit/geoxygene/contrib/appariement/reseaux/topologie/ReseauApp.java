@@ -119,6 +119,7 @@ public class ReseauApp extends CarteTopo {
    * @param param matching parameters
    * @deprecated
    */
+  @Deprecated
   public void instancieAttributsNuls(ParametresApp param) {
     for (Noeud node : this.getPopNoeuds()) {
       NoeudApp noeud = (NoeudApp) node;
