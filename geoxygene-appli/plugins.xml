@@ -4,6 +4,7 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.datamatching.NetworkDataMatchingPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.TopologieReseauPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.ImportAsEdgesPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.BuildingBlocksCreationPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.ShortestPathTreePlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.BezierCurvePlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.TINPlugin</plugin>
@@ -13,7 +14,7 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.VoronoiDiagramJTSPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.SwingingArmPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.semio.SemioPlugin</plugin>
-    <lastOpenedFile>D:\Data\Appariement\Haiti\data\2-projection\extrait2\osm_extrait2.shp</lastOpenedFile>
+    <lastOpenedFile></lastOpenedFile>
     <ConnectionParam>
         <dbtype>postgis</dbtype>
         <host>localhost</host>
