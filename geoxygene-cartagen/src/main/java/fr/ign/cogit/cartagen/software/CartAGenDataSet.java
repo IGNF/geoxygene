@@ -353,6 +353,108 @@ public class CartAGenDataSet extends DataSet {
    * @param obj an object of the dataset
    * @return
    */
+  public String getPopNameFromFeatType(String featureType) {
+    if (featureType.equals(IBuilding.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.BUILDINGS_POP;
+    } else if (featureType.equals(IUrbanBlock.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.BLOCKS_POP;
+    } else if (featureType.equals(ITown.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.TOWNS_POP;
+    } else if (featureType.equals(IUrbanAlignment.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.URBAN_ALIGNMENTS_POP;
+    } else if (featureType.equals(IRoadLine.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.ROADS_POP;
+    } else if (featureType.equals(IRoadNode.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.ROAD_NODES_POP;
+    } else if (featureType.equals(IPathLine.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.PATHS_POP;
+    } else if (featureType.equals(IWaterLine.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.WATER_LINES_POP;
+    } else if (featureType.equals(IWaterNode.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.WATER_NODES_POP;
+    } else if (featureType.equals(IWaterArea.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.WATER_AREAS_POP;
+    } else if (featureType.equals(IRiverSimpleIsland.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.WATER_ISLAND_POP;
+    } else if (featureType.equals(IRailwayLine.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.RAILWAY_LINES_POP;
+    } else if (featureType.equals(IElectricityLine.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.ELECTRICITY_LINES_POP;
+    } else if (featureType.equals(IContourLine.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.CONTOUR_LINES_POP;
+    } else if (featureType.equals(IReliefElementLine.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.RELIEF_LINES_POP;
+    } else if (featureType.equals(ISpotHeight.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.SPOT_HEIGHTS_POP;
+    } else if (featureType.equals(ISimpleLandUseArea.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.LANDUSE_AREAS_POP;
+    } else if (featureType.equals(INetworkFace.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.NETWORK_FACES_POP;
+    } else if (featureType.equals(SpecialPoint.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.SPECIAL_POINTS_POP;
+    } else if (featureType.equals(IRoadStroke.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.ROAD_STROKES_POP;
+    } else if (featureType.equals(IRoundAbout.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.ROUNDABOUTS_POP;
+    } else if (featureType.equals(IBranchingCrossroad.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.BRANCHINGS_POP;
+    } else if (featureType.equals(IMask.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.MASK;
+    } else if (featureType.equals(IRoadFacilityPoint.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.ROAD_FACILITY_PT_POP;
+    } else if (featureType.equals(IRoadArea.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.ROAD_AREA_POP;
+    } else if (featureType.equals(IRailwayNode.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.RAILWAY_NODE_POP;
+    } else if (featureType.equals(ITriageArea.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.TRIAGE_AREA_POP;
+    } else if (featureType.equals(ICable.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.CABLE_POP;
+    } else if (featureType.equals(IBoundedArea.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.BOUNDED_AREA_POP;
+    } else if (featureType.equals(ILabelPoint.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.LABEL_PT_POP;
+    } else if (featureType.equals(IMiscArea.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.MISC_AREA_POP;
+    } else if (featureType.equals(IMiscLine.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.MISC_LINE_POP;
+    } else if (featureType.equals(IMiscPoint.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.MISC_PT_POP;
+    } else if (featureType.equals(IAirportArea.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.AIRPORT_AREA_POP;
+    } else if (featureType.equals(IRunwayArea.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.RUNWAY_AREA_POP;
+    } else if (featureType.equals(IRunwayLine.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.RUNWAY_LINE_POP;
+    } else if (featureType.equals(IWaterPoint.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.WATER_PT_POP;
+    } else if (featureType.equals(IAdminCapital.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.ADMIN_CAP_POP;
+    } else if (featureType.equals(ISimpleAdminUnit.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.ADMIN_UNIT_POP;
+    } else if (featureType.equals(IAdminLimit.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.ADMIN_LIMIT_POP;
+    } else if (featureType.equals(IBuildPoint.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.BUILD_PT_POP;
+    } else if (featureType.equals(ISportsField.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.SPORTS_FIELDS_POP;
+    } else if (featureType.equals(IReliefElementPoint.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.RELIEF_PTS_POP;
+    } else if (featureType.equals(IBuildArea.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.BUILD_AREA_POP;
+    } else if (featureType.equals(IPointOfInterest.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.POI_POP;
+    } else if (featureType.equals(IBridgePoint.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.BRIDGE_PT_POP;
+    }
+    return null;
+  }
+
+  /**
+   * Gets the population name of an object of the dataset
+   * @param obj an object of the dataset
+   * @return
+   */
   public String getPopNameFromClass(Class<?> classObj) {
     if (IBuilding.class.isAssignableFrom(classObj)) {
       return CartAGenDataSet.BUILDINGS_POP;
@@ -920,8 +1022,10 @@ public class CartAGenDataSet extends DataSet {
 
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          IBuilding building = CartagenApplication.getInstance()
-              .getCreationFactory().createBuilding(
+          IBuilding building = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
+              .createBuilding(
                   new BatimentImpl(((IMultiSurface<?>) geom).get(i)));
           if (fields.containsKey("CARTAGEN_ID")) {
             building.setId((Integer) fields.get("CARTAGEN_ID"));
@@ -1113,7 +1217,9 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IRoadLine tr = CartagenApplication.getInstance().getCreationFactory()
+        IRoadLine tr = CartagenApplication
+            .getInstance()
+            .getCreationFactory()
             .createRoadLine(
                 new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
                     .getGeoxObj(), false, (ILineString) geom), importance,
@@ -1326,7 +1432,9 @@ public class CartAGenDataSet extends DataSet {
         IRoadLine tr = null;
 
         if (sourceDlm != SourceDLM.BD_TOPO_V2)
-          tr = CartagenApplication.getInstance().getCreationFactory()
+          tr = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
               .createRoadLine(
                   new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
                       .getGeoxObj(), false, (ILineString) geom), importance,
@@ -1366,7 +1474,9 @@ public class CartAGenDataSet extends DataSet {
 
           IRoadLine tr = null;
           if (sourceDlm != SourceDLM.BD_TOPO_V2)
-            tr = CartagenApplication.getInstance().getCreationFactory()
+            tr = CartagenApplication
+                .getInstance()
+                .getCreationFactory()
                 .createRoadLine(
                     new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
                         .getGeoxObj(), false,
@@ -1378,8 +1488,9 @@ public class CartAGenDataSet extends DataSet {
             tr = new RoadLineWithAttributes(new TronconDeRouteImpl(
                 (Reseau) this.getRoadNetwork()
 
-                .getGeoxObj(), false, (ILineString) ((IMultiCurve<?>) geom)
-                    .get(i)), result.importance, result.symbolId);
+                .getGeoxObj(), false,
+                (ILineString) ((IMultiCurve<?>) geom).get(i)),
+                result.importance, result.symbolId);
 
             tr.setFeatureType(ft);
             for (int k = 0; k < dbr.getHeader().getNumFields(); k++) {
@@ -1482,7 +1593,9 @@ public class CartAGenDataSet extends DataSet {
 
       if (geom instanceof ILineString) {
 
-        IRoadLine tr = CartagenApplication.getInstance().getCreationFactory()
+        IRoadLine tr = CartagenApplication
+            .getInstance()
+            .getCreationFactory()
             .createRoadLine(
                 new TronconDeRouteImpl((Reseau) this.getRoadNetwork(), false,
                     (ILineString) geom), 4, SymbolId);
@@ -1492,7 +1605,9 @@ public class CartAGenDataSet extends DataSet {
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
 
-          IRoadLine tr = CartagenApplication.getInstance().getCreationFactory()
+          IRoadLine tr = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
               .createRoadLine(
                   new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
                       .getGeoxObj(), false,
@@ -1797,7 +1912,9 @@ public class CartAGenDataSet extends DataSet {
 
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IPathLine tr = CartagenApplication.getInstance().getCreationFactory()
+          IPathLine tr = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
               .createPath((ILineString) ((IMultiCurve<?>) geom).get(i),
                   result.importance, result.symbolId);
 
@@ -2028,7 +2145,9 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IWaterLine tr = CartagenApplication.getInstance().getCreationFactory()
+        IWaterLine tr = CartagenApplication
+            .getInstance()
+            .getCreationFactory()
             .createWaterLine(
                 new TronconHydrographiqueImpl((Reseau) this.getHydroNetwork()
                     .getGeoxObj(), false, (ILineString) geom), 0);
@@ -2041,8 +2160,10 @@ public class CartAGenDataSet extends DataSet {
         this.getHydroNetwork().addSection(tr);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IWaterLine tr = CartagenApplication.getInstance()
-              .getCreationFactory().createWaterLine(
+          IWaterLine tr = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
+              .createWaterLine(
                   new TronconHydrographiqueImpl((Reseau) this.getHydroNetwork()
                       .getGeoxObj(), false,
                       (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
@@ -2197,8 +2318,10 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof IPolygon) {
-        IWaterArea surf = CartagenApplication.getInstance()
-            .getCreationFactory().createWaterArea(
+        IWaterArea surf = CartagenApplication
+            .getInstance()
+            .getCreationFactory()
+            .createWaterArea(
                 new SurfaceDEauImpl((Reseau) this.getHydroNetwork()
                     .getGeoxObj(), (IPolygon) geom));
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2210,8 +2333,10 @@ public class CartAGenDataSet extends DataSet {
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
           IPolygon polygon = (IPolygon) ((IMultiSurface<?>) geom).get(i);
-          IWaterArea surf = CartagenApplication.getInstance()
-              .getCreationFactory().createWaterArea(
+          IWaterArea surf = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
+              .createWaterArea(
                   new SurfaceDEauImpl((Reseau) this.getHydroNetwork()
                       .getGeoxObj(), polygon));
           if (fields.containsKey("CARTAGEN_ID")) {
@@ -2378,8 +2503,10 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IRailwayLine tr = CartagenApplication.getInstance()
-            .getCreationFactory().createRailwayLine(
+        IRailwayLine tr = CartagenApplication
+            .getInstance()
+            .getCreationFactory()
+            .createRailwayLine(
                 new TronconFerreImpl((Reseau) this.getRailwayNetwork()
                     .getGeoxObj(), false, (ILineString) geom), 0);
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2391,8 +2518,10 @@ public class CartAGenDataSet extends DataSet {
         this.getRailwayNetwork().addSection(tr);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IRailwayLine tr = CartagenApplication.getInstance()
-              .getCreationFactory().createRailwayLine(
+          IRailwayLine tr = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
+              .createRailwayLine(
                   new TronconFerreImpl((Reseau) this.getRailwayNetwork()
                       .getGeoxObj(), false,
                       (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
@@ -2561,8 +2690,10 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IElectricityLine tr = CartagenApplication.getInstance()
-            .getCreationFactory().createElectricityLine(
+        IElectricityLine tr = CartagenApplication
+            .getInstance()
+            .getCreationFactory()
+            .createElectricityLine(
                 new ArcReseauImpl((Reseau) this.getElectricityNetwork()
                     .getGeoxObj(), false, (ILineString) geom), 0);
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2574,8 +2705,10 @@ public class CartAGenDataSet extends DataSet {
         this.getElectricityNetwork().addSection(tr);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IElectricityLine tr = CartagenApplication.getInstance()
-              .getCreationFactory().createElectricityLine(
+          IElectricityLine tr = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
+              .createElectricityLine(
                   new ArcReseauImpl((Reseau) this.getElectricityNetwork()
                       .getGeoxObj(), false,
                       (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
@@ -2759,8 +2892,10 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IContourLine cn = CartagenApplication.getInstance()
-            .getCreationFactory().createContourLine(
+        IContourLine cn = CartagenApplication
+            .getInstance()
+            .getCreationFactory()
+            .createContourLine(
                 new CourbeDeNiveauImpl(this.getReliefField().getChampContinu(),
                     z, (ILineString) geom));
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2772,8 +2907,10 @@ public class CartAGenDataSet extends DataSet {
         this.getReliefField().addContourLine(cn);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IContourLine cn = CartagenApplication.getInstance()
-              .getCreationFactory().createContourLine(
+          IContourLine cn = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
+              .createContourLine(
                   new CourbeDeNiveauImpl(this.getReliefField()
                       .getChampContinu(), z,
                       (ILineString) ((IMultiCurve<?>) geom).get(i)));
@@ -2938,8 +3075,10 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IReliefElementLine line = CartagenApplication.getInstance()
-            .getCreationFactory().createReliefElementLine(
+        IReliefElementLine line = CartagenApplication
+            .getInstance()
+            .getCreationFactory()
+            .createReliefElementLine(
                 new ElementCaracteristiqueDuReliefImpl(this.getReliefField()
                     .getChampContinu(), geom));
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -2951,8 +3090,10 @@ public class CartAGenDataSet extends DataSet {
         this.getReliefField().addReliefElementLine(line);
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IReliefElementLine line = CartagenApplication.getInstance()
-              .getCreationFactory().createReliefElementLine(
+          IReliefElementLine line = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
+              .createReliefElementLine(
                   new ElementCaracteristiqueDuReliefImpl(this.getReliefField()
                       .getChampContinu(), ((IMultiCurve<?>) geom).get(i)));
           if (fields.containsKey("CARTAGEN_ID")) {
@@ -3105,7 +3246,9 @@ public class CartAGenDataSet extends DataSet {
       double z = Double.parseDouble(champs[0].toString());
       // System.out.println("z="+z);
       if (geom instanceof IPoint) {
-        ISpotHeight pt = CartagenApplication.getInstance().getCreationFactory()
+        ISpotHeight pt = CartagenApplication
+            .getInstance()
+            .getCreationFactory()
             .createSpotHeight(
                 new PointCoteImpl(this.getReliefField().getChampContinu(), z,
                     (IPoint) geom));
@@ -3118,8 +3261,10 @@ public class CartAGenDataSet extends DataSet {
         this.getReliefField().addSpotHeight(pt);
       } else if (geom instanceof IMultiPoint) {
         for (int i = 0; i < ((IMultiPoint) geom).size(); i++) {
-          ISpotHeight pt = CartagenApplication.getInstance()
-              .getCreationFactory().createSpotHeight(
+          ISpotHeight pt = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
+              .createSpotHeight(
                   new PointCoteImpl(this.getReliefField().getChampContinu(), z,
                       ((IMultiPoint) geom).get(i)));
           if (fields.containsKey("CARTAGEN_ID")) {
@@ -3348,7 +3493,9 @@ public class CartAGenDataSet extends DataSet {
         pop.add(tr);
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          IMask tr = CartagenApplication.getInstance().getCreationFactory()
+          IMask tr = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
               .createMask(
                   new GM_LineString(((IMultiSurface<?>) geom).get(i).coord()));
           CartagenApplication.getInstance().getFrame().getLayerManager()
@@ -3512,8 +3659,10 @@ public class CartAGenDataSet extends DataSet {
       }
       int type = 1;
       if (geom instanceof IPolygon) {
-        ISimpleLandUseArea area = CartagenApplication.getInstance()
-            .getCreationFactory().createSimpleLandUseArea(
+        ISimpleLandUseArea area = CartagenApplication
+            .getInstance()
+            .getCreationFactory()
+            .createSimpleLandUseArea(
                 (IPolygon) CommonAlgorithms.filtreDouglasPeucker(geom, dp),
                 type);
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -3524,8 +3673,10 @@ public class CartAGenDataSet extends DataSet {
         pop.add(area);
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          ISimpleLandUseArea area = CartagenApplication.getInstance()
-              .getCreationFactory().createSimpleLandUseArea(
+          ISimpleLandUseArea area = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
+              .createSimpleLandUseArea(
                   (IPolygon) CommonAlgorithms.filtreDouglasPeucker(
                       ((IMultiSurface<?>) geom).get(i), dp), type);
           if (fields.containsKey("CARTAGEN_ID")) {
@@ -3606,8 +3757,10 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof IPolygon) {
-        ISimpleLandUseArea area = CartagenApplication.getInstance()
-            .getCreationFactory().createSimpleLandUseArea(
+        ISimpleLandUseArea area = CartagenApplication
+            .getInstance()
+            .getCreationFactory()
+            .createSimpleLandUseArea(
                 (IPolygon) CommonAlgorithms.filtreDouglasPeucker(geom, dp),
                 type);
         if (fields.containsKey("CARTAGEN_ID")) {
@@ -3618,8 +3771,10 @@ public class CartAGenDataSet extends DataSet {
         pop.add(area);
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
-          ISimpleLandUseArea area = CartagenApplication.getInstance()
-              .getCreationFactory().createSimpleLandUseArea(
+          ISimpleLandUseArea area = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
+              .createSimpleLandUseArea(
                   (IPolygon) CommonAlgorithms.filtreDouglasPeucker(
                       ((IMultiSurface<?>) geom).get(i), dp), type);
           if (fields.containsKey("CARTAGEN_ID")) {
@@ -4127,7 +4282,9 @@ public class CartAGenDataSet extends DataSet {
         }
 
         if (geom instanceof ILineString) {
-          IRoadLine tr = CartagenApplication.getInstance().getCreationFactory()
+          IRoadLine tr = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
               .createRoadLine(
                   new TronconDeRouteImpl((Reseau) this.getRoadNetwork(), false,
                       (ILineString) geom), 4, symbolID);
@@ -4136,8 +4293,10 @@ public class CartAGenDataSet extends DataSet {
 
         } else if (geom instanceof IMultiCurve<?>) {
           for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-            IRoadLine tr = CartagenApplication.getInstance()
-                .getCreationFactory().createRoadLine(
+            IRoadLine tr = CartagenApplication
+                .getInstance()
+                .getCreationFactory()
+                .createRoadLine(
                     new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
                         .getGeoxObj(), false,
                         (ILineString) ((IMultiCurve<?>) geom).get(i)), 4,
@@ -4228,7 +4387,9 @@ public class CartAGenDataSet extends DataSet {
         }
 
         if (geom instanceof ILineString) {
-          IRoadLine tr = CartagenApplication.getInstance().getCreationFactory()
+          IRoadLine tr = CartagenApplication
+              .getInstance()
+              .getCreationFactory()
               .createRoadLine(
                   new TronconDeRouteImpl((Reseau) this.getRoadNetwork(), false,
                       (ILineString) geom), 4, symbolID);
@@ -4238,8 +4399,10 @@ public class CartAGenDataSet extends DataSet {
 
         } else if (geom instanceof IMultiCurve<?>) {
           for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-            IRoadLine tr = CartagenApplication.getInstance()
-                .getCreationFactory().createRoadLine(
+            IRoadLine tr = CartagenApplication
+                .getInstance()
+                .getCreationFactory()
+                .createRoadLine(
                     new TronconDeRouteImpl((Reseau) this.getRoadNetwork()
                         .getGeoxObj(), false,
                         (ILineString) ((IMultiCurve<?>) geom).get(i)), 4,
