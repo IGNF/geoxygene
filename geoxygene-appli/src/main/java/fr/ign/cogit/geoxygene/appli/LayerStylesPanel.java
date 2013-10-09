@@ -264,6 +264,7 @@ public class LayerStylesPanel extends JPanel {
         FT_Coverage coverage = (FT_Coverage) feature;
         BufferedImage image =  PlanarImage.wrapRenderedImage(coverage.coverage().getRenderedImage()).getAsBufferedImage();
         g2.drawImage(image, x, y,width,height, null);
-    } 
+    }
   }
+  
 }

@@ -289,6 +289,62 @@ public class MainFrameMenuBar extends JMenuBar {
             });
         fileMenu.add(openFileMenuItem);
         
+        JMenuItem saveAsSLDMenuItem = new JMenuItem(
+            I18N.getString("MainFrame.SaveAsSLD")); //$NON-NLS-1$
+        saveAsSLDMenuItem.addActionListener(new java.awt.event.ActionListener() {
+          @Override
+          public void actionPerformed(final ActionEvent e) {
+            ProjectFrame projectFrame = (ProjectFrame) mainFrame
+                .getDesktopPane().getSelectedFrame();
+            if (projectFrame == null) {
+              if (mainFrame.getDesktopPane().getAllFrames().length != 0) {
+                projectFrame = (ProjectFrame) mainFrame.getDesktopPane()
+                    .getAllFrames()[0];
+              } else {
+                return;
+              }
+            }
+            JFileChooser chooser = new JFileChooser(fc.getPreviousDirectory());
+            int result = chooser.showSaveDialog(mainFrame);
+            if (result == JFileChooser.APPROVE_OPTION) {
+              File file = chooser.getSelectedFile();
+              if (file != null) {
+                String fileName = file.getAbsolutePath();
+                projectFrame.saveAsSLD(fileName);
+              }
+            }
+          }
+        });
+        fileMenu.add(saveAsSLDMenuItem);
+        
+        JMenuItem loadSLDMenuItem = new JMenuItem(
+            I18N.getString("MainFrame.LoadSLD")); //$NON-NLS-1$
+        loadSLDMenuItem.addActionListener(new java.awt.event.ActionListener() {
+          @Override
+          public void actionPerformed(final ActionEvent e) {
+            ProjectFrame projectFrame = (ProjectFrame) mainFrame
+                .getDesktopPane().getSelectedFrame();
+            if (projectFrame == null) {
+              if (mainFrame.getDesktopPane().getAllFrames().length != 0) {
+                projectFrame = (ProjectFrame) mainFrame.getDesktopPane()
+                    .getAllFrames()[0];
+              } else {
+                return;
+              }
+            }
+            JFileChooser chooser = new JFileChooser(fc.getPreviousDirectory());
+            int result = chooser.showSaveDialog(mainFrame);
+            if (result == JFileChooser.APPROVE_OPTION) {
+              File file = chooser.getSelectedFile();
+              if (file != null) {
+                //String fileName = file.getAbsolutePath();
+                projectFrame.loadSLD(file);
+              }
+            }
+          }
+        });
+        fileMenu.add(loadSLDMenuItem);
+        fileMenu.add(saveAsSLDMenuItem);
         // New Connection
         JMenuItem newPgLayerMenuItem = new JMenuItem(
                 I18N.getString("MainFrame.NewPgLayer"),  //$NON-NLS-1$

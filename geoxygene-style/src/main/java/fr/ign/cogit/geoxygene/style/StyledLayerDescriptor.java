@@ -321,10 +321,23 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
     } catch (FileNotFoundException e) {
       StyledLayerDescriptor.logger
           .error("File " + fileName + " could not be read"); //$NON-NLS-1$//$NON-NLS-2$
+      e.printStackTrace();
       return new StyledLayerDescriptor();
     }
   }
-
+  
+  public static StyledLayerDescriptor unmarshall(String fileName, DataSet dataset) {
+    StyledLayerDescriptor sld = unmarshall(fileName);
+    sld.dataSet = dataset;
+    return sld;
+  }
+  
+  public static StyledLayerDescriptor unmarshall(InputStream stream, DataSet dataset) {
+    StyledLayerDescriptor sld = unmarshall(stream);
+    sld.dataSet = dataset;
+    return sld;
+  }
+  
   public void marshall(Writer writer) {
     try {
       JAXBContext context = JAXBContext.newInstance(

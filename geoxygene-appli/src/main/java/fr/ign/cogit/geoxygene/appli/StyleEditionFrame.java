@@ -242,6 +242,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
    * @param layerLegendPanel the layerLegendPanel of the style to be modified.
    */
   public StyleEditionFrame(LayerLegendPanel layerLegendPanel) {
+    logger.info("StyleEditionFrame");
     this.layerLegendPanel = layerLegendPanel;
     this.layerViewPanel = this.layerLegendPanel.getLayerViewPanel();
 
@@ -253,7 +254,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
     DataSet dataset = layerLegendPanel.getLayerViewPanel().getProjectFrame()
         .getDataSet();
     // Saving the initial SLD
-    this.setInitialSLD(new StyledLayerDescriptor(dataset));
+    logger.info("StyleEditionFrame : saving the initial SLD");
+   this.setInitialSLD(new StyledLayerDescriptor(dataset));
     CharArrayWriter writer = new CharArrayWriter();
     layerLegendPanel.getModel().marshall(writer);
     Reader reader = new CharArrayReader(writer.toCharArray());
@@ -266,7 +268,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
     } else if (this.layer.getSymbolizer().isPointSymbolizer()) {
       this.initPoint();
     }
-
+    
+    
     this.textStylePanel = new JPanel();
     this.textStylePanel.setLayout(new BoxLayout(this.textStylePanel,
         BoxLayout.Y_AXIS));
@@ -290,6 +293,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
     this.setAlwaysOnTop(true);
   }
 
+  
   public void initTextStylePanel() {
     // Initialisation du symboliser s'il y a lieu
     Style lastStyle = this.layer.getStyles().get(layer.getStyles().size() - 1);
@@ -1434,8 +1438,9 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
       this.strokePanel2.setBorder(strokeTitleBorder);
       this.strokePanel2.setPreferredSize(new Dimension(420, 250));
 
-      StyledLayerDescriptor sld = StyledLayerDescriptor
+     StyledLayerDescriptor sld = StyledLayerDescriptor
           .unmarshall(StyledLayerDescriptor.class.getClassLoader().getResourceAsStream("sld/BasicStyles.xml")); //$NON-NLS-1$
+
       this.layer.getStyles().add(sld.getLayer("Basic Line").getStyles().get(0)); //$NON-NLS-1$
 
       this.strokeColor2 = ((LineSymbolizer) this.layer.getStyles().get(1)

@@ -194,7 +194,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
   public void addLayer(Layer l) {
     this.sld.add(l);
   }
-  
+
   /**
    * Inserts the specified layer at the specified position in this ProjectFrame.
    * @param l the new layer
@@ -354,8 +354,8 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
       IPopulation<?> p = (IPopulation<?>) e.getSource();
       Layer l = this.getLayer(p.getNom());
       this.getLayerViewPanel()
-          .getRenderingManager()
-          .render(this.getLayerViewPanel().getRenderingManager().getRenderer(l));
+      .getRenderingManager()
+      .render(this.getLayerViewPanel().getRenderingManager().getRenderer(l));
       this.getLayerViewPanel().superRepaint();
     }
   }
@@ -366,7 +366,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
   public void clearSelection() {
     this.getLayerViewPanel().getSelectedFeatures().clear();
     this.getLayerViewPanel().getRenderingManager().getSelectionRenderer()
-        .clearImageCache();
+    .clearImageCache();
     this.getLayerViewPanel().superRepaint();
   }
 
@@ -431,6 +431,51 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
     this.getLayerViewPanel().saveAsImage(fileName);
   }
 
+
+  /**
+   * 
+   * Save the current styles into an xml file.
+   * 
+   * @param fileName the xml file to save into.
+   */
+
+  public void saveAsSLD(String fileName) {
+    String newPath = fileName;
+    newPath += ".xml"; //$NON-NLS-1$
+    this.sld.marshall(newPath);
+  }
+
+  /**
+   * 
+   * load the described styles in an xml file and apply them to a predefined dataset.
+   * 
+   * @param fileName the xml file to load.
+   */
+  public void loadSLD(File file) {
+
+    if (file.isFile() && (file.getAbsolutePath().endsWith(".xml") //$NON-NLS-1$
+        || file.getAbsolutePath().endsWith(".XML"))) //$NON-NLS-1$
+    {
+
+      StyledLayerDescriptor new_sld = StyledLayerDescriptor.unmarshall(file.getAbsolutePath(), this.getDataSet());
+      if (new_sld != null)
+      {
+        for (int i = 0; i < this.getLayers().size(); i++) {
+          String name = this.getLayers().get(i).getName();
+          this.getLayers().get(i).setStyles(new_sld.getLayer(name).getStyles());
+        }
+
+        layerLegendPanel.repaint();
+        layerViewPanel.repaint();
+
+        /**
+         *  // loading finished
+
+         */
+      }
+    }
+  }
+
   /**
    * Saves a layer into an ESRI Shapefile
    * 
@@ -443,7 +488,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
           layer.getCRS());
     } catch (Exception e) {
       ProjectFrame.logger
-          .error("Shapefile export failed! See stack trace below : "); //$NON-NLS-1$
+      .error("Shapefile export failed! See stack trace below : "); //$NON-NLS-1$
       e.printStackTrace();
     }
   }
