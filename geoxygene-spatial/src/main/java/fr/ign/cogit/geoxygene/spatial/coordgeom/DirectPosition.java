@@ -345,4 +345,12 @@ public class DirectPosition implements IDirectPosition {
     }
     return difference;
   }
+
+  @Override
+  public int hashCode() {
+    if(this.coordinate.length==2){
+      return Double.valueOf(getX()).hashCode()^Double.valueOf(getY()).hashCode();
+    }
+    return Double.valueOf(getX()).hashCode()^Double.valueOf(getY()).hashCode()^Double.valueOf(getZ()).hashCode();
+  }
 }
