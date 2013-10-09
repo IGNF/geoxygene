@@ -73,6 +73,9 @@
 						<executions>
 							<execution>
 								<phase>install</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
 								<configuration>
 									<tasks>
 
@@ -120,9 +123,6 @@
 											/ -->
 									</tasks>
 								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
 							</execution>
 						</executions>
 					</plugin>
