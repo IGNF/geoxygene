@@ -1,9 +1,7 @@
 package fr.ign.cogit.geoxygene.distance;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -13,7 +11,6 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 
 /**
  * A class to compute the Fréchet distance.
@@ -82,7 +79,9 @@ public class Frechet {
         ca[i][j] = -1.0;
       }
     }
-    return discreteFrechetCouplingMeasure(p, q, sizeP - 1, sizeQ - 1, ca);
+    double d = discreteFrechetCouplingMeasure(p, q, sizeP - 1, sizeQ - 1, ca);
+
+    return d;
   }
 
   /**
@@ -112,28 +111,30 @@ public class Frechet {
         qPoints));
   }
 
-  public static double partialFrechet(final ILineString l1, final ILineString l2) {
-    ILineString p = l1;
-    ILineString q = l2;
+  public static double partialFrechet(ILineString p, ILineString q) {
+    IDirectPositionList l1 = p.coord();
+    IDirectPositionList l2 = q.coord();
+//    return  Math.min(partialFrechetpp(p,q),partialFrechetpp(p,q.reverse()));
+    double d = partialFrechet(l1.getList(), l2.getList());
+    double d2 = partialFrechet(l1.getList(), l2.reverse().getList());
+    return Math.min(d, d2);
 
-    if (q.length() < p.length()) {
-      q = p;
-      p = l2;
-    }
-    List<IDirectPosition> pPoints = new ArrayList<IDirectPosition>(p.coord());
-    List<IDirectPosition> qPoints = new ArrayList<IDirectPosition>(q.coord());
+  }
 
-    for (IDirectPosition point : p.getControlPoint()) {
-      Operateurs.projectAndInsert(point, qPoints);
-    }
-    for (IDirectPosition point : q.getControlPoint()) {
-      Operateurs.projectAndInsert(point, pPoints);
-    }
-    double d1 = partialFrechet2(pPoints, qPoints);
-    Collections.reverse(qPoints);
-    double d2 = partialFrechet2(pPoints, qPoints);
-    return Math.min(d1, d2);
-
+  private static double partialFrechetpp(ILineString p, ILineString q) {
+    // Case 1 : Du projeté de p.start sur q jusqu'à q.end
+    IDirectPosition p1p = Operateurs.projection(p.getControlPoint(0), q);
+    int p1pi = Operateurs.insertionIndex(p1p, q.coord().getList());
+    q.addControlPoint(p1pi, p1p);
+    List<IDirectPosition> case1 = q.coord().getList()
+        .subList(p1pi, q.coord().size());
+    // Case 2 : de p.start au projeté de q.end sur p
+    IDirectPosition qnp = Operateurs.projection(
+        q.getControlPoint(q.sizeControlPoint() - 1), p);
+    int qnpi = Operateurs.insertionIndex(qnp, p.coord().getList());
+    p.addControlPoint(qnpi, qnp);
+    List<IDirectPosition> case2 = p.coord().getList().subList(0, qnpi + 1);
+    return partialFrechet(case1, case2);
   }
 
   /**
@@ -142,44 +143,43 @@ public class Frechet {
    * @param q
    * @return
    */
-  private static double partialFrechet2(final List<IDirectPosition> pPoints,
-      final List<IDirectPosition> qPoints) {
-
-    // M C'est le nombre de noeuds de L2
-    // N C'est le nombre de noeuds de L1
-
+  private static double partialFrechet(final List<IDirectPosition> p,
+      final List<IDirectPosition> q) {
+    List<IDirectPosition> pPoints = new ArrayList<IDirectPosition>(p);
+    List<IDirectPosition> qPoints = new ArrayList<IDirectPosition>(q);
+    for (IDirectPosition point : p) {
+      Operateurs.projectAndInsert(point, qPoints);
+    }
+    for (IDirectPosition point : q) {
+      Operateurs.projectAndInsert(point, pPoints);
+    }
+    int n = pPoints.size() - 1;
+    int m = qPoints.size() - 1;
+    GM_LineString l1 = new GM_LineString(pPoints);
     ArrayList<IDirectPosition> b = new ArrayList<IDirectPosition>();
     ArrayList<IDirectPosition> e = new ArrayList<IDirectPosition>();
-
     for (int i = 0; i < qPoints.size() - 1; i++) {
       b.add(qPoints.get(i));
     }
     for (int i = qPoints.size() - 1; i > 0; i--) {
       e.add(qPoints.get(i));
     }
-    double dfdp = Double.POSITIVE_INFINITY;
-    GM_LineString res = null;
-    int j = 1;
-    for (IDirectPosition l2j : b) {
-      if (pPoints.get(0).distance(l2j) < dfdp) {
-        int jj = qPoints.size() - 1;
-        for (IDirectPosition l2jj : e) {
-          if (j <= jj && pPoints.get(pPoints.size() - 1).distance(l2jj) < dfdp) {
-            GM_LineString l11l1n = new GM_LineString(pPoints);
-            GM_LineString l2jl2jj = new GM_LineString(
-                qPoints.subList(j, jj + 1));
-            double dfrechet = discreteFrechet(l11l1n, l2jl2jj);
-            if (dfrechet < dfdp) {
-              dfdp = dfrechet;
-              res = l2jl2jj;
+    double d = Double.POSITIVE_INFINITY;
+    for (int j = 0; j < b.size(); j++) {
+      if (pPoints.get(0).distance(qPoints.get(j)) < d) {
+        for (int jj = 0; jj < e.size(); jj++) {
+
+          if (j <= jj && pPoints.get(m).distance(qPoints.get(jj)) < d) {
+            GM_LineString sub = new GM_LineString(qPoints.subList(j, jj + 1));
+            double f = Frechet.discreteFrechet(l1, sub);
+            if (f < d) {
+              d = f;
             }
           }
-          jj--;
         }
       }
-      j++;
     }
-    return dfdp;
+    return d;
   }
 
   /**
