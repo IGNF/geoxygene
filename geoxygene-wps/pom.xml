@@ -78,7 +78,14 @@
 								</goals>
 								<configuration>
 									<tasks>
-
+									
+									<!-- 
+									   <available file="${configDirectory}/${configId}"
+                                    property="configIsAvailable" />
+                                <fail
+                                    message="Unable to locate configuration: ${configDirectory}/${configId}"
+                                    unless="configIsAvailable" />
+ -->
 										<!-- <echo>Stop geoserver</echo> <exec executable="D:\MesProgrammes\GeoServer\GeoServer2.2.3\bin\shutdown.bat 
 											/>" -->
 
