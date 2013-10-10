@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * A simple and generic parameter class to handle the parameters of different processes using
  * hashmaps.
  * <p>
- * Parameters can be set at runtime, but also loaded from or saved to XML files. 
+ * Parameters can be set at runtime, but also loaded from or saved to XML files.
  * @author Julien Perret
  */
 @XmlRootElement(name = "parameter-configuration")
@@ -46,26 +46,26 @@ public class Parameters {
 
   public boolean getBoolean(String name) {
     Object value = this.map.get(name);
-    if (value == null || !(value instanceof Boolean)) {
+    if (value == null) {
       return false;
     }
-    return ((Boolean) value).booleanValue();
+    return Boolean.parseBoolean(value.toString());
   }
 
   public double getDouble(String name) {
     Object value = this.map.get(name);
-    if (value == null || !(value instanceof Double)) {
+    if (value == null) {
       return 0;
     }
-    return ((Double) value).doubleValue();
+    return Double.parseDouble(value.toString());
   }
 
   public int getInteger(String name) {
     Object value = this.map.get(name);
-    if (value == null || !(value instanceof Integer)) {
+    if (value == null) {
       return 0;
     }
-    return ((Integer) value).intValue();
+    return Integer.parseInt(value.toString());
   }
 
   public String getString(String name) {
@@ -74,6 +74,14 @@ public class Parameters {
       return "";
     }
     return value.toString();
+  }
+
+  public float getFloat(String name) {
+    Object value = this.map.get(name);
+    if (value == null) {
+      return 0;
+    }
+    return Float.parseFloat(value.toString());
   }
 
   public static Parameters unmarshall(String file) {
