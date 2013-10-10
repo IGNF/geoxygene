@@ -79,8 +79,8 @@
 			<id>integration-test</id>
 			<properties>
 				<!-- Only integration tests are run. -->
-				<skip.integration.tests>false</skip.integration.tests>
-				<skip.unit.tests>true</skip.unit.tests>
+				<!-- <skip.integration.tests>false</skip.integration.tests> -->
+				<!-- <skip.unit.tests>true</skip.unit.tests> -->
 			</properties>
 		</profile>
 	</profiles>
@@ -309,10 +309,12 @@
 				<version>2.16</version>
 				<configuration>
 					<!-- Skips unit tests if the value of skip.unit.tests property is true -->
-					<skipTests>${skip.unit.tests}</skipTests>
+					<!-- <skipTests>${skip.unit.tests}</skipTests> -->
 					<!-- Excludes integration tests when unit tests are run. -->
 					<excludes>
 						<exclude>**/IT*.java</exclude>
+						<exclude>**/*IT.java</exclude>
+						<exclude>**/*ITCase.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
@@ -330,7 +332,12 @@
 							<goal>verify</goal>
 						</goals>
 						<configuration>
-							<skipTests>${skip.integration.tests}</skipTests>
+							<!-- <skipTests>${skip.integration.tests}</skipTests> -->
+							<excludes>
+								<exclude>**/Test*.java</exclude>
+								<exclude>**/*Test.java</exclude>
+								<exclude>**/*TestCase.java</exclude>
+							</excludes>
 						</configuration>
 					</execution>
 				</executions>
