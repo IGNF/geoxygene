@@ -36,10 +36,10 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.matching.Matchings;
 import fr.ign.cogit.geoxygene.matching.Matchings.Matching;
 import fr.ign.cogit.geoxygene.matching.Matchings.Matching.Pattern;
-import fr.ign.cogit.geoxygene.matching.Parameters;
 import fr.ign.cogit.geoxygene.matching.dst.graph.Link;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.parameters.Parameters;
 
 /**
  * Implementation of Li and Goodchild's approach for linear feature matching presented in
