@@ -12,6 +12,8 @@ import fr.ign.cogit.evidence.variable.VariableSet;
 
 /**
  * A Potential represents a source of information.
+ * <p>
+ * TODO make the tolerance configurable.
  * @author Julien Perret
  * @param <T>
  */
@@ -20,17 +22,34 @@ public class MassPotential<T> {
   private VariableSet<T> variableSet;
   private Map<ConfigurationSet<T>, Double> focalElements;
   private int conflict;
+  private double tolerance = 0.001;
 
+  /**
+   * @return number of focal elements
+   */
   public int size() {
     return this.focalElements.size();
   }
 
+  /**
+   * Construct an empty mass potential.
+   * @param d
+   *        a variable set
+   */
   public MassPotential(VariableSet<T> d) {
     this.variableSet = d;
     this.focalElements = new HashMap<ConfigurationSet<T>, Double>();
     this.conflict = 0;
   }
 
+  /**
+   * Add a mass value for the given configuration set. If the focal element already exists, mass
+   * values are summed and the number of conflicts is incremented.
+   * @param f
+   *        a configuration set
+   * @param m
+   *        a mass value
+   */
   public void add(ConfigurationSet<T> f, double m) {
     // System.out.println("add " + (f.getVariableSet() == this.variableSet));
     assert (f.getVariableSet().equals(this.variableSet));
@@ -46,21 +65,40 @@ public class MassPotential<T> {
     }
   }
 
+  /**
+   * Check if the sum of the mass values is equal to one (with a certain tolerance).
+   */
   public void check() {
     double cumul = 0;
-    System.out.println("ckeck = " + cumul);
+    // System.out.println("ckeck = " + cumul);
     for (Entry<ConfigurationSet<T>, Double> foc : this.focalElements.entrySet()) {
       cumul += foc.getValue().doubleValue();
     }
-    System.out.println("ckeck = " + cumul);
+    // System.out.println("ckeck = " + cumul);
     // FIXME define a tolerance
-    assert (Math.abs(cumul - 1.0) < 0.001);
+    assert (Math.abs(cumul - 1.0) < this.tolerance);
   }
 
+  /**
+   * Combine 2 mass potentials. By default, the result will be normalized.
+   * @param p
+   *        another mass potential
+   * @return the combination of the 2 mass potentials
+   */
   public MassPotential<T> combination(MassPotential<T> p) {
     return this.combination(p, true);
   }
 
+  /**
+   * Combine 2 mass potentials.
+   * <p>
+   * TODO make the tolerance used for the focal elements not to grow too much configurable.
+   * @param p
+   *        another mass potential
+   * @param normalize
+   *        if true, normalize the result
+   * @return the combination of the 2 mass potentials
+   */
   public MassPotential<T> combination(MassPotential<T> p, boolean normalize) {
     Map<ConfigurationSet<T>, Double> focal1 = new HashMap<ConfigurationSet<T>, Double>();
     Map<ConfigurationSet<T>, Double> focal2 = new HashMap<ConfigurationSet<T>, Double>();
@@ -89,6 +127,14 @@ public class MassPotential<T> {
     return normalize ? result.norm() : result;
   }
 
+  /**
+   * Combine a set of mass potentials.
+   * @param potentialSet
+   *        a set of mass potentials
+   * @param normalize
+   *        if true, normalize the results
+   * @return a combination of all mass potentials
+   */
   public static <T> MassPotential<T> combination(Set<MassPotential<T>> potentialSet,
       boolean normalize) {
     assert (!potentialSet.isEmpty());
@@ -192,6 +238,10 @@ public class MassPotential<T> {
     return normalize ? combination.norm() : combination;
   }
 
+  /**
+   * Normalize the mass potential.
+   * @return the normalized mass potential
+   */
   public MassPotential<T> norm() {
     ConfigurationSet<T> empty = new ConfigurationSet<T>(this.variableSet);
     Double v = this.focalElements.get(empty);
@@ -215,6 +265,12 @@ public class MassPotential<T> {
     return this;
   }
 
+  /**
+   * Weaken the mass potential.
+   * @param confidence
+   *        a confidence value
+   * @return the weakened mass potential
+   */
   public MassPotential<T> weaken(double confidence) {
     for (Entry<ConfigurationSet<T>, Double> foc : this.focalElements.entrySet()) {
       foc.setValue(foc.getValue().doubleValue() * confidence);
@@ -237,6 +293,11 @@ public class MassPotential<T> {
     return result;
   }
 
+  /**
+   * Plausibility.
+   * @param f
+   * @return
+   */
   public double pls(ConfigurationSet<T> f) {
     double result = 0;
     for (Entry<ConfigurationSet<T>, Double> foc : this.focalElements.entrySet()) {
@@ -248,10 +309,20 @@ public class MassPotential<T> {
     return result;
   }
 
+  /**
+   * Doubt.
+   * @param f
+   * @return
+   */
   public double dou(ConfigurationSet<T> f) {
     return 1. - this.pls(f);
   }
 
+  /**
+   * Commonality.
+   * @param f
+   * @return
+   */
   public double com(ConfigurationSet<T> f) {
     double result = 0;
     for (Entry<ConfigurationSet<T>, Double> foc : this.focalElements.entrySet()) {
@@ -263,12 +334,22 @@ public class MassPotential<T> {
     return result;
   }
 
+  /**
+   * Ignorance.
+   * @param f
+   * @return
+   */
   public double ign(ConfigurationSet<T> f) {
     double result = this.pls(f) - this.bel(f);
     assert (result >= 0);
     return result;
   }
 
+  /**
+   * Mass value for the given configuration set.
+   * @param f
+   * @return
+   */
   public double mass(ConfigurationSet<T> f) {
     Double result = this.focalElements.get(f);
     if (result == null) {
@@ -279,6 +360,7 @@ public class MassPotential<T> {
   }
 
   /**
+   * Pignistic probability.
    * @param ffinal
    * @return
    */
@@ -293,6 +375,11 @@ public class MassPotential<T> {
     return result;
   }
 
+  /**
+   * Pignistic probability.
+   * @param f
+   * @return
+   */
   public double pignistic(Configuration<T> f) {
     double result = 0d;
     ConfigurationSet<T> empty = new ConfigurationSet<T>(this.variableSet);
@@ -317,10 +404,21 @@ public class MassPotential<T> {
     return result;
   }
 
+  /**
+   * Make a decision.
+   * @param onSingles
+   *        if true, only chose among singles
+   * @return
+   */
   public ConfigurationSet<T> decide(boolean onSingles) {
     return this.maxPignistic(onSingles);
   }
 
+  /**
+   * Choose the solution with the maximum pignistic probability.
+   * @param onSingles
+   * @return
+   */
   public ConfigurationSet<T> maxPignistic(boolean onSingles) {
     double maxpig = 0d;
     // for (ConfigurationSet<T> conf : this.focalElements.keySet()) {
