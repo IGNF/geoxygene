@@ -40,8 +40,8 @@ public class Parameters {
     return this.map.get(key);
   }
 
-  public void set(String key, String value) {
-    this.map.put(key, value);
+  public void set(String key, Object c) {
+    this.map.put(key, c);
   }
 
   public boolean getBoolean(String name) {
