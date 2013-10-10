@@ -19,7 +19,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.matching.dst.evidence;
+package fr.ign.cogit.geoxygene.matching.dst.geomatching;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +29,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
+import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
 import fr.ign.cogit.geoxygene.matching.dst.operators.DempsterOp;
@@ -51,12 +53,12 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
  *       total (ignorance complète) plutôt que sur toutes les hypothèses.
  * @author Bertrand Dumenieu
  */
-public class MatchingProcess<F, Hyp extends Hypothesis> {
+public class GeoMatchingProcess<F, Hyp extends Hypothesis> {
 
   /**
    * 
    */
-  Logger logger = Logger.getLogger(MatchingProcess.class);
+  Logger logger = Logger.getLogger(GeoMatchingProcess.class);
 
   private Collection<Source<F, Hyp>> criteria;
   // Cadre de discernement : stocke les candidats
@@ -71,7 +73,7 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
    * @param codec
    * @param isworldclosed
    */
-  public MatchingProcess(Collection<Source<F, Hyp>> criteria, List<Hyp> candidates,
+  public GeoMatchingProcess(Collection<Source<F, Hyp>> criteria, List<Hyp> candidates,
       EvidenceCodec<Hyp> codec, boolean isworldclosed) {
     this.logger.debug(candidates.size() + " candidates");
     this.codec = codec;
@@ -163,5 +165,4 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
   private boolean closedworld() {
     return this.isworldclosed;
   }
-
 }

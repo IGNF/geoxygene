@@ -22,7 +22,6 @@
 package fr.ign.cogit.geoxygene.matching.dst.geomatching;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
 
 /**
  * A feature decorator for matching.
@@ -30,5 +29,35 @@ import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
  * Décorateur de IFeature pour les hypothèses d'appariement géométrique.
  * @author Bertrand Dumenieu
  */
-public interface GeomHypothesis extends IFeature, Hypothesis {
+public abstract class AbstractGeomHypothesis implements GeomHypothesis {
+  /**
+   * The decorated feature.
+   */
+  protected IFeature decoratedFeature;
+
+  /**
+   * Constructor with a decorated feature.
+   * @param feature the decorated feature.
+   */
+  protected AbstractGeomHypothesis(IFeature feature) {
+    this.decoratedFeature = feature;
+  }
+  /**
+   * Default contructor.
+   */
+  protected AbstractGeomHypothesis() {
+    this.decoratedFeature = null;
+  }
+  @Override
+  public String toString() {
+    return this.decoratedFeature.toString();
+  }
+  @Override
+  public boolean equals(Object o) {
+    if (!AbstractGeomHypothesis.class.isAssignableFrom(o.getClass())) {
+      return false;
+    }
+    AbstractGeomHypothesis h = (AbstractGeomHypothesis) o;
+    return this.decoratedFeature.equals(h.decoratedFeature);
+  }
 }

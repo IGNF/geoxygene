@@ -38,7 +38,7 @@ import fr.ign.cogit.geoxygene.api.spatial.toporoot.ITopology;
 /**
  * @author Bertrand Dumenieu
  */
-public class SimpleGeomHypothesis extends GeomHypothesis {
+public class SimpleGeomHypothesis extends AbstractGeomHypothesis {
 
   /**
    * @param feature

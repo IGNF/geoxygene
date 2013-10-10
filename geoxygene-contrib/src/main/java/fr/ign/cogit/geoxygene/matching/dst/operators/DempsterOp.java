@@ -19,7 +19,6 @@
 
 package fr.ign.cogit.geoxygene.matching.dst.operators;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -41,7 +40,7 @@ public class DempsterOp implements CombinationOp {
 
   @Override
   public List<Pair<byte[], Float>> combine(List<List<Pair<byte[], Float>>> masspotentials) {
-    logger.info("Combination using dempster operator");
+//    logger.info("Combination using dempster operator");
     SmetsOp sop = new SmetsOp(this.worldclosed);
     List<Pair<byte[], Float>> mresult = sop.combine(masspotentials);
     // On force l'ensemble vide à 0 = on le supprime du noyau
@@ -70,16 +69,18 @@ public class DempsterOp implements CombinationOp {
     for (Pair<byte[], Float> hyp : mresult) {
       hyp.setSecond(hyp.getSecond() / sum);
     }
-
-    if (logger.isDebugEnabled()) {
-      logger.debug("---Result of all masses combination using Dempster operator---");
-      for (Pair<byte[], Float> hyp : mresult) {
-        logger.debug("Value is " + hyp.getSecond() + " for combination "
-            + Arrays.toString(hyp.getFirst()));
-      }
-    }
+//    if (logger.isDebugEnabled()) {
+//      logger.debug("---Result of all masses combination using Dempster operator---");
+//      for (Pair<byte[], Float> hyp : mresult) {
+//        logger.debug("Value is " + hyp.getSecond() + " for combination "
+//            + Arrays.toString(hyp.getFirst()));
+//      }
+//    }
     return mresult;
-
   }
 
+  @Override
+  public Float getConflict() {
+    return this.conflict;
+  }
 }

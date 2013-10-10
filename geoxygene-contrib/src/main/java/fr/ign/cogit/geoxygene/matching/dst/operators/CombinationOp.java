@@ -41,6 +41,9 @@ public interface CombinationOp {
    * @param masspotentials mass potentials
    * @return fused masses
    */
-  public List<Pair<byte[], Float>> combine(List<List<Pair<byte[], Float>>> masspotentials);
-
+  List<Pair<byte[], Float>> combine(List<List<Pair<byte[], Float>>> masspotentials);
+  /**
+   * @return the conflict
+   */
+  Float getConflict();
 }
