@@ -1,9 +1,8 @@
 package fr.ign.cogit.geoxygene.util.string;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 
 /**
  * Classe qui contient des Méthodes qui manipulent des matrices.
@@ -21,8 +20,7 @@ public class MatriceConfiance {
   }
 
   // matrice pour deux populations d'objets géo
-  public MatriceConfiance(IFeatureCollection<?> popRef,
-      IFeatureCollection<?> popComp) {
+  public MatriceConfiance(Collection<?> popRef, Collection<?> popComp) {
     this.nbRows = popRef.size() + 1;
     this.nbColumns = popComp.size() + 1;
     this.values = new double[this.nbRows][this.nbColumns];
@@ -55,7 +53,6 @@ public class MatriceConfiance {
   /**
    * Méthode qui calcule la somme des éléments d'une ligne et qui renvoie une
    * liste.
-   * 
    * @return
    */
   private List<Double> rowSums() {
@@ -104,11 +101,11 @@ public class MatriceConfiance {
    * Méthode qui réalise la normalisation d'une matrice; la matrice est
    * normalisée quand toutes les lignes et toutes les colonnes sont normalisées.
    * <p>
-   * Une ligne(colonne)est dite normalisée si la somme de tous les éléments de
-   * la ligne(colonne) = 1).
+   * Une ligne(colonne)est dite normalisée si la somme de tous les éléments de la ligne(colonne) =
+   * 1).
    * <p>
-   * La normalisation d'une ligne(colonne) consiste à diviser chaque élément
-   * d'une ligne par la somme des éléments de la ligne( colonne);
+   * La normalisation d'une ligne(colonne) consiste à diviser chaque élément d'une ligne par la
+   * somme des éléments de la ligne( colonne);
    */
   public void normalize() {
     int k = 0;
@@ -200,7 +197,8 @@ public class MatriceConfiance {
    * Méthode qui calcule la somme des éléments d'une colonne et qui renvoie un
    * double.
    * @param matrix
-   * @param nc nombre de colonnes.
+   * @param nc
+   *        nombre de colonnes.
    * @return
    */
   public static double columnSum(double[][] matrix, int nc) {
