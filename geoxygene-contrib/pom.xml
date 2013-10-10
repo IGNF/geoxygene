@@ -61,6 +61,11 @@
 			<artifactId>geoxygene-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>evidence4j</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 		<!-- DBUnit for testing -->
 		<dependency>
@@ -84,7 +89,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>jgrapht</groupId>
+			<groupId>net.sf.jgrapht</groupId>
 			<artifactId>jgrapht</artifactId>
 			<version>${jgrapht.version}</version>
 		</dependency>
