@@ -30,13 +30,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class Parameters {
   @XmlJavaTypeAdapter(MapAdapter.class)
   @XmlElement(name = "parameters")
-  Map<String, String> map;
+  Map<String, Object> map;
 
   public Parameters() {
-    this.map = new HashMap<String, String>();
+    this.map = new HashMap<String, Object>();
   }
 
-  public String get(String key) {
+  public Object get(String key) {
     return this.map.get(key);
   }
 
@@ -99,20 +99,20 @@ public class Parameters {
     }
   }
 
-  public static class MapAdapter extends XmlAdapter<MyHashMapType, Map<String, String>> {
+  public static class MapAdapter extends XmlAdapter<MyHashMapType, Map<String, Object>> {
     public MapAdapter() {
       super();
     }
 
     @Override
-    public MyHashMapType marshal(Map<String, String> v) throws Exception {
+    public MyHashMapType marshal(Map<String, Object> v) throws Exception {
       MyHashMapType result = new MyHashMapType(v);
       return result;
     }
 
     @Override
-    public Map<String, String> unmarshal(MyHashMapType v) throws Exception {
-      Map<String, String> result = new HashMap<String, String>();
+    public Map<String, Object> unmarshal(MyHashMapType v) throws Exception {
+      Map<String, Object> result = new HashMap<String, Object>();
       for (MyHashMapEntryType entry : v.entry) {
         result.put(entry.key, entry.value);
       }
@@ -124,8 +124,8 @@ public class Parameters {
     @XmlElement(name = "param")
     public List<MyHashMapEntryType> entry = new ArrayList<MyHashMapEntryType>();
 
-    public MyHashMapType(Map<String, String> map) {
-      for (Map.Entry<String, String> e : map.entrySet())
+    public MyHashMapType(Map<String, Object> map) {
+      for (Map.Entry<String, Object> e : map.entrySet())
         entry.add(new MyHashMapEntryType(e));
     }
 
@@ -143,9 +143,9 @@ public class Parameters {
     public MyHashMapEntryType() {
     }
 
-    public MyHashMapEntryType(Map.Entry<String, String> e) {
+    public MyHashMapEntryType(Map.Entry<String, Object> e) {
       key = e.getKey();
-      value = e.getValue();
+      value = e.getValue().toString();
     }
   };
 }
