@@ -22,10 +22,16 @@ package fr.ign.cogit.geoxygene.style;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * @author Julien Perret
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class GraphicFill implements GraphicType {
+  @XmlElement(name = "Graphic")
   private List<Graphic> graphics = new ArrayList<Graphic>();
 
   public final List<Graphic> getGraphics() {
