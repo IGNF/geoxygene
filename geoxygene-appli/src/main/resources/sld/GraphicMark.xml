@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
 <StyledLayerDescriptor xmlns:ns2="http://www.opengis.net/ogc">
-
 	<NamedLayer>
 		<Name>GraphicFill_Polygon</Name>
 		<UserStyle>
@@ -26,8 +25,8 @@
 						</Stroke>
 						<GeometryPropertyName>geom</GeometryPropertyName>
 						<Fill>
-							<graphicFill>
-								<graphics>
+							<GraphicFill>
+								<Graphic>
 									<Mark>
 										<WellKnownName>star</WellKnownName>
 										<Fill>
@@ -39,8 +38,8 @@
 									<Rotation>
 										<Literal>0</Literal>
 									</Rotation>
-								</graphics>
-							</graphicFill>
+								</Graphic>
+							</GraphicFill>
 							<CssParameter name="fill">#00ff00</CssParameter>
 							<CssParameter name="fill-opacity">1.0</CssParameter>
 						</Fill>
