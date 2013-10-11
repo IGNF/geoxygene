@@ -140,6 +140,7 @@ public class EditParamDistancePanel extends JPanel implements ActionListener {
     
   }
   
+  @Override
   public void actionPerformed(ActionEvent evt) {
     Object source = evt.getSource();
     if (source == impasseButton) {

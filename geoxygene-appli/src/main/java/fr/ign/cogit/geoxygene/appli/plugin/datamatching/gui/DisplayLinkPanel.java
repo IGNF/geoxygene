@@ -88,6 +88,7 @@ public class DisplayLinkPanel extends JInternalFrame  {
         
         tableau.getSelectionModel().addListSelectionListener(
                 new ListSelectionListener() {
+                    @Override
                     public void valueChanged(ListSelectionEvent event) {
                         int viewRow = tableau.getSelectedRow();
                         if (viewRow >= 0) {
@@ -292,18 +293,22 @@ class LienAppariementTableModel extends AbstractTableModel {
         super();
     }
  
+    @Override
     public int getRowCount() {
         return data.size();
     }
  
+    @Override
     public int getColumnCount() {
         return rowHeader.length;
     }
  
+    @Override
     public String getColumnName(int columnIndex) {
         return rowHeader[columnIndex];
     }
  
+    @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch(columnIndex){
             case 0:

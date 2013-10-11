@@ -77,6 +77,7 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
   private Layer layer = null;
 
   /** @return the Layer to render. */
+  @Override
   public Layer getLayer() {
     return this.layer;
   }
