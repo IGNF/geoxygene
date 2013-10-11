@@ -205,9 +205,9 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
 
       // Convert to geoserver object
       LOGGER.debug("Start Converting");
-      SimpleFeatureCollection correctedNetwork = GeOxygeneGeoToolsTypes.convert2FeatureCollection(arcs, popRef.getSchema()
+      /*SimpleFeatureCollection correctedNetwork = GeOxygeneGeoToolsTypes.convert2FeatureCollection(arcs, popRef.getSchema()
         .getCoordinateReferenceSystem());
-      resultatAppariement.setNetworkMatched(correctedNetwork);
+      resultatAppariement.setNetworkMatched(correctedNetwork);*/
       LOGGER.debug("End Converting");
       
       return resultatAppariement;
