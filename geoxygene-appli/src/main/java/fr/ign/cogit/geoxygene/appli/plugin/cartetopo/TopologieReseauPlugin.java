@@ -72,7 +72,7 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin, Action
       // Check if the DataMatching menu exists. If not we create it.
       JMenu menu = null;
       String menuName = I18N.getString("CarteTopoPlugin.CarteTopoPlugin"); //$NON-NLS-1$
-      for (Component c : application.getFrame().getJMenuBar().getComponents()) {
+      for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
         if (c instanceof JMenu) {
           JMenu aMenu = (JMenu) c;
           if (aMenu.getText() != null
@@ -92,9 +92,9 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin, Action
       
       // Refresh menu of the application
       application
-          .getFrame()
-          .getJMenuBar()
-          .add(menu, application.getFrame().getJMenuBar().getComponentCount() - 2);
+          .getMainFrame()
+          .getMenuBar()
+          .add(menu, application.getMainFrame().getMenuBar().getComponentCount() - 2);
       
     }
     
@@ -122,7 +122,7 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin, Action
             
             // ------------------------------------------------------------------------------------------
             // Show the result
-            Dimension desktopSize = this.application.getFrame().getDesktopPane().getSize();
+            Dimension desktopSize = this.application.getMainFrame().getSize();
             int widthProjectFrame = desktopSize.width / 2;
             int heightProjectFrame = desktopSize.height;
           
@@ -201,7 +201,7 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin, Action
             // ---------------------------------------------------------------------------------
             // Frame n°1
             // 
-            ProjectFrame p1 = this.application.getFrame().newProjectFrame();
+            ProjectFrame p1 = this.application.getMainFrame().newProjectFrame();
             p1.setTitle("Réseaux initiaux");
             Layer l1 = p1.addUserLayer(arcsBruts, "Arcs bruts", null);
             l1.getSymbolizer().getStroke().setColor(new Color(67, 144, 193));
@@ -300,7 +300,7 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin, Action
             // ---------------------------------------------------------------------------------
             // Frame n°2
             //    
-            ProjectFrame p2 = this.application.getFrame().newProjectFrame();
+            ProjectFrame p2 = this.application.getMainFrame().newProjectFrame();
             p2.getLayerViewPanel().setViewport(viewport);
             viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
             p2.setTitle("Carte topologie des réseaux");

@@ -28,7 +28,7 @@
 			<item name="Introduction" href="index.html" />
 			<item name="Documentation" href="documentation.html"></item>
 			<item name="Architecture" href="architecture.html"></item>
-			<!-- <item name="FAQ" href="faq.html" /> -->
+			<item name="FAQ" href="faq.html" />
 			<item name="Release Notes" href="release-notes.html" />
 			<item name="Sourceforge Home" href="https://sourceforge.net/p/oxygene-project" />
 		</menu>
@@ -38,18 +38,17 @@
 				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.5/binaries/" />
 			<item name="Sources (jar)"
 				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.5/sources/" />
-			<!-- <item name="Plugin for OpenJump"
-				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene%20Plugin%20for%20OpenJUMP/0.1/geoxygene-plugin-0.1.zip/download" /> -->
+			<item name="Plugin for OpenJump"
+				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene%20Plugin%20for%20OpenJUMP/0.1/geoxygene-plugin-0.1.zip/download" />
 		</menu>
 		
 		<menu name="Applications">
 			<item name="Semiology" href="semiology.html" />
-			<item name="Plugin for OpenJump" href="openjump.html" />
 			<item name="Data Matching" href="data-matching.html" />
 		</menu>
 
 		<!-- Replaced by menus for any configured reports (mailing lists, etc.) -->
-		<menu ref="reports" />
+		<menu ref="reports" /> 
 
 	</body>
 </project>

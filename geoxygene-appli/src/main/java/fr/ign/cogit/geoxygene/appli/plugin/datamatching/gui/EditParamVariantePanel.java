@@ -201,7 +201,6 @@ public class EditParamVariantePanel extends JPanel implements ActionListener {
     }
     
     
-    @Override
     public void actionPerformed(ActionEvent evt) {
         Object source = evt.getSource();
         if (source == jcYesRedecoupageNoeudsNonApparies) {

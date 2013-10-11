@@ -29,8 +29,8 @@ import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.contrib.delaunay.TriangulationJTS;
@@ -43,12 +43,9 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * Triangulation plugin.
  * @author Julien Perret
  */
-public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin,
-    ActionListener {
-  /**
-   * Logger.
-   */
-  static Logger logger = Logger.getLogger(Triangulation.class.getName());
+public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin, ActionListener {
+  /** Logger. */
+  static Logger                logger      = Logger.getLogger(Triangulation.class.getName());
 
   private GeOxygeneApplication application = null;
 
@@ -60,11 +57,10 @@ public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin,
   public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
     JMenu menu = null;
-    for (Component c : application.getFrame().getJMenuBar().getComponents()) {
+    for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null
-            && aMenu.getText().equalsIgnoreCase("Triangulation")) {
+        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Triangulation")) {
           menu = aMenu;
         }
       }
@@ -76,19 +72,15 @@ public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin,
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getFrame().getJMenuBar()
-        .add(menu, application.getFrame().getJMenuBar().getMenuCount() - 2);
+    application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    ProjectFrame project = this.application.getFrame()
-        .getSelectedProjectFrame();
-    Set<Layer> selectedLayers = project.getLayerLegendPanel()
-        .getSelectedLayers();
+    ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
+    Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
     if (selectedLayers.size() != 1) {
-      TriangulationJTSPlugin.logger
-          .error("You need to select one (and only one) layer."); //$NON-NLS-1$
+      TriangulationJTSPlugin.logger.error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }
     Layer layer = selectedLayers.iterator().next();
@@ -107,6 +99,6 @@ public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin,
     popTriangles.setFeatureType(newFeatureTypeExterieurs);
     DataSet.getInstance().addPopulation(popTriangles);
     TriangulationJTSPlugin.logger.info(popTriangles);
-    project.addFeatureCollection(popTriangles, popTriangles.getNom(),null);
+    project.addFeatureCollection(popTriangles, popTriangles.getNom(), null);
   }
 }

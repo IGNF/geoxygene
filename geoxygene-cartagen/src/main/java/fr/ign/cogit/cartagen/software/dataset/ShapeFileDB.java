@@ -53,7 +53,6 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.CartAGenProgress
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolsUtil;
 import fr.ign.cogit.cartagen.util.XMLUtil;
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 public class ShapeFileDB extends CartAGenDB {
 
@@ -135,12 +134,7 @@ public class ShapeFileDB extends CartAGenDB {
       Element popElem = (Element) classElem
           .getElementsByTagName("feature-type").item(0);
       String featureType = popElem.getChildNodes().item(0).getNodeValue();
-      Class<? extends IGeometry> geometryType = IGeometry.class;
-      if (classElem.getElementsByTagName("geometry-type").getLength() != 0) {
-        // TODO
-      }
-      this.classes
-          .add(new ShapeFileClass(this, path, featureType, geometryType));
+      this.classes.add(new ShapeFileClass(this, path, featureType));
     }
 
     // the enrichments
@@ -333,10 +327,8 @@ public class ShapeFileDB extends CartAGenDB {
    * @param populationName the name of the population of objects created from
    *          the Shapefile and stored in GeneralisationDataset
    */
-  public void addShapeFile(String path, String populationName,
-      Class<? extends IGeometry> geometryType) {
-    this.classes.add(new ShapeFileClass(this, path, populationName,
-        geometryType));
+  public void addShapeFile(String path, String populationName) {
+    this.classes.add(new ShapeFileClass(this, path, populationName));
   }
 
   @Override

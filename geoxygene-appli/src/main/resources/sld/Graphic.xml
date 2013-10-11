@@ -25,8 +25,8 @@
 						</Stroke>
 						<GeometryPropertyName>geom</GeometryPropertyName>
 						<Fill>
-							<GraphicFill>
-								<Graphic>
+							<graphicFill>
+								<graphics>
 									<opacity>1.0</opacity>
 									<Size>10.0</Size>
 									<Rotation><Literal>0</Literal></Rotation>
@@ -34,8 +34,8 @@
 										<href>file:/E:/users/hoarau/workspace_chacha/geoxygene/geoxygene-appli/target/classes/images/herbes.png</href>
 										<Format>png</Format>
 									</ExternalGraphic>
-								</Graphic>
-							</GraphicFill>
+								</graphics>
+							</graphicFill>
 							<CssParameter name="fill">#00ff00</CssParameter>
 							<CssParameter name="fill-opacity">1.0</CssParameter>
 						</Fill>
@@ -65,7 +65,7 @@
 					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
 						<Stroke>
 							<GraphicFill>
-								<Graphic>
+								<graphics>
 									<opacity>1.0</opacity>
 									<Size>8.0</Size>
 									<Rotation>
@@ -75,7 +75,7 @@
 										<href>file:/E:/users/hoarau/workspace_chacha/geoxygene/geoxygene-appli/target/classes/images/circles.png</href>
 										<Format>png</Format>
 									</ExternalGraphic>
-								</Graphic>
+								</graphics>
 							</GraphicFill>
 							<CssParameter name="stroke">#ff0000</CssParameter>
 							<CssParameter name="stroke-opacity">1.0</CssParameter>
@@ -112,7 +112,7 @@
 					<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
 						<Stroke>
 							<GraphicStroke>
-								<Graphic>
+								<graphics>
 									<opacity>1.0</opacity>
 									<Size>20.0</Size>
 									<Rotation>
@@ -122,7 +122,7 @@
 										<href>file:/E:/users/hoarau/workspace_chacha/geoxygene/geoxygene-appli/target/classes/images/circle.png</href>
 										<Format>png</Format>
 									</ExternalGraphic>
-								</Graphic>
+								</graphics>
 							</GraphicStroke>
 							<CssParameter name="stroke">#ff0000</CssParameter>
 							<CssParameter name="stroke-opacity">1.0</CssParameter>
@@ -230,7 +230,7 @@
 					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
 						<Stroke>
 							<GraphicStroke>
-								<Graphic>
+								<graphics>
 									<opacity>1.0</opacity>
 									<Size>20.0</Size>
 									<Rotation>
@@ -240,7 +240,7 @@
 										<href>file:/E:/users/hoarau/workspace_chacha/geoxygene/geoxygene-appli/target/classes/images/circle.png</href>
 										<Format>png</Format>
 									</ExternalGraphic>
-								</Graphic>
+								</graphics>
 							</GraphicStroke>
 							<CssParameter name="stroke">#ff0000</CssParameter>
 							<CssParameter name="stroke-opacity">1.0</CssParameter>
@@ -274,7 +274,7 @@
 					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
 						<Stroke>
 							<GraphicFill>
-								<Graphic>
+								<graphics>
 									<opacity>1.0</opacity>
 									<Size>8.0</Size>
 									<Rotation>
@@ -284,7 +284,7 @@
 										<href>file:/E:/users/hoarau/workspace_chacha/geoxygene/geoxygene-appli/target/classes/images/circles.png</href>
 										<Format>png</Format>
 									</ExternalGraphic>
-								</Graphic>
+								</graphics>
 							</GraphicFill>
 							<CssParameter name="stroke">#ff0000</CssParameter>
 							<CssParameter name="stroke-opacity">1.0</CssParameter>
@@ -319,8 +319,8 @@
 						</Stroke>
 						<GeometryPropertyName>geom</GeometryPropertyName>
 						<Fill>
-							<Texture>
-							</Texture>
+							<texture>
+							</texture>
 							<CssParameter name="fill">#ffafaf</CssParameter>
 						</Fill>
 					</PolygonSymbolizer>

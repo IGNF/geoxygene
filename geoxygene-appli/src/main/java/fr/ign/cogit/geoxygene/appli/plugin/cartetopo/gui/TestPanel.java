@@ -33,9 +33,9 @@ public class TestPanel extends JToolBar {
         
         initPanel();
         
-        projectFrame.getContentPane().add(tableauResultat, BorderLayout.SOUTH);
+        projectFrame.getGui().getRootPane().add(tableauResultat, BorderLayout.SOUTH);
         // tableauResultat.setVisible(true);
-        projectFrame.validate();
+        projectFrame.getGui().validate();
         
     }
     

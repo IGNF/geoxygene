@@ -24,7 +24,6 @@ package fr.ign.cogit.geoxygene.matching.dst.sources.surface;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
@@ -39,7 +38,7 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  */
 public class SurfaceDistance extends GeoSource {
 
-  private float threshold = 1.0f;
+  private float threshold = 0.1f;
 
   public float getThreshold() {
     return this.threshold;
@@ -56,9 +55,10 @@ public class SurfaceDistance extends GeoSource {
    * Evaluation.
    */
   @Override
-  public List<Pair<byte[], Float>> evaluate(IFeature reference,
-      final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
+  public List<Pair<byte[], Float>> evaluate(GeomHypothesis reference, final List<GeomHypothesis> candidates,
+      EvidenceCodec<GeomHypothesis> codec) {
     List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
+//    IFeature reference = GeoMatching.getInstance().getReference();
     float sum = 0;
     for (GeomHypothesis h : candidates) {
       // On ne traite que les objets qui intersectent la référence. La distance
@@ -81,16 +81,11 @@ public class SurfaceDistance extends GeoSource {
 
   @Override
   public String getName() {
-    return "Distance Surfacique";// TODO using I18N
+    return "Distance Surfacique";//TODO using I18N
   }
 
   private double compute(IGeometry geo1, IGeometry geo2) {
     double value = geo1.intersection(geo2).area() / geo1.union(geo2).area();
     return Math.max(Math.min(value, 1d), 0d);
-  }
-
-  @Override
-  public double evaluate(IFeature ref, GeomHypothesis candidate) {
-    return compute(ref.getGeom(), candidate.getGeom());
   }
 }

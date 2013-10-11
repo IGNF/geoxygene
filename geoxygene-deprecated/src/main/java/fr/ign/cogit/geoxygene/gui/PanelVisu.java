@@ -48,6 +48,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -57,6 +58,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
@@ -252,7 +254,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
   /**
    * la couleur des objets selectionnes
    */
-  private Color COULEUR_SELECTION = new Color(255, 0, 0, 100);
+  private final Color COULEUR_SELECTION = new Color(255, 0, 0, 100);
   /** distance en m pour la selection */
   private double distanceSelection = 1;
 
@@ -367,9 +369,17 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
 
     this.setBackground(Color.white);
     /** Charge le SLD par défaut */
-    this.defaultSld = StyledLayerDescriptor.unmarshall("defaultSLD.xml");
     /** Charge le dernier SLD utilisé */
-    this.sld = StyledLayerDescriptor.unmarshall("sld.xml");
+    try {
+      this.defaultSld = StyledLayerDescriptor.unmarshall("defaultSLD.xml");
+      this.sld = StyledLayerDescriptor.unmarshall("sld.xml");
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (JAXBException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
     this.dessinable = new DessinableGeoxygene(this.getSld());
     if (this.useChangeListener) {
@@ -1386,7 +1396,7 @@ class KeyListenerGeox implements KeyListener {
  * 
  */
 class ActionListenerGeox implements ActionListener {
-  private PanelVisu panelVisu;
+  private final PanelVisu panelVisu;
 
   public ActionListenerGeox(PanelVisu panelVisu) {
     this.panelVisu = panelVisu;
@@ -1408,7 +1418,7 @@ class ActionListenerGeox implements ActionListener {
  * 
  */
 class PopupListenerGeox extends MouseAdapter {
-  private PanelVisu panelVisu;
+  private final PanelVisu panelVisu;
 
   public PopupListenerGeox(PanelVisu panelVisu) {
     this.panelVisu = panelVisu;

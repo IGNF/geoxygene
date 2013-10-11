@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <GeOxygeneApplicationProperties>
-    <plugin>fr.ign.cogit.geoxygene.appli.plugin.datamatching.DataMatchingPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.datamatching.NetworkDataMatchingPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.datamatching.DataMatchingPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.TopologieReseauPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.ImportAsEdgesPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.BuildingBlocksCreationPlugin</plugin>
@@ -13,13 +13,14 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.CharacteristicShapeJTSPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.VoronoiDiagramJTSPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.SwingingArmPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.script.GroovyConsolePlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.semio.SemioPlugin</plugin>
     <lastOpenedFile></lastOpenedFile>
     <ConnectionParam>
         <dbtype>postgis</dbtype>
         <host>localhost</host>
-        <port>5433</port>
-        <database>indicecarto</database>
+        <port>5432</port>
+        <database>postgres</database>
         <schema>public</schema>
         <user>test</user>
         <passwd>test</passwd>

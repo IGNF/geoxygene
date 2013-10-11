@@ -71,61 +71,59 @@ import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 
 /**
  * Descripteur de couches stylisées. Implémente la norme OGC 02-070 sur les
- * StyledLayerDescriptors.
- * TODO revoir les userLayer
- * TODO voir les rasterSymbolizers
- * FIXME passer à la geoapi
+ * StyledLayerDescriptors. TODO revoir les userLayer TODO voir les
+ * rasterSymbolizers FIXME passer à la geoapi
  * @author Julien Perret
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "name",
-    "layers" })
+@XmlType(name = "", propOrder = { "name", "layers" })
 @XmlRootElement(name = "StyledLayerDescriptor")
 public class StyledLayerDescriptor implements FeatureCollectionListener {
-  
-    static Logger logger = Logger.getLogger(StyledLayerDescriptor.class.getName());
 
-    @XmlElement(name = "Name")
-    protected String name;
-        
-    @XmlAttribute(required = true)
-    protected String version;
-  
-    @XmlTransient
-    private DataSet dataSet = null;
-    
-    @XmlElements({ @XmlElement(name = "NamedLayer", type = NamedLayer.class),
-        @XmlElement(name = "UserLayer", type = UserLayer.class) })
-    private LinkedList<Layer> layers = new LinkedList<Layer>();
-  
-    /**
-     * Constructeur vide.
-     */
-    public StyledLayerDescriptor() {
-        super();
-        this.dataSet = DataSet.getInstance();
-    }
-  
-    /**
-     * @param dataSet
-     */
-    public StyledLayerDescriptor(DataSet dataSet) {
-        super();
-        this.dataSet = dataSet;
-    }
-  
-    public List<Layer> getLayers() {
-        return this.layers;
-    }
-    
-    /**
-     * Affecte la valeur de l'attribut layers.
-     * @param layers l'attribut layers à affecter
-     */
-    public void setLayers(LinkedList<Layer> layers) {
-      this.layers = layers;
-    }
+  static Logger logger = Logger
+      .getLogger(StyledLayerDescriptor.class.getName());
+
+  @XmlElement(name = "Name")
+  protected String name;
+
+  @XmlAttribute(required = true)
+  protected String version;
+
+  @XmlTransient
+  private DataSet dataSet = null;
+
+  @XmlElements({ @XmlElement(name = "NamedLayer", type = NamedLayer.class),
+      @XmlElement(name = "UserLayer", type = UserLayer.class) })
+  private LinkedList<Layer> layers = new LinkedList<Layer>();
+
+  /**
+   * Constructeur vide.
+   */
+  public StyledLayerDescriptor() {
+    super();
+    this.dataSet = DataSet.getInstance();
+  }
+
+  /**
+   * @param dataSet
+   */
+  public StyledLayerDescriptor(DataSet dataSet) {
+    super();
+    this.dataSet = dataSet;
+  }
+
+  public List<Layer> getLayers() {
+    return this.layers;
+  }
+
+  /**
+   * Affecte la valeur de l'attribut layers.
+   * @param layers l'attribut layers à affecter
+   */
+  public void setLayers(LinkedList<Layer> layers) {
+    this.layers = layers;
+  }
 
   /**
    * Return the list of the colors of the layers of this SLD.
@@ -139,8 +137,8 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
           Symbolizer symbolizer = rule.getSymbolizers().get(0);
           if (symbolizer.isLineSymbolizer()) {
             if (symbolizer.getStroke() != null) {
-              colors
-              .add(new ColorimetricColor(symbolizer.getStroke().getStroke()));
+              colors.add(new ColorimetricColor(symbolizer.getStroke()
+                  .getStroke()));
             }
           } else if (symbolizer.isPolygonSymbolizer()) {
             colors.add(new ColorimetricColor(((PolygonSymbolizer) symbolizer)
@@ -191,6 +189,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
     }
     return null;
   }
+
   /**
    * Add a layer at the end of the sld.
    * @param layer the new layer
@@ -199,10 +198,11 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
     this.layers.addLast(layer);
     this.fireActionLayerAdded(layer);
   }
+
   /**
-   * Inserts the specified layer at the specified position in the list of layers of this sld.
-   * Shifts the element currently at that position (if any)
-   * and any subsequent elements to the right (adds one to their indices). 
+   * Inserts the specified layer at the specified position in the list of layers
+   * of this sld. Shifts the element currently at that position (if any) and any
+   * subsequent elements to the right (adds one to their indices).
    * @param layer the new layer
    */
   public void add(Layer layer, int index) {
@@ -232,30 +232,31 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
     this.fireActionLayersRemoved(removed);
   }
 
-  public void remove(Collection<Layer> layers){
-      this.layers.removeAll(layers);
-      for (Layer layer : layers) {
-          layer.destroy();
-        }
-      this.fireActionPerformed(new ChangeEvent(this));
-      this.fireActionLayersRemoved(layers);
+  public void remove(Collection<Layer> layers) {
+    this.layers.removeAll(layers);
+    for (Layer layer : layers) {
+      layer.destroy();
+    }
+    this.fireActionPerformed(new ChangeEvent(this));
+    this.fireActionLayersRemoved(layers);
 
   }
+
   public void removeLayersAt(int[] selectedRows) {
-      for(int index : selectedRows){
-          Layer l=this.layers.get(index);
-          l.destroy();
-          this.layers.remove(index);
-      }
-      this.fireActionLayersRemoved(null);
-      
+    for (int index : selectedRows) {
+      Layer l = this.layers.get(index);
+      l.destroy();
+      this.layers.remove(index);
+    }
+    this.fireActionLayersRemoved(null);
+
   }
 
-    // Event handling
-    @XmlTransient
-    protected List<ChangeListener> listenerList = new ArrayList<ChangeListener>();
-    @XmlTransient
-    private Set<SldListener> sldListenerList = new HashSet<SldListener>();
+  // Event handling
+  @XmlTransient
+  protected List<ChangeListener> listenerList = new ArrayList<ChangeListener>();
+  @XmlTransient
+  private final Set<SldListener> sldListenerList = new HashSet<SldListener>();
 
   /**
    * Ajout un {@link ChangeListener}. Adds a {@link ChangeListener}.
@@ -282,30 +283,22 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
     }
   }
 
-  public static StyledLayerDescriptor unmarshall(InputStream stream) {
-    try {
-      JAXBContext context = JAXBContext.newInstance(
-          StyledLayerDescriptor.class, NamedLayer.class, NamedStyle.class);
-      Unmarshaller m = context.createUnmarshaller();
-      StyledLayerDescriptor sld = (StyledLayerDescriptor) m.unmarshal(stream);
-      return sld;
-    } catch (JAXBException e) {
-      e.printStackTrace();
-    }
-    return new StyledLayerDescriptor();
+  public static StyledLayerDescriptor unmarshall(InputStream stream)
+      throws JAXBException {
+    JAXBContext context = JAXBContext.newInstance(StyledLayerDescriptor.class,
+        NamedLayer.class, NamedStyle.class);
+    Unmarshaller m = context.createUnmarshaller();
+    StyledLayerDescriptor sld = (StyledLayerDescriptor) m.unmarshal(stream);
+    return sld;
   }
 
-  public static StyledLayerDescriptor unmarshall(Reader reader) {
-    try {
-      JAXBContext context = JAXBContext.newInstance(
-          StyledLayerDescriptor.class, NamedLayer.class, NamedStyle.class);
-      Unmarshaller m = context.createUnmarshaller();
-      StyledLayerDescriptor sld = (StyledLayerDescriptor) m.unmarshal(reader);
-      return sld;
-    } catch (JAXBException e) {
-      e.printStackTrace();
-    }
-    return new StyledLayerDescriptor();
+  public static StyledLayerDescriptor unmarshall(Reader reader)
+      throws JAXBException {
+    JAXBContext context = JAXBContext.newInstance(StyledLayerDescriptor.class,
+        NamedLayer.class, NamedStyle.class);
+    Unmarshaller m = context.createUnmarshaller();
+    StyledLayerDescriptor sld = (StyledLayerDescriptor) m.unmarshal(reader);
+    return sld;
   }
 
   /**
@@ -314,38 +307,36 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
    * @param fileName fichier XML décrivant le SLD à charger
    * @return le SLD décrit dans le fichier XML ou un SLD vide si le fichier
    *         n'existe pas.
+   * @throws FileNotFoundException
+   * @throws JAXBException
    */
-  public static StyledLayerDescriptor unmarshall(String fileName) {
-    try {
-      return StyledLayerDescriptor.unmarshall(new FileInputStream(fileName));
-    } catch (FileNotFoundException e) {
-      StyledLayerDescriptor.logger
-          .error("File " + fileName + " could not be read"); //$NON-NLS-1$//$NON-NLS-2$
-      e.printStackTrace();
-      return new StyledLayerDescriptor();
-    }
+  public static StyledLayerDescriptor unmarshall(String fileName)
+      throws FileNotFoundException, JAXBException {
+    return StyledLayerDescriptor.unmarshall(new FileInputStream(fileName));
   }
-  
-  public static StyledLayerDescriptor unmarshall(String fileName, DataSet dataset) {
+
+  public static StyledLayerDescriptor unmarshall(String fileName,
+      DataSet dataset) throws FileNotFoundException, JAXBException {
     StyledLayerDescriptor sld = unmarshall(fileName);
     sld.dataSet = dataset;
     return sld;
   }
-  
-  public static StyledLayerDescriptor unmarshall(InputStream stream, DataSet dataset) {
+
+  public static StyledLayerDescriptor unmarshall(InputStream stream,
+      DataSet dataset) throws JAXBException {
     StyledLayerDescriptor sld = unmarshall(stream);
     sld.dataSet = dataset;
     return sld;
   }
-  
+
   public void marshall(Writer writer) {
     try {
       JAXBContext context = JAXBContext.newInstance(
           StyledLayerDescriptor.class, NamedLayer.class, NamedStyle.class);
-      final XMLStreamWriter xmlStreamWriter = XMLOutputFactory
-      .newInstance().createXMLStreamWriter(writer);
+      final XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance()
+          .createXMLStreamWriter(writer);
       xmlStreamWriter.setPrefix("sld", //$NON-NLS-1$
-      "http://www.example.com/myPO1"); //$NON-NLS-1$
+          "http://www.example.com/myPO1"); //$NON-NLS-1$
       Marshaller m = context.createMarshaller();
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
       m.marshal(this, xmlStreamWriter);
@@ -456,16 +447,16 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
   }
 
   @Override
-  public void changed(final FeatureCollectionEvent event) {    
+  public void changed(final FeatureCollectionEvent event) {
   }
 
   /**
    * Crée un nouveau layer portant le nom donné en paramètre et un symbolizer
    * adapté au type de géométrie en paramètre.
    * <p>
-   * Les couleurs associées au symbolizer sont choisies parmi celles
-   * du système de référence de couleurs du COGIT. Elles sont différentes
-   * les unes des autres.
+   * Les couleurs associées au symbolizer sont choisies parmi celles du système
+   * de référence de couleurs du COGIT. Elles sont différentes les unes des
+   * autres.
    * 
    * @param layerName nom du layer cherché
    * @param geometryType type de géométrie porté par le layer
@@ -475,11 +466,12 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
       Class<? extends IGeometry> geometryType) {
 
     // Selection of suitables colors from the COGIT reference colors.
-	  
-	// Modification Lucille 12 / 08 / 2011
-	// Pour le JAR, le getPath ne passe pas -> remplacé par 
+
+    // Modification Lucille 12 / 08 / 2011
+    // Pour le JAR, le getPath ne passe pas -> remplacé par
     ColorReferenceSystem crs = ColorReferenceSystem
-    .unmarshall(ColorReferenceSystem.class.getClassLoader().getResourceAsStream("color/ColorReferenceSystem.xml")); //$NON-NLS-1$
+        .unmarshall(ColorReferenceSystem.class.getClassLoader()
+            .getResourceAsStream("color/ColorReferenceSystem.xml")); //$NON-NLS-1$
     List<ColorimetricColor> colors = new ArrayList<ColorimetricColor>(0);
     for (int i = 0; i < 12; i++) {
       for (ColorimetricColor c : crs.getSlice(0, i)) {
@@ -753,51 +745,54 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
   }
 
   public void setDataSet(DataSet dataset) {
-      this.dataSet = dataset;
+    this.dataSet = dataset;
   }
 
   public DataSet getDataSet() {
-      return this.dataSet;
+    return this.dataSet;
   }
 
   public int layersCount() {
-      return this.layers.size();
+    return this.layers.size();
   }
 
   public void addSldListener(SldListener listener) {
-      this.sldListenerList.add(listener);
-      
+    this.sldListenerList.add(listener);
+
   }
-  
-  private void fireActionLayerAdded(Layer l){
-      for(SldListener listener : this.sldListenerList){
-          listener.layerAdded(l);
-      }
+
+  public void removeSldListener(SldListener listener) {
+    this.sldListenerList.remove(listener);
+  }
+
+  private void fireActionLayerAdded(Layer l) {
+    for (SldListener listener : this.sldListenerList) {
+      listener.layerAdded(l);
+    }
   }
 
   private void fireActionLayersRemoved(Collection<Layer> layers) {
-      for(SldListener listener : this.sldListenerList){
-          listener.layersRemoved(layers);
-      }
-  }  
-  
-  private void fireActionLayerMoved(int oldId, int newId) {
-      for(SldListener listener : this.sldListenerList){
-          listener.layerOrderChanged(oldId, newId);
-      }        
+    for (SldListener listener : this.sldListenerList) {
+      listener.layersRemoved(layers);
+    }
   }
 
+  private void fireActionLayerMoved(int oldId, int newId) {
+    for (SldListener listener : this.sldListenerList) {
+      listener.layerOrderChanged(oldId, newId);
+    }
+  }
 
   public Layer getLayerAt(int row) {
-      return this.layers.get(row);
+    return this.layers.get(row);
   }
 
   public void moveLayer(int row, int sldIndex) {
-      if(sldIndex < 0 || sldIndex > this.layersCount() || row == sldIndex){
-          return;
-      }
-      Layer l =this.layers.remove(row);
-      this.layers.add(sldIndex, l);
-      this.fireActionLayerMoved(row, sldIndex);
+    if (sldIndex < 0 || sldIndex > this.layersCount() || row == sldIndex) {
+      return;
+    }
+    Layer l = this.layers.remove(row);
+    this.layers.add(sldIndex, l);
+    this.fireActionLayerMoved(row, sldIndex);
   }
 }

@@ -45,7 +45,8 @@ public interface Mode extends KeyListener, MouseListener, MouseMotionListener,
   Cursor getCursor();
 
   /**
-   * Activate the mode. This is a hook in case a mode needs special initilising.
+   * Activate the mode. This is a hook in case a mode needs special
+   * initialization.
    */
   void activated();
 }

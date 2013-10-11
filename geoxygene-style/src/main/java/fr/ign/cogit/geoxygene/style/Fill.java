@@ -44,7 +44,6 @@ public class Fill {
     BUTT, ROUND, SQUARE
   }
 
-  @XmlElement(name = "GraphicFill")
   private GraphicFill graphicFill = null;
 
   /**
@@ -63,7 +62,6 @@ public class Fill {
     this.graphicFill = graphicFill;
   }
   
-  @XmlElement(name = "Texture")
   private Texture texture = null;
   
   /**

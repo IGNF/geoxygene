@@ -39,30 +39,18 @@ import javax.swing.JWindow;
  * @author Julien Perret
  */
 public class SplashScreen extends JWindow {
-  /**
-   * The serial version id.
-   */
-  private static final long serialVersionUID = 1L;
-  /**
-   * The image label.
-   */
-  private JLabel imageLabel = new JLabel();
-  /**
-   * The caption label.
-   */
-  private JLabel captionLabel = new JLabel();
-  /**
-   * The progress bar.
-   */
-  private JProgressBar progressBar = new JProgressBar();
-  /**
-   * The default inset size.
-   */
-  private static final int DEFAULT_INSET_SIZE = 10;
-  /**
-   * The default font size.
-   */
-  private static final int DEFAULT_FONT_SIZE = 10;
+  /** The serial version id. */
+  private static final long serialVersionUID   = 1L;
+  /** The image label. */
+  private JLabel            imageLabel         = new JLabel();
+  /** The caption label. */
+  private JLabel            captionLabel       = new JLabel();
+  /** The progress bar. */
+  private JProgressBar      progressBar        = new JProgressBar();
+  /** The default inset size. */
+  private static final int  DEFAULT_INSET_SIZE = 10;
+  /** The default font size. */
+  private static final int  DEFAULT_FONT_SIZE  = 10;
 
   /**
    * Constructor.
@@ -82,19 +70,12 @@ public class SplashScreen extends JWindow {
     this.captionLabel.setForeground(Color.lightGray);
     this.progressBar.setOpaque(false);
     this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-    container.add(this.imageLabel, new GridBagConstraints(0, 0, 1, 1, 1, 1,
-        GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
-            SplashScreen.DEFAULT_INSET_SIZE, SplashScreen.DEFAULT_INSET_SIZE,
-            SplashScreen.DEFAULT_INSET_SIZE, SplashScreen.DEFAULT_INSET_SIZE),
-        0, 0));
-    container.add(this.captionLabel, new GridBagConstraints(0, 1, 1, 1, 0, 0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE,
-        new Insets(0, SplashScreen.DEFAULT_INSET_SIZE, 0,
-            SplashScreen.DEFAULT_INSET_SIZE), 0, 0));
-    container.add(this.progressBar, new GridBagConstraints(0, 2, 1, 1, 0, 0,
-        GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,
-            SplashScreen.DEFAULT_INSET_SIZE, SplashScreen.DEFAULT_INSET_SIZE,
-            SplashScreen.DEFAULT_INSET_SIZE), 0, 0));
+    container.add(this.imageLabel, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
+        SplashScreen.DEFAULT_INSET_SIZE, SplashScreen.DEFAULT_INSET_SIZE, SplashScreen.DEFAULT_INSET_SIZE, SplashScreen.DEFAULT_INSET_SIZE), 0, 0));
+    container.add(this.captionLabel, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,
+        SplashScreen.DEFAULT_INSET_SIZE, 0, SplashScreen.DEFAULT_INSET_SIZE), 0, 0));
+    container.add(this.progressBar, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,
+        SplashScreen.DEFAULT_INSET_SIZE, SplashScreen.DEFAULT_INSET_SIZE, SplashScreen.DEFAULT_INSET_SIZE), 0, 0));
     this.getContentPane().setBackground(Color.white);
     this.getContentPane().add(container);
     this.pack();

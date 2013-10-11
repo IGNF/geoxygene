@@ -24,6 +24,17 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.jdbc.postgis.ConnectionParam;
 
+/**
+ * properties for geoxygene configuration
+ * plugin: plugin package to load (multiple)
+ * lastOpenedFile: directory for file/save file chooser (single)
+ * preload: file to load at startup (multiple)
+ * DefaultVisualizationType: "AWT" or "LWJGL" (single) if other, default is AWT
+ * ConnectionParam: (single)
+ * ProjectFrameLayout: "floating" or "tabbed" (single) default is Floating
+ *
+ */
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "GeOxygeneApplicationProperties")
 public class GeOxygeneApplicationProperties {
@@ -34,10 +45,20 @@ public class GeOxygeneApplicationProperties {
     @XmlElements(@XmlElement(name = "plugin", type = String.class))
     private List<String> plugins = new ArrayList<String>();
     
+    @XmlElement(name = "lastOpenedFile")
     private String lastOpenedFile = ""; //$NON-NLS-1$
+
+    @XmlElements(@XmlElement(name = "preload", type = String.class))
+    private List<String> preloads = new ArrayList<String>();
     
     @XmlElement(name = "ConnectionParam")
     private ConnectionParam connectionParam = new ConnectionParam();
+
+    @XmlElement(name = "DefaultVisualizationType")
+    private String defaultVisualizationType = "AWT";
+
+    @XmlElement(name = "ProjectFrameLayout") // "floating" or "tabbed"
+    private String projectFrameLayout = "floating";
 
     /**
      * Return plugin list.
@@ -45,6 +66,14 @@ public class GeOxygeneApplicationProperties {
      */
     public List<String> getPlugins() {
         return this.plugins;
+    }
+
+    /**
+     * Return preload list.
+     * @return List<String>
+     */
+    public List<String> getPreloads() {
+        return this.preloads;
     }
 
     /** 
@@ -70,7 +99,41 @@ public class GeOxygeneApplicationProperties {
     public void setLastOpenedFile(String lastOpenedFile) {
         this.lastOpenedFile = lastOpenedFile;
     }
+ 
+    /** 
+     * Return the default visualization type "AWT" or "LWJGL".
+     * @return string "AWT" or "LWJGL"
+     */
+    public String getDefaultVisualizationType() {
+        return this.defaultVisualizationType;
+    }
     
+   /** 
+     * Set the default visualization type "AWT" or "LWJGL".
+     * @param defaultViz "AWT" or "LWJGL"
+     */
+    public void setDefaultVisualizationType( String defaultViz ) {
+        this.defaultVisualizationType = defaultViz;
+    }
+
+    /**
+     * "floating" uses JInternal frames for ProjectFrames
+     * "tabbed" uses A JTabbedPane to dock ProjectFrames
+     * @return the main frame layout: 
+     */ 
+    public String getProjectFrameLayout() {
+    return projectFrameLayout;
+  }
+
+  /**
+   *      * "Floating" uses JInternal frames for ProjectFrames
+     * "Tabbed" uses A JTabbedPane to dock ProjectFrames
+   * @param projectFrameLayout "floating" or "tabbed"
+   */
+  public void setProjectFrameLayout(String projectFrameLayout) {
+    this.projectFrameLayout = projectFrameLayout;
+  }
+
     public void setConnectionParam(ConnectionParam param) {
         this.connectionParam = param;
     }

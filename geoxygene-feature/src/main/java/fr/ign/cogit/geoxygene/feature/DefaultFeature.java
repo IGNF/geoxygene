@@ -320,9 +320,5 @@ public class DefaultFeature extends AbstractFeature {
 
     return clone;
   }
-@Override
-public String toString() {
-  String result = "" + this.getId();// + " - " + this.getGeom();
-  return result;
-}
+
 }

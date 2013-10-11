@@ -29,10 +29,7 @@ package fr.ign.cogit.geoxygene.console;
  */
 public final class Console {
 
-  /**
-   * Private default constructor to prevent objects of this class to be
-   * instanciated: this is an utilitary class.
-   */
+  /** Private default constructor to prevent objects of this class to be instanciated: this is an utilitary class. */
   private Console() {
   }
 

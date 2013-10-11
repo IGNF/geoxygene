@@ -65,7 +65,7 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
         // Check if the DataMatching menu exists. If not we create it.
         JMenu menu = null;
         String menuName = I18N.getString("CarteTopoPlugin.CarteTopoPlugin"); //$NON-NLS-1$
-        for (Component c : application.getFrame().getJMenuBar().getComponents()) {
+        for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
             if (c instanceof JMenu) {
                 JMenu aMenu = (JMenu) c;
                 if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase(menuName)) {
@@ -83,7 +83,7 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
         menu.add(menuItem);
 
         // Refresh menu of the application
-        application.getFrame().getJMenuBar().add(menu, application.getFrame().getJMenuBar().getComponentCount() - 2);
+        application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getComponentCount() - 2);
 
     }
 
@@ -217,12 +217,12 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
 
         try {
 
-            Dimension desktopSize = this.application.getFrame().getSize();
+            Dimension desktopSize = this.application.getMainFrame().getSize();
             int widthProjectFrame = desktopSize.width / 2;
             int heightProjectFrame = desktopSize.height;
 
             // Graph Frame
-            ProjectFrame p1 = this.application.getFrame().newProjectFrame();
+            ProjectFrame p1 = this.application.getMainFrame().newProjectFrame();
             // p1.setMaximum(true);
             p1.setLocation(0, 0);
             p1.setSize(widthProjectFrame, heightProjectFrame - 200);
@@ -265,7 +265,7 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
             // ----------------------------------------------------------------------------------------
             
             // Shortest path tree Frame
-            ProjectFrame p2 = this.application.getFrame().newProjectFrame();
+            ProjectFrame p2 = this.application.getMainFrame().newProjectFrame();
             p2.setSize(widthProjectFrame - 50, heightProjectFrame - 200);
             p2.setLocation(widthProjectFrame, 0);
             p2.getLayerViewPanel().setViewport(viewport);
@@ -280,7 +280,7 @@ public class ShortestPathTreePlugin implements GeOxygeneApplicationPlugin, Actio
             StyledLayerDescriptor sldSPT = StyledLayerDescriptor
                     .unmarshall(StyledLayerDescriptor.class.getClassLoader().getResourceAsStream("sld/shortestpathtree.xml"));
             lppc.setStyles(sldSPT.getLayer("troncon").getStyles());
-            application.getFrame().getSelectedProjectFrame().getLayerViewPanel().repaint();
+            application.getMainFrame().getSelectedProjectFrame().getLayerViewPanel().repaint();
             
             Population<Noeud> popRoot = new Population<Noeud>("root");
             popRoot.add(root);

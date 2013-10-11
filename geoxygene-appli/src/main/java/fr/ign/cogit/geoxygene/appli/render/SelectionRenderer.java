@@ -27,7 +27,7 @@ import java.awt.image.BufferedImage;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.style.Shadow;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
@@ -41,148 +41,58 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
  * @see fr.ign.cogit.geoxygene.style.Layer
  * @see LayerViewPanel
  */
-public class SelectionRenderer implements Renderer {
-  /**
-   * The logger.
-   */
+public class SelectionRenderer extends AbstractLayerRenderer {
+  /** The logger. */
   private static Logger logger = Logger.getLogger(SelectionRenderer.class
       .getName());
-  /**
-   * The layer view panel.
-   */
-  private LayerViewPanel layerViewPanel = null;
 
-  /**
-   * @param theLayerViewPanel The layer view panel
-   */
-  public final void setLayerViewPanel(final LayerViewPanel theLayerViewPanel) {
-    this.layerViewPanel = theLayerViewPanel;
-  }
-
-  /**
-   * @return The layer view panel
-   */
-  public final LayerViewPanel getLayerViewPanel() {
-    return this.layerViewPanel;
-  }
-
-  /**
-   * True if rendering is cancelled.
-   */
-  private volatile boolean cancelled = false;
-
-  /**
-   * @return True if rendering is cancelled
-   */
-  public final boolean isCancelled() {
-    return this.cancelled;
-  }
-
-  /**
-   * True if rendering is ongoing.
-   */
-  private volatile boolean rendering = false;
-
-  @Override
-  public final boolean isRendering() {
-    return this.rendering;
-  }
-
-  /**
-   * @param isRendering True if rendering is ongoing
-   */
-  public final void setRendering(final boolean isRendering) {
-    this.rendering = isRendering;
-  }
-
-  /**
-   * True if rendering is finished.
-   */
-  private volatile boolean rendered = false;
-
-  @Override
-  public final boolean isRendered() {
-    return this.rendered;
-  }
-
-  /**
-   * @param isRendered True if rendering is finished
-   */
-  public final void setRendered(final boolean isRendered) {
-    this.rendered = isRendered;
-  }
-
-  /**
-   * The image the renderer renders into.
-   */
+  /** The image the renderer renders into. */
   private BufferedImage image = null;
 
-  /**
-   * @param bufferedImage The image the renderer renders into
-   */
+  /** @param bufferedImage The image the renderer renders into */
   public final void setImage(final BufferedImage bufferedImage) {
     this.image = bufferedImage;
   }
 
-  /**
-   * @return The image the renderer renders into
-   */
+  /** @return The image the renderer renders into */
   public final BufferedImage getImage() {
     return this.image;
   }
 
-  /**
-   * Fill color.
-   */
-  private Color fillColor = new Color(1f, 1f, 0f, 1 / 2f);
+  /** Fill color. */
+  private final Color fillColor = new Color(1f, 1f, 0f, 1 / 2f);
 
-  /**
-   * @return The fill color
-   */
+  /** @return The fill color */
   public final Color getFillColor() {
     return this.fillColor;
   }
 
-  /**
-   * Stroke color.
-   */
-  private Color strokeColor = new Color(1f, 1f, 0f, 1f);
+  /** Stroke color. */
+  private final Color strokeColor = new Color(1f, 1f, 0f, 1f);
 
-  /**
-   * @return the stroke color
-   */
+  /** @return the stroke color */
   public final Color getStrokeColor() {
     return this.strokeColor;
   }
 
-  /**
-   * Stroke width.
-   */
-  private float strokeWidth = 2f;
+  /** Stroke width. */
+  private final float strokeWidth = 2f;
 
-  /**
-   * @return The stroke width
-   */
+  /** @return The stroke width */
   public final float getStrokeWidth() {
     return this.strokeWidth;
   }
 
-  /**
-   * Radius of the rendered points.
-   */
-  private int pointRadius = 2;
+  /** Radius of the rendered points. */
+  private final int pointRadius = 2;
 
-  /**
-   * @return The point radius
-   */
+  /** @return The point radius */
   public final int getPointRadius() {
     return this.pointRadius;
   }
 
-  /**
-   * The symbolizer.
-   */
-  private Symbolizer symbolizer = new Symbolizer() {
+  /** The symbolizer. */
+  private final Symbolizer symbolizer = new Symbolizer() {
     @Override
     public String getGeometryPropertyName() {
       return null;
@@ -217,53 +127,55 @@ public class SelectionRenderer implements Renderer {
     public boolean isTextSymbolizer() {
       return false;
     }
-//
-//    @Override
-//    public void paint(final IFeature feature, final Viewport viewport,
-//        final Graphics2D graphics) {
-//      if (feature.getGeom() == null) {
-//        return;
-//      }
-//      if (feature.getGeom().isPolygon() || feature.getGeom().isMultiSurface()) {
-//        graphics.setColor(SelectionRenderer.this.getFillColor());
-//        RenderUtil.fill(feature.getGeom(), viewport, graphics);
-//      }
-//      java.awt.Stroke bs = new BasicStroke(
-//          SelectionRenderer.this.getStrokeWidth(), BasicStroke.CAP_SQUARE,
-//          BasicStroke.JOIN_MITER);
-//      graphics.setColor(SelectionRenderer.this.getStrokeColor());
-//      graphics.setStroke(bs);
-//      RenderUtil.draw(feature.getGeom(), viewport, graphics);
-//      try {
-//        graphics.setStroke(new BasicStroke(1, BasicStroke.CAP_SQUARE,
-//            BasicStroke.JOIN_MITER));
-//        for (IDirectPosition position : viewport
-//            .toViewDirectPositionList(feature.getGeom().coord())) {
-//          GeneralPath shape = new GeneralPath();
-//          shape.moveTo(
-//              position.getX() - SelectionRenderer.this.getPointRadius(),
-//              position.getY() - SelectionRenderer.this.getPointRadius());
-//          shape.lineTo(
-//              position.getX() + SelectionRenderer.this.getPointRadius(),
-//              position.getY() - SelectionRenderer.this.getPointRadius());
-//          shape.lineTo(
-//              position.getX() + SelectionRenderer.this.getPointRadius(),
-//              position.getY() + SelectionRenderer.this.getPointRadius());
-//          shape.lineTo(
-//              position.getX() - SelectionRenderer.this.getPointRadius(),
-//              position.getY() + SelectionRenderer.this.getPointRadius());
-//          shape.lineTo(
-//              position.getX() - SelectionRenderer.this.getPointRadius(),
-//              position.getY() - SelectionRenderer.this.getPointRadius());
-//          graphics.setColor(SelectionRenderer.this.getStrokeColor());
-//          graphics.fill(shape);
-//          graphics.setColor(Color.black);
-//          graphics.draw(shape);
-//        }
-//      } catch (NoninvertibleTransformException e) {
-//        e.printStackTrace();
-//      }
-//    }
+
+    //
+    // @Override
+    // public void paint(final IFeature feature, final Viewport viewport,
+    // final Graphics2D graphics) {
+    // if (feature.getGeom() == null) {
+    // return;
+    // }
+    // if (feature.getGeom().isPolygon() || feature.getGeom().isMultiSurface())
+    // {
+    // graphics.setColor(SelectionRenderer.this.getFillColor());
+    // RenderUtil.fill(feature.getGeom(), viewport, graphics);
+    // }
+    // java.awt.Stroke bs = new BasicStroke(
+    // SelectionRenderer.this.getStrokeWidth(), BasicStroke.CAP_SQUARE,
+    // BasicStroke.JOIN_MITER);
+    // graphics.setColor(SelectionRenderer.this.getStrokeColor());
+    // graphics.setStroke(bs);
+    // RenderUtil.draw(feature.getGeom(), viewport, graphics);
+    // try {
+    // graphics.setStroke(new BasicStroke(1, BasicStroke.CAP_SQUARE,
+    // BasicStroke.JOIN_MITER));
+    // for (IDirectPosition position : viewport
+    // .toViewDirectPositionList(feature.getGeom().coord())) {
+    // GeneralPath shape = new GeneralPath();
+    // shape.moveTo(
+    // position.getX() - SelectionRenderer.this.getPointRadius(),
+    // position.getY() - SelectionRenderer.this.getPointRadius());
+    // shape.lineTo(
+    // position.getX() + SelectionRenderer.this.getPointRadius(),
+    // position.getY() - SelectionRenderer.this.getPointRadius());
+    // shape.lineTo(
+    // position.getX() + SelectionRenderer.this.getPointRadius(),
+    // position.getY() + SelectionRenderer.this.getPointRadius());
+    // shape.lineTo(
+    // position.getX() - SelectionRenderer.this.getPointRadius(),
+    // position.getY() + SelectionRenderer.this.getPointRadius());
+    // shape.lineTo(
+    // position.getX() - SelectionRenderer.this.getPointRadius(),
+    // position.getY() - SelectionRenderer.this.getPointRadius());
+    // graphics.setColor(SelectionRenderer.this.getStrokeColor());
+    // graphics.fill(shape);
+    // graphics.setColor(Color.black);
+    // graphics.draw(shape);
+    // }
+    // } catch (NoninvertibleTransformException e) {
+    // e.printStackTrace();
+    // }
+    // }
 
     @Override
     public void setGeometryPropertyName(final String geometryPropertyName) {
@@ -279,7 +191,7 @@ public class SelectionRenderer implements Renderer {
     }
 
     @Override
-    public void setUnitOfMeasure(String uom) {
+    public void setUnitOfMeasure(final String uom) {
     }
 
     @Override
@@ -300,7 +212,7 @@ public class SelectionRenderer implements Renderer {
     }
 
     @Override
-    public void setShadow(Shadow shadow) {
+    public void setShadow(final Shadow shadow) {
     }
   };
 
@@ -310,25 +222,13 @@ public class SelectionRenderer implements Renderer {
    * @param theLayerViewPanel the panel to draws into
    */
   public SelectionRenderer(final LayerViewPanel theLayerViewPanel) {
-    this.setLayerViewPanel(theLayerViewPanel);
-  }
-
-  /**
-   * Cancel the rendering. This method does not actually interrupt the thread
-   * but lets the thread know it should stop.
-   * @see Runnable
-   * @see Thread
-   */
-  @Override
-  public final void cancel() {
-    this.cancelled = true;
+    super(null, theLayerViewPanel);
   }
 
   /**
    * Copy the rendered image the a 2D graphics.
    * @param graphics the 2D graphics to draw into
    */
-  @Override
   public final void copyTo(final Graphics2D graphics) {
     if (this.getImage() != null) {
       graphics.drawImage(this.getImage(), 0, 0, null);
@@ -349,7 +249,7 @@ public class SelectionRenderer implements Renderer {
     if (this.getImage() != null) {
       return null;
     }
-    this.cancelled = false;
+    this.setCancelled(false);
     return new Runnable() {
       @Override
       public void run() {
@@ -401,11 +301,11 @@ public class SelectionRenderer implements Renderer {
    * @see #cancel()
    */
   final void renderHook(final BufferedImage theImage) {
-    if (this.cancelled) {
+    if (this.isCancelled()) {
       return;
     }
     for (IFeature feature : this.getLayerViewPanel().getSelectedFeatures()) {
-      if (this.cancelled) {
+      if (this.isCancelled()) {
         return;
       }
       if (feature.getGeom() != null && !feature.getGeom().isEmpty()) {
@@ -420,22 +320,19 @@ public class SelectionRenderer implements Renderer {
    * @param theImage the image to render into
    */
   private void render(final IFeature feature, final BufferedImage theImage) {
-      RenderUtil.paint(this.symbolizer, feature, this.getLayerViewPanel().getViewport(),
-        (Graphics2D) theImage.getGraphics(), 1.0f, theImage);// FIXME OPACITY FIX
+    // FIXME OPACITY FIX
+    RenderUtil.paint(this.symbolizer, feature, this.getLayerViewPanel()
+        .getViewport(), (Graphics2D) theImage.getGraphics(), 1.0f, theImage);
   }
 
-  /**
-   * Clear the image cache, i.e. delete the current image.
-   */
-  @Override
+  /** Clear the image cache, i.e. delete the current image. */
   public final void clearImageCache() {
     this.setImage(null);
   }
 
-  @Override
   public final void clearImageCache(final int x, final int y, final int width,
       final int height) {
-    if (this.cancelled) {
+    if (this.isCancelled()) {
       return;
     }
     for (int i = Math.max(x, 0); i < Math.min(x + width, this

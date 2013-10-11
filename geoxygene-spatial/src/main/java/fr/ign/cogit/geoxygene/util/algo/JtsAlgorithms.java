@@ -50,7 +50,6 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.operation.buffer.BufferOp;
 import com.vividsolutions.jts.operation.buffer.BufferParameters;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
-import com.vividsolutions.jts.operation.union.CascadedPolygonUnion;
 import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -734,17 +733,6 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @return union d'une liste de géométries
    */
   public static IGeometry union(List<? extends IGeometry> listeGeometries) {
-    try {
-      List<Polygon> lpoly = new ArrayList<Polygon>();
-      for (IGeometry g : listeGeometries) {
-        lpoly.add((Polygon) JtsGeOxygene.makeJtsGeom(g));
-      }
-      Geometry g = CascadedPolygonUnion.union(lpoly);
-      return JtsGeOxygene.makeGeOxygeneGeom(g);
-    } catch (Exception e) {
-      // Continuer pour les autres types de géométries
-    }
-    
     List<Geometry> listeGeometriesJts = new ArrayList<Geometry>(0);
     for (IGeometry geom : listeGeometries) {
       try {
@@ -776,9 +764,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   /**
-   * détermine le point d'un polygone le plus loin d'un autre point. Le polygone
-   * doit être convexe et sans trou. Determine the farest point of a polygon to
-   * another given point. The polygon must be convex and without hole.
+   * détermine le point d'un polygone le plus loin d'un autre point. Le
+   * polygone doit être convexe et sans trou. Determine the farest point of a
+   * polygon to another given point. The polygon must be convex and without
+   * hole.
    * 
    * @param pt un point, a point
    * @param poly un polygone convexe sans trou, a convex polygon without hole
@@ -797,8 +786,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   /**
-   * détermine le point d'un polygone le plus proche d'un autre point. Determine
-   * the closest point of a polygon to another given point.
+   * détermine le point d'un polygone le plus proche d'un autre point.
+   * Determine the closest point of a polygon to another given point.
    * 
    * @param pt un point, a point
    * @param poly un polygone, a polygon
@@ -823,8 +812,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
     try {
       line = (LineString) AdapterFactory.toGeometry(new GeometryFactory(), l);
       Coordinate[] cp = (new DistanceOp(line, point)).nearestPoints();
-      return AdapterFactory.toDirectPosition(line.getFactory()
-          .createPoint(cp[0]).getCoordinate());
+      return AdapterFactory.toDirectPosition(line.getFactory().createPoint(
+          cp[0]).getCoordinate());
     } catch (Exception e) {
     }
     return null;
@@ -866,8 +855,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
 
   /**
    * détermine les points les plus proches deux géométries. Les points sont
-   * donnés dans le même ordre que les deux géométries d'entrée. Compute the
-   * nearest points of two geometries. The points are presented in the same
+   * donnés dans le même ordre que les deux géométries d'entrée. Compute
+   * the nearest points of two geometries. The points are presented in the same
    * order as the input Geometries.
    * 
    * @param g1 une géométrie
@@ -1209,8 +1198,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
    *          buffer négatif
    * @param quadrantSegments nombre de segments utilisés pour la simplification
    *          par l'algorithme de Douglas-Peucker
-   * @param endCapStyle type d'approximation utilisée pour la simplification par
-   *          l'algorithme de Douglas-Peucker
+   * @param endCapStyle type d'approximation utilisée pour la simplification
+   *          par l'algorithme de Douglas-Peucker
    * @return la fermeture de la géométrie passée en paramètre
    */
   public static Geometry fermeture(Geometry geometry, double distance,
@@ -1232,8 +1221,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param poly un polygone, a polygon
    */
   public static Polygon supprimeTrous(Polygon poly) {
-    return new Polygon((LinearRing) poly.getExteriorRing(), null,
-        poly.getFactory());
+    return new Polygon((LinearRing) poly.getExteriorRing(), null, poly
+        .getFactory());
   }
 
   /**
@@ -1263,26 +1252,26 @@ public class JtsAlgorithms implements GeomAlgorithms {
       double distance) {
     double d = Math.abs(distance);
     if (d == 0) {
-      IMultiCurve<ILineString> result = new GM_MultiCurve<ILineString>();
-      result.add(line);
-      return result;
+        IMultiCurve<ILineString> result = new GM_MultiCurve<ILineString>();
+        result.add(line);
+        return result;
     }
-
+    
     int orientationIndex = (int) (d / distance);
     try {
       // removing duplicate coordinates from the input linestring.
       LineString lineString = JtsAlgorithms
-          .getLineStringWithoutDuplicates((LineString) JtsGeOxygene
-              .makeJtsGeom(line));
+      .getLineStringWithoutDuplicates((LineString) JtsGeOxygene
+          .makeJtsGeom(line));
       BufferParameters bufParams = new BufferParameters();
       bufParams.setSingleSided(true);
-      // bufParams.setEndCapStyle(BufferParameters.CAP_SQUARE);
+//      bufParams.setEndCapStyle(BufferParameters.CAP_SQUARE);
       Geometry buffer = BufferOp.bufferOp(lineString, distance, bufParams);
-      // lineString.buffer(distance, 4, BufferParameters.CAP_SQUARE);
-      // System.out.println("SS " + buffer);
+//        lineString.buffer(distance, 4, BufferParameters.CAP_SQUARE);
+//      System.out.println("SS " + buffer);
       if (lineString != null) {
         buffer = lineString.buffer(d, 4, BufferParameters.CAP_ROUND);
-        // System.out.println(buffer);
+//        System.out.println(buffer);
         Polygon polygon = null;
         if (!(buffer instanceof Polygon)) {
           JtsAlgorithms.logger.error("Can't compute offsetcurve of " + //$NON-NLS-1$
@@ -1292,8 +1281,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
         polygon = (Polygon) buffer;
         IMultiCurve<ILineString> result = new GM_MultiCurve<ILineString>();
         // build the offset curve for the exterior ring
-        ILineString r = JtsAlgorithms.getOffsetCurveFromRing(
-            polygon.getExteriorRing(), lineString, orientationIndex, d);
+        ILineString r = JtsAlgorithms.getOffsetCurveFromRing(polygon
+            .getExteriorRing(), lineString, orientationIndex, d);
         if ((r != null) && !r.isEmpty() && (r.coord().size() != 1)) {
           result.add(r);
         } // modif JFG
@@ -1502,8 +1491,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
         && coordinateList.get(0).equals2D(coordinateList.get(1))) {
       return null;
     }
-    ILineString result = new GM_LineString(
-        AdapterFactory.toDirectPositionList(coordinateList
+    ILineString result = new GM_LineString(AdapterFactory
+        .toDirectPositionList(coordinateList
             .toArray(new Coordinate[coordinateList.size()])));
     return result;
   }
@@ -1683,8 +1672,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
         && coordinateList.get(0).equals2D(coordinateList.get(1))) {
       return null;
     }
-    GM_LineString result = new GM_LineString(
-        AdapterFactory.toDirectPositionList(coordinateList
+    GM_LineString result = new GM_LineString(AdapterFactory
+        .toDirectPositionList(coordinateList
             .toArray(new Coordinate[coordinateList.size()])));
     return result;
   }
@@ -1698,13 +1687,13 @@ public class JtsAlgorithms implements GeomAlgorithms {
    */
   public static Polygon MBRAirePreservee(Geometry geom) {
     Polygon out = JtsAlgorithms.MBR(geom);
-    return JtsAlgorithms.homothetie(out,
-        (float) Math.sqrt(geom.getArea() / out.getArea()));
+    return JtsAlgorithms.homothetie(out, (float) Math.sqrt(geom.getArea()
+        / out.getArea()));
   }
 
   /**
-   * Plus Petit Rectangle Englobant d'une géométrie respectant un aire donnée.
-   * Smallest Enclosing Rectangle of a geometry with a given area.
+   * Plus Petit Rectangle Englobant d'une géométrie respectant un aire
+   * donnée. Smallest Enclosing Rectangle of a geometry with a given area.
    * 
    * @param geom une géométrie, a geometry
    * @param aireCible aire visée, target area
@@ -1712,8 +1701,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
    */
   public static Polygon MBRAireCible(Geometry geom, double aireCible) {
     Polygon out = JtsAlgorithms.MBR(geom);
-    return JtsAlgorithms.homothetie(out,
-        (float) Math.sqrt(aireCible / out.getArea()));
+    return JtsAlgorithms.homothetie(out, (float) Math.sqrt(aireCible
+        / out.getArea()));
   }
 
   /**
@@ -1855,16 +1844,16 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   /**
-   * Plus Petit Carré Englobant d'une géométrie préservant son aire. Smallest
-   * Enclosing Suare of a geometry preserving its area.
+   * Plus Petit Carré Englobant d'une géométrie préservant son aire.
+   * Smallest Enclosing Suare of a geometry preserving its area.
    * 
    * @param geom une géométrie, a geometry
    * @return le Plus Petit Carré Englobant, the Smallest Enclosing Square
    */
   public static Polygon MBSAirePreservee(Geometry geom) {
     Polygon out = JtsAlgorithms.MBS(geom);
-    return JtsAlgorithms.homothetie(out,
-        (float) Math.sqrt(geom.getArea() / out.getArea()));
+    return JtsAlgorithms.homothetie(out, (float) Math.sqrt(geom.getArea()
+        / out.getArea()));
   }
 
   /**
@@ -1906,10 +1895,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
   /**
    * Calcule l'homothétie d'une géométrie.
    * @param geom géométrie, geometry
-   * @param x0 position en X du centre de l'homothétie, X position of the center
-   *          of the operation
-   * @param y0 position en Y du centre de l'homothétie, Y position of the center
-   *          of the operation
+   * @param x0 position en X du centre de l'homothétie, X position of the
+   *          center of the operation
+   * @param y0 position en Y du centre de l'homothétie, Y position of the
+   *          center of the operation
    * @param scale facteur d'échelle, scale factor
    * @return polygon résultant de l'homothétie, resulting polygon
    */
@@ -1941,10 +1930,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
   /**
    * Calcule l'homothétie d'une géométrie.
    * @param geom géométrie, geometry
-   * @param x0 position en X du centre de l'homothétie, X position of the center
-   *          of the operation
-   * @param y0 position en Y du centre de l'homothétie, Y position of the center
-   *          of the operation
+   * @param x0 position en X du centre de l'homothétie, X position of the
+   *          center of the operation
+   * @param y0 position en Y du centre de l'homothétie, Y position of the
+   *          center of the operation
    * @param scaleX facteur d'échelle en X, X scale factor
    * @param scaleY facteur d'échelle en Y, Y scale factor
    * @return polygon résultant de l'homothétie, resulting polygon

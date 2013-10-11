@@ -65,8 +65,8 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
@@ -461,10 +461,9 @@ public class AttributeTable extends JDialog {
     JComboBox valueType;
 
     public EditTypeDialog(GF_AttributeType attribute) {
-      super(AttributeTable.this.getProjectFrame().getMainFrame());
+      super(AttributeTable.this.getProjectFrame().getMainFrame().getGui());
       this.setResizable(false);
-      this.setLocationRelativeTo(AttributeTable.this.getProjectFrame()
-          .getContentPane());
+      this.setLocationRelativeTo(AttributeTable.this.getProjectFrame().getGui());
       this.setTitle(I18N.getString("AttributeTable.ValueType")); //$NON-NLS-1$
       this.setLayout(new BorderLayout());
       this.setModal(true);
@@ -697,7 +696,7 @@ public class AttributeTable extends JDialog {
    * @param title
    */
   public AttributeTable(ProjectFrame frame, String title) {
-    super(frame.getMainFrame());
+    super(frame.getMainFrame().getGui());
     this.frame = frame;
     this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     this.setLocationRelativeTo(this.getProjectFrame().getLayerLegendPanel());
@@ -739,10 +738,10 @@ public class AttributeTable extends JDialog {
    */
   public AttributeTable(ProjectFrame frame, String title,
       Set<? extends IFeature> features) {
-    super(frame.getMainFrame());
+    super(frame.getMainFrame().getGui());
     this.frame = frame;
     this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    this.setLocationRelativeTo(frame);
+    this.setLocationRelativeTo(frame.getGui());
     this.setTitle(title);
     this.setSize(800, 350);
     this.setLayout(new BorderLayout());

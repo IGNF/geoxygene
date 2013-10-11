@@ -18,7 +18,6 @@ public class OrientationMapAdapter extends XmlAdapter<OrientationElement[], Map<
   /**
    * 
    */
-  @Override
   public OrientationElement[] marshal(Map<Integer, String> arg0) throws Exception {
     
     if (arg0 != null) {
@@ -44,7 +43,6 @@ public class OrientationMapAdapter extends XmlAdapter<OrientationElement[], Map<
   /**
    * 
    */
-  @Override
   public Map<Integer, String> unmarshal(OrientationElement[] arg0) throws Exception  {
     
     if (arg0 != null) {

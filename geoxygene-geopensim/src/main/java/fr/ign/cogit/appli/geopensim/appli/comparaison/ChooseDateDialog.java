@@ -61,7 +61,7 @@ public class ChooseDateDialog extends JDialog  implements ActionListener {
 	// Constructeur
 	public ChooseDateDialog(MainFrame mainFrame,Integer dateS){
 
-		super (mainFrame,"Choix de la date de simulation",true);
+		super (mainFrame.getGui(),"Choix de la date de simulation",true);
 		this.mainFrame = mainFrame;
 		this.dateSimulation = dateS;
 		

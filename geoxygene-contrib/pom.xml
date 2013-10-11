@@ -61,11 +61,6 @@
 			<artifactId>geoxygene-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>evidence4j</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
 		<!-- DBUnit for testing -->
 		<dependency>
@@ -88,21 +83,7 @@
 			<version>${geoserver.extension.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>net.sf.jgrapht</groupId>
-			<artifactId>jgrapht</artifactId>
-			<version>${jgrapht.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scpsolver</groupId>
-			<artifactId>scpsolver</artifactId>
-			<version>20130227</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scpsolver</groupId>
-			<artifactId>lpsolvesolverpack</artifactId>
-			<version>20130227</version>
-		</dependency>
+
 		<dependency>
 			<groupId>net.sourceforge.collections</groupId>
 			<artifactId>collections-generic</artifactId>
@@ -113,6 +94,7 @@
 			<artifactId>jfreechart</artifactId>
 			<version>${jfreechart.version}</version>
 		</dependency>
+		
 		
 		<dependency>
             <groupId>jama</groupId>
@@ -170,15 +152,7 @@
             <artifactId>postgis-stubs</artifactId>
             <version>1.3.2</version>
         </dependency>
-
+		
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>opengeo</id>
-			<url>http://repo.opengeo.org</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+
 </project>

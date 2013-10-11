@@ -30,5 +30,35 @@ import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
  * Décorateur de IFeature pour les hypothèses d'appariement géométrique.
  * @author Bertrand Dumenieu
  */
-public interface GeomHypothesis extends IFeature, Hypothesis {
+public abstract class GeomHypothesis implements IFeature, Hypothesis {
+  /**
+   * The decorated feature.
+   */
+  protected IFeature decoratedFeature;
+
+  /**
+   * Constructor with a decorated feature.
+   * @param feature the decorated feature.
+   */
+  protected GeomHypothesis(IFeature feature) {
+    this.decoratedFeature = feature;
+  }
+  /**
+   * Default contructor.
+   */
+  protected GeomHypothesis() {
+    this.decoratedFeature = null;
+  }
+  @Override
+  public String toString() {
+    return this.decoratedFeature.toString();
+  }
+  @Override
+  public boolean equals(Object o) {
+    if (!GeomHypothesis.class.isAssignableFrom(o.getClass())) {
+      return false;
+    }
+    GeomHypothesis h = (GeomHypothesis) o;
+    return this.decoratedFeature.equals(h.decoratedFeature);
+  }
 }

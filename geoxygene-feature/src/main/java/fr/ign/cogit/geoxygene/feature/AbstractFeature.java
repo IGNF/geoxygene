@@ -360,12 +360,7 @@ public abstract class AbstractFeature implements IFeature {
   @Override
   public GF_FeatureType getFeatureType() {
     if ((this.featureType == null) && (this.getPopulation() != null)) {
-      try{
-
-        this.getPopulation().getFeatureType(); 
-      }catch (Exception e) {
-        e.printStackTrace();
-      }
+      return this.getPopulation().getFeatureType();
     }
     return this.featureType;
   }

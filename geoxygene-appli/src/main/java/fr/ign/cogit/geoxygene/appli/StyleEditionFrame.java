@@ -68,6 +68,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
@@ -76,6 +77,7 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.style.CategorizedMap;
 import fr.ign.cogit.geoxygene.style.ColorMap;
@@ -103,15 +105,17 @@ import fr.ign.cogit.geoxygene.style.TextSymbolizer;
  * 
  * @author Charlotte Hoarau
  */
-public class StyleEditionFrame extends JFrame implements ActionListener, MouseListener, ChangeListener, ItemListener {
+public class StyleEditionFrame extends JFrame implements ActionListener,
+    MouseListener, ChangeListener, ItemListener {
 
   private static final long serialVersionUID = 1L;
 
-  private static Logger logger = Logger.getLogger(StyleEditionFrame.class.getName());
+  private static Logger logger = Logger.getLogger(StyleEditionFrame.class
+      .getName());
 
   // Main GeOxygene application elements
-  private LayerLegendPanel layerLegendPanel;
-  private LayerViewPanel layerViewPanel;
+  private final LayerLegendPanel layerLegendPanel;
+  private final LayerViewPanel layerViewPanel;
 
   /**
    * The layer which style will be modified. Element of the SLD of the project
@@ -157,10 +161,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
   private JButton btnApply;
   private JButton btnValid;
   private JButton btnCancel;
-  private JTabbedPane tabPane;
-  private JPanel textStylePanel;
+  private final JTabbedPane tabPane;
+  private final JPanel textStylePanel;
   private JPanel mainStylePanel;
-  private JPanel graphicStylePanel;
+  private final JPanel graphicStylePanel;
 
   // Work variables
   private Color fillColor;
@@ -208,7 +212,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
   private JSpinner symbolSizeSpinner;
 
   private ImageIcon[] images;
-  private String[] symbolsDescription = {
+  private final String[] symbolsDescription = {
       I18N.getString("StyleEditionFrame.Square"), //$NON-NLS-1$
       I18N.getString("StyleEditionFrame.Circle"), //$NON-NLS-1$
       I18N.getString("StyleEditionFrame.Triangle"), //$NON-NLS-1$
@@ -218,7 +222,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
       I18N.getString("StyleEditionFrame.hline"), //$NON-NLS-1$
       I18N.getString("StyleEditionFrame.vline") //$NON-NLS-1$
   };
-  private String[] symbols = { "square", //$NON-NLS-1$
+  private final String[] symbols = { "square", //$NON-NLS-1$
       "circle", //$NON-NLS-1$
       "triangle", //$NON-NLS-1$
       "star", //$NON-NLS-1$
@@ -255,11 +259,15 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
         .getDataSet();
     // Saving the initial SLD
     logger.info("StyleEditionFrame : saving the initial SLD");
-   this.setInitialSLD(new StyledLayerDescriptor(dataset));
+    this.setInitialSLD(new StyledLayerDescriptor(dataset));
     CharArrayWriter writer = new CharArrayWriter();
     layerLegendPanel.getModel().marshall(writer);
     Reader reader = new CharArrayReader(writer.toCharArray());
-    this.setInitialSLD(StyledLayerDescriptor.unmarshall(reader));
+    try {
+      this.setInitialSLD(StyledLayerDescriptor.unmarshall(reader));
+    } catch (JAXBException e) {
+      e.printStackTrace();
+    }
     this.getInitialSLD().setDataSet(dataset);
     if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
       this.initPolygon();
@@ -268,8 +276,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
     } else if (this.layer.getSymbolizer().isPointSymbolizer()) {
       this.initPoint();
     }
-    
-    
+
     this.textStylePanel = new JPanel();
     this.textStylePanel.setLayout(new BoxLayout(this.textStylePanel,
         BoxLayout.Y_AXIS));
@@ -284,7 +291,6 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
 
     this.setTitle(I18N.getString("StyleEditionFrame.StyleEdition")); //$NON-NLS-1$
     this.pack();
-    this.pack();
     this.textStylePanel.setSize(600, 500);
     this.graphicStylePanel.setSize(600, 700);
     this.setSize(650, 750);
@@ -293,7 +299,6 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
     this.setAlwaysOnTop(true);
   }
 
-  
   public void initTextStylePanel() {
     // Initialisation du symboliser s'il y a lieu
     Style lastStyle = this.layer.getStyles().get(layer.getStyles().size() - 1);
@@ -662,23 +667,25 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
     this.fillPanel.setBorder(fillTitleBorder);
     this.fillPanel.setPreferredSize(new Dimension(420, 200));
 
-    PolygonSymbolizer symbolizer = (PolygonSymbolizer) this.layer
-        .getStyles().get(0).getSymbolizer();
-    this.fillColor = (symbolizer != null) ? symbolizer.getFill().getFill() : Color.BLACK;
-    this.fillOpacity = (symbolizer != null) ? symbolizer.getFill().getFillOpacity() : 0.0f;
+    PolygonSymbolizer symbolizer = (PolygonSymbolizer) this.layer.getStyles()
+        .get(0).getSymbolizer();
+    this.fillColor = (symbolizer != null) ? symbolizer.getFill().getFill()
+        : Color.BLACK;
+    this.fillOpacity = (symbolizer != null) ? symbolizer.getFill()
+        .getFillOpacity() : 0.0f;
     this.fillPanel.add(this.createColorPreviewPanel(this.fillColor,
         this.fillOpacity));
-    
+
     this.addColorMapButton = new JButton(
         I18N.getString("StyleEditionFrame.AddColorMap")); //$NON-NLS-1$
     this.addColorMapButton.addActionListener(this);
     this.fillPanel.add(this.addColorMapButton);
-    
+
     this.addCategorizedMapButton = new JButton(
         I18N.getString("StyleEditionFrame.AddCategorizedMap")); //$NON-NLS-1$
     this.addCategorizedMapButton.addActionListener(this);
     this.fillPanel.add(this.addCategorizedMapButton);
-    
+
     this.strokePanel = new JPanel();
     this.strokePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     TitledBorder strokeTitleBorder = BorderFactory.createTitledBorder(""); //$NON-NLS-1$
@@ -714,7 +721,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
 
     this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(this.strokePanel);
-    
+
     JButton buttonApply = this.createButtonApply();
     JButton buttonValid = this.createButtonValid();
     JButton buttonCancel = this.createButtonCancel();
@@ -782,7 +789,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
         I18N.getString("StyleEditionFrame.AddCategorizedMap")); //$NON-NLS-1$
     this.addCategorizedMapButton.addActionListener(this);
     this.strokePanel.add(this.addCategorizedMapButton);
-    
+
     if (this.layer.getStyles().size() == 2) {
       this.strokePanel2 = new JPanel();
       this.strokePanel2.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -889,12 +896,12 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
         I18N.getString("StyleEditionFrame.AddColorMap")); //$NON-NLS-1$
     this.addColorMapButton.addActionListener(this);
     this.fillPanel.add(this.addColorMapButton);
-    
+
     this.addCategorizedMapButton = new JButton(
         I18N.getString("StyleEditionFrame.AddCategorizedMap")); //$NON-NLS-1$
     this.addCategorizedMapButton.addActionListener(this);
     this.fillPanel.add(this.addCategorizedMapButton);
-    
+
     this.strokePanel = new JPanel();
     this.strokePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     TitledBorder strokeTitleBorder = BorderFactory.createTitledBorder(""); //$NON-NLS-1$
@@ -1241,7 +1248,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
   }
 
   public JButton createButtonValid() {
-    this.btnValid = new JButton("Ok"); //$NON-NLS-1$
+    this.btnValid = new JButton(I18N.getString("StyleEditionFrame.Ok")); //$NON-NLS-1$
     this.btnValid.addActionListener(this);
     this.btnValid.setBounds(50, 50, 100, 20);
     return this.btnValid;
@@ -1304,77 +1311,75 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
     }
   }
 
-  
-
   @Override
   public void actionPerformed(ActionEvent e) {
     this.getDialogElements();
 
     if (e.getSource() == this.addColorMapButton) {
-      
-        List<GF_AttributeType> attributes = this.layer.getFeatureCollection()
-            .getFeatureType().getFeatureAttributes();
-        if (attributes.isEmpty()) {
+
+      List<GF_AttributeType> attributes = this.layer.getFeatureCollection()
+          .getFeatureType().getFeatureAttributes();
+      if (attributes.isEmpty()) {
+        return;
+      }
+      Object[] possibilities = attributes.toArray();
+      String attributeName = ((GF_AttributeType) JOptionPane.showInputDialog(
+          this, I18N.getString("StyleEditionFrame.ChooseAttribute"), //$NON-NLS-1$
+          I18N.getString("StyleEditionFrame.ChooseAttributeWindowTitle"), //$NON-NLS-1$
+          JOptionPane.PLAIN_MESSAGE, null, possibilities, attributes.get(0)
+              .toString())).getMemberName();
+
+      // TODO If a string was returned, say so.
+      if ((attributeName != null) && (attributeName.length() > 0)) {
+        double min = Double.POSITIVE_INFINITY;
+        double max = Double.NEGATIVE_INFINITY;
+        for (IFeature f : this.layer.getFeatureCollection()) {
+          try {
+            Double v = Double.parseDouble(f.getAttribute(attributeName)
+                .toString());
+            min = Math.min(min, v);
+            max = Math.max(max, v);
+          } catch (NumberFormatException exception) {
+          }
+        }
+        double diff = max - min;
+        double range = diff / 5;
+        ColorMap cm = new ColorMap();
+        Interpolate interpolate = new Interpolate();
+        double value = min;
+        interpolate.getInterpolationPoint().add(
+            new InterpolationPoint(value, Color.black));
+        value += range;
+        interpolate.getInterpolationPoint().add(
+            new InterpolationPoint(value, new Color(128, 0, 0)));
+        value += range;
+        interpolate.getInterpolationPoint().add(
+            new InterpolationPoint(value, new Color(255, 0, 0)));
+        value += range;
+        interpolate.getInterpolationPoint().add(
+            new InterpolationPoint(value, new Color(255, 128, 0)));
+        value += range;
+        interpolate.getInterpolationPoint().add(
+            new InterpolationPoint(value, new Color(255, 255, 0)));
+        value += range;
+        interpolate.getInterpolationPoint().add(
+            new InterpolationPoint(max, Color.white));
+        cm.setInterpolate(interpolate);
+        cm.setPropertyName(attributeName);
+        if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
+          PolygonSymbolizer ps = (PolygonSymbolizer) this.layer.getSymbolizer();
+          ps.setColorMap(cm);
+          ps.setFill(null);
+          return;
+        } else if (this.layer.getSymbolizer().isLineSymbolizer()) {
+          LineSymbolizer ls = (LineSymbolizer) this.layer.getSymbolizer();
+          ls.setColorMap(cm);
+          return;
+        } else if (this.layer.getSymbolizer().isPointSymbolizer()) {
+          PointSymbolizer pts = (PointSymbolizer) this.layer.getSymbolizer();
+          pts.setColorMap(cm);
           return;
         }
-        Object[] possibilities = attributes.toArray();
-        String attributeName = ((GF_AttributeType) JOptionPane.showInputDialog(
-            this, I18N.getString("StyleEditionFrame.ChooseAttribute"), //$NON-NLS-1$
-            I18N.getString("StyleEditionFrame.ChooseAttributeWindowTitle"), //$NON-NLS-1$
-            JOptionPane.PLAIN_MESSAGE, null, possibilities, attributes.get(0)
-                .toString())).getMemberName();
-
-        // TODO If a string was returned, say so.
-        if ((attributeName != null) && (attributeName.length() > 0)) {
-          double min = Double.POSITIVE_INFINITY;
-          double max = Double.NEGATIVE_INFINITY;
-          for (IFeature f : this.layer.getFeatureCollection()) {
-            try {
-              Double v = Double.parseDouble(f.getAttribute(attributeName)
-                  .toString());
-              min = Math.min(min, v);
-              max = Math.max(max, v);
-            } catch (NumberFormatException exception) {
-            }
-          }
-          double diff = max - min;
-          double range = diff / 5;
-          ColorMap cm = new ColorMap();
-          Interpolate interpolate = new Interpolate();
-          double value = min;
-          interpolate.getInterpolationPoint().add(
-              new InterpolationPoint(value, Color.black));
-          value += range;
-          interpolate.getInterpolationPoint().add(
-              new InterpolationPoint(value, new Color(128, 0, 0)));
-          value += range;
-          interpolate.getInterpolationPoint().add(
-              new InterpolationPoint(value, new Color(255, 0, 0)));
-          value += range;
-          interpolate.getInterpolationPoint().add(
-              new InterpolationPoint(value, new Color(255, 128, 0)));
-          value += range;
-          interpolate.getInterpolationPoint().add(
-              new InterpolationPoint(value, new Color(255, 255, 0)));
-          value += range;
-          interpolate.getInterpolationPoint().add(
-              new InterpolationPoint(max, Color.white));
-          cm.setInterpolate(interpolate);
-          cm.setPropertyName(attributeName);
-          if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
-            PolygonSymbolizer ps = (PolygonSymbolizer) this.layer.getSymbolizer();
-            ps.setColorMap(cm);
-            ps.setFill(null);
-            return;
-          } else if (this.layer.getSymbolizer().isLineSymbolizer()) {
-            LineSymbolizer ls = (LineSymbolizer) this.layer.getSymbolizer();
-            ls.setColorMap(cm);
-            return;
-          } else if (this.layer.getSymbolizer().isPointSymbolizer()) {
-            PointSymbolizer pts = (PointSymbolizer) this.layer.getSymbolizer();
-            pts.setColorMap(cm);
-            return;
-          }
       }
       return;
     }
@@ -1394,7 +1399,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
       if ((attributeName != null) && (attributeName.length() > 0)) {
         CategorizedMap categorizedMap = new CategorizedMap();
         categorizedMap.setPropertyName(attributeName);
-        
+
         if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
           PolygonSymbolizer ps = (PolygonSymbolizer) this.layer.getSymbolizer();
           ps.setCategorizedMap(categorizedMap);
@@ -1438,10 +1443,16 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
       this.strokePanel2.setBorder(strokeTitleBorder);
       this.strokePanel2.setPreferredSize(new Dimension(420, 250));
 
-     StyledLayerDescriptor sld = StyledLayerDescriptor
-          .unmarshall(StyledLayerDescriptor.class.getClassLoader().getResourceAsStream("sld/BasicStyles.xml")); //$NON-NLS-1$
-
-      this.layer.getStyles().add(sld.getLayer("Basic Line").getStyles().get(0)); //$NON-NLS-1$
+      StyledLayerDescriptor sld;
+      try {
+        sld = StyledLayerDescriptor.unmarshall(StyledLayerDescriptor.class
+            .getClassLoader().getResourceAsStream("sld/BasicStyles.xml"));
+        this.layer.getStyles().add(
+            sld.getLayer("Basic Line").getStyles().get(0)); //$NON-NLS-1$
+      } catch (JAXBException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      } //$NON-NLS-1$
 
       this.strokeColor2 = ((LineSymbolizer) this.layer.getStyles().get(1)
           .getSymbolizer()).getStroke().getStroke();

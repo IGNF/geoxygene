@@ -110,7 +110,7 @@ public class DecisionOp<H extends Hypothesis> {
         credibility += value.getSecond();
       }
     }
-//    logger.debug("Credibility : " + credibility + " for hypothesis" + Arrays.toString(hyp));
+    logger.debug("Credibility : " + credibility + " for hypothesis" + Arrays.toString(hyp));
     return credibility;
   }
 
@@ -126,7 +126,7 @@ public class DecisionOp<H extends Hypothesis> {
         plausibility += value.getSecond();
       }
     }
-//    logger.debug("Plausibility : " + plausibility + " for hypothesis" + Arrays.toString(hyp));
+    logger.debug("Plausibility : " + plausibility + " for hypothesis" + Arrays.toString(hyp));
     return plausibility;
   }
 
@@ -152,7 +152,7 @@ public class DecisionOp<H extends Hypothesis> {
         pignistic += value.getSecond() / (cardinal * (1 - mvoid));
       }
     }
-//    logger.debug("Pignistic value : " + pignistic + " for hypothesis" + Arrays.toString(hyp));
+    logger.debug("Pignistic value : " + pignistic + " for hypothesis" + Arrays.toString(hyp));
     return pignistic;
   }
 

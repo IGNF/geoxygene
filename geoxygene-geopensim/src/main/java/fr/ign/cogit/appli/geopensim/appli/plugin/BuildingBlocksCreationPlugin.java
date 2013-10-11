@@ -76,7 +76,7 @@ public class BuildingBlocksCreationPlugin implements GeOxygeneApplicationPlugin,
   public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
     JMenu menu = null;
-    for (Component c : application.getFrame().getJMenuBar().getComponents()) {
+    for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
         if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Creation")) { //$NON-NLS-1$
@@ -91,13 +91,13 @@ public class BuildingBlocksCreationPlugin implements GeOxygeneApplicationPlugin,
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getFrame().getJMenuBar()
-        .add(menu, application.getFrame().getJMenuBar().getMenuCount() - 2);
+    application.getMainFrame().getMenuBar()
+        .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    ProjectFrame project = this.application.getFrame()
+    ProjectFrame project = this.application.getMainFrame()
         .getSelectedProjectFrame();
     Set<Layer> selectedLayers = project.getLayerLegendPanel()
         .getSelectedLayers();

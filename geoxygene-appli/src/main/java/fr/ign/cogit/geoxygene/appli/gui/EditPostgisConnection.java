@@ -166,7 +166,6 @@ public class EditPostgisConnection extends JDialog implements ActionListener {
             }
             
             addKeyListener(new KeyAdapter() {
-                @Override
                 public void keyReleased(KeyEvent e) {
                     refresh();
                 }

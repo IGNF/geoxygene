@@ -24,7 +24,6 @@ package fr.ign.cogit.geoxygene.matching.dst.sources.linear;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
@@ -58,7 +57,7 @@ public class LineOrientation extends GeoSource {
    * Evaluation.
    */
   @Override
-  public List<Pair<byte[], Float>> evaluate(IFeature reference,
+  public List<Pair<byte[], Float>> evaluate(GeomHypothesis reference,
       final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
     List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
     // IFeature reference = GeoMatching.getInstance().getReference();
@@ -93,20 +92,9 @@ public class LineOrientation extends GeoSource {
     Angle a1 = Operateurs.directionPrincipale(geo1.coord());
     Angle a2 = Operateurs.directionPrincipale(geo2.coord());
     double result = Angle.ecart(a1, a2).getValeur();
-//    System.out.println("l1 (" + a1.getValeur() + " ) = " + geo1);
-//    System.out.println("l2 (" + a2.getValeur() + " ) = " + geo2);
-//    System.out.println("result = " + result);
+    System.out.println("l1 (" + a1.getValeur() + " ) = " + geo1);
+    System.out.println("l2 (" + a2.getValeur() + " ) = " + geo2);
+    System.out.println("result = " + result);
     return result;
-  }
-
-  @Override
-  public double evaluate(IFeature ref, GeomHypothesis candidate) {
-    double distance = compute(ref.getGeom(), candidate.getGeom());
-    if (distance >= this.threshold) {
-      distance = 0.5 * (distance - this.threshold) / (Math.PI - this.threshold);
-    } else {
-      distance = 0.5 * (this.threshold - distance) / this.threshold;
-    }
-    return distance;
   }
 }

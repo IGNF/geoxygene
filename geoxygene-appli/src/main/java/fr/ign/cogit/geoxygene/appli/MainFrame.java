@@ -16,377 +16,152 @@
  * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package fr.ign.cogit.geoxygene.appli;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyVetoException;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.io.File;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultDesktopManager;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDesktopPane;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.plaf.basic.BasicButtonUI;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
-import fr.ign.cogit.geoxygene.appli.gui.FileChooser;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
 
 /**
- * 
- * @author Julien Perret
+ * @author JeT The main frame is the main window displaying the entire
+ *         application user interface. It is associated with the application
+ *         Base class of all MainFrame subtypes : - FloatingMainFrame: use
+ *         JInternalFrames to dock ProjectFrames - TabbedMainFrame: use
+ *         JTabbedPane to dock ProjectFrames
  */
-public class MainFrame extends JFrame {
+public interface MainFrame {
 
-    /** Default serial uid. */
-    private static final long serialVersionUID = 1L;
+  /**
+   * gives access to the swing frame component
+   * @return
+   */
+  public abstract JFrame getGui();
 
-    /** Logger of the application. */
-    private static Logger LOGGER = Logger.getLogger(MainFrame.class.getName());
+  /**
+   * gives access to the swing menu component
+   * @return
+   */
+  public abstract MainFrameMenuBar getMenuBar();
 
-    /** The associated application. */
-    private GeOxygeneApplication application;
+  /**
+   * Get the associated application.
+   * 
+   * @return the associated application
+   */
+  public abstract GeOxygeneApplication getApplication();
 
-    /** The frame menu bar. */
-    private MainFrameMenuBar menuBar;
+  /**
+   * Return the current application mode.
+   * 
+   * @return the current application mode
+   */
+  public abstract ModeSelector getMode();
 
-    /** The default width of the frame. */
-    private final int defaultFrameWidth = 800;
+  /**
+   * Return the selected (current) project frame.
+   * 
+   * @return the selected (current) project frame
+   */
+  public abstract ProjectFrame getSelectedProjectFrame();
 
-    /** The default height of the frame. */
-    private final int defaultFrameHeight = 800;
+  /**
+   * Return all project frames.
+   * 
+   * @return an array containing all project frames available in the interface
+   */
+  public abstract ProjectFrame[] getDesktopProjectFrames();
 
-    /** The mode selector. */
-    private ModeSelector modeSelector = null;
+  /**
+   * Create and return a new project frame.
+   * 
+   * @return the newly created project frame
+   */
+  public abstract ProjectFrame newProjectFrame();
 
-    /** Tabbed Panes which contains The desktop pane containing the project frames. */
-    private JTabbedPane tabbedPane;
+  /**
+   * Free all graphic resources
+   */
+  public abstract void dispose();
 
-    /**
-     * Return the desktop pane containing the project frames.
-     * 
-     * @return the desktop pane containing the project frames
-     */
-    public final JDesktopPane getDesktopPane() {
-        // return this.desktopPane;
-        return (JDesktopPane) this.tabbedPane.getSelectedComponent();
-    }
+  /**
+   * Display/hide frame on screen
+   * @param display true = display frame. false = hide frame
+   */
+  public abstract void display(boolean display);
 
-    /**
-     * Get the associated application.
-     * 
-     * @return the associated application
-     */
-    public final GeOxygeneApplication getApplication() {
-        return this.application;
-    }
+  /**
+   * Set the current Project Frame selection
+   */
+  public abstract void setSelectedFrame(ProjectFrame projectFrame);
 
-    public JMenuBar getmenuBar() {
-        return this.menuBar;
-    }
+  /**
+   * remove all ProjectFrames from the interface
+   */
+  public abstract void removeAllProjectFrames();
 
-    /**
-     * Return the current application mode.
-     * 
-     * @return the current application mode
-     */
-    public final ModeSelector getMode() {
-        return this.modeSelector;
-    }
+  /**
+   * try to get a managed ProjectFrame with the given GUI component
+   * @param gui GUI component which should match ProjectFrame.getGui()
+   * @return the matching managed ProjectFrame or null
+   */
+  public abstract ProjectFrame getProjectFrameFromGui(Component gui);
 
-    public static FileChooser getFilechooser() {
-        return MainFrameMenuBar.fc;
-    }
+  /**
+   * Set the frame title
+   */
+  public void setTitle(final String title);
 
-    /**
-     * Constructor using a title and an associated application.
-     * 
-     * @param title the title of the frame
-     * @param theApplication the associated application
-     */
-    public MainFrame(final String title, final GeOxygeneApplication theApplication) {
-        super(title);
-        this.application = theApplication;
-        this.setIconImage(this.application.getIcon().getImage());
-        this.setLayout(new BorderLayout());
-        this.setResizable(true);
-        this.setSize(this.defaultFrameWidth, this.defaultFrameHeight);
-        this.setExtendedState(Frame.MAXIMIZED_BOTH);
-        this.menuBar = new MainFrameMenuBar(this);
+  /**
+   * get the frame dimension (in pixels)
+   */
+  public abstract Dimension getSize();
 
-        tabbedPane = new JTabbedPane();
-        
-        this.setJMenuBar(this.menuBar);
-        this.getContentPane().setLayout(new BorderLayout());
-        this.getContentPane().add(tabbedPane, BorderLayout.CENTER);
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(final WindowEvent e) {
-                MainFrame.this.getApplication().exit();
-            }
-        });
-        this.modeSelector = new ModeSelector(this);
-        
-        JDesktopPane desktop0 = new JDesktopPane();
-        desktop0.setDesktopManager(new DefaultDesktopManager());
-        desktop0.addContainerListener(modeSelector);
-        tabbedPane.addTab("Tab 1", new ImageIcon(
-                GeOxygeneApplication.class.getResource("/images/icons/shape_group.png")), desktop0);
-        tabbedPane.setMnemonicAt(0, KeyEvent.VK_0);
-        
-        tabbedPane.setTabComponentAt(0,
-                new ButtonTabComponent(tabbedPane));
-    }
+  /**
+   * Open a file in the current Project Frame
+   * @param file file to load
+   */
+  public abstract boolean openFile(File file);
 
-    @Override
-    public final void dispose() {
-        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-            JDesktopPane desktop = (JDesktopPane) tabbedPane.getComponentAt(i);
-            for (JInternalFrame frame : desktop.getAllFrames()) {
-                frame.dispose();
-            }
-        }
-        super.dispose();
-    }
+  /**
+   * set a default layout for current desktop project frames
+   */
+  public abstract void organizeCurrentDesktop();
 
-    /**
-     * Return the selected (current) project frame.
-     * 
-     * @return the selected (current) project frame
-     */
-    public final ProjectFrame getSelectedProjectFrame() {
-        if (this.tabbedPane == null || this.tabbedPane.getTabCount() < 1) {
-            return null;
-        } else {
-            int tabSelected = this.tabbedPane.getSelectedIndex();
-            JDesktopPane desktop = (JDesktopPane) this.tabbedPane.getComponentAt(tabSelected);
-            if (desktop.getSelectedFrame() == null || !(desktop.getSelectedFrame() instanceof ProjectFrame)) {
-                return null;
-            }
-            return (ProjectFrame) desktop.getSelectedFrame();
-        }
-    }
+  /**
+   * Add a graphic component into the main frame
+   * @param component component to add
+   * @param layout
+   */
+  public abstract void add(JComponent component, String layout);
 
-    /**
-     * Return all project frames.
-     * 
-     * @return an array containing all project frames available in the interface
-     */
-    public final ProjectFrame[] getAllProjectFrames() {
-        List<ProjectFrame> projectFrameList = new ArrayList<ProjectFrame>();
-        if (this.tabbedPane == null || this.tabbedPane.getTabCount() < 1) {
-            return null;
-        } 
-        
-        int tabSelected = this.tabbedPane.getSelectedIndex();
-        JDesktopPane desktop = (JDesktopPane) this.tabbedPane.getComponentAt(tabSelected);
-        for (JInternalFrame frame : desktop.getAllFrames()) {
-            if (frame instanceof ProjectFrame) {
-                projectFrameList.add((ProjectFrame) frame);
-            }
-        }
-        return projectFrameList.toArray(new ProjectFrame[0]);
-    }
+  /**
+   * Add a component that is not a ProjectFrame into this main Frame
+   */
+  public JComponent addComponentInFrame(String title, JComponent component);
 
-    /**
-     * Create and return a new project frame.
-     * 
-     * @return the newly created project frame
-     */
-    public final ProjectFrame newProjectFrame() {
-        LOGGER.log(Level.DEBUG, "New project frame");
-        // Add ProjectFrame to the selected tabbedPane
-        int tabSelected = this.tabbedPane.getSelectedIndex();
-        LOGGER.debug("Tab selected index = " + this.tabbedPane.getSelectedIndex());
-        JDesktopPane currentDesktop = ((JDesktopPane) this.tabbedPane.getComponentAt(tabSelected));
-        
-        ProjectFrame projectFrame = new ProjectFrame(this, new ImageIcon(
-                GeOxygeneApplication.class.getResource("/images/icons/application.png")));
-        currentDesktop.add(projectFrame);
-        try {
-            projectFrame.setSize((int)this.getSize().getWidth() / 2, (int)this.getSize().getHeight() / 2);
-            projectFrame.setVisible(true);
-            projectFrame.setSelected(true);
-            projectFrame.setToolTipText(projectFrame.getTitle());
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        }
-        
-        return projectFrame;
-    }
-    
-    
-    public final void newDesktopFrame(String title) {
-        LOGGER.log(Level.TRACE, "New desktop");
-        int index = tabbedPane.getTabCount();
-        LOGGER.log(Level.DEBUG, "New desktop " + index);
-        JDesktopPane newDesktopPane = new JDesktopPane();
-        newDesktopPane.setDesktopManager(new DefaultDesktopManager());
-        newDesktopPane.addContainerListener(modeSelector);
-        String tabTitle = "Tab " + (index + 1);
-        if (title != null && !title.isEmpty()) {
-            tabTitle = title;
-        }
-        
-        tabbedPane.addTab(tabTitle, new ImageIcon(
-                GeOxygeneApplication.class.getResource("/images/icons/tab.png")), newDesktopPane);
-        // tabbedPane.setMnemonicAt(index, KeyEvent.KEY_LAST + 1);
-        tabbedPane.setSelectedIndex(index);
-        
-        tabbedPane.setTabComponentAt(index,
-                new ButtonTabComponent(tabbedPane));
-    }
-    
+  /**
+   * Get the icon associated with this main frame
+   * @return
+   */
+  public abstract Image getIconImage();
 
-    /**
-     * 
-     * @param desktopName
-     * @param frame
-     */
-    public final void addFrameInDesktop(String desktopName, JInternalFrame frame) {
-        LOGGER.log(Level.DEBUG, "New frame");
-        // Add ProjectFrame to the selected tabbedPane
-        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-            if (tabbedPane.getTitleAt(i).equals(desktopName)) {
-                JDesktopPane currentDesktop = ((JDesktopPane) this.tabbedPane.getComponentAt(i));
-                currentDesktop.add(frame);
-            }
-        }
-    }
+  /**
+   * Add a GUI element into the designed desktop
+   * @param desktopName desktop name
+   * @param desktopContent GUI element to be added to designed desktop
+   */
+  void addFrameInDesktop(String desktopName, JComponent desktopContent);
 
-}
-
-class ButtonTabComponent extends JPanel {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-    private final JTabbedPane pane;
- 
-    public ButtonTabComponent(final JTabbedPane pane) {
-        //unset default FlowLayout' gaps
-        super(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        if (pane == null) {
-            throw new NullPointerException("TabbedPane is null");
-        }
-        this.pane = pane;
-        setOpaque(false);
-        
-        
-        
-        JLabel picLabel = new JLabel(new ImageIcon(
-                GeOxygeneApplication.class.getResource("/images/icons/tab.png").getPath()));
-        add(picLabel);
-        
-        add(new JLabel ("  "));
-         
-        //make JLabel read titles from JTabbedPane
-        JLabel label = new JLabel() {
-          private static final long serialVersionUID = 1L;
-          @Override
-          public String getText() {
-              int i = pane.indexOfTabComponent(ButtonTabComponent.this);
-              if (i != -1) {
-                  return pane.getTitleAt(i);
-              }
-              return null;
-          }
-        };
-         
-        add(label);
-        //add more space between the label and the button
-        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-        //tab button
-        JButton button = new TabButton();
-        add(button);
-        //add more space to the top of the component
-        setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
-    }
- 
-    
-    
-    class TabButton extends JButton implements ActionListener {
-        
-        /** Default serial ID. */
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * Default constructor.
-         */
-        public TabButton() {
-            super(new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/16x16/delete.png").getPath()));
-            setToolTipText("close this tab");
-            // Make the button looks the same for all Laf's
-            setUI(new BasicButtonUI());
-            // Make it transparent
-            setContentAreaFilled(false);
-            // No need to be focusable
-            setFocusable(false);
-            setBorder(BorderFactory.createEtchedBorder());
-            setBorderPainted(false);
-            //Making nice rollover effect
-            //we use the same listener for all buttons
-            addMouseListener(buttonMouseListener);
-            setRolloverEnabled(true);
-            //Close the proper tab by clicking the button
-            addActionListener(this);
-        }
- 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int i = pane.indexOfTabComponent(ButtonTabComponent.this);
-            if (i != -1) {
-                pane.remove(i);
-            }
-        }
- 
-        //we don't want to update UI for this button
-        @Override
-        public void updateUI() {
-        }
- 
-    }
- 
-    private final static MouseListener buttonMouseListener = new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            Component component = e.getComponent();
-            if (component instanceof AbstractButton) {
-                AbstractButton button = (AbstractButton) component;
-                button.setBorderPainted(true);
-            }
-        }
- 
-        @Override
-        public void mouseExited(MouseEvent e) {
-            Component component = e.getComponent();
-            if (component instanceof AbstractButton) {
-                AbstractButton button = (AbstractButton) component;
-                button.setBorderPainted(false);
-            }
-        }
-    };
+  /**
+   * Create a new Desktop that can handle ProjectFrames (Floating or Tabbed)
+   * @param title desktop title
+   * @return
+   */
+  public JComponent createNewDesktop(String title);
 }

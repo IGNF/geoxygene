@@ -55,8 +55,8 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.appli.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
-import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.mode.AddPointMode;
 import fr.ign.cogit.geoxygene.appli.mode.CreateInteriorRingMode;
 import fr.ign.cogit.geoxygene.appli.mode.CreateLineStringMode;
@@ -84,8 +84,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
- * Class allowing geometry edition. </p> Classe représentant la boîte à outils
- * permettant l'édition de la géométrie des objets, et définit toutes les
+ * Class allowing geometry edition. </p> Classe représentant la boîte à outils permettant l'édition de la géométrie des objets, et définit toutes les
  * méthodes qui servent à l'édition.
  * @author Sylvain Becuwe
  * @author Julien Perret
@@ -128,8 +127,7 @@ public class GeometryToolBar extends JToolBar {
   JLabel lMarge = new JLabel("Précision du curseur (en m)");
   JSpinner marge;
   JCheckBox cbSelectionMultiple = new JCheckBox("Sélection multiple");
-  JCheckBox cbAutoriserGeomNonValide = new JCheckBox(
-      "Autoriser les géométries non valides");
+  JCheckBox cbAutoriserGeomNonValide = new JCheckBox("Autoriser les géométries non valides");
   int precisionCurseur = 20;
   // Le panel qui contient les onglets
   JTabbedPane tabbedPane = new JTabbedPane();
@@ -138,7 +136,7 @@ public class GeometryToolBar extends JToolBar {
   JPanel tabCreation = new JPanel();
   JPanel tabOptions = new JPanel();
   // Autres variables
-  private ProjectFrame frame;
+  private final ProjectFrame frame;
   CustomToolBarUI ui = new CustomToolBarUI();
 
   /**
@@ -155,79 +153,65 @@ public class GeometryToolBar extends JToolBar {
     }
   }
 
-  /**
-   * @param frame
-   */
-  public GeometryToolBar(final ProjectFrame frame) {
+  /** @param projectFloatingFrame */
+  public GeometryToolBar(final ProjectFrame projectFloatingFrame) {
     super("Boîte à outils", SwingConstants.VERTICAL);
-    this.frame = frame;
+    this.frame = projectFloatingFrame;
     this.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseEntered(MouseEvent e) {
         GeometryToolBar.this.requestFocus();
       }
     });
-    SelectionMode selectionMode = new SelectionMode(this.frame.getMainFrame(),
-        this.frame.getMainFrame().getMode());
+    SelectionMode selectionMode = new SelectionMode(this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     this.bSelectionObjet = selectionMode.getButton();
-    AddPointMode addMode = new AddPointMode(this.frame.getMainFrame(),
-        this.frame.getMainFrame().getMode());
+    AddPointMode addMode = new AddPointMode(this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     addMode.setGeometryToolBar(this);
     JButton bAjouterPoint = addMode.getButton();
-    RemovePointMode removeMode = new RemovePointMode(this.frame.getMainFrame(),
-        this.frame.getMainFrame().getMode());
+    RemovePointMode removeMode = new RemovePointMode(this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     removeMode.setGeometryToolBar(this);
     JButton bSupprimerPoint = removeMode.getButton();
-    MovePointMode movePointMode = new MovePointMode(this.frame.getMainFrame(),
-        this.frame.getMainFrame().getMode());
+    MovePointMode movePointMode = new MovePointMode(this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     movePointMode.setGeometryToolBar(this);
     JButton bDeplacerPoint = movePointMode.getButton();
-    MoveFeatureMode moveFeatureMode = new MoveFeatureMode(
-        this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
+    MoveFeatureMode moveFeatureMode = new MoveFeatureMode(this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     moveFeatureMode.setGeometryToolBar(this);
     JButton bDeplacerObjet = moveFeatureMode.getButton();
     /*
      * Variables pour l'onglet Creation
      */
-    CreatePointMode createPointMode = new CreatePointMode(
-        this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
+    CreatePointMode createPointMode = new CreatePointMode(this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     createPointMode.setGeometryToolBar(this);
     this.bCreationPoints = createPointMode.getButton();
-    CreatePolygonMode createPolygonMode = new CreatePolygonMode(
-        this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
+    CreatePolygonMode createPolygonMode = new CreatePolygonMode(this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     createPolygonMode.setGeometryToolBar(this);
     this.bCreationPolygon = createPolygonMode.getButton();
-    CreateRectangleMode createRectangleMode = new CreateRectangleMode(
-        this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
+    CreateRectangleMode createRectangleMode = new CreateRectangleMode(this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     createRectangleMode.setGeometryToolBar(this);
     this.bCreationRectangle = createRectangleMode.getButton();
-    CreateInteriorRingMode createRingMode = new CreateInteriorRingMode(
-        this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
+    CreateInteriorRingMode createRingMode = new CreateInteriorRingMode(this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     createRingMode.setGeometryToolBar(this);
     this.bCreationInteriorRing = createRingMode.getButton();
-    CreateLineStringMode createLineStringMode = new CreateLineStringMode(
-        this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
+    CreateLineStringMode createLineStringMode = new CreateLineStringMode(this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     createLineStringMode.setGeometryToolBar(this);
     this.bCreationLigne = createLineStringMode.getButton();
     this.setUI(this.ui);
     this.setLayout(new GridLayout(2, 1));
-    this.setPreferredSize(new Dimension(GeometryToolBar.WIDTH,
-        GeometryToolBar.HEIGHT));
+    this.setPreferredSize(new Dimension(GeometryToolBar.WIDTH, GeometryToolBar.HEIGHT));
     this.tabEdition.setLayout(new GridLayout(2, 1));
     this.tabCreation.setLayout(new GridLayout(2, 1));
     this.tabOptions.setLayout(new GridLayout(3, 1));
-    SpinnerNumberModel model = new SpinnerNumberModel(this.precisionCurseur, 1,
-        50, 1);
+    SpinnerNumberModel model = new SpinnerNumberModel(this.precisionCurseur, 1, 50, 1);
     this.marge = new JSpinner(model);
     this.marge.addChangeListener(new ChangeListener() {
       @Override
       public void stateChanged(ChangeEvent e) {
-        Integer i = (Integer) (GeometryToolBar.this.marge.getValue());
+        Integer i = (Integer) GeometryToolBar.this.marge.getValue();
         GeometryToolBar.this.precisionCurseur = i.intValue();
       }
     });
     this.cBoxCoucheAModifier.addItem("Créer une nouvelle couche");
-    for (Layer layer : frame.getLayers()) {
+    for (Layer layer : projectFloatingFrame.getLayers()) {
       this.cBoxCoucheAModifier.addItem(layer.getName());
     }
     this.cBoxCoucheAModifier.setSelectedIndex(0);
@@ -235,32 +219,27 @@ public class GeometryToolBar extends JToolBar {
       @Override
       public void mouseEntered(MouseEvent e) {
         GeometryToolBar.this.cBoxCoucheAModifier.removeAllItems();
-        GeometryToolBar.this.cBoxCoucheAModifier
-            .addItem("Créer une nouvelle couche");
-        for (Layer layer : frame.getLayers()) {
+        GeometryToolBar.this.cBoxCoucheAModifier.addItem("Créer une nouvelle couche");
+        for (Layer layer : projectFloatingFrame.getLayers()) {
           if (layer.isVisible()) {
             GeometryToolBar.this.cBoxCoucheAModifier.addItem(layer.getName());
           }
         }
-        GeometryToolBar.this.cBoxCoucheAModifier
-            .setSelectedItem(GeometryToolBar.this.layerName);
+        GeometryToolBar.this.cBoxCoucheAModifier.setSelectedItem(GeometryToolBar.this.layerName);
       }
     });
     // Ajouts des listeners aux boutons
     this.cBoxCoucheAModifier.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        JComboBox comboBox = (JComboBox) (e.getSource());
-        if (comboBox.getSelectedIndex() != 0
-            && comboBox.getSelectedIndex() != -1) {
+        JComboBox comboBox = (JComboBox) e.getSource();
+        if (comboBox.getSelectedIndex() != 0 && comboBox.getSelectedIndex() != -1) {
           GeometryToolBar.this.layerName = (String) comboBox.getSelectedItem();
-          Layer layer = GeometryToolBar.this.getFrame().getLayer(
-              GeometryToolBar.this.layerName);
+          Layer layer = GeometryToolBar.this.getFrame().getLayer(GeometryToolBar.this.layerName);
           System.out.println(layer.getFeatureCollection().getFeatureType());
           if (layer.getFeatureCollection().getFeatureType() != null) {
             if (layer.getFeatureCollection().getFeatureType().getGeometryType() != GM_Polygon.class
-                && layer.getFeatureCollection().getFeatureType()
-                    .getGeometryType() != GM_MultiSurface.class) {
+                && layer.getFeatureCollection().getFeatureType().getGeometryType() != GM_MultiSurface.class) {
               GeometryToolBar.this.bCreationInteriorRing.setVisible(false);
             } else {
               GeometryToolBar.this.bCreationInteriorRing.setVisible(true);
@@ -276,8 +255,7 @@ public class GeometryToolBar extends JToolBar {
     bDeplacerPoint.setToolTipText("Déplacer un sommet");
     this.bCreationPoints.setToolTipText("Créer un point");
     this.bCreationPolygon.setToolTipText("Créer un polygone");
-    this.bCreationInteriorRing
-        .setToolTipText("Insérer un anneau intérieur dans un polygone");
+    this.bCreationInteriorRing.setToolTipText("Insérer un anneau intérieur dans un polygone");
     this.bCreationRectangle.setToolTipText("Créer un rectangle");
     this.bCreationLigne.setToolTipText("Créer une polyligne");
     bDeplacerObjet.setToolTipText("Déplacer les objets sélectionnés");
@@ -307,15 +285,13 @@ public class GeometryToolBar extends JToolBar {
     this.pEditionPoints.add(bSupprimerPoint);
     this.pEditionPoints.add(bDeplacerPoint);
     // Fin de l'ajout des boutons
-    this.pEditionPoints.setBorder(BorderFactory
-        .createTitledBorder("Edition des sommets"));
+    this.pEditionPoints.setBorder(BorderFactory.createTitledBorder("Edition des sommets"));
     this.tabEdition.add(this.pEditionPoints);
     // Fin tabEdition
     // Ajout des boutons
     this.pEditionObjets.add(bDeplacerObjet);
     // Fin de l'ajout des boutons
-    this.pEditionObjets.setBorder(BorderFactory
-        .createTitledBorder("Edition des objets"));
+    this.pEditionObjets.setBorder(BorderFactory.createTitledBorder("Edition des objets"));
     this.tabEdition.add(this.pEditionObjets);
     // Fin tabEdition
     // Ajout des components au tabCreation
@@ -324,8 +300,7 @@ public class GeometryToolBar extends JToolBar {
     this.pCoucheAModifier.add(this.cBoxCoucheAModifier, BorderLayout.NORTH);
     this.pCoucheAModifier.add(this.newLayerNameText, BorderLayout.CENTER);
     // Fin de l'ajout des boutons
-    this.pCoucheAModifier.setBorder(BorderFactory
-        .createTitledBorder("Couche à modifier"));
+    this.pCoucheAModifier.setBorder(BorderFactory.createTitledBorder("Couche à modifier"));
     this.tabCreation.add(this.pCoucheAModifier);
     // Ajout des boutons
     this.pCreationGeom.add(this.bCreationPoints);
@@ -334,8 +309,7 @@ public class GeometryToolBar extends JToolBar {
     this.pCreationGeom.add(this.bCreationRectangle);
     this.pCreationGeom.add(this.bCreationInteriorRing);
     // Fin de l'ajout des boutons
-    this.pCreationGeom.setBorder(BorderFactory
-        .createTitledBorder("Création de géométrie"));
+    this.pCreationGeom.setBorder(BorderFactory.createTitledBorder("Création de géométrie"));
     this.tabCreation.add(this.pCreationGeom);
     // Fin tabCreation
     // Ajout des components au tabOptions
@@ -343,8 +317,7 @@ public class GeometryToolBar extends JToolBar {
     JPanel margePanel = new JPanel();
     margePanel.add(this.lMarge);
     margePanel.add(this.marge);
-    margePanel
-        .setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+    margePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
     this.tabOptions.add(margePanel);
     // Fin tabOption
     this.tabbedPane.addTab("Edition", this.tabEdition);
@@ -354,36 +327,27 @@ public class GeometryToolBar extends JToolBar {
     this.add(this.tabbedPane);
   }
 
-  /**
-   * @return
-   */
+  /** @return */
   public ProjectFrame getFrame() {
     return this.frame;
   }
 
-  /**
-   * @return
-   */
+  /** @return */
   public boolean isSelectionMultiple() {
     return this.cbSelectionMultiple.isSelected();
   }
 
-  /**
-   * @return
-   */
+  /** @return */
   public boolean autoriserGeomNonValide() {
     return this.cbAutoriserGeomNonValide.isSelected();
   }
 
-  /**
-   * Permet d'ajouter un point à une géométrie.
-   */
+  /** Permet d'ajouter un point à une géométrie. */
   public void addPoint(IDirectPosition p) {
     GM_Point point = new GM_Point(p);
     double minDistance = Double.POSITIVE_INFINITY;
     IFeature closestFeature = null;
-    for (IFeature feature : this.getFrame().getLayerViewPanel()
-        .getSelectedFeatures()) {
+    for (IFeature feature : this.getFrame().getLayerViewPanel().getSelectedFeatures()) {
       double distance = feature.getGeom().distance(point);
       if (distance < minDistance) {
         minDistance = distance;
@@ -419,16 +383,14 @@ public class GeometryToolBar extends JToolBar {
       } else {
         if (feature.getGeom().isMultiSurface()) {
           if (!feature.getGeom().coord().contains(point)) {
-            GM_MultiSurface<GM_Polygon> multiSurface = new GM_MultiSurface<GM_Polygon>(
-                (GM_MultiSurface<GM_Polygon>) feature.getGeom());
+            GM_MultiSurface<GM_Polygon> multiSurface = new GM_MultiSurface<GM_Polygon>((GM_MultiSurface<GM_Polygon>) feature.getGeom());
             this.addPoint(point, multiSurface);
             feature.setGeom(multiSurface);
           }
         } else {
           if (feature.getGeom().isMultiCurve()) {
             if (!feature.getGeom().coord().contains(point)) {
-              GM_MultiCurve<GM_LineString> multiCurve = new GM_MultiCurve<GM_LineString>(
-                  (GM_MultiCurve<GM_LineString>) feature.getGeom());
+              GM_MultiCurve<GM_LineString> multiCurve = new GM_MultiCurve<GM_LineString>((GM_MultiCurve<GM_LineString>) feature.getGeom());
               this.addPoint(point, multiCurve);
               feature.setGeom(multiCurve);
             }
@@ -443,8 +405,7 @@ public class GeometryToolBar extends JToolBar {
    * @param point
    * @param multiCurve
    */
-  private void addPoint(IDirectPosition point,
-      GM_MultiCurve<GM_LineString> multiCurve) {
+  private void addPoint(IDirectPosition point, GM_MultiCurve<GM_LineString> multiCurve) {
     int indexSurfaceMin = 0;
     GM_LineString surfaceMin = multiCurve.get(0);
     double distanceMin = Distances.distance(point, surfaceMin);
@@ -466,8 +427,7 @@ public class GeometryToolBar extends JToolBar {
    * @param point
    * @param multiSurface
    */
-  private void addPoint(IDirectPosition point,
-      GM_MultiSurface<GM_Polygon> multiSurface) {
+  private void addPoint(IDirectPosition point, GM_MultiSurface<GM_Polygon> multiSurface) {
     int indexSurfaceMin = 0;
     GM_Polygon surfaceMin = multiSurface.get(0);
     double distanceMin = Distances.distance(point, surfaceMin);
@@ -505,11 +465,9 @@ public class GeometryToolBar extends JToolBar {
     IDirectPositionList points = ringMin.coord();
     Operateurs.projectAndInsert(point, points.getList());
     if (indexRingMin == -1) {
-      polygon.setExterior(new GM_Ring(new GM_CompositeCurve(new GM_LineString(
-          points))));
+      polygon.setExterior(new GM_Ring(new GM_CompositeCurve(new GM_LineString(points))));
     } else {
-      polygon.setInterior(indexRingMin, new GM_Ring(new GM_CompositeCurve(
-          new GM_LineString(points))));
+      polygon.setInterior(indexRingMin, new GM_Ring(new GM_CompositeCurve(new GM_LineString(points))));
     }
   }
 
@@ -529,8 +487,7 @@ public class GeometryToolBar extends JToolBar {
     GM_Point point = new GM_Point(p);
     double minDistance = Double.POSITIVE_INFINITY;
     IFeature closestFeature = null;
-    for (IFeature feature : this.getFrame().getLayerViewPanel()
-        .getSelectedFeatures()) {
+    for (IFeature feature : this.getFrame().getLayerViewPanel().getSelectedFeatures()) {
       double distance = feature.getGeom().distance(point);
       if (distance < minDistance) {
         minDistance = distance;
@@ -564,16 +521,14 @@ public class GeometryToolBar extends JToolBar {
       } else {
         if (feature.getGeom().isMultiSurface()) {
           if (!feature.getGeom().coord().contains(point)) {
-            GM_MultiSurface<GM_Polygon> multiSurface = new GM_MultiSurface<GM_Polygon>(
-                (GM_MultiSurface<GM_Polygon>) feature.getGeom());
+            GM_MultiSurface<GM_Polygon> multiSurface = new GM_MultiSurface<GM_Polygon>((GM_MultiSurface<GM_Polygon>) feature.getGeom());
             this.removePoint(point, multiSurface);
             feature.setGeom(multiSurface);
           }
         } else {
           if (feature.getGeom().isMultiCurve()) {
             if (!feature.getGeom().coord().contains(point)) {
-              GM_MultiCurve<GM_LineString> multiCurve = new GM_MultiCurve<GM_LineString>(
-                  (GM_MultiCurve<GM_LineString>) feature.getGeom());
+              GM_MultiCurve<GM_LineString> multiCurve = new GM_MultiCurve<GM_LineString>((GM_MultiCurve<GM_LineString>) feature.getGeom());
               this.removePoint(point, multiCurve);
               feature.setGeom(multiCurve);
             }
@@ -588,8 +543,7 @@ public class GeometryToolBar extends JToolBar {
    * @param point
    * @param multiCurve
    */
-  private void removePoint(IDirectPosition point,
-      GM_MultiCurve<GM_LineString> multiCurve) {
+  private void removePoint(IDirectPosition point, GM_MultiCurve<GM_LineString> multiCurve) {
     int indexSurfaceMin = 0;
     GM_LineString lineMin = multiCurve.get(0);
     double distanceMin = Distances.distance(point, lineMin);
@@ -619,8 +573,7 @@ public class GeometryToolBar extends JToolBar {
    * @param point
    * @param multiSurface
    */
-  private void removePoint(IDirectPosition point,
-      GM_MultiSurface<GM_Polygon> multiSurface) {
+  private void removePoint(IDirectPosition point, GM_MultiSurface<GM_Polygon> multiSurface) {
     int indexSurfaceMin = 0;
     GM_Polygon surfaceMin = multiSurface.get(0);
     double distanceMin = Distances.distance(point, surfaceMin);
@@ -670,11 +623,9 @@ public class GeometryToolBar extends JToolBar {
       points.add(points.size(), points.get(0));
     }
     if (indexRingMin == -1) {
-      polygon.setExterior(new GM_Ring(new GM_CompositeCurve(new GM_LineString(
-          points))));
+      polygon.setExterior(new GM_Ring(new GM_CompositeCurve(new GM_LineString(points))));
     } else {
-      polygon.setInterior(indexRingMin, new GM_Ring(new GM_CompositeCurve(
-          new GM_LineString(points))));
+      polygon.setInterior(indexRingMin, new GM_Ring(new GM_CompositeCurve(new GM_LineString(points))));
     }
   }
 
@@ -690,8 +641,7 @@ public class GeometryToolBar extends JToolBar {
    * @param point
    * @param points
    */
-  private int closestPointIndex(IDirectPosition point,
-      IDirectPositionList points) {
+  private int closestPointIndex(IDirectPosition point, IDirectPositionList points) {
     int indexPointMin = 0;
     double distanceMin = point.distance(points.get(0));
     for (int index = 1; index < points.size(); index++) {
@@ -706,76 +656,45 @@ public class GeometryToolBar extends JToolBar {
   }
 
   /*
-   * @SuppressWarnings("unchecked") public void
-   * supprimerPointExteriorRingPolygon() { GM_Ring exteriorRing = ((GM_Polygon)
-   * objetLePlusProche).getExterior(); List<GM_Ring> interiorRings =
-   * ((GM_Polygon) objetLePlusProche) .getInterior(); DirectPositionList points
-   * = exteriorRing.coord(); GM_LineString exteriorLine = ((GM_Polygon)
-   * objetLePlusProche) .exteriorLineString(); if
-   * (sommetLePlusProche.equals(exteriorLine.startPoint()) ||
-   * sommetLePlusProche.equals(exteriorLine.endPoint())) { points.remove(0);
-   * points.remove(points.size() - 1); points.add(points.get(0)); } else {
-   * points.remove(sommetLePlusProche); } if (points.size() > 3) {
-   * GM_CurveSegment curveSegment = new GM_LineString(points); GM_CompositeCurve
-   * curve = new GM_CompositeCurve(curveSegment); GM_Ring newExteriorRing = new
-   * GM_Ring(curve);
+   * @SuppressWarnings("unchecked") public void supprimerPointExteriorRingPolygon() { GM_Ring exteriorRing = ((GM_Polygon)
+   * objetLePlusProche).getExterior(); List<GM_Ring> interiorRings = ((GM_Polygon) objetLePlusProche) .getInterior(); DirectPositionList points =
+   * exteriorRing.coord(); GM_LineString exteriorLine = ((GM_Polygon) objetLePlusProche) .exteriorLineString(); if
+   * (sommetLePlusProche.equals(exteriorLine.startPoint()) || sommetLePlusProche.equals(exteriorLine.endPoint())) { points.remove(0);
+   * points.remove(points.size() - 1); points.add(points.get(0)); } else { points.remove(sommetLePlusProche); } if (points.size() > 3) {
+   * GM_CurveSegment curveSegment = new GM_LineString(points); GM_CompositeCurve curve = new GM_CompositeCurve(curveSegment); GM_Ring newExteriorRing
+   * = new GM_Ring(curve);
    * 
-   * GM_Polygon newPoly = new GM_Polygon();
-   * newPoly.setExterior(newExteriorRing); for (GM_Ring ring : interiorRings) {
-   * newPoly.addInterior(ring); } if (newPoly.isValid() ||
-   * autoriserGeomNonValide()) {
+   * GM_Polygon newPoly = new GM_Polygon(); newPoly.setExterior(newExteriorRing); for (GM_Ring ring : interiorRings) { newPoly.addInterior(ring); } if
+   * (newPoly.isValid() || autoriserGeomNonValide()) {
    * 
-   * List<FT_Feature> features = new ArrayList<FT_Feature>(
-   * getFrame().getLayerViewPanel().getSelectedFeatures()); if (isAggregate) {
-   * GM_Aggregate<GM_Polygon> geom = (GM_Aggregate<GM_Polygon>) features
-   * .get(indiceFeaturePlusProche).getGeom(); geom.set(indiceObjetPlusProche,
-   * newPoly); } else { features.get(indiceFeaturePlusProche).setGeom(newPoly);
-   * } getFrame().getLayerViewPanel().repaint(); } } }
+   * List<FT_Feature> features = new ArrayList<FT_Feature>( getFrame().getLayerViewPanel().getSelectedFeatures()); if (isAggregate) {
+   * GM_Aggregate<GM_Polygon> geom = (GM_Aggregate<GM_Polygon>) features .get(indiceFeaturePlusProche).getGeom(); geom.set(indiceObjetPlusProche,
+   * newPoly); } else { features.get(indiceFeaturePlusProche).setGeom(newPoly); } getFrame().getLayerViewPanel().repaint(); } } }
    * 
-   * @SuppressWarnings("unchecked") public void
-   * supprimerPointInteriorRingPolygon() { GM_Ring exteriorRing = ((GM_Polygon)
-   * objetLePlusProche).getExterior(); List<GM_Ring> interiorRings =
-   * ((GM_Polygon) objetLePlusProche) .getInterior(); GM_Ring interiorRing =
-   * ((GM_Polygon) objetLePlusProche)
-   * .getInterior(indiceInteriorRingLePlusProche); DirectPositionList points =
-   * interiorRing.coord(); GM_LineString interiorLine = ((GM_Polygon)
-   * objetLePlusProche) .interiorLineString(indiceInteriorRingLePlusProche); if
-   * (sommetLePlusProche.equals(interiorLine.startPoint()) ||
-   * sommetLePlusProche.equals(interiorLine.endPoint())) { points.remove(0);
-   * points.remove(points.size() - 1); points.add(points.get(0)); } else {
-   * points.remove(sommetLePlusProche); } if (points.size() > 3) {
-   * GM_CurveSegment curveSegment = new GM_LineString(points); GM_CompositeCurve
-   * curve = new GM_CompositeCurve(curveSegment); GM_Ring newInteriorRing = new
-   * GM_Ring(curve); if (newInteriorRing.isValid() || autoriserGeomNonValide())
-   * { interiorRings.set(indiceInteriorRingLePlusProche, newInteriorRing);
-   * GM_Polygon newPoly = new GM_Polygon(); newPoly.setExterior(exteriorRing);
-   * for (GM_Ring ring : interiorRings) { newPoly.addInterior(ring); }
-   * List<FT_Feature> features = new ArrayList<FT_Feature>(
-   * getFrame().getLayerViewPanel().getSelectedFeatures()); if (isAggregate) {
-   * GM_Aggregate<GM_Polygon> geom = (GM_Aggregate<GM_Polygon>) features
-   * .get(indiceFeaturePlusProche).getGeom(); geom.set(indiceObjetPlusProche,
-   * newPoly); } else { features.get(indiceFeaturePlusProche).setGeom(newPoly);
-   * } getFrame().repaint(); } } else { interiorRings.remove(interiorRing);
-   * GM_Polygon newPoly = new GM_Polygon(); newPoly.setExterior(exteriorRing);
-   * for (GM_Ring ring : interiorRings) { newPoly.addInterior(ring); }
-   * List<FT_Feature> features = new ArrayList<FT_Feature>(getFrame()
-   * .getLayerViewPanel().getSelectedFeatures()); if (isAggregate) {
-   * GM_Aggregate<GM_Polygon> geom = (GM_Aggregate<GM_Polygon>) features
-   * .get(indiceFeaturePlusProche).getGeom(); geom.set(indiceObjetPlusProche,
-   * newPoly); } else { features.get(indiceFeaturePlusProche).setGeom(newPoly);
-   * } frame.getLayerViewPanel().repaint(); } }
+   * @SuppressWarnings("unchecked") public void supprimerPointInteriorRingPolygon() { GM_Ring exteriorRing = ((GM_Polygon)
+   * objetLePlusProche).getExterior(); List<GM_Ring> interiorRings = ((GM_Polygon) objetLePlusProche) .getInterior(); GM_Ring interiorRing =
+   * ((GM_Polygon) objetLePlusProche) .getInterior(indiceInteriorRingLePlusProche); DirectPositionList points = interiorRing.coord(); GM_LineString
+   * interiorLine = ((GM_Polygon) objetLePlusProche) .interiorLineString(indiceInteriorRingLePlusProche); if
+   * (sommetLePlusProche.equals(interiorLine.startPoint()) || sommetLePlusProche.equals(interiorLine.endPoint())) { points.remove(0);
+   * points.remove(points.size() - 1); points.add(points.get(0)); } else { points.remove(sommetLePlusProche); } if (points.size() > 3) {
+   * GM_CurveSegment curveSegment = new GM_LineString(points); GM_CompositeCurve curve = new GM_CompositeCurve(curveSegment); GM_Ring newInteriorRing
+   * = new GM_Ring(curve); if (newInteriorRing.isValid() || autoriserGeomNonValide()) { interiorRings.set(indiceInteriorRingLePlusProche,
+   * newInteriorRing); GM_Polygon newPoly = new GM_Polygon(); newPoly.setExterior(exteriorRing); for (GM_Ring ring : interiorRings) {
+   * newPoly.addInterior(ring); } List<FT_Feature> features = new ArrayList<FT_Feature>( getFrame().getLayerViewPanel().getSelectedFeatures()); if
+   * (isAggregate) { GM_Aggregate<GM_Polygon> geom = (GM_Aggregate<GM_Polygon>) features .get(indiceFeaturePlusProche).getGeom();
+   * geom.set(indiceObjetPlusProche, newPoly); } else { features.get(indiceFeaturePlusProche).setGeom(newPoly); } getFrame().repaint(); } } else {
+   * interiorRings.remove(interiorRing); GM_Polygon newPoly = new GM_Polygon(); newPoly.setExterior(exteriorRing); for (GM_Ring ring : interiorRings)
+   * { newPoly.addInterior(ring); } List<FT_Feature> features = new ArrayList<FT_Feature>(getFrame() .getLayerViewPanel().getSelectedFeatures()); if
+   * (isAggregate) { GM_Aggregate<GM_Polygon> geom = (GM_Aggregate<GM_Polygon>) features .get(indiceFeaturePlusProche).getGeom();
+   * geom.set(indiceObjetPlusProche, newPoly); } else { features.get(indiceFeaturePlusProche).setGeom(newPoly); } frame.getLayerViewPanel().repaint();
+   * } }
    * 
-   * @SuppressWarnings("unchecked") public void supprimerPointLineString() {
-   * GM_LineString line = (GM_LineString) objetLePlusProche; DirectPositionList
-   * points = line.coord(); if (points.size() > 2) {
-   * points.remove(sommetLePlusProche); GM_LineString newLine = new
-   * GM_LineString(points); List<FT_Feature> features = new
-   * ArrayList<FT_Feature>(getFrame()
-   * .getLayerViewPanel().getSelectedFeatures()); if (isAggregate) {
-   * GM_Aggregate<GM_LineString> geom = (GM_Aggregate<GM_LineString>) features
-   * .get(indiceFeaturePlusProche).getGeom(); geom.set(indiceObjetPlusProche,
-   * newLine); } else { features.get(indiceFeaturePlusProche).setGeom(newLine);
-   * } getFrame().getLayerViewPanel().repaint(); } }
+   * @SuppressWarnings("unchecked") public void supprimerPointLineString() { GM_LineString line = (GM_LineString) objetLePlusProche;
+   * DirectPositionList points = line.coord(); if (points.size() > 2) { points.remove(sommetLePlusProche); GM_LineString newLine = new
+   * GM_LineString(points); List<FT_Feature> features = new ArrayList<FT_Feature>(getFrame() .getLayerViewPanel().getSelectedFeatures()); if
+   * (isAggregate) { GM_Aggregate<GM_LineString> geom = (GM_Aggregate<GM_LineString>) features .get(indiceFeaturePlusProche).getGeom();
+   * geom.set(indiceObjetPlusProche, newLine); } else { features.get(indiceFeaturePlusProche).setGeom(newLine); }
+   * getFrame().getLayerViewPanel().repaint(); } }
    */
 
   /**
@@ -784,97 +703,53 @@ public class GeometryToolBar extends JToolBar {
    * @param y La nouvelle coordonnée en y
    */
   /*
-   * public void deplacerPoint(double x, double y) { if (objetLePlusProche ==
-   * null || pointLePlusProche == null || sommetLePlusProche == null) return; if
-   * (objetLePlusProche.isPolygon()) deplacerPointPolygon(x, y); else if
-   * (objetLePlusProche.isLineString()) { deplacerPointLineString(x, y); } }
+   * public void deplacerPoint(double x, double y) { if (objetLePlusProche == null || pointLePlusProche == null || sommetLePlusProche == null) return;
+   * if (objetLePlusProche.isPolygon()) deplacerPointPolygon(x, y); else if (objetLePlusProche.isLineString()) { deplacerPointLineString(x, y); } }
    * 
-   * public void deplacerPointPolygon(double x, double y) { if (isInterior) {
-   * deplacerPointInteriorRingPolygon(x, y); } else {
+   * public void deplacerPointPolygon(double x, double y) { if (isInterior) { deplacerPointInteriorRingPolygon(x, y); } else {
    * deplacerPointExteriorRingPolygon(x, y); } }
    * 
-   * @SuppressWarnings("unchecked") public void
-   * deplacerPointExteriorRingPolygon(double x, double y) { DirectPosition
-   * oldPoint = sommetLePlusProche; DirectPosition newPoint = new
-   * DirectPosition(x, y); List<GM_Ring> interiorRings = ((GM_Polygon)
-   * objetLePlusProche) .getInterior(); GM_Ring exteriorRing = ((GM_Polygon)
-   * objetLePlusProche).getExterior(); DirectPositionList points =
-   * exteriorRing.coord(); GM_LineString exteriorLine = ((GM_Polygon)
-   * objetLePlusProche) .exteriorLineString(); if
-   * (oldPoint.equals(exteriorLine.startPoint()) ||
-   * oldPoint.equals(exteriorLine.endPoint())) { points.set(0, newPoint);
-   * points.set(points.size() - 1, newPoint); } else {
-   * points.set(indiceSommetPlusProche, newPoint); } GM_CurveSegment
-   * curveSegment = new GM_LineString(points); GM_CompositeCurve curve = new
-   * GM_CompositeCurve(curveSegment); GM_Ring newExteriorRing = new
-   * GM_Ring(curve); GM_Polygon newPoly = new GM_Polygon();
-   * newPoly.setExterior(newExteriorRing); for (GM_Ring ring : interiorRings) {
-   * newPoly.addInterior(ring); } if (newPoly.isValid() ||
-   * autoriserGeomNonValide()) { if (isAggregate) { boolean isValid = true;
-   * GM_Aggregate<GM_Polygon> geom = (GM_Aggregate<GM_Polygon>)
-   * aggregateLePlusProche; for (GM_Polygon poly : geom) { if
-   * (!poly.equals(objetLePlusProche)) { if (poly.intersects(newPoly)) { isValid
-   * = false; } } if (!isValid) break; } if (isValid ||
-   * autoriserGeomNonValide()) { geom.set(indiceObjetPlusProche, newPoly); } }
-   * else { List<FT_Feature> features = new ArrayList<FT_Feature>(
-   * getFrame().getLayerViewPanel().getSelectedFeatures());
-   * features.get(indiceFeaturePlusProche).setGeom(newPoly); }
+   * @SuppressWarnings("unchecked") public void deplacerPointExteriorRingPolygon(double x, double y) { DirectPosition oldPoint = sommetLePlusProche;
+   * DirectPosition newPoint = new DirectPosition(x, y); List<GM_Ring> interiorRings = ((GM_Polygon) objetLePlusProche) .getInterior(); GM_Ring
+   * exteriorRing = ((GM_Polygon) objetLePlusProche).getExterior(); DirectPositionList points = exteriorRing.coord(); GM_LineString exteriorLine =
+   * ((GM_Polygon) objetLePlusProche) .exteriorLineString(); if (oldPoint.equals(exteriorLine.startPoint()) ||
+   * oldPoint.equals(exteriorLine.endPoint())) { points.set(0, newPoint); points.set(points.size() - 1, newPoint); } else {
+   * points.set(indiceSommetPlusProche, newPoint); } GM_CurveSegment curveSegment = new GM_LineString(points); GM_CompositeCurve curve = new
+   * GM_CompositeCurve(curveSegment); GM_Ring newExteriorRing = new GM_Ring(curve); GM_Polygon newPoly = new GM_Polygon();
+   * newPoly.setExterior(newExteriorRing); for (GM_Ring ring : interiorRings) { newPoly.addInterior(ring); } if (newPoly.isValid() ||
+   * autoriserGeomNonValide()) { if (isAggregate) { boolean isValid = true; GM_Aggregate<GM_Polygon> geom = (GM_Aggregate<GM_Polygon>)
+   * aggregateLePlusProche; for (GM_Polygon poly : geom) { if (!poly.equals(objetLePlusProche)) { if (poly.intersects(newPoly)) { isValid = false; } }
+   * if (!isValid) break; } if (isValid || autoriserGeomNonValide()) { geom.set(indiceObjetPlusProche, newPoly); } } else { List<FT_Feature> features
+   * = new ArrayList<FT_Feature>( getFrame().getLayerViewPanel().getSelectedFeatures()); features.get(indiceFeaturePlusProche).setGeom(newPoly); }
    * getFrame().getLayerViewPanel().repaint(); } }
    * 
-   * @SuppressWarnings("unchecked") public void
-   * deplacerPointInteriorRingPolygon(double x, double y) { DirectPosition
-   * oldPoint = sommetLePlusProche; DirectPosition newPoint = new
-   * DirectPosition(x, y); List<GM_Ring> interiorRings = new
-   * ArrayList<GM_Ring>(); interiorRings.addAll(((GM_Polygon)
-   * objetLePlusProche).getInterior()); GM_Ring interiorRing =
-   * interiorRingLePlusProche; GM_Ring exteriorRing = ((GM_Polygon)
-   * objetLePlusProche).getExterior(); DirectPositionList points =
-   * interiorRing.coord(); GM_LineString interiorLine = ((GM_Polygon)
-   * objetLePlusProche) .interiorLineString(indiceInteriorRingLePlusProche); if
-   * (oldPoint.equals(interiorLine.startPoint()) ||
-   * oldPoint.equals(interiorLine.endPoint())) { points.set(0, newPoint);
-   * points.set(points.size() - 1, newPoint); } else {
-   * points.set(indiceSommetPlusProche, newPoint); } GM_CurveSegment
-   * curveSegment = new GM_LineString(points); GM_CompositeCurve curve = new
-   * GM_CompositeCurve(curveSegment); GM_Ring newInteriorRing = new
-   * GM_Ring(curve); interiorRings.set(indiceInteriorRingLePlusProche,
-   * newInteriorRing); GM_Polygon newPoly = new GM_Polygon();
-   * newPoly.setExterior(exteriorRing); for (GM_Ring ring : interiorRings) {
-   * newPoly.addInterior(ring); } boolean ringIntersection = false; for (GM_Ring
-   * ring : newPoly.getInterior()) { if (!ring.equals(newInteriorRing)) { if
-   * (newInteriorRing.intersects(ring)) { ringIntersection = true; break; } } }
-   * if ((newPoly.isValid() && !ringIntersection) || autoriserGeomNonValide()) {
-   * if (isAggregate) { boolean isValid = true; List<FT_Feature> features = new
-   * ArrayList<FT_Feature>(
-   * getFrame().getLayerViewPanel().getSelectedFeatures());
-   * GM_Aggregate<GM_Polygon> geom = (GM_Aggregate<GM_Polygon>) features
-   * .get(indiceFeaturePlusProche).getGeom(); for (GM_Polygon poly : geom) { if
-   * (!poly.equals(objetLePlusProche)) { if (poly.intersects(newPoly)) { isValid
-   * = false; } } if (!isValid) break; } if (isValid ||
-   * autoriserGeomNonValide()) { geom.set(indiceObjetPlusProche, newPoly); } }
-   * else { List<FT_Feature> features = new ArrayList<FT_Feature>(
-   * getFrame().getLayerViewPanel().getSelectedFeatures());
-   * features.get(indiceFeaturePlusProche).setGeom(newPoly); }
+   * @SuppressWarnings("unchecked") public void deplacerPointInteriorRingPolygon(double x, double y) { DirectPosition oldPoint = sommetLePlusProche;
+   * DirectPosition newPoint = new DirectPosition(x, y); List<GM_Ring> interiorRings = new ArrayList<GM_Ring>(); interiorRings.addAll(((GM_Polygon)
+   * objetLePlusProche).getInterior()); GM_Ring interiorRing = interiorRingLePlusProche; GM_Ring exteriorRing = ((GM_Polygon)
+   * objetLePlusProche).getExterior(); DirectPositionList points = interiorRing.coord(); GM_LineString interiorLine = ((GM_Polygon) objetLePlusProche)
+   * .interiorLineString(indiceInteriorRingLePlusProche); if (oldPoint.equals(interiorLine.startPoint()) || oldPoint.equals(interiorLine.endPoint()))
+   * { points.set(0, newPoint); points.set(points.size() - 1, newPoint); } else { points.set(indiceSommetPlusProche, newPoint); } GM_CurveSegment
+   * curveSegment = new GM_LineString(points); GM_CompositeCurve curve = new GM_CompositeCurve(curveSegment); GM_Ring newInteriorRing = new
+   * GM_Ring(curve); interiorRings.set(indiceInteriorRingLePlusProche, newInteriorRing); GM_Polygon newPoly = new GM_Polygon();
+   * newPoly.setExterior(exteriorRing); for (GM_Ring ring : interiorRings) { newPoly.addInterior(ring); } boolean ringIntersection = false; for
+   * (GM_Ring ring : newPoly.getInterior()) { if (!ring.equals(newInteriorRing)) { if (newInteriorRing.intersects(ring)) { ringIntersection = true;
+   * break; } } } if ((newPoly.isValid() && !ringIntersection) || autoriserGeomNonValide()) { if (isAggregate) { boolean isValid = true;
+   * List<FT_Feature> features = new ArrayList<FT_Feature>( getFrame().getLayerViewPanel().getSelectedFeatures()); GM_Aggregate<GM_Polygon> geom =
+   * (GM_Aggregate<GM_Polygon>) features .get(indiceFeaturePlusProche).getGeom(); for (GM_Polygon poly : geom) { if (!poly.equals(objetLePlusProche))
+   * { if (poly.intersects(newPoly)) { isValid = false; } } if (!isValid) break; } if (isValid || autoriserGeomNonValide()) {
+   * geom.set(indiceObjetPlusProche, newPoly); } } else { List<FT_Feature> features = new ArrayList<FT_Feature>(
+   * getFrame().getLayerViewPanel().getSelectedFeatures()); features.get(indiceFeaturePlusProche).setGeom(newPoly); }
    * getFrame().getLayerViewPanel().repaint(); } }
    * 
-   * @SuppressWarnings("unchecked") public void deplacerPointLineString(double
-   * x, double y) { DirectPosition newPoint = new DirectPosition(x, y);
-   * GM_LineString line = (GM_LineString) objetLePlusProche; DirectPositionList
-   * points = line.coord(); points.set(indiceSommetPlusProche, newPoint);
-   * GM_LineString newLine = new GM_LineString(points); if (isAggregate) {
-   * boolean isValid = true; List<FT_Feature> features = new
-   * ArrayList<FT_Feature>(getFrame()
-   * .getLayerViewPanel().getSelectedFeatures()); GM_Aggregate<GM_LineString>
-   * geom = (GM_Aggregate<GM_LineString>) features
-   * .get(indiceFeaturePlusProche).getGeom(); for (GM_LineString segment : geom)
-   * { if (!segment.equals(objetLePlusProche)) { if
-   * (segment.intersects(newLine)) { isValid = false; } } if (!isValid) break; }
-   * if (isValid || autoriserGeomNonValide()) { geom.set(indiceObjetPlusProche,
-   * newLine); } } else { List<FT_Feature> features = new
-   * ArrayList<FT_Feature>(getFrame()
-   * .getLayerViewPanel().getSelectedFeatures());
-   * features.get(indiceFeaturePlusProche).setGeom(newLine); }
-   * getFrame().getLayerViewPanel().repaint(); }
+   * @SuppressWarnings("unchecked") public void deplacerPointLineString(double x, double y) { DirectPosition newPoint = new DirectPosition(x, y);
+   * GM_LineString line = (GM_LineString) objetLePlusProche; DirectPositionList points = line.coord(); points.set(indiceSommetPlusProche, newPoint);
+   * GM_LineString newLine = new GM_LineString(points); if (isAggregate) { boolean isValid = true; List<FT_Feature> features = new
+   * ArrayList<FT_Feature>(getFrame() .getLayerViewPanel().getSelectedFeatures()); GM_Aggregate<GM_LineString> geom = (GM_Aggregate<GM_LineString>)
+   * features .get(indiceFeaturePlusProche).getGeom(); for (GM_LineString segment : geom) { if (!segment.equals(objetLePlusProche)) { if
+   * (segment.intersects(newLine)) { isValid = false; } } if (!isValid) break; } if (isValid || autoriserGeomNonValide()) {
+   * geom.set(indiceObjetPlusProche, newLine); } } else { List<FT_Feature> features = new ArrayList<FT_Feature>(getFrame()
+   * .getLayerViewPanel().getSelectedFeatures()); features.get(indiceFeaturePlusProche).setGeom(newLine); } getFrame().getLayerViewPanel().repaint();
+   * }
    */
 
   /**
@@ -898,13 +773,11 @@ public class GeometryToolBar extends JToolBar {
           String message = "Attention! Vous essayez d'ajouter un polygone dans une couche qui ne contient que des objets de même type. "
               + "\nVoulez-vous malgré tout insérer la nouvelle géométrie ?";
 
-          int reponse = JOptionPane.showConfirmDialog(this, message,
-              "Confirmer la création de la géométrie ?",
-              JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+          int reponse = JOptionPane.showConfirmDialog(this, message, "Confirmer la création de la géométrie ?", JOptionPane.YES_NO_OPTION,
+              JOptionPane.WARNING_MESSAGE);
           // Si on clique sur oui
           if (reponse == JOptionPane.YES_OPTION) {
-            this.getFrame().getSld()
-                .addSymbolizer(layer.getName(), GM_Polygon.class);
+            this.getFrame().getSld().addSymbolizer(layer.getName(), GM_Polygon.class);
             this.createPolygonExistingLayer(layer, newPoly);
           } else {
             // TODO
@@ -919,8 +792,7 @@ public class GeometryToolBar extends JToolBar {
 
   @SuppressWarnings("unchecked")
   public void createPolygonExistingLayer(Layer layer, GM_Polygon newPoly) {
-    IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer
-        .getFeatureCollection();
+    IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer.getFeatureCollection();
     if (features.getFeatureType().getGeometryType() == GM_Polygon.class) {
       IFeature newFeature = new DefaultFeature(newPoly);
       GF_FeatureType featureType = features.getFeatureType();
@@ -931,9 +803,7 @@ public class GeometryToolBar extends JToolBar {
       GM_MultiSurface<GM_Polygon> newSurface = new GM_MultiSurface<GM_Polygon>();
       newSurface.add(newPoly);
       IFeature newFeature = new DefaultFeature(newSurface);
-      /**
-       * TODO A vérifier..;
-       */
+      /** TODO A vérifier..; */
       newFeature.setFeatureType(features.getFeatureType());
       features.add(newFeature);
       this.getFrame().getLayerViewPanel().repaint();
@@ -944,24 +814,21 @@ public class GeometryToolBar extends JToolBar {
   public void createPolygonNewLayer(GM_Polygon newPoly) {
     LayerFactory factory = new LayerFactory(this.getFrame().getSld());
     Layer newlayer = factory.createPopulationAndLayer(this.newLayerNameText.getText(), GM_MultiSurface.class);
-    this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier
-        .getItemCount() - 1);
+    this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier.getItemCount() - 1);
     if (newlayer != null) {
       String newLayerName = newlayer.getName();
       GM_MultiSurface<GM_Polygon> newSurface = new GM_MultiSurface<GM_Polygon>();
       newSurface.add(newPoly);
       DefaultFeature newFeature = new DefaultFeature(newSurface);
       // Remplie la population
-      IFeatureCollection<DefaultFeature> features = (IFeatureCollection<DefaultFeature>) this
-          .getFrame().getLayer(newLayerName).getFeatureCollection();
+      IFeatureCollection<DefaultFeature> features = (IFeatureCollection<DefaultFeature>) this.getFrame().getLayer(newLayerName)
+          .getFeatureCollection();
       features.add(newFeature);
       this.getFrame().getLayerViewPanel().repaint();
     }
   }
 
-  /**
-   * @param points
-   */
+  /** @param points */
   public void createLineString(IDirectPositionList points) {
     GM_LineString newLine = new GM_LineString(points);
     if (this.cBoxCoucheAModifier.getSelectedIndex() != 0) {
@@ -971,13 +838,11 @@ public class GeometryToolBar extends JToolBar {
       } else {
         String message = "Attention! Vous essayez d'ajouter une ligne dans une couche qui ne contient que des objets de même type. "
             + "\nVoulez-vous malgré tout insérer la nouvelle géométrie ?";
-        int reponse = JOptionPane.showConfirmDialog(this, message,
-            "Confirmer la création de la géométrie ?",
-            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        int reponse = JOptionPane.showConfirmDialog(this, message, "Confirmer la création de la géométrie ?", JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
         // Si on clique sur oui
         if (reponse == JOptionPane.YES_OPTION) {
-          this.getFrame().getSld()
-              .addSymbolizer(layer.getName(), GM_LineString.class);
+          this.getFrame().getSld().addSymbolizer(layer.getName(), GM_LineString.class);
           this.createLineStringExistingLayer(layer, newLine);
         } else {
           // TODO
@@ -991,8 +856,7 @@ public class GeometryToolBar extends JToolBar {
 
   @SuppressWarnings("unchecked")
   public void createLineStringExistingLayer(Layer layer, GM_LineString newLine) {
-    IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer
-        .getFeatureCollection();
+    IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer.getFeatureCollection();
     if (features.getFeatureType().getGeometryType() == GM_LineString.class) {
       IFeature newFeature = new DefaultFeature(newLine);
       if (newLine.isValid()) {
@@ -1014,19 +878,17 @@ public class GeometryToolBar extends JToolBar {
   public void createLineStringNewLayer(GM_LineString newLine) {
     if (newLine.isValid()) {
       LayerFactory factory = new LayerFactory(this.getFrame().getSld());
-        Layer newlayer = factory.createPopulationAndLayer(
-                this.newLayerNameText.getText(), GM_MultiCurve.class);
+      Layer newlayer = factory.createPopulationAndLayer(this.newLayerNameText.getText(), GM_MultiCurve.class);
 
-        this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier
-                .getItemCount() - 1);
-        if (newlayer != null) {
+      this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier.getItemCount() - 1);
+      if (newlayer != null) {
         String newLayerName = newlayer.getName();
         GM_MultiCurve<GM_LineString> newCurve = new GM_MultiCurve<GM_LineString>();
         newCurve.add(newLine);
         DefaultFeature newFeature = new DefaultFeature(newCurve);
         // Remplie la population
-        IFeatureCollection<DefaultFeature> features = (IFeatureCollection<DefaultFeature>) this
-            .getFrame().getLayer(newLayerName).getFeatureCollection();
+        IFeatureCollection<DefaultFeature> features = (IFeatureCollection<DefaultFeature>) this.getFrame().getLayer(newLayerName)
+            .getFeatureCollection();
         features.add(newFeature);
         this.getFrame().getLayerViewPanel().repaint();
       }
@@ -1042,13 +904,11 @@ public class GeometryToolBar extends JToolBar {
       } else {
         String message = "Attention! Vous essayez d'ajouter un point dans une couche qui ne contient que des objets de même type. "
             + "\nVoulez-vous malgré tout insérer la nouvelle géométrie ?";
-        int reponse = JOptionPane.showConfirmDialog(this, message,
-            "Confirmer la création de la géométrie ?",
-            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        int reponse = JOptionPane.showConfirmDialog(this, message, "Confirmer la création de la géométrie ?", JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
         // Si on clique sur oui
         if (reponse == JOptionPane.YES_OPTION) {
-          this.getFrame().getSld()
-              .addSymbolizer(layer.getName(), GM_Point.class);
+          this.getFrame().getSld().addSymbolizer(layer.getName(), GM_Point.class);
           this.createPointExistingLayer(layer, newPoint);
         } else {
           // TODO
@@ -1062,8 +922,7 @@ public class GeometryToolBar extends JToolBar {
 
   @SuppressWarnings("unchecked")
   public void createPointExistingLayer(Layer layer, GM_Point newPoint) {
-    IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer
-        .getFeatureCollection();
+    IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer.getFeatureCollection();
     if (features.getFeatureType().getGeometryType() == GM_Point.class) {
       IFeature newFeature = new DefaultFeature(newPoint);
 
@@ -1089,16 +948,15 @@ public class GeometryToolBar extends JToolBar {
       String newLayerName = this.newLayerNameText.getText();
       LayerFactory factory = new LayerFactory(this.getFrame().getSld());
       Layer newLayer = factory.createPopulationAndLayer(newLayerName, GM_MultiPoint.class);
-      this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier
-          .getItemCount() - 1);
+      this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier.getItemCount() - 1);
       if (newLayer != null) {
         GM_MultiPoint newMultiPoint = new GM_MultiPoint();
         newMultiPoint.add(newPoint);
         DefaultFeature newFeature = new DefaultFeature(newMultiPoint);
 
         // Remplie la population
-        IFeatureCollection<DefaultFeature> features = (IFeatureCollection<DefaultFeature>) this
-            .getFrame().getLayer(newLayerName).getFeatureCollection();
+        IFeatureCollection<DefaultFeature> features = (IFeatureCollection<DefaultFeature>) this.getFrame().getLayer(newLayerName)
+            .getFeatureCollection();
         features.add(newFeature);
         this.getFrame().repaint();
       }
@@ -1106,8 +964,7 @@ public class GeometryToolBar extends JToolBar {
   }
 
   /**
-   * Cette méthode créer un interior ring à partir de la liste de points envoyée
-   * en paramètre, puis l'ajoute au polygon de la couche sélectionnée
+   * Cette méthode créer un interior ring à partir de la liste de points envoyée en paramètre, puis l'ajoute au polygon de la couche sélectionnée
    * @param points La liste de point qui forment l'anneau intérieur
    */
   @SuppressWarnings("unchecked")
@@ -1119,8 +976,7 @@ public class GeometryToolBar extends JToolBar {
       GM_CompositeCurve curve = new GM_CompositeCurve(curveSegment);
       GM_Ring newInteriorRing = new GM_Ring(curve);
       Layer layer = this.frame.getLayer(this.layerName);
-      IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer
-          .getFeatureCollection();
+      IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer.getFeatureCollection();
       int i = 0;
       int j = 0;
       int indiceFeature = 0;
@@ -1166,8 +1022,7 @@ public class GeometryToolBar extends JToolBar {
         }
         if (newPoly.isValid() || this.autoriserGeomNonValide()) {
           if (isAggregate) {
-            GM_Aggregate<GM_Polygon> geom = (GM_Aggregate<GM_Polygon>) features
-                .get(indiceFeature).getGeom();
+            GM_Aggregate<GM_Polygon> geom = (GM_Aggregate<GM_Polygon>) features.get(indiceFeature).getGeom();
             geom.set(indiceObjet, newPoly);
             features.get(indiceFeature).setGeom(geom);
             this.getFrame().getLayerViewPanel().repaint();
@@ -1181,8 +1036,7 @@ public class GeometryToolBar extends JToolBar {
   }
 
   public void supprimerObjetsSelectionnes() {
-    for (IFeature ft : this.getFrame().getLayerViewPanel()
-        .getSelectedFeatures()) {
+    for (IFeature ft : this.getFrame().getLayerViewPanel().getSelectedFeatures()) {
       this.supprimerObjet(ft);
     }
   }
@@ -1193,29 +1047,24 @@ public class GeometryToolBar extends JToolBar {
   }
 
   /**
-   * Permet de tester si on peut ajouter le nouvel objet dans la couche Cette
-   * méthode vérifie que les types de géométrie correspondent
+   * Permet de tester si on peut ajouter le nouvel objet dans la couche Cette méthode vérifie que les types de géométrie correspondent
    * @param obj l'objet que l'on souhaite insérer
    * @param layer le layer dans lequel on souhaite insérer obj
    * @return true si l'objet peut être ajouté au layer
    */
   @SuppressWarnings("unchecked")
   public boolean canAddObjectToLayer(GM_Object obj, Layer layer) {
-    IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer
-        .getFeatureCollection();
+    IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer.getFeatureCollection();
     boolean canAdd = true;
     if (!features.isEmpty()) {
       if (!this.mixedGeomType(layer)) {
         IGeometry geom = features.get(0).getGeom();
-        if ((geom instanceof GM_Polygon) && (obj instanceof GM_MultiSurface)) {
-        } else if ((geom instanceof GM_MultiSurface)
-            && (obj instanceof GM_Polygon)) {
-        } else if ((geom instanceof GM_Point) && (obj instanceof GM_MultiPoint)) {
-        } else if ((geom instanceof GM_MultiPoint) && (obj instanceof GM_Point)) {
-        } else if ((geom instanceof GM_LineString)
-            && (obj instanceof GM_MultiCurve)) {
-        } else if ((geom instanceof GM_MultiCurve)
-            && (obj instanceof GM_LineString)) {
+        if (geom instanceof GM_Polygon && obj instanceof GM_MultiSurface) {
+        } else if (geom instanceof GM_MultiSurface && obj instanceof GM_Polygon) {
+        } else if (geom instanceof GM_Point && obj instanceof GM_MultiPoint) {
+        } else if (geom instanceof GM_MultiPoint && obj instanceof GM_Point) {
+        } else if (geom instanceof GM_LineString && obj instanceof GM_MultiCurve) {
+        } else if (geom instanceof GM_MultiCurve && obj instanceof GM_LineString) {
         } else {
           canAdd = false;
         }
@@ -1225,8 +1074,7 @@ public class GeometryToolBar extends JToolBar {
   }
 
   public void deplacerObjetsSelectionnes(double tx, double ty) {
-    Set<IFeature> features = this.getFrame().getLayerViewPanel()
-        .getSelectedFeatures();
+    Set<IFeature> features = this.getFrame().getLayerViewPanel().getSelectedFeatures();
     for (IFeature ft : features) {
       ft.setGeom(ft.getGeom().translate(tx, ty, 0));
     }
@@ -1234,21 +1082,18 @@ public class GeometryToolBar extends JToolBar {
   }
 
   /**
-   * Cette méthode teste si le layer envoyé en paramètre est composé de
-   * géométrie de types différents
+   * Cette méthode teste si le layer envoyé en paramètre est composé de géométrie de types différents
    * @param layer le layer que l'ont veut tester
    * @return true si le layer contient des géométries de type différents
    */
   @SuppressWarnings("unchecked")
   public boolean mixedGeomType(Layer layer) {
-    IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer
-        .getFeatureCollection();
+    IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer.getFeatureCollection();
     return this.mixedGeomType(features);
   }
 
   /**
-   * Cette méthode teste si la feature collection envoyée en paramètre est
-   * composé de géométrie de types différents
+   * Cette méthode teste si la feature collection envoyée en paramètre est composé de géométrie de types différents
    * @param features les features que l'ont veut tester
    * @return true si le layer contient des géométries de type différents
    */
@@ -1267,23 +1112,17 @@ public class GeometryToolBar extends JToolBar {
         }
       } else {
         if (firstClass != ft.getGeom().getClass()) {
-          if ((firstGeom instanceof GM_Polygon)
-              && (ft.getGeom() instanceof GM_MultiSurface<?>)) {
+          if (firstGeom instanceof GM_Polygon && ft.getGeom() instanceof GM_MultiSurface<?>) {
             i++;
-          } else if ((firstGeom instanceof GM_MultiSurface<?>)
-              && (ft.getGeom() instanceof GM_Polygon)) {
+          } else if (firstGeom instanceof GM_MultiSurface<?> && ft.getGeom() instanceof GM_Polygon) {
             i++;
-          } else if ((firstGeom instanceof GM_Point)
-              && (ft.getGeom() instanceof GM_MultiPoint)) {
+          } else if (firstGeom instanceof GM_Point && ft.getGeom() instanceof GM_MultiPoint) {
             i++;
-          } else if ((firstGeom instanceof GM_MultiPoint)
-              && (ft.getGeom() instanceof GM_Point)) {
+          } else if (firstGeom instanceof GM_MultiPoint && ft.getGeom() instanceof GM_Point) {
             i++;
-          } else if ((firstGeom instanceof GM_LineString)
-              && (ft.getGeom() instanceof GM_MultiCurve<?>)) {
+          } else if (firstGeom instanceof GM_LineString && ft.getGeom() instanceof GM_MultiCurve<?>) {
             i++;
-          } else if ((firstGeom instanceof GM_MultiCurve<?>)
-              && (ft.getGeom() instanceof GM_LineString)) {
+          } else if (firstGeom instanceof GM_MultiCurve<?> && ft.getGeom() instanceof GM_LineString) {
             i++;
           } else {
             mixedGeomType = true;

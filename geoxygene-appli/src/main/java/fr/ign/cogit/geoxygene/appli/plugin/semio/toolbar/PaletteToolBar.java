@@ -99,8 +99,8 @@ public class PaletteToolBar extends JToolBar implements ActionListener{
 	public Palette makePalette(){
 		
 		Legend currentLegend = null;
-		for (Component component : PaletteToolBar.this.projectFrame
-				.getContentPane().getComponents()) {
+		for (Component component : (PaletteToolBar.this.projectFrame.getGui())
+				.getComponents()) {
 			if (component.getClass().isAssignableFrom(SemioToolBar.class)) {
 				currentLegend = ((SemioToolBar)component).getSpecificationToolBar().getCurrentLegend();
 			}

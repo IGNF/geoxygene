@@ -9,15 +9,23 @@ import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 
-import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 
 public class CompassPaintListener implements PaintListener {
 
-  static private ImageIcon compass = new ImageIcon(CompassPaintListener.class
-      .getResource("/images/compass_rose.png")); //$NON-NLS-1$
+  static private ImageIcon compass = new ImageIcon(CompassPaintListener.class.getResource("/images/compass_rose.png")); //$NON-NLS-1$
+  static private BufferedImage compassBuf = null;
+  static {
+    compassBuf = new BufferedImage(compass.getIconWidth(), compass.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+    Graphics g = compassBuf.createGraphics();
+    // paint the Icon to the BufferedImage.
+    compass.paintIcon(null, g, 0, 0);
+    g.dispose();
+  }
 
   @Override
   public void paint(LayerViewPanel layerViewPanel, Graphics graphics) {
@@ -27,15 +35,13 @@ public class CompassPaintListener implements PaintListener {
     Font font = Font.decode("arial-bold-20"); //$NON-NLS-1$
     graphics.setFont(font);
     int charWidth = graphics.getFontMetrics().charWidth('N');
-//    int lineHeight = graphics.getFontMetrics().getHeight();
-    graphics.drawImage(CompassPaintListener.compass.getImage(),
-        layerViewPanel.getWidth() - size - shift, layerViewPanel.getHeight()
-            - shift - size,// shift +
-                           // lineHeight,
+    // int lineHeight = graphics.getFontMetrics().getHeight();
+    graphics.drawImage(CompassPaintListener.compass.getImage(), layerViewPanel.getWidth() - size - shift, layerViewPanel.getHeight() - shift - size,// shift
+                                                                                                                                                    // +
+                                                                                                                                                    // lineHeight,
         size, size, null);
-    AffineTransform at = new AffineTransform(1d, 0d, 0d, 1d,
-        layerViewPanel.getWidth() - (size + charWidth) / 2 - shift,
-        layerViewPanel.getHeight() - shift - size);// shift + lineHeight);
+    AffineTransform at = new AffineTransform(1d, 0d, 0d, 1d, layerViewPanel.getWidth() - (size + charWidth) / 2 - shift, layerViewPanel.getHeight()
+        - shift - size);// shift + lineHeight);
     FontRenderContext frc = new FontRenderContext(at, true, true);
     GlyphVector g = font.createGlyphVector(frc, "N"); //$NON-NLS-1$
     Shape shape = g.getOutline();
@@ -53,4 +59,5 @@ public class CompassPaintListener implements PaintListener {
     //graphics.drawString("N", layerViewPanel.getWidth() - (size + charWidth) / 2 - shift, shift + lineHeight); //$NON-NLS-1$
     graphics.setFont(initialFont);
   }
+
 }

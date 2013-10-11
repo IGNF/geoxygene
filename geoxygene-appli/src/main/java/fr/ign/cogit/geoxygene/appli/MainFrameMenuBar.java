@@ -1,6 +1,23 @@
+/*
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package fr.ign.cogit.geoxygene.appli;
 
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseMotionListener;
@@ -25,7 +42,9 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.appli.event.CoordPaintListener;
 import fr.ign.cogit.geoxygene.appli.gui.AddPostgisLayer;
-import fr.ign.cogit.geoxygene.appli.gui.FileChooser;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.style.Layer;
 
@@ -34,465 +53,501 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * 
  */
 public class MainFrameMenuBar extends JMenuBar {
-    
-    private MainFrame mainFrame;
-    
-    public static FileChooser fc = new FileChooser();
-    
-    /** Logger of the application. */
-    private static Logger LOGGER = Logger.getLogger(MainFrameMenuBar.class.getName());
-    
-    /** serial version uid. */
-    private static final long serialVersionUID = -6860364246334166387L;
-    
-    /**
-     * Constructor.
-     * @param frame
-     */
-    public MainFrameMenuBar(MainFrame frame) {
-        
-        super();
-        
-        mainFrame = frame;
-        this.setFont(mainFrame.getApplication().getFont());
-        
-        // Init all menus
-        initFileMenu();
-        initViewMenu();
-        initConfigurationMenu();
-        initHelpMenu();
-    }
-    
-    /**
+
+  private final MainFrame mainFrame;
+
+  public static FileChooser fc = new FileChooser();
+
+  /** Logger of the application. */
+  private static Logger LOGGER = Logger.getLogger(MainFrameMenuBar.class
+      .getName());
+
+  /** serial version uid. */
+  private static final long serialVersionUID = -6860364246334166387L;
+
+  /**
+   * Constructor.
+   * @param frame
+   */
+  public MainFrameMenuBar(MainFrame frame) {
+
+    super();
+
+    mainFrame = frame;
+    this.setFont(mainFrame.getApplication().getFont());
+
+    // Init all menus
+    initFileMenu();
+    initViewMenu();
+    initConfigurationMenu();
+    initHelpMenu();
+  }
+
+  /**
      * 
      */
-    private void initViewMenu() {
-        JMenu viewMenu = new JMenu(I18N.getString("MainFrame.View")); //$NON-NLS-1$
-        
-        JMenuItem mScale6250 = new JMenuItem("1:6250"); //$NON-NLS-1$
-        mScale6250.addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame().getLayerViewPanel();
-            layerViewPanel.getViewport().setScale(
-                1 / (6250 * LayerViewPanel.getMETERS_PER_PIXEL()));
-            layerViewPanel.repaint();
-          }
-        });
-        JMenuItem mScale12500 = new JMenuItem("1:12500"); //$NON-NLS-1$
-        mScale12500.addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame().getLayerViewPanel();
-            layerViewPanel.getViewport().setScale(
-                1 / (12500 * LayerViewPanel.getMETERS_PER_PIXEL()));
-            layerViewPanel.repaint();
-          }
-        });
-        JMenuItem mScale25k = new JMenuItem("1:25k"); //$NON-NLS-1$
-        mScale25k.addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame().getLayerViewPanel();
-            layerViewPanel.getViewport().setScale(
-                1 / (25000 * LayerViewPanel.getMETERS_PER_PIXEL()));
-            layerViewPanel.repaint();
-          }
-        });
-        JMenuItem mScale50k = new JMenuItem("1:50k"); //$NON-NLS-1$
-        mScale50k.addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame().getLayerViewPanel();
-            layerViewPanel.getViewport().setScale(
-                1 / (50000 * LayerViewPanel.getMETERS_PER_PIXEL()));
-            layerViewPanel.repaint();
-          }
-        });
-        JMenuItem mScale100k = new JMenuItem("1:100k"); //$NON-NLS-1$
-        mScale100k.addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame().getLayerViewPanel();
-            layerViewPanel.getViewport().setScale(
-                1 / (100000 * LayerViewPanel.getMETERS_PER_PIXEL()));
-            layerViewPanel.repaint();
-          }
-        });
-        JMenuItem mScaleCustom = new JMenuItem(
-            I18N.getString("MainFrame.CustomScale")); //$NON-NLS-1$
-        mScaleCustom.addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            int scale = Integer.parseInt(JOptionPane.showInputDialog(I18N
-                .getString("MainFrame.NewScale"))); //$NON-NLS-1$
-            LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame().getLayerViewPanel();
-            layerViewPanel.getViewport().setScale(
-                1 / (scale * LayerViewPanel.getMETERS_PER_PIXEL()));
-            layerViewPanel.repaint();
-          }
-        });
-        viewMenu.add(mScale6250);
-        viewMenu.add(mScale12500);
-        viewMenu.add(mScale25k);
-        viewMenu.add(mScale50k);
-        viewMenu.add(mScale100k);
-        viewMenu.add(mScaleCustom);
-        viewMenu.addSeparator();
-        
-        JMenuItem mGoTo = new JMenuItem(I18N.getString("MainFrame.GoTo")); //$NON-NLS-1$
-        mGoTo.addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame().getLayerViewPanel();
+  private void initViewMenu() {
+    JMenu viewMenu = new JMenu(I18N.getString("MainFrame.View")); //$NON-NLS-1$
 
-            String lat = JOptionPane.showInputDialog("Latitude"); //$NON-NLS-1$
-            if (lat == null) {
-              return;
+    JMenuItem mScale6250 = new JMenuItem("1:6250"); //$NON-NLS-1$
+    mScale6250.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame()
+            .getLayerViewPanel();
+        layerViewPanel.getViewport().setScale(
+            1 / (6250 * LayerViewPanel.getMETERS_PER_PIXEL()));
+        layerViewPanel.repaint();
+      }
+    });
+    JMenuItem mScale12500 = new JMenuItem("1:12500"); //$NON-NLS-1$
+    mScale12500.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame()
+            .getLayerViewPanel();
+        layerViewPanel.getViewport().setScale(
+            1 / (12500 * LayerViewPanel.getMETERS_PER_PIXEL()));
+        layerViewPanel.repaint();
+      }
+    });
+    JMenuItem mScale25k = new JMenuItem("1:25k"); //$NON-NLS-1$
+    mScale25k.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame()
+            .getLayerViewPanel();
+        layerViewPanel.getViewport().setScale(
+            1 / (25000 * LayerViewPanel.getMETERS_PER_PIXEL()));
+        layerViewPanel.repaint();
+      }
+    });
+    JMenuItem mScale50k = new JMenuItem("1:50k"); //$NON-NLS-1$
+    mScale50k.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame()
+            .getLayerViewPanel();
+        layerViewPanel.getViewport().setScale(
+            1 / (50000 * LayerViewPanel.getMETERS_PER_PIXEL()));
+        layerViewPanel.repaint();
+      }
+    });
+    JMenuItem mScale100k = new JMenuItem("1:100k"); //$NON-NLS-1$
+    mScale100k.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame()
+            .getLayerViewPanel();
+        layerViewPanel.getViewport().setScale(
+            1 / (100000 * LayerViewPanel.getMETERS_PER_PIXEL()));
+        layerViewPanel.repaint();
+      }
+    });
+    JMenuItem mScaleCustom = new JMenuItem(
+        I18N.getString("MainFrame.CustomScale")); //$NON-NLS-1$
+    mScaleCustom.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        int scale = Integer.parseInt(JOptionPane.showInputDialog(I18N
+            .getString("MainFrame.NewScale"))); //$NON-NLS-1$
+        LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame()
+            .getLayerViewPanel();
+        layerViewPanel.getViewport().setScale(
+            1 / (scale * LayerViewPanel.getMETERS_PER_PIXEL()));
+        layerViewPanel.repaint();
+      }
+    });
+    viewMenu.add(mScale6250);
+    viewMenu.add(mScale12500);
+    viewMenu.add(mScale25k);
+    viewMenu.add(mScale50k);
+    viewMenu.add(mScale100k);
+    viewMenu.add(mScaleCustom);
+    viewMenu.addSeparator();
+
+    JMenuItem mGoTo = new JMenuItem(I18N.getString("MainFrame.GoTo")); //$NON-NLS-1$
+    mGoTo.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame()
+            .getLayerViewPanel();
+
+        String lat = JOptionPane.showInputDialog("Latitude"); //$NON-NLS-1$
+        if (lat == null) {
+          return;
+        }
+        double latitude = Double.parseDouble(lat);
+        String lon = JOptionPane.showInputDialog("Longitude"); //$NON-NLS-1$
+        if (lon == null) {
+          return;
+        }
+        double longitude = Double.parseDouble(lon);
+        try {
+          layerViewPanel.getViewport().center(
+              new DirectPosition(latitude, longitude));
+        } catch (NoninvertibleTransformException e1) {
+          e1.printStackTrace();
+        }
+        layerViewPanel.repaint();
+      }
+    });
+    viewMenu.add(mGoTo);
+
+    JMenuItem mCoord = new JCheckBoxMenuItem(
+        I18N.getString("MainFrame.Coordinate")); //$NON-NLS-1$
+    mCoord.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame()
+            .getLayerViewPanel();
+        if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
+          layerViewPanel.addMouseMotionListener(new CoordPaintListener());
+        } else {
+          for (MouseMotionListener m : layerViewPanel.getMouseMotionListeners()) {
+            if (m.getClass().equals(CoordPaintListener.class)) {
+              layerViewPanel.removeMouseMotionListener(m);
+              layerViewPanel.repaint();
             }
-            double latitude = Double.parseDouble(lat);
-            String lon = JOptionPane.showInputDialog("Longitude"); //$NON-NLS-1$
-            if (lon == null) {
-              return;
-            }
-            double longitude = Double.parseDouble(lon);
+          }
+        }
+      }
+    });
+    viewMenu.add(mCoord);
+
+    add(viewMenu);
+  }
+
+  private void initHelpMenu() {
+    JMenu helpMenu = new JMenu(I18N.getString("MainFrame.Help")); //$NON-NLS-1$
+
+    // ...
+
+    add(helpMenu);
+  }
+
+  private void initConfigurationMenu() {
+
+    JMenu configurationMenu = new JMenu(
+        I18N.getString("MainFrame.Configuration")); //$NON-NLS-1$
+
+    JMenuItem organizeMenuItem = new JMenuItem("Organize"); //$NON-NLS-1$
+    organizeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        mainFrame.organizeCurrentDesktop();
+      }
+    });
+    configurationMenu.add(organizeMenuItem);
+
+    add(configurationMenu);
+
+  }
+
+  /**
+   * File menu : .
+   */
+  private void initFileMenu() {
+
+    JMenu fileMenu = new JMenu(I18N.getString("MainFrame.File")); //$NON-NLS-1$
+
+    // New Desktop
+    JMenuItem newDesktopFrameMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.NewDesktop"), //$NON-NLS-1$
+        new ImageIcon(GeOxygeneApplication.class
+            .getResource("/images/icons/tab_add.png")));
+    newDesktopFrameMenuItem
+        .addActionListener(new java.awt.event.ActionListener() {
+          @Override
+          public void actionPerformed(final ActionEvent e) {
+            mainFrame.createNewDesktop(null);
+          }
+        });
+    fileMenu.add(newDesktopFrameMenuItem);
+    // // New Desktop
+    // JMenuItem newFloatingDesktopFrameMenuItem = new JMenuItem(
+    //        I18N.getString("MainFrame.NewFloatingDesktop"), //$NON-NLS-1$
+    // new ImageIcon(GeOxygeneApplication.class
+    // .getResource("/images/icons/tab_add.png")));
+    // newFloatingDesktopFrameMenuItem
+    // .addActionListener(new java.awt.event.ActionListener() {
+    // @Override
+    // public void actionPerformed(final ActionEvent e) {
+    // mainFrame.createNewDesktop(null);
+    // }
+    // });
+    // fileMenu.add(newFloatingDesktopFrameMenuItem);
+    //
+    // // New Desktop
+    // JMenuItem newTabbedDesktopFrameMenuItem = new JMenuItem(
+    //        I18N.getString("MainFrame.NewTabbedDesktop"), //$NON-NLS-1$
+    // new ImageIcon(GeOxygeneApplication.class
+    // .getResource("/images/icons/tab_add.png")));
+    // newTabbedDesktopFrameMenuItem
+    // .addActionListener(new java.awt.event.ActionListener() {
+    // @Override
+    // public void actionPerformed(final ActionEvent e) {
+    // mainFrame.createNewDesktop(null);
+    // }
+    // });
+    // fileMenu.add(newFloatingDesktopFrameMenuItem);
+
+    // New AWT Project
+    JMenuItem newAWTProjectFrameMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.NewAWTProject"), //$NON-NLS-1$
+        new ImageIcon(
+            GeOxygeneApplication.class
+                .getResource("/images/icons/application_add.png")));
+    newAWTProjectFrameMenuItem
+        .addActionListener(new java.awt.event.ActionListener() {
+          @Override
+          public void actionPerformed(final ActionEvent e) {
+            LayerViewPanelFactory.setRenderingType(RenderingType.AWT);
+            mainFrame.newProjectFrame();
+          }
+        });
+    fileMenu.add(newAWTProjectFrameMenuItem);
+
+    // New LWJGL Project
+    JMenuItem newLWJGLProjectFrameMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.NewGLProject"), //$NON-NLS-1$
+        new ImageIcon(
+            GeOxygeneApplication.class
+                .getResource("/images/icons/application_add.png")));
+    newLWJGLProjectFrameMenuItem
+        .addActionListener(new java.awt.event.ActionListener() {
+          @Override
+          public void actionPerformed(final ActionEvent e) {
+            LayerViewPanelFactory.setRenderingType(RenderingType.LWJGL);
+            mainFrame.newProjectFrame();
+          }
+        });
+    fileMenu.add(newLWJGLProjectFrameMenuItem);
+
+    // Open File
+    JMenuItem openFileMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.OpenFile"), //$NON-NLS-1$
+        new ImageIcon(
+            GeOxygeneApplication.class
+                .getResource("/images/icons/16x16/page_white_add.png")));
+
+    openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        for (File file : fc.getFiles(mainFrame.getGui())) {
+          mainFrame.openFile(file);
+        }
+      }
+    });
+    fileMenu.add(openFileMenuItem);
+
+    /** SCH */
+    JMenuItem loadSLDMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.LoadSLD")); //$NON-NLS-1$
+    loadSLDMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        ProjectFrame projectFrame = mainFrame.getSelectedProjectFrame();
+        if (projectFrame == null) {
+          LOGGER.info("Cannot save SLD, no selected project");
+          return;
+
+        }
+        JFileChooser chooser = new JFileChooser(fc.getPreviousDirectory());
+        int result = chooser.showOpenDialog(mainFrame.getGui());
+        if (result == JFileChooser.APPROVE_OPTION) {
+          File file = chooser.getSelectedFile();
+          if (file != null) {
+            // String fileName = file.getAbsolutePath();
             try {
-              layerViewPanel.getViewport().center(
-                  new DirectPosition(latitude, longitude));
-            } catch (NoninvertibleTransformException e1) {
+              projectFrame.loadSLD(file);
+              mainFrame.getApplication().getProperties()
+                  .setLastOpenedFile(file.getAbsolutePath());
+              fc.setPreviousDirectory(file);
+            } catch (Exception e1) {
               e1.printStackTrace();
             }
-            layerViewPanel.repaint();
           }
-        });
-        viewMenu.add(mGoTo);
+        }
+      }
+    });
+    fileMenu.add(loadSLDMenuItem);
 
-        JMenuItem mCoord = new JCheckBoxMenuItem(
-            I18N.getString("MainFrame.Coordinate")); //$NON-NLS-1$
-        mCoord.addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            LayerViewPanel layerViewPanel = mainFrame.getSelectedProjectFrame().getLayerViewPanel();
-            if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
-              layerViewPanel.addMouseMotionListener(new CoordPaintListener());
-            } else {
-              for (MouseMotionListener m : layerViewPanel.getMouseMotionListeners()) {
-                if (m.getClass().equals(CoordPaintListener.class)) {
-                  layerViewPanel.removeMouseMotionListener(m);
-                  layerViewPanel.repaint();
-                }
-              }
-            }
+    // New Connection
+    JMenuItem newPgLayerMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.NewPgLayer"), //$NON-NLS-1$
+        new ImageIcon(
+            GeOxygeneApplication.class
+                .getResource("/images/icons/16x16/database_add.png")));
+    newPgLayerMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        ProjectFrame projectFrame = mainFrame.getSelectedProjectFrame();
+        if (projectFrame == null) {
+          if (mainFrame.getDesktopProjectFrames().length != 0) {
+            // TODO ask the user in which frame (s)he
+            // wants to load into?
+            projectFrame = mainFrame.getDesktopProjectFrames()[0];
+          } else {
+            // TODO create a new project frame?
+            LOGGER.info(I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+            return;
           }
-        });
-        viewMenu.add(mCoord);
-        
-        add(viewMenu);
-    }
-    
-    private void initHelpMenu() {
-        JMenu helpMenu = new JMenu(I18N.getString("MainFrame.Help")); //$NON-NLS-1$
-        
-        // ...
-        
-        add(helpMenu);
-    }
-     
-    
-    private void initConfigurationMenu() {
-        
-        JMenu configurationMenu = new JMenu(
-                I18N.getString("MainFrame.Configuration")); //$NON-NLS-1$
-        
-        JMenuItem organizeMenuItem = new JMenuItem("Organize"); //$NON-NLS-1$
-        organizeMenuItem.addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            ProjectFrame[] projectFrames = mainFrame.getAllProjectFrames();
-            
-            mainFrame.getDesktopPane().removeAll();
-            GridLayout layout = new GridLayout(0, 2);
-            mainFrame.getDesktopPane().setLayout(layout);
-            for (ProjectFrame frame : projectFrames) {
-              mainFrame.getDesktopPane().add(frame);
-            }
-            mainFrame.getDesktopPane().doLayout();
-          }
-        });
-        configurationMenu.add(organizeMenuItem);
-        
-        add(configurationMenu);
-        
-    }
-    
-    /**
-     * File menu : .
-     */
-    private void initFileMenu() {
-        
-        JMenu fileMenu = new JMenu(I18N.getString("MainFrame.File")); //$NON-NLS-1$
-        
-        // New Desktop
-        JMenuItem newDesktopFrameMenuItem = new JMenuItem(
-                I18N.getString("MainFrame.NewDesktop"),  //$NON-NLS-1$
-                new ImageIcon(
-                        GeOxygeneApplication.class.getResource("/images/icons/tab_add.png")));  
-        newDesktopFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                mainFrame.newDesktopFrame(null);
-            }
-        });
-        fileMenu.add(newDesktopFrameMenuItem);
-        
-        // New Project
-        JMenuItem newProjectFrameMenuItem = new JMenuItem(
-                I18N.getString("MainFrame.NewProject"),  //$NON-NLS-1$
-                new ImageIcon(
-                        GeOxygeneApplication.class.getResource("/images/icons/application_add.png"))); 
-        newProjectFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                    mainFrame.newProjectFrame();
-            }
-        });
-        fileMenu.add(newProjectFrameMenuItem);
-        
-        // Open File
-        JMenuItem openFileMenuItem = new JMenuItem(
-                I18N.getString("MainFrame.OpenFile"), //$NON-NLS-1$
-                new ImageIcon(
-                        GeOxygeneApplication.class.getResource("/images/icons/16x16/page_white_add.png"))); 
-        
-        openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
-              @Override
-              public void actionPerformed(final ActionEvent e) {
-                ProjectFrame projectFrame = (ProjectFrame) mainFrame.getDesktopPane().getSelectedFrame();
-                if (projectFrame == null) {
-                  if (mainFrame.getDesktopPane().getAllFrames().length != 0) {
-                    // TODO ask the user in which frame (s)he
-                    // wants to load into?
-                    projectFrame = (ProjectFrame) mainFrame.getDesktopPane()
-                        .getAllFrames()[0];
-                  } else {
-                    // TODO create a new project frame?
-                    LOGGER.info(
-                        I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
-                    return;
-                  }
-                }
-                File file = fc.getFile(mainFrame);
-                if (file != null) {
-                  projectFrame.addLayer(file);
-                }
-              }
-            });
-        fileMenu.add(openFileMenuItem);
-        
-        JMenuItem saveAsSLDMenuItem = new JMenuItem(
-            I18N.getString("MainFrame.SaveAsSLD")); //$NON-NLS-1$
-        saveAsSLDMenuItem.addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            ProjectFrame projectFrame = (ProjectFrame) mainFrame
-                .getDesktopPane().getSelectedFrame();
-            if (projectFrame == null) {
-              if (mainFrame.getDesktopPane().getAllFrames().length != 0) {
-                projectFrame = (ProjectFrame) mainFrame.getDesktopPane()
-                    .getAllFrames()[0];
-              } else {
-                return;
-              }
-            }
-            JFileChooser chooser = new JFileChooser(fc.getPreviousDirectory());
-            int result = chooser.showSaveDialog(mainFrame);
-            if (result == JFileChooser.APPROVE_OPTION) {
-              File file = chooser.getSelectedFile();
-              if (file != null) {
-                String fileName = file.getAbsolutePath();
-                projectFrame.saveAsSLD(fileName);
-              }
-            }
-          }
-        });
-        fileMenu.add(saveAsSLDMenuItem);
-        
-        JMenuItem loadSLDMenuItem = new JMenuItem(
-            I18N.getString("MainFrame.LoadSLD")); //$NON-NLS-1$
-        loadSLDMenuItem.addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            ProjectFrame projectFrame = (ProjectFrame) mainFrame
-                .getDesktopPane().getSelectedFrame();
-            if (projectFrame == null) {
-              if (mainFrame.getDesktopPane().getAllFrames().length != 0) {
-                projectFrame = (ProjectFrame) mainFrame.getDesktopPane()
-                    .getAllFrames()[0];
-              } else {
-                return;
-              }
-            }
-            JFileChooser chooser = new JFileChooser(fc.getPreviousDirectory());
-            int result = chooser.showSaveDialog(mainFrame);
-            if (result == JFileChooser.APPROVE_OPTION) {
-              File file = chooser.getSelectedFile();
-              if (file != null) {
-                //String fileName = file.getAbsolutePath();
-                projectFrame.loadSLD(file);
-              }
-            }
-          }
-        });
-        fileMenu.add(loadSLDMenuItem);
-        fileMenu.add(saveAsSLDMenuItem);
-        // New Connection
-        JMenuItem newPgLayerMenuItem = new JMenuItem(
-                I18N.getString("MainFrame.NewPgLayer"),  //$NON-NLS-1$
-                new ImageIcon(
-                        GeOxygeneApplication.class.getResource("/images/icons/16x16/database_add.png")));
-        newPgLayerMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-              ProjectFrame projectFrame = (ProjectFrame) mainFrame.getDesktopPane().getSelectedFrame();
-              if (projectFrame == null) {
-                  if (mainFrame.getDesktopPane().getAllFrames().length != 0) {
-                    // TODO ask the user in which frame (s)he
-                    // wants to load into?
-                    projectFrame = (ProjectFrame) mainFrame.getDesktopPane()
-                        .getAllFrames()[0];
-                  } else {
-                    // TODO create a new project frame?
-                    LOGGER.info(
-                        I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
-                    return;
-                  }
-              }
-              AddPostgisLayer addPostgisLayerPanel = new AddPostgisLayer(projectFrame.getLayerLegendPanel());
-              addPostgisLayerPanel.setSize(600, 500);
-            }
-        });
-        fileMenu.add(newPgLayerMenuItem);
-        
-        // separator
-        fileMenu.addSeparator();
-        
-        // Save as Shp
-        JMenuItem saveAsShpMenuItem = new JMenuItem(
-                I18N.getString("MainFrame.SaveAsShp"),  //$NON-NLS-1$
-                new ImageIcon(
-                        GeOxygeneApplication.class.getResource("/images/icons/disk.png"))); 
-        saveAsShpMenuItem.addActionListener(new java.awt.event.ActionListener() {
-        
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                ProjectFrame project = mainFrame.getSelectedProjectFrame();
-                Set<Layer> selectedLayers = project.getLayerLegendPanel()
-                    .getSelectedLayers();
-                if (selectedLayers.size() != 1) {
-                    LOGGER.error("You must select one (and only one) layer."); //$NON-NLS-1$
-                  return;
-                }
-                Layer layer = selectedLayers.iterator().next();
+        }
+        AddPostgisLayer addPostgisLayerPanel = new AddPostgisLayer(projectFrame
+            .getLayerLegendPanel());
+        addPostgisLayerPanel.setSize(600, 500);
+      }
+    });
+    fileMenu.add(newPgLayerMenuItem);
 
-                IFeatureCollection<? extends IFeature> layerfeatures = layer
-                    .getFeatureCollection();
-                if (layerfeatures == null) {
-                    LOGGER.error("The layer selected does not contain any feature."); //$NON-NLS-1$
-                  return;
-                }
-                JFileChooser chooser = new JFileChooser(fc.getPreviousDirectory());
-                int result = chooser.showSaveDialog(mainFrame);
-                if (result == JFileChooser.APPROVE_OPTION) {
-                  File file = chooser.getSelectedFile();
-                  if (file != null) {
-                    String fileName = file.getAbsolutePath();
-                    project.saveAsShp(fileName, layer);
-                  }
-                }
-            }
-        });
-        fileMenu.add(saveAsShpMenuItem);
-        
-        // 
-        JMenuItem saveAsImageMenuItem = new JMenuItem(
-                I18N.getString("MainFrame.SaveAsImage"), //$NON-NLS-1$
-                new ImageIcon(
-                        GeOxygeneApplication.class.getResource("/images/icons/image.png"))); 
-            saveAsImageMenuItem.addActionListener(new java.awt.event.ActionListener() {
-              @Override
-              public void actionPerformed(final ActionEvent e) {
-                ProjectFrame projectFrame = (ProjectFrame) mainFrame.getDesktopPane().getSelectedFrame();
-                if (projectFrame == null) {
-                  if (mainFrame.getDesktopPane().getAllFrames().length != 0) {
-                    projectFrame = (ProjectFrame) mainFrame.getDesktopPane()
-                        .getAllFrames()[0];
-                  } else {
-                    return;
-                  }
-                }
-                JFileChooser chooser = new JFileChooser(fc.getPreviousDirectory());
-                int result = chooser.showSaveDialog(mainFrame);
-                if (result == JFileChooser.APPROVE_OPTION) {
-                  File file = chooser.getSelectedFile();
-                  if (file != null) {
-                    String fileName = file.getAbsolutePath();
-                    projectFrame.saveAsImage(fileName);
-                  }
-                }
-              }
-            });
-        fileMenu.add(saveAsImageMenuItem);
-        
-        JMenuItem printMenu = new JMenuItem(I18N.getString("MainFrame.Print"), //$NON-NLS-1$
-                new ImageIcon(
-                        GeOxygeneApplication.class.getResource("/images/icons/printer.png"))); 
-        printMenu.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent arg0) {
-            Thread th = new Thread(new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  PrinterJob printJob = PrinterJob.getPrinterJob();
-                  printJob.setPrintable(mainFrame.getSelectedProjectFrame()
-                      .getLayerViewPanel());
-                  PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-                  if (printJob.printDialog(aset)) {
-                    printJob.print(aset);
-                  }
-                } catch (java.security.AccessControlException ace) {
-                  JOptionPane.showMessageDialog(mainFrame.getSelectedProjectFrame().getLayerViewPanel(),
-                      I18N.getString("MainFrame.ImpossibleToPrint") //$NON-NLS-1$
-                          + ";" //$NON-NLS-1$
-                          + I18N.getString("MainFrame.AccessControlProblem") //$NON-NLS-1$
-                          + ace.getMessage(), I18N
-                          .getString("MainFrame.ImpossibleToPrint"), //$NON-NLS-1$
-                      JOptionPane.ERROR_MESSAGE);
-                } catch (Exception ex) {
-                  ex.printStackTrace();
-                }
-              }
-            });
-            th.start();
-          }
-        });
-        fileMenu.add(printMenu);
-        
-        // Separator
-        fileMenu.addSeparator();
-        
-        // Exit
-        JMenuItem exitMenuItem = new JMenuItem(I18N.getString("MainFrame.Exit")); //$NON-NLS-1$
-        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            mainFrame.dispose();
-            mainFrame.getApplication().exit();
-          }
-        });
-        fileMenu.add(exitMenuItem);
-        
-        add(fileMenu);
-    }
+    // separator
+    fileMenu.addSeparator();
 
+    // Save as Shp
+    JMenuItem saveAsShpMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.SaveAsShp"), //$NON-NLS-1$
+        new ImageIcon(
+            GeOxygeneApplication.class.getResource("/images/icons/disk.png")));
+    saveAsShpMenuItem.addActionListener(new java.awt.event.ActionListener() {
+
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        ProjectFrame project = mainFrame.getSelectedProjectFrame();
+        Set<Layer> selectedLayers = project.getLayerLegendPanel()
+            .getSelectedLayers();
+        if (selectedLayers.size() != 1) {
+          LOGGER.error("You must select one (and only one) layer."); //$NON-NLS-1$
+          return;
+        }
+        Layer layer = selectedLayers.iterator().next();
+
+        IFeatureCollection<? extends IFeature> layerfeatures = layer
+            .getFeatureCollection();
+        if (layerfeatures == null) {
+          LOGGER.error("The layer selected does not contain any feature."); //$NON-NLS-1$
+          return;
+        }
+        JFileChooser chooser = new JFileChooser(fc.getPreviousDirectory());
+        int result = chooser.showSaveDialog(mainFrame.getGui());
+        if (result == JFileChooser.APPROVE_OPTION) {
+          File file = chooser.getSelectedFile();
+          if (file != null) {
+            String fileName = file.getAbsolutePath();
+            project.saveAsShp(fileName, layer);
+          }
+        }
+      }
+    });
+    fileMenu.add(saveAsShpMenuItem);
+
+    //
+    JMenuItem saveAsImageMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.SaveAsImage"), //$NON-NLS-1$
+        new ImageIcon(
+            GeOxygeneApplication.class.getResource("/images/icons/image.png")));
+    saveAsImageMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        ProjectFrame projectFrame = mainFrame.getSelectedProjectFrame();
+        if (projectFrame == null) {
+          if (mainFrame.getDesktopProjectFrames().length != 0) {
+            projectFrame = mainFrame.getDesktopProjectFrames()[0];
+          } else {
+            return;
+          }
+        }
+        JFileChooser chooser = new JFileChooser(fc.getPreviousDirectory());
+        int result = chooser.showSaveDialog(mainFrame.getGui());
+        if (result == JFileChooser.APPROVE_OPTION) {
+          File file = chooser.getSelectedFile();
+          if (file != null) {
+            String fileName = file.getAbsolutePath();
+            projectFrame.saveAsImage(fileName);
+          }
+        }
+      }
+    });
+    fileMenu.add(saveAsImageMenuItem);
+
+    /** SCH */
+    JMenuItem saveAsSLDMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.SaveAsSLD")); //$NON-NLS-1$
+    saveAsSLDMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        ProjectFrame projectFrame = mainFrame.getSelectedProjectFrame();
+        if (projectFrame == null) {
+          LOGGER.info("Cannot save SLD, no selected project");
+          return;
+        }
+        JFileChooser chooser = new JFileChooser(mainFrame.getApplication()
+            .getProperties().getLastOpenedFile());
+        int result = chooser.showSaveDialog(mainFrame.getGui());
+        if (result == JFileChooser.APPROVE_OPTION) {
+          File file = chooser.getSelectedFile();
+          if (file != null) {
+            String fileName = file.getAbsolutePath();
+            projectFrame.saveAsSLD(fileName);
+            mainFrame.getApplication().getProperties()
+                .setLastOpenedFile(fileName);
+            fc.setPreviousDirectory(file);
+          }
+        }
+      }
+    });
+    fileMenu.add(saveAsSLDMenuItem);
+
+    JMenuItem printMenu = new JMenuItem(I18N.getString("MainFrame.Print"), //$NON-NLS-1$
+        new ImageIcon(GeOxygeneApplication.class
+            .getResource("/images/icons/printer.png")));
+    printMenu.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        Thread th = new Thread(new Runnable() {
+          @Override
+          public void run() {
+            try {
+              PrinterJob printJob = PrinterJob.getPrinterJob();
+              printJob.setPrintable(mainFrame.getSelectedProjectFrame()
+                  .getLayerViewPanel());
+              PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+              if (printJob.printDialog(aset)) {
+                printJob.print(aset);
+              }
+            } catch (java.security.AccessControlException ace) {
+              JOptionPane.showMessageDialog(mainFrame.getSelectedProjectFrame()
+                  .getLayerViewPanel(),
+                  I18N.getString("MainFrame.ImpossibleToPrint") //$NON-NLS-1$
+                      + ";" //$NON-NLS-1$
+                      + I18N.getString("MainFrame.AccessControlProblem") //$NON-NLS-1$
+                      + ace.getMessage(), I18N
+                      .getString("MainFrame.ImpossibleToPrint"), //$NON-NLS-1$
+                  JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+              ex.printStackTrace();
+            }
+          }
+        });
+        th.start();
+      }
+    });
+    fileMenu.add(printMenu);
+
+    // Separator
+    fileMenu.addSeparator();
+
+    // Exit
+    JMenuItem exitMenuItem = new JMenuItem(I18N.getString("MainFrame.Exit")); //$NON-NLS-1$
+    exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        mainFrame.dispose();
+        mainFrame.getApplication().exit();
+      }
+    });
+    fileMenu.add(exitMenuItem);
+
+    add(fileMenu);
+  }
 }

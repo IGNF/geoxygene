@@ -71,7 +71,7 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
         this.application = application;
         JMenu menu = null;
         String menuName = I18N.getString("DataMatchingPlugin.DataMatching"); //$NON-NLS-1$
-        for (Component c : application.getFrame().getJMenuBar().getComponents()) {
+        for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
             if (c instanceof JMenu) {
                 JMenu aMenu = (JMenu) c;
                 if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase(menuName)) {
@@ -88,7 +88,7 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
         menuItem.addActionListener(this);
         menu.add(menuItem);
 
-        application.getFrame().getJMenuBar().add(menu, application.getFrame().getJMenuBar().getComponentCount() - 2);
+        application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getComponentCount() - 2);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
         IPopulation<IFeature> popComp = ShapefileReader.chooseAndReadShapefile();
         if (popComp == null) return;
         
-        this.application.getFrame().getDesktopPane().removeAll();
+        this.application.getMainFrame().removeAllProjectFrames();
         List<ReseauApp> reseaux = new ArrayList<ReseauApp>();
         ParametresApp param = new ParametresApp();
         param.populationsArcs1.add(popRef);
@@ -159,20 +159,20 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
         DataSet.getInstance().addPopulation(reseauRecale.getPopArcs());
         DataMatchingPlugin.LOGGER.info(arcs.getNom());
         DataSet.getInstance().addPopulation(liens);
-        ProjectFrame p1 = this.application.getFrame().newProjectFrame();
+        ProjectFrame p1 = this.application.getMainFrame().newProjectFrame();
         p1.setTitle("Reference Pop"); //$NON-NLS-1$
         Viewport viewport = p1.getLayerViewPanel().getViewport();
-        ProjectFrame p2 = this.application.getFrame().newProjectFrame();
+        ProjectFrame p2 = this.application.getMainFrame().newProjectFrame();
         p2.setTitle("Comparison Pop"); //$NON-NLS-1$
         p2.addFeatureCollection(popComp, popComp.getNom(), null);
         p2.getLayerViewPanel().setViewport(viewport);
         viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
-        ProjectFrame p3 = this.application.getFrame().newProjectFrame();
+        ProjectFrame p3 = this.application.getMainFrame().newProjectFrame();
         p3.setTitle("Corrected Pop"); //$NON-NLS-1$
         p3.addFeatureCollection(arcs, arcs.getNom(), null);
         p3.getLayerViewPanel().setViewport(viewport);
         viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
-        ProjectFrame p4 = this.application.getFrame().newProjectFrame();
+        ProjectFrame p4 = this.application.getMainFrame().newProjectFrame();
         p4.getLayerViewPanel().setViewport(viewport);
         viewport.getLayerViewPanels().add(p4.getLayerViewPanel());
         p4.setTitle("Links"); //$NON-NLS-1$

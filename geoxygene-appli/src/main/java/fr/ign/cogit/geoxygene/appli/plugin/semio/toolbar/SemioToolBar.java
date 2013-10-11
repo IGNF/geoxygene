@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
@@ -105,15 +106,14 @@ public class SemioToolBar extends JToolBar implements ActionListener {
             if (this.specificationToolBar == null) {
                 this.specificationToolBar =
                 	new SpecificationToolBar(this.projectFrame);
-                this.projectFrame.getContentPane().add(
-                		this.specificationToolBar,
-                        BorderLayout.EAST);
+                this.projectFrame.addComponentInProjectFrame(   this.specificationToolBar,
+                    BorderLayout.EAST);
             }
             this.specificationToolBar.setVisible(true);
-            this.projectFrame.validate();
+            this.projectFrame.getGui().validate();
         } else {
             this.specificationToolBar.setVisible(false);
-            this.projectFrame.validate();
+            this.projectFrame.getGui().validate();
         }
 	}
 	
@@ -134,15 +134,14 @@ public class SemioToolBar extends JToolBar implements ActionListener {
 	            if (this.paletteToolBar == null) {
 	                this.paletteToolBar =
 	                	new PaletteToolBar(this.projectFrame);
-	                this.projectFrame.getContentPane().add(
-	                		this.paletteToolBar,
+	                this.projectFrame.addComponentInProjectFrame(	this.paletteToolBar,
 	                        BorderLayout.SOUTH);
 	            }
 	            this.paletteToolBar.setVisible(true);
-	            this.projectFrame.validate();
+	            this.projectFrame.getGui().validate();
 	        } else {
 	            this.paletteToolBar.setVisible(false);
-	            this.projectFrame.validate();
+	            this.projectFrame.getGui().validate();
 	        }
 	    }
 
@@ -175,7 +174,7 @@ public class SemioToolBar extends JToolBar implements ActionListener {
 				colorimetricColors.add(cCOGIT);
 			}
     		
-    		COGITColorChooserPanel.show(SemioToolBar.this.projectFrame, "Colors of the Current Legend", colorimetricColors);
+    		COGITColorChooserPanel.show(SemioToolBar.this.projectFrame.getGui(), "Colors of the Current Legend", colorimetricColors);
     	}
 	}
 	

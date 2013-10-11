@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.filter.expression.Expression;
 import fr.ign.cogit.geoxygene.filter.expression.Literal;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
@@ -24,37 +24,32 @@ import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 
-/**
- * 
- * 
- *
- */
 public class LegendPaintListener implements PaintListener {
-  
-    private static Logger LOGGER = Logger.getLogger(LegendPaintListener.class.getName());
+  protected static Logger LOGGER = Logger.getLogger(LegendPaintListener.class
+      .getName());
 
-    @Override
-    public void paint(final LayerViewPanel layerViewPanel, Graphics graphics) {
-    
-        List<List<Rule>> rulesWithLegendGraphics = new ArrayList<List<Rule>>(0);
-        List<List<Style>> stylesWithLegendGraphics = new ArrayList<List<Style>>(0);
-    
-        for (Layer layer : layerViewPanel.getProjectFrame().getSld().getLayers()) {
-            List<Rule> layerRulesWithLegendGraphics = new ArrayList<Rule>(0);
-            List<Style> layerStylesWithLegendGraphics = new ArrayList<Style>(0);
-      for (Style style : layer.getStyles()) {
-        for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
-          for (Rule rule : fts.getRules()) {
-            LegendGraphic legend = rule.getLegendGraphic();
-            if (legend != null) {
-              layerRulesWithLegendGraphics.add(rule);
-              layerStylesWithLegendGraphics.add(style);
+  @Override
+  public void paint(final LayerViewPanel layerViewPanel, Graphics graphics) {
+    List<List<Rule>> rulesWithLegendGraphics = new ArrayList<List<Rule>>(0);
+    List<List<Style>> stylesWithLegendGraphics = new ArrayList<List<Style>>(0);
+    synchronized (layerViewPanel.getProjectFrame().getSld().getLayers()) {
+      for (Layer layer : layerViewPanel.getProjectFrame().getSld().getLayers()) {
+        List<Rule> layerRulesWithLegendGraphics = new ArrayList<Rule>(0);
+        List<Style> layerStylesWithLegendGraphics = new ArrayList<Style>(0);
+        for (Style style : layer.getStyles()) {
+          for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
+            for (Rule rule : fts.getRules()) {
+              LegendGraphic legend = rule.getLegendGraphic();
+              if (legend != null) {
+                layerRulesWithLegendGraphics.add(rule);
+                layerStylesWithLegendGraphics.add(style);
+              }
             }
           }
         }
+        rulesWithLegendGraphics.add(layerRulesWithLegendGraphics);
+        stylesWithLegendGraphics.add(layerStylesWithLegendGraphics);
       }
-      rulesWithLegendGraphics.add(layerRulesWithLegendGraphics);
-      stylesWithLegendGraphics.add(layerStylesWithLegendGraphics);
     }
     int shift = 10;
     int maxLineWidth = Integer.MIN_VALUE;
@@ -97,21 +92,13 @@ public class LegendPaintListener implements PaintListener {
               .stringWidth(title));
           maxHeight += graphics.getFontMetrics().getHeight();
           for (Rule rule : rules) {
-              
-              String titre = "";
-              if (rule.getTitle() != null) {
-                      titre = rule.getTitle();
-                  
-              maxLineWidth = Math.max(maxLineWidth, graphics.getFontMetrics()
-                .stringWidth(titre)
+            maxLineWidth = Math.max(maxLineWidth, graphics.getFontMetrics()
+                .stringWidth(rule.getTitle())
                 + 2
                 * shift
                 + (int) rule.getLegendGraphic().getGraphic().getWidth());
-            
-              maxHeight += Math.max((int) rule.getLegendGraphic().getGraphic()
+            maxHeight += Math.max((int) rule.getLegendGraphic().getGraphic()
                 .getSize(), graphics.getFontMetrics().getHeight());
-                  }
-              
           }
           // maxHeight += graphics.getFontMetrics().getHeight();
         }
@@ -173,21 +160,16 @@ public class LegendPaintListener implements PaintListener {
           graphics.drawString(title, textBaseLine, textCurrentLine);
           textCurrentLine += graphics.getFontMetrics().getHeight();
           for (Rule rule : list) {
-              String titre = "";
-              if (rule.getTitle() != null) {
-                  titre = rule.getTitle();
-              
             this.paint(rule.getLegendGraphic().getGraphic(),
                 (Graphics2D) graphics, textBaseLine + shift
                     + (int) rule.getLegendGraphic().getGraphic().getSize() / 2,
                 textCurrentLine
                     - (int) rule.getLegendGraphic().getGraphic().getSize() / 2);
-            graphics.drawString(titre, textBaseLine + shift + shift
+            graphics.drawString(rule.getTitle(), textBaseLine + shift + shift
                 + (int) rule.getLegendGraphic().getGraphic().getSize(),
                 textCurrentLine);
             textCurrentLine += Math.max((int) rule.getLegendGraphic()
                 .getGraphic().getSize(), graphics.getFontMetrics().getHeight());
-              }
           }
           // textCurrentLine += graphics.getFontMetrics().getHeight();
         }
@@ -204,7 +186,8 @@ public class LegendPaintListener implements PaintListener {
       Expression rotation = graphic.getRotation();
       if (rotation instanceof Literal) {
         // if this is a literal, we can evaluate it
-        at.rotate(-Double.parseDouble(rotation.evaluate(null).toString()) * Math.PI / 180.0); 
+        at.rotate(-Double.parseDouble(rotation.evaluate(null).toString())
+            * Math.PI / 180.0);
       }
       at.scale(size, size);
       markShape = at.createTransformedShape(markShape);
@@ -221,10 +204,10 @@ public class LegendPaintListener implements PaintListener {
     for (ExternalGraphic theGraphic : graphic.getExternalGraphics()) {
       Image onlineImage = theGraphic.getOnlineResource();
       if (onlineImage != null) {
-          g2.drawImage(onlineImage, x - onlineImage.getWidth(null) / 2, y
-                  - onlineImage.getHeight(null) / 2, null);
+        g2.drawImage(onlineImage, x - onlineImage.getWidth(null) / 2, y
+            - onlineImage.getHeight(null) / 2, null);
       } else {
-          LOGGER.error("null online image " + theGraphic.getHref());
+        LOGGER.error("null online image " + theGraphic.getHref());
       }
     }
     if (graphic.getMarks().isEmpty() && graphic.getExternalGraphics().isEmpty()) {

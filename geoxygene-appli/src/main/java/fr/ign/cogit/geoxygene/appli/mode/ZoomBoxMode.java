@@ -12,36 +12,31 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 
-import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.I18N;
+import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.event.PaintListener;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 
-/**
- * @author Charlotte Hoarau
- * 
- */
+/** @author Charlotte Hoarau */
 public class ZoomBoxMode extends AbstractMode implements PaintListener {
   /**
    * @param theMainFrame the main frame
    * @param theModeSelector the mode selector
    */
-  public ZoomBoxMode(final MainFrame theMainFrame,
-      final ModeSelector theModeSelector) {
+  public ZoomBoxMode(final MainFrame theMainFrame, final ModeSelector theModeSelector) {
     super(theMainFrame, theModeSelector);
   }
 
   private Point initialPointView = null;
   private Point currentPointView = null;
-  private Color color = Color.RED;
+  private Color color            = Color.RED;
 
   @Override
   protected final JButton createButton() {
-    return new JButton(new ImageIcon(this.getClass().getResource(
-        "/images/icons/16x16/zoomBox.png"))); //$NON-NLS-1$
+    return new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/zoomBox.png"))); //$NON-NLS-1$
   }
 
   @Override
@@ -78,12 +73,10 @@ public class ZoomBoxMode extends AbstractMode implements PaintListener {
     if ((SwingUtilities.isLeftMouseButton(e))) {
       try {
         Point currentPoint = e.getPoint();
-        DirectPosition p = frame.getLayerViewPanel().getViewport()
-            .toModelDirectPosition(currentPoint);
+        DirectPosition p = frame.getLayerViewPanel().getViewport().toModelDirectPosition(currentPoint);
         GM_Envelope env = null;
         if (this.initialPointView != null && p != null) {
-          DirectPosition initialPoint = frame.getLayerViewPanel().getViewport()
-              .toModelDirectPosition(this.initialPointView);
+          DirectPosition initialPoint = frame.getLayerViewPanel().getViewport().toModelDirectPosition(this.initialPointView);
           env = this.getEnvelope(initialPoint, p);
         }
         this.initialPointView = null;
@@ -106,9 +99,7 @@ public class ZoomBoxMode extends AbstractMode implements PaintListener {
   @Override
   public Cursor getCursor() {
     Toolkit toolkit = Toolkit.getDefaultToolkit();
-    Cursor cursor = toolkit.createCustomCursor(
-        toolkit.getImage(this.getClass()
-            .getResource("/images/cursors/32x32/zoomCursor.gif").getFile()), //$NON-NLS-1$
+    Cursor cursor = toolkit.createCustomCursor(toolkit.getImage(this.getClass().getResource("/images/cursors/32x32/zoomCursor.gif").getFile()), //$NON-NLS-1$
         new Point(16, 16), "Zoom"); //$NON-NLS-1$
     return cursor;
   }
@@ -118,11 +109,8 @@ public class ZoomBoxMode extends AbstractMode implements PaintListener {
     if (this.initialPointView != null && this.currentPointView != null) {
       Color c = graphics.getColor();
       graphics.setColor(this.color);
-      graphics.drawRect(
-          Math.min(this.initialPointView.x, this.currentPointView.x),
-          Math.min(this.initialPointView.y, this.currentPointView.y),
-          Math.abs(this.initialPointView.x - this.currentPointView.x),
-          Math.abs(this.initialPointView.y - this.currentPointView.y));
+      graphics.drawRect(Math.min(this.initialPointView.x, this.currentPointView.x), Math.min(this.initialPointView.y, this.currentPointView.y),
+          Math.abs(this.initialPointView.x - this.currentPointView.x), Math.abs(this.initialPointView.y - this.currentPointView.y));
       graphics.setColor(c);
     }
   }

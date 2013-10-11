@@ -30,8 +30,8 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.contrib.delaunay.TriangulationJTS;
@@ -44,12 +44,9 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * Triangulation plugin.
  * @author Julien Perret
  */
-public class CharacteristicShapeJTSPlugin implements
-    GeOxygeneApplicationPlugin, ActionListener {
-  /**
-   * Logger.
-   */
-  static Logger logger = Logger.getLogger(Triangulation.class.getName());
+public class CharacteristicShapeJTSPlugin implements GeOxygeneApplicationPlugin, ActionListener {
+  /** Logger. */
+  static Logger                logger      = Logger.getLogger(Triangulation.class.getName());
 
   private GeOxygeneApplication application = null;
 
@@ -61,11 +58,10 @@ public class CharacteristicShapeJTSPlugin implements
   public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
     JMenu menu = null;
-    for (Component c : application.getFrame().getJMenuBar().getComponents()) {
+    for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null
-            && aMenu.getText().equalsIgnoreCase("Triangulation")) {
+        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Triangulation")) {
           menu = aMenu;
         }
       }
@@ -77,19 +73,15 @@ public class CharacteristicShapeJTSPlugin implements
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getFrame().getJMenuBar()
-        .add(menu, application.getFrame().getJMenuBar().getMenuCount() - 2);
+    application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    ProjectFrame project = this.application.getFrame()
-        .getSelectedProjectFrame();
-    Set<Layer> selectedLayers = project.getLayerLegendPanel()
-        .getSelectedLayers();
+    ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
+    Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
     if (selectedLayers.size() != 1) {
-      CharacteristicShapeJTSPlugin.logger
-          .error("You need to select one (and only one) layer."); //$NON-NLS-1$
+      CharacteristicShapeJTSPlugin.logger.error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }
     Layer layer = selectedLayers.iterator().next();
@@ -101,10 +93,8 @@ public class CharacteristicShapeJTSPlugin implements
       e1.printStackTrace();
     }
     double alpha = Double.parseDouble(JOptionPane.showInputDialog("alpha")); //$NON-NLS-1$
-    GM_Polygon characteristicShape = triangulation
-        .getCharacteristicShape(alpha);
-    Population<Face> popTriangles = new Population<Face>(
-        "CharacteristicShape_" + alpha); //$NON-NLS-1$
+    GM_Polygon characteristicShape = triangulation.getCharacteristicShape(alpha);
+    Population<Face> popTriangles = new Population<Face>("CharacteristicShape_" + alpha); //$NON-NLS-1$
     popTriangles.setClasse(Face.class);
     popTriangles.setPersistant(false);
     popTriangles.nouvelElement(characteristicShape);

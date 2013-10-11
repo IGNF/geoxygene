@@ -51,18 +51,20 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
  *       total (ignorance complète) plutôt que sur toutes les hypothèses.
  * @author Bertrand Dumenieu
  */
-public class MatchingProcess<F, Hyp extends Hypothesis> {
+public class MatchingProcess<Hyp extends Hypothesis> {
 
   /**
    * 
    */
   Logger logger = Logger.getLogger(MatchingProcess.class);
 
-  private Collection<Source<F, Hyp>> criteria;
+  Collection<Source<Hyp>> criteria;
   // Cadre de discernement : stocke les candidats
   private List<Hyp> frame;
-  private List<List<Pair<byte[], Float>>> beliefs;
-  private EvidenceCodec<Hyp> codec;
+
+  // Map<Source<Hypothesis>, List<Pair<byte[], Float>>> beliefs;
+  List<List<Pair<byte[], Float>>> beliefs;
+  EvidenceCodec<Hyp> codec;
   private boolean isworldclosed = true;
 
   /**
@@ -71,7 +73,7 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
    * @param codec
    * @param isworldclosed
    */
-  public MatchingProcess(Collection<Source<F, Hyp>> criteria, List<Hyp> candidates,
+  public MatchingProcess(Collection<Source<Hyp>> criteria, List<Hyp> candidates,
       EvidenceCodec<Hyp> codec, boolean isworldclosed) {
     this.logger.debug(candidates.size() + " candidates");
     this.codec = codec;
@@ -79,6 +81,12 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
     this.criteria = criteria;
     this.beliefs = new ArrayList<List<Pair<byte[], Float>>>();
     this.isworldclosed = isworldclosed;
+  }
+
+  /**
+   * 
+   */
+  public MatchingProcess() {
   }
 
   public void closedworld(boolean b) {
@@ -94,16 +102,15 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
    * @TODO : Placer le processus dans un thread séparé?
    * @throws Exception
    */
-  public List<Pair<byte[], Float>> combinationProcess(F reference) throws Exception {
+  public List<Pair<byte[], Float>> combinationProcess(Hyp reference) throws Exception {
     logger.info("RUNNING MATCHING PROCESS UNDER " + (this.closedworld() ? "CLOSED" : "OPEN")
         + " WORLD ASSUMPTION...");
     double start = System.currentTimeMillis();
-    this.beliefs.clear();
     // ----------------EVALUATION------------------------
     // On récupère les éléments focaux de la masse de croyance et on ordonne la
     // liste afin de permettre la combinaison de critères.
-    for (Source<F, Hyp> src : this.criteria) {
-      List<Pair<byte[], Float>> kernel = src.evaluate(reference, this.frame, this.codec);
+    for (Source<Hyp> src : this.criteria) {
+      List<Pair<byte[], Float>> kernel = src.evaluate(reference, frame, this.codec);
       // On s'assure que sum(m(j)) = 1 sinon erreur.
       float sum = 0;
       for (Pair<byte[], Float> pair : kernel) {
@@ -136,7 +143,7 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
     if (this.closedworld()) {
       massresult = new DempsterOp(this.isworldclosed).combine(this.beliefs);
     } else {
-      massresult = new SmetsOp(this.isworldclosed).combine(this.beliefs);
+      massresult = new SmetsOp(isworldclosed).combine(this.beliefs);
     }
     if (logger.isDebugEnabled()) {
       if (!massresult.isEmpty() && Utils.isEmpty(massresult.get(0).getFirst())) {

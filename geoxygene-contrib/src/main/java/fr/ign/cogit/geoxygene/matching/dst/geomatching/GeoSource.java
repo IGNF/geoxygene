@@ -21,7 +21,6 @@ package fr.ign.cogit.geoxygene.matching.dst.geomatching;
 
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
@@ -30,7 +29,7 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  * A source expressing its belief on geometries.
  * @author Bertrand Dumenieu
  */
-public abstract class GeoSource implements Source<IFeature, GeomHypothesis> {
+public abstract class GeoSource implements Source<GeomHypothesis> {
 
   @Override
   public String toString() {
@@ -54,7 +53,7 @@ public abstract class GeoSource implements Source<IFeature, GeomHypothesis> {
    * @param encoded
    */
   @Override
-  public List<Pair<byte[], Float>> evaluate(IFeature reference, final List<GeomHypothesis> candidates,
+  public List<Pair<byte[], Float>> evaluate(GeomHypothesis reference, final List<GeomHypothesis> candidates,
       EvidenceCodec<GeomHypothesis> codec) {
     return null;
   }

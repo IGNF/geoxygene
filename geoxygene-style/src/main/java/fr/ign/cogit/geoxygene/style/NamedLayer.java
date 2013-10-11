@@ -19,7 +19,6 @@
 
 package fr.ign.cogit.geoxygene.style;
 
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -61,6 +60,20 @@ public class NamedLayer extends AbstractLayer {
     this.setName(layerName);
   }
 
+  /**
+   * @return the sld
+   */
+  public StyledLayerDescriptor getSld() {
+    return sld;
+  }
+
+  /**
+   * @param sld the sld to set
+   */
+  public final void setSld(StyledLayerDescriptor sld) {
+    this.sld = sld;
+  }
+
   @SuppressWarnings("unchecked")
   @Override
   public IFeatureCollection<? extends IFeature> getFeatureCollection() {
@@ -69,9 +82,10 @@ public class NamedLayer extends AbstractLayer {
      * on utilise un singleton de DataSet qu'il faut donc avoir remplit au
      * préalable...
      */
-    DataSet dataset = (this.sld != null) ? this.sld.getDataSet() : DataSet.getInstance();
+    DataSet dataset = (this.sld != null) ? this.sld.getDataSet() : DataSet
+        .getInstance();
     IFeatureCollection<IFeature> pop = (IFeatureCollection<IFeature>) dataset
-      .getPopulation(this.getName());
+        .getPopulation(this.getName());
     if (pop == null) {
       pop = new FT_FeatureCollection<IFeature>();
       IDataSet<?> dataSet = dataset.getComposant(this.getName());
@@ -91,23 +105,23 @@ public class NamedLayer extends AbstractLayer {
     }
     return result;
   }
+
   @SuppressWarnings("nls")
   @Override
   public void destroy() {
-      System.out.println("Destroying "+this.getName());
-      if(this.getFeatureCollection().hasSpatialIndex())
-          this.getFeatureCollection().getSpatialIndex().clear();
-      for(IFeature feat : this.getFeatureCollection()){
-          if(feat instanceof FT_Coverage){
-              ((FT_Coverage)feat).coverage().dispose(true);
-          }
-          feat.setPopulation(null);
-          feat.setGeom(null);
-          feat.setFeatureType(null);
+    if (this.getFeatureCollection().hasSpatialIndex())
+      this.getFeatureCollection().getSpatialIndex().clear();
+    for (IFeature feat : this.getFeatureCollection()) {
+      if (feat instanceof FT_Coverage) {
+        ((FT_Coverage) feat).coverage().dispose(true);
       }
-      DataSet dataset = (this.sld != null) ? this.sld.getDataSet() : DataSet.getInstance();
-      dataset.removePopulation(dataset.getPopulation(this.getName()));
-      this.sld = null;
-      System.out.println("Layer " +this.getName()+" destroyed");
+      feat.setPopulation(null);
+      feat.setGeom(null);
+      feat.setFeatureType(null);
+    }
+    DataSet dataset = (this.sld != null) ? this.sld.getDataSet() : DataSet
+        .getInstance();
+    dataset.removePopulation(dataset.getPopulation(this.getName()));
+    this.sld = null;
   }
 }

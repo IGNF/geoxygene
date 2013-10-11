@@ -182,10 +182,10 @@ public class GM_Envelope implements IEnvelope {
       double val = theMin + (theMax - theMin) / 2;
       if (!Double.isNaN(val)) {
         result.setCoordinate(i, val);
-        if (GM_Envelope.logger.isDebugEnabled()) {
-          GM_Envelope.logger
-              .debug("Center " + i + " " + theMin + " " + theMax + " = " + (theMin + (theMax - theMin) / 2)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        }
+        // if (GM_Envelope.logger.isDebugEnabled()) {
+        // GM_Envelope.logger
+        //              .debug("Center " + i + " " + theMin + " " + theMax + " = " + (theMin + (theMax - theMin) / 2)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        // }
       }
     }
     return result;
@@ -231,7 +231,8 @@ public class GM_Envelope implements IEnvelope {
 
   @Override
   public boolean contains(IEnvelope env) {
-    return env != null && this.contains(env.getLowerCorner()) && this.contains(env.getUpperCorner());
+    return env != null && this.contains(env.getLowerCorner())
+        && this.contains(env.getUpperCorner());
   }
 
   @Override
@@ -441,11 +442,11 @@ public class GM_Envelope implements IEnvelope {
 
   @Override
   public boolean equals(Object env) {
-	  if (! (env instanceof GM_Envelope)) {
-		  return false;
-	  }
-	  GM_Envelope envelope = (GM_Envelope) env;
-	  return this.lowerCorner.equals(envelope.getLowerCorner())
-	  && this.upperCorner.equals(envelope.getUpperCorner());
+    if (!(env instanceof GM_Envelope)) {
+      return false;
+    }
+    GM_Envelope envelope = (GM_Envelope) env;
+    return this.lowerCorner.equals(envelope.getLowerCorner())
+        && this.upperCorner.equals(envelope.getUpperCorner());
   }
 }

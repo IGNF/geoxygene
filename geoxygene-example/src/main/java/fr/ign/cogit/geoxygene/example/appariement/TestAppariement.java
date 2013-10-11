@@ -50,7 +50,7 @@ public class TestAppariement extends GeOxygeneApplication {
     public TestAppariement() {
         
         // Nom de l'interface
-        getFrame().setTitle("Tests sur l'appariement de réseaux");
+        getMainFrame().setTitle("Tests sur l'appariement de réseaux");
 
         // Menu
         JMenu menuTest = new JMenu("Tests topo-carto");
@@ -64,12 +64,12 @@ public class TestAppariement extends GeOxygeneApplication {
              
              logger.info("On charge le réseau de référence (topo)");
              
-             ProjectFrame p1 = getFrame().newProjectFrame();
+             ProjectFrame p1 = getMainFrame().newProjectFrame();
              p1.setTitle("Réseau de référence"); 
              charger(fr.ign.cogit.geoxygene.example.appariement.data.BDTopoRoutier.class, "Topo route", GM_LineString.class, p1);
              Viewport viewport = p1.getLayerViewPanel().getViewport();
              
-             ProjectFrame p2 = getFrame().newProjectFrame();
+             ProjectFrame p2 = getMainFrame().newProjectFrame();
              p2.setTitle("Réseau de comparaison"); 
              charger(fr.ign.cogit.geoxygene.example.appariement.data.BDCartoRoutier.class, "Carto route", GM_LineString.class, p2);
              viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
@@ -112,15 +112,16 @@ public class TestAppariement extends GeOxygeneApplication {
         menuTest.add(menuLoadReseauReference);
         
         // 
-        JMenuBar barreMenu = TestAppariement.this.getFrame().getJMenuBar();
+        JMenuBar barreMenu = TestAppariement.this.getMainFrame().getMenuBar();
         barreMenu.add(menuTest, barreMenu.getComponentCount() - 1);
 
         // Adding a new Project Frame
-        ProjectFrame projectFrame = new ProjectFrame(getFrame(), getIcon());
-        projectFrame.setSize(this.getFrame().getDesktopPane().getSize());
-        projectFrame.setVisible(true);
-        this.getFrame().getDesktopPane().add(projectFrame, JLayeredPane.DEFAULT_LAYER);
-        this.getFrame().getDesktopPane().setSelectedFrame(projectFrame);
+        ProjectFrame projectFrame = this.getMainFrame().newProjectFrame();
+//        ProjectFrame projectFrame = new ProjectFrame(getFrame(), getIcon());
+//        projectFrame.setSize(this.getFrame().getDesktopPane().getSize());
+//        projectFrame.setVisible(true);
+//        this.getFrame().getDesktopPane().add(projectFrame, JLayeredPane.DEFAULT_LAYER);
+//        this.getFrame().getDesktopPane().setSelectedFrame(projectFrame);
       
         // Initialisation attribut frame
         // this.frame = (ProjectFrame)TestAppariement.this.getFrame().getDesktopPane().getSelectedFrame();
@@ -162,7 +163,7 @@ public class TestAppariement extends GeOxygeneApplication {
     public static void main(String[] args) {
       try {
           TestAppariement testApplication = new TestAppariement();
-          testApplication.getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//          testApplication.getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       } catch (Exception e) {
       }
     }

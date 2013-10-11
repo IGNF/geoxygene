@@ -3,10 +3,7 @@ package fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
@@ -14,18 +11,13 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.generalisation.Filtering;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
+import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 
 public class MorphologyTransform {
-
-  private static Logger logger = Logger.getLogger(MorphologyTransform.class
-      .getName());
 
   private double bufferSize;
   private int bufferStep;
@@ -34,10 +26,6 @@ public class MorphologyTransform {
     super();
     this.bufferSize = bufferSize;
     this.bufferStep = bufferStep;
-  }
-
-  public MorphologyTransform() {
-    super();
   }
 
   /**
@@ -139,7 +127,7 @@ public class MorphologyTransform {
    * <p>
    * Apply erosion to a polygon that can contain holes. <br>
    * 
-   * @param geom : geometry to modifie.
+   * @param geom : la géométrie à modifier.
    * @return IGeometry : the eroded geometry (a IPolygon or a IMultiSurface or
    *         null).
    */
@@ -194,29 +182,30 @@ public class MorphologyTransform {
     return surfComp;
   }
 
+  @SuppressWarnings("unchecked")
   public IPolygon minkowskiSumWithCustomPolyCentr(IPolygon polygon,
-      IPolygon polyToSum, IDirectPosition centroid) {
+      IPolygon polyToSum) {
     // easy case: no holes in polygon
     if (polygon.getInterior().size() == 0) {
-      return minkowskiSumWithCustomPolyCentrNoHole(polygon, polyToSum, centroid);
+      return minkowskiSumWithCustomPolyCentrNoHole(polygon, polyToSum);
     }
 
     // case with holes in polygon: the final polygon should be the minkowski sum
     // of the exterior and the minkowski difference for the inner rings.
     IPolygon polyNoHole = new GM_Polygon(polygon.getExterior());
     IPolygon extSum = minkowskiSumWithCustomPolyCentrNoHole(polyNoHole,
-        polyToSum, centroid);
+        polyToSum);
     // loop on the inner rings to reduce each one and add it as a hole for
     // extSum
     for (IRing inner : polygon.getInterior()) {
       IGeometry innerDiff = minkowskiDiffWithCustomPolyCentrNoHole(
-          new GM_Polygon(inner), polyToSum, centroid);
+          new GM_Polygon(inner), polyToSum);
       if (innerDiff == null)
         continue;
       if (innerDiff instanceof IPolygon)
         extSum.addInterior(((IPolygon) innerDiff).getExterior());
       if (innerDiff instanceof IMultiSurface) {
-        for (Object part : ((IMultiSurface<?>) innerDiff).getList()) {
+        for (Object part : ((IMultiSurface) innerDiff).getList()) {
           IPolygon hole = (IPolygon) part;
           extSum.addInterior(hole.getExterior());
         }
@@ -227,23 +216,22 @@ public class MorphologyTransform {
   }
 
   public IGeometry minkowskiDiffWithCustomPolyCentr(IPolygon polygon,
-      IPolygon polyToSum, IDirectPosition centroid) {
+      IPolygon polyToSum) {
     // easy case: no holes in polygon
     if (polygon.getInterior().size() == 0) {
-      return minkowskiDiffWithCustomPolyCentrNoHole(polygon, polyToSum,
-          centroid);
+      return minkowskiDiffWithCustomPolyCentrNoHole(polygon, polyToSum);
     }
 
     // case with holes in polygon: the final polygon should be the minkowski
     // difference of the exterior and the minkowski sum for the inner rings.
     IPolygon polyNoHole = new GM_Polygon(polygon.getExterior());
     IGeometry extSum = minkowskiDiffWithCustomPolyCentrNoHole(polyNoHole,
-        polyToSum, centroid);
+        polyToSum);
     // loop on the inner rings to reduce each one and add it as a hole for
     // extSum
     for (IRing inner : polygon.getInterior()) {
       IGeometry innerDiff = minkowskiDiffWithCustomPolyCentrNoHole(
-          new GM_Polygon(inner), polyToSum, centroid);
+          new GM_Polygon(inner), polyToSum);
       if (innerDiff == null)
         continue;
       extSum.difference(innerDiff);
@@ -253,25 +241,24 @@ public class MorphologyTransform {
   }
 
   private IPolygon minkowskiSumWithCustomPolyCentrNoHole(IPolygon polygon,
-      IPolygon polyToSum, IDirectPosition centroid) {
+      IPolygon polyToSum) {
     // get the exterior LineString of polygon
     ILineString exterior = polygon.exteriorLineString();
     // reverse the line to make its left side the exterior of the polygon
     exterior = (ILineString) exterior.reverse();
     // compute the dilatation of the exterior with polyToSum
     IPolygon union = (IPolygon) lineLeftDilatationFromPolyCentr(exterior,
-        polyToSum, centroid);
+        polyToSum);
     // if union contains holes, they have to be removed
     return CommonAlgorithmsFromCartAGen.removeHoles(union);
   }
 
   private IGeometry minkowskiDiffWithCustomPolyCentrNoHole(IPolygon polygon,
-      IPolygon polyToSum, IDirectPosition centroid) {
+      IPolygon polyToSum) {
     // get the exterior LineString of polygon
     ILineString exterior = polygon.exteriorLineString();
     // compute the dilatation of the exterior with polyToSum
-    IPolygon union = lineLeftDilatationFromPolyCentr(exterior, polyToSum,
-        centroid);
+    IPolygon union = lineLeftDilatationFromPolyCentr(exterior, polyToSum);
 
     // the polygon to retrieve is the union of the inner rings of the union
     // geometry
@@ -310,181 +297,42 @@ public class MorphologyTransform {
    * @return
    */
   private IPolygon lineLeftDilatationFromPolyCentr(ILineString line,
-      IPolygon polyToSum, IDirectPosition centroid) {
-
-    JtsAlgorithms algo = new JtsAlgorithms();
-    IGeometry toReturn = null;
-
+      IPolygon polyToSum) {
     // Use convex hull
-    IPolygon polyConvex = (IPolygon) polyToSum.convexHull();
+    polyToSum = (IPolygon) polyToSum.convexHull();
 
-    // Test if the coordinates of the points of polyconvex are in direct sense.
-    IDirectPositionList coord = polyConvex.coord();
-    IDirectPosition point0 = coord.get(0);
-    IDirectPosition point1 = coord.get(1);
-    IDirectPosition point2 = coord.get(2);
+    // Create return area for each point of the line.
+    IDirectPosition pointA = line.getControlPoint(0);
+    IDirectPosition pointB = line.getControlPoint(1);
+    IDirectPosition pointC = line.getControlPoint(2);
 
-    logger.debug("coord " + coord);
-    double vp = (point1.getX() - point0.getX())
-        * (point2.getY() - point0.getY()) - (point2.getX() - point0.getX())
-        * (point1.getY() - point0.getY());
+    double dX = pointB.getX() - pointA.getX();
+    double dY = pointB.getY() - pointA.getY();
 
-    logger.debug("vp " + vp);
-    if (vp < 0.0) {
-      coord.inverseOrdre();
-      logger.debug("coord " + coord);
-    }
+    double theta = Math.atan2(dY, dY) - Math.PI / 2;
 
-    // for each vector, create an area representing the dilatation
-    for (int i = 0; i < line.getControlPoint().size() - 1; i++) {
+    // for each vector, create an area representing the dillatation
 
-      // Create return area for each point of the line.
-      IDirectPosition pointA = line.getControlPoint(i);
-      IDirectPosition pointB = line.getControlPoint(i + 1);
-      IDirectPosition pointC = line.getControlPoint(i == line.getControlPoint()
-          .size() - 2 ? 1 : i + 2);
-      logger.debug("A: " + i + ", B: " + (i + 1) + ", C: "
-          + (i == line.getControlPoint().size() - 2 ? 1 : i + 2));
+    // get the constrained point of polyToSum
 
-      logger.debug("A : " + pointA);
-      logger.debug("B : " + pointB);
-      logger.debug("C : " + pointC);
+    // construct the area
 
-      double dX = pointB.getX() - pointA.getX();
-      double dY = pointB.getY() - pointA.getY();
+    // the segment is
 
-      double theta = Math.atan2(dY, dX) - Math.PI / 2;
-
-      IDirectPosition positionAB = this.getFarestPoint(coord, theta);
-      logger.debug("positionAB: " + positionAB);
-      // Initialize for next turn.
-      dX = pointC.getX() - pointB.getX();
-      dY = pointC.getY() - pointB.getY();
-      theta = Math.atan2(dY, dX) - Math.PI / 2;
-
-      IDirectPosition positionBC = this.getFarestPoint(coord, theta);
-      logger.debug("positionBC: " + positionBC);
-
-      // Construct the area
-      // Create polygon.
-      List<IDirectPosition> tempList = new ArrayList<IDirectPosition>();
-
-      // First segment
-      tempList.add(pointA);
-      tempList.add(pointB);
-      // Analysis of the convexity of the angle ABC
-      double vectorialProduct = (pointB.getX() - pointA.getX())
-          * (pointC.getY() - pointA.getY()) - (pointC.getX() - pointA.getX())
-          * (pointB.getY() - pointA.getY());
-
-      logger.debug("Vector product: " + vectorialProduct);
-
-      // Dilatation of the second point if convexity at left.
-      // We compute the translation vectors to apply to B to get the dilatation
-      // of the angle: these vectors are join centroid to each point of
-      // polyConvex between positionAB and positionBC, in direct order.
-      if (vectorialProduct < 0.0) {
-        boolean afterBC = false;
-        int j = 0;
-        while (true) {
-          IDirectPosition tempPoint = coord.get(j);
-          j = (j < coord.size() - 2) ? j + 1 : 0;
-          // logger.debug("tempPoint: " + tempPoint);
-          if (afterBC || (tempPoint.equals(positionBC))) {
-            // logger.debug("tempPoint: afterBC");
-            afterBC = true;
-            IDirectPosition toAdd = new DirectPosition(pointB.getX()
-                + centroid.getX() - tempPoint.getX(), pointB.getY()
-                + centroid.getY() - tempPoint.getY());
-            tempList.add(toAdd);
-            if (tempPoint.equals(positionAB)) {
-              // logger.debug("tempPoint: break");
-              break;
-            }
-          }
-        }
-      }
-
-      // Dilatation of the left side.
-      // Vector joining positionAB to centroid
-      tempList.add(new DirectPosition(pointB.getX() + centroid.getX()
-          - positionAB.getX(), pointB.getY() + centroid.getY()
-          - positionAB.getY()));
-
-      tempList.add(new DirectPosition(pointA.getX() + centroid.getX()
-          - positionAB.getX(), pointA.getY() + centroid.getY()
-          - positionAB.getY()));
-
-      tempList.add(tempList.get(0));
-
-      // close line and return an area.
-
-      ILineString tempLine = new GM_LineString((List<IDirectPosition>) tempList);
-      IPolygon tempPolygon = new GM_Polygon(tempLine);
-      logger.debug("tempPolygon " + tempPolygon);
-      if (toReturn == null) {
-        toReturn = tempPolygon;
-      } else {
-        IGeometry temp = algo.union(toReturn, tempPolygon);
-        if (temp != null) {
-          toReturn = temp;
-        }
-      }
-      logger.debug("toReturn " + toReturn);
-    }
-
-    if (toReturn.isMultiSurface()) {
-
-      IMultiSurface<?> multiTemp = ((IMultiSurface<?>) toReturn);
-      logger.debug("size " + multiTemp.size());
-
-      for (IGeometry toShow : multiTemp) {
-        logger.debug(toShow);
-      }
-
-      if (multiTemp.size() == 1) {
-        toReturn = (IPolygon) multiTemp.get(0);
-      }
-    }
-
-    logger.debug("toReturn " + toReturn);
-    return (IPolygon) toReturn;
+    return null;
   }
 
-  /**
-   * Return the farest point of the line in the direction given by theta angle.
-   * If they are an egality, get the first in direct sense.
-   * @param polygon
-   * @param theta
-   * @return
-   */
-  private IDirectPosition getFarestPoint(IDirectPositionList coord, double theta) {
-    // IPolygon rotation = CommonAlgorithms.rotation(polygon, - theta);
+  private IDirectPosition getFarestPoint(IPolygon polygon, double angle) {
+    IPolygon rotation = CommonAlgorithms.rotation(polygon, angle);
     IDirectPosition toReturn = null;
-    double xMax = -Double.MAX_VALUE;
-    boolean identFlag = false;
-    for (IDirectPosition toCompare : coord) {
-      // logger.debug("point: " + toCompare);
-
-      double xRotation = toCompare.getX() * Math.cos(-theta) - toCompare.getY()
-          * Math.sin(-theta);
-
-      // logger.debug("xRotation " + xRotation);
-      // logger.debug("identFlag " + identFlag);
-
-      if ((xMax < xRotation)) {
+    for (IDirectPosition toCompare : rotation.coord()) {
+      if (toReturn == null) {
         toReturn = toCompare;
-        xMax = xRotation;
-        identFlag = true;
-      } else if (xMax == xRotation) {
-        if (!identFlag) {
-          toReturn = toCompare;
-          xMax = xRotation;
-          identFlag = true;
-        }
-      } else {
-        identFlag = false;
+      } else if (toReturn.getX() < toCompare.getX()) {
+        toReturn = toCompare;
       }
+      // TODO when egal
+
     }
     return toReturn;
   }

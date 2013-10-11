@@ -41,212 +41,213 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractLayer implements Layer {
 
-    @XmlElement(name = "Name", required = true)
-    private String name;
+  @XmlElement(name = "Name", required = true)
+  private String name;
 
-    @Override
-    public String getName() {
-        return this.name;
+  @Override
+  public String getName() {
+    return this.name;
+  }
+
+  @Override
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @XmlElement(name = "Description", required = false)
+  private String description;
+
+  @Override
+  public String getDescription() {
+    return this.description;
+  }
+
+  @Override
+  public void setDescription(String d) {
+    this.description = d;
+  }
+
+  // @XmlElement(name = "Description")
+  // protected Description description;
+  // @XmlElement(name = "LayerFeatureConstraints")
+  // protected LayerFeatureConstraints layerFeatureConstraints;
+
+  @XmlElements({ @XmlElement(name = "UserStyle", type = UserStyle.class),
+      @XmlElement(name = "NamedStyle", type = NamedStyle.class) })
+  List<Style> styles = new ArrayList<Style>(0);
+
+  @Override
+  public List<Style> getStyles() {
+    return this.styles;
+  }
+
+  @Override
+  public void setStyles(List<Style> styles) {
+    this.styles = styles;
+  }
+
+  @XmlTransient
+  private boolean visible = true;
+
+  @Override
+  public boolean isVisible() {
+    return this.visible;
+  }
+
+  @Override
+  public void setVisible(boolean visible) {
+    this.visible = visible;
+  }
+
+  @XmlTransient
+  private boolean selectable = true;
+
+  @Override
+  public boolean isSelectable() {
+    return this.selectable;
+  }
+
+  @Override
+  public void setSelectable(boolean newSelectable) {
+    this.selectable = newSelectable;
+  }
+
+  @XmlTransient
+  private boolean symbolized = true;
+
+  @Override
+  public boolean isSymbolized() {
+    return this.symbolized;
+  }
+
+  @Override
+  public void setSymbolized(boolean newSymbolized) {
+    this.symbolized = newSymbolized;
+  }
+
+  @Override
+  public Symbolizer getSymbolizer() {
+    return this.getStyles().get(0).getSymbolizer();
+  }
+
+  @XmlTransient
+  private String activeGroup = null;
+
+  // XXX Maybe move the CRS in FeatureTypeStyle.
+  @XmlTransient
+  private CoordinateReferenceSystem ftscrs;
+
+  @Override
+  public String getActiveGroup() {
+    return this.activeGroup;
+  }
+
+  @Override
+  public void setActiveGroup(String activeGroup) {
+    this.activeGroup = activeGroup;
+  }
+
+  @Override
+  public List<Style> getActiveStyles() {
+    Collection<String> groups = this.getGroups();
+    if (groups.isEmpty()) {
+      return this.getStyles();
     }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
+    String group = this.getActiveGroup();
+    if (group == null || group.isEmpty()) {
+      group = groups.iterator().next();
     }
+    return this.getStyles(group);
+  }
 
-    @XmlElement(name = "Description", required = false)
-    private String description;
-
-    @Override
-    public String getDescription() {
-        return this.description;
+  public List<Style> getStyles(String group) {
+    if (group == null || group.isEmpty()) {
+      return this.getStyles();
     }
-
-    @Override
-    public void setDescription(String d) {
-        this.description = d;
+    List<Style> groupStyles = new ArrayList<Style>(0);
+    for (Style style : this.getStyles()) {
+      if (style.getGroup().equalsIgnoreCase(group)) {
+        groupStyles.add(style);
+      }
     }
+    return groupStyles;
+  }
 
-    // @XmlElement(name = "Description")
-    // protected Description description;
-    // @XmlElement(name = "LayerFeatureConstraints")
-    // protected LayerFeatureConstraints layerFeatureConstraints;
-
-    @XmlElements({ @XmlElement(name = "UserStyle", type = UserStyle.class),
-            @XmlElement(name = "NamedStyle", type = NamedStyle.class) })
-    List<Style> styles = new ArrayList<Style>(0);
-
-    @Override
-    public List<Style> getStyles() {
-        return this.styles;
+  @Override
+  public Collection<String> getGroups() {
+    Set<String> groups = new HashSet<String>(0);
+    for (Style style : this.getStyles()) {
+      if (style.getGroup() != null) {
+        groups.add(style.getGroup());
+      }
     }
+    return groups;
+  }
 
-    @Override
-    public void setStyles(List<Style> styles) {
-        this.styles = styles;
+  /**
+   * Affecte la valeur de l'attribut CRS
+   */
+  @Override
+  public void setCRS(CoordinateReferenceSystem crs) {
+    this.ftscrs = crs;
+  }
+
+  /**
+   * Crée un CRS a partir d'un crs sous forme de chaine de caractère WKT.
+   * 
+   * @param scrs
+   */
+  public void setCRSFromWKTString(String scrs) {
+    try {
+      this.ftscrs = CRS.parseWKT(scrs);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
+  }
 
-    @XmlTransient
-    private boolean visible = true;
+  @Override
+  public CoordinateReferenceSystem getCRS() {
+    return this.ftscrs;
+  }
 
-    @Override
-    public boolean isVisible() {
-        return this.visible;
+  @Override
+  public void destroy() {
+    this.styles.clear();
+    this.ftscrs = null;
+
+  }
+
+  // TODO Cette solution doit être provisoire, l'icon devrait être rattaché
+  // aux styles du layer et non à lui même.
+  @XmlTransient
+  protected ImageIcon icon;
+
+  @XmlTransient
+  private double opacity = 1.0d;
+
+  @Override
+  public ImageIcon getIcon() {
+    return this.icon;
+  }
+
+  @Override
+  public void setIcon(ImageIcon _icon) {
+    this.icon = _icon;
+  }
+
+  @Override
+  public double getOpacity() {
+    return this.opacity;
+  }
+
+  @Override
+  public void setOpacity(double opacity) {
+    if (opacity < 0.0d) {
+      this.opacity = 0.0d;
+    } else if (opacity > 1.0d) {
+      this.opacity = 1.0d;
     }
+    this.opacity = opacity;
+  }
 
-    @Override
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    @XmlTransient
-    private boolean selectable = true;
-
-    @Override
-    public boolean isSelectable() {
-        return this.selectable;
-    }
-
-
-    @Override
-    public void setSelectable(boolean newSelectable) {
-        this.selectable = newSelectable;
-    }
-
-    @XmlTransient
-    private boolean symbolized = true;
-
-    @Override
-    public boolean isSymbolized() {
-        return this.symbolized;
-    }
-
-    @Override
-    public void setSymbolized(boolean newSymbolized) {
-        this.symbolized = newSymbolized;
-    }
-
-    @Override
-    public Symbolizer getSymbolizer() {
-        return this.getStyles().get(0).getSymbolizer();
-    }
-
-    @XmlTransient
-    private String activeGroup = null;
-
-    // XXX Maybe move the CRS in FeatureTypeStyle.
-    @XmlTransient
-    private CoordinateReferenceSystem ftscrs;
-
-    @Override
-    public String getActiveGroup() {
-        return this.activeGroup;
-    }
-
-    @Override
-    public void setActiveGroup(String activeGroup) {
-        this.activeGroup = activeGroup;
-    }
-
-    @Override
-    public List<Style> getActiveStyles() {
-        Collection<String> groups = this.getGroups();
-        if (groups.isEmpty()) {
-            return this.getStyles();
-        }
-        String group = this.getActiveGroup();
-        if (group == null || group.isEmpty()) {
-            group = groups.iterator().next();
-        }
-        return this.getStyles(group);
-    }
-    public List<Style> getStyles(String group) {
-        if (group == null || group.isEmpty()) {
-            return this.getStyles();
-        }
-        List<Style> groupStyles = new ArrayList<Style>(0);
-        for (Style style : this.getStyles()) {
-            if (style.getGroup().equalsIgnoreCase(group)) {
-                groupStyles.add(style);
-            }
-        }
-        return groupStyles;
-    }
-
-    @Override
-    public Collection<String> getGroups() {
-        Set<String> groups = new HashSet<String>(0);
-        for (Style style : this.getStyles()) {
-            if (style.getGroup() != null) {
-                groups.add(style.getGroup());
-            }
-        }
-        return groups;
-    }
-
-    /**
-     * Affecte la valeur de l'attribut CRS
-     */
-    @Override
-    public void setCRS(CoordinateReferenceSystem crs) {
-        this.ftscrs = crs;
-    }
-
-    /**
-     * Crée un CRS a partir d'un crs sous forme de chaine de caractère WKT.
-     * 
-     * @param scrs
-     */
-    public void setCRSFromWKTString(String scrs) {
-        try {
-            this.ftscrs = CRS.parseWKT(scrs);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public CoordinateReferenceSystem getCRS() {
-        return this.ftscrs;
-    }
-
-    @Override
-    public void destroy() {
-        this.styles.clear();
-        this.ftscrs = null;
-
-    }
-    
-    // TODO Cette solution doit être provisoire, l'icon devrait être rattaché
-    // aux styles du layer et non à lui même.
-    @XmlTransient
-    protected ImageIcon icon;
-    
-    @XmlTransient
-    private double opacity = 1.0d;
-
-    @Override
-    public ImageIcon getIcon() {
-        return this.icon;
-    }
-
-    @Override
-    public void setIcon(ImageIcon _icon) {
-        this.icon = _icon;
-    }
-    
-    @Override
-    public double getOpacity(){
-        return this.opacity;
-    }
-
-    @Override
-    public void setOpacity(double opacity){
-        if(opacity < 0.0d){
-            this.opacity= 0.0d;
-        }else if(opacity > 1.0d){
-            this.opacity= 1.0d;
-        }
-        this.opacity = opacity;
-    }
 }

@@ -1,0 +1,30 @@
+include 'src/main/resources/scripts/cutOp.groovy'
+include 'src/main/resources/scripts/rotateOp.groovy'
+include 'src/main/resources/scripts/inflateOp.groovy'
+include 'src/main/resources/scripts/lineRenderer.groovy'
+include 'src/main/resources/scripts/pointRenderer.groovy'
+include 'src/main/resources/scripts/displacementRenderer.groovy'
+
+def stroke( geom, strokeSize, angle ) {
+  rotate( cut( geom, strokeSize, 0 ), angle )
+}
+
+scale = viewport.getScale()
+strokeSize = 5 * scale
+width = new ConstantFunction( 10 * viewport.getScale() );
+shift = new SinFunction( 20, 10 * viewport.getScale(), 0, 0 );
+inflater = new InflaterOperator( width, shift, 3 );
+
+for ( DrawingPrimitive primitive : primitives ) {
+  transformedPrimitives = cut(primitive, strokeSize, 0 )
+  lineRendering( transformedPrimitives, 1, Color.black )
+  pointRendering( transformedPrimitives, 3, Color.red, 1, Color.black )
+
+//  displacementRendering( primitive, inflater, Color.green )
+//  lineRendering( inflate(primitive, 10 ), 1, Color.black )
+//  lineRendering( stroke(primitive, strokeSize, PI/4 ), 1, Color.black )
+//  pointRendering( stroke(primitive, strokeSize, PI/4 ), 3, Color.red, 1, Color.black )
+}
+
+//  width = new ConstantFunction( 10 * viewport.getScale() );
+//  shift = new SinFunction( 20, 10 * viewport.getScale(), 0, 0 );

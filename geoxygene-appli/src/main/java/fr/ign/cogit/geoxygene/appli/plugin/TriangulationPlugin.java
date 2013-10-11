@@ -28,8 +28,8 @@ import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.feature.DataSet;
@@ -41,12 +41,9 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * Triangulation plugin.
  * @author Julien Perret
  */
-public class TriangulationPlugin implements GeOxygeneApplicationPlugin,
-    ActionListener {
-  /**
-   * Logger.
-   */
-  static Logger logger = Logger.getLogger(Triangulation.class.getName());
+public class TriangulationPlugin implements GeOxygeneApplicationPlugin, ActionListener {
+  /** Logger. */
+  static Logger                logger      = Logger.getLogger(Triangulation.class.getName());
 
   private GeOxygeneApplication application = null;
 
@@ -63,27 +60,20 @@ public class TriangulationPlugin implements GeOxygeneApplicationPlugin,
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application
-        .getFrame()
-        .getJMenuBar()
-        .add(menu, application.getFrame().getJMenuBar().getComponentCount() - 1);
+    application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getComponentCount() - 1);
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    ProjectFrame project = this.application.getFrame()
-        .getSelectedProjectFrame();
-    Set<Layer> selectedLayers = project.getLayerLegendPanel()
-        .getSelectedLayers();
+    ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
+    Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
     if (selectedLayers.size() != 1) {
-      TriangulationPlugin.logger
-          .error("You need to select one (and only one) layer."); //$NON-NLS-1$
+      TriangulationPlugin.logger.error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }
     Layer layer = selectedLayers.iterator().next();
     double alpha = 100;
-    GM_Polygon characteristicShape = Triangulation.getCharacteristicShape(
-        layer.getFeatureCollection(), alpha);
+    GM_Polygon characteristicShape = Triangulation.getCharacteristicShape(layer.getFeatureCollection(), alpha);
     Population<Face> popExterieurs = new Population<Face>("CharacteristicShape"); //$NON-NLS-1$
     popExterieurs.setClasse(Face.class);
     popExterieurs.setPersistant(false);
@@ -93,6 +83,6 @@ public class TriangulationPlugin implements GeOxygeneApplicationPlugin,
     newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);
     popExterieurs.setFeatureType(newFeatureTypeExterieurs);
     DataSet.getInstance().addPopulation(popExterieurs);
-    project.addFeatureCollection(popExterieurs, popExterieurs.getNom(),null);
+    project.addFeatureCollection(popExterieurs, popExterieurs.getNom(), null);
   }
 }

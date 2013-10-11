@@ -39,7 +39,6 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.util.StringUtil;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 public class ShapeFileClass implements GeographicClass {
@@ -54,7 +53,6 @@ public class ShapeFileClass implements GeographicClass {
    * The CartAGen dataset related to this shapefile class
    */
   private CartAGenDB dataSet;
-  private Class<? extends IGeometry> geometryType;
 
   /**
    * Default Constructor using the three fields of the class.
@@ -62,14 +60,12 @@ public class ShapeFileClass implements GeographicClass {
    * @param path
    * @param popName
    */
-  public ShapeFileClass(CartAGenDB dataSet, String path,
-      String featureTypeName, Class<? extends IGeometry> geometryType) {
+  public ShapeFileClass(CartAGenDB dataSet, String path, String featureTypeName) {
     super();
     this.dataSet = dataSet;
     this.path = path;
     this.fileName = path.substring(path.lastIndexOf("/") + 1);
     this.featureTypeName = featureTypeName;
-    this.geometryType = geometryType;
   }
 
   @SuppressWarnings("unchecked")
@@ -139,7 +135,7 @@ public class ShapeFileClass implements GeographicClass {
       // build the specification String of the shapefile
       // specify the geometry type
       String specs = "geom:" + geomType; //$NON-NLS-1$
-      // now add the attributes to the specs
+      // now add the attributes to the specs 
       for (int j = 0; j < header.getNumFields(); j++) {
         specs += "," + header.getFieldName(j) + ":"
             + getFieldTypeFromChar(header.getFieldType(j));
@@ -265,10 +261,5 @@ public class ShapeFileClass implements GeographicClass {
     if (type == 'L')
       return Boolean.class.getName();
     return String.class.getName();
-  }
-
-  @Override
-  public Class<? extends IGeometry> getGeometryType() {
-    return geometryType;
   }
 }

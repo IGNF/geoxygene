@@ -57,7 +57,7 @@ public class ImportAsEdgesPlugin implements GeOxygeneApplicationPlugin, ActionLi
     // Check if the DataMatching menu exists. If not we create it.
     JMenu menu = null;
     String menuName = I18N.getString("CarteTopoPlugin.CarteTopoPlugin"); //$NON-NLS-1$
-    for (Component c : application.getFrame().getJMenuBar().getComponents()) {
+    for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
         if (aMenu.getText() != null
@@ -77,9 +77,9 @@ public class ImportAsEdgesPlugin implements GeOxygeneApplicationPlugin, ActionLi
     
     // Refresh menu of the application
     application
-        .getFrame()
-        .getJMenuBar()
-        .add(menu, application.getFrame().getJMenuBar().getComponentCount() - 2);
+        .getMainFrame()
+        .getMenuBar()
+        .add(menu, application.getMainFrame().getMenuBar().getComponentCount() - 2);
     
   }
   
@@ -89,7 +89,7 @@ public class ImportAsEdgesPlugin implements GeOxygeneApplicationPlugin, ActionLi
   @Override
   public void actionPerformed(final ActionEvent e) {
       
-    ProjectFrame project = ImportAsEdgesPlugin.this.application.getFrame()
+    ProjectFrame project = ImportAsEdgesPlugin.this.application.getMainFrame()
         .getSelectedProjectFrame();
     Set<Layer> selectedLayers = project.getLayerLegendPanel()
         .getSelectedLayers();

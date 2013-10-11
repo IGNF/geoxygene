@@ -45,9 +45,9 @@ import javax.swing.JToolBar;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 
 /**
  * @author Julien Perret
@@ -57,11 +57,11 @@ public class ModeSelector implements ContainerListener, KeyListener,
   /**
    * Logger.
    */
-  static final Logger LOGGER = Logger.getLogger(ModeSelector.class.getName());
+  static final Logger logger = Logger.getLogger(ModeSelector.class.getName());
   /**
    * List of modes.
    */
-  private List<Mode> modes = new ArrayList<Mode>();
+  private final List<Mode> modes = new ArrayList<Mode>();
   /**
    * The current mode.
    */
@@ -74,7 +74,7 @@ public class ModeSelector implements ContainerListener, KeyListener,
   /**
    * The toolbar.
    */
-  private JToolBar toolBar = new JToolBar(
+  private final JToolBar toolBar = new JToolBar(
       I18N.getString("ModeSelector.ModeSelection")); //$NON-NLS-1$
 
   /**
@@ -113,32 +113,33 @@ public class ModeSelector implements ContainerListener, KeyListener,
     this.setMainFrame(theMainFrame);
     this.getMainFrame().add(this.toolBar, BorderLayout.PAGE_START);
 
-    // 
-    
+    //
+
     JButton zoomToFullExtentButton = new JButton(new ImageIcon(
-            ModeSelector.class
-                .getResource("/images/icons/16x16/zoomToFullExtent.png"))); //$NON-NLS-1$
+        ModeSelector.class
+            .getResource("/images/icons/16x16/zoomToFullExtent.png"))); //$NON-NLS-1$
     zoomToFullExtentButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            ProjectFrame projectFrame = ModeSelector.this.getMainFrame().getSelectedProjectFrame();
-            if (projectFrame != null) {
-              try {
-                projectFrame.getLayerViewPanel().getViewport().zoomToFullExtent();
-              } catch (NoninvertibleTransformException e1) {
-                e1.printStackTrace();
-              }
-            }
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        ProjectFrame projectFrame = ModeSelector.this.getMainFrame()
+            .getSelectedProjectFrame();
+        if (projectFrame != null) {
+          try {
+            projectFrame.getLayerViewPanel().getViewport().zoomToFullExtent();
+          } catch (NoninvertibleTransformException e1) {
+            e1.printStackTrace();
           }
-        });
+        }
+      }
+    });
     zoomToFullExtentButton.setToolTipText(I18N
-            .getString("ModeSelector.zoomToFullExtent.ToolTip")); //$NON-NLS-1$
+        .getString("ModeSelector.zoomToFullExtent.ToolTip")); //$NON-NLS-1$
     this.toolBar.add(zoomToFullExtentButton);
-    
+
     this.modes.add(new ZoomMode(this.getMainFrame(), this));
     this.modes.add(new ZoomBoxMode(this.getMainFrame(), this));
     this.modes.add(new MoveMode(this.getMainFrame(), this));
-    
+
     this.toolBar.addSeparator();
     this.modes.add(new SelectionMode(this.getMainFrame(), this));
 
@@ -182,33 +183,31 @@ public class ModeSelector implements ContainerListener, KeyListener,
     showGeometryToolsButton.setToolTipText(I18N
         .getString("ModeSelector.showGeometryTools.ToolTip")); //$NON-NLS-1$
     this.toolBar.add(showGeometryToolsButton);
-    
+
     this.toolBar.addSeparator();
-    
+
     JButton newTabButton = new JButton(new ImageIcon(
-            ModeSelector.class
-                .getResource("/images/icons/tab_add.png"))); //$NON-NLS-1$
+        ModeSelector.class.getResource("/images/icons/tab_add.png"))); //$NON-NLS-1$
     newTabButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            ModeSelector.this.getMainFrame().newDesktopFrame(null);
-          }
-        });
-    //newProjectFrameButton.setToolTipText(I18N
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        ModeSelector.this.getMainFrame().createNewDesktop(null);
+      }
+    });
+    // newProjectFrameButton.setToolTipText(I18N
     //        .getString("ModeSelector.zoomToFullExtent.ToolTip")); //$NON-NLS-1$
     this.toolBar.add(newTabButton);
 
     JButton newProjectFrameButton = new JButton(new ImageIcon(
-            ModeSelector.class
-                .getResource("/images/icons/application_add.png"))); //$NON-NLS-1$
+        ModeSelector.class.getResource("/images/icons/application_add.png"))); //$NON-NLS-1$
     newProjectFrameButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            ModeSelector.this.getMainFrame().newProjectFrame();
-          }
-        });
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        ModeSelector.this.getMainFrame().newProjectFrame();
+      }
+    });
     this.toolBar.add(newProjectFrameButton);
-    
+
     this.setCurrentMode(this.modes.get(2));
   }
 
@@ -271,8 +270,9 @@ public class ModeSelector implements ContainerListener, KeyListener,
   public final void mouseMoved(final MouseEvent e) {
     this.currentMode.mouseMoved(e);
   }
-  public final List<Mode> getRegisteredModes(){
-      return this.modes;
+
+  public final List<Mode> getRegisteredModes() {
+    return this.modes;
   }
 
   /**
@@ -296,31 +296,31 @@ public class ModeSelector implements ContainerListener, KeyListener,
 
   @Override
   public final void componentAdded(final ContainerEvent e) {
-    if (ProjectFrame.class.isAssignableFrom(e.getChild().getClass())) {
-      this.addComponent(((ProjectFrame)e.getChild()).getLayerViewPanel());
-    }
+    ProjectFrame projectFrame = this.getMainFrame().getProjectFrameFromGui(
+        e.getChild());
+    this.addComponent(projectFrame.getLayerViewPanel());
   }
 
   /**
    * Add a component.
    * @param component the newly added component
    */
-    private void addComponent(final Component component) {
-        if (component instanceof AbstractButton) {
-            return;
-        }
-        component.addKeyListener(this);
-        component.addMouseWheelListener(this);
-        component.addMouseListener(this);
-        component.addMouseMotionListener(this);
-//        if (component instanceof Container) {
-//            Container container = (Container) component;
-//            container.addContainerListener(this);
-//            for (Component child : container.getComponents()) {
-//                this.addComponent(child);
-//            }
-//        }
+  private void addComponent(final Component component) {
+    if (component instanceof AbstractButton) {
+      return;
     }
+    component.addKeyListener(this);
+    component.addMouseWheelListener(this);
+    component.addMouseListener(this);
+    component.addMouseMotionListener(this);
+    // if (component instanceof Container) {
+    // Container container = (Container) component;
+    // container.addContainerListener(this);
+    // for (Component child : container.getComponents()) {
+    // this.addComponent(child);
+    // }
+    // }
+  }
 
   @Override
   public final void componentRemoved(final ContainerEvent e) {

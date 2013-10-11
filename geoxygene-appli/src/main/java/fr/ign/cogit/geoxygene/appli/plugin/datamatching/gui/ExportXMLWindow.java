@@ -123,7 +123,6 @@ public class ExportXMLWindow extends JDialog {
   public void manageEvent() {
     this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     btFermer.addActionListener(new ActionListener() {
-      @Override
       public void actionPerformed(ActionEvent e) {
         dispose();
       }

@@ -44,15 +44,15 @@ public final class CombinationAlgos {
    * @throws Exception
    */
   public static final byte[] combine(List<List<byte[]>> mass_sets) throws Exception {
-//    if (logger.isDebugEnabled()) {
-//      logger.debug("----COMBINING CORE----");
-//      for (List<byte[]> core : mass_sets) {
-//        logger.debug("on focal set...");
-//        for (byte[] focal : core) {
-//          logger.debug(Arrays.toString(focal));
-//        }
-//      }
-//    }
+    if (logger.isDebugEnabled()) {
+      logger.debug("----COMBINING CORE----");
+      for (List<byte[]> core : mass_sets) {
+        logger.debug("on focal set...");
+        for (byte[] focal : core) {
+          logger.debug(Arrays.toString(focal));
+        }
+      }
+    }
     // 1 : calculer l'union des éléments focaux de chaque masse de croyance.
     List<byte[]> cores = new ArrayList<byte[]>();
     for (List<byte[]> focalsets : mass_sets) {
@@ -77,11 +77,11 @@ public final class CombinationAlgos {
         byte[] core2 = cores.get(i);
         core1 = Utils.byteIntersection(core1, core2);
       }
-//      logger.debug("Combined core : " + Arrays.toString(core1));
+      logger.debug("Combined core : " + Arrays.toString(core1));
       return core1;
     } else
       if (cores.size() == 1) {
-//        logger.debug("Combined core : " + Arrays.toString(cores.get(0)));
+        logger.debug("Combined core : " + Arrays.toString(cores.get(0)));
         return cores.get(0);
       } else {
         logger.error("Combined core is null!");
@@ -101,13 +101,13 @@ public final class CombinationAlgos {
       logger.error("Conditionning only defined if there exist CinterB != void");
       return masscore;
     }
-//    if (logger.isDebugEnabled()) {
-//      logger.debug("Conditionner : " + Arrays.toString(conditionner));
-//      logger.debug("Core to condition:");
-//      for (Pair<byte[], Float> focal : masscore) {
-//        logger.debug(focal.getSecond() + " " + Arrays.toString(focal.getFirst()));
-//      }
-//    }
+    if (logger.isDebugEnabled()) {
+      logger.debug("Conditionner : " + Arrays.toString(conditionner));
+      logger.debug("Core to condition:");
+      for (Pair<byte[], Float> focal : masscore) {
+        logger.debug(focal.getSecond() + " " + Arrays.toString(focal.getFirst()));
+      }
+    }
     List<Pair<byte[], Float>> conditionnedlist = new ArrayList<Pair<byte[], Float>>();
     Float k = 0.0f;
     for (Pair<byte[], Float> focal : masscore) {
@@ -135,12 +135,12 @@ public final class CombinationAlgos {
     for (Pair<byte[], Float> mass : conditionnedlist) {
       mass.setSecond(mass.getSecond() / k);
     }
-//    if (logger.isDebugEnabled()) {
-//      logger.debug("Conditionned List:");
-//      for (Pair<byte[], Float> focal : conditionnedlist) {
-//        logger.debug(focal.getSecond() + " " + Arrays.toString(focal.getFirst()));
-//      }
-//    }
+    if (logger.isDebugEnabled()) {
+      logger.debug("Conditionned List:");
+      for (Pair<byte[], Float> focal : conditionnedlist) {
+        logger.debug(focal.getSecond() + " " + Arrays.toString(focal.getFirst()));
+      }
+    }
     return conditionnedlist;
   }
 
@@ -180,7 +180,7 @@ public final class CombinationAlgos {
    */
   public static List<List<Pair<byte[], Float>>> orderMass(
       List<List<Pair<byte[], Float>>> masspotentials) {
-//    logger.debug("Sorting the mass potentials");
+    logger.debug("Sorting the mass potentials");
     List<Pair<Integer, Float>> toSort = new ArrayList<Pair<Integer, Float>>();
     List<List<Pair<byte[], Float>>> newpotentials = new ArrayList<List<Pair<byte[], Float>>>();
     for (List<Pair<byte[], Float>> src : masspotentials) {
@@ -206,12 +206,12 @@ public final class CombinationAlgos {
     for (Pair<Integer, Float> src : toSort) {
       newpotentials.add(masspotentials.get(src.getFirst()));
     }
-//    if (logger.isDebugEnabled()) {
-//      logger.debug("Sorted mass list:");
-//      for (Pair<Integer, Float> src : toSort) {
-//        logger.debug(src.getSecond() + " score for " + src.getFirst());
-//      }
-//    }
+    if (logger.isDebugEnabled()) {
+      logger.debug("Sorted mass list:");
+      for (Pair<Integer, Float> src : toSort) {
+        logger.debug(src.getSecond() + " score for " + src.getFirst());
+      }
+    }
     return newpotentials;
   }
 }

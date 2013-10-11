@@ -64,4 +64,5 @@ public abstract class AbstractStyle implements Style {
   public boolean isUserStyle() {
     return false;
   }
+
 }
