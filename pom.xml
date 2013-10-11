@@ -267,37 +267,16 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3</version>
+				<!-- A specifier dans le bon package 
 				<configuration>
 					<archive>
-						<index>true</index>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<!--
 							<classpathPrefix>dependency/</classpathPrefix>
 							<mainClass>fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</mainClass>
-							-->
 						</manifest>
-						<manifestEntries>
-							<mode>development</mode>
-							<url>${project.url}</url>
-							<key>value</key>
-						</manifestEntries>
 					</archive>
-				</configuration>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
+				</configuration>  -->
 			</plugin>
 
 			<!-- Used to add source directories to our build. -->
@@ -511,9 +490,6 @@
 			<id>Central</id>
 			<name>Central Repository</name>
 			<url>http://repo1.maven.org/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
 		</repository>
 		<repository>
 			<id>cogit-snapshots</id>
@@ -523,7 +499,8 @@
 		<repository>
 			<id>cogit-releases</id>
 			<name>Cogit Releases Repository</name>
-			<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/releases/</url>
+			
+			<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/releases</url>
 		</repository>
 		<repository>
 			<id>OpenGeo</id>
@@ -562,6 +539,14 @@
 		<repository>
 			<id>Cemagref</id>
 			<url>http://trac.clermont.cemagref.fr/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+		</repository>
+		<repository>
+			<id>Cogit-releases</id>
+			<name>Cogit-releases Repository</name>
+			<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/releases</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -712,6 +697,7 @@
 	<modules>
 		<module>geoxygene-api</module>
 		<module>geoxygene-appli</module>
+		<module>geoxygene-scripting</module>
 		<module>geoxygene-cartagen</module>
 		<module>geoxygene-contrib</module>
 		<module>geoxygene-database</module>
@@ -729,7 +715,6 @@
 		<module>geoxygene-style</module>
 		<module>geoxygene-util</module>
 		<module>geoxygene-wps</module>
-		<module>evidence4j</module>
 	</modules>
 
 </project>
