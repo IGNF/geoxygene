@@ -14,6 +14,7 @@ public class GroovyConsoleUILauncher {
   public static void main(final String[] args) {
     SwingUtilities.invokeLater(new Runnable() {
 
+      @Override
       public void run() {
         GroovyConsoleUI console = new GroovyConsoleUI(null, "my console");
         console.setVisible(true);

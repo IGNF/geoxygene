@@ -53,6 +53,7 @@ public abstract class AbstractScriptingConsoleUI implements ScriptingConsoleUI {
   /* (non-Javadoc)
    * @see fr.ign.cogit.geoxygene.scripting.ScriptingConsole#getId()
    */
+  @Override
   public String getId() {
     return this.id;
   }
@@ -60,6 +61,7 @@ public abstract class AbstractScriptingConsoleUI implements ScriptingConsoleUI {
   /* (non-Javadoc)
    * @see fr.ign.cogit.geoxygene.scripting.ScriptingConsole#getTitle()
    */
+  @Override
   public String getTitle() {
     return this.title;
   }
@@ -74,6 +76,7 @@ public abstract class AbstractScriptingConsoleUI implements ScriptingConsoleUI {
   /* (non-Javadoc)
    * @see fr.ign.cogit.geoxygene.scripting.ScriptingConsole#addConsoleListener(fr.ign.cogit.geoxygene.scripting.ConsoleListener)
    */
+  @Override
   public void addConsoleListener(final ConsoleListener listener) {
     synchronized (this.listeners) {
       this.listeners.add(listener);
@@ -83,6 +86,7 @@ public abstract class AbstractScriptingConsoleUI implements ScriptingConsoleUI {
   /* (non-Javadoc)
    * @see fr.ign.cogit.geoxygene.scripting.ScriptingConsole#removeConsoleListener(fr.ign.cogit.geoxygene.scripting.ConsoleListener)
    */
+  @Override
   public void removeConsoleListener(final ConsoleListener listener) {
     synchronized (this.listeners) {
       this.listeners.remove(listener);
@@ -92,6 +96,7 @@ public abstract class AbstractScriptingConsoleUI implements ScriptingConsoleUI {
   /* (non-Javadoc)
    * @see fr.ign.cogit.geoxygene.scripting.ScriptingConsole#removeConsoleListener(fr.ign.cogit.geoxygene.scripting.ConsoleListener)
    */
+  @Override
   public void clearConsoleListeners() {
     synchronized (this.listeners) {
       this.listeners.clear();
