@@ -22,7 +22,6 @@
 package fr.ign.cogit.geoxygene.matching.dst.operators;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -46,7 +45,7 @@ public class SmetsOp implements CombinationOp {
 
   @Override
   public List<Pair<byte[], Float>> combine(List<List<Pair<byte[], Float>>> masspotentials) {
-    logger.info(masspotentials.size());
+//    logger.info(masspotentials.size());
     if (masspotentials.size() == 1) {
       return masspotentials.get(0);
     }
@@ -94,13 +93,13 @@ public class SmetsOp implements CombinationOp {
             List<Pair<byte[], Float>> m2values = conditionnedMassPotentials.get(i);
             m1values = this.smetsOp2mass(m1values, m2values);
           }
-          if (logger.isDebugEnabled()) {
-            logger.debug("---Result of all masses combination using Smets rule---");
-            for (Pair<byte[], Float> hyp : m1values) {
-              logger.debug("Value is " + hyp.getSecond() + "for combination "
-                  + Arrays.toString(hyp.getFirst()));
-            }
-          }
+//          if (logger.isDebugEnabled()) {
+//            logger.debug("---Result of all masses combination using Smets rule---");
+//            for (Pair<byte[], Float> hyp : m1values) {
+//              logger.debug("Value is " + hyp.getSecond() + "for combination "
+//                  + Arrays.toString(hyp.getFirst()));
+//            }
+//          }
           return m1values;
         } catch (Exception e) {
           logger
@@ -122,9 +121,9 @@ public class SmetsOp implements CombinationOp {
    */
   private List<Pair<byte[], Float>> smetsOp2mass(List<Pair<byte[], Float>> mass1,
       List<Pair<byte[], Float>> mass2) {
-    if (logger.isDebugEnabled()) {
-      logger.debug("---Combination of 2 mass functions---");
-    }
+//    if (logger.isDebugEnabled()) {
+//      logger.debug("---Combination of 2 mass functions---");
+//    }
     // Le résultat est une masse de croyance.
     List<Pair<byte[], Float>> massresult = new ArrayList<Pair<byte[], Float>>();
     // Fusion des masses
@@ -137,13 +136,18 @@ public class SmetsOp implements CombinationOp {
     // Tri et suppression des doublons
     CombinationAlgos.sortKernel(massresult);
     CombinationAlgos.deleteDoubles(massresult);
-    if (logger.isDebugEnabled()) {
-      logger.debug("---Result of the combination---");
-      for (Pair<byte[], Float> hyp : massresult) {
-        logger.debug("Value is " + hyp.getSecond() + " for hypothesis"
-            + Arrays.toString(hyp.getFirst()));
-      }
-    }
+//    if (logger.isDebugEnabled()) {
+//      logger.debug("---Result of the combination---");
+//      for (Pair<byte[], Float> hyp : massresult) {
+//        logger.debug("Value is " + hyp.getSecond() + " for hypothesis"
+//            + Arrays.toString(hyp.getFirst()));
+//      }
+//    }
     return massresult;
+  }
+
+  @Override
+  public Float getConflict() {
+    return new Float(0f);
   }
 }

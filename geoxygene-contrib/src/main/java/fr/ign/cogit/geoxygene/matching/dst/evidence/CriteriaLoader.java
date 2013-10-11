@@ -30,8 +30,8 @@ import fr.ign.cogit.geoxygene.matching.dst.FactoryType;
 /**
  * A class to load sources. It should be made more flexible.
  * <p>
- * Classe fournissant les méthodes statiques permettant la création des
- * fonctions de masse de croyance définies pour un type de donnée choisi.
+ * Classe fournissant les méthodes statiques permettant la création des fonctions de masse de
+ * croyance définies pour un type de donnée choisi.
  * @author Bertrand Dumenieu
  */
 public class CriteriaLoader {
@@ -41,7 +41,7 @@ public class CriteriaLoader {
    * classe a pour finalité d'être remplacée par quelque chose de plus souple.
    * @return
    */
-  public static Collection<Source<Hypothesis>> load(FactoryType type) {
+  public static <F, H extends Hypothesis> Collection<Source<F, H>> load(FactoryType type) {
     String path = CriteriaLoader.class.getPackage().toString();
     path = path.substring(0, path.lastIndexOf('.'));
     path += ".sources.";
@@ -63,8 +63,8 @@ public class CriteriaLoader {
    * @return
    */
   @SuppressWarnings("unchecked")
-  private static Collection<Source<Hypothesis>> load(String path) {
-    Collection<Source<Hypothesis>> loadedSources = new HashSet<Source<Hypothesis>>();
+  private static <F, H extends Hypothesis> Collection<Source<F, H>> load(String path) {
+    Collection<Source<F, H>> loadedSources = new HashSet<Source<F, H>>();
     String realPath = path;
     realPath = path.replace('.', File.separatorChar);
     realPath = File.separatorChar + realPath;
@@ -75,7 +75,7 @@ public class CriteriaLoader {
       Class<?> clazz = null;
       try {
         clazz = Class.forName(classpath);
-        loadedSources.add((Source<Hypothesis>) clazz.newInstance());
+        loadedSources.add((Source<F, H>) clazz.newInstance());
       } catch (ClassNotFoundException e) {
         System.out.println("Loading of class " + file.getName() + " failed : no class found");
         e.printStackTrace();

@@ -24,6 +24,7 @@ package fr.ign.cogit.geoxygene.matching.dst.sources.surface;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
@@ -51,8 +52,8 @@ public class EuclidianDistance extends GeoSource {
   }
 
   @Override
-  public List<Pair<byte[], Float>> evaluate(GeomHypothesis reference,
-      List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
+  public List<Pair<byte[], Float>> evaluate(IFeature reference, List<GeomHypothesis> candidates,
+      EvidenceCodec<GeomHypothesis> codec) {
     List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
     // List<byte[]> focalset = new ArrayList<byte[]>();
     // IFeature reference = GeoMatching.getInstance().getReference();
@@ -80,7 +81,10 @@ public class EuclidianDistance extends GeoSource {
   private float compute(IGeometry geom, IGeometry geom2) {
     return (float) geom.distance(geom2);
   }
-
+  @Override
+  public double evaluate(IFeature ref, GeomHypothesis candidate) {
+    return compute(ref.getGeom(), candidate.getGeom());
+  }
   @Override
   public String getName() {
     return "Distance Euclidienne";

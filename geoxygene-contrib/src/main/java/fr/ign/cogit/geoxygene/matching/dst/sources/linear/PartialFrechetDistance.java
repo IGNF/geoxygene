@@ -24,6 +24,7 @@ package fr.ign.cogit.geoxygene.matching.dst.sources.linear;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.distance.Frechet;
@@ -58,14 +59,14 @@ public class PartialFrechetDistance extends GeoSource {
    * Evaluation.
    */
   @Override
-  public List<Pair<byte[], Float>> evaluate(GeomHypothesis reference,
+  public List<Pair<byte[], Float>> evaluate(IFeature reference,
       final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
     List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
     float sum = 0;
     for (GeomHypothesis h : candidates) {
       float distance = (float) this.compute(reference.getGeom(), h.getGeom());
       if (distance < this.threshold) {
-        distance /= this.threshold;
+        distance = (this.threshold - distance) / this.threshold;
         byte[] encoded = codec.encode(new GeomHypothesis[] { h });
         weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
         sum += distance;
@@ -86,9 +87,15 @@ public class PartialFrechetDistance extends GeoSource {
   private double compute(IGeometry geo1, IGeometry geo2) {
     ILineString l1 = new GM_LineString(geo1.coord());
     ILineString l2 = new GM_LineString(geo2.coord());
-    System.out.println("l1 = " + l1);
-    System.out.println("l2 = " + l2);
+//    System.out.println("l1 = " + l1);
+//    System.out.println("l2 = " + l2);
     double v = Frechet.partialFrechet(l1, l2);
     return v;
+  }
+  @Override
+  public double evaluate(IFeature ref, GeomHypothesis candidate) {
+    double distance = compute(ref.getGeom(), candidate.getGeom());
+    distance = (this.threshold - distance) / this.threshold;
+    return Math.min(1, Math.max(0, distance));
   }
 }
