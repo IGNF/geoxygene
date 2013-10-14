@@ -31,9 +31,8 @@ public class IOWindowChooser {
     DTMAscFilter mntASC = new DTMAscFilter();
 
     if (mntASC.accept(f)) {
-      new DTMWindow(f.getAbsolutePath(), imp);
-    }
-
+        (new DTMWindow(f.getAbsolutePath(), imp)).setVisible(true);
+      }
     //SHPFilter
     SHPFilter shpFilter = new SHPFilter();
     
