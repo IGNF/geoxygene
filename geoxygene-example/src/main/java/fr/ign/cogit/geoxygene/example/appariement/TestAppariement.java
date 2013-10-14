@@ -117,11 +117,10 @@ public class TestAppariement extends GeOxygeneApplication {
 
         // Adding a new Project Frame
         ProjectFrame projectFrame = this.getMainFrame().newProjectFrame();
-//        ProjectFrame projectFrame = new ProjectFrame(getFrame(), getIcon());
-//        projectFrame.setSize(this.getFrame().getDesktopPane().getSize());
-//        projectFrame.setVisible(true);
-//        this.getFrame().getDesktopPane().add(projectFrame, JLayeredPane.DEFAULT_LAYER);
-//        this.getFrame().getDesktopPane().setSelectedFrame(projectFrame);
+        projectFrame.getGui().setSize(this.getMainFrame().getGui().getSize());
+        projectFrame.getGui().setVisible(true);
+//        this.getMainFrame().getDesktopPane().add(projectFrame, JLayeredPane.DEFAULT_LAYER);
+        this.getMainFrame().setSelectedFrame(projectFrame);
       
         // Initialisation attribut frame
         // this.frame = (ProjectFrame)TestAppariement.this.getFrame().getDesktopPane().getSelectedFrame();
@@ -163,7 +162,7 @@ public class TestAppariement extends GeOxygeneApplication {
     public static void main(String[] args) {
       try {
           TestAppariement testApplication = new TestAppariement();
-//          testApplication.getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+          testApplication.getMainFrame().getGui().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       } catch (Exception e) {
       }
     }
