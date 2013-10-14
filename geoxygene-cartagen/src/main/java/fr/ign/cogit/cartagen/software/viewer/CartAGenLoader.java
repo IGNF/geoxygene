@@ -168,7 +168,7 @@ public class CartAGenLoader {
     }
 
     // Refresh
-    appli.getFrame().getProjectFrameFromDb(dbName).getLayerViewPanel()
+    appli.getMainFrame().getProjectFrameFromDb(dbName).getLayerViewPanel()
         .repaint();
 
   }

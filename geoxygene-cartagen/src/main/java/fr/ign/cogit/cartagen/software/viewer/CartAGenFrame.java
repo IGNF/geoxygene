@@ -4,14 +4,12 @@ import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JInternalFrame;
-import javax.swing.JLayeredPane;
-
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
+import fr.ign.cogit.geoxygene.appli.FloatingMainFrame;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
-public class CartAGenFrame extends MainFrame {
+public class CartAGenFrame extends FloatingMainFrame  {
 
   /****/
   private static final long serialVersionUID = 1L;
@@ -38,7 +36,7 @@ public class CartAGenFrame extends MainFrame {
    */
   public CartAGenProjectFrame[] getAllCartProjectFrames() {
     List<CartAGenProjectFrame> projectFrameList = new ArrayList<CartAGenProjectFrame>();
-    for (JInternalFrame frame : this.getDesktopPane().getAllFrames()) {
+    for (ProjectFrame frame : this.getDesktopProjectFrames()) {
       if (frame instanceof CartAGenProjectFrame) {
         projectFrameList.add((CartAGenProjectFrame) frame);
       }
@@ -54,15 +52,15 @@ public class CartAGenFrame extends MainFrame {
   public final CartAGenProjectFrame newCartProjectFrame() {
     CartAGenProjectFrame projectFrame = new CartAGenProjectFrame(this,
         this.application.getIcon());
-    projectFrame.setSize(this.getDesktopPane().getSize());
-    projectFrame.setVisible(true);
-    this.getDesktopPane().add(projectFrame, JLayeredPane.DEFAULT_LAYER);
+    projectFrame.getInternalFrame().setSize(this.getGui().getSize());
+    projectFrame.getInternalFrame().setVisible(true);
+    this.addComponentInFrame(projectFrame.getTitle(), projectFrame.getInternalFrame());
     try {
-      projectFrame.setSelected(true);
+      projectFrame.getInternalFrame().setSelected(true);
     } catch (PropertyVetoException e) {
       e.printStackTrace();
     }
-    projectFrame.setToolTipText(projectFrame.getTitle());
+    projectFrame.getInternalFrame().setToolTipText(projectFrame.getTitle());
     return projectFrame;
   }
 
@@ -73,13 +71,11 @@ public class CartAGenFrame extends MainFrame {
    * @return
    */
   public CartAGenProjectFrame getProjectFrameFromDb(String dbName) {
-    for (JInternalFrame frame : this.getDesktopPane().getAllFrames()) {
-      if (frame instanceof CartAGenProjectFrame) {
-        if (((CartAGenProjectFrame) frame).getDb() == null)
+    for (CartAGenProjectFrame frame : this.getAllCartProjectFrames()) {
+        if ( frame.getDb() == null)
           continue;
-        if (((CartAGenProjectFrame) frame).getDb().getName().equals(dbName))
+        if (frame.getDb().getName().equals(dbName))
           return (CartAGenProjectFrame) frame;
-      }
     }
     return null;
   }

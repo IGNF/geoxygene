@@ -79,7 +79,7 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
   @Override
   public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
-    JMenuBar menuBar = application.getFrame().getJMenuBar();
+    JMenuBar menuBar = application.getMainFrame().getMenuBar();
     // geometries pool menu
     this.menuGeomPool
         .setToolTipText("geometries pool: a set of geometries usefull to display");
@@ -100,7 +100,7 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
       public void actionPerformed(ActionEvent e) {
         // empty the geometries pool layer
         for (CartAGenProjectFrame frame : ((CartAGenFrame) application
-            .getFrame()).getAllCartProjectFrames()) {
+            .getMainFrame()).getAllCartProjectFrames()) {
           frame.emptyGeometriesPool();
         }
       }

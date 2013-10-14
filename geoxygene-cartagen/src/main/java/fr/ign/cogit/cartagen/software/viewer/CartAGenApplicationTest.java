@@ -16,9 +16,10 @@ import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.GeneralisationSpecifications;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
+import fr.ign.cogit.geoxygene.appli.FloatingMainFrame;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplicationProperties;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.MainFrameMenuBar;
 import fr.ign.cogit.geoxygene.appli.SplashScreen;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 
@@ -55,9 +56,9 @@ public class CartAGenApplicationTest extends GeOxygeneApplication {
    * Default constructor
    */
   private CartAGenApplicationTest() {
-    super(true);
+    super();
     this.frame = new CartAGenFrame("CartAGen - GeOxygene", this);
-    this.frame.setVisible(true);
+    this.frame.getGui().setVisible(true);
     this.initializeProperties();
     // pour permettre le fonctionnement du code
     CartagenApplication.getInstance().setCreationFactory(
@@ -81,7 +82,7 @@ public class CartAGenApplicationTest extends GeOxygeneApplication {
   }
 
   @Override
-  public CartAGenFrame getFrame() {
+  public CartAGenFrame getMainFrame() {
     return frame;
   }
 
@@ -128,7 +129,7 @@ public class CartAGenApplicationTest extends GeOxygeneApplication {
     this.setProperties(GeOxygeneApplicationProperties.unmarshall(this
         .getPropertiesFile().getFile()));
     if (this.getProperties().getLastOpenedFile() != null) {
-      MainFrame.getFilechooser().setPreviousDirectory(
+      MainFrameMenuBar.fc.setPreviousDirectory(
           new File(this.getProperties().getLastOpenedFile()));
     }
     for (String pluginName : this.getProperties().getPlugins()) {
@@ -156,8 +157,8 @@ public class CartAGenApplicationTest extends GeOxygeneApplication {
         GeOxygeneApplication.splashImage(), "CartAGen - GeOxygene"); //$NON-NLS-1$
     splashScreen.setVisible(true);
     CartAGenApplicationTest application = CartAGenApplicationTest.getInstance();
-    application.getFrame().newCartProjectFrame();
-    application.getFrame().setVisible(true);
+    application.getMainFrame().newCartProjectFrame();
+    application.getMainFrame().getGui().setVisible(true);
     splashScreen.setVisible(false);
     splashScreen.dispose();
   }

@@ -272,7 +272,7 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
       }
 
       try {
-        CartAGenApplicationTest.getInstance().getFrame()
+        CartAGenApplicationTest.getInstance().getMainFrame()
             .getProjectFrameFromDb(this.txtDataset.getText())
             .getLayerViewPanel().getViewport().zoomToFullExtent();
       } catch (NoninvertibleTransformException e1) {
@@ -322,10 +322,10 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
 
     // on crée la projectFrame associée à la BD
     CartAGenProjectFrame projFrame = new CartAGenProjectFrame(
-        CartAGenApplicationTest.getInstance().getFrame(), null);
-    CartAGenApplicationTest.getInstance().getFrame().getDesktopPane().remove(0);
-    CartAGenApplicationTest.getInstance().getFrame().getDesktopPane()
-        .add(projFrame, JLayeredPane.DEFAULT_LAYER);
+        CartAGenApplicationTest.getInstance().getMainFrame(), null);
+    CartAGenApplicationTest.getInstance().getMainFrame().removeAllProjectFrames();
+    CartAGenApplicationTest.getInstance().getMainFrame().addFrameInDesktop(CartAGenApplicationTest.getInstance().getMainFrame().getTitle(),
+        projFrame.getGui() );
     projFrame.setDb(database);
     projFrame.getSld().setDataSet(dataset);
 
@@ -356,11 +356,10 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
       projFrame.getSld().add(layer);
     }
     projFrame.getLayerViewPanel().repaint();
-    projFrame.setSize(CartAGenApplicationTest.getInstance().getFrame()
-        .getDesktopPane().getSize());
-    projFrame.setVisible(true);
+    projFrame.getInternalFrame().setSize(CartAGenApplicationTest.getInstance().getMainFrame().getSize());
+    projFrame.getInternalFrame().setVisible(true);
     try {
-      projFrame.setSelected(true);
+      projFrame.getInternalFrame().setSelected(true);
     } catch (PropertyVetoException e) {
       e.printStackTrace();
     }

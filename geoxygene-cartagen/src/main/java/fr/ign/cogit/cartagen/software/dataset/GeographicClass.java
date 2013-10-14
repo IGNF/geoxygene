@@ -1,20 +1,23 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.software.dataset;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 public interface GeographicClass {
 
   public String getName();
 
   public String getFeatureTypeName();
+
+  public Class<? extends IGeometry> getGeometryType();
 
   /**
    * Adds a CartAGen unique identifier attribute (and value) to the geographic
