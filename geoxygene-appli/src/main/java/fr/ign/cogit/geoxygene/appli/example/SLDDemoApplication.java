@@ -156,20 +156,18 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     symbolizer.getFill().setGraphicFill(graphicFill);
     Population<DefaultFeature> pop = new Population<DefaultFeature>(
         "GraphicFill_Polygon"); //$NON-NLS-1$
-    pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(230, 330, 120,
-        220))));
+    pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(230, 330, 120, 220))));
     projectFrame.getDataSet().addPopulation(pop);
     projectFrame.getSld().add(layer);
 
   }
-
+  
   /**
-   * Le Graphic Stroke permet de répéter une forme le long d'une ligne. Cette
-   * forme peut être une image (ExternalGraphic) ou une forme prédéfinie (Mark).
+   * Le Graphic Stroke permet de répéter une forme le long d'une ligne.
+   * Cette forme peut être une image (ExternalGraphic) ou une forme prédéfinie (Mark).
    */
   public static void exampleGraphicFill_Stroke_Polygon() {
-    Layer layer = projectFrame.getSld().createLayer(
-        "GraphicFill_Stroke_Polygon", //$NON-NLS-1$
+    Layer layer = projectFrame.getSld().createLayer("GraphicFill_Stroke_Polygon", //$NON-NLS-1$
         GM_Polygon.class, Color.red, Color.yellow, 1f, 4);
     PolygonSymbolizer symbolizer = (PolygonSymbolizer) layer.getSymbolizer();
 

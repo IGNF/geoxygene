@@ -25,8 +25,8 @@ import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 
 public class LegendPaintListener implements PaintListener {
-  protected static Logger LOGGER = Logger.getLogger(LegendPaintListener.class
-      .getName());
+  protected static Logger LOGGER = Logger.getLogger(LegendPaintListener.class.getName());
+
 
   @Override
   public void paint(final LayerViewPanel layerViewPanel, Graphics graphics) {
@@ -186,8 +186,7 @@ public class LegendPaintListener implements PaintListener {
       Expression rotation = graphic.getRotation();
       if (rotation instanceof Literal) {
         // if this is a literal, we can evaluate it
-        at.rotate(-Double.parseDouble(rotation.evaluate(null).toString())
-            * Math.PI / 180.0);
+        at.rotate(-Double.parseDouble(rotation.evaluate(null).toString()) * Math.PI / 180.0); 
       }
       at.scale(size, size);
       markShape = at.createTransformedShape(markShape);
@@ -204,10 +203,10 @@ public class LegendPaintListener implements PaintListener {
     for (ExternalGraphic theGraphic : graphic.getExternalGraphics()) {
       Image onlineImage = theGraphic.getOnlineResource();
       if (onlineImage != null) {
-        g2.drawImage(onlineImage, x - onlineImage.getWidth(null) / 2, y
-            - onlineImage.getHeight(null) / 2, null);
+          g2.drawImage(onlineImage, x - onlineImage.getWidth(null) / 2, y
+                  - onlineImage.getHeight(null) / 2, null);
       } else {
-        LOGGER.error("null online image " + theGraphic.getHref());
+          LOGGER.error("null online image " + theGraphic.getHref());
       }
     }
     if (graphic.getMarks().isEmpty() && graphic.getExternalGraphics().isEmpty()) {

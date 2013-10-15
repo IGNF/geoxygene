@@ -26,5 +26,5 @@
         <passwd>test</passwd>
     </ConnectionParam>
     <DefaultVisualizationType>AWT</DefaultVisualizationType>
-    <ProjectFrameLayout>tabbed</ProjectFrameLayout>
+    <ProjectFrameLayout>floating</ProjectFrameLayout>
 </GeOxygeneApplicationProperties>
