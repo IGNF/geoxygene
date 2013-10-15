@@ -210,4 +210,9 @@ public interface ProjectFrame {
    */
   public void addComponentInProjectFrame(JComponent component, String layout);
 
+  /**
+   * Validates this container and all of its subcomponents. 
+   */
+  public abstract void validate();
+
 }

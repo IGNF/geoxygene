@@ -104,10 +104,10 @@ public class TabbedProjectFrame extends AbstractProjectFrame implements
         this.getPanel().add(this.geometryToolBar, BorderLayout.EAST);
       }
       this.geometryToolBar.setVisible(true);
-      this.getPanel().validate();
+      this.validate();
     } else {
       this.geometryToolBar.setVisible(false);
-      this.getPanel().validate();
+      this.validate();
     }
   }
 
@@ -163,5 +163,4 @@ public class TabbedProjectFrame extends AbstractProjectFrame implements
   public void addComponentInProjectFrame(JComponent component, String layout) {
     this.getGui().add(component, layout);
   }
-
 }

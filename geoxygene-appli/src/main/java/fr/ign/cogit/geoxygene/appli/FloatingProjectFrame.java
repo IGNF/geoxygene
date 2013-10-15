@@ -42,9 +42,6 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  */
 public class FloatingProjectFrame extends AbstractProjectFrame implements
     ActionListener {
-
-  private static final long serialVersionUID = 6360566100240417202L; // Serializable
-                                                                     // UID
   private GeometryToolBar geometryToolBar = null;
   /** The default frame width. */
   private static final int DEFAULT_WIDTH = 600;
@@ -101,10 +98,10 @@ public class FloatingProjectFrame extends AbstractProjectFrame implements
             .add(this.geometryToolBar, BorderLayout.EAST);
       }
       this.geometryToolBar.setVisible(true);
-      this.getInternalFrame().validate();
+      this.validate();
     } else {
       this.geometryToolBar.setVisible(false);
-      this.getInternalFrame().validate();
+      this.validate();
     }
   }
 
@@ -158,5 +155,4 @@ public class FloatingProjectFrame extends AbstractProjectFrame implements
   public void addComponentInProjectFrame(JComponent component, String layout) {
     this.getInternalFrame().getContentPane().add(component, layout);
   }
-
 }

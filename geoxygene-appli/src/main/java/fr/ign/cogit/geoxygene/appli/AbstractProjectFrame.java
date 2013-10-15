@@ -619,5 +619,8 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
   public void repaint() {
     // do nothing. let this behavior to subclasses
   }
-
+  @Override
+  public void validate() {
+    this.getGui().validate();    
+  }
 }
