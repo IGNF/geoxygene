@@ -9,6 +9,9 @@ public class ScalePaintListener implements PaintListener {
 
   @Override
   public void paint(final LayerViewPanel layerViewPanel, Graphics graphics) {
+    if (layerViewPanel == null || layerViewPanel.getViewport() == null) {
+      return;
+    }
     int shift = 10;
     // int rightShift = 80;
     int barHeight = 5;
