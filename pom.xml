@@ -717,7 +717,6 @@
 		<module>geoxygene-contrib</module>
 		<module>geoxygene-database</module>
 		<module>geoxygene-deprecated</module>
-		<module>geoxygene-example</module>
 		<module>geoxygene-feature</module>
 		<module>geoxygene-filter</module>
 		<module>geoxygene-io</module>
