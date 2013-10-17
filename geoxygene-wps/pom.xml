@@ -24,8 +24,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<geoserver.extension.version>2.3.5</geoserver.extension.version>
-		<path.geoserver>D:\MesProgrammes\GeoServer\GeoServer-2.3.5\GeoServer 2.3.5\webapps\geoserver\WEB-INF\lib</path.geoserver>
+		<geoserver.extension.version>2.4.0</geoserver.extension.version>
+		<path.geoserver>D:\MesProgrammes\GeoServer\GeoServer-2.4.0\webapps\geoserver\WEB-INF\lib</path.geoserver>
 	</properties>
 
 	<dependencies>
@@ -43,6 +43,11 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-io</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -79,14 +84,19 @@
 								<configuration>
 									<tasks>
 									
-									<!-- 
-									   <available file="${configDirectory}/${configId}"
-                                    property="configIsAvailable" />
-                                <fail
-                                    message="Unable to locate configuration: ${configDirectory}/${configId}"
-                                    unless="configIsAvailable" />
- -->
-										<!-- <echo>Stop geoserver</echo> <exec executable="D:\MesProgrammes\GeoServer\GeoServer2.2.3\bin\shutdown.bat 
+									<!-- check if property "path.geoserver" is available, if not fail -->
+	                                <fail message="Property path.geoserver needs to be set to a value">
+	                                    <condition>
+	                                        <or>
+	                                            <equals arg1="${path.geoserver}" arg2=""/>
+	                                            <not>
+	                                                <isset property="path.geoserver"/>
+	                                            </not>
+	                                       </or>
+	                                   </condition>
+	                                </fail>
+
+									<!-- <echo>Stop geoserver</echo> <exec executable="D:\MesProgrammes\GeoServer\GeoServer2.2.3\bin\shutdown.bat 
 											/>" -->
 
 										<echo>Delete GeOxygene libraries</echo>
@@ -99,35 +109,32 @@
 										<delete
 											file="${path.geoserver}geoxygene-contrib-${project.version}.jar" />
 										<delete file="${path.geoserver}geoxygene-io-${project.version}.jar" />
+										<delete file="${path.geoserver}geoxygene-util-${project.version}.jar" />
 										<delete
 											file="${path.geoserver}geoxygene-spatial-${project.version}.jar" />
 
 										<echo>Copy GeOxygene libraries into GeoServer WEB-INF\lib</echo>
 										<copy file="${basedir}/target/geoxygene-wps-${project.version}.jar"
 											todir="${path.geoserver}" />
-
 										<copy
 											file="${basedir}/../geoxygene-api\target\geoxygene-api-${project.version}.jar"
 											todir="${path.geoserver}" />
-
 										<copy
 											file="${basedir}/../geoxygene-feature\target\geoxygene-feature-${project.version}.jar"
 											todir="${path.geoserver}" />
-
 										<copy
 											file="${basedir}/../geoxygene-contrib\target\geoxygene-contrib-${project.version}.jar"
 											todir="${path.geoserver}" />
-
 										<copy
 											file="${basedir}/../geoxygene-io\target\geoxygene-io-${project.version}.jar"
 											todir="${path.geoserver}" />
-
+										<copy
+											file="${basedir}/../geoxygene-util\target\geoxygene-util-${project.version}.jar"
+											todir="${path.geoserver}" />
 										<copy
 											file="${basedir}/../geoxygene-spatial\target\geoxygene-spatial-${project.version}.jar"
 											todir="${path.geoserver}" />
 
-										<!-- echo>Start geoserver</echo> <exec executable="D:\MesProgrammes\GeoServer\GeoServer2.2.3\bin\startup.bat" 
-											/ -->
 									</tasks>
 								</configuration>
 							</execution>
