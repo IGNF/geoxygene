@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Primitive;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
+import fr.ign.cogit.parameters.Parameters;
 
 /**
  * Chargeur permettant de créer une carte topo à partir de classes de
@@ -258,6 +260,22 @@ public class Chargeur {
     } catch (NoSuchMethodException e) {
       e.printStackTrace();
     }
+  }
+  
+  public static void importAsEdges(Collection<? extends IFeature> edges,
+      CarteTopo map, Parameters param) {
+    
+    // test validation param file here ????
+    
+    // Initialize parameters from global parameters
+    String orientationAttribute = param.getString("orientationAttribute");
+    String groundPositionAttribute = param.getString("groundPositionAttribute");
+    double tolerance = param.getDouble("tolerance");
+    Map<Object, Integer> orientationMap = new HashMap<Object, Integer>(2);
+    // orientationMap.put(key, value);
+    
+    Chargeur.importAsEdges(edges, map, orientationAttribute, orientationMap, 
+        "", null, groundPositionAttribute, tolerance);
   }
 
   /**
