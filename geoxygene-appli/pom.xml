@@ -49,6 +49,112 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+        <profile>
+            <id>executable</id>
+                <build>
+                    <plugins>
+
+            <!-- On copie toutes les dépendances dans le répertoire /exec/lib -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib/</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                    <useUniqueVersions>false</useUniqueVersions>
+                    <!-- <finalName>GeOxygene-1.6-SNAPSHOT</finalName> --> 
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                            
+                                <!-- check if config is available, if not fail -->
+                                <fail message="Property dir.executable needs to be set to a value">
+                                    <condition>
+                                        <or>
+                                            <equals arg1="${dir.executable}" arg2=""/>
+                                            <not>
+                                                <isset property="dir.executable"/>
+                                            </not>
+                                       </or>
+                                   </condition>
+                                </fail>
+                                
+                                
+                                
+                            
+                                <echo>Suppression du répertoire ${dir.executable}</echo>
+                                <delete dir="${dir.executable}" />
+                                 
+                                <echo>Création du répertoire ${dir.executable}</echo>
+                                <mkdir dir="${dir.executable}" />
+                            
+                                <echo>Copy all files and directories to a special directory</echo>
+                                <copy file="${basedir}/target/geoxygene-appli-${project.version}.jar" todir="${dir.executable}" />
+                                
+                                <!-- lib directory -->
+                                <copy todir="${dir.executable}/lib" > 
+                                    <fileset dir="${basedir}/target/lib" />
+                                </copy>
+                                
+                                <!-- conf directory -->
+                                <copy todir="${dir.executable}/conf">
+                                    <fileset dir="${basedir}/conf" />
+                                </copy>
+                                
+                                <!-- script bat -->
+                                <copy file="${basedir}/install/geoxygene.bat"
+                                    todir="${dir.executable}" />
+                                    
+                                <!-- INSTALL -->
+                                <copy file="${basedir}/install/INSTALL.TXT"
+                                    todir="${dir.executable}" />
+                            
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+                 </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 	<dependencies>
 		<dependency>
