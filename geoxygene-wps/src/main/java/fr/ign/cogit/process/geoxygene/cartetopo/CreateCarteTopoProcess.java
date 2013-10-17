@@ -13,8 +13,6 @@
 */
 package fr.ign.cogit.process.geoxygene.cartetopo;
 
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.process.factory.DescribeParameter;
@@ -25,15 +23,17 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Chargeur;
 import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
+import fr.ign.cogit.parameters.Parameters;
 import fr.ign.cogit.process.geoxygene.GeoxygeneProcess;
 import fr.ign.cogit.process.geoxygene.cartetopo.ppio.CarteTopoResult;
+
 
 /**
  * 
  * 
  *
  */
-@DescribeProcess(title = "CreateCarteTopoProcess", description = "Create ")
+@DescribeProcess(title = "CreateCarteTopoProcess", description = "Create  ")
 public class CreateCarteTopoProcess implements GeoxygeneProcess {
     
     /** LOGGER. */
@@ -47,7 +47,8 @@ public class CreateCarteTopoProcess implements GeoxygeneProcess {
     @DescribeResult(name = "CarteTopo", description = "Carte topologique")
     public CarteTopoResult execute(
         @DescribeParameter(name = "rawDataset", description = "Raw data") SimpleFeatureCollection rawDataset,
-        @DescribeParameter(name = "tolerance", description = "Tolerance") double tolerance) {
+        @DescribeParameter(name = "param", description = "Parameters") Parameters param
+    ) {
         
         LOGGER.debug("Create cartetopo begin process.");
         
@@ -57,14 +58,8 @@ public class CreateCarteTopoProcess implements GeoxygeneProcess {
         IFeatureCollection<?> edges = GeOxygeneGeoToolsTypes.convert2IFeatureCollection(rawDataset);
         
         // A passer en paramètres
-        String orientationAttribute = "";
-        Map<Object, Integer> orientationMap = null;
-        String filterAttribute = "";
-        Map<Object, Boolean> filterMap = null;
-        String groundPositionAttribute = "";
         
-        Chargeur.importAsEdges(edges, networkMap, orientationAttribute, 
-                orientationMap, filterAttribute, filterMap, groundPositionAttribute, tolerance);
+        Chargeur.importAsEdges(edges, networkMap, param);
         
         // Result
         CarteTopoResult result = new CarteTopoResult();

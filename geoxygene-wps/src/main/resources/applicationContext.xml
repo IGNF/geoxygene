@@ -13,6 +13,9 @@
 
     <bean id="CarteTopoResultPPIO"
            class="fr.ign.cogit.process.geoxygene.cartetopo.ppio.CarteTopoResultPPIO" />
+           
+    <!-- <bean id="ParametersPPIO"
+           class="fr.ign.cogit.process.ppio.ParametersPPIO" /> -->
 
 
     <!-- ========================================================================== -->
