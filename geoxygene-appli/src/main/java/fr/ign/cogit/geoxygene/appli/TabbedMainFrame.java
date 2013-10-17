@@ -38,8 +38,9 @@ import javax.swing.JTabbedPane;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.util.CompositeIcon;
-import fr.ign.cogit.geoxygene.util.VTextIcon;
+import fr.ign.cogit.geoxygene.icon.CompositeIcon;
+import fr.ign.cogit.geoxygene.icon.VTextIcon;
+
 
 /** @author Julien Perret */
 public class TabbedMainFrame extends AbstractMainFrame {
