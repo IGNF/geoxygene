@@ -66,7 +66,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     super();
     this.setIconImage(iconImage);
     this.setMainFrame(frame);
-    this.title = "Project #" + AbstractProjectFrame.PFID++;
+    this.title = "Desktop #" + AbstractProjectFrame.PFID++;
     this.sld = new StyledLayerDescriptor(new DataSet());
     // this.layerViewPanel.setModel(this.sld);
     // this.layerLegendPanel.setModel(this.sld);
