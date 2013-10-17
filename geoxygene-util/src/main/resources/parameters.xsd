@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-	<xsd:complexType name="Parameter">
-		<xsd:sequence>
-			<xsd:element name="param" minOccurs="0" maxOccurs="unbounded">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="key" minOccurs="1" type="xsd:anyType" />
-						<xsd:element name="value" minOccurs="1" type="xsd:anyType" />
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
+	<xsd:element name="ParameterConfig">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="parameters">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="param" minOccurs="0" maxOccurs="unbounded">
+								<xsd:complexType>
+									<xsd:attribute name="key" type="xsd:string" use="required" />
+            						<xsd:attribute name="value" type="xsd:string" use="required" />
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+					<xsd:unique name="unique-key">
+      					<xsd:selector xpath="param"/>
+      					<xsd:field xpath="@key"/>
+   					</xsd:unique>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 </xsd:schema>

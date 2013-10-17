@@ -12,7 +12,7 @@
 
 	<artifactId>geoxygene-util</artifactId>
 	<packaging>jar</packaging>
-	<name>geoxygene-util</name>
+	<name>Module util</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,6 +29,14 @@
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
         </dependency>
+        
+        <!-- xmlUnit for testing -->
+		<dependency>
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
+			<version>1.4</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>
