@@ -5,7 +5,7 @@ package fr.ign.cogit.geoxygene.appli.layer;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 
 /** @author JeT This factory creates LayerViewPanel class instances */
 public final class LayerViewPanelFactory {

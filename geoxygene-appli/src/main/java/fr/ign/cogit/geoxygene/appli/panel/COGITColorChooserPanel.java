@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.appli;
+package fr.ign.cogit.geoxygene.appli.panel;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -23,6 +23,7 @@ import javax.swing.JTable;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.table.TableColumn;
 
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 

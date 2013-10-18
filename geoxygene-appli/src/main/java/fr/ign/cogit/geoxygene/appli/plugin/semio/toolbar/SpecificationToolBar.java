@@ -62,11 +62,11 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 
+
 import fr.ign.cogit.geoxygene.semio.legend.legendContent.*;
 import fr.ign.cogit.geoxygene.semio.legend.metadata.*;
 import fr.ign.cogit.geoxygene.semio.legend.symbol.GraphicSymbol;
-
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**

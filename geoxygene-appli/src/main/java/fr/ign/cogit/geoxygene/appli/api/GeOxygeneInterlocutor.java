@@ -25,10 +25,11 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli;
+package fr.ign.cogit.geoxygene.appli.api;
 
 import java.util.Map;
 
+import fr.ign.cogit.geoxygene.appli.GeOxygeneEventType;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventType.GeOxygeneEventKey;
 
 /**

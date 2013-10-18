@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.appli.gui;
+package fr.ign.cogit.geoxygene.appli.panel;
 
 import java.awt.Component;
 import java.awt.Frame;
@@ -136,6 +136,18 @@ public class FileChooser {
         }
         return null;
     }
+    
+    public File[] getFiles(Component parent) {
+        this.fileChooser.setMultiSelectionEnabled(true);
+        this.fileChooser.setCurrentDirectory(this.getPreviousDirectory());
+        int returnVal = this.fileChooser.showOpenDialog(parent);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+          this.setPreviousDirectory(new File(this.fileChooser.getSelectedFile()
+              .getAbsolutePath()));
+          return this.fileChooser.getSelectedFiles();
+        }
+        return null;
+      }
 
     public String getDescription() {
         return this.fileChooser.getFileFilter().getDescription();

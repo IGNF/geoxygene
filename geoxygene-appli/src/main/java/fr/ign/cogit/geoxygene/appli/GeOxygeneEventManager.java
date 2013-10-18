@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventType.GeOxygeneEventKey;
+import fr.ign.cogit.geoxygene.appli.api.GeOxygeneInterlocutor;
 
 /**
  * @author JeT

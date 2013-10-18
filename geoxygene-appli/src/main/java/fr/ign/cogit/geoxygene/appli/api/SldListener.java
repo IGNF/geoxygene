@@ -16,11 +16,12 @@
  * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package fr.ign.cogit.geoxygene.appli;
+package fr.ign.cogit.geoxygene.appli.api;
 
 import java.awt.event.ActionListener;
 import java.util.Collection;
 
+import fr.ign.cogit.geoxygene.appli.LayerLegendPanel;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 

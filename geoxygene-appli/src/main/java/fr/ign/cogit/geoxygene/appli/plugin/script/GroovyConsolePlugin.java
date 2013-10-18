@@ -44,7 +44,7 @@ import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventType;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventType.GeOxygeneEventKey;
-import fr.ign.cogit.geoxygene.appli.GeOxygeneInterlocutor;
+import fr.ign.cogit.geoxygene.appli.api.GeOxygeneInterlocutor;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.function.ui.FunctionGraphPanel;
 import fr.ign.cogit.geoxygene.scripting.ConsoleEvent;

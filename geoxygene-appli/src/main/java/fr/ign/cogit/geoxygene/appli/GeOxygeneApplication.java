@@ -30,6 +30,8 @@ import javax.swing.ImageIcon;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;

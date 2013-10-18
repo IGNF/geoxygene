@@ -45,7 +45,7 @@ import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventType;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventType.GeOxygeneEventKey;
-import fr.ign.cogit.geoxygene.appli.GeOxygeneInterlocutor;
+import fr.ign.cogit.geoxygene.appli.api.GeOxygeneInterlocutor;
 import fr.ign.cogit.geoxygene.appli.render.RenderingException;
 import fr.ign.cogit.geoxygene.appli.render.primitive.AbstractPrimitiveRenderer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.GLPrimitiveRenderer;

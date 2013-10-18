@@ -72,9 +72,10 @@ import javax.swing.table.TableColumn;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.appli.gui.AddPostgisLayer;
-import fr.ign.cogit.geoxygene.appli.gui.AttributeTable;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
+import fr.ign.cogit.geoxygene.appli.panel.AddPostgisLayer;
+import fr.ign.cogit.geoxygene.appli.panel.AttributeTable;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.SldListener;

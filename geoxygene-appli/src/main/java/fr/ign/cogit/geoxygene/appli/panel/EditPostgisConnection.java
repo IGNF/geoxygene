@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.appli.gui;
+package fr.ign.cogit.geoxygene.appli.panel;
 
 import java.awt.Color;
 import java.awt.Dimension;

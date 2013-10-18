@@ -17,7 +17,7 @@
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package fr.ign.cogit.geoxygene.appli.gui;
+package fr.ign.cogit.geoxygene.appli.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -65,7 +65,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;

@@ -29,8 +29,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 
 /**
  * Zoom mode. Allows the user to zoom.

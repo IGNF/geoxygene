@@ -38,6 +38,7 @@ import javax.swing.JTabbedPane;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.icon.CompositeIcon;
 import fr.ign.cogit.geoxygene.icon.VTextIcon;
 
@@ -183,7 +184,8 @@ public class TabbedMainFrame extends AbstractMainFrame {
       logger
           .debug("No current desktop found newProjectFrame() method.Create a new desktop with name '"
               + projectFrame.getName() + "'");
-      currentDesktop = (JTabbedPane) createNewDesktop(projectFrame.getName());
+      int index = this.getDesktopTabbedPane().getTabCount() + 1;
+      currentDesktop = (JTabbedPane) createNewDesktop("Desktop #" + index);
     }
     addProjectFrame(currentDesktop, projectFrame);
 

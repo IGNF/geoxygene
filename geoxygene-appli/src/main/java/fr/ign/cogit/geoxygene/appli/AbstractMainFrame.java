@@ -45,6 +45,8 @@ import javax.swing.plaf.basic.BasicButtonUI;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
 
 /**

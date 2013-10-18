@@ -3,7 +3,7 @@ package fr.ign.cogit.geoxygene.appli.mode;
 import javax.swing.JButton;
 
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 
 public class CreateInteriorRingMode extends AbstractGeometryEditMode {
   /**

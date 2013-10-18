@@ -33,9 +33,9 @@ import javax.swing.JToolBar;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.COGITColorChooserPanel;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.panel.COGITColorChooserPanel;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 
 /**

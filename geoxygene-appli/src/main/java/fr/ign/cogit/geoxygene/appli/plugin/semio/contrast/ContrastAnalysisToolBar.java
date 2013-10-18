@@ -42,8 +42,9 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.MainFrameMenuBar;
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.panel.FileChooser;
 import fr.ign.cogit.geoxygene.appli.plugin.semio.toolbar.SpecificationToolBar;
 import fr.ign.cogit.geoxygene.semio.legend.improvement.BasicStopCriteria;
 import fr.ign.cogit.geoxygene.semio.legend.improvement.LucilContrastAnalysis;
@@ -160,7 +161,7 @@ public class ContrastAnalysisToolBar extends JToolBar implements
           return "XML Files"; //$NON-NLS-1$
         }
       };
-      fr.ign.cogit.geoxygene.appli.FileChooser fileChooser = MainFrameMenuBar.fc;
+      FileChooser fileChooser = MainFrameMenuBar.fc;
       fileChooser.getFileChooser().addChoosableFileFilter(xmlFilter);
       fileChooser.getFileChooser().removeChoosableFileFilter(
           fileChooser.getFileChooser().getChoosableFileFilters()[0]);

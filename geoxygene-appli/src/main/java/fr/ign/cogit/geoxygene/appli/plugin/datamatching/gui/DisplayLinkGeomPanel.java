@@ -8,7 +8,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import fr.ign.cogit.geoxygene.appli.FloatingProjectFrame;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;

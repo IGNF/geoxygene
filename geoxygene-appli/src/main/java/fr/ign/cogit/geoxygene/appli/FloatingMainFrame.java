@@ -35,9 +35,12 @@ import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 
 /** @author Julien Perret */
 public class FloatingMainFrame extends AbstractMainFrame {
@@ -154,7 +157,9 @@ public class FloatingMainFrame extends AbstractMainFrame {
       logger
           .debug("No current desktop found newProjectFrame() method.Create a new desktop with name '"
               + projectFrame.getName() + "'");
-      currentDesktop = (JDesktopPane) createNewDesktop(projectFrame.getName());
+      // currentDesktop = (JDesktopPane) createNewDesktop(projectFrame.getName());
+      int index = this.getDesktopTabbedPane().getTabCount() + 1;
+      currentDesktop = (JDesktopPane) createNewDesktop("Desktop #" + index);
     }
 
     projectFrame.getInternalFrame().setSize(
