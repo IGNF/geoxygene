@@ -83,6 +83,30 @@
 				<!-- <skip.unit.tests>true</skip.unit.tests> -->
 			</properties>
 		</profile>
+		<profile>
+            <id>executable</id>
+            <build>
+                <plugins>		
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- + la configuration dans les modules enfants -->
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>geoserver</id>
+		</profile>
 	</profiles>
 
 
@@ -277,27 +301,8 @@
 							<mainClass>fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</mainClass>
 							-->
 						</manifest>
-						<manifestEntries>
-							<mode>development</mode>
-							<url>${project.url}</url>
-							<key>value</key>
-						</manifestEntries>
 					</archive>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 			<!-- Used to add source directories to our build. -->
