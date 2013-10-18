@@ -57,7 +57,7 @@ public class ModeSelector implements ContainerListener, KeyListener,
   /**
    * Logger.
    */
-  static final Logger logger = Logger.getLogger(ModeSelector.class.getName());
+  static final Logger LOGGER = Logger.getLogger(ModeSelector.class.getName());
   /**
    * List of modes.
    */
@@ -284,6 +284,7 @@ public class ModeSelector implements ContainerListener, KeyListener,
       this.currentMode.getButton().setEnabled(true);
     }
     this.currentMode = mode;
+    LOGGER.debug("Current mode = " + currentMode);
     this.currentMode.getButton().setEnabled(false);
     if (this.getMainFrame() != null
         && this.getMainFrame().getSelectedProjectFrame() != null) {

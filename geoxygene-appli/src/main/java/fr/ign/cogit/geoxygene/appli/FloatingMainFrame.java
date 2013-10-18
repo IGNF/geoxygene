@@ -41,6 +41,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
 
 /** @author Julien Perret */
 public class FloatingMainFrame extends AbstractMainFrame {
@@ -52,15 +53,14 @@ public class FloatingMainFrame extends AbstractMainFrame {
   static Logger logger = Logger.getLogger(FloatingMainFrame.class.getName());
 
   private final Map<JComponent, FloatingProjectFrame> projectFrameMap = new HashMap<JComponent, FloatingProjectFrame>();
-
+  
   /**
    * Constructor using a title and an associated application.
    * 
    * @param title the title of the frame
    * @param theApplication the associated application
    */
-  public FloatingMainFrame(final String title,
-      final GeOxygeneApplication application) {
+  public FloatingMainFrame(final String title, final GeOxygeneApplication application) {
     super(title, application);
   }
 
@@ -130,7 +130,7 @@ public class FloatingMainFrame extends AbstractMainFrame {
     return getProjectFrameFromGui(currentDesktop.getSelectedFrame());
 
   }
-
+  
   /*
    * (non-Javadoc)
    * 
@@ -192,6 +192,7 @@ public class FloatingMainFrame extends AbstractMainFrame {
     JDesktopPane newDesktop = new JDesktopPane();
     newDesktop.setDesktopManager(new DefaultDesktopManager());
     newDesktop.addContainerListener(this.getMode());
+    logger.debug("Add event in Menu");
     newDesktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
     return newDesktop;
   }

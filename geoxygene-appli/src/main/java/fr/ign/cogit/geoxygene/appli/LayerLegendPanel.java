@@ -96,7 +96,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
    */
   private static final long serialVersionUID = -6860364246334166387L;
 
-  static Logger logger = Logger.getLogger(LayerLegendPanel.class.getName());
+  private static Logger LOGGER = Logger.getLogger(LayerLegendPanel.class.getName());
 
   /**
    * Model for the layerlegendpanel
@@ -1128,7 +1128,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
   public void layerOrderChanged(int oldIndex, int newIndex) {
     this.repaint();
     this.layersTable.getSelectionModel().clearSelection();
-    logger.info("layer moved from " + oldIndex + "to " + newIndex //$NON-NLS-1$ //$NON-NLS-2$
+    LOGGER.info("layer moved from " + oldIndex + "to " + newIndex //$NON-NLS-1$ //$NON-NLS-2$
         + " caught by LayerLegendPane"); //$NON-NLS-1$
   }
 
@@ -1140,6 +1140,6 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
   @Override
   public void layersRemoved(Collection<Layer> layers) {
     this.repaint();
-    logger.info("layers deletion caught by LayerLegendPane"); //$NON-NLS-1$
+    LOGGER.info("layers deletion caught by LayerLegendPane"); //$NON-NLS-1$
   }
 }

@@ -27,6 +27,8 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
@@ -41,6 +43,9 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * 
  */
 public class SelectionMode extends AbstractMode {
+  
+  /** Logger. */
+  private static final Logger LOGGER = Logger.getLogger(SelectionMode.class.getName());
 
   /**
    * @param theMainFrame the main frame
@@ -64,21 +69,19 @@ public class SelectionMode extends AbstractMode {
   @Override
   public final void leftMouseButtonClicked(final MouseEvent e,
       final ProjectFrame frame) {
+    
+    LOGGER.debug("click event : select");
     try {
-      DirectPosition p = frame.getLayerViewPanel().getViewport()
-          .toModelDirectPosition(e.getPoint());
+      DirectPosition p = frame.getLayerViewPanel().getViewport().toModelDirectPosition(e.getPoint());
       Set<IFeature> features = new HashSet<IFeature>();
-      for (Layer layer : frame.getLayerViewPanel().getRenderingManager()
-          .getLayers()) {
+      for (Layer layer : frame.getLayerViewPanel().getRenderingManager().getLayers()) {
         if (layer.isVisible() && layer.isSelectable()) {
-          features.addAll(layer.getFeatureCollection().select(p,
-              this.selectionRadius));
+          features.addAll(layer.getFeatureCollection().select(p, this.selectionRadius));
         }
       }
       LayerViewPanel lvPanel = frame.getLayerViewPanel();
       lvPanel.getSelectedFeatures().addAll(features);
-      lvPanel.getRenderingManager().render(
-          lvPanel.getRenderingManager().getSelectionRenderer());
+      lvPanel.getRenderingManager().render(lvPanel.getRenderingManager().getSelectionRenderer());
       lvPanel.superRepaint();
     } catch (NoninvertibleTransformException e1) {
       e1.printStackTrace();

@@ -56,8 +56,7 @@ import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
  */
 public abstract class AbstractMainFrame implements MainFrame {
 
-  private static Logger logger = Logger.getLogger(AbstractMainFrame.class
-      .getName());
+  protected static Logger logger = Logger.getLogger(AbstractMainFrame.class.getName());
   private GeOxygeneApplication application = null; // The associated application
   private String title = null; // frame title
   private ModeSelector modeSelector = null;

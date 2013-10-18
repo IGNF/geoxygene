@@ -305,6 +305,8 @@ public class SelectionRenderer extends AbstractLayerRenderer {
       return;
     }
     for (IFeature feature : this.getLayerViewPanel().getSelectedFeatures()) {
+      logger.debug("######################################################");
+      
       if (this.isCancelled()) {
         return;
       }
