@@ -55,7 +55,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import fr.ign.cogit.appli.geopensim.agent.AgentGeographiqueCollection;
 import fr.ign.cogit.appli.geopensim.feature.meso.UniteUrbaine;
 import fr.ign.cogit.appli.geopensim.feature.meso.ZoneElementaireUrbaine;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 
 /**
  * @author Julien Perret

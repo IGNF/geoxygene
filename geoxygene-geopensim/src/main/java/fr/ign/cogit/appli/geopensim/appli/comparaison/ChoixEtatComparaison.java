@@ -60,7 +60,7 @@ import fr.ign.cogit.appli.geopensim.appli.tracking.SimulationTreeFrame;
 import fr.ign.cogit.appli.geopensim.feature.meso.ZoneElementaireUrbaine;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;

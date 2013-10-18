@@ -49,10 +49,11 @@ import org.apache.log4j.Logger;
 //import org.apache.log4j.Logger;
 
 
+
 import fr.ign.cogit.appli.geopensim.agent.macro.EtatGlobal;
 import fr.ign.cogit.appli.geopensim.appli.GeOpenSimApplication;
 import fr.ign.cogit.appli.geopensim.appli.tracking.SimulationTreeFrame;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 
 /**
  * @author Florence Curie

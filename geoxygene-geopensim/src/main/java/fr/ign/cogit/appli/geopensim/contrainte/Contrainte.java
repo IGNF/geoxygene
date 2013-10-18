@@ -48,7 +48,6 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.appli.geopensim.agent.AgentGeographique;
 import fr.ign.cogit.appli.geopensim.comportement.Comportement;
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.filter.expression.Expression;
 
 /**

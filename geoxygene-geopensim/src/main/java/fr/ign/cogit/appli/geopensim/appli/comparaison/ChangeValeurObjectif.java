@@ -55,7 +55,8 @@ import fr.ign.cogit.appli.geopensim.agent.meso.AgentZoneElementaireBatie;
 import fr.ign.cogit.appli.geopensim.appli.GeOpenSimApplication;
 import fr.ign.cogit.appli.geopensim.feature.meso.ClasseUrbaine;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
+
 
 /**
  * @author Florence Curie

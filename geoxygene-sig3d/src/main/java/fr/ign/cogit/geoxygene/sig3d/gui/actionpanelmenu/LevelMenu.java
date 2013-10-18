@@ -20,7 +20,7 @@ import javax.swing.event.ChangeListener;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
-import fr.ign.cogit.geoxygene.appli.COGITColorChooserPanel;
+import fr.ign.cogit.geoxygene.appli.panel.COGITColorChooserPanel;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.Messages;

@@ -91,7 +91,7 @@ import fr.ign.cogit.appli.geopensim.util.MetadataLoader;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;

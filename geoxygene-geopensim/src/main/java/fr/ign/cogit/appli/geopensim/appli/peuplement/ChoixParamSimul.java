@@ -57,7 +57,7 @@ import fr.ign.cogit.appli.geopensim.evolution.EvolutionRule;
 import fr.ign.cogit.appli.geopensim.evolution.EvolutionRuleBase;
 import fr.ign.cogit.appli.geopensim.evolution.Scenario;
 import fr.ign.cogit.appli.geopensim.evolution.ScenariosBase;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 
 
 /**

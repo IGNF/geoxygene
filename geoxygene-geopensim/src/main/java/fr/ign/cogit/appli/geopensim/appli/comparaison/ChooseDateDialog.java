@@ -42,7 +42,9 @@ import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
+
+
 
 /**
  * @author Florence Curie

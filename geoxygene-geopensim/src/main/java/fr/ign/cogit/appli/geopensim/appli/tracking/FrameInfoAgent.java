@@ -25,7 +25,8 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.appli.geopensim.agent.AgentGeographique;
 import fr.ign.cogit.appli.geopensim.agent.Etat;
 import fr.ign.cogit.appli.geopensim.feature.ElementRepresentation;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
+
 
 /**
  * @author julien Gaffuri

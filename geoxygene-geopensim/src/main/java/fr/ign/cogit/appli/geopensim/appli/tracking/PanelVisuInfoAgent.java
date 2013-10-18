@@ -3,7 +3,7 @@ package fr.ign.cogit.appli.geopensim.appli.tracking;
 import java.awt.Graphics;
 
 import fr.ign.cogit.appli.geopensim.feature.ElementRepresentation;
-import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.PaintListener;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewAwtPanel;
