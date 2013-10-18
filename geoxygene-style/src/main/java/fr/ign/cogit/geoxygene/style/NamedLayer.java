@@ -124,4 +124,5 @@ public class NamedLayer extends AbstractLayer {
     dataset.removePopulation(dataset.getPopulation(this.getName()));
     this.sld = null;
   }
+
 }
