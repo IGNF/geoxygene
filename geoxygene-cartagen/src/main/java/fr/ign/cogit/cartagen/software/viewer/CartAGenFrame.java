@@ -7,7 +7,8 @@ import java.util.List;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.geoxygene.appli.FloatingMainFrame;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+
 
 public class CartAGenFrame extends FloatingMainFrame  {
 
