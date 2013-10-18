@@ -66,6 +66,13 @@ public interface MainFrame {
   public abstract ModeSelector getMode();
 
   /**
+   * Return the current desktop.
+   * 
+   * @return the current desktop
+   */
+  public abstract JComponent getCurrentDesktop();
+  
+  /**
    * Return the selected (current) project frame.
    * 
    * @return the selected (current) project frame
