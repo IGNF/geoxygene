@@ -19,6 +19,7 @@
 package fr.ign.cogit.geoxygene.appli.plugin.datamatching;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -153,6 +154,11 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
                 DataMatchingPlugin.LOGGER.info(geom.getClass().getSimpleName());
             }
         }
+        
+        Dimension desktopSize = this.application.getMainFrame().getSize();
+        int widthProjectFrame = desktopSize.width / 2;
+        int heightProjectFrame = desktopSize.height / 2;
+        
         ProjectFrame p1 = this.application.getMainFrame().newProjectFrame();
         DataMatchingPlugin.LOGGER.info(arcs.getNom());
         p1.addUserLayer(reseauRecale.getPopArcs(), arcs.getNom(), null);
@@ -160,16 +166,25 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
         p1.addUserLayer(liens, liens.getNom(), null);
         p1.setTitle("Reference Pop"); //$NON-NLS-1$
         Viewport viewport = p1.getLayerViewPanel().getViewport();
+        p1.setSize(widthProjectFrame, heightProjectFrame);
+        p1.setLocation(0, 0);
+        
         ProjectFrame p2 = this.application.getMainFrame().newProjectFrame();
         p2.setTitle("Comparison Pop"); //$NON-NLS-1$
         p2.addUserLayer(popComp, popComp.getNom(), null);
         p2.getLayerViewPanel().setViewport(viewport);
         viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
+        p2.setSize(widthProjectFrame, heightProjectFrame);
+        p2.setLocation(widthProjectFrame, 0);
+        
         ProjectFrame p3 = this.application.getMainFrame().newProjectFrame();
         p3.setTitle("Corrected Pop"); //$NON-NLS-1$
         p3.addUserLayer(arcs, arcs.getNom(), null);
         p3.getLayerViewPanel().setViewport(viewport);
         viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
+        p3.setSize(widthProjectFrame, heightProjectFrame);
+        p3.setLocation(0, heightProjectFrame);
+        
         ProjectFrame p4 = this.application.getMainFrame().newProjectFrame();
         p4.getLayerViewPanel().setViewport(viewport);
         viewport.getLayerViewPanels().add(p4.getLayerViewPanel());
@@ -178,6 +193,9 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
         p4.addUserLayer(popComp, popComp.getNom(), null);
         Layer layer = p4.addUserLayer(liens, liens.getNom(), null);
         layer.getSymbolizer().getStroke().setStrokeWidth(2);
+        p4.setSize(widthProjectFrame, heightProjectFrame);
+        p4.setLocation(widthProjectFrame, heightProjectFrame);
+        
         DataMatchingPlugin.LOGGER.info("Finished"); //$NON-NLS-1$
     }
 }
