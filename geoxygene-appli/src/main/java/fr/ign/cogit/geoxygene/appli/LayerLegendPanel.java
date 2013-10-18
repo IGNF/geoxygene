@@ -180,7 +180,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
    * @param parentPFrame the parent frame for this panel.
    */
   public LayerLegendPanel(final ProjectFrame parentPFrame) {
-    super(new BorderLayout());
+    super();
+    this.setLayout( new BorderLayout());
     this.parent = parentPFrame;
 
     for (int n = 0; n < 20; n++) {
@@ -234,7 +235,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     panel.add(Box.createHorizontalGlue());
     panel.add(this.attributeButton);
     panel.add(Box.createHorizontalGlue());
-    this.add(panel);
+    this.add(panel, BorderLayout.NORTH);
     this.minusButton.addActionListener(this);
     this.minusButton.setActionCommand("remove"); //$NON-NLS-1$
     this.addShapeButton.addActionListener(this);
@@ -393,7 +394,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
             LayerLegendPanel.this.update();
           }
         });
-    this.add(scrollpane);
+    this.add(scrollpane, BorderLayout.CENTER);
     this.newLayerMenuItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
