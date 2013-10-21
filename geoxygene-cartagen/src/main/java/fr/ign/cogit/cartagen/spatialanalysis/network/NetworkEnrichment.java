@@ -27,7 +27,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.urban.UrbanEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -139,7 +139,7 @@ public class NetworkEnrichment {
       if (net.getSections().get(0) instanceof IWaterLine) {
         IWaterNode waterNode = CartagenApplication.getInstance()
             .getCreationFactory().createWaterNode(n);
-        IPopulation<IWaterNode> popWater = CartAGenDoc.getInstance()
+        IPopulation<IWaterNode> popWater = CartAGenDocOld.getInstance()
             .getCurrentDataset().getWaterNodes();
         popWater.add(waterNode);
         dataset.getHydroNetwork().addNode(waterNode);
@@ -148,7 +148,7 @@ public class NetworkEnrichment {
       if (net.getSections().get(0) instanceof IRailwayLine) {
         IRailwayNode railNode = CartagenApplication.getInstance()
             .getCreationFactory().createRailwayNode(n);
-        CartAGenDoc.getInstance().getCurrentDataset().getRailwayNetwork()
+        CartAGenDocOld.getInstance().getCurrentDataset().getRailwayNetwork()
             .addNode(railNode);
       }
 

@@ -22,7 +22,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.ProgressFrame;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.selection.SelectionUtil;
@@ -98,10 +98,10 @@ public class TownMenu extends JMenu {
     @Override
     public void actionPerformed(ActionEvent e) {
       // first build the town/block link
-      for (ITown town : CartAGenDoc.getInstance().getCurrentDataset()
+      for (ITown town : CartAGenDocOld.getInstance().getCurrentDataset()
           .getTowns()) {
         IPolygon geom = town.getGeom();
-        Collection<IUrbanBlock> blocks = CartAGenDoc.getInstance()
+        Collection<IUrbanBlock> blocks = CartAGenDocOld.getInstance()
             .getCurrentDataset().getBlocks().select(geom);
         town.setTownBlocks(new FT_FeatureCollection<IUrbanBlock>(blocks));
         // then set the block links

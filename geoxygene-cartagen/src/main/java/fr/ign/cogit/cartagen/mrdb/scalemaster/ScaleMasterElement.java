@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.util.Interval;
 import fr.ign.cogit.geoxygene.filter.Filter;
 
@@ -261,7 +261,7 @@ public class ScaleMasterElement {
     Set<Class<?>> classes = new HashSet<Class<?>>();
     ScaleMasterTheme theme = this.getScaleLine().getTheme();
     classes.addAll(theme.getRelatedClasses());
-    CartAGenDB db = CartAGenDoc.getInstance().getDatabases().get(dbName);
+    CartAGenDB db = CartAGenDocOld.getInstance().getDatabases().get(dbName);
     return db.getGeneObjImpl().filterClasses(classes);
   }
 }

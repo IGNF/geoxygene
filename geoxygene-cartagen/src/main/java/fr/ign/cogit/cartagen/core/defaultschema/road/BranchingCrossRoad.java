@@ -37,7 +37,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.core.persistence.CollectionType;
 import fr.ign.cogit.cartagen.core.persistence.Encoded1To1Relation;
 import fr.ign.cogit.cartagen.core.persistence.EncodedRelation;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.PatteOie;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RondPoint;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.SimpleCrossRoad;
@@ -237,7 +237,7 @@ public class BranchingCrossRoad extends GeneObjSurfDefault implements
     }
 
     // check if the block is connected to a roundabout
-    Collection<IRoundAbout> rounds = CartAGenDoc.getInstance()
+    Collection<IRoundAbout> rounds = CartAGenDocOld.getInstance()
         .getCurrentDataset().getRoundabouts().select(
             geom.getExterior().getPrimitive());
 

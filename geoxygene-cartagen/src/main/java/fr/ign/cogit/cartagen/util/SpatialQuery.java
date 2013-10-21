@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -57,7 +57,7 @@ public class SpatialQuery {
       SecurityException, IllegalAccessException, NoSuchFieldException {
     String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME").get(
         null);
-    IPopulation<IGeneObj> pop = CartAGenDoc.getInstance().getCurrentDataset()
+    IPopulation<IGeneObj> pop = CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartagenPop(popName);
     return pop.select(center, radius);
   }
@@ -78,7 +78,7 @@ public class SpatialQuery {
       IllegalAccessException, NoSuchFieldException {
     String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME").get(
         null);
-    IPopulation<IGeneObj> pop = CartAGenDoc.getInstance().getCurrentDataset()
+    IPopulation<IGeneObj> pop = CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartagenPop(popName);
     return pop.select(line);
   }
@@ -102,7 +102,7 @@ public class SpatialQuery {
     for (Class<?> classObj : classObjs) {
       String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME")
           .get(null);
-      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset()
+      pop.addAll(CartAGenDocOld.getInstance().getCurrentDataset()
           .getCartagenPop(popName));
     }
     return pop.select(line);
@@ -130,7 +130,7 @@ public class SpatialQuery {
       Class<?> classObj = Class.forName(className);
       String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME")
           .get(null);
-      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset()
+      pop.addAll(CartAGenDocOld.getInstance().getCurrentDataset()
           .getCartagenPop(popName));
     }
     return pop.select(line);
@@ -243,11 +243,11 @@ public class SpatialQuery {
     IPopulation<IGeneObj> pop = new Population<IGeneObj>();
     for (String className : classNames) {
       Class<?> classObj = Class.forName(className);
-      pop.addAll(CartAGenDoc
+      pop.addAll(CartAGenDocOld
           .getInstance()
           .getCurrentDataset()
           .getCartagenPop(
-              CartAGenDoc.getInstance().getCurrentDataset()
+              CartAGenDocOld.getInstance().getCurrentDataset()
                   .getPopNameFromClass(classObj)));
     }
     return pop.select(polygon);
@@ -265,7 +265,7 @@ public class SpatialQuery {
   public static Collection<IGeneObj> selectInAreaAll(IPolygon polygon)
       throws IllegalArgumentException, SecurityException {
     IPopulation<IGeneObj> globalPop = new Population<IGeneObj>();
-    for (IPopulation<? extends IFeature> pop : CartAGenDoc.getInstance()
+    for (IPopulation<? extends IFeature> pop : CartAGenDocOld.getInstance()
         .getCurrentDataset().getPopulations()) {
       globalPop.addAll((Collection<? extends IGeneObj>) pop.select(polygon));
     }

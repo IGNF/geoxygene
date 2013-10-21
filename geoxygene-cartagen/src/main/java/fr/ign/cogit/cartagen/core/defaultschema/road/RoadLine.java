@@ -25,7 +25,7 @@ import fr.ign.cogit.cartagen.core.genericschema.SymbolShape;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RoadLineImpl;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -169,7 +169,7 @@ public class RoadLine extends NetworkSection implements IRoadLine {
       }
 
     } else { // the new way of calculating the width
-      SymbolShape symbolShape = CartAGenDoc.getInstance().getCurrentDataset()
+      SymbolShape symbolShape = CartAGenDocOld.getInstance().getCurrentDataset()
           .getSymbols().getSymbolShapeBySymbolID(this.getSymbolId());
       return symbolShape.ext_width;
     }
@@ -197,7 +197,7 @@ public class RoadLine extends NetworkSection implements IRoadLine {
         return GeneralisationLegend.ROUTIER_LARGEUR_DESSUS_4;
       }
     } else { // the new way of calculating the width
-      SymbolShape symbolShape = CartAGenDoc.getInstance().getCurrentDataset()
+      SymbolShape symbolShape = CartAGenDocOld.getInstance().getCurrentDataset()
           .getSymbols().getSymbolShapeBySymbolID(this.getSymbolId());
       return symbolShape.int_width;
     }

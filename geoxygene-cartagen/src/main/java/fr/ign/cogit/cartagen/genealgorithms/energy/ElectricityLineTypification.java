@@ -18,7 +18,7 @@ import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -126,8 +126,8 @@ public class ElectricityLineTypification {
   }
 
   private void enrichNetwork() {
-    NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-        .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+    NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
+        .getCurrentDataset(), CartAGenDocOld.getInstance().getCurrentDataset()
         .getElectricityNetwork(), false);
   }
 

@@ -33,7 +33,7 @@ import fr.ign.cogit.cartagen.graph.Graph;
 import fr.ign.cogit.cartagen.graph.INode;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.GeneralisationSpecifications;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.spatialanalysis.measures.Compactness;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -889,7 +889,7 @@ public class StreetNetwork extends AbstractFeature {
    */
   private void buildCityBlocks(Set<Ilot> roadBlocks) {
     this.cityBlocks = new HashSet<IUrbanBlock>();
-    CartAGenDataSet dataSet = CartAGenDoc.getInstance().getCurrentDataset();
+    CartAGenDataSet dataSet = CartAGenDocOld.getInstance().getCurrentDataset();
     // loop on the road blocks
     for (Ilot block : roadBlocks) {
       // get the urban elements inside the block

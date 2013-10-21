@@ -36,7 +36,7 @@ import javax.swing.text.SimpleAttributeSet;
 
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.DataSetZone;
 import fr.ign.cogit.cartagen.software.dataset.DigitalCartographicModel;
 import fr.ign.cogit.cartagen.software.dataset.DigitalLandscapeModel;
@@ -85,11 +85,9 @@ public class ImportDataFrame extends JFrame implements ActionListener {
   private final JRadioButton rbComputed, rbFile;
 
   public ImportDataFrame(boolean isInitial) {
-
     super("Import Shapefile data into a new dataset");
     this.isInitial = isInitial;
     this.setSize(600, 300);
-    this.setLocationRelativeTo(this.getRootPane());
 
     // *********************************
     // THE ZONE PARAMETERS PANEL
@@ -175,8 +173,8 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     this.txtPath.setPreferredSize(new Dimension(170, 20));
     this.txtPath.setMaximumSize(new Dimension(170, 20));
     this.txtPath.setMinimumSize(new Dimension(170, 20));
-    ImageIcon icon = new ImageIcon(ImportDataFrame.class.getResource(
-        "/images/browse.jpeg").getPath().replaceAll("%20", " "));
+    ImageIcon icon = new ImageIcon(ImportDataFrame.class
+        .getResource("/images/browse.jpeg").getPath().replaceAll("%20", " "));
     this.btnBrowse = new JButton(icon);
     this.btnBrowse.addActionListener(this);
     this.btnBrowse.setActionCommand("Browse");
@@ -281,7 +279,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
 
     this.sourceDlm = source;
     this.setScale(scale);
-    CartAGenDoc.getInstance().setZone(new DataSetZone(txtZone, null));
+    CartAGenDocOld.getInstance().setZone(new DataSetZone(txtZone, null));
     this.datasetName = txtDataset;
     this.filePath = filePath;
     if (rbFileSelected) {
@@ -293,10 +291,10 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     database.setSourceDLM(this.sourceDlm);
     database.setSymboScale(this.scale);
     database.setSystemPath(this.filePath);
-    database.setDocument(CartAGenDoc.getInstance());
+    database.setDocument(CartAGenDocOld.getInstance());
     CartAGenDataSet dataset = new CartAGenDataSet();
-    CartagenApplication.getInstance().getDocument().addDatabase(
-        this.datasetName, database);
+    CartagenApplication.getInstance().getDocument()
+        .addDatabase(this.datasetName, database);
     LoadingFrame.cheminAbsolu = this.filePath;
     database.setDataSet(dataset);
     if (dlmSelected) {
@@ -313,11 +311,13 @@ public class ImportDataFrame extends JFrame implements ActionListener {
         scale, dataset);
     // CartagenApplication.getInstance().loadDat(sourceDlm, scale);
 
-    CartAGenDoc.getInstance().setInitialDataset(dataset);
+    CartAGenDocOld.getInstance().setInitialDataset(dataset);
 
-    CartagenApplication.getInstance().getInitialLayerGroup().loadLayers(
-        dataset, true);
     CartagenApplication.getInstance().getInitialLayerGroup()
+        .loadLayers(dataset, true);
+    CartagenApplication
+        .getInstance()
+        .getInitialLayerGroup()
         .loadInterfaceWithLayers(
             CartagenApplication.getInstance().getFrame().getLayerManager(),
             CartagenApplication.getInstance().getDocument().getInitialDataset()
@@ -325,10 +325,11 @@ public class ImportDataFrame extends JFrame implements ActionListener {
   }
 
   public void importCurrentDataSet(SourceDLM selectedItem, String filePath) {
-    this.importCurrentDataSet(selectedItem, Integer.parseInt(this.txtScale
-        .getText()), this.txtZone.getText(), this.txtDataset.getText(),
-        filePath, this.txtExtent.getText(), this.rbFile.isSelected(),
-        this.cbType.getSelectedItem().equals("DLM"), false);
+    this.importCurrentDataSet(selectedItem,
+        Integer.parseInt(this.txtScale.getText()), this.txtZone.getText(),
+        this.txtDataset.getText(), filePath, this.txtExtent.getText(),
+        this.rbFile.isSelected(), this.cbType.getSelectedItem().equals("DLM"),
+        false);
   }
 
   public void importCurrentDataSet(SourceDLM selectedItem, int scale,
@@ -336,7 +337,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
       boolean rbFileSelected, boolean dlmSelected, boolean withEnrichement) {
     this.sourceDlm = selectedItem;
     this.setScale(scale);
-    CartAGenDoc.getInstance().setZone(new DataSetZone(txtZone, null));
+    CartAGenDocOld.getInstance().setZone(new DataSetZone(txtZone, null));
     this.datasetName = txtDataset;
     this.filePath = filePath;
     if (rbFileSelected) {
@@ -348,10 +349,10 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     database.setSourceDLM(this.sourceDlm);
     database.setSymboScale(this.scale);
     database.setSystemPath(this.filePath);
-    database.setDocument(CartAGenDoc.getInstance());
+    database.setDocument(CartAGenDocOld.getInstance());
     CartAGenDataSet dataset = new CartAGenDataSet();
-    CartAGenDoc.getInstance().addDatabase(this.datasetName, database);
-    CartAGenDoc.getInstance().setCurrentDataset(dataset);
+    CartAGenDocOld.getInstance().addDatabase(this.datasetName, database);
+    CartAGenDocOld.getInstance().setCurrentDataset(dataset);
     database.setDataSet(dataset);
     if (dlmSelected) {
       database.setType(new DigitalLandscapeModel());
@@ -364,8 +365,8 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     if (this.sourceDlm == SourceDLM.SPECIAL_CARTAGEN) {
       SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
           SourceDLM.SPECIAL_CARTAGEN, scale);
-      CartAGenDoc.getInstance().getCurrentDataset().setSymbols(
-          SymbolList.getSymbolList(symbGroup));
+      CartAGenDocOld.getInstance().getCurrentDataset()
+          .setSymbols(SymbolList.getSymbolList(symbGroup));
 
       LoadingFrame.cheminAbsolu = this.filePath;
       DataLoadingConfig ccd = new DataLoadingConfig();
@@ -399,7 +400,9 @@ public class ImportDataFrame extends JFrame implements ActionListener {
             .loadLayers(
                 dataset,
                 CartagenApplication.getInstance().getLayerGroup().symbolisationDisplay);
-        CartagenApplication.getInstance().getLayerGroup()
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
             .loadInterfaceWithLayers(
                 CartagenApplication.getInstance().getFrame().getLayerManager(),
                 dataset.getSymbols());

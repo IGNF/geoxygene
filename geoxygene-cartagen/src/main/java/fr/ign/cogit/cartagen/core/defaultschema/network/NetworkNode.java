@@ -17,7 +17,7 @@ import fr.ign.cogit.cartagen.core.genericschema.SymbolShape;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
@@ -174,7 +174,7 @@ public abstract class NetworkNode extends GeneObjPointDefault implements
 
       IRoadLine ns = (IRoadLine) tr;
       int symbolIDtmp = ns.getSymbolId();
-      SymbolShape shapeTmp = CartAGenDoc.getInstance().getCurrentDataset()
+      SymbolShape shapeTmp = CartAGenDocOld.getInstance().getCurrentDataset()
           .getSymbols().getSymbolShapeBySymbolID(symbolIDtmp);
       if (shapeTmp == null) {
         return null;
@@ -193,7 +193,7 @@ public abstract class NetworkNode extends GeneObjPointDefault implements
 
       IRoadLine ns = (IRoadLine) tr;
       int symbolIDtmp = ns.getSymbolId();
-      SymbolShape shapeTmp = CartAGenDoc.getInstance().getCurrentDataset()
+      SymbolShape shapeTmp = CartAGenDocOld.getInstance().getCurrentDataset()
           .getSymbols().getSymbolShapeBySymbolID(symbolIDtmp);
       if (shapeTmp.ext_width > shape.ext_width) {
         shape = shapeTmp;

@@ -52,16 +52,16 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  * @author Guillaume
  * 
  */
-public class CartAGenDoc {
+public class CartAGenDocOld {
 
   /**
    * Get the unique instance of CartAGenDoc class.
    * <p>
    * Remarque : le constructeur est rendu inaccessible
    */
-  public static CartAGenDoc getInstance() {
+  public static CartAGenDocOld getInstance() {
     if (null == instance) { // Premier appel
-      instance = new CartAGenDoc();
+      instance = new CartAGenDocOld();
     }
     return instance;
   }
@@ -70,7 +70,7 @@ public class CartAGenDoc {
    * Constructeur redéfini comme étant privé pour interdire son appel et forcer
    * à passer par la méthode getInstance()
    */
-  private CartAGenDoc() {
+  private CartAGenDocOld() {
     // open a Cartagen doc file
     // TODO
     this.databases = new HashMap<String, CartAGenDB>();
@@ -78,7 +78,7 @@ public class CartAGenDoc {
   }
 
   /** L'instance statique */
-  private static CartAGenDoc instance;
+  private static CartAGenDocOld instance;
 
   /**
    * The name of the document, used as name for the PostGIS db related to this
@@ -202,8 +202,11 @@ public class CartAGenDoc {
 
   public CartAGenDataSet getCurrentDataset() {
     if (currentDataset == null) {
-      if (databases.size() == 0)
-        return null;
+      if (databases.size() == 0) {
+        // FIXME patch pour permettre de maintenir les deux interfaces
+        return CartAGenDoc.getInstance().getCurrentDataset();
+      }
+
       CartAGenDB db = databases.values().iterator().next();
       return db.getDataSet();
     }
@@ -361,12 +364,12 @@ public class CartAGenDoc {
    * @throws InstantiationException
    * @throws IllegalArgumentException
    */
-  public static CartAGenDoc loadDocFromXml(File file)
+  public static CartAGenDocOld loadDocFromXml(File file)
       throws ParserConfigurationException, SAXException, IOException,
       SecurityException, NoSuchMethodException, ClassNotFoundException,
       IllegalArgumentException, InstantiationException, IllegalAccessException,
       InvocationTargetException {
-    instance = new CartAGenDoc();
+    instance = new CartAGenDocOld();
     instance.setXmlFile(file);
 
     // first open the XML document in order to parse it

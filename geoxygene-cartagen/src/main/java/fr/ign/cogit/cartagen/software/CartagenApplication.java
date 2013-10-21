@@ -35,7 +35,7 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
@@ -128,13 +128,13 @@ public class CartagenApplication {
     return this.frameInit;
   }
 
-  private CartAGenDoc document = null;
+  private CartAGenDocOld document = null;
 
-  public CartAGenDoc getDocument() {
+  public CartAGenDocOld getDocument() {
     if (this.document == null) {
       synchronized (CartagenApplication.class) {
         if (this.document == null) {
-          this.document = CartAGenDoc.getInstance();
+          this.document = CartAGenDocOld.getInstance();
         }
       }
     }
@@ -377,7 +377,7 @@ public class CartagenApplication {
     // Data loading
     CartagenApplication.logger.info("Data loading");
     CartagenApplication.cartagenApplication.loadData(this.cheminDonnees,
-        bdsource, scale, CartAGenDoc.getInstance().getCurrentDataset());
+        bdsource, scale, CartAGenDocOld.getInstance().getCurrentDataset());
 
     // Position of the visu panel centered on data
     if (CartagenApplication.cartagenApplication.getFrame().getVisuPanel()
@@ -389,7 +389,7 @@ public class CartagenApplication {
 
     // Data enrichment
     CartagenApplication.logger.info("Data enrichment");
-    CartagenApplication.cartagenApplication.enrichData(CartAGenDoc
+    CartagenApplication.cartagenApplication.enrichData(CartAGenDocOld
         .getInstance().getCurrentDataset());
 
   }
@@ -1023,9 +1023,9 @@ public class CartagenApplication {
       if (CartagenApplication.logger.isInfoEnabled()) {
         CartagenApplication.logger.info("road enrichment");
       }
-      NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-          .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
-          .getRoadNetwork());
+      NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
+          .getCurrentDataset(), CartAGenDocOld.getInstance()
+          .getCurrentDataset().getRoadNetwork());
 
     }
 
@@ -1070,9 +1070,9 @@ public class CartagenApplication {
       if (CartagenApplication.logger.isInfoEnabled()) {
         CartagenApplication.logger.info("hydrography enrichment");
       }
-      NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-          .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
-          .getHydroNetwork());
+      NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
+          .getCurrentDataset(), CartAGenDocOld.getInstance()
+          .getCurrentDataset().getHydroNetwork());
 
     }
 
@@ -1534,11 +1534,8 @@ public class CartagenApplication {
       CartagenApplication.getInstance().getFrame().getVisuPanel()
 
       .zoomToFullExtent();
-      CartAGenDoc
+      CartAGenDocOld
           .getInstance()
-          .getCurrentDataset()
-          .getCartAGenDB()
-          .getDocument()
           .getZone()
           .setExtent(
               new GM_Polygon(CartagenApplication.getInstance().getFrame()

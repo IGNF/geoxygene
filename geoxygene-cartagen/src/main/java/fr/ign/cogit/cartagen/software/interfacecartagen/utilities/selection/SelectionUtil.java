@@ -13,7 +13,7 @@ import java.util.Collection;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -33,7 +33,7 @@ public class SelectionUtil {
    * @return
    */
   public static Collection<IGeneObj> getWindowObjects(String popName) {
-    IPopulation<IGeneObj> pop = CartAGenDoc.getInstance().getCurrentDataset()
+    IPopulation<IGeneObj> pop = CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartagenPop(popName);
     return pop.select(CartagenApplication.getInstance().getFrame()
         .getVisuPanel().getDisplayEnvelope());

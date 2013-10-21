@@ -15,7 +15,7 @@ package fr.ign.cogit.cartagen.software;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 
 /**
@@ -67,8 +67,8 @@ public class CartagenApplicationSansAgent {
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
-        if (CartAGenDoc.getInstance().getPostGisSession() != null) {
-          CartAGenDoc.getInstance().getPostGisSession().close();
+        if (CartAGenDocOld.getInstance().getPostGisSession() != null) {
+          CartAGenDocOld.getInstance().getPostGisSession().close();
         }
       }
     });

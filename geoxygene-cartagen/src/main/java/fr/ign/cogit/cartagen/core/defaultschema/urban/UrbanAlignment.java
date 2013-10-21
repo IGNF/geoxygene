@@ -29,7 +29,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanAlignment;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
 import fr.ign.cogit.cartagen.core.persistence.Encoded1To1Relation;
 import fr.ign.cogit.cartagen.software.GeneralisationSpecifications;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
@@ -115,7 +115,7 @@ public class UrbanAlignment extends GeneObjSurfDefault implements
     this.setInitialShapeLine((ILineString) this.getShapeLine().clone());
 
     // Ajout à la couche de données
-    CartAGenDoc.getInstance().getCurrentDataset().getUrbanAlignments()
+    CartAGenDocOld.getInstance().getCurrentDataset().getUrbanAlignments()
         .add(this);
 
   }

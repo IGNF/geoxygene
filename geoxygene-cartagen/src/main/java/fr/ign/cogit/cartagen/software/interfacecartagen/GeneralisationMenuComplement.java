@@ -35,7 +35,6 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.GeneralisationLa
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.GeoxygeneMenu;
 import fr.ign.cogit.cartagen.software.interfacecartagen.menus.DataThemesGUIComponent;
 import fr.ign.cogit.cartagen.software.interfacecartagen.menus.DatasetGUIComponent;
-import fr.ign.cogit.cartagen.software.viewer.DatasetGeoxGUIComponent;
 
 /**
  * @author julien Gaffuri 6 mars 2009
@@ -228,8 +227,7 @@ public class GeneralisationMenuComplement {
     Font font = menu.getFont();
 
     menu.add(this.menuGene, menu.getComponentCount() - 1);
-    menu.add(new DatasetGeoxGUIComponent("Dataset"),
-        menu.getComponentCount() - 1);
+    menu.add(new DatasetGUIComponent("Dataset"), menu.getComponentCount() - 1);
     menu.add(this.dataThemesMenu, menu.getComponentCount() - 1);
 
     String configFilePath = "/ConfigGUIComponents.xml";

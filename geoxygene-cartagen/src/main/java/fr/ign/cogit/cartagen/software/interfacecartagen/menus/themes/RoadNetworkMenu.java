@@ -30,7 +30,7 @@ import fr.ign.cogit.cartagen.genealgorithms.section.LineCurvatureSmoothing;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.GeneralisationSpecifications;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.measures.section.SectionSymbol;
 import fr.ign.cogit.cartagen.spatialanalysis.network.CrossRoadDetection;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
@@ -129,9 +129,9 @@ public class RoadNetworkMenu extends JMenu {
     @Override
     public void actionPerformed(ActionEvent e) {
       RoadNetworkMenu.this.logger.info("Enrichment of "
-          + CartAGenDoc.getInstance().getCurrentDataset().getRoadNetwork());
-      NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-          .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+          + CartAGenDocOld.getInstance().getCurrentDataset().getRoadNetwork());
+      NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
+          .getCurrentDataset(), CartAGenDocOld.getInstance().getCurrentDataset()
           .getRoadNetwork());
     }
 
@@ -150,7 +150,7 @@ public class RoadNetworkMenu extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      NetworkEnrichment.buildNetworkFaces(CartAGenDoc.getInstance()
+      NetworkEnrichment.buildNetworkFaces(CartAGenDocOld.getInstance()
           .getCurrentDataset());
     }
 
@@ -169,8 +169,8 @@ public class RoadNetworkMenu extends JMenu {
     @Override
     public void actionPerformed(ActionEvent e) {
       RoadNetworkMenu.this.logger.info("Selection of "
-          + CartAGenDoc.getInstance().getCurrentDataset().getRoadNetwork());
-      for (IRoadLine section : CartAGenDoc.getInstance().getCurrentDataset()
+          + CartAGenDocOld.getInstance().getCurrentDataset().getRoadNetwork());
+      for (IRoadLine section : CartAGenDocOld.getInstance().getCurrentDataset()
           .getRoads()) {
         CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects
             .add(section);
@@ -204,7 +204,7 @@ public class RoadNetworkMenu extends JMenu {
 
           RoadNetworkMenu.this.logger
               .info("Suppression des impasses du reseau routier");
-          NetworkEnrichment.supprimerImpasses(CartAGenDoc.getInstance()
+          NetworkEnrichment.supprimerImpasses(CartAGenDocOld.getInstance()
               .getCurrentDataset().getRoadNetwork(), lg);
 
           if (RoadNetworkMenu.this.logger.isLoggable(Level.FINEST)) {
@@ -235,7 +235,7 @@ public class RoadNetworkMenu extends JMenu {
       Thread th = new Thread(new Runnable() {
         @Override
         public void run() {
-          for (IRoadLine tr : CartAGenDoc.getInstance().getCurrentDataset()
+          for (IRoadLine tr : CartAGenDocOld.getInstance().getCurrentDataset()
               .getRoads()) {
             if (tr.isDeleted()) {
               continue;
@@ -278,21 +278,21 @@ public class RoadNetworkMenu extends JMenu {
               .info("Aggregation of analog adjacent road sections");
           if (RoadNetworkMenu.this.logger.isLoggable(Level.FINEST)) {
             RoadNetworkMenu.this.logger.finest("   initial: nbTroncons="
-                + CartAGenDoc.getInstance().getCurrentDataset().getRoads()
+                + CartAGenDocOld.getInstance().getCurrentDataset().getRoads()
                     .size()
                 + "  nbNoeuds="
-                + CartAGenDoc.getInstance().getCurrentDataset().getRoadNodes()
+                + CartAGenDocOld.getInstance().getCurrentDataset().getRoadNodes()
                     .size());
           }
-          NetworkEnrichment.aggregateAnalogAdjacentSections(CartAGenDoc
-              .getInstance().getCurrentDataset(), CartAGenDoc.getInstance()
+          NetworkEnrichment.aggregateAnalogAdjacentSections(CartAGenDocOld
+              .getInstance().getCurrentDataset(), CartAGenDocOld.getInstance()
               .getCurrentDataset().getRoadNetwork());
           if (RoadNetworkMenu.this.logger.isLoggable(Level.FINEST)) {
             RoadNetworkMenu.this.logger.finest("   final: nbTroncons="
-                + CartAGenDoc.getInstance().getCurrentDataset().getRoads()
+                + CartAGenDocOld.getInstance().getCurrentDataset().getRoads()
                     .size()
                 + "  nbNoeuds="
-                + CartAGenDoc.getInstance().getCurrentDataset().getRoadNodes()
+                + CartAGenDocOld.getInstance().getCurrentDataset().getRoadNodes()
                     .size());
           }
           if (RoadNetworkMenu.this.logger.isLoggable(Level.FINEST)) {
@@ -316,7 +316,7 @@ public class RoadNetworkMenu extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
+      CartAGenDataSet dataset = CartAGenDocOld.getInstance().getCurrentDataset();
       CrossRoadDetection detect = new CrossRoadDetection();
       detect.detectRoundaboutsAndBranchingCartagen(dataset);
       for (IRoundAbout round : dataset.getRoundabouts()) {
@@ -342,7 +342,7 @@ public class RoadNetworkMenu extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
+      CartAGenDataSet dataset = CartAGenDocOld.getInstance().getCurrentDataset();
       for (IRoundAbout roundAbout : dataset.getRoundabouts()) {
         CollapseRoundabout collapseRoundabout = new CollapseRoundabout(150,
             roundAbout);

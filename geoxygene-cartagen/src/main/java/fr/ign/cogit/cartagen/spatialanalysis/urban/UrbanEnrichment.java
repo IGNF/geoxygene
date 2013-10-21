@@ -34,7 +34,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationLeftPanelComplement;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.spatialanalysis.network.DeadEndGroup;
@@ -94,7 +94,7 @@ public class UrbanEnrichment {
    * alignments are not built
    */
   public static void buildTowns() {
-    UrbanEnrichment.buildTowns(CartAGenDoc.getInstance().getCurrentDataset(),
+    UrbanEnrichment.buildTowns(CartAGenDocOld.getInstance().getCurrentDataset(),
         false);
   }
 
@@ -105,7 +105,7 @@ public class UrbanEnrichment {
    *          to be built
    */
   public static void buildTowns(boolean buildUrbanAlignments) {
-    UrbanEnrichment.buildTowns(CartAGenDoc.getInstance().getCurrentDataset(),
+    UrbanEnrichment.buildTowns(CartAGenDocOld.getInstance().getCurrentDataset(),
         buildUrbanAlignments);
   }
 
@@ -454,7 +454,7 @@ public class UrbanEnrichment {
       // recupere les batiments de l'ilot
 
       // recupere les batiments intersectant l'ilot
-      Collection<IBuilding> bats = CartAGenDoc.getInstance()
+      Collection<IBuilding> bats = CartAGenDocOld.getInstance()
           .getCurrentDataset().getBuildings().select(polygone);
 
       IFeatureCollection<IUrbanElement> urbanElements = new FT_FeatureCollection<IUrbanElement>();
@@ -488,7 +488,7 @@ public class UrbanEnrichment {
       // identifiant sur une même zone
       // block.setId(2 ^ town.getId() * 3 ^ compteur);
       cityBlocks.add(block);
-      CartAGenDoc.getInstance().getCurrentDataset().getBlocks().add(block);
+      CartAGenDocOld.getInstance().getCurrentDataset().getBlocks().add(block);
       if (!(buildUrbanAlignments)) {
         continue;
       }
@@ -551,7 +551,7 @@ public class UrbanEnrichment {
       for (INetworkSection section : block.getSurroundingNetwork()) {
         if (structure.getShapeLine().intersects(section.getGeom())) {
           structure.getUrbanElements().clear();
-          CartAGenDoc.getInstance().getCurrentDataset().getUrbanAlignments()
+          CartAGenDocOld.getInstance().getCurrentDataset().getUrbanAlignments()
               .remove(structure);
         } else {
           structuresAfterClean.add(structure);
@@ -649,7 +649,7 @@ public class UrbanEnrichment {
 
     // Destroy of the second alignment
     align2.getUrbanElements().clear();
-    CartAGenDoc.getInstance().getCurrentDataset().getUrbanAlignments()
+    CartAGenDocOld.getInstance().getCurrentDataset().getUrbanAlignments()
         .remove(align2);
 
     // Computation of the characteristics
@@ -739,7 +739,7 @@ public class UrbanEnrichment {
     }
 
     align.getUrbanElements().clear();
-    CartAGenDoc.getInstance().getCurrentDataset().getUrbanAlignments()
+    CartAGenDocOld.getInstance().getCurrentDataset().getUrbanAlignments()
         .remove(align);
 
     return aligns;

@@ -30,7 +30,7 @@ import org.geotools.data.shapefile.shp.ShapefileException;
 
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenEnrichment;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 
@@ -177,7 +177,7 @@ public class EnrichFrame extends JDialog implements ActionListener {
     Object source = e.getSource();
 
     // update the CartAGenDB information on enrichments
-    CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
+    CartAGenDB db = CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartAGenDB();
 
     if (source == this.ok) {

@@ -33,7 +33,7 @@ import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.VisuPanel;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.bookmarks.Bookmark;
@@ -91,7 +91,7 @@ public class UtilitiesGUIComponent extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      CartAGenDB dataset = CartAGenDoc.getInstance().getCurrentDataset()
+      CartAGenDB dataset = CartAGenDocOld.getInstance().getCurrentDataset()
           .getCartAGenDB();
       BookmarkSet bookSet = new BookmarkSet(dataset, view);
 
@@ -137,7 +137,7 @@ public class UtilitiesGUIComponent extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      CartAGenDB dataset = CartAGenDoc.getInstance().getCurrentDataset()
+      CartAGenDB dataset = CartAGenDocOld.getInstance().getCurrentDataset()
           .getCartAGenDB();
       BookmarkSet bookSet = new BookmarkSet(dataset, view);
       try {

@@ -91,8 +91,13 @@ public class ShapeFileClass implements GeographicClass {
             headerIni.getFieldLength(i) + 6, headerIni.getFieldDecimalCount(i));
       }
       // get the population of Cartagen objects
-      IPopulation<? extends IFeature> pop = this.getDataSet().getDataSet()
-          .getPopulationByFeatureTypeName(this.featureTypeName);
+      IPopulation<? extends IFeature> pop = this
+          .getDataSet()
+          .getDataSet()
+          .getCartagenPop(
+              this.getDataSet().getDataSet()
+                  .getPopNameFromFeatType(this.featureTypeName),
+              featureTypeName);
       // get the records of the shapefile
       HashMap<Integer, Object[]> fields = new HashMap<Integer, Object[]>();
       int i = 0;

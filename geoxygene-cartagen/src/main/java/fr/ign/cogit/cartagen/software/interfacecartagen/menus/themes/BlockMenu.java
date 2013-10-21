@@ -20,7 +20,7 @@ import javax.swing.JMenuItem;
 
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
@@ -81,7 +81,7 @@ public class BlockMenu extends JMenu {
     @Override
     public void actionPerformed(ActionEvent e) {
       CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects = new FT_FeatureCollection<IFeature>();
-      for (IUrbanBlock ai : CartAGenDoc.getInstance().getCurrentDataset()
+      for (IUrbanBlock ai : CartAGenDocOld.getInstance().getCurrentDataset()
           .getBlocks()) {
         CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects
             .add(ai);

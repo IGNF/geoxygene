@@ -83,8 +83,9 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanAlignment;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
+import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.dataset.SpecialPoint;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationLeftPanelComplement;
@@ -121,6 +122,7 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.champContinu.PointCoteImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ArcReseauImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
@@ -139,14 +141,16 @@ public class CartAGenDataSet extends DataSet {
    */
   public CartAGenDataSet() {
     super();
-    System.out.println(this.getPopulations().size() + " populations créées");
+    IPopulation<IFeature> geomPool = new Population<IFeature>(GEOM_POOL);
+    addPopulation(geomPool);
+    geometryPool = new GeometryPool(this, sld);
   }
 
   /**
    * @return The dataset of the unique document named 'name'.
    */
   public static CartAGenDataSet getInstance(String name) {
-    return CartAGenDoc.getInstance().getDataset(name);
+    return CartAGenDocOld.getInstance().getDataset(name);
   }
 
   /**
@@ -158,6 +162,19 @@ public class CartAGenDataSet extends DataSet {
   public CartAGenDB getCartAGenDB() {
     return this.cartagenDB;
   }
+
+  private StyledLayerDescriptor sld;
+
+  public StyledLayerDescriptor getSld() {
+    return sld;
+  }
+
+  public void setSld(StyledLayerDescriptor sld) {
+    this.sld = sld;
+    this.geometryPool.setSld(sld);
+  }
+
+  private GeometryPool geometryPool;
 
   // the symbols used for the database
   private SymbolList symbols = new SymbolList();
@@ -241,6 +258,8 @@ public class CartAGenDataSet extends DataSet {
   public static final String ADMIN_LIMIT_POP = "adminLimits";
 
   public static final String MASK = "mask";
+
+  public static final String GEOM_POOL = "Geometry Pool";
 
   // ///////////////////////////////////////
   // GETTERS FOR DATASET POPULATIONS
@@ -1193,7 +1212,6 @@ public class CartAGenDataSet extends DataSet {
     }
 
     IPopulation<IRoadLine> pop = this.getRoads();
-
     int j = 0;
     while (shr.hasNext() && dbr.hasNext()) {
       Record objet = shr.nextRecord();
@@ -1215,7 +1233,9 @@ public class CartAGenDataSet extends DataSet {
         e.printStackTrace();
         return false;
       }
-
+      if (geom == null) {
+        continue;
+      }
       if (geom instanceof ILineString) {
         IRoadLine tr = CartagenApplication
             .getInstance()
@@ -2143,8 +2163,9 @@ public class CartAGenDataSet extends DataSet {
         e.printStackTrace();
         return false;
       }
-
-      if (geom instanceof ILineString) {
+      if (geom == null) {
+        continue;
+      } else if (geom instanceof ILineString) {
         IWaterLine tr = CartagenApplication
             .getInstance()
             .getCreationFactory()
@@ -2316,8 +2337,9 @@ public class CartAGenDataSet extends DataSet {
         e.printStackTrace();
         return false;
       }
-
-      if (geom instanceof IPolygon) {
+      if (geom == null) {
+        continue;
+      } else if (geom instanceof IPolygon) {
         IWaterArea surf = CartagenApplication
             .getInstance()
             .getCreationFactory()
@@ -3901,7 +3923,7 @@ public class CartAGenDataSet extends DataSet {
     try {
 
       IFeatureCollection<IFeature> coll = new FT_FeatureCollection<IFeature>();
-      for (IRoadLine section : CartAGenDoc.getInstance().getCurrentDataset()
+      for (IRoadLine section : CartAGenDocOld.getInstance().getCurrentDataset()
           .getRoads()) {
         coll.add(section);
       }
@@ -4767,6 +4789,23 @@ public class CartAGenDataSet extends DataSet {
     if (IElectricityLine.class.isAssignableFrom(classObj))
       return getElectricityNetwork();
     return null;
+  }
+
+  /**
+   * Gets the geometry pool of the dataset
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<IFeature> getGeometryPoolPop() {
+    return (IPopulation<IFeature>) this.getPopulation(GEOM_POOL);
+  }
+
+  public GeometryPool getGeometryPool() {
+    return geometryPool;
+  }
+
+  public void setGeometryPool(GeometryPool geometryPool) {
+    this.geometryPool = geometryPool;
   }
 
 }

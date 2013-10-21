@@ -48,7 +48,7 @@ import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.event.PaintListener;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -871,7 +871,7 @@ public class VisuPanel extends JPanel implements Runnable, Printable {
    */
   public final IEnvelope getEnvelope() {
     IEnvelope envelope = null;
-    for (IPopulation<? extends IFeature> pop : CartAGenDoc.getInstance()
+    for (IPopulation<? extends IFeature> pop : CartAGenDocOld.getInstance()
         .getCurrentDataset().getPopulations()) {
       if (pop == null) {
         continue;

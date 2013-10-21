@@ -5,7 +5,7 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine.BridgeType;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Franchissement;
@@ -26,7 +26,7 @@ public class BridgePoint extends GeneObjPointDefault implements IBridgePoint {
     this.setInitialGeom(point);
     this.setEliminated(false);
     this.setType(BridgeType.BRIDGE);
-    this.road = CartAGenDoc.getInstance().getCurrentDataset().getRoads()
+    this.road = CartAGenDocOld.getInstance().getCurrentDataset().getRoads()
         .select(point.buffer(0.5)).iterator().next();
   }
 

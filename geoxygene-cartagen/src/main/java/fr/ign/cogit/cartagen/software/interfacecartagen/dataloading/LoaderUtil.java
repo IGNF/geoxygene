@@ -33,7 +33,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -293,7 +293,7 @@ public class LoaderUtil {
   public static void computeDataLoading(SourceDLM source, int scale)
       throws ShapefileException, IOException {
     if (EnrichFrame.getInstance().isResetSelected()) {
-      CartAGenDoc.getInstance().getCurrentDataset().resetDataSet();
+      CartAGenDocOld.getInstance().getCurrentDataset().resetDataSet();
     }
     String systemPath = CartagenApplication.getInstance().getCheminDonnees();
     // CartagenApplication.getInstance().loadData(source, scale);
@@ -314,18 +314,18 @@ public class LoaderUtil {
         return;
       }
       shr.close();
-      CartAGenDoc.getInstance().getZone().setExtent(geom);
+      CartAGenDocOld.getInstance().getZone().setExtent(geom);
     }
-    ((ShapeFileDB) CartAGenDoc.getInstance().getCurrentDataset()
+    ((ShapeFileDB) CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartAGenDB()).setSystemPath(LoadingFrame.cheminAbsolu);
 
     CartagenApplication.getInstance().initialiserPositionGeographique(
         !ImportDataFrame.extentFile);
     CartagenApplication.getInstance().enrichData(
-        CartAGenDoc.getInstance().getCurrentDataset());
+        CartAGenDocOld.getInstance().getCurrentDataset());
     CartagenApplication.getInstance().initGeneralisation();
     // add generated cartagen ids in the shapefiles
-    CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
+    CartAGenDocOld.getInstance().getCurrentDataset().getCartAGenDB()
         .addCartagenId();
 
   }

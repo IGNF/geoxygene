@@ -63,7 +63,7 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
 import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
@@ -188,7 +188,7 @@ public class DatasetGUIComponent extends JMenu {
       String name = JOptionPane
           .showInputDialog("Enter a name for the new CartAGen Document");
 
-      CartAGenDoc doc = CartAGenDoc.getInstance();
+      CartAGenDocOld doc = CartAGenDocOld.getInstance();
       doc.setName(name);
       doc.setPostGisDb(PostgisDB.get(name, true));
     }
@@ -230,23 +230,23 @@ public class DatasetGUIComponent extends JMenu {
       }
 
       try {
-        CartAGenDoc.loadDocFromXml(file);
+        CartAGenDocOld.loadDocFromXml(file);
         CartagenApplication.getInstance().getFrame().getVisuPanel()
-            .centerAndZoom(CartAGenDoc.getInstance().getDisplayEnvelope());
+            .centerAndZoom(CartAGenDocOld.getInstance().getDisplayEnvelope());
         CartagenApplication.getInstance().setLayerGroup(
-            CartAGenDoc.getInstance().getLayerGroup());
+            CartAGenDocOld.getInstance().getLayerGroup());
         CartagenApplication
             .getInstance()
             .getLayerGroup()
             .loadLayers(
-                CartAGenDoc.getInstance().getCurrentDataset(),
+                CartAGenDocOld.getInstance().getCurrentDataset(),
                 CartagenApplication.getInstance().getLayerGroup().symbolisationDisplay);
         CartagenApplication
             .getInstance()
             .getLayerGroup()
             .loadInterfaceWithLayers(
                 CartagenApplication.getInstance().getFrame().getLayerManager(),
-                CartAGenDoc.getInstance().getCurrentDataset().getSymbols());
+                CartAGenDocOld.getInstance().getCurrentDataset().getSymbols());
       } catch (ParserConfigurationException e) {
         e.printStackTrace();
       } catch (SAXException e) {
@@ -355,10 +355,10 @@ public class DatasetGUIComponent extends JMenu {
       // and apply the new CartAGenDataSet
       dataset.setCartAGenDB(this.database);
       // add the database to the document
-      CartAGenDoc.getInstance().addDatabase(this.database.getName(),
+      CartAGenDocOld.getInstance().addDatabase(this.database.getName(),
           this.database);
       // put the new dataset as the current one
-      CartAGenDoc.getInstance().setCurrentDataset(dataset);
+      CartAGenDocOld.getInstance().setCurrentDataset(dataset);
       // populate the generalisation dataset from the cartagen dataset
       this.database.populateDataset(this.scale);
       while (!((ShapeFileDB) this.database).getTask().exit) {
@@ -416,7 +416,7 @@ public class DatasetGUIComponent extends JMenu {
     @Override
     public void actionPerformed(ActionEvent arg0) {
       CartagenApplication appl = CartagenApplication.getInstance();
-      CartAGenDoc doc = CartAGenDoc.getInstance();
+      CartAGenDocOld doc = CartAGenDocOld.getInstance();
       doc.saveWindow(appl);
       File file = doc.getXmlFile();
       if (file == null) {
@@ -476,7 +476,7 @@ public class DatasetGUIComponent extends JMenu {
     @Override
     public void actionPerformed(ActionEvent arg0) {
 
-      if (CartAGenDoc.getInstance().getName() == null) {
+      if (CartAGenDocOld.getInstance().getName() == null) {
         JOptionPane.showMessageDialog(CartagenApplication.getInstance()
             .getFrame(), "No CartAGen document open, create or load one first",
             "Warning", JOptionPane.WARNING_MESSAGE);
@@ -512,14 +512,14 @@ public class DatasetGUIComponent extends JMenu {
     @Override
     public void actionPerformed(ActionEvent arg0) {
 
-      if (CartAGenDoc.getInstance().getName() == null) {
+      if (CartAGenDocOld.getInstance().getName() == null) {
         /*
          * JOptionPane.showMessageDialog(CartagenApplication.getInstance()
          * .getFrame(), "No CartAGen document open, create or load one first",
          * "Warning", JOptionPane.WARNING_MESSAGE);
          */
 
-        CartAGenDoc doc = CartAGenDoc.getInstance();
+        CartAGenDocOld doc = CartAGenDocOld.getInstance();
         doc.setName("Kusay");
         doc.setPostGisDb(PostgisDB.get("Kusay", true));
 
@@ -694,7 +694,7 @@ public class DatasetGUIComponent extends JMenu {
         if (e.getActionCommand().equals("cancel")) {
           this.setVisible(false);
         } else if (e.getActionCommand().equals("ok")) {
-          CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
+          CartAGenDB db = CartAGenDocOld.getInstance().getCurrentDataset()
               .getCartAGenDB();
           for (JCheckBox check : this.checks.keySet()) {
             if (check.isSelected()) {
@@ -709,12 +709,12 @@ public class DatasetGUIComponent extends JMenu {
       public OverwriteFromShapeFrame() {
         super("Shapefiles to overwrite");
         this.setSize(200, 400);
-        System.out.println(CartAGenDoc.getInstance().getCurrentDataset());
-        System.out.println(CartAGenDoc.getInstance().getCurrentDataset()
+        System.out.println(CartAGenDocOld.getInstance().getCurrentDataset());
+        System.out.println(CartAGenDocOld.getInstance().getCurrentDataset()
             .getCartAGenDB());
-        System.out.println(CartAGenDoc.getInstance().getCurrentDataset()
+        System.out.println(CartAGenDocOld.getInstance().getCurrentDataset()
             .getCartAGenDB().getClasses());
-        for (GeographicClass geoClass : CartAGenDoc.getInstance()
+        for (GeographicClass geoClass : CartAGenDocOld.getInstance()
             .getCurrentDataset().getCartAGenDB().getClasses()) {
           JCheckBox check = new JCheckBox(geoClass.getName());
           this.checks.put(check, geoClass);
@@ -779,7 +779,7 @@ public class DatasetGUIComponent extends JMenu {
       // a panel to choose the current database among the databases of the
       // document
       JPanel p1 = new JPanel();
-      this.databases = new JComboBox(CartAGenDoc.getInstance().getDatabases()
+      this.databases = new JComboBox(CartAGenDocOld.getInstance().getDatabases()
           .keySet().toArray());
       this.databases.setPreferredSize(new Dimension(150, 20));
       this.databases.setMaximumSize(new Dimension(150, 20));
@@ -815,9 +815,9 @@ public class DatasetGUIComponent extends JMenu {
       if (e.getActionCommand().equals("cancel")) {
         this.setVisible(false);
       } else if (e.getActionCommand().equals("ok")) {
-        this.current = CartAGenDoc.getInstance().getDatabases()
+        this.current = CartAGenDocOld.getInstance().getDatabases()
             .get(this.databases.getSelectedItem()).getDataSet();
-        CartAGenDoc.getInstance().setCurrentDataset(this.current);
+        CartAGenDocOld.getInstance().setCurrentDataset(this.current);
         this.setVisible(false);
       }
     }
@@ -840,7 +840,7 @@ public class DatasetGUIComponent extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      if (CartAGenDoc.getInstance().getPostGisSession() == null) {
+      if (CartAGenDocOld.getInstance().getPostGisSession() == null) {
         // open a connection with the current PostGISDB
         AnnotationConfiguration hibConfig = new AnnotationConfiguration();
         hibConfig = hibConfig.configure(new File(PostgisDB
@@ -848,7 +848,7 @@ public class DatasetGUIComponent extends JMenu {
         hibConfig.setProperty("hibernate.connection.url", PostgisDB.getUrl());
 
         // get the persistent classes
-        for (Class<?> classObj : CartAGenDoc.getInstance().getCurrentDataset()
+        for (Class<?> classObj : CartAGenDocOld.getInstance().getCurrentDataset()
             .getCartAGenDB().getPersistentClasses()) {
           // add the persistent class to the hibernate configuration
           hibConfig.addAnnotatedClass(classObj);
@@ -869,10 +869,10 @@ public class DatasetGUIComponent extends JMenu {
         // start the transaction
         Session session = hibConfig.buildSessionFactory().openSession(
             PostgisDB.getConnection());
-        CartAGenDoc.getInstance().setPostGisSession(session);
+        CartAGenDocOld.getInstance().setPostGisSession(session);
         session.beginTransaction();
       } else {
-        CartAGenDoc.getInstance().getPostGisSession().beginTransaction();
+        CartAGenDocOld.getInstance().getPostGisSession().beginTransaction();
       }
 
     }
@@ -906,9 +906,9 @@ public class DatasetGUIComponent extends JMenu {
         return;
       }
 
-      CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
+      CartAGenDataSet dataset = CartAGenDocOld.getInstance().getCurrentDataset();
       // loop on the persistent classes to save their features in the current DB
-      for (Class<?> classObj : CartAGenDoc.getInstance().getCurrentDataset()
+      for (Class<?> classObj : CartAGenDocOld.getInstance().getCurrentDataset()
           .getCartAGenDB().getPersistentClasses()) {
         if (!classObj.isAnnotationPresent(Entity.class)) {
           continue;
@@ -932,11 +932,11 @@ public class DatasetGUIComponent extends JMenu {
           } catch (NoSuchFieldException e) {
             e.printStackTrace();
           }
-          CartAGenDoc.getInstance().getPostGisSession().saveOrUpdate(obj);
+          CartAGenDocOld.getInstance().getPostGisSession().saveOrUpdate(obj);
         }
       }
       // commit the transaction than close the session
-      CartAGenDoc.getInstance().getPostGisSession().getTransaction().commit();
+      CartAGenDocOld.getInstance().getPostGisSession().getTransaction().commit();
     }
 
     public CommitAction() {
@@ -970,7 +970,7 @@ public class DatasetGUIComponent extends JMenu {
       }
 
       // rollback the transaction than close the session
-      CartAGenDoc.getInstance().getPostGisSession().getTransaction().rollback();
+      CartAGenDocOld.getInstance().getPostGisSession().getTransaction().rollback();
     }
 
     public BackTrackAction() {
@@ -1046,7 +1046,7 @@ public class DatasetGUIComponent extends JMenu {
       this.persistList
           .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
       // the combo box with the databases
-      this.cbDatabases = new JComboBox(CartAGenDoc.getInstance().getDatabases()
+      this.cbDatabases = new JComboBox(CartAGenDocOld.getInstance().getDatabases()
           .values().toArray());
       this.cbDatabases.setPreferredSize(new Dimension(150, 20));
       this.cbDatabases.setMaximumSize(new Dimension(150, 20));

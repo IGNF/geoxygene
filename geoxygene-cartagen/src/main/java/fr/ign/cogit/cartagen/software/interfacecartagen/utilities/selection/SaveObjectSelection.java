@@ -31,7 +31,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 
@@ -75,7 +75,7 @@ public class SaveObjectSelection extends AbstractAction {
 
   private void saveSelectionToXml(Collection<IFeature> selection, String name,
       File file) throws IOException, SAXException, ParserConfigurationException {
-    String cartagenDataset = CartAGenDoc.getInstance().getCurrentDataset()
+    String cartagenDataset = CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartAGenDB().getName();
     // first tests if 'file' is an existing xml file
     if (!file.exists()) {
@@ -150,7 +150,7 @@ public class SaveObjectSelection extends AbstractAction {
       Element objElem = xmldoc.createElement("object");
       n = xmldoc.createTextNode(String.valueOf(obj.getId()));
       objElem.appendChild(n);
-      objElem.setAttribute("population-name", CartAGenDoc.getInstance()
+      objElem.setAttribute("population-name", CartAGenDocOld.getInstance()
           .getCurrentDataset().getPopNameFromObj(obj));
       objsElem.appendChild(objElem);
     }

@@ -43,7 +43,7 @@ import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 /**
@@ -203,7 +203,7 @@ public class ExportFrame extends JFrame {
               try {
                 // compte les non supprimes
                 nb = 0;
-                for (IBuilding a : CartAGenDoc.getInstance()
+                for (IBuilding a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getBuildings()) {
                   if (!a.isDeleted()) {
                     nb++;
@@ -213,7 +213,7 @@ public class ExportFrame extends JFrame {
                 // collection des geometries
                 geoms = new Geometry[nb];
                 i = 0;
-                for (IBuilding a : CartAGenDoc.getInstance()
+                for (IBuilding a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getBuildings()) {
                   if (!a.isDeleted()) {
                     geoms[i++] = AdapterFactory.toGeometry(
@@ -238,7 +238,7 @@ public class ExportFrame extends JFrame {
 
                 writer.writeHeaders(col.getEnvelopeInternal(),
                     ShapeType.POLYGON, nb, 100000);
-                for (IBuilding a : CartAGenDoc.getInstance()
+                for (IBuilding a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getBuildings()) {
                   if (!a.isDeleted()) {
                     writer.writeGeometry(AdapterFactory.toGeometry(
@@ -257,7 +257,7 @@ public class ExportFrame extends JFrame {
               try {
                 // compte les non supprimes
                 nb = 0;
-                for (IBuilding a : CartAGenDoc.getInstance()
+                for (IBuilding a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getBuildings()) {
                   if (!a.isDeleted()) {
                     nb++;
@@ -267,7 +267,7 @@ public class ExportFrame extends JFrame {
                 // collection des geometries
                 geoms = new Geometry[nb];
                 i = 0;
-                for (IBuilding a : CartAGenDoc.getInstance()
+                for (IBuilding a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getBuildings()) {
                   if (!a.isDeleted()) {
                     geoms[i++] = AdapterFactory.toGeometry(
@@ -293,7 +293,7 @@ public class ExportFrame extends JFrame {
 
                 writer.writeHeaders(col.getEnvelopeInternal(),
                     ShapeType.POLYGON, nb, 100000);
-                for (IBuilding a : CartAGenDoc.getInstance()
+                for (IBuilding a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getBuildings()) {
                   if (!a.isDeleted()) {
                     writer.writeGeometry(AdapterFactory.toGeometry(
@@ -312,7 +312,7 @@ public class ExportFrame extends JFrame {
               try {
                 // compte les non supprimes
                 nb = 0;
-                for (IWaterArea a : CartAGenDoc.getInstance()
+                for (IWaterArea a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getWaterAreas()) {
                   if (!a.isDeleted()) {
                     nb++;
@@ -322,7 +322,7 @@ public class ExportFrame extends JFrame {
                 // collection des geometries
                 geoms = new Geometry[nb];
                 i = 0;
-                for (IWaterArea a : CartAGenDoc.getInstance()
+                for (IWaterArea a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getWaterAreas()) {
                   if (!a.isDeleted()) {
                     geoms[i++] = AdapterFactory.toGeometry(
@@ -344,7 +344,7 @@ public class ExportFrame extends JFrame {
 
                 writer.writeHeaders(col.getEnvelopeInternal(),
                     ShapeType.POLYGON, nb, 100000);
-                for (IBuilding a : CartAGenDoc.getInstance()
+                for (IBuilding a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getBuildings()) {
                   if (!a.isDeleted()) {
                     writer.writeGeometry(AdapterFactory.toGeometry(
@@ -364,7 +364,7 @@ public class ExportFrame extends JFrame {
                 // compte les non supprimes
                 nb = 0;
 
-                for (INetworkSection a : CartAGenDoc.getInstance()
+                for (INetworkSection a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getRoadNetwork()
                     .getNonDeletedSections()) {
                   if (!a.isDeleted()) {
@@ -375,7 +375,7 @@ public class ExportFrame extends JFrame {
                 // collection des geometries
                 geoms = new Geometry[nb];
                 i = 0;
-                for (INetworkSection tr : CartAGenDoc.getInstance()
+                for (INetworkSection tr : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getRoadNetwork()
                     .getNonDeletedSections()) {
                   if (tr.isDeleted()) {
@@ -408,7 +408,7 @@ public class ExportFrame extends JFrame {
                 // compte les non supprimes
                 nb = 0;
 
-                for (INetworkSection a : CartAGenDoc.getInstance()
+                for (INetworkSection a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getHydroNetwork()
                     .getNonDeletedSections()) {
                   if (!a.isDeleted()) {
@@ -419,7 +419,7 @@ public class ExportFrame extends JFrame {
                 // collection des geometries
                 geoms = new Geometry[nb];
                 i = 0;
-                for (INetworkSection tr : CartAGenDoc.getInstance()
+                for (INetworkSection tr : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getHydroNetwork()
                     .getNonDeletedSections()) {
                   if (tr.isDeleted()) {
@@ -452,7 +452,7 @@ public class ExportFrame extends JFrame {
                 // compte les non supprimes
                 nb = 0;
 
-                for (INetworkSection a : CartAGenDoc.getInstance()
+                for (INetworkSection a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getElectricityNetwork()
                     .getNonDeletedSections()) {
                   if (!a.isDeleted()) {
@@ -463,7 +463,7 @@ public class ExportFrame extends JFrame {
                 // collection des geometries
                 geoms = new Geometry[nb];
                 i = 0;
-                for (INetworkSection tr : CartAGenDoc.getInstance()
+                for (INetworkSection tr : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getElectricityNetwork()
                     .getNonDeletedSections()) {
                   if (tr.isDeleted()) {
@@ -496,7 +496,7 @@ public class ExportFrame extends JFrame {
                 // compte les non supprimes
                 nb = 0;
 
-                for (INetworkSection a : CartAGenDoc.getInstance()
+                for (INetworkSection a : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getRailwayNetwork()
                     .getNonDeletedSections()) {
                   if (!a.isDeleted()) {
@@ -507,7 +507,7 @@ public class ExportFrame extends JFrame {
                 // collection des geometries
                 geoms = new Geometry[nb];
                 i = 0;
-                for (INetworkSection tr : CartAGenDoc.getInstance()
+                for (INetworkSection tr : CartAGenDocOld.getInstance()
                     .getCurrentDataset().getRailwayNetwork()
                     .getNonDeletedSections()) {
                   if (tr.isDeleted()) {

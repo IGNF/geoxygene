@@ -10,6 +10,7 @@
 package fr.ign.cogit.cartagen.software.interfacecartagen.symbols.geompool;
 
 import java.awt.Color;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
@@ -22,6 +23,19 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
+import fr.ign.cogit.geoxygene.filter.PropertyIsEqualTo;
+import fr.ign.cogit.geoxygene.filter.expression.Literal;
+import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
+import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
+import fr.ign.cogit.geoxygene.style.Fill;
+import fr.ign.cogit.geoxygene.style.Graphic;
+import fr.ign.cogit.geoxygene.style.LineSymbolizer;
+import fr.ign.cogit.geoxygene.style.Mark;
+import fr.ign.cogit.geoxygene.style.PointSymbolizer;
+import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
+import fr.ign.cogit.geoxygene.style.Rule;
+import fr.ign.cogit.geoxygene.style.Stroke;
+import fr.ign.cogit.geoxygene.style.Symbolizer;
 
 /**
  * Extension of a GeOxygene default feature with additional information of
@@ -41,13 +55,15 @@ public class ColouredFeature extends DefaultFeature {
   @SuppressWarnings("unused")
   private static Logger logger = Logger.getLogger(ColouredFeature.class
       .getName());
+  private static AtomicInteger idCounter = new AtomicInteger();
 
   /**
-   * Colour of the symbol the feature should be drawn with - used if {@code
-   * this.symbolisation} is {@code null}
+   * Colour of the symbol the feature should be drawn with - used if
+   * {@code this.symbolisation} is {@code null}
    */
   private Color symbolColour = null;
 
+  private int widthPixels = 1;
   /**
    * A {@link Symbolisation} associated to the feature. If not null the feature
    * will be drawn using the {@code draw()} method of this Symbolisation. If
@@ -84,6 +100,7 @@ public class ColouredFeature extends DefaultFeature {
    */
   public ColouredFeature(IGeometry geom) {
     super(geom);
+    this.setId(idCounter.getAndIncrement());
     this.symbolColour = Color.RED;
   }
 
@@ -94,6 +111,7 @@ public class ColouredFeature extends DefaultFeature {
    */
   public ColouredFeature(IGeometry geom, Color colour) {
     super(geom);
+    this.setId(idCounter.getAndIncrement());
     if (colour == null) {
       this.symbolColour = Color.RED;
     } else {
@@ -109,6 +127,7 @@ public class ColouredFeature extends DefaultFeature {
    */
   public ColouredFeature(IGeometry geom, Symbolisation symbolisation) {
     super(geom);
+    this.setId(idCounter.getAndIncrement());
     if (symbolisation == null) {
       this.symbolColour = Color.RED;
     } else {
@@ -129,6 +148,8 @@ public class ColouredFeature extends DefaultFeature {
    */
   public ColouredFeature(IGeometry geom, Color colour, int widthPixels) {
     super(geom);
+    this.setId(idCounter.getAndIncrement());
+    this.widthPixels = widthPixels;
     // Set colour to red if null
     Color actualColour = colour;
     if (colour == null) {
@@ -156,4 +177,62 @@ public class ColouredFeature extends DefaultFeature {
         widthPixels, actualColour, 255, actualColour, 120);
   }
 
+  public FeatureTypeStyle computeFeatureStyle() {
+    FeatureTypeStyle style = new FeatureTypeStyle();
+    style.setName(this.toString() + "-" + this.symbolColour);
+    Rule rule = new Rule();
+    rule.setFilter(new PropertyIsEqualTo(new PropertyName("id"), new Literal(
+        String.valueOf(this.getId()))));
+    rule.getSymbolizers().add(computeSymbolizer());
+    style.getRules().add(rule);
+    return style;
+  }
+
+  private Symbolizer computeSymbolizer() {
+    if (this.getGeom() instanceof ILineString) {
+      Symbolizer symbolizer = new LineSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      Stroke stroke = new Stroke();
+      stroke.setColor(symbolColour);
+      stroke.setStrokeWidth(widthPixels);
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      symbolizer.setStroke(stroke);
+      return symbolizer;
+    } else if (this.getGeom() instanceof IPolygon) {
+      PolygonSymbolizer symbolizer = new PolygonSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      Stroke stroke = new Stroke();
+      stroke.setColor(symbolColour);
+      stroke.setStrokeWidth(widthPixels);
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      symbolizer.setStroke(stroke);
+      Fill fill = new Fill();
+      fill.setColor(symbolColour);
+      fill.setFillOpacity((float) 0.5);
+      symbolizer.setFill(fill);
+      return symbolizer;
+    } else if (this.getGeom() instanceof IPoint) {
+      PointSymbolizer symbolizer = new PointSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      Graphic graphic = new Graphic();
+      Mark mark = new Mark();
+      mark.setWellKnownName("cross");
+      Fill fill = new Fill();
+      fill.setColor(symbolColour);
+      mark.setFill(fill);
+      graphic.getMarks().add(mark);
+      symbolizer.setGraphic(graphic);
+      return symbolizer;
+    } else {
+      Symbolizer symbolizer = new LineSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      Stroke stroke = new Stroke();
+      stroke.setColor(symbolColour);
+      stroke.setStrokeWidth(widthPixels);
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      symbolizer.setStroke(stroke);
+      return symbolizer;
+    }
+  }
 }

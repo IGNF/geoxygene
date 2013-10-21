@@ -23,7 +23,7 @@ import javax.swing.JOptionPane;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.GeneralisationSpecifications;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
@@ -143,7 +143,7 @@ public class BuildingMenu extends JMenu {
     @Override
     public void actionPerformed(ActionEvent e) {
       CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects = new FT_FeatureCollection<IFeature>();
-      for (IBuilding obj : CartAGenDoc.getInstance().getCurrentDataset()
+      for (IBuilding obj : CartAGenDocOld.getInstance().getCurrentDataset()
           .getBuildings()) {
         CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects
             .add(obj);

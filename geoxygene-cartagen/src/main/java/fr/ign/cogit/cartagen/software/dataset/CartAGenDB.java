@@ -63,7 +63,7 @@ public abstract class CartAGenDB {
   /**
    * The document this database is opened in.
    */
-  private CartAGenDoc document;
+  private CartAGenDocOld document;
 
   /**
    * The source DLM the database derives from (e.g. BD_CARTO).
@@ -181,7 +181,8 @@ public abstract class CartAGenDB {
       HibernateException {
     // open a connection with the current PostGISDB
     AnnotationConfiguration hibConfig = new AnnotationConfiguration();
-    hibConfig = hibConfig.configure(new File(PostgisDB.getDefaultConfigPath()));
+    hibConfig = hibConfig.configure(new File(PostgisDB.class.getResource(
+        PostgisDB.getDefaultConfigPath()).getFile()));
     hibConfig.setProperty("hibernate.connection.url", PostgisDB.getUrl());
 
     // loop on the persistent classes
@@ -203,7 +204,7 @@ public abstract class CartAGenDB {
       hibConfig.addAnnotatedClass(classObj);
       Session session = hibConfig.buildSessionFactory().openSession(
           PostgisDB.getConnection());
-      CartAGenDoc.getInstance().setPostGisSession(session);
+      CartAGenDocOld.getInstance().setPostGisSession(session);
 
       // query the objects of this class in this DB
       Query q = session.createQuery("from " + classObj.getSimpleName());
@@ -275,11 +276,11 @@ public abstract class CartAGenDB {
     this.type = type;
   }
 
-  public CartAGenDoc getDocument() {
+  public CartAGenDocOld getDocument() {
     return document;
   }
 
-  public void setDocument(CartAGenDoc document) {
+  public void setDocument(CartAGenDocOld document) {
     this.document = document;
   }
 

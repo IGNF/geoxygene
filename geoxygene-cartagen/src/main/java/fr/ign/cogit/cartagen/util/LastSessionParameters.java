@@ -29,7 +29,7 @@ public class LastSessionParameters {
   private Map<String, Object> parameters = new HashMap<String, Object>();
   private File file;
 
-  private static final String filePath = "src/main/resources/XML/last_session_parameters.xml";
+  private static final String filePath = "src/main/resources/xml/last_session_parameters.xml";
   private static LastSessionParameters instance = null;
 
   protected LastSessionParameters() {

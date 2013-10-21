@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.VisuPanel;
 import fr.ign.cogit.cartagen.software.interfacecartagen.menus.DataThemesGUIComponent;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
@@ -160,7 +160,7 @@ public class GeneralisationVisuPanelComplement {
 
             // Building displacement
             GeneralisationVisuPanelComplement.this.buildingToDisplace = null;
-            for (IBuilding building : CartAGenDoc.getInstance()
+            for (IBuilding building : CartAGenDocOld.getInstance()
                 .getCurrentDataset().getBuildings()) {
               if (building.getGeom() == null || building.getGeom().isEmpty()) {
                 continue;

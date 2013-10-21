@@ -14,7 +14,7 @@ package fr.ign.cogit.cartagen.software;
 
 import java.awt.Color;
 
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 
 /**
  * @author julien Gaffuri
@@ -63,11 +63,11 @@ public class GeneralisationLegend {
       new Color(247, 222, 66), new Color(214, 148, 66) };
 
   public static Color getTeinteHypsometrique(double z) {
-    double d = (CartAGenDoc.getInstance().getCurrentDataset().getReliefField()
-        .getZMax() - CartAGenDoc.getInstance().getCurrentDataset()
+    double d = (CartAGenDocOld.getInstance().getCurrentDataset().getReliefField()
+        .getZMax() - CartAGenDocOld.getInstance().getCurrentDataset()
         .getReliefField().getZMin())
         / GeneralisationLegend.teintesHypsometriques.length;
-    return GeneralisationLegend.teintesHypsometriques[(int) ((z - CartAGenDoc
+    return GeneralisationLegend.teintesHypsometriques[(int) ((z - CartAGenDocOld
         .getInstance().getCurrentDataset().getReliefField().getZMin()) / d)];
   }
 

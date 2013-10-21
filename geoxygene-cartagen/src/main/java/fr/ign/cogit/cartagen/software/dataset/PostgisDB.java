@@ -130,7 +130,7 @@ public class PostgisDB {
     return PostgisDB.connection;
   }
 
-  private static String defaultConfigPath = "src/main/resources/hibernate_config/hibernate_cartagen.cfg.xml";
+  private static String defaultConfigPath = "/hibernate_config/hibernate_cartagen.cfg.xml";
 
   public static String getDefaultConfigPath() {
     return defaultConfigPath;

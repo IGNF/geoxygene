@@ -33,7 +33,7 @@ import javax.swing.JTable;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
@@ -286,7 +286,7 @@ public class GeomPoolFrame extends JFrame {
 
       // Treatment of each tab for each theme
       themeTabPanel tab = (themeTabPanel) GeomPoolFrame.themes.getComponent(i);
-      for (IGeneObj obj : CartAGenDoc.getInstance().getCurrentDataset()
+      for (IGeneObj obj : CartAGenDocOld.getInstance().getCurrentDataset()
           .getCartagenPop(tab.popName)) {
 
         // Initial dataset features
@@ -333,7 +333,7 @@ public class GeomPoolFrame extends JFrame {
       // Treatment of each tab for each theme
       themeTabPanel tab = (themeTabPanel) GeomPoolFrame.themesInitial
           .getComponent(i);
-      for (IGeneObj obj : CartAGenDoc.getInstance().getInitialDataset()
+      for (IGeneObj obj : CartAGenDocOld.getInstance().getInitialDataset()
           .getCartagenPop(tab.popName)) {
 
         // Initial dataset features

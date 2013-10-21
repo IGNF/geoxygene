@@ -21,7 +21,7 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.network.NetworkSectionType;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
@@ -110,7 +110,7 @@ public class Path extends GeneObjLinDefault implements IPathLine {
     if (this.getSymbolId() == -1) {
       return GeneralisationLegend.ROUTIER_LARGEUR_DESSOUS_0;
     }
-    SymbolShape symbolShape = CartAGenDoc.getInstance().getCurrentDataset()
+    SymbolShape symbolShape = CartAGenDocOld.getInstance().getCurrentDataset()
         .getSymbols().getSymbolShapeBySymbolID(this.getSymbolId());
     return symbolShape.int_width;
   }

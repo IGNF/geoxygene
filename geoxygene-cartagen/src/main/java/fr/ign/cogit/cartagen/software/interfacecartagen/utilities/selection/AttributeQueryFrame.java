@@ -52,7 +52,7 @@ import org.jfree.util.ClassComparator;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.OGCFilterPanel;
@@ -102,7 +102,7 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
     this.setSize(800, 600);
     this.internationalisation();
     this.setGeoClasses();
-    this.dbName = CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
+    this.dbName = CartAGenDocOld.getInstance().getCurrentDataset().getCartAGenDB()
         .getName();
 
     // ***********************************
@@ -139,9 +139,9 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
     // a panel to define the extent of the query
     this.pExtent = new JPanel();
     JPanel pDb = new JPanel();
-    this.cbDbs = new JComboBox(CartAGenDoc.getInstance().getDatabases()
+    this.cbDbs = new JComboBox(CartAGenDocOld.getInstance().getDatabases()
         .keySet().toArray());
-    this.cbDbs.setSelectedItem(CartAGenDoc.getInstance().getCurrentDataset()
+    this.cbDbs.setSelectedItem(CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartAGenDB());
     this.cbDbs.setPreferredSize(new Dimension(110, 20));
     this.cbDbs.setMaximumSize(new Dimension(110, 20));
@@ -325,7 +325,7 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
    */
   private void triggerQuery() {
     // first get the correct dataset to work with
-    CartAGenDoc doc = CartAGenDoc.getInstance();
+    CartAGenDocOld doc = CartAGenDocOld.getInstance();
     CartAGenDataSet dataset = doc.getDataset(this.dbName);
     // now get the population from the class
     String popName = dataset.getPopNameFromClass(this.pFilter
@@ -376,7 +376,7 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
   @SuppressWarnings("unchecked")
   private void setGeoClasses() {
     this.geoClasses = new ArrayList<Class<?>>();
-    GeneObjImplementation impl = CartAGenDoc.getInstance().getCurrentDataset()
+    GeneObjImplementation impl = CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartAGenDB().getGeneObjImpl();
     // get the directory of the package of this class
     Package pack = this.getClass().getPackage();

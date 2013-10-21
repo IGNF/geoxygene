@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 
 public class ObjectSelection {
@@ -56,7 +56,7 @@ public class ObjectSelection {
   }
 
   public ObjectSelection(Element root) {
-    CartAGenDoc document = CartAGenDoc.getInstance();
+    CartAGenDocOld document = CartAGenDocOld.getInstance();
     Element nomElem = (Element) root.getElementsByTagName("name").item(0);
     this.name = nomElem.getChildNodes().item(0).getNodeValue();
     Element versionElem = (Element) root.getElementsByTagName(

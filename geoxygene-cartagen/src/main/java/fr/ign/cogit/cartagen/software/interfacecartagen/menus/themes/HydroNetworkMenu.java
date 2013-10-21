@@ -22,7 +22,7 @@ import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
@@ -68,18 +68,18 @@ public class HydroNetworkMenu extends JMenu {
     @Override
     public void actionPerformed(ActionEvent e) {
       HydroNetworkMenu.this.logger.info("Enrichment of "
-          + CartAGenDoc.getInstance().getCurrentDataset().getHydroNetwork());
-      INetwork net = CartAGenDoc.getInstance().getCurrentDataset()
+          + CartAGenDocOld.getInstance().getCurrentDataset().getHydroNetwork());
+      INetwork net = CartAGenDocOld.getInstance().getCurrentDataset()
           .getHydroNetwork();
       if (net.getSections().size() == 0) {
         IFeatureCollection<INetworkSection> sections = new FT_FeatureCollection<INetworkSection>();
-        for (IWaterLine w : CartAGenDoc.getInstance().getCurrentDataset()
+        for (IWaterLine w : CartAGenDocOld.getInstance().getCurrentDataset()
             .getWaterLines()) {
           sections.add(w);
         }
         net.setSections(sections);
       }
-      NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
+      NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
           .getCurrentDataset(), net);
     }
 
@@ -99,8 +99,8 @@ public class HydroNetworkMenu extends JMenu {
     @Override
     public void actionPerformed(ActionEvent e) {
       HydroNetworkMenu.this.logger.info("Selection of "
-          + CartAGenDoc.getInstance().getCurrentDataset().getHydroNetwork());
-      for (IWaterLine section : CartAGenDoc.getInstance().getCurrentDataset()
+          + CartAGenDocOld.getInstance().getCurrentDataset().getHydroNetwork());
+      for (IWaterLine section : CartAGenDocOld.getInstance().getCurrentDataset()
           .getWaterLines()) {
         CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects
             .add(section);

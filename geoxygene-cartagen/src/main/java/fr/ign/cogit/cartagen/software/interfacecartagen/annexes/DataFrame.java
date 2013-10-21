@@ -32,7 +32,7 @@ import javax.swing.JTabbedPane;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.cartagen.spatialanalysis.urban.UrbanEnrichment;
 
@@ -96,22 +96,22 @@ public class DataFrame extends JFrame {
         Thread th = new Thread(new Runnable() {
           @Override
           public void run() {
-            if (CartAGenDoc.getInstance().getCurrentDataset().getTowns().size() == 0) {
+            if (CartAGenDocOld.getInstance().getCurrentDataset().getTowns().size() == 0) {
               DataFrame.logger.info("Début enrichissement bati...");
-              UrbanEnrichment.buildTowns(CartAGenDoc.getInstance()
+              UrbanEnrichment.buildTowns(CartAGenDocOld.getInstance()
                   .getCurrentDataset());
               DataFrame.logger.info("Fin enrichissement bati: "
-                  + CartAGenDoc.getInstance().getCurrentDataset().getTowns()
+                  + CartAGenDocOld.getInstance().getCurrentDataset().getTowns()
                       .size()
                   + " villes et "
-                  + CartAGenDoc.getInstance().getCurrentDataset().getBlocks()
+                  + CartAGenDocOld.getInstance().getCurrentDataset().getBlocks()
                       .size() + " ilots crees.");
             } else {
               DataFrame.logger.info("Enrichissement bâti deja effectue: "
-                  + CartAGenDoc.getInstance().getCurrentDataset().getTowns()
+                  + CartAGenDocOld.getInstance().getCurrentDataset().getTowns()
                       .size()
                   + " villes et "
-                  + CartAGenDoc.getInstance().getCurrentDataset().getBlocks()
+                  + CartAGenDocOld.getInstance().getCurrentDataset().getBlocks()
                       .size() + " ilots crees.");
             }
           }
@@ -135,11 +135,11 @@ public class DataFrame extends JFrame {
         Thread th = new Thread(new Runnable() {
           @Override
           public void run() {
-            if (CartAGenDoc.getInstance().getCurrentDataset().getRoadNetwork()
+            if (CartAGenDocOld.getInstance().getCurrentDataset().getRoadNetwork()
                 .getNodes().size() == 0) {
               DataFrame.logger.info("Début enrichissement routier...");
-              NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-                  .getCurrentDataset(), CartAGenDoc.getInstance()
+              NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
+                  .getCurrentDataset(), CartAGenDocOld.getInstance()
                   .getCurrentDataset().getRoadNetwork());
               DataFrame.logger.info("fin enrichissement routier");
             } else {
@@ -165,11 +165,11 @@ public class DataFrame extends JFrame {
         Thread th = new Thread(new Runnable() {
           @Override
           public void run() {
-            if (CartAGenDoc.getInstance().getCurrentDataset().getHydroNetwork()
+            if (CartAGenDocOld.getInstance().getCurrentDataset().getHydroNetwork()
                 .getNodes().size() == 0) {
               DataFrame.logger.info("Début enrichissement hydro...");
-              NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-                  .getCurrentDataset(), CartAGenDoc.getInstance()
+              NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
+                  .getCurrentDataset(), CartAGenDocOld.getInstance()
                   .getCurrentDataset().getHydroNetwork());
               DataFrame.logger.info("fin enrichissement hydro");
             } else {

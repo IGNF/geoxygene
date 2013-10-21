@@ -44,7 +44,7 @@ import fr.ign.cogit.cartagen.graph.ITriangleFace;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.cartagen.software.GeneralisationSpecifications;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Symbolisation;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.VisuPanel;
@@ -364,9 +364,9 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
       public void draw(VisuPanel pv, IFeature obj) {
         IDEMPixel pixel = (IDEMPixel) obj;
         Color col;
-        double Zmin = CartAGenDoc.getInstance().getCurrentDataset()
+        double Zmin = CartAGenDocOld.getInstance().getCurrentDataset()
             .getReliefField().getZMin();
-        double Zmax = CartAGenDoc.getInstance().getCurrentDataset()
+        double Zmax = CartAGenDocOld.getInstance().getCurrentDataset()
             .getReliefField().getZMax();
         if (Zmin == Zmax) {
           col = Color.LIGHT_GRAY;

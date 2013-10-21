@@ -405,7 +405,7 @@ public class ShapeFileDB extends CartAGenDB {
         this.getDataSet().loadLandUseAreasFromSHP(shape.getPath(), 1.0, type);
       }
       // add the unique Id in the ShapeFile
-      addCartagenId();
+      // addCartagenId();
     } catch (IOException e) {
       e.printStackTrace();
     }

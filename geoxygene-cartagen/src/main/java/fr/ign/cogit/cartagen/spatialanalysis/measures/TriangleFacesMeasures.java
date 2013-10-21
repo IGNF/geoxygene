@@ -11,7 +11,7 @@ package fr.ign.cogit.cartagen.spatialanalysis.measures;
 
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.graph.ITriangleFace;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 
 public class TriangleFacesMeasures {
@@ -410,7 +410,7 @@ public class TriangleFacesMeasures {
    * @return True if a building is on the triangle, else false
    */
   public static boolean contientBatiment(ITriangleFace tri) {
-    for (IBuilding bat : CartAGenDoc.getInstance().getCurrentDataset()
+    for (IBuilding bat : CartAGenDocOld.getInstance().getCurrentDataset()
         .getBuildings()) {
       if (bat.getGeom() == null || bat.getGeom().isEmpty()) {
         return false;

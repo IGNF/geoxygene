@@ -36,7 +36,7 @@ import fr.ign.cogit.cartagen.graph.IEdge;
 import fr.ign.cogit.cartagen.graph.IGraphLinkableFeature;
 import fr.ign.cogit.cartagen.graph.INode;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.util.ReflectionUtil;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -367,10 +367,10 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
 
   @Override
   public IPopulation<? extends IGeneObj> getPopulation() {
-    String popName = CartAGenDoc.getInstance().getCurrentDataset()
+    String popName = CartAGenDocOld.getInstance().getCurrentDataset()
         .getPopNameFromObj(this);
     try {
-      return CartAGenDoc
+      return CartAGenDocOld
           .getInstance()
           .getCurrentDataset()
           .getCartagenPop(
@@ -515,7 +515,7 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
     this.antecedents = new HashSet<IGeneObj>();
     this.featureType = new FeatureType();
     this.featureType.setTypeName(IGeneObj.FEAT_TYPE_NAME);
-    this.setDbName(CartAGenDoc.getInstance().getCurrentDataset()
+    this.setDbName(CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartAGenDB().getName());
     // this.setDbName("CartAGen_initial_dataset");
   }
@@ -721,11 +721,11 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
         }
 
         // then, get the population related to targetEntity
-        String popName = CartAGenDoc.getInstance().getCurrentDataset()
+        String popName = CartAGenDocOld.getInstance().getCurrentDataset()
             .getPopNameFromClass(targetEntity);
         Field field = targetEntity.getField("FEAT_TYPE_NAME");
         String featType = (String) field.get(null);
-        IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
+        IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDocOld
             .getInstance().getCurrentDataset()
             .getCartagenPop(popName, featType);
         // TODO this part of the code is not optimised: a query would be better
@@ -760,11 +760,11 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
         IGeneObj obj = null;
 
         // then, get the population related to targetEntity
-        String popName = CartAGenDoc.getInstance().getCurrentDataset()
+        String popName = CartAGenDocOld.getInstance().getCurrentDataset()
             .getPopNameFromClass(targetEntity);
         Field field = targetEntity.getField("FEAT_TYPE_NAME");
         String featType = (String) field.get(null);
-        IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
+        IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDocOld
             .getInstance().getCurrentDataset()
             .getCartagenPop(popName, featType);
 
