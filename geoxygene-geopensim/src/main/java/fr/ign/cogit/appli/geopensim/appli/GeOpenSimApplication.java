@@ -92,7 +92,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
+import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.DataSet;
@@ -118,9 +118,9 @@ public class GeOpenSimApplication extends GeOxygeneApplication implements
   private List<EtatGlobal> listeEtats = new ArrayList<EtatGlobal>();
 
   private final ImageIcon start = new ImageIcon(
-      ModeSelector.class.getResource("/images/icons/16x16/startSimulation.png"));
+      MainFrameToolBar.class.getResource("/images/icons/16x16/startSimulation.png"));
   private final ImageIcon stop = new ImageIcon(
-      ModeSelector.class.getResource("/images/icons/16x16/stopSimulation.png"));
+      MainFrameToolBar.class.getResource("/images/icons/16x16/stopSimulation.png"));
   private final JButton simulationButton = new JButton(start);
   private final JButton editRulesButton = new JButton("Editer règles");
   private final JButton applyRulesButton = new JButton("Appliquer règles");
@@ -159,7 +159,7 @@ public class GeOpenSimApplication extends GeOxygeneApplication implements
     this.getMainFrame().getMode().getToolBar().add(changerValObj);
 
     JButton treeButton = new JButton(new ImageIcon(
-        ModeSelector.class.getResource("/images/icons/16x16/tree.png")));
+        MainFrameToolBar.class.getResource("/images/icons/16x16/tree.png")));
     treeButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
