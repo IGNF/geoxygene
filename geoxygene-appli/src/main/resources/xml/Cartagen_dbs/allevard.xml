@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<cartagen-dataset>
+  <name>allevard</name>
+  <system-path>E:\Users\gtouya\workspace\libcogit-cartagen\src\main\resources\donnees\allevard</system-path>
+  <type>fr.ign.cogit.cartagen.software.dataset.ShapeFileDB</type>
+  <dataset-type>fr.ign.cogit.cartagen.software.CartAGenDataSet</dataset-type>
+  <scale>25000</scale>
+  <source-dlm>SPECIAL_CARTAGEN</source-dlm>
+  <classes-list>
+    <class>
+      <path>E:\Users\gtouya\workspace\libcogit-cartagen\src\main\resources\donnees\allevard/batiment</path>
+      <feature-type>Building</feature-type>
+    </class>
+    <class>
+      <path>E:\Users\gtouya\workspace\libcogit-cartagen\src\main\resources\donnees\allevard/troncon_route</path>
+      <feature-type>RoadLine</feature-type>
+    </class>
+    <class>
+      <path>E:\Users\gtouya\workspace\libcogit-cartagen\src\main\resources\donnees\allevard/troncon_cours_eau</path>
+      <feature-type>WaterLine</feature-type>
+    </class>
+    <class>
+      <path>E:\Users\gtouya\workspace\libcogit-cartagen\src\main\resources\donnees\allevard/surface_eau</path>
+      <feature-type>WaterArea</feature-type>
+    </class>
+  </classes-list>
+  <geneobj-implementation>
+    <implementation-name>default</implementation-name>
+    <implementation-package>fr.ign.cogit.cartagen.core.defaultschema</implementation-package>
+    <implementation-root-class>fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault</implementation-root-class>
+    <implementation-factory>fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory</implementation-factory>
+  </geneobj-implementation>
+  <persistent>false</persistent>
+  <persistent-classes/>
+</cartagen-dataset>

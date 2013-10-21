@@ -228,6 +228,13 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-cartagen</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-scripting</artifactId>
 			<version>0.3-SNAPSHOT</version>
 			<type>jar</type>
