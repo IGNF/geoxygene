@@ -14,6 +14,7 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.SwingingArmPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.script.GroovyConsolePlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.semio.SemioPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin</plugin>
     <lastOpenedFile>E:\Workspace\GeOxygene\modules\library\semiology\src\main\resources\proprietevisu\shp\Rural\vegetation_25.shp</lastOpenedFile>
     <preload>/home/turbet/projects/geoxygene/svn/oxygene-project/main/trunk/geoxygene-data/ign-echantillon/bdtopo/72_BDTOPO_shp/BDT_2-0_SHP_LAMB93_X062-ED111/A_RESEAU_ROUTIER/ROUTE_SECONDAIRE.SHP</preload>
     <preload>/home/turbet/projects/geoxygene/svn/oxygene-project/main/trunk/geoxygene-data/ign-echantillon/bdtopo/72_BDTOPO_shp/BDT_2-0_SHP_LAMB93_X062-ED111/A_RESEAU_ROUTIER/ROUTE.SHP</preload>
