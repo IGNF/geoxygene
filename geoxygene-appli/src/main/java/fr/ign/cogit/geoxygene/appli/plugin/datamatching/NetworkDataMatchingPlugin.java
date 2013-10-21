@@ -163,8 +163,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         
         // String filename1 = "D:\\Data\\Appariement\\ESPON_DB\\Test02\\Reseau1.shp";
         // String filename2 = "D:\\Data\\Appariement\\ESPON_DB\\Test02\\Reseau2.shp";
-        String filename1 = "D:\\Data\\Appariement\\MesTests\\T5\\Res1.shp";
-        String filename2 = "D:\\Data\\Appariement\\MesTests\\T5\\Res2.shp";
+        // String filename1 = "D:\\Data\\Appariement\\MesTests\\T5\\Res1.shp";
+        // String filename2 = "D:\\Data\\Appariement\\MesTests\\T5\\Res2.shp";
 
         // Filename
         //
@@ -172,7 +172,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         // ParamParserTest.class.getClassLoader().getResource("data/reseau.shp").getPath();
         // String filename1 = application.getProperties().getLastOpenedFile();
         // bdcarto_route.shp
-        // String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+        String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+        String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
         // String filename1 =
         // "D:\\Data\\Appariement\\ESPON_DB\\Test\\Reseau1.shp";
 
@@ -666,11 +667,11 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         
         // Test : ajout 
         this.application.getMainFrame().createNewDesktop("Résultat.");
-        DisplayLinkGeomPanel geomLinkPanel = new DisplayLinkGeomPanel(application.getMainFrame(), liens);
-        this.application.getMainFrame().addFrameInDesktop("Résultat.", new DisplayLinkPanel(geomLinkPanel, liens));
+        // DisplayLinkGeomPanel geomLinkPanel = new DisplayLinkGeomPanel(application.getMainFrame(), liens);
+        // this.application.getMainFrame().addFrameInDesktop("Résultat.", new DisplayLinkPanel(geomLinkPanel, liens));
         this.application.getMainFrame().addFrameInDesktop("Résultat.", new DisplayStatResultPanel(resultatAppariement));
-        this.application.getMainFrame().addFrameInDesktop("Résultat.", new DisplayParamPanel(paramPlugin));
-        this.application.getMainFrame().addFrameInDesktop("Résultat.", geomLinkPanel.getGui());
+        // this.application.getMainFrame().addFrameInDesktop("Résultat.", new DisplayParamPanel(paramPlugin));
+        //this.application.getMainFrame().addFrameInDesktop("Résultat.", geomLinkPanel.getGui());
         
         
         

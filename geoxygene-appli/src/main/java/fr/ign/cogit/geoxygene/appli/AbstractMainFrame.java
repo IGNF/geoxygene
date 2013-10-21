@@ -229,8 +229,7 @@ public abstract class AbstractMainFrame implements MainFrame {
    * @param desktopContent
    */
   @Override
-  public final void addFrameInDesktop(String desktopName,
-      JComponent desktopContent) {
+  public final void addFrameInDesktop(String desktopName, JComponent desktopContent) {
     logger.log(Level.DEBUG, "New frame");
     // Add ProjectFrame to the selected desktop
     JComponent currentDesktop = getDesktop(desktopName);
