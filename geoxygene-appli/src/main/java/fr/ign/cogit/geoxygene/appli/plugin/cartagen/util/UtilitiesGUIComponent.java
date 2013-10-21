@@ -36,7 +36,7 @@ import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.frame.ShowWKTFrame;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.bookmarks.Bookmark;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.bookmarks.BookmarkSet;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.bookmarks.LoadBookmarkFrame;
