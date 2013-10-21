@@ -17,7 +17,7 @@ public class AddPointMode extends AbstractGeometryEditMode {
    * @param theModeSelector the mode selector
    */
   public AddPointMode(final MainFrame theMainFrame,
-      final ModeSelector theModeSelector) {
+      final MainFrameToolBar theModeSelector) {
     super(theMainFrame, theModeSelector);
   }
 

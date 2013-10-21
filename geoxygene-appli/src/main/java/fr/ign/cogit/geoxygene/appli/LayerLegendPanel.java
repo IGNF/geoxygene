@@ -30,6 +30,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.NoninvertibleTransformException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,6 +47,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -64,6 +66,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -129,7 +132,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
   JButton addShapeButton = new JButton(new ImageIcon(this.getClass()
       .getResource("/images/icons/16x16/page_white_add.png"))); //$NON-NLS-1$
   JButton addPostgisButton = new JButton(new ImageIcon(this.getClass()
-      .getResource("/images/icons/16x16/database_add.png"))); //$NON-NLS-1$
+      .getResource("/images/toolbar/database_add.png"))); //$NON-NLS-1$
+  JButton addLayerButton = new JButton(new ImageIcon(this.getClass()
+      .getResource("/images/toolbar/page_white_paintbrush.png"))); //$NON-NLS-1$
 
   JButton topButton = new JButton(new ImageIcon(this.getClass().getResource(
       "/images/icons/16x16/arrow_top.png"))); //$NON-NLS-1$
@@ -204,6 +209,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     this.addPostgisButton.setMargin(nullInsets);
     this.addPostgisButton
         .setToolTipText(I18N.getString("MainFrame.NewPgLayer"));
+    this.addLayerButton.setMargin(nullInsets);
+    this.addLayerButton
+        .setToolTipText(I18N.getString("MainFrame.LoadSLD"));
 
     this.topButton.setMargin(nullInsets);
     this.topButton.setToolTipText(I18N.getString("LayerLegendPanel.Top"));
@@ -221,6 +229,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     panel.add(this.addShapeButton);
     panel.add(Box.createHorizontalGlue());
     panel.add(this.addPostgisButton);
+    panel.add(this.addLayerButton);
 
     panel.add(Box.createHorizontalGlue());
     panel.add(this.topButton);
@@ -242,6 +251,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     this.addShapeButton.setActionCommand("addShp"); //$NON-NLS-1$
     this.addPostgisButton.addActionListener(this);
     this.addPostgisButton.setActionCommand("addPg"); //$NON-NLS-1$
+    this.addLayerButton.addActionListener(this);
+    this.addLayerButton.setActionCommand("addSLD"); //$NON-NLS-1$
     this.topButton.addActionListener(this);
     this.topButton.setActionCommand("top"); //$NON-NLS-1$
     this.bottomButton.addActionListener(this);
@@ -265,7 +276,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     JScrollPane scrollpane = new JScrollPane(this.layersTable);
 
     Icon selectionIcon = new ImageIcon(this.getClass().getResource(
-        "/images/icons/16x16/selection.png")); //$NON-NLS-1$
+        "/images/toolbar/pencil.png")); //$NON-NLS-1$
     Icon visibleIcon = new ImageIcon(this.getClass().getResource(
         "/images/icons/16x16/visible.png")); //$NON-NLS-1$
     Icon symbolizeIcon = new ImageIcon(this.getClass().getResource(
@@ -638,6 +649,41 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     AddPostgisLayer addPostgisLayerPanel = new AddPostgisLayer(this);
     addPostgisLayerPanel.setSize(600, 500);
   }
+  
+  private void displayAddSLD() {
+    if (parent == null) {
+      LOGGER.info("Cannot save SLD, no selected project");
+      return;
+    }
+    JFileChooser chooser = new JFileChooser(parent.getMainFrame().getMenuBar().fc.getPreviousDirectory());
+    chooser.setFileFilter(new FileFilter() {
+      @Override
+      public boolean accept(File f) {
+        return (f.isFile()
+            && (f.getAbsolutePath().endsWith(".xml") || f.getAbsolutePath()
+                .endsWith(".XML")) || f.isDirectory());
+      }
+      @Override
+      public String getDescription() {
+        return "XMLfileReader";
+      }
+    });
+    int result = chooser.showOpenDialog(parent.getMainFrame().getGui());
+    if (result == JFileChooser.APPROVE_OPTION) {
+      File file = chooser.getSelectedFile();
+      if (file != null) {
+        // String fileName = file.getAbsolutePath();
+        try {
+          parent.loadSLD(file);
+          parent.getMainFrame().getApplication().getProperties()
+              .setLastOpenedFile(file.getAbsolutePath());
+          parent.getMainFrame().getMenuBar().fc.setPreviousDirectory(file);
+        } catch (Exception e1) {
+          e1.printStackTrace();
+        }
+      }
+    }
+  }
 
   /**
    * Return the layer corresponding to the given row.
@@ -982,6 +1028,10 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     }
     if (e.getActionCommand().equals("addPg")) { //$NON-NLS-1$
       this.displayAddPostgisLayer();
+      return;
+    }
+    if (e.getActionCommand().equals("addSLD")) { //$NON-NLS-1$
+      this.displayAddSLD();
       return;
     }
     if (e.getActionCommand().equals("remove")) { //$NON-NLS-1$

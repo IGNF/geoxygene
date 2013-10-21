@@ -36,7 +36,7 @@ import fr.ign.cogit.geoxygene.style.Layer;
  */
 public class MultithreadedRenderingManager implements RenderingManager {
 
-  private static final Logger logger = Logger
+  private static final Logger LOGGER = Logger
       .getLogger(MultithreadedRenderingManager.class.getName()); // logger
 
   private LayerViewPanel layerViewPanel = null; // managed LayerViewPanel
@@ -101,17 +101,16 @@ public class MultithreadedRenderingManager implements RenderingManager {
                       .wait(
                           MultithreadedRenderingManager.DAEMON_MAXIMUM_WAITING_TIME);
                 } catch (InterruptedException ie) {
-                  if (MultithreadedRenderingManager.logger.isTraceEnabled()) {
-                    MultithreadedRenderingManager.logger.trace(ie.getMessage());
+                  if (LOGGER.isTraceEnabled()) {
+                    LOGGER.trace(ie.getMessage());
                     // ie.printStackTrace();
                   }
                 }
               }
               runnable = MultithreadedRenderingManager.this.getRunnableQueue()
                   .poll();
-              if (MultithreadedRenderingManager.logger.isTraceEnabled()) {
-                MultithreadedRenderingManager.logger
-                    .trace(MultithreadedRenderingManager.this
+              if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace(MultithreadedRenderingManager.this
                         .getRunnableQueue().size() + " runnables in the queue" //$NON-NLS-1$
                     );
               }
@@ -126,9 +125,8 @@ public class MultithreadedRenderingManager implements RenderingManager {
             }
           }
         } finally {
-          if (MultithreadedRenderingManager.logger.isTraceEnabled()) {
-            MultithreadedRenderingManager.logger
-                .trace("Deamon thread finished"); //$NON-NLS-1$
+          if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Deamon thread finished"); //$NON-NLS-1$
           }
           // MultithreadedRenderingManager.this.getLayerViewPanel().superRepaint();
         }
@@ -168,6 +166,9 @@ public class MultithreadedRenderingManager implements RenderingManager {
    */
   @Override
   public final void renderAll() {
+    
+    LOGGER.debug("RenderAll()");
+    
     // if the daemon is still alive, interrupt it
     if (this.daemon != null && this.daemon.isAlive()) {
       synchronized (this.daemon) {
@@ -240,17 +241,22 @@ public class MultithreadedRenderingManager implements RenderingManager {
    */
   @Override
   public void render(final LayerRenderer renderer) {
+    
     // if the renderer is already rendering, interrupt the current
     // rendering to start a new one
     if (renderer == null) {
-      logger.warn("Rendering process requested but no renderer has been set");
+      LOGGER.warn("Rendering process requested but no renderer has been set");
       return;
     }
+    LOGGER.trace("rendering process for " + renderer.getClass());
+    
     if (renderer.isRendering()) {
       renderer.cancel();
     }
+    
     // clear the image cache
     renderer.initializeRendering();
+    
     // create a new runnable for the rendering
     Runnable runnable = renderer.createRunnable();
     if (runnable != null) {
@@ -361,8 +367,8 @@ public class MultithreadedRenderingManager implements RenderingManager {
             .isRendered())) {
       return;
     }
-    if (MultithreadedRenderingManager.logger.isTraceEnabled()) {
-      MultithreadedRenderingManager.logger.trace("Repaint"); //$NON-NLS-1$
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Repaint"); //$NON-NLS-1$
     }
     // nothing is being rendered, we can actually repaint the panel
     MultithreadedRenderingManager.this.getLayerViewPanel().superRepaint();

@@ -30,7 +30,7 @@ public class ZoomBoxMode extends AbstractMode implements PaintListener {
    * @param theModeSelector the mode selector
    */
   public ZoomBoxMode(final MainFrame theMainFrame,
-      final ModeSelector theModeSelector) {
+      final MainFrameToolBar theModeSelector) {
     super(theMainFrame, theModeSelector);
   }
 

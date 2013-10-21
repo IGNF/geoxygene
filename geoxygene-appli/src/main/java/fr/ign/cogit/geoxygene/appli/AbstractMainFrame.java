@@ -47,26 +47,36 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
+import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 
 /**
  * Common implementation of all MainFrames
- * @author JeT
  * 
+ * @author JeT
  */
 public abstract class AbstractMainFrame implements MainFrame {
 
+  /** Logger. */
   protected static Logger logger = Logger.getLogger(AbstractMainFrame.class.getName());
-  private GeOxygeneApplication application = null; // The associated application
-  private String title = null; // frame title
-  private ModeSelector modeSelector = null;
+  
+  /** The associated application. */
+  private GeOxygeneApplication application = null;
+  
+  /** frame title. */
+  private String title = null;
+  
+  /** The frame toolbar. */
+  private MainFrameToolBar modeSelector = null;
+  
   /** The frame menu bar. */
   private MainFrameMenuBar menuBar = null;
-  /**
-   * Tabbed Panes which contains The desktop pane containing the project frames.
-   */
+  
+  /** Tabbed Panes which contains the desktop pane containing the project frames. */
   private JTabbedPane desktopTabbedPane = null;
-  private JFrame frame = null; // main GUI window
+  
+  /** Main GUI window. */
+  private JFrame frame = null;
+  
   /** The default width of the frame. */
   private final int defaultFrameWidth = 800;
 
@@ -78,12 +88,11 @@ public abstract class AbstractMainFrame implements MainFrame {
    * @param title frame title
    * @param application associated application
    */
-  public AbstractMainFrame(final String title,
-      final GeOxygeneApplication application) {
+  public AbstractMainFrame(final String title, final GeOxygeneApplication application) {
     super();
     this.setTitle(title);
     this.application = application;
-    this.modeSelector = new ModeSelector(this);
+    this.modeSelector = new MainFrameToolBar(this);
   }
 
   /**
@@ -102,8 +111,8 @@ public abstract class AbstractMainFrame implements MainFrame {
 
       this.frame.setJMenuBar(this.getMenuBar());
       this.frame.getContentPane().setLayout(new BorderLayout());
-      this.frame.getContentPane().add(this.getDesktopTabbedPane(),
-          BorderLayout.CENTER);
+      this.frame.getContentPane().add(this.getDesktopTabbedPane(), BorderLayout.CENTER);
+      
       this.frame.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosing(final WindowEvent e) {
@@ -152,7 +161,7 @@ public abstract class AbstractMainFrame implements MainFrame {
   }
 
   @Override
-  public final ModeSelector getMode() {
+  public final MainFrameToolBar getMode() {
     return this.modeSelector;
   }
 
@@ -356,311 +365,3 @@ class ButtonTabComponent extends JPanel {
 
 }
 
-//      this.fileMenu = new JMenu(I18N.getString("MainFrame.File")); //$NON-NLS-1$
-//      this.viewMenu = new JMenu(I18N.getString("MainFrame.View")); //$NON-NLS-1$
-// this.configurationMenu = new JMenu(
-//          I18N.getString("MainFrame.Configuration")); //$NON-NLS-1$
-//      this.helpMenu = new JMenu(I18N.getString("MainFrame.Help")); //$NON-NLS-1$
-//
-// JMenuItem openFileMenuItem = new JMenuItem(
-//          I18N.getString("MainFrame.OpenFile")); //$NON-NLS-1$
-// openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// ProjectFrame projectFrame = AbstractMainFrame.this
-// .getSelectedProjectFrame();
-// if (projectFrame == null) {
-// if (AbstractMainFrame.this.getAllProjectFrames().length != 0) {
-// // TODO ask the user in which frame (s)he
-// // wants to load into?
-// projectFrame = AbstractMainFrame.this.getAllProjectFrames()[0];
-// } else {
-// // TODO create a new project frame?
-// AbstractMainFrame.logger.info(I18N
-//                  .getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
-// return;
-// }
-// }
-// File file = MainFrameMenuBar.fc.getFile( AbstractMainFrame.this.getGui());
-// if (file != null) {
-// projectFrame.addLayer(file);
-// }
-// }
-// });
-//
-// JMenuItem newProjectFrameMenuItem = new JMenuItem(
-//          I18N.getString("MainFrame.NewProject")); //$NON-NLS-1$
-// newProjectFrameMenuItem
-// .addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// /**
-// * popup for the visualization type
-// */
-// String[] visuOptions = new String[] { "GL (lwJGL)",
-// "native (AWT)" };
-// String input = (String) JOptionPane.showInputDialog(
-// AbstractMainFrame.this.getGui(),
-// "Please select a visualization engine",
-// "visualization engine", JOptionPane.INFORMATION_MESSAGE,
-// null, visuOptions, visuOptions[0]);
-// if (input.equals(visuOptions[0])) {
-// LayerViewPanelFactory.setRenderingType(RenderingType.LWJGL);
-// }
-//
-// if (input.equals(visuOptions[2])) {
-// LayerViewPanelFactory.setRenderingType(RenderingType.AWT);
-// }
-//
-// AbstractMainFrame.this.newProjectFrame();
-// }
-// });
-//
-// JMenuItem saveAsShpMenuItem = new JMenuItem(
-//          I18N.getString("MainFrame.SaveAsShp")); //$NON-NLS-1$
-// saveAsShpMenuItem.addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// ProjectFrame projectFrame = AbstractMainFrame.this
-// .getSelectedProjectFrame();
-// Set<Layer> selectedLayers = projectFrame.getLayerLegendPanel()
-// .getSelectedLayers();
-// if (selectedLayers.size() != 1) {
-// AbstractMainFrame.logger
-//                .error("You must select one (and only one) layer."); //$NON-NLS-1$
-// return;
-// }
-// Layer layer = selectedLayers.iterator().next();
-//
-// IFeatureCollection<? extends IFeature> layerfeatures = layer
-// .getFeatureCollection();
-// if (layerfeatures == null) {
-// AbstractMainFrame.logger
-//                .error("The layer selected does not contain any feature."); //$NON-NLS-1$
-// return;
-// }
-// JFileChooser chooser = new
-// JFileChooser(MainFrameMenuBar.fc.getPreviousDirectory());
-// int result = chooser.showSaveDialog(AbstractMainFrame.this.getGui());
-// if (result == JFileChooser.APPROVE_OPTION) {
-// File file = chooser.getSelectedFile();
-// if (file != null) {
-// String fileName = file.getAbsolutePath();
-// projectFrame.saveAsShp(fileName, layer);
-// }
-// }
-// }
-// });
-//
-// JMenuItem saveAsImageMenuItem = new JMenuItem(
-//          I18N.getString("MainFrame.SaveAsImage")); //$NON-NLS-1$
-// saveAsImageMenuItem
-// .addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// ProjectFrame projectFrame = AbstractMainFrame.this
-// .getSelectedProjectFrame();
-// if (projectFrame == null) {
-// if (AbstractMainFrame.this.getAllProjectFrames().length != 0) {
-// projectFrame = AbstractMainFrame.this.getAllProjectFrames()[0];
-// } else {
-// return;
-// }
-// }
-// JFileChooser chooser = new
-// JFileChooser(MainFrameMenuBar.fc.getPreviousDirectory());
-// int result = chooser.showSaveDialog(AbstractMainFrame.this
-// .getGui());
-// if (result == JFileChooser.APPROVE_OPTION) {
-// File file = chooser.getSelectedFile();
-// if (file != null) {
-// String fileName = file.getAbsolutePath();
-// projectFrame.saveAsImage(fileName);
-// }
-// }
-// }
-// });
-//
-//      JMenuItem printMenu = new JMenuItem(I18N.getString("MainFrame.Print")); //$NON-NLS-1$
-// printMenu.addActionListener(new ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent arg0) {
-// Thread th = new Thread(new Runnable() {
-// @Override
-// public void run() {
-// try {
-// PrinterJob printJob = PrinterJob.getPrinterJob();
-// printJob.setPrintable(AbstractMainFrame.this
-// .getSelectedProjectFrame().getLayerViewPanel());
-// PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-// if (printJob.printDialog(aset)) {
-// printJob.print(aset);
-// }
-// } catch (java.security.AccessControlException ace) {
-// JOptionPane.showMessageDialog(AbstractMainFrame.this
-// .getSelectedProjectFrame().getLayerViewPanel(),
-//                    I18N.getString("MainFrame.ImpossibleToPrint") //$NON-NLS-1$
-//                        + ";" //$NON-NLS-1$
-//                        + I18N.getString("MainFrame.AccessControlProblem") //$NON-NLS-1$
-// + ace.getMessage(), I18N
-//                        .getString("MainFrame.ImpossibleToPrint"), //$NON-NLS-1$
-// JOptionPane.ERROR_MESSAGE);
-// } catch (Exception ex) {
-// ex.printStackTrace();
-// }
-// }
-// });
-// th.start();
-// }
-// });
-//
-//      JMenuItem exitMenuItem = new JMenuItem(I18N.getString("MainFrame.Exit")); //$NON-NLS-1$
-// exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// AbstractMainFrame.this.dispose();
-// AbstractMainFrame.this.getApplication().exit();
-// }
-// });
-//
-// this.fileMenu.add(openFileMenuItem);
-// this.fileMenu.add(newProjectFrameMenuItem);
-// this.fileMenu.addSeparator();
-// this.fileMenu.add(saveAsShpMenuItem);
-// this.fileMenu.add(saveAsImageMenuItem);
-// this.fileMenu.add(printMenu);
-// this.fileMenu.addSeparator();
-// this.fileMenu.add(exitMenuItem);
-// this.menuBar.setFont(this.getApplication().getFont());
-// this.menuBar.add(this.fileMenu);
-// this.menuBar.add(this.viewMenu);
-//      JMenuItem mScale6250 = new JMenuItem("1:6250"); //$NON-NLS-1$
-// mScale6250.addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// LayerViewPanel layerViewPanel = AbstractMainFrame.this
-// .getSelectedProjectFrame().getLayerViewPanel();
-// layerViewPanel.getViewport().setScale(
-// 1 / (6250 * LayerViewPanel.getMETERS_PER_PIXEL()));
-// layerViewPanel.repaint();
-// }
-// });
-//      JMenuItem mScale12500 = new JMenuItem("1:12500"); //$NON-NLS-1$
-// mScale12500.addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// LayerViewPanel layerViewPanel = AbstractMainFrame.this
-// .getSelectedProjectFrame().getLayerViewPanel();
-// layerViewPanel.getViewport().setScale(
-// 1 / (12500 * LayerViewPanel.getMETERS_PER_PIXEL()));
-// layerViewPanel.repaint();
-// }
-// });
-//      JMenuItem mScale25k = new JMenuItem("1:25k"); //$NON-NLS-1$
-// mScale25k.addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// LayerViewPanel layerViewPanel = AbstractMainFrame.this
-// .getSelectedProjectFrame().getLayerViewPanel();
-// layerViewPanel.getViewport().setScale(
-// 1 / (25000 * LayerViewPanel.getMETERS_PER_PIXEL()));
-// layerViewPanel.repaint();
-// }
-// });
-//      JMenuItem mScale50k = new JMenuItem("1:50k"); //$NON-NLS-1$
-// mScale50k.addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// LayerViewPanel layerViewPanel = AbstractMainFrame.this
-// .getSelectedProjectFrame().getLayerViewPanel();
-// layerViewPanel.getViewport().setScale(
-// 1 / (50000 * LayerViewPanel.getMETERS_PER_PIXEL()));
-// layerViewPanel.repaint();
-// }
-// });
-//      JMenuItem mScale100k = new JMenuItem("1:100k"); //$NON-NLS-1$
-// mScale100k.addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// LayerViewPanel layerViewPanel = AbstractMainFrame.this
-// .getSelectedProjectFrame().getLayerViewPanel();
-// layerViewPanel.getViewport().setScale(
-// 1 / (100000 * LayerViewPanel.getMETERS_PER_PIXEL()));
-// layerViewPanel.repaint();
-// }
-// });
-// JMenuItem mScaleCustom = new JMenuItem(
-//          I18N.getString("MainFrame.CustomScale")); //$NON-NLS-1$
-// mScaleCustom.addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// int scale = Integer.parseInt(JOptionPane.showInputDialog(I18N
-//              .getString("MainFrame.NewScale"))); //$NON-NLS-1$
-// LayerViewPanel layerViewPanel = AbstractMainFrame.this
-// .getSelectedProjectFrame().getLayerViewPanel();
-// layerViewPanel.getViewport().setScale(
-// 1 / (scale * LayerViewPanel.getMETERS_PER_PIXEL()));
-// layerViewPanel.repaint();
-// }
-// });
-// this.viewMenu.add(mScale6250);
-// this.viewMenu.add(mScale12500);
-// this.viewMenu.add(mScale25k);
-// this.viewMenu.add(mScale50k);
-// this.viewMenu.add(mScale100k);
-// this.viewMenu.add(mScaleCustom);
-// this.viewMenu.addSeparator();
-//
-//      JMenuItem mGoTo = new JMenuItem(I18N.getString("MainFrame.GoTo")); //$NON-NLS-1$
-// mGoTo.addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// LayerViewPanel layerViewPanel = AbstractMainFrame.this
-// .getSelectedProjectFrame().getLayerViewPanel();
-//
-//          String lat = JOptionPane.showInputDialog("Latitude"); //$NON-NLS-1$
-// if (lat == null) {
-// return;
-// }
-// double latitude = Double.parseDouble(lat);
-//          String lon = JOptionPane.showInputDialog("Longitude"); //$NON-NLS-1$
-// if (lon == null) {
-// return;
-// }
-// double longitude = Double.parseDouble(lon);
-// try {
-// layerViewPanel.getViewport().center(
-// new DirectPosition(latitude, longitude));
-// } catch (NoninvertibleTransformException e1) {
-// e1.printStackTrace();
-// }
-// layerViewPanel.repaint();
-// }
-// });
-// this.viewMenu.add(mGoTo);
-//
-// JMenuItem mCoord = new JCheckBoxMenuItem(
-//          I18N.getString("MainFrame.Coordinate")); //$NON-NLS-1$
-// mCoord.addActionListener(new java.awt.event.ActionListener() {
-// @Override
-// public void actionPerformed(final ActionEvent e) {
-// LayerViewPanel layerViewPanel = AbstractMainFrame.this
-// .getSelectedProjectFrame().getLayerViewPanel();
-// if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
-// layerViewPanel.addMouseMotionListener(new CoordPaintListener());
-// } else {
-// for (MouseMotionListener m : layerViewPanel
-// .getMouseMotionListeners()) {
-// if (m.getClass().equals(CoordPaintListener.class)) {
-// layerViewPanel.removeMouseMotionListener(m);
-// layerViewPanel.repaint();
-// }
-// }
-// }
-// }
-// });
-// this.viewMenu.add(mCoord);
-//
-// this.menuBar.add(this.configurationMenu);
-// this.menuBar.add(this.helpMenu);
-//

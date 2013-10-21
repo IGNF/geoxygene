@@ -45,9 +45,12 @@ import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
  * @author Julien Perret
  */
 public class GeOxygeneApplication {
-  private static ImageIcon splashImage; // The splash Image used when running the application.
-  private static Logger logger = Logger.getLogger(GeOxygeneApplication.class
-      .getName()); // logger
+  
+  /** The splash Image used when running the application. */
+  private static ImageIcon splashImage;
+  
+  /** Logger. */
+  private static Logger logger = Logger.getLogger(GeOxygeneApplication.class.getName());
 
   /**
    * The icon of the icon, i.e. the GeOxygene icon by default. Also used by
@@ -98,17 +101,23 @@ public class GeOxygeneApplication {
    * @param title title of the application
    * @param theApplicationIcon the application icon
    */
-  public GeOxygeneApplication(final String title,
-      final ImageIcon theApplicationIcon) {
+  public GeOxygeneApplication(final String title, final ImageIcon theApplicationIcon) {
+    
     this.frameTitle = title;
     if (theApplicationIcon != null) {
       this.applicationIcon = theApplicationIcon;
     }
+    
     // register application in the event manager
     GeOxygeneEventManager.getInstance().setApplication(this);
 
-    this.initializeProperties("./geoxygene-configuration.xml");
+    // Load properties from geoxygene-configuation.xml file
+    this.loadProperties("./geoxygene-configuration.xml");
+    
     this.preload();
+    
+    // Initialize plugins and last opened files
+    this.initializeProperties();
 
   }
 
@@ -147,9 +156,11 @@ public class GeOxygeneApplication {
           projectFrame = f.getDesktopProjectFrames()[f
               .getDesktopProjectFrames().length - 1];
         }
+        
         if (projectFrame == null) {
           projectFrame = frame.newProjectFrame();
         }
+        
         for (String filename : GeOxygeneApplication.this.properties
             .getPreloads()) {
           try {
@@ -239,16 +250,21 @@ public class GeOxygeneApplication {
     }
     return this.frame;
   }
-
-  /** Initialize the application plugins. */
-  private void initializeProperties(final String propertyFilename) {
+  
+  private void loadProperties(String propertyFilename) {
     try {
       this.propertiesFile = new URL("file", "", propertyFilename); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     } catch (MalformedURLException e) {
       e.printStackTrace();
     }
-    this.properties = GeOxygeneApplicationProperties
-        .unmarshall(this.propertiesFile.getFile());
+    this.properties = GeOxygeneApplicationProperties.unmarshall(this.propertiesFile.getFile());
+  }
+
+  /** 
+   * Initialize the application plugins. 
+   */
+  private void initializeProperties() {
+    
     for (String pluginName : this.properties.getPlugins()) {
       try {
         Class<?> pluginClass = Class.forName(pluginName);

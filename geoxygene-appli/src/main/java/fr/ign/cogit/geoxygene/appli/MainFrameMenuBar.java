@@ -35,6 +35,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 import org.apache.log4j.Logger;
 
@@ -267,65 +268,22 @@ public class MainFrameMenuBar extends JMenuBar {
           }
         });
     fileMenu.add(newDesktopFrameMenuItem);
-    // // New Desktop
-    // JMenuItem newFloatingDesktopFrameMenuItem = new JMenuItem(
-    //        I18N.getString("MainFrame.NewFloatingDesktop"), //$NON-NLS-1$
-    // new ImageIcon(GeOxygeneApplication.class
-    // .getResource("/images/icons/tab_add.png")));
-    // newFloatingDesktopFrameMenuItem
-    // .addActionListener(new java.awt.event.ActionListener() {
-    // @Override
-    // public void actionPerformed(final ActionEvent e) {
-    // mainFrame.createNewDesktop(null);
-    // }
-    // });
-    // fileMenu.add(newFloatingDesktopFrameMenuItem);
-    //
-    // // New Desktop
-    // JMenuItem newTabbedDesktopFrameMenuItem = new JMenuItem(
-    //        I18N.getString("MainFrame.NewTabbedDesktop"), //$NON-NLS-1$
-    // new ImageIcon(GeOxygeneApplication.class
-    // .getResource("/images/icons/tab_add.png")));
-    // newTabbedDesktopFrameMenuItem
-    // .addActionListener(new java.awt.event.ActionListener() {
-    // @Override
-    // public void actionPerformed(final ActionEvent e) {
-    // mainFrame.createNewDesktop(null);
-    // }
-    // });
-    // fileMenu.add(newFloatingDesktopFrameMenuItem);
 
-    // New AWT Project
-    JMenuItem newAWTProjectFrameMenuItem = new JMenuItem(
-        I18N.getString("MainFrame.NewAWTProject"), //$NON-NLS-1$
+    // New Project
+    JMenuItem newProjectFrameMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.NewProject"), //$NON-NLS-1$
         new ImageIcon(
             GeOxygeneApplication.class
                 .getResource("/images/icons/application_add.png")));
-    newAWTProjectFrameMenuItem
+    newProjectFrameMenuItem
         .addActionListener(new java.awt.event.ActionListener() {
           @Override
           public void actionPerformed(final ActionEvent e) {
-            LayerViewPanelFactory.setRenderingType(RenderingType.AWT);
+           // LayerViewPanelFactory.setRenderingType(RenderingType.AWT);
             mainFrame.newProjectFrame();
           }
         });
-    fileMenu.add(newAWTProjectFrameMenuItem);
-
-    // New LWJGL Project
-    JMenuItem newLWJGLProjectFrameMenuItem = new JMenuItem(
-        I18N.getString("MainFrame.NewGLProject"), //$NON-NLS-1$
-        new ImageIcon(
-            GeOxygeneApplication.class
-                .getResource("/images/icons/application_add.png")));
-    newLWJGLProjectFrameMenuItem
-        .addActionListener(new java.awt.event.ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            LayerViewPanelFactory.setRenderingType(RenderingType.LWJGL);
-            mainFrame.newProjectFrame();
-          }
-        });
-    fileMenu.add(newLWJGLProjectFrameMenuItem);
+    fileMenu.add(newProjectFrameMenuItem);
 
     // Open File
     JMenuItem openFileMenuItem = new JMenuItem(
@@ -346,7 +304,10 @@ public class MainFrameMenuBar extends JMenuBar {
 
     /** SCH */
     JMenuItem loadSLDMenuItem = new JMenuItem(
-        I18N.getString("MainFrame.LoadSLD")); //$NON-NLS-1$
+        I18N.getString("MainFrame.LoadSLD"), //$NON-NLS-1$
+        new ImageIcon(
+            GeOxygeneApplication.class
+                .getResource("/images/toolbar/page_white_paintbrush.png")));
     loadSLDMenuItem.addActionListener(new java.awt.event.ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -354,9 +315,20 @@ public class MainFrameMenuBar extends JMenuBar {
         if (projectFrame == null) {
           LOGGER.info("Cannot save SLD, no selected project");
           return;
-
         }
         JFileChooser chooser = new JFileChooser(fc.getPreviousDirectory());
+        chooser.setFileFilter(new FileFilter() {
+          @Override
+          public boolean accept(File f) {
+            return (f.isFile()
+                && (f.getAbsolutePath().endsWith(".xml") || f.getAbsolutePath()
+                    .endsWith(".XML")) || f.isDirectory());
+          }
+          @Override
+          public String getDescription() {
+            return "XMLfileReader";
+          }
+        });
         int result = chooser.showOpenDialog(mainFrame.getGui());
         if (result == JFileChooser.APPROVE_OPTION) {
           File file = chooser.getSelectedFile();
@@ -381,7 +353,7 @@ public class MainFrameMenuBar extends JMenuBar {
         I18N.getString("MainFrame.NewPgLayer"), //$NON-NLS-1$
         new ImageIcon(
             GeOxygeneApplication.class
-                .getResource("/images/icons/16x16/database_add.png")));
+                .getResource("/images/toolbar/database_add.png")));
     newPgLayerMenuItem.addActionListener(new java.awt.event.ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {

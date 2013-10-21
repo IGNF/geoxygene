@@ -17,7 +17,7 @@ public class CreateRectangleMode extends AbstractGeometryEditMode {
    * @param theModeSelector the mode selector
    */
   public CreateRectangleMode(final MainFrame theMainFrame,
-      final ModeSelector theModeSelector) {
+      final MainFrameToolBar theModeSelector) {
     super(theMainFrame, theModeSelector);
   }
 

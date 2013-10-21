@@ -84,8 +84,12 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
- * Class allowing geometry edition. </p> Classe représentant la boîte à outils permettant l'édition de la géométrie des objets, et définit toutes les
- * méthodes qui servent à l'édition.
+ * Class allowing geometry edition. 
+ * 
+ * </p> Classe représentant la boîte à outils permettant 
+ * l'édition de la géométrie des objets, et définit toutes les
+ * méthodes qui servent à l'édition. </p>
+ 
  * @author Sylvain Becuwe
  * @author Julien Perret
  */

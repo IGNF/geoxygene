@@ -19,36 +19,17 @@
 
 package fr.ign.cogit.geoxygene.appli.render;
 
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Transparency;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import javax.swing.event.EventListenerList;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
-import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.style.Rule;
-import fr.ign.cogit.geoxygene.style.Style;
-import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.UserStyle;
+
 
 /**
  * A renderer to render a {@link Layer} into a {@link LayerViewPanel}.
@@ -187,5 +168,6 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
   public void initializeRendering() {
     // nothing special to initialize
   }
+  
 
 }

@@ -41,7 +41,7 @@ public class GeometryEditingMode extends AbstractGeometryEditMode {
    * @param theModeSelector the mode selector
    */
   public GeometryEditingMode(MainFrame theMainFrame,
-      ModeSelector theModeSelector) {
+      MainFrameToolBar theModeSelector) {
     super(theMainFrame, theModeSelector);
   }
 

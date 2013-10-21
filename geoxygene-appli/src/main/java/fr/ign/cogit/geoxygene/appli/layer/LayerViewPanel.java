@@ -11,6 +11,8 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -38,7 +40,11 @@ import fr.ign.cogit.geoxygene.style.Layer;
  */
 public abstract class LayerViewPanel extends JComponent implements Printable, SldListener, fr.ign.cogit.geoxygene.style.SldListener {
 
-  private static final long serialVersionUID = -1275390035288869114L; // Serializable UID
+  /** Serializable UID. */
+  private static final long serialVersionUID = -1275390035288869114L; 
+  
+  /** The logger. */
+  private static Logger LOGGER = Logger.getLogger(LayerViewPanel.class.getName());
 
   /**
    * Taille d'un pixel en mètres (la longueur d'un coté de pixel de l'écran) utilisé pour le calcul de l'echelle courante de la vue. Elle est calculée

@@ -36,6 +36,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
@@ -62,22 +63,29 @@ public class BuildingBlocksCreationPlugin implements GeOxygeneApplicationPlugin,
   @Override
   public final void initialize(final GeOxygeneApplication app) {
     this.application = app;
+    
+ // Check if the DataMatching menu exists. If not we create it.
     JMenu menu = null;
+    String menuName = I18N.getString("CarteTopoPlugin.CarteTopoPlugin"); //$NON-NLS-1$
     for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Creation")) { //$NON-NLS-1$
+        if (aMenu.getText() != null
+            && aMenu.getText().equalsIgnoreCase(menuName)) {
           menu = aMenu;
         }
       }
     }
     if (menu == null) {
-      menu = new JMenu("Creation");//$NON-NLS-1$
+      menu = new JMenu(menuName);
     }
-    JMenuItem menuItem = new JMenuItem("Creation of Buildings Blocks" //$NON-NLS-1$
-    );
+    
+    // Add network data matching menu item to the menu.
+    JMenuItem menuItem = new JMenuItem("Creation of Buildings Blocks"); //$NON-NLS-1$
     menuItem.addActionListener(this);
     menu.add(menuItem);
+    
+    // Refresh menu of the application
     application.getMainFrame().getMenuBar()
         .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
@@ -89,6 +97,7 @@ public class BuildingBlocksCreationPlugin implements GeOxygeneApplicationPlugin,
     Set<Layer> selectedLayers = project.getLayerLegendPanel()
         .getSelectedLayers();
     if (selectedLayers.isEmpty()) {
+      javax.swing.JOptionPane.showMessageDialog(null, "You need to select at least one layer.");
       BuildingBlocksCreationPlugin.logger
           .error("You need to select at least one network layer."); //$NON-NLS-1$
       return;

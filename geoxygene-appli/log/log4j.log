@@ -1,0 +1,13 @@
+10:44:02,686 DEBUG (MainFrameToolBar.java:setCurrentMode:287) - Set current mode = fr.ign.cogit.geoxygene.appli.mode.MoveMode@35b7fa17
+10:44:02,742 DEBUG (MainFrameToolBar.java:setCurrentMode:287) - Set current mode = fr.ign.cogit.geoxygene.appli.mode.MoveMode@35b7fa17
+10:44:03,776 DEBUG (SelectionRenderer.java:<init>:225) - constructor
+10:44:03,840 DEBUG (FloatingMainFrame.java:newProjectFrame:163) - New floating project frame
+10:44:03,840 DEBUG (FloatingMainFrame.java:newProjectFrame:168) - No current desktop found newProjectFrame() method.Create a new desktop with name 'Project #1'
+10:44:03,841 DEBUG (FloatingMainFrame.java:createNewDesktop:206) - Add event in Menu
+10:44:03,847 DEBUG (FloatingMainFrame.java:addProjectFrame:78) - N°0
+10:44:03,851 DEBUG (MultithreadedRenderingManager.java:renderAll:170) - RenderAll()
+10:44:03,852 TRACE (MultithreadedRenderingManager.java:render:251) - rendering process for class fr.ign.cogit.geoxygene.appli.render.SelectionRenderer
+10:44:03,852 TRACE (MultithreadedRenderingManager.java:run:113) - 0 runnables in the queue
+10:44:03,853 DEBUG (SelectionRenderer.java:renderHook:308) - Features = []
+10:44:03,853 TRACE (SelectionRenderer.java:run:290) - Selection Renderer finished
+10:44:03,853 TRACE (MultithreadedRenderingManager.java:repaint:371) - Repaint

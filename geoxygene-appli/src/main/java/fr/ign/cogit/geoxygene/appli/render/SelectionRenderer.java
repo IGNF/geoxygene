@@ -43,8 +43,7 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
  */
 public class SelectionRenderer extends AbstractLayerRenderer {
   /** The logger. */
-  private static Logger logger = Logger.getLogger(SelectionRenderer.class
-      .getName());
+  private static Logger LOGGER = Logger.getLogger(SelectionRenderer.class.getName());
 
   /** The image the renderer renders into. */
   private BufferedImage image = null;
@@ -223,6 +222,7 @@ public class SelectionRenderer extends AbstractLayerRenderer {
    */
   public SelectionRenderer(final LayerViewPanel theLayerViewPanel) {
     super(null, theLayerViewPanel);
+    LOGGER.debug("constructor");
   }
 
   /**
@@ -246,9 +246,10 @@ public class SelectionRenderer extends AbstractLayerRenderer {
    */
   @Override
   public final Runnable createRunnable() {
+
     if (this.getImage() != null) {
       return null;
-    }
+    } 
     this.setCancelled(false);
     return new Runnable() {
       @Override
@@ -285,8 +286,8 @@ public class SelectionRenderer extends AbstractLayerRenderer {
           // ( used by isRendering() )
           SelectionRenderer.this.setRendering(false);
           SelectionRenderer.this.setRendered(true);
-          if (SelectionRenderer.logger.isTraceEnabled()) {
-            SelectionRenderer.logger.trace("Selection Renderer finished"); //$NON-NLS-1$
+          if (SelectionRenderer.LOGGER.isTraceEnabled()) {
+            SelectionRenderer.LOGGER.trace("Selection Renderer finished"); //$NON-NLS-1$
           }
           SelectionRenderer.this.getLayerViewPanel().getRenderingManager()
               .repaint();
@@ -304,9 +305,8 @@ public class SelectionRenderer extends AbstractLayerRenderer {
     if (this.isCancelled()) {
       return;
     }
+    LOGGER.debug("Features = " + this.getLayerViewPanel().getSelectedFeatures());
     for (IFeature feature : this.getLayerViewPanel().getSelectedFeatures()) {
-      logger.debug("######################################################");
-      
       if (this.isCancelled()) {
         return;
       }
@@ -345,4 +345,19 @@ public class SelectionRenderer extends AbstractLayerRenderer {
       }
     }
   }
+  
+  /**
+   * Method called before each rendering
+   */
+  @Override
+  public void initializeRendering() {
+    super.initializeRendering();
+    this.clearImageCache();
+    /*this.setImage(new BufferedImage(
+        SelectionRenderer.this.getLayerViewPanel().getWidth(),
+        SelectionRenderer.this.getLayerViewPanel().getHeight(),
+        BufferedImage.TYPE_INT_ARGB));*/
+  }
+  
+  
 }

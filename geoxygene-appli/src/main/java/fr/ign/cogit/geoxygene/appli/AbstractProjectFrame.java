@@ -45,8 +45,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 public abstract class AbstractProjectFrame implements ProjectFrame {
 
   /** Logger of the application. */
-  private static Logger logger = Logger.getLogger(AbstractProjectFrame.class
-      .getName());
+  private static Logger logger = Logger.getLogger(AbstractProjectFrame.class.getName());
   private MainFrame mainFrame = null;
   private final Map<IFeature, BufferedImage> featureToImageMap = new HashMap<IFeature, BufferedImage>();
   private LayerLegendPanel layerLegendPanel = null; // The layer legend panel
@@ -577,6 +576,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
       if (new_sld != null) {
         for (int i = 0; i < this.getLayers().size(); i++) {
           String name = this.getLayers().get(i).getName();
+          logger.debug(name);
           this.getLayers().get(i).setStyles(new_sld.getLayer(name).getStyles());
         }
 

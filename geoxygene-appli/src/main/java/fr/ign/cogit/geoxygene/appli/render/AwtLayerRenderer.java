@@ -56,9 +56,9 @@ import fr.ign.cogit.geoxygene.style.UserStyle;
  * @see LayerViewPanel
  */
 public class AwtLayerRenderer extends AbstractLayerRenderer {
+  
   /** The logger. */
-  private static Logger logger = Logger.getLogger(AwtLayerRenderer.class
-      .getName());
+  private static Logger LOGGER = Logger.getLogger(AwtLayerRenderer.class.getName());
   private BufferedImage image = null;
 
   /**
@@ -99,8 +99,8 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
        */
       graphics.drawImage(this.getImage(), 0, 0, null);
     } else {
-      if (AwtLayerRenderer.logger.isTraceEnabled()) {
-        AwtLayerRenderer.logger.trace("this.getImage() = null"); //$NON-NLS-1$
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("this.getImage() = null"); //$NON-NLS-1$
       }
     }
   }
@@ -154,8 +154,8 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
           // ( used by isRendering() )
           AwtLayerRenderer.this.setRendering(false);
           AwtLayerRenderer.this.setRendered(true);
-          if (AwtLayerRenderer.logger.isTraceEnabled()) {
-            AwtLayerRenderer.logger.trace("Renderer " //$NON-NLS-1$
+          if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Renderer " //$NON-NLS-1$
                 + AwtLayerRenderer.this.getLayer().getName() + " finished"); //$NON-NLS-1$
           }
           // FIXME Is this operation really useful or is a patch?

@@ -43,12 +43,17 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  */
 public class FloatingProjectFrame extends AbstractProjectFrame implements
     ActionListener {
+  
   private GeometryToolBar geometryToolBar = null;
+  
   /** The default frame width. */
   private static final int DEFAULT_WIDTH = 600;
+  
   /** The default frame height. */
   private static final int DEFAULT_HEIGHT = 400;
-  private JInternalFrame internalFrame = null; // internal frame
+  
+  /** internal frame. */
+  private JInternalFrame internalFrame = null;
 
   // containing the
 
@@ -59,7 +64,6 @@ public class FloatingProjectFrame extends AbstractProjectFrame implements
    */
   public FloatingProjectFrame(final MainFrame frame, final ImageIcon iconImage) {
     super(frame, iconImage);
-
     ShapefileReader.addActionListener(this);
   }
 

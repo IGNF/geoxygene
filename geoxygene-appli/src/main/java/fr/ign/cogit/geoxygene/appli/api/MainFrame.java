@@ -28,7 +28,7 @@ import javax.swing.JFrame;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.MainFrameMenuBar;
-import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
+import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 
 /**
  * @author JeT The main frame is the main window displaying the entire
@@ -63,7 +63,7 @@ public interface MainFrame {
    * 
    * @return the current application mode
    */
-  public abstract ModeSelector getMode();
+  public abstract MainFrameToolBar getMode();
 
   /**
    * Return the current desktop.

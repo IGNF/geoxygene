@@ -62,12 +62,14 @@ import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
  */
 public class LayerViewAwtPanel extends LayerViewPanel {
 
-  private static final long serialVersionUID = -6502924871341284384L; // Serializable
-                                                                      // UID
-  private static Logger logger = Logger.getLogger(LayerViewAwtPanel.class
-      .getName()); // logger
-  private MultithreadedRenderingManager renderingManager = null; // rendering
-                                                                 // manager
+  /** Serializable UID. */
+  private static final long serialVersionUID = -6502924871341284384L; 
+  
+  /** Logger. */
+  private static Logger logger = Logger.getLogger(LayerViewAwtPanel.class.getName());
+  
+  /** Rendering manager. */
+  private MultithreadedRenderingManager renderingManager = null; 
 
   /** Default visibility Constructor which can be called only by the factory. */
   public LayerViewAwtPanel(final ProjectFrame frame) {

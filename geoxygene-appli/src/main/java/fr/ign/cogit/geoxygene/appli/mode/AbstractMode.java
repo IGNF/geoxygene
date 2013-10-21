@@ -44,7 +44,7 @@ public abstract class AbstractMode implements Mode {
   /**
    * Mode Selector.
    */
-  private ModeSelector modeSelector;
+  private MainFrameToolBar modeSelector;
   /**
    * Button triggering the mode.
    */
@@ -54,14 +54,14 @@ public abstract class AbstractMode implements Mode {
    * Set the mode selector.
    * @param theModeSelector the new mode selector
    */
-  public final void setModeSelector(final ModeSelector theModeSelector) {
+  public final void setModeSelector(final MainFrameToolBar theModeSelector) {
     this.modeSelector = theModeSelector;
   }
 
   /**
    * @return the mode selector
    */
-  public final ModeSelector getModeSelector() {
+  public final MainFrameToolBar getModeSelector() {
     return this.modeSelector;
   }
 
@@ -79,7 +79,7 @@ public abstract class AbstractMode implements Mode {
    * @param theModeSelector the mode selector
    */
   public AbstractMode(final MainFrame theMainFrame,
-      final ModeSelector theModeSelector) {
+      final MainFrameToolBar theModeSelector) {
     this.mainFrame = theMainFrame;
     this.setModeSelector(theModeSelector);
     final Mode currentMode = this;

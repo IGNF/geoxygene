@@ -52,7 +52,7 @@ public class MoveMode extends AbstractMode {
    * @param theModeSelector the mode selector
    */
   public MoveMode(final MainFrame theMainFrame,
-      final ModeSelector theModeSelector) {
+      final MainFrameToolBar theModeSelector) {
     super(theMainFrame, theModeSelector);
   }
 

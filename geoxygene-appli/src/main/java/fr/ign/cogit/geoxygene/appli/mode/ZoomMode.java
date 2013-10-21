@@ -43,7 +43,7 @@ public class ZoomMode extends AbstractMode {
    * @param theModeSelector the mode selector
    */
   public ZoomMode(final MainFrame theMainFrame,
-      final ModeSelector theModeSelector) {
+      final MainFrameToolBar theModeSelector) {
     super(theMainFrame, theModeSelector);
   }
 

@@ -54,7 +54,7 @@ public class EditPostgisConnection extends JDialog implements ActionListener {
         setModal(true);
         setTitle(I18N.getString("AddPostgisLayer.title"));
         setIconImage(new ImageIcon(
-                GeOxygeneApplication.class.getResource("/images/icons/16x16/database_add.png")).getImage());
+                GeOxygeneApplication.class.getResource("/images/toolbar/database_add.png")).getImage());
         setLocation(300, 150);
         
         initConnectionPanel(connectionParam);

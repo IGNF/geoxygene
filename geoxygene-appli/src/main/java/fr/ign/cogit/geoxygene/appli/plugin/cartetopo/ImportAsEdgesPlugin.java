@@ -94,6 +94,7 @@ public class ImportAsEdgesPlugin implements GeOxygeneApplicationPlugin, ActionLi
     Set<Layer> selectedLayers = project.getLayerLegendPanel()
         .getSelectedLayers();
     if (selectedLayers.size() != 1) {
+      javax.swing.JOptionPane.showMessageDialog(null, "You need to select one (and only one) layer.");
       LOGGER.error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }

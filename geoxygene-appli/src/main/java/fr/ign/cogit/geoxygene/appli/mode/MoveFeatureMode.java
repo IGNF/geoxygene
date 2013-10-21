@@ -22,7 +22,7 @@ public class MoveFeatureMode extends AbstractGeometryEditMode {
    * @param theModeSelector the mode selector
    */
   public MoveFeatureMode(final MainFrame theMainFrame,
-      final ModeSelector theModeSelector) {
+      final MainFrameToolBar theModeSelector) {
     super(theMainFrame, theModeSelector);
   }
 

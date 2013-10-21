@@ -23,6 +23,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,13 +42,12 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
 
 /** @author Julien Perret */
 public class FloatingMainFrame extends AbstractMainFrame {
 
-  private static final long serialVersionUID = -6931105831522187478L; // Serializable
-                                                                      // UID
+  /** Serializable UID. */
+  private static final long serialVersionUID = -6931105831522187478L;  
 
   /** Logger of the application. */
   static Logger logger = Logger.getLogger(FloatingMainFrame.class.getName());
@@ -68,12 +68,24 @@ public class FloatingMainFrame extends AbstractMainFrame {
    * Add a new frame into the main frame. implementation should check the frame
    * type before adding it...
    * @param project frame to add
+   * @throws PropertyVetoException 
    */
   void addProjectFrame(final JDesktopPane desktop, final ProjectFrame project) {
     if (project instanceof FloatingProjectFrame) {
-      FloatingProjectFrame floatingProject = (FloatingProjectFrame) project;
-      desktop.add(floatingProject.getInternalFrame());
-      desktop.setSelectedFrame(floatingProject.getInternalFrame());
+      
+      try {
+        FloatingProjectFrame floatingProject = (FloatingProjectFrame) project;
+        logger.debug("N°" + desktop.getAllFrames().length);
+        desktop.add(floatingProject.getInternalFrame());
+        
+        floatingProject.getInternalFrame().setVisible(true);
+        floatingProject.getInternalFrame().setSelected(true);
+        
+        desktop.setSelectedFrame(floatingProject.getInternalFrame());
+      } catch (Exception e) {
+        e.printStackTrace();
+        logger.error("not allowed to set floatingProject visible and selected");
+      }
     } else {
       logger.error("Cannot add a " + project.getClass().getSimpleName()
           + " into a " + this.getClass().getSimpleName());
@@ -95,7 +107,7 @@ public class FloatingMainFrame extends AbstractMainFrame {
           .marshall(this.getApplication().getPropertiesFile().getFile());
     }
 
-    // FIXME: howto reach all desktops ?
+    // FIXME: how to reach all desktops ?
     // for (JInternalFrame frame : this.getIFrameDocker().getAllFrames()) {
     // frame.dispose();
     // }
@@ -128,7 +140,6 @@ public class FloatingMainFrame extends AbstractMainFrame {
       return null;
     }
     return getProjectFrameFromGui(currentDesktop.getSelectedFrame());
-
   }
   
   /*
@@ -163,8 +174,8 @@ public class FloatingMainFrame extends AbstractMainFrame {
     }
 
     projectFrame.getInternalFrame().setSize(
-        (int) this.getSize().getWidth() / 2,
-        (int) this.getSize().getHeight() / 2);
+        (int) this.getSize().getWidth() / 3 * 2,
+        (int) this.getSize().getHeight() / 3 * 2);
     projectFrame.getInternalFrame().setVisible(true);
     addProjectFrame(currentDesktop, projectFrame);
     projectFrame.getInternalFrame().setToolTipText(projectFrame.getTitle());
