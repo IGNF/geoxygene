@@ -24,7 +24,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.schemageo.api.routier.TronconDeRoute;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Direction;
@@ -169,7 +169,7 @@ public class VMAPRoadLine extends VMAPFeature implements IRoadLine {
       }
 
     } else { // the new way of calculating the width
-      SymbolShape symbolShape = CartAGenDoc.getInstance().getCurrentDataset()
+      SymbolShape symbolShape = CartAGenDocOld.getInstance().getCurrentDataset()
           .getSymbols().getSymbolShapeBySymbolID(this.getSymbolId());
       return symbolShape.ext_width;
     }
@@ -197,7 +197,7 @@ public class VMAPRoadLine extends VMAPFeature implements IRoadLine {
         return GeneralisationLegend.ROUTIER_LARGEUR_DESSUS_4;
       }
     } else { // the new way of calculating the width
-      SymbolShape symbolShape = CartAGenDoc.getInstance().getCurrentDataset()
+      SymbolShape symbolShape = CartAGenDocOld.getInstance().getCurrentDataset()
           .getSymbols().getSymbolShapeBySymbolID(this.getSymbolId());
       return symbolShape.int_width;
     }

@@ -20,7 +20,7 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
@@ -70,11 +70,11 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
       e1.printStackTrace();
     }
     @SuppressWarnings("unchecked")
-    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDocOld
         .getInstance()
         .getCurrentDataset()
         .getCartagenPop(
-            CartAGenDoc.getInstance().getCurrentDataset()
+            CartAGenDocOld.getInstance().getCurrentDataset()
                 .getPopNameFromClass(classObj), ft);
 
     for (IGeneObj obj : features) {
@@ -124,7 +124,7 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
       areaThreshold = (Double) getParamValueFromName("area_min");
     String themeName = (String) getParamValueFromName("theme");
     ScaleMasterTheme theme = this.getScaleMaster().getThemeFromName(themeName);
-    CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
+    CartAGenDB db = CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartAGenDB();
     Set<Class<?>> classes = new HashSet<Class<?>>();
     classes.addAll(theme.getRelatedClasses());

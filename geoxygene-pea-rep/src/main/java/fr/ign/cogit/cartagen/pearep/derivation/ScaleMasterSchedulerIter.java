@@ -36,7 +36,7 @@ import fr.ign.cogit.cartagen.pearep.importexport.MGCPLoader;
 import fr.ign.cogit.cartagen.pearep.importexport.ShapeFileExport;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP1PlusPlusLoader;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -96,13 +96,13 @@ public class ScaleMasterSchedulerIter extends ScaleMasterScheduler {
           + line.getTheme());
 
       // test if the element relates to an existing database
-      if (!CartAGenDoc.getInstance().getDatabases().keySet()
+      if (!CartAGenDocOld.getInstance().getDatabases().keySet()
           .contains(elem.getDbName()))
         continue;
       // get the dataset related to the element
-      CartAGenDataSet dataset = CartAGenDoc.getInstance().getDataset(
+      CartAGenDataSet dataset = CartAGenDocOld.getInstance().getDataset(
           elem.getDbName());
-      CartAGenDoc.getInstance().setCurrentDataset(dataset);
+      CartAGenDocOld.getInstance().setCurrentDataset(dataset);
 
       // load data
       Class<?> classObj = elem.getClasses().iterator().next();
@@ -206,9 +206,9 @@ public class ScaleMasterSchedulerIter extends ScaleMasterScheduler {
       for (ScaleMasterMultiElement elem : this.getScaleMaster().getMultiLine()
           .getElementsFromScale(this.getScale())) {
         // get the dataset related to the element
-        CartAGenDataSet dataset = CartAGenDoc.getInstance().getDataset(
+        CartAGenDataSet dataset = CartAGenDocOld.getInstance().getDataset(
             elem.getDbName());
-        CartAGenDoc.getInstance().setCurrentDataset(dataset);
+        CartAGenDocOld.getInstance().setCurrentDataset(dataset);
 
         // get the corresponding feature population
         IPopulation<IGeneObj> features = new Population<IGeneObj>();

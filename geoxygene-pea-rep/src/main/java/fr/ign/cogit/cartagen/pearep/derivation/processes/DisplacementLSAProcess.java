@@ -19,7 +19,7 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.MultiThemeParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterMultiProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.cartagen.spatialanalysis.network.flexibilitygraph.MinimumSeparation;
 import fr.ign.cogit.cartagen.spatialanalysis.network.flexibilitygraph.OverlapConflict;
@@ -43,7 +43,7 @@ public class DisplacementLSAProcess extends ScaleMasterMultiProcess {
 
   @Override
   public void parameterise() {
-    CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
+    CartAGenDB db = CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartAGenDB();
     for (MultiThemeParameter param : this.getParameters()) {
       String theme1Name = param.getTheme1();
@@ -73,8 +73,8 @@ public class DisplacementLSAProcess extends ScaleMasterMultiProcess {
     try {
 
       // enrich the rail network
-      NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-          .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+      NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
+          .getCurrentDataset(), CartAGenDocOld.getInstance().getCurrentDataset()
           .getRailwayNetwork(), false);
     } catch (Exception e1) {
       e1.printStackTrace();

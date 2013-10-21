@@ -17,7 +17,7 @@ import fr.ign.cogit.cartagen.genealgorithms.polygon.RaposoSimplification;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -49,7 +49,7 @@ public class RaposoSimplifProcess extends ScaleMasterGeneProcess {
   public void execute(IFeatureCollection<? extends IGeneObj> features) {
     parameterise();
     if (initialScale == null) {
-      CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
+      CartAGenDB db = CartAGenDocOld.getInstance().getCurrentDataset()
           .getCartAGenDB();
       initialScale = db.getSourceDLM().getRelatedScale();
     }

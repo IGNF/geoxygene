@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
 
 public class GUIMainClassEclipse extends JFrame implements ActionListener {
@@ -67,7 +67,7 @@ public class GUIMainClassEclipse extends JFrame implements ActionListener {
 
     // Application initialisation
     CartagenApplication.getInstance().initApplication();
-    CartAGenDoc doc = CartAGenDoc.getInstance();
+    CartAGenDocOld doc = CartAGenDocOld.getInstance();
     doc.setName("PEA_REP");
     doc.setPostGisDb(PostgisDB.get("PEA_REP", true));
 

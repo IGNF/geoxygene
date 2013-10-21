@@ -7,7 +7,7 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 
@@ -49,7 +49,7 @@ public class DataCorrection {
    */
   @SuppressWarnings("unchecked")
   public void triggerDataCorrection() throws Exception {
-    CartAGenDB database = CartAGenDoc.getInstance().getDatabaseFromSource(
+    CartAGenDB database = CartAGenDocOld.getInstance().getDatabaseFromSource(
         this.dbType);
     Set<Class<? extends IGeneObj>> processedClasses = new HashSet<Class<? extends IGeneObj>>();
     for (ScaleMasterTheme theme : themes) {

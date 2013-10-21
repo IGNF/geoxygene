@@ -19,7 +19,7 @@ import fr.ign.cogit.cartagen.pearep.importexport.PeaRepDataset;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUseType;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.AbstractLayerGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationSymbolisation;
@@ -521,7 +521,7 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
 
     // to know if we are using the new loading function of Kusay or the old one
     // we examine symbols list, if its not empty => we are using the new one
-    if (CartAGenDoc.getInstance().getCurrentDataset().getSymbols().getGroup() != SymbolGroup.SPECIAL_Cartagen) {
+    if (CartAGenDocOld.getInstance().getCurrentDataset().getSymbols().getGroup() != SymbolGroup.SPECIAL_Cartagen) {
 
       layerManager.addSymbolisedLayer(this.layerRoadLine,
           GeneralisationSymbolisation.symboliseSeparator(this, symbolList),

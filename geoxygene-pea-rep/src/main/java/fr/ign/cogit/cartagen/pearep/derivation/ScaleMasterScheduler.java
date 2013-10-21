@@ -69,7 +69,7 @@ import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanar;
 import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanarDir;
 import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -384,14 +384,14 @@ public class ScaleMasterScheduler {
       ScaleMasterScheduler.traceLogger
           .info("début de la généralisation du thème " + line.getTheme());
       // test if the element relates to an existing database
-      if (!CartAGenDoc.getInstance().getDatabases().keySet()
+      if (!CartAGenDocOld.getInstance().getDatabases().keySet()
           .contains(elem.getDbName()))
         continue;
 
       // get the dataset related to the element
-      CartAGenDataSet dataset = CartAGenDoc.getInstance().getDataset(
+      CartAGenDataSet dataset = CartAGenDocOld.getInstance().getDataset(
           elem.getDbName());
-      CartAGenDoc.getInstance().setCurrentDataset(dataset);
+      CartAGenDocOld.getInstance().setCurrentDataset(dataset);
 
       // get the corresponding feature population
       Class<?> classObj = elem.getClasses().iterator().next();
@@ -482,9 +482,9 @@ public class ScaleMasterScheduler {
       for (ScaleMasterMultiElement elem : this.scaleMaster.getMultiLine()
           .getElementsFromScale(this.scale)) {
         // get the dataset related to the element
-        CartAGenDataSet dataset = CartAGenDoc.getInstance().getDataset(
+        CartAGenDataSet dataset = CartAGenDocOld.getInstance().getDataset(
             elem.getDbName());
-        CartAGenDoc.getInstance().setCurrentDataset(dataset);
+        CartAGenDocOld.getInstance().setCurrentDataset(dataset);
 
         // get the corresponding feature population
         IPopulation<IGeneObj> features = new Population<IGeneObj>();
@@ -679,7 +679,7 @@ public class ScaleMasterScheduler {
     }
 
     // Get the population with lower level of details
-    CartAGenDataSet datasetSup = CartAGenDoc.getInstance().getDataset(
+    CartAGenDataSet datasetSup = CartAGenDocOld.getInstance().getDataset(
         elemSup.getDbName());
     IPopulation<IGeneObj> popSup = datasetSup.getCartagenPop(datasetSup
         .getPopNameFromClass(classObj));

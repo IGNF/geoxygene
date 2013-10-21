@@ -23,7 +23,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -79,7 +79,7 @@ public class BridgeCollapseProcess extends ScaleMasterGeneProcess {
       IGeometry geom = obj.getGeom();
       INetworkSection crossedNetwork = bridge.getCrossedNetwork();
       if (crossedNetwork == null) {
-        Collection<IWaterLine> rivers = CartAGenDoc.getInstance()
+        Collection<IWaterLine> rivers = CartAGenDocOld.getInstance()
             .getCurrentDataset().getWaterLines().select(geom);
         if (rivers == null)
           continue;
@@ -91,7 +91,7 @@ public class BridgeCollapseProcess extends ScaleMasterGeneProcess {
       if (geom.intersects(crossedNetwork.getGeom()))
         centroid = geom.intersection(crossedNetwork.getGeom()).coord().get(0);
       else {
-        for (IRoadLine road : CartAGenDoc.getInstance().getCurrentDataset()
+        for (IRoadLine road : CartAGenDocOld.getInstance().getCurrentDataset()
             .getRoads().select(geom)) {
           if (road.getGeom().intersectsStrictement(crossedNetwork.getGeom())) {
             centroid = road.getGeom().intersection(crossedNetwork.getGeom())
@@ -100,7 +100,7 @@ public class BridgeCollapseProcess extends ScaleMasterGeneProcess {
           }
         }
         if (centroid == null) {
-          for (IRailwayLine rail : CartAGenDoc.getInstance()
+          for (IRailwayLine rail : CartAGenDocOld.getInstance()
               .getCurrentDataset().getRailwayLines().select(geom)) {
             if (rail.getGeom().intersectsStrictement(crossedNetwork.getGeom())) {
               centroid = rail.getGeom().intersection(crossedNetwork.getGeom())
@@ -114,7 +114,7 @@ public class BridgeCollapseProcess extends ScaleMasterGeneProcess {
         continue;
       IBridgePoint bridgePt = CartagenApplication.getInstance()
           .getCreationFactory().createBridgePoint(centroid.toGM_Point());
-      CartAGenDoc.getInstance().getCurrentDataset().getBridgePoints()
+      CartAGenDocOld.getInstance().getCurrentDataset().getBridgePoints()
           .add(bridgePt);
       bridgePt.setCrossedNetwork(crossedNetwork);
     }

@@ -18,7 +18,7 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -135,8 +135,8 @@ public class MakeNetworkPlanarDir extends ScaleMasterPreProcess {
        * CartAGenDoc.getInstance().getCurrentDataset().getHydroNetwork()
        * .addNode(waterNode); }
        */
-      NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-          .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+      NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
+          .getCurrentDataset(), CartAGenDocOld.getInstance().getCurrentDataset()
           .getHydroNetwork(), false);
     }
   }

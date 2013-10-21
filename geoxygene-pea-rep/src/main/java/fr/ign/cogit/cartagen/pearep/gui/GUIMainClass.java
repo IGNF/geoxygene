@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
 import fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory;
 import fr.ign.cogit.cartagen.pearep.PeaRepGeneralisation;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
 
 public class GUIMainClass extends JFrame implements ActionListener {
@@ -70,7 +70,7 @@ public class GUIMainClass extends JFrame implements ActionListener {
         new DefaultCreationFactory());
     // Application initialisation
     CartagenApplication.getInstance().initApplication();
-    CartAGenDoc doc = CartAGenDoc.getInstance();
+    CartAGenDocOld doc = CartAGenDocOld.getInstance();
     doc.setName("PEA_REP");
     doc.setPostGisDb(PostgisDB.get("PEA_REP", true));
     String jarPath = null;

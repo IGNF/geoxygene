@@ -45,7 +45,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPSchemaFactory;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
@@ -181,7 +181,7 @@ class GeneralisationIterativeTask extends SwingWorker<Void, Void> {
 
       // Application initialisation
       CartagenApplication.getInstance().initApplication();
-      CartAGenDoc doc = CartAGenDoc.getInstance();
+      CartAGenDocOld doc = CartAGenDocOld.getInstance();
       doc.setName("PEA_REP");
       doc.setPostGisDb(PostgisDB.get("PEA_REP", true));
       progress += 5;

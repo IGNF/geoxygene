@@ -17,7 +17,7 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
 import fr.ign.cogit.cartagen.spatialanalysis.network.rivers.RiverStroke;
 import fr.ign.cogit.cartagen.spatialanalysis.network.rivers.RiverStrokesNetwork;
@@ -54,7 +54,7 @@ public class RiverStrokeSelectionProcess extends ScaleMasterGeneProcess {
 
     HashMap<ArcReseau, IWaterLine> map = new HashMap<ArcReseau, IWaterLine>();
     HashSet<ArcReseau> arcs = new HashSet<ArcReseau>();
-    for (IWaterLine feat : CartAGenDoc.getInstance().getCurrentDataset()
+    for (IWaterLine feat : CartAGenDocOld.getInstance().getCurrentDataset()
         .getWaterLines()) {
       if (feat.isEliminated())
         continue;

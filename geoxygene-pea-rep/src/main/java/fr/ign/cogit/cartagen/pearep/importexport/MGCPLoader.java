@@ -131,7 +131,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayYard;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.DigitalLandscapeModel;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
@@ -2287,11 +2287,11 @@ public class MGCPLoader extends ShapeFileLoader {
     MGCPPlusPlusDB database = new MGCPPlusPlusDB(name);
     database.setSourceDLM(SourceDLM.MGCPPlusPlus);
     database.setSymboScale(100000);
-    database.setDocument(CartAGenDoc.getInstance());
+    database.setDocument(CartAGenDocOld.getInstance());
     CartAGenDataSet dataset = new PeaRepDataset();
     dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
-    CartAGenDoc.getInstance().addDatabase(name, database);
-    CartAGenDoc.getInstance().setCurrentDataset(dataset);
+    CartAGenDocOld.getInstance().addDatabase(name, database);
+    CartAGenDocOld.getInstance().setCurrentDataset(dataset);
     database.setDataSet(dataset);
     database.setType(new DigitalLandscapeModel());
     this.setDataset(dataset);
@@ -2311,22 +2311,22 @@ public class MGCPLoader extends ShapeFileLoader {
           FileUtil.getNamedFileInDir(directory, "LAQ040.shp").getAbsolutePath(),
           MGCPBridgeLine.class, PeaRepDataset.BRIDGE_LINE_POP,
           IBridgeLine.FEAT_TYPE_NAME, null, PeaRepDbType.MGCPPlusPlus);
-      for (IBridgeLine bridge : ((PeaRepDataset) CartAGenDoc.getInstance()
+      for (IBridgeLine bridge : ((PeaRepDataset) CartAGenDocOld.getInstance()
           .getCurrentDataset()).getBridgeLines()) {
         bridge.setType(BridgeType.BRIDGE);
         bridges.add(bridge);
-        Collection<IWaterArea> areas = CartAGenDoc.getInstance()
+        Collection<IWaterArea> areas = CartAGenDocOld.getInstance()
             .getCurrentDataset().getWaterAreas().select(bridge.getGeom());
         if (!areas.isEmpty()) {
           Object area = areas.iterator().next();
           bridge.setCrossedArea((IWaterArea) area);
         }
-        Collection<IWaterLine> rivers = CartAGenDoc.getInstance()
+        Collection<IWaterLine> rivers = CartAGenDocOld.getInstance()
             .getCurrentDataset().getWaterLines().select(bridge.getGeom());
         if (!rivers.isEmpty()) {
           bridge.setCrossedNetwork(rivers.iterator().next());
         }
-        Collection<IRoadLine> roads = CartAGenDoc.getInstance()
+        Collection<IRoadLine> roads = CartAGenDocOld.getInstance()
             .getCurrentDataset().getRoads().select(bridge.getGeom());
         if (!roads.isEmpty()) {
           for (IRoadLine road : roads) {
@@ -2336,7 +2336,7 @@ public class MGCPLoader extends ShapeFileLoader {
               bridge.setContainingNetwork(road);
           }
         }
-        Collection<IRailwayLine> rails = CartAGenDoc.getInstance()
+        Collection<IRailwayLine> rails = CartAGenDocOld.getInstance()
             .getCurrentDataset().getRailwayLines().select(bridge.getGeom());
         if (!rails.isEmpty()) {
           for (IRailwayLine rail : rails) {
@@ -2355,17 +2355,17 @@ public class MGCPLoader extends ShapeFileLoader {
           FileUtil.getNamedFileInDir(directory, "LBH070.shp").getAbsolutePath(),
           MGCPBridgeLine.class, PeaRepDataset.BRIDGE_LINE_POP,
           IBridgeLine.FEAT_TYPE_NAME, null, PeaRepDbType.MGCPPlusPlus);
-      for (IBridgeLine bridge : ((PeaRepDataset) CartAGenDoc.getInstance()
+      for (IBridgeLine bridge : ((PeaRepDataset) CartAGenDocOld.getInstance()
           .getCurrentDataset()).getBridgeLines()) {
         if (bridges.contains(bridge))
           continue;
         bridge.setType(BridgeType.FORD);
-        Collection<IWaterArea> areas = CartAGenDoc.getInstance()
+        Collection<IWaterArea> areas = CartAGenDocOld.getInstance()
             .getCurrentDataset().getWaterAreas().select(bridge.getGeom());
         if (!areas.isEmpty()) {
           bridge.setCrossedArea(areas.iterator().next());
         }
-        Collection<IWaterLine> rivers = CartAGenDoc.getInstance()
+        Collection<IWaterLine> rivers = CartAGenDocOld.getInstance()
             .getCurrentDataset().getWaterLines().select(bridge.getGeom());
         if (!rivers.isEmpty()) {
           bridge.setCrossedNetwork(rivers.iterator().next());
@@ -2386,22 +2386,22 @@ public class MGCPLoader extends ShapeFileLoader {
           MGCPBridgeLine.class, PeaRepDataset.BRIDGE_LINE_POP,
           IBridgeLine.FEAT_TYPE_NAME, null, PeaRepDbType.MGCPPlusPlus,
           partition);
-      for (IBridgeLine bridge : ((PeaRepDataset) CartAGenDoc.getInstance()
+      for (IBridgeLine bridge : ((PeaRepDataset) CartAGenDocOld.getInstance()
           .getCurrentDataset()).getBridgeLines()) {
         bridge.setType(BridgeType.BRIDGE);
         bridges.add(bridge);
-        Collection<IWaterArea> areas = CartAGenDoc.getInstance()
+        Collection<IWaterArea> areas = CartAGenDocOld.getInstance()
             .getCurrentDataset().getWaterAreas().select(bridge.getGeom());
         if (!areas.isEmpty()) {
           Object area = areas.iterator().next();
           bridge.setCrossedArea((IWaterArea) area);
         }
-        Collection<IWaterLine> rivers = CartAGenDoc.getInstance()
+        Collection<IWaterLine> rivers = CartAGenDocOld.getInstance()
             .getCurrentDataset().getWaterLines().select(bridge.getGeom());
         if (!rivers.isEmpty()) {
           bridge.setCrossedNetwork(rivers.iterator().next());
         }
-        Collection<IRoadLine> roads = CartAGenDoc.getInstance()
+        Collection<IRoadLine> roads = CartAGenDocOld.getInstance()
             .getCurrentDataset().getRoads().select(bridge.getGeom());
         if (!roads.isEmpty()) {
           for (IRoadLine road : roads) {
@@ -2411,7 +2411,7 @@ public class MGCPLoader extends ShapeFileLoader {
               bridge.setContainingNetwork(road);
           }
         }
-        Collection<IRailwayLine> rails = CartAGenDoc.getInstance()
+        Collection<IRailwayLine> rails = CartAGenDocOld.getInstance()
             .getCurrentDataset().getRailwayLines().select(bridge.getGeom());
         if (!rails.isEmpty()) {
           for (IRailwayLine rail : rails) {
@@ -2431,17 +2431,17 @@ public class MGCPLoader extends ShapeFileLoader {
           MGCPBridgeLine.class, PeaRepDataset.BRIDGE_LINE_POP,
           IBridgeLine.FEAT_TYPE_NAME, null, PeaRepDbType.MGCPPlusPlus,
           partition);
-      for (IBridgeLine bridge : ((PeaRepDataset) CartAGenDoc.getInstance()
+      for (IBridgeLine bridge : ((PeaRepDataset) CartAGenDocOld.getInstance()
           .getCurrentDataset()).getBridgeLines()) {
         if (bridges.contains(bridge))
           continue;
         bridge.setType(BridgeType.FORD);
-        Collection<IWaterArea> areas = CartAGenDoc.getInstance()
+        Collection<IWaterArea> areas = CartAGenDocOld.getInstance()
             .getCurrentDataset().getWaterAreas().select(bridge.getGeom());
         if (!areas.isEmpty()) {
           bridge.setCrossedArea(areas.iterator().next());
         }
-        Collection<IWaterLine> rivers = CartAGenDoc.getInstance()
+        Collection<IWaterLine> rivers = CartAGenDocOld.getInstance()
             .getCurrentDataset().getWaterLines().select(bridge.getGeom());
         if (!rivers.isEmpty()) {
           bridge.setCrossedNetwork(rivers.iterator().next());
@@ -2494,10 +2494,10 @@ public class MGCPLoader extends ShapeFileLoader {
     // TODO
 
     // finally builds the airport complex object
-    IPopulation<IGeneObj> runPop = CartAGenDoc.getInstance()
+    IPopulation<IGeneObj> runPop = CartAGenDocOld.getInstance()
         .getCurrentDataset().getCartagenPop(CartAGenDataSet.RUNWAY_AREA_POP);
 
-    for (IGeneObj airport : CartAGenDoc.getInstance().getCurrentDataset()
+    for (IGeneObj airport : CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartagenPop(CartAGenDataSet.AIRPORT_AREA_POP)) {
       Collection<IGeneObj> inside = runPop.select(airport.getGeom());
       for (IGeneObj obj : inside) {
@@ -2555,9 +2555,9 @@ public class MGCPLoader extends ShapeFileLoader {
     // TODO
 
     // finally builds the airport complex object
-    IPopulation<IGeneObj> runPop = CartAGenDoc.getInstance()
+    IPopulation<IGeneObj> runPop = CartAGenDocOld.getInstance()
         .getCurrentDataset().getCartagenPop(CartAGenDataSet.RUNWAY_AREA_POP);
-    for (IGeneObj airport : CartAGenDoc.getInstance().getCurrentDataset()
+    for (IGeneObj airport : CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartagenPop(CartAGenDataSet.AIRPORT_AREA_POP)) {
       Collection<IGeneObj> inside = runPop.select(airport.getGeom());
       for (IGeneObj obj : inside) {

@@ -10,7 +10,7 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -41,7 +41,7 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
   public void parameterise() {
     String themeName = (String) this.getParamValueFromName("linear_theme");
     ScaleMasterTheme theme = this.getScaleMaster().getThemeFromName(themeName);
-    CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
+    CartAGenDB db = CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartAGenDB();
     Set<Class<?>> classes = new HashSet<Class<?>>();
     classes.addAll(theme.getRelatedClasses());
@@ -55,11 +55,11 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
   @Override
   public void execute(IFeatureCollection<? extends IGeneObj> features)
       throws Exception {
-    IPopulation<IGeneObj> pop = CartAGenDoc
+    IPopulation<IGeneObj> pop = CartAGenDocOld
         .getInstance()
         .getCurrentDataset()
         .getCartagenPop(
-            CartAGenDoc.getInstance().getCurrentDataset()
+            CartAGenDocOld.getInstance().getCurrentDataset()
                 .getPopNameFromClass(this.newClass));
     for (IGeneObj obj : features) {
       if (obj.isDeleted()) {

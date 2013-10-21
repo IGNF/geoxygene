@@ -23,7 +23,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -88,11 +88,11 @@ public class UnionProcess extends ScaleMasterGeneProcess {
       IGeometry union = JtsGeOxygene.makeGeOxygeneGeom(jtsUnion);
 
       // Get the object population
-      IPopulation<IGeneObj> pop = CartAGenDoc
+      IPopulation<IGeneObj> pop = CartAGenDocOld
           .getInstance()
           .getCurrentDataset()
           .getCartagenPop(
-              CartAGenDoc.getInstance().getCurrentDataset()
+              CartAGenDocOld.getInstance().getCurrentDataset()
                   .getPopNameFromClass(features.get(0).getClass()));
 
       // Get the constructor of the class, in order to create new objects

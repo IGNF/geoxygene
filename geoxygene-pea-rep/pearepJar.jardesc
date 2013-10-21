@@ -45,10 +45,10 @@
         <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{InterpolationPoint.java"/>
         <javaElement handleIdentifier="=geoxygene-feature/src\/main\/java&lt;fr.ign.cogit.geoxygene.datatools"/>
         <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Stroke.java"/>
-        <javaElement handleIdentifier="=geoxygene-api/src\/main\/java"/>
         <javaElement handleIdentifier="=geoxygene-database/src\/main\/resources"/>
-        <javaElement handleIdentifier="=geoxygene-contrib/src\/main\/java"/>
+        <javaElement handleIdentifier="=geoxygene-api/src\/main\/java"/>
         <javaElement handleIdentifier="=geoxygene-feature/src\/main\/java&lt;fr.ign.cogit.geoxygene.schema.util.persistance"/>
+        <javaElement handleIdentifier="=geoxygene-contrib/src\/main\/java"/>
         <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.contrib.geometrie"/>
         <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{UserLayer.java"/>
         <javaElement handleIdentifier="=geoxygene-feature/src\/main\/java&lt;fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu"/>
@@ -66,8 +66,8 @@
         <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.lineoffset"/>
         <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{RasterSymbolizer.java"/>
         <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{LabelPlacement.java"/>
-        <folder path="/geoxygene-schemageo/.settings"/>
         <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/resources"/>
+        <folder path="/geoxygene-schemageo/.settings"/>
         <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style.colorimetry"/>
         <javaElement handleIdentifier="=geoxygene-pea-rep/src\/main\/java"/>
         <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.generalisation.simplification"/>
@@ -137,7 +137,7 @@
         <javaElement handleIdentifier="=geoxygene-filter/src\/test\/java"/>
         <javaElement handleIdentifier="=geoxygene-feature/src\/main\/java&lt;fr.ign.cogit.geoxygene.schema{Produit.java"/>
         <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{CategorizedMap.java"/>
-        <javaElement handleIdentifier="=geoxygene-io/src\/main\/resources"/>
         <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.spatial.geomcomp"/>
+        <javaElement handleIdentifier="=geoxygene-io/src\/main\/resources"/>
     </selectedElements>
 </jardesc>

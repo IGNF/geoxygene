@@ -21,7 +21,7 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.clustering.DistanceClustering;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -81,11 +81,11 @@ public class PointsNonConvexHullProcess extends ScaleMasterGeneProcess {
       e1.printStackTrace();
     }
     @SuppressWarnings("unchecked")
-    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDocOld
         .getInstance()
         .getCurrentDataset()
         .getCartagenPop(
-            CartAGenDoc.getInstance().getCurrentDataset()
+            CartAGenDocOld.getInstance().getCurrentDataset()
                 .getPopNameFromClass(classObj), ft);
 
     // then cover clusters
@@ -141,7 +141,7 @@ public class PointsNonConvexHullProcess extends ScaleMasterGeneProcess {
       maxEdgeLength = (Double) getParamValueFromName("max_edge_length");
     String themeName = (String) getParamValueFromName("theme");
     ScaleMasterTheme theme = this.getScaleMaster().getThemeFromName(themeName);
-    CartAGenDB db = CartAGenDoc.getInstance().getCurrentDataset()
+    CartAGenDB db = CartAGenDocOld.getInstance().getCurrentDataset()
         .getCartAGenDB();
     Set<Class<?>> classes = new HashSet<Class<?>>();
     classes.addAll(theme.getRelatedClasses());

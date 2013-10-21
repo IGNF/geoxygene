@@ -20,7 +20,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
 import fr.ign.cogit.cartagen.genealgorithms.section.CollapseRoundabout;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.CrossRoadDetection;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -54,14 +54,14 @@ public class RoundaboutCollapseProcess extends ScaleMasterGeneProcess {
     this.parameterise();
 
     // enrich the road network
-    NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-        .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+    NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
+        .getCurrentDataset(), CartAGenDocOld.getInstance().getCurrentDataset()
         .getRoadNetwork(), deleted);
 
     // get the eliminated features to compute strokes on
     HashMap<ArcReseau, IRoadLine> map = new HashMap<ArcReseau, IRoadLine>();
     // first get the road features not yet selected
-    for (IGeneObj obj : CartAGenDoc.getInstance().getCurrentDataset()
+    for (IGeneObj obj : CartAGenDocOld.getInstance().getCurrentDataset()
         .getRoadNetwork().getSections()) {
       if (((INetworkSection) obj).getInitialNode() == null) {
         obj.eliminateBatch();
@@ -82,10 +82,10 @@ public class RoundaboutCollapseProcess extends ScaleMasterGeneProcess {
     }
 
     CrossRoadDetection algo = new CrossRoadDetection();
-    algo.detectRoundaboutsAndBranchingCartagen(CartAGenDoc.getInstance()
+    algo.detectRoundaboutsAndBranchingCartagen(CartAGenDocOld.getInstance()
         .getCurrentDataset());
 
-    for (IRoundAbout roundabout : CartAGenDoc.getInstance().getCurrentDataset()
+    for (IRoundAbout roundabout : CartAGenDocOld.getInstance().getCurrentDataset()
         .getRoundabouts()) {
       CollapseRoundabout collapse = new CollapseRoundabout(diameter, roundabout);
       collapse.collapseToPoint();

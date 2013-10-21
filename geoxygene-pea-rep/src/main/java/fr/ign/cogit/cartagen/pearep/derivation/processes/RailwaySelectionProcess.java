@@ -18,7 +18,7 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
 import fr.ign.cogit.cartagen.spatialanalysis.network.StrokesNetwork;
@@ -56,8 +56,8 @@ public class RailwaySelectionProcess extends ScaleMasterGeneProcess {
     this.parameterise();
 
     // make planar and enrich the road network
-    NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-        .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+    NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
+        .getCurrentDataset(), CartAGenDocOld.getInstance().getCurrentDataset()
         .getRailwayNetwork(), false);
 
     PropertyIsNotEqualTo filter = new PropertyIsNotEqualTo();

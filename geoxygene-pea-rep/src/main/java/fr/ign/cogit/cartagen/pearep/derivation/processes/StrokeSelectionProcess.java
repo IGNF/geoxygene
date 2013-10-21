@@ -21,7 +21,7 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.pearep.enrichment.DeleteDoublePreProcess;
 import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanar;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RoadStrokesNetwork;
@@ -65,7 +65,7 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
         .getInstance();
     processDblRoad.setProcessedClasses(classes);
     try {
-      processDblRoad.execute(CartAGenDoc.getInstance().getCurrentDataset()
+      processDblRoad.execute(CartAGenDocOld.getInstance().getCurrentDataset()
           .getCartAGenDB());
     } catch (Exception e) {
       e.printStackTrace();
@@ -77,19 +77,19 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
     MakeNetworkPlanar process = MakeNetworkPlanar.getInstance();
     process.setProcessedClasses(classes);
     try {
-      process.execute(CartAGenDoc.getInstance().getCurrentDataset()
+      process.execute(CartAGenDocOld.getInstance().getCurrentDataset()
           .getCartAGenDB());
     } catch (Exception e) {
       e.printStackTrace();
     }
-    NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
-        .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+    NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
+        .getCurrentDataset(), CartAGenDocOld.getInstance().getCurrentDataset()
         .getRoadNetwork(), deleted);
 
     // get the eliminated features to compute strokes on
     HashMap<ArcReseau, IRoadLine> map = new HashMap<ArcReseau, IRoadLine>();
     // first get the road features not yet selected
-    for (IGeneObj obj : CartAGenDoc.getInstance().getCurrentDataset()
+    for (IGeneObj obj : CartAGenDocOld.getInstance().getCurrentDataset()
         .getRoadNetwork().getSections()) {
       if (((INetworkSection) obj).getInitialNode() == null) {
         obj.eliminateBatch();

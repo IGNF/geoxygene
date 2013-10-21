@@ -90,6 +90,34 @@ public class PeaRepDataset extends CartAGenDataSet {
     return super.getPopNameFromClass(classObj);
   }
 
+  @Override
+  public String getPopNameFromFeatType(String featureType) {
+    if (featureType.equals(IPipeLine.FEAT_TYPE_NAME)) {
+      return PeaRepDataset.PIPELINES_POP;
+    } else if (featureType.equals(IWoodLine.FEAT_TYPE_NAME)) {
+      return PeaRepDataset.WOODLINES_POP;
+    } else if (featureType.equals(ISquareArea.FEAT_TYPE_NAME)) {
+      return PeaRepDataset.SQUARE_POP;
+    } else if (featureType.equals(IDitchLine.FEAT_TYPE_NAME)) {
+      return PeaRepDataset.DITCH_LINE_POP;
+    } else if (featureType.equals(IBridgeLine.FEAT_TYPE_NAME)) {
+      return PeaRepDataset.BRIDGE_LINE_POP;
+    } else if (featureType.equals(IBridgePoint.FEAT_TYPE_NAME)) {
+      return PeaRepDataset.BRIDGE_POINT_POP;
+    } else if (featureType.equals(ICoastLine.FEAT_TYPE_NAME)) {
+      return PeaRepDataset.COAST_LINE_POP;
+    } else if (featureType.equals(IBuildLine.FEAT_TYPE_NAME)) {
+      return PeaRepDataset.BUILD_LINE_POP;
+    } else if (featureType.equals(IBerthingLine.FEAT_TYPE_NAME)) {
+      return PeaRepDataset.BERTHING_LINES;
+    } else if (featureType.equals(IInundationArea.FEAT_TYPE_NAME)) {
+      return PeaRepDataset.INUNDATION_POP;
+    } else if (featureType.equals(IEmbankmentLine.FEAT_TYPE_NAME)) {
+      return PeaRepDataset.EMBANKMENT_POP;
+    }
+    return super.getPopNameFromFeatType(featureType);
+  }
+
   /**
    * Gets the pipelines of the dataset
    * @return

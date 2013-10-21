@@ -19,7 +19,7 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.clustering.KMeansCluster;
 import fr.ign.cogit.cartagen.spatialanalysis.clustering.KMeansClutering;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -92,11 +92,11 @@ public class KMeansClusteringProcess extends ScaleMasterGeneProcess {
                 String ft = (String) classObj.getField("FEAT_TYPE_NAME").get(
                     null);
                 @SuppressWarnings("unchecked")
-                IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
+                IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDocOld
                     .getInstance()
                     .getCurrentDataset()
                     .getCartagenPop(
-                        CartAGenDoc.getInstance().getCurrentDataset()
+                        CartAGenDocOld.getInstance().getCurrentDataset()
                             .getPopNameFromClass(classObj), ft);
                 pop.add(newObj);
 

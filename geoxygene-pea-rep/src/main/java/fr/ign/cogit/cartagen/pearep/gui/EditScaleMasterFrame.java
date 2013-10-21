@@ -89,7 +89,7 @@ import fr.ign.cogit.cartagen.pearep.shom.SHOMFeature;
 import fr.ign.cogit.cartagen.pearep.shom.SHOMSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPSchemaFactory;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
@@ -476,7 +476,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
           jp.add(linePanel);
           this.getDisplayPanel().add(jp);
           for (ScaleMasterElement elem : elements) {
-            if (!CartAGenDoc.getInstance().containsSourceDLM(
+            if (!CartAGenDocOld.getInstance().containsSourceDLM(
                 SourceDLM.valueOf(elem.getDbName()))) {
               if (!this.dbHues.containsKey(elem.getDbName())) {
                 this.dbHues.put(elem.getDbName(), Color.BLUE);
