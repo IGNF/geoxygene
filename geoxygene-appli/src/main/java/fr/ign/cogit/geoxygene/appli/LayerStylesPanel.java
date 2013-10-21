@@ -68,16 +68,19 @@ public class LayerStylesPanel extends JPanel {
    * The layer the panel corresponds to.
    */
   private WeakReference<Layer> layer;
+
   /**
    * @return the layer the panel corresponds to
    */
   public Layer getLayer() {
     return this.layer.get();
   }
+
   /**
    * A margin around the panel.
    */
   private int margin = 2;
+
   /**
    * Constructor.
    */
@@ -85,7 +88,7 @@ public class LayerStylesPanel extends JPanel {
     this.layer = new WeakReference<Layer>(aLayer);
     this.setBackground(Color.white);
   }
-  
+
   @Override
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
@@ -102,15 +105,17 @@ public class LayerStylesPanel extends JPanel {
       for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
         for (Rule r : fts.getRules()) {
           if (!map.containsKey(r.getFilter())) {
-            map.put(r.getFilter(), new ArrayList<Symbolizer>(r.getSymbolizers()));
+            map.put(r.getFilter(),
+                new ArrayList<Symbolizer>(r.getSymbolizers()));
           } else {
             map.get(r.getFilter()).addAll(r.getSymbolizers());
           }
         }
       }
     }
-    int numberOfColumns = Math.round((float) Math.sqrt(map.keySet().size()));
-    int numberOfRows = map.keySet().size() / numberOfColumns;
+    int numberOfColumns = Math.max(1,
+        Math.round((float) Math.sqrt(map.keySet().size())));
+    int numberOfRows = Math.max(1, map.keySet().size() / numberOfColumns);
     int columnsWidth = (this.getWidth() - numberOfColumns * this.margin - this.margin)
         / numberOfColumns;
     int rowHeight = (this.getHeight() - numberOfRows * this.margin - this.margin)
@@ -125,8 +130,8 @@ public class LayerStylesPanel extends JPanel {
               currentRow, columnsWidth, rowHeight);
         } else {
           if (symbolizer.isPointSymbolizer()) {
-            this.paintPoint((PointSymbolizer) symbolizer, g2,
-                currentColumn, currentRow, columnsWidth, rowHeight);
+            this.paintPoint((PointSymbolizer) symbolizer, g2, currentColumn,
+                currentRow, columnsWidth, rowHeight);
           } else {
             if (symbolizer.isPolygonSymbolizer()) {
               this.paintPolygon((PolygonSymbolizer) symbolizer, g2,
@@ -149,7 +154,7 @@ public class LayerStylesPanel extends JPanel {
     // restore the initial color
     g.setColor(originalColor);
   }
-  
+
   /**
    * Paint a line symbolizer at the given position.
    * @param symbolizer the symbolizer
@@ -170,13 +175,13 @@ public class LayerStylesPanel extends JPanel {
         * (columnsWidth + this.margin) + this.margin, currentRow
         * (rowHeight + this.margin) + rowHeight / 2);
   }
-  
+
   @Override
   public void setBounds(int x, int y, int w, int h) {
     super.setBounds(x, y, w, h);
     this.validate();
   }
-  
+
   /**
    * @param symbolizer
    * @param g2
@@ -196,7 +201,8 @@ public class LayerStylesPanel extends JPanel {
       Expression rotation = symbolizer.getGraphic().getRotation();
       if (rotation instanceof Literal) {
         // if this is a literal, we can evaluate it
-        at.rotate(-Double.parseDouble(rotation.evaluate(null).toString()) * Math.PI / 180.0); 
+        at.rotate(-Double.parseDouble(rotation.evaluate(null).toString())
+            * Math.PI / 180.0);
       }
       at.scale(3 * size, 3 * size);
       markShape = at.createTransformedShape(markShape);
@@ -220,7 +226,7 @@ public class LayerStylesPanel extends JPanel {
               - onlineImage.getHeight(null) / 2, null);
     }
   }
-  
+
   /**
    * @param symbolizer
    * @param g2
@@ -245,6 +251,7 @@ public class LayerStylesPanel extends JPanel {
           rowHeight);
     }
   }
+
   /**
    * @param symbolizer
    * @param g2
@@ -259,11 +266,12 @@ public class LayerStylesPanel extends JPanel {
     int y = currentRow * (rowHeight + this.margin) + this.margin;
     int width = columnsWidth;
     int height = rowHeight;
-    //FIXME Pour l'instant on considère qu'il n'y a qu'un symbolizer
-    for(IFeature feature : this.layer.get().getFeatureCollection()){
-        FT_Coverage coverage = (FT_Coverage) feature;
-        BufferedImage image =  PlanarImage.wrapRenderedImage(coverage.coverage().getRenderedImage()).getAsBufferedImage();
-        g2.drawImage(image, x, y,width,height, null);
-    } 
+    // FIXME Pour l'instant on considère qu'il n'y a qu'un symbolizer
+    for (IFeature feature : this.layer.get().getFeatureCollection()) {
+      FT_Coverage coverage = (FT_Coverage) feature;
+      BufferedImage image = PlanarImage.wrapRenderedImage(
+          coverage.coverage().getRenderedImage()).getAsBufferedImage();
+      g2.drawImage(image, x, y, width, height, null);
+    }
   }
 }

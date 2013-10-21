@@ -114,6 +114,7 @@ public class FloatingProjectFrame extends AbstractProjectFrame implements
   @Override
   public final void dispose() {
     this.getLayerViewPanel().dispose();
+    this.getInternalFrame().dispose();
     super.dispose();
   }
 

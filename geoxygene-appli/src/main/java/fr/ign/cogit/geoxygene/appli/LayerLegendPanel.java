@@ -1192,4 +1192,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     this.repaint();
     LOGGER.info("layers deletion caught by LayerLegendPane"); //$NON-NLS-1$
   }
+
+  public JTable getLayersTable() {
+    return layersTable;
+  }
 }

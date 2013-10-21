@@ -262,7 +262,6 @@ public class FloatingMainFrame extends AbstractMainFrame {
    */
   @Override
   public void removeAllProjectFrames() {
-
     ProjectFrame[] desktopProjectFrames = this.getDesktopProjectFrames();
     for (ProjectFrame projectFrame : desktopProjectFrames) {
       projectFrame.dispose();
@@ -330,6 +329,10 @@ public class FloatingMainFrame extends AbstractMainFrame {
   public JComponent addComponentInFrame(String title, JComponent component) {
     throw new UnsupportedOperationException(
         "Don't understand what this method is intended to do... [JeT]");
+  }
+
+  public Map<JComponent, FloatingProjectFrame> getProjectFrameMap() {
+    return projectFrameMap;
   }
 
 }
