@@ -18,15 +18,15 @@
  */
 package fr.ign.cogit.geoxygene.appli.plugin;
 
-import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 
 /**
- * GeOxygene applcation plugins can be used to had menus 
- * to the application MainFrame.
+ * Project frame plugins can be used to add graphic components 
+ * (such as toolbars, sliders, ...) to a given ProjectFrame.
  * 
- * @author Julien Perret
+ * @author Charlotte Hoarau
  *
  */
-public interface GeOxygeneApplicationPlugin {
-  void initialize(final GeOxygeneApplication application);
+public interface ProjectFramePlugin {
+  void initialize(final ProjectFrame projectFrame);
 }

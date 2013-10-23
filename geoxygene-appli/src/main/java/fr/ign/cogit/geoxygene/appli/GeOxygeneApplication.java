@@ -38,6 +38,7 @@ import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.appli.mode.Mode;
 import fr.ign.cogit.geoxygene.appli.mode.MoveMode;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
+import fr.ign.cogit.geoxygene.appli.plugin.ProjectFramePlugin;
 
 /**
  * Base class for GeOxygene applications.
@@ -116,8 +117,8 @@ public class GeOxygeneApplication {
     
     this.preload();
     
-    // Initialize plugins and last opened files
-    this.initializeProperties();
+    // Initialize application plugins
+    this.initializeApplicationPlugins();
 
   }
 
@@ -173,7 +174,10 @@ public class GeOxygeneApplication {
             e.printStackTrace();
           }
         }
-
+        
+        MainFrameMenuBar.fc.setPreviousDirectory(new File(GeOxygeneApplication.this.properties
+            .getLastOpenedFile()));
+        GeOxygeneApplication.this.initializeProjectFramePlugins();
       }
     }).start();
 
@@ -193,10 +197,8 @@ public class GeOxygeneApplication {
           System.err.println("Exception type " + e.getClass() + " = "
               + e.getMessage());
         }
-
       }
     }).start();
-
   }
 
   /** @return The font to be used for all menus, etc. */
@@ -263,14 +265,19 @@ public class GeOxygeneApplication {
   /** 
    * Initialize the application plugins. 
    */
-  private void initializeProperties() {
-    
+  private void initializeApplicationPlugins() {
     for (String pluginName : this.properties.getPlugins()) {
       try {
         Class<?> pluginClass = Class.forName(pluginName);
-        GeOxygeneApplicationPlugin plugin = (GeOxygeneApplicationPlugin) pluginClass
-            .newInstance();
-        plugin.initialize(this);
+        if (GeOxygeneApplicationPlugin.class.isAssignableFrom(pluginClass
+            .newInstance().getClass())) {
+          GeOxygeneApplicationPlugin plugin = (GeOxygeneApplicationPlugin) pluginClass
+              .newInstance();
+          plugin.initialize(this);
+        } else if (ProjectFramePlugin.class.isAssignableFrom(pluginClass
+            .newInstance().getClass())) {
+          logger.error(pluginClass + " should not be called has a GeOxygeneApplicationPlugin, but as a ProjectFramePlugin");
+        }
       } catch (ClassNotFoundException e) {
         e.printStackTrace();
       } catch (InstantiationException e) {
@@ -279,8 +286,33 @@ public class GeOxygeneApplication {
         e.printStackTrace();
       }
     }
-    MainFrameMenuBar.fc.setPreviousDirectory(new File(this.properties
-        .getLastOpenedFile()));
+  }
+  
+  /** 
+   * Initialize projectFrame plugins. 
+   */
+  private void initializeProjectFramePlugins() {
+    for (String pluginName : this.properties.getProjectPlugins()) {
+      try {
+        Class<?> pluginClass = Class.forName(pluginName);
+
+        if (ProjectFramePlugin.class.isAssignableFrom(pluginClass
+            .newInstance().getClass())) {
+          ProjectFramePlugin plugin = (ProjectFramePlugin) pluginClass
+            .newInstance();        
+          plugin.initialize(this.getMainFrame().getSelectedProjectFrame());
+        } else if (GeOxygeneApplicationPlugin.class.isAssignableFrom(pluginClass
+            .newInstance().getClass())) {
+          logger.error(pluginClass + " should not be called has a ProjectFramePlugin, but as a GeOxygeneApplicationPlugin");
+        }
+      } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+      } catch (InstantiationException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /** Exit the application. */

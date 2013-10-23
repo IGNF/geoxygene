@@ -45,6 +45,9 @@ public class GeOxygeneApplicationProperties {
     @XmlElements(@XmlElement(name = "plugin", type = String.class))
     private List<String> plugins = new ArrayList<String>();
     
+    @XmlElements(@XmlElement(name = "projectPlugin", type = String.class))
+    private List<String> projectPlugins = new ArrayList<String>();
+    
     @XmlElement(name = "lastOpenedFile")
     private String lastOpenedFile = ""; //$NON-NLS-1$
 
@@ -66,6 +69,14 @@ public class GeOxygeneApplicationProperties {
      */
     public List<String> getPlugins() {
         return this.plugins;
+    }
+    
+    /**
+     * Return project plugin list.
+     * @return List<String>
+     */
+    public List<String> getProjectPlugins() {
+        return this.projectPlugins;
     }
 
     /**
