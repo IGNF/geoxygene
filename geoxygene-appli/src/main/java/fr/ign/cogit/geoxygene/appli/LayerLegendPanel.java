@@ -583,9 +583,17 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
    * Move the selected layers up.
    */
   private void moveSelectedLayersUp() {
-    for (int row : this.layersTable.getSelectedRows()) {
+    int[] liste = this.layersTable.getSelectedRows();
+    for (int row : liste) {
       int sldIndex = row - 1;
       this.getModel().moveLayer(row, sldIndex);
+    }
+
+    // reselect moved rows
+    ListSelectionModel selModel = this.layersTable.getSelectionModel();
+    selModel.clearSelection();
+    for (int row : liste) {
+        if ( row-1 >= 0 ) selModel.addSelectionInterval(row-1, row-1);
     }
   }
 
@@ -594,6 +602,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
    */
   private void moveSelectedLayersDown() {
     int[] liste = this.layersTable.getSelectedRows();
+    // inverse list order
     for (int i = 0; i < (liste.length / 2); i++) {
       int temp = liste[i];
       liste[i] = liste[liste.length - i - 1];
@@ -603,6 +612,14 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       int sldIndex = row + 1;
       this.getModel().moveLayer(row, sldIndex);
     }
+    // reselect moved rows
+    ListSelectionModel selModel = this.layersTable.getSelectionModel();
+    selModel.clearSelection();
+    for (int row : liste) {
+        if ( row < this.layersTable.getRowCount()-1 )
+            selModel.addSelectionInterval(row+1, row+1);
+    }
+    
   }
 
   /**
@@ -615,6 +632,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       this.getModel().moveLayer(row, sldIndex);
       begin++;
     }
+    this.layersTable.setRowSelectionInterval(0, begin-1);
   }
 
   /**
@@ -633,6 +651,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       this.getModel().moveLayer(row, sldIndex);
       end--;
     }
+    this.layersTable.setRowSelectionInterval(this.layersTable.getRowCount()-liste.length, this.layersTable.getRowCount()-1);
   }
 
   private void displayAttributeTable() {
@@ -1064,14 +1083,14 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       LayerRenderer renderer = (LayerRenderer) e.getSource();
       int n = e.getModifiers() * 2 / 10;
       renderer.getLayer().setIcon(this.images[n]);
-      this.tablemodel.fireTableDataChanged();
+//      this.tablemodel.fireTableDataChanged();
       this.layersTable.repaint();
       this.update();
     }
     if (e.getID() == 5) { // rendering finished
       LayerRenderer renderer = (LayerRenderer) e.getSource();
       renderer.getLayer().setIcon(this.images[20]);
-      this.tablemodel.fireTableDataChanged();
+//      this.tablemodel.fireTableDataChanged();
       this.layersTable.repaint();
       this.update();
     }
@@ -1196,4 +1215,6 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
   public JTable getLayersTable() {
     return layersTable;
   }
+
+
 }
