@@ -44,6 +44,7 @@ import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
+import fr.ign.cogit.geoxygene.appli.plugin.ProjectFramePlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.geompool.GeometryPoolMenu;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -56,7 +57,7 @@ import fr.ign.cogit.geoxygene.style.UserStyle;
  * @author Guillaume Touya
  */
 public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
-    ActionListener {
+    ActionListener, ProjectFramePlugin {
   /**
    * Logger.
    */
@@ -161,6 +162,11 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
     } catch (NoSuchMethodException e) {
       e.printStackTrace();
     }
+  }
+
+  @Override
+  public void initialize(final ProjectFrame frame) {
+    // TODO
   }
 
   @Override

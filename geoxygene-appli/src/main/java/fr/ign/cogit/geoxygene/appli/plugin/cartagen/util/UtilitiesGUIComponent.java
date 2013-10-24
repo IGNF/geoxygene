@@ -52,6 +52,7 @@ import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SaveObjectSelectio
 public class UtilitiesGUIComponent extends JMenu {
 
   private ProjectFrame view;
+  private GeOxygeneApplication appli;
 
   /**
    * 
@@ -60,6 +61,7 @@ public class UtilitiesGUIComponent extends JMenu {
 
   public UtilitiesGUIComponent(GeOxygeneApplication appli, String title) {
     super(title);
+    this.appli = appli;
     this.view = appli.getMainFrame().getSelectedProjectFrame();
     JMenu bookmarkMenu = new JMenu("Bookmarks");
     this.add(bookmarkMenu);
@@ -73,6 +75,8 @@ public class UtilitiesGUIComponent extends JMenu {
     this.add(selectionMenu);
     this.addSeparator();
     this.add(new JMenuItem(new ShowWktAction()));
+    this.add(new JMenuItem(new ShowIniGeomAction()));
+    this.addSeparator();
     this.add(new JMenuItem(new InternationalisationAction()));
   }
 
@@ -234,6 +238,23 @@ public class UtilitiesGUIComponent extends JMenu {
     @Override
     public void actionPerformed(ActionEvent arg0) {
       ShowWKTFrame frame = new ShowWKTFrame();
+      frame.setVisible(true);
+    }
+  }
+
+  class ShowIniGeomAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    public ShowIniGeomAction() {
+      putValue(Action.NAME, I18N.getString("DisplayInitialGeomsFrame.title"));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      DisplayInitialGeomsFrame frame = new DisplayInitialGeomsFrame(appli
+          .getMainFrame().getSelectedProjectFrame());
       frame.setVisible(true);
     }
   }
