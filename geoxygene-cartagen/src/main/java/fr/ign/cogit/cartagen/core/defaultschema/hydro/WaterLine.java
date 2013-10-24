@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
+import fr.ign.cogit.cartagen.core.carto.SLDUtil;
 import fr.ign.cogit.cartagen.core.defaultschema.network.NetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
@@ -87,12 +88,18 @@ public class WaterLine extends NetworkSection implements IWaterLine {
   @Override
   @Transient
   public double getWidth() {
+    if (this.getSymbolId() == -2) {// SLD width
+      return SLDUtil.getSymbolMaxWidthMapMm(this);
+    }
     return GeneralisationLegend.RES_EAU_LARGEUR;
   }
 
   @Override
   @Transient
   public double getInternWidth() {
+    if (this.getSymbolId() == -2) {// SLD width
+      return SLDUtil.getSymbolInnerWidthMapMm(this);
+    }
     return GeneralisationLegend.RES_EAU_LARGEUR;
   }
 
@@ -182,8 +189,8 @@ public class WaterLine extends NetworkSection implements IWaterLine {
 
   @Override
   public void restoreGeoxObjects() {
-    this.geoxObj = new TronconHydrographiqueImpl(new ReseauImpl(), false, this
-        .getGeom());
+    this.geoxObj = new TronconHydrographiqueImpl(new ReseauImpl(), false,
+        this.getGeom());
     this.geoxObj.setNom(this.name);
   }
 

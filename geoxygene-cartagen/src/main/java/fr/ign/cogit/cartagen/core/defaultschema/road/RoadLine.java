@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
+import fr.ign.cogit.cartagen.core.carto.SLDUtil;
 import fr.ign.cogit.cartagen.core.defaultschema.network.NetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.SymbolShape;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
@@ -168,9 +169,14 @@ public class RoadLine extends NetworkSection implements IRoadLine {
         return GeneralisationLegend.ROUTIER_LARGEUR_DESSOUS_4;
       }
 
+    } else if (this.getSymbolId() == -2) {// SLD width
+
+      return SLDUtil.getSymbolMaxWidthMapMm(this);
+
     } else { // the new way of calculating the width
-      SymbolShape symbolShape = CartAGenDocOld.getInstance().getCurrentDataset()
-          .getSymbols().getSymbolShapeBySymbolID(this.getSymbolId());
+      SymbolShape symbolShape = CartAGenDocOld.getInstance()
+          .getCurrentDataset().getSymbols()
+          .getSymbolShapeBySymbolID(this.getSymbolId());
       return symbolShape.ext_width;
     }
 
@@ -196,9 +202,14 @@ public class RoadLine extends NetworkSection implements IRoadLine {
       if (this.getImportance() == 4) {
         return GeneralisationLegend.ROUTIER_LARGEUR_DESSUS_4;
       }
+    } else if (this.getSymbolId() == -2) {// SLD width
+
+      return SLDUtil.getSymbolInnerWidthMapMm(this);
+
     } else { // the new way of calculating the width
-      SymbolShape symbolShape = CartAGenDocOld.getInstance().getCurrentDataset()
-          .getSymbols().getSymbolShapeBySymbolID(this.getSymbolId());
+      SymbolShape symbolShape = CartAGenDocOld.getInstance()
+          .getCurrentDataset().getSymbols()
+          .getSymbolShapeBySymbolID(this.getSymbolId());
       return symbolShape.int_width;
     }
     return 0.0;
