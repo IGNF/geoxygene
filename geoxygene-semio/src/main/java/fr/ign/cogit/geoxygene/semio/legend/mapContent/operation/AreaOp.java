@@ -226,6 +226,7 @@ private SymbolisedFeature symbolisedFeature;
    *      superficie = longueur * épaisseur + cercle de diamètre égal au contour
    */
   public static void computeArea(SymbolisedFeature symbolisedFeature) {
-    
+    AreaOp areaOp = new AreaOp(symbolisedFeature);
+    areaOp.computeArea();
   };
 }
