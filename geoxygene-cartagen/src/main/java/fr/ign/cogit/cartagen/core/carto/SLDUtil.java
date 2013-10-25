@@ -15,6 +15,7 @@ import fr.ign.cogit.geoxygene.style.Graphic;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
+import fr.ign.cogit.geoxygene.style.NamedLayer;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Rule;
@@ -187,5 +188,103 @@ public class SLDUtil {
       }
     }
     return false;
+  }
+
+  /**
+   * Checks if a layer has a style for displaying initial geometries.
+   * @param layer
+   * @return
+   */
+  public static FeatureTypeStyle getLayerInitialDisplay(Layer layer) {
+    for (Style style : layer.getStyles()) {
+      if ("initial geometry".equals(style.getFeatureTypeStyles().get(0)
+          .getName())) {
+        return style.getFeatureTypeStyles().get(0);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Compute a raw SLD (no fill, no complex symbol for roads, etc.) from a given
+   * sld.
+   * @param initialSld
+   * @return
+   */
+  public static StyledLayerDescriptor computeRawSld(
+      StyledLayerDescriptor initialSld) {
+    StyledLayerDescriptor rawSld = new StyledLayerDescriptor(
+        initialSld.getDataSet());
+    for (Layer layer : initialSld.getLayers()) {
+      NamedLayer newLayer = new NamedLayer(rawSld, layer.getName());
+      newLayer.setSld(rawSld);
+      newLayer.getStyles().add(computeRawStyle(layer));
+      rawSld.add(newLayer);
+    }
+    return rawSld;
+  }
+
+  private static Style computeRawStyle(Layer layer) {
+    Style rawStyle = new UserStyle();
+    FeatureTypeStyle ftStyle = new FeatureTypeStyle();
+    rawStyle.getFeatureTypeStyles().add(ftStyle);
+    Rule rule = new Rule();
+    ftStyle.getRules().add(rule);
+    Color color = getRawColor(layer);
+    if (layer.getSymbolizer() instanceof PointSymbolizer) {
+      PointSymbolizer symbolizer = new PointSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      Graphic graphic = new Graphic();
+      Mark mark = new Mark();
+      mark.setWellKnownName("cross");
+      Fill fill = new Fill();
+      fill.setColor(color);
+      mark.setFill(fill);
+      graphic.getMarks().add(mark);
+      symbolizer.setGraphic(graphic);
+      rule.getSymbolizers().add(symbolizer);
+    } else if (layer.getSymbolizer() instanceof PolygonSymbolizer) {
+      PolygonSymbolizer symbolizer = new PolygonSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      Stroke stroke = new Stroke();
+      stroke.setColor(color);
+      stroke.setStrokeWidth(1);
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      symbolizer.setStroke(stroke);
+      rule.getSymbolizers().add(symbolizer);
+    } else if (layer.getSymbolizer() instanceof LineSymbolizer) {
+      Symbolizer symbolizer = new LineSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      Stroke stroke = new Stroke();
+      stroke.setColor(color);
+      stroke.setStrokeWidth(2);
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      symbolizer.setStroke(stroke);
+      rule.getSymbolizers().add(symbolizer);
+    }
+    return rawStyle;
+  }
+
+  private static Color getRawColor(Layer layer) {
+    if (layer.getSymbolizer() instanceof PointSymbolizer) {
+      return ((PointSymbolizer) layer.getSymbolizer()).getGraphic().getMarks()
+          .get(0).getFill().getColor();
+    } else if (layer.getSymbolizer() instanceof PolygonSymbolizer) {
+      PolygonSymbolizer symb = (PolygonSymbolizer) layer.getSymbolizer();
+      if (symb.getFill() != null) {
+        return symb.getFill().getColor();
+      } else {
+        return symb.getStroke().getColor();
+      }
+    } else if (layer.getSymbolizer() instanceof LineSymbolizer) {
+      Color strokeColor = ((LineSymbolizer) layer.getSymbolizer()).getStroke()
+          .getColor();
+      if (strokeColor.equals(Color.WHITE))
+        return Color.BLACK;
+      else
+        return strokeColor;
+    }
+    return Color.BLACK;
   }
 }
