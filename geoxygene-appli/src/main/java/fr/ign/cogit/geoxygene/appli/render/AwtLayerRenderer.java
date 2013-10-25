@@ -341,8 +341,7 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
     graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
         RenderingHints.VALUE_ANTIALIAS_ON);
     RenderUtil.paint(symbolizer, feature, this.getLayerViewPanel()
-        .getViewport(), graphics, this.getLayer().getOpacity(), null);// FIXME
-                                                                      // // FIX
+        .getViewport(), graphics, this.getLayer().getOpacity(), theImage);
   }
 
   /** Clear the image cache, i.e. delete the current image. */
