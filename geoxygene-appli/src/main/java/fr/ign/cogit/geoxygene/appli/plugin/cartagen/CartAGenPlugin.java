@@ -44,7 +44,6 @@ import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
-import fr.ign.cogit.geoxygene.appli.plugin.ProjectFramePlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.geompool.GeometryPoolMenu;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -57,7 +56,7 @@ import fr.ign.cogit.geoxygene.style.UserStyle;
  * @author Guillaume Touya
  */
 public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
-    ActionListener, ProjectFramePlugin {
+    ActionListener {
   /**
    * Logger.
    */
@@ -74,6 +73,8 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
   }
 
   private GeOxygeneApplication application = null;
+
+  protected CartAGenRightPanel rightPanel;
 
   /**
    * The {@link CartAGenDocOld} document related to {@code this} plugin.
@@ -141,8 +142,9 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
     MainFrame frame = application.getMainFrame();
     JTabbedPane pane = ((AbstractMainFrame) frame).getDesktopTabbedPane();
     frame.getGui().getContentPane().remove(pane);
+    rightPanel = new CartAGenRightPanel(frame);
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane,
-        new CartAGenRightPanel(frame));
+        rightPanel);
     splitPane.setContinuousLayout(false);
     splitPane.setOneTouchExpandable(false);
     splitPane.resetToPreferredSizes();
@@ -162,11 +164,6 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
     } catch (NoSuchMethodException e) {
       e.printStackTrace();
     }
-  }
-
-  @Override
-  public void initialize(final ProjectFrame frame) {
-    // TODO
   }
 
   @Override
@@ -221,6 +218,8 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
         frame.getSld().add(layer);
       }
     }
+    // initialise the frame with cartagen plugin
+    CartAGenProjectPlugin.getInstance().initialize(frame);
   }
 
   /**
@@ -248,6 +247,9 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
       ((NamedLayer) layer).setSld(frame.getSld());
       frame.getLayerViewPanel().layerAdded(layer);
     }
+
+    // initialise the frame with cartagen plugin
+    CartAGenProjectPlugin.getInstance().initialize(frame);
 
     return frame;
   }

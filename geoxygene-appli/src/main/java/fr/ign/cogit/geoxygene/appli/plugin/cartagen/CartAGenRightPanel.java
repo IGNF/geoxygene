@@ -167,8 +167,9 @@ public final class CartAGenRightPanel extends JPanel implements MouseListener {
 
   @Override
   public void mouseClicked(MouseEvent e) {
-    this.lNbSelection.setText(String.valueOf(SelectionUtil.getSelectedObjects(
-        frame.getApplication()).size()));
+    this.lNbSelection.setText("Nb="
+        + String.valueOf(SelectionUtil.getSelectedObjects(
+            frame.getApplication()).size()));
     this.validate();
   }
 
