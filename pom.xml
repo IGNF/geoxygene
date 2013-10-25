@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -60,8 +59,8 @@
 		<jts.version>1.13</jts.version>
 		<log4j.version>1.2.16</log4j.version>
 		<geotools.version>8.4</geotools.version>
-		<jfreechart.version>1.0.12</jfreechart.version>
-        <jgrapht.version>0.8.3</jgrapht.version>
+		<jfreechart.version>1.0.0</jfreechart.version>
+		<jgrapht.version>0.8.3</jgrapht.version>
 
 		<skip.unit.tests>false</skip.unit.tests>
 		<skip.integration.tests>true</skip.integration.tests>
@@ -79,8 +78,8 @@
 			<id>integration-test</id>
 			<properties>
 				<!-- Only integration tests are run. -->
-				<!-- <skip.integration.tests>false</skip.integration.tests> -->
-				<!-- <skip.unit.tests>true</skip.unit.tests> -->
+				<skip.integration.tests>false</skip.integration.tests>
+				<skip.unit.tests>true</skip.unit.tests>
 			</properties>
 		</profile>
 		<profile>
@@ -291,20 +290,17 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3</version>
+				<!-- A specifier dans le bon package 
 				<configuration>
 					<archive>
-						<index>true</index>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<!--
 							<classpathPrefix>dependency/</classpathPrefix>
 							<mainClass>fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</mainClass>
-							-->
 						</manifest>
 					</archive>
-				</configuration>
+				</configuration>  -->
 			</plugin>
-
 			<!-- Used to add source directories to our build. -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -335,12 +331,10 @@
 				<version>2.16</version>
 				<configuration>
 					<!-- Skips unit tests if the value of skip.unit.tests property is true -->
-					<!-- <skipTests>${skip.unit.tests}</skipTests> -->
+					<skipTests>${skip.unit.tests}</skipTests>
 					<!-- Excludes integration tests when unit tests are run. -->
 					<excludes>
 						<exclude>**/IT*.java</exclude>
-						<exclude>**/*IT.java</exclude>
-						<exclude>**/*ITCase.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
@@ -358,12 +352,7 @@
 							<goal>verify</goal>
 						</goals>
 						<configuration>
-							<!-- <skipTests>${skip.integration.tests}</skipTests> -->
-							<excludes>
-								<exclude>**/Test*.java</exclude>
-								<exclude>**/*Test.java</exclude>
-								<exclude>**/*TestCase.java</exclude>
-							</excludes>
+							<skipTests>${skip.integration.tests}</skipTests>
 						</configuration>
 					</execution>
 				</executions>
@@ -516,19 +505,28 @@
 			<id>Central</id>
 			<name>Central Repository</name>
 			<url>http://repo1.maven.org/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
 		</repository>
 		<repository>
 			<id>cogit-snapshots</id>
 			<name>Cogit Snapshots Repository</name>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 			<url>https://dionysos2.ign.fr/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
 			<id>cogit-releases</id>
 			<name>Cogit Releases Repository</name>
-			<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/releases/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/releases</url>
 		</repository>
 		<repository>
 			<id>OpenGeo</id>
@@ -540,19 +538,11 @@
 			<releases>
 				<enabled>true</enabled>
 			</releases>
-		</repository>		
+		</repository>
 		<repository>
 			<id>osgeo-geotools</id>
 			<name>Open Source Geospatial Foundation Repository</name>
 			<url>http://download.osgeo.org/webdav/geotools/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-		</repository>
-		<repository>
-			<id>osgeo</id>
-			<name>Open Source Geospatial Foundation Repository</name>
-			<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/osgeo</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -560,32 +550,23 @@
 		<repository>
 			<id>mathplot</id>
 			<url>http://igetdb.sourceforge.net/maven2-repository/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
 		</repository>
 		<repository>
 			<id>Cemagref</id>
 			<url>http://trac.clermont.cemagref.fr/nexus/content/groups/public/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
 		</repository>
 		<repository>
 			<id>hibernatespatial</id>
 			<name>hibernatespatial Repository</name>
 			<url>http://www.hibernatespatial.org/repository</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
 		</repository>
 		<repository>
 			<id>jboss</id>
 			<name>jboss Repository</name>
 			<url>http://repository.jboss.org/maven2/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 
@@ -594,9 +575,6 @@
 			<id>Central</id>
 			<name>Central Repository</name>
 			<url>http://repo1.maven.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
 		</pluginRepository>
 		<pluginRepository>
 			<id>maven-latex-plugin-repo</id>
@@ -604,11 +582,9 @@
 			<releases>
 				<enabled>true</enabled>
 			</releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+
 
 	<!-- ==================================================================== -->
 	<!-- Centraliser la gestion des versions des dépendances -->
@@ -725,7 +701,6 @@
 		<module>geoxygene-feature</module>
 		<module>geoxygene-filter</module>
 		<module>geoxygene-io</module>
-		<module>geoxygene-geopensim</module>
 		<module>geoxygene-pea-rep</module>
 		<module>geoxygene-schemageo</module>
 		<module>geoxygene-semio</module>
@@ -734,7 +709,7 @@
 		<module>geoxygene-style</module>
 		<module>geoxygene-util</module>
 		<module>geoxygene-wps</module>
-		<module>evidence4j</module>
-	</modules>
+    <module>geoxygene-osm</module>
+  </modules>
 
 </project>
