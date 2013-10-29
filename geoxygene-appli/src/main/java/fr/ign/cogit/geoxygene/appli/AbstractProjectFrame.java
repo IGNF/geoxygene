@@ -3,6 +3,7 @@ package fr.ign.cogit.geoxygene.appli;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
@@ -246,8 +247,22 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     @Override
     public final void askAndAddNewLayer() {
         File[] files = MainFrameMenuBar.fc.getFiles(this.getMainFrame().getGui());
+        this.addLayerFromFileOrDirectory(files);
+    }
+
+    private void addLayerFromFileOrDirectory(File... files) {
         for (File file : files) {
-            this.addLayer(file);
+            if (file.isDirectory()) {
+                this.addLayerFromFileOrDirectory(file.listFiles(new FileFilter() {
+
+                    @Override
+                    public boolean accept(File pathname) {
+                        return MainFrameMenuBar.fc.getFileChooser().getFileFilter().accept(pathname);
+                    }
+                }));
+            } else {
+                this.addLayer(file);
+            }
         }
     }
 
