@@ -29,9 +29,9 @@
 				<denivelleeMini>1.0</denivelleeMini>
 			</altitude>
 			<proximiteBatimentsIlot>
-				<distanceSeparationBatiments>0.15</distanceSeparationBatiments>
+				<distanceSeparationBatiments>0.10</distanceSeparationBatiments>
 				<distancMaxDeplacementBatiment>2.0</distancMaxDeplacementBatiment>
-				<distanceSeparationBatimentsRoutes>0.05</distanceSeparationBatimentsRoutes>
+				<distanceSeparationBatimentsRoutes>0.1</distanceSeparationBatimentsRoutes>
 				<seuilTauxSuperpositionSuppression>0.3</seuilTauxSuperpositionSuppression>
 				<distanceMaxProximite>30.0</distanceMaxProximite>
 			</proximiteBatimentsIlot>

@@ -88,11 +88,11 @@ public final class GeneralisationSpecifications {
 
   // proximite
   // distance minimale inter-batiments (en mm carte)
-  public static double DISTANCE_SEPARATION_INTER_BATIMENT = 0.15;
+  public static double DISTANCE_SEPARATION_INTER_BATIMENT = 0.1;
   // distance maximale de déplacement d'un batiment (en mm carte)
   public static double DISTANCE_MAX_DEPLACEMENT_BATIMENT = 2.0;
   // distance minimale batiments-routes (en mm carte)
-  public static double DISTANCE_SEPARATION_BATIMENT_ROUTE = 0.05;
+  public static double DISTANCE_SEPARATION_BATIMENT_ROUTE = 0.1;
   // lorsque les batiments ne peuvent pas etre deplaces pour resoudre conflit de
   // superposition, le batiment le plus en coflit est supprime.
   // ce seuil est le taux de superposition minimal que doit acvoir ce batiment
@@ -148,9 +148,10 @@ public final class GeneralisationSpecifications {
    * @param fichier
    */
   public static void enregistrer(File fichier) {
-    JOptionPane.showMessageDialog(GeneralisationConfigurationFrame
-        .getInstance(), "Fonctionnalité à venir... un jour... peut-etre..."
-        + fichier, "A venir", JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(
+        GeneralisationConfigurationFrame.getInstance(),
+        "Fonctionnalité à venir... un jour... peut-etre..." + fichier,
+        "A venir", JOptionPane.INFORMATION_MESSAGE);
   }
 
 }
