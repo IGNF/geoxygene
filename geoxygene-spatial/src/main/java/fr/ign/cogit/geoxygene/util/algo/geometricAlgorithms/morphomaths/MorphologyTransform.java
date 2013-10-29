@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.vividsolutions.jts.algorithm.CGAlgorithms;
+import com.vividsolutions.jts.geom.LineString;
+
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -21,9 +24,11 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
+import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 
 public class MorphologyTransform {
 
+  @SuppressWarnings("unused")
   private static Logger logger = Logger.getLogger(MorphologyTransform.class
       .getName());
 
@@ -313,6 +318,18 @@ public class MorphologyTransform {
       IPolygon polyToSum, IDirectPosition centroid) {
 
     JtsAlgorithms algo = new JtsAlgorithms();
+
+    try {
+      LineString jtsLine = (LineString) JtsGeOxygene.makeJtsGeom(line);
+
+      if (CGAlgorithms.isCCW(jtsLine.getCoordinates())) {
+        line = (ILineString) line.getNegative();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    // line = (ILineString) line.getNegative();
     IGeometry toReturn = null;
 
     // Use convex hull
@@ -324,15 +341,12 @@ public class MorphologyTransform {
     IDirectPosition point1 = coord.get(1);
     IDirectPosition point2 = coord.get(2);
 
-    logger.debug("coord " + coord);
     double vp = (point1.getX() - point0.getX())
         * (point2.getY() - point0.getY()) - (point2.getX() - point0.getX())
         * (point1.getY() - point0.getY());
 
-    logger.debug("vp " + vp);
     if (vp < 0.0) {
       coord.inverseOrdre();
-      logger.debug("coord " + coord);
     }
 
     // for each vector, create an area representing the dilatation
@@ -343,27 +357,27 @@ public class MorphologyTransform {
       IDirectPosition pointB = line.getControlPoint(i + 1);
       IDirectPosition pointC = line.getControlPoint(i == line.getControlPoint()
           .size() - 2 ? 1 : i + 2);
-      logger.debug("A: " + i + ", B: " + (i + 1) + ", C: "
-          + (i == line.getControlPoint().size() - 2 ? 1 : i + 2));
-
-      logger.debug("A : " + pointA);
-      logger.debug("B : " + pointB);
-      logger.debug("C : " + pointC);
+      // logger.debug("A: " + i + ", B: " + (i + 1) + ", C: "
+      // + (i == line.getControlPoint().size() - 2 ? 1 : i + 2));
+      //
+      // logger.debug("A : " + pointA);
+      // logger.debug("B : " + pointB);
+      // logger.debug("C : " + pointC);
 
       double dX = pointB.getX() - pointA.getX();
       double dY = pointB.getY() - pointA.getY();
 
       double theta = Math.atan2(dY, dX) - Math.PI / 2;
 
-      IDirectPosition positionAB = this.getFarestPoint(coord, theta);
-      logger.debug("positionAB: " + positionAB);
+      IDirectPosition positionAB = this.getFurthestPoint(coord, theta);
+      // logger.debug("positionAB: " + positionAB);
       // Initialize for next turn.
       dX = pointC.getX() - pointB.getX();
       dY = pointC.getY() - pointB.getY();
       theta = Math.atan2(dY, dX) - Math.PI / 2;
 
-      IDirectPosition positionBC = this.getFarestPoint(coord, theta);
-      logger.debug("positionBC: " + positionBC);
+      IDirectPosition positionBC = this.getFurthestPoint(coord, theta);
+      // logger.debug("positionBC: " + positionBC);
 
       // Construct the area
       // Create polygon.
@@ -377,7 +391,7 @@ public class MorphologyTransform {
           * (pointC.getY() - pointA.getY()) - (pointC.getX() - pointA.getX())
           * (pointB.getY() - pointA.getY());
 
-      logger.debug("Vector product: " + vectorialProduct);
+      // logger.debug("Vector product: " + vectorialProduct);
 
       // Dilatation of the second point if convexity at left.
       // We compute the translation vectors to apply to B to get the dilatation
@@ -421,7 +435,7 @@ public class MorphologyTransform {
 
       ILineString tempLine = new GM_LineString((List<IDirectPosition>) tempList);
       IPolygon tempPolygon = new GM_Polygon(tempLine);
-      logger.debug("tempPolygon " + tempPolygon);
+      // logger.debug("tempPolygon " + tempPolygon);
       if (toReturn == null) {
         toReturn = tempPolygon;
       } else {
@@ -430,24 +444,23 @@ public class MorphologyTransform {
           toReturn = temp;
         }
       }
-      logger.debug("toReturn " + toReturn);
+      // logger.debug("toReturn " + toReturn);
     }
 
     if (toReturn.isMultiSurface()) {
 
       IMultiSurface<?> multiTemp = ((IMultiSurface<?>) toReturn);
-      logger.debug("size " + multiTemp.size());
-
-      for (IGeometry toShow : multiTemp) {
-        logger.debug(toShow);
-      }
+      // logger.debug("size " + multiTemp.size());
+      //
+      // for (IGeometry toShow : multiTemp) {
+      // logger.debug(toShow);
+      // }
 
       if (multiTemp.size() == 1) {
         toReturn = (IPolygon) multiTemp.get(0);
       }
     }
 
-    logger.debug("toReturn " + toReturn);
     return (IPolygon) toReturn;
   }
 
@@ -458,7 +471,8 @@ public class MorphologyTransform {
    * @param theta
    * @return
    */
-  private IDirectPosition getFarestPoint(IDirectPositionList coord, double theta) {
+  private IDirectPosition getFurthestPoint(IDirectPositionList coord,
+      double theta) {
     // IPolygon rotation = CommonAlgorithms.rotation(polygon, - theta);
     IDirectPosition toReturn = null;
     double xMax = -Double.MAX_VALUE;
