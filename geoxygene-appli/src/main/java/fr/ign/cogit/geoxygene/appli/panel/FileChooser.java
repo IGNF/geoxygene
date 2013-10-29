@@ -34,7 +34,9 @@ public class FileChooser {
 
     /**
      * Affect the previous opened directory.
-     * @param directory the previous opened directory
+     * 
+     * @param directory
+     *            the previous opened directory
      */
     public void setPreviousDirectory(File directory) {
         this.previousDirectory = directory;
@@ -114,7 +116,7 @@ public class FileChooser {
         this.fileChooser.addChoosableFileFilter(gpsTextFilter);
         this.fileChooser.addChoosableFileFilter(roadNetworkTextFilter);
         this.fileChooser.setFileFilter(shapefileFilter);
-        this.fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        this.fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         this.fileChooser.setMultiSelectionEnabled(false);
         this.fileChooser.setAcceptAllFileFilterUsed(false);
         this.fileChooser.setCurrentDirectory(this.getPreviousDirectory());
@@ -127,8 +129,7 @@ public class FileChooser {
     public File getFile(Component parent) {
         this.fileChooser.setCurrentDirectory(this.getPreviousDirectory());
         Frame window = new Frame();
-        window.setIconImage(new ImageIcon(GeOxygeneApplication.class
-                .getResource("/images/icons/16x16/page_white_add.png")).getImage());
+        window.setIconImage(new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/16x16/page_white_add.png")).getImage());
         int returnVal = this.fileChooser.showOpenDialog(window);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             this.setPreviousDirectory(new File(this.fileChooser.getSelectedFile().getAbsolutePath()));
@@ -136,18 +137,17 @@ public class FileChooser {
         }
         return null;
     }
-    
+
     public File[] getFiles(Component parent) {
         this.fileChooser.setMultiSelectionEnabled(true);
         this.fileChooser.setCurrentDirectory(this.getPreviousDirectory());
         int returnVal = this.fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-          this.setPreviousDirectory(new File(this.fileChooser.getSelectedFile()
-              .getAbsolutePath()));
-          return this.fileChooser.getSelectedFiles();
+            this.setPreviousDirectory(new File(this.fileChooser.getSelectedFile().getAbsolutePath()));
+            return this.fileChooser.getSelectedFiles();
         }
         return null;
-      }
+    }
 
     public String getDescription() {
         return this.fileChooser.getFileFilter().getDescription();
