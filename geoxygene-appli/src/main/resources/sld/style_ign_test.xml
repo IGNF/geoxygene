@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
+<NamedLayer>
+	<Name>bati_indifferencie</Name>
+	<UserStyle>
+	  <Name>bati_indifferencie</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Single symbol</Name>
+		  <PolygonSymbolizer>
+			<Fill>
+			  <SvgParameter name="fill">#000000</SvgParameter>
+			</Fill>
+			<Stroke>
+			  <SvgParameter name="stroke">#000000</SvgParameter>
+			  <SvgParameter name="stroke-width">2</SvgParameter>
+			</Stroke>
+		  </PolygonSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>
+  <NamedLayer>
+	<Name>bati_industriel</Name>
+	<UserStyle>
+	  <Name>bati_industriel</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Single symbol</Name>
+		  <PolygonSymbolizer>
+			<Fill>
+			  <SvgParameter name="fill">#9e9e9e</SvgParameter>
+			</Fill>
+			<Stroke>
+			  <SvgParameter name="stroke">#000000</SvgParameter>
+			  <SvgParameter name="stroke-width">2</SvgParameter>
+			</Stroke>
+		  </PolygonSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>
+  <NamedLayer>
+	<Name>chef_lieu</Name>
+	<UserStyle>
+	  <Name>chef_lieu</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Single symbol</Name>
+		  <PointSymbolizer>
+			<Graphic>
+			  <Mark>
+				<WellKnownName>circle</WellKnownName>
+				<Fill>
+				  <SvgParameter name="fill">#a257c7</SvgParameter>
+				</Fill>
+				<Stroke>
+				  <SvgParameter name="stroke">#000000</SvgParameter>
+				</Stroke>
+			  </Mark>
+			  <Displacement>
+				<DisplacementX>24</DisplacementX>
+				<DisplacementY>21</DisplacementY>
+			  </Displacement>
+			</Graphic>
+		  </PointSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>
+  <NamedLayer>
+	<Name>chemin</Name>
+	<UserStyle>
+	  <Name>chemin</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Single symbol</Name>
+		  <LineSymbolizer>
+			<Stroke>
+			  <SvgParameter name="stroke">#906c00</SvgParameter>
+			  <SvgParameter name="stroke-width">3</SvgParameter>
+			  <SvgParameter name="stroke-linejoin">bevel</SvgParameter>
+			  <SvgParameter name="stroke-linecap">square</SvgParameter>
+			  <SvgParameter name="stroke-dasharray">5 2</SvgParameter>
+			</Stroke>
+		  </LineSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>
+   <NamedLayer>
+	<Name>commune</Name>
+	<UserStyle>
+	  <Name>commune</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		   <PolygonSymbolizer>
+			<Fill>
+			  <SvgParameter name="fill">#ffffff</SvgParameter>
+			</Fill>
+			<Stroke>
+			  <SvgParameter name="stroke">#00000</SvgParameter>
+			  <SvgParameter name="stroke-width">2</SvgParameter>
+			</Stroke>
+		  </PolygonSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>
+   <NamedLayer>
+	<Name>cimetiere</Name>
+	<UserStyle>
+	  <Name>cimetiere</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Single symbol</Name>
+		  <PolygonSymbolizer>
+			<Fill>
+			  <SvgParameter name="fill">#ffffff</SvgParameter>
+			</Fill>
+			<Stroke>
+			  <SvgParameter name="stroke">#000000</SvgParameter>
+			  <SvgParameter name="stroke-width">5</SvgParameter>
+			</Stroke>
+		  </PolygonSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>
+  <NamedLayer>
+	<Name>mer</Name>
+	<UserStyle>
+	  <Name>mer</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Single symbol</Name>
+		  <PolygonSymbolizer>
+			<Fill>
+			  <SvgParameter name="fill">#b2d8fe</SvgParameter>
+			</Fill>
+			<Stroke>
+			  <SvgParameter name="stroke">#00aaff</SvgParameter>
+			  <SvgParameter name="stroke-width">40</SvgParameter>
+			</Stroke>
+		  </PolygonSymbolizer>
+		 <!-- Out of Memory sur le GraphicFill <PolygonSymbolizer>
+			<Fill>
+			  <GraphicFill>
+				<Graphic>
+				  <Mark>
+					<WellKnownName>cross</WellKnownName>
+					<Fill>
+					  <SvgParameter name="fill">#00aaff</SvgParameter>
+					</Fill>
+					<Stroke>
+					  <SvgParameter name="stroke">#00aaff</SvgParameter>
+					</Stroke>
+				  </Mark>
+				  <Size>2</Size>
+				  <Rotation>
+					<Literal>5</Literal>
+				  </Rotation>
+				</Graphic>
+			  </GraphicFill>
+			</Fill>
+			<VendorOption name="distance">60,60</VendorOption>
+		  </PolygonSymbolizer>-->
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>
+	<NamedLayer>
+	<Name>route</Name>
+	<UserStyle>
+	  <Name>route</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Autoroute</Name>
+		  <Description>Autoroute</Description>
+		  <Filter>
+			<PropertyIsEqualTo>
+			  <PropertyName>cl_admin</PropertyName>
+			  <Literal>Autoroute</Literal>
+			</PropertyIsEqualTo>
+		  </Filter>
+		  <LineSymbolizer>
+			<Stroke>
+			  <SvgParameter name="stroke">#f7fbff</SvgParameter>
+			  <SvgParameter name="stroke-width">20</SvgParameter>
+			  <SvgParameter name="stroke-linejoin">bevel</SvgParameter>
+			  <SvgParameter name="stroke-linecap">square</SvgParameter>
+			</Stroke>
+		  </LineSymbolizer>
+		</Rule>
+		</FeatureTypeStyle>	
+		<FeatureTypeStyle>
+		<Rule>
+		  <Name>Autre</Name>
+		  <Description>Autre</Description>
+		  <Filter>
+			<PropertyIsEqualTo>
+			  <PropertyName>cl_admin</PropertyName>
+			  <Literal>Autre</Literal>
+			</PropertyIsEqualTo>
+		  </Filter>
+		  <LineSymbolizer>
+			<Stroke>
+			  <SvgParameter name="stroke">#000000</SvgParameter>
+			  <SvgParameter name="stroke-width">8</SvgParameter>
+			  <SvgParameter name="stroke-linejoin">round</SvgParameter>
+			  <SvgParameter name="stroke-linecap">butt</SvgParameter>
+			</Stroke>
+		  </LineSymbolizer>
+		   </Rule>
+		  </FeatureTypeStyle>		  
+		  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Autre</Name>
+		  <Description>Autre</Description>
+		  <Filter>
+			<PropertyIsEqualTo>
+			  <PropertyName>cl_admin</PropertyName>
+			  <Literal>Autre</Literal>
+			</PropertyIsEqualTo>
+		  </Filter>
+		  <LineSymbolizer>
+			<Stroke>
+			  <SvgParameter name="stroke">#ffffff</SvgParameter>
+			  <SvgParameter name="stroke-width">4</SvgParameter>
+			  <SvgParameter name="stroke-linejoin">bevel</SvgParameter>
+			  <SvgParameter name="stroke-linecap">square</SvgParameter>
+			</Stroke>
+		  </LineSymbolizer>
+		</Rule>
+		</FeatureTypeStyle>		
+		<FeatureTypeStyle>
+		<Rule>
+		  <Name>Départementale</Name>
+		  <Description>Départementale</Description>
+		  <Filter>
+			<PropertyIsEqualTo>
+			  <PropertyName>cl_admin</PropertyName>
+			  <Literal>Départementale</Literal>
+			</PropertyIsEqualTo>
+		  </Filter>
+		  <LineSymbolizer>
+			<Stroke>
+			  <SvgParameter name="stroke">#000000</SvgParameter>
+			  <SvgParameter name="stroke-width">15</SvgParameter>
+			  <SvgParameter name="stroke-linecap">round</SvgParameter>
+			</Stroke>
+		  </LineSymbolizer>
+		   </Rule>
+		  </FeatureTypeStyle>		  
+		  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Départementale</Name>
+		  <Description>Départementale</Description>
+		  <Filter>
+			<PropertyIsEqualTo>
+			  <PropertyName>cl_admin</PropertyName>
+			  <Literal>Départementale</Literal>
+			</PropertyIsEqualTo>
+		  </Filter>
+		  <LineSymbolizer>
+			<Stroke>
+			  <SvgParameter name="stroke">#fe984b</SvgParameter>
+			  <SvgParameter name="stroke-width">11</SvgParameter>
+			  <SvgParameter name="stroke-linecap">round</SvgParameter>
+			</Stroke>
+		  </LineSymbolizer>
+		</Rule>
+		</FeatureTypeStyle>	
+		<FeatureTypeStyle>
+		<Rule>
+		  <Name>Nationale</Name>
+		  <Description>Nationale</Description>
+		  <Filter>
+			<PropertyIsEqualTo>
+			  <PropertyName>cl_admin</PropertyName>
+			  <Literal>Nationale</Literal>
+			</PropertyIsEqualTo>
+		  </Filter>
+		  <LineSymbolizer>
+			<Stroke>
+			  <SvgParameter name="stroke">#000000</SvgParameter>
+			  <SvgParameter name="stroke-width">10</SvgParameter>
+			  <SvgParameter name="stroke-linecap">butt</SvgParameter>
+			</Stroke>
+		  </LineSymbolizer>
+		   </Rule>
+		  </FeatureTypeStyle>
+		 <FeatureTypeStyle>
+		<Rule>
+		  <Name>Nationale</Name>
+		  <Description>Nationale</Description>
+		  <Filter>
+			<PropertyIsEqualTo>
+			  <PropertyName>cl_admin</PropertyName>
+			  <Literal>Nationale</Literal>
+			</PropertyIsEqualTo>
+		  </Filter>
+		  <LineSymbolizer>
+			<Stroke>
+			  <SvgParameter name="stroke">#fe0032</SvgParameter>
+			  <SvgParameter name="stroke-width">6</SvgParameter>
+			  <SvgParameter name="stroke-linecap">square</SvgParameter> 
+			</Stroke>
+		  </LineSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>
+  <NamedLayer>
+	<Name>surface_eau</Name>
+	<UserStyle>
+	  <Name>surface_eau</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Single symbol</Name>
+		  <PolygonSymbolizer>
+			<Fill>
+			  <SvgParameter name="fill">#b2d8fe</SvgParameter>
+			</Fill>
+			<Stroke>
+			  <SvgParameter name="stroke">#00aaff</SvgParameter>
+			  <SvgParameter name="stroke-width">0.16</SvgParameter>
+			</Stroke>
+		  </PolygonSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>
+  <NamedLayer>
+	<Name>terrain_sport</Name>
+	<UserStyle>
+	  <Name>terrain_sport</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Single symbol</Name>
+		  <PolygonSymbolizer>
+			<Stroke>
+			  <SvgParameter name="stroke">#2d2d2d</SvgParameter>
+			  <SvgParameter name="stroke-width">2</SvgParameter>
+			</Stroke>
+		  </PolygonSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>
+   <NamedLayer>
+	<Name>troncon_cours_eau</Name>
+	<UserStyle>
+	  <Name>troncon_cours_eau</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Single symbol</Name>
+		  <LineSymbolizer>
+			<Stroke>
+			  <SvgParameter name="stroke">#00aaff</SvgParameter>
+			  <SvgParameter name="stroke-width">3</SvgParameter>
+			  <SvgParameter name="stroke-linecap">round</SvgParameter> 
+			</Stroke>
+		  </LineSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>
+   <NamedLayer>
+	<Name>troncon_laisse</Name>
+	<UserStyle>
+	  <Name>troncon_laisse</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Single symbol</Name>
+		  <LineSymbolizer>
+			<Stroke>
+			  <SvgParameter name="stroke">#00aaff</SvgParameter>
+			  <SvgParameter name="stroke-width">3</SvgParameter>
+			  <SvgParameter name="stroke-linecap">round</SvgParameter> 
+			</Stroke>
+		  </LineSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>
+	<NamedLayer>
+	<Name>troncon_voie_ferree</Name>
+	<UserStyle>
+	  <Name>troncon_voie_ferree</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Single symbol</Name>
+		  <LineSymbolizer>
+			<Stroke>
+			  <SvgParameter name="stroke">#000000</SvgParameter>
+			  <SvgParameter name="stroke-width">3</SvgParameter>
+			</Stroke>
+		  </LineSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>	
+<NamedLayer>
+	<Name>zone_vegetation</Name>
+	<UserStyle>
+	  <Name>zone_vegetation</Name>
+	  <FeatureTypeStyle>
+		<Rule>
+		  <Name>Single symbol</Name>
+		  <PolygonSymbolizer>
+			<Fill>
+			  <SvgParameter name="fill">#d0feb9</SvgParameter>
+			</Fill>
+		  </PolygonSymbolizer>
+		</Rule>
+	  </FeatureTypeStyle>
+	</UserStyle>
+  </NamedLayer>  
+  </StyledLayerDescriptor>
