@@ -551,7 +551,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     }
 
     /**
-     * SCH Save the current styles into an xml file.
+     * Save the current styles into an xml file.
      * 
      * @param fileName
      *            the xml file to save into.
@@ -566,12 +566,10 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     }
 
     /**
-     * SCH load the described styles in an xml file and apply them to a
-     * predefined
+     * load the described styles in an xml file and apply them to a predefined
      * dataset.
      * 
-     * @param fileName
-     *            the xml file to load.
+     * @param fileName the xml file to load.
      * @throws JAXBException
      * @throws FileNotFoundException
      */
@@ -579,26 +577,39 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     @Override
     public void loadSLD(File file) throws FileNotFoundException, JAXBException {
 
-        if (file.isFile() && (file.getAbsolutePath().endsWith(".xml") //$NON-NLS-1$
-                || file.getAbsolutePath().endsWith(".XML"))) //$NON-NLS-1$
-        {
+      if (file.isFile() && (file.getAbsolutePath().endsWith(".xml") //$NON-NLS-1$
+          || file.getAbsolutePath().endsWith(".XML"))) //$NON-NLS-1$
+      {
 
-            StyledLayerDescriptor new_sld = StyledLayerDescriptor.unmarshall(file.getAbsolutePath(), this.getDataSet());
-            if (new_sld != null) {
-                for (int i = 0; i < this.getLayers().size(); i++) {
-                    String name = this.getLayers().get(i).getName();
-                    logger.debug(name);
-                    this.getLayers().get(i).setStyles(new_sld.getLayer(name).getStyles());
-                }
-
-                this.layerLegendPanel.repaint();
-                this.layerViewPanel.repaint();
-
-                /**
-                 * // loading finished
-                 */
+        StyledLayerDescriptor new_sld = StyledLayerDescriptor.unmarshall(
+            file.getAbsolutePath(), this.getDataSet());
+        if (new_sld != null) {
+          for (int i = 0; i < this.getLayers().size(); i++) {
+            String name = this.getLayers().get(i).getName();
+            //logger.debug(name);
+            //vérifier que le layer est décrit dans le SLD
+            if (new_sld.getLayer(name) != null) {           
+              if (new_sld.getLayer(name).getStyles() != null) {
+               // logger.debug(new_sld.getLayer(name).getStyles());
+                this.getLayers().get(i).setStyles(new_sld.getLayer(name).getStyles());
+                
+              }
+              else { 
+                logger.trace("Le layer "+name+" n'a pas de style défini dans le SLD");}
             }
+            else { 
+              logger.trace("Le layer "+name+" n'est pas décrit dans le SLD");
+              this.getLayers().get(i).setStyles(this.sld.getLayer(name).getStyles());}
+          }
+
+          layerLegendPanel.repaint();
+          layerViewPanel.repaint();
+
+          /**
+           * // loading finished
+           */
         }
+      }
     }
 
     /*
