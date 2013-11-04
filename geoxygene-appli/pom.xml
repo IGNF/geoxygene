@@ -236,9 +236,7 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-scripting</artifactId>
-			<version>0.3-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- JGoodies Forms framework helps you lay out and implement elegant Swing 
