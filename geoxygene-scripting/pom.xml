@@ -10,13 +10,11 @@
 	</parent>
 
 	<artifactId>geoxygene-scripting</artifactId>
-	<version>0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>geoxygene-scripting</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<main.basedir>..</main.basedir>
 	</properties>
 
 
