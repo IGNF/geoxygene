@@ -293,7 +293,6 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     TableCellRenderer renderer = new JComponentTableCellRenderer();
 
     // Case à cocher
-    int width = this.getWidth();
     TableColumn col = this.layersTable.getColumnModel().getColumn(0);
     col.setMinWidth(22);
     col.setMaxWidth(22);
@@ -376,7 +375,6 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     col.setMinWidth(50);
     col.setMaxWidth(50);
     col.setWidth(50);
-    // col.setWidth(width - 106);
     col.setResizable(false);
 
     this.layersTable.setFillsViewportHeight(true);
