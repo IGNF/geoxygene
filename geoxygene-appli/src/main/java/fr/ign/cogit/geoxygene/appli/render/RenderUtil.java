@@ -110,7 +110,8 @@ import fr.ign.cogit.geoxygene.style.thematic.ThematicClass;
 import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 import fr.ign.cogit.geoxygene.util.ColorUtil;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
-
+import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
+  
 /**
  * @author Julien Perret
  * 
@@ -376,7 +377,7 @@ public final class RenderUtil {
     }
     graphics.setStroke(symbolizer.getStroke().toAwtStroke((float) scaleUOMToPixels));
     paintShadow(symbolizer, geometry, viewport, graphics, opacity);
-    if (symbolizer.getStroke().getGraphicType() == null) {
+    if (symbolizer.getStroke().getColor() != null) {
       List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, false);
       if (shapes != null) {
         // ColorMap
@@ -402,7 +403,8 @@ public final class RenderUtil {
           graphics.draw(shape);
         }
       }
-    } else {
+    }
+    if (symbolizer.getStroke().getGraphicType() != null) {
       if (symbolizer.getStroke().getGraphicType().getClass()
           .isAssignableFrom(GraphicFill.class)) {
         List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, true);
@@ -905,20 +907,18 @@ public final class RenderUtil {
         }
       }
       for (Shape shape : shapes) {
-        if (symbolizer.getFill() != null && 
-            (symbolizer.getFill().getGraphicFill() == null && symbolizer.getFill().getTexture() == null)) {
+        if (symbolizer.getFill() != null && symbolizer.getFill().getTexture() == null) {
           fillPolygon(symbolizer, shape, viewport, graphics, opacity);
-        } else {
-          if (symbolizer.getFill().getGraphicFill() != null){
-            List<Graphic> graphicList = symbolizer.getFill().getGraphicFill()
-                .getGraphics();
-            for (Graphic graphic : graphicList) {
-              double rotation = Double.parseDouble(graphic.getRotation().evaluate(feature).toString());
-              graphicFillPolygon(symbolizer, shape, graphic, viewport, graphics, opacity, rotation);
-            }
-          } else if (symbolizer.getFill().getTexture() != null) {
-            texturePolygon(symbolizer, shape, graphics, img);
+        }
+        if (symbolizer.getFill().getGraphicFill() != null){
+          List<Graphic> graphicList = symbolizer.getFill().getGraphicFill()
+              .getGraphics();
+          for (Graphic graphic : graphicList) {
+            double rotation = Double.parseDouble(graphic.getRotation().evaluate(feature).toString());
+            graphicFillPolygon(shape, graphic, viewport, graphics, opacity, rotation);
           }
+        } else if (symbolizer.getFill().getTexture() != null) {
+          texturePolygon(symbolizer, shape, graphics, img);
         }
       }
     }
@@ -933,7 +933,7 @@ public final class RenderUtil {
         RenderUtil.logger.error("Stroke Line Join undefined."); //$NON-NLS-1$
       }
       float strokeOpacity = symbolizer.getStroke().getStrokeOpacity();
-      if (symbolizer.getStroke().getGraphicType() == null && strokeOpacity > 0f) {
+      if (strokeOpacity > 0f) {
         
         double scale = 1;
         if (!symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
@@ -959,7 +959,8 @@ public final class RenderUtil {
             }
           }
         }
-      } else {
+      }
+      if (symbolizer.getStroke().getGraphicType() != null) {
         if (symbolizer.getStroke().getGraphicType().getClass()
             .isAssignableFrom(GraphicFill.class)) {
           List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, true);
@@ -998,9 +999,9 @@ public final class RenderUtil {
               texture.getColor1().getRGB(),
               texture.getColor2().getRGB()));
       filter.setScale(texture.getScale());
-
-      BufferedImage imgTexture = new BufferedImage(
-          img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+      filter.setStretch(texture.getStretch());
+      filter.setAmount(texture.getAmount());
+      BufferedImage imgTexture = ImgUtil.createBufferedImage(img);
       imgTexture.setData(img.getData());
       
       filter.filter(imgTexture, imgTexture);
@@ -1009,7 +1010,7 @@ public final class RenderUtil {
     }
   }
   
-  private static void graphicFillPolygon(PolygonSymbolizer symbolizer, Shape shape, Graphic graphic,
+  private static void graphicFillPolygon(Shape shape, Graphic graphic,
       Viewport viewport, Graphics2D graphics, double opacity, double rotation) {
     if (shape == null || viewport == null || graphic == null) {
       return;
@@ -1019,11 +1020,11 @@ public final class RenderUtil {
     for (ExternalGraphic external : graphic.getExternalGraphics()) {
       if (external.getFormat().contains("png") || external.getFormat().contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
         Image image = external.getOnlineResource();
-        graphicFillPolygon(symbolizer, shape, image, size, graphics, opacity);
+        graphicFillPolygon(shape, image, size, graphics, opacity);
       } else {
         if (external.getFormat().contains("svg")) { //$NON-NLS-1$
           GraphicsNode node = external.getGraphicsNode();
-          graphicFillPolygon(symbolizer, shape, node, size, graphics, opacity);
+          graphicFillPolygon(shape, node, size, graphics, opacity);
         }
       }
       return;
@@ -1047,11 +1048,11 @@ public final class RenderUtil {
       Graphics2D g = (Graphics2D) buff.getGraphics();
       g.setColor(ColorUtil.getColorWithOpacity(mark.getFill().getColor(), opacity));
       g.fill(tranlatedShape);
-      graphicFillPolygon(symbolizer, shape, buff, size, graphics, opacity);
+      graphicFillPolygon(shape, buff, size, graphics, opacity);
     }
   }
 
-  private static void graphicFillPolygon(PolygonSymbolizer symbolizer, Shape shape, Image image, float size,
+  private static void graphicFillPolygon(Shape shape, Image image, float size,
       Graphics2D graphics, double opacity) {
     Double width = new Double(Math.max(1, shape.getBounds2D().getWidth()));
     Double height = new Double(Math.max(1, shape.getBounds2D().getHeight()));
@@ -1078,7 +1079,7 @@ public final class RenderUtil {
     buff.flush();
   }
 
-  private static void graphicFillPolygon(PolygonSymbolizer symbolizer, Shape shape, GraphicsNode node, float size,
+  private static void graphicFillPolygon(Shape shape, GraphicsNode node, float size,
       Graphics2D graphics, double opacity) {
     AffineTransform translate = AffineTransform.getTranslateInstance(-node
         .getBounds().getMinX(), -node.getBounds().getMinY());
@@ -1086,7 +1087,7 @@ public final class RenderUtil {
     BufferedImage buff = new BufferedImage((int) node.getBounds().getWidth(),
         (int) node.getBounds().getHeight(), BufferedImage.TYPE_INT_ARGB);
     node.paint((Graphics2D) buff.getGraphics());
-    graphicFillPolygon(symbolizer, shape, buff, size, graphics, opacity);
+    graphicFillPolygon(shape, buff, size, graphics, opacity);
   }
 
   private static void fillPolygon(PolygonSymbolizer symbolizer, Shape shape, Viewport viewport, Graphics2D graphics, double opacity) {
