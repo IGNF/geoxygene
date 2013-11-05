@@ -16,4 +16,16 @@ public class ImageUtil {
         frame.setVisible(true);
     }
   }
+  
+  /**
+   * This method create and return a BufferdImage
+   * with the same characteristics (size, data type) than the input image
+   * @param img
+   * @return
+   */
+  public static BufferedImage createBufferedImage(BufferedImage img) {
+    BufferedImage newImage = new BufferedImage(
+        img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    return newImage;
+  }
 }

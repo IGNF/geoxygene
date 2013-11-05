@@ -110,7 +110,7 @@ import fr.ign.cogit.geoxygene.style.thematic.ThematicClass;
 import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 import fr.ign.cogit.geoxygene.util.ColorUtil;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
-import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
+import fr.ign.cogit.geoxygene.util.ImageUtil;
   
 /**
  * @author Julien Perret
@@ -1001,7 +1001,7 @@ public final class RenderUtil {
       filter.setScale(texture.getScale());
       filter.setStretch(texture.getStretch());
       filter.setAmount(texture.getAmount());
-      BufferedImage imgTexture = ImgUtil.createBufferedImage(img);
+      BufferedImage imgTexture = ImageUtil.createBufferedImage(img);
       imgTexture.setData(img.getData());
       
       filter.filter(imgTexture, imgTexture);
