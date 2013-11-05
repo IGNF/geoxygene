@@ -6,10 +6,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PerlinNoiseTexture extends Texture{
-  
+public class PerlinNoiseTexture extends Texture {
+
   private float scale = 10f;
-  
+
   public float getScale() {
     return scale;
   }
@@ -19,7 +19,7 @@ public class PerlinNoiseTexture extends Texture{
   }
 
   private float amount = 0.5f;
-  
+
   public float getAmount() {
     return amount;
   }
@@ -27,8 +27,9 @@ public class PerlinNoiseTexture extends Texture{
   public void setAmount(float amount) {
     this.amount = amount;
   }
-  private float angle = (float)Math.PI;
-  
+
+  private float angle = (float) Math.PI;
+
   public float getAngle() {
     return angle;
   }
@@ -36,8 +37,8 @@ public class PerlinNoiseTexture extends Texture{
   public void setAngle(float angle) {
     this.angle = angle;
   }
-  
-  private float stretch = 0.5f;
+
+  private float stretch = 1f;
 
   public float getStretch() {
     return stretch;
@@ -47,8 +48,8 @@ public class PerlinNoiseTexture extends Texture{
     this.stretch = stretch;
   }
 
-  private Color color1 = Color.GREEN.darker();
-  
+  private Color color1 = Color.YELLOW;
+
   public Color getColor1() {
     return color1;
   }
@@ -57,8 +58,8 @@ public class PerlinNoiseTexture extends Texture{
     this.color1 = color1;
   }
 
-  private Color color2 = Color.GREEN.darker().darker().darker();
-  
+  private Color color2 = Color.RED;
+
   public Color getColor2() {
     return color2;
   }
@@ -66,7 +67,5 @@ public class PerlinNoiseTexture extends Texture{
   public void setColor2(Color color2) {
     this.color2 = color2;
   }
-  
-  
-  
+
 }
