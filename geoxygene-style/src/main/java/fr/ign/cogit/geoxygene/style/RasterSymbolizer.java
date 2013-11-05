@@ -78,8 +78,8 @@ public class RasterSymbolizer extends AbstractSymbolizer {
     return this.opacity;
   }
 
-  public double setOpacity() {
-    return this.opacity;
+  public void setOpacity(double opacity) {
+    this.opacity = opacity;
   }
   
 }
