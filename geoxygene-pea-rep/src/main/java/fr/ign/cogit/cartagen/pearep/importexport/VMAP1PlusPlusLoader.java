@@ -3052,7 +3052,7 @@ public class VMAP1PlusPlusLoader extends ShapeFileLoader {
     VMAP1PlusPlusDB database = new VMAP1PlusPlusDB(name);
     database.setSourceDLM(SourceDLM.VMAP1PlusPlus);
     database.setSymboScale(300000);
-    database.setDocument(CartAGenDocOld.getInstance());
+    database.setOldDocument(CartAGenDocOld.getInstance());
     CartAGenDataSet dataset = new PeaRepDataset();
     dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
     CartAGenDocOld.getInstance().addDatabase(name, database);

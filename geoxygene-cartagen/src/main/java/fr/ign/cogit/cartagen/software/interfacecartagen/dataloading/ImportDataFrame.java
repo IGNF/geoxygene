@@ -291,7 +291,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     database.setSourceDLM(this.sourceDlm);
     database.setSymboScale(this.scale);
     database.setSystemPath(this.filePath);
-    database.setDocument(CartAGenDocOld.getInstance());
+    database.setOldDocument(CartAGenDocOld.getInstance());
     CartAGenDataSet dataset = new CartAGenDataSet();
     CartagenApplication.getInstance().getDocument()
         .addDatabase(this.datasetName, database);
@@ -349,7 +349,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     database.setSourceDLM(this.sourceDlm);
     database.setSymboScale(this.scale);
     database.setSystemPath(this.filePath);
-    database.setDocument(CartAGenDocOld.getInstance());
+    database.setOldDocument(CartAGenDocOld.getInstance());
     CartAGenDataSet dataset = new CartAGenDataSet();
     CartAGenDocOld.getInstance().addDatabase(this.datasetName, database);
     CartAGenDocOld.getInstance().setCurrentDataset(dataset);

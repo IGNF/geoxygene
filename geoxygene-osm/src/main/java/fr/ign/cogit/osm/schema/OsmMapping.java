@@ -13,7 +13,9 @@ import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.land.ITreePoint;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IPointOfInterest;
 import fr.ign.cogit.cartagen.core.genericschema.railway.ICable;
+import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.ICycleWay;
+import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
@@ -130,6 +132,12 @@ public class OsmMapping {
     private OsmMapping getOuterType() {
       return OsmMapping.this;
     }
+
+    @Override
+    public String toString() {
+      return "OsmMatching [tag=" + tag + ", cartagenClass=" + cartagenClass
+          + ", type=" + type + ", tagValues=" + tagValues + "]";
+    }
   }
 
   /**
@@ -138,9 +146,6 @@ public class OsmMapping {
   public OsmMapping() {
     this.matchings = new HashSet<OsmMapping.OsmMatching>();
 
-    // cable matching
-    this.matchings.add(new OsmMatching("aerialway", ICable.class,
-        GeometryType.LINE));
     // building matching
     this.matchings.add(new OsmMatching("building", IBuilding.class,
         GeometryType.POLYGON));
@@ -154,6 +159,7 @@ public class OsmMapping {
     OsmMatching lakematching = new OsmMatching("natural", IWaterArea.class,
         GeometryType.POLYGON);
     lakematching.addTagValue("water");
+    lakematching.addTagValue("lake");
     this.matchings.add(lakematching);
     // shops matchings
     this.matchings.add(new OsmMatching("shop", IPointOfInterest.class,
@@ -187,6 +193,15 @@ public class OsmMapping {
     roadmatching.addTagValue("trunk");
     this.matchings.add(roadmatching);
 
+    // paths matching
+    OsmMatching pathmatching = new OsmMatching("highway", IPathLine.class,
+        GeometryType.LINE);
+    roadmatching.addTagValue("path");
+    roadmatching.addTagValue("footway");
+    roadmatching.addTagValue("bridleway");
+    roadmatching.addTagValue("steps");
+    this.matchings.add(pathmatching);
+
     // airports and runways
     OsmMatching airportMatch = new OsmMatching("aeroway", IAirportArea.class,
         GeometryType.POLYGON);
@@ -201,6 +216,13 @@ public class OsmMapping {
     runwayLineMatch.addTagValue("runway");
     runwayLineMatch.addTagValue("taxiway");
     this.matchings.add(runwayLineMatch);
+
+    // cable matching
+    this.matchings.add(new OsmMatching("aerialway", ICable.class,
+        GeometryType.LINE));
+    // railways
+    this.matchings.add(new OsmMatching("railway", IRailwayLine.class,
+        GeometryType.LINE));
 
     // landuse
     OsmMatching vineyardMatch = new OsmMatching("landuse",

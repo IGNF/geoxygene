@@ -36,4 +36,7 @@ public enum OsmLandUseTypology {
     return colors;
   }
 
+  public String toTagValue() {
+    return this.name().toLowerCase();
+  }
 }

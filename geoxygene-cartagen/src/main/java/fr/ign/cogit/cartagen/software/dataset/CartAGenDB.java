@@ -63,7 +63,12 @@ public abstract class CartAGenDB {
   /**
    * The document this database is opened in.
    */
-  private CartAGenDocOld document;
+  private CartAGenDocOld oldDocument;
+
+  /**
+   * The document this database is opened in.
+   */
+  private CartAGenDoc document;
 
   /**
    * The source DLM the database derives from (e.g. BD_CARTO).
@@ -276,12 +281,12 @@ public abstract class CartAGenDB {
     this.type = type;
   }
 
-  public CartAGenDocOld getDocument() {
-    return document;
+  public CartAGenDocOld getOldDocument() {
+    return oldDocument;
   }
 
-  public void setDocument(CartAGenDocOld document) {
-    this.document = document;
+  public void setOldDocument(CartAGenDocOld document) {
+    this.oldDocument = document;
   }
 
   public SourceDLM getSourceDLM() {
@@ -457,6 +462,14 @@ public abstract class CartAGenDB {
 
   public GeneObjImplementation getGeneObjImpl() {
     return geneObjImpl;
+  }
+
+  public CartAGenDoc getDocument() {
+    return document;
+  }
+
+  public void setDocument(CartAGenDoc document) {
+    this.document = document;
   }
 
 }

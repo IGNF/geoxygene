@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StyledLayerDescriptor version="1.0.20">
+  <NamedLayer>
+    <Name>waterLines</Name>
+    <UserStyle>
+      <Name>waterways</Name>
+      <FeatureTypeStyle>
+        <Rule>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#b5d0d0</CssParameter>
+              <CssParameter name="stroke-width">12</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+  <NamedLayer>
+    <Name>waterAreas</Name>
+    <UserStyle>
+      <Name>waterareas</Name>
+      <FeatureTypeStyle>
+        <Rule>
+			<PolygonSymbolizer>
+				<Fill>
+					<CssParameter name="fill">#b5d0d0</CssParameter>
+				</Fill>
+				<Stroke>
+					<CssParameter name="stroke">#b5d0d0</CssParameter>
+					<CssParameter name="stroke-width">1</CssParameter>
+				</Stroke>
+			</PolygonSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>

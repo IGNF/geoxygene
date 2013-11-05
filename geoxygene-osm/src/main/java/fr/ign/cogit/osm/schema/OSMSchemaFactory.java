@@ -16,8 +16,10 @@ import fr.ign.cogit.cartagen.core.genericschema.misc.IPointOfInterest;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.railway.ICable;
+import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefField;
 import fr.ign.cogit.cartagen.core.genericschema.road.ICycleWay;
+import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
@@ -43,7 +45,9 @@ import fr.ign.cogit.osm.schema.landuse.OsmSimpleLandUseArea;
 import fr.ign.cogit.osm.schema.nature.OsmTreePoint;
 import fr.ign.cogit.osm.schema.network.OsmNetworkFace;
 import fr.ign.cogit.osm.schema.rail.OsmCable;
+import fr.ign.cogit.osm.schema.rail.OsmRailwayLine;
 import fr.ign.cogit.osm.schema.roads.OsmCycleWay;
+import fr.ign.cogit.osm.schema.roads.OsmPathLine;
 import fr.ign.cogit.osm.schema.roads.OsmRoadLine;
 import fr.ign.cogit.osm.schema.roads.OsmRoadNode;
 import fr.ign.cogit.osm.schema.urban.OsmBuildPoint;
@@ -130,6 +134,16 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
           (OSMWay) resource.getGeom(), nodes);
       return (OsmGeneObj) this.createCycleWay(line);
     }
+    if (IRailwayLine.class.isAssignableFrom(classObj)) {
+      ILineString line = OsmGeometryConversion.convertOSMLine(
+          (OSMWay) resource.getGeom(), nodes);
+      return (OsmGeneObj) this.createRailwayLine(line, 0);
+    }
+    if (IPathLine.class.isAssignableFrom(classObj)) {
+      ILineString line = OsmGeometryConversion.convertOSMLine(
+          (OSMWay) resource.getGeom(), nodes);
+      return (OsmGeneObj) this.createPath(line, 0);
+    }
     // TODO
     return null;
   }
@@ -159,6 +173,16 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
   @Override
   public IRoadLine createRoadLine(ILineString line, int importance) {
     return new OsmRoadLine(line, -1);
+  }
+
+  // /////////////////
+  // RAILWAY
+  // /////////////////
+
+  // RailwayLine
+  @Override
+  public IRailwayLine createRailwayLine(ILineString line, int importance) {
+    return new OsmRailwayLine(line);
   }
 
   @Override
@@ -248,6 +272,11 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
   @Override
   public ICycleWay createCycleWay(ILineString line) {
     return new OsmCycleWay(line);
+  }
+
+  @Override
+  public IPathLine createPath(ILineString line, int importance) {
+    return new OsmPathLine(line, importance);
   }
 
 }

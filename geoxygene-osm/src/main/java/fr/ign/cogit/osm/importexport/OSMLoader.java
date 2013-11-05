@@ -1,9 +1,7 @@
 package fr.ign.cogit.osm.importexport;
 
-import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,6 +14,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -30,7 +31,6 @@ import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.util.CRSConversion;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
-import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.osm.importexport.OSMRelation.RoleMembre;
 import fr.ign.cogit.osm.importexport.OSMRelation.TypeRelation;
 import fr.ign.cogit.osm.schema.OSMSchemaFactory;
@@ -41,9 +41,8 @@ import fr.ign.cogit.osm.schema.OsmMapping.OsmMatching;
 import fr.ign.cogit.osm.schema.OsmSource;
 import fr.ign.cogit.osm.schema.landuse.OsmLandUseTypology;
 import fr.ign.cogit.osm.schema.landuse.OsmSimpleLandUseArea;
-import fr.ign.cogit.osm.schema.urban.OsmPointOfInterest;
 
-public class OSMLoader {
+public class OSMLoader extends SwingWorker<Void, Void> {
 
   private Logger logger = Logger.getLogger(OSMLoader.class.getName());
 
@@ -54,20 +53,48 @@ public class OSMLoader {
   public static final String TAG_MIN_LON = "minlon";
   public static final String TAG_MAX_LON = "maxlon";
 
+  public enum OsmLoadingTask {
+    POINTS, LINES, RELATIONS, OBJECTS;
+
+    public String getLabel() {
+      if (this.equals(POINTS))
+        return "OSM Points";
+      else if (this.equals(LINES))
+        return "OSM Lines";
+      else if (this.equals(RELATIONS))
+        return "OSM Relations";
+      else if (this.equals(OBJECTS))
+        return "Objects";
+      return "";
+    }
+  }
+
   private Set<OSMResource> nodes, ways, relations;
+  private File fic;
+  private OsmDataset dataset;
+  private OsmMapping mapping;
+  private JDialog dialog;
+  private OsmLoadingTask currentTask = OsmLoadingTask.POINTS;
+  private Runnable fillLayersTask;
   double xMin, yMin, xMax, yMax;
   double xCentr, yCentr;
   double surf;
   File file;
   int nbNoeuds, nbWays, nbRels, nbResources;
 
-  public void importOsmData(File fic, OsmDataset dataset, OsmMapping mapping)
-      throws SAXException, IOException, ParserConfigurationException,
-      IllegalArgumentException, SecurityException, IllegalAccessException,
-      NoSuchFieldException {
+  public OSMLoader(File fic, OsmDataset dataset, Runnable fillLayersTask) {
+    this.fic = fic;
+    this.dataset = dataset;
+    this.fillLayersTask = fillLayersTask;
+  }
+
+  public void importOsmData() throws SAXException, IOException,
+      ParserConfigurationException, IllegalArgumentException,
+      SecurityException, IllegalAccessException, NoSuchFieldException {
     this.nodes = new HashSet<OSMResource>();
     this.ways = new HashSet<OSMResource>();
     this.relations = new HashSet<OSMResource>();
+    this.mapping = new OsmMapping();
     this.loadOsmFile(fic);
     if (this.logger.isLoggable(Level.FINE)) {
       this.logger.fine(this.nbResources + "RDF resources loaded");
@@ -75,7 +102,7 @@ public class OSMLoader {
       this.logger.fine(this.nbWays + "ways");
       this.logger.fine(this.nbRels + "relations");
     }
-    this.convertResourcesToGeneObjs(dataset, mapping);
+    this.convertResourcesToGeneObjs();
   }
 
   /**
@@ -122,12 +149,16 @@ public class OSMLoader {
 
     // on calcule la surface en km²
     this.surf = (this.xMax - this.xMin) * (this.yMax - this.yMin) / 1000000.0;
-    System.out.println("Surface calculée " + this.surf);
 
     DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     // on charge les objets ponctuels
     this.nbNoeuds = root.getElementsByTagName(OsmGeneObj.TAG_NODE).getLength();
     for (int i = 0; i < this.nbNoeuds; i++) {
+      // Sleep for up to one second.
+      try {
+        Thread.sleep(2);
+      } catch (InterruptedException ignore) {
+      }
       Element elem = (Element) root.getElementsByTagName(OsmGeneObj.TAG_NODE)
           .item(i);
       // on récupère les attributs de l'élément
@@ -162,15 +193,29 @@ public class OSMLoader {
       this.instancierTagsObjet(obj, elem);
       // on ajoute obj aux objets chargés
       this.nodes.add(obj);
+      setProgress(i * 100 / this.nbNoeuds);
       System.out.println("Chargement des points " + i * 100 / this.nbNoeuds
           + " %");
     }
     System.out.println(this.nbNoeuds + " points chargés");
+
+    // Sleep for up to one second.
+    try {
+      Thread.sleep(2);
+    } catch (InterruptedException ignore) {
+    }
+    this.currentTask = OsmLoadingTask.LINES;
+    this.setProgress(0);
     // on charge les objets linéaires
     this.nbWays = root.getElementsByTagName(OsmGeneObj.TAG_WAY).getLength();
     for (int i = 0; i < this.nbWays; i++) {
       Element elem = (Element) root.getElementsByTagName(OsmGeneObj.TAG_WAY)
           .item(i);
+      // Sleep for up to one second.
+      try {
+        Thread.sleep(2);
+      } catch (InterruptedException ignore) {
+      }
       // on récupère les attributs de l'élément
       int id = Integer.valueOf(elem.getAttribute(OsmGeneObj.ATTR_ID));
       int version = Integer.valueOf(elem.getAttribute(OsmGeneObj.ATTR_VERSION));
@@ -203,16 +248,29 @@ public class OSMLoader {
       this.instancierTagsObjet(obj, elem);
       // on ajoute obj aux objets chargés
       this.ways.add(obj);
+      setProgress(i * 100 / this.nbWays);
       System.out.println("Chargement des lignes " + i * 100 / this.nbWays
           + " %");
     }
     System.out.println(this.nbWays + " lignes chargées");
 
+    // Sleep for up to one second.
+    try {
+      Thread.sleep(2);
+    } catch (InterruptedException ignore) {
+    }
+    this.currentTask = OsmLoadingTask.RELATIONS;
+    this.setProgress(0);
     // on charge les relations
     this.nbRels = root.getElementsByTagName(OsmGeneObj.TAG_REL).getLength();
     for (int i = 0; i < this.nbRels; i++) {
       Element elem = (Element) root.getElementsByTagName(OsmGeneObj.TAG_REL)
           .item(i);
+      // Sleep for up to one second.
+      try {
+        Thread.sleep(2);
+      } catch (InterruptedException ignore) {
+      }
       // on récupère les attributs de l'élément
       int id = Integer.valueOf(elem.getAttribute(OsmGeneObj.ATTR_ID));
       int version = Integer.valueOf(elem.getAttribute(OsmGeneObj.ATTR_VERSION));
@@ -254,6 +312,7 @@ public class OSMLoader {
       this.instancierTagsObjet(obj, elem);
       // on ajoute obj aux objets chargés
       this.relations.add(obj);
+      setProgress(i * 100 / this.nbRels);
       System.out.println("Chargement des relations " + i * 100 / this.nbRels
           + " %");
     }
@@ -302,20 +361,35 @@ public class OSMLoader {
    * @throws IllegalArgumentException
    */
   @SuppressWarnings("unchecked")
-  private void convertResourcesToGeneObjs(OsmDataset dataset, OsmMapping mapping)
-      throws IllegalArgumentException, SecurityException,
-      IllegalAccessException, NoSuchFieldException {
+  private void convertResourcesToGeneObjs() throws IllegalArgumentException,
+      SecurityException, IllegalAccessException, NoSuchFieldException {
+    // Sleep for up to one second.
+    try {
+      Thread.sleep(2);
+    } catch (InterruptedException ignore) {
+    }
+    this.currentTask = OsmLoadingTask.OBJECTS;
+    this.setProgress(0);
     // get the Gene Obj factory
     OSMSchemaFactory factory = new OSMSchemaFactory();
     CartagenApplication.getInstance().setCreationFactory(factory);
     // the conversion is made mapping-by-mapping
+    int i = 0;
     for (OsmMatching matching : mapping.getMatchings()) {
+      // Sleep for up to one second.
+      try {
+        Thread.sleep(2);
+      } catch (InterruptedException ignore) {
+      }
       String featTypeName = (String) matching.getCartagenClass()
           .getField("FEAT_TYPE_NAME").get(null);
       IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) dataset
           .getCartagenPop(
               dataset.getPopNameFromClass(matching.getCartagenClass()),
               featTypeName);
+      OsmGeoClass geoClass = new OsmGeoClass(pop.getNom(), featTypeName,
+          matching.getType());
+      dataset.getCartAGenDB().getClasses().add(geoClass);
 
       // case with point geometry
       if (matching.getType().equals(GeometryType.POINT)) {
@@ -334,15 +408,6 @@ public class OSMLoader {
           obj.setVersion(resource.getVersion());
           obj.setUid(resource.getUid());
           pop.add(obj);
-          if (matching.getTag().equals("highway")) {
-            // put the specific bus symbol
-            ExternalGraphic graphic = new ExternalGraphic();
-            URL url = OsmPointOfInterest.class
-                .getResource("/images/symbols/bus_flou.png");
-            graphic.setHref(url.toString());
-            ((OsmPointOfInterest) obj).setSymbol(graphic.getOnlineResource()
-                .getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-          }
         }
       } else {
         Collection<OSMResource> resources = this.getWaysFromTag(
@@ -361,12 +426,13 @@ public class OSMLoader {
           obj.setUid(resource.getUid());
           pop.add(obj);
           if (matching.getTag().equals("landuse")) {
-            System.out.println("landuse");
             ((OsmSimpleLandUseArea) obj).setType(OsmLandUseTypology
                 .valueOfTagValue(obj.getTags().get("landuse")).ordinal());
           }
         }
       }
+      i++;
+      setProgress(i * 100 / mapping.getMatchings().size());
     }
   }
 
@@ -410,5 +476,34 @@ public class OSMLoader {
       }
     }
     return resources;
+  }
+
+  @Override
+  protected Void doInBackground() throws Exception {
+    importOsmData();
+    return null;
+  }
+
+  @Override
+  protected void done() {
+    this.dialog.setVisible(false);
+    super.done();
+    SwingUtilities.invokeLater(fillLayersTask);
+  }
+
+  public OsmLoadingTask getCurrentTask() {
+    return currentTask;
+  }
+
+  public void setCurrentTask(OsmLoadingTask currentTask) {
+    this.currentTask = currentTask;
+  }
+
+  public JDialog getDialog() {
+    return dialog;
+  }
+
+  public void setDialog(JDialog dialog) {
+    this.dialog = dialog;
   }
 }

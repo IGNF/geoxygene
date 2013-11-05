@@ -2,6 +2,7 @@ package fr.ign.cogit.osm.importexport;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -16,6 +17,7 @@ public class OpenStreetMapDb extends CartAGenDB {
   public OpenStreetMapDb(String name) {
     super();
     this.setName(name);
+    this.setClasses(new ArrayList<GeographicClass>());
     // TODO
   }
 

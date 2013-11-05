@@ -2287,7 +2287,7 @@ public class MGCPLoader extends ShapeFileLoader {
     MGCPPlusPlusDB database = new MGCPPlusPlusDB(name);
     database.setSourceDLM(SourceDLM.MGCPPlusPlus);
     database.setSymboScale(100000);
-    database.setDocument(CartAGenDocOld.getInstance());
+    database.setOldDocument(CartAGenDocOld.getInstance());
     CartAGenDataSet dataset = new PeaRepDataset();
     dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
     CartAGenDocOld.getInstance().addDatabase(name, database);

@@ -348,7 +348,7 @@ public class VMAP2Loader extends ShapeFileLoader {
     PeaRepDB database = new PeaRepDB(name);
     database.setSourceDLM(SourceDLM.VMAP2i);
     database.setSymboScale(100000);
-    database.setDocument(CartAGenDocOld.getInstance());
+    database.setOldDocument(CartAGenDocOld.getInstance());
     CartAGenDataSet dataset = new PeaRepDataset();
     dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
     CartAGenDocOld.getInstance().addDatabase(name, database);

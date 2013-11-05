@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StyledLayerDescriptor version="1.0.20">
+  <NamedLayer>
+    <Name>buildings</Name>
+    <UserStyle>
+      <Name>buildings</Name>
+      <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+            <PropertyIsEqualTo>
+              <PropertyName>building</PropertyName>
+              <Literal>yes</Literal>
+            </PropertyIsEqualTo>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#bca9a9</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>
+        <Rule>
+          <Filter>
+            <PropertyIsEqualTo>
+              <PropertyName>aeroway</PropertyName>
+              <Literal>terminal</Literal>
+            </PropertyIsEqualTo>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#cc99ff</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>
+        <Rule>
+          <Filter>
+            <PropertyIsEqualTo>
+              <PropertyName>aeroway</PropertyName>
+              <Literal>terminal</Literal>
+            </PropertyIsEqualTo>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke-width">0.2</CssParameter>
+              <CssParameter name="stroke">#330066</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+  <NamedLayer>
+    <Name>sportsFields</Name>
+    <UserStyle>
+      <Name>sportsFields</Name>
+      <FeatureTypeStyle>
+        <Rule>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#33cc99</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule> 
+      </FeatureTypeStyle>
+    </UserStyle>		
+  </NamedLayer>		
+</StyledLayerDescriptor>

@@ -183,11 +183,11 @@ public class OsmGeneObj extends GeneObjDefault {
 
   @Override
   public Object getAttribute(String nomAttribut) {
-    Object value = super.getAttribute(nomAttribut);
+    Object value = getTags().get(nomAttribut);
     if (value != null)
       return value;
 
-    return getTags().get(nomAttribut);
+    return super.getAttribute(nomAttribut);
   }
 
 }

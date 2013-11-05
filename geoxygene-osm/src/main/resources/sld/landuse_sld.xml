@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StyledLayerDescriptor version="1.0.20">
+  <NamedLayer>
+    <Name>landUseAreas</Name>
+    <UserStyle>
+	  <Name>fill</Name>
+      <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+            <PropertyIsEqualTo>
+              <PropertyName>landuse</PropertyName>
+              <Literal>vineyard</Literal>
+            </PropertyIsEqualTo>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#abdf96</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>
+        <Rule>
+          <Filter>
+            <PropertyIsEqualTo>
+              <PropertyName>landuse</PropertyName>
+              <Literal>residential</Literal>
+            </PropertyIsEqualTo>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+			  <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#dddddd</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>
+        <Rule>
+          <Filter>
+            <PropertyIsEqualTo>
+              <PropertyName>landuse</PropertyName>
+              <Literal>field</Literal>
+            </PropertyIsEqualTo>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+			  <CssParameter name="fill-opacity">0.2</CssParameter>
+              <CssParameter name="fill">#666600</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>
+        <Rule>
+          <Filter>
+			<Or>
+            <PropertyIsEqualTo>
+              <PropertyName>landuse</PropertyName>
+              <Literal>meadow</Literal>
+            </PropertyIsEqualTo>
+			<PropertyIsEqualTo>
+              <PropertyName>landuse</PropertyName>
+              <Literal>grass</Literal>
+            </PropertyIsEqualTo>
+			</Or>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+			  <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#cfeca8</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>		
+        <Rule>
+          <Filter>
+            <PropertyIsEqualTo>
+              <PropertyName>landuse</PropertyName>
+              <Literal>forest</Literal>
+            </PropertyIsEqualTo>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+			  <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#8dc56c</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>		
+        <Rule>
+          <Filter>
+			<Or>
+            <PropertyIsEqualTo>
+              <PropertyName>landuse</PropertyName>
+              <Literal>farm</Literal>
+            </PropertyIsEqualTo>
+			<PropertyIsEqualTo>
+              <PropertyName>landuse</PropertyName>
+              <Literal>farmland</Literal>
+            </PropertyIsEqualTo>
+			</Or>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+			  <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#ead8bd</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>			
+        <Rule>
+          <Filter>
+            <PropertyIsEqualTo>
+              <PropertyName>landuse</PropertyName>
+              <Literal>retail</Literal>
+            </PropertyIsEqualTo>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+			  <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#f1dada</CssParameter>
+            </Fill>
+			<Stroke>
+              <CssParameter name="stroke">#ff0000</CssParameter>
+              <CssParameter name="stroke-width">3</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>
+        </Rule>	
+        <Rule>
+          <Filter>
+			<Or>
+            <PropertyIsEqualTo>
+              <PropertyName>landuse</PropertyName>
+              <Literal>industrial</Literal>
+            </PropertyIsEqualTo>
+			<PropertyIsEqualTo>
+              <PropertyName>landuse</PropertyName>
+              <Literal>railway</Literal>
+            </PropertyIsEqualTo>
+			</Or>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+			  <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#dfd1d6</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>		
+      </FeatureTypeStyle>
+    </UserStyle>
+  
+  </NamedLayer>
+</StyledLayerDescriptor>

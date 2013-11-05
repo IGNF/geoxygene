@@ -348,7 +348,7 @@ public class SHOMLoader extends ShapeFileLoader {
     SHOMDB database = new SHOMDB(name);
     database.setSourceDLM(SourceDLM.SHOM);
     database.setSymboScale(50000);
-    database.setDocument(CartAGenDocOld.getInstance());
+    database.setOldDocument(CartAGenDocOld.getInstance());
     CartAGenDataSet dataset = new PeaRepDataset();
     dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
     CartAGenDocOld.getInstance().addDatabase(name, database);

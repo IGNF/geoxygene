@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StyledLayerDescriptor version="1.0.20">
+  <NamedLayer>
+    <Name>railwayLines</Name>
+    <UserStyle>
+      <Name>railways</Name>
+      <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+              <PropertyIsEqualTo>
+                <PropertyName>railway</PropertyName>
+                <Literal>rail</Literal>
+              </PropertyIsEqualTo>
+          </Filter>		
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-width">5.5</CssParameter>
+              <CssParameter name="stroke">#999999</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+		</Rule>
+      </FeatureTypeStyle>	
+    </UserStyle>
+    <UserStyle>          	
+      <FeatureTypeStyle>		
+        <Rule>	
+          <Filter>
+              <PropertyIsEqualTo>
+                <PropertyName>railway</PropertyName>
+                <Literal>rail</Literal>
+              </PropertyIsEqualTo>
+          </Filter>			
+          <LineSymbolizer>
+          	<Geometry>
+				<PropertyName>geom</PropertyName>
+			</Geometry>
+            <Stroke>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-width">4</CssParameter>
+              <CssParameter name="stroke">#f8f8fa</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+		</Rule>	
+      </FeatureTypeStyle>
+    </UserStyle>
+    <UserStyle>      
+      <FeatureTypeStyle>      			 
+        <Rule>	
+          <Filter>
+              <PropertyIsEqualTo>
+                <PropertyName>railway</PropertyName>
+                <Literal>rail</Literal>
+              </PropertyIsEqualTo>
+          </Filter>			
+          <LineSymbolizer>
+          	<Geometry>
+				<PropertyName>geom</PropertyName>
+			</Geometry>          
+            <Stroke>
+              <CssParameter name="stroke">#999999</CssParameter>
+              <CssParameter name="stroke-width">4</CssParameter>
+              <CssParameter name="stroke-dasharray">10 14</CssParameter>
+              <CssParameter name="stroke-linecap">square</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+  <NamedLayer>
+    <Name>cables</Name>
+    <UserStyle>
+      <Name>cablesMainLine</Name>
+      <FeatureTypeStyle>
+        <Rule>
+          <LineSymbolizer>
+          	<Geometry>
+				<PropertyName>geom</PropertyName>
+			</Geometry>          
+            <Stroke>
+              <CssParameter name="stroke">#999999</CssParameter>
+              <CssParameter name="stroke-width">2</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+    <UserStyle>
+      <Name>cablesHatch</Name>
+      <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+          	  <Or>
+              	<PropertyIsEqualTo>
+                	<PropertyName>aerialway</PropertyName>
+                	<Literal>gondola</Literal>
+              	</PropertyIsEqualTo>
+              	<PropertyIsEqualTo>
+                	<PropertyName>aerialway</PropertyName>
+                	<Literal>cable_car</Literal>
+              	</PropertyIsEqualTo>              	
+              </Or>
+          </Filter>		        
+	      <LineSymbolizer>
+	         <Stroke>
+	           <GraphicStroke>
+	             <Graphic>
+	               <Mark>
+	                 <WellKnownName>circle</WellKnownName>
+	                 <Fill>
+	                   <CssParameter name="fill">#777777</CssParameter>
+	                 </Fill>
+	               </Mark>
+	               <Size>25</Size>
+	             </Graphic>
+	           </GraphicStroke>
+	           <CssParameter name="stroke-dasharray">7 5</CssParameter>
+	           <CssParameter name="stroke-width">0</CssParameter>
+	           <CssParameter name="stroke-opacity">0</CssParameter>
+	         </Stroke>
+	       </LineSymbolizer>
+        </Rule>
+        <Rule>
+          <Filter>
+          	  <Or>
+              	<PropertyIsEqualTo>
+                	<PropertyName>aerialway</PropertyName>
+                	<Literal>chair_lift</Literal>
+              	</PropertyIsEqualTo>
+              	<PropertyIsEqualTo>
+                	<PropertyName>aerialway</PropertyName>
+                	<Literal>drag_lift</Literal>
+              	</PropertyIsEqualTo>              	
+              </Or>
+          </Filter>		        
+	       <LineSymbolizer>
+	         <Stroke>
+	           <GraphicStroke>
+	             <Graphic>
+	               <Mark>
+	                 <WellKnownName>vLine</WellKnownName>
+	                 <Fill>
+	                   <CssParameter name="stroke">#777777</CssParameter>
+	                 </Fill>
+	               </Mark>
+	               <Size>20</Size>
+	             </Graphic>
+	           </GraphicStroke>
+	           <CssParameter name="stroke-dasharray">8 4</CssParameter>
+	           <CssParameter name="stroke-width">0</CssParameter>
+	           <CssParameter name="stroke-opacity">0</CssParameter>
+	         </Stroke>
+	       </LineSymbolizer>
+        </Rule>        
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>  
+</StyledLayerDescriptor>

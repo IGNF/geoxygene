@@ -319,7 +319,8 @@ public class LayerStylesPanel extends JPanel {
       g2.setColor((mark.getFill() == null) ? Color.gray : mark.getFill()
           .getColor());
       g2.fill(markShape);
-      g2.setStroke(mark.getStroke().toAwtStroke());
+      if (mark.getStroke() != null)
+        g2.setStroke(mark.getStroke().toAwtStroke());
       g2.setColor((mark.getStroke() == null) ? Color.black : mark.getStroke()
           .getColor());
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
