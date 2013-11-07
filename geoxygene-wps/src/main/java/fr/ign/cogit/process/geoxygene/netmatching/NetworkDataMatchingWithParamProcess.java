@@ -6,14 +6,7 @@ import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
-import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
-import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
+import fr.ign.cogit.parameters.Parameters;
 import fr.ign.cogit.process.geoxygene.GeoxygeneProcess;
 
 /**
@@ -28,14 +21,17 @@ public class NetworkDataMatchingWithParamProcess implements GeoxygeneProcess {
     
     @DescribeResult(name = "OK", description = "Ok !!")
     public String execute(
-        @DescribeParameter(name = "param1",  description = "Test paramètres") ParamDistanceNetworkDataMatching param1,
+        @DescribeParameter(name = "param",  description = "Paramètres") Parameters param,
         @DescribeParameter(name = "reseau1", description = "Réseau 1 (moins détaillé)") SimpleFeatureCollection reseau1,
         @DescribeParameter(name = "reseau2", description = "Réseau 2 (plus détaillé)") SimpleFeatureCollection reseau2) {
         
         LOGGER.debug("====================================================================");
         LOGGER.debug("NetworkDataMatchingWithParamProcess");
-        LOGGER.debug(param1);
+        LOGGER.debug(param);
         LOGGER.debug("====================================================================");
+        
+        System.out.println("DistanceNoeudsMax = " + param.get("DistanceNoeudsMax"));
+        System.out.println("DistanceArcsMax = " + param.get("DistanceArcsMax"));
         
         // Set parameters
         /*ParamNetworkDataMatching param = new ParamNetworkDataMatching();

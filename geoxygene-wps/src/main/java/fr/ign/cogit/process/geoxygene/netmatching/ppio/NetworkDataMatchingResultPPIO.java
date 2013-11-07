@@ -19,9 +19,12 @@ package fr.ign.cogit.process.geoxygene.netmatching.ppio;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import org.apache.log4j.Logger;
+
 import com.thoughtworks.xstream.XStream;
+
 import org.xml.sax.ContentHandler;
 import org.geoserver.wps.ppio.CDataPPIO;
 import org.geoserver.wps.ppio.XStreamPPIO;
@@ -30,8 +33,11 @@ import com.thoughtworks.xstream.io.xml.SaxWriter;
 // import com.thoughtworks.xstream.mapper.MapperWrapper;
 // import com.thoughtworks.xstream.mapper.MapperWrapper;
 
+
+
 //import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
+import fr.ign.cogit.process.geoxygene.netmatching.xml.ResultatAppariementParser;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElementInterface;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
@@ -62,11 +68,13 @@ public class NetworkDataMatchingResultPPIO extends CDataPPIO {
   }
 
   
-  /*@Override
-  public void encode(Object obj, ContentHandler handler) throws Exception {
+  /*public void encode(Object obj, ContentHandler handler) throws Exception {
     
-    LOGGER.info("------------------------------------------------------------------------");
-    LOGGER.info("Start encoding the result for output.");
+    //LOGGER.info("------------------------------------------------------------------------");
+    //LOGGER.info("Start encoding the result for output.");
+    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    System.out.println("[NetworkDataMatchingResultPPIO] ENCODE HANDLER");
+    System.out.println("Start encoding the result for output");
     
     // Prepare xml encoding
     *//*XStream xstream = new XStream();
@@ -90,21 +98,21 @@ public class NetworkDataMatchingResultPPIO extends CDataPPIO {
     xstream.marshal(result, writer);
     
     // Get XML format for resultatAppariement
-    /*ResultatAppariementParser resultatAppariementParser = new ResultatAppariementParser();
+    *//*ResultatAppariementParser resultatAppariementParser = new ResultatAppariementParser();
     String result = resultatAppariementParser.generateXMLResponse(((ResultNetworkDataMatching)obj));
     
     // Write out xml
     SaxWriter writer = new SaxWriter();
     writer.setContentHandler(handler);
     XStream xstream = new XStream();
-    xstream.marshal(result, writer);*//*
+    xstream.marshal(result, writer);*/
     
-    *//*JAXBContext context = JAXBContext.newInstance(ResultNetwork.class);
+    /*JAXBContext context = JAXBContext.newInstance(ResultNetwork.class);
     Marshaller m = context.createMarshaller();
     m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-    m.marshal(obj, writer);*//*
+    m.marshal(obj, writer);*/
     
-    *//*JAXBContext jc = JAXBContext.newInstance(ResultNetwork.class);
+    /*JAXBContext jc = JAXBContext.newInstance(ResultNetwork.class);
     Marshaller marshaller = jc.createMarshaller();
     marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     marshaller.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
@@ -117,18 +125,20 @@ public class NetworkDataMatchingResultPPIO extends CDataPPIO {
   }*/
   
   @Override
-  public void encode(Object value, OutputStream os) throws IOException {
-      
+  public void encode(Object value, OutputStream os) throws Exception {
+    
       System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      System.out.println("[ParamDistanceNetworkDataMatchingPPIO] ENCODE ");
+      System.out.println("[NetworkDataMatchingResultPPIO] ENCODE OUTPUTSTREAM ");
       System.out.println("Start encoding the result for output");
       
-      /*SaxWriter writer = new SaxWriter();
-      writer.setContentHandler(handler);
-      XStream xstream = new XStream();
-      xstream.marshal((ParamDistanceNetworkDataMatching)object, writer);*/
+      ResultatAppariementParser resultatAppariementParser = new ResultatAppariementParser();
+      String result = resultatAppariementParser.generateXMLResponse(((ResultNetworkDataMatching)value));
       
-      throw new UnsupportedOperationException("Unsupported Operation.");
+      // os.write(result);
+      os.write(result.getBytes(Charset.forName("UTF-8")));
+      
+    
+      // throw new UnsupportedOperationException("Unsupported Operation.");
   }
   
   @Override

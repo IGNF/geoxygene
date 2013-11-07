@@ -5,21 +5,16 @@
 	<!-- ========================================================================== -->
 	<!-- 	The PPIO -->
 	<!-- ========================================================================== -->
-	<bean id="NetworkDataMatchingResultPPIO" 
-			class="fr.ign.cogit.process.geoxygene.netmatching.ppio.NetworkDataMatchingResultPPIO" />
-	
-	<bean id="ParamDistanceNetworkDataMatchingPPIO"
-	       class="fr.ign.cogit.process.geoxygene.netmatching.ppio.ParamDistanceNetworkDataMatchingPPIO" />
-
-    <bean id="CarteTopoResultPPIO"
-           class="fr.ign.cogit.process.geoxygene.cartetopo.ppio.CarteTopoResultPPIO" />
+    <bean id="ParametersPPIO"
+            class="fr.ign.parameters.ParametersPPIO" />
            
-    <!-- <bean id="ParametersPPIO"
-           class="fr.ign.cogit.process.ppio.ParametersPPIO" /> -->
+    <bean id="NetworkDataMatchingResultPPIO" 
+            class="fr.ign.cogit.process.geoxygene.netmatching.ppio.NetworkDataMatchingResultPPIO" />
 
+    <!-- CarteTopoResult -->
 
     <!-- ========================================================================== -->
-    <!--    The Filtering processes -->
+    <!--   The Filtering processes -->
     <!-- ========================================================================== -->
     <bean id="geoxygeneFilter" class="fr.ign.cogit.process.geoxygene.GeoxygeneFilter" />
 

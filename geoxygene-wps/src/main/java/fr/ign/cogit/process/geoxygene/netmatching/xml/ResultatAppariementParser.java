@@ -98,9 +98,12 @@ public class ResultatAppariementParser {
       result.append("<NetworkMatched>");
       try {
         
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        /*ByteArrayOutputStream output = new ByteArrayOutputStream();
         GML encode = new GML(Version.WFS1_0);
         encode.setNamespace("geotools", "http://geotools.org");
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println(resultatAppariement.getNetworkMatched().size());
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         encode.encode(output, resultatAppariement.getNetworkMatched());
         
         String buffer = output.toString();
@@ -108,7 +111,7 @@ public class ResultatAppariementParser {
         buffer = buffer.substring(begin - 1, buffer.length() - 1);
             
         // Add to the document
-        result.append(buffer);
+        result.append(buffer);*/
       
       } catch (Exception e) {
         e.printStackTrace();

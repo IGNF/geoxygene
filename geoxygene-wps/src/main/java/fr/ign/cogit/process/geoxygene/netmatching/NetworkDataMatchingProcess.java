@@ -117,12 +117,12 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
     param.setParamDirectionNetwork1(paramDirectionNetwork1);
     // Direction réseau 2
     ParamDirectionNetworkDataMatching paramDirectionNetwork2 = new ParamDirectionNetworkDataMatching();
-    paramDirectionNetwork2.setAttributOrientation("sens_de_circulation");
+    /*paramDirectionNetwork2.setAttributOrientation("sens_de_circulation");
     Map<Integer, String> orientationMap2 = new HashMap<Integer, String>();
     orientationMap2.put(1, "Sens direct");
     orientationMap2.put(-1, "Sens inverse");
     orientationMap2.put(2, "Double sens");
-    paramDirectionNetwork2.setOrientationMap(orientationMap2);
+    paramDirectionNetwork2.setOrientationMap(orientationMap2);*/
     param.setParamDirectionNetwork2(paramDirectionNetwork2);
     
     // Distance
@@ -177,7 +177,7 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
       LOGGER.debug("Start network data matching");
       
       NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2);
-      networkDataMatchingProcess.setActions(true, false);
+      networkDataMatchingProcess.setActions(false, false);
       
       // On lance l'appariement
       ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();

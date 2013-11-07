@@ -12,11 +12,11 @@ public class GeoxygeneFilter extends ProcessSelector {
     
     @Override
     protected boolean allowProcess(Name processName) {
-        //if ("cogit".equals(processName.getNamespaceURI())) {
+        if (processName.getNamespaceURI().equals("cogit")) {
             return true;
-        //} else {
-        //    return false;
-        //}
+        } else {
+            return false;
+        }
     }
 
 }

@@ -2,6 +2,7 @@
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -25,7 +26,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<geoserver.extension.version>2.4.0</geoserver.extension.version>
-		<path.geoserver>D:\MesProgrammes\GeoServer\GeoServer-2.4.0\webapps\geoserver\WEB-INF\lib</path.geoserver>
+		<path.geoserver>D:\MesProgrammes\GeoServer\GeoServer-2.4.1\webapps\geoserver\WEB-INF\lib</path.geoserver>
 	</properties>
 
 	<dependencies>
