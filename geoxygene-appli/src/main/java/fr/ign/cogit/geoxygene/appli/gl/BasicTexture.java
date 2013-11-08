@@ -27,8 +27,12 @@
 
 package fr.ign.cogit.geoxygene.appli.gl;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glEnable;
 
 import java.awt.image.BufferedImage;
@@ -39,9 +43,9 @@ import javax.vecmath.Point2d;
 import org.lwjgl.opengl.GL11;
 
 /**
- * @author JeT
- * Basic texture returns the coordinates equal to the provided point.
- * It manages a texture by its filename and is a good base class for inheritance
+ * @author JeT Basic texture returns the coordinates equal to the provided
+ *         point. It manages a texture by its filename and is a good base class
+ *         for inheritance
  */
 public class BasicTexture implements Texture {
 
@@ -144,29 +148,39 @@ public class BasicTexture implements Texture {
     glBindTexture(GL_TEXTURE_2D, texIndex);
     GL11.glColor4f(1f, 1f, 1f, 1f);
     GL11.glDepthMask(false);
-    //    glEnable(GL11.GL_BLEND);
-    //    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    // glEnable(GL11.GL_BLEND);
+    // GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     return true;
   }
 
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(javax.vecmath.Point2d)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(javax.vecmath
+   * .Point2d)
    */
   @Override
   public Point2d vertexCoordinates(final Point2d p) {
     return this.vertexCoordinates(p.x, p.y);
   }
 
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(double, double)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(double,
+   * double)
    */
   @Override
   public Point2d vertexCoordinates(final double x, final double y) {
-    Point2d p = new Point2d((x - this.minX) / (this.maxX - this.minX), (y - this.minY) / (this.maxY - this.minY));
+    Point2d p = new Point2d((x - this.minX) / (this.maxX - this.minX),
+        (y - this.minY) / (this.maxY - this.minY));
     return p;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see fr.ign.cogit.geoxygene.appli.gl.Texture#finalizeRendering()
    */
   @Override
@@ -175,7 +189,8 @@ public class BasicTexture implements Texture {
   }
 
   @Override
-  public void setRange(final double xmin, final double ymin, final double xmax, final double ymax) {
+  public void setRange(final double xmin, final double ymin, final double xmax,
+      final double ymax) {
     this.minX = xmin;
     this.maxX = xmax;
     this.minY = ymin;

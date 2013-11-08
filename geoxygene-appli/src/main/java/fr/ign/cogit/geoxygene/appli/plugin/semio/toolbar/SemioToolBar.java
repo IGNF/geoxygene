@@ -27,7 +27,6 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
@@ -41,141 +40,141 @@ import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 /**
  * @author Charlotte Hoarau
  * 
- * Menu Bar dedicated to semiotics tools.
- * It is available by an item menu of the Menu of the Semiotics Plugin.
- *
+ *         Menu Bar dedicated to semiotics tools. It is available by an item
+ *         menu of the Menu of the Semiotics Plugin.
+ * 
  */
 public class SemioToolBar extends JToolBar implements ActionListener {
 
-	private static final long serialVersionUID = 4791806011051504347L;
-	
-	/**
-     * Logger.
-     */
-    static Logger logger = Logger.getLogger(SemioToolBar.class.getName());
-    
-	private ProjectFrame projectFrame;
-	private JToggleButton btnSpecifications;
-	private JToggleButton btnPalettes;
-	public JButton btnCercle;
-	
-	private SpecificationToolBar specificationToolBar = null;
-	private PaletteToolBar paletteToolBar = null;
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param projectFrame The ProjectFrame object which contains the Menu Bar.
-	 */
-	public SemioToolBar(ProjectFrame projectFrame){
-		this.projectFrame = projectFrame;
-		
-		btnSpecifications = new JToggleButton(new ImageIcon(
-		        GeOxygeneApplication.class.getResource(
-                "/images/icons/16x16/tree.png")));
-		btnSpecifications.addActionListener(this);
-		btnSpecifications.setToolTipText("Open the Specifications Toolbar");
-		
-		btnPalettes = new JToggleButton(new ImageIcon(
-		        GeOxygeneApplication.class.getResource(
-                "/images/icons/palette.png")));
-		btnPalettes.addActionListener(this);
-		btnPalettes.setToolTipText("Open the Palette Toolbar");
-		
-		btnCercle = new JButton(new ImageIcon(
-				GeOxygeneApplication.class.getResource(
-				"/images/icons/cercle.png")));
-		btnCercle.addActionListener(this);
-		btnCercle.setToolTipText("See the legend on the color wheels");
-		
-		add(btnSpecifications);
-		add(btnPalettes);
-		add(btnCercle);
-	}
-	
-	public SpecificationToolBar getSpecificationToolBar() {
-		return this.specificationToolBar;
-	}
+  private static final long serialVersionUID = 4791806011051504347L;
 
-	/**
-	 * Hide or Display the Specification Tool Bar.
-	 * @param b <code>true</code> to display the tool bar; <code>false</code> otherwise.
-	 */
-	public void setSpecificationToolsVisible(boolean b) {
-        if (b) {
-            if (this.specificationToolBar == null) {
-                this.specificationToolBar =
-                	new SpecificationToolBar(this.projectFrame);
-                this.projectFrame.addComponentInProjectFrame(   this.specificationToolBar,
-                    BorderLayout.EAST);
-            }
-            this.specificationToolBar.setVisible(true);
-            this.projectFrame.getGui().validate();
-        } else {
-            this.specificationToolBar.setVisible(false);
-            this.projectFrame.getGui().validate();
-        }
-	}
-	
-	public void setPaletteToolBar(PaletteToolBar paletteToolBar) {
-		this.paletteToolBar = paletteToolBar;
-	}
-	
-	public PaletteToolBar getPaletteToolBar() {
-		return this.paletteToolBar;
-	}
+  /**
+   * Logger.
+   */
+  static Logger logger = Logger.getLogger(SemioToolBar.class.getName());
 
-	/**
-	 * Hide or Display the {@link}PaletteToolBar.
-	 * @param b <code>true</code> to display the tool bar; <code>false</code> otherwise.
-	 */
-	public void setPaletteToolsVisible(boolean b) {
-	        if (b) {
-	            if (this.paletteToolBar == null) {
-	                this.paletteToolBar =
-	                	new PaletteToolBar(this.projectFrame);
-	                this.projectFrame.addComponentInProjectFrame(	this.paletteToolBar,
-	                        BorderLayout.SOUTH);
-	            }
-	            this.paletteToolBar.setVisible(true);
-	            this.projectFrame.getGui().validate();
-	        } else {
-	            this.paletteToolBar.setVisible(false);
-	            this.projectFrame.getGui().validate();
-	        }
-	    }
+  private ProjectFrame projectFrame;
+  private JToggleButton btnSpecifications;
+  private JToggleButton btnPalettes;
+  public JButton btnCercle;
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		//TODO A améliorer : Ne pas rendre l'analyse des contrastes possible tant que les spécifications ne sont pas remplies
-		if (e.getSource() == this.btnSpecifications) {
-            if (!btnSpecifications.isSelected()) {
-            	//Hide the specificationToolBar
-                SemioToolBar.this.setSpecificationToolsVisible(false);
-            } else {
-            	//Display the specificationToolBar
-            	SemioToolBar.this.setSpecificationToolsVisible(true);
-            }
-    	} else if (e.getSource() == btnPalettes) {
-    		if (!btnPalettes.isSelected()) {
-            	//Hide the paletteToolBar
-    			SemioToolBar.this.setPaletteToolsVisible(false);
-            } else {
-            	//Display the paletteToolBar
-            	SemioToolBar.this.setPaletteToolsVisible(true);
-            }
-    	} else if (e.getSource() == btnCercle) {
-    		List<ColorimetricColor> colors = SemioToolBar.this.projectFrame.getSld().getColors();
-    		
-    		//Conversion to chromatic wheels colors
-    		List<ColorimetricColor> colorimetricColors = new ArrayList<ColorimetricColor>();
-    		for (ColorimetricColor c : colors) {
-				ColorimetricColor cCOGIT = new ColorimetricColor(c.toColor(),true);
-				colorimetricColors.add(cCOGIT);
-			}
-    		
-    		COGITColorChooserPanel.show(SemioToolBar.this.projectFrame.getGui(), "Colors of the Current Legend", colorimetricColors);
-    	}
-	}
-	
+  private SpecificationToolBar specificationToolBar = null;
+  private PaletteToolBar paletteToolBar = null;
+
+  /**
+   * Constructor.
+   * 
+   * @param projectFrame The ProjectFrame object which contains the Menu Bar.
+   */
+  public SemioToolBar(ProjectFrame projectFrame) {
+    this.projectFrame = projectFrame;
+
+    btnSpecifications = new JToggleButton(new ImageIcon(
+        GeOxygeneApplication.class.getResource("/images/icons/16x16/tree.png")));
+    btnSpecifications.addActionListener(this);
+    btnSpecifications.setToolTipText("Open the Specifications Toolbar");
+
+    btnPalettes = new JToggleButton(new ImageIcon(
+        GeOxygeneApplication.class.getResource("/images/icons/palette.png")));
+    btnPalettes.addActionListener(this);
+    btnPalettes.setToolTipText("Open the Palette Toolbar");
+
+    btnCercle = new JButton(new ImageIcon(
+        GeOxygeneApplication.class.getResource("/images/icons/cercle.png")));
+    btnCercle.addActionListener(this);
+    btnCercle.setToolTipText("See the legend on the color wheels");
+
+    add(btnSpecifications);
+    add(btnPalettes);
+    add(btnCercle);
+  }
+
+  public SpecificationToolBar getSpecificationToolBar() {
+    return this.specificationToolBar;
+  }
+
+  /**
+   * Hide or Display the Specification Tool Bar.
+   * @param b <code>true</code> to display the tool bar; <code>false</code>
+   *          otherwise.
+   */
+  public void setSpecificationToolsVisible(boolean b) {
+    if (b) {
+      if (this.specificationToolBar == null) {
+        this.specificationToolBar = new SpecificationToolBar(this.projectFrame);
+        this.projectFrame.addComponentInProjectFrame(this.specificationToolBar,
+            BorderLayout.EAST);
+      }
+      this.specificationToolBar.setVisible(true);
+      this.projectFrame.getGui().validate();
+    } else {
+      this.specificationToolBar.setVisible(false);
+      this.projectFrame.getGui().validate();
+    }
+  }
+
+  public void setPaletteToolBar(PaletteToolBar paletteToolBar) {
+    this.paletteToolBar = paletteToolBar;
+  }
+
+  public PaletteToolBar getPaletteToolBar() {
+    return this.paletteToolBar;
+  }
+
+  /**
+   * Hide or Display the {@link}PaletteToolBar.
+   * @param b <code>true</code> to display the tool bar; <code>false</code>
+   *          otherwise.
+   */
+  public void setPaletteToolsVisible(boolean b) {
+    if (b) {
+      if (this.paletteToolBar == null) {
+        this.paletteToolBar = new PaletteToolBar(this.projectFrame);
+        this.projectFrame.addComponentInProjectFrame(this.paletteToolBar,
+            BorderLayout.SOUTH);
+      }
+      this.paletteToolBar.setVisible(true);
+      this.projectFrame.getGui().validate();
+    } else {
+      this.paletteToolBar.setVisible(false);
+      this.projectFrame.getGui().validate();
+    }
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    // TODO A améliorer : Ne pas rendre l'analyse des contrastes possible tant
+    // que les spécifications ne sont pas remplies
+    if (e.getSource() == this.btnSpecifications) {
+      if (!btnSpecifications.isSelected()) {
+        // Hide the specificationToolBar
+        SemioToolBar.this.setSpecificationToolsVisible(false);
+      } else {
+        // Display the specificationToolBar
+        SemioToolBar.this.setSpecificationToolsVisible(true);
+      }
+    } else if (e.getSource() == btnPalettes) {
+      if (!btnPalettes.isSelected()) {
+        // Hide the paletteToolBar
+        SemioToolBar.this.setPaletteToolsVisible(false);
+      } else {
+        // Display the paletteToolBar
+        SemioToolBar.this.setPaletteToolsVisible(true);
+      }
+    } else if (e.getSource() == btnCercle) {
+      List<ColorimetricColor> colors = SemioToolBar.this.projectFrame.getSld()
+          .getColors();
+
+      // Conversion to chromatic wheels colors
+      List<ColorimetricColor> colorimetricColors = new ArrayList<ColorimetricColor>();
+      for (ColorimetricColor c : colors) {
+        ColorimetricColor cCOGIT = new ColorimetricColor(c.toColor(), true);
+        colorimetricColors.add(cCOGIT);
+      }
+
+      COGITColorChooserPanel.show(SemioToolBar.this.projectFrame.getGui(),
+          "Colors of the Current Legend", colorimetricColors);
+    }
+  }
+
 }
