@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<parameter-configuration>
+    <parameters>
+        <param key="orientationDouble" value="true" group="1" />
+        
+        <param key="orientationDouble" value="false" group="2" />
+        <param key="attributOrientation" value="DIR_TRAVEL" group="2" />
+        <param key="orientationMap_SENS_DIRECT" value="T" group="2" />
+        <param key="orientationMap_SENS_INVERSE" value="F" group="2" />
+        <param key="orientationMap_DOUBLE_SENS" value="B" group="2" />
+        
+        <param key="distanceNoeudsMax" value="150.0" />
+        <param key="distanceArcsMax" value="100.0" />
+        <param key="distanceArcsMin" value="30.0" />
+        <param key="distanceNoeudsImpassesMax" value="-1" />
+        
+        <param key="graphePlanaire1" value="false" />
+        <param key="fusionArcsDoubles1" value="false" />
+        <param key="elimineNoeudsAvecDeuxArcs1" value="false" />
+        <param key="seuilFusionNoeuds1" value="-1" />
+        
+        <param key="graphePlanaire2" value="false" />
+        <param key="fusionArcsDoubles2" value="false" />
+        <param key="elimineNoeudsAvecDeuxArcs2" value="false" />
+        <param key="seuilFusionNoeuds2" value="-1" />
+        
+        <param key="projeteNoeuds1SurReseau2" value="false" />
+        <param key="projeteNoeuds1SurReseau2DistanceNoeudArc" value="0" />
+        <param key="projeteNoeuds1SurReseau2DistanceProjectionNoeud" value="0" />
+        <param key="projeteNoeuds1SurReseau2ImpassesSeulement" value="false" />
+        
+        <param key="projeteNoeuds2SurReseau1" value="false" />
+        <param key="projeteNoeuds2SurReseau1DistanceNoeudArc" value="0" />
+        <param key="projeteNoeuds2SurReseau1DistanceProjectionNoeud" value="0" />
+        <param key="projeteNoeuds2SurReseau1ImpassesSeulement" value="false" />
+        
+        <param key="forceAppariementSimple" value="false" />
+        <param key="redecoupageArcsNonApparies" value="false" />
+        <param key="chercheRondsPoints" value="false" />
+        <param key="filtrageImpassesParasites" value="false" />
+        <param key="redecoupageNoeudsNonApparies" value="false" />
+        <param key="distanceNoeudArc" value="100" />
+        <param key="distanceProjectionNoeud" value="50" />
+    </parameters>
+</parameter-configuration>

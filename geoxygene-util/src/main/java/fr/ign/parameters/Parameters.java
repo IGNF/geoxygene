@@ -1,12 +1,14 @@
 package fr.ign.parameters;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -18,6 +20,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
@@ -165,6 +169,31 @@ public class Parameters {
     } catch (Exception e1) {
       //e1.printStackTrace();
       throw e1;
+    }
+  }
+  
+  /**
+   * Parse une requête XML de paramètres.
+   * 
+   * @param inputXML valeurToParse
+     *            Le contenu du XML à parser
+   * @param inputXSD document
+   *              Le document de validation
+   * @return Les paramètres
+   * @throws Exception
+   */
+  public static Parameters parseXML(String inputXML, InputStream inputXSD) throws Exception {
+    try {
+      
+      Source schemaSource = new StreamSource(inputXSD);
+      SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+      Schema parameterSchema = schemaFactory.newSchema(schemaSource);
+     
+      Parameters param = Parameters.unmarshall(inputXML, parameterSchema);
+      return param;
+
+    } catch (Exception e) {
+      throw e;
     }
   }
 

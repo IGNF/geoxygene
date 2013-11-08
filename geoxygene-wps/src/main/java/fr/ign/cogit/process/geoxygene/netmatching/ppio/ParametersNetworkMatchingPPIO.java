@@ -8,8 +8,6 @@ import org.apache.log4j.Logger;
 import org.geoserver.wps.ppio.CDataPPIO;
 
 import fr.ign.parameters.Parameters;
-import fr.ign.parameters.ParametersParser;
-
 
 /**
  * 
@@ -39,8 +37,8 @@ public class ParametersNetworkMatchingPPIO extends CDataPPIO {
 
   @Override
   public Object decode(String inputXML) throws Exception {
-    InputStream inputXSD = ParametersParser.class.getResourceAsStream("/schema/ParametersNetworkMatching.xsd");
-    return ParametersParser.parseXML(inputXML, inputXSD);
+    InputStream inputXSD = ParametersNetworkMatchingPPIO.class.getResourceAsStream("/schema/ParametersNetworkMatching.xsd");
+    return Parameters.parseXML(inputXML, inputXSD);
   }
 
   @Override

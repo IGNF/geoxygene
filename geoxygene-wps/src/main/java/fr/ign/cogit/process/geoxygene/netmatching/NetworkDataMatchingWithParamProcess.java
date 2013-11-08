@@ -6,6 +6,14 @@ import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
+import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
 import fr.ign.cogit.process.geoxygene.GeoxygeneProcess;
 import fr.ign.parameters.Parameters;
 
@@ -19,6 +27,7 @@ public class NetworkDataMatchingWithParamProcess implements GeoxygeneProcess {
     /** LOGGER. */
     private final static Logger LOGGER = Logger.getLogger(NetworkDataMatchingWithParamProcess.class.getName());
     
+    @SuppressWarnings("unchecked")
     @DescribeResult(name = "OK", description = "Ok !!")
     public String execute(
         @DescribeParameter(name = "param",  description = "Paramètres") Parameters param,
@@ -27,34 +36,36 @@ public class NetworkDataMatchingWithParamProcess implements GeoxygeneProcess {
         
         LOGGER.debug("====================================================================");
         LOGGER.debug("NetworkDataMatchingWithParamProcess");
-        LOGGER.debug(param);
+        LOGGER.debug(param.toString());
         LOGGER.debug("====================================================================");
         
-        System.out.println("DistanceNoeudsMax = " + param.get("DistanceNoeudsMax"));
-        System.out.println("DistanceArcsMax = " + param.get("DistanceArcsMax"));
-        
-        // Set parameters
-        /*ParamNetworkDataMatching param = new ParamNetworkDataMatching();
-        param.setParamDistance(param1);
-        
         // Converting networks
-        LOGGER.debug("Start Converting networks : reference and comparative");
+        LOGGER.debug("Start converting networks : reference and comparative");
         IFeatureCollection<?> gReseau1 = GeOxygeneGeoToolsTypes.convert2IFeatureCollection(reseau1);
         IFeatureCollection<?> gReseau2 = GeOxygeneGeoToolsTypes.convert2IFeatureCollection(reseau2);
-        LOGGER.debug("End Converting networks");
-        
+        LOGGER.debug("End converting networks");
         
         LOGGER.debug("Start setting parameters");
-        
+        // Set parameters
+        ParamNetworkDataMatching paramNetworkMatching = ParamNetworkDataMatching.convertParameter(param);
+        // Set datasets 
         DatasetNetworkDataMatching datasetNetwork1 = new DatasetNetworkDataMatching();
         datasetNetwork1.addPopulationsArcs((IPopulation<IFeature>)gReseau1);
         DatasetNetworkDataMatching datasetNetwork2 = new DatasetNetworkDataMatching();
         datasetNetwork2.addPopulationsArcs((IPopulation<IFeature>)gReseau2);
+        LOGGER.debug("End setting parameters");
         
-        NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2);
-        networkDataMatchingProcess.setActions(true, false);
-        // ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();*/
+        LOGGER.debug("Start network matching");
+        NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(
+            paramNetworkMatching, datasetNetwork1, datasetNetwork2);
+        // No recalage, no export
+        networkDataMatchingProcess.setActions(false, false);
+        ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();
+        LOGGER.debug("End network matching");
         
+        // Convert resultat
+        
+        // return resultat
         return "OK";
     }
 
