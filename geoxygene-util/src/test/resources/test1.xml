@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ParameterConfig>
+<parameter-configuration>
     <parameters>
         <param key="A" value="B"/>
         <param key="C" value="D"/>
     </parameters>
-</ParameterConfig>
+</parameter-configuration>

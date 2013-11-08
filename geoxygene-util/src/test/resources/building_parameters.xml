@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<parameter-configuration>
+	<parameters>
+		<param key="A" value="B" />
+		<param key="C" value="D" />
+		<param key="temp" value="150" />
+		<param key="deccoef" value="0.999999" />
+		<param key="nbiter" value="20000000" />
+		<param key="nbdump" value="10000" />
+		<param key="nbsave" value="1000000" />
+		<param key="poisson" value="200" />
+		<param key="maxsize" value="10" />
+		<param key="maxratio" value="5" />
+		<param key="pbirth" value="0.1" />
+		<param key="pdeath" value="0.1" />
+		<param key="ponderation_surface" value="10" />
+		<param key="energy" value="250" />
+		<param key="ponderation_grad" value="1" />
+		<param key="ponderation_mask" value="0" />
+		<param key="dsm" value="./src/test/resources/ZTerrain.tif" />
+		<param key="mask" value="" />
+		<param key="xmin" value="0" />
+		<param key="ymin" value="0" />
+		<param key="xmax" value="1000000" />
+		<param key="ymax" value="1000000" />
+		<param key="sigmaD" value="1f" />
+	</parameters>
+</parameter-configuration>

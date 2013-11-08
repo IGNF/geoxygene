@@ -13,7 +13,6 @@ import javax.xml.validation.SchemaFactory;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.parameters.Parameters;
 
 /**
  * 

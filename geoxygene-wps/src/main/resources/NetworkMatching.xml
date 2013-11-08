@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ParameterConfig>
+<parameter-configuration>
     <parameters>
         <param key="DistanceNoeudsMax" value="150.0" />
         <param key="DistanceArcsMax" value="100.0" />
         <param key="DistanceArcsMin" value="30.0" />
         <param key="DistanceNoeudsImpassesMax" value="-1" />
     </parameters>
-</ParameterConfig>
+</parameter-configuration>

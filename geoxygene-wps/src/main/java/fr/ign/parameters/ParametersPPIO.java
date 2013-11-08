@@ -7,8 +7,6 @@ import java.io.OutputStream;
 import org.apache.log4j.Logger;
 import org.geoserver.wps.ppio.CDataPPIO;
 
-import fr.ign.cogit.parameters.Parameters;
-
 
 /**
  * 
