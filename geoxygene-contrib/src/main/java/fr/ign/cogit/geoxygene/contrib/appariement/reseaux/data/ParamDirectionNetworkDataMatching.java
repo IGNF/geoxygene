@@ -19,6 +19,7 @@
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,6 +30,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.OrientationMapAdapter;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
+import fr.ign.parameters.Parameters;
 
 /**
  * Prise en compte de l'orientation des arcs sur le terrain (sens de circulation). 
@@ -118,5 +121,28 @@ public class ParamDirectionNetworkDataMatching {
   public void setOrientationMap (Map<Integer, String> mo) {
     orientationMap = mo;
   }
+  
+  
+  public static ParamDirectionNetworkDataMatching convertParameter(Parameters param) {
+    ParamDirectionNetworkDataMatching direction = new ParamDirectionNetworkDataMatching();
+    boolean orientationDouble = param.getBoolean("orientationDouble1");
+    direction.setOrientationDouble(orientationDouble);
+    if (!orientationDouble) {
+      direction.setAttributOrientation(param.getString("attributOrientation1"));
+      Map<Integer, String> orientationMap = new HashMap<Integer, String>();
+      /*if (param.getString("orientationMap1_SENS_DIRECT") != "") {
+        orientationMap1.put(OrientationInterface.SENS_DIRECT, param.getString("orientationMap1_SENS_DIRECT"));
+      }
+      if (param.getString("orientationMap1_SENS_INVERSE") != "") {
+        orientationMap1.put(OrientationInterface.SENS_INVERSE, param.getString("orientationMap1_SENS_INVERSE"));
+      }
+      if (param.getString("orientationMap1_DOUBLE_SENS") != "") {
+        orientationMap1.put(OrientationInterface.DOUBLE_SENS, param.getString("orientationMap1_DOUBLE_SENS"));
+      }*/
+      direction.setOrientationMap(orientationMap);
+    }
+    return direction;
+  }
+  
   
 }

@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
+import fr.ign.parameters.Parameters;
 
 /**
  * 
@@ -296,6 +297,65 @@ public class ParamNetworkDataMatching {
     // Projection 2
     
     return buffer.toString();
+  }
+  
+  
+  public static ParamNetworkDataMatching convertParameter(Parameters param) {
+    ParamNetworkDataMatching paramNetworkMatching = new ParamNetworkDataMatching();
+    
+    // paramDirectionNetwork1
+    ParamDirectionNetworkDataMatching direction1 = new ParamDirectionNetworkDataMatching();
+    boolean orientationDouble1 = param.getBoolean("orientationDouble1");
+    direction1.setOrientationDouble(orientationDouble1);
+    if (!orientationDouble1) {
+      direction1.setAttributOrientation(param.getString("attributOrientation1"));
+      Map<Integer, String> orientationMap1 = new HashMap<Integer, String>();
+      if (param.getString("orientationMap1_SENS_DIRECT") != "") {
+        orientationMap1.put(OrientationInterface.SENS_DIRECT, param.getString("orientationMap1_SENS_DIRECT"));
+      }
+      if (param.getString("orientationMap1_SENS_INVERSE") != "") {
+        orientationMap1.put(OrientationInterface.SENS_INVERSE, param.getString("orientationMap1_SENS_INVERSE"));
+      }
+      if (param.getString("orientationMap1_DOUBLE_SENS") != "") {
+        orientationMap1.put(OrientationInterface.DOUBLE_SENS, param.getString("orientationMap1_DOUBLE_SENS"));
+      }
+      direction1.setOrientationMap(orientationMap1);
+    }
+    paramNetworkMatching.setParamDirectionNetwork1(direction1);
+    
+    // paramDirectionNetwork1
+    ParamDirectionNetworkDataMatching direction2 = new ParamDirectionNetworkDataMatching();
+    boolean orientationDouble2 = param.getBoolean("orientationDouble1");
+    direction1.setOrientationDouble(orientationDouble1);
+    if (!orientationDouble1) {
+      direction1.setAttributOrientation(param.getString("attributOrientation1"));
+      Map<Integer, String> orientationMap1 = new HashMap<Integer, String>();
+      if (param.getString("orientationMap1_SENS_DIRECT") != "") {
+        orientationMap1.put(OrientationInterface.SENS_DIRECT, param.getString("orientationMap1_SENS_DIRECT"));
+      }
+      if (param.getString("orientationMap1_SENS_INVERSE") != "") {
+        orientationMap1.put(OrientationInterface.SENS_INVERSE, param.getString("orientationMap1_SENS_INVERSE"));
+      }
+      if (param.getString("orientationMap1_DOUBLE_SENS") != "") {
+        orientationMap1.put(OrientationInterface.DOUBLE_SENS, param.getString("orientationMap1_DOUBLE_SENS"));
+      }
+      direction1.setOrientationMap(orientationMap1);
+    }
+    paramNetworkMatching.setParamDirectionNetwork1(direction1);
+    
+    // paramDistance
+    
+    // paramTopoNetwork1
+    
+    // paramTopoNetwork2
+    
+    // paramProjNetwork1
+    
+    // paramProjNetwork2
+    
+    // paramVarianteGeneralProcess
+    
+    return paramNetworkMatching;
   }
   
 }
