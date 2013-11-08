@@ -45,21 +45,19 @@ import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 /** @author Julien Perret */
 public class FloatingMainFrame extends AbstractMainFrame {
 
-  /** Serializable UID. */
-  private static final long serialVersionUID = -6931105831522187478L;  
-
   /** Logger of the application. */
   static Logger logger = Logger.getLogger(FloatingMainFrame.class.getName());
 
   private final Map<JComponent, FloatingProjectFrame> projectFrameMap = new HashMap<JComponent, FloatingProjectFrame>();
-  
+
   /**
    * Constructor using a title and an associated application.
    * 
    * @param title the title of the frame
    * @param theApplication the associated application
    */
-  public FloatingMainFrame(final String title, final GeOxygeneApplication application) {
+  public FloatingMainFrame(final String title,
+      final GeOxygeneApplication application) {
     super(title, application);
   }
 
@@ -67,19 +65,19 @@ public class FloatingMainFrame extends AbstractMainFrame {
    * Add a new frame into the main frame. implementation should check the frame
    * type before adding it...
    * @param project frame to add
-   * @throws PropertyVetoException 
+   * @throws PropertyVetoException
    */
   void addProjectFrame(final JDesktopPane desktop, final ProjectFrame project) {
     if (project instanceof FloatingProjectFrame) {
-      
+
       try {
         FloatingProjectFrame floatingProject = (FloatingProjectFrame) project;
         logger.debug("N°" + desktop.getAllFrames().length);
         desktop.add(floatingProject.getInternalFrame());
-        
+
         floatingProject.getInternalFrame().setVisible(true);
         floatingProject.getInternalFrame().setSelected(true);
-        
+
         desktop.setSelectedFrame(floatingProject.getInternalFrame());
       } catch (Exception e) {
         e.printStackTrace();
@@ -140,7 +138,7 @@ public class FloatingMainFrame extends AbstractMainFrame {
     }
     return getProjectFrameFromGui(currentDesktop.getSelectedFrame());
   }
-  
+
   /*
    * (non-Javadoc)
    * 
@@ -167,7 +165,8 @@ public class FloatingMainFrame extends AbstractMainFrame {
       logger
           .debug("No current desktop found newProjectFrame() method.Create a new desktop with name '"
               + projectFrame.getName() + "'");
-      // currentDesktop = (JDesktopPane) createNewDesktop(projectFrame.getName());
+      // currentDesktop = (JDesktopPane)
+      // createNewDesktop(projectFrame.getName());
       int index = this.getDesktopTabbedPane().getTabCount() + 1;
       currentDesktop = (JDesktopPane) createNewDesktop("Desktop #" + index);
     }

@@ -25,11 +25,9 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.event.EventListenerList;
 
-import org.apache.log4j.Logger;
-
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.style.Layer;
-
 
 /**
  * A renderer to render a {@link Layer} into a {@link LayerViewPanel}.
@@ -40,8 +38,6 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * @see LayerViewPanel
  */
 public abstract class AbstractLayerRenderer implements LayerRenderer {
-  /** The logger. */
-  private static Logger logger = Logger.getLogger(AwtLayerRenderer.class.getName());
   protected EventListenerList listenerList = new EventListenerList();
 
   /**
@@ -49,7 +45,8 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
    * @param theLayer a layer to render
    * @param theLayerViewPanel the panel to draws into
    */
-  public AbstractLayerRenderer(final Layer theLayer, final LayerViewPanel theLayerViewPanel) {
+  public AbstractLayerRenderer(final Layer theLayer,
+      final LayerViewPanel theLayerViewPanel) {
     this.layer = theLayer;
     this.setLayerViewPanel(theLayerViewPanel);
   }
@@ -73,7 +70,8 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
   }
 
   /**
-   * Notifies all listeners that have registered interest for notification on this event type. The event instance is lazily created.
+   * Notifies all listeners that have registered interest for notification on
+   * this event type. The event instance is lazily created.
    * @see EventListenerList
    */
   protected void fireActionPerformed(final ActionEvent event) {
@@ -136,7 +134,8 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
   private volatile boolean rendering = false;
 
   /**
-   * True is the renderer is running, i.e. if its associated runnable is running, false otherwise.
+   * True is the renderer is running, i.e. if its associated runnable is
+   * running, false otherwise.
    * @return true is the renderer is running, false otherwise
    * @see #createRunnable()
    * @see #renderHook(BufferedImage,IEnvelope)
@@ -152,7 +151,8 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
   }
 
   /**
-   * Cancel the rendering. This method does not actually interrupt the thread but lets the thread know it should stop.
+   * Cancel the rendering. This method does not actually interrupt the thread
+   * but lets the thread know it should stop.
    * @see Runnable
    * @see Thread
    */
@@ -161,13 +161,14 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
     this.setCancelled(true);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see fr.ign.cogit.geoxygene.appli.render.Renderer#initializeRendering()
    */
   @Override
   public void initializeRendering() {
     // nothing special to initialize
   }
-  
 
 }

@@ -42,12 +42,8 @@ import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.icon.CompositeIcon;
 import fr.ign.cogit.geoxygene.icon.VTextIcon;
 
-
 /** @author Julien Perret */
 public class TabbedMainFrame extends AbstractMainFrame {
-
-  private static final long serialVersionUID = -6931105831522187478L; // Serializable
-                                                                      // UID
 
   /** Logger of the application. */
   static Logger logger = Logger.getLogger(TabbedMainFrame.class.getName());
