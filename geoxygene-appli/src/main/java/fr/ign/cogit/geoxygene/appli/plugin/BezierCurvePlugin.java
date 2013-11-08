@@ -42,9 +42,10 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * Triangulation plugin.
  * @author Julien Perret
  */
-public class BezierCurvePlugin implements GeOxygeneApplicationPlugin, ActionListener {
+public class BezierCurvePlugin implements GeOxygeneApplicationPlugin,
+    ActionListener {
   /** Logger. */
-  static Logger                logger      = Logger.getLogger(Triangulation.class.getName());
+  static Logger logger = Logger.getLogger(Triangulation.class.getName());
 
   private GeOxygeneApplication application = null;
 
@@ -59,7 +60,8 @@ public class BezierCurvePlugin implements GeOxygeneApplicationPlugin, ActionList
     for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Curve")) { //$NON-NLS-1$
+        if (aMenu.getText() != null
+            && aMenu.getText().equalsIgnoreCase("Curve")) { //$NON-NLS-1$
           menu = aMenu;
         }
       }
@@ -71,20 +73,24 @@ public class BezierCurvePlugin implements GeOxygeneApplicationPlugin, ActionList
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+    application.getMainFrame().getMenuBar()
+        .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public void actionPerformed(final ActionEvent e) {
-    ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
-    Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
+    ProjectFrame project = this.application.getMainFrame()
+        .getSelectedProjectFrame();
+    Set<Layer> selectedLayers = project.getLayerLegendPanel()
+        .getSelectedLayers();
     if (selectedLayers.size() != 1) {
-      BezierCurvePlugin.logger.error("You need to select one (and only one) layer."); //$NON-NLS-1$
+      BezierCurvePlugin.logger
+          .error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }
     Layer layer = selectedLayers.iterator().next();
-    Population<DefaultFeature> popBezier = new Population<DefaultFeature>("Bezier"); //$NON-NLS-1$
+    Population<DefaultFeature> popBezier = new Population<DefaultFeature>(
+        "Bezier"); //$NON-NLS-1$
     popBezier.setClasse(DefaultFeature.class);
     popBezier.setPersistant(false);
     for (IFeature f : layer.getFeatureCollection()) {

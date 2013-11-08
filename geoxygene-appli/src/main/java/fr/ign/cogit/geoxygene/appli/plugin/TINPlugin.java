@@ -40,11 +40,9 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
-import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Tin;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
@@ -55,7 +53,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  */
 public class TINPlugin implements GeOxygeneApplicationPlugin, ActionListener {
   /** Logger. */
-  static Logger                logger      = Logger.getLogger(Triangulation.class.getName());
+  static Logger logger = Logger.getLogger(Triangulation.class.getName());
 
   private GeOxygeneApplication application = null;
 
@@ -82,12 +80,14 @@ public class TINPlugin implements GeOxygeneApplicationPlugin, ActionListener {
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+    application.getMainFrame().getMenuBar()
+        .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
+    ProjectFrame project = this.application.getMainFrame()
+        .getSelectedProjectFrame();
     // Set<Layer> selectedLayers = project.getLayerLegendPanel()
     // .getSelectedLayers();
     // if (selectedLayers.size() != 1) {
@@ -96,9 +96,12 @@ public class TINPlugin implements GeOxygeneApplicationPlugin, ActionListener {
     // return;
     // }
     // Layer layer = selectedLayers.iterator().next();
-    IPopulation<IFeature> popSites = ShapefileReader.read("C:\\Users\\jperret\\Desktop\\sites.shp");
-    IPopulation<IFeature> popBreakLines = ShapefileReader.read("C:\\Users\\jperret\\Desktop\\breaklines.shp");
-    IPopulation<IFeature> popStopLines = ShapefileReader.read("C:\\Users\\jperret\\Desktop\\stoplines.shp");
+    IPopulation<IFeature> popSites = ShapefileReader
+        .read("C:\\Users\\jperret\\Desktop\\sites.shp");
+    IPopulation<IFeature> popBreakLines = ShapefileReader
+        .read("C:\\Users\\jperret\\Desktop\\breaklines.shp");
+    IPopulation<IFeature> popStopLines = ShapefileReader
+        .read("C:\\Users\\jperret\\Desktop\\stoplines.shp");
     IDirectPositionList list = new DirectPositionList();
     for (IFeature f : popSites) {
       list.add(f.getGeom().centroid());
@@ -106,7 +109,8 @@ public class TINPlugin implements GeOxygeneApplicationPlugin, ActionListener {
     List<ILineString> breaklines = new ArrayList<ILineString>();
     for (IFeature f : popBreakLines) {
       if (IMultiCurve.class.isAssignableFrom(f.getGeom().getClass())) {
-        for (IOrientableCurve curve : ((IMultiCurve<? extends IOrientableCurve>) f.getGeom()).getList()) {
+        for (IOrientableCurve curve : ((IMultiCurve<? extends IOrientableCurve>) f
+            .getGeom()).getList()) {
           breaklines.add(curve.getPrimitive().asLineString(0, 0, 0));
         }
       } else {
@@ -116,16 +120,19 @@ public class TINPlugin implements GeOxygeneApplicationPlugin, ActionListener {
     List<ILineString> stoplines = new ArrayList<ILineString>();
     for (IFeature f : popStopLines) {
       if (IMultiCurve.class.isAssignableFrom(f.getGeom().getClass())) {
-        for (IOrientableCurve curve : ((IMultiCurve<? extends IOrientableCurve>) f.getGeom()).getList()) {
+        for (IOrientableCurve curve : ((IMultiCurve<? extends IOrientableCurve>) f
+            .getGeom()).getList()) {
           stoplines.add(curve.getPrimitive().asLineString(0, 0, 0));
         }
       } else {
         stoplines.add((ILineString) f.getGeom());
       }
     }
-    GM_Tin tin = new GM_Tin(list, stoplines, breaklines, Float.POSITIVE_INFINITY);
+    GM_Tin tin = new GM_Tin(list, stoplines, breaklines,
+        Float.POSITIVE_INFINITY);
     System.out.println(tin.getlTriangles().size() + " triangles found");
-    Population<DefaultFeature> popTriangles = new Population<DefaultFeature>("TIN"); //$NON-NLS-1$
+    Population<DefaultFeature> popTriangles = new Population<DefaultFeature>(
+        "TIN"); //$NON-NLS-1$
     popTriangles.setClasse(DefaultFeature.class);
     popTriangles.setPersistant(false);
     for (ITriangle t : tin.getlTriangles()) {

@@ -38,7 +38,6 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.contrib.delaunay.TriangulationJTS;
-import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
@@ -48,9 +47,10 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * Triangulation plugin.
  * @author Julien Perret
  */
-public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin, ActionListener {
+public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin,
+    ActionListener {
   /** Logger. */
-  static Logger                logger      = Logger.getLogger(Triangulation.class.getName());
+  static Logger logger = Logger.getLogger(Triangulation.class.getName());
 
   private GeOxygeneApplication application = null;
 
@@ -65,7 +65,8 @@ public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin, Acti
     for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Triangulation")) {
+        if (aMenu.getText() != null
+            && aMenu.getText().equalsIgnoreCase("Triangulation")) {
           menu = aMenu;
         }
       }
@@ -77,15 +78,19 @@ public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin, Acti
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+    application.getMainFrame().getMenuBar()
+        .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
-    Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
+    ProjectFrame project = this.application.getMainFrame()
+        .getSelectedProjectFrame();
+    Set<Layer> selectedLayers = project.getLayerLegendPanel()
+        .getSelectedLayers();
     if (selectedLayers.size() != 1) {
-      VoronoiDiagramJTSPlugin.logger.error("You need to select one (and only one) layer."); //$NON-NLS-1$
+      VoronoiDiagramJTSPlugin.logger
+          .error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }
     Layer layer = selectedLayers.iterator().next();
@@ -94,7 +99,8 @@ public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin, Acti
       ILineString line = ((IMultiCurve<ILineString>) feature.getGeom()).get(0);
       line = line.asLineString(10, 0);
       for (int i = 0; i < line.sizeControlPoint() - 1; i++) {
-        ILineString newline = new GM_LineString(line.getControlPoint(i), line.getControlPoint(i + 1));
+        ILineString newline = new GM_LineString(line.getControlPoint(i),
+            line.getControlPoint(i + 1));
         triangulation.getPopArcs().nouvelElement(newline);
       }
     }
@@ -116,7 +122,8 @@ public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin, Acti
     VoronoiDiagramJTSPlugin.logger.info(popVoronoi);
 
     Population<Arc> popEdgeVoronoi = new Population<Arc>("Edges");
-    popEdgeVoronoi.setElements(triangulation.getPopVoronoiEdges().getElements());
+    popEdgeVoronoi
+        .setElements(triangulation.getPopVoronoiEdges().getElements());
     /** créer un featuretype de jeu correspondant */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureTypeEdges = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
     newFeatureTypeEdges.setGeometryType(GM_LineString.class);
