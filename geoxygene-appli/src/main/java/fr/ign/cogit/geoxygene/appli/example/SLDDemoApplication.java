@@ -46,7 +46,6 @@ import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Shadow;
-import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTexture;
 import fr.ign.cogit.geoxygene.style.texture.Texture;
 
@@ -69,7 +68,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     splashScreen.setVisible(true);
     SLDDemoApplication application = new SLDDemoApplication();
     projectFrame = application.getMainFrame().newProjectFrame();
-    
+
     exampleGraphicFill_Fill_Polygon();
     exampleGraphicFill_Stroke_Polygon();
     exampleGraphicStroke_Stroke_Polygon();
@@ -102,31 +101,32 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     PolygonSymbolizer symbolizer = (PolygonSymbolizer) layer.getSymbolizer();
     GraphicFill graphicFill = new GraphicFill();
 
-    //--------------- Exemples avec des Graphic de type image ----------------------------------
-//    Graphic graphic = new Graphic();
-//    graphic.setSize(10);
+    // --------------- Exemples avec des Graphic de type image
+    // ----------------------------------
+    // Graphic graphic = new Graphic();
+    // graphic.setSize(10);
     // ----- Image au format svg
-//    ExternalGraphic circle = new ExternalGraphic();
-//    URL url = SLDDemoApplication.class.getResource("/images/circle.svg"); //$NON-NLS-1$
-//    circle.setHref(url.toString());
-//    circle.setFormat("svg"); //$NON-NLS-1$
-//    graphic.getExternalGraphics().add(circle);
-    
+    // ExternalGraphic circle = new ExternalGraphic();
+    //    URL url = SLDDemoApplication.class.getResource("/images/circle.svg"); //$NON-NLS-1$
+    // circle.setHref(url.toString());
+    //    circle.setFormat("svg"); //$NON-NLS-1$
+    // graphic.getExternalGraphics().add(circle);
+
     // ----- Image au format png
-//    ExternalGraphic tree = new ExternalGraphic();
-//    URL url = SLDDemoApplication.class.getResource("/images/herbes.png"); //$NON-NLS-1$
-//    tree.setHref(url.toString());
-//    tree.setFormat("png"); //$NON-NLS-1$
-//    graphic.getExternalGraphics().add(tree);
+    // ExternalGraphic tree = new ExternalGraphic();
+    //    URL url = SLDDemoApplication.class.getResource("/images/herbes.png"); //$NON-NLS-1$
+    // tree.setHref(url.toString());
+    //    tree.setFormat("png"); //$NON-NLS-1$
+    // graphic.getExternalGraphics().add(tree);
 
     // ----- Image au format gif
-//     ExternalGraphic cogitLogo = new ExternalGraphic();
-//     cogitLogo.setHref("http://recherche.ign.fr/labos/cogit/img/LOGO_COGIT.gif"); //$NON-NLS-1$
-//     cogitLogo.setFormat("gif"); //$NON-NLS-1$
-//     graphic.getExternalGraphics().add(cogitLogo);
+    // ExternalGraphic cogitLogo = new ExternalGraphic();
+    //     cogitLogo.setHref("http://recherche.ign.fr/labos/cogit/img/LOGO_COGIT.gif"); //$NON-NLS-1$
+    //     cogitLogo.setFormat("gif"); //$NON-NLS-1$
+    // graphic.getExternalGraphics().add(cogitLogo);
 
-
-    //--------------- Exemple avec un Graphic de type Mark ----------------------------------
+    // --------------- Exemple avec un Graphic de type Mark
+    // ----------------------------------
     Graphic graphic = new Graphic();
     graphic.setSize(8f);
     Mark markStar = new Mark();
@@ -135,53 +135,56 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     fillStar.setColor(Color.YELLOW);
     markStar.setFill(fillStar);
     graphic.getMarks().add(markStar);
-    
+
     graphicFill.getGraphics().add(graphic);
     symbolizer.getFill().setColor(Color.GREEN);
     symbolizer.getFill().setGraphicFill(graphicFill);
     Population<DefaultFeature> pop = new Population<DefaultFeature>(
         "GraphicFill_Polygon"); //$NON-NLS-1$
-    pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(230, 330, 120, 220))));
+    pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(230, 330, 120,
+        220))));
     projectFrame.getDataSet().addPopulation(pop);
     projectFrame.getSld().add(layer);
 
   }
-  
+
   /**
-   * Le Graphic Stroke permet de répéter une forme le long d'une ligne.
-   * Cette forme peut être une image (ExternalGraphic) ou une forme prédéfinie (Mark).
+   * Le Graphic Stroke permet de répéter une forme le long d'une ligne. Cette
+   * forme peut être une image (ExternalGraphic) ou une forme prédéfinie (Mark).
    */
   public static void exampleGraphicFill_Stroke_Polygon() {
-    Layer layer = projectFrame.getSld().createLayer("GraphicFill_Stroke_Polygon", //$NON-NLS-1$
+    Layer layer = projectFrame.getSld().createLayer(
+        "GraphicFill_Stroke_Polygon", //$NON-NLS-1$
         GM_Polygon.class, Color.red, Color.yellow, 1f, 4);
     PolygonSymbolizer symbolizer = (PolygonSymbolizer) layer.getSymbolizer();
     GraphicFill graphicFill = new GraphicFill();
-    
-    //--------------- Exemples avec des Graphic de type image ----------------------------------
-//    Graphic graphic = new Graphic();
-//    graphic.setSize(10);
+
+    // --------------- Exemples avec des Graphic de type image
+    // ----------------------------------
+    // Graphic graphic = new Graphic();
+    // graphic.setSize(10);
     // ----- Image au format svg
-//    ExternalGraphic circle = new ExternalGraphic();
-//    URL url = SLDDemoApplication.class.getResource("/images/circle.svg"); //$NON-NLS-1$
-//    circle.setHref(url.toString());
-//    circle.setFormat("svg"); //$NON-NLS-1$
-//    graphic.getExternalGraphics().add(circle);
-    
+    // ExternalGraphic circle = new ExternalGraphic();
+    //    URL url = SLDDemoApplication.class.getResource("/images/circle.svg"); //$NON-NLS-1$
+    // circle.setHref(url.toString());
+    //    circle.setFormat("svg"); //$NON-NLS-1$
+    // graphic.getExternalGraphics().add(circle);
+
     // ----- Image au format png
-//    ExternalGraphic tree = new ExternalGraphic();
-//    URL url = SLDDemoApplication.class.getResource("/images/herbes.png"); //$NON-NLS-1$
-//    tree.setHref(url.toString());
-//    tree.setFormat("png"); //$NON-NLS-1$
-//    graphic.getExternalGraphics().add(tree);
-  
+    // ExternalGraphic tree = new ExternalGraphic();
+    //    URL url = SLDDemoApplication.class.getResource("/images/herbes.png"); //$NON-NLS-1$
+    // tree.setHref(url.toString());
+    //    tree.setFormat("png"); //$NON-NLS-1$
+    // graphic.getExternalGraphics().add(tree);
+
     // ----- Image au format gif
-//     ExternalGraphic cogitLogo = new ExternalGraphic();
-//     cogitLogo.setHref("http://recherche.ign.fr/labos/cogit/img/LOGO_COGIT.gif"); //$NON-NLS-1$
-//     cogitLogo.setFormat("gif"); //$NON-NLS-1$
-//     graphic.getExternalGraphics().add(cogitLogo);
+    // ExternalGraphic cogitLogo = new ExternalGraphic();
+    //     cogitLogo.setHref("http://recherche.ign.fr/labos/cogit/img/LOGO_COGIT.gif"); //$NON-NLS-1$
+    //     cogitLogo.setFormat("gif"); //$NON-NLS-1$
+    // graphic.getExternalGraphics().add(cogitLogo);
 
-
-    //--------------- Exemple avec un Graphic de type Mark ----------------------------------
+    // --------------- Exemple avec un Graphic de type Mark
+    // ----------------------------------
     Graphic graphic = new Graphic();
     graphic.setSize(8f);
     Mark markStar = new Mark();
@@ -215,7 +218,8 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     PolygonSymbolizer symbolizer = (PolygonSymbolizer) layer.getSymbolizer();
     GraphicStroke graphicStroke = new GraphicStroke();
 
-    //--------------- Exemple avec un graphic de type image ----------------------------------
+    // --------------- Exemple avec un graphic de type image
+    // ----------------------------------
     Graphic graphicCircle = new Graphic();
     graphicCircle.setSize(20f);
     ExternalGraphic externalGraphicCircle = new ExternalGraphic();
@@ -225,16 +229,17 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     graphicCircle.getExternalGraphics().add(externalGraphicCircle);
     graphicStroke.getGraphics().add(graphicCircle);
 
-    //--------------- Exemple avec un graphic de type Mark ----------------------------------
-//     Graphic graphicStar = new Graphic();
-//     graphicStar.setSize(8f);
-//     Mark markStar = new Mark();
-//        markStar.setWellKnownName("star"); //$NON-NLS-1$
-//     Fill fillStar = new Fill();
-//     fillStar.setColor(new Color(1.f,0.4f,0.4f));
-//     markStar.setFill(fillStar);
-//     graphicStar.getMarks().add(markStar);
-//     graphicStroke.getGraphics().add(graphicStar);
+    // --------------- Exemple avec un graphic de type Mark
+    // ----------------------------------
+    // Graphic graphicStar = new Graphic();
+    // graphicStar.setSize(8f);
+    // Mark markStar = new Mark();
+    //        markStar.setWellKnownName("star"); //$NON-NLS-1$
+    // Fill fillStar = new Fill();
+    // fillStar.setColor(new Color(1.f,0.4f,0.4f));
+    // markStar.setFill(fillStar);
+    // graphicStar.getMarks().add(markStar);
+    // graphicStroke.getGraphics().add(graphicStar);
 
     symbolizer.getStroke().setGraphicType(graphicStroke);
 
@@ -259,11 +264,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     d.setDisplacementY(-5);
     shadow.setDisplacement(d);
     symbolizer.setShadow(shadow);
-    Style style = projectFrame.getSld().createStyle("Red", //$NON-NLS-1$
-        GM_Polygon.class, Color.red, Color.gray, 1f, 2);
 
-    layer.getStyles().add(style);
-    layer.setActiveGroup("default"); //$NON-NLS-1$
     Population<DefaultFeature> pop = new Population<DefaultFeature>("Shadow"); //$NON-NLS-1$
     pop.add(new DefaultFeature(new GM_Polygon(
         new GM_Envelope(10, 110, 230, 330))));
@@ -282,7 +283,8 @@ public class SLDDemoApplication extends GeOxygeneApplication {
 
     GraphicStroke graphicStroke = new GraphicStroke();
 
-    //--------------- Exemple avec un Graphic de type image ----------------------------------
+    // --------------- Exemple avec un Graphic de type image
+    // ----------------------------------
     Graphic graphicCircle = new Graphic();
     graphicCircle.setSize(20f);
     ExternalGraphic externalGraphicCircle = new ExternalGraphic();
@@ -292,16 +294,17 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     graphicCircle.getExternalGraphics().add(externalGraphicCircle);
     graphicStroke.getGraphics().add(graphicCircle);
 
-    //--------------- Exemple avec un Graphic de type Mark ----------------------------------
-//     Graphic graphicStar = new Graphic();
-//     graphicStar.setSize(8f);
-//     Mark markStar = new Mark();
-//        markStar.setWellKnownName("star"); //$NON-NLS-1$
-//     Fill fillStar = new Fill();
-//     fillStar.setColor(new Color(1.f,0.4f,0.4f));
-//     markStar.setFill(fillStar);
-//     graphicStar.getMarks().add(markStar);
-//     graphicStroke.getGraphics().add(graphicStar);
+    // --------------- Exemple avec un Graphic de type Mark
+    // ----------------------------------
+    // Graphic graphicStar = new Graphic();
+    // graphicStar.setSize(8f);
+    // Mark markStar = new Mark();
+    //        markStar.setWellKnownName("star"); //$NON-NLS-1$
+    // Fill fillStar = new Fill();
+    // fillStar.setColor(new Color(1.f,0.4f,0.4f));
+    // markStar.setFill(fillStar);
+    // graphicStar.getMarks().add(markStar);
+    // graphicStroke.getGraphics().add(graphicStar);
 
     symbolizer.getStroke().setGraphicType(graphicStroke);
 
@@ -327,24 +330,26 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     GraphicFill graphicFill = new GraphicFill();
     Graphic graphic = new Graphic();
     graphic.setSize(8f);
-    
-    //---------------  Exemple avec un Graphic de type image ----------------------------------
+
+    // --------------- Exemple avec un Graphic de type image
+    // ----------------------------------
     // ----- Image au format svg
-//    ExternalGraphic circle = new ExternalGraphic();
-//    URL url = SLDDemoApplication.class.getResource("/images/circle.svg"); //$NON-NLS-1$
-//    circle.setHref(url.toString());
-//    circle.setFormat("svg"); //$NON-NLS-1$
-//    graphic.getExternalGraphics().add(circle);
-    
+    // ExternalGraphic circle = new ExternalGraphic();
+    //    URL url = SLDDemoApplication.class.getResource("/images/circle.svg"); //$NON-NLS-1$
+    // circle.setHref(url.toString());
+    //    circle.setFormat("svg"); //$NON-NLS-1$
+    // graphic.getExternalGraphics().add(circle);
+
     // ----- Image au format png
-//    ExternalGraphic externalGraphic = new ExternalGraphic();
-//    URL urlCircles = SLDDemoApplication.class
-//        .getResource("/images/circles.png"); //$NON-NLS-1$
-//    externalGraphic.setHref(urlCircles.toString());
-//    externalGraphic.setFormat("png"); //$NON-NLS-1$
-//    graphic.getExternalGraphics().add(externalGraphic);
-    
-    //---------------  Exemple avec un Graphic de type Mark ----------------------------------
+    // ExternalGraphic externalGraphic = new ExternalGraphic();
+    // URL urlCircles = SLDDemoApplication.class
+    //        .getResource("/images/circles.png"); //$NON-NLS-1$
+    // externalGraphic.setHref(urlCircles.toString());
+    //    externalGraphic.setFormat("png"); //$NON-NLS-1$
+    // graphic.getExternalGraphics().add(externalGraphic);
+
+    // --------------- Exemple avec un Graphic de type Mark
+    // ----------------------------------
     Mark mark = new Mark();
     mark.setWellKnownName("circle"); //$NON-NLS-1$
     graphic.setSize(20f);
@@ -352,7 +357,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     fill.setColor(Color.YELLOW);
     mark.setFill(fill);
     graphic.getMarks().add(mark);
-    
+
     graphicFill.getGraphics().add(graphic);
     symbolizer.getStroke().setGraphicType(graphicFill);
 
@@ -367,7 +372,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
   }
 
   public static void exampleTexture() {
-//  Layer layer = projectFrame.getLayer("ZONE_VEGETATION");
+    // Layer layer = projectFrame.getLayer("ZONE_VEGETATION");
     Layer layer = projectFrame.getSld().createLayer("Texture", //$NON-NLS-1$
         GM_Polygon.class, Color.black, Color.red, 1f, 4);
 
