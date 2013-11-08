@@ -5,8 +5,8 @@
 	<!-- ========================================================================== -->
 	<!-- 	The PPIO -->
 	<!-- ========================================================================== -->
-    <bean id="ParametersPPIO"
-            class="fr.ign.parameters.ParametersPPIO" />
+    <bean id="ParametersNetworkMatchingPPIO"
+            class="fr.ign.cogit.process.geoxygene.netmatching.ppio.ParametersNetworkMatchingPPIO" />
            
     <bean id="NetworkDataMatchingResultPPIO" 
             class="fr.ign.cogit.process.geoxygene.netmatching.ppio.NetworkDataMatchingResultPPIO" />

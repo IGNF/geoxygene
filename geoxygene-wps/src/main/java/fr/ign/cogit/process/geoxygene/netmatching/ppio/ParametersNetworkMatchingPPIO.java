@@ -1,4 +1,4 @@
-package fr.ign.parameters;
+package fr.ign.cogit.process.geoxygene.netmatching.ppio;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,20 +7,23 @@ import java.io.OutputStream;
 import org.apache.log4j.Logger;
 import org.geoserver.wps.ppio.CDataPPIO;
 
+import fr.ign.parameters.Parameters;
+import fr.ign.parameters.ParametersParser;
+
 
 /**
  * 
  * @author MDVan-Damme
  */
-public class ParametersPPIO extends CDataPPIO {
+public class ParametersNetworkMatchingPPIO extends CDataPPIO {
 
   /** LOGGER. */
-  private final static Logger LOGGER = Logger.getLogger(ParametersPPIO.class.getName());
+  private final static Logger LOGGER = Logger.getLogger(ParametersNetworkMatchingPPIO.class.getName());
 
   /**
    * Default constructor.
    */
-  protected ParametersPPIO() {
+  protected ParametersNetworkMatchingPPIO() {
     super(Parameters.class, Parameters.class, "text/xml");
   }
 
@@ -35,8 +38,9 @@ public class ParametersPPIO extends CDataPPIO {
   }
 
   @Override
-  public Object decode(String input) throws Exception {
-    return ParametersParser.parseXML(input);
+  public Object decode(String inputXML) throws Exception {
+    InputStream inputXSD = ParametersParser.class.getResourceAsStream("/schema/ParametersNetworkMatching.xsd");
+    return ParametersParser.parseXML(inputXML, inputXSD);
   }
 
   @Override

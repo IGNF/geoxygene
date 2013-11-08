@@ -1,9 +1,7 @@
 package fr.ign.parameters;
 
 
-import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
@@ -15,8 +13,7 @@ import org.apache.log4j.Logger;
 
 
 /**
- * 
- * 
+ * Parser for the Parameters object.
  * @author MDVan-Damme
  */
 public class ParametersParser {
@@ -24,22 +21,30 @@ public class ParametersParser {
   /** LOGGER. */
   private final static Logger LOGGER = Logger.getLogger(ParametersParser.class.getName());
 
-  public static Parameters parseXML(String inputXML) throws Exception {
+  /**
+   * Parse une requête XML de paramètres.
+   * 
+   * @param inputXML valeurToParse
+     *            Le contenu du XML à parser
+   * @param inputXSD document
+   *              Le document de validation
+   * @return Les paramètres
+   * @throws Exception
+   */
+  public static Parameters parseXML(String inputXML, InputStream inputXSD) throws Exception {
 
     LOGGER.debug("====================================================================");
     LOGGER.debug("Parser");
     try {
       
-      InputStream input = ParametersParser.class.getResourceAsStream("/schema/Parameters.xsd");
-      Source schemaSource = new StreamSource(input);
-      
+      Source schemaSource = new StreamSource(inputXSD);
       SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
       Schema parameterSchema = schemaFactory.newSchema(schemaSource);
      
       Parameters param = Parameters.unmarshall(inputXML, parameterSchema);
-      System.out.println(param);
+      LOGGER.trace(param);
 
-      // Return Parameter object
+      // Return Parameter 
       return param;
 
     } catch (Exception e) {
