@@ -6,11 +6,11 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -20,11 +20,11 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
  * 
  * @version 0.1
  * 
- *
  * 
- * Classe permettant de définir une équation de ligne en 3D
  * 
- * Class to define a 3D line equation
+ *          Classe permettant de définir une équation de ligne en 3D
+ * 
+ *          Class to define a 3D line equation
  * 
  */
 public class LineEquation {
@@ -54,8 +54,17 @@ public class LineEquation {
     this.a1 = a1;
     this.b0 = b0;
     this.b1 = b1;
-    this.c0 = c0;
-    this.c1 = c1;
+
+    if (Double.isNaN(c0)) {
+      // 2D vector
+      this.c0 = 0;
+      this.c1 = 0;
+    } else {
+
+      this.c0 = c0;
+      this.c1 = c1;
+    }
+
   }
 
   /**
@@ -105,7 +114,7 @@ public class LineEquation {
 
     Vecteur v1 = new Vecteur(dp, new DirectPosition(this.a0, this.b0, this.c0));
     Vecteur v2 = new Vecteur(this.a1, this.b1, this.c1);
-    
+
     return (v1.prodVectoriel(v2).norme() < LineEquation.EPSILON);
 
   }
@@ -132,21 +141,16 @@ public class LineEquation {
     return eq.intersectionLinePlan(dp, dp2);
 
   }
-  
-  
-  public double distance(IDirectPosition dp){
-    
-    
-    
+
+  public double distance(IDirectPosition dp) {
+
     IDirectPosition dpLine = valueAt(0);
-    
-    
-    Vecteur v = new Vecteur(dp,dpLine);
-    
-    return v.prodVectoriel(this.getVecteur()).norme() / this.getVecteur().norme();
-    
-    
-    
+
+    Vecteur v = new Vecteur(dp, dpLine);
+
+    return v.prodVectoriel(this.getVecteur()).norme()
+        / this.getVecteur().norme();
+
   }
 
   /**
@@ -232,9 +236,131 @@ public class LineEquation {
   public void setC1(double c1) {
     this.c1 = c1;
   }
+
+  public Vecteur getVecteur() {
+    return new Vecteur(a1, b1, c1);
+  }
+
   
-  public Vecteur getVecteur(){
-    return new Vecteur(a1,b1,c1);
+  /**
+   * @Todo : à finir, j'ai pas fait tous les cas, et je m'y suis sans doute mal pris
+   * @param l2
+   * @return
+   */
+  public IDirectPosition intersectionLineLine(LineEquation l2) {
+
+    double lambda = Double.NaN;
+
+    if (this.a1 != 0) {
+
+      lambda = l2.getA1() / this.a1;
+
+    } else if (this.b1 != 0) {
+
+      lambda = l2.getB1() / this.b1;
+
+    } else if (this.b1 != 0) {
+
+      lambda = l2.getC1() / this.c1;
+
+    } else {
+
+      if (l2.a1 == 0 && l2.b1 == 0 && l2.c1 == 0) {
+        //Parrallel line
+        return null;
+      }
+
+    }
+
+    if (this.a1 * lambda == l2.getA1() && this.b1 * lambda == l2.getB1()
+        && this.c1 * lambda == l2.getC1()) {
+        //Parrallel line
+      return null;
+      
+    }
+    
+    
+    
+    
+    //Non parrallel line
+    if(this.a1 != 0 && this.b1 != 0){
+      
+      double det = this.b1 * l2.getA1() - this.a1 * l2.getB1();
+      
+      
+      
+      if(det == 0){
+        return null;
+      }
+      
+      
+      double t = this.b1 * ( this.a0 - l2.getA0()) + this.a1 * (l2.getB0() - this.b0);
+      t = t/det;
+      
+      
+      return l2.valueAt(t);
+      
+    }
+    
+    
+    
+    
+    
+    //Non parrallel line
+    if(this.a1 != 0 && this.c1 != 0){
+      
+      double det = this.c1 * l2.getA1() - this.a1 * l2.getC1();
+      
+      
+      
+      if(det == 0){
+        return null;
+      }
+      
+      
+      double t = this.c1 * ( this.a0 - l2.getA0()) + this.a1 * (l2.getC0() - this.c0);
+      t = t/det;
+      
+      
+      return l2.valueAt(t);
+      
+    }
+    
+    
+    
+    
+    //Non parrallel line
+    if(this.b1 != 0 && this.c1 != 0){
+      
+      double det = this.c1 * l2.getB1() - this.b1 * l2.getC1();
+      
+      
+      
+      if(det == 0){
+        return null;
+      }
+      
+      
+      double t = this.c1 * ( this.a0 - l2.getB0()) + this.b1 * (l2.getC0() - this.c0);
+      t = t/det;
+      
+      
+      return l2.valueAt(t);
+      
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    return null;
+    
+    
+    
+
   }
 
 }
