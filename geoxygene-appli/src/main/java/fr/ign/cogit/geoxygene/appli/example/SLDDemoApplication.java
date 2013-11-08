@@ -97,7 +97,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
 
   public static void exampleGraphicFill_Fill_Polygon() {
     Layer layer = projectFrame.getSld().createLayer("GraphicFill_Polygon", //$NON-NLS-1$
-        GM_Polygon.class, new Color(0.5f, 1.f, 0.5f), Color.green, 1f, 4);
+        GM_Polygon.class, new Color(0.5f, 1.f, 0.5f), Color.green, 0.5f, 4);
     PolygonSymbolizer symbolizer = (PolygonSymbolizer) layer.getSymbolizer();
     GraphicFill graphicFill = new GraphicFill();
 
@@ -143,6 +143,8 @@ public class SLDDemoApplication extends GeOxygeneApplication {
         "GraphicFill_Polygon"); //$NON-NLS-1$
     pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(230, 330, 120,
         220))));
+    pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(250, 350, 100,
+        200))));
     projectFrame.getDataSet().addPopulation(pop);
     projectFrame.getSld().add(layer);
 
@@ -372,13 +374,10 @@ public class SLDDemoApplication extends GeOxygeneApplication {
   }
 
   public static void exampleTexture() {
-    // Layer layer = projectFrame.getLayer("ZONE_VEGETATION");
     Layer layer = projectFrame.getSld().createLayer("Texture", //$NON-NLS-1$
-        GM_Polygon.class, Color.black, Color.red, 1f, 4);
-
+        GM_Polygon.class, Color.black, Color.blue, 1f, 4);
+    layer.setOpacity(0.6f);
     PolygonSymbolizer symbolizer = (PolygonSymbolizer) layer.getSymbolizer();
-    Fill fill = new Fill();
-    symbolizer.setFill(fill);
 
     Texture texture = new PerlinNoiseTexture();
     symbolizer.getFill().setTexture(texture);
@@ -386,6 +385,8 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     Population<DefaultFeature> pop = new Population<DefaultFeature>("Texture"); //$NON-NLS-1$
     pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(120, 220, 230,
         330))));
+    pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(150, 250, 250,
+        350))));
     projectFrame.getDataSet().addPopulation(pop);
     projectFrame.getSld().add(layer);
   }
