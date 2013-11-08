@@ -30,30 +30,31 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 
 /**
  * 
  * 
  * @author Bertrand Dumenieu
  */
-public class ImportAsEdgesPlugin implements GeOxygeneApplicationPlugin, ActionListener {
-  
+public class ImportAsEdgesPlugin implements GeOxygeneApplicationPlugin,
+    ActionListener {
+
   /** Classic logger. */
-  private static Logger LOGGER = Logger.getLogger(ImportAsEdgesPlugin.class.getName());
-  
+  private static Logger LOGGER = Logger.getLogger(ImportAsEdgesPlugin.class
+      .getName());
+
   /** GeOxygeneApplication. */
   private GeOxygeneApplication application;
-  
+
   /**
    * Initialize the plugin.
    * @param application the application
    */
   @Override
   public final void initialize(final GeOxygeneApplication application) {
-    
+
     this.application = application;
-    
+
     // Check if the DataMatching menu exists. If not we create it.
     JMenu menu = null;
     String menuName = I18N.getString("CarteTopoPlugin.CarteTopoPlugin"); //$NON-NLS-1$
@@ -69,37 +70,41 @@ public class ImportAsEdgesPlugin implements GeOxygeneApplicationPlugin, ActionLi
     if (menu == null) {
       menu = new JMenu(menuName);
     }
-    
+
     // Add network data matching menu item to the menu.
-    JMenuItem menuItem = new JMenuItem(I18N.getString("CarteTopoPlugin.ImportAsEdges")); //$NON-NLS-1$
+    JMenuItem menuItem = new JMenuItem(
+        I18N.getString("CarteTopoPlugin.ImportAsEdges")); //$NON-NLS-1$
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    
+
     // Refresh menu of the application
     application
         .getMainFrame()
         .getMenuBar()
-        .add(menu, application.getMainFrame().getMenuBar().getComponentCount() - 2);
-    
+        .add(menu,
+            application.getMainFrame().getMenuBar().getComponentCount() - 2);
+
   }
-  
+
   /**
    * 
    */
   @Override
   public void actionPerformed(final ActionEvent e) {
-      
+
     ProjectFrame project = ImportAsEdgesPlugin.this.application.getMainFrame()
         .getSelectedProjectFrame();
     Set<Layer> selectedLayers = project.getLayerLegendPanel()
         .getSelectedLayers();
     if (selectedLayers.size() != 1) {
-      javax.swing.JOptionPane.showMessageDialog(null, "You need to select one (and only one) layer.");
+      javax.swing.JOptionPane.showMessageDialog(null,
+          "You need to select one (and only one) layer.");
       LOGGER.error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }
     Layer layer = selectedLayers.iterator().next();
-    IFeatureCollection<? extends IFeature> routes =  layer.getFeatureCollection();
+    IFeatureCollection<? extends IFeature> routes = layer
+        .getFeatureCollection();
     String attribute = "SENS";
     Map<Object, Integer> orientationMap = new HashMap<Object, Integer>(2);
     orientationMap.put("Direct", new Integer(1));
@@ -115,7 +120,7 @@ public class ImportAsEdgesPlugin implements GeOxygeneApplicationPlugin, ActionLi
     SchemaDefaultFeature schema = new SchemaDefaultFeature();
 
     FeatureType type = new FeatureType();
-    //type.addFeatureAttribute(new AttributeType("gid", "id", "integer"));
+    // type.addFeatureAttribute(new AttributeType("gid", "id", "integer"));
     type.addFeatureAttribute(new AttributeType("t_id", "String"));
     type.addFeatureAttribute(new AttributeType("oneway", "String"));
     type.addFeatureAttribute(new AttributeType("cost", "double"));
@@ -136,14 +141,11 @@ public class ImportAsEdgesPlugin implements GeOxygeneApplicationPlugin, ActionLi
     FT_FeatureCollection<DefaultFeature> collection = new FT_FeatureCollection<DefaultFeature>();
     collection.setFeatureType(type);
 
-    
-
-    
     Map<Arc, DefaultFeature> mapArc = new HashMap<Arc, DefaultFeature>(
         networkMap.getPopArcs().size());
     System.out.println(networkMap.getPopArcs().size());
 
-//    Map<String, double[]> speedMap = getSpeedMap();
+    // Map<String, double[]> speedMap = getSpeedMap();
 
     int count = 0;
     for (Arc arc : networkMap.getPopArcs()) {
@@ -162,24 +164,25 @@ public class ImportAsEdgesPlugin implements GeOxygeneApplicationPlugin, ActionLi
       f.setAttributes(new Object[schema.getAttLookup().size()]);
       f.setFeatureType(type);
       f.setSchema(schema);
-      //f.setAttribute("gid", (Long)feat.getAttribute("gid"));
+      // f.setAttribute("gid", (Long)feat.getAttribute("gid"));
       f.setAttribute("oneway", (oneWay) ? "Y" : "N");
-      long mspeed = (Long)feat.getAttribute("mspeed");
-      mspeed -=15;
-      if(mspeed <0) mspeed = 0;
+      long mspeed = (Long) feat.getAttribute("mspeed");
+      mspeed -= 15;
+      if (mspeed < 0)
+        mspeed = 0;
       mspeed *= 1000;
       mspeed /= 3600;
 
-      double speed = mspeed+0.001;
+      double speed = mspeed + 0.001;
       double time = arc.getGeometrie().length() / speed;
-      if(mspeed == 0){
+      if (mspeed == 0) {
         time = 10000;
       }
       double reverseCost = time;
       if (oneWay) {
         reverseCost = 10000;
       }
-      if(time > 10000)
+      if (time > 10000)
         System.out.println("PROBLEM");
       f.setAttribute("t_id", feat.getAttribute("ID"));
       f.setAttribute("cost", time);
@@ -191,10 +194,9 @@ public class ImportAsEdgesPlugin implements GeOxygeneApplicationPlugin, ActionLi
       collection.add(f);
       mapArc.put(arc, f);
     }
-    
-    
+
     // ShapefileWriter.write(collection, "/home/BDumenieu/Bureau/network.shp");
-      
+
   }
 
 }
