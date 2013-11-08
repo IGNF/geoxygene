@@ -88,6 +88,12 @@ public class Parameters {
     return Float.parseFloat(value.toString());
   }
 
+  /**
+   * Unmarshal XML data from the specified Parameters file.
+   * @param XML data file 
+   * @return the resulting content tree in Parameters
+   * @throws Exception
+   */
   public static Parameters unmarshall(File file) throws Exception {
     try {
       JAXBContext context = JAXBContext.newInstance(Parameters.class);
@@ -100,13 +106,19 @@ public class Parameters {
     }
   }
   
-  public static Parameters unmarshall(File file, String xsd) throws Exception {
+  /**
+   * Validate and Unmarshal XML data from the specified Parameters file.
+   * @param XML data file 
+   * @param xsdSchema
+   * @return the resulting content tree in Parameters
+   * @throws Exception
+   */
+  public static Parameters unmarshall(File file, Schema xsdSchema) throws Exception {
     try {
       JAXBContext context = JAXBContext.newInstance(Parameters.class);
       Unmarshaller unmarshaller = context.createUnmarshaller();
       // Validation : setting a schema on the marshaller instance to activate validation against given XML schema
-      unmarshaller.setSchema(SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
-          .newSchema(new File(Parameters.class.getClassLoader().getResource(xsd).getPath())));
+      unmarshaller.setSchema(xsdSchema);
       Parameters root = (Parameters) unmarshaller.unmarshal(file);
       return root;
     } catch (Exception e1) {
@@ -115,6 +127,12 @@ public class Parameters {
     }
   }
   
+  /**
+   * Unmarshal data from XML text.
+   * @param inputXML
+   * @return the resulting content tree in Parameters
+   * @throws Exception
+   */
   public static Parameters unmarshall(String inputXML) throws Exception {
     try {
       JAXBContext context = JAXBContext.newInstance(Parameters.class);
@@ -128,6 +146,13 @@ public class Parameters {
     }
   }
   
+  /**
+   * Validate and Unmarshal data from XML text.
+   * @param inputXML
+   * @param xsdSchema
+   * @return the resulting content tree in Parameters
+   * @throws Exception
+   */
   public static Parameters unmarshall(String inputXML, Schema xsdSchema) throws Exception {
     try {
       JAXBContext context = JAXBContext.newInstance(Parameters.class);

@@ -56,7 +56,7 @@ public class ParametersTest extends XMLTestCase {
   @Test 
   public void testUnmarshallFileWithValidation() {
     try {
-      Parameters p = Parameters.unmarshall(new File(ParametersTest.class.getClassLoader().getResource("test1.xml").getPath()), "parameters.xsd");
+      Parameters p = Parameters.unmarshall(new File(ParametersTest.class.getClassLoader().getResource("test1.xml").getPath()), PARAMETERS_SCHEMA);
       String result = p.get("A").toString();
       assertEquals("B", result);
       result = p.get("C").toString();
