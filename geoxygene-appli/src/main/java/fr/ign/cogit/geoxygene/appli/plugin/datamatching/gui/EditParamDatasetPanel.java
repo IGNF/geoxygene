@@ -156,8 +156,10 @@ public class EditParamDatasetPanel extends JPanel {
   private void doUpload(JButton typeButton) {
 
     JFileChooser jFileChooser = new JFileChooser();
-    // TODO : utiliser le dernier répertoire ouvert par l'interface. 
-    jFileChooser.setCurrentDirectory(new File(paramFilename1.getListNomFichiersPopArcs().get(0)));
+    // TODO : utiliser le dernier répertoire ouvert par l'interface.
+    if (paramFilename1.getListNomFichiersPopArcs() != null && paramFilename1.getListNomFichiersPopArcs().size() > 0) {
+      jFileChooser.setCurrentDirectory(new File(paramFilename1.getListNomFichiersPopArcs().get(0)));
+    } 
     
     // Crée un filtre qui n'accepte que les fichier shp ou les répertoires
     if (typeButton.equals(buttonEdgesShape1) || typeButton.equals(buttonEdgesShape2)) {

@@ -51,10 +51,6 @@ import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayLinkGeomPanel;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayLinkPanel;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayParamPanel;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.DisplayStatResultPanel;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.EditParamPanel;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
@@ -103,15 +99,12 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
 
     /** Displayed colors. */
     private final static Color nodeColor = new Color(255, 216, 0);
-    private final static Color liensGeneriquesColor = new Color(44, 66, 71);
 
     private final static Color linkColorOk = new Color(77, 146, 33);
     private final static Color linkColorNull = new Color(239, 59, 44);
     private final static Color linkColorDoubtfull = new Color(240, 157, 18);
 
     private final static Color network1Color = new Color(11, 73, 157);
-    private final static Color network1DColor = new Color(67, 144, 193);
-    private final static Color network1NColor = new Color(111, 173, 209);
 
     private final static Color network2Color = new Color(145, 100, 10);
     private final static Color matchedNetworkColor = new Color(136, 64, 153);
@@ -161,45 +154,16 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
      */
     private void initializeParam() {
         
-        // String filename1 = "D:\\Data\\Appariement\\ESPON_DB\\Test02\\Reseau1.shp";
-        // String filename2 = "D:\\Data\\Appariement\\ESPON_DB\\Test02\\Reseau2.shp";
-        // String filename1 = "D:\\Data\\Appariement\\MesTests\\T5\\Res1.shp";
-        // String filename2 = "D:\\Data\\Appariement\\MesTests\\T5\\Res2.shp";
-
-        // Filename
-        //
-        // String filename1 =
-        // ParamParserTest.class.getClassLoader().getResource("data/reseau.shp").getPath();
-        // String filename1 = application.getProperties().getLastOpenedFile();
-        // bdcarto_route.shp
-        String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+        /*String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
         String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
-        // String filename1 =
-        // "D:\\Data\\Appariement\\ESPON_DB\\Test\\Reseau1.shp";
-
-        // String filename1 =
-        // "D:\\Data\\Appariement\\CG32\\Route\\Referentiel_ImaRoute_CG32.shp";
-        // String filename1 =
-        // "D:\\Data\\Appariement\\Kusay\\CGDep84_extraction.shp";
-        // String filename1 = "D:\\Data\\Appariement\\Kusay\\GGraph2.shp";
-        // String filename1 = "D:\\Data\\Appariement\\Kusay02\\comp.shp";
-
+        
         ParamFilenamePopulationEdgesNetwork paramFilename1 = new ParamFilenamePopulationEdgesNetwork();
         paramFilename1.addFilename(filename1);
         paramPlugin.setParamFilenameNetwork1(paramFilename1);
 
-        // String filename2 =
-        // "D:\\Data\\Appariement\\ESPON_DB\\Test\\Reseau2.shp";
-        // String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
-        // String filename2 = "D:\\Data\\Appariement\\CG32\\Route\\bduni.shp";
-        // String filename2 =
-        // "D:\\Data\\Appariement\\Kusay\\RIUV1BDCARTO_extractionV2.shp";
-        // String filename2 =
-        // "D:\\Data\\Appariement\\Kusay\\RIUV1BDCARTO_extraction.shp";
-        // String filename2 = "D:\\Data\\Appariement\\Kusay02\\ref.shp";
         ParamFilenamePopulationEdgesNetwork paramFilename2 = new ParamFilenamePopulationEdgesNetwork();
         paramFilename2.addFilename(filename2);
-        paramPlugin.setParamFilenameNetwork2(paramFilename2);
+        paramPlugin.setParamFilenameNetwork2(paramFilename2);*/
 
         // -----------------------------------------------------------------------------------------
         // Param
@@ -310,32 +274,17 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
             IPopulation<IFeature> reseau = ShapefileReader.read(filename);
             datasetNetwork2.addPopulationsArcs(reseau);
         }
+        
+        if (datasetNetwork1.getPopulationsArcs().size() < 1) {
+          javax.swing.JOptionPane.showMessageDialog(null, "You need to select one layer for network 1.");
+        } else if (datasetNetwork2.getPopulationsArcs().size() < 1) {
+          javax.swing.JOptionPane.showMessageDialog(null, "You need to select one layer for network 2.");
+        } else {
 
         // Set last Opened file
         application.getProperties().setLastOpenedFile(lastFile);
         MainFrameMenuBar.fc.setPreviousDirectory(new File(lastFile));
         application.getProperties().marshall(application.getPropertiesFile().getFile());
-
-        // -------------------------------------------------------------------------------
-
-        // Parse new parameter object to old parameter
-        // ParametresApp paramOld =
-        // paramPlugin.getParamNetworkDataMatching().paramNDMToParamApp();
-        // paramOld.populationsArcs1 = datasetNetwork1.getPopulationsArcs();
-        // paramOld.populationsArcs2 = datasetNetwork2.getPopulationsArcs();
-
-        // paramOld.varianteFiltrageImpassesParasites = false;
-
-        // moins detaille
-        // paramOld.varianteForceAppariementSimple = false;
-        // paramOld.varianteRedecoupageArcsNonApparies = false;
-
-        // paramOld.debugTirets = true;
-        // paramOld.debugBilanSurObjetsGeo = true;
-        // paramOld.debugAffichageCommentaires = 1;
-
-        // Log parameters
-        // LOGGER.info(paramPlugin.toString());
 
         NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(
                 paramPlugin.getParamNetworkDataMatching(), datasetNetwork1, datasetNetwork2);
@@ -392,89 +341,6 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
             }
         }
 
-        // Liens generiques
-        /*
-         * Population<DefaultFeature> collection2 = new
-         * Population<DefaultFeature>();
-         * fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType
-         * newFeatureType2 = new
-         * fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
-         * newFeatureType2.setTypeName("aaa");
-         * newFeatureType2.setGeometryType(GM_LineString.class);
-         * SchemaDefaultFeature schemaDefaultFeature2 = new
-         * SchemaDefaultFeature(); schemaDefaultFeature2.setNom("aaa");
-         * schemaDefaultFeature2.setNomSchema("aaa");
-         * schemaDefaultFeature2.setFeatureType(newFeatureType2);
-         * collection.setFeatureType(newFeatureType2);
-         * collection2.setFeatureType(newFeatureType2);
-         */
-
-        /*
-         * EnsembleDeLiens liensGeneriques =
-         * resultatAppariement.getLiensGeneriques();
-         * LOGGER.trace("Liens generiques = " + liensGeneriques.size()); for
-         * (Lien lien : liensGeneriques) {
-         *//*
-            * DefaultFeature defaultFeature = new DefaultFeature();
-            * defaultFeature
-            * .setFeatureType(schemaDefaultFeature2.getFeatureType());
-            * defaultFeature.setSchema(schemaDefaultFeature2);
-            * defaultFeature.setGeom(lien.getGeom());
-            *//*
-               * 
-               * LOGGER.trace("Objets reseau 1 comme chaine = " +
-               * lien.getObjetsRefAsString());
-               * LOGGER.trace("Objets reseau 2 comme chaine = " +
-               * lien.getCorrespondantsAsString());
-               * 
-               * // On ajoute l'attribut "nature" qui vaut i*0.05 et qui est de
-               * type "double" // AttributeManager.addAttribute(defaultFeature,
-               * "evaluation", "0.5", "Double"); //
-               * AttributeManager.addAttribute(defaultFeature, "objetsRef",
-               * "44", "String"); //
-               * AttributeManager.addAttribute(defaultFeature, "objetsComp",
-               * "33", "String");
-               *//*
-                  * List<GF_AttributeType> listAttributs =
-                  * lien.getFeatureType().getFeatureAttributes(); AttributeType
-                  * aT = new AttributeType(); aT.setMemberName("objetsRef");
-                  * aT.setNomField("objetsRef"); aT.setValueType("String");
-                  * listAttributs.add(aT);
-                  * lien.getFeatureType().setFeatureAttributes(listAttributs);
-                  * 
-                  * LOGGER.trace("Nb d'attributs = " +
-                  * lien.getFeatureType().getFeatureAttributes().size()); for
-                  * (GF_AttributeType attribute :
-                  * lien.getFeatureType().getFeatureAttributes()) { String
-                  * nomAttribut = attribute.getMemberName(); String value =
-                  * attribute. LOGGER.trace(nomAttribut); }
-                  *//*
-                     * 
-                     * // collection2.add(defaultFeature); }
-                     */
-
-        LOGGER.trace("----------------------------------------------------------");
-        LOGGER.trace("Enregistrement des résultats en fichier shape");
-        // StockageLiens.stockageDesLiens(liens, 1, 2, 3);
-
-        // String repResultat =
-        // "D:\\Data\\Appariement\\MesTests\\EXTRAITS-GPS\\R4\\";
-        // ShapefileWriter.write(arcs, repResultat + "ReseauApparie.shp");
-        // ShapefileWriter.write(liens, repResultat + "Liens.shp");
-        // ShapefileWriter.write(resultatAppariement.getReseau1().getPopArcs(),
-        // repResultat + "ArcTopoReseau1.shp");
-        // ShapefileWriter.write(resultatAppariement.getReseau1().getPopNoeuds(),
-        // repResultat + "NoeudTopoReseau1.shp");
-        // ShapefileWriter.write(resultatAppariement.getReseau2().getPopArcs(),
-        // repResultat + "ArcTopoReseau2.shp");
-        // ShapefileWriter.write(resultatAppariement.getReseau2().getPopNoeuds(),
-        // repResultat + "NoeudTopoReseau2.shp");
-
-        LOGGER.trace("----------------------------------------------------------");
-
-        // A garder ??
-        // this.application.getFrame().getDesktopPane().removeAll();
-
         this.application.getMainFrame().createNewDesktop("Appariement réseau.");
 
         Dimension desktopSize = this.application.getMainFrame().getSize();
@@ -525,36 +391,6 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
             LOGGER.info("Nombre de noeuds de la carte topo n°1 = "
                     + resultatAppariement.getReseauStat1().getReseauApp().getListeNoeuds().size());
 
-            /*
-             * List<ReseauApp> cartesTopoReferenceValuees = AppariementIO
-             * .scindeSelonValeursResultatsAppariement
-             * (resultatAppariement.getReseau1(), valeursClassement);
-             * IPopulation<Arc> arcsReferenceApparies =
-             * cartesTopoReferenceValuees.get(0).getPopArcs(); IPopulation<Arc>
-             * arcsReferenceIncertains =
-             * cartesTopoReferenceValuees.get(1).getPopArcs(); IPopulation<Arc>
-             * arcsReferenceNonApparies =
-             * cartesTopoReferenceValuees.get(2).getPopArcs(); //
-             * IPopulation<Noeud> noeudsReferenceApparies =
-             * cartesTopoReferenceValuees.get(0).getPopNoeuds(); //
-             * IPopulation<Noeud> noeudsReferenceIncertains =
-             * cartesTopoReferenceValuees.get(1).getPopNoeuds(); //
-             * IPopulation<Noeud> noeudsReferenceNonApparies =
-             * cartesTopoReferenceValuees.get(2).getPopNoeuds();
-             * 
-             * l1 = p2.addUserLayer(arcsReferenceApparies,
-             * "Arcs réseau 1 appariés", null);
-             * l1.getSymbolizer().getStroke().setColor(network1Color);
-             * l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH); Layer
-             * l1D = p2.addUserLayer(arcsReferenceIncertains,
-             * "Arcs réseau 1 incertains", null);
-             * l1D.getSymbolizer().getStroke().setColor(network1DColor);
-             * l1D.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH); Layer
-             * l1N = p2.addUserLayer(arcsReferenceNonApparies,
-             * "Arcs réseau 1 non appariés", null);
-             * l1N.getSymbolizer().getStroke().setColor(network1NColor);
-             * l1N.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
-             */
             l1 = p2.addUserLayer(datasetNetwork1.getPopulationsArcs().get(0), "Réseau 1", null);
             l1.getSymbolizer().getStroke().setColor(network1Color);
             l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
@@ -583,22 +419,12 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         l1.getSymbolizer().getStroke().setColor(network1Color);
         l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
 
-        // Layer lp1 =
         p3.addUserLayer(resultatAppariement.getReseauStat1().getReseauApp().getPopNoeuds(), "CT 1 - Noeuds", null);
-        // Layer lp2 =
         p3.addUserLayer(resultatAppariement.getReseauStat2().getReseauApp().getPopNoeuds(), "CT 2 - Noeuds", null);
-        // lp1.getSymbolizer().getStroke().setColor(network1Color);
-        // lp1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
 
         l2 = p3.addUserLayer(resultatAppariement.getReseauStat2().getReseauApp().getPopArcs(), "CT 2 - Arcs", null);
         l2.getSymbolizer().getStroke().setColor(network2Color);
         l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
-
-        /*
-         * Layer l3 = p3.addUserLayer(liens, "Liens", null);
-         * l3.getSymbolizer().getStroke().setColor(linkColorDoubtfull);
-         * l3.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH_LINK);
-         */
 
         Layer l4 = p3.addUserLayer(collection, "Liens noeuds", null);
         l4.getSymbolizer().getStroke().setColor(nodeColor);
@@ -625,58 +451,12 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         link_doubtfull_layer.getSymbolizer().getStroke().setColor(linkColorDoubtfull);
         link_doubtfull_layer.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH_LINK);
 
-        /*
-         * try { CoordinateReferenceSystem crs = CRS.decode("EPSG:32618");
-         * ShapefileWriter.write(liensIncertains,
-         * "D:\\Data\\Appariement\\Haiti\\rond-point\\liens.shp", crs); } catch
-         * (Exception e1) { e1.printStackTrace(); }
-         */
-
         p3.setSize(widthProjectFrame, heightProjectFrame * 2);
         p3.setLocation(widthProjectFrame, 0);
 
-        
-
-        // ---------------------------------------------------------------------------------
-        // Frame n°4
-        //
-        /*
-         * ProjectFrame p4 = this.application.getFrame().newProjectFrame();
-         * p4.getLayerViewPanel().setViewport(viewport);
-         * viewport.getLayerViewPanels().add(p4.getLayerViewPanel());
-         * p4.setTitle("Export liens");
-         * 
-         * l1 = p4.addUserLayer(datasetNetwork1.getPopulationsArcs().get(0),
-         * "Réseau 1", null);
-         * l1.getSymbolizer().getStroke().setColor(network1Color);
-         * l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH); l2 =
-         * p4.addUserLayer(datasetNetwork2.getPopulationsArcs().get(0),
-         * "Réseau 2", null);
-         * l2.getSymbolizer().getStroke().setColor(network2Color);
-         * l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
-         * 
-         * Layer l5 = p4.addUserLayer(liensGeneriques, "Liens generiques",
-         * null); // Layer l5 = p4.addUserLayer(collection2, "Liens generiques",
-         * null); l5.getSymbolizer().getStroke().setColor(liensGeneriquesColor);
-         * l5.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH * 3);
-         * 
-         * p4.setSize(widthProjectFrame, heightProjectFrame);
-         * p4.setLocation(widthProjectFrame / 2, heightProjectFrame / 2);
-         */
-
-        
-        // Test : ajout 
-        this.application.getMainFrame().createNewDesktop("Résultat.");
-        // DisplayLinkGeomPanel geomLinkPanel = new DisplayLinkGeomPanel(application.getMainFrame(), liens);
-        // this.application.getMainFrame().addFrameInDesktop("Résultat.", new DisplayLinkPanel(geomLinkPanel, liens));
-        this.application.getMainFrame().addFrameInDesktop("Résultat.", new DisplayStatResultPanel(resultatAppariement));
-        // this.application.getMainFrame().addFrameInDesktop("Résultat.", new DisplayParamPanel(paramPlugin));
-        //this.application.getMainFrame().addFrameInDesktop("Résultat.", geomLinkPanel.getGui());
-        
-        
-        
         //
         LOGGER.info("Finished");
+        }
     }
 
 }
