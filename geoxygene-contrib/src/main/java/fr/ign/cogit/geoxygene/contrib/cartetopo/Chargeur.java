@@ -48,7 +48,8 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Primitive;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
-import fr.ign.cogit.parameters.Parameters;
+import fr.ign.parameters.Parameters;
+
 
 /**
  * Chargeur permettant de créer une carte topo à partir de classes de
