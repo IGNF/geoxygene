@@ -8,13 +8,6 @@ import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
-import fr.ign.cogit.cartagen.leastsquares.core.LSCurvatureConstraint;
-import fr.ign.cogit.cartagen.leastsquares.core.LSMovementConstraint;
-import fr.ign.cogit.cartagen.leastsquares.core.LSMovementDirConstraint;
-import fr.ign.cogit.cartagen.leastsquares.core.LSProximityConstraint;
-import fr.ign.cogit.cartagen.leastsquares.core.LSScheduler;
-import fr.ign.cogit.cartagen.leastsquares.core.LSScheduler.MatrixSolver;
-import fr.ign.cogit.cartagen.leastsquares.core.MapspecsLS;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.MultiThemeParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterMultiProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
@@ -24,6 +17,13 @@ import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.cartagen.spatialanalysis.network.flexibilitygraph.MinimumSeparation;
 import fr.ign.cogit.cartagen.spatialanalysis.network.flexibilitygraph.OverlapConflict;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSCurvatureConstraint;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSMovementConstraint;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSMovementDirConstraint;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSProximityConstraint;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSScheduler;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSScheduler.MatrixSolver;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.MapspecsLS;
 
 public class DisplacementLSAProcess extends ScaleMasterMultiProcess {
 
@@ -74,8 +74,8 @@ public class DisplacementLSAProcess extends ScaleMasterMultiProcess {
 
       // enrich the rail network
       NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
-          .getCurrentDataset(), CartAGenDocOld.getInstance().getCurrentDataset()
-          .getRailwayNetwork(), false);
+          .getCurrentDataset(), CartAGenDocOld.getInstance()
+          .getCurrentDataset().getRailwayNetwork(), false);
     } catch (Exception e1) {
       e1.printStackTrace();
     }
@@ -114,14 +114,14 @@ public class DisplacementLSAProcess extends ScaleMasterMultiProcess {
       poidsContraintes.put(LSMovementDirConstraint.class.getName(), 4.0);
       poidsContraintes.put(LSProximityConstraint.class.getName(), 15.0);
 
-      MapspecsLS mapspecs = new MapspecsLS(this.getScale(),
+      MapspecsLS mapspecs = new MapspecsLS(this.getScale(), null,
           new HashSet<String>(), new HashSet<String>(), contraintesMalleables,
           contraintesExternes, new HashSet<String>(), new HashSet<String>(),
           classesMalleables, poidsContraintes);
 
       // puis on construit un scheduler
       LSScheduler sched = new LSScheduler(mapspecs);
-      sched.setObjs(conflict.getSections());
+      mapspecs.setSelectedObjects(conflict.getSectionsColn());
       sched.setSolver(MatrixSolver.JAMA);
       // on lance la généralisation
       sched.triggerAdjustment(false, true);

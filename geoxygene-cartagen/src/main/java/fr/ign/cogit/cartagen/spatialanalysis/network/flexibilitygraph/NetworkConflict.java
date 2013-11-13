@@ -1,8 +1,10 @@
 package fr.ign.cogit.cartagen.spatialanalysis.network.flexibilitygraph;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 
 public abstract class NetworkConflict {
 
@@ -28,6 +30,10 @@ public abstract class NetworkConflict {
 
   public void setConflictCost(double conflictCost) {
     this.conflictCost = conflictCost;
+  }
+
+  public Set<IFeature> getSectionsColn() {
+    return new HashSet<IFeature>(sections);
   }
 
 }
