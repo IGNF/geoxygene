@@ -23,9 +23,9 @@ import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.LineDensification;
 /**
  * @author G. Touya
  * 
- *         Curvature constraints like the one presented in (Harrie, 1999)
+ *         Constraint that preserves the length of a segment.
  */
-public class LSCurvatureConstraint extends LSInternalConstraint {
+public class LSSegmentLengthConstraint extends LSInternalConstraint {
 
   private Double minSegLength;
   /**
@@ -48,7 +48,7 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
     return false;
   }
 
-  public LSCurvatureConstraint(LSPoint pt, LSScheduler scheduler) {
+  public LSSegmentLengthConstraint(LSPoint pt, LSScheduler scheduler) {
     super(pt, scheduler);
   }
 
@@ -148,16 +148,13 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
 
     // construction du vecteur des contraintes
     systeme.setConstraints(new Vector<LSConstraint>());
-    for (int i = 0; i < 3; i++) {
-      systeme.getConstraints().add(this);
-    }
+    systeme.getConstraints().add(this);
+    systeme.getConstraints().add(this);
 
     // construction de la matrice des observations
     // c'est une matrice (4,1) contenant deux 0
-    systeme.initObservations(3);
+    systeme.initObservations(2);
 
-    // calcul des facteurs de l'équation sur les angles
-    double a = 0.0, b = 0.0, c = 0.0, d = 0.0, e = 0.0, f = 0.0;
     double normeU = Math.sqrt((point.getIniPt().getX() - pointPrec.getIniPt()
         .getX())
         * (point.getIniPt().getX() - pointPrec.getIniPt().getX())
@@ -168,18 +165,6 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
         * (pointSuiv.getIniPt().getX() - point.getIniPt().getX())
         + (pointSuiv.getIniPt().getY() - point.getIniPt().getY())
         * (pointSuiv.getIniPt().getY() - point.getIniPt().getY()));
-    a = (point.getIniPt().getY() - pointSuiv.getIniPt().getY())
-        / (normeU * normeW);
-    b = (-point.getIniPt().getX() + pointSuiv.getIniPt().getX())
-        / (normeU * normeW);
-    c = (-pointPrec.getIniPt().getY() + pointSuiv.getIniPt().getY())
-        / (normeU * normeW);
-    d = (pointPrec.getIniPt().getX() - pointSuiv.getIniPt().getX())
-        / (normeU * normeW);
-    e = (pointPrec.getIniPt().getY() - point.getIniPt().getY())
-        / (normeU * normeW);
-    f = (-pointPrec.getIniPt().getX() + point.getIniPt().getX())
-        / (normeU * normeW);
 
     // calcul des facteurs pour les équations sur les longueurs
     double a1 = 0.0, b1 = 0.0, c1 = 0.0, d1 = 0.0;
@@ -195,69 +180,49 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
 
     // construction de la matrice A
     if (pointPrec.isFixed() && pointSuiv.isFixed()) {
-      systeme.initMatriceA(3, 2);
-      systeme.setA(0, 0, c);
-      systeme.setA(0, 1, d);
-      systeme.setA(1, 0, c1);
-      systeme.setA(1, 1, d1);
-      systeme.setA(2, 0, c2);
-      systeme.setA(2, 1, d2);
-      systeme.setNonNullValues(6);
-      systeme.setObs(0, -a * pointPrec.getDeltaX() - b * pointPrec.getDeltaY()
-          - e * pointSuiv.getDeltaX() - f * pointSuiv.getDeltaY());
-      systeme.setObs(1,
+      systeme.initMatriceA(2, 2);
+      systeme.setA(0, 0, c1);
+      systeme.setA(0, 1, d1);
+      systeme.setA(1, 0, c2);
+      systeme.setA(1, 1, d2);
+      systeme.setNonNullValues(4);
+      systeme.setObs(0,
           -a1 * pointPrec.getDeltaX() - b1 * pointPrec.getDeltaY());
-      systeme.setObs(2,
+      systeme.setObs(1,
           -a2 * pointSuiv.getDeltaX() - b2 * pointSuiv.getDeltaY());
     } else if (pointPrec.isFixed()) {
-      systeme.initMatriceA(3, 4);
-      systeme.setA(0, 0, c);
-      systeme.setA(0, 1, d);
-      systeme.setA(0, 2, e);
-      systeme.setA(0, 3, f);
-      systeme.setA(1, 0, c1);
-      systeme.setA(1, 1, d1);
-      systeme.setA(2, 0, c2);
-      systeme.setA(2, 1, d2);
-      systeme.setA(2, 2, a2);
-      systeme.setA(2, 3, b2);
-      systeme.setNonNullValues(10);
-      systeme.setObs(0, -a * pointPrec.getDeltaX() - b * pointPrec.getDeltaY());
-      systeme.setObs(1,
+      systeme.initMatriceA(2, 4);
+      systeme.setA(0, 0, c1);
+      systeme.setA(0, 1, d1);
+      systeme.setA(1, 0, c2);
+      systeme.setA(1, 1, d2);
+      systeme.setA(1, 2, a2);
+      systeme.setA(1, 3, b2);
+      systeme.setNonNullValues(6);
+      systeme.setObs(0,
           -a1 * pointPrec.getDeltaX() - b1 * pointPrec.getDeltaY());
     } else if (pointSuiv.isFixed()) {
-      systeme.initMatriceA(3, 4);
-      systeme.setA(0, 0, a);
-      systeme.setA(0, 1, b);
-      systeme.setA(0, 2, c);
-      systeme.setA(0, 3, d);
-      systeme.setA(1, 0, a1);
-      systeme.setA(1, 1, b1);
-      systeme.setA(1, 2, c1);
-      systeme.setA(1, 3, d1);
-      systeme.setA(2, 2, c2);
-      systeme.setA(2, 3, d2);
-      systeme.setNonNullValues(10);
-      systeme.setObs(0, -e * pointSuiv.getDeltaX() - f * pointSuiv.getDeltaY());
-      systeme.setObs(2,
+      systeme.initMatriceA(2, 4);
+      systeme.setA(0, 0, a1);
+      systeme.setA(0, 1, b1);
+      systeme.setA(0, 2, c1);
+      systeme.setA(0, 3, d1);
+      systeme.setA(1, 2, c2);
+      systeme.setA(1, 3, d2);
+      systeme.setNonNullValues(6);
+      systeme.setObs(1,
           -a2 * pointSuiv.getDeltaX() - b2 * pointSuiv.getDeltaY());
     } else {
-      systeme.initMatriceA(3, 6);
-      systeme.setA(0, 0, a);
-      systeme.setA(0, 1, b);
-      systeme.setA(0, 2, c);
-      systeme.setA(0, 3, d);
-      systeme.setA(0, 4, e);
-      systeme.setA(0, 5, f);
-      systeme.setA(1, 0, a1);
-      systeme.setA(1, 1, b1);
-      systeme.setA(1, 2, c1);
-      systeme.setA(1, 3, d1);
-      systeme.setA(2, 4, a2);
-      systeme.setA(2, 5, b2);
-      systeme.setA(2, 2, c2);
-      systeme.setA(2, 3, d2);
-      systeme.setNonNullValues(14);
+      systeme.initMatriceA(2, 6);
+      systeme.setA(0, 0, a1);
+      systeme.setA(0, 1, b1);
+      systeme.setA(0, 2, c1);
+      systeme.setA(0, 3, d1);
+      systeme.setA(1, 4, a2);
+      systeme.setA(1, 5, b2);
+      systeme.setA(1, 2, c2);
+      systeme.setA(1, 3, d2);
+      systeme.setNonNullValues(8);
     }
 
     return systeme;

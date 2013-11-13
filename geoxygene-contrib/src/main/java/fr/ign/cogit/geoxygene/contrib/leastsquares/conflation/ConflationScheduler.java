@@ -133,9 +133,10 @@ public class ConflationScheduler extends LSScheduler {
 
   }
 
-  private void initialiseConflationConstraints() throws ClassNotFoundException,
-      SecurityException, NoSuchMethodException, IllegalArgumentException,
-      InstantiationException, IllegalAccessException, InvocationTargetException {
+  protected void initialiseConflationConstraints()
+      throws ClassNotFoundException, SecurityException, NoSuchMethodException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException,
+      InvocationTargetException {
     IFeatureCollection<IFeature> conflatedFeats = new FT_FeatureCollection<IFeature>();
     conflatedFeats.addAll(this.getObjsRigides());
     conflatedFeats.addAll(this.getObjsMalleables());
