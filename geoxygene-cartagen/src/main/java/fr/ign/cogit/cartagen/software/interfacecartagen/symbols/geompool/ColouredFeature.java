@@ -155,6 +155,7 @@ public class ColouredFeature extends DefaultFeature {
     if (colour == null) {
       actualColour = Color.RED;
     }
+    this.symbolColour = actualColour;
     // If not "simple" geom type, assign color and that's all
     if (!(geom instanceof IPolygon) && !(geom instanceof IMultiSurface<?>)
         && !(geom instanceof ILineString) && !(geom instanceof IMultiCurve<?>)
@@ -221,6 +222,10 @@ public class ColouredFeature extends DefaultFeature {
       Fill fill = new Fill();
       fill.setColor(symbolColour);
       mark.setFill(fill);
+      Stroke stroke = new Stroke();
+      stroke.setColor(symbolColour);
+      stroke.setStrokeWidth(0);
+      mark.setStroke(stroke);
       graphic.getMarks().add(mark);
       symbolizer.setGraphic(graphic);
       return symbolizer;

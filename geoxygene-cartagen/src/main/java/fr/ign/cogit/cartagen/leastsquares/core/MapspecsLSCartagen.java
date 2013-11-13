@@ -27,6 +27,12 @@ import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.selection.SelectionUtil;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSCurvatureConstraint;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSMovementConstraint;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSMovementDirConstraint;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSProximityConstraint;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSSideOrientConstraint;
+import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSStiffnessConstraint;
 
 /**
  * @author G. Touya
@@ -34,7 +40,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
  *         Les objets Java de cette classe contiennent les différentes
  *         définitions d'une Mapspec de Moindres Carrés.
  */
-public class MapspecsLS {
+public class MapspecsLSCartagen {
 
   public enum SelectionType {
     SELECTED_OBJECTS, WINDOW_OBJECTS, SELECTED_AREAS
@@ -77,7 +83,7 @@ public class MapspecsLS {
   private double filterThreshold = 1.0;
 
   // constructeur
-  public MapspecsLS() {
+  public MapspecsLSCartagen() {
   }
 
   /**
@@ -90,7 +96,7 @@ public class MapspecsLS {
    * @throws IOException
    * @throws ParserConfigurationException
    */
-  public MapspecsLS(File fic) throws SAXException, IOException,
+  public MapspecsLSCartagen(File fic) throws SAXException, IOException,
       ParserConfigurationException {
     // on récupère la sélection d'objets
     this.selectedObjects = SelectionUtil.getSelectedObjects();
@@ -219,7 +225,7 @@ public class MapspecsLS {
         .getNodeValue()));
   }
 
-  public MapspecsLS(double echelle, Set<String> contraintesFixes,
+  public MapspecsLSCartagen(double echelle, Set<String> contraintesFixes,
       Set<String> contraintesRigides, Set<String> contraintesMalleables,
       Map<String[], Double> contraintesExternes, Set<String> classesFixes,
       Set<String> classesRigides, Set<String> classesMalleables,
