@@ -80,6 +80,7 @@
 			<groupId>xmlunit</groupId>
 			<artifactId>xmlunit</artifactId>
 			<version>1.4</version>
+			<scope>test</scope>
 		</dependency>
 		
 		<dependency>
@@ -149,6 +150,13 @@
             <artifactId>gt-shapefile</artifactId>
             <version>${geotools.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-xml</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        
+        
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>

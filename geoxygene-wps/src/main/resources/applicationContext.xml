@@ -11,7 +11,7 @@
     <bean id="NetworkDataMatchingResultPPIO" 
             class="fr.ign.cogit.process.geoxygene.netmatching.ppio.NetworkDataMatchingResultPPIO" />
 
-    <!-- CarteTopoResult -->
+    <bean id="CarteTopoPPIO" class="fr.ign.cogit.process.geoxygene.ppio.CarteTopoPPIO" />
 
     <!-- ========================================================================== -->
     <!--   The Filtering processes -->

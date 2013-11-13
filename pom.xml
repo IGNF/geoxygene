@@ -73,9 +73,6 @@
 	<!-- =========================================================== -->
 	<profiles>
 		<profile>
-			<id>cogit</id>
-		</profile>
-		<profile>
 			<id>integration-test</id>
 			<properties>
 				<!-- Only integration tests are run. -->
@@ -106,6 +103,44 @@
 		</profile>
 		<profile>
 			<id>geoserver</id>
+			<modules>
+				<module>geoxygene-api</module>
+				<module>geoxygene-contrib</module>
+				<module>geoxygene-util</module>
+				<module>geoxygene-wps</module>
+				<module>geoxygene-feature</module>
+				<module>geoxygene-io</module>
+				<module>geoxygene-spatial</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>cogit</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>geoxygene-api</module>
+				<module>geoxygene-appli</module>
+				<module>geoxygene-scripting</module>
+				<module>geoxygene-cartagen</module>
+				<module>geoxygene-contrib</module>
+				<module>geoxygene-database</module>
+				<module>geoxygene-deprecated</module>
+				<module>geoxygene-feature</module>
+				<module>geoxygene-filter</module>
+				<module>geoxygene-io</module>
+				<module>geoxygene-geopensim</module>
+				<module>geoxygene-pea-rep</module>
+				<module>geoxygene-schemageo</module>
+				<module>geoxygene-semio</module>
+				<module>geoxygene-sig3d</module>
+				<module>geoxygene-spatial</module>
+				<module>geoxygene-style</module>
+				<module>geoxygene-util</module>
+				<module>geoxygene-wps</module>
+				<module>evidence4j</module>
+				<module>geoxygene-osm</module>
+			</modules>
 		</profile>
 	</profiles>
 
@@ -459,7 +494,7 @@
 				<reportSets>
 					<reportSet>
 						<reports>
-							<report>javadoc</report>
+							<!-- <report>javadoc</report> -->
 							<report>summary</report>
 							<report>project-team</report>
 							<report>mailing-list</report>

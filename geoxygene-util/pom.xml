@@ -12,7 +12,7 @@
 
 	<artifactId>geoxygene-util</artifactId>
 	<packaging>jar</packaging>
-	<name>Module util</name>
+	<name>Module geoxygene.util</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
