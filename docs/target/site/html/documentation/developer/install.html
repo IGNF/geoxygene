@@ -1,0 +1,556 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>GeOxygene Developer’s Setup Guide &mdash; GeOxygene 1.6-SNAPSHOT documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/geoxygene.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.6-SNAPSHOT',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="GeOxygene 1.6-SNAPSHOT documentation" href="../../index.html" />
+    <link rel="up" title="Developer Guide" href="index.html" />
+    <link rel="next" title="Quickstart" href="quickstart.html" />
+    <link rel="prev" title="Developer Guide" href="index.html" /> 
+  </head>
+  <body>
+    <div class="header">
+        <div class="wrap">
+            
+            <div id="logo"><a href="http://oxygene-project.sourceforge.net/">GeOxygene</a></div>
+            <h1 id="logo_cogit"><a href="http://recherche.ign.fr/labos/cogit/">COGIT</a></h1>
+            <h1 id="logo_ign"><a href="http://www.ign.fr">IGN</a></h1>
+            <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1>
+            
+            <ul id="top-nav2">
+                <li class="first">
+                    <a href="../community/index.html">About</a>
+                </li>
+                <li>
+                    <a href="../download/index.html">Download</a>
+                </li>
+                <li>
+                    <a href="../documentation/index.html">Documentation</a>
+                </li>
+            </ul>
+            
+            <div id='top-xleft'>Last Published: 2013-11-12  | Version: 1.6-SNAPSHOT</div>
+            <ul id="top-nav">
+                <li><a href="http://www.geotools.org/">GeoTools</a></li>
+                <li><a href="http://geoapi.sourceforge.net/">GeoApi</a></li>
+            </ul>
+            <div id="searchbox">
+                <form class="search" action="../../search.html" method="get">
+                    <input id="searchbox-query" type="text" name="q" size="25" value="Search &hellip;" tabindex="3" onblur="if(this.value=='') this.value='Search &hellip;';" onfocus="if(this.value=='Search &hellip;') this.value='';" />
+                    <input id="searchbox-submit" type="image" value="Search" src="../../_static/img/search_icon_green.png" />
+                    <input type="hidden" name="check_keywords" value="yes" />
+                    <input type="hidden" name="area" value="default" />
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="related">
+      <ul id="breadcrumbs">
+        <li><a href="../../index.html">GeOxygene 1.6-SNAPSHOT documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Developer Guide</a> &raquo;</li>
+        <li><a href="#">GeOxygene Developer’s Setup Guide</a></li>
+      </ul>
+    </div> 
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">GeOxygene Developer’s Setup Guide</a><ul>
+<li><a class="reference internal" href="#java">JAVA</a></li>
+<li><a class="reference internal" href="#eclipse-installation">Eclipse installation</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#eclipse-preferences">Eclipse preferences</a><ul>
+<li><a class="reference internal" href="#jdk">JDK</a></li>
+<li><a class="reference internal" href="#proxy">Proxy</a></li>
+<li><a class="reference internal" href="#encodage">Encodage</a></li>
+<li><a class="reference internal" href="#code-formatting">Code formatting</a></li>
+<li><a class="reference internal" href="#text-editors">Text editors</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#eclipse-plugins">Eclipse Plugins</a><ul>
+<li><a class="reference internal" href="#plugin-m2e">Plugin M2E</a></li>
+<li><a class="reference internal" href="#plugin-subclipse">Plugin Subclipse</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#geoxygene">GeOxygene</a><ul>
+<li><a class="reference internal" href="#importer-le-projet-geoxygene">Importer le projet GeOxygene</a></li>
+<li><a class="reference internal" href="#compilation">Compilation</a></li>
+<li><a class="reference internal" href="#lancement-de-l-interface-graphique">Lancement de l&#8217;interface graphique</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Developer Guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="quickstart.html"
+                        title="next chapter">Quickstart</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation/developer/install.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="geoxygene-developers-setup-guide">
+<h1>GeOxygene Developer’s Setup Guide</h1>
+<p>Cette page a pour objectif de guider le développeur dans son installation de la plateforme GeOxygene
+sous Windows ou sous Linux.</p>
+<div class="section" id="java">
+<h2>JAVA</h2>
+<p>GeOxygene est un projet Open Source écrit en JAVA, il faut donc l&#8217;installation d&#8217;une <strong>JDK</strong> dont la version est au moins supérieure à la version 6.
+Il est possible de télécharger cet environnement sur le site de Sun à l&#8217;adresse suivante : <a class="reference external" href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">java.sun.com</a></p>
+</div>
+<div class="section" id="eclipse-installation">
+<h2>Eclipse installation</h2>
+<p>L&#8217;environnement de développement utilisé est celui d&#8217;<a class="reference external" href="http://www.eclipse.org/">Eclipse</a>, éditeur très largement utilisé
+aujourd&#8217;hui pour les développements JAVA.</p>
+<div class="section" id="installation">
+<h3>Installation</h3>
+<ul>
+<li><p class="first">Vous pouvez télécharger la dernière version d&#8217;Eclipse directement à partir du lien : <a class="reference external" href="http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/keplersr1">Eclipse Java EE IDE for Web Developers</a>
+Actuellement la dernière version est Kepler (4.3)</p>
+</li>
+<li><p class="first">Décompresser le fichier téléchargé (Eclipse ne fournit pas d&#8217;installeur, juste un répertoire à dézipper).</p>
+</li>
+<li><p class="first">Editer le fichier eclipse.ini situé à la racine du répertoire d&#8217;Eclipse. Configurer Eclipse pour qu&#8217;il s&#8217;exécute avec une JDK et non une JRE. Pour ce faire,
+rajouter les lignes suivantes au début du fichier :</p>
+<blockquote>
+<div><div class="highlight-xml"><div class="highlight"><pre>-vm
+d:/MesProgrammes/Java/jdk1.7.0_03/bin/javaw.exe
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Lancer Eclipse :</p>
+<blockquote>
+<div><div class="chemin container">
+<p><strong>Windows</strong> : eclipse.exe</p>
+<p><strong>Linux</strong> : ./eclipse</p>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Lors du premier lancement, une boite de dialogue vous demandera de sélectionner le répertoire racine de vos projets Eclipse.
+Soit vous sélectionnez celui proposé, auquel cas il sera créé ou, vous pouvez en choisir un personnalisé.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="eclipse-preferences">
+<h3>Eclipse preferences</h3>
+<div class="section" id="jdk">
+<h4>JDK</h4>
+<div class="centerside container">
+<div class="figure">
+<img alt="../../_images/JavaConfiguration.png" src="../../_images/JavaConfiguration.png" />
+<p class="caption">Figure 5 : Java configuration in Eclipse</p>
+</div>
+</div>
+</div>
+<div class="section" id="proxy">
+<h4>Proxy</h4>
+<p>Pour installer des mises à jour, de nouveaux plugins ou des extensions, il faut qu&#8217;Eclipse puisse accèder
+au net pour pouvoir les télécharger.  Si vous êtes derrière un proxy, il vous faut configurer Eclipse afin qu&#8217;il en tienne compte.</p>
+<p>Pour ce faire, accéder au menu :</p>
+<div class="chemin container">
+Window &gt;&gt; Preferences &gt;&gt; General &gt;&gt; Network Connection</div>
+<p>Vous pouvez alors séléctionner &lt;Manual&gt; comme &lt;Active Provider&gt;</p>
+<div class="centerside container">
+<div class="figure">
+<img alt="../../_images/proxy3.png" src="../../_images/proxy3.png" />
+<p class="caption">Figure 1 : aaa</p>
+</div>
+</div>
+<p>Selectionner &#8220;HTTP&#8221; dans la liste des entrées et cliquer sur le bouton &#8220;Edit&#8221;</p>
+<div class="centerside container">
+<div class="figure">
+<img alt="../../_images/proxy4.png" src="../../_images/proxy4.png" />
+<p class="caption">Figure 2 : bbb</p>
+</div>
+</div>
+<p>Entrer les coordonnées de votre proxy. Pour l&#8217;IGN par exemple, il s&#8217;agit de &lt;proxy.ign.fr&gt; avec le port &lt;3128&gt;.
+Ne remplisser pas les champs d&#8217;authentification.</p>
+<div class="centerside container">
+<div class="figure">
+<img alt="../../_images/proxy1.png" src="../../_images/proxy1.png" />
+<p class="caption">Figure 3 : ccc</p>
+</div>
+</div>
+</div>
+<div class="section" id="encodage">
+<h4>Encodage</h4>
+<p>Tous les modules de GeOxygene doivent être encodés en UTF-8.
+Pour ce faire, dans Eclipse, aller dans :</p>
+<div class="chemin container">
+Preferences &gt;&gt; Workspace &gt;&gt; Text file encoding &gt;&gt; Other</div>
+<p>et choisir UTF-8.</p>
+<div class="centerside container">
+<div class="figure">
+<img alt="../../_images/encodage.png" src="../../_images/encodage.png" />
+<p class="caption">Figure 4 : ddd</p>
+</div>
+</div>
+</div>
+<div class="section" id="code-formatting">
+<h4>Code formatting</h4>
+<p>Parce qu&#8217;on passe plus de temps à lire du code qu’à en écrire, il faut configurer dans Eclipse la convention de programmation adoptée dans GeOxygene.
+Elle s&#8217;inspire avant tout de la convention de programmation recommandée pour tous les développements JAVA.
+Cette norme est dérivée de celle proposée par SUN à l’adresse :</p>
+<blockquote>
+<div><a class="reference external" href="http://www.oracle.com/technetwork/java/codeconvtoc-136057.html">http://www.oracle.com/technetwork/java/codeconvtoc-136057.html</a></div></blockquote>
+<p>Aller dans &#8220;Preferences =&gt; Java =&gt; Code Style =&gt; Formatter&#8221; et cliquer sur &#8220;Import&#8221;.</p>
+<div class="centerside container">
+<div class="figure">
+<img alt="../../_images/ConfigEclipseConventionCodage_1.png" src="../../_images/ConfigEclipseConventionCodage_1.png" />
+<p class="caption">Figure 17 : &#8212;&#8211;</p>
+</div>
+</div>
+<p>Le template de la convention de nommage du COGIT «java_cogit_formatting_conventions_v1.xml» se trouve dans le code source du projet GeOxygene :</p>
+<p>geoxygene =&gt;  src =&gt;  main =&gt;  resources =&gt;  java_cogit_formatting_conventions_v1.xml</p>
+<p>Importer ce fichier et choisissez comme &#8220;Active profile&#8221; : &#8220;Java COGIT Formatting Conventions v1&#8221;</p>
+<div class="centerside container">
+<div class="figure">
+<img alt="../../_images/ConfigEclipseConventionCodage_2.png" src="../../_images/ConfigEclipseConventionCodage_2.png" />
+<p class="caption">Figure 18 : &#8212;&#8211;</p>
+</div>
+</div>
+</div>
+<div class="section" id="text-editors">
+<h4>Text editors</h4>
+</div>
+</div>
+<div class="section" id="eclipse-plugins">
+<h3>Eclipse Plugins</h3>
+<p>Maintenant, Eclipse est prêt pour l&#8217;installation des plugins nécessaires à GeOxygene.
+Vous aurez besoin des plugins Maven (m2eclipse) et subversion (subclipse).</p>
+<div class="section" id="plugin-m2e">
+<h4>Plugin M2E</h4>
+<p>Sur les dernières versions d&#8217;Eclipse Java, le plugin m2eclipse est déjà installé.</p>
+<p>Sinon : <a class="reference external" href="http://www.eclipse.org/m2e/download/">http://www.eclipse.org/m2e/download/</a></p>
+<p>When downloading jars maven makes use of a &#8220;local repository&#8221; to store jars.</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">PLATFORM</th>
+<th class="head">LOCAL REPOSITORY</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Windows XP:</td>
+<td><tt class="file docutils literal"><span class="pre">C:\Documents</span> <span class="pre">and</span> <span class="pre">Settings\Jody\.m2\repository</span></tt></td>
+</tr>
+<tr class="row-odd"><td>Windows:</td>
+<td><tt class="file docutils literal"><span class="pre">C:\Users\Jody\.m2repository</span></tt></td>
+</tr>
+<tr class="row-even"><td>Linux and Mac:</td>
+<td><tt class="file docutils literal"><span class="pre">~/.m2/repository</span></tt></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>To download jars maven makes use of public maven repositories on the internet where projects
+such as GeoTools publish their work.</p>
+<p>Si vous êtes derrière un proxy, la dernière étape consiste à configurer Maven pour utiliser le proxy.
+Pour ce, il faut ajouter un fichier emph{settings.xml} dans la racine de Maven.
+Ce répertoire est situé à l&#8217;endroit suivant :</p>
+<blockquote>
+<div><ul class="simple">
+<li>sous Linux&amp;verb|~/.m2|\</li>
+<li>sous Windows&amp;verb|C:Documents and Settings%USER%.m2|</li>
+</ul>
+</div></blockquote>
+<p>Voici un exemplaire d&#8217;un fichier settings.xml que vous pouvez utiliser à l&#8217;IGN :</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;settings</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/SETTINGS/1.0.0&quot;</span>
+          <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+          <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/SETTINGS/1.0.0</span>
+<span class="s">                              http://maven.apache.org/xsd/settings-1.0.0.xsd&quot;</span><span class="nt">&gt;</span>
+    
+    <span class="nt">&lt;interactiveMode&gt;</span>true<span class="nt">&lt;/interactiveMode&gt;</span>
+    <span class="nt">&lt;usePluginRegistry&gt;</span>false<span class="nt">&lt;/usePluginRegistry&gt;</span>
+    <span class="nt">&lt;offline&gt;</span>false<span class="nt">&lt;/offline&gt;</span>
+    
+    <span class="nt">&lt;proxies&gt;</span>
+        <span class="nt">&lt;proxy&gt;</span>
+            <span class="nt">&lt;active&gt;</span>true<span class="nt">&lt;/active&gt;</span>
+            <span class="nt">&lt;port&gt;</span>3128<span class="nt">&lt;/port&gt;</span>
+            <span class="nt">&lt;host&gt;</span>proxy.ign.fr<span class="nt">&lt;/host&gt;</span>
+            <span class="nt">&lt;nonProxyHosts&gt;</span>localhost<span class="nt">&lt;/nonProxyHosts&gt;</span>
+        <span class="nt">&lt;/proxy&gt;</span>
+    <span class="nt">&lt;/proxies&gt;</span>
+    
+    <span class="nt">&lt;profiles&gt;</span>
+        <span class="nt">&lt;profile&gt;</span>
+            <span class="nt">&lt;id&gt;</span>cogit<span class="nt">&lt;/id&gt;</span>
+            <span class="nt">&lt;activation&gt;</span>
+                <span class="nt">&lt;activeByDefault&gt;</span>true<span class="nt">&lt;/activeByDefault&gt;</span>
+            <span class="nt">&lt;/activation&gt;</span>
+        <span class="nt">&lt;/profile&gt;</span>
+        <span class="nt">&lt;profile&gt;</span>
+            <span class="nt">&lt;id&gt;</span>executable<span class="nt">&lt;/id&gt;</span>
+            <span class="nt">&lt;properties&gt;</span>
+                <span class="nt">&lt;dir.executable&gt;</span>E:\executable<span class="nt">&lt;/dir.executable&gt;</span>
+            <span class="nt">&lt;/properties&gt;</span>
+        <span class="nt">&lt;/profile&gt;</span>
+    <span class="nt">&lt;/profiles&gt;</span>
+    
+<span class="nt">&lt;/settings&gt;</span>
+</pre></div>
+</div>
+<div class="centerside container">
+<div class="figure">
+<img alt="../../_images/MavenConfiguration.png" src="../../_images/MavenConfiguration.png" />
+<p class="caption">Figure 5 : eee</p>
+</div>
+</div>
+</div>
+<div class="section" id="plugin-subclipse">
+<h4>Plugin Subclipse</h4>
+<div class="centerside container">
+<div class="figure">
+<img alt="../../_images/connector_subclipse01.png" src="../../_images/connector_subclipse01.png" />
+<p class="caption">Figure 5 : eee</p>
+</div>
+<div class="figure">
+<img alt="../../_images/connector_subclipse02.png" src="../../_images/connector_subclipse02.png" />
+<p class="caption">Figure 6 : fff</p>
+</div>
+<div class="figure">
+<img alt="../../_images/connector_subclipse03.png" src="../../_images/connector_subclipse03.png" />
+<p class="caption">Figure 6 : ggg</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="geoxygene">
+<h2>GeOxygene</h2>
+<p>Tout est en place pour l&#8217;installation de GeOxygene.</p>
+<div class="section" id="importer-le-projet-geoxygene">
+<h3>Importer le projet GeOxygene</h3>
+<p>Dans Eclipse la création d&#8217;un nouveau projet s&#8217;effectue via l&#8217;assistant &#8220;Import&#8221;.
+Celui-ci offre en effet une pléthore de modèles. Il suffit donc pour importer GeOxygene de choisir
+celui qui va extraire un projet Maven depuis un SCM (dans notre cas SVN).</p>
+<p>Comme décrits dans les deux captures d’écran ci-dessous, cliquer :</p>
+<div class="twocol container">
+<div class="leftside container">
+<p>D&#8217;abord sur :</p>
+<div class="chemin container">
+File &gt;&gt; Import</div>
+<div class="centerside container">
+<div class="figure">
+<a class="reference internal image-reference" href="../../_images/Import_01.png"><img alt="../../_images/Import_01.png" src="../../_images/Import_01.png" style="width: 350px;" /></a>
+<p class="caption">Figure 10 : Import Project</p>
+</div>
+</div>
+</div>
+<div class="rightside container">
+<p>Puis sur :</p>
+<div class="chemin container">
+Maven &gt;&gt; Checkout Maven Projects from SCM</div>
+<div class="centerside container">
+<div class="figure">
+<a class="reference internal image-reference" href="../../_images/Import_02.png"><img alt="../../_images/Import_02.png" src="../../_images/Import_02.png" style="width: 350px;" /></a>
+<p class="caption">Figure 11 : Check out Maven Projects from SCM</p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+<p>Ensuite comme l&#8217;indique la figure suivante, sélectionner <strong>svn</strong> dans la première liste comme SCM URL et indiquer l&#8217;adresse du svn de GeOxygene :</p>
+<ul class="simple">
+<li>Si vous êtes enregistré sur <a class="reference external" href="http://sourceforge.net/">Sourceforge</a>  et si vous avez des droits en tant que développeur ou administrateur sur le projet geoxygene :</li>
+</ul>
+<div class="svnurl container">
+<a class="reference external" href="https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene">https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene</a></div>
+<ul class="simple">
+<li>Sinon :</li>
+</ul>
+<div class="svnurl container">
+<a class="reference external" href="http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/">http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/</a></div>
+<p>puis cliquer sur &#8220;Next&#8221;.</p>
+</div>
+<div class="rightside container">
+<div class="centerside container">
+<div class="figure">
+<img alt="../../_images/geoxygeneEtape3.png" src="../../_images/geoxygeneEtape3.png" />
+<p class="caption">Figure 12 : SCM URL for check out GeOxygene</p>
+</div>
+</div>
+</div>
+</div>
+<div class="twocol container">
+<div class="leftside container">
+<div class="centerside container">
+<div class="figure">
+<a class="reference internal image-reference" href="../../_images/geoxygeneEtape4.png"><img alt="../../_images/geoxygeneEtape4.png" src="../../_images/geoxygeneEtape4.png" style="width: 420px;" /></a>
+<p class="caption">Figure 13 : Configure your import</p>
+</div>
+</div>
+</div>
+<div class="rightside container">
+<p>Dans le panneau suivant, vous pouvez:</p>
+<ul class="simple">
+<li>sélectionner le répertoire où sera stocké votre projet (par défaut dans le workspace courant),</li>
+<li>ajouter le projet à un working set (c&#8217;est à dire à un groupe de projets)</li>
+<li>modifier le nom du (ou des) projet(s) récupéré (s) (dans Advanced).</li>
+</ul>
+<p>Cette dernière option est utile si vous souhaitez ajouter à tous les projets récupérés un préfixe, un suffixe au nom du projet.
+Par exemple <strong>geox-[artifactId]</strong> vous créera, pour geoxygene, n projets nommés geox-xxxx.</p>
+</div>
+</div>
+<p>Cliquez ensuite sur Finish.</p>
+</div>
+<div class="section" id="compilation">
+<h3>Compilation</h3>
+<ul class="simple">
+<li>1er cas : vous utilisez l&#8217;option de compilation automatique</li>
+</ul>
+<div class="twocol container">
+<div class="leftside container">
+<div class="centerside container">
+<div class="figure">
+<a class="reference internal image-reference" href="../../_images/geoxygeneBuildAutomatically.png"><img alt="../../_images/geoxygeneBuildAutomatically.png" src="../../_images/geoxygeneBuildAutomatically.png" style="width: 410px;" /></a>
+<p class="caption">Figure 20 : Option build automatically</p>
+</div>
+</div>
+</div>
+<div class="rightside container">
+<p>Vous n&#8217;avez rien à faire, la compilation se lance automatiquement</p>
+<div class="centerside container">
+<div class="figure">
+<a class="reference internal image-reference" href="../../_images/geoxygeneAutoBuild.png"><img alt="../../_images/geoxygeneAutoBuild.png" src="../../_images/geoxygeneAutoBuild.png" style="width: 500px;" /></a>
+<p class="caption">Figure 21 : Maven build automatically</p>
+</div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li>2ème cas : lancer un maven build manuellement.</li>
+</ul>
+<p>Pour cela :</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Sélectionner dans l&#8217;explorateur à droite, le projet &#8220;geoxygene&#8221;. Puis dans le menu, cliquer sur Run =&gt; Run Configurations.</li>
+</ol>
+<blockquote>
+<div><div class="centerside container">
+<div class="figure">
+<img alt="../../_images/geoxygeneRunEtape1.png" src="../../_images/geoxygeneRunEtape1.png" />
+</div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Sélectionner comme type de run &#8220;Maven&#8221;, puis cliquer dans le menu en haut sur &#8220;New launch configuration&#8221;</li>
+</ol>
+<blockquote>
+<div><div class="centerside container">
+<div class="figure">
+<img alt="../../_images/geoxygeneRunEtape2.png" src="../../_images/geoxygeneRunEtape2.png" />
+</div>
+</div>
+</div></blockquote>
+<ol class="arabic" start="3">
+<li><p class="first">Dans la nouvelle fenêtre &#8220;Run configuration&#8221; configurer :</p>
+<blockquote>
+<div><p><strong>Name</strong> : geoxygene
+<strong>Base directory</strong> : saisir le chemin d&#8217;installation de GeOxygene (c&#8217;est celui de votre Workspace auquel il faut ajouter geoxygene)
+<strong>Goal</strong> : clean install. Vous définissez la phase du cycle (clean, install, package, compile, test, site, ...)
+** d&#8217;autres options peuvent être configurées dans cette interface si vous le souhaitez.</p>
+</div></blockquote>
+</li>
+</ol>
+<blockquote>
+<div><div class="centerside container">
+<div class="figure">
+<img alt="../../_images/geoxygeneRunEtape3.png" src="../../_images/geoxygeneRunEtape3.png" />
+</div>
+</div>
+</div></blockquote>
+</div></blockquote>
+<p>Si tout se passe bien, Maven devrait récupérer tous les jars nécessaires et compiler le projet.</p>
+</div>
+<div class="section" id="lancement-de-l-interface-graphique">
+<h3>Lancement de l&#8217;interface graphique</h3>
+<p>Une application exemple peut être exécutée:
+<strong>fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</strong>.</p>
+<p>Pour cela ouvrir le fichier GeOxygeneApplication.java qui se trouve dans le module :</p>
+<blockquote>
+<div>geoxygene-appli =&gt; src/main/java =&gt;  fr.ign.cogit.geoxygene =&gt; appli</div></blockquote>
+<p>Dans la fenêtre de l&#8217;éditeur de la classe, faire un click droit de la souris. Puis cliquer sur :</p>
+<p>&#8220;Run As&#8221; =&gt; &#8220;Java Application&#8221;</p>
+<div class="centerside container">
+<div class="figure">
+<img alt="../../_images/GeOxygeneAppliRunAs.png" src="../../_images/GeOxygeneAppliRunAs.png" />
+<p class="caption">Figure 15 : &#8212;&#8211;</p>
+</div>
+</div>
+<p>L&#8217;interface de GeOxygene est lancée !</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <ul id="breadcrumbs">
+            <li class="right" style="margin-right: 10px">
+              <a href="quickstart.html" title="Quickstart"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="index.html" title="Developer Guide"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GeOxygene 1.6-SNAPSHOT documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Documentation</a> &raquo;</li>
+          <li><a href="index.html" >Developer Guide</a> &raquo;</li>
+        <li><a href="#">GeOxygene Developer’s Setup Guide</a></li>
+      </ul>
+    </div> 
+
+    <div class="footer">
+        &copy; Copyright 2013, Laboratoire COGIT, IGN.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

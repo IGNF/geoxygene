@@ -1,0 +1,736 @@
+
+
+body {
+	font-family: Arial, sans-serif;
+    font-size: 100%;
+    background-color: #fff;
+    color: black;
+    margin: 0px 0px 0px 0px;
+    padding: 0;
+	min-width: 900px;
+}
+
+h1 {
+    margin: 0;
+    padding: 0.7em 0 0.3em 0;
+    font-size: 1.5em;
+    color: #11557C;
+}
+
+/*h1 {
+    background: url(img/h2.png) repeat-x;
+	-moz-border-radius: 10px;
+	color: #606060;
+	padding: 4px 4px 4px 16px;
+	border: 1px solid #999;
+	background-color: #ddd;
+	font-weight: bold;
+	font-size: 1.5em;
+	display: block;
+}*/
+
+h2 {
+  	/*background: url(img/h2.png) repeat-x;
+	-moz-border-radius: 10px;
+	color: #404040;*/
+	color:#0257B5;
+	border-bottom: 2px dotted #0257B5;
+	padding: 4px 4px 4px 0px;
+	/*border: 1px solid #999;
+	background-color: #ddd;*/
+	font-weight: bold;
+	font-size: 1.3em;
+	display: block;
+}
+
+h3 {
+  color: #0257B5;
+  border-bottom: 1px dotted #A0A0A0;
+  padding: 2px 2px 2px 0px;
+}
+
+h4 {
+  color: #0257A6;
+  border: none;
+  font-size: medium;
+  font-weight: bold;
+  padding-left: 0px;
+  padding-bottom: 0px;
+}
+
+h5 {
+  color: #404040;
+  display: block;
+}
+
+p {
+	text-align:justify;
+}
+
+div.bodywrapper {
+    margin: 0 100px 0 100px;
+    /*border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;*/
+}
+
+div.body {
+    margin: 0;
+    padding: 0.5em 20px 20px 20px;
+}
+
+
+/* custom header */
+div.header {
+    position: relative;
+    overflow: hidden;
+    height: 100px;
+    background: #CCCCCC url(img/header-bg.png) 0 0 repeat-x;
+}
+div.header div.wrap {
+    margin: 0;
+}
+
+#logo {
+    padding: 0;
+	position: absolute;
+    left:240px;
+    top:4px;
+}
+
+#logo a {
+    float: left;
+    width: 330px;
+    height: 75px;
+    left:200px;
+    overflow: hidden;
+    text-indent: -9999em;
+    background: url(img/geoxygene-logo-neutre.png) no-repeat;
+}
+
+#logo_cogit {
+    padding: 0;
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    padding: 0px;
+    margin : 0px;
+}
+
+#logo_cogit a {
+    float: right;
+    width: 46px;
+    height: 55px;
+    padding: 0px;
+    margin : 0px;
+    overflow: hidden;
+    text-indent: -9999em;
+    background: url(img/LOGO_COGIT.gif) no-repeat;
+}
+
+#logo_ign {
+	padding: 0;
+	position: absolute;
+	top: 8px;
+	right: 60px;
+	padding: 0px;
+	margin : 0px;
+}
+#logo_ign a {
+	float: right;
+    width: 57px;
+    height: 60px;
+    padding: 0px;
+	margin : 0px;
+    overflow: hidden;
+    text-indent: -9999em;
+    background: url(img/5313354.jpg) no-repeat;
+}
+
+#logo_sourceforge {
+	padding: 0;
+	position: absolute;
+	top: 20px;
+	right: 120px;
+	padding: 0px;
+	margin : 0px;
+}
+#logo_sourceforge a {
+	float: right;
+    width: 88px;
+    height: 31px;
+    padding: 0px;
+	margin : 0px;
+    overflow: hidden;
+    text-indent: -9999em;
+    background: url(img/sourceforge.png) no-repeat;
+}
+
+#top-xleft {
+    position: absolute;
+    bottom: 4px;
+    left: 8px;
+    font-size: 0.7em;
+}
+
+#top-nav {
+    position: absolute;
+    bottom: 4px;
+    right: 8px;
+    list-style: none;
+    margin: 0;
+    font-size: 0.7em;
+}
+
+#top-nav2 {
+    bottom: 35px;
+    list-style: none outside none;
+    margin: 0;
+    position: absolute;
+    right: 395px;
+}
+
+#top-nav2 li:first-child, #top-nav li.first {
+    /*border-left: 0 none;*/
+}
+#top-nav2 li:first-child, #top-nav li.first {
+    /*border-left: 0 none;*/
+}
+#top-nav2 li {
+    border: 1px solid #26b2dd;
+    display: inline;
+    padding: 8px;
+    margin:0px 8px 0px 8px;
+    color: #0257B5;
+    font-weight:bold;
+    font-size:1.2em;
+    background-color:#FFFFFF;
+}
+
+
+
+
+
+#top-nav li {
+    display: inline;
+    margin: 0;
+    padding: 0 8px;
+    border-left: 1px solid #CA7900;
+}
+
+#top-nav li:first-child, #top-nav li.first {
+    border-left: 0;
+}
+
+#top-nav li a {
+    /*font-weight: bold;*/
+    text-decoration: none;
+}
+
+#top-nav li a:hover {
+}
+
+
+ul {
+    list-style: disc;
+    padding-left: 20px;
+}
+
+ul > p {
+	padding-left: 40px;
+}
+
+
+/* override some of ext-all.css 
+ul, ol {
+    margin: 14px 0;
+    padding-left: 40px;
+}
+ul {
+    list-style: disc;
+}
+ol {
+    list-style-type:decimal;
+}
+strong {
+    font-weight: bolder;
+}
+*/
+
+a {
+    color: #0257B5;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #FF00DC;
+}
+
+div.chemin {
+    background-color: #F0F0F0;
+    border: 1px solid #C0C0C0;
+    padding:4px 4px 4px 16px;
+    font-family: Courier New, Arial;
+    /*font-style:italic;*/
+    color:#0257B5;
+}
+
+div.svnurl {
+    background-color: #F0F0F0;
+    border: 1px solid #C0C0C0;
+    padding:16px;
+    font-family: Courier New, Arial;
+    font-weight:bold;
+    color:#FF00DC;
+}
+
+div.svnurl a {
+    font-family: Courier New, Arial;
+    color:#FF00DC;
+    text-decoration: none;
+}
+
+pre {
+    font-size: 0.8em;
+}
+pre {
+    background-color: #F8F8F8;
+    border: 1px solid #CCCCCC;
+    font-family: 'Consolas','Deja Vu Sans Mono','Bitstream Vera Sans Mono',monospace;
+    font-size: 0.95em;
+    letter-spacing: 0.015em;
+    line-height: 120%;
+    padding: 0.5em;
+}
+
+/* override some of sphinxdoc.css */
+/*
+
+h1, h2, h3, h4, h5, h6 {
+	color: #17365c
+}
+table td, table th {
+    padding: 0;
+}
+
+a.reference em {
+    font-style: normal;
+}
+*/
+
+table.docutils {
+    border: 0;
+}
+
+table.docutils td, table.docutils th {
+    padding: 1px 8px 1px 0;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid #aaa;
+}
+
+
+div.footer {
+    background: #fff url(img/footer-bg.png) repeat-x;
+    color: #000000;
+    padding: 60px 0 35px;
+    text-align: center;
+}
+
+div.footer a {
+    color: #86989B;
+    text-decoration: underline;
+}
+
+div.alignleft {
+    width: 100%;
+    padding: 0px;
+    float: left;
+}
+
+div.centerside {
+	width: 100%;
+	padding: 8px;
+	text-align:center;
+}
+
+div.twocol {
+	width: 100%;
+    height: auto;
+    /* border: 2px solid red; */
+    overflow: hidden;
+}
+
+div.leftside {
+    width: 414px;
+    padding: 0px 3px 0px 0px;
+    float: left;
+    vertical-align:top;
+}
+
+div.rightside {
+    margin-left: 425px;
+    padding-left:48px;
+    text-align:justify;
+    vertical-align:top;
+}
+
+p.caption {
+	text-align:center;
+	font-size:0.8em;
+	font-style:italic;
+}
+
+
+/* index page links */
+/*
+#quicklinks {
+  margin: 0 auto;
+  padding-top: 2em;
+}
+
+#quicklinks ul {
+	float: left; 
+	padding: 0;
+}
+#quicklinks li {
+	float: left; 
+	display: inline;
+	margin: 1.1em;
+}
+
+
+#quicklinks a {
+  float: left;
+  text-align: center;
+  padding-top: 5em;
+  min-width: 85px;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+*/
+/* about page */
+/*
+#about-geotools p {
+  text-align: justify;
+  font-size: 0.9em;
+}
+
+#open-source {
+  float: left;
+  width: 350px;
+  padding-right: 2em;
+}
+
+#open-development {
+  float: left;
+  width: 350px;
+}
+*/
+/* search box style */
+
+#searchbox {
+    position: absolute;
+    bottom: 0px;
+    right: 150px;
+    background-color:#26b2dd;
+    color: #0257B5;
+    height: 28px;
+    width: 190px;
+}
+#searchbox-query {
+    color: #0257B5;
+    font-size: 0.92em;
+    border: 0;
+    background: transparent;
+    width: 175px;
+    margin: 5px 0 0 8px;
+}
+#searchbox-submit {
+    position: absolute;
+    top: 6px;
+    right: 5px;
+}
+a.headerlink {
+    display: none;
+}
+
+/* meta-info about a class/module get pulled out */
+/*
+.meta {
+    float: right;
+    padding: 0 2em;
+    background-color: white;
+}
+.meta ul {
+    list-style-type: none;
+    padding: 0;
+}
+*/
+/* overriding clear: both on dl */
+/*
+dl.class {
+    clear: left;
+}
+*/
+/* don't display class names for attributes or methods*/
+/*
+.attribute .descclassname {
+    display: none;
+}
+.method .descclassname {
+    display: none;
+}
+.classmethod .descclassname, .classmethod .property {
+    display: none;
+}*/
+
+/* headers with bottom border get some padding */
+/*h2, h3, h4 {
+    padding-bottom: 4px;
+}*/
+
+/* making code samples less gigantic */
+/*pre {
+    font-size: 0.8em;
+}*/
+
+/* blog entry style */
+/*ul.rss_items li.rss_item {
+    padding-bottom: 0.5em;
+}
+*/
+/* execute button style */
+/*.x-btn.execute {
+    margin: 1em;
+}*/
+
+/*
+.wrap {
+width: 990px;
+margin: 0 auto; 
+padding: 0;
+}
+*/
+
+/*.selfclear:after {
+content: ".";
+display: block;
+height: 0;
+clear: both;
+visibility: hidden;
+}
+
+.selfclear {
+display: inline-block;
+}
+
+.selfclear {
+display: block;
+}
+
+#content {
+	width: 740px; 
+	overflow: hidden;
+	float: left;
+	margin: -3px 0 0 0;
+	padding: 1216px 28px 0 22px;
+	background: #fff;
+	color: #262523;
+	font-size: 1.2em;
+}
+*/
+
+div.document {
+    margin: 0 300px 0 80px;
+    background-image: none;
+    min-height:400px;
+}
+div.documentwrapper {
+    /*width: auto;*/
+    width: 80%;
+}
+
+/* ----------------------------------------------------- */
+/*    sidebar        */
+
+div.sphinxsidebarwrapper {
+    padding: 0;
+}
+
+div.sphinxsidebarwrapper li {
+    /*font-size: 0.8em;*/   
+}
+
+div.sphinxsidebar {
+    margin: 0;
+    padding: 0em 130px 15px 0px;
+    /*width: 210px;*/
+    float: right;
+    width: 18%;
+    /*font-size: 1em;*/
+    text-align: left;
+}
+
+div.sphinxsidebar h3 {
+    /*background: inherit;*/
+    background: url("img/toc-contrast-top-bg.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: none;
+    color: #FFFFFF;
+    /*color: #385F95;
+    background-color: #AFC1C4;
+    padding: 0;*/
+    background-color: #FFFFFF;
+    padding: 0.75em 1em;
+    /*margin: 0em 0 0.5em 0;*/
+    margin: 0;
+    /*font-size: 0.9em;*/   
+    font-weight: normal;
+}
+
+div.sphinxsidebar h4 {
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+	color:#0257B5;
+    background-color: #F4F4F4;
+    padding: 0.75em 1em;
+    margin-top: 4px;
+    margin: 0;
+    font-weight: normal;
+    color:#0257B5;
+}
+
+div.sphinxsidebar h4:before {
+	content: "» ";
+    color:#0257B5;
+    background-color:#F4F4F4;
+}
+
+div.sphinxsidebar h3 a {
+    color: inherit;
+}
+
+/*#toc h3 {
+    padding: 0.75em 1em;
+}
+#sidebar .section h3 {
+    font-family: "Lucida Sans","Lucida Sans Unicode","Lucida Grande",Verdana,Arial,Helvetica,sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    margin: 0;
+}*/
+
+div.sphinxsidebar ul {
+	background-color:#F4F4F4;
+	border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+    /*min-height: 95px;*/
+    padding: 2px 0px;
+    margin: 0;
+    /*padding-left: 1.5em;
+    margin-top: 7px;
+    padding: 0;
+    line-height: 130%;*/
+}
+
+div.sphinxsidebar ul ul {
+    /*margin-left: 20px;*/
+    border:none;
+}
+
+div.sphinxsidebar li {
+	content: "» ";
+    /*margin: 0 0 0.2em -1em;*/
+    margin: 0 0 0.2em 0em;
+    list-style-type: none;
+    padding: 0 8px 0 16px;
+}
+
+div.sphinxsidebar li li {
+    border: none;
+}
+
+p.topless h3 {
+	background: url("img/toc-contrast-bg.png") no-repeat scroll 0 100% rgba(0, 0, 0, 0);
+    border-width: 0 1px;
+    min-height: 40px;
+    padding: 0 0.3em 0 2em;
+    margin: 0;
+    font-size: 0.9em;   
+    font-weight: normal;
+}
+
+p.topless {
+    margin: 0;
+    padding: 1em 0.3em 1em 2em;
+    background-color:#F4F4F4;
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    /*font-size: 0.9em;*/   
+    font-weight: normal;
+}
+
+div.related {
+    margin: 0 80px;
+    width: auto;
+    font-size: 1em;
+}
+div.related ul {
+  	background-image: none;
+    height: 2em;
+    border-top: 0px solid #ddd;
+    border-bottom: 0px solid #ddd;
+}
+div.related ul li a {
+   color: #078c00;
+}
+
+div.related ul li {
+    margin: 0;
+    padding: 0;
+    height: 2em;
+    float: left;
+}
+
+div.related ul li.right {
+    float: right;
+    margin-right: 5px;
+}
+
+div.related ul li a {
+    margin: 0;
+    padding: 0 5px 0 5px;
+    line-height: 1.75em;
+    color: #EE9816;
+}
+
+div.related ul li a:hover {
+    color: #EE9816; /* #3CA8E7; */
+}
+
+
+/* ----------------------------------------------------- */
+/*    breadcrumbs        */
+
+#breadcrumbs {
+	font-size: 1em;
+	color: #0257B5;
+	border-bottom: 0px;
+	margin: 1em 0 1em 40px;
+	padding: 0 0 0.5em;
+}
+
+#breadcrumbs li {
+	list-style-type: none;
+	display: inline;
+}
+
+#breadcrumbs a {
+	color: #0257B5;
+	text-decoration: none;
+}
+
+#breadcrumbs a:hover {
+	color: #26b2dd;
+}
