@@ -82,6 +82,7 @@
 		</profile>
 		<profile>
             <id>executable</id>
+			<!-- controler la variable {dir.executable} -->
             <build>
                 <plugins>		
 					<plugin>
@@ -111,6 +112,12 @@
 				<module>geoxygene-feature</module>
 				<module>geoxygene-io</module>
 				<module>geoxygene-spatial</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>documentation</id>
+			<modules>
+				<module>docs</module>
 			</modules>
 		</profile>
 		<profile>
