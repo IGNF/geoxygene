@@ -52,8 +52,9 @@ public class HouseGroupInForest extends LoDSpatialRelationDetection {
               (OsmGeneObj) element, crit);
           valeursCourantes.put(crit.getName(), new Double(crit.value(param)));
         }
-        categories.add(LoDCategory.valueOf(electre.decision(
-            electre.getCriteria(), valeursCourantes, conclusion)));
+        categories
+            .add(LoDCategory.valueOf(electre.decision(electre.getCriteria(),
+                valeursCourantes, conclusion).getCategory()));
       }
       LoDCategory category1 = LoDCategory.mean(categories);
       for (IGeneObj forest : forests) {
@@ -69,7 +70,8 @@ public class HouseGroupInForest extends LoDSpatialRelationDetection {
             valeursCourantes.put(crit.getName(), new Double(crit.value(param)));
           }
           LoDCategory category2 = LoDCategory.valueOf(electre.decision(
-              electre.getCriteria(), valeursCourantes, conclusion));
+              electre.getCriteria(), valeursCourantes, conclusion)
+              .getCategory());
           System.out.println(category1);
           System.out.println(category2);
           if (Math.abs(category1.ordinal() - category2.ordinal()) < this

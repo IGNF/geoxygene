@@ -44,7 +44,7 @@ public class PathNotCrossingLake extends LoDSpatialRelationDetection {
         valeursCourantes.put(crit.getName(), new Double(crit.value(param)));
       }
       LoDCategory category1 = LoDCategory.valueOf(electre.decision(
-          electre.getCriteria(), valeursCourantes, conclusion));
+          electre.getCriteria(), valeursCourantes, conclusion).getCategory());
 
       for (IGeneObj path : pathes) {
         // check the LoDs
@@ -54,8 +54,9 @@ public class PathNotCrossingLake extends LoDSpatialRelationDetection {
               (OsmGeneObj) path, crit);
           valeursCourantes2.put(crit.getName(), new Double(crit.value(param)));
         }
-        LoDCategory category2 = LoDCategory.valueOf(electre.decision(
-            electre.getCriteria(), valeursCourantes2, conclusion));
+        LoDCategory category2 = LoDCategory
+            .valueOf(electre.decision(electre.getCriteria(), valeursCourantes2,
+                conclusion).getCategory());
         if (Math.abs(category1.ordinal() - category2.ordinal()) < this
             .getLodDiffThreshold())
           continue;

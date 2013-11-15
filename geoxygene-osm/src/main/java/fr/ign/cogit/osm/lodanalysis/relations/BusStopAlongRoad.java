@@ -51,7 +51,7 @@ public class BusStopAlongRoad extends LoDSpatialRelationDetection {
         valeursCourantes.put(crit.getName(), new Double(crit.value(param)));
       }
       LoDCategory category1 = LoDCategory.valueOf(electre.decision(
-          electre.getCriteria(), valeursCourantes, conclusion));
+          electre.getCriteria(), valeursCourantes, conclusion).getCategory());
       // get the road LoD category
       OsmGeneObj road = (OsmGeneObj) nearest.get(0);
       Map<String, Double> valeursCourantes2 = new HashMap<String, Double>();
@@ -60,7 +60,7 @@ public class BusStopAlongRoad extends LoDSpatialRelationDetection {
         valeursCourantes2.put(crit.getName(), new Double(crit.value(param)));
       }
       LoDCategory category2 = LoDCategory.valueOf(electre.decision(
-          electre.getCriteria(), valeursCourantes2, conclusion));
+          electre.getCriteria(), valeursCourantes2, conclusion).getCategory());
       if (Math.abs(category1.ordinal() - category2.ordinal()) < this
           .getLodDiffThreshold())
         continue;

@@ -45,7 +45,7 @@ public class BuildingInBuiltUp extends LoDSpatialRelationDetection {
         valeursCourantes.put(crit.getName(), new Double(crit.value(param)));
       }
       LoDCategory category1 = LoDCategory.valueOf(electre.decision(
-          electre.getCriteria(), valeursCourantes, conclusion));
+          electre.getCriteria(), valeursCourantes, conclusion).getCategory());
 
       // searches for a built-up area that contains building
       Collection<IGeneObj> builtUps = getFeatures2().select(building.getGeom());
@@ -68,8 +68,9 @@ public class BuildingInBuiltUp extends LoDSpatialRelationDetection {
               crit);
           valeursCourantes2.put(crit.getName(), new Double(crit.value(param)));
         }
-        LoDCategory category2 = LoDCategory.valueOf(electre.decision(
-            electre.getCriteria(), valeursCourantes2, conclusion));
+        LoDCategory category2 = LoDCategory
+            .valueOf(electre.decision(electre.getCriteria(), valeursCourantes2,
+                conclusion).getCategory());
         if (Math.abs(category1.ordinal() - category2.ordinal()) < this
             .getLodDiffThreshold())
           continue;
@@ -89,8 +90,9 @@ public class BuildingInBuiltUp extends LoDSpatialRelationDetection {
               crit);
           valeursCourantes2.put(crit.getName(), new Double(crit.value(param)));
         }
-        LoDCategory category2 = LoDCategory.valueOf(electre.decision(
-            electre.getCriteria(), valeursCourantes2, conclusion));
+        LoDCategory category2 = LoDCategory
+            .valueOf(electre.decision(electre.getCriteria(), valeursCourantes2,
+                conclusion).getCategory());
         if (Math.abs(category1.ordinal() - category2.ordinal()) < this
             .getLodDiffThreshold())
           continue;
