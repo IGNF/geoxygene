@@ -26,25 +26,32 @@ public class EvidenceFunctorTest {
 
   @Test
   public void test() {
+    
     long start = System.currentTimeMillis();
+    
     VariableFactory<String> vf = new VariableFactory<String>();
+    
     Variable<String> murderer = vf.newVariable();
     murderer.add("Colonel Mustard");
     murderer.add("Miss Scarlett");
     murderer.add("Mrs Peacock");
     System.out.println("Variable murderer: " + murderer);
+    
     Variable<String> room = vf.newVariable();
     room.add("Dining room");
     room.add("Kitchen");
     System.out.println("Variable room: " + room);
+    
     Variable<String> weapon = vf.newVariable();
     weapon.add("Dagger");
     weapon.add("Candlestick");
     System.out.println("Variable weapon: " + weapon);
+    
     VariableSet<String> d = new VariableSet<String>(vf);
     d.add(murderer);
     d.add(room);
     d.add(weapon);
+    
     // first player
     VariableSet<String> d1 = new VariableSet<String>(vf);
     d1.add(murderer);
@@ -63,6 +70,7 @@ public class EvidenceFunctorTest {
     player1.add(f12, new MassComplement<Object>(m1));
     player1.check(null);
     System.out.println("Player 1:\n" + player1);
+    
     // second player
     VariableSet<String> d2 = new VariableSet<String>(vf);
     d2.add(murderer);
@@ -81,6 +89,7 @@ public class EvidenceFunctorTest {
     player2.add(f22, new MassComplement<Object>(m2));
     player2.check(null);
     System.out.println("Player 2:\n" + player2);
+    
     // combination
     MassPotential<String, Object> finalPotential = player1.combination(player2);
     List<String> lfinal = new ArrayList<String>();
@@ -104,7 +113,7 @@ public class EvidenceFunctorTest {
     System.out.println("Com = " + communality);
     Assert.assertEquals(1.0, communality, 0.001);
     double ignorance = finalPotential.ign(ffinal, null);
-    System.out.println("Ign = " + ignorance); 
+    System.out.println("Ign = " + ignorance);
     Assert.assertEquals(0.36, ignorance, 0.001);
     long end = System.currentTimeMillis();
     System.out.println("Test took " + (end - start) + " ms");
