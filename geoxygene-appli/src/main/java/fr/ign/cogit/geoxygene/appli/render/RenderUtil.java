@@ -900,7 +900,8 @@ public final class RenderUtil {
     }
     Color fillColor = null;
     float fillOpacity = 1f;
-    if (symbolizer.getFill() != null) {
+    if (symbolizer.getFill() != null && symbolizer.getFill().getColor() != null
+        && opacity > 0f) {
       fillColor = ColorUtil.getColorWithOpacity(
           symbolizer.getFill().getColor(), opacity);
       fillOpacity = symbolizer.getFill().getFillOpacity() * (float) opacity;
@@ -1051,6 +1052,7 @@ public final class RenderUtil {
       filter.setScale(texture.getScale());
       filter.setStretch(texture.getStretch());
       filter.setAmount(texture.getAmount());
+      filter.setAngle(texture.getAngle());
       BufferedImage imgTexture = ImageUtil.createBufferedImage(img);
       imgTexture.setData(img.getData());
       filter.filter(imgTexture, imgTexture);

@@ -187,32 +187,33 @@ public class LayerStylesPanel extends JPanel {
     int x2 = (currentColumn + 1) * (columnsWidth + this.margin) + this.margin;
     int y2 = currentRow * (rowHeight + this.margin) + rowHeight / 2;
     int widthDrawn = x2 - x1;
-    
+
     if (symbolizer.getStroke() != null) {
-      if (symbolizer.getStroke().getColor()!=null) {
+      if (symbolizer.getStroke().getColor() != null) {
         g2.setStroke(symbolizer.getStroke().toAwtStroke());
         g2.setColor(symbolizer.getStroke().getColor());
         g2.drawLine(x1, y1, x2, y2);
       }
       if (symbolizer.getStroke().getGraphicType() != null) {
-        if (GraphicFill.class.isAssignableFrom(symbolizer.getStroke().getGraphicType().getClass())){
-          List<Graphic> graphicList = ((GraphicFill)symbolizer.getStroke().getGraphicType())
-              .getGraphics();
+        if (GraphicFill.class.isAssignableFrom(symbolizer.getStroke()
+            .getGraphicType().getClass())) {
+          List<Graphic> graphicList = ((GraphicFill) symbolizer.getStroke()
+              .getGraphicType()).getGraphics();
           for (Graphic graphic : graphicList) {
             for (ExternalGraphic external : graphic.getExternalGraphics()) {
               if (external.getFormat().contains("png") || external.getFormat().contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
                 Image image = external.getOnlineResource();
-                drawGraphicFillPolygon(
-                    image, graphic.getSize(), g2, getLayer().getOpacity(), 
-                    widthDrawn, symbolizer.getStroke().getStrokeWidth() * 2,
-                    rowHeight / 2 - symbolizer.getStroke().getStrokeWidth() / 2, 0);
+                drawGraphicFillPolygon(image, graphic.getSize(), g2, getLayer()
+                    .getOpacity(), widthDrawn, symbolizer.getStroke()
+                    .getStrokeWidth() * 2, rowHeight / 2
+                    - symbolizer.getStroke().getStrokeWidth() / 2, 0);
               } else {
                 if (external.getFormat().contains("svg")) { //$NON-NLS-1$
                   GraphicsNode node = external.getGraphicsNode();
-                  drawGraphicFillPolygon(
-                      node, graphic.getSize(), g2, getLayer().getOpacity(), 
-                      widthDrawn, symbolizer.getStroke().getStrokeWidth() * 2,
-                      rowHeight / 2 - symbolizer.getStroke().getStrokeWidth() / 2, 0);
+                  drawGraphicFillPolygon(node, graphic.getSize(), g2,
+                      getLayer().getOpacity(), widthDrawn, symbolizer
+                          .getStroke().getStrokeWidth() * 2, rowHeight / 2
+                          - symbolizer.getStroke().getStrokeWidth() / 2, 0);
                 }
               }
               return;
@@ -223,51 +224,59 @@ public class LayerStylesPanel extends JPanel {
               AffineTransform translate = AffineTransform.getTranslateInstance(
                   markShapeSize / 2, markShapeSize / 2);
               if (graphic.getRotation() != null) {
-                AffineTransform rotate = AffineTransform.getRotateInstance(Math.PI
-                    * Double.parseDouble(graphic.getRotation().evaluate(null).toString()) / 180.0);
+                AffineTransform rotate = AffineTransform
+                    .getRotateInstance(Math.PI
+                        * Double.parseDouble(graphic.getRotation()
+                            .evaluate(null).toString()) / 180.0);
                 translate.concatenate(rotate);
               }
-              AffineTransform scaleTransform = AffineTransform.getScaleInstance(
-                  markShapeSize, markShapeSize);
+              AffineTransform scaleTransform = AffineTransform
+                  .getScaleInstance(markShapeSize, markShapeSize);
               translate.concatenate(scaleTransform);
-              Shape tranlatedShape = translate.createTransformedShape(markShape);
-              BufferedImage buff = new BufferedImage(markShapeSize, markShapeSize,
-                  BufferedImage.TYPE_INT_ARGB);
+              Shape tranlatedShape = translate
+                  .createTransformedShape(markShape);
+              BufferedImage buff = new BufferedImage(markShapeSize,
+                  markShapeSize, BufferedImage.TYPE_INT_ARGB);
               Graphics2D g = (Graphics2D) buff.getGraphics();
-              g.setColor(ColorUtil.getColorWithOpacity(mark.getFill().getColor(), getLayer().getOpacity()));
+              g.setColor(ColorUtil.getColorWithOpacity(mark.getFill()
+                  .getColor(), getLayer().getOpacity()));
               g.fill(tranlatedShape);
-              drawGraphicFillPolygon(
-                  buff, graphic.getSize(), g2, getLayer().getOpacity(), 
-                  widthDrawn, symbolizer.getStroke().getStrokeWidth() * 2,
-                  rowHeight / 2 - symbolizer.getStroke().getStrokeWidth() / 2, 0);
+              drawGraphicFillPolygon(buff, graphic.getSize(), g2, getLayer()
+                  .getOpacity(), widthDrawn, symbolizer.getStroke()
+                  .getStrokeWidth() * 2, rowHeight / 2
+                  - symbolizer.getStroke().getStrokeWidth() / 2, 0);
             }
           }
-        } else if (GraphicStroke.class.isAssignableFrom(symbolizer.getStroke().getGraphicType().getClass())){
-          //TODO Finir l'implémentation pour les GraphicStroke
+        } else if (GraphicStroke.class.isAssignableFrom(symbolizer.getStroke()
+            .getGraphicType().getClass())) {
+          // TODO Finir l'implémentation pour les GraphicStroke
           g2.setColor(Color.green);
         }
       }
     }
   }
-  
+
   public static void drawGraphicFillPolygon(GraphicsNode node, float size,
-      Graphics2D graphics, double opacity, double widthSymbol, double heightSymbol, double offsetYSymbol, double offsetXSymbol) {
+      Graphics2D graphics, double opacity, double widthSymbol,
+      double heightSymbol, double offsetYSymbol, double offsetXSymbol) {
     AffineTransform translate = AffineTransform.getTranslateInstance(-node
         .getBounds().getMinX(), -node.getBounds().getMinY());
     node.setTransform(translate);
     BufferedImage buff = new BufferedImage((int) node.getBounds().getWidth(),
         (int) node.getBounds().getHeight(), BufferedImage.TYPE_INT_ARGB);
     node.paint((Graphics2D) buff.getGraphics());
-    drawGraphicFillPolygon(
-        buff, size, graphics, opacity, widthSymbol, heightSymbol, offsetYSymbol, offsetXSymbol);
+    drawGraphicFillPolygon(buff, size, graphics, opacity, widthSymbol,
+        heightSymbol, offsetYSymbol, offsetXSymbol);
   }
-  
+
   private static void drawGraphicFillPolygon(Image image, float size,
-      Graphics2D graphics, double opacity, double widthSymbol, double heightSymbol, double offsetYSymbol, double offsetXSymbol) {
+      Graphics2D graphics, double opacity, double widthSymbol,
+      double heightSymbol, double offsetYSymbol, double offsetXSymbol) {
     Double shapeHeight = new Double(size);
     double factor = shapeHeight / image.getHeight(null);
     Double shapeWidth = new Double(Math.max(image.getWidth(null) * factor, 1));
-    AffineTransform transform = AffineTransform.getTranslateInstance(offsetXSymbol, offsetYSymbol);
+    AffineTransform transform = AffineTransform.getTranslateInstance(
+        offsetXSymbol, offsetYSymbol);
     Image scaledImage = image.getScaledInstance(shapeWidth.intValue(),
         shapeHeight.intValue(), Image.SCALE_FAST);
     BufferedImage buff = new BufferedImage(shapeWidth.intValue(),
@@ -275,8 +284,8 @@ public class LayerStylesPanel extends JPanel {
     buff.getGraphics().drawImage(scaledImage, 0, 0, null);
     ParameterBlock p = new ParameterBlock();
     p.addSource(buff);
-    p.add((int)widthSymbol);
-    p.add((int)heightSymbol);
+    p.add((int) widthSymbol);
+    p.add((int) heightSymbol);
     RenderedOp im = JAI.create("pattern", p);//$NON-NLS-1$
     BufferedImage bufferedImage = im.getAsBufferedImage();
     graphics.drawImage(bufferedImage, transform, null);
@@ -352,51 +361,52 @@ public class LayerStylesPanel extends JPanel {
     int x1 = currentColumn * (columnsWidth + this.margin);
     int x2 = (currentColumn + 1) * (columnsWidth + this.margin) + this.margin;
     int widthDrawn = x2 - x1;
-    
+
     if (symbolizer.getShadow() != null) {
       g2.setColor(symbolizer.getShadow().getColor());
       g2.fillRect(currentColumn * (columnsWidth + this.margin) + this.margin,
-        currentRow * (rowHeight + this.margin) + this.margin, columnsWidth,
-        rowHeight);
+          currentRow * (rowHeight + this.margin) + this.margin, columnsWidth,
+          rowHeight);
     }
     if (symbolizer.getFill() != null) {
       if (symbolizer.getFill().getTexture() != null) {
-        if (PerlinNoiseTexture.class.isAssignableFrom(symbolizer.getFill().getTexture().getClass())) {
-          PerlinNoiseTexture texture = (PerlinNoiseTexture)symbolizer.getFill().getTexture();
+        if (PerlinNoiseTexture.class.isAssignableFrom(symbolizer.getFill()
+            .getTexture().getClass())) {
+          PerlinNoiseTexture texture = (PerlinNoiseTexture) symbolizer
+              .getFill().getTexture();
           TextureFilter filter = new TextureFilter();
-          filter.setColormap(
-              new LinearColormap(
-                  texture.getColor1().getRGB(),
-                  texture.getColor2().getRGB()));
+          filter.setColormap(new LinearColormap(texture.getColor1().getRGB(),
+              texture.getColor2().getRGB()));
           filter.setScale(texture.getScale());
           filter.setStretch(texture.getStretch());
-          filter.setAmount(texture.getAmount());     
-          BufferedImage textureImg = new BufferedImage(columnsWidth, rowHeight, BufferedImage.TYPE_INT_ARGB);
+          filter.setAmount(texture.getAmount());
+          filter.setAngle(texture.getAngle());
+          BufferedImage textureImg = new BufferedImage(columnsWidth, rowHeight,
+              BufferedImage.TYPE_INT_ARGB);
           filter.filter(textureImg, textureImg);
           g2.drawImage(textureImg, this.margin, this.margin, null);
         }
       } else if (symbolizer.getFill().getColor() != null) {
         g2.setColor(symbolizer.getFill().getColor());
         g2.fillRect(currentColumn * (columnsWidth + this.margin) + this.margin,
-          currentRow * (rowHeight + this.margin) + this.margin, columnsWidth,
-          rowHeight);
+            currentRow * (rowHeight + this.margin) + this.margin, columnsWidth,
+            rowHeight);
       }
       if (symbolizer.getFill().getGraphicFill() != null) {
-        List<Graphic> graphicList = (symbolizer.getFill().getGraphicFill()).getGraphics();
+        List<Graphic> graphicList = (symbolizer.getFill().getGraphicFill())
+            .getGraphics();
         for (Graphic graphic : graphicList) {
-          if (graphic.getExternalGraphics().size()!=0){
+          if (graphic.getExternalGraphics().size() != 0) {
             for (ExternalGraphic external : graphic.getExternalGraphics()) {
               if (external.getFormat().contains("png") || external.getFormat().contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
                 Image image = external.getOnlineResource();
-                drawGraphicFillPolygon(
-                    image, graphic.getSize(), g2, getLayer().getOpacity(), 
-                    widthDrawn, rowHeight, 0, 0);
+                drawGraphicFillPolygon(image, graphic.getSize(), g2, getLayer()
+                    .getOpacity(), widthDrawn, rowHeight, 0, 0);
               } else {
                 if (external.getFormat().contains("svg")) { //$NON-NLS-1$
                   GraphicsNode node = external.getGraphicsNode();
-                  drawGraphicFillPolygon(
-                      node, graphic.getSize(), g2, getLayer().getOpacity(), 
-                      widthDrawn, rowHeight, 0, 0);
+                  drawGraphicFillPolygon(node, graphic.getSize(), g2,
+                      getLayer().getOpacity(), widthDrawn, rowHeight, 0, 0);
                 }
               }
             }
@@ -407,23 +417,26 @@ public class LayerStylesPanel extends JPanel {
               AffineTransform translate = AffineTransform.getTranslateInstance(
                   markShapeSize / 2, markShapeSize / 2);
               if (graphic.getRotation() != null) {
-                AffineTransform rotate = AffineTransform.getRotateInstance(Math.PI
-                    * Double.parseDouble(graphic.getRotation().evaluate(null).toString()) / 180.0);
+                AffineTransform rotate = AffineTransform
+                    .getRotateInstance(Math.PI
+                        * Double.parseDouble(graphic.getRotation()
+                            .evaluate(null).toString()) / 180.0);
                 translate.concatenate(rotate);
               }
-              AffineTransform scaleTransform = AffineTransform.getScaleInstance(
-                  markShapeSize, markShapeSize);
+              AffineTransform scaleTransform = AffineTransform
+                  .getScaleInstance(markShapeSize, markShapeSize);
               translate.concatenate(scaleTransform);
-              Shape tranlatedShape = translate.createTransformedShape(markShape);
-              BufferedImage buff = new BufferedImage(markShapeSize, markShapeSize,
-                  BufferedImage.TYPE_INT_ARGB);
+              Shape tranlatedShape = translate
+                  .createTransformedShape(markShape);
+              BufferedImage buff = new BufferedImage(markShapeSize,
+                  markShapeSize, BufferedImage.TYPE_INT_ARGB);
               Graphics2D g = (Graphics2D) buff.getGraphics();
-              g.setColor(ColorUtil.getColorWithOpacity(mark.getFill().getColor(), getLayer().getOpacity()));
+              g.setColor(ColorUtil.getColorWithOpacity(mark.getFill()
+                  .getColor(), getLayer().getOpacity()));
               g.fill(tranlatedShape);
 
-              drawGraphicFillPolygon(
-                  buff, graphic.getSize(), g2, getLayer().getOpacity(), 
-                  widthDrawn, rowHeight, 0, 0);
+              drawGraphicFillPolygon(buff, graphic.getSize(), g2, getLayer()
+                  .getOpacity(), widthDrawn, rowHeight, 0, 0);
             }
           }
         }
@@ -438,59 +451,74 @@ public class LayerStylesPanel extends JPanel {
             rowHeight);
       }
       if (symbolizer.getStroke().getGraphicType() != null) {
-        if (GraphicFill.class.isAssignableFrom(symbolizer.getStroke().getGraphicType().getClass())){
-          GraphicFill graphicFill = (GraphicFill)symbolizer.getStroke().getGraphicType();
+        if (GraphicFill.class.isAssignableFrom(symbolizer.getStroke()
+            .getGraphicType().getClass())) {
+          GraphicFill graphicFill = (GraphicFill) symbolizer.getStroke()
+              .getGraphicType();
           List<Graphic> graphicList = graphicFill.getGraphics();
           for (Graphic graphic : graphicList) {
-            if (graphic.getExternalGraphics().size()!=0){
+            if (graphic.getExternalGraphics().size() != 0) {
               for (ExternalGraphic external : graphic.getExternalGraphics()) {
                 if (external.getFormat().contains("png") || external.getFormat().contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
                   Image image = external.getOnlineResource();
-                  
-                  //FIXME Le contour est représenter dans la légende par les 4 bords du symbole de légende
-                  //Ce serait plus propre de créer une polygon de la forme du contour et de le remplir
-                  drawGraphicFillPolygon(
-                      image, graphic.getSize(), g2, getLayer().getOpacity(), 
-                      widthDrawn, symbolizer.getStroke().getStrokeWidth() * 2,
-                      symbolizer.getStroke().getStrokeWidth() / 2 - this.margin * 2, 0);
-                  drawGraphicFillPolygon(
-                      image, graphic.getSize(), g2, getLayer().getOpacity(), 
-                      widthDrawn, symbolizer.getStroke().getStrokeWidth() * 2,
-                      rowHeight - this.margin * 2 + symbolizer.getStroke().getStrokeWidth() / 2, 0);
-                  drawGraphicFillPolygon(
-                      image, graphic.getSize(), g2, getLayer().getOpacity(), 
-                      symbolizer.getStroke().getStrokeWidth() * 2,
-                      rowHeight - symbolizer.getStroke().getStrokeWidth() - this.margin * 2,
-                      symbolizer.getStroke().getStrokeWidth() * 2 - this.margin * 2, - this.margin);
-                  drawGraphicFillPolygon(
-                      image, graphic.getSize(), g2, getLayer().getOpacity(), 
-                      symbolizer.getStroke().getStrokeWidth() * 2,
-                      rowHeight - symbolizer.getStroke().getStrokeWidth() - this.margin * 2,
-                      symbolizer.getStroke().getStrokeWidth() * 2 - this.margin * 2, columnsWidth - this.margin);
+
+                  // FIXME Le contour est représenter dans la légende par les 4
+                  // bords du symbole de légende
+                  // Ce serait plus propre de créer une polygon de la forme du
+                  // contour et de le remplir
+                  drawGraphicFillPolygon(image, graphic.getSize(), g2,
+                      getLayer().getOpacity(), widthDrawn, symbolizer
+                          .getStroke().getStrokeWidth() * 2, symbolizer
+                          .getStroke().getStrokeWidth() / 2 - this.margin * 2,
+                      0);
+                  drawGraphicFillPolygon(image, graphic.getSize(), g2,
+                      getLayer().getOpacity(), widthDrawn, symbolizer
+                          .getStroke().getStrokeWidth() * 2, rowHeight
+                          - this.margin * 2
+                          + symbolizer.getStroke().getStrokeWidth() / 2, 0);
+                  drawGraphicFillPolygon(image, graphic.getSize(), g2,
+                      getLayer().getOpacity(), symbolizer.getStroke()
+                          .getStrokeWidth() * 2, rowHeight
+                          - symbolizer.getStroke().getStrokeWidth()
+                          - this.margin * 2, symbolizer.getStroke()
+                          .getStrokeWidth() * 2 - this.margin * 2, -this.margin);
+                  drawGraphicFillPolygon(image, graphic.getSize(), g2,
+                      getLayer().getOpacity(), symbolizer.getStroke()
+                          .getStrokeWidth() * 2, rowHeight
+                          - symbolizer.getStroke().getStrokeWidth()
+                          - this.margin * 2, symbolizer.getStroke()
+                          .getStrokeWidth() * 2 - this.margin * 2, columnsWidth
+                          - this.margin);
 
                 } else {
                   if (external.getFormat().contains("svg")) { //$NON-NLS-1$
                     GraphicsNode node = external.getGraphicsNode();
 
-                    //FIXME Idem, il faudrait recréer la forme adéquate
-                    drawGraphicFillPolygon(
-                        node, graphic.getSize(), g2, getLayer().getOpacity(), 
-                        widthDrawn, symbolizer.getStroke().getStrokeWidth() * 2,
-                        symbolizer.getStroke().getStrokeWidth() / 2 - this.margin * 2, 0);
-                    drawGraphicFillPolygon(
-                        node, graphic.getSize(), g2, getLayer().getOpacity(), 
-                        widthDrawn, symbolizer.getStroke().getStrokeWidth() * 2,
-                        rowHeight - this.margin * 2 + symbolizer.getStroke().getStrokeWidth() / 2, 0);
-                    drawGraphicFillPolygon(
-                        node, graphic.getSize(), g2, getLayer().getOpacity(), 
-                        symbolizer.getStroke().getStrokeWidth() * 2,
-                        rowHeight - symbolizer.getStroke().getStrokeWidth() - this.margin * 2,
-                        symbolizer.getStroke().getStrokeWidth() * 2 - this.margin * 2, - this.margin);
-                    drawGraphicFillPolygon(
-                        node, graphic.getSize(), g2, getLayer().getOpacity(), 
-                        symbolizer.getStroke().getStrokeWidth() * 2,
-                        rowHeight - symbolizer.getStroke().getStrokeWidth() - this.margin * 2,
-                        symbolizer.getStroke().getStrokeWidth() * 2 - this.margin * 2, columnsWidth - this.margin);
+                    // FIXME Idem, il faudrait recréer la forme adéquate
+                    drawGraphicFillPolygon(node, graphic.getSize(), g2,
+                        getLayer().getOpacity(), widthDrawn, symbolizer
+                            .getStroke().getStrokeWidth() * 2,
+                        symbolizer.getStroke().getStrokeWidth() / 2
+                            - this.margin * 2, 0);
+                    drawGraphicFillPolygon(node, graphic.getSize(), g2,
+                        getLayer().getOpacity(), widthDrawn, symbolizer
+                            .getStroke().getStrokeWidth() * 2, rowHeight
+                            - this.margin * 2
+                            + symbolizer.getStroke().getStrokeWidth() / 2, 0);
+                    drawGraphicFillPolygon(node, graphic.getSize(), g2,
+                        getLayer().getOpacity(), symbolizer.getStroke()
+                            .getStrokeWidth() * 2, rowHeight
+                            - symbolizer.getStroke().getStrokeWidth()
+                            - this.margin * 2, symbolizer.getStroke()
+                            .getStrokeWidth() * 2 - this.margin * 2,
+                        -this.margin);
+                    drawGraphicFillPolygon(node, graphic.getSize(), g2,
+                        getLayer().getOpacity(), symbolizer.getStroke()
+                            .getStrokeWidth() * 2, rowHeight
+                            - symbolizer.getStroke().getStrokeWidth()
+                            - this.margin * 2, symbolizer.getStroke()
+                            .getStrokeWidth() * 2 - this.margin * 2,
+                        columnsWidth - this.margin);
                   }
                 }
               }
@@ -498,52 +526,58 @@ public class LayerStylesPanel extends JPanel {
               int markShapeSize = 200;
               for (Mark mark : graphic.getMarks()) {
                 Shape markShape = mark.toShape();
-                AffineTransform translate = AffineTransform.getTranslateInstance(
-                    markShapeSize / 2, markShapeSize / 2);
+                AffineTransform translate = AffineTransform
+                    .getTranslateInstance(markShapeSize / 2, markShapeSize / 2);
                 if (graphic.getRotation() != null) {
-                  AffineTransform rotate = AffineTransform.getRotateInstance(Math.PI
-                      * Double.parseDouble(graphic.getRotation().evaluate(null).toString()) / 180.0);
+                  AffineTransform rotate = AffineTransform
+                      .getRotateInstance(Math.PI
+                          * Double.parseDouble(graphic.getRotation()
+                              .evaluate(null).toString()) / 180.0);
                   translate.concatenate(rotate);
                 }
-                AffineTransform scaleTransform = AffineTransform.getScaleInstance(
-                    markShapeSize, markShapeSize);
+                AffineTransform scaleTransform = AffineTransform
+                    .getScaleInstance(markShapeSize, markShapeSize);
                 translate.concatenate(scaleTransform);
-                Shape tranlatedShape = translate.createTransformedShape(markShape);
-                BufferedImage buff = new BufferedImage(markShapeSize, markShapeSize,
-                    BufferedImage.TYPE_INT_ARGB);
+                Shape tranlatedShape = translate
+                    .createTransformedShape(markShape);
+                BufferedImage buff = new BufferedImage(markShapeSize,
+                    markShapeSize, BufferedImage.TYPE_INT_ARGB);
                 Graphics2D g = (Graphics2D) buff.getGraphics();
-                g.setColor(ColorUtil.getColorWithOpacity(mark.getFill().getColor(), getLayer().getOpacity()));
+                g.setColor(ColorUtil.getColorWithOpacity(mark.getFill()
+                    .getColor(), getLayer().getOpacity()));
                 g.fill(tranlatedShape);
 
-                //FIXME Idem, il faudrait recréer la forme adéquate
-                drawGraphicFillPolygon(
-                    buff, graphic.getSize(), g2, getLayer().getOpacity(), 
-                    widthDrawn, symbolizer.getStroke().getStrokeWidth() * 2,
-                    symbolizer.getStroke().getStrokeWidth() / 2 - this.margin * 2, 0);
-                drawGraphicFillPolygon(
-                    buff, graphic.getSize(), g2, getLayer().getOpacity(), 
-                    widthDrawn, symbolizer.getStroke().getStrokeWidth() * 2,
-                    rowHeight - this.margin * 2 + symbolizer.getStroke().getStrokeWidth() / 2, 0);
-                drawGraphicFillPolygon(
-                    buff, graphic.getSize(), g2, getLayer().getOpacity(), 
-                    symbolizer.getStroke().getStrokeWidth() * 2,
-                    rowHeight - symbolizer.getStroke().getStrokeWidth() - this.margin * 2,
-                    symbolizer.getStroke().getStrokeWidth() * 2 - this.margin * 2, - this.margin);
-                drawGraphicFillPolygon(
-                    buff, graphic.getSize(), g2, getLayer().getOpacity(), 
-                    symbolizer.getStroke().getStrokeWidth() * 2,
-                    rowHeight - symbolizer.getStroke().getStrokeWidth() - this.margin * 2,
-                    symbolizer.getStroke().getStrokeWidth() * 2 - this.margin * 2, columnsWidth - this.margin);
+                // FIXME Idem, il faudrait recréer la forme adéquate
+                drawGraphicFillPolygon(buff, graphic.getSize(), g2, getLayer()
+                    .getOpacity(), widthDrawn, symbolizer.getStroke()
+                    .getStrokeWidth() * 2, symbolizer.getStroke()
+                    .getStrokeWidth() / 2 - this.margin * 2, 0);
+                drawGraphicFillPolygon(buff, graphic.getSize(), g2, getLayer()
+                    .getOpacity(), widthDrawn, symbolizer.getStroke()
+                    .getStrokeWidth() * 2, rowHeight - this.margin * 2
+                    + symbolizer.getStroke().getStrokeWidth() / 2, 0);
+                drawGraphicFillPolygon(buff, graphic.getSize(), g2, getLayer()
+                    .getOpacity(), symbolizer.getStroke().getStrokeWidth() * 2,
+                    rowHeight - symbolizer.getStroke().getStrokeWidth()
+                        - this.margin * 2, symbolizer.getStroke()
+                        .getStrokeWidth() * 2 - this.margin * 2, -this.margin);
+                drawGraphicFillPolygon(buff, graphic.getSize(), g2, getLayer()
+                    .getOpacity(), symbolizer.getStroke().getStrokeWidth() * 2,
+                    rowHeight - symbolizer.getStroke().getStrokeWidth()
+                        - this.margin * 2, symbolizer.getStroke()
+                        .getStrokeWidth() * 2 - this.margin * 2, columnsWidth
+                        - this.margin);
               }
             }
           }
-        } else if (GraphicStroke.class.isAssignableFrom(symbolizer.getStroke().getGraphicType().getClass())){
-          //TODO Finir l'implémentation pour les GraphicStroke
+        } else if (GraphicStroke.class.isAssignableFrom(symbolizer.getStroke()
+            .getGraphicType().getClass())) {
+          // TODO Finir l'implémentation pour les GraphicStroke
           g2.setColor(symbolizer.getStroke().getColor());
           g2.setStroke(symbolizer.getStroke().toAwtStroke());
-          g2.drawRect(currentColumn * (columnsWidth + this.margin) + this.margin,
-              currentRow * (rowHeight + this.margin) + this.margin, columnsWidth,
-              rowHeight);
+          g2.drawRect(currentColumn * (columnsWidth + this.margin)
+              + this.margin, currentRow * (rowHeight + this.margin)
+              + this.margin, columnsWidth, rowHeight);
         }
       }
     }
