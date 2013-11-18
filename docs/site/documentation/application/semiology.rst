@@ -7,51 +7,51 @@
 Semiology Tools
 ================================
 
- A documentation is available concerning these tools and application for users and developers, 
- :download:`here </documentation/resources/doc/geoxygene-semiology-0.4.pdf>`,  in PDF file format.
+A documentation is available concerning these tools and application for users and developers, 
+:download:`here </documentation/resources/doc/geoxygene-semiology-0.4.pdf>`,  in PDF file format.
   
   
 A model of legend
 ------------------------
   
- A base model is proposed to represent the legend of a map as a tree. This model 
- describes symbolization and allows manipulating map features symbolised with 
- those symbols. More originally, this model describes metadata on the legend, 
- such as semantic relationships between map layers (order, association or 
- difference) related to Bertin’s work [B67].
+A base model is proposed to represent the legend of a map as a tree. This model 
+describes symbolization and allows manipulating map features symbolised with 
+those symbols. More originally, this model describes metadata on the legend, 
+such as semantic relationships between map layers (order, association or 
+difference) related to Bertin’s work [B67].
 
- In the proposed framework (see Figure 1), the legend is thought of as a mediator 
- between what has to be represented (which features?), how they are represented 
- (which signs?), and what is the intended/perceived relations between represented 
- features (which message?).
+In the proposed framework (see Figure 1), the legend is thought of as a mediator 
+between what has to be represented (which features?), how they are represented 
+(which signs?), and what is the intended/perceived relations between represented 
+features (which message?).
  
- .. container:: twocol
+.. container:: twocol
 
-   .. container:: leftside
+  .. container:: leftside
 
-      .. figure:: /documentation/resources/img/semiology/modele-legende-overview.png
+     .. figure:: /documentation/resources/img/semiology/modele-legende-overview.png
       
-         Figure 1 - Overview of the model
+        Figure 1 - Overview of the model
 
-   .. container:: rightside
+  .. container:: rightside
 
-      This theoretical framework is organized in four main packages: 
+     This theoretical framework is organized in four main packages: 
       
-      * The main package is legendContent: it describes which components are contained
-        in the map legend of the map (names and symbol choices of each line of the key),
-        and how they are organized (which lines are gathered  in a theme). 
+     * The main package is legendContent: it describes which components are contained
+       in the map legend of the map (names and symbol choices of each line of the key),
+       and how they are organized (which lines are gathered  in a theme). 
       
-      * The package mapContent describes, for a given map, the set of features that are
-        to be represented (features organized in feature collections).
-      
-      * The package symbol describes the symbols used to draw features on the map (color, size…).
-      
-      * The package metadata describes messages to be conveyed by the map (concretely
-        restricted to relations between set of symbolised features for the time being,
-        like ‘association’, ‘difference’ or ‘order’). It could be extended after time
-        (Cf. paragraph 1.6 Foreseen extensions).
-      
- 
+     * The package mapContent describes, for a given map, the set of features that are
+       to be represented (features organized in feature collections).
+     
+     * The package symbol describes the symbols used to draw features on the map (color, size…).
+     
+     * The package metadata describes messages to be conveyed by the map (concretely
+       restricted to relations between set of symbolised features for the time being,
+       like ‘association’, ‘difference’ or ‘order’). It could be extended after time
+       (Cf. paragraph 1.6 Foreseen extensions).
+     
+
 .. container:: centerside
 
     Main elements of the model are described in Figure 2 :
@@ -64,15 +64,15 @@ A model of legend
 Chromatic Wheels and Color Contrasts
 -------------------------------------------
  
- A color Reference system have been designed at COGIT laboratory, dedicated to 
- map design. User tests have been proceed to evaluate hue and lightness contrasts 
- between the colors of this color reference system.
+A color Reference system have been designed at COGIT laboratory, dedicated to 
+map design. User tests have been proceed to evaluate hue and lightness contrasts 
+between the colors of this color reference system.
  
- .. container:: centerside
+.. container:: centerside
      
-    .. figure:: /documentation/resources/img/semiology/cercles-geoxygene.png
+   .. figure:: /documentation/resources/img/semiology/cercles-geoxygene.png
        
-       Figure 3 : COGIT Chromatic Wheels
+      Figure 3 : COGIT Chromatic Wheels
  
 
 Application : Automatic Contrast Improvement of a map

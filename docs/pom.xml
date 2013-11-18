@@ -21,8 +21,8 @@
 	<!-- Module Description -->
 	<!-- =========================================================== -->
 	<artifactId>docs</artifactId>
-	<name>GeOxygene Documentation</name>
-	<description>GeOxygene website, user and developer guides.</description>
+	<name>GeOxygene Documentation Site</name>
+	<description>Source repository for the GeOxygene documentation site</description>
 
 	<!-- LICENCES -->
 
@@ -88,9 +88,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
-
-
 
 </project>

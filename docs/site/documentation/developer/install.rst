@@ -1,7 +1,7 @@
 :Date: 11/2013
 :Version: 0.6
 
-GeOxygene Developer’s Setup Guide
+Developer’s Setup Guide
 ####################################
 
 Cette page a pour objectif de guider le développeur dans son installation de la plateforme GeOxygene 

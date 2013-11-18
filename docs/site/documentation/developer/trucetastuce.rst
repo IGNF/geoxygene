@@ -1,5 +1,5 @@
 
-Trucs et Astuces
+Tips and tricks
 =======================
 
    

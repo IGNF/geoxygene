@@ -9,8 +9,12 @@ Developer Guide
    
 	
    install
-   quickstart
    architecture
+   quickstart
    trucetastuce
+
    
 Doc d'install : les fichiers de configuration, accès aux bases de données, journalisation
+Les profiles GeOxygene
+Tests d'intégration
+

@@ -9,12 +9,22 @@
 
 /* -- page layout ----------------------------------------------------------- */
 
+body {
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva',
+                 'Verdana', sans-serif;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    line-height: 150%;
+    text-align: center;
+    background-color: #BFD1D4;
+    color: black;
+    padding: 0;
+    border: 1px solid #aaa;
 
+    margin: 0px 80px 0px 80px;
+    min-width: 740px;
+}
 
-
-
-
-/*
 div.documentwrapper {
     float: none;
 }
@@ -71,7 +81,7 @@ div.related ul li a:hover {
 }
 
 div.sphinxsidebarwrapper {
-    padding: 0;
+    padding: 0px;
 }
 
 div.sphinxsidebar {
@@ -97,12 +107,16 @@ div.sphinxsidebar h3 a {
 }
 
 div.sphinxsidebar ul {
+	list-style: none;
     padding-left: 1.5em;
     margin-top: 7px;
     padding: 0;
     line-height: 130%;
 }
 
+div.sphinxsidebar ul ul {
+    margin-left: 20px;
+}
 
 div.footer {
     background-color: #E3EFF1;
@@ -113,10 +127,13 @@ div.footer {
     text-align: right;
 }
 
+div.footer a {
+    color: #86989B;
+    text-decoration: underline;
+}
 
-*/
 /* -- body styles ----------------------------------------------------------- */
-/*
+
 p {    
     margin: 0.8em 0 0.5em 0;
 }
@@ -131,7 +148,7 @@ a:hover {
 }
 
 div.body a {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 h1 {
@@ -211,11 +228,12 @@ hr {
 
 a tt {
     border: 0;
-    color: #CA7900;
+    color: #0257B5;
+    text-decoration: none;
 }
 
 a tt:hover {
-    color: #2491CF;
+    color: #FF00DC;
 }
 
 pre {
@@ -231,7 +249,7 @@ pre {
 
 pre a {
     color: inherit;
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 td.linenos pre {
@@ -309,4 +327,3 @@ div.versioninfo {
     line-height: 1.3em;
     font-size: 0.9em;
 }
-*/
