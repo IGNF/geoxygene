@@ -20,13 +20,16 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import fr.ign.cogit.cartagen.util.multicriteriadecision.Criterion;
+import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ClassificationResult;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ConclusionIntervals;
 
 /**
- * @author PTaillandier Permet de prendre une d�cision � l'aide de la m�thode
- *         ELECTRE TRI en faisant varier les valeurs des param�tres
- *         Impl�mentation tr�s moche (presque honteuse... mais bon j'�tais un
- *         peu press�)
+ * @author PTaillandier Permet de prendre une décision à l'aide de la méthode
+ *         ELECTRE TRI en faisant varier les valeurs des paramètres
+ *         Implémentation très moche (presque honteuse... mais bon j'étais un
+ *         peu pressé)
+ * @author GTouya amélioration de l'implémentation avec un peu plus de
+ *         généricité.
  */
 public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
 
@@ -84,15 +87,15 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
   }
 
   /**
-   * variation du seuil de coupe et test de la m�thode ELCTRE TRI avec les deux
-   * types de proc�dures (optimiste et pessimiste)
-   * @param votes : ensemble des conclusions obtenus apr�s d�cisions avec
-   *          l'ensemble des jeux de param�tres
-   * @param criteres : ensemble de Critere : crit�res utilis�s pour la d�cision
-   *          multicrit�re
+   * variation du seuil de coupe et test de la méthode ELECTRE TRI avec les deux
+   * types de procédures (optimiste et pessimiste)
+   * @param votes : ensemble des conclusions obtenus après décisions avec
+   *          l'ensemble des jeux de paramètres
+   * @param criteres : ensemble de Critere : critères utilisés pour la décision
+   *          multicritère
    * @param valeursCourantes : vecteur de valeurs courant : Clef : String : nom
-   *          crit�re -> Valeur : Double : valeur du crit�re
-   * @param conclusion : les intervalles auxquels il faut rattach� le vecteur de
+   *          critère -> Valeur : Double : valeur du critère
+   * @param conclusion : les intervalles auxquels il faut rattaché le vecteur de
    *          valeurs courant
    */
   private void decision(Map<String, Double> votes, Set<Criterion> criteres,
@@ -100,13 +103,13 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
     for (Double valCoupe : this.seuilCoupeSet) {
       this.setCutThreshold(valCoupe.doubleValue());
       this.setProcedureOptimiste(true);
-      String decision = this.decisionELECTRETRI(criteres, valeursCourantes,
-          conclusion);
+      ClassificationResult decision = this.decisionELECTRETRI(criteres,
+          valeursCourantes, conclusion);
       Double val = votes.get(decision);
       if (val == null) {
         val = new Double(0);
       }
-      votes.put(decision, new Double(val.doubleValue() + 1));
+      votes.put(decision.getCategory(), new Double(val.doubleValue() + 1));
       this.setProcedureOptimiste(false);
       decision = this
           .decisionELECTRETRI(criteres, valeursCourantes, conclusion);
@@ -114,17 +117,17 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
       if (val2 == null) {
         val2 = new Double(0);
       }
-      votes.put(decision, new Double(val2.doubleValue() + 1));
+      votes.put(decision.getCategory(), new Double(val2.doubleValue() + 1));
 
     }
   }
 
   /**
-   * Modifie l'ensemble la valeur de indiff�rence des crit�res donn�s en
-   * param�tre
-   * @param criteres : crit�res desquels nous cherchons � modifier la valeur de
-   *          indiff�rence
-   * @param val : nouvelle valeur de indiff�rence
+   * Modifie l'ensemble la valeur de indiff�rence des critéres donnés en
+   * paramètre
+   * @param criteres : critères desquels nous cherchons à modifier la valeur de
+   *          indifférence
+   * @param val : nouvelle valeur de indifférence
    */
   private void setPreference(Set<Criterion> criteres, double val) {
     for (Criterion critere : criteres) {
@@ -248,13 +251,13 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
 
   /**
    * variation des valeurs des poids
-   * @param votes : ensemble des conclusions obtenus apr�s d�cisions avec
-   *          l'ensemble des jeux de param�tres
-   * @param criteres : ensemble de Critere : crit�res utilis�s pour la d�cision
-   *          multicrit�re
+   * @param votes : ensemble des conclusions obtenus après décisions avec
+   *          l'ensemble des jeux de paramètres
+   * @param criteres : ensemble de Critere : critères utilisés pour la décision
+   *          multicritère
    * @param valeursCourantes : vecteur de valeurs courant : Clef : String : nom
-   *          crit�re -> Valeur : Double : valeur du crit�re
-   * @param conclusion : les intervalles auxquels il faut rattach� le vecteur de
+   *          critère -> Valeur : Double : valeur du critère
+   * @param conclusion : les intervalles auxquels il faut rattaché le vecteur de
    *          valeurs courant
    */
   private void decisionWeight(Map<String, Double> votes,
@@ -265,7 +268,7 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
   }
 
   @Override
-  public String decision(Set<Criterion> criteres,
+  public ClassificationResult decision(Set<Criterion> criteres,
       Map<String, Double> valeursCourantes, ConclusionIntervals conclusion) {
     Map<String, Double> votes = new Hashtable<String, Double>();
 
@@ -300,7 +303,7 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
     robustesse /= valTot;
     logger.info("**** ELECTRE TRI : Categorie choisie : " + catChoisie
         + "  robustesse : " + robustesse + "  ****");
-    return catChoisie;
+    return new ClassificationResult(catChoisie, robustesse, criteres);
   }
 
   /**

@@ -13,9 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 import fr.ign.cogit.cartagen.util.multicriteriadecision.Criterion;
+import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ClassificationResult;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ConclusionIntervals;
-import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.MultiCriteriaDecisionClassifMethod;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ConclusionIntervals.Interval;
+import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.MultiCriteriaDecisionClassifMethod;
 
 /**
  * @author PTaillandier ELECTRE TRI multiple criteria decision method. Méthode
@@ -59,9 +60,9 @@ public class ELECTRETRIMethod implements MultiCriteriaDecisionClassifMethod {
    * @param refValues : le vecteur de valeur de r�f�rence
    * @return le nom de la relation unissant les deux vecteurs : soit A R Ref =>
    *         les deux vecteurs sont incomparables, soit A S Ref => le vecteur
-   *         courant est sup�rieur au vecteur ref soit Ref S A => le vecteur
-   *         ref est sup�rieur au vecteur courant soit A I Ref => les deux
-   *         vecteurs sont incompatibles
+   *         courant est sup�rieur au vecteur ref soit Ref S A => le vecteur ref
+   *         est sup�rieur au vecteur courant soit A I Ref => les deux vecteurs
+   *         sont incompatibles
    */
   public String relation(Set<Criterion> criteria,
       Map<String, Double> currentValues, Map<String, Double> refValues) {
@@ -133,7 +134,7 @@ public class ELECTRETRIMethod implements MultiCriteriaDecisionClassifMethod {
   }
 
   @Override
-  public String decision(Set<Criterion> criteres,
+  public ClassificationResult decision(Set<Criterion> criteres,
       Map<String, Double> valeursCourantes, ConclusionIntervals conclusion) {
     // A noter que la fonction decisionFC existe uniquement pour �tre
     // appel�e
@@ -143,18 +144,18 @@ public class ELECTRETRIMethod implements MultiCriteriaDecisionClassifMethod {
   }
 
   /**
-   * Fonction qui permet de d�finir la cat�gorie � affecter par rapport
-   * � un jeu de K courant
+   * Fonction qui permet de d�finir la cat�gorie � affecter par rapport � un jeu
+   * de K courant
    * @param criteres : Ensemble de CritereELECTRETRI (les crit�res pour cette
    *          m�thode)
-   * @param valeursCourantes : dictionnaire des valeurs des crit�res pour le
-   *          jeu de K courant : Clef : Strign : nom du crit�re -> Valeur :
-   *          Double : sa valeur
+   * @param valeursCourantes : dictionnaire des valeurs des crit�res pour le jeu
+   *          de K courant : Clef : Strign : nom du crit�re -> Valeur : Double :
+   *          sa valeur
    * @param conclusion : objets qui regroupent les Intervalles possibles pour
    *          les affectations de conclusion
    * @return le nom de la cat�gorie affect�e
    */
-  public String decisionELECTRETRI(Set<Criterion> criteres,
+  public ClassificationResult decisionELECTRETRI(Set<Criterion> criteres,
       Map<String, Double> valeursCourantes, ConclusionIntervals conclusion) {
     // Cas de la proc�dure optimiste
     if (this.optimisticProcess) {
@@ -175,10 +176,12 @@ public class ELECTRETRIMethod implements MultiCriteriaDecisionClassifMethod {
         // si le vecteur ref ne surclasse pas (n'est pas meilleur que) le
         // vecteur courant -> conclusion de l'intervalle courant
         if (!relation.equals("Ref S A")) {
-          return interval.getConclusion();
+          return new ClassificationResult(interval.getConclusion(), -1,
+              criteres);
         }
       }
-      return conclusion.getIntervals().get(0).getConclusion();
+      return new ClassificationResult(conclusion.getIntervals().get(0)
+          .getConclusion(), -1, criteres);
     }
     // cas de la proc�dure pessimiste
     for (int i = conclusion.getIntervals().size() - 1; i > 0; i--) {
@@ -195,10 +198,11 @@ public class ELECTRETRIMethod implements MultiCriteriaDecisionClassifMethod {
       // si le vecteur courant surclasse (est meilleur que) le vecteur ref ->
       // conclusion de l'intervalle courant
       if (relation.equals("A S Ref")) {
-        return interval.getConclusion();
+        return new ClassificationResult(interval.getConclusion(), -1, criteres);
       }
     }
-    return conclusion.getIntervals().get(0).getConclusion();
+    return new ClassificationResult(conclusion.getIntervals().get(0)
+        .getConclusion(), -1, criteres);
   }
 
   /**

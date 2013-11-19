@@ -245,7 +245,8 @@ public class Town extends GeneObjSurfDefault implements ITown {
       Map<String, Object> param = this.getCentreParamMap(block, crit);
       valeursCourantes.put(crit.getName(), new Double(crit.value(param)));
     }
-    String res = electre.decision(criteria, valeursCourantes, conclusion);
+    String res = electre.decision(criteria, valeursCourantes, conclusion)
+        .getCategory();
     if (res.equals("very good")) {
       Town.logger.info("block " + block.getId() + " est grise !!!!");
       return true;

@@ -32,7 +32,7 @@ public interface MultiCriteriaDecisionClassifMethod {
    * @return the conclusion associated to the interval the current values vector
    *         is attached to
    */
-  public String decision(Set<Criterion> criteria,
+  public ClassificationResult decision(Set<Criterion> criteria,
       Map<String, Double> currentValues, ConclusionIntervals conclusion);
 
 }
