@@ -210,6 +210,7 @@ div.sphinxsidebar h3 a {
     color: inherit;
 }
 div.document {
+	min-height:400px;
     margin: 0 80px;
     background-image: none;
     width: 85%;

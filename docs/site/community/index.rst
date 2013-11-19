@@ -1,16 +1,17 @@
+.. _community:
 
-Community
+About
 ================
 
-.. sidebar:: Community
+.. sidebar:: About
 
 
 .. toctree::
    :maxdepth: 1
    
 
-   welcome
    release
    
 
-Mailing Lists, Project License, Project Team
+* Project License 
+* Project Team

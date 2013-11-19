@@ -31,11 +31,23 @@
             <h1 id="logo_ign"><a href="http://www.ign.fr">IGN</a></h1>
             <h1 id="logo_sourceforge"><a href="http://sourceforge.net/projects/oxygene-project/">Sourceforge</a></h1>
             
+            <div class='top-xleft'><span>Last Published : {%- print today %}  | Version : {%- print release  %}</span></div>
+            
+            {%- if pagename != 'index' %}
             <ul id="top-nav">
-                <li class="first"><a href="http://docs.geotools.org">About</a></li>
-                <li><a href="http://sourceforge.net/projects/geotools/files">Download</a></li>
-                <li><a href="http://docs.codehaus.org/display/GEOTOOLS/Home">Documentation</a></li>
+                <li class="first"><a href="../community/index.html">About</a></li>
+                <li><a href="../download/index.html">Download</a></li>
+                <li><a href="../documentation/index.html">Documentation</a></li>
             </ul>
+            {% endif %}
+            {%- if pagename == 'index' %}
+            <ul id="top-nav">
+                <li class="first"><a href="./community/index.html">About</a></li>
+                <li><a href="./download/index.html">Download</a></li>
+                <li><a href="./documentation/index.html">Documentation</a></li>
+            </ul>
+            {% endif %}
+            
         </div>
     </div>
 {% endblock %}

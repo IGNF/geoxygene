@@ -26,7 +26,7 @@
 			<isset property="build.directory" />
 		</condition>
 
-        <condition property="project.version" value="${project.version}" else="1.6-SNAPSHOT">
+        <condition property="project.version" value="${project.version}" else="55.55-SNAPSHOT">
 			<isset property="project.version" />
 		</condition>
 
@@ -34,9 +34,14 @@
 		<echo message="Sphinx is available ${sphinx.available}" />
 		<echo message="Rst2pdf is available ${rst2pdf.available}" />
 		<echo message="Latex is available ${latex.available}" />
-    </target>
-
+    
+	</target>
+	
 	<target name="site" depends="init">
+		<tstamp> 
+			  <format property="current.time_one" pattern="dd/MM/yyyy"/> 
+		</tstamp> 
+		<echo message="On est le ${current.time_one}" />
 		<antcall target="sphinx">
 			<param name="id" value="site" />
 			<param name="build" value="html" />
@@ -44,7 +49,6 @@
 	</target>
 
 	<target name="full" depends="site" />
-
 	
 	<target name="sphinx" if="sphinx.available">
 		<echo message="Running sphinx-build "/> 
