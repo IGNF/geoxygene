@@ -98,7 +98,7 @@ div.svnurl {
     border: 1px solid #C0C0C0;
     padding:16px;
     font-family: Courier New, Arial;
-    font-weight:bold;
+    /*font-weight:bold;*/
     color:#FF00DC;
 }
 

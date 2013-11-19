@@ -102,8 +102,4 @@ Navigation
 .. Liens vers geoxygene-data
 
 
-.. * :ref:`About <community>`
-.. :ref:`Download <download>`
-.. :ref:`Documentation <documentation>`
-
 

@@ -9,9 +9,9 @@ Download
    
    
    geoxygene
-   geoxygene3d
+   .. geoxygene3d
    openjump
-   wps
+   .. wps
 
 
 Ajouter : Triangulation

@@ -4,20 +4,11 @@ Plugins GeOxygene for OpenJump
 ########################################
 
 
-  
-Introduction
-************************
-
-Cette version contient deux plugins, un plugin permettant d'utiliser l'appariement de réseaux implémentés dans GeOxygene
-et un second qui permet de manipuler  la carte topologique (Création de la carte topologique (noeuds, arcs, faces), 
-Recherche de faces circulaires dans une carte topologique, 
-création d'une carte topologique pour cartographiée le degré des noeuds.
-
 GeOxygene library is used by these plugins
 
-  * Licence GPL :
-  * Date de publication :
-  * Version : 1.0
+* Licence : GPL
+* Publication date : 2009-06-27
+* Version : 0.1
 
 Installation
 ***********************
@@ -26,57 +17,60 @@ Set up OpenJump as a prerequisite.
 
 1. Download the plugin 
 
-.. container:: chemin
+.. container:: svnurl
 
    http://sourceforge.net/projects/oxygene-project/files/GeOxygene%20Plugin%20for%20OpenJUMP/0.1/geoxygene-plugin-0.1.zip/download
      
-2. Copy the whole folder contents into your <myOpenjumpFolder>\lib\ext
+2. Copy the whole folder contents into your **<myOpenjumpFolder>**/lib/ext
 
 3. Start openjump.
  
-4. You will now see a new item menu in "Extensions" called "GeOxygene" 
+4. You will now see a new item menu called "GeOxygene" 
 
 
-Examples
-************************
+Example : Network matching
+******************************
 
-Network matching
-============================
-* {TO USE DEMO DATA (EDGES.SHP)}
+Playing
+--------------
 
 1. Download demo data :
-   Network 1 : http://
-   Network 2 : http://
-2.
    
-2. Export shapefile to postgreSQL database using OpenJUMP or shp2pgsql tools.
-3. Start OpenJUMP.
-4. Select menu "pg Routing-->shortest Path".
-5. Give the connection string with the database containing the demo data edges.shp.
-6. Click connect.
-7. If postgreSQL is running and connection strings are correct you get the source and target column populated.
-8. Select the target and "Find Route".
-9. the demo shapefile and shortest path will be displayed on mapwindow.
-10. Finish.
+   * Network 1 : http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-data/ign-echantillon/bdcarto/BDC_3-1_SHP_LAMB93_X072-ED111/RESEAU_ROUTIER/TRONCON_ROUTE.zip
+   
+   * Network 2 : http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-data/ign-echantillon/bdtopo/72_BDTOPO_shp/BDT_2-0_SHP_LAMB93_X062-ED111/A_RESEAU_ROUTIER/ROUTE.zip
+
+2. Start OpenJUMP.
+
+3. Load both shapefiles
+
+4. Select menu "GeOxygene >> Appariement >> Appariement de réseaux".
+
+5. Launch matching 
+
+   .. container:: centerside
+   
+      .. figure:: /documentation/resources/img/openjump/GeoxygeneOpenJump01.png
+         :width: 450px
+       
+         Figure 1 : Dataset
+               
+6. Results of matching will be displayed on windows.
+
+   .. container:: centerside
+   
+      .. figure:: /documentation/resources/img/openjump/GeoxygeneOpenJump02.png
+         :width: 450px
+       
+         Figure 2 : Results of matching
+      
+7. Finish.
 
 
 Reference
 --------------
   
-  * Mustière S., Devogele T., 2008, <<{{{http://www.informaworld.com/smpp/1673074808-66010030/content~db=all~content=a902412390}
-  Matching networks with different levels of detail}}>>, GeoInformatica, Vol.12 n°4, pp 435-453
-
-  * La carte topologique dans GeOxygene
-  
-  
-  
-  
-Currently  for doing routing based on pgRouting you need to give connection string and select the source and 
-target nodes. The plugin will send these parameters to postgis table and create a table containing the 
-geometry of features which makes the shortest path.
-
-* {Features implemented}
-1. Interactive source and destination selection
-2. Allowing to load a shapefile directly and do network data matching
-
+* Mustière S., Devogele T., 2008, `Matching networks with different levels of detail 
+  <http://www.informaworld.com/smpp/1673074808-66010030/content~db=all~content=a902412390>`_ , 
+  GeoInformatica, Vol.12 n°4, pp 435-453
 
