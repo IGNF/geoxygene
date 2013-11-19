@@ -4,8 +4,7 @@
 Developer’s Setup Guide
 ####################################
 
-Cette page a pour objectif de guider le développeur dans son installation de la plateforme GeOxygene 
-sous Windows ou sous Linux.
+Cette page a pour objectif de guider le développeur dans son installation de la plateforme GeOxygene.
   
   
 JAVA
@@ -54,10 +53,12 @@ Eclipse preferences
 JDK
 -------
 
+Configurer Eclipse pour qu'il exécute les programmes java avec un jdk et non pas une jre :
 
 .. container:: centerside
      
     .. figure:: /documentation/resources/img/install/JavaConfiguration.png
+       :width: 450px
        
        Figure 5 : Java configuration in Eclipse
 
@@ -118,8 +119,9 @@ et choisir UTF-8.
 .. container:: centerside
      
     .. figure:: /documentation/resources/img/install/encodage.png
+       :width: 450px
        
-       Figure 4 : ddd 
+       Figure 4 : Eclipse - Encodage 
 
 
 Code formatting
@@ -130,44 +132,83 @@ Elle s'inspire avant tout de la convention de programmation recommandée pour to
 Cette norme est dérivée de celle proposée par SUN à l’adresse :
 
 
-    http://www.oracle.com/technetwork/java/codeconvtoc-136057.html
+1. Télécharger la norme du COGIT :
+    
+.. container:: svnurl
 
+   http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/src/main/resources/java_cogit_formatting_conventions_v1.xml
+   
+   
+.. container:: twocol
 
-Aller dans "Preferences => Java => Code Style => Formatter" et cliquer sur "Import". 
+   .. container:: leftside
+   
+      2. Aller dans :
 
-.. container:: centerside
+         .. container:: chemin
+
+            Preferences >> Java 
+                        >> Code Style >> Formatter 
+   
+         et cliquer sur "Import" :
+
+         .. container:: centerside
      
-    .. figure:: /documentation/resources/img/install/ConfigEclipseConventionCodage_1.png
+            .. figure:: /documentation/resources/img/install/ConfigEclipseConventionCodage_1.png
+               :width: 450px
        
-       Figure 17 : -----
+               Figure 17 : Convention de codage - Import
+    
+   
+   .. container:: rightside
+   
+      3. Importer ce fichier et choisissez comme "Active profile" : 
+                     "Java COGIT Formatting Conventions v1" 
 
-
-Le template de la convention de nommage du COGIT «java_cogit_formatting_conventions_v1.xml» se trouve dans le code source du projet GeOxygene :
-
-
-geoxygene =>  src =>  main =>  resources =>  java_cogit_formatting_conventions_v1.xml
-
-
-
-
-
-Importer ce fichier et choisissez comme "Active profile" : "Java COGIT Formatting Conventions v1" 
-
-
-.. container:: centerside
+      .. container:: centerside
      
-    .. figure:: /documentation/resources/img/install/ConfigEclipseConventionCodage_2.png
+         .. figure:: /documentation/resources/img/install/ConfigEclipseConventionCodage_2.png
+            :width: 500px
        
-       Figure 18 : -----
-
+            Figure 18 : Convention de codage - Active profile 
 
 
 Text editors
 ------------------
 
+.. container:: twocol
+
+   .. container:: leftside
+
+
+        1. Aller dans :
+        
+        .. container:: chemin
+         
+           Préférences >> General >> Editors >> Text Editors
+           
+        2. Cocher :
+        
+           * Insert spaces for tabs
+        
+           * Check Show line numbers
+        
+           * Check Show whitespace characters (optional)
+        
+           * Check Show print margin and set Print margin column to “100” (optional)
+   
+   .. container:: rightside
+   
+      .. container:: centerside
+   
+           .. figure:: /documentation/resources/img/install/PreferencesTextEditor.png
+              :width: 450px
+               
+              Figure 8 : Eclipse preferences - Text editors  
+
 
 Eclipse Plugins
-================
+===================
 
 Maintenant, Eclipse est prêt pour l'installation des plugins nécessaires à GeOxygene. 
 Vous aurez besoin des plugins Maven (m2eclipse) et subversion (subclipse). 
