@@ -25,8 +25,16 @@ Certificate
 If you don't use Eclipse editor for building your project, you have to configure Maven to use the certificates for downloading jar files on sites behind an HTTPS server.
 The reference of this approach is explained here : http://maven.apache.org/guides/mini/guide-repository-ssl.html.
 
-1. Download the certificate from your browser like this : 
+1. Get the certificate 
 
+**First method** : If you have openssl installed
+
+   .. container:: chemin
+   
+      echo -n | openssl s_client -connect dionysos2.ign.fr:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > dionysos2.cert 
+
+
+**Second method** : Download the certificate from your browser like this : 
 
 .. container:: twocol
 
