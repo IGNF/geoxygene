@@ -9,8 +9,9 @@ Developer Guide
    
 	
    install
+   maven
    architecture
-   quickstart
+   .. quickstart
    trucetastuce
 
    
