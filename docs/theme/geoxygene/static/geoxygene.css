@@ -163,6 +163,15 @@ p.caption {
 table td, table th {
     padding: 0;
 }
+
+table.docutils {
+    margin-left: 48px;
+}
+
+table.docutils td {
+	white-space : nowrap;
+}
+
 div.related {
     margin: 0 80px;
     width: auto;

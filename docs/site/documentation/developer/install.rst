@@ -24,12 +24,17 @@ aujourd'hui pour les développements JAVA.
 Installation
 ================
 
-* Vous pouvez télécharger la dernière version d'Eclipse directement à partir du lien : `Eclipse Java EE IDE for Web Developers <http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/keplersr1>`_
-  Actuellement la dernière version est Kepler (4.3)
-   
+* Vous pouvez télécharger la dernière version d'Eclipse directement à partir des liens ci-dessous. Actuellement la dernière version est Kepler (4.3). 
+  
+============================================================================================================================================================================ ====================================================================================================================================================================================
+  `Windows 32-bit <http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/kepler/SR1/eclipse-standard-kepler-SR1-win32.zip>`_                    `Windows 64-bit <http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/kepler/SR1/eclipse-standard-kepler-SR1-win32-x86_64.zip>`_
+  `Mac OS X(Cocoa 32) <http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/kepler/SR1/eclipse-standard-kepler-SR1-macosx-cocoa.tar.gz>`_      `Mac OS X(Cocoa 64) <http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/kepler/SR1/eclipse-standard-kepler-SR1-macosx-cocoa-x86_64.tar.gz>`_
+  `Linux 32-bit <http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/kepler/SR1/eclipse-standard-kepler-SR1-linux-gtk.tar.gz>`_               `Linux 64-bit <http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/kepler/SR1/eclipse-standard-kepler-SR1-linux-gtk-x86_64.tar.gz>`_
+============================================================================================================================================================================ ====================================================================================================================================================================================
+
 * Décompresser le fichier téléchargé (Eclipse ne fournit pas d'installeur, juste un répertoire à dézipper).
 
-* Editer le fichier eclipse.ini situé à la racine du répertoire d'Eclipse. Configurer Eclipse pour qu'il s'exécute avec une JDK et non une JRE. Pour ce faire, 
+* Editer le fichier **eclipse.ini** situé à la racine du répertoire d'Eclipse. Configurer Eclipse pour qu'il s'exécute avec un JDK et non une JRE. Pour ce faire, 
   rajouter les lignes suivantes au début du fichier :
 
    .. literalinclude:: /documentation/resources/code_src/eclipse.ini
@@ -60,7 +65,7 @@ Configurer Eclipse pour qu'il exécute les programmes java avec un jdk et non pa
     .. figure:: /documentation/resources/img/install/JavaConfiguration.png
        :width: 450px
        
-       Figure 5 : Java configuration in Eclipse
+       Figure 1 : Java configuration in Eclipse
 
 
 
@@ -76,32 +81,27 @@ Pour ce faire, accéder au menu :
 
    Window >> Preferences >> General >> Network Connection 
 
-Vous pouvez alors séléctionner <Manual> comme <Active Provider>
+Vous pouvez alors séléctionner **Manual** comme **Active Provider**
 
 .. container:: centerside
      
     .. figure:: /documentation/resources/img/install/proxy3.png
+       :width: 600px
        
-       Figure 1 : aaa
-       
-
-Selectionner "HTTP" dans la liste des entrées et cliquer sur le bouton "Edit"
-
-.. container:: centerside
-     
-    .. figure:: /documentation/resources/img/install/proxy4.png
-       
-       Figure 2 : bbb
+       Figure 2 : Eclipse - Network connections
        
 
-Entrer les coordonnées de votre proxy. Pour l'IGN par exemple, il s'agit de <proxy.ign.fr> avec le port <3128>. 
+Selectionner "HTTP" dans la liste des entrées et cliquer sur le bouton "Edit". 
+
+Entrer les coordonnées de votre proxy. 
+Pour l'IGN par exemple, il s'agit de **proxy.ign.fr** avec le port **3128**. 
 Ne remplisser pas les champs d'authentification.
   
 .. container:: centerside
      
     .. figure:: /documentation/resources/img/install/proxy1.png
        
-       Figure 3 : ccc 
+       Figure 3 : Edit proxy entry 
 
 
 Encodage
@@ -157,7 +157,7 @@ Cette norme est dérivée de celle proposée par SUN à l’adresse :
             .. figure:: /documentation/resources/img/install/ConfigEclipseConventionCodage_1.png
                :width: 450px
        
-               Figure 17 : Convention de codage - Import
+               Figure 5 : Convention de codage - Import
     
    
    .. container:: rightside
@@ -170,7 +170,7 @@ Cette norme est dérivée de celle proposée par SUN à l’adresse :
          .. figure:: /documentation/resources/img/install/ConfigEclipseConventionCodage_2.png
             :width: 500px
        
-            Figure 18 : Convention de codage - Active profile 
+            Figure 6 : Convention de codage - Active profile 
 
 
 Text editors
@@ -204,7 +204,11 @@ Text editors
            .. figure:: /documentation/resources/img/install/PreferencesTextEditor.png
               :width: 450px
                
-              Figure 8 : Eclipse preferences - Text editors  
+              Figure 7 : Eclipse preferences - Text editors  
+
+
+.. ???????????????????????????????????????????????????????????????????????????????????????????????????????????????????
+.. ???????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 
 
 Eclipse Plugins
@@ -212,47 +216,6 @@ Eclipse Plugins
 
 Maintenant, Eclipse est prêt pour l'installation des plugins nécessaires à GeOxygene. 
 Vous aurez besoin des plugins Maven (m2eclipse) et subversion (subclipse). 
-
-Plugin M2E
-------------------
-Sur les dernières versions d'Eclipse Java, le plugin m2eclipse est déjà installé.
-
-Sinon : http://www.eclipse.org/m2e/download/
-
-
-When downloading jars maven makes use of a "local repository" to store jars.
-
-  ==================  ========================================================
-     PLATFORM           LOCAL REPOSITORY
-  ==================  ========================================================
-     Windows XP:      :file:`C:\\Documents and Settings\\Jody\\.m2\\repository`
-     Windows:         :file:`C:\\Users\\Jody\\.m2\repository`
-     Linux and Mac:   :file:`~/.m2/repository`
-  ==================  ========================================================
-
-To download jars maven makes use of public maven repositories on the internet where projects
-such as GeoTools publish their work.
-
-
-Si vous êtes derrière un proxy, la dernière étape consiste à configurer Maven pour utiliser le proxy. 
-Pour ce, il faut ajouter un fichier \emph{settings.xml} dans la racine de Maven. 
-Ce répertoire est situé à l'endroit suivant :
-
-    * sous Linux&\verb|~/.m2|\\
-    * sous Windows&\verb|C:\Documents and Settings\%USER%\.m2|
-
-Voici un exemplaire d'un fichier settings.xml que vous pouvez utiliser à l'IGN :
-
-.. literalinclude:: /documentation/resources/code_src/settings.xml
-        :language: xml
-        
-
-.. container:: centerside
-     
-    .. figure:: /documentation/resources/img/install/MavenConfiguration.png
-       
-       Figure 5 : eee
-
 
 Plugin Subclipse
 ------------------
@@ -273,6 +236,48 @@ Plugin Subclipse
     .. figure:: /documentation/resources/img/install/connector_subclipse03.png
        
        Figure 6 : ggg
+
+
+Plugin M2E
+------------------
+
+
+Sinon : http://www.eclipse.org/m2e/download/
+
+Latest m2e release (recommended)
+http://download.eclipse.org/technology/m2e/releases 
+
+
+When downloading jars maven makes use of a "local repository" to store jars.
+
+To download jars maven makes use of public maven repositories on the internet where projects
+such as GeoTools publish their work.
+
+
+Si vous êtes derrière un proxy, la dernière étape consiste à configurer Maven pour utiliser le proxy. 
+Pour ce, il faut ajouter un fichier **settings.xml** à la racine de Maven. 
+Ce répertoire est situé à l'endroit suivant :
+
+  ==================  ========================================================
+     PLATFORM           LOCAL REPOSITORY
+  ==================  ========================================================
+     Windows XP:      :file:`C:\\Documents and Settings\\Jody\\.m2\\repository`
+     Windows:         :file:`C:\\Users\\Jody\\.m2\repository`
+     Linux and Mac:   :file:`~/.m2/repository`
+  ==================  ========================================================
+
+
+Voici un exemplaire d'un fichier settings.xml que vous pouvez utiliser à l'IGN :
+
+.. literalinclude:: /documentation/resources/code_src/settings.xml
+        :language: xml
+        
+
+.. container:: centerside
+     
+    .. figure:: /documentation/resources/img/install/MavenConfiguration.png
+       
+       Figure 5 : eee
 
 
 
