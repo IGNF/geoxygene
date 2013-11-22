@@ -304,6 +304,22 @@ public class CommonAlgorithmsFromCartAGen {
   }
 
   /**
+   * Compute the ratio of length of a line that is inside a polygon (0 if
+   * disjoint, 1 if contained).
+   * @param line
+   * @param poly
+   * @return
+   */
+  public static double getOverlappingLength(ILineString line, IPolygon poly) {
+    if (line.disjoint(poly))
+      return 0.0;
+    if (poly.contains(line))
+      return 1.0;
+    IGeometry intersection = line.intersection(poly);
+    return intersection.length() / line.length();
+  }
+
+  /**
    * Computes the angle between two crossing lines. The angle is not directly
    * computed between the first vertices after the crossing to avoid capture
    * artifacts.

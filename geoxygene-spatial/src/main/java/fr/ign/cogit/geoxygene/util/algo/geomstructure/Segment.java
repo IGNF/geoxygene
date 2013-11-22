@@ -323,4 +323,13 @@ public class Segment extends GM_LineSegment {
       return true;
     return false;
   }
+
+  /**
+   * Get the point that is the middle of the segment.
+   * @return
+   */
+  public IDirectPosition getMiddlePoint() {
+    return new DirectPosition((startPoint().getX() + endPoint().getX()) / 2,
+        (startPoint().getY() + endPoint().getY()) / 2);
+  }
 }

@@ -30,7 +30,6 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 /**
  * Segment de droite.
@@ -75,10 +74,5 @@ public class GM_LineSegment extends GM_LineString implements ILineSegment {
     }
     this.startPoint = points.get(0);
     this.endPoint = points.get(1);
-  }
-
-  @Override
-  public IGeometry intersection(IGeometry geom) {
-    return this.intersection(geom);
   }
 }
