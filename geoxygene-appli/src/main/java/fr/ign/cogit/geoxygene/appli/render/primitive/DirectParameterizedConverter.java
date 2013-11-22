@@ -27,9 +27,6 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
-import java.awt.Shape;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -43,41 +40,40 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
 
 /**
  * @author JeT
- * Convert geoxygene features to rendering primitives.
- * This class don't do any optimization
+ *         Convert geoxygene features to rendering primitives.
+ *         This class don't do any optimization
  */
 public class DirectParameterizedConverter implements ParameterizedConverter {
 
-  private static Logger logger = Logger.getLogger(DirectParameterizedConverter.class.getName());
+    private static Logger logger = Logger.getLogger(DirectParameterizedConverter.class.getName());
 
-  /**
-   * Constructor
-   */
-  public DirectParameterizedConverter() {
-  }
-
-  @Override
-  public DrawingPrimitive convert(final IFeature feature, final Symbolizer symbolizer, final Viewport viewport) throws RenderingException {
-    // get the geometry
-    IGeometry geometry = RenderUtil.getGeometry(symbolizer.getGeometryPropertyName(), feature);
-    if (geometry == null) {
-      throw new RenderingException("Cannot convert a null geometry from feature " + feature.getClass().getSimpleName());
+    /**
+     * Constructor
+     */
+    public DirectParameterizedConverter() {
     }
 
-    // check the symbolizer class
-    if (symbolizer instanceof LineSymbolizer) {
-      LineSymbolizer lineSymbolizer = (LineSymbolizer) symbolizer;
-      WorldCoordinatesLineParameterizer lineParameterizer = new WorldCoordinatesLineParameterizer(viewport);
-      DrawingPrimitive primitive = ParameterizedConverterUtil.generateParameterizedPolyline(lineSymbolizer, geometry, viewport, lineParameterizer);
-      return primitive;
-    } else if (symbolizer instanceof PolygonSymbolizer) {
-      PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) symbolizer;
-      WorldCoordinatesLineParameterizer lineParameterizer = new WorldCoordinatesLineParameterizer(viewport);
-      DrawingPrimitive primitive = ParameterizedConverterUtil.generateParameterizedPolygon(polygonSymbolizer, geometry, viewport, lineParameterizer);
-      return primitive;
-    } else {
-      logger.error(this.getClass().getSimpleName() + " Cannot handle symbolizer type " + symbolizer.getClass().getSimpleName());
-      return null;
+    @Override
+    public DrawingPrimitive convert(final IFeature feature, final Symbolizer symbolizer, final Viewport viewport) throws RenderingException {
+        // get the geometry
+        IGeometry geometry = RenderUtil.getGeometry(symbolizer.getGeometryPropertyName(), feature);
+        if (geometry == null) {
+            throw new RenderingException("Cannot convert a null geometry from feature " + feature.getClass().getSimpleName());
+        }
+
+        // check the symbolizer class
+        if (symbolizer instanceof LineSymbolizer) {
+            LineSymbolizer lineSymbolizer = (LineSymbolizer) symbolizer;
+            DrawingPrimitive primitive = ParameterizedConverterUtil.generateParameterizedPolyline(lineSymbolizer, geometry, viewport);
+            return primitive;
+        } else if (symbolizer instanceof PolygonSymbolizer) {
+            PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) symbolizer;
+            //      WorldCoordinatesLineParameterizer polygonParameterizer = new WorldCoordinatesLineParameterizer(viewport);
+            DrawingPrimitive primitive = ParameterizedConverterUtil.generateParameterizedPolygon(polygonSymbolizer, geometry, viewport);
+            return primitive;
+        } else {
+            logger.error(this.getClass().getSimpleName() + " Cannot handle symbolizer type " + symbolizer.getClass().getSimpleName());
+            return null;
+        }
     }
-  }
 }

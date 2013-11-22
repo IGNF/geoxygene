@@ -31,52 +31,76 @@ import java.util.List;
 
 import javax.vecmath.Point2d;
 
+import fr.ign.cogit.geoxygene.appli.Viewport;
+
 /**
  * @author JeT
- * Base interface of all drawing primitive. These primitives are used in the GL rendering process.
- * A DrawingPrimitive can contain multiple drawing primitives, it is then a non-leaf primitive.
- * We can access points to non leaf primitive but we don't know where the "holes" between primitives are
- * The safe way to access primitives data is:
- * - if it is a leaf : access to points. getPrimitives() is null
- * - if it is not a leaf: access to children using getPrimitives(). access to points is managed but is not reflecting the exact reality
+ *         Base interface of all drawing primitive. These primitives are used in
+ *         the GL rendering process.
+ *         A DrawingPrimitive can contain multiple drawing primitives, it is
+ *         then a non-leaf primitive.
+ *         We can access points to non leaf primitive but we don't know where
+ *         the "holes" between primitives are
+ *         The safe way to access primitives data is:
+ *         - if it is a leaf : access to points. getPrimitives() is null
+ *         - if it is not a leaf: access to children using getPrimitives().
+ *         access to points is managed but is not reflecting the exact reality
  */
 public interface DrawingPrimitive {
 
-  /**
-   * Get the primitive as Java2D shape object
-   */
-  public Shape getShape();
+    /**
+     * Get the primitive as Java2D shape objects
+     */
+    public List<Shape> getShapes();
 
-  /**
-   * get all primitives contained in this primitive
-   */
-  public List<DrawingPrimitive> getPrimitives();
+    /**
+     * get all primitives contained in this primitive
+     */
+    public List<DrawingPrimitive> getPrimitives();
 
-  /**
-   * @param n point index to retrieve point coordinates
-   * @return the Nth point
-   */
-  public Point2d getPoint(final int n);
+    /**
+     * @param n
+     *            point index to retrieve point coordinates
+     * @return the Nth point
+     */
+    public Point2d getPoint(final int n);
 
-  //  /**
-  //   * @return the 1st point
-  //   */
-  //  public Point2d getFirstPoint();
-  //
-  //  /**
-  //   * @return the last point
-  //   */
-  //  public Point2d getLastPoint();
+    //  /**
+    //   * @return the 1st point
+    //   */
+    //  public Point2d getFirstPoint();
+    //
+    //  /**
+    //   * @return the last point
+    //   */
+    //  public Point2d getLastPoint();
 
-  /**
-   * get the number of points in this primitive
-   */
-  public int getPointCount();
+    /**
+     * get the number of points in this primitive
+     */
+    public int getPointCount();
 
-  /**
-   * if a primitive is a "leaf" primitive, it is a non composed single primitive.
-   * accessing it's points is safe
-   */
-  public boolean isLeaf();
+    /**
+     * if a primitive is a "leaf" primitive, it is a non composed single
+     * primitive.
+     * accessing it's points is safe
+     */
+    public boolean isLeaf();
+
+    /**
+     * Set primitive texture coordinates using the given parameterizer
+     * 
+     * @param parameterizer
+     *            object computing texture coordinates
+     */
+    void generateParameterization(Parameterizer parameterizer);
+
+    /**
+     * update primitive content with given viewport
+     * 
+     * @param viewport
+     *            viewport used to recompute primitive content
+     */
+    void update(Viewport viewport);
 
 }

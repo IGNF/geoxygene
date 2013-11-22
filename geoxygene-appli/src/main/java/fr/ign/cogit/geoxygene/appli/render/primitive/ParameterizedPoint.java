@@ -33,116 +33,154 @@ import java.util.List;
 
 import javax.vecmath.Point2d;
 
+import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.appli.Viewport;
+
 /**
  * This class represents a point associated with a parameter
+ * 
  * @author JeT
- *
+ * 
  */
 public class ParameterizedPoint implements DrawingPrimitive {
 
-  private final Point2d point = new Point2d(); // point pointer is never changed, only the content is modified
-  private GeneralPath pointPath = null;
-  private double parameter = 0; // point parameter
-  private static final List<DrawingPrimitive> primitives = new ArrayList<DrawingPrimitive>(); // empty children list
+    private static final Logger logger = Logger.getLogger(ParameterizedPoint.class.getName()); // logger
 
-  /**
-   * Default constructor
-   */
-  public ParameterizedPoint() {
-  }
+    private final Point2d point = new Point2d(); // point pointer is never changed, only the content is modified
+    private GeneralPath pointPath = null;
+    private double parameter = 0; // point parameter
+    private static final List<DrawingPrimitive> primitives = new ArrayList<DrawingPrimitive>(); // empty children list
+    private final List<Shape> shapes = new ArrayList<Shape>();
 
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.appli.render.primitive.DrawingPrimitive#getShape()
-   */
-  @Override
-  public Shape getShape() {
-    if (this.pointPath == null) {
-      this.pointPath = new GeneralPath();
-      this.pointPath.moveTo(this.point.x, this.point.y);
+    /**
+     * Default constructor
+     */
+    public ParameterizedPoint() {
     }
-    return this.pointPath;
-  }
 
-  private void invalidateShape() {
-    this.pointPath = null;
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.primitive.DrawingPrimitive#getShape()
+     */
+    @Override
+    public List<Shape> getShapes() {
+        if (this.pointPath == null) {
+            this.pointPath = new GeneralPath();
+            this.pointPath.moveTo(this.point.x, this.point.y);
+        }
+        this.shapes.clear();
+        this.shapes.add(this.pointPath);
+        return this.shapes;
 
-  /**
-   * Set the parameterized point
-   * @param p point value to set
-   * @param parameter parameter associated with the point 
-   */
-  public void setPoint(final Point2d p, final double parameter) {
-    this.point.set(p.x, p.y);
-    this.parameter = parameter;
-    this.invalidateShape();
-  }
-
-  /**
-   * Set the parameterized point
-   * @param x x coordinate to set
-   * @param y y coordinate to set
-   * @param parameter parameter associated with the point 
-   */
-  public void setPoint(final double x, final double y, final double parameter) {
-    this.point.set(x, y);
-    this.parameter = parameter;
-    this.invalidateShape();
-  }
-
-  /**
-   * @param n point index to retrieve point coordinates
-   * @return the Nth point
-   */
-  @Override
-  public Point2d getPoint(final int n) {
-    if (n != 0) {
-      throw new IndexOutOfBoundsException("ParameterizedPoint::getPoint() method can only be called with inedx = 0");
     }
-    return this.point;
-  }
 
-  /**
-   * @return the stored point
-   */
-  public Point2d getPoint() {
-    return this.point;
-  }
+    private void invalidateShape() {
+        this.pointPath = null;
+    }
 
-  /**
-   * @return the parameter point 
-   */
-  public double getParameter() {
-    return this.parameter;
-  }
+    /**
+     * Set the parameterized point
+     * 
+     * @param p
+     *            point value to set
+     * @param parameter
+     *            parameter associated with the point
+     */
+    public void setPoint(final Point2d p, final double parameter) {
+        this.point.set(p.x, p.y);
+        this.parameter = parameter;
+        this.invalidateShape();
+    }
 
-  /**
-   * Set a parameter value
-   */
-  public void setParameter(final double parameterValue) {
-    this.parameter = parameterValue;
-  }
+    /**
+     * Set the parameterized point
+     * 
+     * @param x
+     *            x coordinate to set
+     * @param y
+     *            y coordinate to set
+     * @param parameter
+     *            parameter associated with the point
+     */
+    public void setPoint(final double x, final double y, final double parameter) {
+        this.point.set(x, y);
+        this.parameter = parameter;
+        this.invalidateShape();
+    }
 
-  /**
-   * get the number of points in this poly line
-   * @return
-   */
-  @Override
-  public int getPointCount() {
-    return 1;
-  }
+    /**
+     * @param n
+     *            point index to retrieve point coordinates
+     * @return the Nth point
+     */
+    @Override
+    public Point2d getPoint(final int n) {
+        if (n != 0) {
+            throw new IndexOutOfBoundsException("ParameterizedPoint::getPoint() method can only be called with inedx = 0");
+        }
+        return this.point;
+    }
 
-  @Override
-  public List<DrawingPrimitive> getPrimitives() {
-    return ParameterizedPoint.primitives;
-  }
+    /**
+     * @return the stored point
+     */
+    public Point2d getPoint() {
+        return this.point;
+    }
 
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.appli.render.primitive.DrawingPrimitive#isLeaf()
-   */
-  @Override
-  public boolean isLeaf() {
-    return true;
-  }
+    /**
+     * @return the parameter point
+     */
+    public double getParameter() {
+        return this.parameter;
+    }
+
+    /**
+     * Set a parameter value
+     */
+    public void setParameter(final double parameterValue) {
+        this.parameter = parameterValue;
+    }
+
+    /**
+     * get the number of points in this poly line
+     * 
+     * @return
+     */
+    @Override
+    public int getPointCount() {
+        return 1;
+    }
+
+    @Override
+    public List<DrawingPrimitive> getPrimitives() {
+        return ParameterizedPoint.primitives;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.primitive.DrawingPrimitive#isLeaf()
+     */
+    @Override
+    public boolean isLeaf() {
+        return true;
+    }
+
+    @Override
+    public void generateParameterization(Parameterizer parameterizer) {
+        // no parameterization for point primitives
+        logger.warn("Parameterization asked on point primitive. Skip this useless request...");
+
+    }
+
+    @Override
+    public void update(Viewport viewport) {
+        throw new UnsupportedOperationException(this.getClass().getSimpleName() + "::update() not yet implemented");
+    }
 
 }

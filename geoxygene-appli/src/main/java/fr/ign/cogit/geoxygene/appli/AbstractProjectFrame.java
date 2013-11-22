@@ -52,7 +52,6 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     private final Map<IFeature, BufferedImage> featureToImageMap = new HashMap<IFeature, BufferedImage>();
     private LayerLegendPanel layerLegendPanel = null; // The layer legend panel
     private StyledLayerDescriptor sld = null; // The project styled layer
-    private final Object sldLock = new Object(); // SLD synchronization lock
     private JSplitPane splitPane = null; // The split pane
     private static final int DEFAULT_DIVIDER_LOCATION = 200;
     private static final int DEFAULT_DIVIDER_SIZE = 5;
@@ -192,7 +191,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final void addLayer(final Layer l) {
-        synchronized (this.sldLock) {
+        synchronized (this.getSld().lock) {
             this.getSld().add(l);
         }
     }
@@ -206,7 +205,9 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final void addLayer(final Layer l, final int index) {
-        this.getSld().add(l, index);
+        synchronized (this.getSld().lock) {
+            this.getSld().add(l, index);
+        }
     }
 
     /*
@@ -231,7 +232,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
                 l = factory.createLayer(fileName, LayerType.TXT);
             }
             if (l != null) {
-                synchronized (this.sldLock) {
+                synchronized (this.getSld().lock) {
                     this.getSld().add(l);
                 }
             }
@@ -333,7 +334,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         Layer layer = factory.createLayer(name, population.getFeatureType().getGeometryType());
         layer.setCRS(crs);
 
-        synchronized (this.sldLock) {
+        synchronized (this.getSld().lock) {
             this.getSld().add(layer);
         }
         return layer;
@@ -460,7 +461,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final void setSld(final StyledLayerDescriptor sld) {
-        synchronized (this.sldLock) {
+        synchronized (this.getSld().lock) {
             if (this.sld != null) {
                 this.sld.removeSldListener(this.getLayerViewPanel());
                 this.sld.removeSldListener(this.getLayerLegendPanel());
@@ -498,7 +499,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         this.getDataSet().addPopulation(population);
         LayerFactory factory = new LayerFactory(this.getSld());
         Layer layer = factory.createLayer(name);
-        synchronized (this.sldLock) {
+        synchronized (this.getSld().lock) {
             this.getSld().add(layer);
         }
     }
@@ -569,7 +570,8 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * load the described styles in an xml file and apply them to a predefined
      * dataset.
      * 
-     * @param fileName the xml file to load.
+     * @param fileName
+     *            the xml file to load.
      * @throws JAXBException
      * @throws FileNotFoundException
      */
@@ -577,39 +579,41 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     @Override
     public void loadSLD(File file) throws FileNotFoundException, JAXBException {
 
-      if (file.isFile() && (file.getAbsolutePath().endsWith(".xml") //$NON-NLS-1$
-          || file.getAbsolutePath().endsWith(".XML"))) //$NON-NLS-1$
-      {
+        if (file.isFile() && (file.getAbsolutePath().endsWith(".xml") //$NON-NLS-1$
+                || file.getAbsolutePath().endsWith(".XML"))) //$NON-NLS-1$
+        {
 
-        StyledLayerDescriptor new_sld = StyledLayerDescriptor.unmarshall(
-            file.getAbsolutePath(), this.getDataSet());
-        if (new_sld != null) {
-          for (int i = 0; i < this.getLayers().size(); i++) {
-            String name = this.getLayers().get(i).getName();
-            //logger.debug(name);
-            //vérifier que le layer est décrit dans le SLD
-            if (new_sld.getLayer(name) != null) {           
-              if (new_sld.getLayer(name).getStyles() != null) {
-               // logger.debug(new_sld.getLayer(name).getStyles());
-                this.getLayers().get(i).setStyles(new_sld.getLayer(name).getStyles());
-                
-              }
-              else { 
-                logger.trace("Le layer "+name+" n'a pas de style défini dans le SLD");}
+            StyledLayerDescriptor new_sld;
+            synchronized (this.getSld().lock) {
+                new_sld = StyledLayerDescriptor.unmarshall(file.getAbsolutePath(), this.getDataSet());
+                if (new_sld != null) {
+                    for (int i = 0; i < this.getLayers().size(); i++) {
+                        String name = this.getLayers().get(i).getName();
+                        //logger.debug(name);
+                        //vérifier que le layer est décrit dans le SLD
+                        if (new_sld.getLayer(name) != null) {
+                            if (new_sld.getLayer(name).getStyles() != null) {
+                                // logger.debug(new_sld.getLayer(name).getStyles());
+                                this.getLayers().get(i).setStyles(new_sld.getLayer(name).getStyles());
+
+                            } else {
+                                logger.trace("Le layer " + name + " n'a pas de style défini dans le SLD");
+                            }
+                        } else {
+                            logger.trace("Le layer " + name + " n'est pas décrit dans le SLD");
+                            this.getLayers().get(i).setStyles(this.sld.getLayer(name).getStyles());
+                        }
+                    }
+
+                    this.layerLegendPanel.repaint();
+                    this.layerViewPanel.repaint();
+
+                    /**
+                     * // loading finished
+                     */
+                }
             }
-            else { 
-              logger.trace("Le layer "+name+" n'est pas décrit dans le SLD");
-              this.getLayers().get(i).setStyles(this.sld.getLayer(name).getStyles());}
-          }
-
-          layerLegendPanel.repaint();
-          layerViewPanel.repaint();
-
-          /**
-           * // loading finished
-           */
         }
-      }
     }
 
     /*
@@ -620,7 +624,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final void removeLayers(final List<Layer> toRemove) {
-        synchronized (this.sldLock) {
+        synchronized (this.getSld().lock) {
             this.getSld().remove(toRemove);
             for (Layer layer : toRemove) {
                 this.getLayerViewPanel().getRenderingManager().removeLayer(layer);
@@ -635,7 +639,9 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final DataSet getDataSet() {
-        return this.getSld().getDataSet();
+        synchronized (this.getSld().lock) {
+            return this.getSld().getDataSet();
+        }
     }
 
     /**
@@ -650,4 +656,5 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     public void validate() {
         this.getGui().validate();
     }
+
 }

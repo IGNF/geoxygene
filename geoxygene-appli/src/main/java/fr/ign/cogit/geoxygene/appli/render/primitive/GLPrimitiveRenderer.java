@@ -34,7 +34,6 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glLineWidth;
-import static org.lwjgl.opengl.GL11.glTexCoord2d;
 import static org.lwjgl.opengl.GL11.glVertex2d;
 import static org.lwjgl.util.glu.GLU.GLU_TESS_BEGIN;
 import static org.lwjgl.util.glu.GLU.GLU_TESS_COMBINE;
@@ -52,368 +51,287 @@ import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellator;
-import org.lwjgl.util.glu.GLUtessellatorCallbackAdapter;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLTools;
+import fr.ign.cogit.geoxygene.appli.gl.TessCallback;
 import fr.ign.cogit.geoxygene.appli.render.RenderingException;
 
 /**
  * @author JeT
- * This renderer writes GL Code to perform GL rendering
+ *         This renderer writes GL Code to perform GL rendering
  */
 public class GLPrimitiveRenderer extends AbstractPrimitiveRenderer {
 
-  private static Logger logger = Logger.getLogger(GLPrimitiveRenderer.class.getName());
+    private static Logger logger = Logger.getLogger(GLPrimitiveRenderer.class.getName());
 
-  private int textureId = -1;
-  private String textureFilename = null;
-  private Color backgroundColor = Color.white;
-  private Color foregroundColor = Color.black;
-  private float lineWidth = 2.f;
-  private float pointWidth = 2.f;
+    private int textureId = -1;
+    private String textureFilename = null;
+    private Color backgroundColor = Color.white;
+    private Color foregroundColor = Color.black;
+    private float lineWidth = 2.f;
+    private float pointWidth = 2.f;
 
-  /**
-   * Constructor
-   */
-  public GLPrimitiveRenderer() {
-
-  }
-
-  /**
-   * Constructor
-   * @param backgroundColor
-   * @param foregroundColor
-   */
-  public GLPrimitiveRenderer(final Color backgroundColor, final Color foregroundColor) {
-    super();
-    this.backgroundColor = backgroundColor;
-    this.foregroundColor = foregroundColor;
-  }
-
-  private Integer getTextureId() {
-    if (this.textureFilename == null) {
-      return null;
-    }
-    if (this.textureId < 0) {
-      try {
-        this.textureId = GLTools.loadTexture(this.textureFilename);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+    /**
+     * Constructor
+     */
+    public GLPrimitiveRenderer() {
 
     }
-    return this.textureId;
-  }
 
-  /**
-   * @return the lineWidth
-   */
-  public float getLineWidth() {
-    return this.lineWidth;
-  }
-
-  /**
-   * @param lineWidth the lineWidth to set
-   */
-  public void setLineWidth(final float lineWidth) {
-    this.lineWidth = lineWidth;
-  }
-
-  /**
-   * @return the pointWidth
-   */
-  public float getPointWidth() {
-    return this.pointWidth;
-  }
-
-  /**
-   * @param pointWidth the pointWidth to set
-   */
-  public void setPointWidth(final float pointWidth) {
-    this.pointWidth = pointWidth;
-  }
-
-  /**
-   * @return the backgroundColor
-   */
-  public Color getBackgroundColor() {
-    return this.backgroundColor;
-  }
-
-  /**
-   * @param backgroundColor the backgroundColor to set
-   */
-  public void setBackgroundColor(final Color backgroundColor) {
-    this.backgroundColor = backgroundColor;
-  }
-
-  /**
-   * @return the foregroundColor
-   */
-  public Color getForegroundColor() {
-    return this.foregroundColor;
-  }
-
-  /**
-   * @param foregroundColor the foregroundColor to set
-   */
-  public void setForegroundColor(final Color foregroundColor) {
-    this.foregroundColor = foregroundColor;
-  }
-
-  /**
-   * @return the textureFilename
-   */
-  public String getTextureFilename() {
-    return this.textureFilename;
-  }
-
-  /**
-   * @param textureFilename the textureFilename to set
-   */
-  public void setTextureFilename(final String textureFilename) {
-    this.textureFilename = textureFilename;
-    this.textureId = -1;
-  }
-
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.appli.render.PrimitiveRenderer#render()
-   */
-  @Override
-  public void render() throws RenderingException {
-    if (this.getViewport() == null) {
-      throw new RenderingException("viewport is not set");
-    }
-    for (DrawingPrimitive primitive : this.getPrimitives()) {
-      this.render(primitive, this.getViewport());
+    /**
+     * Constructor
+     * 
+     * @param backgroundColor
+     * @param foregroundColor
+     */
+    public GLPrimitiveRenderer(final Color backgroundColor, final Color foregroundColor) {
+        super();
+        this.backgroundColor = backgroundColor;
+        this.foregroundColor = foregroundColor;
     }
 
-  }
+    private Integer getTextureId() {
+        if (this.textureFilename == null) {
+            return null;
+        }
+        if (this.textureId < 0) {
+            try {
+                this.textureId = GLTools.loadTexture(this.textureFilename);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-  /**
-   * Render one drawing primitive
-   * @param primitive
-   * @throws RenderingException
-   */
-  private void render(final DrawingPrimitive primitive, final Viewport viewport) throws RenderingException {
-    if (!primitive.isLeaf()) {
-      MultiDrawingPrimitive multiPrimitive = (MultiDrawingPrimitive) primitive;
-      for (DrawingPrimitive childPrimitive : multiPrimitive.getPrimitives()) {
-        this.render(childPrimitive, viewport);
-      }
-      return;
-    } else if (primitive instanceof ParameterizedPolyline) {
-      this.renderLine((ParameterizedPolyline) primitive);
-      return;
-    } else if (primitive instanceof ParameterizedPolygon) {
-      this.renderSurface(viewport, (ParameterizedPolygon) primitive, this.getTextureId());
-      return;
-    }
-    logger.warn(this.getClass().getSimpleName() + " do not know how to paint primitives " + primitive.getClass().getSimpleName());
-  }
-
-  /**
-   * Render simple line
-   * @param primitive primitive to paint
-   */
-  private void renderLine(final ParameterizedPolyline line) {
-    GLTools.glColor(this.getForegroundColor());
-    glLineWidth(this.getLineWidth());
-    glBegin(GL_LINE_STRIP);
-    for (int n = 0; n < line.getPointCount(); n++) {
-      Point2d p2 = line.getPoint(n);
-      glVertex2d(p2.x, p2.y);
-      //      System.err.println("point #" + n + " = " + p2);
-    }
-    glEnd();
-  }
-
-  /**
-   * Draw a filled shape with open GL
-   */
-  private void renderSurface(final Viewport viewport, final ParameterizedPolygon polygon, final Integer texIndex) {
-
-    if (texIndex != null && texIndex > 0) {
-      GL11.glColor4f(1.f, 1.f, 1.f, 1.f);
-      glEnable(GL_TEXTURE_2D);
-      glBindTexture(GL_TEXTURE_2D, texIndex);
-    } else {
-      GLTools.glColor(this.getBackgroundColor());
-      GL11.glDisable(GL_TEXTURE_2D);
-    }
-    boolean texCoord = polygon.hasTextureCoordinates();
-
-    // tesselation
-    GLUtessellator tesselator = gluNewTess();
-    // Set callback functions
-    TessCallback callback = new TessCallback();
-    tesselator.gluTessCallback(GLU_TESS_VERTEX, callback);
-    tesselator.gluTessCallback(GLU_TESS_BEGIN, callback);
-    tesselator.gluTessCallback(GLU_TESS_END, callback);
-    tesselator.gluTessCallback(GLU_TESS_COMBINE, callback);
-    tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_POSITIVE);
-
-    tesselator.gluTessBeginPolygon(null);
-
-    // outer frontier
-    tesselator.gluTessBeginContour();
-    for (int outerFrontierPointIndex = 0; outerFrontierPointIndex < polygon.getOuterFrontier().size(); outerFrontierPointIndex++) {
-      Point2d outerFrontierPoint = polygon.getOuterFrontier().get(outerFrontierPointIndex);
-      Point2d outerFrontierTextureCoordinates = polygon.getOuterFrontierTextureCoordinates(outerFrontierPointIndex);
-      // point coordinates
-      double coords[] = new double[6];
-      coords[0] = outerFrontierPoint.x;
-      coords[1] = outerFrontierPoint.y;
-      coords[2] = 0;
-      // texture coordinates
-      coords[3] = texCoord ? outerFrontierTextureCoordinates.x / 100. : outerFrontierPoint.x;
-      coords[4] = texCoord ? outerFrontierTextureCoordinates.y / 100. : outerFrontierPoint.y;
-      coords[5] = 0;
-      //      System.err.println("------------------------------------------------ " + outerFrontierTextureCoordinates);
-      tesselator.gluTessVertex(coords, 0, coords);
-    }
-    tesselator.gluTessEndContour();
-
-    for (int innerFrontierIndex = 0; innerFrontierIndex < polygon.getInnerFrontierCount(); innerFrontierIndex++) {
-
-      List<Point2d> innerFrontier = polygon.getInnerFrontier(innerFrontierIndex);
-      tesselator.gluTessBeginContour();
-
-      for (int innerFrontierPointIndex = 0; innerFrontierPointIndex < innerFrontier.size(); innerFrontierPointIndex++) {
-        Point2d innerFrontierPoint = innerFrontier.get(innerFrontierPointIndex);
-        Point2d innerFrontierTextureCoordinates = polygon.getInnerFrontierTextureCoordinates(innerFrontierIndex, innerFrontierPointIndex);
-
-        double[] coords = new double[6];
-        // point coordinates
-        coords[0] = innerFrontierPoint.x;
-        coords[1] = innerFrontierPoint.y;
-        coords[2] = 0;
-        // texture coordinates
-        coords[3] = texCoord ? innerFrontierTextureCoordinates.x / 100. : innerFrontierPoint.x;
-        coords[4] = texCoord ? innerFrontierTextureCoordinates.y / 100. : innerFrontierPoint.y;
-        //        coords[3] = texCoord ? innerFrontierTextureCoordinates.x / 1000. : innerFrontierPoint.x;
-        //        coords[4] = texCoord ? innerFrontierTextureCoordinates.y / 1000. : innerFrontierPoint.y;
-        coords[5] = 0;
-        tesselator.gluTessVertex(coords, 0, coords);
-      }
-
-      tesselator.gluTessEndContour();
+        }
+        return this.textureId;
     }
 
-    tesselator.gluTessEndPolygon();
+    /**
+     * @return the lineWidth
+     */
+    public float getLineWidth() {
+        return this.lineWidth;
+    }
 
-  }
+    /**
+     * @param lineWidth
+     *            the lineWidth to set
+     */
+    public void setLineWidth(final float lineWidth) {
+        this.lineWidth = lineWidth;
+    }
 
-  /**
-   * Callback class used in gl tesselation process
-   * @author JeT
-   *
-   */
-  private static class TessCallback extends GLUtessellatorCallbackAdapter {
+    /**
+     * @return the pointWidth
+     */
+    public float getPointWidth() {
+        return this.pointWidth;
+    }
+
+    /**
+     * @param pointWidth
+     *            the pointWidth to set
+     */
+    public void setPointWidth(final float pointWidth) {
+        this.pointWidth = pointWidth;
+    }
+
+    /**
+     * @return the backgroundColor
+     */
+    public Color getBackgroundColor() {
+        return this.backgroundColor;
+    }
+
+    /**
+     * @param backgroundColor
+     *            the backgroundColor to set
+     */
+    public void setBackgroundColor(final Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    /**
+     * @return the foregroundColor
+     */
+    public Color getForegroundColor() {
+        return this.foregroundColor;
+    }
+
+    /**
+     * @param foregroundColor
+     *            the foregroundColor to set
+     */
+    public void setForegroundColor(final Color foregroundColor) {
+        this.foregroundColor = foregroundColor;
+    }
+
+    /**
+     * @return the textureFilename
+     */
+    public String getTextureFilename() {
+        return this.textureFilename;
+    }
+
+    /**
+     * @param textureFilename
+     *            the textureFilename to set
+     */
+    public void setTextureFilename(final String textureFilename) {
+        this.textureFilename = textureFilename;
+        this.textureId = -1;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.render.PrimitiveRenderer#render()
+     */
     @Override
-    public void edgeFlag(final boolean boundaryEdge) {
-      //      System.err.println("edgeFlag " + boundaryEdge);
-      super.edgeFlag(boundaryEdge);
+    public void render() throws RenderingException {
+        if (this.getViewport() == null) {
+            throw new RenderingException("viewport is not set");
+        }
+        for (DrawingPrimitive primitive : this.getPrimitives()) {
+            this.render(primitive, this.getViewport());
+        }
+
     }
 
-    @Override
-    public void combine(final double[] coords, final Object[] data, final float[] weight, final Object[] outData) {
-      double[] vertex = new double[6];
-      vertex[0] = coords[0];
-      vertex[1] = coords[1];
-      vertex[2] = coords[2];
+    /**
+     * Render one drawing primitive
+     * 
+     * @param primitive
+     * @throws RenderingException
+     */
+    private void render(final DrawingPrimitive primitive, final Viewport viewport) throws RenderingException {
+        if (!primitive.isLeaf()) {
+            MultiDrawingPrimitive multiPrimitive = (MultiDrawingPrimitive) primitive;
+            for (DrawingPrimitive childPrimitive : multiPrimitive.getPrimitives()) {
+                this.render(childPrimitive, viewport);
+            }
+            return;
+        } else if (primitive instanceof ParameterizedPolyline) {
+            this.renderLine((ParameterizedPolyline) primitive);
+            return;
+        } else if (primitive instanceof ParameterizedPolygon) {
+            this.renderSurface(viewport, (ParameterizedPolygon) primitive, this.getTextureId());
+            return;
+        }
+        logger.warn(this.getClass().getSimpleName() + " do not know how to paint primitives " + primitive.getClass().getSimpleName());
+    }
 
-      outData[0] = vertex;      //      System.err.println("combine " + coords + " " + data + " " + weight + " " + outData);
-      //        double[] vertex = new double[6];
-      //      vertex[0] = coords[0];
-      //      vertex[1] = coords[1];
-      //      vertex[2] = coords[2];
-      //for (int i = 3; i < 6; i++)
-      //vertex[i] = weight[0] * ((double[]) data[0])[i] + weight[1]
-      //* ((double[]) data[1])[i] + weight[2] * ((double[]) data[2])[i] + weight[3]
-      //* ((double[]) data[3])[i];
+    /**
+     * Render simple line
+     * 
+     * @param primitive
+     *            primitive to paint
+     */
+    private void renderLine(final ParameterizedPolyline line) {
+        GLTools.glColor(this.getForegroundColor());
+        glLineWidth(this.getLineWidth());
+        glBegin(GL_LINE_STRIP);
+        for (int n = 0; n < line.getPointCount(); n++) {
+            Point2d p2 = line.getPoint(n);
+            glVertex2d(p2.x, p2.y);
+            //      System.err.println("point #" + n + " = " + p2);
+        }
+        glEnd();
+    }
+
+    /**
+     * Draw a filled shape with open GL
+     */
+    private void renderSurface(final Viewport viewport, final ParameterizedPolygon polygon, final Integer texIndex) {
+
+        // TODO: [JeT] Those lines should not be here. parameterization should be part of the SLD description
+        // As I don't already have modified the SLD, I just had to find a place where to compute parameterization
+        // comparable lines can be found in DensityFieldPrimitiveRenderer
+
+        // TODO: create a hashmap to avoid recomputing texture coordinates each time
+        WorldCoordinatesParameterizer parameterizer = new WorldCoordinatesParameterizer(viewport);
+        polygon.generateParameterization(parameterizer);
+
+        if (texIndex != null && texIndex > 0) {
+            GL11.glColor4f(1.f, 1.f, 1.f, 1.f);
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, texIndex);
+        } else {
+            GLTools.glColor(this.getBackgroundColor());
+            GL11.glDisable(GL_TEXTURE_2D);
+        }
+        boolean texCoord = polygon.hasTextureCoordinates();
+
+        // tesselation
+        GLUtessellator tesselator = gluNewTess();
+        // Set callback functions
+        TessCallback callback = new TessCallback();
+        tesselator.gluTessCallback(GLU_TESS_VERTEX, callback);
+        tesselator.gluTessCallback(GLU_TESS_BEGIN, callback);
+        tesselator.gluTessCallback(GLU_TESS_END, callback);
+        tesselator.gluTessCallback(GLU_TESS_COMBINE, callback);
+        tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_POSITIVE);
+
+        tesselator.gluTessBeginPolygon(null);
+
+        // outer frontier
+        tesselator.gluTessBeginContour();
+        for (int outerFrontierPointIndex = 0; outerFrontierPointIndex < polygon.getOuterFrontier().size(); outerFrontierPointIndex++) {
+            Point2d outerFrontierPoint = polygon.getOuterFrontier().get(outerFrontierPointIndex);
+            Point2d outerFrontierTextureCoordinates = polygon.getOuterFrontierTextureCoordinates(outerFrontierPointIndex);
+            // point coordinates
+            double coords[] = new double[6];
+            coords[0] = outerFrontierPoint.x;
+            coords[1] = outerFrontierPoint.y;
+            coords[2] = 0;
+            // texture coordinates
+            coords[3] = texCoord ? outerFrontierTextureCoordinates.x / 100. : outerFrontierPoint.x;
+            coords[4] = texCoord ? outerFrontierTextureCoordinates.y / 100. : outerFrontierPoint.y;
+            coords[5] = 0;
+            //      System.err.println("------------------------------------------------ " + outerFrontierTextureCoordinates);
+            tesselator.gluTessVertex(coords, 0, coords);
+        }
+        tesselator.gluTessEndContour();
+
+        for (int innerFrontierIndex = 0; innerFrontierIndex < polygon.getInnerFrontierCount(); innerFrontierIndex++) {
+
+            List<Point2d> innerFrontier = polygon.getInnerFrontier(innerFrontierIndex);
+            tesselator.gluTessBeginContour();
+
+            for (int innerFrontierPointIndex = 0; innerFrontierPointIndex < innerFrontier.size(); innerFrontierPointIndex++) {
+                Point2d innerFrontierPoint = innerFrontier.get(innerFrontierPointIndex);
+                Point2d innerFrontierTextureCoordinates = polygon.getInnerFrontierTextureCoordinates(innerFrontierIndex, innerFrontierPointIndex);
+
+                double[] coords = new double[6];
+                // point coordinates
+                coords[0] = innerFrontierPoint.x;
+                coords[1] = innerFrontierPoint.y;
+                coords[2] = 0;
+                // texture coordinates
+                coords[3] = texCoord ? innerFrontierTextureCoordinates.x / 100. : innerFrontierPoint.x;
+                coords[4] = texCoord ? innerFrontierTextureCoordinates.y / 100. : innerFrontierPoint.y;
+                //        coords[3] = texCoord ? innerFrontierTextureCoordinates.x / 1000. : innerFrontierPoint.x;
+                //        coords[4] = texCoord ? innerFrontierTextureCoordinates.y / 1000. : innerFrontierPoint.y;
+                coords[5] = 0;
+                tesselator.gluTessVertex(coords, 0, coords);
+            }
+
+            tesselator.gluTessEndContour();
+        }
+
+        tesselator.gluTessEndPolygon();
+
     }
 
     @Override
-    public void beginData(final int type, final Object polygonData) {
-      //      System.err.println("beginData " + type + " " + polygonData);
-      super.beginData(type, polygonData);
+    public void initializeRendering() throws RenderingException {
+        // nothing to initialize
+
     }
 
     @Override
-    public void edgeFlagData(final boolean boundaryEdge, final Object polygonData) {
-      //      System.err.println("edgeFlagData " + boundaryEdge + " " + polygonData);
-      super.edgeFlagData(boundaryEdge, polygonData);
+    public void finalizeRendering() throws RenderingException {
+        // nothing to finalize
     }
-
-    @Override
-    public void vertexData(final Object vertexData, final Object polygonData) {
-      //      System.err.println("vertexData " + vertexData + " " + polygonData);
-      super.vertexData(vertexData, polygonData);
-    }
-
-    @Override
-    public void endData(final Object polygonData) {
-      //      System.err.println("endData " + polygonData);
-      super.endData(polygonData);
-    }
-
-    @Override
-    public void combineData(final double[] coords, final Object[] data, final float[] weight, final Object[] outData, final Object polygonData) {
-      glTexCoord2d((Double) data[3], (Double) data[4]);
-      //      System.out.println("combine tex : " + data[3] + "x" + data[4]);
-      glVertex2d(coords[0], coords[1]);
-    }
-
-    @Override
-    public void begin(final int type) {
-      //      System.err.println("begin " + type);
-      //      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-      glBegin(type);
-    }
-
-    @Override
-    public void end() {
-      //      System.err.println("end");
-      glEnd();
-      //      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }
-
-    @Override
-    public void vertex(final Object coords) {
-      //      System.err.println("vertex " + coords);
-      //      System.out.println("vertex tex : " + ((double[]) coords)[3] + "x" + ((double[]) coords)[4]);
-      glTexCoord2d(((double[]) coords)[3], ((double[]) coords)[4]);
-      glVertex2d(((double[]) coords)[0], ((double[]) coords)[1]);
-    }
-
-    @Override
-    public void error(final int errnum) {
-      String estring;
-      estring = GLU.gluErrorString(errnum);
-      logger.error("Tessellation Error Number: " + errnum);
-      logger.error("Tessellation Error: " + estring);
-      super.error(errnum);
-    }
-
-    @Override
-    public void errorData(final int errnum, final Object polygonData) {
-      logger.error("Tesselation error : " + errnum + " + " + polygonData.toString());
-      super.errorData(errnum, polygonData);
-    }
-
-  }
-
-  @Override
-  public void initializeRendering() throws RenderingException {
-    // nothing to initialize
-
-  }
-
-  @Override
-  public void finalizeRendering() throws RenderingException {
-    // nothing to finalize
-  }
 
 }

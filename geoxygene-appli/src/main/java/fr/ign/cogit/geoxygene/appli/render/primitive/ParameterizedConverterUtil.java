@@ -27,87 +27,73 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
-import java.awt.Polygon;
-import java.awt.Shape;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.PathIterator;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.vecmath.Point2d;
-
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
-import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
-import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
-import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 
 /**
  * @author JeT
- *
+ * 
  */
 public final class ParameterizedConverterUtil {
 
-  private static Logger logger = Logger.getLogger(ParameterizedConverterUtil.class.getName());
+    private static Logger logger = Logger.getLogger(ParameterizedConverterUtil.class.getName());
 
-  private static ParameterizedConverter converter = new DirectParameterizedConverter(); // converter to use for everybody
+    private static ParameterizedConverter converter = new CachedParameterizedConverter(); // converter to use for everybody
 
-  /**
-   * Private Constructor
-   */
-  private ParameterizedConverterUtil() {
-    // utility class
-  }
+    /**
+     * Private Constructor
+     */
+    private ParameterizedConverterUtil() {
+        // utility class
+    }
 
-  /**
-   * @return the current converter
-   */
-  public static ParameterizedConverter getConverter() {
-    return converter;
-  }
+    /**
+     * @return the current converter
+     */
+    public static ParameterizedConverter getConverter() {
+        return converter;
+    }
 
-  /**
-   * @param converter the converter to set
-   */
-  public static void setConverter(final ParameterizedConverter converter) {
-    ParameterizedConverterUtil.converter = converter;
-  }
+    /**
+     * @param converter
+     *            the converter to set
+     */
+    public static void setConverter(final ParameterizedConverter converter) {
+        ParameterizedConverterUtil.converter = converter;
+    }
 
-  /**
-   * Convert geometry to line drawing primitives
-   * @param geometry geometry to convert
-   * @param viewport viewport used to generate shapes
-   * @return a list of drawing primitives
-   */
-  public static DrawingPrimitive generateParameterizedPolyline(final LineSymbolizer lineSymbolizer, final IGeometry geometry,
-      final Viewport viewport, final Parameterizer parameterizer) {
-    List<Shape> shapes = ParameterizedLineConverterUtil.getShapeList(lineSymbolizer, geometry, viewport, false);
+    /**
+     * Convert geometry to line drawing primitives
+     * 
+     * @param geometry
+     *            geometry to convert
+     * @param viewport
+     *            viewport used to generate shapes
+     * @return a list of drawing primitives
+     */
+    public static DrawingPrimitive generateParameterizedPolyline(final LineSymbolizer lineSymbolizer, final IGeometry geometry, final Viewport viewport) {
+        //ligne suivante à déplacer ailleurs (update line ?)
+        //        List<Shape> shapes = ParameterizedLineConverterUtil.getShapeList(lineSymbolizer, geometry, viewport, false);
+        //ici il faudrait pouvoir faire un update à partir de viewport
+        DrawingPrimitive primitive = ParameterizedLineConverterUtil.generateParameterizedPolyline(lineSymbolizer, geometry, viewport);
+        return primitive;
+    }
 
-    DrawingPrimitive primitive = ParameterizedLineConverterUtil.generateParameterizedPolyline(shapes, viewport, parameterizer);
-    return primitive;
-  }
-
-  /**
-   * Convert geometry to polygon drawing primitives
-   * @param geometry geometry to convert
-   * @param viewport viewport used to generate shapes
-   * @return a list of drawing primitives
-   */
-  public static DrawingPrimitive generateParameterizedPolygon(final PolygonSymbolizer polygonSymbolizer, final IGeometry geometry,
-      final Viewport viewport, final Parameterizer parameterizer) {
-    DrawingPrimitive primitive = ParameterizedPolygonConverterUtil.generateParameterizedPolygon(polygonSymbolizer, geometry, viewport, parameterizer);
-    return primitive;
-  }
+    /**
+     * Convert geometry to polygon drawing primitives
+     * 
+     * @param geometry
+     *            geometry to convert
+     * @param viewport
+     *            viewport used to generate shapes
+     * @return a list of drawing primitives
+     */
+    public static DrawingPrimitive generateParameterizedPolygon(final PolygonSymbolizer polygonSymbolizer, final IGeometry geometry, final Viewport viewport) {
+        DrawingPrimitive primitive = ParameterizedPolygonConverterUtil.generateParameterizedPolygon(polygonSymbolizer, geometry, viewport);
+        return primitive;
+    }
 }

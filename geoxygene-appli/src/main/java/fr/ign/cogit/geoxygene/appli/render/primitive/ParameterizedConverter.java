@@ -34,13 +34,25 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
 
 /**
  * @author JeT
- * Convert a geoxygene feature to a rendering primitive depending on the symbolizer type
- * TODO: Maybe we could add some conversion methods depending on the Symbolizer type because they produce
- * different type of geometry ? LineSymbolizer => lines ? PolygonSymbolizer => polygons ? Really not sure about that
- *  
+ *         Convert a geoxygene feature to a rendering primitive depending on the
+ *         symbolizer type
+ *         TODO: Maybe we could add some conversion methods depending on the
+ *         Symbolizer type because they produce
+ *         different type of geometry ? LineSymbolizer => lines ?
+ *         PolygonSymbolizer => polygons ? Really not sure about that
+ * 
  */
 public interface ParameterizedConverter {
 
-  public DrawingPrimitive convert(final IFeature feature, final Symbolizer symbolizer, final Viewport viewport) throws RenderingException;
+    /**
+     * Convert a geometry geometry into a drawing primitive
+     * 
+     * @param feature
+     * @param symbolizer
+     * @param viewport
+     * @return
+     * @throws RenderingException
+     */
+    public DrawingPrimitive convert(final IFeature feature, final Symbolizer symbolizer, final Viewport viewport) throws RenderingException;
 
 }

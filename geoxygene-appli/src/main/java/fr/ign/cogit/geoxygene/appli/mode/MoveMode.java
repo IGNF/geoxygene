@@ -40,103 +40,99 @@ import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
  * 
  */
 public class MoveMode extends AbstractMode {
-  @SuppressWarnings("unused")
-  private static Logger logger = Logger.getLogger(MoveMode.class.getName());
+    @SuppressWarnings("unused")
+    private static Logger logger = Logger.getLogger(MoveMode.class.getName());
 
-  private Point initialPointView = null;
-  private Point currentPointView = null;
+    private Point initialPointView = null;
+    private Point currentPointView = null;
 
-  /**
-   * Constructor.
-   * @param theMainFrame the main frame
-   * @param theModeSelector the mode selector
-   */
-  public MoveMode(final MainFrame theMainFrame,
-      final MainFrameToolBar theModeSelector) {
-    super(theMainFrame, theModeSelector);
-  }
-
-  @Override
-  protected final JButton createButton() {
-    return new JButton(new ImageIcon(this.getClass().getResource(
-        "/images/icons/16x16/move.png"))); //$NON-NLS-1$
-  }
-
-  @Override
-  public final void leftMouseButtonClicked(final MouseEvent e,
-      final ProjectFrame frame) {
-    try {
-      frame.getLayerViewPanel().getViewport().moveTo(e.getPoint());
-    } catch (NoninvertibleTransformException e1) {
-      e1.printStackTrace();
+    /**
+     * Constructor.
+     * 
+     * @param theMainFrame
+     *            the main frame
+     * @param theModeSelector
+     *            the mode selector
+     */
+    public MoveMode(final MainFrame theMainFrame, final MainFrameToolBar theModeSelector) {
+        super(theMainFrame, theModeSelector);
     }
-  }
 
-  @Override
-  public void mousePressed(final MouseEvent e) {
-    if ((SwingUtilities.isLeftMouseButton(e))) {
-      this.initialPointView = e.getPoint();
+    @Override
+    protected final JButton createButton() {
+        return new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/move.png"))); //$NON-NLS-1$
     }
-  }
 
-  @Override
-  public void mouseDragged(final MouseEvent e) {
-    ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-    if ((SwingUtilities.isLeftMouseButton(e))) {
-      try {
-        this.currentPointView = e.getPoint();
-        if (this.initialPointView == null) {
-          this.initialPointView = new Point(this.currentPointView);
+    @Override
+    public final void leftMouseButtonClicked(final MouseEvent e, final ProjectFrame frame) {
+        try {
+            frame.getLayerViewPanel().getViewport().moveTo(e.getPoint());
+        } catch (NoninvertibleTransformException e1) {
+            e1.printStackTrace();
         }
-
-        double xMove = this.initialPointView.getX()
-            - this.currentPointView.getX();
-        double yMove = this.currentPointView.getY()
-            - this.initialPointView.getY();
-
-        frame.getLayerViewPanel().getViewport().moveOf(xMove, yMove);
-
-        this.initialPointView = this.currentPointView;
-        this.currentPointView = null;
-
-      } catch (NoninvertibleTransformException e1) {
-        e1.printStackTrace();
-      }
     }
-  }
 
-  @Override
-  public void mouseReleased(final MouseEvent e) {
-    ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-    if ((SwingUtilities.isLeftMouseButton(e))) {
-      try {
-        this.currentPointView = e.getPoint();
-        if (this.initialPointView == null) {
-          this.initialPointView = new Point(this.currentPointView);
+    @Override
+    public void mousePressed(final MouseEvent e) {
+        if ((SwingUtilities.isLeftMouseButton(e))) {
+            this.initialPointView = e.getPoint();
         }
-
-        double xMove = this.initialPointView.getX()
-            - this.currentPointView.getX();
-        double yMove = this.currentPointView.getY()
-            - this.initialPointView.getY();
-
-        frame.getLayerViewPanel().getViewport().moveOf(xMove, yMove);
-
-        this.initialPointView = null;
-        this.currentPointView = null;
-      } catch (NoninvertibleTransformException e1) {
-        e1.printStackTrace();
-      }
     }
-  }
 
-  @Override
-  public Cursor getCursor() {
-    return Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
-  }
+    @Override
+    public void mouseDragged(final MouseEvent e) {
+        ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
+        if ((SwingUtilities.isLeftMouseButton(e))) {
+            try {
+                this.currentPointView = e.getPoint();
+                if (this.initialPointView == null) {
+                    this.initialPointView = new Point(this.currentPointView);
+                }
 
-  @Override
-  protected String getToolTipText() {
-    return I18N.getString("MoveMode.ToolTip"); //$NON-NLS-1$
-  }
+                double xMove = this.initialPointView.getX() - this.currentPointView.getX();
+                double yMove = this.currentPointView.getY() - this.initialPointView.getY();
+
+                frame.getLayerViewPanel().getViewport().moveOf(xMove, yMove);
+
+                this.initialPointView = this.currentPointView;
+                this.currentPointView = null;
+
+            } catch (NoninvertibleTransformException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void mouseReleased(final MouseEvent e) {
+        ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
+        if ((SwingUtilities.isLeftMouseButton(e))) {
+            try {
+                this.currentPointView = e.getPoint();
+                if (this.initialPointView == null) {
+                    this.initialPointView = new Point(this.currentPointView);
+                }
+
+                double xMove = this.initialPointView.getX() - this.currentPointView.getX();
+                double yMove = this.currentPointView.getY() - this.initialPointView.getY();
+
+                frame.getLayerViewPanel().getViewport().moveOf(xMove, yMove);
+
+                this.initialPointView = null;
+                this.currentPointView = null;
+            } catch (NoninvertibleTransformException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public Cursor getCursor() {
+        return Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
+    }
+
+    @Override
+    protected String getToolTipText() {
+        return I18N.getString("MoveMode.ToolTip"); //$NON-NLS-1$
+    }
 }

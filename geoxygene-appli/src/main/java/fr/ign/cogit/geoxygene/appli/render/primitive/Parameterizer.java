@@ -32,15 +32,30 @@ import javax.vecmath.Point2d;
 /**
  * @author JeT
  * Implementations computes parameters for parameterized Primitives
+ * Incoming coordinates (x,y) are expressed in screen coordinates 
  */
 public interface Parameterizer {
 
+    /**
+     * method called just before parameterization process
+     */
   void initializeParameterization();
 
+  /**
+   * method called after parameterization process
+   */
   void finalizeParameterization();
 
+  /**
+   * method called during parameterization process. It computes a 2D parameterization
+   * with (x,y) screen coordinates
+   */
   Point2d getTextureCoordinates(double x, double y);
 
-  double getLinearParameter(float f, float g);
+  /**
+   * method called during parameterization process. It computes a 1D parameterization
+   * with (x,y) screen coordinates
+   */
+  double getLinearParameter(double x, double y);
 
 }

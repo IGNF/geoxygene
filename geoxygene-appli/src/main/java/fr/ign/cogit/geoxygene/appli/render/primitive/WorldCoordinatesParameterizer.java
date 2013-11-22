@@ -38,11 +38,11 @@ import fr.ign.cogit.geoxygene.appli.Viewport;
 
 /**
  * @author JeT
- *
+ * Compute texture coordinates in world coordinates
  */
-public class WorldCoordinatesLineParameterizer implements Parameterizer {
+public class WorldCoordinatesParameterizer implements Parameterizer {
 
-  private static Logger logger = Logger.getLogger(WorldCoordinatesLineParameterizer.class.getName());
+  private static Logger logger = Logger.getLogger(WorldCoordinatesParameterizer.class.getName());
   private Viewport viewport = null;
   private Double previousX = null;
   private Double previousY = null;
@@ -53,7 +53,7 @@ public class WorldCoordinatesLineParameterizer implements Parameterizer {
    * @param shape shape representing a line
    * @param viewport viewport in which the shape has been generated
    */
-  public WorldCoordinatesLineParameterizer(final Viewport viewport) {
+  public WorldCoordinatesParameterizer(final Viewport viewport) {
     this.viewport = viewport;
   }
 
@@ -107,7 +107,7 @@ public class WorldCoordinatesLineParameterizer implements Parameterizer {
    * @see fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer#getLinearParameter(float, float)
    */
   @Override
-  public double getLinearParameter(final float x, final float y) {
+  public double getLinearParameter(final double x, final double y) {
     try {
       Point2D modelView = this.viewport.toModelPoint(new Point2D.Double(x, y));
       if (this.previousX != null && this.previousY != null) {

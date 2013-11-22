@@ -29,6 +29,7 @@ import javax.swing.JFrame;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.MainFrameMenuBar;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
+import fr.ign.cogit.geoxygene.appli.ui.Message;
 
 /**
  * @author JeT The main frame is the main window displaying the entire
@@ -39,138 +40,165 @@ import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
  */
 public interface MainFrame {
 
-  /**
-   * gives access to the swing frame component
-   * @return
-   */
-  public abstract JFrame getGui();
+    /**
+     * gives access to the swing frame component
+     * 
+     * @return
+     */
+    public abstract JFrame getGui();
 
-  /**
-   * gives access to the swing menu component
-   * @return
-   */
-  public abstract MainFrameMenuBar getMenuBar();
+    /**
+     * gives access to the swing menu component
+     * 
+     * @return
+     */
+    public abstract MainFrameMenuBar getMenuBar();
 
-  /**
-   * Get the associated application.
-   * 
-   * @return the associated application
-   */
-  public abstract GeOxygeneApplication getApplication();
+    /**
+     * Get the associated application.
+     * 
+     * @return the associated application
+     */
+    public abstract GeOxygeneApplication getApplication();
 
-  /**
-   * Return the current application mode.
-   * 
-   * @return the current application mode
-   */
-  public abstract MainFrameToolBar getMode();
+    /**
+     * Return the current application mode.
+     * 
+     * @return the current application mode
+     */
+    public abstract MainFrameToolBar getMode();
 
-  /**
-   * Return the current desktop.
-   * 
-   * @return the current desktop
-   */
-  public abstract JComponent getCurrentDesktop();
-  
-  /**
-   * Return the selected (current) project frame.
-   * 
-   * @return the selected (current) project frame
-   */
-  public abstract ProjectFrame getSelectedProjectFrame();
+    /**
+     * Return the current desktop.
+     * 
+     * @return the current desktop
+     */
+    public abstract JComponent getCurrentDesktop();
 
-  /**
-   * Return all project frames.
-   * 
-   * @return an array containing all project frames available in the interface
-   */
-  public abstract ProjectFrame[] getDesktopProjectFrames();
+    /**
+     * Return the selected (current) project frame.
+     * 
+     * @return the selected (current) project frame
+     */
+    public abstract ProjectFrame getSelectedProjectFrame();
 
-  /**
-   * Create and return a new project frame.
-   * 
-   * @return the newly created project frame
-   */
-  public abstract ProjectFrame newProjectFrame();
+    /**
+     * Return all project frames.
+     * 
+     * @return an array containing all project frames available in the interface
+     */
+    public abstract ProjectFrame[] getDesktopProjectFrames();
 
-  /**
-   * Free all graphic resources
-   */
-  public abstract void dispose();
+    /**
+     * Create and return a new project frame.
+     * 
+     * @return the newly created project frame
+     */
+    public abstract ProjectFrame newProjectFrame();
 
-  /**
-   * Display/hide frame on screen
-   * @param display true = display frame. false = hide frame
-   */
-  public abstract void display(boolean display);
+    /**
+     * Free all graphic resources
+     */
+    public abstract void dispose();
 
-  /**
-   * Set the current Project Frame selection
-   */
-  public abstract void setSelectedFrame(ProjectFrame projectFrame);
+    /**
+     * Display/hide frame on screen
+     * 
+     * @param display
+     *            true = display frame. false = hide frame
+     */
+    public abstract void display(boolean display);
 
-  /**
-   * remove all ProjectFrames from the interface
-   */
-  public abstract void removeAllProjectFrames();
+    /**
+     * Set the current Project Frame selection
+     */
+    public abstract void setSelectedFrame(ProjectFrame projectFrame);
 
-  /**
-   * try to get a managed ProjectFrame with the given GUI component
-   * @param gui GUI component which should match ProjectFrame.getGui()
-   * @return the matching managed ProjectFrame or null
-   */
-  public abstract ProjectFrame getProjectFrameFromGui(Component gui);
+    /**
+     * remove all ProjectFrames from the interface
+     */
+    public abstract void removeAllProjectFrames();
 
-  /**
-   * Set the frame title
-   */
-  public void setTitle(final String title);
+    /**
+     * try to get a managed ProjectFrame with the given GUI component
+     * 
+     * @param gui
+     *            GUI component which should match ProjectFrame.getGui()
+     * @return the matching managed ProjectFrame or null
+     */
+    public abstract ProjectFrame getProjectFrameFromGui(Component gui);
 
-  /**
-   * get the frame dimension (in pixels)
-   */
-  public abstract Dimension getSize();
+    /**
+     * Set the frame title
+     */
+    public void setTitle(final String title);
 
-  /**
-   * Open a file in the current Project Frame
-   * @param file file to load
-   */
-  public abstract boolean openFile(File file);
+    /**
+     * get the frame dimension (in pixels)
+     */
+    public abstract Dimension getSize();
 
-  /**
-   * set a default layout for current desktop project frames
-   */
-  public abstract void organizeCurrentDesktop();
+    /**
+     * Open a file in the current Project Frame
+     * 
+     * @param file
+     *            file to load
+     */
+    public abstract boolean openFile(File file);
 
-  /**
-   * Add a graphic component into the main frame
-   * @param component component to add
-   * @param layout
-   */
-  public abstract void add(JComponent component, String layout);
+    /**
+     * set a default layout for current desktop project frames
+     */
+    public abstract void organizeCurrentDesktop();
 
-  /**
-   * Add a component that is not a ProjectFrame into this main Frame
-   */
-  public JComponent addComponentInFrame(String title, JComponent component);
+    /**
+     * Add a graphic component into the main frame
+     * 
+     * @param component
+     *            component to add
+     * @param layout
+     */
+    public abstract void add(JComponent component, String layout);
 
-  /**
-   * Get the icon associated with this main frame
-   * @return
-   */
-  public abstract Image getIconImage();
+    /**
+     * Add a component that is not a ProjectFrame into this main Frame
+     */
+    public JComponent addComponentInFrame(String title, JComponent component);
 
-  /**
-   * Add a GUI element into the designed desktop
-   * @param desktopName desktop name
-   * @param desktopContent GUI element to be added to designed desktop
-   */
-  void addFrameInDesktop(String desktopName, JComponent desktopContent);
+    /**
+     * Get the icon associated with this main frame
+     * 
+     * @return
+     */
+    public abstract Image getIconImage();
 
-  /**
-   * Create a new Desktop that can handle ProjectFrames (Floating or Tabbed)
-   * @param title desktop title
-   * @return
-   */
-  public JComponent createNewDesktop(String title);
+    /**
+     * Add a GUI element into the designed desktop
+     * 
+     * @param desktopName
+     *            desktop name
+     * @param desktopContent
+     *            GUI element to be added to designed desktop
+     */
+    void addFrameInDesktop(String desktopName, JComponent desktopContent);
+
+    /**
+     * Create a new Desktop that can handle ProjectFrames (Floating or Tabbed)
+     * 
+     * @param title
+     *            desktop title
+     * @return
+     */
+    public JComponent createNewDesktop(String title);
+
+    /**
+     * put a message in the message console
+     */
+    public void addMessage(Message.MessageType type, String message);
+
+    /**
+     * terminate all graphic components
+     */
+    public abstract void close();
+
 }
