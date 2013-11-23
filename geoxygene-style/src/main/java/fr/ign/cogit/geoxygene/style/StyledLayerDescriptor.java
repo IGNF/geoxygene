@@ -84,6 +84,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
 
     static Logger logger = Logger.getLogger(StyledLayerDescriptor.class.getName());
 
+    @XmlTransient
     public final Object lock = new Object(); // mutex used when changing SLD content (dataSet or layers)
 
     @XmlElement(name = "Name")
