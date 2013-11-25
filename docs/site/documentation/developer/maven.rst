@@ -2,8 +2,10 @@
 Maven Developer
 #######################
 
-Project settings in the pom file
-**************************************
+Project settings 
+********************
+
+This tutorial is for developers who wants use GeOxygene library in a maven project. 
 
 Open the pom.xml file and configure :
 
@@ -13,7 +15,7 @@ Open the pom.xml file and configure :
   .. literalinclude:: /download/resources/repository.xml
           :language: xml
 
-* the correct dependencies like this :
+* the dependencies like this :
 
   .. literalinclude:: /download/resources/dependencies.xml
           :language: xml
@@ -22,7 +24,7 @@ Open the pom.xml file and configure :
 Certificate
 ******************
 
-If you don't use Eclipse editor for building your project, you have to configure Maven to use the certificates for downloading jar files on sites behind an HTTPS server.
+If you don't use **Eclipse** editor for building your project, you have to configure Maven to use the certificates for downloading jar files on sites behind an HTTPS server.
 The reference of this approach is explained here : http://maven.apache.org/guides/mini/guide-repository-ssl.html.
 
 1. Get the certificate 

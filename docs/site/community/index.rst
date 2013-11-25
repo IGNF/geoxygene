@@ -1,4 +1,4 @@
-.. _community:
+.. _about:
 
 About
 ================
@@ -13,5 +13,5 @@ About
    release
    
 
-* Project License 
-* Project Team
+.. Project License 
+.. Project Team

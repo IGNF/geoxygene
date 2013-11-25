@@ -15,12 +15,12 @@ OGC specifications and ISO standards in the geographic information domain.
 The support of the Java interfaces developped by the open source
 `GeoAPI project <http://geoapi.sourceforge.net/>`_ is planned.
 
-Data are stored in a relational DBMS (RDBMS) to ensure a rapid and reliable access to the system
-but users do not have to worry about any SQL statements: they model their applications in UML and code in Java.
-Mapping between object and relational environments is performed with open source software.
-At present, `OJB <http://db.apache.org/ojb/>`_ is supported and the mapping files for the storage of
-geographic information in `Oracle <http://www.oracle.com/>`_ or `PostGIS <http://postgis.refractions.net/>`_
-are provided to users.
+.. Data are stored in a relational DBMS (RDBMS) to ensure a rapid and reliable access to the system
+.. but users do not have to worry about any SQL statements: they model their applications in UML and code in Java.
+.. Mapping between object and relational environments is performed with open source software.
+.. At present, `OJB <http://db.apache.org/ojb/>`_ is supported and the mapping files for the storage of
+.. geographic information in `Oracle <http://www.oracle.com/>`_ or `PostGIS <http://postgis.refractions.net/>`_
+.. are provided to users.
 
 News
 ----------

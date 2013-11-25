@@ -10,8 +10,17 @@ Cette page a pour objectif de guider le développeur dans son installation de la
 JAVA
 *********
 
-GeOxygene est un projet Open Source écrit en JAVA, il faut donc l'installation d'une **JDK** dont la version est au moins supérieure à la version 6. 
-Il est possible de télécharger cet environnement sur le site de Sun à l'adresse suivante : `java.sun.com <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_
+GeOxygene est un projet Open Source écrit en JAVA, il faut donc l'installation d'un **JDK** dont la version soit au moins supérieure à la version 6. 
+
+#. Télécharger cet environnement sur le site de Sun à l'adresse suivante :
+
+   http://www.oracle.com/technetwork/java/javase/downloads/index.html
+   
+#. Cliquer sur l'exécutable et accepter l'accord de licence. Par défaut l'installation s'est faites dans :
+   
+   .. container:: chemin
+   
+      C:\\Program Files\\Java\\jdk1.7.0\\
 
 
 Eclipse installation
@@ -34,8 +43,8 @@ Installation
 
 * Décompresser le fichier téléchargé (Eclipse ne fournit pas d'installeur, juste un répertoire à dézipper).
 
-* Editer le fichier **eclipse.ini** situé à la racine du répertoire d'Eclipse. Configurer Eclipse pour qu'il s'exécute avec un JDK et non une JRE. Pour ce faire, 
-  rajouter les lignes suivantes au début du fichier :
+* Editer le fichier **eclipse.ini** situé à la racine du répertoire d'Eclipse. Configurer Eclipse pour qu'il s'exécute avec un JDK et non un JRE. 
+  Pour ce faire, rajouter les lignes suivantes au début du fichier (en spécifiant votre répertoire d'installation) :
 
    .. literalinclude:: /documentation/resources/code_src/eclipse.ini
            :language: xml
@@ -58,7 +67,7 @@ Eclipse preferences
 JDK
 -------
 
-Configurer Eclipse pour qu'il exécute les programmes java avec un jdk et non pas une jre :
+Configurer Eclipse pour qu'il exécute les programmes java avec un jdk et non pas un jre :
 
 .. container:: centerside
      
@@ -155,7 +164,7 @@ Cette norme est dérivée de celle proposée par SUN à l’adresse :
          .. container:: centerside
      
             .. figure:: /documentation/resources/img/install/ConfigEclipseConventionCodage_1.png
-               :width: 450px
+               :width: 400px
        
                Figure 5 : Convention de codage - Import
     
@@ -193,9 +202,9 @@ Text editors
         
            * Check Show line numbers
         
-           * Check Show whitespace characters (optional)
+           .. * Check Show whitespace characters (optional)
         
-           * Check Show print margin and set Print margin column to “100” (optional)
+           .. * Check Show print margin and set Print margin column to “100” (optional)
    
    .. container:: rightside
    
@@ -220,39 +229,265 @@ Vous aurez besoin des plugins Maven (m2eclipse) et subversion (subclipse).
 Plugin Subclipse
 ------------------
 
+Subclipse est un plugin Eclipse permettant d'utiliser Subversion (SVN) directement depuis votre éditeur préféré.
 
-.. container:: centerside
-     
-    .. figure:: /documentation/resources/img/install/connector_subclipse01.png
+.. container:: twocol
+
+   .. container:: leftside
+
+      **Etape 1** : Cliquer dans le menu d'Eclipse :
+
+	     .. container:: chemin
+	
+	           Help >> Install New Software
+   
+   .. container:: rightside     
        
-       Figure 5 : eee 
+       .. container:: centerside
+	      
+	      .. figure:: /documentation/resources/img/install/pluginInstall.png
+	         :width: 350px
+	      
+	         Figure 8 : Install new Software 
+         
+.. container:: twocol
 
-     
-    .. figure:: /documentation/resources/img/install/connector_subclipse02.png
+   .. container:: leftside
+            
+      **Etape 2** : Cliquer sur **Add** afin d’ajouter le site de subeclipse dans la liste des sites de logiciels disponibles
+
+   .. container:: rightside     
+   
+      .. container:: centerside
+      
+         .. figure:: /documentation/resources/img/install/pluginNewUrl.png
+            :width: 500px
        
-       Figure 6 : fff
+            Figure 9 : Add new update site  
 
+.. container:: twocol
 
-    .. figure:: /documentation/resources/img/install/connector_subclipse03.png
-       
-       Figure 6 : ggg
+   .. container:: leftside
+   
+      **Etape 3** : Saisir dans la boite de dialogue les informations décrites ci-dessous puis cliquer sur **OK**
+
+      .. container:: chemin
+
+         Name = Subclispe
+         
+         Location = 
+            http://subclipse.tigris.org/update_1.8.x
+
+   .. container:: rightside     
+   
+      .. container:: centerside
+      
+         .. figure:: /documentation/resources/img/install/subeclipseUrl.png
+            :width: 450px
+         
+            Figure 10 : Subclipse update site
+
+.. container:: twocol
+
+   .. container:: leftside
+
+      **Etape 4** : La boite de dialogue **install** affiche l'ensemble des plugins disponibles. Tout n’est pas utile, mais cocher au moins les packages 
+      marqués required ainsi que SVNKit puis cliquer sur **Next**.
+   
+   .. container:: rightside
+      
+      .. container:: centerside
+      
+         .. figure:: /documentation/resources/img/install/subeclipseEtape1.png
+            :width: 450px
+         
+            Figure 11 : Plugins Subclipse disponibles
+   
+.. container:: twocol
+   
+   .. container:: leftside
+   
+      **Etape 5** : Sur la page "Install Details" cliquer juste sur le bouton "Next"
+   
+   .. container:: rightside
+      
+      .. container:: centerside
+      
+         .. figure:: /documentation/resources/img/install/subeclipseEtape2.png
+            :width: 350px
+         
+            Figure 12
+         
+.. container:: twocol
+
+   .. container:: leftside
+   
+      **Etape 6** : Accepter les termes de la licence de subeclipse sur la page "Review Licences" et cliquer sur "Finish" pour commencer l'installation.
+   
+   .. container:: rightside
+      
+      .. container:: centerside
+      
+         .. figure:: /documentation/resources/img/install/subeclipseEtape3.png
+            :width: 350px
+
+            Figure 13
+
+.. container:: twocol
+
+   .. container:: leftside
+   
+      **Etape 7** : Vous allez recevoir un message d'alerte "Security Warning" parce que les jars de subeclipse 
+      ne sont pas signés. Cliquer sur "OK" pour continuer l'installation.
+   
+   .. container:: rightside
+      
+      .. container:: centerside
+      
+         .. figure:: /documentation/resources/img/install/pluginNonSigne.png
+            :width: 350px
+
+            Figure 14
+
+.. container:: twocol
+
+   .. container:: leftside
+   
+      **Etape 8** : Une fois l'installation terminée, préférer "Restart Now" dans la prochaine boite de dialogue. 
+      
+      Le plugin subeclipse sera opérationnel après le redémarrage d'Eclipse.
+   
+   .. container:: rightside
+      
+      .. container:: centerside
+      
+         .. figure:: /documentation/resources/img/install/pluginRestart.png
+            :width: 350px
+
+            Figure 15
+
+.. container:: twocol
+
+   .. container:: leftside
+   
+      **Etape 9** : Une fois le plugin installé, configurer dans Eclipse l'interface **SVNKit**. 
+      En effet, celle-ci semble mieux fonctionner que celle par défaut (JavaHL). 
+      Pour cela, dans le menu d'Eclipse :
+      
+      .. container:: chemin
+      
+         Window >> Preferences >> Team >> SVN
+      
+      sélectionner l’interface SVNKit.
+   
+   .. container:: rightside
+      
+      .. container:: centerside
+      
+         .. figure:: /documentation/resources/img/install/subeclipseInterface.png
+            :width: 450px
+
+            Figure 16
 
 
 Plugin M2E
 ------------------
+GeOxygene est construit à partir de Maven. Le projet m2eclipse fournit un support afin d'utiliser les fonctionnalités de Maven
+dans l'éditeur Eclipse. L'intégration Maven pour Eclipse est composé d'un plugin (le core) et de connectors. 
+Pour installer GeOxygene il faut le plugin et le connector subclipse.
+
+Reprener les 8 premières étapes de l'installation du plugin subclipse mais en adaptant les paramètres pour le plugin m2e.
 
 
-Sinon : http://www.eclipse.org/m2e/download/
+.. container:: twocol
 
-Latest m2e release (recommended)
-http://download.eclipse.org/technology/m2e/releases 
+   .. container:: leftside
+   
+      **A l'étape 3** saisir comme URL :
+      
+      .. container:: chemin
+
+         Name = m2eclipse
+         
+         Location = http://download.eclipse.org/technology/m2e/releases 
+   
+   .. container:: rightside
+      
+      .. container:: centerside
+      
+         .. figure:: /documentation/resources/img/install/m2eclipseUrl.png
+            :width: 450px
+
+            Figure 17 - m2eclipse update site
+
+.. container:: twocol
+
+   .. container:: leftside
+   
+      **A l'étape 4** choisir l'unique composant "Maven Integration for Eclipse".
+      
+   .. container:: rightside
+      
+      .. container:: centerside
+      
+         .. figure:: /documentation/resources/img/install/m2eclipseEtape1.png
+            :width: 450px
+
+            Figure 18 - Plugins m2eclipse disponibles
 
 
-When downloading jars maven makes use of a "local repository" to store jars.
+**A l'étape 8**, une fois l'installation terminée, une fenêtre propose de redémarrer Eclipse, inutile de le faire à ce stade.
 
-To download jars maven makes use of public maven repositories on the internet where projects
-such as GeoTools publish their work.
 
+Connector Subclipse for Maven
+--------------------------------
+
+Il reste à installer le connector subclipse pour Maven.
+
+.. container:: twocol
+
+   .. container:: leftside
+   
+      **Etape 1** Ouvrez le catalogue à partir du menu :
+      
+      .. container:: chemin
+      
+         Window >> Preferences >> Maven >> Discovery
+         
+      
+      Et cliquer sur **Open Catalog**
+      
+   .. container:: rightside
+      
+      .. container:: centerside
+      
+         .. figure:: /documentation/resources/img/install/connector_subclipse03.png
+            :width: 450px
+
+            Figure 19 : Maven catalog 
+
+.. container:: twocol
+
+   .. container:: leftside
+   
+      .. container:: centerside
+         
+         .. figure:: /documentation/resources/img/install/connector_subclipse02.png
+            :width: 450px
+ 
+            Figure 20 : Maven catalog
+      
+   .. container:: rightside-marge
+       
+       **Etape 2** chercher le connector **m2e-subclipse** et l'installer
+      
+          
+
+Maven preferences
+********************
+
+Settings
+============
 
 Si vous êtes derrière un proxy, la dernière étape consiste à configurer Maven pour utiliser le proxy. 
 Pour ce, il faut ajouter un fichier **settings.xml** à la racine de Maven. 
@@ -261,8 +496,8 @@ Ce répertoire est situé à l'endroit suivant :
   ==================  ========================================================
      PLATFORM           LOCAL REPOSITORY
   ==================  ========================================================
-     Windows XP:      :file:`C:\\Documents and Settings\\Jody\\.m2\\repository`
-     Windows:         :file:`C:\\Users\\Jody\\.m2\repository`
+     Windows XP:      :file:`C:\\Documents and Settings\\Augusta\\.m2\\repository`
+     Windows:         :file:`C:\\Users\\Augusta\\.m2\\repository`
      Linux and Mac:   :file:`~/.m2/repository`
   ==================  ========================================================
 
@@ -273,13 +508,21 @@ Voici un exemplaire d'un fichier settings.xml que vous pouvez utiliser à l'IGN 
         :language: xml
         
 
+Eclipse Preferences for Maven
+=================================
+
+Afin de voir la javadoc ou les sources des dépendances de vos projets, sélectionner :
+
+* Download Artifact Sources
+
+* Download Artifact Javadoc
+
 .. container:: centerside
      
     .. figure:: /documentation/resources/img/install/MavenConfiguration.png
+       :width: 500px
        
-       Figure 5 : eee
-
-
+       Figure 21 : Eclipse preferences pour Maven
 
 
 GeOxygene
@@ -428,30 +671,43 @@ Compilation
 Pour cela :
 
 
-    1. Sélectionner dans l'explorateur à droite, le projet "geoxygene". Puis dans le menu, cliquer sur Run => Run Configurations.
+    1. Dans le menu, cliquer sur 
+      
+      .. container:: chemin
+      
+         Run >> Run Configurations
       
       .. container:: centerside
      
           .. figure:: /documentation/resources/img/install/geoxygeneRunEtape1.png
+             :width: 600px
+          
+             Figure 22
        
     2. Sélectionner comme type de run "Maven", puis cliquer dans le menu en haut sur "New launch configuration"
       
       .. container:: centerside
      
           .. figure:: /documentation/resources/img/install/geoxygeneRunEtape2.png
+             :width: 350px
+             
+             Figure 23
 
     3. Dans la nouvelle fenêtre "Run configuration" configurer :
          
          **Name** : geoxygene
+         
          **Base directory** : saisir le chemin d'installation de GeOxygene (c'est celui de votre Workspace auquel il faut ajouter geoxygene)
+         
          **Goal** : clean install. Vous définissez la phase du cycle (clean, install, package, compile, test, site, ...)
-         ** d'autres options peuvent être configurées dans cette interface si vous le souhaitez.
-   
+         
+  
       .. container:: centerside
      
           .. figure:: /documentation/resources/img/install/geoxygeneRunEtape3.png
-
-
+             :width: 600px
+             
+             Figure 24
 
 
 Si tout se passe bien, Maven devrait récupérer tous les jars nécessaires et compiler le projet. 
@@ -460,32 +716,34 @@ Si tout se passe bien, Maven devrait récupérer tous les jars nécessaires et c
 Lancement de l'interface graphique
 ========================================
 
-Une application exemple peut être exécutée: 
-**fr.ign.cogit.geoxygene.appli.GeOxygeneApplication**.
+1. Dans le menu, cliquer sur 
+      
+   .. container:: chemin
+      
+      Run >> Run Configurations
 
 
-
-Pour cela ouvrir le fichier GeOxygeneApplication.java qui se trouve dans le module : 
-
-   geoxygene-appli => src/main/java =>  fr.ign.cogit.geoxygene => appli
+2. Sélectionner comme type de run "Java Application", puis faire un click droit et sélectionner "New"
 
 
+3. Configurer les éléments suivants :
 
+   * **Name** : geoxygene
 
+   * **Project** : geoxygene-appli
 
-Dans la fenêtre de l'éditeur de la classe, faire un click droit de la souris. Puis cliquer sur :
-
-"Run As" => "Java Application"
+   * **Main class** : fr.ign.cogit.geoxygene.appli.GeOxygeneApplication
 
 
 .. container:: centerside
      
     .. figure:: /documentation/resources/img/install/GeOxygeneAppliRunAs.png
+       :width: 600px
        
-       Figure 15 : -----
+       Figure 25 - Lancement de l'interface graphique
 
 
-L'interface de GeOxygene est lancée !
+4. Cliquer sur **Run**, l'interface de GeOxygene est lancée !
 
 
 

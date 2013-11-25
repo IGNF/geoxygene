@@ -11,7 +11,8 @@ Documentation
 
    developer/index
    application/index
-   user/index
+   .. user/index
 
    
-+ Online javadoc
++ `Online javadoc <http://oxygene-project.sourceforge.net/apidocs/index.html>`_
+
