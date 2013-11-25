@@ -11,14 +11,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.geotools.GML;
-import org.geotools.GML.Version;
 import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
+
 
 
 
@@ -100,16 +100,24 @@ public class CarteTopoData {
     result.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
     result.append("<CarteTopo>");
     
-    ByteArrayOutputStream output = new ByteArrayOutputStream();
-    GML encode = new GML(Version.WFS1_0);
-    encode.setNamespace("geotools", "http://geotools.org");
-    
     // Convert
     LOGGER.trace("Pop edges size = " + carteTopo.getPopEdge().size());
     CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
     SimpleFeatureCollection edges = GeOxygeneGeoToolsTypes.convert2FeatureCollection(carteTopo.getPopEdge(), sourceCRS);
-    encode.encode(output, edges);
+
+    // Convert into valid GML
+    FeatureTransformer ft = new FeatureTransformer();
+    // set the indentation to 4 spaces
+    ft.setIndentation(4);
+    // this will allow Features with the FeatureType which has the namespace
+    // "http://somewhere.org" to be prefixed with xxx...
+    ft.getFeatureNamespaces().declarePrefix("xxx", "http://somewhere.org");
     
+    // transform
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    ft.transform(edges, output);
+
+    // Delete first line
     String buffer = output.toString();
     int begin = buffer.indexOf("wfs:FeatureCollection");
     buffer = buffer.substring(begin - 1, buffer.length() - 1);
