@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.FeatureCollections;
@@ -41,6 +42,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 public class GeOxygeneGeoToolsTypes {
   private final static Logger logger = Logger.getLogger(GeOxygeneGeoToolsTypes.class.getName());
+
   public static IFeatureCollection<?> convert2IFeatureCollection(SimpleFeatureCollection collection) {
     logger.info("Schema name = " + collection.getSchema().getName() + " - " + collection.getSchema().getName().getLocalPart());
     SchemaDefaultFeature schemaDefaultFeature = new SchemaDefaultFeature();
@@ -55,8 +57,7 @@ public class GeOxygeneGeoToolsTypes {
       AttributeType type = new AttributeType();
       String nomField = collection.getSchema().getAttributeDescriptors().get(i).getLocalName();
       String memberName = nomField;
-      String valueType = collection.getSchema().getAttributeDescriptors().get(i).getType()
-          .getBinding().getSimpleName();
+      String valueType = collection.getSchema().getAttributeDescriptors().get(i).getType().getBinding().getSimpleName();
       type.setNomField(nomField);
       type.setMemberName(memberName);
       type.setValueType(valueType);
@@ -65,14 +66,12 @@ public class GeOxygeneGeoToolsTypes {
       logger.info("Attribute " + i + " added " + nomField + " : " + valueType);
     }
     /** Création d'un schéma associé au featureType */
-    newFeatureType.setGeometryType(geometryType(collection.getSchema().getGeometryDescriptor()
-        .getType().getBinding()));
+    newFeatureType.setGeometryType(geometryType(collection.getSchema().getGeometryDescriptor().getType().getBinding()));
     logger.info("Schema Created with " + newFeatureType.getGeometryType());
     schemaDefaultFeature.setFeatureType(newFeatureType);
     newFeatureType.setSchema(schemaDefaultFeature);
     schemaDefaultFeature.setAttLookup(attLookup);
-    Population<DefaultFeature> population = new Population<DefaultFeature>(schemaDefaultFeature
-        .getNom());
+    Population<DefaultFeature> population = new Population<DefaultFeature>(schemaDefaultFeature.getNom());
     population.setFeatureType(newFeatureType);
     SimpleFeatureIterator iterator = collection.features();
     int id = 0;
@@ -123,19 +122,29 @@ public class GeOxygeneGeoToolsTypes {
     return GM_MultiSurface.class;
   }
 
-  public static <Feat extends IFeature> SimpleFeatureCollection convert2FeatureCollection(
-      IFeatureCollection<Feat> featureCollection) throws Exception {
+  public static <Feat extends IFeature> SimpleFeatureCollection convert2FeatureCollection(IFeatureCollection<Feat> featureCollection)
+      throws Exception {
     return convert2FeatureCollection(featureCollection, DefaultGeographicCRS.WGS84);
   }
 
-  public static <Feat extends IFeature> SimpleFeatureCollection convert2FeatureCollection(
-      IFeatureCollection<Feat> featureCollection, CoordinateReferenceSystem crs) throws Exception {
+  /**
+   * 
+   * @param featureCollection
+   * @param crs
+   * @return
+   * @throws Exception
+   */
+  public static <Feat extends IFeature> SimpleFeatureCollection convert2FeatureCollection(IFeatureCollection<Feat> featureCollection,
+      CoordinateReferenceSystem crs) throws Exception {
+    
     GF_FeatureType featureType = featureCollection.getFeatureType();
     logger.info("Typename = " + featureType.getTypeName());
+    
     String typeName = featureType.getTypeName();
     if (typeName == null) {
       typeName = "CreatedType";
     }
+    
     SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
     builder.setName(typeName);
     builder.setCRS(crs);
@@ -163,8 +172,10 @@ public class GeOxygeneGeoToolsTypes {
         }
       }
     }
+    
     SimpleFeatureType type = builder.buildFeatureType();
-    SimpleFeatureCollection collection = FeatureCollections.newCollection();
+    // SimpleFeatureCollection collection = FeatureCollections.newCollection();
+    List<SimpleFeature> list = new ArrayList<SimpleFeature>();
     int i = 1;
     for (Feat feature : featureCollection) {
       List<Object> liste = new ArrayList<Object>(0);
@@ -174,10 +185,13 @@ public class GeOxygeneGeoToolsTypes {
           liste.add(feature.getAttribute(attributeType.getMemberName()));
         }
       }
-      SimpleFeature simpleFeature = SimpleFeatureBuilder.build(type, liste.toArray(), String
-          .valueOf(i++));
-      collection.add(simpleFeature);
+      SimpleFeature simpleFeature = SimpleFeatureBuilder.build(type, liste.toArray(), String.valueOf(i++));
+      // collection.add(simpleFeature);
+      list.add(simpleFeature);
     }
+    SimpleFeatureCollection collection = new ListFeatureCollection(type, list);
+    
+    
     return collection;
   }
 }
