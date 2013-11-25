@@ -38,7 +38,8 @@ public class ParametersNetworkMatchingPPIO extends CDataPPIO {
   @Override
   public Object decode(String inputXML) throws Exception {
     InputStream inputXSD = ParametersNetworkMatchingPPIO.class.getResourceAsStream("/schema/ParametersNetworkMatching.xsd");
-    return Parameters.parseXML(inputXML, inputXSD);
+   // return Parameters.parseXML(inputXML, inputXSD);
+    return null;
   }
 
   @Override

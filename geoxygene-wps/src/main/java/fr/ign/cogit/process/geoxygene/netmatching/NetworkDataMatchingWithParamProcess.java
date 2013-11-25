@@ -47,7 +47,7 @@ public class NetworkDataMatchingWithParamProcess implements GeoxygeneProcess {
         
         LOGGER.debug("Start setting parameters");
         // Set parameters
-        ParamNetworkDataMatching paramNetworkMatching = ParamNetworkDataMatching.convertParameter(param);
+        /*ParamNetworkDataMatching paramNetworkMatching = ParamNetworkDataMatching.convertParameter(param);
         // Set datasets 
         DatasetNetworkDataMatching datasetNetwork1 = new DatasetNetworkDataMatching();
         datasetNetwork1.addPopulationsArcs((IPopulation<IFeature>)gReseau1);
@@ -62,7 +62,7 @@ public class NetworkDataMatchingWithParamProcess implements GeoxygeneProcess {
         networkDataMatchingProcess.setActions(false, false);
         ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();
         LOGGER.debug("End network matching");
-        
+        */
         // Convert resultat
         
         // return resultat
