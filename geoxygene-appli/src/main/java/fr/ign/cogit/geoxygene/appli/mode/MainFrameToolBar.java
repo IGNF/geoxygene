@@ -275,35 +275,38 @@ public class MainFrameToolBar implements ContainerListener, KeyListener, MouseLi
     /**
      * Set the current mode.
      * 
-     * @param mode
+     * @param newMode
      *            the new current mode.
      */
-    public final void setCurrentMode(final Mode mode) {
-        LOGGER.debug("Set current mode = " + mode);
-        if (this.currentMode != null) {
+    public final void setCurrentMode(final Mode newMode) {
+        final Mode oldMode = this.currentMode;
+
+        if (oldMode != null) {
             SwingUtilities.invokeLater(new Runnable() {
 
                 @Override
                 public void run() {
-                    MainFrameToolBar.this.currentMode.getButton().setEnabled(true);
+                    oldMode.getButton().setEnabled(true);
                 }
             });
         }
-        this.currentMode = mode;
+        if (newMode != null) {
+            SwingUtilities.invokeLater(new Runnable() {
 
-        SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
 
-            @Override
-            public void run() {
-                MainFrameToolBar.this.currentMode.getButton().setEnabled(false);
-                if (MainFrameToolBar.this.getMainFrame() != null && MainFrameToolBar.this.getMainFrame().getSelectedProjectFrame() != null) {
-                    LayerViewPanel layerViewPanel = MainFrameToolBar.this.getMainFrame().getSelectedProjectFrame().getLayerViewPanel();
-                    layerViewPanel.setCursor(MainFrameToolBar.this.currentMode.getCursor());
+                    newMode.getButton().setEnabled(false);
+                    if (MainFrameToolBar.this.getMainFrame() != null && MainFrameToolBar.this.getMainFrame().getSelectedProjectFrame() != null) {
+                        LayerViewPanel layerViewPanel = MainFrameToolBar.this.getMainFrame().getSelectedProjectFrame().getLayerViewPanel();
+                        layerViewPanel.setCursor(MainFrameToolBar.this.currentMode.getCursor());
+                    }
                 }
-            }
-        });
+            });
 
-        this.currentMode.activated();
+            this.currentMode = newMode;
+            this.currentMode.activated();
+        }
     }
 
     @Override

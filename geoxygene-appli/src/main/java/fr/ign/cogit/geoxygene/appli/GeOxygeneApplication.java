@@ -183,24 +183,6 @@ public class GeOxygeneApplication {
             //            preloadTask.start();
         }
 
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                    for (Mode mode : mainFrame.getMode().getRegisteredModes()) {
-                        if (mode instanceof MoveMode) {
-                            MoveMode moveMode = (MoveMode) mode;
-                            mainFrame.getMode().setCurrentMode(moveMode);
-
-                        }
-                    }
-                } catch (Exception e) {
-                    System.err.println("Exception type " + e.getClass() + " = " + e.getMessage());
-                }
-            }
-        }).start();
     }
 
     /** @return The font to be used for all menus, etc. */
