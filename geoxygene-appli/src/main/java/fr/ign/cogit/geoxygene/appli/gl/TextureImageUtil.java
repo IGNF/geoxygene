@@ -233,7 +233,7 @@ public class TextureImageUtil {
         g2d.setComposite(AlphaComposite.Src);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, image.getHeight() - y - 1);
+                TexturePixel pixel = image.getPixel(x, y);
                 int rgb = 0;
                 if (pixel.in || pixel.frontier != 0) {
                     int xTexture = (int) Math.abs(pixel.uTexture * texture.getWidth()) % texture.getWidth();

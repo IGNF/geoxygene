@@ -3,9 +3,13 @@
  */
 package fr.ign.cogit.geoxygene.appli.layer;
 
+import java.awt.Color;
+
 import org.apache.log4j.Logger;
+import org.lwjgl.LWJGLException;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel.LayerViewGLCanvasType;
 
 /** @author JeT This factory creates LayerViewPanel class instances */
 public final class LayerViewPanelFactory {
@@ -51,7 +55,7 @@ public final class LayerViewPanelFactory {
         case AWT:
             return newLayerViewAwtPanel(projectFrame);
         case LWJGL:
-            return newLayerViewLwjglPanel(projectFrame);
+            return newLayerViewGLPanel(projectFrame);
         }
         logger.error("Unhandled layer type " + getLayerViewPanelType());
         return null;
@@ -76,8 +80,46 @@ public final class LayerViewPanelFactory {
      *            parent frame containing the newly created layer
      * @return newly created layer view
      */
-    private static LayerViewGLPanel newLayerViewLwjglPanel(final ProjectFrame projectFrame) {
-        return new LayerViewLwjglPanel(projectFrame);
+    private static LayerViewGLPanel newLayerViewGLPanel(final ProjectFrame projectFrame) {
+        LayerViewGLPanel glPanel = new LayerViewGLPanel(projectFrame, LayerViewGLCanvasType.GL1);
+        return glPanel;
+    }
+
+    public static LayerViewGLCanvas newLayerViewGLCanvas(final LayerViewGLPanel glPanel, LayerViewGLPanel.LayerViewGLCanvasType glType) {
+        switch (glType) {
+        case GL1:
+            return newLayerViewGL1Canvas(glPanel);
+        case GL4:
+            return newLayerViewGL4Canvas(glPanel);
+        default:
+            throw new IllegalArgumentException("Unknown gl canvas type : " + glType);
+        }
+    }
+
+    private static LayerViewGL1Canvas newLayerViewGL1Canvas(final LayerViewGLPanel glPanel) {
+        try {
+            LayerViewGL1Canvas gl1Canvas = new LayerViewGL1Canvas(glPanel);
+            gl1Canvas.setBackground(new Color(255, 255, 220));
+            return gl1Canvas;
+        } catch (LWJGLException e) {
+            logger.error("LWJGL creation error");
+            logger.error(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static LayerViewGL4Canvas newLayerViewGL4Canvas(final LayerViewGLPanel glPanel) {
+        try {
+            LayerViewGL4Canvas gl4Canvas = new LayerViewGL4Canvas(glPanel);
+            gl4Canvas.setBackground(new Color(255, 255, 220));
+            return gl4Canvas;
+        } catch (LWJGLException e) {
+            logger.error("LWJGL creation error");
+            logger.error(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

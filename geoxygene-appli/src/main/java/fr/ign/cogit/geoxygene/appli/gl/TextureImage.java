@@ -87,6 +87,8 @@ public class TextureImage {
     private static final Logger logger = Logger.getLogger(TextureImage.class.getName()); // logger
     private static final double SQRT2 = Math.sqrt(2.);
 
+    private static final double LINEAR_PARAMETER_SCALE = 50.; // 1: world coordinates N: texture coordinates divided by N 
+
     /**
      * constructor
      * 
@@ -310,15 +312,17 @@ public class TextureImage {
      */
     void rasterize() {
 
-        // draw the outer frontier
         DensityFieldFrontierPixelRenderer pixelRenderer = new DensityFieldFrontierPixelRenderer();
 
+        // draw the outer frontier
         this.drawFrontier(this.getPolygon().getGM_Polygon().getExterior(), 1, pixelRenderer, this.viewport);
+
         // draw all inner frontiers
         for (int innerFrontierIndex = 0; innerFrontierIndex < this.polygon.getInnerFrontierCount(); innerFrontierIndex++) {
             IRing innerFrontier = this.getPolygon().getGM_Polygon().getInterior().get(innerFrontierIndex);
             this.drawFrontier(innerFrontier, -innerFrontierIndex - 1, pixelRenderer, this.viewport);
         }
+
         // fills the inner pixels
         fillHorizontally(this, pixelRenderer.getYs());
 
@@ -330,9 +334,9 @@ public class TextureImage {
 
         fillTextureCoordinates(this, pixelRenderer.getModifiedPixels());
 
-        TextureImageUtil.checkTextureCoordinates(this);
+        //        TextureImageUtil.checkTextureCoordinates(this);
 
-        TextureImageUtil.blurTextureCoordinates(this);
+        //        TextureImageUtil.blurTextureCoordinates(this);
     }
 
     /**
@@ -562,9 +566,9 @@ public class TextureImage {
         IDirectPosition p0 = frontier.coord().get(frontierSize - 1);// previous point
         IDirectPosition p1 = frontier.coord().get(0); // start point line to draw
         IDirectPosition p2 = frontier.coord().get(1); // end point line to draw
-        double frontierLength = frontier.length();
+        //        double frontierLength = frontier.length();
         double segmentLength = Math.sqrt((p2.getX() - p1.getX()) * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY()) * (p2.getY() - p1.getY()))
-                / frontierLength;
+                / LINEAR_PARAMETER_SCALE;
         // convert world-based coordinates to projection-space coordinates
         Point2D proj0 = this.worldToProj(p0);
         Point2D proj1 = this.worldToProj(p1);
@@ -607,7 +611,8 @@ public class TextureImage {
             p0 = p1;
             p1 = p2;
             p2 = frontier.coord().get((nPoint + 1) % frontierSize);
-            segmentLength = Math.sqrt((p2.getX() - p1.getX()) * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY()) * (p2.getY() - p1.getY())) / frontierLength;
+            segmentLength = Math.sqrt((p2.getX() - p1.getX()) * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY()) * (p2.getY() - p1.getY()))
+                    / LINEAR_PARAMETER_SCALE;
 
             proj0 = proj1;
             proj1 = proj2;

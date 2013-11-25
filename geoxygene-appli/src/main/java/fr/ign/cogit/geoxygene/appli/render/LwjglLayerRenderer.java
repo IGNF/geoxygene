@@ -40,7 +40,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
-import fr.ign.cogit.geoxygene.appli.layer.LayerViewLwjglPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.plugin.script.ScriptingPrimitiveRenderer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.DensityFieldPrimitiveRenderer;
@@ -56,7 +55,7 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 
 /**
- * A renderer to render a {@link Layer} into a {@link LayerViewLwjglPanel}. It
+ * A renderer to render a {@link Layer} into a {@link LayerViewLwjgl1Panel}. It
  * draws directly the layer into the GL context contained into the
  * 
  * @author JeT

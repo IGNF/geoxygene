@@ -59,7 +59,6 @@ public class DensityFieldGenerationTask extends AbstractTask {
      */
     public DensityFieldGenerationTask(final String name, final DensityFieldParameterizer parameterizer, final String textureFilename) {
         super(name);
-        System.err.println("create task " + name);
         if (parameterizer == null || textureFilename == null) {
             throw new IllegalArgumentException("parameterizer or texture filename cannot be null:" + parameterizer + " '" + textureFilename + "'");
         }

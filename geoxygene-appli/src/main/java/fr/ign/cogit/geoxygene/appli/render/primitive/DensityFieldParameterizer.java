@@ -44,6 +44,7 @@ import fr.ign.cogit.geoxygene.appli.gl.TextureImage.TexturePixel;
  */
 public class DensityFieldParameterizer implements Parameterizer {
 
+    private static final int TEXTURE_WIDTH_HEIGHT = 1024;
     private static Logger logger = Logger.getLogger(DensityFieldParameterizer.class.getName());
     private Viewport viewport = null;
     private ParameterizedPolygon polygon = null;
@@ -66,7 +67,7 @@ public class DensityFieldParameterizer implements Parameterizer {
         if (this.image == null) {
             // generate the field image
             this.image = new TextureImage(this.polygon, this.viewport);
-            this.image.setDimension(1024, 1024);
+            this.image.setDimension(TEXTURE_WIDTH_HEIGHT, TEXTURE_WIDTH_HEIGHT);
         }
         return this.image;
     }
@@ -143,8 +144,9 @@ public class DensityFieldParameterizer implements Parameterizer {
      */
     /**
      * convert screen coordinates to model (world) coordinates then to texture
-     * image coordinates
-     * the pixel contains the texture coordinates
+     * image coordinates. Image coordinates are directly the texture coordinates
+     * (normalized by image size) because source texture has already been
+     * applies using applyTexture() method
      */
     @Override
     public Point2d getTextureCoordinates(final double x, final double y) {

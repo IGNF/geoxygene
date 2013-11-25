@@ -34,225 +34,242 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
- * Extracted interface from previous LayerViewPanel which is LayerViewAwtPanel now. This interface extraction is done in order to use GL layers
+ * Extracted interface from previous LayerViewPanel which is LayerViewAwtPanel
+ * now. This interface extraction is done in order to use GL layers
  * 
  * @author JeT
  */
 public abstract class LayerViewPanel extends JComponent implements Printable, SldListener, fr.ign.cogit.geoxygene.style.SldListener {
 
-  /** Serializable UID. */
-  private static final long serialVersionUID = -1275390035288869114L; 
-  
-  /** The logger. */
-  private static Logger LOGGER = Logger.getLogger(LayerViewPanel.class.getName());
+    /** Serializable UID. */
+    private static final long serialVersionUID = -1275390035288869114L;
 
-  /**
-   * Taille d'un pixel en mètres (la longueur d'un coté de pixel de l'écran) utilisé pour le calcul de l'echelle courante de la vue. Elle est calculée
-   * à partir de la résolution de l'écran en DPI. Par exemple si la résolution est 90DPI, c'est: 90 pix/inch = 1/90 inch/pix = 0.0254/90 meter/pix.
-   */
-  private final static double METERS_PER_PIXEL = 0.02540005 / Toolkit.getDefaultToolkit().getScreenResolution();
+    /** The logger. */
+    private static Logger LOGGER = Logger.getLogger(LayerViewPanel.class.getName());
 
-  private boolean recording = false;
-  private String recordFileName = "";
-  private int recordIndex = 0;
+    /**
+     * Taille d'un pixel en mètres (la longueur d'un coté de pixel de l'écran)
+     * utilisé pour le calcul de l'echelle courante de la vue. Elle est calculée
+     * à partir de la résolution de l'écran en DPI. Par exemple si la résolution
+     * est 90DPI, c'est: 90 pix/inch = 1/90 inch/pix = 0.0254/90 meter/pix.
+     */
+    private final static double METERS_PER_PIXEL = 0.02540005 / Toolkit.getDefaultToolkit().getScreenResolution();
 
-  private Viewport viewport = null; // Viewport (coordinate systems
-                                    // conversion)
-  private ProjectFrame projectFrame = null; // main parent Frame
+    private boolean recording = false;
+    private String recordFileName = "";
+    private int recordIndex = 0;
 
-  /** Private selected features. Use getter and setter. */
-  private final Set<IFeature> selectedFeatures = new HashSet<IFeature>(0);
+    private Viewport viewport = null; // Viewport (coordinate systems conversion)
+    private ProjectFrame projectFrame = null; // main parent Frame
 
-  /*********************************************************************** Default Constructor. Set the parent project frame and create a new Viewport */
-  public LayerViewPanel(final ProjectFrame frame) {
-    super();
-    this.projectFrame = frame;
-    this.viewport = new Viewport(this);
-  }
+    /** Private selected features. Use getter and setter. */
+    private final Set<IFeature> selectedFeatures = new HashSet<IFeature>(0);
 
-  /**
-   * Returns the size of a pixel in meters.
-   * 
-   * @return Taille d'un pixel en mètres (la longueur d'un coté de pixel de l'écran).
-   */
-  public static double getMETERS_PER_PIXEL() {
-    return LayerViewPanel.METERS_PER_PIXEL;
-  }
+    /***********************************************************************
+     * Default Constructor. Set the parent project frame and create a new
+     * Viewport
+     */
+    public LayerViewPanel(final ProjectFrame frame) {
+        super();
+        this.projectFrame = frame;
+        this.viewport = new Viewport(this);
+    }
 
-  public boolean isRecording() {
-    return this.recording;
-  }
+    /**
+     * Returns the size of a pixel in meters.
+     * 
+     * @return Taille d'un pixel en mètres (la longueur d'un coté de pixel de
+     *         l'écran).
+     */
+    public static double getMETERS_PER_PIXEL() {
+        return LayerViewPanel.METERS_PER_PIXEL;
+    }
 
-  // @Override
-  public void setRecord(boolean b) {
-    this.recording = b;
-  }
+    public boolean isRecording() {
+        return this.recording;
+    }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#getRecordFileName()
-   */
-  // @Override
-  public String getRecordFileName() {
-    return this.recordFileName;
-  }
+    // @Override
+    public void setRecord(boolean b) {
+        this.recording = b;
+    }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#setRecordFileName(java.lang.String)
-   */
-  // @Override
-  public void setRecordFileName(String recordFileName) {
-    this.recordFileName = recordFileName;
-    this.recordIndex = 0;
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#getRecordFileName()
+     */
+    // @Override
+    public String getRecordFileName() {
+        return this.recordFileName;
+    }
 
-  protected void paintGeometryEdition(Graphics g) {
-    Mode mode = this.getProjectFrame().getMainFrame().getMode().getCurrentMode();
-    g.setColor(new Color(1f, 0f, 0f));
-    if (mode instanceof AbstractGeometryEditMode) {
-      IDirectPositionList points = new DirectPositionList();
-      points.addAll(((AbstractGeometryEditMode) mode).getPoints());
-      if (mode instanceof CreateLineStringMode) {
-        if (!points.isEmpty()) {
-          points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
-          RenderUtil.draw(new GM_LineString(points), this.getViewport(), (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
-        }
-      } else {
-        if (mode instanceof CreatePolygonMode) {
-          if (!points.isEmpty()) {
-            IDirectPosition start = points.get(0);
-            points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
-            if (points.size() > 2) {
-              points.add(start);
-              RenderUtil.draw(new GM_Polygon(new GM_LineString(points)), this.getViewport(), (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#setRecordFileName
+     * (java.lang.String)
+     */
+    // @Override
+    public void setRecordFileName(String recordFileName) {
+        this.recordFileName = recordFileName;
+        this.recordIndex = 0;
+    }
+
+    protected void paintGeometryEdition(Graphics g) {
+        Mode mode = this.getProjectFrame().getMainFrame().getMode().getCurrentMode();
+        g.setColor(new Color(1f, 0f, 0f));
+        if (mode instanceof AbstractGeometryEditMode) {
+            IDirectPositionList points = new DirectPositionList();
+            points.addAll(((AbstractGeometryEditMode) mode).getPoints());
+            if (mode instanceof CreateLineStringMode) {
+                if (!points.isEmpty()) {
+                    points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
+                    RenderUtil.draw(new GM_LineString(points), this.getViewport(), (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
+                }
             } else {
-              if (points.size() == 2) {
-                points.add(start);
-                RenderUtil.draw(new GM_LineString(points), this.getViewport(), (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
-              }
+                if (mode instanceof CreatePolygonMode) {
+                    if (!points.isEmpty()) {
+                        IDirectPosition start = points.get(0);
+                        points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
+                        if (points.size() > 2) {
+                            points.add(start);
+                            RenderUtil.draw(new GM_Polygon(new GM_LineString(points)), this.getViewport(), (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
+                        } else {
+                            if (points.size() == 2) {
+                                points.add(start);
+                                RenderUtil.draw(new GM_LineString(points), this.getViewport(), (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
+                            }
+                        }
+                    }
+                } else {
+                    if (mode instanceof CreateInteriorRingMode) {
+                    } else {
+                    }
+                }
             }
-          }
-        } else {
-          if (mode instanceof CreateInteriorRingMode) {
-          } else {
-          }
         }
-      }
     }
-  }
 
-  /**
-   * The viewport of the panel.
-   * 
-   * @return the viewport of the panel
-   */
-  public Viewport getViewport() {
+    /**
+     * The viewport of the panel.
+     * 
+     * @return the viewport of the panel
+     */
+    public Viewport getViewport() {
 
-    return this.viewport;
-  }
-
-  /** @param viewport viewport to set */
-  public void setViewport(Viewport viewport) {
-    this.viewport = viewport;
-
-  }
-
-  /** Get parent project frame */
-  public ProjectFrame getProjectFrame() {
-    return this.projectFrame;
-  }
-
-  /** Model */
-  // private StyledLayerDescriptor sldmodel;
-
-  /** @return The rendering manager handling the rendering of the layers */
-  public abstract RenderingManager getRenderingManager();
-
-  // /**
-  // * The rendering manager handling the rendering of the layers
-  // */
-  // public abstract void setRenderingManager(RenderingManager manager);
-  //
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#getSelectedFeatures()
-   */
-  public final Set<IFeature> getSelectedFeatures() {
-    return this.selectedFeatures;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#getFeatures()
-   */
-  /**
-   * Getter for the selected feature.
-   * 
-   * @return the features selected by the user
-   */
-  public final Set<IFeature> getFeatures() {
-    Set<IFeature> features = new HashSet<IFeature>();
-    for (Layer layer : this.getProjectFrame().getLayers()) {
-      features.addAll(layer.getFeatureCollection());
+        return this.viewport;
     }
-    return features;
-  }
 
-  /**
-   * Get the envelope.
-   * 
-   * @return The envelope of all layers of the panel in model coordinates
-   */
-  public abstract IEnvelope getEnvelope();
+    /**
+     * @param viewport
+     *            viewport to set
+     */
+    public void setViewport(Viewport viewport) {
+        this.viewport = viewport;
 
-  /**
-   * Save the map into an image file. The file format is determined by the given file extension. If there is none or if the given extension is
-   * unsupported, the image is saved in PNG format.
-   * 
-   * @param fileName the image file to save into.
-   */
-  public abstract void saveAsImage(String fileName);
-
-  // public abstract void layerAdded(Layer l);
-
-  // public abstract void layerOrderChanged(int oldIndex, int newIndex);
-
-  // public abstract void layersRemoved(Collection<Layer> layers);
-
-  public abstract void dispose();
-
-  @Override
-  public abstract void repaint();
-
-  /**
-   * Repaint the panel using the repaint method of the super class {@link JPanel}. Called in order to perform the progressive rendering.
-   * 
-   * @see #paintComponent(Graphics)
-   */
-  public abstract void superRepaint();
-
-  /********************************* Paint listener management */
-  private final Set<PaintListener> overlayListeners = new HashSet<PaintListener>(0);
-
-  public void addPaintListener(PaintListener listener) {
-    this.overlayListeners.add(listener);
-  }
-
-  public Set<PaintListener> getOverlayListeners() {
-    return overlayListeners;
-  }
-
-  public void paintOverlays(final Graphics graphics) {
-    for (PaintListener listener : this.getOverlayListeners()) {
-      listener.paint(this, graphics);
     }
-  }
 
-  /** Paint listener management *********************************/
+    /** Get parent project frame */
+    public ProjectFrame getProjectFrame() {
+        return this.projectFrame;
+    }
+
+    /** Model */
+    // private StyledLayerDescriptor sldmodel;
+
+    /** @return The rendering manager handling the rendering of the layers */
+    public abstract RenderingManager getRenderingManager();
+
+    // /**
+    // * The rendering manager handling the rendering of the layers
+    // */
+    // public abstract void setRenderingManager(RenderingManager manager);
+    //
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#getSelectedFeatures
+     * ()
+     */
+    public final Set<IFeature> getSelectedFeatures() {
+        return this.selectedFeatures;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.LayerViewPanelExtracted#getFeatures()
+     */
+    /**
+     * Getter for the selected feature.
+     * 
+     * @return the features selected by the user
+     */
+    public final Set<IFeature> getFeatures() {
+        Set<IFeature> features = new HashSet<IFeature>();
+        for (Layer layer : this.getProjectFrame().getLayers()) {
+            features.addAll(layer.getFeatureCollection());
+        }
+        return features;
+    }
+
+    /**
+     * Get the envelope.
+     * 
+     * @return The envelope of all layers of the panel in model coordinates
+     */
+    public abstract IEnvelope getEnvelope();
+
+    /**
+     * Save the map into an image file. The file format is determined by the
+     * given file extension. If there is none or if the given extension is
+     * unsupported, the image is saved in PNG format.
+     * 
+     * @param fileName
+     *            the image file to save into.
+     */
+    public abstract void saveAsImage(String fileName);
+
+    // public abstract void layerAdded(Layer l);
+
+    // public abstract void layerOrderChanged(int oldIndex, int newIndex);
+
+    // public abstract void layersRemoved(Collection<Layer> layers);
+
+    public abstract void dispose();
+
+    @Override
+    public abstract void repaint();
+
+    /**
+     * Repaint the panel using the repaint method of the super class
+     * {@link JPanel}. Called in order to perform the progressive rendering.
+     * 
+     * @see #paintComponent(Graphics)
+     */
+    public abstract void superRepaint();
+
+    /********************************* Paint listener management */
+    private final Set<PaintListener> overlayListeners = new HashSet<PaintListener>(0);
+
+    public void addPaintListener(PaintListener listener) {
+        this.overlayListeners.add(listener);
+    }
+
+    public Set<PaintListener> getOverlayListeners() {
+        return this.overlayListeners;
+    }
+
+    public void paintOverlays(final Graphics graphics) {
+        for (PaintListener listener : this.getOverlayListeners()) {
+            listener.paint(this, graphics);
+        }
+    }
+
+    /** Paint listener management *********************************/
 
 }
