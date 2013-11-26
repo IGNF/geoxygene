@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
+
+    <!-- ========================================================================== -->
+    <!--    Processes -->
+    <!-- ========================================================================== -->
+    <bean id="importCarteTopoProcess" class="fr.ign.cogit.process.geoxygene.cartetopo.ImportCarteTopoProcess">
+      <constructor-arg index="0" ref="catalog"/>
+    </bean>
 	
 	<!-- ========================================================================== -->
 	<!-- 	The PPIO -->

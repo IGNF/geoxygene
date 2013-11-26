@@ -46,8 +46,10 @@ public class CreateCarteTopoProcess implements GeoxygeneProcess {
     // Prepare the result format
     CarteTopoData cartetopo = new CarteTopoData();
     cartetopo.setPopEdge(map.getPopArcs());
+    cartetopo.setPopNode(map.getPopNoeuds());
+    cartetopo.setPopFace(map.getPopFaces());
     
-    //
+    // Return carte topo
     return cartetopo;
     
   }
