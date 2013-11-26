@@ -176,6 +176,35 @@ public class CommonAlgorithmsFromCartAGen {
   }
 
   /**
+   * Inserts as a new vertex a point of the given line that is not already a
+   * vertex. The point has to be on the line.
+   * @param line
+   * @param newVertex
+   * @param tolerance a tolerance to deal with rounding approximations.
+   * @return
+   */
+  public static ILineString insertVertex(ILineString line,
+      IDirectPosition newVertex, double tolerance) {
+    if (line.coord().contains(newVertex))
+      return line;
+    IDirectPositionList pts = new DirectPositionList();
+    pts.add(line.startPoint());
+    List<Segment> segments = Segment.getSegmentList(line);
+    boolean added = false;
+    for (int i = 0; i < segments.size(); i++) {
+      Segment seg = segments.get(i);
+      if (!seg.containsPoint(newVertex, tolerance) || added) {
+        pts.add(seg.endPoint());
+        continue;
+      }
+      pts.add(newVertex);
+      pts.add(seg.endPoint());
+      added = true;
+    }
+    return new GM_LineString(pts);
+  }
+
+  /**
    * Gets the nearest point of the geometry to a point. If the point is a
    * vertex, it is not chosen.
    * 
@@ -849,7 +878,7 @@ public class CommonAlgorithmsFromCartAGen {
    */
   public static IDirectPosition getCommonVertexBetween2Lines(ILineString line1,
       ILineString line2) {
-    if (!line1.touches(line2))
+    if (!line1.intersects(line2))
       return null;
     return line1.intersection(line2).coord().get(0);
   }
@@ -993,7 +1022,8 @@ public class CommonAlgorithmsFromCartAGen {
   public static ILineString getSubLine(ILineString line, IDirectPosition pt1,
       IDirectPosition pt2) {
     // first, insert both pts as vertices of the line
-    ILineString updatedLine = insertVertex(insertVertex(line, pt1), pt2);
+    ILineString updatedLine = insertVertex(insertVertex(line, pt1, 0.01), pt2,
+        0.01);
     IDirectPositionList subLine = new DirectPositionList();
     boolean start = false;
     boolean end = false;

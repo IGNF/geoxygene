@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
@@ -14,6 +15,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.TopologyException;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -142,5 +144,29 @@ public class JTSAlgorithms {
       e.printStackTrace();
     }
     return outColn;
+  }
+
+  public static boolean isClockwise(ILineString line) {
+    Geometry geom = null;
+    try {
+      geom = AdapterFactory.toGeometry(new GeometryFactory(), line);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    if (CGAlgorithms.isCCW(geom.getCoordinates()))
+      return false;
+    return true;
+  }
+
+  public static boolean isClockwise(IPolygon polygon) {
+    Geometry geom = null;
+    try {
+      geom = AdapterFactory.toGeometry(new GeometryFactory(), polygon);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    if (CGAlgorithms.isCCW(geom.getCoordinates()))
+      return false;
+    return true;
   }
 }
