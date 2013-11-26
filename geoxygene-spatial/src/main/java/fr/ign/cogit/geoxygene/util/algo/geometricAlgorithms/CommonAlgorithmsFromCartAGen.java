@@ -1024,6 +1024,8 @@ public class CommonAlgorithmsFromCartAGen {
     // first, insert both pts as vertices of the line
     ILineString updatedLine = insertVertex(insertVertex(line, pt1, 0.01), pt2,
         0.01);
+    System.out.println(line);
+    System.out.println(updatedLine);
     IDirectPositionList subLine = new DirectPositionList();
     boolean start = false;
     boolean end = false;

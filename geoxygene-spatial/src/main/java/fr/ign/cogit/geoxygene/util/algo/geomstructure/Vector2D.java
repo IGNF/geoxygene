@@ -193,4 +193,16 @@ public class Vector2D extends Vecteur {
       return true;
     return false;
   }
+
+  /**
+   * Checks if {@code this} is colinear to another vector with a given
+   * tolerance.
+   * @param vect
+   * @return
+   */
+  public boolean isColinear(Vector2D vect, double tolerance) {
+    if (Math.abs(vect.getX() * this.getY() - vect.getY() * this.getX()) < tolerance)
+      return true;
+    return false;
+  }
 }

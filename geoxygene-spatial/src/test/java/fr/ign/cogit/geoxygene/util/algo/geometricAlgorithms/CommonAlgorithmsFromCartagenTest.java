@@ -159,6 +159,7 @@ public class CommonAlgorithmsFromCartagenTest {
     ILineString line2 = new GM_LineString(list2);
     ILineString line3 = CommonAlgorithmsFromCartAGen.getSubLine(line, pt1, pt2);
     ILineString line4 = CommonAlgorithmsFromCartAGen.getSubLine(line, p2, p5);
+
     Assert.assertTrue(line1.equals(line3));
     Assert.assertTrue(line2.equals(line4));
   }
