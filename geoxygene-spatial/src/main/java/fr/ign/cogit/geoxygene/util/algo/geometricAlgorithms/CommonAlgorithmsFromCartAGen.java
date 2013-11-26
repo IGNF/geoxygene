@@ -156,6 +156,8 @@ public class CommonAlgorithmsFromCartAGen {
    */
   public static ILineString insertVertex(ILineString line,
       IDirectPosition newVertex) {
+    if (line.coord().contains(newVertex))
+      return line;
     IDirectPositionList pts = new DirectPositionList();
     pts.add(line.startPoint());
     List<Segment> segments = Segment.getSegmentList(line);
@@ -819,6 +821,12 @@ public class CommonAlgorithmsFromCartAGen {
     return longest;
   }
 
+  /**
+   * For any aggregate geometry, get the biggest simple polygon of the
+   * aggregate.
+   * @param aggr
+   * @return
+   */
   public static IPolygon getBiggerFromAggregate(IAggregate<IGeometry> aggr) {
     double max = 0.0;
     IPolygon bigger = null;
@@ -833,6 +841,12 @@ public class CommonAlgorithmsFromCartAGen {
     return bigger;
   }
 
+  /**
+   * Get the (first) intersection point between two lines.
+   * @param line1
+   * @param line2
+   * @return
+   */
   public static IDirectPosition getCommonVertexBetween2Lines(ILineString line1,
       ILineString line2) {
     if (!line1.touches(line2))
@@ -966,6 +980,36 @@ public class CommonAlgorithmsFromCartAGen {
     }
 
     return line.length();
+  }
+
+  /**
+   * Get the sub line between two points on a given line (not necessarily
+   * vertices). The first point has to be before the second point in the line
+   * order.
+   * @param line
+   * @param index
+   * @return
+   */
+  public static ILineString getSubLine(ILineString line, IDirectPosition pt1,
+      IDirectPosition pt2) {
+    // first, insert both pts as vertices of the line
+    ILineString updatedLine = insertVertex(insertVertex(line, pt1), pt2);
+    IDirectPositionList subLine = new DirectPositionList();
+    boolean start = false;
+    boolean end = false;
+    for (IDirectPosition vertex : updatedLine.coord()) {
+      if (vertex.equals(pt1))
+        start = true;
+      if (!start)
+        continue;
+      if (end)
+        break;
+      if (vertex.equals(pt2))
+        end = true;
+      subLine.add(vertex);
+    }
+
+    return new GM_LineString(subLine);
   }
 
   /**
@@ -1177,6 +1221,37 @@ public class CommonAlgorithmsFromCartAGen {
     }
 
     return CommonAlgorithms.rotation(longest, polygon.centroid(), orientation);
+  }
+
+  /**
+   * Get the longest segment that can be traced inside a polygon in a given
+   * orientation.
+   * @param polygon
+   * @param orientation
+   * @return
+   * @throws Exception
+   */
+  public static ILineString getPolygonDiameter(IPolygon polygon) {
+    double maxDist = 0.0;
+    ILineSegment longest = null;
+    // then, find the longest segment by looping on the vertices
+    for (IDirectPosition vertex : polygon.coord()) {
+      for (IDirectPosition other : polygon.coord()) {
+        if (vertex.equals(other))
+          continue;
+        ILineSegment seg = new GM_LineSegment(vertex, other);
+        // the segment is intersected with the rotated polygon
+        IGeometry inter = polygon.intersection(seg);
+        if (inter instanceof ILineString) {
+          if (seg.length() < maxDist)
+            continue;
+          maxDist = seg.length();
+          longest = seg;
+        }
+      }
+    }
+
+    return longest;
   }
 
   /**

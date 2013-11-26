@@ -12,5 +12,11 @@ public enum Side {
   LEFT,
   /**
 	 */
-  RIGHT
+  RIGHT;
+
+  public Side inverse() {
+    if (this.equals(LEFT))
+      return RIGHT;
+    return LEFT;
+  }
 }

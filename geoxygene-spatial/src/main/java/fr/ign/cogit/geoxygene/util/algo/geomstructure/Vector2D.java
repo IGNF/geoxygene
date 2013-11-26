@@ -182,4 +182,15 @@ public class Vector2D extends Vecteur {
     IDirectPosition end = this.translate(point);
     return new GM_LineSegment(point, end);
   }
+
+  /**
+   * Checks if {@code this} is colinear to another vector.
+   * @param vect
+   * @return
+   */
+  public boolean isColinear(Vector2D vect) {
+    if (vect.getX() * this.getY() == vect.getY() * this.getX())
+      return true;
+    return false;
+  }
 }

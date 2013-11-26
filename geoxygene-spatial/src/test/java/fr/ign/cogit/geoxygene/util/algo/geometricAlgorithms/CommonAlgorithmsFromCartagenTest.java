@@ -134,4 +134,33 @@ public class CommonAlgorithmsFromCartagenTest {
         line2, direction).equals(new DirectPosition(2.0, 1.0)));
   }
 
+  @Test
+  public void testGetSubLine() {
+    IDirectPosition p1 = new DirectPosition(0.0, 0.0);
+    IDirectPosition p2 = new DirectPosition(10.0, 10.0);
+    IDirectPosition p3 = new DirectPosition(20.0, 20.0);
+    IDirectPosition p4 = new DirectPosition(30.0, 30.0);
+    IDirectPosition p5 = new DirectPosition(40.0, 50.0);
+    IDirectPosition p6 = new DirectPosition(50.0, 55.0);
+    ILineString line = new GM_LineString(p1, p2, p3, p4, p5, p6);
+    IDirectPosition pt1 = new DirectPosition(5.0, 5.0);
+    IDirectPosition pt2 = new DirectPosition(25.0, 25.0);
+    IDirectPositionList list1 = new DirectPositionList();
+    list1.add(pt1);
+    list1.add(p2);
+    list1.add(p3);
+    list1.add(pt2);
+    ILineString line1 = new GM_LineString(list1);
+    IDirectPositionList list2 = new DirectPositionList();
+    list2.add(p2);
+    list2.add(p3);
+    list2.add(p4);
+    list2.add(p5);
+    ILineString line2 = new GM_LineString(list2);
+    ILineString line3 = CommonAlgorithmsFromCartAGen.getSubLine(line, pt1, pt2);
+    ILineString line4 = CommonAlgorithmsFromCartAGen.getSubLine(line, p2, p5);
+    Assert.assertTrue(line1.equals(line3));
+    Assert.assertTrue(line2.equals(line4));
+  }
+
 }

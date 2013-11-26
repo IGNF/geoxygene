@@ -35,4 +35,14 @@ public class SegmentTest {
     Assert.assertTrue(inter1.equals(p4) || inter2.equals(p4));
   }
 
+  @Test
+  public void testContainsPoint() {
+    IDirectPosition p1 = new DirectPosition(0.0, 0.0);
+    IDirectPosition p2 = new DirectPosition(10.0, 10.0);
+    IDirectPosition p3 = new DirectPosition(5.0, 5.0);
+    IDirectPosition p4 = new DirectPosition(25.0, 25.0);
+    Segment segment = new Segment(p1, p2);
+    Assert.assertTrue(segment.containsPoint(p3));
+    Assert.assertFalse(segment.containsPoint(p4));
+  }
 }
