@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JSplitPane;
@@ -45,6 +46,7 @@ import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.geompool.GeometryPoolMenu;
+import fr.ign.cogit.geoxygene.appli.plugin.semio.toolbar.SemioToolBar;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.NamedLayer;
@@ -75,6 +77,9 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
   private GeOxygeneApplication application = null;
 
   protected CartAGenRightPanel rightPanel;
+  private JSplitPane splitPane;
+  private JCheckBoxMenuItem displayRightPanel = new JCheckBoxMenuItem(
+      "Display cartaGen right panel");
 
   /**
    * The {@link CartAGenDocOld} document related to {@code this} plugin.
@@ -143,7 +148,7 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
     JTabbedPane pane = ((AbstractMainFrame) frame).getDesktopTabbedPane();
     frame.getGui().getContentPane().remove(pane);
     rightPanel = new CartAGenRightPanel(frame);
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane,
+    splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane,
         rightPanel);
     splitPane.setContinuousLayout(false);
     splitPane.setOneTouchExpandable(false);
@@ -153,6 +158,12 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
 
     JMenuBar menuBar = application.getMainFrame().getMenuBar();
     JMenu cartagenMenu = new JMenu("CartAGen");
+    // Add checkbox "display right panel"
+    this.displayRightPanel.setSelected(true);
+    this.displayRightPanel.addActionListener(this);
+    this.displayRightPanel.setFont(menuBar.getFont());
+    cartagenMenu.add(this.displayRightPanel);
+    
     this.menuConfig.add(new GeometryPoolMenu("Geometry Pool"));
     this.menuConfig.setFont(menuBar.getFont());
     menuBar.add(cartagenMenu, menuBar.getMenuCount() - 1);
@@ -168,6 +179,13 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
 
   @Override
   public void actionPerformed(final ActionEvent e) {
+    if (e.getSource() == displayRightPanel) {
+      if (displayRightPanel.isSelected()) {
+        splitPane.setRightComponent(rightPanel);
+      } else {
+        splitPane.remove(rightPanel);
+      }
+    }
 
   }
 
