@@ -53,6 +53,8 @@ public class CartAGenProjectPlugin implements ProjectFramePlugin {
     // ajout d'écouteurs
     frame.getLayerViewPanel().addMouseListener(
         CartAGenPlugin.getInstance().rightPanel);
+    frame.getLayerViewPanel().addMouseMotionListener(
+        CartAGenPlugin.getInstance().rightPanel);
   }
 
 }

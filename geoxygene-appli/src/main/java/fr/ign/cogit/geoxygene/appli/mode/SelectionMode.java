@@ -43,9 +43,10 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * 
  */
 public class SelectionMode extends AbstractMode {
-  
+
   /** Logger. */
-  private static final Logger LOGGER = Logger.getLogger(SelectionMode.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(SelectionMode.class
+      .getName());
 
   /**
    * @param theMainFrame the main frame
@@ -58,7 +59,8 @@ public class SelectionMode extends AbstractMode {
 
   @Override
   protected final JButton createButton() {
-    return new JButton(new ImageIcon(this.getClass().getResource("/images/toolbar/pencil.png"))); //$NON-NLS-1$
+    return new JButton(new ImageIcon(this.getClass().getResource(
+        "/images/toolbar/pencil.png"))); //$NON-NLS-1$
   }
 
   /**
@@ -69,25 +71,34 @@ public class SelectionMode extends AbstractMode {
   @Override
   public final void leftMouseButtonClicked(final MouseEvent e,
       final ProjectFrame frame) {
-    
-    LOGGER.debug("--------------------------------------------------------------------------------");
+
+    LOGGER
+        .debug("--------------------------------------------------------------------------------");
     LOGGER.debug("click event : select");
-    
+
     try {
-      DirectPosition p = frame.getLayerViewPanel().getViewport().toModelDirectPosition(e.getPoint());
+      DirectPosition p = frame.getLayerViewPanel().getViewport()
+          .toModelDirectPosition(e.getPoint());
       Set<IFeature> features = new HashSet<IFeature>();
-      for (Layer layer : frame.getLayerViewPanel().getRenderingManager().getLayers()) {
+      for (Layer layer : frame.getLayerViewPanel().getRenderingManager()
+          .getLayers()) {
         if (layer.isVisible() && layer.isSelectable()) {
-          features.addAll(layer.getFeatureCollection().select(p, this.selectionRadius));
+          for (IFeature feature : layer.getFeatureCollection().select(p,
+              this.selectionRadius)) {
+            if (feature.isDeleted())
+              continue;
+            features.add(feature);
+          }
         }
       }
       LayerViewPanel lvPanel = frame.getLayerViewPanel();
       lvPanel.getSelectedFeatures().addAll(features);
       LOGGER.debug("Number of selected features = " + features.size());
-      
-      lvPanel.getRenderingManager().render(lvPanel.getRenderingManager().getSelectionRenderer());
+
+      lvPanel.getRenderingManager().render(
+          lvPanel.getRenderingManager().getSelectionRenderer());
       lvPanel.superRepaint();
-    
+
     } catch (NoninvertibleTransformException e1) {
       e1.printStackTrace();
     }

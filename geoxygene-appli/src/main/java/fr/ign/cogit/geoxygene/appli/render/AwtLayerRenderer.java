@@ -56,9 +56,10 @@ import fr.ign.cogit.geoxygene.style.UserStyle;
  * @see LayerViewPanel
  */
 public class AwtLayerRenderer extends AbstractLayerRenderer {
-  
+
   /** The logger. */
-  private static Logger LOGGER = Logger.getLogger(AwtLayerRenderer.class.getName());
+  private static Logger LOGGER = Logger.getLogger(AwtLayerRenderer.class
+      .getName());
   private BufferedImage image = null;
 
   /**
@@ -332,7 +333,7 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
    * @param feature the feature
    * @param theImage the image
    */
-  private void render(final Symbolizer symbolizer, final IFeature feature,
+  protected void render(final Symbolizer symbolizer, final IFeature feature,
       final BufferedImage theImage) {
     if (theImage == null) {
       return;

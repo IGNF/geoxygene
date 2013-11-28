@@ -11,7 +11,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
-import fr.ign.cogit.osm.schema.OsmGeneObj;
+import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
 
 /**
  * A Browser that displays the tags of {@link OsmGeneObj} features rather than
@@ -44,6 +44,7 @@ public class OSMTagBrowser extends JFrame {
     this.setPreferredSize(new Dimension(200, 300));
     this.selectedObjs = selectedObjs;
     this.setLocation(mouseClick);
+    this.setAlwaysOnTop(true);
 
     // build the Tree model
     DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("selection");

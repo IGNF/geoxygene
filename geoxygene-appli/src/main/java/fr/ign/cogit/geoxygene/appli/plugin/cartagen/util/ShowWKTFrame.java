@@ -25,9 +25,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.JColorSelectionButton;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.util.conversion.ParseException;
 import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
@@ -45,6 +47,7 @@ public class ShowWKTFrame extends JFrame implements ActionListener {
   private JTextField txtWidth;
   private JColorSelectionButton colorChooser;
   private JButton okBtn, cancelBtn;
+  private GeOxygeneApplication application = null;
 
   // internationalisation values
   private String widthLbl, okLbl, cancelLbl, frameTitle;
@@ -63,17 +66,20 @@ public class ShowWKTFrame extends JFrame implements ActionListener {
     }
   }
 
-  public ShowWKTFrame() {
+  public ShowWKTFrame(GeOxygeneApplication application) {
     super();
+    this.application = application;
     internationalisation();
     this.setTitle(frameTitle);
     this.setSize(500, 500);
+    this.setAlwaysOnTop(true);
 
     // define the text area
     txtArea = new JTextArea();
-    txtArea.setPreferredSize(new Dimension(300, 150));
-    txtArea.setMaximumSize(new Dimension(300, 150));
-    txtArea.setMinimumSize(new Dimension(300, 150));
+    txtArea.setPreferredSize(new Dimension(300, 1500));
+    txtArea.setMaximumSize(new Dimension(300, 1500));
+    txtArea.setMinimumSize(new Dimension(300, 1500));
+    txtArea.setLineWrap(true);
 
     // define a panel with the colorChooser and the width
     JPanel symbolPanel = new JPanel();
@@ -131,13 +137,11 @@ public class ShowWKTFrame extends JFrame implements ActionListener {
     IGeometry geom = WktGeOxygene.makeGeOxygene(wktGeom);
     Color colour = colorChooser.getColor();
     int widthPixels = Integer.valueOf(txtWidth.getText());
-    CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
-        .addFeatureToGeometryPool(geom, colour, widthPixels);
+    GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+        .getGeometryPool();
+    pool.setSld(application.getMainFrame().getSelectedProjectFrame().getSld());
+    pool.addFeatureToGeometryPool(geom, colour, widthPixels);
 
   }
 
-  public static void main(String[] args) {
-    ShowWKTFrame frame = new ShowWKTFrame();
-    frame.setVisible(true);
-  }
 }

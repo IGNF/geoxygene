@@ -322,7 +322,8 @@ public final class RenderUtil {
       }
       graphics.fill(markShape);
 
-      graphics.setStroke(mark.getStroke().toAwtStroke((float) scale));
+      if (mark.getStroke() != null)
+        graphics.setStroke(mark.getStroke().toAwtStroke((float) scale));
       if (symbolizer.getColorMap() != null
           || symbolizer.getCategorizedMap() != null) {
         Color color = Color.black;

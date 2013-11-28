@@ -34,7 +34,6 @@ import org.xml.sax.SAXException;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.frame.ShowWKTFrame;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.bookmarks.Bookmark;
@@ -52,6 +51,7 @@ import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SaveObjectSelectio
 public class UtilitiesGUIComponent extends JMenu {
 
   private ProjectFrame view;
+  private GeOxygeneApplication appli;
   /**
    * 
    */
@@ -59,6 +59,7 @@ public class UtilitiesGUIComponent extends JMenu {
 
   public UtilitiesGUIComponent(GeOxygeneApplication appli, String title) {
     super(title);
+    this.appli = appli;
     this.view = appli.getMainFrame().getSelectedProjectFrame();
     JMenu bookmarkMenu = new JMenu("Bookmarks");
     this.add(bookmarkMenu);
@@ -234,7 +235,7 @@ public class UtilitiesGUIComponent extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      ShowWKTFrame frame = new ShowWKTFrame();
+      ShowWKTFrame frame = new ShowWKTFrame(appli);
       frame.setVisible(true);
     }
   }

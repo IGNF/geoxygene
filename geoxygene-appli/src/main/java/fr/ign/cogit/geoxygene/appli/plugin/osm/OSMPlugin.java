@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.Paint;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,9 +14,13 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -37,9 +42,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.xml.bind.JAXBException;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
+
 import com.vividsolutions.jts.geom.Geometry;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.core.genericschema.IGeneObjPoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
@@ -47,10 +61,15 @@ import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.DataSetZone;
 import fr.ign.cogit.cartagen.software.dataset.DigitalCartographicModel;
 import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
+import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
 import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.OsmFileFilter;
 import fr.ign.cogit.cartagen.spatialanalysis.clustering.AdjacencyClustering;
+import fr.ign.cogit.cartagen.util.multicriteriadecision.Criterion;
+import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ClassificationResult;
+import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ConclusionIntervals;
+import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.RobustELECTRETRIMethod;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -68,6 +87,23 @@ import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenProjectPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.osm.importexport.OSMLoader;
+import fr.ign.cogit.geoxygene.osm.importexport.OSMLoader.OsmLoadingTask;
+import fr.ign.cogit.geoxygene.osm.importexport.OpenStreetMapDb;
+import fr.ign.cogit.geoxygene.osm.importexport.OsmDataset;
+import fr.ign.cogit.geoxygene.osm.lodanalysis.LoDCategory;
+import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.CoalescenceCriterion;
+import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.EdgeLengthMedianCriterion;
+import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.FeatureTypeCriterion;
+import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.GranularityCriterion;
+import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.LoDMultiCriteria;
+import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.SizeCriterion;
+import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.SourceCriterion;
+import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.VertexDensityCriterion;
+import fr.ign.cogit.geoxygene.osm.lodharmonisation.gui.HarmonisationFrame;
+import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
+import fr.ign.cogit.geoxygene.osm.schema.network.OsmNetworkSection;
+import fr.ign.cogit.geoxygene.osm.schema.urban.OsmBuilding;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.NamedLayer;
@@ -75,13 +111,8 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
-import fr.ign.cogit.osm.importexport.OSMLoader;
-import fr.ign.cogit.osm.importexport.OSMLoader.OsmLoadingTask;
-import fr.ign.cogit.osm.importexport.OpenStreetMapDb;
-import fr.ign.cogit.osm.importexport.OsmDataset;
-import fr.ign.cogit.osm.schema.OsmGeneObj;
-import fr.ign.cogit.osm.schema.network.OsmNetworkSection;
-import fr.ign.cogit.osm.schema.urban.OsmBuilding;
+import fr.ign.cogit.geoxygene.util.math.Combination;
+import fr.ign.cogit.geoxygene.util.math.CombinationSet;
 
 public class OSMPlugin implements ProjectFramePlugin,
     GeOxygeneApplicationPlugin {
@@ -103,8 +134,10 @@ public class OSMPlugin implements ProjectFramePlugin,
     menu.add(correctionMenu);
     menu.addSeparator();
     JMenu analysisMenu = new JMenu("LoD Analysis");
-
+    analysisMenu.add(new JMenuItem(new InferLoDAction()));
+    analysisMenu.add(new JMenuItem(new LodSensitivityAction()));
     JMenu harmoniseMenu = new JMenu("LoD Harmonisation");
+    harmoniseMenu.add(new JMenuItem(new HarmonisationFrameAction()));
     menu.add(analysisMenu);
     menu.add(harmoniseMenu);
     // TODO Auto-generated method stub
@@ -489,6 +522,266 @@ public class OSMPlugin implements ProjectFramePlugin,
   }
 
   /**
+   * Carry out an LOD inference on the selected features with every possible
+   * combination of criteria and compute statistics on the results to study the
+   * LOD inference sensitivity to the choice of the criteria.
+   * 
+   * @author GTouya
+   * 
+   */
+  class LodSensitivityAction extends AbstractAction {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      OsmGeneObj obj = (OsmGeneObj) SelectionUtil
+          .getSelectedObjects(application).iterator().next();
+      DefaultCategoryDataset dataset = buildEmptyDataset();
+      // on veut tirer quatre critères au moins sur les sept disponibles
+      // (7!/(4!*3!) = 35 possibilités pour 4 critères, 21 pour 5 critères et 7
+      // pour 6 critères, soit 63 en tout).
+      Set<Criterion> criteria = new HashSet<Criterion>();
+      criteria.add(new CoalescenceCriterion("Coalescence"));
+      criteria.add(new EdgeLengthMedianCriterion("EdgeLengthMedian"));
+      criteria.add(new FeatureTypeCriterion("FeatureType"));
+      criteria.add(new GranularityCriterion("Granularity"));
+      criteria.add(new SizeCriterion("Size"));
+      criteria.add(new SourceCriterion("Source"));
+      criteria.add(new VertexDensityCriterion("VertexDensity"));
+      CombinationSet combSet = new CombinationSet(criteria);
+
+      // on calcule d'abord les combinaisons à 4 critères
+      for (Combination comb : combSet.getAllCombinationsOfNOrMoreElements(4)) {
+        // on met de côté le cas à sept critères
+        if (comb.getSize() == 7)
+          continue;
+        @SuppressWarnings("unchecked")
+        ClassificationResult decision = computeDecision(
+            (Set<Criterion>) comb.getSubSet(), obj);
+        dataset.incrementValue(1.0, "Number of inferences", LoDCategory
+            .valueOf(decision.getCategory()).ordinal() + 1);
+      }
+      JFreeChart chart = ChartFactory.createBarChart(
+          "LoD Inference Sensitivity", "LoD Category", "Number of inferences",
+          dataset, PlotOrientation.VERTICAL, false, false, false);
+      // on calcule l'inférence à sept critères
+      ClassificationResult decision = computeDecision(criteria, obj);
+      System.out.println(decision.getCategory());
+      // on met en valeur la colonne du diagramme correspondant à la décision à
+      // 7 critères
+      CategoryPlot plot = chart.getCategoryPlot();
+      final BarRenderer renderer = new CustomRenderer(LoDCategory.valueOf(
+          decision.getCategory()).ordinal(), Color.BLUE);
+      plot.setRenderer(renderer);
+
+      String nom = obj.toString() + " Satisfaction Distribution";
+      JDialog dialog = new JDialog();
+      dialog.setTitle(nom);
+      dialog.add(new ChartPanel(chart));
+      dialog.setSize(400, 300);
+      dialog.setVisible(true);
+      dialog.setAlwaysOnTop(true);
+    }
+
+    /**
+     * A custom renderer that returns a different color for each item in a
+     * single series.
+     */
+    class CustomRenderer extends BarRenderer {
+
+      /****/
+      private static final long serialVersionUID = 1L;
+      /** The colors. */
+      private int columnToHighlight;
+      private Color highlightColor;
+
+      /**
+       * Creates a new renderer.
+       * 
+       * @param colors the colors.
+       */
+      public CustomRenderer(final int columnToHighlight,
+          final Color highlightColor) {
+        this.columnToHighlight = columnToHighlight;
+        this.highlightColor = highlightColor;
+      }
+
+      /**
+       * Returns the paint for an item. Overrides the default behaviour
+       * inherited from AbstractSeriesRenderer.
+       * 
+       * @param row the series.
+       * @param column the category.
+       * 
+       * @return The item color.
+       */
+      public Paint getItemPaint(final int row, final int column) {
+        if (column == columnToHighlight)
+          return highlightColor;
+        return Color.RED;
+      }
+    }
+
+    /**
+     * Build an empty dataset for printing the distribution in a chart.
+     * @return
+     */
+    private DefaultCategoryDataset buildEmptyDataset() {
+      DefaultCategoryDataset newDataset = new DefaultCategoryDataset();
+      newDataset.addValue(0.0, "Number of inferences", new Integer(
+          LoDCategory.STREET.ordinal() + 1));
+      newDataset.addValue(0.0, "Number of inferences", new Integer(
+          LoDCategory.CITY.ordinal() + 1));
+      newDataset.addValue(0.0, "Number of inferences", new Integer(
+          LoDCategory.COUNTY.ordinal() + 1));
+      newDataset.addValue(0.0, "Number of inferences", new Integer(
+          LoDCategory.REGION.ordinal() + 1));
+      newDataset.addValue(0.0, "Number of inferences", new Integer(
+          LoDCategory.COUNTRY.ordinal() + 1));
+
+      return newDataset;
+    }
+
+    private ClassificationResult computeDecision(Set<Criterion> criteria,
+        OsmGeneObj obj) {
+      RobustELECTRETRIMethod electre = new RobustELECTRETRIMethod();
+      ConclusionIntervals conclusion = LoDMultiCriteria
+          .initConclusion(criteria);
+      electre.setCriteriaParamsFromCriteria(criteria);
+
+      // make the decision
+      // on remplit les valeurs courantes à partir du block courant
+      Map<String, Double> valeursCourantes = new HashMap<String, Double>();
+      for (Criterion crit : criteria) {
+        Map<String, Object> param = LoDMultiCriteria.initParameters(
+            (OsmGeneObj) obj, crit);
+        valeursCourantes.put(crit.getName(), new Double(crit.value(param)));
+      }
+      return electre.decision(criteria, valeursCourantes, conclusion);
+    }
+
+    public LodSensitivityAction() {
+      this.putValue(Action.NAME, "Level of Detail inference sensitivity");
+    }
+  }
+
+  /**
+   * Launch the frame that triggers LoD harmonisation processes.
+   * 
+   * @author GTouya
+   * 
+   */
+  class HarmonisationFrameAction extends AbstractAction {
+
+    /**
+   * 
+   */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      StyledLayerDescriptor sld = application.getMainFrame()
+          .getSelectedProjectFrame().getSld();
+      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+          .getGeometryPool();
+      pool.setSld(sld);
+      CartAGenDoc.getInstance().getCurrentDataset().setSld(sld);
+      HarmonisationFrame frame = new HarmonisationFrame(
+          SelectionUtil.getAllWindowObjects(application), pool);
+      frame.setVisible(true);
+    }
+
+    public HarmonisationFrameAction() {
+      this.putValue(Action.SHORT_DESCRIPTION, "Launch the harmonisation frame");
+      this.putValue(Action.NAME, "Launch harmonisation");
+    }
+  }
+
+  /**
+   * Infer the LoD of the selected features using the multicriteria method.
+   * 
+   * @author GTouya
+   * 
+   */
+  class InferLoDAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+    private JTextArea txtArea;
+    private DecimalFormat df;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      List<OsmGeneObj> selectedObjs = new ArrayList<OsmGeneObj>();
+      for (IFeature obj : SelectionUtil.getSelectedObjects(application)) {
+        if (!(obj instanceof OsmGeneObj)) {
+          continue;
+        }
+        selectedObjs.add((OsmGeneObj) obj);
+      }
+      try {
+        RobustELECTRETRIMethod electreStd = LoDMultiCriteria
+            .buildELECTRETRIMethod();
+        RobustELECTRETRIMethod electrePt = LoDMultiCriteria
+            .buildELECTRETRIMethodForPts();
+        ConclusionIntervals conclusionStd = LoDMultiCriteria
+            .initConclusion(electreStd.getCriteria());
+        ConclusionIntervals conclusionPt = LoDMultiCriteria
+            .initConclusion(electrePt.getCriteria());
+
+        // make an output dialog to display results
+        JDialog dialog = new JDialog(application.getMainFrame().getGui());
+        txtArea = new JTextArea();
+        txtArea.setPreferredSize(new Dimension(200, 800));
+        txtArea.setMaximumSize(new Dimension(200, 800));
+        txtArea.setMinimumSize(new Dimension(200, 800));
+        dialog.add(new JScrollPane(txtArea));
+        dialog.setAlwaysOnTop(true);
+        dialog.setSize(300, 300);
+
+        // loop on the selected objects
+        for (OsmGeneObj obj : selectedObjs) {
+          RobustELECTRETRIMethod electreMethod = electreStd;
+          ConclusionIntervals conclusion = conclusionStd;
+          if (obj instanceof IGeneObjPoint) {
+            electreMethod = electrePt;
+            conclusion = conclusionPt;
+          }
+          Map<String, Double> valeursCourantes = new HashMap<String, Double>();
+          for (Criterion crit : electreMethod.getCriteria()) {
+            Map<String, Object> param = LoDMultiCriteria.initParameters(obj,
+                crit);
+            valeursCourantes.put(crit.getName(), new Double(crit.value(param)));
+          }
+          ClassificationResult decision = electreMethod.decision(
+              electreMethod.getCriteria(), valeursCourantes, conclusion);
+          txtArea.append(obj.getClass().getSimpleName() + ":" + obj.toString()
+              + ": " + decision.getCategory().toString() + " (robustness="
+              + df.format(decision.getRobustness()) + ")");
+          txtArea.append("\n");
+        }
+        dialog.setVisible(true);
+      } catch (IllegalArgumentException e) {
+        e.printStackTrace();
+      }
+    }
+
+    public InferLoDAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Infer the LoD of the selected OSM features");
+      this.putValue(Action.NAME, "Infer LoD");
+      df = new DecimalFormat();
+      df.setMaximumFractionDigits(2);
+      df.setMinimumFractionDigits(2);
+      df.setDecimalSeparatorAlwaysShown(true);
+    }
+  }
+
+  /**
    * Relates a {@link OpenSteetMapDB} to a {@link ProjectFrame} of the
    * application. Fills the layers of the project frame with the database
    * objects.
@@ -506,7 +799,9 @@ public class OSMPlugin implements ProjectFramePlugin,
     ProjectFrame frame = application.getMainFrame().newProjectFrame();
     CartAGenPlugin.getInstance().getMapDbFrame().put(db.getName(), frame);
     frame.getSld().setDataSet(db.getDataSet());
+    frame.getLayerViewPanel().getRenderingManager().setHandlingDeletion(true);
     StyledLayerDescriptor defaultSld = compileOsmSlds();
+    db.getDataSet().setSld(defaultSld);
     StyledLayerDescriptor.unmarshall(OSMLoader.class.getClassLoader()
         .getResourceAsStream("sld/roads_sld.xml")); //$NON-NLS-1$
     float opacity = 0.8f;
@@ -578,6 +873,12 @@ public class OSMPlugin implements ProjectFramePlugin,
         .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
             "sld/railway_sld.xml")); //$NON-NLS-1$
     for (Layer layer : railSld.getLayers())
+      defaultSld.add(layer);
+    // load natural sld
+    StyledLayerDescriptor naturalSld = StyledLayerDescriptor
+        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
+            "sld/natural_sld.xml")); //$NON-NLS-1$
+    for (Layer layer : naturalSld.getLayers())
       defaultSld.add(layer);
     // TODO fill with the other SLDs
     return defaultSld;

@@ -6,8 +6,10 @@ import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
- * RenderingManager is in charge of rendering images on request. It draws all layers and displays a packing of them
- * @author Jérémie Turbet (Interface extracted from initial RenderingManager which is now MultithreadedRenderingManager)
+ * RenderingManager is in charge of rendering images on request. It draws all
+ * layers and displays a packing of them
+ * @author Jérémie Turbet (Interface extracted from initial RenderingManager
+ *         which is now MultithreadedRenderingManager)
  */
 public interface RenderingManager {
 
@@ -77,5 +79,14 @@ public interface RenderingManager {
   /** @return The selection renderer used to render the selected features */
 
   SelectionRenderer getSelectionRenderer();
+
+  /**
+   * Is the rendering manager handling the deletion of features when they are
+   * rendered.
+   * @return
+   */
+  public boolean isHandlingDeletion();
+
+  public void setHandlingDeletion(boolean handlingDeletion);
 
 }
