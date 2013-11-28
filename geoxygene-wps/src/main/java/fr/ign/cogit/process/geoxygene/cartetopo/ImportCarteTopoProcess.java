@@ -50,7 +50,11 @@ public class ImportCarteTopoProcess implements GeoxygeneProcess {
   }
 
   @DescribeResult(name = "layerName", description = "Name of the new featuretype, with workspace")
-  public String execute(@DescribeParameter(name = "carteTopo", description = "Topological map") CarteTopoData carteTopo) throws Exception {
+  public String execute(@DescribeParameter(name = "carteTopo", description = "Topological map") CarteTopoData carteTopo
+   // @DescribeParameter(name = "workspace", min = 0, description = "Target workspace (default is the system default)") String workspace,
+   // @DescribeParameter(name = "store", min = 0, description = "Target store (default is the workspace default)") String store,
+   // @DescribeParameter(name = "srs", min = 0, description = "Target coordinate reference system (default is based on source when possible)") CoordinateReferenceSystem srs
+      ) throws Exception {
     
     ProjectionPolicy srsHandling = ProjectionPolicy.FORCE_DECLARED;
 
@@ -113,6 +117,119 @@ public class ImportCarteTopoProcess implements GeoxygeneProcess {
     } catch (Exception e) { 
       throw new ProcessException("Failed to complete the import inside the GeoServer catalog", e); 
     }
+    
+//  workspace = "Appariement";
+//  store = "T3";
+//  ProjectionPolicy srsHandling = ProjectionPolicy.FORCE_DECLARED;
+//
+//  // Target store
+//  WorkspaceInfo ws = catalog.getWorkspaceByName(workspace);
+//
+//  // Target store
+//  StoreInfo storeInfo = catalog.getDataStoreByName(ws.getName(), store);
+//
+//  // Check if the target layer and the target feature type are not already there 
+//  String tentativeTargetEdgesName = ws.getName() + ":" + EDGES_SHAPEFILE_NAME;
+//  if (catalog.getLayer(tentativeTargetEdgesName) != null) {
+//    throw new ProcessException("Target layer " + tentativeTargetEdgesName + " already exists");
+//  }
+//  /*String tentativeTargetNodesName = ws.getName() + ":" + "cartetopo-nodes";
+//  if (catalog.getLayer(tentativeTargetNodesName) != null) {
+//    throw new ProcessException("Target layer " + tentativeTargetNodesName + " already exists");
+//  }
+//  String tentativeTargetFacesName = ws.getName() + ":" + "cartetopo-faces";
+//  if (catalog.getLayer(tentativeTargetFacesName) != null) {
+//    throw new ProcessException("Target layer " + tentativeTargetFacesName + " already exists");
+//  }*/
+//
+//  // Target CRS
+//  String targetSRSCode = null;
+//  if (srs != null) {
+//      try {
+//          Integer code = CRS.lookupEpsgCode(srs, true);
+//          if (code == null) {
+//              throw new WPSException("Could not find a EPSG code for " + srs);
+//          }
+//          targetSRSCode = "EPSG:" + code;
+//      } catch (Exception e) {
+//          throw new ProcessException("Could not lookup the EPSG code for the provided srs", e);
+//      }
+//  } else {
+//    targetSRSCode = "EPSG:2154";
+//  }
+//  targetSRSCode = "EPSG:2154";
+//
+//  // import the data into the target store
+//  SimpleFeatureType targetEdgesType;
+//  //SimpleFeatureType targetNodesType;
+//  //SimpleFeatureType targetFacesType;
+//  SimpleFeatureCollection edgesFeatures = GeOxygeneGeoToolsTypes.convert2FeatureCollection(carteTopo.getPopEdge());
+//  //SimpleFeatureCollection nodesFeatures = GeOxygeneGeoToolsTypes.convert2FeatureCollection(carteTopo.getPopNode());
+//  //SimpleFeatureCollection facesFeatures = GeOxygeneGeoToolsTypes.convert2FeatureCollection(carteTopo.getPopFace());
+//  
+//  try {
+//    targetEdgesType = importDataIntoStore(edgesFeatures, EDGES_SHAPEFILE_NAME, (DataStoreInfo) storeInfo);
+//    //targetNodesType = importDataIntoStore(nodesFeatures, "cartetopo-nodes", (DataStoreInfo) storeInfo);
+//    //targetFacesType = importDataIntoStore(facesFeatures, "cartetopo-faces", (DataStoreInfo) storeInfo);
+//  } catch (IOException e) {
+//    throw new ProcessException("Failed to import data into the target store", e);
+//  }
+//
+//  
+//  // Create a builder to help build catalog objects
+//  CatalogBuilder edgesCB = new CatalogBuilder(catalog);
+//  //CatalogBuilder nodesCB = new CatalogBuilder(catalog);
+//  //CatalogBuilder facesCB = new CatalogBuilder(catalog);
+//  edgesCB.setWorkspace(ws);
+//  //nodesCB.setWorkspace(ws);
+// // facesCB.setWorkspace(ws);
+//  
+//  // now import the newly created layer into GeoServer
+//  try { 
+//    
+//    edgesCB.setStore(storeInfo);
+//    //nodesCB.setStore(storeInfo);
+//    //facesCB.setStore(storeInfo);
+//    
+//    // build the typeInfo and set CRS if necessary 
+//    FeatureTypeInfo edgesTypeInfo = edgesCB.buildFeatureType(targetEdgesType.getName());
+//    //FeatureTypeInfo nodesTypeInfo = nodesCB.buildFeatureType(targetNodesType.getName());
+//    //FeatureTypeInfo facesTypeInfo = facesCB.buildFeatureType(targetFacesType.getName());
+//    
+//    if (targetSRSCode != null) {
+//      edgesTypeInfo.setSRS(targetSRSCode);
+//      //nodesTypeInfo.setSRS(targetSRSCode);
+//      //facesTypeInfo.setSRS(targetSRSCode);
+//    } 
+//    if (srsHandling != null) {
+//      edgesTypeInfo.setProjectionPolicy(srsHandling);
+//      //nodesTypeInfo.setProjectionPolicy(srsHandling);
+//      //facesTypeInfo.setProjectionPolicy(srsHandling);
+//    } 
+//    // compute the bounds
+//    edgesCB.setupBounds(edgesTypeInfo);
+//    //nodesCB.setupBounds(nodesTypeInfo);
+//    //facesCB.setupBounds(facesTypeInfo);
+//    
+//    // build the layer and set a style 
+//    LayerInfo layerEdgesInfo = edgesCB.buildLayer(edgesTypeInfo); 
+//    //LayerInfo layerNodesInfo = nodesCB.buildLayer(nodesTypeInfo); 
+//    //LayerInfo layerFacesInfo = facesCB.buildLayer(facesTypeInfo); 
+//    
+//    catalog.add(edgesTypeInfo); 
+//    //catalog.add(nodesTypeInfo); 
+//    //catalog.add(facesTypeInfo); 
+//    
+//    catalog.add(layerEdgesInfo);
+//    //catalog.add(layerNodesInfo);
+//    //catalog.add(layerFacesInfo);
+//    
+//    //return "[" + layerEdgesInfo.prefixedName() + ", " + layerNodesInfo.prefixedName() + ", " + layerFacesInfo.prefixedName() + "]";
+//    return "[" + layerEdgesInfo.prefixedName() + "]";
+//    
+//  } catch (Exception e) { 
+//    throw new ProcessException("Failed to complete the import inside the GeoServer catalog", e); 
+//  }
 
     
   }

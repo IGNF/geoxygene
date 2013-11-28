@@ -3,7 +3,7 @@
 <beans>
 
     <!-- ========================================================================== -->
-    <!--    Processes -->
+    <!--    Web Processes -->
     <!-- ========================================================================== -->
     <bean id="importCarteTopoProcess" class="fr.ign.cogit.process.geoxygene.cartetopo.ImportCarteTopoProcess">
       <constructor-arg index="0" ref="catalog"/>
