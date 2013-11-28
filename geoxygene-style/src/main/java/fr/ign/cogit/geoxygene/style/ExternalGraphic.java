@@ -112,7 +112,8 @@ public class ExternalGraphic {
     try {
       String xmlParser = XMLResourceDescriptor.getXMLParserClassName();
       SAXSVGDocumentFactory df = new SAXSVGDocumentFactory(xmlParser);
-      SVGDocument doc = df.createSVGDocument(new URL(this.href).toString());
+      SVGDocument doc = df.createSVGDocument(ExternalGraphic.class.getResource(
+          this.href).toString());
       UserAgent userAgent = new UserAgentAdapter();
       DocumentLoader loader = new DocumentLoader(userAgent);
       BridgeContext ctx = new BridgeContext(userAgent, loader);
