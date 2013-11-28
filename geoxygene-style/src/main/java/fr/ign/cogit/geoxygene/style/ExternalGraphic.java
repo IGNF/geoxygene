@@ -112,6 +112,7 @@ public class ExternalGraphic {
     try {
       String xmlParser = XMLResourceDescriptor.getXMLParserClassName();
       SAXSVGDocumentFactory df = new SAXSVGDocumentFactory(xmlParser);
+      // correction par Jérémie !!!!!!
       SVGDocument doc = df.createSVGDocument(ExternalGraphic.class.getResource(
           this.href).toString());
       UserAgent userAgent = new UserAgentAdapter();
