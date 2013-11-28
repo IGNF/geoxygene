@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StyledLayerDescriptor version="1.0.20">
+  <NamedLayer>
+    <Name>trees</Name>
+    <UserStyle>
+      <Name>trees</Name>
+      <FeatureTypeStyle>
+        <Rule>
+			<Filter>
+				<PropertyIsEqualTo>
+					<PropertyName>natural</PropertyName>
+					<Literal>tree</Literal>
+				</PropertyIsEqualTo>
+			</Filter>
+			<PointSymbolizer>
+				<Geometry>
+					<PropertyName>geom</PropertyName>
+				</Geometry>
+				<Graphic>
+					<Mark>
+						<WellKnownName>circle</WellKnownName>
+						<Fill>
+							<CssParameter name="fill">#3a9d23</CssParameter>
+							<CssParameter name="fill-opacity">0.6</CssParameter>
+						</Fill>
+						<Stroke>
+                            <CssParameter name="stroke">#3a9d23</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                            <CssParameter name="stroke-opacity">0.6</CssParameter>
+                        </Stroke>
+					</Mark>
+					<opacity>5.0</opacity>
+                    <Size>5.0</Size>
+				</Graphic>
+			</PointSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+  <NamedLayer>
+    <Name>reliefPoints</Name>
+    <UserStyle>
+      <Name>reliefPoints</Name>
+      <FeatureTypeStyle>
+        <Rule>
+			<Filter>
+				<PropertyIsEqualTo>
+					<PropertyName>natural</PropertyName>
+					<Literal>peak</Literal>
+				</PropertyIsEqualTo>
+			</Filter>
+			<PointSymbolizer>
+				<Geometry>
+					<PropertyName>geom</PropertyName>
+				</Geometry>
+				<Graphic>
+					<Mark>
+						<WellKnownName>triangle</WellKnownName>
+						<Fill>
+							<CssParameter name="fill">#ae4a34</CssParameter>
+						</Fill>
+					</Mark>
+                    <Size>10.0</Size>
+					<Rotation>
+						<Literal>180.0</Literal>
+					</Rotation>
+				</Graphic>
+			</PointSymbolizer>
+        </Rule>
+		<Rule>
+			<Filter>
+				<PropertyIsEqualTo>
+					<PropertyName>natural</PropertyName>
+					<Literal>saddle</Literal>
+				</PropertyIsEqualTo>
+			</Filter>
+			<PointSymbolizer>
+				<Geometry>
+					<PropertyName>geom</PropertyName>
+				</Geometry>
+				<Graphic>
+					<Mark>
+						<WellKnownName>square</WellKnownName>
+						<Fill>
+							<CssParameter name="fill">#ae4a34</CssParameter>
+						</Fill>
+					</Mark>
+                    <Size>10.0</Size>
+				</Graphic>
+			</PointSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>  
+	
+</StyledLayerDescriptor>
