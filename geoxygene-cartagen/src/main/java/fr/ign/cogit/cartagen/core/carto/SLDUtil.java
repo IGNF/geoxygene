@@ -268,8 +268,12 @@ public class SLDUtil {
 
   private static Color getRawColor(Layer layer) {
     if (layer.getSymbolizer() instanceof PointSymbolizer) {
-      return ((PointSymbolizer) layer.getSymbolizer()).getGraphic().getMarks()
-          .get(0).getFill().getColor();
+      if (((PointSymbolizer) layer.getSymbolizer()).getGraphic().getMarks()
+          .size() != 0)
+        return ((PointSymbolizer) layer.getSymbolizer()).getGraphic()
+            .getMarks().get(0).getFill().getColor();
+      else
+        return Color.BLACK;
     } else if (layer.getSymbolizer() instanceof PolygonSymbolizer) {
       PolygonSymbolizer symb = (PolygonSymbolizer) layer.getSymbolizer();
       if (symb.getFill() != null) {
