@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<parameters>
+	<parameters description="direction1">
+		<param key="populationsArcsAvecOrientationDouble" value="false" />
+	</parameters>
+	<parameters description="direction2">
+		<param key="populationsArcsAvecOrientationDouble" value="true" />
+		<param key="attributOrientation" value="orientation" />
+		<parameters description="orientation2">
+			<param key="SENS_DIRECT" value="1" />
+			<param key="SENS_INVERSE" value="-1" />
+			<param key="DOUBLE_SENS" value="2" />
+		</parameters>
+	</parameters>
+	<param key="distanceNoeudsMax" value="150" />
+	<param key="distanceArcsMax" value="100" />
+	<param key="distanceArcsMin" value="30" />
+	<param key="distanceNoeudsImpassesMax" value="-1" />
+
+	<param key="topologieSeuilFusionNoeuds1" value="-1" />
+	<param key="topologieElimineNoeudsAvecDeuxArcs1" value="false" />
+	<param key="topologieGraphePlanaire1" value="false" />
+	<param key="topologieFusionArcsDoubles1" value="false" />
+
+	<param key="topologieSeuilFusionNoeuds2" value="-1" />
+	<param key="topologieElimineNoeudsAvecDeuxArcs2" value="false" />
+	<param key="topologieGraphePlanaire2" value="false" />
+	<param key="topologieFusionArcsDoubles2" value="false" />
+
+	<param key="projeteNoeuds1SurReseau2" value="false" />
+	<param key="projeteNoeuds1SurReseau2DistanceNoeudArc" value="0" />
+	<param key="projeteNoeuds1SurReseau2DistanceProjectionNoeud" value="0" />
+	<param key="projeteNoeuds1SurReseau2ImpassesSeulement" value="false" />
+	<param key="projeteNoeuds2SurReseau1" value="false" />
+	<param key="projeteNoeuds2SurReseau1DistanceNoeudArc" value="0" />
+	<param key="projeteNoeuds2SurReseau1DistanceProjectionNoeud" value="0" />
+	<param key="projeteNoeuds2SurReseau1ImpassesSeulement" value="false" />
+
+	<param key="varianteForceAppariementSimple" value="false" />
+	<param key="varianteRedecoupageArcsNonApparies" value="false" />
+	<param key="varianteRedecoupageNoeudsNonApparies" value="false" />
+	<param key="varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc" value="100" />
+	<param key="varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud" value="50" />
+	<param key="varianteFiltrageImpassesParasites" value="false" />
+	<param key="varianteChercheRondsPoints" value="false" />
+	<param key="exportGeometrieLiens2vers1" value="true" />
+	<param key="debugBilanSurObjetsGeo" value="true" />
+</parameters>

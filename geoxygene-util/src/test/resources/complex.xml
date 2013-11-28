@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<parameters>
+	<param key="A" value="1" />
+	<param key="B" value="2" />
+	<parameters description="group1">
+		<param key="C" value="13" />
+		<param key="D" value="14" />
+	</parameters>
+	<parameters description="group2">
+		<param key="C" value="23" />
+		<param key="E" value="25" />
+	</parameters>
+	<parameters>
+		<param key="C" value="33" />
+		<parameters>
+			<param key="F" value="6" />
+			<param key="C" value="43" />
+		</parameters>
+	</parameters>
+</parameters>
