@@ -40,6 +40,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IRiverSimpleIsland;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
@@ -256,6 +257,7 @@ public class CartAGenDataSet extends DataSet {
   public static final String ADMIN_CAP_POP = "adminCapitals";
   public static final String ADMIN_UNIT_POP = "adminUnits";
   public static final String ADMIN_LIMIT_POP = "adminLimits";
+  public static final String COASTLINE_POP = "coastlines";
 
   public static final String MASK = "mask";
 
@@ -363,6 +365,8 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.POI_POP;
     } else if (obj instanceof IBridgePoint) {
       return CartAGenDataSet.BRIDGE_PT_POP;
+    } else if (obj instanceof ICoastLine) {
+      return CartAGenDataSet.COASTLINE_POP;
     }
     return null;
   }
@@ -465,6 +469,8 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.POI_POP;
     } else if (featureType.equals(IBridgePoint.FEAT_TYPE_NAME)) {
       return CartAGenDataSet.BRIDGE_PT_POP;
+    } else if (featureType.equals(ICoastLine.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.COASTLINE_POP;
     }
     return null;
   }
@@ -567,6 +573,8 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.POI_POP;
     } else if (IBridgePoint.class.isAssignableFrom(classObj)) {
       return CartAGenDataSet.BRIDGE_PT_POP;
+    } else if (ICoastLine.class.isAssignableFrom(classObj)) {
+      return CartAGenDataSet.COASTLINE_POP;
     }
     return null;
   }
@@ -964,6 +972,16 @@ public class CartAGenDataSet extends DataSet {
   public IPopulation<IBridgePoint> getBridgePoints() {
     return (IPopulation<IBridgePoint>) this.getCartagenPop(
         CartAGenDataSet.BRIDGE_PT_POP, IBridgePoint.FEAT_TYPE_NAME);
+  }
+
+  /**
+   * Gets the coastline objects of the dataset
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<ICoastLine> getCoastlines() {
+    return (IPopulation<ICoastLine>) this.getCartagenPop(
+        CartAGenDataSet.COASTLINE_POP, ICoastLine.FEAT_TYPE_NAME);
   }
 
   /**

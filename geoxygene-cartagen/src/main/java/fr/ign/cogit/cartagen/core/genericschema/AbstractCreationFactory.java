@@ -26,6 +26,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea.TaxiwayType;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterCourse;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
@@ -1243,4 +1244,10 @@ public abstract class AbstractCreationFactory {
     return null;
   }
 
+  @SuppressWarnings("unused")
+  public ICoastLine createCoastline(ILineString line) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for ICoastLine");
+    return null;
+  }
 }
