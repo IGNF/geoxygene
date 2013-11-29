@@ -65,7 +65,7 @@ public class Symbology {
       featCollec.add(new DefaultFeature(new GM_Point(dp)));
     }
 
-    URL url = Symbology.class.getResource("/demo3D/textures/icone_arbre.jpg");
+    URL url = Symbology.class.getResource("/texture/eau.jpg");
     // On récupère le chemin du fichier
     // String path = url.getPath().toString();
     // On génère pour chaque élément la représentation que l'on souhaite
