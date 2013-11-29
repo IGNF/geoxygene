@@ -89,6 +89,7 @@ public class TabbedMainFrame extends AbstractMainFrame {
       CompositeIcon icon = new CompositeIcon(tabbedFrame.getIconImage(),
           textIcon);
       currentDesktop.addTab(null, icon, tabbedFrame.getGui());
+      currentDesktop.setSelectedComponent(tabbedFrame.getGui());
     } else {
       logger.error("Cannot add a " + frame.getClass().getSimpleName()
           + " into a " + this.getClass().getSimpleName());
@@ -184,7 +185,9 @@ public class TabbedMainFrame extends AbstractMainFrame {
       currentDesktop = (JTabbedPane) createNewDesktop("Desktop #" + index);
     }
     addProjectFrame(currentDesktop, projectFrame);
-
+    if (this.getApplication().getProperties().getProjectPlugins().size() != 0) {
+      this.getApplication().initializeProjectFramePlugins();
+    }
     // projectFrame.getInternalFrame().setToolTipText(projectFrame.getTitle());
     return projectFrame;
   }

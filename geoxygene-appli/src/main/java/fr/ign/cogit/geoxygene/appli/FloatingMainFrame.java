@@ -176,6 +176,11 @@ public class FloatingMainFrame extends AbstractMainFrame {
         (int) this.getSize().getHeight() / 3 * 2);
     projectFrame.getInternalFrame().setVisible(true);
     addProjectFrame(currentDesktop, projectFrame);
+
+    if (this.getApplication().getProperties().getProjectPlugins().size() != 0) {
+      this.getApplication().initializeProjectFramePlugins();
+    }
+
     projectFrame.getInternalFrame().setToolTipText(projectFrame.getTitle());
     return projectFrame;
   }
