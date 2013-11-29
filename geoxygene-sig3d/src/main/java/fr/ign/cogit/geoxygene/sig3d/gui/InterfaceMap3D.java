@@ -216,7 +216,7 @@ public class InterfaceMap3D extends JPanel {
       public void mouseClicked(MouseEvent event) {
         // Permet de récupèrer le focus si il est perdu et qu'un
         // clic est effectué avec la souris
-        event.getComponent().requestFocus()
+        event.getComponent().requestFocus();
       }
     });
 
