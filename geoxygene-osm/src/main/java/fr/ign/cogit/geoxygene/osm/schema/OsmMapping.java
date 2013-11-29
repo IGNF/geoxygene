@@ -7,6 +7,7 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
@@ -261,6 +262,7 @@ public class OsmMapping {
     OsmMatching farmMatch = new OsmMatching("landuse",
         ISimpleLandUseArea.class, GeometryType.POLYGON);
     farmMatch.addTagValue("farmland");
+    farmMatch.addTagValue("farm");
     this.matchings.add(farmMatch);
     OsmMatching commMatch = new OsmMatching("landuse",
         ISimpleLandUseArea.class, GeometryType.POLYGON);
@@ -286,6 +288,11 @@ public class OsmMapping {
     cyclewaymatching.addTagValue("cycleway");
     this.matchings.add(cyclewaymatching);
 
+    // coastlines
+    OsmMatching coastlineMatching = new OsmMatching("natural",
+        ICoastLine.class, GeometryType.LINE);
+    coastlineMatching.addTagValue("coastline");
+    this.matchings.add(coastlineMatching);
     // TODO à remplir
   }
 

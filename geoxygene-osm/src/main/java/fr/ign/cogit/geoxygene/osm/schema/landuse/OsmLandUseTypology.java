@@ -17,6 +17,8 @@ public enum OsmLandUseTypology {
   COMMERCIAL, FARMLAND, FOREST, INDUSTRIAL, MEADOW, ORCHARD, RAILWAY, RESIDENTIAL, RETAIL, VINEYARD;
 
   public static OsmLandUseTypology valueOfTagValue(String value) {
+    if (value.equals("farm"))
+      return FARMLAND;
     return valueOf(value.toUpperCase());
   }
 

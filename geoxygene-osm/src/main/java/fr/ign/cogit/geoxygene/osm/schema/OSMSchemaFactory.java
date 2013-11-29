@@ -17,6 +17,7 @@ import fr.ign.cogit.cartagen.core.genericschema.AbstractCreationFactory;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
@@ -49,6 +50,7 @@ import fr.ign.cogit.geoxygene.osm.schema.aero.OsmRunwayLine;
 import fr.ign.cogit.geoxygene.osm.schema.hydro.OsmWaterArea;
 import fr.ign.cogit.geoxygene.osm.schema.hydro.OsmWaterLine;
 import fr.ign.cogit.geoxygene.osm.schema.landuse.OsmSimpleLandUseArea;
+import fr.ign.cogit.geoxygene.osm.schema.nature.OsmCoastline;
 import fr.ign.cogit.geoxygene.osm.schema.nature.OsmReliefElementPoint;
 import fr.ign.cogit.geoxygene.osm.schema.nature.OsmTreePoint;
 import fr.ign.cogit.geoxygene.osm.schema.network.OsmNetworkFace;
@@ -159,6 +161,11 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
       IPoint pt = OsmGeometryConversion.convertOsmPoint((OSMNode) resource
           .getGeom());
       return (OsmGeneObj) this.createReliefElementPoint(pt);
+    }
+    if (ICoastLine.class.isAssignableFrom(classObj)) {
+      ILineString line = OsmGeometryConversion.convertOSMLine(
+          (OSMWay) resource.getGeom(), nodes);
+      return (OsmGeneObj) this.createCoastline(line);
     }
     // TODO
     return null;
@@ -298,6 +305,11 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
   @Override
   public IReliefElementPoint createReliefElementPoint(IPoint point) {
     return new OsmReliefElementPoint(point);
+  }
+
+  @Override
+  public ICoastLine createCoastline(ILineString line) {
+    return new OsmCoastline(line);
   }
 
 }

@@ -92,5 +92,29 @@
       </FeatureTypeStyle>
     </UserStyle>
   </NamedLayer>  
-	
+  <NamedLayer>
+    <Name>coastlines</Name>
+    <UserStyle>
+      <Name>coastlines</Name>
+      <FeatureTypeStyle>
+        <Rule>
+			<Filter>
+				<PropertyIsEqualTo>
+					<PropertyName>natural</PropertyName>
+					<Literal>coastline</Literal>
+				</PropertyIsEqualTo>
+			</Filter>
+	      <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#990099</CssParameter>
+              <CssParameter name="stroke-width">2</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+              <CssParameter name="stroke-dasharray">5 4</CssParameter>
+            </Stroke>
+          </LineSymbolizer>  
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>	
 </StyledLayerDescriptor>
