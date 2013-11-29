@@ -26,7 +26,7 @@ public class ITLinearFeatureMatcher extends TestCase {
     System.out.println("-------------------------------------");
     
     // 2 datasets
-    IPopulation<IFeature> db1 = ShapefileReader.read("E:\\Workspace\\GeOxygene\\modules\\noyau\\geoxygene-contrib"
+    /*IPopulation<IFeature> db1 = ShapefileReader.read("E:\\Workspace\\GeOxygene\\modules\\noyau\\geoxygene-contrib"
         + "\\src\\test\\resources\\data\\reseau1.shp");
     IPopulation<IFeature> db2 = ShapefileReader.read("E:\\Workspace\\GeOxygene\\modules\\noyau\\geoxygene-contrib"
         + "\\src\\test\\resources\\data\\reseau2.shp");
@@ -42,7 +42,7 @@ public class ITLinearFeatureMatcher extends TestCase {
     param.set("name_db2", "SENS");
     
     LinearFeatureMatcher lfm = new LinearFeatureMatcher(db1, db2, param);
-    Matchings m = lfm.getMatchings("SENS", "SENS");
+    Matchings m = lfm.getMatchings("SENS", "SENS");*/
     
     System.out.println("-------------------------------------");
     assertTrue(true);
