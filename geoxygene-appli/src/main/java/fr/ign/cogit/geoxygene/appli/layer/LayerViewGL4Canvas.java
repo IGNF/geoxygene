@@ -49,9 +49,9 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas {
     }
 
     private void setupTextures() {
-        this.texIds[0] = GL4Util.loadPNGTexture("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/textures/water.png",
+        this.texIds[0] = GL4Util.loadPNGTexture("./src/main/resources/textures/water.png",
                 GL_TEXTURE0);
-        this.texIds[1] = GL4Util.loadPNGTexture("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/textures/cell02.png",
+        this.texIds[1] = GL4Util.loadPNGTexture("./src/main/resources/textures/cell02.png",
                 GL_TEXTURE0);
     }
 
@@ -61,9 +61,9 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas {
         glViewport(0, 0, this.getWidth(), this.getHeight());
         int vertShader = 0, fragShader = 0;
         try {
-            vertShader = this.createShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/shaders/screen.vert",
+            vertShader = this.createShader("./src/main/resources/shaders/screen.vert",
                     GL_VERTEX_SHADER);
-            fragShader = this.createShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/shaders/screen.frag",
+            fragShader = this.createShader("./src/main/resources/shaders/screen.frag",
                     GL_FRAGMENT_SHADER);
         } catch (Exception exc) {
             exc.printStackTrace();
