@@ -614,6 +614,15 @@
             </snapshots>
 		</repository>
 		<repository>
+			<id>Imagej</id>
+			<url>http://maven.imagej.net/content/repositories/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+		</repository>
+		
+		
+		<repository>
 			<id>hibernatespatial</id>
 			<name>hibernatespatial Repository</name>
 			<url>http://www.hibernatespatial.org/repository</url>
