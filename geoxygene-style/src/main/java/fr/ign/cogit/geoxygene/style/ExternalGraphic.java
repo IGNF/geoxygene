@@ -112,8 +112,15 @@ public class ExternalGraphic {
     try {
       String xmlParser = XMLResourceDescriptor.getXMLParserClassName();
       SAXSVGDocumentFactory df = new SAXSVGDocumentFactory(xmlParser);
-      SVGDocument doc = df.createSVGDocument(ExternalGraphic.class.getResource(
-          this.href).toString());
+      SVGDocument doc = null;
+      if (this.href != null) {
+        if (!this.href.substring(0, 4).equalsIgnoreCase("file")) {
+          doc = df.createSVGDocument(ExternalGraphic.class.getResource(
+              this.href).toString());
+        } else {
+          doc = df.createSVGDocument(this.href);
+        }
+      }
       UserAgent userAgent = new UserAgentAdapter();
       DocumentLoader loader = new DocumentLoader(userAgent);
       BridgeContext ctx = new BridgeContext(userAgent, loader);
@@ -122,10 +129,8 @@ public class ExternalGraphic {
       GraphicsNode rootGN = builder.build(ctx, doc);
       return rootGN;
     } catch (MalformedURLException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     return null;
