@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
+import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTexture;
 import fr.ign.cogit.geoxygene.style.texture.Texture;
 
 /**
@@ -62,10 +63,10 @@ public class Fill {
   public void setGraphicFill(GraphicFill graphicFill) {
     this.graphicFill = graphicFill;
   }
-  
-  @XmlElement(name = "Texture")
+
+  @XmlElements({ @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTexture.class) })
   private Texture texture = null;
-  
+
   /**
    * Renvoie la texture.
    * @return la texture.
@@ -81,7 +82,7 @@ public class Fill {
   public void setTexture(Texture texture) {
     this.texture = texture;
   }
-  
+
   @XmlElements({ @XmlElement(name = "SvgParameter", type = SvgParameter.class),
       @XmlElement(name = "CssParameter", type = SvgParameter.class) })
   private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>();
