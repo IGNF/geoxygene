@@ -248,6 +248,120 @@ public class TextureImageUtil {
     }
 
     /**
+     * code texture coordinates (u,v) with saturation and hue. u & v coordinates
+     * must be between 0 & 1
+     */
+    public static BufferedImage toHSB(TextureImage image) {
+        // create an image with transparent background
+        BufferedImage bufferedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = bufferedImage.createGraphics();
+        g2d.setComposite(AlphaComposite.Clear);
+        g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
+        // fill every image pixel
+        g2d.setComposite(AlphaComposite.Src);
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                TexturePixel pixel = image.getPixel(x, y);
+                int rgb = 0;
+                if (pixel.in || pixel.frontier != 0) {
+                    double u = pixel.uTexture;
+                    double v = pixel.vTexture;
+                    rgb = Color.HSBtoRGB((float) u, (float) (1. - v), 1.f);
+                    bufferedImage.setRGB(x, y, rgb);
+                }
+            }
+        }
+        return bufferedImage;
+    }
+
+    /**
+     * code texture coordinates (u,v) with saturation and hue. u & v coordinates
+     * must be between 0 & 1
+     */
+    public static BufferedImage toColors(TextureImage image, Color uMinColor, Color uMaxColor, Color vMaxColor) {
+        double uMin = Double.MAX_VALUE, uMax = -Double.MAX_VALUE;
+        double vMin = Double.MAX_VALUE, vMax = -Double.MAX_VALUE;
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                TexturePixel pixel = image.getPixel(x, y);
+                int rgb = 0;
+                if (pixel.in || pixel.frontier != 0) {
+                    double u = pixel.uTexture;
+                    double v = pixel.vTexture;
+                    uMin = Math.min(uMin, u);
+                    uMax = Math.max(uMax, u);
+                    vMin = Math.min(vMin, v);
+                    vMax = Math.max(vMax, v);
+                }
+            }
+        }
+        // create an image with transparent background
+        BufferedImage bufferedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = bufferedImage.createGraphics();
+        g2d.setComposite(AlphaComposite.Clear);
+        g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
+        // fill every image pixel
+        g2d.setComposite(AlphaComposite.Src);
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                TexturePixel pixel = image.getPixel(x, y);
+                int rgb = 0;
+                if (pixel.in || pixel.frontier != 0) {
+                    double u = pixel.uTexture;
+                    double v = pixel.vTexture;
+                    float uf = (float) ((u - uMin) / (uMax - uMin));
+                    Color uColor = new Color((int) (uMaxColor.getRed() * uf + uMinColor.getRed() * (1 - uf)),
+                            (int) (uMaxColor.getGreen() * uf + uMinColor.getGreen() * (1 - uf)), (int) (uMaxColor.getBlue() * uf + uMinColor.getBlue()
+                                    * (1 - uf)));
+                    float vf = (float) ((v - vMin) / (vMax - vMin));
+                    rgb = new Color((int) (vMaxColor.getRed() * vf + uColor.getRed() * (1 - vf)), (int) (vMaxColor.getGreen() * vf + uColor.getGreen()
+                            * (1 - vf)), (int) (vMaxColor.getBlue() * vf + uColor.getBlue() * (1 - vf))).getRGB();
+                    bufferedImage.setRGB(x, y, rgb);
+                }
+            }
+        }
+        return bufferedImage;
+    }
+
+    /**
+     * code v texture coordinates as level of colors
+     */
+    public static BufferedImage toHeight(TextureImage image, Color vMinColor, Color vMaxColor) {
+        double vMin = Double.MAX_VALUE, vMax = -Double.MAX_VALUE;
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                TexturePixel pixel = image.getPixel(x, y);
+                if (pixel.in || pixel.frontier != 0) {
+                    double v = pixel.vTexture;
+                    vMin = Math.min(vMin, v);
+                    vMax = Math.max(vMax, v);
+                }
+            }
+        }
+        // create an image with transparent background
+        BufferedImage bufferedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = bufferedImage.createGraphics();
+        g2d.setComposite(AlphaComposite.Clear);
+        g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
+        // fill every image pixel
+        g2d.setComposite(AlphaComposite.Src);
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                TexturePixel pixel = image.getPixel(x, y);
+                int rgb = 0;
+                if (pixel.in || pixel.frontier != 0) {
+                    double v = pixel.vTexture;
+                    float vf = (float) ((v - vMin) / (vMax - vMin));
+                    rgb = new Color((int) (vMaxColor.getRed() * vf + vMinColor.getRed() * (1 - vf)), (int) (vMaxColor.getGreen() * vf + vMinColor.getGreen()
+                            * (1 - vf)), (int) (vMaxColor.getBlue() * vf + vMinColor.getBlue() * (1 - vf))).getRGB();
+                    bufferedImage.setRGB(x, y, rgb);
+                }
+            }
+        }
+        return bufferedImage;
+    }
+
+    /**
      * Check if all texture coordinates values are in [0..1] for in and frontier
      * points
      * 

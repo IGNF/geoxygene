@@ -98,7 +98,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
      */
     private static boolean onlyOneWarning = false;
 
-    private PrimitiveRenderer getLayerRenderer() {
+    public PrimitiveRenderer getLayerRenderer() {
         String layerName = this.getLayer().getName();
 
         //        if (layerName.compareToIgnoreCase("SURFACE_ROUTE") == 0 || layerName.compareToIgnoreCase("SURFACE_EAU") == 0) {

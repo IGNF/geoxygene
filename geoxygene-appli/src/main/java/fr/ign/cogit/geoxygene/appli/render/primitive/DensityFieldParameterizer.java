@@ -29,6 +29,8 @@ package fr.ign.cogit.geoxygene.appli.render.primitive;
 
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.text.DecimalFormat;
 
 import javax.vecmath.Point2d;
 
@@ -37,6 +39,7 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.TextureImage;
 import fr.ign.cogit.geoxygene.appli.gl.TextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.appli.gl.TextureImageUtil;
 
 /**
  * @author JeT
@@ -125,15 +128,14 @@ public class DensityFieldParameterizer implements Parameterizer {
      */
     @Override
     public void finalizeParameterization() {
-        /*
-         * DecimalFormat df = new DecimalFormat("#.0000");
-         * try {
-         * TextureImageUtil.save(this.getTextureImage(), "./z-" +
-         * df.format(this.polygon.getGM_Polygon().area()) + "-polygon");
-         * } catch (IOException e) {
-         * e.printStackTrace();
-         * }
-         */
+
+        //        DecimalFormat df = new DecimalFormat("#.0000");
+        //        try {
+        //            TextureImageUtil.save(this.getTextureImage(), "./z-" + df.format(this.polygon.getGM_Polygon().area()) + "-polygon");
+        //        } catch (IOException e) {
+        //            e.printStackTrace();
+        //        }
+
     }
 
     /*

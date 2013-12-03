@@ -332,11 +332,12 @@ public class TextureImage {
         //blurDistance(this);
         //fillUVTextureFromOuterFrontier( this, pixelRenderer.getModifiedPixels());
 
-        fillTextureCoordinates(this, pixelRenderer.getModifiedPixels());
+        fillTextureCoordinates(this, pixelRenderer.getModifiedPixels(), this.imageToPolygonFactorX, this.imageToPolygonFactorY);
 
         //        TextureImageUtil.checkTextureCoordinates(this);
 
-        //        TextureImageUtil.blurTextureCoordinates(this);
+        // FIXME: it seems that there is a bug in blur algo
+        //TextureImageUtil.blurTextureCoordinates(this);
     }
 
     /**
@@ -377,7 +378,7 @@ public class TextureImage {
      * 
      * @param set
      */
-    private static void fillFrontierDistance(TextureImage image, Set<Point> set) {
+    private static void fillFrontierDistance(TextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
         double maxDistance = 0;
         while (set.size() > 0) {
             //            System.err.println(modifiedPixels.size() + " modified pixels");
@@ -388,18 +389,15 @@ public class TextureImage {
                     throw new IllegalStateException("modified pixels cannot be outside image ... " + p.x + "x" + p.y);
                 }
                 double distance = pixel.distance;
-                boolean w = fillFrontierDistance(distance + 1, new Point(p.x - 1, p.y), image, newlyModifiedPixels);
-                boolean e = fillFrontierDistance(distance + 1, new Point(p.x + 1, p.y), image, newlyModifiedPixels);
-                boolean n = fillFrontierDistance(distance + 1, new Point(p.x, p.y - 1), image, newlyModifiedPixels);
-                boolean s = fillFrontierDistance(distance + 1, new Point(p.x, p.y + 1), image, newlyModifiedPixels);
-                boolean nw = fillFrontierDistance(distance + SQRT2, new Point(p.x - 1, p.y - 1), image, newlyModifiedPixels);
-                boolean ne = fillFrontierDistance(distance + SQRT2, new Point(p.x + 1, p.y - 1), image, newlyModifiedPixels);
-                boolean sw = fillFrontierDistance(distance + SQRT2, new Point(p.x - 1, p.y + 1), image, newlyModifiedPixels);
-                boolean se = fillFrontierDistance(distance + SQRT2, new Point(p.x + 1, p.y + 1), image, newlyModifiedPixels);
-                if ((n || e || s || w) && (distance + 1 > maxDistance)) {
-                    maxDistance = distance + 1;
-                } else if ((nw || ne || sw || se) && (distance + SQRT2 > maxDistance)) {
-                    maxDistance = distance + SQRT2;
+                boolean w = fillFrontierDistance(distance + pixelWidth, new Point(p.x - 1, p.y), image, newlyModifiedPixels);
+                boolean e = fillFrontierDistance(distance + pixelWidth, new Point(p.x + 1, p.y), image, newlyModifiedPixels);
+                boolean n = fillFrontierDistance(distance + pixelHeight, new Point(p.x, p.y - 1), image, newlyModifiedPixels);
+                boolean s = fillFrontierDistance(distance + pixelHeight, new Point(p.x, p.y + 1), image, newlyModifiedPixels);
+                if ((n || s) && (distance + pixelHeight > maxDistance)) {
+                    maxDistance = distance + pixelHeight;
+                }
+                if ((e || w) && (distance + pixelWidth > maxDistance)) {
+                    maxDistance = distance + pixelWidth;
                 }
             }
             set = newlyModifiedPixels;
@@ -417,7 +415,7 @@ public class TextureImage {
      * Compute the distance from any point to the outer frontier (skipping inner
      * frontiers)
      */
-    private static void fillOuterFrontierDistance(TextureImage image, Set<Point> set) {
+    private static void fillOuterFrontierDistance(TextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
         double maxDistance = 0;
         while (set.size() > 0) {
             //            System.err.println(modifiedPixels.size() + " modified pixels");
@@ -431,18 +429,15 @@ public class TextureImage {
                     continue; // skip inner frontier ( pixel.frontier < 0 )
                 }
                 double distance = pixel.distance;
-                boolean w = fillFrontierDistance(distance + 1, new Point(p.x - 1, p.y), image, newlyModifiedPixels);
-                boolean e = fillFrontierDistance(distance + 1, new Point(p.x + 1, p.y), image, newlyModifiedPixels);
-                boolean n = fillFrontierDistance(distance + 1, new Point(p.x, p.y - 1), image, newlyModifiedPixels);
-                boolean s = fillFrontierDistance(distance + 1, new Point(p.x, p.y + 1), image, newlyModifiedPixels);
-                boolean nw = fillFrontierDistance(distance + SQRT2, new Point(p.x - 1, p.y - 1), image, newlyModifiedPixels);
-                boolean ne = fillFrontierDistance(distance + SQRT2, new Point(p.x + 1, p.y - 1), image, newlyModifiedPixels);
-                boolean sw = fillFrontierDistance(distance + SQRT2, new Point(p.x - 1, p.y + 1), image, newlyModifiedPixels);
-                boolean se = fillFrontierDistance(distance + SQRT2, new Point(p.x + 1, p.y + 1), image, newlyModifiedPixels);
-                if ((n || e || s || w) && (distance + 1 > maxDistance)) {
-                    maxDistance = distance + 1;
-                } else if ((nw || ne || sw || se) && (distance + SQRT2 > maxDistance)) {
-                    maxDistance = distance + SQRT2;
+                boolean w = fillFrontierDistance(distance + pixelWidth, new Point(p.x - 1, p.y), image, newlyModifiedPixels);
+                boolean e = fillFrontierDistance(distance + pixelWidth, new Point(p.x + 1, p.y), image, newlyModifiedPixels);
+                boolean n = fillFrontierDistance(distance + pixelHeight, new Point(p.x, p.y - 1), image, newlyModifiedPixels);
+                boolean s = fillFrontierDistance(distance + pixelHeight, new Point(p.x, p.y + 1), image, newlyModifiedPixels);
+                if ((n || s) && (distance + pixelHeight > maxDistance)) {
+                    maxDistance = distance + pixelHeight;
+                }
+                if ((e || w) && (distance + pixelWidth > maxDistance)) {
+                    maxDistance = distance + pixelWidth;
                 }
             }
             set = newlyModifiedPixels;
@@ -487,7 +482,7 @@ public class TextureImage {
      * 
      * @param set
      */
-    private static void fillTextureCoordinates(TextureImage image, Set<Point> set) {
+    private static void fillTextureCoordinates(TextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
         double maxDistance = 0;
         while (set.size() > 0) {
             //            System.err.println(modifiedPixels.size() + " modified pixels");
@@ -498,18 +493,15 @@ public class TextureImage {
                     throw new IllegalStateException("modified pixels cannot be outside image ... " + p.x + "x" + p.y);
                 }
                 double distance = pixel.distance;
-                boolean w = fillTextureCoordinates(distance + 1, pixel.uTexture, new Point(p.x - 1, p.y), image, newlyModifiedPixels);
-                boolean e = fillTextureCoordinates(distance + 1, pixel.uTexture, new Point(p.x + 1, p.y), image, newlyModifiedPixels);
-                boolean n = fillTextureCoordinates(distance + 1, pixel.uTexture, new Point(p.x, p.y - 1), image, newlyModifiedPixels);
-                boolean s = fillTextureCoordinates(distance + 1, pixel.uTexture, new Point(p.x, p.y + 1), image, newlyModifiedPixels);
-                boolean nw = fillTextureCoordinates(distance + SQRT2, pixel.uTexture, new Point(p.x - 1, p.y - 1), image, newlyModifiedPixels);
-                boolean ne = fillTextureCoordinates(distance + SQRT2, pixel.uTexture, new Point(p.x + 1, p.y - 1), image, newlyModifiedPixels);
-                boolean sw = fillTextureCoordinates(distance + SQRT2, pixel.uTexture, new Point(p.x - 1, p.y + 1), image, newlyModifiedPixels);
-                boolean se = fillTextureCoordinates(distance + SQRT2, pixel.uTexture, new Point(p.x + 1, p.y + 1), image, newlyModifiedPixels);
-                if ((n || e || s || w) && (distance + 1 > maxDistance)) {
-                    maxDistance = distance + 1;
-                } else if ((nw || ne || sw || se) && (distance + SQRT2 > maxDistance)) {
-                    maxDistance = distance + SQRT2;
+                boolean w = fillTextureCoordinates(distance + pixelWidth, pixel.uTexture, new Point(p.x - 1, p.y), image, newlyModifiedPixels);
+                boolean e = fillTextureCoordinates(distance + pixelWidth, pixel.uTexture, new Point(p.x + 1, p.y), image, newlyModifiedPixels);
+                boolean n = fillTextureCoordinates(distance + pixelHeight, pixel.uTexture, new Point(p.x, p.y - 1), image, newlyModifiedPixels);
+                boolean s = fillTextureCoordinates(distance + pixelHeight, pixel.uTexture, new Point(p.x, p.y + 1), image, newlyModifiedPixels);
+                if ((n || s) && (distance + pixelHeight > maxDistance)) {
+                    maxDistance = distance + pixelHeight;
+                }
+                if ((e || w) && (distance + pixelWidth > maxDistance)) {
+                    maxDistance = distance + pixelWidth;
                 }
 
             }
@@ -567,8 +559,7 @@ public class TextureImage {
         IDirectPosition p1 = frontier.coord().get(0); // start point line to draw
         IDirectPosition p2 = frontier.coord().get(1); // end point line to draw
         //        double frontierLength = frontier.length();
-        double segmentLength = Math.sqrt((p2.getX() - p1.getX()) * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY()) * (p2.getY() - p1.getY()))
-                / LINEAR_PARAMETER_SCALE;
+        double segmentLength = Math.sqrt((p2.getX() - p1.getX()) * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY()) * (p2.getY() - p1.getY()));
         // convert world-based coordinates to projection-space coordinates
         Point2D proj0 = this.worldToProj(p0);
         Point2D proj1 = this.worldToProj(p1);
@@ -611,8 +602,7 @@ public class TextureImage {
             p0 = p1;
             p1 = p2;
             p2 = frontier.coord().get((nPoint + 1) % frontierSize);
-            segmentLength = Math.sqrt((p2.getX() - p1.getX()) * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY()) * (p2.getY() - p1.getY()))
-                    / LINEAR_PARAMETER_SCALE;
+            segmentLength = Math.sqrt((p2.getX() - p1.getX()) * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY()) * (p2.getY() - p1.getY()));
 
             proj0 = proj1;
             proj1 = proj2;

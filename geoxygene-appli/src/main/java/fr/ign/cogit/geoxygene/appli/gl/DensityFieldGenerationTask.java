@@ -27,6 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.gl;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -34,6 +35,7 @@ import javax.imageio.ImageIO;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.render.primitive.DensityFieldParameterizer;
+import fr.ign.cogit.geoxygene.appli.render.primitive.DensityFieldPrimitiveRenderer.DensityFieldVisualizationType;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.appli.ui.Message.MessageType;
@@ -49,6 +51,7 @@ public class DensityFieldGenerationTask extends AbstractTask {
     private DensityFieldParameterizer parameterizer = null;
     private BufferedImage generatedTextureImage = null;
     private String textureFilename = null;
+    private DensityFieldVisualizationType visualizationType = DensityFieldVisualizationType.TEXTURE;
 
     /**
      * Constructor
@@ -57,21 +60,33 @@ public class DensityFieldGenerationTask extends AbstractTask {
      * @param parameterizer
      * @param textureFilename
      */
-    public DensityFieldGenerationTask(final String name, final DensityFieldParameterizer parameterizer, final String textureFilename) {
+    public DensityFieldGenerationTask(final String name, final DensityFieldParameterizer parameterizer, final String textureFilename,
+            DensityFieldVisualizationType visualizationType) {
         super(name);
         if (parameterizer == null || textureFilename == null) {
             throw new IllegalArgumentException("parameterizer or texture filename cannot be null:" + parameterizer + " '" + textureFilename + "'");
         }
         this.parameterizer = parameterizer;
         this.textureFilename = textureFilename;
+        this.visualizationType = visualizationType;
     }
 
     @Override
     public void run() {
         try {
             this.setState(TaskState.RUNNING);
-            BufferedImage sourceTextureImage = ImageIO.read(new File(this.textureFilename));
-            this.generatedTextureImage = TextureImageUtil.applyTexture(this.parameterizer.getTextureImage(), sourceTextureImage);
+            switch (this.visualizationType) {
+            case HEIGHT:
+                this.generatedTextureImage = TextureImageUtil.toHeight(this.parameterizer.getTextureImage(), Color.black, Color.white);
+                break;
+            case UV:
+                this.generatedTextureImage = TextureImageUtil.toColors(this.parameterizer.getTextureImage(), Color.red, Color.blue, Color.white);
+                break;
+            case TEXTURE:
+                BufferedImage sourceTextureImage = ImageIO.read(new File(this.textureFilename));
+                this.generatedTextureImage = TextureImageUtil.applyTexture(this.parameterizer.getTextureImage(), sourceTextureImage);
+                break;
+            }
             this.setState(TaskState.FINISHED);
 
         } catch (Exception e) {

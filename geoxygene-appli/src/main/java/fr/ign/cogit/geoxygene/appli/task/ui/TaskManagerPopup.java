@@ -281,7 +281,7 @@ public class TaskManagerPopup implements TaskManagerListener, ItemListener, Comp
             if (this.taskControllers.size() == 1) {
                 this.progressTimer = new Timer();
                 this.progressTimer.scheduleAtFixedRate(this.createProgressTimerTask(), 0, PROGRESS_TIMER_INTERVAL);
-                this.displayExpandedPanel();
+                //                this.displayExpandedPanel();
             }
             this.getSummaryProgress().setIndeterminate(this.taskControllers.size() != 0);
             this.getSummaryProgress().setString(this.taskControllers.size() == 0 ? "no tasks" : this.taskControllers.size() + " tasks running");
