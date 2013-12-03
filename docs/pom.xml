@@ -10,17 +10,15 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>fr.ign.cogit</groupId>
-		<artifactId>geoxygene</artifactId>
-		<version>1.6-SNAPSHOT</version>
-	</parent>
+	
 
 
 	<!-- =========================================================== -->
 	<!-- Module Description -->
 	<!-- =========================================================== -->
+	<groupId>fr.ign.cogit</groupId>
 	<artifactId>docs</artifactId>
+	<version>1.6-SNAPSHOT</version>
 	<name>GeOxygene Documentation Site</name>
 	<description>Source repository for the GeOxygene documentation site</description>
 
