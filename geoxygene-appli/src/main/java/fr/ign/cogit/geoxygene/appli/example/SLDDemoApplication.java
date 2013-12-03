@@ -287,14 +287,13 @@ public class SLDDemoApplication extends GeOxygeneApplication {
 
     // --------------- Exemple avec un Graphic de type image
     // ----------------------------------
-    Graphic graphicCircle = new Graphic();
-    graphicCircle.setSize(20f);
-    ExternalGraphic externalGraphicCircle = new ExternalGraphic();
-    URL urlCircle = SLDDemoApplication.class.getResource("/images/circle.png"); //$NON-NLS-1$
-    externalGraphicCircle.setHref(urlCircle.toString());
-    externalGraphicCircle.setFormat("png"); //$NON-NLS-1$
-    graphicCircle.getExternalGraphics().add(externalGraphicCircle);
-    graphicStroke.getGraphics().add(graphicCircle);
+    // Graphic graphic = new Graphic();
+    // graphic.setSize(20f);
+    // ExternalGraphic externalGraphicCircle = new ExternalGraphic();
+    //    URL urlCircle = SLDDemoApplication.class.getResource("/images/circle.png"); //$NON-NLS-1$
+    // externalGraphicCircle.setHref(urlCircle.toString());
+    //    externalGraphicCircle.setFormat("png"); //$NON-NLS-1$
+    // graphic.getExternalGraphics().add(externalGraphicCircle);
 
     // --------------- Exemple avec un Graphic de type Mark
     // ----------------------------------
@@ -308,6 +307,19 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     // graphicStar.getMarks().add(markStar);
     // graphicStroke.getGraphics().add(graphicStar);
 
+    // --------------- Exemple avec un Graphic de type svg
+    // ----------------------------------
+    Graphic graphic = new Graphic();
+    graphic.setSize(10);
+
+    ExternalGraphic circle = new ExternalGraphic();
+    URL url = SLDDemoApplication.class.getResource("/images/circle.svg"); //$NON-NLS-1$
+    System.out.println(url);
+    circle.setHref(url.toString());
+    circle.setFormat("svg"); //$NON-NLS-1$
+    graphic.getExternalGraphics().add(circle);
+
+    graphicStroke.getGraphics().add(graphic);
     symbolizer.getStroke().setGraphicType(graphicStroke);
 
     Population<DefaultFeature> pop = new Population<DefaultFeature>(
@@ -327,20 +339,22 @@ public class SLDDemoApplication extends GeOxygeneApplication {
    */
   public static void exampleGraphicFill_Line() {
     Layer layer = projectFrame.getSld().createLayer("GraphicFill_Line", //$NON-NLS-1$
-        GM_LineString.class, Color.red, Color.red, 1f, 4);
+        GM_LineString.class, Color.green, Color.red, 1f, 4);
     LineSymbolizer symbolizer = (LineSymbolizer) layer.getSymbolizer();
     GraphicFill graphicFill = new GraphicFill();
     Graphic graphic = new Graphic();
-    graphic.setSize(8f);
+    graphic.setSize(5f);
+    // FIXME Avec cette image svg (herbes.svg), la taille doit être un multiple
+    // de 5 ...
 
     // --------------- Exemple avec un Graphic de type image
     // ----------------------------------
     // ----- Image au format svg
-    // ExternalGraphic circle = new ExternalGraphic();
-    //    URL url = SLDDemoApplication.class.getResource("/images/circle.svg"); //$NON-NLS-1$
-    // circle.setHref(url.toString());
-    //    circle.setFormat("svg"); //$NON-NLS-1$
-    // graphic.getExternalGraphics().add(circle);
+    ExternalGraphic circle = new ExternalGraphic();
+    URL url = SLDDemoApplication.class.getResource("/images/circles.svg"); //$NON-NLS-1$
+    circle.setHref(url.toString());
+    circle.setFormat("svg"); //$NON-NLS-1$
+    graphic.getExternalGraphics().add(circle);
 
     // ----- Image au format png
     // ExternalGraphic externalGraphic = new ExternalGraphic();
@@ -352,13 +366,13 @@ public class SLDDemoApplication extends GeOxygeneApplication {
 
     // --------------- Exemple avec un Graphic de type Mark
     // ----------------------------------
-    Mark mark = new Mark();
-    mark.setWellKnownName("circle"); //$NON-NLS-1$
-    graphic.setSize(20f);
-    Fill fill = new Fill();
-    fill.setColor(Color.YELLOW);
-    mark.setFill(fill);
-    graphic.getMarks().add(mark);
+    // Mark mark = new Mark();
+    //    mark.setWellKnownName("circle"); //$NON-NLS-1$
+    // graphic.setSize(20f);
+    // Fill fill = new Fill();
+    // fill.setColor(Color.YELLOW);
+    // mark.setFill(fill);
+    // graphic.getMarks().add(mark);
 
     graphicFill.getGraphics().add(graphic);
     symbolizer.getStroke().setGraphicType(graphicFill);
