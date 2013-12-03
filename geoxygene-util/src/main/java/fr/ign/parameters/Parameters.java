@@ -31,7 +31,7 @@ public class Parameters extends ParameterComponent {
     entry.add(p);
   }
   
-  public void set(String key, String c) {
+  public void set(String key, Object c) {
     Parameter p = new Parameter(key, c);
     entry.add(p);
   }

@@ -84,5 +84,32 @@ public class ParameterTest extends XMLTestCase {
       fail();
     }
   }
+  
+  @Test 
+  public void testReturnObject() {
+    Direction direction = new Direction();
+    direction.setDoubleSens(false);
+    direction.setValueSensDirect("T");
+    
+    // New parameter
+    Parameters p = new Parameters();
+    p.set("direction1", direction);
+    p.marshall();
+    
+    Direction retour = (Direction)p.get("direction1");
+    retour.toString();
+    assertEquals(retour.toString(), "SimpleSens ('T')");
+    
+    System.out.println("---------------------");
+    
+    // Old parameter
+    ParametersOld po = new ParametersOld();
+    po.set("direction1", direction);
+    po.marshall();
+    
+    retour = (Direction)po.get("direction1");
+    retour.toString();
+    assertEquals(retour.toString(), "SimpleSens ('T')");
+  }
 
 }
