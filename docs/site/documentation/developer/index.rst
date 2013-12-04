@@ -9,6 +9,7 @@ Developer Guide
    
 	
    install
+   geoxygene
    maven
    architecture
    .. quickstart
