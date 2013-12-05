@@ -46,7 +46,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  * 
  * @author Brasebin Mickaël
  * 
- * @version 0.1
+ * @version 1.5
  * 
  *
  * Classe permettant de calculer des Opérations booléennes entre 2 objets
