@@ -104,7 +104,8 @@ public class Launcher {
 
     switch (i) {
       case 0:
-        (new MainWindow()).setVisible(true);
+        MainWindow mw = new MainWindow();
+        mw.setVisible(true);
         break;
       case 1:
         RGE.main(null);
@@ -124,6 +125,7 @@ public class Launcher {
       case 6:
         AddMenu.main(null);
         break;
+        
       default:
         break;
     }
