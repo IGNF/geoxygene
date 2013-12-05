@@ -106,7 +106,7 @@ public class JImageBrowser extends JPanel implements ActionListener {
             this.previewLabel = new JLabel();
             this.previewLabel.setSize(64, 64);
             this.previewLabel.setIcon(invalidIcon);
-            this.previewLabel.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
+            this.previewLabel.setBorder(BorderFactory.createLineBorder(Color.white, 1));
         }
         return this.previewLabel;
     }
