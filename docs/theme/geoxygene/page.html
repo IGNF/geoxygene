@@ -45,7 +45,7 @@
 {% endblock %}
 
 {% block relbar1 %}
-    {%- if pagename != 'index' %}{{ customrelbar(False) }} {% endif %}
+    {%- if pagename != 'index' %}{{ customrelbar(True) }} {% endif %}
 {% endblock %}
 {%- block relbar2 %}
     {%- if pagename != 'index' %}{{ customrelbar(True) }} {% endif %}
@@ -66,6 +66,11 @@
     
 {% endblock %}
 
-{%- block sidebar2 %}{% endblock %}
+{% block sidebar1 %}
+    {{ sidebar() }}
+{% endblock %}
+
+
+{% block sidebar2 %}{% endblock %}
 
 

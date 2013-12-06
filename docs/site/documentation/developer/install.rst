@@ -4,7 +4,7 @@
 Setup Guide : Tools 
 ####################################
 
-Cette page a pour objectif de guider le développeur dans son installation de la plateforme de développement de GeOxygene.
+Cette page et la suivante ont pour objectif de guider le développeur dans son installation de la plateforme de développement de GeOxygene.
   
   
 JAVA
@@ -42,12 +42,6 @@ Installation
 ============================================================================================================================================================================ ====================================================================================================================================================================================
 
 * Décompresser le fichier téléchargé (Eclipse ne fournit pas d'installeur, juste un répertoire à dézipper).
-
-* Editer le fichier **eclipse.ini** situé à la racine du répertoire d'Eclipse. Configurer Eclipse pour qu'il s'exécute avec un JDK et non un JRE. 
-  Pour ce faire, rajouter les lignes suivantes au début du fichier (en spécifiant votre répertoire d'installation) :
-
-   .. literalinclude:: /documentation/resources/code_src/eclipse.ini
-           :language: xml
 
 * Lancer Eclipse :
    

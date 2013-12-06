@@ -23,12 +23,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
-        <profile>
-            <id>executable</id>
-            <properties>
-                <dir.executable>E:\executable</dir.executable>
-            </properties>
-        </profile>
     </profiles>
     
 </settings>
