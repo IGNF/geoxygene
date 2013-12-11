@@ -74,9 +74,7 @@ public class AlignTreesAlongRoads {
       }
       IDirectPosition newTree = CommonAlgorithms.getNearestPoint(
           leftBufferLine, tree.getGeom());
-      double dx = newTree.getX() - tree.getGeom().getPosition().getX();
-      double dy = newTree.getY() - tree.getGeom().getPosition().getY();
-      tree.displaceAndRegister(dx, dy);
+      tree.setGeom(newTree.toGM_Point());
       modifiedFeats.add(tree);
     }
 
@@ -97,9 +95,7 @@ public class AlignTreesAlongRoads {
       }
       IDirectPosition newTree = CommonAlgorithms.getNearestPoint(
           rightBufferLine, tree.getGeom());
-      double dx = newTree.getX() - tree.getGeom().getPosition().getX();
-      double dy = newTree.getY() - tree.getGeom().getPosition().getY();
-      tree.displaceAndRegister(dx, dy);
+      tree.setGeom(newTree.toGM_Point());
       modifiedFeats.add(tree);
     }
 
@@ -110,9 +106,7 @@ public class AlignTreesAlongRoads {
         // align on the first one
         IDirectPosition newTree = CommonAlgorithms.getNearestPoint(offsets
             .iterator().next(), tree.getGeom());
-        double dx = newTree.getX() - tree.getGeom().getPosition().getX();
-        double dy = newTree.getY() - tree.getGeom().getPosition().getY();
-        tree.displaceAndRegister(dx, dy);
+        tree.setGeom(newTree.toGM_Point());
         modifiedFeats.add(tree);
       } else {
         // align on the intersection of both lines
@@ -134,11 +128,7 @@ public class AlignTreesAlongRoads {
           modifiedFeats.add(tree);
           continue;
         }
-        double dx = intersection.centroid().getX()
-            - tree.getGeom().getPosition().getX();
-        double dy = intersection.centroid().getY()
-            - tree.getGeom().getPosition().getY();
-        tree.displaceAndRegister(dx, dy);
+        tree.setGeom(intersection.centroid().toGM_Point());
         modifiedFeats.add(tree);
       }
     }

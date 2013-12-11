@@ -1,10 +1,10 @@
 package fr.ign.cogit.geoxygene.osm.importexport;
 
-import java.util.LinkedHashMap;
+import java.util.List;
 
 public class OSMRelation extends PrimitiveGeomOSM {
   private TypeRelation type;
-  private LinkedHashMap<Long, RoleMembre> membres;
+  private List<OsmRelationMember> membres;
 
   public enum TypeRelation {
     MULTIPOLYGON, NON_DEF;
@@ -38,15 +38,15 @@ public class OSMRelation extends PrimitiveGeomOSM {
     this.type = type;
   }
 
-  public void setMembres(LinkedHashMap<Long, RoleMembre> membres) {
+  public void setMembres(List<OsmRelationMember> membres) {
     this.membres = membres;
   }
 
-  public LinkedHashMap<Long, RoleMembre> getMembres() {
+  public List<OsmRelationMember> getMembres() {
     return membres;
   }
 
-  public OSMRelation(TypeRelation type, LinkedHashMap<Long, RoleMembre> membres) {
+  public OSMRelation(TypeRelation type, List<OsmRelationMember> membres) {
     this.type = type;
     this.membres = membres;
   }

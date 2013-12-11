@@ -52,6 +52,8 @@ public class HarmonisationFrame extends JFrame implements ActionListener,
     tabs.addTab(adjustLake.getTabName(), adjustLake);
     AlignTreeAlongRoadPanel alignTrees = new AlignTreeAlongRoadPanel();
     tabs.addTab(alignTrees.getTabName(), alignTrees);
+    CoastlineLandusePanel coastlines = new CoastlineLandusePanel();
+    tabs.addTab(coastlines.getTabName(), coastlines);
     tabs.setSelectedIndex(0);
     currentTab = extendBuiltUp;
     // TODO add the other tabs

@@ -77,6 +77,7 @@ public class OsmGeneObj extends GeneObjDefault {
     this.version = version;
     this.date = date;
     this.tags = new HashMap<String, String>();
+    this.id = new Long(osmId).intValue();
   }
 
   public OsmGeneObj() {

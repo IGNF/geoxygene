@@ -6,6 +6,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.ICycleWay;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.osm.schema.urban.OsmCemetery;
 
 public class OsmDataset extends CartAGenDataSet {
 
@@ -15,6 +16,7 @@ public class OsmDataset extends CartAGenDataSet {
 
   public static final String TREE_POINT_POP = "trees";
   public static final String CYCLEWAY_POP = "cycleWay";
+  public static final String CEMETERY_POP = "cemeteries";
 
   @Override
   public String getPopNameFromObj(IFeature obj) {
@@ -23,6 +25,9 @@ public class OsmDataset extends CartAGenDataSet {
     }
     if (obj instanceof ICycleWay) {
       return OsmDataset.CYCLEWAY_POP;
+    }
+    if (obj instanceof OsmCemetery) {
+      return OsmDataset.CEMETERY_POP;
     }
     return super.getPopNameFromObj(obj);
   }
@@ -35,6 +40,9 @@ public class OsmDataset extends CartAGenDataSet {
     if (ICycleWay.class.isAssignableFrom(classObj)) {
       return OsmDataset.CYCLEWAY_POP;
     }
+    if (OsmCemetery.class.isAssignableFrom(classObj)) {
+      return OsmDataset.CEMETERY_POP;
+    }
     return super.getPopNameFromClass(classObj);
   }
 
@@ -45,6 +53,9 @@ public class OsmDataset extends CartAGenDataSet {
     }
     if (featureType.equals(ICycleWay.FEAT_TYPE_NAME)) {
       return OsmDataset.CYCLEWAY_POP;
+    }
+    if (featureType.equals(OsmCemetery.FEAT_TYPE_NAME)) {
+      return OsmDataset.CEMETERY_POP;
     }
     return super.getPopNameFromFeatType(featureType);
   }
@@ -69,6 +80,17 @@ public class OsmDataset extends CartAGenDataSet {
   public IPopulation<ICycleWay> getCycleWays() {
     return (IPopulation<ICycleWay>) this.getCartagenPop(
         OsmDataset.CYCLEWAY_POP, INetworkSection.FEAT_TYPE_NAME);
+  }
+
+  /**
+   * Gets the cemeteries of the dataset
+   * 
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<OsmCemetery> getCemeteries() {
+    return (IPopulation<OsmCemetery>) this.getCartagenPop(
+        OsmDataset.CEMETERY_POP, OsmCemetery.FEAT_TYPE_NAME);
   }
 
 }

@@ -139,6 +139,20 @@
             </Fill>
           </PolygonSymbolizer>
         </Rule>		
+        <Rule>
+          <Filter>
+            <PropertyIsEqualTo>
+              <PropertyName>natural</PropertyName>
+              <Literal>beach</Literal>
+            </PropertyIsEqualTo>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+			  <CssParameter name="fill-opacity">0.8</CssParameter>
+              <CssParameter name="fill">#fff1ba</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>	
       </FeatureTypeStyle>
     </UserStyle>
   

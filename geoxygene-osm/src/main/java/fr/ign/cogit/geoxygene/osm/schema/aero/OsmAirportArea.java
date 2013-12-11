@@ -9,6 +9,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObjSurf;
 
@@ -64,6 +65,12 @@ public class OsmAirportArea extends OsmGeneObjSurf implements IAirportArea {
 
   @Override
   public Set<IHelipadPoint> getHelipadPoints() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Set<IBuilding> getTerminals() {
     // TODO Auto-generated method stub
     return null;
   }

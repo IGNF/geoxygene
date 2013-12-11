@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum OsmLandUseTypology {
-  COMMERCIAL, FARMLAND, FOREST, INDUSTRIAL, MEADOW, ORCHARD, RAILWAY, RESIDENTIAL, RETAIL, VINEYARD;
+  BEACH, COMMERCIAL, FARMLAND, FOREST, INDUSTRIAL, MEADOW, ORCHARD, RAILWAY, RESIDENTIAL, RETAIL, VINEYARD;
 
   public static OsmLandUseTypology valueOfTagValue(String value) {
     if (value.equals("farm"))
@@ -24,6 +24,8 @@ public enum OsmLandUseTypology {
 
   public static List<Color> getFillColors() {
     List<Color> colors = new ArrayList<Color>();
+    // beach color
+    colors.add(new Color(255, 255, 0));
     // commercial color
     colors.add(new Color(255, 228, 196));
     // farmland color

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,12 +29,16 @@ import javax.swing.SwingWorker;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.util.CRSConversion;
@@ -45,6 +49,7 @@ import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation.TypeRelation;
 import fr.ign.cogit.geoxygene.osm.schema.OSMSchemaFactory;
 import fr.ign.cogit.geoxygene.osm.schema.OsmCaptureTool;
 import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
+import fr.ign.cogit.geoxygene.osm.schema.OsmGeometryConversion;
 import fr.ign.cogit.geoxygene.osm.schema.OsmMapping;
 import fr.ign.cogit.geoxygene.osm.schema.OsmMapping.OsmMatching;
 import fr.ign.cogit.geoxygene.osm.schema.OsmSource;
@@ -63,7 +68,7 @@ public class OSMLoader extends SwingWorker<Void, Void> {
   public static final String TAG_MAX_LON = "maxlon";
 
   public enum OsmLoadingTask {
-    POINTS, LINES, RELATIONS, OBJECTS;
+    POINTS, LINES, RELATIONS, OBJECTS, PARSING;
 
     public String getLabel() {
       if (this.equals(POINTS))
@@ -72,12 +77,15 @@ public class OSMLoader extends SwingWorker<Void, Void> {
         return "OSM Lines";
       else if (this.equals(RELATIONS))
         return "OSM Relations";
+      else if (this.equals(PARSING))
+        return "Parsing";
       else if (this.equals(OBJECTS))
         return "Objects";
       return "";
     }
   }
 
+  private OsmGeometryConversion convertor;
   private Set<OSMResource> nodes, ways, relations;
   private File fic;
   private OsmDataset dataset;
@@ -91,20 +99,22 @@ public class OSMLoader extends SwingWorker<Void, Void> {
   File file;
   int nbNoeuds, nbWays, nbRels, nbResources;
 
-  public OSMLoader(File fic, OsmDataset dataset, Runnable fillLayersTask) {
+  public OSMLoader(File fic, OsmDataset dataset, Runnable fillLayersTask,
+      String epsg) {
     this.fic = fic;
     this.dataset = dataset;
     this.fillLayersTask = fillLayersTask;
+    this.convertor = new OsmGeometryConversion(epsg);
   }
 
-  public void importOsmData() throws SAXException, IOException,
-      ParserConfigurationException, IllegalArgumentException,
-      SecurityException, IllegalAccessException, NoSuchFieldException {
+  public void importOsmData() throws Exception {
     this.nodes = new HashSet<OSMResource>();
     this.ways = new HashSet<OSMResource>();
     this.relations = new HashSet<OSMResource>();
     this.mapping = new OsmMapping();
-    this.loadOsmFile(fic);
+    // TODO allow to switch loaders
+    // this.loadOsmFile(fic);
+    loadOsmFileSAX(fic);
     if (this.logger.isLoggable(Level.FINE)) {
       this.logger.fine(this.nbResources + "RDF resources loaded");
       this.logger.fine(this.nbNoeuds + "nodes");
@@ -112,6 +122,25 @@ public class OSMLoader extends SwingWorker<Void, Void> {
       this.logger.fine(this.nbRels + "relations");
     }
     this.convertResourcesToGeneObjs();
+  }
+
+  /**
+   * A SAX parser that is quicker than the default DOM parser loadOsmFile.
+   * @param fic
+   * @throws SAXException
+   * @throws ParserConfigurationException
+   * @throws IOException
+   */
+  private void loadOsmFileSAX(File fic) throws ParserConfigurationException,
+      SAXException, IOException {
+    this.file = fic;
+    long size = file.length();
+    int nbElements = Math.round(size / 220);
+    SAXParserFactory factory = SAXParserFactory.newInstance();
+    SAXParser parser = factory.newSAXParser();
+
+    DefaultHandler handler = new OsmResourceHandler(this, nbElements);
+    parser.parse(file, handler);
   }
 
   /**
@@ -123,6 +152,7 @@ public class OSMLoader extends SwingWorker<Void, Void> {
    * @throws IOException
    * @throws ParserConfigurationException
    */
+  @SuppressWarnings("unused")
   private void loadOsmFile(File fic) throws SAXException, IOException,
       ParserConfigurationException {
     this.file = fic;
@@ -305,12 +335,13 @@ public class OSMLoader extends SwingWorker<Void, Void> {
           type = TypeRelation.valueOfTexte(tagElem.getAttribute("v"));
         }
       }
-      LinkedHashMap<Long, RoleMembre> membres = new LinkedHashMap<Long, RoleMembre>();
+      List<OsmRelationMember> membres = new ArrayList<OsmRelationMember>();
       for (int j = 0; j < elem.getElementsByTagName("member").getLength(); j++) {
         Element memElem = (Element) elem.getElementsByTagName("member").item(j);
         long ref = Long.valueOf(memElem.getAttribute("ref"));
         String role = memElem.getAttribute("role");
-        membres.put(ref, RoleMembre.valueOfTexte(role));
+        membres.add(new OsmRelationMember(RoleMembre.valueOfTexte(role), true,
+            ref));
       }
       OSMRelation geom = new OSMRelation(type, membres);
       // on construit le nouvel objet ponctuel
@@ -364,14 +395,10 @@ public class OSMLoader extends SwingWorker<Void, Void> {
    * {@link IGeneObj} classes.
    * 
    * @param dataset
-   * @throws NoSuchFieldException
-   * @throws IllegalAccessException
-   * @throws SecurityException
-   * @throws IllegalArgumentException
+   * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  private void convertResourcesToGeneObjs() throws IllegalArgumentException,
-      SecurityException, IllegalAccessException, NoSuchFieldException {
+  private void convertResourcesToGeneObjs() throws Exception {
     // Sleep for up to one second.
     try {
       Thread.sleep(1);
@@ -406,7 +433,7 @@ public class OSMLoader extends SwingWorker<Void, Void> {
             matching.getTag(), matching.getTagValues());
         for (OSMResource resource : resources) {
           OsmGeneObj obj = factory.createGeneObj(matching.getCartagenClass(),
-              resource, this.nodes);
+              resource, this.nodes, convertor);
           obj.setCaptureTool(resource.getCaptureTool());
           obj.setChangeSet(resource.getChangeSet());
           obj.setOsmId(resource.getId());
@@ -419,11 +446,10 @@ public class OSMLoader extends SwingWorker<Void, Void> {
           pop.add(obj);
         }
       } else {
-        Collection<OSMResource> resources = this.getWaysFromTag(
-            matching.getTag(), matching.getTagValues());
+        Collection<OSMResource> resources = this.getWaysFromTag(matching);
         for (OSMResource resource : resources) {
           OsmGeneObj obj = factory.createGeneObj(matching.getCartagenClass(),
-              resource, this.nodes);
+              resource, this.nodes, convertor);
           obj.setCaptureTool(resource.getCaptureTool());
           obj.setChangeSet(resource.getChangeSet());
           obj.setOsmId(resource.getId());
@@ -434,9 +460,15 @@ public class OSMLoader extends SwingWorker<Void, Void> {
           obj.setVersion(resource.getVersion());
           obj.setUid(resource.getUid());
           pop.add(obj);
-          if (matching.getTag().equals("landuse")) {
+          if (matching.getTag().equals("landuse")
+              && obj instanceof ISimpleLandUseArea) {
             ((OsmSimpleLandUseArea) obj).setType(OsmLandUseTypology
                 .valueOfTagValue(obj.getTags().get("landuse")).ordinal());
+          }
+          if (matching.getTag().equals("natural")
+              && matching.getTagValues().contains("beach")) {
+            ((OsmSimpleLandUseArea) obj).setType(OsmLandUseTypology
+                .valueOfTagValue(obj.getTags().get("natural")).ordinal());
           }
         }
       }
@@ -466,13 +498,18 @@ public class OSMLoader extends SwingWorker<Void, Void> {
     return resources;
   }
 
-  private Collection<OSMResource> getWaysFromTag(String tag,
-      Set<String> tagValues) {
+  private Collection<OSMResource> getWaysFromTag(OsmMatching matching) {
+    String tag = matching.getTag();
+    Set<String> tagValues = matching.getTagValues();
     Set<OSMResource> resources = new HashSet<OSMResource>();
     for (OSMResource way : this.ways) {
       if (!way.getTags().containsKey(tag)) {
         continue;
       }
+      // check that it's not a polygon if a line is expected
+      if (matching.getType().equals(GeometryType.LINE)
+          && way.getTags().containsKey("area"))
+        continue;
       if (tagValues == null) {
         resources.add(way);
       } else {
@@ -515,4 +552,33 @@ public class OSMLoader extends SwingWorker<Void, Void> {
   public void setDialog(JDialog dialog) {
     this.dialog = dialog;
   }
+
+  public void setProgressForBar(int i) {
+    this.setProgress(i);
+  }
+
+  public Set<OSMResource> getNodes() {
+    return nodes;
+  }
+
+  public void setNodes(Set<OSMResource> nodes) {
+    this.nodes = nodes;
+  }
+
+  public Set<OSMResource> getWays() {
+    return ways;
+  }
+
+  public void setWays(Set<OSMResource> ways) {
+    this.ways = ways;
+  }
+
+  public Set<OSMResource> getRelations() {
+    return relations;
+  }
+
+  public void setRelations(Set<OSMResource> relations) {
+    this.relations = relations;
+  }
+
 }

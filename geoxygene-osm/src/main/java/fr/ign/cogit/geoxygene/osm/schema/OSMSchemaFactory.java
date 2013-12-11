@@ -17,6 +17,9 @@ import fr.ign.cogit.cartagen.core.genericschema.AbstractCreationFactory;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea.TaxiwayType;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
@@ -36,6 +39,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
@@ -47,6 +51,8 @@ import fr.ign.cogit.geoxygene.osm.importexport.OSMWay;
 import fr.ign.cogit.geoxygene.osm.schema.aero.OsmAirportArea;
 import fr.ign.cogit.geoxygene.osm.schema.aero.OsmRunwayArea;
 import fr.ign.cogit.geoxygene.osm.schema.aero.OsmRunwayLine;
+import fr.ign.cogit.geoxygene.osm.schema.aero.OsmTaxiwayArea;
+import fr.ign.cogit.geoxygene.osm.schema.aero.OsmTaxiwayLine;
 import fr.ign.cogit.geoxygene.osm.schema.hydro.OsmWaterArea;
 import fr.ign.cogit.geoxygene.osm.schema.hydro.OsmWaterLine;
 import fr.ign.cogit.geoxygene.osm.schema.landuse.OsmSimpleLandUseArea;
@@ -62,6 +68,8 @@ import fr.ign.cogit.geoxygene.osm.schema.roads.OsmRoadLine;
 import fr.ign.cogit.geoxygene.osm.schema.roads.OsmRoadNode;
 import fr.ign.cogit.geoxygene.osm.schema.urban.OsmBuildPoint;
 import fr.ign.cogit.geoxygene.osm.schema.urban.OsmBuilding;
+import fr.ign.cogit.geoxygene.osm.schema.urban.OsmCemetery;
+import fr.ign.cogit.geoxygene.osm.schema.urban.OsmParkArea;
 import fr.ign.cogit.geoxygene.osm.schema.urban.OsmPointOfInterest;
 import fr.ign.cogit.geoxygene.osm.schema.urban.OsmSportsField;
 import fr.ign.cogit.geoxygene.schemageo.api.routier.NoeudRoutier;
@@ -71,101 +79,118 @@ import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Reseau;
 public class OSMSchemaFactory extends AbstractCreationFactory {
 
   public OsmGeneObj createGeneObj(Class<?> classObj, OSMResource resource,
-      Collection<OSMResource> nodes) {
+      Collection<OSMResource> nodes, OsmGeometryConversion convertor)
+      throws Exception {
     if (IRoadLine.class.isAssignableFrom(classObj)) {
-      ILineString line = OsmGeometryConversion.convertOSMLine(
-          (OSMWay) resource.getGeom(), nodes);
+      ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createRoadLine(line, 0);
     }
     if (ICable.class.isAssignableFrom(classObj)) {
-      ILineString line = OsmGeometryConversion.convertOSMLine(
-          (OSMWay) resource.getGeom(), nodes);
+      ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createCable(line);
     }
     if (IBuilding.class.isAssignableFrom(classObj)) {
-      IPolygon poly = OsmGeometryConversion.convertOSMPolygon(
-          (OSMWay) resource.getGeom(), nodes);
+      IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createBuilding(poly);
     }
     if (ISportsField.class.isAssignableFrom(classObj)) {
-      IPolygon poly = OsmGeometryConversion.convertOSMPolygon(
-          (OSMWay) resource.getGeom(), nodes);
+      IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createSportsField(poly);
     }
     if (IWaterLine.class.isAssignableFrom(classObj)) {
-      ILineString line = OsmGeometryConversion.convertOSMLine(
-          (OSMWay) resource.getGeom(), nodes);
+      ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createWaterLine(line, 0);
     }
     if (IWaterArea.class.isAssignableFrom(classObj)) {
-      IPolygon poly = OsmGeometryConversion.convertOSMPolygon(
-          (OSMWay) resource.getGeom(), nodes);
+      IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createWaterArea(poly);
     }
     if (IBuildPoint.class.isAssignableFrom(classObj)) {
-      IPoint pt = OsmGeometryConversion.convertOsmPoint((OSMNode) resource
-          .getGeom());
+      IPoint pt = convertor.convertOsmPoint((OSMNode) resource.getGeom());
       return (OsmGeneObj) this.createBuildPoint(pt);
     }
     if (IWaterArea.class.isAssignableFrom(classObj)) {
-      IPolygon poly = OsmGeometryConversion.convertOSMPolygon(
-          (OSMWay) resource.getGeom(), nodes);
+      IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createWaterArea(poly);
     }
     if (IAirportArea.class.isAssignableFrom(classObj)) {
-      IPolygon poly = OsmGeometryConversion.convertOSMPolygon(
-          (OSMWay) resource.getGeom(), nodes);
+      IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createAirportArea(poly);
     }
     if (IRunwayArea.class.isAssignableFrom(classObj)) {
-      IPolygon poly = OsmGeometryConversion.convertOSMPolygon(
-          (OSMWay) resource.getGeom(), nodes);
+      IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createRunwayArea(poly);
     }
     if (IRunwayLine.class.isAssignableFrom(classObj)) {
-      ILineString poly = OsmGeometryConversion.convertOSMLine(
-          (OSMWay) resource.getGeom(), nodes);
+      ILineString poly = convertor.convertOSMLine((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createRunwayLine(poly);
     }
+    if (ITaxiwayArea.class.isAssignableFrom(classObj)) {
+      IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
+          nodes);
+      return (OsmGeneObj) this.createTaxiwayArea(poly, null);
+    }
+    if (ITaxiwayLine.class.isAssignableFrom(classObj)) {
+      ILineString poly = convertor.convertOSMLine((OSMWay) resource.getGeom(),
+          nodes);
+      return (OsmGeneObj) this.createTaxiwayLine(poly, null);
+    }
     if (ISimpleLandUseArea.class.isAssignableFrom(classObj)) {
-      IPolygon poly = OsmGeometryConversion.convertOSMPolygon(
-          (OSMWay) resource.getGeom(), nodes);
+      IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createSimpleLandUseArea(poly, 0);
     }
     if (IPointOfInterest.class.isAssignableFrom(classObj)) {
-      IPoint pt = OsmGeometryConversion.convertOsmPoint((OSMNode) resource
-          .getGeom());
+      IPoint pt = convertor.convertOsmPoint((OSMNode) resource.getGeom());
       return new OsmPointOfInterest(pt);
     }
     if (ITreePoint.class.isAssignableFrom(classObj)) {
-      IPoint pt = OsmGeometryConversion.convertOsmPoint((OSMNode) resource
-          .getGeom());
+      IPoint pt = convertor.convertOsmPoint((OSMNode) resource.getGeom());
       return (OsmGeneObj) this.createTreePoint(pt);
     }
     if (ICycleWay.class.isAssignableFrom(classObj)) {
-      ILineString line = OsmGeometryConversion.convertOSMLine(
-          (OSMWay) resource.getGeom(), nodes);
+      ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createCycleWay(line);
     }
     if (IRailwayLine.class.isAssignableFrom(classObj)) {
-      ILineString line = OsmGeometryConversion.convertOSMLine(
-          (OSMWay) resource.getGeom(), nodes);
+      ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createRailwayLine(line, 0);
     }
     if (IPathLine.class.isAssignableFrom(classObj)) {
-      ILineString line = OsmGeometryConversion.convertOSMLine(
-          (OSMWay) resource.getGeom(), nodes);
+      ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createPath(line, 0);
     }
     if (IReliefElementPoint.class.isAssignableFrom(classObj)) {
-      IPoint pt = OsmGeometryConversion.convertOsmPoint((OSMNode) resource
-          .getGeom());
+      IPoint pt = convertor.convertOsmPoint((OSMNode) resource.getGeom());
       return (OsmGeneObj) this.createReliefElementPoint(pt);
     }
     if (ICoastLine.class.isAssignableFrom(classObj)) {
-      ILineString line = OsmGeometryConversion.convertOSMLine(
-          (OSMWay) resource.getGeom(), nodes);
+      ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
+          nodes);
       return (OsmGeneObj) this.createCoastline(line);
+    }
+    if (ISquareArea.class.isAssignableFrom(classObj)) {
+      IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
+          nodes);
+      return (OsmGeneObj) this.createSquareArea(poly);
+    }
+    if (OsmCemetery.class.isAssignableFrom(classObj)) {
+      IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
+          nodes);
+      return new OsmCemetery(poly);
     }
     // TODO
     return null;
@@ -310,6 +335,21 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
   @Override
   public ICoastLine createCoastline(ILineString line) {
     return new OsmCoastline(line);
+  }
+
+  @Override
+  public ISquareArea createSquareArea(IPolygon poly) {
+    return new OsmParkArea(poly);
+  }
+
+  @Override
+  public ITaxiwayArea createTaxiwayArea(IPolygon simple, TaxiwayType type) {
+    return new OsmTaxiwayArea(simple);
+  }
+
+  @Override
+  public ITaxiwayLine createTaxiwayLine(ILineString geom, TaxiwayType type) {
+    return new OsmTaxiwayLine(geom);
   }
 
 }

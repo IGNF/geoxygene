@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StyledLayerDescriptor version="1.0.20">
+  <NamedLayer>
+    <Name>airportAreas</Name>
+    <UserStyle>
+      <Name>airportAreas</Name>
+      <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+            <PropertyIsEqualTo>
+              <PropertyName>aeroway</PropertyName>
+              <Literal>aerodrome</Literal>
+            </PropertyIsEqualTo>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#cccccc</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#555555</CssParameter>
+              <CssParameter name="stroke-width">0.2</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+  <NamedLayer>
+    <Name>runwayAreas</Name>
+    <UserStyle>
+      <Name>runwayAreas</Name>
+      <FeatureTypeStyle>
+        <Rule>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#bbbbcc</CssParameter>
+            </Fill>          
+          </PolygonSymbolizer>
+        </Rule> 
+      </FeatureTypeStyle>
+    </UserStyle>		
+  </NamedLayer>	
+  <NamedLayer>
+    <Name>runwayLines</Name>
+    <UserStyle>
+      <Name>runwayLines</Name>
+      <FeatureTypeStyle>
+        <Rule>
+        <Filter>
+          <PropertyIsEqualTo>
+              <PropertyName>aeroway</PropertyName>
+              <Literal>runway</Literal>
+          </PropertyIsEqualTo>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#bbbbcc</CssParameter>
+              <CssParameter name="stroke-width">0.3</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule> 
+      </FeatureTypeStyle>
+    </UserStyle>		
+  </NamedLayer>	 
+  <NamedLayer>
+    <Name>taxiwayLines</Name>
+    <UserStyle>
+      <Name>taxiwayLines</Name>
+      <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+          <PropertyIsEqualTo>
+              <PropertyName>aeroway</PropertyName>
+              <Literal>taxiway</Literal>
+          </PropertyIsEqualTo>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#bbbbcc</CssParameter>
+              <CssParameter name="stroke-width">0.2</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule> 
+        <Rule>
+          <Filter>
+          <PropertyIsEqualTo>
+              <PropertyName>aeroway</PropertyName>
+              <Literal>apron</Literal>
+          </PropertyIsEqualTo>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#e9d1ff</CssParameter>
+              <CssParameter name="stroke-width">0.2</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>         
+      </FeatureTypeStyle>
+    </UserStyle>		
+  </NamedLayer>	   	
+  <NamedLayer>
+    <Name>taxiwayAreas</Name>
+    <UserStyle>
+      <Name>taxiwayAreas</Name>
+      <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+          <PropertyIsEqualTo>
+              <PropertyName>aeroway</PropertyName>
+              <Literal>taxiway</Literal>
+          </PropertyIsEqualTo>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#bbbbcc</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule> 
+        <Rule>
+          <Filter>
+          <PropertyIsEqualTo>
+              <PropertyName>aeroway</PropertyName>
+              <Literal>apron</Literal>
+          </PropertyIsEqualTo>
+          </Filter>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#e9d1ff</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>         
+      </FeatureTypeStyle>
+    </UserStyle>		
+  </NamedLayer>	   	  
+</StyledLayerDescriptor>

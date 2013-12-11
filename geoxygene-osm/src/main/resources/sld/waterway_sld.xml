@@ -24,6 +24,22 @@
       <Name>waterareas</Name>
       <FeatureTypeStyle>
         <Rule>
+	          <Filter>
+	          	  <Or>
+	              	<PropertyIsEqualTo>
+	                	<PropertyName>waterway</PropertyName>
+	                	<Literal>riverbank</Literal>
+	              	</PropertyIsEqualTo>
+	              	<PropertyIsEqualTo>
+	                	<PropertyName>natural</PropertyName>
+	                	<Literal>water</Literal>
+	              	</PropertyIsEqualTo>              	
+	              <PropertyIsEqualTo>
+	                	<PropertyName>natural</PropertyName>
+	                	<Literal>lake</Literal>
+	              	</PropertyIsEqualTo>              	
+	              </Or>
+	          </Filter>	        
 			<PolygonSymbolizer>
 				<Fill>
 					<CssParameter name="fill">#b5d0d0</CssParameter>

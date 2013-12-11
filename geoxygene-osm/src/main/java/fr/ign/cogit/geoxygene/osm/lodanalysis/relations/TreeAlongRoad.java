@@ -70,7 +70,7 @@ public class TreeAlongRoad extends LoDSpatialRelationDetection {
       IPolygon rightBuffer = BufferComputing.buildHalfOffsetBuffer(Side.RIGHT,
           (ILineString) road.getGeom(), widthBuffer);
       // create a half buffer of the road on its left side with widthBuffer
-      IPolygon leftBuffer = BufferComputing.buildHalfOffsetBuffer(Side.RIGHT,
+      IPolygon leftBuffer = BufferComputing.buildHalfOffsetBuffer(Side.LEFT,
           (ILineString) road.getGeom(), widthBuffer);
 
       for (IGeneObj tree : getFeatures2()) {

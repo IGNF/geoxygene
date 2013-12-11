@@ -7,6 +7,8 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
@@ -21,7 +23,9 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
+import fr.ign.cogit.geoxygene.osm.schema.urban.OsmCemetery;
 
 /**
  * Class that stores mapping between OSM RDF resources and {@link IGeneObj} core
@@ -155,8 +159,16 @@ public class OsmMapping {
     this.matchings.add(new OsmMatching("sport", ISportsField.class,
         GeometryType.POLYGON));
     // rivers matching
-    this.matchings.add(new OsmMatching("waterway", IWaterLine.class,
-        GeometryType.LINE));
+    OsmMatching rivermatching = new OsmMatching("waterway", IWaterLine.class,
+        GeometryType.LINE);
+    rivermatching.addTagValue("stream");
+    rivermatching.addTagValue("river");
+    rivermatching.addTagValue("canal");
+    this.matchings.add(rivermatching);
+    OsmMatching riverAreaMatching = new OsmMatching("waterway",
+        IWaterArea.class, GeometryType.POLYGON);
+    riverAreaMatching.addTagValue("riverbank");
+    this.matchings.add(riverAreaMatching);
     // lakes matching
     OsmMatching lakematching = new OsmMatching("natural", IWaterArea.class,
         GeometryType.POLYGON);
@@ -216,8 +228,21 @@ public class OsmMapping {
     OsmMatching runwayLineMatch = new OsmMatching("aeroway", IRunwayLine.class,
         GeometryType.LINE);
     runwayLineMatch.addTagValue("runway");
-    runwayLineMatch.addTagValue("taxiway");
     this.matchings.add(runwayLineMatch);
+    OsmMatching taxiwayLineMatch = new OsmMatching("aeroway",
+        ITaxiwayLine.class, GeometryType.LINE);
+    taxiwayLineMatch.addTagValue("taxiway");
+    this.matchings.add(taxiwayLineMatch);
+    OsmMatching taxiwayAreaMatch = new OsmMatching("aeroway",
+        ITaxiwayArea.class, GeometryType.POLYGON);
+    taxiwayAreaMatch.addTagValue("apron");
+    taxiwayAreaMatch.addTagValue("taxiway");
+    this.matchings.add(taxiwayAreaMatch);
+    OsmMatching terminalMatch = new OsmMatching("aeroway", IBuilding.class,
+        GeometryType.POLYGON);
+    terminalMatch.addTagValue("terminal");
+    terminalMatch.addTagValue("hangar");
+    this.matchings.add(terminalMatch);
 
     // cable matching
     this.matchings.add(new OsmMatching("aerialway", ICable.class,
@@ -268,6 +293,10 @@ public class OsmMapping {
         ISimpleLandUseArea.class, GeometryType.POLYGON);
     commMatch.addTagValue("commercial");
     this.matchings.add(commMatch);
+    OsmMatching beachMatch = new OsmMatching("natural",
+        ISimpleLandUseArea.class, GeometryType.POLYGON);
+    beachMatch.addTagValue("beach");
+    this.matchings.add(beachMatch);
 
     // tree matching
     OsmMatching treematching = new OsmMatching("natural", ITreePoint.class,
@@ -293,6 +322,22 @@ public class OsmMapping {
         ICoastLine.class, GeometryType.LINE);
     coastlineMatching.addTagValue("coastline");
     this.matchings.add(coastlineMatching);
+
+    // leisure features
+    OsmMatching parkMatching = new OsmMatching("leisure", ISquareArea.class,
+        GeometryType.POLYGON);
+    parkMatching.addTagValue("park");
+    this.matchings.add(parkMatching);
+
+    // cemeteries
+    OsmMatching cemeteryMatching = new OsmMatching("landuse",
+        OsmCemetery.class, GeometryType.POLYGON);
+    cemeteryMatching.addTagValue("cemetery");
+    this.matchings.add(cemeteryMatching);
+    OsmMatching graveyardMatching = new OsmMatching("amenity",
+        OsmCemetery.class, GeometryType.POLYGON);
+    graveyardMatching.addTagValue("grave_yard");
+    this.matchings.add(graveyardMatching);
     // TODO à remplir
   }
 

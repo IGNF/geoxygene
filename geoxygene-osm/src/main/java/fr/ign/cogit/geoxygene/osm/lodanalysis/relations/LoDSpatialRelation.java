@@ -59,4 +59,9 @@ public class LoDSpatialRelation {
     return name;
   }
 
+  @Override
+  public String toString() {
+    return name + " [" + feature1.toString() + "," + feature2.toString() + "]";
+  }
+
 }

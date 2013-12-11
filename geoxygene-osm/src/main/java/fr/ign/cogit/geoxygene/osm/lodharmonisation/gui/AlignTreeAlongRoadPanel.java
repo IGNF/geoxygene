@@ -17,6 +17,7 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.osm.importexport.OsmDataset;
+import fr.ign.cogit.geoxygene.osm.lodanalysis.relations.LoDSpatialRelation;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.relations.TreeAlongRoad;
 import fr.ign.cogit.geoxygene.osm.lodharmonisation.process.AlignTreesAlongRoads;
 import fr.ign.cogit.geoxygene.osm.util.I18N;
@@ -35,12 +36,12 @@ public class AlignTreeAlongRoadPanel extends HarmonisationPanel {
     this.roads = new FT_FeatureCollection<IGeneObj>();
 
     // fill the detection panel
-    SpinnerModel distModel = new SpinnerNumberModel(0.7, 0.1, 3.0, 0.1);
+    SpinnerModel distModel = new SpinnerNumberModel(0.9, 0.1, 3.0, 0.1);
     spinDist = new JSpinner(distModel);
     spinDist.setPreferredSize(new Dimension(60, 20));
     spinDist.setMaximumSize(new Dimension(60, 20));
     spinDist.setMinimumSize(new Dimension(60, 20));
-    SpinnerModel treeModel = new SpinnerNumberModel(0.1, 0.05, 1.0, 0.05);
+    SpinnerModel treeModel = new SpinnerNumberModel(0.05, 0.05, 1.0, 0.05);
     spinTreeWidth = new JSpinner(treeModel);
     spinTreeWidth.setPreferredSize(new Dimension(50, 20));
     spinTreeWidth.setMaximumSize(new Dimension(50, 20));
@@ -82,6 +83,14 @@ public class AlignTreeAlongRoadPanel extends HarmonisationPanel {
     TreeAlongRoad detectionProc = new TreeAlongRoad(roads, trees,
         lodSlider.getValue(), minDist, treeWidth);
     detectionProc.findInstances();
+
+    System.out.println("left instances");
+    for (LoDSpatialRelation i : detectionProc.getLeftInstances())
+      System.out.println(i);
+    System.out.println("right instances");
+    for (LoDSpatialRelation i : detectionProc.getRightInstances())
+      System.out.println(i);
+
     // harmonise the inconsistencies
     AlignTreesAlongRoads process = new AlignTreesAlongRoads(
         detectionProc.getLeftInstances(), detectionProc.getRightInstances(),

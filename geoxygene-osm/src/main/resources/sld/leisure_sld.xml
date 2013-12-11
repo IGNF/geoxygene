@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StyledLayerDescriptor version="1.0.20">
+  <NamedLayer>
+    <Name>squareAreas</Name>
+    <UserStyle>
+      <Name>squareAreas</Name>
+      <FeatureTypeStyle>
+        <Rule>
+			<Filter>
+				<PropertyIsEqualTo>
+					<PropertyName>leisure</PropertyName>
+					<Literal>park</Literal>
+				</PropertyIsEqualTo>
+			</Filter>
+	      <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill-opacity">0.6</CssParameter>
+              <CssParameter name="fill">#b6fdb6</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>  
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>	
+</StyledLayerDescriptor>
