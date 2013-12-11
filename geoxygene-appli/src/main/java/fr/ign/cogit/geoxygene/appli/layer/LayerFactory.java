@@ -20,6 +20,7 @@
 package fr.ign.cogit.geoxygene.appli.layer;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.image.Raster;
 import java.io.File;
@@ -48,16 +49,20 @@ import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.style.ColorMap;
+import fr.ign.cogit.geoxygene.style.Displacement;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.Graphic;
+import fr.ign.cogit.geoxygene.style.Halo;
 import fr.ign.cogit.geoxygene.style.Interpolate;
 import fr.ign.cogit.geoxygene.style.InterpolationPoint;
+import fr.ign.cogit.geoxygene.style.LabelPlacement;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.LegendGraphic;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.NamedLayer;
+import fr.ign.cogit.geoxygene.style.PointPlacement;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
@@ -66,6 +71,7 @@ import fr.ign.cogit.geoxygene.style.ShadedRelief;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.style.TextSymbolizer;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
@@ -532,6 +538,65 @@ public class LayerFactory {
     fts.getRules().add(
         LayerFactory.createRule(geometryType, strokeColor, fillColor, opacity,
             opacity, strokeWidth));
+    style.getFeatureTypeStyles().add(fts);
+    return style;
+  }
+
+  /**
+   * Crée un nouveau Style qui affiche en étiquette la valeur d'un attribut
+   * donné avec les paramètres donnés en entrée (couleur, etc.). Le type de
+   * placement est uniquement ponctuel
+   * <p>
+   * @param name nom du style
+   * @param geometryType type de géométrie porté par le layer
+   * @param strokeColor la couleur du trait
+   * @param fillColor la couleur de remplissage
+   * @param opacity l'opacité des objets de la couche
+   * @param strokeWidth la largeur du trait
+   * @return style
+   */
+  // FIXME Les méthodes createStyle et createRule n'ont sans doute pas
+  // vraiment leur place ici mais devraient être placées dans un factory et/ou
+  // builder propre
+  public static Style createStyle(String name, String attrName,
+      Color textColor, Font font, Color haloColor, float haloRadius,
+      float dxPlacement, float dyPlacement) {
+    UserStyle style = new UserStyle();
+    style.setName(name);
+    FeatureTypeStyle fts = new FeatureTypeStyle();
+    Rule rule = new Rule();
+    TextSymbolizer txtSymbolizer = new TextSymbolizer();
+    // build the halo
+    if (haloRadius > 0.0) {
+      Halo halo = new Halo();
+      halo.setRadius(haloRadius);
+      Fill fillHalo = new Fill();
+      fillHalo.setColor(haloColor);
+      halo.setFill(fillHalo);
+      txtSymbolizer.setHalo(halo);
+    }
+    // build the font
+    fr.ign.cogit.geoxygene.style.Font sldFont = new fr.ign.cogit.geoxygene.style.Font(
+        font);
+    txtSymbolizer.setFont(sldFont);
+    // build the symbolizer fill
+    Fill txtFill = new Fill();
+    txtFill.setColor(textColor);
+    txtSymbolizer.setFill(txtFill);
+    // build the label placement
+    LabelPlacement placement = new LabelPlacement();
+    PointPlacement ptPlacement = new PointPlacement();
+    Displacement displ = new Displacement();
+    displ.setDisplacementX(dxPlacement);
+    displ.setDisplacementY(dyPlacement);
+    ptPlacement.setDisplacement(displ);
+    placement.setPlacement(ptPlacement);
+    txtSymbolizer.setLabelPlacement(placement);
+    // build the label
+    txtSymbolizer.setLabel(attrName);
+    // add the symbolizer to the rule, and rule to style
+    rule.getSymbolizers().add(txtSymbolizer);
+    fts.getRules().add(rule);
     style.getFeatureTypeStyles().add(fts);
     return style;
   }
