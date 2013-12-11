@@ -9,7 +9,7 @@ Les plugins GeOxygene permettent d'ajouter de nouvelles fonctionnalités que l'o
 Ce tutoriel explique comment créer un plugin GeOxygene depuis un module Maven. 
 
 
-Le plugin ajoute un nouveau bouton dans la barre de menu qui permet de calculer un filtre gaussien sur la couche sélectionnée. 
+Le plugin ajoute un nouveau bouton dans la barre de menu qui permet de lancer un filtre gaussien (lissage) sur un réseau linéaire. 
 
 
 
@@ -32,7 +32,7 @@ Créer une nouvelle classe qui implémente GeOxygeneApplicationPlugin, par exemp
         :language: java
 
 
-Puis il faut surcharger la méthode initialize qui initialise le plugin. 
+Puis il faut surcharger la méthode "initialize" qui initialise le plugin. 
 Dans notre exemple, on ajoute un nouveau bouton et un évènement sur celui-ci.
 
 .. literalinclude:: /documentation/resources/code_src/plugin/GaussianFilterPlugin02.java

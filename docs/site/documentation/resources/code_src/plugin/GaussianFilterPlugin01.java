@@ -30,6 +30,9 @@ public class GaussianFilterPlugin implements GeOxygeneApplicationPlugin, ActionL
 
   /** Logger. */
   private final static Logger LOGGER = Logger.getLogger(GaussianFilterPlugin.class.getName());
+  
+  /** GeOxygeneApplication */
+  private GeOxygeneApplication application = null;
 
   // ...
 

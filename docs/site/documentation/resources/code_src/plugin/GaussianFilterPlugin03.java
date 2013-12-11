@@ -13,7 +13,7 @@
     }
     Layer layer = selectedLayers.iterator().next();
     
-    // On propose le champ de saisie du paramètre sigma.
+    // On propose le champ de saisie du paramètre sigma pour le filtrage gaussien.
     double sigma = Double.parseDouble(JOptionPane.showInputDialog(GaussianFilterPlugin.this.application.getMainFrame(), "Sigma"));
     
     // On construit une population de DefaultFeature
@@ -29,11 +29,11 @@
           line = ((IMultiCurve<ILineString>) f.getGeom()).get(0);
         }
       }
-      // On ajoute à la population de 
+      // On ajoute à la population l'arc lissé
       pop.nouvelElement(GaussianFilter.gaussianFilter(line, sigma, 1));
     }
     
-    // Créer les métadonnées du jeu correspondant 
+    // Créer les métadonnées du jeu correspondant et on l'ajoute à la population
     FeatureType newFeatureType = new FeatureType();
     newFeatureType.setGeometryType(ILineString.class);
     pop.setFeatureType(newFeatureType);
