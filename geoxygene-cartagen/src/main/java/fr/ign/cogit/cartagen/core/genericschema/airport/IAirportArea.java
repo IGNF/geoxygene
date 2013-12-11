@@ -12,6 +12,7 @@ package fr.ign.cogit.cartagen.core.genericschema.airport;
 import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObjSurf;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 
 public interface IAirportArea extends IGeneObjSurf {
 
@@ -32,4 +33,6 @@ public interface IAirportArea extends IGeneObjSurf {
   public Set<IHelipadArea> getHelipadAreas();
 
   public Set<IHelipadPoint> getHelipadPoints();
+
+  public Set<IBuilding> getTerminals();
 }

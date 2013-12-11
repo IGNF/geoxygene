@@ -76,6 +76,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IEmptySpace;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanAlignment;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
@@ -1250,4 +1251,12 @@ public abstract class AbstractCreationFactory {
         .error("Non implemented creation factory method for ICoastLine");
     return null;
   }
+
+  @SuppressWarnings("unused")
+  public ISquareArea createSquareArea(IPolygon poly) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for ICoastLine");
+    return null;
+  }
+
 }

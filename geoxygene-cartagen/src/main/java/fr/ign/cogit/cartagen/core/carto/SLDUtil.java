@@ -1,6 +1,17 @@
+/*******************************************************************************
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.cartagen.core.carto;
 
 import java.awt.Color;
+import java.util.HashSet;
+import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObjLin;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -290,5 +301,37 @@ public class SLDUtil {
         return strokeColor;
     }
     return Color.BLACK;
+  }
+
+  /**
+   * Removes from a SLD, for each layer, all the styles with a given group name.
+   * @param sld
+   * @param styleName
+   */
+  public static void removeGroupNamedStyles(StyledLayerDescriptor sld,
+      String groupName) {
+    for (Layer layer : sld.getLayers()) {
+      Set<Style> layerStyles = new HashSet<Style>(layer.getStyles());
+      for (Style style : layerStyles) {
+        if (groupName.equals(style.getGroup()))
+          layer.getStyles().remove(style);
+      }
+    }
+  }
+
+  /**
+   * Removes from a SLD, for each layer, all the styles with a given name.
+   * @param sld
+   * @param styleName
+   */
+  public static void removeNamedStyles(StyledLayerDescriptor sld, String name) {
+    for (Layer layer : sld.getLayers()) {
+      Set<Style> layerStyles = new HashSet<Style>(layer.getStyles());
+      for (Style style : layerStyles) {
+        if (name.equals(style.getName())) {
+          layer.getStyles().remove(style);
+        }
+      }
+    }
   }
 }

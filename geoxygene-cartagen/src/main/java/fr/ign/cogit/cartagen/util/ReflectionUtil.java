@@ -168,6 +168,8 @@ public class ReflectionUtil {
   public static Collection<Method> getAllGetters(Class<?> classObj,
       Collection<Class<?>> types) {
     Collection<Method> methods = new HashSet<Method>();
+    if (classObj.getMethods() == null)
+      return methods;
     for (Method meth : classObj.getMethods()) {
       if (!meth.getName().startsWith("get"))
         continue;

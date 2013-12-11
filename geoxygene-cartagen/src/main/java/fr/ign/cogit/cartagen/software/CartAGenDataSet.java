@@ -39,6 +39,8 @@ import fr.ign.cogit.cartagen.core.genericschema.admin.ISimpleAdminUnit;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IRiverSimpleIsland;
@@ -80,6 +82,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanAlignment;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
@@ -208,6 +211,7 @@ public class CartAGenDataSet extends DataSet {
   public static final String BUILD_PT_POP = "buildingPoints";
   public static final String SPORTS_FIELDS_POP = "sportsFields";
   public static final String BUILD_AREA_POP = "buildingAreas";
+  public static final String SQUARE_AREA_POP = "squareAreas";
 
   public static final String ROADS_POP = "roads";
   public static final String ROAD_NODES_POP = "roadNodes";
@@ -248,6 +252,8 @@ public class CartAGenDataSet extends DataSet {
   public static final String AIRPORT_AREA_POP = "airportAreas";
   public static final String RUNWAY_AREA_POP = "runwayAreas";
   public static final String RUNWAY_LINE_POP = "runwayLines";
+  public static final String TAXIWAY_AREA_POP = "taxiwayAreas";
+  public static final String TAXIWAY_LINE_POP = "taxiwayLines";
   public static final String POI_POP = "pointsOfInterest";
 
   public static final String ROAD_STROKES_POP = "strokes";
@@ -345,6 +351,10 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.RUNWAY_AREA_POP;
     } else if (obj instanceof IRunwayLine) {
       return CartAGenDataSet.RUNWAY_LINE_POP;
+    } else if (obj instanceof ITaxiwayArea) {
+      return CartAGenDataSet.TAXIWAY_AREA_POP;
+    } else if (obj instanceof ITaxiwayLine) {
+      return CartAGenDataSet.TAXIWAY_LINE_POP;
     } else if (obj instanceof IWaterPoint) {
       return CartAGenDataSet.WATER_PT_POP;
     } else if (obj instanceof IAdminCapital) {
@@ -367,6 +377,8 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.BRIDGE_PT_POP;
     } else if (obj instanceof ICoastLine) {
       return CartAGenDataSet.COASTLINE_POP;
+    } else if (obj instanceof ISquareArea) {
+      return CartAGenDataSet.SQUARE_AREA_POP;
     }
     return null;
   }
@@ -449,6 +461,10 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.RUNWAY_AREA_POP;
     } else if (featureType.equals(IRunwayLine.FEAT_TYPE_NAME)) {
       return CartAGenDataSet.RUNWAY_LINE_POP;
+    } else if (featureType.equals(ITaxiwayArea.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.TAXIWAY_AREA_POP;
+    } else if (featureType.equals(ITaxiwayLine.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.TAXIWAY_LINE_POP;
     } else if (featureType.equals(IWaterPoint.FEAT_TYPE_NAME)) {
       return CartAGenDataSet.WATER_PT_POP;
     } else if (featureType.equals(IAdminCapital.FEAT_TYPE_NAME)) {
@@ -471,6 +487,8 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.BRIDGE_PT_POP;
     } else if (featureType.equals(ICoastLine.FEAT_TYPE_NAME)) {
       return CartAGenDataSet.COASTLINE_POP;
+    } else if (featureType.equals(ISquareArea.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.SQUARE_AREA_POP;
     }
     return null;
   }
@@ -551,6 +569,10 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.RUNWAY_AREA_POP;
     } else if (IRunwayLine.class.isAssignableFrom(classObj)) {
       return CartAGenDataSet.RUNWAY_LINE_POP;
+    } else if (ITaxiwayArea.class.isAssignableFrom(classObj)) {
+      return CartAGenDataSet.TAXIWAY_AREA_POP;
+    } else if (ITaxiwayLine.class.isAssignableFrom(classObj)) {
+      return CartAGenDataSet.TAXIWAY_LINE_POP;
     } else if (IAirportArea.class.isAssignableFrom(classObj)) {
       return CartAGenDataSet.AIRPORT_AREA_POP;
     } else if (IWaterPoint.class.isAssignableFrom(classObj)) {
@@ -575,6 +597,8 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.BRIDGE_PT_POP;
     } else if (ICoastLine.class.isAssignableFrom(classObj)) {
       return CartAGenDataSet.COASTLINE_POP;
+    } else if (ISquareArea.class.isAssignableFrom(classObj)) {
+      return CartAGenDataSet.SQUARE_AREA_POP;
     }
     return null;
   }
@@ -982,6 +1006,16 @@ public class CartAGenDataSet extends DataSet {
   public IPopulation<ICoastLine> getCoastlines() {
     return (IPopulation<ICoastLine>) this.getCartagenPop(
         CartAGenDataSet.COASTLINE_POP, ICoastLine.FEAT_TYPE_NAME);
+  }
+
+  /**
+   * Gets the square areas of the dataset
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<ISquareArea> getSquareAreas() {
+    return (IPopulation<ISquareArea>) this.getCartagenPop(
+        CartAGenDataSet.SQUARE_AREA_POP, ISquareArea.FEAT_TYPE_NAME);
   }
 
   /**
