@@ -1,5 +1,5 @@
 
-Tutoriel
+Application
 =======================
 
 .. sidebar:: Application

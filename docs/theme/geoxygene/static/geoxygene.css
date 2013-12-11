@@ -73,6 +73,15 @@ ul > p {
     padding-left: 40px;
 }
 
+td > div.figure {
+	text-align:center;
+}
+
+table.docutils td {
+	text-align:center;
+	vertical-align:middle;
+}
+
 
 a {
     color: #0257B5;

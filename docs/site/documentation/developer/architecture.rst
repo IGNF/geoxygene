@@ -7,15 +7,33 @@ This page describes how GeOxygene Plateform is structured. The figure below show
 
 .. container:: centerside
      
-    .. figure:: /documentation/resources/img/architecture/RelationModuleNoyauGeOxygene.png
+    .. figure:: /documentation/resources/img/architecture/ArchitectureGeoxygene.png
        
-       Figure 1 : Dependency Graph for Geoxygene
+       Figure 1 : Architecture de GeOxygene
 
   
   
 GeOxygene Plateform
 ***********************************
 
-  All modules are presented here, functionalities and concepts. 
+All modules are presented here, functionalities and concepts. 
 
-  Coming soon.        
+  +-----------------------+--------------------------------------------------------------------------------------+
+  |  geoxygene-api        | définition des interfaces permettant de travailler avec de l’information spatiale    |
+  +-----------------------+--------------------------------------------------------------------------------------+
+  |  geoxygene-spatial    | implémentation des principales classes géométriques et topologiques.                 |
+  |                       |                                                                                      |
+  |                       | Algorithmes spatiaux : géométriques, généralisations, index, …                       |
+  +-----------------------+--------------------------------------------------------------------------------------+
+  |  geoxygene-feature    | implémentation des objets géographiques                                              |
+  +-----------------------+--------------------------------------------------------------------------------------+
+  |  geoxygene-io         | chargement / export des données                                                      |
+  |  geoxygene-database   |                                                                                      |
+  +-----------------------+--------------------------------------------------------------------------------------+
+  |  geoxygene-style      |                                                                                      |
+  +-----------------------+--------------------------------------------------------------------------------------+
+  |  geoxygene-filter     |                                                                                      |
+  +-----------------------+--------------------------------------------------------------------------------------+
+
+  
+  

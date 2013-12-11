@@ -180,7 +180,7 @@ Ce fichier contient l'ensemble des plugins lancés au démarrage de l'applicatio
 
 
 Lancement de l'interface graphique 2D
-========================================
+*********************************************
 1. Dans le menu, cliquer sur 
       
    .. container:: chemin
@@ -238,7 +238,7 @@ Lancement de l'interface graphique 2D
 
 
 Lancement de l'interface graphique 3D
-========================================
+***************************************************
 
 A venir
 

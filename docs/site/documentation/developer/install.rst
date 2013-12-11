@@ -215,13 +215,13 @@ Text editors
 
 
 Eclipse Plugins
-===================
+*********************************
 
 Maintenant, Eclipse est prêt pour l'installation des plugins nécessaires à GeOxygene. 
 Vous aurez besoin des plugins Maven (m2eclipse) et subversion (subclipse). 
 
 Plugin Subclipse
-------------------
+======================
 
 Subclipse est un plugin Eclipse permettant d'utiliser Subversion (SVN) directement depuis votre éditeur préféré.
 
@@ -385,7 +385,7 @@ Subclipse est un plugin Eclipse permettant d'utiliser Subversion (SVN) directeme
 
 
 Plugin M2E
-------------------
+=========================
 GeOxygene est construit à partir de Maven. Le projet m2eclipse fournit un support afin d'utiliser les fonctionnalités de Maven
 dans l'éditeur Eclipse. L'intégration Maven pour Eclipse est composé d'un plugin (le core) et de connectors. 
 Pour installer GeOxygene il faut le plugin et le connector subclipse.
@@ -434,7 +434,7 @@ Reprener les 8 premières étapes de l'installation du plugin subclipse mais en 
 
 
 Connector Subclipse for Maven
---------------------------------
+========================================
 
 Il reste à installer le connector subclipse pour Maven.
 

@@ -10,6 +10,7 @@ Documentation
    
 
    developer/index
+   tutorial/index
    application/index
    .. user/index
 
