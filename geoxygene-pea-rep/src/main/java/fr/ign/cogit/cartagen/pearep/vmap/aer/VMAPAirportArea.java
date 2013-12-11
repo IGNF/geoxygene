@@ -23,6 +23,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -183,6 +184,12 @@ public class VMAPAirportArea extends VMAPFeature implements IAirportArea {
   @Override
   public Set<IHelipadPoint> getHelipadPoints() {
     return helipadPoint;
+  }
+
+  @Override
+  public Set<IBuilding> getTerminals() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
