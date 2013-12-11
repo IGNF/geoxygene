@@ -31,7 +31,10 @@ public class PropertyIsNotEqualTo extends BinaryComparisonOpsType {
   public boolean evaluate(Object object) {
     Object property = this.getPropertyName().evaluate(object);
     if (property == null) {
-      return false;
+      // modif gtouya: return true to be the logical contrary of
+      // PropertyIsEqualTo that returns false when there is no property.
+      // this modification is not obvious and can be discussed!
+      return true;
     }
     if (property instanceof String) {
       if (!this.isMatchCase()) {
