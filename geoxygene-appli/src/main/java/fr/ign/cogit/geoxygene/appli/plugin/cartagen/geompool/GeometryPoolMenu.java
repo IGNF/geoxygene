@@ -30,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
@@ -53,6 +54,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.NamedLayer;
 import fr.ign.cogit.geoxygene.style.UserStyle;
+import fr.ign.cogit.geoxygene.util.algo.SmallestSurroundingRectangleComputation;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.BufferComputing;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.Side;
 
@@ -208,12 +210,12 @@ public class GeometryPoolMenu extends JMenu {
     private static final long serialVersionUID = 1L;
     private Set<IGeneObj> objects;
     private JCheckBox chkBuffer, chkHalfR, chkHalfL, chkCentroid, chkOffsetR,
-        chkOffsetL;
+        chkOffsetL, chkMbr, chkConvex;
     private JColorSelectionButton colorBuffer, colorHalfR, colorHalfL,
-        colorCentroid, colorOffsetR, colorOffsetL;
+        colorCentroid, colorOffsetR, colorOffsetL, colorMbr, colorConvex;
     private JSpinner spinBuffer, spinHalfR, spinHalfL, spinOffsetR,
         spinOffsetL, spinBufferWidth, spinHalfRWidth, spinHalfLWidth,
-        spinOffsetRWidth, spinOffsetLWidth;
+        spinOffsetRWidth, spinOffsetLWidth, spinMbrWidth, spinConvexWidth;
 
     AddBufferEtcFrame(Set<IGeneObj> objects) {
       super("Draw in geometry pool");
@@ -341,6 +343,34 @@ public class GeometryPoolMenu extends JMenu {
       colorCentroid = new JColorSelectionButton();
       pCentroid.add(colorCentroid);
       pCentroid.setLayout(new BoxLayout(pCentroid, BoxLayout.X_AXIS));
+      // MBR panel
+      JPanel pMbr = new JPanel();
+      chkMbr = new JCheckBox("MBR");
+      pMbr.add(chkMbr);
+      pMbr.add(Box.createHorizontalGlue());
+      spinMbrWidth = new JSpinner(widthModel);
+      spinMbrWidth.setPreferredSize(new Dimension(40, 20));
+      spinMbrWidth.setMaximumSize(new Dimension(40, 20));
+      spinMbrWidth.setMinimumSize(new Dimension(40, 20));
+      pMbr.add(spinMbrWidth);
+      pMbr.add(Box.createHorizontalGlue());
+      colorMbr = new JColorSelectionButton();
+      pMbr.add(colorMbr);
+      pMbr.setLayout(new BoxLayout(pMbr, BoxLayout.X_AXIS));
+      // convex hull panel
+      JPanel pConvex = new JPanel();
+      chkConvex = new JCheckBox("Convex Hull");
+      pConvex.add(chkConvex);
+      pConvex.add(Box.createHorizontalGlue());
+      spinConvexWidth = new JSpinner(widthModel);
+      spinConvexWidth.setPreferredSize(new Dimension(40, 20));
+      spinConvexWidth.setMaximumSize(new Dimension(40, 20));
+      spinConvexWidth.setMinimumSize(new Dimension(40, 20));
+      pConvex.add(spinConvexWidth);
+      pConvex.add(Box.createHorizontalGlue());
+      colorConvex = new JColorSelectionButton();
+      pConvex.add(colorConvex);
+      pConvex.setLayout(new BoxLayout(pConvex, BoxLayout.X_AXIS));
 
       // define a panel with the OK and Cancel buttons
       JPanel btnPanel = new JPanel();
@@ -354,17 +384,25 @@ public class GeometryPoolMenu extends JMenu {
       btnPanel.add(cancelBtn);
       btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
 
-      this.getContentPane().add(pBuffer);
-      this.getContentPane().add(Box.createVerticalGlue());
-      this.getContentPane().add(pBufferR);
-      this.getContentPane().add(Box.createVerticalGlue());
-      this.getContentPane().add(pBufferL);
-      this.getContentPane().add(Box.createVerticalGlue());
-      this.getContentPane().add(pOffsetR);
-      this.getContentPane().add(Box.createVerticalGlue());
-      this.getContentPane().add(pOffsetL);
-      this.getContentPane().add(Box.createVerticalGlue());
-      this.getContentPane().add(pCentroid);
+      JPanel mainPanel = new JPanel();
+      mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+      mainPanel.add(pBuffer);
+      mainPanel.add(Box.createVerticalGlue());
+      mainPanel.add(pBufferR);
+      mainPanel.add(Box.createVerticalGlue());
+      mainPanel.add(pBufferL);
+      mainPanel.add(Box.createVerticalGlue());
+      mainPanel.add(pOffsetR);
+      mainPanel.add(Box.createVerticalGlue());
+      mainPanel.add(pOffsetL);
+      mainPanel.add(Box.createVerticalGlue());
+      mainPanel.add(pCentroid);
+      mainPanel.add(Box.createVerticalGlue());
+      mainPanel.add(pMbr);
+      mainPanel.add(Box.createVerticalGlue());
+      mainPanel.add(pConvex);
+
+      this.getContentPane().add(new JScrollPane(mainPanel));
       this.getContentPane().add(Box.createVerticalGlue());
       this.getContentPane().add(btnPanel);
       this.getContentPane().setLayout(
@@ -456,6 +494,25 @@ public class GeometryPoolMenu extends JMenu {
           IGeometry centroid = obj.getGeom().centroid().toGM_Point();
           CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
               .addFeatureToGeometryPool(centroid, colorCentroid.getColor(), 1);
+        }
+        if (chkMbr.isSelected()) {
+          IGeometry mbr = SmallestSurroundingRectangleComputation.getSSR(obj
+              .getGeom());
+          CartAGenDoc
+              .getInstance()
+              .getCurrentDataset()
+              .getGeometryPool()
+              .addFeatureToGeometryPool(mbr, colorMbr.getColor(),
+                  (Integer) spinMbrWidth.getValue());
+        }
+        if (chkConvex.isSelected()) {
+          IGeometry hull = obj.getGeom().convexHull();
+          CartAGenDoc
+              .getInstance()
+              .getCurrentDataset()
+              .getGeometryPool()
+              .addFeatureToGeometryPool(hull, colorConvex.getColor(),
+                  (Integer) spinConvexWidth.getValue());
         }
       }
     }

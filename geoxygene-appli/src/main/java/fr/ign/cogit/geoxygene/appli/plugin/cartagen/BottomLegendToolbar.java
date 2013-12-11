@@ -19,7 +19,9 @@
 
 package fr.ign.cogit.geoxygene.appli.plugin.cartagen;
 
+import java.awt.Color;
 import java.awt.ComponentOrientation;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -33,8 +35,10 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.LayerLegendPanel;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.ShowIniGeomAction;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 
 public class BottomLegendToolbar extends JToolBar {
@@ -44,7 +48,7 @@ public class BottomLegendToolbar extends JToolBar {
   private ProjectFrame frame;
   private LayerLegendPanel panel;
   private GeOxygeneApplication appli;
-  private JToggleButton rawDisplayBtn;
+  private JToggleButton rawDisplayBtn, idDisplayBtn;
   private JButton initGeomBtn;
   private StyledLayerDescriptor initialSld, rawSld;
 
@@ -57,9 +61,11 @@ public class BottomLegendToolbar extends JToolBar {
 
     this.initGeomBtn = new JButton(new ShowIniGeomAction(appli));
     this.rawDisplayBtn = new JToggleButton(new RawDisplayAction());
+    this.idDisplayBtn = new JToggleButton(new DisplayIdAction());
 
     this.add(rawDisplayBtn);
     this.add(initGeomBtn);
+    this.add(idDisplayBtn);
     this.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
     this.setFloatable(false);
     this.setOrientation(HORIZONTAL);
@@ -135,6 +141,34 @@ public class BottomLegendToolbar extends JToolBar {
     public RawDisplayAction() {
       putValue(Action.NAME, I18N.getString("RawDisplay.unselectedTitle"));
       putValue(Action.SHORT_DESCRIPTION, I18N.getString("RawDisplay.descr"));
+    }
+  }
+
+  class DisplayIdAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (idDisplayBtn.isSelected()) {
+        StyledLayerDescriptor sld = frame.getSld();
+        // add a textsymbolizer for each layer of the sld
+        for (Layer layer : sld.getLayers()) {
+          Style style = LayerFactory.createStyle("IdDisplay", "id", new Color(
+              135, 89, 26), new Font("Arial", Font.PLAIN, 6), Color.BLACK,
+              0.0f, 0.0f, 0.0f);
+          layer.getStyles().add(style);
+        }
+      } else {
+        // remove all the styles named "displayIds" in the sld
+        SLDUtil.removeNamedStyles(frame.getSld(), "IdDisplay");
+      }
+      frame.getLayerViewPanel().repaint();
+    }
+
+    public DisplayIdAction() {
+      putValue(Action.NAME, "IDs");
     }
   }
 

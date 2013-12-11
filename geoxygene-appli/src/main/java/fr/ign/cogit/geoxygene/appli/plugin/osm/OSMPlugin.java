@@ -28,6 +28,8 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -40,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.xml.bind.JAXBException;
 
 import org.jfree.chart.ChartFactory;
@@ -64,6 +67,7 @@ import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
 import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
 import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
+import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.OsmFileFilter;
 import fr.ign.cogit.cartagen.spatialanalysis.clustering.AdjacencyClustering;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.Criterion;
@@ -72,6 +76,7 @@ import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ConclusionIn
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.RobustELECTRETRIMethod;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
@@ -104,6 +109,7 @@ import fr.ign.cogit.geoxygene.osm.lodharmonisation.gui.HarmonisationFrame;
 import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
 import fr.ign.cogit.geoxygene.osm.schema.network.OsmNetworkSection;
 import fr.ign.cogit.geoxygene.osm.schema.urban.OsmBuilding;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.NamedLayer;
@@ -138,9 +144,12 @@ public class OSMPlugin implements ProjectFramePlugin,
     analysisMenu.add(new JMenuItem(new LodSensitivityAction()));
     JMenu harmoniseMenu = new JMenu("LoD Harmonisation");
     harmoniseMenu.add(new JMenuItem(new HarmonisationFrameAction()));
+    JMenu utilMenu = new JMenu("Tools");
+    utilMenu.add(new JMenuItem(new CreateFeatureTypeAction()));
     menu.add(analysisMenu);
     menu.add(harmoniseMenu);
-    // TODO Auto-generated method stub
+    menu.add(utilMenu);
+
     application.getMainFrame().getMenuBar()
         .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
@@ -172,55 +181,8 @@ public class OSMPlugin implements ProjectFramePlugin,
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      JFileChooser fc = new JFileChooser();
-      fc.setFileFilter(new OsmFileFilter());
-      fc.setCurrentDirectory(new File("src/main/resources/XML/"));
-      int returnVal = fc.showSaveDialog(CartagenApplication.getInstance()
-          .getFrame());
-      if (returnVal != JFileChooser.APPROVE_OPTION) {
-        return;
-      }
-      File file = fc.getSelectedFile();
-      CartAGenDoc doc = CartAGenDoc.getInstance();
-      String name = null;
-      if (doc.getName() == null) {
-        name = file.getName().substring(0, file.getName().length() - 4);
-        doc.setName(name);
-        doc.setPostGisDb(PostgisDB.get(name, true));
-      }
-      // build database & dataset
-      CartAGenDoc.getInstance().setZone(new DataSetZone(name, null));
-      // create the new CartAGen dataset
-      final OpenStreetMapDb database = new OpenStreetMapDb(name);
-      database.setSourceDLM(SourceDLM.OpenStreetMap);
-      database.setSymboScale(25000);
-      database.setDocument(CartAGenDoc.getInstance());
-      OsmDataset dataset = new OsmDataset();
-      CartAGenDoc.getInstance().addDatabase(name, database);
-      CartAGenDoc.getInstance().setCurrentDataset(dataset);
-      database.setDataSet(dataset);
-      database.setType(new DigitalCartographicModel());
-
-      fillLayersTask = new Runnable() {
-        public void run() {
-          try {
-            addOsmDatabaseToFrame(database);
-          } catch (JAXBException e) {
-            e.printStackTrace();
-          }
-          application.getMainFrame().getGui().setCursor(null);
-        }
-      };
-
-      loader = new OSMLoader(file, dataset, fillLayersTask);
-      createDialog();
-      loader.setDialog(dialog);
-      dialog.setVisible(true);
-      application.getMainFrame().getGui()
-          .setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-      loader.addPropertyChangeListener(this);
-      loader.execute();
-
+      ImportOsmFileFrame frame = new ImportOsmFileFrame(this);
+      frame.setVisible(true);
     }
 
     public ImportOSMFileAction() {
@@ -265,6 +227,146 @@ public class OSMPlugin implements ProjectFramePlugin,
       dialog = new JDialog(application.getMainFrame().getGui());
       dialog.add(panel);
       dialog.pack();
+    }
+
+    class ImportOsmFileFrame extends JFrame implements ActionListener {
+
+      /****/
+      private static final long serialVersionUID = 1L;
+      private JTextField txtPath, txtEpsg;
+      private File file;
+      private JButton browseBtn, usedBtn;
+      private JComboBox usedCombo;
+      private ImportOSMFileAction action;
+      private Map<String, String> currentProjections = new HashMap<String, String>();
+
+      public ImportOsmFileFrame(ImportOSMFileAction action) {
+        super((String) action.getValue(Action.NAME));
+        this.action = action;
+        Icon icon = new ImageIcon(
+            CartAGenDataSet.class.getResource("/images/browse.jpeg"));
+        this.setAlwaysOnTop(true);
+        currentProjections.put("Lambert93", "2154");
+        currentProjections.put("UTM 18N", "32618");
+        currentProjections.put("UTM 51N", "32651");
+        this.setPreferredSize(new Dimension(350, 150));
+
+        JPanel filePanel = new JPanel();
+        txtPath = new JTextField();
+        txtPath.setPreferredSize(new Dimension(120, 20));
+        txtPath.setMaximumSize(new Dimension(120, 20));
+        txtPath.setMinimumSize(new Dimension(120, 20));
+        browseBtn = new JButton(icon);
+        browseBtn.addActionListener(this);
+        browseBtn.setActionCommand("browse");
+        filePanel.add(txtPath);
+        filePanel.add(browseBtn);
+        filePanel.setLayout(new BoxLayout(filePanel, BoxLayout.X_AXIS));
+
+        JPanel epsgPanel = new JPanel();
+        txtEpsg = new JTextField();
+        txtEpsg.setPreferredSize(new Dimension(60, 20));
+        txtEpsg.setMaximumSize(new Dimension(60, 20));
+        txtEpsg.setMinimumSize(new Dimension(60, 20));
+        txtEpsg.setText("2154");
+        usedBtn = new JButton("<-");
+        usedBtn.addActionListener(this);
+        usedBtn.setActionCommand("used");
+        usedCombo = new JComboBox(currentProjections.keySet().toArray());
+        usedCombo.setPreferredSize(new Dimension(130, 20));
+        usedCombo.setMaximumSize(new Dimension(130, 20));
+        usedCombo.setMinimumSize(new Dimension(130, 20));
+        epsgPanel.add(new JLabel("EPSG of projection: "));
+        epsgPanel.add(txtEpsg);
+        epsgPanel.add(Box.createHorizontalGlue());
+        epsgPanel.add(usedBtn);
+        epsgPanel.add(usedCombo);
+        epsgPanel.setLayout(new BoxLayout(epsgPanel, BoxLayout.X_AXIS));
+
+        // define a panel with the OK and Cancel buttons
+        JPanel btnPanel = new JPanel();
+        JButton okBtn = new JButton("OK");
+        okBtn.addActionListener(this);
+        okBtn.setActionCommand("ok");
+        JButton cancelBtn = new JButton(I18N.getString("MainLabels.lblCancel"));
+        cancelBtn.addActionListener(this);
+        cancelBtn.setActionCommand("cancel");
+        btnPanel.add(okBtn);
+        btnPanel.add(cancelBtn);
+        btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
+
+        this.getContentPane().add(filePanel);
+        this.getContentPane().add(Box.createVerticalGlue());
+        this.getContentPane().add(epsgPanel);
+        this.getContentPane().add(Box.createVerticalGlue());
+        this.getContentPane().add(btnPanel);
+        this.getContentPane().setLayout(
+            new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+        this.pack();
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("ok")) {
+          setVisible(false);
+          CartAGenDoc doc = CartAGenDoc.getInstance();
+          String name = null;
+          if (doc.getName() == null) {
+            name = file.getName().substring(0, file.getName().length() - 4);
+            doc.setName(name);
+            doc.setPostGisDb(PostgisDB.get(name, true));
+          }
+          // build database & dataset
+          CartAGenDoc.getInstance().setZone(new DataSetZone(name, null));
+          // create the new CartAGen dataset
+          final OpenStreetMapDb database = new OpenStreetMapDb(name);
+          database.setSourceDLM(SourceDLM.OpenStreetMap);
+          database.setSymboScale(25000);
+          database.setDocument(CartAGenDoc.getInstance());
+          OsmDataset dataset = new OsmDataset();
+          CartAGenDoc.getInstance().addDatabase(name, database);
+          CartAGenDoc.getInstance().setCurrentDataset(dataset);
+          database.setDataSet(dataset);
+          database.setType(new DigitalCartographicModel());
+
+          fillLayersTask = new Runnable() {
+            public void run() {
+              try {
+                addOsmDatabaseToFrame(database);
+              } catch (JAXBException e) {
+                e.printStackTrace();
+              }
+              application.getMainFrame().getGui().setCursor(null);
+            }
+          };
+          String epsg = txtEpsg.getText();
+          loader = new OSMLoader(file, dataset, fillLayersTask, epsg);
+          createDialog();
+          loader.setDialog(dialog);
+          dialog.setVisible(true);
+          application.getMainFrame().getGui()
+              .setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+          loader.addPropertyChangeListener(action);
+          loader.execute();
+        } else if (e.getActionCommand().equals("cancel")) {
+          dispose();
+        } else if (e.getActionCommand().equals("browse")) {
+          JFileChooser fc = new JFileChooser();
+          fc.setFileFilter(new OsmFileFilter());
+          fc.setCurrentDirectory(new File("src/main/resources/XML/"));
+          int returnVal = fc.showSaveDialog(CartagenApplication.getInstance()
+              .getFrame());
+          if (returnVal != JFileChooser.APPROVE_OPTION) {
+            return;
+          }
+          file = fc.getSelectedFile();
+          this.txtPath.setText(file.getAbsolutePath());
+        } else if (e.getActionCommand().equals("used")) {
+          txtEpsg.setText(currentProjections.get(usedCombo.getSelectedItem()));
+        }
+
+      }
+
     }
   }
 
@@ -880,7 +982,62 @@ public class OSMPlugin implements ProjectFramePlugin,
             "sld/natural_sld.xml")); //$NON-NLS-1$
     for (Layer layer : naturalSld.getLayers())
       defaultSld.add(layer);
+    // load leisure sld
+    StyledLayerDescriptor leisureSld = StyledLayerDescriptor
+        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
+            "sld/leisure_sld.xml")); //$NON-NLS-1$
+    for (Layer layer : leisureSld.getLayers())
+      defaultSld.add(layer);
+    // load airport sld
+    StyledLayerDescriptor airportSld = StyledLayerDescriptor
+        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
+            "sld/airport_sld.xml")); //$NON-NLS-1$
+    for (Layer layer : airportSld.getLayers())
+      defaultSld.add(layer);
     // TODO fill with the other SLDs
     return defaultSld;
   }
+
+  /**
+   * Create the complete feature type attributes from the existing tags in the
+   * dataset for each layer.
+   * 
+   * @author GTouya
+   * 
+   */
+  class CreateFeatureTypeAction extends AbstractAction {
+
+    /**
+   * 
+   */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      StyledLayerDescriptor sld = application.getMainFrame()
+          .getSelectedProjectFrame().getSld();
+      for (Layer layer : sld.getLayers()) {
+        // get layer feature type
+        GF_FeatureType ft = layer.getFeatureCollection().getFeatureType();
+        // add the default metadata as attribute
+        ft.addFeatureAttribute(new AttributeType("osmId", "Long"));
+        ft.addFeatureAttribute(new AttributeType("contributor", "String"));
+        ft.addFeatureAttribute(new AttributeType("changeSet", "Integer"));
+        ft.addFeatureAttribute(new AttributeType("version", "Integer"));
+        ft.addFeatureAttribute(new AttributeType("uid", "Integer"));
+        ft.addFeatureAttribute(new AttributeType("date", "Date"));
+        // add the tags as attribute
+        Set<String> layerTags = new HashSet<String>();
+        for (IFeature feat : layer.getFeatureCollection())
+          layerTags.addAll(((OsmGeneObj) feat).getTags().keySet());
+        for (String tag : layerTags)
+          ft.addFeatureAttribute(new AttributeType(tag, "String"));
+      }
+    }
+
+    public CreateFeatureTypeAction() {
+      this.putValue(Action.NAME, "Create FeatureType information");
+    }
+  }
+
 }
