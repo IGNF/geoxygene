@@ -85,7 +85,12 @@
                 <version>2.3</version>
                 <configuration>
                     <archive>
-                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                        <!-- <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile> -->
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</mainClass>
+                        </manifest>
                     </archive>
                     <useUniqueVersions>false</useUniqueVersions>
                     <!-- <finalName>GeOxygene-1.6-SNAPSHOT</finalName> --> 
@@ -116,9 +121,6 @@
                                    </condition>
                                 </fail>
                                 
-                                
-                                
-                            
                                 <echo>Suppression du répertoire ${dir.executable}</echo>
                                 <delete dir="${dir.executable}" />
                                  
