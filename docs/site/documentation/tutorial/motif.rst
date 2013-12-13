@@ -96,15 +96,18 @@ Des exemples de constructions de tels styles sont disponibles dans la classe
 
 Des fichiers SLD avec des exemples de styles sont également disponibles dans les ressources du module appli (dossier sld).
 
-.. literalinclude:: /documentation/resources/code_src/SLDDemoApplication.java
-        :language: java
+.. literalinclude:: ../../../../geoxygene-appli/src/main/java/fr/ign/cogit/geoxygene/appli/example/SLDDemoApplication.java
+    :linenos:
+    :language: java
+    :lines: 277-333
 
 
+    
 
 Bibliographie
 ****************************
-*OpenGIS Styled Layer Descriptor Profile of the Web Map Service Implementation Specification, Version 1.1.0, Norme de l’Open Geospatial Consortium (OGC)
-*OpenGIS Symbology Encoding Implementation Specification , Version 1.1.0, Norme de l’Open Geospatial Consortium (OGC)
+* OpenGIS Styled Layer Descriptor Profile of the Web Map Service Implementation Specification, Version 1.1.0, Norme de l’Open Geospatial Consortium (OGC)
+* OpenGIS Symbology Encoding Implementation Specification , Version 1.1.0, Norme de l’Open Geospatial Consortium (OGC)
 
 
 

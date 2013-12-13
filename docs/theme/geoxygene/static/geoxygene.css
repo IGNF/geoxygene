@@ -568,3 +568,13 @@ div.sphinxsidebar input {
   margin-right: 0;
 }
 
+li.toctree-l2::before {
+  content: "๑";
+  padding-right: 5px;
+  color:#0257A6;
+}
+
+li.toctree-l2 {
+  list-style-type: none;
+  /* margin-left:48px; */
+}
