@@ -1034,6 +1034,12 @@ public class OSMPlugin implements ProjectFramePlugin,
             "sld/airport_sld.xml")); //$NON-NLS-1$
     for (Layer layer : airportSld.getLayers())
       defaultSld.add(layer);
+    // load amenity sld
+    StyledLayerDescriptor amenitySld = StyledLayerDescriptor
+        .unmarshall(OSMLoader.class.getClassLoader().getResourceAsStream(
+            "sld/amenity_sld.xml")); //$NON-NLS-1$
+    for (Layer layer : amenitySld.getLayers())
+      defaultSld.add(layer);
     // TODO fill with the other SLDs
     return defaultSld;
   }
