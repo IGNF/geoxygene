@@ -53,6 +53,8 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 import com.vividsolutions.jts.geom.Geometry;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
@@ -178,11 +180,57 @@ public class OSMPlugin implements ProjectFramePlugin,
     private JLabel taskLabel;
     private OSMLoader loader;
     private OsmLoadingTask currentTask = OsmLoadingTask.POINTS;
+    
+    public File osmFile;
+    public String epsg;
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      ImportOsmFileFrame frame = new ImportOsmFileFrame(this);
-      frame.setVisible(true);
+      ImportOsmFileFrame dialogImportOsmFrame = new ImportOsmFileFrame(this);
+      if (dialogImportOsmFrame.getAction().equals("OK")) {
+        //
+        CartAGenDoc doc = CartAGenDoc.getInstance();
+        String name = null;
+        if (doc.getName() == null) {
+          name = osmFile.getName().substring(0, osmFile.getName().length() - 4);
+          doc.setName(name);
+          doc.setPostGisDb(PostgisDB.get(name, true));
+        }
+
+        // build database & dataset
+        CartAGenDoc.getInstance().setZone(new DataSetZone(name, null));
+
+        // create the new CartAGen dataset
+        final OpenStreetMapDb database = new OpenStreetMapDb(name);
+        database.setSourceDLM(SourceDLM.OpenStreetMap);
+        database.setSymboScale(25000);
+        database.setDocument(CartAGenDoc.getInstance());
+        OsmDataset dataset = new OsmDataset();
+        CartAGenDoc.getInstance().addDatabase(name, database);
+        CartAGenDoc.getInstance().setCurrentDataset(dataset);
+        database.setDataSet(dataset);
+        database.setType(new DigitalCartographicModel());
+
+        fillLayersTask = new Runnable() {
+          public void run() {
+            try {
+              addOsmDatabaseToFrame(database);
+            } catch (JAXBException e) {
+              e.printStackTrace();
+            }
+            application.getMainFrame().getGui().setCursor(null);
+          }
+        };
+
+        loader = new OSMLoader(osmFile, dataset, fillLayersTask, epsg);
+        createDialog();
+        loader.setDialog(dialog);
+        dialog.setVisible(true);
+        application.getMainFrame().getGui().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        loader.addPropertyChangeListener(this); 
+        loader.execute();
+
+      }
     }
 
     public ImportOSMFileAction() {
@@ -229,142 +277,134 @@ public class OSMPlugin implements ProjectFramePlugin,
       dialog.pack();
     }
 
-    class ImportOsmFileFrame extends JFrame implements ActionListener {
+    class ImportOsmFileFrame extends JDialog implements ActionListener {
 
-      /****/
+      /** Serial version UID. */
       private static final long serialVersionUID = 1L;
-      private JTextField txtPath, txtEpsg;
-      private File file;
-      private JButton browseBtn, usedBtn;
-      private JComboBox usedCombo;
-      private ImportOSMFileAction action;
-      private Map<String, String> currentProjections = new HashMap<String, String>();
 
-      public ImportOsmFileFrame(ImportOSMFileAction action) {
-        super((String) action.getValue(Action.NAME));
-        this.action = action;
-        Icon icon = new ImageIcon(
-            CartAGenDataSet.class.getResource("/images/browse.jpeg"));
-        this.setAlwaysOnTop(true);
+      ImportOSMFileAction importPlugin;
+      
+      private String action;
+      
+      /** Fields. */
+      private JTextField txtPath, txtEpsg;
+      private Map<String, String> currentProjections = new HashMap<String, String>();
+      private JButton browseBtn, usedBtn, cancelBtn, okBtn;
+      private JComboBox usedCombo;
+
+      /**
+       * Constructor, build the frame.
+       * @param importPlugin
+       */
+      public ImportOsmFileFrame(ImportOSMFileAction importPlugin) {
+        this.importPlugin = importPlugin;
+        
+        setModal(true);
+        setTitle("Import OSM File");
+        setIconImage(new ImageIcon(
+                GeOxygeneApplication.class.getResource("/images/icons/map_add.png")).getImage());
+        
+        initPanel();
+        
+        pack();
+        setLocation(300, 300);
+        setSize(600, 200);
+        setVisible(true);
+      }
+
+      @Override
+      public void actionPerformed(ActionEvent evt) {
+          Object source = evt.getSource();
+          if (source == cancelBtn) {
+            dispose();
+          } else if (source == usedBtn) {
+            txtEpsg.setText(currentProjections.get(usedCombo.getSelectedItem()));
+          } else if (source == browseBtn) {
+            JFileChooser fc = new JFileChooser();
+            fc.setFileFilter(new OsmFileFilter());
+            // fc.setCurrentDirectory(new File("src/main/resources/XML/"));
+            fc.setCurrentDirectory(new File(application.getProperties().getLastOpenedFile()));
+            int returnVal = fc.showSaveDialog(CartagenApplication.getInstance().getFrame());
+            if (returnVal != JFileChooser.APPROVE_OPTION) {
+              return;
+            }
+            File file = fc.getSelectedFile();
+            this.txtPath.setText(file.getAbsolutePath());
+          } else if (source == okBtn) {
+            action = "OK";
+            importPlugin.epsg = txtEpsg.getText();
+            importPlugin.osmFile = new File(txtPath.getText());
+            dispose();
+          }
+      }
+      
+      /**
+       * Initialize and display fields.
+       */
+      private void initPanel() {
+        
+        FormLayout layout = new FormLayout(
+            "20dlu, pref, pref, 10dlu, pref, pref, pref, pref, pref, pref, 20dlu",  // Colonnes
+            "10dlu, pref, pref, 20dlu, pref, 20dlu");  // Lignes
+        setLayout(layout);
+        
+        CellConstraints cc = new CellConstraints();
+        
         currentProjections.put("Lambert93", "2154");
         currentProjections.put("UTM 18N", "32618");
         currentProjections.put("UTM 51N", "32651");
         this.setPreferredSize(new Dimension(350, 150));
 
-        JPanel filePanel = new JPanel();
-        txtPath = new JTextField();
-        txtPath.setPreferredSize(new Dimension(120, 20));
-        txtPath.setMaximumSize(new Dimension(120, 20));
-        txtPath.setMinimumSize(new Dimension(120, 20));
-        browseBtn = new JButton(icon);
+        // JPanel filePanel = new JPanel();
+        add(new JLabel("File : "), cc.xy(2, 2));
+        txtPath = new JTextField(40);
+        add(txtPath, cc.xyw(3, 2, 6));
+        browseBtn = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/magnifier.png")));
         browseBtn.addActionListener(this);
         browseBtn.setActionCommand("browse");
-        filePanel.add(txtPath);
-        filePanel.add(browseBtn);
-        filePanel.setLayout(new BoxLayout(filePanel, BoxLayout.X_AXIS));
+        add(browseBtn, cc.xy(9, 2));
+        add(new JLabel(" (*.osm) "), cc.xy(10, 2));
 
-        JPanel epsgPanel = new JPanel();
+        add(new JLabel("EPSG of projection: "), cc.xy(2, 3));
         txtEpsg = new JTextField();
         txtEpsg.setPreferredSize(new Dimension(60, 20));
         txtEpsg.setMaximumSize(new Dimension(60, 20));
         txtEpsg.setMinimumSize(new Dimension(60, 20));
         txtEpsg.setText("2154");
-        usedBtn = new JButton("<-");
+        add(txtEpsg, cc.xy(3, 3));
+        
+        add(new JLabel("( "), cc.xy(5, 3));
+        usedBtn = new JButton("<<");
         usedBtn.addActionListener(this);
         usedBtn.setActionCommand("used");
+        add(usedBtn, cc.xy(6, 3));
         usedCombo = new JComboBox(currentProjections.keySet().toArray());
         usedCombo.setPreferredSize(new Dimension(130, 20));
         usedCombo.setMaximumSize(new Dimension(130, 20));
         usedCombo.setMinimumSize(new Dimension(130, 20));
-        epsgPanel.add(new JLabel("EPSG of projection: "));
-        epsgPanel.add(txtEpsg);
-        epsgPanel.add(Box.createHorizontalGlue());
-        epsgPanel.add(usedBtn);
-        epsgPanel.add(usedCombo);
-        epsgPanel.setLayout(new BoxLayout(epsgPanel, BoxLayout.X_AXIS));
+        add(usedCombo, cc.xy(7, 3));
+        add(new JLabel(" )  "), cc.xy(8, 3));
 
-        // define a panel with the OK and Cancel buttons
+        // Define a panel with the OK and Cancel buttons
         JPanel btnPanel = new JPanel();
-        JButton okBtn = new JButton("OK");
+        okBtn = new JButton("OK");
         okBtn.addActionListener(this);
         okBtn.setActionCommand("ok");
-        JButton cancelBtn = new JButton(I18N.getString("MainLabels.lblCancel"));
+        cancelBtn = new JButton(I18N.getString("MainLabels.lblCancel"));
         cancelBtn.addActionListener(this);
         cancelBtn.setActionCommand("cancel");
         btnPanel.add(okBtn);
         btnPanel.add(cancelBtn);
         btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
-
-        this.getContentPane().add(filePanel);
-        this.getContentPane().add(Box.createVerticalGlue());
-        this.getContentPane().add(epsgPanel);
-        this.getContentPane().add(Box.createVerticalGlue());
-        this.getContentPane().add(btnPanel);
-        this.getContentPane().setLayout(
-            new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-        this.pack();
+        add(btnPanel, cc.xy(7, 5));
+        
       }
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("ok")) {
-          setVisible(false);
-          CartAGenDoc doc = CartAGenDoc.getInstance();
-          String name = null;
-          if (doc.getName() == null) {
-            name = file.getName().substring(0, file.getName().length() - 4);
-            doc.setName(name);
-            doc.setPostGisDb(PostgisDB.get(name, true));
-          }
-          // build database & dataset
-          CartAGenDoc.getInstance().setZone(new DataSetZone(name, null));
-          // create the new CartAGen dataset
-          final OpenStreetMapDb database = new OpenStreetMapDb(name);
-          database.setSourceDLM(SourceDLM.OpenStreetMap);
-          database.setSymboScale(25000);
-          database.setDocument(CartAGenDoc.getInstance());
-          OsmDataset dataset = new OsmDataset();
-          CartAGenDoc.getInstance().addDatabase(name, database);
-          CartAGenDoc.getInstance().setCurrentDataset(dataset);
-          database.setDataSet(dataset);
-          database.setType(new DigitalCartographicModel());
-
-          fillLayersTask = new Runnable() {
-            public void run() {
-              try {
-                addOsmDatabaseToFrame(database);
-              } catch (JAXBException e) {
-                e.printStackTrace();
-              }
-              application.getMainFrame().getGui().setCursor(null);
-            }
-          };
-          String epsg = txtEpsg.getText();
-          loader = new OSMLoader(file, dataset, fillLayersTask, epsg);
-          createDialog();
-          loader.setDialog(dialog);
-          dialog.setVisible(true);
-          application.getMainFrame().getGui()
-              .setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-          loader.addPropertyChangeListener(action);
-          loader.execute();
-        } else if (e.getActionCommand().equals("cancel")) {
-          dispose();
-        } else if (e.getActionCommand().equals("browse")) {
-          JFileChooser fc = new JFileChooser();
-          fc.setFileFilter(new OsmFileFilter());
-          fc.setCurrentDirectory(new File("src/main/resources/XML/"));
-          int returnVal = fc.showSaveDialog(CartagenApplication.getInstance()
-              .getFrame());
-          if (returnVal != JFileChooser.APPROVE_OPTION) {
-            return;
-          }
-          file = fc.getSelectedFile();
-          this.txtPath.setText(file.getAbsolutePath());
-        } else if (e.getActionCommand().equals("used")) {
-          txtEpsg.setText(currentProjections.get(usedCombo.getSelectedItem()));
-        }
-
+      
+      /**
+       * @return name of action (ok, cancel).
+       */
+      public String getAction() {
+        return action;
       }
 
     }
