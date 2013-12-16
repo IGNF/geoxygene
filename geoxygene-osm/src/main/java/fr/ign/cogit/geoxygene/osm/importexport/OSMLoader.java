@@ -40,7 +40,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.util.CRSConversion;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -121,7 +120,11 @@ public class OSMLoader extends SwingWorker<Void, Void> {
       this.logger.fine(this.nbWays + "ways");
       this.logger.fine(this.nbRels + "relations");
     }
-    this.convertResourcesToGeneObjs();
+    try {
+      this.convertResourcesToGeneObjs();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -408,7 +411,6 @@ public class OSMLoader extends SwingWorker<Void, Void> {
     this.setProgress(0);
     // get the Gene Obj factory
     OSMSchemaFactory factory = new OSMSchemaFactory();
-    CartagenApplication.getInstance().setCreationFactory(factory);
     // the conversion is made mapping-by-mapping
     int i = 0;
     for (OsmMatching matching : mapping.getMatchings()) {

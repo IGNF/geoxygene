@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StyledLayerDescriptor version="1.0.20">
+  <NamedLayer>
+    <Name>schools</Name>
+    <UserStyle>
+      <Name>schools</Name>
+      <FeatureTypeStyle>
+        <Rule>
+			<Filter>
+				<Or>
+				<PropertyIsEqualTo>
+					<PropertyName>amenity</PropertyName>
+					<Literal>school</Literal>
+				</PropertyIsEqualTo>
+				<PropertyIsEqualTo>
+					<PropertyName>amenity</PropertyName>
+					<Literal>university</Literal>
+				</PropertyIsEqualTo>				
+				</Or>
+			</Filter>
+	      <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill-opacity">0.6</CssParameter>
+              <CssParameter name="fill">#f0f0d8</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#a52a2a</CssParameter>
+              <CssParameter name="stroke-width">0.3</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>  
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>	
+  <NamedLayer>
+    <Name>hospitals</Name>
+    <UserStyle>
+      <Name>hospitals</Name>
+      <FeatureTypeStyle>
+        <Rule>
+			<Filter>
+				<PropertyIsEqualTo>
+					<PropertyName>amenity</PropertyName>
+					<Literal>hospital</Literal>
+				</PropertyIsEqualTo>
+			</Filter>
+	      <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill-opacity">0.6</CssParameter>
+              <CssParameter name="fill">#f0f0d8</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#a52a2a</CssParameter>
+              <CssParameter name="stroke-width">0.3</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>  
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>	  
+</StyledLayerDescriptor>

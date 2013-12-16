@@ -53,6 +53,8 @@ import fr.ign.cogit.geoxygene.osm.schema.aero.OsmRunwayArea;
 import fr.ign.cogit.geoxygene.osm.schema.aero.OsmRunwayLine;
 import fr.ign.cogit.geoxygene.osm.schema.aero.OsmTaxiwayArea;
 import fr.ign.cogit.geoxygene.osm.schema.aero.OsmTaxiwayLine;
+import fr.ign.cogit.geoxygene.osm.schema.amenity.OsmHospital;
+import fr.ign.cogit.geoxygene.osm.schema.amenity.OsmSchool;
 import fr.ign.cogit.geoxygene.osm.schema.hydro.OsmWaterArea;
 import fr.ign.cogit.geoxygene.osm.schema.hydro.OsmWaterLine;
 import fr.ign.cogit.geoxygene.osm.schema.landuse.OsmSimpleLandUseArea;
@@ -191,6 +193,16 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
       return new OsmCemetery(poly);
+    }
+    if (OsmSchool.class.isAssignableFrom(classObj)) {
+      IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
+          nodes);
+      return new OsmSchool(poly);
+    }
+    if (OsmHospital.class.isAssignableFrom(classObj)) {
+      IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
+          nodes);
+      return new OsmHospital(poly);
     }
     // TODO
     return null;

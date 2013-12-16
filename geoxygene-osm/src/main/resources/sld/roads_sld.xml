@@ -145,7 +145,24 @@
             </Stroke>
           </LineSymbolizer>
         </Rule>
-      </FeatureTypeStyle>		  
+      </FeatureTypeStyle>	
+       <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>service</Literal>
+              </PropertyIsEqualTo>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#999999</CssParameter>
+              <CssParameter name="stroke-width">7</CssParameter>
+                <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>	      	  
     </UserStyle>	
     <UserStyle>
       <Name>roads_fill</Name>
@@ -171,7 +188,24 @@
             </Stroke>
           </LineSymbolizer>
         </Rule>
-      </FeatureTypeStyle>		  
+      </FeatureTypeStyle>	
+       <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>service</Literal>
+              </PropertyIsEqualTo>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#ffffff</CssParameter>
+              <CssParameter name="stroke-width">4.6</CssParameter>
+                <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>      	  
 	  <FeatureTypeStyle> 
 		<Rule>
           <Filter>

@@ -25,6 +25,8 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
+import fr.ign.cogit.geoxygene.osm.schema.amenity.OsmHospital;
+import fr.ign.cogit.geoxygene.osm.schema.amenity.OsmSchool;
 import fr.ign.cogit.geoxygene.osm.schema.urban.OsmCemetery;
 
 /**
@@ -338,6 +340,18 @@ public class OsmMapping {
         OsmCemetery.class, GeometryType.POLYGON);
     graveyardMatching.addTagValue("grave_yard");
     this.matchings.add(graveyardMatching);
+
+    // schools
+    OsmMatching schoolMatching = new OsmMatching("amenity", OsmSchool.class,
+        GeometryType.POLYGON);
+    schoolMatching.addTagValue("school");
+    schoolMatching.addTagValue("university");
+    this.matchings.add(schoolMatching);
+    // hospitals
+    OsmMatching hospitalMatching = new OsmMatching("amenity",
+        OsmHospital.class, GeometryType.POLYGON);
+    hospitalMatching.addTagValue("hospital");
+    this.matchings.add(hospitalMatching);
     // TODO à remplir
   }
 

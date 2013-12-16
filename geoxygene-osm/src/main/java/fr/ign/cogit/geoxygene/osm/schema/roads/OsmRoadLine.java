@@ -11,6 +11,7 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
+import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
@@ -182,6 +183,12 @@ public class OsmRoadLine extends OsmNetworkSection implements IRoadLine {
   @Transient
   public IFeature getGeoxObj() {
     return this.geoxObj;
+  }
+
+  @Override
+  public IGeometry getSymbolGeom() {
+    return super.getGeom().buffer(
+        getWidth() * Legend.getSYMBOLISATI0N_SCALE() / 2000);
   }
 
 }

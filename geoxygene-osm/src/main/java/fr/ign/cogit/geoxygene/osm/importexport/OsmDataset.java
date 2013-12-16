@@ -6,6 +6,8 @@ import fr.ign.cogit.cartagen.core.genericschema.road.ICycleWay;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.osm.schema.amenity.OsmHospital;
+import fr.ign.cogit.geoxygene.osm.schema.amenity.OsmSchool;
 import fr.ign.cogit.geoxygene.osm.schema.urban.OsmCemetery;
 
 public class OsmDataset extends CartAGenDataSet {
@@ -17,6 +19,8 @@ public class OsmDataset extends CartAGenDataSet {
   public static final String TREE_POINT_POP = "trees";
   public static final String CYCLEWAY_POP = "cycleWay";
   public static final String CEMETERY_POP = "cemeteries";
+  public static final String SCHOOL_POP = "schools";
+  public static final String HOSPITAL_POP = "hospitals";
 
   @Override
   public String getPopNameFromObj(IFeature obj) {
@@ -28,6 +32,12 @@ public class OsmDataset extends CartAGenDataSet {
     }
     if (obj instanceof OsmCemetery) {
       return OsmDataset.CEMETERY_POP;
+    }
+    if (obj instanceof OsmSchool) {
+      return OsmDataset.SCHOOL_POP;
+    }
+    if (obj instanceof OsmHospital) {
+      return OsmDataset.HOSPITAL_POP;
     }
     return super.getPopNameFromObj(obj);
   }
@@ -43,6 +53,12 @@ public class OsmDataset extends CartAGenDataSet {
     if (OsmCemetery.class.isAssignableFrom(classObj)) {
       return OsmDataset.CEMETERY_POP;
     }
+    if (OsmSchool.class.isAssignableFrom(classObj)) {
+      return OsmDataset.SCHOOL_POP;
+    }
+    if (OsmHospital.class.isAssignableFrom(classObj)) {
+      return OsmDataset.HOSPITAL_POP;
+    }
     return super.getPopNameFromClass(classObj);
   }
 
@@ -56,6 +72,12 @@ public class OsmDataset extends CartAGenDataSet {
     }
     if (featureType.equals(OsmCemetery.FEAT_TYPE_NAME)) {
       return OsmDataset.CEMETERY_POP;
+    }
+    if (featureType.equals(OsmSchool.FEAT_TYPE_NAME)) {
+      return OsmDataset.SCHOOL_POP;
+    }
+    if (featureType.equals(OsmHospital.FEAT_TYPE_NAME)) {
+      return OsmDataset.HOSPITAL_POP;
     }
     return super.getPopNameFromFeatType(featureType);
   }
@@ -91,6 +113,28 @@ public class OsmDataset extends CartAGenDataSet {
   public IPopulation<OsmCemetery> getCemeteries() {
     return (IPopulation<OsmCemetery>) this.getCartagenPop(
         OsmDataset.CEMETERY_POP, OsmCemetery.FEAT_TYPE_NAME);
+  }
+
+  /**
+   * Gets the schools of the dataset
+   * 
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<OsmSchool> getSchools() {
+    return (IPopulation<OsmSchool>) this.getCartagenPop(OsmDataset.SCHOOL_POP,
+        OsmSchool.FEAT_TYPE_NAME);
+  }
+
+  /**
+   * Gets the hospitals of the dataset
+   * 
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<OsmHospital> getHospitals() {
+    return (IPopulation<OsmHospital>) this.getCartagenPop(
+        OsmDataset.HOSPITAL_POP, OsmHospital.FEAT_TYPE_NAME);
   }
 
 }
