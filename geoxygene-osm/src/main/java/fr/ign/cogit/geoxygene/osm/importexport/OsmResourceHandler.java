@@ -27,6 +27,7 @@ public class OsmResourceHandler extends DefaultHandler {
   private int i = 0;
   private OSMResource resource;
   private long nbResources;
+  private int nbNodes = 0, nbWays = 0, nbRelations = 0;
   private ArrayList<Long> vertices;
   private List<OsmRelationMember> members;
   private TypeRelation type = TypeRelation.NON_DEF;;
@@ -62,6 +63,7 @@ public class OsmResourceHandler extends DefaultHandler {
       OSMNode geom = new OSMNode(lat, lon);
       resource.setGeom(geom);
       geom.setObjet(resource);
+      nbNodes++;
     } else if (qName.equals("way")) {
       // Sleep for up to one second.
       try {
@@ -71,6 +73,7 @@ public class OsmResourceHandler extends DefaultHandler {
       i++;
       resource = createResource(attributes);
       vertices = new ArrayList<Long>();
+      nbWays++;
     } else if (qName.equals("relation")) {
       // Sleep for up to one second.
       try {
@@ -80,6 +83,7 @@ public class OsmResourceHandler extends DefaultHandler {
       i++;
       resource = createResource(attributes);
       members = new ArrayList<OsmRelationMember>();
+      nbRelations++;
     } else if (qName.equals("tag")) {
       // case of the relation type tag
       if (attributes.getValue("k").equals("type")) {
@@ -113,6 +117,10 @@ public class OsmResourceHandler extends DefaultHandler {
     } else {
       // do nothing for unknowns tags
     }
+    this.loader.setNbResources((int) nbResources);
+    this.loader.setNbNoeuds(nbNodes);
+    this.loader.setNbWays(nbWays);
+    this.loader.setNbRels(nbRelations);
   }
 
   private OSMResource createResource(Attributes attributes) {
@@ -126,7 +134,7 @@ public class OsmResourceHandler extends DefaultHandler {
     int changeSet = Integer.valueOf(attributes.getValue(OsmGeneObj.ATTR_SET));
     String contributeur = attributes.getValue(OsmGeneObj.ATTR_USER);
     int uid = 0;
-    if (!contributeur.equals("")) {
+    if (contributeur != null && !contributeur.equals("")) {
       uid = Integer.valueOf(attributes.getValue(OsmGeneObj.ATTR_UID));
     }
     String timeStamp = attributes.getValue(OsmGeneObj.ATTR_DATE);

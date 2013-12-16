@@ -97,7 +97,7 @@ public class OSMLoader extends SwingWorker<Void, Void> {
   double xCentr, yCentr;
   double surf;
   File file;
-  int nbNoeuds, nbWays, nbRels, nbResources;
+  private int nbNoeuds = 0, nbWays = 0, nbRels = 0, nbResources = 0;
 
   public OSMLoader(File fic, OsmDataset dataset, Runnable fillLayersTask,
       String epsg) {
@@ -579,6 +579,38 @@ public class OSMLoader extends SwingWorker<Void, Void> {
 
   public void setRelations(Set<OSMResource> relations) {
     this.relations = relations;
+  }
+
+  public int getNbNoeuds() {
+    return nbNoeuds;
+  }
+
+  public void setNbNoeuds(int nbNoeuds) {
+    this.nbNoeuds = nbNoeuds;
+  }
+
+  public int getNbWays() {
+    return nbWays;
+  }
+
+  public void setNbWays(int nbWays) {
+    this.nbWays = nbWays;
+  }
+
+  public int getNbRels() {
+    return nbRels;
+  }
+
+  public void setNbRels(int nbRels) {
+    this.nbRels = nbRels;
+  }
+
+  public int getNbResources() {
+    return nbResources;
+  }
+
+  public void setNbResources(int nbResources) {
+    this.nbResources = nbResources;
   }
 
 }
