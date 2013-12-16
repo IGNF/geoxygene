@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version="0.6" generator="osmconvert 0.7P" timestamp="2013-12-12T20:55:02Z">
+	
+  <node id="670195943" visible="true" version="1" changeset="4176402" timestamp="2010-03-20T05:58:55Z" 
+		user="Eric S" uid="45284" lat="42.8959309" lon="-0.4054379">
+    <tag k="description" v="Table d'orientation : Axe et sommet - Point vu en place en 1949"/>
+    <tag k="ele" v="2031.91"/>
+    <tag k="man_made" v="survey_point"/>
+    <tag k="note" v="Ne pas déplacer ce point, cf. - Do not move this node, see - 
+  		http://wiki.openstreetmap.org/wiki/WikiProject_France/Repères_Géodésiques#Permanence_des_rep.C3.A8res"/>
+    <tag k="ref" v="6432013 - 1"/>
+  	<tag k="source" v="©IGN 2010 dans le cadre de la cartographie réglementaire"/>
+  	<tag k="url"
+  		v="http://ancien-geodesie.ign.fr/fiche_point.asp?num_site=6432013&amp;no_ptg=01&amp;numero_f50=1547"/>
+  </node>
+ 	

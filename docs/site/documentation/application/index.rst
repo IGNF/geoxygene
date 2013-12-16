@@ -11,4 +11,5 @@ Application
    semiology
    3d
    data-matching
+   osm
 

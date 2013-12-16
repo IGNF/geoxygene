@@ -11,6 +11,15 @@ Ce tutoriel explique comment créer un plugin GeOxygene depuis un module Maven.
 
 Le plugin ajoute un nouveau bouton dans la barre de menu qui permet de lancer un filtre gaussien (lissage) sur un réseau linéaire. 
 
+Implémentation 
+********************
+
+.. container:: centerside
+     
+   .. figure:: /documentation/resources/img/plugin/class-diagram.png
+      :width: 1000px
+       
+      Figure 1 : Diagramme de classe des plugins dans GeOxygene
 
 
 pom.xml

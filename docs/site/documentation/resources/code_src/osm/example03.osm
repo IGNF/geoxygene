@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version="0.6" generator="osmconvert 0.7P" timestamp="2013-12-12T20:55:02Z">
+	
+	<way id="167651914" visible="true" version="1" changeset="11918076" timestamp="2012-06-16T18:39:15Z" 
+						user="Slyan" uid="342924">
+  		<nd ref="1790350049"/>
+  		<nd ref="1790350043"/>
+ 		<nd ref="1790350064"/>
+  		<nd ref="1790350066"/>
+  		<nd ref="1790350070"/>
+  		<nd ref="1790350072"/>
+  		<tag k="highway" v="track"/>
+ 	</way>
