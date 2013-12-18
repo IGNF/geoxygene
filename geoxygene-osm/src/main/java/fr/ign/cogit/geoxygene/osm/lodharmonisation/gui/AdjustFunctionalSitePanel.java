@@ -133,7 +133,6 @@ public class AdjustFunctionalSitePanel extends HarmonisationPanel {
           .getIncludeInstances();
       Set<LoDSpatialRelation> toExclude = detectionProcess
           .getExcludeInstances();
-      System.out.println(toExclude);
 
       // then, trigger the harmonisation process
       AdjustFunctionalSitesBounds process = new AdjustFunctionalSitesBounds(

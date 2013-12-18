@@ -114,10 +114,10 @@
 	                   <CssParameter name="fill">#777777</CssParameter>
 	                 </Fill>
 	               </Mark>
-	               <Size>25</Size>
+	               <Size>5</Size>
 	             </Graphic>
 	           </GraphicStroke>
-	           <CssParameter name="stroke-dasharray">7 5</CssParameter>
+	           <CssParameter name="stroke-dasharray">7 11</CssParameter>
 	           <CssParameter name="stroke-width">0</CssParameter>
 	           <CssParameter name="stroke-opacity">0</CssParameter>
 	         </Stroke>
@@ -146,10 +146,10 @@
 	                   <CssParameter name="stroke">#777777</CssParameter>
 	                 </Fill>
 	               </Mark>
-	               <Size>20</Size>
+	               <Size>8</Size>
 	             </Graphic>
 	           </GraphicStroke>
-	           <CssParameter name="stroke-dasharray">8 4</CssParameter>
+	           <CssParameter name="stroke-dasharray">8 10</CssParameter>
 	           <CssParameter name="stroke-width">0</CssParameter>
 	           <CssParameter name="stroke-opacity">0</CssParameter>
 	         </Stroke>
