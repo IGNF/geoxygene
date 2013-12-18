@@ -429,6 +429,12 @@ public final class RenderUtil {
         }
       } else {
         // GraphicStroke
+        float[] dashArray = symbolizer.getStroke().getStrokeDashArray(
+            (float) scaleUOMToPixels);
+        double space = 0.0;
+        if (dashArray != null) {
+          space = dashArray[1];
+        }
         List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, false);
         if (shapes != null) {
           List<Graphic> graphicList = ((GraphicStroke) symbolizer.getStroke()
@@ -436,7 +442,7 @@ public final class RenderUtil {
           for (Graphic graphic : graphicList) {
             for (Shape shape : shapes) {
               graphicStrokeLineString(shape, graphic, viewport, graphics,
-                  opacity);
+                  opacity, space);
             }
           }
         }
@@ -752,7 +758,7 @@ public final class RenderUtil {
   }
 
   private static void graphicStrokeLineString(Shape shape, Graphic graphic,
-      Viewport viewport, Graphics2D graphics, double opacity) {
+      Viewport viewport, Graphics2D graphics, double opacity, double space) {
     if (shape == null || viewport == null || graphic == null) {
       return;
     }
@@ -775,8 +781,9 @@ public final class RenderUtil {
       graphics.setColor(ColorUtil.getColorWithOpacity(
           mark.getFill().getColor(), opacity));
     }
+
     List<AffineTransform> transforms = getGraphicStrokeLineStringTransforms(
-        shape, size, 1, 1);
+        shape, size, 1, 1, space);
     for (AffineTransform t : transforms) {
       for (Shape markShape : shapes) {
         Shape tranlatedShape = t.createTransformedShape(markShape);
@@ -790,7 +797,7 @@ public final class RenderUtil {
     double width = node.getBounds().getWidth();
     double height = node.getBounds().getHeight();
     List<AffineTransform> transforms = getGraphicStrokeLineStringTransforms(
-        shape, size, width, height);
+        shape, size, width, height, 0.0);
     for (AffineTransform t : transforms) {
       AffineTransform tr = AffineTransform.getTranslateInstance(-node
           .getBounds().getMinX(), -node.getBounds().getMinY());
@@ -803,14 +810,23 @@ public final class RenderUtil {
   private static void graphicStrokeLineString(Shape shape, Image image,
       float size, Graphics2D graphics, double opacity) {
     List<AffineTransform> transforms = getGraphicStrokeLineStringTransforms(
-        shape, size, image.getWidth(null), image.getHeight(null));
+        shape, size, image.getWidth(null), image.getHeight(null), 0.0);
     for (AffineTransform t : transforms) {
       graphics.drawImage(image, t, null);
     }
   }
 
+  /**
+   * 
+   * @param shape the shape being drawn regularly on the stroke
+   * @param size the size of the shape
+   * @param width the width of the shape
+   * @param height the height of the shape
+   * @param space the space between two shapes on the stroke
+   * @return
+   */
   private static List<AffineTransform> getGraphicStrokeLineStringTransforms(
-      Shape shape, float size, double width, double height) {
+      Shape shape, float size, double width, double height, double space) {
     List<AffineTransform> transforms = new ArrayList<AffineTransform>();
     double shapeHeight = size;
     double factor = shapeHeight / height;
@@ -819,6 +835,7 @@ public final class RenderUtil {
         factor);
     AffineTransform translation = AffineTransform.getTranslateInstance(-(0.5)
         * width, -(0.5) * height);
+    transforms.add(translation);
     GeneralPath path = (GeneralPath) shape;
     PathIterator pathIterator = path.getPathIterator(null);
     IDirectPositionList points = new DirectPositionList();
@@ -830,20 +847,37 @@ public final class RenderUtil {
       }
       pathIterator.next();
     }
-    ILineString line = Operateurs.resampling(new GM_LineString(points),
-        shapeWidth);
-    for (int i = 0; i < line.sizeControlPoint() - 1; i++) {
-      IDirectPosition p1 = line.getControlPoint(i);
-      IDirectPosition p2 = line.getControlPoint(i + 1);
-      IDirectPosition p = new DirectPosition((p1.getX() + p2.getX()) / 2,
-          (p1.getY() + p2.getY()) / 2);
-      AffineTransform transform = AffineTransform.getTranslateInstance(
-          p.getX(), p.getY());
-      transform.concatenate(scaleTransform);
-      transform.concatenate(AffineTransform.getRotateInstance(new Angle(p1, p2)
-          .getValeur()));
-      transform.concatenate(translation);
-      transforms.add(transform);
+    // case with no space between symbols
+    if (space == 0.0) {
+      ILineString line = Operateurs.resampling(new GM_LineString(points),
+          shapeWidth);
+      for (int i = 0; i < line.sizeControlPoint() - 1; i++) {
+        IDirectPosition p1 = line.getControlPoint(i);
+        IDirectPosition p2 = line.getControlPoint(i + 1);
+        IDirectPosition p = new DirectPosition((p1.getX() + p2.getX()) / 2,
+            (p1.getY() + p2.getY()) / 2);
+        AffineTransform transform = AffineTransform.getTranslateInstance(
+            p.getX(), p.getY());
+        transform.concatenate(scaleTransform);
+        transform.concatenate(AffineTransform.getRotateInstance(new Angle(p1,
+            p2).getValeur()));
+        transform.concatenate(translation);
+        transforms.add(transform);
+      }
+    } else {
+      ILineString line = new GM_LineString(points);
+      IDirectPosition previous = line.coord().get(0);
+      for (double curv = 0.0; curv < line.length(); curv += space + shapeWidth) {
+        IDirectPosition p = Operateurs.pointEnAbscisseCurviligne(line, curv);
+        AffineTransform transform = AffineTransform.getTranslateInstance(
+            p.getX(), p.getY());
+        transform.concatenate(scaleTransform);
+        transform.concatenate(AffineTransform.getRotateInstance(new Angle(
+            previous, p).getValeur()));
+        // transform.concatenate(translation);
+        transforms.add(transform);
+        previous = p;
+      }
     }
     return transforms;
   }
@@ -1024,6 +1058,20 @@ public final class RenderUtil {
           }
         } else {
           // GraphicStroke
+          double scaleUOMToPixels = 1;
+          if (!symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
+            try {
+              scaleUOMToPixels = viewport.getModelToViewTransform().getScaleX();
+            } catch (NoninvertibleTransformException e) {
+              e.printStackTrace();
+            }
+          }
+          float[] dashArray = symbolizer.getStroke().getStrokeDashArray(
+              (float) scaleUOMToPixels);
+          double space = 0.0;
+          if (dashArray != null) {
+            space = dashArray[1];
+          }
           List<Shape> shapes = getShapeList(symbolizer, geometry, viewport,
               false);
           if (shapes != null) {
@@ -1032,7 +1080,7 @@ public final class RenderUtil {
             for (Graphic graphic : graphicList) {
               for (Shape shape : shapes) {
                 graphicStrokeLineString(shape, graphic, viewport, graphics,
-                    opacity);
+                    opacity, space);
               }
             }
           }
