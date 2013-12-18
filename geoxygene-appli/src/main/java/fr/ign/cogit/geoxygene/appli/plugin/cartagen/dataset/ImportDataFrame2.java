@@ -7,7 +7,7 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.geoxygene.appli.plugin.cartagen;
+package fr.ign.cogit.geoxygene.appli.plugin.cartagen.dataset;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -48,6 +48,7 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.LoadingFrame
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolsUtil;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 
 public class ImportDataFrame2 extends JFrame implements ActionListener {
 

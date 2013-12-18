@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.appli.plugin.cartagen;
+package fr.ign.cogit.geoxygene.appli.plugin.cartagen.dataset;
 
 import java.io.IOException;
 
@@ -27,6 +27,7 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolsUtil;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 public class CartAGenLoader {

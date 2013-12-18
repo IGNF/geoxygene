@@ -560,7 +560,7 @@ public class LayerFactory {
   // builder propre
   public static Style createStyle(String name, String attrName,
       Color textColor, Font font, Color haloColor, float haloRadius,
-      float dxPlacement, float dyPlacement) {
+      float dxPlacement, float dyPlacement, float rotation) {
     UserStyle style = new UserStyle();
     style.setName(name);
     FeatureTypeStyle fts = new FeatureTypeStyle();
@@ -591,6 +591,7 @@ public class LayerFactory {
     displ.setDisplacementY(dyPlacement);
     ptPlacement.setDisplacement(displ);
     placement.setPlacement(ptPlacement);
+    ptPlacement.setRotation(rotation);
     txtSymbolizer.setLabelPlacement(placement);
     // build the label
     txtSymbolizer.setLabel(attrName);

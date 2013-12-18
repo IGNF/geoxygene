@@ -157,7 +157,7 @@ public class BottomLegendToolbar extends JToolBar {
         for (Layer layer : sld.getLayers()) {
           Style style = LayerFactory.createStyle("IdDisplay", "id", new Color(
               135, 89, 26), new Font("Arial", Font.PLAIN, 6), Color.BLACK,
-              0.0f, 0.0f, 0.0f);
+              0.0f, 0.0f, 0.0f, 0.0f);
           layer.getStyles().add(style);
         }
       } else {

@@ -7,7 +7,7 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.geoxygene.appli.plugin.cartagen;
+package fr.ign.cogit.geoxygene.appli.plugin.cartagen.dataset;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -72,7 +72,6 @@ import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
 import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.CartAGenProgressBar;
-import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.ExportFrame;
 import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.ImportDataFrame;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
@@ -82,6 +81,7 @@ import fr.ign.cogit.cartagen.util.ReflectionUtil;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
@@ -660,7 +660,9 @@ public class DatasetGeoxGUIComponent extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      ExportFrame.get().setVisible(true);
+      ExportFrame frame = new ExportFrame(CartAGenPlugin.getInstance()
+          .getApplication().getMainFrame().getSelectedProjectFrame());
+      frame.setVisible(true);
     }
 
     public ExportDataToShapeAction() {
@@ -856,7 +858,7 @@ public class DatasetGeoxGUIComponent extends JMenu {
       if (CartAGenDoc.getInstance().getPostGisSession() == null) {
         // open a connection with the current PostGISDB
         AnnotationConfiguration hibConfig = new AnnotationConfiguration();
-        hibConfig = hibConfig.configure(new File(PostgisDB
+        hibConfig = hibConfig.configure(PostgisDB.class.getResource(PostgisDB
             .getDefaultConfigPath()));
         hibConfig.setProperty("hibernate.connection.url", PostgisDB.getUrl());
 
@@ -1046,7 +1048,7 @@ public class DatasetGeoxGUIComponent extends JMenu {
       super("Set Current Dataset");
       this.setSize(500, 300);
       this.getExistingClasses();
-      System.out.println(this.existingClasses.size());
+      this.setAlwaysOnTop(true);
 
       // a panel to choose the current database among the databases of the
       // document

@@ -35,6 +35,7 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.GeneralisationLa
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.GeoxygeneMenu;
 import fr.ign.cogit.cartagen.software.interfacecartagen.menus.DataThemesGUIComponent;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.dataset.DatasetGeoxGUIComponent;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.GeneralisationConfigurationFrame;
 
 /**
@@ -217,8 +218,8 @@ public class GeneralisationMenus {
 
   private int getMenuLocation(boolean isBar, JComponent parent) {
     if (isBar)
-      return parent.getComponentCount() - 1;
+      return ((JMenuBar) parent).getMenuCount() - 1;
     else
-      return parent.getComponentCount();
+      return ((JMenu) parent).getMenuComponentCount();
   }
 }
