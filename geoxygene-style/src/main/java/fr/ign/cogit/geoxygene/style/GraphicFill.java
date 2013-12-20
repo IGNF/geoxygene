@@ -31,14 +31,55 @@ import javax.xml.bind.annotation.XmlElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GraphicFill implements GraphicType {
-  @XmlElement(name = "Graphic")
-  private List<Graphic> graphics = new ArrayList<Graphic>();
+    @XmlElement(name = "Graphic")
+    private List<Graphic> graphics = new ArrayList<Graphic>();
 
-  public final List<Graphic> getGraphics() {
-    return this.graphics;
-  }
+    public final List<Graphic> getGraphics() {
+        return this.graphics;
+    }
 
-  public final void setGraphics(List<Graphic> graphics) {
-    this.graphics = graphics;
-  }
+    public final void setGraphics(List<Graphic> graphics) {
+        this.graphics = graphics;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.graphics == null) ? 0 : this.graphics.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        GraphicFill other = (GraphicFill) obj;
+        if (this.graphics == null) {
+            if (other.graphics != null) {
+                return false;
+            }
+        } else if (!this.graphics.equals(other.graphics)) {
+            return false;
+        }
+        return true;
+    }
+
 }

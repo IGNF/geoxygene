@@ -21,8 +21,6 @@ package fr.ign.cogit.geoxygene.appli.render;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,19 +32,13 @@ import javax.swing.event.EventListenerList;
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GLContext;
 
-import com.google.common.io.Files;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
-import fr.ign.cogit.geoxygene.appli.plugin.script.ScriptingPrimitiveRenderer;
-import fr.ign.cogit.geoxygene.appli.render.primitive.DensityFieldPrimitiveRenderer;
-import fr.ign.cogit.geoxygene.appli.render.primitive.DrawingPrimitive;
-import fr.ign.cogit.geoxygene.appli.render.primitive.GLPrimitivePointRenderer;
-import fr.ign.cogit.geoxygene.appli.render.primitive.ParameterizedConverterUtil;
-import fr.ign.cogit.geoxygene.appli.render.primitive.PrimitiveRenderer;
+import fr.ign.cogit.geoxygene.appli.render.primitive.FeatureRenderer;
+import fr.ign.cogit.geoxygene.appli.render.primitive.GL4FeatureRenderer;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Rule;
@@ -66,10 +58,10 @@ import fr.ign.cogit.geoxygene.style.UserStyle;
 public class LwjglLayerRenderer extends AbstractLayerRenderer {
     private static Logger logger = Logger.getLogger(LwjglLayerRenderer.class.getName()); // logger
     protected EventListenerList listenerList = new EventListenerList();
-    private LayerViewGLPanel layerViewPanel = null; // Lwjgl layer view Panel
-    private final Map<String, PrimitiveRenderer> renderers = new HashMap<String, PrimitiveRenderer>();
-    private PrimitiveRenderer defaultRenderer = null;
-    private final DensityFieldPrimitiveRenderer densityFieldPrimitiveRenderer = new DensityFieldPrimitiveRenderer();
+    //    private final Map<String, PrimitiveRenderer> renderers = new HashMap<String, PrimitiveRenderer>();
+    //    private PrimitiveRenderer defaultRenderer = null;
+    //    private final DensityFieldPrimitiveRenderer densityFieldPrimitiveRenderer = new DensityFieldPrimitiveRenderer();
+    private GL4FeatureRenderer gl4Renderer = null;
 
     /**
      * Constructor of renderer using a {@link Layer} and a
@@ -82,12 +74,13 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
      */
     public LwjglLayerRenderer(final Layer theLayer, final LayerViewGLPanel theLayerViewPanel) {
         super(theLayer, theLayerViewPanel);
-        this.setLayerViewPanel(theLayerViewPanel);
+
         this.initRenderers();
     }
 
-    private void initRenderers() {
-        this.defaultRenderer = new GLPrimitivePointRenderer();
+    private final void initRenderers() {
+        this.gl4Renderer = new GL4FeatureRenderer(this);
+        //        this.defaultRenderer = new GLPrimitivePointRenderer();
     }
 
     /**
@@ -98,63 +91,47 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
      */
     private static boolean onlyOneWarning = false;
 
-    public PrimitiveRenderer getLayerRenderer() {
-        String layerName = this.getLayer().getName();
-
-        //        if (layerName.compareToIgnoreCase("SURFACE_ROUTE") == 0 || layerName.compareToIgnoreCase("SURFACE_EAU") == 0) {
-        if (layerName.compareToIgnoreCase("mer") == 0 || layerName.compareToIgnoreCase("PISTE_AERODROME") == 0
-                || layerName.compareToIgnoreCase("mer_sans_sable") == 0 || layerName.compareToIgnoreCase("sable_humide") == 0) {
-            //            if (layerName.compareToIgnoreCase("mer") == 0 || layerName.compareToIgnoreCase("sable_humide") == 0) {
-            if (!onlyOneWarning) {
-                logger.warn("Special primitive renderer used for layer named " + layerName);
-                onlyOneWarning = true;
-            }
-            return this.densityFieldPrimitiveRenderer;
-        }
-
-        if (this.renderers.containsKey(layerName)) {
-            return this.renderers.get(layerName);
-        }
-
-        System.err.println("layer name = " + layerName);
-        File defaultRenderingScriptFile = new File("src/main/resources/scripts/defaultRenderer.groovy");
-        File layerRenderingScriptFile = new File("src/main/resources/scripts/" + layerName + "-renderer.groovy");
-        if (!layerRenderingScriptFile.isFile()) {
-            try {
-                Files.copy(defaultRenderingScriptFile, layerRenderingScriptFile);
-                logger.info("copy default script to " + layerRenderingScriptFile);
-            } catch (IOException e) {
-                logger.error("Cannot copy " + defaultRenderingScriptFile + " to " + layerRenderingScriptFile);
-                e.printStackTrace();
-                return null;
-            }
-        }
-        try {
-            ScriptingPrimitiveRenderer scriptingPrimitiveRenderer = new ScriptingPrimitiveRenderer(layerRenderingScriptFile);
-            scriptingPrimitiveRenderer.initializeRendering();
-            this.renderers.put(layerName, scriptingPrimitiveRenderer);
-            return scriptingPrimitiveRenderer;
-        } catch (Exception e) {
-            logger.error("Cannot load groovy script file " + layerRenderingScriptFile);
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * Get the renderer associated with this symbolizer. It should be described
-     * by the SLD
-     * FIXME: use SLD to choose the right Renderer
-     * 
-     * @return the renderer
-     */
-    public PrimitiveRenderer getRenderer(final Symbolizer symbolizer) {
-        PrimitiveRenderer symbolizerRenderer = this.getLayerRenderer();
-        if (symbolizerRenderer != null) {
-            return symbolizerRenderer;
-        }
-        logger.warn("No Primitive renderer associated with layer " + this.getLayer().getName());
-        return this.defaultRenderer;
+    public FeatureRenderer getLayerRenderer() {
+        return this.gl4Renderer; // FIXME: GL4 development purpose only
+        //        String layerName = this.getLayer().getName();
+        //        //        if (layerName.compareToIgnoreCase("SURFACE_ROUTE") == 0 || layerName.compareToIgnoreCase("SURFACE_EAU") == 0) {
+        //        if (layerName.compareToIgnoreCase("mer") == 0 || layerName.compareToIgnoreCase("PISTE_AERODROME") == 0
+        //                || layerName.compareToIgnoreCase("mer_sans_sable") == 0 || layerName.compareToIgnoreCase("sable_humide") == 0) {
+        //            //            if (layerName.compareToIgnoreCase("mer") == 0 || layerName.compareToIgnoreCase("sable_humide") == 0) {
+        //            if (!onlyOneWarning) {
+        //                logger.warn("Special primitive renderer used for layer named " + layerName);
+        //                onlyOneWarning = true;
+        //            }
+        //            return this.densityFieldPrimitiveRenderer;
+        //        }
+        //
+        //        if (this.renderers.containsKey(layerName)) {
+        //            return this.renderers.get(layerName);
+        //        }
+        //
+        //        System.err.println("layer name = " + layerName);
+        //        File defaultRenderingScriptFile = new File("src/main/resources/scripts/defaultRenderer.groovy");
+        //        File layerRenderingScriptFile = new File("src/main/resources/scripts/" + layerName + "-renderer.groovy");
+        //        if (!layerRenderingScriptFile.isFile()) {
+        //            try {
+        //                Files.copy(defaultRenderingScriptFile, layerRenderingScriptFile);
+        //                logger.info("copy default script to " + layerRenderingScriptFile);
+        //            } catch (IOException e) {
+        //                logger.error("Cannot copy " + defaultRenderingScriptFile + " to " + layerRenderingScriptFile);
+        //                e.printStackTrace();
+        //                return null;
+        //            }
+        //        }
+        //        try {
+        //            ScriptingPrimitiveRenderer scriptingPrimitiveRenderer = new ScriptingPrimitiveRenderer(layerRenderingScriptFile);
+        //            scriptingPrimitiveRenderer.initializeRendering();
+        //            this.renderers.put(layerName, scriptingPrimitiveRenderer);
+        //            return scriptingPrimitiveRenderer;
+        //        } catch (Exception e) {
+        //            logger.error("Cannot load groovy script file " + layerRenderingScriptFile);
+        //            e.printStackTrace();
+        //            return null;
+        //        }
     }
 
     /**
@@ -186,16 +163,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                 ((ActionListener) listeners[i + 1]).actionPerformed(event);
             }
         }
-    }
-
-    /**
-     * Set the layer view panel.
-     * 
-     * @param theLayerViewPanel
-     *            the layer view Lwjgl panel
-     */
-    public final void setLayerViewPanel(final LayerViewGLPanel theLayerViewPanel) {
-        this.layerViewPanel = theLayerViewPanel;
     }
 
     /**
@@ -271,14 +238,14 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
      */
     @Override
     public void initializeRendering() {
-        System.err.println("initialize Layer before rendering");
-        for (PrimitiveRenderer renderer : this.renderers.values()) {
-            try {
-                renderer.initializeRendering();
-            } catch (RenderingException e) {
-                e.printStackTrace();
-            }
-        }
+        //        System.err.println("initialize Layer before rendering");
+        //        for (PrimitiveRenderer renderer : this.renderers.values()) {
+        //            try {
+        //                renderer.initializeRendering();
+        //            } catch (RenderingException e) {
+        //                e.printStackTrace();
+        //            }
+        //        }
         super.initializeRendering();
     }
 
@@ -431,117 +398,17 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
      *            the symbolizer
      * @param feature
      *            the feature
-     * @param theImage
-     *            the image
      */
 
     private void render(final Symbolizer symbolizer, final IFeature feature) throws RenderingException {
         Viewport viewport = this.getLayerViewPanel().getViewport();
-        DrawingPrimitive primitive = ParameterizedConverterUtil.getConverter().convert(feature, symbolizer, viewport);
-        PrimitiveRenderer symbolizerRenderer = this.getRenderer(symbolizer);
-        //        WorldCoordinatesParameterizer parameterizer = new WorldCoordinatesParameterizer(viewport);
-        //        primitive.generateParameterization(parameterizer);
-        symbolizerRenderer.setPrimitive(primitive);
-        symbolizerRenderer.setViewport(viewport);
-        symbolizerRenderer.render();
+        FeatureRenderer renderer = this.getLayerRenderer();
+        renderer.render(feature, symbolizer, viewport);
     }
 
-    //  /**
-    //   * @param theImage the image
-    //   * @param feature the feature
-    //   * @throws RenderingException 
-    //   */
-    //  final void renderHook(final IFeature feature) throws RenderingException {
-    //    if (this.isCancelled()) {
-    //      return;
-    //    }
-    //    for (Style style : this.layer.getStyles()) {
-    //      if (this.isCancelled()) {
-    //        return;
-    //      }
-    //      if (style.isUserStyle()) {
-    //        UserStyle userStyle = (UserStyle) style;
-    //        for (FeatureTypeStyle featureTypeStyle : userStyle.getFeatureTypeStyles()) {
-    //          if (this.isCancelled()) {
-    //            return;
-    //          }
-    //          for (int indexRule = featureTypeStyle.getRules().size() - 1; indexRule >= 0; indexRule--) {
-    //            if (this.isCancelled()) {
-    //              return;
-    //            }
-    //            Rule rule = featureTypeStyle.getRules().get(indexRule);
-    //            for (Symbolizer symbolizer : rule.getSymbolizers()) {
-    //              if (rule.getFilter() == null || rule.getFilter().evaluate(feature)) {
-    //                this.render(symbolizer, feature);
-    //              }
-    //            }
-    //          }
-    //        }
-    //      }
-    //    }
-    //  }
-    //
-    //  /**
-    //   * Render hook.
-    //   * @param theImage the image to render
-    //   * @param geom the geometry to render
-    //   * @throws RenderingException 
-    //   */
-    //  final void renderHook(final IGeometry geom) throws RenderingException {
-    //    if (this.isCancelled() || geom == null || geom.isEmpty()) {
-    //      return;
-    //    }
-    //    IEnvelope envelope = geom.envelope();
-    //    IDirectPosition lowerCornerPosition = envelope.getLowerCorner();
-    //    lowerCornerPosition.move(-1, -1);
-    //    IDirectPosition upperCornerPosition = envelope.getUpperCorner();
-    //    upperCornerPosition.move(1, 1);
-    //    envelope.setLowerCorner(lowerCornerPosition);
-    //    envelope.setUpperCorner(upperCornerPosition);
-    //    try {
-    //      Point2D upperCorner = this.getLayerViewPanel().getViewport().toViewPoint(envelope.getUpperCorner());
-    //      Point2D lowerCorner = this.getLayerViewPanel().getViewport().toViewPoint(envelope.getLowerCorner());
-    //      this.clearImageCache((int) lowerCorner.getX(), (int) upperCorner.getY(), (int) (upperCorner.getX() - lowerCorner.getX() + 2),
-    //          (int) (lowerCorner.getY() - upperCorner.getY() + 2));
-    //    } catch (NoninvertibleTransformException e) {
-    //      e.printStackTrace();
-    //    }
-    //    Collection<? extends IFeature> visibleFeatures = this.layer.getFeatureCollection().select(envelope);
-    //    for (Style style : this.layer.getStyles()) {
-    //      if (this.isCancelled()) {
-    //        return;
-    //      }
-    //      if (style.isUserStyle()) {
-    //        UserStyle userStyle = (UserStyle) style;
-    //        for (FeatureTypeStyle featureTypeStyle : userStyle.getFeatureTypeStyles()) {
-    //          if (this.isCancelled()) {
-    //            return;
-    //          }
-    //          Map<Rule, Set<IFeature>> filteredFeatures = new HashMap<Rule, Set<IFeature>>();
-    //          for (Rule rule : featureTypeStyle.getRules()) {
-    //            filteredFeatures.put(rule, new HashSet<IFeature>());
-    //          }
-    //          for (IFeature feature : visibleFeatures) {
-    //            for (Rule rule : featureTypeStyle.getRules()) {
-    //              if (rule.getFilter() == null || rule.getFilter().evaluate(feature)) {
-    //                filteredFeatures.get(rule).add(feature);
-    //                break;
-    //              }
-    //            }
-    //          }
-    //          for (int indexRule = featureTypeStyle.getRules().size() - 1; indexRule >= 0; indexRule--) {
-    //            if (this.isCancelled()) {
-    //              return;
-    //            }
-    //            Rule rule = featureTypeStyle.getRules().get(indexRule);
-    //            for (IFeature feature : filteredFeatures.get(rule)) {
-    //              for (Symbolizer symbolizer : rule.getSymbolizers()) {
-    //                this.render(symbolizer, feature);
-    //              }
-    //            }
-    //          }
-    //        }
-    //      }
-    //    }
-    //  }
+    @Override
+    public void reset() {
+        this.gl4Renderer.reset();
+    }
+
 }

@@ -25,60 +25,72 @@ import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
  * Renderer interface.
+ * 
  * @author Julien Perret
  */
 public interface LayerRenderer {
 
-  Layer getLayer();
+    Layer getLayer();
 
-  /**
-   * True is the renderer is running, i.e. if its associated runnable is running, false otherwise.
-   * @return true is the renderer is running, false otherwise
-   * @see #createRunnable()
-   */
-  boolean isRendering();
+    /**
+     * True is the renderer is running, i.e. if its associated runnable is
+     * running, false otherwise.
+     * 
+     * @return true is the renderer is running, false otherwise
+     * @see #createRunnable()
+     */
+    boolean isRendering();
 
-  /** @return true if rendering is finished, false otherwise */
-  boolean isRendered();
+    /** @return true if rendering is finished, false otherwise */
+    boolean isRendered();
 
-  /**
-   * Cancel the rendering. This method does not actually interrupt the thread but lets the thread know it should stop.
-   * @see Runnable
-   * @see Thread
-   */
-  void cancel();
+    /**
+     * Cancel the rendering. This method does not actually interrupt the thread
+     * but lets the thread know it should stop.
+     * 
+     * @see Runnable
+     * @see Thread
+     */
+    void cancel();
 
-  //  /**
-  //   * Copy the rendered image the a 2D graphics.
-  //   * @param graphics the 2D graphics to draw into
-  //   */
-  //  void copyTo(Graphics2D graphics);
+    //  /**
+    //   * Copy the rendered image the a 2D graphics.
+    //   * @param graphics the 2D graphics to draw into
+    //   */
+    //  void copyTo(Graphics2D graphics);
 
-  /**
-   * Create a runnable for the renderer. A renderer create a new image to draw into. If cancel() is called, the rendering stops as soon as possible.
-   * When finished, set the variable rendering to false.
-   * @return a new runnable
-   * @see Runnable
-   * @see #cancel()
-   * @see #isRendering()
-   */
-  Runnable createRunnable();
+    /**
+     * Create a runnable for the renderer. A renderer create a new image to draw
+     * into. If cancel() is called, the rendering stops as soon as possible.
+     * When finished, set the variable rendering to false.
+     * 
+     * @return a new runnable
+     * @see Runnable
+     * @see #cancel()
+     * @see #isRendering()
+     */
+    Runnable createRunnable();
 
-  /**
-   * Method called once before creating runnables
-   */
-  void initializeRendering();
+    /**
+     * Method called once before creating runnables
+     */
+    void initializeRendering();
 
-  void addActionListener(ActionListener l);
+    void addActionListener(ActionListener l);
 
-  //    /** Clear the image cache, i.e. delete the current image. */
-  //    void clearImageCache();
-  //  
-  //    /**
-  //     * @param x the X coordinate of the upper left pixel of the region to clear
-  //     * @param y the y coordinate of the upper left pixel of the region to clear
-  //     * @param width width of the region to clear
-  //     * @param height height of the region to clear
-  //     */
-  //    void clearImageCache(int x, int y, int width, int height);
+    //    /** Clear the image cache, i.e. delete the current image. */
+    //    void clearImageCache();
+    //  
+    //    /**
+    //     * @param x the X coordinate of the upper left pixel of the region to clear
+    //     * @param y the y coordinate of the upper left pixel of the region to clear
+    //     * @param width width of the region to clear
+    //     * @param height height of the region to clear
+    //     */
+    //    void clearImageCache(int x, int y, int width, int height);
+
+    /**
+     * Reinitialize all cached data
+     */
+    void reset();
 }

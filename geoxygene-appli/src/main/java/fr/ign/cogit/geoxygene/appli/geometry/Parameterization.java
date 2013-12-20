@@ -25,39 +25,18 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.render.primitive;
+package fr.ign.cogit.geoxygene.appli.geometry;
 
-import javax.vecmath.Point2d;
+import fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer;
 
 /**
  * @author JeT
- *         Implementations computes parameters for parameterized Primitives
- *         Incoming coordinates (x,y) are expressed in screen coordinates
+ *         Add some parameterization to an existing geometry
  */
-public interface Parameterizer {
-
+public interface Parameterization {
     /**
-     * method called just before parameterization process
+     * @return the object that computes parameterization on this geometry
      */
-    void initializeParameterization();
-
-    /**
-     * method called after parameterization process
-     */
-    void finalizeParameterization();
-
-    /**
-     * method called during parameterization process. It computes a 2D
-     * parameterization
-     * with (x,y) screen coordinates
-     */
-    Point2d getTextureCoordinates(double[] vertex);
-
-    /**
-     * method called during parameterization process. It computes a 1D
-     * parameterization
-     * with (x,y) screen coordinates
-     */
-    double getLinearParameter(double[] vertex);
+    public Parameterizer getParameterizer();
 
 }

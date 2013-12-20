@@ -28,41 +28,88 @@ import javax.xml.bind.annotation.XmlElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Displacement {
-  @XmlElement(name = "DisplacementX")
-  private float x = 0.0f;
+    @XmlElement(name = "DisplacementX")
+    private float x = 0.0f;
 
-  /**
-   * Renvoie la valeur de l'attribut x.
-   * @return la valeur de l'attribut x
-   */
-  public float getDisplacementX() {
-    return this.x;
-  }
+    /**
+     * Renvoie la valeur de l'attribut x.
+     * 
+     * @return la valeur de l'attribut x
+     */
+    public float getDisplacementX() {
+        return this.x;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut x.
-   * @param x l'attribut x à affecter
-   */
-  public void setDisplacementX(float x) {
-    this.x = x;
-  }
+    /**
+     * Affecte la valeur de l'attribut x.
+     * 
+     * @param x
+     *            l'attribut x à affecter
+     */
+    public void setDisplacementX(float x) {
+        this.x = x;
+    }
 
-  @XmlElement(name = "DisplacementY")
-  private float y = 0.0f;
+    @XmlElement(name = "DisplacementY")
+    private float y = 0.0f;
 
-  /**
-   * Renvoie la valeur de l'attribut y.
-   * @return la valeur de l'attribut y
-   */
-  public float getDisplacementY() {
-    return this.y;
-  }
+    /**
+     * Renvoie la valeur de l'attribut y.
+     * 
+     * @return la valeur de l'attribut y
+     */
+    public float getDisplacementY() {
+        return this.y;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut y.
-   * @param y l'attribut y à affecter
-   */
-  public void setDisplacementY(float y) {
-    this.y = y;
-  }
+    /**
+     * Affecte la valeur de l'attribut y.
+     * 
+     * @param y
+     *            l'attribut y à affecter
+     */
+    public void setDisplacementY(float y) {
+        this.y = y;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Float.floatToIntBits(this.x);
+        result = prime * result + Float.floatToIntBits(this.y);
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        Displacement other = (Displacement) obj;
+        if (Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y)) {
+            return false;
+        }
+        return true;
+    }
+
 }

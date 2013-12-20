@@ -31,106 +31,170 @@ import org.apache.log4j.Logger;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractSymbolizer implements Symbolizer {
-  protected static Logger logger = Logger.getLogger(AbstractSymbolizer.class
-      .getName());
+    protected static Logger logger = Logger.getLogger(AbstractSymbolizer.class.getName());
 
-  @XmlElement(name = "Stroke")
-  private Stroke stroke = null;
+    @XmlElement(name = "Stroke")
+    private Stroke stroke = null;
 
-  @Override
-  public Stroke getStroke() {
-    return this.stroke;
-  }
+    @Override
+    public Stroke getStroke() {
+        return this.stroke;
+    }
 
-  @Override
-  public void setStroke(Stroke stroke) {
-    this.stroke = stroke;
-  }
+    @Override
+    public void setStroke(Stroke stroke) {
+        this.stroke = stroke;
+    }
 
-  @Override
-  public boolean isLineSymbolizer() {
-    return false;
-  }
+    @Override
+    public boolean isLineSymbolizer() {
+        return false;
+    }
 
-  @Override
-  public boolean isPointSymbolizer() {
-    return false;
-  }
+    @Override
+    public boolean isPointSymbolizer() {
+        return false;
+    }
 
-  @Override
-  public boolean isPolygonSymbolizer() {
-    return false;
-  }
+    @Override
+    public boolean isPolygonSymbolizer() {
+        return false;
+    }
 
-  @Override
-  public boolean isRasterSymbolizer() {
-    return false;
-  }
+    @Override
+    public boolean isRasterSymbolizer() {
+        return false;
+    }
 
-  @Override
-  public boolean isTextSymbolizer() {
-    return false;
-  }
+    @Override
+    public boolean isTextSymbolizer() {
+        return false;
+    }
 
-  @XmlElement(name = "GeometryPropertyName")
-  private String geometryPropertyName = "geom"; //$NON-NLS-1$
+    @XmlElement(name = "GeometryPropertyName")
+    private String geometryPropertyName = "geom"; //$NON-NLS-1$
 
-  @Override
-  public String getGeometryPropertyName() {
-    return this.geometryPropertyName;
-  }
+    @Override
+    public String getGeometryPropertyName() {
+        return this.geometryPropertyName;
+    }
 
-  @Override
-  public void setGeometryPropertyName(String geometryPropertyName) {
-    this.geometryPropertyName = geometryPropertyName;
-  }
+    @Override
+    public void setGeometryPropertyName(String geometryPropertyName) {
+        this.geometryPropertyName = geometryPropertyName;
+    }
 
-  @XmlAttribute(name = "uom")
-  private String uom = Symbolizer.METRE;
+    @XmlAttribute(name = "uom")
+    private String uom = Symbolizer.METRE;
 
-  @Override
-  public String getUnitOfMeasure() {
-    return this.uom;
-  }
+    @Override
+    public String getUnitOfMeasure() {
+        return this.uom;
+    }
 
-  @Override
-  public void setUnitOfMeasure(String uom) {
-    this.uom = uom;
-  }
+    @Override
+    public void setUnitOfMeasure(String uom) {
+        this.uom = uom;
+    }
 
-  @Override
-  public void setUnitOfMeasureMetre() {
-    this.setUnitOfMeasure(Symbolizer.METRE);
-  }
+    @Override
+    public void setUnitOfMeasureMetre() {
+        this.setUnitOfMeasure(Symbolizer.METRE);
+    }
 
-  @Override
-  public void setUnitOfMeasureFoot() {
-    this.setUnitOfMeasure(Symbolizer.FOOT);
-  }
+    @Override
+    public void setUnitOfMeasureFoot() {
+        this.setUnitOfMeasure(Symbolizer.FOOT);
+    }
 
-  @Override
-  public void setUnitOfMeasurePixel() {
-    this.setUnitOfMeasure(Symbolizer.PIXEL);
-  }
+    @Override
+    public void setUnitOfMeasurePixel() {
+        this.setUnitOfMeasure(Symbolizer.PIXEL);
+    }
 
-  @XmlElement(name = "Shadow")
-  private Shadow shadow = null;
+    @XmlElement(name = "Shadow")
+    private Shadow shadow = null;
 
-  @Override
-  public Shadow getShadow() {
-    return this.shadow;
-  }
+    @Override
+    public Shadow getShadow() {
+        return this.shadow;
+    }
 
-  @Override
-  public void setShadow(Shadow shadow) {
-    this.shadow = shadow;
-  }
+    @Override
+    public void setShadow(Shadow shadow) {
+        this.shadow = shadow;
+    }
 
-  @Override
-  public String toString() {
-    String result = this.getClass().getSimpleName() + ":"; //$NON-NLS-1$
-    result += this.getGeometryPropertyName() + " ("; //$NON-NLS-1$
-    result += this.getUnitOfMeasure() + ")"; //$NON-NLS-1$
-    return result;
-  }
+    @Override
+    public String toString() {
+        String result = this.getClass().getSimpleName() + ":"; //$NON-NLS-1$
+        result += this.getGeometryPropertyName() + " ("; //$NON-NLS-1$
+        result += this.getUnitOfMeasure() + ")"; //$NON-NLS-1$
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.geometryPropertyName == null) ? 0 : this.geometryPropertyName.hashCode());
+        result = prime * result + ((this.shadow == null) ? 0 : this.shadow.hashCode());
+        result = prime * result + ((this.stroke == null) ? 0 : this.stroke.hashCode());
+        result = prime * result + ((this.uom == null) ? 0 : this.uom.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        AbstractSymbolizer other = (AbstractSymbolizer) obj;
+        if (this.geometryPropertyName == null) {
+            if (other.geometryPropertyName != null) {
+                return false;
+            }
+        } else if (!this.geometryPropertyName.equals(other.geometryPropertyName)) {
+            return false;
+        }
+        if (this.shadow == null) {
+            if (other.shadow != null) {
+                return false;
+            }
+        } else if (!this.shadow.equals(other.shadow)) {
+            return false;
+        }
+        if (this.stroke == null) {
+            if (other.stroke != null) {
+                return false;
+            }
+        } else if (!this.stroke.equals(other.stroke)) {
+            return false;
+        }
+        if (this.uom == null) {
+            if (other.uom != null) {
+                return false;
+            }
+        } else if (!this.uom.equals(other.uom)) {
+            return false;
+        }
+        return true;
+    }
+
 }

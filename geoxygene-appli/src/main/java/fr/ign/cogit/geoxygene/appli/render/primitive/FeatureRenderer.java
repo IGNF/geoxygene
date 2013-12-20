@@ -27,37 +27,24 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
-import javax.vecmath.Point2d;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.render.RenderingException;
+import fr.ign.cogit.geoxygene.style.Symbolizer;
 
 /**
  * @author JeT
- *         Implementations computes parameters for parameterized Primitives
- *         Incoming coordinates (x,y) are expressed in screen coordinates
+ *         Render features to the current context
  */
-public interface Parameterizer {
+public interface FeatureRenderer {
 
-    /**
-     * method called just before parameterization process
-     */
-    void initializeParameterization();
+    public Viewport getViewport();
 
-    /**
-     * method called after parameterization process
-     */
-    void finalizeParameterization();
+    void initializeRendering() throws RenderingException;
 
-    /**
-     * method called during parameterization process. It computes a 2D
-     * parameterization
-     * with (x,y) screen coordinates
-     */
-    Point2d getTextureCoordinates(double[] vertex);
+    void render(IFeature feature, Symbolizer symbolizer, Viewport viewport) throws RenderingException;
 
-    /**
-     * method called during parameterization process. It computes a 1D
-     * parameterization
-     * with (x,y) screen coordinates
-     */
-    double getLinearParameter(double[] vertex);
+    void finalizeRendering() throws RenderingException;
 
+    void reset();
 }

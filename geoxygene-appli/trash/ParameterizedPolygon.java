@@ -37,9 +37,12 @@ import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.render.RenderUtil;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 
 /**
  * This class represents a complex polygon composed of 2D points describing the
@@ -60,6 +63,8 @@ public class ParameterizedPolygon implements DrawingPrimitive {
     private List<Point2d> points = null; // generated list of points containing all points from all frontiers
     private final List<DrawingPrimitive> primitives = new ArrayList<DrawingPrimitive>();
     private GM_Polygon polygon = null;
+    private IFeature feature = null;
+    private PolygonSymbolizer polygonSymbolizer = null;
     private final List<Shape> shapes = new ArrayList<Shape>();
     private Parameterizer parameterizer = null; // stored parameterizer used when updating polygon
 
@@ -77,7 +82,9 @@ public class ParameterizedPolygon implements DrawingPrimitive {
      * @param viewport
      * @param polygon
      */
-    public ParameterizedPolygon(final GM_Polygon polygon, final Viewport viewport) {
+    public ParameterizedPolygon(final PolygonSymbolizer polygonSymbolizer, final GM_Polygon polygon, final IFeature feature, final Viewport viewport) {
+        this.feature = feature;
+        this.polygonSymbolizer = polygonSymbolizer;
         this.polygon = polygon;
         this.update(viewport);
 
@@ -90,7 +97,7 @@ public class ParameterizedPolygon implements DrawingPrimitive {
      */
     @Override
     public void update(final Viewport viewport) {
-        if (this.polygon == null) {
+        if (this.getGM_Polygon() == null) {
             return;
         }
         //        System.err.println("update polygon " + this.hashCode() + " " + this.getGM_Polygon().area() + " " + this.parameterizer);
@@ -98,7 +105,7 @@ public class ParameterizedPolygon implements DrawingPrimitive {
         this.outerFrontier.clear();
         try {
             // put all "holes" in a list 
-            for (IRing ring : this.polygon.getInterior()) {
+            for (IRing ring : this.getGM_Polygon().getInterior()) {
                 Shape innerShape = viewport.toShape(ring);
                 if (innerShape != null) {
                     this.addInnerFrontier(innerShape);
@@ -106,7 +113,7 @@ public class ParameterizedPolygon implements DrawingPrimitive {
 
             }
             // draw the outer & inner frontier
-            Shape outerShape = viewport.toShape(this.polygon.getExterior());
+            Shape outerShape = viewport.toShape(this.getGM_Polygon().getExterior());
             this.setOuterFrontier(outerShape);
 
         } catch (NoninvertibleTransformException e) {
@@ -114,9 +121,9 @@ public class ParameterizedPolygon implements DrawingPrimitive {
         }
         try {
             this.shapes.clear();
-            this.shapes.add(viewport.toShape(this.polygon));
+            this.shapes.add(viewport.toShape(this.getGM_Polygon()));
         } catch (NoninvertibleTransformException e) {
-            logger.error("Cannot convert polygon " + this.polygon + " to shape object");
+            logger.error("Cannot convert polygon " + this.getGM_Polygon() + " to shape object");
             e.printStackTrace();
         }
         // if a parameterizer has been used, regenerate parameterization

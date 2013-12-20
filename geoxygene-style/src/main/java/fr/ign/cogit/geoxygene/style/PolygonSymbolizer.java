@@ -29,16 +29,16 @@ import javax.xml.bind.annotation.XmlElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PolygonSymbolizer extends AbstractSymbolizer {
-    
+
     @XmlElement(name = "Fill")
     private Fill fill = null;
-    
+
     @XmlElement(name = "CategorizedMap")
     CategorizedMap categorizedMap = null;
-    
+
     @XmlElement(name = "ColorMap")
     ColorMap colorMap = null;
-  
+
     @Override
     public boolean isPolygonSymbolizer() {
         return true;
@@ -65,13 +65,69 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     public void setColorMap(ColorMap colorMap) {
         this.colorMap = colorMap;
     }
-  
+
     public CategorizedMap getCategorizedMap() {
         return this.categorizedMap;
     }
 
     public void setCategorizedMap(CategorizedMap categorizedMap) {
         this.categorizedMap = categorizedMap;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((this.categorizedMap == null) ? 0 : this.categorizedMap.hashCode());
+        result = prime * result + ((this.colorMap == null) ? 0 : this.colorMap.hashCode());
+        result = prime * result + ((this.fill == null) ? 0 : this.fill.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        PolygonSymbolizer other = (PolygonSymbolizer) obj;
+        if (this.categorizedMap == null) {
+            if (other.categorizedMap != null) {
+                return false;
+            }
+        } else if (!this.categorizedMap.equals(other.categorizedMap)) {
+            return false;
+        }
+        if (this.colorMap == null) {
+            if (other.colorMap != null) {
+                return false;
+            }
+        } else if (!this.colorMap.equals(other.colorMap)) {
+            return false;
+        }
+        if (this.fill == null) {
+            if (other.fill != null) {
+                return false;
+            }
+        } else if (!this.fill.equals(other.fill)) {
+            return false;
+        }
+        return true;
     }
 
 }

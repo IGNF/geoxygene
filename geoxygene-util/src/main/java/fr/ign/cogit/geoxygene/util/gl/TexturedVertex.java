@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.gl;
+package fr.ign.cogit.geoxygene.util.gl;
 
 /**
  * @author JeT

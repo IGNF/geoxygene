@@ -53,9 +53,9 @@ import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellator;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.gl.GLTools;
-import fr.ign.cogit.geoxygene.appli.gl.TessCallback;
 import fr.ign.cogit.geoxygene.appli.render.RenderingException;
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
+import fr.ign.cogit.geoxygene.util.gl.TessCallback;
 
 /**
  * @author JeT

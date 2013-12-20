@@ -22,6 +22,7 @@ package fr.ign.cogit.geoxygene.style;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -37,26 +38,24 @@ import org.apache.log4j.Logger;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Stroke {
-    
+
     static Logger logger = Logger.getLogger(Stroke.class.getName());
 
-    @XmlElements({ @XmlElement(name = "GraphicFill", type = GraphicFill.class),
-            @XmlElement(name = "GraphicStroke", type = GraphicStroke.class) })
+    @XmlElements({ @XmlElement(name = "GraphicFill", type = GraphicFill.class), @XmlElement(name = "GraphicStroke", type = GraphicStroke.class) })
     private GraphicType graphicType = null;
-    
-    @XmlElements({ @XmlElement(name = "SvgParameter", type = SvgParameter.class),
-        @XmlElement(name = "CssParameter", type = SvgParameter.class) })
+
+    @XmlElements({ @XmlElement(name = "SvgParameter", type = SvgParameter.class), @XmlElement(name = "CssParameter", type = SvgParameter.class) })
     private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>(0);
-    
+
     /**
      * The raw color of the stroke, without opacity information.
      */
     @XmlTransient
     private Color stroke = Color.black;
-    
+
     @XmlTransient
     private float strokeOpacity = 1.0f;
-    
+
     @XmlTransient
     private float strokeWidth = 1.0f;
 
@@ -80,11 +79,10 @@ public class Stroke {
 
     @XmlTransient
     private java.awt.Stroke awtStroke = null;
-    
-    
 
     /**
      * Renvoie la valeur de l'attribut graphicType.
+     * 
      * @return la valeur de l'attribut graphicType
      */
     public GraphicType getGraphicType() {
@@ -93,7 +91,9 @@ public class Stroke {
 
     /**
      * Affecte la valeur de l'attribut graphicType.
-     * @param graphicType l'attribut graphicType à affecter
+     * 
+     * @param graphicType
+     *            l'attribut graphicType à affecter
      */
     public void setGraphicType(GraphicType graphicType) {
         this.graphicType = graphicType;
@@ -101,6 +101,7 @@ public class Stroke {
 
     /**
      * Renvoie la valeur de l'attribut cssParameters.
+     * 
      * @return la valeur de l'attribut cssParameters
      */
     public List<SvgParameter> getSvgParameters() {
@@ -109,7 +110,9 @@ public class Stroke {
 
     /**
      * Affecte la valeur de l'attribut cssParameters.
-     * @param svgParameters l'attribut cssParameters à affecter
+     * 
+     * @param svgParameters
+     *            l'attribut cssParameters à affecter
      */
     public void setSvgParameters(List<SvgParameter> svgParameters) {
         this.svgParameters = svgParameters;
@@ -144,6 +147,7 @@ public class Stroke {
     /**
      * Returns the raw color of the stroke, without opacity information. Renvoie
      * la valeur de l'attribut stroke, sans considération de l'opacité.
+     * 
      * @return The raw color of the stroke, without opacity information.
      */
     public Color getStroke() {
@@ -154,7 +158,9 @@ public class Stroke {
      * Affecte la valeur de l'attribut stroke.
      * <p>
      * Met à jout le parametre CSS correspondant
-     * @param stroke l'attribut stroke à affecter
+     * 
+     * @param stroke
+     *            l'attribut stroke à affecter
      */
     public synchronized void setStroke(Color stroke) {
         this.stroke = stroke;
@@ -186,6 +192,7 @@ public class Stroke {
 
     /**
      * Renvoie la valeur de l'attribut strokeOpacity.
+     * 
      * @return la valeur de l'attribut strokeOpacity
      */
     public float getStrokeOpacity() {
@@ -194,7 +201,9 @@ public class Stroke {
 
     /**
      * Affecte la valeur de l'attribut strokeOpacity.
-     * @param strokeOpacity l'attribut strokeOpacity à affecter
+     * 
+     * @param strokeOpacity
+     *            l'attribut strokeOpacity à affecter
      */
     public synchronized void setStrokeOpacity(float strokeOpacity) {
         this.strokeOpacity = strokeOpacity;
@@ -217,6 +226,7 @@ public class Stroke {
 
     /**
      * Renvoie la valeur de l'attribut strokeWidth.
+     * 
      * @return la valeur de l'attribut strokeWidth
      */
     public float getStrokeWidth() {
@@ -225,7 +235,9 @@ public class Stroke {
 
     /**
      * Affecte la valeur de l'attribut strokeWidth.
-     * @param strokeWidth l'attribut strokeWidth à affecter
+     * 
+     * @param strokeWidth
+     *            l'attribut strokeWidth à affecter
      */
     public synchronized void setStrokeWidth(float strokeWidth) {
         this.strokeWidth = strokeWidth;
@@ -245,9 +257,10 @@ public class Stroke {
             }
         }
     }
-    
+
     /**
      * Renvoie la valeur de l'attribut strokeLineJoin.
+     * 
      * @return la valeur de l'attribut strokeLineJoin
      */
     public int getStrokeLineJoin() {
@@ -256,7 +269,9 @@ public class Stroke {
 
     /**
      * Affecte la valeur de l'attribut strokeLineJoin.
-     * @param strokeLineJoin l'attribut strokeLineJoin à affecter
+     * 
+     * @param strokeLineJoin
+     *            l'attribut strokeLineJoin à affecter
      */
     public synchronized void setStrokeLineJoin(int strokeLineJoin) {
         this.strokeLineJoin = strokeLineJoin;
@@ -271,7 +286,9 @@ public class Stroke {
 
     /**
      * Affecte la valeur de l'attribut strokeLineJoin.
-     * @param strokeLineJoin l'attribut strokeLineJoin à affecter
+     * 
+     * @param strokeLineJoin
+     *            l'attribut strokeLineJoin à affecter
      */
     private void setStrokeLineJoin(String strokeLineJoin) {
         if (strokeLineJoin.equalsIgnoreCase("mitre")) { //$NON-NLS-1$
@@ -282,9 +299,10 @@ public class Stroke {
         // sinon, c'est la valeur par defaut
         // otherwise, setting the default value.
     }
-    
+
     /**
      * Renvoie la valeur de l'attribut strokeLineCap.
+     * 
      * @return la valeur de l'attribut strokeLineCap
      */
     public int getStrokeLineCap() {
@@ -293,7 +311,9 @@ public class Stroke {
 
     /**
      * Affecte la valeur de l'attribut strokeLineCap.
-     * @param strokeLineCap l'attribut strokeLineCap à affecter
+     * 
+     * @param strokeLineCap
+     *            l'attribut strokeLineCap à affecter
      */
     public synchronized void setStrokeLineCap(int strokeLineCap) {
         this.strokeLineCap = strokeLineCap;
@@ -308,7 +328,9 @@ public class Stroke {
 
     /**
      * Affecte la valeur de l'attribut strokeLineCap.
-     * @param strokeLineCap l'attribut strokeLineCap à affecter
+     * 
+     * @param strokeLineCap
+     *            l'attribut strokeLineCap à affecter
      */
     private void setStrokeLineCap(String strokeLineCap) {
         if (strokeLineCap.equalsIgnoreCase("butt")) { //$NON-NLS-1$
@@ -319,9 +341,10 @@ public class Stroke {
         // sinon, c'est la valeur par défaut
         // otherwise, setting the default value.
     }
-    
+
     /**
      * Renvoie la valeur de l'attribut strokeDashOffset.
+     * 
      * @return la valeur de l'attribut strokeDashOffset
      */
     public float getStrokeDashOffset() {
@@ -330,7 +353,9 @@ public class Stroke {
 
     /**
      * Affecte la valeur de l'attribut strokeDashOffset.
-     * @param strokeDashOffset l'attribut strokeDashOffset à affecter
+     * 
+     * @param strokeDashOffset
+     *            l'attribut strokeDashOffset à affecter
      */
     public synchronized void setStrokeDashOffset(float strokeDashOffset) {
         this.strokeDashOffset = strokeDashOffset;
@@ -349,9 +374,10 @@ public class Stroke {
     private void setStrokeDashOffset(String value) {
         this.setStrokeDashOffset(Float.parseFloat(value));
     }
-    
+
     /**
      * Renvoie la valeur de l'attribut strokeDashArray.
+     * 
      * @return la valeur de l'attribut strokeDashArray
      */
     public float[] getStrokeDashArray() {
@@ -360,7 +386,9 @@ public class Stroke {
 
     /**
      * Renvoie le strokeDashArray avec un facteur d'échelle.
-     * @param scale facteur d'échelle
+     * 
+     * @param scale
+     *            facteur d'échelle
      * @return le strokeDashArray avec un facteur d'échelle
      */
     public float[] getStrokeDashArray(float scale) {
@@ -376,7 +404,9 @@ public class Stroke {
 
     /**
      * Affecte la valeur de l'attribut strokeDashArray.
-     * @param strokeDashArray l'attribut strokeDashArray à affecter
+     * 
+     * @param strokeDashArray
+     *            l'attribut strokeDashArray à affecter
      */
     public synchronized void setStrokeDashArray(float[] strokeDashArray) {
         this.strokeDashArray = strokeDashArray;
@@ -403,11 +433,10 @@ public class Stroke {
             this.strokeDashArray[index] = Float.parseFloat(values[index]);
         }
     }
-    
-    
 
     /**
      * Returns the color of the stroke, considering the opacity attribute.
+     * 
      * @return The color of the stroke, considering the opacity attribute.
      */
     public synchronized Color getColor() {
@@ -416,8 +445,7 @@ public class Stroke {
             if (this.strokeOpacity == 1.0f) {
                 this.color = this.stroke;
             } else {
-                this.color = new Color(this.stroke.getRed(), this.stroke.getGreen(), this.stroke.getBlue(),
-                        (int) (this.strokeOpacity * 255f));
+                this.color = new Color(this.stroke.getRed(), this.stroke.getGreen(), this.stroke.getBlue(), (int) (this.strokeOpacity * 255f));
             }
         }
         return this.color;
@@ -431,11 +459,10 @@ public class Stroke {
         if (this.strokeOpacity == 1.0f) {
             this.color = this.stroke;
         } else {
-            this.color = new Color(this.stroke.getRed(), this.stroke.getGreen(), this.stroke.getBlue(),
-                    (int) (this.strokeOpacity * 255f));
+            this.color = new Color(this.stroke.getRed(), this.stroke.getGreen(), this.stroke.getBlue(), (int) (this.strokeOpacity * 255f));
         }
     }
-    
+
     /**
      * @return the AWT Stroke properties to be used for drawing
      */
@@ -450,8 +477,105 @@ public class Stroke {
         if (this.awtStroke == null) {
             this.updateValues();
         }
-        this.awtStroke = new BasicStroke(this.getStrokeWidth() * scale, this.getStrokeLineCap(),
-                this.getStrokeLineJoin(), 10.0f, this.getStrokeDashArray(scale), this.getStrokeDashOffset() * scale);
+        this.awtStroke = new BasicStroke(this.getStrokeWidth() * scale, this.getStrokeLineCap(), this.getStrokeLineJoin(), 10.0f,
+                this.getStrokeDashArray(scale), this.getStrokeDashOffset() * scale);
         return this.awtStroke;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.awtStroke == null) ? 0 : this.awtStroke.hashCode());
+        result = prime * result + ((this.color == null) ? 0 : this.color.hashCode());
+        result = prime * result + ((this.graphicType == null) ? 0 : this.graphicType.hashCode());
+        result = prime * result + ((this.stroke == null) ? 0 : this.stroke.hashCode());
+        result = prime * result + Arrays.hashCode(this.strokeDashArray);
+        result = prime * result + Float.floatToIntBits(this.strokeDashOffset);
+        result = prime * result + this.strokeLineCap;
+        result = prime * result + this.strokeLineJoin;
+        result = prime * result + Float.floatToIntBits(this.strokeOpacity);
+        result = prime * result + Float.floatToIntBits(this.strokeWidth);
+        result = prime * result + ((this.svgParameters == null) ? 0 : this.svgParameters.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        Stroke other = (Stroke) obj;
+        if (this.awtStroke == null) {
+            if (other.awtStroke != null) {
+                return false;
+            }
+        } else if (!this.awtStroke.equals(other.awtStroke)) {
+            return false;
+        }
+        if (this.color == null) {
+            if (other.color != null) {
+                return false;
+            }
+        } else if (!this.color.equals(other.color)) {
+            return false;
+        }
+        if (this.graphicType == null) {
+            if (other.graphicType != null) {
+                return false;
+            }
+        } else if (!this.graphicType.equals(other.graphicType)) {
+            return false;
+        }
+        if (this.stroke == null) {
+            if (other.stroke != null) {
+                return false;
+            }
+        } else if (!this.stroke.equals(other.stroke)) {
+            return false;
+        }
+        if (!Arrays.equals(this.strokeDashArray, other.strokeDashArray)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.strokeDashOffset) != Float.floatToIntBits(other.strokeDashOffset)) {
+            return false;
+        }
+        if (this.strokeLineCap != other.strokeLineCap) {
+            return false;
+        }
+        if (this.strokeLineJoin != other.strokeLineJoin) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.strokeOpacity) != Float.floatToIntBits(other.strokeOpacity)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.strokeWidth) != Float.floatToIntBits(other.strokeWidth)) {
+            return false;
+        }
+        if (this.svgParameters == null) {
+            if (other.svgParameters != null) {
+                return false;
+            }
+        } else if (!this.svgParameters.equals(other.svgParameters)) {
+            return false;
+        }
+        return true;
+    }
+
 }

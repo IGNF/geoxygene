@@ -83,8 +83,6 @@ import fr.ign.cogit.geoxygene.appli.panel.COGITColorChooserPanel;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.RenderingManager;
-import fr.ign.cogit.geoxygene.appli.render.primitive.ui.PrimitiveRendererUI;
-import fr.ign.cogit.geoxygene.appli.render.primitive.ui.PrimitiveRendererUIFactory;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.style.CategorizedMap;
 import fr.ign.cogit.geoxygene.style.ColorMap;
@@ -326,19 +324,19 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
         if (!(renderer instanceof LwjglLayerRenderer)) {
             return;
         }
-        PrimitiveRendererUI rendererUI = PrimitiveRendererUIFactory.getPrimitiveRendererUI(((LwjglLayerRenderer) renderer).getLayerRenderer());
-        if (rendererUI != null) {
-            rendererUI.addChangeListener(new ChangeListener() {
-
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
-                    StyleEditionFrame.this.layerLegendPanel.repaint();
-                    StyleEditionFrame.this.layerViewPanel.repaint();
-                }
-            });
-            this.tabPane.add(renderer.getClass().getSimpleName(), new JScrollPane(rendererUI.getGUI()));
-        }
+        //        PrimitiveRendererUI rendererUI = PrimitiveRendererUIFactory.getPrimitiveRendererUI(((LwjglLayerRenderer) renderer).getLayerRenderer());
+        //        if (rendererUI != null) {
+        //            rendererUI.addChangeListener(new ChangeListener() {
+        //
+        //                @Override
+        //                public void stateChanged(ChangeEvent e) {
+        //                    StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
+        //                    StyleEditionFrame.this.layerLegendPanel.repaint();
+        //                    StyleEditionFrame.this.layerViewPanel.repaint();
+        //                }
+        //            });
+        //            this.tabPane.add(renderer.getClass().getSimpleName(), new JScrollPane(rendererUI.getGUI()));
+        //        }
 
     }
 

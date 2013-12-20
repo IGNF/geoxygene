@@ -37,8 +37,10 @@ import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.render.RenderUtil;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 
 /**
@@ -58,8 +60,10 @@ public class ParameterizedPolyline implements DrawingPrimitive {
     private final List<Double> parameters = new ArrayList<Double>(); // list of parameters associated to each point
     private final List<Shape> shapes = new ArrayList<Shape>();
     private static final List<DrawingPrimitive> primitives = new ArrayList<DrawingPrimitive>(); // empty children list
+    private IFeature feature = null;
     private LineSymbolizer lineSymbolizer = null;
-    private IGeometry lineGeometry = null;
+
+    private IGeometry geometry = null;
 
     /**
      * Default constructor
@@ -67,9 +71,14 @@ public class ParameterizedPolyline implements DrawingPrimitive {
     public ParameterizedPolyline() {
     }
 
-    public ParameterizedPolyline(LineSymbolizer lineSymbolizer, IGeometry geometry) {
+    public ParameterizedPolyline(LineSymbolizer lineSymbolizer, IFeature feature) {
         this.lineSymbolizer = lineSymbolizer;
-        this.lineGeometry = geometry;
+        this.geometry = RenderUtil.getGeometry(this.lineSymbolizer.getGeometryPropertyName(), this.feature);
+        this.feature = feature;
+    }
+
+    private IGeometry getLineGeometry() {
+        return this.geometry;
     }
 
     //    /**
@@ -385,7 +394,7 @@ public class ParameterizedPolyline implements DrawingPrimitive {
     @Override
     public void update(Viewport viewport) {
         this.shapes.clear();
-        this.shapes.addAll(ParameterizedLineConverterUtil.getShapeList(this.lineSymbolizer, this.lineGeometry, viewport, false));
+        this.shapes.addAll(ParameterizedLineConverterUtil.getShapeList(this.lineSymbolizer, this.getLineGeometry(), viewport, false));
         for (Shape shape : this.shapes) {
             PathIterator pathIterator = shape.getPathIterator(null);
             this.points.clear();

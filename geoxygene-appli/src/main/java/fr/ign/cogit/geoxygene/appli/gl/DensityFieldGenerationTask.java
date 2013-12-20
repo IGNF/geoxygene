@@ -35,7 +35,6 @@ import javax.imageio.ImageIO;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.render.primitive.DensityFieldParameterizer;
-import fr.ign.cogit.geoxygene.appli.render.primitive.DensityFieldPrimitiveRenderer.DensityFieldVisualizationType;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.appli.ui.Message.MessageType;
@@ -47,6 +46,13 @@ import fr.ign.cogit.geoxygene.appli.ui.Message.MessageType;
  *         is filled
  */
 public class DensityFieldGenerationTask extends AbstractTask {
+
+    public static enum DensityFieldVisualizationType {
+        TEXTURE, // apply source texture to (u,v) coordinates  
+        UV, // display U,V coordinates with a Color LUT
+        HEIGHT, // display the V coordinates with a GRAY GRADIENT
+
+    }
 
     private DensityFieldParameterizer parameterizer = null;
     private BufferedImage generatedTextureImage = null;

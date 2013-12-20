@@ -42,6 +42,8 @@ import javax.vecmath.Point2d;
 
 import org.lwjgl.opengl.GL11;
 
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
+
 /**
  * @author JeT Basic texture returns the coordinates equal to the provided
  *         point. It manages a texture by its filename and is a good base class

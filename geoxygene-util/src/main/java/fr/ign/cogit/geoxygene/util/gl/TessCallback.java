@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.appli.gl;
+package fr.ign.cogit.geoxygene.util.gl;
 
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glEnd;

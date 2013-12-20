@@ -28,9 +28,13 @@
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
 import org.apache.log4j.Logger;
+import org.jfree.util.Log;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 
@@ -75,11 +79,8 @@ public final class ParameterizedConverterUtil {
      *            viewport used to generate shapes
      * @return a list of drawing primitives
      */
-    public static DrawingPrimitive generateParameterizedPolyline(final LineSymbolizer lineSymbolizer, final IGeometry geometry, final Viewport viewport) {
-        //ligne suivante à déplacer ailleurs (update line ?)
-        //        List<Shape> shapes = ParameterizedLineConverterUtil.getShapeList(lineSymbolizer, geometry, viewport, false);
-        //ici il faudrait pouvoir faire un update à partir de viewport
-        DrawingPrimitive primitive = ParameterizedLineConverterUtil.generateParameterizedPolyline(lineSymbolizer, geometry, viewport);
+    public static DrawingPrimitive generateParameterizedPolyline(final LineSymbolizer lineSymbolizer, final IFeature feature, final Viewport viewport) {
+        DrawingPrimitive primitive = ParameterizedLineConverterUtil.generateParameterizedPolyline(lineSymbolizer, feature, viewport);
         return primitive;
     }
 
@@ -92,8 +93,56 @@ public final class ParameterizedConverterUtil {
      *            viewport used to generate shapes
      * @return a list of drawing primitives
      */
-    public static DrawingPrimitive generateParameterizedPolygon(final PolygonSymbolizer polygonSymbolizer, final IGeometry geometry, final Viewport viewport) {
-        DrawingPrimitive primitive = ParameterizedPolygonConverterUtil.generateParameterizedPolygon(polygonSymbolizer, geometry, viewport);
-        return primitive;
+    public static DrawingPrimitive generateParameterizedPolygon(final PolygonSymbolizer polygonSymbolizer, final IFeature feature, final Viewport viewport) {
+        if (feature.getGeom().isPolygon()) {
+            return generateParameterizedPolygon(polygonSymbolizer, feature.getGeom(), feature, viewport);
+        } else if (feature.getGeom().isMultiSurface()) {
+            GM_MultiSurface<?> surface = (GM_MultiSurface<?>) feature.getGeom();
+            MultiDrawingPrimitive multi = new MultiDrawingPrimitive();
+
+            for (IGeometry element : surface.getList()) {
+                DrawingPrimitive polygon = generateParameterizedPolygon(polygonSymbolizer, element, feature, viewport);
+                if (polygon != null) {
+                    multi.addPrimitive(polygon);
+                }
+            }
+
+            return multi;
+        } else {
+            Log.error("Polygon symbolizer do not know how to convert geometry type " + feature.getGeom().getClass().getSimpleName());
+        }
+        return null;
     }
+
+    /**
+     * Convert geometry to polygon drawing primitives
+     * 
+     * @param geometry
+     *            geometry to convert
+     * @param viewport
+     *            viewport used to generate shapes
+     * @return a list of drawing primitives
+     */
+    public static DrawingPrimitive generateParameterizedPolygon(final PolygonSymbolizer polygonSymbolizer, final IGeometry geometry, final IFeature feature,
+            final Viewport viewport) {
+        if (geometry.isPolygon()) {
+            return ParameterizedPolygonConverterUtil.generateParameterizedPolygon(polygonSymbolizer, (GM_Polygon) geometry, feature, viewport);
+        } else if (geometry.isMultiSurface()) {
+            GM_MultiSurface<?> surface = (GM_MultiSurface<?>) feature.getGeom();
+            MultiDrawingPrimitive multi = new MultiDrawingPrimitive();
+
+            for (IGeometry element : surface.getList()) {
+                DrawingPrimitive polygon = generateParameterizedPolygon(polygonSymbolizer, element, feature, viewport);
+                if (polygon != null) {
+                    multi.addPrimitive(polygon);
+                }
+            }
+
+            return multi;
+        } else {
+            Log.error("Polygon symbolizer do not know how to convert geometry type " + geometry.getClass().getSimpleName());
+        }
+        return null;
+    }
+
 }

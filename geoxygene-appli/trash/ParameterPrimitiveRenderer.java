@@ -44,8 +44,8 @@ import javax.vecmath.Point2d;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.gl.GLTools;
 import fr.ign.cogit.geoxygene.appli.render.RenderingException;
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
  * @author JeT

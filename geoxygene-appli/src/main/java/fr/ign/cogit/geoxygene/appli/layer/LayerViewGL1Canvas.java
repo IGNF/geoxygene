@@ -344,4 +344,9 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
 
     }
 
+    @Override
+    public boolean isWireframe() {
+        return false;
+    }
+
 }

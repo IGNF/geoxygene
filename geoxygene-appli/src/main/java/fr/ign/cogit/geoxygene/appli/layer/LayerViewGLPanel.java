@@ -49,6 +49,7 @@ public class LayerViewGLPanel extends LayerViewPanel {
     private static Logger logger = Logger.getLogger(LayerViewGLPanel.class.getName());
     private SyncRenderingManager renderingManager = null;
     private LayerViewGLCanvas glCanvas = null; // canvas containing the GL
+    private LayerViewGLCanvasType glType = null;
 
     public enum LayerViewGLCanvasType {
         GL1, GL4
@@ -71,7 +72,7 @@ public class LayerViewGLPanel extends LayerViewPanel {
         this.renderingManager = new SyncRenderingManager(this, RenderingType.LWJGL);
 
         this.glCanvas = LayerViewPanelFactory.newLayerViewGLCanvas(this, glType);
-
+        this.setGlType(glType);
         this.setLayout(new BorderLayout());
         // Attach LWJGL to the created canvas
         this.setGLComponent(this.glCanvas);
@@ -230,6 +231,14 @@ public class LayerViewGLPanel extends LayerViewPanel {
     public void saveAsImage(final String fileName) {
         logger.error("LayerViewGLPanel::saveAsImage(...) not implemented yet");
 
+    }
+
+    public LayerViewGLCanvasType getGlType() {
+        return this.glType;
+    }
+
+    private final void setGlType(LayerViewGLCanvasType glType) {
+        this.glType = glType;
     }
 
 }

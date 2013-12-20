@@ -35,12 +35,12 @@ import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.gl.GLTools;
 import fr.ign.cogit.geoxygene.appli.gl.TiledTexture;
 import fr.ign.cogit.geoxygene.appli.gl.Texture;
 import fr.ign.cogit.geoxygene.appli.render.RenderingException;
 import fr.ign.cogit.geoxygene.math.MathUtil;
 import fr.ign.cogit.geoxygene.math.ui.GraphPanel;
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
  * @author JeT

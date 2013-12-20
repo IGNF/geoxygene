@@ -25,39 +25,44 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.render.primitive;
+package fr.ign.cogit.geoxygene.appli.geometry;
 
-import javax.vecmath.Point2d;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 /**
  * @author JeT
- *         Implementations computes parameters for parameterized Primitives
- *         Incoming coordinates (x,y) are expressed in screen coordinates
+ * 
  */
-public interface Parameterizer {
+public class ParameterizedPolygon extends ParameterizedGeometry {
+
+    private GM_Polygon polygon = null;
 
     /**
-     * method called just before parameterization process
+     * Constructor
      */
-    void initializeParameterization();
+    public ParameterizedPolygon(final GM_Polygon polygon) {
+        this.polygon = polygon;
+    }
 
     /**
-     * method called after parameterization process
+     * Constructor
      */
-    void finalizeParameterization();
+    public ParameterizedPolygon(final GM_Polygon polygon, final Parameterizer parameterizer) {
+        this.polygon = polygon;
+        this.setParameterizer(parameterizer);
+    }
 
-    /**
-     * method called during parameterization process. It computes a 2D
-     * parameterization
-     * with (x,y) screen coordinates
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.geometry.ParameterizedGeometry#getGeometry()
      */
-    Point2d getTextureCoordinates(double[] vertex);
-
-    /**
-     * method called during parameterization process. It computes a 1D
-     * parameterization
-     * with (x,y) screen coordinates
-     */
-    double getLinearParameter(double[] vertex);
+    @Override
+    public GM_Polygon getGeometry() {
+        return this.polygon;
+    }
 
 }

@@ -53,14 +53,14 @@ import org.lwjgl.util.glu.GLUtessellator;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.DensityFieldGenerationTask;
-import fr.ign.cogit.geoxygene.appli.gl.GLTools;
-import fr.ign.cogit.geoxygene.appli.gl.TessCallback;
 import fr.ign.cogit.geoxygene.appli.render.RenderingException;
 import fr.ign.cogit.geoxygene.appli.task.Task;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Primitive;
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
+import fr.ign.cogit.geoxygene.util.gl.TessCallback;
 
 /**
  * @author JeT
@@ -68,13 +68,6 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Primitive;
  *         coordinates. This class generates textures asynchronously
  */
 public class DensityFieldPrimitiveRenderer extends AbstractPrimitiveRenderer implements TaskListener {
-
-    public static enum DensityFieldVisualizationType {
-        TEXTURE, // apply source texture to (u,v) coordinates  
-        UV, // display U,V coordinates with a Color LUT
-        HEIGHT, // display the V coordinates with a GRAY GRADIENT
-
-    }
 
     private static Logger logger = Logger.getLogger(DensityFieldPrimitiveRenderer.class.getName());
     // this renderer is added just for pre-visualization during this renderer development.

@@ -27,37 +27,34 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
-import javax.vecmath.Point2d;
+import fr.ign.cogit.geoxygene.appli.Viewport;
 
 /**
  * @author JeT
- *         Implementations computes parameters for parameterized Primitives
- *         Incoming coordinates (x,y) are expressed in screen coordinates
+ * 
  */
-public interface Parameterizer {
+public abstract class AbstractFeatureRenderer implements FeatureRenderer {
+
+    private Viewport viewport = null;
 
     /**
-     * method called just before parameterization process
+     * @param viewport
+     *            the viewport to set
      */
-    void initializeParameterization();
+    public final void setViewport(Viewport viewport) {
+        this.viewport = viewport;
+    }
 
-    /**
-     * method called after parameterization process
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.primitive.FeatureRenderer#getViewport
+     * ()
      */
-    void finalizeParameterization();
-
-    /**
-     * method called during parameterization process. It computes a 2D
-     * parameterization
-     * with (x,y) screen coordinates
-     */
-    Point2d getTextureCoordinates(double[] vertex);
-
-    /**
-     * method called during parameterization process. It computes a 1D
-     * parameterization
-     * with (x,y) screen coordinates
-     */
-    double getLinearParameter(double[] vertex);
+    @Override
+    public Viewport getViewport() {
+        return this.viewport;
+    }
 
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
@@ -43,8 +44,8 @@ public class ParameterizedLineConverterUtil {
      *            viewport used to generate shapes
      * @return a list of drawing primitives
      */
-    public static ParameterizedPolyline generateParameterizedPolyline(LineSymbolizer lineSymbolizer, IGeometry geometry, final Viewport viewport) {
-        ParameterizedPolyline parameterizedPolyline = new ParameterizedPolyline(lineSymbolizer, geometry);
+    public static ParameterizedPolyline generateParameterizedPolyline(LineSymbolizer lineSymbolizer, IFeature feature, final Viewport viewport) {
+        ParameterizedPolyline parameterizedPolyline = new ParameterizedPolyline(lineSymbolizer, feature);
         parameterizedPolyline.update(viewport);
         return parameterizedPolyline;
     }

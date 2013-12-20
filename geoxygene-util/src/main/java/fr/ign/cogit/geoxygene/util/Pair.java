@@ -25,39 +25,64 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.render.primitive;
-
-import javax.vecmath.Point2d;
+package fr.ign.cogit.geoxygene.util;
 
 /**
  * @author JeT
- *         Implementations computes parameters for parameterized Primitives
- *         Incoming coordinates (x,y) are expressed in screen coordinates
+ *         Class containing two objects
  */
-public interface Parameterizer {
+public class Pair<U, V> {
+
+    private U u = null;
+    private V v = null;
 
     /**
-     * method called just before parameterization process
+     * Default Constructor
      */
-    void initializeParameterization();
+    public Pair() {
+        // TODO Auto-generated constructor stub
+    }
 
     /**
-     * method called after parameterization process
+     * Quick constructor
+     * 
+     * @param u
+     * @param v
      */
-    void finalizeParameterization();
+    public Pair(U u, V v) {
+        super();
+        this.u = u;
+        this.v = v;
+    }
 
     /**
-     * method called during parameterization process. It computes a 2D
-     * parameterization
-     * with (x,y) screen coordinates
+     * @return the u
      */
-    Point2d getTextureCoordinates(double[] vertex);
+    public U getU() {
+        return this.u;
+    }
 
     /**
-     * method called during parameterization process. It computes a 1D
-     * parameterization
-     * with (x,y) screen coordinates
+     * @param u
+     *            the u to set
      */
-    double getLinearParameter(double[] vertex);
+    public void setU(U u) {
+        this.u = u;
+    }
+
+    /**
+     * @return the v
+     */
+    public V getV() {
+        return this.v;
+    }
+
+    /**
+     * @param v
+     *            the v to set
+     */
+    public void setV(V v) {
+        this.v = v;
+    }
 
 }

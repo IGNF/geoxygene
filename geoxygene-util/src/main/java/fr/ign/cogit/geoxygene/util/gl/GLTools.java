@@ -24,8 +24,9 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  *******************************************************************************/
-package fr.ign.cogit.geoxygene.appli.gl;
+package fr.ign.cogit.geoxygene.util.gl;
 
+import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_REPEAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
@@ -39,10 +40,20 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glGenTextures;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
+import static org.lwjgl.opengl.GL20.glCompileShader;
+import static org.lwjgl.opengl.GL20.glCreateShader;
+import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
+import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
+import static org.lwjgl.opengl.GL20.glGetShaderi;
+import static org.lwjgl.opengl.GL20.glShaderSource;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.Random;
@@ -643,6 +654,98 @@ public final class GLTools {
     public static org.lwjgl.util.Color glRandomColor() {
 
         return new org.lwjgl.util.Color(randomSeed.nextInt(256), randomSeed.nextInt(256), randomSeed.nextInt(256));
+    }
+
+    /**
+     * Read a file as a single string
+     * 
+     * @param filename
+     *            file name containing the content to be read
+     * @return the file content as a single string
+     * @throws Exception
+     */
+    public static String readFileAsString(String filename) throws Exception {
+        StringBuilder source = new StringBuilder();
+        FileInputStream in = new FileInputStream(filename);
+        Exception exception = null;
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            Exception innerExc = null;
+            try {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    source.append(line).append('\n');
+                }
+            } catch (Exception exc) {
+                exception = exc;
+            } finally {
+                try {
+                    reader.close();
+                } catch (Exception exc) {
+                    if (innerExc == null) {
+                        innerExc = exc;
+                    } else {
+                        exc.printStackTrace();
+                    }
+                }
+            }
+            if (innerExc != null) {
+                throw innerExc;
+            }
+        } catch (Exception exc) {
+            exception = exc;
+        } finally {
+            try {
+                in.close();
+            } catch (Exception exc) {
+                if (exception == null) {
+                    exception = exc;
+                } else {
+                    exc.printStackTrace();
+                }
+            }
+            if (exception != null) {
+                throw exception;
+            }
+        }
+        return source.toString();
+    }
+
+    /**
+     * Method to create a new shader
+     * 
+     * @param filename
+     * @param shaderType
+     * @return
+     * @throws Exception
+     */
+    public static int createShader(String shaderFilename, int shaderType) throws Exception {
+        int shader = 0;
+        try {
+            shader = glCreateShader(shaderType);
+            if (shader == 0) {
+                return 0;
+            }
+            glShaderSource(shader, readFileAsString(shaderFilename));
+            glCompileShader(shader);
+            if (glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
+                throw new RuntimeException("Error creating shader: " + getShaderLogInfo(shader));
+            }
+            return shader;
+        } catch (Exception exc) {
+            // TODO: delete shader
+            //            glDeleteShader(shader);
+            throw exc;
+        }
+    }
+
+    public static String getShaderLogInfo(int obj) {
+        return glGetShaderInfoLog(obj, 4096);
+    }
+
+    public static String getProgramLogInfo(int obj) {
+        return glGetProgramInfoLog(obj, 4096);
     }
 
 }

@@ -37,189 +37,278 @@ import fr.ign.cogit.geoxygene.style.texture.Texture;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Fill {
-  public enum LineJoin {
-    MITRE, ROUND, BEVEL
-  }
+    public enum LineJoin {
+        MITRE, ROUND, BEVEL
+    }
 
-  public enum LineCap {
-    BUTT, ROUND, SQUARE
-  }
+    public enum LineCap {
+        BUTT, ROUND, SQUARE
+    }
 
-  @XmlElement(name = "GraphicFill")
-  private GraphicFill graphicFill = null;
+    @XmlElement(name = "GraphicFill")
+    private GraphicFill graphicFill = null;
 
-  /**
-   * Renvoie la valeur de l'attribut graphicFill.
-   * @return la valeur de l'attribut graphicFill
-   */
-  public GraphicFill getGraphicFill() {
-    return this.graphicFill;
-  }
+    /**
+     * Renvoie la valeur de l'attribut graphicFill.
+     * 
+     * @return la valeur de l'attribut graphicFill
+     */
+    public GraphicFill getGraphicFill() {
+        return this.graphicFill;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut graphicFill.
-   * @param graphicFill l'attribut graphicFill à affecter
-   */
-  public void setGraphicFill(GraphicFill graphicFill) {
-    this.graphicFill = graphicFill;
-  }
+    /**
+     * Affecte la valeur de l'attribut graphicFill.
+     * 
+     * @param graphicFill
+     *            l'attribut graphicFill à affecter
+     */
+    public void setGraphicFill(GraphicFill graphicFill) {
+        this.graphicFill = graphicFill;
+    }
 
-  @XmlElements({ @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTexture.class) })
-  private Texture texture = null;
+    @XmlElements({ @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTexture.class) })
+    private Texture texture = null;
 
-  /**
-   * Renvoie la texture.
-   * @return la texture.
-   */
-  public Texture getTexture() {
-    return this.texture;
-  }
+    /**
+     * Renvoie la texture.
+     * 
+     * @return la texture.
+     */
+    public Texture getTexture() {
+        return this.texture;
+    }
 
-  /**
-   * Affecte la texture.
-   * @param texture la texture.
-   */
-  public void setTexture(Texture texture) {
-    this.texture = texture;
-  }
+    /**
+     * Affecte la texture.
+     * 
+     * @param texture
+     *            la texture.
+     */
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
 
-  @XmlElements({ @XmlElement(name = "SvgParameter", type = SvgParameter.class),
-      @XmlElement(name = "CssParameter", type = SvgParameter.class) })
-  private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>();
+    @XmlElements({ @XmlElement(name = "SvgParameter", type = SvgParameter.class), @XmlElement(name = "CssParameter", type = SvgParameter.class) })
+    private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>();
 
-  /**
-   * Renvoie la valeur de l'attribut cssParameters.
-   * @return la valeur de l'attribut cssParameters
-   */
-  public List<SvgParameter> getSvgParameters() {
-    return this.svgParameters;
-  }
+    /**
+     * Renvoie la valeur de l'attribut cssParameters.
+     * 
+     * @return la valeur de l'attribut cssParameters
+     */
+    public List<SvgParameter> getSvgParameters() {
+        return this.svgParameters;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut cssParameters.
-   * @param svgParameters l'attribut cssParameters à affecter
-   */
-  public synchronized void setSvgParameters(List<SvgParameter> svgParameters) {
-    this.svgParameters = svgParameters;
-    this.updateValues();
-  }
+    /**
+     * Affecte la valeur de l'attribut cssParameters.
+     * 
+     * @param svgParameters
+     *            l'attribut cssParameters à affecter
+     */
+    public synchronized void setSvgParameters(List<SvgParameter> svgParameters) {
+        this.svgParameters = svgParameters;
+        this.updateValues();
+    }
 
-  private synchronized void updateValues() {
-    synchronized (this) {
-      for (SvgParameter parameter : this.svgParameters) {
-        if (parameter.getName().equalsIgnoreCase("fill")) { //$NON-NLS-1$
-          this.setFill(Color.decode(parameter.getValue()));
-        } else if (parameter.getName().equalsIgnoreCase("fill-opacity")) { //$NON-NLS-1$
-          this.setFillOpacity(Float.parseFloat(parameter.getValue()));
-        } else if (parameter.getName().equalsIgnoreCase("color")) { //$NON-NLS-1$
-          this.setFill(new Color(Integer.parseInt(parameter.getValue())));
+    private synchronized void updateValues() {
+        synchronized (this) {
+            for (SvgParameter parameter : this.svgParameters) {
+                if (parameter.getName().equalsIgnoreCase("fill")) { //$NON-NLS-1$
+                    this.setFill(Color.decode(parameter.getValue()));
+                } else if (parameter.getName().equalsIgnoreCase("fill-opacity")) { //$NON-NLS-1$
+                    this.setFillOpacity(Float.parseFloat(parameter.getValue()));
+                } else if (parameter.getName().equalsIgnoreCase("color")) { //$NON-NLS-1$
+                    this.setFill(new Color(Integer.parseInt(parameter.getValue())));
+                }
+            }
         }
-      }
     }
-  }
 
-  @XmlTransient
-  private Color fill = Color.gray;
+    @XmlTransient
+    private Color fill = Color.gray;
 
-  /**
-   * Renvoie la valeur de l'attribut fill.
-   * @return la valeur de l'attribut fill
-   */
-  public Color getFill() {
-    return this.fill;
-  }
+    /**
+     * Renvoie la valeur de l'attribut fill.
+     * 
+     * @return la valeur de l'attribut fill
+     */
+    public Color getFill() {
+        return this.fill;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut fill.
-   * @param fill l'attribut fill à affecter
-   */
-  public synchronized void setFill(Color fill) {
-    this.fill = fill;
-    boolean found = false;
-    synchronized (this) {
-      for (SvgParameter parameter : this.svgParameters) {
-        if (parameter.getName().equalsIgnoreCase("fill")) { //$NON-NLS-1$
-          String rgb = Integer.toHexString(fill.getRGB());
-          rgb = rgb.substring(2, rgb.length());
-          parameter.setValue("#" + rgb); //$NON-NLS-1$
-          found = true;
-        } else if (parameter.getName().equalsIgnoreCase("color")) { //$NON-NLS-1$
-          String sRGB = Integer.toString(fill.getRGB());
-          parameter.setValue(sRGB);
-          found = true;
+    /**
+     * Affecte la valeur de l'attribut fill.
+     * 
+     * @param fill
+     *            l'attribut fill à affecter
+     */
+    public synchronized void setFill(Color fill) {
+        this.fill = fill;
+        boolean found = false;
+        synchronized (this) {
+            for (SvgParameter parameter : this.svgParameters) {
+                if (parameter.getName().equalsIgnoreCase("fill")) { //$NON-NLS-1$
+                    String rgb = Integer.toHexString(fill.getRGB());
+                    rgb = rgb.substring(2, rgb.length());
+                    parameter.setValue("#" + rgb); //$NON-NLS-1$
+                    found = true;
+                } else if (parameter.getName().equalsIgnoreCase("color")) { //$NON-NLS-1$
+                    String sRGB = Integer.toString(fill.getRGB());
+                    parameter.setValue(sRGB);
+                    found = true;
+                }
+            }
+            if (!found) {
+                SvgParameter parameter = new SvgParameter();
+                parameter.setName("fill"); //$NON-NLS-1$
+                String rgb = Integer.toHexString(fill.getRGB());
+                rgb = rgb.substring(2, rgb.length());
+                parameter.setValue("#" + rgb); //$NON-NLS-1$
+                this.svgParameters.add(parameter);
+            }
         }
-      }
-      if (!found) {
-        SvgParameter parameter = new SvgParameter();
-        parameter.setName("fill"); //$NON-NLS-1$
-        String rgb = Integer.toHexString(fill.getRGB());
-        rgb = rgb.substring(2, rgb.length());
-        parameter.setValue("#" + rgb); //$NON-NLS-1$
-        this.svgParameters.add(parameter);
-      }
     }
-  }
 
-  @XmlTransient
-  private float fillOpacity = 1.0f;
+    @XmlTransient
+    private float fillOpacity = 1.0f;
 
-  /**
-   * Renvoie la valeur de l'attribut fillOpacity.
-   * @return la valeur de l'attribut fillOpacity
-   */
-  public float getFillOpacity() {
-    return this.fillOpacity;
-  }
+    /**
+     * Renvoie la valeur de l'attribut fillOpacity.
+     * 
+     * @return la valeur de l'attribut fillOpacity
+     */
+    public float getFillOpacity() {
+        return this.fillOpacity;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut fillOpacity.
-   * @param fillOpacity l'attribut fillOpacity à affecter
-   */
-  public synchronized void setFillOpacity(float fillOpacity) {
-    this.fillOpacity = fillOpacity;
-    boolean found = false;
-    synchronized (this) {
-      for (SvgParameter parameter : this.svgParameters) {
-        if (parameter.getName().equalsIgnoreCase("fill-opacity")) { //$NON-NLS-1$
-          parameter.setValue(Float.toString(fillOpacity));
-          found = true;
+    /**
+     * Affecte la valeur de l'attribut fillOpacity.
+     * 
+     * @param fillOpacity
+     *            l'attribut fillOpacity à affecter
+     */
+    public synchronized void setFillOpacity(float fillOpacity) {
+        this.fillOpacity = fillOpacity;
+        boolean found = false;
+        synchronized (this) {
+            for (SvgParameter parameter : this.svgParameters) {
+                if (parameter.getName().equalsIgnoreCase("fill-opacity")) { //$NON-NLS-1$
+                    parameter.setValue(Float.toString(fillOpacity));
+                    found = true;
+                }
+            }
+            if (!found) {
+                SvgParameter parameter = new SvgParameter();
+                parameter.setName("fill-opacity"); //$NON-NLS-1$
+                parameter.setValue(Float.toString(fillOpacity));
+                this.svgParameters.add(parameter);
+            }
         }
-      }
-      if (!found) {
-        SvgParameter parameter = new SvgParameter();
-        parameter.setName("fill-opacity"); //$NON-NLS-1$
-        parameter.setValue(Float.toString(fillOpacity));
-        this.svgParameters.add(parameter);
-      }
     }
-  }
 
-  @XmlTransient
-  private Color color = null;
+    @XmlTransient
+    private Color color = null;
 
-  public synchronized Color getColor() {
-    if (this.color == null) {
-      this.updateValues();
-      if (this.fillOpacity == 1.0f) {
-        this.color = this.fill;
-      } else {
-        this.color = new Color(this.fill.getRed(), this.fill.getGreen(),
-            this.fill.getBlue(), (int) (this.fillOpacity * 255f));
-      }
+    public synchronized Color getColor() {
+        if (this.color == null) {
+            this.updateValues();
+            if (this.fillOpacity == 1.0f) {
+                this.color = this.fill;
+            } else {
+                this.color = new Color(this.fill.getRed(), this.fill.getGreen(), this.fill.getBlue(), (int) (this.fillOpacity * 255f));
+            }
+        }
+        return this.color;
     }
-    return this.color;
-  }
 
-  /**
-   * @param newColor
-   */
-  public void setColor(Color newColor) {
-    this.setFill(newColor);
-    if (this.fillOpacity == 1.0f) {
-      this.color = this.fill;
-    } else {
-      this.color = new Color(this.fill.getRed(), this.fill.getGreen(),
-          this.fill.getBlue(), (int) (this.fillOpacity * 255f));
+    /**
+     * @param newColor
+     */
+    public void setColor(Color newColor) {
+        this.setFill(newColor);
+        if (this.fillOpacity == 1.0f) {
+            this.color = this.fill;
+        } else {
+            this.color = new Color(this.fill.getRed(), this.fill.getGreen(), this.fill.getBlue(), (int) (this.fillOpacity * 255f));
+        }
     }
-  }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.color == null) ? 0 : this.color.hashCode());
+        result = prime * result + ((this.fill == null) ? 0 : this.fill.hashCode());
+        result = prime * result + Float.floatToIntBits(this.fillOpacity);
+        result = prime * result + ((this.graphicFill == null) ? 0 : this.graphicFill.hashCode());
+        result = prime * result + ((this.svgParameters == null) ? 0 : this.svgParameters.hashCode());
+        result = prime * result + ((this.texture == null) ? 0 : this.texture.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        Fill other = (Fill) obj;
+        if (this.color == null) {
+            if (other.color != null) {
+                return false;
+            }
+        } else if (!this.color.equals(other.color)) {
+            return false;
+        }
+        if (this.fill == null) {
+            if (other.fill != null) {
+                return false;
+            }
+        } else if (!this.fill.equals(other.fill)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.fillOpacity) != Float.floatToIntBits(other.fillOpacity)) {
+            return false;
+        }
+        if (this.graphicFill == null) {
+            if (other.graphicFill != null) {
+                return false;
+            }
+        } else if (!this.graphicFill.equals(other.graphicFill)) {
+            return false;
+        }
+        if (this.svgParameters == null) {
+            if (other.svgParameters != null) {
+                return false;
+            }
+        } else if (!this.svgParameters.equals(other.svgParameters)) {
+            return false;
+        }
+        if (this.texture == null) {
+            if (other.texture != null) {
+                return false;
+            }
+        } else if (!this.texture.equals(other.texture)) {
+            return false;
+        }
+        return true;
+    }
+
 }

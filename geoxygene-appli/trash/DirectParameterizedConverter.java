@@ -64,12 +64,12 @@ public class DirectParameterizedConverter implements ParameterizedConverter {
         // check the symbolizer class
         if (symbolizer instanceof LineSymbolizer) {
             LineSymbolizer lineSymbolizer = (LineSymbolizer) symbolizer;
-            DrawingPrimitive primitive = ParameterizedConverterUtil.generateParameterizedPolyline(lineSymbolizer, geometry, viewport);
+            DrawingPrimitive primitive = ParameterizedConverterUtil.generateParameterizedPolyline(lineSymbolizer, feature, viewport);
             return primitive;
         } else if (symbolizer instanceof PolygonSymbolizer) {
             PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) symbolizer;
             //      WorldCoordinatesLineParameterizer polygonParameterizer = new WorldCoordinatesLineParameterizer(viewport);
-            DrawingPrimitive primitive = ParameterizedConverterUtil.generateParameterizedPolygon(polygonSymbolizer, geometry, viewport);
+            DrawingPrimitive primitive = ParameterizedConverterUtil.generateParameterizedPolygon(polygonSymbolizer, feature, viewport);
             return primitive;
         } else {
             logger.error(this.getClass().getSimpleName() + " Cannot handle symbolizer type " + symbolizer.getClass().getSimpleName());

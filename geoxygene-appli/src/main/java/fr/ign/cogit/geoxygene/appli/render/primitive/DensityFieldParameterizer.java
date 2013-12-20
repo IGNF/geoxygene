@@ -29,17 +29,15 @@ package fr.ign.cogit.geoxygene.appli.render.primitive;
 
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.text.DecimalFormat;
 
 import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.geometry.ParameterizedPolygon;
 import fr.ign.cogit.geoxygene.appli.gl.TextureImage;
 import fr.ign.cogit.geoxygene.appli.gl.TextureImage.TexturePixel;
-import fr.ign.cogit.geoxygene.appli.gl.TextureImageUtil;
 
 /**
  * @author JeT
@@ -151,11 +149,11 @@ public class DensityFieldParameterizer implements Parameterizer {
      * applies using applyTexture() method
      */
     @Override
-    public Point2d getTextureCoordinates(final double x, final double y) {
+    public Point2d getTextureCoordinates(final double[] vertex) {
 
         Point2D modelPoint;
         try {
-            modelPoint = this.viewport.toModelPoint(new Point2D.Double(x, y));
+            modelPoint = this.viewport.toModelPoint(new Point2D.Double(vertex[0], vertex[1]));
             Point2D imageCoordinates = this.getTextureImage().worldToProj(modelPoint);
             double xTexture = imageCoordinates.getX() / this.getTextureImage().getWidth();
             double yTexture = imageCoordinates.getY() / this.getTextureImage().getHeight();
@@ -173,10 +171,10 @@ public class DensityFieldParameterizer implements Parameterizer {
      * getLinearParameter(float, float)
      */
     @Override
-    public double getLinearParameter(final double x, final double y) {
+    public double getLinearParameter(final double[] vertex) {
         Point2D modelPoint;
         try {
-            modelPoint = this.viewport.toModelPoint(new Point2D.Double(x, y));
+            modelPoint = this.viewport.toModelPoint(new Point2D.Double(vertex[0], vertex[1]));
             Point2D imageCoordinates = this.getTextureImage().worldToProj(modelPoint);
             TexturePixel pixel = this.getTextureImage().getPixel((int) imageCoordinates.getX(), (int) imageCoordinates.getY());
             return pixel.uTexture;

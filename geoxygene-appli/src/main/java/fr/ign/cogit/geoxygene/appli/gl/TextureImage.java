@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.render.primitive.ParameterizedPolygon;
+import fr.ign.cogit.geoxygene.appli.geometry.ParameterizedPolygon;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 /**
@@ -137,6 +137,8 @@ public class TextureImage {
     }
 
     /**
+     * TextureImage
+     * 
      * @return the maxy
      */
     public double getMaxY() {
@@ -315,11 +317,11 @@ public class TextureImage {
         DensityFieldFrontierPixelRenderer pixelRenderer = new DensityFieldFrontierPixelRenderer();
 
         // draw the outer frontier
-        this.drawFrontier(this.getPolygon().getGM_Polygon().getExterior(), 1, pixelRenderer, this.viewport);
+        this.drawFrontier(this.getPolygon().getGeometry().getExterior(), 1, pixelRenderer, this.viewport);
 
         // draw all inner frontiers
-        for (int innerFrontierIndex = 0; innerFrontierIndex < this.polygon.getInnerFrontierCount(); innerFrontierIndex++) {
-            IRing innerFrontier = this.getPolygon().getGM_Polygon().getInterior().get(innerFrontierIndex);
+        for (int innerFrontierIndex = 0; innerFrontierIndex < this.getPolygon().getGeometry().getInterior().size(); innerFrontierIndex++) {
+            IRing innerFrontier = this.getPolygon().getGeometry().getInterior().get(innerFrontierIndex);
             this.drawFrontier(innerFrontier, -innerFrontierIndex - 1, pixelRenderer, this.viewport);
         }
 
@@ -662,7 +664,7 @@ public class TextureImage {
             Thread.dumpStack();
             return;
         }
-        GM_Polygon gmPolygon = this.getPolygon().getGM_Polygon();
+        GM_Polygon gmPolygon = this.getPolygon().getGeometry();
 
         for (IDirectPosition pos : gmPolygon.getExterior().coord()) {
             Point2D p = new Point2D.Double(pos.getX(), pos.getY());

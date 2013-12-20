@@ -81,7 +81,7 @@ public final class LayerViewPanelFactory {
      * @return newly created layer view
      */
     private static LayerViewGLPanel newLayerViewGLPanel(final ProjectFrame projectFrame) {
-        LayerViewGLPanel glPanel = new LayerViewGLPanel(projectFrame, LayerViewGLCanvasType.GL1);
+        LayerViewGLPanel glPanel = new LayerViewGLPanel(projectFrame, LayerViewGLCanvasType.GL4);
         return glPanel;
     }
 

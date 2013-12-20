@@ -80,7 +80,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.gl.TessCallback;
 import fr.ign.cogit.geoxygene.appli.render.primitive.DrawingPrimitive;
 import fr.ign.cogit.geoxygene.appli.render.primitive.ParameterizedPolyline;
 import fr.ign.cogit.geoxygene.appli.render.stroke.TextStroke;
@@ -122,6 +121,7 @@ import fr.ign.cogit.geoxygene.style.thematic.DiagramSymbolizer;
 import fr.ign.cogit.geoxygene.style.thematic.ThematicClass;
 import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
+import fr.ign.cogit.geoxygene.util.gl.TessCallback;
 
 /**
  * @author JeT
