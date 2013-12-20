@@ -48,7 +48,6 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
@@ -267,6 +266,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer {
             // try to retrieve previously generated geometry matching the given view environment
             GLComplex complex = this.getComplex(venv);
             if (complex != null) {
+                System.err.println("render a stored GL complex");
                 this.renderGLPrimitive(complex, viewport);
                 return;
             }
@@ -284,6 +284,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer {
             if (complex != null) {
                 this.cachedComplex.put(venv, complex); // stores generated geometry
                 this.renderGLPrimitive(complex, viewport);
+                System.err.println("Generate a new GL primitive with " + complex.getVertices().size() + " vertices for feature " + feature.getId());
             } else {
                 logger.warn(this.getClass().getSimpleName() + " do not know how to render feature " + feature.getGeom().getClass().getSimpleName());
             }
@@ -339,12 +340,26 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer {
 
     /**
      * try to retrieve a GLComplex associated with the given view environment
+     * TODO: this method is O(n) but I don't know how to retrieve key AND value
+     * at the same time. We can do something much more intelligent
      * 
      * @param venv
      * @return
      */
-    private GLComplex getComplex(ViewEnvironment venv) {
-        return this.cachedComplex.get(venv);
+    private GLComplex getComplex(ViewEnvironment currentVenv) {
+        if (this.cachedComplex.size() == 1) {
+            ViewEnvironment storedVenv = this.cachedComplex.keySet().iterator().next();
+            System.err.println("venv equality ? => " + currentVenv.equals(storedVenv));
+        }
+        for (Map.Entry<ViewEnvironment, GLComplex> entry : this.cachedComplex.entrySet()) {
+            ViewEnvironment storedVenv = entry.getKey();
+            if (storedVenv.equals(currentVenv)) {
+                if (!storedVenv.needRegenerateGeometry(currentVenv)) {
+                    return entry.getValue();
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -379,7 +394,6 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer {
     public void initializeRendering() throws RenderingException {
         this.initShader();
         this.needInitialization = false;
-
     }
 
     @Override

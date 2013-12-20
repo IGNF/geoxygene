@@ -48,6 +48,10 @@ public class ViewEnvironment {
         this.viewport = viewport;
     }
 
+    public boolean needRegenerateGeometry(ViewEnvironment otherVenv) {
+        return false;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -58,8 +62,6 @@ public class ViewEnvironment {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.feature == null) ? 0 : this.feature.hashCode());
-        result = prime * result + ((this.symbolizer == null) ? 0 : this.symbolizer.hashCode());
-        result = prime * result + ((this.viewport == null) ? 0 : this.viewport.hashCode());
         return result;
     }
 
@@ -85,20 +87,6 @@ public class ViewEnvironment {
                 return false;
             }
         } else if (!this.feature.equals(other.feature)) {
-            return false;
-        }
-        if (this.symbolizer == null) {
-            if (other.symbolizer != null) {
-                return false;
-            }
-        } else if (!this.symbolizer.equals(other.symbolizer)) {
-            return false;
-        }
-        if (this.viewport == null) {
-            if (other.viewport != null) {
-                return false;
-            }
-        } else if (!this.viewport.equals(other.viewport)) {
             return false;
         }
         return true;
