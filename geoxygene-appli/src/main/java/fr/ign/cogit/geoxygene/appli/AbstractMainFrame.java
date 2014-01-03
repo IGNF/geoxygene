@@ -41,6 +41,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -50,7 +53,6 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.appli.task.Task;
@@ -306,6 +308,30 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
     @Override
     public void addMessage(MessageType type, String message) {
         this.getMessageConsole().addMessage(type, message);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.api.MainFrame#setLookAndFeel(java.lang.String
+     * )
+     */
+    @Override
+    public boolean setLookAndFeel(final String className) {
+        if (className == null) {
+            return false;
+        }
+        try {
+            UIManager.setLookAndFeel(className);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return false;
+        }
+        SwingUtilities.updateComponentTreeUI(this.frame);
+        this.getFrame().repaint();
+
+        return true;
     }
 
     /**

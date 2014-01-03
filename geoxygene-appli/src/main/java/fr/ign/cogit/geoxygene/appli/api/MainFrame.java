@@ -209,4 +209,12 @@ public interface MainFrame {
      */
     public abstract void close();
 
+    /**
+     * Set the main frame look and feel
+     * 
+     * @param className
+     *            class name of the look and feel
+     */
+    public abstract boolean setLookAndFeel(String className);
+
 }

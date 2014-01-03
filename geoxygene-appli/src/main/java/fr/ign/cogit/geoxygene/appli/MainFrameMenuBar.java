@@ -35,6 +35,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.log4j.Logger;
@@ -224,6 +225,26 @@ public class MainFrameMenuBar extends JMenuBar {
         });
         configurationMenu.add(organizeMenuItem);
 
+        configurationMenu.addSeparator();
+
+        // add a Look and feel submenu
+        JMenu lafMenu = new JMenu(I18N.getString("MainFrame.LookAndFeel")); //$NON-NLS-1$
+
+        // list all available look and feel
+        for (final UIManager.LookAndFeelInfo lafInfo : UIManager.getInstalledLookAndFeels()) {
+
+            JMenuItem lafMenuItem = new JMenuItem(lafInfo.getName()); //$NON-NLS-1$
+            lafMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(final ActionEvent e) {
+                    MainFrameMenuBar.this.mainFrame.setLookAndFeel(lafInfo.getClassName());
+                }
+            });
+            lafMenu.add(lafMenuItem);
+
+        }
+        configurationMenu.add(lafMenu);
+
         this.add(configurationMenu);
 
     }
@@ -250,7 +271,7 @@ public class MainFrameMenuBar extends JMenuBar {
         JMenu newProjectFrameSubMenu = new JMenu(I18N.getString("MainFrame.NewProject"));
 
         // New Default project
-        JMenuItem newDefaultProjectFrameMenuItem = new JMenuItem("new default Project", //$NON-NLS-1$
+        JMenuItem newDefaultProjectFrameMenuItem = new JMenuItem(I18N.getString("MainFrame.NewDefaultProject"), //$NON-NLS-1$
                 new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/application_add.png")));
         newDefaultProjectFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -262,7 +283,7 @@ public class MainFrameMenuBar extends JMenuBar {
         newProjectFrameSubMenu.add(newDefaultProjectFrameMenuItem);
 
         // New AWT project
-        JMenuItem newAWTProjectFrameMenuItem = new JMenuItem("new AWT Project", //$NON-NLS-1$
+        JMenuItem newAWTProjectFrameMenuItem = new JMenuItem(I18N.getString("MainFrame.NewAWTProject"), //$NON-NLS-1$
                 new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/application_add.png")));
         newAWTProjectFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -274,7 +295,7 @@ public class MainFrameMenuBar extends JMenuBar {
         newProjectFrameSubMenu.add(newAWTProjectFrameMenuItem);
 
         // New AWT project
-        JMenuItem newGLProjectFrameMenuItem = new JMenuItem("new GL Project", //$NON-NLS-1$
+        JMenuItem newGLProjectFrameMenuItem = new JMenuItem(I18N.getString("MainFrame.NewGLProject"), //$NON-NLS-1$
                 new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/application_add.png")));
         newGLProjectFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
             @Override
