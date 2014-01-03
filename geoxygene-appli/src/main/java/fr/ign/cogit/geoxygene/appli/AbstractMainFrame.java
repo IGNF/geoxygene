@@ -41,6 +41,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicButtonUI;
 
 import org.apache.log4j.Level;
@@ -48,6 +50,8 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.appli.task.Task;
 import fr.ign.cogit.geoxygene.appli.task.TaskManagerListener;
@@ -64,7 +68,7 @@ import fr.ign.cogit.geoxygene.appli.ui.MessageConsole;
  * 
  * @author JeT
  */
-public abstract class AbstractMainFrame implements MainFrame, TaskManagerListener {
+public abstract class AbstractMainFrame implements MainFrame, TaskManagerListener, ChangeListener {
 
     /** Logger. */
     protected static Logger logger = Logger.getLogger(AbstractMainFrame.class.getName());
@@ -122,6 +126,16 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
         this.application.getTaskManager().addTaskManagerListener(this);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.MainFrameTmp#newProjectFrame()
+     */
+    @Override
+    synchronized public final ProjectFrame newProjectFrame() {
+        return this.newProjectFrame(LayerViewPanelFactory.newLayerViewPanel());
+    }
+
     /**
      * @return the main frame
      */
@@ -166,6 +180,7 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
     public final JTabbedPane getDesktopTabbedPane() {
         if (this.desktopTabbedPane == null) {
             this.desktopTabbedPane = new JTabbedPane(JTabbedPane.TOP);
+            this.desktopTabbedPane.addChangeListener(this);
         }
         return this.desktopTabbedPane;
     }
@@ -317,9 +332,9 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
 
         this.getDesktopTabbedPane().addTab(tabTitle, new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/tab.png")), newDesktop);
         // tabbedPane.setMnemonicAt(index, KeyEvent.KEY_LAST + 1);
-        this.getDesktopTabbedPane().setSelectedIndex(index);
 
         this.getDesktopTabbedPane().setTabComponentAt(index, new ButtonTabComponent(this.getDesktopTabbedPane()));
+        this.getDesktopTabbedPane().setSelectedIndex(index);
         return newDesktop;
     }
 
@@ -383,6 +398,12 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
         }
     }
 
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (e.getSource() == this.getDesktopTabbedPane()) {
+            // action to perform when a new desktop is selected
+        }
+    }
 }
 
 class ButtonTabComponent extends JPanel {

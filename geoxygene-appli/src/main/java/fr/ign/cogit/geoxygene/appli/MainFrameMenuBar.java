@@ -45,6 +45,7 @@ import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.event.CoordPaintListener;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory;
 import fr.ign.cogit.geoxygene.appli.panel.AddPostgisLayer;
 import fr.ign.cogit.geoxygene.appli.panel.FileChooser;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -246,16 +247,45 @@ public class MainFrameMenuBar extends JMenuBar {
         fileMenu.add(newDesktopFrameMenuItem);
 
         // New Project
-        JMenuItem newProjectFrameMenuItem = new JMenuItem(I18N.getString("MainFrame.NewProject"), //$NON-NLS-1$
+        JMenu newProjectFrameSubMenu = new JMenu(I18N.getString("MainFrame.NewProject"));
+
+        // New Default project
+        JMenuItem newDefaultProjectFrameMenuItem = new JMenuItem("new default Project", //$NON-NLS-1$
                 new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/application_add.png")));
-        newProjectFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        newDefaultProjectFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 // LayerViewPanelFactory.setRenderingType(RenderingType.AWT);
                 MainFrameMenuBar.this.mainFrame.newProjectFrame();
             }
         });
-        fileMenu.add(newProjectFrameMenuItem);
+        newProjectFrameSubMenu.add(newDefaultProjectFrameMenuItem);
+
+        // New AWT project
+        JMenuItem newAWTProjectFrameMenuItem = new JMenuItem("new AWT Project", //$NON-NLS-1$
+                new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/application_add.png")));
+        newAWTProjectFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                // LayerViewPanelFactory.setRenderingType(RenderingType.AWT);
+                MainFrameMenuBar.this.mainFrame.newProjectFrame(LayerViewPanelFactory.newLayerViewAwtPanel());
+            }
+        });
+        newProjectFrameSubMenu.add(newAWTProjectFrameMenuItem);
+
+        // New AWT project
+        JMenuItem newGLProjectFrameMenuItem = new JMenuItem("new GL Project", //$NON-NLS-1$
+                new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/application_add.png")));
+        newGLProjectFrameMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                // LayerViewPanelFactory.setRenderingType(RenderingType.AWT);
+                MainFrameMenuBar.this.mainFrame.newProjectFrame(LayerViewPanelFactory.newLayerViewGLPanel());
+            }
+        });
+        newProjectFrameSubMenu.add(newGLProjectFrameMenuItem);
+
+        fileMenu.add(newProjectFrameSubMenu);
 
         // Open File
         JMenuItem openFileMenuItem = new JMenuItem(I18N.getString("MainFrame.OpenFile"), //$NON-NLS-1$

@@ -65,17 +65,35 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     /**
      * Constructor
      */
-    public AbstractProjectFrame(final MainFrame frame, final ImageIcon iconImage) {
+    public AbstractProjectFrame(final MainFrame frame, final LayerViewPanel layerViewPanel, final ImageIcon iconImage) {
         super();
         this.setIconImage(iconImage);
         this.setMainFrame(frame);
+        this.setLayerViewPanel(layerViewPanel);
         this.title = "Project #" + AbstractProjectFrame.PFID++;
         this.sld = new StyledLayerDescriptor(new DataSet());
+
         // this.layerViewPanel.setModel(this.sld);
         // this.layerLegendPanel.setModel(this.sld);
+
         this.sld.addSldListener(this.getLayerViewPanel());
         this.sld.addSldListener(this.getLayerLegendPanel());
     }
+
+    //    /**
+    //     * Constructor
+    //     */
+    //    public AbstractProjectFrame(final MainFrame frame, final ImageIcon iconImage) {
+    //        super();
+    //        this.setIconImage(iconImage);
+    //        this.setMainFrame(frame);
+    //        this.title = "Project #" + AbstractProjectFrame.PFID++;
+    //        this.sld = new StyledLayerDescriptor(new DataSet());
+    //        // this.layerViewPanel.setModel(this.sld);
+    //        // this.layerLegendPanel.setModel(this.sld);
+    //        this.sld.addSldListener(this.getLayerViewPanel());
+    //        this.sld.addSldListener(this.getLayerLegendPanel());
+    //    }
 
     @Override
     public final void setTitle(final String string) {
@@ -133,7 +151,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     @Override
     public final LayerViewPanel getLayerViewPanel() {
         if (this.layerViewPanel == null) {
-            this.layerViewPanel = LayerViewPanelFactory.newLayerViewPanel(this);
+            this.layerViewPanel = LayerViewPanelFactory.newLayerViewPanel();
         }
         return this.layerViewPanel;
     }
@@ -144,6 +162,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     public final void setLayerViewPanel(final LayerViewPanel layerViewPanel) {
         this.layerViewPanel = layerViewPanel;
+        this.layerViewPanel.setProjectFrame(this);
     }
 
     /**

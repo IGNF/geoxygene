@@ -28,6 +28,7 @@ import javax.swing.JFrame;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.MainFrameMenuBar;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.appli.ui.Message;
 
@@ -88,6 +89,13 @@ public interface MainFrame {
      * @return an array containing all project frames available in the interface
      */
     public abstract ProjectFrame[] getDesktopProjectFrames();
+
+    /**
+     * Create and return a new project frame.
+     * 
+     * @return the newly created project frame
+     */
+    public abstract ProjectFrame newProjectFrame(final LayerViewPanel layerViewPanel);
 
     /**
      * Create and return a new project frame.

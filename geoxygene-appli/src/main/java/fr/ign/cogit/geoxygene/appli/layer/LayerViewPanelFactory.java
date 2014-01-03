@@ -50,12 +50,12 @@ public final class LayerViewPanelFactory {
      *            parent frame containing the newly created layer
      * @return newly created layer view
      */
-    public static LayerViewPanel newLayerViewPanel(final ProjectFrame projectFrame) {
+    public static LayerViewPanel newLayerViewPanel() {
         switch (getLayerViewPanelType()) {
         case AWT:
-            return newLayerViewAwtPanel(projectFrame);
+            return newLayerViewAwtPanel();
         case LWJGL:
-            return newLayerViewGLPanel(projectFrame);
+            return newLayerViewGLPanel();
         }
         logger.error("Unhandled layer type " + getLayerViewPanelType());
         return null;
@@ -69,8 +69,8 @@ public final class LayerViewPanelFactory {
      * @return newly created layer view
      */
 
-    private static LayerViewAwtPanel newLayerViewAwtPanel(final ProjectFrame projectFrame) {
-        return new LayerViewAwtPanel(projectFrame);
+    public static LayerViewAwtPanel newLayerViewAwtPanel() {
+        return new LayerViewAwtPanel();
     }
 
     /**
@@ -80,8 +80,8 @@ public final class LayerViewPanelFactory {
      *            parent frame containing the newly created layer
      * @return newly created layer view
      */
-    private static LayerViewGLPanel newLayerViewGLPanel(final ProjectFrame projectFrame) {
-        LayerViewGLPanel glPanel = new LayerViewGLPanel(projectFrame, LayerViewGLCanvasType.GL4);
+    public static LayerViewGLPanel newLayerViewGLPanel() {
+        LayerViewGLPanel glPanel = new LayerViewGLPanel(LayerViewGLCanvasType.GL4);
         return glPanel;
     }
 

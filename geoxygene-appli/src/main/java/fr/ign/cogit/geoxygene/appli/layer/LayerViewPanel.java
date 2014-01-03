@@ -66,14 +66,24 @@ public abstract class LayerViewPanel extends JComponent implements Printable, Sl
     private final Set<IFeature> selectedFeatures = new HashSet<IFeature>(0);
 
     /***********************************************************************
-     * Default Constructor. Set the parent project frame and create a new
-     * Viewport
+     * Default Constructor. The parent project frame has to be set before
+     * using it
      */
-    public LayerViewPanel(final ProjectFrame frame) {
+    public LayerViewPanel() {
         super();
-        this.projectFrame = frame;
+        this.projectFrame = null;
         this.viewport = new Viewport(this);
     }
+
+    //    /***********************************************************************
+    //     * Default Constructor. Set the parent project frame and create a new
+    //     * Viewport
+    //     */
+    //    public LayerViewPanel(final ProjectFrame frame) {
+    //        super();
+    //        this.projectFrame = frame;
+    //        this.viewport = new Viewport(this);
+    //    }
 
     /**
      * Returns the size of a pixel in meters.
@@ -170,6 +180,14 @@ public abstract class LayerViewPanel extends JComponent implements Printable, Sl
     public void setViewport(Viewport viewport) {
         this.viewport = viewport;
 
+    }
+
+    /**
+     * @param projectFrame
+     *            the projectFrame to set
+     */
+    public void setProjectFrame(ProjectFrame projectFrame) {
+        this.projectFrame = projectFrame;
     }
 
     /** Get parent project frame */
@@ -269,6 +287,18 @@ public abstract class LayerViewPanel extends JComponent implements Printable, Sl
             listener.paint(this, graphics);
         }
     }
+
+    /**
+     * add GUI elements relative to this layer view panel.
+     * This method should be called when the layer view becomes active
+     */
+    public abstract void displayGui();
+
+    /**
+     * remove GUI elements relative to this layer view panel.
+     * This method should be called when the layer view becomes inactive
+     */
+    public abstract void hideGui();
 
     /** Paint listener management *********************************/
 

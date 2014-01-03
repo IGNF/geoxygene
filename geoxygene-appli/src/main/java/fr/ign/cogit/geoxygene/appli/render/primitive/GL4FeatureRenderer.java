@@ -266,7 +266,6 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer {
             // try to retrieve previously generated geometry matching the given view environment
             GLComplex complex = this.getComplex(venv);
             if (complex != null) {
-                System.err.println("render a stored GL complex");
                 this.renderGLPrimitive(complex, viewport);
                 return;
             }
@@ -347,10 +346,10 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer {
      * @return
      */
     private GLComplex getComplex(ViewEnvironment currentVenv) {
-        if (this.cachedComplex.size() == 1) {
-            ViewEnvironment storedVenv = this.cachedComplex.keySet().iterator().next();
-            System.err.println("venv equality ? => " + currentVenv.equals(storedVenv));
-        }
+        //        if (this.cachedComplex.size() == 1) {
+        //            ViewEnvironment storedVenv = this.cachedComplex.keySet().iterator().next();
+        //            System.err.println("venv equality ? => " + currentVenv.equals(storedVenv));
+        //        }
         for (Map.Entry<ViewEnvironment, GLComplex> entry : this.cachedComplex.entrySet()) {
             ViewEnvironment storedVenv = entry.getKey();
             if (storedVenv.equals(currentVenv)) {
@@ -371,7 +370,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer {
         this.setGLViewMatrix(viewport);
         GL30.glBindVertexArray(primitive.getVaoId());
 
-        if (((LayerViewGLPanel) this.getLayerViewPanel()).getLwJGLCanvas().isWireframe()) {
+        if (((LayerViewGLPanel) this.getLayerViewPanel()).isWireframe()) {
             GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
         } else {
             GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);

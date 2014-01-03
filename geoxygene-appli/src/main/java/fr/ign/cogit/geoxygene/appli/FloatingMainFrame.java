@@ -36,14 +36,17 @@ import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 
 /** @author Julien Perret */
-public class FloatingMainFrame extends AbstractMainFrame {
+public class FloatingMainFrame extends AbstractMainFrame implements InternalFrameListener {
 
     /** Logger of the application. */
     static Logger logger = Logger.getLogger(FloatingMainFrame.class.getName());
@@ -63,13 +66,10 @@ public class FloatingMainFrame extends AbstractMainFrame {
     }
 
     /**
-     * Add a new frame into the main frame. implementation should check the
-     * frame
-     * type before adding it...
+     * Add a new frame into the main frame.
      * 
      * @param project
-     *            frame to add
-     * @throws PropertyVetoException
+     *            project frame to add
      */
     void addProjectFrame(final JDesktopPane desktop, final ProjectFrame project) {
         if (project instanceof FloatingProjectFrame) {
@@ -78,7 +78,6 @@ public class FloatingMainFrame extends AbstractMainFrame {
                 FloatingProjectFrame floatingProject = (FloatingProjectFrame) project;
                 logger.debug("N°" + desktop.getAllFrames().length);
                 desktop.add(floatingProject.getInternalFrame());
-
                 floatingProject.getInternalFrame().setVisible(true);
                 floatingProject.getInternalFrame().setSelected(true);
 
@@ -147,12 +146,11 @@ public class FloatingMainFrame extends AbstractMainFrame {
      * @see fr.ign.cogit.geoxygene.appli.MainFrameTmp#newProjectFrame()
      */
     @Override
-    synchronized public final ProjectFrame newProjectFrame() {
+    synchronized public final ProjectFrame newProjectFrame(final LayerViewPanel layerViewPanel) {
 
-        // create the project frame (only FloatingProjectFrame can be inserted in
-        // FloatingMainFrame)
-        FloatingProjectFrame projectFrame = new FloatingProjectFrame(this, new ImageIcon(
-                GeOxygeneApplication.class.getResource("/images/icons/application.png")));
+        // create the project frame (only FloatingProjectFrame can be inserted inFloatingMainFrame)
+        ImageIcon icon = new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/application.png"));
+        FloatingProjectFrame projectFrame = new FloatingProjectFrame(this, layerViewPanel, icon);
         // insert it into the managed list
         this.projectFrameMap.put(projectFrame.getGui(), projectFrame);
         // set ProjectFrame initial values
@@ -178,6 +176,8 @@ public class FloatingMainFrame extends AbstractMainFrame {
         }
 
         projectFrame.getInternalFrame().setToolTipText(projectFrame.getTitle());
+        layerViewPanel.setProjectFrame(projectFrame);
+        projectFrame.getInternalFrame().addInternalFrameListener(this);
         return projectFrame;
     }
 
@@ -249,7 +249,6 @@ public class FloatingMainFrame extends AbstractMainFrame {
 
     @Override
     public void setSelectedFrame(final ProjectFrame projectFrame) {
-        // Maybe we should check that the project frame is in the CURRENT desktop...
         this.getCurrentDesktop().setSelectedFrame((JInternalFrame) projectFrame.getGui());
     }
 
@@ -262,6 +261,7 @@ public class FloatingMainFrame extends AbstractMainFrame {
     public void removeAllProjectFrames() {
         ProjectFrame[] desktopProjectFrames = this.getDesktopProjectFrames();
         for (ProjectFrame projectFrame : desktopProjectFrames) {
+            ((FloatingProjectFrame) projectFrame).getInternalFrame().removeInternalFrameListener(this);
             projectFrame.dispose();
             this.projectFrameMap.remove(projectFrame.getGui());
         }
@@ -330,6 +330,53 @@ public class FloatingMainFrame extends AbstractMainFrame {
 
     public Map<JComponent, FloatingProjectFrame> getProjectFrameMap() {
         return this.projectFrameMap;
+    }
+
+    @Override
+    public void internalFrameOpened(InternalFrameEvent e) {
+        ProjectFrame projectFrame = this.getProjectFrameFromGui(e.getInternalFrame());
+        if (projectFrame != null) {
+            projectFrame.getLayerViewPanel().displayGui();
+        }
+    }
+
+    @Override
+    public void internalFrameClosing(InternalFrameEvent e) {
+        // nothing to do
+    }
+
+    @Override
+    public void internalFrameClosed(InternalFrameEvent e) {
+        ProjectFrame projectFrame = this.getProjectFrameFromGui(e.getInternalFrame());
+        if (projectFrame != null) {
+            projectFrame.getLayerViewPanel().hideGui();
+        }
+    }
+
+    @Override
+    public void internalFrameIconified(InternalFrameEvent e) {
+        // nothing to do
+    }
+
+    @Override
+    public void internalFrameDeiconified(InternalFrameEvent e) {
+        // nothing to do
+    }
+
+    @Override
+    public void internalFrameActivated(InternalFrameEvent e) {
+        ProjectFrame projectFrame = this.getProjectFrameFromGui(e.getInternalFrame());
+        if (projectFrame != null) {
+            projectFrame.getLayerViewPanel().displayGui();
+        }
+    }
+
+    @Override
+    public void internalFrameDeactivated(InternalFrameEvent e) {
+        ProjectFrame projectFrame = this.getProjectFrameFromGui(e.getInternalFrame());
+        if (projectFrame != null) {
+            projectFrame.getLayerViewPanel().hideGui();
+        }
     }
 
 }

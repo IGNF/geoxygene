@@ -6,6 +6,9 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
@@ -14,7 +17,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 
 import org.apache.log4j.Logger;
 
@@ -22,11 +30,12 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.event.CompassPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.ScalePaintListener;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
+import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
+import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.SyncRenderingManager;
 import fr.ign.cogit.geoxygene.style.Layer;
 
@@ -38,7 +47,7 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * @author turbet
  * 
  */
-public class LayerViewGLPanel extends LayerViewPanel {
+public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, ActionListener {
 
     private static final long serialVersionUID = -7181604491025859187L; // serializable
                                                                         // UID
@@ -50,6 +59,10 @@ public class LayerViewGLPanel extends LayerViewPanel {
     private SyncRenderingManager renderingManager = null;
     private LayerViewGLCanvas glCanvas = null; // canvas containing the GL
     private LayerViewGLCanvasType glType = null;
+    private JToggleButton wireframeToggleButton = null;
+    private JButton clearCacheButton = null;
+    private JToolBar.Separator toolbarSeparator = null;
+    private boolean wireframe = false;
 
     public enum LayerViewGLCanvasType {
         GL1, GL4
@@ -63,8 +76,8 @@ public class LayerViewGLPanel extends LayerViewPanel {
      * 
      * @param frame
      */
-    public LayerViewGLPanel(final ProjectFrame frame, final LayerViewGLCanvasType glType) {
-        super(frame);
+    public LayerViewGLPanel(final LayerViewGLCanvasType glType) {
+        super();
         this.addPaintListener(new ScalePaintListener());
         this.addPaintListener(new CompassPaintListener());
         this.addPaintListener(new LegendPaintListener());
@@ -77,6 +90,24 @@ public class LayerViewGLPanel extends LayerViewPanel {
         // Attach LWJGL to the created canvas
         this.setGLComponent(this.glCanvas);
 
+    }
+
+    @Override
+    public void displayGui() {
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getToolbarSeparator());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getWireframeButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getClearCacheButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().revalidate();
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
+    }
+
+    @Override
+    public void hideGui() {
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getToolbarSeparator());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getWireframeButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getClearCacheButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().revalidate();
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
     }
 
     @Override
@@ -97,6 +128,41 @@ public class LayerViewGLPanel extends LayerViewPanel {
      */
     public void setGLCanvas(LayerViewGLCanvas lwJGLCanvas) {
         this.glCanvas = lwJGLCanvas;
+    }
+
+    private JToolBar.Separator getToolbarSeparator() {
+        if (this.toolbarSeparator == null) {
+            this.toolbarSeparator = new JToolBar.Separator();
+        }
+        return this.toolbarSeparator;
+    }
+
+    private JToggleButton getWireframeButton() {
+        if (this.wireframeToggleButton == null) {
+            this.wireframeToggleButton = new JToggleButton();
+            this.wireframeToggleButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/wireframe.png")));
+            this.wireframeToggleButton.setToolTipText(I18N.getString("RenderingGL.ToggleWireframe"));
+            this.wireframeToggleButton.setSelected(this.isWireframe());
+            this.wireframeToggleButton.addItemListener(this);
+        }
+        return this.wireframeToggleButton;
+    }
+
+    private JButton getClearCacheButton() {
+        if (this.clearCacheButton == null) {
+            this.clearCacheButton = new JButton();
+            this.clearCacheButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/clear.png")));
+            this.clearCacheButton.setToolTipText(I18N.getString("RenderingGL.ClearCache"));
+            this.clearCacheButton.addActionListener(this);
+        }
+        return this.clearCacheButton;
+    }
+
+    /**
+     * @return the wireframe
+     */
+    public boolean isWireframe() {
+        return this.wireframe;
     }
 
     @Override
@@ -152,12 +218,6 @@ public class LayerViewGLPanel extends LayerViewPanel {
         this.setViewport(null);
         // this.glPanel.setVisible(false);
         // TODO: properly close GL stuff
-    }
-
-    /** Evenements SLD */
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        this.repaint();
     }
 
     /**
@@ -239,6 +299,28 @@ public class LayerViewGLPanel extends LayerViewPanel {
 
     private final void setGlType(LayerViewGLCanvasType glType) {
         this.glType = glType;
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getSource() == this.getWireframeButton()) {
+            this.wireframe = this.getWireframeButton().isSelected();
+            this.repaint();
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == this.getClearCacheButton()) {
+            for (LayerRenderer renderer : this.getRenderingManager().getRenderers()) {
+                renderer.reset();
+            }
+            this.repaint();
+        } else {
+            // old SLD events....
+            this.repaint();
+        }
+
     }
 
 }

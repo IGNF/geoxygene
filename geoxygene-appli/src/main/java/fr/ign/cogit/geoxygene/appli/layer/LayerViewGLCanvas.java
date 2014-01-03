@@ -108,6 +108,4 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements Component
         }
     }
 
-    public abstract boolean isWireframe();
-
 }

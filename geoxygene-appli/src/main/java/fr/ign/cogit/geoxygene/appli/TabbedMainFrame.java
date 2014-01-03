@@ -32,18 +32,22 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.icon.CompositeIcon;
 import fr.ign.cogit.geoxygene.icon.VTextIcon;
 
 /** @author Julien Perret */
-public class TabbedMainFrame extends AbstractMainFrame {
+public class TabbedMainFrame extends AbstractMainFrame implements ChangeListener {
 
     /** Logger of the application. */
     static Logger logger = Logger.getLogger(TabbedMainFrame.class.getName());
@@ -154,6 +158,7 @@ public class TabbedMainFrame extends AbstractMainFrame {
     JComponent createNewDesktop() {
         JTabbedPane newDesktopPane = new JTabbedPane(JTabbedPane.LEFT);
         newDesktopPane.addContainerListener(this.getMode());
+        newDesktopPane.addChangeListener(this);
         return newDesktopPane;
     }
 
@@ -163,17 +168,17 @@ public class TabbedMainFrame extends AbstractMainFrame {
      * @see fr.ign.cogit.geoxygene.appli.MainFrameTmp#newProjectFrame()
      */
     @Override
-    synchronized public final ProjectFrame newProjectFrame() {
-        // create the project frame (only TabbedProjectFrame can be inserted in
-        // TabbedMainFrame)
-        TabbedProjectFrame projectFrame = new TabbedProjectFrame(this, new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/application.png")));
+    synchronized public final ProjectFrame newProjectFrame(final LayerViewPanel layerViewPanel) {
+        // create the project frame (only TabbedProjectFrame can be inserted in TabbedMainFrame)
+        ImageIcon icon = new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/application.png"));
+        TabbedProjectFrame projectFrame = new TabbedProjectFrame(this, layerViewPanel, icon);
         // insert it into the managed list
         this.projectFrameMap.put(projectFrame.getGui(), projectFrame);
 
         logger.log(Level.DEBUG, "New tabbed project frame");
         JTabbedPane currentDesktop = this.getCurrentDesktop();
         if (currentDesktop == null) {
-            logger.debug("No current desktop found newProjectFrame() method.Create a new desktop with name '" + projectFrame.getName() + "'");
+            logger.debug("No current desktop found newProjectFrame() method. Create a new desktop with name '" + projectFrame.getName() + "'");
             int index = this.getDesktopTabbedPane().getTabCount() + 1;
             currentDesktop = (JTabbedPane) this.createNewDesktop("Desktop #" + index);
         }
@@ -181,7 +186,7 @@ public class TabbedMainFrame extends AbstractMainFrame {
         if (this.getApplication().getProperties().getProjectPlugins().size() != 0) {
             this.getApplication().initializeProjectFramePlugins();
         }
-        // projectFrame.getInternalFrame().setToolTipText(projectFrame.getTitle());
+        layerViewPanel.setProjectFrame(projectFrame);
         return projectFrame;
     }
 
@@ -219,12 +224,22 @@ public class TabbedMainFrame extends AbstractMainFrame {
 
     @Override
     public void setSelectedFrame(final ProjectFrame projectFrame) {
+        ProjectFrame selectedProjectFrame = this.getSelectedProjectFrame();
+        if (selectedProjectFrame == projectFrame) {
+            return;
+        }
+
+        if (selectedProjectFrame != null) {
+            selectedProjectFrame.getLayerViewPanel().hideGui();
+        }
+
         for (int nProject = 0; nProject < this.getCurrentDesktop().getTabCount(); nProject++) {
             // use of == operator checks if object pointers are the same
             if (this.getCurrentDesktop().getTabComponentAt(nProject) == projectFrame) {
                 this.getCurrentDesktop().setSelectedIndex(nProject);
             }
         }
+        projectFrame.getLayerViewPanel().displayGui();
     }
 
     /*
@@ -318,6 +333,18 @@ public class TabbedMainFrame extends AbstractMainFrame {
     @Override
     public Image getIconImage() {
         return this.getGui().getIconImage();
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        for (ProjectFrame projectFrame : this.getDesktopProjectFrames()) {
+            projectFrame.getLayerViewPanel().hideGui();
+
+        }
+        ProjectFrame projectFrame = this.getSelectedProjectFrame();
+        if (projectFrame != null) {
+            projectFrame.getLayerViewPanel().displayGui();
+        }
     }
 
 }

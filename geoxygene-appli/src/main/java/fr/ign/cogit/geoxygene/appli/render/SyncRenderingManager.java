@@ -22,6 +22,7 @@ package fr.ign.cogit.geoxygene.appli.render;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
+import org.apache.commons.jxpath.Pointer;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
@@ -114,6 +115,9 @@ public class SyncRenderingManager implements RenderingManager {
      */
     @Override
     public final void renderAll() {
+        if (this.getLayerViewPanel() == null || this.getLayerViewPanel().getProjectFrame() == null) {
+            return;
+        }
         synchronized (this.getLayerViewPanel().getProjectFrame().getSld().lock) {
 
             // render all layers

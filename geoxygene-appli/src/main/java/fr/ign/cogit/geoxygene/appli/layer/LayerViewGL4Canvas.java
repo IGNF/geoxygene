@@ -5,35 +5,18 @@ package fr.ign.cogit.geoxygene.appli.layer;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL11.GL_PROJECTION;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL11.glMatrixMode;
-import static org.lwjgl.opengl.GL11.glOrtho;
 import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.awt.event.ComponentEvent;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JToggleButton;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import org.lwjgl.LWJGLException;
 
-import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
-import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
-
 /** @author JeT GL drawable canvas inserted into a LayerViewLwjglPanel */
-public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ChangeListener {
+public class LayerViewGL4Canvas extends LayerViewGLCanvas {
 
     private static final long serialVersionUID = 2813681374260169340L; // serializable
-    private JToggleButton wireframeToggleButton = null;
-    private JButton clearCacheButton = null;
-    private boolean wireframe = false;
 
     /**
      * Constructor
@@ -43,9 +26,6 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ChangeListe
      */
     public LayerViewGL4Canvas(final LayerViewGLPanel parentPanel) throws LWJGLException {
         super(parentPanel);
-        parentPanel.getProjectFrame().getMainFrame().getMode().getToolBar().addSeparator();
-        parentPanel.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getWireframeButton());
-        parentPanel.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getClearCacheButton());
     }
 
     //    private void setupTextures() {
@@ -56,33 +36,6 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ChangeListe
     //            e.printStackTrace();
     //        }
     //    }
-
-    private JToggleButton getWireframeButton() {
-        if (this.wireframeToggleButton == null) {
-            this.wireframeToggleButton = new JToggleButton();
-            this.wireframeToggleButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/wireframe.png")));
-            this.wireframeToggleButton.setSelected(this.isWireframe());
-            this.wireframeToggleButton.addChangeListener(this);
-        }
-        return this.wireframeToggleButton;
-    }
-
-    private JButton getClearCacheButton() {
-        if (this.clearCacheButton == null) {
-            this.clearCacheButton = new JButton();
-            this.clearCacheButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/clear.png")));
-            this.clearCacheButton.addChangeListener(this);
-        }
-        return this.clearCacheButton;
-    }
-
-    /**
-     * @return the wireframe
-     */
-    @Override
-    public boolean isWireframe() {
-        return this.wireframe;
-    }
 
     @Override
     protected void initGL() {
@@ -154,11 +107,11 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ChangeListe
                 return;
             }
             this.setSize(this.getParentPanel().getSize());
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity();
-            glOrtho(0, this.getWidth(), this.getHeight(), 0, -1000, 1000);
-            glMatrixMode(GL_MODELVIEW);
-            glViewport(0, 0, this.getWidth(), this.getHeight());
+            //            glMatrixMode(GL_PROJECTION);
+            //            glLoadIdentity();
+            //            glOrtho(0, this.getWidth(), this.getHeight(), 0, -1000, 1000);
+            //            glMatrixMode(GL_MODELVIEW);
+            //            glViewport(0, 0, this.getWidth(), this.getHeight());
         } catch (Exception e1) {
             // don't know hot to prevent/check this exception.
             // isDisplayable() and isValid() are both true at this point...
@@ -174,19 +127,4 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ChangeListe
     public void glPaintOverlays() {
     }
 
-    @Override
-    public void stateChanged(ChangeEvent e) {
-        if (e.getSource() == this.getWireframeButton()) {
-            this.wireframe = this.getWireframeButton().isSelected();
-            this.getParentPanel().repaint();
-        }
-
-        if (e.getSource() == this.getClearCacheButton()) {
-            for (LayerRenderer renderer : this.getParentPanel().getRenderingManager().getRenderers()) {
-                renderer.reset();
-            }
-            this.getParentPanel().repaint();
-        }
-
-    }
 }
