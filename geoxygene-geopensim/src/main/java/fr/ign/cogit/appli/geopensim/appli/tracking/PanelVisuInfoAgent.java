@@ -23,7 +23,8 @@ public class PanelVisuInfoAgent extends LayerViewAwtPanel {
     return this.etatAAfficher;
   }
   public PanelVisuInfoAgent(MainFrame mainFrame) {
-    super(mainFrame.getSelectedProjectFrame());
+    super();
+    // super(mainFrame.getSelectedProjectFrame());
     for (Layer layer : mainFrame.getSelectedProjectFrame().getLayers()) {
       this.getRenderingManager().addLayer(layer);
     }
