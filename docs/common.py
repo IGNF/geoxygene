@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'GeOxygene'
-copyright = u'2013, Laboratoire COGIT, IGN'
+copyright = u'2014, Laboratoire COGIT, IGN'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -58,7 +58,7 @@ release = '1.0'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
-today = '2013'
+today = '2014'
 # Else, today_fmt is used as the format for a strftime call.
 #today_fmt = '%B %d, %Y'
 
