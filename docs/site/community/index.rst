@@ -9,9 +9,6 @@ About
 .. toctree::
    :maxdepth: 1
    
-
+   license
    release
-   
-
-.. Project License 
-.. Project Team
+   .. Project Team

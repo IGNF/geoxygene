@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<GeOxygenePlugins>
+    <plugin class="fr.ign.cogit.geoxygene.appli.plugin.cartetopo.BuildingBlocksCreationPlugin" />
+    
+    <!-- Semiology -->
+    <plugin type="project" class="fr.ign.cogit.geoxygene.appli.plugin.semio.SemioToolbarPlugin">
+        <arg ref="displayToolbar" value="false" />
+    </plugin>
+    
+    <!-- Generalization -->
+    <plugin type="main" class="fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin">
+        <arg ref="displayPanel" value="false" />
+    </plugin>
+    <plugin type="project" class="fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenProjectPlugin" />
+    
+    <!-- OSM -->
+    <plugin class="fr.ign.cogit.geoxygene.appli.plugin.osm.OSMPlugin" />
+</GeOxygenePlugins>

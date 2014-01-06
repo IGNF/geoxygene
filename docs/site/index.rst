@@ -7,13 +7,14 @@ GeOxygene aims at providing an open framework which implements
 specifications for the development and deployment of geographic (GIS) applications.
 It is a open source contribution of the `COGIT laboratory <http://recherche.ign.fr/labos/cogit/accueilCOGIT.php>`_ at the
 `IGN <http://www.ign.fr/>`_ (Institut Géographique National), the French National Mapping Agency.
-It is released under the terms of the `LGPL (GNU Lesser General Public License) license <http://www.fsf.org/licensing/licenses/lgpl.html#SEC1>`_
 
 GeOxygene is based on Java and open source technologies and provides users with an extensible
 object data model (geographic features, geometry, topology and metadata) which implements
 OGC specifications and ISO standards in the geographic information domain.
 The support of the Java interfaces developped by the open source
 `GeoAPI project <http://geoapi.sourceforge.net/>`_ is planned.
+
+GeOxygene is an open source project made available to you using an open source license described :ref:`here <geoxlicense>`.
 
 .. Data are stored in a relational DBMS (RDBMS) to ensure a rapid and reliable access to the system
 .. but users do not have to worry about any SQL statements: they model their applications in UML and code in Java.

@@ -69,6 +69,11 @@ ul {
     padding-left: 20px;
 }
 
+ul > ul {
+    list-style: none;
+    padding-left: 20px;
+}
+
 ul > p {
     padding-left: 40px;
 }
@@ -81,7 +86,7 @@ table.docutils td {
 	/*text-align:center;*/
 	vertical-align:middle;
 	border: 1px solid #C0C0C0;
-	padding:2px;
+	padding:2px 8px 2px 8px;
 }
 
 
@@ -106,6 +111,18 @@ div.chemin {
     /*white-space:nowrap;*/
 }
 
+div.field {
+    background-color: #F0F0F0;
+    border: 1px solid #C0C0C0;
+    padding:4px 4px 4px 16px;
+    margin-top:2px;
+    margin-bottom:2px;
+    font-family: Courier New, Arial;
+    /*font-style:italic;*/
+    color:#000000;
+    /*white-space:nowrap;*/
+}
+
 div.svnurl {
     background-color: #F0F0F0;
     border: 1px solid #C0C0C0;
@@ -119,6 +136,11 @@ div.svnurl a {
     font-family: Courier New, Arial;
     color:#FF00DC;
     text-decoration: none;
+}
+
+ol.arabic > li {
+	padding-top:8px;
+	padding-bottom:8px;
 }
 
 div.alignleft {
@@ -214,25 +236,27 @@ div.sphinxsidebar {
     width: 18%;
 }
 div.sphinxsidebar h3 {
-    background: inherit;
+    /*background: inherit;*/
+    background-color:#F0F0F0;
     border: none;
     color: #385F95;
     padding: 0;
 }
-div.sphinxsidebar h4:before {
+/*div.sphinxsidebar h4:before {
     content: "» ";
     color:#0257B5;
-    background-color:#F4F4F4;
-}
+    background-color:#FFFFFF;
+}*/
 div.sphinxsidebar h4 {
-    background: inherit;
+    /*background: inherit;*/
+    background-color:#F0F0F0;
     border: none;
     color: #385F95;
     padding: 0;
 }
 p.topless {
     margin: 0;
-    padding-left: 2em; /* 1em 0.3em 1em */
+    /*padding-left: 2em;*/ /* 1em 0.3em 1em */
     /*font-size: 0.9em;*/   
     font-weight: normal;
 }
@@ -250,10 +274,13 @@ div.documentwrapper {
     width: auto;
 }
 div.footer {
-    background: #FFFFFF url(img/hr.png) repeat-x;;
+    background: #FFFFFF url(img/footer-bg.png) 0 0 repeat-x;
     color: #000000;
-    padding: 60px 0 35px;
+    padding: 10px 0 35px;
     text-align: center;
+    height: 45px;
+    position: relative;
+    overflow: hidden;
 }
 
 /* custom header */
@@ -579,4 +606,8 @@ li.toctree-l2::before {
 li.toctree-l2 {
   list-style-type: none;
   /* margin-left:48px; */
+}
+
+li.toctree-l1 {
+	padding-left:25px;
 }

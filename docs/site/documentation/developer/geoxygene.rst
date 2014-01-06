@@ -1,15 +1,12 @@
 :Date: 11/2013
 :Version: 0.6
 
-Setup Guide : GeOxygene 
+Setup GeOxygene 
 ####################################
 
 
 GeOxygene
 ********************
-
-Tout est en place pour l'installation de GeOxygene.
-
 
 .. --------------------------------------------------------------------------------------------------------------
 ..   Third Part : GEOXYGENE
@@ -28,7 +25,7 @@ Comme décrits dans les deux captures d’écran ci-dessous, cliquer :
 
    .. container:: leftside
 
-      D'abord sur : 
+      1. D'abord sur : 
 
       .. container:: chemin
 
@@ -39,12 +36,12 @@ Comme décrits dans les deux captures d’écran ci-dessous, cliquer :
          .. figure:: /documentation/resources/img/install/Import_01.png
             :width: 350px
        
-            Figure 10 : Import Project
+            Figure 1 : Import Project
 
 
    .. container:: rightside
 
-      Puis sur : 
+      2. Puis sur : 
       
       .. container:: chemin
 
@@ -55,39 +52,33 @@ Comme décrits dans les deux captures d’écran ci-dessous, cliquer :
          .. figure:: /documentation/resources/img/install/Import_02.png
             :width: 350px
        
-            Figure 11 : Check out Maven Projects from SCM
+            Figure 2 : Check out Maven Projects from SCM
 
 
-.. container:: twocol
+3. Ensuite comme l'indique la figure suivante, sélectionner **svn** dans la première liste comme SCM URL et indiquer l'adresse du svn de GeOxygene :
 
-   .. container:: leftside
+.. container:: centerside
+     
+   .. figure:: /documentation/resources/img/install/geoxygeneEtape3.png
+       
+      Figure 3 : SCM URL for check out GeOxygene
 
-      Ensuite comme l'indique la figure suivante, sélectionner **svn** dans la première liste comme SCM URL et indiquer l'adresse du svn de GeOxygene :
+* Si vous êtes enregistré sur `Sourceforge <http://sourceforge.net/>`_  et si vous avez des droits en tant que développeur ou administrateur sur le projet geoxygene : 
 
-      * Si vous êtes enregistré sur `Sourceforge <http://sourceforge.net/>`_  et si vous avez des droits en tant que développeur ou administrateur sur le projet geoxygene : 
-
-      .. container:: svnurl
+  .. container:: svnurl
     
-         https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene 
+     https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene 
 
-      * Sinon :
+* Sinon :
 
-      .. container:: svnurl
+  .. container:: svnurl
    
-         http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/ 
+     http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/ 
 
-      puis cliquer sur "Next".
+
+4. puis cliquer sur "Next".
  
    
-   .. container:: rightside
-
-      .. container:: centerside
-     
-          .. figure:: /documentation/resources/img/install/geoxygeneEtape3.png
-       
-             Figure 12 : SCM URL for check out GeOxygene 
-
-
 .. container:: twocol
 
    .. container:: leftside
@@ -97,11 +88,11 @@ Comme décrits dans les deux captures d’écran ci-dessous, cliquer :
          .. figure:: /documentation/resources/img/install/geoxygeneEtape4.png
             :width: 420px
        
-            Figure 13 : Configure your import
+            Figure 4 : Configure your import
    
    .. container:: rightside
 
-      Dans le panneau suivant, vous pouvez:
+      5. Dans le panneau suivant, vous pouvez:
 
       * sélectionner le répertoire où sera stocké votre projet (par défaut dans le workspace courant), 
 
@@ -112,9 +103,7 @@ Comme décrits dans les deux captures d’écran ci-dessous, cliquer :
       Par exemple **geox-[artifactId]** vous créera, pour geoxygene, n projets nommés geox-xxxx.
 
 
-Cliquez ensuite sur Finish.
-
-
+6. Cliquez ensuite sur **Finish**.
 
 Compilation
 ==================
@@ -133,7 +122,7 @@ Lancer un maven build manuellement. Pour cela :
       .. figure:: /documentation/resources/img/install/geoxygeneRunEtape1.png
          :width: 600px
           
-         Figure 22
+         Figure 5
        
 2. Sélectionner comme type de run "Maven", puis cliquer dans le menu en haut sur "New launch configuration"
       
@@ -142,15 +131,18 @@ Lancer un maven build manuellement. Pour cela :
       .. figure:: /documentation/resources/img/install/geoxygeneRunEtape2.png
          :width: 350px
              
-         Figure 23
+         Figure 6
 
 3. Dans la nouvelle fenêtre "Run configuration" configurer :
          
-     **Name** : geoxygene
+   .. container:: field
+   
+      **Name** : geoxygene
          
-     **Base directory** : saisir le chemin d'installation de GeOxygene (c'est celui de votre Workspace auquel il faut ajouter geoxygene)
+      **Base directory** : saisir le chemin d'installation de GeOxygene 
+                              (c'est celui de votre Workspace auquel il faut ajouter geoxygene)
          
-     **Goal** : clean install. Vous définissez la phase du cycle (clean, install, package, compile, test, site, ...)
+      **Goal** : clean install. Vous définissez la phase du cycle (clean, install, package, compile, test, site, ...)
          
   
   .. container:: centerside
@@ -158,95 +150,100 @@ Lancer un maven build manuellement. Pour cela :
       .. figure:: /documentation/resources/img/install/geoxygeneRunEtape3.png
          :width: 600px
              
-         Figure 24
+         Figure 7
 
 
 Si tout se passe bien, Maven devrait récupérer tous les jars des librairies nécessaires et compiler le projet. 
 
-
-Fichier de configuration des plugins
-========================================
-Créer le fichier **geoxygene-configuration.xml** depuis le fichier template:
-
-   .. container:: chemin
-        
-      $geoxygene >> copy geoxygene-appli/conf/geoxygene-configuration-template.xml geoxygene-appli/geoxygene-configuration.xml
+Cette opération peut prendre un certain temps !
 
 
-Ce fichier contient l'ensemble des plugins lancés au démarrage de l'application. Pour en ajouter ou supprimer il suffit de modifier le fichier.
-
-   .. literalinclude:: /documentation/resources/code_src/geoxygene-configuration.xml
-           :language: xml
-
-
-Lancement de l'interface graphique 2D
-*********************************************
-1. Dans le menu, cliquer sur 
-      
-   .. container:: chemin
-      
-      Run >> Run Configurations
-
-
-2. Sélectionner comme type de run "Java Application", puis faire un click droit et sélectionner "New"
-
-
-3. Configurer les éléments suivants :
-
-  3.1 Dans la partie "Main"
-
-     * **Name** : geoxygene
-
-     * **Project** : geoxygene-appli
-
-     * **Main class** : fr.ign.cogit.geoxygene.appli.GeOxygeneApplication
-
-
-  .. container:: centerside
-      
-      .. figure:: /documentation/resources/img/install/GeOxygeneAppliRunAs.png
-         :width: 700px
-       
-         Figure 25 - Lancement de l'interface graphique
-
-
-  3.2 Dans la partie "Arguments", pour la machine virtuelle :
- 
-     * **VM arguments** : -Djava.library.path=dll\win64 -Xms512M -Xmx1G
-     
-       où *dll\win64* définit l'emplacement où sont stockées vos librairies logicielles système (*.DLL, *.SO)
-
-
-  .. container:: centerside
-     
-      .. figure:: /documentation/resources/img/install/GeOxygeneAppliRunAs02.png
-         :width: 700px
-       
-         Figure 26 - Lancement de l'interface graphique 
-
-
-4. Cliquer sur **Run**, l'interface de GeOxygene est lancée !
-
-
-.. container:: centerside
-     
-    .. figure:: /documentation/resources/img/install/GeOxygene2D.png
-       :width: 700px
-       
-       Figure 26 - Interface graphique GeOxygene 2D 
-
-
-
-Lancement de l'interface graphique 3D
-***************************************************
-
-A venir
-
+Lancement des interfaces graphiques 
+=================================================================
+Le guide de lancement des interfaces graphiques est décrit sur la : :ref:`page suivante <launchinggeox>`.
 
 
 Plugins GeOxygene pour OpenJump
 ****************************************
 
-A venir
+Les plugins GeOxygene pour OpenJump sont dans un module dédié et dans un projet différent de celui de GeOxygene.
+Ils ne nécessitent pas forcément l'installation du projet GeOxygene.
+
+Importer le projet GeOxygene-ojplugin
+=======================================
+Suivez les mêmes étapes que l'import du projet GeOxygene. En revanche, les URLS du serveur SVN sont à choisir parmi celles-ci :
+
+Si vous êtes enregistré sur `Sourceforge <http://sourceforge.net/>`_  et si vous avez des droits en tant que développeur ou administrateur sur le projet geoxygene : 
+
+.. container:: svnurl
+    
+   https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-ojplugin 
+
+Sinon :
+
+.. container:: svnurl
+   
+   http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene-ojplugin
+
+
+Compilation
+==============
+Suivez les mêmes étapes que la compilation du projet GeOxygene. Dans la nouvelle fenêtre "Run configuration" configurer :
+         
+  .. container:: field
+
+     **Name** : geoxygene-ojplugin
+        
+     **Base directory** : saisir le chemin d'installation de geoxygene-ojplugin 
+                              (c'est celui de votre Workspace auquel il faut ajouter geoxygene-ojplugin)
+         
+     **Goal** : clean install. Vous définissez la phase du cycle (clean, install, package, compile, test, site, ...)
+
+
+Lancement des plugins Geoxygene d'OpenJump à partir d'Eclipse 
+=================================================================
+Cette méthode ne nécessite pas d'avoir installé OpenJump sur sa machine.
+
+1. Click droit dans l'explorateur d'Eclipse, puis "Run As", puis "Java Application"
+
+2. Dans le premier onglet saisissez comme MainClass :
+
+   .. container:: chemin
+
+      com.vividsolutions.jump.workbench.JUMPWorkbench
+
+
+.. container:: centerside
+
+   .. figure:: /documentation/resources/img/geoxygene/LancerOJEclipse01.png
+      :width: 600px
+      
+
+3. Dans le second onglet, ajouter comme Program arguments de la ligne de commande :
+
+   .. container:: chemin
+
+      -properties ./src/main/resources/workbench-properties.xml
+      -I18n fr
+
+   
+.. container:: centerside
+   
+   .. figure:: /documentation/resources/img/geoxygene/LancerOJEclipse02.png
+      :width: 600px
+             
+
+4. Pour lancer les plugins "quality", ceux-ci nécessitent la librairie java3d. Une version des dll est stockée dans le module "geoxygene-sig3d".
+
+   Ajouter comme VM arguments de la ligne de commande :
+
+   .. container:: chemin
+
+      -Xmx1536M
+      -Djava.library.path=D:/Workspace/geoxygene/geoxygene-sig3d/lib/native_libraries/windows-i586/
+
+
+5. Clicker sur le bouton "Run" et openjump se lance, avec les plugins GeOxygene.
+
 
 

@@ -10,8 +10,10 @@ Developer Guide
 	
    install
    geoxygene
+   launching
    maven
    architecture
+   .. test
    .. quickstart
    .. trucetastuce
 

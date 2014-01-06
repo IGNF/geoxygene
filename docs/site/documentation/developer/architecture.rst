@@ -20,48 +20,48 @@ GeOxygene Plateform
 All modules are presented here, functionalities and concepts. 
 
   +----------------+-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-api        | définition des interfaces permettant de travailler avec de l’information spatiale    |
+  |                |  geoxygene-api        | Définition des interfaces permettant de travailler avec de l’information spatiale    |
   +                +-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-spatial    | implémentation des principales classes géométriques et topologiques.                 |
+  |                |  geoxygene-spatial    | Implémentation des principales classes géométriques et topologiques.                 |
   |                |                       |                                                                                      |
   |                |                       | Algorithmes spatiaux : géométriques, généralisations, index, …                       |
   +                +-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-feature    | implémentation des objets géographiques                                              |
+  |                |  geoxygene-feature    | Implémentation des objets géographiques                                              |
   + Noyau          +-----------------------+--------------------------------------------------------------------------------------+
   |                |  geoxygene-io         |                                                                                      |
-  |                |                       | chargement / export des données                                                      |
+  |                |                       | Chargement et export des données                                                     |
   |                |  geoxygene-database   |                                                                                      |
   +                +-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-style      |                                                                                      |
+  |                |  geoxygene-style      | Le package style permet de décrire des styles cartographiques dans le formalisme     |
+  |                |                       |                                                                                      |
+  |                |                       | des normes OGC SLD (Styled Layer Descriptor) et SE (Symbology Encoding).             |
   +                +-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-filter     |                                                                                      |
+  |                |  geoxygene-filter     |  Le package filter permet de filtrer pour produire un nouveau jeu de résultats       |
   +                +-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-schemageo  |                                                                                      |
+  |                |  geoxygene-schemageo  | Schéma géographique des objets                                                       |
   +----------------+-----------------------+--------------------------------------------------------------------------------------+
   +----------------+-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-semio      |                                                                                      |
+  |                |  geoxygene-semio      | Module dédié aux travaux autour de la légende d'une carte                            |
   +                +-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-contrib    |                                                                                      |
+  |                |  geoxygene-contrib    | Module dédié à l'appariement, la conflation, la qualité des données                  |
   +                +-----------------------+--------------------------------------------------------------------------------------+
-  | Contributions  |  geoxygene-cartagen   |                                                                                      |
+  | Contributions  |  geoxygene-cartagen   | Module dédié à la généralisation de données géographiques                            |
   +                +-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-osm        |                                                                                      |
+  |                |  geoxygene-osm        | Module dédié aux manipulations des données OSM                                       |
   +                +-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-sig3d      |                                                                                      |
+  |                |  geoxygene-sig3d      | Module dédié à la visualisation et à la manipulation de données 3D                   |
   +----------------+-----------------------+--------------------------------------------------------------------------------------+
   +----------------+-----------------------+--------------------------------------------------------------------------------------+
-  | Viewer         |  geoxygene-appli      |                                                                                      |
+  | Viewer         |  geoxygene-appli      | Application graphique 2D                                                             |
   +----------------+-----------------------+--------------------------------------------------------------------------------------+
   +----------------+-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-ojplugin   |                                                                                      |
+  |                |  geoxygene-ojplugin   | Plugins GeOxygene pour OpenJump : appariement de réseaux, indicateur de qualité.     |
   + Extensions     +-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-wps        |                                                                                      |
+  |                |  geoxygene-wps        | Web services pour GeoServer : appariement de réseaux, réseaux topologiques           |
   +----------------+-----------------------+--------------------------------------------------------------------------------------+
   +----------------+-----------------------+--------------------------------------------------------------------------------------+
-  |                |  geoxygene-geopensim  |                                                                                      |
+  |                |  geoxygene-geopensim  | http://geopensim.ign.fr                                                              |
   + Applications   +-----------------------+--------------------------------------------------------------------------------------+
   |                |  geoxygene-pearep     |                                                                                      |
   +----------------+-----------------------+--------------------------------------------------------------------------------------+
-  
-  
-  
+   

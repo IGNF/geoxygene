@@ -1,8 +1,8 @@
 :Date: 11/2013
 :Version: 0.6
 
-Setup Guide : Tools 
-####################################
+Setup tools for GeOxygene
+##########################
 
 Cette page et la suivante ont pour objectif de guider le développeur dans son installation de la plateforme de développement de GeOxygene.
   
@@ -393,41 +393,30 @@ Pour installer GeOxygene il faut le plugin et le connector subclipse.
 Reprener les 8 premières étapes de l'installation du plugin subclipse mais en adaptant les paramètres pour le plugin m2e.
 
 
-.. container:: twocol
-
-   .. container:: leftside
-   
-      **A l'étape 3** saisir comme URL :
+**A l'étape 3** saisir comme URL :
       
-      .. container:: chemin
+.. container:: chemin
 
-         Name = m2eclipse
+   Name = m2eclipse
          
-         Location = http://download.eclipse.org/technology/m2e/releases 
+   Location = http://download.eclipse.org/technology/m2e/releases 
    
-   .. container:: rightside
+.. container:: centerside
       
-      .. container:: centerside
-      
-         .. figure:: /documentation/resources/img/install/m2eclipseUrl.png
-            :width: 450px
+   .. figure:: /documentation/resources/img/install/m2eclipseUrl.png
+      :width: 450px
 
-            Figure 17 - m2eclipse update site
+      Figure 17 - m2eclipse update site
 
-.. container:: twocol
 
-   .. container:: leftside
-   
-      **A l'étape 4** choisir l'unique composant "Maven Integration for Eclipse".
+**A l'étape 4** choisir l'unique composant "Maven Integration for Eclipse".
       
-   .. container:: rightside
+.. container:: centerside
       
-      .. container:: centerside
-      
-         .. figure:: /documentation/resources/img/install/m2eclipseEtape1.png
-            :width: 450px
+   .. figure:: /documentation/resources/img/install/m2eclipseEtape1.png
+      :width: 450px
 
-            Figure 18 - Plugins m2eclipse disponibles
+      Figure 18 - Plugins m2eclipse disponibles
 
 
 **A l'étape 8**, une fois l'installation terminée, une fenêtre propose de redémarrer Eclipse, inutile de le faire à ce stade.
@@ -519,7 +508,7 @@ Afin de voir la javadoc ou les sources des dépendances de vos projets, sélecti
        Figure 21 : Eclipse preferences pour Maven
 
 
-
+Tout est en place pour l'installation de GeOxygene.
 
 
 

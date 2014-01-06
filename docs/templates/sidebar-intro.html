@@ -1,0 +1,30 @@
+<p>
+   Bottle is a fast, simple and lightweight WSGI micro web-framework for Python.
+</p>
+<h3>Installation</h3>
+<p>Install Bottle with <code>pip&nbsp;install&nbsp;bottle</code> or download the source package at <a href="https://pypi.python.org/pypi/bottle">PyPI</a>.</p>
+<h3>Releases</h3>
+  {% if 'dev' in release or 'rc' in release %}
+  <p style='font-size: 0.75em; color: darkred'><b>Warning:</b> This is a preview for <b>Bottle-{{release}}</b>, which is
+    not released yet. Switch to the latest <a href="/docs/stable/"><b>stable release</b></a>?</p>
+  {% endif %}
+<ul>
+  {% for v, name in releases %}
+    {% if v == version %}
+      <li><b>Bottle {{v}}</b> ({{name}})</li>
+    {% else %}
+      <li><a href="/docs/{{v}}/">Bottle {{v}}</a> ({{name}})</li>
+  {% endif %}
+  {% endfor %}
+</ul>
+<h3>Download Docs</h3>
+  <p>Download this documentation as <a href="{{ pathto('bottle-docs.pdf', 1) }}">PDF</a> or <a href="{{ pathto('bottle-docs.zip', 1) }}">HTML (zip)</a> for offline use.</p>
+
+<h3>Resources</h3>
+<ul>
+  <li><a target="_blank" href="https://twitter.com/bottlepy">Twitter news</a></li>
+  <li><a target="_blank" href="http://blog.bottlepy.org">Development blog</a></li>
+  <li><a target="_blank" href="https://github.com/defnull/bottle">GitHub repository</a></li>
+  <li><a target="_blank" href="https://groups.google.de/group/bottlepy">Mailing list archive</a></li>
+  <li><a target="_blank" href="https://webchat.freenode.net/?channels=bottlepy">Freenode chat</a></li>
+</ul>

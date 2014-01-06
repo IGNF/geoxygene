@@ -1,0 +1,29 @@
+{% extends "basic/layout.html" %}
+
+{%- block sidebartoc %}
+	
+	<h4>Navigation</h4>
+	<a href="https://sourceforge.net/p/oxygene-project">
+	   Sourceforge Home
+	   <img src="/_static/img/sourceforge.png" />
+	</a>
+	
+	<h4>{{ _('Table Of Contents') }}</h4>
+    {{ toc }}
+{#    
+    {% if next %}
+    	<h4>Next topic</h4>
+		<a href="{{ next.link|e }}">{{ next.title }}</a>
+	{% endif %}
+#}
+
+{%- endblock %}
+          
+{%- block sidebarsearch %}
+	<form class="navbar-search pull-right" style="margin-bottom:-3px;" action="{{ pathto('search') }}" method="get">
+    	<input type="text" name="q" placeholder="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+{%- endblock %}
+        

@@ -9,6 +9,7 @@ Tutorial
    :maxdepth: 1
    
 
-   default-feature
+   .. default-feature
+   .. motif
    plugin
-   motif
+
