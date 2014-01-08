@@ -45,7 +45,8 @@ public class ParameterComponent {
     try {
       JAXBContext context = JAXBContext.newInstance(Parameters.class, Parameter.class);
       Unmarshaller unmarshaller = context.createUnmarshaller(); 
-      Parameters root = (Parameters) unmarshaller.unmarshal(file); return root; 
+      Parameters root = (Parameters) unmarshaller.unmarshal(file); 
+      return root; 
     } catch (Exception e1) { 
       e1.printStackTrace(); throw e1; 
     } 
