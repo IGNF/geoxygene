@@ -103,13 +103,13 @@ public class ParameterTest extends XMLTestCase {
     System.out.println("---------------------");
     
     // Old parameter
-    ParametersOld po = new ParametersOld();
+    /*ParametersOld po = new ParametersOld();
     po.set("direction1", direction);
     po.marshall();
     
     retour = (Direction)po.get("direction1");
     retour.toString();
-    assertEquals(retour.toString(), "SimpleSens ('T')");
+    assertEquals(retour.toString(), "SimpleSens ('T')");*/
   }
 
 }
