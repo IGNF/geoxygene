@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.process.ProcessException;
@@ -37,7 +36,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
@@ -47,6 +45,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkData
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
+import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
 import fr.ign.cogit.process.geoxygene.GeoxygeneProcess;
 
@@ -103,10 +102,10 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
     // Set parameters
     LOGGER.debug("Start setting parameters");
     
-    DatasetNetworkDataMatching datasetNetwork1 = new DatasetNetworkDataMatching();
-    datasetNetwork1.addPopulationsArcs((IPopulation<IFeature>)gPopRef);
-    DatasetNetworkDataMatching datasetNetwork2 = new DatasetNetworkDataMatching();
-    datasetNetwork2.addPopulationsArcs((IPopulation<IFeature>)gPopComp);
+    DataSet datasetNetwork1 = new DataSet();
+    datasetNetwork1.addPopulation((IPopulation<IFeature>)gPopRef);
+    DataSet datasetNetwork2 = new DataSet();
+    datasetNetwork2.addPopulation((IPopulation<IFeature>)gPopComp);
     
     ParamNetworkDataMatching param = new ParamNetworkDataMatching();
     float distanceNoeudsMax = 20;
@@ -184,19 +183,8 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
       // ResultNetworkDataMatching resultatAppariement = NetworkDataMatching.networkDataMatching(param);
       LOGGER.debug("End network data matching");
       
-      System.out.println(resultatAppariement.getResultStat().getStatsEdgesOfNetwork1().toString());
-      System.out.println(resultatAppariement.getResultStat().getStatsNodesOfNetwork1().toString());
-      System.out.println(resultatAppariement.getResultStat().getStatsEdgesOfNetwork2().toString());
-      System.out.println(resultatAppariement.getResultStat().getStatsNodesOfNetwork2().toString());
-      
-      System.out.println("Nombre arcs reseau 1 = " + resultatAppariement.getReseauStat1().getReseauApp().getPopArcs().size());
-      System.out.println("Nombre noeuds reseau 1 = " + resultatAppariement.getReseauStat1().getReseauApp().getPopNoeuds().size());
-      System.out.println("Nombre arcs reseau 2 = " + resultatAppariement.getReseauStat2().getReseauApp().getPopArcs().size());
-      System.out.println("Nombre noeuds reseau 2 = " + resultatAppariement.getReseauStat2().getReseauApp().getPopNoeuds().size());
-
       LOGGER.debug("Start recalage");
-      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseauStat1().getReseauApp(), 
-          resultatAppariement.getReseauStat2().getReseauApp(), 
+      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), resultatAppariement.getReseau2(), 
           resultatAppariement.getLiens());
       LOGGER.debug("End recalage");
 

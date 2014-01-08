@@ -27,10 +27,7 @@ import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartetopo.data.ParamDoingTopologicalStructure;
 import fr.ign.cogit.geoxygene.appli.plugin.cartetopo.gui.DialogTopoStructurePanel;
-import fr.ign.cogit.geoxygene.appli.plugin.cartetopo.gui.TestPanel;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultCarteTopoStatElement;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultCarteTopoStatElementInterface;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
@@ -132,9 +129,6 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin,
 
       LOGGER.debug("Tolerance = " + paramDoingTopologicalStructure.tolerance);
 
-      ResultCarteTopoStatElement resultStatArc = new ResultCarteTopoStatElement();
-      ResultCarteTopoStatElement resultStatNoeud = new ResultCarteTopoStatElement();
-
       // Réseau final muni d'une topologie réseau
       ReseauApp reseau = new ReseauApp("Réseau muni d'une topologie réseau");
       IPopulation<? extends IFeature> popArc = reseau.getPopArcs();
@@ -182,14 +176,8 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.info("==================================");
       LOGGER.info("Nombre d'arcs bruts des réseaux = "
           + reseau.getPopArcs().size());
-      resultStatArc.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_BRUTS, reseau.getPopArcs()
-              .size());
       LOGGER.info("Nombre de noeuds bruts des réseaux = "
           + reseau.getPopNoeuds().size());
-      resultStatNoeud.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_BRUTS, reseau.getPopNoeuds()
-              .size());
       LOGGER.info("==================================");
 
       // Instanciation de la topologie
@@ -207,14 +195,8 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.info("==================================");
       LOGGER.info("Nombre d'arcs après instanciation de la topologie = "
           + reseau.getPopArcs().size());
-      resultStatArc.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_IMPORT, reseau.getPopArcs()
-              .size());
       LOGGER.info("Nombre de noeuds après instanciation de la topologie = "
           + reseau.getPopNoeuds().size());
-      resultStatNoeud.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_IMPORT, reseau.getPopNoeuds()
-              .size());
       LOGGER.info("==================================");
 
       // ---------------------------------------------------------------------------------
@@ -245,14 +227,8 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.info("==================================");
       LOGGER.info("Nombre d'arcs après planaire = "
           + reseau.getPopArcs().size());
-      resultStatArc.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_PLANAIRE, reseau.getPopArcs()
-              .size());
       LOGGER.info("Nombre de noeuds après planaire = "
           + reseau.getPopNoeuds().size());
-      resultStatNoeud.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_PLANAIRE, reseau
-              .getPopNoeuds().size());
       LOGGER.info("==================================");
 
       // ------------------------------------------------------------------------------------------
@@ -266,14 +242,8 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.info("==================================");
       LOGGER.info("Nombre d'arcs après fusion des noeuds proches = "
           + reseau.getPopArcs().size());
-      resultStatArc.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_NOEUDS_PROCHES, reseau
-              .getPopArcs().size());
       LOGGER.info("Nombre de noeuds après fusion des noeuds proches = "
           + reseau.getPopNoeuds().size());
-      resultStatNoeud.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_NOEUDS_PROCHES, reseau
-              .getPopNoeuds().size());
       LOGGER.info("==================================");
 
       // ------------------------------------------------------------------------------------------
@@ -287,14 +257,8 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.info("==================================");
       LOGGER.info("Nombre d'arcs après fusion des noeuds proches = "
           + reseau.getPopArcs().size());
-      resultStatArc.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_NOEUDS_ISOLES, reseau
-              .getPopArcs().size());
       LOGGER.info("Nombre de noeuds après fusion des noeuds proches = "
           + reseau.getPopNoeuds().size());
-      resultStatNoeud.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_NOEUDS_ISOLES, reseau
-              .getPopNoeuds().size());
       LOGGER.info("==================================");
 
       // ------------------------------------------------------------------------------------------
@@ -308,14 +272,8 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.info("==================================");
       LOGGER.info("Nombre d'arcs après fusion des noeuds proches = "
           + reseau.getPopArcs().size());
-      resultStatArc.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_FILTRE_ARCS_INCIDENTS, reseau
-              .getPopArcs().size());
       LOGGER.info("Nombre de noeuds après fusion des noeuds proches = "
           + reseau.getPopNoeuds().size());
-      resultStatNoeud.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_FILTRE_ARCS_INCIDENTS, reseau
-              .getPopNoeuds().size());
       LOGGER.info("==================================");
 
       // ---------------------------------------------------------------------------------
@@ -329,14 +287,8 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.info("==================================");
       LOGGER.info("Nombre d'arcs après fusion des noeuds proches = "
           + reseau.getPopArcs().size());
-      resultStatArc.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_INDEXATION, reseau
-              .getPopArcs().size());
       LOGGER.info("Nombre de noeuds après fusion des noeuds proches = "
           + reseau.getPopNoeuds().size());
-      resultStatNoeud.addNbElementForType(
-          ResultCarteTopoStatElementInterface.NB_INDEXATION, reseau
-              .getPopNoeuds().size());
       LOGGER.info("==================================");
 
       // 6 - On crée la topologie de faces
@@ -362,8 +314,6 @@ public class TopologieReseauPlugin implements GeOxygeneApplicationPlugin,
 
       p2.setSize(widthProjectFrame, heightProjectFrame);
       p2.setLocation(widthProjectFrame, 0);
-
-      TestPanel testPanel = new TestPanel(p2, resultStatArc, resultStatNoeud);
 
       // On enregistre les résultats
       // ShapefileWriter.write(reseau.getPopArcs(),

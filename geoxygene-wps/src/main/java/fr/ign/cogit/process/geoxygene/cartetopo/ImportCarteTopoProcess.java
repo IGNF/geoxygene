@@ -47,16 +47,13 @@ public class ImportCarteTopoProcess implements GeoxygeneProcess {
 
   public ImportCarteTopoProcess(Catalog catalog) {
     this.catalog = catalog;
+    System.out.println("????????????????????????????????????????????????????????");
   }
 
   @DescribeResult(name = "layerName", description = "Name of the new featuretype, with workspace")
-  public String execute(@DescribeParameter(name = "carteTopo", description = "Topological map") CarteTopoData carteTopo
-   // @DescribeParameter(name = "workspace", min = 0, description = "Target workspace (default is the system default)") String workspace,
-   // @DescribeParameter(name = "store", min = 0, description = "Target store (default is the workspace default)") String store,
-   // @DescribeParameter(name = "srs", min = 0, description = "Target coordinate reference system (default is based on source when possible)") CoordinateReferenceSystem srs
-      ) throws Exception {
-    
-    ProjectionPolicy srsHandling = ProjectionPolicy.FORCE_DECLARED;
+  public String execute() throws Exception {
+    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    /*ProjectionPolicy srsHandling = ProjectionPolicy.FORCE_DECLARED;
 
     // Target store
     WorkspaceInfo ws = catalog.getWorkspaceByName("Appariement");
@@ -116,7 +113,9 @@ public class ImportCarteTopoProcess implements GeoxygeneProcess {
       
     } catch (Exception e) { 
       throw new ProcessException("Failed to complete the import inside the GeoServer catalog", e); 
-    }
+    }*/
+    
+    return "OK";
     
 //  workspace = "Appariement";
 //  store = "T3";
@@ -241,7 +240,7 @@ public class ImportCarteTopoProcess implements GeoxygeneProcess {
    * @param storeInfo
    * @return
    */
-  private SimpleFeatureType importDataIntoStore(SimpleFeatureCollection features, String name, DataStoreInfo storeInfo) throws IOException,
+  /*private SimpleFeatureType importDataIntoStore(SimpleFeatureCollection features, String name, DataStoreInfo storeInfo) throws IOException,
       ProcessException {
 
     SimpleFeatureType targetType;
@@ -308,7 +307,7 @@ public class ImportCarteTopoProcess implements GeoxygeneProcess {
     t.close();
 
     return targetType;
-  }
+  }*/
   
   /**
    * Applies a set of heuristics to find which target attribute corresponds to a certain input
@@ -318,7 +317,7 @@ public class ImportCarteTopoProcess implements GeoxygeneProcess {
    * @param targetType
    * @return
    */
-  Map<String, String> buildAttributeMapping(SimpleFeatureType sourceType,
+  /*Map<String, String> buildAttributeMapping(SimpleFeatureType sourceType,
           SimpleFeatureType targetType) {
       // look for the typical manglings. For example, if the target is a
       // shapefile store it will move the geometry and name it the_geom
@@ -376,5 +375,5 @@ public class ImportCarteTopoProcess implements GeoxygeneProcess {
                   + " to the target feature type ones: " + targetType);
       }
       return result;
-  }
+  }*/
 }

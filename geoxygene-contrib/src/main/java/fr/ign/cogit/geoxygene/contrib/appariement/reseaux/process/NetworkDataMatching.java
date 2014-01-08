@@ -19,6 +19,7 @@
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,17 +38,15 @@ import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ReseauAppStat;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultCarteTopoStatElement;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultCarteTopoStatElementInterface;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
+import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
@@ -67,8 +66,8 @@ public class NetworkDataMatching {
 
     /** Parameters, Dataset and Actions. */
     private ParamNetworkDataMatching inputParam;
-    private DatasetNetworkDataMatching dataset1;
-    private DatasetNetworkDataMatching dataset2;
+    private DataSet dataset1;
+    private DataSet dataset2;
     private boolean doRecalage;
     private boolean doLinkExport;
 
@@ -76,8 +75,7 @@ public class NetworkDataMatching {
      * Constructor.
      * @param paramApp
      */
-    public NetworkDataMatching(ParamNetworkDataMatching param, DatasetNetworkDataMatching network1,
-            DatasetNetworkDataMatching network2) {
+    public NetworkDataMatching(ParamNetworkDataMatching param, DataSet network1, DataSet network2) {
         this.inputParam = param;
         this.dataset1 = network1;
         this.dataset2 = network2;
@@ -98,13 +96,20 @@ public class NetworkDataMatching {
      * @param paramApp, les paramètres de l'appariement
      * @return
      */
+    @SuppressWarnings("unchecked")
     public ResultNetworkDataMatching networkDataMatching() {
 
         // Temporaire
         ParametresApp paramApp = inputParam.paramNDMToParamApp();
         // + Dataset
-        paramApp.populationsArcs1 = dataset1.getPopulationsArcs();
-        paramApp.populationsArcs2 = dataset2.getPopulationsArcs();
+        List<IFeatureCollection<? extends IFeature>> list1 = new ArrayList<IFeatureCollection<? extends IFeature>>();
+        list1.add((IPopulation<Arc>)this.dataset1.getPopulation("Edge"));
+        paramApp.populationsArcs1 = list1;
+
+        List<IFeatureCollection<? extends IFeature>> list2 = new ArrayList<IFeatureCollection<? extends IFeature>>();
+        list2.add((IPopulation<Arc>)this.dataset2.getPopulation("Edge"));
+        paramApp.populationsArcs2 = list2;
+        
 
         /*
          * List<ReseauApp> reseaux = new ArrayList<ReseauApp>();
@@ -141,21 +146,19 @@ public class NetworkDataMatching {
         if (LOGGER.isEnabledFor(Level.DEBUG)) {
             LOGGER.debug("creation of network 1 " + (new Time(System.currentTimeMillis())).toString());
         }
-        ReseauAppStat reseau1Stat = importAsEdgesAndNodes("Réseau 1", dataset1, inputParam.getParamDirectionNetwork1(), inputParam
+        ReseauApp reseau1 = importAsEdgesAndNodes("Réseau 1", dataset1, inputParam.getParamDirectionNetwork1(), inputParam
                 .getParamDistance().getDistanceNoeudsMax());
-        reseau1Stat = importData(reseau1Stat, inputParam.getParamTopoNetwork1(), false,
+        importData(reseau1, inputParam.getParamTopoNetwork1(), false,
                 inputParam.getParamDistance().getDistanceNoeudsImpassesMax());
-        ReseauApp reseau1 = reseau1Stat.getReseauApp();
         
         //
         if (LOGGER.isEnabledFor(Level.DEBUG)) {
             LOGGER.debug("creation of network 2 " + (new Time(System.currentTimeMillis())).toString());
         }
-        ReseauAppStat reseau2Stat = importAsEdgesAndNodes("Réseau 2", dataset2, inputParam.getParamDirectionNetwork2(), inputParam
+        ReseauApp reseau2 = importAsEdgesAndNodes("Réseau 2", dataset2, inputParam.getParamDirectionNetwork2(), inputParam
                 .getParamDistance().getDistanceNoeudsMax());
-        reseau2Stat = importData(reseau2Stat, inputParam.getParamTopoNetwork2(), 
+        importData(reseau2, inputParam.getParamTopoNetwork2(), 
                 inputParam.getParamVarianteGeneralProcess().getChercheRondsPoints(), -1);
-        ReseauApp reseau2 = reseau2Stat.getReseauApp();
 
         // resultatAppariement.setReseau1(reseau1);
         // resultatAppariement.setReseau2(reseau2);
@@ -239,10 +242,8 @@ public class NetworkDataMatching {
         }
 
         // Avant le nettoyage des liens ou maintenant ???
-        reseau1Stat.setReseauApp(reseau1);
-        resultatAppariement.setReseauStat1(reseau1Stat);
-        reseau2Stat.setReseauApp(reseau2);
-        resultatAppariement.setReseauStat2(reseau2Stat);
+        resultatAppariement.setReseau1(reseau1);
+        resultatAppariement.setReseau2(reseau2);
 
         // if (paramApp.debugBilanSurObjetsGeo) {
         if (doRecalage) {
@@ -281,18 +282,12 @@ public class NetworkDataMatching {
      * @param direction
      * @return
      */
-    public static ReseauAppStat importAsEdgesAndNodes(String networkName, DatasetNetworkDataMatching network,
+    public static ReseauApp importAsEdgesAndNodes(String networkName, DataSet network,
             ParamDirectionNetworkDataMatching direction, float distanceNoeudsMax) {
 
         boolean populationsArcsAvecOrientationDouble = direction.getOrientationDouble();
         String attributOrientation = direction.getAttributOrientation();
         Map<Integer, String> orientationMap = direction.getOrientationMap();
-
-        ReseauAppStat reseauAppStat = new ReseauAppStat();
-
-        // Stats
-        ResultCarteTopoStatElement statEdge = new ResultCarteTopoStatElement();
-        ResultCarteTopoStatElement statNode = new ResultCarteTopoStatElement();
 
         // Reseau
         ReseauApp reseau = new ReseauApp(networkName);
@@ -302,14 +297,15 @@ public class NetworkDataMatching {
         LOGGER.info(popNoeudApp.size() + " noeuds");
         
         // Ajout du schema 
-        DefaultFeature featureRef = (DefaultFeature) network.getPopulationsArcs().get(0).get(0);
+        DefaultFeature featureRef = (DefaultFeature) network.getPopulation("Edge").get(0);
         SchemaDefaultFeature schemaDefaultFeature = featureRef.getSchema();
         FeatureType newFeatureType = (FeatureType) featureRef.getFeatureType();
         popArcApp.setFeatureType(newFeatureType);
 
         // /////////////////////////
         // import des arcs
-        List<IFeatureCollection<? extends IFeature>> populationsArcs = network.getPopulationsArcs();
+        List<IFeatureCollection<? extends IFeature>> populationsArcs = new ArrayList<IFeatureCollection<? extends IFeature>>();
+        populationsArcs.add(network.getPopulation("Edge"));
         Iterator<IFeatureCollection<? extends IFeature>> itPopArcs = null;
         itPopArcs = populationsArcs.iterator();
         LOGGER.info(populationsArcs.size() + " pops");
@@ -319,10 +315,6 @@ public class NetworkDataMatching {
         while (itPopArcs.hasNext()) {
 
             IFeatureCollection<? extends IFeature> popGeo = itPopArcs.next();
-
-            // Log stat
-            statEdge.addNbElementForType(ResultCarteTopoStatElementInterface.NB_BRUTS, popGeo.size());
-            LOGGER.info("Nombre d'arcs bruts du i-ème réseau = " + popGeo.size());
 
             // import d'une population d'arcs
             for (IFeature element : popGeo) {
@@ -359,7 +351,7 @@ public class NetworkDataMatching {
                         if (orientationMap != null) {
                             for (int mapKey : orientationMap.keySet()) {
                                 String valAttribut = orientationMap.get(mapKey);
-                                LOGGER.trace("Population " + networkName + " - " + attribute + " = " +
+                                LOGGER.debug("Population " + networkName + " - " + attribute + " = " +
                                         value + " ? " + valAttribut);
                                 if (valAttribut.equals(value.toString())) {
                                     arc.setOrientation(mapKey);
@@ -407,37 +399,29 @@ public class NetworkDataMatching {
 
         // if (true) return reseau;
         // import des noeuds
-        List<IFeatureCollection<? extends IFeature>> populationsNoeuds = network.getPopulationsNoeuds();
+        List<IFeatureCollection<? extends IFeature>> populationsNoeuds = new ArrayList<IFeatureCollection<? extends IFeature>>();
+        populationsNoeuds.add(network.getPopulation("Node"));
         Iterator<?> itPopNoeuds = null;
         itPopNoeuds = populationsNoeuds.iterator();
         while (itPopNoeuds.hasNext()) {
             IFeatureCollection<?> popGeo = (IFeatureCollection<?>) itPopNoeuds.next();
-            statNode.addNbElementForType(ResultCarteTopoStatElementInterface.NB_BRUTS, popGeo.size());
             // import d'une population de noeuds
+            if (popGeo != null && popGeo.size() > 0) {
             for (IFeature element : popGeo.getElements()) {
                 NoeudApp noeud = (NoeudApp) popNoeudApp.nouvelElement();
                 // noeud.setGeometrie((GM_Point)element.getGeom());
                 noeud.setGeometrie(new GM_Point((IDirectPosition) ((GM_Point) element.getGeom()).getPosition().clone()));
                 noeud.addCorrespondant(element);
                 noeud.setTaille(distanceNoeudsMax);
-            }
+            }}
         }
 
         LOGGER.info("==================================");
         LOGGER.info(popArcApp.size() + " arcs");
-        LOGGER.info("Nombre d'arcs bruts des réseaux = "
-                + statEdge.getNbElementForType(ResultCarteTopoStatElementInterface.NB_BRUTS));
         LOGGER.info(popNoeudApp.size() + " noeuds");
-        LOGGER.info("Nombre de noeuds bruts des réseaux = "
-                + statNode.getNbElementForType(ResultCarteTopoStatElementInterface.NB_BRUTS));
         LOGGER.info("==================================");
 
-        reseauAppStat.setReseauApp(reseau);
-        reseauAppStat.setResultCarteTopoEdge(statEdge);
-        reseauAppStat.setResultCarteTopoNode(statNode);
-        
-        return reseauAppStat;
-
+        return reseau;
     }
 
     /**
@@ -445,7 +429,7 @@ public class NetworkDataMatching {
      * 
      * @return Le réseau créé
      */
-    public static ReseauAppStat importData(ReseauAppStat reseauAppStat, ParamTopologyTreatmentNetwork topo, boolean chercheRondPoint,
+    public static void importData(ReseauApp reseau, ParamTopologyTreatmentNetwork topo, boolean chercheRondPoint,
             float distanceNoeudsImpassesMax) {
 
         // Get param
@@ -455,11 +439,8 @@ public class NetworkDataMatching {
         boolean topologieElimineNoeudsAvecDeuxArcs = topo.getElimineNoeudsAvecDeuxArcs();
         boolean topologieFusionArcsDoubles = topo.getFusionArcsDoubles();
 
-        ReseauApp reseau = reseauAppStat.getReseauApp();
         IPopulation<? extends IFeature> popArcApp = reseau.getPopArcs();
         IPopulation<? extends IFeature> popNoeudApp = reseau.getPopNoeuds();
-        ResultCarteTopoStatElement statEdge = reseauAppStat.getResultCarteTopoEdge();
-        ResultCarteTopoStatElement statNode = reseauAppStat.getResultCarteTopoNode();
 
         // Indexation spatiale des arcs et noeuds
         // On crée un dallage régulier avec en moyenne 20 objets par case
@@ -500,9 +481,7 @@ public class NetworkDataMatching {
         }
 
         LOGGER.info(popArcApp.size() + " arcs");
-        statEdge.addNbElementForType(ResultCarteTopoStatElementInterface.NB_PLANAIRE, popArcApp.size());
         LOGGER.info(popNoeudApp.size() + " noeuds");
-        statNode.addNbElementForType(ResultCarteTopoStatElementInterface.NB_PLANAIRE, popNoeudApp.size());
         LOGGER.info("**********************************");
 
         // 2- On fusionne les noeuds proches
@@ -520,9 +499,7 @@ public class NetworkDataMatching {
         }
 
         LOGGER.info(popArcApp.size() + " arcs");
-        statEdge.addNbElementForType(ResultCarteTopoStatElementInterface.NB_NOEUDS_PROCHES, popArcApp.size());
         LOGGER.info(popNoeudApp.size() + " noeuds");
-        statNode.addNbElementForType(ResultCarteTopoStatElementInterface.NB_NOEUDS_PROCHES, popNoeudApp.size());
         LOGGER.info("**********************************");
 
         // 3- On enlève les noeuds isolés
@@ -532,9 +509,7 @@ public class NetworkDataMatching {
         reseau.filtreNoeudsIsoles();
 
         LOGGER.info(popArcApp.size() + " arcs");
-        statEdge.addNbElementForType(ResultCarteTopoStatElementInterface.NB_NOEUDS_ISOLES, popArcApp.size());
         LOGGER.info(popNoeudApp.size() + " noeuds");
-        statNode.addNbElementForType(ResultCarteTopoStatElementInterface.NB_NOEUDS_ISOLES, popNoeudApp.size());
         LOGGER.info("**********************************");
 
         // 4- On filtre les noeuds simples (avec 2 arcs incidents)
@@ -591,9 +566,5 @@ public class NetworkDataMatching {
         LOGGER.info(popNoeudApp.size() + " noeuds");
         LOGGER.info("**********************************");
 
-        reseauAppStat.setReseauApp(reseau);
-        reseauAppStat.setResultCarteTopoEdge(statEdge);
-        reseauAppStat.setResultCarteTopoNode(statNode);
-        return reseauAppStat;
     }
 }

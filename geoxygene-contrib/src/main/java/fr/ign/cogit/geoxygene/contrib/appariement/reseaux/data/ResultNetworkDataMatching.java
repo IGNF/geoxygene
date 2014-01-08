@@ -60,19 +60,15 @@ public class ResultNetworkDataMatching {
   
   /** Cartes topo */
   @XmlTransient
-  private ReseauAppStat reseauStat1;
+  private ReseauApp reseau1;
   @XmlTransient
-  private ReseauAppStat reseauStat2;
+  private ReseauApp reseau2;
   
   /** EnsembleDeLiens. */
   @XmlTransient
   private EnsembleDeLiens liens;
   @XmlTransient
   private EnsembleDeLiens liensGeneriques;
-  
-  /** Stat result. */
-  @XmlElement(required = true)
-  private ResultNetworkStat resultStat;
   
   /** Network matched. */
   @XmlElement(required = true)
@@ -85,10 +81,11 @@ public class ResultNetworkDataMatching {
    * Default constructor.
    */
   public ResultNetworkDataMatching() {
+    reseau1 = null;
+    reseau2 = null;
     liens = null;
     liensGeneriques = null;
     networkMatched = null;
-    resultStat = new ResultNetworkStat();
   }
   
   /**
@@ -127,22 +124,6 @@ public class ResultNetworkDataMatching {
   }
   
   /**
-   * Return statistics results.
-   * @return resultStat
-   */
-  public ResultNetworkStat getResultStat() {
-    return resultStat;
-  }
-  
-  /**
-   * @param rsa
-   *          Stat result to set.
-   */
-  public void setResultStat (ResultNetworkStat rsa) {
-    resultStat = rsa;
-  }
-  
-  /**
    * Return Network matched.
    * @return SimpleFeatureCollection
    */
@@ -160,20 +141,20 @@ public class ResultNetworkDataMatching {
   
   
   
-  public void setReseauStat1(ReseauAppStat resStat) {
-      reseauStat1 = resStat;
+  public void setReseau1(ReseauApp res) {
+      reseau1 = res;
   }
   
-  public ReseauAppStat getReseauStat1() {
-    return reseauStat1;
+  public ReseauApp getReseau1() {
+    return reseau1;
   }
   
-  public void setReseauStat2(ReseauAppStat resStat) {
-      reseauStat2 = resStat;
+  public void setReseau2(ReseauApp res) {
+      reseau2 = res;
   }
   
-  public ReseauAppStat getReseauStat2() {
-    return reseauStat2;
+  public ReseauApp getReseau2() {
+    return reseau2;
   }
   
   /**

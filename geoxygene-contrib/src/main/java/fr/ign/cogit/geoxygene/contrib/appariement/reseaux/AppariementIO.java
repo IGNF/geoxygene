@@ -174,7 +174,7 @@ public final class AppariementIO {
             .getString("AppariementIO.AttributeFilling" //$NON-NLS-1$
             ) + (new Time(System.currentTimeMillis())).toString());
       }
-      reseauRef.instancieAttributsNuls(paramApp);
+      reseauRef.instancieAttributsNuls(paramApp.distanceNoeudsMax);
       reseauComp.initialisePoids();
       if (AppariementIO.LOGGER.isInfoEnabled()) {
         AppariementIO.LOGGER.info(I18N

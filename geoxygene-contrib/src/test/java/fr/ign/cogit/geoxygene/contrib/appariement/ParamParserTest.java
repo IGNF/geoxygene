@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
+
 
 /**
  * 

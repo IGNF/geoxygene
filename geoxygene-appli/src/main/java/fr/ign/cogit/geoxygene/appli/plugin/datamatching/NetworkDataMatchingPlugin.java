@@ -33,7 +33,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -55,7 +57,6 @@ import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.EditParamPanel;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
@@ -63,10 +64,12 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamProjectionNe
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamVarianteGeneralProcess;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
+import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
@@ -94,8 +97,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
 
     /** Parameters and datasets. */
     protected ParamPluginNetworkDataMatching paramPlugin = new ParamPluginNetworkDataMatching();
-    private DatasetNetworkDataMatching datasetNetwork1 = new DatasetNetworkDataMatching();
-    private DatasetNetworkDataMatching datasetNetwork2 = new DatasetNetworkDataMatching();
+    private DataSet datasetNetwork1;
+    private DataSet datasetNetwork2;
 
     /** Displayed colors. */
     private final static Color nodeColor = new Color(255, 216, 0);
@@ -154,8 +157,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
      */
     private void initializeParam() {
         
-        /*String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
-        String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
+        // String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+        // String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
+        String filename1 = "D:\\DATA\\Appariement\\ESPON-DB\\Test\\Reseau1.shp";
+        String filename2 = "D:\\DATA\\Appariement\\ESPON-DB\\Test\\Reseau2.shp";
         
         ParamFilenamePopulationEdgesNetwork paramFilename1 = new ParamFilenamePopulationEdgesNetwork();
         paramFilename1.addFilename(filename1);
@@ -163,7 +168,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
 
         ParamFilenamePopulationEdgesNetwork paramFilename2 = new ParamFilenamePopulationEdgesNetwork();
         paramFilename2.addFilename(filename2);
-        paramPlugin.setParamFilenameNetwork2(paramFilename2);*/
+        paramPlugin.setParamFilenameNetwork2(paramFilename2);
 
         // -----------------------------------------------------------------------------------------
         // Param
@@ -175,14 +180,14 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         param.setParamDirectionNetwork1(paramDirection1);
 
         ParamDirectionNetworkDataMatching paramDirection2 = new ParamDirectionNetworkDataMatching();
-        paramDirection2.setOrientationDouble(true);
-        // paramDirection2.setAttributOrientation("DIR_TRAVEL");
-        // Map<Integer, String> orientationMap2 = new HashMap<Integer, String>(); 
-        // orientationMap2.put(OrientationInterface.SENS_DIRECT, "T");
-        // orientationMap2.put(OrientationInterface.SENS_INVERSE, "F");
-        // orientationMap2.put(OrientationInterface.DOUBLE_SENS, "B");
-        // paramDirection2.setOrientationMap(orientationMap2);
-        // param.setParamDirectionNetwork2(paramDirection2);
+        paramDirection2.setOrientationDouble(false);
+        paramDirection2.setAttributOrientation("DIR_TRAVEL");
+        Map<Integer, String> orientationMap2 = new HashMap<Integer, String>(); 
+        orientationMap2.put(OrientationInterface.SENS_DIRECT, "T");
+        orientationMap2.put(OrientationInterface.SENS_INVERSE, "F");
+        orientationMap2.put(OrientationInterface.DOUBLE_SENS, "B");
+        paramDirection2.setOrientationMap(orientationMap2);
+        param.setParamDirectionNetwork2(paramDirection2);
 
         // Distance
         ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
@@ -266,18 +271,29 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
             String filename = paramPlugin.getParamFilenameNetwork1().getListNomFichiersPopArcs().get(i);
             lastFile = filename;
             IPopulation<IFeature> reseau = ShapefileReader.read(filename);
-            datasetNetwork1.addPopulationsArcs(reseau);
+            reseau.setNom("Edge");
+            // reseau.setClasse(fr.ign.cogit.geoxygene.contrib.cartetopo.Arc.class);
+            // datasetNetwork1.addPopulation(new Population<Arc>(false, "Edge", fr.ign.cogit.geoxygene.contrib.cartetopo.Arc.class, true));
+            // datasetNetwork1.addPopulation(new Population<Noeud>(false, "Node", fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud.class, true));
+            datasetNetwork1 = new DataSet();
+            datasetNetwork1.addPopulation(reseau);
+            IPopulation<IFeature> popNode = new Population<IFeature>("Node");
+            datasetNetwork1.addPopulation(popNode);
         }
         for (int i = 0; i < paramPlugin.getParamFilenameNetwork2().getListNomFichiersPopArcs().size(); i++) {
             String filename = paramPlugin.getParamFilenameNetwork2().getListNomFichiersPopArcs().get(i);
             lastFile = filename;
             IPopulation<IFeature> reseau = ShapefileReader.read(filename);
-            datasetNetwork2.addPopulationsArcs(reseau);
+            reseau.setNom("Edge");
+            datasetNetwork2 = new DataSet();
+            datasetNetwork2.addPopulation(reseau);
+            IPopulation<IFeature> popNode = new Population<IFeature>("Node");
+            datasetNetwork1.addPopulation(popNode);
         }
         
-        if (datasetNetwork1.getPopulationsArcs().size() < 1) {
+        if (datasetNetwork1.getPopulation("Edge").size() < 1) {
           javax.swing.JOptionPane.showMessageDialog(null, "You need to select one layer for network 1.");
-        } else if (datasetNetwork2.getPopulationsArcs().size() < 1) {
+        } else if (datasetNetwork2.getPopulation("Edge").size() < 1) {
           javax.swing.JOptionPane.showMessageDialog(null, "You need to select one layer for network 2.");
         } else {
 
@@ -293,20 +309,13 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
 
         // Logs
         LOGGER.info("Nb arcs du réseau 1 calculés : "
-                + resultatAppariement.getReseauStat1().getReseauApp().getListeArcs().size() + " >= "
-                + datasetNetwork1.getPopulationsArcs().size());
+                + resultatAppariement.getReseau1().getListeArcs().size() + " >= "
+                + datasetNetwork1.getPopulation("Edge").size());
         LOGGER.info("Nb arcs du réseau 2 calculés : "
-                + resultatAppariement.getReseauStat2().getReseauApp().getListeArcs().size() + " >= "
-                + datasetNetwork2.getPopulationsArcs().size());
+                + resultatAppariement.getReseau2().getListeArcs().size() + " >= "
+                + datasetNetwork2.getPopulation("Edge").size());
 
         EnsembleDeLiens liens = resultatAppariement.getLiens();
-
-        // Statistic information
-        ResultNetworkStat resultNetwork = resultatAppariement.getResultStat();
-        LOGGER.debug(resultNetwork.getStatsEdgesOfNetwork1().toString());
-        LOGGER.debug(resultNetwork.getStatsNodesOfNetwork1().toString());
-        LOGGER.debug(resultNetwork.getStatsEdgesOfNetwork2().toString());
-        LOGGER.debug(resultNetwork.getStatsNodesOfNetwork2().toString());
 
         // Split les multi des liens
         Population<DefaultFeature> collection = new Population<DefaultFeature>();
@@ -352,10 +361,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         //
         ProjectFrame p1 = this.application.getMainFrame().newProjectFrame();
         p1.setTitle("Réseau 1 et réseau 2");
-        Layer l1 = p1.addUserLayer(datasetNetwork1.getPopulationsArcs().get(0), "Réseau 1", null);
+        Layer l1 = p1.addUserLayer(datasetNetwork1.getPopulation("Edge"), "Réseau 1", null);
         l1.getSymbolizer().getStroke().setColor(network1Color);
         l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
-        Layer l2 = p1.addUserLayer(datasetNetwork2.getPopulationsArcs().get(0), "Réseau 2", null);
+        Layer l2 = p1.addUserLayer(datasetNetwork2.getPopulation("Edge"), "Réseau 2", null);
         l2.getSymbolizer().getStroke().setColor(network2Color);
         l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
         if (paramPlugin.getDoRecalage()) {
@@ -371,8 +380,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         //
         if (paramPlugin.getDoRecalage()) {
             //
-            CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseauStat1().getReseauApp(),
-                    resultatAppariement.getReseauStat2().getReseauApp(), liens);
+            CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(),
+                    resultatAppariement.getReseau2(), liens);
             IPopulation<Arc> arcs = reseauRecale.getPopArcs();
 
             ProjectFrame p2 = this.application.getMainFrame().newProjectFrame();
@@ -387,15 +396,15 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
 
             LOGGER.info("----");
             LOGGER.info("Nombre d'arcs de la carte topo n°1 = "
-                    + resultatAppariement.getReseauStat1().getReseauApp().getListeArcs().size());
+                    + resultatAppariement.getReseau1().getListeArcs().size());
             LOGGER.info("Nombre de noeuds de la carte topo n°1 = "
-                    + resultatAppariement.getReseauStat1().getReseauApp().getListeNoeuds().size());
+                    + resultatAppariement.getReseau2().getListeNoeuds().size());
 
-            l1 = p2.addUserLayer(datasetNetwork1.getPopulationsArcs().get(0), "Réseau 1", null);
+            l1 = p2.addUserLayer(datasetNetwork1.getPopulation("Edge"), "Réseau 1", null);
             l1.getSymbolizer().getStroke().setColor(network1Color);
             l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
 
-            l2 = p2.addUserLayer(datasetNetwork2.getPopulationsArcs().get(0), "Réseau 2", null);
+            l2 = p2.addUserLayer(datasetNetwork2.getPopulation("Edge"), "Réseau 2", null);
             l2.getSymbolizer().getStroke().setColor(network2Color);
             l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
 
@@ -415,14 +424,14 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
         p3.setTitle("Liens d'appariement");
 
-        l1 = p3.addUserLayer(resultatAppariement.getReseauStat1().getReseauApp().getPopArcs(), "CT 1 - Arcs", null);
+        l1 = p3.addUserLayer(resultatAppariement.getReseau1().getPopArcs(), "CT 1 - Arcs", null);
         l1.getSymbolizer().getStroke().setColor(network1Color);
         l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
 
-        p3.addUserLayer(resultatAppariement.getReseauStat1().getReseauApp().getPopNoeuds(), "CT 1 - Noeuds", null);
-        p3.addUserLayer(resultatAppariement.getReseauStat2().getReseauApp().getPopNoeuds(), "CT 2 - Noeuds", null);
+        p3.addUserLayer(resultatAppariement.getReseau1().getPopNoeuds(), "CT 1 - Noeuds", null);
+        p3.addUserLayer(resultatAppariement.getReseau2().getPopNoeuds(), "CT 2 - Noeuds", null);
 
-        l2 = p3.addUserLayer(resultatAppariement.getReseauStat2().getReseauApp().getPopArcs(), "CT 2 - Arcs", null);
+        l2 = p3.addUserLayer(resultatAppariement.getReseau2().getPopArcs(), "CT 2 - Arcs", null);
         l2.getSymbolizer().getStroke().setColor(network2Color);
         l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
 

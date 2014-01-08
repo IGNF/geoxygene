@@ -35,6 +35,16 @@
 			<artifactId>wps-core</artifactId>
 			<version>${geoserver.extension.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.geoserver.extension</groupId>
+			<artifactId>web-wps</artifactId>
+			<version>${geoserver.extension.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geoserver.web</groupId>
+			<artifactId>web-core</artifactId>
+			<version>2.3.5</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
@@ -97,10 +107,7 @@
 	                                   </condition>
 	                                </fail>
 
-									<!-- <echo>Stop geoserver</echo> <exec executable="D:\MesProgrammes\GeoServer\GeoServer2.2.3\bin\shutdown.bat 
-											/>" -->
-
-										<echo>Delete GeOxygene libraries</echo>
+									<echo>Delete GeOxygene libraries</echo>
 										<delete
 											file="${path.geoserver}geoxygene-wps-${project.version}.jar" />
 										<delete
@@ -114,7 +121,7 @@
 										<delete
 											file="${path.geoserver}geoxygene-spatial-${project.version}.jar" />
 
-										<echo>Copy GeOxygene libraries into GeoServer WEB-INF\lib</echo>
+									<echo>Copy GeOxygene libraries into GeoServer WEB-INF\lib</echo>
 										<copy file="${basedir}/target/geoxygene-wps-${project.version}.jar"
 											todir="${path.geoserver}" />
 										<copy
