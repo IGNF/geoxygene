@@ -5,7 +5,6 @@ import java.awt.Cursor;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
-import fr.ign.cogit.geoxygene.appli.plugin.GeometryToolBar;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 
 public abstract class AbstractGeometryEditMode extends AbstractMode {

@@ -33,7 +33,7 @@ import javax.swing.JTextArea;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
-import fr.ign.cogit.geoxygene.appli.plugin.GeometryToolBar;
+import fr.ign.cogit.geoxygene.appli.mode.GeometryToolBar;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
