@@ -43,6 +43,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Chargeur;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
@@ -131,9 +132,9 @@ public class NetworkDataMatching {
             LOGGER.debug("creation of network 1 " + (new Time(System.currentTimeMillis())).toString());
         }
         
-        
         ReseauApp reseau1 = importAsEdgesAndNodes("Réseau 1", dataset1, param.populationsArcsAvecOrientationDouble1,
             param.attributOrientation1, param.orientationMap1, param.distanceNoeudsMax);
+        // Chargeur.importAsEdges(edges, map, orientationAttribute, orientationMap, groundPositionAttribute, tolerance);
         
         importData(reseau1, param.topologieGraphePlanaire1, param.topologieElimineNoeudsAvecDeuxArcs1, 
             param.topologieFusionArcsDoubles1, param.topologieSeuilFusionNoeuds1,
@@ -340,7 +341,7 @@ public class NetworkDataMatching {
                             for (Object valAttribut : orientationMap.keySet()) {
                               LOGGER.debug("Population " + networkName + " - " + attribute + " = " +
                                   value + " ? " + valAttribut);
-                              if (valAttribut.equals(value.toString())) {
+                              if (value != null && valAttribut.equals(value.toString())) {
                                   arc.setOrientation(orientationMap.get(valAttribut));
                                   LOGGER.trace("Population " + networkName + " - orientation arc = " + orientationMap.get(valAttribut));
                               }

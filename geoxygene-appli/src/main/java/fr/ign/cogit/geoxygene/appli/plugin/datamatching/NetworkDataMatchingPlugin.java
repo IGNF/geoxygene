@@ -154,8 +154,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         
         // String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
         // String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
-        String filename1 = "D:\\DATA\\Appariement\\ESPON_DB\\Test03\\Reseau1.shp";
-        String filename2 = "D:\\DATA\\Appariement\\ESPON_DB\\Test03\\Reseau2.shp";
+        // String filename1 = "D:\\DATA\\Appariement\\ESPON_DB\\Test03\\Reseau1.shp";
+        // String filename2 = "D:\\DATA\\Appariement\\ESPON_DB\\Test03\\Reseau2.shp";
+        String filename1 = "E:\\Workspace\\GeOxygene\\data\\geoxygene-data\\sample-dataset\\rondpoint\\bdcarto.shp";
+        String filename2 = "E:\\Workspace\\GeOxygene\\data\\geoxygene-data\\sample-dataset\\rondpoint\\bdtopo.shp";
         
         ParamFilenamePopulationEdgesNetwork paramFilename1 = new ParamFilenamePopulationEdgesNetwork();
         paramFilename1.addFilename(filename1);
