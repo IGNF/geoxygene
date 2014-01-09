@@ -13,7 +13,7 @@ Developer Guide
    launching
    maven
    architecture
-   .. test
+   test
    .. quickstart
    .. trucetastuce
 

@@ -12,7 +12,8 @@ Documentation
    developer/index
    tutorial/index
    application/index
-   .. user/index
+   user/index
+   java/index
 
    
 + `Online javadoc <http://oxygene-project.sourceforge.net/apidocs/index.html>`_

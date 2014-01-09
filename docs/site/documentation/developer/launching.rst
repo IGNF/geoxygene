@@ -1,7 +1,7 @@
 .. _launchinggeox:
 
-Interfaces graphiques
-========================
+Lancement des interfaces graphiques
+=====================================
 
 Lancement de l'interface graphique 2D depuis Eclipse 
 *****************************************************

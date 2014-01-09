@@ -10,7 +10,7 @@ Application
 
    semiology
    3d
-   .. topological-map
+   topological-map
    data-matching
-   .. osm
+   osm
 
