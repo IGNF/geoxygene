@@ -37,8 +37,7 @@ import javax.swing.JTextField;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
-
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 
 /**
  * 
@@ -50,7 +49,8 @@ public class EditParamDistancePanel extends JPanel implements ActionListener {
   /** Serial version UID. */
   private static final long serialVersionUID = 4791806011051504347L;
   
-  private ParamDistanceNetworkDataMatching paramDistance;
+  /** Parameters. */
+  private ParametresApp param = null;
   
   private JTextField fieldDistanceNoeudsMax = null;
   private JTextField fieldDistanceNoeudsImpassesMax = null;
@@ -61,9 +61,9 @@ public class EditParamDistancePanel extends JPanel implements ActionListener {
   /**
    * Constructor.
    */
-  public EditParamDistancePanel(ParamDistanceNetworkDataMatching distanceParam) {
+  public EditParamDistancePanel(ParametresApp distanceParam) {
     
-    paramDistance = distanceParam;
+    param = distanceParam;
     
     // Initialize all fields
     initFields();
@@ -78,19 +78,19 @@ public class EditParamDistancePanel extends JPanel implements ActionListener {
   private void initFields() {
     
     fieldDistanceNoeudsMax = new JTextField(10);
-    fieldDistanceNoeudsMax.setText(Float.toString(paramDistance.getDistanceNoeudsMax()));
+    fieldDistanceNoeudsMax.setText(Float.toString(param.distanceNoeudsMax));
     
     fieldDistanceArcsMax = new JTextField(10);
-    fieldDistanceArcsMax.setText(Float.toString(paramDistance.getDistanceArcsMax()));
+    fieldDistanceArcsMax.setText(Float.toString(param.distanceArcsMax));
     
     fieldDistanceArcsMin = new JTextField(10);
-    fieldDistanceArcsMin.setText(Float.toString(paramDistance.getDistanceArcsMin()));
+    fieldDistanceArcsMin.setText(Float.toString(param.distanceArcsMin));
     
     fieldDistanceNoeudsImpassesMax = new JTextField(10);
     
     impasseButton = new JCheckBox();
     impasseButton.addActionListener(this);
-    if (paramDistance.getDistanceNoeudsImpassesMax() == -1) {
+    if (param.distanceNoeudsImpassesMax == -1) {
       impasseButton.setSelected(false);
       // fieldDistanceNoeudsImpassesMax.setEnabled(false);
       fieldDistanceNoeudsImpassesMax.setEditable(false);
@@ -99,7 +99,7 @@ public class EditParamDistancePanel extends JPanel implements ActionListener {
       impasseButton.setSelected(true);
       // fieldDistanceNoeudsImpassesMax.setEnabled(true);
       fieldDistanceNoeudsImpassesMax.setEditable(true);
-      fieldDistanceNoeudsImpassesMax.setText(Float.toString(paramDistance.getDistanceNoeudsImpassesMax()));
+      fieldDistanceNoeudsImpassesMax.setText(Float.toString(param.distanceNoeudsImpassesMax));
     }
   }
   
@@ -157,20 +157,19 @@ public class EditParamDistancePanel extends JPanel implements ActionListener {
    * 
    * @return
    */
-  public ParamDistanceNetworkDataMatching valideField() {
-    ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
+  public ParametresApp valideField() {
     
-    paramDistance.setDistanceNoeudsMax(Float.parseFloat(fieldDistanceNoeudsMax.getText()));
-    paramDistance.setDistanceArcsMax(Float.parseFloat(fieldDistanceArcsMax.getText()));
-    paramDistance.setDistanceArcsMin(Float.parseFloat(fieldDistanceArcsMin.getText()));
+    param.distanceNoeudsMax = Float.parseFloat(fieldDistanceNoeudsMax.getText());
+    param.distanceArcsMax = Float.parseFloat(fieldDistanceArcsMax.getText());
+    param.distanceArcsMin = Float.parseFloat(fieldDistanceArcsMin.getText());
     
     if (impasseButton.isSelected()) {
-      paramDistance.setDistanceNoeudsImpassesMax(Float.parseFloat(fieldDistanceNoeudsImpassesMax.getText()));
+      param.distanceNoeudsImpassesMax = Float.parseFloat(fieldDistanceNoeudsImpassesMax.getText());
     } else {
-      paramDistance.setDistanceNoeudsImpassesMax(-1);
+      param.distanceNoeudsImpassesMax = -1;
     }
     
-    return paramDistance;
+    return param;
   }
 
 }

@@ -13,9 +13,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
@@ -401,7 +398,7 @@ public class ITCompareAppariementTest {
    * @param paramApp
    * @param param
    */
-  private void compareParam(ParametresApp oldParam, ParamNetworkDataMatching newParam) {
+  /*private void compareParam(ParametresApp oldParam, ParamNetworkDataMatching newParam) {
     
     // Distance
     Assert.assertTrue("Comparaison de distanceArcsMax : " + oldParam.distanceArcsMax + " ? "
@@ -504,7 +501,7 @@ public class ITCompareAppariementTest {
     
     // Debug
     
-  }
+  }*/
   
 
 }

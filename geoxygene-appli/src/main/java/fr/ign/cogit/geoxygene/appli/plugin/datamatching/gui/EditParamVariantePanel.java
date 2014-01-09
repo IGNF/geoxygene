@@ -12,8 +12,7 @@ import javax.swing.JTextField;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamVarianteGeneralProcess;
-
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 
 
 public class EditParamVariantePanel extends JPanel implements ActionListener {
@@ -21,7 +20,8 @@ public class EditParamVariantePanel extends JPanel implements ActionListener {
     /** Serial version UID. */
     private static final long serialVersionUID = 4791806011051504347L;
     
-    private ParamVarianteGeneralProcess paramVariante;
+    /** Parameters. */
+    private ParametresApp param = null;
     
     private JRadioButton jcYesForceAppariementSimple;
     private JRadioButton jcNoForceAppariementSimple;
@@ -46,9 +46,9 @@ public class EditParamVariantePanel extends JPanel implements ActionListener {
      * @param pn1
      * @param pn2
      */
-    public EditParamVariantePanel(ParamVarianteGeneralProcess pv) {
+    public EditParamVariantePanel(ParametresApp pv) {
       
-        paramVariante = pv;
+      param = pv;
         
         // Initialize fields
         initField();
@@ -67,7 +67,7 @@ public class EditParamVariantePanel extends JPanel implements ActionListener {
         gpForceAppariementSimple.add(jcYesForceAppariementSimple);
         jcNoForceAppariementSimple = new JRadioButton();
         gpForceAppariementSimple.add(jcNoForceAppariementSimple);
-        if (paramVariante.getForceAppariementSimple()) {
+        if (param.varianteForceAppariementSimple) {
             jcYesForceAppariementSimple.setSelected(true);
         } else {
             jcNoForceAppariementSimple.setSelected(true);
@@ -79,7 +79,7 @@ public class EditParamVariantePanel extends JPanel implements ActionListener {
         gpRedecoupageArcsNonApparies.add(jcYesRedecoupageArcsNonApparies);
         jcNoRedecoupageArcsNonApparies = new JRadioButton();
         gpRedecoupageArcsNonApparies.add(jcNoRedecoupageArcsNonApparies);
-        if (paramVariante.getRedecoupageArcsNonApparies()) {
+        if (param.varianteRedecoupageArcsNonApparies) {
             jcYesRedecoupageArcsNonApparies.setSelected(true);
         } else {
             jcNoRedecoupageArcsNonApparies.setSelected(true);
@@ -91,7 +91,7 @@ public class EditParamVariantePanel extends JPanel implements ActionListener {
         gpChercheRondsPoints.add(jcYesChercheRondsPoints);
         jcNoChercheRondsPoints = new JRadioButton();
         gpChercheRondsPoints.add(jcNoChercheRondsPoints);
-        if (paramVariante.getChercheRondsPoints()) {
+        if (param.varianteChercheRondsPoints) {
             jcYesChercheRondsPoints.setSelected(true);
         } else {
             jcNoChercheRondsPoints.setSelected(true);
@@ -103,7 +103,7 @@ public class EditParamVariantePanel extends JPanel implements ActionListener {
         gpFiltrageImpassesParasites.add(jcYesFiltrageImpassesParasites);
         jcNoFiltrageImpassesParasites = new JRadioButton();
         gpFiltrageImpassesParasites.add(jcNoFiltrageImpassesParasites);
-        if (paramVariante.getFiltrageImpassesParasites()) {
+        if (param.varianteFiltrageImpassesParasites) {
             jcYesFiltrageImpassesParasites.setSelected(true);
         } else {
             jcNoFiltrageImpassesParasites.setSelected(true);
@@ -119,12 +119,12 @@ public class EditParamVariantePanel extends JPanel implements ActionListener {
         jcNoRedecoupageNoeudsNonApparies.addActionListener(this);
         
         fieldDistanceNoeudArc = new JTextField(10);
-        fieldDistanceNoeudArc.setText(Double.toString(paramVariante.getDistanceNoeudArc()));
+        fieldDistanceNoeudArc.setText(Double.toString(param.varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc));
         
         fieldDistanceProjectionNoeud = new JTextField(10);
-        fieldDistanceProjectionNoeud.setText(Double.toString(paramVariante.getDistanceProjectionNoeud()));
+        fieldDistanceProjectionNoeud.setText(Double.toString(param.varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud));
         
-        if (paramVariante.getRedecoupageNoeudsNonApparies()) {
+        if (param.varianteRedecoupageArcsNonApparies) {
             jcYesRedecoupageNoeudsNonApparies.setSelected(true);
             fieldDistanceNoeudArc.setEditable(true);
             fieldDistanceProjectionNoeud.setEditable(true);
@@ -229,52 +229,49 @@ public class EditParamVariantePanel extends JPanel implements ActionListener {
      * 
      * @return
      */
-    public ParamVarianteGeneralProcess valideField() {
-        
-        ParamVarianteGeneralProcess returnParamVariante = new ParamVarianteGeneralProcess();
+    public ParametresApp valideField() {
         
         // ForceAppariementSimple
         if (jcYesForceAppariementSimple.isSelected()) {
-            returnParamVariante.setForceAppariementSimple(true);
+            param.varianteForceAppariementSimple = true;
         } else {
-            returnParamVariante.setForceAppariementSimple(false);
+            param.varianteForceAppariementSimple = false;
         }
         
         // RedecoupageArcsNonApparies
         if (jcYesRedecoupageArcsNonApparies.isSelected()) {
-            returnParamVariante.setRedecoupageArcsNonApparies(true);
+            param.varianteRedecoupageArcsNonApparies = true;
         } else {
-            returnParamVariante.setRedecoupageArcsNonApparies(false);
+            param.varianteRedecoupageArcsNonApparies = false;
         }
         
         // ChercheRondsPoints
         if (jcYesChercheRondsPoints.isSelected()) {
-            returnParamVariante.setChercheRondsPoints(true);
+            param.varianteChercheRondsPoints = true;
         } else {
-            returnParamVariante.setChercheRondsPoints(false);
+          param.varianteChercheRondsPoints = false;
         }
         
         // FiltrageImpassesParasites
         if (jcYesFiltrageImpassesParasites.isSelected()) {
-            returnParamVariante.setFiltrageImpassesParasites(true);
+            param.varianteFiltrageImpassesParasites = true;
         } else {
-            returnParamVariante.setFiltrageImpassesParasites(false);
+            param.varianteFiltrageImpassesParasites = false;
         }
         
         // RedecoupageNoeudsNonApparies
         if (jcYesRedecoupageNoeudsNonApparies.isSelected()) {
-            returnParamVariante.setRedecoupageNoeudsNonApparies(true);
-            returnParamVariante.setDistanceNoeudArc(Double.parseDouble(fieldDistanceNoeudArc.getText()));
-            returnParamVariante.setDistanceNoeudArc(Double.parseDouble(fieldDistanceProjectionNoeud.getText()));
+            param.varianteRedecoupageArcsNonApparies = true;
+            param.varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc = Double.parseDouble(fieldDistanceNoeudArc.getText());
+            param.varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud = Double.parseDouble(fieldDistanceProjectionNoeud.getText());
         } else {
-            returnParamVariante.setRedecoupageNoeudsNonApparies(true);
-            returnParamVariante.setDistanceNoeudArc(0);
-            returnParamVariante.setDistanceNoeudArc(0);
+            param.varianteRedecoupageArcsNonApparies = false;
+            param.varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc = 0;
+            param.varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud = 0;
         }
         
-        
         // return 
-        return returnParamVariante;
+        return param;
     }
 
 }

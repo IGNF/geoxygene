@@ -56,13 +56,8 @@ import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkD
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.EditParamPanel;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamProjectionNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamVarianteGeneralProcess;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
@@ -159,8 +154,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         
         // String filename1 = "D:\\Data\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
         // String filename2 = "D:\\Data\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
-        String filename1 = "D:\\DATA\\Appariement\\ESPON-DB\\Test\\Reseau1.shp";
-        String filename2 = "D:\\DATA\\Appariement\\ESPON-DB\\Test\\Reseau2.shp";
+        String filename1 = "D:\\DATA\\Appariement\\ESPON_DB\\Test03\\Reseau1.shp";
+        String filename2 = "D:\\DATA\\Appariement\\ESPON_DB\\Test03\\Reseau2.shp";
         
         ParamFilenamePopulationEdgesNetwork paramFilename1 = new ParamFilenamePopulationEdgesNetwork();
         paramFilename1.addFilename(filename1);
@@ -172,64 +167,45 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
 
         // -----------------------------------------------------------------------------------------
         // Param
-        ParamNetworkDataMatching param = new ParamNetworkDataMatching();
+        ParametresApp param = new ParametresApp();
 
         // Direction
-        ParamDirectionNetworkDataMatching paramDirection1 = new ParamDirectionNetworkDataMatching();
-        paramDirection1.setOrientationDouble(true);
-        param.setParamDirectionNetwork1(paramDirection1);
-
-        ParamDirectionNetworkDataMatching paramDirection2 = new ParamDirectionNetworkDataMatching();
-        paramDirection2.setOrientationDouble(false);
-        paramDirection2.setAttributOrientation("DIR_TRAVEL");
-        Map<Integer, String> orientationMap2 = new HashMap<Integer, String>(); 
-        orientationMap2.put(OrientationInterface.SENS_DIRECT, "T");
-        orientationMap2.put(OrientationInterface.SENS_INVERSE, "F");
-        orientationMap2.put(OrientationInterface.DOUBLE_SENS, "B");
-        paramDirection2.setOrientationMap(orientationMap2);
-        param.setParamDirectionNetwork2(paramDirection2);
-
+        param.populationsArcsAvecOrientationDouble2 = false;
+        param.attributOrientation2 = "DIR_TRAVEL";
+        Map<Object, Integer> orientationMap2 = new HashMap<Object, Integer>(); 
+        orientationMap2.put("T", OrientationInterface.SENS_DIRECT);
+        orientationMap2.put("F", OrientationInterface.SENS_INVERSE);
+        orientationMap2.put("B", OrientationInterface.DOUBLE_SENS);
+        param.orientationMap2 = orientationMap2;
+        
         // Distance
-        ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
-        float distanceNoeudsMax = 150;
-        paramDistance.setDistanceNoeudsMax(distanceNoeudsMax);
-        paramDistance.setDistanceArcsMax(2 * distanceNoeudsMax);
-        paramDistance.setDistanceArcsMin(1); // distanceNoeudsMax
-        param.setParamDistance(paramDistance);
+        float distanceNoeudsMax = 50;
+        param.distanceNoeudsMax = distanceNoeudsMax;
+        param.distanceArcsMax = 2 * distanceNoeudsMax;
+        param.distanceArcsMin = 1;
 
         // Topologie
-        ParamTopologyTreatmentNetwork paramTopo1 = new ParamTopologyTreatmentNetwork();
-        paramTopo1.setGraphePlanaire(true);
-        paramTopo1.setFusionArcsDoubles(true);
-        paramTopo1.setSeuilFusionNoeuds(0.1);
-        param.setParamTopoNetwork1(paramTopo1);
+        param.topologieGraphePlanaire1 = true;
+        param.topologieFusionArcsDoubles1 = true;
+        param.topologieSeuilFusionNoeuds1 = 0.2;
 
-        ParamTopologyTreatmentNetwork paramTopo2 = new ParamTopologyTreatmentNetwork();
-        paramTopo2.setGraphePlanaire(true);
-        paramTopo2.setFusionArcsDoubles(true);
-        paramTopo2.setSeuilFusionNoeuds(0.1);
-        param.setParamTopoNetwork2(paramTopo2);
-
+        param.topologieGraphePlanaire2 = true;
+        param.topologieFusionArcsDoubles2 = true;
+        param.topologieSeuilFusionNoeuds2 = 0.2;
+        
         // Projection
-        ParamProjectionNetworkDataMatching paramProj1 = new ParamProjectionNetworkDataMatching();
-        paramProj1.setProjeteNoeuds1SurReseau2(true);
-        paramProj1.setProjeteNoeuds1SurReseau2DistanceNoeudArc(distanceNoeudsMax);
-        paramProj1.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(2 * distanceNoeudsMax);
-        param.setParamProjNetwork1(paramProj1);
+        param.projeteNoeuds1SurReseau2 = true;
+        param.projeteNoeuds1SurReseau2DistanceNoeudArc = distanceNoeudsMax;
+        param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 2 * distanceNoeudsMax;
 
-        ParamProjectionNetworkDataMatching paramProj2 = new ParamProjectionNetworkDataMatching();
-        paramProj2.setProjeteNoeuds1SurReseau2(true);
-        paramProj2.setProjeteNoeuds1SurReseau2DistanceNoeudArc(distanceNoeudsMax);
-        paramProj2.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(2 * distanceNoeudsMax);
-        paramProj2.setProjeteNoeuds1SurReseau2ImpassesSeulement(true);
-        param.setParamProjNetwork2(paramProj2);
-
+        param.projeteNoeuds2SurReseau1 = true;
+        param.projeteNoeuds2SurReseau1DistanceNoeudArc = distanceNoeudsMax;
+        param.projeteNoeuds2SurReseau1DistanceProjectionNoeud = 2 * distanceNoeudsMax;
+        param.projeteNoeuds2SurReseau1ImpassesSeulement = true;
+        
         // Variante
-        ParamVarianteGeneralProcess paramVariante = new ParamVarianteGeneralProcess();
-        paramVariante.setChercheRondsPoints(false);
-        param.setParamVarianteGeneralProcess(paramVariante);
-        // default param
-
+        param.varianteChercheRondsPoints = true;
+        
         //
         paramPlugin.setParamNetworkDataMatching(param);
 
@@ -272,9 +248,6 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
             lastFile = filename;
             IPopulation<IFeature> reseau = ShapefileReader.read(filename);
             reseau.setNom("Edge");
-            // reseau.setClasse(fr.ign.cogit.geoxygene.contrib.cartetopo.Arc.class);
-            // datasetNetwork1.addPopulation(new Population<Arc>(false, "Edge", fr.ign.cogit.geoxygene.contrib.cartetopo.Arc.class, true));
-            // datasetNetwork1.addPopulation(new Population<Noeud>(false, "Node", fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud.class, true));
             datasetNetwork1 = new DataSet();
             datasetNetwork1.addPopulation(reseau);
             IPopulation<IFeature> popNode = new Population<IFeature>("Node");

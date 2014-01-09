@@ -48,7 +48,8 @@ public class LineStringMatchingParameters {
         // l'appariement
         // param.populationsNoeuds2.add(populationsNoeuds2);
 
-        param.populationsArcsAvecOrientationDouble = true;
+        param.populationsArcsAvecOrientationDouble1 = true;
+        param.populationsArcsAvecOrientationDouble2 = true;
 
         // ///////////////////////////////////////////////////////////////////////////////
         // /////////////// TAILLES DE RECHERCHE ///////////////////////
@@ -152,7 +153,8 @@ public class LineStringMatchingParameters {
         // l'appariement
         param.populationsNoeuds2.add((IFeatureCollection<IFeature>) populationsNoeuds2);
 
-        param.populationsArcsAvecOrientationDouble = true;
+        param.populationsArcsAvecOrientationDouble1 = true;
+        param.populationsArcsAvecOrientationDouble2 = true;
 
         // ///////////////////////////////////////////////////////////////////////////////
         // /////////////// TAILLES DE RECHERCHE ///////////////////////

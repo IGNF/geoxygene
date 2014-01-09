@@ -24,7 +24,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
+
 
 /**
  * 
@@ -54,7 +55,7 @@ public class ParamPluginNetworkDataMatching {
   
   /** Paramètres pour l'appariement. */
   @XmlElement(name = "ParamNetworkDataMatching")
-  private ParamNetworkDataMatching paramNetworkDataMatching = null;
+  private ParametresApp paramNetworkDataMatching = null;
   
   /** Action du recalage à faire en sortie de l'appariement. */
   @XmlElement(name = "DoRecalage")
@@ -70,7 +71,7 @@ public class ParamPluginNetworkDataMatching {
   public ParamPluginNetworkDataMatching() {
     paramFilenameNetwork1 = new ParamFilenamePopulationEdgesNetwork();
     paramFilenameNetwork2 = new ParamFilenamePopulationEdgesNetwork();
-    paramNetworkDataMatching = new ParamNetworkDataMatching();
+    paramNetworkDataMatching = new ParametresApp();
     doRecalage = false;
   }
   
@@ -82,7 +83,7 @@ public class ParamPluginNetworkDataMatching {
     return paramFilenameNetwork2;
   }
   
-  public ParamNetworkDataMatching getParamNetworkDataMatching() {
+  public ParametresApp getParamNetworkDataMatching() {
     return paramNetworkDataMatching;
   }
   
@@ -94,7 +95,7 @@ public class ParamPluginNetworkDataMatching {
     paramFilenameNetwork2 = pf;
   }
   
-  public void setParamNetworkDataMatching(ParamNetworkDataMatching p) {
+  public void setParamNetworkDataMatching(ParametresApp p) {
     paramNetworkDataMatching = p;
   }
 

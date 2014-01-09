@@ -35,12 +35,8 @@ import org.geotools.process.factory.DescribeResult;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamProjectionNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
@@ -107,58 +103,58 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
     DataSet datasetNetwork2 = new DataSet();
     datasetNetwork2.addPopulation((IPopulation<IFeature>)gPopComp);
     
-    ParamNetworkDataMatching param = new ParamNetworkDataMatching();
+    ParametresApp param = new ParametresApp();
     float distanceNoeudsMax = 20;
     
     // Direction
     // Direction réseau 1
-    ParamDirectionNetworkDataMatching paramDirectionNetwork1 = new ParamDirectionNetworkDataMatching();
-    param.setParamDirectionNetwork1(paramDirectionNetwork1);
+    // ParamDirectionNetworkDataMatching paramDirectionNetwork1 = new ParamDirectionNetworkDataMatching();
+    // param.setParamDirectionNetwork1(paramDirectionNetwork1);
     // Direction réseau 2
-    ParamDirectionNetworkDataMatching paramDirectionNetwork2 = new ParamDirectionNetworkDataMatching();
+    // ParamDirectionNetworkDataMatching paramDirectionNetwork2 = new ParamDirectionNetworkDataMatching();
     /*paramDirectionNetwork2.setAttributOrientation("sens_de_circulation");
     Map<Integer, String> orientationMap2 = new HashMap<Integer, String>();
     orientationMap2.put(1, "Sens direct");
     orientationMap2.put(-1, "Sens inverse");
     orientationMap2.put(2, "Double sens");
     paramDirectionNetwork2.setOrientationMap(orientationMap2);*/
-    param.setParamDirectionNetwork2(paramDirectionNetwork2);
+    // param.setParamDirectionNetwork2(paramDirectionNetwork2);
     
     // Distance
-    ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
-    paramDistance.setDistanceNoeudsMax(distanceNoeudsMax);
-    paramDistance.setDistanceArcsMax(2 * distanceNoeudsMax);
-    paramDistance.setDistanceArcsMin(distanceNoeudsMax);
-    param.setParamDistance(paramDistance);
+    // ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
+    // paramDistance.setDistanceNoeudsMax(distanceNoeudsMax);
+    // paramDistance.setDistanceArcsMax(2 * distanceNoeudsMax);
+    // paramDistance.setDistanceArcsMin(distanceNoeudsMax);
+    // param.setParamDistance(paramDistance);
     
     // Topologie
     // Topologie reseau 1
-    ParamTopologyTreatmentNetwork paramTopo1 = new ParamTopologyTreatmentNetwork();
-    paramTopo1.setGraphePlanaire(true);
-    paramTopo1.setFusionArcsDoubles(true);
-    paramTopo1.setSeuilFusionNoeuds(0.1);
-    param.setParamTopoNetwork1(paramTopo1);
+    // ParamTopologyTreatmentNetwork paramTopo1 = new ParamTopologyTreatmentNetwork();
+    // paramTopo1.setGraphePlanaire(true);
+    // paramTopo1.setFusionArcsDoubles(true);
+    // paramTopo1.setSeuilFusionNoeuds(0.1);
+    // param.setParamTopoNetwork1(paramTopo1);
     // Topologie reseau 2
-    ParamTopologyTreatmentNetwork paramTopo2 = new ParamTopologyTreatmentNetwork();
-    paramTopo2.setGraphePlanaire(false);
-    paramTopo2.setFusionArcsDoubles(false);
+    // ParamTopologyTreatmentNetwork paramTopo2 = new ParamTopologyTreatmentNetwork();
+    // paramTopo2.setGraphePlanaire(false);
+    // paramTopo2.setFusionArcsDoubles(false);
     // paramTopo2.setSeuilFusionNoeuds(0.1);
-    param.setParamTopoNetwork1(paramTopo2);
+    // param.setParamTopoNetwork1(paramTopo2);
     
     // Projection
     // Projection reseau 1
-    ParamProjectionNetworkDataMatching paramProj1 = new ParamProjectionNetworkDataMatching();
-    paramProj1.setProjeteNoeuds1SurReseau2(true);
-    paramProj1.setProjeteNoeuds1SurReseau2DistanceNoeudArc(distanceNoeudsMax);
-    paramProj1.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(2 * distanceNoeudsMax);
-    param.setParamProjNetwork1(paramProj1);
+    // ParamProjectionNetworkDataMatching paramProj1 = new ParamProjectionNetworkDataMatching();
+    // paramProj1.setProjeteNoeuds1SurReseau2(true);
+    // paramProj1.setProjeteNoeuds1SurReseau2DistanceNoeudArc(distanceNoeudsMax);
+    // paramProj1.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(2 * distanceNoeudsMax);
+    // param.setParamProjNetwork1(paramProj1);
     // Projection reseau 2
-    ParamProjectionNetworkDataMatching paramProj2 = new ParamProjectionNetworkDataMatching();
-    paramProj2.setProjeteNoeuds1SurReseau2(true);
-    paramProj2.setProjeteNoeuds1SurReseau2DistanceNoeudArc(distanceNoeudsMax);
-    paramProj2.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(2 * distanceNoeudsMax);
-    paramProj2.setProjeteNoeuds1SurReseau2ImpassesSeulement(false);
-    param.setParamProjNetwork2(paramProj2);
+    // ParamProjectionNetworkDataMatching paramProj2 = new ParamProjectionNetworkDataMatching();
+    // paramProj2.setProjeteNoeuds1SurReseau2(true);
+    // paramProj2.setProjeteNoeuds1SurReseau2DistanceNoeudArc(distanceNoeudsMax);
+    // paramProj2.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(2 * distanceNoeudsMax);
+    // paramProj2.setProjeteNoeuds1SurReseau2ImpassesSeulement(false);
+    // param.setParamProjNetwork2(paramProj2);
     
     /*
     // Ces paramètres ne sont plus pris en compte je crois, à vérifier que ce sont ceux par défaut

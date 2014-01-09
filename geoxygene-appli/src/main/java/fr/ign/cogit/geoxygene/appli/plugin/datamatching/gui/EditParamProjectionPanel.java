@@ -12,7 +12,7 @@ import javax.swing.JTextField;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamProjectionNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 
 /**
  * 
@@ -24,8 +24,8 @@ public class EditParamProjectionPanel extends JPanel implements ActionListener {
   private static final long serialVersionUID = 4791806011051504347L;
   
   /** . */
-  private ParamProjectionNetworkDataMatching paramProjNetwork1;
-  private ParamProjectionNetworkDataMatching paramProjNetwork2;
+  /** Parameters. */
+  private ParametresApp param = null;
   
   // Projection du reseau 1
   private JRadioButton jcYesProjection1;
@@ -47,11 +47,9 @@ public class EditParamProjectionPanel extends JPanel implements ActionListener {
   /**
    * Constructor.
    */
-  public EditParamProjectionPanel(ParamProjectionNetworkDataMatching paramProjection1, 
-      ParamProjectionNetworkDataMatching paramProjection2) {
+  public EditParamProjectionPanel(ParametresApp param) {
     
-    paramProjNetwork1 = paramProjection1;
-    paramProjNetwork2 = paramProjection2;
+    this.param = param;
     
     // Initialize all fields
     initFields();
@@ -72,7 +70,7 @@ public class EditParamProjectionPanel extends JPanel implements ActionListener {
     gpProjection1.add(jcYesProjection1);
     jcNoProjection1 = new JRadioButton();
     gpProjection1.add(jcNoProjection1);
-    if (paramProjNetwork1.getProjeteNoeuds1SurReseau2()) {
+    if (param.projeteNoeuds1SurReseau2) {
       jcYesProjection1.setSelected(true);
     } else {
       jcNoProjection1.setSelected(true);
@@ -81,17 +79,17 @@ public class EditParamProjectionPanel extends JPanel implements ActionListener {
     jcNoProjection1.addActionListener(this);
     
     distanceNoeudArc1 = new JTextField(10);
-    distanceNoeudArc1.setText(Double.toString(paramProjNetwork1.getProjeteNoeuds1SurReseau2DistanceNoeudArc()));
+    distanceNoeudArc1.setText(Double.toString(param.projeteNoeuds1SurReseau2DistanceNoeudArc));
     
     distanceProjectionNoeud1 = new JTextField(10);
-    distanceProjectionNoeud1.setText(Double.toString(paramProjNetwork1.getProjeteNoeuds1SurReseau2DistanceProjectionNoeud()));
+    distanceProjectionNoeud1.setText(Double.toString(param.projeteNoeuds1SurReseau2DistanceProjectionNoeud));
     
     ButtonGroup gpImpasseSeulement1 = new ButtonGroup();
     jcYesImpasseSeulement1 = new JRadioButton();
     gpImpasseSeulement1.add(jcYesImpasseSeulement1);
     jcNoImpasseSeulement1 = new JRadioButton();
     gpImpasseSeulement1.add(jcNoImpasseSeulement1);
-    if (paramProjNetwork1.getProjeteNoeuds1SurReseau2()) {
+    if (param.projeteNoeuds1SurReseau2) {
       jcYesImpasseSeulement1.setSelected(true);
     } else {
       jcNoImpasseSeulement1.setSelected(true);
@@ -103,7 +101,7 @@ public class EditParamProjectionPanel extends JPanel implements ActionListener {
     gpProjection2.add(jcYesProjection2);
     jcNoProjection2 = new JRadioButton();
     gpProjection2.add(jcNoProjection2);
-    if (paramProjNetwork2.getProjeteNoeuds1SurReseau2()) {
+    if (param.projeteNoeuds2SurReseau1) {
       jcYesProjection2.setSelected(true);
     } else {
       jcNoProjection2.setSelected(true);
@@ -112,17 +110,17 @@ public class EditParamProjectionPanel extends JPanel implements ActionListener {
     jcNoProjection2.addActionListener(this);
     
     distanceNoeudArc2 = new JTextField(10);
-    distanceNoeudArc2.setText(Double.toString(paramProjNetwork2.getProjeteNoeuds1SurReseau2DistanceNoeudArc()));
+    distanceNoeudArc2.setText(Double.toString(param.projeteNoeuds2SurReseau1DistanceNoeudArc));
     
     distanceProjectionNoeud2 = new JTextField(10);
-    distanceProjectionNoeud2.setText(Double.toString(paramProjNetwork2.getProjeteNoeuds1SurReseau2DistanceProjectionNoeud()));
+    distanceProjectionNoeud2.setText(Double.toString(param.projeteNoeuds2SurReseau1DistanceProjectionNoeud));
     
     ButtonGroup gpImpasseSeulement2 = new ButtonGroup();
     jcYesImpasseSeulement2 = new JRadioButton();
     gpImpasseSeulement2.add(jcYesImpasseSeulement2);
     jcNoImpasseSeulement2 = new JRadioButton();
     gpImpasseSeulement2.add(jcNoImpasseSeulement2);
-    if (paramProjNetwork2.getProjeteNoeuds1SurReseau2()) {
+    if (param.projeteNoeuds2SurReseau1) {
       jcYesImpasseSeulement2.setSelected(true);
     } else {
       jcNoImpasseSeulement2.setSelected(true);
@@ -188,51 +186,44 @@ public class EditParamProjectionPanel extends JPanel implements ActionListener {
    * 
    * @return
    */
-  public ParamProjectionNetworkDataMatching[] valideField() {
-    
-    // 
-    ParamProjectionNetworkDataMatching[] tabParamProjection = new ParamProjectionNetworkDataMatching[2];
+  public ParametresApp valideField() {
     
     // Reseau 1
-    ParamProjectionNetworkDataMatching paramProjection1 = new ParamProjectionNetworkDataMatching();
     if (jcYesProjection1.isSelected()) {
-      paramProjection1.setProjeteNoeuds1SurReseau2(true);
-      paramProjection1.setProjeteNoeuds1SurReseau2DistanceNoeudArc(Double.parseDouble(distanceNoeudArc1.getText()));
-      paramProjection1.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(Double.parseDouble(distanceProjectionNoeud1.getText()));
+      param.projeteNoeuds1SurReseau2 = true;
+      param.projeteNoeuds1SurReseau2DistanceNoeudArc = Double.parseDouble(distanceNoeudArc1.getText());
+      param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = Double.parseDouble(distanceProjectionNoeud1.getText());
       if (jcYesImpasseSeulement1.isSelected()) {
-        paramProjection1.setProjeteNoeuds1SurReseau2ImpassesSeulement(true);
+        param.projeteNoeuds1SurReseau2ImpassesSeulement = true;
       } else {
-        paramProjection1.setProjeteNoeuds1SurReseau2ImpassesSeulement(false);
+        param.projeteNoeuds1SurReseau2ImpassesSeulement = false;
       }
     } else {
-      paramProjection1.setProjeteNoeuds1SurReseau2(false);
-      paramProjection1.setProjeteNoeuds1SurReseau2DistanceNoeudArc(0);
-      paramProjection1.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(0);
-      paramProjection1.setProjeteNoeuds1SurReseau2ImpassesSeulement(false);
+      param.projeteNoeuds1SurReseau2 = false;
+      param.projeteNoeuds1SurReseau2DistanceNoeudArc = 0;
+      param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 0;
+      param.projeteNoeuds1SurReseau2ImpassesSeulement = false;
     }
-    tabParamProjection[0] = paramProjection1;
     
     // Reseau 2
-    ParamProjectionNetworkDataMatching paramProjection2 = new ParamProjectionNetworkDataMatching();
     if (jcYesProjection2.isSelected()) {
-      paramProjection2.setProjeteNoeuds1SurReseau2(true);
-      paramProjection2.setProjeteNoeuds1SurReseau2DistanceNoeudArc(Double.parseDouble(distanceNoeudArc2.getText()));
-      paramProjection2.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(Double.parseDouble(distanceProjectionNoeud2.getText()));
+      param.projeteNoeuds2SurReseau1 = true;
+      param.projeteNoeuds2SurReseau1DistanceNoeudArc = Double.parseDouble(distanceNoeudArc2.getText());
+      param.projeteNoeuds2SurReseau1DistanceProjectionNoeud = Double.parseDouble(distanceProjectionNoeud2.getText());
       if (jcYesImpasseSeulement2.isSelected()) {
-        paramProjection2.setProjeteNoeuds1SurReseau2ImpassesSeulement(true);
+        param.projeteNoeuds2SurReseau1ImpassesSeulement = true;
       } else {
-        paramProjection2.setProjeteNoeuds1SurReseau2ImpassesSeulement(false);
+        param.projeteNoeuds2SurReseau1ImpassesSeulement = false;
       }
     } else {
-      paramProjection2.setProjeteNoeuds1SurReseau2(false);
-      paramProjection2.setProjeteNoeuds1SurReseau2DistanceNoeudArc(0);
-      paramProjection2.setProjeteNoeuds1SurReseau2DistanceProjectionNoeud(0);
-      paramProjection2.setProjeteNoeuds1SurReseau2ImpassesSeulement(false);
+      param.projeteNoeuds2SurReseau1 = false;
+      param.projeteNoeuds2SurReseau1DistanceNoeudArc = 0;
+      param.projeteNoeuds2SurReseau1DistanceProjectionNoeud = 0;
+      param.projeteNoeuds2SurReseau1ImpassesSeulement = false;
     }
-    tabParamProjection[1] = paramProjection2;
     
-    //
-    return tabParamProjection;
+    // return all parameters
+    return param;
   
   }
   

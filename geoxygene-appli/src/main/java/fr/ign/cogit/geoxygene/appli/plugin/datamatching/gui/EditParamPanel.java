@@ -45,11 +45,7 @@ import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.NetworkDataMatchingPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamProjectionNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamVarianteGeneralProcess;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 
 
 /**
@@ -106,18 +102,15 @@ public class EditParamPanel extends JDialog implements ActionListener {
     datasetPanel = new EditParamDatasetPanel(networkDataMatchingPlugin.getParamPlugin().getParamFilenameNetwork1(),
         networkDataMatchingPlugin.getParamPlugin().getParamFilenameNetwork2());
     
-    directionPanel = new EditParamDirectionPanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamDirectionNetwork1(),
-        networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamDirectionNetwork2());
+    directionPanel = new EditParamDirectionPanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching());
     
-    distancePanel = new EditParamDistancePanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamDistance());
+    distancePanel = new EditParamDistancePanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching());
     
-    topoTreatmentPanel = new EditParamTopoPanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamTopoNetwork1(),
-        networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamTopoNetwork2());
+    topoTreatmentPanel = new EditParamTopoPanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching());
     
-    projectionPanel = new EditParamProjectionPanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamProjNetwork1(),
-        networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamProjNetwork2());
+    projectionPanel = new EditParamProjectionPanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching());
     
-    variante = new EditParamVariantePanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching().getParamVarianteGeneralProcess());
+    variante = new EditParamVariantePanel(networkDataMatchingPlugin.getParamPlugin().getParamNetworkDataMatching());
     
     // Init tabbed panel
     JTabbedPane tabbedPane = new JTabbedPane();
@@ -239,30 +232,56 @@ public class EditParamPanel extends JDialog implements ActionListener {
     
     // ------------------------------------------------------------------------------------------
 
-    ParamNetworkDataMatching param = new ParamNetworkDataMatching();
+    ParametresApp paramtmp = new ParametresApp();
+    ParametresApp param = new ParametresApp();
     
     // Direction
-    ParamDirectionNetworkDataMatching[] tabParamDirection = directionPanel.valideField();
-    param.setParamDirectionNetwork1(tabParamDirection[0]);
-    param.setParamDirectionNetwork2(tabParamDirection[1]);
+    paramtmp = directionPanel.valideField();
+    param.populationsArcsAvecOrientationDouble1 = paramtmp.populationsArcsAvecOrientationDouble1;
+    param.populationsArcsAvecOrientationDouble2 = paramtmp.populationsArcsAvecOrientationDouble2;
+    param.attributOrientation1 = paramtmp.attributOrientation1;
+    param.attributOrientation2 = paramtmp.attributOrientation2;
+    param.orientationMap1 = paramtmp.orientationMap1;
+    param.orientationMap2 = paramtmp.orientationMap2;
     
     // Ecart de distance
-    param.setParamDistance(distancePanel.valideField());
+    paramtmp = distancePanel.valideField();
+    param.distanceNoeudsMax = paramtmp.distanceNoeudsMax;
+    param.distanceNoeudsImpassesMax = paramtmp.distanceNoeudsImpassesMax;
+    param.distanceArcsMax = paramtmp.distanceArcsMax;
+    param.distanceArcsMin = paramtmp.distanceArcsMin;
     
     // Topo treatment
-    ParamTopologyTreatmentNetwork[] tabParamTopo = topoTreatmentPanel.valideField();
-    param.setParamTopoNetwork1(tabParamTopo[0]);
-    param.setParamTopoNetwork2(tabParamTopo[1]);
+    paramtmp = topoTreatmentPanel.valideField();
+    param.topologieSeuilFusionNoeuds1 = paramtmp.topologieSeuilFusionNoeuds1;
+    param.topologieSeuilFusionNoeuds2 = paramtmp.topologieSeuilFusionNoeuds2;
+    param.topologieElimineNoeudsAvecDeuxArcs1 = paramtmp.topologieElimineNoeudsAvecDeuxArcs1;
+    param.topologieElimineNoeudsAvecDeuxArcs2 = paramtmp.topologieElimineNoeudsAvecDeuxArcs2;
+    param.topologieGraphePlanaire1 = paramtmp.topologieGraphePlanaire1;
+    param.topologieGraphePlanaire2 = paramtmp.topologieGraphePlanaire2;
+    param.topologieFusionArcsDoubles1 = paramtmp.topologieFusionArcsDoubles1;
+    param.topologieFusionArcsDoubles2 = paramtmp.topologieFusionArcsDoubles2;
     
     // Projection
-    ParamProjectionNetworkDataMatching[] tabParamProj = projectionPanel.valideField();
-    param.setParamProjNetwork1(tabParamProj[0]);
-    param.setParamProjNetwork2(tabParamProj[1]);
+    paramtmp = projectionPanel.valideField();
+    param.projeteNoeuds1SurReseau2 = paramtmp.projeteNoeuds1SurReseau2;
+    param.projeteNoeuds1SurReseau2DistanceNoeudArc = paramtmp.projeteNoeuds1SurReseau2DistanceNoeudArc;
+    param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = paramtmp.projeteNoeuds1SurReseau2DistanceProjectionNoeud;
+    param.projeteNoeuds1SurReseau2ImpassesSeulement = paramtmp.projeteNoeuds1SurReseau2ImpassesSeulement;
+    param.projeteNoeuds2SurReseau1 = paramtmp.projeteNoeuds2SurReseau1;
+    param.projeteNoeuds2SurReseau1DistanceNoeudArc = paramtmp.projeteNoeuds2SurReseau1DistanceNoeudArc;
+    param.projeteNoeuds2SurReseau1DistanceProjectionNoeud = paramtmp.projeteNoeuds2SurReseau1DistanceProjectionNoeud;
+    param.projeteNoeuds2SurReseau1ImpassesSeulement = paramtmp.projeteNoeuds2SurReseau1ImpassesSeulement;
     
     // Variante
-    ParamVarianteGeneralProcess paramVariante = variante.valideField();
-    param.setParamVarianteGeneralProcess(paramVariante);
-    
+    paramtmp = variante.valideField();
+    param.varianteForceAppariementSimple = paramtmp.varianteForceAppariementSimple;
+    param.varianteRedecoupageArcsNonApparies = paramtmp.varianteRedecoupageArcsNonApparies;
+    param.varianteRedecoupageNoeudsNonApparies = paramtmp.varianteRedecoupageNoeudsNonApparies;
+    param.varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc = paramtmp.varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc;
+    param.varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud = paramtmp.varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud;
+    param.varianteFiltrageImpassesParasites = paramtmp.varianteFiltrageImpassesParasites;
+    param.varianteChercheRondsPoints = paramtmp.varianteChercheRondsPoints;
     
     //
     paramPlugin.setParamNetworkDataMatching(param);
@@ -271,7 +290,6 @@ public class EditParamPanel extends JDialog implements ActionListener {
     
     // Set parameters values to plugin
     networkDataMatchingPlugin.setParamPlugin(paramPlugin);
-    
     
   }
 

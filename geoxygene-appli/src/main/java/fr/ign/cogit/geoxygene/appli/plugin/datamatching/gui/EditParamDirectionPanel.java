@@ -40,7 +40,7 @@ import javax.swing.JTextField;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
 
 /**
@@ -51,8 +51,8 @@ public class EditParamDirectionPanel extends JPanel implements ActionListener {
   /** Serial version UID. */
   private static final long serialVersionUID = 4791806011051504347L;
   
-  private ParamDirectionNetworkDataMatching paramDirection1 = null;
-  private ParamDirectionNetworkDataMatching paramDirection2 = null;
+  /** Parameters. */
+  private ParametresApp param = null;
   
   /** */
   private JRadioButton rbDoubleSensArcReseau1 = null;
@@ -74,11 +74,10 @@ public class EditParamDirectionPanel extends JPanel implements ActionListener {
   /**
    * Constructor.
    */
-  public EditParamDirectionPanel(ParamDirectionNetworkDataMatching paramDirection1, ParamDirectionNetworkDataMatching paramDirection2) {
+  public EditParamDirectionPanel(ParametresApp param) {
     
-    // Initialize directions parameters 
-    this.paramDirection1 = paramDirection1;
-    this.paramDirection2 = paramDirection2;
+    // Initialize parameters 
+    this.param = param;
     
     // Initialize all fields
     initFields();
@@ -98,7 +97,7 @@ public class EditParamDirectionPanel extends JPanel implements ActionListener {
     // Double sens
     rbDoubleSensArcReseau1 = new JRadioButton("Tous les axes sont en double sens");
     rbDoubleSensArcReseau1.addActionListener(this);
-    if (paramDirection1.getOrientationDouble()) {
+    if (param.populationsArcsAvecOrientationDouble1) {
       rbDoubleSensArcReseau1.setSelected(true);
     }
     groupe1.add(rbDoubleSensArcReseau1);
@@ -106,15 +105,15 @@ public class EditParamDirectionPanel extends JPanel implements ActionListener {
     // Sens definit par un attribut
     rbSimpleSensArcReseau1 = new JRadioButton("Définir le sens de l'axe suivant la valeur d'un attribut");
     rbSimpleSensArcReseau1.addActionListener(this);
-    if (!paramDirection1.getOrientationDouble()) {
+    if (!param.populationsArcsAvecOrientationDouble1) {
       rbSimpleSensArcReseau1.setSelected(true);
     }
     groupe1.add(rbSimpleSensArcReseau1);
     
     // Attribut
     fieldAttributeReseau1 = new JTextField(30);
-    if (paramDirection1.getAttributOrientation() != null) {
-      fieldAttributeReseau1.setText(paramDirection1.getAttributOrientation());
+    if (param.attributOrientation1 != null) {
+      fieldAttributeReseau1.setText(param.attributOrientation1);
     } else {
       fieldAttributeReseau1.setText("sens_de_circulation");
     }
@@ -123,31 +122,37 @@ public class EditParamDirectionPanel extends JPanel implements ActionListener {
     fieldValueDirectReseau1 = new JTextField(20);
     fieldValueInverseReseau1 = new JTextField(20);
     fieldValueDoubleSensReseau1 = new JTextField(20);
-    if (paramDirection1.getOrientationMap() != null) {
+    if (param.orientationMap1 != null) {
       
       // Set map of values 
-      Map<Integer, String> orientationMap1 = paramDirection1.getOrientationMap();
+      Map<Object, Integer> orientationMap1 = param.orientationMap1;
       
       // Sens direct
-      if (orientationMap1.get(OrientationInterface.SENS_DIRECT) != null) {
-        fieldValueDirectReseau1.setText(orientationMap1.get(OrientationInterface.SENS_DIRECT));
-      } else {
-        fieldValueDirectReseau1.setText("direct");
+      fieldValueDirectReseau1.setText("direct");
+      for (Object valSens : orientationMap1.keySet()) {
+          if (orientationMap1.get(valSens).equals(OrientationInterface.SENS_DIRECT)) {
+            fieldValueDirectReseau1.setText(valSens.toString());
+          }
       }
+      
       
       // Sens inverse
-      if (orientationMap1.get(OrientationInterface.SENS_INVERSE) != null) {
-        fieldValueInverseReseau1.setText(orientationMap1.get(OrientationInterface.SENS_INVERSE));
-      } else {
-        fieldValueInverseReseau1.setText("inverse");
-      }
+      fieldValueInverseReseau1.setText("inverse");
+        for (Object valSens : orientationMap1.keySet()) {
+          if (orientationMap1.get(valSens).equals(OrientationInterface.SENS_INVERSE)) {
+            fieldValueInverseReseau1.setText(valSens.toString());
+          }
+        }
+      
       
       // Double sens
-      if (orientationMap1.get(OrientationInterface.DOUBLE_SENS) != null) {
-        fieldValueDoubleSensReseau1.setText(orientationMap1.get(OrientationInterface.DOUBLE_SENS));
-      } else {
         fieldValueDoubleSensReseau1.setText("double");
-      }
+        for (Object valSens : orientationMap1.keySet()) {
+          if (orientationMap1.get(valSens).equals(OrientationInterface.DOUBLE_SENS)) {
+            fieldValueDoubleSensReseau1.setText(valSens.toString());
+          }
+        }
+      
     
     }
     
@@ -157,22 +162,22 @@ public class EditParamDirectionPanel extends JPanel implements ActionListener {
     
     rbDoubleSensArcReseau2 = new JRadioButton("Tous les axes sont en double sens");
     rbDoubleSensArcReseau2.addActionListener(this);
-    if (paramDirection2.getOrientationDouble()) {
+    if (param.populationsArcsAvecOrientationDouble2) {
       rbDoubleSensArcReseau2.setSelected(true);
     }
     groupe2.add(rbDoubleSensArcReseau2);
     
     rbSimpleSensArcReseau2 = new JRadioButton("Définir le sens de l'axe suivant la valeur d'un attribut");
     rbSimpleSensArcReseau2.addActionListener(this);
-    if (!paramDirection2.getOrientationDouble()) {
+    if (!param.populationsArcsAvecOrientationDouble2) {
       rbSimpleSensArcReseau2.setSelected(true);
     }
     groupe2.add(rbSimpleSensArcReseau2);
     
     // Attribut
     fieldAttributeReseau2 = new JTextField(30);
-    if (paramDirection2.getAttributOrientation() != null) {
-      fieldAttributeReseau2.setText(paramDirection2.getAttributOrientation());
+    if (param.attributOrientation2 != null) {
+      fieldAttributeReseau2.setText(param.attributOrientation2);
     } else {
       fieldAttributeReseau2.setText("sens_de_circulation");
     }
@@ -180,44 +185,49 @@ public class EditParamDirectionPanel extends JPanel implements ActionListener {
     fieldValueDirectReseau2 = new JTextField(20);
     fieldValueInverseReseau2 = new JTextField(20);
     fieldValueDoubleSensReseau2 = new JTextField(20);
-    if (paramDirection2.getOrientationMap() != null) {
+    if (param.orientationMap2 != null) {
       
       // Set map of values 
-      Map<Integer, String> orientationMap2 = paramDirection2.getOrientationMap();
+      Map<Object, Integer> orientationMap2 = param.orientationMap2;
       
       // Sens direct
-      if (orientationMap2.get(OrientationInterface.SENS_DIRECT) != null) {
-        fieldValueDirectReseau2.setText(orientationMap2.get(OrientationInterface.SENS_DIRECT));
-      } else {
-        fieldValueDirectReseau2.setText("direct");
-      }
+      fieldValueDirectReseau2.setText("direct");
+        for (Object valSens : orientationMap2.keySet()) {
+          if (orientationMap2.get(valSens).equals(OrientationInterface.SENS_DIRECT)) {
+            fieldValueDirectReseau2.setText(valSens.toString());
+          }
+        }
       
       // Sens inverse
-      if (orientationMap2.get(OrientationInterface.SENS_INVERSE) != null) {
-        fieldValueInverseReseau2.setText(orientationMap2.get(OrientationInterface.SENS_INVERSE));
-      } else {
         fieldValueInverseReseau2.setText("inverse");
-      }
+        for (Object valSens : orientationMap2.keySet()) {
+          if (orientationMap2.get(valSens).equals(OrientationInterface.SENS_INVERSE)) {
+            fieldValueInverseReseau2.setText(valSens.toString());
+          }
+        }
+      
       
       // Double sens
-      if (orientationMap2.get(OrientationInterface.DOUBLE_SENS) != null) {
-        fieldValueDoubleSensReseau2.setText(orientationMap2.get(OrientationInterface.DOUBLE_SENS));
-      } else {
         fieldValueDoubleSensReseau2.setText("double");
-      }
+        for (Object valSens : orientationMap2.keySet()) {
+          if (orientationMap2.get(valSens).equals(OrientationInterface.DOUBLE_SENS)) {
+            fieldValueDoubleSensReseau2.setText(valSens.toString());
+          }
+        }
+      
     
     }
     
     // -----------------------------------------------------------------------------------------------------
     
-    if (paramDirection1.getOrientationDouble()) {
+    if (param.populationsArcsAvecOrientationDouble1) {
       fieldAttributeReseau1.setEnabled(false);
       fieldValueDirectReseau1.setEnabled(false);
       fieldValueInverseReseau1.setEnabled(false);
       fieldValueDoubleSensReseau1.setEnabled(false);
     }
     
-    if (paramDirection2.getOrientationDouble()) {
+    if (param.populationsArcsAvecOrientationDouble2) {
       fieldAttributeReseau2.setEnabled(false);
       fieldValueDirectReseau2.setEnabled(false);
       fieldValueInverseReseau2.setEnabled(false);
@@ -275,47 +285,42 @@ public class EditParamDirectionPanel extends JPanel implements ActionListener {
    * 
    * @return
    */
-  public ParamDirectionNetworkDataMatching[] valideField() {
-    
-    ParamDirectionNetworkDataMatching[] tabParamDirection = new ParamDirectionNetworkDataMatching[2];
+  public ParametresApp valideField() {
     
     // param direction 1
-    ParamDirectionNetworkDataMatching paramDirection1 = new ParamDirectionNetworkDataMatching();
     if (rbDoubleSensArcReseau1.isSelected()) {
-      paramDirection1.setOrientationDouble(true);
-      paramDirection1.setAttributOrientation(null);
-      paramDirection1.setOrientationMap(null);
+      param.populationsArcsAvecOrientationDouble1 = true;
+      param.attributOrientation1 = null;
+      param.orientationMap1 = null;
     } else if (rbSimpleSensArcReseau1.isSelected()) {
-      paramDirection1.setOrientationDouble(false);
-      paramDirection1.setAttributOrientation(fieldAttributeReseau1.getText());
+      param.populationsArcsAvecOrientationDouble1 = false;
+      param.attributOrientation1 = fieldAttributeReseau1.getText();
       
-      Map<Integer, String> orientationMap1 = new HashMap<Integer, String>();
-      orientationMap1.put(OrientationInterface.SENS_DIRECT, fieldValueDirectReseau1.getText());
-      orientationMap1.put(OrientationInterface.SENS_INVERSE, fieldValueInverseReseau1.getText());
-      orientationMap1.put(OrientationInterface.DOUBLE_SENS, fieldValueDoubleSensReseau1.getText());
-      paramDirection1.setOrientationMap(orientationMap1);
+      Map<Object, Integer> orientationMap1 = new HashMap<Object, Integer>();
+      orientationMap1.put(fieldValueDirectReseau1.getText(), OrientationInterface.SENS_DIRECT);
+      orientationMap1.put(fieldValueInverseReseau1.getText(), OrientationInterface.SENS_INVERSE);
+      orientationMap1.put(fieldValueDoubleSensReseau1.getText(), OrientationInterface.DOUBLE_SENS);
+      param.orientationMap1 = orientationMap1;
     }
-    tabParamDirection[0] = paramDirection1;
     
     // param direction 2
-    ParamDirectionNetworkDataMatching paramDirection2 = new ParamDirectionNetworkDataMatching();
     if (rbDoubleSensArcReseau2.isSelected()) {
-      paramDirection2.setOrientationDouble(true);
-      paramDirection2.setAttributOrientation(null);
-      paramDirection2.setOrientationMap(null);
+      param.populationsArcsAvecOrientationDouble2 = true;
+      param.attributOrientation2 = null;
+      param.orientationMap2 = null;
     } else if (rbSimpleSensArcReseau2.isSelected()) {
-      paramDirection2.setOrientationDouble(false);
-      paramDirection2.setAttributOrientation(fieldAttributeReseau2.getText());
+      param.populationsArcsAvecOrientationDouble2 = false;
+      param.attributOrientation2 = fieldAttributeReseau2.getText();
       
-      Map<Integer, String> orientationMap2 = new HashMap<Integer, String>();
-      orientationMap2.put(OrientationInterface.SENS_DIRECT, fieldValueDirectReseau2.getText());
-      orientationMap2.put(OrientationInterface.SENS_INVERSE, fieldValueInverseReseau2.getText());
-      orientationMap2.put(OrientationInterface.DOUBLE_SENS, fieldValueDoubleSensReseau2.getText());
-      paramDirection2.setOrientationMap(orientationMap2);
+      Map<Object, Integer> orientationMap2 = new HashMap<Object, Integer>();
+      orientationMap2.put(fieldValueDirectReseau2.getText(), OrientationInterface.SENS_DIRECT);
+      orientationMap2.put(fieldValueInverseReseau2.getText(), OrientationInterface.SENS_INVERSE);
+      orientationMap2.put(fieldValueDoubleSensReseau2.getText(), OrientationInterface.DOUBLE_SENS);
+      param.orientationMap2 = orientationMap2;
     }
-    tabParamDirection[1] = paramDirection2;
-    
-    return tabParamDirection;
+
+    // Return all parameters
+    return param;
   
   }
   

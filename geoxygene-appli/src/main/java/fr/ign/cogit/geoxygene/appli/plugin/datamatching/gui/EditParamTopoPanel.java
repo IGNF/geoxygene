@@ -1,10 +1,6 @@
 package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.ButtonGroup;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -13,16 +9,19 @@ import javax.swing.JTextField;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopologyTreatmentNetwork;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 
+/**
+ * 
+ *
+ */
 public class EditParamTopoPanel extends JPanel {
   
   /** Serial version UID. */
   private static final long serialVersionUID = 4791806011051504347L;
   
-  private ParamTopologyTreatmentNetwork paramTopoNetwork1;
-  private ParamTopologyTreatmentNetwork paramTopoNetwork2;
+  /** Parameters. */
+  private ParametresApp param = null;
   
   private JTextField jtSeuilFusionNoeuds1;
   private JRadioButton jcYesGraphePlanaire1;
@@ -45,10 +44,9 @@ public class EditParamTopoPanel extends JPanel {
    * @param pn1
    * @param pn2
    */
-  public EditParamTopoPanel(ParamTopologyTreatmentNetwork pn1, ParamTopologyTreatmentNetwork pn2) {
+  public EditParamTopoPanel(ParametresApp pn) {
     
-    paramTopoNetwork1 = pn1;
-    paramTopoNetwork2 = pn2;
+    this.param = pn;
     
     // Initialize fields
     initField();
@@ -61,14 +59,14 @@ public class EditParamTopoPanel extends JPanel {
     
     // Reseau n°1
     jtSeuilFusionNoeuds1 = new JTextField(20);
-    jtSeuilFusionNoeuds1.setText(Double.toString(paramTopoNetwork1.getSeuilFusionNoeuds()));
+    jtSeuilFusionNoeuds1.setText(Double.toString(param.topologieSeuilFusionNoeuds1));
     
     ButtonGroup gpGraphePlanaire1 = new ButtonGroup();
     jcYesGraphePlanaire1 = new JRadioButton();
     gpGraphePlanaire1.add(jcYesGraphePlanaire1);
     jcNoGraphePlanaire1 = new JRadioButton();
     gpGraphePlanaire1.add(jcNoGraphePlanaire1);
-    if (paramTopoNetwork1.getGraphePlanaire()) {
+    if (param.topologieGraphePlanaire1) {
       jcYesGraphePlanaire1.setSelected(true);
     } else {
       jcNoGraphePlanaire1.setSelected(true);
@@ -79,7 +77,7 @@ public class EditParamTopoPanel extends JPanel {
     gpElimineNoeudsAvec2Arcs1.add(jcYesElimineNoeudsAvec2Arcs1);
     jcNoElimineNoeudsAvec2Arcs1 = new JRadioButton();
     gpElimineNoeudsAvec2Arcs1.add(jcNoElimineNoeudsAvec2Arcs1);
-    if (paramTopoNetwork1.getElimineNoeudsAvecDeuxArcs()) {
+    if (param.topologieElimineNoeudsAvecDeuxArcs1) {
       jcYesElimineNoeudsAvec2Arcs1.setSelected(true);
     } else {
       jcNoElimineNoeudsAvec2Arcs1.setSelected(true);
@@ -90,7 +88,7 @@ public class EditParamTopoPanel extends JPanel {
     gpFusionArcsDoubles1.add(jcYesFusionArcsDoubles1);
     jcNoFusionArcsDoubles1 = new JRadioButton();
     gpFusionArcsDoubles1.add(jcNoFusionArcsDoubles1);
-    if (paramTopoNetwork1.getFusionArcsDoubles()) {
+    if (param.topologieFusionArcsDoubles1) {
       jcYesFusionArcsDoubles1.setSelected(true);
     } else {
       jcNoFusionArcsDoubles1.setSelected(true);
@@ -98,14 +96,14 @@ public class EditParamTopoPanel extends JPanel {
     
     // Reseau n°2
     jtSeuilFusionNoeuds2 = new JTextField(20);
-    jtSeuilFusionNoeuds2.setText(Double.toString(paramTopoNetwork2.getSeuilFusionNoeuds()));
+    jtSeuilFusionNoeuds2.setText(Double.toString(param.topologieSeuilFusionNoeuds2));
     
     ButtonGroup gpGraphePlanaire2 = new ButtonGroup();
     jcYesGraphePlanaire2 = new JRadioButton();
     gpGraphePlanaire2.add(jcYesGraphePlanaire2);
     jcNoGraphePlanaire2 = new JRadioButton();
     gpGraphePlanaire2.add(jcNoGraphePlanaire2);
-    if (paramTopoNetwork2.getGraphePlanaire()) {
+    if (param.topologieGraphePlanaire2) {
       jcYesGraphePlanaire2.setSelected(true);
     } else {
       jcNoGraphePlanaire2.setSelected(true);
@@ -116,7 +114,7 @@ public class EditParamTopoPanel extends JPanel {
     gpElimineNoeudsAvec2Arcs2.add(jcYesElimineNoeudsAvec2Arcs2);
     jcNoElimineNoeudsAvec2Arcs2 = new JRadioButton();
     gpElimineNoeudsAvec2Arcs2.add(jcNoElimineNoeudsAvec2Arcs2);
-    if (paramTopoNetwork2.getElimineNoeudsAvecDeuxArcs()) {
+    if (param.topologieElimineNoeudsAvecDeuxArcs2) {
       jcYesElimineNoeudsAvec2Arcs2.setSelected(true);
     } else {
       jcNoElimineNoeudsAvec2Arcs2.setSelected(true);
@@ -127,7 +125,7 @@ public class EditParamTopoPanel extends JPanel {
     gpFusionArcsDoubles2.add(jcYesFusionArcsDoubles2);
     jcNoFusionArcsDoubles2 = new JRadioButton();
     gpFusionArcsDoubles2.add(jcNoFusionArcsDoubles2);
-    if (paramTopoNetwork2.getFusionArcsDoubles()) {
+    if (param.topologieFusionArcsDoubles2) {
       jcYesFusionArcsDoubles2.setSelected(true);
     } else {
       jcNoFusionArcsDoubles2.setSelected(true);
@@ -196,52 +194,46 @@ public class EditParamTopoPanel extends JPanel {
    * 
    * @return
    */
-  public ParamTopologyTreatmentNetwork[] valideField() {
-    
-    ParamTopologyTreatmentNetwork[] tabParamTopology = new ParamTopologyTreatmentNetwork[2];
+  public ParametresApp valideField() {
     
     // param topology 1
-    ParamTopologyTreatmentNetwork paramTopo1 = new ParamTopologyTreatmentNetwork();
-    paramTopo1.setSeuilFusionNoeuds(Double.parseDouble(jtSeuilFusionNoeuds1.getText()));
+    param.topologieSeuilFusionNoeuds1 = Double.parseDouble(jtSeuilFusionNoeuds1.getText());
     if (jcYesGraphePlanaire1.isSelected()) {
-      paramTopo1.setGraphePlanaire(true);
+      param.topologieGraphePlanaire1 = true;
     } else {
-      paramTopo1.setGraphePlanaire(false);
+      param.topologieGraphePlanaire1 = false;
     }
     if (jcYesElimineNoeudsAvec2Arcs1.isSelected()) {
-      paramTopo1.setElimineNoeudsAvecDeuxArcs(true);
+      param.topologieElimineNoeudsAvecDeuxArcs1 = true;
     } else {
-      paramTopo1.setElimineNoeudsAvecDeuxArcs(false);
+      param.topologieElimineNoeudsAvecDeuxArcs1 = false;
     }
     if (jcYesFusionArcsDoubles1.isSelected()) {
-      paramTopo1.setFusionArcsDoubles(true);
+      param.topologieFusionArcsDoubles1 = true;
     } else {
-      paramTopo1.setFusionArcsDoubles(false);
+      param.topologieFusionArcsDoubles1 = false;
     }
-    tabParamTopology[0] = paramTopo1;
     
     // param topology 2
-    ParamTopologyTreatmentNetwork paramTopo2 = new ParamTopologyTreatmentNetwork();
-    paramTopo2.setSeuilFusionNoeuds(Double.parseDouble(jtSeuilFusionNoeuds2.getText()));
+    param.topologieSeuilFusionNoeuds2 = Double.parseDouble(jtSeuilFusionNoeuds2.getText());
     if (jcYesGraphePlanaire2.isSelected()) {
-      paramTopo2.setGraphePlanaire(true);
+      param.topologieGraphePlanaire2 = true;
     } else {
-      paramTopo2.setGraphePlanaire(false);
+      param.topologieGraphePlanaire2 = false;
     }
     if (jcYesElimineNoeudsAvec2Arcs2.isSelected()) {
-      paramTopo2.setElimineNoeudsAvecDeuxArcs(true);
+      param.topologieElimineNoeudsAvecDeuxArcs2 = true;
     } else {
-      paramTopo2.setElimineNoeudsAvecDeuxArcs(false);
+      param.topologieElimineNoeudsAvecDeuxArcs2 = false;
     }
     if (jcYesFusionArcsDoubles2.isSelected()) {
-      paramTopo2.setFusionArcsDoubles(true);
+      param.topologieFusionArcsDoubles2 = true;
     } else {
-      paramTopo2.setFusionArcsDoubles(false);
+      param.topologieFusionArcsDoubles2 = false;
     }
-    tabParamTopology[1] = paramTopo2;
     
     // 
-    return tabParamTopology;
+    return param;
   }
 
 }

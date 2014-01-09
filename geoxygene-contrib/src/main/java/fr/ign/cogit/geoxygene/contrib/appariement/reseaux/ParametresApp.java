@@ -35,6 +35,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 
+
 /**
  * Paramètres de l'appariement.
  * 
@@ -71,6 +72,7 @@ public class ParametresApp implements Cloneable {
    */
   public List<IFeatureCollection<? extends IFeature>> populationsNoeuds2 = new ArrayList<IFeatureCollection<? extends IFeature>>();
 
+  
   /**
    * Prise en compte de l'orientation des arcs sur le terrain (sens de
    * circulation). Si true : on suppose tous les arcs en double sens. Si false:
@@ -80,7 +82,8 @@ public class ParametresApp implements Cloneable {
    * 
    * Utile ensuite pour l'appariement des arcs.
    */
-  public boolean populationsArcsAvecOrientationDouble = true;
+  public boolean populationsArcsAvecOrientationDouble1 = true;
+  public boolean populationsArcsAvecOrientationDouble2 = true;
   public String attributOrientation1 = "orientation"; //$NON-NLS-1$
   public String attributOrientation2 = "orientation"; //$NON-NLS-1$
   public Map<Object, Integer> orientationMap1 = null;
@@ -402,5 +405,5 @@ public class ParametresApp implements Cloneable {
    * autour des objets appariés à un noeud.
    */
   public double debugTailleBuffer = 10;
-
+  
 }

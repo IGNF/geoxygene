@@ -294,10 +294,13 @@ public final class AppariementIO {
     // /////////////////////////
     // import des arcs
     Iterator<IFeatureCollection<? extends IFeature>> itPopArcs = null;
+    boolean populationsArcsAvecOrientationDouble = true;
     if (ref) {
       itPopArcs = paramApp.populationsArcs1.iterator();
+      populationsArcsAvecOrientationDouble = paramApp.populationsArcsAvecOrientationDouble1;
       LOGGER.info(paramApp.populationsArcs1.size() + " pops");
     } else {
+      populationsArcsAvecOrientationDouble = paramApp.populationsArcsAvecOrientationDouble2;
       itPopArcs = paramApp.populationsArcs2.iterator();
       LOGGER.info(paramApp.populationsArcs2.size() + " pops");
     }
@@ -310,7 +313,7 @@ public final class AppariementIO {
         ILineString ligne = new GM_LineString((IDirectPositionList) element
             .getGeom().coord().clone());
         arc.setGeometrie(ligne);
-        if (paramApp.populationsArcsAvecOrientationDouble) {
+        if (populationsArcsAvecOrientationDouble) {
           arc.setOrientation(2);
         } else {
           String attribute = (ref) ? paramApp.attributOrientation1
