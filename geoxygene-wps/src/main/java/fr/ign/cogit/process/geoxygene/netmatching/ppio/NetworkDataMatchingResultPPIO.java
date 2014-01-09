@@ -35,8 +35,9 @@ import com.thoughtworks.xstream.io.xml.SaxWriter;
 
 
 
+
+import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 //import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.process.geoxygene.netmatching.xml.ResultatAppariementParser;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElementInterface;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
@@ -64,7 +65,8 @@ public class NetworkDataMatchingResultPPIO extends CDataPPIO {
    */
   protected NetworkDataMatchingResultPPIO() {
       // super(ResultNetworkDataMatching.class);
-      super(ResultNetworkDataMatching.class, ResultNetworkDataMatching.class, "text/xml");
+      // super(ResultNetworkDataMatching.class, ResultNetworkDataMatching.class, "text/xml");
+    super(EnsembleDeLiens.class, EnsembleDeLiens.class, "text/xml");
   }
 
   
@@ -132,10 +134,10 @@ public class NetworkDataMatchingResultPPIO extends CDataPPIO {
       System.out.println("Start encoding the result for output");
       
       ResultatAppariementParser resultatAppariementParser = new ResultatAppariementParser();
-      String result = resultatAppariementParser.generateXMLResponse(((ResultNetworkDataMatching)value));
+      // String result = resultatAppariementParser.generateXMLResponse(((ResultNetworkDataMatching)value));
       
       // os.write(result);
-      os.write(result.getBytes(Charset.forName("UTF-8")));
+      // os.write(result.getBytes(Charset.forName("UTF-8")));
       
     
       // throw new UnsupportedOperationException("Unsupported Operation.");

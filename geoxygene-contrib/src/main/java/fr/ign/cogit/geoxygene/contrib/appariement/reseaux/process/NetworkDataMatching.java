@@ -38,7 +38,6 @@ import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
@@ -77,6 +76,15 @@ public class NetworkDataMatching {
         this.param = param;
         this.dataset1 = network1;
         this.dataset2 = network2;
+        
+        // + Dataset
+        List<IFeatureCollection<? extends IFeature>> list1 = new ArrayList<IFeatureCollection<? extends IFeature>>();
+        list1.add((IPopulation<Arc>)this.dataset1.getPopulation("Edge"));
+        param.populationsArcs1 = list1;
+
+        List<IFeatureCollection<? extends IFeature>> list2 = new ArrayList<IFeatureCollection<? extends IFeature>>();
+        list2.add((IPopulation<Arc>)this.dataset2.getPopulation("Edge"));
+        param.populationsArcs2 = list2;
     }
 
     /**
@@ -88,26 +96,15 @@ public class NetworkDataMatching {
         this.doRecalage = doRecalage;
         this.doLinkExport = false;
     }
-
+    
+    
     /**
      * Appariement de réseaux.
      * @param paramApp, les paramètres de l'appariement
      * @return
      */
     @SuppressWarnings("unchecked")
-    public ResultNetworkDataMatching networkDataMatching() {
-
-        // + Dataset
-        List<IFeatureCollection<? extends IFeature>> list1 = new ArrayList<IFeatureCollection<? extends IFeature>>();
-        list1.add((IPopulation<Arc>)this.dataset1.getPopulation("Edge"));
-        param.populationsArcs1 = list1;
-
-        List<IFeatureCollection<? extends IFeature>> list2 = new ArrayList<IFeatureCollection<? extends IFeature>>();
-        list2.add((IPopulation<Arc>)this.dataset2.getPopulation("Edge"));
-        param.populationsArcs2 = list2;
-        
-        // For result
-        ResultNetworkDataMatching resultatAppariement = new ResultNetworkDataMatching();
+    public EnsembleDeLiens networkDataMatching() {
 
         if (LOGGER.isEnabledFor(Level.INFO)) {
             LOGGER.info("------------------------------------------------------------------");
@@ -204,10 +201,10 @@ public class NetworkDataMatching {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("    NETWORK MATCHING START");
         }
-        resultatAppariement = Appariement.appariementReseaux(reseau1, reseau2, param);
+        EnsembleDeLiens liens = Appariement.appariementReseaux(reseau1, reseau2, param);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("    Network Matching finished");
-            LOGGER.info("  " + resultatAppariement.getLiens().size() + "matching links found");
+            LOGGER.info("  " + liens.size() + "matching links found");
         }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("    END OF NETWORK MATCHING");
@@ -224,38 +221,18 @@ public class NetworkDataMatching {
             LOGGER.debug("START OF EXPORT ");
         }
 
-        // Avant le nettoyage des liens ou maintenant ???
-        resultatAppariement.setReseau1(reseau1);
-        resultatAppariement.setReseau2(reseau2);
-
-        // if (paramApp.debugBilanSurObjetsGeo) {
-        if (doRecalage) {
-
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Transformation of matching links to generic links");
-            }
-
-            EnsembleDeLiens liensGeneriques = LienReseaux.exportLiensAppariement(resultatAppariement.getLiens(),
-                    reseau1, param);
-            // Appariement.nettoyageLiens(reseau1, reseau2);
-            resultatAppariement.setLiensGeneriques(liensGeneriques);
-
-        }
-
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Link geometry assignment");
         }
-        EnsembleDeLiens liens = resultatAppariement.getLiens();
+        
         LienReseaux.exportAppCarteTopo(liens, param);
-        resultatAppariement.setLiens(liens);
+        
 
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("######## NETWORK MATCHING END #########");
         }
 
-        //
-        return resultatAppariement;
-
+        return liens;
     }
 
     /**

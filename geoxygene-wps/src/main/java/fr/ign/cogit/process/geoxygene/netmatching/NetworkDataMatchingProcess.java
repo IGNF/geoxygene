@@ -37,7 +37,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
@@ -67,7 +66,7 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
    * @return Results ResultatAppariement
    */
   @DescribeResult(name = "resultNetMatching", description = "Result network matching")
-  public ResultNetworkDataMatching execute(
+  public void execute(
       @DescribeParameter(name = "popRef", description = "Less detailed network") SimpleFeatureCollection popRef,
       @DescribeParameter(name = "popComp", description = "Comparison network") SimpleFeatureCollection popComp) {
       
@@ -175,7 +174,7 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
       networkDataMatchingProcess.setActions(false, false);
       
       // On lance l'appariement
-      ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();
+      /*ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();
       // ResultNetworkDataMatching resultatAppariement = NetworkDataMatching.networkDataMatching(param);
       LOGGER.debug("End network data matching");
       
@@ -187,7 +186,7 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
       // Get arcs 
       IPopulation<Arc> arcs = reseauRecale.getPopArcs();
       System.out.println("Nb arcs = " + arcs.size());
-
+*/
       // Convert to geoserver object
       LOGGER.debug("Start Converting");
       /*SimpleFeatureCollection correctedNetwork = GeOxygeneGeoToolsTypes.convert2FeatureCollection(arcs, popRef.getSchema()
@@ -195,7 +194,7 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
       resultatAppariement.setNetworkMatched(correctedNetwork);*/
       LOGGER.debug("End Converting");
       
-      return resultatAppariement;
+      // return resultatAppariement;
 
     } catch (Exception e) {
       e.printStackTrace();

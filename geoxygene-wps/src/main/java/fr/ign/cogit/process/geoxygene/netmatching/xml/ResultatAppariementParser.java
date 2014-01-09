@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import org.geotools.GML;
 import org.geotools.GML.Version;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
+// import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 
 
 /**
@@ -39,7 +39,7 @@ public class ResultatAppariementParser {
      *            L'objet résultat de l'appariement
      * @return Le XML correspondant
      */
-    public String generateXMLResponse(ResultNetworkDataMatching resultatAppariement) throws Exception {
+    /* public String generateXMLResponse(ResultNetworkDataMatching resultatAppariement) throws Exception {
       
       LOGGER.info("------------------------------------------------------------------------");
       LOGGER.info("Start generating resultat appariement xml response.");
@@ -57,7 +57,7 @@ public class ResultatAppariementParser {
       result.append("<NetworkMatched>");
       try {
         
-        /*ByteArrayOutputStream output = new ByteArrayOutputStream();
+        *//*ByteArrayOutputStream output = new ByteArrayOutputStream();
         GML encode = new GML(Version.WFS1_0);
         encode.setNamespace("geotools", "http://geotools.org");
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -70,7 +70,7 @@ public class ResultatAppariementParser {
         buffer = buffer.substring(begin - 1, buffer.length() - 1);
             
         // Add to the document
-        result.append(buffer);*/
+        result.append(buffer);*//*
       
       } catch (Exception e) {
         e.printStackTrace();
@@ -86,6 +86,6 @@ public class ResultatAppariementParser {
       // Return the document
       return result.toString();
     
-    }
+    } */
 
 }

@@ -34,7 +34,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.GroupeApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
@@ -130,7 +129,7 @@ public abstract class Appariement {
    * @see ReseauApp
    * @see ParametresApp
    */
-  public static ResultNetworkDataMatching appariementReseaux(final ReseauApp reseau1,
+  public static EnsembleDeLiens appariementReseaux(final ReseauApp reseau1,
       final ReseauApp reseau2, final ParametresApp param) {
     
     // build a spatial index (regular tiling with an average of 20 objets
@@ -296,11 +295,7 @@ public abstract class Appariement {
     // --------------------------------------------------------------------------------------
     Appariement.controleGlobal(reseau1, reseau2, tousLiens, param);
 
-    // return liens_AppArcs;
-    ResultNetworkDataMatching resultatAppariement = new ResultNetworkDataMatching();
-    resultatAppariement.setLiens(tousLiens);
-    
-    return resultatAppariement;
+    return tousLiens;
   }
 
   /**

@@ -36,7 +36,6 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.contrib.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
@@ -88,18 +87,6 @@ public final class AppariementIO {
   public static EnsembleDeLiens appariementDeJeuxGeo(
       final ParametresApp paramApp, final List<ReseauApp> cartesTopo) {
     
-    ResultNetworkDataMatching resultatAppariement = appariementDeJeuxGeo2(paramApp, cartesTopo);
-
-    return resultatAppariement.getLiens();
-  
-  }
-  
-  
-  public static ResultNetworkDataMatching appariementDeJeuxGeo2(
-          final ParametresApp paramApp, final List<ReseauApp> cartesTopo) {
-        
-      ResultNetworkDataMatching resultatAppariement = new ResultNetworkDataMatching();
-
       switch (paramApp.debugAffichageCommentaires) {
         case 0:
           AppariementIO.LOGGER.setLevel(Level.ERROR);
@@ -206,12 +193,12 @@ public final class AppariementIO {
             .getString("AppariementIO.NetworkMatchingStart") //$NON-NLS-1$
             + new Time(System.currentTimeMillis()).toString());
       }
-      // EnsembleDeLiens liens = Appariement.appariementReseaux(reseauRef, reseauComp, paramApp);
-      resultatAppariement = Appariement.appariementReseaux(reseauRef, reseauComp, paramApp);
+      EnsembleDeLiens liens = Appariement.appariementReseaux(reseauRef, reseauComp, paramApp);
+      
       if (AppariementIO.LOGGER.isInfoEnabled()) {
         AppariementIO.LOGGER.info(I18N
             .getString("AppariementIO.NetworkMatchingFinished")); //$NON-NLS-1$
-        AppariementIO.LOGGER.info("  " + resultatAppariement.getLiens().size() + I18N.getString(//$NON-NLS-1$
+        AppariementIO.LOGGER.info("  " + liens.size() + I18N.getString(//$NON-NLS-1$
             "AppariementIO.MatchingLinksFound")); //$NON-NLS-1$
       }
       if (AppariementIO.LOGGER.isDebugEnabled()) {
@@ -236,24 +223,23 @@ public final class AppariementIO {
               + new Time(System.currentTimeMillis()).toString());
         }
         EnsembleDeLiens liensGeneriques = LienReseaux.exportLiensAppariement(
-            resultatAppariement.getLiens(), reseauRef, paramApp);
+            liens, reseauRef, paramApp);
         Appariement.nettoyageLiens(reseauRef, reseauComp);
         if (AppariementIO.LOGGER.isInfoEnabled()) {
           AppariementIO.LOGGER.info(I18N.getString("AppariementIO.MatchingEnd")); //$NON-NLS-1$
         }
-        resultatAppariement.setLiens(liensGeneriques);
-        return resultatAppariement;
+        return liensGeneriques;
       }
       if (AppariementIO.LOGGER.isDebugEnabled()) {
         AppariementIO.LOGGER.debug(I18N.getString("AppariementIO.LinkGeometry") //$NON-NLS-1$
             + new Time(System.currentTimeMillis()).toString());
       }
-      LienReseaux.exportAppCarteTopo(resultatAppariement.getLiens(), paramApp);
+      LienReseaux.exportAppCarteTopo(liens, paramApp);
       if (AppariementIO.LOGGER.isInfoEnabled()) {
         AppariementIO.LOGGER.info(I18N.getString("AppariementIO.MatchingEnd")); //$NON-NLS-1$
       }
    
-        return resultatAppariement;
+      return liens;
   }
   
 

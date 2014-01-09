@@ -58,7 +58,6 @@ import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
@@ -280,17 +279,19 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(
                 paramPlugin.getParamNetworkDataMatching(), datasetNetwork1, datasetNetwork2);
         networkDataMatchingProcess.setActions(paramPlugin.getDoRecalage(), paramPlugin.getDoLinkExport());
-        ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();
+        
+        // ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();
+        EnsembleDeLiens liens = networkDataMatchingProcess.networkDataMatching();
 
         // Logs
-        LOGGER.info("Nb arcs du réseau 1 calculés : "
+        /*LOGGER.info("Nb arcs du réseau 1 calculés : "
                 + resultatAppariement.getReseau1().getListeArcs().size() + " >= "
                 + datasetNetwork1.getPopulation("Edge").size());
         LOGGER.info("Nb arcs du réseau 2 calculés : "
                 + resultatAppariement.getReseau2().getListeArcs().size() + " >= "
                 + datasetNetwork2.getPopulation("Edge").size());
 
-        EnsembleDeLiens liens = resultatAppariement.getLiens();
+        EnsembleDeLiens liens = resultatAppariement.getLiens();*/
 
         // Split les multi des liens
         Population<DefaultFeature> collection = new Population<DefaultFeature>();
@@ -355,7 +356,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
         //
         if (paramPlugin.getDoRecalage()) {
             //
-            CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(),
+            /*CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(),
                     resultatAppariement.getReseau2(), liens);
             IPopulation<Arc> arcs = reseauRecale.getPopArcs();
 
@@ -388,13 +389,13 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
             l1bis.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
 
             p2.setSize(widthProjectFrame, heightProjectFrame);
-            p2.setLocation(0, heightProjectFrame);
+            p2.setLocation(0, heightProjectFrame);*/
         }
 
         // ---------------------------------------------------------------------------------
         // Frame n°3
         //
-        ProjectFrame p3 = this.application.getMainFrame().newProjectFrame();
+        /*ProjectFrame p3 = this.application.getMainFrame().newProjectFrame();
         p3.getLayerViewPanel().setViewport(viewport);
         viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
         p3.setTitle("Liens d'appariement");
@@ -437,7 +438,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin, Ac
 
         p3.setSize(widthProjectFrame, heightProjectFrame * 2);
         p3.setLocation(widthProjectFrame, 0);
-
+      */
         //
         LOGGER.info("Finished");
         }

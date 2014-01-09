@@ -13,7 +13,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
@@ -371,7 +370,7 @@ public class ITCompareAppariementTest {
     
   }
   
-  private void compareCarteTopo(List<ReseauApp> listCarteTopo, ResultNetworkDataMatching resultatAppariement) {
+  // private void compareCarteTopo(List<ReseauApp> listCarteTopo, ResultNetworkDataMatching resultatAppariement) {
     
     // Nombre d'arcs du reseau 1
     /*Assert.assertTrue("Nb arcs carte topo reseau 1 = " + listCarteTopo.get(0).getListeArcs().size() + " ? " + resultatAppariement.getReseauStat1().getReseauApp().getListeArcs().size(), 
@@ -389,7 +388,7 @@ public class ITCompareAppariementTest {
     Assert.assertTrue("Nb noeuds carte topo reseau 2 = " + listCarteTopo.get(1).getListeNoeuds().size() + " ? " + resultatAppariement.getReseauStat2().getReseauApp().getListeNoeuds().size(), 
         listCarteTopo.get(1).getListeNoeuds().size() == resultatAppariement.getReseauStat2().getReseauApp().getListeNoeuds().size());
     */
-  }
+  // }
   
   
   /**
