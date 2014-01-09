@@ -97,7 +97,7 @@
 		<dependency>
 			<groupId>org.scpsolver</groupId>
 			<artifactId>scpsolver</artifactId>
-			<version>20130227</version>
+			<version>20131128</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scpsolver</groupId>
