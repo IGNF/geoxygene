@@ -17,7 +17,7 @@
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
+package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process;
 
 import java.util.ArrayList;
 import java.util.Collection;
