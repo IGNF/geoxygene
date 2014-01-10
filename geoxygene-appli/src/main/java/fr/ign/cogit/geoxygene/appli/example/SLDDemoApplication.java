@@ -20,14 +20,20 @@
 package fr.ign.cogit.geoxygene.appli.example;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.NoninvertibleTransformException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 
-import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
-import fr.ign.cogit.geoxygene.appli.SplashScreen;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.plugin.ProjectFramePlugin;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -54,20 +60,45 @@ import fr.ign.cogit.geoxygene.style.texture.Texture;
  * 
  * @author Julien Perret
  */
-public class SLDDemoApplication extends GeOxygeneApplication {
-
-  public static ProjectFrame projectFrame;
+public class SLDDemoApplication implements ProjectFramePlugin, ActionListener {
 
   /**
-   * Main GeOxygene Application.
-   * @param args arguments of the application
+   * Logger.
    */
-  public static void main(final String[] args) {
-    SplashScreen splashScreen = new SplashScreen(
-        GeOxygeneApplication.splashImage(), "GeOxygene"); //$NON-NLS-1$
-    splashScreen.setVisible(true);
-    SLDDemoApplication application = new SLDDemoApplication();
-    projectFrame = application.getMainFrame().newProjectFrame();
+  static Logger logger = Logger.getLogger(SLDDemoApplication.class.getName());
+
+  private ProjectFrame projectFrame = null;
+  
+  @Override
+  public void initialize(final ProjectFrame projectFrame) {
+    this.projectFrame = projectFrame;
+    JMenu menuExample = new JMenu("Example");
+    
+    JMenuItem sLDDemoItem = new JMenuItem("SLDDemo");
+    sLDDemoItem.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        displayCercles();
+      }
+    });
+    
+    menuExample.add(sLDDemoItem);
+
+    this.projectFrame.getMainFrame().getApplication()
+        .getMainFrame()
+        .getMenuBar()
+        .add(menuExample,
+            this.projectFrame.getMainFrame().getApplication().getMainFrame().getMenuBar().getComponentCount() - 1);
+  }
+  
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    
+  }
+  
+  
+  public void displayCercles() {
+    // ProjectFrame projectFrame = application.getMainFrame().newProjectFrame();
 
     exampleGraphicFill_Fill_Polygon();
     exampleGraphicFill_Stroke_Polygon();
@@ -90,12 +121,10 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     } catch (NoninvertibleTransformException e) {
       e.printStackTrace();
     }
-    application.getMainFrame().getGui().setVisible(true);
-    splashScreen.setVisible(false);
-    splashScreen.dispose();
   }
-
-  public static void exampleGraphicFill_Fill_Polygon() {
+  
+  public void exampleGraphicFill_Fill_Polygon() {
+    
     Layer layer = projectFrame.getSld().createLayer("GraphicFill_Polygon", //$NON-NLS-1$
         GM_Polygon.class, new Color(0.5f, 1.f, 0.5f), Color.green, 0.5f, 4);
     PolygonSymbolizer symbolizer = (PolygonSymbolizer) layer.getSymbolizer();
@@ -149,12 +178,12 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     projectFrame.getSld().add(layer);
 
   }
-
+  
   /**
    * Le Graphic Stroke permet de répéter une forme le long d'une ligne. Cette
    * forme peut être une image (ExternalGraphic) ou une forme prédéfinie (Mark).
    */
-  public static void exampleGraphicFill_Stroke_Polygon() {
+  public void exampleGraphicFill_Stroke_Polygon() {
     Layer layer = projectFrame.getSld().createLayer(
         "GraphicFill_Stroke_Polygon", //$NON-NLS-1$
         GM_Polygon.class, Color.red, Color.yellow, 1f, 4);
@@ -213,7 +242,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
    * Le Graphic Stroke permet de répéter une forme le long d'une ligne. Cette
    * forme peut être une image (ExternalGraphic) ou une forme prédéfinie (Mark).
    */
-  public static void exampleGraphicStroke_Stroke_Polygon() {
+  public void exampleGraphicStroke_Stroke_Polygon() {
     Layer layer = projectFrame.getSld().createLayer(
         "GraphicStroke_Stroke_Polygon", //$NON-NLS-1$
         GM_Polygon.class, Color.red, Color.yellow, 1f, 1);
@@ -253,7 +282,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     projectFrame.getSld().add(layer);
   }
 
-  public static void exampleShadow() {
+  public void exampleShadow() {
     Layer layer = projectFrame.getSld().createLayer("Shadow", //$NON-NLS-1$
         GM_Polygon.class, Color.blue, Color.yellow, 1f, 2);
     layer.getStyles().get(0).setGroup("default"); //$NON-NLS-1$
@@ -278,7 +307,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
    * Le Graphic Stroke permet de répéter une forme le long d'une ligne. Cette
    * forme peut être une image (ExternalGraphic) ou une forme prédéfinie (Mark).
    */
-  public static void exampleGraphicStroke_Line() {
+  public void exampleGraphicStroke_Line() {
     Layer layer = projectFrame.getSld().createLayer("GraphicStroke_Line", //$NON-NLS-1$
         GM_LineString.class, Color.red, Color.red, 1f, 1);
     LineSymbolizer symbolizer = (LineSymbolizer) layer.getSymbolizer();
@@ -337,7 +366,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
    * ligne. Cette forme peut être une image (ExternalGraphic) ou une forme
    * prédéfinie (Mark).
    */
-  public static void exampleGraphicFill_Line() {
+  public void exampleGraphicFill_Line() {
     Layer layer = projectFrame.getSld().createLayer("GraphicFill_Line", //$NON-NLS-1$
         GM_LineString.class, Color.green, Color.red, 1f, 4);
     LineSymbolizer symbolizer = (LineSymbolizer) layer.getSymbolizer();
@@ -387,7 +416,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     projectFrame.getSld().add(layer);
   }
 
-  public static void exampleTexture() {
+  public void exampleTexture() {
     Layer layer = projectFrame.getSld().createLayer("Texture", //$NON-NLS-1$
         GM_Polygon.class, Color.black, Color.blue, 1f, 4);
     layer.setOpacity(0.6f);
