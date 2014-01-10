@@ -34,6 +34,7 @@ import java.util.Map;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.parameters.Parameters;
 
 
 /**
@@ -405,5 +406,77 @@ public class ParametresApp implements Cloneable {
    * autour des objets appariés à un noeud.
    */
   public double debugTailleBuffer = 10;
+  
+  
+  public Parameters convertParamAppToParameters() {
+    Parameters p = new Parameters();
+    
+    p.set("distanceNoeudsMax", this.distanceNoeudsMax);
+    p.set("distanceArcsMax", this.distanceArcsMax);
+    p.set("distanceArcsMin", this.distanceArcsMin);
+    p.set("distanceNoeudsImpassesMax", this.distanceNoeudsImpassesMax);
+    
+    p.set("topologieSeuilFusionNoeuds1", this.topologieSeuilFusionNoeuds1);
+    p.set("topologieElimineNoeudsAvecDeuxArcs1", this.topologieElimineNoeudsAvecDeuxArcs1);
+    p.set("topologieGraphePlanaire1", this.topologieGraphePlanaire1);
+    p.set("topologieFusionArcsDoubles1", this.topologieFusionArcsDoubles1);
+
+    p.set("topologieSeuilFusionNoeuds2", this.topologieSeuilFusionNoeuds2);
+    p.set("topologieElimineNoeudsAvecDeuxArcs2", this.topologieElimineNoeudsAvecDeuxArcs2);
+    p.set("topologieGraphePlanaire2", this.topologieGraphePlanaire2);
+    p.set("topologieFusionArcsDoubles2", this.topologieFusionArcsDoubles2);
+    
+    p.set("projeteNoeuds1SurReseau2", this.projeteNoeuds1SurReseau2);
+    p.set("projeteNoeuds1SurReseau2DistanceNoeudArc", this.projeteNoeuds1SurReseau2DistanceNoeudArc);
+    p.set("projeteNoeuds1SurReseau2DistanceProjectionNoeud", this.projeteNoeuds1SurReseau2DistanceProjectionNoeud);
+    p.set("projeteNoeuds1SurReseau2ImpassesSeulement", this.projeteNoeuds1SurReseau2ImpassesSeulement);
+    p.set("projeteNoeuds2SurReseau1", this.projeteNoeuds2SurReseau1);
+    p.set("projeteNoeuds2SurReseau1DistanceNoeudArc", this.projeteNoeuds2SurReseau1DistanceNoeudArc);
+    p.set("projeteNoeuds2SurReseau1DistanceProjectionNoeud", this.projeteNoeuds2SurReseau1DistanceProjectionNoeud);
+    p.set("projeteNoeuds2SurReseau1ImpassesSeulement", this.projeteNoeuds2SurReseau1ImpassesSeulement);
+    
+    p.set("varianteForceAppariementSimple", this.varianteForceAppariementSimple);
+    p.set("varianteRedecoupageArcsNonApparies", this.varianteRedecoupageArcsNonApparies);
+    p.set("varianteRedecoupageNoeudsNonApparies", this.varianteRedecoupageNoeudsNonApparies);
+    p.set("varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc", this.varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc);
+    p.set("varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud", this.varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud);
+    p.set("varianteFiltrageImpassesParasites", this.varianteFiltrageImpassesParasites);
+    p.set("varianteChercheRondsPoints", this.varianteChercheRondsPoints);
+    
+    // 
+    Parameters direction1 = new Parameters();
+    direction1.setDescription("direction1");
+    if (this.populationsArcsAvecOrientationDouble1) {
+      direction1.set("populationsArcsAvecOrientationDouble", "true");
+    } else {
+      direction1.set("populationsArcsAvecOrientationDouble", "false");
+      direction1.set("attributOrientation", this.attributOrientation1);
+      Parameters pAtt1 = new Parameters();
+      pAtt1.setDescription("orientation1");
+      for (Object valAttribut : this.orientationMap1.keySet()) {
+        pAtt1.set(valAttribut.toString(), this.orientationMap1.get(valAttribut));
+      }
+      direction1.add(pAtt1);
+    }
+    p.add(direction1);
+    
+    Parameters direction2 = new Parameters();
+    direction2.setDescription("direction2");
+    if (this.populationsArcsAvecOrientationDouble2) {
+      direction2.set("populationsArcsAvecOrientationDouble", "true");
+    } else {
+      direction2.set("populationsArcsAvecOrientationDouble", "false");
+      direction2.set("attributOrientation", this.attributOrientation2);
+      Parameters pAtt2 = new Parameters();
+      pAtt2.setDescription("orientation2");
+      for (Object valAttribut : this.orientationMap2.keySet()) {
+        pAtt2.set(valAttribut.toString(), this.orientationMap2.get(valAttribut));
+      }
+      direction2.add(pAtt2);
+    }
+    p.add(direction2);
+    
+    return p;
+  }
   
 }

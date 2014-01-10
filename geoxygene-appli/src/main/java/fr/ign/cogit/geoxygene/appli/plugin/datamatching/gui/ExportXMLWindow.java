@@ -12,11 +12,9 @@ import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
+import fr.ign.parameters.Parameters;
 
 /**
  * 
@@ -100,25 +98,17 @@ public class ExportXMLWindow extends JDialog {
     editPaneHtml.setSize(800, 500);
     jspHtml = new JScrollPane(editPaneHtml);
     
-    try {
-      
-      JAXBContext context = JAXBContext.newInstance(ParamPluginNetworkDataMatching.class);
-      Marshaller m = context.createMarshaller();
-      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      
-      StringWriter sw = new StringWriter();
-      m.marshal(paramPlugin, sw);
-  
-      //
-      editPaneHtml.setText(sw.toString());
+    Parameters p = paramPlugin.getParamNetworkDataMatching().convertParamAppToParameters();
+    StringWriter sw = new StringWriter();
+    p.marshall(sw);
     
-    } catch (JAXBException ex) {
-      ex.printStackTrace();
-    }
+    //
+    editPaneHtml.setText(sw.toString());
+    
   }
   
   /**
-   * Manage events : close and record
+   * Manage events : close and record.
    */
   public void manageEvent() {
     this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);

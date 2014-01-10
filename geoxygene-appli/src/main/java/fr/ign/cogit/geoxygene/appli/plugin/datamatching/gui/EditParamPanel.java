@@ -201,9 +201,7 @@ public class EditParamPanel extends JDialog implements ActionListener {
    */
   private void exportXML() {
     try {
-      
       ExportXMLWindow w = new ExportXMLWindow(networkDataMatchingPlugin.getParamPlugin());
-    
     } catch (Exception e) {
       e.printStackTrace();
     }
