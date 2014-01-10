@@ -36,8 +36,8 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.NetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.Recalage;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.DataSet;
@@ -170,8 +170,8 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
 
       LOGGER.debug("Start network data matching");
       
-      NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2);
-      networkDataMatchingProcess.setActions(false, false);
+      // NetworkDataMatching networkDataMatchingProcess = new NetworkDataMatching(param, datasetNetwork1, datasetNetwork2);
+      // networkDataMatchingProcess.setActions(false, false);
       
       // On lance l'appariement
       /*ResultNetworkDataMatching resultatAppariement = networkDataMatchingProcess.networkDataMatching();

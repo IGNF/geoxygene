@@ -42,7 +42,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.process.Recalage;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;

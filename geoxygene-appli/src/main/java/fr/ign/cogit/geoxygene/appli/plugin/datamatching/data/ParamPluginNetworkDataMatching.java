@@ -71,7 +71,7 @@ public class ParamPluginNetworkDataMatching {
   public ParamPluginNetworkDataMatching() {
     paramFilenameNetwork1 = new ParamFilenamePopulationEdgesNetwork();
     paramFilenameNetwork2 = new ParamFilenamePopulationEdgesNetwork();
-    paramNetworkDataMatching = new ParametresApp();
+    // paramNetworkDataMatching = new ParametresApp();
     doRecalage = false;
   }
   
