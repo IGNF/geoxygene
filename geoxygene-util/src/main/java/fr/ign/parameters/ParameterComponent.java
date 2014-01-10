@@ -2,6 +2,7 @@ package fr.ign.parameters;
 
 import java.io.File;
 import java.io.StringReader;
+import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -30,6 +31,17 @@ public class ParameterComponent {
       Marshaller marshaller = context.createMarshaller();
       marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
       marshaller.marshal(this, new File(filename));
+    } catch (JAXBException e1) {
+      e1.printStackTrace();
+    }
+  }
+  
+  public void marshall(StringWriter w) {
+    try {
+      JAXBContext context = JAXBContext.newInstance(Parameters.class, Parameter.class);
+      Marshaller marshaller = context.createMarshaller();
+      marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+      marshaller.marshal(this, w);
     } catch (JAXBException e1) {
       e1.printStackTrace();
     }
