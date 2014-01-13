@@ -131,7 +131,7 @@ public class GeOxygeneApplication {
 
         // Initialize application plugins
         this.initializeApplicationPlugins();
-        this.initializeProjectFramePlugins();
+        // this.initializeProjectFramePlugins();
 
         this.preload();
     }
@@ -151,7 +151,7 @@ public class GeOxygeneApplication {
     }
 
     /**
-     * preload files defined in the configuration file <preload></preload>
+     * Preload files defined in the configuration file <preload></preload>
      */
     private void preload() {
         try { // ugly "synchronization"
