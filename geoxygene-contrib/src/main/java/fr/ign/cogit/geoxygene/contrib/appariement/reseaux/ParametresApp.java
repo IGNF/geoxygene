@@ -28,12 +28,15 @@
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.parameters.Parameter;
+import fr.ign.parameters.ParameterComponent;
 import fr.ign.parameters.Parameters;
 
 
@@ -477,6 +480,103 @@ public class ParametresApp implements Cloneable {
     p.add(direction2);
     
     return p;
+  }
+  
+  /**
+   * 
+   * @param p
+   * @return
+   */
+  public static ParametresApp convertParametersToParamApp(Parameters p) {
+    
+    ParametresApp param = new ParametresApp();
+
+    //
+    if (p.get("direction1", "populationsArcsAvecOrientationDouble") != null) {
+      boolean double1 = Boolean.parseBoolean(p.get("direction1", "populationsArcsAvecOrientationDouble").toString());
+      if (double1) {
+        param.populationsArcsAvecOrientationDouble1 = true;
+      } else {
+        param.populationsArcsAvecOrientationDouble1 = false;
+        if (p.get("direction1", "attributOrientation") != null) {
+          param.attributOrientation1 = p.get("direction1", "attributOrientation").toString();
+        } else {
+          param.attributOrientation1 = "";
+        }
+        
+        Parameters pAtt1 = p.getParameters("orientation1");
+        Map<Object, Integer> orientationMap1 = new HashMap<Object, Integer>();
+        if (pAtt1 != null) {
+          for (ParameterComponent paramComp : pAtt1.entry) {
+            Parameter po = (Parameter)paramComp;
+            orientationMap1.put(po.getKey(), Integer.parseInt(po.getValue().toString()));
+          }
+        }
+        param.orientationMap1 = orientationMap1;
+      }
+    } else {
+      param.populationsArcsAvecOrientationDouble1 = true;
+    }
+    
+    if (p.get("direction1", "populationsArcsAvecOrientationDouble") != null) {
+      boolean double2 = Boolean.parseBoolean(p.get("direction2", "populationsArcsAvecOrientationDouble").toString());
+      if (double2) {
+        param.populationsArcsAvecOrientationDouble2 = true;
+      } else {
+        param.populationsArcsAvecOrientationDouble2 = false;
+        if (p.get("direction2", "attributOrientation") != null) {
+          param.attributOrientation2 = p.get("direction2", "attributOrientation").toString();
+        } else {
+          param.attributOrientation2 = "";
+        }
+        Parameters pAtt2 = p.getParameters("orientation2");
+        Map<Object, Integer> orientationMap2 = new HashMap<Object, Integer>();
+        if (pAtt2 != null) {
+          for (ParameterComponent paramComp : pAtt2.entry) {
+            Parameter po = (Parameter)paramComp;
+            orientationMap2.put(po.getKey(), Integer.parseInt(po.getValue().toString()));
+          }
+        }
+        param.orientationMap2 = orientationMap2;
+      }
+    } else {
+      param.populationsArcsAvecOrientationDouble2 = true;
+    }
+    
+    // Distance
+    param.distanceNoeudsMax = p.getFloat("distanceNoeudsMax");
+    param.distanceArcsMax = p.getFloat("distanceArcsMax");
+    param.distanceArcsMin = p.getFloat("distanceArcsMin");
+    param.distanceNoeudsImpassesMax = p.getFloat("distanceNoeudsImpassesMax");
+    
+    param.topologieSeuilFusionNoeuds1 = p.getDouble("topologieSeuilFusionNoeuds1");
+    param.topologieElimineNoeudsAvecDeuxArcs1 = p.getBoolean("topologieElimineNoeudsAvecDeuxArcs1");
+    param.topologieGraphePlanaire1 = p.getBoolean("topologieGraphePlanaire1");
+    param.topologieFusionArcsDoubles1 = p.getBoolean("topologieFusionArcsDoubles1");
+
+    param.topologieSeuilFusionNoeuds2 = p.getDouble("topologieSeuilFusionNoeuds2");
+    param.topologieElimineNoeudsAvecDeuxArcs2 = p.getBoolean("topologieElimineNoeudsAvecDeuxArcs2");
+    param.topologieGraphePlanaire2 = p.getBoolean("topologieGraphePlanaire2");
+    param.topologieFusionArcsDoubles2 = p.getBoolean("topologieFusionArcsDoubles2");
+    
+    param.projeteNoeuds1SurReseau2 = p.getBoolean("projeteNoeuds1SurReseau2");
+    param.projeteNoeuds1SurReseau2DistanceNoeudArc = p.getDouble("projeteNoeuds1SurReseau2DistanceNoeudArc");
+    param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = p.getDouble("projeteNoeuds1SurReseau2DistanceProjectionNoeud");
+    param.projeteNoeuds1SurReseau2ImpassesSeulement = p.getBoolean("projeteNoeuds1SurReseau2ImpassesSeulement");
+    param.projeteNoeuds2SurReseau1 = p.getBoolean("projeteNoeuds2SurReseau1");
+    param.projeteNoeuds2SurReseau1DistanceNoeudArc = p.getDouble("projeteNoeuds2SurReseau1DistanceNoeudArc");
+    param.projeteNoeuds2SurReseau1DistanceProjectionNoeud = p.getDouble("projeteNoeuds2SurReseau1DistanceProjectionNoeud");
+    param.projeteNoeuds2SurReseau1ImpassesSeulement = p.getBoolean("projeteNoeuds2SurReseau1ImpassesSeulement");
+    
+    param.varianteForceAppariementSimple = p.getBoolean("varianteForceAppariementSimple");
+    param.varianteRedecoupageArcsNonApparies = p.getBoolean("varianteRedecoupageArcsNonApparies");
+    param.varianteRedecoupageNoeudsNonApparies = p.getBoolean("varianteRedecoupageNoeudsNonApparies");
+    param.varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc = p.getDouble("varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc");
+    param.varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud = p.getDouble("varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud");
+    param.varianteFiltrageImpassesParasites = p.getBoolean("varianteFiltrageImpassesParasites");
+    param.varianteChercheRondsPoints = p.getBoolean("varianteChercheRondsPoints");
+    
+    return param;
   }
   
 }
