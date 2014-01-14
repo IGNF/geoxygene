@@ -67,7 +67,7 @@ public class PreloadTask extends AbstractTask {
     }
 
     @Override
-    public boolean isStopable() {
+    public boolean isStoppable() {
         return false;
     }
 
