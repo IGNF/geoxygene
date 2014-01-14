@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <parameters>
 	<parameters description="direction1">
-		<param key="populationsArcsAvecOrientationDouble" value="false" />
+		<param key="populationsArcsAvecOrientationDouble" value="True" />
 	</parameters>
 	<parameters description="direction2">
-		<param key="populationsArcsAvecOrientationDouble" value="true" />
+		<param key="populationsArcsAvecOrientationDouble" value="False" />
 		<param key="attributOrientation" value="orientation" />
 		<parameters description="orientation2">
 			<param key="SENS_DIRECT" value="1" />
