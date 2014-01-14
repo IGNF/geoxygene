@@ -46,19 +46,18 @@ public class NetworkDataMatchingWithParamProcess implements GeoxygeneProcess {
   @SuppressWarnings("unchecked")
   @DescribeResult(name = "EnsembleDeLiensData", description = "EnsembleDeLiensData")
   public EnsembleDeLiensData execute(
-      // @DescribeParameter(name = "param", description = "Paramètres")
-      // Parameters param,
+      @DescribeParameter(name = "param", description = "Paramètres") Parameters parameters,
       @DescribeParameter(name = "reseau1", description = "Réseau 1 (moins détaillé)") SimpleFeatureCollection reseau1,
       @DescribeParameter(name = "reseau2", description = "Réseau 2 (plus détaillé)") SimpleFeatureCollection reseau2) {
 
-    // LOGGER.debug("====================================================================");
-    // LOGGER.debug("NetworkDataMatchingWithParamProcess");
-    // LOGGER.debug(param.toString());
-    // LOGGER.debug("====================================================================");
+    LOGGER.debug("====================================================================");
+    LOGGER.debug("NetworkDataMatchingWithParamProcess");
+    LOGGER.debug(parameters.toString());
+    LOGGER.debug("====================================================================");
 
     // Set parameters
-    LOGGER.debug("Start setting parameters");
-    ParametresApp param = new ParametresApp();
+    LOGGER.debug("Start setting parameters");  
+    ParametresApp param = ParametresApp.convertParametersToParamApp(parameters);
 
     // Set datasets
 
@@ -86,7 +85,6 @@ public class NetworkDataMatchingWithParamProcess implements GeoxygeneProcess {
     param.populationsArcs2 = list2;
     
     LOGGER.debug("End converting networks");
-
     
     ReseauApp carteTopo1 = Chargeur.importCarteTopo1(datasetNetwork1, param);
     ReseauApp carteTopo2 = Chargeur.importCarteTopo2(datasetNetwork2, param);

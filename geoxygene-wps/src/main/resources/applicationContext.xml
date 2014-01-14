@@ -12,16 +12,12 @@
 	<!-- ========================================================================== -->
 	<!-- 	The PPIO -->
 	<!-- ========================================================================== -->
-    <bean id="ParametersNetworkMatchingPPIO"
-            class="fr.ign.cogit.process.geoxygene.netmatching.ppio.ParametersNetworkMatchingPPIO" />
+    <bean id="ParametersNetworkMatchingPPIO" class="fr.ign.cogit.process.geoxygene.ppio.ParametersNetworkMatchingPPIO" />
            
-    <!-- <bean id="NetworkDataMatchingResultPPIO" 
-            class="fr.ign.cogit.process.geoxygene.netmatching.ppio.NetworkDataMatchingResultPPIO" />  -->
-
     <bean id="CarteTopoPPIO" class="fr.ign.cogit.process.geoxygene.ppio.CarteTopoPPIO" />
     
     <bean id="EnsembleDeLiensPPIO" class="fr.ign.cogit.process.geoxygene.ppio.EnsembleDeLiensPPIO" />
-
+    
     <!-- ========================================================================== -->
     <!--   The Filtering processes -->
     <!-- ========================================================================== -->

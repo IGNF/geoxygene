@@ -82,6 +82,20 @@ public class Parameters extends ParameterComponent {
     return null;
   }
   
+  public Parameters getParameters(String desc) {
+    // System.out.println("key = " + key);
+    if (entry != null) {
+      for (ParameterComponent paramComp : entry) {
+        if (paramComp instanceof Parameters) {
+          if (((Parameters) paramComp).description.equals(desc)) {
+            return (Parameters) paramComp;
+          }
+        }
+      }
+    }
+    return null;
+  }
+  
   public String getString(String name) {
     Object value = this.get(name);
     if (value == null) {

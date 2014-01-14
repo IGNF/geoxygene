@@ -1,4 +1,4 @@
-package fr.ign.cogit.process.geoxygene.netmatching.ppio;
+package fr.ign.cogit.process.geoxygene.ppio;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.geoserver.wps.ppio.CDataPPIO;
 
 import fr.ign.parameters.Parameters;
+
 
 /**
  * 
@@ -37,9 +38,11 @@ public class ParametersNetworkMatchingPPIO extends CDataPPIO {
 
   @Override
   public Object decode(String inputXML) throws Exception {
-    InputStream inputXSD = ParametersNetworkMatchingPPIO.class.getResourceAsStream("/schema/ParametersNetworkMatching.xsd");
-   // return Parameters.parseXML(inputXML, inputXSD);
-    return null;
+    LOGGER.debug("DECODE PARAM XML");
+    LOGGER.debug(inputXML);
+    // InputStream inputXSD = ParametersNetworkMatchingPPIO.class.getResourceAsStream("/schema/ParametersNetworkMatching.xsd");
+    Parameters p = Parameters.unmarshall(inputXML);
+    return p;
   }
 
   @Override
