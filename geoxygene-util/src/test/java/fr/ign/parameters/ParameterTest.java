@@ -71,10 +71,10 @@ public class ParameterTest extends XMLTestCase {
       assertEquals(p.getBoolean("varianteChercheRondsPoints"), false);
       
       // Test direction values
-      assertEquals(p.getBoolean("direction1", "populationsArcsAvecOrientationDouble"), false);
+      assertEquals(p.getBoolean("direction1", "populationsArcsAvecOrientationDouble"), true);
       assertEquals(p.getString("direction1", "attributOrientation"), "");
       
-      assertEquals(p.getBoolean("direction2", "populationsArcsAvecOrientationDouble"), true);
+      assertEquals(p.getBoolean("direction2", "populationsArcsAvecOrientationDouble"), false);
       assertEquals(p.getString("direction2", "attributOrientation"), "orientation");
       assertEquals(p.getString("direction2", "SENS_DIRECT"), "1");
       assertEquals(p.getString("direction2", "DOUBLE_SENS"), "2");
