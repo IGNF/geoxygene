@@ -8,18 +8,18 @@ uniform float screenWidth;
 uniform float screenHeight;
 
 in vec3 inPosition;
-in vec2 inTextCoord;
+in vec2 inTextureCoord;
 in vec4 inColor;
 
-out vec4 passColor;
-//out vec2 passTextureCoord;
+out vec4 vColor;
+out vec2 vTextureCoord;
 
 void main(void) {
-	gl_Position = vec4( 2 * (inPosition.x * m00 + m02) / screenWidth - 1, 1 - 2 * ( inPosition.y * m11 + m12 ) / screenHeight, 0, 1);
+	gl_Position = vec4( 2 * (inPosition.x * m00 + m02) / (screenWidth-1) -1, 1 - 2 * ( inPosition.y * m11 + m12 ) / (screenHeight-1), 0, 1);
 
 
 //	gl_Position = inPosition;
 	
-	passColor = inColor;
-//	passTextureCoord = inTextureCoord;
+	vColor = new vec4( inTextureCoord.x, inTextureCoord.y, 0 , 1);
+	vTextureCoord = inTextureCoord;
 }

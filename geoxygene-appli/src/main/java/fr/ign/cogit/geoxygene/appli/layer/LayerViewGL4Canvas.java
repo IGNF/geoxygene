@@ -3,11 +3,7 @@
  */
 package fr.ign.cogit.geoxygene.appli.layer;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.event.ComponentEvent;
 
@@ -67,6 +63,8 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas {
             glClear(GL_COLOR_BUFFER_BIT);
             glClearColor(0f, 0f, 0f, 1);
             glClear(GL_DEPTH_BUFFER_BIT);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_BLEND);
             // this.parentPanel.repaint();
             if (this.getParentPanel() != null && this.getParentPanel().getRenderingManager() != null) {
                 this.getParentPanel().getRenderingManager().renderAll();

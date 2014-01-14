@@ -163,7 +163,7 @@ public abstract class AtomicAbstractTask extends AbstractTask {
      * @see fr.ign.cogit.geoxygene.appli.task.Task#isStopable()
      */
     @Override
-    public boolean isStopable() {
+    public boolean isStoppable() {
         return true;
     }
 

@@ -1,5 +1,7 @@
 package fr.ign.cogit.geoxygene.util.gl;
 
+import java.util.Arrays;
+
 import org.apache.log4j.Logger;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellatorCallbackAdapter;
@@ -40,21 +42,22 @@ public class GLPrimitiveTessCallback extends GLUtessellatorCallbackAdapter {
     public void combine(final double[] coords, final Object[] data, final float[] weight, final Object[] outData) {
         //        System.err.println("combine " + coords[0] + "," + coords[1] + "," + coords[2]);
         final int coordinatesElementCount = GLVertex.NumberOfFloatValues;
-        float[] vertex = new float[coordinatesElementCount];
+        float[] combinedData = new float[coordinatesElementCount];
         // fill new vertex position
-        vertex[0] = (float) coords[0];
-        vertex[1] = (float) coords[1];
-        vertex[2] = (float) coords[2];
+        combinedData[0] = (float) coords[0];
+        combinedData[1] = (float) coords[1];
+        combinedData[2] = (float) coords[2];
         // fill data by interpolation
         for (int i = 3; i < coordinatesElementCount; i++) {
-            vertex[i] = 0;
+            combinedData[i] = 0;
             for (int j = 0; j < 4; j++) {
                 if (weight[j] > 0 && data[j] != null) {
-                    vertex[i] += weight[j] * ((float[]) data[j])[i];
+                    combinedData[i] += weight[j] * ((float[]) data[j])[i];
                 }
             }
         }
-        outData[0] = vertex;
+        //        System.err.println("combined Data = " + Arrays.toString(combinedData));
+        outData[0] = combinedData;
     }
 
     @Override
@@ -107,7 +110,9 @@ public class GLPrimitiveTessCallback extends GLUtessellatorCallbackAdapter {
     @Override
     public void vertex(final Object coordsObject) {
         float[] coords = (float[]) coordsObject;
-        //        System.err.println("vertex " + coords[0] + "," + coords[1] + "," + coords[2]);
+        //        System.err.println("tess vertex " + coords[0] + " " + coords[1]);
+        //        System.err.println("tess     uv " + coords[3] + " " + coords[4]);
+        //        System.err.println("tess   rgba " + coords[5] + " " + coords[6] + " " + coords[7] + " " + coords[8]);
         //        glTexCoord2d(coords[3], coords[4]);
         GLVertex vertex = new GLVertex();
         vertex.setXYZ(coords[0], coords[1], coords[2]);

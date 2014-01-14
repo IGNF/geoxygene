@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dialog.ModalityType;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,10 +20,11 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
@@ -38,6 +40,7 @@ import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.SyncRenderingManager;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.util.ImageComparator;
 
 /**
  * LayerViewGLPanel is the basic implementation of a GL Viewer. It adds a glass
@@ -61,6 +64,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
     private LayerViewGLCanvasType glType = null;
     private JToggleButton wireframeToggleButton = null;
     private JButton clearCacheButton = null;
+    private JButton awtComparButton = null;
     private JToolBar.Separator toolbarSeparator = null;
     private boolean wireframe = false;
 
@@ -97,6 +101,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
         this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getToolbarSeparator());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getWireframeButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getClearCacheButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getAWTComparButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
     }
@@ -106,6 +111,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
         this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getToolbarSeparator());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getWireframeButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getClearCacheButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getAWTComparButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
     }
@@ -113,6 +119,13 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
     @Override
     public SyncRenderingManager getRenderingManager() {
         return this.renderingManager;
+    }
+
+    /**
+     * activate the GL context
+     */
+    public void activateGLContext() {
+        this.glCanvas.activateContext();
     }
 
     /**
@@ -146,6 +159,16 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
             this.wireframeToggleButton.addItemListener(this);
         }
         return this.wireframeToggleButton;
+    }
+
+    private JButton getAWTComparButton() {
+        if (this.awtComparButton == null) {
+            this.awtComparButton = new JButton();
+            this.awtComparButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/compare.gif")));
+            this.awtComparButton.setToolTipText(I18N.getString("RenderingGL.ImageComparison"));
+            this.awtComparButton.addActionListener(this);
+        }
+        return this.awtComparButton;
     }
 
     private JButton getClearCacheButton() {
@@ -316,6 +339,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
                 renderer.reset();
             }
             this.repaint();
+        } else if (e.getSource() == this.getAWTComparButton()) {
+            JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(this));
+            ImageComparator imageComparator = new ImageComparator(this);
+            dialog.setSize(500, 500);
+            dialog.setLocation(50, 50);
+            //            dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+            dialog.getContentPane().add(imageComparator.getGui());
+            dialog.setVisible(true);
+            imageComparator.update();
         } else {
             // old SLD events....
             this.repaint();

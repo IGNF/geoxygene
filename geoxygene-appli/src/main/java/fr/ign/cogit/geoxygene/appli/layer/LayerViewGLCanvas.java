@@ -108,4 +108,13 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements Component
         }
     }
 
+    public void activateContext() {
+        try {
+            this.makeCurrent();
+        } catch (LWJGLException e) {
+            logger.error(e.getMessage());
+        }
+
+    }
+
 }

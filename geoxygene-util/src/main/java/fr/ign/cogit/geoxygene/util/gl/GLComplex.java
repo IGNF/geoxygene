@@ -46,7 +46,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.util.Color;
 
 /**
  * GL Primitive is a representation of a 2D Object with 2D coordinates, Texture
@@ -68,16 +67,49 @@ public class GLComplex {
     private final List<GLMesh> meshes = new ArrayList<GLMesh>();
     private FloatBuffer verticesBuffer = null; // Vertex buffer (VBO array) constructed from vertices
     private IntBuffer indicesBuffer = null; // Index Buffer (VBO indices) constructed from flattened indicesPerType
+    private Texture texture = null;
 
     private int vaoId = -1; // VAO index
     private int vboVerticesId = -1; // VBO Vertices index
     private int vboIndicesId = -1; // VBO Indices index
+    private double minX = 0.;
+    private double minY = 0.;
 
     /**
      * Default constructor
      */
-    public GLComplex() {
+    public GLComplex(double minX, double minY) {
+        this.minX = minX;
+        this.minY = minY;
+    }
 
+    /**
+     * @return the texture
+     */
+    public Texture getTexture() {
+        return this.texture;
+    }
+
+    /**
+     * @param texture
+     *            the texture to set
+     */
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    /**
+     * @return the minX
+     */
+    public double getMinX() {
+        return this.minX;
+    }
+
+    /**
+     * @return the minY
+     */
+    public double getMinY() {
+        return this.minY;
     }
 
     /**
@@ -106,11 +138,21 @@ public class GLComplex {
         }
     }
 
-    private void invalidateBuffers() {
-        this.verticesBuffer = null;
-        this.indicesBuffer = null;
-        this.vaoId = -1;
-        this.vboVerticesId = -1;
+    public void invalidateBuffers() {
+        if (this.vboIndicesId >= 0) {
+            GL15.glDeleteBuffers(this.vboIndicesId);
+            this.indicesBuffer = null;
+            this.vboIndicesId = -1;
+        }
+        if (this.vboVerticesId >= 0) {
+            GL15.glDeleteBuffers(this.vboVerticesId);
+            this.verticesBuffer = null;
+            this.vboVerticesId = -1;
+        }
+        if (this.vaoId >= 0) {
+            GL30.glDeleteVertexArrays(this.vaoId);
+            this.vaoId = -1;
+        }
     }
 
     /**
@@ -160,10 +202,10 @@ public class GLComplex {
             this.verticesBuffer = BufferUtils.createByteBuffer(this.vertices.size() * GLVertex.VERTEX_BYTESIZE).asFloatBuffer();
             for (GLVertex vertex : this.vertices) {
                 // Add position, color and texture floats to the buffer
-                //                System.err.println("add XYZ to vertex buffer: " + vertex.getXYZ().length);
-                //                System.err.println("add UV to vertex buffer: " + vertex.getUV().length);
-                //                System.err.println("add RGBA to vertex buffer: " + vertex.getRGBA().length);
-                this.verticesBuffer.put(vertex.getXYZ());
+                //                System.err.println("add XYZ to vertex buffer: " + Arrays.toString(vertex.getXYZ()));
+                //                System.err.println("add UV to vertex buffer: " + Arrays.toString(vertex.getUV()));
+                //                System.err.println("add RGBA to vertex buffer: " + Arrays.toString(vertex.getRGBA()));
+                this.verticesBuffer.put(new float[] { (vertex.getXYZ()[0]), (vertex.getXYZ()[1]), vertex.getXYZ()[1] });
                 this.verticesBuffer.put(vertex.getUV());
                 this.verticesBuffer.put(vertex.getRGBA());
 

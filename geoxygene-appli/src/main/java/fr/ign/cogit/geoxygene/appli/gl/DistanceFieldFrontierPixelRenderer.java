@@ -35,13 +35,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fr.ign.cogit.geoxygene.appli.gl.TextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.util.gl.TextureImage;
+import fr.ign.cogit.geoxygene.util.gl.TexturePixelRenderer;
+import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 
 /**
  * @author JeT This pixel renderer is used to draw polygon frontiers in a
- *         DensityField Image. It fills a list of x values for all y values
+ *         Distance field Image. It fills a list of x values for all y values
  */
-public class DensityFieldFrontierPixelRenderer implements TexturePixelRenderer {
+public class DistanceFieldFrontierPixelRenderer implements TexturePixelRenderer {
 
     private final Map<Integer, List<Integer>> ys = new HashMap<Integer, List<Integer>>();
     private final Set<Integer> yValueAlreadyStored = new HashSet<Integer>();
@@ -55,7 +57,7 @@ public class DensityFieldFrontierPixelRenderer implements TexturePixelRenderer {
     /**
      * Constructor
      */
-    public DensityFieldFrontierPixelRenderer() {
+    public DistanceFieldFrontierPixelRenderer() {
         super();
     }
 

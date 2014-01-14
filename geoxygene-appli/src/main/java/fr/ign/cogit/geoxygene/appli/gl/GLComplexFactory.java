@@ -40,11 +40,13 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellator;
 
@@ -55,11 +57,13 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.render.primitive.Colorizer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer;
-import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLPrimitiveTessCallback;
+import fr.ign.cogit.geoxygene.util.gl.GLVertex;
 
 /**
  * @author JeT
@@ -68,8 +72,9 @@ import fr.ign.cogit.geoxygene.util.gl.GLPrimitiveTessCallback;
 public class GLComplexFactory {
 
     private static final Logger logger = Logger.getLogger(GLComplexFactory.class.getName()); // logger
-    private static final int BEZIER_SAMPLE_COUNT = 10;
-    private static final Point2d nullUV = new Point2d(0, 0);
+    private static final int BEZIER_SAMPLE_COUNT = 20;
+    private static final Point2d DEFAULT_UV = new Point2d(0, 0);
+    private static final float[] DEFAULT_COLOR = new float[] { 1f, 0f, 0f, 1f };
 
     /**
      * Private constructor for utility class
@@ -107,12 +112,12 @@ public class GLComplexFactory {
     }
 
     //evaluate a point on the B spline
-    private static double interpolateQuadratic(double v0, double v1, double v2, float t) {
+    static double interpolateQuadratic(double v0, double v1, double v2, float t) {
         return bernstein2(0, t) * v0 + bernstein2(1, t) * v1 + bernstein2(2, t) * v2;
     }
 
     //evaluate a point on the B spline
-    private static double interpolateCubic(double v0, double v1, double v2, double v3, float t) {
+    static double interpolateCubic(double v0, double v1, double v2, double v3, float t) {
         return bernstein3(0, t) * v0 + bernstein3(1, t) * v1 + bernstein3(2, t) * v2 + bernstein3(3, t) * v3;
     }
 
@@ -132,11 +137,11 @@ public class GLComplexFactory {
     /**
      * Tesselate a list of java shape2D into a GLPrimitive
      */
-    public static GLComplex toGLComplex(final List<Path2D> outlines) {
+    public static GLComplex toGLComplex(final List<Path2D> outlines, double minX, double minY) {
 
-        GLComplex primitive = new GLComplex();
+        GLComplex primitive = new GLComplex(minX, minY);
         for (Path2D path : outlines) {
-            primitive.addGLComplex(toGLComplex(path));
+            primitive.addGLComplex(toGLComplex(path, minX, minY));
         }
         return primitive;
     }
@@ -144,9 +149,9 @@ public class GLComplexFactory {
     /**
      * Tesselate a java shape2D into a GLPrimitive
      */
-    public static GLComplex toGLComplex(final Path2D shape) {
+    public static GLComplex toGLComplex(final Path2D shape, double minX, double minY) {
 
-        GLComplex primitive = new GLComplex();
+        GLComplex primitive = new GLComplex(minX, minY);
 
         // tesselation
         GLUtessellator tesselator = gluNewTess();
@@ -193,7 +198,14 @@ public class GLComplexFactory {
         //        System.err.println("----------------------------------------------------------------------------");
         while (!iter.isDone()) {
 
-            switch (iter.currentSegment(coords)) {
+            int currentSegment = iter.currentSegment(coords);
+            coords[0] -= minX;
+            coords[1] -= minY;
+            coords[2] -= minX;
+            coords[3] -= minY;
+            coords[4] -= minX;
+            coords[5] -= minY;
+            switch (currentSegment) {
 
             case PathIterator.SEG_MOVETO:   // 1 point (2 vars) in coords
                 tesselator.gluTessBeginContour();
@@ -202,11 +214,13 @@ public class GLComplexFactory {
                 vertex = new double[] { coords[0], coords[1], 0. };
                 data = new float[] { coords[0], coords[1], 0, 0, 0, 0, 0, 0, 0 };
                 tesselator.gluTessVertex(vertex, 0, data);
+                //                System.err.println(" shape " + vertex[0] + " " + vertex[1]);
                 //                System.err.println("MOVETO " + coords[0] + "x" + coords[1]);
                 break;
             case PathIterator.SEG_LINETO:   // 1 point
                 vertex = new double[] { coords[0], coords[1], 0. };
                 data = new float[] { coords[0], coords[1], 0, 0, 0, 0, 0, 0, 0 };
+                //                System.err.println(" shape " + vertex[0] + " " + vertex[1]);
                 tesselator.gluTessVertex(vertex, 0, data);
                 lastX = coords[0];
                 lastY = coords[1];
@@ -222,6 +236,7 @@ public class GLComplexFactory {
                     double py = interpolateQuadratic(lastY, coords[1], coords[3], t);
                     vertex = new double[] { px, py, 0 };
                     data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0, 0, 0 };
+                    //                    System.err.println(" shape " + vertex[0] + " " + vertex[1]);
                     tesselator.gluTessVertex(vertex, 0, data);
                 }
                 lastX = coords[2];
@@ -238,6 +253,7 @@ public class GLComplexFactory {
                     vertex = new double[] { px, py, 0 };
                     data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0, 0, 0 };
                     tesselator.gluTessVertex(vertex, 0, data);
+                    //                    System.err.println(" shape " + vertex[0] + " " + vertex[1]);
                 }
                 lastX = coords[4];
                 lastY = coords[5];
@@ -255,9 +271,14 @@ public class GLComplexFactory {
         tesselator.gluTessEndPolygon();
 
         //        System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ vertices");
+        //        
+        //        for (GLVertex vertex: primitive.getVertices(); i += 9) {
+        //            System.err.println("#" + (i / 9) + " " + verticesBuffer.get(i) + " " + verticesBuffer.get(i + 1));
+        //        }
+        //        System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ vertices");
         //        FloatBuffer verticesBuffer = primitive.getFlippedVerticesBuffer();
         //        for (int i = 0; i < verticesBuffer.limit(); i += 9) {
-        //            System.err.println("#" + (i / 9) + ": " + verticesBuffer.get(i) + "x" + verticesBuffer.get(i + 1));
+        //            System.err.println("#" + (i / 9) + " " + verticesBuffer.get(i) + " " + verticesBuffer.get(i + 1));
         //        }
         //
         //        System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ indices");
@@ -276,10 +297,86 @@ public class GLComplexFactory {
     /**
      * Tesselate a java shape2D into a GLPrimitive
      */
-    public static GLComplex createFilledPolygon(final IPolygon polygon, Parameterizer parameterizer) {
+    public static GLComplex createEmptyPolygon(final IPolygon polygon, final Colorizer colorizer, final Parameterizer parameterizer, double minX, double minY) {
+        if (parameterizer != null) {
+            parameterizer.initializeParameterization();
+        }
+        if (colorizer != null) {
+            colorizer.initializeColorization();
+        }
 
-        GLComplex primitive = new GLComplex();
+        GLComplex primitive = new GLComplex(minX, minY);
+        GLMesh outlineMesh = primitive.addGLMesh(GL11.GL_LINE_LOOP);
+        for (int outerFrontierPointIndex = 0; outerFrontierPointIndex < polygon.exteriorCoord().size(); outerFrontierPointIndex++) {
+            IDirectPosition outerFrontierPoint = polygon.exteriorCoord().get(outerFrontierPointIndex);
+            double p[] = new double[3];
+            p[0] = outerFrontierPoint.getX() - minX;
+            p[1] = outerFrontierPoint.getY() - minY;
+            p[2] = 0; //outerFrontierPoint.getZ();
+            Point2d uv = DEFAULT_UV;
+            if (parameterizer != null) {
+                uv = parameterizer.getTextureCoordinates(p);
+            }
+            float[] rgba = DEFAULT_COLOR;
+            if (colorizer != null) {
+                rgba = colorizer.getColor(p);
+            }
 
+            GLVertex vertex = new GLVertex();
+            vertex.setXYZ((float) p[0], (float) p[1], (float) p[2]);
+            vertex.setUV((float) uv.x, (float) uv.y);
+            vertex.setRGBA(rgba[0], rgba[1], rgba[2], rgba[3]);
+            int vertexId = primitive.addVertex(vertex);
+            outlineMesh.addIndex(vertexId);
+        }
+        for (int innerFrontierIndex = 0; innerFrontierIndex < polygon.sizeInterior(); innerFrontierIndex++) {
+
+            IDirectPositionList interiorCoord = polygon.interiorCoord(innerFrontierIndex);
+            for (int innerFrontierPointIndex = 0; innerFrontierPointIndex < interiorCoord.size(); innerFrontierPointIndex++) {
+                IDirectPosition innerFrontierPoint = interiorCoord.get(innerFrontierPointIndex);
+                //Point2d innerFrontierTextureCoordinates = polygon.getInnerFrontierTextureCoordinates(innerFrontierIndex, innerFrontierPointIndex);
+                double p[] = new double[3];
+                p[0] = innerFrontierPoint.getX() - minX;
+                p[1] = innerFrontierPoint.getY() - minY;
+                p[2] = 0; //outerFrontierPoint.getZ();
+                Point2d uv = DEFAULT_UV;
+                if (parameterizer != null) {
+                    uv = parameterizer.getTextureCoordinates(p);
+                }
+                float[] rgba = DEFAULT_COLOR;
+                if (colorizer != null) {
+                    rgba = colorizer.getColor(p);
+                }
+
+                GLVertex vertex = new GLVertex();
+                vertex.setXYZ((float) p[0], (float) p[1], (float) p[2]);
+                vertex.setUV((float) uv.x, (float) uv.y);
+                vertex.setRGBA(rgba[0], rgba[1], rgba[2], rgba[3]);
+                int vertexId = primitive.addVertex(vertex);
+                outlineMesh.addIndex(vertexId);
+            }
+        }
+        if (parameterizer != null) {
+            parameterizer.finalizeParameterization();
+        }
+        if (colorizer != null) {
+            colorizer.initializeColorization();
+        }
+        return primitive;
+    }
+
+    /**
+     * Tesselate a polygon into a GLPrimitive
+     */
+    public static GLComplex createFilledPolygon(final IPolygon polygon, final Colorizer colorizer, final Parameterizer parameterizer, double minX, double minY) {
+
+        GLComplex primitive = new GLComplex(minX, minY);
+        if (parameterizer != null) {
+            parameterizer.initializeParameterization();
+        }
+        if (colorizer != null) {
+            colorizer.initializeColorization();
+        }
         // tesselation
         GLUtessellator tesselator = gluNewTess();
 
@@ -300,11 +397,23 @@ public class GLComplexFactory {
             //Point2d outerFrontierTextureCoordinates = polygon.getOuterFrontierTextureCoordinates(outerFrontierPointIndex);
             // point coordinates
             double vertex[] = new double[3];
-            vertex[0] = outerFrontierPoint.getX();
-            vertex[1] = outerFrontierPoint.getY();
+            vertex[0] = outerFrontierPoint.getX() - minX;
+            vertex[1] = outerFrontierPoint.getY() - minY;
             vertex[2] = 0; //outerFrontierPoint.getZ();
-            Point2d uv = parameterizer != null ? parameterizer.getTextureCoordinates(vertex) : nullUV;
-            float[] data = new float[] { (float) vertex[0], (float) vertex[1], (float) vertex[2], (float) uv.x, (float) uv.y, 0, 0, 0, 0 };
+            Point2d uv = DEFAULT_UV;
+            if (parameterizer != null) {
+                // vertex is expressed in local-object coordinates
+                uv = parameterizer.getTextureCoordinates(vertex);
+            }
+            //            System.err.println("Filled polygon outer frontier uv = " + uv);
+            float[] rgba = DEFAULT_COLOR;
+            if (colorizer != null) {
+                rgba = colorizer.getColor(vertex);
+            }
+
+            float[] data = new float[] { (float) vertex[0], (float) vertex[1], (float) vertex[2], (float) uv.x, (float) uv.y, rgba[0], rgba[1], rgba[2],
+                    rgba[3] };
+            //            System.err.println("tess input data = " + Arrays.toString(data));
             tesselator.gluTessVertex(vertex, 0, data);
             //            System.err.println("set exterior vertex " + vertex[0] + ", " + vertex[1] + ", " + vertex[2]);
         }
@@ -321,11 +430,20 @@ public class GLComplexFactory {
                 //Point2d innerFrontierTextureCoordinates = polygon.getInnerFrontierTextureCoordinates(innerFrontierIndex, innerFrontierPointIndex);
 
                 double vertex[] = new double[3];
-                vertex[0] = innerFrontierPoint.getX();
-                vertex[1] = innerFrontierPoint.getY();
+                vertex[0] = innerFrontierPoint.getX() - minX;
+                vertex[1] = innerFrontierPoint.getY() - minY;
                 vertex[2] = 0; // innerFrontierPoint.getZ();
-                Point2d uv = parameterizer != null ? parameterizer.getTextureCoordinates(vertex) : nullUV;
-                float[] data = new float[] { (float) vertex[0], (float) vertex[1], (float) vertex[2], (float) uv.x, (float) uv.y, 0, 0, 0, 0 };
+                Point2d uv = DEFAULT_UV;
+                if (parameterizer != null) {
+                    uv = parameterizer.getTextureCoordinates(vertex);
+                }
+                float[] rgba = DEFAULT_COLOR;
+                if (colorizer != null) {
+                    rgba = colorizer.getColor(vertex);
+                }
+
+                float[] data = new float[] { (float) vertex[0], (float) vertex[1], (float) vertex[2], (float) uv.x, (float) uv.y, rgba[0], rgba[1], rgba[2],
+                        rgba[3] };
                 tesselator.gluTessVertex(vertex, 0, data);
                 //                System.err.println("set interior #" + innerFrontierIndex + " vertex " + vertex[0] + ", " + vertex[1] + ", " + vertex[2]);
             }
@@ -334,94 +452,25 @@ public class GLComplexFactory {
         }
         tesselator.gluTessEndPolygon();
 
+        if (parameterizer != null) {
+            parameterizer.finalizeParameterization();
+        }
+        if (colorizer != null) {
+            colorizer.initializeColorization();
+        }
         return primitive;
     }
 
     /**
-     * Tesselate a java shape2D into a GLPrimitive
+     * Create a gl primitive filled surface
      */
-    public static GLComplex createFilledPolygon(final IPolygon polygon, Color color) {
-
-        GLComplex primitive = new GLComplex();
-
-        // tesselation
-        GLUtessellator tesselator = gluNewTess();
-
-        // Set callback functions
-        GLPrimitiveTessCallback callback = new GLPrimitiveTessCallback(primitive);
-        tesselator.gluTessCallback(GLU_TESS_VERTEX, callback);
-        tesselator.gluTessCallback(GLU_TESS_BEGIN, callback);
-        tesselator.gluTessCallback(GLU_TESS_END, callback);
-        tesselator.gluTessCallback(GLU_TESS_COMBINE, callback);
-        tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_POSITIVE);
-
-        tesselator.gluTessBeginPolygon(null);
-
-        // outer frontier
-        tesselator.gluTessBeginContour();
-        for (int outerFrontierPointIndex = 0; outerFrontierPointIndex < polygon.exteriorCoord().size(); outerFrontierPointIndex++) {
-            IDirectPosition outerFrontierPoint = polygon.exteriorCoord().get(outerFrontierPointIndex);
-            //Point2d outerFrontierTextureCoordinates = polygon.getOuterFrontierTextureCoordinates(outerFrontierPointIndex);
-            // point coordinates
-            double vertex[] = new double[3];
-            vertex[0] = outerFrontierPoint.getX();
-            vertex[1] = outerFrontierPoint.getY();
-            vertex[2] = 0; //outerFrontierPoint.getZ();
-            Point2d uv = nullUV;
-            float r = color.getRed() / 255f;
-            float g = color.getGreen() / 255f;
-            float b = color.getBlue() / 255f;
-            float a = color.getTransparency() / 255f;
-            float[] data = new float[] { (float) vertex[0], (float) vertex[1], (float) vertex[2], (float) uv.x, (float) uv.y, r, g, b, a };
-            tesselator.gluTessVertex(vertex, 0, data);
-            //            System.err.println("set exterior vertex " + vertex[0] + ", " + vertex[1] + ", " + vertex[2]);
-        }
-        tesselator.gluTessEndContour();
-
-        for (int innerFrontierIndex = 0; innerFrontierIndex < polygon.sizeInterior(); innerFrontierIndex++) {
-
-            //            IRing innerFrontier = polygon.getInterior(innerFrontierIndex);
-            tesselator.gluTessBeginContour();
-
-            IDirectPositionList interiorCoord = polygon.interiorCoord(innerFrontierIndex);
-            for (int innerFrontierPointIndex = 0; innerFrontierPointIndex < interiorCoord.size(); innerFrontierPointIndex++) {
-                IDirectPosition innerFrontierPoint = interiorCoord.get(innerFrontierPointIndex);
-                //Point2d innerFrontierTextureCoordinates = polygon.getInnerFrontierTextureCoordinates(innerFrontierIndex, innerFrontierPointIndex);
-
-                double vertex[] = new double[3];
-                vertex[0] = innerFrontierPoint.getX();
-                vertex[1] = innerFrontierPoint.getY();
-                vertex[2] = 0; // innerFrontierPoint.getZ();
-                Point2d uv = nullUV;
-                float r = color.getRed() / 255f;
-                float g = color.getGreen() / 255f;
-                float b = color.getBlue() / 255f;
-                float a = color.getTransparency() / 255f;
-                float[] data = new float[] { (float) vertex[0], (float) vertex[1], (float) vertex[2], (float) uv.x, (float) uv.y, r, g, b, a };
-                tesselator.gluTessVertex(vertex, 0, data);
-                //                System.err.println("set interior #" + innerFrontierIndex + " vertex " + vertex[0] + ", " + vertex[1] + ", " + vertex[2]);
-            }
-
-            tesselator.gluTessEndContour();
-        }
-        tesselator.gluTessEndPolygon();
-
-        return primitive;
-    }
-
-    /**
-     * Create a gl primitive with a filled surface with given color
-     * 
-     * @param multiSurface
-     * @param parameterizer
-     * @return
-     */
-    public static GLComplex createFilledPolygon(IMultiSurface<?> multiSurface, final Color color) {
-        GLComplex primitive = new GLComplex();
+    public static GLComplex createFilledMultiSurface(IMultiSurface<?> multiSurface, final Colorizer colorizer, final Parameterizer parameterizer, double minX,
+            double minY) {
+        GLComplex primitive = new GLComplex(minX, minY);
 
         for (IOrientableSurface surface : multiSurface) {
             if (IPolygon.class.isAssignableFrom(surface.getClass())) {
-                GLComplex subComplex = createFilledPolygon((IPolygon) surface, color);
+                GLComplex subComplex = createFilledPolygon((IPolygon) surface, colorizer, parameterizer, minX, minY);
                 primitive.addGLComplex(subComplex);
             } else {
                 logger.warn("Multi surface content is not polygons: " + surface.getClass().getSimpleName());
@@ -431,19 +480,15 @@ public class GLComplexFactory {
     }
 
     /**
-     * Create a gl primitive with a filled surface with a parameterization
-     * applied on
-     * 
-     * @param multiSurface
-     * @param parameterizer
-     * @return
+     * Create a gl primitive empty surface
      */
-    public static GLComplex createFilledPolygon(IMultiSurface<?> multiSurface, Parameterizer parameterizer) {
-        GLComplex primitive = new GLComplex();
+    public static GLComplex createEmptyMultiSurface(IMultiSurface<?> multiSurface, final Colorizer colorizer, final Parameterizer parameterizer, double minX,
+            double minY) {
+        GLComplex primitive = new GLComplex(minX, minY);
 
         for (IOrientableSurface surface : multiSurface) {
             if (IPolygon.class.isAssignableFrom(surface.getClass())) {
-                GLComplex subComplex = createFilledPolygon((IPolygon) surface, parameterizer);
+                GLComplex subComplex = createEmptyPolygon((IPolygon) surface, colorizer, parameterizer, minX, minY);
                 primitive.addGLComplex(subComplex);
             } else {
                 logger.warn("Multi surface content is not polygons: " + surface.getClass().getSimpleName());
@@ -452,12 +497,12 @@ public class GLComplexFactory {
         return primitive;
     }
 
-    public static GLComplex createMultiSurfaceOutline(IMultiSurface<?> multiSurface, BasicStroke stroke) {
-        GLComplex primitive = new GLComplex();
+    public static GLComplex createOutlineMultiSurface(IMultiSurface<?> multiSurface, BasicStroke stroke, double minX, double minY) {
+        GLComplex primitive = new GLComplex(minX, minY);
 
         for (IOrientableSurface surface : multiSurface) {
             if (IPolygon.class.isAssignableFrom(surface.getClass())) {
-                GLComplex subComplex = createPolygonOutline((IPolygon) surface, stroke);
+                GLComplex subComplex = createOutlinePolygon((IPolygon) surface, stroke, minX, minY);
                 primitive.addGLComplex(subComplex);
             } else {
                 logger.warn("Multi surface content is not polygons: " + surface.getClass().getSimpleName());
@@ -466,13 +511,13 @@ public class GLComplexFactory {
         return primitive;
     }
 
-    public static GLComplex createPolygonOutline(IPolygon polygon, BasicStroke stroke) {
+    public static GLComplex createOutlinePolygon(IPolygon polygon, BasicStroke stroke, double minX, double minY) {
         List<Path2D> outlines = new ArrayList<Path2D>();
         outlines.add(stroke(toShape(polygon.getExterior()), stroke));
         for (IRing interior : polygon.getInterior()) {
             outlines.add(stroke(toShape(interior), stroke));
         }
-        return toGLComplex(outlines);
+        return toGLComplex(outlines, minX, minY);
     }
 
     private static Path2D stroke(Path2D shape, java.awt.Stroke stroke) {
@@ -484,9 +529,9 @@ public class GLComplexFactory {
         if (strokeOpacity > 0f) {
 
             double scale = 1;
-            if (!symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
+            if (symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
                 try {
-                    scale = viewport.getModelToViewTransform().getScaleX();
+                    scale = 1. / viewport.getModelToViewTransform().getScaleX();
                 } catch (NoninvertibleTransformException e) {
                     e.printStackTrace();
                 }

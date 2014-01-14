@@ -46,7 +46,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.event.CompassPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.ScalePaintListener;
@@ -79,8 +78,7 @@ public class LayerViewAwtPanel extends LayerViewPanel {
         this.addPaintListener(new LegendPaintListener());
         this.setDoubleBuffered(true);
         this.setOpaque(true);
-        this.renderingManager = new MultithreadedRenderingManager(this); // rendering
-                                                                         // manager
+        this.renderingManager = new MultithreadedRenderingManager(this); // rendering manager
     }
 
     /** @return The rendering manager handling the rendering of the layers */

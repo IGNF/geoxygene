@@ -115,27 +115,27 @@ public class WorldCoordinatesParameterizer implements Parameterizer {
         return new Point2d(modelPoint.getX(), modelPoint.getY());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer#
-     * getLinearParameter(float, float)
-     */
-    @Override
-    public double getLinearParameter(final double[] vertex) {
-        try {
-            Point2D modelView = this.viewport.toModelPoint(new Point2D.Double(vertex[0], vertex[1]));
-            if (this.previousX != null && this.previousY != null) {
-                this.distance += Math.sqrt((this.previousX - modelView.getX()) * (this.previousX - modelView.getX()) + (this.previousY - modelView.getY())
-                        * (this.previousY - modelView.getY()));
-            }
-            this.previousX = modelView.getX();
-            this.previousY = modelView.getY();
-        } catch (NoninvertibleTransformException e) {
-            logger.error(e);
-            return this.distance;
-        }
-        return this.distance;
-    }
+    //    /*
+    //     * (non-Javadoc)
+    //     * 
+    //     * @see fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer#
+    //     * getLinearParameter(float, float)
+    //     */
+    //    @Override
+    //    public double getLinearParameter(final double[] vertex) {
+    //        try {
+    //            Point2D modelView = this.viewport.toModelPoint(new Point2D.Double(vertex[0], vertex[1]));
+    //            if (this.previousX != null && this.previousY != null) {
+    //                this.distance += Math.sqrt((this.previousX - modelView.getX()) * (this.previousX - modelView.getX()) + (this.previousY - modelView.getY())
+    //                        * (this.previousY - modelView.getY()));
+    //            }
+    //            this.previousX = modelView.getX();
+    //            this.previousY = modelView.getY();
+    //        } catch (NoninvertibleTransformException e) {
+    //            logger.error(e);
+    //            return this.distance;
+    //        }
+    //        return this.distance;
+    //    }
 
 }

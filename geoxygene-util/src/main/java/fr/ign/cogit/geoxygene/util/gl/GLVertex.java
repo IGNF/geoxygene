@@ -29,6 +29,7 @@ package fr.ign.cogit.geoxygene.util.gl;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.util.Arrays;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -55,7 +56,7 @@ public final class GLVertex {
     public static final int[] ATTRIBUTES_COMPONENT_NUMBER = { 3, 2, 4 };
     public static final int[] ATTRIBUTES_TYPE = { GL11.GL_FLOAT, GL11.GL_FLOAT, GL11.GL_FLOAT };
     public static final int[] ATTRIBUTES_BYTEOFFSET = { 0, Float.SIZE / 8 * 3, Float.SIZE / 8 * 5 };
-    public static final String[] ELEMENTS_NAME = { "inPosition", "inTextCoord", "inColor" };
+    public static final String[] ELEMENTS_NAME = { "inPosition", "inTextureCoord", "inColor" };
 
     /**
      * Default constructor
@@ -195,6 +196,16 @@ public final class GLVertex {
      */
     public final float[] getRGBA() {
         return this.rgba;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "GLVertex [xyz=" + Arrays.toString(this.xyz) + ", uv=" + Arrays.toString(this.uv) + ", rgba=" + Arrays.toString(this.rgba) + "]";
     }
 
 }

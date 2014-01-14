@@ -24,7 +24,7 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  *******************************************************************************/
-package fr.ign.cogit.geoxygene.appli.gl;
+package fr.ign.cogit.geoxygene.util.gl;
 
 import javax.vecmath.Point2d;
 

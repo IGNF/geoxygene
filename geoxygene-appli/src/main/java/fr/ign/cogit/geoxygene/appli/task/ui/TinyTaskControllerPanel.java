@@ -212,13 +212,13 @@ public class TinyTaskControllerPanel implements TaskControllerPanel, ActionListe
                 case FINALIZING:
                 case RUNNING:
                     //            this.getProgressBar().setEnabled(true);
-                    TinyTaskControllerPanel.this.getStopButton().setEnabled(true && TinyTaskControllerPanel.this.task.isStopable());
+                    TinyTaskControllerPanel.this.getStopButton().setEnabled(true && TinyTaskControllerPanel.this.task.isStoppable());
                     TinyTaskControllerPanel.this.getPauseButton().setEnabled(true && TinyTaskControllerPanel.this.task.isPausable());
                     TinyTaskControllerPanel.this.getPlayButton().setEnabled(false);
                     break;
                 case PAUSED:
                     //            this.getProgressBar().setEnabled(true);
-                    TinyTaskControllerPanel.this.getStopButton().setEnabled(true && TinyTaskControllerPanel.this.task.isStopable());
+                    TinyTaskControllerPanel.this.getStopButton().setEnabled(true && TinyTaskControllerPanel.this.task.isStoppable());
                     TinyTaskControllerPanel.this.getPauseButton().setEnabled(false);
                     TinyTaskControllerPanel.this.getPlayButton().setEnabled(true);
                     break;

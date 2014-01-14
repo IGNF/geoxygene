@@ -1,4 +1,5 @@
-package fr.ign.cogit.geoxygene.appli.gl;
+package fr.ign.cogit.geoxygene.util.gl;
+
 
 /**
  * Pixel renderer draws pixels in a texture image

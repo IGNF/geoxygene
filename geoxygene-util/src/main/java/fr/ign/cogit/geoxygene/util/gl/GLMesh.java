@@ -45,7 +45,8 @@ public class GLMesh {
     private final List<Integer> indices = new ArrayList<Integer>();
     private int firstIndex = -1; // first index in the parent vertex indices list (included)
     private int lastIndex = -1; // last index in the parent vertex indices list (included)
-    private final float[] color = new float[4];
+
+    //    private final float[] color = new float[4];
 
     /**
      * Default constructor
@@ -66,21 +67,23 @@ public class GLMesh {
         return this.indices;
     }
 
-    /**
-     * @return the color
-     */
-    public float[] getColor() {
-        return this.color;
-    }
+    //    /**
+    //     * @return the color
+    //     */
+    //    public float[] getColor() {
+    //        return this.color;
+    //    }
 
     /**
-     * @return the color
+     * Set the given to all points pointed by this mesh. If points are shared
+     * between meshes, the color is overridden !
+     * The full vbo is reconstructed
      */
     public void setColor(final java.awt.Color color2) {
-        this.color[0] = color2.getRed() / 255f;
-        this.color[1] = color2.getGreen() / 255f;
-        this.color[2] = color2.getBlue() / 255f;
-        this.color[3] = color2.getAlpha() / 255f;
+        for (int vertexIndex : this.indices) {
+            this.complexParent.getVertices().get(vertexIndex).setRGBA(color2);
+        }
+        this.complexParent.invalidateBuffers();
     }
 
     /**

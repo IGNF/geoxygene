@@ -60,6 +60,21 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
     /** The logger. */
     private static Logger LOGGER = Logger.getLogger(AwtLayerRenderer.class.getName());
     private BufferedImage image = null;
+    private int offscreenWidth = 0;
+    private int offscreenHeight = 0;
+
+    /**
+     * Constructor of renderer using a {@link Layer} and a
+     * {@link LayerViewPanel}.
+     * 
+     * @param theLayer
+     *            a layer to render
+     * @param theLayerViewPanel
+     *            the panel to draws into
+     */
+    public AwtLayerRenderer(final Layer theLayer, final LayerViewPanel theLayerViewPanel) {
+        super(theLayer, theLayerViewPanel);
+    }
 
     /**
      * Set the image.
@@ -81,16 +96,33 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
     }
 
     /**
-     * Constructor of renderer using a {@link Layer} and a
-     * {@link LayerViewPanel}.
-     * 
-     * @param theLayer
-     *            a layer to render
-     * @param theLayerViewPanel
-     *            the panel to draws into
+     * @param offscreenWidth
+     *            the width to set
      */
-    public AwtLayerRenderer(final Layer theLayer, final LayerViewPanel theLayerViewPanel) {
-        super(theLayer, theLayerViewPanel);
+    public void setOffscreenWidth(int offscreenWidth) {
+        this.offscreenWidth = offscreenWidth;
+    }
+
+    /**
+     * @param height
+     *            the height to set
+     */
+    public void setOffscreenHeight(int offscreenHeight) {
+        this.offscreenHeight = offscreenHeight;
+    }
+
+    /**
+     * @return the offscreenWidth
+     */
+    public int getOffscreenWidth() {
+        return this.offscreenWidth;
+    }
+
+    /**
+     * @return the offscreenHeight
+     */
+    public int getOffscreenHeight() {
+        return this.offscreenHeight;
     }
 
     /**
@@ -146,7 +178,7 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
                     }
                     // if either the width or the height of the panel is lesser
                     // or equal to 0, stop
-                    if (Math.min(AwtLayerRenderer.this.getLayerViewPanel().getWidth(), AwtLayerRenderer.this.getLayerViewPanel().getHeight()) <= 0) {
+                    if (Math.min(AwtLayerRenderer.this.getWidth(), AwtLayerRenderer.this.getHeight()) <= 0) {
                         return;
                     }
                     // do the actual rendering
@@ -182,8 +214,7 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
     public void initializeRendering() {
         super.initializeRendering();
         this.clearImageCache();
-        this.setImage(new BufferedImage(AwtLayerRenderer.this.getLayerViewPanel().getWidth(), AwtLayerRenderer.this.getLayerViewPanel().getHeight(),
-                BufferedImage.TYPE_INT_ARGB));
+        this.setImage(new BufferedImage(AwtLayerRenderer.this.getWidth(), AwtLayerRenderer.this.getHeight(), BufferedImage.TYPE_INT_ARGB));
     }
 
     /**
@@ -359,8 +390,8 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
         if (this.isCancelled() || this.getImage() == null) {
             return;
         }
-        for (int i = Math.max(x, 0); i < Math.min(x + width, this.getLayerViewPanel().getWidth()); i++) {
-            for (int j = Math.max(y, 0); j < Math.min(y + height, this.getLayerViewPanel().getHeight()); j++) {
+        for (int i = Math.max(x, 0); i < Math.min(x + width, this.getWidth()); i++) {
+            for (int j = Math.max(y, 0); j < Math.min(y + height, this.getHeight()); j++) {
                 if (this.getImage() == null) {
                     return;
                 }
@@ -372,6 +403,23 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
                 }
             }
         }
+    }
+
+    /**
+     * @return the rendering width: layer view panel width or offscreen width if
+     *         layer view panel is not displayed
+     */
+    private int getWidth() {
+        return (this.getLayerViewPanel().getWidth() != 0) ? this.getLayerViewPanel().getWidth() : this.getOffscreenWidth();
+    }
+
+    /**
+     * @return the rendering height: layer view panel width or offscreen height
+     *         if
+     *         layer view panel is not displayed
+     */
+    private int getHeight() {
+        return (this.getLayerViewPanel().getHeight() != 0) ? this.getLayerViewPanel().getHeight() : this.getOffscreenHeight();
     }
 
     /**

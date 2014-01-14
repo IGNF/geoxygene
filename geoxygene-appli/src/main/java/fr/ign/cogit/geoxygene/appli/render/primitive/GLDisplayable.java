@@ -27,37 +27,40 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
-import javax.vecmath.Point2d;
+import java.util.Collection;
+import java.util.Date;
+
+import fr.ign.cogit.geoxygene.appli.task.Task;
+import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 
 /**
  * @author JeT
- *         Implementations computes parameters for parameterized Primitives
- *         Incoming coordinates (x,y) are expressed in object coordinates
+ *         A GLDisplayable is an object drawn in a GL Panel. Those objects are
+ *         generated asynchronously and are able to give a fast and simple
+ *         representation of themselves during asynchronous GLComplex generation
  */
-public interface Parameterizer {
+public interface GLDisplayable extends Task {
 
     /**
-     * method called just before parameterization process
+     * get the number of time this displayable has been displayed on screen
      */
-    void initializeParameterization();
+    public long getDisplayCount();
 
     /**
-     * method called after parameterization process
+     * @return the last time this displayable has been displayed
      */
-    void finalizeParameterization();
+    public Date getLastDisplayTime();
 
     /**
-     * method called during parameterization process. It computes a 2D
-     * parameterization
-     * with (x,y) local-object coordinates
+     * Synchronous method returning a quick and dirty representation of the
+     * object
      */
-    Point2d getTextureCoordinates(double[] vertex);
+    public GLComplex getPartialRepresentation();
 
-    //    /**
-    //     * method called during parameterization process. It computes a 1D
-    //     * parameterization
-    //     * with (x,y) local-object coordinates
-    //     */
-    //    double getLinearParameter(double[] vertex);
-
+    /**
+     * Asynchronous method returning a full representation of the object. It
+     * returns null if the computation is not finished. Listen to the task state
+     * change to know when this method will return a non null value
+     */
+    public Collection<GLComplex> getFullRepresentation();
 }

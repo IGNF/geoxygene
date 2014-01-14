@@ -27,37 +27,61 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
-import javax.vecmath.Point2d;
-
 /**
  * @author JeT
- *         Implementations computes parameters for parameterized Primitives
- *         Incoming coordinates (x,y) are expressed in object coordinates
+ *         this colorizer returns one solid color independently of the position
  */
-public interface Parameterizer {
+public class SolidColorizer implements Colorizer {
+
+    float[] rgba = new float[4];
 
     /**
-     * method called just before parameterization process
+     * Quick constructor
+     * 
+     * @param color
+     *            color to set
      */
-    void initializeParameterization();
+    public SolidColorizer(java.awt.Color color) {
+        super();
+        this.rgba[0] = (float) (color.getRed() / 255.);
+        this.rgba[1] = (float) (color.getGreen() / 255.);
+        this.rgba[2] = (float) (color.getBlue() / 255.);
+        this.rgba[3] = (float) (color.getAlpha() / 255.);
+    }
 
-    /**
-     * method called after parameterization process
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.render.primitive.Colorizer#
+     * initializeColorization()
      */
-    void finalizeParameterization();
+    @Override
+    public void initializeColorization() {
+        // nothing to initialize
+    }
 
-    /**
-     * method called during parameterization process. It computes a 2D
-     * parameterization
-     * with (x,y) local-object coordinates
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.primitive.Colorizer#finalizeColorization
+     * ()
      */
-    Point2d getTextureCoordinates(double[] vertex);
+    @Override
+    public void finalizeColorization() {
+        // nothing to finalize
+    }
 
-    //    /**
-    //     * method called during parameterization process. It computes a 1D
-    //     * parameterization
-    //     * with (x,y) local-object coordinates
-    //     */
-    //    double getLinearParameter(double[] vertex);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.primitive.Colorizer#getColor(double
+     * [])
+     */
+    @Override
+    public float[] getColor(double[] vertex) {
+        return this.rgba;
+    }
 
 }

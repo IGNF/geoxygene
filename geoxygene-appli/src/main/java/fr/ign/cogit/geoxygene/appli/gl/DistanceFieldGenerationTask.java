@@ -34,30 +34,32 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
-import fr.ign.cogit.geoxygene.appli.render.primitive.DensityFieldParameterizer;
+import fr.ign.cogit.geoxygene.appli.render.primitive.DistanceFieldParameterizer;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.appli.ui.Message.MessageType;
+import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
 
 /**
  * @author JeT
  *         Asynchronous task generating a texture file from
- *         DensityFieldParameterization. Once finished the generatedTextureImage
+ *         DistanceFieldParameterization. Once finished the
+ *         generatedTextureImage
  *         is filled
  */
-public class DensityFieldGenerationTask extends AbstractTask {
+public class DistanceFieldGenerationTask extends AbstractTask {
 
-    public static enum DensityFieldVisualizationType {
+    public static enum DistanceFieldVisualizationType {
         TEXTURE, // apply source texture to (u,v) coordinates  
         UV, // display U,V coordinates with a Color LUT
         HEIGHT, // display the V coordinates with a GRAY GRADIENT
 
     }
 
-    private DensityFieldParameterizer parameterizer = null;
+    private DistanceFieldParameterizer parameterizer = null;
     private BufferedImage generatedTextureImage = null;
     private String textureFilename = null;
-    private DensityFieldVisualizationType visualizationType = DensityFieldVisualizationType.TEXTURE;
+    private DistanceFieldVisualizationType visualizationType = DistanceFieldVisualizationType.TEXTURE;
 
     /**
      * Constructor
@@ -66,8 +68,8 @@ public class DensityFieldGenerationTask extends AbstractTask {
      * @param parameterizer
      * @param textureFilename
      */
-    public DensityFieldGenerationTask(final String name, final DensityFieldParameterizer parameterizer, final String textureFilename,
-            DensityFieldVisualizationType visualizationType) {
+    public DistanceFieldGenerationTask(final String name, final DistanceFieldParameterizer parameterizer, final String textureFilename,
+            DistanceFieldVisualizationType visualizationType) {
         super(name);
         if (parameterizer == null || textureFilename == null) {
             throw new IllegalArgumentException("parameterizer or texture filename cannot be null:" + parameterizer + " '" + textureFilename + "'");
@@ -113,7 +115,7 @@ public class DensityFieldGenerationTask extends AbstractTask {
     /**
      * @return the parameterizer
      */
-    public DensityFieldParameterizer getParameterizer() {
+    public DistanceFieldParameterizer getParameterizer() {
         return this.parameterizer;
     }
 
@@ -135,7 +137,7 @@ public class DensityFieldGenerationTask extends AbstractTask {
     }
 
     @Override
-    public boolean isStopable() {
+    public boolean isStoppable() {
         return false;
     }
 

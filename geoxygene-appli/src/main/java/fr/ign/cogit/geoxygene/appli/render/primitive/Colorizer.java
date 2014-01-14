@@ -27,37 +27,27 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
-import javax.vecmath.Point2d;
-
 /**
  * @author JeT
- *         Implementations computes parameters for parameterized Primitives
+ *         Implementations computes color values for geometric Primitives
  *         Incoming coordinates (x,y) are expressed in object coordinates
  */
-public interface Parameterizer {
+public interface Colorizer {
 
     /**
-     * method called just before parameterization process
+     * method called just before colorization process
      */
-    void initializeParameterization();
+    void initializeColorization();
 
     /**
-     * method called after parameterization process
+     * method called after colorization process
      */
-    void finalizeParameterization();
+    void finalizeColorization();
 
     /**
-     * method called during parameterization process. It computes a 2D
-     * parameterization
-     * with (x,y) local-object coordinates
+     * method called during parameterization process. It computes an rgba color
+     * with (x,y) object coordinates
      */
-    Point2d getTextureCoordinates(double[] vertex);
-
-    //    /**
-    //     * method called during parameterization process. It computes a 1D
-    //     * parameterization
-    //     * with (x,y) local-object coordinates
-    //     */
-    //    double getLinearParameter(double[] vertex);
+    float[] getColor(double[] vertex);
 
 }

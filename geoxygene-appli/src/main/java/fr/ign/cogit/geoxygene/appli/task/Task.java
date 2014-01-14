@@ -100,7 +100,7 @@ public interface Task extends Runnable {
     /**
      * @return true if the stopRequest can be called or not
      */
-    boolean isStopable();
+    boolean isStoppable();
 
     /**
      * @return the exception that has been thrown if Task is in error state

@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.gl;
+package fr.ign.cogit.geoxygene.util.gl;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -39,7 +39,7 @@ import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.gl.TextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 
 /**
  * @author JeT
@@ -50,20 +50,19 @@ public class TextureImageUtil {
     private static final double PI2 = Math.PI * 2;
     private static final Logger logger = Logger.getLogger(TextureImageUtil.class.getName()); // logger
 
-    public static void blurDistance(TextureImage image) {
+    public static void blurDistance(TextureImage image, int blurWindowHalfSize) {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 TexturePixel pixel = image.getPixel(x, y);
-                pixel.distance = blurDistanceNeighborhood(image, x, y);
+                pixel.distance = blurDistanceNeighborhood(image, x, y, blurWindowHalfSize);
             }
         }
 
     }
 
-    public static double blurDistanceNeighborhood(TextureImage image, int x, int y) {
+    public static double blurDistanceNeighborhood(TextureImage image, int x, int y, int blurWindowHalfSize) {
         double neighborsWeightSum = 0.;
         double blurredDistance = 0;
-        final int blurWindowHalfSize = 10;
         for (int dy = -blurWindowHalfSize; dy <= blurWindowHalfSize; dy++) {
 
             for (int dx = -blurWindowHalfSize; dx <= blurWindowHalfSize; dx++) {
@@ -81,11 +80,11 @@ public class TextureImageUtil {
         return blurredDistance;
     }
 
-    public static void blurTextureCoordinates(TextureImage image) {
+    public static void blurTextureCoordinates(TextureImage image, int blurWindowHalfSize) {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 TexturePixel pixel = image.getPixel(x, y);
-                Point2d textureCoordinates = blurTextureCoordinatesNeighborhood(image, x, y);
+                Point2d textureCoordinates = blurTextureCoordinatesNeighborhood(image, x, y, blurWindowHalfSize);
                 pixel.uTexture = textureCoordinates.x;
                 pixel.vTexture = textureCoordinates.y;
             }
@@ -93,12 +92,11 @@ public class TextureImageUtil {
 
     }
 
-    public static Point2d blurTextureCoordinatesNeighborhood(TextureImage image, int x, int y) {
+    public static Point2d blurTextureCoordinatesNeighborhood(TextureImage image, int x, int y, int blurWindowHalfSize) {
         double blurredUcos = 0.;
         double blurredUsin = 0.;
         double neighborsWeightSum = 0.;
         double blurredV = 0;
-        final int blurWindowHalfSize = 5;
         for (int dy = -blurWindowHalfSize; dy <= blurWindowHalfSize; dy++) {
 
             for (int dx = -blurWindowHalfSize; dx <= blurWindowHalfSize; dx++) {
