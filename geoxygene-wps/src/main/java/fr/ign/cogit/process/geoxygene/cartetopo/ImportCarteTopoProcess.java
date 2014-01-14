@@ -32,7 +32,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 
-import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopoData;
+import fr.ign.cogit.geoxygene.contrib.data.CarteTopoData;
 import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
 import fr.ign.cogit.process.geoxygene.GeoxygeneProcess;
 

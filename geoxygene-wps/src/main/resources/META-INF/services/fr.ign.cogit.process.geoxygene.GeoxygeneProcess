@@ -1,4 +1,3 @@
-fr.ign.cogit.process.geoxygene.cartetopo.CreateCarteTopoProcess
-fr.ign.cogit.process.geoxygene.cartetopo.CreateFacesProcess
-fr.ign.cogit.process.geoxygene.netmatching.NetworkDataMatchingProcess
+fr.ign.cogit.process.geoxygene.cartetopo.BuildingBlocksCreationProcess
+fr.ign.cogit.process.geoxygene.cartetopo.PlanarGraphCreationProcess
 fr.ign.cogit.process.geoxygene.netmatching.NetworkDataMatchingWithParamProcess

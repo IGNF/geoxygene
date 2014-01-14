@@ -29,10 +29,10 @@ import fr.ign.cogit.process.geoxygene.GeoxygeneProcess;
  * 
  * 
  */
-@DescribeProcess(title = "CreateFaces", description = "Create Faces from a Feature Collection representing a Network")
-public class CreateFacesProcess implements GeoxygeneProcess {
+@DescribeProcess(title = "BuildingBlocksCreation", description = "Create Faces from a Feature Collection representing a Network")
+public class BuildingBlocksCreationProcess implements GeoxygeneProcess {
   
-  private final static Logger logger = Logger.getLogger(CreateFacesProcess.class.getName());
+  private final static Logger logger = Logger.getLogger(BuildingBlocksCreationProcess.class.getName());
 
   @DescribeResult(name = "result", description = "output result")
   public SimpleFeatureCollection execute(

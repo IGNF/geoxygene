@@ -15,10 +15,12 @@
     <bean id="ParametersNetworkMatchingPPIO"
             class="fr.ign.cogit.process.geoxygene.netmatching.ppio.ParametersNetworkMatchingPPIO" />
            
-    <bean id="NetworkDataMatchingResultPPIO" 
-            class="fr.ign.cogit.process.geoxygene.netmatching.ppio.NetworkDataMatchingResultPPIO" />
+    <!-- <bean id="NetworkDataMatchingResultPPIO" 
+            class="fr.ign.cogit.process.geoxygene.netmatching.ppio.NetworkDataMatchingResultPPIO" />  -->
 
     <bean id="CarteTopoPPIO" class="fr.ign.cogit.process.geoxygene.ppio.CarteTopoPPIO" />
+    
+    <bean id="EnsembleDeLiensPPIO" class="fr.ign.cogit.process.geoxygene.ppio.EnsembleDeLiensPPIO" />
 
     <!-- ========================================================================== -->
     <!--   The Filtering processes -->
@@ -29,10 +31,10 @@
 	<!--   Web Processing Service GUI -->
 	<!-- ========================================================================== -->
     <bean id="helloPage" class="org.geoserver.web.MenuPageInfo">
-        <property name="id" value="helloPage"/>
-        <property name="titleKey" value="HelloPage.page.title"/>
-        <property name="descriptionKey" value="HelloPage.page.description"/>
-        <property name="componentClass" value="fr.ign.cogit.web.HelloPage"/>
+        <property name="id" value="helloPage" />
+        <property name="titleKey" value="HelloPage.page.title" />
+        <property name="descriptionKey" value="HelloPage.page.description" />
+        <property name="componentClass" value="fr.ign.cogit.web.HelloPage" />
     </bean>
 
 </beans>

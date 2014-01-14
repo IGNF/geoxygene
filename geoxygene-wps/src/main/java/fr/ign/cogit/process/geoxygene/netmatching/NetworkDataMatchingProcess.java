@@ -66,7 +66,7 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
    * @return Results ResultatAppariement
    */
   @DescribeResult(name = "resultNetMatching", description = "Result network matching")
-  public void execute(
+  public String execute(
       @DescribeParameter(name = "popRef", description = "Less detailed network") SimpleFeatureCollection popRef,
       @DescribeParameter(name = "popComp", description = "Comparison network") SimpleFeatureCollection popComp) {
       
@@ -200,6 +200,8 @@ public class NetworkDataMatchingProcess implements GeoxygeneProcess {
       e.printStackTrace();
       throw new ProcessException("Error during network data matching process");
     }
+    
+    return "OK";
     
   }
   

@@ -8,30 +8,32 @@ import java.nio.charset.Charset;
 import org.apache.log4j.Logger;
 import org.geoserver.wps.ppio.CDataPPIO;
 
-import fr.ign.cogit.geoxygene.contrib.data.CarteTopoData;
+import fr.ign.cogit.geoxygene.contrib.data.EnsembleDeLiensData;
+
 
 /**
  * 
  * 
  * @author MDVan-Damme
+ * 
  */
-public class CarteTopoPPIO extends CDataPPIO {
+public class EnsembleDeLiensPPIO extends CDataPPIO {
   
   /** LOGGER. */
-  private final static Logger LOGGER = Logger.getLogger(CarteTopoPPIO.class.getName());
+  private final static Logger LOGGER = Logger.getLogger(EnsembleDeLiensPPIO.class.getName());
 
   /**
    * Default constructor.
    */
-  protected CarteTopoPPIO() {
-    super(CarteTopoData.class, CarteTopoData.class, "text/xml");
+  protected EnsembleDeLiensPPIO() {
+    super(EnsembleDeLiensData.class, EnsembleDeLiensData.class, "text/xml");
   }
 
   @Override
   public void encode(Object value, OutputStream os) throws IOException {
     String result;
     try {
-      result = CarteTopoData.generateXMLResponse((CarteTopoData)value);
+      result = EnsembleDeLiensData.generateXMLResponse((EnsembleDeLiensData)value);
       os.write(result.getBytes(Charset.forName("UTF-8")));
     } catch (Exception e) {
       // TODO Auto-generated catch block

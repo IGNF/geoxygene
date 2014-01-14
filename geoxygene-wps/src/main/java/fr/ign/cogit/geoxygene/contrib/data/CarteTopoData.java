@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.contrib.cartetopo;
+package fr.ign.cogit.geoxygene.contrib.data;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -17,6 +17,9 @@ import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
 
 

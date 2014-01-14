@@ -9,8 +9,8 @@ import org.geotools.factory.FactoryRegistry;
 import org.geotools.process.factory.AnnotatedBeanProcessFactory;
 import org.geotools.text.Text;
 
-import fr.ign.cogit.process.geoxygene.cartetopo.CreateCarteTopoProcess;
-import fr.ign.cogit.process.geoxygene.cartetopo.CreateFacesProcess;
+import fr.ign.cogit.process.geoxygene.cartetopo.PlanarGraphCreationProcess;
+import fr.ign.cogit.process.geoxygene.cartetopo.BuildingBlocksCreationProcess;
 import fr.ign.cogit.process.geoxygene.cartetopo.ImportCarteTopoProcess;
 import fr.ign.cogit.process.geoxygene.netmatching.LinearFeatureMatcherProcess;
 import fr.ign.cogit.process.geoxygene.netmatching.NetworkDataMatchingProcess;
