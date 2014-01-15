@@ -27,6 +27,7 @@ public class ParametersTest extends XMLTestCase {
       PARAMETERS_SCHEMA = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
           .newSchema(new File(ParametersTest.class.getClassLoader().getResource("parameters.xsd").getPath()));
     } catch (Exception e) {
+      e.printStackTrace();
       fail();
     }
   }
