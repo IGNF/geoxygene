@@ -10,4 +10,4 @@ Java Tutorial
    
 
    interface
-
+   generique

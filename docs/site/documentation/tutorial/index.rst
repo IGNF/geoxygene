@@ -9,7 +9,7 @@ GeOxygene Tutorial
    :maxdepth: 1
    
 
-   default-feature
+   feature
    motif
    plugin
 

@@ -13,7 +13,7 @@ Documentation
    tutorial/index
    application/index
    user/index
-   java/index
+   .. java/index
 
    
 + `Online javadoc <http://oxygene-project.sourceforge.net/apidocs/index.html>`_

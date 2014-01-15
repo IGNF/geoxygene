@@ -4,10 +4,10 @@ User Guide
 
 
 .. toctree::
-   :maxdepth: 0
+   :maxdepth: 1
    
-   userguide
-
+   userguide2D
+   datadirectory
 
 
    

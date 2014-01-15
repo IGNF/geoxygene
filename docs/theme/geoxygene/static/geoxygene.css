@@ -65,7 +65,7 @@ p {
 }
 
 ul {
-    list-style: disc;
+    list-style: none;
     padding-left: 20px;
 }
 
