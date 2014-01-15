@@ -12,7 +12,6 @@
 	</parent>
 
 	<artifactId>geoxygene-pea-rep</artifactId>
-	<version>1.0-SNAPSHOT</version>
 	<name>PEA REP</name>
 	<description>cadre d'un projet PEAREP (plan d'études amont de la direction générale de l'armement</description>
 
