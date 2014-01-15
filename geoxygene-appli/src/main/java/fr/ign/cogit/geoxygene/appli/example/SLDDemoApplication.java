@@ -32,7 +32,9 @@ import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.ProjectFramePlugin;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -60,18 +62,20 @@ import fr.ign.cogit.geoxygene.style.texture.Texture;
  * 
  * @author Julien Perret
  */
-public class SLDDemoApplication implements ProjectFramePlugin, ActionListener {
+public class SLDDemoApplication implements GeOxygeneApplicationPlugin, ActionListener {
 
   /**
    * Logger.
    */
   static Logger logger = Logger.getLogger(SLDDemoApplication.class.getName());
 
+  private GeOxygeneApplication application = null;
   private ProjectFrame projectFrame = null;
   
   @Override
-  public void initialize(final ProjectFrame projectFrame) {
-    this.projectFrame = projectFrame;
+  public void initialize(final GeOxygeneApplication application) {
+    this.application = application;
+    projectFrame = application.getMainFrame().newProjectFrame();
     JMenu menuExample = new JMenu("Example");
     
     JMenuItem sLDDemoItem = new JMenuItem("SLDDemo");
@@ -84,11 +88,10 @@ public class SLDDemoApplication implements ProjectFramePlugin, ActionListener {
     
     menuExample.add(sLDDemoItem);
 
-    this.projectFrame.getMainFrame().getApplication()
-        .getMainFrame()
+    this.application.getMainFrame()
         .getMenuBar()
         .add(menuExample,
-            this.projectFrame.getMainFrame().getApplication().getMainFrame().getMenuBar().getComponentCount() - 1);
+            this.application.getMainFrame().getMenuBar().getComponentCount() - 1);
   }
   
   @Override

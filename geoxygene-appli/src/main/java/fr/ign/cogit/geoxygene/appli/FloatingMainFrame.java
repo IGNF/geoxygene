@@ -171,9 +171,13 @@ public class FloatingMainFrame extends AbstractMainFrame implements InternalFram
         projectFrame.getInternalFrame().setVisible(true);
         this.addProjectFrame(currentDesktop, projectFrame);
 
-        if (this.getApplication().getProperties().getProjectPlugins().size() != 0) {
-            this.getApplication().initializeProjectFramePlugins();
+        // Load project Plugin
+        // FIXME - Ugly : test if the first pluginAppli were loaded !!
+        int menuCount = this.getApplication().getMainFrame().getMenuBar().getMenuCount();
+        if (this.getApplication().getProperties().getPlugins().size() != 0 && menuCount > 6) {
+          this.getApplication().initializeProjectFramePlugins();
         }
+        
 
         projectFrame.getInternalFrame().setToolTipText(projectFrame.getTitle());
         layerViewPanel.setProjectFrame(projectFrame);

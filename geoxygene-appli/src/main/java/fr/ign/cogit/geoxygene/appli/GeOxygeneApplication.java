@@ -131,7 +131,7 @@ public class GeOxygeneApplication {
 
         // Initialize application plugins
         this.initializeApplicationPlugins();
-        // this.initializeProjectFramePlugins();
+        this.initializeProjectFramePlugins();
 
         this.preload();
     }

@@ -45,16 +45,18 @@ public class CartAGenProjectPlugin implements ProjectFramePlugin {
 
   @Override
   public void initialize(final ProjectFrame frame) {
-    JToolBar toolbar = new BottomLegendToolbar(frame,
-        frame.getLayerLegendPanel(), CartAGenPlugin.getInstance()
-            .getApplication());
-    frame.getLayerLegendPanel().add(toolbar, BorderLayout.PAGE_END);
-
-    // ajout d'écouteurs
-    frame.getLayerViewPanel().addMouseListener(
-        CartAGenPlugin.getInstance().rightPanel);
-    frame.getLayerViewPanel().addMouseMotionListener(
-        CartAGenPlugin.getInstance().rightPanel);
+    if (CartAGenPlugin.getInstance() != null) {
+      JToolBar toolbar = new BottomLegendToolbar(frame,
+          frame.getLayerLegendPanel(), CartAGenPlugin.getInstance()
+              .getApplication());
+      frame.getLayerLegendPanel().add(toolbar, BorderLayout.PAGE_END);
+  
+      // ajout d'écouteurs
+      frame.getLayerViewPanel().addMouseListener(
+          CartAGenPlugin.getInstance().rightPanel);
+      frame.getLayerViewPanel().addMouseMotionListener(
+          CartAGenPlugin.getInstance().rightPanel);
+    }
   }
 
 }
