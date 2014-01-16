@@ -1,7 +1,7 @@
 
 
 Feature
-###########                               
+#########
 
 GeOxygene propose un schéma logique générique pour l'exploitation des données. Il est basé sur le concept OGC d'objets géographiques
 (FT_Feature) et sur les concepts de jeu de données (DataSet), de populations d'objets d'un même type (Population), de collections d'objets
@@ -10,7 +10,7 @@ et topologiques spécifiée oar la norme ISO 19107.
 
 
                                          
-les classes dite géographiques héritent soit de « FT_Feature » (routes, rivières…) soit de DefaultFeature
+
   
 .. .. container:: centerside
      
@@ -44,7 +44,17 @@ Références OGC :
 * http://www.opengeospatial.org/standards/sfa - Simple Feature Access - Part 1: Common Architecture
 * http://www.opengeospatial.org/standards/as - Topic 5 - Features
 
-Par exemple : troncon_hydrographique, noeud _hydrographique, cours_d_eau, toponyme_d_hydrographie_surfacique, point_eau_isole, laisse
+Par exemple : troncon_hydrographique, noeud_hydrographique, cours_d_eau, toponyme_d_hydrographie_surfacique, point_d_eau_isole, laisse
+
+
+.. container:: centerside
+
+   .. figure:: /documentation/resources/img/feature/TronconRoute.png
+      :width: 360px
+       
+       Figure 2 : Feature *Tronçon de route*
+
+
 
 FeatureType
 ^^^^^^^^^^^^^^
@@ -62,29 +72,10 @@ Occasionally you have two features that have a lot in common. You may have the L
 Because these two features have a couple of things in common it is nice to group them together - in Java we would create a Class called Airport. 
 On a map we will create a Feature Type called Airport.
 
-<FeatureType id="1">
-    <typeName>route</typeName>
-    <definition>les routes sur lesquelles on roule</definition>
-    <positionInitiale>10,10</positionInitiale>
-    <nomClasse>donnees.sandrine.classesGenerees.Route</nomClasse>
-    <isExplicite>1</isExplicite>
-    <AttributeType id="1">
-        <memberName>revêtement</memberName>
-    <valueType>text</valueType>
-    </AttributeType>
-    <AttributeType id="2">
-        <memberName>geom</memberName>
-        <valueType>polyligne</valueType>        
-    </AttributeType>
-</FeatureType>
 
-<FeatureType id="2">
-    <typeName>bâtiment</typeName>
-    <definition>les maisons dans lesquelles on vit</definition>
-    <positionInitiale>200,10</positionInitiale>
-    <isExplicite>1</isExplicite>
-    <nomClasse>donnees.sandrine.classesGenerees.Route</nomClasse>
-</FeatureType>
+
+.. literalinclude:: /documentation/resources/code_src/feature/FeatureType.xml
+      :language: xml
 
 
 FT_Feature
@@ -125,147 +116,56 @@ ce schéma contient aussi une référence vers le schéma conceptuel : le featur
 
 AssociationType
 ^^^^^^^^^^^^^^^^^^
-
-<AssociationType id="3">
-    <typeName>permet d'accéder à</typeName>
-    <definition>relation sémantique indiquant qu'un équipement est accessible à partir d'un tronçon de route</definition>
-    <isAggregation>0</isAggregation>
-    <idLinkBetween>1</idLinkBetween>
-    <idLinkBetween>2</idLinkBetween>    
-    <AssociationRole id="1">
-        <featureTypeId>1</featureTypeId>
-        <memberName>permet l'accès à</memberName>
-        <cardMin>0</cardMin>
-        <cardMax>n</cardMax>
-        <isComponent>0</isComponent>
-        <isComposite>0</isComposite>
-    </AssociationRole>
-    <AssociationRole id="2">
-        <featureTypeId>2</featureTypeId>
-        <memberName>est accedé par</memberName>
-        <cardMin>0</cardMin>
-        <cardMax>n</cardMax>
-        <isComponent>0</isComponent>
-        <isComposite>0</isComposite>
-    </AssociationRole>      
-</AssociationType>
+.. literalinclude:: /documentation/resources/code_src/feature/AssociationType.xml
+      :language: xml
 
 
-
-Module
-=============
+Module *geoxygene-feature*
+==============================
 Ce module contient l'implémentation des objets géographiques. 
 
-DefaultFeature
-
-FT_Feature
+Les classes dite géographiques héritent soit de « FT_Feature » (routes, rivières…) soit de « DefaultFeature »
 
 
+.. container:: centerside
 
-
-
-
-
+   .. figure:: /documentation/resources/img/feature/DC-Feature.png
+      :width: 350px
+       
+       Figure 2 : Diagramme de classe Feature
 
 
 Trucs et astuces
 --------------------
 
-Afficher la liste des attributs d'une population
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Afficher des attributs 
+^^^^^^^^^^^^^^^^^^^^^^^
 
+Afficher un attribut :
 
-// arcsBruts est une population de DefaultFeature (IPopulation<DefaultFeature>)
-for(Arc arc : arcsBruts) {
-    GF_FeatureType ft = arc.getFeatureType();
-    List<GF_AttributeType> listAttribut = ft.getFeatureAttributes();
-    for (int j = 0; j < listAttribut.size(); j++) {
-        System.out.println("attribut : " + listAttribut.get(j).getMemberName());
-    }
-}
+.. literalinclude:: /documentation/resources/code_src/feature/AfficheAttribut.java
+      :language: java
+
+Afficher une liste d'attributs :
+
+.. literalinclude:: /documentation/resources/code_src/feature/AfficheListeAttributs.java
+      :language: java
 
 
 Création d'une collection de features (pour un export en shapefile ou un affichage dans l'interface graphique)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    // Créer un featuretype du jeu correspondant
-    FeatureType newFeatureType = new FeatureType();
-    newFeatureType.setTypeName("troncon");
-    newFeatureType.setGeometryType(ILineString.class);
-                
-    AttributeType idTroncon = new AttributeType("idTroncon", "String");
-    AttributeType typeLargeurVoie = new AttributeType("largeurV", "double");
-    AttributeType numVoie = new AttributeType("numVoie", "int");
-    newFeatureType.addFeatureAttribute(idTroncon);
-    newFeatureType.addFeatureAttribute(typeLargeurVoie);
-    newFeatureType.addFeatureAttribute(numVoie);
-    
-    // Création d'un schéma associé au featureType
-    SchemaDefaultFeature schema = new SchemaDefaultFeature();
-    schema.setFeatureType(newFeatureType);
-    
-    newFeatureType.setSchema(schema);
-                
-    Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>(0);
-    attLookup.put(new Integer(0), new String[] { idTroncon.getNomField(), idTroncon.getMemberName() });
-    attLookup.put(new Integer(1), new String[] { typeLargeurVoie.getNomField(), typeLargeurVoie.getMemberName() });
-    attLookup.put(new Integer(2), new String[] { numVoie.getNomField(), numVoie.getMemberName() });
-    schema.setAttLookup(attLookup);
-    
-    // Création de la population
-    Population<DefaultFeature> entrees = new Population<DefaultFeature>(false, "entrees", DefaultFeature.class, true);
-    entrees.setFeatureType(newFeatureType);
-    
-    // On ajoute les defaults features à la collection
-    for () {
-    DefaultFeature n = entrees.nouvelElement(first.toGM_Point());
-        n.setSchema(schema);
-        Object[] attributes = new Object[] { t.getId(), t.getLargeurVoie(), new Integer(i + 1) };
-        n.setAttributes(attributes);
-    }
-    
-    
-    // Export en fichier shape par exemple
-    CoordinateReferenceSystem crs = CRS.decode("EPSG:3035");
-    ShapefileWriter.write(entrees, "D:\\DATA\\entrees.shp", crs);
-
-
-    // Affichage dans l'interface graphique de GeOxygene
-    ...
-    ProjectFrame p1 = this.application.getFrame().newProjectFrame();
-    Layer l1 = p1.addUserLayer(entrees, "Entrees", null);
-    ...
+.. literalinclude:: /documentation/resources/code_src/feature/CreateCollection.java
+      :language: java   
 
 
 Ajout d'un attribut dans un DefaultFeature (sans cohérence globale au niveau du schéma de la collection)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 L'export de la collection est possible si les objets ont les mêmes attributs
 
+.. literalinclude:: /documentation/resources/code_src/feature/AjoutAttribut.java
+      :language: java 
 
-import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
-    ...
-
-    IFeatureCollection<IFeature> collRoutes = new FT_FeatureCollection<>(); 
-
-    for(){
-
-        DefaultFeature route = new DefaultFeature(new GM_ .... );
-
-        AttributeManager.addAttribute(route , "Largeur", 3, "Integer");
-        AttributeManager.addAttribute(route , "Nom", "Rue de la Paix", "String");
-        AttributeManager.addAttribute(route , "Longueur", 12.3, "Double");
-
-        collRoutes.add(route);
-
-    }
-
-    ...
-
-    // Export en fichier shape par exemple
-    CoordinateReferenceSystem crs = CRS.decode("EPSG:3035");
-    ShapefileWriter.write(collRoutes , "D:\\DATA\\routes.shp", crs);
-
-    ...
 
 
 

@@ -1,6 +1,6 @@
 
-User Guide 2D
-================
+Prise en main de l'interface graphique 2D
+==========================================
 
 .. container:: centerside
      
@@ -10,11 +10,11 @@ User Guide 2D
        Figure 1 : Interface graphique Geoxygene 2D
 
 
-Pour réaliser les premiers tests appelée JDD (il s'agit ainsi de fixer les données et la légende associée)
 
 
-Chargement d'un jeu de données géographiques
-------------------------------------------------
+
+Chargement d'un jeu de données géographiques shape
+----------------------------------------------------
 
 .. container:: chemin
 
@@ -87,6 +87,11 @@ On peut obtenir la visualisation suivante Cf. Figure \ref{fig:affichage}.
 	    
 	       Figure 6 : Interface de GeOxygene
        
+
+Modifier le style
+------------------------------------------------
+Soit en chargeant un nouveau fichier SLD, soit via l'éditeur.
+
 
 
 Enregistrer
