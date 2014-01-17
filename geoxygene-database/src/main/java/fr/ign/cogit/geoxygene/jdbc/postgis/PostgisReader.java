@@ -125,10 +125,14 @@ public class PostgisReader {
             AttributeType type = new AttributeType();
             String nomField = reader.getFieldName(i);
             String memberName = reader.getFieldName(i);
-            String valueType = reader.getFieldClass(i).getSimpleName();
+            if (reader.getFieldClass(i) != null) {
+              String valueType = reader.getFieldClass(i).getSimpleName();
+              type.setValueType(valueType);
+            } else {
+              type.setValueType("");
+            }
             type.setNomField(nomField);
             type.setMemberName(memberName);
-            type.setValueType(valueType);
             newFeatureType.addFeatureAttribute(type);
             attLookup.put(new Integer(i), new String[] { nomField, memberName });
             LOGGER.log(Level.DEBUG, "AddingAttribute " + i + " = " + nomField);
