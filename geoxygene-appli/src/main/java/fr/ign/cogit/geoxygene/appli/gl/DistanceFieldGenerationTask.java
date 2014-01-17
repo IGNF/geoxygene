@@ -34,10 +34,10 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
-import fr.ign.cogit.geoxygene.appli.render.primitive.DistanceFieldParameterizer;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.appli.ui.Message.MessageType;
+import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
 
 /**
@@ -56,7 +56,7 @@ public class DistanceFieldGenerationTask extends AbstractTask {
 
     }
 
-    private DistanceFieldParameterizer parameterizer = null;
+    private DistanceFieldTexture texture = null;
     private BufferedImage generatedTextureImage = null;
     private String textureFilename = null;
     private DistanceFieldVisualizationType visualizationType = DistanceFieldVisualizationType.TEXTURE;
@@ -68,13 +68,13 @@ public class DistanceFieldGenerationTask extends AbstractTask {
      * @param parameterizer
      * @param textureFilename
      */
-    public DistanceFieldGenerationTask(final String name, final DistanceFieldParameterizer parameterizer, final String textureFilename,
+    public DistanceFieldGenerationTask(final String name, final DistanceFieldTexture texture, final String textureFilename,
             DistanceFieldVisualizationType visualizationType) {
         super(name);
-        if (parameterizer == null || textureFilename == null) {
-            throw new IllegalArgumentException("parameterizer or texture filename cannot be null:" + parameterizer + " '" + textureFilename + "'");
+        if (texture == null || textureFilename == null) {
+            throw new IllegalArgumentException("texture or texture filename cannot be null:" + texture + " '" + textureFilename + "'");
         }
-        this.parameterizer = parameterizer;
+        this.texture = texture;
         this.textureFilename = textureFilename;
         this.visualizationType = visualizationType;
     }
@@ -85,14 +85,14 @@ public class DistanceFieldGenerationTask extends AbstractTask {
             this.setState(TaskState.RUNNING);
             switch (this.visualizationType) {
             case HEIGHT:
-                this.generatedTextureImage = TextureImageUtil.toHeight(this.parameterizer.getTextureImage(), Color.black, Color.white);
+                this.generatedTextureImage = TextureImageUtil.toHeight(this.texture.getUVTextureImage(), Color.black, Color.white);
                 break;
             case UV:
-                this.generatedTextureImage = TextureImageUtil.toColors(this.parameterizer.getTextureImage(), Color.red, Color.blue, Color.white);
+                this.generatedTextureImage = TextureImageUtil.toColors(this.texture.getUVTextureImage(), Color.red, Color.blue, Color.white);
                 break;
             case TEXTURE:
                 BufferedImage sourceTextureImage = ImageIO.read(new File(this.textureFilename));
-                this.generatedTextureImage = TextureImageUtil.applyTexture(this.parameterizer.getTextureImage(), sourceTextureImage);
+                this.generatedTextureImage = TextureImageUtil.applyTexture(this.texture.getUVTextureImage(), sourceTextureImage);
                 break;
             }
             this.setState(TaskState.FINISHED);
@@ -110,13 +110,6 @@ public class DistanceFieldGenerationTask extends AbstractTask {
      */
     public BufferedImage getGeneratedTextureImage() {
         return this.generatedTextureImage;
-    }
-
-    /**
-     * @return the parameterizer
-     */
-    public DistanceFieldParameterizer getParameterizer() {
-        return this.parameterizer;
     }
 
     /**

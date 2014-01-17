@@ -26,8 +26,6 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.util.gl;
 
-import javax.vecmath.Point2d;
-
 /**
  * Texture management. This class returns texture coordinates depending on the
  * kind of texture type
@@ -37,20 +35,6 @@ import javax.vecmath.Point2d;
  * 
  */
 public interface Texture {
-
-    //  /**
-    //   * Get 2D texture coordinates depending on a given 2D point
-    //   * @param p 2D point to retrieve texture coordinates
-    //   * @return 2D texture coordinates at the given p point
-    //   */
-    //  public Point2d vertexCoordinates(final Point2d p);
-    //
-    //  /**
-    //   * Get 2D texture coordinates depending on a given 2D point
-    //   * @param p 2D point to retrieve texture coordinates
-    //   * @return 2D texture coordinates at the given p point
-    //   */
-    //  public Point2d vertexCoordinates(final double x, final double y);
 
     /**
      * Texture initialization. This method must be called before
@@ -65,35 +49,6 @@ public interface Texture {
      * returns unpredictive results
      */
     void finalizeRendering();
-
-    //  /**
-    //   * Set the valid range of points that can be mapped to texture coordinates
-    //   * @param xmin min x value
-    //   * @param ymin min Y value
-    //   * @param xmax max X value
-    //   * @param ymax max Y value
-    //   */
-    //  public void setRange(double xmin, double ymin, double xmax, double ymax);
-    //
-    //  /**
-    //   * @return the min X point coordinate that can be mapped to texture coordinates
-    //   */
-    //  double getMinX();
-    //
-    //  /**
-    //   * @return the max X point coordinate that can be mapped to texture coordinates
-    //   */
-    //  double getMaxX();
-    //
-    //  /**
-    //   * @return the min Y point coordinate that can be mapped to texture coordinates
-    //   */
-    //  double getMinY();
-    //
-    //  /**
-    //   * @return the max Y point coordinate that can be mapped to texture coordinates
-    //   */
-    //  double getMaxY();
 
     /**
      * @return the texture image width (in pixels)

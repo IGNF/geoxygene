@@ -109,12 +109,12 @@ public class TextureImageUtil {
      * @param image
      * @param scaleFactor
      */
-    public static void rescaleTextureCoordinates(TextureImage image, double scaleFactor) {
+    public static void rescaleTextureCoordinates(TextureImage image, double uScaleFactor, double vScaleFactor) {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 TexturePixel pixel = image.getPixel(x, y);
-                pixel.uTexture *= scaleFactor;
-                pixel.vTexture *= scaleFactor;
+                pixel.uTexture *= uScaleFactor;
+                pixel.vTexture *= vScaleFactor;
             }
         }
 
@@ -451,15 +451,15 @@ public class TextureImageUtil {
             }
         }
         byteBuffer.rewind();
-        for (int y = 0; y < image.getHeight(); y++) {
-            for (int x = 0; x < image.getWidth(); x++) {
-                float u = byteBuffer.getFloat();
-                float v = byteBuffer.getFloat();
-                if (u != -1 && v != -1) {
-                    System.err.println("pixel(" + x + "," + y + ") = " + u + "x" + v);
-                }
-            }
-        }
+        //        for (int y = 0; y < image.getHeight(); y++) {
+        //            for (int x = 0; x < image.getWidth(); x++) {
+        //                float u = byteBuffer.getFloat();
+        //                float v = byteBuffer.getFloat();
+        //                if (u != -1 && v != -1) {
+        //                    System.err.println("pixel(" + x + "," + y + ") = " + u + "x" + v);
+        //                }
+        //            }
+        //        }
         return byteBuffer;
     }
 }

@@ -39,7 +39,6 @@ import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldTexture;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.render.primitive.BasicParameterizer;
-import fr.ign.cogit.geoxygene.appli.render.primitive.DistanceFieldParameterizer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.FeatureRenderer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.GL4FeatureRenderer;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
@@ -331,8 +330,12 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                                 // FIXME: find a way to integrate/describe it into the SLD
                                 // bypass given symbolizers for some layers
                                 if (this.getLayer().getName().equals("PISTE_AERODROME")) {
-                                    //symbolizer = this.generateDistanceFieldTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
-                                    symbolizer = this.generateTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
+                                    symbolizer = this.generateDistanceFieldTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
+                                    //                                    symbolizer = this.generateTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
+                                }
+                                if (this.getLayer().getName().equals("mer_sans_sable")) {
+                                    symbolizer = this.generateDistanceFieldTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
+                                    //                                    symbolizer = this.generateTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
                                 }
                                 // FIXME: find a way to integrate/describe it into the SLD
                                 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -355,8 +358,11 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
      */
     private DistanceFieldTexturedPolygonSymbolizer generateDistanceFieldTexturedPolygonSymbolizer(Viewport viewport, IFeature feature) {
         DistanceFieldTexturedPolygonSymbolizer polygonSymbolizer = new DistanceFieldTexturedPolygonSymbolizer(feature, viewport);
-        DistanceFieldParameterizer parameterizer = new DistanceFieldParameterizer(viewport, feature);
-        polygonSymbolizer.setTexture(new DistanceFieldTexture(parameterizer));
+        DistanceFieldTexture texture = new DistanceFieldTexture(viewport, feature);
+        texture.setTextureFilename("./src/main/resources/textures/mer cassini.png");
+        texture.setUScale(Viewport.getMETERS_PER_PIXEL());
+        texture.setVScale(Viewport.getMETERS_PER_PIXEL());
+        polygonSymbolizer.setTexture(texture);
         return polygonSymbolizer;
     }
 
@@ -367,7 +373,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
      */
     private TexturedPolygonSymbolizer generateTexturedPolygonSymbolizer(Viewport viewport, IFeature feature) {
         TexturedPolygonSymbolizer polygonSymbolizer = new TexturedPolygonSymbolizer(feature, viewport);
-        BasicParameterizer parameterizer = new BasicParameterizer(feature.getGeom().getEnvelope());
+        BasicParameterizer parameterizer = new BasicParameterizer(feature);
         parameterizer.scaleX(10);
         parameterizer.scaleY(10);
         polygonSymbolizer.setParameterizer(parameterizer);

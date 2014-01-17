@@ -403,6 +403,7 @@ public class GLComplexFactory {
             if (parameterizer != null) {
                 // vertex is expressed in local-object coordinates
                 uv = parameterizer.getTextureCoordinates(vertex);
+                //                System.err.println("texture coordinates = " + uv + " parameterizer = " + parameterizer.getClass().getSimpleName());
             }
             //            System.err.println("Filled polygon outer frontier uv = " + uv);
             float[] rgba = DEFAULT_COLOR;

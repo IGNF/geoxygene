@@ -27,23 +27,16 @@
 
 package fr.ign.cogit.geoxygene.util.gl;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glEnable;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import javax.vecmath.Point2d;
-
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
 
 /**
  * @author JeT Basic texture returns the coordinates equal to the provided
@@ -87,6 +80,7 @@ public class BasicTexture implements Texture {
             return null;
         }
         if (this.textureId < 0) {
+            GL13.glActiveTexture(GL13.GL_TEXTURE0);
             this.textureId = GLTools.loadTexture(this.getTextureImage());
             logger.debug("Load basic texture " + this.getTextureFilename());
         }
@@ -151,14 +145,8 @@ public class BasicTexture implements Texture {
             return false;
         }
         glEnable(GL_TEXTURE_2D);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texIndex);
-        GL11.glColor4f(1f, 1f, 1f, 1f);
-        GL11.glDepthMask(false);
-        // glEnable(GL11.GL_BLEND);
-        // GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         return true;
     }
 
