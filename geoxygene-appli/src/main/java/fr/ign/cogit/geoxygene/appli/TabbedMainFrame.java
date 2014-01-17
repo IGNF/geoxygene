@@ -186,6 +186,7 @@ public class TabbedMainFrame extends AbstractMainFrame implements ChangeListener
         if (this.getApplication().getProperties().getProjectPlugins().size() != 0) {
             this.getApplication().initializeProjectFramePlugins();
         }
+        projectFrame.getLayerViewPanel().displayGui();
         layerViewPanel.setProjectFrame(projectFrame);
         return projectFrame;
     }

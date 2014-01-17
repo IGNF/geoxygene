@@ -312,7 +312,7 @@ public class DistanceFieldParameterizer implements Parameterizer {
      */
     private void projectMultiSurface(IMultiSurface<?> multiSurface, final Viewport viewport) {
         List<IPolygon> polygons = new ArrayList<IPolygon>();
-
+        // convert the multisurface as a collection of polygons
         for (IOrientableSurface surface : multiSurface.getList()) {
             if (surface instanceof IPolygon) {
                 IPolygon polygon = (IPolygon) surface;
@@ -324,6 +324,13 @@ public class DistanceFieldParameterizer implements Parameterizer {
         this.projectPolygons(polygons, viewport);
     }
 
+    /**
+     * Fills image pixels
+     * draw all boundaries and stores all points into a table ordered by Y
+     * values
+     * then fill the polygon content using Y values
+     * then fill recursively distance pixels for inner pixels
+     */
     private void projectPolygons(Collection<IPolygon> polygons, final Viewport viewport) {
         DistanceFieldFrontierPixelRenderer pixelRenderer = new DistanceFieldFrontierPixelRenderer();
 
@@ -337,6 +344,7 @@ public class DistanceFieldParameterizer implements Parameterizer {
                 this.drawFrontier(innerFrontier, -innerFrontierIndex - 1, pixelRenderer, viewport);
             }
         }
+
         // fills the inner pixels
         this.fillHorizontally(pixelRenderer.getYs());
 
@@ -346,12 +354,36 @@ public class DistanceFieldParameterizer implements Parameterizer {
         //blurDistance(this);
         //fillUVTextureFromOuterFrontier( this, pixelRenderer.getModifiedPixels());
 
-        fillTextureCoordinates(this.texImage, pixelRenderer.getModifiedPixels(), this.imageToPolygonFactorX, this.imageToPolygonFactorY);
+        System.err.println("u texture coordinate range = " + pixelRenderer.getuMin() + " - " + pixelRenderer.getuMax());
+        System.err.println("image to polygon factor = " + this.imageToPolygonFactorX + " - " + this.imageToPolygonFactorY);
+        System.err.println("viewport scale = " + viewport.getScale());
+        TextureImageUtil.rescaleTextureCoordinates(this.texImage, viewport.getScale() * 0.001);
+        Set<Point> nonInfiniteModifiedPixels = this.getModifiedPixelsButInfiniteDistancePixels(pixelRenderer.getModifiedPixels());
+        //        Set<Point> nonInfiniteModifiedPixels = pixelRenderer.getModifiedPixels();
+        fillTextureCoordinates(this.texImage, nonInfiniteModifiedPixels, this.imageToPolygonFactorX, this.imageToPolygonFactorY);
 
         //        TextureImageUtil.checkTextureCoordinates(this);
 
-        // FIXME: it seems that there is a bug in blur algo
-        //TextureImageUtil.blurTextureCoordinates(this);
+        // FIXME: it seems that there is a bug in the blur algo
+        TextureImageUtil.blurTextureCoordinates(this.texImage, 10);
+    }
+
+    /**
+     * Remove all pixels which have an infinite distance from the modified
+     * pixels
+     * 
+     * @param modifiedPixels
+     * @return
+     */
+    private Set<Point> getModifiedPixelsButInfiniteDistancePixels(Set<Point> modifiedPixels) {
+        Set<Point> nonInfiniteModifiedPixels = new HashSet<Point>();
+        for (Point p : modifiedPixels) {
+            TexturePixel pixel = this.texImage.getPixel(p.x, p.y);
+            if (pixel.distance != Double.POSITIVE_INFINITY) {
+                nonInfiniteModifiedPixels.add(p);
+            }
+        }
+        return nonInfiniteModifiedPixels;
     }
 
     /**
@@ -359,8 +391,8 @@ public class DistanceFieldParameterizer implements Parameterizer {
      *            list of y values containing a list of x-values
      * @param image
      */
-    private static void fillHorizontally(TextureImage image, Map<Integer, List<Integer>> ys) {
-        for (int y = 0; y < image.getHeight(); y++) {
+    private void fillHorizontally(Map<Integer, List<Integer>> ys) {
+        for (int y = 0; y < this.texImage.getHeight(); y++) {
             List<Integer> xs = ys.get(y);
             if (xs == null || xs.size() == 0) {
                 continue;
@@ -374,7 +406,7 @@ public class DistanceFieldParameterizer implements Parameterizer {
                 int x1 = xs.get(2 * n);
                 int x2 = xs.get(2 * n + 1);
                 for (int x = x1; x <= x2; x++) {
-                    TexturePixel pixel = image.getPixel(x, y);
+                    TexturePixel pixel = this.texImage.getPixel(x, y);
                     if (pixel != null && pixel.frontier == 0) {
                         pixel.in = true;
                         pixel.distance = Double.MAX_VALUE;
@@ -429,7 +461,6 @@ public class DistanceFieldParameterizer implements Parameterizer {
 
         double linearDistance = 0; // linear parameterization along the frontier
         for (int nPoint = 0; nPoint < frontierSize; nPoint++) {
-            //pixelRenderer.setHorizontalLine((int) proj1.getY() == (int) proj2.getY());
             // check if previous and next points are on the same Y side (cusp)
             // if the line is horizontal, keep previous cusp
             if (y1 != y2) {
@@ -437,11 +468,15 @@ public class DistanceFieldParameterizer implements Parameterizer {
                 lastDirection = y2 - y1;
             }
 
+            // here we can choose the parameterization along frontiers
             pixelRenderer.setLinearParameterization(linearDistance, linearDistance + segmentLength);
-
+            // FIXME: very special case for 'mer JDD plancoet'. Long outer frontier
+            // don't have to be of distance 0
+            pixelRenderer.setDistanceToZero(segmentLength < 1000);
             if (!(x1 == x2 && y1 == y2)) {
                 this.texImage.drawLine(x1, y1, x2, y2, pixelRenderer);
             }
+
             linearDistance += segmentLength;
             p0 = p1;
             p1 = p2;
@@ -456,38 +491,6 @@ public class DistanceFieldParameterizer implements Parameterizer {
             y1 = y2;
             x2 = (int) proj2.getX();
             y2 = (int) proj2.getY();
-
-        }
-    }
-
-    /**
-     * @param ys
-     *            list of y values containing a list of x-values
-     * @param image
-     */
-    private void fillHorizontally(Map<Integer, List<Integer>> ys) {
-        for (int y = 0; y < this.texImage.getHeight(); y++) {
-            List<Integer> xs = ys.get(y);
-            if (xs == null || xs.size() == 0) {
-                continue;
-            }
-            Collections.sort(xs); // order by x values
-            if (xs.size() % 2 != 0) {
-                logger.warn("x values count cannot be even ! y = " + y + " : " + xs.size() + " : " + xs);
-            }
-            // draw horizontal lines between xs pixel pairs/couples
-            for (int n = 0; n < xs.size() / 2; n++) {
-                int x1 = xs.get(2 * n);
-                int x2 = xs.get(2 * n + 1);
-                for (int x = x1; x <= x2; x++) {
-                    TexturePixel pixel = this.texImage.getPixel(x, y);
-                    if (pixel != null && pixel.frontier == 0) {
-                        pixel.in = true;
-                        pixel.distance = Double.MAX_VALUE;
-                    }
-
-                }
-            }
 
         }
     }

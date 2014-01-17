@@ -369,7 +369,6 @@ public class GLComplexFactory {
      * Tesselate a polygon into a GLPrimitive
      */
     public static GLComplex createFilledPolygon(final IPolygon polygon, final Colorizer colorizer, final Parameterizer parameterizer, double minX, double minY) {
-
         GLComplex primitive = new GLComplex(minX, minY);
         if (parameterizer != null) {
             parameterizer.initializeParameterization();
@@ -415,7 +414,7 @@ public class GLComplexFactory {
                     rgba[3] };
             //            System.err.println("tess input data = " + Arrays.toString(data));
             tesselator.gluTessVertex(vertex, 0, data);
-            //            System.err.println("set exterior vertex " + vertex[0] + ", " + vertex[1] + ", " + vertex[2]);
+            //            System.err.println("set exterior #" + outerFrontierPointIndex + " vertex " + vertex[0] + ", " + vertex[1] + ", " + vertex[2]);
         }
         tesselator.gluTessEndContour();
 
@@ -464,7 +463,7 @@ public class GLComplexFactory {
     /**
      * Create a gl primitive filled surface
      */
-    public static GLComplex createFilledMultiSurface(IMultiSurface<?> multiSurface, final Colorizer colorizer, final Parameterizer parameterizer, double minX,
+    public static GLComplex createFilledMultiSurface(List<IPolygon> multiSurface, final Colorizer colorizer, final Parameterizer parameterizer, double minX,
             double minY) {
         GLComplex primitive = new GLComplex(minX, minY);
 
@@ -482,7 +481,7 @@ public class GLComplexFactory {
     /**
      * Create a gl primitive empty surface
      */
-    public static GLComplex createEmptyMultiSurface(IMultiSurface<?> multiSurface, final Colorizer colorizer, final Parameterizer parameterizer, double minX,
+    public static GLComplex createEmptyMultiSurface(List<IPolygon> multiSurface, final Colorizer colorizer, final Parameterizer parameterizer, double minX,
             double minY) {
         GLComplex primitive = new GLComplex(minX, minY);
 
@@ -497,7 +496,7 @@ public class GLComplexFactory {
         return primitive;
     }
 
-    public static GLComplex createOutlineMultiSurface(IMultiSurface<?> multiSurface, BasicStroke stroke, double minX, double minY) {
+    public static GLComplex createOutlineMultiSurface(List<IPolygon> multiSurface, BasicStroke stroke, double minX, double minY) {
         GLComplex primitive = new GLComplex(minX, minY);
 
         for (IOrientableSurface surface : multiSurface) {

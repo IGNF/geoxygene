@@ -51,9 +51,8 @@ import org.lwjgl.opengl.GL30;
  * GL Primitive is a representation of a 2D Object with 2D coordinates, Texture
  * coordinates and Color components
  * It is composed of primitives types which are themselves composed of index
- * lists
- * so it can mix different type of primitives, but the insertion order is not
- * kept
+ * lists so it can mix different type of primitives, but the insertion order
+ * is not kept
  * 
  * @author JeT
  * 
@@ -74,6 +73,11 @@ public class GLComplex {
     private int vboIndicesId = -1; // VBO Indices index
     private double minX = 0.;
     private double minY = 0.;
+    private GLRenderingCapability renderingCapability = null;
+
+    public enum GLRenderingCapability {
+        POSITION, COLOR, TEXTURE
+    }
 
     /**
      * Default constructor
@@ -81,6 +85,20 @@ public class GLComplex {
     public GLComplex(double minX, double minY) {
         this.minX = minX;
         this.minY = minY;
+    }
+
+    /**
+     * @return the renderingCapability
+     */
+    public GLRenderingCapability getRenderingCapability() {
+        if (this.renderingCapability == null) {
+            if (this.getTexture() != null) {
+                this.renderingCapability = GLRenderingCapability.TEXTURE;
+            } else {
+                this.renderingCapability = GLRenderingCapability.COLOR;
+            }
+        }
+        return this.renderingCapability;
     }
 
     /**
@@ -96,6 +114,8 @@ public class GLComplex {
      */
     public void setTexture(Texture texture) {
         this.texture = texture;
+        this.renderingCapability = null;
+
     }
 
     /**
@@ -205,7 +225,7 @@ public class GLComplex {
                 //                System.err.println("add XYZ to vertex buffer: " + Arrays.toString(vertex.getXYZ()));
                 //                System.err.println("add UV to vertex buffer: " + Arrays.toString(vertex.getUV()));
                 //                System.err.println("add RGBA to vertex buffer: " + Arrays.toString(vertex.getRGBA()));
-                this.verticesBuffer.put(new float[] { (vertex.getXYZ()[0]), (vertex.getXYZ()[1]), vertex.getXYZ()[1] });
+                this.verticesBuffer.put(new float[] { (vertex.getXYZ()[0]), (vertex.getXYZ()[1]), vertex.getXYZ()[2] });
                 this.verticesBuffer.put(vertex.getUV());
                 this.verticesBuffer.put(vertex.getRGBA());
 

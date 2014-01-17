@@ -35,8 +35,11 @@ import org.lwjgl.opengl.GLContext;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldTexture;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
+import fr.ign.cogit.geoxygene.appli.render.primitive.BasicParameterizer;
+import fr.ign.cogit.geoxygene.appli.render.primitive.DistanceFieldParameterizer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.FeatureRenderer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.GL4FeatureRenderer;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
@@ -45,6 +48,9 @@ import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.UserStyle;
+import fr.ign.cogit.geoxygene.style.gl.DistanceFieldTexturedPolygonSymbolizer;
+import fr.ign.cogit.geoxygene.style.gl.TexturedPolygonSymbolizer;
+import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 
 /**
  * A renderer to render a {@link Layer} into a {@link LayerViewLwjgl1Panel}. It
@@ -321,6 +327,15 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                                 if (this.isCancelled()) {
                                     return;
                                 }
+                                /// ////////////////////////////////////////////////////////////////////////////////////////////
+                                // FIXME: find a way to integrate/describe it into the SLD
+                                // bypass given symbolizers for some layers
+                                if (this.getLayer().getName().equals("PISTE_AERODROME")) {
+                                    //symbolizer = this.generateDistanceFieldTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
+                                    symbolizer = this.generateTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
+                                }
+                                // FIXME: find a way to integrate/describe it into the SLD
+                                // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
                                 this.render(symbolizer, feature);
                             }
                             this.fireActionPerformed(new ActionEvent(this, 4, "Rendering feature", 100 * featureRenderIndex++ //$NON-NLS-1$
@@ -331,6 +346,35 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
             }
         }
         this.fireActionPerformed(new ActionEvent(this, 5, "Rendering finished", featureRenderIndex)); //$NON-NLS-1$
+    }
+
+    /**
+     * @param feature
+     * @param viewport
+     * @return
+     */
+    private DistanceFieldTexturedPolygonSymbolizer generateDistanceFieldTexturedPolygonSymbolizer(Viewport viewport, IFeature feature) {
+        DistanceFieldTexturedPolygonSymbolizer polygonSymbolizer = new DistanceFieldTexturedPolygonSymbolizer(feature, viewport);
+        DistanceFieldParameterizer parameterizer = new DistanceFieldParameterizer(viewport, feature);
+        polygonSymbolizer.setTexture(new DistanceFieldTexture(parameterizer));
+        return polygonSymbolizer;
+    }
+
+    /**
+     * @param feature
+     * @param viewport
+     * @return
+     */
+    private TexturedPolygonSymbolizer generateTexturedPolygonSymbolizer(Viewport viewport, IFeature feature) {
+        TexturedPolygonSymbolizer polygonSymbolizer = new TexturedPolygonSymbolizer(feature, viewport);
+        BasicParameterizer parameterizer = new BasicParameterizer(feature.getGeom().getEnvelope());
+        parameterizer.scaleX(10);
+        parameterizer.scaleY(10);
+        polygonSymbolizer.setParameterizer(parameterizer);
+        BasicTexture texture = new BasicTexture();
+        texture.setTextureFilename("./src/main/resources/textures/dense pine forest.jpg");
+        polygonSymbolizer.setTexture(texture);
+        return polygonSymbolizer;
     }
 
     //  /**

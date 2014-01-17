@@ -29,6 +29,8 @@ import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.log4j.Logger;
 
@@ -127,6 +129,15 @@ public class GeOxygeneApplication {
         // Load properties from geoxygene-configuation.xml file
         this.loadProperties("./geoxygene-configuration.xml");
 
+        // set Look And Feel
+        String lafClassname = this.properties.getDefaultLookAndFeel();
+        try {
+            UIManager.setLookAndFeel(lafClassname);
+        } catch (Exception e) {
+            logger.warn("Cannot restore Look and Feel '" + lafClassname + "'. Use default one");
+        }
+
+        // set last directory used
         MainFrameMenuBar.fc.setPreviousDirectory(new File(GeOxygeneApplication.this.properties.getLastOpenedFile()));
 
         // Initialize application plugins

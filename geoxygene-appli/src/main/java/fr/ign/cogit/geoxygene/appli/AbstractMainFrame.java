@@ -324,12 +324,13 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
         }
         try {
             UIManager.setLookAndFeel(className);
+            SwingUtilities.updateComponentTreeUI(this.frame);
+            this.getFrame().repaint();
+            this.getApplication().getProperties().setDefaultLookAndFeel(className);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return false;
         }
-        SwingUtilities.updateComponentTreeUI(this.frame);
-        this.getFrame().repaint();
 
         return true;
     }

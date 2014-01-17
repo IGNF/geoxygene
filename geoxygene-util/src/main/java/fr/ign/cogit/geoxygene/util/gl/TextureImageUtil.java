@@ -33,11 +33,14 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 import javax.imageio.ImageIO;
 import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
+import org.lwjgl.BufferUtils;
 
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 
@@ -50,6 +53,14 @@ public class TextureImageUtil {
     private static final double PI2 = Math.PI * 2;
     private static final Logger logger = Logger.getLogger(TextureImageUtil.class.getName()); // logger
 
+    /**
+     * Blur the 'distance' pixel member with a square window
+     * 
+     * @param image
+     *            image to blur
+     * @param blurWindowHalfSize
+     *            half size of the blur square
+     */
     public static void blurDistance(TextureImage image, int blurWindowHalfSize) {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
@@ -57,10 +68,22 @@ public class TextureImageUtil {
                 pixel.distance = blurDistanceNeighborhood(image, x, y, blurWindowHalfSize);
             }
         }
-
     }
 
-    public static double blurDistanceNeighborhood(TextureImage image, int x, int y, int blurWindowHalfSize) {
+    /**
+     * Compute the blurred value of a given window centered at (x,y)
+     * 
+     * @param image
+     *            pixel content
+     * @param x
+     *            blur window center
+     * @param y
+     *            blur window center
+     * @param blurWindowHalfSize
+     *            half size of the blur window
+     * @return
+     */
+    private static double blurDistanceNeighborhood(TextureImage image, int x, int y, int blurWindowHalfSize) {
         double neighborsWeightSum = 0.;
         double blurredDistance = 0;
         for (int dy = -blurWindowHalfSize; dy <= blurWindowHalfSize; dy++) {
@@ -78,6 +101,23 @@ public class TextureImageUtil {
             return blurredDistance / neighborsWeightSum;
         }
         return blurredDistance;
+    }
+
+    /**
+     * Scan all pixels and multiply uv texture coordinates by the given factor
+     * 
+     * @param image
+     * @param scaleFactor
+     */
+    public static void rescaleTextureCoordinates(TextureImage image, double scaleFactor) {
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                TexturePixel pixel = image.getPixel(x, y);
+                pixel.uTexture *= scaleFactor;
+                pixel.vTexture *= scaleFactor;
+            }
+        }
+
     }
 
     public static void blurTextureCoordinates(TextureImage image, int blurWindowHalfSize) {
@@ -235,7 +275,7 @@ public class TextureImageUtil {
                 int rgb = 0;
                 if (pixel.in || pixel.frontier != 0) {
                     int xTexture = (int) Math.abs(pixel.uTexture * texture.getWidth()) % texture.getWidth();
-                    int yTexture = (int) Math.abs(pixel.vTexture * texture.getHeight()) % texture.getHeight();
+                    int yTexture = (int) Math.abs((1 - pixel.vTexture) * texture.getHeight()) % texture.getHeight();
                     //                    System.err.println("pixel = " + pixel + " => " + xTexture + "x" + yTexture + "");
                     rgb = texture.getRGB(xTexture, yTexture);
                     bufferedImage.setRGB(x, y, rgb);
@@ -378,5 +418,48 @@ public class TextureImageUtil {
             }
         }
 
+    }
+
+    /**
+     * Convert a texture image into a byte buffer containing (u,v) couple
+     * of float values for each pixel. non defined coordinates are set to (0,0)
+     * 
+     * @param image
+     *            image to be converted
+     * @return
+     */
+    public static ByteBuffer toFloatBuffer(TextureImage image) {
+        if (image == null) {
+            return null;
+        }
+
+        ByteBuffer byteBuffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 2 * Float.SIZE / 8);
+
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                //                byteBuffer.putFloat((float) x / (float) image.getWidth());
+                //                byteBuffer.putFloat((float) y / (float) image.getHeight());
+                TexturePixel pixel = image.getPixel(x, y);
+                if (pixel.in) {
+                    //                    System.err.println("uv texture (" + x + "," + y + ") = " + pixel.uTexture + "x" + pixel.vTexture);
+                    byteBuffer.putFloat((float) Math.abs(pixel.uTexture));     // U component
+                    byteBuffer.putFloat((float) Math.abs(pixel.vTexture));     // V component
+                } else {
+                    byteBuffer.putFloat(-1f);     // U component
+                    byteBuffer.putFloat(-1f);     // V component
+                }
+            }
+        }
+        byteBuffer.rewind();
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                float u = byteBuffer.getFloat();
+                float v = byteBuffer.getFloat();
+                if (u != -1 && v != -1) {
+                    System.err.println("pixel(" + x + "," + y + ") = " + u + "x" + v);
+                }
+            }
+        }
+        return byteBuffer;
     }
 }

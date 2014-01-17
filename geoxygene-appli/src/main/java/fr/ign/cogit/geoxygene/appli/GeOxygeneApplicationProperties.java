@@ -32,47 +32,55 @@ import fr.ign.cogit.geoxygene.jdbc.postgis.ConnectionParam;
  * DefaultVisualizationType: "AWT" or "LWJGL" (single) if other, default is AWT
  * ConnectionParam: (single)
  * ProjectFrameLayout: "floating" or "tabbed" (single) default is Floating
- *
+ * 
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "GeOxygeneApplicationProperties")
 public class GeOxygeneApplicationProperties {
-  
+
     /** Logger. */
     static Logger logger = Logger.getLogger(GeOxygeneApplicationProperties.class.getName());
-  
+
     @XmlElements(@XmlElement(name = "plugin", type = String.class))
-    private List<String> plugins = new ArrayList<String>();
-    
+    private final List<String> plugins = new ArrayList<String>();
+
     @XmlElements(@XmlElement(name = "projectPlugin", type = String.class))
-    private List<String> projectPlugins = new ArrayList<String>();
-    
+    private final List<String> projectPlugins = new ArrayList<String>();
+
     @XmlElement(name = "lastOpenedFile")
     private String lastOpenedFile = ""; //$NON-NLS-1$
 
     @XmlElements(@XmlElement(name = "preload", type = String.class))
-    private List<String> preloads = new ArrayList<String>();
-    
+    private final List<String> preloads = new ArrayList<String>();
+
     @XmlElement(name = "ConnectionParam")
     private ConnectionParam connectionParam = new ConnectionParam();
 
     @XmlElement(name = "DefaultVisualizationType")
+    // "AWT" ou "LWJGL"
     private String defaultVisualizationType = "AWT";
 
-    @XmlElement(name = "ProjectFrameLayout") // "floating" or "tabbed"
+    @XmlElement(name = "ProjectFrameLayout")
+    // "floating" or "tabbed"
     private String projectFrameLayout = "floating";
+
+    @XmlElement(name = "DefaultLookAndFeel")
+    // LAF class name
+    private String defaultLookAndFeel = "";
 
     /**
      * Return plugin list.
+     * 
      * @return List<String>
      */
     public List<String> getPlugins() {
         return this.plugins;
     }
-    
+
     /**
      * Return project plugin list.
+     * 
      * @return List<String>
      */
     public List<String> getProjectPlugins() {
@@ -81,22 +89,25 @@ public class GeOxygeneApplicationProperties {
 
     /**
      * Return preload list.
+     * 
      * @return List<String>
      */
     public List<String> getPreloads() {
         return this.preloads;
     }
 
-    /** 
+    /**
      * Return last opened file.
+     * 
      * @return string
      */
     public String getLastOpenedFile() {
         return this.lastOpenedFile;
     }
-    
+
     /**
      * Return connection list.
+     * 
      * @return List<String>
      */
     public ConnectionParam getConnectionParam() {
@@ -105,45 +116,71 @@ public class GeOxygeneApplicationProperties {
 
     /**
      * Set last opened file.
+     * 
      * @param lastOpenedFile
      */
     public void setLastOpenedFile(String lastOpenedFile) {
         this.lastOpenedFile = lastOpenedFile;
     }
- 
-    /** 
+
+    /**
      * Return the default visualization type "AWT" or "LWJGL".
+     * 
      * @return string "AWT" or "LWJGL"
      */
     public String getDefaultVisualizationType() {
         return this.defaultVisualizationType;
     }
-    
-   /** 
+
+    /**
      * Set the default visualization type "AWT" or "LWJGL".
-     * @param defaultViz "AWT" or "LWJGL"
+     * 
+     * @param defaultViz
+     *            "AWT" or "LWJGL"
      */
-    public void setDefaultVisualizationType( String defaultViz ) {
+    public void setDefaultVisualizationType(String defaultViz) {
         this.defaultVisualizationType = defaultViz;
+    }
+
+    /**
+     * Return the default Look and Feel class name
+     * 
+     * @return look and feel class name
+     */
+    public String getDefaultLookAndFeel() {
+        return this.defaultLookAndFeel;
+    }
+
+    /**
+     * Set the default Look and Feel class name
+     * 
+     * @param defaultViz
+     *            look and feel class name
+     */
+    public void setDefaultLookAndFeel(String defaultLAF) {
+        this.defaultLookAndFeel = defaultLAF;
     }
 
     /**
      * "floating" uses JInternal frames for ProjectFrames
      * "tabbed" uses A JTabbedPane to dock ProjectFrames
-     * @return the main frame layout: 
-     */ 
+     * 
+     * @return the main frame layout:
+     */
     public String getProjectFrameLayout() {
-    return projectFrameLayout;
-  }
+        return this.projectFrameLayout;
+    }
 
-  /**
-   *      * "Floating" uses JInternal frames for ProjectFrames
+    /**
+     * * "Floating" uses JInternal frames for ProjectFrames
      * "Tabbed" uses A JTabbedPane to dock ProjectFrames
-   * @param projectFrameLayout "floating" or "tabbed"
-   */
-  public void setProjectFrameLayout(String projectFrameLayout) {
-    this.projectFrameLayout = projectFrameLayout;
-  }
+     * 
+     * @param projectFrameLayout
+     *            "floating" or "tabbed"
+     */
+    public void setProjectFrameLayout(String projectFrameLayout) {
+        this.projectFrameLayout = projectFrameLayout;
+    }
 
     public void setConnectionParam(ConnectionParam param) {
         this.connectionParam = param;
@@ -152,7 +189,8 @@ public class GeOxygeneApplicationProperties {
     /**
      * Load the properties from the specified stream.
      * 
-     * @param stream stream to load the properties from
+     * @param stream
+     *            stream to load the properties from
      * @return the properties loaded from the specified stream
      */
     public static GeOxygeneApplicationProperties unmarshall(InputStream stream) {
@@ -170,15 +208,15 @@ public class GeOxygeneApplicationProperties {
     /**
      * Load the properties from the specified file.
      * 
-     * @param fileName file to load the properties from
+     * @param fileName
+     *            file to load the properties from
      * @return the properties loaded from the specified file
      */
     public static GeOxygeneApplicationProperties unmarshall(String fileName) {
         try {
             return GeOxygeneApplicationProperties.unmarshall(new FileInputStream(fileName));
         } catch (FileNotFoundException e) {
-            GeOxygeneApplicationProperties.logger
-                .error("File " + fileName + " could not be found"); //$NON-NLS-1$//$NON-NLS-2$
+            GeOxygeneApplicationProperties.logger.error("File " + fileName + " could not be found"); //$NON-NLS-1$//$NON-NLS-2$
             return new GeOxygeneApplicationProperties();
         }
     }
@@ -186,7 +224,8 @@ public class GeOxygeneApplicationProperties {
     /**
      * Save the properties using the specified writer.
      * 
-     * @param writer writer to save the properties into
+     * @param writer
+     *            writer to save the properties into
      */
     public void marshall(Writer writer) {
         try {
@@ -202,7 +241,8 @@ public class GeOxygeneApplicationProperties {
     /**
      * Save the properties using the specified stream.
      * 
-     * @param stream stream to save the properties into
+     * @param stream
+     *            stream to save the properties into
      */
     public void marshall(OutputStream stream) {
         try {
@@ -221,7 +261,8 @@ public class GeOxygeneApplicationProperties {
     /**
      * Save the properties in the specified file.
      * 
-     * @param fileName name of the file to save the properties into
+     * @param fileName
+     *            name of the file to save the properties into
      */
     public void marshall(String fileName) {
         try {

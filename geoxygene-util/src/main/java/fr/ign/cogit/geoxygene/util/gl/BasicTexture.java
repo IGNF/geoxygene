@@ -40,7 +40,10 @@ import java.io.IOException;
 
 import javax.vecmath.Point2d;
 
+import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL20;
 
 /**
  * @author JeT Basic texture returns the coordinates equal to the provided
@@ -49,13 +52,16 @@ import org.lwjgl.opengl.GL11;
  */
 public class BasicTexture implements Texture {
 
+    private static final Logger logger = Logger.getLogger(BasicTexture.class.getName()); // logger
+
     private int textureId = -1;
     private String textureFilename = null;
     private BufferedImage textureImage = null;
-    private double minX = 0; // range of point coordinates in world space
-    private double maxX = 1; // range of point coordinates in world space
-    private double minY = 0; // range of point coordinates in world space
-    private double maxY = 1; // range of point coordinates in world space
+
+    //    private double minX = 0; // range of point coordinates in world space
+    //    private double maxX = 1; // range of point coordinates in world space
+    //    private double minY = 0; // range of point coordinates in world space
+    //    private double maxY = 1; // range of point coordinates in world space
 
     /**
      * Constructor
@@ -82,7 +88,7 @@ public class BasicTexture implements Texture {
         }
         if (this.textureId < 0) {
             this.textureId = GLTools.loadTexture(this.getTextureImage());
-
+            logger.debug("Load basic texture " + this.getTextureFilename());
         }
         return this.textureId;
     }
@@ -147,6 +153,7 @@ public class BasicTexture implements Texture {
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texIndex);
         GL11.glColor4f(1f, 1f, 1f, 1f);
         GL11.glDepthMask(false);
@@ -155,29 +162,30 @@ public class BasicTexture implements Texture {
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(javax.vecmath
-     * .Point2d)
-     */
-    @Override
-    public Point2d vertexCoordinates(final Point2d p) {
-        return this.vertexCoordinates(p.x, p.y);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(double,
-     * double)
-     */
-    @Override
-    public Point2d vertexCoordinates(final double x, final double y) {
-        Point2d p = new Point2d((x - this.minX) / (this.maxX - this.minX), (y - this.minY) / (this.maxY - this.minY));
-        return p;
-    }
+    //    /*
+    //     * (non-Javadoc)
+    //     * 
+    //     * @see
+    //     * fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(javax.vecmath
+    //     * .Point2d)
+    //     */
+    //    @Override
+    //    public Point2d vertexCoordinates(final Point2d p) {
+    //        return this.vertexCoordinates(p.x, p.y);
+    //    }
+    //
+    //    /*
+    //     * (non-Javadoc)
+    //     * 
+    //     * @see fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(double,
+    //     * double)
+    //     */
+    //    @Override
+    //    public Point2d vertexCoordinates(final double x, final double y) {
+    //        Point2d p = new Point2d((x - this.minX) / (this.maxX - this.minX), (y - this.minY) / (this.maxY - this.minY));
+    //        System.err.println("return vertex coordinate(" + x + "," + y + ") = " + p);
+    //        return p;
+    //    }
 
     /*
      * (non-Javadoc)
@@ -189,45 +197,45 @@ public class BasicTexture implements Texture {
 
     }
 
-    @Override
-    public void setRange(final double xmin, final double ymin, final double xmax, final double ymax) {
-        this.minX = xmin;
-        this.maxX = xmax;
-        this.minY = ymin;
-        this.maxY = ymax;
-    }
-
-    /**
-     * @return the minX
-     */
-    @Override
-    public double getMinX() {
-        return this.minX;
-    }
-
-    /**
-     * @return the maxX
-     */
-    @Override
-    public double getMaxX() {
-        return this.maxX;
-    }
-
-    /**
-     * @return the minY
-     */
-    @Override
-    public double getMinY() {
-        return this.minY;
-    }
-
-    /**
-     * @return the maxY
-     */
-    @Override
-    public double getMaxY() {
-        return this.maxY;
-    }
+    //    @Override
+    //    public void setRange(final double xmin, final double ymin, final double xmax, final double ymax) {
+    //        this.minX = xmin;
+    //        this.maxX = xmax;
+    //        this.minY = ymin;
+    //        this.maxY = ymax;
+    //    }
+    //
+    //    /**
+    //     * @return the minX
+    //     */
+    //    @Override
+    //    public double getMinX() {
+    //        return this.minX;
+    //    }
+    //
+    //    /**
+    //     * @return the maxX
+    //     */
+    //    @Override
+    //    public double getMaxX() {
+    //        return this.maxX;
+    //    }
+    //
+    //    /**
+    //     * @return the minY
+    //     */
+    //    @Override
+    //    public double getMinY() {
+    //        return this.minY;
+    //    }
+    //
+    //    /**
+    //     * @return the maxY
+    //     */
+    //    @Override
+    //    public double getMaxY() {
+    //        return this.maxY;
+    //    }
 
     public void setTextureImage(BufferedImage textureImage) {
         this.textureImage = textureImage;

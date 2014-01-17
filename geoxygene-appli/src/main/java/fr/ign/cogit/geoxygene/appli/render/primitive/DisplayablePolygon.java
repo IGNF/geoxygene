@@ -33,43 +33,71 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.gl.DistanceFieldTexturedPolygonSymbolizer;
+import fr.ign.cogit.geoxygene.style.gl.TexturedPolygonSymbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
-import fr.ign.cogit.geoxygene.util.gl.Texture;
 
 /**
  * @author JeT
  * 
  */
 public class DisplayablePolygon extends AbstractTask implements GLDisplayable {
+
+    private static final Logger logger = Logger.getLogger(DisplayablePolygon.class.getName()); // logger
+
     private Viewport viewport = null;
-    private IMultiSurface<?> multiSurface = null;
+    private final List<IPolygon> polygons = new ArrayList<IPolygon>();
     private Symbolizer symbolizer = null;
     private List<GLComplex> fullRepresentation = null;
     private GLComplex partialRepresentation = null;
     private long displayCount = 0; // number of time it has been displayed
     private Date lastDisplayTime; // last time it has been displayed
-    private Colorizer colorizer = null;
-    private Parameterizer parameterizer = null;
-    private Texture texture;
+
+    //    private Colorizer colorizer = null;
+    //    private Parameterizer parameterizer = null;
+
+    //    private Texture texture = null;
 
     /**
-     * 
+     * Constructor using a IMultiSurface
      */
     public DisplayablePolygon(String name, Viewport viewport, IMultiSurface<?> multiSurface, Symbolizer symbolizer) {
         super(name);
         this.viewport = viewport;
-        this.multiSurface = multiSurface;
         this.symbolizer = symbolizer;
+
+        for (Object polygon : multiSurface.getList()) {
+            if (polygon instanceof IPolygon) {
+                this.polygons.add((IPolygon) polygon);
+
+            } else {
+                logger.warn("multisurface does not contains only IPolygons but " + polygon.getClass().getSimpleName());
+            }
+        }
     }
 
-    // TODO: there should be a constructor for IPolygon too (it is very similar to IMultiSurface)
+    /** 
+     * 
+     */
+    public DisplayablePolygon(String name, Viewport viewport, IPolygon polygon, Symbolizer symbolizer) {
+        super(name);
+        this.viewport = viewport;
+        this.symbolizer = symbolizer;
+
+        this.polygons.add(polygon);
+    }
 
     /*
      * (non-Javadoc)
@@ -79,36 +107,6 @@ public class DisplayablePolygon extends AbstractTask implements GLDisplayable {
     @Override
     public boolean isProgressable() {
         return false;
-    }
-
-    /**
-     * @return the colorizer
-     */
-    public Colorizer getColorizer() {
-        return this.colorizer;
-    }
-
-    /**
-     * @param colorizer
-     *            the colorizer to set
-     */
-    public void setColorizer(Colorizer colorizer) {
-        this.colorizer = colorizer;
-    }
-
-    /**
-     * @return the parameterizer
-     */
-    public Parameterizer getParameterizer() {
-        return this.parameterizer;
-    }
-
-    /**
-     * @param parameterizer
-     *            the parameterizer to set
-     */
-    public void setParameterizer(Parameterizer parameterizer) {
-        this.parameterizer = parameterizer;
     }
 
     /**
@@ -157,8 +155,17 @@ public class DisplayablePolygon extends AbstractTask implements GLDisplayable {
         super.setState(TaskState.INITIALIZING);
         this.fullRepresentation = null;
         super.setState(TaskState.RUNNING);
-        if (this.getTexture() != null) {
-            this.generateWithDistanceField();
+
+        //        if (this.getTexture() != null) {
+        //            this.generateWithDistanceField();
+        //        }
+
+        if (this.symbolizer instanceof DistanceFieldTexturedPolygonSymbolizer) {
+            DistanceFieldTexturedPolygonSymbolizer polygonSymbolizer = (DistanceFieldTexturedPolygonSymbolizer) this.symbolizer;
+            this.generateWithDistanceFieldTexturedPolygonSymbolizer(polygonSymbolizer);
+        } else if (this.symbolizer instanceof TexturedPolygonSymbolizer) {
+            TexturedPolygonSymbolizer polygonSymbolizer = (TexturedPolygonSymbolizer) this.symbolizer;
+            this.generateWithTexturedPolygonSymbolizer(polygonSymbolizer);
         } else if (this.symbolizer instanceof PolygonSymbolizer) {
             PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.symbolizer;
             this.generateWithPolygonSymbolizer(polygonSymbolizer);
@@ -172,42 +179,64 @@ public class DisplayablePolygon extends AbstractTask implements GLDisplayable {
 
     private void generateWithPolygonSymbolizer(PolygonSymbolizer symbolizer) {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
+        System.err.println("generate Simple Polygon");
         //        return GLComplexFactory.createFilledPolygon(multiSurface, symbolizer.getStroke().getColor());
-        double minX = this.multiSurface.getEnvelope().minX();
-        double minY = this.multiSurface.getEnvelope().minY();
-        this.colorizer = new SolidColorizer(this.symbolizer.getStroke().getColor());
-        GLComplex content = GLComplexFactory.createFilledMultiSurface(this.multiSurface, this.getColorizer(), this.getParameterizer(), minX, minY);
+        IEnvelope envelope = getEnvelope(this.polygons);
+        double minX = envelope.minX();
+        double minY = envelope.minY();
+        SolidColorizer colorizer = new SolidColorizer(this.symbolizer.getStroke().getColor());
+        GLComplex content = GLComplexFactory.createFilledMultiSurface(this.polygons, colorizer, null, minX, minY);
         content.setColor(symbolizer.getFill().getColor());
         complexes.add(content);
 
         BasicStroke awtStroke = GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport, symbolizer);
-        GLComplex outline = GLComplexFactory.createOutlineMultiSurface(this.multiSurface, awtStroke, minX, minY);
+        GLComplex outline = GLComplexFactory.createOutlineMultiSurface(this.polygons, awtStroke, minX, minY);
         outline.setColor(symbolizer.getStroke().getColor());
         complexes.add(outline);
         this.fullRepresentation = complexes;
     }
 
-    private void generateWithDistanceField() {
+    /**
+     * generate the envelope of a list of polygons
+     * 
+     * @param polygons
+     * @return
+     */
+    private static IEnvelope getEnvelope(List<IPolygon> polygons) {
+        IEnvelope envelope = new GM_Envelope();
+
+        for (int nPolygon = 0; nPolygon < polygons.size(); nPolygon++) {
+            IPolygon polygon = polygons.get(nPolygon);
+            if (nPolygon == 0) {
+                envelope.setLowerCorner(polygon.getEnvelope().getLowerCorner());
+                envelope.setUpperCorner(polygon.getEnvelope().getUpperCorner());
+            } else {
+                envelope.expand(polygon.getEnvelope());
+            }
+        }
+        return envelope;
+    }
+
+    private void generateWithTexturedPolygonSymbolizer(TexturedPolygonSymbolizer symbolizer) {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
-        double minX = this.multiSurface.getEnvelope().minX();
-        double minY = this.multiSurface.getEnvelope().minY();
-        this.colorizer = new SolidColorizer(this.symbolizer.getStroke().getColor());
-        GLComplex content = GLComplexFactory.createFilledMultiSurface(this.multiSurface, this.getColorizer(), this.getParameterizer(), minX, minY);
-        content.setTexture(this.getTexture());
+        IEnvelope envelope = getEnvelope(this.polygons);
+        double minX = envelope.minX();
+        double minY = envelope.minY();
+        GLComplex content = GLComplexFactory.createFilledMultiSurface(this.polygons, null, symbolizer.getParameterizer(), minX, minY);
+        content.setTexture(symbolizer.getTexture());
         complexes.add(content);
         this.fullRepresentation = complexes;
     }
 
-    private Texture getTexture() {
-        return this.texture;
-    }
-
-    /**
-     * @param texture
-     *            the texture to set
-     */
-    public void setTexture(Texture texture) {
-        this.texture = texture;
+    private void generateWithDistanceFieldTexturedPolygonSymbolizer(DistanceFieldTexturedPolygonSymbolizer symbolizer) {
+        List<GLComplex> complexes = new ArrayList<GLComplex>();
+        IEnvelope envelope = getEnvelope(this.polygons);
+        double minX = envelope.minX();
+        double minY = envelope.minY();
+        GLComplex content = GLComplexFactory.createFilledMultiSurface(this.polygons, null, symbolizer.getParameterizer(), minX, minY);
+        content.setTexture(symbolizer.getTexture());
+        complexes.add(content);
+        this.fullRepresentation = complexes;
     }
 
     /*
@@ -219,8 +248,10 @@ public class DisplayablePolygon extends AbstractTask implements GLDisplayable {
     @Override
     public GLComplex getPartialRepresentation() {
         if (this.partialRepresentation == null) {
-            this.partialRepresentation = GLComplexFactory.createEmptyMultiSurface(this.multiSurface, null, null, this.multiSurface.getEnvelope().minX(),
-                    this.multiSurface.getEnvelope().minY());
+            IEnvelope envelope = getEnvelope(this.polygons);
+            double minX = envelope.minX();
+            double minY = envelope.minY();
+            this.partialRepresentation = GLComplexFactory.createEmptyMultiSurface(this.polygons, null, null, minX, minY);
         }
         this.displayIncrement();
         return this.partialRepresentation;

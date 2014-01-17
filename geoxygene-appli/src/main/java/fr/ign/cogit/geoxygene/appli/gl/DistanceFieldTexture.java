@@ -27,10 +27,30 @@
 
 package fr.ign.cogit.geoxygene.appli.gl;
 
-import java.awt.Color;
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
+import static org.lwjgl.opengl.GL11.GL_REPEAT;
+import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Date;
+
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL20;
 
 import fr.ign.cogit.geoxygene.appli.render.primitive.DistanceFieldParameterizer;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
@@ -46,6 +66,7 @@ public class DistanceFieldTexture extends BasicTexture {
 
     private DistanceFieldParameterizer parameterizer = null;
     private boolean firstCall = true;
+    private int distanceFieldTextureId = -1;
 
     /**
      * Constructor
@@ -70,15 +91,41 @@ public class DistanceFieldTexture extends BasicTexture {
     public boolean initializeRendering() {
         if (this.firstCall) {
             this.getParameterizer().initializeParameterization();
-            TextureImage textureImage = this.getParameterizer().getTextureImage();
+            TextureImage uvMap = this.getParameterizer().getTextureImage();
             try {
                 // save image for debug purpose only
                 String generatedTextureFilename = this.generateTextureFilename();
-                TextureImageUtil.saveHeight(textureImage, generatedTextureFilename);
-                super.setTextureImage(this.fillFinalTexture(textureImage));
+                TextureImageUtil.saveHeight(uvMap, generatedTextureFilename);
+                super.setTextureImage(this.fillFinalTexture(uvMap));
+
+                glEnable(GL_TEXTURE_2D);
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                GL13.glActiveTexture(GL13.GL_TEXTURE4);
+                this.distanceFieldTextureId = glGenTextures(); //Generate texture ID
+                glBindTexture(GL_TEXTURE_2D, this.distanceFieldTextureId); //Bind texture ID
+
+                //Setup wrap mode
+                //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+                //Setup texture scaling filtering
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+                //Send texel data to OpenGL
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, uvMap.getWidth(), uvMap.getHeight(), 0, GL_RG, GL_FLOAT, TextureImageUtil.toFloatBuffer(uvMap));
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            GL13.glActiveTexture(GL13.GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, this.distanceFieldTextureId); //Bind texture ID
         }
         return super.initializeRendering();
     }
@@ -90,12 +137,12 @@ public class DistanceFieldTexture extends BasicTexture {
     private BufferedImage fillFinalTexture(TextureImage textureImage) {
         BufferedImage textureToApply = null;
         try {
-            textureToApply = GLTools.loadImage("./src/main/resources/textures/checker.jpg");
+            textureToApply = GLTools.loadImage("./src/main/resources/textures/mer cassini.png");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        TextureImageUtil.blurDistance(textureImage, 10);
+        //TextureImageUtil.blurDistance(textureImage, 10);
         return TextureImageUtil.applyTexture(textureImage, textureToApply);
         //return TextureImageUtil.toHeight(textureImage, Color.white, Color.black);
     }

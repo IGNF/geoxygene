@@ -157,10 +157,10 @@ public final class GLVertex {
     }
 
     public final void setRGBA(final Color c) {
-        this.rgba[0] = c.getRed();
-        this.rgba[1] = c.getGreen();
-        this.rgba[2] = c.getBlue();
-        this.rgba[3] = c.getAlpha();
+        this.rgba[0] = c.getRed() / 255.f;
+        this.rgba[1] = c.getGreen() / 255.f;
+        this.rgba[2] = c.getBlue() / 255.f;
+        this.rgba[3] = c.getAlpha() / 255.f;
     }
 
     public final void setRGBA(final float[] c) {

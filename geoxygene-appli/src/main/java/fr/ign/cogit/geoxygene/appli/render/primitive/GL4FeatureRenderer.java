@@ -53,6 +53,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
@@ -80,7 +81,6 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
 
     private static Logger logger = Logger.getLogger(GL4FeatureRenderer.class.getName());
 
-    private final Map<GLComplex, Texture> textureMap = new HashMap<GLComplex, Texture>();
     private Color backgroundColor = Color.white;
     private Color foregroundColor = Color.black;
     private float lineWidth = 2.f;
@@ -89,20 +89,22 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
     private boolean needInitialization = true;
 
     // shaders
-    private int programId = 0; // shader program id
+    private int currentProgramId = -1; // current program in use in GL context (-1 if none)
+    private int glColorProgramId = 0; // shader program id for rendering colors stored in vertices
+    private int glTextureProgramId = 0; // shader program id for rendering textured polygons
+    private int glDMapTextureProgramId = 0; // shader program id for distance map texture
     private static final String m00ModelToViewMatrixUniformVarName = "m00"; // view matrix GLSL variable name
-    private int m00Location = -1; // GLSL id
+    //    private int m00Location = -1; // GLSL id
     private static final String m02ModelToViewMatrixUniformVarName = "m02"; // view matrix GLSL variable name
-    private int m02Location = -1; // GLSL
+    //    private int m02Location = -1; // GLSL
     private static final String m11ModelToViewMatrixUniformVarName = "m11"; // view matrix GLSL variable name
-    private int m11Location = -1; // GLSL
+    //    private int m11Location = -1; // GLSL
     private static final String m12ModelToViewMatrixUniformVarName = "m12"; // view matrix GLSL variable name
-    private int m12Location = -1; // GLSL
+    //    private int m12Location = -1; // GLSL
     private static final String screenWidthUniformVarName = "screenWidth"; // screen width GLSL variable name
-    private int screenWidthLocation = -1; // GLSL
+    //    private int screenWidthLocation = -1; // GLSL
     private static final String screenHeightUniformVarName = "screenHeight"; // screen height GLSL variable name
-
-    private int screenHeightLocation = -1; // GLSL
+    //    private int screenHeightLocation = -1; // GLSL
 
     private final Map<IFeature, GLDisplayable> displayables = new HashMap<IFeature, GLDisplayable>();
     private LwjglLayerRenderer lwjglLayerRenderer = null;
@@ -231,14 +233,12 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
                 logger.warn("null geometry for feature " + feature.getId());
                 return;
             } else if (geometry.isPolygon()) {
-                logger.warn("null geometry for feature " + feature.getId());
+                logger.warn("polygon geometry for feature " + feature.getId());
+                DisplayablePolygon displayablePolygon = new DisplayablePolygon("polygon #" + feature.getId(), viewport, (IPolygon) geometry, symbolizer);
+                displayable = displayablePolygon;
             } else if (geometry.isMultiSurface()) {
                 DisplayablePolygon displayablePolygon = new DisplayablePolygon("polygon #" + feature.getId(), viewport, (IMultiSurface<?>) geometry, symbolizer);
-                DistanceFieldParameterizer parameterizer = new DistanceFieldParameterizer(viewport, feature);
-                displayablePolygon.setParameterizer(parameterizer);
-                displayablePolygon.setTexture(new DistanceFieldTexture(parameterizer));
                 displayable = displayablePolygon;
-
             } else {
                 logger.warn("GL4FeatureRenderer cannot handle geometry type " + geometry.getClass().getSimpleName());
             }
@@ -289,7 +289,28 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
      */
     private void renderGLPrimitive(GLComplex primitive, final Viewport viewport) {
         //        glEnableVertexAttribArray(COLOR_ATTRIBUTE_ID);
-        GL20.glUseProgram(this.programId);
+
+        switch (primitive.getRenderingCapability()) {
+        case TEXTURE:
+            this.currentProgramId = (primitive.getTexture() instanceof DistanceFieldTexture) ? this.glDMapTextureProgramId : this.glTextureProgramId;
+            GL20.glUseProgram(this.currentProgramId);
+            break;
+        default:
+            logger.warn("Rendering capability " + primitive.getRenderingCapability() + " is not handled by " + this.getClass().getSimpleName());
+        case POSITION:
+        case COLOR:
+            this.currentProgramId = this.glColorProgramId;
+            GL20.glUseProgram(this.currentProgramId);
+        }
+
+        Texture texture = primitive.getTexture();
+        if (texture != null) {
+            texture.initializeRendering();
+            GL20.glUniform1i(glGetUniformLocation(this.currentProgramId, "colorTexture1"), 0);
+            GL20.glUniform1i(glGetUniformLocation(this.currentProgramId, "dMapTexture"), 4);
+
+        }
+
         this.setGLViewMatrix(viewport, primitive.getMinX(), primitive.getMinY());
         GL30.glBindVertexArray(primitive.getVaoId());
 
@@ -297,10 +318,6 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
             GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
         } else {
             GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-        }
-        Texture texture = primitive.getTexture();
-        if (texture != null) {
-            texture.initializeRendering();
         }
         for (GLMesh mesh : primitive.getMeshes()) {
             //            float[] color = mesh.getColor();
@@ -347,10 +364,15 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
     }
 
     public void initShader() {
-        int vertShader = 0, fragPolygonShader = 0;
+        int vertShader = 0;
+        int fragColorShader = 0;
+        int fragTextureShader = 0;
+        int fragDMapTextureShader = 0;
         try {
             vertShader = GLTools.createShader("./src/main/resources/shaders/screen.vert.glsl", GL_VERTEX_SHADER);
-            fragPolygonShader = GLTools.createShader("./src/main/resources/shaders/polygon.frag.glsl", GL_FRAGMENT_SHADER);
+            fragColorShader = GLTools.createShader("./src/main/resources/shaders/polygon.color.frag.glsl", GL_FRAGMENT_SHADER);
+            fragTextureShader = GLTools.createShader("./src/main/resources/shaders/polygon.texture.frag.glsl", GL_FRAGMENT_SHADER);
+            fragDMapTextureShader = GLTools.createShader("./src/main/resources/shaders/polygon.dmap.frag.glsl", GL_FRAGMENT_SHADER);
         } catch (Exception exc) {
             exc.printStackTrace();
             return;
@@ -359,13 +381,32 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
                 logger.error("Unable to create vertex shader");
                 return;
             }
-            if (fragPolygonShader <= 0) {
-                logger.error("Unable to create polygon fragment shader");
+            if (fragColorShader <= 0) {
+                logger.error("Unable to create color fragment shader");
+                return;
+            }
+            if (fragTextureShader <= 0) {
+                logger.error("Unable to create texture fragment shader");
+                return;
+            }
+            if (fragDMapTextureShader <= 0) {
+                logger.error("Unable to create Distance Map fragment shader");
                 return;
             }
         }
-        this.programId = glCreateProgram();
-        if (this.programId <= 0) {
+        this.initColorProgram(vertShader, fragColorShader);
+        this.initTextureProgram(vertShader, fragTextureShader);
+        this.initDMapTextureProgram(vertShader, fragDMapTextureShader);
+
+    }
+
+    /**
+     * @param vertShader
+     * @param fragColorShader
+     */
+    private void initColorProgram(int vertShader, int fragColorShader) {
+        this.glColorProgramId = glCreateProgram();
+        if (this.glColorProgramId <= 0) {
             logger.error("Unable to create GL program");
             return;
         }
@@ -373,33 +414,119 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
         // if the vertex and fragment shaders setup successfully,
         // attach them to the shader program, link the shader program
         // into the GL context, and validate
-        glAttachShader(this.programId, vertShader);
-        glAttachShader(this.programId, fragPolygonShader);
+        glAttachShader(this.glColorProgramId, vertShader);
+        glAttachShader(this.glColorProgramId, fragColorShader);
         //        glAttachShader(this.programId, fragLineShader);
         for (int nAttrib = 0; nAttrib < GLVertex.ATTRIBUTES_COUNT; nAttrib++) {
-            GL20.glBindAttribLocation(this.programId, GLVertex.ATTRIBUTES_ID[nAttrib], GLVertex.ELEMENTS_NAME[nAttrib]);
+            //            GL20.glEnableVertexAttribArray(GLVertex.ATTRIBUTES_ID[nAttrib]);
+            GL20.glBindAttribLocation(this.glColorProgramId, GLVertex.ATTRIBUTES_ID[nAttrib], GLVertex.ELEMENTS_NAME[nAttrib]);
             //            System.err.println("Bind attribute " + GLVertex.ELEMENTS_NAME[nAttrib] + " location to " + GLVertex.ATTRIBUTES_ID[nAttrib]);
         }
         //        GL20.glBindAttribLocation(this.programId, COLOR_ATTRIBUTE_ID, COLOR_ATTRIBUTE_NAME);
 
-        glLinkProgram(this.programId);
-        if (glGetProgrami(this.programId, GL_LINK_STATUS) == GL_FALSE) {
-            logger.error(GLTools.getProgramLogInfo(this.programId));
+        glLinkProgram(this.glColorProgramId);
+        if (glGetProgrami(this.glColorProgramId, GL_LINK_STATUS) == GL_FALSE) {
+            logger.error(GLTools.getProgramLogInfo(this.glColorProgramId));
             return;
         }
-        glValidateProgram(this.programId);
-        if (glGetProgrami(this.programId, GL_VALIDATE_STATUS) == GL_FALSE) {
-            logger.error(GLTools.getProgramLogInfo(this.programId));
+        glValidateProgram(this.glColorProgramId);
+        if (glGetProgrami(this.glColorProgramId, GL_VALIDATE_STATUS) == GL_FALSE) {
+            logger.error(GLTools.getProgramLogInfo(this.glColorProgramId));
             return;
         }
 
-        this.m00Location = glGetUniformLocation(this.programId, GL4FeatureRenderer.m00ModelToViewMatrixUniformVarName);
-        this.m02Location = glGetUniformLocation(this.programId, GL4FeatureRenderer.m02ModelToViewMatrixUniformVarName);
-        this.m11Location = glGetUniformLocation(this.programId, GL4FeatureRenderer.m11ModelToViewMatrixUniformVarName);
-        this.m12Location = glGetUniformLocation(this.programId, GL4FeatureRenderer.m12ModelToViewMatrixUniformVarName);
-        this.screenWidthLocation = glGetUniformLocation(this.programId, GL4FeatureRenderer.screenWidthUniformVarName);
-        this.screenHeightLocation = glGetUniformLocation(this.programId, GL4FeatureRenderer.screenHeightUniformVarName);
+        //        this.m00Location = glGetUniformLocation(this.glColorProgramId, GL4FeatureRenderer.m00ModelToViewMatrixUniformVarName);
+        //        this.m02Location = glGetUniformLocation(this.glColorProgramId, GL4FeatureRenderer.m02ModelToViewMatrixUniformVarName);
+        //        this.m11Location = glGetUniformLocation(this.glColorProgramId, GL4FeatureRenderer.m11ModelToViewMatrixUniformVarName);
+        //        this.m12Location = glGetUniformLocation(this.glColorProgramId, GL4FeatureRenderer.m12ModelToViewMatrixUniformVarName);
+        //        this.screenWidthLocation = glGetUniformLocation(this.glColorProgramId, GL4FeatureRenderer.screenWidthUniformVarName);
+        //        this.screenHeightLocation = glGetUniformLocation(this.glColorProgramId, GL4FeatureRenderer.screenHeightUniformVarName);
+    }
 
+    /**
+     * @param vertShader
+     * @param fragTextureShader
+     */
+    private void initTextureProgram(int vertShader, int fragTextureShader) {
+        this.glTextureProgramId = glCreateProgram();
+        if (this.glTextureProgramId <= 0) {
+            logger.error("Unable to create GL program");
+            return;
+        }
+
+        // if the vertex and fragment shaders setup successfully,
+        // attach them to the shader program, link the shader program
+        // into the GL context, and validate
+        glAttachShader(this.glTextureProgramId, vertShader);
+        glAttachShader(this.glTextureProgramId, fragTextureShader);
+        //        glAttachShader(this.programId, fragLineShader);
+        for (int nAttrib = 0; nAttrib < GLVertex.ATTRIBUTES_COUNT; nAttrib++) {
+            GL20.glBindAttribLocation(this.glTextureProgramId, GLVertex.ATTRIBUTES_ID[nAttrib], GLVertex.ELEMENTS_NAME[nAttrib]);
+            //            System.err.println("Bind attribute " + GLVertex.ELEMENTS_NAME[nAttrib] + " location to " + GLVertex.ATTRIBUTES_ID[nAttrib]);
+        }
+        //        GL20.glBindAttribLocation(this.programId, COLOR_ATTRIBUTE_ID, COLOR_ATTRIBUTE_NAME);
+
+        glLinkProgram(this.glTextureProgramId);
+        if (glGetProgrami(this.glTextureProgramId, GL_LINK_STATUS) == GL_FALSE) {
+            logger.error(GLTools.getProgramLogInfo(this.glTextureProgramId));
+            return;
+        }
+        glValidateProgram(this.glTextureProgramId);
+        if (glGetProgrami(this.glTextureProgramId, GL_VALIDATE_STATUS) == GL_FALSE) {
+            logger.error(GLTools.getProgramLogInfo(this.glTextureProgramId));
+            return;
+        }
+
+        //        this.m00Location = glGetUniformLocation(this.glTextureProgramId, GL4FeatureRenderer.m00ModelToViewMatrixUniformVarName);
+        //        this.m02Location = glGetUniformLocation(this.glTextureProgramId, GL4FeatureRenderer.m02ModelToViewMatrixUniformVarName);
+        //        this.m11Location = glGetUniformLocation(this.glTextureProgramId, GL4FeatureRenderer.m11ModelToViewMatrixUniformVarName);
+        //        this.m12Location = glGetUniformLocation(this.glTextureProgramId, GL4FeatureRenderer.m12ModelToViewMatrixUniformVarName);
+        //        this.screenWidthLocation = glGetUniformLocation(this.glTextureProgramId, GL4FeatureRenderer.screenWidthUniformVarName);
+        //        this.screenHeightLocation = glGetUniformLocation(this.glTextureProgramId, GL4FeatureRenderer.screenHeightUniformVarName);
+        //        System.err.println("m00location = " + this.m00Location);
+        //        System.err.println("m02location = " + this.m02Location);
+    }
+
+    /**
+     * @param vertShader
+     * @param fragDMapTextureShader
+     */
+    private void initDMapTextureProgram(int vertShader, int fragDMapTextureShader) {
+        this.glDMapTextureProgramId = glCreateProgram();
+        if (this.glDMapTextureProgramId <= 0) {
+            logger.error("Unable to create GL program");
+            return;
+        }
+
+        // if the vertex and fragment shaders setup successfully,
+        // attach them to the shader program, link the shader program
+        // into the GL context, and validate
+        glAttachShader(this.glDMapTextureProgramId, vertShader);
+        glAttachShader(this.glDMapTextureProgramId, fragDMapTextureShader);
+        //        glAttachShader(this.programId, fragLineShader);
+        for (int nAttrib = 0; nAttrib < GLVertex.ATTRIBUTES_COUNT; nAttrib++) {
+            GL20.glBindAttribLocation(this.glDMapTextureProgramId, GLVertex.ATTRIBUTES_ID[nAttrib], GLVertex.ELEMENTS_NAME[nAttrib]);
+            //            System.err.println("Bind attribute " + GLVertex.ELEMENTS_NAME[nAttrib] + " location to " + GLVertex.ATTRIBUTES_ID[nAttrib]);
+        }
+        //        GL20.glBindAttribLocation(this.programId, COLOR_ATTRIBUTE_ID, COLOR_ATTRIBUTE_NAME);
+
+        glLinkProgram(this.glDMapTextureProgramId);
+        if (glGetProgrami(this.glDMapTextureProgramId, GL_LINK_STATUS) == GL_FALSE) {
+            logger.error(GLTools.getProgramLogInfo(this.glDMapTextureProgramId));
+            return;
+        }
+        glValidateProgram(this.glDMapTextureProgramId);
+        if (glGetProgrami(this.glDMapTextureProgramId, GL_VALIDATE_STATUS) == GL_FALSE) {
+            logger.error(GLTools.getProgramLogInfo(this.glDMapTextureProgramId));
+            return;
+        }
+
+        //        this.m00Location = glGetUniformLocation(this.glDMapTextureProgramId, GL4FeatureRenderer.m00ModelToViewMatrixUniformVarName);
+        //        this.m02Location = glGetUniformLocation(this.glDMapTextureProgramId, GL4FeatureRenderer.m02ModelToViewMatrixUniformVarName);
+        //        this.m11Location = glGetUniformLocation(this.glDMapTextureProgramId, GL4FeatureRenderer.m11ModelToViewMatrixUniformVarName);
+        //        this.m12Location = glGetUniformLocation(this.glDMapTextureProgramId, GL4FeatureRenderer.m12ModelToViewMatrixUniformVarName);
+        //        this.screenWidthLocation = glGetUniformLocation(this.glDMapTextureProgramId, GL4FeatureRenderer.screenWidthUniformVarName);
+        //        this.screenHeightLocation = glGetUniformLocation(this.glDMapTextureProgramId, GL4FeatureRenderer.screenHeightUniformVarName);
     }
 
     /**
@@ -417,12 +544,15 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
         LayerViewPanel lvp = viewport.getLayerViewPanels().iterator().next();
         float windowWidth = lvp.getWidth();
         float windowHeight = lvp.getHeight();
-        glUniform1f(this.m00Location, (float) modelToViewTransform.getScaleX());
-        glUniform1f(this.m02Location, (float) (modelToViewTransform.getTranslateX() + minX * modelToViewTransform.getScaleX()));
-        glUniform1f(this.m11Location, (float) modelToViewTransform.getScaleY());
-        glUniform1f(this.m12Location, (float) (modelToViewTransform.getTranslateY() + minY * modelToViewTransform.getScaleY()));
-        glUniform1f(this.screenWidthLocation, windowWidth);
-        glUniform1f(this.screenHeightLocation, windowHeight);
+
+        glUniform1f(glGetUniformLocation(this.currentProgramId, m00ModelToViewMatrixUniformVarName), (float) modelToViewTransform.getScaleX());
+        glUniform1f(glGetUniformLocation(this.currentProgramId, m02ModelToViewMatrixUniformVarName), (float) (modelToViewTransform.getTranslateX() + minX
+                * modelToViewTransform.getScaleX()));
+        glUniform1f(glGetUniformLocation(this.currentProgramId, m11ModelToViewMatrixUniformVarName), (float) modelToViewTransform.getScaleY());
+        glUniform1f(glGetUniformLocation(this.currentProgramId, m12ModelToViewMatrixUniformVarName), (float) (modelToViewTransform.getTranslateY() + minY
+                * modelToViewTransform.getScaleY()));
+        glUniform1f(glGetUniformLocation(this.currentProgramId, screenWidthUniformVarName), windowWidth);
+        glUniform1f(glGetUniformLocation(this.currentProgramId, screenHeightUniformVarName), windowHeight);
 
         //        System.err.println("x = " + (float) (modelToViewTransform.getTranslateX()) + " y = " + (modelToViewTransform.getTranslateY()));
         return true;

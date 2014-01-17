@@ -42,6 +42,8 @@ import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 /**
  * @author JeT This pixel renderer is used to draw polygon frontiers in a
  *         Distance field Image. It fills a list of x values for all y values
+ *         u texture coordinates is filled using distance along the frontier
+ *         and is expressed in pixel coordinates
  */
 public class DistanceFieldFrontierPixelRenderer implements TexturePixelRenderer {
 
@@ -53,6 +55,8 @@ public class DistanceFieldFrontierPixelRenderer implements TexturePixelRenderer 
     private int x1, y1, x2, y2; // segment coordinates
     private double u1, u2; // linear parameterization values
     private double lineLength = 0; // distance between begin and end point
+    private double uMin = Double.MAX_VALUE, uMax = -Double.MAX_VALUE;
+    private boolean distanceToZero = true;
 
     /**
      * Constructor
@@ -165,10 +169,16 @@ public class DistanceFieldFrontierPixelRenderer implements TexturePixelRenderer 
         }
 
         pixel.closestFrontier = this.getCurrentFrontier();
-        pixel.distance = 0;
+        pixel.distance = this.distanceToZero ? 0 : Double.POSITIVE_INFINITY;
         pixel.frontier = this.getCurrentFrontier();
         double alpha = Math.sqrt((x - this.x1) * (x - this.x1) + (y - this.y1) * (y - this.y1)) / this.lineLength;
         pixel.uTexture = this.u1 + (this.u2 - this.u1) * alpha;
+        if (pixel.uTexture > this.uMax) {
+            this.uMax = pixel.uTexture;
+        }
+        if (pixel.uTexture < this.uMin) {
+            this.uMin = pixel.uTexture;
+        }
         // fills the list of modified pixels
         this.modifiedPixels.add(new Point(x, y));
     }
@@ -207,6 +217,25 @@ public class DistanceFieldFrontierPixelRenderer implements TexturePixelRenderer 
     public void setLinearParameterization(double ui, double uf) {
         this.u1 = ui;
         this.u2 = uf;
+    }
+
+    /**
+     * @return the minimum value of U texture coordinates (expressed in pixels)
+     */
+    public double getuMin() {
+        return this.uMin;
+    }
+
+    /**
+     * @return the maximum value of U texture coordinates (expressed in pixels)
+     */
+    public double getuMax() {
+        return this.uMax;
+    }
+
+    public void setDistanceToZero(boolean b) {
+        this.distanceToZero = b;
+
     }
 
 }
