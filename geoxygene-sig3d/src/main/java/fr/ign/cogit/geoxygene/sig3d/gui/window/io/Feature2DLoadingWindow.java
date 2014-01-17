@@ -511,6 +511,7 @@ public class Feature2DLoadingWindow extends JDialog implements ActionListener {
           this.iMap3D, featCollFinale);
 
       ((JDialog) repW).setVisible(true);
+      
       if (!repW.isCanceled()) {
         this.dispose();
         this.ftColl.clear();

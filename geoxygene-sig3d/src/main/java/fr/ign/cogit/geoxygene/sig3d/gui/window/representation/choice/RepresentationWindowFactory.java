@@ -76,7 +76,7 @@ public class RepresentationWindowFactory {
         return new Representation3DWindow(iMap3D, featColl);
 
     }
-
+    
     return new OneColoredLayerWindow(iMap3D, featColl);
 
   }

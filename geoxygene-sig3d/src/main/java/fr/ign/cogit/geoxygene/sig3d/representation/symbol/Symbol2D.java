@@ -148,8 +148,7 @@ public class Symbol2D extends Default3DRep {
    * @param color la couleur que l'on souhaite appliquer au cube
    */
   public Symbol2D(FT_Feature feat, double width, double length, Color color) {
-    super();
-    this.feat = feat;
+    super(feat);
     this.width = width;
     this.width = length;
     this.color = color;

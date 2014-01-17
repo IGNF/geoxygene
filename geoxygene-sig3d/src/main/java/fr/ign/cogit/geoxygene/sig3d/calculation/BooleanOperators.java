@@ -58,7 +58,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  * 
  */
 public class BooleanOperators {
-
+ 
   private final static Logger logger = Logger.getLogger(BooleanOperators.class
       .getName());
 

@@ -56,6 +56,20 @@ public abstract class Default3DRep implements I3DRepresentation {
    * Il s'agit du noeud attaché à la représentation
    */
   protected BranchGroup bGRep = null;
+  
+  
+
+  /**
+   * Constructeur par défaut permettant de créer les autorisations nécessaires à
+   * un BranchGroup attribut (ici BgRep attribut "protected" et feat attribut "protected") 
+   * @param feat l'entité liée à la représentation
+   */
+  public Default3DRep(IFeature feat){
+    this();
+    this.feat = feat;
+  }
+  
+  
 
   /**
    * Constructeur par défaut permettant de créer les autorisations nécessaires à

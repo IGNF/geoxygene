@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.geometry;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -49,7 +50,7 @@ public class Sphere extends GM_Solid {
    */
   public Sphere(IDirectPosition center, double radius, int nbCircles) {
 
-    ArrayList<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
+    List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
 
     // On vire les cas que l'on ne devrait pas considèrer
     // Si le centre est à NAN il y a une erreur
