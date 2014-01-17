@@ -50,7 +50,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +71,7 @@ import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
+import fr.ign.cogit.geoxygene.util.gl.Texture;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
@@ -80,7 +80,7 @@ import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
  * @author JeT
  * 
  */
-public class DistanceFieldTexture extends BasicTexture implements Parameterizer {
+public class DistanceFieldTexture implements Parameterizer, Texture {
 
     private static final Logger logger = Logger.getLogger(DistanceFieldTexture.class.getName()); // logger
 
@@ -95,6 +95,7 @@ public class DistanceFieldTexture extends BasicTexture implements Parameterizer 
     private double maxY;
     private double imageToPolygonFactorX;
     private double imageToPolygonFactorY;
+    private BasicTexture textureToApply = null;
 
     private double uScale = 1.;
     private double vScale = 1.;
@@ -117,6 +118,21 @@ public class DistanceFieldTexture extends BasicTexture implements Parameterizer 
         this.setViewport(viewport);
         this.setFeature(feature);
         this.computeBoundaries(feature.getGeom());
+    }
+
+    /**
+     * @return the textureToApply
+     */
+    public final BasicTexture getTextureToApply() {
+        return this.textureToApply;
+    }
+
+    /**
+     * @param textureToApply
+     *            the textureToApply to set
+     */
+    public final void setTextureToApply(BasicTexture textureToApply) {
+        this.textureToApply = textureToApply;
     }
 
     /**
@@ -228,7 +244,7 @@ public class DistanceFieldTexture extends BasicTexture implements Parameterizer 
         if (this.texImage == null) {
             if (this.getFeature().getGeom().isPolygon()) {
                 // generate the field image
-                this.generateTextureImage((IPolygon) this.getFeature().getGeom(), this.viewport);
+                this.generateDistanceField((IPolygon) this.getFeature().getGeom(), this.viewport);
             } else if (this.getFeature().getGeom().isMultiSurface()) {
                 // generate the field image
                 this.generateTextureImage((IMultiSurface<?>) this.getFeature().getGeom(), this.viewport);
@@ -276,32 +292,8 @@ public class DistanceFieldTexture extends BasicTexture implements Parameterizer 
             GL13.glActiveTexture(GL13.GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, this.distanceFieldTextureId); //Bind texture ID
         }
-        return super.initializeRendering();
+        return this.textureToApply.initializeRendering();
     }
-
-    /**
-     * @param textureImage
-     * @return
-     */
-    private BufferedImage fillFinalTexture(TextureImage textureImage) {
-        BufferedImage textureToApply = null;
-        try {
-            textureToApply = GLTools.loadImage("./src/main/resources/textures/mer cassini.png");
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        //TextureImageUtil.blurDistance(textureImage, 10);
-        return TextureImageUtil.applyTexture(textureImage, textureToApply);
-        //return TextureImageUtil.toHeight(textureImage, Color.white, Color.black);
-    }
-
-    //    /**
-    //     * Generate a unique texture filename
-    //     */
-    //    private String generateTextureFilename() {
-    //        return this.getFeature().getId() + String.valueOf(new Date().getTime());
-    //    }
 
     /*
      * (non-Javadoc)
@@ -310,7 +302,7 @@ public class DistanceFieldTexture extends BasicTexture implements Parameterizer 
      */
     @Override
     public void finalizeRendering() {
-        super.finalizeRendering();
+        this.textureToApply.finalizeRendering();
     }
 
     /**
@@ -344,7 +336,7 @@ public class DistanceFieldTexture extends BasicTexture implements Parameterizer 
      * @param polygon
      * @param viewport
      */
-    private void generateTextureImage(IPolygon polygon, Viewport viewport) {
+    private void generateDistanceField(IPolygon polygon, Viewport viewport) {
 
         if (polygon == null) {
             logger.error("Cannot compute boundaries of a null polygon");
@@ -427,7 +419,7 @@ public class DistanceFieldTexture extends BasicTexture implements Parameterizer 
         //blurDistance(this);
         //fillUVTextureFromOuterFrontier( this, pixelRenderer.getModifiedPixels());
 
-        TextureImageUtil.rescaleTextureCoordinates(this.texImage, this.uScale, 1.);
+        TextureImageUtil.rescaleTextureCoordinates(this.texImage, this.uScale, this.vScale);
         Set<Point> nonInfiniteModifiedPixels = this.getModifiedPixelsButInfiniteDistancePixels(pixelRenderer.getModifiedPixels());
         //        Set<Point> nonInfiniteModifiedPixels = pixelRenderer.getModifiedPixels();
         fillTextureCoordinates(this.texImage, nonInfiniteModifiedPixels, this.imageToPolygonFactorX, this.imageToPolygonFactorY);
@@ -777,6 +769,16 @@ public class DistanceFieldTexture extends BasicTexture implements Parameterizer 
     public void setVScale(double d) {
         this.vScale = d;
 
+    }
+
+    @Override
+    public int getTextureWidth() {
+        return this.texImage.getWidth();
+    }
+
+    @Override
+    public int getTextureHeight() {
+        return this.texImage.getHeight();
     }
 
 }

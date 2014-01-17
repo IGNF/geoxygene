@@ -359,7 +359,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
     private DistanceFieldTexturedPolygonSymbolizer generateDistanceFieldTexturedPolygonSymbolizer(Viewport viewport, IFeature feature) {
         DistanceFieldTexturedPolygonSymbolizer polygonSymbolizer = new DistanceFieldTexturedPolygonSymbolizer(feature, viewport);
         DistanceFieldTexture texture = new DistanceFieldTexture(viewport, feature);
-        texture.setTextureFilename("./src/main/resources/textures/mer cassini.png");
+        texture.setTextureToApply(new BasicTexture("./src/main/resources/textures/mer cassini.png"));
         texture.setUScale(Viewport.getMETERS_PER_PIXEL());
         texture.setVScale(Viewport.getMETERS_PER_PIXEL());
         polygonSymbolizer.setTexture(texture);
