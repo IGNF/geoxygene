@@ -20,6 +20,7 @@
 package fr.ign.cogit.geoxygene.appli.example;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.NoninvertibleTransformException;
@@ -33,6 +34,7 @@ import javax.swing.JMenuItem;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.ProjectFramePlugin;
@@ -76,7 +78,20 @@ public class SLDDemoApplication implements GeOxygeneApplicationPlugin, ActionLis
   public void initialize(final GeOxygeneApplication application) {
     this.application = application;
     projectFrame = application.getMainFrame().newProjectFrame();
-    JMenu menuExample = new JMenu("Example");
+    JMenu menuExample = null;
+    String menuName = "Example"; 
+    for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
+      if (c instanceof JMenu) {
+        JMenu aMenu = (JMenu) c;
+        if (aMenu.getText() != null
+            && aMenu.getText().equalsIgnoreCase(menuName)) {
+          menuExample = aMenu;
+        }
+      }
+    }
+    if (menuExample == null) {
+      menuExample = new JMenu(menuName);
+    }
     
     JMenuItem sLDDemoItem = new JMenuItem("SLDDemo");
     sLDDemoItem.addActionListener(new java.awt.event.ActionListener() {
