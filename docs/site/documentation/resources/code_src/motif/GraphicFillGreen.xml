@@ -1,0 +1,25 @@
+<PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+	<Stroke>
+		<CssParameter name="stroke">#007F0E</CssParameter>
+		<CssParameter name="stroke-opacity">0.8</CssParameter>
+		<CssParameter name="stroke-width">1.0</CssParameter>
+	</Stroke>
+	<GeometryPropertyName>geom</GeometryPropertyName>
+	<Fill>
+		<GraphicFill>
+			<Graphic>
+				<opacity>1.0</opacity>
+				<Size>10.0</Size>
+				<Rotation>
+					<Literal>0</Literal>
+				</Rotation>
+				<ExternalGraphic>
+					<href>file:/D:\motif\circles-purple.png</href>
+					<Format>png</Format>
+				</ExternalGraphic>
+			</Graphic>
+		</GraphicFill>
+		<CssParameter name="fill">#ffffff</CssParameter>
+		<CssParameter name="fill-opacity">1.0</CssParameter>
+	</Fill>
+</PolygonSymbolizer>

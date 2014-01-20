@@ -1,6 +1,6 @@
 
-Données OSM dans GeOxygene
-#################################
+Données OSM 
+############
 
 Cette page documente le chargement de données OpenStreetMap dans GeOxygene implémenté dans le module **geoxygene-osm**.
 

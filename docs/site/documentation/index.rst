@@ -1,6 +1,6 @@
 .. _documentation:
 
-Documentation
+GeOxygene Documentation
 =========================
 
 .. sidebar:: GeOxygene Documentation

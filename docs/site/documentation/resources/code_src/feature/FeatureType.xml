@@ -6,18 +6,10 @@
     <isExplicite>1</isExplicite>
     <AttributeType id="1">
         <memberName>revêtement</memberName>
-    <valueType>text</valueType>
+        <valueType>text</valueType>
     </AttributeType>
     <AttributeType id="2">
         <memberName>geom</memberName>
         <valueType>polyligne</valueType>        
     </AttributeType>
-</FeatureType>
-
-<FeatureType id="2">
-    <typeName>bâtiment</typeName>
-    <definition>les maisons dans lesquelles on vit</definition>
-    <positionInitiale>200,10</positionInitiale>
-    <isExplicite>1</isExplicite>
-    <nomClasse>donnees.sandrine.classesGenerees.Route</nomClasse>
 </FeatureType>

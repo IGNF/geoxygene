@@ -8,8 +8,6 @@ specifications for the development and deployment of geographic (GIS) applicatio
 It is a open source contribution of the `COGIT laboratory <http://recherche.ign.fr/labos/cogit/accueilCOGIT.php>`_ at the
 `IGN <http://www.ign.fr/>`_ (Institut Géographique National), the French National Mapping Agency.
 
-GeOxygene is an open source project made available to you using an open source license described :ref:`here <geoxlicense>`.
-
 GeOxygene is based on Java and open source technologies and provides users with an extensible
 object data model (geographic features, geometry, topology and metadata) which implements
 OGC specifications and ISO standards in the geographic information domain.

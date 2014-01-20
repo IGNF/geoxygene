@@ -4,8 +4,8 @@
 :Date: 11 décembre 2008
 :License: Create Commons with attribution
 
-La Carte Topologique dans GeOxygene
-#########################################
+La Carte Topologique
+######################
                                            
                                 
 Objectif de la carte topologique

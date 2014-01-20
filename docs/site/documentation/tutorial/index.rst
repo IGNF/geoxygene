@@ -1,6 +1,6 @@
 
-GeOxygene Tutorial
-===================
+Tutorial
+=========
 
 
 .. sidebar:: GeOxygene Tutorial
@@ -8,8 +8,9 @@ GeOxygene Tutorial
 .. toctree::
    :maxdepth: 1
    
-
+   
    feature
+   geometry
    motif
    plugin
 
