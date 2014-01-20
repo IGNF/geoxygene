@@ -104,7 +104,7 @@ public class ChangementProjectionShape implements GeOxygeneApplicationPlugin, Ac
     // On recherche le code ISO sur 2 chiffres du pays dans le ShapeFile
     for (IFeature feat : countryCollection) {
         // On sélectionne uniquement le polygone des Etats-unis
-        if(feat.getAttribute("iso_a2").equals("US")){
+        if(feat.getAttribute("POSTAL").equals("US")){
             // On stocke le Feature sélectionné dans une nouvelle Population
             popSelectionnee.setFeatureType(countryCollection.getFeatureType());
             popSelectionnee.add((DefaultFeature) feat);
@@ -180,11 +180,11 @@ public class ChangementProjectionShape implements GeOxygeneApplicationPlugin, Ac
     layerTranslate.getSymbolizer().getStroke().setStrokeWidth(3f);
     layerLimites.getSymbolizer().setUnitOfMeasurePixel();
     
-    Color darkRed = new Color(80, 0, 0);
-    Color lightRed = new Color(255, 0, 0);
+    Color darkRed = new Color(0, 0, 80);
+    Color lightRed = new Color(151, 201, 85);
     
     Color darkBlue = new Color(0, 0, 80);
-    Color lightBlue = new Color(0, 0, 255);
+    Color lightBlue = new Color(77, 146, 33);
     
     Color darkGreen = new Color(254, 212, 116);
     
