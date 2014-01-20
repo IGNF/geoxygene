@@ -71,7 +71,7 @@ Schéma géographique : définitions
    
    1.2. FT_Feature
    
-        Un **FT_Feature** est un Feature qui correspond à un objet géographique métier, la géométrie et les attributs sont connus. 
+        Un **FT_Feature** est un Feature qui correspond à un objet géographique métier, le type de la géométrie et les attributs sont connus. 
         Chaque attribut de l'objet géographique devient un attribut de l'objet java. La classe FT_Feature étant abstraite, 
         les nouveaux features doivent donc étendre cette classe. 
         
@@ -87,6 +87,9 @@ Schéma géographique : définitions
               :width: 500px
        
               Figure 3 : Mapping relationnel / objet
+              
+        .. literalinclude:: /documentation/resources/code_src/feature/TronconRoute.java
+                :language: java
 
 2. FeatureType
 

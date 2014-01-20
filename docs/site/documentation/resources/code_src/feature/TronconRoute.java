@@ -1,20 +1,18 @@
-package fr.ign.cogit.geoxygene.user.exercice;
-
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 
-public class Salle extends FT_Feature {
+public class TronconDeRoute extends FT_Feature {
   
-  protected String nom;
-  public String getNom() {return nom;}
-  public void setNom(String nom) {this.nom = nom;}
-
-  protected int numero;
-  public int getNumero() {return numero;}
-
-  public void setNumero(int numero) {this.numero = numero;}
-
-  protected double superficie;
-  public double getSuperficie() {return superficie;}
-  public void setSuperficie(double superficie) {this.superficie = superficie;}
+  /** Renvoie la géométrie de l'objet, castée plus précisément qu'avec la méthode getGeom() */
+  public GM_LineString getGeometrie() {return (GM_LineString)geom;}
+  /** Définit la géométrie de l'objet, castée plus précisément qu'avec la méthode setGeom() */
+  public void setGeometrie(GM_LineString G) {this.geom = G;}
+  
+  protected double nb_voies;
+  public double getNb_voies() {return this.nb_voies; }
+  public void setNb_voies (double Nb_voies) {nb_voies = Nb_voies; }
+  
+  protected String revetement;
+  public String getRevetement() {return this.revetement; }
+  public void setRevetement (String revetement) {revetement = revetement; }
 
 }

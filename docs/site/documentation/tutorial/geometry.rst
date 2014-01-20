@@ -1,13 +1,13 @@
 
 
-La Geometrie
-##############
+Geometrie 
+###########
 
 Introduction
 **************
 
 Dans GeOxygene la dimension spatiale des objets géographiques repose sur la large gamme de primitives géométriques 
-et topologiques spécifiée oar la norme ISO 19107.
+et topologiques spécifiée par la norme ISO 19107.
 
 
 Exemple

@@ -94,7 +94,8 @@ public class TestChangementProjectionShape {
 					double ancienneLongitude = coordAncienne.getX();
 					double nouvelleLongitude = ancienneLongitude + 40;
 										
-					// Si l'ancienne longitude est supérieure à la limite Est du WGS84, la nouvelle longitude est replacée toute à l'ouest
+					// Si l'ancienne longitude est supérieure à la limite Est du WGS84, 
+					//    la nouvelle longitude est replacée toute à l'ouest
 					if(nouvelleLongitude > 180.0){
 						double diff = nouvelleLongitude - 180.0;
 						nouvelleLongitude = -180 +diff;
