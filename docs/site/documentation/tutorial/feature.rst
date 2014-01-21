@@ -27,21 +27,23 @@ ce n'est pas le cas des classes DataSet et Population. Ces classes sont un enric
       Figure 1 : Diagramme de classe Feature
        
 
-Le module **geoxygene-feature** contient l'implémentation des objets géographiques.
+Le module **geoxygene-feature** contient l'implémentation des objets géographiques. 
+
+Cette page présente les *Feature* dans GeOxygene, d'abord en définissant précisément les objets
+puis en donnant quelques exemples d'utilisation.
+
 
 Schéma géographique : définitions
 ***********************************
 
-1. Feature
+**1. Feature**
 
-   Un **Feature** est un objet géographique qui a, en particulier, des attributs et une géométrie. 
+   Un *Feature* est un objet géographique qui a, en particulier, des attributs et une géométrie. 
    La définition exacte d'un feature, d'après la norme ISO 19101 est : 
 
    .. container:: chemin
 
       A feature is an abstraction of a real world phenomenon; it is a geographic feature if it is associated with a location relative to the Earth. 
-
-      A feature is quite simply something that can be drawn on a map
 
    Par exemple on peut avoir comme Feature : TRONCON_ROUTE, NOEUD_ROUTIER, ZONE_ACTIVITE
 
@@ -55,9 +57,9 @@ Schéma géographique : définitions
    Les classes dite géographiques (routes, rivières…) héritent soit de « FT_Feature » soit de « DefaultFeature », autrement dit
    FT_Feature & DefaultFeature sont les classes mères des classes géographiques.
 
-   1.1. DefaultFeature
+   **1.1. DefaultFeature**
 
-        Un **DefaultFeature** est un Feature générique. Les attributs sont représentés dans une table et ne
+        Un *DefaultFeature* est un Feature générique. Les attributs sont représentés dans une table et ne
         peuvent pas être accèdés autrement dit il n'y a pas de getter ni de setter spécifique à un attribut. 
         L'objet géométrique doit être casté suivant son type. 
     
@@ -69,17 +71,15 @@ Schéma géographique : définitions
         table. Mais cela ne constitue pas un schéma conceptuel (voir point n°5), il doit donc être précisé manuellement 
         dès que possible pour les utilisations ultérieures (notamment pour identifier les relations entre objets etc.)
    
-   1.2. FT_Feature
+   **1.2. FT_Feature**
    
-        Un **FT_Feature** est un Feature qui correspond à un objet géographique métier, le type de la géométrie et les attributs sont connus. 
+        Un *FT_Feature* est un Feature qui correspond à un objet géographique métier, le type de la géométrie et les attributs sont connus. 
         Chaque attribut de l'objet géographique devient un attribut de l'objet java. La classe FT_Feature étant abstraite, 
         les nouveaux features doivent donc étendre cette classe. 
         
-        Les classes sont construites en général par un mapping sur des données stockées dans un SGBD relationel.
-        
-        Historiquement, c'est cette méthode qui a été la première implémentée dans GeOxygene. Le mapping entre les environnements objet et relationnel 
-        est assuré par des librairies de persistance open source, Hibernate ou/et OJB. 
-        Cette technique est encore utilisée pour la généralisation, car elle permet de sauvegarder les « états » intermédiaires des features.
+        Les classes sont construites en général par un mapping sur des données stockées dans un SGBD relationel.        
+        Le mapping entre les environnements objet et relationnel est assuré par des librairies de persistance open source, Hibernate ou/et OJB. 
+        Cette technique est utilisée pour la généralisation, car elle permet de sauvegarder les « états » intermédiaires des features.
         
         .. container:: centerside
 
@@ -91,9 +91,9 @@ Schéma géographique : définitions
         .. literalinclude:: /documentation/resources/code_src/feature/TronconRoute.java
                 :language: java
 
-2. FeatureType
+**2. FeatureType**
 
-   Un **FeatureType** fournit les métadonnées d'un Feature, c'est à dire une description des informations d'un objet géographique.
+   Un *FeatureType* fournit les métadonnées d'un Feature, c'est à dire une description des informations d'un objet géographique.
 
    Ci-dessous un exemple de FeatureType pour un Feature *TRONCON_ROUTE*
 
@@ -105,17 +105,17 @@ Schéma géographique : définitions
    * pour accéder à la liste des attributs disponibles d'un Feature
    * à la création d'un nouveau Feature, les métadonnées permettent de définir l'ensemble des informations à saisir.
  	
-3. AttributeType
+**3. AttributeType**
 
    Les attributs d'un Feature décrivent ses propriétés qualitatives et quantitatives. 
    
    Par exemple : classement_administratif, nb_voies, numéro, ...
 
 
-4. FeatureCollection, Population, DataSet
+**4. FeatureCollection, Population, DataSet**
 
-   Des *FT_Feature* peuvent s'agréger en *FT_FeatureCollection*, 
-   classe qui représente donc un groupe de *FT_Feature* et qui porte des méthodes d'indexation spatiale.
+   Des *FT_Feature* peuvent s'agréger en *FT_FeatureCollection*, classe qui représente donc un groupe de *FT_Feature* 
+   et qui porte des méthodes d'indexation spatiale.
 
    .. container:: centerside
   
@@ -123,8 +123,19 @@ Schéma géographique : définitions
          :width: 550px
        
          Figure 3 : Collection, DataSet et Population
+         
+   
+   La classe *DataSet* représente un jeu de données. Par exemple :
+   
+   * un extrait de bases de données sur une zone géographique limitée, datant de l'année 2003
+   * thème hydrographie d'une base de données topographiques
+   
+   Un « thème » sous-ensemble d'un jeu de données, est lui même un DataSet. Un DataSet porte quelques métadonnées (zone, année, ...).
+   
+   Un DataSet se compose de plusieurs *Populations*. La classe Population représente une FT_FeatureCollection particulière : 
+   il s'agit de TOUS les FT_Feature d'un *DataSet*, de même type. 
 
-5. Schema
+**5. Schema**
 
    *SchemaConceptuelJeu* : schéma conceptuel d'un jeu de données. Correspond à la notion "Application schema" dans les normes ISO, 
    qui n'est pas définie par  un type de données formel. Nous définissons ici ce type comme un ensemble de classes et de 

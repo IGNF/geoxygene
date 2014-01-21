@@ -64,6 +64,11 @@ p {
     text-align:justify;
 }
 
+div.section > ul {
+    list-style: disc;
+    padding-left: 20px;
+}
+
 ul {
     list-style: none;
     padding-left: 20px;
@@ -71,11 +76,12 @@ ul {
 
 ul.simple {
     list-style: disc;
+    list-style-type:square;
     padding-left: 20px;
 }
 
 ul > ul {
-    list-style: none;
+	list-style: none;
     padding-left: 20px;
 }
 
