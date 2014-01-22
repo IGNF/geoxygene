@@ -26,6 +26,10 @@ GeOxygene is an open source project made available to you using an open source l
 News
 ----------
 
+* January, 2014 - **Version 1.6 released**
+
+    Qualité (code de Jean-François), Fusion des interfaces classique/généralisation, Module OSM, Charger/Sauvegarder un SLD 
+
 * June 10, 2013 - **What’s New in GeOxygene 1.5**
     
     The presentation on GeOxygene 1.5 at `FROG 2013 <http://frog.osgeo.fr>`_ in Saint-Mandé will focus  
@@ -33,7 +37,6 @@ News
     geoxygene-sig3d (3D) and geoxygene-cartagen (generalization).
       
     Presentation Slides : `"GeOxygene : une plate-forme de recherche pour le développement d'applications SIG" <https://github.com/OSGeo-fr/frog2013/raw/master/presentations/technique/01-van_damme/FROG13-GeOxygene.pdf>`_ 
-  
 
 * January, 2013 - **Version 1.5 released**
     
@@ -98,9 +101,6 @@ Navigation
 
 .. Gérer les liens du site internet
 
-.. Lien vers le site de sourceforge !
-
-.. Liens vers geoxygene-data
 
 
 
