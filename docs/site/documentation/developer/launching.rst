@@ -52,7 +52,7 @@ Lancement de l'interface graphique 2D depuis Eclipse
          Figure 2 - Lancement de l'interface graphique 2D
 
 
-4. Cliquer sur **Run**, l'interface de GeOxygene est lancée !
+4. Cliquer sur **Run**, l'interface de GeOxygene 2D est lancée !
 
 
 .. container:: centerside
@@ -65,7 +65,69 @@ Lancement de l'interface graphique 2D depuis Eclipse
 
 
 Lancement de l'interface graphique 3D
-***************************************************
+***************************************
 
-A venir
+1. Dans le menu, cliquer sur 
+      
+   .. container:: chemin
+      
+      Run >> Run Configurations
+
+
+2. Sélectionner comme type de run "Java Application", puis faire un click droit et sélectionner "New"
+
+
+3. Configurer les éléments suivants :
+
+   3.1 Dans la partie "Main"
+
+   .. container:: field
+     
+      **Name** : GeOxygeneApplication3D
+
+      **Project** : geoxygene-sig3d
+
+      **Main class** : fr.ign.cogit.geoxygene.sig3d.gui.MainWindow
+
+
+   .. container:: centerside
+      
+      .. figure:: /documentation/resources/img/install/GeOxygene3DAppliRunAs.png
+         :width: 700px
+       
+         Figure 4 - Lancement de l'interface graphique 3D
+
+
+  3.2 Dans la partie "Arguments", pour la machine virtuelle :
+ 
+  .. container:: field
+  
+     **VM arguments** : 
+         
+         **Win (32bits)** : -Xms1156m -Xmx1156m -XX:PermSize=256m -XX:MaxPermSize=256m -Djava.library.path=./lib/native_libraries/windows-i586/
+         
+         **Win (64bits)** : -Xms1156m -Xmx1156m -XX:PermSize=256m -XX:MaxPermSize=256m -Djava.library.path=./lib/native_libraries/windows-amd64/
+     
+  .. container:: centerside
+     
+      .. figure:: /documentation/resources/img/install/GeOxygene3DAppliRunAs02.png
+         :width: 700px
+       
+         Figure 5 - Lancement de l'interface graphique 3D
+
+
+4. Cliquer sur **Run**, l'interface de GeOxygene 3D est lancée !
+
+
+.. container:: centerside
+     
+    .. figure:: /documentation/resources/img/install/GeOxygene3D.png
+       :width: 600px
+       
+       Figure 6 - Interface graphique GeOxygene 3D
+
+
+
+
+
 

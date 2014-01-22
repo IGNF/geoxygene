@@ -9,7 +9,8 @@ Download
    
    
    geoxygene
-   .. geoxygene3d
+   geoxygene2d
+   geoxygene3d
    openjump
    .. wps
 

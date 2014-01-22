@@ -1,10 +1,8 @@
 
-GeOxygene
-##############
 
 
 GeOxygene library
-========================
+==================
 
 
 * Binaries (jar) :

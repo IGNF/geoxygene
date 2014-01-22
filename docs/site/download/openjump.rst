@@ -1,17 +1,16 @@
 
 
 Plugins GeOxygene for OpenJump
-########################################
-
+###############################
 
 GeOxygene library is used by these plugins
 
 * Licence : GPL
-* Publication date : 2009-06-27
-* Version : 0.1
+* Publication date : 2014-01-23
+* Version : 1.1
 
 Installation
-***********************
+**************
 
 Set up OpenJump as a prerequisite.
 
@@ -29,7 +28,7 @@ Set up OpenJump as a prerequisite.
 
 
 Example : Network matching
-******************************
+****************************
 
 Playing
 --------------
@@ -68,9 +67,45 @@ Playing
 
 
 Reference
---------------
+-----------
   
 * Mustière S., Devogele T., 2008, `Matching networks with different levels of detail 
   <http://www.informaworld.com/smpp/1673074808-66010030/content~db=all~content=a902412390>`_ , 
   GeoInformatica, Vol.12 n°4, pp 435-453
 
+
+Plugins "quality"  
+******************
+
+Presentation
+--------------
+
+Several plugins concern the "geoxygene-quality" module :
+
+- « PlugInEstim » : this plugin concern the EstIM model developed during the PhD of (Girres,
+  2012). Allows the computation of different impacts (projection, terrain,
+  polygonal approximation, digitizing error, generalisation) for lengths and
+  areas.
+
+- « PlugInComparison » : a plugin to compute differences between datasets. 
+  Automatic or manuel matching are provided for polygons and linestrings. Different methods to
+  normalize linestring comparisons are also proposed (extremity cutting,
+  section cutting)
+
+- « PlugInMountainGridDetection » : a plugin to facilitate the delineation of mountainous areas
+
+- ...
+
+.. container:: centerside
+   
+   .. figure:: /download/resources/800px-QUALITE-Comparison.png
+         :width: 450px
+       
+         Figure 3 : Results of computing differences between datasets
+
+Reference
+----------
+
+* Jean-François Girres, 2012, `Modèle d’estimation de l’imprécision des mesures géométriques de données géographiques. 
+  Application aux mesures de longueur et de surface. 
+  <http://recherche.ign.fr/labos/cogit/pdf/THESES/GIRRES/theseJFGirres.pdf>`_ 
