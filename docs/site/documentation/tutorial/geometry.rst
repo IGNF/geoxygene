@@ -100,6 +100,8 @@ Apprendre par l'exemple !
 Le code source de cet exemple est disponible dans GeOxygene 
 `ici <http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/geoxygene-appli/src/main/java/fr/ign/cogit/geoxygene/appli/example/ChangementProjectionShape.java>`_
 
+http://www.naturalearthdata.com/about/
+
 
 .. container:: centerside
 
