@@ -158,6 +158,23 @@ Si tout se passe bien, Maven devrait récupérer tous les jars des librairies n�
 Cette opération peut prendre un certain temps !
 
 
+Fichier de configuration des plugins
+========================================
+
+Créer un fichier *geoxygene-configuration.xml* depuis le fichier template *geoxygene-appli/conf/geoxygene-configuration-template.xml* 
+et placez-le à la racine du module *geoxygene-appli* :
+
+   .. container:: chemin
+        
+      E:\\Workspace\\GeOxygene >> copy geoxygene-appli/conf/geoxygene-configuration-template.xml geoxygene-appli/geoxygene-configuration.xml
+
+
+Ce fichier contient l'ensemble des plugins lancés au démarrage de l'application. Pour en ajouter ou supprimer il suffit de modifier ce nouveau fichier.
+
+   .. literalinclude:: /documentation/resources/code_src/geoxygene-configuration.xml
+           :language: xml
+
+
 Lancement des interfaces graphiques 
 =================================================================
 Le guide de lancement des interfaces graphiques est décrit sur la : :ref:`page suivante <launchinggeox>`.
