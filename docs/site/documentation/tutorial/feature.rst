@@ -130,7 +130,9 @@ Schéma géographique : définitions
    * un extrait de bases de données sur une zone géographique limitée, datant de l'année 2003
    * thème hydrographie d'une base de données topographiques
    
-   Un « thème » sous-ensemble d'un jeu de données, est lui même un DataSet. Un DataSet porte quelques métadonnées (zone, année, ...).
+   Un « thème » sous-ensemble d'un jeu de données, est lui même un DataSet. 
+   
+   Un DataSet porte quelques métadonnées (zone, année, ...).
    
    Un DataSet se compose de plusieurs *Populations*. La classe Population représente une FT_FeatureCollection particulière : 
    il s'agit de TOUS les FT_Feature d'un *DataSet*, de même type. 
@@ -157,51 +159,33 @@ Schéma géographique : définitions
 
 
 
-Quelques lignes de code pour exemple
+Quelques lignes de code comme exemple
 **************************************
 
-1. Afficher la valeur d'un attribut :
+1. Afficher la valeur de l'attribut **OBJECTID** :
 
      .. literalinclude:: /documentation/resources/code_src/feature/AfficheAttribut.java
            :language: java
 
-2. Afficher la liste des attributs :
-
-     .. literalinclude:: /documentation/resources/code_src/feature/AfficheListeAttributs.java
-           :language: java
- 
-3. Ajouter un élément à une collection
+2. Ajouter un élément à une collection de DefaultFeature (le Schéma et le FeatureType sont déjà renseignés) : 
  
      .. literalinclude:: /documentation/resources/code_src/feature/CreationAttribut.java
            :language: java
 
-
-4. Création d'une collection de features (pour un export en shapefile ou un affichage dans l'interface graphique)
-
+3. Création d'une collection de features 
 
      .. literalinclude:: /documentation/resources/code_src/feature/CreateCollection.java
            :language: java   
 
 
-5. Ajout d'un attribut dans un DefaultFeature (sans cohérence globale au niveau du schéma de la collection)
+4. Ajout d'un attribut dans un DefaultFeature (sans cohérence globale au niveau du schéma de la collection)
 
    L'export de la collection est possible si les objets ont les mêmes attributs
 
      .. literalinclude:: /documentation/resources/code_src/feature/AjoutAttribut.java
            :language: java 
 
-6. 
-
-Pour les FT_Feature !!! et sans concordance avec le schéma
-
-AttributeType at = new AttributeType();
-at.setMemberName(bestPossib.getPropertyName());
-at.setNomField(bestPossib.getPropertyName());
-at.setValueType(attribute.getClass().getSimpleName());
-					
-feature.setAttribute(at, targetValue);
-
-----------------------------------------------------------------
+5. 
 
 FeatureType newFeatureType = new FeatureType();
 newFeatureType.setTypeName("Shortest path tree");

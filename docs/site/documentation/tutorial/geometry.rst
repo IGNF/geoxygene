@@ -1,7 +1,7 @@
 
 
-Geometrie : structure et manipulation
-######################################
+Geometrie : approche Code First
+###############################
 
 Introduction
 **************
@@ -91,10 +91,10 @@ Apprendre par l'exemple !
 
 .. container:: chemin
 
-   Problème : on voudrait réaliser une carte à l'échelle du monde et la centrer sur une longitude particulière 
+   Problème : le but est de réaliser une carte à l'échelle du monde et de la centrer sur une longitude particulière 
    dans l'interface graphique 2D de GeOxygene. 
-   Par exemple, à partir de la projection WGS84, on va 
-   « déplacer » vers l'est les Etats-Unis, afin d'avoir une emprise complète entièrement à gauche de la carte .... 
+   Par exemple, à partir de la projection WGS84, on va « déplacer » la carte vers l'est, 
+   afin d'avoir pour les Etats-Unis une emprise complète entièrement à gauche de la carte .... 
 
 
 Le code source de cet exemple est disponible dans GeOxygene 
