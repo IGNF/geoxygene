@@ -46,7 +46,6 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
-import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
@@ -154,7 +153,6 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
                 DataMatchingPlugin.LOGGER.info(geom.getClass().getSimpleName());
             }
         }
-        
         Dimension desktopSize = this.application.getMainFrame().getSize();
         int widthProjectFrame = desktopSize.width / 2;
         int heightProjectFrame = desktopSize.height / 2;
