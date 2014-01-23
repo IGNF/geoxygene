@@ -63,15 +63,15 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
 
     /**
      * Initialize the plugin.
-     * @param application the application
+     * @param app the application
      */
     @Override
-    public final void initialize(final GeOxygeneApplication application) {
+    public final void initialize(final GeOxygeneApplication app) {
 
-        this.application = application;
+        this.application = app;
         JMenu menu = null;
         String menuName = I18N.getString("DataMatchingPlugin.DataMatching"); //$NON-NLS-1$
-        for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
+        for (Component c : app.getMainFrame().getMenuBar().getComponents()) {
             if (c instanceof JMenu) {
                 JMenu aMenu = (JMenu) c;
                 if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase(menuName)) {
@@ -88,7 +88,7 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
         menuItem.addActionListener(this);
         menu.add(menuItem);
 
-        application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getComponentCount() - 2);
+        app.getMainFrame().getMenuBar().add(menu, app.getMainFrame().getMenuBar().getComponentCount() - 2);
     }
 
     @Override
