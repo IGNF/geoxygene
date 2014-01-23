@@ -139,24 +139,24 @@ Schéma géographique : définitions
 
 **5. Schema**
 
-   *SchemaConceptuelJeu* : schéma conceptuel d'un jeu de données. Correspond à la notion "Application schema" dans les normes ISO, 
-   qui n'est pas définie par  un type de données formel. Nous définissons ici ce type comme un ensemble de classes et de 
-   relations (associations et héritage) comportant des proprietés (attributs, rôles, opérations) et des contraintes.
-
-   Attention dans GeoTools "schema" designe la structure d'un feature et non pas d'un jeu de données.
-
-   *SchemaDefaultFeature* : Description du schéma logique d'un DefaultFeature (table de SGBD). 
+   Le schéma dans GeOxygene est le schéma conceptuel d'un jeu de données. 
+   Il correspond à la notion "Application schema" dans les normes ISO.
+   Nous définissons ici ce type comme un ensemble de classes et de relations (associations et héritage)
+   comportant des proprietés (attributs, rôles, opérations) et des contraintes.
+   
+   Dans GeoTools un "schema" designe la structure d'un feature et non pas un jeu de données.
+   
+   **SchemaDefaultFeature** : Description du schéma logique d'un DefaultFeature (table de SGBD). 
    Ce schéma contient le nom de la table (ou du fichier GML ou autre...) et une lookup table indiquant le nom des attributs 
    et leur emplacement dans la table attributes[] du defaultFeature. 
-
-   Dans le cas où une métadonnée de structure était disponible (soit stockée quelque part soit donnée par l'utilisateur lors du chargement), 
+   Dans le cas où une métadonnée de structure est disponible (soit stockée quelque part soit donnée par l'utilisateur lors du chargement), 
    ce schéma contient aussi une référence vers le schéma conceptuel : le featureType correspondant au DefaultFeature.
 
-   schéma conceptuel d'un jeu de données. Correspond à la notion "Application schema" dans les normes ISO, qui n'est pas définie par
-   un type de données formel. Nous définissons ici ce type comme un ensemble de classes et de relations (associations et héritage)
-   comportant des proprietés (attributs, rôles, opérations) et des contraintes.
-   Dans GeoTools "schema" designe la structure d'un feature et non pas d'un jeu de données.
+..   *SchemaConceptuelJeu* : schéma conceptuel d'un jeu de données. Correspond à la notion "Application schema" dans les normes ISO, 
+..   qui n'est pas définie par  un type de données formel. Nous définissons ici ce type comme un ensemble de classes et de 
+..   relations (associations et héritage) comportant des proprietés (attributs, rôles, opérations) et des contraintes.
 
+..   Attention dans GeoTools "schema" designe la structure d'un feature et non pas d'un jeu de données.
 
 
 Quelques lignes de code comme exemple
@@ -172,27 +172,27 @@ Quelques lignes de code comme exemple
      .. literalinclude:: /documentation/resources/code_src/feature/CreationAttribut.java
            :language: java
 
-3. Création d'une collection de features 
+3. Création d'une collection de features, du schéma et du featureType
 
      .. literalinclude:: /documentation/resources/code_src/feature/CreateCollection.java
            :language: java   
 
 
-4. Ajout d'un attribut dans un DefaultFeature (sans cohérence globale au niveau du schéma de la collection)
+.. 4. Ajout d'un attribut dans un DefaultFeature (sans cohérence globale au niveau du schéma de la collection)
 
-   L'export de la collection est possible si les objets ont les mêmes attributs
+..    L'export de la collection est possible si les objets ont les mêmes attributs
 
-     .. literalinclude:: /documentation/resources/code_src/feature/AjoutAttribut.java
-           :language: java 
+..      .. literalinclude:: /documentation/resources/code_src/feature/AjoutAttribut.java
+..            :language: java 
 
-5. 
+.. 5. 
 
-FeatureType newFeatureType = new FeatureType();
-newFeatureType.setTypeName("Shortest path tree");
-newFeatureType.setGeometryType(GM_LineString.class);
+.. FeatureType newFeatureType = new FeatureType();
+.. newFeatureType.setTypeName("Shortest path tree");
+.. newFeatureType.setGeometryType(GM_LineString.class);
 
-AttributeType nbPassage = new AttributeType("nb", "integer");
-newFeatureType.addFeatureAttribute(nbPassage);
+.. AttributeType nbPassage = new AttributeType("nb", "integer");
+.. newFeatureType.addFeatureAttribute(nbPassage);
 
 
 Références

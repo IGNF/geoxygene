@@ -119,8 +119,13 @@ Exemples de rendus
 
 Bibliographie
 ***************
-* OpenGIS Styled Layer Descriptor Profile of the Web Map Service Implementation Specification, Version 1.1.0, Norme de l’Open Geospatial Consortium (OGC)
-* OpenGIS Symbology Encoding Implementation Specification , Version 1.1.0, Norme de l’Open Geospatial Consortium (OGC)
+
+* `OpenGIS Styled Layer Descriptor Profile of the Web Map Service Implementation Specification, Version 1.1.0, Norme de l’Open Geospatial Consortium (OGC)
+  <http://www.opengeospatial.org/standards/sld>`_
+
+* `OpenGIS Symbology Encoding Implementation Specification , Version 1.1.0, Norme de l’Open Geospatial Consortium (OGC) 
+  <http://www.opengeospatial.org/standards/se>`_
+
 
 
 

@@ -1,7 +1,7 @@
 
 
-Geometrie : approche Code First
-###############################
+Geometrie dans GeOxygene
+#########################
 
 Introduction
 **************
@@ -9,7 +9,8 @@ Introduction
 Dans GeOxygene la dimension spatiale des objets géographiques repose sur la large gamme de primitives géométriques 
 et topologiques spécifiée par la norme ISO 19107.
 
-La géométrie est implémentée dans le package **geoxygene-spatial**, et les interfaces sont implémentées dans **geoxygene-api**
+La géométrie est implémentée dans le module **geoxygene-spatial**, 
+et les interfaces sont implémentées dans le module **geoxygene-api**
 
 
 Implémentation dans GeOxygene
@@ -81,6 +82,23 @@ Implémentation dans GeOxygene
   Leur utilisation n’est pas fondamentale.
 
 
+Diagramme de classes 
+**********************
+
+.. container:: centerside
+
+   .. figure:: /documentation/resources/img/geometry/DC_Geometrie.png
+      :width: 800px
+       
+      Figure 1 : Diagramme de classe relatif à la géométrie
+
+
+.. container:: centerside
+
+   .. figure:: /documentation/resources/img/geometry/DC_GM_Point.png
+      :width: 350px
+       
+      Figure 2 : Diagramme de classe *GM_Point*
 
 
 
@@ -100,7 +118,8 @@ Apprendre par l'exemple !
 Le code source de cet exemple est disponible dans GeOxygene 
 `ici <http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/geoxygene-appli/src/main/java/fr/ign/cogit/geoxygene/appli/example/ChangementProjectionShape.java>`_
 
-http://www.naturalearthdata.com/about/
+Le jeu de données est disponible 
+`ici <http://www.naturalearthdata.com/about/>`_
 
 
 .. container:: centerside
@@ -117,5 +136,5 @@ http://www.naturalearthdata.com/about/
 Références
 ***********
 
-- Quelques compléments sur le modèle géométrique :
-    o Se fier à la description technique du modèle et à la norme ISO 19107.
+- Norme ISO 19107.
+

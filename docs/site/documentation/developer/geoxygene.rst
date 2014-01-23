@@ -105,6 +105,18 @@ Comme décrits dans les deux captures d’écran ci-dessous, cliquer :
 
 6. Cliquez ensuite sur **Finish**.
 
+
+7. Certains connectors vont peut-être se mettre à jour ou pas durant cette phase. Cliquer sur **OK** si vous avez un message 
+   d'avertissement ou d'erreur de type *Maven Goal Execution*, 
+
+   .. container:: centerside
+     
+         .. figure:: /documentation/resources/img/geoxygene/IncompleteMaven.png
+            :width: 500px
+       
+            Figure 5 : Configure your import
+
+
 Compilation
 ==================
 
@@ -122,7 +134,7 @@ Lancer un maven build manuellement. Pour cela :
       .. figure:: /documentation/resources/img/install/geoxygeneRunEtape1.png
          :width: 600px
           
-         Figure 5
+         Figure 6
        
 2. Sélectionner comme type de run "Maven", puis cliquer dans le menu en haut sur "New launch configuration"
       
@@ -131,7 +143,7 @@ Lancer un maven build manuellement. Pour cela :
       .. figure:: /documentation/resources/img/install/geoxygeneRunEtape2.png
          :width: 350px
              
-         Figure 6
+         Figure 7
 
 3. Dans la nouvelle fenêtre "Run configuration" configurer :
          
@@ -150,7 +162,7 @@ Lancer un maven build manuellement. Pour cela :
       .. figure:: /documentation/resources/img/install/geoxygeneRunEtape3.png
          :width: 600px
              
-         Figure 7
+         Figure 8
 
 
 Si tout se passe bien, Maven devrait récupérer tous les jars des librairies nécessaires et compiler le projet. 

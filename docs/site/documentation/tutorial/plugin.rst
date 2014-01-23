@@ -28,21 +28,21 @@ Ci-dessous le diagramme de classe des plugins implémentés dans le module geoxy
 
 .. container:: centerside
      
-   .. figure:: /documentation/resources/img/plugin/class-diagram.png
-      :width: 1000px
+   .. figure:: /documentation/resources/img/plugin/class-diagram01.png
+      :width: 800px
        
       Figure 1 : Diagramme de classe des plugins dans GeOxygene
 
 
 En général les plugins sont implémentés dans un module Maven dédié à un thème. 
 
-Les plugins sont configurés dans un fichier **plugins.xml** stocké dans un répertoire **conf** à la racine du module.
+Les plugins sont configurés dans le fichier **geoxygene-configuration.xml** stocké à la racine de votre module.
 
-.. literalinclude:: /documentation/resources/code_src/plugin/plugins-geox.xml
+.. literalinclude:: /documentation/resources/code_src/plugin/geoxygene-configuration.xml
         :language: xml
 
-Il est possible d'ajouter des arguments au plugin de type clé-valeur, comme par exemple le plugin SemioToolbarPlugin 
-(le paramètre configure l'affichage ou non de la toolbar).
+.. Il est possible d'ajouter des arguments au plugin de type clé-valeur, comme par exemple le plugin SemioToolbarPlugin 
+.. (le paramètre configure l'affichage ou non de la toolbar).
 
 
 Quickstart

@@ -1,8 +1,7 @@
 
 
 GeOxygene releases
-###################################
-
+####################
 
 The current development version is GeOxygene-1.6-SNAPSHOT. The latest stable release is **GeOxygene 1.5**.
 
@@ -13,8 +12,20 @@ Snapshots and releases are also available from the `COGIT repositories <https://
 History of Changes
 -------------------
 
+Version 1.6 (2014/01/23)
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  * Added the EstIM model developed during the Jean-François Girres PhD, 2012. 
+  
+  * The old GeOxygene 2D graphical interface and CartaGen merge 
+  
+  * Added a new OSM module 
+  
+  * Added editor, import and export style in GeOxygene 2D GUI
+
+
 Version 1.5 (2013/01/07)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
   
   * Added 3D module
   

@@ -28,7 +28,9 @@ News
 
 * January, 2014 - **Version 1.6 released**
 
-    Qualité (code de Jean-François), Fusion des interfaces classique/généralisation, Module OSM, Charger/Sauvegarder un SLD 
+    This new version includes the EstIM model developed during the Jean-François Girres PhD (2012), a new OSM module,
+    new tools for managing style (editor, import and export SLD).
+    The old GeOxygene 2D graphical interface and CartaGen graphical interface merge.
 
 * June 10, 2013 - **What’s New in GeOxygene 1.5**
     

@@ -95,7 +95,9 @@ Style
 
 Une fois les couches chargées et superposées dans le bon ordre pour être visualisées, 
 
-1. on peut modifier leur symbolisation par défaut : il suffit de cliquer sur le carré de la colonne Styles 
+1. Panel de style
+
+   On peut modifier leur symbolisation par défaut : il suffit de cliquer sur le carré de la colonne Styles 
    devant le nom de la couche à représenter. Le premier onglet concerne la symbologie de la couche; 
    un deuxième onglet permet de gérer l'affichage des toponymes.
 
@@ -141,6 +143,19 @@ Une fois les couches chargées et superposées dans le bon ordre pour être visu
            Figure 6 : Style très basique IGN dans l'interface GeOxygene 2D 
 
 
+3. Editeur SLD
+
+   Pour les connaisseurs du langage SLD, on peut modifier directement le style dans un éditeur :
+
+   .. container:: centerside
+
+    .. figure:: /documentation/resources/img/userguide/IMG08.png
+           :width: 700px
+        
+           Figure 7 : Editeur SLD 
+
+
+
 Le style peut être sauvegardé en cliquant dans le menu *Exporter SLD*  
 
 
@@ -157,7 +172,7 @@ On peut sauver la visualisation sous la forme d'une image PNG :
 	.. figure:: /documentation/resources/img/userguide/ImageRecordGeOxygene.png
 	       :width: 700px
 	    
-	       Figure 7 : Image de la carte sauvegardée
+	       Figure 8 : Image de la carte sauvegardée
 
 
 
