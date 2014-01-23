@@ -28,7 +28,7 @@ import fr.ign.cogit.geoxygene.appli.plugin.ProjectFramePlugin;
 
 public class CartAGenProjectPlugin implements ProjectFramePlugin {
 
-  protected static CartAGenProjectPlugin instance = null;
+  protected static CartAGenProjectPlugin instance = new CartAGenProjectPlugin();
 
   /**
    * Recuperation de l'instance unique (singleton)
@@ -40,7 +40,6 @@ public class CartAGenProjectPlugin implements ProjectFramePlugin {
 
   public CartAGenProjectPlugin() {
     super();
-    instance = this;
   }
 
   @Override
