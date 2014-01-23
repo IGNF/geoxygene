@@ -41,6 +41,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.MainFrameMenuBar;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
@@ -103,18 +104,18 @@ public class ContrastAnalysisToolBar extends JToolBar implements
     spinnerNeighborsDist
         .setMaximumSize(spinnerNeighborsDist.getPreferredSize());
 
-    String[] contrastAnalysisString = { "LucilAnalysis" };
+    String[] contrastAnalysisString = { I18N.getString("ContrastAnalysisToolBar.LucilAnalysis") }; //$NON-NLS-1$
     comboContrastAnalysis = new JComboBox(contrastAnalysisString);
     comboContrastAnalysis.setMaximumSize(comboContrastAnalysis
         .getPreferredSize());
 
-    String[] stopCriteriaString = { "Basic Stop Criteria",
-        "Quality Stop Criteria" };
+    String[] stopCriteriaString = { I18N.getString("ContrastAnalysisToolBar.BasicStopCriteria"), //$NON-NLS-1$
+        I18N.getString("ContrastAnalysisToolBar.QualityStopCriteria") }; //$NON-NLS-1$
     comboStopCriteria = new JComboBox(stopCriteriaString);
     comboStopCriteria.setMaximumSize(comboStopCriteria.getPreferredSize());
     comboStopCriteria.addItemListener(this);
 
-    improvementSteps = new JLabel(" Improvement steps :  ");
+    improvementSteps = new JLabel(I18N.getString("ContrastAnalysisToolBar.ImprovementSteps")); //$NON-NLS-1$
 
     model = new SpinnerNumberModel(10, // initial value
         1, // min
@@ -123,15 +124,15 @@ public class ContrastAnalysisToolBar extends JToolBar implements
     spinnerNbSteps = new JSpinner(model);
     spinnerNbSteps.setMaximumSize(spinnerNbSteps.getPreferredSize());
 
-    checkWeight = new JCheckBox("Surface weights");
+    checkWeight = new JCheckBox(I18N.getString("ContrastAnalysisToolBar.SurfaceWeights")); //$NON-NLS-1$
 
-    btnloadMap = new JButton("Load Legend & Semantic Relations");
+    btnloadMap = new JButton(I18N.getString("ContrastAnalysisToolBar.LoadLegendAndSemanticRelations")); //$NON-NLS-1$
     btnloadMap.addActionListener(this);
 
-    btnAnalyse = new JButton("Contrasts Improvement");
+    btnAnalyse = new JButton(I18N.getString("ContrastAnalysisToolBar.ContrastsImprovement")); //$NON-NLS-1$
     btnAnalyse.addActionListener(this);
 
-    add(new JLabel("Neighbourhood :"));
+    add(new JLabel(I18N.getString("ContrastAnalysisToolBar.Neibourhood"))); //$NON-NLS-1$
     add(spinnerNeighborsDist, BorderLayout.PAGE_START);
     add(comboContrastAnalysis);
     add(comboStopCriteria);
@@ -139,14 +140,14 @@ public class ContrastAnalysisToolBar extends JToolBar implements
     add(spinnerNbSteps);
     add(checkWeight);
     add(btnloadMap);
-    add(new JLabel("    "));
+    add(new JLabel("    ")); //$NON-NLS-1$
     add(btnAnalyse);
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == this.btnloadMap) {
-      logger.info("chargement de légende et relation sémantique");
+      logger.info("chargement de légende et relation sémantique"); //$NON-NLS-1$
 
       FileFilter xmlFilter = new FileFilter() {
         @Override
@@ -171,12 +172,12 @@ public class ContrastAnalysisToolBar extends JToolBar implements
           fileChooser.getFileChooser().getChoosableFileFilters()[0]);
 
       fileChooser.getFileChooser().setDialogTitle(
-          "Choisir un fichier contenant un arbre de légende");
+          I18N.getString("ContrastAnalysisToolBar.ChooseLegendTree")); //$NON-NLS-1$
       File legendFile = fileChooser.getFile(projectFrame.getMainFrame()
           .getGui());
       logger.info(legendFile.getAbsolutePath());
       fileChooser.getFileChooser().setDialogTitle(
-          "Choisir un fichier contenant des relations sémantiques");
+          I18N.getString("ContrastAnalysisToolBar.ChooseSemanticRelations")); //$NON-NLS-1$
       File semanticRelationsFile = fileChooser.getFile(projectFrame
           .getMainFrame().getGui());
       logger.info(semanticRelationsFile.getAbsolutePath());
@@ -185,11 +186,11 @@ public class ContrastAnalysisToolBar extends JToolBar implements
       for (LegendLeaf leaf : currentLegend.getLeaves()) {
         leaf.setSymbol(new GraphicSymbol());
       }
-      logger.info("legend tree loaded");
+      logger.info("legend tree loaded"); //$NON-NLS-1$
 
       relations = SemanticRelationDescriptor.unmarshall(
           semanticRelationsFile.getPath(), currentLegend);
-      logger.info(relations.getNbRelations() + " semantic relations loaded");
+      logger.info(relations.getNbRelations() + " semantic relations loaded"); //$NON-NLS-1$
 
     } else if (e.getSource() == this.btnAnalyse) {
       // TODO ajouter une vérification de spécifications de l'arbre de légende
@@ -213,34 +214,34 @@ public class ContrastAnalysisToolBar extends JToolBar implements
         }
       }
       if (currentLegend == null || relations == null) {
-        logger.error("Legend or Semantic Rlations specifications are missing.");
+        logger.error("Legend or Semantic Rlations specifications are missing."); //$NON-NLS-1$
       }
 
       // /////////////////////////////////////////////////////////////////
       // Creating the Map with the displayed layers
       layers = this.projectFrame.getLayers();
       if (layers.size() == 0) {
-        logger.error("Data have not been loaded");
+        logger.error("Data have not been loaded"); //$NON-NLS-1$
       }
       currentMap = new Map(layers, currentLegend,
           Viewport.getMETERS_PER_PIXEL());
       currentMap.setName(this.projectFrame.getName());
-      logger.info(layers.size() + " couches chargées");
+      logger.info(layers.size() + " couches chargées"); //$NON-NLS-1$
       logger.info(currentMap.toString());
 
       if (comboContrastAnalysis.getSelectedIndex() == 0) {
-        logger.info("Lucil Contrast Analysis");
+        logger.info("Lucil Contrast Analysis"); //$NON-NLS-1$
         LucilContrastAnalysis analysis = new LucilContrastAnalysis();
         analysis.setSurfaceWeights(checkWeight.isSelected());
         if (comboStopCriteria.getSelectedIndex() == 0) {
-          logger.info("Basic Stop Criteria");
+          logger.info("Basic Stop Criteria"); //$NON-NLS-1$
           BasicStopCriteria stop = new BasicStopCriteria(
               ((SpinnerNumberModel) this.spinnerNbSteps.getModel()).getNumber()
                   .intValue());
           analysis.initialize(currentMap, stop);
 
         } else if (comboStopCriteria.getSelectedIndex() == 1) {
-          logger.info("Quality Stop Criteria");
+          logger.info("Quality Stop Criteria"); //$NON-NLS-1$
           QualityStopCriteria stop = new QualityStopCriteria();
           analysis.initialize(currentMap, stop);
 
@@ -289,7 +290,7 @@ public class ContrastAnalysisToolBar extends JToolBar implements
     this.projectFrame.getLayerLegendPanel().repaint();
     this.projectFrame.getLayerViewPanel().repaint();
     this.projectFrame.repaint();
-    logger.info("Contrast analysis finished, Map updated.");
+    logger.info("Contrast analysis finished, Map updated."); //$NON-NLS-1$
   }
 
   @Override

@@ -26,11 +26,13 @@ import java.util.Set;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
@@ -61,15 +63,17 @@ public class BezierCurvePlugin implements GeOxygeneApplicationPlugin,
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
         if (aMenu.getText() != null
-            && aMenu.getText().equalsIgnoreCase("Curve")) { //$NON-NLS-1$
+            && aMenu.getText().equalsIgnoreCase(
+                I18N.getString("BezierCurvePlugin.Curve"))) { //$NON-NLS-1$
           menu = aMenu;
         }
       }
     }
     if (menu == null) {
-      menu = new JMenu("Curve");//$NON-NLS-1$
+      menu = new JMenu(I18N.getString("BezierCurvePlugin.Curve"));//$NON-NLS-1$
     }
-    JMenuItem menuItem = new JMenuItem("Bezier Curve" //$NON-NLS-1$
+    JMenuItem menuItem = new JMenuItem(
+        I18N.getString("BezierCurvePlugin.BezierCurve") //$NON-NLS-1$
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
@@ -86,6 +90,9 @@ public class BezierCurvePlugin implements GeOxygeneApplicationPlugin,
     if (selectedLayers.size() != 1) {
       BezierCurvePlugin.logger
           .error("You need to select one (and only one) layer."); //$NON-NLS-1$
+      JOptionPane.showMessageDialog(project.getGui(),
+          I18N.getString("CubicSplinePlugin.SelectedLayerErrorMessage"),
+          "Selected layer error", JOptionPane.ERROR_MESSAGE);
       return;
     }
     Layer layer = selectedLayers.iterator().next();

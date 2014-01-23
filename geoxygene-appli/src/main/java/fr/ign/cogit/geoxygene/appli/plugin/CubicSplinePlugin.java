@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
@@ -44,7 +45,8 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * Triangulation plugin.
  * @author Julien Perret
  */
-public class CubicSplinePlugin implements GeOxygeneApplicationPlugin, ActionListener {
+public class CubicSplinePlugin implements GeOxygeneApplicationPlugin,
+    ActionListener {
   /** Logger. */
   static Logger logger = Logger.getLogger(Triangulation.class.getName());
 
@@ -61,47 +63,67 @@ public class CubicSplinePlugin implements GeOxygeneApplicationPlugin, ActionList
     for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Curve")) { //$NON-NLS-1$
+        if (aMenu.getText() != null
+            && aMenu.getText().equalsIgnoreCase(
+                I18N.getString("BezierCurvePlugin.Curve"))) { //$NON-NLS-1$
           menu = aMenu;
         }
       }
     }
     if (menu == null) {
-      menu = new JMenu("Curve");//$NON-NLS-1$
+      menu = new JMenu(I18N.getString("BezierCurvePlugin.Curve"));//$NON-NLS-1$
     }
-    JMenuItem menuItem = new JMenuItem("Cubic Spline" //$NON-NLS-1$
+    JMenuItem menuItem = new JMenuItem(
+        I18N.getString("CubicSplinePlugin.CubicSpline") //$NON-NLS-1$
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+    application.getMainFrame().getMenuBar()
+        .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
-    Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
+    ProjectFrame project = this.application.getMainFrame()
+        .getSelectedProjectFrame();
+    Set<Layer> selectedLayers = project.getLayerLegendPanel()
+        .getSelectedLayers();
     if (selectedLayers.size() != 1) {
-      CubicSplinePlugin.logger.error("You need to select one (and only one) layer."); //$NON-NLS-1$
+      CubicSplinePlugin.logger
+          .error("You need to select one (and only one) layer."); //$NON-NLS-1$
+      JOptionPane.showMessageDialog(project.getGui(),
+          I18N.getString("CubicSplinePlugin.SelectedLayerErrorMessage"),
+          "Selected layer error", JOptionPane.ERROR_MESSAGE);
       return;
     }
     Layer layer = selectedLayers.iterator().next();
-    String tangentMethod = (String) JOptionPane.showInputDialog(CubicSplinePlugin.this.application.getMainFrame().getGui(), "Choose a Tangent Method", //$NON-NLS-1$
-        "Tangent Method", JOptionPane.QUESTION_MESSAGE, null, //$NON-NLS-1$
-        new String[] { "finiteDifference", "cardinalSpline", "kochanekBartels" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        "kochanekBartels"); //$NON-NLS-1$
+    String tangentMethod = (String) JOptionPane
+        .showInputDialog(
+            CubicSplinePlugin.this.application.getMainFrame().getGui(),
+            I18N.getString("CubicSplinePlugin.ChooseTangentMethod"), //$NON-NLS-1$
+            I18N.getString("CubicSplinePlugin.TangentMethod"), JOptionPane.QUESTION_MESSAGE, null, //$NON-NLS-1$
+            new String[] {
+                I18N.getString("CubicSplinePlugin.finiteDifference"), I18N.getString("CubicSplinePlugin.cardinalSpline"), I18N.getString("CubicSplinePlugin.kochanekBartels") }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            I18N.getString("CubicSplinePlugin.kochanekBartels")); //$NON-NLS-1$
     double tension = 0.0;
     double bias = 0.0;
     double continuity = 0.0;
-    if (tangentMethod.equalsIgnoreCase("cardinalSpline")) { //$NON-NLS-1$
-      tension = Double.parseDouble(JOptionPane.showInputDialog("tension")); //$NON-NLS-1$
+    if (tangentMethod.equalsIgnoreCase(I18N
+        .getString("CubicSplinePlugin.cardinalSpline"))) { //$NON-NLS-1$
+      tension = Double.parseDouble(JOptionPane.showInputDialog(I18N
+          .getString("CubicSplinePlugin.tension"))); //$NON-NLS-1$
     }
-    if (tangentMethod.equalsIgnoreCase("kochanekBartels")) { //$NON-NLS-1$
-      tension = Double.parseDouble(JOptionPane.showInputDialog("tension")); //$NON-NLS-1$
-      bias = Double.parseDouble(JOptionPane.showInputDialog("bias")); //$NON-NLS-1$
-      continuity = Double.parseDouble(JOptionPane.showInputDialog("continuity")); //$NON-NLS-1$
+    if (tangentMethod.equalsIgnoreCase(I18N
+        .getString("CubicSplinePlugin.kochanekBartels"))) { //$NON-NLS-1$
+      tension = Double.parseDouble(JOptionPane.showInputDialog(I18N
+          .getString("CubicSplinePlugin.tension"))); //$NON-NLS-1$
+      bias = Double.parseDouble(JOptionPane.showInputDialog(I18N
+          .getString("CubicSplinePlugin.bias"))); //$NON-NLS-1$
+      continuity = Double.parseDouble(JOptionPane.showInputDialog(I18N
+          .getString("CubicSplinePlugin.continuity"))); //$NON-NLS-1$
     }
     Population<DefaultFeature> popHermite = new Population<DefaultFeature>(
-        "CubicSpline " + tangentMethod + " " + tension + " " + bias + " " + continuity); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        I18N.getString("CubicSplinePlugin.CubicSpline") + tangentMethod + " " + tension + " " + bias + " " + continuity); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     popHermite.setClasse(DefaultFeature.class);
     popHermite.setPersistant(false);
     for (IFeature f : layer.getFeatureCollection()) {
