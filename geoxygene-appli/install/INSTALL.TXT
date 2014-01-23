@@ -1,0 +1,12 @@
+GeOxygene, version 1.6.
+
+Basic installation instructions:
+-------------------------------
+
+In order to launch GeOxygene, please follow basic instructions detailled above : 
+
+1. You MUST have a Java SDK installed
+
+2. Double click on geoxygene.bat if your OS is windows or Double click on geoxygene.sh if your OS is linux
+ 
+3. Consult website for more information : http://oxygene-project.sourceforge.net

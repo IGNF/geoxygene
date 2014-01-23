@@ -1,0 +1,1 @@
+java -Xms1024m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=256m -jar "geoxygene-appli-1.6.jar"

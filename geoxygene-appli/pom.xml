@@ -144,6 +144,15 @@
                                 <copy file="${basedir}/install/geoxygene.bat"
                                     todir="${dir.executable}" />
                                     
+                                <copy file="${basedir}/install/geoxygene-configuration.xml"
+                                    todir="${dir.executable}" />
+                                    
+                                <copy file="${basedir}/install/geoxygene-configuration.xml"
+                                    todir="${dir.executable}" />
+                                    
+                                <copy file="${basedir}/install/last_session_parameters.xml"
+                                    todir="${dir.executable}/src/main/resources/xml/" />
+                                    
                                 <!-- INSTALL -->
                                 <copy file="${basedir}/install/INSTALL.TXT"
                                     todir="${dir.executable}" />
