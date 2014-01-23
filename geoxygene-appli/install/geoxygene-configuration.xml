@@ -16,7 +16,6 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.osm.OSMPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.example.SLDDemoApplication</plugin>
-    <plugin>fr.ign.cogit.geoxygene.appli.plugin.TINPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.example.ChangementProjectionShape</plugin>
     <projectPlugin>fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenProjectPlugin</projectPlugin>
     <DefaultVisualizationType>AWT</DefaultVisualizationType>
