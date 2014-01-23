@@ -16,7 +16,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<dir.executable>E:\executable</dir.executable>
+		<dir.executable>/executable</dir.executable>
 	</properties>
 
 	<build>
@@ -88,7 +88,7 @@
                         <!-- <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile> -->
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
+                            <classpathPrefix>./lib/</classpathPrefix>
                             <mainClass>fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</mainClass>
                         </manifest>
                     </archive>
@@ -163,6 +163,9 @@
                                 <!-- INSTALL -->
                                 <copy file="${basedir}/install/INSTALL.TXT"
                                     todir="${dir.executable}" />
+
+                                <echo>Suppression d'Ojb</echo>
+                                <delete file="${dir.executable}/lib/ojb-1.0.rc6-COGIT.jar" />
                             
                             </tasks>
                         </configuration>
@@ -357,7 +360,11 @@
 			<artifactId>jogl-all</artifactId>
 			<version>2.0.2</version>
 		</dependency>
-		
+		<dependency>
+        	<groupId>org.geotools</groupId>
+        	<artifactId>gt-epsg-hsql</artifactId>
+        	<version>${geotools.version}</version>
+        </dependency>
 	</dependencies>
 
 </project>
