@@ -184,6 +184,7 @@ public class DisplayInitialGeomsFrame extends JFrame implements ActionListener {
     /**
      * Handles events from the editor button and from the dialog's OK button.
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
       if (EDIT.equals(e.getActionCommand())) {
         // The user has clicked the cell, so
@@ -201,11 +202,13 @@ public class DisplayInitialGeomsFrame extends JFrame implements ActionListener {
     }
 
     // Implement the one CellEditor method that AbstractCellEditor doesn't.
+    @Override
     public Object getCellEditorValue() {
       return currentColor;
     }
 
     // Implement the one method defined by TableCellEditor.
+    @Override
     public Component getTableCellEditorComponent(JTable table, Object value,
         boolean isSelected, int row, int column) {
       currentColor = (Color) value;
@@ -230,6 +233,7 @@ public class DisplayInitialGeomsFrame extends JFrame implements ActionListener {
       setOpaque(true);
     }
 
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object color,
         boolean isSelected, boolean hasFocus, int row, int column) {
       Color newColor = (Color) color;
@@ -269,18 +273,22 @@ public class DisplayInitialGeomsFrame extends JFrame implements ActionListener {
       this.data = data;
     }
 
+    @Override
     public int getColumnCount() {
       return columnNames.length;
     }
 
+    @Override
     public int getRowCount() {
       return data.length;
     }
 
+    @Override
     public String getColumnName(int col) {
       return columnNames[col];
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
       return data[row][col];
     }
@@ -290,10 +298,12 @@ public class DisplayInitialGeomsFrame extends JFrame implements ActionListener {
      * each cell. If we didn't implement this method, then the last column would
      * contain text ("true"/"false"), rather than a check box.
      */
+    @Override
     public Class<?> getColumnClass(int c) {
       return getValueAt(0, c).getClass();
     }
 
+    @Override
     public boolean isCellEditable(int row, int col) {
       // Note that the data/cell address is constant,
       // no matter where the cell appears onscreen.
@@ -304,6 +314,7 @@ public class DisplayInitialGeomsFrame extends JFrame implements ActionListener {
       }
     }
 
+    @Override
     public void setValueAt(Object value, int row, int col) {
       data[row][col] = value;
       fireTableCellUpdated(row, col);

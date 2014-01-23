@@ -212,6 +212,7 @@ public class OSMPlugin implements ProjectFramePlugin,
         database.setType(new DigitalCartographicModel());
 
         fillLayersTask = new Runnable() {
+          @Override
           public void run() {
             try {
               addOsmDatabaseToFrame(database);
@@ -761,6 +762,7 @@ public class OSMPlugin implements ProjectFramePlugin,
        * 
        * @return The item color.
        */
+      @Override
       public Paint getItemPaint(final int row, final int column) {
         if (column == columnToHighlight)
           return highlightColor;
