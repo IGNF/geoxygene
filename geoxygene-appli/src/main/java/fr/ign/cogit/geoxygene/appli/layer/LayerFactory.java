@@ -1,20 +1,14 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at providing an open framework which
+ * implements OGC/ISO specifications for the development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique National (the French National Mapping
+ * Agency). See: http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut Géographique National This library
+ * is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1 of the License, or any later version. This library
+ * is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details. You
+ * should have received a copy of the GNU Lesser General Public License along with this library (see file LICENSE if
+ * present); if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.appli.layer;
@@ -44,6 +38,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.I18N;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_Coverage;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
@@ -78,8 +73,7 @@ import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 /**
- * Convenience factory for creating GeOxygene layers. In order to manage new
- * layertypes please use LayerTypes.
+ * Convenience factory for creating GeOxygene layers. In order to manage new layertypes please use LayerTypes.
  * 
  * @see Layer
  * @see GeoTiffReader
@@ -105,8 +99,7 @@ public class LayerFactory {
     ShapefileReader.addActionListener(listener);
   }
 
-  public Layer createLayer(String filename, LayerType layertype,
-      String styleName) {
+  public Layer createLayer(String filename, LayerType layertype, String styleName) {
     Layer layer = createLayer(filename, layertype);
     layer.setStyles(this.model.getLayer(styleName).getStyles());
     return layer;
@@ -139,11 +132,9 @@ public class LayerFactory {
 
   private synchronized Layer createShapeLayer(File file) {
     String populationName = popNameFromFile(file.getPath());
-    ShapefileReader shapefileReader = new ShapefileReader(file.getPath(),
-        populationName, this.model.getDataSet(), true);
+    ShapefileReader shapefileReader = new ShapefileReader(file.getPath(), populationName, this.model.getDataSet(), true);
     shapefileReader.read();
-    Layer layer = this.createLayer(populationName, shapefileReader
-        .getPopulation().getFeatureType().getGeometryType());
+    Layer layer = this.createLayer(populationName, shapefileReader.getPopulation().getFeatureType().getGeometryType());
     if (layer != null)
       layer.setCRS(shapefileReader.getCRS());
     return layer;
@@ -155,12 +146,11 @@ public class LayerFactory {
     GeoTiffReader reader = new GeoTiffReader(file);
     @SuppressWarnings("cast")
     GridCoverage2D coverage = (GridCoverage2D) reader.read(null);
-    Population<FT_Coverage> population = new Population<FT_Coverage>(
-        populationName);
+    Population<FT_Coverage> population = new Population<FT_Coverage>(populationName);
     org.opengis.geometry.Envelope envelope = coverage.getEnvelope();
-    population.setEnvelope(new GM_Envelope(envelope.getLowerCorner()
-        .getCoordinate()[0], envelope.getUpperCorner().getCoordinate()[0],
-        envelope.getLowerCorner().getCoordinate()[1], envelope.getUpperCorner()
+    population
+        .setEnvelope(new GM_Envelope(envelope.getLowerCorner().getCoordinate()[0], envelope.getUpperCorner()
+            .getCoordinate()[0], envelope.getLowerCorner().getCoordinate()[1], envelope.getUpperCorner()
             .getCoordinate()[1]));
     population.add(new FT_Coverage(coverage));
     this.model.getDataSet().addPopulation(population);
@@ -168,22 +158,18 @@ public class LayerFactory {
     return layer;
   }
 
-  private Layer createAscLayer(File file) throws IllegalArgumentException,
-      IOException {
+  private Layer createAscLayer(File file) throws IllegalArgumentException, IOException {
     String populationName = popNameFromFile(file.getPath());
-    // double[][] range = new double[2][2];
+//    double[][] range = new double[2][2];
     // BufferedImage grid = ArcGridReader.loadAsc(file.getPath(), range);
     ArcGridReader reader = new ArcGridReader(file);
     @SuppressWarnings("cast")
     GridCoverage2D coverage = (GridCoverage2D) reader.read(null);
-    /*
-     * DefaultFeature feature = new DefaultFeature(new GM_Envelope( range[0][0],
-     * range[0][1], range[1][0], range[1][1]).getGeom());
-     * Population<DefaultFeature> population = new Population<DefaultFeature>(
-     * populationName); population.add(feature);
-     * DataSet.getInstance().addPopulation(population);
-     */
-    // wat?
+    FT_Coverage feature = new FT_Coverage(coverage);
+    // new GM_Envelope(range[0][0], range[0][1], range[1][0], range[1][1]).getGeom());
+    Population<FT_Coverage> population = new Population<FT_Coverage>(populationName);
+    population.add(feature);
+    this.model.getDataSet().addPopulation(population);
     Layer layer = this.createLayer(populationName);
     RasterSymbolizer symbolizer = (RasterSymbolizer) layer.getSymbolizer();
     symbolizer.setShadedRelief(new ShadedRelief());
@@ -201,14 +187,10 @@ public class LayerFactory {
     ColorMap colorMap = new ColorMap();
     Interpolate interpolate = new Interpolate();
     double diff = max - min;
-    interpolate.getInterpolationPoint().add(
-        new InterpolationPoint(min, Color.blue));
-    interpolate.getInterpolationPoint().add(
-        new InterpolationPoint(min + diff / 3, Color.cyan));
-    interpolate.getInterpolationPoint().add(
-        new InterpolationPoint(min + 2 * diff / 3, Color.yellow));
-    interpolate.getInterpolationPoint().add(
-        new InterpolationPoint(max, Color.red));
+    interpolate.getInterpolationPoint().add(new InterpolationPoint(min, Color.blue));
+    interpolate.getInterpolationPoint().add(new InterpolationPoint(min + diff / 3, Color.cyan));
+    interpolate.getInterpolationPoint().add(new InterpolationPoint(min + 2 * diff / 3, Color.yellow));
+    interpolate.getInterpolationPoint().add(new InterpolationPoint(max, Color.red));
     colorMap.setInterpolate(interpolate);
     symbolizer.setColorMap(colorMap);
     // layer.setImage(symbolizer, coverage);
@@ -217,8 +199,7 @@ public class LayerFactory {
 
   private String popNameFromFile(String file) {
     int lastIndexOfSeparator = file.lastIndexOf(File.separatorChar);
-    String name = file.substring(lastIndexOfSeparator + 1,
-        file.lastIndexOf(".")); //$NON-NLS-1$
+    String name = file.substring(lastIndexOfSeparator + 1, file.lastIndexOf(".")); //$NON-NLS-1$
     if (name == null || name.isEmpty()) {
       return "Unnamed population"; //$NON-NLS-1$
     } else
@@ -227,8 +208,8 @@ public class LayerFactory {
   }
 
   /**
-   * Cette méthode génère un nom de couche du type: "Nouvelle couche ('n') où n
-   * indique le nombre de couche portant déjà ce nom.
+   * Cette méthode génère un nom de couche du type: "Nouvelle couche ('n') où n indique le nombre de couche portant déjà
+   * ce nom.
    * @return Le nom de la nouvelle couche
    */
   public String generateNewLayerName() {
@@ -247,19 +228,15 @@ public class LayerFactory {
   }
 
   /**
-   * Créer une nouvelle population en fonction du nom et du type de géométrie
-   * envoyés en paramètre.
+   * Créer une nouvelle population en fonction du nom et du type de géométrie envoyés en paramètre.
    * <p>
-   * Initialise l'index spatial, ajoute le PanelVisu comme ChangeListener et met
-   * à jour le FeatureType de la population.
+   * Initialise l'index spatial, ajoute le PanelVisu comme ChangeListener et met à jour le FeatureType de la population.
    * 
    * @param popName Le nom de la population à créer
    * @param geomType Le type de géométrie de la population
-   * @return Une nouvelle population à partir du nom et du type de géométrie
-   *         envoyés en paramètre.
+   * @return Une nouvelle population à partir du nom et du type de géométrie envoyés en paramètre.
    */
-  public IPopulation<IFeature> generateNewPopulation(String popName,
-      Class<? extends IGeometry> geomType) {
+  public IPopulation<IFeature> generateNewPopulation(String popName, Class<? extends IGeometry> geomType) {
     IPopulation<IFeature> newPop = new Population<IFeature>(popName);
     FeatureType type = new FeatureType();
     type.setGeometryType(geomType);
@@ -267,16 +244,14 @@ public class LayerFactory {
     return newPop;
   }
 
-  public Layer createPopulationAndLayer(String layerName,
-      Class<? extends IGeometry> geometryType) {
+  public Layer createPopulationAndLayer(String layerName, Class<? extends IGeometry> geometryType) {
     if (layerName.isEmpty()) {
       layerName = this.generateNewLayerName();
     } else {
       layerName = this.checkLayerName(layerName);
     }
     // Initialisation de la nouvelle population
-    IPopulation<IFeature> newPop = this.generateNewPopulation(layerName,
-        geometryType);
+    IPopulation<IFeature> newPop = this.generateNewPopulation(layerName, geometryType);
     LayerFactory factory = new LayerFactory(this.model);
     Layer newLayer = factory.createLayer(layerName, geometryType);
     FeatureType featureType = new FeatureType();
@@ -288,21 +263,16 @@ public class LayerFactory {
   }
 
   /**
-   * Cree un nouveau layer portant le nom donne en parametre et un symbolizer
-   * adapte au type de geometrie en parametre.
+   * Cree un nouveau layer portant le nom donne en parametre et un symbolizer adapte au type de geometrie en parametre.
    * <p>
    * Les couleurs associees au symbolizer du layer sont creees aleatoirement.
    * @param layerName nom du layer cherche
    * @param geometryType type de geometrie porte par le layer
    * @return layer portant le nom et la geometrie en parametre
    */
-  public Layer createLayer(String layerName,
-      Class<? extends IGeometry> geometryType) {
-    return this.createLayer(
-        layerName,
-        geometryType,
-        new Color((float) Math.random(), (float) Math.random(), (float) Math
-            .random(), 0.5f));
+  public Layer createLayer(String layerName, Class<? extends IGeometry> geometryType) {
+    return this.createLayer(layerName, geometryType, new Color((float) Math.random(), (float) Math.random(),
+        (float) Math.random(), 0.5f));
   }
 
   /**
@@ -311,23 +281,20 @@ public class LayerFactory {
    * @return
    */
   public Layer createLayer(String layerName) {
-    return this.createLayer(layerName, null, new Color((float) Math.random(),
-        (float) Math.random(), (float) Math.random(), 0.5f));
+    return this.createLayer(layerName, null,
+        new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 0.5f));
   }
 
   /**
-   * Crée un nouveau layer portant le nom donné en paramètre et un symbolizer
-   * adapté au type de géométrie en paramètre.
+   * Crée un nouveau layer portant le nom donné en paramètre et un symbolizer adapté au type de géométrie en paramètre.
    * <p>
-   * Les couleurs associées au symbolizer du layer sont créées aléatoirement.
-   * Elles sont choisies dans le cercle chromatique COGIT et sont différentes
-   * des couleurs existantes.
+   * Les couleurs associées au symbolizer du layer sont créées aléatoirement. Elles sont choisies dans le cercle
+   * chromatique COGIT et sont différentes des couleurs existantes.
    * @param layerName nom du layer cherché
    * @param geometryType type de géométrie porté par le layer
    * @return layer portant le nom et la géométrie en paramètre
    */
-  public Layer createLayerRandomColor(String layerName,
-      Class<? extends IGeometry> geometryType,
+  public Layer createLayerRandomColor(String layerName, Class<? extends IGeometry> geometryType,
       Collection<ColorimetricColor> undesirableColors) {
     ColorReferenceSystem crs = ColorReferenceSystem.defaultColorRS();
     ColorimetricColor theColor = null;
@@ -346,23 +313,19 @@ public class LayerFactory {
   }
 
   /**
-   * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
-   * trait.
+   * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de trait.
    * <p>
    * @param layerName nom du layer cherché
    * @param geometryType type de géométrie porté par le layer
    * @param fillColor la couleur de l'intérieur
    * @return layer portant le nom et la géométrie en paramètre
    */
-  public Layer createLayer(String layerName,
-      Class<? extends IGeometry> geometryType, Color fillColor) {
-    return this.createLayer(layerName, geometryType, fillColor.darker(),
-        fillColor);
+  public Layer createLayer(String layerName, Class<? extends IGeometry> geometryType, Color fillColor) {
+    return this.createLayer(layerName, geometryType, fillColor.darker(), fillColor);
   }
 
   /**
-   * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
-   * trait, la couleur de remplissage.
+   * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de trait, la couleur de remplissage.
    * <p>
    * @param layerName nom du layer cherché
    * @param geometryType type de géométrie porté par le layer
@@ -370,16 +333,13 @@ public class LayerFactory {
    * @param fillColor la couleur de remplissage
    * @return layer portant le nom et la géométrie en paramètre
    */
-  public Layer createLayer(String layerName,
-      Class<? extends IGeometry> geometryType, Color strokeColor,
-      Color fillColor) {
-    return this.createLayer(layerName, geometryType, strokeColor, fillColor,
-        0.8f);
+  public Layer createLayer(String layerName, Class<? extends IGeometry> geometryType, Color strokeColor, Color fillColor) {
+    return this.createLayer(layerName, geometryType, strokeColor, fillColor, 0.8f);
   }
 
   /**
-   * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
-   * trait, la couleur de remplissage, l'opacité donnés en paramètre.
+   * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de trait, la couleur de remplissage,
+   * l'opacité donnés en paramètre.
    * <p>
    * @param layerName nom du layer cherché
    * @param geometryType type de géométrie porté par le layer
@@ -388,17 +348,14 @@ public class LayerFactory {
    * @param opacity l'opacité des objets de la couche
    * @return layer portant le nom et la géométrie en paramètre
    */
-  public Layer createLayer(String layerName,
-      Class<? extends IGeometry> geometryType, Color strokeColor,
+  public Layer createLayer(String layerName, Class<? extends IGeometry> geometryType, Color strokeColor,
       Color fillColor, float opacity) {
-    return this.createLayer(layerName, geometryType, strokeColor, fillColor,
-        opacity, 1.0f);
+    return this.createLayer(layerName, geometryType, strokeColor, fillColor, opacity, 1.0f);
   }
 
   /**
-   * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
-   * trait, la couleur de remplissage, l'opacité et la largeur de trait donnés
-   * en paramètre.
+   * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de trait, la couleur de remplissage,
+   * l'opacité et la largeur de trait donnés en paramètre.
    * <p>
    * @param layerName nom du layer cherché
    * @param geometryType type de géométrie porté par le layer
@@ -408,13 +365,11 @@ public class LayerFactory {
    * @param strokeWidth la largeur du trait
    * @return layer portant le nom et la géométrie en paramètre
    */
-  public Layer createLayer(String layerName,
-      Class<? extends IGeometry> geometryType, Color strokeColor,
+  public Layer createLayer(String layerName, Class<? extends IGeometry> geometryType, Color strokeColor,
       Color fillColor, float opacity, float strokeWidth) {
 
-    LayerFactory.logger.info("create Layer " + layerName + " " + geometryType
-        + " " + strokeColor + " " + fillColor + " " + opacity + " "
-        + strokeWidth);
+    LayerFactory.logger.info("create Layer " + layerName + " " + geometryType + " " + strokeColor + " " + fillColor
+        + " " + opacity + " " + strokeWidth);
 
     Layer layer = new NamedLayer(this.model, layerName);
 
@@ -422,9 +377,7 @@ public class LayerFactory {
     style.setName("Style créé pour le layer " + layerName);//$NON-NLS-1$
 
     FeatureTypeStyle fts = new FeatureTypeStyle();
-    fts.getRules().add(
-        LayerFactory.createRule(geometryType, strokeColor, fillColor, opacity,
-            opacity, strokeWidth));
+    fts.getRules().add(LayerFactory.createRule(geometryType, strokeColor, fillColor, opacity, opacity, strokeWidth));
     style.getFeatureTypeStyles().add(fts);
     layer.getStyles().add(style);
 
@@ -432,8 +385,8 @@ public class LayerFactory {
   }
 
   /**
-   * Créer un layer pour représenter une ligne utilisant deux styles: le premier
-   * pour la bordure de la ligne, le deuxième pour le trait central
+   * Créer un layer pour représenter une ligne utilisant deux styles: le premier pour la bordure de la ligne, le
+   * deuxième pour le trait central
    * @param layerName le nom de la couche
    * @param mainStrokeColor la couleur du trait central
    * @param borderStrokeColor la couleur du trait de bordure
@@ -441,8 +394,8 @@ public class LayerFactory {
    * @param borderStrokeWidth l'épaisseur du trait de bordure
    * @return un nouveau layer permettant de représenter des lignes avec bordure
    */
-  public Layer createLayerWithBorder(String layerName, Color mainStrokeColor,
-      Color borderStrokeColor, float mainStrokeWidth, float borderStrokeWidth) {
+  public Layer createLayerWithBorder(String layerName, Color mainStrokeColor, Color borderStrokeColor,
+      float mainStrokeWidth, float borderStrokeWidth) {
     if (mainStrokeWidth > borderStrokeWidth) {
       System.out.println("Le layer n'a pas été créé: " //$NON-NLS-1$
           + "La largeur du trait central ne peut " //$NON-NLS-1$
@@ -487,8 +440,7 @@ public class LayerFactory {
    * @param strokeColor
    * @param fillColor
    */
-  public Layer createPointLayer(String layerName, String wellKnownText,
-      Color strokeColor, Color fillColor) {
+  public Layer createPointLayer(String layerName, String wellKnownText, Color strokeColor, Color fillColor) {
     Layer layer = new NamedLayer(this.model, layerName);
     UserStyle style = new UserStyle();
     style.setName("Style créé pour le layer " + layerName); //$NON-NLS-1$
@@ -514,9 +466,8 @@ public class LayerFactory {
   }
 
   /**
-   * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
-   * trait, la couleur de remplissage, l'opacité et la largeur de trait donnés
-   * en paramètre.
+   * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de trait, la couleur de remplissage,
+   * l'opacité et la largeur de trait donnés en paramètre.
    * <p>
    * @param groupName nom du groupe
    * @param geometryType type de géométrie porté par le layer
@@ -529,23 +480,19 @@ public class LayerFactory {
   // FIXME Les deux méthodes createStyle et createRule n'ont sans doute pas
   // vraiment leur place ici mais devraient être placées dans un factory et/ou
   // builder propre
-  public static Style createStyle(String groupName,
-      Class<? extends IGeometry> geometryType, Color strokeColor,
+  public static Style createStyle(String groupName, Class<? extends IGeometry> geometryType, Color strokeColor,
       Color fillColor, float opacity, float strokeWidth) {
     UserStyle style = new UserStyle();
     style.setGroup(groupName);
     FeatureTypeStyle fts = new FeatureTypeStyle();
-    fts.getRules().add(
-        LayerFactory.createRule(geometryType, strokeColor, fillColor, opacity,
-            opacity, strokeWidth));
+    fts.getRules().add(LayerFactory.createRule(geometryType, strokeColor, fillColor, opacity, opacity, strokeWidth));
     style.getFeatureTypeStyles().add(fts);
     return style;
   }
 
   /**
-   * Crée un nouveau Style qui affiche en étiquette la valeur d'un attribut
-   * donné avec les paramètres donnés en entrée (couleur, etc.). Le type de
-   * placement est uniquement ponctuel
+   * Crée un nouveau Style qui affiche en étiquette la valeur d'un attribut donné avec les paramètres donnés en entrée
+   * (couleur, etc.). Le type de placement est uniquement ponctuel
    * <p>
    * @param name nom du style
    * @param geometryType type de géométrie porté par le layer
@@ -558,9 +505,8 @@ public class LayerFactory {
   // FIXME Les méthodes createStyle et createRule n'ont sans doute pas
   // vraiment leur place ici mais devraient être placées dans un factory et/ou
   // builder propre
-  public static Style createStyle(String name, String attrName,
-      Color textColor, Font font, Color haloColor, float haloRadius,
-      float dxPlacement, float dyPlacement, float rotation) {
+  public static Style createStyle(String name, String attrName, Color textColor, Font font, Color haloColor,
+      float haloRadius, float dxPlacement, float dyPlacement, float rotation) {
     UserStyle style = new UserStyle();
     style.setName(name);
     FeatureTypeStyle fts = new FeatureTypeStyle();
@@ -576,8 +522,7 @@ public class LayerFactory {
       txtSymbolizer.setHalo(halo);
     }
     // build the font
-    fr.ign.cogit.geoxygene.style.Font sldFont = new fr.ign.cogit.geoxygene.style.Font(
-        font);
+    fr.ign.cogit.geoxygene.style.Font sldFont = new fr.ign.cogit.geoxygene.style.Font(font);
     txtSymbolizer.setFont(sldFont);
     // build the symbolizer fill
     Fill txtFill = new Fill();
@@ -605,9 +550,8 @@ public class LayerFactory {
   // FIXME Les deux méthodes createStyle et createRule n'ont sans doute pas
   // vraiment leur place ici mais devraient être placées dans un factory et/ou
   // builder propre
-  public static Rule createRule(Class<? extends IGeometry> geometryType,
-      Color strokeColor, Color fillColor, float strokeOpacity,
-      float fillOpacity, float strokeWidth) {
+  public static Rule createRule(Class<? extends IGeometry> geometryType, Color strokeColor, Color fillColor,
+      float strokeOpacity, float fillOpacity, float strokeWidth) {
     Rule rule = new Rule();
     rule.setLegendGraphic(new LegendGraphic());
     Graphic graphicSymbol = new Graphic();
@@ -638,8 +582,7 @@ public class LayerFactory {
       rule.getSymbolizers().add(rasterSymbolizer);
       return rule;
     }
-    if (IPolygon.class.isAssignableFrom(geometryType)
-        || IMultiSurface.class.isAssignableFrom(geometryType)) {
+    if (IPolygon.class.isAssignableFrom(geometryType) || IMultiSurface.class.isAssignableFrom(geometryType)) {
       /** Ajoute un polygone symbolizer */
       PolygonSymbolizer polygonSymbolizer = new PolygonSymbolizer();
       polygonSymbolizer.setStroke(stroke);
@@ -647,16 +590,14 @@ public class LayerFactory {
       rule.getSymbolizers().add(polygonSymbolizer);
       return rule;
     }
-    if (ICurve.class.isAssignableFrom(geometryType)
-        || IMultiCurve.class.isAssignableFrom(geometryType)) {
+    if (ICurve.class.isAssignableFrom(geometryType) || IMultiCurve.class.isAssignableFrom(geometryType)) {
       /** Ajoute un line symbolizer */
       LineSymbolizer lineSymbolizer = new LineSymbolizer();
       lineSymbolizer.setStroke(stroke);
       rule.getSymbolizers().add(lineSymbolizer);
       return rule;
     }
-    if (IPoint.class.isAssignableFrom(geometryType)
-        || IMultiPoint.class.isAssignableFrom(geometryType)) {
+    if (IPoint.class.isAssignableFrom(geometryType) || IMultiPoint.class.isAssignableFrom(geometryType)) {
       /** Ajoute un point symbolizer */
       PointSymbolizer pointSymbolizer = new PointSymbolizer();
       Graphic graphic = new Graphic();
