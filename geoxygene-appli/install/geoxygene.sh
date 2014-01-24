@@ -30,3 +30,4 @@ echo "classpath = " $CLASSPATH
 echo $JAVA $JAVA_MAXMEM -cp "$CLASSPATH" $MAIN $*
 
 $JAVA $JAVA_MAXMEM $GEOX_OPTS -cp "$CLASSPATH":geoxygene-appli-1.6.jar $MAIN $*
+

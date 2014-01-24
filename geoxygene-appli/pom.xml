@@ -16,7 +16,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<dir.executable>/executable</dir.executable>
+		<dir.executable>/exec-geox</dir.executable>
 	</properties>
 
 	<build>
@@ -143,6 +143,8 @@
                                 <!-- script bat -->
                                 <copy file="${basedir}/install/geoxygene.bat"
                                     todir="${dir.executable}" />
+                                <copy file="${basedir}/install/cpappend.bat"
+                                    todir="${dir.executable}" />
                                 <copy file="${basedir}/install/geoxygene.sh"
                                     todir="${dir.executable}" />
                                     
@@ -165,7 +167,7 @@
                                     todir="${dir.executable}" />
 
                                 <echo>Suppression d'Ojb</echo>
-                                <delete file="${dir.executable}/lib/ojb-1.0.rc6-COGIT.jar" />
+                                
                             
                             </tasks>
                         </configuration>
