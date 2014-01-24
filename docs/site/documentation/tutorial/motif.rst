@@ -1,3 +1,6 @@
+.. _motif:
+
+
 :Author: Charlotte Hoarau
 :Version: 0.1
 :License: Create Commons with attribution
@@ -13,7 +16,7 @@ Il existe plusieurs façons de décrire un motif selon la norme SLD et de l'appl
 à un objet géographique dans GeOxygene qui implémente cette norme.
 Cette page a pour objectif d'illustrer le plus exhaustivement possible les différents cas :
 
-- avec différents méthodes (répétition le long d'un contour ou distribution dans une forme),
+- avec différentes méthodes (répétition le long d'un contour ou distribution dans une forme),
 - selon le mode d'implantation des objets (point, ligne, polygone),
 - selon les différents formats de motifs (image png ou gif, image svg, forme SLD)
 
@@ -28,9 +31,9 @@ La classe GraphicFill modélise la méthode de rendu qui consiste à remplir une
 Cela peut être réalisé de façon très classique à l'intérieur d'un polygone, mais également à l'intérieur d'un contour (de point, de ligne ou de polygone).
 
 Il n'y a pas pour l'instant de paramètre d'agencement des motifs à l'intérieur de la forme (ni prévu par la norme ni implémenté dans GeOxygene). 
-Mais il est possible de prévoir une image de remplissage adéquate pour :
+Cependant il est possible de remplir la forme par une image du motif afin de :
 
-* gérer l'espacement entre motif (en ajoutant plus de blanc autour du motif)
+* gérer l'espacement entre motifs (en ajoutant plus de blanc autour du motif)
 * créer un motif irégulier (en ajoutant plus d'un blanc d'un côté du motif)
 * réaliser un motif en quinconce
 

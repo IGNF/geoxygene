@@ -1,11 +1,11 @@
-
+.. _plugin:
 
 Plugin dans l'interface graphique 2D.
 ######################################
 
    ... ou comment ajouter de nouvelles fonctionnalités dans l'interface graphique de GeOxygene.
 
-Les contributions des développeurs ne sont pas inclues dans le module de l'interface graphique 2D, 
+Les contributions des développeurs ne sont pas incluses dans le module de l'interface graphique 2D, 
 elles sont implémentées à l'aide de plugins. 
 
 Actuellement les plugins sont regroupés suivant les thèmes de recherche du laboratoire :
@@ -20,11 +20,11 @@ Il existe deux types de plugins :
 - les GeOxygeneApplicationPlugin, qui permettent par exemple d'ajouter des menus à l'interface principale (c'est ceux qui existaient avant).
 - les ProjectFramePlugin, qui permettent d'ajouter des éléments graphiques (toolbar, slider, ...) à un projectFrame afin de le modifier.
 
-L'initialisation des plugins se fait à différent moment suivant le type choisi. 
+L’initialisation des plugins se fait à différents moments suivant le type choisi. 
 Les plugins classiques (GeOxygeneApplicationPlugin) sont initialisés au chargement de l'interface graphique, 
 et les plugins de type ProjectFrame sont initialisés à chaque nouvelle création d'un projectFrame.
 
-Ci-dessous le diagramme de classe des plugins implémentés dans le module geoxygene-appli :
+Ci-dessous le diagramme de classes des plugins implémentés dans le module geoxygene-appli :
 
 .. container:: centerside
      

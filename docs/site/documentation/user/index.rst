@@ -1,6 +1,6 @@
 
-User Guide
-===============
+Guide de l'utilisateur
+=======================
 
 
 .. toctree::

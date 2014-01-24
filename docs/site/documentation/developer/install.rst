@@ -1,8 +1,8 @@
 :Date: 11/2013
 :Version: 0.6
 
-Setup tools for GeOxygene
-##########################
+Installation des outils pour GeOxygene
+#######################################
 
 Cette page et la suivante ont pour objectif de guider le développeur dans son installation de la plateforme de développement de GeOxygene.
   

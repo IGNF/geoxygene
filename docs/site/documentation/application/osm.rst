@@ -9,10 +9,10 @@ Cette page documente le chargement de données OpenStreetMap dans GeOxygene impl
 Utilisation via le plugin OSM
 ************************************
 
-La première entrée du menu OSM permet d'importer un fichier de données .osm. Ce format est dérivée de XML et 
+La première entrée du menu OSM permet d'importer un fichier de données .osm. Ce format est dérivé de XML et 
 contient les données OSM sous forme de triplets RDF. Parser ce fichier et convertir les informations est un processus 
 long (plusieurs minutes pour de gros fichiers), le déroulement du chargement s'affiche dans la barre 
-de progression ci-dessous. L'étape la plus longue est la lecture de l'ensemble des points du fichiers, 
+de progression ci-dessous. L'étape la plus longue est la lecture de l'ensemble des points du fichier, 
 puis le chargeur lit les lignes et les relations, et enfin convertit toute l'information parsée en objets CartAGen. 
 
 .. container:: centerside
@@ -45,7 +45,7 @@ linéaires et surfaciques (voir exemples ci-dessous). Les coordonnées sont donn
 
 Ces nœuds peuvent également être "taggés" (on leur a ajouté des propriétés par un tag RDF) s'ils 
 représentent un objet géographique ponctuel comme le repère géodésique ci-dessous. Ces tags correspondent 
-la plupart du temps aux recommendations du projet OpenStreetMap que l'on peut retrouver sur ce 
+la plupart du temps aux recommandations du projet OpenStreetMap que l'on peut retrouver sur ce 
 `wiki <http://wiki.openstreetmap.org/wiki/Map_Features>`_. Dans cet exemple, on retrouve des tags de nature 
 métadonnées comme "source" et d'autres de nature attributaire comme "ele" qui donne l'altitude du point.
 
@@ -57,7 +57,7 @@ lignes avec leurs tags associés. Un polygone est ici une ligne dont le point fi
 au point initial. Les points sont listés par la identifiant unique (voir exemple ci-dessous). 
 Les données géographiques ont en général un tag principal (dont la liste est disponible sur le wiki, 
 voir plus haut), qui correspond au nom de la classe dans une modélisation relationnelle ou orientée-objet. 
-Dans notre exemple c-dessous, le tag principal est "highway" (qui correspond aux routes) 
+Dans notre exemple ci-dessous, le tag principal est "highway" (qui correspond aux routes) 
 avec la valeur "track" : c'est une route de type piste.
 
 .. literalinclude:: /documentation/resources/code_src/osm/example03.osm
@@ -113,9 +113,9 @@ Le schéma de données CartAGen est un schéma orienté-objets avec des classes 
 chacune possédant un type de géométrie, alors que le schéma OSM se contente de mettre des tags sur des points 
 ou des lignes. Le passage de l'un à l'autre n'est donc pas direct. En effet, suivant ni les types de géométries, 
 ni le tag principal ne permettent d'apparier directement à des classes : le tag highway peut décrire une route 
-linéaire (à mettre dans la classe OsmRoadLine) ou une parking surfacique (à mettre dans la classe OsmRoadArea) 
+linéaire (à mettre dans la classe OsmRoadLine) ou un parking surfacique (à mettre dans la classe OsmRoadArea) 
 suivant le type de géométrie taguée. Nous proposons donc pour réaliser cet appariement d'utiliser un objet 
-Mapping composant d'une liste d'appariement (objets de la classe OsmMatching) dont le diagramme de classe 
+Mapping composant d'une liste d'appariement (objets de la classe OsmMatching) dont le diagramme de classes 
 UML est présenté ci-dessous. Un "matching" énumère les combinaisons de tag permettant de peupler une classe du schéma CartAGen.
 
 .. container:: centerside
@@ -163,7 +163,7 @@ du menu ajouté par le plugin OSM.
 
 Attention, pour l'instant, le chargeur convertit les coordonnées en Lambert93 et ne projette donc correctement 
 que des données situées en France métropolitaine. Une version améliorée du chargeur gérant plusieurs projections 
-est prévue car des données OSM sont disponibles partout dans la monde.
+est prévue car des données OSM sont disponibles partout dans le monde.
 
 
 

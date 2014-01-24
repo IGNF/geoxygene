@@ -1,4 +1,4 @@
-
+.. _geometry:
 
 Geometrie dans GeOxygene
 #########################
@@ -54,7 +54,7 @@ Implémentation dans GeOxygene
 
 - Le seul GM_CurveSegment implémenté dans GeOxygene est la polyligne GM_LineString. En effet, les SGBD et SIG actuels 
   n’offrent pas beaucoup d’autres alternatives pour le stockage des primitives linéaires. 
-  La GM_LineString est de surcroît une GM_Curve particulière, composée d’un et d’un seul segment qui est elle-même (extension de la norme ISO). 
+  La GM_LineString est de surcroît une GM_Curve particulière, composée d’un et d’un seul segment qui est lui-même (extension de la norme ISO). 
   Cette extension à la norme permet de travailler directement et facilement sur les instances de la classe GM_LineString, qui est le cas le plus courant. 
   Malgré tout, la classe GM_Curve existe et est utilisable.
 
@@ -62,7 +62,7 @@ Implémentation dans GeOxygene
 
 - On retrouve, pour les surfaces, une modélisation analogue à celle sur les linéaires. 
   La primitive surfacique de base s’appelle dans la norme GM_Surface. Elle est composée de GM_SurfacePatch. 
-  Un GM_SurfacePatch peut être un polygone (GM_Polygon) ou des choses plus compliquées pour permettre de travailler 
+  Un GM_SurfacePatch peut être un polygone (GM_Polygon) ou quelque chose de plus compliqué pour permettre de travailler 
   en 3D (cylindre, sphère, etc.). GM_Polygon est ici une GM_Surface particulière composée d’un et d’un seul GM_SurfacePatch qui est lui-même. 
   Ceci permet là aussi de travailler directement sur GM_Polygon. En pratique, dans la version actuelle de GeOxygene, 
   seule la classe GM_Polygon est utilisable (GM_Surface ne l’est pas).
@@ -77,7 +77,7 @@ Implémentation dans GeOxygene
 - La classe DirectPosition représente un tableau de X,Y,Z, avec certaines méthodes associées (non détaillées ici). 
   Si on travaille en 2D, le Z n’est pas renseigné. On ne parle pas des primitives 3D dans ce document.
 
-- A noter qu’il existe des classes qui sont des structures pour représenter les frontières des objets géométriques 
+- À noter qu’il existe des classes qui sont des structures pour représenter les frontières des objets géométriques 
   (GM_CurveBoundary pour représenter la frontière d’une GM_Curve, GM_SurfaceBoundary pour représenter la frontière d’un GM_Polygon). 
   Leur utilisation n’est pas fondamentale.
 

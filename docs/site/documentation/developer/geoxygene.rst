@@ -1,8 +1,8 @@
 :Date: 11/2013
 :Version: 0.6
 
-Setup GeOxygene 
-####################################
+Installation de GeOxygene 
+##########################
 
 
 GeOxygene

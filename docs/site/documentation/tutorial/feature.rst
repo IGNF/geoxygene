@@ -1,4 +1,4 @@
-
+.. _feature:
 
 Feature : structure et manipulation
 ####################################
@@ -13,7 +13,7 @@ En réalité il existe 2 schémas logiques indépendants, implémentés dans GeO
 - Le premier est basé sur des objets géographiques métiers héritant de *FT_Feature*
 - Le second est générique, les objets géographiques sont implémentés dans un même objet *DefaultFeature*
 
-A cela s'ajoute les concepts de jeu de données (DataSet), de populations d'objets d'un même type (Population), de collections d'objets
+À cela s’ajoutent les concepts de jeu de données (DataSet), de populations d'objets d'un même type (Population), de collections d'objets
 quelconques (FT_FeatureCollection).  
 
 **Remarque importante** : si les FT_Feature et FT_FeatureCollection sont conformes au modèle de l'OGC, 
@@ -54,13 +54,13 @@ Schéma géographique : définitions
        
          Figure 2 : Feature *Tronçon de route*
          
-   Les classes dite géographiques (routes, rivières…) héritent soit de « FT_Feature » soit de « DefaultFeature », autrement dit
+   Les classes dites géographiques (routes, rivières, …) héritent soit de « FT_Feature » soit de « DefaultFeature », autrement dit
    FT_Feature & DefaultFeature sont les classes mères des classes géographiques.
 
    **1.1. DefaultFeature**
 
         Un *DefaultFeature* est un Feature générique. Les attributs sont représentés dans une table et ne
-        peuvent pas être accèdés autrement dit il n'y a pas de getter ni de setter spécifique à un attribut. 
+        peuvent pas être accédés autrement dit il n'y a pas de getter ni de setter spécifique à un attribut. 
         L'objet géométrique doit être casté suivant son type. 
     
         Un defaultFeature est cependant associé à un FeatureType avec toutes les descriptions de ses attributs, 
@@ -130,7 +130,7 @@ Schéma géographique : définitions
    * un extrait de bases de données sur une zone géographique limitée, datant de l'année 2003
    * thème hydrographie d'une base de données topographiques
    
-   Un « thème » sous-ensemble d'un jeu de données, est lui même un DataSet. 
+   Un « thème » sous-ensemble d'un jeu de données, est lui-même un DataSet. 
    
    Un DataSet porte quelques métadonnées (zone, année, ...).
    

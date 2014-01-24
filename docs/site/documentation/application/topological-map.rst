@@ -1,3 +1,4 @@
+.. _cartetopo:
 
 :Author: Olivier Bonin, Sébastien Mustière – IGN / Laboratoire COGIT
 :Version: 1.0
