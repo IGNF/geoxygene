@@ -33,9 +33,9 @@ import org.xml.sax.SAXException;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.GeneralisationLaunchingFrame;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.GeoxygeneMenu;
-import fr.ign.cogit.cartagen.software.interfacecartagen.menus.DataThemesGUIComponent;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.dataset.DatasetGeoxGUIComponent;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.themes.DataThemesGUIComponent;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.GeneralisationConfigurationFrame;
 
 /**

@@ -65,4 +65,14 @@ public class SelectionUtil {
     return allWindowObjs;
   }
 
+  /**
+   * Add a feature to the selection.
+   * @param appli
+   * @param feature
+   */
+  public static void addFeatureToSelection(GeOxygeneApplication appli,
+      IGeneObj feature) {
+    appli.getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
+        .getSelectedFeatures().add(feature);
+  }
 }
