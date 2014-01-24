@@ -49,7 +49,7 @@ Les couches s'affichent dans l'ordre de leur sélection.
 
 .. container:: centerside
      
-   .. figure:: /documentation/resources/img/userguide/affichage_data.png
+   .. figure:: /documentation/resources/img/userguide/IMG06.png
       :width: 700px
        
       Figure 2 : Interface de GeOxygene
