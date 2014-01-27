@@ -14,11 +14,14 @@ Windows Installation
 
 .. container:: svnurl
 
-   https://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.6/binaries/
+   https://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.6/GeOxygene-Viewer2D-1.6.zip
      
 2. Copy the whole folder contents into your system 
 
-3. Double-click in geoxygene.bat.
+3. Double-click in 
+
+
+geoxygene.bat.
  
 4. You will now see the GeOxygene 2D graphical interface  
 
