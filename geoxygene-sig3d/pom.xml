@@ -53,7 +53,6 @@
 							<mainClass>fr.ign.cogit.geoxygene.sig3d.gui.MainWindow</mainClass>
 						</manifest>
 					</archive>
-					<finalName>toto</finalName>
 				</configuration>
 			</plugin>
 
