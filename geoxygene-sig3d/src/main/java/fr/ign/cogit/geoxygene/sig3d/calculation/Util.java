@@ -9,6 +9,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.equation.PlanEquation;
@@ -371,7 +372,7 @@ public abstract class Util {
    * @param sol
    * @return
    */
-  public static double volumeTriangulatedSolid(GM_Solid sol) {
+  public static double volumeTriangulatedSolid(ISolid sol) {
 
     return Util.volumeUnderSurface(sol.getFacesList());
 
