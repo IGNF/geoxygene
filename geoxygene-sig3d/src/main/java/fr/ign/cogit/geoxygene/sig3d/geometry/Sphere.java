@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.sun.j3d.utils.image.TextureLoader;
+
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
@@ -39,7 +41,6 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_SolidBoundary;
 public class Sphere extends GM_Solid {
 
   static Logger logger = Logger.getLogger(GM_Solid.class.getName());
-
   /**
    * Permet de Génèrer une sphère et d'en choisir un niveau de détail
    * 
