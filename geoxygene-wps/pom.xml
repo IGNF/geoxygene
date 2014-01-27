@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>geoxygene</artifactId>
 		<groupId>fr.ign.cogit</groupId>
-		<version>1.6</version>
+		<version>1.7-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>geoxygene-wps</artifactId>

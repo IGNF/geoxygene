@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>fr.ign.cogit</groupId>
 		<artifactId>geoxygene</artifactId>
-		<version>1.6</version>
+		<version>1.7-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>geoxygene-pea-rep</artifactId>
@@ -74,47 +74,47 @@
 
 		<!-- GeOxygene -->
 		<dependency>
-			<groupId>fr.ign.cogit</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-api</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>fr.ign.cogit</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-spatial</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>fr.ign.cogit</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-feature</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>fr.ign.cogit</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-filter</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>fr.ign.cogit</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-style</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>fr.ign.cogit</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-io</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>fr.ign.cogit</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-contrib</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>fr.ign.cogit</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-cartagen</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>fr.ign.cogit</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-schemageo</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
