@@ -9,7 +9,7 @@
 	<!-- ==================================================== -->
 	<groupId>fr.ign.cogit</groupId>
 	<artifactId>geoxygene</artifactId>
-	<version>1.7-SNAPSHOT</version>
+	<version>1.6</version>
 	<packaging>pom</packaging>
 	<name>GeOxygene</name>
 	<url>http://oxygene-project.sourceforge.net/</url>
@@ -120,27 +120,8 @@
 				<module>geoxygene-spatial</module>
 				<module>geoxygene-style</module>
 				<module>geoxygene-util</module>
-				<module>geoxygene-wps</module>
 				<module>evidence4j</module>
 				<module>geoxygene-osm</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>geoserver</id>
-			<modules>
-				<module>geoxygene-api</module>
-				<module>geoxygene-contrib</module>
-				<module>geoxygene-util</module>
-				<module>geoxygene-wps</module>
-				<module>geoxygene-feature</module>
-				<module>geoxygene-io</module>
-				<module>geoxygene-spatial</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>documentation</id>
-			<modules>
-				<module>docs</module>
 			</modules>
 		</profile>
 		<profile>
@@ -167,7 +148,6 @@
 				<module>geoxygene-spatial</module>
 				<module>geoxygene-style</module>
 				<module>geoxygene-util</module>
-				<module>geoxygene-wps</module>
 				<module>evidence4j</module>
 				<module>geoxygene-osm</module>
 			</modules>

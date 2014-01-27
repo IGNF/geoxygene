@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<osm version="0.6" generator="osmconvert 0.7P" timestamp="2013-12-12T20:55:02Z">
-
-	<node id="354718511" visible="true" version="3" changeset="525232" timestamp="2009-04-13T22:51:35Z" 
-		user="RedFox" uid="10610" lat="42.8837240" lon="-0.4035712"/>
-	<node id="354718548" visible="true" version="3" changeset="525232" timestamp="2009-04-13T22:52:28Z" 
-		user="RedFox" uid="10610" lat="42.8847835" lon="-0.4043782"/>
-	<node id="354718549" visible="true" version="3" changeset="525232" timestamp="2009-04-13T22:52:26Z" 
-		user="RedFox" uid="10610" lat="42.8848781" lon="-0.4049507"/>
