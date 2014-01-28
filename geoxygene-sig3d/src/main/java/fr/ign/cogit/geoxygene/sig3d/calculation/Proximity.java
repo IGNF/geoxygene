@@ -34,198 +34,209 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
  */
 public class Proximity {
 
-  public IDirectPosition nearest;
-  public IDirectPosition nearest2;
-  public double distance;
-  public IOrientableSurface containingFace;
+	public IDirectPosition nearest;
+	public IDirectPosition nearest2;
+	public double distance;
+	public IOrientableSurface containingFace;
 
-  /**
-   * Initialise le calcul
-   */
-  public Proximity() {
+	/**
+	 * Initialise le calcul
+	 */
+	public Proximity() {
 
-    this.nearest = null;
-    this.nearest2 = null;
-    this.distance = Double.NaN;
-    this.containingFace = null;
+		this.nearest = null;
+		this.nearest2 = null;
+		this.distance = Double.NaN;
+		this.containingFace = null;
 
-  }
+	}
 
-  /**
-   * méthode renvoyant : (ATTENTION : le calcul n'est- effectué que sur les
-   * points de la face) -la distance entre 1 liste de points et une liste de
-   * faces -le point de la liste de points le plus proche -la face la plus
-   * proche -Le point le plus proche de cette face
-   * 
-   * @param P1
-   * @param lF
-   */
+	/**
+	 * méthode renvoyant : (ATTENTION : le calcul n'est- effectué que sur les
+	 * points de la face) -la distance entre 1 liste de points et une liste de
+	 * faces -le point de la liste de points le plus proche -la face la plus
+	 * proche -Le point le plus proche de cette face
+	 * 
+	 * @param P1
+	 * @param lF
+	 */
 
-  public void nearest(IDirectPosition P1, ArrayList<IOrientableSurface> lF) {
+	public void nearest(IDirectPosition P1, ArrayList<IOrientableSurface> lF) {
 
-    int nb = lF.size();
+		int nb = lF.size();
 
-    if (nb == 0) {
+		if (nb == 0) {
 
-      this.nearest = null;
-      this.nearest2 = null;
-      this.distance = Double.NaN;
-      this.containingFace = null;
-    }
+			this.nearest = null;
+			this.nearest2 = null;
+			this.distance = Double.NaN;
+			this.containingFace = null;
+		}
 
-    IOrientableSurface faceTemp = lF.get(0);
+		IOrientableSurface faceTemp = lF.get(0);
 
-    IDirectPosition pTemp2 = faceTemp.coord().get(0);
-    double dTemp = pTemp2.distance(P1);
+		IDirectPosition pTemp2 = faceTemp.coord().get(0);
+		double dTemp = pTemp2.distance(P1);
 
-    for (int i = 0; i < nb; i++) {
-      IOrientableSurface fTemp = lF.get(i);
-      IDirectPositionList lPTemp = fTemp.coord();
-      int nbpoint = lPTemp.size();
+		for (int i = 0; i < nb; i++) {
+			IOrientableSurface fTemp = lF.get(i);
+			IDirectPositionList lPTemp = fTemp.coord();
+			int nbpoint = lPTemp.size();
 
-      for (int j = 0; j < nbpoint; j++) {
-        IDirectPosition p = lPTemp.get(j);
-        double d = p.distance(P1);
-        if (d < dTemp) {
-          // On garde le point
-          dTemp = d;
-          pTemp2 = p;
-          faceTemp = fTemp;
-        }
+			for (int j = 0; j < nbpoint; j++) {
+				IDirectPosition p = lPTemp.get(j);
+				double d = p.distance(P1);
+				if (d < dTemp) {
+					// On garde le point
+					dTemp = d;
+					pTemp2 = p;
+					faceTemp = fTemp;
+				}
 
-      }
+			}
 
-    }
+		}
 
-    this.nearest = P1;
-    this.nearest2 = pTemp2;
-    this.distance = dTemp;
-    this.containingFace = faceTemp;
+		this.nearest = P1;
+		this.nearest2 = pTemp2;
+		this.distance = dTemp;
+		this.containingFace = faceTemp;
 
-  }
+	}
 
-  /**
-   * méthode renvoyant : (ATTENTION : le calcul n'est- effectué que sur les
-   * points de la face) -la distance entre 1 liste de points et une liste de
-   * faces -le point de la liste de points le plus proche -la face la plus
-   * proche Le point le plus proche de cette face
-   * 
-   * @param lP1
-   * @param lF
-   */
+	/**
+	 * méthode renvoyant : (ATTENTION : le calcul n'est- effectué que sur les
+	 * points de la face) -la distance entre 1 liste de points et une liste de
+	 * faces -le point de la liste de points le plus proche -la face la plus
+	 * proche Le point le plus proche de cette face
+	 * 
+	 * @param lP1
+	 * @param lF
+	 */
 
-  public void nearest(IDirectPositionList lP1, ArrayList<IOrientableSurface> lF) {
+	public void nearest(IDirectPositionList lP1, ArrayList<IOrientableSurface> lF) {
 
-    int nb = lF.size();
 
-    if (nb == 0) {
+		int nb = lF.size(); 
 
-      this.nearest = null;
-      this.nearest2 = null;
-      this.distance = Double.NaN;
-      this.containingFace = null;
-    }
+		if ((nb == 0)||(lP1.size() == 0)) {  
 
-    IOrientableSurface faceTemp = lF.get(0);
+			this.nearest = null;
+			this.nearest2 = null;
+			this.distance = Double.NaN;
+			this.containingFace = null;
+			
+			return;
+		}
 
-    IDirectPosition pTemp1 = this.nearest;
-    IDirectPosition pTemp2 = this.nearest2;
-    double dTemp = this.distance;
+		IOrientableSurface faceTemp = lF.get(0);
 
-    this.nearest(lP1, this.containingFace.coord());
+		this.nearest(lP1, faceTemp.coord());
 
-    for (int i = 0; i < nb; i++) {
+		IDirectPosition pTemp1 = this.nearest;
+		IDirectPosition pTemp2 = this.nearest2;
+		double dTemp = this.distance;
 
-      this.nearest(lP1, lF.get(i).coord());
+		for (int i = 0; i < nb; i++) {
 
-      if (this.distance < dTemp) {
-        pTemp1 = this.nearest;
-        pTemp2 = this.nearest2;
-        dTemp = this.distance;
-        faceTemp = this.containingFace;
+			this.nearest(lP1, lF.get(i).coord());
 
-      }
+			if (this.distance < dTemp) {
+				pTemp1 = this.nearest;
+				pTemp2 = this.nearest2;
+				dTemp = this.distance;
+				faceTemp = this.containingFace;
 
-    }
+			}
 
-    this.nearest = pTemp1;
-    this.nearest2 = pTemp2;
-    this.distance = dTemp;
-    this.containingFace = faceTemp;
+		}
 
-  }
+		this.nearest = pTemp1;
+		this.nearest2 = pTemp2;
+		this.distance = dTemp;
+		this.containingFace = faceTemp;
 
-  /**
-   * Renvoie le point de la liste LP1 le plus proche des points de la liste LP2
-   */
-  public void nearest(IDirectPositionList lP1, IDirectPositionList lP2) {
+	}
 
-    int nb = lP1.size();
-    int nb2 = lP2.size();
+	/**
+	 * Renvoie le point de la liste LP1 le plus proche des points de la liste LP2
+	 */
+	public void nearest(IDirectPositionList lP1, IDirectPositionList lP2) {
 
-    this.distance = Double.POSITIVE_INFINITY;
+		int nb = lP1.size();
+		int nb2 = lP2.size(); 
 
-    for (int i = 0; i < nb; i++) {
+		if ((nb == 0)||(nb2 == 0)) {
 
-      IDirectPosition dp1 = lP1.get(i);
-      for (int j = 0; j < nb2; j++) {
-        IDirectPosition dp2 = lP2.get(j);
+			this.nearest = null;
+			this.distance = Double.NaN;
+			return;
 
-        double d = dp1.distance(dp2);
-        if (d < this.distance) {
-          this.distance = d;
-          this.nearest = dp1;
-          this.nearest2 = dp2;
-        }
+		}
 
-      }
+		this.distance = Double.POSITIVE_INFINITY;
 
-    }
+		for (int i = 0; i < nb; i++) {
 
-  }
+			IDirectPosition dp1 = lP1.get(i);
+			for (int j = 0; j < nb2; j++) {
+				IDirectPosition dp2 = lP2.get(j);
 
-  /**
-   * Renvoie le point le plus pproche d'une liste de points par rapport à un
-   * autre point
-   * 
-   * @param dp
-   * @param lP1
-   */
-  public IDirectPosition nearest(IDirectPosition dp, IDirectPositionList lP1) {
-    int nb = lP1.size();
+				double d = dp1.distance(dp2);
+				if (d < this.distance) {
+					this.distance = d;
+					this.nearest = dp1;
+					this.nearest2 = dp2;
+				}
 
-    if (nb == 0) {
+			}
 
-      this.nearest = null;
-      this.distance = Double.NaN;
-      return null;
+		}
 
-    }
+	}
 
-    IDirectPosition pTemp = lP1.get(0);
+	/**
+	 * Renvoie le point le plus pproche d'une liste de points par rapport à un
+	 * autre point
+	 * 
+	 * @param dp
+	 * @param lP1
+	 */
+	public IDirectPosition nearest(IDirectPosition dp, IDirectPositionList lP1) {
+		int nb = lP1.size();
 
-    double d = dp.distance(pTemp);
-    this.distance = d;
+		if (nb == 0) {
 
-    for (int i = 1; i < nb; i++) {
+			this.nearest = null;
+			this.distance = Double.NaN;
+			return null;
 
-      IDirectPosition p2 = lP1.get(i);
+		}
 
-      double dtemp = dp.distance(p2);
+		IDirectPosition pTemp = lP1.get(0);
 
-      if (dtemp < d) {
-        d = dtemp;
-        pTemp = p2;
+		double d = dp.distance(pTemp);
+		this.distance = d;
 
-      }
+		for (int i = 1; i < nb; i++) {
 
-    }
+			IDirectPosition p2 = lP1.get(i);
 
-    this.nearest = pTemp;
-    this.distance = d;
+			double dtemp = dp.distance(p2);
 
-    return pTemp;
+			if (dtemp < d) {
+				d = dtemp;
+				pTemp = p2;
 
-  }
+			}
+
+		}
+
+		this.nearest = pTemp;
+		this.distance = d;
+
+		return pTemp;
+
+	}
 
 }

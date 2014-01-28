@@ -86,15 +86,15 @@ public class TextureManager {
   public static Texture2D textureLoading(String path) {
     int nbTextures = TextureManager.lTextures.size();
     for (int i = 0; i < nbTextures; i++) {
-      System.out.println(path);
-      System.out.println("lPathTextures = " + TextureManager.lPathTextures.get(i));
+     // System.out.println(path);
+     // System.out.println("lPathTextures = " + TextureManager.lPathTextures.get(i));
       if (TextureManager.lPathTextures.get(i).equals(path)) {
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+       // System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         return TextureManager.lTextures.get(i);
       }
 
     }
-    System.out.println("chemin = " + path);
+    //System.out.println("chemin = " + path);
     TextureLoader loader = new TextureLoader(path, null);
     Texture2D texture = (Texture2D) loader.getTexture();
     texture.setBoundaryModeS(Texture.WRAP);

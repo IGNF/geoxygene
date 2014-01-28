@@ -90,6 +90,8 @@ public class GM_Solid extends GM_Primitive implements ISolid {
   /** Constructeur par défaut. */
   public GM_Solid() {
   }
+  
+
 
   /**
    * Constructeur à partir de la frontière.
