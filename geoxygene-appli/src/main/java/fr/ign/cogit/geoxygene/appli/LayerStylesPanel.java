@@ -338,12 +338,28 @@ public class LayerStylesPanel extends JPanel {
     }
     for (ExternalGraphic theGraphic : symbolizer.getGraphic()
         .getExternalGraphics()) {
-      Image onlineImage = theGraphic.getOnlineResource();
-      g2.drawImage(onlineImage,
-          this.margin + currentColumn * (columnsWidth + this.margin)
-              + columnsWidth / 2 - onlineImage.getWidth(null) / 2, this.margin
-              + currentRow * (rowHeight + this.margin) + rowHeight / 2
-              - onlineImage.getHeight(null) / 2, null);
+      String format = theGraphic.getFormat();
+      if (format.contains("svg")) { //$NON-NLS-1$
+        GraphicsNode node = theGraphic.getGraphicsNode();
+
+        int x1 = currentColumn * (columnsWidth + this.margin);
+        int x2 = (currentColumn + 1) * (columnsWidth + this.margin)
+            + this.margin;
+        int widthDrawn = x2 - x1;
+
+        // FIXME find better parameters to display the symbol display.
+        drawGraphicFillPolygon(node, symbolizer.getGraphic().getSize(), g2,
+            getLayer().getOpacity(), widthDrawn, widthDrawn, rowHeight / 2
+                - widthDrawn / 2, 0);
+      } else if (format.contains("png") || format.contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
+
+        Image onlineImage = theGraphic.getOnlineResource();
+        g2.drawImage(onlineImage,
+            this.margin + currentColumn * (columnsWidth + this.margin)
+                + columnsWidth / 2 - onlineImage.getWidth(null) / 2,
+            this.margin + currentRow * (rowHeight + this.margin) + rowHeight
+                / 2 - onlineImage.getHeight(null) / 2, null);
+      }
     }
   }
 

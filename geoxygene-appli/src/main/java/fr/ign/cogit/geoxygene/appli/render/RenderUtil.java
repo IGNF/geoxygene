@@ -338,44 +338,75 @@ public final class RenderUtil {
     }
     for (ExternalGraphic theGraphic : symbolizer.getGraphic()
         .getExternalGraphics()) {
-      Image onlineImage = theGraphic.getOnlineResource();
 
-      float size = symbolizer.getGraphic().getSize();
-      double scale = 1;
-      if (!symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
-        try {
-          scale = viewport.getModelToViewTransform().getScaleX();
-        } catch (NoninvertibleTransformException e) {
-          e.printStackTrace();
+      if (theGraphic.getFormat().contains("svg")) { //$NON-NLS-1$
+        GraphicsNode node = theGraphic.getGraphicsNode();
+        float size = symbolizer.getGraphic().getSize();
+        double scale = 1;
+        if (!symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
+          try {
+            scale = viewport.getModelToViewTransform().getScaleX();
+          } catch (NoninvertibleTransformException e) {
+            e.printStackTrace();
+          }
         }
+        size *= scale;
+
+        AffineTransform at = AffineTransform.getTranslateInstance(point.getX(),
+            point.getY());
+        // AffineTransform at = AffineTransform.getRotateInstance(-Double
+        // .parseDouble(symbolizer.getGraphic().getRotation()
+        // .evaluate(feature).toString())
+        // * Math.PI / 180.0);
+        at.rotate(-Double.parseDouble(symbolizer.getGraphic().getRotation()
+            .evaluate(feature).toString())
+            * Math.PI / 180.0);
+        at.translate(-size / 2, -size / 2);
+        at.scale(size / node.getBounds().getHeight(), size
+            / node.getBounds().getHeight());
+        node.setTransform(at);
+        node.paint(graphics);
+      } else if (theGraphic.getFormat().contains("png") || theGraphic.getFormat().contains("gif")) { //$NON-NLS-1$
+        Image onlineImage = theGraphic.getOnlineResource();
+
+        float size = symbolizer.getGraphic().getSize();
+        double scale = 1;
+        if (!symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
+          try {
+            scale = viewport.getModelToViewTransform().getScaleX();
+          } catch (NoninvertibleTransformException e) {
+            e.printStackTrace();
+          }
+        }
+        size *= scale;
+        // AffineTransform at =
+        // AffineTransform.getTranslateInstance(point.getX(),
+        // point.getY());
+        AffineTransform at = AffineTransform.getRotateInstance(-Double
+            .parseDouble(symbolizer.getGraphic().getRotation()
+                .evaluate(feature).toString())
+            * Math.PI / 180.0);
+        // at.rotate(-Double.parseDouble(symbolizer.getGraphic().getRotation()
+        // .evaluate(feature).toString())
+        // * Math.PI / 180.0);
+        at.scale(size / onlineImage.getHeight(null),
+            size / onlineImage.getHeight(null));
+        // at.translate(
+        // -(size / 2)
+        // * (onlineImage.getWidth(null) / onlineImage.getHeight(null)),
+        // -size / 2);
+
+        AffineTransformOp op = new AffineTransformOp(at,
+            AffineTransformOp.TYPE_BILINEAR);
+
+        graphics
+            .drawImage(
+                (BufferedImage) onlineImage,
+                op,
+                (int) (point.getX() - ((((double) onlineImage.getWidth(null)) / ((double) onlineImage
+                    .getHeight(null))) * (size / 2))),
+                (int) (point.getY() - size / 2));
       }
-      size *= scale;
-      // AffineTransform at = AffineTransform.getTranslateInstance(point.getX(),
-      // point.getY());
-      AffineTransform at = AffineTransform.getRotateInstance(-Double
-          .parseDouble(symbolizer.getGraphic().getRotation().evaluate(feature)
-              .toString())
-          * Math.PI / 180.0);
-      // at.rotate(-Double.parseDouble(symbolizer.getGraphic().getRotation()
-      // .evaluate(feature).toString())
-      // * Math.PI / 180.0);
-      at.scale(size / onlineImage.getHeight(null),
-          size / onlineImage.getHeight(null));
-      // at.translate(
-      // -(size / 2)
-      // * (onlineImage.getWidth(null) / onlineImage.getHeight(null)),
-      // -size / 2);
-
-      AffineTransformOp op = new AffineTransformOp(at,
-          AffineTransformOp.TYPE_BILINEAR);
-
-      graphics
-          .drawImage(
-              (BufferedImage) onlineImage,
-              op,
-              (int) (point.getX() - ((((double) onlineImage.getWidth(null)) / ((double) onlineImage
-                  .getHeight(null))) * (size / 2))),
-              (int) (point.getY() - size / 2));
     }
   }
 
