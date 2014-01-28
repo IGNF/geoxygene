@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import junit.framework.TestCase;
+
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -16,7 +18,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
 
 
-public class TestProximity {
+public class TestProximity extends TestCase {
 
 
 	// ---------------------------------- ATTRIBUTES ----------------------------------

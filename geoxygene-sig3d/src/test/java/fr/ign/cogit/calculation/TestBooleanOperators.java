@@ -1,10 +1,8 @@
 package fr.ign.cogit.calculation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
+
+import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,7 +15,7 @@ import fr.ign.cogit.geoxygene.sig3d.geometry.Sphere;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 
-public class TestBooleanOperators {
+public class TestBooleanOperators extends TestCase {
 
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 

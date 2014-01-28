@@ -1,24 +1,23 @@
 package fr.ign.cogit.calculation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 
-import org.junit.After;
-import org.junit.Before;
+import junit.framework.TestCase;
+
 import org.junit.Test;
 
 import Jama.Matrix;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
 import fr.ign.cogit.geoxygene.sig3d.calculation.Calculation3D;
+import fr.ign.cogit.geoxygene.sig3d.geometry.Sphere;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 
-public class TestCalculation3D {
+public class TestCalculation3D extends TestCase {
 
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
@@ -26,13 +25,6 @@ public class TestCalculation3D {
 
 	// ---------------------------------- PREPROCESS ----------------------------------
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
 
 	// ------------------------------------ TESTS -------------------------------------
 
@@ -246,7 +238,7 @@ public class TestCalculation3D {
 		for (double theta = 0; theta < 2*Math.PI; theta += 0.0001){
 
 			double radius = Math.random()*10;   
-			
+
 			double dx = radius*Math.cos(theta);
 			double dy = radius*Math.sin(theta);
 
@@ -259,7 +251,7 @@ public class TestCalculation3D {
 
 		// Processing center of gravity
 		DirectPosition G = (DirectPosition) Calculation3D.centerOfGravity(surface);
-		
+
 		// Expected result
 		DirectPosition GExp = new DirectPosition(center.getX(), center.getY(), 0);
 
@@ -270,11 +262,203 @@ public class TestCalculation3D {
 
 	}
 
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute lower point of a bounding box : cube
+	// --------------------------------------------------------------------------------
+	public void testArea8() {
+
+		// Creating basic cube
+		GM_Solid cube = Utils.createCube(-5, -5, -5, 10);
+
+		// Processing lower point
+		DirectPosition pmin = (DirectPosition) Calculation3D.pointMin(cube);
+
+		// Processing expected result
+		DirectPosition pminExp = new DirectPosition(-5,-5,-5);
+
+		// Comparison
+		assertEquals("Lower point is incorrect", pmin, pminExp);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute lower point of a bounding box : sphere
+	// --------------------------------------------------------------------------------
+	public void testArea9() {
+
+		// Creating basic cube
+		GM_Solid sphere = new Sphere(new DirectPosition(10,10,10), 3, 100);
+
+		// Processing lower point
+		DirectPosition pmin = (DirectPosition) Calculation3D.pointMin(sphere);
+
+		// Processing expected result
+		DirectPosition pminExp = new DirectPosition(7, 7, 7);
+
+		// Comparison
+		assertEquals("Lower point coordinate X is incorrect", pminExp.getX(), pmin.getX(), epsilon);
+		assertEquals("Lower point coordinate Y is incorrect", pminExp.getY(), pmin.getY(), epsilon);
+		assertEquals("Lower point coordinate Z is incorrect", pminExp.getZ(), pmin.getZ(), epsilon);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute lower position from a list of points bounding box
+	// --------------------------------------------------------------------------------
+	public void testArea10() {
+
+		double xmin = Double.MAX_VALUE;
+		double ymin = Double.MAX_VALUE;
+		double zmin = Double.MAX_VALUE;
+
+		double x;
+		double y;
+		double z;
+
+		DirectPositionList dpl = new DirectPositionList();
+
+		for (int i=0; i<100; i++){
+
+			x = Math.random()*1000;
+			y = Math.random()*1000;
+			z = Math.random()*1000;
+
+			xmin = Math.min(xmin, x);
+			ymin = Math.min(ymin, y);
+			zmin = Math.min(zmin, z);
+
+			dpl.add(new DirectPosition(x, y, z));
+
+		}
+
+		// Processing lower point
+		DirectPosition pmin = (DirectPosition) Calculation3D.pointMin(dpl);
+
+		// Processing expected result
+		DirectPosition pminExp = new DirectPosition(xmin, ymin, zmin);
+
+		// Comparison
+		assertEquals("Lower point is incorrect", pmin, pminExp);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute upper point of a bounding box : cube
+	// --------------------------------------------------------------------------------
+	public void testArea11() {
+
+		// Creating basic cube
+		GM_Solid cube = Utils.createCube(-5, -5, -5, 10);
+
+		// Processing lower point
+		DirectPosition pmax = (DirectPosition) Calculation3D.pointMax(cube);
+
+		// Processing expected result
+		DirectPosition pmaxExp = new DirectPosition(5, 5, 5);
+
+		// Comparison
+		assertEquals("Upper point is incorrect", pmax, pmaxExp);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute upper point of a bounding box : sphere
+	// --------------------------------------------------------------------------------
+	public void testArea12() {
+
+		// Creating basic cube
+		GM_Solid sphere = new Sphere(new DirectPosition(10,10,10), 3, 100);
+
+		// Processing lower point
+		DirectPosition pmax = (DirectPosition) Calculation3D.pointMax(sphere);
+
+		// Processing expected result
+		DirectPosition pmaxExp = new DirectPosition(13, 13, 13);
+
+		// Comparison
+		assertEquals("Lower point coordinate X is incorrect", pmaxExp.getX(), pmax.getX(), epsilon);
+		assertEquals("Lower point coordinate Y is incorrect", pmaxExp.getY(), pmax.getY(), epsilon);
+		assertEquals("Lower point coordinate Z is incorrect", pmaxExp.getZ(), pmax.getZ(), epsilon);
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute upper position from a list of points bounding box
+	// --------------------------------------------------------------------------------
+	public void testArea13() {
+
+		double xmax = Double.MIN_VALUE;
+		double ymax = Double.MIN_VALUE;
+		double zmax = Double.MIN_VALUE;
+
+		double x;
+		double y;
+		double z;
+
+		DirectPositionList dpl = new DirectPositionList();
+
+		for (int i=0; i<100; i++){
+
+			x = Math.random()*1000;
+			y = Math.random()*1000;
+			z = Math.random()*1000;
+
+			xmax = Math.max(xmax, x);
+			ymax = Math.max(ymax, y);
+			zmax = Math.max(zmax, z);
+
+			dpl.add(new DirectPosition(x, y, z));
+
+		}
+
+		// Processing lower point
+		DirectPosition pmax = (DirectPosition) Calculation3D.pointMax(dpl);
+
+		// Processing expected result
+		DirectPosition pmaxExp = new DirectPosition(xmax, ymax, zmax);
+
+		// Comparison
+		assertEquals("Upper point is incorrect", pmax, pmaxExp);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute geometry translations
+	// --------------------------------------------------------------------------------
+	public void testArea14() {
+
+		GM_Solid cube1 = Utils.createCube(100, 100, 100, 10);
+		Calculation3D.translate(cube1, new DirectPosition(-1, +2, -3));
+
+		// Expected result
+		GM_Solid cube2 = Utils.createCube(99, 102, 97, 10);
+
+		// Comparison
+		assertTrue("Translation is incorrect", cube1.equals(cube2));
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute compute geometry translations
+	// --------------------------------------------------------------------------------
+	public void testArea15() {
+
+		GM_Solid cube1 = Utils.createCube(100, 100, 100, 10);
+		Calculation3D.translate(cube1, -1, +2, -3);
+
+		// Expected result
+		GM_Solid cube2 = Utils.createCube(99, 102, 97, 10);
+
+		// Comparison
+		assertTrue("Translation is incorrect", cube1.equals(cube2));
+
+	}
 
 }
-
-
-
-
-
-
