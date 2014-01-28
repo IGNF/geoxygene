@@ -34,6 +34,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.renderable.ParameterBlock;
 import java.util.ArrayList;
@@ -338,9 +339,43 @@ public final class RenderUtil {
     for (ExternalGraphic theGraphic : symbolizer.getGraphic()
         .getExternalGraphics()) {
       Image onlineImage = theGraphic.getOnlineResource();
-      graphics.drawImage(onlineImage,
-          (int) point.getX() - onlineImage.getWidth(null) / 2,
-          (int) point.getY() - onlineImage.getHeight(null) / 2, null);
+
+      float size = symbolizer.getGraphic().getSize();
+      double scale = 1;
+      if (!symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
+        try {
+          scale = viewport.getModelToViewTransform().getScaleX();
+        } catch (NoninvertibleTransformException e) {
+          e.printStackTrace();
+        }
+      }
+      size *= scale;
+      // AffineTransform at = AffineTransform.getTranslateInstance(point.getX(),
+      // point.getY());
+      AffineTransform at = AffineTransform.getRotateInstance(-Double
+          .parseDouble(symbolizer.getGraphic().getRotation().evaluate(feature)
+              .toString())
+          * Math.PI / 180.0);
+      // at.rotate(-Double.parseDouble(symbolizer.getGraphic().getRotation()
+      // .evaluate(feature).toString())
+      // * Math.PI / 180.0);
+      at.scale(size / onlineImage.getHeight(null),
+          size / onlineImage.getHeight(null));
+      // at.translate(
+      // -(size / 2)
+      // * (onlineImage.getWidth(null) / onlineImage.getHeight(null)),
+      // -size / 2);
+
+      AffineTransformOp op = new AffineTransformOp(at,
+          AffineTransformOp.TYPE_BILINEAR);
+
+      graphics
+          .drawImage(
+              (BufferedImage) onlineImage,
+              op,
+              (int) (point.getX() - ((((double) onlineImage.getWidth(null)) / ((double) onlineImage
+                  .getHeight(null))) * (size / 2))),
+              (int) (point.getY() - size / 2));
     }
   }
 

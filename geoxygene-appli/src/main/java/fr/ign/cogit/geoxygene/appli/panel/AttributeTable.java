@@ -718,13 +718,17 @@ public class AttributeTable extends JDialog {
     this.tabPane = new JTabbedPane(SwingConstants.LEFT);
     // On récupère les couches sélectionnées a partir des objets selectionnes
     for (Layer layer : layers) {
-      IFeatureCollection<?> listeFeatures = layer.getFeatureCollection();
-      for (IFeature ft : this.objectsToDraw) {
-        if (listeFeatures.contains(ft)) {
-          this.selectedLayers.add(layer);
-          break;
-        }
-      }
+      // @author amaudet
+      // Modification here to show all the layers, even ones without selected
+      // feature.
+      this.selectedLayers.add(layer);
+      // IFeatureCollection<?> listeFeatures = layer.getFeatureCollection();
+      // for (IFeature ft : this.objectsToDraw) {
+      // if (listeFeatures.contains(ft)) {
+      // this.selectedLayers.add(layer);
+      // break;
+      // }
+      // }
     }
     this.initJDialog();
   }
@@ -745,7 +749,8 @@ public class AttributeTable extends JDialog {
     this.setTitle(title);
     this.setSize(800, 350);
     this.setLayout(new BorderLayout());
-    this.objectsToDraw = features;
+    this.objectsToDraw = this.getProjectFrame().getLayerViewPanel()
+        .getSelectedFeatures();
     List<String> layersName = new ArrayList<String>();
     for (Layer l : this.getProjectFrame().getSld().getLayers()) {
       layersName.add(l.getName());
@@ -759,13 +764,17 @@ public class AttributeTable extends JDialog {
     this.tabPane = new JTabbedPane(SwingConstants.LEFT);
     // On récupère les couches sélectionnées a partir des objets selectionnes
     for (Layer layer : layers) {
-      IFeatureCollection<?> listeFeatures = layer.getFeatureCollection();
-      for (IFeature ft : this.objectsToDraw) {
-        if (listeFeatures.contains(ft)) {
-          this.selectedLayers.add(layer);
-          break;
-        }
-      }
+      this.selectedLayers.add(layer);
+      // @author amaudet
+      // Modification here to show all the layers, even ones without selected
+      // feature.
+      // IFeatureCollection<?> listeFeatures = layer.getFeatureCollection();
+      // for (IFeature ft : this.objectsToDraw) {
+      // if (listeFeatures.contains(ft)) {
+      // this.selectedLayers.add(layer);
+      // break;
+      // }
+      // }
     }
     this.initJDialog();
   }
@@ -811,13 +820,17 @@ public class AttributeTable extends JDialog {
     JPanel control = new JPanel();
     JCheckBox displaySelectedFeatures = new JCheckBox(
         I18N.getString("AttributeTable.DisplaySelected")); //$NON-NLS-1$
-    displaySelectedFeatures.addActionListener(new ActionListener(){
+    // @author amaudet
+    // By default, panel shows only selected features.
+    displaySelectedFeatures.setSelected(true);
+    displaySelectedFeatures.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         LayerViewPanel layerViewPanel = AttributeTable.this.frame
             .getLayerLegendPanel().getLayerViewPanel();
-        if (((JCheckBox)e.getSource()).isSelected()) {
-          AttributeTable.this.objectsToDraw = layerViewPanel.getSelectedFeatures();
+        if (((JCheckBox) e.getSource()).isSelected()) {
+          AttributeTable.this.objectsToDraw = layerViewPanel
+              .getSelectedFeatures();
           AttributeTable.this.tabPane.removeAll();
           AttributeTable.this.initJDialog();
         } else {
@@ -825,7 +838,7 @@ public class AttributeTable extends JDialog {
           AttributeTable.this.tabPane.removeAll();
           AttributeTable.this.initJDialog();
         }
-        
+
       }
     });
     control.add(displaySelectedFeatures);
