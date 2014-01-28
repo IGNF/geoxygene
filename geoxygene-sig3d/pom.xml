@@ -240,6 +240,7 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-appli</artifactId>
+			<version>${project.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
