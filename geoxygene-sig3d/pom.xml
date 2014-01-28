@@ -13,7 +13,7 @@
 	<artifactId>geoxygene-sig3d</artifactId>
 	<packaging>jar</packaging>
 	<name>geoxygene-sig3d</name>
-	<version>1.7-SNAPSHOT</version>
+	
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
