@@ -292,7 +292,7 @@ public class LoaderUtil {
   // pour le noveau chargeur
   public static void computeDataLoading(SourceDLM source, int scale)
       throws ShapefileException, IOException {
-    if (EnrichFrame.getInstance().isResetSelected()) {
+    if (EnrichFrameOld.getInstance().isResetSelected()) {
       CartAGenDocOld.getInstance().getCurrentDataset().resetDataSet();
     }
     String systemPath = CartagenApplication.getInstance().getCheminDonnees();

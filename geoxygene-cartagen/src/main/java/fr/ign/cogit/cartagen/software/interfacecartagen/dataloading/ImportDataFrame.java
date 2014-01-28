@@ -61,7 +61,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
    */
   public static ImportDataFrame getInstance(boolean isInitial) {
     if (ImportDataFrame.importDataFrame == null) {
-      synchronized (EnrichFrame.class) {
+      synchronized (EnrichFrameOld.class) {
         if (ImportDataFrame.importDataFrame == null) {
           ImportDataFrame.importDataFrame = new ImportDataFrame(isInitial);
         }
@@ -376,7 +376,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
       this.setVisible(false);
       LoadingFrame loadingFrame = new LoadingFrame(new File(this.filePath));
       if (loadingFrame.test()) {
-        EnrichFrame.getInstance().setVisible(true);
+        EnrichFrameOld.getInstance().setVisible(true);
         return;
       }
       loadingFrame.setVisible(true);
@@ -390,7 +390,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
       this.setVisible(false);
       // loadingFrameMultiBD.setVisible(true);
       if (withEnrichement) {
-        EnrichFrame enrichFrame = EnrichFrame.getInstance();
+        EnrichFrameOld enrichFrame = EnrichFrameOld.getInstance();
         enrichFrame.setVersion(2);
         enrichFrame.setVisible(true);
 

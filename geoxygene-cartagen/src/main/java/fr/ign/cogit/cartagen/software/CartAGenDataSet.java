@@ -87,6 +87,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanAlignment;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
 import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
@@ -154,7 +155,7 @@ public class CartAGenDataSet extends DataSet {
    * @return The dataset of the unique document named 'name'.
    */
   public static CartAGenDataSet getInstance(String name) {
-    return CartAGenDocOld.getInstance().getDataset(name);
+    return CartAGenDoc.getInstance().getDataset(name);
   }
 
   /**
@@ -822,8 +823,10 @@ public class CartAGenDataSet extends DataSet {
    * Gets the network faces of the dataset
    * @return
    */
+  @SuppressWarnings("unchecked")
   public IPopulation<INetworkFace> getNetworkFaces() {
-    return this.listeFacesReseau;
+    return (IPopulation<INetworkFace>) this.getCartagenPop(
+        CartAGenDataSet.NETWORK_FACES_POP, INetworkFace.FEAT_TYPE_NAME);
   }
 
   /**
@@ -1203,14 +1206,15 @@ public class CartAGenDataSet extends DataSet {
   /**
    * les faces reseau du jeu de données
    */
-  private IPopulation<INetworkFace> listeFacesReseau = new Population<INetworkFace>();
+  // private IPopulation<INetworkFace> listeFacesReseau = new
+  // Population<INetworkFace>();
 
   public IPopulation<INetworkFace> getFacesReseau() {
-    return this.listeFacesReseau;
+    return this.getNetworkFaces();
   }
 
   public void eraseFacesReseau() {
-    this.listeFacesReseau.clear();
+    this.getNetworkFaces().clear();
   }
 
   // ///////////////////////////////////////

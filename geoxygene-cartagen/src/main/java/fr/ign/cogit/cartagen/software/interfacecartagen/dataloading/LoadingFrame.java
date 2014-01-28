@@ -92,7 +92,7 @@ public class LoadingFrame extends JFrame implements ActionListener {
     // Already traducted dataset
     if (this.dataSet.contains("loaded_data")) {
       LoadingFrame.logger.info("The dataset exists and will be launched");
-      EnrichFrame.getInstance().setVisible(true);
+      EnrichFrameOld.getInstance().setVisible(true);
       return;
     }
     this.setTitle("Traduction of the needed layers");
@@ -240,7 +240,7 @@ public class LoadingFrame extends JFrame implements ActionListener {
             LoadingFrame.cheminAbsolu = destination.toString();
             CartagenApplication.getInstance().setCheminDonnees(
                 LoadingFrame.cheminAbsolu);
-            EnrichFrame.getInstance().setVisible(true);
+            EnrichFrameOld.getInstance().setVisible(true);
           }
         } else {
           JOptionPane.showMessageDialog(null, "Traduction cancelled...");
@@ -288,14 +288,14 @@ public class LoadingFrame extends JFrame implements ActionListener {
     if (this.dataSet.contains("CartAGen")
         && this.dataSet.contains("loaded_data")) {
       LoadingFrame.logger.info("The dataset exists and will be launched");
-      EnrichFrame.getInstance().setVisible(true);
+      EnrichFrameOld.getInstance().setVisible(true);
       return true;
     }
 
     // Test of existence
     if (this.test(this.dataSet)) {
       LoadingFrame.logger.info("The dataset exists and will be launched");
-      EnrichFrame.getInstance().setVisible(true);
+      EnrichFrameOld.getInstance().setVisible(true);
       return true;
     }
     if (this.dataSet != null) {
