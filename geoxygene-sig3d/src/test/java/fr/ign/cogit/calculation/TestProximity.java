@@ -1,6 +1,8 @@
 package fr.ign.cogit.calculation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
@@ -11,8 +13,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.sig3d.calculation.Proximity;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
 
 
@@ -35,8 +35,8 @@ public class TestProximity {
 		Proximity prox = new Proximity();
 
 		// Creating point lists
-		DirectPositionList POINTS1 = createPointsList(1, 0, 0, 1);
-		DirectPositionList POINTS2 = createPointsList(1, 0.8, 0.8, 2);
+		DirectPositionList POINTS1 = Utils.createPointsList(1, 0, 0, 1);
+		DirectPositionList POINTS2 = Utils.createPointsList(1, 0.8, 0.8, 2);
 
 		// Processing shortest distance
 		prox.nearest(POINTS1, POINTS2);
@@ -164,7 +164,7 @@ public class TestProximity {
 
 		// Creating surfaces list
 		ArrayList<IOrientableSurface> SURFACES = new ArrayList<IOrientableSurface>();
-		SURFACES.add(createSquarePolygon(100, 0, 0));
+		SURFACES.add(Utils.createSquarePolygon(100, 0, 0));
 
 		// Creating single points
 		DirectPosition point1 = new DirectPosition(49,150,50);		// Case 1
@@ -225,8 +225,8 @@ public class TestProximity {
 		ArrayList<IOrientableSurface> SURFACES = new ArrayList<IOrientableSurface>();
 
 		// Surfaces
-		SURFACES.add(createSquarePolygon(1, 0, 0));
-		SURFACES.add(createSquarePolygon(1, 1, 1));
+		SURFACES.add(Utils.createSquarePolygon(1, 0, 0));
+		SURFACES.add(Utils.createSquarePolygon(1, 1, 1));
 
 		// Creating single points
 		DirectPosition point1 = new DirectPosition(1.2, 0.2, 0);		// Case 1
@@ -293,7 +293,7 @@ public class TestProximity {
 		ArrayList<IOrientableSurface> SURFACES = new ArrayList<IOrientableSurface>();
 
 		// Surface
-		SURFACES.add(createSquarePolygon(1, 0, 0));
+		SURFACES.add(Utils.createSquarePolygon(1, 0, 0));
 
 		// Creating list of points
 		DirectPositionList POINTS = new DirectPositionList();
@@ -340,8 +340,8 @@ public class TestProximity {
 		ArrayList<IOrientableSurface> SURFACES = new ArrayList<IOrientableSurface>();
 
 		// Surfaces
-		SURFACES.add(createSquarePolygon(1, 0, 0));
-		SURFACES.add(createSquarePolygon(1, 1, 1));
+		SURFACES.add(Utils.createSquarePolygon(1, 0, 0));
+		SURFACES.add(Utils.createSquarePolygon(1, 1, 1));
 
 		// Creating list of points
 		DirectPositionList POINTS = new DirectPositionList();
@@ -383,8 +383,8 @@ public class TestProximity {
 		Proximity prox = new Proximity();
 
 		// Creating point lists
-		DirectPositionList POINTS1 = createPointsList(1, 0, 0, 1);
-		DirectPositionList POINTS2 = createPointsList(1, 0, 0, 1);
+		DirectPositionList POINTS1 = Utils.createPointsList(1, 0, 0, 1);
+		DirectPositionList POINTS2 = Utils.createPointsList(1, 0, 0, 1);
 
 		// Processing shortest distance
 		prox.nearest(POINTS1, POINTS2);
@@ -443,43 +443,6 @@ public class TestProximity {
 		assertNull("Surface containingFace should be null", surface);
 		assertTrue("Distance should be null", Double.isNaN(d));
 
-
-	}
-
-	// --------------------------------------------------------------------------------
-	// Method to create a square list of points, size s, shift dx, dy, dz
-	// --------------------------------------------------------------------------------
-	public DirectPositionList createPointsList(double s, double dx, double dy, double dz) {
-
-		DirectPositionList POINTS = new DirectPositionList();
-
-		// Shifting second square
-		POINTS.add(new DirectPosition(0+dx, 0+dy, dz));
-		POINTS.add(new DirectPosition(s+dx, 0+dy, dz));
-		POINTS.add(new DirectPosition(s+dx, s+dy, dz));
-		POINTS.add(new DirectPosition(0+dx, s+dy, dz));
-
-		return POINTS;
-
-	}
-
-
-	// --------------------------------------------------------------------------------
-	// Method to create a square polygon, size s, shift dx, dy
-	// --------------------------------------------------------------------------------
-	public GM_Polygon createSquarePolygon(double s, double dx, double dy) {
-
-		DirectPositionList pointsList = new DirectPositionList();
-
-		pointsList.add(new DirectPosition(dx+0, dy+0,  0));
-		pointsList.add(new DirectPosition(dx+s, dy+0,  0));
-		pointsList.add(new DirectPosition(dx+s, dy+s,  0));
-		pointsList.add(new DirectPosition(dx+0, dy+s,  0));
-		pointsList.add(new DirectPosition(dx+0, dy+0,  0));
-
-		GM_LineString line= new GM_LineString(pointsList);
-
-		return new GM_Polygon(line);
 
 	}
 
