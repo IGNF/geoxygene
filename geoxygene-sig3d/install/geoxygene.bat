@@ -11,7 +11,7 @@ set JAVA_MAXMEM="-Xms1024m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=256m"
 set GEOX_OPTS="-Duser.language=en"
 set GEOX_LIB=".\lib"
 
-set MAIN="fr.ign.cogit.geoxygene.sig3d.Launcher"
+set MAIN="fr.ign.cogit.geoxygene.sig3d.gui.MainWindow"
 
 set JARS=.
 set CLASSPATH=
@@ -19,7 +19,7 @@ for %%i in (.\lib\*.jar) do call cpappend.bat %%i
 set CLASSPATH=%JARS%;./conf;geoxygene-sig3d-1.7-SNAPSHOT.jar;
 REM echo %CLASSPATH%
  
-%JAVA% "%JAVA_MAXMEM%" "%GEOX_OPTS%" -cp %CLASSPATH% %MAIN%
+%JAVA% "-Djava.library.path=".\lib\"" "%JAVA_MAXMEM%" "%GEOX_OPTS%" -cp %CLASSPATH% %MAIN%
 
 
 
