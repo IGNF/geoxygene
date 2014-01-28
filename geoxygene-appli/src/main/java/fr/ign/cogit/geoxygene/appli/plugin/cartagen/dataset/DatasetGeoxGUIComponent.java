@@ -134,6 +134,8 @@ public class DatasetGeoxGUIComponent extends JMenu {
     this.add(new JMenuItem(new CommitAction()));
     this.add(new JMenuItem(new BackTrackAction()));
     this.add(new JMenuItem(new EditPersistentClassesAction()));
+    this.addSeparator();
+    this.add(new JMenuItem(new LaunchEnrichmentWindowAction()));
   }
 
   /**
@@ -1319,6 +1321,26 @@ public class DatasetGeoxGUIComponent extends JMenu {
       }
     }
 
+  }
+
+  class LaunchEnrichmentWindowAction extends AbstractAction {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      // get the enrich frame
+      // get factory
+      // get dataset
+    }
+
+    public LaunchEnrichmentWindowAction() {
+      this.putValue(Action.SHORT_DESCRIPTION, "Launch enrichment panel.");
+      this.putValue(Action.NAME, "Enrichment");
+    }
   }
 
 }

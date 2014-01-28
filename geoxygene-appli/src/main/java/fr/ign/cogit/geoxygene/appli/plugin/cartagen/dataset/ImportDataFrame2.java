@@ -36,6 +36,7 @@ import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.xml.bind.JAXBException;
 
+import fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.DataSetZone;
@@ -43,7 +44,7 @@ import fr.ign.cogit.cartagen.software.dataset.DigitalCartographicModel;
 import fr.ign.cogit.cartagen.software.dataset.DigitalLandscapeModel;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
-import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.EnrichFrame;
+import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.EnrichFrameOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.LoadingFrame;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
@@ -66,7 +67,7 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
   public static ImportDataFrame2 getInstance(boolean isInitial,
       CartAGenPlugin plugIn) {
     if (ImportDataFrame2.importDataFrame == null) {
-      synchronized (EnrichFrame.class) {
+      synchronized (EnrichFrameOld.class) {
         if (ImportDataFrame2.importDataFrame == null) {
           ImportDataFrame2.importDataFrame = new ImportDataFrame2(isInitial,
               plugIn);
@@ -326,6 +327,12 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     }
 
     CartAGenDoc.getInstance().setInitialDataset(dataset);
+
+    EnrichFrame enrichFrame = EnrichFrame.getInstance();
+    enrichFrame.setDataSet(dataset);
+    enrichFrame.setFactory(new DefaultCreationFactory());
+
+    enrichFrame.setVisible(true);
   }
 
   public void setScale(int scale) {
