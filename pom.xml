@@ -120,7 +120,6 @@
 				<module>geoxygene-spatial</module>
 				<module>geoxygene-style</module>
 				<module>geoxygene-util</module>
-				<module>evidence4j</module>
 				<module>geoxygene-osm</module>
 			</modules>
 		</profile>
@@ -148,7 +147,6 @@
 				<module>geoxygene-spatial</module>
 				<module>geoxygene-style</module>
 				<module>geoxygene-util</module>
-				<module>evidence4j</module>
 				<module>geoxygene-osm</module>
 			</modules>
 		</profile>
