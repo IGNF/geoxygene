@@ -19,7 +19,10 @@ for %%i in (.\lib\*.jar) do call cpappend.bat %%i
 set CLASSPATH=%JARS%;./conf;geoxygene-sig3d-1.7-SNAPSHOT.jar;
 REM echo %CLASSPATH%
  
-%JAVA% "-Djava.library.path=".\lib\"" "%JAVA_MAXMEM%" "%GEOX_OPTS%" -cp %CLASSPATH% %MAIN%
+%JAVA% "-Djava.library.path=./lib/" "%JAVA_MAXMEM%" "%GEOX_OPTS%" -cp %CLASSPATH% %MAIN%
+
+
+
 
 
 
