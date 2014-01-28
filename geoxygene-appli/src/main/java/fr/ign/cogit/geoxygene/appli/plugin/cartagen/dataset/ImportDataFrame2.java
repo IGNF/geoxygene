@@ -44,7 +44,6 @@ import fr.ign.cogit.cartagen.software.dataset.DigitalCartographicModel;
 import fr.ign.cogit.cartagen.software.dataset.DigitalLandscapeModel;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
-import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.EnrichFrameOld;
 import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.LoadingFrame;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
@@ -67,7 +66,7 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
   public static ImportDataFrame2 getInstance(boolean isInitial,
       CartAGenPlugin plugIn) {
     if (ImportDataFrame2.importDataFrame == null) {
-      synchronized (EnrichFrameOld.class) {
+      synchronized (EnrichFrame.class) {
         if (ImportDataFrame2.importDataFrame == null) {
           ImportDataFrame2.importDataFrame = new ImportDataFrame2(isInitial,
               plugIn);
