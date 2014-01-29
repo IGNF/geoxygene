@@ -450,6 +450,8 @@ public class OSMLoader extends SwingWorker<Void, Void> {
       } else {
         Collection<OSMResource> resources = this.getWaysFromTag(matching);
         for (OSMResource resource : resources) {
+          if (!isGeometryMatching((OSMWay) resource.getGeom(), matching))
+            continue;
           OsmGeneObj obj = factory.createGeneObj(matching.getCartagenClass(),
               resource, this.nodes, convertor);
           obj.setCaptureTool(resource.getCaptureTool());
@@ -524,6 +526,22 @@ public class OSMLoader extends SwingWorker<Void, Void> {
       }
     }
     return resources;
+  }
+
+  private boolean isGeometryMatching(OSMWay resource, OsmMatching matching) {
+    boolean initialFinal = false;
+    if (resource.getVertices().get(0)
+        .equals(resource.getVertices().get(resource.getVertices().size() - 1)))
+      initialFinal = true;
+    if (matching.getType().equals(GeometryType.LINE) && initialFinal)
+      return false;
+    else if (matching.getType().equals(GeometryType.LINE) && !initialFinal)
+      return true;
+    else if (matching.getType().equals(GeometryType.POLYGON) && !initialFinal)
+      return false;
+    else if (matching.getType().equals(GeometryType.POLYGON) && initialFinal)
+      return true;
+    return false;
   }
 
   @Override

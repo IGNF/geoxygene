@@ -15,11 +15,11 @@
           <PolygonSymbolizer>
             <Fill>
               <CssParameter name="fill-opacity">0.7</CssParameter>
-              <CssParameter name="fill">#cccccc</CssParameter>
+              <CssParameter name="fill">#e8e6e1</CssParameter>
             </Fill>
             <Stroke>
               <CssParameter name="stroke">#555555</CssParameter>
-              <CssParameter name="stroke-width">0.2</CssParameter>
+              <CssParameter name="stroke-width">1.0</CssParameter>
             </Stroke>
           </PolygonSymbolizer>
         </Rule>
@@ -57,7 +57,8 @@
           <LineSymbolizer>
             <Stroke>
               <CssParameter name="stroke">#bbbbcc</CssParameter>
-              <CssParameter name="stroke-width">0.3</CssParameter>
+              <CssParameter name="stroke-width">50.0</CssParameter>
+              <CssParameter name="stroke-linecap">square</CssParameter>
             </Stroke>
           </LineSymbolizer>
         </Rule> 
@@ -79,7 +80,7 @@
           <LineSymbolizer>
             <Stroke>
               <CssParameter name="stroke">#bbbbcc</CssParameter>
-              <CssParameter name="stroke-width">0.2</CssParameter>
+              <CssParameter name="stroke-width">10.0</CssParameter>
             </Stroke>
           </LineSymbolizer>
         </Rule> 
@@ -93,7 +94,7 @@
           <LineSymbolizer>
             <Stroke>
               <CssParameter name="stroke">#e9d1ff</CssParameter>
-              <CssParameter name="stroke-width">0.2</CssParameter>
+              <CssParameter name="stroke-width">8.0</CssParameter>
             </Stroke>
           </LineSymbolizer>
         </Rule>         

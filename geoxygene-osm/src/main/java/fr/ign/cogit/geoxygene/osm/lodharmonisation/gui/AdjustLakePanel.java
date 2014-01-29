@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.util.Set;
 
 import javax.swing.Box;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
@@ -11,10 +12,12 @@ import javax.swing.SpinnerNumberModel;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
+import fr.ign.cogit.cartagen.core.genericschema.road.ICycleWay;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.osm.importexport.OsmDataset;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.relations.LoDSpatialRelation;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.relations.PathNotCrossingLake;
 import fr.ign.cogit.geoxygene.osm.lodharmonisation.process.AdjustLakeOutlineToPaths;
@@ -27,12 +30,15 @@ public class AdjustLakePanel extends HarmonisationPanel {
 
   private IFeatureCollection<IGeneObj> paths, lakes;
   private JSpinner spinBuffer, spinShore, spinCushion, spinTol, spinAngle;
+  private JCheckBox chkBridges;
 
   public AdjustLakePanel() {
     super();
     this.paths = new FT_FeatureCollection<IGeneObj>();
     this.lakes = new FT_FeatureCollection<IGeneObj>();
 
+    chkBridges = new JCheckBox(I18N.getString("AdjustLakePanel.bridges"));
+    chkBridges.setSelected(true);
     SpinnerModel tolModel = new SpinnerNumberModel(0.9, 0.0, 1.0, 0.05);
     spinTol = new JSpinner(tolModel);
     spinTol.setPreferredSize(new Dimension(50, 20));
@@ -43,6 +49,8 @@ public class AdjustLakePanel extends HarmonisationPanel {
     spinAngle.setPreferredSize(new Dimension(60, 20));
     spinAngle.setMaximumSize(new Dimension(60, 20));
     spinAngle.setMinimumSize(new Dimension(60, 20));
+    detectionPanel.add(chkBridges);
+    detectionPanel.add(Box.createHorizontalGlue());
     detectionPanel.add(new JLabel(I18N.getString("AdjustLakePanel.bridgeTol")));
     detectionPanel.add(spinTol);
     detectionPanel.add(Box.createHorizontalGlue());
@@ -96,6 +104,7 @@ public class AdjustLakePanel extends HarmonisationPanel {
         (Double) spinShore.getValue(), (Double) spinCushion.getValue(),
         (Double) spinTol.getValue(), (Double) spinAngle.getValue() * Math.PI
             / 180);
+    process.setSearchBridges(chkBridges.isSelected());
     return process.harmonise();
   }
 
@@ -107,11 +116,16 @@ public class AdjustLakePanel extends HarmonisationPanel {
         if (obj instanceof IPathLine) {
           paths.add(obj);
         }
+        if (obj instanceof ICycleWay) {
+          paths.add(obj);
+        }
       }
     } else {
       lakes.addAll(CartAGenDoc.getInstance().getCurrentDataset()
           .getWaterAreas());
       paths.addAll(CartAGenDoc.getInstance().getCurrentDataset().getPaths());
+      paths.addAll(((OsmDataset) CartAGenDoc.getInstance().getCurrentDataset())
+          .getCycleWays());
     }
   }
 }

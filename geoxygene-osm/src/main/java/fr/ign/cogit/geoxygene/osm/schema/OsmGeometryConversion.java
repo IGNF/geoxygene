@@ -149,6 +149,8 @@ public class OsmGeometryConversion {
         coord.add(pt);
       }
     }
+    if (coord.size() == 1)
+      return null;
     return new GM_Polygon(new GM_LineString(coord));
   }
 

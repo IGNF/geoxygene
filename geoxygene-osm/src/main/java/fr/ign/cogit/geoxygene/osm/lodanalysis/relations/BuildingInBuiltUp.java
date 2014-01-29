@@ -53,6 +53,8 @@ public class BuildingInBuiltUp extends LoDSpatialRelationDetection {
       if (builtUps.size() == 0) {
         // case without builtUp area: is there one close?
         // select the nearest built-up area
+        if (building.getGeom() == null)
+          continue;
         Vector<Object> nearest = SpatialQuery.selectNearestWithDistance(
             building.getGeom(), getFeatures2(), distanceThreshold + 1.0);
         if (nearest.get(0) == null)

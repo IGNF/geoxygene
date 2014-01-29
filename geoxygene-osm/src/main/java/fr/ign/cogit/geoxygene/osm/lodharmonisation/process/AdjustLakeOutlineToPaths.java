@@ -35,6 +35,7 @@ public class AdjustLakeOutlineToPaths {
 
   private Set<LoDSpatialRelation> inconsistencies;
 
+  private boolean searchBridges = true;
   private double lakeBuffer = 4.0, shoreBuffer = 20.0, cushionRadius = 5.0,
       bridgeTol = 0.9, bridgeAngle = Math.PI / 3;
 
@@ -61,54 +62,72 @@ public class AdjustLakeOutlineToPaths {
   public Set<IGeneObj> harmonise() {
     Set<IGeneObj> modifiedFeats = new HashSet<IGeneObj>();
     for (LoDSpatialRelation instance : inconsistencies) {
+      instance.getFeature2();
       ILineString path = (ILineString) instance.getFeature2().getGeom();
       OsmWaterArea lake = (OsmWaterArea) instance.getFeature1();
       List<Segment> path_segments = Segment.getSegmentList(path);
-      Set<Segment> bridges = findBridges(path_segments, lake.getGeom());
+
+      Side lakeSide = null;
+      Set<Segment> bridges = new HashSet<Segment>();
+      if (searchBridges)
+        bridges.addAll(findBridges(path_segments, lake.getGeom()));
       IGeometry diffGeom = lake.getGeom();
       for (int i = 0; i < path_segments.size(); i++) {
         if (bridges.contains(path_segments.get(i)))
           continue;
         if (path_segments.get(i).intersects(lake.getGeom())) {
+          if (lakeSide == null)
+            lakeSide = computeLakeSide(path_segments.get(i), lake.getGeom());
           diffGeom = controlledDifference(diffGeom,
-              geomToSubstract(path_segments.get(i), lake.getGeom()));
+              geomToSubstract(path_segments.get(i), lake.getGeom(), lakeSide));
           if (i == 0) {
-            while (GeometryFactory.buildCircle(
-                path_segments.get(i + 1).getStartPoint(), cushionRadius, 12)
-                .intersects(lake.getGeom())
-                && i < path_segments.size()) {
-              diffGeom = controlledDifference(diffGeom,
-                  geomToSubstract(path_segments.get(i + 1), lake.getGeom()));
+            while (i + 1 < path_segments.size()
+                && GeometryFactory
+                    .buildCircle(path_segments.get(i + 1).getStartPoint(),
+                        cushionRadius, 12).intersects(lake.getGeom())) {
+              diffGeom = controlledDifference(
+                  diffGeom,
+                  geomToSubstract(path_segments.get(i + 1), lake.getGeom(),
+                      lakeSide));
               i++;
             }
           } else {
             int j = i;
-            while (GeometryFactory.buildCircle(
-                path_segments.get(j - 1).getEndPoint(), cushionRadius, 12)
-                .intersects(lake.getGeom())
-                && j > 0) {
+            while (j > 0
+                && GeometryFactory.buildCircle(
+                    path_segments.get(j - 1).getEndPoint(), cushionRadius, 12)
+                    .intersects(lake.getGeom())) {
               if (bridges.contains(path_segments.get(j - 1)))
                 break;
-              diffGeom = controlledDifference(diffGeom,
-                  geomToSubstract(path_segments.get(j - 1), lake.getGeom()));
+              diffGeom = controlledDifference(
+                  diffGeom,
+                  geomToSubstract(path_segments.get(j - 1), lake.getGeom(),
+                      lakeSide));
               j--;
               logger.fine("on passe dans la boucle arrière " + j);
             }
-            diffGeom = controlledDifference(diffGeom,
-                geomToSubstract(path_segments.get(j - 1), lake.getGeom()));
-            while (GeometryFactory.buildCircle(
-                path_segments.get(i + 1).getStartPoint(), cushionRadius, 12)
-                .intersects(lake.getGeom())
-                && i < path_segments.size()) {
+            diffGeom = controlledDifference(
+                diffGeom,
+                geomToSubstract(path_segments.get(j - 1), lake.getGeom(),
+                    lakeSide));
+            while (i + 1 < path_segments.size()
+                && GeometryFactory
+                    .buildCircle(path_segments.get(i + 1).getStartPoint(),
+                        cushionRadius, 12).intersects(lake.getGeom())) {
               if (bridges.contains(path_segments.get(i + 1)))
                 break;
-              diffGeom = controlledDifference(diffGeom,
-                  geomToSubstract(path_segments.get(i + 1), lake.getGeom()));
+              diffGeom = controlledDifference(
+                  diffGeom,
+                  geomToSubstract(path_segments.get(i + 1), lake.getGeom(),
+                      lakeSide));
               i++;
               logger.fine("on passe dans la boucle avant " + i);
             }
-            diffGeom = controlledDifference(diffGeom,
-                geomToSubstract(path_segments.get(i + 1), lake.getGeom()));
+            if (i + 1 < path_segments.size())
+              diffGeom = controlledDifference(
+                  diffGeom,
+                  geomToSubstract(path_segments.get(i + 1), lake.getGeom(),
+                      lakeSide));
           }
         }
       }
@@ -238,9 +257,8 @@ public class AdjustLakeOutlineToPaths {
     return angle;
   }
 
-  private IPolygon geomToSubstract(Segment segment, IPolygon lake) {
+  private IPolygon geomToSubstract(Segment segment, IPolygon lake, Side lakeSide) {
     if (lake.intersects(segment)) {
-      Side lakeSide = computeLakeSide(segment, lake);
       // First, compute the buffer on the lake side
       IPolygon lakePolygon = BufferComputing.buildLineHalfBuffer(segment,
           lakeBuffer, lakeSide);
@@ -347,5 +365,13 @@ public class AdjustLakeOutlineToPaths {
           .getBiggerFromMultiSurface((IMultiSurface<IOrientableSurface>) union);
     }
     return (IPolygon) union;
+  }
+
+  public boolean isSearchBridges() {
+    return searchBridges;
+  }
+
+  public void setSearchBridges(boolean searchBridges) {
+    this.searchBridges = searchBridges;
   }
 }

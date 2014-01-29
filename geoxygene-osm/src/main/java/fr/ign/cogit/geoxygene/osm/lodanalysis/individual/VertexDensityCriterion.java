@@ -55,6 +55,8 @@ public class VertexDensityCriterion extends ELECTRECriterion {
   @Override
   public double value(Map<String, Object> param) {
     IGeometry geom = (IGeometry) param.get("geometry");
+    if (geom == null)
+      return 0;
     double power = (Double) param.get("power");
     double density = geom.numPoints() / geom.length();
     double value = Math.pow(1 - density, power);

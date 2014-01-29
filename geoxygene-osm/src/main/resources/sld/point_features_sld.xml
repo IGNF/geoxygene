@@ -601,7 +601,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <href>/symbols/osm/bus_stop_small.png</href>
+                <href>/symbols/osm/bus_stop.p.12.png</href>
 				<Format>png</Format>
               </ExternalGraphic>
             </Graphic>

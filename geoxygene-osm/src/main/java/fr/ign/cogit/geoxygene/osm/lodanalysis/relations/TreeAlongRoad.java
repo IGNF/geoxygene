@@ -75,8 +75,9 @@ public class TreeAlongRoad extends LoDSpatialRelationDetection {
 
       for (IGeneObj tree : getFeatures2()) {
         // search for trees close to the buffer
-        if (rightBuffer.intersects(GeometryFactory.buildCircle(
-            ((IPoint) tree.getGeom()).getPosition(), treeWidth, 12))) {
+        if (rightBuffer != null
+            && rightBuffer.intersects(GeometryFactory.buildCircle(
+                ((IPoint) tree.getGeom()).getPosition(), treeWidth, 12))) {
 
           // get the LoD category for the tree
           Map<String, Double> valeursCourantes2 = new HashMap<String, Double>();
@@ -101,8 +102,9 @@ public class TreeAlongRoad extends LoDSpatialRelationDetection {
         }
 
         // search for trees close to the buffer
-        if (leftBuffer.intersects(GeometryFactory.buildCircle(
-            ((IPoint) tree.getGeom()).getPosition(), treeWidth, 12))) {
+        if (leftBuffer != null
+            && leftBuffer.intersects(GeometryFactory.buildCircle(
+                ((IPoint) tree.getGeom()).getPosition(), treeWidth, 12))) {
 
           // get the LoD category for the tree
           Map<String, Double> valeursCourantes2 = new HashMap<String, Double>();
