@@ -139,6 +139,7 @@ public class DistanceFieldFrontierPixelRenderer implements TexturePixelRenderer 
 
     @Override
     public void renderPixel(int x, int y, TextureImage image) {
+        image.invalidateUVBounds();
         TexturePixel pixel = image.getPixel(x, y);
         // fills the x-values array of the given y value (create a new one if needed)
         if (this.y1 == this.y2 || !this.isCusp) {
@@ -170,6 +171,7 @@ public class DistanceFieldFrontierPixelRenderer implements TexturePixelRenderer 
 
         pixel.closestFrontier = this.getCurrentFrontier();
         pixel.distance = this.distanceToZero ? 0 : Double.POSITIVE_INFINITY;
+        pixel.closestPoint = null;
         pixel.frontier = this.getCurrentFrontier();
         double alpha = Math.sqrt((x - this.x1) * (x - this.x1) + (y - this.y1) * (y - this.y1)) / this.lineLength;
         pixel.uTexture = this.u1 + (this.u2 - this.u1) * alpha;

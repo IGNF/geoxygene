@@ -34,13 +34,11 @@ import static org.lwjgl.util.glu.GLU.GLU_TESS_VERTEX;
 import static org.lwjgl.util.glu.GLU.gluNewTess;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.vecmath.Point2d;
@@ -50,10 +48,12 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellator;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ICurveSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
-import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.appli.Viewport;
@@ -134,164 +134,99 @@ public class GLComplexFactory {
     //        return primitive;
     //    }
 
-    /**
-     * Tesselate a list of java shape2D into a GLPrimitive
+    /****************************************************************************************************
+     * LINES
      */
-    public static GLComplex toGLComplex(final List<Path2D> outlines, double minX, double minY) {
 
+    /**
+     * Create a gl primitive that is just drawn as lines
+     */
+    public static GLComplex createQuickLine(List<? extends ICurve> curves, final Colorizer colorizer, final Parameterizer parameterizer, double minX,
+            double minY) {
         GLComplex primitive = new GLComplex(minX, minY);
-        for (Path2D path : outlines) {
-            primitive.addGLComplex(toGLComplex(path, minX, minY));
+
+        for (ICurve curve : curves) {
+            GLComplex subComplex = createQuickLine(curve, colorizer, parameterizer, minX, minY);
+            primitive.addGLComplex(subComplex);
         }
         return primitive;
     }
 
     /**
-     * Tesselate a java shape2D into a GLPrimitive
+     * Create a gl primitive that is just drawn as lines
      */
-    public static GLComplex toGLComplex(final Path2D shape, double minX, double minY) {
+    public static GLComplex createQuickLine(final ICurve curve, final Colorizer colorizer, final Parameterizer parameterizer, double minX, double minY) {
+        if (parameterizer != null) {
+            parameterizer.initializeParameterization();
+        }
+        if (colorizer != null) {
+            colorizer.initializeColorization();
+        }
 
         GLComplex primitive = new GLComplex(minX, minY);
-
-        // tesselation
-        GLUtessellator tesselator = gluNewTess();
-
-        // Set callback functions
-        GLPrimitiveTessCallback callback = new GLPrimitiveTessCallback(primitive);
-        tesselator.gluTessCallback(GLU_TESS_VERTEX, callback);
-        tesselator.gluTessCallback(GLU_TESS_BEGIN, callback);
-        tesselator.gluTessCallback(GLU_TESS_END, callback);
-        tesselator.gluTessCallback(GLU_TESS_COMBINE, callback);
-        switch (shape.getWindingRule()) {
-        case Path2D.WIND_EVEN_ODD:
-            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_ODD);
-            break;
-        case Path2D.WIND_NON_ZERO:
-            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_NONZERO);
-            break;
-        default:
-            logger.warn("unknown winding rule " + shape.getWindingRule());
+        GLMesh outlineMesh = primitive.addGLMesh(GL11.GL_LINE_LOOP);
+        for (IDirectPosition p : curve.coord()) {
+            System.err.println("curve " + curve.hashCode() + " point " + p);
+            GLVertex vertex = new GLVertex((float) p.getX(), (float) p.getY(), (float) p.getZ());
+            outlineMesh.addIndex(primitive.addVertex(vertex));
         }
-
-        tesselator.gluTessBeginPolygon(null);
-
-        float lastX = 0;
-        float lastY = 0;
-        float lastMoveX = 0;
-        float lastMoveY = 0;
-
-        double[] vertex = null;
-        float[] data = null;
-        float[] coords = new float[6];
-
-        PathIterator iter = shape.getPathIterator(null); // ,5) add a number on here to simplify verts
-
-        int rule = iter.getWindingRule();
-        switch (rule) {
-        case PathIterator.WIND_EVEN_ODD:
-            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_ODD);
-            break;
-        case PathIterator.WIND_NON_ZERO:
-            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_NONZERO);
-            break;
-        }
-        //        System.err.println("----------------------------------------------------------------------------");
-        while (!iter.isDone()) {
-
-            int currentSegment = iter.currentSegment(coords);
-            coords[0] -= minX;
-            coords[1] -= minY;
-            coords[2] -= minX;
-            coords[3] -= minY;
-            coords[4] -= minX;
-            coords[5] -= minY;
-            switch (currentSegment) {
-
-            case PathIterator.SEG_MOVETO:   // 1 point (2 vars) in coords
-                tesselator.gluTessBeginContour();
-                lastX = lastMoveX = coords[0];
-                lastY = lastMoveY = coords[1];
-                vertex = new double[] { coords[0], coords[1], 0. };
-                data = new float[] { coords[0], coords[1], 0, 0, 0, 0, 0, 0, 0 };
-                tesselator.gluTessVertex(vertex, 0, data);
-                //                System.err.println(" shape " + vertex[0] + " " + vertex[1]);
-                //                System.err.println("MOVETO " + coords[0] + "x" + coords[1]);
-                break;
-            case PathIterator.SEG_LINETO:   // 1 point
-                vertex = new double[] { coords[0], coords[1], 0. };
-                data = new float[] { coords[0], coords[1], 0, 0, 0, 0, 0, 0, 0 };
-                //                System.err.println(" shape " + vertex[0] + " " + vertex[1]);
-                tesselator.gluTessVertex(vertex, 0, data);
-                lastX = coords[0];
-                lastY = coords[1];
-                //                System.err.println("LINETO " + coords[0] + "x" + coords[1]);
-                break;
-
-            case PathIterator.SEG_QUADTO:   // 2 points (1 control point)
-                //                System.err.println("QUAD FROM " + lastX + "x" + lastY + " TO " + coords[2] + "x" + coords[3]);
-                for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
-                    float t = i / (float) BEZIER_SAMPLE_COUNT;
-
-                    double px = interpolateQuadratic(lastX, coords[0], coords[2], t);
-                    double py = interpolateQuadratic(lastY, coords[1], coords[3], t);
-                    vertex = new double[] { px, py, 0 };
-                    data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0, 0, 0 };
-                    //                    System.err.println(" shape " + vertex[0] + " " + vertex[1]);
-                    tesselator.gluTessVertex(vertex, 0, data);
-                }
-                lastX = coords[2];
-                lastY = coords[3];
-                break;
-
-            case PathIterator.SEG_CUBICTO:  // 3 points (2 control points)
-                //                System.err.println("CUBIC FROM " + lastX + "x" + lastY + " TO " + coords[4] + "x" + coords[5]);
-                for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
-                    float t = i / (float) BEZIER_SAMPLE_COUNT;
-
-                    double px = interpolateCubic(lastX, coords[0], coords[2], coords[4], t);
-                    double py = interpolateCubic(lastY, coords[1], coords[3], coords[5], t);
-                    vertex = new double[] { px, py, 0 };
-                    data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0, 0, 0 };
-                    tesselator.gluTessVertex(vertex, 0, data);
-                    //                    System.err.println(" shape " + vertex[0] + " " + vertex[1]);
-                }
-                lastX = coords[4];
-                lastY = coords[5];
-                break;
-
-            case PathIterator.SEG_CLOSE:
-                lastX = lastMoveX;
-                lastY = lastMoveY;
-                tesselator.gluTessEndContour();
-                //                System.err.println("CLOSE " + lastMoveX + "x" + lastMoveY);
-                break;
-            }
-            iter.next();
-        }
-        tesselator.gluTessEndPolygon();
-
-        //        System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ vertices");
-        //        
-        //        for (GLVertex vertex: primitive.getVertices(); i += 9) {
-        //            System.err.println("#" + (i / 9) + " " + verticesBuffer.get(i) + " " + verticesBuffer.get(i + 1));
-        //        }
-        //        System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ vertices");
-        //        FloatBuffer verticesBuffer = primitive.getFlippedVerticesBuffer();
-        //        for (int i = 0; i < verticesBuffer.limit(); i += 9) {
-        //            System.err.println("#" + (i / 9) + " " + verticesBuffer.get(i) + " " + verticesBuffer.get(i + 1));
-        //        }
-        //
-        //        System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ indices");
-        //        IntBuffer indicesBuffer = primitive.getFlippedIndicesBuffer();
-        //        for (int i = 0; i < indicesBuffer.limit(); i++) {
-        //            System.err.println("#" + i + ": " + indicesBuffer.get(i));
-        //        }
-        //        System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ meshes");
-        //        for (GLMesh mesh : primitive.getMeshes()) {
-        //
-        //            System.err.println("type = " + mesh.getGlType() + " start = " + mesh.getFirstIndex() + " end = " + mesh.getLastIndex());
-        //        }
         return primitive;
+    }
+
+    /****************************************************************************************************
+     * POLYGONS
+     */
+
+    /**
+     * Create a gl primitive that is just polygons frontiers drawn as lines
+     */
+    public static GLComplex createQuickPolygons(List<IPolygon> polygons, final Colorizer colorizer, final Parameterizer parameterizer, double minX, double minY) {
+        GLComplex primitive = new GLComplex(minX, minY);
+
+        for (IPolygon polygon : polygons) {
+            GLComplex subComplex = createEmptyPolygon(polygon, colorizer, parameterizer, minX, minY);
+            primitive.addGLComplex(subComplex);
+        }
+        return primitive;
+    }
+
+    public static GLComplex createOutlineMultiSurface(List<IPolygon> multiSurface, BasicStroke stroke, double minX, double minY) {
+        GLComplex primitive = new GLComplex(minX, minY);
+
+        for (IOrientableSurface surface : multiSurface) {
+            if (IPolygon.class.isAssignableFrom(surface.getClass())) {
+                GLComplex subComplex = createOutlinePolygon((IPolygon) surface, stroke, minX, minY);
+                primitive.addGLComplex(subComplex);
+            } else {
+                logger.warn("Multi surface content is not polygons: " + surface.getClass().getSimpleName());
+            }
+        }
+        return primitive;
+    }
+
+    /**
+     * Create a gl primitive filled surface
+     */
+    public static GLComplex createFilledPolygons(List<IPolygon> polygons, final Colorizer colorizer, final Parameterizer parameterizer, double minX, double minY) {
+        GLComplex primitive = new GLComplex(minX, minY);
+
+        for (IPolygon polygon : polygons) {
+            GLComplex subComplex = createFilledPolygon(polygon, colorizer, parameterizer, minX, minY);
+            primitive.addGLComplex(subComplex);
+        }
+        return primitive;
+    }
+
+    /**
+     * Create a gl primitive which is a surface thick outline
+     */
+    public static GLComplex createOutlinePolygon(IPolygon polygon, BasicStroke stroke, double minX, double minY) {
+        List<Path2D> outlines = new ArrayList<Path2D>();
+        outlines.add(stroke(toShape(polygon.getExterior()), stroke));
+        for (IRing interior : polygon.getInterior()) {
+            outlines.add(stroke(toShape(interior), stroke));
+        }
+        return toGLComplex(outlines, minX, minY);
     }
 
     /**
@@ -461,63 +396,167 @@ public class GLComplexFactory {
         return primitive;
     }
 
-    /**
-     * Create a gl primitive filled surface
+    /*************************************************************************************
+     * SHAPE
      */
-    public static GLComplex createFilledMultiSurface(List<IPolygon> multiSurface, final Colorizer colorizer, final Parameterizer parameterizer, double minX,
-            double minY) {
-        GLComplex primitive = new GLComplex(minX, minY);
+    /**
+     * Tesselate a list of java shape2D into a GLPrimitive
+     */
+    public static GLComplex toGLComplex(final List<Path2D> outlines, double minX, double minY) {
 
-        for (IOrientableSurface surface : multiSurface) {
-            if (IPolygon.class.isAssignableFrom(surface.getClass())) {
-                GLComplex subComplex = createFilledPolygon((IPolygon) surface, colorizer, parameterizer, minX, minY);
-                primitive.addGLComplex(subComplex);
-            } else {
-                logger.warn("Multi surface content is not polygons: " + surface.getClass().getSimpleName());
-            }
+        GLComplex primitive = new GLComplex(minX, minY);
+        for (Path2D path : outlines) {
+            primitive.addGLComplex(toGLComplex(path, minX, minY));
         }
         return primitive;
     }
 
     /**
-     * Create a gl primitive empty surface
+     * Tesselate a java shape2D into a GLPrimitive
      */
-    public static GLComplex createEmptyMultiSurface(List<IPolygon> multiSurface, final Colorizer colorizer, final Parameterizer parameterizer, double minX,
-            double minY) {
+    public static GLComplex toGLComplex(final Path2D shape, double minX, double minY) {
+
         GLComplex primitive = new GLComplex(minX, minY);
 
-        for (IOrientableSurface surface : multiSurface) {
-            if (IPolygon.class.isAssignableFrom(surface.getClass())) {
-                GLComplex subComplex = createEmptyPolygon((IPolygon) surface, colorizer, parameterizer, minX, minY);
-                primitive.addGLComplex(subComplex);
-            } else {
-                logger.warn("Multi surface content is not polygons: " + surface.getClass().getSimpleName());
+        // tesselation
+        GLUtessellator tesselator = gluNewTess();
+
+        // Set callback functions
+        GLPrimitiveTessCallback callback = new GLPrimitiveTessCallback(primitive);
+        tesselator.gluTessCallback(GLU_TESS_VERTEX, callback);
+        tesselator.gluTessCallback(GLU_TESS_BEGIN, callback);
+        tesselator.gluTessCallback(GLU_TESS_END, callback);
+        tesselator.gluTessCallback(GLU_TESS_COMBINE, callback);
+        switch (shape.getWindingRule()) {
+        case Path2D.WIND_EVEN_ODD:
+            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_ODD);
+            break;
+        case Path2D.WIND_NON_ZERO:
+            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_NONZERO);
+            break;
+        default:
+            logger.warn("unknown winding rule " + shape.getWindingRule());
+        }
+
+        tesselator.gluTessBeginPolygon(null);
+
+        float lastX = 0;
+        float lastY = 0;
+        float lastMoveX = 0;
+        float lastMoveY = 0;
+
+        double[] vertex = null;
+        float[] data = null;
+        float[] coords = new float[6];
+
+        PathIterator iter = shape.getPathIterator(null); // ,5) add a number on here to simplify verts
+
+        int rule = iter.getWindingRule();
+        switch (rule) {
+        case PathIterator.WIND_EVEN_ODD:
+            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_ODD);
+            break;
+        case PathIterator.WIND_NON_ZERO:
+            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_NONZERO);
+            break;
+        }
+        //        System.err.println("----------------------------------------------------------------------------");
+        while (!iter.isDone()) {
+
+            int currentSegment = iter.currentSegment(coords);
+            coords[0] -= minX;
+            coords[1] -= minY;
+            coords[2] -= minX;
+            coords[3] -= minY;
+            coords[4] -= minX;
+            coords[5] -= minY;
+            switch (currentSegment) {
+
+            case PathIterator.SEG_MOVETO:   // 1 point (2 vars) in coords
+                tesselator.gluTessBeginContour();
+                lastX = lastMoveX = coords[0];
+                lastY = lastMoveY = coords[1];
+                vertex = new double[] { coords[0], coords[1], 0. };
+                data = new float[] { coords[0], coords[1], 0, 0, 0, 0, 0, 0, 0 };
+                tesselator.gluTessVertex(vertex, 0, data);
+                //                System.err.println(" shape " + vertex[0] + " " + vertex[1]);
+                //                System.err.println("MOVETO " + coords[0] + "x" + coords[1]);
+                break;
+            case PathIterator.SEG_LINETO:   // 1 point
+                vertex = new double[] { coords[0], coords[1], 0. };
+                data = new float[] { coords[0], coords[1], 0, 0, 0, 0, 0, 0, 0 };
+                //                System.err.println(" shape " + vertex[0] + " " + vertex[1]);
+                tesselator.gluTessVertex(vertex, 0, data);
+                lastX = coords[0];
+                lastY = coords[1];
+                //                System.err.println("LINETO " + coords[0] + "x" + coords[1]);
+                break;
+
+            case PathIterator.SEG_QUADTO:   // 2 points (1 control point)
+                //                System.err.println("QUAD FROM " + lastX + "x" + lastY + " TO " + coords[2] + "x" + coords[3]);
+                for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
+                    float t = i / (float) BEZIER_SAMPLE_COUNT;
+
+                    double px = interpolateQuadratic(lastX, coords[0], coords[2], t);
+                    double py = interpolateQuadratic(lastY, coords[1], coords[3], t);
+                    vertex = new double[] { px, py, 0 };
+                    data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0, 0, 0 };
+                    //                    System.err.println(" shape " + vertex[0] + " " + vertex[1]);
+                    tesselator.gluTessVertex(vertex, 0, data);
+                }
+                lastX = coords[2];
+                lastY = coords[3];
+                break;
+
+            case PathIterator.SEG_CUBICTO:  // 3 points (2 control points)
+                //                System.err.println("CUBIC FROM " + lastX + "x" + lastY + " TO " + coords[4] + "x" + coords[5]);
+                for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
+                    float t = i / (float) BEZIER_SAMPLE_COUNT;
+
+                    double px = interpolateCubic(lastX, coords[0], coords[2], coords[4], t);
+                    double py = interpolateCubic(lastY, coords[1], coords[3], coords[5], t);
+                    vertex = new double[] { px, py, 0 };
+                    data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0, 0, 0 };
+                    tesselator.gluTessVertex(vertex, 0, data);
+                    //                    System.err.println(" shape " + vertex[0] + " " + vertex[1]);
+                }
+                lastX = coords[4];
+                lastY = coords[5];
+                break;
+
+            case PathIterator.SEG_CLOSE:
+                lastX = lastMoveX;
+                lastY = lastMoveY;
+                tesselator.gluTessEndContour();
+                //                System.err.println("CLOSE " + lastMoveX + "x" + lastMoveY);
+                break;
             }
+            iter.next();
         }
+        tesselator.gluTessEndPolygon();
+
+        //        System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ vertices");
+        //        
+        //        for (GLVertex vertex: primitive.getVertices(); i += 9) {
+        //            System.err.println("#" + (i / 9) + " " + verticesBuffer.get(i) + " " + verticesBuffer.get(i + 1));
+        //        }
+        //        System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ vertices");
+        //        FloatBuffer verticesBuffer = primitive.getFlippedVerticesBuffer();
+        //        for (int i = 0; i < verticesBuffer.limit(); i += 9) {
+        //            System.err.println("#" + (i / 9) + " " + verticesBuffer.get(i) + " " + verticesBuffer.get(i + 1));
+        //        }
+        //
+        //        System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ indices");
+        //        IntBuffer indicesBuffer = primitive.getFlippedIndicesBuffer();
+        //        for (int i = 0; i < indicesBuffer.limit(); i++) {
+        //            System.err.println("#" + i + ": " + indicesBuffer.get(i));
+        //        }
+        //        System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ meshes");
+        //        for (GLMesh mesh : primitive.getMeshes()) {
+        //
+        //            System.err.println("type = " + mesh.getGlType() + " start = " + mesh.getFirstIndex() + " end = " + mesh.getLastIndex());
+        //        }
         return primitive;
-    }
-
-    public static GLComplex createOutlineMultiSurface(List<IPolygon> multiSurface, BasicStroke stroke, double minX, double minY) {
-        GLComplex primitive = new GLComplex(minX, minY);
-
-        for (IOrientableSurface surface : multiSurface) {
-            if (IPolygon.class.isAssignableFrom(surface.getClass())) {
-                GLComplex subComplex = createOutlinePolygon((IPolygon) surface, stroke, minX, minY);
-                primitive.addGLComplex(subComplex);
-            } else {
-                logger.warn("Multi surface content is not polygons: " + surface.getClass().getSimpleName());
-            }
-        }
-        return primitive;
-    }
-
-    public static GLComplex createOutlinePolygon(IPolygon polygon, BasicStroke stroke, double minX, double minY) {
-        List<Path2D> outlines = new ArrayList<Path2D>();
-        outlines.add(stroke(toShape(polygon.getExterior()), stroke));
-        for (IRing interior : polygon.getInterior()) {
-            outlines.add(stroke(toShape(interior), stroke));
-        }
-        return toGLComplex(outlines, minX, minY);
     }
 
     private static Path2D stroke(Path2D shape, java.awt.Stroke stroke) {

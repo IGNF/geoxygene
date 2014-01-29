@@ -117,7 +117,7 @@ public class GeOxygeneApplication {
      *            the application icon
      */
     public GeOxygeneApplication(final String title, final ImageIcon theApplicationIcon) {
-
+    	
         this.frameTitle = title;
         if (theApplicationIcon != null) {
             this.applicationIcon = theApplicationIcon;
@@ -337,7 +337,7 @@ public class GeOxygeneApplication {
             try {
                 System.loadLibrary("xinitthread");
             } catch (Throwable e) {
-                logger.error("The xinitthread library was not found. You should add ./lib/xinithread/linux-amd64 to the library path (LD_LIBRARY_PATH)");
+                logger.error("The xinitthread library was not found. You should add ./lib/xinitthread/linux-amd64 to the library path (LD_LIBRARY_PATH)");
                 logger.info("Current LD_LIBRARY_PATH = " + System.getenv("LD_LIBRARY_PATH"));
                 logger.info("Current java.library.path = " + System.getProperty("java.library.path"));
             }

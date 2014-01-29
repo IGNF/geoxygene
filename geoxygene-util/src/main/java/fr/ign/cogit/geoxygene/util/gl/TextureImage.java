@@ -27,6 +27,8 @@
 
 package fr.ign.cogit.geoxygene.util.gl;
 
+import javax.vecmath.Point2d;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -40,12 +42,16 @@ public class TextureImage {
     public class TexturePixel {
         public double uTexture = 0;
         public double vTexture = 0;
+        public double uTextureWeightSum = 0;
+        public double vTextureWeightSum = 0;
         public double distance = -1.;
         public double linearParameter = 0;
         public int closestFrontier = 0; // 0: not defined -1: outer frontier -n: nth inner frontier
+        public Point2d closestPoint = null;
         public boolean in = false; // pixel inside the polygon (frontier excluded)
         public int frontier = 0; // pixel on the polygon boundary (border count)
-        public int weightSum = 0; // some elements are computed as a weighted average
+        public double weightSum = 0; // some elements are computed as a weighted average
+        public Point2d vGradient = null; // gradient component of v Value
 
         /*
          * (non-Javadoc)
@@ -65,9 +71,12 @@ public class TextureImage {
     private int size = 0; // width * height
     private TexturePixel[] pixels = null;
     private static final Logger logger = Logger.getLogger(TextureImage.class.getName()); // logger
-    private static final double SQRT2 = Math.sqrt(2.);
-
-    private static final double LINEAR_PARAMETER_SCALE = 50.; // 1: world coordinates N: texture coordinates divided by N 
+    public Double uMin = null;
+    public Double uMax = null;
+    public Double vMin = null;
+    public Double vMax = null;
+    public Double dMin = null;
+    public Double dMax = null;
 
     /**
      * constructor
@@ -108,6 +117,115 @@ public class TextureImage {
             this.pixels[l] = new TexturePixel();
         }
 
+    }
+
+    /**
+     * @return the uMin
+     */
+    public final Double getuMin() {
+        if (this.uMin == null) {
+            this.computeUVBounds();
+        }
+        return this.uMin;
+    }
+
+    /**
+     * @return the uMax
+     */
+    public final Double getuMax() {
+        if (this.uMax == null) {
+            this.computeUVBounds();
+        }
+        return this.uMax;
+    }
+
+    /**
+     * @return the vMin
+     */
+    public final Double getvMin() {
+        if (this.vMin == null) {
+            this.computeUVBounds();
+        }
+        return this.vMin;
+    }
+
+    /**
+     * @return the vMax
+     */
+    public final Double getvMax() {
+        if (this.vMax == null) {
+            this.computeUVBounds();
+        }
+        return this.vMax;
+    }
+
+    /**
+     * @return the dMin
+     */
+    public final Double getdMin() {
+        if (this.dMax == null) {
+            this.computeUVBounds();
+        }
+        return this.dMin;
+    }
+
+    /**
+     * @return the dMax
+     */
+    public final Double getdMax() {
+        if (this.dMax == null) {
+            this.computeUVBounds();
+        }
+        return this.dMax;
+    }
+
+    /**
+     * Compute min & max values of the image uTexture/vTexture pixels
+     */
+    private void computeUVBounds() {
+        double uMin = Double.MAX_VALUE;
+        double uMax = -Double.MAX_VALUE;
+        double vMin = Double.MAX_VALUE;
+        double vMax = -Double.MAX_VALUE;
+        double dMin = Double.MAX_VALUE;
+        double dMax = -Double.MAX_VALUE;
+        for (int y = 0; y < this.getHeight(); y++) {
+            for (int x = 0; x < this.getWidth(); x++) {
+                TexturePixel pixel = this.getPixel(x, y);
+                //                    System.err.println("calcul distance d = " + pixel.distance + " min = " + dMin + " max = " + dMax);
+                if (pixel.uTexture < uMin) {
+                    uMin = pixel.uTexture;
+                }
+                if (pixel.uTexture > uMax && pixel.uTexture != Double.POSITIVE_INFINITY && pixel.uTexture != Double.MAX_VALUE) {
+                    uMax = pixel.uTexture;
+                }
+                if (pixel.vTexture < vMin) {
+                    vMin = pixel.vTexture;
+                }
+                if (pixel.vTexture > vMax && pixel.vTexture != Double.POSITIVE_INFINITY && pixel.vTexture != Double.MAX_VALUE) {
+                    vMax = pixel.vTexture;
+                }
+                if (pixel.distance < dMin) {
+                    dMin = pixel.distance;
+                }
+                if (pixel.distance > dMax && pixel.distance != Double.POSITIVE_INFINITY && pixel.distance != Double.MAX_VALUE) {
+                    dMax = pixel.distance;
+                }
+            }
+        }
+        this.uMin = new Double(uMin);
+        this.uMax = new Double(uMax);
+        this.vMin = new Double(vMin);
+        this.vMax = new Double(vMax);
+        this.dMin = new Double(dMin);
+        this.dMax = new Double(dMax);
+    }
+
+    /**
+     * invlaidate precomputations
+     */
+    public void invalidateUVBounds() {
+        this.uMin = this.uMax = this.vMin = this.vMax = this.dMin = this.dMax = null;
     }
 
     /**

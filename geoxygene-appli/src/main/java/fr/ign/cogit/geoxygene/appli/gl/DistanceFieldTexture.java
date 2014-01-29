@@ -321,8 +321,8 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
 
         final double imagesize = 1E6; // 1000*1000 (if ratio aspect = 1) 
         double ratio = (this.maxY - this.minY) / (this.maxX - this.minX);
-        int imageWidth = (int) (Math.sqrt(imagesize) / ratio);
-        int imageHeight = (int) (Math.sqrt(imagesize) * ratio);
+        int imageWidth = (int) (Math.sqrt(imagesize / ratio));
+        int imageHeight = (int) (Math.sqrt(imagesize * ratio));
         this.texImage = new TextureImage(imageWidth, imageHeight);
         this.imageToPolygonFactorX = (this.maxX - this.minX) / (imageWidth - 1);
         this.imageToPolygonFactorY = (this.maxY - this.minY) / (imageHeight - 1);
@@ -401,12 +401,12 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
 
         for (IPolygon polygon : polygons) {
             // draw the outer frontier
-            this.drawFrontier(polygon.getExterior(), 1, pixelRenderer, viewport);
+            this.drawFrontier(polygon.getExterior(), 1, pixelRenderer);
 
             // draw all inner frontiers
             for (int innerFrontierIndex = 0; innerFrontierIndex < polygon.getInterior().size(); innerFrontierIndex++) {
                 IRing innerFrontier = polygon.getInterior().get(innerFrontierIndex);
-                this.drawFrontier(innerFrontier, -innerFrontierIndex - 1, pixelRenderer, viewport);
+                this.drawFrontier(innerFrontier, -innerFrontierIndex - 1, pixelRenderer);
             }
         }
 
@@ -418,16 +418,15 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
         //fillOuterFrontierDistance(this, pixelRenderer.getModifiedPixels());
         //blurDistance(this);
         //fillUVTextureFromOuterFrontier( this, pixelRenderer.getModifiedPixels());
-
-        TextureImageUtil.rescaleTextureCoordinates(this.texImage, this.uScale, this.vScale);
         Set<Point> nonInfiniteModifiedPixels = this.getModifiedPixelsButInfiniteDistancePixels(pixelRenderer.getModifiedPixels());
         //        Set<Point> nonInfiniteModifiedPixels = pixelRenderer.getModifiedPixels();
         fillTextureCoordinates(this.texImage, nonInfiniteModifiedPixels, this.imageToPolygonFactorX, this.imageToPolygonFactorY);
+        TextureImageUtil.rescaleTextureCoordinates(this.texImage, this.uScale, this.vScale);
 
         //        TextureImageUtil.checkTextureCoordinates(this);
 
         // FIXME: it seems that there is a bug in the blur algo
-        //        TextureImageUtil.blurTextureCoordinates(this.texImage, 10);
+        TextureImageUtil.blurTextureCoordinates(this.texImage, 10);
 
     }
 
@@ -470,9 +469,11 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
                 int x2 = xs.get(2 * n + 1);
                 for (int x = x1; x <= x2; x++) {
                     TexturePixel pixel = this.texImage.getPixel(x, y);
-                    if (pixel != null && pixel.frontier == 0) {
+                    if (pixel != null) {
                         pixel.in = true;
-                        pixel.distance = Double.MAX_VALUE;
+                        if (pixel.frontier == 0) {
+                            pixel.distance = Double.MAX_VALUE;
+                        }
                     }
 
                 }
@@ -487,7 +488,7 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
      * @param frontier
      * @param pixelRenderer
      */
-    private void drawFrontier(IRing frontier, int frontierId, DistanceFieldFrontierPixelRenderer pixelRenderer, Viewport viewport) {
+    private void drawFrontier(IRing frontier, int frontierId, DistanceFieldFrontierPixelRenderer pixelRenderer) {
         pixelRenderer.setCurrentFrontier(frontierId);
         int frontierSize = frontier.coord().size();
         if (frontierSize < 3) {

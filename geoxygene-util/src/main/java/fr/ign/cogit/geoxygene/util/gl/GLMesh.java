@@ -104,7 +104,7 @@ public class GLMesh {
      * Add a list of indices for this mesh
      */
     public void addIndices(final Integer... primitiveIndices) {
-        for (int index : primitiveIndices) {
+        for (int index : primitiveIndices) {        	
             this.indices.add(index);
         }
     }

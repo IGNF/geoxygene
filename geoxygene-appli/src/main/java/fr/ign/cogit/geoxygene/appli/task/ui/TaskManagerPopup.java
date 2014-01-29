@@ -305,8 +305,13 @@ public class TaskManagerPopup implements TaskManagerListener, ItemListener, Comp
                 this.stopTimer();
                 this.displayExpandedPanel();
             }
-            this.getSummaryProgress().setIndeterminate(this.taskControllers.size() != 0);
-            this.getSummaryProgress().setString(this.taskControllers.size() == 0 ? "no tasks" : this.taskControllers.size() + " tasks running");
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    TaskManagerPopup.this.getSummaryProgress().setIndeterminate(TaskManagerPopup.this.taskControllers.size() != 0);
+                    TaskManagerPopup.this.getSummaryProgress().setString(TaskManagerPopup.this.taskControllers.size() == 0 ? "no tasks" : TaskManagerPopup.this.taskControllers.size() + " tasks running");
+                }
+            });
         }
         this.relocate();
     }

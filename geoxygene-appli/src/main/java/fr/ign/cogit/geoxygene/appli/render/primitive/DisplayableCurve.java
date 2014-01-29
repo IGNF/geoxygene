@@ -36,13 +36,14 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
-import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
+import fr.ign.cogit.geoxygene.appli.gl.LineTesselator;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.gl.DistanceFieldTexturedPolygonSymbolizer;
@@ -53,12 +54,12 @@ import fr.ign.cogit.geoxygene.util.gl.GLComplex;
  * @author JeT
  * 
  */
-public class DisplayablePolygon extends AbstractTask implements GLDisplayable {
+public class DisplayableCurve extends AbstractTask implements GLDisplayable {
 
-    private static final Logger logger = Logger.getLogger(DisplayablePolygon.class.getName()); // logger
+    private static final Logger logger = Logger.getLogger(DisplayableCurve.class.getName()); // logger
 
     private Viewport viewport = null;
-    private final List<IPolygon> polygons = new ArrayList<IPolygon>();
+    private final List<ILineString> curves = new ArrayList<ILineString>();
     private Symbolizer symbolizer = null;
     private List<GLComplex> fullRepresentation = null;
     private GLComplex partialRepresentation = null;
@@ -73,30 +74,19 @@ public class DisplayablePolygon extends AbstractTask implements GLDisplayable {
     /**
      * Constructor using a IMultiSurface
      */
-    public DisplayablePolygon(String name, Viewport viewport, IMultiSurface<?> multiSurface, Symbolizer symbolizer) {
+    public DisplayableCurve(String name, Viewport viewport, IMultiCurve<?> multiCurve, Symbolizer symbolizer) {
         super(name);
         this.viewport = viewport;
         this.symbolizer = symbolizer;
 
-        for (Object polygon : multiSurface.getList()) {
-            if (polygon instanceof IPolygon) {
-                this.polygons.add((IPolygon) polygon);
+        for (Object lineString : multiCurve.getList()) {
+            if (lineString instanceof ILineString) {
+                this.curves.add((ILineString) lineString);
 
             } else {
-                logger.warn("multisurface does not contains only IPolygons but " + polygon.getClass().getSimpleName());
+                logger.warn("multisurface does not contains only ILineString but " + this.curves.getClass().getSimpleName());
             }
         }
-    }
-
-    /** 
-     * 
-     */
-    public DisplayablePolygon(String name, Viewport viewport, IPolygon polygon, Symbolizer symbolizer) {
-        super(name);
-        this.viewport = viewport;
-        this.symbolizer = symbolizer;
-
-        this.polygons.add(polygon);
     }
 
     /*
@@ -160,15 +150,9 @@ public class DisplayablePolygon extends AbstractTask implements GLDisplayable {
         //            this.generateWithDistanceField();
         //        }
 
-        if (this.symbolizer instanceof DistanceFieldTexturedPolygonSymbolizer) {
-            DistanceFieldTexturedPolygonSymbolizer polygonSymbolizer = (DistanceFieldTexturedPolygonSymbolizer) this.symbolizer;
-            this.generateWithDistanceFieldTexturedPolygonSymbolizer(polygonSymbolizer);
-        } else if (this.symbolizer instanceof TexturedPolygonSymbolizer) {
-            TexturedPolygonSymbolizer polygonSymbolizer = (TexturedPolygonSymbolizer) this.symbolizer;
-            this.generateWithTexturedPolygonSymbolizer(polygonSymbolizer);
-        } else if (this.symbolizer instanceof PolygonSymbolizer) {
-            PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.symbolizer;
-            this.generateWithPolygonSymbolizer(polygonSymbolizer);
+        if (this.symbolizer instanceof LineSymbolizer) {
+            LineSymbolizer lineSymbolizer = (LineSymbolizer) this.symbolizer;
+            this.generateWithLineSymbolizer(lineSymbolizer);
         } else {
             super.setState(TaskState.ERROR);
             return;
@@ -177,65 +161,20 @@ public class DisplayablePolygon extends AbstractTask implements GLDisplayable {
         super.setState(TaskState.FINISHED);
     }
 
-    private void generateWithPolygonSymbolizer(PolygonSymbolizer symbolizer) {
+    private void generateWithLineSymbolizer(LineSymbolizer symbolizer) {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
-        System.err.println("generate Simple Polygon");
+        System.err.println("generate line Polygon");
         //        return GLComplexFactory.createFilledPolygon(multiSurface, symbolizer.getStroke().getColor());
-        IEnvelope envelope = getEnvelope(this.polygons);
+        IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
         double minX = envelope.minX();
         double minY = envelope.minY();
-        SolidColorizer colorizer = new SolidColorizer(this.symbolizer.getStroke().getColor());
-        GLComplex content = GLComplexFactory.createFilledMultiSurface(this.polygons, colorizer, null, minX, minY);
-        content.setColor(symbolizer.getFill().getColor());
-        complexes.add(content);
 
         BasicStroke awtStroke = GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport, symbolizer);
-        GLComplex outline = GLComplexFactory.createOutlineMultiSurface(this.polygons, awtStroke, minX, minY);
-        outline.setColor(symbolizer.getStroke().getColor());
-        complexes.add(outline);
-        this.fullRepresentation = complexes;
-    }
-
-    /**
-     * generate the envelope of a list of polygons
-     * 
-     * @param polygons
-     * @return
-     */
-    private static IEnvelope getEnvelope(List<IPolygon> polygons) {
-        IEnvelope envelope = new GM_Envelope();
-
-        for (int nPolygon = 0; nPolygon < polygons.size(); nPolygon++) {
-            IPolygon polygon = polygons.get(nPolygon);
-            if (nPolygon == 0) {
-                envelope.setLowerCorner(polygon.getEnvelope().getLowerCorner());
-                envelope.setUpperCorner(polygon.getEnvelope().getUpperCorner());
-            } else {
-                envelope.expand(polygon.getEnvelope());
-            }
-        }
-        return envelope;
-    }
-
-    private void generateWithTexturedPolygonSymbolizer(TexturedPolygonSymbolizer symbolizer) {
-        List<GLComplex> complexes = new ArrayList<GLComplex>();
-        IEnvelope envelope = getEnvelope(this.polygons);
-        double minX = envelope.minX();
-        double minY = envelope.minY();
-        GLComplex content = GLComplexFactory.createFilledMultiSurface(this.polygons, null, symbolizer.getParameterizer(), minX, minY);
-        content.setTexture(symbolizer.getTexture());
-        complexes.add(content);
-        this.fullRepresentation = complexes;
-    }
-
-    private void generateWithDistanceFieldTexturedPolygonSymbolizer(DistanceFieldTexturedPolygonSymbolizer symbolizer) {
-        List<GLComplex> complexes = new ArrayList<GLComplex>();
-        IEnvelope envelope = getEnvelope(this.polygons);
-        double minX = envelope.minX();
-        double minY = envelope.minY();
-        GLComplex content = GLComplexFactory.createFilledMultiSurface(this.polygons, null, symbolizer.getParameterizer(), minX, minY);
-        content.setTexture(symbolizer.getTexture());
-        complexes.add(content);
+        //GLComplex outline = GLComplexFactory.createOutlineMultiSurface(this.polygons, awtStroke, minX, minY);
+        GLComplex line = LineTesselator.createThickLine(this.curves, symbolizer.getStroke(), minX, minY);
+        line.setColor(symbolizer.getStroke().getColor());
+        complexes.add(line);
+        // TODO
         this.fullRepresentation = complexes;
     }
 
@@ -248,10 +187,10 @@ public class DisplayablePolygon extends AbstractTask implements GLDisplayable {
     @Override
     public GLComplex getPartialRepresentation() {
         if (this.partialRepresentation == null) {
-            IEnvelope envelope = getEnvelope(this.polygons);
+            IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
             double minX = envelope.minX();
             double minY = envelope.minY();
-            this.partialRepresentation = GLComplexFactory.createEmptyMultiSurface(this.polygons, null, null, minX, minY);
+            this.partialRepresentation = GLComplexFactory.createQuickLine(this.curves, null, null, minX, minY);
         }
         this.displayIncrement();
         return this.partialRepresentation;

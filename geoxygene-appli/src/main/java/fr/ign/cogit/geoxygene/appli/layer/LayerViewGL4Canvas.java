@@ -8,6 +8,8 @@ import static org.lwjgl.opengl.GL11.*;
 import java.awt.event.ComponentEvent;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.PixelFormat;
 
 /** @author JeT GL drawable canvas inserted into a LayerViewLwjglPanel */
 public class LayerViewGL4Canvas extends LayerViewGLCanvas {
@@ -22,21 +24,16 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas {
      */
     public LayerViewGL4Canvas(final LayerViewGLPanel parentPanel) throws LWJGLException {
         super(parentPanel);
+        // multisampling antialiasing doesn't work on my computer (freeze application without message error)
+        //        PixelFormat pixelFormat = new PixelFormat().withSamples(4);
+        //        this.setPixelFormat(pixelFormat);
     }
-
-    //    private void setupTextures() {
-    //        try {
-    //            this.texIds[0] = GLTools.loadTexture("./src/main/resources/textures/water.png");
-    //            this.texIds[1] = GLTools.loadTexture("./src/main/resources/textures/cell02.png");
-    //        } catch (IOException e) {
-    //            e.printStackTrace();
-    //        }
-    //    }
 
     @Override
     protected void initGL() {
         super.initGL();
         glViewport(0, 0, this.getWidth(), this.getHeight());
+        //        glEnable(GL13.GL_MULTISAMPLE);
 
     }
 

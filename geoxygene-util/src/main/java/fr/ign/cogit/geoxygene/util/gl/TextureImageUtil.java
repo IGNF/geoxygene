@@ -113,8 +113,10 @@ public class TextureImageUtil {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 TexturePixel pixel = image.getPixel(x, y);
-                pixel.uTexture *= uScaleFactor;
-                pixel.vTexture *= vScaleFactor;
+                if (pixel.in) {
+                    pixel.uTexture *= uScaleFactor;
+                    pixel.vTexture *= vScaleFactor;
+                }
             }
         }
 
@@ -461,5 +463,11 @@ public class TextureImageUtil {
         //            }
         //        }
         return byteBuffer;
+    }
+
+    public static void displayPixel(TextureImage texImage, int i, int j) {
+        TexturePixel pixel = texImage.getPixel(i, j);
+        System.err.println("pixel(" + i + "," + j + ") = " + pixel.uTexture + "x" + pixel.vTexture + " " + (pixel.in ? "inside" : "outside") + " frontier = "
+                + (pixel.frontier));
     }
 }

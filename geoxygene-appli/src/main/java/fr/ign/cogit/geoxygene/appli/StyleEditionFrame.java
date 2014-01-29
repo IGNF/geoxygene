@@ -19,6 +19,7 @@
 
 package fr.ign.cogit.geoxygene.appli;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -40,7 +41,9 @@ import java.awt.image.BufferedImage;
 import java.io.CharArrayReader;
 import java.io.CharArrayWriter;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -50,6 +53,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -57,7 +61,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
@@ -177,6 +180,11 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
     private Color strokeColor;
     private float strokeOpacity;
     private double strokeWidth;
+    private int strokeLineJoin = BasicStroke.JOIN_ROUND;
+    private int strokeLineCap = BasicStroke.CAP_ROUND;
+    private final Map<String, Integer> strokeLineJoinNames = new HashMap<String, Integer>();
+    private final Map<String, Integer> strokeLineCapNames = new HashMap<String, Integer>();
+
     private String unit;
 
     private Color strokeColor2;
@@ -204,6 +212,9 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
     private JSpinner strokeWidthSpinner;
     private JRadioButton unitMeterRadio;
     private JRadioButton unitPixelRadio;
+    private JComboBox strokeLineJoinCombo;
+    private JComboBox strokeLineCapCombo;
+    private StrokeSamplePanel strokeSamplePanel;
 
     private JColorChooser strokeColorChooser2;
     private JDialog strokeDialog2;
@@ -254,7 +265,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
         logger.info("StyleEditionFrame");
         this.layerLegendPanel = layerLegendPanel;
         this.layerViewPanel = this.layerLegendPanel.getLayerViewPanel();
-
+        this.initStrokeNameTables();
         this.graphicStylePanel = new JPanel();
 
         if (layerLegendPanel.getSelectedLayers().size() == 1) {
@@ -300,6 +311,16 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
 
         this.setLocation(200, 200);
         this.setAlwaysOnTop(true);
+    }
+
+    private void initStrokeNameTables() {
+        this.strokeLineCapNames.put("BUTT", BasicStroke.CAP_BUTT);
+        this.strokeLineCapNames.put("ROUND", BasicStroke.CAP_ROUND);
+        this.strokeLineCapNames.put("SQUARE", BasicStroke.CAP_SQUARE);
+        this.strokeLineJoinNames.put("BEVEL", BasicStroke.JOIN_BEVEL);
+        this.strokeLineJoinNames.put("MITER", BasicStroke.JOIN_MITER);
+        this.strokeLineJoinNames.put("ROUND", BasicStroke.JOIN_ROUND);
+
     }
 
     /**
@@ -692,10 +713,13 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
         this.strokeColor = ((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getStroke().getStroke();
         this.strokeOpacity = ((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getStroke().getStrokeOpacity();
         this.strokeWidth = ((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getStroke().getStrokeWidth();
+        this.strokeLineJoin = ((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getStroke().getStrokeLineJoin();
+        this.strokeLineCap = ((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getStroke().getStrokeLineCap();
         this.unit = ((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getUnitOfMeasure();
 
         this.strokePanel.add(this.createColorPreviewPanel(this.strokeColor, this.strokeOpacity));
         this.strokePanel.add(this.createWidthPanel(this.strokeWidth, this.unit));
+        this.strokePanel.add(this.createJoinCapPanel(this.strokeLineJoin, this.strokeLineCap));
 
         this.mainStylePanel = new JPanel();
         this.mainStylePanel.setLayout(new BoxLayout(this.mainStylePanel, BoxLayout.Y_AXIS));
@@ -756,10 +780,13 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
         this.strokeColor = ((LineSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getStroke().getStroke();
         this.strokeOpacity = ((LineSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getStroke().getStrokeOpacity();
         this.strokeWidth = ((LineSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getStroke().getStrokeWidth();
+        this.strokeLineJoin = ((LineSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getStroke().getStrokeLineJoin();
+        this.strokeLineCap = ((LineSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getStroke().getStrokeLineCap();
         this.unit = ((LineSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getUnitOfMeasure();
 
         this.strokePanel.add(this.createColorPreviewPanel(this.strokeColor, this.strokeOpacity));
         this.strokePanel.add(this.createWidthPanel(this.strokeWidth, this.unit));
+        this.strokePanel.add(this.createJoinCapPanel(this.strokeLineJoin, this.strokeLineCap));
 
         this.addColorMapButton = new JButton(I18N.getString("StyleEditionFrame.AddColorMap")); //$NON-NLS-1$
         this.addColorMapButton.addActionListener(this);
@@ -786,6 +813,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
 
             this.strokePanel2.add(this.createColorPreviewPanel(this.strokeColor2, this.strokeOpacity2));
             this.strokePanel2.add(this.createWidthPanel(this.strokeWidth2, this.unit));
+            this.strokePanel2.add(this.createJoinCapPanel(this.strokeLineJoin, this.strokeLineCap));
         } else {
             this.strokePanel2 = new JPanel();
             this.strokePanel2.setVisible(false);
@@ -878,9 +906,12 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
         this.strokeColor = ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getGraphic().getMarks().get(0).getStroke().getStroke();
         this.strokeOpacity = ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getGraphic().getMarks().get(0).getStroke().getStrokeOpacity();
         this.strokeWidth = ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getGraphic().getMarks().get(0).getStroke().getStrokeWidth();
+        this.strokeLineJoin = ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getGraphic().getMarks().get(0).getStroke().getStrokeLineJoin();
+        this.strokeLineCap = ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getGraphic().getMarks().get(0).getStroke().getStrokeLineCap();
         this.unit = ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getUnitOfMeasure();
         this.strokePanel.add(this.createColorPreviewPanel(this.strokeColor, this.strokeOpacity));
         this.strokePanel.add(this.createWidthPanel(this.strokeWidth, this.unit));
+        this.strokePanel.add(this.createJoinCapPanel(this.strokeLineJoin, this.strokeLineCap));
 
         this.symbolPanel = new JPanel();
         this.symbolPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -1103,11 +1134,45 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
     }
 
     /**
+     * This method creates and return the panel to choose a line join and cap.
+     * 
+     * @return the panel of the cap & join choice.
+     */
+    public JPanel createJoinCapPanel(int joinValue, int capValue) {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));
+
+        JComboBox joinCombo = new JComboBox();
+        joinCombo.setBorder(BorderFactory.createTitledBorder(I18N.getString("StyleEditionFrame.LineJoinTitle")));
+        for (String joinName : this.strokeLineJoinNames.keySet()) {
+            joinCombo.addItem(joinName);
+        }
+        leftPanel.add(joinCombo);
+        joinCombo.addItemListener(this);
+
+        JComboBox capCombo = new JComboBox();
+        capCombo.setBorder(BorderFactory.createTitledBorder(I18N.getString("StyleEditionFrame.LineCapTitle")));
+        for (String capName : this.strokeLineCapNames.keySet()) {
+            capCombo.addItem(capName);
+        }
+        leftPanel.add(capCombo);
+        capCombo.addItemListener(this);
+
+        panel.add(leftPanel);
+        StrokeSamplePanel strokeSample = new StrokeSamplePanel();
+        panel.add(strokeSample);
+        return panel;
+    }
+
+    /**
      * This method creates and return the panel of the shape of a point symbol.
      * The shape is one of the well known shapes of the SVG standard; so, it can
      * be: - a square - a circle - a triangle - a star - a cross - a X (cross
-     * with
-     * a rotation of 45°)
+     * with a rotation of 45°)
      * 
      * @param shape
      *            the shape of the style to be modified.
@@ -1410,6 +1475,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
 
             this.strokePanel2.add(this.createColorPreviewPanel(this.strokeColor2, this.strokeOpacity2));
             this.strokePanel2.add(this.createWidthPanel(this.strokeWidth2, this.unit));
+            this.strokePanel2.add(this.createJoinCapPanel(this.strokeLineJoin, this.strokeLineCap));
 
             this.strokePanel2.setVisible(true);
             this.btnAddStyle.setEnabled(false);
@@ -1654,6 +1720,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
             lineSymbolizer.getStroke().setColor(this.strokeColor);
             lineSymbolizer.getStroke().setStrokeOpacity(this.strokeOpacity);
             lineSymbolizer.getStroke().setStrokeWidth((float) this.strokeWidth);
+            lineSymbolizer.getStroke().setStrokeLineJoin(this.strokeLineJoin);
+            lineSymbolizer.getStroke().setStrokeLineCap(this.strokeLineCap);
             lineSymbolizer.setUnitOfMeasure(this.unit);
 
             if (this.layer.getStyles().size() == 2) {
@@ -1743,6 +1811,9 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
             this.strokeWidthSpinner = (JSpinner) ((JPanel) this.strokePanel.getComponent(1)).getComponent(1);
             this.unitMeterRadio = (JRadioButton) ((JPanel) ((JPanel) this.strokePanel.getComponent(1)).getComponent(2)).getComponent(1);
             this.unitPixelRadio = (JRadioButton) ((JPanel) ((JPanel) this.strokePanel.getComponent(1)).getComponent(2)).getComponent(2);
+            this.strokeLineJoinCombo = (JComboBox) ((JPanel) ((JPanel) this.strokePanel.getComponent(2)).getComponent(0)).getComponent(0);
+            this.strokeLineCapCombo = (JComboBox) ((JPanel) ((JPanel) this.strokePanel.getComponent(2)).getComponent(0)).getComponent(1);
+            this.strokeSamplePanel = (StrokeSamplePanel) ((JPanel) this.strokePanel.getComponent(2)).getComponent(1);
         }
         if (this.layer.getStyles().get(0).getSymbolizer().isLineSymbolizer() && this.layer.getStyles().size() == 2) {
             this.strokeColorLabel2 = (JLabel) ((JPanel) ((JPanel) ((JPanel) this.strokePanel2.getComponent(0)).getComponent(0)).getComponent(0))
@@ -1751,6 +1822,9 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
             this.strokeOpacitySlider2 = (JSlider) ((JPanel) ((JPanel) ((JPanel) this.strokePanel2.getComponent(0)).getComponent(0)).getComponent(1))
                     .getComponent(1);
             this.strokeWidthSpinner2 = (JSpinner) ((JPanel) this.strokePanel2.getComponent(1)).getComponent(1);
+            this.strokeLineJoinCombo = (JComboBox) ((JPanel) ((JPanel) this.strokePanel.getComponent(2)).getComponent(0)).getComponent(0);
+            this.strokeLineCapCombo = (JComboBox) ((JPanel) ((JPanel) this.strokePanel.getComponent(2)).getComponent(0)).getComponent(1);
+            this.strokeSamplePanel = (StrokeSamplePanel) ((JPanel) this.strokePanel.getComponent(2)).getComponent(1);
         }
         if (this.layer.getStyles().get(0).getSymbolizer().isPolygonSymbolizer() || this.layer.getStyles().get(0).getSymbolizer().isPointSymbolizer()) {
             this.fillColorLabel = (JLabel) ((JPanel) ((JPanel) ((JPanel) this.fillPanel.getComponent(0)).getComponent(0)).getComponent(0)).getComponent(1);
@@ -1768,6 +1842,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
 
     @Override
     public void itemStateChanged(ItemEvent e) {
+        this.getDialogElements();
         if (e.getSource() == this.toponymBtn) {
             logger.info("toponymBtn");
             if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -1785,9 +1860,76 @@ public class StyleEditionFrame extends JFrame implements ActionListener, MouseLi
             logger.info("repeatBtn " + e.getStateChange());
             this.linePlacement.setRepeated(this.repeatBtn.isSelected());
         }
+        if (e.getSource() == this.strokeLineJoinCombo) {
+            this.strokeLineJoin = this.strokeLineJoinNames.get(this.strokeLineJoinCombo.getSelectedItem());
+            this.strokeSamplePanel.setJoin(this.strokeLineJoin);
+            this.strokeSamplePanel.repaint();
+
+        }
+        if (e.getSource() == this.strokeLineCapCombo) {
+            this.strokeLineCap = this.strokeLineCapNames.get(this.strokeLineCapCombo.getSelectedItem());
+            this.strokeSamplePanel.setCap(this.strokeLineCap);
+            this.strokeSamplePanel.repaint();
+        }
+
         this.update();
     }
 
     private void showPlacementParameters(int selectedIndex) {
     }
+}
+
+final class StrokeSamplePanel extends JPanel {
+
+    private static final long serialVersionUID = 3453526756981264877L;
+    private int cap = BasicStroke.CAP_ROUND;
+    private int join = BasicStroke.JOIN_ROUND;
+    private final int strokeWidth = 10;
+    private final int inset = 2;
+
+    public StrokeSamplePanel() {
+        this.setPreferredSize(new Dimension(100, 100));
+    }
+
+    /**
+     * @param cap
+     *            the cap to set
+     */
+    public final void setCap(int cap) {
+        this.cap = cap;
+    }
+
+    /**
+     * @param join
+     *            the join to set
+     */
+    public final void setJoin(int join) {
+        this.join = join;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+     */
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        int d = this.strokeWidth + this.inset;
+        int[] x = new int[] { d, this.getWidth() / 2, this.getWidth() - d };
+        int[] y = new int[] { d, this.getHeight() - d, d };
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setColor(java.awt.Color.white);
+        g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g2.setColor(new java.awt.Color(20, 20, 100));
+        BasicStroke stroke = new BasicStroke(10, this.cap, this.join);
+        g2.setStroke(stroke);
+        g2.drawPolyline(x, y, 3);
+        g2.setStroke(new BasicStroke(0));
+        g2.setColor(java.awt.Color.lightGray);
+        for (int n = 0; n < 3; n++) {
+            g2.fillRect(x[n] - 1, y[n] - 1, 3, 3);
+        }
+    }
+
 }

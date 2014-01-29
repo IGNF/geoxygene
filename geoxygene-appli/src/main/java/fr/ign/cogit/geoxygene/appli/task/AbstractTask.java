@@ -237,9 +237,11 @@ public abstract class AbstractTask implements Task {
      *            old task state
      */
     public void fireStateChanged(final TaskState oldState) {
-        TaskListener[] listeners = this.listeners.toArray(DUMMYTASKLISTENERARRAY);
-        for (TaskListener listener : listeners) {
-            listener.onStateChange(this, oldState);
+        synchronized (this.listeners) {
+            TaskListener[] listeners = this.listeners.toArray(DUMMYTASKLISTENERARRAY);
+            for (TaskListener listener : listeners) {
+                listener.onStateChange(this, oldState);
+            }
         }
     }
 

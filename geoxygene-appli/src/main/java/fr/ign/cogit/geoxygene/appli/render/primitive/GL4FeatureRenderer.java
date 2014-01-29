@@ -27,7 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
-import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
 import static org.lwjgl.opengl.GL20.GL_VALIDATE_STATUS;
@@ -54,6 +54,7 @@ import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
@@ -228,17 +229,22 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
                 this.renderDisplayable(displayable, viewport);
                 return;
             }
+
             IGeometry geometry = feature.getGeom();
             if (geometry == null) {
                 logger.warn("null geometry for feature " + feature.getId());
                 return;
             } else if (geometry.isPolygon()) {
                 logger.warn("polygon geometry for feature " + feature.getId());
-                DisplayablePolygon displayablePolygon = new DisplayablePolygon("polygon #" + feature.getId(), viewport, (IPolygon) geometry, symbolizer);
+                DisplayableSurface displayablePolygon = new DisplayableSurface("polygon #" + feature.getId(), viewport, (IPolygon) geometry, symbolizer);
                 displayable = displayablePolygon;
             } else if (geometry.isMultiSurface()) {
-                DisplayablePolygon displayablePolygon = new DisplayablePolygon("polygon #" + feature.getId(), viewport, (IMultiSurface<?>) geometry, symbolizer);
+                DisplayableSurface displayablePolygon = new DisplayableSurface("multisurface #" + feature.getId(), viewport, (IMultiSurface<?>) geometry,
+                        symbolizer);
                 displayable = displayablePolygon;
+            } else if (geometry.isMultiCurve()) {
+                DisplayableCurve displayableCurve = new DisplayableCurve("multicurve #" + feature.getId(), viewport, (IMultiCurve<?>) geometry, symbolizer);
+                displayable = displayableCurve;
             } else {
                 logger.warn("GL4FeatureRenderer cannot handle geometry type " + geometry.getClass().getSimpleName());
             }
@@ -313,20 +319,49 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
 
         this.setGLViewMatrix(viewport, primitive.getMinX(), primitive.getMinY());
         GL30.glBindVertexArray(primitive.getVaoId());
-
-        if (((LayerViewGLPanel) this.getLayerViewPanel()).isWireframe()) {
+        boolean wireframe = ((LayerViewGLPanel) this.getLayerViewPanel()).isWireframe();
+        if (wireframe) {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_LINE_SMOOTH);
+            glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
             GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-        } else {
-            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+            for (GLMesh mesh : primitive.getMeshes()) {
+                //            float[] color = mesh.getColor();
+                //            GL20.glVertexAttrib4f(COLOR_ATTRIBUTE_ID, color[0], color[1], color[2], color[3]);
+                // Draw the vertices
+                //            System.err.println("draw type = " + mesh.getGlType() + " from " + mesh.getFirstIndex() + " to " + mesh.getLastIndex() + " (included)");
+
+                //GL11.glDrawArrays(mesh.getGlType(), mesh.getFirstIndex(), mesh.getLastIndex() - mesh.getFirstIndex() + 1);
+
+                GL11.glDrawElements(mesh.getGlType(), mesh.getLastIndex() - mesh.getFirstIndex() + 1, GL11.GL_UNSIGNED_INT, mesh.getFirstIndex()
+                        * (Integer.SIZE / 8));
+                //GL11.glDrawElements(GL11.GL_TRIANGLE_FAN, 5, GL11.GL_UNSIGNED_INT, mesh.getFirstIndex());
+                //                        System.err.println("Drawing mode = " + mesh.getGlType() + " first = " + mesh.getFirstIndex() + " count = "
+                //                                + (mesh.getLastIndex() - mesh.getFirstIndex() + 1));
+            }
         }
-        for (GLMesh mesh : primitive.getMeshes()) {
-            //            float[] color = mesh.getColor();
-            //            GL20.glVertexAttrib4f(COLOR_ATTRIBUTE_ID, color[0], color[1], color[2], color[3]);
-            // Draw the vertices
-            //            System.err.println("draw type = " + mesh.getGlType() + " from " + mesh.getFirstIndex() + " to " + mesh.getLastIndex() + " (included)");
-            GL11.glDrawArrays(mesh.getGlType(), mesh.getFirstIndex(), mesh.getLastIndex() - mesh.getFirstIndex() + 1);
-            //            System.err.println("Drawing mode = " + mesh.getGlType() + " first = " + mesh.getFirstIndex() + " count = "
-            //                    + (mesh.getLastIndex() - mesh.getFirstIndex() + 1));
+        if (!wireframe) {
+            glEnable(GL_BLEND);
+            glEnable(GL_POLYGON_SMOOTH);
+            glDisable(GL_LINE_SMOOTH);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+            for (GLMesh mesh : primitive.getMeshes()) {
+                //            float[] color = mesh.getColor();
+                //            GL20.glVertexAttrib4f(COLOR_ATTRIBUTE_ID, color[0], color[1], color[2], color[3]);
+                // Draw the vertices
+                //            System.err.println("draw type = " + mesh.getGlType() + " from " + mesh.getFirstIndex() + " to " + mesh.getLastIndex() + " (included)");
+
+                //GL11.glDrawArrays(mesh.getGlType(), mesh.getFirstIndex(), mesh.getLastIndex() - mesh.getFirstIndex() + 1);
+
+                GL11.glDrawElements(mesh.getGlType(), mesh.getLastIndex() - mesh.getFirstIndex() + 1, GL11.GL_UNSIGNED_INT, mesh.getFirstIndex()
+                        * (Integer.SIZE / 8));
+                //GL11.glDrawElements(GL11.GL_TRIANGLE_FAN, 5, GL11.GL_UNSIGNED_INT, mesh.getFirstIndex());
+                //                        System.err.println("Drawing mode = " + mesh.getGlType() + " first = " + mesh.getFirstIndex() + " count = "
+                //                                + (mesh.getLastIndex() - mesh.getFirstIndex() + 1));
+            }
         }
         if (texture != null) {
             texture.finalizeRendering();
