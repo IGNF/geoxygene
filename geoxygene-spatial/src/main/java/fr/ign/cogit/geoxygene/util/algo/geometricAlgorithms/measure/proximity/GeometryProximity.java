@@ -44,7 +44,10 @@ public class GeometryProximity {
     this.geom2 = geom2;
     this.point1 = CommonAlgorithms.getNearestPoint(geom1, geom2);
     this.point2 = CommonAlgorithms.getNearestPoint(geom2, geom1);
-    this.distance = this.point1.distance(this.point2);
+    if (point1 == null || point2 == null)
+      this.distance = 0.0;
+    else
+      this.distance = this.point1.distance(this.point2);
   }
 
   // Getters and setters //

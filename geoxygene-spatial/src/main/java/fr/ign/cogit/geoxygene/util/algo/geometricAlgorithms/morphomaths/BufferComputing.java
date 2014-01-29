@@ -335,6 +335,8 @@ public class BufferComputing {
     }
     if (forwardId >= buffer.coord().size())
       forwardId = forwardId - buffer.coord().size();
+    if (forwardId < 0)
+      forwardId = buffer.coord().size() - 1;
     map.put(buffer.coord().get(forwardId), forwardId);
 
     // then go backward
@@ -416,6 +418,8 @@ public class BufferComputing {
     IDirectPosition startPt = line.coord().get(0);
     IDirectPosition endPt = line.coord().get(line.coord().size() - 1);
     IPolygon buffer = (IPolygon) line.buffer(distance);
+    if (buffer == null)
+      return null;
     IDirectPositionList coordList = new DirectPositionList();
     // get the start vertex index
     int startId = getSideEndingPtsOfRoundPart(side, true, startPt,

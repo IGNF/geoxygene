@@ -1091,6 +1091,8 @@ public class CommonAlgorithmsFromCartAGen {
     // sort the list of lengths
     Collections.sort(lengths);
     // then, compute the median from the sorted list
+    if (lengths.size() == 0)
+      return 0.0;
     if (lengths.size() == 1)
       return lengths.get(0);
     if (lengths.size() % 2 == 0)
