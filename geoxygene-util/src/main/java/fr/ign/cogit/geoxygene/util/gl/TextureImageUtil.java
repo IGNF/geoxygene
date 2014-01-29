@@ -123,6 +123,7 @@ public class TextureImageUtil {
     }
 
     public static void blurTextureCoordinates(TextureImage image, int blurWindowHalfSize) {
+        image.invalidateUVBounds();
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 TexturePixel pixel = image.getPixel(x, y);
@@ -146,8 +147,9 @@ public class TextureImageUtil {
                 TexturePixel neighbor = image.getPixel(x + dx, y + dy);
                 if (neighbor != null && (neighbor.in || neighbor.frontier != 0)) {
                     blurredV += neighbor.vTexture * neighborWeight;
-                    blurredUcos += neighborWeight * Math.cos(PI2 * neighbor.uTexture);
-                    blurredUsin += neighborWeight * Math.sin(PI2 * neighbor.uTexture);
+                    double uNormalized = (neighbor.uTexture - image.getuMin()) / (image.getuMax() - image.getuMin());
+                    blurredUcos += Math.cos(PI2 * uNormalized);
+                    blurredUsin += Math.sin(PI2 * uNormalized);
                     neighborsWeightSum += neighborWeight;
                 }
             }
@@ -157,10 +159,11 @@ public class TextureImageUtil {
             blurredU = Math.atan2(blurredUsin, blurredUcos) / PI2;
 
         }
+        blurredU = blurredU * (image.getuMax() - image.getuMin()) + image.getuMax();
         if (neighborsWeightSum > 1E-6) {
             return new Point2d(blurredU, blurredV / neighborsWeightSum);
         }
-        return new Point2d(blurredU, blurredV / neighborsWeightSum);
+        return new Point2d(blurredU, blurredV);
     }
 
     public static double circularWeightedAverage(double v1, double v2, double w1, double w2) {

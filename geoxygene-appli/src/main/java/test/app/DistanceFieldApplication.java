@@ -1,39 +1,3 @@
-package test.app;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EtchedBorder;
-import javax.xml.bind.JAXBException;
-
-import org.apache.log4j.Logger;
-
-import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
-import fr.ign.cogit.geoxygene.appli.layer.LayerFactory.LayerType;
-import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
-
 /*******************************************************************************
  * This file is part of the GeOxygene project source files.
  * 
@@ -60,6 +24,46 @@ import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  *******************************************************************************/
+package test.app;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.prefs.Preferences;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
+import javax.xml.bind.JAXBException;
+
+import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
+import fr.ign.cogit.geoxygene.appli.layer.LayerFactory.LayerType;
+import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 
 /**
  * @author JeT
@@ -71,7 +75,7 @@ public class DistanceFieldApplication {
     private static final Logger logger = Logger.getLogger(DistanceFieldApplication.class.getName()); // logger
     public final StyledLayerDescriptor sld = new StyledLayerDescriptor();
     private DisplayPanel displayPanel = null;
-    private final JTextArea stepLabel = new JTextArea(20, 20);
+    private final JTextArea stepTextField = new JTextArea(20, 20);
     private final JTextArea pixelLabel = new JTextArea(20, 20);
     private final JLabel uMinLabel = new JLabel();
     private final JLabel uMaxLabel = new JLabel();
@@ -82,6 +86,7 @@ public class DistanceFieldApplication {
     private JTextField uSlider = null;
     private JTextField vSlider = null;
     private String method = null;
+    private final Preferences prefs = Preferences.userRoot().node(DistanceFieldApplication.class.getName());
 
     //    private final DataSet dataset = new DataSet();
 
@@ -109,8 +114,8 @@ public class DistanceFieldApplication {
 
                     @Override
                     public void run() {
-                        DistanceFieldApplication.this.stepLabel.insert(stepText + "\n", 0);
-                        DistanceFieldApplication.this.stepLabel.setCaretPosition(0);
+                        DistanceFieldApplication.this.stepTextField.insert(stepText + "\n", 0);
+                        DistanceFieldApplication.this.stepTextField.setCaretPosition(0);
                         DistanceFieldApplication.this.displayPanel.repaint();
                         DistanceFieldApplication.this.updateContent();
                     }
@@ -124,13 +129,14 @@ public class DistanceFieldApplication {
             @Override
             public void actionPerformed(ActionEvent e) {
                 while (!DistanceFieldApplication.this.displayPanel.hasNoStepLeft) {
+                    DistanceFieldApplication.this.updateContent();
                     final String stepText = DistanceFieldApplication.this.doStep();
                     SwingUtilities.invokeLater(new Runnable() {
 
                         @Override
                         public void run() {
-                            DistanceFieldApplication.this.stepLabel.insert(stepText + "\n", 0);
-                            DistanceFieldApplication.this.stepLabel.setCaretPosition(0);
+                            DistanceFieldApplication.this.stepTextField.insert(stepText + "\n", 0);
+                            DistanceFieldApplication.this.stepTextField.setCaretPosition(0);
                             DistanceFieldApplication.this.displayPanel.repaint();
                             DistanceFieldApplication.this.updateContent();
                         }
@@ -149,9 +155,9 @@ public class DistanceFieldApplication {
 
                     @Override
                     public void run() {
-                        DistanceFieldApplication.this.stepLabel.setText("");
+                        DistanceFieldApplication.this.stepTextField.setText(stepText);
                         ;
-                        DistanceFieldApplication.this.stepLabel.setCaretPosition(0);
+                        DistanceFieldApplication.this.stepTextField.setCaretPosition(0);
                         DistanceFieldApplication.this.displayPanel.repaint();
                         DistanceFieldApplication.this.updateContent();
                     }
@@ -159,6 +165,58 @@ public class DistanceFieldApplication {
             }
         });
         buttonPanel.add(resetButton);
+        JButton loadButton = new JButton("load");
+        loadButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fc = new JFileChooser();
+                String lastDir = DistanceFieldApplication.this.prefs.get("lastDir", ".");
+                if (lastDir != null) {
+                    fc.setCurrentDirectory(new File(lastDir));
+                }
+                fc.setFileFilter(new FileFilter() {
+
+                    @Override
+                    public boolean accept(File f) {
+                        return f.isDirectory() || f.getName().endsWith(".shp") || f.getName().endsWith(".SHP");
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "shape files";
+                    }
+                });
+
+                int returnVal = fc.showOpenDialog(DistanceFieldApplication.this.frame);
+                if (returnVal != JFileChooser.APPROVE_OPTION) {
+                    return;
+                }
+                try {
+                    final File file = fc.getSelectedFile();
+                    DistanceFieldApplication.this.prefs.put("lastDir", file.getAbsolutePath());
+                    final String stepText = DistanceFieldApplication.this.loadShapeFile(file.getAbsolutePath());
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            DistanceFieldApplication.this.stepTextField.setText(stepText + "\n");
+                            DistanceFieldApplication.this.stepTextField.setCaretPosition(0);
+                            DistanceFieldApplication.this.displayPanel.repaint();
+                            DistanceFieldApplication.this.updateContent();
+                        }
+                    });
+                } catch (FileNotFoundException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                } catch (JAXBException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
+        });
+        buttonPanel.add(loadButton);
+
         toolPanel.add(buttonPanel);
         JComboBox<String> methodComboBox = new JComboBox<String>();
         methodComboBox.setBorder(BorderFactory.createTitledBorder("Distance computation type"));
@@ -178,10 +236,10 @@ public class DistanceFieldApplication {
         methodComboBox.setSelectedItem("Shrink 4 exact distance");
         toolPanel.add(methodComboBox);
 
-        this.stepLabel.setBorder(BorderFactory.createTitledBorder("Progression"));
-        this.stepLabel.setEditable(false);
-        this.stepLabel.setLineWrap(true);
-        JScrollPane comp = new JScrollPane(this.stepLabel);
+        this.stepTextField.setBorder(BorderFactory.createTitledBorder("Progression"));
+        this.stepTextField.setEditable(false);
+        this.stepTextField.setLineWrap(true);
+        JScrollPane comp = new JScrollPane(this.stepTextField);
         comp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         comp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         toolPanel.add(comp);
@@ -197,6 +255,7 @@ public class DistanceFieldApplication {
         vizComboBox.setBorder(BorderFactory.createTitledBorder("visualization"));
         vizComboBox.addItem("U HSV");
         vizComboBox.addItem("Distance BW");
+        vizComboBox.addItem("Distance WB");
         vizComboBox.addItem("Distance HSV");
         vizComboBox.addItem("Distance Strip 10");
         vizComboBox.addItem("Distance Strip 50");
@@ -214,10 +273,14 @@ public class DistanceFieldApplication {
 
             }
         });
+        vizComboBox.setSelectedItem("Distance BW");
         toolPanel.add(vizComboBox);
 
+        JPanel gPanel = new JPanel();
+        gPanel.setLayout(new BoxLayout(gPanel, BoxLayout.LINE_AXIS));
+        gPanel.setBorder(BorderFactory.createTitledBorder("gradient"));
+
         JComboBox<String> gradComboBox = new JComboBox<String>();
-        gradComboBox.setBorder(BorderFactory.createTitledBorder("gradient"));
         gradComboBox.addItem("None");
         gradComboBox.addItem("3x3");
         gradComboBox.addItem("5x5");
@@ -239,7 +302,25 @@ public class DistanceFieldApplication {
 
             }
         });
-        toolPanel.add(gradComboBox);
+
+        gPanel.add(gradComboBox);
+        final JSlider gSlider = new JSlider();
+        gSlider.setMinimum(-1000);
+        gSlider.setMinimum(1000);
+        gSlider.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                double scale = Math.exp(gSlider.getValue() / 100.);
+                gSlider.setToolTipText(String.valueOf(scale));
+                DistanceFieldApplication.this.displayPanel.setGradientScale(scale);
+                DistanceFieldApplication.this.displayPanel.invalidateImage();
+                DistanceFieldApplication.this.displayPanel.repaint();
+            }
+        });
+        gPanel.add(gSlider);
+
+        toolPanel.add(gPanel);
 
         this.uSlider = new JTextField();
         this.uSlider.setBorder(BorderFactory.createTitledBorder("U scale sactor"));
@@ -288,11 +369,43 @@ public class DistanceFieldApplication {
             public void keyPressed(KeyEvent e) {
             }
         });
+        toolPanel.add(this.vSlider);
+
+        JPanel filterPanel = new JPanel();
+        filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.LINE_AXIS));
+        filterPanel.setBorder(BorderFactory.createTitledBorder("Filtering"));
+
+        final JComboBox<String> filterCombo = new JComboBox<String>();
+        filterCombo.addItem("None");
+        filterCombo.addItem("Blur UV 3px");
+        filterCombo.addItem("Blur UV 10px");
+        filterCombo.addItem("Blur UV 30px");
+        filterCombo.addItem("Blur distance 3px");
+        filterCombo.addItem("Blur distance 10px");
+        filterCombo.addItem("Blur distance 30px");
+        filterPanel.add(filterCombo);
+
+        JButton filterButton = new JButton("apply");
+        filterButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String returnValue = DistanceFieldApplication.this.displayPanel.applyFilter((String) filterCombo.getSelectedItem());
+                DistanceFieldApplication.this.stepTextField.insert(returnValue + "\n", 0);
+                DistanceFieldApplication.this.stepTextField.setCaretPosition(0);
+                DistanceFieldApplication.this.displayPanel.invalidateImage();
+                DistanceFieldApplication.this.displayPanel.repaint();
+
+            }
+        });
+        filterPanel.add(filterButton);
+
+        toolPanel.add(filterPanel);
+
         JPanel imageInfoPanel = new JPanel();
         imageInfoPanel.setLayout(new BoxLayout(imageInfoPanel, BoxLayout.PAGE_AXIS));
         imageInfoPanel.setBorder(BorderFactory.createTitledBorder("Image information"));
 
-        imageInfoPanel.add(this.vSlider);
         imageInfoPanel.add(this.uMinLabel);
         imageInfoPanel.add(this.uMaxLabel);
         imageInfoPanel.add(this.vMinLabel);
@@ -325,7 +438,7 @@ public class DistanceFieldApplication {
         return Double.valueOf(this.vSlider.getText());
     }
 
-    public void loadShapeFile(String shapeFilename) throws FileNotFoundException, JAXBException {
+    public String loadShapeFile(String shapeFilename) throws FileNotFoundException, JAXBException {
         File file = new File(shapeFilename);
 
         if (file != null) {
@@ -349,7 +462,7 @@ public class DistanceFieldApplication {
             }
         }
         this.frame.repaint();
-        logger.info("shape file " + shapeFilename + " loaded");
+        return "shape file " + shapeFilename + " loaded";
     }
 
     private void updateContent() {
@@ -377,9 +490,9 @@ public class DistanceFieldApplication {
         DistanceFieldApplication app = new DistanceFieldApplication();
 
         app.show();
+        String shapeFilename = "/home/turbet/export/expressivemaps/data/JDD_Plancoet/mer_sans_sable.shp";
         try {
-            app.loadShapeFile("/home/turbet/export/expressivemaps/data/JDD_Plancoet/mer_sans_sable.shp");
-            //            app.loadShapeFile("/home/turbet/projects/geoxygene/svn/oxygene-project/main/trunk/geoxygene-data/ign-echantillon/bdtopo/72_BDTOPO_shp/BDT_2-0_SHP_LAMB93_X062-ED111/E_BATI/PISTE_AERODROME.SHP");
+            app.loadShapeFile(shapeFilename);
         } catch (FileNotFoundException e) {
             logger.error(e);
             e.printStackTrace();

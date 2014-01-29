@@ -44,6 +44,7 @@ import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldFrontierPixelRenderer;
 import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldTexture;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
+import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 
 public class DisplayPanel extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener {
@@ -96,7 +97,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     private double maxY;
     private double imageToPolygonFactorX;
     private double imageToPolygonFactorY;
-    public TextureImage texImage;
+    public TextureImage texImage; // the one that is visualized (with filters)
+    public TextureImage initialTexImage; // texture before filter application 
     private final List<IPolygon> polygons = new ArrayList<IPolygon>();
     private final List<IRing> rings = new ArrayList<IRing>();
     private final List<ParameterizedSegment> segments = new ArrayList<ParameterizedSegment>();
@@ -107,6 +109,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     private boolean texCoordFilled = false;
     private boolean vScaled = false;
     private boolean gradientComputed = false;
+    private double gScale = 1.;
     private int stepCount = 0;
     private Set<Point> modifiedPixels = new HashSet<Point>();
     private AffineTransform pressedTransform = null;
@@ -268,8 +271,10 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 this.bi = toBufferedImageDistanceStrip(this.texImage, 200);
             } else if (this.viz.equals("Distance Strip 500")) {
                 this.bi = toBufferedImageDistanceStrip(this.texImage, 500);
+            } else if (this.viz.equals("Distance WB")) {
+                this.bi = toBufferedImageDistance(this.texImage, Color.white, Color.black);
             } else {
-                this.bi = toBufferedImageDistance(this.texImage);
+                this.bi = toBufferedImageDistance(this.texImage, Color.black, Color.white);
 
             }
 
@@ -336,8 +341,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 if (pixel == null || pixel.vGradient == null) {
                     continue;
                 } else {
-                    int x2 = (int) (x + pixel.vGradient.x * i);
-                    int y2 = (int) (y + pixel.vGradient.y * i);
+                    int x2 = (int) (x + pixel.vGradient.x * i * this.gScale);
+                    int y2 = (int) (y + pixel.vGradient.y * i * this.gScale);
                     g2.drawLine(x, y, x2, y2);
                     if (i > 10) {
                         g2.drawOval(x2 - 1, y2 - 1, 3, 3);
@@ -426,7 +431,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return bi;
     }
 
-    private static BufferedImage toBufferedImageDistance(TextureImage image) {
+    private static BufferedImage toBufferedImageDistance(TextureImage image, Color c1, Color c2) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
@@ -441,7 +446,9 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 } else {
                     float v = (float) Math.max(0, Math.min(1, pixel.distance / image.getdMax()));
                     //                    System.err.println("v = " + v + " d = " + pixel.distance + " dMax = " + image.getdMax());
-                    bi.setRGB(x, y, new Color(v, v, v).getRGB());
+                    Color c = new Color(c1.getRed() / 255f * (1 - v) + v * c2.getRed() / 255f, c1.getGreen() / 255f * (1 - v) + v * c2.getGreen() / 255f,
+                            c1.getBlue() / 255f * (1 - v) + v * c2.getBlue() / 255f);
+                    bi.setRGB(x, y, c.getRGB());
                 }
             }
         }
@@ -743,7 +750,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         if (ySumWeight != 0) {
             yGradient /= ySumWeight;
         }
-        return new Point2d(-100 * yGradient, 100 * xGradient);
+        return new Point2d(-40 * yGradient, 40 * xGradient);
     }
 
     /**
@@ -1523,4 +1530,45 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         this.gradientViz = item;
 
     }
+
+    public String applyFilter(String filterName) {
+        if (this.initialTexImage == null) {
+            this.initialTexImage = new TextureImage(this.texImage);
+        }
+        if (filterName.equals("None")) {
+            this.texImage = new TextureImage(this.initialTexImage);
+            return "Back to unfiltered distance field texture";
+        } else if (filterName.equals("Blur distance 3px")) {
+            return this.applyBlurDistance(this.initialTexImage, 3);
+        } else if (filterName.equals("Blur distance 10px")) {
+            return this.applyBlurDistance(this.initialTexImage, 10);
+        } else if (filterName.equals("Blur distance 30px")) {
+            return this.applyBlurDistance(this.initialTexImage, 30);
+        } else if (filterName.equals("Blur UV 3px")) {
+            return this.applyBlurUV(this.initialTexImage, 3);
+        } else if (filterName.equals("Blur UV 10px")) {
+            return this.applyBlurUV(this.initialTexImage, 10);
+        } else if (filterName.equals("Blur UV 30px")) {
+            return this.applyBlurUV(this.initialTexImage, 30);
+        }
+        return "Unknown filter '" + filterName + "'";
+    }
+
+    private String applyBlurDistance(TextureImage sourceTexImage, int i) {
+        this.texImage = new TextureImage(sourceTexImage);
+        TextureImageUtil.blurDistance(this.texImage, i);
+        return i + " pixels distance-blur applied to initial image";
+    }
+
+    private String applyBlurUV(TextureImage sourceTexImage, int i) {
+        this.texImage = new TextureImage(sourceTexImage);
+        TextureImageUtil.blurTextureCoordinates(this.texImage, i);
+        return i + " pixels UV-blur applied to initial image";
+    }
+
+    public void setGradientScale(double gScale) {
+        this.gScale = gScale;
+
+    }
+
 }

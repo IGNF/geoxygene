@@ -53,6 +53,25 @@ public class TextureImage {
         public double weightSum = 0; // some elements are computed as a weighted average
         public Point2d vGradient = null; // gradient component of v Value
 
+        public TexturePixel() {
+
+        }
+
+        public TexturePixel(final TexturePixel src) {
+            this.uTexture = src.uTexture;
+            this.vTexture = src.vTexture;
+            this.uTextureWeightSum = src.uTextureWeightSum;
+            this.vTextureWeightSum = src.vTextureWeightSum;
+            this.distance = src.distance;
+            this.linearParameter = src.linearParameter;
+            this.closestFrontier = src.closestFrontier;
+            this.closestPoint = src.closestPoint == null ? null : new Point2d(src.closestPoint);
+            this.in = src.in;
+            this.frontier = src.frontier;
+            this.weightSum = src.weightSum;
+            this.vGradient = src.vGradient == null ? null : new Point2d(src.vGradient);
+        }
+
         /*
          * (non-Javadoc)
          * 
@@ -83,6 +102,17 @@ public class TextureImage {
      * 
      */
     public TextureImage() {
+    }
+
+    /**
+     * Copy constructor
+     */
+    public TextureImage(final TextureImage src) {
+        this.setDimension(src.width, src.height);
+        for (int l = 0; l < src.size; l++) {
+            this.pixels[l] = new TexturePixel(src.getPixels()[l]);
+        }
+
     }
 
     /**
