@@ -12,6 +12,7 @@ import fr.ign.cogit.geoxygene.sig3d.calculation.Proximity;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
+import fr.ign.cogit.tools.Utils;
 
 
 public class TestProximity extends TestCase {

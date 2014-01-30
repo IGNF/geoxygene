@@ -14,6 +14,7 @@ import fr.ign.cogit.geoxygene.sig3d.calculation.Util;
 import fr.ign.cogit.geoxygene.sig3d.geometry.Sphere;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
+import fr.ign.cogit.tools.Utils;
 
 public class TestBooleanOperators extends TestCase {
 

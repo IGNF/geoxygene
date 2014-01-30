@@ -74,6 +74,8 @@ public class Extrusion2DObject {
   @SuppressWarnings("unchecked")
   public static IGeometry convertFromGeometry(IGeometry geom, double zMin,
       double zMax) {
+	  
+	if (geom == null){return null;}
 
     IGeometry geomFinale = null;
 

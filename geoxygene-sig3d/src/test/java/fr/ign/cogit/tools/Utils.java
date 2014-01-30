@@ -1,4 +1,4 @@
-package fr.ign.cogit.calculation;
+package fr.ign.cogit.tools;
 
 import java.util.ArrayList;
 
@@ -162,8 +162,8 @@ public class Utils {
 		// FACE 1b
 		DirectPositionList dpl1b = new DirectPositionList();
 		dpl1b.add(new DirectPosition(x,   y,   z));
-		dpl1b.add(new DirectPosition(x,   y+c,   z));
 		dpl1b.add(new DirectPosition(x+c, y+c, z));
+		dpl1b.add(new DirectPosition(x,   y+c,   z));
 		dpl1b.add(new DirectPosition(x,   y,   z));
 		GM_LineString ls1b = new GM_LineString(dpl1b);
 		GM_Polygon polygon1b = new GM_Polygon(ls1b);
@@ -182,8 +182,8 @@ public class Utils {
 		// FACE 2b
 		DirectPositionList dpl2b = new DirectPositionList();
 		dpl2b.add(new DirectPosition(x,   y, z));
-		dpl2b.add(new DirectPosition(x  , y, z+c));
 		dpl2b.add(new DirectPosition(x+c, y, z+c));
+		dpl2b.add(new DirectPosition(x  , y, z+c));
 		dpl2b.add(new DirectPosition(x,   y, z));
 		GM_LineString ls2b = new GM_LineString(dpl2b);
 		GM_Polygon polygon2b = new GM_Polygon(ls2b);
@@ -223,8 +223,8 @@ public class Utils {
 		// FACE 4b
 		DirectPositionList dpl4b = new DirectPositionList();
 		dpl4b.add(new DirectPosition(x,   y,   z+c));
-		dpl4b.add(new DirectPosition(x,   y+c,   z+c));
 		dpl4b.add(new DirectPosition(x+c, y+c, z+c));
+		dpl4b.add(new DirectPosition(x,   y+c,   z+c));
 		dpl4b.add(new DirectPosition(x,   y,   z+c));
 		GM_LineString ls4b = new GM_LineString(dpl4b);
 		GM_Polygon polygon4b = new GM_Polygon(ls4b);
@@ -243,8 +243,8 @@ public class Utils {
 		// FACE 5b
 		DirectPositionList dpl5b = new DirectPositionList();
 		dpl5b.add(new DirectPosition(x,   y+c, z));
-		dpl5b.add(new DirectPosition(x,   y+c, z+c));
 		dpl5b.add(new DirectPosition(x+c, y+c, z+c));
+		dpl5b.add(new DirectPosition(x,   y+c, z+c));
 		dpl5b.add(new DirectPosition(x,   y+c, z));
 		GM_LineString ls5b = new GM_LineString(dpl5b);
 		GM_Polygon polygon5b = new GM_Polygon(ls5b);
@@ -263,8 +263,8 @@ public class Utils {
 		// FACE 6b
 		DirectPositionList dpl6b = new DirectPositionList();
 		dpl6b.add(new DirectPosition(x+c, y,   z));
-		dpl6b.add(new DirectPosition(x+c, y,   z+c));
 		dpl6b.add(new DirectPosition(x+c, y+c, z+c));
+		dpl6b.add(new DirectPosition(x+c, y,   z+c));
 		dpl6b.add(new DirectPosition(x+c, y,   z));
 		GM_LineString ls6b = new GM_LineString(dpl6b);
 		GM_Polygon polygon6b = new GM_Polygon(ls6b);

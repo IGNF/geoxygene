@@ -316,9 +316,9 @@ public abstract class Util {
       ApproximatedPlanEquation eqP = new ApproximatedPlanEquation(dplTemp);
 
       Vecteur v = eqP.getNormale();
-      v.normalise();
+      v.normalise(); 
 
-      if (v.getZ() > tolerence) {
+      if (Math.abs(v.getZ()) > tolerence) { 
 
         lFacesNVerticales.add(new GM_Triangle(((GM_Polygon) surfTemp)
             .getExterior()));
@@ -368,7 +368,7 @@ public abstract class Util {
   }
 
   /**
-   * Asses volume in a triangulated solid
+   * Assess volume in a triangulated solid
    * @param sol
    * @return
    */

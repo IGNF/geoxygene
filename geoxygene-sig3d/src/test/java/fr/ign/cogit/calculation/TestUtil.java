@@ -6,14 +6,18 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.sig3d.calculation.Util;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
+import fr.ign.cogit.tools.Utils;
 
 
 public class TestUtil extends TestCase {
@@ -369,4 +373,404 @@ public class TestUtil extends TestCase {
 
 	}
 
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to detect roof in list of triangles
+	// --------------------------------------------------------------------------------
+	public void testCenterOf12() {
+
+		// Creating list of surfaces
+		ArrayList<ITriangle> AT = new ArrayList<ITriangle>();
+
+		// Surface 1
+		DirectPositionList dpl1 = new DirectPositionList();
+		dpl1.add(new DirectPosition(0,0,0));
+		dpl1.add(new DirectPosition(0,2,0));
+		dpl1.add(new DirectPosition(2,2,0));
+		GM_LineString line1 = new GM_LineString(dpl1);
+		GM_Triangle surface1 = new GM_Triangle(line1);
+
+		// Surface 2
+		DirectPositionList dpl2 = new DirectPositionList();
+		dpl2.add(new DirectPosition(0,0,0));
+		dpl2.add(new DirectPosition(0,0,1));
+		dpl2.add(new DirectPosition(1,0,1));
+		GM_LineString line2 = new GM_LineString(dpl2);
+		GM_Triangle surface2 = new GM_Triangle(line2);
+
+		// Filling surface list
+		AT.add(surface1);
+		AT.add(surface2);
+
+		// Detecting vertical surface
+		GM_MultiSurface<ITriangle> MS = Util.detectRoofTriangles(AT, epsilon);
+
+		// recovering number of detected surfaces
+		int nDetect = MS.size();
+
+		// Comparison
+		assertEquals("Wrong number of roof surfaces has been detected", 1, nDetect);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to detect roof in list of triangles
+	// --------------------------------------------------------------------------------
+	public void testCenterOf13() {
+
+		// Creating list of surfaces
+		ArrayList<ITriangle> AT = new ArrayList<ITriangle>();
+
+
+		DirectPositionList dpl2 = new DirectPositionList();
+		dpl2.add(new DirectPosition(0,0,0));
+		dpl2.add(new DirectPosition(0,0,1));
+		dpl2.add(new DirectPosition(1,0,1));
+		GM_LineString line2 = new GM_LineString(dpl2);
+		GM_Triangle surface2 = new GM_Triangle(line2);
+
+		// Filling surface list
+		AT.add(surface2);
+
+		// Detecting vertical surface
+		GM_MultiSurface<ITriangle> MS = Util.detectRoofTriangles(AT, epsilon);
+
+		// Comparison
+		assertNull("Wrong number of roof surfaces has been detected", MS);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to detect floor in list of triangles
+	// --------------------------------------------------------------------------------
+	public void testCenterOf14() {
+
+		// Creating list of surfaces
+		ArrayList<ITriangle> AT = new ArrayList<ITriangle>();
+
+		// Surface 1
+		DirectPositionList dpl1 = new DirectPositionList();
+		dpl1.add(new DirectPosition(0,0,0));
+		dpl1.add(new DirectPosition(0,2,0));
+		dpl1.add(new DirectPosition(2,2,0));
+		GM_LineString line1 = new GM_LineString(dpl1);
+		GM_Triangle surface1 = new GM_Triangle(line1);
+
+		// Surface 2
+		DirectPositionList dpl2 = new DirectPositionList();
+		dpl2.add(new DirectPosition(0,0,0));
+		dpl2.add(new DirectPosition(0,0,1));
+		dpl2.add(new DirectPosition(1,0,1));
+		GM_LineString line2 = new GM_LineString(dpl2);
+		GM_Triangle surface2 = new GM_Triangle(line2);
+
+		// Filling surface list
+		AT.add(surface1);
+		AT.add(surface2);
+
+		// Detecting vertical surface
+		GM_MultiSurface<ITriangle> MS = Util.detectRoofTriangles(AT, epsilon);
+
+		// recovering number of detected surfaces
+		int nDetect = MS.size();
+
+		// Comparison
+		assertEquals("Wrong number of floor surfaces has been detected", 1, nDetect);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to detect floor in list of triangles
+	// --------------------------------------------------------------------------------
+	public void testCenterOf15() {
+
+		// Creating list of surfaces
+		ArrayList<ITriangle> AT = new ArrayList<ITriangle>();
+
+
+		DirectPositionList dpl2 = new DirectPositionList();
+		dpl2.add(new DirectPosition(0,0,0));
+		dpl2.add(new DirectPosition(0,0,1));
+		dpl2.add(new DirectPosition(1,0,1));
+		GM_LineString line2 = new GM_LineString(dpl2);
+		GM_Triangle surface2 = new GM_Triangle(line2);
+
+		// Filling surface list
+		AT.add(surface2);
+
+		// Detecting vertical surface
+		GM_MultiSurface<ITriangle> MS = Util.detectRoofTriangles(AT, epsilon);
+
+		// Comparison
+		assertNull("Wrong number of floor surfaces has been detected", MS);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to know if a list contains only triangular surfaces
+	// --------------------------------------------------------------------------------
+	public void testCenterOf16() {
+
+		// Creating list of surfaces
+		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
+
+		// Surface 1 : triangle
+		DirectPositionList dpl1 = new DirectPositionList();
+		dpl1.add(new DirectPosition(0,0,0));
+		dpl1.add(new DirectPosition(0,2,0));
+		dpl1.add(new DirectPosition(2,2,0));
+		GM_LineString line1 = new GM_LineString(dpl1);
+		GM_Triangle surface1 = new GM_Triangle(line1);
+
+		// Surface 2 :
+		DirectPositionList dpl2 = new DirectPositionList();
+		dpl2.add(new DirectPosition(0,0,0));
+		dpl2.add(new DirectPosition(0,0,1));
+		dpl2.add(new DirectPosition(1,0,1));
+		dpl2.add(new DirectPosition(1,0,2));
+		GM_LineString line2 = new GM_LineString(dpl2);
+		GM_Polygon surface2 = new GM_Polygon(line2);
+
+		// Filling surface list
+		AS.add(surface1);
+		AS.add(surface2);
+
+		// Recovering result
+		boolean bf = Util.containOnlyTriangleFaces(AS);
+
+		// Removing non triangle surface
+		AS.remove(1);
+
+		// Adding polygon triangle
+		dpl2.remove(3);
+		line2 = new GM_LineString(dpl2);
+		surface2 = new GM_Polygon(line2);
+		AS.add(surface2);
+
+		// Recovering result
+		boolean bt1 = Util.containOnlyTriangleFaces(AS);
+
+		// Removing polygon triangle surface
+		AS.remove(1);
+
+		// Adding triangle
+		surface2 = new GM_Triangle(line2);
+		AS.add(surface2);
+
+		// Recovering result
+		boolean bt2 = Util.containOnlyTriangleFaces(AS);
+
+		// Comparison
+		assertFalse("List does not contain only triangular surfaces", bf);
+		assertTrue("List contain only triangular surfaces", bt1);
+		assertTrue("List contain only triangular surfaces", bt2);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to know if an empty list contains only triangular surfaces
+	// --------------------------------------------------------------------------------
+	public void testCenterOf17() {
+
+		// Creating list of surfaces
+		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
+
+		// Recovering result
+		boolean bt = Util.containOnlyTriangleFaces(AS);
+
+		// Comparison
+		assertTrue("List does not contain non-triangular surfaces (empty list)", bt);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute volume under a surface
+	// --------------------------------------------------------------------------------
+	public void testCenterOf18() {
+
+		// Creating list of surfaces
+		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
+
+		// Random parameters
+		double triangleSize = Math.random()*100;
+		double alti = Math.random()*100;
+
+		// Surface 1 : triangle
+		DirectPositionList dpl1 = new DirectPositionList();
+		dpl1.add(new DirectPosition(0,0,alti));
+		dpl1.add(new DirectPosition(triangleSize,triangleSize,alti));
+		dpl1.add(new DirectPosition(0,triangleSize,alti));
+		GM_LineString line1 = new GM_LineString(dpl1);
+		GM_Triangle surface1 = new GM_Triangle(line1);
+
+		// Surface 2 : triangle
+		DirectPositionList dpl2 = new DirectPositionList();
+		dpl2.add(new DirectPosition(0,0,alti));
+		dpl2.add(new DirectPosition(triangleSize,0,alti));
+		dpl2.add(new DirectPosition(triangleSize,triangleSize,alti));
+		GM_LineString line2 = new GM_LineString(dpl2);
+		GM_Triangle surface2 = new GM_Triangle(line2);
+
+		// Filling surface list
+		AS.add(surface1);
+		AS.add(surface2);
+
+		// Processing volume under surface
+		double v = Util.volumeUnderSurface(AS);
+
+		// Processing expected result
+		double vExp = triangleSize*triangleSize*alti;
+
+		// Comparison
+		assertEquals("Volume under surface is incorrect", vExp, v, epsilon);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to volume under an empty surface list
+	// --------------------------------------------------------------------------------
+	public void testCenterOf19() {
+
+		// Creating list of surfaces
+		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
+
+		// Processing volume under surface
+		double v = Util.volumeUnderSurface(AS);
+
+		// Comparison
+		assertEquals("Volume under empty surface is incorrect", 0, v, epsilon);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute volume under an negatively oriented surfaces
+	// --------------------------------------------------------------------------------
+	public void testCenterOf20() {
+
+		// Creating list of surfaces
+		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
+
+		// Random parameters
+		double triangleSize = Math.random()*100;
+		double alti = Math.random()*100;
+
+		// Surface 1 : triangle
+		DirectPositionList dpl1 = new DirectPositionList();
+		dpl1.add(new DirectPosition(0,0,alti));
+		dpl1.add(new DirectPosition(triangleSize,triangleSize,alti));
+		dpl1.add(new DirectPosition(0,triangleSize,alti));
+		GM_LineString line1 = new GM_LineString(dpl1);
+		GM_Triangle surface1 = new GM_Triangle(line1);
+
+		// Surface 2 : triangle
+		DirectPositionList dpl2 = new DirectPositionList();
+		dpl2.add(new DirectPosition(0,0,alti));
+		dpl2.add(new DirectPosition(triangleSize,triangleSize,alti));
+		dpl2.add(new DirectPosition(triangleSize,0,alti));
+		GM_LineString line2 = new GM_LineString(dpl2);
+		GM_Triangle surface2 = new GM_Triangle(line2);
+
+		// Filling surface list
+		AS.add(surface1);
+		AS.add(surface2);
+
+		// Processing volume under surface
+		double v = Util.volumeUnderSurface(AS);
+
+		// Comparison
+		assertEquals("Volume under surface is incorrect", 0, v, epsilon);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute volume in a triangulated surface (cube)
+	// --------------------------------------------------------------------------------
+	public void testCenterOf21() {
+
+		// Random cube parameter
+		double size = Math.random()*100.0; 
+
+		// Creating triangulated cube
+		GM_Solid cube = Utils.createTriangulatedCube(0, 0, 0, size);
+
+		// Processing volume
+		double v = Util.volumeTriangulatedSolid(cube);
+
+		// Processing expected volume
+		double vExp = Math.pow(size, 3);
+
+		// Comparison
+		assertEquals("Volume in triangulated solid is incorrect", vExp, v, epsilon);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute area of a triangulated surface (cube)
+	// --------------------------------------------------------------------------------
+	public void testCenterOf22() {
+
+		// Random cube parameter
+		double size = Math.random()*100.0; 
+
+		// Creating triangulated cube
+		GM_Solid cube = Utils.createTriangulatedCube(0, 0, 0, size);
+
+		// Processing area
+		double v = Util.aireTriangulatedSolid(cube);
+
+		// Processing expected volume
+		double vExp = 6*size*size;
+
+		// Comparison
+		assertEquals("Volume in triangulated solid is incorrect", vExp, v, epsilon);
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Test for method to compute area of a triangulated list of surfaces
+	// --------------------------------------------------------------------------------
+	public void testCenterOf23() {
+
+		// Creating list of surfaces
+		ArrayList<ITriangle> AS = new ArrayList<ITriangle>();
+
+		// Surface 1 : triangle
+		DirectPositionList dpl1 = new DirectPositionList();
+		dpl1.add(new DirectPosition(0,0,2));
+		dpl1.add(new DirectPosition(1,1,2));
+		dpl1.add(new DirectPosition(0,1,2));
+		GM_LineString line1 = new GM_LineString(dpl1);
+		GM_Triangle surface1 = new GM_Triangle(line1);
+
+		// Surface 2 : triangle
+		DirectPositionList dpl2 = new DirectPositionList();
+		dpl2.add(new DirectPosition(0,0,2));
+		dpl2.add(new DirectPosition(1,0,2));
+		dpl2.add(new DirectPosition(1,1,2));
+		GM_LineString line2 = new GM_LineString(dpl2);
+		GM_Triangle surface2 = new GM_Triangle(line2);
+
+		// Filling surface list
+		AS.add(surface1);
+		AS.add(surface2);
+
+		// Processing volume under surface
+		double v = Util.aireTriangles(AS);
+
+		// Comparison
+		assertEquals("Volume under surface is incorrect", 1, v, epsilon);
+
+	}
+	
 }
