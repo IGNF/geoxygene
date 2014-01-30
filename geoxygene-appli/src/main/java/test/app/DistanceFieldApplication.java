@@ -59,6 +59,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
+import test.app.DisplayPanel.RepeatType;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory.LayerType;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -213,6 +214,8 @@ public class DistanceFieldApplication {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
+
+                DistanceFieldApplication.this.displayPanel.updateContent();
             }
         });
         buttonPanel.add(loadButton);
@@ -263,6 +266,7 @@ public class DistanceFieldApplication {
         vizComboBox.addItem("Distance Strip 500");
         vizComboBox.addItem("UV HSV + light");
         vizComboBox.addItem("UV textured");
+        vizComboBox.addItem("UV pixel textured");
         vizComboBox.addItemListener(new ItemListener() {
 
             @Override
@@ -302,11 +306,15 @@ public class DistanceFieldApplication {
 
             }
         });
-
         gPanel.add(gradComboBox);
+
         final JSlider gSlider = new JSlider();
-        gSlider.setMinimum(-1000);
-        gSlider.setMinimum(1000);
+        gSlider.setPaintTicks(true);
+        gSlider.setMajorTickSpacing(10);
+        gSlider.setMajorTickSpacing(5);
+        gSlider.setMinimum(-100);
+        gSlider.setMaximum(100);
+        gSlider.setValue(0);
         gSlider.addChangeListener(new ChangeListener() {
 
             @Override
@@ -322,8 +330,11 @@ public class DistanceFieldApplication {
 
         toolPanel.add(gPanel);
 
+        JPanel uvPanel = new JPanel();
+        uvPanel.setLayout(new BoxLayout(uvPanel, BoxLayout.LINE_AXIS));
+        uvPanel.setBorder(BorderFactory.createTitledBorder("UV Scale"));
+
         this.uSlider = new JTextField();
-        this.uSlider.setBorder(BorderFactory.createTitledBorder("U scale sactor"));
 
         this.uSlider.setText("1");
         this.uSlider.addKeyListener(new java.awt.event.KeyListener() {
@@ -346,19 +357,13 @@ public class DistanceFieldApplication {
             public void keyReleased(java.awt.event.KeyEvent e) {
             }
         });
-        toolPanel.add(this.uSlider);
+        uvPanel.add(this.uSlider);
         this.vSlider = new JTextField();
-        this.vSlider.setBorder(BorderFactory.createTitledBorder("V scale sactor"));
         this.vSlider.setText("1");
-        this.vSlider.addKeyListener(new KeyListener() {
+        this.vSlider.addKeyListener(new java.awt.event.KeyListener() {
 
             @Override
-            public void keyTyped(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    DistanceFieldApplication.this.vSlider.setToolTipText("v value = " + DistanceFieldApplication.this.getScaleV());
-                    DistanceFieldApplication.this.displayPanel.invalidateImage();
-                    DistanceFieldApplication.this.displayPanel.repaint();
-                }
+            public void keyTyped(java.awt.event.KeyEvent e) {
             }
 
             @Override
@@ -366,10 +371,56 @@ public class DistanceFieldApplication {
             }
 
             @Override
-            public void keyPressed(KeyEvent e) {
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    DistanceFieldApplication.this.vSlider.setToolTipText("v value = " + DistanceFieldApplication.this.getScaleV());
+                    DistanceFieldApplication.this.displayPanel.invalidateImage();
+                    DistanceFieldApplication.this.displayPanel.repaint();
+                }
             }
         });
-        toolPanel.add(this.vSlider);
+        uvPanel.add(this.vSlider);
+        toolPanel.add(uvPanel);
+
+        JPanel uvRepeatPanel = new JPanel();
+        uvRepeatPanel.setLayout(new BoxLayout(uvRepeatPanel, BoxLayout.LINE_AXIS));
+        uvRepeatPanel.setBorder(BorderFactory.createTitledBorder("UV Repeat"));
+
+        JComboBox<String> uRepeatCombo = new JComboBox<String>();
+        for (RepeatType repeat : RepeatType.values()) {
+            uRepeatCombo.addItem(repeat.name());
+        }
+        uRepeatCombo.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                DistanceFieldApplication.this.displayPanel.setURepeat((String) e.getItem());
+                DistanceFieldApplication.this.displayPanel.invalidateImage();
+                DistanceFieldApplication.this.displayPanel.repaint();
+
+            }
+        });
+        uRepeatCombo.setSelectedItem("Repeat");
+        gPanel.add(uRepeatCombo);
+
+        uvRepeatPanel.add(uRepeatCombo);
+        JComboBox<String> vRepeatCombo = new JComboBox<String>();
+        for (RepeatType repeat : RepeatType.values()) {
+            vRepeatCombo.addItem(repeat.name());
+        }
+        vRepeatCombo.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                DistanceFieldApplication.this.displayPanel.setVRepeat((String) e.getItem());
+                DistanceFieldApplication.this.displayPanel.invalidateImage();
+                DistanceFieldApplication.this.displayPanel.repaint();
+
+            }
+        });
+        vRepeatCombo.setSelectedItem("Repeat");
+        uvRepeatPanel.add(vRepeatCombo);
+        toolPanel.add(uvRepeatPanel);
 
         JPanel filterPanel = new JPanel();
         filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.LINE_AXIS));
@@ -456,6 +507,7 @@ public class DistanceFieldApplication {
                 l = factory.createLayer(fileName, LayerType.TXT);
             }
             if (l != null) {
+                this.sld.remove(this.sld.getLayers());
                 this.sld.add(l);
                 this.displayPanel.updateContent();
                 this.updateContent();

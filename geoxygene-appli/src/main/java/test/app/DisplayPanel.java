@@ -49,6 +49,24 @@ import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 
 public class DisplayPanel extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener {
 
+    public enum RepeatType {
+        Repeat, None, Clamp, Mirror;
+
+        public static Double repeat(double x, RepeatType repeat) {
+            switch (repeat) {
+            case None:
+                return (x <= 0) ? 0 : (x >= 1) ? 1 : x;
+            case Clamp:
+                return (x < 0 || x > 1) ? null : x;
+            case Repeat:
+                return x % 1;
+            case Mirror:
+                return x < 0 ? -x % 1 : x % 1;
+            }
+            return null;
+        }
+    }
+
     public static class ParameterizedPoint {
         public double x, y; // point coordinates in world frame
         public double u, v; // texture coordinates
@@ -118,7 +136,10 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     private String viz = "U";
     private String gradientViz = "None";
     private BufferedImage textureToBeApplied = null;
+    private RepeatType uRepeat = RepeatType.Repeat;
+    private RepeatType vRepeat = RepeatType.Repeat;
     private BufferedImage bi = null;
+    private boolean screenSpace = false;
     private boolean recomputeImage = true;
     private boolean drag = true;
 
@@ -248,12 +269,18 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         if (this.feature == null) {
             return;
         }
+        if (!this.frontierDrawn) {
+            this.drawGeometry(g2, this.feature.getGeom());
+            for (Layer layer : this.app.sld.getLayers()) {
+                g2.drawString(layer.getName(), 50, 50);
+            }
+            return;
+        }
+        if (this.viz.equals("UV pixel textured")) {
+            this.recomputeImage = true;
+        }
         if (this.recomputeImage) {
-            //        this.drawGeometry(g2, this.feature.getGeom());
-            //        for (Layer layer : this.sld.getLayers()) {
-            //            g2.drawString(layer.getName(), 50, 50);
-            //        }
-
+            this.screenSpace = false;
             this.bi = null;
             if (this.viz.equals("U HSV")) {
                 this.bi = toBufferedImageU(this.texImage);
@@ -261,6 +288,10 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 this.bi = toBufferedImageUV(this.texImage);
             } else if (this.viz.equals("UV textured")) {
                 this.bi = this.toBufferedImageTexturedUV(this.texImage, this.textureToBeApplied);
+            } else if (this.viz.equals("UV pixel textured")) {
+                this.bi = this.toBufferedImagePixelTexturedUV(this.texImage, this.textureToBeApplied);
+                this.screenSpace = true;
+
             } else if (this.viz.equals("Distance HSV")) {
                 this.bi = toBufferedImageDistanceHSV(this.texImage);
             } else if (this.viz.equals("Distance Strip 10")) {
@@ -281,7 +312,11 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             addModifiedPointsOnBufferedImage(this.bi, this.modifiedPixels);
             this.recomputeImage = false;
         }
-        g2.drawImage(this.bi, this.transform, null);
+        if (!this.screenSpace) {
+            g2.drawImage(this.bi, this.transform, null);
+        } else {
+            g2.drawImage(this.bi, null, 0, 0);
+        }
 
         if (this.gradientViz.equals("3x3")) {
             this.drawGradients(g2, 3);
@@ -539,23 +574,133 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     private BufferedImage toBufferedImageTexturedUV(TextureImage image, BufferedImage texture) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 TexturePixel pixel = image.getPixel(x, y);
                 if (!pixel.in) {
                     bi.setRGB(x, y, Color.black.getRGB());
                 } else {
-                    double u = (pixel.uTexture - image.getuMin()) / (image.getuMax() - image.getuMin()) * this.app.getScaleU();
-                    double v = (pixel.vTexture - image.getvMin()) / (image.getvMax() - image.getvMin()) * this.app.getScaleV();
-                    int xTexture = Math.abs((int) (u * texture.getWidth()) % texture.getWidth());
-                    int yTexture = Math.abs((int) ((1 - v) * texture.getHeight()) % texture.getHeight());
-                    //                    System.err.println("normalized uv = " + u + "x" + v + " pixel uv = " + pixel.uTexture + "x" + pixel.vTexture + "  texture pixel = "
-                    //                            + xTexture + "x" + yTexture);
-                    bi.setRGB(x, y, texture.getRGB(xTexture, yTexture));
+                    Double u = (pixel.uTexture - image.getuMin()) / (image.getuMax() - image.getuMin()) * this.app.getScaleU();
+                    Double v = (pixel.vTexture - image.getvMin()) / (image.getvMax() - image.getvMin()) * this.app.getScaleV();
+                    u = RepeatType.repeat(u, this.uRepeat);
+                    v = RepeatType.repeat(v, this.vRepeat);
+                    if (u == null || v == null) {
+                        bi.setRGB(x, y, Color.black.getRGB());
+                    } else {
+                        int xTexture = Math.abs((int) (u * texture.getWidth()) % texture.getWidth());
+                        int yTexture = Math.abs((int) ((1 - v) * texture.getHeight()) % texture.getHeight());
+                        bi.setRGB(x, y, texture.getRGB(xTexture, yTexture));
+                    }
                 }
             }
         }
         return bi;
+    }
+
+    private BufferedImage toBufferedImagePixelTexturedUV(TextureImage image, BufferedImage texture) {
+        image.invalidateUVBounds();
+        BufferedImage bi = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        try {
+            for (int yScreen = 0; yScreen < this.getHeight(); yScreen++) {
+                for (int xScreen = 0; xScreen < this.getWidth(); xScreen++) {
+                    Point2D pixelLocation = new Point2D.Double();
+                    this.transform.inverseTransform(new Point2D.Double(xScreen, yScreen), pixelLocation);
+                    double x = pixelLocation.getX();
+                    double y = pixelLocation.getY();
+                    double xFrac = x - (int) x;
+                    double yFrac = y - (int) y;
+                    int dx = 0;
+                    int dy = 0;
+                    if (xFrac > 0.5 + 1E-6) {
+                        dx = +1;
+                    } else {
+                        dx = -1;
+                    }
+                    if (yFrac > 0.5 + 1E-6) {
+                        dy = +1;
+                    } else {
+                        dy = -1;
+                    }
+
+                    Point2d uv = this.getTextureCoordinates(x, y, image);
+                    Point2d uvx = this.getTextureCoordinates(x + dx, y, image);
+                    Point2d uvy = this.getTextureCoordinates(x, y + dy, image);
+                    Point2d uvxy = this.getTextureCoordinates(x + dx, y + dy, image);
+                    if (uv == null) {
+                        continue;
+                    }
+                    Double u = uv.x;
+                    Double v = uv.y;
+                    if (uvx != null && uvy != null && uvxy != null) {
+                        double lx = dx * (xFrac - 0.5);
+                        double ly = dy * (yFrac - 0.5);
+                        double a = (1 - lx) * (1 - ly);
+                        double ax = (1 - ly) * lx;
+                        double ay = (1 - lx) * ly;
+                        double axy = lx * ly;
+
+                        if (lx < 0 || ly < 0 || lx > 0.5 || ly > 0.5) {
+                            System.err.println("lx, ly out of range");
+                        }
+                        u = (uv.x * a + uvx.x * ax + uvy.x * ay + uvxy.x * axy);
+                        v = (uv.y * a + uvx.y * ax + uvy.y * ay + uvxy.y * axy);
+                    }
+                    u = RepeatType.repeat(u, this.uRepeat);
+                    v = RepeatType.repeat(v, this.vRepeat);
+                    if (u == null || v == null) {
+                        bi.setRGB(xScreen, yScreen, Color.black.getRGB());
+                    } else {
+                        int xTexture = Math.abs((int) (u * texture.getWidth()) % texture.getWidth());
+                        int yTexture = Math.abs((int) ((1 - v) * texture.getHeight()) % texture.getHeight());
+
+                        bi.setRGB(xScreen, yScreen, texture.getRGB(xTexture, yTexture));
+                    }
+                }
+            }
+        } catch (NoninvertibleTransformException e) {
+            e.printStackTrace();
+        }
+        return bi;
+    }
+
+    private Point2d getTextureCoordinates(double x, double y, TextureImage image) {
+        TexturePixel pixel = image.getPixel((int) x, (int) y);
+        if (pixel == null || !pixel.in) {
+            return null;
+        }
+        double u = (pixel.uTexture - image.getuMin()) / (image.getuMax() - image.getuMin()) * this.app.getScaleU();
+        double v = (pixel.vTexture - image.getvMin()) / (image.getvMax() - image.getvMin()) * this.app.getScaleV();
+        return new Point2d(u, v);
+
+    }
+
+    /**
+     * @param image
+     * @param texture
+     * @param bi
+     * @param x
+     * @param y
+     * @return
+     */
+    private Color getTextureColor(TextureImage image, BufferedImage texture, double x, double y) {
+        TexturePixel pixel = image.getPixel((int) x, (int) y);
+        if (pixel == null || !pixel.in) {
+            return Color.black;
+        } else {
+            Double u = (pixel.uTexture - image.getuMin()) / (image.getuMax() - image.getuMin()) * this.app.getScaleU();
+            Double v = (pixel.vTexture - image.getvMin()) / (image.getvMax() - image.getvMin()) * this.app.getScaleV();
+            u = RepeatType.repeat(u, this.uRepeat);
+            v = RepeatType.repeat(v, this.vRepeat);
+            if (u == null || v == null) {
+                return Color.black;
+            } else {
+                int xTexture = Math.abs((int) (u * texture.getWidth()) % texture.getWidth());
+                int yTexture = Math.abs((int) ((1 - v) * texture.getHeight()) % texture.getHeight());
+                return new Color(texture.getRGB(xTexture, yTexture));
+            }
+        }
     }
 
     private static BufferedImage toBufferedImageUDistance(TextureImage image) {
@@ -581,6 +726,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     }
 
     private void drawGeometry(Graphics2D g2, IGeometry geom) {
+        g2.setColor(Color.black);
         IDirectPosition previous = null;
         for (IDirectPosition p : geom.coord()) {
             if (previous != null) {
@@ -644,6 +790,12 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             this.vScaled = true;
             return "v scaling done";
         }
+        if (this.gradientComputed == false) {
+            this.computeGradient();
+            this.gradientComputed = true;
+            return "v coordinates gradient computed";
+        }
+
         this.hasNoStepLeft = true;
         return "process finished";
     }
@@ -822,6 +974,11 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             scaleV(this.texImage, this.texImage.getdMax());
             this.vScaled = true;
             return "v scaling done";
+        }
+        if (this.gradientComputed == false) {
+            this.computeGradient();
+            this.gradientComputed = true;
+            return "v coordinates gradient computed";
         }
         this.hasNoStepLeft = true;
         return "process finished";
@@ -1280,15 +1437,26 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             return "texture coordinates done (" + this.segments.size() + " segments treated)";
 
         }
+        if (this.gradientComputed == false) {
+            this.computeGradient();
+            this.gradientComputed = true;
+            return "v coordinates gradient computed";
+        }
+
         this.hasNoStepLeft = true;
         return "process finished";
     }
 
     private void fillTextureCoordinatesIDW(TextureImage image, List<ParameterizedSegment> segments, double powerParameter) {
+        int prevDone = 0;
         double[] distances = new double[segments.size()];
         double imageMaxDistance = -Double.MAX_VALUE;
         for (int y = 0; y < image.getHeight(); y++) {
-            System.err.println(((100 * y) / image.getHeight()) + "% done ");
+            int percentDone = (100 * y) / image.getHeight();
+            if (prevDone != percentDone) {
+                System.err.println(percentDone + "% done ");
+                prevDone = percentDone;
+            }
             for (int x = 0; x < image.getWidth(); x++) {
                 TexturePixel pixel = image.getPixel(x, y);
                 if (pixel.in || pixel.closestFrontier != 0) {
@@ -1569,6 +1737,14 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     public void setGradientScale(double gScale) {
         this.gScale = gScale;
 
+    }
+
+    public void setURepeat(String repeat) {
+        this.uRepeat = RepeatType.valueOf(repeat);
+    }
+
+    public void setVRepeat(String repeat) {
+        this.vRepeat = RepeatType.valueOf(repeat);
     }
 
 }
