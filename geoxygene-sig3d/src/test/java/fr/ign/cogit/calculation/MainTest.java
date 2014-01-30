@@ -19,6 +19,7 @@ public class MainTest {
 		suite.addTestSuite(TestBooleanOperators.class);
 		suite.addTestSuite(TestCalculation3D.class);
 		suite.addTestSuite(TestProximity.class);
+		suite.addTestSuite(TestUtil.class);
 		
 		return suite;
 		

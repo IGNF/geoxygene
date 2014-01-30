@@ -80,7 +80,7 @@ public class ShapeIndicator {
 
   public ShapeIndicator(IGeometry geom) {
 
-    eq = new EquiSurfaceDistribution(geom);
+    eq = new EquiSurfaceDistribution(geom); 
     finalPoints = new DirectPositionList();
 
   }
@@ -104,9 +104,9 @@ public class ShapeIndicator {
     for (int i = 0; i < this.nbSamples; i++) {
 
       double valActu = this.lSamples[i];
-      int classeVal = (int) ((valActu - this.valMin) / this.stepSize);
+      int classeVal = (int) ((valActu - this.valMin) / this.stepSize); 
 
-      // cas de la valeur max
+      // cas de la valeur max 
       if (classeVal == this.nbClasses) {
 
         classeVal = this.nbClasses - 1;

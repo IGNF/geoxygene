@@ -147,13 +147,13 @@ public abstract class Util {
 
     List<IOrientableSurface> lFacesVerticales = new ArrayList<IOrientableSurface>();
 
-    int nbFaces = lSurf.size();
-
-    for (int i = 0; i < nbFaces; i++) {
+    int nbFaces = lSurf.size(); 
+   
+    for (int i = 0; i < nbFaces; i++) {  
       IOrientableSurface surfTemp = lSurf.get(i);
       PlanEquation eqP = new PlanEquation(surfTemp);
 
-      double prodscalaire = eqP.getNormale().prodScalaire(MathConstant.vectZ);
+      double prodscalaire = eqP.getNormale().prodScalaire(MathConstant.vectZ);   
 
       if (Math.abs(prodscalaire) < Math.sin(tolerence)
           * eqP.getNormale().norme()) {
