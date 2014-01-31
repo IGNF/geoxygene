@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.sun.j3d.utils.image.TextureLoader;
-
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
@@ -19,11 +17,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_SolidBoundary;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -33,14 +31,15 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_SolidBoundary;
  * 
  * @version 0.1
  * 
- * Classe permettant de créer une géométrie de type sphère
+ *          Classe permettant de créer une géométrie de type sphère
  * 
- * Sphere geometry
+ *          Sphere geometry
  * 
  */
 public class Sphere extends GM_Solid {
 
   static Logger logger = Logger.getLogger(GM_Solid.class.getName());
+
   /**
    * Permet de Génèrer une sphère et d'en choisir un niveau de détail
    * 
