@@ -628,7 +628,7 @@ public class TestUtil extends TestCase {
 		double vExp = triangleSize*triangleSize*alti;
 
 		// Comparison
-		assertEquals("Volume under surface is incorrect", vExp, v, epsilon);
+		assertEquals("Volume under surface is incorrect", vExp, v, Math.pow(10, 6)*epsilon);
 
 	}
 

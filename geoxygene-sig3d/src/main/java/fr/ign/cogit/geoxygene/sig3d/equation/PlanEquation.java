@@ -8,7 +8,6 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
-import fr.ign.cogit.geoxygene.sig3d.Messages;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -53,7 +52,8 @@ public class PlanEquation {
 
   public static double EPSILON = 0.001;
 
-  private final static Logger logger = Logger.getLogger(PlanEquation.class
+  @SuppressWarnings("unused")
+private final static Logger logger = Logger.getLogger(PlanEquation.class
       .getName());
 
   protected PlanEquation() {
@@ -459,12 +459,18 @@ public class PlanEquation {
    */
   public boolean intersecteHalfLinePlan(IDirectPosition dp1,
       IDirectPosition dp2, double dist) {
+	  
     IDirectPosition inter = this.intersectionLinePlan(dp1, dp2);
-    Vecteur vectDirecteur = new Vecteur(dp1, dp2);
+    Vecteur vectDirecteur = new Vecteur(dp1, dp2); 
+    
     if (vectDirecteur.prodScalaire(new Vecteur(dp1, inter)) < 0
+    		
         || (dp1.distance(inter) > dist) || Double.isNaN(inter.getX())
+        
         || Double.isInfinite(inter.getX())) {
+    	
       return false;
+      
     }
     return true;
   }
