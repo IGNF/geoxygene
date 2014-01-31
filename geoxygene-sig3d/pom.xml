@@ -75,6 +75,7 @@
 
         <!-- Tests under Windows 64bits -->
 		<profile>
+		    <id>win64</id>
 			<activation>
 				<os>
 					<family>windows</family>
@@ -99,6 +100,7 @@
 		
 		<!-- Tests under Windows 64bits -->
         <profile>
+            <id>win32</id>
             <activation>
                 <os>
                     <family>windows</family>
