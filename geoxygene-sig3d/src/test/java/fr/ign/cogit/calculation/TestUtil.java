@@ -709,7 +709,7 @@ public class TestUtil extends TestCase {
 		double vExp = Math.pow(size, 3);
 
 		// Comparison
-		assertEquals("Volume in triangulated solid is incorrect", vExp, v, epsilon);
+		assertEquals("Volume in triangulated solid is incorrect", vExp, v, Math.pow(10, 6)*epsilon);
 
 	}
 
@@ -732,7 +732,7 @@ public class TestUtil extends TestCase {
 		double vExp = 6*size*size;
 
 		// Comparison
-		assertEquals("Volume in triangulated solid is incorrect", vExp, v, epsilon);
+		assertEquals("Volume in triangulated solid is incorrect", vExp, v, Math.pow(10, 6)*epsilon);
 
 	}
 
