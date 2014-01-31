@@ -83,10 +83,14 @@ public class PlanEquation {
     double a = normale.getX();
     double b = normale.getY();
     double c = normale.getZ();
-
-    if (a == 0 && b == 0 && c == 0) {
-
-      PlanEquation.logger.warn(Messages.getString("Plans.PointsAlignes"));
+  
+   
+    
+    if (a == 0 && b == 0 && c == 0) {  
+    	
+    	return;
+    	//PlanEquation.logger.warn(Messages.getString("Plans.PointsAlignes"));
+      
     }
 
     // Calcul de d

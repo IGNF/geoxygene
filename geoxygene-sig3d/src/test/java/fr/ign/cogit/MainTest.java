@@ -10,6 +10,7 @@ import fr.ign.cogit.calculation.TestUtil;
 import fr.ign.cogit.convert.geom.TestFromGeomToSurface;
 import fr.ign.cogit.convert.geom.TestFromPolygonToLineString;
 import fr.ign.cogit.convert.transform.TestExtrusion2DObject;
+import fr.ign.cogit.equation.TestPlanEquation;
 
 //--------------------------------------------------------------------------------
 // Class containing main function to launch test suite
@@ -31,6 +32,7 @@ public class MainTest {
 		suite.addTestSuite(TestFromGeomToSurface.class);
 		suite.addTestSuite(TestFromPolygonToLineString.class);
 		suite.addTestSuite(TestExtrusion2DObject.class);
+		suite.addTestSuite(TestPlanEquation.class);
 		
 		return suite;
 		

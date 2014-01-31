@@ -89,10 +89,10 @@ public class Extrusion3DObject {
     // On essaie de retrouver la classe de la geometrie
     // Ordre de test simple puis complexe de la dim la plus elevee a la
     // plus faible
-    Extrusion3DObject.logger.debug(Messages
+ /*   Extrusion3DObject.logger.debug(Messages
         .getString("FenetreShapeFile3D.FeatureConversion")
         + " : "
-        + geom.toString());
+        + geom.toString());*/
 
     if (geom instanceof IPolygon) {
 
@@ -147,8 +147,8 @@ public class Extrusion3DObject {
 
     } else {
 
-      Extrusion3DObject.logger.warn(Messages
-          .getString("Representation.GeomUnk") + geom.getClass().getName());
+   /*   Extrusion3DObject.logger.warn(Messages
+          .getString("Representation.GeomUnk") + geom.getClass().getName());*/
       return null;
     }
 
