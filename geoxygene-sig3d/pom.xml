@@ -58,46 +58,69 @@
 			</plugin>
 
 			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<tasks>
-
-								<!-- Copie les dll 
-
-								<echo>Copy DLL to a special directory</echo>
-								<copy todir="${project.build.directory}/lib">
-									<fileset dir="${basedir}/lib/native_libraries/windows-amd64" />
-								</copy> -->
-
-							</tasks>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration> 
-					<environmentVariables> 
-						<PATH>${basedir}\lib\native_libraries\windows-amd64\</PATH> 
-					</environmentVariables> 
-				</configuration> 
+				<configuration>
+					<environmentVariables>
+						<PATH>${basedir}\lib\native_libraries\windows-amd64\</PATH>
+					</environmentVariables>
+					<skipTests>true</skipTests>
+				</configuration>
 			</plugin>
 
 		</plugins>
 	</build>
 
-
-
 	<profiles>
+
+        <!-- Tests under Windows 64bits -->
+		<profile>
+			<activation>
+				<os>
+					<family>windows</family>
+					<arch>amd64</arch>
+				</os>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<environmentVariables>
+								<PATH>${basedir}\lib\native_libraries\windows-amd64\</PATH>
+							</environmentVariables>
+							<skipTests>false</skipTests>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<!-- Tests under Windows 64bits -->
+        <profile>
+            <activation>
+                <os>
+                    <family>windows</family>
+                    <arch>amd32</arch>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <environmentVariables>
+                                <PATH>${basedir}\lib\native_libraries\windows-i586\</PATH>
+                            </environmentVariables>
+                            <skipTests>false</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+		
 		<profile>
 			<id>executable</id>
 			<build>
@@ -161,9 +184,6 @@
 											</condition>
 										</fail>
 
-
-
-
 										<echo>Suppression du répertoire ${dir.executable}</echo>
 										<delete dir="${dir.executable}" />
 
@@ -183,14 +203,15 @@
 										<!-- conf directory <copy todir="${dir.executable}/conf"> <fileset 
 											dir="${basedir}/conf" /> </copy> -->
 
-											
+
 										<!-- script bat -->
 										<copy file="${basedir}/install/cpappend.bat" todir="${dir.executable}" />
 										<!-- script bat -->
 										<copy file="${basedir}/install/geoxygene.bat" todir="${dir.executable}" />
 
 										<!-- dll -->
-										<copy file="${basedir}/lib/native_libraries/windows-amd64/j3dcore-ogl.dll"
+										<copy
+											file="${basedir}/lib/native_libraries/windows-amd64/j3dcore-ogl.dll"
 											todir="${dir.executable}/lib" />
 
 										<copy file="${basedir}/install/docs/GeOxygene3d-install.pdf"
