@@ -267,6 +267,7 @@ public class DistanceFieldApplication {
         vizComboBox.addItem("UV HSV + light");
         vizComboBox.addItem("UV textured");
         vizComboBox.addItem("UV pixel textured");
+        vizComboBox.addItem("UV pixel tile");
         vizComboBox.addItemListener(new ItemListener() {
 
             @Override
@@ -277,7 +278,7 @@ public class DistanceFieldApplication {
 
             }
         });
-        vizComboBox.setSelectedItem("Distance BW");
+        vizComboBox.setSelectedItem("UV pixel tile");
         toolPanel.add(vizComboBox);
 
         JPanel gPanel = new JPanel();
@@ -319,7 +320,7 @@ public class DistanceFieldApplication {
 
             @Override
             public void stateChanged(ChangeEvent e) {
-                double scale = Math.exp(gSlider.getValue() / 100.);
+                double scale = Math.exp(gSlider.getValue() / 10.);
                 gSlider.setToolTipText(String.valueOf(scale));
                 DistanceFieldApplication.this.displayPanel.setGradientScale(scale);
                 DistanceFieldApplication.this.displayPanel.invalidateImage();
@@ -428,6 +429,8 @@ public class DistanceFieldApplication {
 
         final JComboBox<String> filterCombo = new JComboBox<String>();
         filterCombo.addItem("None");
+        filterCombo.addItem("Blur UV 1px");
+        filterCombo.addItem("Blur UV 2px");
         filterCombo.addItem("Blur UV 3px");
         filterCombo.addItem("Blur UV 10px");
         filterCombo.addItem("Blur UV 30px");
@@ -542,7 +545,8 @@ public class DistanceFieldApplication {
         DistanceFieldApplication app = new DistanceFieldApplication();
 
         app.show();
-        String shapeFilename = "/home/turbet/export/expressivemaps/data/JDD_Plancoet/mer_sans_sable.shp";
+        //        String shapeFilename = "/home/turbet/export/expressivemaps/data/JDD_Plancoet/mer_sans_sable.shp";
+        String shapeFilename = "/home/turbet/geodata/bdtopo/72_BDTOPO_shp/BDT_2-0_SHP_LAMB93_X062-ED111/E_BATI/PISTE_AERODROME.SHP";
         try {
             app.loadShapeFile(shapeFilename);
         } catch (FileNotFoundException e) {
@@ -575,7 +579,8 @@ public class DistanceFieldApplication {
                 + "\n closest point (pixels) = " + pixel.closestPoint + "\n frontier = " + pixel.closestFrontier + "\n in ?= " + pixel.in + "\n sum weight = "
                 + pixel.weightSum + "\n U sum weight = " + pixel.uTextureWeightSum + "\n V sum weight = " + pixel.vTextureWeightSum + pixel.weightSum
                 + "\n U weighted = " + (pixel.uTextureWeightSum >= 1E-6 ? pixel.uTexture / pixel.uTextureWeightSum : "NaN") + "\n V weighted = "
-                + (pixel.vTextureWeightSum >= 1E-6 ? pixel.vTexture / pixel.vTextureWeightSum : "NaN") + "\n V Gradient = " + pixel.vGradient);
+                + (pixel.vTextureWeightSum >= 1E-6 ? pixel.vTexture / pixel.vTextureWeightSum : "NaN") + "\n V Gradient = " + pixel.vGradient
+                + "\n main direction = " + pixel.mainDirection);
 
     }
 

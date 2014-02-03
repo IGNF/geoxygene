@@ -3,9 +3,13 @@ package test.app;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -16,14 +20,18 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -34,6 +42,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
@@ -41,11 +50,12 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldFrontierPixelRenderer;
-import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldTexture;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
-import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
 
 public class DisplayPanel extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener {
 
@@ -107,7 +117,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             "null");
     private IFeature feature = null;
     private IEnvelope envelope = null;
-    private final DistanceFieldTexture texture = null;
+    private Shape featureShape = null; // shape corresponding to the given feature in the image texture space
+    //    private final DistanceFieldTexture texture = null;
     private DistanceFieldApplication app = null;
     private double minX;
     private double minY;
@@ -136,6 +147,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     private String viz = "U";
     private String gradientViz = "None";
     private BufferedImage textureToBeApplied = null;
+    private final List<BufferedImage> tileToBeApplied = new ArrayList<BufferedImage>();
     private RepeatType uRepeat = RepeatType.Repeat;
     private RepeatType vRepeat = RepeatType.Repeat;
     private BufferedImage bi = null;
@@ -154,12 +166,27 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         this.addMouseWheelListener(this);
         this.addMouseListener(this);
         try {
-            this.textureToBeApplied = ImageIO.read(new File("./src/main/resources/textures/mer cassini.png"));
+            this.textureToBeApplied = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini.png")), BufferedImage.TYPE_INT_ARGB);
+            BufferedImage tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/cassini mer 1.png")), BufferedImage.TYPE_INT_ARGB);
+            this.tileToBeApplied.add(this.softenEdgeTexture(tileTexture));
+            tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/cassini mer 2.png")), BufferedImage.TYPE_INT_ARGB);
+            this.tileToBeApplied.add(this.softenEdgeTexture(tileTexture));
+            tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/cassini mer 3.png")), BufferedImage.TYPE_INT_ARGB);
+            this.tileToBeApplied.add(this.softenEdgeTexture(tileTexture));
+
         } catch (IOException e) {
             logger.error(e);
             e.printStackTrace();
         }
         this.updateContent();
+    }
+
+    public static BufferedImage convert(BufferedImage src, int bufImgType) {
+        BufferedImage img = new BufferedImage(src.getWidth(), src.getHeight(), bufImgType);
+        Graphics2D g2d = img.createGraphics();
+        g2d.drawImage(src, 0, 0, null);
+        g2d.dispose();
+        return img;
     }
 
     public void reset() {
@@ -231,10 +258,78 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 this.segments.add(new ParameterizedSegment(p1, p2));
             }
         }
+
+        // create Shape
+        IDirectPositionList viewDirectPositionList = null;
+        IDirectPosition lastPosition = null;
+        for (IPolygon polygon : this.polygons) {
+            IDirectPositionList list = this.toViewDirectPositionList(polygon);
+            if (viewDirectPositionList == null) {
+                viewDirectPositionList = list;
+                lastPosition = list.get(list.size() - 1);
+            } else {
+                viewDirectPositionList.addAll(list);
+                viewDirectPositionList.add(lastPosition);
+            }
+        }
+        this.featureShape = this.toPolygonShape(viewDirectPositionList);
+
         // sort segments to begin with smallest ones
         Collections.sort(this.segments, new SegmentComparator());
         this.pixelRenderer = null;
         this.modifiedPixels.clear();
+    }
+
+    /**
+     * Transform a direct position list in view coordinates to an awt shape.
+     * 
+     * @param viewDirectPositionList
+     *            a direct position list in view coordinates
+     * @return A shape representing the polygon in view coordinates
+     */
+    private Shape toPolygonShape(final IDirectPositionList viewDirectPositionList) {
+        int numPoints = viewDirectPositionList.size();
+        int[] xpoints = new int[numPoints];
+        int[] ypoints = new int[numPoints];
+        for (int i = 0; i < viewDirectPositionList.size(); i++) {
+            IDirectPosition p = viewDirectPositionList.get(i);
+            xpoints[i] = (int) p.getX();
+            ypoints[i] = (int) p.getY();
+        }
+        return new Polygon(xpoints, ypoints, numPoints);
+    }
+
+    public final IDirectPositionList toViewDirectPositionList(final IPolygon p) {
+        IDirectPositionList viewDirectPositionList = this.toViewDirectPositionList(p.getExterior().coord());
+        if (viewDirectPositionList.isEmpty()) {
+            return null;
+        }
+        IDirectPosition lastExteriorRingDirectPosition = viewDirectPositionList.get(viewDirectPositionList.size() - 1);
+        for (int i = 0; i < p.sizeInterior(); i++) {
+            viewDirectPositionList.addAll(this.toViewDirectPositionList(p.getInterior(i).coord()));
+            viewDirectPositionList.add(lastExteriorRingDirectPosition);
+        }
+        return viewDirectPositionList;
+    }
+
+    public final IDirectPositionList toViewDirectPositionList(final IDirectPositionList modelDirectPositionList) {
+        IDirectPositionList viewDirectPositionList = new DirectPositionList();
+        if (modelDirectPositionList.isEmpty()) {
+            return viewDirectPositionList;
+        }
+        int numberOfModelPoints = modelDirectPositionList.size();
+        for (int i = 0; i < numberOfModelPoints; i++) {
+            IDirectPosition pi = modelDirectPositionList.get(i);
+            Point2D point2D = this.toImageCoordinates(pi);
+            viewDirectPositionList.add(new DirectPosition(point2D.getX(), point2D.getY()));
+        }
+        return viewDirectPositionList;
+    }
+
+    private Point2D toImageCoordinates(IDirectPosition pi) {
+        double x = (pi.getX() - this.minX) / this.imageToPolygonFactorX;
+        double y = (pi.getY() - this.minY) / this.imageToPolygonFactorY;
+        return new Point2D.Double(x, y);
     }
 
     public static class SegmentComparator implements Comparator<ParameterizedSegment> {
@@ -264,20 +359,11 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
 
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.white);
+        GradientPaint redtowhite = new GradientPaint(0, 0, new Color(230, 230, 250), 0, this.getHeight(), Color.white);
+        g2.setPaint(redtowhite);
         g2.fillRect(0, 0, this.getWidth(), this.getHeight());
-
         if (this.feature == null) {
             return;
-        }
-        if (!this.frontierDrawn) {
-            this.drawGeometry(g2, this.feature.getGeom());
-            for (Layer layer : this.app.sld.getLayers()) {
-                g2.drawString(layer.getName(), 50, 50);
-            }
-            return;
-        }
-        if (this.viz.equals("UV pixel textured")) {
-            this.recomputeImage = true;
         }
         if (this.recomputeImage) {
             this.screenSpace = false;
@@ -290,6 +376,22 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 this.bi = this.toBufferedImageTexturedUV(this.texImage, this.textureToBeApplied);
             } else if (this.viz.equals("UV pixel textured")) {
                 this.bi = this.toBufferedImagePixelTexturedUV(this.texImage, this.textureToBeApplied);
+                this.screenSpace = true;
+            } else if (this.viz.equals("UV pixel tile")) {
+                int y = 0;
+                for (BufferedImage tileTexture : this.tileToBeApplied) {
+                    g2.drawImage(tileTexture, null, 1, y + 1);
+                    g2.setColor(Color.black);
+                    g2.drawRect(0, y, tileTexture.getWidth() + 2, tileTexture.getHeight() + 2);
+                    y += tileTexture.getHeight() + 2;
+                }
+                double scale = this.transform.getScaleX();
+                double sampleX = 50;
+                double sampleY = 25;
+                this.bi = this
+
+                .toBufferedImagePixelUVTile(this.texImage, this.tileToBeApplied, new TextureImageSampler(this.texImage, sampleX, sampleY, scale),
+                        this.featureShape);
                 this.screenSpace = true;
 
             } else if (this.viz.equals("Distance HSV")) {
@@ -313,8 +415,10 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             this.recomputeImage = false;
         }
         if (!this.screenSpace) {
+            g2.setComposite(AlphaComposite.SrcOver);
             g2.drawImage(this.bi, this.transform, null);
         } else {
+            g2.setComposite(AlphaComposite.SrcOver);
             g2.drawImage(this.bi, null, 0, 0);
         }
 
@@ -338,6 +442,12 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             this.drawGradients(g2, 100);
         } else if (this.gradientViz.equals("200x200")) {
             this.drawGradients(g2, 200);
+        }
+
+        if (this.featureShape != null) {
+            Shape screenSpaceShape = this.transform.createTransformedShape(this.featureShape);
+            g2.setColor(Color.blue);
+            g2.draw(screenSpaceShape);
         }
 
         if (this.currentSelectedPixel != null) {
@@ -596,6 +706,164 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             }
         }
         return bi;
+    }
+
+    private BufferedImage toBufferedImagePixelUVTile(TextureImage image, List<BufferedImage> textures, SamplingAlgorithm sampler, Shape clippingShape) {
+
+        image.invalidateUVBounds();
+        BufferedImage bi = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = (Graphics2D) bi.getGraphics();
+        g2.setComposite(AlphaComposite.Clear);
+        g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g2.setComposite(AlphaComposite.SrcOver);
+        if (clippingShape != null) {
+            Shape screenSpaceShape = this.transform.createTransformedShape(clippingShape);
+            g2.setClip(screenSpaceShape);
+        }
+        Iterator<Sample> sampleIterator = sampler.getSampleIterator();
+        Random rand = new Random(0);
+        while (sampleIterator.hasNext()) {
+            BufferedImage texture = this.tileToBeApplied.get(rand.nextInt(this.tileToBeApplied.size()));
+            Sample sample = sampleIterator.next();
+            double xTexture = sample.getLocation().x;
+            double yTexture = sample.getLocation().y;
+            Point2D screenPixelLocation = new Point2D.Double();
+            this.transform.transform(new Point2D.Double(xTexture, yTexture), screenPixelLocation);
+
+            //                        Point2D texturePixelLocation = new Point2D.Double();
+            //                        this.transform.inverseTransform(new Point2D.Double(xScreen, yScreen), texturePixelLocation);
+            //                        double xTexture = texturePixelLocation.getX();
+            //                        double yTexture = texturePixelLocation.getY();
+            TexturePixel pixel = image.getPixel((int) xTexture, (int) yTexture);
+            if (pixel == null || !pixel.in || pixel.vGradient == null) {
+                continue;
+            } else {
+                //                        g2.setColor(Color.yellow);
+                //                        g2.drawOval(xScreen - 2, yScreen - 2, 4, 4);
+                //                        System.err.println("draw tile at " + (xScreen - texture.getWidth() / 2) + "x" + (yScreen - texture.getHeight() / 2));
+                AffineTransform transform = new AffineTransform();
+                transform.translate(screenPixelLocation.getX() - texture.getWidth() / 2, screenPixelLocation.getY() - texture.getHeight() / 2);
+                transform.rotate(pixel.vGradient.x, pixel.vGradient.y, texture.getWidth() / 2, texture.getHeight() / 2);
+
+                // FIXME: v Texture attenuation is computed with a *3 factor just for fun 
+                float opacity = (float) Math.max(0, 1 - (3 * pixel.vTexture / this.texImage.getvMax()));
+                if (opacity > 0.1) {
+                    float[] scales = { 1f, 1f, 1f, opacity };
+                    float[] offsets = new float[4];
+                    RescaleOp rop = new RescaleOp(scales, offsets, null);
+                    BufferedImage textureWithAlpha = rop.filter(texture, null);
+                    g2.drawImage(textureWithAlpha, transform, null);
+                    //                        g2.fillRect(xScreen - texture.getWidth() / 2, yScreen - texture.getHeight() / 2, texture.getWidth(), texture.getHeight());
+                }
+            }
+
+        }
+        return bi;
+    }
+
+    private BufferedImage toBufferedImagePixelUVTileScreenSpace(TextureImage image, BufferedImage texture, SamplingAlgorithm sampling, Shape clippingShape) {
+
+        image.invalidateUVBounds();
+        int xSampling = texture.getWidth() / 2;
+        int ySampling = texture.getHeight() / 2;
+        BufferedImage bi = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = (Graphics2D) bi.getGraphics();
+        g2.setComposite(AlphaComposite.Clear);
+        g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g2.setComposite(AlphaComposite.SrcOver);
+        if (clippingShape != null) {
+            Shape screenSpaceShape = this.transform.createTransformedShape(clippingShape);
+            g2.setClip(screenSpaceShape);
+        }
+        try {
+            for (int yScreen = 0; yScreen < this.getHeight(); yScreen += ySampling) {
+                for (int xScreen = 0; xScreen < this.getWidth(); xScreen += xSampling) {
+                    Point2D pixelLocation = new Point2D.Double();
+                    this.transform.inverseTransform(new Point2D.Double(xScreen, yScreen), pixelLocation);
+                    double x = pixelLocation.getX();
+                    double y = pixelLocation.getY();
+                    TexturePixel pixel = image.getPixel((int) x, (int) y);
+                    if (pixel == null || !pixel.in) {
+                        continue;
+                    } else {
+                        //                        g2.setColor(Color.yellow);
+                        //                        g2.drawOval(xScreen - 2, yScreen - 2, 4, 4);
+                        //                        System.err.println("draw tile at " + (xScreen - texture.getWidth() / 2) + "x" + (yScreen - texture.getHeight() / 2));
+                        AffineTransform transform = new AffineTransform();
+                        transform.translate(xScreen - texture.getWidth() / 2, yScreen - texture.getHeight() / 2);
+                        transform.rotate(pixel.vGradient.x, pixel.vGradient.y, texture.getWidth() / 2, texture.getHeight() / 2);
+                        g2.drawImage(texture, transform, null);
+                        //                        g2.fillRect(xScreen - texture.getWidth() / 2, yScreen - texture.getHeight() / 2, texture.getWidth(), texture.getHeight());
+                    }
+
+                }
+            }
+        } catch (NoninvertibleTransformException e) {
+            e.printStackTrace();
+        }
+        return bi;
+    }
+
+    private BufferedImage softenEdgeTexture(BufferedImage sharpEdgeTexture) {
+        double pow = 8;
+        BufferedImage softEdgeTexture = new BufferedImage(sharpEdgeTexture.getWidth(), sharpEdgeTexture.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = (Graphics2D) softEdgeTexture.getGraphics();
+        g2.setComposite(AlphaComposite.Clear);
+        g2.fillRect(0, 0, softEdgeTexture.getWidth(), softEdgeTexture.getHeight());
+        g2.setComposite(AlphaComposite.Src);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        for (int y = 0; y < sharpEdgeTexture.getHeight(); y++) {
+            for (int x = 0; x < sharpEdgeTexture.getWidth(); x++) {
+                float[] rgba = getRGBA(sharpEdgeTexture.getRGB(x, y));
+                double ax = (2 * x / (double) sharpEdgeTexture.getWidth() - 1);
+                double ay = (2 * y / (double) sharpEdgeTexture.getHeight() - 1);
+                double a = 1 - Math.pow(Math.pow(ax, pow) + Math.pow(ay, pow), 1 / pow);
+                a = (a < 0) ? 0 : (a > 1) ? 1 : a;
+                rgba[3] *= (float) a;
+                softEdgeTexture.setRGB(x, y, getInt(rgba));
+            }
+        }
+        return softEdgeTexture;
+    }
+
+    private static float[] getRGBA(int elem) {
+        float[] f = new float[4];
+        f[0] = (elem & 0xFF) / 255.f;
+        f[1] = ((elem >> 8) & 0xFF) / 255.f;
+        f[2] = ((elem >> 16) & 0xFF) / 255.f;
+        f[3] = ((elem >> 24) & 0xFF) / 255.f;
+        return f;
+    }
+
+    private static int getInt(float[] f) {
+        int r = (int) Math.min(255, Math.max(0, f[0] * 255));
+        int g = (int) Math.min(255, Math.max(0, f[1] * 255));
+        int b = (int) Math.min(255, Math.max(0, f[2] * 255));
+        int a = (int) Math.min(255, Math.max(0, f[3] * 255));
+        return r + (g << 8) + (b << 16) + (a << 24);
+    }
+
+    /**
+     * @param srcDataBuffer
+     */
+    private String getDataType(DataBuffer srcDataBuffer) {
+        switch (srcDataBuffer.getDataType()) {
+        case DataBuffer.TYPE_BYTE:
+            return "BYTE";
+        case DataBuffer.TYPE_DOUBLE:
+            return "DOUBLE";
+        case DataBuffer.TYPE_FLOAT:
+            return "FLOAT";
+        case DataBuffer.TYPE_INT:
+            return "INT";
+        case DataBuffer.TYPE_SHORT:
+            return "SHORT";
+        case DataBuffer.TYPE_UNDEFINED:
+            return "UNDEFINED";
+        case DataBuffer.TYPE_USHORT:
+            return "UNSIGNED SHORT";
+        }
+        return "unknown type";
     }
 
     private BufferedImage toBufferedImagePixelTexturedUV(TextureImage image, BufferedImage texture) {
@@ -866,7 +1134,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             for (int x = 0; x < this.texImage.getWidth(); x++) {
                 TexturePixel pixel = this.texImage.getPixel(x, y);
                 if (pixel.in) {
-                    pixel.vGradient = computeSobelVGradient(this.texImage, x, y);
+                    pixel.vGradient = new Point2d(Math.cos(pixel.mainDirection), Math.sin(pixel.mainDirection));
+                    //                    pixel.vGradient = computeGradient(this.texImage, x, y);
                 } else {
                     pixel.vGradient = null;
                 }
@@ -874,7 +1143,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         }
     }
 
-    private static Point2d computeSobelVGradient(TextureImage image, int x, int y) {
+    private static Point2d computeSobel3VGradient(TextureImage image, int x, int y) {
         final int windowDimension = 3;
         double[][] xSobelWeight = { { +1, +2, +1 }, { 0, 0, 0 }, { -1, -2, -1 } };
         double[][] ySobelWeight = { { +1, 0, -1 }, { +2, 0, -2 }, { +1, 0, -1 } };
@@ -902,7 +1171,69 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         if (ySumWeight != 0) {
             yGradient /= ySumWeight;
         }
-        return new Point2d(-40 * yGradient, 40 * xGradient);
+        return new Point2d(xGradient, yGradient);
+    }
+
+    private static Point2d computeGradient(TextureImage image, int x, int y) {
+        TexturePixel p = image.getPixel(x, y);
+        TexturePixel pxp1 = image.getPixel(x + 1, y);
+        TexturePixel pxm1 = image.getPixel(x - 1, y);
+        TexturePixel pyp1 = image.getPixel(x, y + 1);
+        TexturePixel pym1 = image.getPixel(x, y - 1);
+        double dx = 0, dy = 0;
+        if (pxp1 != null && pxm1 != null) {
+            dx = pxp1.vTexture - pxm1.vTexture;
+        } else if (pxp1 == null && pxm1 != null) {
+            dx = p.vTexture - pxm1.vTexture;
+        } else if (pxm1 == null && pxp1 != null) {
+            dx = pxp1.vTexture - p.vTexture;
+        }
+        if (pyp1 != null && pym1 != null) {
+            dy = pyp1.vTexture - pym1.vTexture;
+        } else if (pyp1 == null && pym1 != null) {
+            dy = p.vTexture - pym1.vTexture;
+        } else if (pym1 == null && pyp1 != null) {
+            dy = pyp1.vTexture - p.vTexture;
+        }
+        return new Point2d(dx, dy);
+    }
+
+    private static Point2d compute5VGradient(TextureImage image, int x, int y) {
+        final int windowDimension = 5;
+        double[][] xSobelWeight = { { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 0, 0, 0, 0, 0 }, { -1, -1, -1, -1, -1 }, { -1, -1, -1, -1, -1 } };
+        double[][] ySobelWeight = { { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 } };
+        double xSumWeight = 0;
+        double ySumWeight = 0;
+        double xGradient = 0;
+        double yGradient = 0;
+        boolean edge = false;
+        for (int wy = 0; wy < windowDimension; wy++) {
+            for (int wx = 0; wx < windowDimension; wx++) {
+                TexturePixel wPixel = image.getPixel(x + wx - windowDimension, y + wy - windowDimension);
+                if (wPixel == null || wPixel.in == false) {
+                    edge = true;
+                    continue;
+                }
+                xSumWeight += xSobelWeight[wx][wy];
+                ySumWeight += ySobelWeight[wx][wy];
+                xGradient += xSobelWeight[wx][wy] * wPixel.vTexture;
+                yGradient += ySobelWeight[wx][wy] * wPixel.vTexture;
+
+            }
+
+        }
+        //        if (edge) {
+        //            TexturePixel pixel = image.getPixel(x, y);
+        //            return new Point2d(x - pixel.closestPoint.x, y - pixel.closestPoint.y);
+        //
+        //        }
+        if (xSumWeight != 0) {
+            xGradient /= xSumWeight;
+        }
+        if (ySumWeight != 0) {
+            yGradient /= ySumWeight;
+        }
+        return new Point2d(xGradient, yGradient);
     }
 
     /**
@@ -1033,6 +1364,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             pixel.distance = d;
             pixel.uTexture = closestPixel.uTexture;
             pixel.closestPoint = closestPoint;
+            pixel.mainDirection = closestPixel.mainDirection;
             newlyModifiedPixels.add(p);
             return true;
         }
@@ -1229,7 +1561,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             pixelRenderer.setLinearParameterization(linearDistance, linearDistance + segmentLength);
             // FIXME: very special case for 'mer JDD plancoet'. Long outer frontier
             // don't have to be of distance 0
-            pixelRenderer.setDistanceToZero(segmentLength < 1000);
+            pixelRenderer.setDistanceToZero(segmentLength < 10000);
             if (!(x1 == x2 && y1 == y2)) {
                 this.texImage.drawLine(x1, y1, x2, y2, pixelRenderer);
             }
@@ -1309,6 +1641,9 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         this.transform.translate(+e.getX() / scaleX, +e.getY() / scaleY);
         this.transform.scale(scale, scale);
         this.transform.translate(-e.getX() / scaleX, -e.getY() / scaleY);
+        if (this.screenSpace) {
+            this.invalidateImage();
+        }
         this.repaint();
 
     }
@@ -1322,6 +1657,9 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         this.drag = true;
         if (e.getButton() == MouseEvent.BUTTON2) {
             this.transform = new AffineTransform();
+            if (this.viz.equals("UV pixel textured")) {
+                this.invalidateImage();
+            }
             this.repaint();
         } else {
             this.clickX = e.getX();
@@ -1352,6 +1690,10 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             this.drag = true;
             this.transform = new AffineTransform(this.pressedTransform);
             this.transform.translate((e.getX() - this.clickX) / this.transform.getScaleX(), (e.getY() - this.clickY) / this.transform.getScaleY());
+            if (this.screenSpace) {
+                this.invalidateImage();
+            }
+
             this.repaint();
         }
     }
@@ -1703,15 +2045,25 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         if (this.initialTexImage == null) {
             this.initialTexImage = new TextureImage(this.texImage);
         }
+        this.initialTexImage.invalidateUVBounds();
+        this.texImage.invalidateUVBounds();
         if (filterName.equals("None")) {
             this.texImage = new TextureImage(this.initialTexImage);
             return "Back to unfiltered distance field texture";
+        } else if (filterName.equals("Blur distance 1px")) {
+            return this.applyBlurDistance(this.initialTexImage, 1);
+        } else if (filterName.equals("Blur distance 2px")) {
+            return this.applyBlurDistance(this.initialTexImage, 2);
         } else if (filterName.equals("Blur distance 3px")) {
             return this.applyBlurDistance(this.initialTexImage, 3);
         } else if (filterName.equals("Blur distance 10px")) {
             return this.applyBlurDistance(this.initialTexImage, 10);
         } else if (filterName.equals("Blur distance 30px")) {
             return this.applyBlurDistance(this.initialTexImage, 30);
+        } else if (filterName.equals("Blur UV 1px")) {
+            return this.applyBlurUV(this.initialTexImage, 1);
+        } else if (filterName.equals("Blur UV 2px")) {
+            return this.applyBlurUV(this.initialTexImage, 2);
         } else if (filterName.equals("Blur UV 3px")) {
             return this.applyBlurUV(this.initialTexImage, 3);
         } else if (filterName.equals("Blur UV 10px")) {

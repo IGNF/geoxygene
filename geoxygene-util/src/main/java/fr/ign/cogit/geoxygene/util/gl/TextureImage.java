@@ -52,6 +52,7 @@ public class TextureImage {
         public int frontier = 0; // pixel on the polygon boundary (border count)
         public double weightSum = 0; // some elements are computed as a weighted average
         public Point2d vGradient = null; // gradient component of v Value
+        public double mainDirection; // 
 
         public TexturePixel() {
 

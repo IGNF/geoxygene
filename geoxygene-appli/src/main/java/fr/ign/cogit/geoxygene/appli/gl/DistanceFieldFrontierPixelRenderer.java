@@ -173,6 +173,7 @@ public class DistanceFieldFrontierPixelRenderer implements TexturePixelRenderer 
         pixel.distance = this.distanceToZero ? 0 : Double.POSITIVE_INFINITY;
         pixel.closestPoint = null;
         pixel.frontier = this.getCurrentFrontier();
+        pixel.mainDirection = Math.atan2(this.y2 - this.y1, this.x2 - this.x1);
         double alpha = Math.sqrt((x - this.x1) * (x - this.x1) + (y - this.y1) * (y - this.y1)) / this.lineLength;
         pixel.uTexture = this.u1 + (this.u2 - this.u1) * alpha;
         if (pixel.uTexture > this.uMax) {
