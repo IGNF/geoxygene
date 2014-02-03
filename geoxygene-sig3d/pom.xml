@@ -44,6 +44,17 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<compilerVersion>1.7</compilerVersion>
+					<source>1.7</source>
+					<complianceLevel>1.7</complianceLevel>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
@@ -73,9 +84,9 @@
 
 	<profiles>
 
-        <!-- Tests under Windows 64bits -->
+		<!-- Tests under Windows 64bits -->
 		<profile>
-		    <id>win64</id>
+			<id>win64</id>
 			<activation>
 				<os>
 					<family>windows</family>
@@ -97,32 +108,32 @@
 				</plugins>
 			</build>
 		</profile>
-		
+
 		<!-- Tests under Windows 64bits -->
-        <profile>
-            <id>win32</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                    <arch>amd32</arch>
-                </os>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <environmentVariables>
-                                <PATH>${basedir}\lib\native_libraries\windows-i586\</PATH>
-                            </environmentVariables>
-                            <skipTests>false</skipTests>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-		
+		<profile>
+			<id>win32</id>
+			<activation>
+				<os>
+					<family>windows</family>
+					<arch>amd32</arch>
+				</os>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<environmentVariables>
+								<PATH>${basedir}\lib\native_libraries\windows-i586\</PATH>
+							</environmentVariables>
+							<skipTests>false</skipTests>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
 		<profile>
 			<id>executable</id>
 			<build>
