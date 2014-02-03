@@ -79,7 +79,7 @@ public class LineEquation {
   }
 
   /**
-   * Genère à partir d'un point et d'un vecteur
+   * Genère à partir de deux points
    * @param dp
    * @param v
    */
@@ -120,7 +120,7 @@ public class LineEquation {
   }
 
   /**
-   * Renvoie les coordonnées d'intersection entre un point et un plan Renvoie
+   * Renvoie les coordonnées d'intersection entre une droite et un plan Renvoie
    * null si pas d'intersection ou si tout est l'intersection
    * 
    * @param eq
@@ -130,18 +130,28 @@ public class LineEquation {
 
     IDirectPosition dp = new DirectPosition(this.a0, this.b0, this.c0);
     IDirectPosition dp2 = this.valueAt(10);
-
+    
     // Normale au plan orthogonale au plan (pas d'intersection ou tout est
     // intersection)
     if (Math.abs(eq.getNormale().prodScalaire(new Vecteur(dp, dp2))) < LineEquation.EPSILON) {
 
       return null;
     }
-
-    return eq.intersectionLinePlan(dp, dp2);
-
+    
+    IDirectPosition p = eq.intersectionLinePlan(dp, dp2);
+    
+    // Modification
+    // -----------------------------------------------------------------------------------
+    if (p != null){return p;} 
+    
+    return eq.intersectionLinePlan(dp, this.valueAt(-10));
+    // -----------------------------------------------------------------------------------
+    
   }
 
+  /**Method to process distance between a line and a point
+   * @return the distance dp
+   */
   public double distance(IDirectPosition dp) {
 
     IDirectPosition dpLine = valueAt(0);

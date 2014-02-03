@@ -125,7 +125,23 @@ public class Box3D {
    */
   public boolean intersect(Box3D b) {
 
-    IDirectPosition pMin = b.getLLDP();
+    // Correction
+	  
+	double xmin1 = pMin.getX(); double xmin2 = b.pMin.getX();
+	double xmax1 = pMax.getX(); double xmax2 = b.pMax.getX();
+	double ymin1 = pMin.getY(); double ymin2 = b.pMin.getY();
+	double ymax1 = pMax.getY(); double ymax2 = b.pMax.getY();
+	double zmin1 = pMin.getZ(); double zmin2 = b.pMin.getZ();
+	double zmax1 = pMax.getZ(); double zmax2 = b.pMin.getZ();
+	
+	boolean bx = ((xmin2<=xmax1)&&(xmin2>=xmin1))||((xmin1<=xmax2)&&(xmin1>=xmin2));
+	boolean by = ((ymin2<=ymax1)&&(ymin2>=ymin1))||((ymin1<=ymax2)&&(ymin1>=ymin2));
+	boolean bz = ((zmin2<=zmax1)&&(zmin2>=zmin1))||((zmin1<=zmax2)&&(zmin1>=zmin2));
+	
+	return bx&&by&&bz;
+	  
+	/* // -------------------------------------------------------------------  
+	IDirectPosition pMin = b.getLLDP();
     IDirectPosition pMax = b.getURDP();
 
     if (b.pMin.getX() <= pMax.getX() && b.pMin.getY() <= pMax.getY()
@@ -141,6 +157,7 @@ public class Box3D {
     }
 
     return false;
+    // ------------------------------------------------------------------- */
 
   }
 
