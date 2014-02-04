@@ -77,8 +77,8 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 @Entity
 public class Population<Feat extends IFeature> extends
     FT_FeatureCollection<Feat> implements IPopulation<Feat> {
-  
-    /** Identifiant. Correspond au "cogitID" des tables du SGBD. */
+
+  /** Identifiant. Correspond au "cogitID" des tables du SGBD. */
   protected int id;
 
   @Override
@@ -114,9 +114,10 @@ public class Population<Feat extends IFeature> extends
     }
     for (int i = 0; i < p.size(); i++) {
       if (DefaultFeature.class.isAssignableFrom(p.get(i).getClass())) {
-        DefaultFeature f = new DefaultFeature((DefaultFeature)p.get(i));
+        DefaultFeature f = new DefaultFeature((DefaultFeature) p.get(i));
         if (schema == null) {
-          schema = new SchemaDefaultFeature(((DefaultFeature)p.get(i)).getSchema());
+          schema = new SchemaDefaultFeature(
+              ((DefaultFeature) p.get(i)).getSchema());
         }
         f.setSchema(schema);
         f.setFeatureType(this.featureType);
@@ -132,6 +133,7 @@ public class Population<Feat extends IFeature> extends
       }
     }
   }
+
   /**
    * Constructeur à partir du nom de la population
    * @param nom nom de la population.
@@ -628,8 +630,8 @@ public class Population<Feat extends IFeature> extends
       if (FT_FeatureCollection.logger.isDebugEnabled()) {
         FT_FeatureCollection.logger.debug("debut"); //$NON-NLS-1$
       }
-      IFeatureCollection<Feat> coll = DataSet.db.loadAllFeatures((FeatureType) this
-          .getFeatureType());
+      IFeatureCollection<Feat> coll = DataSet.db
+          .loadAllFeatures((FeatureType) this.getFeatureType());
       if (FT_FeatureCollection.logger.isDebugEnabled()) {
         FT_FeatureCollection.logger.debug("milieu"); //$NON-NLS-1$
       }
@@ -650,5 +652,12 @@ public class Population<Feat extends IFeature> extends
       FT_FeatureCollection.logger
           .info("-- " + this.size() + " instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
     }
+  }
+
+  @Override
+  public boolean add(Feat feat) {
+    feat.setPopulation(this);
+    return super.add(feat);
+
   }
 }
