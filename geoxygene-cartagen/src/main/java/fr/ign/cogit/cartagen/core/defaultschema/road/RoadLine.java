@@ -45,6 +45,8 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
 @Access(AccessType.PROPERTY)
 public class RoadLine extends NetworkSection implements IRoadLine {
 
+  public static final Class<?> associatedNodeClass = RoadNode.class;
+
   /**
    * Associated Geoxygene schema object
    */
