@@ -745,6 +745,11 @@ public class CarteTopo extends DataSet {
   }
 
   public void filtreNoeudsSimples(boolean useWeight, IGeometry filteredArea) {
+    this.filtreNoeudsSimples(useWeight, filteredArea, false);
+  }
+
+  public void filtreNoeudsSimples(boolean useWeight, IGeometry filteredArea,
+      boolean checkEqualCorrespondants) {
     List<Noeud> noeudsElimines = new ArrayList<Noeud>();
     for (Noeud noeud : this.getPopNoeuds()) {
       List<Arc> arcsIncidents = noeud.arcs();
@@ -770,6 +775,13 @@ public class CarteTopo extends DataSet {
       if (arc1 == arc2) {
         continue;
       }
+
+      if (checkEqualCorrespondants
+          && !(arc1.getCorrespondants().containsAll(arc2.getCorrespondants()) && arc2
+              .getCorrespondants().containsAll(arc1.getCorrespondants()))) {
+        continue;
+      }
+
       if (useWeight && arc1.getPoids() != arc2.getPoids()) {
         continue; // different weights
       }
@@ -1978,16 +1990,14 @@ public class CarteTopo extends DataSet {
             // GM_Ring(cycle.getGeometrie()));
             // CarteTopo.logger.debug("Added as interior");
             // } else {
-           
-            
-            //Correction Mickael
+
+            // Correction Mickael
             IGeometry geom = faceInfinie.getGeometrie().difference(holePolygon);
             faceInfinie.setGeometrie((IPolygon) geom);
-            
-            //Former code :
-            //   IGeometry geom = face.getGeometrie().difference(holePolygon);
+
+            // Former code :
+            // IGeometry geom = face.getGeometrie().difference(holePolygon);
             // faceInfinie.setGeometrie((IPolygon) geom);
-           
 
             // CarteTopo.logger.debug("Removed from infinite face "
             // + newPolygon);
