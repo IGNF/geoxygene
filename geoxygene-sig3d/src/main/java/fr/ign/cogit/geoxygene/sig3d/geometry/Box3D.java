@@ -168,7 +168,23 @@ public class Box3D {
    * @return
    */
   public Box3D intersection(Box3D b) {
+	 
+	  
+	  if (!intersect(b)){return null;}
+	  
+	  double xmin = Math.max(pMin.getX(), b.pMin.getX());
+	  double ymin = Math.max(pMin.getY(), b.pMin.getY());
+	  double zmin = Math.max(pMin.getZ(), b.pMin.getZ());
+	  double xmax = Math.min(pMax.getX(), b.pMax.getX());
+	  double ymax = Math.min(pMax.getY(), b.pMax.getY());
+	  double zmax = Math.min(pMax.getZ(), b.pMax.getZ());
+	  
+	  DirectPosition pmin = new DirectPosition(xmin,ymin,zmin);
+	  DirectPosition pmax = new DirectPosition(xmax,ymax,zmax);
+	  
+	  return new Box3D(pmin,pmax);
 
+	 /* // -------------------------------------------------------------------  
     IDirectPosition pMin = b.getLLDP();
     IDirectPosition pMax = b.getURDP();
 
@@ -191,6 +207,7 @@ public class Box3D {
     }
 
     return new Box3D(xMin, yMin, zMin, xMax, yMax, zMax);
+     // ------------------------------------------------------------------- */
 
   }
 

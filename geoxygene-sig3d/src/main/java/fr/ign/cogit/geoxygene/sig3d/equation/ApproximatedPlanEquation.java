@@ -53,7 +53,7 @@ public class ApproximatedPlanEquation extends PlanEquation {
     }
 
     if (dpl.size() < 3) {
-      ApproximatedPlanEquation.logger.error(Messages.getString("PLAN.POINTS"));
+    //  ApproximatedPlanEquation.logger.error(Messages.getString("PLAN.POINTS"));
 
       return;
     }

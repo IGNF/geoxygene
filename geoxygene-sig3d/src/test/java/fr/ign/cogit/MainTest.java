@@ -14,6 +14,7 @@ import fr.ign.cogit.equation.TestApproximatedPlanEquation;
 import fr.ign.cogit.equation.TestLineEquation;
 import fr.ign.cogit.equation.TestPlanEquation;
 import fr.ign.cogit.geometry.TestBox3D;
+import fr.ign.cogit.io.vector.TestShapeFileLoader;
 
 //--------------------------------------------------------------------------------
 // Class containing main function to launch test suite
@@ -33,12 +34,14 @@ public class MainTest {
 		suite.addTestSuite(TestProximity.class);
 		suite.addTestSuite(TestUtil.class);
 		suite.addTestSuite(TestFromGeomToSurface.class);
+		suite.addTestSuite(TestShapeFileLoader.class);
 		suite.addTestSuite(TestFromPolygonToLineString.class);
 		suite.addTestSuite(TestExtrusion2DObject.class);
 		suite.addTestSuite(TestPlanEquation.class);
 		suite.addTestSuite(TestLineEquation.class);
 		suite.addTestSuite(TestApproximatedPlanEquation.class);
 		suite.addTestSuite(TestBox3D.class);
+		
 		
 		return suite;
 		

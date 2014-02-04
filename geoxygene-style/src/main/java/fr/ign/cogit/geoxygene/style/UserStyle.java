@@ -42,6 +42,7 @@ public class UserStyle extends AbstractStyle {
   @Override
   public void setName(String newName) {
     super.setName(newName);
+  
   }
 
   private List<FeatureTypeStyle> featureTypeStyles = new ArrayList<FeatureTypeStyle>();

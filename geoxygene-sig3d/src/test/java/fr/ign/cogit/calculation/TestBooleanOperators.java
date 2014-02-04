@@ -152,7 +152,6 @@ public class TestBooleanOperators extends TestCase {
 
 		// Comparison
 		assertTrue("Output solid from boolean operation is incorrect", s.equals(sExp));
-
 	}
 
 	@Test
