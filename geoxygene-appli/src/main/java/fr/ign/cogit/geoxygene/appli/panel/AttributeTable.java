@@ -58,6 +58,7 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
 
@@ -268,9 +269,21 @@ public class AttributeTable extends JDialog {
 
     @Override
     public Class<?> getColumnClass(int column) {
-      String valueType = this.getFeatures().get(0).getFeatureType()
-          .getFeatureAttributeByName(this.attributeNames.get(column))
-          .getValueType();
+
+      String attributeName = this.attributeNames.get(column);
+      String valueType = "";
+      if (attributeName.equals("FID")) {
+        valueType = "Integer";
+      } else {
+        GF_AttributeType featureAttributeType = this.getFeatures().get(0)
+            .getFeatureType().getFeatureAttributeByName(attributeName);
+        if (featureAttributeType == null) {
+          valueType = "Integer";
+        } else {
+          valueType = this.getFeatures().get(0).getFeatureType()
+              .getFeatureAttributeByName(attributeName).getValueType();
+        }
+      }
       try {
         return Class.forName("java.lang." + valueType); //$NON-NLS-1$
       } catch (ClassNotFoundException e) {
@@ -797,6 +810,7 @@ public class AttributeTable extends JDialog {
       // et on l'ajoute au panel de table
       AttributsTableModel tableModel = new AttributsTableModel(features);
       JTable table = new JTable(tableModel);
+      table.setRowSorter(new TableRowSorter<AttributsTableModel>(tableModel));
       TableColumn col = table.getColumnModel().getColumn(0);
       col.setPreferredWidth(30);
       for (int i = 0; i < table.getColumnCount(); i++) {
