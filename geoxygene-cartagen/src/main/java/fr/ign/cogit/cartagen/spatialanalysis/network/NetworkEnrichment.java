@@ -9,6 +9,8 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.spatialanalysis.network;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +18,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.cartagen.core.genericschema.AbstractCreationFactory;
+import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
@@ -235,27 +238,65 @@ public class NetworkEnrichment {
     for (Noeud n : net.getCarteTopo().getPopNoeuds()) {
 
       if (NetworkEnrichment.logger.isInfoEnabled()) {
-        NetworkEnrichment.logger.info("Add node in population: " + n);
+        NetworkEnrichment.logger.info("Add node " + n + " in population");
       }
 
-      if (net.getSections().get(0) instanceof IRoadLine) {
-        IRoadNode roadNode = factory.createRoadNode(n);
-        IPopulation<IRoadNode> popRoad = dataset.getRoadNodes();
-        popRoad.add(roadNode);
-        dataset.getRoadNetwork().addNode(roadNode);
+      try {
+        @SuppressWarnings("unchecked")
+        Class<INetworkNode> nodeClass = (Class<INetworkNode>) net.getSections()
+            .get(0).getClass().getField("associatedNodeClass").get(null);
+
+        if (NetworkEnrichment.logger.isDebugEnabled()) {
+          logger.debug("sectionClass " + net.getSections().get(0).getClass());
+
+          logger.debug("nodeClass " + nodeClass);
+        }
+        Class<?>[] parametersType = { Noeud.class };
+        Constructor<INetworkNode> constructor = nodeClass
+            .getConstructor(parametersType);
+        @SuppressWarnings("unchecked")
+        IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) dataset
+            .getCartagenPop(dataset.getPopNameFromClass(nodeClass),
+                (String) nodeClass.getField("FEAT_TYPE_NAME").get(null));
+        if (NetworkEnrichment.logger.isDebugEnabled()) {
+          logger.debug("population " + pop.getNom());
+        }
+        Object[] parameters = { n };
+        pop.add(constructor.newInstance(parameters));
+      } catch (SecurityException e) {
+        e.printStackTrace();
+      } catch (NoSuchFieldException e) {
+        e.printStackTrace();
+      } catch (IllegalArgumentException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      } catch (InstantiationException e) {
+        e.printStackTrace();
+      } catch (InvocationTargetException e) {
+        e.printStackTrace();
       }
 
-      if (net.getSections().get(0) instanceof IWaterLine) {
-        IWaterNode waterNode = factory.createWaterNode(n);
-        IPopulation<IWaterNode> popWater = dataset.getWaterNodes();
-        popWater.add(waterNode);
-        dataset.getHydroNetwork().addNode(waterNode);
-      }
-
-      if (net.getSections().get(0) instanceof IRailwayLine) {
-        IRailwayNode railNode = factory.createRailwayNode(n);
-        dataset.getRailwayNetwork().addNode(railNode);
-      }
+      // if (net.getSections().get(0) instanceof IRoadLine) {
+      // IRoadNode roadNode = factory.createRoadNode(n);
+      // IPopulation<IRoadNode> popRoad = dataset.getRoadNodes();
+      // popRoad.add(roadNode);
+      // dataset.getRoadNetwork().addNode(roadNode);
+      // }
+      //
+      // if (net.getSections().get(0) instanceof IWaterLine) {
+      // IWaterNode waterNode = factory.createWaterNode(n);
+      // IPopulation<IWaterNode> popWater = dataset.getWaterNodes();
+      // popWater.add(waterNode);
+      // dataset.getHydroNetwork().addNode(waterNode);
+      // }
+      //
+      // if (net.getSections().get(0) instanceof IRailwayLine) {
+      // IRailwayNode railNode = factory.createRailwayNode(n);
+      // dataset.getRailwayNetwork().addNode(railNode);
+      // }
 
     }
 

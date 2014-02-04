@@ -23,6 +23,8 @@ import fr.ign.cogit.geoxygene.schemageo.impl.routier.RouteItineraireImpl;
 
 public class RoadRoute extends GeneObjLinDefault implements IRoadRoute {
 
+  public static final Class<?> associatedNodeClass = RoadNode.class;
+
   /**
    * Associated Geoxygene schema object
    */

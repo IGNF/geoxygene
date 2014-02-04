@@ -38,6 +38,8 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
 @Access(AccessType.PROPERTY)
 public class WaterLine extends NetworkSection implements IWaterLine {
 
+  public static final Class<?> associatedNodeClass = WaterNode.class;
+
   /**
    * Associated Geoxygene schema object
    */

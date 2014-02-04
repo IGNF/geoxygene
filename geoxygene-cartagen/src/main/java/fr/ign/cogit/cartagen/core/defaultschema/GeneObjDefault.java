@@ -36,6 +36,7 @@ import fr.ign.cogit.cartagen.graph.IEdge;
 import fr.ign.cogit.cartagen.graph.IGraphLinkableFeature;
 import fr.ign.cogit.cartagen.graph.INode;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.util.ReflectionUtil;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -367,16 +368,25 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
 
   @Override
   public IPopulation<? extends IGeneObj> getPopulation() {
-    String popName = CartAGenDocOld.getInstance().getCurrentDataset()
+
+    @SuppressWarnings("unchecked")
+    IPopulation<? extends IGeneObj> population = (IPopulation<? extends IGeneObj>) super
+        .getPopulation();
+
+    if (population != null) {
+      return population;
+    }
+
+    String popName = CartAGenDoc.getInstance().getCurrentDataset()
         .getPopNameFromObj(this);
     try {
-      return CartAGenDocOld
+      return CartAGenDoc
           .getInstance()
           .getCurrentDataset()
           .getCartagenPop(
               popName,
-              (String) this.getClass()
-                  .getDeclaredField(IGeneObj.FEAT_TYPE_NAME).get(null));
+              (String) this.getClass().getDeclaredField("FEAT_TYPE_NAME")
+                  .get(null));
     } catch (IllegalArgumentException e) {
       e.printStackTrace();
     } catch (SecurityException e) {

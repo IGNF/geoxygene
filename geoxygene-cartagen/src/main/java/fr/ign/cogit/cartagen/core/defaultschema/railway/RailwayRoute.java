@@ -23,6 +23,8 @@ import fr.ign.cogit.geoxygene.schemageo.impl.ferre.LigneDeCheminDeFerImpl;
 
 public class RailwayRoute extends GeneObjLinDefault implements IRailwayRoute {
 
+  public static final Class<?> associatedNodeClass = RailwayNode.class;
+
   /**
    * Associated Geoxygene schema object
    */
