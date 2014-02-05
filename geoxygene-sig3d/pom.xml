@@ -112,13 +112,13 @@
 			</build>
 		</profile>
 
-		<!-- Tests under Windows 64bits -->
+		<!-- Tests under Windows 32bits -->
 		<profile>
 			<id>win32</id>
 			<activation>
 				<os>
 					<family>windows</family>
-					<arch>amd32</arch>
+      				 <arch>x86</arch>
 				</os>
 			</activation>
 			<build>

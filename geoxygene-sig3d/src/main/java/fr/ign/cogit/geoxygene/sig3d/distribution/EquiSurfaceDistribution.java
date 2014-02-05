@@ -5,13 +5,14 @@ import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.sig3d.calculation.Util;
 import fr.ign.cogit.geoxygene.sig3d.convert.geom.FromGeomToSurface;
-import fr.ign.cogit.geoxygene.sig3d.equation.LineEquation;
+import fr.ign.cogit.geoxygene.sig3d.convert.geom.FromPolygonToTriangle;
 import fr.ign.cogit.geoxygene.sig3d.tetraedrisation.Tetraedrisation;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
@@ -77,16 +78,27 @@ public class EquiSurfaceDistribution {
 
     } else {
 
-      try {
-        Tetraedrisation tet = new Tetraedrisation(new GM_Solid(lTriangles));
+      List<ITriangle> lTrianglesTemp = FromPolygonToTriangle
+          .convertAndTriangle(lTriangles);
 
-        tet.tetraedriseWithConstraint(true);
+      if (lTrianglesTemp == null) {
 
-        lTriangles = tet.getTriangles();
-      } catch (Exception e) {
+        try {
+          Tetraedrisation tet = new Tetraedrisation(new GM_Solid(lTriangles));
 
-        e.printStackTrace();
+          tet.tetraedriseWithConstraint(true);
+
+          lTriangles = tet.getTriangles();
+        } catch (Exception e) {
+
+          e.printStackTrace();
+        }
+
+      } else {
+        lTriangles = new ArrayList<IOrientableSurface>();
+        lTriangles.addAll(lTrianglesTemp);
       }
+
     }
 
   }
@@ -178,11 +190,10 @@ public class EquiSurfaceDistribution {
 
     DirectPosition pointFinal = new DirectPosition(p1.getX() * (1 - sqrtAleaX)
         + p2.getX() * sqrtAleaX * (1 - aleaY) + p3.getX() * aleaY * sqrtAleaX,
-        
-        p1.getY() * (1 - sqrtAleaX) + p2.getY() * sqrtAleaX * (1 - aleaY)
-            + p3.getY() * aleaY * sqrtAleaX, p1.getZ() * (1 - sqrtAleaX)
-            + p2.getZ() * sqrtAleaX * (1 - aleaY) + p3.getZ() * aleaY
-            * sqrtAleaX);
+
+    p1.getY() * (1 - sqrtAleaX) + p2.getY() * sqrtAleaX * (1 - aleaY)
+        + p3.getY() * aleaY * sqrtAleaX, p1.getZ() * (1 - sqrtAleaX)
+        + p2.getZ() * sqrtAleaX * (1 - aleaY) + p3.getZ() * aleaY * sqrtAleaX);
 
     return pointFinal;
 
@@ -212,8 +223,8 @@ public class EquiSurfaceDistribution {
     }
 
     if (tOut == null) {
-//      System.out.println("Error");
-      //      System.out.println("X : " + x + "   Y : " + y);
+      // System.out.println("Error");
+      // System.out.println("X : " + x + "   Y : " + y);
       return null;
     }
 
@@ -223,76 +234,59 @@ public class EquiSurfaceDistribution {
     IDirectPosition p2 = pTriangle.get(1);
     IDirectPosition p3 = pTriangle.get(2);
 
-    
-    
     double E0 = p2.getX() - p1.getX();
     double E1 = p2.getY() - p1.getY();
-    
-    
-    
+
     double F0 = p3.getX() - p2.getX();
     double F1 = p3.getY() - p2.getY();
-    
-    
-    
-    double val2 = (E1 * (x - p1.getX() )  - E0 * (y - p1.getY())) /  (F0 * E1 - F1 * E0);
-    
+
+    double val2 = (E1 * (x - p1.getX()) - E0 * (y - p1.getY()))
+        / (F0 * E1 - F1 * E0);
+
     double val1 = (y - p1.getY() - val2 * F1) / E1;
-    
-    
+
     double eta1 = val1 * val1;
-    
+
     double eta2 = val2 / val1;
-    
-    
-    
-    
+
     /*
+     * 
+     * 
+     * 
+     * LineEquation l1 = new LineEquation(p1, p.getPosition()); LineEquation l2
+     * = new LineEquation(p2, p3);
+     * 
+     * 
+     * 
+     * double det = p1.getX() * p2.getY() - p2.getX() * p1.getY();
+     * 
+     * 
+     * 
+     * 
+     * IDirectPosition dp = l1.intersectionLineLine(l2);
+     * 
+     * if (dp == null) { System.out.println("Erreur erreur"); return null; }
+     * 
+     * Vecteur ax = new Vecteur(p1, p.getPosition()); ax.normalise(); Vecteur an
+     * = new Vecteur(p1, dp); an.normalise();
+     * 
+     * double prodS = ax.prodScalaire(an);
+     * 
+     * double eta1 = (1 - prodS) * (1 - prodS);
+     * 
+     * Vecteur bx = new Vecteur(p2, dp); bx.normalise(); Vecteur bc = new
+     * Vecteur(p2, p3); bc.normalise();
+     * 
+     * double prodS2 = bx.prodScalaire(bc);
+     * 
+     * double eta2 = 1 - prodS2;
+     */
 
+    // double xtest = ( 1 - Math.sqrt(eta1)) * p1.getX() + Math.sqrt(eta1) * (1
+    // - eta2) * p2.getX() + Math.sqrt(eta1) * eta2 * p3.getX();
 
-
-    LineEquation l1 = new LineEquation(p1, p.getPosition());
-    LineEquation l2 = new LineEquation(p2, p3);
-    
-    
-    
-    double det = p1.getX() * p2.getY()  - p2.getX() * p1.getY();
-    
-    
-    
-    
-    IDirectPosition dp = l1.intersectionLineLine(l2);
-
-    if (dp == null) {
-      System.out.println("Erreur erreur");
-      return null;
-    }
-
-    Vecteur ax = new Vecteur(p1, p.getPosition());
-    ax.normalise();
-    Vecteur an = new Vecteur(p1, dp);
-    an.normalise();
-
-    double prodS = ax.prodScalaire(an);
-
-    double eta1 = (1 - prodS) * (1 - prodS);
-
-    Vecteur bx = new Vecteur(p2, dp);
-    bx.normalise();
-    Vecteur bc = new Vecteur(p2, p3);
-    bc.normalise();
-
-    double prodS2 = bx.prodScalaire(bc);
-
-    double eta2 = 1 - prodS2;*/
-    
-    
-   // double xtest = ( 1 - Math.sqrt(eta1)) * p1.getX() +  Math.sqrt(eta1) * (1 - eta2) * p2.getX() + Math.sqrt(eta1) * eta2 * p3.getX();
-    
-
-    // double ytest = ( 1 - Math.sqrt(eta1)) * p1.getY() +  Math.sqrt(eta1) * (1 - eta2) * p2.getY() + Math.sqrt(eta1) * eta2 * p3.getY();
-    
-    
+    // double ytest = ( 1 - Math.sqrt(eta1)) * p1.getY() + Math.sqrt(eta1) * (1
+    // - eta2) * p2.getY() + Math.sqrt(eta1) * eta2 * p3.getY();
 
     return new DirectPosition(eta1, eta2);
 
