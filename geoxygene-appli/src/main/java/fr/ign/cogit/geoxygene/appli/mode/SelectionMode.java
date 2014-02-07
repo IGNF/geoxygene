@@ -39,101 +39,93 @@ import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
  * Selection Mode. Allow the user to select features.
+ * 
  * @author Julien Perret
  * 
  */
 public class SelectionMode extends AbstractMode {
 
-  /** Logger. */
-  private static final Logger LOGGER = Logger.getLogger(SelectionMode.class
-      .getName());
+    /** Logger. */
+    private static final Logger LOGGER = Logger.getLogger(SelectionMode.class.getName());
 
-  /**
-   * @param theMainFrame the main frame
-   * @param theModeSelector the mode selector
-   */
-  public SelectionMode(final MainFrame theMainFrame,
-      final MainFrameToolBar theModeSelector) {
-    super(theMainFrame, theModeSelector);
-  }
-
-  @Override
-  protected final JButton createButton() {
-    return new JButton(new ImageIcon(this.getClass().getResource(
-        "/images/toolbar/pencil.png"))); //$NON-NLS-1$
-  }
-
-  /**
-   * Selection radius.
-   */
-  private final double selectionRadius = 10.0;
-
-  @Override
-  public final void leftMouseButtonClicked(final MouseEvent e,
-      final ProjectFrame frame) {
-
-    LOGGER
-        .debug("--------------------------------------------------------------------------------");
-    LOGGER.debug("click event : select");
-
-    try {
-      DirectPosition p = frame.getLayerViewPanel().getViewport()
-          .toModelDirectPosition(e.getPoint());
-      Set<IFeature> features = new HashSet<IFeature>();
-      for (Layer layer : frame.getLayerViewPanel().getRenderingManager()
-          .getLayers()) {
-        if (layer.isVisible() && layer.isSelectable()) {
-          for (IFeature feature : layer.getFeatureCollection().select(p,
-              this.selectionRadius)) {
-            if (feature.isDeleted())
-              continue;
-            features.add(feature);
-          }
-        }
-      }
-      LayerViewPanel lvPanel = frame.getLayerViewPanel();
-      lvPanel.getSelectedFeatures().addAll(features);
-      LOGGER.debug("Number of selected features = " + features.size());
-
-      lvPanel.getRenderingManager().render(
-          lvPanel.getRenderingManager().getSelectionRenderer());
-      lvPanel.superRepaint();
-
-    } catch (NoninvertibleTransformException e1) {
-      e1.printStackTrace();
+    /**
+     * @param theMainFrame
+     *            the main frame
+     * @param theModeSelector
+     *            the mode selector
+     */
+    public SelectionMode(final MainFrame theMainFrame, final MainFrameToolBar theModeSelector) {
+        super(theMainFrame, theModeSelector);
     }
-  }
 
-  @Override
-  public final void rightMouseButtonClicked(final MouseEvent e,
-      final ProjectFrame frame) {
-    try {
-      DirectPosition p = frame.getLayerViewPanel().getViewport()
-          .toModelDirectPosition(e.getPoint());
-      Set<IFeature> features = new HashSet<IFeature>();
-      for (Layer layer : frame.getLayerViewPanel().getRenderingManager()
-          .getLayers()) {
-        if (layer.isVisible() && layer.isSelectable()) {
-          features.addAll(layer.getFeatureCollection().select(p,
-              this.selectionRadius));
-        }
-      }
-      LayerViewPanel lvPanel = frame.getLayerViewPanel();
-      if (features.isEmpty()) {
-        lvPanel.getSelectedFeatures().clear();
-      } else {
-        lvPanel.getSelectedFeatures().removeAll(features);
-      }
-      lvPanel.getRenderingManager().render(
-          lvPanel.getRenderingManager().getSelectionRenderer());
-      lvPanel.superRepaint();
-    } catch (NoninvertibleTransformException e1) {
-      e1.printStackTrace();
+    @Override
+    protected final JButton createButton() {
+        return new JButton(new ImageIcon(this.getClass().getResource("/images/toolbar/pencil.png"))); //$NON-NLS-1$
     }
-  }
 
-  @Override
-  protected String getToolTipText() {
-    return I18N.getString("SelectionMode.ToolTip"); //$NON-NLS-1$
-  }
+    /**
+     * Selection radius.
+     */
+    private final double selectionRadius = 10.0;
+
+    @Override
+    public final void leftMouseButtonClicked(final MouseEvent e, final ProjectFrame frame) {
+
+        LOGGER.debug("--------------------------------------------------------------------------------");
+        LOGGER.debug("click event : select");
+
+        try {
+            DirectPosition p = frame.getLayerViewPanel().getViewport().toModelDirectPosition(e.getPoint());
+            Set<IFeature> features = new HashSet<IFeature>();
+            for (Layer layer : frame.getLayerViewPanel().getRenderingManager().getLayers()) {
+                if (layer.isVisible() && layer.isSelectable()) {
+                    for (IFeature feature : layer.getFeatureCollection().select(p, this.selectionRadius)) {
+                        if (feature.isDeleted()) {
+                            continue;
+                        }
+                        features.add(feature);
+                    }
+                }
+            }
+            LayerViewPanel lvPanel = frame.getLayerViewPanel();
+            lvPanel.getSelectedFeatures().addAll(features);
+            LOGGER.debug("Number of selected features = " + features.size());
+            for (IFeature feature : lvPanel.getSelectedFeatures()) {
+                LOGGER.debug("\t" + feature);
+            }
+            lvPanel.getRenderingManager().render(lvPanel.getRenderingManager().getSelectionRenderer());
+            lvPanel.superRepaint();
+
+        } catch (NoninvertibleTransformException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    @Override
+    public final void rightMouseButtonClicked(final MouseEvent e, final ProjectFrame frame) {
+        try {
+            DirectPosition p = frame.getLayerViewPanel().getViewport().toModelDirectPosition(e.getPoint());
+            Set<IFeature> features = new HashSet<IFeature>();
+            for (Layer layer : frame.getLayerViewPanel().getRenderingManager().getLayers()) {
+                if (layer.isVisible() && layer.isSelectable()) {
+                    features.addAll(layer.getFeatureCollection().select(p, this.selectionRadius));
+                }
+            }
+            LayerViewPanel lvPanel = frame.getLayerViewPanel();
+            if (features.isEmpty()) {
+                lvPanel.getSelectedFeatures().clear();
+            } else {
+                lvPanel.getSelectedFeatures().removeAll(features);
+            }
+            lvPanel.getRenderingManager().render(lvPanel.getRenderingManager().getSelectionRenderer());
+            lvPanel.superRepaint();
+        } catch (NoninvertibleTransformException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    @Override
+    protected String getToolTipText() {
+        return I18N.getString("SelectionMode.ToolTip"); //$NON-NLS-1$
+    }
 }

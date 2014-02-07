@@ -28,8 +28,10 @@
 package test.app;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
@@ -45,6 +47,7 @@ public class TextureImageSampler implements SamplingAlgorithm {
     private double sampleX = 1;
     private double sampleY = 1;
     private List<Sample> samples = null;
+    private double jitteringFactor = 0.;
 
     /**
      * Default constructor
@@ -55,6 +58,21 @@ public class TextureImageSampler implements SamplingAlgorithm {
         this.sampleX = sampleX;
         this.sampleY = sampleY;
         this.computeSamples();
+    }
+
+    /**
+     * @return the jitteringFactor
+     */
+    public double getJitteringFactor() {
+        return this.jitteringFactor;
+    }
+
+    /**
+     * @param jitteringFactor
+     *            the jitteringFactor to set
+     */
+    public void setJitteringFactor(double jitteringFactor) {
+        this.jitteringFactor = jitteringFactor;
     }
 
     /**
@@ -73,6 +91,7 @@ public class TextureImageSampler implements SamplingAlgorithm {
     }
 
     private void computeSamples() {
+        Random rand = new Random(0);
         double xSampleRate = this.image.getWidth() / this.sampleX / this.scale;
         double ySampleRate = this.image.getHeight() / this.sampleY / this.scale;
         this.samples = new ArrayList<Sample>();
@@ -81,7 +100,13 @@ public class TextureImageSampler implements SamplingAlgorithm {
             for (double x = 0; x < this.image.getWidth(); x += xSampleRate) {
                 TexturePixel pixel = this.image.getPixel((int) x, (int) y);
                 if (pixel.in) {
-                    this.samples.add(new Sample(x, y));
+                    double jitterX = 0.;
+                    double jitterY = 0.;
+                    if (this.getJitteringFactor() > 0.01) {
+                        jitterX = (rand.nextDouble() * 2 - 1) * xSampleRate * this.getJitteringFactor();
+                        jitterY = (rand.nextDouble() * 2 - 1) * ySampleRate * this.getJitteringFactor();
+                    }
+                    this.samples.add(new Sample(x + jitterX, y + jitterY));
                 }
             }
         }

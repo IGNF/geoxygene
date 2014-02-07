@@ -28,17 +28,46 @@
 package fr.ign.cogit.geoxygene.appli.task;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author JeT
  *         manage a set of tasks
  */
 public class TaskManager implements TaskListener {
+
+    private static final Logger logger = Logger.getLogger(TaskManager.class.getName()); // logger
+
     private static final TaskManagerListener[] DUMMYTASKMANAGERLISTENERARRAY = new TaskManagerListener[] {};
     private final Set<Task> tasks = new HashSet<Task>();
+    private final Map<Thread, Task> associatedTasks = new HashMap<Thread, Task>();
     private final Set<TaskManagerListener> listeners = new HashSet<TaskManagerListener>();
+    private Thread.UncaughtExceptionHandler uncaughtExceptionHandler = null;
+
+    /**
+     * Constructor
+     */
+    public TaskManager() {
+        this.uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread th, Throwable ex) {
+                Task task = TaskManager.this.associatedTasks.get(th);
+                if (task == null) {
+                    logger.error("Impossible case. Exception caught from a non referenced thread " + th.getName());
+                    ex.printStackTrace();
+                    return;
+                }
+                logger.error("Uncaught exception from task " + task.getName() + ": " + ex);
+                TaskManager.this.removeTask(task);
+                ex.printStackTrace();
+            }
+        };
+    }
 
     /**
      * add a new Managed task. duplicates are discarded
@@ -53,10 +82,22 @@ public class TaskManager implements TaskListener {
         if (this.tasks.contains(task)) {
             return false;
         }
-
+        // check if the task has already been launched
+        if (task.getState() != TaskState.WAITING) {
+            logger.warn("task " + task.getName() + " added to task manager with state " + task.getState());
+        }
         this.tasks.add(task);
         task.addTaskListener(this);
         this.fireTaskAdded(task);
+        Thread thread = task.start();
+        if (thread != null) {
+            this.associatedTasks.put(thread, task);
+        } else {
+            logger.error("Task Manager cannot start task " + task.getName());
+            this.removeTask(task);
+            return false;
+        }
+        //        System.err.println("[TaskManager] add and start task " + task.getName());
         return true;
     }
 
@@ -65,8 +106,10 @@ public class TaskManager implements TaskListener {
      */
     public boolean removeTask(final Task task) {
         if (this.tasks.remove(task)) {
+            this.associatedTasks.remove(task.getThread());
             task.removeTaskListener(this);
             this.fireTaskRemoved(task);
+            //            System.err.println("[TaskManager] remove task " + task.getName());
             return true;
         }
         return false;

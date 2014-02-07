@@ -166,7 +166,6 @@ public class GLComplexFactory {
         GLComplex primitive = new GLComplex(minX, minY);
         GLMesh outlineMesh = primitive.addGLMesh(GL11.GL_LINE_LOOP);
         for (IDirectPosition p : curve.coord()) {
-            System.err.println("curve " + curve.hashCode() + " point " + p);
             GLVertex vertex = new GLVertex((float) p.getX(), (float) p.getY(), (float) p.getZ());
             outlineMesh.addIndex(primitive.addVertex(vertex));
         }

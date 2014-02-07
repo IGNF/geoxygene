@@ -95,11 +95,11 @@ public class FloatingProjectFrame extends AbstractProjectFrame implements Action
 
     @Override
     public void setGeometryToolsVisible(boolean b) {
+        if (this.geometryToolBar == null) {
+            this.geometryToolBar = new GeometryToolBar(this);
+        }
         if (b) {
-            if (this.geometryToolBar == null) {
-                this.geometryToolBar = new GeometryToolBar(this);
-                this.getInternalFrame().getContentPane().add(this.geometryToolBar, BorderLayout.EAST);
-            }
+            this.getInternalFrame().getContentPane().add(this.geometryToolBar, BorderLayout.EAST);
             this.geometryToolBar.setVisible(true);
             this.validate();
         } else {

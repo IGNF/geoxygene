@@ -180,7 +180,6 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable {
 
     private void generateWithPolygonSymbolizer(PolygonSymbolizer symbolizer) {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
-        System.err.println("generate Simple Polygon");
         //        return GLComplexFactory.createFilledPolygon(multiSurface, symbolizer.getStroke().getColor());
         IEnvelope envelope = IGeometryUtil.getEnvelope(this.polygons);
         double minX = envelope.minX();
@@ -190,7 +189,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable {
         content.setColor(symbolizer.getFill().getColor());
         complexes.add(content);
 
-        BasicStroke awtStroke = GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport, symbolizer);
+        //        BasicStroke awtStroke = GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport, symbolizer);
         //GLComplex outline = GLComplexFactory.createOutlineMultiSurface(this.polygons, awtStroke, minX, minY);
         GLComplex outline = LineTesselator.createPolygonOutlines(this.polygons, symbolizer.getStroke(), minX, minY);
         outline.setColor(symbolizer.getStroke().getColor());

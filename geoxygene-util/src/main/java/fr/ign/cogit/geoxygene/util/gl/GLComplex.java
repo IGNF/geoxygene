@@ -73,7 +73,9 @@ public class GLComplex {
     private int vboIndicesId = -1; // VBO Indices index
     private double minX = 0.;
     private double minY = 0.;
+    private double overallOpacity = 1.;
     private GLRenderingCapability renderingCapability = null;
+    private boolean mayOverlap = false; // set to true if polygons may overlap (invalid for transparency)
 
     public enum GLRenderingCapability {
         POSITION, COLOR, TEXTURE
@@ -85,6 +87,41 @@ public class GLComplex {
     public GLComplex(double minX, double minY) {
         this.minX = minX;
         this.minY = minY;
+    }
+
+    /**
+     * @return the opacity for that entire complex
+     */
+    public double getOverallOpacity() {
+        return this.overallOpacity;
+    }
+
+    /**
+     * Overall opacity is used to set the opacity of the FBO in which this
+     * object has been drawn without an transparency.
+     * Set the vertices opacity to 1
+     */
+    public void setOverallOpacity(double overallOpacity) {
+        this.overallOpacity = overallOpacity;
+        for (GLVertex vertex : this.vertices) {
+            vertex.setAlpha(1.f);
+        }
+    }
+
+    /**
+     * @return true if contained geometries may overlap (invalid for
+     *         transparency)
+     */
+    public boolean mayOverlap() {
+        return this.mayOverlap;
+    }
+
+    /**
+     * set it to true if contained geometries may overlap (invalid for
+     * transparency)
+     */
+    public void setMayOverlap(boolean mayOverlap) {
+        this.mayOverlap = mayOverlap;
     }
 
     /**
@@ -147,14 +184,14 @@ public class GLComplex {
     }
 
     /**
-     * Set the color of all meshes contained in this complex
+     * Set the color of all vertices contained in this complex
      * 
      * @param color
-     *            color to be set to all submeshes
+     *            color to be set to all vertices
      */
     public void setColor(final java.awt.Color color) {
-        for (GLMesh mesh : this.meshes) {
-            mesh.setColor(color);
+        for (GLVertex vertex : this.vertices) {
+            vertex.setRGBA(color);
         }
     }
 
@@ -219,7 +256,7 @@ public class GLComplex {
      */
     public FloatBuffer getFlippedVerticesBuffer() {
         if (this.verticesBuffer == null) {
-            this.verticesBuffer = BufferUtils.createFloatBuffer(this.vertices.size()*GLVertex.NumberOfFloatValues);
+            this.verticesBuffer = BufferUtils.createFloatBuffer(this.vertices.size() * GLVertex.NumberOfFloatValues);
             //BufferUtils.createByteBuffer(this.vertices.size() * GLVertex.VERTEX_BYTESIZE).asFloatBuffer();
             for (GLVertex vertex : this.vertices) {
                 // Add position, color and texture floats to the buffer
@@ -271,7 +308,7 @@ public class GLComplex {
         int currentStartIndex = 0;
         for (GLMesh mesh : this.getMeshes()) {
             for (int nIndex = 0; nIndex < mesh.getIndices().size(); nIndex++) {
-                this.indicesBuffer.put(mesh.getIndices().get(nIndex).intValue());                
+                this.indicesBuffer.put(mesh.getIndices().get(nIndex).intValue());
             }
             mesh.setFirstIndex(currentStartIndex);
             currentStartIndex = currentStartIndex + mesh.getIndices().size();
@@ -285,7 +322,7 @@ public class GLComplex {
      */
     private void initializeShaderConfiguration() {
         // Create a new Vertex Array Object in memory and select it (bind)
-        this.vaoId = GL30.glGenVertexArrays();      
+        this.vaoId = GL30.glGenVertexArrays();
         if (this.vaoId <= 0) {
             logger.error("VAO ID is invalid " + this.vaoId);
         }
@@ -298,19 +335,18 @@ public class GLComplex {
         }
         glBindBuffer(GL15.GL_ARRAY_BUFFER, this.vboVerticesId);
         glBufferData(GL_ARRAY_BUFFER, this.getFlippedVerticesBuffer(), GL_STATIC_DRAW);
-                           
+
         for (int nAttrib = 0; nAttrib < GLVertex.ATTRIBUTES_COUNT; nAttrib++) {
 
             glEnableVertexAttribArray(GLVertex.ATTRIBUTES_ID[nAttrib]);
             GL20.glVertexAttribPointer(GLVertex.ATTRIBUTES_ID[nAttrib], GLVertex.ATTRIBUTES_COMPONENT_NUMBER[nAttrib], GLVertex.ATTRIBUTES_TYPE[nAttrib],
                     false, GLVertex.VERTEX_BYTESIZE, GLVertex.ATTRIBUTES_BYTEOFFSET[nAttrib]);
             glEnableVertexAttribArray(GLVertex.ATTRIBUTES_ID[nAttrib]);
-//                        System.err.println("index = " + GLVertex.ATTRIBUTES_ID[nAttrib] + " size = " + GLVertex.ATTRIBUTES_COMPONENT_NUMBER[nAttrib] + " type = "
-//                                + GLVertex.ATTRIBUTES_TYPE[nAttrib] + " normalized = false stride = " + GLVertex.VERTEX_BYTESIZE + " offset = "
-//                               + GLVertex.ATTRIBUTES_BYTEOFFSET[nAttrib]);
+            //                        System.err.println("index = " + GLVertex.ATTRIBUTES_ID[nAttrib] + " size = " + GLVertex.ATTRIBUTES_COMPONENT_NUMBER[nAttrib] + " type = "
+            //                                + GLVertex.ATTRIBUTES_TYPE[nAttrib] + " normalized = false stride = " + GLVertex.VERTEX_BYTESIZE + " offset = "
+            //                               + GLVertex.ATTRIBUTES_BYTEOFFSET[nAttrib]);
 
         }
-        
 
         //        displayBuffer(this.getFlippedVerticesBuffer());
 
@@ -399,11 +435,15 @@ public class GLComplex {
      * @param subComplex
      */
     public void addGLComplex(GLComplex subComplex) {
+
         // map between old indices and new ones
         HashMap<Integer, Integer> indicesLUT = new HashMap<Integer, Integer>();
 
         if (subComplex == null) {
             return;
+        }
+        if (subComplex.mayOverlap()) {
+            this.setMayOverlap(true);
         }
         // add all vertices
         int vertexOldIndex = 0;

@@ -45,7 +45,7 @@ public interface Task extends Runnable {
      * 
      * @return true if the task is correctly launched
      */
-    public boolean start();
+    public Thread start();
 
     /**
      * @return the task progress between 0 & 1
@@ -105,5 +105,10 @@ public interface Task extends Runnable {
     /**
      * @return the exception that has been thrown if Task is in error state
      */
-    Exception getError();
+    public Exception getError();
+
+    /**
+     * @return the thread associated with this task. null if not started
+     */
+    public Thread getThread();
 }

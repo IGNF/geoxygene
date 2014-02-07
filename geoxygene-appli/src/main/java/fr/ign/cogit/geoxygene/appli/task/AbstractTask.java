@@ -71,13 +71,21 @@ public abstract class AbstractTask implements Task {
      * @see fr.ign.cogit.geoxygene.appli.task.Task#start()
      */
     @Override
-    public boolean start() {
+    public Thread start() {
         if (this.taskThread != null) {
-            return false;
+            return null;
         }
         this.taskThread = new Thread(this, this.getName() + "-thread");
         this.taskThread.start();
-        return true;
+        return this.taskThread;
+    }
+
+    /**
+     * @return the thread associated with this task
+     */
+    @Override
+    public Thread getThread() {
+        return this.taskThread;
     }
 
     /*

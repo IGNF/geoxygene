@@ -30,7 +30,9 @@ import java.util.Set;
 import javax.swing.event.EventListenerList;
 
 import org.apache.log4j.Logger;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.Util;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
@@ -221,8 +223,10 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                     // do the actual rendering
                     try {
                         LwjglLayerRenderer.this.renderHook(vp.getViewport().getEnvelopeInModelCoordinates());
+                        Util.checkGLError();
                     } catch (Throwable t) {
                         logger.warn("LwJGL Rendering failed: " + t.getMessage() + " (" + t.getClass().getSimpleName() + ")");
+                        logger.warn("Open GL Error message = " + Util.translateGLErrorString(GL11.glGetError()));
                         t.printStackTrace();
                         return;
                     }
@@ -339,7 +343,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                                 }
                                 // FIXME: find a way to integrate/describe it into the SLD
                                 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-                                this.render(symbolizer, feature);
+                                this.render(symbolizer, feature, this.getLayer());
                             }
                             this.fireActionPerformed(new ActionEvent(this, 4, "Rendering feature", 100 * featureRenderIndex++ //$NON-NLS-1$
                                     / (numberOfFeatureTypeStyle * collection.size())));
@@ -450,10 +454,10 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
      *            the feature
      */
 
-    private void render(final Symbolizer symbolizer, final IFeature feature) throws RenderingException {
+    private void render(final Symbolizer symbolizer, final IFeature feature, final Layer layer) throws RenderingException {
         Viewport viewport = this.getLayerViewPanel().getViewport();
         FeatureRenderer renderer = this.getLayerRenderer();
-        renderer.render(feature, symbolizer, viewport);
+        renderer.render(feature, layer, symbolizer, viewport);
     }
 
     @Override

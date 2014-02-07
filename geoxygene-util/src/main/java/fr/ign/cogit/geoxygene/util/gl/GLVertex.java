@@ -117,6 +117,13 @@ public final class GLVertex {
         this.setRGBA(c);
     }
 
+    /**
+     * Vertex constructor
+     */
+    public GLVertex(final Point2D xy) {
+        this.setXYZ(xy);
+    }
+
     public final void setXYZ(final float x, final float y, final float z) {
         this.xyz[0] = x;
         this.xyz[1] = y;
@@ -174,6 +181,10 @@ public final class GLVertex {
         this.rgba[0] = r;
         this.rgba[1] = g;
         this.rgba[2] = b;
+        this.rgba[3] = a;
+    }
+
+    public final void setAlpha(final float a) {
         this.rgba[3] = a;
     }
 

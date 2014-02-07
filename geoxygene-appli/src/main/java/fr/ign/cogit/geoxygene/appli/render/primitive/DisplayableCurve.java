@@ -28,6 +28,9 @@
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
 import java.awt.BasicStroke;
+import java.awt.Shape;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -35,14 +38,20 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IBezier;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.LineTesselator;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
@@ -82,7 +91,6 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
         for (Object lineString : multiCurve.getList()) {
             if (lineString instanceof ILineString) {
                 this.curves.add((ILineString) lineString);
-
             } else {
                 logger.warn("multisurface does not contains only ILineString but " + this.curves.getClass().getSimpleName());
             }
@@ -163,16 +171,16 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
 
     private void generateWithLineSymbolizer(LineSymbolizer symbolizer) {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
-        System.err.println("generate line Polygon");
         //        return GLComplexFactory.createFilledPolygon(multiSurface, symbolizer.getStroke().getColor());
         IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
         double minX = envelope.minX();
         double minY = envelope.minY();
 
-        BasicStroke awtStroke = GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport, symbolizer);
+        //        BasicStroke awtStroke = GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport, symbolizer);
         //GLComplex outline = GLComplexFactory.createOutlineMultiSurface(this.polygons, awtStroke, minX, minY);
         GLComplex line = LineTesselator.createThickLine(this.curves, symbolizer.getStroke(), minX, minY);
         line.setColor(symbolizer.getStroke().getColor());
+        line.setOverallOpacity(symbolizer.getStroke().getColor().getAlpha());
         complexes.add(line);
         // TODO
         this.fullRepresentation = complexes;

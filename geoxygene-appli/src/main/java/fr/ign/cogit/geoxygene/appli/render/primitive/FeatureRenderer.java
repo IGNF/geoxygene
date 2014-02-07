@@ -30,6 +30,7 @@ package fr.ign.cogit.geoxygene.appli.render.primitive;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.render.RenderingException;
+import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 
 /**
@@ -42,7 +43,7 @@ public interface FeatureRenderer {
 
     void initializeRendering() throws RenderingException;
 
-    void render(IFeature feature, Symbolizer symbolizer, Viewport viewport) throws RenderingException;
+    void render(IFeature feature, Layer layer, Symbolizer symbolizer, Viewport viewport) throws RenderingException;
 
     void finalizeRendering() throws RenderingException;
 

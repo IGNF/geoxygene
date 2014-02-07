@@ -388,10 +388,11 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 double scale = this.transform.getScaleX();
                 double sampleX = 50;
                 double sampleY = 25;
+                TextureImageSampler sampler = new TextureImageSampler(this.texImage, sampleX, sampleY, scale);
+                sampler.setJitteringFactor(1);
                 this.bi = this
 
-                .toBufferedImagePixelUVTile(this.texImage, this.tileToBeApplied, new TextureImageSampler(this.texImage, sampleX, sampleY, scale),
-                        this.featureShape);
+                .toBufferedImagePixelUVTile(this.texImage, this.tileToBeApplied, sampler, this.featureShape);
                 this.screenSpace = true;
 
             } else if (this.viz.equals("Distance HSV")) {
@@ -1134,8 +1135,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             for (int x = 0; x < this.texImage.getWidth(); x++) {
                 TexturePixel pixel = this.texImage.getPixel(x, y);
                 if (pixel.in) {
-                    pixel.vGradient = new Point2d(Math.cos(pixel.mainDirection), Math.sin(pixel.mainDirection));
-                    //                    pixel.vGradient = computeGradient(this.texImage, x, y);
+                    //                    pixel.vGradient = new Point2d(Math.cos(pixel.mainDirection), Math.sin(pixel.mainDirection));
+                    pixel.vGradient = compute5VGradient(this.texImage, x, y);
                 } else {
                     pixel.vGradient = null;
                 }
