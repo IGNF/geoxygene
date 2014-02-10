@@ -49,6 +49,8 @@ public class LineTesselator {
 
     private static final Logger logger = Logger.getLogger(LineTesselator.class.getName()); // logger
     private static final double DEFAULT_AWT_MITERLIMIT = 10.;    // 10 is the default miter limit defined by java.awt.BasiStroke
+    private static final double anglePrecision = Math.PI / 40;
+    private static final double epsilon = 1E-6;
 
     /**
      * generate the outline of a collection of polygons
@@ -101,6 +103,10 @@ public class LineTesselator {
 
     public static Point2D mulDoublePoint2D(double d, Point2D p) {
         return new Point2D.Double(d * p.getX(), d * p.getY());
+    }
+
+    public static Point2D opposite(Point2D p) {
+        return new Point2D.Double(-p.getX(), -p.getY());
     }
 
     public static Point2D mulPoint2D(Point2D p1, Point2D p2) {
@@ -178,14 +184,13 @@ public class LineTesselator {
      */
     private static void tesselateThickLine(GLComplex complex, Function1D getWidth, Point2D[] polyline, int join, int cap, double miterLimit, boolean closedLine)
             throws FunctionEvaluationException {
-        final double anglePrecision = Math.PI / 40;
-        final double epsilon = 1E-6;
         complex.setMayOverlap(true);
-        //Algo tessellation
 
+        //Algo tessellation
         int size = polyline.length;
         int edgeCount = closedLine ? size : size - 1;
         if (polyline[0].equals(polyline[size - 1])) {
+            // if the last point is the same as the first one, remove the last from the list of points
             edgeCount -= 1;
             size -= 1;
         }
@@ -205,51 +210,26 @@ public class LineTesselator {
         float currentLength = 0;
         int vertexIndex0 = 0;
         int vertexIndex1 = 0;
-        int splitVertexIndex = 0;
 
         Point2D edge0 = edges[0];
         Point2D normal0 = normals[0];
-        Point2D vertex0 = addPoint2D(polyline[0], mulDoublePoint2D(-getWidth.evaluate(currentLength / arcLength) / 2, normal0));
-        Point2D vertex1 = addPoint2D(polyline[0], mulDoublePoint2D(getWidth.evaluate(currentLength / arcLength) / 2, normal0));
-        if (!closedLine) { // initial cap
-
-            double l = getWidth.evaluate(currentLength / arcLength) / 2;
-            // start Cap
-            if (!closedLine) {
-                switch (cap) {
-                case BasicStroke.CAP_BUTT:
-                    // BUTT is the default computation of start points
-                    break;
-                case BasicStroke.CAP_SQUARE:
-                    Point2D dec = mulDoublePoint2D(-l, normalize(edge0));
-                    vertex0 = addPoint2D(vertex0, dec);
-                    vertex1 = addPoint2D(vertex1, dec);
-                    break;
-                case BasicStroke.CAP_ROUND:
-                    GLMesh capMesh = complex.addGLMesh(GL11.GL_TRIANGLE_FAN);
-                    Point2D splitVertex = new Point2D.Double(polyline[0].getX(), polyline[0].getY());
-                    capMesh.addIndex(splitVertexIndex);
-                    splitVertexIndex = complex.addVertex(new GLVertex(splitVertex));
-                    int nbCapPoints = (int) (Math.PI / anglePrecision);
-                    Point2D sideVector = mulDoublePoint2D(getWidth.evaluate(currentLength / arcLength) / 2, normal0);
-                    for (int n = 0; n <= nbCapPoints; n++) {
-                        double angle = n * Math.PI / nbCapPoints;
-                        capMesh.addIndex(complex.addVertex(new GLVertex(addPoint2D(splitVertex, rotateVector(sideVector, angle)))));
-                    }
-                    break;
-                }
-            }
-        }
+        double l = getWidth.evaluate(currentLength / arcLength) / 2;
+        Point2D sideVector = mulDoublePoint2D(l, normal0);
+        Point2D vertex0 = addPoint2D(polyline[0], opposite(sideVector));
+        Point2D vertex1 = addPoint2D(polyline[0], sideVector);
         vertexIndex0 = complex.addVertex(new GLVertex(vertex0));
         vertexIndex1 = complex.addVertex(new GLVertex(vertex1));
+        if (!closedLine) { // initial cap
+            createCap(complex, l, cap, vertexIndex0, vertexIndex1, edge0, normal0, vertex0, vertex1, true);
+        }
 
         // treat all segments (draw segment + join to the next segment)
         for (int currentEdgeIndex = 0; currentEdgeIndex < edgeCount; currentEdgeIndex++) {
             int nextEdgeIndex = (currentEdgeIndex + 1) % edgeCount;
-            Point2D endPoint0 = polyline[nextEdgeIndex];
+            Point2D endPoint0 = polyline[(currentEdgeIndex + 1) % size];
             edge0 = edges[currentEdgeIndex];
             normal0 = normals[currentEdgeIndex];
-            Point2D startPoint1 = polyline[nextEdgeIndex];
+            Point2D startPoint1 = endPoint0;
             Point2D normal1 = normals[nextEdgeIndex];
             Point2D edge1 = edges[nextEdgeIndex];
 
@@ -271,21 +251,33 @@ public class LineTesselator {
                 // if points are exactly aligned, we can go directly to the next point. This one is useless
                 continue;
             }
+            l = getWidth.evaluate(currentLength / arcLength) / 2;
 
             // join between lines
             Point2D midPoint = null;
-            //                  midPoint = addPoint2D(endPoint0, mulDoublePoint2D(-sideToCap*getWidth.evaluate(currentLength/arcLength)/2, addPoint2D(normal0, normal1)));
-            midPoint = lineIntersection(addPoint2D(endPoint0, mulDoublePoint2D(-sideToCap * getWidth.evaluate(currentLength / arcLength) / 2, normal0)), edge0,
-                    addPoint2D(endPoint0, mulDoublePoint2D(-sideToCap * getWidth.evaluate(currentLength / arcLength) / 2, normal1)), edge1);
-            if (currentEdgeIndex < edgeCount - 1 || ((currentEdgeIndex == edgeCount - 1) && closedLine)) {
+            //                  midPoint = addPoint2D(endPoint0, mulDoublePoint2D(-sideToCap*l, addPoint2D(normal0, normal1)));
+            midPoint = lineIntersection(addPoint2D(endPoint0, mulDoublePoint2D(-sideToCap * l, normal0)), edge0,
+                    addPoint2D(endPoint0, mulDoublePoint2D(-sideToCap * l, normal1)), edge1);
 
-                // in AWT if the angle is too small, miter join is switched to bevel join to avoid quite infinite miter point
+            if (currentEdgeIndex == edgeCount - 1 && !closedLine) {
+                // last point
+                Point2D vertex2 = addPoint2D(endPoint0, mulDoublePoint2D(-l, normal0));
+                Point2D vertex3 = addPoint2D(endPoint0, mulDoublePoint2D(l, normal0));
+                int vertexIndex2 = complex.addVertex(new GLVertex(vertex2));
+                int vertexIndex3 = complex.addVertex(new GLVertex(vertex3));
+                // add triangles 
+                mesh.addIndices(vertexIndex0, vertexIndex1, vertexIndex2);
+                mesh.addIndices(vertexIndex1, vertexIndex2, vertexIndex3);
+                vertexIndex0 = vertexIndex2;
+                vertexIndex1 = vertexIndex3;
+            } else {
+
+                // in AWT if the angle is too small, miter join is switched to bevel join to avoid potential infinite miter point
                 switch (join) {
                 case BasicStroke.JOIN_MITER: {
-                    Point2D miterPoint = lineIntersection(
-                            addPoint2D(endPoint0, mulDoublePoint2D(sideToCap * getWidth.evaluate(currentLength / arcLength) / 2, normal0)), edge0,
-                            addPoint2D(endPoint0, mulDoublePoint2D(sideToCap * getWidth.evaluate(currentLength / arcLength) / 2, normal1)), edge1);
-                    if (distance(miterPoint, midPoint) < miterLimit * getWidth.evaluate(currentLength / arcLength)) {
+                    Point2D miterPoint = lineIntersection(addPoint2D(endPoint0, mulDoublePoint2D(sideToCap * l, normal0)), edge0,
+                            addPoint2D(endPoint0, mulDoublePoint2D(sideToCap * l, normal1)), edge1);
+                    if (distance(miterPoint, midPoint) < miterLimit * l * 2) {
                         // miter should be represented as bevel due to too small angle between lines
                         int miterVertexIndex = complex.addVertex(new GLVertex(miterPoint));
                         int midVertexIndex = complex.addVertex(new GLVertex(midPoint));
@@ -304,13 +296,11 @@ public class LineTesselator {
                     }
                 }
                 case BasicStroke.JOIN_BEVEL: {
-                    Point2D vertex2 = (sideToCap == 1) ? midPoint : addPoint2D(endPoint0,
-                            mulDoublePoint2D(-getWidth.evaluate(currentLength / arcLength) / 2, normal0));
+                    Point2D vertex2 = (sideToCap == 1) ? midPoint : addPoint2D(endPoint0, mulDoublePoint2D(-l, normal0));
                     int vertexIndex2 = complex.addVertex(new GLVertex(vertex2));
-                    Point2D vertex3 = (sideToCap == -1) ? midPoint : addPoint2D(endPoint0,
-                            mulDoublePoint2D(getWidth.evaluate(currentLength / arcLength) / 2, normal0));
-                    Point2D vertex4 = (sideToCap == 1) ? addPoint2D(startPoint1, mulDoublePoint2D(getWidth.evaluate(currentLength / arcLength) / 2, normal1))
-                            : addPoint2D(startPoint1, mulDoublePoint2D(-getWidth.evaluate(currentLength / arcLength) / 2, normal1));
+                    Point2D vertex3 = (sideToCap == -1) ? midPoint : addPoint2D(endPoint0, mulDoublePoint2D(l, normal0));
+                    Point2D vertex4 = (sideToCap == 1) ? addPoint2D(startPoint1, mulDoublePoint2D(l, normal1)) : addPoint2D(startPoint1,
+                            mulDoublePoint2D(-l, normal1));
                     int vertexIndex3 = complex.addVertex(new GLVertex(vertex3));
                     int vertexIndex4 = complex.addVertex(new GLVertex(vertex4));
                     // add triangles 
@@ -323,12 +313,10 @@ public class LineTesselator {
                     break;
                 case BasicStroke.JOIN_ROUND: {
                     Point2D centerPoint = endPoint0; // edges intersection
-                    Point2D vertex2 = (sideToCap == 1) ? midPoint : addPoint2D(endPoint0,
-                            mulDoublePoint2D(-getWidth.evaluate(currentLength / arcLength) / 2, normal0));
-                    Point2D vertex3 = (sideToCap == -1) ? midPoint : addPoint2D(endPoint0,
-                            mulDoublePoint2D(getWidth.evaluate(currentLength / arcLength) / 2, normal0));
-                    Point2D vertex4 = (sideToCap == 1) ? addPoint2D(startPoint1, mulDoublePoint2D(getWidth.evaluate(currentLength / arcLength) / 2, normal1))
-                            : addPoint2D(startPoint1, mulDoublePoint2D(-getWidth.evaluate(currentLength / arcLength) / 2, normal1));
+                    Point2D vertex2 = (sideToCap == 1) ? midPoint : addPoint2D(endPoint0, mulDoublePoint2D(-l, normal0));
+                    Point2D vertex3 = (sideToCap == -1) ? midPoint : addPoint2D(endPoint0, mulDoublePoint2D(l, normal0));
+                    Point2D vertex4 = (sideToCap == 1) ? addPoint2D(startPoint1, mulDoublePoint2D(l, normal1)) : addPoint2D(startPoint1,
+                            mulDoublePoint2D(-l, normal1));
                     int vertexIndex2 = complex.addVertex(new GLVertex(vertex2));
                     int vertexIndex3 = complex.addVertex(new GLVertex(vertex3));
                     int vertexIndex4 = complex.addVertex(new GLVertex(vertex4));
@@ -366,7 +354,7 @@ public class LineTesselator {
                     } else {// from vertex2 to vertex 4
                         roundJoinMesh.addIndices(vertexIndex2); // first corner
                         for (int n = 1; n < nbJoinPoints; n++) { // round part
-                            double angle = alpha1 + n * (alpha2 - alpha1) / nbJoinPoints - Math.PI;
+                            double angle = n * (alpha2 - alpha1) / nbJoinPoints;
                             roundJoinMesh.addIndices(complex.addVertex(new GLVertex(addPoint2D(centerPoint, rotateVector(border1, angle)))));
                         }
                         roundJoinMesh.addIndices(vertexIndex4); // last corner
@@ -377,51 +365,63 @@ public class LineTesselator {
                 }
                     break;
                 }
-            } else {
-                // last point
-                endPoint0 = polyline[size - 1];
-                Point2D vertex2 = addPoint2D(endPoint0, mulDoublePoint2D(-getWidth.evaluate(currentLength / arcLength) / 2, normal0));
-                Point2D vertex3 = addPoint2D(endPoint0, mulDoublePoint2D(getWidth.evaluate(currentLength / arcLength) / 2, normal0));
-                int vertexIndex2 = complex.addVertex(new GLVertex(vertex2));
-                int vertexIndex3 = complex.addVertex(new GLVertex(vertex3));
-                // add triangles 
-                mesh.addIndices(vertexIndex0, vertexIndex1, vertexIndex2);
-                mesh.addIndices(vertexIndex1, vertexIndex2, vertexIndex3);
-                vertexIndex0 = vertexIndex2;
-                vertexIndex1 = vertexIndex3;
             }
         }
 
         // end Cap
         if (!closedLine) {
-            // treat last point (manage cap)
-            edge0 = edges[edgeCount - 1];
-            normal0 = normalize(new Point2D.Double(-edge0.getY(), edge0.getX()));
-            Point2D splitVertex = polyline[size - 1];
-            double l = getWidth.evaluate(currentLength / arcLength) / 2;
-            switch (cap) {
-            case BasicStroke.CAP_BUTT:
-                // BUTT is the default computation of start points
-                break;
-            case BasicStroke.CAP_SQUARE:
-                Point2D dec = mulDoublePoint2D(l, normalize(edge0));
-                GLVertex v0 = complex.getVertices().get(vertexIndex0);
-                GLVertex v1 = complex.getVertices().get(vertexIndex1);
-                v0.setXYZ(addPoint2D(new Point2D.Double(v0.getXYZ()[0], v0.getXYZ()[1]), dec));
-                v1.setXYZ(addPoint2D(new Point2D.Double(v1.getXYZ()[0], v1.getXYZ()[1]), dec));
-                break;
-            case BasicStroke.CAP_ROUND:
-                GLMesh capMesh = complex.addGLMesh(GL11.GL_TRIANGLE_FAN);
-                splitVertexIndex = complex.addVertex(new GLVertex(splitVertex));
-                capMesh.addIndex(splitVertexIndex);
-                int nbCapPoints = (int) (Math.PI / anglePrecision);
-                Point2D sideVector = mulDoublePoint2D(-getWidth.evaluate(currentLength / arcLength) / 2, normal0);
-                for (int n = 0; n <= nbCapPoints; n++) {
-                    double angle = n * Math.PI / nbCapPoints;
-                    capMesh.addIndex(complex.addVertex(new GLVertex(addPoint2D(splitVertex, rotateVector(sideVector, angle)))));
+            vertex0 = new Point2D.Double(complex.getVertices().get(vertexIndex0).getXYZ()[0], complex.getVertices().get(vertexIndex0).getXYZ()[1]);
+            vertex1 = new Point2D.Double(complex.getVertices().get(vertexIndex1).getXYZ()[0], complex.getVertices().get(vertexIndex1).getXYZ()[1]);
+            createCap(complex, l, cap, vertexIndex0, vertexIndex1, edge0, normal0, vertex0, vertex1, false);
+        }
+    }
+
+    /**
+     * @param complex
+     * @param getWidth
+     * @param cap
+     * @param arcLength
+     * @param currentLength
+     * @param vertexIndex0
+     * @param vertexIndex1
+     * @param edge0
+     * @param normal0
+     * @param vertex0
+     * @param vertex1
+     * @throws FunctionEvaluationException
+     */
+    private static void createCap(GLComplex complex, double l, int cap, int vertexIndex0, int vertexIndex1, Point2D edge0, Point2D normal0, Point2D vertex0,
+            Point2D vertex1, boolean startPoint) throws FunctionEvaluationException {
+        Point2D sideVector;
+        switch (cap) {
+        case BasicStroke.CAP_BUTT:
+            // BUTT is the default computation of start points
+            break;
+        case BasicStroke.CAP_SQUARE:
+            Point2D dec = mulDoublePoint2D(startPoint ? -l : l, normalize(edge0));
+            // retrieve lasts points and move them
+            GLVertex v0 = complex.getVertices().get(vertexIndex0);
+            GLVertex v1 = complex.getVertices().get(vertexIndex1);
+            v0.setXYZ(addPoint2D(new Point2D.Double(v0.getXYZ()[0], v0.getXYZ()[1]), dec));
+            v1.setXYZ(addPoint2D(new Point2D.Double(v1.getXYZ()[0], v1.getXYZ()[1]), dec));
+            break;
+        case BasicStroke.CAP_ROUND: {
+            GLMesh capMesh = complex.addGLMesh(GL11.GL_TRIANGLE_FAN);
+            Point2D splitVertex = mulDoublePoint2D(0.5, addPoint2D(vertex0, vertex1));
+            capMesh.addIndex(complex.addVertex(new GLVertex(splitVertex)));
+            int nbCapPoints = Math.max(3, (int) (Math.PI / anglePrecision));
+            sideVector = mulDoublePoint2D(l, normal0);
+            capMesh.addIndex(vertexIndex1);
+            for (int n = 1; n < nbCapPoints; n++) {
+                double angle = n * Math.PI / nbCapPoints;
+                if (!startPoint) {
+                    angle *= -1;
                 }
-                break;
+                capMesh.addIndex(complex.addVertex(new GLVertex(addPoint2D(splitVertex, rotateVector(sideVector, angle)))));
             }
+            capMesh.addIndex(vertexIndex0);
+        }
+            break;
         }
     }
 

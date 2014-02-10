@@ -62,9 +62,14 @@ public final class GLVertex {
      * Default constructor
      */
     public GLVertex() {
+        this.rgba[1] = 0f;
+        this.rgba[0] = 1f;
+        this.rgba[2] = 0f;
+        this.rgba[3] = 1f;
     }
 
     public GLVertex(GLVertex vertex) {
+        this();
         this.setXYZ(vertex.getXYZ());
         this.setUV(vertex.getUV());
         this.setRGBA(vertex.getRGBA());
@@ -74,6 +79,7 @@ public final class GLVertex {
      * Vertex constructor
      */
     public GLVertex(final float[] xyz) {
+        this();
         this.setXYZ(xyz);
     }
 
@@ -81,6 +87,7 @@ public final class GLVertex {
      * Vertex constructor
      */
     public GLVertex(final float[] xyz, final float[] uv) {
+        this();
         this.setXYZ(xyz);
         this.setUV(uv);
     }
@@ -89,6 +96,7 @@ public final class GLVertex {
      * Vertex constructor
      */
     public GLVertex(final float x, final float y, final float z) {
+        this();
         this.setXYZ(x, y, z);
     }
 
@@ -96,6 +104,7 @@ public final class GLVertex {
      * Vertex constructor
      */
     public GLVertex(final Point2D xy, final Point2D uv) {
+        this();
         this.setXYZ(xy);
         this.setUV(uv);
     }
@@ -104,6 +113,7 @@ public final class GLVertex {
      * Vertex constructor
      */
     public GLVertex(final Point2D xy, final Point2D uv, final Color c) {
+        this();
         this.setXYZ(xy);
         this.setUV(uv);
         this.setRGBA(c);
@@ -113,6 +123,7 @@ public final class GLVertex {
      * Vertex constructor
      */
     public GLVertex(final Point2D xy, final Color c) {
+        this();
         this.setXYZ(xy);
         this.setRGBA(c);
     }
@@ -121,6 +132,7 @@ public final class GLVertex {
      * Vertex constructor
      */
     public GLVertex(final Point2D xy) {
+        this();
         this.setXYZ(xy);
     }
 

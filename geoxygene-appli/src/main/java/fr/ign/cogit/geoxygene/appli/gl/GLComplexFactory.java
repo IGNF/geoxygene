@@ -11,15 +11,15 @@
  * Copyright (C) 2005 Institut Géographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
+ * the terms of the GNU Lesser General private License as published by the Free
  * Software Foundation; either version 2.1 of the License, or any later version.
  * 
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General private License for more
  * details.
  * 
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Lesser General private License
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
@@ -121,19 +121,6 @@ public class GLComplexFactory {
         return bernstein3(0, t) * v0 + bernstein3(1, t) * v1 + bernstein3(2, t) * v2 + bernstein3(3, t) * v3;
     }
 
-    //    /**
-    //     * Tesselate a java shape2D into a GLPrimitive
-    //     */
-    //    public static GLComplex createGLTrianglePrimitive() {
-    //        GLComplex primitive = new GLComplex();
-    //        GLMesh mesh = primitive.addGLMesh(GL11.GL_TRIANGLES);
-    //        int vertex1 = primitive.addVertex(new GLVertex(0.1f, 0.1f, 0.1f));
-    //        int vertex2 = primitive.addVertex(new GLVertex(.1f, .8f, 0.f));
-    //        int vertex3 = primitive.addVertex(new GLVertex(.8f, .8f, 0.f));
-    //        mesh.addIndices(vertex1, vertex2, vertex3);
-    //        return primitive;
-    //    }
-
     /****************************************************************************************************
      * LINES
      */
@@ -146,8 +133,7 @@ public class GLComplexFactory {
         GLComplex primitive = new GLComplex(minX, minY);
 
         for (ICurve curve : curves) {
-            GLComplex subComplex = createQuickLine(curve, colorizer, parameterizer, minX, minY);
-            primitive.addGLComplex(subComplex);
+            createQuickLine(primitive, curve, colorizer, parameterizer, minX, minY);
         }
         return primitive;
     }
@@ -155,7 +141,8 @@ public class GLComplexFactory {
     /**
      * Create a gl primitive that is just drawn as lines
      */
-    public static GLComplex createQuickLine(final ICurve curve, final Colorizer colorizer, final Parameterizer parameterizer, double minX, double minY) {
+    private static void createQuickLine(GLComplex primitive, final ICurve curve, final Colorizer colorizer, final Parameterizer parameterizer, double minX,
+            double minY) {
         if (parameterizer != null) {
             parameterizer.initializeParameterization();
         }
@@ -163,13 +150,26 @@ public class GLComplexFactory {
             colorizer.initializeColorization();
         }
 
-        GLComplex primitive = new GLComplex(minX, minY);
-        GLMesh outlineMesh = primitive.addGLMesh(GL11.GL_LINE_LOOP);
-        for (IDirectPosition p : curve.coord()) {
-            GLVertex vertex = new GLVertex((float) p.getX(), (float) p.getY(), (float) p.getZ());
+        GLMesh outlineMesh = primitive.addGLMesh(GL11.GL_LINE_STRIP);
+        for (IDirectPosition position : curve.coord()) {
+            double p[] = new double[3];
+            p[0] = position.getX() - minX;
+            p[1] = position.getY() - minY;
+            p[2] = 0; // position.getZ();
+            Point2d uv = DEFAULT_UV;
+            if (parameterizer != null) {
+                uv = parameterizer.getTextureCoordinates(p);
+            }
+            float[] rgba = DEFAULT_COLOR;
+            if (colorizer != null) {
+                rgba = colorizer.getColor(p);
+            }
+            GLVertex vertex = new GLVertex();
+            vertex.setXYZ((float) p[0], (float) p[1], (float) p[2]);
+            vertex.setUV((float) uv.x, (float) uv.y);
+            vertex.setRGBA(rgba[0], rgba[1], rgba[2], rgba[3]);
             outlineMesh.addIndex(primitive.addVertex(vertex));
         }
-        return primitive;
     }
 
     /****************************************************************************************************
@@ -183,22 +183,7 @@ public class GLComplexFactory {
         GLComplex primitive = new GLComplex(minX, minY);
 
         for (IPolygon polygon : polygons) {
-            GLComplex subComplex = createEmptyPolygon(polygon, colorizer, parameterizer, minX, minY);
-            primitive.addGLComplex(subComplex);
-        }
-        return primitive;
-    }
-
-    public static GLComplex createOutlineMultiSurface(List<IPolygon> multiSurface, BasicStroke stroke, double minX, double minY) {
-        GLComplex primitive = new GLComplex(minX, minY);
-
-        for (IOrientableSurface surface : multiSurface) {
-            if (IPolygon.class.isAssignableFrom(surface.getClass())) {
-                GLComplex subComplex = createOutlinePolygon((IPolygon) surface, stroke, minX, minY);
-                primitive.addGLComplex(subComplex);
-            } else {
-                logger.warn("Multi surface content is not polygons: " + surface.getClass().getSimpleName());
-            }
+            createQuickPolygon(primitive, polygon, colorizer, parameterizer, minX, minY);
         }
         return primitive;
     }
@@ -210,28 +195,16 @@ public class GLComplexFactory {
         GLComplex primitive = new GLComplex(minX, minY);
 
         for (IPolygon polygon : polygons) {
-            GLComplex subComplex = createFilledPolygon(polygon, colorizer, parameterizer, minX, minY);
-            primitive.addGLComplex(subComplex);
+            createFilledPolygon(primitive, polygon, colorizer, parameterizer, minX, minY);
         }
         return primitive;
     }
 
     /**
-     * Create a gl primitive which is a surface thick outline
-     */
-    public static GLComplex createOutlinePolygon(IPolygon polygon, BasicStroke stroke, double minX, double minY) {
-        List<Path2D> outlines = new ArrayList<Path2D>();
-        outlines.add(stroke(toShape(polygon.getExterior()), stroke));
-        for (IRing interior : polygon.getInterior()) {
-            outlines.add(stroke(toShape(interior), stroke));
-        }
-        return toGLComplex(outlines, minX, minY);
-    }
-
-    /**
      * Tesselate a java shape2D into a GLPrimitive
      */
-    public static GLComplex createEmptyPolygon(final IPolygon polygon, final Colorizer colorizer, final Parameterizer parameterizer, double minX, double minY) {
+    private static void createQuickPolygon(GLComplex primitive, final IPolygon polygon, final Colorizer colorizer, final Parameterizer parameterizer,
+            double minX, double minY) {
         if (parameterizer != null) {
             parameterizer.initializeParameterization();
         }
@@ -239,7 +212,6 @@ public class GLComplexFactory {
             colorizer.initializeColorization();
         }
 
-        GLComplex primitive = new GLComplex(minX, minY);
         GLMesh outlineMesh = primitive.addGLMesh(GL11.GL_LINE_LOOP);
         for (int outerFrontierPointIndex = 0; outerFrontierPointIndex < polygon.exteriorCoord().size(); outerFrontierPointIndex++) {
             IDirectPosition outerFrontierPoint = polygon.exteriorCoord().get(outerFrontierPointIndex);
@@ -296,14 +268,13 @@ public class GLComplexFactory {
         if (colorizer != null) {
             colorizer.initializeColorization();
         }
-        return primitive;
     }
 
     /**
      * Tesselate a polygon into a GLPrimitive
      */
-    public static GLComplex createFilledPolygon(final IPolygon polygon, final Colorizer colorizer, final Parameterizer parameterizer, double minX, double minY) {
-        GLComplex primitive = new GLComplex(minX, minY);
+    private static void createFilledPolygon(GLComplex primitive, final IPolygon polygon, final Colorizer colorizer, final Parameterizer parameterizer,
+            double minX, double minY) {
         if (parameterizer != null) {
             parameterizer.initializeParameterization();
         }
@@ -392,7 +363,6 @@ public class GLComplexFactory {
         if (colorizer != null) {
             colorizer.initializeColorization();
         }
-        return primitive;
     }
 
     /*************************************************************************************
@@ -401,21 +371,17 @@ public class GLComplexFactory {
     /**
      * Tesselate a list of java shape2D into a GLPrimitive
      */
-    public static GLComplex toGLComplex(final List<Path2D> outlines, double minX, double minY) {
+    public static void toGLComplex(GLComplex primitive, final List<Path2D> outlines, double minX, double minY) {
 
-        GLComplex primitive = new GLComplex(minX, minY);
         for (Path2D path : outlines) {
-            primitive.addGLComplex(toGLComplex(path, minX, minY));
+            toGLComplex(primitive, path, minX, minY);
         }
-        return primitive;
     }
 
     /**
      * Tesselate a java shape2D into a GLPrimitive
      */
-    public static GLComplex toGLComplex(final Path2D shape, double minX, double minY) {
-
-        GLComplex primitive = new GLComplex(minX, minY);
+    private static void toGLComplex(GLComplex primitive, final Path2D shape, double minX, double minY) {
 
         // tesselation
         GLUtessellator tesselator = gluNewTess();
@@ -555,14 +521,13 @@ public class GLComplexFactory {
         //
         //            System.err.println("type = " + mesh.getGlType() + " start = " + mesh.getFirstIndex() + " end = " + mesh.getLastIndex());
         //        }
-        return primitive;
     }
 
     private static Path2D stroke(Path2D shape, java.awt.Stroke stroke) {
         return (Path2D) stroke.createStrokedShape(shape);
     }
 
-    public static BasicStroke geoxygeneStrokeToAWTStroke(Viewport viewport, Symbolizer symbolizer) {
+    private static BasicStroke geoxygeneStrokeToAWTStroke(Viewport viewport, Symbolizer symbolizer) {
         float strokeOpacity = symbolizer.getStroke().getStrokeOpacity();
         if (strokeOpacity > 0f) {
 

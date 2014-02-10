@@ -462,4 +462,14 @@ public class GLComplex {
         this.invalidateBuffers();
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "GLComplex [#vertices=" + this.vertices.size() + ", #meshes=" + this.meshes.size() + ", minX=" + this.minX + ", minY=" + this.minY + "]";
+    }
+
 }

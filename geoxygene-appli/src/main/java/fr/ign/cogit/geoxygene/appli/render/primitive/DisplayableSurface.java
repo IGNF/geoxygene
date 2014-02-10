@@ -28,6 +28,7 @@
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -57,8 +58,8 @@ import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 public class DisplayableSurface extends AbstractTask implements GLDisplayable {
 
     private static final Logger logger = Logger.getLogger(DisplayableSurface.class.getName()); // logger
+    private static final Colorizer partialColorizer = new SolidColorizer(Color.blue);
 
-    private Viewport viewport = null;
     private final List<IPolygon> polygons = new ArrayList<IPolygon>();
     private Symbolizer symbolizer = null;
     private List<GLComplex> fullRepresentation = null;
@@ -76,7 +77,6 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable {
      */
     public DisplayableSurface(String name, Viewport viewport, IMultiSurface<?> multiSurface, Symbolizer symbolizer) {
         super(name);
-        this.viewport = viewport;
         this.symbolizer = symbolizer;
 
         for (Object polygon : multiSurface.getList()) {
@@ -94,9 +94,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable {
      */
     public DisplayableSurface(String name, Viewport viewport, IPolygon polygon, Symbolizer symbolizer) {
         super(name);
-        this.viewport = viewport;
         this.symbolizer = symbolizer;
-
         this.polygons.add(polygon);
     }
 
@@ -194,7 +192,6 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable {
         GLComplex outline = LineTesselator.createPolygonOutlines(this.polygons, symbolizer.getStroke(), minX, minY);
         outline.setColor(symbolizer.getStroke().getColor());
         complexes.add(outline);
-        // TODO
         this.fullRepresentation = complexes;
     }
 
@@ -233,7 +230,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable {
             IEnvelope envelope = IGeometryUtil.getEnvelope(this.polygons);
             double minX = envelope.minX();
             double minY = envelope.minY();
-            this.partialRepresentation = GLComplexFactory.createQuickPolygons(this.polygons, null, null, minX, minY);
+            this.partialRepresentation = GLComplexFactory.createQuickPolygons(this.polygons, partialColorizer, null, minX, minY);
         }
         this.displayIncrement();
         return this.partialRepresentation;

@@ -27,10 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
-import java.awt.BasicStroke;
-import java.awt.Shape;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -38,25 +35,16 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IBezier;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.LineTesselator;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
-import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.gl.DistanceFieldTexturedPolygonSymbolizer;
-import fr.ign.cogit.geoxygene.style.gl.TexturedPolygonSymbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 
 /**
@@ -67,7 +55,7 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
 
     private static final Logger logger = Logger.getLogger(DisplayableCurve.class.getName()); // logger
 
-    private Viewport viewport = null;
+    private static final Colorizer partialColorizer = new SolidColorizer(Color.red);
     private final List<ILineString> curves = new ArrayList<ILineString>();
     private Symbolizer symbolizer = null;
     private List<GLComplex> fullRepresentation = null;
@@ -85,14 +73,13 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
      */
     public DisplayableCurve(String name, Viewport viewport, IMultiCurve<?> multiCurve, Symbolizer symbolizer) {
         super(name);
-        this.viewport = viewport;
         this.symbolizer = symbolizer;
 
         for (Object lineString : multiCurve.getList()) {
             if (lineString instanceof ILineString) {
                 this.curves.add((ILineString) lineString);
             } else {
-                logger.warn("multisurface does not contains only ILineString but " + this.curves.getClass().getSimpleName());
+                logger.warn("multisurface does not contain only ILineString but " + this.curves.getClass().getSimpleName());
             }
         }
     }
@@ -162,6 +149,7 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
             LineSymbolizer lineSymbolizer = (LineSymbolizer) this.symbolizer;
             this.generateWithLineSymbolizer(lineSymbolizer);
         } else {
+            logger.error("Curve rendering do not handle " + this.symbolizer.getClass().getSimpleName());
             super.setState(TaskState.ERROR);
             return;
         }
@@ -182,7 +170,6 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
         line.setColor(symbolizer.getStroke().getColor());
         line.setOverallOpacity(symbolizer.getStroke().getColor().getAlpha());
         complexes.add(line);
-        // TODO
         this.fullRepresentation = complexes;
     }
 
@@ -198,7 +185,7 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
             IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
             double minX = envelope.minX();
             double minY = envelope.minY();
-            this.partialRepresentation = GLComplexFactory.createQuickLine(this.curves, null, null, minX, minY);
+            this.partialRepresentation = GLComplexFactory.createQuickLine(this.curves, partialColorizer, null, minX, minY);
         }
         this.displayIncrement();
         return this.partialRepresentation;

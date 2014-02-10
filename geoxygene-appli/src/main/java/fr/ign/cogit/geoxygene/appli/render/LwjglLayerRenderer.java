@@ -330,17 +330,17 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                                 if (this.isCancelled()) {
                                     return;
                                 }
-                                /// ////////////////////////////////////////////////////////////////////////////////////////////
-                                // FIXME: find a way to integrate/describe it into the SLD
-                                // bypass given symbolizers for some layers
-                                if (this.getLayer().getName().equals("PISTE_AERODROME")) {
-                                    symbolizer = this.generateDistanceFieldTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
-                                    //                                    symbolizer = this.generateTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
-                                }
-                                if (this.getLayer().getName().equals("mer_sans_sable")) {
-                                    symbolizer = this.generateDistanceFieldTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
-                                    //                                    symbolizer = this.generateTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
-                                }
+                                //                                /// ////////////////////////////////////////////////////////////////////////////////////////////
+                                //                                // FIXME: find a way to integrate/describe it into the SLD
+                                //                                // bypass given symbolizers for some layers
+                                //                                if (this.getLayer().getName().equals("PISTE_AERODROME")) {
+                                //                                    symbolizer = this.generateDistanceFieldTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
+                                //                                    //                                    symbolizer = this.generateTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
+                                //                                }
+                                //                                if (this.getLayer().getName().equals("mer_sans_sable")) {
+                                //                                    symbolizer = this.generateDistanceFieldTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
+                                //                                    //                                    symbolizer = this.generateTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(), feature);
+                                //                                }
                                 // FIXME: find a way to integrate/describe it into the SLD
                                 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
                                 this.render(symbolizer, feature, this.getLayer());
