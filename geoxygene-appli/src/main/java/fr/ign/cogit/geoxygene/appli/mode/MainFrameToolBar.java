@@ -128,6 +128,7 @@ public class MainFrameToolBar implements ContainerListener, KeyListener, MouseLi
 
         // Selection
         this.modes.add(new SelectionMode(this.getMainFrame(), this));
+        this.modes.add(new SelectionBoxMode(this.getMainFrame(), this));
 
         /*
          * ImageIcon deleteSelectionIcon = new ImageIcon(MainFrameToolBar.class
