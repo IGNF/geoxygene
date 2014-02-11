@@ -1136,7 +1136,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 TexturePixel pixel = this.texImage.getPixel(x, y);
                 if (pixel.in) {
                     //                    pixel.vGradient = new Point2d(Math.cos(pixel.mainDirection), Math.sin(pixel.mainDirection));
-                    pixel.vGradient = compute5VGradient(this.texImage, x, y);
+                    pixel.vGradient = computeGradient(this.texImage, x, y);
                 } else {
                     pixel.vGradient = null;
                 }
@@ -1196,7 +1196,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         } else if (pym1 == null && pyp1 != null) {
             dy = pyp1.vTexture - p.vTexture;
         }
-        return new Point2d(dx, dy);
+        return new Point2d(-dy, dx);
     }
 
     private static Point2d compute5VGradient(TextureImage image, int x, int y) {
@@ -1234,7 +1234,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         if (ySumWeight != 0) {
             yGradient /= ySumWeight;
         }
-        return new Point2d(xGradient, yGradient);
+        return new Point2d(-yGradient, xGradient);
     }
 
     /**
@@ -2078,13 +2078,15 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     private String applyBlurDistance(TextureImage sourceTexImage, int i) {
         this.texImage = new TextureImage(sourceTexImage);
         TextureImageUtil.blurDistance(this.texImage, i);
-        return i + " pixels distance-blur applied to initial image";
+        this.computeGradient();
+        return i + " pixels distance-blur applied to initial image. Gradient recomputed.";
     }
 
     private String applyBlurUV(TextureImage sourceTexImage, int i) {
         this.texImage = new TextureImage(sourceTexImage);
         TextureImageUtil.blurTextureCoordinates(this.texImage, i);
-        return i + " pixels UV-blur applied to initial image";
+        this.computeGradient();
+        return i + " pixels UV-blur applied to initial image. Gradient recomputed.";
     }
 
     public void setGradientScale(double gScale) {

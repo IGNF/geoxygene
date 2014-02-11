@@ -27,7 +27,6 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +34,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.geotools.graph.util.geom.GeometryUtil;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -189,7 +187,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable {
 
         //        BasicStroke awtStroke = GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport, symbolizer);
         //GLComplex outline = GLComplexFactory.createOutlineMultiSurface(this.polygons, awtStroke, minX, minY);
-        GLComplex outline = LineTesselator.createPolygonOutlines(this.polygons, symbolizer.getStroke(), minX, minY);
+        GLComplex outline = GLComplexFactory.createPolygonOutlines(this.polygons, symbolizer.getStroke(), minX, minY);
         outline.setColor(symbolizer.getStroke().getColor());
         complexes.add(outline);
         this.fullRepresentation = complexes;

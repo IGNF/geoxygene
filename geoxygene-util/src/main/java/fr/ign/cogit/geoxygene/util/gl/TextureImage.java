@@ -71,6 +71,7 @@ public class TextureImage {
             this.frontier = src.frontier;
             this.weightSum = src.weightSum;
             this.vGradient = src.vGradient == null ? null : new Point2d(src.vGradient);
+            this.mainDirection = src.mainDirection;
         }
 
         /*

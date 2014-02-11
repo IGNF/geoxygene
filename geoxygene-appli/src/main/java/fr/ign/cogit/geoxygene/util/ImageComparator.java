@@ -273,7 +273,6 @@ public class ImageComparator implements MouseMotionListener, MouseListener, Mous
             this.awtLayerViewPanel.repaint();
             while (this.awtLayerViewPanel.getRenderingManager().isRendering()) {
                 try {
-                    System.err.println("rendering " + String.valueOf(new Date().getTime()));
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

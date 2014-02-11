@@ -34,11 +34,11 @@ import static org.lwjgl.util.glu.GLU.GLU_TESS_VERTEX;
 import static org.lwjgl.util.glu.GLU.gluNewTess;
 
 import java.awt.BasicStroke;
+import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.vecmath.Point2d;
@@ -48,22 +48,22 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellator;
 
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ICurveSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Colorizer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer;
+import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLPrimitiveTessCallback;
 import fr.ign.cogit.geoxygene.util.gl.GLVertex;
+import fr.ign.cogit.geoxygene.util.math.Interpolation;
 
 /**
  * @author JeT
@@ -83,44 +83,6 @@ public class GLComplexFactory {
         // utility class
     }
 
-    // cubic bernstein polynom
-    static private float bernstein3(int i, float t) {
-        switch (i) {
-        case 0:
-            return (1 - t) * (1 - t) * (1 - t);
-        case 1:
-            return 3 * t * (1 - t) * (1 - t);
-        case 2:
-            return 3 * t * t * (1 - t);
-        case 3:
-            return t * t * t;
-        }
-        return 0; //we only get here if an invalid i is specified
-    }
-
-    // quadratic bernstein polynom
-    static private float bernstein2(int i, float t) {
-        switch (i) {
-        case 0:
-            return (1 - t) * (1 - t);
-        case 1:
-            return 2 * t * (1 - t);
-        case 2:
-            return t * t;
-        }
-        return 0; //we only get here if an invalid i is specified
-    }
-
-    //evaluate a point on the B spline
-    static double interpolateQuadratic(double v0, double v1, double v2, float t) {
-        return bernstein2(0, t) * v0 + bernstein2(1, t) * v1 + bernstein2(2, t) * v2;
-    }
-
-    //evaluate a point on the B spline
-    static double interpolateCubic(double v0, double v1, double v2, double v3, float t) {
-        return bernstein3(0, t) * v0 + bernstein3(1, t) * v1 + bernstein3(2, t) * v2 + bernstein3(3, t) * v3;
-    }
-
     /****************************************************************************************************
      * LINES
      */
@@ -133,7 +95,7 @@ public class GLComplexFactory {
         GLComplex primitive = new GLComplex(minX, minY);
 
         for (ICurve curve : curves) {
-            createQuickLine(primitive, curve, colorizer, parameterizer, minX, minY);
+            createQuickLine(primitive, curve, colorizer, parameterizer);
         }
         return primitive;
     }
@@ -141,8 +103,10 @@ public class GLComplexFactory {
     /**
      * Create a gl primitive that is just drawn as lines
      */
-    private static void createQuickLine(GLComplex primitive, final ICurve curve, final Colorizer colorizer, final Parameterizer parameterizer, double minX,
-            double minY) {
+    private static void createQuickLine(GLComplex primitive, final ICurve curve, final Colorizer colorizer, final Parameterizer parameterizer) {
+        double minX = primitive.getMinX();
+        double minY = primitive.getMinY();
+
         if (parameterizer != null) {
             parameterizer.initializeParameterization();
         }
@@ -183,7 +147,7 @@ public class GLComplexFactory {
         GLComplex primitive = new GLComplex(minX, minY);
 
         for (IPolygon polygon : polygons) {
-            createQuickPolygon(primitive, polygon, colorizer, parameterizer, minX, minY);
+            createQuickPolygon(primitive, polygon, colorizer, parameterizer);
         }
         return primitive;
     }
@@ -195,7 +159,7 @@ public class GLComplexFactory {
         GLComplex primitive = new GLComplex(minX, minY);
 
         for (IPolygon polygon : polygons) {
-            createFilledPolygon(primitive, polygon, colorizer, parameterizer, minX, minY);
+            createFilledPolygon(primitive, polygon, colorizer, parameterizer);
         }
         return primitive;
     }
@@ -203,8 +167,9 @@ public class GLComplexFactory {
     /**
      * Tesselate a java shape2D into a GLPrimitive
      */
-    private static void createQuickPolygon(GLComplex primitive, final IPolygon polygon, final Colorizer colorizer, final Parameterizer parameterizer,
-            double minX, double minY) {
+    private static void createQuickPolygon(GLComplex primitive, final IPolygon polygon, final Colorizer colorizer, final Parameterizer parameterizer) {
+        double minX = primitive.getMinX();
+        double minY = primitive.getMinY();
         if (parameterizer != null) {
             parameterizer.initializeParameterization();
         }
@@ -273,8 +238,10 @@ public class GLComplexFactory {
     /**
      * Tesselate a polygon into a GLPrimitive
      */
-    private static void createFilledPolygon(GLComplex primitive, final IPolygon polygon, final Colorizer colorizer, final Parameterizer parameterizer,
-            double minX, double minY) {
+    private static void createFilledPolygon(GLComplex primitive, final IPolygon polygon, final Colorizer colorizer, final Parameterizer parameterizer) {
+        double minX = primitive.getMinX();
+        double minY = primitive.getMinY();
+
         if (parameterizer != null) {
             parameterizer.initializeParameterization();
         }
@@ -365,24 +332,73 @@ public class GLComplexFactory {
         }
     }
 
+    public static GLComplex createQuickPoints(List<IGeometry> geometries, final Colorizer colorizer, final Parameterizer parameterizer, double minX, double minY) {
+        GLComplex primitive = new GLComplex(minX, minY);
+        GLMesh mesh = primitive.addGLMesh(GL11.GL_POINTS);
+
+        for (IGeometry geometry : geometries) {
+            createQuickPoints(primitive, mesh, geometry, colorizer, parameterizer);
+        }
+        return primitive;
+    }
+
+    private static void createQuickPoints(GLComplex primitive, GLMesh mesh, IGeometry geometry, final Colorizer colorizer, final Parameterizer parameterizer) {
+        double minX = primitive.getMinX();
+        double minY = primitive.getMinY();
+        double p[] = new double[3];
+        p[0] = geometry.centroid().getX() - minX;
+        p[1] = geometry.centroid().getY() - minY;
+        p[2] = 0; // Z
+        Point2d uv = DEFAULT_UV;
+        if (parameterizer != null) {
+            uv = parameterizer.getTextureCoordinates(p);
+        }
+        float[] rgba = DEFAULT_COLOR;
+        if (colorizer != null) {
+            rgba = colorizer.getColor(p);
+        }
+
+        GLVertex vertex = new GLVertex();
+        vertex.setXYZ((float) p[0], (float) p[1], (float) p[2]);
+        vertex.setUV((float) uv.x, (float) uv.y);
+        vertex.setRGBA(rgba);
+        mesh.addIndex(primitive.addVertex(vertex));
+    }
+
+    public static GLComplex createColorizedPoints(IGeometry geometry, final Colorizer colorizer, final Parameterizer parameterizer, double minX, double minY) {
+        GLComplex primitive = new GLComplex(minX, minY);
+
+        return primitive;
+    }
+
     /*************************************************************************************
      * SHAPE
      */
     /**
      * Tesselate a list of java shape2D into a GLPrimitive
      */
-    public static void toGLComplex(GLComplex primitive, final List<Path2D> outlines, double minX, double minY) {
+    public static GLComplex toGLComplex(final List<? extends Shape> shapes, double minX, double minY) {
+        GLComplex primitive = new GLComplex(minX, minY);
 
-        for (Path2D path : outlines) {
-            toGLComplex(primitive, path, minX, minY);
+        for (Shape shape : shapes) {
+            toGLComplex(primitive, shape);
         }
+        return primitive;
+    }
+
+    public static GLComplex toGLComplex(Shape shape, double minX, double minY) {
+        GLComplex primitive = new GLComplex(minX, minY);
+
+        toGLComplex(primitive, shape);
+        return primitive;
     }
 
     /**
      * Tesselate a java shape2D into a GLPrimitive
      */
-    private static void toGLComplex(GLComplex primitive, final Path2D shape, double minX, double minY) {
-
+    private static void toGLComplex(GLComplex primitive, final Shape shape) {
+        double minX = primitive.getMinX();
+        double minY = primitive.getMinY();
         // tesselation
         GLUtessellator tesselator = gluNewTess();
 
@@ -392,15 +408,19 @@ public class GLComplexFactory {
         tesselator.gluTessCallback(GLU_TESS_BEGIN, callback);
         tesselator.gluTessCallback(GLU_TESS_END, callback);
         tesselator.gluTessCallback(GLU_TESS_COMBINE, callback);
-        switch (shape.getWindingRule()) {
-        case Path2D.WIND_EVEN_ODD:
-            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_ODD);
-            break;
-        case Path2D.WIND_NON_ZERO:
-            tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_NONZERO);
-            break;
-        default:
-            logger.warn("unknown winding rule " + shape.getWindingRule());
+        if (shape instanceof Path2D) {
+            Path2D path = (Path2D) shape;
+
+            switch (path.getWindingRule()) {
+            case Path2D.WIND_EVEN_ODD:
+                tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_ODD);
+                break;
+            case Path2D.WIND_NON_ZERO:
+                tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_NONZERO);
+                break;
+            default:
+                logger.warn("unknown winding rule " + path.getWindingRule());
+            }
         }
 
         tesselator.gluTessBeginPolygon(null);
@@ -462,8 +482,8 @@ public class GLComplexFactory {
                 for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
                     float t = i / (float) BEZIER_SAMPLE_COUNT;
 
-                    double px = interpolateQuadratic(lastX, coords[0], coords[2], t);
-                    double py = interpolateQuadratic(lastY, coords[1], coords[3], t);
+                    double px = Interpolation.interpolateQuadratic(lastX, coords[0], coords[2], t);
+                    double py = Interpolation.interpolateQuadratic(lastY, coords[1], coords[3], t);
                     vertex = new double[] { px, py, 0 };
                     data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0, 0, 0 };
                     //                    System.err.println(" shape " + vertex[0] + " " + vertex[1]);
@@ -478,8 +498,8 @@ public class GLComplexFactory {
                 for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
                     float t = i / (float) BEZIER_SAMPLE_COUNT;
 
-                    double px = interpolateCubic(lastX, coords[0], coords[2], coords[4], t);
-                    double py = interpolateCubic(lastY, coords[1], coords[3], coords[5], t);
+                    double px = Interpolation.interpolateCubic(lastX, coords[0], coords[2], coords[4], t);
+                    double py = Interpolation.interpolateCubic(lastY, coords[1], coords[3], coords[5], t);
                     vertex = new double[] { px, py, 0 };
                     data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0, 0, 0 };
                     tesselator.gluTessVertex(vertex, 0, data);
@@ -523,7 +543,7 @@ public class GLComplexFactory {
         //        }
     }
 
-    private static Path2D stroke(Path2D shape, java.awt.Stroke stroke) {
+    private static Path2D stroke(Shape shape, java.awt.Stroke stroke) {
         return (Path2D) stroke.createStrokedShape(shape);
     }
 
@@ -557,4 +577,31 @@ public class GLComplexFactory {
         }
         return path;
     }
+
+    /**
+     * Create a polygon outline with the given "stroke"
+     * 
+     * @param polygons
+     * @param stroke
+     * @param minX
+     * @param minY
+     * @return
+     */
+    public static GLComplex createPolygonOutlines(List<IPolygon> polygons, Stroke stroke, double minX, double minY) {
+        return LineTesselator.createPolygonOutlines(polygons, stroke, minX, minY);
+    }
+
+    /**
+     * Create a polygon outline with the given "stroke"
+     * 
+     * @param polygons
+     * @param stroke
+     * @param minX
+     * @param minY
+     * @return
+     */
+    public static GLComplex createShapeOutline(Shape shape, Stroke stroke, double minX, double minY) {
+        return LineTesselator.createThickLine(shape, stroke, minX, minY);
+    }
+
 }

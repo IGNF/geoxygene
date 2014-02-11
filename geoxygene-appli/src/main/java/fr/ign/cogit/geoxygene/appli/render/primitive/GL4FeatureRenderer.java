@@ -73,12 +73,13 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.OpenGLException;
-import org.lwjgl.opengl.Util;
+
+import com.vividsolutions.jts.geom.MultiPoint;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
@@ -304,6 +305,9 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
                 DisplayableCurve displayableCurve = new DisplayableCurve(layer.getName() + "multicurve #" + feature.getId(), viewport,
                         (IMultiCurve<?>) geometry, symbolizer);
                 displayable = displayableCurve;
+            } else if (geometry.isPoint() || (geometry instanceof IMultiPoint)) {
+                DisplayablePoint displayablePoint = new DisplayablePoint(layer.getName() + "multipoint #" + feature.getId(), viewport, geometry, symbolizer);
+                displayable = displayablePoint;
             } else {
                 logger.warn("GL4FeatureRenderer cannot handle geometry type " + geometry.getClass().getSimpleName());
             }
@@ -358,10 +362,12 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
             this.setCurrentProgram(this.glColorProgramId);
             glEnable(GL_BLEND);
             glEnable(GL_LINE_SMOOTH);
+            glEnable(GL11.GL_POINT_SMOOTH);
             glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+            glHint(GL11.GL_POINT_SMOOTH_HINT, GL_NICEST);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-            this.wireframeRendering(primitive, 1f);
+            this.wireframeRendering(primitive, 1f, 3f);
         }
         if (!wireframe) {
             if (primitive.mayOverlap()) {
@@ -442,7 +448,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
             glEnable(GL_LINE_SMOOTH);
             glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            this.wireframeRendering(primitive, 1.f);
+            this.wireframeRendering(primitive, 1.f, 3f);
             GLTools.glCheckError("FBO Antialiasing wireframe rendering");
         }
         glDisable(GL11.GL_BLEND);
@@ -520,11 +526,12 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
     /**
      * @param primitive
      */
-    private void wireframeRendering(GLComplex primitive, float lineWidth) {
+    private void wireframeRendering(GLComplex primitive, float lineWidth, float pointSize) {
         this.setGLViewMatrix(this.getViewport(), primitive.getMinX(), primitive.getMinY());
         GL30.glBindVertexArray(primitive.getVaoId());
         glDisable(GL_TEXTURE_2D);  // if not set to disable, line smoothing won't work
         GL11.glLineWidth(lineWidth);
+        GL11.glPointSize(pointSize);
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
         this.drawComplex(primitive);
         GL30.glBindVertexArray(0);

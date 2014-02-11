@@ -19,8 +19,10 @@
 package fr.ign.cogit.geoxygene.appli.gl;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
+import java.awt.Shape;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -38,6 +40,7 @@ import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLVertex;
+import fr.ign.cogit.geoxygene.util.math.Interpolation;
 
 /**
  * Tesselator class specialized in tesselating lines (closed or opened)
@@ -51,6 +54,7 @@ public class LineTesselator {
     private static final double DEFAULT_AWT_MITERLIMIT = 10.;    // 10 is the default miter limit defined by java.awt.BasiStroke
     private static final double anglePrecision = Math.PI / 40;
     private static final double epsilon = 1E-6;
+    private static final int BEZIER_SAMPLE_COUNT = 20;
 
     /**
      * generate the outline of a collection of polygons
@@ -471,6 +475,84 @@ public class LineTesselator {
     }
 
     /**
+     * Tesselation of an ICurve (closed or open polyline or polycurve)
+     * 
+     * @param complex
+     * @param ring
+     * @param getWidth
+     * @param minX
+     * @param minY
+     * @throws FunctionEvaluationException
+     */
+    private static void tesselateThickLine(GLComplex complex, Shape shape, Function1D getWidth, int join, int cap, double miterLimit, double minX, double minY)
+            throws FunctionEvaluationException {
+        PathIterator iter = shape.getPathIterator(null);
+        float lastX = 0;
+        float lastY = 0;
+        float lastMoveX = 0;
+        float lastMoveY = 0;
+        float[] coords = new float[6];
+        List<Point2D> polyline = new ArrayList<Point2D>();
+        boolean closed = false;
+        while (!iter.isDone()) {
+
+            int currentSegment = iter.currentSegment(coords);
+            coords[0] -= minX;
+            coords[1] -= minY;
+            coords[2] -= minX;
+            coords[3] -= minY;
+            coords[4] -= minX;
+            coords[5] -= minY;
+            switch (currentSegment) {
+
+            case PathIterator.SEG_MOVETO:   // 1 point (2 vars) in coords
+                lastX = lastMoveX = coords[0];
+                lastY = lastMoveY = coords[1];
+                break;
+            case PathIterator.SEG_LINETO:   // 1 point
+                polyline.add(new Point2D.Double(coords[0], coords[1]));
+                lastX = coords[0];
+                lastY = coords[1];
+                break;
+
+            case PathIterator.SEG_QUADTO:   // 2 points (1 control point)
+                for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
+                    float t = i / (float) BEZIER_SAMPLE_COUNT;
+
+                    double px = Interpolation.interpolateQuadratic(lastX, coords[0], coords[2], t);
+                    double py = Interpolation.interpolateQuadratic(lastY, coords[1], coords[3], t);
+                    polyline.add(new Point2D.Double(px, py));
+                }
+                lastX = coords[2];
+                lastY = coords[3];
+                break;
+
+            case PathIterator.SEG_CUBICTO:  // 3 points (2 control points)
+                //                System.err.println("CUBIC FROM " + lastX + "x" + lastY + " TO " + coords[4] + "x" + coords[5]);
+                for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
+                    float t = i / (float) BEZIER_SAMPLE_COUNT;
+
+                    double px = Interpolation.interpolateCubic(lastX, coords[0], coords[2], coords[4], t);
+                    double py = Interpolation.interpolateCubic(lastY, coords[1], coords[3], coords[5], t);
+                    polyline.add(new Point2D.Double(px, py));
+                }
+                lastX = coords[4];
+                lastY = coords[5];
+                break;
+
+            case PathIterator.SEG_CLOSE:
+                lastX = lastMoveX;
+                lastY = lastMoveY;
+                closed = true;
+                break;
+            }
+            iter.next();
+        }
+
+        tesselateThickLine(complex, getWidth, polyline.toArray(new Point2D[] {}), join, cap, miterLimit, closed);
+    }
+
+    /**
      * Curve tesselation
      * 
      * @param curves
@@ -492,4 +574,47 @@ public class LineTesselator {
         }
         return complex;
     }
+
+    /**
+     * Curve tesselation
+     * 
+     * @param curves
+     * @param stroke
+     * @param minX
+     * @param minY
+     * @return
+     */
+    public static GLComplex createThickLine(ICurve curve, Stroke stroke, double minX, double minY) {
+        GLComplex complex = new GLComplex(minX, minY);
+
+        try {
+            tesselateThickLine(complex, curve, new ConstantFunction(stroke.getStrokeWidth()), stroke.getStrokeLineJoin(), stroke.getStrokeLineCap(),
+                    DEFAULT_AWT_MITERLIMIT, minX, minY);
+        } catch (FunctionEvaluationException e) {
+            logger.error(e);
+        }
+        return complex;
+    }
+
+    /**
+     * Curve tesselation
+     * 
+     * @param curves
+     * @param stroke
+     * @param minX
+     * @param minY
+     * @return
+     */
+    public static GLComplex createThickLine(Shape shape, Stroke stroke, double minX, double minY) {
+        GLComplex complex = new GLComplex(minX, minY);
+
+        try {
+            tesselateThickLine(complex, shape, new ConstantFunction(stroke.getStrokeWidth()), stroke.getStrokeLineJoin(), stroke.getStrokeLineCap(),
+                    DEFAULT_AWT_MITERLIMIT, minX, minY);
+        } catch (FunctionEvaluationException e) {
+            logger.error(e);
+        }
+        return complex;
+    }
+
 }
