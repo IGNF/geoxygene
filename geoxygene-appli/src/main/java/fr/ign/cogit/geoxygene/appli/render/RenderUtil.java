@@ -331,7 +331,7 @@ public final class RenderUtil {
         graphics.setColor(ColorUtil.getColorWithOpacity(color, opacity));
       } else {
         Color color = (mark.getStroke() == null) ? Color.black : mark
-            .getStroke().getColor();
+            .getStroke().getColor(feature);
         graphics.setColor(ColorUtil.getColorWithOpacity(color, opacity));
       }
       graphics.draw(markShape);
@@ -451,7 +451,7 @@ public final class RenderUtil {
     graphics.setStroke(symbolizer.getStroke().toAwtStroke(
         (float) scaleUOMToPixels));
     paintShadow(symbolizer, geometry, viewport, graphics, opacity);
-    if (symbolizer.getStroke().getColor() != null) {
+    if (symbolizer.getStroke().getColor(feature) != null) {
       List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, false);
       if (shapes != null) {
         // ColorMap
@@ -474,7 +474,7 @@ public final class RenderUtil {
 
         } else {
           graphics.setColor(ColorUtil.getColorWithOpacity(symbolizer
-              .getStroke().getColor(), opacity));
+              .getStroke().getColor(feature), opacity));
         }
         for (Shape shape : shapes) {
           graphics.draw(shape);
@@ -1093,18 +1093,18 @@ public final class RenderUtil {
             (float) scale);
         // Solid color
         Color color = ColorUtil.getColorWithOpacity(symbolizer.getStroke()
-            .getColor(), opacity);
+            .getColor(feature), opacity);
         graphics.setColor(color);
         if (feature.getGeom().isPolygon()) {
-          drawPolygon(symbolizer, (GM_Polygon) feature.getGeom(), viewport,
-              graphics, bs, opacity);
+          drawPolygon(symbolizer, feature, (GM_Polygon) feature.getGeom(),
+              viewport, graphics, bs, opacity);
         } else {
           if (GM_MultiSurface.class.isAssignableFrom(feature.getGeom()
               .getClass())) {
             for (IOrientableSurface surface : ((GM_MultiSurface<?>) feature
                 .getGeom())) {
-              drawPolygon(symbolizer, (GM_Polygon) surface, viewport, graphics,
-                  bs, opacity);
+              drawPolygon(symbolizer, feature, (GM_Polygon) surface, viewport,
+                  graphics, bs, opacity);
             }
           }
         }
@@ -1287,8 +1287,8 @@ public final class RenderUtil {
   }
 
   private static void drawPolygon(PolygonSymbolizer symbolizer,
-      GM_Polygon polygon, Viewport viewport, Graphics2D graphics,
-      BasicStroke stroke, double opacity) {
+      IFeature feature, GM_Polygon polygon, Viewport viewport,
+      Graphics2D graphics, BasicStroke stroke, double opacity) {
     if (polygon == null || viewport == null) {
       return;
     }
@@ -1310,7 +1310,7 @@ public final class RenderUtil {
     for (Shape shape : shapes) {
       Shape outline = stroke.createStrokedShape(shape);
       graphics.setColor(ColorUtil.getColorWithOpacity(symbolizer.getStroke()
-          .getColor(), opacity));
+          .getColor(feature), opacity));
       graphics.fill(outline);
     }
   }

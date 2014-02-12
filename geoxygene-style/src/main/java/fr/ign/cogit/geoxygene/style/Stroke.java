@@ -33,13 +33,16 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
+
 /**
  * @author Julien Perret
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Stroke {
 
-  static Logger logger = Logger.getLogger(Stroke.class.getName());
+  @SuppressWarnings("unused")
+  static private Logger logger = Logger.getLogger(Stroke.class.getName());
 
   @XmlElements({ @XmlElement(name = "GraphicFill", type = GraphicFill.class),
       @XmlElement(name = "GraphicStroke", type = GraphicStroke.class) })
@@ -82,6 +85,9 @@ public class Stroke {
   @XmlTransient
   private java.awt.Stroke awtStroke = null;
 
+  @XmlTransient
+  private PropertyName colorPropertyName;
+
   /**
    * Renvoie la valeur de l'attribut graphicType.
    * 
@@ -123,9 +129,17 @@ public class Stroke {
     synchronized (this.svgParameters) {
       for (SvgParameter parameter : this.svgParameters) {
         if (parameter.getName().equalsIgnoreCase("stroke")) { //$NON-NLS-1$
-          this.stroke = Color.decode(parameter.getValue());
+          if (parameter.getPropertyName() != null) {
+            this.colorPropertyName = parameter.getPropertyName();
+          } else if (parameter.getValue() != null) {
+            this.stroke = Color.decode(parameter.getValue().trim());
+          }
         } else if (parameter.getName().equalsIgnoreCase("color")) { //$NON-NLS-1$
-          this.stroke = new Color(Integer.parseInt(parameter.getValue()));
+          if (parameter.getPropertyName() != null) {
+            this.colorPropertyName = parameter.getPropertyName();
+          } else if (parameter.getValue() != null) {
+            this.stroke = Color.decode(parameter.getValue().trim());
+          }
         } else if (parameter.getName().equalsIgnoreCase("stroke-opacity")) { //$NON-NLS-1$
           this.strokeOpacity = Float.parseFloat(parameter.getValue());
         } else if (parameter.getName().equalsIgnoreCase("stroke-width")) { //$NON-NLS-1$
@@ -138,6 +152,7 @@ public class Stroke {
           this.setStrokeDashArray(parameter.getValue());
         } else if (parameter.getName().equalsIgnoreCase("stroke-dashoffset")) { //$NON-NLS-1$
           this.setStrokeDashOffset(parameter.getValue());
+
         }
       }
     }
@@ -195,6 +210,15 @@ public class Stroke {
    */
   public float getStrokeOpacity() {
     return this.strokeOpacity;
+  }
+
+  /**
+   * Renvoie la valeur de l'attribut strokeOpacity.
+   * 
+   * @return la valeur de l'attribut strokeOpacity
+   */
+  public float getStrokeOpacity(Object object) {
+    return this.getStrokeOpacity();
   }
 
   /**
@@ -511,6 +535,31 @@ public class Stroke {
       }
     }
     return this.color;
+  }
+
+  /**
+   * Returns the color of the stroke, considering the opacity attribute.
+   * 
+   * @return The color of the stroke, considering the opacity attribute.
+   */
+  public synchronized Color getColor(Object object) {
+
+    if (object == null) {
+      return this.getColor();
+    }
+    if (this.colorPropertyName == null) {
+      this.updateValues();
+    }
+    if (this.colorPropertyName == null) {
+      return this.getColor();
+    } else {
+      Color compColor = (Color) this.colorPropertyName.evaluate(object);
+      if (this.getStrokeOpacity(object) != 1.0f) {
+        compColor = new Color(compColor.getRed(), compColor.getGreen(),
+            compColor.getBlue(), (int) (this.getStrokeOpacity(object) * 255f));
+      }
+      return compColor;
+    }
   }
 
   /**

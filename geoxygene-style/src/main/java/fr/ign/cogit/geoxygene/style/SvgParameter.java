@@ -28,10 +28,18 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMixed;
+
+import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 
 /**
  * @author Julien Perret
@@ -39,6 +47,9 @@ import javax.xml.bind.annotation.XmlValue;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SvgParameter {
+
+  @SuppressWarnings("unused")
+  static private Logger LOGGER = Logger.getLogger(SvgParameter.class.getName());
 
   @XmlAttribute
   private String name;
@@ -59,15 +70,31 @@ public class SvgParameter {
     this.name = name;
   }
 
-  @XmlValue
-  private String value;
+  @XmlMixed
+  private List<String> values;
+
+  public List<String> getValues() {
+    return values;
+  }
+
+  public void setValues(List<String> values) {
+    this.values = values;
+  }
+
+  // private String value;
 
   /**
    * Renvoie la valeur de l'attribut value.
    * @return la valeur de l'attribut value
    */
   public String getValue() {
-    return this.value;
+    if (values == null) {
+      return null;
+    }
+    if (values.size() == 0) {
+      return null;
+    }
+    return values.get(0);
   }
 
   /**
@@ -75,6 +102,18 @@ public class SvgParameter {
    * @param value l'attribut value à affecter
    */
   public void setValue(String value) {
-    this.value = value;
+    this.values = new ArrayList<String>();
+    this.values.add(value);
+  }
+
+  @XmlElement(name = "PropertyName")
+  private PropertyName propertyName;
+
+  public PropertyName getPropertyName() {
+    return this.propertyName;
+  }
+
+  public void setPropertyName(PropertyName propertyName) {
+    this.propertyName = propertyName;
   }
 }
