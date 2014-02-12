@@ -477,7 +477,7 @@ public class Stroke {
    * @param scale facteur d'échelle
    * @return le strokeDashArray avec un facteur d'échelle
    */
-  public float[] getStrokeDashArray(float scale) {
+  public synchronized float[] getStrokeDashArray(float scale) {
     if (this.strokeDashArray == null) {
       return null;
     }
@@ -512,6 +512,7 @@ public class Stroke {
    * @param value
    */
   private void setStrokeDashArray(String value) {
+
     String[] values = value.split(" "); //$NON-NLS-1$
     this.strokeDashArray = new float[values.length];
     for (int index = 0; index < values.length; index++) {
