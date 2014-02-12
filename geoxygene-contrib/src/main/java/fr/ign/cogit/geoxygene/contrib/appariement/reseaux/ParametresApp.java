@@ -518,7 +518,7 @@ public class ParametresApp implements Cloneable {
       param.populationsArcsAvecOrientationDouble1 = true;
     }
     
-    if (p.get("direction1", "populationsArcsAvecOrientationDouble") != null) {
+    if (p.get("direction2", "populationsArcsAvecOrientationDouble") != null) {
       boolean double2 = Boolean.parseBoolean(p.get("direction2", "populationsArcsAvecOrientationDouble").toString());
       if (double2) {
         param.populationsArcsAvecOrientationDouble2 = true;
