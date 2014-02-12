@@ -519,6 +519,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
         for (Feat feature : this) {
           if (feature.getGeom() == null) {
             logger.debug("Feature with null geom " + feature);
+            continue;
           }
           if (feature.getGeom().distance(P.toGM_Point()) <= D) {
             selectedFeatures.add(feature);

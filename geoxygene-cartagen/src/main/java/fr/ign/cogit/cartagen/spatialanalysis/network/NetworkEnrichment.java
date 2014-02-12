@@ -138,6 +138,21 @@ public class NetworkEnrichment {
 
   }
 
+  public static void enrichNetworkWithoutMergingNodes(CartAGenDataSet dataset,
+      INetwork net, AbstractCreationFactory factory) {
+
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("topology creation for " + net);
+    }
+    NetworkEnrichment.buildTopologyWithoutMergingNodes(dataset, net, false,
+        factory);
+
+    if (NetworkEnrichment.logger.isDebugEnabled()) {
+      NetworkEnrichment.logger.debug("nodes importance computation for " + net);
+    }
+
+  }
+
   /**
    * Builds the topology of a network. The network is supposed to be constituted
    * of linear geometries with common extremities. This method builds the
@@ -300,6 +315,80 @@ public class NetworkEnrichment {
 
     }
 
+  }
+
+  /**
+   * Builds the topology of a network. The network is supposed to be constituted
+   * of linear geometries with common extremities. This method builds the
+   * topological map of the network anf its nodes
+   * @param net
+   * @param deleted true if deleted sections of the network have to be included
+   */
+  public static void buildTopologyWithoutMergingNodes(CartAGenDataSet dataset,
+      INetwork net, boolean deleted, AbstractCreationFactory factory) {
+
+    // if necessary
+    NetworkEnrichment.destroyTopology(net);
+
+    // topo map construction
+    net.setCarteTopo(new CarteTopo("cartetopo"));
+    if (deleted)
+      net.getCarteTopo().importClasseGeo(net.getSections(), true);
+    else
+      net.getCarteTopo().importClasseGeo(net.getNonDeletedSections(), true);
+
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("Nodes creation");
+    }
+    net.getCarteTopo().creeNoeudsManquants(1.0);
+
+    // Creates the nodes
+    // The node-section topology in CartAGen is updated through the constructor
+    // of nodes
+    for (Noeud n : net.getCarteTopo().getPopNoeuds()) {
+
+      if (NetworkEnrichment.logger.isInfoEnabled()) {
+        NetworkEnrichment.logger.info("Add node " + n + " in population");
+      }
+
+      try {
+        @SuppressWarnings("unchecked")
+        Class<INetworkNode> nodeClass = (Class<INetworkNode>) net.getSections()
+            .get(0).getClass().getField("associatedNodeClass").get(null);
+
+        if (NetworkEnrichment.logger.isDebugEnabled()) {
+          logger.debug("sectionClass " + net.getSections().get(0).getClass());
+
+          logger.debug("nodeClass " + nodeClass);
+        }
+        Class<?>[] parametersType = { Noeud.class };
+        Constructor<INetworkNode> constructor = nodeClass
+            .getConstructor(parametersType);
+        @SuppressWarnings("unchecked")
+        IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) dataset
+            .getCartagenPop(dataset.getPopNameFromClass(nodeClass),
+                (String) nodeClass.getField("FEAT_TYPE_NAME").get(null));
+        if (NetworkEnrichment.logger.isDebugEnabled()) {
+          logger.debug("population " + pop.getNom());
+        }
+        Object[] parameters = { n };
+        pop.add(constructor.newInstance(parameters));
+      } catch (SecurityException e) {
+        e.printStackTrace();
+      } catch (NoSuchFieldException e) {
+        e.printStackTrace();
+      } catch (IllegalArgumentException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      } catch (InstantiationException e) {
+        e.printStackTrace();
+      } catch (InvocationTargetException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
