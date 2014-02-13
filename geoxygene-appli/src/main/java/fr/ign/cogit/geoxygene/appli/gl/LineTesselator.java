@@ -252,7 +252,20 @@ public class LineTesselator {
             } else if (turnDirection < -epsilon) {
                 sideToCap = -1;
             } else {
-                // if points are exactly aligned, we can go directly to the next point. This one is useless
+                // if points are exactly aligned, we can go directly to the next point.
+                // if there is only two points in the line, add triangles
+                if (edgeCount == 1) {
+                    // last point
+                    Point2D vertex2 = addPoint2D(endPoint0, mulDoublePoint2D(-l, normal0));
+                    Point2D vertex3 = addPoint2D(endPoint0, mulDoublePoint2D(l, normal0));
+                    int vertexIndex2 = complex.addVertex(new GLVertex(vertex2));
+                    int vertexIndex3 = complex.addVertex(new GLVertex(vertex3));
+                    // add triangles 
+                    mesh.addIndices(vertexIndex0, vertexIndex1, vertexIndex2);
+                    mesh.addIndices(vertexIndex1, vertexIndex2, vertexIndex3);
+                    vertexIndex0 = vertexIndex2;
+                    vertexIndex1 = vertexIndex3;
+                }
                 continue;
             }
             l = getWidth.evaluate(currentLength / arcLength) / 2;
