@@ -27,55 +27,23 @@
 
 package test.app;
 
-import javax.vecmath.Point2d;
-
 /**
  * @author JeT
- * 
+ *         Probabilistic function for tile apparition in a textured image
  */
-public class Sample {
-
-    private Point2d location = null;
-    public static final Point2d origin = new Point2d(0, 0);
+public interface TileProbability {
 
     /**
-     * Default constructor
-     */
-    public Sample() {
-        this(origin);
-    }
-
-    public Sample(Point2d location) {
-        this.location = new Point2d(location);
-    }
-
-    public Sample(double x, double y) {
-        this(new Point2d(x, y));
-    }
-
-    /**
-     * @return the location
-     */
-    public Point2d getLocation() {
-        return this.location;
-    }
-
-    /**
-     * @param location
-     *            the location to set
-     */
-    public void setLocation(Point2d location) {
-        this.location = location;
-    }
-
-    /*
-     * (non-Javadoc)
+     * return a probability of apparition. probability should be between 0 & 1
+     * but may
+     * be composed with other probability. 1 is not exactly the probabilistic
+     * "sure" value
      * 
-     * @see java.lang.Object#toString()
+     * @param x
+     *            position in texture image
+     * @param y
+     *            position in texture image
+     * @return
      */
-    @Override
-    public String toString() {
-        return "Sample [location=" + this.location + "]";
-    }
-
+    double getProbability(double x, double y);
 }

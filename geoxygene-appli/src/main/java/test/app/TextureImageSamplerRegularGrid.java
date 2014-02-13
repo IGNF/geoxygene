@@ -40,7 +40,7 @@ import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
  * @author JeT
  * 
  */
-public class TextureImageSampler implements SamplingAlgorithm {
+public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
 
     private TextureImage image = null;
     private double scale = 1;
@@ -52,12 +52,11 @@ public class TextureImageSampler implements SamplingAlgorithm {
     /**
      * Default constructor
      */
-    public TextureImageSampler(TextureImage image, double sampleX, double sampleY, double scale) {
+    public TextureImageSamplerRegularGrid(TextureImage image, double sampleX, double sampleY, double scale) {
         this.image = image;
         this.scale = scale;
         this.sampleX = sampleX;
         this.sampleY = sampleY;
-        this.computeSamples();
     }
 
     /**
@@ -73,6 +72,11 @@ public class TextureImageSampler implements SamplingAlgorithm {
      */
     public void setJitteringFactor(double jitteringFactor) {
         this.jitteringFactor = jitteringFactor;
+        this.invalidateSamples();
+    }
+
+    private void invalidateSamples() {
+        this.samples = null;
     }
 
     /**
@@ -88,6 +92,7 @@ public class TextureImageSampler implements SamplingAlgorithm {
      */
     public void setScale(double scale) {
         this.scale = scale;
+        this.invalidateSamples();
     }
 
     private void computeSamples() {

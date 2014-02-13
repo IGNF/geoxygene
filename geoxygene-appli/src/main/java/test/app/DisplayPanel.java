@@ -25,6 +25,7 @@ import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -40,6 +41,7 @@ import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
 
+import utils.Pair;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -146,8 +148,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     private int clickX = -1, clickY = -1;
     private String viz = "U";
     private String gradientViz = "None";
-    private BufferedImage textureToBeApplied = null;
-    private final List<BufferedImage> tileToBeApplied = new ArrayList<BufferedImage>();
+    private final BufferedImage textureToBeApplied = null;
+    private final List<Pair<TileProbability, BufferedImage>> tileToBeApplied = new ArrayList<Pair<TileProbability, BufferedImage>>();
     private RepeatType uRepeat = RepeatType.Repeat;
     private RepeatType vRepeat = RepeatType.Repeat;
     private BufferedImage bi = null;
@@ -165,19 +167,6 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         this.addMouseMotionListener(this);
         this.addMouseWheelListener(this);
         this.addMouseListener(this);
-        try {
-            this.textureToBeApplied = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini.png")), BufferedImage.TYPE_INT_ARGB);
-            BufferedImage tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/cassini mer 1.png")), BufferedImage.TYPE_INT_ARGB);
-            this.tileToBeApplied.add(this.softenEdgeTexture(tileTexture));
-            tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/cassini mer 2.png")), BufferedImage.TYPE_INT_ARGB);
-            this.tileToBeApplied.add(this.softenEdgeTexture(tileTexture));
-            tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/cassini mer 3.png")), BufferedImage.TYPE_INT_ARGB);
-            this.tileToBeApplied.add(this.softenEdgeTexture(tileTexture));
-
-        } catch (IOException e) {
-            logger.error(e);
-            e.printStackTrace();
-        }
         this.updateContent();
     }
 
@@ -278,6 +267,37 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         Collections.sort(this.segments, new SegmentComparator());
         this.pixelRenderer = null;
         this.modifiedPixels.clear();
+
+        DistanceTileProbability closeProbability = new DistanceTileProbability(this.texImage, Double.NEGATIVE_INFINITY, 100, 1, 0);
+        DistanceTileProbability mediumProbability = new DistanceTileProbability(this.texImage, 100, 200, 1, 0);
+        DistanceTileProbability farProbability = new DistanceTileProbability(this.texImage, 200, Double.POSITIVE_INFINITY, 0, 0);
+        DistanceTileProbability allProbability = new DistanceTileProbability(this.texImage, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 1, 0);
+        try {
+
+            //            this.textureToBeApplied = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini.png")), BufferedImage.TYPE_INT_ARGB);
+            //            BufferedImage tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini big tile.png")), BufferedImage.TYPE_INT_ARGB);
+            //            this.tileToBeApplied.add(tileTexture);
+            BufferedImage tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini1 BW softedges.png")),
+                    BufferedImage.TYPE_INT_ARGB);
+            //            this.tileToBeApplied.add(tileTexture);
+            this.tileToBeApplied.add(new Pair<TileProbability, BufferedImage>(closeProbability, this.softenEdgeTexture(tileTexture)));
+            //            tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini2 BW softedges.png")), BufferedImage.TYPE_INT_ARGB);
+            //            //            this.tileToBeApplied.add(tileTexture);
+            //            this.tileToBeApplied.add(this.softenEdgeTexture(tileTexture));
+            tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini3 BW softedges.png")), BufferedImage.TYPE_INT_ARGB);
+            this.tileToBeApplied.add(new Pair<TileProbability, BufferedImage>(closeProbability, this.softenEdgeTexture(tileTexture)));
+            //            this.tileToBeApplied.add(tileTexture);
+
+            tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini4 BW softedges.png")), BufferedImage.TYPE_INT_ARGB);
+            this.tileToBeApplied.add(new Pair<TileProbability, BufferedImage>(mediumProbability, this.softenEdgeTexture(tileTexture)));
+            tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini5 BW softedges.png")), BufferedImage.TYPE_INT_ARGB);
+            this.tileToBeApplied.add(new Pair<TileProbability, BufferedImage>(mediumProbability, this.softenEdgeTexture(tileTexture)));
+
+        } catch (IOException e) {
+            logger.error(e);
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -379,20 +399,35 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 this.screenSpace = true;
             } else if (this.viz.equals("UV pixel tile")) {
                 int y = 0;
-                for (BufferedImage tileTexture : this.tileToBeApplied) {
+                double min = Double.POSITIVE_INFINITY;
+                for (Pair<TileProbability, BufferedImage> pairTileTexture : this.tileToBeApplied) {
+                    BufferedImage tileTexture = pairTileTexture.second();
+                    if (tileTexture.getWidth() < min) {
+                        min = tileTexture.getWidth();
+                    }
+                    if (tileTexture.getHeight() < min) {
+                        min = tileTexture.getHeight();
+                    }
                     g2.drawImage(tileTexture, null, 1, y + 1);
                     g2.setColor(Color.black);
                     g2.drawRect(0, y, tileTexture.getWidth() + 2, tileTexture.getHeight() + 2);
                     y += tileTexture.getHeight() + 2;
                 }
-                double scale = this.transform.getScaleX();
-                double sampleX = 50;
-                double sampleY = 25;
-                TextureImageSampler sampler = new TextureImageSampler(this.texImage, sampleX, sampleY, scale);
-                sampler.setJitteringFactor(1);
-                this.bi = this
+                double minDistance = min / 1.5 / this.transform.getScaleX();
+                double minVDistance = min / 1.5 / this.transform.getScaleX();
+                //                System.err.println("minDistance = " + minDistance + " min V Distance = " + minVDistance);
+                TextureImageSamplerUVSampler sampler = new TextureImageSamplerUVSampler(this.texImage, minDistance, minVDistance);
+                //                System.err.println(sampler.getSamples().size() + " samples generated");
+                //                for (Sample sample : sampler.getSamples()) {
+                //                    System.err.println("sample " + sample);
+                //                }
+                //                double scale = this.transform.getScaleX();
+                //                double sampleX = 5;
+                //                double sampleY = 5;
+                //                TextureImageSamplerRegularGrid sampler = new TextureImageSamplerRegularGrid(this.texImage, sampleX, sampleY, scale);
+                //                sampler.setJitteringFactor(0.3);
+                this.bi = this.toBufferedImagePixelUVTile(this.texImage, this.tileToBeApplied, sampler, this.featureShape);
 
-                .toBufferedImagePixelUVTile(this.texImage, this.tileToBeApplied, sampler, this.featureShape);
                 this.screenSpace = true;
 
             } else if (this.viz.equals("Distance HSV")) {
@@ -523,59 +558,59 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
 
     private static void addModifiedPointsOnBufferedImage(BufferedImage bi, Set<Point> modifiedPixels) {
         for (Point p : modifiedPixels) {
-            int color = bi.getRGB(p.x, p.y);
+            //            int color = bi.getRGB(p.x, p.y);
             bi.setRGB(p.x, p.y, Color.blue.getRGB());
         }
 
     }
 
-    private static BufferedImage toBufferedImageUVSum(TextureImage image) {
-        image.invalidateUVBounds();
-        double uMin = Double.MAX_VALUE;
-        double uMax = -Double.MAX_VALUE;
-        double vMin = Double.MAX_VALUE;
-        double vMax = -Double.MAX_VALUE;
-
-        for (int y = 0; y < image.getHeight(); y++) {
-            for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
-                if (pixel.in) {
-                    double u = pixel.uTextureWeightSum < 1E-6 ? 0. : pixel.uTexture / pixel.uTextureWeightSum;
-                    double v = pixel.vTextureWeightSum < 1E-6 ? 0. : pixel.vTexture / pixel.vTextureWeightSum;
-                    if (u < uMin) {
-                        uMin = u;
-                    }
-                    if (u > uMax) {
-                        uMax = u;
-                    }
-                    if (v < vMin) {
-                        vMin = v;
-                    }
-                    if (v > vMax) {
-                        vMax = v;
-                    }
-                }
-            }
-        }
-        BufferedImage bi = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        for (int y = 0; y < image.getHeight(); y++) {
-            for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
-                double u = pixel.uTextureWeightSum < 1E-6 ? 0. : pixel.uTexture / pixel.uTextureWeightSum;
-                double v = pixel.vTextureWeightSum < 1E-6 ? 0. : pixel.vTexture / pixel.vTextureWeightSum;
-                double u1 = (u - uMin) / (uMax - uMin);
-                double v1 = (v - vMin) / (vMax - vMin);
-                Color c = Color.getHSBColor((float) u1, 1f, 1f);
-                if (!pixel.in) {
-                    c = new Color(c.getRed() / 3, c.getGreen() / 3, c.getBlue() / 3);
-                } else if (pixel.distance == 0) {
-                    c = new Color((int) Math.min(c.getRed() * 1.2, 255), (int) Math.min(c.getGreen() * 1.2, 255), (int) Math.min(c.getBlue() * 1.2, 255));
-                }
-                bi.setRGB(x, y, c.getRGB());
-            }
-        }
-        return bi;
-    }
+    //    private static BufferedImage toBufferedImageUVSum(TextureImage image) {
+    //        image.invalidateUVBounds();
+    //        double uMin = Double.MAX_VALUE;
+    //        double uMax = -Double.MAX_VALUE;
+    //        double vMin = Double.MAX_VALUE;
+    //        double vMax = -Double.MAX_VALUE;
+    //
+    //        for (int y = 0; y < image.getHeight(); y++) {
+    //            for (int x = 0; x < image.getWidth(); x++) {
+    //                TexturePixel pixel = image.getPixel(x, y);
+    //                if (pixel.in) {
+    //                    double u = pixel.uTextureWeightSum < 1E-6 ? 0. : pixel.uTexture / pixel.uTextureWeightSum;
+    //                    double v = pixel.vTextureWeightSum < 1E-6 ? 0. : pixel.vTexture / pixel.vTextureWeightSum;
+    //                    if (u < uMin) {
+    //                        uMin = u;
+    //                    }
+    //                    if (u > uMax) {
+    //                        uMax = u;
+    //                    }
+    //                    if (v < vMin) {
+    //                        vMin = v;
+    //                    }
+    //                    if (v > vMax) {
+    //                        vMax = v;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        BufferedImage bi = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    //        for (int y = 0; y < image.getHeight(); y++) {
+    //            for (int x = 0; x < image.getWidth(); x++) {
+    //                TexturePixel pixel = image.getPixel(x, y);
+    //                double u = pixel.uTextureWeightSum < 1E-6 ? 0. : pixel.uTexture / pixel.uTextureWeightSum;
+    //                double v = pixel.vTextureWeightSum < 1E-6 ? 0. : pixel.vTexture / pixel.vTextureWeightSum;
+    //                double u1 = (u - uMin) / (uMax - uMin);
+    //                double v1 = (v - vMin) / (vMax - vMin);
+    //                Color c = Color.getHSBColor((float) u1, 1f, 1f);
+    //                if (!pixel.in) {
+    //                    c = new Color(c.getRed() / 3, c.getGreen() / 3, c.getBlue() / 3);
+    //                } else if (pixel.distance == 0) {
+    //                    c = new Color((int) Math.min(c.getRed() * 1.2, 255), (int) Math.min(c.getGreen() * 1.2, 255), (int) Math.min(c.getBlue() * 1.2, 255));
+    //                }
+    //                bi.setRGB(x, y, c.getRGB());
+    //            }
+    //        }
+    //        return bi;
+    //    }
 
     private static BufferedImage toBufferedImageDistance(TextureImage image, Color c1, Color c2) {
         image.invalidateUVBounds();
@@ -709,7 +744,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return bi;
     }
 
-    private BufferedImage toBufferedImagePixelUVTile(TextureImage image, List<BufferedImage> textures, SamplingAlgorithm sampler, Shape clippingShape) {
+    private BufferedImage toBufferedImagePixelUVTile(TextureImage image, List<Pair<TileProbability, BufferedImage>> tilesToBeApplied,
+            SamplingAlgorithm sampler, Shape clippingShape) {
 
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -717,6 +753,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         g2.setComposite(AlphaComposite.Clear);
         g2.fillRect(0, 0, this.getWidth(), this.getHeight());
         g2.setComposite(AlphaComposite.SrcOver);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         if (clippingShape != null) {
             Shape screenSpaceShape = this.transform.createTransformedShape(clippingShape);
             g2.setClip(screenSpaceShape);
@@ -724,10 +761,13 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         Iterator<Sample> sampleIterator = sampler.getSampleIterator();
         Random rand = new Random(0);
         while (sampleIterator.hasNext()) {
-            BufferedImage texture = this.tileToBeApplied.get(rand.nextInt(this.tileToBeApplied.size()));
             Sample sample = sampleIterator.next();
             double xTexture = sample.getLocation().x;
             double yTexture = sample.getLocation().y;
+            BufferedImage texture = this.chooseTextureToApply(xTexture, yTexture, rand, tilesToBeApplied);
+            if (texture == null) {
+                continue;
+            }
             Point2D screenPixelLocation = new Point2D.Double();
             this.transform.transform(new Point2D.Double(xTexture, yTexture), screenPixelLocation);
 
@@ -747,7 +787,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 transform.rotate(pixel.vGradient.x, pixel.vGradient.y, texture.getWidth() / 2, texture.getHeight() / 2);
 
                 // FIXME: v Texture attenuation is computed with a *3 factor just for fun 
-                float opacity = (float) Math.max(0, 1 - (3 * pixel.vTexture / this.texImage.getvMax()));
+                //                float opacity = (float) Math.max(0, 1 - (3 * pixel.vTexture / this.texImage.getvMax()));
+                float opacity = 1f;
                 if (opacity > 0.1) {
                     float[] scales = { 1f, 1f, 1f, opacity };
                     float[] offsets = new float[4];
@@ -759,7 +800,56 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             }
 
         }
+        g2.setComposite(AlphaComposite.SrcOver);
+        g2.setColor(Color.red);
+        g2.setTransform(new AffineTransform());
+        sampleIterator = sampler.getSampleIterator();
+        while (sampleIterator.hasNext()) {
+            Sample sample = sampleIterator.next();
+            double xTexture = sample.getLocation().x;
+            double yTexture = sample.getLocation().y;
+            Point2D screenPixelLocation = new Point2D.Double();
+            this.transform.transform(new Point2D.Double(xTexture, yTexture), screenPixelLocation);
+            //                        Point2D texturePixelLocation = new Point2D.Double();
+            //                        this.transform.inverseTransform(new Point2D.Double(xScreen, yScreen), texturePixelLocation);
+            //                        double xTexture = texturePixelLocation.getX();
+            //                        double yTexture = texturePixelLocation.getY();
+            g2.drawRect((int) screenPixelLocation.getX() - 1, (int) screenPixelLocation.getY() - 1, 3, 3);
+        }
         return bi;
+    }
+
+    /**
+     * Choose the right texture depending on proba functions
+     * 
+     * @param xTexture
+     * @param yTexture
+     * @param rand
+     * @param tilesToBeApplied
+     * @return
+     */
+    private BufferedImage chooseTextureToApply(double xTexture, double yTexture, Random rand, List<Pair<TileProbability, BufferedImage>> tilesToBeApplied) {
+        double sumProbability = 0;
+        double[] sumProbabilities = new double[tilesToBeApplied.size()];
+        for (int n = 0; n < tilesToBeApplied.size(); n++) {
+            Pair<TileProbability, BufferedImage> pair = tilesToBeApplied.get(n);
+            sumProbability += pair.first().getProbability(xTexture, yTexture);
+            sumProbabilities[n] = sumProbability;
+        }
+        if (sumProbability < 1E-6) {
+            return null;
+        }
+        double randomValue = rand.nextDouble() * sumProbability;
+        int n = 0;
+        while (n < tilesToBeApplied.size()) {
+            if (randomValue < sumProbabilities[n]) {
+                //                System.err.println("probabilities: " + Arrays.toString(sumProbabilities) + " random value = " + randomValue + " => index = " + n + "["
+                //                        + sumProbabilities[n] + "]");
+                return tilesToBeApplied.get(n).second();
+            }
+            n++;
+        }
+        throw new IllegalStateException("impossible case random value = " + randomValue + " max Value = " + sumProbabilities[sumProbabilities.length - 1]);
     }
 
     private BufferedImage toBufferedImagePixelUVTileScreenSpace(TextureImage image, BufferedImage texture, SamplingAlgorithm sampling, Shape clippingShape) {
@@ -819,6 +909,28 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 double ax = (2 * x / (double) sharpEdgeTexture.getWidth() - 1);
                 double ay = (2 * y / (double) sharpEdgeTexture.getHeight() - 1);
                 double a = 1 - Math.pow(Math.pow(ax, pow) + Math.pow(ay, pow), 1 / pow);
+                a = (a < 0) ? 0 : (a > 1) ? 1 : a;
+                rgba[3] *= (float) a;
+                softEdgeTexture.setRGB(x, y, getInt(rgba));
+            }
+        }
+        return softEdgeTexture;
+    }
+
+    private BufferedImage softenLREdgeTexture(BufferedImage sharpEdgeTexture) {
+        double pow = 8;
+        BufferedImage softEdgeTexture = new BufferedImage(sharpEdgeTexture.getWidth(), sharpEdgeTexture.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = (Graphics2D) softEdgeTexture.getGraphics();
+        g2.setComposite(AlphaComposite.Clear);
+        g2.fillRect(0, 0, softEdgeTexture.getWidth(), softEdgeTexture.getHeight());
+        g2.setComposite(AlphaComposite.Src);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        for (int y = 0; y < sharpEdgeTexture.getHeight(); y++) {
+            for (int x = 0; x < sharpEdgeTexture.getWidth(); x++) {
+                float[] rgba = getRGBA(sharpEdgeTexture.getRGB(x, y));
+                double ax = (2 * x / (double) sharpEdgeTexture.getWidth() - 1);
+                double ay = (2 * y / (double) sharpEdgeTexture.getHeight() - 1);
+                double a = 1 - Math.pow(ax, pow);
                 a = (a < 0) ? 0 : (a > 1) ? 1 : a;
                 rgba[3] *= (float) a;
                 softEdgeTexture.setRGB(x, y, getInt(rgba));
@@ -1560,9 +1672,9 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
 
             // here we can choose the parameterization along frontiers
             pixelRenderer.setLinearParameterization(linearDistance, linearDistance + segmentLength);
-            // FIXME: very special case for 'mer JDD plancoet'. Long outer frontier
+            // FIXME: very special case for 'mer_decoupee2 (cassini)'. Long outer frontier
             // don't have to be of distance 0
-            pixelRenderer.setDistanceToZero(segmentLength < 10000);
+            pixelRenderer.setDistanceToZero(segmentLength < 5000);
             if (!(x1 == x2 && y1 == y2)) {
                 this.texImage.drawLine(x1, y1, x2, y2, pixelRenderer);
             }

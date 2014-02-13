@@ -145,7 +145,7 @@ public class TextureImageUtil {
             for (int dx = -blurWindowHalfSize; dx <= blurWindowHalfSize; dx++) {
                 double neighborWeight = 1.;
                 TexturePixel neighbor = image.getPixel(x + dx, y + dy);
-                if (neighbor != null && (neighbor.in || neighbor.frontier != 0)) {
+                if (neighbor != null && (neighbor.in || neighbor.frontier != 0) && neighbor.vTexture != Double.POSITIVE_INFINITY) {
                     blurredV += neighbor.vTexture * neighborWeight;
                     double uNormalized = (neighbor.uTexture - image.getuMin()) / (image.getuMax() - image.getuMin());
                     blurredUcos += Math.cos(PI2 * uNormalized);

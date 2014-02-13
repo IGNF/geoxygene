@@ -539,26 +539,6 @@ public class DistanceFieldApplication {
     }
 
     /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        DistanceFieldApplication app = new DistanceFieldApplication();
-
-        app.show();
-        //        String shapeFilename = "/home/turbet/export/expressivemaps/data/JDD_Plancoet/mer_sans_sable.shp";
-        String shapeFilename = "/home/turbet/geodata/bdtopo/72_BDTOPO_shp/BDT_2-0_SHP_LAMB93_X062-ED111/E_BATI/PISTE_AERODROME.SHP";
-        try {
-            app.loadShapeFile(shapeFilename);
-        } catch (FileNotFoundException e) {
-            logger.error(e);
-            e.printStackTrace();
-        } catch (JAXBException e) {
-            logger.error(e);
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * p is expressed in pixels in the texture image
      * 
      * @param p
@@ -607,4 +587,26 @@ public class DistanceFieldApplication {
         }
         return "unknown method type '" + this.method + "'";
     }
+
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        DistanceFieldApplication app = new DistanceFieldApplication();
+
+        app.show();
+        //        String shapeFilename = "/home/turbet/export/expressivemaps/data/JDD_Plancoet/mer_sans_sable.shp";
+        //        String shapeFilename = "/home/turbet/geodata/bdtopo/72_BDTOPO_shp/BDT_2-0_SHP_LAMB93_X062-ED111/E_BATI/PISTE_AERODROME.SHP";
+        String shapeFilename = "/export/home/kandinsky/turbet/expressivemaps/data/cassini/mer_decoupee2.shp";
+        try {
+            app.loadShapeFile(shapeFilename);
+        } catch (FileNotFoundException e) {
+            logger.error(e);
+            e.printStackTrace();
+        } catch (JAXBException e) {
+            logger.error(e);
+            e.printStackTrace();
+        }
+    }
+
 }
