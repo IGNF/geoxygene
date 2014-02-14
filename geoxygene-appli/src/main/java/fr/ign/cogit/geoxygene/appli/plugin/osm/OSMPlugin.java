@@ -28,9 +28,9 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -180,7 +180,7 @@ public class OSMPlugin implements ProjectFramePlugin,
     private JLabel taskLabel;
     private OSMLoader loader;
     private OsmLoadingTask currentTask = OsmLoadingTask.POINTS;
-    
+
     public File osmFile;
     public String epsg;
 
@@ -194,7 +194,13 @@ public class OSMPlugin implements ProjectFramePlugin,
         if (doc.getName() == null) {
           name = osmFile.getName().substring(0, osmFile.getName().length() - 4);
           doc.setName(name);
-          doc.setPostGisDb(PostgisDB.get(name, true));
+          if (dialogImportOsmFrame.createPostGis()) {
+            try {
+              doc.setPostGisDb(PostgisDB.get(name, true));
+            } catch (Exception e) {
+              // do nothing
+            }
+          }
         }
 
         // build database & dataset
@@ -227,8 +233,9 @@ public class OSMPlugin implements ProjectFramePlugin,
         createDialog();
         loader.setDialog(dialog);
         dialog.setVisible(true);
-        application.getMainFrame().getGui().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        loader.addPropertyChangeListener(this); 
+        application.getMainFrame().getGui()
+            .setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        loader.addPropertyChangeListener(this);
         loader.execute();
 
       }
@@ -284,14 +291,15 @@ public class OSMPlugin implements ProjectFramePlugin,
       private static final long serialVersionUID = 1L;
 
       ImportOSMFileAction importPlugin;
-      
+
       private String action;
-      
+
       /** Fields. */
       private JTextField txtPath, txtEpsg;
       private Map<String, String> currentProjections = new HashMap<String, String>();
       private JButton browseBtn, usedBtn, cancelBtn, okBtn;
       private JComboBox usedCombo;
+      private JCheckBox postGisCheck;
 
       /**
        * Constructor, build the frame.
@@ -299,14 +307,15 @@ public class OSMPlugin implements ProjectFramePlugin,
        */
       public ImportOsmFileFrame(ImportOSMFileAction importPlugin) {
         this.importPlugin = importPlugin;
-        
+
         setModal(true);
         setTitle("Import OSM File");
         setIconImage(new ImageIcon(
-                GeOxygeneApplication.class.getResource("/images/icons/map_add.png")).getImage());
-        
+            GeOxygeneApplication.class.getResource("/images/icons/map_add.png"))
+            .getImage());
+
         initPanel();
-        
+
         pack();
         setLocation(300, 300);
         setSize(600, 200);
@@ -315,52 +324,58 @@ public class OSMPlugin implements ProjectFramePlugin,
 
       @Override
       public void actionPerformed(ActionEvent evt) {
-          Object source = evt.getSource();
-          if (source == cancelBtn) {
-            dispose();
-          } else if (source == usedBtn) {
-            txtEpsg.setText(currentProjections.get(usedCombo.getSelectedItem()));
-          } else if (source == browseBtn) {
-            JFileChooser fc = new JFileChooser();
-            fc.setFileFilter(new OsmFileFilter());
-            // fc.setCurrentDirectory(new File("src/main/resources/XML/"));
-            fc.setCurrentDirectory(new File(application.getProperties().getLastOpenedFile()));
-            int returnVal = fc.showSaveDialog(CartagenApplication.getInstance().getFrame());
-            if (returnVal != JFileChooser.APPROVE_OPTION) {
-              return;
-            }
-            File file = fc.getSelectedFile();
-            this.txtPath.setText(file.getAbsolutePath());
-          } else if (source == okBtn) {
-            action = "OK";
-            importPlugin.epsg = txtEpsg.getText();
-            importPlugin.osmFile = new File(txtPath.getText());
-            dispose();
+        Object source = evt.getSource();
+        if (source == cancelBtn) {
+          dispose();
+        } else if (source == usedBtn) {
+          txtEpsg.setText(currentProjections.get(usedCombo.getSelectedItem()));
+        } else if (source == browseBtn) {
+          JFileChooser fc = new JFileChooser();
+          fc.setFileFilter(new OsmFileFilter());
+          // fc.setCurrentDirectory(new File("src/main/resources/XML/"));
+          fc.setCurrentDirectory(new File(application.getProperties()
+              .getLastOpenedFile()));
+          int returnVal = fc.showSaveDialog(CartagenApplication.getInstance()
+              .getFrame());
+          if (returnVal != JFileChooser.APPROVE_OPTION) {
+            return;
           }
+          File file = fc.getSelectedFile();
+          this.txtPath.setText(file.getAbsolutePath());
+        } else if (source == okBtn) {
+          action = "OK";
+          importPlugin.epsg = txtEpsg.getText();
+          importPlugin.osmFile = new File(txtPath.getText());
+          dispose();
+        }
       }
-      
+
       /**
        * Initialize and display fields.
        */
       private void initPanel() {
-        
+
         FormLayout layout = new FormLayout(
-            "20dlu, pref, pref, 10dlu, pref, pref, pref, pref, pref, pref, 20dlu",  // Colonnes
-            "10dlu, pref, pref, 20dlu, pref, 20dlu");  // Lignes
+            "20dlu, pref, pref, 10dlu, pref, pref, pref, pref, pref, pref, 20dlu", // Colonnes
+            "10dlu, pref, pref, 20dlu, pref, 20dlu"); // Lignes
         setLayout(layout);
-        
+
         CellConstraints cc = new CellConstraints();
-        
+
         currentProjections.put("Lambert93", "2154");
-        currentProjections.put("UTM 18N", "32618");
-        currentProjections.put("UTM 51N", "32651");
+        currentProjections.put("UTM 18N (New York)", "32618");
+        currentProjections.put("UTM 51N (Philippines)", "32651");
+        currentProjections.put("UTM 16N (Chicago)", "32616");
+        currentProjections.put("UTM 28N (Dakar)", "32628");
+        currentProjections.put("UTM 33N (Vienna)", "32633");
         this.setPreferredSize(new Dimension(350, 150));
 
         // JPanel filePanel = new JPanel();
         add(new JLabel("File : "), cc.xy(2, 2));
         txtPath = new JTextField(40);
         add(txtPath, cc.xyw(3, 2, 6));
-        browseBtn = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/magnifier.png")));
+        browseBtn = new JButton(new ImageIcon(this.getClass().getResource(
+            "/images/icons/magnifier.png")));
         browseBtn.addActionListener(this);
         browseBtn.setActionCommand("browse");
         add(browseBtn, cc.xy(9, 2));
@@ -373,7 +388,7 @@ public class OSMPlugin implements ProjectFramePlugin,
         txtEpsg.setMinimumSize(new Dimension(60, 20));
         txtEpsg.setText("2154");
         add(txtEpsg, cc.xy(3, 3));
-        
+
         add(new JLabel("( "), cc.xy(5, 3));
         usedBtn = new JButton("<<");
         usedBtn.addActionListener(this);
@@ -385,6 +400,10 @@ public class OSMPlugin implements ProjectFramePlugin,
         usedCombo.setMinimumSize(new Dimension(130, 20));
         add(usedCombo, cc.xy(7, 3));
         add(new JLabel(" )  "), cc.xy(8, 3));
+
+        postGisCheck = new JCheckBox("Create PostGis Db");
+        postGisCheck.setSelected(false);
+        add(postGisCheck, cc.xy(7, 4));
 
         // Define a panel with the OK and Cancel buttons
         JPanel btnPanel = new JPanel();
@@ -398,9 +417,9 @@ public class OSMPlugin implements ProjectFramePlugin,
         btnPanel.add(cancelBtn);
         btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
         add(btnPanel, cc.xy(7, 5));
-        
+
       }
-      
+
       /**
        * @return name of action (ok, cancel).
        */
@@ -408,6 +427,9 @@ public class OSMPlugin implements ProjectFramePlugin,
         return action;
       }
 
+      public boolean createPostGis() {
+        return postGisCheck.isSelected();
+      }
     }
   }
 
@@ -472,8 +494,13 @@ public class OSMPlugin implements ProjectFramePlugin,
     public void actionPerformed(ActionEvent arg0) {
       try {
         // get the building population
-        IPopulation<IBuilding> pop = CartAGenDoc.getInstance()
-            .getCurrentDataset().getBuildings();
+
+        IPopulation<IBuilding> pop = new Population<IBuilding>();
+        for (IBuilding b : CartAGenDoc.getInstance().getCurrentDataset()
+            .getBuildings()) {
+          if (b.getGeom() != null)
+            pop.add(b);
+        }
         AdjacencyClustering clusters = new AdjacencyClustering(pop);
         System.out.println("début clustering");
         Set<Set<IGeneObj>> clusterSet = clusters.getClusters();
