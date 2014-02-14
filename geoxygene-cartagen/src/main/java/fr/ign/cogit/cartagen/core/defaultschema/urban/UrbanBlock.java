@@ -621,6 +621,7 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
     return DensityMeasures.getBlockBuildingsDensity(this);
   }
 
+  @Transient
   public String getDensityString() {
     String masque = new String("#0.##");
     DecimalFormat form = new DecimalFormat(masque);

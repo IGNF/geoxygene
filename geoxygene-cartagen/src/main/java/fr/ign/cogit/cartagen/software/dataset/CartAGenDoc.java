@@ -313,7 +313,11 @@ public class CartAGenDoc {
     // The document name
     Element nameElem = (Element) root.getElementsByTagName("name").item(0);
     instance.setName(nameElem.getChildNodes().item(0).getNodeValue());
-    instance.postGisDb = PostgisDB.get(instance.getName(), true);
+    try {
+      instance.postGisDb = PostgisDB.get(instance.getName(), true);
+    } catch (Exception e) {
+      // do nothing
+    }
 
     // the dataset zone
     Element zoneElem = (Element) root.getElementsByTagName("dataset-zone")

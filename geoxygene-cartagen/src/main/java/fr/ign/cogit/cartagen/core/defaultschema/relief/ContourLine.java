@@ -9,6 +9,15 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.core.defaultschema.relief;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Type;
+
 import fr.ign.cogit.cartagen.core.defaultschema.GeneObjLinDefault;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
@@ -25,7 +34,8 @@ import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
  * ###### IGN / CartAGen ###### Title: ContourLine Description: Courbes de
  * niveau Author: J. Renard Date: 18/09/2009
  */
-
+@Entity
+@Access(AccessType.PROPERTY)
 public class ContourLine extends GeneObjLinDefault implements IContourLine {
 
   /**
@@ -59,11 +69,34 @@ public class ContourLine extends GeneObjLinDefault implements IContourLine {
   }
 
   @Override
+  @Transient
   public IFeature getGeoxObj() {
     return this.geoxObj;
   }
 
+  @Override
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
+  public ILineString getGeom() {
+    return super.getGeom();
+  }
+
+  @Override
+  @Column(name = "CartAGenDB_name")
+  public String getDbName() {
+    return super.getDbName();
+  }
+
+  @Override
+  @Id
+  public int getId() {
+    return super.getId();
+  }
+
   private boolean isMaster = false;
+
+  public void setMaster(boolean isMaster) {
+    this.isMaster = isMaster;
+  }
 
   @Override
   public boolean isMaster() {
@@ -71,6 +104,7 @@ public class ContourLine extends GeneObjLinDefault implements IContourLine {
   }
 
   @Override
+  @Transient
   public double getWidth() {
     if (this.isMaster()) {
       return GeneralisationLegend.CN_LARGEUR_MAITRESSE;
@@ -79,6 +113,7 @@ public class ContourLine extends GeneObjLinDefault implements IContourLine {
   }
 
   @Override
+  @Transient
   public IPolygon getSymbolExtent() {
     return (IPolygon) CommonAlgorithms.buffer(this.getGeom(), this.getWidth()
         * 0.5 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0);

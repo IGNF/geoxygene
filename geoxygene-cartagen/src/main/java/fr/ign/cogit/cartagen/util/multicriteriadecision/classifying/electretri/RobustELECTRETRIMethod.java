@@ -301,7 +301,7 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
     // d'harmonisation, on ne se retrouve plus avec un résultat compris entre 0
     // et 1)
     robustesse /= valTot;
-    logger.info("**** ELECTRE TRI : Categorie choisie : " + catChoisie
+    logger.fine("**** ELECTRE TRI : Categorie choisie : " + catChoisie
         + "  robustesse : " + robustesse + "  ****");
     return new ClassificationResult(catChoisie, robustesse, criteres);
   }
