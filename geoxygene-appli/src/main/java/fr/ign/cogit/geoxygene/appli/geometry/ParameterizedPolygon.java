@@ -27,7 +27,6 @@
 
 package fr.ign.cogit.geoxygene.appli.geometry;
 
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
@@ -37,32 +36,33 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  */
 public class ParameterizedPolygon extends ParameterizedGeometry {
 
-    private GM_Polygon polygon = null;
+  private GM_Polygon polygon = null;
 
-    /**
-     * Constructor
-     */
-    public ParameterizedPolygon(final GM_Polygon polygon) {
-        this.polygon = polygon;
-    }
+  /**
+   * Constructor
+   */
+  public ParameterizedPolygon(final GM_Polygon polygon) {
+    this.polygon = polygon;
+  }
 
-    /**
-     * Constructor
-     */
-    public ParameterizedPolygon(final GM_Polygon polygon, final Parameterizer parameterizer) {
-        this.polygon = polygon;
-        this.setParameterizer(parameterizer);
-    }
+  /**
+   * Constructor
+   */
+  public ParameterizedPolygon(final GM_Polygon polygon,
+      final Parameterizer parameterizer) {
+    this.polygon = polygon;
+    this.setParameterizer(parameterizer);
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * fr.ign.cogit.geoxygene.appli.geometry.ParameterizedGeometry#getGeometry()
-     */
-    @Override
-    public GM_Polygon getGeometry() {
-        return this.polygon;
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * fr.ign.cogit.geoxygene.appli.geometry.ParameterizedGeometry#getGeometry()
+   */
+  @Override
+  public GM_Polygon getGeometry() {
+    return this.polygon;
+  }
 
 }

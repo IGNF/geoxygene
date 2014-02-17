@@ -135,30 +135,24 @@ public class SelectionBoxMode extends AbstractMode implements PaintListener {
   @Override
   public final void rightMouseButtonClicked(final MouseEvent e,
       final ProjectFrame frame) {
-    try {
-      DirectPosition p = frame.getLayerViewPanel().getViewport()
-          .toModelDirectPosition(e.getPoint());
-      Set<IFeature> features = new HashSet<IFeature>();
-      for (Layer layer : frame.getLayerViewPanel().getRenderingManager()
-          .getLayers()) {
-        if (layer.isVisible() && layer.isSelectable()) {
+    Set<IFeature> features = new HashSet<IFeature>();
+    for (Layer layer : frame.getLayerViewPanel().getRenderingManager()
+        .getLayers()) {
+      if (layer.isVisible() && layer.isSelectable()) {
 
-          IEnvelope env = new GM_Envelope(0.0, 0.0, 0.0, 0.0);
-          features.addAll(layer.getFeatureCollection().select(env));
-        }
+        IEnvelope env = new GM_Envelope(0.0, 0.0, 0.0, 0.0);
+        features.addAll(layer.getFeatureCollection().select(env));
       }
-      LayerViewPanel lvPanel = frame.getLayerViewPanel();
-      if (features.isEmpty()) {
-        lvPanel.getSelectedFeatures().clear();
-      } else {
-        lvPanel.getSelectedFeatures().removeAll(features);
-      }
-      lvPanel.getRenderingManager().render(
-          lvPanel.getRenderingManager().getSelectionRenderer());
-      lvPanel.superRepaint();
-    } catch (NoninvertibleTransformException e1) {
-      e1.printStackTrace();
     }
+    LayerViewPanel lvPanel = frame.getLayerViewPanel();
+    if (features.isEmpty()) {
+      lvPanel.getSelectedFeatures().clear();
+    } else {
+      lvPanel.getSelectedFeatures().removeAll(features);
+    }
+    lvPanel.getRenderingManager().render(
+        lvPanel.getRenderingManager().getSelectionRenderer());
+    lvPanel.superRepaint();
   }
 
   @Override

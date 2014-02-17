@@ -34,10 +34,8 @@ import javax.swing.JMenuItem;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
-import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
-import fr.ign.cogit.geoxygene.appli.plugin.ProjectFramePlugin;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -64,7 +62,8 @@ import fr.ign.cogit.geoxygene.style.texture.Texture;
  * 
  * @author Julien Perret
  */
-public class SLDDemoApplication implements GeOxygeneApplicationPlugin, ActionListener {
+public class SLDDemoApplication implements GeOxygeneApplicationPlugin,
+    ActionListener {
 
   /**
    * Logger.
@@ -73,13 +72,13 @@ public class SLDDemoApplication implements GeOxygeneApplicationPlugin, ActionLis
 
   private GeOxygeneApplication application = null;
   private ProjectFrame projectFrame = null;
-  
+
   @Override
   public void initialize(final GeOxygeneApplication application) {
     this.application = application;
     projectFrame = application.getMainFrame().newProjectFrame();
     JMenu menuExample = null;
-    String menuName = "Example"; 
+    String menuName = "Example";
     for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
@@ -92,7 +91,7 @@ public class SLDDemoApplication implements GeOxygeneApplicationPlugin, ActionLis
     if (menuExample == null) {
       menuExample = new JMenu(menuName);
     }
-    
+
     JMenuItem sLDDemoItem = new JMenuItem("SLDDemo");
     sLDDemoItem.addActionListener(new java.awt.event.ActionListener() {
       @Override
@@ -100,21 +99,22 @@ public class SLDDemoApplication implements GeOxygeneApplicationPlugin, ActionLis
         displayCercles();
       }
     });
-    
+
     menuExample.add(sLDDemoItem);
 
-    this.application.getMainFrame()
+    this.application
+        .getMainFrame()
         .getMenuBar()
-        .add(menuExample,
+        .add(
+            menuExample,
             this.application.getMainFrame().getMenuBar().getComponentCount() - 1);
   }
-  
+
   @Override
   public void actionPerformed(ActionEvent e) {
-    
+
   }
-  
-  
+
   public void displayCercles() {
     // ProjectFrame projectFrame = application.getMainFrame().newProjectFrame();
 
@@ -140,9 +140,9 @@ public class SLDDemoApplication implements GeOxygeneApplicationPlugin, ActionLis
       e.printStackTrace();
     }
   }
-  
+
   public void exampleGraphicFill_Fill_Polygon() {
-    
+
     Layer layer = projectFrame.getSld().createLayer("GraphicFill_Polygon", //$NON-NLS-1$
         GM_Polygon.class, new Color(0.5f, 1.f, 0.5f), Color.green, 0.5f, 4);
     PolygonSymbolizer symbolizer = (PolygonSymbolizer) layer.getSymbolizer();
@@ -196,7 +196,7 @@ public class SLDDemoApplication implements GeOxygeneApplicationPlugin, ActionLis
     projectFrame.getSld().add(layer);
 
   }
-  
+
   /**
    * Le Graphic Stroke permet de répéter une forme le long d'une ligne. Cette
    * forme peut être une image (ExternalGraphic) ou une forme prédéfinie (Mark).
