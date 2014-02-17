@@ -42,7 +42,6 @@ import javax.media.jai.RenderedOp;
 import javax.swing.JPanel;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.log4j.Logger;
 
 import com.jhlabs.image.LinearColormap;
 import com.jhlabs.image.TextureFilter;
@@ -74,7 +73,6 @@ import fr.ign.cogit.geoxygene.util.ColorUtil;
  * @author Charlotte Hoarau
  */
 public class LayerStylesPanel extends JPanel {
-  private static final Logger logger = Logger.getLogger(LayerStylesPanel.class);
 
   /**
    * Serial uid.
@@ -478,7 +476,7 @@ public class LayerStylesPanel extends JPanel {
                 if (external.getFormat().contains("png") || external.getFormat().contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
                   Image image = external.getOnlineResource();
 
-                  // FIXME Le contour est représenter dans la légende par les 4
+                  // FIXME Le contour est représenté dans la légende par les 4
                   // bords du symbole de légende
                   // Ce serait plus propre de créer une polygon de la forme du
                   // contour et de le remplir
@@ -618,7 +616,9 @@ public class LayerStylesPanel extends JPanel {
       FT_Coverage coverage = (FT_Coverage) feature;
       BufferedImage image = PlanarImage.wrapRenderedImage(
           coverage.coverage().getRenderedImage()).getAsBufferedImage();
-      g2.drawImage(image, x, y, width, height, null);
+      BufferedImage thumb = image.getSubimage(0, 0, image.getWidth() / 10,
+          image.getHeight() / 10);
+      g2.drawImage(thumb, x, y, width, height, null);
     }
   }
 }
