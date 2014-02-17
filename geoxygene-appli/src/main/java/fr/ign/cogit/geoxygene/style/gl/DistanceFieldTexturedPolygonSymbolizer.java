@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldTexture;
-import fr.ign.cogit.geoxygene.appli.render.primitive.BasicParameterizer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer;
 import fr.ign.cogit.geoxygene.style.AbstractSymbolizer;
 import fr.ign.cogit.geoxygene.util.gl.Texture;
@@ -37,35 +36,35 @@ import fr.ign.cogit.geoxygene.util.gl.Texture;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DistanceFieldTexturedPolygonSymbolizer extends AbstractSymbolizer {
 
-    private DistanceFieldTexture texture = null;
+  private DistanceFieldTexture texture = null;
 
-    public DistanceFieldTexturedPolygonSymbolizer(IFeature feature, Viewport viewport) {
-        super();
-    }
+  public DistanceFieldTexturedPolygonSymbolizer(IFeature feature,
+      Viewport viewport) {
+    super();
+  }
 
-    @Override
-    public boolean isPolygonSymbolizer() {
-        return true;
-    }
+  @Override
+  public boolean isPolygonSymbolizer() {
+    return true;
+  }
 
-    /**
-     * @return the texture
-     */
-    public Texture getTexture() {
-        return this.texture;
-    }
+  /**
+   * @return the texture
+   */
+  public Texture getTexture() {
+    return this.texture;
+  }
 
-    /**
-     * @param texture
-     *            the texture to set
-     */
-    public void setTexture(DistanceFieldTexture texture) {
-        this.texture = texture;
-    }
+  /**
+   * @param texture the texture to set
+   */
+  public void setTexture(DistanceFieldTexture texture) {
+    this.texture = texture;
+  }
 
-    public Parameterizer getParameterizer() {
-        return this.texture;
-    }
+  public Parameterizer getParameterizer() {
+    return this.texture;
+  }
 
-    // TODO : generate hashCode & equals methods
+  // TODO : generate hashCode & equals methods
 }
