@@ -464,12 +464,29 @@ public final class RenderUtil {
           } catch (NumberFormatException e) {
             e.printStackTrace();
           }
+
           // Categorized Map
         } else if (symbolizer.getCategorizedMap() != null) {
           Object value = feature.getAttribute(symbolizer.getCategorizedMap()
               .getPropertyName());
           int rgb = symbolizer.getCategorizedMap().getColor(value);
           graphics.setColor(ColorUtil.getColorWithOpacity(new Color(rgb),
+              opacity));
+
+          // Proxy Symbol
+        } else if (symbolizer.getProxySymbol() != null) {
+          // Color without opacity
+          Color adaptedColor = new Color(Integer.parseInt(feature.getAttribute(
+              symbolizer.getProxySymbol().getProxyColorPropertyName())
+              .toString()));
+
+          // Color with stroke opacity
+          Color adaptedColorTransp = new Color(adaptedColor.getRed(),
+              adaptedColor.getGreen(), adaptedColor.getBlue(),
+              (int) (symbolizer.getStroke().getStrokeOpacity() * 255f));
+
+          // Color with stroke and layer opacity
+          graphics.setColor(ColorUtil.getColorWithOpacity(adaptedColorTransp,
               opacity));
 
         } else {

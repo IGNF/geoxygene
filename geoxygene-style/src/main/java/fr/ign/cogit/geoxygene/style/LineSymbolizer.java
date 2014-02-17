@@ -23,48 +23,61 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+import fr.ign.cogit.geoxygene.style.proxy.ProxySymbol;
+
 /**
  * @author Julien Perret
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LineSymbolizer extends AbstractSymbolizer {
-  
-    @XmlElement(name = "ColorMap")
-    ColorMap colorMap = null;
-    
-    @XmlElement(name = "CategorizedMap")
-    CategorizedMap categorizedMap = null;
-    
-    @XmlElement(name = "PerpendicularOffset")
-    double perpendicularOffset = 0;
-    
-    @Override
-    public boolean isLineSymbolizer() {
-        return true;
-    }
 
-    public ColorMap getColorMap() {
-        return this.colorMap;
-    }
+  @XmlElement(name = "ColorMap")
+  ColorMap colorMap = null;
 
-    public void setColorMap(ColorMap colorMap) {
-        this.colorMap = colorMap;
-    }
+  @XmlElement(name = "CategorizedMap")
+  CategorizedMap categorizedMap = null;
 
-    public CategorizedMap getCategorizedMap() {
-        return this.categorizedMap;
-    }
+  @XmlElement(name = "PerpendicularOffset")
+  double perpendicularOffset = 0;
 
-    public void setCategorizedMap(CategorizedMap categorizedMap) {
-        this.categorizedMap = categorizedMap;
-    }
+  @XmlElement(name = "ProxySymbol")
+  ProxySymbol proxySymbol = null;
 
-    public double getPerpendicularOffset() {
-        return this.perpendicularOffset;
-    }
+  @Override
+  public boolean isLineSymbolizer() {
+    return true;
+  }
 
-    public void setPerpendicularOffset(double perpendicularOffset) {
-        this.perpendicularOffset = perpendicularOffset;
-    }
+  public ColorMap getColorMap() {
+    return this.colorMap;
+  }
+
+  public void setColorMap(ColorMap colorMap) {
+    this.colorMap = colorMap;
+  }
+
+  public CategorizedMap getCategorizedMap() {
+    return this.categorizedMap;
+  }
+
+  public void setCategorizedMap(CategorizedMap categorizedMap) {
+    this.categorizedMap = categorizedMap;
+  }
+
+  public double getPerpendicularOffset() {
+    return this.perpendicularOffset;
+  }
+
+  public void setPerpendicularOffset(double perpendicularOffset) {
+    this.perpendicularOffset = perpendicularOffset;
+  }
+
+  public ProxySymbol getProxySymbol() {
+    return proxySymbol;
+  }
+
+  public void setProxySymbo(ProxySymbol proxySymbol) {
+    this.proxySymbol = proxySymbol;
+  }
 
 }
