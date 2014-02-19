@@ -18,6 +18,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import org.apache.log4j.Logger;
+
 import com.sun.j3d.utils.image.TextureLoader;
 
 /**
@@ -41,6 +43,8 @@ import com.sun.j3d.utils.image.TextureLoader;
  * texture loading to avoid having different instance for a same texture
  */
 public class TextureManager {
+	
+	private static Logger log = Logger.getLogger(TextureManager.class);
 
   /**
    * Liste des noms associés aux textures (chemin sur le disque)
@@ -172,10 +176,10 @@ public class TextureManager {
     File[] lf = directoryToScan.listFiles();
 
     if (lf == null) {
-      System.out.println("Nb textures par defaut = NULL");
+      log.trace("Nb textures par defaut = NULL");
       return formatsDisponibles;
     }
-    System.out.println("Nb textures par defaut = " + lf.length);
+    log.trace("Nb textures par defaut = " + lf.length);
 
     int nbFichiers = lf.length;
 

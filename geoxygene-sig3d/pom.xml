@@ -293,11 +293,22 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+	<!-- DLL 
 		<dependency>
 			<groupId>java3d</groupId>
 			<artifactId>j3d-core</artifactId>
 			<version>1.5.2</version>
+		</dependency> --> 
+		
+	<!-- 	
+		<dependency>
+			<groupId>java3d</groupId>
+			<artifactId>j3d-core-utils</artifactId>
+			<version>1.6</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/truc.jar</systemPath>
 		</dependency>
+	-->
 		<dependency>
 			<groupId>java3d</groupId>
 			<artifactId>j3d-core-utils</artifactId>
