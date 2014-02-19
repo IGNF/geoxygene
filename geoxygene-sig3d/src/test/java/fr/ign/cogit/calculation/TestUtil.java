@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
@@ -26,6 +27,8 @@ public class TestUtil extends TestCase {
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
 	private double epsilon = Math.pow(10, -10);    // Scale error
+	
+	private static Logger log = Logger.getLogger(TestUtil.class);
 
 	// ------------------------------------ TESTS -------------------------------------
 
@@ -35,6 +38,8 @@ public class TestUtil extends TestCase {
 	// Test for method to compute center of gravity of a set of points
 	// --------------------------------------------------------------------------------
 	public void testCenterOf1() {
+		
+		log.info("Test for method to compute center of gravity of a set of points");
 
 		// Number of points
 		int n = 100;
@@ -81,6 +86,8 @@ public class TestUtil extends TestCase {
 	// Test for method to compute center of gravity of an empty set of points
 	// --------------------------------------------------------------------------------
 	public void testCenterOf2() {
+		
+		log.info("Test for method to compute center of gravity of an empty set of points");
 
 		// Generating empty set of points
 		DirectPositionList dpl = new DirectPositionList();
@@ -101,6 +108,8 @@ public class TestUtil extends TestCase {
 	// Test for method to compute volume under triangle
 	// --------------------------------------------------------------------------------
 	public void testCenterOf3() {
+		
+		log.info("Test for method to compute volume under triangle");
 
 		// Generating triangle
 		DirectPositionList dpl = new DirectPositionList();
@@ -129,6 +138,8 @@ public class TestUtil extends TestCase {
 	// Test for method to compute volume under below Oxy triangle
 	// --------------------------------------------------------------------------------
 	public void testCenterOf4() {
+		
+		log.info("Test for method to compute volume under below Oxy triangle");
 
 		// Generating triangle
 		DirectPositionList dpl = new DirectPositionList();
@@ -157,6 +168,8 @@ public class TestUtil extends TestCase {
 	// Test for method to compute volume "under" vertical triangle
 	// --------------------------------------------------------------------------------
 	public void testCenterOf5() {
+		
+		log.info("Test for method to compute volume 'under' vertical triangle");
 
 		// Generating triangle
 		DirectPositionList dpl = new DirectPositionList();
@@ -183,6 +196,8 @@ public class TestUtil extends TestCase {
 	// Test for method to detect vertical faces
 	// --------------------------------------------------------------------------------
 	public void testCenterOf6() {
+		
+		log.info("Test for method to detect vertical faces");
 
 		// Creating list of surfaces
 		ArrayList<GM_Surface> AS = new ArrayList<GM_Surface>();
@@ -229,6 +244,8 @@ public class TestUtil extends TestCase {
 	// Test for method to detect vertical faces with empty list
 	// --------------------------------------------------------------------------------
 	public void testCenterOf7() {
+		
+		log.info("Test for method to detect vertical faces with empty list");
 
 		// Creating list of surfaces
 		ArrayList<GM_Surface> AS = new ArrayList<GM_Surface>();
@@ -249,6 +266,8 @@ public class TestUtil extends TestCase {
 	// Test for method to detect non-vertical faces
 	// --------------------------------------------------------------------------------
 	public void testCenterOf8() {
+		
+		log.info("Test for method to detect non-vertical faces");
 
 		// Creating list of surfaces
 		ArrayList<GM_Surface> AS = new ArrayList<GM_Surface>();
@@ -295,6 +314,8 @@ public class TestUtil extends TestCase {
 	// Test for method to detect non-vertical faces with empty list
 	// --------------------------------------------------------------------------------
 	public void testCenterOf9() {
+		
+		log.info("Test for method to detect non-vertical faces with empty list");
 
 		// Creating list of surfaces
 		ArrayList<GM_Surface> AS = new ArrayList<GM_Surface>();
@@ -315,6 +336,8 @@ public class TestUtil extends TestCase {
 	// Test for method to detect roof faces
 	// --------------------------------------------------------------------------------
 	public void testCenterOf10() {
+		
+		log.info("Test for method to detect roof faces");
 
 		// Creating list of surfaces
 		ArrayList<GM_Surface> AS = new ArrayList<GM_Surface>();
@@ -361,6 +384,8 @@ public class TestUtil extends TestCase {
 	// Test for method to detect roof with empty list
 	// --------------------------------------------------------------------------------
 	public void testCenterOf11() {
+		
+		log.info("Test for method to detect roof with empty list");
 
 		// Creating list of surfaces
 		ArrayList<GM_Surface> AS = new ArrayList<GM_Surface>();
@@ -378,6 +403,8 @@ public class TestUtil extends TestCase {
 	// Test for method to detect roof in list of triangles
 	// --------------------------------------------------------------------------------
 	public void testCenterOf12() {
+		
+		log.info("Test for method to detect roof in list of triangles");
 
 		// Creating list of surfaces
 		ArrayList<ITriangle> AT = new ArrayList<ITriangle>();
@@ -418,6 +445,8 @@ public class TestUtil extends TestCase {
 	// Test for method to detect roof in list of triangles
 	// --------------------------------------------------------------------------------
 	public void testCenterOf13() {
+		
+		log.info("Test for method to detect roof in list of triangles");
 
 		// Creating list of surfaces
 		ArrayList<ITriangle> AT = new ArrayList<ITriangle>();
@@ -446,6 +475,8 @@ public class TestUtil extends TestCase {
 	// Test for method to detect floor in list of triangles
 	// --------------------------------------------------------------------------------
 	public void testCenterOf14() {
+		
+		log.info("Test for method to detect floor in list of triangles");
 
 		// Creating list of surfaces
 		ArrayList<ITriangle> AT = new ArrayList<ITriangle>();
@@ -486,6 +517,8 @@ public class TestUtil extends TestCase {
 	// Test for method to detect floor in list of triangles
 	// --------------------------------------------------------------------------------
 	public void testCenterOf15() {
+		
+		log.info("Test for method to detect floor in list of triangles");
 
 		// Creating list of surfaces
 		ArrayList<ITriangle> AT = new ArrayList<ITriangle>();
@@ -514,6 +547,8 @@ public class TestUtil extends TestCase {
 	// Test for method to know if a list contains only triangular surfaces
 	// --------------------------------------------------------------------------------
 	public void testCenterOf16() {
+		
+		log.info("Test for method to know if a list contains only triangular surfaces");
 
 		// Creating list of surfaces
 		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
@@ -576,6 +611,8 @@ public class TestUtil extends TestCase {
 	// Test for method to know if an empty list contains only triangular surfaces
 	// --------------------------------------------------------------------------------
 	public void testCenterOf17() {
+		
+		log.info("Test for method to know if an empty list contains only triangular surfaces");
 
 		// Creating list of surfaces
 		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
@@ -593,6 +630,8 @@ public class TestUtil extends TestCase {
 	// Test for method to compute volume under a surface
 	// --------------------------------------------------------------------------------
 	public void testCenterOf18() {
+		
+		log.info("Test for method to compute volume under a surface");
 
 		// Creating list of surfaces
 		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
@@ -637,6 +676,8 @@ public class TestUtil extends TestCase {
 	// Test for method to volume under an empty surface list
 	// --------------------------------------------------------------------------------
 	public void testCenterOf19() {
+		
+		log.info("Test for method to volume under an empty surface list");
 
 		// Creating list of surfaces
 		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
@@ -654,6 +695,8 @@ public class TestUtil extends TestCase {
 	// Test for method to compute volume under an negatively oriented surfaces
 	// --------------------------------------------------------------------------------
 	public void testCenterOf20() {
+		
+		log.info("Test for method to compute volume under an negatively oriented surfaces");
 
 		// Creating list of surfaces
 		ArrayList<IOrientableSurface> AS = new ArrayList<IOrientableSurface>();
@@ -695,6 +738,8 @@ public class TestUtil extends TestCase {
 	// Test for method to compute volume in a triangulated surface (cube)
 	// --------------------------------------------------------------------------------
 	public void testCenterOf21() {
+		
+		log.info("Test for method to compute volume in a triangulated surface (cube)");
 
 		// Random cube parameter
 		double size = Math.random()*100.0; 
@@ -718,6 +763,8 @@ public class TestUtil extends TestCase {
 	// Test for method to compute area of a triangulated surface (cube)
 	// --------------------------------------------------------------------------------
 	public void testCenterOf22() {
+		
+		log.info("Test for method to compute area of a triangulated surface (cube)");
 
 		// Random cube parameter
 		double size = Math.random()*100.0; 
@@ -741,6 +788,8 @@ public class TestUtil extends TestCase {
 	// Test for method to compute area of a triangulated list of surfaces
 	// --------------------------------------------------------------------------------
 	public void testCenterOf23() {
+		
+		log.info("Test for method to compute area of a triangulated list of surfaces");
 
 		// Creating list of surfaces
 		ArrayList<ITriangle> AS = new ArrayList<ITriangle>();

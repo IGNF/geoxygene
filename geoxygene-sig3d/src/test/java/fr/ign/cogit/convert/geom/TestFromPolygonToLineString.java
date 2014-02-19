@@ -7,6 +7,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -19,6 +20,8 @@ import fr.ign.cogit.tools.Utils;
 
 
 public class TestFromPolygonToLineString extends TestCase {
+	
+	private static Logger log = Logger.getLogger(TestFromPolygonToLineString.class);
 
 	// ----------------------------------- METHODS ------------------------------------
 
@@ -27,6 +30,8 @@ public class TestFromPolygonToLineString extends TestCase {
 	// Test for method to convert polygon to line strings
 	// --------------------------------------------------------------------------------
 	public void testConvertListPolToLineStrings() {
+		
+		log.info("Test for method to convert polygon to line strings");
 
 		// Creating square polygon
 		GM_Polygon square = Utils.createSquarePolygon(2, 0, 0);

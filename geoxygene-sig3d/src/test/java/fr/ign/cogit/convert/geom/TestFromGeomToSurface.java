@@ -6,8 +6,10 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import fr.ign.cogit.calculation.TestCalculation3D;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.sig3d.convert.geom.FromGeomToSurface;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
@@ -18,6 +20,9 @@ import fr.ign.cogit.tools.Utils;
 
 
 public class TestFromGeomToSurface extends TestCase {
+	
+	
+	private static Logger log = Logger.getLogger(TestFromGeomToSurface.class);
 
 	// ----------------------------------- METHODS ------------------------------------
 
@@ -26,6 +31,8 @@ public class TestFromGeomToSurface extends TestCase {
 	// Test for method to convert solid to surfaces
 	// --------------------------------------------------------------------------------
 	public void testConvertGeom1() {
+		
+		log.info("Test for method to convert solid to surfaces");
 
 		// Creating solid
 		GM_Solid cube = Utils.createCube(0, 0, 0, 10);
@@ -69,6 +76,8 @@ public class TestFromGeomToSurface extends TestCase {
 	// Test for method to convert solid into multi-surfaces
 	// --------------------------------------------------------------------------------
 	public void testConvertGeom2() {
+		
+		log.info("Test for method to convert solid into multi-surfaces");
 
 		// Creating solid
 		GM_Solid cube = Utils.createCube(0, 0, 0, 10);

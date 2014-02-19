@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,8 @@ public class TestBooleanOperators extends TestCase {
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
 	private static double epsilon = Math.pow(10,-1);
+	
+	private static Logger log = Logger.getLogger(TestBooleanOperators.class);
 
 	// ---------------------------------- PREPROCESS ----------------------------------
 
@@ -40,6 +43,8 @@ public class TestBooleanOperators extends TestCase {
 	// Test for solid cubes intersection
 	// --------------------------------------------------------------------------------
 	public void testCompute1() {
+		
+		log.info("Test for solid cube intersection");
 
 		GM_Solid s = normalCase(BooleanOperators.INTERSECTION);
 
@@ -56,6 +61,8 @@ public class TestBooleanOperators extends TestCase {
 	// Test for solid cubes intersection (same positions)
 	// --------------------------------------------------------------------------------
 	public void testCompute2() {
+		
+		log.info("Test for solid cubes intersection (same positions)");
 
 		GM_Solid s = samePositions(BooleanOperators.INTERSECTION);
 
@@ -73,6 +80,8 @@ public class TestBooleanOperators extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testCompute3() {
 
+		log.info("Test for solid cubes intersection (empty intersection)");
+		
 		GM_Solid s = emptyIntersection(BooleanOperators.INTERSECTION);
 
 		// Comparison
@@ -85,6 +94,8 @@ public class TestBooleanOperators extends TestCase {
 	// Test for solid cubes union
 	// --------------------------------------------------------------------------------
 	public void testCompute4() {
+		
+		log.info("Test for solid cubes union");
 
 		DefaultFeature object1 = new DefaultFeature(Utils.createCube(2, 2, 2, 10));
 		DefaultFeature object2 = new DefaultFeature(Utils.createCube(5, 5, 5, 1));
@@ -105,6 +116,8 @@ public class TestBooleanOperators extends TestCase {
 	// Test for solid cubes union (same positions)
 	// --------------------------------------------------------------------------------
 	public void testCompute5() {
+		
+		log.info("Test for solid cubes union (same positions)");
 
 		GM_Solid s = samePositions(BooleanOperators.UNION);
 
@@ -121,6 +134,8 @@ public class TestBooleanOperators extends TestCase {
 	// Test for solid cubes union (empty intersection)
 	// --------------------------------------------------------------------------------
 	public void testCompute6() {
+		
+		log.info("Test for solid cubes union (empty intersection)");
 
 		// Adding geometries
 		DefaultFeature object1 = new DefaultFeature(Utils.createCube(0, 0, 0, 1));
@@ -160,6 +175,8 @@ public class TestBooleanOperators extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testCompute7() {
 		
+		log.info("Test with Sphere differences");
+		
 		// Creating spheres
 		GM_Solid sphere1 = new Sphere(new DirectPosition(0,0,0),10,10);
 		GM_Solid sphere2 = new Sphere(new DirectPosition(0,0,0),2,10);
@@ -185,6 +202,8 @@ public class TestBooleanOperators extends TestCase {
 	// Test for solid cubes operation
 	// --------------------------------------------------------------------------------
 	public GM_Solid normalCase(int operation) {
+		
+		log.info("Test for solid cubes operation");
 
 		// Creating features
 		DefaultFeature object1 = new DefaultFeature();
@@ -208,6 +227,8 @@ public class TestBooleanOperators extends TestCase {
 	// --------------------------------------------------------------------------------
 	public GM_Solid samePositions(int operation) {
 
+		log.info("Test for solid cubes operation (same positions)");
+		
 		// Creating features
 		DefaultFeature object1 = new DefaultFeature();
 		DefaultFeature object2 = new DefaultFeature();
@@ -230,6 +251,8 @@ public class TestBooleanOperators extends TestCase {
 	// --------------------------------------------------------------------------------
 	public GM_Solid emptyIntersection(int operation) {
 
+		log.info("Test for solid cubes operation (empty intersection)");
+		
 		// Creating features
 		DefaultFeature object1 = new DefaultFeature();
 		DefaultFeature object2 = new DefaultFeature();

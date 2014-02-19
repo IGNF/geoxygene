@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import Jama.Matrix;
@@ -23,6 +24,8 @@ public class TestCalculation3D extends TestCase {
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
 	private static double epsilon = Math.pow(10,-1);
+	
+	private static Logger log = Logger.getLogger(TestCalculation3D.class);
 
 	// ---------------------------------- PREPROCESS ----------------------------------
 
@@ -35,6 +38,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute area of single random triangle
 	// --------------------------------------------------------------------------------
 	public void testArea1() {
+		
+		log.info("Test for method to compute area of single random triangle");
 
 		// Creating random triangle
 
@@ -115,6 +120,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute area of vertical triangle
 	// --------------------------------------------------------------------------------
 	public void testArea2() {
+		
+		log.info("Test for method to compute area of vertical triangle");
 
 		DirectPositionList listeSommets = new DirectPositionList();
 		listeSommets.add(new DirectPosition(0, 0, 0));
@@ -138,6 +145,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute area of a list of triangles
 	// --------------------------------------------------------------------------------
 	public void testArea3() {
+		
+		log.info("Test for method to compute area of a list of triangles");
 
 		DirectPositionList listeSommets1 = new DirectPositionList();
 		listeSommets1.add(new DirectPosition(0, 0, 0));
@@ -168,6 +177,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute area for empty list
 	// --------------------------------------------------------------------------------
 	public void testArea4() {
+		
+		log.info("Test for method to compute area for empty list");
 
 		ArrayList<ITriangle> LT = new ArrayList<ITriangle>();
 
@@ -185,6 +196,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute center of gravity of a surface
 	// --------------------------------------------------------------------------------
 	public void testArea5() {
+		
+		log.info("Test for method to compute center of gravity of a surface");
 
 		GM_Polygon surface = Utils.createSquarePolygon(70, 10, 10);
 
@@ -204,6 +217,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute center of gravity of a vertical triangle
 	// --------------------------------------------------------------------------------
 	public void testArea6() {
+		
+		log.info("Test for method to compute center of gravity of a vertical triangle");
 
 		DirectPositionList dpl = new DirectPositionList();
 
@@ -229,6 +244,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute center of complex form
 	// --------------------------------------------------------------------------------
 	public void testArea7() {
+		
+		log.info("Test for method to compute center of complex form");
 
 		DirectPosition center = new DirectPosition(12,12,0);
 
@@ -268,6 +285,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute lower point of a bounding box : cube
 	// --------------------------------------------------------------------------------
 	public void testArea8() {
+		
+		log.info("Test for method to compute lower point of a bounding box : cube");
 
 		// Creating basic cube
 		GM_Solid cube = Utils.createCube(-5, -5, -5, 10);
@@ -288,6 +307,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute lower point of a bounding box : sphere
 	// --------------------------------------------------------------------------------
 	public void testArea9() {
+		
+		log.info("Test for method to compute lower point of a bounding box : sphere");
 
 		// Creating basic cube
 		GM_Solid sphere = new Sphere(new DirectPosition(10,10,10), 3, 100);
@@ -310,6 +331,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute lower position from a list of points bounding box
 	// --------------------------------------------------------------------------------
 	public void testArea10() {
+		
+		log.info("Test for method to compute lower position from a list of points bounding box");
 
 		double xmin = Double.MAX_VALUE;
 		double ymin = Double.MAX_VALUE;
@@ -351,6 +374,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute upper point of a bounding box : cube
 	// --------------------------------------------------------------------------------
 	public void testArea11() {
+		
+		log.info("Test for method to compute upper point of a bounding box : cube");
 
 		// Creating basic cube
 		GM_Solid cube = Utils.createCube(-5, -5, -5, 10);
@@ -371,6 +396,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute upper point of a bounding box : sphere
 	// --------------------------------------------------------------------------------
 	public void testArea12() {
+		
+		log.info("Test for method to compute upper point of a bounding box : sphere");
 
 		// Creating basic cube
 		GM_Solid sphere = new Sphere(new DirectPosition(10,10,10), 3, 100);
@@ -392,6 +419,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute upper position from a list of points bounding box
 	// --------------------------------------------------------------------------------
 	public void testArea13() {
+		
+		log.info("Test for method to compute upper position from a list of points bounding box");
 
 		double xmax = Double.MIN_VALUE;
 		double ymax = Double.MIN_VALUE;
@@ -433,6 +462,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute geometry translations
 	// --------------------------------------------------------------------------------
 	public void testArea14() {
+		
+		log.info("Test for method to compute geometry translations");
 
 		GM_Solid cube1 = Utils.createCube(100, 100, 100, 10);
 		Calculation3D.translate(cube1, new DirectPosition(-1, +2, -3));
@@ -450,6 +481,8 @@ public class TestCalculation3D extends TestCase {
 	// Test for method to compute compute geometry translations
 	// --------------------------------------------------------------------------------
 	public void testArea15() {
+		
+		log.info("Test for method to compute compute geometry translations");
 
 		GM_Solid cube1 = Utils.createCube(100, 100, 100, 10);
 		Calculation3D.translate(cube1, -1, +2, -3);

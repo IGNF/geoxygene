@@ -2,6 +2,7 @@ package fr.ign.cogit.equation;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,8 @@ public class TestLineEquation extends TestCase {
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
 	private static double epsilon = Math.pow(10,-1);
+	
+	private static Logger log = Logger.getLogger(TestLineEquation.class);
 
 	// ---------------------------------- PREPROCESS ----------------------------------
 
@@ -35,6 +38,8 @@ public class TestLineEquation extends TestCase {
 	// Test for method to build line equation from point and vector
 	// --------------------------------------------------------------------------------
 	public void testLineEquation1() {
+		
+		log.info("Test for method to build line equation from point and vector");
 
 		// Creating point
 		DirectPosition p = new DirectPosition(10,10,10);
@@ -60,6 +65,8 @@ public class TestLineEquation extends TestCase {
 	// Test for method to build line equation from two points
 	// --------------------------------------------------------------------------------
 	public void testLineEquation2() {
+		
+		log.info("Test for method to build line equation from two points");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(10,10,10);
@@ -84,6 +91,8 @@ public class TestLineEquation extends TestCase {
 	// Test for method to process value at t
 	// --------------------------------------------------------------------------------
 	public void testLineEquation3() {
+		
+		log.info("Test for method to process value at t");
 
 		// Creating point
 		DirectPosition p = new DirectPosition(10,10,10);
@@ -117,6 +126,8 @@ public class TestLineEquation extends TestCase {
 	// Test for method to know if a point belongs to a line
 	// --------------------------------------------------------------------------------
 	public void testLineEquation4() {
+		
+		log.info("Test for method to know if a point belongs to a line");
 
 		// Creating point
 		DirectPosition p = new DirectPosition(10,10,10);
@@ -146,6 +157,8 @@ public class TestLineEquation extends TestCase {
 	// Test for method to process intersection with a plane
 	// --------------------------------------------------------------------------------
 	public void testLineEquation5() {
+		
+		log.info("Test for method to process intersection with a plane");
 
 		// Creating point
 		DirectPosition p = new DirectPosition(10,10,10);
@@ -180,6 +193,8 @@ public class TestLineEquation extends TestCase {
 	// Test for method to process intersection with a plane (parallel case)
 	// --------------------------------------------------------------------------------
 	public void testLineEquation6() {
+		
+		log.info("Test for method to process intersection with a plane (parallel case)");
 
 		// Creating point
 		DirectPosition p = new DirectPosition(10,10,10);
@@ -211,6 +226,8 @@ public class TestLineEquation extends TestCase {
 	// Test for method to process distance between a line and a point
 	// --------------------------------------------------------------------------------
 	public void testLineEquation7() {
+		
+		log.info("Test for method to process distance between a line and a point");
 
 		// Creating point
 		DirectPosition p = new DirectPosition(10,10,10);
@@ -243,6 +260,8 @@ public class TestLineEquation extends TestCase {
 	// Test for method to process intersection between two lines
 	// --------------------------------------------------------------------------------
 	public void testLineEquation8() {
+		
+		log.info("Test for method to process intersection between two lines");
 
 		// Creating random point
 
@@ -283,6 +302,8 @@ public class TestLineEquation extends TestCase {
 	// Test for method to process intersection between two lines (parallel case)
 	// --------------------------------------------------------------------------------
 	public void testLineEquation9() {
+		
+		log.info("Test for method to process intersection between two lines (parallel case)");
 
 		// Creating random points
 
@@ -315,20 +336,3 @@ public class TestLineEquation extends TestCase {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

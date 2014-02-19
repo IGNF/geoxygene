@@ -2,6 +2,7 @@ package fr.ign.cogit.equation;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,8 @@ public class TestPlanEquation extends TestCase {
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
 	private static double epsilon = Math.pow(10,-10);
+	
+	private static Logger log = Logger.getLogger(TestPlanEquation.class);
 
 	// ---------------------------------- PREPROCESS ----------------------------------
 
@@ -39,6 +42,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute plane equation from 3 points : Oxy plane
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation1() {
+		
+		log.info("Test for method to compute plane equation from 3 points : Oxy plane");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
@@ -81,6 +86,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute plane equation from 3 points : Oxz plane
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation2() {
+		
+		log.info("Test for method to compute plane equation from 3 points : Oxz plane");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
@@ -122,6 +129,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute plane equation from 3 points : Oyz plane
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation3() {
+		
+		log.info("Test for method to compute plane equation from 3 points : Oyz plane");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
@@ -164,6 +173,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute plane equation from 3 points : random plane
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation4() {
+		
+		log.info("Test for method to compute plane equation from 3 points : random plane");
 
 		// Creating random points
 		DirectPosition p1 = new DirectPosition(Math.random()*100,Math.random()*100,Math.random()*100);
@@ -196,6 +207,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute plane equation from 3 points : colinear case
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation5() {
+		
+		log.info("Test for method to compute plane equation from 3 points : colinear case");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0, 0, 0);
@@ -224,6 +237,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute plane equation from 1 point and 1 normal vector
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation6() {
+		
+		log.info("Test for method to compute plane equation from 1 point and 1 normal vector");
 
 		// Creating random point
 		DirectPosition p = new DirectPosition(Math.random()*100,Math.random()*100,Math.random()*100);
@@ -273,6 +288,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute plane equation from 1 point and 1 null vector
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation7() {
+		
+		log.info("Test for method to compute plane equation from 1 point and 1 null vector");
 
 		// Creating random point
 		DirectPosition p = new DirectPosition(Math.random()*100,Math.random()*100,Math.random()*100);
@@ -302,6 +319,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute plane equation from surface
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation8() {
+		
+		log.info("Test for method to compute plane equation from surface");
 
 		// Creating surface
 		GM_Surface surface = Utils.createSquarePolygon(2, 0, 0);
@@ -335,6 +354,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute plane equation from list of points
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation9() {
+		
+		log.info("Test for method to compute plane equation from list of points");
 
 		// Creating list of points
 		DirectPositionList dpl = new DirectPositionList();
@@ -388,6 +409,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute equation from a plane
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation10() {
+		
+		log.info("Test for method to compute equation from a plane");
 
 		// Creating random points
 		DirectPosition p1 = new DirectPosition(Math.random()*100,Math.random()*100,Math.random()*100);
@@ -414,6 +437,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute sign from a plane
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation11() {
+		
+		log.info("Test for method to compute sign from a plane");
 
 		// Creating random points
 		DirectPosition p1 = new DirectPosition(Math.random()*100,Math.random()*100,Math.random()*100);
@@ -450,6 +475,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute intersection on a plane (Oxy plane)
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation12() {
+		
+		log.info("Test for method to compute intersection on a plane (Oxy plane)");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
@@ -478,6 +505,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute intersection on a plane : case "parallel"
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation13() {
+		
+		log.info("Test for method to compute intersection on a plane : case 'parallel'");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
@@ -504,6 +533,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute intersection between plane and half line
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation14() {
+		
+		log.info("Test for method to compute intersection between plane and half line");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
@@ -532,6 +563,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute intersection between plane and half line
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation15() {
+		
+		log.info("Test for method to compute intersection between plane and half line");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
@@ -562,6 +595,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute intersection between plane and half line (parallel)
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation16() {
+		
+		log.info("Test for method to compute intersection between plane and half line (parallel)");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
@@ -593,6 +628,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute intersection point between plane and half line
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation17() {
+		
+		log.info("Test for method to compute intersection point between plane and half line");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,2);
@@ -624,6 +661,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to compute intersection point between plane and line
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation18() {
+		
+		log.info("Test for method to compute intersection point between plane and line");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,2);
@@ -652,6 +691,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to project a 2D point on a plane
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation19() {
+		
+		log.info("Test for method to project a 2D point on a plane");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,3,2);
@@ -683,6 +724,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to process intersection between plane and triangle
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation20() {
+		
+		log.info("Test for method to process intersection between plane and triangle");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
@@ -718,6 +761,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to process intersection between plane and triangle
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation21() {
+		
+		log.info("Test for method to process intersection between plane and triangle");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
@@ -748,6 +793,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to process intersection between plane and triangle
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation22() {
+		
+		log.info("Test for method to process intersection between plane and triangle");
 
 		// NEEDS FIXING METHOD triangleIntersection
 
@@ -779,6 +826,9 @@ public class TestPlanEquation extends TestCase {
 	// BE CAREFUL, REDUDANCY with equation Value Method !!!
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation23() {
+		
+		log.info("Test for method to process equation value : ");
+		log.warn("BE CAREFUL, REDUDANCY with equation Value Method !!!");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
@@ -810,6 +860,8 @@ public class TestPlanEquation extends TestCase {
 	// Test for method to return plane normal vector
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation24() {
+		
+		log.info("Test for method to return plane normal vector");
 
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
@@ -838,6 +890,8 @@ public class TestPlanEquation extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testPlanEquation25() {
 
+		log.info("Test for method to return orthogonal projection");
+		
 		// Creating points
 		DirectPosition p1 = new DirectPosition(0,0,0);
 		DirectPosition p2 = new DirectPosition(0,0,1);

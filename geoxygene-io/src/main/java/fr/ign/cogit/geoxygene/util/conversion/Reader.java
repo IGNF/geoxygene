@@ -23,9 +23,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.geotools.data.shapefile.ShpFiles;
 import org.geotools.data.shapefile.shp.ShapefileReader;
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
@@ -80,15 +80,15 @@ public class Reader {
             shapefileReader = new ShapefileReader(shpf, true, false, new GeometryFactory());
             dbaseFileReader = new DbaseFileReader(shpf, true, Charset.forName("ISO-8859-1")); //$NON-NLS-1$
         } catch (FileNotFoundException e) {
-            LOGGER.log(Level.FINE, I18N.getString("ShapefileReader.File") + shapefileName //$NON-NLS-1$
+            LOGGER.log(Level.ERROR, I18N.getString("ShapefileReader.File") + shapefileName //$NON-NLS-1$
                     + I18N.getString("ShapefileReader.NotFound")); //$NON-NLS-1$
             return;
         } catch (ShapefileException e) {
-            LOGGER.log(Level.SEVERE, I18N.getString("ShapefileReader.ErrorReadingShapefile") //$NON-NLS-1$
+            LOGGER.log(Level.ERROR, I18N.getString("ShapefileReader.ErrorReadingShapefile") //$NON-NLS-1$
                     + shapefileName);
             return;
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, I18N.getString("ShapefileReader.ErrorReadingFile") //$NON-NLS-1$
+            LOGGER.log(Level.ERROR, I18N.getString("ShapefileReader.ErrorReadingFile") //$NON-NLS-1$
                     + shapefileName);
             e.printStackTrace();
             return;
@@ -97,13 +97,13 @@ public class Reader {
         try {
             prjFileReader = new PrjFileReader(shpf);
         } catch (FileNotFoundException e) {
-            LOGGER.log(Level.FINE, I18N.getString("ShapefileReader.PrjFile") + shapefileName //$NON-NLS-1$
+            LOGGER.log(Level.WARN, I18N.getString("ShapefileReader.PrjFile") + shapefileName //$NON-NLS-1$
                     + I18N.getString("ShapefileReader.NotFound")); //$NON-NLS-1$
         } catch (ShapefileException e) {
-            LOGGER.log(Level.FINE, I18N.getString("ShapefileReader.ErrorReadingPrjFile") //$NON-NLS-1$
+            LOGGER.log(Level.WARN, I18N.getString("ShapefileReader.ErrorReadingPrjFile") //$NON-NLS-1$
                     + shapefileName);
         } catch (IOException e) {
-            LOGGER.log(Level.FINE, I18N.getString("ShapefileReader.ErrorReadingPrjFile") //$NON-NLS-1$
+            LOGGER.log(Level.WARN, I18N.getString("ShapefileReader.ErrorReadingPrjFile") //$NON-NLS-1$
                     + shapefileName);
         }
 
@@ -247,7 +247,7 @@ public class Reader {
      * @return the class of the given geometry type
      */
     private static Class<? extends GM_Object> geometryType(ShapeType type) {
-        LOGGER.log(Level.FINE, "shapeType = " + type); //$NON-NLS-1$
+        LOGGER.log(Level.TRACE, "shapeType = " + type); //$NON-NLS-1$
         if (type.isPointType()) {
             return GM_Point.class;
         }

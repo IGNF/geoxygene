@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -21,6 +22,8 @@ public class TestProximity extends TestCase {
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
 	private double epsilon = Math.pow(10, -10);    // Scale error
+	
+	private static Logger log = Logger.getLogger(TestProximity.class);
 
 	// ------------------------------------ TESTS -------------------------------------
 
@@ -30,6 +33,8 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between set of points processing
 	// --------------------------------------------------------------------------------
 	public void testNearest1() {
+		
+		log.info("Test for minimal distance between set of points processing");
 
 		Proximity prox = new Proximity();
 
@@ -67,6 +72,8 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between single point and set of points processing
 	// --------------------------------------------------------------------------------
 	public void testNearest2() {
+		
+		log.info("Test for minimal distance between single point and set of points processing");
 
 		Proximity prox = new Proximity();
 
@@ -122,6 +129,8 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between single point and set of points processing
 	// --------------------------------------------------------------------------------
 	public void testNearest3() {
+		
+		log.info("Test for minimal distance between single point and set of points processing");
 
 		Proximity prox = new Proximity();
 
@@ -158,6 +167,8 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between single point and single surface
 	// --------------------------------------------------------------------------------
 	public void testNearest4() {
+		
+		log.info("Test for minimal distance between single point and single surface");
 
 		Proximity prox = new Proximity();
 
@@ -217,6 +228,8 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between single point and surfaces list
 	// --------------------------------------------------------------------------------
 	public void testNearest5() {
+		
+		log.info("Test for minimal distance between single point and surfaces list");
 
 		Proximity prox = new Proximity();
 
@@ -285,6 +298,8 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between list of point and single surface
 	// --------------------------------------------------------------------------------
 	public void testNearest6() {
+		
+		log.info("Test for minimal distance between list of point and single surface");
 
 		Proximity prox = new Proximity();
 
@@ -332,6 +347,8 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between list of point and list of surfaces
 	// --------------------------------------------------------------------------------
 	public void testNearest7() {
+		
+		log.info("Test for minimal distance between list of point and list of surfaces");
 
 		Proximity prox = new Proximity();
 
@@ -378,6 +395,8 @@ public class TestProximity extends TestCase {
 	// Test when two points are same point
 	// --------------------------------------------------------------------------------
 	public void testNearest8() {
+		
+		log.info("Test when two points are same point");
 
 		Proximity prox = new Proximity();
 
@@ -417,6 +436,8 @@ public class TestProximity extends TestCase {
 	// Basic test case
 	// --------------------------------------------------------------------------------
 	public void testNearest9() {
+		
+		log.info("Basic test case");
 
 		Proximity prox = new Proximity();
 

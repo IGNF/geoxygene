@@ -1,0 +1,135 @@
+11:25:55,168  INFO (TestBooleanOperators.java:testCompute5:120) - Test for solid cubes union (same positions)
+11:25:55,168  INFO (TestBooleanOperators.java:samePositions:230) - Test for solid cubes operation (same positions)
+11:25:55,932  INFO (TestBooleanOperators.java:testCompute3:83) - Test for solid cubes intersection (empty intersection)
+11:25:55,932  INFO (TestBooleanOperators.java:emptyIntersection:254) - Test for solid cubes operation (empty intersection)
+11:25:55,932  INFO (TestBooleanOperators.java:testCompute4:98) - Test for solid cubes union
+11:25:55,948  INFO (TestBooleanOperators.java:testCompute6:138) - Test for solid cubes union (empty intersection)
+11:25:56,121  INFO (TestBooleanOperators.java:testCompute7:178) - Test with Sphere differences
+11:25:56,589  INFO (TestBooleanOperators.java:testCompute2:65) - Test for solid cubes intersection (same positions)
+11:25:56,589  INFO (TestBooleanOperators.java:samePositions:230) - Test for solid cubes operation (same positions)
+11:25:56,589  INFO (TestBooleanOperators.java:testCompute1:47) - Test for solid cube intersection
+11:25:56,589  INFO (TestBooleanOperators.java:normalCase:206) - Test for solid cubes operation
+11:25:56,604  INFO (TestCalculation3D.java:testArea1:42) - Test for method to compute area of single random triangle
+11:25:56,604  INFO (TestCalculation3D.java:testArea2:124) - Test for method to compute area of vertical triangle
+11:25:56,604  INFO (TestCalculation3D.java:testArea3:149) - Test for method to compute area of a list of triangles
+11:25:56,604  INFO (TestCalculation3D.java:testArea4:181) - Test for method to compute area for empty list
+11:25:56,604  INFO (TestCalculation3D.java:testArea5:200) - Test for method to compute center of gravity of a surface
+11:25:56,604  INFO (TestCalculation3D.java:testArea6:221) - Test for method to compute center of gravity of a vertical triangle
+11:25:56,604  INFO (TestCalculation3D.java:testArea7:248) - Test for method to compute center of complex form
+11:25:56,651  INFO (TestCalculation3D.java:testArea8:289) - Test for method to compute lower point of a bounding box : cube
+11:25:56,651  INFO (TestCalculation3D.java:testArea9:311) - Test for method to compute lower point of a bounding box : sphere
+11:25:56,760  INFO (TestCalculation3D.java:testArea10:335) - Test for method to compute lower position from a list of points bounding box
+11:25:56,760  INFO (TestCalculation3D.java:testArea11:378) - Test for method to compute upper point of a bounding box : cube
+11:25:56,760  INFO (TestCalculation3D.java:testArea12:400) - Test for method to compute upper point of a bounding box : sphere
+11:25:56,838  INFO (TestCalculation3D.java:testArea13:423) - Test for method to compute upper position from a list of points bounding box
+11:25:56,838  INFO (TestCalculation3D.java:testArea14:466) - Test for method to compute geometry translations
+11:25:56,838  INFO (TestCalculation3D.java:testArea15:485) - Test for method to compute compute geometry translations
+11:25:56,838  INFO (TestProximity.java:testNearest1:37) - Test for minimal distance between set of points processing
+11:25:56,838  INFO (TestProximity.java:testNearest2:76) - Test for minimal distance between single point and set of points processing
+11:25:56,838  INFO (TestProximity.java:testNearest3:133) - Test for minimal distance between single point and set of points processing
+11:25:56,838  INFO (TestProximity.java:testNearest4:171) - Test for minimal distance between single point and single surface
+11:25:56,854  INFO (TestProximity.java:testNearest5:232) - Test for minimal distance between single point and surfaces list
+11:25:56,854  INFO (TestProximity.java:testNearest6:302) - Test for minimal distance between list of point and single surface
+11:25:56,854  INFO (TestProximity.java:testNearest7:351) - Test for minimal distance between list of point and list of surfaces
+11:25:56,854  INFO (TestProximity.java:testNearest8:399) - Test when two points are same point
+11:25:56,854  INFO (TestProximity.java:testNearest9:440) - Basic test case
+11:25:56,854  INFO (TestUtil.java:testCenterOf10:340) - Test for method to detect roof faces
+11:25:56,854  INFO (TestUtil.java:testCenterOf11:388) - Test for method to detect roof with empty list
+11:25:56,854  INFO (TestUtil.java:testCenterOf12:407) - Test for method to detect roof in list of triangles
+11:25:56,854  INFO (TestUtil.java:testCenterOf13:449) - Test for method to detect roof in list of triangles
+11:25:56,854  INFO (TestUtil.java:testCenterOf14:479) - Test for method to detect floor in list of triangles
+11:25:56,854  INFO (TestUtil.java:testCenterOf15:521) - Test for method to detect floor in list of triangles
+11:25:56,854  INFO (TestUtil.java:testCenterOf16:551) - Test for method to know if a list contains only triangular surfaces
+11:25:56,854  INFO (TestUtil.java:testCenterOf17:615) - Test for method to know if an empty list contains only triangular surfaces
+11:25:56,854  INFO (TestUtil.java:testCenterOf18:634) - Test for method to compute volume under a surface
+11:25:56,854  INFO (TestUtil.java:testCenterOf19:680) - Test for method to volume under an empty surface list
+11:25:56,854  INFO (TestUtil.java:testCenterOf20:699) - Test for method to compute volume under an negatively oriented surfaces
+11:25:56,854  INFO (TestUtil.java:testCenterOf21:742) - Test for method to compute volume in a triangulated surface (cube)
+11:25:56,854  INFO (TestUtil.java:testCenterOf22:767) - Test for method to compute area of a triangulated surface (cube)
+11:25:56,854  INFO (TestUtil.java:testCenterOf23:792) - Test for method to compute area of a triangulated list of surfaces
+11:25:56,854  INFO (TestUtil.java:testCenterOf2:90) - Test for method to compute center of gravity of an empty set of points
+11:25:56,854  INFO (TestUtil.java:testCenterOf3:112) - Test for method to compute volume under triangle
+11:25:56,854  INFO (TestUtil.java:testCenterOf1:42) - Test for method to compute center of gravity of a set of points
+11:25:56,854  INFO (TestUtil.java:testCenterOf6:200) - Test for method to detect vertical faces
+11:25:56,916  INFO (TestUtil.java:testCenterOf5:172) - Test for method to compute volume 'under' vertical triangle
+11:25:56,916  INFO (TestUtil.java:testCenterOf4:142) - Test for method to compute volume under below Oxy triangle
+11:25:56,916  INFO (TestUtil.java:testCenterOf7:248) - Test for method to detect vertical faces with empty list
+11:25:56,916  INFO (TestUtil.java:testCenterOf8:270) - Test for method to detect non-vertical faces
+11:25:56,916  INFO (TestUtil.java:testCenterOf9:318) - Test for method to detect non-vertical faces with empty list
+11:25:56,916  INFO (TestFromGeomToSurface.java:testConvertGeom2:80) - Test for method to convert solid into multi-surfaces
+11:25:56,916  INFO (TestFromGeomToSurface.java:testConvertGeom1:35) - Test for method to convert solid to surfaces
+11:25:56,916  INFO (TestShapeFileLoader.java:testShapeFileLoader1:46) - Test for method to load shape file
+11:25:56,916  INFO (TestShapeFileLoader.java:loadAndTest:105) - Method to load and test a shape file
+11:25:57,713  INFO (TestShapeFileLoader.java:testShapeFileLoader2:58) - Test for method to load shape file
+11:25:57,713  INFO (TestShapeFileLoader.java:loadAndTest:105) - Method to load and test a shape file
+11:25:57,745  INFO (TestShapeFileLoader.java:testShapeFileLoader3:70) - Test for method to load shape file
+11:25:57,745  INFO (TestShapeFileLoader.java:loadAndTest:105) - Method to load and test a shape file
+11:25:57,761  INFO (TestShapeFileLoader.java:testShapeFileLoader4:82) - Test for method to load shape file
+11:25:57,761  INFO (TestShapeFileLoader.java:loadAndTest:105) - Method to load and test a shape file
+11:25:57,948  INFO (TestShapeFileLoader.java:testShapeFileLoader5:94) - Test for method to load shape file
+11:25:57,948  INFO (TestShapeFileLoader.java:loadAndTest:105) - Method to load and test a shape file
+11:25:58,260  INFO (TestFromPolygonToLineString.java:testConvertListPolToLineStrings:34) - Test for method to convert polygon to line strings
+11:25:58,260  INFO (TestExtrusion2DObject.java:testConvertFromGeometry1:35) - Test for method to extrude 2D object
+11:25:58,276  INFO (TestExtrusion2DObject.java:testConvertFromGeometry2:57) - Test for method to extrude 2D object (null object)
+11:25:58,276  INFO (TestExtrusion2DObject.java:testConvertFromGeometry3:73) - Test for method to extrude 2D polygon 
+11:25:58,276  INFO (TestExtrusion2DObject.java:testConvertFromGeometry4:95) - Test for method to extrude 2D line
+11:25:58,276  INFO (TestExtrusion2DObject.java:testConvertFromGeometry5:117) - Test for method to extrude 2D point
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation1:46) - Test for method to compute plane equation from 3 points : Oxy plane
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation2:90) - Test for method to compute plane equation from 3 points : Oxz plane
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation3:133) - Test for method to compute plane equation from 3 points : Oyz plane
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation4:177) - Test for method to compute plane equation from 3 points : random plane
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation5:211) - Test for method to compute plane equation from 3 points : colinear case
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation6:241) - Test for method to compute plane equation from 1 point and 1 normal vector
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation7:292) - Test for method to compute plane equation from 1 point and 1 null vector
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation8:323) - Test for method to compute plane equation from surface
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation9:358) - Test for method to compute plane equation from list of points
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation10:413) - Test for method to compute equation from a plane
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation11:441) - Test for method to compute sign from a plane
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation12:479) - Test for method to compute intersection on a plane (Oxy plane)
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation13:509) - Test for method to compute intersection on a plane : case 'parallel'
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation14:537) - Test for method to compute intersection between plane and half line
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation15:567) - Test for method to compute intersection between plane and half line
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation16:599) - Test for method to compute intersection between plane and half line (parallel)
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation17:632) - Test for method to compute intersection point between plane and half line
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation18:665) - Test for method to compute intersection point between plane and line
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation19:695) - Test for method to project a 2D point on a plane
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation20:728) - Test for method to process intersection between plane and triangle
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation21:765) - Test for method to process intersection between plane and triangle
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation22:797) - Test for method to process intersection between plane and triangle
+11:25:58,276  INFO (TestPlanEquation.java:testPlanEquation23:830) - Test for method to process equation value : 
+11:25:58,276  WARN (TestPlanEquation.java:testPlanEquation23:831) - BE CAREFUL, REDUDANCY with equation Value Method !!!
+11:25:58,291  INFO (TestPlanEquation.java:testPlanEquation24:864) - Test for method to return plane normal vector
+11:25:58,291  INFO (TestPlanEquation.java:testPlanEquation25:893) - Test for method to return orthogonal projection
+11:25:58,291  INFO (TestLineEquation.java:testLineEquation1:42) - Test for method to build line equation from point and vector
+11:25:58,291  INFO (TestLineEquation.java:testLineEquation2:69) - Test for method to build line equation from two points
+11:25:58,291  INFO (TestLineEquation.java:testLineEquation3:95) - Test for method to process value at t
+11:25:58,291  INFO (TestLineEquation.java:testLineEquation4:130) - Test for method to know if a point belongs to a line
+11:25:58,291  INFO (TestLineEquation.java:testLineEquation5:161) - Test for method to process intersection with a plane
+11:25:58,291  INFO (TestLineEquation.java:testLineEquation6:197) - Test for method to process intersection with a plane (parallel case)
+11:25:58,291  INFO (TestLineEquation.java:testLineEquation7:230) - Test for method to process distance between a line and a point
+11:25:58,291  INFO (TestLineEquation.java:testLineEquation8:264) - Test for method to process intersection between two lines
+11:25:58,291  INFO (TestLineEquation.java:testLineEquation9:306) - Test for method to process intersection between two lines (parallel case)
+11:25:58,291  INFO (TestApproximatedPlanEquation.java:testApproximatedPlanEquation1:44) - Test for method to build approximated plan equation : 3 points
+11:25:58,291  INFO (TestApproximatedPlanEquation.java:testApproximatedPlanEquation2:73) - Test for method to build approximated plan equation : 2 points
+11:25:58,291  INFO (TestApproximatedPlanEquation.java:testApproximatedPlanEquation3:102) - Test for method to build approximated plan equation : 3 alined points
+11:25:58,291  INFO (TestApproximatedPlanEquation.java:testApproximatedPlanEquation4:124) - Test for method to build approximated plan equation : 1 million coplanar points
+11:25:58,369  INFO (TestApproximatedPlanEquation.java:testApproximatedPlanEquation5:160) - Test for method to build approximated plan equation : 8 points
+11:25:58,369  INFO (TestApproximatedPlanEquation.java:testApproximatedPlanEquation6:188) - Test for method to build approximated plan equation : surface
+11:25:58,369  INFO (TestApproximatedPlanEquation.java:testApproximatedPlanEquation7:210) - Test for method to build approximated plan equation : polygon
+11:25:58,369  INFO (TestBox3D.java:testBox3D2:70) - Test for method to process bounding box from geometry
+11:25:58,369  INFO (TestBox3D.java:testBox3D3:98) - Test for method to process bounding box from list of points
+11:25:58,369  INFO (TestBox3D.java:testBox3D1:46) - Test for method to get box center from extremal coordinates
+11:25:58,369  INFO (TestBox3D.java:testBox3D4:150) - 
+11:25:58,369  INFO (TestBox3D.java:testBox3D5:180) - 
+11:25:58,369  INFO (TestBox3D.java:testBox3D6:219) - Test for method to process union between two boxes : standard case
+11:25:58,369  INFO (TestBox3D.java:testBox3D7:254) - Test for method to process union between two boxes : no intersection case
+11:25:58,369  INFO (TestBox3D.java:testBox3D8:289) - Test for method to process union between two boxes : same boxes case
+11:25:58,369  INFO (TestBox3D.java:testBox3D9:321) - Test for method to process polygon footprint
+11:25:58,369  INFO (TestSample.java:testSample1:44) - Test for sample class AddMenu
+11:25:58,463  INFO (TestSample.java:testSample3:70) - Test for sample class DisplayData
+11:25:58,463  INFO (TestSample.java:testSample2:57) - Test for sample class Calcul3DArea
+11:25:58,479  INFO (TestSample.java:testSample4:83) - Test for sample class DTMDisplay
+11:25:58,479  INFO (TestSample.java:testSample6:109) - Test for sample class RGE
+11:25:58,479  INFO (TestSample.java:testSample7:122) - Test for sample class Symbology
+11:25:58,494  INFO (TestSample.java:testSample8:135) - Test for sample class Toponym
+11:25:58,494  INFO (TestSample.java:testSample5:96) - Test for sample class DTMDisplay

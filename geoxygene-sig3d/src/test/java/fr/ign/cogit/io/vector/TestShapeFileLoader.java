@@ -2,10 +2,12 @@ package fr.ign.cogit.io.vector;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import fr.ign.cogit.calculation.TestCalculation3D;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.io.vector.ShapeFileLoader;
@@ -19,6 +21,8 @@ public class TestShapeFileLoader extends TestCase {
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
 	private static double epsilon = Math.pow(10,-1);
+	
+	private static Logger log = Logger.getLogger(TestShapeFileLoader.class);
 
 	// ---------------------------------- PREPROCESS ----------------------------------
 
@@ -38,6 +42,8 @@ public class TestShapeFileLoader extends TestCase {
 	// Test for method to load shape file
 	// --------------------------------------------------------------------------------
 	public void testShapeFileLoader1() {
+		
+		log.info("Test for method to load shape file");
 
 		loadAndTest("src\\test\\resources\\Bati.shp", 470, 91482);
 
@@ -48,6 +54,8 @@ public class TestShapeFileLoader extends TestCase {
 	// Test for method to load shape file
 	// --------------------------------------------------------------------------------
 	public void testShapeFileLoader2() {
+		
+		log.info("Test for method to load shape file");
 
 		loadAndTest("src\\test\\resources\\Parcelle.shp",137,2033);
 
@@ -59,6 +67,8 @@ public class TestShapeFileLoader extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testShapeFileLoader3() {
 
+		log.info("Test for method to load shape file");
+		
 		loadAndTest("src\\test\\resources\\Route.shp",37,85);
 
 	}
@@ -68,6 +78,8 @@ public class TestShapeFileLoader extends TestCase {
 	// Test for method to load shape file
 	// --------------------------------------------------------------------------------
 	public void testShapeFileLoader4() {
+		
+		log.info("Test for method to load shape file");
 
 		loadAndTest("src\\test\\resources\\Ruerennes.shp",6,15);
 
@@ -78,6 +90,8 @@ public class TestShapeFileLoader extends TestCase {
 	// Test for method to load shape file
 	// --------------------------------------------------------------------------------
 	public void testShapeFileLoader5() {
+		
+		log.info("Test for method to load shape file");
 
 		loadAndTest("src\\test\\resources\\projrenn.shp",19316,19316);
 
@@ -87,6 +101,8 @@ public class TestShapeFileLoader extends TestCase {
 	// Method to load and test a shape file
 	// --------------------------------------------------------------------------------
 	public void loadAndTest(String path, int nbShapes, int nbPoints) {
+		
+		log.info("Method to load and test a shape file");
 
 		// Loading data
 		FT_FeatureCollection<IFeature> data = ShapeFileLoader.loadingShapeFile(path,"0","10",true);
@@ -111,9 +127,7 @@ public class TestShapeFileLoader extends TestCase {
 		assertEquals("Wrong number of loaded objects", nbShapes, data.size(), epsilon);
 		assertEquals("Wrong number of loaded points", nbPoints, dpl.size());
 
-
 	}
-
 
 }
 

@@ -2,6 +2,7 @@ package fr.ign.cogit.equation;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +19,8 @@ public class TestApproximatedPlanEquation extends TestCase {
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
 	private static double epsilon = Math.pow(10,-1);
+	
+	private static Logger log = Logger.getLogger(TestApproximatedPlanEquation.class);
 
 	// ---------------------------------- PREPROCESS ----------------------------------
 
@@ -37,6 +40,8 @@ public class TestApproximatedPlanEquation extends TestCase {
 	// Test for method to build approximated plan equation : 3 points
 	// --------------------------------------------------------------------------------
 	public void testApproximatedPlanEquation1() {
+		
+		log.info("Test for method to build approximated plan equation : 3 points");
 
 		// Creating list of points
 		DirectPositionList dpl = new DirectPositionList();
@@ -64,6 +69,8 @@ public class TestApproximatedPlanEquation extends TestCase {
 	// Test for method to build approximated plan equation : 2 points
 	// --------------------------------------------------------------------------------
 	public void testApproximatedPlanEquation2() {
+		
+		log.info("Test for method to build approximated plan equation : 2 points");
 
 		// NEEDS FIXING
 		
@@ -91,6 +98,8 @@ public class TestApproximatedPlanEquation extends TestCase {
 	// Test for method to build approximated plan equation : 3 alined points
 	// --------------------------------------------------------------------------------
 	public void testApproximatedPlanEquation3() {
+		
+		log.info("Test for method to build approximated plan equation : 3 alined points");
 
 		// NEEDS FIXING
 
@@ -111,6 +120,8 @@ public class TestApproximatedPlanEquation extends TestCase {
 	// Test for method to build approximated plan equation : 1 million coplanar points
 	// --------------------------------------------------------------------------------
 	public void testApproximatedPlanEquation4() {
+		
+		log.info("Test for method to build approximated plan equation : 1 million coplanar points");
 
 		// Number of points 
 		int n = 1000000;
@@ -145,6 +156,8 @@ public class TestApproximatedPlanEquation extends TestCase {
 	// Test for method to build approximated plan equation : 8 points
 	// --------------------------------------------------------------------------------
 	public void testApproximatedPlanEquation5() {
+		
+		log.info("Test for method to build approximated plan equation : 8 points");
 
 		// NEEDS FIXING : should be horizontal plane z = 3
 
@@ -171,6 +184,8 @@ public class TestApproximatedPlanEquation extends TestCase {
 	// Test for method to build approximated plan equation : surface
 	// --------------------------------------------------------------------------------
 	public void testApproximatedPlanEquation6() {
+		
+		log.info("Test for method to build approximated plan equation : surface");
 
 		// Creating surface
 		GM_Surface surface = Utils.createSquarePolygon(2, 0, 0);
@@ -191,6 +206,8 @@ public class TestApproximatedPlanEquation extends TestCase {
 	// Test for method to build approximated plan equation : polygon
 	// --------------------------------------------------------------------------------
 	public void testApproximatedPlanEquation7() {
+		
+		log.info("Test for method to build approximated plan equation : polygon");
 
 		// Creating surface
 		GM_Polygon polygon = Utils.createSquarePolygon(2, 0, 0);

@@ -5,6 +5,7 @@ package fr.ign.cogit.convert.transform;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.sig3d.convert.transform.Extrusion2DObject;
@@ -20,6 +21,8 @@ import fr.ign.cogit.tools.Utils;
 
 
 public class TestExtrusion2DObject extends TestCase {
+	
+	private static Logger log = Logger.getLogger(TestExtrusion2DObject.class);
 
 	// ----------------------------------- METHODS ------------------------------------
 
@@ -28,6 +31,8 @@ public class TestExtrusion2DObject extends TestCase {
 	// Test for method to extrude 2D object
 	// --------------------------------------------------------------------------------
 	public void testConvertFromGeometry1() {
+		
+		log.info("Test for method to extrude 2D object");
 
 		// Creating square
 		GM_Polygon square = Utils.createSquarePolygon(1, 0, 0);
@@ -48,6 +53,8 @@ public class TestExtrusion2DObject extends TestCase {
 	// Test for method to extrude 2D object (null object)
 	// --------------------------------------------------------------------------------
 	public void testConvertFromGeometry2() {
+		
+		log.info("Test for method to extrude 2D object (null object)");
 
 		// Operating extrusion
 		GM_Solid cube = (GM_Solid) Extrusion2DObject.convertFromGeometry(null, 0, 1);
@@ -62,6 +69,8 @@ public class TestExtrusion2DObject extends TestCase {
 	// Test for method to extrude 2D polygon 
 	// --------------------------------------------------------------------------------
 	public void testConvertFromGeometry3() {
+		
+		log.info("Test for method to extrude 2D polygon ");
 
 		// Creating square
 		GM_Polygon square = Utils.createSquarePolygon(1, 0, 0);
@@ -82,6 +91,8 @@ public class TestExtrusion2DObject extends TestCase {
 	// Test for method to extrude 2D line
 	// --------------------------------------------------------------------------------
 	public void testConvertFromGeometry4() {
+		
+		log.info("Test for method to extrude 2D line");
 
 		// Creating 1D line string
 		GM_LineString line = new GM_LineString(new DirectPosition(0,0), new DirectPosition(1,0));
@@ -102,6 +113,8 @@ public class TestExtrusion2DObject extends TestCase {
 	// Test for method to extrude 2D point
 	// --------------------------------------------------------------------------------
 	public void testConvertFromGeometry5() {
+		
+		log.info("Test for method to extrude 2D point");
 		
 		// Creating point
 		GM_Point p = new GM_Point(new DirectPosition(0,0)); 

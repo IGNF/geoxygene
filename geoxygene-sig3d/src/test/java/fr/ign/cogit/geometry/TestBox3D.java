@@ -2,6 +2,7 @@ package fr.ign.cogit.geometry;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,8 @@ public class TestBox3D extends TestCase {
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
 	// private static double epsilon = Math.pow(10,-1);
+	
+	private static Logger log = Logger.getLogger(TestBox3D.class);
 
 	// ---------------------------------- PREPROCESS ----------------------------------
 
@@ -39,6 +42,8 @@ public class TestBox3D extends TestCase {
 	// Test for method to get box center from extremal coordinates
 	// --------------------------------------------------------------------------------
 	public void testBox3D1() {
+		
+		log.info("Test for method to get box center from extremal coordinates");
 
 		// Building box
 		DirectPosition pmin = new DirectPosition(10,10,10);
@@ -61,6 +66,8 @@ public class TestBox3D extends TestCase {
 	// Test for method to process bounding box from geometry
 	// --------------------------------------------------------------------------------
 	public void testBox3D2() {
+		
+		log.info("Test for method to process bounding box from geometry");
 
 		// Creating cube
 		GM_Solid cube = Utils.createCube(0, 0, 0, 10);
@@ -87,6 +94,8 @@ public class TestBox3D extends TestCase {
 	// Test for method to process bounding box from list of points
 	// --------------------------------------------------------------------------------
 	public void testBox3D3() {
+		
+		log.info("Test for method to process bounding box from list of points");
 
 		// Creating list of random points
 		DirectPositionList dpl = new DirectPositionList();
@@ -138,6 +147,8 @@ public class TestBox3D extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testBox3D4() {
 
+		log.info("");
+		
 		// Creating boxes
 		DirectPosition pmin1 = new DirectPosition(0,0,0);
 		DirectPosition pmax1 = new DirectPosition(10,20,30);
@@ -165,6 +176,8 @@ public class TestBox3D extends TestCase {
 	// Test for method to process intersection between boxes
 	// --------------------------------------------------------------------------------
 	public void testBox3D5() {
+		
+		log.info("");
 
 		// Creating boxes
 		DirectPosition pmin1 = new DirectPosition(0,0,0);
@@ -202,6 +215,8 @@ public class TestBox3D extends TestCase {
 	// Test for method to process union between two boxes : standard case
 	// --------------------------------------------------------------------------------
 	public void testBox3D6() {
+		
+		log.info("Test for method to process union between two boxes : standard case");
 
 		// Creating boxes
 		DirectPosition pmin1 = new DirectPosition(0,0,0);
@@ -235,6 +250,8 @@ public class TestBox3D extends TestCase {
 	// Test for method to process union between two boxes : no intersection case
 	// --------------------------------------------------------------------------------
 	public void testBox3D7() {
+		
+		log.info("Test for method to process union between two boxes : no intersection case");
 
 		// Creating boxes
 		DirectPosition pmin1 = new DirectPosition(0,0,0);
@@ -268,6 +285,8 @@ public class TestBox3D extends TestCase {
 	// Test for method to process union between two boxes : same boxes case
 	// --------------------------------------------------------------------------------
 	public void testBox3D8() {
+		
+		log.info("Test for method to process union between two boxes : same boxes case");
 
 		// Creating boxes
 		DirectPosition pmin1 = new DirectPosition(0,0,0);
@@ -298,6 +317,8 @@ public class TestBox3D extends TestCase {
 	// Test for method to process polygon footprint
 	// --------------------------------------------------------------------------------
 	public void testBox3D9() {
+		
+		log.info("Test for method to process polygon footprint");
 
 		// Creating boxes
 		DirectPosition pmin1 = new DirectPosition(0,0,0);
