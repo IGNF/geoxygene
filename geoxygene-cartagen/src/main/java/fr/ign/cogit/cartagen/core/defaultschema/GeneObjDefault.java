@@ -633,6 +633,8 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
       }
       // get its values
       Class<? extends IGeneObj> targetEntity = encodedAnnotation.targetEntity();
+      Class<? extends IGeneObj>[] targetEntities = encodedAnnotation
+          .targetEntities();
       String methodName = "get" + encodedAnnotation.methodName();
       // invoke the getter of the actual relation
       Method meth = this.getClass().getMethod(methodName);
@@ -641,8 +643,17 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
       List<Integer> ids = new ArrayList<Integer>();
       if (objects != null) {
         for (Object obj : objects) {
-          IGeneObj entity = targetEntity.cast(obj);
-          ids.add(entity.getId());
+          if (!targetEntity.equals(GeneObjDefault.class)) {
+            IGeneObj entity = targetEntity.cast(obj);
+            ids.add(entity.getId());
+          } else {
+            for (Class<? extends IGeneObj> classObject : targetEntities) {
+              if (classObject.isInstance(obj)) {
+                IGeneObj entity = targetEntity.cast(obj);
+                ids.add(entity.getId());
+              }
+            }
+          }
         }
       }
 
@@ -689,24 +700,26 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
       EncodedRelation encodedAnnotation = null;
       Encoded1To1Relation encoded1To1Annotation = null;
       for (Annotation a : m.getAnnotations()) {
-        if (a instanceof EncodedRelation) {
+        if (a.annotationType().equals(EncodedRelation.class)) {
           encodedAnnotation = (EncodedRelation) a;
           break;
         }
-        if (a instanceof Encoded1To1Relation) {
+        if (a.annotationType().equals(Encoded1To1Relation.class)) {
           encoded1To1Annotation = (Encoded1To1Relation) a;
           break;
         }
       }
 
-      if (encodedAnnotation == null || encoded1To1Annotation == null) {
-        return;
+      if (encodedAnnotation == null && encoded1To1Annotation == null) {
+        continue;
       }
 
       if (m.isAnnotationPresent(EncodedRelation.class)) {
         // get its values
         Class<? extends IGeneObj> targetEntity = encodedAnnotation
             .targetEntity();
+        Class<? extends IGeneObj>[] targetEntities = encodedAnnotation
+            .targetEntities();
         String methodName = "set" + encodedAnnotation.methodName();
 
         // invoke m to get the collection of ids
@@ -723,33 +736,58 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
         }
 
         // get the inverse relation if not nToM
-        Method inverseMethod = null;
+        List<Method> inverseMethods = new ArrayList<Method>();
         if (!encodedAnnotation.nToM() && encodedAnnotation.inverse()) {
           String methName = "set" + encodedAnnotation.invMethodName();
-          inverseMethod = ReflectionUtil.getInheritedMethod(targetEntity,
-              methName, encodedAnnotation.invClass());
+          if (!targetEntity.equals(GeneObjDefault.class))
+            inverseMethods.add(ReflectionUtil.getInheritedMethod(targetEntity,
+                methName, encodedAnnotation.invClass()));
+          else {
+            for (Class<? extends IGeneObj> target : targetEntities) {
+              inverseMethods.add(ReflectionUtil.getInheritedMethod(target,
+                  methName, encodedAnnotation.invClass()));
+            }
+          }
         }
 
         // then, get the population related to targetEntity
-        String popName = CartAGenDocOld.getInstance().getCurrentDataset()
-            .getPopNameFromClass(targetEntity);
-        Field field = targetEntity.getField("FEAT_TYPE_NAME");
-        String featType = (String) field.get(null);
-        IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDocOld
-            .getInstance().getCurrentDataset()
-            .getCartagenPop(popName, featType);
+        Set<IGeneObj> objectsToParse = new HashSet<IGeneObj>();
+        if (!targetEntity.equals(GeneObjDefault.class)) {
+          String popName = CartAGenDocOld.getInstance().getCurrentDataset()
+              .getPopNameFromClass(targetEntity);
+          Field field = targetEntity.getField("FEAT_TYPE_NAME");
+          String featType = (String) field.get(null);
+          IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDocOld
+              .getInstance().getCurrentDataset()
+              .getCartagenPop(popName, featType);
+          objectsToParse.addAll(pop);
+        } else {
+          for (Class<? extends IGeneObj> target : targetEntities) {
+            String popName = CartAGenDocOld.getInstance().getCurrentDataset()
+                .getPopNameFromClass(target);
+            Field field = target.getField("FEAT_TYPE_NAME");
+            String featType = (String) field.get(null);
+            IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDocOld
+                .getInstance().getCurrentDataset()
+                .getCartagenPop(popName, featType);
+            objectsToParse.addAll(pop);
+          }
+        }
         // TODO this part of the code is not optimised: a query would be better
 
         // loop on the object population
-        for (IGeneObj obj : pop) {
+        for (IGeneObj obj : objectsToParse) {
           if (!ids.contains(obj.getId())) {
             continue;
           }
           objs.add(obj);
           // now set the inverse relation
-          if (inverseMethod != null && !encodedAnnotation.nToM()
+          if (inverseMethods.size() != 0 && !encodedAnnotation.nToM()
               && encodedAnnotation.inverse()) {
-            inverseMethod.invoke(obj, this);
+            for (Method inverseMethod : inverseMethods) {
+              if (inverseMethod.getDeclaringClass().isInstance(obj))
+                inverseMethod.invoke(obj, this);
+            }
           }
         }
 

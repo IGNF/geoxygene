@@ -43,6 +43,10 @@ public class ContourLine extends GeneObjLinDefault implements IContourLine {
    */
   private CourbeDeNiveau geoxObj;
 
+  public ContourLine() {
+    super();
+  }
+
   /**
    * Constructor
    */
@@ -119,14 +123,19 @@ public class ContourLine extends GeneObjLinDefault implements IContourLine {
         * 0.5 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0);
   }
 
+  private double altitude;
+
   @Override
   public double getAltitude() {
-    return (this.geoxObj).getValeur();
+    return this.altitude;
+    // return (this.geoxObj).getValeur();
   }
 
   @Override
   public void setAltitude(double z) {
-    (this.geoxObj).setValeur(z);
+    this.altitude = altitude;
+    if (this.geoxObj != null)
+      (this.geoxObj).setValeur(z);
   }
 
 }

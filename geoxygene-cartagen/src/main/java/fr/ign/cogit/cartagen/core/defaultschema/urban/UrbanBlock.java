@@ -30,6 +30,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.defaultschema.GeneObjSurfDefault;
+import fr.ign.cogit.cartagen.core.defaultschema.hydro.WaterLine;
 import fr.ign.cogit.cartagen.core.defaultschema.road.BranchingCrossRoad;
 import fr.ign.cogit.cartagen.core.defaultschema.road.RoadLine;
 import fr.ign.cogit.cartagen.core.defaultschema.road.RoundAbout;
@@ -690,7 +691,7 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
   @CollectionTable(name = "SurroundingNetworkIds", joinColumns = @JoinColumn(name = "block"))
   @Column(name = "SurroundingNetworkIds")
   @Access(AccessType.FIELD)
-  @EncodedRelation(targetEntity = RoadLine.class, inverse = false, methodName = "SurroundingNetwork", nToM = false, collectionType = CollectionType.FEATURE_COLLECTION)
+  @EncodedRelation(targetEntities = { RoadLine.class, WaterLine.class }, inverse = false, methodName = "SurroundingNetwork", nToM = false, collectionType = CollectionType.FEATURE_COLLECTION)
   public List<Integer> getSurroundingNetworkIds() {
     return this.surroundingNetworkIds;
   }
@@ -720,6 +721,7 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
   @Override
   public void restoreGeoxRelations() {
     Ilot ilot = this.getGeoxObj();
+    System.out.println(this);
     for (INetworkSection sect : this.getSurroundingNetwork()) {
       ilot.getArcsReseaux().add((ArcReseau) sect.getGeoxObj());
     }

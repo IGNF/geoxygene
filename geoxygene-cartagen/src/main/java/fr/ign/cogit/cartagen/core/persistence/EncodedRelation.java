@@ -22,7 +22,10 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EncodedRelation {
-  Class<? extends IGeneObj> targetEntity();
+
+  Class<? extends IGeneObj> targetEntity() default GeneObjDefault.class;
+
+  Class<? extends IGeneObj>[] targetEntities() default { GeneObjDefault.class };
 
   /**
    * In a 1toN relation, gives the declared class of the inverse relation that
