@@ -157,6 +157,13 @@ public class GeometryPoolMenu extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
+      CartAGenDoc
+          .getInstance()
+          .getCurrentDataset()
+          .getGeometryPool()
+          .setSld(
+              CartAGenPlugin.getInstance().getApplication().getMainFrame()
+                  .getSelectedProjectFrame().getSld());
       for (IFeature feat : CartAGenPlugin.getInstance().getApplication()
           .getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
           .getSelectedFeatures()) {
