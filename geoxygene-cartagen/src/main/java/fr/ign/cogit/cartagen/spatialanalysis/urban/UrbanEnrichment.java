@@ -93,6 +93,7 @@ public class UrbanEnrichment {
    * Construction of the towns of a dataset by enriching its buildings By
    * default, used on the current dataset of the application By default, urban
    * alignments are not built
+   * @deprecated
    */
   public static void buildTowns() {
     UrbanEnrichment.buildTowns(
@@ -104,6 +105,7 @@ public class UrbanEnrichment {
    * default, used on the current dataset of the application
    * @param buildUrbanAlignments a boolean to determine if urban alignments have
    *          to be built
+   * @deprecated
    */
   public static void buildTowns(boolean buildUrbanAlignments) {
     UrbanEnrichment.buildTowns(
@@ -114,6 +116,7 @@ public class UrbanEnrichment {
    * Construction of the towns of a dataset by enriching its buildings By
    * default, urban alignments are not built
    * @param jdd the dataset
+   * @deprecated
    */
   public static void buildTowns(CartAGenDataSet jdd) {
     UrbanEnrichment.buildTowns(jdd,
@@ -472,7 +475,7 @@ public class UrbanEnrichment {
         ITown town = factory.createTown((IPolygon) mp.get(i));
         dataset.getTowns().add(town);
         if (town.getGeom().area() < 100000.0) {
-          town.setDeleted(true);
+          town.eliminateBatch();
         }
       }
     } else {

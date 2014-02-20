@@ -108,6 +108,7 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
    */
   public void setEliminated(boolean elim) {
     this.eliminated = elim;
+    this.setDeleted(elim);
   }
 
   // Attribute hasBeenCreated and getter/setter
