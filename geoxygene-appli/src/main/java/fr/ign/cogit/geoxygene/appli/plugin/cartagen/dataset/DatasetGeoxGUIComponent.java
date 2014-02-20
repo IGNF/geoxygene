@@ -18,8 +18,6 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,7 +73,6 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.CartAGenProgress
 import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.ImportDataFrame;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
-import fr.ign.cogit.cartagen.util.FileUtil;
 import fr.ign.cogit.cartagen.util.LastSessionParameters;
 import fr.ign.cogit.cartagen.util.ReflectionUtil;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -83,6 +80,8 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.NamedLayer;
+import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 
 /**
  * This menu allows to manipulate the CartAGen datasets, import data or export
@@ -1181,123 +1180,21 @@ public class DatasetGeoxGUIComponent extends JMenu {
       return cbModel;
     }
 
-    @SuppressWarnings("unchecked")
     private void getExistingClasses() {
       this.existingClasses = new HashSet<Class<?>>();
       this.additionalClasses = new HashSet<Class<?>>();
       this.mapNameClass = new HashMap<String, Class<? extends IFeature>>();
-      // get the directory of the package of this class
-      Package pack = this.getClass().getPackage();
-      String name = pack.getName();
-      name = name.replace('.', '/');
-      name.replaceAll("%20", " ");
-      if (!name.startsWith("/")) {
-        name = "/" + name;
-      }
-      URL pathName = this.getClass().getResource(name);
-      File directory = new File(pathName.getFile());
-      // get the parent directories to get fr.ign.cogit.cartagen package
-      while (!directory.getName().equals("cartagen")) {
-        directory = directory.getParentFile();
-      }
-      String cleanDir = directory.toString().replaceAll("%20", " ");
-      directory = new File(cleanDir);
-      List<File> files = FileUtil.getAllFilesInDir(directory);
-      for (File file : files) {
-        if (!file.getName().endsWith(".class")) {
-          continue;
-        }
-        if (file.getName().substring(0, file.getName().length() - 6)
-            .equals("GothicObjectDiffusion")) {
-          continue;
-        }
-        String path = file.getPath().substring(file.getPath().indexOf("fr"));
-        String classname = FileUtil.changeFileNameToClassName(path);
-        try {
-          // Try to create an instance of the object
-          Class<?> classObj = Class.forName(classname);
-          if (classObj.isInterface()) {
-            continue;
+      StyledLayerDescriptor sld = CartAGenDoc.getInstance().getCurrentDataset()
+          .getSld();
+      sld.setDataSet(CartAGenDoc.getInstance().getCurrentDataset());
+      for (Layer layer : sld.getLayers()) {
+        ((NamedLayer) layer).setSld(sld);
+        for (IFeature feat : layer.getFeatureCollection()) {
+          Class<? extends IFeature> classObj = feat.getClass();
+          if (!this.existingClasses.contains(classObj)) {
+            this.existingClasses.add(classObj);
+            this.mapNameClass.put(classObj.getSimpleName(), classObj);
           }
-          if (classObj.isLocalClass()) {
-            continue;
-          }
-          if (classObj.isMemberClass()) {
-            continue;
-          }
-          if (classObj.isEnum()) {
-            continue;
-          }
-          if (Modifier.isAbstract(classObj.getModifiers())) {
-            continue;
-          }
-          // test if the class inherits from IGeneObj
-          if (IGeneObj.class.isAssignableFrom(classObj)) {
-            Class<? extends IGeneObj> c = (Class<? extends IGeneObj>) classObj;
-            this.existingClasses.add(c);
-            this.mapNameClass.put(c.getSimpleName(), c);
-          } else if (classObj.isAnnotationPresent(Entity.class)) {
-            Class<? extends IFeature> c = (Class<? extends IGeneObj>) classObj;
-            this.additionalClasses.add(c);
-            this.mapNameClass.put(c.getSimpleName(), c);
-          }
-        } catch (ClassNotFoundException cnfex) {
-          cnfex.printStackTrace();
-        }
-      }
-
-      // now do the same for the Open Source CartAGen
-      pack = IGeneObj.class.getPackage();
-      name = pack.getName().replace('.', '/');
-      name.replaceAll("%20", " ");
-      if (!name.startsWith("/")) {
-        name = "/" + name;
-      }
-      pathName = IGeneObj.class.getResource(name);
-      directory = new File(pathName.getFile());
-      // get the parent directories to get fr.ign.cogit.cartagen package
-      while (!directory.getName().equals("cartagen")) {
-        directory = directory.getParentFile();
-      }
-      cleanDir = directory.toString().replaceAll("%20", " ");
-      directory = new File(cleanDir);
-      files = FileUtil.getAllFilesInDir(directory);
-      for (File file : files) {
-        if (!file.getName().endsWith(".class")) {
-          continue;
-        }
-        String path = file.getPath().substring(file.getPath().indexOf("fr"));
-        String classname = FileUtil.changeFileNameToClassName(path);
-        try {
-          // Try to create an instance of the object
-          Class<?> classObj = Class.forName(classname);
-          if (classObj.isInterface()) {
-            continue;
-          }
-          if (classObj.isLocalClass()) {
-            continue;
-          }
-          if (classObj.isMemberClass()) {
-            continue;
-          }
-          if (classObj.isEnum()) {
-            continue;
-          }
-          if (Modifier.isAbstract(classObj.getModifiers())) {
-            continue;
-          }
-          // test if the class inherits from IGeneObj
-          if (IGeneObj.class.isAssignableFrom(classObj)) {
-            Class<? extends IGeneObj> c = (Class<? extends IGeneObj>) classObj;
-            this.existingClasses.add(c);
-            this.mapNameClass.put(c.getSimpleName(), c);
-          } else if (classObj.isAnnotationPresent(Entity.class)) {
-            Class<? extends IFeature> c = (Class<? extends IGeneObj>) classObj;
-            this.additionalClasses.add(c);
-            this.mapNameClass.put(c.getSimpleName(), c);
-          }
-        } catch (ClassNotFoundException cnfex) {
-          cnfex.printStackTrace();
         }
       }
     }

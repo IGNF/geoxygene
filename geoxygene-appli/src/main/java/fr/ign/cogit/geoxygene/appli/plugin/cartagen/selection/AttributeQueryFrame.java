@@ -14,14 +14,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
-import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -52,16 +48,18 @@ import org.jfree.util.ClassComparator;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.OGCFilterPanel;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.RealLimitator;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.renderer.ClassSimpleNameListRenderer;
-import fr.ign.cogit.cartagen.util.FileUtil;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.NamedLayer;
+import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 
 public class AttributeQueryFrame extends JFrame implements ActionListener,
     ItemListener, ChangeListener, ListSelectionListener {
@@ -107,6 +105,7 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
     this.dbName = CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
         .getName();
     this.appli = appli;
+    this.setAlwaysOnTop(true);
 
     // ***********************************
     // a panel to define the queried class
@@ -381,63 +380,15 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
   @SuppressWarnings("unchecked")
   private void setGeoClasses() {
     this.geoClasses = new ArrayList<Class<?>>();
-    GeneObjImplementation impl = CartAGenDoc.getInstance().getCurrentDataset()
-        .getCartAGenDB().getGeneObjImpl();
-    // get the directory of the package of this class
-    Package pack = this.getClass().getPackage();
-    String name = pack.getName();
-    name = name.replace('.', '/');
-    name.replaceAll("%20", " ");
-    if (!name.startsWith("/")) {
-      name = "/" + name;
-    }
-    URL pathName = this.getClass().getResource(name);
-    File directory = new File(pathName.getFile());
-    // get the parent directories to get fr.ign.cogit.cartagen package
-    while (!directory.getName().equals("cartagen")) {
-      directory = directory.getParentFile();
-    }
-    Collection<String> excluded = new HashSet<String>();
-    excluded.add("gestionK");
-    excluded.add("software");
-    excluded.add("agentGeneralisation");
-    excluded.add("internships");
-    List<File> files = FileUtil.getAllFilesInDir(directory, excluded);
-    for (File file : files) {
-      if (!file.getName().endsWith(".class")) {
-        continue;
-      }
-      if (file.getName().substring(0, file.getName().length() - 6)
-          .equals("GothicObjectDiffusion")) {
-        continue;
-      }
-      String path = file.getPath().substring(file.getPath().indexOf("fr"));
-      String classname = FileUtil.changeFileNameToClassName(path);
-      try {
-        // Try to create an instance of the object
-        Class<?> classObj = Class.forName(classname);
-        if (classObj.isInterface()) {
-          continue;
-        }
-        if (classObj.isLocalClass()) {
-          continue;
-        }
-        if (classObj.isMemberClass()) {
-          continue;
-        }
-        if (classObj.isEnum()) {
-          continue;
-        }
-        if (Modifier.isAbstract(classObj.getModifiers())) {
-          continue;
-        }
-        // test if the class inherits from IGeneObj
-        if (IGeneObj.class.isAssignableFrom(classObj)) {
-          if (impl.containsClass(classObj))
-            this.geoClasses.add(classObj);
-        }
-      } catch (ClassNotFoundException cnfex) {
-        cnfex.printStackTrace();
+    StyledLayerDescriptor sld = CartAGenDoc.getInstance().getCurrentDataset()
+        .getSld();
+    sld.setDataSet(CartAGenDoc.getInstance().getCurrentDataset());
+    for (Layer layer : sld.getLayers()) {
+      ((NamedLayer) layer).setSld(sld);
+      for (IFeature feat : layer.getFeatureCollection()) {
+        Class<?> classObj = feat.getClass();
+        if (!this.geoClasses.contains(classObj))
+          this.geoClasses.add(classObj);
       }
     }
     Collections.sort(this.geoClasses, new ClassComparator());

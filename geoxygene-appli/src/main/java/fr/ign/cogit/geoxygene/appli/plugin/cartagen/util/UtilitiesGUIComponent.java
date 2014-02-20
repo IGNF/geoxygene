@@ -67,7 +67,7 @@ public class UtilitiesGUIComponent extends JMenu {
     bookmarkMenu.add(new JMenuItem(new GoToBookmark()));
     this.addSeparator();
     JMenu selectionMenu = new JMenu("Selection");
-    selectionMenu.add(new JMenuItem(new AttributeQueryAction(appli)));
+    selectionMenu.add(new JMenuItem(new AttributeQueryAction()));
     selectionMenu.add(new JMenuItem(new SaveObjectSelection(appli)));
     selectionMenu.add(new JMenuItem(new LoadObjectSelection(appli)));
     this.add(selectionMenu);

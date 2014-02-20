@@ -130,8 +130,7 @@ public class GeneralisationMenus {
     Font font = menuBar.getFont();
 
     parent.add(this.menuGene, getMenuLocation(isBar, parent));
-    parent.add(new DatasetGeoxGUIComponent("Dataset"),
-        getMenuLocation(isBar, parent));
+    parent.add(menuDataset, getMenuLocation(isBar, parent));
     parent.add(this.dataThemesMenu, getMenuLocation(isBar, parent));
 
     String configFilePath = "/ConfigGUIComponents.xml";

@@ -30,6 +30,7 @@ public class DataThemesGUIComponent extends JMenu {
   private BlockMenu blockMenu;
   private UrbanAlignmentMenu alignmentMenu;
   private TownMenu townMenu;
+  private OtherThemesMenu otherMenu;
 
   /**
    * 
@@ -47,6 +48,7 @@ public class DataThemesGUIComponent extends JMenu {
     this.blockMenu = new BlockMenu("Block");
     this.alignmentMenu = new UrbanAlignmentMenu("Urban alignment");
     this.townMenu = new TownMenu("Town");
+    this.otherMenu = new OtherThemesMenu("Other Themes");
     this.add(this.reliefMenu);
     this.add(this.landUseMenu);
     this.add(this.roadNetMenu);
@@ -55,6 +57,7 @@ public class DataThemesGUIComponent extends JMenu {
     this.add(this.blockMenu);
     this.add(this.alignmentMenu);
     this.add(this.townMenu);
+    this.add(this.otherMenu);
 
     DataThemesGUIComponent.menu = this;
 
