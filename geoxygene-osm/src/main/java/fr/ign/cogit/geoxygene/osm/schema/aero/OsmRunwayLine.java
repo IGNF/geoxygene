@@ -24,4 +24,13 @@ public class OsmRunwayLine extends OsmGeneObjLin implements IRunwayLine {
     return z;
   }
 
+  public void setZ(int z) {
+    this.z = z;
+  }
+
+  @Override
+  public void setAirport(IAirportArea airport) {
+    this.airport = airport;
+  }
+
 }

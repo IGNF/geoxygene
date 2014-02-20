@@ -51,6 +51,9 @@ public class OsmBuilding extends OsmGeneObjSurf implements IBuilding {
   }
 
   private void computeNatureFromTags() {
-    // TODO
+    if (getTags().containsKey("aeroway"))
+      nature = getTags().get("aeroway");
+    else
+      nature = "unknown";
   }
 }

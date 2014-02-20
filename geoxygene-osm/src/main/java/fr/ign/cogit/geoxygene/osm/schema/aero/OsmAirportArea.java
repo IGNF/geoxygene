@@ -1,5 +1,6 @@
 package fr.ign.cogit.geoxygene.osm.schema.aero;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
@@ -16,6 +17,13 @@ import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObjSurf;
 public class OsmAirportArea extends OsmGeneObjSurf implements IAirportArea {
 
   private int z;
+  private Set<IRunwayArea> runwayAreas = new HashSet<IRunwayArea>();
+  private Set<IRunwayLine> runwayLines = new HashSet<IRunwayLine>();
+  private Set<ITaxiwayArea> taxiwayAreas = new HashSet<ITaxiwayArea>();
+  private Set<ITaxiwayLine> taxiwayLines = new HashSet<ITaxiwayLine>();
+  private Set<IHelipadArea> helipadAreas = new HashSet<IHelipadArea>();
+  private Set<IHelipadPoint> helipadPoint = new HashSet<IHelipadPoint>();
+  private Set<IBuilding> terminals = new HashSet<IBuilding>();
 
   public OsmAirportArea(IPolygon geom) {
     super(geom);
@@ -35,44 +43,37 @@ public class OsmAirportArea extends OsmGeneObjSurf implements IAirportArea {
 
   @Override
   public Set<IRunwayLine> getRunwayLines() {
-    // TODO Auto-generated method stub
-    return null;
+    return runwayLines;
   }
 
   @Override
   public Set<IRunwayArea> getRunwayAreas() {
-    // TODO Auto-generated method stub
-    return null;
+    return runwayAreas;
   }
 
   @Override
   public Set<ITaxiwayArea> getTaxiwayAreas() {
-    // TODO Auto-generated method stub
-    return null;
+    return taxiwayAreas;
   }
 
   @Override
   public Set<ITaxiwayLine> getTaxiwayLines() {
-    // TODO Auto-generated method stub
-    return null;
+    return taxiwayLines;
   }
 
   @Override
   public Set<IHelipadArea> getHelipadAreas() {
-    // TODO Auto-generated method stub
-    return null;
+    return helipadAreas;
   }
 
   @Override
   public Set<IHelipadPoint> getHelipadPoints() {
-    // TODO Auto-generated method stub
-    return null;
+    return helipadPoint;
   }
 
   @Override
   public Set<IBuilding> getTerminals() {
-    // TODO Auto-generated method stub
-    return null;
+    return terminals;
   }
 
 }

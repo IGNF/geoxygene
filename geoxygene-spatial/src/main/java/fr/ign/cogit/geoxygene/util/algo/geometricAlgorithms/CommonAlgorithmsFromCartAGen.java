@@ -750,7 +750,7 @@ public class CommonAlgorithmsFromCartAGen {
     Rectangle mbr = Rectangle.boundingRectangle(line);
     // Build an auxiliary point outside the mbr:
     // transle point according to direction, using the MBR diameter
-    Vector2D transVect = direction.changeNorm(mbr.getDiameter());
+    Vector2D transVect = direction.changeNorm(mbr.getDiameter() + 1);
     IDirectPosition auxPt = transVect.translate(point);
 
     // now it is sure that (point,aux) intersects line and we just have to find
@@ -759,6 +759,13 @@ public class CommonAlgorithmsFromCartAGen {
     // get the intersection between line and (point,aux)
     ILineString segment = new GM_LineSegment(point, auxPt);
     IGeometry intersection = line.intersection(segment);
+    if (intersection.isEmpty()) {
+      // extend segment
+      transVect.scalarMultiplication(3.0);
+      auxPt = transVect.translate(point);
+      segment = new GM_LineSegment(point, auxPt);
+      intersection = line.intersection(segment);
+    }
     if (intersection instanceof IPoint)
       return ((IPoint) intersection).getPosition();
     else if (intersection instanceof IMultiPoint) {
@@ -772,8 +779,9 @@ public class CommonAlgorithmsFromCartAGen {
         }
       }
       return nearest;
-    } else
+    } else {
       return null;
+    }
   }
 
   /**
@@ -1323,5 +1331,35 @@ public class CommonAlgorithmsFromCartAGen {
     for (int i = 0; i < index; i++)
       list.add(ring.coord().get(i));
     return new GM_LineString(list);
+  }
+
+  /**
+   * Get the vertices where the angles are sharp. They may correspond to
+   * triangle corners for triangular shapes for instance.
+   * @param polygon
+   * @return
+   */
+  public static List<IDirectPosition> getSharpAngleVertices(IPolygon polygon,
+      double maxAngle) {
+    ArrayList<IDirectPosition> points = new ArrayList<IDirectPosition>();
+    points.addAll(polygon.coord().getList());
+    points.remove(points.size() - 1);
+    points.addAll(polygon.coord().getList());
+    points.remove(points.size() - 1);
+    points.addAll(polygon.coord().getList());
+    List<IDirectPosition> sharpVertices = new ArrayList<IDirectPosition>();
+    for (int i = polygon.coord().size(); i < 2 * polygon.coord().size() - 1; i++) {
+      double angle = Angle.angleTroisPoints(points.get(i - 1), points.get(i),
+          points.get(i + 1)).getValeur();
+      if (angle > Math.PI) {
+        angle = 2 * Math.PI - angle;
+      }
+
+      if (angle < maxAngle) {
+        sharpVertices.add(points.get(i));
+      }
+    }
+
+    return sharpVertices;
   }
 }

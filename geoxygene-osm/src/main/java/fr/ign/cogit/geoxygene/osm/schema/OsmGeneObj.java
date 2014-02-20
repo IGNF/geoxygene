@@ -9,6 +9,7 @@
  ******************************************************************************/
 package fr.ign.cogit.geoxygene.osm.schema;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -16,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
+import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.AbstractFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
@@ -173,7 +176,7 @@ public class OsmGeneObj extends GeneObjDefault {
     if (this.osmId != other.osmId) {
       return false;
     }
-    if (this.id != other.id) {
+    if (this.getId() != other.getId()) {
       return false;
     }
     if (this.version != other.version) {
@@ -305,6 +308,61 @@ public class OsmGeneObj extends GeneObjDefault {
     }
 
     return null;
+  }
+
+  @Override
+  public void copyAttributes(IGeneObj obj) {
+    Class<?> classObj = obj.getClass();
+    for (Field field : classObj.getDeclaredFields()) {
+      // filter the fields to represent relations between GeneObj features
+      if (IGeneObj.class.isAssignableFrom(field.getType()))
+        continue;
+      if (IGeometry.class.isAssignableFrom(field.getType()))
+        continue;
+      if (IFeature.class.isAssignableFrom(field.getType()))
+        continue;
+      // do not copy the id
+      if (field.getName().equals("id"))
+        continue;
+      // get the getter of this field
+      String getterName = "get" + field.getName().substring(0, 1).toUpperCase()
+          + field.getName().substring(1);
+      if (field.getType().equals(boolean.class))
+        getterName = "is" + field.getName().substring(0, 1).toUpperCase()
+            + field.getName().substring(1);
+      try {
+        Method getter = classObj.getDeclaredMethod(getterName);
+
+        Object value = getter.invoke(obj);
+
+        // get the setter of this field
+        String setterName = "set"
+            + field.getName().substring(0, 1).toUpperCase()
+            + field.getName().substring(1);
+        Method setter = classObj.getDeclaredMethod(setterName, field.getType());
+        setter.invoke(this, value);
+      } catch (SecurityException e) {
+        e.printStackTrace();
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      } catch (IllegalArgumentException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (InvocationTargetException e) {
+        e.printStackTrace();
+      }
+    }
+    // copy tags
+    this.setTags(((OsmGeneObj) obj).getTags());
+    this.setCaptureTool(((OsmGeneObj) obj).getCaptureTool());
+    this.setChangeSet(((OsmGeneObj) obj).changeSet);
+    this.setDate(((OsmGeneObj) obj).getDate());
+    this.setContributor(((OsmGeneObj) obj).getContributor());
+    this.setOsmId(((OsmGeneObj) obj).getOsmId());
+    this.setUid(((OsmGeneObj) obj).getUid());
+    this.setSource(((OsmGeneObj) obj).getSource());
+    this.setVersion(((OsmGeneObj) obj).getVersion());
   }
 
 }

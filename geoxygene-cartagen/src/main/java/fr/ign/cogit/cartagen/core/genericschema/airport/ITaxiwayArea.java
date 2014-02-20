@@ -20,4 +20,8 @@ public interface ITaxiwayArea extends IGeneObjSurf {
   public static final String FEAT_TYPE_NAME = "TaxiwayArea"; //$NON-NLS-1$
 
   public TaxiwayType getType();
+
+  public IAirportArea getAirport();
+
+  public void setAirport(IAirportArea airport);
 }

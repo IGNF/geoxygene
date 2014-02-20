@@ -10,7 +10,10 @@ import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
+import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
+import fr.ign.cogit.geoxygene.osm.schema.OSMSchemaFactory;
+import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
 
 public class OpenStreetMapDb extends CartAGenDB {
 
@@ -18,7 +21,9 @@ public class OpenStreetMapDb extends CartAGenDB {
     super();
     this.setName(name);
     this.setClasses(new ArrayList<GeographicClass>());
-    // TODO
+    this.setGeneObjImpl(new GeneObjImplementation("OSM", Package
+        .getPackage("fr.ign.cogit.geoxygene.osm.schema"), OsmGeneObj.class,
+        new OSMSchemaFactory()));
   }
 
   @Override

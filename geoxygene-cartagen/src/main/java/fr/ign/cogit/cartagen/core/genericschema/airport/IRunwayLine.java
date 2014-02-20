@@ -17,5 +17,7 @@ public interface IRunwayLine extends IGeneObjLin {
 
   public IAirportArea getAirport();
 
+  public void setAirport(IAirportArea airport);
+
   public int getZ();
 }

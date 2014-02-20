@@ -17,4 +17,8 @@ public interface ITaxiwayLine extends IGeneObjLin {
   public static final String FEAT_TYPE_NAME = "TaxiwayLine"; //$NON-NLS-1$
 
   public TaxiwayType getType();
+
+  public IAirportArea getAirport();
+
+  public void setAirport(IAirportArea airport);
 }

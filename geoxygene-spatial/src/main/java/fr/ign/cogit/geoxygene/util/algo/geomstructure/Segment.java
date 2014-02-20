@@ -370,4 +370,19 @@ public class Segment extends GM_LineSegment {
     return new DirectPosition((startPoint().getX() + endPoint().getX()) / 2,
         (startPoint().getY() + endPoint().getY()) / 2);
   }
+
+  /**
+   * Extend a segment by a given length at both extremities.
+   * @param length
+   * @return
+   */
+  public Segment extendAtExtremities(double length) {
+    // first, extend start point
+    Vector2D vect = new Vector2D(this.getEndPoint(), this.getStartPoint());
+    Vector2D normalisedVect = vect.changeNorm(length);
+    IDirectPosition startPt = normalisedVect.translate(getStartPoint());
+    // then, extend end point
+    IDirectPosition endPt = normalisedVect.opposite().translate(getEndPoint());
+    return new Segment(startPt, endPt);
+  }
 }
