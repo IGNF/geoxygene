@@ -25,7 +25,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 
 
-public class TestDTM extends TestCase {
+public class TestDTM2 extends TestCase {
 
 
 	// ---------------------------------- ATTRIBUTES ----------------------------------
@@ -47,7 +47,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -77,12 +77,12 @@ public class TestDTM extends TestCase {
 
 		// Tests
 		assertTrue("Exageration is incorrect", dtm.getExageration() == exager);
-		assertTrue("Nx dimension is incorrect", dtm.getNX() == 51);
-		assertTrue("Ny dimension is incorrect", dtm.getNY() == 51);
-		assertTrue("X resolution is incorrect", dtm.getStepX() == 200);
-		assertTrue("Y resolution is incorrect", dtm.getStepY() == 200);
-		assertTrue("Lower left corner is incorrect", dtm.getXIni() == 914900.00);
-		assertTrue("Lower left corner is incorrect", dtm.getYIni() ==  6449900.00);
+		assertTrue("Nx dimension is incorrect", dtm.getNX() == 201);
+		assertTrue("Ny dimension is incorrect", dtm.getNY() == 201);
+		assertTrue("X resolution is incorrect", dtm.getStepX() == 50);
+		assertTrue("Y resolution is incorrect", dtm.getStepY() == 50);
+		assertTrue("Lower left corner is incorrect", dtm.getXIni() ==  914975.00);
+		assertTrue("Lower left corner is incorrect", dtm.getYIni() ==  6449975.00);
 
 	}
 
@@ -96,7 +96,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -136,7 +136,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -170,7 +170,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -205,7 +205,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -240,7 +240,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -267,9 +267,9 @@ public class TestDTM extends TestCase {
 		double z3 = dpl3.get(0).getZ();
 
 		// Tests
-		assertTrue("Recovered triangle is incorrect", z1 == 530);
-		assertTrue("Recovered triangle is incorrect", z2 == 512);
-		assertTrue("Recovered triangle is incorrect", z3 == 771);
+		assertTrue("Recovered triangle is incorrect", z1 == 383);
+		assertTrue("Recovered triangle is incorrect", z2 == 386);
+		assertTrue("Recovered triangle is incorrect", z3 == 425);
 
 	}
 
@@ -284,7 +284,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -301,14 +301,14 @@ public class TestDTM extends TestCase {
 		DTM dtm = new DTM(fileName, layerName, fill, exager, colorGradation);
 
 		// Projections
-		double z1 = dtm.cast(new DirectPosition(914900.00 + 200*10, 6449900.00 + 200*10)).getZ();
-		double z2 = dtm.cast(new DirectPosition(914900.00 + 200*11, 6449900.00 + 200*11)).getZ();
-		double z3 = dtm.cast(new DirectPosition(914900.00 + 200*12, 6449900.00 + 200*12)).getZ();
+		double z1 = dtm.cast(new DirectPosition(914975.00 + 50*10, 6449975.00 + 50*10)).getZ();
+		double z2 = dtm.cast(new DirectPosition(914975.00 + 50*11, 6449975.00 + 50*11)).getZ();
+		double z3 = dtm.cast(new DirectPosition(914975.00 + 50*12, 6449975.00 + 50*12)).getZ();
 
 		// Tests
-		assertTrue("Projected altitude is incorrect", z1 == 480);
-		assertTrue("Projected altitude is incorrect", z2 == 445);
-		assertTrue("Projected altitude is incorrect", z3 == 396);
+		assertTrue("Projected altitude is incorrect", z1 == 384);
+		assertTrue("Projected altitude is incorrect", z2 == 386);
+		assertTrue("Projected altitude is incorrect", z3 == 382);
 
 	}
 
@@ -323,7 +323,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -340,14 +340,14 @@ public class TestDTM extends TestCase {
 		DTM dtm = new DTM(fileName, layerName, fill, exager, colorGradation);
 
 		// Projections
-		double z1 = dtm.castCoordinate(914900.00 + 200*10, 6449900.00 + 200*10).z;
-		double z2 = dtm.castCoordinate(914900.00 + 200*11, 6449900.00 + 200*11).z;
-		double z3 = dtm.castCoordinate(914900.00 + 200*12, 6449900.00 + 200*12).z;
+		double z1 = dtm.castCoordinate(914975.00 + 50*10, 6449975.00 + 50*10).z;
+		double z2 = dtm.castCoordinate(914975.00 + 50*11, 6449975.00 + 50*11).z;
+		double z3 = dtm.castCoordinate(914975.00 + 50*12, 6449975.00 + 50*12).z;
 
 		// Tests
-		assertTrue("Projected altitude is incorrect", z1 == 480);
-		assertTrue("Projected altitude is incorrect", z2 == 445);
-		assertTrue("Projected altitude is incorrect", z3 == 396);
+		assertTrue("Projected altitude is incorrect", z1 == 384);
+		assertTrue("Projected altitude is incorrect", z2 == 386);
+		assertTrue("Projected altitude is incorrect", z3 == 382);
 
 	}
 
@@ -361,7 +361,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -382,8 +382,8 @@ public class TestDTM extends TestCase {
 		DirectPosition UR = (DirectPosition) dtm.get3DEnvelope().getURDP();
 
 		// Comparison
-		boolean bool1 = (LL.getX() == 914900.00)&&(LL.getY() == 6449900.00)&&(LL.getZ() == 206);
-		boolean bool2 = (UR.getX() == 914900.00+51*200)&&(UR.getY() == 6449900.00+51*200)&&(UR.getZ() == 1496);
+		boolean bool1 = (LL.getX() == 914975.00)&&(LL.getY() == 6449975.00)&&(LL.getZ() == 206);
+		boolean bool2 = (UR.getX() == 914975.00+201*50)&&(UR.getY() == 6449975.00+201*50)&&(UR.getZ() == 1496);
 
 		// Tests
 		assertTrue("Lower left coordinates of bounding bow are incorrect", bool1);
@@ -401,7 +401,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -436,7 +436,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -471,7 +471,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -488,7 +488,7 @@ public class TestDTM extends TestCase {
 		DTM dtm = new DTM(fileName, layerName, fill, exager, colorGradation);
 
 		//  Getting triangles object 
-		GM_Object triangle = dtm.getGeometryAt(914900.00 + 200*10, 6449900.00 + 200*10);
+		GM_Object triangle = dtm.getGeometryAt(914975.00 + 50*10, 6449975.00 + 50*10);
 
 		// Retrieving altitudes
 		double z1 = triangle.coord().get(0).getZ();
@@ -497,10 +497,10 @@ public class TestDTM extends TestCase {
 		double z4 = triangle.coord().get(3).getZ();
 
 		// Tests
-		assertTrue("Triangle altitude is incorrect", z1 == 420);
-		assertTrue("Projected altitude is incorrect", z2 == 480);
-		assertTrue("Projected altitude is incorrect", z3 == 445);
-		assertTrue("Triangle altitude is incorrect", z4 == 420);
+		assertTrue("Triangle altitude is incorrect", z1 == 386);
+		assertTrue("Projected altitude is incorrect", z2 == 384);
+		assertTrue("Projected altitude is incorrect", z3 == 386);
+		assertTrue("Triangle altitude is incorrect", z4 == 386);
 
 	}
 
@@ -514,7 +514,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -550,7 +550,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -596,7 +596,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -643,7 +643,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src\\test\\resources\\mnt2.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -663,7 +663,7 @@ public class TestDTM extends TestCase {
 		double zMean = dtm.getAverageAltitude();
 
 		// Tests
-		assertEquals("Error mean altitude is incorrect", zMean, 472.4, epsilon);
+		assertEquals("Error mean altitude is incorrect", zMean, 470, epsilon);
 
 	}
 
@@ -698,7 +698,7 @@ public class TestDTM extends TestCase {
 		double zStd = dtm.getStdAltitude();
 
 		// Tests
-		assertEquals("Error standard deviation altitude is incorrect", zStd, 234.7, epsilon);
+		assertEquals("Error standard deviation altitude is incorrect", zStd, 239.5, epsilon);
 
 	}
 
@@ -732,12 +732,11 @@ public class TestDTM extends TestCase {
 		// Processing average altitude
 		double ratio1 = dtm.getRatioUnder(dtm.get3DEnvelope().getLLDP().getZ());
 		double ratio2 = dtm.getRatioUnder(dtm.get3DEnvelope().getURDP().getZ()+0.1);
-		
+
 		// Tests
 		assertTrue("Ratio under threshold altitude is incorrect", ratio1 == 0);
 		assertTrue("Ratio under threshold altitude is incorrect", ratio2 == 1);
 
 	}
-
 
 }

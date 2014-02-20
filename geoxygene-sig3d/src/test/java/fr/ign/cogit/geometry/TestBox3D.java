@@ -147,7 +147,7 @@ public class TestBox3D extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testBox3D4() {
 
-		log.info("");
+		log.info("Test for method to process intersection between boxes");
 		
 		// Creating boxes
 		DirectPosition pmin1 = new DirectPosition(0,0,0);
@@ -177,7 +177,7 @@ public class TestBox3D extends TestCase {
 	// --------------------------------------------------------------------------------
 	public void testBox3D5() {
 		
-		log.info("");
+		log.info("Test for method to process intersection between boxes");
 
 		// Creating boxes
 		DirectPosition pmin1 = new DirectPosition(0,0,0);

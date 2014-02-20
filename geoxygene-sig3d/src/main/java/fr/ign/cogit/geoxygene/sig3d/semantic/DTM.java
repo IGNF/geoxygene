@@ -75,1334 +75,1613 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  */
 public class DTM extends AbstractDTM {
 
-  public int echantillonage = 1;
-
-  public static double CONSTANT_OFFSET = 0;
-
-  protected DTM() {
-    super();
-  }
-
-  /*
-   * Les paramètres du MNT xIni : il s'agit du X du coin supérieur gauche du MNT
-   * yIni : il s'agit du Y du coin supérieur gauche du MNT pasX : il s'agit du
-   * pas en X du MNT (echantillonnage inclus) pasY : il s'agit du pas en Y du
-   * MNT (echantillonnage inclus) nX : il s'agit du nombre de mailles en X à
-   * afficher nY : il s'agit du nombre de mailles en Y à afficher strip : il
-   * s'agit de la liste de triangles formant le MNT exageration : il s'agi du
-   * coefficient en Z que l'on applique bgeo : il s'agit de la BranchGroup
-   * représentant le MNT
-   */
-  protected double xIni;
-  protected double yIni;
-  protected double zMax;
-  protected double zMin;
-  protected double stepX;
-  protected double stepY;
-  protected int nX;
-  protected int nY;
-  protected TriangleStripArray strip;
-  protected double noDataValue;
-
-  // Echantillonnage
-  protected int sampling;
-
-  protected Color4f[] color4fShade = null;
-
-  /**
-   * Ajoute à la carte un MNT avec orthophoto. L'orthophoto doit être orientée
-   * nord, sud
-   * 
-   * @param file Nom du fichier du MNT, il doit être au format
-   * @param layerName Nom de couche du MNT
-   * @param fill Indique si l'on fait une représentation maille ou une
-   *          représentation continue
-   * @param exager L'exaggération du MNT
-   * @param imageFileName Nom du fichier de l'image à plaquer
-   * @param imageEnvelope coordonnées min et max de l'image
-   */
-  public DTM(String file, String layerName, boolean fill, int exager,
-      String imageFileName, GM_Envelope imageEnvelope) {
-    super(layerName, file, null, imageFileName, imageEnvelope, exager, fill);
-
-    this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
-        exager, imageFileName, imageEnvelope));
-
-  }
-
-  /**
-   * Permet de rafraichir un MNT en appliquant les paramètres nécessaires pour
-   * l'utilisation d'un MNT
-   * 
-   * @param file
-   * @param layerName
-   * @param fill
-   * @param exager
-   * @param imageFileName
-   * @param imageEnvelope
-   */
-  public void refresh(String file, String layerName, boolean fill, int exager,
-      String imageFileName, IEnvelope imageEnvelope) {
-
-    BranchGroup parent = null;
-
-    if (this.isVisible()) {
-      parent = (BranchGroup) this.bgLayer.getParent();
-      this.bgLayer.detach();
-    }
-
-    this.bgLayer.removeAllChildren();
-    this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
-        exager, imageFileName, imageEnvelope));
-
-    if (parent != null) {
-      parent.addChild(this.bgLayer);
-    }
-
-  }
-
-  /**
-   * Calcul l'objet Java3D associé à un MNT avec une image plaquée
-   * 
-   * @param file
-   * @param layerName
-   * @param fill
-   * @param exager
-   * @param imageFilePath
-   * @param imageEnvelope
-   * @return un objet Java3D représentant la forme du MNT
-   */
-  private Shape3D representationProcess(String file, String layerName,
-      boolean fill, int exager, String imageFilePath, IEnvelope imageEnvelope) {
-
-    this.imagePath = imageFilePath;
-    this.imageEnvelope = imageEnvelope;
-    this.colorShade = null;
-    this.isFilled = fill;
+	public int echantillonage = 1;
+
+	public static double CONSTANT_OFFSET = 0;
+
+	protected DTM() {
+		super();
+	}
+
+	/*
+	 * Les paramètres du MNT xIni : il s'agit du X du coin supérieur gauche du MNT
+	 * yIni : il s'agit du Y du coin supérieur gauche du MNT pasX : il s'agit du
+	 * pas en X du MNT (echantillonnage inclus) pasY : il s'agit du pas en Y du
+	 * MNT (echantillonnage inclus) nX : il s'agit du nombre de mailles en X à
+	 * afficher nY : il s'agit du nombre de mailles en Y à afficher strip : il
+	 * s'agit de la liste de triangles formant le MNT exageration : il s'agi du
+	 * coefficient en Z que l'on applique bgeo : il s'agit de la BranchGroup
+	 * représentant le MNT
+	 */
+	protected double xIni;
+	protected double yIni;
+	protected double zMax;
+	protected double zMin;
+	protected double stepX;
+	protected double stepY;
+	protected int nX;
+	protected int nY;
+	protected TriangleStripArray strip;
+	protected double noDataValue;
+
+	// Echantillonnage
+	protected int sampling;
+
+	protected Color4f[] color4fShade = null;
+
+	/**
+	 * Ajoute à la carte un MNT avec orthophoto. L'orthophoto doit être orientée
+	 * nord, sud
+	 * 
+	 * @param file Nom du fichier du MNT, il doit être au format
+	 * @param layerName Nom de couche du MNT
+	 * @param fill Indique si l'on fait une représentation maille ou une
+	 *          représentation continue
+	 * @param exager L'exaggération du MNT
+	 * @param imageFileName Nom du fichier de l'image à plaquer
+	 * @param imageEnvelope coordonnées min et max de l'image
+	 */
+	public DTM(String file, String layerName, boolean fill, int exager,
+			String imageFileName, GM_Envelope imageEnvelope) {
+		super(layerName, file, null, imageFileName, imageEnvelope, exager, fill);
+
+		this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
+				exager, imageFileName, imageEnvelope));
+
+	}
+
+	/**
+	 * Permet de rafraichir un MNT en appliquant les paramètres nécessaires pour
+	 * l'utilisation d'un MNT
+	 * 
+	 * @param file
+	 * @param layerName
+	 * @param fill
+	 * @param exager
+	 * @param imageFileName
+	 * @param imageEnvelope
+	 */
+	public void refresh(String file, String layerName, boolean fill, int exager,
+			String imageFileName, IEnvelope imageEnvelope) {
+
+		BranchGroup parent = null;
+
+		if (this.isVisible()) {
+			parent = (BranchGroup) this.bgLayer.getParent();
+			this.bgLayer.detach();
+		}
+
+		this.bgLayer.removeAllChildren();
+		this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
+				exager, imageFileName, imageEnvelope));
+
+		if (parent != null) {
+			parent.addChild(this.bgLayer);
+		}
+
+	}
+
+	/**
+	 * Calcul l'objet Java3D associé à un MNT avec une image plaquée
+	 * 
+	 * @param file
+	 * @param layerName
+	 * @param fill
+	 * @param exager
+	 * @param imageFilePath
+	 * @param imageEnvelope
+	 * @return un objet Java3D représentant la forme du MNT
+	 */
+	private Shape3D representationProcess(String file, String layerName,
+			boolean fill, int exager, String imageFilePath, IEnvelope imageEnvelope) {
+
+		this.imagePath = imageFilePath;
+		this.imageEnvelope = imageEnvelope;
+		this.colorShade = null;
+		this.isFilled = fill;
 
-    // On initialize les paramètres génèraux concernant le MNT
-    this.layerName = layerName;
-    this.exageration = exager;
-    // Les informations concernant le coin supérieur gauche du MNT
-    double shiftX = 0;
-    double shiftY = 0;
+		// On initialize les paramètres génèraux concernant le MNT
+		this.layerName = layerName;
+		this.exageration = exager;
+		// Les informations concernant le coin supérieur gauche du MNT
+		double shiftX = 0;
+		double shiftY = 0;
 
-    // Le nombre d'éléments présents dans le MNT
-    int nbpoints = 0;
-    int numligne = 0;
-    int numcol = 0;
+		// Le nombre d'éléments présents dans le MNT
+		int nbpoints = 0;
+		int numligne = 0;
+		int numcol = 0;
 
-    // Le fichier contenant le MNT
-    this.path = file;
+		// Le fichier contenant le MNT
+		this.path = file;
 
-    // Il s'agit d'une chaine contenant les informations en train d'être lu
-    // dans le fichier
-    String ligne;
+		// Il s'agit d'une chaine contenant les informations en train d'être lu
+		// dans le fichier
+		String ligne;
 
-    double denomX = this.imageEnvelope.getUpperCorner().getX()
-        - this.imageEnvelope.getLowerCorner().getX();
-    double denomY = this.imageEnvelope.getUpperCorner().getY()
-        - this.imageEnvelope.getLowerCorner().getY();
+		double denomX = this.imageEnvelope.getUpperCorner().getX()
+				- this.imageEnvelope.getLowerCorner().getX();
+		double denomY = this.imageEnvelope.getUpperCorner().getY()
+				- this.imageEnvelope.getLowerCorner().getY();
 
-    try {
+		try {
 
-      // Lecture du fichier et récupèration des différentes valeurs citées
-      // précédemment
-      FileReader fr = new FileReader(file);
-      BufferedReader br = new BufferedReader(fr);
+			// Lecture du fichier et récupèration des différentes valeurs citées
+			// précédemment
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
 
-      ligne = br.readLine();
+			ligne = br.readLine();
 
-      String[] result = ligne.split(" ");
+			String[] result = ligne.split(" ");
 
-      int ncols = Integer.parseInt(result[result.length - 1]);
+			int ncols = Integer.parseInt(result[result.length - 1]);
 
-      // System.out.println("ncols" + result[result.length - 1]);
+			// System.out.println("ncols" + result[result.length - 1]);
 
-      ligne = br.readLine();
-      result = ligne.split("\\s");
+			ligne = br.readLine();
+			result = ligne.split("\\s");
 
-      // System.out.println("nrows" + result[result.length - 1]);
+			// System.out.println("nrows" + result[result.length - 1]);
 
-      int nrows = Integer.parseInt(result[result.length - 1]);
+			int nrows = Integer.parseInt(result[result.length - 1]);
 
-      ligne = br.readLine();
-      result = ligne.split("\\s");
+			ligne = br.readLine();
+			result = ligne.split("\\s");
 
-      shiftX = Double.parseDouble(result[result.length - 1]);
+			shiftX = Double.parseDouble(result[result.length - 1]);
 
-      // System.out.println("xllcorner" + result[result.length - 1]);
+			// System.out.println("xllcorner" + result[result.length - 1]);
 
-      ligne = br.readLine();
-      result = ligne.split("\\s");
+			ligne = br.readLine();
+			result = ligne.split("\\s");
 
-      shiftY = Double.parseDouble(result[result.length - 1]);
+			shiftY = Double.parseDouble(result[result.length - 1]);
 
-      // System.out.println("yllcorner" + shiftY);
+			// System.out.println("yllcorner" + shiftY);
 
-      ligne = br.readLine();
-      result = ligne.split("\\s");
+			ligne = br.readLine();
+			result = ligne.split("\\s");
 
-      // System.out.println("cellsize" + result[result.length - 1]);
+			// System.out.println("cellsize" + result[result.length - 1]);
 
-      double cellsize = Double.parseDouble(result[result.length - 1]);
+			double cellsize = Double.parseDouble(result[result.length - 1]);
 
-      ligne = br.readLine();
+			ligne = br.readLine();
 
-      this.noDataValue = Double.parseDouble(result[result.length - 1]);
+			this.noDataValue = Double.parseDouble(result[result.length - 1]);
 
-      ligne = br.readLine();
+			ligne = br.readLine();
 
-      double maxy = ((nrows - 1) * cellsize + shiftY);
+			double maxy = ((nrows - 1) * cellsize + shiftY);
 
-      // On prépare le nombre de lignes
-      nrows = nrows / this.echantillonage;
-      ncols = ncols / this.echantillonage;
+			// On prépare le nombre de lignes
+			nrows = nrows / this.echantillonage;
+			ncols = ncols / this.echantillonage;
 
-      // Tab contiendra les Z de la ligne précédente
-      int[] tab = new int[nrows - 1];
+			// Tab contiendra les Z de la ligne précédente
+			int[] tab = new int[nrows - 1];
 
-      for (int i = 0; i < nrows - 1; i++) {
+			for (int i = 0; i < nrows - 1; i++) {
 
-        tab[i] = 2 * ncols;
-      }
+				tab[i] = 2 * ncols;
+			}
 
-      // Création de la géométrie Java3D qui accueillera le MNT
-      TriangleStripArray strp = null;
+			// Création de la géométrie Java3D qui accueillera le MNT
+			TriangleStripArray strp = null;
 
-      // La construction se fait en TriangleStripArray
-      // C'est un mode de construction efficace et rapide
-      // Toutefois chaque point se retrouve chargé 2 fois en mémoire
-      // (un test avec un autre mode de représentation indexé n'a pas été
-      // concluant)
+			// La construction se fait en TriangleStripArray
+			// C'est un mode de construction efficace et rapide
+			// Toutefois chaque point se retrouve chargé 2 fois en mémoire
+			// (un test avec un autre mode de représentation indexé n'a pas été
+			// concluant)
 
-      strp = new TriangleStripArray(2 * ncols * (nrows - 1),
-          GeometryArray.COORDINATES | GeometryArray.TEXTURE_COORDINATE_2, tab);
+			strp = new TriangleStripArray(2 * ncols * (nrows - 1),
+					GeometryArray.COORDINATES | GeometryArray.TEXTURE_COORDINATE_2, tab);
 
-      strp.setCapability(GeometryArray.ALLOW_COORDINATE_READ);
-      strp.setCapability(IndexedGeometryArray.ALLOW_COORDINATE_INDEX_READ);
-      strp.setCapability(Geometry.ALLOW_INTERSECT);
+			strp.setCapability(GeometryArray.ALLOW_COORDINATE_READ);
+			strp.setCapability(IndexedGeometryArray.ALLOW_COORDINATE_INDEX_READ);
+			strp.setCapability(Geometry.ALLOW_INTERSECT);
 
-      // On renseigne les différentes valeurs donnant des informations sur
-      // le MNT
-      this.xIni = shiftX;
-      this.yIni = shiftY;
-      // on initialize la ligne précédente
-      double[] lignePred = new double[ncols];
+			// On renseigne les différentes valeurs donnant des informations sur
+			// le MNT
+			this.xIni = shiftX;
+			this.yIni = shiftY;
+			// on initialize la ligne précédente
+			double[] lignePred = new double[ncols];
 
-      result = ligne.split("\\s");
+			result = ligne.split("\\s");
 
-      // On remplit la premiere ligne : initialisation
-      for (int i = 0; i < ncols; i++) {
+			// On remplit la premiere ligne : initialisation
+			for (int i = 0; i < ncols; i++) {
 
-        lignePred[i] = Double.parseDouble(result[i * this.echantillonage]);
-        this.zMin = Math.min(lignePred[i], this.zMin);
-        this.zMax = Math.max(lignePred[i], this.zMax);
-      }
+				lignePred[i] = Double.parseDouble(result[i * this.echantillonage]);
+				this.zMin = Math.min(lignePred[i], this.zMin);
+				this.zMax = Math.max(lignePred[i], this.zMax);
+			}
 
-      // On passe des lignes pour sous échantillonner
-      for (int i = 0; i < this.echantillonage; i++) {
-        ligne = br.readLine();
+			// On passe des lignes pour sous échantillonner
+			for (int i = 0; i < this.echantillonage; i++) {
+				ligne = br.readLine();
 
-      }
+			}
 
-      numligne = 0;
-      // On traite le fichier ligne par ligne
-      for (int j = 0; j < nrows; j++) {
+			numligne = 0;
+			// On traite le fichier ligne par ligne
+			for (int j = 0; j < nrows; j++) {
 
-        if (ligne == null) {
-          break;
-        }
+				if (ligne == null) {
+					break;
+				}
 
-        numcol = 0;
+				numcol = 0;
 
-        // On charge la ligne en mémoire
-        result = ligne.split("\\s");
+				// On charge la ligne en mémoire
+				result = ligne.split("\\s");
 
-        double qx = 0;
-        double qy = 0;
+				double qx = 0;
+				double qy = 0;
 
-        // Pour chaque colonne que l'on souhaite récupèrer
-        for (int i = 0; i < ncols; i++) {
+				// Pour chaque colonne que l'on souhaite récupèrer
+				for (int i = 0; i < ncols; i++) {
 
-          // On récupère le Z du point que l'on traite actuellement
-          // Le Z du point en dessous
-          double nouvZ = Double.parseDouble(result[i * this.echantillonage]);
-          double oldZ = lignePred[i];
+					// On récupère le Z du point que l'on traite actuellement
+					// Le Z du point en dessous
+					double nouvZ = Double.parseDouble(result[i * this.echantillonage]);
+					double oldZ = lignePred[i];
 
-          this.zMin = Math.min(nouvZ, this.zMin);
-          this.zMax = Math.max(nouvZ, this.zMax);
+					this.zMin = Math.min(nouvZ, this.zMin);
+					this.zMax = Math.max(nouvZ, this.zMax);
 
-          // On crée le nouveau point
+					// On crée le nouveau point
 
-          // On crée le nouveau point
-          Point3d pointAncien = null;
-          if (oldZ == this.noDataValue) {
+					// On crée le nouveau point
+					Point3d pointAncien = null;
+					if (oldZ == this.noDataValue) {
 
-            pointAncien = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * numligne), this.zMin * exager);
-          } else {
+						pointAncien = new Point3d((cellsize * numcol + shiftX),
+								(maxy - cellsize * numligne), this.zMin * exager);
+					} else {
 
-            pointAncien = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * numligne), oldZ * exager);
-          }
+						pointAncien = new Point3d((cellsize * numcol + shiftX),
+								(maxy - cellsize * numligne), oldZ * exager);
+					}
 
-          Point3d nouvePoint = null;
+					Point3d nouvePoint = null;
 
-          if (nouvZ == this.noDataValue) {
-            nouvePoint = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * (numligne + this.echantillonage)), this.zMin
-                    * exager);
+					if (nouvZ == this.noDataValue) {
+						nouvePoint = new Point3d((cellsize * numcol + shiftX),
+								(maxy - cellsize * (numligne + this.echantillonage)), this.zMin
+								* exager);
 
-          } else {
-            nouvePoint = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * (numligne + this.echantillonage)), nouvZ
-                    * exager);
+					} else {
+						nouvePoint = new Point3d((cellsize * numcol + shiftX),
+								(maxy - cellsize * (numligne + this.echantillonage)), nouvZ
+								* exager);
 
-          }
+					}
 
-          TexCoord2f q = new TexCoord2f();
+					TexCoord2f q = new TexCoord2f();
 
-          TexCoord2f q2 = new TexCoord2f();
+					TexCoord2f q2 = new TexCoord2f();
 
-          qx = pointAncien.x - this.getImageEnvelope().getLowerCorner().getX();
-          qy = pointAncien.y - this.getImageEnvelope().getLowerCorner().getY();
+					qx = pointAncien.x - this.getImageEnvelope().getLowerCorner().getX();
+					qy = pointAncien.y - this.getImageEnvelope().getLowerCorner().getY();
 
-          double q2x = nouvePoint.x
-              - this.getImageEnvelope().getLowerCorner().getX();
-          double q2y = nouvePoint.y
-              - this.getImageEnvelope().getLowerCorner().getY();
+					double q2x = nouvePoint.x
+							- this.getImageEnvelope().getLowerCorner().getX();
+					double q2y = nouvePoint.y
+							- this.getImageEnvelope().getLowerCorner().getY();
 
-          q.set((float) (qx / denomX), (float) (qy / denomY));
-          q2.set((float) (q2x / denomX), (float) (q2y / denomY));
+					q.set((float) (qx / denomX), (float) (qy / denomY));
+					q2.set((float) (q2x / denomX), (float) (q2y / denomY));
 
-          strp.setCoordinate(nbpoints, pointAncien);
+					strp.setCoordinate(nbpoints, pointAncien);
 
-          strp.setTextureCoordinate(0, nbpoints, q);
+					strp.setTextureCoordinate(0, nbpoints, q);
 
-          nbpoints++;
+					nbpoints++;
 
-          strp.setCoordinate(nbpoints, nouvePoint);
+					strp.setCoordinate(nbpoints, nouvePoint);
 
-          strp.setTextureCoordinate(0, nbpoints, q2);
+					strp.setTextureCoordinate(0, nbpoints, q2);
 
-          nbpoints++;
-          lignePred[i] = nouvZ;
+					nbpoints++;
+					lignePred[i] = nouvZ;
 
-          numcol = numcol + this.echantillonage;
+					numcol = numcol + this.echantillonage;
 
-        }
-        numligne = numligne + this.echantillonage;
-        // On passe des lignes pour sous àchantillonner
-        for (int l = 0; l < this.echantillonage; l++) {
-          ligne = br.readLine();
+				}
+				numligne = numligne + this.echantillonage;
+				// On passe des lignes pour sous àchantillonner
+				for (int l = 0; l < this.echantillonage; l++) {
+					ligne = br.readLine();
 
-        }
+				}
 
-      }
-      
-      br.close();
+			}
 
-      this.stepX = this.echantillonage * cellsize;
-      this.stepY = this.echantillonage * cellsize;
-      this.nX = ncols;
-      this.nY = nrows;
-      this.sampling = this.echantillonage;
-      this.strip = strp;
+			br.close();
 
-      Appearance app = new Appearance();
-      TransparencyAttributes tra = new TransparencyAttributes();
-      tra.setTransparencyMode(TransparencyAttributes.NONE);
-      app.setTransparencyAttributes(tra);
+			this.stepX = this.echantillonage * cellsize;
+			this.stepY = this.echantillonage * cellsize;
+			this.nX = ncols;
+			this.nY = nrows;
+			this.sampling = this.echantillonage;
+			this.strip = strp;
 
-      URL url = new URL(this.imagePath);
+			Appearance app = new Appearance();
+			TransparencyAttributes tra = new TransparencyAttributes();
+			tra.setTransparencyMode(TransparencyAttributes.NONE);
+			app.setTransparencyAttributes(tra);
 
-      Texture t = TextureManager.textureNoReapetLoading(url.getPath());
+			URL url = new URL(this.imagePath);
 
-      app.setTexture(t);
+			Texture t = TextureManager.textureNoReapetLoading(url.getPath());
 
-      // Style normal
-      // Création des attributs du polygone
-      PolygonAttributes pa = new PolygonAttributes();
+			app.setTexture(t);
 
-      // a modifier pour changer de mode
-      // Le mode permet de représenter le MNT de différentes manières
-      if (fill) {
-        pa.setPolygonMode(PolygonAttributes.POLYGON_FILL);
-      } else {
-        pa.setPolygonMode(PolygonAttributes.POLYGON_LINE);
-      }
+			// Style normal
+			// Création des attributs du polygone
+			PolygonAttributes pa = new PolygonAttributes();
 
-      pa.setCullFace(PolygonAttributes.CULL_BACK);
-      pa.setBackFaceNormalFlip(true);
+			// a modifier pour changer de mode
+			// Le mode permet de représenter le MNT de différentes manières
+			if (fill) {
+				pa.setPolygonMode(PolygonAttributes.POLYGON_FILL);
+			} else {
+				pa.setPolygonMode(PolygonAttributes.POLYGON_LINE);
+			}
 
-      // Association à l'apparence des attributs de géométrie et de
-      // material
+			pa.setCullFace(PolygonAttributes.CULL_BACK);
+			pa.setBackFaceNormalFlip(true);
 
-      app.setPolygonAttributes(pa);
+			// Association à l'apparence des attributs de géométrie et de
+			// material
 
-      Shape3D shapepleine = new Shape3D(this.strip, app);
+			app.setPolygonAttributes(pa);
 
-      return shapepleine;
+			Shape3D shapepleine = new Shape3D(this.strip, app);
 
-    } catch (Exception e) {
+			return shapepleine;
 
-      e.printStackTrace();
-    }
-    return null;
+		} catch (Exception e) {
 
-  }
+			e.printStackTrace();
+		}
+		return null;
 
-  /**
-   * Permet de créer un MNT en appliquant un dégradé de couleur.
-   * 
-   * @param file Fichier MNT au format .asc
-   * @param layerName Nom de la couche
-   * @param fill Si l'on veut une représentation sous forme remplie ou sous
-   *          forme de maille
-   * @param exager exaggeration à appliquer
-   * @param colorGradation dégradé appliqué sur le MNT. Il s'agit d'un Color[].
-   *          Les triangles seront classés en fonction du nombre de couleur dans
-   *          le tableau de couleur. La classe Degrade propose une série de
-   *          tableau de couleurs.
-   */
-  public DTM(String file, String layerName, boolean fill, int exager,
-      Color[] colorGradation) {
+	}
 
-    super(layerName, file, colorGradation, null, null, 1, fill);
-    this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
-        exager, colorGradation));
+	/**
+	 * Permet de créer un MNT en appliquant un dégradé de couleur.
+	 * 
+	 * @param file Fichier MNT au format .asc
+	 * @param layerName Nom de la couche
+	 * @param fill Si l'on veut une représentation sous forme remplie ou sous
+	 *          forme de maille
+	 * @param exager exaggeration à appliquer
+	 * @param colorGradation dégradé appliqué sur le MNT. Il s'agit d'un Color[].
+	 *          Les triangles seront classés en fonction du nombre de couleur dans
+	 *          le tableau de couleur. La classe Degrade propose une série de
+	 *          tableau de couleurs.
+	 */
+	public DTM(String file, String layerName, boolean fill, int exager,
+			Color[] colorGradation) {
 
-  }
+		super(layerName, file, colorGradation, null, null, 1, fill);
+		this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
+				exager, colorGradation));
 
-  /**
-   * Rafraichit la représentation d'un MNT en appliquer un dégradé
-   * 
-   * @param file
-   * @param layerName
-   * @param fill
-   * @param exager
-   * @param colorGradation
-   */
-  public void refresh(String file, String layerName, boolean fill, int exager,
-      Color[] colorGradation) {
+	}
 
-    BranchGroup parent = null;
+	/**
+	 * Rafraichit la représentation d'un MNT en appliquer un dégradé
+	 * 
+	 * @param file
+	 * @param layerName
+	 * @param fill
+	 * @param exager
+	 * @param colorGradation
+	 */
+	public void refresh(String file, String layerName, boolean fill, int exager,
+			Color[] colorGradation) {
 
-    if (this.isVisible()) {
-      parent = (BranchGroup) this.bgLayer.getParent();
-      this.bgLayer.detach();
-    }
+		BranchGroup parent = null;
 
-    this.bgLayer.removeAllChildren();
-    this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
-        exager, colorGradation));
+		if (this.isVisible()) {
+			parent = (BranchGroup) this.bgLayer.getParent();
+			this.bgLayer.detach();
+		}
 
-    if (parent != null) {
-      parent.addChild(this.bgLayer);
-    }
+		this.bgLayer.removeAllChildren();
+		this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
+				exager, colorGradation));
 
-  }
+		if (parent != null) {
+			parent.addChild(this.bgLayer);
+		}
 
-  /**
-   * Calcul l'objet 3D permettant de représenter un MNT en appliquant un
-   * dégradé.
-   * 
-   * @param file
-   * @param layerName
-   * @param fill
-   * @param exager
-   * @param colorGradation
-   * @return un objet Java3D représentant la forme du MNT
-   */
-  private Shape3D representationProcess(String file, String layerName,
-      boolean fill, int exager, Color[] colorGradation) {
+	}
 
-    int nbElemCouleur = colorGradation.length;
-    this.color4fShade = new Color4f[nbElemCouleur];
+	/**
+	 * Calcul l'objet 3D permettant de représenter un MNT en appliquant un
+	 * dégradé.
+	 * 
+	 * @param file
+	 * @param layerName
+	 * @param fill
+	 * @param exager
+	 * @param colorGradation
+	 * @return un objet Java3D représentant la forme du MNT
+	 */
+	private Shape3D representationProcess(String file, String layerName,
+			boolean fill, int exager, Color[] colorGradation) {
 
-    for (int i = 0; i < nbElemCouleur; i++) {
-      this.color4fShade[i] = new Color4f(colorGradation[i]);
-    }
+		int nbElemCouleur = colorGradation.length;
+		this.color4fShade = new Color4f[nbElemCouleur];
 
-    // Les informations concernant le coin supérieur gauche du MNT
-    double shiftX = 0;
-    double shiftY = 0;
+		for (int i = 0; i < nbElemCouleur; i++) {
+			this.color4fShade[i] = new Color4f(colorGradation[i]);
+		}
 
-    // Le nombre d'éléments présents dans le MNT
-    int nbpoints = 0;
-    int numligne = 0;
-    int numcol = 0;
+		// Les informations concernant le coin supérieur gauche du MNT
+		double shiftX = 0;
+		double shiftY = 0;
 
-    // Valeur indiquant l'absence de données
-    this.noDataValue = Double.NaN;
-    try {
-      String ligne = "";
-      // Lecture du fichier et récupèration des différentes valeurs citées
-      // précédemment
+		// Le nombre d'éléments présents dans le MNT
+		int nbpoints = 0;
+		int numligne = 0;
+		int numcol = 0;
 
-      BufferedReader br = new BufferedReader(new FileReader(file));
+		// Valeur indiquant l'absence de données
+		this.noDataValue = Double.NaN;
+		try {
+			String ligne = "";
+			// Lecture du fichier et récupèration des différentes valeurs citées
+			// précédemment
 
-      this.zMin = Double.POSITIVE_INFINITY;
-      this.zMax = Double.NEGATIVE_INFINITY;
+			BufferedReader br = new BufferedReader(new FileReader(file));
 
-      // on saute les 6 lignes du début
-      for (int i = 0; i < 6; i++) {
-        ligne = br.readLine();
-      }
+			this.zMin = Double.POSITIVE_INFINITY;
+			this.zMax = Double.NEGATIVE_INFINITY;
 
-      String[] result = ligne.split(" ");
+			// on saute les 6 lignes du début
+			for (int i = 0; i < 6; i++) {
+				ligne = br.readLine();
+			}
 
-      // On récupère la valeur noData
-      this.noDataValue = Double.parseDouble(result[result.length - 1]);
+			String[] result = ligne.split(" ");
 
-      ligne = br.readLine();
-      while (ligne != null) {
-        result = ligne.split(" ");
+			// On récupère la valeur noData
+			this.noDataValue = Double.parseDouble(result[result.length - 1]);
 
-        int nbElem = result.length;
+			ligne = br.readLine();
+			while (ligne != null) {
+				result = ligne.split(" ");
 
-        for (int i = 0; i < nbElem; i++) {
+				int nbElem = result.length;
 
-          double valZ = Double.parseDouble(result[i]);
+				for (int i = 0; i < nbElem; i++) {
 
-          if (valZ == this.noDataValue) {
-            continue;
-          }
+					double valZ = Double.parseDouble(result[i]);
 
-          this.zMin = Math.min(valZ, this.zMin);
-          this.zMax = Math.max(valZ, this.zMax);
-        }
+					if (valZ == this.noDataValue) {
+						continue;
+					}
 
-        ligne = br.readLine();
-      }
+					this.zMin = Math.min(valZ, this.zMin);
+					this.zMax = Math.max(valZ, this.zMax);
+				}
 
-      br.close();
+				ligne = br.readLine();
+			}
 
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    // Il s'agit d'une chaine contenant les informations en train d'être lu
-    // dans le fichier
-    String ligne;
+			br.close();
 
-    try {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// Il s'agit d'une chaine contenant les informations en train d'être lu
+		// dans le fichier
+		String ligne;
 
-      // Lecture du fichier et récupèration des différentes valeurs citées
-      // précédemment
-      BufferedReader br = new BufferedReader(new FileReader(file));
+		try {
 
-      ligne = br.readLine();
+			// Lecture du fichier et récupèration des différentes valeurs citées
+			// précédemment
+			BufferedReader br = new BufferedReader(new FileReader(file));
 
-      String[] result = ligne.split(" ");
+			ligne = br.readLine();
 
-      int ncols = Integer.parseInt(result[result.length - 1]);
+			String[] result = ligne.split(" ");
 
-      // System.out.println("ncols" + result[result.length - 1]);
+			int ncols = Integer.parseInt(result[result.length - 1]);
 
-      ligne = br.readLine();
-      result = ligne.split("\\s");
+			// System.out.println("ncols" + result[result.length - 1]);
 
-      // System.out.println("nrows" + result[result.length - 1]);
+			ligne = br.readLine();
+			result = ligne.split("\\s");
 
-      int nrows = Integer.parseInt(result[result.length - 1]);
+			// System.out.println("nrows" + result[result.length - 1]);
 
-      ligne = br.readLine();
-      result = ligne.split("\\s");
+			int nrows = Integer.parseInt(result[result.length - 1]);
 
-      shiftX = Double.parseDouble(result[result.length - 1]);
+			ligne = br.readLine();
+			result = ligne.split("\\s");
 
-      // System.out.println("xllcorner" + result[result.length - 1]);
+			shiftX = Double.parseDouble(result[result.length - 1]);
 
-      ligne = br.readLine();
-      result = ligne.split("\\s");
+			// System.out.println("xllcorner" + result[result.length - 1]);
 
-      shiftY = Double.parseDouble(result[result.length - 1]);
+			ligne = br.readLine();
+			result = ligne.split("\\s");
 
-      // System.out.println("yllcorner" + shiftY);
+			shiftY = Double.parseDouble(result[result.length - 1]);
 
-      ligne = br.readLine();
-      result = ligne.split("\\s");
+			// System.out.println("yllcorner" + shiftY);
 
-      double cellsize = Double.parseDouble(result[result.length - 1]);
+			ligne = br.readLine();
+			result = ligne.split("\\s");
 
-      // 2 lignes à ne pas lire
-      ligne = br.readLine();
+			double cellsize = Double.parseDouble(result[result.length - 1]);
 
-      ligne = br.readLine();
+			// 2 lignes à ne pas lire
+			ligne = br.readLine();
 
-      double maxy = ((nrows - 1) * cellsize + shiftY);
+			ligne = br.readLine();
 
-      // On prépare le nombre de lignes
-      nrows = nrows / this.echantillonage;
-      ncols = ncols / this.echantillonage;
+			double maxy = ((nrows - 1) * cellsize + shiftY);
 
-      // Tab contiendra les Z de la ligne précédente
-      int[] tab = new int[nrows - 1];
+			// On prépare le nombre de lignes
+			nrows = nrows / this.echantillonage;
+			ncols = ncols / this.echantillonage;
 
-      for (int i = 0; i < nrows - 1; i++) {
+			// Tab contiendra les Z de la ligne précédente
+			int[] tab = new int[nrows - 1];
 
-        tab[i] = 2 * ncols;
-      }
+			for (int i = 0; i < nrows - 1; i++) {
 
-      // Création de la géométrie Java3D qui accueillera le MNT
-      TriangleStripArray strp = null;
+				tab[i] = 2 * ncols;
+			}
 
-      // La construction se fait en TriangleStripArray
-      // C'est un mode de construction efficace et rapide
-      // Toutefois chaque point se retrouve chargé 2 fois en mémoire
-      // (un test avec un autre mode de représentation indexé n'a pas été
-      // concluant)
+			// Création de la géométrie Java3D qui accueillera le MNT
+			TriangleStripArray strp = null;
 
-      strp = new TriangleStripArray(2 * ncols * (nrows - 1),
-          GeometryArray.COORDINATES | GeometryArray.COLOR_4
-              | GeometryArray.NORMALS, tab);
+			// La construction se fait en TriangleStripArray
+			// C'est un mode de construction efficace et rapide
+			// Toutefois chaque point se retrouve chargé 2 fois en mémoire
+			// (un test avec un autre mode de représentation indexé n'a pas été
+			// concluant)
 
-      strp.setCapability(GeometryArray.ALLOW_COORDINATE_READ);
-      strp.setCapability(Geometry.ALLOW_INTERSECT);
-      // On renseigne les différentes valeurs donnant des informations sur
-      // le MNT
-      this.xIni = shiftX;
-      this.yIni = shiftY;
-      // on initialize la ligne précédente
-      double[] lignePred = new double[ncols];
+			strp = new TriangleStripArray(2 * ncols * (nrows - 1),
+					GeometryArray.COORDINATES | GeometryArray.COLOR_4
+					| GeometryArray.NORMALS, tab);
 
-      result = ligne.split("\\s");
+			strp.setCapability(GeometryArray.ALLOW_COORDINATE_READ);
+			strp.setCapability(Geometry.ALLOW_INTERSECT);
+			// On renseigne les différentes valeurs donnant des informations sur
+			// le MNT
+			this.xIni = shiftX;
+			this.yIni = shiftY;
+			// on initialize la ligne précédente
+			double[] lignePred = new double[ncols];
 
-      // On remplit la premiere ligne : inittialisation
-      for (int i = 0; i < ncols; i++) {
+			result = ligne.split("\\s");
 
-        lignePred[i] = Double.parseDouble(result[i * this.echantillonage]);
+			// On remplit la premiere ligne : inittialisation
+			for (int i = 0; i < ncols; i++) {
 
-      }
+				lignePred[i] = Double.parseDouble(result[i * this.echantillonage]);
 
-      // On passe des lignes pour sous àchantillonner
-      for (int i = 0; i < this.echantillonage; i++) {
-        ligne = br.readLine();
+			}
 
-      }
+			// On passe des lignes pour sous àchantillonner
+			for (int i = 0; i < this.echantillonage; i++) {
+				ligne = br.readLine();
 
-      numligne = 0;
-      // On traite le fichier ligne par ligne
-      for (int j = 0; j < nrows; j++) {
+			}
 
-        if (ligne == null) {
-          break;
-        }
+			numligne = 0;
+			// On traite le fichier ligne par ligne
+			for (int j = 0; j < nrows; j++) {
 
-        numcol = 0;
+				if (ligne == null) {
+					break;
+				}
 
-        // On charge la ligne en mémoire
-        result = ligne.split("\\s");
+				numcol = 0;
 
-        // Pour chaque colonne que l'on souhaite récupèrer
-        for (int i = 0; i < ncols; i++) {
+				// On charge la ligne en mémoire
+				result = ligne.split("\\s");
 
-          // On récupère le Z du point que l'on traite actuellement
-          // Le Z du point en dessous
-          double nouvZ = Double.parseDouble(result[i * this.echantillonage]);
-          double oldZ = lignePred[i];
+				// Pour chaque colonne que l'on souhaite récupèrer
+				for (int i = 0; i < ncols; i++) {
 
-          // On crée le nouveau point
-          Point3d pointAncien = null;
-          if (oldZ == this.noDataValue) {
+					// On récupère le Z du point que l'on traite actuellement
+					// Le Z du point en dessous
+					double nouvZ = Double.parseDouble(result[i * this.echantillonage]);
+					double oldZ = lignePred[i];
 
-            pointAncien = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * numligne), this.zMin * exager);
-          } else {
+					// On crée le nouveau point
+					Point3d pointAncien = null;
+					if (oldZ == this.noDataValue) {
 
-            pointAncien = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * numligne), oldZ * exager);
-          }
+						pointAncien = new Point3d((cellsize * numcol + shiftX),
+								(maxy - cellsize * numligne), this.zMin * exager);
+					} else {
 
-          Point3d nouvePoint = null;
+						pointAncien = new Point3d((cellsize * numcol + shiftX),
+								(maxy - cellsize * numligne), oldZ * exager);
+					}
 
-          if (nouvZ == this.noDataValue) {
-            nouvePoint = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * (numligne + this.echantillonage)), this.zMin
-                    * exager);
+					Point3d nouvePoint = null;
 
-          } else {
-            nouvePoint = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * (numligne + this.echantillonage)), nouvZ
-                    * exager);
+					if (nouvZ == this.noDataValue) {
+						nouvePoint = new Point3d((cellsize * numcol + shiftX),
+								(maxy - cellsize * (numligne + this.echantillonage)), this.zMin
+								* exager);
 
-          }
+					} else {
+						nouvePoint = new Point3d((cellsize * numcol + shiftX),
+								(maxy - cellsize * (numligne + this.echantillonage)), nouvZ
+								* exager);
 
-          strp.setCoordinate(nbpoints, pointAncien);
+					}
 
-          strp.setColor(nbpoints, this.getColor4f(oldZ));
+					strp.setCoordinate(nbpoints, pointAncien);
 
-          nbpoints++;
+					strp.setColor(nbpoints, this.getColor4f(oldZ));
 
-          strp.setCoordinate(nbpoints, nouvePoint);
+					nbpoints++;
 
-          strp.setColor(nbpoints, this.getColor4f(nouvZ));
+					strp.setCoordinate(nbpoints, nouvePoint);
 
-          nbpoints++;
-          lignePred[i] = nouvZ;
+					strp.setColor(nbpoints, this.getColor4f(nouvZ));
 
-          numcol = numcol + this.echantillonage;
+					nbpoints++;
+					lignePred[i] = nouvZ;
 
-        }
-        numligne = numligne + this.echantillonage;
-        // On passe des lignes pour sous àchantillonner
-        for (int l = 0; l < this.echantillonage; l++) {
-          ligne = br.readLine();
+					numcol = numcol + this.echantillonage;
 
-        }
+				}
+				numligne = numligne + this.echantillonage;
+				// On passe des lignes pour sous àchantillonner
+				for (int l = 0; l < this.echantillonage; l++) {
+					ligne = br.readLine();
 
-      }
+				}
 
-      br.close();
-      
-      this.stepX = this.echantillonage * cellsize;
-      this.stepY = this.echantillonage * cellsize;
-      this.nX = ncols;
-      this.nY = nrows;
-      this.sampling = this.echantillonage;
-      this.strip = strp;
+			}
 
-      Appearance app = new Appearance();
-      TransparencyAttributes tra = new TransparencyAttributes();
-      tra.setTransparencyMode(TransparencyAttributes.NONE);
-      app.setTransparencyAttributes(tra);
+			br.close();
 
-      // Style normal
-      // Création des attributs du polygone
-      PolygonAttributes pa = new PolygonAttributes();
+			this.stepX = this.echantillonage * cellsize;
+			this.stepY = this.echantillonage * cellsize;
+			this.nX = ncols;
+			this.nY = nrows;
+			this.sampling = this.echantillonage;
+			this.strip = strp;
 
-      // a modifier pour changer de mode
-      // Le mode permet de représenter le MNT de différentes manières
-      // pa.setPolygonMode(PolygonAttributes.POLYGON_LINE);
-      if (fill) {
-        pa.setPolygonMode(PolygonAttributes.POLYGON_FILL);
-      } else {
-        pa.setPolygonMode(PolygonAttributes.POLYGON_LINE);
-      }
-      // pa.setPolygonMode(PolygonAttributes.POLYGON_POINT);
+			Appearance app = new Appearance();
+			TransparencyAttributes tra = new TransparencyAttributes();
+			tra.setTransparencyMode(TransparencyAttributes.NONE);
+			app.setTransparencyAttributes(tra);
 
-      pa.setCullFace(PolygonAttributes.CULL_BACK);
-      pa.setBackFaceNormalFlip(true);
+			// Style normal
+			// Création des attributs du polygone
+			PolygonAttributes pa = new PolygonAttributes();
 
-      // Création du material (gestion des couleurs et de l'affichage)
-      Material material = new Material();
+			// a modifier pour changer de mode
+			// Le mode permet de représenter le MNT de différentes manières
+			// pa.setPolygonMode(PolygonAttributes.POLYGON_LINE);
+			if (fill) {
+				pa.setPolygonMode(PolygonAttributes.POLYGON_FILL);
+			} else {
+				pa.setPolygonMode(PolygonAttributes.POLYGON_LINE);
+			}
+			// pa.setPolygonMode(PolygonAttributes.POLYGON_POINT);
 
-      material.setSpecularColor(new Color3f(1f, 1f, 1f));
-      material.setShininess(128f);
-      material.setDiffuseColor(new Color3f(0.8f, 0.8f, 0.8f));
+			pa.setCullFace(PolygonAttributes.CULL_BACK);
+			pa.setBackFaceNormalFlip(true);
 
-      // Autorisations pour le material
-      app.setCapability(Appearance.ALLOW_MATERIAL_READ);
-      app.setCapability(Appearance.ALLOW_MATERIAL_WRITE);
-      /*
-       * ColoringAttributes cA = new ColoringAttributes();
-       * cA.setShadeModel(ColoringAttributes.SHADE_GOURAUD); cA.setColor(new
-       * Color3f(0.0f, 0.8f, 0.0f));
-       */
+			// Création du material (gestion des couleurs et de l'affichage)
+			Material material = new Material();
 
-      // Association à l'apparence des attributs de géométrie et de
-      // material
-      /*
-       * RenderingAttributes rendering = new RenderingAttributes();
-       * rendering.setAlphaTestFunction(RenderingAttributes.EQUAL);
-       * rendering.setAlphaTestValue(1.0f);
-       * app.setRenderingAttributes(rendering);
-       */
+			material.setSpecularColor(new Color3f(1f, 1f, 1f));
+			material.setShininess(128f);
+			material.setDiffuseColor(new Color3f(0.8f, 0.8f, 0.8f));
 
-      app.setPolygonAttributes(pa);
+			// Autorisations pour le material
+			app.setCapability(Appearance.ALLOW_MATERIAL_READ);
+			app.setCapability(Appearance.ALLOW_MATERIAL_WRITE);
+			/*
+			 * ColoringAttributes cA = new ColoringAttributes();
+			 * cA.setShadeModel(ColoringAttributes.SHADE_GOURAUD); cA.setColor(new
+			 * Color3f(0.0f, 0.8f, 0.0f));
+			 */
 
-      app.setMaterial(material);
+			// Association à l'apparence des attributs de géométrie et de
+			// material
+			/*
+			 * RenderingAttributes rendering = new RenderingAttributes();
+			 * rendering.setAlphaTestFunction(RenderingAttributes.EQUAL);
+			 * rendering.setAlphaTestValue(1.0f);
+			 * app.setRenderingAttributes(rendering);
+			 */
 
-      // app.setColoringAttributes(cA);
+			app.setPolygonAttributes(pa);
 
-      Shape3D shapepleine;
+			app.setMaterial(material);
 
-      GeometryInfo geomInfo = new GeometryInfo(strp);
+			// app.setColoringAttributes(cA);
 
-      NormalGenerator ng = new NormalGenerator();
-      ng.generateNormals(geomInfo);
+			Shape3D shapepleine;
 
-      shapepleine = new Shape3D(geomInfo.getGeometryArray(), app);
+			GeometryInfo geomInfo = new GeometryInfo(strp);
 
-      return shapepleine;
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
-    }
-  }
+			NormalGenerator ng = new NormalGenerator();
+			ng.generateNormals(geomInfo);
 
-  /**
-   * Met à jour la représentation de la carte dans la vue
-   */
-  @Override
-  public void refresh() {
-    if (this.colorShade == null) {
+			shapepleine = new Shape3D(geomInfo.getGeometryArray(), app);
 
-      this.refresh(this.path, this.layerName, this.isFilled, this.exageration,
-          this.imagePath, this.getImageEnvelope());
-    } else {
+			return shapepleine;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
-      this.refresh(this.path, this.layerName, this.isFilled, this.exageration,
-          this.colorShade);
-    }
+	/**
+	 * Met à jour la représentation de la carte dans la vue
+	 */
+	@Override
+	public void refresh() {
+		if (this.colorShade == null) {
 
-  }
+			this.refresh(this.path, this.layerName, this.isFilled, this.exageration,
+					this.imagePath, this.getImageEnvelope());
+		} else {
 
-  /**
-   * Permet de faire une petite classification sur les altitudes des points Il
-   * faut modifier le code pour influer sur cette classification, pour l'instant
-   * Cette classification utilise les véritables altitudes et non les altitudes
-   * exaggarees On utilise une classification linéaire en fonction du tableau de
-   * dégradé utilisé
-   * 
-   * @param z l'altitude dont on veut obtenir la couleur
-   * @return la couleur au format Color3f
-   */
-  public Color4f getColor4f(double z) {
+			this.refresh(this.path, this.layerName, this.isFilled, this.exageration,
+					this.colorShade);
+		}
 
-    // System.out.println("z ="+z+";"+"nodata"+noDataValue);
+	}
 
-    if (z == this.noDataValue) {
+	/**
+	 * Permet de faire une petite classification sur les altitudes des points Il
+	 * faut modifier le code pour influer sur cette classification, pour l'instant
+	 * Cette classification utilise les véritables altitudes et non les altitudes
+	 * exaggarees On utilise une classification linéaire en fonction du tableau de
+	 * dégradé utilisé
+	 * 
+	 * @param z l'altitude dont on veut obtenir la couleur
+	 * @return la couleur au format Color3f
+	 */
+	public Color4f getColor4f(double z) {
 
-      return new Color4f(1, 0, 0, 0.95f);
-    }
-    // Il s'agit du nombre de couleur que l'on va interprêter comme un
-    // nombre de classes
-    int nbColor = this.color4fShade.length;
+		// System.out.println("z ="+z+";"+"nodata"+noDataValue);
 
-    // la largeur d'une classe
-    double largeur = (this.zMax - this.zMin) / nbColor;
+		if (z == this.noDataValue) {
 
-    int numClass = (int) ((z - this.zMin) / largeur);
+			return new Color4f(1, 0, 0, 0.95f);
+		}
+		// Il s'agit du nombre de couleur que l'on va interprêter comme un
+		// nombre de classes
+		int nbColor = this.color4fShade.length;
 
-    numClass = Math.max(Math.min(nbColor - 1, numClass), 0);
+		// la largeur d'une classe
+		double largeur = (this.zMax - this.zMin) / nbColor;
 
-    return this.color4fShade[numClass];
+		int numClass = (int) ((z - this.zMin) / largeur);
 
-  }
+		numClass = Math.max(Math.min(nbColor - 1, numClass), 0);
 
-  /**
-   * @return Les coordonnées inférieures gauche de l'image plaquée (renvoie 0,0
-   *         si il n'y a pas d'image définie
-   */
-  public IDirectPosition getPMinImage() {
-    if (this.getImageEnvelope() == null) {
-      return new DirectPosition(0, 0);
-    }
+		return this.color4fShade[numClass];
 
-    return this.getImageEnvelope().getLowerCorner();
-  }
+	}
 
-  /**
-   * @return Les coordonnées supérieures droite de l'image plaquée (renvoie 0,0
-   *         si il n'y a pas d'image définie
-   */
-  public IDirectPosition getPMaxImage() {
-    if (this.getImageEnvelope() == null) {
-      return new DirectPosition(0, 0);
-    }
-    return this.getImageEnvelope().getUpperCorner();
-  }
+	/**
+	 * @return Les coordonnées inférieures gauche de l'image plaquée (renvoie 0,0
+	 *         si il n'y a pas d'image définie
+	 */
+	public IDirectPosition getPMinImage() {
+		if (this.getImageEnvelope() == null) {
+			return new DirectPosition(0, 0);
+		}
 
-  /**
-   * Cette fonction permet d'extraire en géométrie géoxygene les triangles du
-   * MNT compris dans le rectangle formé par dpMin et dpMax en 2D
-   * 
-   * @param dpMin point inférieur gauche du rectangle
-   * @param dpMax point supérieur droit du rectangle
-   * @return une liste de polygones décrivant les géométries du MNT compris dans
-   *         le rectangle formé par les 2 points en 2D
-   */
-  @Override
-  public MultiPolygon processSurfacicGrid(double xmin, double xmax,
-      double ymin, double ymax) {
+		return this.getImageEnvelope().getLowerCorner();
+	}
 
-    GeometryFactory fac = new GeometryFactory();
+	/**
+	 * @return Les coordonnées supérieures droite de l'image plaquée (renvoie 0,0
+	 *         si il n'y a pas d'image définie
+	 */
+	public IDirectPosition getPMaxImage() {
+		if (this.getImageEnvelope() == null) {
+			return new DirectPosition(0, 0);
+		}
+		return this.getImageEnvelope().getUpperCorner();
+	}
 
-    // On récupère dans quels triangles se trouvent dpMin et dpMax
-    int posxMin = (int) ((xmin - this.xIni) / (this.stepX * this.sampling));
-    int posyMin = (int) ((ymin - this.yIni) / (this.stepY * this.sampling));
+	/**
+	 * Cette fonction permet d'extraire en géométrie géoxygene les triangles du
+	 * MNT compris dans le rectangle formé par dpMin et dpMax en 2D
+	 * 
+	 * @param dpMin point inférieur gauche du rectangle
+	 * @param dpMax point supérieur droit du rectangle
+	 * @return une liste de polygones décrivant les géométries du MNT compris dans
+	 *         le rectangle formé par les 2 points en 2D
+	 */
+	@Override
+	public MultiPolygon processSurfacicGrid(double xmin, double xmax,
+			double ymin, double ymax) {
 
-    int posxMax = 1 + (int) ((xmax - this.xIni) / (this.stepX * this.sampling));
-    int posyMax = 1 + (int) ((ymax - this.yIni) / (this.stepY * this.sampling));
+		GeometryFactory fac = new GeometryFactory();
 
-    // On récupère les sommets extérieurs de ces triangles (ceux qui
-    // permettent d'englober totalement le rectangle dpMin, dpMax
-    Coordinate dpOrigin = new Coordinate(posxMin * this.stepX + this.xIni,
-        posyMin * this.stepY + this.yIni);
-    Coordinate dpFin = new Coordinate(posxMax * this.stepX + this.xIni, posyMax
-        * this.stepY + this.yIni);
+		// On récupère dans quels triangles se trouvent dpMin et dpMax
+		int posxMin = (int) ((xmin - this.xIni) / (this.stepX * this.sampling));
+		int posyMin = (int) ((ymin - this.yIni) / (this.stepY * this.sampling));
 
-    // On évalue le nombre de mailles à couvrir
-    int nbInterX = Math.max(1,(int) ((dpFin.x - dpOrigin.x) / this.stepX));
-    int nbInterY =  Math.max(1,(int) ((int) ((dpFin.y - dpOrigin.y) / this.stepY)));
+		int posxMax = 1 + (int) ((xmax - this.xIni) / (this.stepX * this.sampling));
+		int posyMax = 1 + (int) ((ymax - this.yIni) / (this.stepY * this.sampling));
 
-    Polygon[] lPolys = new Polygon[2 * nbInterX * nbInterY];
-    int indPoly = 0;
-    // On crée une géométrie géoxygne pour chacune de ces mailles
-    // (2 triangles par maille)
-    for (int i = 0; i < nbInterX; i++) {
-      for (int j = 0; j < nbInterY; j++) {
+		// On récupère les sommets extérieurs de ces triangles (ceux qui
+		// permettent d'englober totalement le rectangle dpMin, dpMax
+		Coordinate dpOrigin = new Coordinate(posxMin * this.stepX + this.xIni,
+				posyMin * this.stepY + this.yIni);
+		Coordinate dpFin = new Coordinate(posxMax * this.stepX + this.xIni, posyMax
+				* this.stepY + this.yIni);
 
-        Coordinate dp1 = new Coordinate(dpOrigin.x + i * this.stepX, dpOrigin.y
-            + j * this.stepY);
-        Coordinate dp2 = new Coordinate(dpOrigin.x + (i + 1) * this.stepX,
-            dpOrigin.y + j * this.stepY);
-        Coordinate dp3 = new Coordinate(dpOrigin.x + i * this.stepX, dpOrigin.y
-            + (j + 1) * this.stepY);
+		// On évalue le nombre de mailles à couvrir
+		int nbInterX = Math.max(1,(int) ((dpFin.x - dpOrigin.x) / this.stepX));
+		int nbInterY =  Math.max(1,(int) ((int) ((dpFin.y - dpOrigin.y) / this.stepY)));
 
-        Coordinate dp4 = new Coordinate(dpOrigin.x + (i + 1) * this.stepX,
-            dpOrigin.y + (j + 1) * this.stepY);
+		Polygon[] lPolys = new Polygon[2 * nbInterX * nbInterY];
+		int indPoly = 0;
+		// On crée une géométrie géoxygne pour chacune de ces mailles
+		// (2 triangles par maille)
+		for (int i = 0; i < nbInterX; i++) {
+			for (int j = 0; j < nbInterY; j++) {
 
-        Coordinate[] coord = new Coordinate[4];
-        coord[0] = dp1;
-        coord[1] = dp2;
-        coord[2] = dp4;
-        coord[3] = dp1;
+				Coordinate dp1 = new Coordinate(dpOrigin.x + i * this.stepX, dpOrigin.y
+						+ j * this.stepY);
+				Coordinate dp2 = new Coordinate(dpOrigin.x + (i + 1) * this.stepX,
+						dpOrigin.y + j * this.stepY);
+				Coordinate dp3 = new Coordinate(dpOrigin.x + i * this.stepX, dpOrigin.y
+						+ (j + 1) * this.stepY);
 
-        LinearRing l1 = fac.createLinearRing(coord);
+				Coordinate dp4 = new Coordinate(dpOrigin.x + (i + 1) * this.stepX,
+						dpOrigin.y + (j + 1) * this.stepY);
 
-        Coordinate[] coord2 = new Coordinate[4];
-        coord2[0] = dp1;
-        coord2[1] = dp4;
-        coord2[2] = dp3;
-        coord2[3] = dp1;
+				Coordinate[] coord = new Coordinate[4];
+				coord[0] = dp1;
+				coord[1] = dp2;
+				coord[2] = dp4;
+				coord[3] = dp1;
 
-        LinearRing l2 = fac.createLinearRing(coord2);
-        lPolys[indPoly] = fac.createPolygon(l1, null);
-        indPoly++;
-        lPolys[indPoly] = fac.createPolygon(l2, null);
-        indPoly++;
+				LinearRing l1 = fac.createLinearRing(coord);
 
-      }
+				Coordinate[] coord2 = new Coordinate[4];
+				coord2[0] = dp1;
+				coord2[1] = dp4;
+				coord2[2] = dp3;
+				coord2[3] = dp1;
 
-    }
-    // On renvoie la liste des triangles
-    return fac.createMultiPolygon(lPolys);
-  }
+				LinearRing l2 = fac.createLinearRing(coord2);
+				lPolys[indPoly] = fac.createPolygon(l1, null);
+				indPoly++;
+				lPolys[indPoly] = fac.createPolygon(l2, null);
+				indPoly++;
 
-  /**
-   * Cette fonction renvoie les lignes comprises dans le rectangles ayant dpMin
-   * et dpMax comme points extrémités
-   * 
-   * @param dpMin point inférieur gauche
-   * @param dpMax point supérieur droit
-   * @return une liste de points correspondant aux lignes des mailles comprises
-   *         entre ces 2 points
-   */
-  @Override
-  public MultiLineString processLinearGrid(double xmin, double ymin,
-      double xmax, double ymax) {
-    GeometryFactory fact = new GeometryFactory();
-    // On récupère l'indice des triangles contenant ces points
-    int posxMin = (int) ((xmin - this.xIni) / (this.stepX * this.sampling));
-    int posyMin = (int) ((ymin - this.yIni) / (this.stepY * this.sampling));
+			}
 
-    int posxMax = 1 + (int) ((xmax - this.xIni) / (this.stepX * this.sampling));
-    int posyMax = 1 + (int) ((ymax - this.yIni) / (this.stepY * this.sampling));
+		}
+		// On renvoie la liste des triangles
+		return fac.createMultiPolygon(lPolys);
+	}
 
-    // On récupère les points extrêmes appartenant à ces triangles
-    Coordinate dpOrigin = new Coordinate(posxMin * this.stepX + this.xIni,
-        posyMin * this.stepY + this.yIni);
-    Coordinate dpFin = new Coordinate(posxMax * this.stepX + this.xIni, posyMax
-        * this.stepY + this.yIni);
+	/**
+	 * Cette fonction renvoie les lignes comprises dans le rectangles ayant dpMin
+	 * et dpMax comme points extrémités
+	 * 
+	 * @param dpMin point inférieur gauche
+	 * @param dpMax point supérieur droit
+	 * @return une liste de points correspondant aux lignes des mailles comprises
+	 *         entre ces 2 points
+	 */
+	@Override
+	public MultiLineString processLinearGrid(double xmin, double ymin,
+			double xmax, double ymax) {
+		GeometryFactory fact = new GeometryFactory();
+		// On récupère l'indice des triangles contenant ces points
+		int posxMin = (int) ((xmin - this.xIni) / (this.stepX * this.sampling));
+		int posyMin = (int) ((ymin - this.yIni) / (this.stepY * this.sampling));
 
-    // On calcule le nombre de géométries à générer
-    int nbInterX = (int) ((dpFin.x - dpOrigin.x) / this.stepX);
-    int nbInterY = (int) ((dpFin.y - dpOrigin.y) / this.stepY);
-    
-    
-    
-    nbInterX = Math.max(1, nbInterX);
-    nbInterY = Math.max(1, nbInterY);
-    
-    LineString[] lineStrings = new LineString[(nbInterX - 1) * (nbInterY - 1)
-        * 3 + 2];
-    int indL = 0;
+		int posxMax = 1 + (int) ((xmax - this.xIni) / (this.stepX * this.sampling));
+		int posyMax = 1 + (int) ((ymax - this.yIni) / (this.stepY * this.sampling));
 
-    // On crée 3 lignes par maill du MNT
-    for (int i = 0; i < nbInterX - 1; i++) {
+		// On récupère les points extrêmes appartenant à ces triangles
+		Coordinate dpOrigin = new Coordinate(posxMin * this.stepX + this.xIni,
+				posyMin * this.stepY + this.yIni);
+		Coordinate dpFin = new Coordinate(posxMax * this.stepX + this.xIni, posyMax
+				* this.stepY + this.yIni);
 
-      for (int j = 0; j < nbInterY - 1; j++) {
+		// On calcule le nombre de géométries à générer
+		int nbInterX = (int) ((dpFin.x - dpOrigin.x) / this.stepX);
+		int nbInterY = (int) ((dpFin.y - dpOrigin.y) / this.stepY);
 
-        Coordinate dp1 = new Coordinate(dpOrigin.x + i * this.stepX, dpOrigin.y
-            + j * this.stepY);
-        Coordinate dp2 = new Coordinate(dpOrigin.x + (i + 1) * this.stepX,
-            dpOrigin.y + j * this.stepY);
-        Coordinate dp3 = new Coordinate(dpOrigin.x + i * this.stepX, dpOrigin.y
-            + (j + 1) * this.stepY);
-        Coordinate dp4 = new Coordinate(dpOrigin.x + (i + 1) * this.stepX,
-            dpOrigin.y + (j + 1) * this.stepY);
 
-        Coordinate[] c1 = new Coordinate[2];
-        Coordinate[] c2 = new Coordinate[2];
-        Coordinate[] c3 = new Coordinate[2];
 
-        c1[0] = dp1;
-        c1[1] = dp2;
+		nbInterX = Math.max(1, nbInterX);
+		nbInterY = Math.max(1, nbInterY);
 
-        LineString s1 = fact.createLineString(c1);
+		LineString[] lineStrings = new LineString[(nbInterX - 1) * (nbInterY - 1)
+		                                          * 3 + 2];
+		int indL = 0;
 
-        c2[0] = dp1;
-        c2[1] = dp3;
+		// On crée 3 lignes par maill du MNT
+		for (int i = 0; i < nbInterX - 1; i++) {
 
-        LineString s2 = fact.createLineString(c2);
+			for (int j = 0; j < nbInterY - 1; j++) {
 
-        c3[0] = dp1;
-        c3[1] = dp4;
+				Coordinate dp1 = new Coordinate(dpOrigin.x + i * this.stepX, dpOrigin.y
+						+ j * this.stepY);
+				Coordinate dp2 = new Coordinate(dpOrigin.x + (i + 1) * this.stepX,
+						dpOrigin.y + j * this.stepY);
+				Coordinate dp3 = new Coordinate(dpOrigin.x + i * this.stepX, dpOrigin.y
+						+ (j + 1) * this.stepY);
+				Coordinate dp4 = new Coordinate(dpOrigin.x + (i + 1) * this.stepX,
+						dpOrigin.y + (j + 1) * this.stepY);
 
-        LineString s3 = fact.createLineString(c3);
+				Coordinate[] c1 = new Coordinate[2];
+				Coordinate[] c2 = new Coordinate[2];
+				Coordinate[] c3 = new Coordinate[2];
 
-        lineStrings[indL] = s1;
-        indL++;
-        lineStrings[indL] = s2;
-        indL++;
-        lineStrings[indL] = s3;
-        indL++;
+				c1[0] = dp1;
+				c1[1] = dp2;
 
-      }
+				LineString s1 = fact.createLineString(c1);
 
-    }
-    // On complète en ajoutant les bordures supérieures et inférieures (qui
-    // ne sont pas parcourus par le boucle précédente
-    Coordinate dpInterX = new Coordinate(dpFin.x, dpOrigin.y);
-    Coordinate dpInterY = new Coordinate(dpOrigin.x, dpFin.y);
+				c2[0] = dp1;
+				c2[1] = dp3;
 
-    Coordinate[] c1 = new Coordinate[2];
-    c1[0] = dpInterX;
-    c1[1] = dpFin;
+				LineString s2 = fact.createLineString(c2);
 
-    lineStrings[indL] = fact.createLineString(c1);
-    indL++;
+				c3[0] = dp1;
+				c3[1] = dp4;
 
-    Coordinate[] c2 = new Coordinate[2];
-    c2[0] = dpInterY;
-    c2[1] = dpFin;
+				LineString s3 = fact.createLineString(c3);
 
-    lineStrings[indL] = fact.createLineString(c2);
+				lineStrings[indL] = s1;
+				indL++;
+				lineStrings[indL] = s2;
+				indL++;
+				lineStrings[indL] = s3;
+				indL++;
 
-    // On renvoie le tout
-    return fact.createMultiLineString(lineStrings);
-  }
+			}
 
-  /**
-   * Renvoie le triangle qui se trouve dans la maille indexX, indexY et dans le
-   * bas de la maille si inferior est true et dans le haut de celle-ci sinon
-   * Renvoie null si les indices ne correspondent pas à un triangle existant
-   * 
-   * @param indexX l'indice de la maille en X
-   * @param indexY l'indice de la maille en Y
-   * @param inferior la position du triangle par rapport à la maille
-   * @return une liste de points correspondants au sommet du triangle concerné
-   */
-  public DirectPositionList getTriangle(int indexX, int indexY, boolean inferior) {
+		}
+		// On complète en ajoutant les bordures supérieures et inférieures (qui
+		// ne sont pas parcourus par le boucle précédente
+		Coordinate dpInterX = new Coordinate(dpFin.x, dpOrigin.y);
+		Coordinate dpInterY = new Coordinate(dpOrigin.x, dpFin.y);
 
-    // Si les coordonnées ne sont pas dans le MNT, on renvoie null
-    if (indexX >= (this.nX - 1) || indexX < 0 || indexY >= (this.nY - 1)
-        || indexY < 0) {
+		Coordinate[] c1 = new Coordinate[2];
+		c1[0] = dpInterX;
+		c1[1] = dpFin;
 
-      return null;
+		lineStrings[indL] = fact.createLineString(c1);
+		indL++;
 
-    }
-    // On récupère les 4 coordonnées potentielle
-    int lignInit2 = 2 * (indexX) + 2 * (this.nY - 1 - (indexY + 1)) * this.nX;
+		Coordinate[] c2 = new Coordinate[2];
+		c2[0] = dpInterY;
+		c2[1] = dpFin;
 
-    Point3d pointemp1 = new Point3d();
-    this.strip.getCoordinate(lignInit2, pointemp1);
+		lineStrings[indL] = fact.createLineString(c2);
 
-    Point3d pointemp2 = new Point3d();
-    this.strip.getCoordinate(lignInit2 + 1, pointemp2);
+		// On renvoie le tout
+		return fact.createMultiLineString(lineStrings);
+	}
 
-    Point3d pointemp3 = new Point3d();
-    this.strip.getCoordinate(lignInit2 + 2, pointemp3);
+	/**
+	 * Renvoie le triangle qui se trouve dans la maille indexX, indexY et dans le
+	 * bas de la maille si inferior est true et dans le haut de celle-ci sinon
+	 * Renvoie null si les indices ne correspondent pas à un triangle existant
+	 * 
+	 * @param indexX l'indice de la maille en X
+	 * @param indexY l'indice de la maille en Y
+	 * @param inferior la position du triangle par rapport à la maille
+	 * @return une liste de points correspondants au sommet du triangle concerné
+	 */
+	public DirectPositionList getTriangle(int indexX, int indexY, boolean inferior) {
 
-    Point3d pointemp4 = new Point3d();
-    this.strip.getCoordinate(lignInit2 + 3, pointemp4);
+		// Si les coordonnées ne sont pas dans le MNT, on renvoie null
+		if (indexX >= (this.nX - 1) || indexX < 0 || indexY >= (this.nY - 1)
+				|| indexY < 0) {
 
-    DirectPosition pt12D = new DirectPosition(pointemp1.x + this.xIni,
-        pointemp1.y + this.yIni, pointemp1.getZ());
-    DirectPosition pt22D = new DirectPosition(pointemp2.x + this.xIni,
-        pointemp2.y + this.yIni, pointemp2.getZ());
-    DirectPosition pt32D = new DirectPosition(pointemp3.x + this.xIni,
-        pointemp3.y + this.yIni, pointemp3.getZ());
-    DirectPosition pt42D = new DirectPosition(pointemp4.x + this.xIni,
-        pointemp4.y + this.yIni, pointemp4.getZ());
+			return null;
 
-    DirectPositionList dpl = new DirectPositionList();
+		}
+		// On récupère les 4 coordonnées potentielle
+		int lignInit2 = 2 * (indexX) + 2 * (this.nY - 1 - (indexY + 1)) * this.nX;
 
-    if (inferior) {
+		Point3d pointemp1 = new Point3d();
+		this.strip.getCoordinate(lignInit2, pointemp1);
 
-      dpl.add(pt12D);
-      dpl.add(pt22D);
-      dpl.add(pt32D);
+		Point3d pointemp2 = new Point3d();
+		this.strip.getCoordinate(lignInit2 + 1, pointemp2);
 
-    } else {
+		Point3d pointemp3 = new Point3d();
+		this.strip.getCoordinate(lignInit2 + 2, pointemp3);
 
-      dpl.add(pt42D);
-      dpl.add(pt22D);
-      dpl.add(pt32D);
-    }
+		Point3d pointemp4 = new Point3d();
+		this.strip.getCoordinate(lignInit2 + 3, pointemp4);
 
-    return dpl;
-  }
+		DirectPosition pt12D = new DirectPosition(pointemp1.x + this.xIni,
+				pointemp1.y + this.yIni, pointemp1.getZ());
+		DirectPosition pt22D = new DirectPosition(pointemp2.x + this.xIni,
+				pointemp2.y + this.yIni, pointemp2.getZ());
+		DirectPosition pt32D = new DirectPosition(pointemp3.x + this.xIni,
+				pointemp3.y + this.yIni, pointemp3.getZ());
+		DirectPosition pt42D = new DirectPosition(pointemp4.x + this.xIni,
+				pointemp4.y + this.yIni, pointemp4.getZ());
 
-  /**
-   * Cette fonction permet de projeter un point sur un MNT en lui ajoutant un
-   * altitude offsetting
-   * 
-   * @param x ,y le point à projeter
-   * @param offsetting l'altitude que l'on rajoute au point final
-   * @return un point 3D ayant comme altitude Z du MNT + offesting
-   */
-  @Override
-  public Coordinate castCoordinate(double x, double y) {
+		DirectPositionList dpl = new DirectPositionList();
 
- 
-    // Etant donne que l'on a translaté le MNT
-    // On fait de meme avec le vecteur
+		if (inferior) {
 
-    // On recupere la maille dans laquelle se trouve le point
-    int posx = (int) ((x - this.xIni) / (this.stepX * this.sampling));
-    int posy = (int) ((y - this.yIni) / (this.stepY * this.sampling));
+			dpl.add(pt12D);
+			dpl.add(pt22D);
+			dpl.add(pt32D);
 
-    if (posx >= (this.nX) || posx < 0 || posy >= (this.nY) || posy < 0) {
+		} else {
 
-      return new Coordinate(x, y, 0);
+			dpl.add(pt42D);
+			dpl.add(pt22D);
+			dpl.add(pt32D);
+		}
 
-    } else if (posx == this.nX - 1) {
+		return dpl;
+	}
 
-      /*
-       * int lignInit2 = 2 * (posx-1) + 2 * (this.nY - 1 - (posy + 1)) this.nX;
-       * Point3d pointemp1 = new Point3d(); this.strip.getCoordinate(lignInit2 +
-       * 2, pointemp1); Point3d pointemp2 = new Point3d();
-       * this.strip.getCoordinate(lignInit2 + 3, pointemp2); DirectPosition
-       * ptloc2D = new DirectPosition(x, y); DirectPosition pt12D = new
-       * DirectPosition(pointemp1.x, pointemp1.y); DirectPosition pt22D = new
-       * DirectPosition(pointemp2.x, pointemp2.y); double d1 =
-       * ptloc2D.distance(pt12D); double d2 = ptloc2D.distance(pt22D); double
-       * zMoy; if (d1 < 0.5) { zMoy = pointemp1.z; return new Coordinate(x, y,
-       * zMoy + offsetting); } else if (d2 < 0.5) { zMoy = pointemp2.z; return
-       * new Coordinate(x, y, zMoy + offsetting); } pt12D.setZ(pointemp1.z);
-       * pt22D.setZ(pointemp2.z); double invDist1 = 1/d1; double invDist2 =
-       * 1/d2; //Un peu bancal, mais on fait une moyenne pondérée par l'inverse
-       * des distances ... zMoy = (invDist1 *pt12D.getZ() +
-       * invDist1*pt22D.getZ())/(invDist1+invDist2 );
-       */
-      return new Coordinate(x, y, 0);
+	/**
+	 * Cette fonction permet de projeter un point sur un MNT en lui ajoutant un
+	 * altitude offsetting
+	 * 
+	 * @param x ,y le point à projeter
+	 * @param offsetting l'altitude que l'on rajoute au point final
+	 * @return un point 3D ayant comme altitude Z du MNT + offesting
+	 */
+	@Override
+	public Coordinate castCoordinate(double x, double y) {
 
-    } else if (posy == this.nY - 1) {
 
-      /*
-       * int lignInit2 = 2 * (posx) + 2 * (this.nY - 1 - posy ) this.nX; Point3d
-       * pointemp1 = new Point3d(); this.strip.getCoordinate(lignInit2+1,
-       * pointemp1); Point3d pointemp2 = new Point3d();
-       * this.strip.getCoordinate(lignInit2 + 2, pointemp2); DirectPosition
-       * ptloc2D = new DirectPosition(x, y); DirectPosition pt12D = new
-       * DirectPosition(pointemp1.x, pointemp1.y); DirectPosition pt22D = new
-       * DirectPosition(pointemp2.x, pointemp2.y); double d1 =
-       * ptloc2D.distance(pt12D); double d2 = ptloc2D.distance(pt22D); double
-       * zMoy; if (d1 < 0.5) { zMoy = pointemp1.z; return new Coordinate(x, y,
-       * zMoy + offsetting); } else if (d2 < 0.5) { zMoy = pointemp2.z; return
-       * new Coordinate(x, y, zMoy + offsetting); } double invDist1 = 1/d1;
-       * double invDist2 = 1/d2; pt12D.setZ(pointemp1.z);
-       * pt22D.setZ(pointemp2.z); //Un peu bancal, mais on fait une moyenne
-       * pondérée par l'inverse des distances ... zMoy = (invDist1 *pt12D.getZ()
-       * + invDist1*pt22D.getZ())/(invDist1+invDist2 );
-       */
+		// Etant donne que l'on a translaté le MNT
+		// On fait de meme avec le vecteur
 
-      return new Coordinate(x, y, 0);
-    } else {
-      int lignInit2 = 2 * (posx) + 2 * (this.nY - 1 - (posy + 1)) * this.nX;
+		// On recupere la maille dans laquelle se trouve le point
+		int posx = (int) ((x - this.xIni) / (this.stepX * this.sampling));
+		int posy = (int) ((y - this.yIni) / (this.stepY * this.sampling));
 
-      // int lignInit2 = 2 * (posx) + 2 * (this.nY - 1 - (posy + 1)) * this.nX;
+		if (posx >= (this.nX) || posx < 0 || posy >= (this.nY) || posy < 0) {
 
-      Point3d pointemp1 = new Point3d();
-      this.strip.getCoordinate(lignInit2, pointemp1);
+			return new Coordinate(x, y, 0);
 
-      Point3d pointemp2 = new Point3d();
-      this.strip.getCoordinate(lignInit2 + 1, pointemp2);
+		} else if (posx == this.nX - 1) {
 
-      Point3d pointemp3 = new Point3d();
-      this.strip.getCoordinate(lignInit2 + 2, pointemp3);
+			/*
+			 * int lignInit2 = 2 * (posx-1) + 2 * (this.nY - 1 - (posy + 1)) this.nX;
+			 * Point3d pointemp1 = new Point3d(); this.strip.getCoordinate(lignInit2 +
+			 * 2, pointemp1); Point3d pointemp2 = new Point3d();
+			 * this.strip.getCoordinate(lignInit2 + 3, pointemp2); DirectPosition
+			 * ptloc2D = new DirectPosition(x, y); DirectPosition pt12D = new
+			 * DirectPosition(pointemp1.x, pointemp1.y); DirectPosition pt22D = new
+			 * DirectPosition(pointemp2.x, pointemp2.y); double d1 =
+			 * ptloc2D.distance(pt12D); double d2 = ptloc2D.distance(pt22D); double
+			 * zMoy; if (d1 < 0.5) { zMoy = pointemp1.z; return new Coordinate(x, y,
+			 * zMoy + offsetting); } else if (d2 < 0.5) { zMoy = pointemp2.z; return
+			 * new Coordinate(x, y, zMoy + offsetting); } pt12D.setZ(pointemp1.z);
+			 * pt22D.setZ(pointemp2.z); double invDist1 = 1/d1; double invDist2 =
+			 * 1/d2; //Un peu bancal, mais on fait une moyenne pondérée par l'inverse
+			 * des distances ... zMoy = (invDist1 *pt12D.getZ() +
+			 * invDist1*pt22D.getZ())/(invDist1+invDist2 );
+			 */
+			return new Coordinate(x, y, 0);
 
-      Point3d pointemp4 = new Point3d();
-      this.strip.getCoordinate(lignInit2 + 3, pointemp4);
+		} else if (posy == this.nY - 1) {
 
-      DirectPosition pt12D = new DirectPosition(pointemp1.x, pointemp1.y);
-      DirectPosition pt22D = new DirectPosition(pointemp2.x, pointemp2.y);
-      DirectPosition pt32D = new DirectPosition(pointemp3.x, pointemp3.y);
-      DirectPosition pt42D = new DirectPosition(pointemp4.x, pointemp4.y);
+			/*
+			 * int lignInit2 = 2 * (posx) + 2 * (this.nY - 1 - posy ) this.nX; Point3d
+			 * pointemp1 = new Point3d(); this.strip.getCoordinate(lignInit2+1,
+			 * pointemp1); Point3d pointemp2 = new Point3d();
+			 * this.strip.getCoordinate(lignInit2 + 2, pointemp2); DirectPosition
+			 * ptloc2D = new DirectPosition(x, y); DirectPosition pt12D = new
+			 * DirectPosition(pointemp1.x, pointemp1.y); DirectPosition pt22D = new
+			 * DirectPosition(pointemp2.x, pointemp2.y); double d1 =
+			 * ptloc2D.distance(pt12D); double d2 = ptloc2D.distance(pt22D); double
+			 * zMoy; if (d1 < 0.5) { zMoy = pointemp1.z; return new Coordinate(x, y,
+			 * zMoy + offsetting); } else if (d2 < 0.5) { zMoy = pointemp2.z; return
+			 * new Coordinate(x, y, zMoy + offsetting); } double invDist1 = 1/d1;
+			 * double invDist2 = 1/d2; pt12D.setZ(pointemp1.z);
+			 * pt22D.setZ(pointemp2.z); //Un peu bancal, mais on fait une moyenne
+			 * pondérée par l'inverse des distances ... zMoy = (invDist1 *pt12D.getZ()
+			 * + invDist1*pt22D.getZ())/(invDist1+invDist2 );
+			 */
 
-      DirectPosition ptloc2D = new DirectPosition(x, y);
+			return new Coordinate(x, y, 0);
+		} else {
+			int lignInit2 = 2 * (posx) + 2 * (this.nY - 1 - (posy + 1)) * this.nX;
 
-      double d1 = ptloc2D.distance(pt12D);
-      double d2 = ptloc2D.distance(pt22D);
+			// int lignInit2 = 2 * (posx) + 2 * (this.nY - 1 - (posy + 1)) * this.nX;
 
-      double d3 = ptloc2D.distance(pt32D);
+			Point3d pointemp1 = new Point3d();
+			this.strip.getCoordinate(lignInit2, pointemp1);
 
-      double d4 = ptloc2D.distance(pt42D);
+			Point3d pointemp2 = new Point3d();
+			this.strip.getCoordinate(lignInit2 + 1, pointemp2);
 
-      double zMoy = 0;
-      if (d1 < 5) {
+			Point3d pointemp3 = new Point3d();
+			this.strip.getCoordinate(lignInit2 + 2, pointemp3);
 
-        zMoy = pointemp1.z;
-        return new Coordinate(x, y, zMoy +  DTM.CONSTANT_OFFSET);
-      } else if (d2 < 5) {
-        zMoy = pointemp2.z;
-        return new Coordinate(x, y, zMoy +  DTM.CONSTANT_OFFSET);
-      } else if (d3 < 5) {
-        zMoy = pointemp3.z;
-        return new Coordinate(x, y, zMoy +  DTM.CONSTANT_OFFSET);
-      } else if (d4 < 5) {
-        zMoy = pointemp4.z;
-        return new Coordinate(x, y, zMoy +  DTM.CONSTANT_OFFSET);
-      }
+			Point3d pointemp4 = new Point3d();
+			this.strip.getCoordinate(lignInit2 + 3, pointemp4);
 
-      Vecteur v1 = new Vecteur(pt22D, pt32D);
-      Vecteur v2 = new Vecteur(pt22D, ptloc2D);
+			DirectPosition pt12D = new DirectPosition(pointemp1.x, pointemp1.y);
+			DirectPosition pt22D = new DirectPosition(pointemp2.x, pointemp2.y);
+			DirectPosition pt32D = new DirectPosition(pointemp3.x, pointemp3.y);
+			DirectPosition pt42D = new DirectPosition(pointemp4.x, pointemp4.y);
 
-      double d = v1.prodVectoriel(v2).prodScalaire(new Vecteur(0, 0, 1));
+			DirectPosition ptloc2D = new DirectPosition(x, y);
 
-      if (d > 0) {// Triangle 1 2 3
+			double d1 = ptloc2D.distance(pt12D);
+			double d2 = ptloc2D.distance(pt22D);
 
-        double xn = (pointemp2.y - pointemp1.y) * (pointemp3.z - pointemp1.z)
-            - (pointemp3.y - pointemp1.y) * (pointemp2.z - pointemp1.z);
-        double yn = (pointemp3.x - pointemp1.x) * (pointemp2.z - pointemp1.z)
-            - (pointemp2.x - pointemp1.x) * (pointemp3.z - pointemp1.z);
-        double zn = (pointemp2.x - pointemp1.x) * (pointemp3.y - pointemp1.y)
-            - (pointemp3.x - pointemp1.x) * (pointemp2.y - pointemp1.y);
+			double d3 = ptloc2D.distance(pt32D);
 
-        zMoy = (pointemp1.x * xn + pointemp1.y * yn + pointemp1.z * zn - x * xn - y
-            * yn)
-            / zn;
+			double d4 = ptloc2D.distance(pt42D);
 
-        // zMoy = ((1 / d1) * pointemp1.z + (1 / d2) * pointemp2.z + (1 / d3)
-        // * pointemp3.z)
-        // / (1 / d1 + 1 / d2 + 1 / d3);
-        // zMoy = (pointemp1.z + pointemp2.z + pointemp3.z)/3;
-        // PlanEquation eq = new PlanEquation(pt12D, pt22D, pt32D);
+			double zMoy = 0;
+			if (d1 < 5) {
 
-        // zMoy = eq.getZ(ptloc2D);
+				zMoy = pointemp1.z;
+				return new Coordinate(x, y, zMoy +  DTM.CONSTANT_OFFSET);
+			} else if (d2 < 5) {
+				zMoy = pointemp2.z;
+				return new Coordinate(x, y, zMoy +  DTM.CONSTANT_OFFSET);
+			} else if (d3 < 5) {
+				zMoy = pointemp3.z;
+				return new Coordinate(x, y, zMoy +  DTM.CONSTANT_OFFSET);
+			} else if (d4 < 5) {
+				zMoy = pointemp4.z;
+				return new Coordinate(x, y, zMoy +  DTM.CONSTANT_OFFSET);
+			}
 
-      } else {// Il se trouve dans le triangle 2 3 4
+			Vecteur v1 = new Vecteur(pt22D, pt32D);
+			Vecteur v2 = new Vecteur(pt22D, ptloc2D);
 
-        double xn = (pointemp2.y - pointemp4.y) * (pointemp3.z - pointemp4.z)
-            - (pointemp3.y - pointemp4.y) * (pointemp2.z - pointemp4.z);
-        double yn = (pointemp3.x - pointemp4.x) * (pointemp2.z - pointemp4.z)
-            - (pointemp2.x - pointemp4.x) * (pointemp3.z - pointemp4.z);
-        double zn = (pointemp2.x - pointemp4.x) * (pointemp3.y - pointemp4.y)
-            - (pointemp3.x - pointemp4.x) * (pointemp2.y - pointemp4.y);
+			double d = v1.prodVectoriel(v2).prodScalaire(new Vecteur(0, 0, 1));
 
-        zMoy = (pointemp4.x * xn + pointemp4.y * yn + pointemp4.z * zn - x * xn - y
-            * yn)
-            / zn;
+			if (d > 0) {// Triangle 1 2 3
 
-        // pt42D.setZ(pointemp4.getZ());
-        // pt22D.setZ(pointemp2.getZ());
-        // pt32D.setZ(pointemp3.getZ());
+				double xn = (pointemp2.y - pointemp1.y) * (pointemp3.z - pointemp1.z)
+						- (pointemp3.y - pointemp1.y) * (pointemp2.z - pointemp1.z);
+				double yn = (pointemp3.x - pointemp1.x) * (pointemp2.z - pointemp1.z)
+						- (pointemp2.x - pointemp1.x) * (pointemp3.z - pointemp1.z);
+				double zn = (pointemp2.x - pointemp1.x) * (pointemp3.y - pointemp1.y)
+						- (pointemp3.x - pointemp1.x) * (pointemp2.y - pointemp1.y);
 
-        // PlanEquation eq = new PlanEquation(pt42D, pt22D, pt32D);
+				zMoy = (pointemp1.x * xn + pointemp1.y * yn + pointemp1.z * zn - x * xn - y
+						* yn)
+						/ zn;
 
-        // zMoy = eq.getZ(ptloc2D);
+				// zMoy = ((1 / d1) * pointemp1.z + (1 / d2) * pointemp2.z + (1 / d3)
+				// * pointemp3.z)
+				// / (1 / d1 + 1 / d2 + 1 / d3);
+				// zMoy = (pointemp1.z + pointemp2.z + pointemp3.z)/3;
+				// PlanEquation eq = new PlanEquation(pt12D, pt22D, pt32D);
 
-        // zMoy = ((1 / d4) * pointemp4.z + (1 / d2) * pointemp2.z + (1 / d3)
-        // * pointemp3.z)
-        // / (1 / d4 + 1 / d2 + 1 / d3);
-        // zMoy = (pointemp4.z + pointemp2.z + pointemp3.z)/3;
-      }
+				// zMoy = eq.getZ(ptloc2D);
 
-      return new Coordinate(x, y, zMoy +  DTM.CONSTANT_OFFSET);
+			} else {// Il se trouve dans le triangle 2 3 4
 
-    }
+				double xn = (pointemp2.y - pointemp4.y) * (pointemp3.z - pointemp4.z)
+						- (pointemp3.y - pointemp4.y) * (pointemp2.z - pointemp4.z);
+				double yn = (pointemp3.x - pointemp4.x) * (pointemp2.z - pointemp4.z)
+						- (pointemp2.x - pointemp4.x) * (pointemp3.z - pointemp4.z);
+				double zn = (pointemp2.x - pointemp4.x) * (pointemp3.y - pointemp4.y)
+						- (pointemp3.x - pointemp4.x) * (pointemp2.y - pointemp4.y);
 
-  }
+				zMoy = (pointemp4.x * xn + pointemp4.y * yn + pointemp4.z * zn - x * xn - y
+						* yn)
+						/ zn;
 
-  @Override
-  public Box3D get3DEnvelope() {
-    if (this.emprise == null) {
+				// pt42D.setZ(pointemp4.getZ());
+				// pt22D.setZ(pointemp2.getZ());
+				// pt32D.setZ(pointemp3.getZ());
 
-      return new Box3D(this.xIni, this.yIni, this.zMin, this.xIni + this.nX
-          * this.stepX, this.yIni + this.nY * this.stepY, this.zMax);
-    }
-    return this.emprise;
-  }
+				// PlanEquation eq = new PlanEquation(pt42D, pt22D, pt32D);
 
-  /**
-   * @return Objet Java3D servant a representer le MNT
-   */
-  public TriangleStripArray getRepresentation() {
+				// zMoy = eq.getZ(ptloc2D);
 
-    return this.strip;
-  }
+				// zMoy = ((1 / d4) * pointemp4.z + (1 / d2) * pointemp2.z + (1 / d3)
+				// * pointemp3.z)
+				// / (1 / d4 + 1 / d2 + 1 / d3);
+				// zMoy = (pointemp4.z + pointemp2.z + pointemp3.z)/3;
+			}
 
-  /**
-   * @return Nombre de mailes en X
-   */
-  public int getNX() {
-    return this.nX;
-  }
+			return new Coordinate(x, y, zMoy +  DTM.CONSTANT_OFFSET);
 
-  /**
-   * @return Nombre de mailles en Y
-   */
-  public int getNY() {
-    return this.nY;
-  }
+		}
 
-  /**
-   * @return Origine en X du MNT
-   */
-  public double getXIni() {
+	}
 
-    return this.xIni;
-  }
+	@Override
+	public Box3D get3DEnvelope() {
+		if (this.emprise == null) {
 
-  /**
-   * @return Origine en Y du MNT
-   */
-  public double getYIni() {
+			return new Box3D(this.xIni, this.yIni, this.zMin, this.xIni + this.nX
+					* this.stepX, this.yIni + this.nY * this.stepY, this.zMax);
+		}
+		return this.emprise;
+	}
 
-    return this.yIni;
-  }
+	/**
+	 * @return Objet Java3D servant a representer le MNT
+	 */
+	public TriangleStripArray getRepresentation() {
 
-  /**
-   * @return Pas des mailles en X
-   */
-  public double getStepX() {
+		return this.strip;
+	}
 
-    return this.stepX;
-  }
+	/**
+	 * @return Nombre de mailes en X
+	 */
+	public int getNX() {
+		return this.nX;
+	}
 
-  /**
-   * @return Pas des mailles en Y
-   */
-  public double getStepY() {
+	/**
+	 * @return Nombre de mailles en Y
+	 */
+	public int getNY() {
+		return this.nY;
+	}
 
-    return this.stepY;
-  }
+	/**
+	 * @return Origine en X du MNT
+	 */
+	public double getXIni() {
 
-  @Override
-  public Component getRepresentationComponent() {
-    JButton jb = new JButton(Messages.getString("3DGIS.DTM"));
-    jb.setHorizontalAlignment(SwingConstants.HORIZONTAL);
-    return jb;
-  }
+		return this.xIni;
+	}
 
-  @Override
-  public GM_Object getGeometryAt(double x, double y) {
-    int posx = (int) ((x - this.xIni) / (this.stepX * this.sampling));
-    int posy = (int) ((y - this.yIni) / (this.stepY * this.sampling));
+	/**
+	 * @return Origine en Y du MNT
+	 */
+	public double getYIni() {
 
-    DirectPositionList lTri = this.getTriangle(posx, posy, true);
-    GM_Triangle tri = new GM_Triangle(new GM_LineString(lTri));
+		return this.yIni;
+	}
 
-    if (tri.contains(new GM_Point(new DirectPosition(x, y)))) {
-      return tri;
-    }
-    lTri = this.getTriangle(posx, posy, false);
-    return new GM_Triangle(new GM_LineString(lTri));
+	/**
+	 * @return Pas des mailles en X
+	 */
+	public double getStepX() {
 
-  }
+		return this.stepX;
+	}
+
+	/**
+	 * @return Pas des mailles en Y
+	 */
+	public double getStepY() {
+
+		return this.stepY;
+	}
+
+	@Override
+	public Component getRepresentationComponent() {
+		JButton jb = new JButton(Messages.getString("3DGIS.DTM"));
+		jb.setHorizontalAlignment(SwingConstants.HORIZONTAL);
+		return jb;
+	}
+
+	@Override
+	public GM_Object getGeometryAt(double x, double y) {
+		int posx = (int) ((x - this.xIni) / (this.stepX * this.sampling));
+		int posy = (int) ((y - this.yIni) / (this.stepY * this.sampling));
+
+		DirectPositionList lTri = this.getTriangle(posx, posy, true);
+		GM_Triangle tri = new GM_Triangle(new GM_LineString(lTri));
+
+		if (tri.contains(new GM_Point(new DirectPosition(x, y)))) {
+			return tri;
+		}
+		lTri = this.getTriangle(posx, posy, false);
+		return new GM_Triangle(new GM_LineString(lTri));
+
+	}
+
+
+
+	/**
+	 * Method to get lowest position
+	 * Input : none
+	 * Output : DirectPosition
+	 */
+
+	public DirectPosition getLowestPoint() {
+
+		// Getting resolutions
+		double xr = stepX;
+		double yr = stepY;
+
+		// Getting minimal coordinates
+		double xmin = xIni+xr;
+		double ymin = yIni+yr;
+
+		// Getting DTM sizes
+		double nx = nX;
+		double ny = nY;
+
+		// Getting maximal cooridnates
+		double xmax = xIni + xr*(nx-2);
+		double ymax = yIni + yr*(ny-2);
+
+		// Temporary optimum
+		double ztemp;
+
+		// Temporary solution
+		double xSitemin = 0;
+		double ySitemin = 0;
+		double zSitemin = Double.MAX_VALUE;
+
+		// Running through grid
+		for (double x = xmin; x<=xmax; x+=xr){
+
+			for (double y = ymin; y<=ymax; y+=yr){
+
+				// Altitude projection
+				ztemp = castCoordinate(x, y).getOrdinate(2);
+
+				if ((ztemp < zSitemin)&&(ztemp != -9999)){
+
+					xSitemin = x;
+					ySitemin = y;
+					zSitemin = ztemp;
+
+				}
+
+			}
+
+		}
+
+		return new DirectPosition(xSitemin, ySitemin, zSitemin);
+
+	}
+
+
+
+	/**
+	 * Method to get highest position
+	 * Input : none
+	 * Output : DirectPosition
+	 */
+
+	public DirectPosition getHighestPoint() {
+
+		// Getting resolutions
+		double xr = stepX;
+		double yr = stepY;
+
+		// Getting minimal coordinates
+		double xmin = xIni+xr;
+		double ymin = yIni+yr;
+
+		// Getting DTM sizes
+		double nx = nX;
+		double ny = nY;
+
+		// Getting maximal cooridnates
+		double xmax = xIni + xr*(nx-2);
+		double ymax = yIni + yr*(ny-2);
+
+		// Temporary optimum
+		double ztemp;
+
+		// Temporary solution
+		double xSitemax = 0;
+		double ySitemax = 0;
+		double zSitemax = Double.MIN_VALUE;
+
+		// Running through grid
+		for (double x = xmin; x<=xmax; x+=xr){
+
+			for (double y = ymin; y<=ymax; y+=yr){
+
+				// Altitude projection
+				ztemp = castCoordinate(x, y).getOrdinate(2);
+
+				if (ztemp > zSitemax){
+
+					xSitemax = x;
+					ySitemax = y;
+					zSitemax = ztemp;
+
+				}
+
+			}
+
+		}
+
+		return new DirectPosition(xSitemax, ySitemax, zSitemax);
+
+	}
+
+
+	/**
+	 * Method to get average value
+	 * Input : none
+	 * Output : double
+	 */
+
+	public double getAverageAltitude() {
+
+		// Getting resolutions
+		double xr = stepX;
+		double yr = stepY;
+
+		// Getting minimal coordinates
+		double xmin = xIni+xr;
+		double ymin = yIni+yr;
+
+		// Getting DTM sizes
+		double nx = nX;
+		double ny = nY;
+
+		// Getting maximal cooridnates
+		double xmax = xIni + xr*(nx-2);
+		double ymax = yIni + yr*(ny-2);
+
+		// Temporary optimum
+		double ztemp;
+
+		// Temporary solution
+		double mean = 0;
+		double count = 0;
+
+		// Running through grid
+		for (double x = xmin; x<=xmax; x+=xr){
+
+			for (double y = ymin; y<=ymax; y+=yr){
+
+				ztemp = castCoordinate(x, y).getOrdinate(2);
+				
+				if (ztemp != -9999){
+
+					mean += ztemp;
+					count ++;
+
+				}
+
+			}
+
+		}
+
+		return mean/(count);
+
+	}
+	
+	/**
+	 * Method to get standard deviation value
+	 * Input : none
+	 * Output : double
+	 */
+
+	public double getStdAltitude() {
+
+		// Getting resolutions
+		double xr = stepX;
+		double yr = stepY;
+
+		// Getting minimal coordinates
+		double xmin = xIni+xr;
+		double ymin = yIni+yr;
+
+		// Getting DTM sizes
+		double nx = nX;
+		double ny = nY;
+
+		// Getting maximal cooridnates
+		double xmax = xIni + xr*(nx-2);
+		double ymax = yIni + yr*(ny-2);
+
+		// Temporary optimum
+		double ztemp;
+
+		// Temporary solution
+		double mean = 0;
+		double meanSquare = 0;
+		double count = 0;
+
+		// Running through grid
+		for (double x = xmin; x<=xmax; x+=xr){
+
+			for (double y = ymin; y<=ymax; y+=yr){
+
+				ztemp = castCoordinate(x, y).getOrdinate(2);
+				
+				if (ztemp != -9999){
+
+					mean += ztemp;
+					meanSquare += ztemp*ztemp;
+					count ++;
+
+				}
+
+			}
+
+		}
+
+		return Math.sqrt((meanSquare/count-(mean/(count))*(mean/(count))));
+
+	}
+	
+	/**
+	 * Method to get surface ratio under threshold altitude
+	 * Input : none
+	 * Output : double
+	 */
+
+	public double getRatioUnder(double threshold) {
+
+		// Getting resolutions
+		double xr = stepX;
+		double yr = stepY;
+
+		// Getting minimal coordinates
+		double xmin = xIni+xr;
+		double ymin = yIni+yr;
+
+		// Getting DTM sizes
+		double nx = nX;
+		double ny = nY;
+
+		// Getting maximal cooridnates
+		double xmax = xIni + xr*(nx-2);
+		double ymax = yIni + yr*(ny-2);
+
+		// Temporary optimum
+		double ratio = 0;
+		double counter = 0;
+		double z;
+
+
+		// Running through grid
+		for (double x = xmin; x<=xmax; x+=xr){
+
+			for (double y = ymin; y<=ymax; y+=yr){
+
+				// Altitude projection
+				z = castCoordinate(x, y).getOrdinate(2);
+
+				if (z < threshold){
+
+					ratio ++;
+					
+				}
+				
+				counter ++;
+
+			}
+
+		}
+
+		return ratio/counter;
+
+	}
 
 }

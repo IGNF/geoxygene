@@ -17,6 +17,7 @@ import fr.ign.cogit.geometry.TestBox3D;
 import fr.ign.cogit.io.vector.TestShapeFileLoader;
 import fr.ign.cogit.sample.TestSample;
 import fr.ign.cogit.semantic.TestDTM;
+import fr.ign.cogit.semantic.TestDTM2;
 
 //--------------------------------------------------------------------------------
 // Class containing main function to launch test suite
@@ -45,7 +46,7 @@ public class MainTest {
 		suite.addTestSuite(TestBox3D.class);
 		suite.addTestSuite(TestSample.class);
 		suite.addTestSuite(TestDTM.class);
-		
+		suite.addTestSuite(TestDTM2.class);
 		
 		return suite;
 		
