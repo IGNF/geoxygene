@@ -1103,8 +1103,10 @@ public class OSMPlugin implements ProjectFramePlugin,
         ft.addFeatureAttribute(new AttributeType("date", "Date"));
         // add the tags as attribute
         Set<String> layerTags = new HashSet<String>();
-        for (IFeature feat : layer.getFeatureCollection())
+        for (IFeature feat : layer.getFeatureCollection()) {
           layerTags.addAll(((OsmGeneObj) feat).getTags().keySet());
+          feat.setFeatureType(ft);
+        }
         for (String tag : layerTags)
           ft.addFeatureAttribute(new AttributeType(tag, "String"));
       }
