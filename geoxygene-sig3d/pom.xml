@@ -293,12 +293,12 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-	<!-- DLL 
+	<!-- DLL --><!-- si on l'enleve, on a bug dans Jenkins -->
 		<dependency>
 			<groupId>java3d</groupId>
 			<artifactId>j3d-core</artifactId>
 			<version>1.5.2</version>
-		</dependency> --> 
+		</dependency> 
 		
 	<!-- 	
 		<dependency>
