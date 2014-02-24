@@ -65,6 +65,7 @@ public class GeometryPool {
    */
   public void addFeatureToGeometryPool(IFeature feat, Color color) {
     ColouredFeature colFeat = new ColouredFeature(feat.getGeom(), color);
+    System.out.println(colFeat);
     dataset.getGeometryPoolPop().add(colFeat);
     Layer poolLayer = sld.getLayer(CartAGenDataSet.GEOM_POOL);
     if (poolLayer == null)

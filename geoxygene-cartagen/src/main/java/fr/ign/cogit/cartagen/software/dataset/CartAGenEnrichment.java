@@ -14,7 +14,7 @@ import java.util.Collection;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 
 public enum CartAGenEnrichment {
-  NETWORK_FACES, ROAD_NETWORK, BUILDINGS, BUILDINGS_ALIGNMENT, HYDRO_NETWORK, RELIEF, LAND_USE;
+  NETWORK_FACES, ROAD_NETWORK, BUILDINGS, BUILDINGS_ALIGNMENT, HYDRO_NETWORK, RELIEF, LAND_USE, TOURIST_ROUTE_NETWORK, ROAD_TOURIST_ROUTE_ASSOCIATION;
 
   /**
    * Set the boolean field of CartAGenApplication in relation to 'this'

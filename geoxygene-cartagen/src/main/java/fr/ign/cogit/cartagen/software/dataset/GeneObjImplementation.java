@@ -22,6 +22,7 @@ public class GeneObjImplementation {
   private Package rootPackage;
   private Class<?> rootClass;
   private AbstractCreationFactory creationFactory;
+  private String rootPackageName;
 
   public Class<?> getRootClass() {
     return rootClass;
@@ -52,6 +53,15 @@ public class GeneObjImplementation {
     super();
     this.name = name;
     this.rootPackage = rootPackage;
+    this.rootClass = rootClass;
+    this.creationFactory = creationFactory;
+  }
+
+  public GeneObjImplementation(String name, String rootPackageName,
+      Class<?> rootClass, AbstractCreationFactory creationFactory) {
+    super();
+    this.name = name;
+    this.setRootPackageName(rootPackageName);
     this.rootClass = rootClass;
     this.creationFactory = creationFactory;
   }
@@ -110,6 +120,12 @@ public class GeneObjImplementation {
     if (!rootClass.isAssignableFrom(classObj))
       return false;
     // now check package compatibility by String comparison
+    if (rootPackage == null) {
+      if (classObj.getPackage().getName().contains(rootPackageName)) {
+        return true;
+      }
+      return false;
+    }
     if (classObj.getPackage().getName().contains(rootPackage.getName()))
       return true;
     return false;
@@ -121,5 +137,13 @@ public class GeneObjImplementation {
 
   public void setCreationFactory(AbstractCreationFactory creationFactory) {
     this.creationFactory = creationFactory;
+  }
+
+  public String getRootPackageName() {
+    return rootPackageName;
+  }
+
+  public void setRootPackageName(String rootPackageName) {
+    this.rootPackageName = rootPackageName;
   }
 }

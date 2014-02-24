@@ -102,8 +102,8 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
     this.setSize(800, 600);
     this.internationalisation();
     this.setGeoClasses();
-    this.dbName = CartAGenDocOld.getInstance().getCurrentDataset().getCartAGenDB()
-        .getName();
+    this.dbName = CartAGenDocOld.getInstance().getCurrentDataset()
+        .getCartAGenDB().getName();
 
     // ***********************************
     // a panel to define the queried class
@@ -376,8 +376,11 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
   @SuppressWarnings("unchecked")
   private void setGeoClasses() {
     this.geoClasses = new ArrayList<Class<?>>();
-    GeneObjImplementation impl = CartAGenDocOld.getInstance().getCurrentDataset()
-        .getCartAGenDB().getGeneObjImpl();
+    GeneObjImplementation impl = CartAGenDocOld.getInstance()
+        .getCurrentDataset().getCartAGenDB().getGeneObjImpl();
+    if (impl == null) {
+      impl = GeneObjImplementation.getDefaultImplementation();
+    }
     // get the directory of the package of this class
     Package pack = this.getClass().getPackage();
     String name = pack.getName();
