@@ -14,6 +14,8 @@ import fr.ign.cogit.equation.TestApproximatedPlanEquation;
 import fr.ign.cogit.equation.TestLineEquation;
 import fr.ign.cogit.equation.TestPlanEquation;
 import fr.ign.cogit.geometry.TestBox3D;
+import fr.ign.cogit.geometry.TestTriangle;
+import fr.ign.cogit.geometry.TestVertex;
 import fr.ign.cogit.io.vector.TestShapeFileLoader;
 import fr.ign.cogit.sample.TestSample;
 import fr.ign.cogit.semantic.TestDTM;
@@ -27,7 +29,7 @@ import fr.ign.cogit.semantic.TestDTM2;
 
 public class MainTest {
 
-	
+
 	public static Test suite(){
 		
 		TestSuite suite = new TestSuite("All 3D tests");
@@ -47,6 +49,8 @@ public class MainTest {
 		suite.addTestSuite(TestSample.class);
 		suite.addTestSuite(TestDTM.class);
 		suite.addTestSuite(TestDTM2.class);
+		suite.addTestSuite(TestVertex.class);
+		suite.addTestSuite(TestTriangle.class);
 		
 		return suite;
 		

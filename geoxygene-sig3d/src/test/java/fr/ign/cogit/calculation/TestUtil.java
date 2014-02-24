@@ -472,11 +472,11 @@ public class TestUtil extends TestCase {
 
 	@Test
 	// --------------------------------------------------------------------------------
-	// Test for method to detect floor in list of triangles
+	// Test for method to detect roof in list of triangles
 	// --------------------------------------------------------------------------------
 	public void testCenterOf14() {
 		
-		log.info("Test for method to detect floor in list of triangles");
+		log.info("Test for method to detect roof in list of triangles");
 
 		// Creating list of surfaces
 		ArrayList<ITriangle> AT = new ArrayList<ITriangle>();
@@ -535,7 +535,7 @@ public class TestUtil extends TestCase {
 		AT.add(surface2);
 
 		// Detecting vertical surface
-		GM_MultiSurface<ITriangle> MS = Util.detectRoofTriangles(AT, epsilon);
+		GM_MultiSurface<ITriangle> MS = Util.detectFloorTriangles(AT, epsilon);
 
 		// Comparison
 		assertNull("Wrong number of floor surfaces has been detected", MS);
@@ -821,5 +821,6 @@ public class TestUtil extends TestCase {
 		assertEquals("Volume under surface is incorrect", 1, v, epsilon);
 
 	}
+
 	
 }

@@ -21,7 +21,7 @@ import fr.ign.cogit.tools.Utils;
 
 
 public class TestExtrusion2DObject extends TestCase {
-	
+
 	private static Logger log = Logger.getLogger(TestExtrusion2DObject.class);
 
 	// ----------------------------------- METHODS ------------------------------------
@@ -31,7 +31,7 @@ public class TestExtrusion2DObject extends TestCase {
 	// Test for method to extrude 2D object
 	// --------------------------------------------------------------------------------
 	public void testConvertFromGeometry1() {
-		
+
 		log.info("Test for method to extrude 2D object");
 
 		// Creating square
@@ -53,7 +53,7 @@ public class TestExtrusion2DObject extends TestCase {
 	// Test for method to extrude 2D object (null object)
 	// --------------------------------------------------------------------------------
 	public void testConvertFromGeometry2() {
-		
+
 		log.info("Test for method to extrude 2D object (null object)");
 
 		// Operating extrusion
@@ -69,7 +69,7 @@ public class TestExtrusion2DObject extends TestCase {
 	// Test for method to extrude 2D polygon 
 	// --------------------------------------------------------------------------------
 	public void testConvertFromGeometry3() {
-		
+
 		log.info("Test for method to extrude 2D polygon ");
 
 		// Creating square
@@ -91,43 +91,43 @@ public class TestExtrusion2DObject extends TestCase {
 	// Test for method to extrude 2D line
 	// --------------------------------------------------------------------------------
 	public void testConvertFromGeometry4() {
-		
+
 		log.info("Test for method to extrude 2D line");
 
 		// Creating 1D line string
 		GM_LineString line = new GM_LineString(new DirectPosition(0,0), new DirectPosition(1,0));
-		
+
 		// Operating line extrusion
 		GM_MultiSurface<?> surface = (GM_MultiSurface<?>) Extrusion2DObject.convertFromLine(line, 0, 1);
-		
+
 		// Processing expected result
 		String sExp = "MULTIPOLYGON (((1.0 0.0 0.0, 0.0 0.0 0.0, 0.0 0.0 1.0, 1.0 0.0 1.0, 1.0 0.0 0.0)))";
-		
+
 		// Comparison
 		assertTrue("Extruded line is incorrect", surface.toString().equals(sExp));
 
 	}
-	
+
 	@Test
 	// --------------------------------------------------------------------------------
 	// Test for method to extrude 2D point
 	// --------------------------------------------------------------------------------
 	public void testConvertFromGeometry5() {
-		
+
 		log.info("Test for method to extrude 2D point");
-		
+
 		// Creating point
 		GM_Point p = new GM_Point(new DirectPosition(0,0)); 
-		
+
 		// Operating extrusion
 		GM_LineString line = (GM_LineString) Extrusion2DObject.convertFromPoint(p, 10, 15);
-		
+
 		// Processing expected result
 		GM_LineString lineExpected = new GM_LineString(new DirectPosition(0,0,10),new DirectPosition(0,0,15));
-		
+
 		// Comparison
 		assertTrue("Extruded point is incorrect", line.toString().equals(lineExpected.toString()));
-		
+
 	}
 
 }

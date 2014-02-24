@@ -22,7 +22,7 @@ public class TestProximity extends TestCase {
 	// ---------------------------------- ATTRIBUTES ----------------------------------
 
 	private double epsilon = Math.pow(10, -10);    // Scale error
-	
+
 	private static Logger log = Logger.getLogger(TestProximity.class);
 
 	// ------------------------------------ TESTS -------------------------------------
@@ -33,7 +33,7 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between set of points processing
 	// --------------------------------------------------------------------------------
 	public void testNearest1() {
-		
+
 		log.info("Test for minimal distance between set of points processing");
 
 		Proximity prox = new Proximity();
@@ -72,7 +72,7 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between single point and set of points processing
 	// --------------------------------------------------------------------------------
 	public void testNearest2() {
-		
+
 		log.info("Test for minimal distance between single point and set of points processing");
 
 		Proximity prox = new Proximity();
@@ -129,7 +129,7 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between single point and set of points processing
 	// --------------------------------------------------------------------------------
 	public void testNearest3() {
-		
+
 		log.info("Test for minimal distance between single point and set of points processing");
 
 		Proximity prox = new Proximity();
@@ -167,7 +167,7 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between single point and single surface
 	// --------------------------------------------------------------------------------
 	public void testNearest4() {
-		
+
 		log.info("Test for minimal distance between single point and single surface");
 
 		Proximity prox = new Proximity();
@@ -228,7 +228,7 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between single point and surfaces list
 	// --------------------------------------------------------------------------------
 	public void testNearest5() {
-		
+
 		log.info("Test for minimal distance between single point and surfaces list");
 
 		Proximity prox = new Proximity();
@@ -298,7 +298,7 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between list of point and single surface
 	// --------------------------------------------------------------------------------
 	public void testNearest6() {
-		
+
 		log.info("Test for minimal distance between list of point and single surface");
 
 		Proximity prox = new Proximity();
@@ -347,7 +347,7 @@ public class TestProximity extends TestCase {
 	// Test for minimal distance between list of point and list of surfaces
 	// --------------------------------------------------------------------------------
 	public void testNearest7() {
-		
+
 		log.info("Test for minimal distance between list of point and list of surfaces");
 
 		Proximity prox = new Proximity();
@@ -395,7 +395,7 @@ public class TestProximity extends TestCase {
 	// Test when two points are same point
 	// --------------------------------------------------------------------------------
 	public void testNearest8() {
-		
+
 		log.info("Test when two points are same point");
 
 		Proximity prox = new Proximity();
@@ -419,11 +419,11 @@ public class TestProximity extends TestCase {
 
 		boolean test1 =  false;
 		for (IDirectPosition p : POINTS1){test1 = test1 || p1.equals(p);}
-		
+
 		boolean test2 =  false;
 		for (IDirectPosition p : POINTS2){test2 = test2 || p2.equals(p);}
-		
-		
+
+
 		// Tests
 		assertTrue("Closest point in list 1 is incorrect", test1);
 		assertTrue("Closest point in list 2 is incorrect", test2);
@@ -436,7 +436,7 @@ public class TestProximity extends TestCase {
 	// Basic test case
 	// --------------------------------------------------------------------------------
 	public void testNearest9() {
-		
+
 		log.info("Basic test case");
 
 		Proximity prox = new Proximity();
@@ -465,5 +465,99 @@ public class TestProximity extends TestCase {
 
 
 	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Basic test case
+	// --------------------------------------------------------------------------------
+	public void testNearest10() {
+
+		log.info("Basic test case");
+
+		Proximity prox = new Proximity();
+
+		// Creating surfaces
+		ArrayList<IOrientableSurface> SURFACES = new ArrayList<IOrientableSurface>();
+
+
+		// Creating list of points
+		DirectPosition pt = new DirectPosition(10,10,10);
+
+		// Processing case
+		prox.nearest(pt, SURFACES);
+
+		// Recovering results
+		DirectPosition p1 = (DirectPosition) prox.nearest;
+		DirectPosition p2 = (DirectPosition) prox.nearest2;
+		GM_Surface surface = (GM_Surface) prox.containingFace;
+		double d = prox.distance;
+
+		// Comparison
+		assertNull("Point nearest should be null", p1);
+		assertNull("Point nearest2 should be null", p2);
+		assertNull("Surface containingFace should be null", surface);
+		assertTrue("Distance should be null", Double.isNaN(d));
+
+
+	}
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Basic test case
+	// --------------------------------------------------------------------------------
+	public void testNearest11() {
+
+		log.info("Basic test case");
+
+		Proximity prox = new Proximity();
+
+		// Creating point lists
+		DirectPositionList POINTS1 = new DirectPositionList();
+		DirectPositionList POINTS2 = new DirectPositionList();
+
+		// Processing shortest distance
+		prox.nearest(POINTS1, POINTS2);
+
+		// Tests
+		assertTrue("", true);
+
+	}
+
+
+	@Test
+	// --------------------------------------------------------------------------------
+	// Basic test case
+	// --------------------------------------------------------------------------------
+	public void testNearest12() {
+
+		log.info("Basic test case");
+
+		Proximity prox = new Proximity();
+
+		// Creating surfaces
+		DirectPositionList POINTS = new DirectPositionList();
+
+
+		// Creating list of points
+		DirectPosition pt = new DirectPosition(10,10,10);
+
+		// Processing case
+		prox.nearest(pt, POINTS);
+
+		// Recovering results
+		DirectPosition p1 = (DirectPosition) prox.nearest;
+		DirectPosition p2 = (DirectPosition) prox.nearest2;
+		GM_Surface surface = (GM_Surface) prox.containingFace;
+		double d = prox.distance;
+
+		// Comparison
+		assertNull("Point nearest should be null", p1);
+		assertNull("Point nearest2 should be null", p2);
+		assertNull("Surface containingFace should be null", surface);
+		assertTrue("Distance should be null", Double.isNaN(d));
+
+
+	}
+
 
 }
