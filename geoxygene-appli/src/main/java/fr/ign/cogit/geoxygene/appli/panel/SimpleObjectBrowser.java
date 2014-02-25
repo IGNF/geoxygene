@@ -84,7 +84,7 @@ public class SimpleObjectBrowser extends JFrame {
       for (Method meth : obj.getClass().getDeclaredMethods()) {
         // keep only simple getters
         if (!meth.getName().startsWith("get")
-            || !meth.getName().startsWith("is"))
+            && !meth.getName().startsWith("is"))
           continue;
         // do not display geometries
         if (meth.getName().startsWith("getGeom"))
