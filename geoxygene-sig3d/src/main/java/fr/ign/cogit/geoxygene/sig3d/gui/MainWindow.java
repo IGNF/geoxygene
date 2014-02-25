@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
@@ -88,8 +89,11 @@ public class MainWindow extends JFrame implements WindowListener {
     InterfaceMap3D iCarte3D = new InterfaceMap3D(MainWindow.WIDTH_APPLICATION
         - MainWindow.WIDTH_PANELSIDE, this.getHeight()
         - this.mainMenuBar.getHeight(), this);
-    iCarte3D.setBorder(new TitledBorder(new EtchedBorder(), Messages
-        .getString("FenetrePrincipale.VueGlobale3D")));
+    iCarte3D.setBorder(new EmptyBorder(0, 0, 0, 0));
+    
+    
+   // iCarte3D.setBorder(new TitledBorder(new EtchedBorder(), Messages
+    //    .getString("FenetrePrincipale.VueGlobale3D")));
 
     this.iMap3D = iCarte3D;
 

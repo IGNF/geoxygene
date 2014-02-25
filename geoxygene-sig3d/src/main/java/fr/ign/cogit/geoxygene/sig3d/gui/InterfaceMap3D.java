@@ -791,7 +791,10 @@ public class InterfaceMap3D extends JPanel {
     try {
       BufferedImage bufImage = new BufferedImage(this.getSize().width, this.getSize().height,
           BufferedImage.TYPE_INT_RGB);
-      this.paint(bufImage.createGraphics());
+      
+      this.canvas3D.paint(bufImage.createGraphics());
+      
+      
       File fichier = new File(path, fileName);
       if (fichier.exists()) {
         InterfaceMap3D.logger.warn(Messages.getString("ExportImage.Fail"));
