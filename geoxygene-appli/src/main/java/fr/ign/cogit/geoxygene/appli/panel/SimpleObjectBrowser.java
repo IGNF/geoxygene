@@ -70,8 +70,10 @@ public class SimpleObjectBrowser extends JFrame {
       root.add(lengthLeaf);
       // leaves for vertices number and centroid coordinates
       String verticesName = "vertices number = " + obj.getGeom().coord().size();
-      String centroidName = "centroid = (" + obj.getGeom().centroid().getX()
-          + ", " + obj.getGeom().centroid().getY() + ")";
+      String centroidName = "centroid = null";
+      if (obj.getGeom().centroid() != null)
+        centroidName = "centroid = (" + obj.getGeom().centroid().getX() + ", "
+            + obj.getGeom().centroid().getY() + ")";
       DefaultMutableTreeNode verticesLeaf = new DefaultMutableTreeNode(
           verticesName);
       DefaultMutableTreeNode centroidLeaf = new DefaultMutableTreeNode(
