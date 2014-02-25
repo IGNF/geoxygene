@@ -83,7 +83,8 @@ public class SimpleObjectBrowser extends JFrame {
       // a leaf for each attribute
       for (Method meth : obj.getClass().getDeclaredMethods()) {
         // keep only simple getters
-        if (!meth.getName().startsWith("get"))
+        if (!meth.getName().startsWith("get")
+            || !meth.getName().startsWith("is"))
           continue;
         // do not display geometries
         if (meth.getName().startsWith("getGeom"))
@@ -96,10 +97,14 @@ public class SimpleObjectBrowser extends JFrame {
           continue;
         Object value = meth.invoke(obj);
         // TODO manage complex types like collections
-        String attribute = meth.getName().substring(3) + " = null";
+        String attribute = meth.getName().substring(3);
+        if (meth.getName().startsWith("is"))
+          attribute = meth.getName().substring(2);
+        String attributeValue = attribute + " = null";
         if (value != null)
-          attribute = meth.getName().substring(3) + " = " + value.toString();
-        DefaultMutableTreeNode attrLeaf = new DefaultMutableTreeNode(attribute);
+          attributeValue = attribute + " = " + value.toString();
+        DefaultMutableTreeNode attrLeaf = new DefaultMutableTreeNode(
+            attributeValue);
         root.add(attrLeaf);
       }
 
