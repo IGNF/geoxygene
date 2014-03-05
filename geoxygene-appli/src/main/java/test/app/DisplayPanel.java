@@ -25,7 +25,6 @@ import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -58,6 +57,7 @@ import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
+import fr.ign.util.graphcut.GraphCut;
 
 public class DisplayPanel extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener {
 
@@ -149,7 +149,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     private String viz = "U";
     private String gradientViz = "None";
     private final BufferedImage textureToBeApplied = null;
-    private final List<Pair<TileProbability, BufferedImage>> tileToBeApplied = new ArrayList<Pair<TileProbability, BufferedImage>>();
+    private final List<Pair<TileProbability, Tile>> tilesToBeApplied = new ArrayList<Pair<TileProbability, Tile>>();
     private RepeatType uRepeat = RepeatType.Repeat;
     private RepeatType vRepeat = RepeatType.Repeat;
     private BufferedImage bi = null;
@@ -168,14 +168,6 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         this.addMouseWheelListener(this);
         this.addMouseListener(this);
         this.updateContent();
-    }
-
-    public static BufferedImage convert(BufferedImage src, int bufImgType) {
-        BufferedImage img = new BufferedImage(src.getWidth(), src.getHeight(), bufImgType);
-        Graphics2D g2d = img.createGraphics();
-        g2d.drawImage(src, 0, 0, null);
-        g2d.dispose();
-        return img;
     }
 
     public void reset() {
@@ -270,28 +262,30 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
 
         DistanceTileProbability closeProbability = new DistanceTileProbability(this.texImage, Double.NEGATIVE_INFINITY, 100, 1, 0);
         DistanceTileProbability mediumProbability = new DistanceTileProbability(this.texImage, 100, 200, 1, 0);
-        DistanceTileProbability farProbability = new DistanceTileProbability(this.texImage, 200, Double.POSITIVE_INFINITY, 0, 0);
+        DistanceTileProbability farProbability = new DistanceTileProbability(this.texImage, 200, 300, 1, 0);
         DistanceTileProbability allProbability = new DistanceTileProbability(this.texImage, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 1, 0);
         try {
 
-            //            this.textureToBeApplied = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini.png")), BufferedImage.TYPE_INT_ARGB);
-            //            BufferedImage tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini big tile.png")), BufferedImage.TYPE_INT_ARGB);
-            //            this.tileToBeApplied.add(tileTexture);
-            BufferedImage tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini1 BW softedges.png")),
-                    BufferedImage.TYPE_INT_ARGB);
-            //            this.tileToBeApplied.add(tileTexture);
-            this.tileToBeApplied.add(new Pair<TileProbability, BufferedImage>(closeProbability, this.softenEdgeTexture(tileTexture)));
-            //            tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini2 BW softedges.png")), BufferedImage.TYPE_INT_ARGB);
-            //            //            this.tileToBeApplied.add(tileTexture);
-            //            this.tileToBeApplied.add(this.softenEdgeTexture(tileTexture));
-            tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini3 BW softedges.png")), BufferedImage.TYPE_INT_ARGB);
-            this.tileToBeApplied.add(new Pair<TileProbability, BufferedImage>(closeProbability, this.softenEdgeTexture(tileTexture)));
-            //            this.tileToBeApplied.add(tileTexture);
+            Tile tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/waves small.png");
+            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(closeProbability, tileTexture));
+            //            //            tileTexture = Tile.read("/home/turbet/Documents/s2.png");
+            //            //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(closeProbability, tileTexture));
+            //            //            tileTexture = Tile.read("/home/turbet/Documents/s3.png");
+            //            //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(closeProbability, tileTexture));
 
-            tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini4 BW softedges.png")), BufferedImage.TYPE_INT_ARGB);
-            this.tileToBeApplied.add(new Pair<TileProbability, BufferedImage>(mediumProbability, this.softenEdgeTexture(tileTexture)));
-            tileTexture = convert(ImageIO.read(new File("./src/main/resources/textures/mer cassini5 BW softedges.png")), BufferedImage.TYPE_INT_ARGB);
-            this.tileToBeApplied.add(new Pair<TileProbability, BufferedImage>(mediumProbability, this.softenEdgeTexture(tileTexture)));
+            tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/waves small.png");
+            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(mediumProbability, tileTexture));
+            tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/waves big.png");
+            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(mediumProbability, tileTexture));
+            //            tileTexture = Tile.read("/home/turbet/Documents/t3.png");
+            //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(mediumProbability, tileTexture));
+            //
+            //            tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/crest small.png");
+            //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(farProbability, tileTexture));
+            //            tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/crest small.png");
+            //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(farProbability, tileTexture));
+            //            //            tileTexture = Tile.read("/home/turbet/Documents/u3.png");
+            //            //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(farProbability, tileTexture));
 
         } catch (IOException e) {
             logger.error(e);
@@ -400,8 +394,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             } else if (this.viz.equals("UV pixel tile")) {
                 int y = 0;
                 double min = Double.POSITIVE_INFINITY;
-                for (Pair<TileProbability, BufferedImage> pairTileTexture : this.tileToBeApplied) {
-                    BufferedImage tileTexture = pairTileTexture.second();
+                for (Pair<TileProbability, Tile> pairTileTexture : this.tilesToBeApplied) {
+                    BufferedImage tileTexture = pairTileTexture.second().getImage();
                     if (tileTexture.getWidth() < min) {
                         min = tileTexture.getWidth();
                     }
@@ -426,7 +420,39 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 //                double sampleY = 5;
                 //                TextureImageSamplerRegularGrid sampler = new TextureImageSamplerRegularGrid(this.texImage, sampleX, sampleY, scale);
                 //                sampler.setJitteringFactor(0.3);
-                this.bi = this.toBufferedImagePixelUVTile(this.texImage, this.tileToBeApplied, sampler, this.featureShape);
+                this.bi = this.toBufferedImagePixelUVTile(this.texImage, this.tilesToBeApplied, sampler, this.featureShape);
+
+                this.screenSpace = true;
+
+            } else if (this.viz.equals("GraphCut")) {
+                int y = 0;
+                double min = Double.POSITIVE_INFINITY;
+                for (Pair<TileProbability, Tile> pairTileTexture : this.tilesToBeApplied) {
+                    Tile tile = pairTileTexture.second();
+                    BufferedImage tileTexture = tile.getImage();
+                    if (tileTexture.getWidth() < min) {
+                        min = tileTexture.getWidth();
+                    }
+                    if (tileTexture.getHeight() < min) {
+                        min = tileTexture.getHeight();
+                    }
+                    g2.drawImage(tileTexture, null, 1, y + 1);
+                    g2.setColor(Color.black);
+                    g2.drawRect(0, y, tileTexture.getWidth() + 2, tileTexture.getHeight() + 2);
+                    g2.drawImage(tile.getMask(), null, 3 + tileTexture.getWidth(), y + 1);
+                    g2.setColor(Color.black);
+                    g2.drawRect(2 + tileTexture.getWidth(), y, tile.getMask().getWidth() + 2, tile.getMask().getHeight() + 2);
+                    y += tileTexture.getHeight() + 2;
+                }
+                //                System.err.println("minDistance = " + minDistance + " min V Distance = " + minVDistance);
+
+                TextureImageTileChooser tileChooser = new TextureImageTileChooser();
+                for (Pair<TileProbability, Tile> pair : this.tilesToBeApplied) {
+                    tileChooser.addTile(pair.first(), pair.second());
+                }
+
+                TextureImageSamplerTiler sampler = new TextureImageSamplerTiler(this.texImage, tileChooser, 0.3, this.transform.getScaleX());
+                this.bi = this.toBufferedImagePixelUVTileGraphCut(this.texImage, this.tilesToBeApplied, sampler, this.featureShape);
 
                 this.screenSpace = true;
 
@@ -744,10 +770,14 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return bi;
     }
 
-    private BufferedImage toBufferedImagePixelUVTile(TextureImage image, List<Pair<TileProbability, BufferedImage>> tilesToBeApplied,
-            SamplingAlgorithm sampler, Shape clippingShape) {
+    private BufferedImage toBufferedImagePixelUVTile(TextureImage image, List<Pair<TileProbability, Tile>> tilesToBeApplied, SamplingAlgorithm sampler,
+            Shape clippingShape) {
 
         image.invalidateUVBounds();
+        TextureImageTileChooser tileChooser = new TextureImageTileChooser();
+        for (Pair<TileProbability, Tile> pair : tilesToBeApplied) {
+            tileChooser.addTile(pair.first(), pair.second());
+        }
         BufferedImage bi = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = (Graphics2D) bi.getGraphics();
         g2.setComposite(AlphaComposite.Clear);
@@ -759,15 +789,15 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             g2.setClip(screenSpaceShape);
         }
         Iterator<Sample> sampleIterator = sampler.getSampleIterator();
-        Random rand = new Random(0);
         while (sampleIterator.hasNext()) {
             Sample sample = sampleIterator.next();
             double xTexture = sample.getLocation().x;
             double yTexture = sample.getLocation().y;
-            BufferedImage texture = this.chooseTextureToApply(xTexture, yTexture, rand, tilesToBeApplied);
-            if (texture == null) {
+            Tile tile = tileChooser.getTile(sample);
+            if (tile == null) {
                 continue;
             }
+            BufferedImage texture = tile.getImage();
             Point2D screenPixelLocation = new Point2D.Double();
             this.transform.transform(new Point2D.Double(xTexture, yTexture), screenPixelLocation);
 
@@ -800,6 +830,63 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             }
 
         }
+        this.displaySamples(sampler, g2);
+        return bi;
+    }
+
+    private BufferedImage toBufferedImagePixelUVTileGraphCut(TextureImage image, List<Pair<TileProbability, Tile>> tilesToBeApplied, SamplingAlgorithm sampler,
+            Shape clippingShape) {
+        image.invalidateUVBounds();
+        BufferedImage bi = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        Graphics2D g2 = (Graphics2D) bi.getGraphics();
+        g2.setComposite(AlphaComposite.Clear);
+        g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g2.setComposite(AlphaComposite.SrcOver);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.drawImage(((TextureImageSamplerTiler) sampler).getImageMask(), 0, 0, null);
+        //        if (clippingShape != null) {
+        //            Shape screenSpaceShape = this.transform.createTransformedShape(clippingShape);
+        //            g2.setClip(screenSpaceShape);
+        //        }
+
+        //        GraphCut graphCut = new GraphCut(bi);
+        //        graphCut.setClippingShape(this.transform.createTransformedShape(clippingShape));
+        //        Iterator<Sample> sampleIterator = sampler.getSampleIterator();
+        //        while (sampleIterator.hasNext()) {
+        //            Sample sample = sampleIterator.next();
+        //            double xTexture = sample.getLocation().x;
+        //            double yTexture = sample.getLocation().y;
+        //            Tile tile = sample.getTile();
+        //            if (tile == null) {
+        //                System.err.println("tiles must be precomputed by samplers for the graphcut algorithm");
+        //                continue;
+        //            }
+        //            BufferedImage texture = tile.getImage();
+        //            Point2D screenPixelLocation = new Point2D.Double();
+        //            this.transform.transform(new Point2D.Double(xTexture, yTexture), screenPixelLocation);
+        //
+        //            TexturePixel pixel = image.getPixel((int) xTexture, (int) yTexture);
+        //            if (pixel == null || !pixel.in || pixel.vGradient == null) {
+        //                continue;
+        //            } else {
+        //                AffineTransform transform = new AffineTransform();
+        //                transform.translate(screenPixelLocation.getX() - texture.getWidth() / 2, screenPixelLocation.getY() - texture.getHeight() / 2);
+        //                transform.rotate(pixel.vGradient.x, pixel.vGradient.y, texture.getWidth() / 2, texture.getHeight() / 2);
+        //                graphCut.pasteTile(texture, transform);
+        //            }
+        //
+        //        }
+        this.displaySamples(sampler, (Graphics2D) bi.getGraphics());
+        return bi;
+    }
+
+    /**
+     * @param sampler
+     * @param g2
+     */
+    private void displaySamples(SamplingAlgorithm sampler, Graphics2D g2) {
+        Iterator<Sample> sampleIterator;
+        // show Samples
         g2.setComposite(AlphaComposite.SrcOver);
         g2.setColor(Color.red);
         g2.setTransform(new AffineTransform());
@@ -816,41 +903,40 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             //                        double yTexture = texturePixelLocation.getY();
             g2.drawRect((int) screenPixelLocation.getX() - 1, (int) screenPixelLocation.getY() - 1, 3, 3);
         }
-        return bi;
     }
 
-    /**
-     * Choose the right texture depending on proba functions
-     * 
-     * @param xTexture
-     * @param yTexture
-     * @param rand
-     * @param tilesToBeApplied
-     * @return
-     */
-    private BufferedImage chooseTextureToApply(double xTexture, double yTexture, Random rand, List<Pair<TileProbability, BufferedImage>> tilesToBeApplied) {
-        double sumProbability = 0;
-        double[] sumProbabilities = new double[tilesToBeApplied.size()];
-        for (int n = 0; n < tilesToBeApplied.size(); n++) {
-            Pair<TileProbability, BufferedImage> pair = tilesToBeApplied.get(n);
-            sumProbability += pair.first().getProbability(xTexture, yTexture);
-            sumProbabilities[n] = sumProbability;
-        }
-        if (sumProbability < 1E-6) {
-            return null;
-        }
-        double randomValue = rand.nextDouble() * sumProbability;
-        int n = 0;
-        while (n < tilesToBeApplied.size()) {
-            if (randomValue < sumProbabilities[n]) {
-                //                System.err.println("probabilities: " + Arrays.toString(sumProbabilities) + " random value = " + randomValue + " => index = " + n + "["
-                //                        + sumProbabilities[n] + "]");
-                return tilesToBeApplied.get(n).second();
-            }
-            n++;
-        }
-        throw new IllegalStateException("impossible case random value = " + randomValue + " max Value = " + sumProbabilities[sumProbabilities.length - 1]);
-    }
+    //    /**
+    //     * Choose the right texture depending on proba functions
+    //     * 
+    //     * @param xTexture
+    //     * @param yTexture
+    //     * @param rand
+    //     * @param tilesToBeApplied
+    //     * @return
+    //     */
+    //    private BufferedImage chooseTextureToApply(double xTexture, double yTexture, Random rand, List<Pair<TileProbability, BufferedImage>> tilesToBeApplied) {
+    //        double sumProbability = 0;
+    //        double[] sumProbabilities = new double[tilesToBeApplied.size()];
+    //        for (int n = 0; n < tilesToBeApplied.size(); n++) {
+    //            Pair<TileProbability, BufferedImage> pair = tilesToBeApplied.get(n);
+    //            sumProbability += pair.first().getProbability(xTexture, yTexture);
+    //            sumProbabilities[n] = sumProbability;
+    //        }
+    //        if (sumProbability < 1E-6) {
+    //            return null;
+    //        }
+    //        double randomValue = rand.nextDouble() * sumProbability;
+    //        int n = 0;
+    //        while (n < tilesToBeApplied.size()) {
+    //            if (randomValue < sumProbabilities[n]) {
+    //                //                System.err.println("probabilities: " + Arrays.toString(sumProbabilities) + " random value = " + randomValue + " => index = " + n + "["
+    //                //                        + sumProbabilities[n] + "]");
+    //                return tilesToBeApplied.get(n).second();
+    //            }
+    //            n++;
+    //        }
+    //        throw new IllegalStateException("impossible case random value = " + randomValue + " max Value = " + sumProbabilities[sumProbabilities.length - 1]);
+    //    }
 
     private BufferedImage toBufferedImagePixelUVTileScreenSpace(TextureImage image, BufferedImage texture, SamplingAlgorithm sampling, Shape clippingShape) {
 

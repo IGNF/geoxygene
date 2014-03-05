@@ -268,6 +268,7 @@ public class DistanceFieldApplication {
         vizComboBox.addItem("UV textured");
         vizComboBox.addItem("UV pixel textured");
         vizComboBox.addItem("UV pixel tile");
+        vizComboBox.addItem("GraphCut");
         vizComboBox.addItemListener(new ItemListener() {
 
             @Override
@@ -278,7 +279,7 @@ public class DistanceFieldApplication {
 
             }
         });
-        vizComboBox.setSelectedItem("UV pixel tile");
+        vizComboBox.setSelectedItem("GraphCut");
         toolPanel.add(vizComboBox);
 
         JPanel gPanel = new JPanel();

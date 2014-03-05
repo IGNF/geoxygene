@@ -27,6 +27,9 @@
 
 package test.app;
 
+import java.awt.geom.AffineTransform;
+import java.util.Comparator;
+
 import javax.vecmath.Point2d;
 
 /**
@@ -36,21 +39,82 @@ import javax.vecmath.Point2d;
 public class Sample {
 
     private Point2d location = null;
+    private Point2d rotation = null;
+    private Point2d scale = null;
+    private Tile tile = null;
     public static final Point2d origin = new Point2d(0, 0);
+    public static final Point2d scaleUnit = new Point2d(1, 1);
 
     /**
      * Default constructor
      */
     public Sample() {
-        this(origin);
+        this(origin, null);
     }
 
-    public Sample(Point2d location) {
+    public Sample(Point2d location, Tile tile) {
+        this(origin, origin, null);
+    }
+
+    public Sample(double x, double y, Tile tile) {
+        this(new Point2d(x, y), tile);
+    }
+
+    public Sample(Point2d location, Point2d rotation, Tile tile) {
+        this(location, rotation, scaleUnit, tile);
+    }
+
+    public Sample(Point2d location, Point2d rotation, Point2d scale, Tile tile) {
+        super();
         this.location = new Point2d(location);
+        this.rotation = new Point2d(rotation);
+        this.scale = new Point2d(scale);
+        this.tile = tile;
     }
 
-    public Sample(double x, double y) {
-        this(new Point2d(x, y));
+    /**
+     * @return the tile
+     */
+    public Tile getTile() {
+        return this.tile;
+    }
+
+    /**
+     * @param tile
+     *            the tile to set
+     */
+    public void setTile(Tile tile) {
+        this.tile = tile;
+    }
+
+    /**
+     * @return the rotation
+     */
+    public Point2d getRotation() {
+        return this.rotation;
+    }
+
+    /**
+     * @param rotation
+     *            the rotation to set
+     */
+    public void setRotation(Point2d rotation) {
+        this.rotation = rotation;
+    }
+
+    /**
+     * @return the scale
+     */
+    public Point2d getScale() {
+        return this.scale;
+    }
+
+    /**
+     * @param scale
+     *            the scale to set
+     */
+    public void setScale(Point2d scale) {
+        this.scale = scale;
     }
 
     /**
@@ -76,6 +140,24 @@ public class Sample {
     @Override
     public String toString() {
         return "Sample [location=" + this.location + "]";
+    }
+
+    public static class TileSizeComparator implements Comparator<Sample> {
+
+        @Override
+        public int compare(Sample o1, Sample o2) {
+            if (o1.getTile() == null && o2.getTile() == null) {
+                return 0;
+            }
+            if (o1.getTile() == null) {
+                return -1;
+            }
+            if (o2.getTile() == null) {
+                return 1;
+            }
+            return Integer.compare(o1.getTile().getSize(), o2.getTile().getSize());
+        }
+
     }
 
 }

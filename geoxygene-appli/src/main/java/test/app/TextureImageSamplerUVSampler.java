@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import javax.vecmath.Point2d;
+
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 
@@ -130,7 +132,8 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
             for (Point p : pixelsToTreat) {
                 TexturePixel pixel = this.image.getPixel(p.x, p.y);
                 pixel.weightSum = 0;
-                this.tryToAddSample(p.x, p.y);
+                //                this.tryToAddSample(p.x, p.y, pixel.vGradient.x, pixel.vGradient.y);
+                this.tryToAddSampleMinimizeCoverage(p.x, p.y, pixel.vGradient.x, pixel.vGradient.y);
                 this.tryToAddNeighbor(p.x + 1, p.y, neighborhood);
                 this.tryToAddNeighbor(p.x - 1, p.y, neighborhood);
                 this.tryToAddNeighbor(p.x, p.y + 1, neighborhood);
@@ -167,17 +170,40 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
      * @param y
      * @param previousVDistanceInPixels
      * @param x
+     * @param uGradient
+     * @param vGradient
      */
-    private boolean tryToAddSample(int x, int y) {
+    private boolean tryToAddSample(int x, int y, double xGradient, double yGradient) {
         TexturePixel pixel = this.image.getPixel(x, y);
         if (pixel != null && pixel.in) {
             if (this.isDistanceStep(pixel, x + 1, y) || this.isDistanceStep(pixel, x - 1, y) || this.isDistanceStep(pixel, x, y + 1)
                     || this.isDistanceStep(pixel, x, y - 1)) {
                 if (this.minDistanceToSamples(x, y) > this.minDistanceInPixels) {
-                    this.samples.add(new Sample(x, y));
+                    this.samples.add(new Sample(new Point2d(x, y), new Point2d(xGradient, yGradient), null));
                     return true;
                 }
 
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param y
+     * @param previousVDistanceInPixels
+     * @param x
+     * @param uGradient
+     * @param vGradient
+     */
+    private boolean tryToAddSampleMinimizeCoverage(int x, int y, double xGradient, double yGradient) {
+        TexturePixel pixel = this.image.getPixel(x, y);
+        if (pixel != null && pixel.in) {
+            if (this.isDistanceStep(pixel, x + 1, y) || this.isDistanceStep(pixel, x - 1, y) || this.isDistanceStep(pixel, x, y + 1)
+                    || this.isDistanceStep(pixel, x, y - 1)) {
+                if (this.minDistanceToSamples(x, y) > this.minDistanceInPixels) {
+                    this.samples.add(new Sample(new Point2d(x, y), new Point2d(xGradient, yGradient), null));
+                    return true;
+                }
             }
         }
         return false;

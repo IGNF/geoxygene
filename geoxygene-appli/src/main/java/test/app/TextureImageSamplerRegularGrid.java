@@ -27,11 +27,14 @@
 
 package test.app;
 
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
+import javax.vecmath.Point2d;
 
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
@@ -42,12 +45,14 @@ import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
  */
 public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
 
+    private static final Point2d unitScaleFactor = new Point2d(1., 1.);
     private TextureImage image = null;
     private double scale = 1;
     private double sampleX = 1;
     private double sampleY = 1;
     private List<Sample> samples = null;
-    private double jitteringFactor = 0.;
+    private double jitteringFactor = 0.2;
+    private TileChooser tileChooser = null;
 
     /**
      * Default constructor
@@ -57,6 +62,17 @@ public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
         this.scale = scale;
         this.sampleX = sampleX;
         this.sampleY = sampleY;
+    }
+
+    /**
+     * Default constructor
+     */
+    public TextureImageSamplerRegularGrid(TextureImage image, double sampleX, double sampleY, double scale, TileChooser tileChooser) {
+        this.image = image;
+        this.scale = scale;
+        this.sampleX = sampleX;
+        this.sampleY = sampleY;
+        this.tileChooser = tileChooser;
     }
 
     /**
@@ -111,10 +127,33 @@ public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
                         jitterX = (rand.nextDouble() * 2 - 1) * xSampleRate * this.getJitteringFactor();
                         jitterY = (rand.nextDouble() * 2 - 1) * ySampleRate * this.getJitteringFactor();
                     }
-                    this.samples.add(new Sample(x + jitterX, y + jitterY));
+                    Point2d location = new Point2d(x + jitterX, y + jitterY);
+                    Point2d rotation = new Point2d(pixel.vGradient.x, pixel.vGradient.y);
+                    Sample sample = new Sample(location, rotation, unitScaleFactor, null);
+                    if (this.tileChooser != null) {
+                        Tile tile = this.tileChooser.getTile(sample);
+                        if (tile != null) {
+                            sample.setTile(tile);
+                            this.samples.add(sample);
+                        }
+                    } else {
+                        this.samples.add(sample);
+                    }
                 }
             }
         }
+        this.jitterSamples(xSampleRate, ySampleRate);
+    }
+
+    private void jitterSamples(double xSampleRate, double ySampleRate) {
+        Random rand = new Random(0);
+        for (Sample sample : this.samples) {
+            double dx = rand.nextDouble() * xSampleRate * this.jitteringFactor;
+            double dy = rand.nextDouble() * ySampleRate * this.jitteringFactor;
+            sample.getLocation().x += dx;
+            sample.getLocation().y += dy;
+        }
+
     }
 
     /**
