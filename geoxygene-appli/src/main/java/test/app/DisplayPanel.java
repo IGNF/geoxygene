@@ -1829,7 +1829,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         final double precision = 0.1;
-        double scale = e.getPreciseWheelRotation();
+        double scale = e.getWheelRotation();
         if (scale < 0) {
             scale = 1 - scale * precision;
         } else {

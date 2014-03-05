@@ -534,7 +534,7 @@ public class GraphCutPanel extends JPanel implements MouseListener, MouseWheelLi
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        this.zoom /= 1 + 0.1 * e.getPreciseWheelRotation();
+        this.zoom /= 1 + 0.1 * e.getWheelRotation();
         this.repaint();
     }
 

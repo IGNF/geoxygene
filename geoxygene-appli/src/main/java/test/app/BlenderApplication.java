@@ -250,7 +250,7 @@ public class BlenderApplication {
             }
         });
 
-        JComboBox<BlendingMode> modeComboBox = new JComboBox<BlenderApplication.BlendingMode>();
+        JComboBox modeComboBox = new JComboBox();
         for (BlendingMode mode : BlendingMode.values()) {
             modeComboBox.addItem(mode);
         }
@@ -993,7 +993,7 @@ class BlenderPanel extends JPanel implements MouseMotionListener, MouseWheelList
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        this.rotation += e.getPreciseWheelRotation() / rotationPrecision;
+        this.rotation += e.getWheelRotation() / rotationPrecision;
         this.computeAt();
         this.repaint();
     }

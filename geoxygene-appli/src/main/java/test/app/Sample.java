@@ -155,7 +155,7 @@ public class Sample {
             if (o2.getTile() == null) {
                 return 1;
             }
-            return Integer.compare(o1.getTile().getSize(), o2.getTile().getSize());
+            return Integer.valueOf(o1.getTile().getSize()).compareTo( Integer.valueOf(o2.getTile().getSize()));
         }
 
     }

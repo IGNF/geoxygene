@@ -221,7 +221,7 @@ public class DistanceFieldApplication {
         buttonPanel.add(loadButton);
 
         toolPanel.add(buttonPanel);
-        JComboBox<String> methodComboBox = new JComboBox<String>();
+        JComboBox methodComboBox = new JComboBox();
         methodComboBox.setBorder(BorderFactory.createTitledBorder("Distance computation type"));
         methodComboBox.addItem("Shrink 4");
         methodComboBox.addItem("Shrink 4 exact distance");
@@ -254,7 +254,7 @@ public class DistanceFieldApplication {
         comp2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         comp2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         toolPanel.add(comp2);
-        JComboBox<String> vizComboBox = new JComboBox<String>();
+        JComboBox vizComboBox = new JComboBox();
         vizComboBox.setBorder(BorderFactory.createTitledBorder("visualization"));
         vizComboBox.addItem("U HSV");
         vizComboBox.addItem("Distance BW");
@@ -286,7 +286,7 @@ public class DistanceFieldApplication {
         gPanel.setLayout(new BoxLayout(gPanel, BoxLayout.LINE_AXIS));
         gPanel.setBorder(BorderFactory.createTitledBorder("gradient"));
 
-        JComboBox<String> gradComboBox = new JComboBox<String>();
+        JComboBox gradComboBox = new JComboBox();
         gradComboBox.addItem("None");
         gradComboBox.addItem("3x3");
         gradComboBox.addItem("5x5");
@@ -388,7 +388,7 @@ public class DistanceFieldApplication {
         uvRepeatPanel.setLayout(new BoxLayout(uvRepeatPanel, BoxLayout.LINE_AXIS));
         uvRepeatPanel.setBorder(BorderFactory.createTitledBorder("UV Repeat"));
 
-        JComboBox<String> uRepeatCombo = new JComboBox<String>();
+        JComboBox uRepeatCombo = new JComboBox();
         for (RepeatType repeat : RepeatType.values()) {
             uRepeatCombo.addItem(repeat.name());
         }
@@ -406,7 +406,7 @@ public class DistanceFieldApplication {
         gPanel.add(uRepeatCombo);
 
         uvRepeatPanel.add(uRepeatCombo);
-        JComboBox<String> vRepeatCombo = new JComboBox<String>();
+        JComboBox vRepeatCombo = new JComboBox();
         for (RepeatType repeat : RepeatType.values()) {
             vRepeatCombo.addItem(repeat.name());
         }
@@ -428,7 +428,7 @@ public class DistanceFieldApplication {
         filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.LINE_AXIS));
         filterPanel.setBorder(BorderFactory.createTitledBorder("Filtering"));
 
-        final JComboBox<String> filterCombo = new JComboBox<String>();
+        final JComboBox filterCombo = new JComboBox();
         filterCombo.addItem("None");
         filterCombo.addItem("Blur UV 1px");
         filterCombo.addItem("Blur UV 2px");
