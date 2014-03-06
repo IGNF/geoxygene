@@ -104,8 +104,8 @@
 							</environmentVariables>
 							<skipTests>false</skipTests>
 							<excludes>
-            					<exclude>**/TestTetra.java</exclude>
-          					</excludes>
+								<exclude>**/TestTetra.java</exclude>
+							</excludes>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -118,7 +118,7 @@
 			<activation>
 				<os>
 					<family>windows</family>
-      				 <arch>x86</arch>
+					<arch>x86</arch>
 				</os>
 			</activation>
 			<build>
@@ -248,10 +248,10 @@
 
 
 	<dependencies>
-	
-	
-        
-	
+
+
+
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -349,9 +349,8 @@
 			<artifactId>xstream</artifactId>
 			<version>1.3.1</version>
 		</dependency>
-
 		<dependency>
-			<groupId>jfreechart</groupId>
+			<groupId>org.jfree</groupId>
 			<artifactId>jfreechart</artifactId>
 			<version>${jfreechart.version}</version>
 		</dependency>
@@ -385,18 +384,18 @@
 			<version>1.7-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
 			<id>junit-snapshot-repo</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
+			<name>Nexus Snapshot Repository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
 	</repositories>
-	
-	
-	
+
+
+
 </project>

@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.calculation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -61,16 +62,18 @@ public class Proximity {
 	 * @param lF
 	 */
 
-	public void nearest(IDirectPosition P1, ArrayList<IOrientableSurface> lF) {
+	public void nearest(IDirectPosition P1, List<IOrientableSurface> lF) {
 
 		int nb = lF.size();
 
-		if (nb == 0) {
+		if (lF == null || nb == 0) {
 
 			this.nearest = null;
 			this.nearest2 = null;
 			this.distance = Double.NaN;
 			this.containingFace = null;
+			
+			return;
 		}
 
 		IOrientableSurface faceTemp = lF.get(0);
