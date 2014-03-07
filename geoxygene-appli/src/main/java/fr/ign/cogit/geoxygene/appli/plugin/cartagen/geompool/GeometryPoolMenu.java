@@ -40,6 +40,7 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.geompool.GeomPoolFrame;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.JColorSelectionButton;
@@ -50,6 +51,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
+import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.NamedLayer;
@@ -67,12 +69,15 @@ public class GeometryPoolMenu extends JMenu {
 
   static Logger logger = Logger.getLogger(GeometryPoolMenu.class.getName());
 
+  private static GeometryPoolMenu instance;
+
   /**
    * The Geometry Pool layer
    */
   private NamedLayer geomPoolLayer;
   private Color defaultColor = Color.RED;
   private GeOxygeneApplication application;
+  private GeometryPool geometryPool;
 
   // Geometries pool
   /**
@@ -120,6 +125,19 @@ public class GeometryPoolMenu extends JMenu {
 
     this.mGeomPoolDrawSegments.setSelected(false);
     this.add(this.mGeomPoolDrawSegments);
+    instance = this;
+  }
+
+  public static GeometryPoolMenu getInstance() {
+    return instance;
+  }
+
+  public GeometryPool getGeometryPool() {
+    return geometryPool;
+  }
+
+  public void setGeometryPool(GeometryPool geometryPool) {
+    this.geometryPool = geometryPool;
   }
 
   /**
@@ -157,21 +175,33 @@ public class GeometryPoolMenu extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      CartAGenDoc
-          .getInstance()
-          .getCurrentDataset()
-          .getGeometryPool()
-          .setSld(
+      if (CartAGenDoc.getInstance().getCurrentDataset() == null) {
+        if (geometryPool == null)
+          geometryPool = new GeometryPool(geomPoolLayer.getSld().getDataSet(),
               CartAGenPlugin.getInstance().getApplication().getMainFrame()
                   .getSelectedProjectFrame().getSld());
-      for (IFeature feat : CartAGenPlugin.getInstance().getApplication()
-          .getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
-          .getSelectedFeatures()) {
-        if (!(feat instanceof IGeneObj)) {
-          continue;
+        for (IFeature feat : CartAGenPlugin.getInstance().getApplication()
+            .getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
+            .getSelectedFeatures()) {
+          geometryPool.addFeatureToGeometryPool(feat, defaultColor);
         }
-        CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
-            .addFeatureToGeometryPool(feat, defaultColor);
+      } else {
+        CartAGenDoc
+            .getInstance()
+            .getCurrentDataset()
+            .getGeometryPool()
+            .setSld(
+                CartAGenPlugin.getInstance().getApplication().getMainFrame()
+                    .getSelectedProjectFrame().getSld());
+        for (IFeature feat : CartAGenPlugin.getInstance().getApplication()
+            .getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
+            .getSelectedFeatures()) {
+          if (!(feat instanceof IGeneObj)) {
+            continue;
+          }
+          CartAGenDoc.getInstance().getCurrentDataset().getGeometryPool()
+              .addFeatureToGeometryPool(feat, defaultColor);
+        }
       }
       CartAGenPlugin.getInstance().getApplication().getMainFrame()
           .getSelectedProjectFrame().getLayerViewPanel().validate();
@@ -566,6 +596,14 @@ public class GeometryPoolMenu extends JMenu {
         ProjectFrame frame = CartAGenPlugin.getInstance().getApplication()
             .getMainFrame().getSelectedProjectFrame();
         if (mGeomPoolVisible.isSelected()) {
+          if (geomPoolLayer.getSld().getDataSet()
+              .getPopulation(geomPoolLayer.getName()) == null) {
+            geomPoolLayer
+                .getSld()
+                .getDataSet()
+                .addPopulation(
+                    new Population<IFeature>(geomPoolLayer.getName()));
+          }
           frame.addLayer(geomPoolLayer);
         } else {
           List<Layer> toRemove = new ArrayList<Layer>();

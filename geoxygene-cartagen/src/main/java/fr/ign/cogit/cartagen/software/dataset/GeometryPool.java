@@ -4,7 +4,9 @@ import java.awt.Color;
 
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.geompool.ColouredFeature;
+import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Style;
@@ -12,7 +14,7 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 
 public class GeometryPool {
 
-  private CartAGenDataSet dataset;
+  private IDataSet<?> dataset;
   private StyledLayerDescriptor sld;
 
   /**
@@ -26,11 +28,22 @@ public class GeometryPool {
     this.sld = sld;
   }
 
-  public CartAGenDataSet getDataset() {
+  /**
+   * Simple Constructor using fields.
+   * @param dataset
+   * @param sld
+   */
+  public GeometryPool(IDataSet<?> dataset, StyledLayerDescriptor sld) {
+    super();
+    this.dataset = dataset;
+    this.sld = sld;
+  }
+
+  public IDataSet<?> getDataset() {
     return dataset;
   }
 
-  public void setDataset(CartAGenDataSet dataset) {
+  public void setDataset(IDataSet<?> dataset) {
     this.dataset = dataset;
   }
 
@@ -47,10 +60,12 @@ public class GeometryPool {
    * @param feat
    * @param color
    */
+  @SuppressWarnings("unchecked")
   public void addFeatureToGeometryPool(IGeometry geom, Color color,
       int widthPixels) {
     ColouredFeature colFeat = new ColouredFeature(geom, color, widthPixels);
-    dataset.getGeometryPoolPop().add(colFeat);
+    ((IPopulation<IFeature>) dataset.getPopulation(CartAGenDataSet.GEOM_POOL))
+        .add(colFeat);
     Layer poolLayer = sld.getLayer(CartAGenDataSet.GEOM_POOL);
     if (poolLayer == null)
       return;
@@ -63,10 +78,12 @@ public class GeometryPool {
    * @param feat
    * @param color
    */
+  @SuppressWarnings("unchecked")
   public void addFeatureToGeometryPool(IFeature feat, Color color) {
     ColouredFeature colFeat = new ColouredFeature(feat.getGeom(), color);
     System.out.println(colFeat);
-    dataset.getGeometryPoolPop().add(colFeat);
+    ((IPopulation<IFeature>) dataset.getPopulation(CartAGenDataSet.GEOM_POOL))
+        .add(colFeat);
     Layer poolLayer = sld.getLayer(CartAGenDataSet.GEOM_POOL);
     if (poolLayer == null)
       return;

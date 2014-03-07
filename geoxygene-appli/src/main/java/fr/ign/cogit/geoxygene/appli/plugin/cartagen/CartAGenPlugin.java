@@ -145,6 +145,7 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
     // add the right panel
     MainFrame frame = application.getMainFrame();
     JTabbedPane pane = ((AbstractMainFrame) frame).getDesktopTabbedPane();
+    System.out.println("coucou");
     frame.getGui().getContentPane().remove(pane);
     rightPanel = new CartAGenRightPanel(frame);
     splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane, rightPanel);
@@ -175,6 +176,8 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
     } catch (NoSuchMethodException e) {
       e.printStackTrace();
     }
+    System.out.println("coucou fin");
+
   }
 
   @Override
