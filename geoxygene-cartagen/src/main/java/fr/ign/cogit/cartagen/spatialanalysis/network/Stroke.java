@@ -14,6 +14,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RoadStrokesNetwork;
@@ -31,8 +33,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
-public class Stroke extends AbstractFeature {
-  @SuppressWarnings("hiding")
+public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   private static Logger logger = Logger.getLogger(Stroke.class.getName());
 
   private StrokesNetwork network;
@@ -40,6 +41,7 @@ public class Stroke extends AbstractFeature {
   private ILineString geomStroke;
   private int id;
   private ArcReseau root;
+  private static AtomicInteger COUNTER = new AtomicInteger();
 
   public StrokesNetwork getNetwork() {
     return this.network;
@@ -113,7 +115,7 @@ public class Stroke extends AbstractFeature {
     this.setRoot(root);
     this.features = new ArrayList<ArcReseau>();
     this.features.add(root);
-    this.id = root.getId();
+    this.id = COUNTER.getAndIncrement();
   }
 
   public Stroke(RoadStrokesNetwork network, ArrayList<ArcReseau> features,
@@ -141,7 +143,7 @@ public class Stroke extends AbstractFeature {
    *          points.
    * 
    */
-  public void buildOneSide(boolean side, HashSet<String> attributeNames,
+  public void buildOneSide(boolean side, Set<String> attributeNames,
       double deviatAngle, double deviatSum, boolean noStop) {
 
     // get the following network segments of the root of this stroke
@@ -200,7 +202,7 @@ public class Stroke extends AbstractFeature {
   }
 
   protected ArcReseau chooseNextSegment(ArcReseau arc,
-      HashSet<ArcReseau> followers, HashSet<String> attributeNames,
+      HashSet<ArcReseau> followers, Set<String> attributeNames,
       double deviatAngle, double deviatSum) {
     // first, filter the followers
     this.filterFollowers(arc, followers);
@@ -619,7 +621,7 @@ public class Stroke extends AbstractFeature {
   }
 
   protected ArcReseau chooseNextSegmentNoStop(ArcReseau arc,
-      HashSet<ArcReseau> followers, HashSet<String> attributeNames,
+      HashSet<ArcReseau> followers, Set<String> attributeNames,
       double deviatAngle, double deviatSum) {
 
     // first, no stop case
@@ -715,7 +717,7 @@ public class Stroke extends AbstractFeature {
   }
 
   protected void filterByAttributeContinuity(ArcReseau arc,
-      HashSet<ArcReseau> followers, HashSet<String> attributeNames) {
+      HashSet<ArcReseau> followers, Set<String> attributeNames) {
     if (this.getNetwork().isAttributesDeclared()) {
       try {
         this.filterByAttributeContinuityDeclared(arc, followers, attributeNames);
@@ -748,7 +750,7 @@ public class Stroke extends AbstractFeature {
    * @throws IllegalArgumentException
    */
   private void filterByAttributeContinuityDeclared(ArcReseau arc,
-      HashSet<ArcReseau> followers, HashSet<String> attributeNames)
+      HashSet<ArcReseau> followers, Set<String> attributeNames)
       throws SecurityException, NoSuchMethodException,
       IllegalArgumentException, IllegalAccessException,
       InvocationTargetException {
@@ -786,7 +788,7 @@ public class Stroke extends AbstractFeature {
    * @param attributeNames
    */
   private void filterByAttributeContinuityFT(ArcReseau arc,
-      HashSet<ArcReseau> followers, HashSet<String> attributeNames) {
+      HashSet<ArcReseau> followers, Set<String> attributeNames) {
     HashSet<ArcReseau> loopFoll = new HashSet<ArcReseau>();
 
     // loop on the attribute names to filter the followers
@@ -870,13 +872,15 @@ public class Stroke extends AbstractFeature {
 
     if (index != lines.size() - 1) {
       lineAfter = Operateurs.compileArcs(after);
-      pointsFinaux.remove(this.root.getGeom().endPoint());
+      if (lineAfter != null) {
+        pointsFinaux.remove(this.root.getGeom().endPoint());
 
-      if (Distances.proche(this.root.getGeom().endPoint(),
-          lineAfter.endPoint(), 0)) {
-        lineAfter.reverse();
+        if (Distances.proche(this.root.getGeom().endPoint(),
+            lineAfter.endPoint(), 0)) {
+          lineAfter.reverse();
+        }
+        pointsFinaux.addAll(lineAfter.getControlPoint());
       }
-      pointsFinaux.addAll(lineAfter.getControlPoint());
     }
     return new GM_LineString(pointsFinaux);
   }
@@ -896,5 +900,15 @@ public class Stroke extends AbstractFeature {
       length += arc.getGeom().length();
     }
     return length;
+  }
+
+  /**
+   * Strokes can be compared using their total length. {@inheritDoc}
+   * <p>
+   * 
+   */
+  @Override
+  public int compareTo(Stroke o) {
+    return (int) Math.round(this.getLength() - o.getLength());
   }
 }

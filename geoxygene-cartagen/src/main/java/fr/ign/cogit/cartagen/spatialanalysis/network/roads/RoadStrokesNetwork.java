@@ -58,7 +58,7 @@ public class RoadStrokesNetwork extends StrokesNetwork {
 
   // Other public methods //
   @Override
-  public void buildStrokes(HashSet<String> attributeNames, double deviatAngle,
+  public void buildStrokes(Set<String> attributeNames, double deviatAngle,
       double deviatSum, boolean noStop) {
 
     // loop on the network features

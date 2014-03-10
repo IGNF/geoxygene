@@ -70,7 +70,7 @@ public class NetworkEnrichment {
     if (NetworkEnrichment.logger.isInfoEnabled()) {
       NetworkEnrichment.logger.info("topology creation for " + net);
     }
-    NetworkEnrichment.buildTopology(dataset, net, false);
+    NetworkEnrichment.buildTopologyOld(dataset, net, false);
 
     if (NetworkEnrichment.logger.isDebugEnabled()) {
       NetworkEnrichment.logger.debug("nodes importance computation for " + net);
@@ -89,7 +89,7 @@ public class NetworkEnrichment {
     if (NetworkEnrichment.logger.isInfoEnabled()) {
       NetworkEnrichment.logger.info("topology creation for " + net);
     }
-    NetworkEnrichment.buildTopology(dataset, net, false, factory);
+    NetworkEnrichment.buildTopology(dataset, net, false);
 
     if (NetworkEnrichment.logger.isDebugEnabled()) {
       NetworkEnrichment.logger.debug("nodes importance computation for " + net);
@@ -110,7 +110,7 @@ public class NetworkEnrichment {
     if (NetworkEnrichment.logger.isInfoEnabled()) {
       NetworkEnrichment.logger.info("topology creation for " + net);
     }
-    NetworkEnrichment.buildTopology(dataset, net, deleted);
+    NetworkEnrichment.buildTopologyOld(dataset, net, deleted);
 
     if (NetworkEnrichment.logger.isDebugEnabled()) {
       NetworkEnrichment.logger.debug("nodes importance computation for " + net);
@@ -161,7 +161,7 @@ public class NetworkEnrichment {
    * @param deleted true if deleted sections of the network have to be included
    * @deprecated
    */
-  public static void buildTopology(CartAGenDataSet dataset, INetwork net,
+  public static void buildTopologyOld(CartAGenDataSet dataset, INetwork net,
       boolean deleted) {
 
     // if necessary
@@ -225,7 +225,7 @@ public class NetworkEnrichment {
    * @param deleted true if deleted sections of the network have to be included
    */
   public static void buildTopology(CartAGenDataSet dataset, INetwork net,
-      boolean deleted, AbstractCreationFactory factory) {
+      boolean deleted) {
 
     // if necessary
     NetworkEnrichment.destroyTopology(net);
@@ -293,25 +293,67 @@ public class NetworkEnrichment {
       } catch (InvocationTargetException e) {
         e.printStackTrace();
       }
+    }
 
-      // if (net.getSections().get(0) instanceof IRoadLine) {
-      // IRoadNode roadNode = factory.createRoadNode(n);
-      // IPopulation<IRoadNode> popRoad = dataset.getRoadNodes();
-      // popRoad.add(roadNode);
-      // dataset.getRoadNetwork().addNode(roadNode);
-      // }
-      //
-      // if (net.getSections().get(0) instanceof IWaterLine) {
-      // IWaterNode waterNode = factory.createWaterNode(n);
-      // IPopulation<IWaterNode> popWater = dataset.getWaterNodes();
-      // popWater.add(waterNode);
-      // dataset.getHydroNetwork().addNode(waterNode);
-      // }
-      //
-      // if (net.getSections().get(0) instanceof IRailwayLine) {
-      // IRailwayNode railNode = factory.createRailwayNode(n);
-      // dataset.getRailwayNetwork().addNode(railNode);
-      // }
+  }
+
+  /**
+   * Builds the topology of a network. The network is supposed to be constituted
+   * of linear geometries with common extremities. This method builds the
+   * topological map of the network anf its nodes
+   * @param net
+   * @param deleted true if deleted sections of the network have to be included
+   */
+  public static void buildTopology(CartAGenDataSet dataset, INetwork net,
+      boolean deleted, AbstractCreationFactory factory) {
+
+    // if necessary
+    NetworkEnrichment.destroyTopology(net);
+
+    // topo map construction
+    net.setCarteTopo(new CarteTopo("cartetopo"));
+    if (deleted)
+      net.getCarteTopo().importClasseGeo(net.getSections(), true);
+    else
+      net.getCarteTopo().importClasseGeo(net.getNonDeletedSections(), true);
+
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("Nodes creation");
+    }
+    net.getCarteTopo().creeNoeudsManquants(1.0);
+
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("nodes merging");
+    }
+    net.getCarteTopo().fusionNoeuds(1.0);
+
+    // Creates the nodes
+    // The node-section topology in CartAGen is updated through the constructor
+    // of nodes
+    for (Noeud n : net.getCarteTopo().getPopNoeuds()) {
+
+      if (NetworkEnrichment.logger.isInfoEnabled()) {
+        NetworkEnrichment.logger.info("Add node " + n + " in population");
+      }
+
+      if (net.getSections().get(0) instanceof IRoadLine) {
+        IRoadNode roadNode = factory.createRoadNode(n);
+        IPopulation<IRoadNode> popRoad = dataset.getRoadNodes();
+        popRoad.add(roadNode);
+        dataset.getRoadNetwork().addNode(roadNode);
+      }
+
+      if (net.getSections().get(0) instanceof IWaterLine) {
+        IWaterNode waterNode = factory.createWaterNode(n);
+        IPopulation<IWaterNode> popWater = dataset.getWaterNodes();
+        popWater.add(waterNode);
+        dataset.getHydroNetwork().addNode(waterNode);
+      }
+
+      if (net.getSections().get(0) instanceof IRailwayLine) {
+        IRailwayNode railNode = factory.createRailwayNode(n);
+        dataset.getRailwayNetwork().addNode(railNode);
+      }
 
     }
 
@@ -662,7 +704,7 @@ public class NetworkEnrichment {
       at1.eliminate();
 
       // construire topologie
-      NetworkEnrichment.buildTopology(dataset, net, false);
+      NetworkEnrichment.buildTopologyOld(dataset, net, false);
 
       // aux suivants
       ats = NetworkEnrichment.getTronconsAnaloguesAdjacents(net);

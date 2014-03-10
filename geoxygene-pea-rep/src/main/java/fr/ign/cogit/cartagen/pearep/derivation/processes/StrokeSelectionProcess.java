@@ -126,7 +126,8 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
         if (deleted) {
           for (ArcReseau arc : stroke.getFeatures()) {
             IRoadLine road = map.get(arc);
-            road.cancelElimination();
+            if (road != null)
+              road.cancelElimination();
           }
         }
       } else {
