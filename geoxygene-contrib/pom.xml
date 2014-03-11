@@ -174,13 +174,4 @@
         </dependency>
 
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>opengeo</id>
-			<url>http://repo.opengeo.org</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 </project>

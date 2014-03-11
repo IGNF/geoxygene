@@ -41,6 +41,19 @@
 		</testResources>
 		
 	</build>
+	
+	<repositories>
+       <repository>
+            <id>hibernatespatial</id>
+            <name>hibernatespatial Repository</name>
+            <url>http://www.hibernatespatial.org/repository</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+	
+	
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>

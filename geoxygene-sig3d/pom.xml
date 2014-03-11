@@ -248,10 +248,6 @@
 
 
 	<dependencies>
-
-
-
-
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -262,38 +258,35 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-api</artifactId>
 			<version>${project.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
+		<dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>geoxygene-spatial</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-feature</artifactId>
 			<version>${project.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-style</artifactId>
 			<version>${project.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-io</artifactId>
 			<version>${project.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-appli</artifactId>
 			<version>${project.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
-	<!-- DLL --><!-- si on l'enleve, on a bug dans Jenkins -->
+	
+	
+	   <!-- DLL --><!-- si on l'enleve, on a bug dans Jenkins -->
 		<dependency>
 			<groupId>java3d</groupId>
 			<artifactId>j3d-core</artifactId>
@@ -378,14 +371,19 @@
 			<artifactId>xml-apis-xerces</artifactId>
 			<version>2.7.1</version>
 		</dependency>
-		<dependency>
-			<groupId>fr.ign.cogit</groupId>
-			<artifactId>geoxygene-spatial</artifactId>
-			<version>1.7-SNAPSHOT</version>
-		</dependency>
+		
 	</dependencies>
 
+	
 	<repositories>
+	   <repository>
+            <id>Imagej</id>
+            <url>http://maven.imagej.net/content/repositories/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+	   <!-- 
 		<repository>
 			<id>junit-snapshot-repo</id>
 			<name>Nexus Snapshot Repository</name>
@@ -393,9 +391,9 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</repository>
+		</repository> -->
 	</repositories>
-
+     
 
 
 </project>
