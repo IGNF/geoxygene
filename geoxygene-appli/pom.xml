@@ -38,7 +38,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<!-- Skips unit tests if the value of skip.unit.tests property is true -->
-					<skipTests>${skip.unit.tests}</skipTests>
+					<skipTests>false</skipTests>
 					<!-- Excludes integration tests when unit tests are run. -->
 					<excludes>
 						<exclude>**/IT*.java</exclude>
@@ -50,141 +50,138 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<profiles>
-        <profile>
-            <id>executable</id>
-                <build>
-                    <plugins>
+		<profile>
+			<id>executable</id>
+			<build>
+				<plugins>
 
-            <!-- On copie toutes les dépendances dans le répertoire /exec/lib -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.8</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib/</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+					<!-- On copie toutes les dépendances dans le répertoire /exec/lib -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>2.8</version>
+						<executions>
+							<execution>
+								<id>copy-dependencies</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-dependencies</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.build.directory}/lib/</outputDirectory>
+									<overWriteReleases>false</overWriteReleases>
+									<overWriteSnapshots>false</overWriteSnapshots>
+									<overWriteIfNewer>true</overWriteIfNewer>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <archive>
-                        <!-- <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile> -->
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>./lib/</classpathPrefix>
-                            <mainClass>fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</mainClass>
-                        </manifest>
-                    </archive>
-                    <useUniqueVersions>false</useUniqueVersions>
-                    <!-- <finalName>GeOxygene-1.6-SNAPSHOT</finalName> --> 
-                </configuration>
-            </plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>2.3</version>
+						<configuration>
+							<archive>
+								<!-- <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile> -->
+								<manifest>
+									<addClasspath>true</addClasspath>
+									<classpathPrefix>./lib/</classpathPrefix>
+									<mainClass>fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</mainClass>
+								</manifest>
+							</archive>
+							<useUniqueVersions>false</useUniqueVersions>
+							<!-- <finalName>GeOxygene-1.6-SNAPSHOT</finalName> -->
+						</configuration>
+					</plugin>
 
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                            
-                                <!-- check if config is available, if not fail -->
-                                <fail message="Property dir.executable needs to be set to a value">
-                                    <condition>
-                                        <or>
-                                            <equals arg1="${dir.executable}" arg2=""/>
-                                            <not>
-                                                <isset property="dir.executable"/>
-                                            </not>
-                                       </or>
-                                   </condition>
-                                </fail>
-                                
-                                <echo>Suppression du répertoire ${dir.executable}</echo>
-                                <delete dir="${dir.executable}" />
-                                 
-                                <echo>Création du répertoire ${dir.executable}</echo>
-                                <mkdir dir="${dir.executable}" />
-                            
-                                <echo>Copy all files and directories to a special directory</echo>
-                                <copy file="${basedir}/target/geoxygene-appli-${project.version}.jar" todir="${dir.executable}" />
-                                
-                                <!-- lib directory -->
-                                <copy todir="${dir.executable}/lib" > 
-                                    <fileset dir="${basedir}/target/lib" />
-                                </copy>
-                                
-                                <!-- conf directory -->
-                                <copy todir="${dir.executable}/conf">
-                                    <fileset dir="${basedir}/conf" />
-                                </copy>
-                                
-                                <!-- script bat -->
-                                <copy file="${basedir}/install/geoxygene.bat"
-                                    todir="${dir.executable}" />
-                                <copy file="${basedir}/install/cpappend.bat"
-                                    todir="${dir.executable}" />
-                                <copy file="${basedir}/install/geoxygene.sh"
-                                    todir="${dir.executable}" />
-                                    
-                                <copy file="${basedir}/install/geoxygene-configuration.xml"
-                                    todir="${dir.executable}" />
-                                    
-                                <copy file="${basedir}/install/geoxygene-configuration.xml"
-                                    todir="${dir.executable}" />
-                                    
-                                <copy file="${basedir}/install/last_session_parameters.xml"
-                                    todir="${dir.executable}/src/main/resources/xml/" />
-                                    
-                                <!-- traduction -->
-                                <copy todir="${dir.executable}/language">
-                                    <fileset dir="${basedir}/src/main/resources/language" />
-                                </copy>
-                                    
-                                <!-- INSTALL -->
-                                <copy file="${basedir}/install/INSTALL.TXT"
-                                    todir="${dir.executable}" />
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.4</version>
+						<executions>
+							<execution>
+								<phase>install</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
 
-                                <echo>Suppression d'Ojb</echo>
-                                
-                            
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+										<!-- check if config is available, if not fail -->
+										<fail message="Property dir.executable needs to be set to a value">
+											<condition>
+												<or>
+													<equals arg1="${dir.executable}" arg2="" />
+													<not>
+														<isset property="dir.executable" />
+													</not>
+												</or>
+											</condition>
+										</fail>
 
-                 </plugins>
-            </build>
-        </profile>
-    </profiles>
+										<echo>Suppression du répertoire ${dir.executable}</echo>
+										<delete dir="${dir.executable}" />
+
+										<echo>Création du répertoire ${dir.executable}</echo>
+										<mkdir dir="${dir.executable}" />
+
+										<echo>Copy all files and directories to a special directory</echo>
+										<copy
+											file="${basedir}/target/geoxygene-appli-${project.version}.jar"
+											todir="${dir.executable}" />
+
+										<!-- lib directory -->
+										<copy todir="${dir.executable}/lib">
+											<fileset dir="${basedir}/target/lib" />
+										</copy>
+
+										<!-- conf directory -->
+										<copy todir="${dir.executable}/conf">
+											<fileset dir="${basedir}/conf" />
+										</copy>
+
+										<!-- script bat -->
+										<copy file="${basedir}/install/geoxygene.bat" todir="${dir.executable}" />
+										<copy file="${basedir}/install/cpappend.bat" todir="${dir.executable}" />
+										<copy file="${basedir}/install/geoxygene.sh" todir="${dir.executable}" />
+
+										<copy file="${basedir}/install/geoxygene-configuration.xml"
+											todir="${dir.executable}" />
+
+										<copy file="${basedir}/install/geoxygene-configuration.xml"
+											todir="${dir.executable}" />
+
+										<copy file="${basedir}/install/last_session_parameters.xml"
+											todir="${dir.executable}/src/main/resources/xml/" />
+
+										<!-- traduction -->
+										<copy todir="${dir.executable}/language">
+											<fileset dir="${basedir}/src/main/resources/language" />
+										</copy>
+
+										<!-- INSTALL -->
+										<copy file="${basedir}/install/INSTALL.TXT" todir="${dir.executable}" />
+
+										<echo>Suppression d'Ojb</echo>
+
+
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -264,10 +261,15 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-            <groupId>fr.ign.cogit</groupId>
-            <artifactId>geoxygene-osm</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-osm</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<!-- JGoodies Forms framework helps you lay out and implement elegant Swing 
 			panels quickly and consistently -->
@@ -275,6 +277,11 @@
 			<groupId>jgoodies</groupId>
 			<artifactId>forms</artifactId>
 			<version>1.0.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 		</dependency>
 
 		<dependency>
@@ -312,6 +319,11 @@
 			<artifactId>gt-geotiff</artifactId>
 			<version>${geotools.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-shapefile</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
@@ -339,29 +351,113 @@
 			<artifactId>filters</artifactId>
 			<version>2.0.235-1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.lwjgl.lwjgl</groupId>
 			<artifactId>lwjgl</artifactId>
 			<version>2.9.1</version>
 		</dependency>
 		<dependency>
+			<groupId>org.lwjgl.lwjgl</groupId>
+			<artifactId>lwjgl_util</artifactId>
+			<version>2.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fifesoft</groupId>
+			<artifactId>rsyntaxtextarea</artifactId>
+			<version>2.0.7</version>
+		</dependency>
+		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
 			<version>2.1.6</version>
 		</dependency>
-<!-- this dependency is only used for LayerViewLwjglLightWeightCanvas class
-     if heavyweight is chosen, this dependency might be removed -->
+		<!-- this dependency is only used for LayerViewLwjglLightWeightCanvas class 
+			if heavyweight is chosen, this dependency might be removed -->
 		<dependency>
 			<groupId>org.jogamp.jogl</groupId>
 			<artifactId>jogl-all</artifactId>
 			<version>2.0.2</version>
 		</dependency>
 		<dependency>
-        	<groupId>org.geotools</groupId>
-        	<artifactId>gt-epsg-hsql</artifactId>
-        	<version>${geotools.version}</version>
-        </dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-epsg-hsql</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>3.5.6-Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+			<version>1.0.1.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.5.6-Final</version>
+		</dependency>
+		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis</artifactId>
+			<version>1.3.04</version>
+		</dependency>
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jcommon</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>java3d</groupId>
+			<artifactId>vecmath</artifactId>
+			<version>1.5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>jfreechart</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>${jfreechart.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis-xerces</artifactId>
+			<version>2.7.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jgrapht</groupId>
+			<artifactId>jgrapht-core</artifactId>
+			<version>${jgrapht.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>campskeleton</groupId>
+			<artifactId>campskeleton</artifactId>
+			<version>6.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.3.1</version>
+		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>Imagej</id>
+			<url>http://maven.imagej.net/content/repositories/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 </project>

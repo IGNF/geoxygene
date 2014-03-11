@@ -61,7 +61,7 @@
 		<log4j.version>1.2.16</log4j.version>
 		<geotools.version>8.4</geotools.version>
 		<jfreechart.version>1.0.12</jfreechart.version>
-        <jgrapht.version>0.9.0</jgrapht.version>
+		<jgrapht.version>0.9.0</jgrapht.version>
 
 		<!-- <skip.unit.tests>false</skip.unit.tests> -->
 		<!-- <skip.integration.tests>true</skip.integration.tests> -->
@@ -72,20 +72,16 @@
 	<!-- -->
 	<!-- =========================================================== -->
 	<profiles>
-		
-		<!-- <profile>
-			<id>integration-test</id>
-			<properties>
-				--><!-- Only integration tests are run. -->
-				<!-- <skip.integration.tests>false</skip.integration.tests> -->
-				<!-- <skip.unit.tests>true</skip.unit.tests> -->
-			<!-- </properties>
-		</profile> -->
+
+		<!-- <profile> <id>integration-test</id> <properties> --><!-- Only integration tests are run. -->
+		<!-- <skip.integration.tests>false</skip.integration.tests> -->
+		<!-- <skip.unit.tests>true</skip.unit.tests> -->
+		<!-- </properties> </profile> -->
 		<profile>
-            <id>executable</id>
+			<id>executable</id>
 			<!-- controler la variable {dir.executable} -->
-            <build>
-                <plugins>		
+			<build>
+				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
@@ -305,8 +301,8 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.16</version>
 				</plugin>
-	       </plugins>
-	   </pluginManagement>
+			</plugins>
+		</pluginManagement>
 
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
@@ -368,41 +364,19 @@
 						<index>true</index>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<!--
-							<classpathPrefix>dependency/</classpathPrefix>
-							<mainClass>fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</mainClass>
-							-->
+							<!-- <classpathPrefix>dependency/</classpathPrefix> <mainClass>fr.ign.cogit.geoxygene.appli.GeOxygeneApplication</mainClass> -->
 						</manifest>
 					</archive>
 				</configuration>
 			</plugin>
 
 			<!-- Used to add source directories to our build. -->
-			<!--
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					--><!-- States that the plugin's add-test-source 
-					     goal is executed at generate-test-sources phase. --><!--
-					<execution>
-						<id>add-integration-test-sources</id>
-						<phase>generate-test-sources</phase>
-						<goals>
-							<goal>add-test-source</goal>
-						</goals>
-						<configuration>
-							--><!-- Configures the source directory of integration tests. --><!--
-							<sources>
-								<source>src/integration-test/java</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			-->
-			
+			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> 
+				<version>1.7</version> <executions> --><!-- States that the plugin's add-test-source goal is executed at generate-test-sources 
+				phase. --><!-- <execution> <id>add-integration-test-sources</id> <phase>generate-test-sources</phase> 
+				<goals> <goal>add-test-source</goal> </goals> <configuration> --><!-- Configures the source directory of integration tests. --><!-- <sources> <source>src/integration-test/java</source> </sources> </configuration> 
+				</execution> </executions> </plugin> -->
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -410,41 +384,18 @@
 					<!-- Skips unit tests if the value of skip.unit.tests property is true -->
 					<!-- <skipTests>${skip.unit.tests}</skipTests> -->
 					<!-- Excludes integration tests when unit tests are run. -->
-					<!--
-					<excludes>
-						<exclude>**/IT*.java</exclude>
-						<exclude>**/*IT.java</exclude>
-						<exclude>**/*ITCase.java</exclude>
-					</excludes>
-					-->
+					<!-- <excludes> <exclude>**/IT*.java</exclude> <exclude>**/*IT.java</exclude> 
+						<exclude>**/*ITCase.java</exclude> </excludes> -->
 				</configuration>
 			</plugin>
 
 			<!-- Used for integration tests -->
-			<!--
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.14.1</version>
-				<executions>
-					<execution>
-						<id>integration-tests</id>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-						<configuration>
-							<skipTests>${skip.integration.tests}</skipTests>
-							<excludes>
-								<exclude>**/Test*.java</exclude>
-								<exclude>**/*Test.java</exclude>
-								<exclude>**/*TestCase.java</exclude>
-							</excludes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			-->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-failsafe-plugin</artifactId> 
+				<version>2.14.1</version> <executions> <execution> <id>integration-tests</id> 
+				<goals> <goal>integration-test</goal> <goal>verify</goal> </goals> <configuration> 
+				<skipTests>${skip.integration.tests}</skipTests> <excludes> <exclude>**/Test*.java</exclude> 
+				<exclude>**/*Test.java</exclude> <exclude>**/*TestCase.java</exclude> </excludes> 
+				</configuration> </execution> </executions> </plugin> -->
 
 			<plugin>
 				<groupId>de.akquinet.maven</groupId>
@@ -464,7 +415,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- A lancer : mvn eclipse:eclipse -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -476,7 +427,7 @@
 					<useProjectReferences>true</useProjectReferences> <!-- default true -->
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
@@ -489,7 +440,7 @@
 					</formats>
 				</configuration>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 
@@ -515,7 +466,7 @@
 					<outputEncoding>UTF-8</outputEncoding>
 				</configuration>
 			</plugin>
-			
+
 			<!-- ======================================================= -->
 			<!-- Javadoc generation. -->
 			<!-- ======================================================= -->
@@ -578,19 +529,15 @@
 				<reportSets>
 					<reportSet>
 						<reports>
-							<!-- <report>javadoc</report>
-							<report>summary</report>
-							<report>project-team</report>
-							<report>mailing-list</report>
-							<report>license</report>
-							<report>scm</report>
-							<report>dependencies</report> -->
+							<!-- <report>javadoc</report> <report>summary</report> <report>project-team</report> 
+								<report>mailing-list</report> <report>license</report> <report>scm</report> 
+								<report>dependencies</report> -->
 						</reports>
 					</reportSet>
 				</reportSets>
 			</plugin>
 
-			
+
 
 		</plugins>
 	</reporting>
@@ -609,22 +556,22 @@
 			<name>Cogit Snapshots Repository</name>
 			<url>https://dionysos2.ign.fr/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
 			<snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
 		</repository>
 		<repository>
 			<id>cogit-releases</id>
 			<name>Cogit Releases Repository</name>
 			<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/releases/</url>
 			<snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
 		</repository>
 		<repository>
 			<id>OpenGeo</id>
@@ -636,8 +583,8 @@
 			<releases>
 				<enabled>true</enabled>
 			</releases>
-		</repository>		
-		
+		</repository>
+
 	</repositories>
 
 	<pluginRepositories>
@@ -645,9 +592,9 @@
 			<id>Central</id>
 			<name>Central Repository</name>
 			<url>http://repo1.maven.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</pluginRepository>
 		<pluginRepository>
 			<id>maven-latex-plugin-repo</id>
@@ -655,9 +602,9 @@
 			<releases>
 				<enabled>true</enabled>
 			</releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -672,83 +619,25 @@
 				<artifactId>jts</artifactId>
 				<version>${jts.version}</version>
 			</dependency>
+
 			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>geoxygene-appli</artifactId>
-				<version>${project.version}</version>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.version}</version>
 			</dependency>
+
+			<!-- Scope TEST -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.10</version>
+				<scope>test</scope>
+			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-awt-util</artifactId>
-			<version>1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-dom</artifactId>
-			<version>1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-svggen</artifactId>
-			<version>1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-transcoder</artifactId>
-			<version>1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>xstream</artifactId>
-			<version>1.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>xml-apis</groupId>
-			<artifactId>xml-apis</artifactId>
-			<version>1.3.04</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>fop</artifactId>
-			<version>0.95</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>dom4j</groupId>
-			<artifactId>dom4j</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-commons-csv</artifactId>
-			<version>1.4.0</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.5.8</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.4.2</version>
-		</dependency>
-
-		<!-- Scope TEST -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<distributionManagement>
