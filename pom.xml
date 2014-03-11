@@ -63,8 +63,8 @@
 		<jfreechart.version>1.0.12</jfreechart.version>
         <jgrapht.version>0.9.0</jgrapht.version>
 
-		<skip.unit.tests>false</skip.unit.tests>
-		<skip.integration.tests>true</skip.integration.tests>
+		<!-- <skip.unit.tests>false</skip.unit.tests> -->
+		<!-- <skip.integration.tests>true</skip.integration.tests> -->
 	</properties>
 
 	<!-- =========================================================== -->
@@ -72,14 +72,15 @@
 	<!-- -->
 	<!-- =========================================================== -->
 	<profiles>
-		<profile>
+		
+		<!-- <profile>
 			<id>integration-test</id>
 			<properties>
-				<!-- Only integration tests are run. -->
+				--><!-- Only integration tests are run. -->
 				<!-- <skip.integration.tests>false</skip.integration.tests> -->
 				<!-- <skip.unit.tests>true</skip.unit.tests> -->
-			</properties>
-		</profile>
+			<!-- </properties>
+		</profile> -->
 		<profile>
             <id>executable</id>
 			<!-- controler la variable {dir.executable} -->
@@ -377,13 +378,14 @@
 			</plugin>
 
 			<!-- Used to add source directories to our build. -->
+			<!--
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<version>1.7</version>
 				<executions>
-					<!-- States that the plugin's add-test-source 
-					     goal is executed at generate-test-sources phase. -->
+					--><!-- States that the plugin's add-test-source 
+					     goal is executed at generate-test-sources phase. --><!--
 					<execution>
 						<id>add-integration-test-sources</id>
 						<phase>generate-test-sources</phase>
@@ -391,7 +393,7 @@
 							<goal>add-test-source</goal>
 						</goals>
 						<configuration>
-							<!-- Configures the source directory of integration tests. -->
+							--><!-- Configures the source directory of integration tests. --><!--
 							<sources>
 								<source>src/integration-test/java</source>
 							</sources>
@@ -399,7 +401,8 @@
 					</execution>
 				</executions>
 			</plugin>
-
+			-->
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -407,15 +410,18 @@
 					<!-- Skips unit tests if the value of skip.unit.tests property is true -->
 					<!-- <skipTests>${skip.unit.tests}</skipTests> -->
 					<!-- Excludes integration tests when unit tests are run. -->
+					<!--
 					<excludes>
 						<exclude>**/IT*.java</exclude>
 						<exclude>**/*IT.java</exclude>
 						<exclude>**/*ITCase.java</exclude>
 					</excludes>
+					-->
 				</configuration>
 			</plugin>
 
 			<!-- Used for integration tests -->
+			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
@@ -428,7 +434,7 @@
 							<goal>verify</goal>
 						</goals>
 						<configuration>
-							<!-- <skipTests>${skip.integration.tests}</skipTests> -->
+							<skipTests>${skip.integration.tests}</skipTests>
 							<excludes>
 								<exclude>**/Test*.java</exclude>
 								<exclude>**/*Test.java</exclude>
@@ -438,6 +444,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			-->
 
 			<plugin>
 				<groupId>de.akquinet.maven</groupId>
@@ -697,8 +704,8 @@
 	</pluginRepositories>
 
 	<!-- ==================================================================== -->
-	<!-- Centraliser la gestion des versions des dÃ©pendances -->
-	<!-- sans ajouter de dÃ©pendances hÃ©ritÃ©es par tous les projets fils -->
+	<!-- Centraliser la gestion des versions des dépendances -->
+	<!-- sans ajouter de dépendances héritées par tous les projets fils -->
 	<!-- =================================================================== -->
 	<dependencyManagement>
 		<dependencies>
