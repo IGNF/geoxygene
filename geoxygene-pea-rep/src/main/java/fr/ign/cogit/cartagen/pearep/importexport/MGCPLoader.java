@@ -1506,6 +1506,14 @@ public class MGCPLoader extends ShapeFileLoader {
             CartAGenDataSet.RAILWAY_LINES_POP, IRailwayLine.FEAT_TYPE_NAME,
             this.getDataset().getRailwayNetwork(), PeaRepDbType.MGCPPlusPlus);
       }
+      if (((listLayer.size() == 0) || (listLayer.contains("LAN050")))
+          && (FileUtil.getNamedFileInDir(directory, "LAN050.shp") != null)) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LAN050.shp")
+                .getAbsolutePath(), MGCPRailwayLine.class,
+            CartAGenDataSet.RAILWAY_LINES_POP, IRailwayLine.FEAT_TYPE_NAME,
+            this.getDataset().getRailwayNetwork(), PeaRepDbType.MGCPPlusPlus);
+      }
 
       // point loading
       // PowerSubstation

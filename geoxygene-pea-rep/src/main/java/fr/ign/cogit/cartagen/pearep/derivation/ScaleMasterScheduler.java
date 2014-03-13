@@ -41,6 +41,7 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterMultiElement;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterMultiProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterXMLParser;
+import fr.ign.cogit.cartagen.pearep.derivation.mraware.MultiRepAwareStrategy;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.BridgeCollapseProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.CollapseToPointProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.ContourSelectionProcess;
@@ -53,6 +54,7 @@ import fr.ign.cogit.cartagen.pearep.derivation.processes.PointsConvexHullProcess
 import fr.ign.cogit.cartagen.pearep.derivation.processes.PointsNonConvexHullProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.PolygonSimplification;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RailwaySelectionProcess;
+import fr.ign.cogit.cartagen.pearep.derivation.processes.RailwaySelectionProcess2;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RaposoSimplifProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RiverStrokeSelectionProcess;
 import fr.ign.cogit.cartagen.pearep.derivation.processes.RoundaboutCollapseProcess;
@@ -140,6 +142,7 @@ public class ScaleMasterScheduler {
    * generalization process
    */
   private boolean isAware;
+  private MultiRepAwareStrategy awareStrategy = MultiRepAwareStrategy.POST_PROC;
 
   /**
    * A constructor from the XML configuration files describing the ScaleMaster
@@ -269,6 +272,14 @@ public class ScaleMasterScheduler {
     this.themes = themes;
   }
 
+  public MultiRepAwareStrategy getAwareStrategy() {
+    return awareStrategy;
+  }
+
+  public void setAwareStrategy(MultiRepAwareStrategy awareStrategy) {
+    this.awareStrategy = awareStrategy;
+  }
+
   /**
    * Initialise the {@link ScaleMasterTheme} objects known by {@code this}.
    * @throws ClassNotFoundException
@@ -305,6 +316,7 @@ public class ScaleMasterScheduler {
     this.availableProcesses.add(TaxiwaySimplificationProcess.getInstance());
     this.availableProcesses.add(RiverStrokeSelectionProcess.getInstance());
     this.availableProcesses.add(RailwaySelectionProcess.getInstance());
+    this.availableProcesses.add(RailwaySelectionProcess2.getInstance());
     this.availableProcesses.add(RoundaboutCollapseProcess.getInstance());
     this.availableProcesses.add(ElectricTypificationProcess.getInstance());
     for (ScaleMasterGeneProcess proc : availableProcesses)
@@ -417,6 +429,50 @@ public class ScaleMasterScheduler {
         continue;
       }
 
+      // if the MR-aware strategy is pre-processing, filter the input features
+      if (isAware && awareStrategy.equals(MultiRepAwareStrategy.PRE_FILTERING)) {
+        // remove the matched features from 'features' collection
+        // Get the elements with lower level of details
+        ScaleMasterElement elemSup = null;
+        for (ScaleMasterElement element : line.getAllElements()) {
+          if (!element.getDbName().equals(elem.getDbName())) {
+            if (element.getInterval().getMinimum() >= elem.getInterval()
+                .getMaximum()) {
+              elemSup = element;
+            }
+          }
+        }
+
+        // Get the population with lower level of details
+        CartAGenDataSet datasetSup = CartAGenDocOld.getInstance().getDataset(
+            elemSup.getDbName());
+        IPopulation<IGeneObj> popSup = datasetSup.getCartagenPop(datasetSup
+            .getPopNameFromClass(classObj));
+
+        // cancel the elimination of objects present in the database with lower
+        // level of detail
+        for (IFeature ftSup : popSup) {
+          String idappSup = ftSup.getAttribute("idapp").toString();
+          if (!(idappSup.equals("0"))) {
+            boolean deleted = true;
+            for (IFeature ftOut : new HashSet<IGeneObj>(features)) {
+              String idappOut = ftOut.getAttribute("idapp").toString();
+              if (idappOut == idappSup) {
+                deleted = false;
+              }
+            }
+            if (deleted == true) {
+              for (IGeneObj obj : pop) {
+                String idappInf = obj.getAttribute("idapp").toString();
+                if (idappInf.equals(idappSup)) {
+                  features.remove(obj);
+                }
+              }
+            }
+          }
+        }
+      }
+
       // apply the processes in the priority order
       for (OrderedProcess orderedProc : procList) {
         // test if the current process is the filter
@@ -467,7 +523,7 @@ public class ScaleMasterScheduler {
         }
       }
 
-      if (isAware == true) {
+      if (isAware && awareStrategy.equals(MultiRepAwareStrategy.POST_PROC)) {
         ScaleMasterScheduler.traceLogger
             .info("Application du processus de generalisation consciente sur "
                 + elem.getClasses() + " de " + elem.getDbName());

@@ -34,7 +34,7 @@ public class VMAP1PPRailrdL extends VMAP1PPFeature implements IRailwayLine {
       uid_, upd_date, upd_info, v2i_f_code, valid_date, valid_info, status;
   private long acc, exs, fco, fcsubtype, gaw, keep, loc, rgc, rra, rrc, rsa,
       obj_rmq, ppc, src_dim, src_name, scamax, scamin, upd_name, valid_stat,
-      originform, targetscal;
+      originform, targetscal, idapp;
 
   /**
    * @param type
@@ -46,6 +46,8 @@ public class VMAP1PPRailrdL extends VMAP1PPFeature implements IRailwayLine {
     this.setInitialGeom(lineString);
     this.setEliminated(false);
     this.setAttributeMap(attributes);//
+
+    this.idapp = getLongAttribute("idapp");
 
     this.date_bdi = getStringAttribute("date_bdi");
     this.f_code = getStringAttribute("f_code");
@@ -473,13 +475,13 @@ public class VMAP1PPRailrdL extends VMAP1PPFeature implements IRailwayLine {
   }
 
   @Override
-  public void setSidetrack(boolean sidetrack) {
+  public void setSidetrack(Boolean sidetrack) {
     // TODO Auto-generated method stub
 
   }
 
   @Override
-  public boolean isSideTrack() {
+  public boolean isSidetrack() {
     // TODO Auto-generated method stub
     return false;
   }
@@ -490,6 +492,14 @@ public class VMAP1PPRailrdL extends VMAP1PPFeature implements IRailwayLine {
 
   public void setAcc(long acc) {
     this.acc = acc;
+  }
+
+  public long getIdapp() {
+    return idapp;
+  }
+
+  public void setIdapp(long idapp) {
+    this.idapp = idapp;
   }
 
 }

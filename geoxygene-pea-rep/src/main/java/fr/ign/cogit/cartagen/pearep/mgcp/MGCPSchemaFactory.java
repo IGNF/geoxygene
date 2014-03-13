@@ -26,6 +26,7 @@ import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
+import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayNode;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefField;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
@@ -43,6 +44,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.energy.MGCPElectricityLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterNode;
 import fr.ign.cogit.cartagen.pearep.mgcp.sea.MGCPShipWreckArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPBridgePoint;
+import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayNode;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadNode;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.PatteOie;
@@ -164,6 +166,13 @@ public class MGCPSchemaFactory extends AbstractCreationFactory {
       Collection<IRoadLine> externalRoads, Collection<IRoadLine> internalRoads,
       Collection<INetworkNode> initialNodes) {
     return new RoundAbout(geom, externalRoads, internalRoads, initialNodes);
+  }
+
+  @Override
+  public IRailwayLine createRailwayLine(ILineString line, int importance) {
+    IRailwayLine rail = new MGCPRailwayLine(line);
+    rail.setImportance(importance);
+    return rail;
   }
 
 }

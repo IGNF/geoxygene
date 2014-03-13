@@ -31,7 +31,7 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
 
   // attributes
   private long fun, loc, rir, src_name, uid, ale_eval, ace_eval, zval_type,
-      rta, acc, rgc, rra, rrc, ctl, rsa;
+      rta, acc, rgc, rra, rrc, ctl, rsa, idapp;
   private String nam, nfi, nfn, cpyrt_note, ltn, tier_note, src_info, src_date,
       upd_date, txt, upd_info, ale, gaw, ace;
 
@@ -52,11 +52,21 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
     this.finalNode = null;
     this.setAttributeMap(attributes);//
 
+    this.idapp = getLongAttribute("idapp");
+
     // attributes present in Mgcp++
+    if (attributes.containsKey("coe"))
+      this.sideTrack = false;
+    else
+      this.sideTrack = true;
+
     this.acc = getLongAttribute("acc");
     this.fun = getLongAttribute("fun");
-    if (attributes.containsKey("loc"))
+    if (attributes.containsKey("loc")) {
       this.loc = getLongAttribute("loc");
+      if (!sideTrack && this.loc == 0)
+        this.sideTrack = true;
+    }
     this.ltn = getStringAttribute("ltn");
     if (attributes.containsKey("rir"))
       this.rir = getLongAttribute("rir");
@@ -90,6 +100,7 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
     if (attributes.containsKey("rsa"))
       this.rsa = getLongAttribute("rsa");
     this.setAttributeMap(null);
+
   }
 
   /**
@@ -148,7 +159,7 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
 
   @Override
   public double getWidth() {
-    if (this.isSideTrack()) {
+    if (this.isSidetrack()) {
       return GeneralisationLegend.RES_FER_LARGEUR * 2 / 3;
     } else {
       return GeneralisationLegend.RES_FER_LARGEUR;
@@ -217,7 +228,7 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
   }
 
   @Override
-  public boolean isSideTrack() {
+  public boolean isSidetrack() {
     return sideTrack;
   }
 
@@ -454,9 +465,16 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
   }
 
   @Override
-  public void setSidetrack(boolean sidetrack) {
-    // TODO Auto-generated method stub
+  public void setSidetrack(Boolean sidetrack) {
+    this.sideTrack = sidetrack;
+  }
 
+  public long getIdapp() {
+    return idapp;
+  }
+
+  public void setIdapp(long idapp) {
+    this.idapp = idapp;
   }
 
 }

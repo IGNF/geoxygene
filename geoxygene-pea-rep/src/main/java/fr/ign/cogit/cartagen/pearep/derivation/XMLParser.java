@@ -31,6 +31,7 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMaster;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterXMLParser;
+import fr.ign.cogit.cartagen.pearep.derivation.mraware.MultiRepAwareStrategy;
 import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 
@@ -197,6 +198,9 @@ public class XMLParser {
         if (awareElem != null) {
           if (awareElem.getChildNodes().item(0).getNodeValue().equals("true")) {
             scheduler.setAware(true);
+            if (awareElem.hasAttribute("strategy"))
+              scheduler.setAwareStrategy(MultiRepAwareStrategy
+                  .valueOf(awareElem.getAttribute("strategy")));
           }
         }
 
