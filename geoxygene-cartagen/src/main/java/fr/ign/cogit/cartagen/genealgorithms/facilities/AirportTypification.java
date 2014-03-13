@@ -10,8 +10,11 @@
 package fr.ign.cogit.cartagen.genealgorithms.facilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
@@ -31,6 +34,8 @@ import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.clustering.AdjacencyClustering;
+import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
+import fr.ign.cogit.cartagen.spatialanalysis.network.StrokesNetwork;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -46,9 +51,16 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.generalisation.simplification.SimplificationAlgorithm;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.NoeudReseau;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Reseau;
+import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ArcReseauImpl;
+import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.NoeudReseauImpl;
+import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
@@ -70,12 +82,45 @@ public class AirportTypification {
   /** The maximum area of a branching taxiway pattern. Default value = 7000 m² */
   private double branchingMaxArea;
   private double maxAngleBranching;
+  private double taxiwayLengthThreshold;
   private Set<TaxiwayBranching> branchings;
   private Set<TaxiwayBranchingGroup> branchingGroups;
+  private Set<TaxiwayBranchingCouple> branchingCouples;
 
   public AirportTypification(IAirportArea airport) {
     super();
     this.airport = airport;
+  }
+
+  /**
+   * Constructor without explicit airport area object. A fictitious airport
+   * object is created from the convex hull of the airport objects of the
+   * dataset.
+   */
+  public AirportTypification() {
+    super();
+    IFeatureCollection<IFeature> objects = new FT_FeatureCollection<IFeature>();
+    objects.addAll(CartAGenDoc.getInstance().getCurrentDataset()
+        .getRunwayLines());
+    objects.addAll(CartAGenDoc.getInstance().getCurrentDataset().getRunways());
+    objects.addAll(CartAGenDoc.getInstance().getCurrentDataset()
+        .getCartagenPop(CartAGenDataSet.TAXIWAY_AREA_POP));
+    objects.addAll(CartAGenDoc.getInstance().getCurrentDataset()
+        .getCartagenPop(CartAGenDataSet.TAXIWAY_LINE_POP));
+    IGeometry geom = objects.getGeomAggregate().convexHull();
+    this.airport = CartAGenDoc.getInstance().getCurrentDataset()
+        .getCartAGenDB().getGeneObjImpl().getCreationFactory()
+        .createAirportArea((IPolygon) geom);
+    for (IGeneObj obj : CartAGenDoc.getInstance().getCurrentDataset()
+        .getCartagenPop(CartAGenDataSet.TAXIWAY_LINE_POP))
+      this.airport.getTaxiwayLines().add((ITaxiwayLine) obj);
+    for (IGeneObj obj : CartAGenDoc.getInstance().getCurrentDataset()
+        .getCartagenPop(CartAGenDataSet.TAXIWAY_AREA_POP))
+      this.airport.getTaxiwayAreas().add((ITaxiwayArea) obj);
+    this.airport.getRunwayLines().addAll(
+        CartAGenDoc.getInstance().getCurrentDataset().getRunwayLines());
+    this.airport.getRunwayAreas().addAll(
+        CartAGenDoc.getInstance().getCurrentDataset().getRunways());
   }
 
   /**
@@ -241,6 +286,7 @@ public class AirportTypification {
   public void detectBranchingPatterns() {
     this.branchings = new HashSet<AirportTypification.TaxiwayBranching>();
     this.branchingGroups = new HashSet<AirportTypification.TaxiwayBranchingGroup>();
+    this.branchingCouples = new HashSet<AirportTypification.TaxiwayBranchingCouple>();
 
     // first make the taxiway network planar
     makeTaxiwaysPlanar();
@@ -348,9 +394,34 @@ public class AirportTypification {
       this.branchings.removeAll(branchingGroup);
     }
 
+    // finally detect the TaxiwayBranchingCouples from the groups previously
+    // identified, i.e. two adjacent branching taxiways with one intersecting
+    // slip way.
+    Set<TaxiwayBranchingGroup> branchingGroupsToRemove = new HashSet<TaxiwayBranchingGroup>();
+    for (TaxiwayBranchingGroup group : branchingGroups) {
+      if (group.components.size() != 3)
+        continue;
+
+      // one of the corners is shared by all three components if this is a
+      // couple
+      Iterator<TaxiwayBranching> i = group.components.iterator();
+      TaxiwayBranching branch1 = i.next(), branch2 = i.next(), branch3 = i
+          .next();
+      for (IDirectPosition corner : branch1.corners) {
+        if (!branch2.corners.contains(corner)
+            || !branch3.corners.contains(corner))
+          continue;
+
+        // arrived here, the group is a couple, create the object
+        this.branchingCouples.add(new TaxiwayBranchingCouple(group.components,
+            corner));
+        branchingGroupsToRemove.add(group);
+      }
+    }
+    this.branchingGroups.removeAll(branchingGroupsToRemove);
   }
 
-  private void makeTaxiwaysPlanar() {
+  public void makeTaxiwaysPlanar() {
     IFeatureCollection<IGeneObj> fc = new FT_FeatureCollection<IGeneObj>();
     for (ITaxiwayLine obj : airport.getTaxiwayLines())
       fc.add(obj);
@@ -408,6 +479,59 @@ public class AirportTypification {
     }
   }
 
+  public void selectTaxiwayLines() {
+    // get the eliminated features to compute strokes on
+    HashMap<ArcReseau, ITaxiwayLine> map = new HashMap<ArcReseau, ITaxiwayLine>();
+    Map<IDirectPosition, NoeudReseau> nodes = new HashMap<IDirectPosition, NoeudReseau>();
+    Reseau res = new ReseauImpl();
+    // first get the road features not yet selected
+    for (ITaxiwayLine obj : airport.getTaxiwayLines()) {
+      ArcReseau arc = new ArcReseauImpl(res, false, obj.getGeom());
+      map.put(arc, obj);
+      IDirectPosition startPt = obj.getGeom().startPoint();
+      IDirectPosition endPt = obj.getGeom().endPoint();
+      if (nodes.containsKey(startPt)) {
+        NoeudReseau node = nodes.get(startPt);
+        node.getArcsSortants().add(arc);
+        arc.setNoeudInitial(node);
+      } else {
+        NoeudReseau node = new NoeudReseauImpl();
+        node.setGeom(startPt.toGM_Point());
+        node.getArcsSortants().add(arc);
+        nodes.put(startPt, node);
+        res.getNoeuds().add(node);
+        arc.setNoeudInitial(node);
+      }
+      if (nodes.containsKey(endPt)) {
+        NoeudReseau node = nodes.get(endPt);
+        node.getArcsEntrants().add(arc);
+        arc.setNoeudFinal(node);
+      } else {
+        NoeudReseau node = new NoeudReseauImpl();
+        node.setGeom(endPt.toGM_Point());
+        node.getArcsEntrants().add(arc);
+        nodes.put(endPt, node);
+        res.getNoeuds().add(node);
+        arc.setNoeudFinal(node);
+      }
+    }
+    // then compute the strokes
+    StrokesNetwork network = new StrokesNetwork(map.keySet());
+    HashSet<String> attributeNames = new HashSet<String>();
+    network.buildStrokes(attributeNames, 112.5, 45.0, true);
+    // select the strokes big enough
+    for (Stroke stroke : network.getStrokes()) {
+      if (stroke.getLength() < this.taxiwayLengthThreshold) {
+        for (ArcReseau arc : stroke.getFeatures()) {
+          ITaxiwayLine way = map.get(arc);
+          if (way != null) {
+            way.eliminateBatch();
+          }
+        }
+      }
+    }
+  }
+
   public double getApronSegLength() {
     return this.apronSegLength;
   }
@@ -440,6 +564,14 @@ public class AirportTypification {
     this.openThreshTaxi = openThreshTaxi;
   }
 
+  public double getTaxiwayLengthThreshold() {
+    return taxiwayLengthThreshold;
+  }
+
+  public void setTaxiwayLengthThreshold(double taxiwayLengthThreshold) {
+    this.taxiwayLengthThreshold = taxiwayLengthThreshold;
+  }
+
   public Set<TaxiwayBranching> getBranchings() {
     return branchings;
   }
@@ -470,6 +602,14 @@ public class AirportTypification {
 
   public void setMaxAngleBranching(double maxAngleBranching) {
     this.maxAngleBranching = maxAngleBranching;
+  }
+
+  public Set<TaxiwayBranchingCouple> getBranchingCouples() {
+    return branchingCouples;
+  }
+
+  public void setBranchingCouples(Set<TaxiwayBranchingCouple> branchingCouples) {
+    this.branchingCouples = branchingCouples;
   }
 
   public class TaxiwayBranching extends DefaultFeature {
@@ -560,6 +700,10 @@ public class AirportTypification {
      * collapse).
      */
     public void collapse() {
+      if (corners.size() < 3) {
+        // twisted case: do nothing
+        return;
+      }
       IGeneObj slipWay1 = null, slipWay2 = null;
       IGeneObj minorOutWay = null;
       IDirectPosition cornerMain1 = null, cornerMain2 = null, cornerMinor = null;
@@ -615,6 +759,13 @@ public class AirportTypification {
           .extendAtExtremities(2.0);
       IDirectPosition proj = CommonAlgorithmsFromCartAGen.projection(
           cornerMinor, segment, direction);
+      if (proj == null)
+        proj = CommonAlgorithmsFromCartAGen.projection(cornerMinor,
+            segment.extendAtExtremities(10.0), direction);
+      if (proj == null) {
+        // another twisted case: do nothing
+        return;
+      }
       // check of the projected is on the outline or not
       if (!this.getGeom().exteriorLineString().intersects(proj.toGM_Point())) {
         // it means that the main way is not right but curved. Then, look for
@@ -691,5 +842,226 @@ public class AirportTypification {
             .getBiggerFromMultiSurface((IMultiSurface<IOrientableSurface>) geom));
     }
 
+    /**
+     * Collapse a group of branching taxiways, i.e. delete the slip taxiways and
+     * preserve the others. The slip ways are detected using their curvature.
+     */
+    public void collapse() {
+      // loop on all inside taxiways
+      Set<IGeneObj> treated = new HashSet<IGeneObj>();
+      for (TaxiwayBranching component : components) {
+        for (IGeneObj taxiway : component.getInTaxiways()) {
+          if (treated.contains(taxiway)) {
+            // if it has been previously eliminated due to curvature, cancel
+            // elimination, it just a curved 'inside taxiway'
+            taxiway.cancelElimination();
+            continue;
+          }
+          // compute the total angle deviation of the line, i.e. the sum of all
+          // consecutive angles
+          double deviation = 0.0;
+          for (int i = 1; i < taxiway.getGeom().coord().size() - 2; i++) {
+            double angle = Angle.angleTroisPoints(
+                taxiway.getGeom().coord().get(i - 1),
+                taxiway.getGeom().coord().get(i),
+                taxiway.getGeom().coord().get(i + 1)).getValeur();
+            // put the angle between 0 & Pi
+            if (angle > Math.PI)
+              angle = 2 * Math.PI - angle;
+            // take the symmetrical angle (0.75Pi is in fact a Pi/4 deviation)
+            angle = Math.PI - angle;
+            deviation += Math.abs(angle);
+          }
+          if (deviation > Math.PI / 6)
+            taxiway.eliminateBatch();
+          // count the current taxiway as treated
+          treated.add(taxiway);
+        }
+      }
+
+    }
+  }
+
+  public class TaxiwayBranchingCouple {
+    private IPolygon geom;
+    private Set<IGeneObj> slipTaxiways;
+    private Set<TaxiwayBranching> components;
+    private IDirectPosition centralCorner;
+
+    public TaxiwayBranchingCouple(Set<TaxiwayBranching> components,
+        IDirectPosition centralCorner) {
+      super();
+      this.components = components;
+      computeGeom();
+      this.centralCorner = centralCorner;
+      this.slipTaxiways = new HashSet<IGeneObj>();
+    }
+
+    public IPolygon getGeom() {
+      return geom;
+    }
+
+    public void setGeom(IPolygon geom) {
+      this.geom = geom;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void computeGeom() {
+      IGeometry geom = null;
+      for (TaxiwayBranching obj : components) {
+        if (geom == null)
+          geom = obj.getGeom();
+        else
+          geom = geom.union(obj.getGeom());
+      }
+      if (geom instanceof IPolygon)
+        this.setGeom((IPolygon) geom);
+      else
+        this.setGeom(CommonAlgorithmsFromCartAGen
+            .getBiggerFromMultiSurface((IMultiSurface<IOrientableSurface>) geom));
+    }
+
+    public void collapse() {
+      Map<IDirectPosition, IGeneObj> objsToExtend = new HashMap<IDirectPosition, IGeneObj>();
+      // first identify the central branching
+      TaxiwayBranching central = null;
+      List<TaxiwayBranching> compList = new ArrayList<AirportTypification.TaxiwayBranching>();
+      compList.addAll(components);
+      compList.addAll(components);
+      for (int i = 0; i < 3; i++) {
+        int nbSharedCorners = 0;
+        for (IDirectPosition corner : compList.get(i).corners) {
+          if (compList.get(i + 1).getGeom().buffer(0.1)
+              .contains(corner.toGM_Point())
+              || compList.get(i + 2).getGeom().buffer(0.1)
+                  .contains(corner.toGM_Point()))
+            nbSharedCorners++;
+        }
+        if (nbSharedCorners == 3) {
+          central = compList.get(i);
+          break;
+        }
+      }
+
+      if (central == null) {
+        // do nothing
+        return;
+      }
+
+      // identify the slipways in the central branching
+      for (IGeneObj obj : central.inTaxiways) {
+        if (obj.getGeom().intersects(centralCorner.toGM_Point()))
+          this.slipTaxiways.add(obj);
+      }
+
+      // characterise the other corners of non central branchings
+      TaxiwayBranching branch1 = null, branch2 = null;
+      for (TaxiwayBranching branch : components) {
+        if (branch1 == null && !branch.equals(central)) {
+          branch1 = branch;
+          continue;
+        }
+        if (branch2 == null && !branch.equals(central)) {
+          branch2 = branch;
+          break;
+        }
+      }
+      IDirectPosition extremity1 = null, extremity2 = null;
+      IDirectPosition minorCorner1 = null, minorCorner2 = null;
+      for (IDirectPosition corner : branch1.corners) {
+        if (central.corners.contains(corner))
+          continue;
+        boolean connected = false;
+        for (IGeneObj obj : branch1.inTaxiways) {
+          if (obj.getGeom().intersects(corner.toGM_Point())
+              && obj.getGeom().intersects(centralCorner.toGM_Point())) {
+            connected = true;
+            break;
+          }
+        }
+        if (connected) {
+          minorCorner1 = corner;
+          objsToExtend.put(corner, branch1.getConnectedWay(false, corner)
+              .get(0));
+        } else {
+          extremity1 = corner;
+        }
+      }
+      // find slipways for branch1
+      for (IGeneObj obj : branch1.inTaxiways) {
+        if (obj.getGeom().intersects(minorCorner1.toGM_Point())) {
+          this.slipTaxiways.add(obj);
+        }
+      }
+
+      for (IDirectPosition corner : branch2.corners) {
+        if (central.corners.contains(corner))
+          continue;
+        boolean connected = false;
+        for (IGeneObj obj : branch2.inTaxiways) {
+          if (obj.getGeom().intersects(corner.toGM_Point())
+              && obj.getGeom().intersects(centralCorner.toGM_Point())) {
+            connected = true;
+            break;
+          }
+        }
+        if (connected) {
+          minorCorner2 = corner;
+          objsToExtend.put(corner, branch2.getConnectedWay(false, corner)
+              .get(0));
+        } else {
+          extremity2 = corner;
+        }
+      }
+      // find slipways for branch2
+      for (IGeneObj obj : branch2.inTaxiways) {
+        if (obj.getGeom().intersects(minorCorner2.toGM_Point())) {
+          this.slipTaxiways.add(obj);
+        }
+      }
+
+      // delete slip ways
+      for (IGeneObj obj : this.slipTaxiways)
+        obj.eliminateBatch();
+
+      if (extremity1 == null || extremity2 == null) {
+        // twisted case: do nothing
+        return;
+      }
+
+      // reconnect the branching taxiway
+      Segment seg = new Segment(extremity1, extremity2)
+          .extendAtExtremities(2.0);
+      for (IDirectPosition corner : objsToExtend.keySet()) {
+        IGeneObj minorOutWay = objsToExtend.get(corner);
+        Vector2D direction = new Vector2D(minorOutWay.getGeom().coord().get(1),
+            corner);
+        if (!minorOutWay.getGeom().coord().get(0).equals(corner))
+          direction = new Vector2D(minorOutWay.getGeom().coord()
+              .get(minorOutWay.getGeom().coord().size() - 2), corner);
+        IDirectPosition proj = CommonAlgorithmsFromCartAGen.projection(corner,
+            seg, direction);
+        // check of the projected is on the outline or not
+        if (!this.getGeom().exteriorLineString().intersects(proj.toGM_Point())) {
+          // it means that the main way is not right but curved. Then, look for
+          // the nearest point on the outline.
+          proj = CommonAlgorithms.getNearestPoint(this.getGeom()
+              .exteriorLineString(), proj.toGM_Point());
+        }
+        if (!minorOutWay.getGeom().coord().get(0).equals(corner)) {
+          IDirectPositionList points = new DirectPositionList();
+          points.addAll(minorOutWay.getGeom().coord());
+          points.add(proj);
+          ILineString newGeom = new GM_LineString(points);
+          minorOutWay.setGeom(newGeom);
+        } else {
+          IDirectPositionList points = new DirectPositionList();
+          points.addAll(minorOutWay.getGeom().coord());
+          points.add(0, proj);
+          ILineString newGeom = new GM_LineString(points);
+          minorOutWay.setGeom(newGeom);
+        }
+      }
+    }
   }
 }

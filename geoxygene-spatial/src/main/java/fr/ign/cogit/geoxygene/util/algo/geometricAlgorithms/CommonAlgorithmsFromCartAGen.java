@@ -761,7 +761,7 @@ public class CommonAlgorithmsFromCartAGen {
     IGeometry intersection = line.intersection(segment);
     if (intersection.isEmpty()) {
       // extend segment
-      transVect.scalarMultiplication(3.0);
+      transVect.scalarMultiplication(10.0);
       auxPt = transVect.translate(point);
       segment = new GM_LineSegment(point, auxPt);
       intersection = line.intersection(segment);

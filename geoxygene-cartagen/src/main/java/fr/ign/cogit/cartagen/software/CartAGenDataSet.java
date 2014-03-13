@@ -810,6 +810,21 @@ public class CartAGenDataSet extends DataSet {
   }
 
   /**
+   * Gets the landuse areas of the dataset of one given type.
+   * @return
+   */
+  public IFeatureCollection<ISimpleLandUseArea> getLandUseAreas(int type) {
+    IFeatureCollection<ISimpleLandUseArea> landuse = new FT_FeatureCollection<ISimpleLandUseArea>();
+    for (IGeneObj obj : this.getCartagenPop(CartAGenDataSet.LANDUSE_AREAS_POP,
+        ISimpleLandUseArea.FEAT_TYPE_NAME)) {
+      ISimpleLandUseArea parcel = (ISimpleLandUseArea) obj;
+      if (parcel.getType() == type)
+        landuse.add(parcel);
+    }
+    return landuse;
+  }
+
+  /**
    * Gets the administrative areas of the dataset A REVOIR
    * @return
    */

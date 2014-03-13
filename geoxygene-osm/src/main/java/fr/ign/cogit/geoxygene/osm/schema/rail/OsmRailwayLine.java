@@ -27,7 +27,8 @@ public class OsmRailwayLine extends OsmNetworkSection implements IRailwayLine {
    * Associated Geoxygene schema object
    */
   private TronconFerre geoxObj;
-  private boolean sidetrack = false;
+  private Boolean sidetrack = null;
+  private OsmRailwayNode initialNode, finalNode;
 
   /**
    * Constructor
@@ -38,6 +39,8 @@ public class OsmRailwayLine extends OsmNetworkSection implements IRailwayLine {
     this.setInitialGeom(geoxObj.getGeom());
     this.setEliminated(false);
     this.setImportance(importance);
+    if (getTags().containsKey("service"))
+      this.sidetrack = true;
   }
 
   public OsmRailwayLine(ILineString line) {
@@ -45,6 +48,8 @@ public class OsmRailwayLine extends OsmNetworkSection implements IRailwayLine {
     this.geoxObj = new TronconFerreImpl(new ReseauImpl(), false, line);
     this.setInitialGeom(line);
     this.setEliminated(false);
+    if (getTags().containsKey("service"))
+      this.sidetrack = true;
   }
 
   @Override
@@ -65,36 +70,54 @@ public class OsmRailwayLine extends OsmNetworkSection implements IRailwayLine {
 
   @Override
   public INetworkNode getInitialNode() {
-    // TODO Auto-generated method stub
-    return null;
+    return initialNode;
   }
 
   @Override
   public void setInitialNode(INetworkNode node) {
-    // TODO Auto-generated method stub
-
+    this.initialNode = (OsmRailwayNode) node;
   }
 
   @Override
   public INetworkNode getFinalNode() {
-    // TODO Auto-generated method stub
-    return null;
+    return finalNode;
   }
 
   @Override
   public void setFinalNode(INetworkNode node) {
-    // TODO Auto-generated method stub
-
+    this.finalNode = (OsmRailwayNode) node;
   }
 
   @Override
-  public void setSidetrack(boolean sidetrack) {
+  public void setSidetrack(Boolean sidetrack) {
     this.sidetrack = sidetrack;
   }
 
   @Override
-  public boolean isSideTrack() {
+  public boolean isSidetrack() {
+    if (sidetrack == null)
+      computeSideTrack();
     return sidetrack;
   }
 
+  /**
+   * Computes the value of sidetrack field, using the tags.
+   * 
+   */
+  private void computeSideTrack() {
+    if (getTags().containsKey("service")) {
+      this.sidetrack = true;
+      return;
+    }
+    if (getTags().containsKey("usage")) {
+      this.sidetrack = false;
+      return;
+    }
+    if (getTags().containsKey("name")) {
+      this.sidetrack = false;
+      return;
+    }
+
+    this.sidetrack = false;
+  }
 }

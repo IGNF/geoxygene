@@ -40,6 +40,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
+import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.util.CRSConversion;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -120,6 +121,9 @@ public class OSMLoader extends SwingWorker<Void, Void> {
       this.logger.fine(this.nbWays + "ways");
       this.logger.fine(this.nbRels + "relations");
     }
+    // set the symbolisation scale to 1:25k (the OSM sld are made for this
+    // scale)
+    Legend.setSYMBOLISATI0N_SCALE(25000);
     try {
       this.convertResourcesToGeneObjs();
     } catch (Exception e) {

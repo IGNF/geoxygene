@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,6 +60,8 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObjPoint;
+import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
+import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
@@ -109,6 +112,7 @@ import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.SourceCriterion;
 import fr.ign.cogit.geoxygene.osm.lodanalysis.individual.VertexDensityCriterion;
 import fr.ign.cogit.geoxygene.osm.lodharmonisation.gui.HarmonisationFrame;
 import fr.ign.cogit.geoxygene.osm.schema.OsmGeneObj;
+import fr.ign.cogit.geoxygene.osm.schema.landuse.OsmLandUseTypology;
 import fr.ign.cogit.geoxygene.osm.schema.network.OsmNetworkSection;
 import fr.ign.cogit.geoxygene.osm.schema.urban.OsmBuilding;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
@@ -139,6 +143,7 @@ public class OSMPlugin implements ProjectFramePlugin,
     JMenu correctionMenu = new JMenu("Data Correction");
     correctionMenu.add(new JMenuItem(new AggrBuildingsAction()));
     correctionMenu.add(new JMenuItem(new PlanarNetworkAction()));
+    correctionMenu.add(new JMenuItem(new RailSideTracksAction()));
     menu.add(correctionMenu);
     menu.addSeparator();
     JMenu analysisMenu = new JMenu("LoD Analysis");
@@ -326,6 +331,7 @@ public class OSMPlugin implements ProjectFramePlugin,
       public void actionPerformed(ActionEvent evt) {
         Object source = evt.getSource();
         if (source == cancelBtn) {
+          action = "cancel";
           dispose();
         } else if (source == usedBtn) {
           txtEpsg.setText(currentProjections.get(usedCombo.getSelectedItem()));
@@ -555,6 +561,49 @@ public class OSMPlugin implements ProjectFramePlugin,
       this.putValue(Action.SHORT_DESCRIPTION,
           "Aggregate the intersecting buildings to correct the digitising problems");
       this.putValue(Action.NAME, "Aggregate buildings");
+    }
+  }
+
+  /**
+   * Identify untagged sidetracks and mark the identified objects as sidetracks.
+   * Uses the landuse objects typed as "railway" to find the missing sidetracks.
+   * 
+   * @author GTouya
+   * 
+   */
+  class RailSideTracksAction extends AbstractAction {
+
+    /**
+   * 
+   */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      IPopulation<IRailwayLine> railways = CartAGenDoc.getInstance()
+          .getCurrentDataset().getRailwayLines();
+      for (ISimpleLandUseArea parcel : CartAGenDoc.getInstance()
+          .getCurrentDataset()
+          .getLandUseAreas(OsmLandUseTypology.RAILWAY.ordinal())) {
+        Collection<IRailwayLine> inside = railways.select(parcel.getGeom());
+        if (inside == null)
+          continue;
+        for (IRailwayLine rail : inside) {
+          if (rail.isSidetrack())
+            continue;
+          if (((OsmGeneObj) rail).getTags().containsKey("usage"))
+            continue;
+          if (((OsmGeneObj) rail).getTags().containsKey("name"))
+            continue;
+          // FIXME to be improved as poorly tagged main railways are converted
+          // into sidetracks.
+          rail.setSidetrack(true);
+        }
+      }
+    }
+
+    public RailSideTracksAction() {
+      this.putValue(Action.NAME, "Identify untagged sidetracks");
     }
   }
 

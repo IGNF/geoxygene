@@ -75,4 +75,14 @@ public class SelectionUtil {
     appli.getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
         .getSelectedFeatures().add(feature);
   }
+
+  /**
+   * Checks if the selection is empty or not.
+   * @param appli
+   * @return
+   */
+  public static boolean isEmpty(GeOxygeneApplication appli) {
+    return appli.getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
+        .getSelectedFeatures().size() == 0;
+  }
 }

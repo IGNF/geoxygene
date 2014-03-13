@@ -1365,8 +1365,9 @@ public class CarteTopo extends DataSet {
       }
       // cas imprévu: OUPS
       CarteTopo.logger.error(I18N.getString("CarteTopo.PlanarGraphProblem")); //$NON-NLS-1$
-      CarteTopo.logger
-          .error(I18N.getString("CarteTopo.UnionBug") + nodedLineStrings.getClass()); //$NON-NLS-1$
+      if (nodedLineStrings != null)
+        CarteTopo.logger
+            .error(I18N.getString("CarteTopo.UnionBug") + nodedLineStrings.getClass()); //$NON-NLS-1$
       CarteTopo.logger
           .error(I18N.getString("CarteTopo.EdgeProblem") + currentEdge.getGeom().coord()); //$NON-NLS-1$
     }

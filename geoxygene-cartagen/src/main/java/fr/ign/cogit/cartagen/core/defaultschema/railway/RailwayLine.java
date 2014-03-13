@@ -175,13 +175,13 @@ public class RailwayLine extends NetworkSection implements IRailwayLine {
 
   @Override
   @Transient
-  public void setSidetrack(boolean sidetrack) {
+  public void setSidetrack(Boolean sidetrack) {
     this.sidetrack = sidetrack;
   }
 
   @Override
   @Transient
-  public boolean isSideTrack() {
+  public boolean isSidetrack() {
     return this.sidetrack;
   }
 }

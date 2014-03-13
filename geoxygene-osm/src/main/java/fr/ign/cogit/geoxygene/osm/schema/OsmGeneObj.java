@@ -327,7 +327,8 @@ public class OsmGeneObj extends GeneObjDefault {
       // get the getter of this field
       String getterName = "get" + field.getName().substring(0, 1).toUpperCase()
           + field.getName().substring(1);
-      if (field.getType().equals(boolean.class))
+      if (field.getType().equals(boolean.class)
+          || field.getType().equals(Boolean.class))
         getterName = "is" + field.getName().substring(0, 1).toUpperCase()
             + field.getName().substring(1);
       try {

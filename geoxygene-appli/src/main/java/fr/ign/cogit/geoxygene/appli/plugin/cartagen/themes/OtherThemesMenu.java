@@ -24,9 +24,13 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification;
 import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification.TaxiwayBranching;
+import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification.TaxiwayBranchingCouple;
+import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification.TaxiwayBranchingGroup;
+import fr.ign.cogit.cartagen.genealgorithms.rail.TypifySideTracks;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
@@ -55,11 +59,15 @@ public class OtherThemesMenu extends JMenu {
     airportMenu.add(new JMenuItem(new BuildAirportsAction()));
     airportMenu.addSeparator();
     airportMenu.add(new JMenuItem(new TypifyTaxiwaysAction()));
-
+    airportMenu.add(new JMenuItem(new SelectTaxiwaysAction()));
+    airportMenu.add(new JMenuItem(new CollapseTaxiwayAreasAction()));
     this.addSeparator();
     JMenu railMenu = new JMenu("Railroads");
     this.add(railMenu);
     railMenu.add(new JMenuItem(new SelectAction("railroad")));
+    railMenu.add(new JMenuItem(new DisplaySideTracksAction()));
+    railMenu.addSeparator();
+    railMenu.add(new JMenuItem(new TypifySideTracksAction()));
 
   }
 
@@ -161,6 +169,14 @@ public class OtherThemesMenu extends JMenu {
           pool.addFeatureToGeometryPool(branch.getGeom(), Color.RED, 1);
           branch.collapse();
         }
+        for (TaxiwayBranchingGroup branch : algo.getDoubleBranchings()) {
+          pool.addFeatureToGeometryPool(branch.getGeom(), Color.PINK, 1);
+          branch.collapse();
+        }
+        for (TaxiwayBranchingCouple branch : algo.getBranchingCouples()) {
+          pool.addFeatureToGeometryPool(branch.getGeom(), Color.CYAN, 1);
+          branch.collapse();
+        }
       }
     }
 
@@ -169,4 +185,111 @@ public class OtherThemesMenu extends JMenu {
     }
   }
 
+  private class SelectTaxiwaysAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+          .getApplication();
+      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+          .getGeometryPool();
+      pool.setSld(appli.getMainFrame().getSelectedProjectFrame().getSld());
+      for (IFeature sel : SelectionUtil.getSelectedObjects(appli)) {
+        if (!(sel instanceof IAirportArea))
+          continue;
+        IAirportArea airport = (IAirportArea) sel;
+        AirportTypification algo = new AirportTypification(airport);
+        algo.setTaxiwayLengthThreshold(500.0);
+        algo.makeTaxiwaysPlanar();
+        algo.selectTaxiwayLines();
+
+      }
+    }
+
+    public SelectTaxiwaysAction() {
+      this.putValue(Action.NAME, "Select taxiway lines by strokes");
+    }
+  }
+
+  private class CollapseTaxiwayAreasAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+          .getApplication();
+      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+          .getGeometryPool();
+      pool.setSld(appli.getMainFrame().getSelectedProjectFrame().getSld());
+      if (SelectionUtil.isEmpty(appli)) {
+        AirportTypification algo = new AirportTypification();
+        algo.setOpenThreshTaxi(30.0);
+        algo.collapseThinTaxiways();
+        return;
+      }
+      for (IFeature sel : SelectionUtil.getSelectedObjects(appli)) {
+        if (!(sel instanceof IAirportArea))
+          continue;
+        IAirportArea airport = (IAirportArea) sel;
+        AirportTypification algo = new AirportTypification(airport);
+        algo.setTaxiwayLengthThreshold(500.0);
+        algo.makeTaxiwaysPlanar();
+        algo.selectTaxiwayLines();
+
+      }
+    }
+
+    public CollapseTaxiwayAreasAction() {
+      this.putValue(Action.NAME, "Collapse taxiway areas");
+    }
+  }
+
+  private class TypifySideTracksAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+          .getApplication();
+      TypifySideTracks typify = new TypifySideTracks(100.0, CartAGenDoc
+          .getInstance().getCurrentDataset());
+      typify.typifySideTracks();
+
+    }
+
+    public TypifySideTracksAction() {
+      this.putValue(Action.NAME, "Typify Sidetracks");
+    }
+  }
+
+  private class DisplaySideTracksAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+          .getApplication();
+      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+          .getGeometryPool();
+      pool.setSld(appli.getMainFrame().getSelectedProjectFrame().getSld());
+      for (IRailwayLine rail : CartAGenDoc.getInstance().getCurrentDataset()
+          .getRailwayLines()) {
+        if (rail.isSidetrack())
+          pool.addFeatureToGeometryPool(rail.getGeom(), Color.PINK, 2);
+      }
+    }
+
+    public DisplaySideTracksAction() {
+      this.putValue(Action.NAME, "Display Sidetracks in geometry pool");
+    }
+  }
 }

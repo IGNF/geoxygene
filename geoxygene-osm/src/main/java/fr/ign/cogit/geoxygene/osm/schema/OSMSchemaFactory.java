@@ -30,6 +30,7 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.railway.ICable;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayNode;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementPoint;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefField;
 import fr.ign.cogit.cartagen.core.genericschema.road.ICycleWay;
@@ -64,6 +65,7 @@ import fr.ign.cogit.geoxygene.osm.schema.nature.OsmTreePoint;
 import fr.ign.cogit.geoxygene.osm.schema.network.OsmNetworkFace;
 import fr.ign.cogit.geoxygene.osm.schema.rail.OsmCable;
 import fr.ign.cogit.geoxygene.osm.schema.rail.OsmRailwayLine;
+import fr.ign.cogit.geoxygene.osm.schema.rail.OsmRailwayNode;
 import fr.ign.cogit.geoxygene.osm.schema.roads.OsmCycleWay;
 import fr.ign.cogit.geoxygene.osm.schema.roads.OsmPathLine;
 import fr.ign.cogit.geoxygene.osm.schema.roads.OsmRoadLine;
@@ -362,6 +364,21 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
   @Override
   public ITaxiwayLine createTaxiwayLine(ILineString geom, TaxiwayType type) {
     return new OsmTaxiwayLine(geom);
+  }
+
+  @Override
+  public IRailwayNode createRailwayNode() {
+    return new OsmRailwayNode();
+  }
+
+  @Override
+  public IRailwayNode createRailwayNode(IPoint point) {
+    return new OsmRailwayNode(point);
+  }
+
+  @Override
+  public IRailwayNode createRailwayNode(Noeud noeud) {
+    return new OsmRailwayNode(noeud);
   }
 
 }

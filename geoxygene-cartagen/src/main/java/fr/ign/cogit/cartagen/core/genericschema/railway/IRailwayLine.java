@@ -19,8 +19,8 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 public interface IRailwayLine extends INetworkSection {
   public static final String FEAT_TYPE_NAME = "RailwayLine"; //$NON-NLS-1$
 
-  public void setSidetrack(boolean sidetrack);
+  public void setSidetrack(Boolean sidetrack);
 
-  public boolean isSideTrack();
+  public boolean isSidetrack();
 
 }
