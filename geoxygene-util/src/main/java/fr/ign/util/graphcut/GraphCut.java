@@ -29,13 +29,23 @@ package fr.ign.util.graphcut;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
+import java.awt.CompositeContext;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 
@@ -58,6 +68,7 @@ public class GraphCut {
     private byte[] imagePixels = null;
     private MinSourceSinkCut<PixelVertex, PixelEdge> algoMinCut = null;
     private Shape clippingShape;
+    private int pasteCount = 0;
 
     /**
      * Constructor
@@ -88,6 +99,7 @@ public class GraphCut {
         this.image = image;
         this.initializeMask();
         this.imagePixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        this.pasteCount = 0;
     }
 
     /**
@@ -104,7 +116,7 @@ public class GraphCut {
      */
     private void initializeMask() {
         // generate mask
-        this.mask = new BufferedImage(1600, 1200, BufferedImage.TYPE_BYTE_GRAY);
+        this.mask = new BufferedImage(this.image.getWidth(), this.image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
         Graphics2D g2 = this.mask.createGraphics();
         g2.setComposite(AlphaComposite.Src);
         g2.setColor(Color.white);
@@ -133,13 +145,14 @@ public class GraphCut {
      *            tile to paste
      * @param tileOrientation
      *            tile orientation and position in the final image
+     * @return
      */
-    public void pasteTile(BufferedImage tile, AffineTransform tileTransform) {
+    public MinSourceSinkCut<PixelVertex, PixelEdge> pasteTile(Tile tile, AffineTransform tileTransform) {
         DefaultDirectedWeightedGraph<PixelVertex, PixelEdge> graph = new DefaultDirectedWeightedGraph<PixelVertex, PixelEdge>(new PixelEdge.PixelEdgeFactory());
         PixelEdge edge = null;
         double weight = 0;
-        int w = tile.getWidth();
-        int h = tile.getHeight();
+        int w = tile.getImage().getWidth();
+        int h = tile.getImage().getHeight();
         PixelVertex[][] tileVertices = new PixelVertex[h][w];
         PixelVertex vertex = null;
         PixelVertex A = new PixelVertex(-3, h / 2);
@@ -154,7 +167,9 @@ public class GraphCut {
         gTile.fillRect(0, 0, w, h);
 
         byte[] graphCutTilePixels = ((DataBufferByte) graphCutTile.getRaster().getDataBuffer()).getData();
-        byte[] tilePixels = ((DataBufferByte) tile.getRaster().getDataBuffer()).getData();
+        byte[] tilePixels = ((DataBufferByte) tile.getImage().getRaster().getDataBuffer()).getData();
+        byte[] tileMaskPixels = ((DataBufferByte) tile.getMask().getRaster().getDataBuffer()).getData();
+        byte[] tileBorderPixels = ((DataBufferByte) tile.getBorder().getRaster().getDataBuffer()).getData();
 
         // Add pixels as graph vertices
         for (int yTile = 0; yTile < h; yTile++) {
@@ -169,15 +184,22 @@ public class GraphCut {
                     continue;
                 }
                 int lTile = (xTile + yTile * w) * 4;
+                int lTileMask = (xTile + yTile * w);
                 int lImage = (xImage + yImage * this.getImage().getWidth()) * 4;
-                int lMask = (xImage + yImage * this.getImage().getWidth());
-                byte pixelMask = this.maskPixels[lMask];
+                int lImageMask = (xImage + yImage * this.getImage().getWidth());
+                byte pixelImageMask = this.maskPixels[lImageMask];
                 int tileA = tilePixels[lTile] & 0xFF;
                 int tileB = tilePixels[lTile + 1] & 0xFF;
                 int tileG = tilePixels[lTile + 2] & 0xFF;
                 int tileR = tilePixels[lTile + 3] & 0xFF;
 
-                if (pixelMask != 0) { // out of mask
+                // out of tile
+                if (tileMaskPixels[lTileMask] == Tile.MASK_OUT) {
+                    tileVertices[yTile][xTile] = null;
+                    continue;
+                }
+
+                if (pixelImageMask == Tile.MASK_OUT) { // out of image mask
                     // copy Tile
                     graphCutTilePixels[lTile + 0] = (byte) tileA;
                     graphCutTilePixels[lTile + 1] = (byte) tileB;
@@ -191,79 +213,42 @@ public class GraphCut {
                     tileVertices[yTile][xTile] = new PixelVertex(xTile, yTile, tileR / 255f, tileG / 255f, tileB / 255f, tileA / 255f, imageR / 255f,
                             imageG / 255f, imageB / 255f, imageA / 255f);
                     graph.addVertex(tileVertices[yTile][xTile]);
-                    if (this.isOnTileBorder(xTile, yTile, tile)) {
+                    if (tileBorderPixels[lTileMask] == Tile.MASK_IN) {
                         graph.addVertex(tileVertices[yTile][xTile]);
                         edge = graph.addEdge(A, tileVertices[yTile][xTile]);
                         graph.setEdgeWeight(edge, Double.POSITIVE_INFINITY);
-                    } else if (this.hasNonZeroMaskBorder(xTile, yTile, tileTransform)) {
+                        //
+                        //                        graphCutTilePixels[lTile + 0] = (byte) 255;
+                        //                        graphCutTilePixels[lTile + 1] = (byte) 0;
+                        //                        graphCutTilePixels[lTile + 2] = (byte) 0;
+                        //                        graphCutTilePixels[lTile + 3] = (byte) 255;
+
+                    } else if (this.isOnImageMaskBorder(xTile, yTile, tileTransform)) {
                         graph.addVertex(tileVertices[yTile][xTile]);
                         edge = graph.addEdge(tileVertices[yTile][xTile], B);
                         graph.setEdgeWeight(edge, Double.POSITIVE_INFINITY);
+
+                        //                        graphCutTilePixels[lTile + 0] = (byte) 255;
+                        //                        graphCutTilePixels[lTile + 1] = (byte) 255;
+                        //                        graphCutTilePixels[lTile + 2] = (byte) 0;
+                        //                        graphCutTilePixels[lTile + 3] = (byte) 0;
+
                     }
 
                 }
             }
         }
 
-        //        // add edges from image A (dst) to borders
-        //        for (int xTile = 0; xTile < this.app.getTile().getWidth(); xTile++) {
-        //            vertex = tileVertices[0][xTile];
-        //            if (vertex != null) {
-        //                edge = graph.addEdge(A, vertex);
-        //                graph.setEdgeWeight(edge, Double.POSITIVE_INFINITY);
-        //            }
-        //            vertex = tileVertices[this.app.getTile().getHeight() - 1][xTile];
-        //            if (vertex != null) {
-        //                edge = graph.addEdge(A, vertex);
-        //                graph.setEdgeWeight(edge, Double.POSITIVE_INFINITY);
-        //            }
-        //        }
-        //        for (int yTile = 1; yTile < this.app.getTile().getHeight() - 1; yTile++) {
-        //            vertex = tileVertices[yTile][0];
-        //            if (vertex != null) {
-        //                edge = graph.addEdge(A, vertex);
-        //                graph.setEdgeWeight(edge, Double.POSITIVE_INFINITY);
-        //            }
-        //            vertex = tileVertices[yTile][this.app.getTile().getWidth() - 1];
-        //            if (vertex != null) {
-        //                edge = graph.addEdge(A, vertex);
-        //                graph.setEdgeWeight(edge, Double.POSITIVE_INFINITY);
-        //            }
-        //        }
-
-        //        // add edge from center to image B (src)
-        //        double keepRatio = 0.2;
-        //        for (int yTile = (int) (h / 2 * (1 - keepRatio)); yTile < (int) (h / 2 * (1 + keepRatio)); yTile++) {
-        //            for (int xTile = (int) (w / 2 * (1 - keepRatio)); xTile < (int) (w / 2 * (1 + keepRatio)); xTile++) {
-        //                edge = graph.addEdge(tileVertices[yTile][xTile], B);
-        //                graph.setEdgeWeight(edge, Double.POSITIVE_INFINITY);
-        //            }
-        //        }
-
-        // add edges to A & B from opposite corners
-        //        edge = graph.addEdge(A, tileVertices[0][0]);
-        //        graph.setEdgeWeight(edge, Double.POSITIVE_INFINITY);
-        //        edge = graph.addEdge(tileVertices[h - 1][w - 1], B);
-        //        graph.setEdgeWeight(edge, Double.POSITIVE_INFINITY);
-
-        //        for (int yTile = 1; yTile < this.app.getTile().getHeight() - 1; yTile++) {
-        //            vertex = tileVertices[yTile][this.app.getTile().getWidth() - 1];
-        //            if (vertex != null) {
-        //                edge = graph.addEdge(vertex, B);
-        //                graph.setEdgeWeight(edge, Double.POSITIVE_INFINITY);
-        //            }
-        //                        vertex = tileVertices[yTile][this.app.getTile().getWidth() - 1];
-        //                        if (vertex != null) {
-        //                            edge = graph.addEdge(A, vertex);
-        //                            graph.setEdgeWeight(edge, Double.POSITIVE_INFINITY);
-        //                        }
-        //        }
-
         // add all edges between pixels (forward and reverse edges)
         for (int yTile = 0; yTile < h; yTile++) {
             for (int xTile = 0; xTile < w; xTile++) {
                 vertex = tileVertices[yTile][xTile];
                 if (vertex == null) {
+                    continue;
+                }
+                // check if we are in the tile
+                int lTileMask = xTile + yTile * w;
+                if (tileMaskPixels[lTileMask] == Tile.MASK_OUT) {
                     continue;
                 }
                 if (xTile != w - 1) {
@@ -293,6 +278,7 @@ public class GraphCut {
 
         this.algoMinCut = new MinSourceSinkCut<PixelVertex, PixelEdge>(graph);
         this.algoMinCut.computeMinCut(A, B);
+
         for (PixelVertex v : this.algoMinCut.getSinkPartition()) {
 
             int l = (v.getX() + v.getY() * w) * 4;
@@ -301,11 +287,15 @@ public class GraphCut {
                 graphCutTilePixels[l + 2] = (byte) (v.getTileG() * 255);
                 graphCutTilePixels[l + 1] = (byte) (v.getTileB() * 255);
                 graphCutTilePixels[l + 0] = (byte) (v.getTileA() * 255);
-                //                System.err.println("resulting pixel value (byte) = " + graphCutTilePixels[l + 3] + " " + graphCutTilePixels[l + 2] + " "
-                //                        + graphCutTilePixels[l + 1] + " " + graphCutTilePixels[l]);
-                //                System.err.println("            =>       (float) = " + v.getTileR() + " " + v.getTileG() + " " + v.getTileB() + " " + v.getTileA());
+                // System.err.println("resulting pixel value (byte) = " +
+                //                graphCutTilePixels[l + 3] + " " + graphCutTilePixels[l + 2] + " "
+                // + graphCutTilePixels[l + 1] + " " + graphCutTilePixels[l]);
+                // System.err.println("            =>       (float) = " +
+                //                v.getTileR() + " " + v.getTileG() + " " + v.getTileB() + " " +
+                //                v.getTileA());
             }
         }
+
         // finally draw the graphcut tile to the resulting image and update mask
         Graphics2D g2 = this.getImage().createGraphics();
         if (this.clippingShape != null) {
@@ -315,15 +305,33 @@ public class GraphCut {
         g2.setTransform(tileTransform);
         g2.setComposite(AlphaComposite.SrcOver);
         g2.drawImage(graphCutTile, null, 0, 0);
+
+        //        // draw the the graph cut edges (Debug)
+        //        g2.setClip(null);
+        //        g2.setColor(Color.red);
+        //        g2.setStroke(new BasicStroke(1.f));
+        //        for (PixelEdge e : this.algoMinCut.getCutEdges()) {
+        //            g2.drawLine(e.getSource().getX(), e.getSource().getY(), e.getTarget().getX(), e.getTarget().getY());
+        //
+        //        }
         // draw tile in mask
         g2 = this.getMask().createGraphics();
         g2.setTransform(tileTransform);
-        g2.setComposite(AlphaComposite.Clear);
-        g2.drawImage(graphCutTile, null, 0, 0);
+        g2.setComposite(new MaskComposite());
+        g2.drawImage(tile.getMask(), null, 0, 0);
 
+        //        try {
+        //            ImageIO.write(this.getImage(), "PNG", new File("graphcut" + this.pasteCount + ".png"));
+        //            ImageIO.write(this.getMask(), "PNG", new File("graphcut" + this.pasteCount + "-mask.png"));
+        //        } catch (IOException e1) {
+        //            // TODO Auto-generated catch block
+        //            e1.printStackTrace();
+        //        }
+        this.pasteCount++;
+        return this.algoMinCut;
     }
 
-    private Byte getMaskPixel(int xTile, int yTile, AffineTransform tileTransform) {
+    private Byte getImageMaskPixel(int xTile, int yTile, AffineTransform tileTransform) {
         Point2D pixel = new Point2D.Double(xTile, yTile);
         Point2D transformedPixel = new Point2D.Double();
         tileTransform.transform(pixel, transformedPixel);
@@ -336,41 +344,25 @@ public class GraphCut {
         return this.maskPixels[lMask];
     }
 
-    private boolean hasNonZeroMaskBorder(int xTile, int yTile, AffineTransform tileTransform) {
-        Byte west = this.getMaskPixel(xTile - 1, yTile, tileTransform);
+    private boolean isOnImageMaskBorder(int xTile, int yTile, AffineTransform tileTransform) {
+        Byte west = this.getImageMaskPixel(xTile - 1, yTile, tileTransform);
         if (west != null && west != 0) {
             return true;
         }
-        Byte east = this.getMaskPixel(xTile + 1, yTile, tileTransform);
+        Byte east = this.getImageMaskPixel(xTile + 1, yTile, tileTransform);
         if (east != null && east != 0) {
             return true;
         }
-        Byte north = this.getMaskPixel(xTile, yTile - 1, tileTransform);
+        Byte north = this.getImageMaskPixel(xTile, yTile - 1, tileTransform);
         if (north != null && north != 0) {
             return true;
         }
-        Byte south = this.getMaskPixel(xTile, yTile + 1, tileTransform);
+        Byte south = this.getImageMaskPixel(xTile, yTile + 1, tileTransform);
         if (south != null && south != 0) {
             return true;
         }
         return false;
     }
-
-    /**
-     * check if a pixel is on the tile border
-     * 
-     * @param xTile
-     * @param yTile
-     * @param tile
-     * @return
-     */
-    private boolean isOnTileBorder(int xTile, int yTile, BufferedImage tile) {
-        return xTile == 0 || xTile == tile.getWidth() - 1 || yTile == 0 || yTile == tile.getHeight() - 1;
-    }
-
-    //    private boolean isInTile(int xTile, int yTile, BufferedImage tile) {
-    //        return xTile >= 0 && xTile < tile.getWidth() && yTile > 0 && yTile < tile.getHeight();
-    //    }
 
     private static double distanceColor(PixelVertex p1, PixelVertex p2) {
         return distanceLab(p1, p2);
@@ -446,6 +438,50 @@ public class GraphCut {
         float dgn = p1.getTileG() - p1.getImageG();
         float dbn = p1.getTileB() - p1.getImageB();
         return Math.sqrt(drp * drp + dgp * dgp + dbp * dbp) + Math.sqrt(drn * drn + dgn * dgn + dbn * dbn);
+    }
+
+}
+
+/**
+ * Compose mask pixels.
+ * 0 (MASK_IN) => copy source pixel
+ * !0 (MASK_OUT) => copy destination pixel
+ * 
+ * @author JeT
+ * 
+ */
+class MaskComposite implements Composite, CompositeContext {
+
+    private final int[] spixel = new int[16];
+    private final int[] dpixel = new int[16];
+
+    public MaskComposite() {
+    }
+
+    @Override
+    public CompositeContext createContext(final ColorModel srcColorModel, final ColorModel dstColorModel, final RenderingHints hints) {
+        return this;
+    }
+
+    @Override
+    public void dispose() {
+        // Do nothing
+    }
+
+    @Override
+    public void compose(final Raster src, final Raster dstIn, final WritableRaster dstOut) {
+        final int w = dstOut.getWidth(), h = dstOut.getHeight();
+
+        final int n = src.getNumBands();
+
+        for (int x = 0; w > x; x++) {
+            for (int y = 0; h > y; y++) {
+                src.getPixel(x, y, this.spixel);
+                dstIn.getPixel(x, y, this.dpixel);
+                dstOut.setPixel(x, y, (this.spixel[0] == 0) ? this.spixel : this.dpixel);
+            }
+
+        }
     }
 
 }

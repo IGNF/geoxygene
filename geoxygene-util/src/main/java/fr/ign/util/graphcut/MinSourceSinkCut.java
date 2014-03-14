@@ -92,7 +92,6 @@ public class MinSourceSinkCut<V, E> {
         processQueue.add(source);
 
         while (!processQueue.isEmpty()) {
-            System.err.println();
             V vertex = processQueue.remove();
             if (this.minCut.contains(vertex)) {
                 continue;

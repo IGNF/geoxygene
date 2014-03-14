@@ -267,14 +267,14 @@ public class GraphCutPanel extends JPanel implements MouseListener, MouseWheelLi
     private void displayTile(Graphics2D g2) {
         g2.setColor(Color.green);
         g2.fillRect(0, 0, this.getWidth(), this.getHeight());
-        for (PixelVertex v : this.graph.vertexSet()) {
-            try {
-                g2.setColor(new Color(this.app.getTile().getRGB(v.getX(), v.getY())));
-            } catch (Exception e) {
-            }
-            g2.fillRect(this.x(v.getX()), this.y(v.getY()), Math.max(3, (int) this.zoom - 1), Math.max(3, (int) this.zoom - 1));
-
-        }
+        //        for (PixelVertex v : this.graph.vertexSet()) {
+        //            try {
+        //                g2.setColor(new Color(this.app.getTile().getRGB(v.getX(), v.getY())));
+        //            } catch (Exception e) {
+        //            }
+        //            g2.fillRect(this.x(v.getX()), this.y(v.getY()), Math.max(3, (int) this.zoom - 1), Math.max(3, (int) this.zoom - 1));
+        //
+        //        }
         this.displayVertexInformation(g2);
 
     }

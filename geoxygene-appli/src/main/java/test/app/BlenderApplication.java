@@ -69,13 +69,9 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
-import org.jgrapht.graph.DefaultDirectedWeightedGraph;
-
 import fr.ign.util.graphcut.GraphCut;
-import fr.ign.util.graphcut.MinSourceSinkCut;
 import fr.ign.util.graphcut.PixelEdge;
-import fr.ign.util.graphcut.PixelEdge.PixelEdgeFactory;
-import fr.ign.util.graphcut.PixelVertex;
+import fr.ign.util.graphcut.Tile;
 
 /**
  * @author JeT
@@ -86,12 +82,12 @@ public class BlenderApplication {
     JFrame frame = null;
     private BlenderPanel main = null;
     private BufferedImage image = null;
-    private BufferedImage tileToApply = null;
+    private Tile tileToApply = null;
     private final Preferences prefs = Preferences.userRoot();
     private static final String LAST_DIRECTORY = "blender.app.lastDirectory";
     private static final int TH_WIDTH = 50;
     private static final int TH_HEIGHT = 50;
-    private static final File defaultTileFilename = new File("/home/turbet/Documents/dice4.png");
+    private static final File defaultTileFilename = new File("/export/home/kandinsky/turbet/cassini samples/waves big.png");
     private BlendingMode mode = BlendingMode.SrcOver;
     boolean drawEdges = true;
     boolean drawMask = true;
@@ -196,7 +192,7 @@ public class BlenderApplication {
                 g2.setComposite(AlphaComposite.Src);
                 for (int y = 0; y < BlenderApplication.this.getImage().getHeight(); y += BlenderApplication.this.getTile().getHeight()) {
                     for (int x = 0; x < BlenderApplication.this.getImage().getWidth(); x += BlenderApplication.this.getTile().getWidth()) {
-                        g2.drawImage(BlenderApplication.this.getTile(), null, x, y);
+                        g2.drawImage(BlenderApplication.this.getTile().getImage(), null, x, y);
                     }
                 }
                 BlenderApplication.this.frame.repaint();
@@ -277,9 +273,9 @@ public class BlenderApplication {
                 if (fc.showOpenDialog(BlenderApplication.this.frame) == JFileChooser.APPROVE_OPTION) {
                     try {
                         File selectedFile = fc.getSelectedFile();
-                        BlenderApplication.this.tileToApply = BlenderApplication.this.readImageABGR(selectedFile);
+                        BlenderApplication.this.tileToApply = new Tile(BlenderApplication.this.readImageABGR(selectedFile));
                         BlenderApplication.this.prefs.put(LAST_DIRECTORY, selectedFile.getAbsolutePath());
-                        preview.setIcon(new ImageIcon(BlenderApplication.this.tileToApply.getScaledInstance(TH_WIDTH, TH_HEIGHT, Image.SCALE_SMOOTH)));
+                        preview.setIcon(new ImageIcon(BlenderApplication.this.tileToApply.getImage().getScaledInstance(TH_WIDTH, TH_HEIGHT, Image.SCALE_SMOOTH)));
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -334,8 +330,8 @@ public class BlenderApplication {
         tool.add(autoButton);
         tool.add(this.textArea);
         try {
-            BlenderApplication.this.tileToApply = this.readImageABGR(defaultTileFilename);
-            preview.setIcon(new ImageIcon(BlenderApplication.this.tileToApply.getScaledInstance(TH_WIDTH, TH_HEIGHT, Image.SCALE_SMOOTH)));
+            BlenderApplication.this.tileToApply = new Tile(this.readImageABGR(defaultTileFilename));
+            preview.setIcon(new ImageIcon(BlenderApplication.this.tileToApply.getImage().getScaledInstance(TH_WIDTH, TH_HEIGHT, Image.SCALE_SMOOTH)));
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -398,7 +394,7 @@ public class BlenderApplication {
     /**
      * @return the tileToApply
      */
-    public BufferedImage getTile() {
+    public Tile getTile() {
         return this.tileToApply;
     }
 
@@ -614,7 +610,7 @@ class BlenderPanel extends JPanel implements MouseMotionListener, MouseWheelList
         g2.setColor(Color.red);
         g2.setTransform(this.at);
 
-        BufferedImage tile = this.app.getTile();
+        BufferedImage tile = this.app.getTile().getImage();
         if (tile != null) {
             g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
             g2.drawImage(tile, null, 0, 0);
@@ -765,7 +761,7 @@ class BlenderPanel extends JPanel implements MouseMotionListener, MouseWheelList
         gTile.fillRect(0, 0, w, h);
 
         byte[] srcPixels = ((DataBufferByte) src.getRaster().getDataBuffer()).getData();
-        byte[] tilePixels = ((DataBufferByte) this.app.getTile().getRaster().getDataBuffer()).getData();
+        byte[] tilePixels = ((DataBufferByte) this.app.getTile().getImage().getRaster().getDataBuffer()).getData();
         byte[] imagePixels = ((DataBufferByte) this.app.getImage().getRaster().getDataBuffer()).getData();
         int nbTile = 0, nbImage = 0;
         for (int yTile = 0; yTile < h; yTile++) {
@@ -832,7 +828,7 @@ class BlenderPanel extends JPanel implements MouseMotionListener, MouseWheelList
         //
         g2.setTransform(this.at);
         g2.setComposite(AlphaComposite.SrcOver);
-        g2.drawImage(this.app.getTile(), null, 0, 0);
+        g2.drawImage(this.app.getTile().getImage(), null, 0, 0);
 
         byte[] srcPixels = ((DataBufferByte) src.getRaster().getDataBuffer()).getData();
         byte[] dstPixels = ((DataBufferByte) this.app.getImage().getRaster().getDataBuffer()).getData();
@@ -904,70 +900,70 @@ class BlenderPanel extends JPanel implements MouseMotionListener, MouseWheelList
         Graphics2D g2 = this.app.getImage().createGraphics();
         g2.setTransform(this.at);
         g2.setComposite(AlphaComposite.SrcOver);
-        g2.drawImage(this.app.getTile(), null, 0, 0);
+        g2.drawImage(this.app.getTile().getImage(), null, 0, 0);
     }
 
     private void mergeDst() {
         Graphics2D g2 = this.app.getImage().createGraphics();
         g2.setTransform(this.at);
         g2.setComposite(AlphaComposite.Dst);
-        g2.drawImage(this.app.getTile(), null, 0, 0);
+        g2.drawImage(this.app.getTile().getImage(), null, 0, 0);
     }
 
     private void mergeSrc() {
         Graphics2D g2 = this.app.getImage().createGraphics();
         g2.setTransform(this.at);
         g2.setComposite(AlphaComposite.Src);
-        g2.drawImage(this.app.getTile(), null, 0, 0);
+        g2.drawImage(this.app.getTile().getImage(), null, 0, 0);
     }
 
     private void mergeSrcIn() {
         Graphics2D g2 = this.app.getImage().createGraphics();
         g2.setTransform(this.at);
         g2.setComposite(AlphaComposite.SrcIn);
-        g2.drawImage(this.app.getTile(), null, 0, 0);
+        g2.drawImage(this.app.getTile().getImage(), null, 0, 0);
     }
 
     private void mergeSrcOut() {
         Graphics2D g2 = this.app.getImage().createGraphics();
         g2.setTransform(this.at);
         g2.setComposite(AlphaComposite.SrcOut);
-        g2.drawImage(this.app.getTile(), null, 0, 0);
+        g2.drawImage(this.app.getTile().getImage(), null, 0, 0);
     }
 
     private void mergeDstAtop() {
         Graphics2D g2 = this.app.getImage().createGraphics();
         g2.setTransform(this.at);
         g2.setComposite(AlphaComposite.DstAtop);
-        g2.drawImage(this.app.getTile(), null, 0, 0);
+        g2.drawImage(this.app.getTile().getImage(), null, 0, 0);
     }
 
     private void mergeSrcAtop() {
         Graphics2D g2 = this.app.getImage().createGraphics();
         g2.setTransform(this.at);
         g2.setComposite(AlphaComposite.SrcAtop);
-        g2.drawImage(this.app.getTile(), null, 0, 0);
+        g2.drawImage(this.app.getTile().getImage(), null, 0, 0);
     }
 
     private void mergeDstOver() {
         Graphics2D g2 = this.app.getImage().createGraphics();
         g2.setTransform(this.at);
         g2.setComposite(AlphaComposite.DstOver);
-        g2.drawImage(this.app.getTile(), null, 0, 0);
+        g2.drawImage(this.app.getTile().getImage(), null, 0, 0);
     }
 
     private void mergeDstIn() {
         Graphics2D g2 = this.app.getImage().createGraphics();
         g2.setTransform(this.at);
         g2.setComposite(AlphaComposite.DstIn);
-        g2.drawImage(this.app.getTile(), null, 0, 0);
+        g2.drawImage(this.app.getTile().getImage(), null, 0, 0);
     }
 
     private void mergeDstOut() {
         Graphics2D g2 = this.app.getImage().createGraphics();
         g2.setTransform(this.at);
         g2.setComposite(AlphaComposite.DstOut);
-        g2.drawImage(this.app.getTile(), null, 0, 0);
+        g2.drawImage(this.app.getTile().getImage(), null, 0, 0);
     }
 
     private void computeAt() {

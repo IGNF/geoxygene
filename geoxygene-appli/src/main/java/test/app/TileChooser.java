@@ -27,6 +27,8 @@
 
 package test.app;
 
+import fr.ign.util.graphcut.Tile;
+
 /**
  * @author JeT
  *         algorithm used to choose a tile depending on a sample

@@ -38,6 +38,7 @@ import javax.vecmath.Point2d;
 
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
+import fr.ign.util.graphcut.Tile;
 
 /**
  * @author JeT

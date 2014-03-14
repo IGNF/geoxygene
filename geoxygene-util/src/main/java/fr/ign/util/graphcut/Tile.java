@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package test.app;
+package fr.ign.util.graphcut;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -33,7 +33,6 @@ import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -84,6 +83,20 @@ public class Tile {
      */
     public BufferedImage getImage() {
         return this.image;
+    }
+
+    /**
+     * get tile width
+     */
+    public int getWidth() {
+        return this.image == null ? 0 : this.image.getWidth();
+    }
+
+    /**
+     * get tile height
+     */
+    public int getHeight() {
+        return this.image == null ? 0 : this.image.getHeight();
     }
 
     /**
@@ -166,31 +179,39 @@ public class Tile {
         for (int y = 0, lMask = 0; y < h; y++) {
             for (int x = 0; x < w; x++, lMask++) {
                 int lImage = lMask * 4;
-                boolean in = (imagePixels[lImage] & 0xFF) > this.transparencyThreshold;
-                // border
-                if ((x > 0 && (((maskPixels[lMask - 1] & 0xFF) > this.transparencyThreshold) != in))
-                        || (x < w - 1 && (((imagePixels[lImage + 4] & 0xFF) > this.transparencyThreshold) != in))
-                        || (y > 0 && (((maskPixels[lMask - w] & 0xFF) > this.transparencyThreshold) != in))
-                        || (y < h - 1 && (((imagePixels[lImage + 4 * w] & 0xFF) > this.transparencyThreshold) != in))) {
-                    this.borders.add(new Point(x, y));
-                    borderPixels[lMask] = MASK_IN;
-
-                } else {
-                    borderPixels[lMask] = MASK_OUT;
-                }
+                boolean in = this.imagePixelIsInMask(imagePixels, lImage);
 
                 // mask
                 if (in) {
                     this.size++;
                     maskPixels[lMask] = MASK_IN; // mask black : visible pixel
                     imagePixels[lImage] = (byte) 255; // alpha = 255 : pure opaque pixel
+                    // border
+                    //                    if (x == 0) {
+                    if (x == 0 || y == 0 || x == w - 1 || y == h - 1 || !this.imagePixelIsInMask(imagePixels, lImage - 4)
+                            || !this.imagePixelIsInMask(imagePixels, lImage + 4) || !this.imagePixelIsInMask(imagePixels, lImage - 4 * w)
+                            || !this.imagePixelIsInMask(imagePixels, lImage + 4 * w)) {
+                        this.borders.add(new Point(x, y));
+                        borderPixels[lMask] = MASK_IN;
+
+                    } else {
+                        borderPixels[lMask] = MASK_OUT;
+                    }
                 } else {
+                    borderPixels[lMask] = MASK_OUT;
                     maskPixels[lMask] = MASK_OUT; // mask white : invisible pixel
                     imagePixels[lImage] = (byte) 0; // alpha = 0 : pure transparent pixel 
                 }
             }
-
         }
     }
 
+    /**
+     * @param imagePixels
+     * @param lImage
+     * @return
+     */
+    private boolean imagePixelIsInMask(byte[] imagePixels, int lImage) {
+        return (imagePixels[lImage] & 0xFF) >= this.transparencyThreshold;
+    }
 }

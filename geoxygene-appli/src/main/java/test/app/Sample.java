@@ -32,6 +32,8 @@ import java.util.Comparator;
 
 import javax.vecmath.Point2d;
 
+import fr.ign.util.graphcut.Tile;
+
 /**
  * @author JeT
  * 
@@ -53,7 +55,7 @@ public class Sample {
     }
 
     public Sample(Point2d location, Tile tile) {
-        this(origin, origin, null);
+        this(location, origin, null);
     }
 
     public Sample(double x, double y, Tile tile) {
@@ -155,7 +157,7 @@ public class Sample {
             if (o2.getTile() == null) {
                 return 1;
             }
-            return Integer.valueOf(o1.getTile().getSize()).compareTo( Integer.valueOf(o2.getTile().getSize()));
+            return Integer.valueOf(o1.getTile().getSize()).compareTo(Integer.valueOf(o2.getTile().getSize()));
         }
 
     }

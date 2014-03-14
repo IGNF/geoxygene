@@ -1,6 +1,7 @@
 package test.app;
 
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.GradientPaint;
@@ -58,6 +59,10 @@ import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
 import fr.ign.util.graphcut.GraphCut;
+import fr.ign.util.graphcut.MinSourceSinkCut;
+import fr.ign.util.graphcut.PixelEdge;
+import fr.ign.util.graphcut.PixelVertex;
+import fr.ign.util.graphcut.Tile;
 
 public class DisplayPanel extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener {
 
@@ -262,16 +267,17 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
 
         DistanceTileProbability closeProbability = new DistanceTileProbability(this.texImage, Double.NEGATIVE_INFINITY, 100, 1, 0);
         DistanceTileProbability mediumProbability = new DistanceTileProbability(this.texImage, 100, 200, 1, 0);
-        DistanceTileProbability farProbability = new DistanceTileProbability(this.texImage, 200, 300, 1, 0);
+        DistanceTileProbability farmediumProbability = new DistanceTileProbability(this.texImage, 200, 250, 1, 0);
+        DistanceTileProbability farProbability = new DistanceTileProbability(this.texImage, 200, 300, 0.7, 0);
         DistanceTileProbability allProbability = new DistanceTileProbability(this.texImage, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 1, 0);
         try {
 
             Tile tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/waves small.png");
             this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(closeProbability, tileTexture));
-            //            //            tileTexture = Tile.read("/home/turbet/Documents/s2.png");
-            //            //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(closeProbability, tileTexture));
-            //            //            tileTexture = Tile.read("/home/turbet/Documents/s3.png");
-            //            //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(closeProbability, tileTexture));
+            //            tileTexture = Tile.read("/home/turbet/Documents/s2.png");
+            //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(closeProbability, tileTexture));
+            //            tileTexture = Tile.read("/home/turbet/Documents/s3.png");
+            //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(closeProbability, tileTexture));
 
             tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/waves small.png");
             this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(mediumProbability, tileTexture));
@@ -279,13 +285,13 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(mediumProbability, tileTexture));
             //            tileTexture = Tile.read("/home/turbet/Documents/t3.png");
             //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(mediumProbability, tileTexture));
-            //
-            //            tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/crest small.png");
+
+            tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/crest small.png");
+            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(farProbability, tileTexture));
+            tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/crest big.png");
+            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(farProbability, tileTexture));
+            //            tileTexture = Tile.read("/home/turbet/Documents/u3.png");
             //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(farProbability, tileTexture));
-            //            tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/crest small.png");
-            //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(farProbability, tileTexture));
-            //            //            tileTexture = Tile.read("/home/turbet/Documents/u3.png");
-            //            //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(farProbability, tileTexture));
 
         } catch (IOException e) {
             logger.error(e);
@@ -392,6 +398,40 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 this.bi = this.toBufferedImagePixelTexturedUV(this.texImage, this.textureToBeApplied);
                 this.screenSpace = true;
             } else if (this.viz.equals("UV pixel tile")) {
+                if (this.bi == null) {
+                    int y = 0;
+                    double min = Double.POSITIVE_INFINITY;
+                    for (Pair<TileProbability, Tile> pairTileTexture : this.tilesToBeApplied) {
+                        BufferedImage tileTexture = pairTileTexture.second().getImage();
+                        if (tileTexture.getWidth() < min) {
+                            min = tileTexture.getWidth();
+                        }
+                        if (tileTexture.getHeight() < min) {
+                            min = tileTexture.getHeight();
+                        }
+                        g2.drawImage(tileTexture, null, 1, y + 1);
+                        g2.setColor(Color.black);
+                        g2.drawRect(0, y, tileTexture.getWidth() + 2, tileTexture.getHeight() + 2);
+                        y += tileTexture.getHeight() + 2;
+                    }
+                    double minDistance = min / 1.5 / this.transform.getScaleX();
+                    double minVDistance = min / 1.5 / this.transform.getScaleX();
+                    //                System.err.println("minDistance = " + minDistance + " min V Distance = " + minVDistance);
+                    TextureImageSamplerUVSampler sampler = new TextureImageSamplerUVSampler(this.texImage, minDistance, minVDistance);
+                    //                System.err.println(sampler.getSamples().size() + " samples generated");
+                    //                for (Sample sample : sampler.getSamples()) {
+                    //                    System.err.println("sample " + sample);
+                    //                }
+                    //                double scale = this.transform.getScaleX();
+                    //                double sampleX = 5;
+                    //                double sampleY = 5;
+                    //                TextureImageSamplerRegularGrid sampler = new TextureImageSamplerRegularGrid(this.texImage, sampleX, sampleY, scale);
+                    //                sampler.setJitteringFactor(0.3);
+                    this.bi = this.toBufferedImagePixelUVTile(this.texImage, this.tilesToBeApplied, sampler, this.featureShape);
+                }
+                this.screenSpace = false;
+
+            } else if (this.viz.equals("MipMap pixel tile")) {
                 int y = 0;
                 double min = Double.POSITIVE_INFINITY;
                 for (Pair<TileProbability, Tile> pairTileTexture : this.tilesToBeApplied) {
@@ -407,20 +447,15 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                     g2.drawRect(0, y, tileTexture.getWidth() + 2, tileTexture.getHeight() + 2);
                     y += tileTexture.getHeight() + 2;
                 }
-                double minDistance = min / 1.5 / this.transform.getScaleX();
-                double minVDistance = min / 1.5 / this.transform.getScaleX();
-                //                System.err.println("minDistance = " + minDistance + " min V Distance = " + minVDistance);
-                TextureImageSamplerUVSampler sampler = new TextureImageSamplerUVSampler(this.texImage, minDistance, minVDistance);
-                //                System.err.println(sampler.getSamples().size() + " samples generated");
-                //                for (Sample sample : sampler.getSamples()) {
-                //                    System.err.println("sample " + sample);
-                //                }
-                //                double scale = this.transform.getScaleX();
-                //                double sampleX = 5;
-                //                double sampleY = 5;
-                //                TextureImageSamplerRegularGrid sampler = new TextureImageSamplerRegularGrid(this.texImage, sampleX, sampleY, scale);
-                //                sampler.setJitteringFactor(0.3);
+                TextureImageTileChooser tileChooser = new TextureImageTileChooser();
+                for (Pair<TileProbability, Tile> pair : this.tilesToBeApplied) {
+                    tileChooser.addTile(pair.first(), pair.second());
+                }
+                System.err.println("compute sampler");
+                TextureImageSamplerMipMap sampler = new TextureImageSamplerMipMap(this.texImage, tileChooser);
+                System.err.println("display tiles");
                 this.bi = this.toBufferedImagePixelUVTile(this.texImage, this.tilesToBeApplied, sampler, this.featureShape);
+                //                this.bi = this.toBufferedImagePixelUVTileGraphCut(this.texImage, this.tilesToBeApplied, sampler, this.featureShape);
 
                 this.screenSpace = true;
 
@@ -793,7 +828,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
             Sample sample = sampleIterator.next();
             double xTexture = sample.getLocation().x;
             double yTexture = sample.getLocation().y;
-            Tile tile = tileChooser.getTile(sample);
+            Tile tile = sample.getTile() != null ? sample.getTile() : tileChooser.getTile(sample);
             if (tile == null) {
                 continue;
             }
@@ -843,41 +878,82 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         g2.fillRect(0, 0, this.getWidth(), this.getHeight());
         g2.setComposite(AlphaComposite.SrcOver);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.drawImage(((TextureImageSamplerTiler) sampler).getImageMask(), 0, 0, null);
-        //        if (clippingShape != null) {
-        //            Shape screenSpaceShape = this.transform.createTransformedShape(clippingShape);
-        //            g2.setClip(screenSpaceShape);
-        //        }
+        //        g2.drawImage(((TextureImageSamplerTiler) sampler).getImageMask(), 0, 0, null);
+        if (clippingShape != null) {
+            Shape screenSpaceShape = this.transform.createTransformedShape(clippingShape);
+            g2.setClip(screenSpaceShape);
+        }
 
-        //        GraphCut graphCut = new GraphCut(bi);
-        //        graphCut.setClippingShape(this.transform.createTransformedShape(clippingShape));
-        //        Iterator<Sample> sampleIterator = sampler.getSampleIterator();
-        //        while (sampleIterator.hasNext()) {
-        //            Sample sample = sampleIterator.next();
-        //            double xTexture = sample.getLocation().x;
-        //            double yTexture = sample.getLocation().y;
-        //            Tile tile = sample.getTile();
-        //            if (tile == null) {
-        //                System.err.println("tiles must be precomputed by samplers for the graphcut algorithm");
-        //                continue;
-        //            }
-        //            BufferedImage texture = tile.getImage();
-        //            Point2D screenPixelLocation = new Point2D.Double();
-        //            this.transform.transform(new Point2D.Double(xTexture, yTexture), screenPixelLocation);
-        //
-        //            TexturePixel pixel = image.getPixel((int) xTexture, (int) yTexture);
-        //            if (pixel == null || !pixel.in || pixel.vGradient == null) {
-        //                continue;
-        //            } else {
-        //                AffineTransform transform = new AffineTransform();
-        //                transform.translate(screenPixelLocation.getX() - texture.getWidth() / 2, screenPixelLocation.getY() - texture.getHeight() / 2);
-        //                transform.rotate(pixel.vGradient.x, pixel.vGradient.y, texture.getWidth() / 2, texture.getHeight() / 2);
-        //                graphCut.pasteTile(texture, transform);
-        //            }
-        //
-        //        }
-        this.displaySamples(sampler, (Graphics2D) bi.getGraphics());
+        List<Pair<MinSourceSinkCut<PixelVertex, PixelEdge>, AffineTransform>> algos = new ArrayList<Pair<MinSourceSinkCut<PixelVertex, PixelEdge>, AffineTransform>>();
+        GraphCut graphCut = new GraphCut(bi);
+        graphCut.setClippingShape(this.transform.createTransformedShape(clippingShape));
+        Iterator<Sample> sampleIterator = sampler.getSampleIterator();
+        int count = 0;
+        while (sampleIterator.hasNext()) {
+            Sample sample = sampleIterator.next();
+            double xTexture = sample.getLocation().x;
+            double yTexture = sample.getLocation().y;
+            Tile tile = sample.getTile();
+            if (tile == null) {
+                System.err.println("tiles must be precomputed by samplers for the graphcut algorithm");
+                continue;
+            }
+            BufferedImage texture = tile.getImage();
+            Point2D screenPixelLocation = new Point2D.Double();
+            this.transform.transform(new Point2D.Double(xTexture, yTexture), screenPixelLocation);
+
+            TexturePixel pixel = image.getPixel((int) xTexture, (int) yTexture);
+            if (pixel == null || !pixel.in || pixel.vGradient == null) {
+                continue;
+            } else {
+                AffineTransform transform = new AffineTransform();
+                transform.translate(screenPixelLocation.getX() - texture.getWidth() / 2, screenPixelLocation.getY() - texture.getHeight() / 2);
+                transform.rotate(pixel.vGradient.x, pixel.vGradient.y, texture.getWidth() / 2, texture.getHeight() / 2);
+                MinSourceSinkCut<PixelVertex, PixelEdge> algo = graphCut.pasteTile(tile, transform);
+                algos.add(new Pair<MinSourceSinkCut<PixelVertex, PixelEdge>, AffineTransform>(algo, transform));
+
+                //                g2.setTransform(transform);
+                //                g2.setColor(Color.red);
+                //
+                //                // draw the the graph cut edges (Debug)
+                //                g2.setClip(null);
+                //                g2.setStroke(new BasicStroke(1.f));
+                //                for (PixelEdge e : algo.getCutEdges()) {
+                //                    g2.drawLine(e.getSource().getX(), e.getSource().getY(), e.getTarget().getX(), e.getTarget().getY());
+                //
+                //                }
+                //                try {
+                //                    ImageIO.write(bi, "PNG", new File("graphcut" + count + ".png"));
+                //                } catch (IOException e1) {
+                //                    // TODO Auto-generated catch block
+                //                    e1.printStackTrace();
+                //                }
+                count++;
+            }
+
+        }
+        //        this.displaySamples(sampler, (Graphics2D) bi.getGraphics());
+        //        this.displayEdges(algos, (Graphics2D) bi.getGraphics());
         return bi;
+    }
+
+    private void displayEdges(List<Pair<MinSourceSinkCut<PixelVertex, PixelEdge>, AffineTransform>> algos, Graphics2D g2) {
+        Random rand = new Random(0);
+        for (Pair<MinSourceSinkCut<PixelVertex, PixelEdge>, AffineTransform> pair : algos) {
+            AffineTransform transform = pair.second();
+            MinSourceSinkCut<PixelVertex, PixelEdge> algo = pair.first();
+            g2.setTransform(transform);
+            g2.setColor(new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()));
+
+            // draw the the graph cut edges (Debug)
+            g2.setClip(null);
+            g2.setStroke(new BasicStroke(1.f));
+            for (PixelEdge e : algo.getCutEdges()) {
+                g2.drawLine(e.getSource().getX(), e.getSource().getY(), e.getTarget().getX(), e.getTarget().getY());
+
+            }
+
+        }
     }
 
     /**
