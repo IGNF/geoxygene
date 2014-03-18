@@ -55,15 +55,15 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 public class CartAGenDocOld {
 
   /**
-   * Get the unique instance of CartAGenDoc class.
+   * Get the unique instance of CartAGenDocOld class.
    * <p>
    * Remarque : le constructeur est rendu inaccessible
    */
   public static CartAGenDocOld getInstance() {
-    if (null == instance) { // Premier appel
-      instance = new CartAGenDocOld();
+    if (null == CartAGenDocOld.instance) { // Premier appel
+      CartAGenDocOld.instance = new CartAGenDocOld();
     }
-    return instance;
+    return CartAGenDocOld.instance;
   }
 
   /**
@@ -145,11 +145,11 @@ public class CartAGenDocOld {
   }
 
   public PostgisDB getPostGisDb() {
-    return postGisDb;
+    return this.postGisDb;
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public void setName(String name) {
@@ -157,7 +157,7 @@ public class CartAGenDocOld {
   }
 
   public Map<String, CartAGenDB> getDatabases() {
-    return databases;
+    return this.databases;
   }
 
   public void setDatabases(Map<String, CartAGenDB> databases) {
@@ -169,11 +169,11 @@ public class CartAGenDocOld {
   }
 
   public DataSetZone getZone() {
-    return zone;
+    return this.zone;
   }
 
   public IDirectPosition getGeoCenter() {
-    return geoCenter;
+    return this.geoCenter;
   }
 
   public void setGeoCenter(IDirectPosition geoCenter) {
@@ -181,7 +181,7 @@ public class CartAGenDocOld {
   }
 
   public IEnvelope getDisplayEnvelope() {
-    return displayEnvelope;
+    return this.displayEnvelope;
   }
 
   public void setDisplayEnvelope(IEnvelope displayEnvelope) {
@@ -193,7 +193,7 @@ public class CartAGenDocOld {
   }
 
   public File getXmlFile() {
-    return xmlFile;
+    return this.xmlFile;
   }
 
   public void setCurrentDataset(CartAGenDataSet currentDataset) {
@@ -201,16 +201,16 @@ public class CartAGenDocOld {
   }
 
   public CartAGenDataSet getCurrentDataset() {
-    if (currentDataset == null) {
-      if (databases.size() == 0) {
+    if (this.currentDataset == null) {
+      if (this.databases.size() == 0) {
         // FIXME patch pour permettre de maintenir les deux interfaces
         return CartAGenDoc.getInstance().getCurrentDataset();
       }
 
-      CartAGenDB db = databases.values().iterator().next();
+      CartAGenDB db = this.databases.values().iterator().next();
       return db.getDataSet();
     }
-    return currentDataset;
+    return this.currentDataset;
   }
 
   public void setInitialDataset(CartAGenDataSet initialDataset) {
@@ -218,7 +218,7 @@ public class CartAGenDocOld {
   }
 
   public CartAGenDataSet getInitialDataset() {
-    return initialDataset;
+    return this.initialDataset;
   }
 
   public void setPostGisSession(Session postGisSession) {
@@ -226,11 +226,11 @@ public class CartAGenDocOld {
   }
 
   public Session getPostGisSession() {
-    return postGisSession;
+    return this.postGisSession;
   }
 
   public AbstractLayerGroup getLayerGroup() {
-    return layerGroup;
+    return this.layerGroup;
   }
 
   public void setLayerGroup(AbstractLayerGroup layerGroup) {
@@ -323,16 +323,17 @@ public class CartAGenDocOld {
     xmlPath.append("src/main/resources/XML/Cartagen_dbs/");
     Element dbsElem = xmlDoc.createElement("databases");
     root.appendChild(dbsElem);
-    for (CartAGenDB db : databases.values()) {
+    for (CartAGenDB db : this.databases.values()) {
       File dbFile = db.getXmlFile();
       String path = null;
       if (dbFile == null) {
         path = xmlPath.append(db.getName() + ".xml").toString();
         dbFile = new File(path);
-      } else
+      } else {
         path = dbFile.getPath();
-      System.out.println(dbFile.toString());
-      System.out.println(((ShapeFileDB) db).getSystemPath());
+      }
+      // System.out.println(dbFile.toString());
+      // System.out.println(((ShapeFileDB) db).getSystemPath());
       db.saveToXml(dbFile);
       // store the path in this file
       Element dbElem = xmlDoc.createElement("database");
@@ -369,8 +370,8 @@ public class CartAGenDocOld {
       SecurityException, NoSuchMethodException, ClassNotFoundException,
       IllegalArgumentException, InstantiationException, IllegalAccessException,
       InvocationTargetException {
-    instance = new CartAGenDocOld();
-    instance.setXmlFile(file);
+    CartAGenDocOld.instance = new CartAGenDocOld();
+    CartAGenDocOld.instance.setXmlFile(file);
 
     // first open the XML document in order to parse it
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -386,8 +387,10 @@ public class CartAGenDocOld {
 
     // The document name
     Element nameElem = (Element) root.getElementsByTagName("name").item(0);
-    instance.setName(nameElem.getChildNodes().item(0).getNodeValue());
-    instance.postGisDb = PostgisDB.get(instance.getName(), true);
+    CartAGenDocOld.instance.setName(nameElem.getChildNodes().item(0)
+        .getNodeValue());
+    CartAGenDocOld.instance.postGisDb = PostgisDB.get(
+        CartAGenDocOld.instance.getName(), true);
 
     // the geoCenter
     Element centerElem = (Element) root.getElementsByTagName("geo-center")
@@ -400,7 +403,7 @@ public class CartAGenDocOld {
         .item(0);
     double yCenter = Double.valueOf(yCenterElem.getChildNodes().item(0)
         .getNodeValue());
-    instance.setGeoCenter(new DirectPosition(xCenter, yCenter));
+    CartAGenDocOld.instance.setGeoCenter(new DirectPosition(xCenter, yCenter));
 
     // the display envelope
     Element envElem = (Element) root.getElementsByTagName("envelope").item(0);
@@ -422,7 +425,7 @@ public class CartAGenDocOld {
         .getNodeValue());
     IDirectPosition lCorner = new DirectPosition(xlCorner, ylCorner);
     IDirectPosition uCorner = new DirectPosition(xuCorner, yuCorner);
-    instance.setDisplayEnvelope(new GM_Envelope(uCorner, lCorner));
+    CartAGenDocOld.instance.setDisplayEnvelope(new GM_Envelope(uCorner, lCorner));
 
     // the dataset zone
     Element zoneElem = (Element) root.getElementsByTagName("dataset-zone")
@@ -444,7 +447,7 @@ public class CartAGenDocOld {
       }
       extent = new GM_Polygon(new GM_LineString(coords));
     }
-    instance.setZone(new DataSetZone(zoneName, extent));
+    CartAGenDocOld.instance.setZone(new DataSetZone(zoneName, extent));
 
     // load databases
     Element dbsElem = (Element) root.getElementsByTagName("databases").item(0);
@@ -457,13 +460,13 @@ public class CartAGenDocOld {
       Constructor<? extends CartAGenDB> construct = dbClass
           .getConstructor(File.class);
       CartAGenDB database = construct.newInstance(dbFile);
-      instance.databases.put(database.getName(), database);
+      CartAGenDocOld.instance.databases.put(database.getName(), database);
       // populate the dataset of the loaded database
       Class<?> datasetClass = CartAGenDB.readDatasetType(dbFile);
       CartAGenDataSet dataset = (CartAGenDataSet) datasetClass.getConstructor()
           .newInstance();
       database.setDataSet(dataset);
-      instance.currentDataset = dataset;
+      CartAGenDocOld.instance.currentDataset = dataset;
       database.populateDataset(database.getSymboScale());
       Legend.setSYMBOLISATI0N_SCALE(database.getSymboScale());
     }
@@ -474,10 +477,10 @@ public class CartAGenDocOld {
           .getNodeValue();
       AbstractLayerGroup layerGroup = (AbstractLayerGroup) Class
           .forName(layerGroupName).getConstructor().newInstance();
-      instance.setLayerGroup(layerGroup);
+      CartAGenDocOld.instance.setLayerGroup(layerGroup);
     }
 
-    return instance;
+    return CartAGenDocOld.instance;
   }
 
   /**
@@ -496,8 +499,9 @@ public class CartAGenDocOld {
    * @return
    */
   public CartAGenDataSet getDataset(String name1) {
-    if (databases.containsKey(name1))
-      return databases.get(name1).getDataSet();
+    if (this.databases.containsKey(name1)) {
+      return this.databases.get(name1).getDataSet();
+    }
     return null;
   }
 
@@ -508,9 +512,10 @@ public class CartAGenDocOld {
    * @return
    */
   public boolean containsSourceDLM(SourceDLM source) {
-    for (CartAGenDB db : databases.values()) {
-      if (db.getSourceDLM().equals(source))
+    for (CartAGenDB db : this.databases.values()) {
+      if (db.getSourceDLM().equals(source)) {
         return true;
+      }
     }
     return false;
   }
@@ -521,9 +526,10 @@ public class CartAGenDocOld {
    * @return
    */
   public boolean hasDataset(String name1) {
-    CartAGenDB dataset = databases.get(name1);
-    if (dataset == null)
+    CartAGenDB dataset = this.databases.get(name1);
+    if (dataset == null) {
       return false;
+    }
     return true;
   }
 

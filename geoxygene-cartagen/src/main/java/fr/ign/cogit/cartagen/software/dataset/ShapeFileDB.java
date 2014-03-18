@@ -132,6 +132,15 @@ public class ShapeFileDB extends CartAGenDB {
       Element pathElem = (Element) classElem.getElementsByTagName("path").item(
           0);
       String path = pathElem.getChildNodes().item(0).getNodeValue();
+      // Essai Cecile (pour l'instant laissé en commentaires
+      // Pour être sûr que les shapefiles sont referencés "en absolu" en
+      // utilisant la
+      // recupération du répertoire dans lequel s'exécute l'appli (= racine du
+      // projet), plutôt que par rapport au repertoire des ressources internes
+      // au projet telles que définies dans le classpath
+      // On concatène le chemain récupéré dans le xml avec le répertoire courant
+      // String path = System.getProperty("user.dir") + "/"
+      // + pathElem.getChildNodes().item(0).getNodeValue();
       Element popElem = (Element) classElem
           .getElementsByTagName("feature-type").item(0);
       String featureType = popElem.getChildNodes().item(0).getNodeValue();
@@ -207,7 +216,7 @@ public class ShapeFileDB extends CartAGenDB {
       this.getPersistentClasses().add(Class.forName(className1, true, loader));
     }
     this.setPersistentClasses(this.getGeneObjImpl().filterClasses(
-        getPersistentClasses()));
+        this.getPersistentClasses()));
 
     this.setXmlFile(file);
   }
@@ -323,7 +332,7 @@ public class ShapeFileDB extends CartAGenDB {
 
     // ECRITURE DU FICHIER
     xmlDoc.appendChild(root);
-    print();
+    this.print();
     XMLUtil.writeDocumentToXml(xmlDoc, file);
   }
 
@@ -398,14 +407,16 @@ public class ShapeFileDB extends CartAGenDB {
       }
       if (shape.getFeatureTypeName().equals(ISimpleLandUseArea.FEAT_TYPE_NAME)) {
         int type = 0;
-        if (shape.getName().equals("ZONE_VEGETATION"))
+        if (shape.getName().equals("ZONE_VEGETATION")) {
           type = 1;
-        if (shape.getName().equals("ZONE_ACTIVITE"))
+        }
+        if (shape.getName().equals("ZONE_ACTIVITE")) {
           type = 2;
+        }
         this.getDataSet().loadLandUseAreasFromSHP(shape.getPath(), 1.0, type);
       }
       // add the unique Id in the ShapeFile
-      // addCartagenId();
+      // this.addCartagenId();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -540,15 +551,18 @@ public class ShapeFileDB extends CartAGenDB {
         }
         // now build the dataset networks from the loaded data
         INetwork roadNet = ShapeFileDB.this.getDataSet().getRoadNetwork();
-        for (IRoadLine road : ShapeFileDB.this.getDataSet().getRoads())
+        for (IRoadLine road : ShapeFileDB.this.getDataSet().getRoads()) {
           roadNet.addSection(road);
+        }
         INetwork railNet = ShapeFileDB.this.getDataSet().getRailwayNetwork();
         for (IRailwayLine rail : ShapeFileDB.this.getDataSet()
-            .getRailwayLines())
+            .getRailwayLines()) {
           railNet.addSection(rail);
+        }
         INetwork waterNet = ShapeFileDB.this.getDataSet().getHydroNetwork();
-        for (IWaterLine water : ShapeFileDB.this.getDataSet().getWaterLines())
+        for (IWaterLine water : ShapeFileDB.this.getDataSet().getWaterLines()) {
           waterNet.addSection(water);
+        }
       } catch (SecurityException e) {
         e.printStackTrace();
       } catch (IllegalArgumentException e) {
@@ -600,12 +614,12 @@ public class ShapeFileDB extends CartAGenDB {
 
   @Override
   public List<GeographicClass> getClasses() {
-    return new ArrayList<GeographicClass>(classes);
+    return new ArrayList<GeographicClass>(this.classes);
   }
 
   public void print() {
     System.out.println("ShapeFileDB: " + this.getName());
-    System.out.println("classes: " + classes);
-    System.out.println("path: " + systemPath);
+    System.out.println("classes: " + this.classes);
+    System.out.println("path: " + this.systemPath);
   }
 }
