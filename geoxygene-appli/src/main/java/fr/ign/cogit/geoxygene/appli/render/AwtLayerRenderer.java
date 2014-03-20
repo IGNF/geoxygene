@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,6 +47,7 @@ import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.UserStyle;
+import fr.ign.cogit.geoxygene.util.Pair;
 
 /**
  * A renderer to render a {@link Layer} into a {@link LayerViewPanel}.
@@ -231,69 +233,17 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
         if (this.isCancelled() || this.getLayer().getFeatureCollection() == null || !this.getLayer().isVisible()) {
             return;
         }
-        Collection<? extends IFeature> collection = this.getLayer().getFeatureCollection().select(envelope);
-        int numberOfFeatureTypeStyle = 0;
-        Collection<Style> activeStyles = this.getLayer().getActiveStyles();
-        for (Style style : activeStyles) {
-            if (style.isUserStyle()) {
-                numberOfFeatureTypeStyle += ((UserStyle) style).getFeatureTypeStyles().size();
-            }
-        }
-        // logger.info(numberOfFeatureTypeStyle + " fts");
-        this.fireActionPerformed(new ActionEvent(this, 3, "Rendering start", numberOfFeatureTypeStyle * collection.size())); //$NON-NLS-1$
         int featureRenderIndex = 0;
-        for (Style style : activeStyles) {
-            if (this.isCancelled()) {
-                return;
-            }
-            if (style.isUserStyle()) {
-                UserStyle userStyle = (UserStyle) style;
-                for (FeatureTypeStyle featureTypeStyle : userStyle.getFeatureTypeStyles()) {
-                    if (this.isCancelled()) {
-                        return;
-                    }
-                    // creating a map between each rule and the
-                    // corresponding features (filtered in)
-                    Map<Rule, Set<IFeature>> filteredFeatures = new HashMap<Rule, Set<IFeature>>(0);
-                    if (featureTypeStyle.getRules().size() == 1 && featureTypeStyle.getRules().get(0).getFilter() == null) {
-                        filteredFeatures.put(featureTypeStyle.getRules().get(0), new HashSet<IFeature>(collection));
-                    } else {
-                        for (Rule rule : featureTypeStyle.getRules()) {
-                            filteredFeatures.put(rule, new HashSet<IFeature>(0));
-                        }
-                        IFeature[] list = new IFeature[0];
-                        synchronized (collection) {
-                            list = collection.toArray(list);
-                        }
-                        for (IFeature feature : list) {
-                            for (Rule rule : featureTypeStyle.getRules()) {
-                                if (rule.getFilter() == null || rule.getFilter().evaluate(feature)) {
-                                    filteredFeatures.get(rule).add(feature);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    for (int indexRule = featureTypeStyle.getRules().size() - 1; indexRule >= 0; indexRule--) {
-                        if (this.isCancelled()) {
-                            return;
-                        }
-                        Rule rule = featureTypeStyle.getRules().get(indexRule);
-                        for (IFeature feature : filteredFeatures.get(rule)) {
-                            if (this.isCancelled()) {
-                                return;
-                            }
-                            for (Symbolizer symbolizer : rule.getSymbolizers()) {
-                                if (this.isCancelled()) {
-                                    return;
-                                }
-                                this.render(symbolizer, feature, theImage);
-                            }
-                            this.fireActionPerformed(new ActionEvent(this, 4, "Rendering feature", 100 * featureRenderIndex++ //$NON-NLS-1$
-                                    / (numberOfFeatureTypeStyle * collection.size())));
-                        }
-                    }
+        List<Pair<Symbolizer, IFeature>> featuresToRender = this.generateFeaturesToRender(envelope);
+        if (featuresToRender != null) {
+            for (Pair<Symbolizer, IFeature> pair : featuresToRender) {
+                if (this.isCancelled()) {
+                    return;
                 }
+                Symbolizer symbolizer = pair.getU();
+                IFeature feature = pair.getV();
+                this.render(symbolizer, feature, theImage);
+                featureRenderIndex++;
             }
         }
         this.fireActionPerformed(new ActionEvent(this, 5, "Rendering finished", featureRenderIndex)); //$NON-NLS-1$
