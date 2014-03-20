@@ -831,7 +831,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     }
     this.setGeomStroke(this.joinStrokeFeatures(geoms));
     if (this.getGeomStroke() == null) {
-      System.out.println(this.features);
+      // System.out.println(this.features);
     }
   }
 

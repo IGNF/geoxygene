@@ -32,6 +32,7 @@ import org.geotools.data.shapefile.shp.ShapefileReader.Record;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
@@ -85,8 +86,8 @@ public class LoaderUtil {
       // ||listefichiers[i].endsWith(".dbf")==true)
       // ||(listefichiers[i].endsWith(".shx")==true))
       {
-        listeFinaleDesFichiers.add(listefichier.substring(0, listefichier
-            .length() - 4));
+        listeFinaleDesFichiers.add(listefichier.substring(0,
+            listefichier.length() - 4));
       }
     }
     return listeFinaleDesFichiers;
@@ -295,7 +296,17 @@ public class LoaderUtil {
     if (EnrichFrameOld.getInstance().isResetSelected()) {
       CartAGenDocOld.getInstance().getCurrentDataset().resetDataSet();
     }
-    String systemPath = CartagenApplication.getInstance().getCheminDonnees();
+    // Modif Cecile: here, the system path (path where the shapefiled from which
+    // the current dataset will be loaded) should be retrieved from the
+    // ShapefileDB associated to the current dataset
+    // OLd code:
+    // String systemPath = CartagenApplication.getInstance().getCheminDonnees();
+    // New code:
+    CartAGenDocOld doc = CartAGenDocOld.getInstance();
+    CartAGenDataSet curDS = doc.getCurrentDataset();
+    ShapeFileDB curDB = (ShapeFileDB) curDS.getCartAGenDB();
+    String systemPath = curDB.getSystemPath();
+    // End modif Cecile
     // CartagenApplication.getInstance().loadData(source, scale);
     CartagenApplication.getInstance().loadData(systemPath, source, scale,
         CartagenApplication.getInstance().getDocument().getCurrentDataset());
@@ -316,8 +327,12 @@ public class LoaderUtil {
       shr.close();
       CartAGenDocOld.getInstance().getZone().setExtent(geom);
     }
-    ((ShapeFileDB) CartAGenDocOld.getInstance().getCurrentDataset()
-        .getCartAGenDB()).setSystemPath(LoadingFrame.cheminAbsolu);
+    // Modif Cecile: the systemPath of the ShapefileDB associated to the current
+    // dataset being loaded should not be modified here
+    // Old code:
+    // ((ShapeFileDB) CartAGenDocOld.getInstance().getCurrentDataset()
+    // .getCartAGenDB()).setSystemPath(LoadingFrame.cheminAbsolu);
+    // End modif Cecile
 
     CartagenApplication.getInstance().initialiserPositionGeographique(
         !ImportDataFrame.extentFile);

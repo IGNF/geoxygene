@@ -85,7 +85,7 @@ public class CornerBuildings {
 
   // Getters and setters //
   public Ilot getBlock() {
-    return block;
+    return this.block;
   }
 
   public void setBlock(Ilot block) {
@@ -93,7 +93,7 @@ public class CornerBuildings {
   }
 
   public HashSet<Batiment> getCornerBuildings() {
-    return cornerBuildings;
+    return this.cornerBuildings;
   }
 
   public void setCornerBuildings(HashSet<Batiment> cornerBuildings) {
@@ -104,7 +104,7 @@ public class CornerBuildings {
   public void compute() {
     // first cut the roads at right angles
     HashSet<ILineString> roadParts = this.cutRoads();
-    double tol = angleTolerance * Math.PI / 180.0;
+    double tol = this.angleTolerance * Math.PI / 180.0;
     // build the corner areas
     HashSet<IPolygon> cornerAreas = new HashSet<IPolygon>();
     HashSet<ILineString> treatedRoads = new HashSet<ILineString>();
@@ -112,8 +112,9 @@ public class CornerBuildings {
       treatedRoads.add(road);
       // get the connected roads
       for (ILineString road2 : this.getConnectedRoads(road, roadParts)) {
-        if (treatedRoads.contains(road2))
+        if (treatedRoads.contains(road2)) {
           continue;
+        }
         double angle = CommonAlgorithmsFromCartAGen.angleBetween2Lines(road,
             road2);
         if (angle > Math.PI / 2.0 - tol && angle < Math.PI / 2.0 + tol) {
@@ -122,27 +123,31 @@ public class CornerBuildings {
           IDirectPosition a = CommonAlgorithmsFromCartAGen
               .getCommonVertexBetween2Lines(road, road2);
           // get second point on road1
-          double distAB = this.triangleEdge * scale / 1000.0
+          double distAB = this.triangleEdge * this.scale / 1000.0
               * Math.min(Math.PI / 2.0, angle) / Math.max(Math.PI / 2.0, angle);
           IDirectPositionList liste1 = road.coord();
-          if (!liste1.get(0).equals2D(a))
+          if (!liste1.get(0).equals2D(a)) {
             liste1.inverseOrdre();
+          }
           IDirectPosition b = Operateurs.pointEnAbscisseCurviligne(
               new GM_LineString(liste1), distAB);
           // if distance is bigger than line length, get line last vertex
-          if (b == null)
+          if (b == null) {
             b = liste1.get(liste1.size() - 1);
+          }
           // get second point on road2
-          double distAC = this.triangleEdge * scale / 1000.0
+          double distAC = this.triangleEdge * this.scale / 1000.0
               * Math.min(Math.PI / 2.0, angle) / Math.max(Math.PI / 2.0, angle);
           IDirectPositionList liste2 = road2.coord();
-          if (!liste2.get(0).equals2D(a))
+          if (!liste2.get(0).equals2D(a)) {
             liste2.inverseOrdre();
+          }
           IDirectPosition c = Operateurs.pointEnAbscisseCurviligne(
               new GM_LineString(liste2), distAC);
           // if distance is bigger than line length, get line last vertex
-          if (c == null)
+          if (c == null) {
             c = liste2.get(liste2.size() - 1);
+          }
           // build the triangle
           cornerAreas.add(GeometryFactory.buildTriangle(a, b, c));
         }
@@ -151,10 +156,12 @@ public class CornerBuildings {
 
     // get the corner buildings from the triangles
     IFeatureCollection<Batiment> fc = new FT_FeatureCollection<Batiment>();
-    for (ElementIndependant component : block.getComposants())
+    for (ElementIndependant component : this.block.getComposants()) {
       fc.add((Batiment) component);
-    for (IPolygon triangle : cornerAreas)
+    }
+    for (IPolygon triangle : cornerAreas) {
       this.cornerBuildings.addAll(fc.select(triangle));
+    }
   }
 
   /**
@@ -167,7 +174,7 @@ public class CornerBuildings {
   public HashSet<IPolygon> getTriangles() {
     // first cut the roads at right angles
     HashSet<ILineString> roadParts = this.cutRoads();
-    double tol = angleTolerance * Math.PI / 180.0;
+    double tol = this.angleTolerance * Math.PI / 180.0;
     // build the corner areas
     HashSet<IPolygon> cornerAreas = new HashSet<IPolygon>();
     HashSet<ILineString> treatedRoads = new HashSet<ILineString>();
@@ -175,38 +182,43 @@ public class CornerBuildings {
       treatedRoads.add(road);
       // get the connected roads
       for (ILineString road2 : this.getConnectedRoads(road, roadParts)) {
-        if (treatedRoads.contains(road2))
+        if (treatedRoads.contains(road2)) {
           continue;
+        }
         double angle = CommonAlgorithmsFromCartAGen.angleBetween2Lines(road,
             road2);
-        System.out.println("angle: " + angle);
+        // System.out.println("angle: " + angle);
         if (angle > Math.PI / 2.0 - tol && angle < Math.PI / 2.0 + tol) {
           // build a triangle as a new corner area
           // first get the triangle three points
           IDirectPosition a = CommonAlgorithmsFromCartAGen
               .getCommonVertexBetween2Lines(road, road2);
           // get second point on road1
-          double distAB = this.triangleEdge * scale / 1000.0
+          double distAB = this.triangleEdge * this.scale / 1000.0
               * Math.min(Math.PI / 2.0, angle) / Math.max(Math.PI / 2.0, angle);
           IDirectPositionList liste1 = road.coord();
-          if (!liste1.get(0).equals2D(a))
+          if (!liste1.get(0).equals2D(a)) {
             liste1.inverseOrdre();
+          }
           IDirectPosition b = Operateurs.pointEnAbscisseCurviligne(
               new GM_LineString(liste1), distAB);
           // if distance is bigger than line length, get line last vertex
-          if (b == null)
+          if (b == null) {
             b = liste1.get(liste1.size() - 1);
+          }
           // get second point on road2
-          double distAC = this.triangleEdge * scale / 1000.0
+          double distAC = this.triangleEdge * this.scale / 1000.0
               * Math.min(Math.PI / 2.0, angle) / Math.max(Math.PI / 2.0, angle);
           IDirectPositionList liste2 = road2.coord();
-          if (!liste2.get(0).equals2D(a))
+          if (!liste2.get(0).equals2D(a)) {
             liste2.inverseOrdre();
+          }
           IDirectPosition c = Operateurs.pointEnAbscisseCurviligne(
               new GM_LineString(liste2), distAC);
           // if distance is bigger than line length, get line last vertex
-          if (c == null)
+          if (c == null) {
             c = liste2.get(liste2.size() - 1);
+          }
           // build the triangle
           cornerAreas.add(GeometryFactory.buildTriangle(a, b, c));
         }
@@ -243,10 +255,12 @@ public class CornerBuildings {
         // add the angle between [0,Pi/2] to the cumulated angle
         double angle = Angle.angleTroisPoints(prevPrevPt, prevPt, pt)
             .angleAPiPres().getValeur();
-        if (angle > Math.PI / 2.0)
+        if (angle > Math.PI / 2.0) {
           angle = Math.abs(angle - Math.PI);
+        }
         cumulatedAngle += angle;
-        if (cumulatedAngle > Math.PI / 2.0 - angleTolerance * Math.PI / 180.0) {
+        if (cumulatedAngle > Math.PI / 2.0 - this.angleTolerance * Math.PI
+            / 180.0) {
           // cut the road at prevPt
           roadParts.add(GeometryFactory.buildSubLine(line, initialPt, prevPt));
           initialPt = prevPt;
@@ -258,19 +272,21 @@ public class CornerBuildings {
       prevPrevPt = prevPt;
       prevPt = pt;
     }
-    ILineString finalLine = GeometryFactory.buildSubLine(line, initialPt, road
-        .endPoint());
+    ILineString finalLine = GeometryFactory.buildSubLine(line, initialPt,
+        road.endPoint());
     // special case with a rounded block
-    if (initialPt.equals2D(road.endPoint()))
+    if (initialPt.equals2D(road.endPoint())) {
       finalLine = road;
+    }
     roadParts.add(finalLine);
     return roadParts;
   }
 
   public HashSet<ILineString> cutRoads() {
     HashSet<ILineString> roadParts = new HashSet<ILineString>();
-    for (ArcReseau road : block.getArcsReseaux())
+    for (ArcReseau road : this.block.getArcsReseaux()) {
       roadParts.addAll(this.cutRoad((ILineString) road.getGeom()));
+    }
     return roadParts;
   }
 
@@ -278,10 +294,12 @@ public class CornerBuildings {
       HashSet<ILineString> roads) {
     HashSet<ILineString> connectedRoads = new HashSet<ILineString>();
     for (ILineString r : roads) {
-      if (r.equals(road))
+      if (r.equals(road)) {
         continue;
-      if (r.touches(road))
+      }
+      if (r.touches(road)) {
         connectedRoads.add(r);
+      }
     }
     return connectedRoads;
   }

@@ -57,17 +57,14 @@ public class GeneralisationLeftPanelComplement extends JPanel {
   private boolean isInitialData = false;
 
   // les icônes
-  private JLabel iconSee = new JLabel(new ImageIcon(
-      GeneralisationLeftPanelComplement.class
-          .getResource("/images/iconSee.png").getPath().replaceAll("%20", " ")));
-  private JLabel iconSelect = new JLabel(new ImageIcon(
-      GeneralisationLeftPanelComplement.class
-          .getResource("/images/iconSelect.png").getPath()
-          .replaceAll("%20", " ")));
-  private JLabel iconSeeInit = new JLabel(new ImageIcon(
-      GeneralisationLeftPanelComplement.class
-          .getResource("/images/iconSeeInit.png").getPath()
-          .replaceAll("%20", " ")));
+  // Modif Cecile acces à l'image par URL pour que ça marche depuis un jar
+  private JLabel iconSee = new JLabel(new ImageIcon(this.getClass()
+      .getResource("/images/iconSee.png")));
+  private JLabel iconSelect = new JLabel(new ImageIcon(this.getClass()
+      .getResource("/images/iconSelect.png")));
+  private JLabel iconSeeInit = new JLabel(new ImageIcon(this.getClass()
+      .getResource("/images/iconSeeInit.png")));
+  // Fin modif Cecile
 
   // URBAN
   private JLabel lUrban = new JLabel("URBAN");

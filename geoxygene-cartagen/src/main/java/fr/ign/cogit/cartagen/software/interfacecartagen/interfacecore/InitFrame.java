@@ -57,12 +57,17 @@ public class InitFrame extends JFrame {
     return this.icon;
   }
 
-  private ImageIcon goodInit = new ImageIcon(InitFrame.class.getResource(
-      "/images/goodInit.png").getPath().replaceAll("%20", " "));
-  private ImageIcon warnInit = new ImageIcon(InitFrame.class.getResource(
-      "/images/warnInit.png").getPath().replaceAll("%20", " "));
-  private ImageIcon wrongInit = new ImageIcon(InitFrame.class.getResource(
-      "/images/wrongInit.png").getPath().replaceAll("%20", " "));
+  // Modif Cecile construction ImageIcon a partir d'une URL et non d'un file
+  // path string
+  // private ImageIcon goodInit = new ImageIcon(InitFrame.class.getResource(
+  // "/images/goodInit.png").getPath().replaceAll("%20", " "));
+  private ImageIcon goodInit = new ImageIcon(
+      InitFrame.class.getResource("/images/goodInit.png"));
+  private ImageIcon warnInit = new ImageIcon(
+      InitFrame.class.getResource("/images/warnInit.png"));
+  private ImageIcon wrongInit = new ImageIcon(
+      InitFrame.class.getResource("/images/wrongInit.png"));
+  // Fin modif Cecile
 
   public void isGood(JLabel lbl) {
     lbl.setText("");

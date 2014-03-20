@@ -134,12 +134,12 @@ public class RexportFrame extends JFrame implements ListSelectionListener,
     if (src == this.validate) {
       try {
 
-        System.out.println(this.selectionList.getSelectedValue().toString());
+        // System.out.println(this.selectionList.getSelectedValue().toString());
 
         File source = new File("donnees_TDT//"
             + this.selectionList.getSelectedValue().toString() + "_TDT");
         File destination = new File(this.ChoixDossier(source));
-        System.out.println(destination);
+        // System.out.println(destination);
         // creation du nouveau repertoire
         // boolean ok=UtilStage.copyDirectory(source, destination);
         // Traduction des fichiers par modif du libele

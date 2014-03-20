@@ -36,7 +36,10 @@ import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 
 /**
  * Shapefile data loader
@@ -87,6 +90,7 @@ public class LoadingFrame extends JFrame implements ActionListener {
   }
 
   public LoadingFrame(File file) {
+
     this.dataSet = file.getAbsolutePath();
     this.filesList = LoaderUtil.listerRepertoire(file);
     // Already traducted dataset
@@ -216,11 +220,22 @@ public class LoadingFrame extends JFrame implements ActionListener {
       try {
 
         File source = new File(this.dataSet); // original dataset
-        File destination = new File(LoadingFrame.class.getResource(
-            "/loaded_data").getPath().replaceAll("%20", " ")
-            + "/" + source.getName()); // future
+
+        // Modif Cecile: data should be loaded in src/resources loaded data, not
+        // in target, because they must be retrievable during a further
+        // execution, even after a build (that would have deleted the content of
+        // the target directory)
+        // Old code:
+        // File destination = new File(LoadingFrame.class
+        // .getResource("/loaded_data").getPath().replaceAll("%20", " ")
+        // + "/" + source.getName()); // future
         // loaded
         // dataset
+        // New code:
+        String destinationPath = CartagenApplication.LOADED_DATA_RELATIVE_PATH
+            + "/" + source.getName();
+        File destination = new File(destinationPath);
+        // End modif Cecile
 
         boolean ok = LoaderUtil.copyDirectory(source, destination);
 
@@ -234,12 +249,24 @@ public class LoadingFrame extends JFrame implements ActionListener {
                 + LoaderUtil.type[i]);
           }
           fos.close();
+          // Added Cecile: Now we can set the systemPath of the CartAGenDB that
+          // is associated to the current dataset that is being loaded
+          CartAGenDoc doc = CartAGenDoc.getInstance();
+          CartAGenDataSet curDS = doc.getCurrentDataset();
+          ShapeFileDB curDB = (ShapeFileDB) curDS.getCartAGenDB();
+          curDB.setSystemPath(destinationPath);
+          // End added Cecile
           int rep = JOptionPane.showConfirmDialog(this,
               "Do you want to open this dataset ?");
           if (rep == JOptionPane.OK_OPTION) {
-            LoadingFrame.cheminAbsolu = destination.toString();
-            CartagenApplication.getInstance().setCheminDonnees(
-                LoadingFrame.cheminAbsolu);
+            // Modif Cecile: LoadingFrame.cheminAbsolu and
+            // CartagenApplication.getInstance().cheminDonnees should not be
+            // modified here
+            // Old code:
+            // LoadingFrame.cheminAbsolu = destination.toString();
+            // CartagenApplication.getInstance().setCheminDonnees(
+            // LoadingFrame.cheminAbsolu);
+            // End modif Cecile
             EnrichFrameOld.getInstance().setVisible(true);
           }
         } else {
@@ -255,6 +282,9 @@ public class LoadingFrame extends JFrame implements ActionListener {
     }
 
     if (src == this.other) {
+      // Comment Cecile: this code, trigger by the "Other" JButton, seems not to
+      // work. (infinite loop generated to choose a new directory containing
+      // data
       CartagenApplication.getInstance().getFrameChargeur().setVisible(false);
       // destruction du singleton pour pouvoir en recharger un
       CartagenApplication.getInstance().resetFrameChargeur();
@@ -318,11 +348,29 @@ public class LoadingFrame extends JFrame implements ActionListener {
 
   private boolean test(String dataSetTest) {
     LoadingFrame.logger.info("test of the existence of the file");
+    // Modif Cecile
+    // LoadingFrame.cheminAbsolu should not be modified here + the path search
+    // for is corrupted
+    // Old code:
     // Traducted file path
-    LoadingFrame.cheminAbsolu = "loaded_data//"
-        + new File(dataSetTest).getName();
+    // LoadingFrame.cheminAbsolu = "loaded_data//"
+    // + new File(dataSetTest).getName();
+
     // Tests is a traducted file already exists
-    if (new File(LoadingFrame.cheminAbsolu).exists()) {
+    // if (new File(LoadingFrame.cheminAbsolu).exists()) {
+    // int rep = JOptionPane
+    // .showConfirmDialog(
+    // null,
+    // "This dataset has already been loaded before !!\n Do you want to erase the old version ?",
+    // "CAUTION !", JOptionPane.YES_NO_OPTION);
+    // if (rep == JOptionPane.OK_OPTION) {
+    // return false; // Re-traduction of the dataset
+    // }
+    // New code:
+    String datasetDirSimpleName = new File(dataSetTest).getName();
+    String pathToTest = CartagenApplication.LOADED_DATA_RELATIVE_PATH
+        + File.separatorChar + datasetDirSimpleName;
+    if (new File(pathToTest).exists()) {
       int rep = JOptionPane
           .showConfirmDialog(
               null,
@@ -331,6 +379,7 @@ public class LoadingFrame extends JFrame implements ActionListener {
       if (rep == JOptionPane.OK_OPTION) {
         return false; // Re-traduction of the dataset
       }
+      // End modif Cecile
       return true; // Ok for the old traduction
     }
     return false; // First traduction of the dataset

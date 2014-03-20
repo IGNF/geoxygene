@@ -14,10 +14,10 @@
 				<aireSeuilSuppression>70.0</aireSeuilSuppression>
 			</taille>
 			<granularite>
-				<longueurMinimale>0.3</longueurMinimale>
+				<longueurMinimale>0.2</longueurMinimale>
 			</granularite>
 			<equarrite>
-				<toleranceAngle>0.3</toleranceAngle>
+				<toleranceAngle>15.0</toleranceAngle>
 			</equarrite>
 			<convexite>
 				<convexiteMini>0.01</convexiteMini>

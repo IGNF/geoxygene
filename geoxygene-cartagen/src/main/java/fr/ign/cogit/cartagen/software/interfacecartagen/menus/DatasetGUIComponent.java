@@ -96,14 +96,14 @@ public class DatasetGUIComponent extends JMenu {
 
   public DatasetGUIComponent(String title) {
     super(title);
-    internationalisation();
-    loadRecentDocs();
+    this.internationalisation();
+    this.loadRecentDocs();
 
     this.add(new JMenuItem(new NewDocumentAction()));
     this.add(new JMenuItem(new OpenDocumentAction()));
     this.add(new JMenuItem(new SaveDocumentAction()));
-    JMenu recentDocsMenu = new JMenu(lblRecentDocs);
-    for (File recentDoc : recentDocs) {
+    JMenu recentDocsMenu = new JMenu(this.lblRecentDocs);
+    for (File recentDoc : this.recentDocs) {
       recentDocsMenu.add(new JMenuItem(new OpenDocumentAction(recentDoc)));
     }
     this.add(recentDocsMenu);
@@ -164,8 +164,8 @@ public class DatasetGUIComponent extends JMenu {
 
   private void saveRecentDocs() throws TransformerException, IOException {
     LastSessionParameters params = LastSessionParameters.getInstance();
-    for (int i = 1; i <= recentDocs.size(); i++) {
-      params.setParameter("Recent CartAGenDoc " + i, recentDocs.get(i - 1)
+    for (int i = 1; i <= this.recentDocs.size(); i++) {
+      params.setParameter("Recent CartAGenDoc " + i, this.recentDocs.get(i - 1)
           .getPath());
     }
   }
@@ -217,8 +217,8 @@ public class DatasetGUIComponent extends JMenu {
     @Override
     public void actionPerformed(ActionEvent arg0) {
       CartagenApplication appl = CartagenApplication.getInstance();
-      File file = docFile;
-      if (docFile == null) {
+      File file = this.docFile;
+      if (this.docFile == null) {
         JFileChooser fc = new JFileChooser();
         fc.setCurrentDirectory(new File("src/main/resources/XML/"));
         fc.setFileFilter(new XMLFileFilter());
@@ -433,15 +433,16 @@ public class DatasetGUIComponent extends JMenu {
       try {
         doc.saveToXml(file);
         // update the recent docs list
-        if (recentDocs.contains(file)) {
-          recentDocs.remove(file);
-          recentDocs.add(0, file);
+        if (DatasetGUIComponent.this.recentDocs.contains(file)) {
+          DatasetGUIComponent.this.recentDocs.remove(file);
+          DatasetGUIComponent.this.recentDocs.add(0, file);
         } else {
-          recentDocs.add(0, file);
-          if (recentDocs.size() == 6)
-            recentDocs.remove(5);
+          DatasetGUIComponent.this.recentDocs.add(0, file);
+          if (DatasetGUIComponent.this.recentDocs.size() == 6) {
+            DatasetGUIComponent.this.recentDocs.remove(5);
+          }
         }
-        saveRecentDocs();
+        DatasetGUIComponent.this.saveRecentDocs();
       } catch (IOException e) {
         e.printStackTrace();
       } catch (TransformerException e) {
@@ -709,11 +710,11 @@ public class DatasetGUIComponent extends JMenu {
       public OverwriteFromShapeFrame() {
         super("Shapefiles to overwrite");
         this.setSize(200, 400);
-        System.out.println(CartAGenDocOld.getInstance().getCurrentDataset());
-        System.out.println(CartAGenDocOld.getInstance().getCurrentDataset()
-            .getCartAGenDB());
-        System.out.println(CartAGenDocOld.getInstance().getCurrentDataset()
-            .getCartAGenDB().getClasses());
+        // System.out.println(CartAGenDocOld.getInstance().getCurrentDataset());
+        // System.out.println(CartAGenDocOld.getInstance().getCurrentDataset()
+        // .getCartAGenDB());
+        // System.out.println(CartAGenDocOld.getInstance().getCurrentDataset()
+        // .getCartAGenDB().getClasses());
         for (GeographicClass geoClass : CartAGenDocOld.getInstance()
             .getCurrentDataset().getCartAGenDB().getClasses()) {
           JCheckBox check = new JCheckBox(geoClass.getName());
@@ -1033,7 +1034,7 @@ public class DatasetGUIComponent extends JMenu {
       super("Set Current Dataset");
       this.setSize(500, 300);
       this.getExistingClasses();
-      System.out.println(this.existingClasses.size());
+      // System.out.println(this.existingClasses.size());
 
       // a panel to choose the current database among the databases of the
       // document

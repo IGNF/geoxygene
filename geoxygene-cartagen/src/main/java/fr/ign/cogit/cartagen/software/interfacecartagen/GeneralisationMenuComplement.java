@@ -13,6 +13,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -124,7 +125,15 @@ public class GeneralisationMenuComplement {
     menu.add(this.menuDataset, menu.getComponentCount() - 1);
     menu.add(this.dataThemesMenu, menu.getComponentCount() - 1);
 
-    String configFilePath = "/ConfigGUIComponents.xml";
+    // Modif Cecile
+    // Pour que lors de l'execution depuis un jar, le fichier soit accessible
+    // comme une ressource externe à l'application et donc modifiable par
+    // l'utilisateur
+    // Ancien code
+    // String configFilePath = "/ConfigGUIComponents.xml";
+    // Nouveau code
+    String configFilePath = "src/main/resources/ConfigGUIComponents.xml";
+    // Fin modif Cecile
     // parse the Components config file
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     DocumentBuilder db = null;
@@ -136,8 +145,14 @@ public class GeneralisationMenuComplement {
     Document doc = null;
     try {
       if (db != null) {
-        doc = db.parse(GeneralisationMenuComplement.class
-            .getResourceAsStream(configFilePath));
+        // Modif Cecile
+        // Pour que ça marche depuis un jar, suite de la modif ci-dessus
+        // Ancien code
+        // doc = db.parse(GeneralisationMenuComplement.class
+        // .getResourceAsStream(configFilePath));
+        // Nouveau code
+        doc = db.parse(new File(configFilePath));
+        // Fin modif Cecile
       }
     } catch (SAXException e1) {
       e1.printStackTrace();

@@ -245,7 +245,7 @@ public class DeadEndGroup extends GeneObjDefault implements IDeadEndGroup {
       }
 
       // do the same on end side
-      System.out.println(edge);
+      // System.out.println(edge);
       INetworkNode end = edge.getFinalNode();
       connected.clear();
       connected.addAll(end.getInSections());
@@ -334,10 +334,11 @@ public class DeadEndGroup extends GeneObjDefault implements IDeadEndGroup {
     if (border != null) {
       IFeatureCollection<DefaultFeature> contours = new FT_FeatureCollection<DefaultFeature>();
       DefaultFeature contourVille = new DefaultFeature();
-      if (border instanceof IPolygon)
+      if (border instanceof IPolygon) {
         borderLine = ((IPolygon) border).exteriorLineString();
-      else if (border instanceof ILineString)
+      } else if (border instanceof ILineString) {
         borderLine = (ILineString) border;
+      }
       contourVille.setGeom(borderLine);
       contours.add(contourVille);
       carteTopo.importClasseGeo(contours, true);
@@ -410,10 +411,11 @@ public class DeadEndGroup extends GeneObjDefault implements IDeadEndGroup {
 
     // Addition of the city centre contour if existing
     ILineString borderLine = null;
-    if (border instanceof IPolygon)
+    if (border instanceof IPolygon) {
       borderLine = ((IPolygon) border).exteriorLineString();
-    else if (border instanceof ILineString)
+    } else if (border instanceof ILineString) {
       borderLine = (ILineString) border;
+    }
 
     HashSet<DeadEndGroup> deadEndGroups = new HashSet<DeadEndGroup>();
 
@@ -421,8 +423,9 @@ public class DeadEndGroup extends GeneObjDefault implements IDeadEndGroup {
     HashSet<IRoadLine> deadEnds = new HashSet<IRoadLine>();
     // loop on the faces of the topological map
     for (Face f : carteTopo.getListeFaces()) {
-      if (f.isInfinite())
+      if (f.isInfinite()) {
         continue;
+      }
 
       // first find out if the block is inside another block, to detect rackets
       HashSet<Face> neighFaces = new HashSet<Face>();

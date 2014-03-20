@@ -77,9 +77,9 @@ public final class BottomPanel extends JPanel {
     this.b_.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        System.out.println("");
-        System.out.println("=============================================");
-        System.out.println("");
+        // System.out.println("");
+        // System.out.println("=============================================");
+        // System.out.println("");
       }
     });
     this.b_.setFont(this.getFont());

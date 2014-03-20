@@ -66,7 +66,7 @@ public class DataLoadingConfig {
       String xml = xstream.toXML(config);
 
       // Affichage de la conversion XML
-      System.out.println(xml);
+      // System.out.println(xml);
 
       // On ferme le flux en entrÃ©e
       fis.close();
@@ -74,8 +74,8 @@ public class DataLoadingConfig {
       // Instanciation d'un flux de sortie fichier vers
       // ./configurationDonnees.xml
       FileOutputStream fos = new FileOutputStream(DataLoadingConfig.class
-          .getResource("/configurationDonnees.xml").getPath().replaceAll("%20",
-              " "));
+          .getResource("/configurationDonnees.xml").getPath()
+          .replaceAll("%20", " "));
 
       // SÃ©rialisation de l'objet article dans ./configurationDonnees.xml
       xstream.toXML(config, fos);

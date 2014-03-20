@@ -122,22 +122,19 @@ public class MoveMode extends AbstractMode {
   @Override
   public Cursor getCursor() {
     Toolkit toolkit = Toolkit.getDefaultToolkit();
+    // Modif Cecile create image à partir d'une URL pour que ca marche depuis un
+    // jar
     if (this.cursor == null) {
-      this.cursor = toolkit
-          .createCustomCursor(
-              toolkit
-                  .getImage(this
-                      .getClass()
-                      .getResource("/images/cursors/32x32/panCursor.png").getFile().replaceAll("%20", " ")), //$NON-NLS-1$
-              new Point(16, 16), "Pan"); //$NON-NLS-1$
-      this.cursorClosed = toolkit
-          .createCustomCursor(
-              toolkit
-                  .getImage(this
-                      .getClass()
-                      .getResource("/images/cursors/32x32/panClosedCursor.png").getFile().replaceAll("%20", " ")), //$NON-NLS-1$
-              new Point(16, 16), "PanClosed"); //$NON-NLS-1$
+      this.cursor = toolkit.createCustomCursor(
+          toolkit.createImage(this.getClass().getResource(
+              "/images/cursors/32x32/panCursor.png")), //$NON-NLS-1$
+          new Point(16, 16), "Pan"); //$NON-NLS-1$
+      this.cursorClosed = toolkit.createCustomCursor(
+          toolkit.createImage(this.getClass().getResource(
+              "/images/cursors/32x32/panClosedCursor.png")), //$NON-NLS-1$
+          new Point(16, 16), "PanClosed"); //$NON-NLS-1$
     }
+    // Fin modif Cecile
     return this.cursor;
   }
 

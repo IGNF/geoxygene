@@ -10,6 +10,7 @@
 package fr.ign.cogit.cartagen.software;
 
 import java.awt.Color;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -101,6 +102,20 @@ public class CartagenApplication {
   public double getVersion() {
     return this.version;
   }
+
+  /**
+   * Pointer to the path where the already loaded data should be written and
+   * retrieved. It is expressed relatively to the "cartagen" directory, which is
+   * the main directory of the application and can therefore be retrieved at
+   * runtime with System.getProperty("user.dir")
+   */
+  public static final String LOADED_DATA_RELATIVE_PATH = "src/main/resources/loaded_data";
+
+  /**
+   * Same thing for the default path proposed to store the XMLs of CartAGen
+   * documents and DataBases
+   */
+  public static final String DOC_AND_BD_DEFAULT_RELATIVE_PATH = "src/main/resources/XML";
 
   private GeoxygeneFrame frame = null;
 
@@ -438,13 +453,28 @@ public class CartagenApplication {
     CartagenApplication.cartagenApplication.getFrameInit().repaint();
   }
 
-  private final String cheminFichierConfigurationDonnees = "/configurationDonnees.xml";
+  // Modif Cecile
+  // Pour que lors de l'execution depuis un jar, le fichier soit accessible
+  // comme une ressource externe à l'application et donc modifiable par
+  // l'utilisateur
+  // Ancien code
+  // private final String cheminFichierConfigurationDonnees =
+  // "/configurationDonnees.xml";
+  // Nouveau code
+  private final String cheminFichierConfigurationDonnees = "src/main/resources/configurationDonnees.xml";
 
   public String getCheminFichierConfigurationChargementDonnees() {
     return this.cheminFichierConfigurationDonnees;
   }
 
-  private final String cheminFichierConfigurationGeneralisation = "/configurationGeneralisation.xml";
+  // Modif Cecile
+  // Pour que lors de l'execution depuis un jar, le fichier accessible comme une
+  // ressource externe à l'application et donc modifiable par l'utilisateur
+  // Ancien code
+  // private final String cheminFichierConfigurationGeneralisation =
+  // "/configurationGeneralisation.xml";
+  // Nouveau code
+  private final String cheminFichierConfigurationGeneralisation = "src/main/resources/configurationGeneralisation.xml";
 
   public String getCheminFichierConfigurationGene() {
     return this.cheminFichierConfigurationGeneralisation;
@@ -558,12 +588,23 @@ public class CartagenApplication {
     // le document XML
     Document docXML = null;
     try {
-      docXML = DocumentBuilderFactory
-          .newInstance()
-          .newDocumentBuilder()
-          .parse(
-              CartagenApplication.class
-                  .getResourceAsStream(this.cheminFichierConfigurationDonnees));
+      // Modif Cecile, pour que ça marche depuis un jar
+      // NB: le XML de config des données sera à recopier dans un
+      // répertoire racine du jar/src/main/resources/, en attendant de faire
+      // plus propre. Par contre ça permet de le modifier pour configurer
+      // l'exécution via le jar ce qui n'était pas le cas lorsque le fichier
+      // était vu comme une ressource interne au jar.
+      // Ancien code
+      // docXML = DocumentBuilderFactory
+      // .newInstance()
+      // .newDocumentBuilder()
+      // .parse(
+      // CartagenApplication.class
+      // .getResourceAsStream(this.ConfigurationDonnees));
+      // Nouveau code
+      docXML = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+          .parse(new File(this.cheminFichierConfigurationDonnees));
+      // Fin modif Cecile
     } catch (FileNotFoundException e) {
       CartagenApplication.logger.error("Fichier non trouvé: "
           + this.cheminFichierConfigurationDonnees);
@@ -1155,12 +1196,23 @@ public class CartagenApplication {
     // le document XML
     Document docXML = null;
     try {
-      docXML = DocumentBuilderFactory
-          .newInstance()
-          .newDocumentBuilder()
-          .parse(
-              CartagenApplication.class
-                  .getResourceAsStream(this.cheminFichierConfigurationGeneralisation));
+      // Modif Cecile, pour que ça marche depuis un jar
+      // NB: le XML de config de la généralisation sera à recopier dans un
+      // répertoire racine du jar/src/main/resources/, en attendant de faire
+      // plus propre. Par contre ça permet de le modifier pour configurer
+      // l'exécution via le jar ce qui n'était pas le cas lorsque le fichier
+      // était vu comme une ressource interne au jar.
+      // Ancien code
+      // docXML = DocumentBuilderFactory
+      // .newInstance()
+      // .newDocumentBuilder()
+      // .parse(
+      // CartagenApplication.class
+      // .getResourceAsStream(this.cheminFichierConfigurationGeneralisation));
+      // Nouveau code
+      docXML = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+          .parse(new File(this.cheminFichierConfigurationGeneralisation));
+      // Fin modif Cecile
     } catch (FileNotFoundException e) {
       CartagenApplication.logger.error("Fichier non trouvé: "
           + this.cheminFichierConfigurationGeneralisation);

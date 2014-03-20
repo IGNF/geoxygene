@@ -108,13 +108,13 @@ public class ZoomBoxMode extends AbstractMode implements PaintListener {
   @Override
   public Cursor getCursor() {
     Toolkit toolkit = Toolkit.getDefaultToolkit();
-    Cursor cursor = toolkit
-        .createCustomCursor(
-            toolkit
-                .getImage(this
-                    .getClass()
-                    .getResource("/images/cursors/32x32/zoomCursor.gif").getFile().replaceAll("%20", " ")), //$NON-NLS-1$
-            new Point(16, 16), "Zoom"); //$NON-NLS-1$
+    // Modif Cecile create image à partir d'une URL pour que ca marche depuis un
+    // jar
+    Cursor cursor = toolkit.createCustomCursor(
+        toolkit.createImage(this.getClass().getResource(
+            "/images/cursors/32x32/zoomCursor.gif")), //$NON-NLS-1$
+        new Point(16, 16), "Zoom"); //$NON-NLS-1$
+    // Fin modif Cecile
     return cursor;
   }
 
@@ -123,11 +123,11 @@ public class ZoomBoxMode extends AbstractMode implements PaintListener {
     if (this.initialPointView != null && this.currentPointView != null) {
       Color c = graphics.getColor();
       graphics.setColor(this.color);
-      graphics.drawRect(Math.min(this.initialPointView.x,
-          this.currentPointView.x), Math.min(this.initialPointView.y,
-          this.currentPointView.y), Math.abs(this.initialPointView.x
-          - this.currentPointView.x), Math.abs(this.initialPointView.y
-          - this.currentPointView.y));
+      graphics.drawRect(
+          Math.min(this.initialPointView.x, this.currentPointView.x),
+          Math.min(this.initialPointView.y, this.currentPointView.y),
+          Math.abs(this.initialPointView.x - this.currentPointView.x),
+          Math.abs(this.initialPointView.y - this.currentPointView.y));
       graphics.setColor(c);
     }
   }

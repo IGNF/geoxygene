@@ -224,13 +224,29 @@ public class ImportDataFrame extends JFrame implements ActionListener {
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    // What button has been pressed??
     if (e.getActionCommand().equals("Cancel")) {
+      // ////
+      // Case where the CANCEL button has been pressed
+      // ////
       this.setVisible(false);
     } else if (e.getActionCommand().equals("Browse")) {
-
+      // ////
+      // Case where the BROWSE button has been pressed
+      // ////
       JFileChooser fc;
       try {
-        CartagenApplication.getInstance().lectureFichierConfigurationDonnees();
+        // Modif Cecile
+        // Only read the config file if not already read. Criterion:
+        // CartagenApplication.getInstance().getCheminDonnees() == null
+        // Old code
+        // CartagenApplication.getInstance().lectureFichierConfigurationDonnees();
+        // New code
+        if (CartagenApplication.getInstance().getCheminDonnees() == null) {
+          CartagenApplication.getInstance()
+              .lectureFichierConfigurationDonnees();
+        }
+        // End modif Cecile
         fc = new JFileChooser(CartagenApplication.getInstance()
             .getCheminDonnees());
       } catch (Exception exception) {
@@ -247,22 +263,25 @@ public class ImportDataFrame extends JFrame implements ActionListener {
       this.txtPath.setText(file.getPath());
 
     } else if (e.getActionCommand().equals("OK")) {
-
+      // ////
+      // Case where the OK button has been pressed
+      // ////
+      // The data import can continue... we just need to know if we are loading
+      // an initial or a current dataset
       if (!this.isInitial) {
         this.importCurrentDataSet((SourceDLM) this.cbSourceDlm
             .getSelectedItem(), Integer.parseInt(this.txtScale.getText()),
             this.txtZone.getText(), this.txtDataset.getText(), this.txtPath
                 .getText(), this.txtExtent.getText(), this.rbFile.isSelected(),
             this.cbType.getSelectedItem().equals("DLM"), true);
-      }// end of if(!isInitial
+      }// end of if(!isInitial)
       else {
         this.importInitialDataSet((SourceDLM) this.cbSourceDlm
             .getSelectedItem(), Integer.parseInt(this.txtScale.getText()),
             this.txtZone.getText(), this.txtDataset.getText(), this.txtPath
                 .getText(), this.txtExtent.getText(), this.rbFile.isSelected(),
             this.cbType.getSelectedItem().equals("DLM"));
-
-      }
+      } // End of if (!isInitial)... else...
 
       CartagenApplication.getInstance().getFrame().getVisuPanel()
           .zoomToFullExtent();
@@ -283,8 +302,8 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     this.datasetName = txtDataset;
     this.filePath = filePath;
     if (rbFileSelected) {
-      extentFile = true;
-      extentClass = txtExtent;
+      ImportDataFrame.extentFile = true;
+      ImportDataFrame.extentClass = txtExtent;
     }
     // create the new CartAGen dataset
     ShapeFileDB database = new ShapeFileDB(this.datasetName);
@@ -304,11 +323,11 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     }
 
     SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(SourceDLM.BD_TOPO_V2,
-        scale);
+        this.scale);
     dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
 
     CartagenApplication.getInstance().loadData(this.filePath, this.sourceDlm,
-        scale, dataset);
+        this.scale, dataset);
     // CartagenApplication.getInstance().loadDat(sourceDlm, scale);
 
     CartAGenDocOld.getInstance().setInitialDataset(dataset);
@@ -322,6 +341,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
             CartagenApplication.getInstance().getFrame().getLayerManager(),
             CartagenApplication.getInstance().getDocument().getInitialDataset()
                 .getSymbols());
+
   }
 
   public void importCurrentDataSet(SourceDLM selectedItem, String filePath) {
@@ -348,7 +368,11 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     ShapeFileDB database = new ShapeFileDB(this.datasetName);
     database.setSourceDLM(this.sourceDlm);
     database.setSymboScale(this.scale);
-    database.setSystemPath(this.filePath);
+    // Modif Cecile: the database.systemPath will be assigned once the data
+    // are actually loaded, after being first copied into .../loaded_data
+    // Old code commented out:
+    // database.setSystemPath(this.filePath);
+    // End Modif Cecile
     database.setOldDocument(CartAGenDocOld.getInstance());
     CartAGenDataSet dataset = new CartAGenDataSet();
     CartAGenDocOld.getInstance().addDatabase(this.datasetName, database);
@@ -361,26 +385,45 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     }
 
     // launch the import plug-in
-
+    // What data schema for the source DLM?
     if (this.sourceDlm == SourceDLM.SPECIAL_CARTAGEN) {
+      // Case where the source DLM has a schema of type "SPECIAL_CARTAGEN"
+      // Initialise the symbolisation properties for the dataset
       SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
-          SourceDLM.SPECIAL_CARTAGEN, scale);
+          SourceDLM.SPECIAL_CARTAGEN, this.scale);
       CartAGenDocOld.getInstance().getCurrentDataset()
           .setSymbols(SymbolList.getSymbolList(symbGroup));
-
+      // Copy the path of the source data into a variable of the loading
+      // frame
       LoadingFrame.cheminAbsolu = this.filePath;
-      DataLoadingConfig ccd = new DataLoadingConfig();
-      this.filePath = this.filePath.replace("\\", "/");
-      ccd.configuration(this.filePath);
+      // Modif Cecile: the XML does not need to be updated as it will not be
+      // read any more (it has already been read once).
+      // It is also unclear why it was needed to modify the separator
+      // character in this.filePath.
+      // Old code commented out:
+      // DataLoadingConfig ccd = new DataLoadingConfig();
+      // this.filePath = this.filePath.replace("\\", "/");
+      // ccd.configuration(this.filePath);
+      // End modif Cecile
+      // Copy the path of the source data into the appropriate variable of
+      // the CartaGenApplication
       CartagenApplication.getInstance().setCheminDonnees(this.filePath);
       this.setVisible(false);
       LoadingFrame loadingFrame = new LoadingFrame(new File(this.filePath));
+      // Test if the loading frame can be skipped (occurs if the source data
+      // have already been copied into /loded_data AND the user is ok to
+      // reuse them). In that case, launch the enrichment frame
       if (loadingFrame.test()) {
         EnrichFrameOld.getInstance().setVisible(true);
         return;
       }
+      // Launch the loading frame
       loadingFrame.setVisible(true);
     } else {
+      // Case where the source DLM has a schema of another type than
+      // "SPECIAL_CARTAGEN". This case should certainly be modified in the
+      // same direction as the previous case. But it does not seem to be
+      // very well managed at this time
       LoadingFrame.cheminAbsolu = this.filePath;
       DataLoadingConfig ccd = new DataLoadingConfig();
       this.filePath = this.filePath.replace("\\", "/");
@@ -390,33 +433,24 @@ public class ImportDataFrame extends JFrame implements ActionListener {
       this.setVisible(false);
       // loadingFrameMultiBD.setVisible(true);
       if (withEnrichement) {
-        EnrichFrameOld enrichFrame = EnrichFrameOld.getInstance();
-        enrichFrame.setVersion(2);
-        enrichFrame.setVisible(true);
-
-        CartagenApplication
-            .getInstance()
-            .getLayerGroup()
-            .loadLayers(
-                dataset,
-                CartagenApplication.getInstance().getLayerGroup().symbolisationDisplay);
-        CartagenApplication
-            .getInstance()
-            .getLayerGroup()
-            .loadInterfaceWithLayers(
-                CartagenApplication.getInstance().getFrame().getLayerManager(),
-                dataset.getSymbols());
-
-      }
-
+      EnrichFrameOld enrichFrame = EnrichFrameOld.getInstance();
+      enrichFrame.setVersion(2);
+      enrichFrame.setVisible(true);
     }
 
-    /*
-     * 
-     * CartagenApplication.getInstance().loadAndEnrichData2(sourceDlm,scale);
-     * CartagenApplication.getInstance().initGeneralisation();
-     */
-
+    CartagenApplication
+        .getInstance()
+        .getLayerGroup()
+        .loadLayers(
+            dataset,
+            CartagenApplication.getInstance().getLayerGroup().symbolisationDisplay);
+    CartagenApplication
+        .getInstance()
+        .getLayerGroup()
+        .loadInterfaceWithLayers(
+            CartagenApplication.getInstance().getFrame().getLayerManager(),
+            dataset.getSymbols());
+}
   }
 
   public void setScale(int scale) {

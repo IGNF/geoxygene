@@ -385,8 +385,8 @@ public class CartAGenDataSet extends DataSet {
   }
 
   /**
-   * Gets the population name of an object of the dataset
-   * @param obj an object of the dataset
+   * Gets the population name of a feature type name
+   * @param featureType the name of the feature type
    * @return
    */
   public String getPopNameFromFeatType(String featureType) {
@@ -495,8 +495,8 @@ public class CartAGenDataSet extends DataSet {
   }
 
   /**
-   * Gets the population name of an object of the dataset
-   * @param obj an object of the dataset
+   * Gets the population name associated with a class of the dataset
+   * @param classObj a class of objects of the dataset
    * @return
    */
   public String getPopNameFromClass(Class<?> classObj) {
@@ -621,8 +621,9 @@ public class CartAGenDataSet extends DataSet {
       pop.setNom(nomPopulation);
       pop.setFeatureType(ft);
       this.addPopulation(pop);
-    } else
+    } else {
       pop.setFeatureType(ft);
+    }
     return pop;
   }
 
@@ -1087,8 +1088,9 @@ public class CartAGenDataSet extends DataSet {
       }
       // get the building nature
       String nature = "Indifferencie";
-      if (fields.containsKey("NATURE"))
+      if (fields.containsKey("NATURE")) {
         nature = (String) fields.get("NATURE");
+      }
       IGeometry geom = null;
       try {
         geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
@@ -1263,8 +1265,9 @@ public class CartAGenDataSet extends DataSet {
    */
   public boolean loadRoadLinesFromSHP(String chemin, SourceDLM sourceDlm,
       SymbolList symbols) throws IOException {
-    if (sourceDlm.equals(SourceDLM.BD_TOPO_V2))
+    if (sourceDlm.equals(SourceDLM.BD_TOPO_V2)) {
       return this.loadRoadLinesShapeFile(chemin, sourceDlm, symbols);
+    }
     ShapefileReader shr = null;
     DbaseFileReader dbr = null;
     try {
@@ -1917,18 +1920,15 @@ public class CartAGenDataSet extends DataSet {
    * .setEnabled(true);
    * GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
    * return true; }
-   * 
-   * /** Charge des troncons de route depuis un shapefile lineaire. Adapte a la
+   *
+   */
+  /**
+   * Charge des troncons de route depuis un shapefile lineaire. Adapte a la
    * BDTopo V2 pour de la symbo 25K
-   * 
    * @param chemin
-   * 
    * @param doug
-   * 
    * @param sourceDlm
-   * 
    * @param symbols
-   * 
    * @throws IOException
    */
   public boolean loadPathsBDTopoV2_25FromSHP(String chemin,
@@ -2163,12 +2163,15 @@ public class CartAGenDataSet extends DataSet {
    * .setEnabled(true);
    * GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
    * return true; }
-   * 
-   * // /////////////////////////////////////// // Hydro network //
-   * ///////////////////////////////////////
-   * 
-   * /** Récupération de l'instance unique (singleton) de ReseauHydrographique.
-   * 
+   */
+
+
+  // ///////////////////////////////////////
+  // Hydro network
+  // ///////////////////////////////////////
+
+  /**
+   * Récupération de l'instance unique (singleton) de ReseauHydrographique.
    * @return instance unique (singleton) de ReseauHydrographique.
    */
   private INetwork hydroNetwork = null;
@@ -4019,8 +4022,9 @@ public class CartAGenDataSet extends DataSet {
     for (Layer lay : CartagenApplication.getInstance().getFrame()
         .getLayerManager().getLayers()) {
       if (lay instanceof LoadedLayer) {
-        if (((LoadedLayer) lay).getFeatures() == null)
+        if (((LoadedLayer) lay).getFeatures() == null) {
           continue;
+        }
         for (IFeature feat : ((LoadedLayer) lay).getFeatures()) {
           if (!(feat instanceof IGeneObj)) {
             continue;
@@ -4034,8 +4038,9 @@ public class CartAGenDataSet extends DataSet {
     for (Layer lay : CartagenApplication.getInstance().getFrame()
         .getLayerManager().getLayers()) {
       if (lay instanceof LoadedLayer) {
-        if (((LoadedLayer) lay).getFeatures() == null)
+        if (((LoadedLayer) lay).getFeatures() == null) {
           continue;
+        }
         for (@SuppressWarnings("unused")
         IFeature feat : ((LoadedLayer) lay).getFeatures()) {
           feat = null;
