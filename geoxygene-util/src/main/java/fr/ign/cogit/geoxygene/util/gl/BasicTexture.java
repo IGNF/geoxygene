@@ -32,7 +32,10 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glEnable;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
@@ -63,7 +66,7 @@ public class BasicTexture implements Texture {
     }
 
     /**
-     * Constructor
+     * Constructor with an image to read
      * 
      * @param textureFilename
      */
@@ -73,16 +76,31 @@ public class BasicTexture implements Texture {
     }
 
     /**
+     * Constructor with an image in memory
+     * 
+     * @param textureImage
+     */
+    public BasicTexture(BufferedImage textureImage) {
+        super();
+        this.textureImage = textureImage;
+    }
+
+    /**
      * @return the generated texture id
      */
     protected final Integer getTextureId() {
-        if (this.textureFilename == null) {
-            return null;
-        }
         if (this.textureId < 0) {
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
-            this.textureId = GLTools.loadTexture(this.getTextureImage());
-            logger.debug("Load basic texture " + this.getTextureFilename());
+            BufferedImage textureImage = this.getTextureImage();
+            if (textureImage != null) {
+                this.textureId = GLTools.loadTexture(textureImage);
+                try {
+                    ImageIO.write(textureImage, "PNG", new File("basicTexture-" + this.textureId + ".png"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
         }
         return this.textureId;
     }
@@ -98,10 +116,12 @@ public class BasicTexture implements Texture {
      * @return the textureImage
      */
     public final BufferedImage getTextureImage() {
-        if (this.textureImage == null) {
+        if (this.textureImage == null && this.textureFilename != null) {
+            // if the texture image is not set, try to read it from a file
             try {
                 this.textureImage = GLTools.loadImage(this.textureFilename);
             } catch (IOException e) {
+                logger.error("Cannot read file '" + this.getTextureFilename() + "'");
                 e.printStackTrace();
             }
         }
@@ -227,7 +247,7 @@ public class BasicTexture implements Texture {
 
     public void setTextureImage(BufferedImage textureImage) {
         this.textureImage = textureImage;
-        this.textureId = GLTools.loadTexture(this.textureImage);
+        //        this.textureId = GLTools.loadTexture(this.textureImage);
 
     }
 

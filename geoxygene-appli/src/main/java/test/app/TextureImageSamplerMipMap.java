@@ -27,14 +27,11 @@
 
 package test.app;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -43,11 +40,12 @@ import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.util.ImageUtil;
+import fr.ign.cogit.geoxygene.api.texture.Sample;
+import fr.ign.cogit.geoxygene.api.texture.Tile;
+import fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm;
 import fr.ign.cogit.geoxygene.util.MipMapMask;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
-import fr.ign.util.graphcut.Tile;
 
 /**
  * @author JeT
@@ -109,7 +107,10 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
         this.samples = new ArrayList<Sample>();
         Point p;
         Random rand = new Random(0);
-        int count = 0;
+        //        int count = 0;
+        //        System.err.println("compute samples using mipmap");
+        //        MipMapMask.save(this.imageMask, "./initial mipmap.png");
+        //        System.err.println("save file initial mipmap.png");
         while ((p = this.nextWhitePixel(rand)) != null) {
             //            System.err.println("Chosen sample = " + p + " between " + this.imageMask.getNbWhite() + " white pixels");
             Sample sample = new Sample(p.x, p.y, null);
@@ -122,18 +123,19 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
                 this.samples.add(sample);
             } else {
                 logger.error("An error ocured pasting patch at " + sample);
-                TexturePixel pixel = this.image.getPixel((int) sample.getLocation().x, (int) sample.getLocation().y);
+                TexturePixel pixel = this.image.getPixel((int) sample.getLocation().getX(), (int) sample.getLocation().getY());
                 System.err.println("pixel = " + pixel);
                 // remove the invalid pixel...
-                this.imageMask.removeWhitePixel((int) sample.getLocation().x, (int) sample.getLocation().y);
+                this.imageMask.removeWhitePixel((int) sample.getLocation().getX(), (int) sample.getLocation().getY());
             }
 
             //            MipMapMask.save(this.imageMask, "./mipmap" + count + "-" + this.imageMask.getNbWhite() + ".png");
             //            System.err.println("save file mipmap.png");
-            count++;
+            //            System.err.println("count = " + count);
+            //            count++;
         }
-        MipMapMask.save(this.imageMask, "./mipmap.png");
-        System.err.println("save file mipmap.png");
+        //        MipMapMask.save(this.imageMask, "./mipmap.png");
+        //        System.err.println("save file mipmap.png");
     }
 
     private boolean pastePatch(Sample sample) {
@@ -141,16 +143,16 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
         int tileWidth = tile.getMask().getWidth();
         int tileHeight = tile.getMask().getHeight();
 
-        TexturePixel pixel = this.image.getPixel((int) sample.getLocation().x, (int) sample.getLocation().y);
+        TexturePixel pixel = this.image.getPixel((int) sample.getLocation().getX(), (int) sample.getLocation().getY());
         if (pixel == null || pixel.vGradient == null) {
             return false;
         }
 
-        Point2d rotation = new Point2d(pixel.vGradient.x, pixel.vGradient.y);
+        Point2D rotation = new Point2D.Double(pixel.vGradient.x, pixel.vGradient.y);
         sample.setRotation(rotation);
         AffineTransform transform = new AffineTransform(); // from tile to image pixel coordinates
-        transform.translate(sample.getLocation().x - tileWidth / 2, sample.getLocation().y - tileHeight / 2);
-        transform.rotate(sample.getRotation().x, sample.getRotation().y, tileWidth / 2, tileHeight / 2);
+        transform.translate(sample.getLocation().getX() - tileWidth / 2, sample.getLocation().getY() - tileHeight / 2);
+        transform.rotate(sample.getRotation().getX(), sample.getRotation().getY(), tileWidth / 2, tileHeight / 2);
 
         byte[] tileMaskPixels = ((DataBufferByte) tile.getMask().getRaster().getDataBuffer()).getData();
 
@@ -407,6 +409,9 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
                 points.add(ps[i]);
                 nbMax++;
             }
+        }
+        if (nbMax == 0) {
+            return null;
         }
         Point chosenPoint = points.get(rand.nextInt(nbMax));
         //        System.err.println("chosen point " + chosenPoint + " level " + (level - 1) + " with #white = ");

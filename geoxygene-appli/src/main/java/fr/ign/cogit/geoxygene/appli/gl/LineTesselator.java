@@ -131,10 +131,6 @@ public class LineTesselator {
         return new Point2D.Double(v.getX() * c - v.getY() * s, v.getX() * s + v.getY() * c);
     }
 
-    public static Point2D toPoint2D(IDirectPosition i) {
-        return new Point2D.Double(i.getX(), i.getY());
-    }
-
     public static Point2D vector(Point2D p1, Point2D p2) {
         return new Point2D.Double(p2.getX() - p1.getX(), p2.getY() - p1.getY());
     }

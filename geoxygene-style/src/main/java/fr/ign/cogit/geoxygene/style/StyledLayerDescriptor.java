@@ -810,6 +810,9 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
     }
 
     public Layer getLayerAt(int row) {
+        if (row < 0 || row >= this.layers.size()) {
+            return null;
+        }
         return this.layers.get(row);
     }
 

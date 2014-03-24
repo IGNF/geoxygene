@@ -37,7 +37,6 @@ import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldTexture;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.render.primitive.BasicParameterizer;
-import fr.ign.cogit.geoxygene.appli.render.primitive.FeatureRenderer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.GL4FeatureRenderer;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
@@ -95,7 +94,8 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
     }
 
     /**
-     * Notifies all listeners that have registered interest for notification on
+     * Notifies all listeners that have registered as interested for
+     * notification on
      * this event type. The event instance is lazily created.
      * 
      * @see EventListenerList
@@ -242,6 +242,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                 //                                }
                 // FIXME: find a way to integrate/describe it into the SLD
                 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
                 this.render(symbolizer, feature, this.getLayer());
                 featureRenderIndex++;
             }
@@ -270,8 +271,9 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
      * @return
      */
     private TexturedPolygonSymbolizer generateTexturedPolygonSymbolizer(Viewport viewport, IFeature feature) {
-        TexturedPolygonSymbolizer polygonSymbolizer = new TexturedPolygonSymbolizer(feature, viewport);
-        BasicParameterizer parameterizer = new BasicParameterizer(feature);
+        IEnvelope envelope = feature.getGeom().getEnvelope();
+        TexturedPolygonSymbolizer polygonSymbolizer = new TexturedPolygonSymbolizer(envelope, viewport);
+        BasicParameterizer parameterizer = new BasicParameterizer(envelope);
         parameterizer.scaleX(10);
         parameterizer.scaleY(10);
         polygonSymbolizer.setParameterizer(parameterizer);

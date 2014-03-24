@@ -29,7 +29,8 @@ package fr.ign.cogit.geoxygene.appli.render.primitive;
 
 import javax.vecmath.Point2d;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 
 /**
@@ -37,6 +38,8 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
  * 
  */
 public class BasicParameterizer implements Parameterizer {
+
+    private static final Logger logger = Logger.getLogger(BasicParameterizer.class.getName()); // logger
 
     private double minX = 0;
     private double minY = 0;
@@ -56,18 +59,15 @@ public class BasicParameterizer implements Parameterizer {
         this.setMaxX(maxX);
         this.setMinY(minY);
         this.setMaxY(maxY);
+        //        logger.debug("Create Basic parameterizer with bounding box " + minX + "x" + minY + " /" + maxX + "x" + maxY);
     }
 
     /**
      * Constructor
      */
-    public BasicParameterizer(IFeature feature) {
-        // incoming coordinates are in object coordinates (0 -> max - min ) 
-        IEnvelope envelope = feature.getGeom().getEnvelope();
-        this.setMinX(0);
-        this.setMaxX(envelope.maxX() - envelope.minX());
-        this.setMinY(0);
-        this.setMaxY(envelope.maxY() - envelope.minY());
+    public BasicParameterizer(IEnvelope envelope) {
+        // incoming coordinates are stored in object coordinates (0 -> max - min ) 
+        this(0, 0, envelope.maxX() - envelope.minX(), envelope.maxY() - envelope.minY());
     }
 
     /**
@@ -180,11 +180,11 @@ public class BasicParameterizer implements Parameterizer {
      */
     @Override
     public Point2d getTextureCoordinates(double[] vertex) {
-        System.err.println("vertex = " + vertex[0] + " x " + vertex[1]);
-        System.err.println("min x = " + this.minX);
-        System.err.println("max x = " + this.maxX);
-        return new Point2d(((vertex[0] - this.minX) / (this.maxX - this.minX)) * this.scaleX + this.translateX,
-                ((vertex[1] - this.minY) / (this.maxY - this.minY)) * this.scaleY + this.translateY);
+        //        System.err.println("vertex = " + vertex[0] + " x " + vertex[1]);
+        //        System.err.println("min x = " + this.minX);
+        //        System.err.println("max x = " + this.maxX);
+        return new Point2d(((vertex[0]) / (this.maxX - this.minX)) * this.scaleX + this.translateX, ((vertex[1]) / (this.maxY - this.minY)) * this.scaleY
+                + this.translateY);
     }
 
 }

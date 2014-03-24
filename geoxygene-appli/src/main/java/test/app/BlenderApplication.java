@@ -69,9 +69,10 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
-import fr.ign.util.graphcut.GraphCut;
-import fr.ign.util.graphcut.PixelEdge;
-import fr.ign.util.graphcut.Tile;
+import fr.ign.cogit.geoxygene.api.texture.Tile;
+import fr.ign.cogit.geoxygene.util.graphcut.DefaultTile;
+import fr.ign.cogit.geoxygene.util.graphcut.GraphCut;
+import fr.ign.cogit.geoxygene.util.graphcut.PixelEdge;
 
 /**
  * @author JeT
@@ -273,7 +274,7 @@ public class BlenderApplication {
                 if (fc.showOpenDialog(BlenderApplication.this.frame) == JFileChooser.APPROVE_OPTION) {
                     try {
                         File selectedFile = fc.getSelectedFile();
-                        BlenderApplication.this.tileToApply = new Tile(BlenderApplication.this.readImageABGR(selectedFile));
+                        BlenderApplication.this.tileToApply = new DefaultTile(BlenderApplication.this.readImageABGR(selectedFile));
                         BlenderApplication.this.prefs.put(LAST_DIRECTORY, selectedFile.getAbsolutePath());
                         preview.setIcon(new ImageIcon(BlenderApplication.this.tileToApply.getImage().getScaledInstance(TH_WIDTH, TH_HEIGHT, Image.SCALE_SMOOTH)));
                     } catch (IOException e1) {
@@ -330,7 +331,7 @@ public class BlenderApplication {
         tool.add(autoButton);
         tool.add(this.textArea);
         try {
-            BlenderApplication.this.tileToApply = new Tile(this.readImageABGR(defaultTileFilename));
+            BlenderApplication.this.tileToApply = new DefaultTile(this.readImageABGR(defaultTileFilename));
             preview.setIcon(new ImageIcon(BlenderApplication.this.tileToApply.getImage().getScaledInstance(TH_WIDTH, TH_HEIGHT, Image.SCALE_SMOOTH)));
         } catch (IOException e1) {
             e1.printStackTrace();

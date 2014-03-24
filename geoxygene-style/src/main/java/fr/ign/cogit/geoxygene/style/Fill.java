@@ -29,8 +29,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
+import fr.ign.cogit.geoxygene.style.texture.BasicTexture;
 import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTexture;
 import fr.ign.cogit.geoxygene.style.texture.Texture;
+import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture;
 
 /**
  * @author Julien Perret
@@ -67,7 +69,8 @@ public class Fill {
         this.graphicFill = graphicFill;
     }
 
-    @XmlElements({ @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTexture.class) })
+    @XmlElements({ @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTexture.class), @XmlElement(name = "BasicTexture", type = BasicTexture.class),
+            @XmlElement(name = "TileDistributionTexture", type = TileDistributionTexture.class) })
     private Texture texture = null;
 
     /**

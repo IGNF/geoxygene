@@ -27,13 +27,13 @@
 
 package test.app;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import fr.ign.util.graphcut.Tile;
 import utils.Pair;
+import fr.ign.cogit.geoxygene.api.texture.Sample;
+import fr.ign.cogit.geoxygene.api.texture.Tile;
 
 /**
  * @author JeT
@@ -72,7 +72,7 @@ public class TextureImageTileChooser implements TileChooser {
         double[] sumProbabilities = new double[this.tilesToBeApplied.size()];
         for (int n = 0; n < this.tilesToBeApplied.size(); n++) {
             Pair<TileProbability, Tile> pair = this.tilesToBeApplied.get(n);
-            sumProbability += pair.first().getProbability(sample.getLocation().x, sample.getLocation().y);
+            sumProbability += pair.first().getProbability(sample.getLocation().getX(), sample.getLocation().getY());
             sumProbabilities[n] = sumProbability;
         }
         if (sumProbability < 1E-6) {

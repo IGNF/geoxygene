@@ -22,7 +22,7 @@ package fr.ign.cogit.geoxygene.style.gl;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.render.primitive.BasicParameterizer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer;
@@ -39,9 +39,9 @@ public class TexturedPolygonSymbolizer extends AbstractSymbolizer {
     private Parameterizer parameterizer = null;
     private Texture texture = null;
 
-    public TexturedPolygonSymbolizer(IFeature feature, Viewport viewport) {
+    public TexturedPolygonSymbolizer(IEnvelope envelope, Viewport viewport) {
         super();
-        this.parameterizer = new BasicParameterizer(feature);
+        this.parameterizer = new BasicParameterizer(envelope);
     }
 
     @Override

@@ -718,7 +718,7 @@ public class Viewport {
      *             throws an exception when the transformation fails
      */
     public final Point2D toModelPoint(final Point2D viewPoint) throws NoninvertibleTransformException {
-        return this.getModelToViewTransform().inverseTransform(this.toPoint2DDouble(viewPoint), null);
+        return this.getModelToViewTransform().inverseTransform(toPoint2DDouble(viewPoint), null);
     }
 
     /**
@@ -726,12 +726,25 @@ public class Viewport {
      * 
      * @param p
      *            a 2D point
-     * @return a correspondin Point2D.Double
+     * @return a correspondind Point2D.Double
      */
-    private Point2D.Double toPoint2DDouble(final Point2D p) {
+    public static Point2D.Double toPoint2DDouble(final Point2D p) {
         if (p instanceof Point2D.Double) {
             return (Point2D.Double) p;
         }
+        return new Point2D.Double(p.getX(), p.getY());
+    }
+
+    /**
+     * Conversion function from an IDirectPosition to the equivalent
+     * Point2D.Double.
+     * Only X & Y values are used. Z is ignored
+     * 
+     * @param p
+     *            an IDirectPosition
+     * @return a corresponding Point2D.Double
+     */
+    public static Point2D toPoint2D(final IDirectPosition p) {
         return new Point2D.Double(p.getX(), p.getY());
     }
 

@@ -25,17 +25,21 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.task;
+package fr.ign.cogit.geoxygene.appli.render.texture;
+
+import java.util.Iterator;
+
+import fr.ign.cogit.geoxygene.api.texture.Sample;
 
 /**
  * @author JeT
  * 
  */
-public interface TaskListener {
+public interface SamplingAlgorithm {
 
     /**
-     * method called when the listened task change its state
+     * get an iterator over a sample collection
      */
-    public void onStateChange(final Task task, final TaskState oldState);
+    Iterator<Sample> getSampleIterator();
 
 }

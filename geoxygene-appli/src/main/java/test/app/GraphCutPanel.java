@@ -48,9 +48,9 @@ import javax.swing.JPanel;
 
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 
-import fr.ign.util.graphcut.MinSourceSinkCut;
-import fr.ign.util.graphcut.PixelEdge;
-import fr.ign.util.graphcut.PixelVertex;
+import fr.ign.cogit.geoxygene.util.graphcut.MinSourceSinkCut;
+import fr.ign.cogit.geoxygene.util.graphcut.PixelEdge;
+import fr.ign.cogit.geoxygene.util.graphcut.PixelVertex;
 
 /**
  * @author JeT

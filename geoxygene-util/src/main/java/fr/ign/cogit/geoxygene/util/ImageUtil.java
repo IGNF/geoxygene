@@ -63,7 +63,18 @@ public class ImageUtil {
      * @return empty newly created image with same size and data type
      */
     public static BufferedImage createBufferedImage(BufferedImage img) {
-        BufferedImage newImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        BufferedImage newImage = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
+        return newImage;
+    }
+
+    /**
+     * This method create and return a ARGB BufferedImage
+     * with the given input size
+     * 
+     * @return empty newly created image of type ARGB
+     */
+    public static BufferedImage createBufferedImage(int width, int height) {
+        BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         return newImage;
     }
 

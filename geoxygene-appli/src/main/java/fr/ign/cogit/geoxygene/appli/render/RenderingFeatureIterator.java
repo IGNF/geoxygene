@@ -25,31 +25,41 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package test.app;
+package fr.ign.cogit.geoxygene.appli.render;
 
-import fr.ign.cogit.geoxygene.api.texture.Sample;
-import fr.ign.cogit.geoxygene.api.texture.Tile;
+import java.util.Iterator;
+
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 
 /**
  * @author JeT
- *         algorithm used to choose a tile depending on a sample
+ * 
  */
-public interface TileChooser {
+public class RenderingFeatureIterator implements Iterator<IFeature> {
 
     /**
-     * Choose a tile depending on a sample position
+     * 
      */
-    public Tile getTile(Sample sample);
+    public RenderingFeatureIterator() {
 
-    /**
-     * Choose a tile depending on a sample position
-     */
-    public Tile setTile(Sample sample);
+    }
 
-    /**
-     * Method used to initialize tiling. Any call of getTile(Sample)
-     * will give repeatable results if done in the same order
-     */
-    void initializeTiling();
+    @Override
+    public boolean hasNext() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public IFeature next() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void remove() {
+        // TODO Auto-generated method stub
+
+    }
 
 }

@@ -260,7 +260,6 @@ public class GLComplexFactory {
         tesselator.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_POSITIVE);
 
         tesselator.gluTessBeginPolygon(null);
-
         // outer frontier
         tesselator.gluTessBeginContour();
         for (int outerFrontierPointIndex = 0; outerFrontierPointIndex < polygon.exteriorCoord().size(); outerFrontierPointIndex++) {
@@ -287,7 +286,7 @@ public class GLComplexFactory {
                     rgba[3] };
             //            System.err.println("tess input data = " + Arrays.toString(data));
             tesselator.gluTessVertex(vertex, 0, data);
-            //            System.err.println("set exterior #" + outerFrontierPointIndex + " vertex " + vertex[0] + ", " + vertex[1] + ", " + vertex[2]);
+            //            System.err.println("set exterior #" + outerFrontierPointIndex + " vertex " + vertex[0] + ", " + vertex[1] + ", " + vertex[2] + " uv = " + uv);
         }
         tesselator.gluTessEndContour();
 

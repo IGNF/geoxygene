@@ -23,7 +23,6 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.RescaleOp;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +34,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.vecmath.Point2d;
 
@@ -51,18 +49,21 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.api.texture.Sample;
+import fr.ign.cogit.geoxygene.api.texture.Tile;
 import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldFrontierPixelRenderer;
+import fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
-import fr.ign.util.graphcut.GraphCut;
-import fr.ign.util.graphcut.MinSourceSinkCut;
-import fr.ign.util.graphcut.PixelEdge;
-import fr.ign.util.graphcut.PixelVertex;
-import fr.ign.util.graphcut.Tile;
+import fr.ign.cogit.geoxygene.util.graphcut.DefaultTile;
+import fr.ign.cogit.geoxygene.util.graphcut.GraphCut;
+import fr.ign.cogit.geoxygene.util.graphcut.MinSourceSinkCut;
+import fr.ign.cogit.geoxygene.util.graphcut.PixelEdge;
+import fr.ign.cogit.geoxygene.util.graphcut.PixelVertex;
 
 public class DisplayPanel extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener {
 
@@ -272,25 +273,25 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         DistanceTileProbability allProbability = new DistanceTileProbability(this.texImage, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 1, 0);
         try {
 
-            Tile tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/waves small.png");
+            Tile tileTexture = DefaultTile.read("/export/home/kandinsky/turbet/cassini samples/waves small.png");
             this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(closeProbability, tileTexture));
-            //            tileTexture = Tile.read("/home/turbet/Documents/s2.png");
+            //            tileTexture = DefaultTile.read("/home/turbet/Documents/s2.png");
             //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(closeProbability, tileTexture));
-            //            tileTexture = Tile.read("/home/turbet/Documents/s3.png");
+            //            tileTexture = DefaultTile.read("/home/turbet/Documents/s3.png");
             //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(closeProbability, tileTexture));
 
-            tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/waves small.png");
+            tileTexture = DefaultTile.read("/export/home/kandinsky/turbet/cassini samples/waves small.png");
             this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(mediumProbability, tileTexture));
-            tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/waves big.png");
+            tileTexture = DefaultTile.read("/export/home/kandinsky/turbet/cassini samples/waves big.png");
             this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(mediumProbability, tileTexture));
-            //            tileTexture = Tile.read("/home/turbet/Documents/t3.png");
+            //            tileTexture = DefaultTile.read("/home/turbet/Documents/t3.png");
             //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(mediumProbability, tileTexture));
 
-            tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/crest small.png");
+            tileTexture = DefaultTile.read("/export/home/kandinsky/turbet/cassini samples/crest small.png");
             this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(farProbability, tileTexture));
-            tileTexture = Tile.read("/export/home/kandinsky/turbet/cassini samples/crest big.png");
+            tileTexture = DefaultTile.read("/export/home/kandinsky/turbet/cassini samples/crest big.png");
             this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(farProbability, tileTexture));
-            //            tileTexture = Tile.read("/home/turbet/Documents/u3.png");
+            //            tileTexture = DefaultTile.read("/home/turbet/Documents/u3.png");
             //            this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(farProbability, tileTexture));
 
         } catch (IOException e) {
@@ -826,8 +827,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         Iterator<Sample> sampleIterator = sampler.getSampleIterator();
         while (sampleIterator.hasNext()) {
             Sample sample = sampleIterator.next();
-            double xTexture = sample.getLocation().x;
-            double yTexture = sample.getLocation().y;
+            double xTexture = sample.getLocation().getX();
+            double yTexture = sample.getLocation().getY();
             Tile tile = sample.getTile() != null ? sample.getTile() : tileChooser.getTile(sample);
             if (tile == null) {
                 continue;
@@ -891,8 +892,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         int count = 0;
         while (sampleIterator.hasNext()) {
             Sample sample = sampleIterator.next();
-            double xTexture = sample.getLocation().x;
-            double yTexture = sample.getLocation().y;
+            double xTexture = sample.getLocation().getX();
+            double yTexture = sample.getLocation().getY();
             Tile tile = sample.getTile();
             if (tile == null) {
                 System.err.println("tiles must be precomputed by samplers for the graphcut algorithm");
@@ -969,8 +970,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         sampleIterator = sampler.getSampleIterator();
         while (sampleIterator.hasNext()) {
             Sample sample = sampleIterator.next();
-            double xTexture = sample.getLocation().x;
-            double yTexture = sample.getLocation().y;
+            double xTexture = sample.getLocation().getX();
+            double yTexture = sample.getLocation().getY();
             Point2D screenPixelLocation = new Point2D.Double();
             this.transform.transform(new Point2D.Double(xTexture, yTexture), screenPixelLocation);
             //                        Point2D texturePixelLocation = new Point2D.Double();
@@ -1473,43 +1474,43 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return new Point2d(-dy, dx);
     }
 
-    private static Point2d compute5VGradient(TextureImage image, int x, int y) {
-        final int windowDimension = 5;
-        double[][] xSobelWeight = { { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 0, 0, 0, 0, 0 }, { -1, -1, -1, -1, -1 }, { -1, -1, -1, -1, -1 } };
-        double[][] ySobelWeight = { { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 } };
-        double xSumWeight = 0;
-        double ySumWeight = 0;
-        double xGradient = 0;
-        double yGradient = 0;
-        boolean edge = false;
-        for (int wy = 0; wy < windowDimension; wy++) {
-            for (int wx = 0; wx < windowDimension; wx++) {
-                TexturePixel wPixel = image.getPixel(x + wx - windowDimension, y + wy - windowDimension);
-                if (wPixel == null || wPixel.in == false) {
-                    edge = true;
-                    continue;
-                }
-                xSumWeight += xSobelWeight[wx][wy];
-                ySumWeight += ySobelWeight[wx][wy];
-                xGradient += xSobelWeight[wx][wy] * wPixel.vTexture;
-                yGradient += ySobelWeight[wx][wy] * wPixel.vTexture;
-
-            }
-
-        }
-        //        if (edge) {
-        //            TexturePixel pixel = image.getPixel(x, y);
-        //            return new Point2d(x - pixel.closestPoint.x, y - pixel.closestPoint.y);
-        //
-        //        }
-        if (xSumWeight != 0) {
-            xGradient /= xSumWeight;
-        }
-        if (ySumWeight != 0) {
-            yGradient /= ySumWeight;
-        }
-        return new Point2d(-yGradient, xGradient);
-    }
+    //    private static Point2d compute5VGradient(TextureImage image, int x, int y) {
+    //        final int windowDimension = 5;
+    //        double[][] xSobelWeight = { { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 0, 0, 0, 0, 0 }, { -1, -1, -1, -1, -1 }, { -1, -1, -1, -1, -1 } };
+    //        double[][] ySobelWeight = { { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 } };
+    //        double xSumWeight = 0;
+    //        double ySumWeight = 0;
+    //        double xGradient = 0;
+    //        double yGradient = 0;
+    //        boolean edge = false;
+    //        for (int wy = 0; wy < windowDimension; wy++) {
+    //            for (int wx = 0; wx < windowDimension; wx++) {
+    //                TexturePixel wPixel = image.getPixel(x + wx - windowDimension, y + wy - windowDimension);
+    //                if (wPixel == null || wPixel.in == false) {
+    //                    edge = true;
+    //                    continue;
+    //                }
+    //                xSumWeight += xSobelWeight[wx][wy];
+    //                ySumWeight += ySobelWeight[wx][wy];
+    //                xGradient += xSobelWeight[wx][wy] * wPixel.vTexture;
+    //                yGradient += ySobelWeight[wx][wy] * wPixel.vTexture;
+    //
+    //            }
+    //
+    //        }
+    //        //        if (edge) {
+    //        //            TexturePixel pixel = image.getPixel(x, y);
+    //        //            return new Point2d(x - pixel.closestPoint.x, y - pixel.closestPoint.y);
+    //        //
+    //        //        }
+    //        if (xSumWeight != 0) {
+    //            xGradient /= xSumWeight;
+    //        }
+    //        if (ySumWeight != 0) {
+    //            yGradient /= ySumWeight;
+    //        }
+    //        return new Point2d(-yGradient, xGradient);
+    //    }
 
     /**
      * Modify the neighbors pixel distance according to the current pixel

@@ -40,9 +40,11 @@ import java.util.List;
 import javax.vecmath.Point2d;
 
 import utils.Pair;
+import fr.ign.cogit.geoxygene.api.texture.Sample;
+import fr.ign.cogit.geoxygene.api.texture.Tile;
+import fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
-import fr.ign.util.graphcut.Tile;
 
 /**
  * @author JeT
@@ -196,14 +198,14 @@ public class TextureImageSamplerTiler implements SamplingAlgorithm {
             if (pixel == null || pixel.vGradient == null) {
                 return;
             }
-            Point2d location = new Point2d(p.x, p.y);
-            Point2d rotation = new Point2d(pixel.vGradient.x, pixel.vGradient.y);
+            Point2D location = new Point2D.Double(p.x, p.y);
+            Point2D rotation = new Point2D.Double(pixel.vGradient.x, pixel.vGradient.y);
             Sample sample = new Sample(location, rotation, null);
             AffineTransform transform = new AffineTransform();
             int tileWidth = tile.getImage().getWidth();
             int tileHeight = tile.getImage().getHeight();
-            transform.translate(sample.getLocation().x - tileWidth / 2, sample.getLocation().y - tileHeight / 2);
-            transform.rotate(sample.getRotation().x, sample.getRotation().y, tileWidth / 2, tileHeight / 2);
+            transform.translate(sample.getLocation().getX() - tileWidth / 2, sample.getLocation().getY() - tileHeight / 2);
+            transform.rotate(sample.getRotation().getX(), sample.getRotation().getY(), tileWidth / 2, tileHeight / 2);
 
             BufferedImage mergedTile = new BufferedImage(tileWidth, tileHeight, BufferedImage.TYPE_BYTE_GRAY);
             byte[] tileMaskPixels = ((DataBufferByte) tile.getMask().getRaster().getDataBuffer()).getData();
@@ -260,10 +262,8 @@ public class TextureImageSamplerTiler implements SamplingAlgorithm {
         if (pixel == null || pixel.vGradient == null) {
             return null;
         }
-        Point2d location = new Point2d(p.x, p.y);
-        System.err.println("evaluate Tile matching at pixel " + pixel);
-        System.err.println("evaluate Tile matching vGradient = " + pixel.vGradient);
-        Point2d rotation = new Point2d(pixel.vGradient.x, pixel.vGradient.y);
+        Point2D location = new Point2D.Double(p.x, p.y);
+        Point2D rotation = new Point2D.Double(pixel.vGradient.x, pixel.vGradient.y);
         Sample potentialSample = new Sample(location, rotation, null);
 
         //        int nbNewPixels = 0;
@@ -272,8 +272,8 @@ public class TextureImageSamplerTiler implements SamplingAlgorithm {
         AffineTransform transform = new AffineTransform();
         int tileWidth = tile.getImage().getWidth();
         int tileHeight = tile.getImage().getHeight();
-        transform.translate(potentialSample.getLocation().x - tileWidth / 2, potentialSample.getLocation().y - tileHeight / 2);
-        transform.rotate(potentialSample.getRotation().x, potentialSample.getRotation().y, tileWidth / 2, tileHeight / 2);
+        transform.translate(potentialSample.getLocation().getX() - tileWidth / 2, potentialSample.getLocation().getY() - tileHeight / 2);
+        transform.rotate(potentialSample.getRotation().getX(), potentialSample.getRotation().getY(), tileWidth / 2, tileHeight / 2);
 
         BufferedImage mergedTile = new BufferedImage(tileWidth, tileHeight, BufferedImage.TYPE_BYTE_GRAY);
         byte[] tileMaskPixels = ((DataBufferByte) tile.getMask().getRaster().getDataBuffer()).getData();
@@ -434,8 +434,8 @@ public class TextureImageSamplerTiler implements SamplingAlgorithm {
         AffineTransform transform = new AffineTransform();
         int tileWidth = tile.getImage().getWidth();
         int tileHeight = tile.getImage().getHeight();
-        transform.translate(sample.getLocation().x - tileWidth / 2, sample.getLocation().y - tileHeight / 2);
-        transform.rotate(sample.getRotation().x, sample.getRotation().y, tileWidth / 2, tileHeight / 2);
+        transform.translate(sample.getLocation().getX() - tileWidth / 2, sample.getLocation().getY() - tileHeight / 2);
+        transform.rotate(sample.getRotation().getX(), sample.getRotation().getY(), tileWidth / 2, tileHeight / 2);
 
         BufferedImage mergedTile = new BufferedImage(tileWidth, tileHeight, BufferedImage.TYPE_BYTE_GRAY);
         byte[] tileMaskPixels = ((DataBufferByte) tile.getMask().getRaster().getDataBuffer()).getData();

@@ -24,13 +24,55 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  *******************************************************************************/
+package fr.ign.cogit.geoxygene.style.texture;
 
-package fr.ign.cogit.geoxygene.appli.task;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
+ * Simple texture containing a single image
+ * 
  * @author JeT
  * 
  */
-public enum TaskState {
-    WAITING, INITIALIZING, RUNNING, PAUSED, STOPPED, FINALIZING, FINISHED, ERROR
+@XmlAccessorType(XmlAccessType.NONE)
+public class BasicTexture extends Texture {
+
+    @XmlElement(name = "url")
+    private String url = null;
+
+    /**
+     * default constructor
+     */
+    public BasicTexture() {
+        super(TextureDrawingMode.VIEWPORTSPACE);
+    }
+
+    /**
+     * constructor
+     * 
+     * @param url
+     *            url to the texture image location
+     */
+    public BasicTexture(String url) {
+        this();
+        this.url = url;
+    }
+
+    /**
+     * @return the url
+     */
+    public String getUrl() {
+        return this.url;
+    }
+
+    /**
+     * @param url
+     *            the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
 }

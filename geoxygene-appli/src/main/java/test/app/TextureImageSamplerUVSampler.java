@@ -28,6 +28,7 @@
 package test.app;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,6 +38,8 @@ import java.util.Set;
 
 import javax.vecmath.Point2d;
 
+import fr.ign.cogit.geoxygene.api.texture.Sample;
+import fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 
@@ -150,8 +153,7 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
         for (Sample sample : this.samples) {
             double dx = rand.nextDouble() * this.minDistanceInPixels * this.jitteringFactor;
             double dy = rand.nextDouble() * this.minDistanceInPixels * this.jitteringFactor;
-            sample.getLocation().x += dx;
-            sample.getLocation().y += dy;
+            sample.getLocation().setLocation(sample.getLocation().getX() + dx, sample.getLocation().getY() + dy);
         }
 
     }
@@ -179,7 +181,7 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
             if (this.isDistanceStep(pixel, x + 1, y) || this.isDistanceStep(pixel, x - 1, y) || this.isDistanceStep(pixel, x, y + 1)
                     || this.isDistanceStep(pixel, x, y - 1)) {
                 if (this.minDistanceToSamples(x, y) > this.minDistanceInPixels) {
-                    this.samples.add(new Sample(new Point2d(x, y), new Point2d(xGradient, yGradient), null));
+                    this.samples.add(new Sample(new Point2D.Double(x, y), new Point2D.Double(xGradient, yGradient), null));
                     return true;
                 }
 
@@ -201,7 +203,7 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
             if (this.isDistanceStep(pixel, x + 1, y) || this.isDistanceStep(pixel, x - 1, y) || this.isDistanceStep(pixel, x, y + 1)
                     || this.isDistanceStep(pixel, x, y - 1)) {
                 if (this.minDistanceToSamples(x, y) > this.minDistanceInPixels) {
-                    this.samples.add(new Sample(new Point2d(x, y), new Point2d(xGradient, yGradient), null));
+                    this.samples.add(new Sample(new Point2D.Double(x, y), new Point2D.Double(xGradient, yGradient), null));
                     return true;
                 }
             }
@@ -222,7 +224,8 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
     private double minDistanceToSamples(double x, double y) {
         double min = Double.POSITIVE_INFINITY;
         for (Sample sample : this.samples) {
-            double d = Math.sqrt((x - sample.getLocation().x) * (x - sample.getLocation().x) + (y - sample.getLocation().y) * (y - sample.getLocation().y));
+            double d = Math.sqrt((x - sample.getLocation().getX()) * (x - sample.getLocation().getX()) + (y - sample.getLocation().getY())
+                    * (y - sample.getLocation().getY()));
             if (d < min) {
                 min = d;
             }

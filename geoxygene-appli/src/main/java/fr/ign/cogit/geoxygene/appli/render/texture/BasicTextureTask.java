@@ -25,26 +25,75 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.task;
+package fr.ign.cogit.geoxygene.appli.render.texture;
+
+import java.net.URL;
+
+import javax.imageio.ImageIO;
+
+import fr.ign.cogit.geoxygene.appli.task.TaskState;
+import fr.ign.cogit.geoxygene.style.texture.BasicTexture;
 
 /**
  * @author JeT
- *         Event fired from TaskManager
+ * 
  */
-public interface TaskManagerListener {
+public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
 
     /**
-     * a task has been added to a manager
-     * 
-     * @param task
+     * @param texture
      */
-    public void onTaskAdded(final Task task);
+    public BasicTextureTask(BasicTexture texture) {
+        super(texture);
+    }
 
-    /**
-     * a task has been removed from a manager
+    /*
+     * (non-Javadoc)
      * 
-     * @param task
+     * @see fr.ign.cogit.geoxygene.appli.task.Task#isProgressable()
      */
-    public void onTaskRemoved(final Task task);
+    @Override
+    public boolean isProgressable() {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.task.Task#isPausable()
+     */
+    @Override
+    public boolean isPausable() {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.task.Task#isStoppable()
+     */
+    @Override
+    public boolean isStoppable() {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Runnable#run()
+     */
+    @Override
+    public void run() {
+        this.setState(TaskState.INITIALIZING);
+        this.setState(TaskState.RUNNING);
+        try {
+
+            this.getTexture().setTextureImage(ImageIO.read(new URL(this.getTexture().getUrl())));
+            this.setState(TaskState.FINISHED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.setState(TaskState.ERROR);
+        }
+    }
 
 }

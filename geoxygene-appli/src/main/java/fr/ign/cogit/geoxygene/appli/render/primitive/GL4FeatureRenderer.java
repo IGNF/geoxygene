@@ -295,11 +295,11 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
             } else if (geometry.isPolygon()) {
                 logger.warn("polygon geometry for feature " + feature.getId());
                 DisplayableSurface displayablePolygon = new DisplayableSurface(layer.getName() + " polygon #" + feature.getId(), viewport, (IPolygon) geometry,
-                        symbolizer);
+                        feature, symbolizer);
                 displayable = displayablePolygon;
             } else if (geometry.isMultiSurface()) {
                 DisplayableSurface displayablePolygon = new DisplayableSurface(layer.getName() + "multisurface #" + feature.getId(), viewport,
-                        (IMultiSurface<?>) geometry, symbolizer);
+                        (IMultiSurface<?>) geometry, feature, symbolizer);
                 displayable = displayablePolygon;
             } else if (geometry.isMultiCurve()) {
                 DisplayableCurve displayableCurve = new DisplayableCurve(layer.getName() + "multicurve #" + feature.getId(), viewport,

@@ -25,19 +25,46 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package test.app;
+package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import java.util.Iterator;
+import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
+import fr.ign.cogit.geoxygene.style.texture.Texture;
 
 /**
  * @author JeT
- * 
+ *         Abstract task for async texture generation
  */
-public interface SamplingAlgorithm {
+public abstract class AbstractTextureTask<TextureType extends Texture> extends AbstractTask implements TextureTask<TextureType> {
+
+    private TextureType texture = null;
 
     /**
-     * get an iterator over a sample collection
+     * Default constructor
      */
-    Iterator<Sample> getSampleIterator();
+    public AbstractTextureTask(TextureType texture) {
+        super(texture.getClass().getSimpleName() + " texture generation");
+        this.texture = texture;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.render.texture.TextureTask#getTexture()
+     */
+    @Override
+    public TextureType getTexture() {
+        return this.texture;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.render.texture.TextureTask#setTexture(
+     * TextureType)
+     */
+    @Override
+    public void setTexture(TextureType texture) {
+        this.texture = texture;
+    }
 
 }

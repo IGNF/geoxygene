@@ -27,18 +27,19 @@
 
 package test.app;
 
-import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
 import javax.vecmath.Point2d;
 
+import fr.ign.cogit.geoxygene.api.texture.Sample;
+import fr.ign.cogit.geoxygene.api.texture.Tile;
+import fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
-import fr.ign.util.graphcut.Tile;
 
 /**
  * @author JeT
@@ -46,7 +47,7 @@ import fr.ign.util.graphcut.Tile;
  */
 public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
 
-    private static final Point2d unitScaleFactor = new Point2d(1., 1.);
+    private static final Point2D unitScaleFactor = new Point2D.Double(1., 1.);
     private TextureImage image = null;
     private double scale = 1;
     private double sampleX = 1;
@@ -128,8 +129,8 @@ public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
                         jitterX = (rand.nextDouble() * 2 - 1) * xSampleRate * this.getJitteringFactor();
                         jitterY = (rand.nextDouble() * 2 - 1) * ySampleRate * this.getJitteringFactor();
                     }
-                    Point2d location = new Point2d(x + jitterX, y + jitterY);
-                    Point2d rotation = new Point2d(pixel.vGradient.x, pixel.vGradient.y);
+                    Point2D location = new Point2D.Double(x + jitterX, y + jitterY);
+                    Point2D rotation = new Point2D.Double(pixel.vGradient.x, pixel.vGradient.y);
                     Sample sample = new Sample(location, rotation, unitScaleFactor, null);
                     if (this.tileChooser != null) {
                         Tile tile = this.tileChooser.getTile(sample);
@@ -151,8 +152,7 @@ public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
         for (Sample sample : this.samples) {
             double dx = rand.nextDouble() * xSampleRate * this.jitteringFactor;
             double dy = rand.nextDouble() * ySampleRate * this.jitteringFactor;
-            sample.getLocation().x += dx;
-            sample.getLocation().y += dy;
+            sample.getLocation().setLocation(sample.getLocation().getX() + dx, sample.getLocation().getY() + dy);
         }
 
     }
