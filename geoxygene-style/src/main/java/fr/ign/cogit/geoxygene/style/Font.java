@@ -50,6 +50,21 @@ public class Font {
    */
   public void setFontFamily(String fontFamily) {
     this.fontFamily = fontFamily;
+    boolean found = false;
+    synchronized (this) {
+      for (SvgParameter parameter : this.svgParameters) {
+        if (parameter.getName().equalsIgnoreCase("font-family")) { //$NON-NLS-1$
+          parameter.setValue(fontFamily);
+          found = true;
+        }
+      }
+      if (!found) {
+        SvgParameter parameter = new SvgParameter();
+        parameter.setName("font-family"); //$NON-NLS-1$
+        parameter.setValue(fontFamily);
+        this.svgParameters.add(parameter);
+      }
+    }
   }
 
   @XmlTransient
@@ -65,7 +80,37 @@ public class Font {
 
   public void setFontStyle(int fontStyle) {
     this.fontStyle = fontStyle;
+    boolean found = false;
+    synchronized (this) {
+      for (SvgParameter parameter : this.svgParameters) {
+        if (parameter.getName().equalsIgnoreCase("font-style")) { //$NON-NLS-1$
+          parameter.setValue(Float.toString(fontStyle));
+          switch (fontStyle) {
+            case java.awt.Font.PLAIN:
+              parameter.setValue("normal");//$NON-NLS-1$
+              break;
+            case java.awt.Font.ITALIC:
+              parameter.setValue("italic");//$NON-NLS-1$
+              break;
+            case java.awt.Font.BOLD:
+              parameter.setValue("oblique");//$NON-NLS-1$
+              break;
+            default:
+              parameter.setValue("normal");//$NON-NLS-1$
+              break;
+          }
+          found = true;
+        }
+      }
+      if (!found) {
+        SvgParameter parameter = new SvgParameter();
+        parameter.setName("font-style"); //$NON-NLS-1$
+        parameter.setValue(Float.toString(fontStyle));
+        this.svgParameters.add(parameter);
+      }
+    }
   }
+
   /**
    * Affecte la valeur de l'attribut fontStyle.
    * @param fontStyle l'attribut fontStyle à affecter
@@ -74,8 +119,8 @@ public class Font {
     int style = java.awt.Font.PLAIN;
     if (fontStyle.equalsIgnoreCase("italic")) { //$NON-NLS-1$
       style = java.awt.Font.ITALIC;
-    }
-    else if (fontStyle.equalsIgnoreCase("bold")) { //$NON-NLS-1$
+    } else if (fontStyle.equalsIgnoreCase("oblique")//$NON-NLS-1$
+        || fontStyle.equalsIgnoreCase("bold")) { //$NON-NLS-1$
       style = java.awt.Font.BOLD;
     }
     this.setFontStyle(style);
@@ -96,9 +141,45 @@ public class Font {
    * Affecte la valeur de l'attribut fontWeight.
    * @param fontWeight l'attribut fontWeight à affecter
    */
-  public void setFontWeight(int fontWeight) {
+  public synchronized void setFontWeight(int fontWeight) {
     this.fontWeight = fontWeight;
+    boolean found = false;
+    synchronized (this) {
+      for (SvgParameter parameter : this.svgParameters) {
+        if (parameter.getName().equalsIgnoreCase("font-weight")) { //$NON-NLS-1$
+          switch (fontWeight) {
+            case java.awt.Font.PLAIN:
+              parameter.setValue("normal");//$NON-NLS-1$
+              break;
+            case java.awt.Font.BOLD:
+              parameter.setValue("bold");//$NON-NLS-1$
+              break;
+            default:
+              parameter.setValue("normal");//$NON-NLS-1$
+              break;
+          }
+          found = true;
+        }
+      }
+      if (!found) {
+        SvgParameter parameter = new SvgParameter();
+        parameter.setName("font-weight"); //$NON-NLS-1$
+        switch (fontWeight) {
+          case java.awt.Font.PLAIN:
+            parameter.setValue("normal");
+            break;
+          case java.awt.Font.BOLD:
+            parameter.setValue("bold");
+            break;
+          default:
+            parameter.setValue("normal");
+            break;
+        }
+        this.svgParameters.add(parameter);
+      }
+    }
   }
+
   public void setFontWeight(String fontWeight) {
     int weight = java.awt.Font.PLAIN;
     if (fontWeight.equalsIgnoreCase("bold")) { //$NON-NLS-1$
@@ -124,6 +205,21 @@ public class Font {
    */
   public void setFontSize(int fontSize) {
     this.fontSize = fontSize;
+    boolean found = false;
+    synchronized (this) {
+      for (SvgParameter parameter : this.svgParameters) {
+        if (parameter.getName().equalsIgnoreCase("font-size")) { //$NON-NLS-1$
+          parameter.setValue(Float.toString(fontSize));
+          found = true;
+        }
+      }
+      if (!found) {
+        SvgParameter parameter = new SvgParameter();
+        parameter.setName("font-size"); //$NON-NLS-1$
+        parameter.setValue(Float.toString(fontSize));
+        this.svgParameters.add(parameter);
+      }
+    }
   }
 
   @XmlElements({ @XmlElement(name = "SvgParameter", type = SvgParameter.class),
@@ -148,24 +244,27 @@ public class Font {
     this.svgParameters = svgParameters;
     this.updateValues();
   }
-  private synchronized void updateValues() {
-	  synchronized (this.svgParameters) {
-		  for (SvgParameter parameter : this.svgParameters) {
-			  if (parameter.getName().equalsIgnoreCase("font-family")) { //$NON-NLS-1$
-				  this.setFontFamily(parameter.getValue());
-			  } else if (parameter.getName().equalsIgnoreCase("font-style")) { //$NON-NLS-1$
-				  this.setFontStyle(parameter.getValue());
-			  } else if (parameter.getName().equalsIgnoreCase("font-weight")) { //$NON-NLS-1$
-				  this.setFontWeight(parameter.getValue());
-			  } else if (parameter.getName().equalsIgnoreCase("font-size")) { //$NON-NLS-1$
-				  this.setFontSize((int) (Double.parseDouble(parameter.getValue())));
-			  }
-		  }	  
 
-	  }
+  private synchronized void updateValues() {
+    synchronized (this.svgParameters) {
+      for (SvgParameter parameter : this.svgParameters) {
+        if (parameter.getName().equalsIgnoreCase("font-family")) { //$NON-NLS-1$
+          this.setFontFamily(parameter.getValue());
+        } else if (parameter.getName().equalsIgnoreCase("font-style")) { //$NON-NLS-1$
+          this.setFontStyle(parameter.getValue());
+        } else if (parameter.getName().equalsIgnoreCase("font-weight")) { //$NON-NLS-1$
+          this.setFontWeight(parameter.getValue());
+        } else if (parameter.getName().equalsIgnoreCase("font-size")) { //$NON-NLS-1$
+          this.setFontSize((int) (Double.parseDouble(parameter.getValue())));
+        }
+      }
+
+    }
   }
+
   @XmlTransient
   private java.awt.Font font = null;
+
   /**
    * @return une police AWT équivalent à la police courante
    */
@@ -174,10 +273,10 @@ public class Font {
       this.updateValues();
     }
     this.font = new java.awt.Font(this.getFontFamily(), this.getFontStyle()
-        | this.getFontWeight(),(int)(this.getFontSize() * scale));
+        | this.getFontWeight(), (int) (this.getFontSize() * scale));
     return this.font;
   }
-  
+
   public java.awt.Font toAwfFont() {
     if (this.font == null) {
       this.updateValues();
@@ -186,10 +285,10 @@ public class Font {
         | this.getFontWeight(), this.getFontSize());
     return this.font;
   }
-  
+
   public Font() {
   }
-  
+
   public Font(java.awt.Font font) {
     this.setFontFamily(font.getFamily());
     switch (font.getStyle()) {
@@ -205,7 +304,7 @@ public class Font {
         this.setFontStyle(java.awt.Font.PLAIN);
         this.setFontWeight(java.awt.Font.BOLD);
         break;
-      case java.awt.Font.BOLD|java.awt.Font.ITALIC:
+      case java.awt.Font.BOLD | java.awt.Font.ITALIC:
         this.setFontStyle(java.awt.Font.ITALIC);
         this.setFontWeight(java.awt.Font.BOLD);
         break;
