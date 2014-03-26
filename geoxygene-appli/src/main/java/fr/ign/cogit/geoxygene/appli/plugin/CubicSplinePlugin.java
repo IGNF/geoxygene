@@ -34,7 +34,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_CubicSpline;
@@ -48,7 +47,7 @@ import fr.ign.cogit.geoxygene.style.Layer;
 public class CubicSplinePlugin implements GeOxygeneApplicationPlugin,
     ActionListener {
   /** Logger. */
-  static Logger logger = Logger.getLogger(Triangulation.class.getName());
+  static Logger logger = Logger.getLogger(CubicSplinePlugin.class.getName());
 
   private GeOxygeneApplication application = null;
 
