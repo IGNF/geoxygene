@@ -38,10 +38,10 @@ import java.util.Set;
 
 import javax.vecmath.Point2d;
 
-import fr.ign.cogit.geoxygene.api.texture.Sample;
 import fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
+import fr.ign.cogit.geoxygene.util.gl.Sample;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 
 /**
  * @author JeT
@@ -49,7 +49,7 @@ import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
  */
 public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
 
-    private TextureImage image = null;
+    private GradientTextureImage image = null;
     private double scale = 1;
     private double vDistanceInPixels = 50;
     private double minDistanceInPixels = 50;
@@ -61,7 +61,7 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
     /**
      * Default constructor
      */
-    public TextureImageSamplerUVSampler(TextureImage image, double minDistanceInPixels, double vDistanceInPixels) {
+    public TextureImageSamplerUVSampler(GradientTextureImage image, double minDistanceInPixels, double vDistanceInPixels) {
         this.image = image;
         this.vDistanceInPixels = vDistanceInPixels;
         this.minDistanceInPixels = minDistanceInPixels;
@@ -72,6 +72,18 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
      */
     public double getJitteringFactor() {
         return this.jitteringFactor;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm#getSampleCount
+     * ()
+     */
+    @Override
+    public int getSampleCount() {
+        return this.getSamples() == null ? 0 : this.getSamples().size();
     }
 
     /**

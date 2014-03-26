@@ -40,73 +40,69 @@ import fr.ign.cogit.geoxygene.util.ImageUtil;
  * @author JeT
  * 
  */
-public class PerlinNoiseTextureTask extends
-    AbstractTextureTask<PerlinNoiseTexture> {
+public class PerlinNoiseTextureTask extends AbstractTextureTask<PerlinNoiseTexture> {
 
-  /**
-   * @param texture
-   */
-  public PerlinNoiseTextureTask(PerlinNoiseTexture texture) {
-    super(texture);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.appli.task.Task#isProgressable()
-   */
-  @Override
-  public boolean isProgressable() {
-    return false;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.appli.task.Task#isPausable()
-   */
-  @Override
-  public boolean isPausable() {
-    return false;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.appli.task.Task#isStoppable()
-   */
-  @Override
-  public boolean isStoppable() {
-    return false;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Runnable#run()
-   */
-  @Override
-  public void run() {
-    this.setState(TaskState.INITIALIZING);
-    this.setState(TaskState.RUNNING);
-    try {
-      TextureFilter filter = new TextureFilter();
-      filter.setColormap(new LinearColormap(this.getTexture().getColor1()
-          .getRGB(), this.getTexture().getColor2().getRGB()));
-      filter.setScale(this.getTexture().getScale());
-      filter.setStretch(this.getTexture().getStretch());
-      filter.setAmount(this.getTexture().getAmount());
-      filter.setAngle(this.getTexture().getAngle());
-      BufferedImage imgTexture = ImageUtil
-          .createBufferedImage(this.getTexture().getTextureWidth(), this
-              .getTexture().getTextureHeight());
-      filter.filter(imgTexture, imgTexture);
-      this.getTexture().setTextureImage(imgTexture);
-      this.setState(TaskState.FINISHED);
-    } catch (Exception e) {
-      e.printStackTrace();
-      this.setState(TaskState.ERROR);
+    /**
+     * @param texture
+     */
+    public PerlinNoiseTextureTask(PerlinNoiseTexture texture) {
+        super(texture);
     }
-  }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.task.Task#isProgressable()
+     */
+    @Override
+    public boolean isProgressable() {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.task.Task#isPausable()
+     */
+    @Override
+    public boolean isPausable() {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.task.Task#isStoppable()
+     */
+    @Override
+    public boolean isStoppable() {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Runnable#run()
+     */
+    @Override
+    public void run() {
+        this.setState(TaskState.INITIALIZING);
+        this.setState(TaskState.RUNNING);
+        try {
+            TextureFilter filter = new TextureFilter();
+            filter.setColormap(new LinearColormap(this.getTexture().getColor1().getRGB(), this.getTexture().getColor2().getRGB()));
+            filter.setScale(this.getTexture().getScale());
+            filter.setStretch(this.getTexture().getStretch());
+            filter.setAmount(this.getTexture().getAmount());
+            filter.setAngle(this.getTexture().getAngle());
+            BufferedImage imgTexture = ImageUtil.createBufferedImage(this.getTexture().getTextureWidth(), this.getTexture().getTextureHeight());
+            filter.filter(imgTexture, imgTexture);
+            this.getTexture().setTextureImage(imgTexture);
+            this.setState(TaskState.FINISHED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.setState(TaskState.ERROR);
+        }
+
+    }
 }

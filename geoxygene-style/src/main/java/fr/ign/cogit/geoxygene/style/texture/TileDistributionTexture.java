@@ -26,6 +26,9 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.style.texture;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -40,8 +43,17 @@ import javax.xml.bind.annotation.XmlElement;
 public class TileDistributionTexture extends Texture {
 
     // coast geometry segments greater than this value won't be considered as coast lines
-    @XmlElement(name = "maxCoastlineLength")
+    @XmlElement(name = "MaxCoastlineLength")
     private double maxCoastlineLength = Double.POSITIVE_INFINITY;
+
+    @XmlElement(name = "Tile")
+    private final List<ProbabilistTileDescriptor> tiles = new ArrayList<ProbabilistTileDescriptor>();
+
+    @XmlElement(name = "Resolution")
+    private double textureResolution = 600; // resolution in DPI
+
+    @XmlElement(name = "Blending")
+    private final TileBlendingType blending = TileBlendingType.NONE;
 
     /**
      * default constructor
@@ -65,4 +77,36 @@ public class TileDistributionTexture extends Texture {
         this.maxCoastlineLength = maxCoastlineLength;
     }
 
+    /**
+     * @return the tiles
+     */
+    public List<ProbabilistTileDescriptor> getTiles() {
+        return this.tiles;
+    }
+
+    /**
+     * @return the textureResolution
+     */
+    public double getTextureResolution() {
+        return this.textureResolution;
+    }
+
+    /**
+     * @param textureResolution
+     *            the textureResolution to set
+     */
+    public void setTextureResolution(double textureResolution) {
+        this.textureResolution = textureResolution;
+    }
+
+    /**
+     * @return the blending
+     */
+    public TileBlendingType getBlending() {
+        return this.blending;
+    }
+
+    public enum TileBlendingType {
+        NONE, ALPHA, GRAPHCUT
+    };
 }

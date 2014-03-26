@@ -32,5 +32,39 @@ package fr.ign.cogit.geoxygene.appli.task;
  * 
  */
 public enum TaskState {
-    WAITING, INITIALIZING, RUNNING, PAUSED, STOPPED, FINALIZING, FINISHED, ERROR
+
+    WAITING(false, false, false), INITIALIZING(true, false, false), RUNNING(true, false, false), PAUSED(false, false, false), STOPPED(false, true, false), FINALIZING(
+            true, false, false), FINISHED(false, true, false), ERROR(false, true, true);
+
+    private boolean running = false;
+    private boolean finished = false;
+    private boolean error = false;
+
+    private TaskState(boolean running, boolean finished, boolean error) {
+        this.running = running;
+        this.finished = finished;
+        this.error = error;
+    }
+
+    /**
+     * @return the running
+     */
+    public boolean isRunning() {
+        return this.running;
+    }
+
+    /**
+     * @return the error
+     */
+    public boolean isError() {
+        return this.error;
+    }
+
+    /**
+     * @return the finished
+     */
+    public boolean isFinished() {
+        return this.finished;
+    }
+
 }

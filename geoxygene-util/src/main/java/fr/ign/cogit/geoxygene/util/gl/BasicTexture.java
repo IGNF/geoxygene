@@ -94,11 +94,11 @@ public class BasicTexture implements Texture {
             BufferedImage textureImage = this.getTextureImage();
             if (textureImage != null) {
                 this.textureId = GLTools.loadTexture(textureImage);
-                try {
-                    ImageIO.write(textureImage, "PNG", new File("basicTexture-" + this.textureId + ".png"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                //                try {
+                //                    ImageIO.write(textureImage, "PNG", new File("basicTexture-" + this.textureId + ".png"));
+                //                } catch (IOException e) {
+                //                    e.printStackTrace();
+                //                }
 
             }
         }

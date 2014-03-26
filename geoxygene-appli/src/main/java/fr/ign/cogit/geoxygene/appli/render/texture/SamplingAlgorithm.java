@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import java.util.Iterator;
 
-import fr.ign.cogit.geoxygene.api.texture.Sample;
+import fr.ign.cogit.geoxygene.util.gl.Sample;
 
 /**
  * @author JeT
@@ -42,4 +42,8 @@ public interface SamplingAlgorithm {
      */
     Iterator<Sample> getSampleIterator();
 
+    /**
+     * get the number of samples
+     */
+    int getSampleCount();
 }

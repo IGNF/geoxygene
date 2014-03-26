@@ -35,11 +35,11 @@ import java.util.Random;
 
 import javax.vecmath.Point2d;
 
-import fr.ign.cogit.geoxygene.api.texture.Sample;
-import fr.ign.cogit.geoxygene.api.texture.Tile;
 import fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
+import fr.ign.cogit.geoxygene.util.gl.Sample;
+import fr.ign.cogit.geoxygene.util.gl.Tile;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 
 /**
  * @author JeT
@@ -48,7 +48,7 @@ import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
 public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
 
     private static final Point2D unitScaleFactor = new Point2D.Double(1., 1.);
-    private TextureImage image = null;
+    private GradientTextureImage image = null;
     private double scale = 1;
     private double sampleX = 1;
     private double sampleY = 1;
@@ -59,7 +59,7 @@ public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
     /**
      * Default constructor
      */
-    public TextureImageSamplerRegularGrid(TextureImage image, double sampleX, double sampleY, double scale) {
+    public TextureImageSamplerRegularGrid(GradientTextureImage image, double sampleX, double sampleY, double scale) {
         this.image = image;
         this.scale = scale;
         this.sampleX = sampleX;
@@ -69,12 +69,24 @@ public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
     /**
      * Default constructor
      */
-    public TextureImageSamplerRegularGrid(TextureImage image, double sampleX, double sampleY, double scale, TileChooser tileChooser) {
+    public TextureImageSamplerRegularGrid(GradientTextureImage image, double sampleX, double sampleY, double scale, TileChooser tileChooser) {
         this.image = image;
         this.scale = scale;
         this.sampleX = sampleX;
         this.sampleY = sampleY;
         this.tileChooser = tileChooser;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm#getSampleCount
+     * ()
+     */
+    @Override
+    public int getSampleCount() {
+        return this.getSamples() == null ? 0 : this.getSamples().size();
     }
 
     /**

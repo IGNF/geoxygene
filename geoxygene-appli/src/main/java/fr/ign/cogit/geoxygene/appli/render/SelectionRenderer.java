@@ -216,6 +216,10 @@ public class SelectionRenderer extends AbstractLayerRenderer {
         @Override
         public void setShadow(final Shadow shadow) {
         }
+
+        @Override
+        public void reset() {
+        }
     };
 
     /**

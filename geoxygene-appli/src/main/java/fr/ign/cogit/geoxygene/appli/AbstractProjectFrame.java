@@ -17,6 +17,7 @@ import javax.xml.bind.JAXBException;
 import org.apache.log4j.Logger;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import fr.ign.cogit.cartagen.util.FileUtil;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -563,6 +564,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     @Override
     public final void saveAsShp(final String fileName, final Layer layer) {
         try {
+            // do we have to add ".shp" extension ? (FileUtil.changeExtension(fileName, "shp"))
             ShapefileWriter.write(layer.getFeatureCollection(), fileName, layer.getCRS());
         } catch (Exception e) {
             logger.error("Shapefile export failed! See stack trace below : "); //$NON-NLS-1$
@@ -580,8 +582,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     @Override
     public void saveAsSLD(String fileName) {
         logger.info(" " + this.sld);
-        String newPath = fileName;
-        newPath += ".xml"; //$NON-NLS-1$
+        String newPath = FileUtil.changeExtension(fileName, "xml");
         this.sld.marshall(newPath);
     }
 

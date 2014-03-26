@@ -197,4 +197,15 @@ public abstract class AbstractSymbolizer implements Symbolizer {
         return true;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.style.Symbolizer#reset()
+     */
+    @Override
+    public void reset() {
+        // default behavior is to do nothing
+
+    }
+
 }

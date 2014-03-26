@@ -27,8 +27,8 @@
 
 package test.app;
 
-import fr.ign.cogit.geoxygene.util.gl.TextureImage;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 
 /**
  * @author JeT
@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
  */
 public class DistanceTileProbability implements TileProbability {
 
-    private TextureImage image = null;
+    private GradientTextureImage image = null;
     private double distanceMin = 0;
     private double distanceMax = 0;
     private double inRangeProbability = 1;
@@ -49,7 +49,7 @@ public class DistanceTileProbability implements TileProbability {
      * @param image
      * @param probability
      */
-    public DistanceTileProbability(TextureImage image, double distanceMin, double distanceMax, double inRangeProbability, double outRangeProbability) {
+    public DistanceTileProbability(GradientTextureImage image, double distanceMin, double distanceMax, double inRangeProbability, double outRangeProbability) {
         super();
         this.image = image;
         this.distanceMin = distanceMin;
@@ -70,6 +70,7 @@ public class DistanceTileProbability implements TileProbability {
      */
     public double getProbability(double x, double y) {
         TexturePixel pixel = this.image.getPixel((int) x, (int) y);
+        //        System.err.println("DistanceTileProbability pixel = " + pixel + " distance = " + pixel.distance);
         if (pixel == null || pixel.distance == Double.NaN) {
             return this.outRangeProbability;
         }

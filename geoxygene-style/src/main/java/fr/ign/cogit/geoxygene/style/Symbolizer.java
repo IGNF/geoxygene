@@ -19,77 +19,90 @@
 
 package fr.ign.cogit.geoxygene.style;
 
-
 /**
  * @author Julien Perret
  */
 public interface Symbolizer {
 
-  /**
-   * Renvoie la valeur de l'attribut stroke.
-   * @return la valeur de l'attribut stroke
-   */
-  public Stroke getStroke();
+    /**
+     * Renvoie la valeur de l'attribut stroke.
+     * 
+     * @return la valeur de l'attribut stroke
+     */
+    public Stroke getStroke();
 
-  /**
-   * Affecte la valeur de l'attribut stroke.
-   * @param stroke l'attribut stroke à affecter
-   */
-  public void setStroke(Stroke stroke);
+    /**
+     * Affecte la valeur de l'attribut stroke.
+     * 
+     * @param stroke
+     *            l'attribut stroke à affecter
+     */
+    public void setStroke(Stroke stroke);
 
-  public Shadow getShadow();
+    public Shadow getShadow();
 
-  public void setShadow(Shadow shadow);
+    public void setShadow(Shadow shadow);
 
-  public boolean isTextSymbolizer();
+    public boolean isTextSymbolizer();
 
-  public boolean isPointSymbolizer();
+    public boolean isPointSymbolizer();
 
-  public boolean isPolygonSymbolizer();
+    public boolean isPolygonSymbolizer();
 
-  public boolean isLineSymbolizer();
+    public boolean isLineSymbolizer();
 
-  public boolean isRasterSymbolizer();
+    public boolean isRasterSymbolizer();
 
-  /**
-   * Renvoie la valeur de l'attribut geometryPropertyName.
-   * @return la valeur de l'attribut geometryPropertyName
-   */
-  public String getGeometryPropertyName();
+    /**
+     * Renvoie la valeur de l'attribut geometryPropertyName.
+     * 
+     * @return la valeur de l'attribut geometryPropertyName
+     */
+    public String getGeometryPropertyName();
 
-  /**
-   * Affecte la valeur de l'attribut geometryPropertyName.
-   * @param geometryPropertyName l'attribut geometryPropertyName à affecter
-   */
-  public void setGeometryPropertyName(String geometryPropertyName);
+    /**
+     * Affecte la valeur de l'attribut geometryPropertyName.
+     * 
+     * @param geometryPropertyName
+     *            l'attribut geometryPropertyName à affecter
+     */
+    public void setGeometryPropertyName(String geometryPropertyName);
 
-  /**
-   * Returns the Unit of Measure used by the symbolizer.
-   * @return Unit of Measure used by the symbolizer
-   */
-  public String getUnitOfMeasure();
+    /**
+     * Returns the Unit of Measure used by the symbolizer.
+     * 
+     * @return Unit of Measure used by the symbolizer
+     */
+    public String getUnitOfMeasure();
 
-  /**
-   * Set the Unit of Measure used by the symbolizer.
-   * @param uom Unit of Measure used by the symbolizer
-   */
-  public void setUnitOfMeasure(String uom);
+    /**
+     * Set the Unit of Measure used by the symbolizer.
+     * 
+     * @param uom
+     *            Unit of Measure used by the symbolizer
+     */
+    public void setUnitOfMeasure(String uom);
 
-  public void setUnitOfMeasureMetre();
+    public void setUnitOfMeasureMetre();
 
-  public void setUnitOfMeasureFoot();
+    public void setUnitOfMeasureFoot();
 
-  public void setUnitOfMeasurePixel();
+    public void setUnitOfMeasurePixel();
 
-  public static String METRE = "http://www.opengeospatial.org/se/units/metre"; //$NON-NLS-1$
-  public static String FOOT = "http://www.opengeospatial.org/se/units/foot"; //$NON-NLS-1$
-  public static String PIXEL = "http://www.opengeospatial.org/se/units/pixel"; //$NON-NLS-1$
+    public static String METRE = "http://www.opengeospatial.org/se/units/metre"; //$NON-NLS-1$
+    public static String FOOT = "http://www.opengeospatial.org/se/units/foot"; //$NON-NLS-1$
+    public static String PIXEL = "http://www.opengeospatial.org/se/units/pixel"; //$NON-NLS-1$
 
-//  /**
-//   * Paint a feature using a viewport and a graphics.
-//   * @param feature the feature to paint
-//   * @param viewport the viewport in which to paint
-//   * @param graphics the graphics used to paint into
-//   */
-//  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics);
+    /**
+     * reinitialize precomputed values
+     */
+    public void reset();
+
+    //  /**
+    //   * Paint a feature using a viewport and a graphics.
+    //   * @param feature the feature to paint
+    //   * @param viewport the viewport in which to paint
+    //   * @param graphics the graphics used to paint into
+    //   */
+    //  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics);
 }

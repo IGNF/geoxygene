@@ -1,0 +1,1020 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
+    <NamedLayer>
+        <Name>emprise</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer emprise</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#cde90e</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#8fa309</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#ffffff</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">0.8</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>batiment_fonctionnel_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer batiment_fonctionnel_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#875390</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#5e3a64</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#5e3a64</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#d9d9d9</CssParameter>
+                            <CssParameter name="fill-opacity">0.8</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>batiment_quelconque_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer batiment_quelconque_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#aec392</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#798866</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#798866</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                            <CssParameter name="fill-opacity">0.14</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>chef_lieu</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer chef_lieu</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#6d13fb</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#4c0daf</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#6d13fb</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#4c0daf</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>courbe_de_niveau_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer courbe_de_niveau_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#80b3ac</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#597d78</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#597d78</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>ligne_electrique_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer ligne_electrique_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#cb164c</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#8e0f35</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#8e0f35</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>ligne_orographique_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer ligne_orographique_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#110791</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#0b0465</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#0b0465</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>limite_adm_decale_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer limite_adm_decale_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#31439f</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#222e6f</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#222e6f</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>limite_administrative_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer limite_administrative_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#0156d8</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#003c97</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#003c97</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>nature_du_sol_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer nature_du_sol_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#100bf2</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#0b07a9</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.34</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <TileDistributionTexture>
+<MaxCoastlineLength>INF</MaxCoastlineLength>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/sand 0 A.png</url>
+    <MinDistance>0.0</MinDistance>
+    <MaxDistance>20.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/sand 0 B.png</url>
+    <MinDistance>0.0</MinDistance>
+    <MaxDistance>20.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/sand 1 A.png</url>
+    <MinDistance>20.0</MinDistance>
+    <MaxDistance>150.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/sand 1 B.png</url>
+    <MinDistance>20.0</MinDistance>
+    <MaxDistance>150.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/sand 1 C.png</url>
+    <MinDistance>20.0</MinDistance>
+    <MaxDistance>150.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/sand 2 A.png</url>
+    <MinDistance>100.0</MinDistance>
+    <MaxDistance>INF</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/sand 2 B.png</url>
+    <MinDistance>100.0</MinDistance>
+    <MaxDistance>INF</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Resolution>2000.0</Resolution>
+<Blending>GRAPHCUT</Blending>
+                            </TileDistributionTexture>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>surface_d_eau_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer surface_d_eau_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#2b34e8</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#1e24a2</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.54</CssParameter>
+                            <CssParameter name="stroke-width">3.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <TileDistributionTexture>
+<MaxCoastlineLength>1000.0</MaxCoastlineLength>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 1 A.png</url>
+    <MinDistance>0.0</MinDistance>
+    <MaxDistance>150.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 1 B.png</url>
+    <MinDistance>0.0</MinDistance>
+    <MaxDistance>150.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 1 C.png</url>
+    <MinDistance>0.0</MinDistance>
+    <MaxDistance>150.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 1 D.png</url>
+    <MinDistance>0.0</MinDistance>
+    <MaxDistance>150.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 1 E.png</url>
+    <MinDistance>0.0</MinDistance>
+    <MaxDistance>150.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 2 A.png</url>
+    <MinDistance>150.0</MinDistance>
+    <MaxDistance>250.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 2 B.png</url>
+    <MinDistance>150.0</MinDistance>
+    <MaxDistance>250.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 2 C.png</url>
+    <MinDistance>150.0</MinDistance>
+    <MaxDistance>250.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 2 D.png</url>
+    <MinDistance>150.0</MinDistance>
+    <MaxDistance>250.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 2 E.png</url>
+    <MinDistance>150.0</MinDistance>
+    <MaxDistance>250.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 3 A.png</url>
+    <MinDistance>250.0</MinDistance>
+    <MaxDistance>300.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 3 B.png</url>
+    <MinDistance>250.0</MinDistance>
+    <MaxDistance>300.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 3 C.png</url>
+    <MinDistance>250.0</MinDistance>
+    <MaxDistance>300.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 3 D.png</url>
+    <MinDistance>250.0</MinDistance>
+    <MaxDistance>300.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/manche 3 E.png</url>
+    <MinDistance>250.0</MinDistance>
+    <MaxDistance>300.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Resolution>2000</Resolution>
+<Blending>GRAPHCUT</Blending>
+                            </TileDistributionTexture>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">0.8</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>terrain_de_sport_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer terrain_de_sport_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#440539</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#2f0327</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#2f0327</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                            <CssParameter name="fill-opacity">0.03</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>toponyme_droit_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer toponyme_droit_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#d9dc2c</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#979a1e</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#000000</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#979a1e</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </PointSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>troncon_chemin_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer troncon_chemin_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#e7ed85</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#a1a55d</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#a1a55d</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>troncon_cours_d_eau_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer troncon_cours_d_eau_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#c8d6c5</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#8c9589</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#8c9589</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>troncon_route_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer troncon_route_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#69cad8</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#498d97</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#498d97</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>troncon_voie_ferree_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer troncon_voie_ferree_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#059b57</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#036c3c</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#036c3c</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>vegetation_25</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer vegetation_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#7b2f11</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#56200b</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <TileDistributionTexture>
+<MaxCoastlineLength>INF</MaxCoastlineLength>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/forest 1 A.png</url>
+    <MinDistance>10.0</MinDistance>
+    <MaxDistance>80.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/forest 1 B.png</url>
+    <MinDistance>10.0</MinDistance>
+    <MaxDistance>80.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/forest 1 C.png</url>
+    <MinDistance>10.0</MinDistance>
+    <MaxDistance>80.0</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/forest 2 A.png</url>
+    <MinDistance>60.0</MinDistance>
+    <MaxDistance>INF</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/forest 2 B.png</url>
+    <MinDistance>60.0</MinDistance>
+    <MaxDistance>INF</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/forest 2 C.png</url>
+    <MinDistance>60.0</MinDistance>
+    <MaxDistance>INF</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/forest 2 D.png</url>
+    <MinDistance>60.0</MinDistance>
+    <MaxDistance>INF</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Tile>
+    <url>file:src/main/resources/textures/cassini/manche/forest 2 E.png</url>
+    <MinDistance>60.0</MinDistance>
+    <MaxDistance>INF</MaxDistance>
+    <InRangeProbability>1.0</InRangeProbability>
+    <OutOfRangeProbability>0.0</OutOfRangeProbability>
+</Tile>
+<Resolution>2000</Resolution>
+<Blending>GRAPHCUT</Blending>
+                            </TileDistributionTexture>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                            <CssParameter name="fill-opacity">0.58</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+</StyledLayerDescriptor>

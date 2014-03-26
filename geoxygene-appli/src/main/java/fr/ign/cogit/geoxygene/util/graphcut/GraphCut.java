@@ -45,8 +45,8 @@ import java.util.Set;
 
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 
-import fr.ign.cogit.geoxygene.api.texture.Tile;
 import fr.ign.cogit.geoxygene.util.ColorUtil;
+import fr.ign.cogit.geoxygene.util.gl.Tile;
 
 /**
  * @author JeT

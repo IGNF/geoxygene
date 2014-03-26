@@ -99,6 +99,24 @@ public class TaskManagerPopup implements TaskManagerListener, ItemListener, Comp
                     for (TaskControllerPanel controller : TaskManagerPopup.this.taskControllers.values()) {
                         controller.updateController();
                     }
+                    double minProgress = 1;
+                    boolean isProgressable = false;
+                    for (Task task : TaskManagerPopup.this.taskControllers.keySet()) {
+                        if (task.isProgressable()) {
+                            isProgressable = true;
+                            double progress = task.getProgress();
+                            if (progress < minProgress) {
+                                minProgress = progress;
+                            }
+                        }
+
+                    }
+                    if (isProgressable) {
+                        TaskManagerPopup.this.summaryProgress.setIndeterminate(false);
+                        TaskManagerPopup.this.summaryProgress.setValue((int) (minProgress * 100.));
+                    } else {
+                        TaskManagerPopup.this.summaryProgress.setIndeterminate(true);
+                    }
                 }
 
             }
@@ -309,7 +327,8 @@ public class TaskManagerPopup implements TaskManagerListener, ItemListener, Comp
                 @Override
                 public void run() {
                     TaskManagerPopup.this.getSummaryProgress().setIndeterminate(TaskManagerPopup.this.taskControllers.size() != 0);
-                    TaskManagerPopup.this.getSummaryProgress().setString(TaskManagerPopup.this.taskControllers.size() == 0 ? "no tasks" : TaskManagerPopup.this.taskControllers.size() + " tasks running");
+                    TaskManagerPopup.this.getSummaryProgress().setString(
+                            TaskManagerPopup.this.taskControllers.size() == 0 ? "no tasks" : TaskManagerPopup.this.taskControllers.size() + " tasks running");
                 }
             });
         }

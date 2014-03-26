@@ -77,6 +77,19 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     /*
      * (non-Javadoc)
      * 
+     * @see fr.ign.cogit.geoxygene.style.AbstractSymbolizer#reset()
+     */
+    @Override
+    public void reset() {
+        super.reset();
+        if (this.getFill() != null && this.getFill().getTexture() != null) {
+            this.getFill().getTexture().invalidateTexture();
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override

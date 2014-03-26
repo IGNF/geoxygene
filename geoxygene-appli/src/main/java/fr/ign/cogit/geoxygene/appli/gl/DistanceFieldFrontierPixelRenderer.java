@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fr.ign.cogit.geoxygene.util.gl.TextureImage;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TexturePixelRenderer;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 
 /**
  * @author JeT This pixel renderer is used to draw polygon frontiers in a
@@ -138,7 +138,7 @@ public class DistanceFieldFrontierPixelRenderer implements TexturePixelRenderer 
     }
 
     @Override
-    public void renderPixel(int x, int y, TextureImage image) {
+    public void renderPixel(int x, int y, GradientTextureImage image) {
         image.invalidateUVBounds();
         TexturePixel pixel = image.getPixel(x, y);
         // fills the x-values array of the given y value (create a new one if needed)
@@ -187,7 +187,7 @@ public class DistanceFieldFrontierPixelRenderer implements TexturePixelRenderer 
     }
 
     @Override
-    public void renderFirstPixel(int x, int y, TextureImage image) {
+    public void renderFirstPixel(int x, int y, GradientTextureImage image) {
         this.newLine();
         this.renderPixel(x, y, image);
         //        DensityFieldPixel pixel = image.getPixel(x, y);
@@ -195,7 +195,7 @@ public class DistanceFieldFrontierPixelRenderer implements TexturePixelRenderer 
     }
 
     @Override
-    public void renderLastPixel(int x, int y, TextureImage image) {
+    public void renderLastPixel(int x, int y, GradientTextureImage image) {
         this.renderPixel(x, y, image);
         //        DensityFieldPixel pixel = image.getPixel(x, y);
         //        pixel.frontier += 100;

@@ -32,13 +32,14 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import fr.ign.cogit.geoxygene.api.texture.Tile;
 import fr.ign.cogit.geoxygene.util.ImageUtil;
+import fr.ign.cogit.geoxygene.util.gl.Tile;
 
 /**
  * @author JeT
@@ -135,6 +136,21 @@ public class DefaultTile implements Tile {
     public static Tile read(File f) throws IOException {
         DefaultTile tile = new DefaultTile();
         tile.setImage(ImageIO.read(f));
+        return tile;
+    }
+
+    /**
+     * read an image as tile
+     * 
+     * @param filename
+     *            file to read
+     * @return a newly created tile
+     * @throws IOException
+     *             on IO Error
+     */
+    public static Tile read(URL url) throws IOException {
+        DefaultTile tile = new DefaultTile();
+        tile.setImage(ImageIO.read(url));
         return tile;
     }
 

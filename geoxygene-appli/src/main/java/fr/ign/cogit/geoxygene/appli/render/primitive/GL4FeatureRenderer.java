@@ -512,10 +512,13 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
         this.setGLViewMatrix(this.getViewport(), primitive.getMinX(), primitive.getMinY());
 
         GL30.glBindVertexArray(primitive.getVaoId());
+        GLTools.glCheckError("direct rendering binding vaoId = " + primitive.getVaoId());
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
         this.drawComplex(primitive);
+        GLTools.glCheckError("direct rendering drawing glComplex class = " + primitive.getClass().getSimpleName());
         if (texture != null) {
             texture.finalizeRendering();
+            GLTools.glCheckError("direct rendering finalizing texture rendering glComplex class = " + primitive.getClass().getSimpleName());
         }
 
         GL30.glBindVertexArray(0);
@@ -715,7 +718,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
 
     @Override
     public void onStateChange(Task task, TaskState oldState) {
-        if (task.getState() == TaskState.ERROR || task.getState() == TaskState.FINISHED) {
+        if (task.getState().isFinished()) {
             GeOxygeneEventManager.getInstance().getApplication().getMainFrame().getCurrentDesktop().repaint();
         }
     }

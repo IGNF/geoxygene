@@ -27,8 +27,8 @@
 
 package test.app;
 
-import fr.ign.cogit.geoxygene.api.texture.Sample;
-import fr.ign.cogit.geoxygene.api.texture.Tile;
+import fr.ign.cogit.geoxygene.util.gl.Sample;
+import fr.ign.cogit.geoxygene.util.gl.Tile;
 
 /**
  * @author JeT

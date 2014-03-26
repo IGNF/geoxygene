@@ -69,7 +69,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
-import fr.ign.cogit.geoxygene.api.texture.Tile;
+import fr.ign.cogit.geoxygene.util.gl.Tile;
 import fr.ign.cogit.geoxygene.util.graphcut.DefaultTile;
 import fr.ign.cogit.geoxygene.util.graphcut.GraphCut;
 import fr.ign.cogit.geoxygene.util.graphcut.PixelEdge;

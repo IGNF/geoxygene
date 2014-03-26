@@ -117,7 +117,7 @@ public class TaskManager implements TaskListener {
 
     @Override
     public void onStateChange(Task task, TaskState oldState) {
-        if (task.getState() == TaskState.ERROR || task.getState() == TaskState.FINISHED) {
+        if (task.getState().isFinished()) {
             this.removeTask(task);
         }
 
@@ -215,7 +215,7 @@ class TaskWaiter implements TaskListener {
 
     @Override
     public void onStateChange(Task task, TaskState oldState) {
-        if (task.getState() == TaskState.FINISHED || task.getState() == TaskState.ERROR) {
+        if (task.getState().isFinished()) {
             this.finished[0] = true;
         }
     }

@@ -72,8 +72,8 @@ import fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 import fr.ign.cogit.geoxygene.util.gl.Texture;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
 
 /**
@@ -88,7 +88,7 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
     private int distanceFieldTextureId = -1;
     private Viewport viewport = null;
     private IFeature feature = null;
-    private TextureImage texImage = null;
+    private GradientTextureImage texImage = null;
     private double minX;
     private double minY;
     private double maxX;
@@ -240,7 +240,7 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
      * DensityFieldGenerationTask for async generation
      * 
      */
-    public TextureImage getUVTextureImage() {
+    public GradientTextureImage getUVTextureImage() {
         if (this.texImage == null) {
             if (this.getFeature().getGeom().isPolygon()) {
                 // generate the field image
@@ -263,7 +263,7 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
     @Override
     public boolean initializeRendering() {
         if (this.firstCall) {
-            TextureImage uvMap = this.getUVTextureImage();
+            GradientTextureImage uvMap = this.getUVTextureImage();
             // save image for debug purpose only
             //                String generatedTextureFilename = this.generateTextureFilename();
             //                TextureImageUtil.saveHeight(uvMap, generatedTextureFilename);
@@ -323,7 +323,7 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
         double ratio = (this.maxY - this.minY) / (this.maxX - this.minX);
         int imageWidth = (int) (Math.sqrt(imagesize / ratio));
         int imageHeight = (int) (Math.sqrt(imagesize * ratio));
-        this.texImage = new TextureImage(imageWidth, imageHeight);
+        this.texImage = new GradientTextureImage(imageWidth, imageHeight);
         this.imageToPolygonFactorX = (this.maxX - this.minX) / (imageWidth - 1);
         this.imageToPolygonFactorY = (this.maxY - this.minY) / (imageHeight - 1);
 
@@ -565,7 +565,7 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
      * 
      * @param set
      */
-    private static void fillFrontierDistance(TextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
+    private static void fillFrontierDistance(GradientTextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
         double maxDistance = 0;
         while (set.size() > 0) {
             //            System.err.println(modifiedPixels.size() + " modified pixels");
@@ -602,7 +602,7 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
      * Compute the distance from any point to the outer frontier (skipping inner
      * frontiers)
      */
-    private static void fillOuterFrontierDistance(TextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
+    private static void fillOuterFrontierDistance(GradientTextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
         double maxDistance = 0;
         while (set.size() > 0) {
             //            System.err.println(modifiedPixels.size() + " modified pixels");
@@ -650,7 +650,7 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
      *            pixel position is added to this list if this pixel distance
      *            value has been modified
      */
-    private static boolean fillFrontierDistance(double d, Point p, TextureImage image, Set<Point> newlyModifiedPixels) {
+    private static boolean fillFrontierDistance(double d, Point p, GradientTextureImage image, Set<Point> newlyModifiedPixels) {
         TexturePixel pixel = image.getPixel(p.x, p.y);
         if (pixel == null) {
             return false;
@@ -669,7 +669,7 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
      * 
      * @param set
      */
-    private static void fillTextureCoordinates(TextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
+    private static void fillTextureCoordinates(GradientTextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
         double maxDistance = 0;
         while (set.size() > 0) {
             //            System.err.println(modifiedPixels.size() + " modified pixels");
@@ -715,7 +715,7 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
      *            pixel position is added to this list if this pixel distance
      *            value has been modified
      */
-    private static boolean fillTextureCoordinates(TextureImage texImage, double d, double uTexture, Point p, Set<Point> newlyModifiedPixels) {
+    private static boolean fillTextureCoordinates(GradientTextureImage texImage, double d, double uTexture, Point p, Set<Point> newlyModifiedPixels) {
         TexturePixel pixel = texImage.getPixel(p.x, p.y);
         if (pixel == null) {
             return false;

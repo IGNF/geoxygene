@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.api.texture;
+package fr.ign.cogit.geoxygene.util.gl;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;

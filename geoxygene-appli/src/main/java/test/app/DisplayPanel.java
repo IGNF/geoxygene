@@ -49,15 +49,15 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.api.texture.Sample;
-import fr.ign.cogit.geoxygene.api.texture.Tile;
 import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldFrontierPixelRenderer;
 import fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
+import fr.ign.cogit.geoxygene.util.gl.Sample;
+import fr.ign.cogit.geoxygene.util.gl.Tile;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
 import fr.ign.cogit.geoxygene.util.graphcut.DefaultTile;
 import fr.ign.cogit.geoxygene.util.graphcut.GraphCut;
@@ -134,8 +134,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     private double maxY;
     private double imageToPolygonFactorX;
     private double imageToPolygonFactorY;
-    public TextureImage texImage; // the one that is visualized (with filters)
-    public TextureImage initialTexImage; // texture before filter application 
+    public GradientTextureImage texImage; // the one that is visualized (with filters)
+    public GradientTextureImage initialTexImage; // texture before filter application 
     private final List<IPolygon> polygons = new ArrayList<IPolygon>();
     private final List<IRing> rings = new ArrayList<IRing>();
     private final List<ParameterizedSegment> segments = new ArrayList<ParameterizedSegment>();
@@ -206,7 +206,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         double ratio = (this.maxY - this.minY) / (this.maxX - this.minX);
         int imageWidth = (int) (Math.sqrt(imagesize / ratio));
         int imageHeight = (int) (Math.sqrt(imagesize * ratio));
-        this.texImage = new TextureImage(imageWidth, imageHeight);
+        this.texImage = new GradientTextureImage(imageWidth, imageHeight);
         this.imageToPolygonFactorX = (this.maxX - this.minX) / (imageWidth - 1);
         this.imageToPolygonFactorY = (this.maxY - this.minY) / (imageHeight - 1);
 
@@ -367,7 +367,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     /**
      * @return the texImage
      */
-    public final TextureImage getTexImage() {
+    public final GradientTextureImage getTexImage() {
         return this.texImage;
     }
 
@@ -486,11 +486,11 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
                 for (Pair<TileProbability, Tile> pair : this.tilesToBeApplied) {
                     tileChooser.addTile(pair.first(), pair.second());
                 }
+                throw new IllegalStateException("Not working anymore");
+                //                TextureImageSamplerTiler sampler = new TextureImageSamplerTiler(this.texImage, tileChooser, 0.3, this.transform.getScaleX());
+                //                this.bi = this.toBufferedImagePixelUVTileGraphCut(this.texImage, this.tilesToBeApplied, sampler, this.featureShape);
 
-                TextureImageSamplerTiler sampler = new TextureImageSamplerTiler(this.texImage, tileChooser, 0.3, this.transform.getScaleX());
-                this.bi = this.toBufferedImagePixelUVTileGraphCut(this.texImage, this.tilesToBeApplied, sampler, this.featureShape);
-
-                this.screenSpace = true;
+                //                this.screenSpace = true;
 
             } else if (this.viz.equals("Distance HSV")) {
                 this.bi = toBufferedImageDistanceHSV(this.texImage);
@@ -674,7 +674,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     //        return bi;
     //    }
 
-    private static BufferedImage toBufferedImageDistance(TextureImage image, Color c1, Color c2) {
+    private static BufferedImage toBufferedImageDistance(GradientTextureImage image, Color c1, Color c2) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
@@ -698,7 +698,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return bi;
     }
 
-    private static BufferedImage toBufferedImageDistanceHSV(TextureImage image) {
+    private static BufferedImage toBufferedImageDistanceHSV(GradientTextureImage image) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
@@ -720,7 +720,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return bi;
     }
 
-    private static BufferedImage toBufferedImageDistanceStrip(TextureImage image, int nbStrips) {
+    private static BufferedImage toBufferedImageDistanceStrip(GradientTextureImage image, int nbStrips) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
@@ -742,7 +742,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return bi;
     }
 
-    private static BufferedImage toBufferedImageU(TextureImage image) {
+    private static BufferedImage toBufferedImageU(GradientTextureImage image) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
@@ -760,7 +760,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return bi;
     }
 
-    private static BufferedImage toBufferedImageUV(TextureImage image) {
+    private static BufferedImage toBufferedImageUV(GradientTextureImage image) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
@@ -779,7 +779,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return bi;
     }
 
-    private BufferedImage toBufferedImageTexturedUV(TextureImage image, BufferedImage texture) {
+    private BufferedImage toBufferedImageTexturedUV(GradientTextureImage image, BufferedImage texture) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
@@ -806,7 +806,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return bi;
     }
 
-    private BufferedImage toBufferedImagePixelUVTile(TextureImage image, List<Pair<TileProbability, Tile>> tilesToBeApplied, SamplingAlgorithm sampler,
+    private BufferedImage toBufferedImagePixelUVTile(GradientTextureImage image, List<Pair<TileProbability, Tile>> tilesToBeApplied, SamplingAlgorithm sampler,
             Shape clippingShape) {
 
         image.invalidateUVBounds();
@@ -870,8 +870,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return bi;
     }
 
-    private BufferedImage toBufferedImagePixelUVTileGraphCut(TextureImage image, List<Pair<TileProbability, Tile>> tilesToBeApplied, SamplingAlgorithm sampler,
-            Shape clippingShape) {
+    private BufferedImage toBufferedImagePixelUVTileGraphCut(GradientTextureImage image, List<Pair<TileProbability, Tile>> tilesToBeApplied,
+            SamplingAlgorithm sampler, Shape clippingShape) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D g2 = (Graphics2D) bi.getGraphics();
@@ -1015,7 +1015,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     //        throw new IllegalStateException("impossible case random value = " + randomValue + " max Value = " + sumProbabilities[sumProbabilities.length - 1]);
     //    }
 
-    private BufferedImage toBufferedImagePixelUVTileScreenSpace(TextureImage image, BufferedImage texture, SamplingAlgorithm sampling, Shape clippingShape) {
+    private BufferedImage toBufferedImagePixelUVTileScreenSpace(GradientTextureImage image, BufferedImage texture, SamplingAlgorithm sampling,
+            Shape clippingShape) {
 
         image.invalidateUVBounds();
         int xSampling = texture.getWidth() / 2;
@@ -1142,7 +1143,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return "unknown type";
     }
 
-    private BufferedImage toBufferedImagePixelTexturedUV(TextureImage image, BufferedImage texture) {
+    private BufferedImage toBufferedImagePixelTexturedUV(GradientTextureImage image, BufferedImage texture) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
@@ -1209,7 +1210,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return bi;
     }
 
-    private Point2d getTextureCoordinates(double x, double y, TextureImage image) {
+    private Point2d getTextureCoordinates(double x, double y, GradientTextureImage image) {
         TexturePixel pixel = image.getPixel((int) x, (int) y);
         if (pixel == null || !pixel.in) {
             return null;
@@ -1228,7 +1229,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
      * @param y
      * @return
      */
-    private Color getTextureColor(TextureImage image, BufferedImage texture, double x, double y) {
+    private Color getTextureColor(GradientTextureImage image, BufferedImage texture, double x, double y) {
         TexturePixel pixel = image.getPixel((int) x, (int) y);
         if (pixel == null || !pixel.in) {
             return Color.black;
@@ -1247,7 +1248,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         }
     }
 
-    private static BufferedImage toBufferedImageUDistance(TextureImage image) {
+    private static BufferedImage toBufferedImageUDistance(GradientTextureImage image) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
@@ -1419,7 +1420,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         }
     }
 
-    private static Point2d computeSobel3VGradient(TextureImage image, int x, int y) {
+    private static Point2d computeSobel3VGradient(GradientTextureImage image, int x, int y) {
         final int windowDimension = 3;
         double[][] xSobelWeight = { { +1, +2, +1 }, { 0, 0, 0 }, { -1, -2, -1 } };
         double[][] ySobelWeight = { { +1, 0, -1 }, { +2, 0, -2 }, { +1, 0, -1 } };
@@ -1450,7 +1451,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return new Point2d(xGradient, yGradient);
     }
 
-    private static Point2d computeGradient(TextureImage image, int x, int y) {
+    private static Point2d computeGradient(GradientTextureImage image, int x, int y) {
         TexturePixel p = image.getPixel(x, y);
         TexturePixel pxp1 = image.getPixel(x + 1, y);
         TexturePixel pxm1 = image.getPixel(x - 1, y);
@@ -1518,7 +1519,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
      * 
      * @param set
      */
-    private static Set<Point> fillTextureCoordinates4(TextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
+    private static Set<Point> fillTextureCoordinates4(GradientTextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
         //            System.err.println(modifiedPixels.size() + " modified pixels");
         HashSet<Point> newlyModifiedPixels = new HashSet<Point>();
         for (Point p : set) {
@@ -1597,7 +1598,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
      * 
      * @param set
      */
-    private Set<Point> fillTextureCoordinates4ExactDistance(TextureImage image, Set<Point> set) {
+    private Set<Point> fillTextureCoordinates4ExactDistance(GradientTextureImage image, Set<Point> set) {
         //            System.err.println(modifiedPixels.size() + " modified pixels");
         HashSet<Point> newlyModifiedPixels = new HashSet<Point>();
         for (Point p : set) {
@@ -1629,7 +1630,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
      *            pixel position is added to this list if this pixel distance
      *            value has been modified
      */
-    private boolean fillTextureCoordinatesExactDistance(TextureImage image, Point p, Point2d closestPoint, HashSet<Point> newlyModifiedPixels) {
+    private boolean fillTextureCoordinatesExactDistance(GradientTextureImage image, Point p, Point2d closestPoint, HashSet<Point> newlyModifiedPixels) {
         TexturePixel pixel = this.texImage.getPixel(p.x, p.y);
         if (pixel == null) {
             return false;
@@ -1654,7 +1655,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
      * 
      * @param set
      */
-    private static Set<Point> fillTextureCoordinates8(TextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
+    private static Set<Point> fillTextureCoordinates8(GradientTextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
         double maxDistance = 0;
         //            System.err.println(modifiedPixels.size() + " modified pixels");
         double pixelDiag = Math.sqrt(pixelWidth * pixelWidth + pixelHeight * pixelHeight);
@@ -1691,7 +1692,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
      * @param image
      * @param maxDistance
      */
-    private static void scaleV(TextureImage image, double maxDistance) {
+    private static void scaleV(GradientTextureImage image, double maxDistance) {
         // fill yTexture coordinates as distance / maxDistance for any pixel
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
@@ -1713,7 +1714,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
      *            pixel position is added to this list if this pixel distance
      *            value has been modified
      */
-    private static boolean fillTextureCoordinates(TextureImage texImage, double d, double uTexture, Point p, Set<Point> newlyModifiedPixels) {
+    private static boolean fillTextureCoordinates(GradientTextureImage texImage, double d, double uTexture, Point p, Set<Point> newlyModifiedPixels) {
         TexturePixel pixel = texImage.getPixel(p.x, p.y);
         if (pixel == null) {
             return false;
@@ -2065,7 +2066,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return "process finished";
     }
 
-    private void fillTextureCoordinatesIDW(TextureImage image, List<ParameterizedSegment> segments, double powerParameter) {
+    private void fillTextureCoordinatesIDW(GradientTextureImage image, List<ParameterizedSegment> segments, double powerParameter) {
         int prevDone = 0;
         double[] distances = new double[segments.size()];
         double imageMaxDistance = -Double.MAX_VALUE;
@@ -2138,7 +2139,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return v.x * v.x + v.y * v.y;
     }
 
-    private void fillTextureCoordinatesHalfSpace(TextureImage image, int x, int y, ParameterizedSegment segment) {
+    private void fillTextureCoordinatesHalfSpace(GradientTextureImage image, int x, int y, ParameterizedSegment segment) {
         TexturePixel pixel = image.getPixel(x, y);
 
         Point2d p1 = new Point2d(segment.p1.x, segment.p1.y);
@@ -2319,12 +2320,12 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
 
     public String applyFilter(String filterName) {
         if (this.initialTexImage == null) {
-            this.initialTexImage = new TextureImage(this.texImage);
+            this.initialTexImage = new GradientTextureImage(this.texImage);
         }
         this.initialTexImage.invalidateUVBounds();
         this.texImage.invalidateUVBounds();
         if (filterName.equals("None")) {
-            this.texImage = new TextureImage(this.initialTexImage);
+            this.texImage = new GradientTextureImage(this.initialTexImage);
             return "Back to unfiltered distance field texture";
         } else if (filterName.equals("Blur distance 1px")) {
             return this.applyBlurDistance(this.initialTexImage, 1);
@@ -2350,15 +2351,15 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
         return "Unknown filter '" + filterName + "'";
     }
 
-    private String applyBlurDistance(TextureImage sourceTexImage, int i) {
-        this.texImage = new TextureImage(sourceTexImage);
+    private String applyBlurDistance(GradientTextureImage sourceTexImage, int i) {
+        this.texImage = new GradientTextureImage(sourceTexImage);
         TextureImageUtil.blurDistance(this.texImage, i);
         this.computeGradient();
         return i + " pixels distance-blur applied to initial image. Gradient recomputed.";
     }
 
-    private String applyBlurUV(TextureImage sourceTexImage, int i) {
-        this.texImage = new TextureImage(sourceTexImage);
+    private String applyBlurUV(GradientTextureImage sourceTexImage, int i) {
+        this.texImage = new GradientTextureImage(sourceTexImage);
         TextureImageUtil.blurTextureCoordinates(this.texImage, i);
         this.computeGradient();
         return i + " pixels UV-blur applied to initial image. Gradient recomputed.";

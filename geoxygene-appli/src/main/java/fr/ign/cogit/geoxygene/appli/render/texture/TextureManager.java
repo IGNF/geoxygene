@@ -39,6 +39,9 @@ import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
+import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.Style;
+import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.texture.Texture;
 
 /**
@@ -121,18 +124,31 @@ public class TextureManager implements TaskListener<TextureTask<Texture>> {
         synchronized (tasksMap) {
             switch (task.getState()) {
             case FINISHED:
-                tasksMap.remove(task);
+                tasksMap.remove(task.getTexture());
                 task.removeTaskListener(this);
                 if (task.getTexture().getTextureImage() == null) {
-                    logger.error("TextureTask has finished with a null texture");
+                    logger.error("TextureTask has finished with no error but a null texture (its role is to fill texture.getTextureImage() method)");
                 }
+                GeOxygeneEventManager.refreshApplicationGui();
+                break;
             case ERROR:
-                tasksMap.remove(task);
+            case STOPPED:
+                tasksMap.remove(task.getTexture());
                 task.removeTaskListener(this);
                 break;
             default:
                 // do nothing special;
             }
+        }
+    }
+
+    /**
+     * Invalidate all textures. They will be regenerated next display call
+     */
+    public void invalidateTextures(Layer layer) {
+        for (Style style : layer.getStyles()) {
+            Symbolizer symbolizer = style.getSymbolizer();
+            symbolizer.reset();
         }
     }
 }

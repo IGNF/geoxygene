@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.api.texture;
+package fr.ign.cogit.geoxygene.util.gl;
 
 import java.awt.geom.Point2D;
 import java.util.Comparator;
@@ -85,35 +85,35 @@ public class Sample {
         this.tile = tile;
     }
 
-    /**
-     * @return the rotation
-     */
-    public Point2D getRotation() {
-        return this.rotation;
-    }
-
-    /**
-     * @param rotation
-     *            the rotation to set
-     */
-    public void setRotation(Point2D rotation) {
-        this.rotation = rotation;
-    }
-
-    /**
-     * @return the scale
-     */
-    public Point2D getScale() {
-        return this.scale;
-    }
-
-    /**
-     * @param scale
-     *            the scale to set
-     */
-    public void setScale(Point2D scale) {
-        this.scale = scale;
-    }
+    //    /**
+    //     * @return the rotation
+    //     */
+    //    public Point2D getRotation() {
+    //        return this.rotation;
+    //    }
+    //
+    //    /**
+    //     * @param rotation
+    //     *            the rotation to set
+    //     */
+    //    public void setRotation(Point2D rotation) {
+    //        this.rotation = rotation;
+    //    }
+    //
+    //    /**
+    //     * @return the scale
+    //     */
+    //    public Point2D getScale() {
+    //        return this.scale;
+    //    }
+    //
+    //    /**
+    //     * @param scale
+    //     *            the scale to set
+    //     */
+    //    public void setScale(Point2D scale) {
+    //        this.scale = scale;
+    //    }
 
     /**
      * @return the location

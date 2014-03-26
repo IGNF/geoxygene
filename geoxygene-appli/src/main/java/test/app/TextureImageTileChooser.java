@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Random;
 
 import utils.Pair;
-import fr.ign.cogit.geoxygene.api.texture.Sample;
-import fr.ign.cogit.geoxygene.api.texture.Tile;
+import fr.ign.cogit.geoxygene.util.gl.Sample;
+import fr.ign.cogit.geoxygene.util.gl.Tile;
 
 /**
  * @author JeT
@@ -84,6 +84,7 @@ public class TextureImageTileChooser implements TileChooser {
             if (randomValue < sumProbabilities[n]) {
                 //                System.err.println("probabilities: " + Arrays.toString(sumProbabilities) + " random value = " + randomValue + " => index = " + n + "["
                 //                        + sumProbabilities[n] + "]");
+                //                System.err.println("sample " + sample + " => tile " + this.tilesToBeApplied.get(n).second());
                 return this.tilesToBeApplied.get(n).second();
             }
             n++;

@@ -84,6 +84,7 @@ public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
      */
     @Override
     public void run() {
+        this.setState(TaskState.WAITING);
         this.setState(TaskState.INITIALIZING);
         this.setState(TaskState.RUNNING);
         try {

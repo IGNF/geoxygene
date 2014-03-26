@@ -112,8 +112,6 @@ public class MipMapMask {
         // just count the number of zero in binary representation to get the closest power of two (+1 for the ceil value)
         this.mipmapNbLevels = 32 - Integer.numberOfLeadingZeros((int) Math.ceil((Math.max(this.imageWidth, this.imageHeight)))) + 1;
         this.fullMipmapImageWidth = 1 << (this.mipmapNbLevels - 1);
-        System.err.println("create a mimap " + this.fullMipmapImageWidth + "x" + this.fullMipmapImageWidth + " for image " + this.imageWidth + "x"
-                + this.imageHeight);
         this.mipmapImages = new MipMapImage[this.mipmapNbLevels];
 
         this.mipmapImageWidthPerLevel = new int[this.mipmapNbLevels];
@@ -179,8 +177,10 @@ public class MipMapMask {
      *         given level
      */
     public Point mipmap2SourceCoordinates(Point p) {
-        return new Point((int) ((double) p.x / this.getMipmapSize() * this.getImageWidth()),
-                (int) ((double) p.y / this.getMipmapSize() * this.getImageHeight()));
+        //        System.err.println(" convert from mipmap = " + p.x + "x" + p.y + " to " + (((double) p.x / this.getMipmapSize() * this.getImageWidth())) + "x"
+        //                + (((double) p.y / this.getMipmapSize() * this.getImageHeight())));
+        return new Point((int) Math.round((double) p.x / this.getMipmapSize() * this.getImageWidth()), (int) Math.round((double) p.y / this.getMipmapSize()
+                * this.getImageHeight()));
     }
 
     /**

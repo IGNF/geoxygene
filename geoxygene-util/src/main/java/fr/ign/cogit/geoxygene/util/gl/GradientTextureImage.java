@@ -27,6 +27,9 @@
 
 package fr.ign.cogit.geoxygene.util.gl;
 
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+
 import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
@@ -37,7 +40,7 @@ import org.apache.log4j.Logger;
  *         each pixel contains texture coordinates and some
  *         temporary information
  */
-public class TextureImage {
+public class GradientTextureImage {
 
     public class TexturePixel {
         public double uTexture = 0;
@@ -53,6 +56,7 @@ public class TextureImage {
         public double weightSum = 0; // some elements are computed as a weighted average
         public Point2d vGradient = null; // gradient component of v Value
         public double mainDirection; // 
+        public Sample sample = null; // associated sample (or null)
 
         public TexturePixel() {
 
@@ -72,6 +76,7 @@ public class TextureImage {
             this.weightSum = src.weightSum;
             this.vGradient = src.vGradient == null ? null : new Point2d(src.vGradient);
             this.mainDirection = src.mainDirection;
+            this.sample = src.sample;
         }
 
         /*
@@ -82,16 +87,16 @@ public class TextureImage {
         @Override
         public String toString() {
             return "TexturePixel [uTexture=" + this.uTexture + ", vTexture=" + this.vTexture + ", distance=" + this.distance + ", linearParameter="
-                    + this.linearParameter + ", closestFrontier=" + this.closestFrontier + ", in=" + this.in + ", frontier=" + this.frontier + "]";
+                    + this.linearParameter + ", closestFrontier=" + this.closestFrontier + ", in=" + this.in + ", frontier=" + this.frontier + ", v-gradient="
+                    + this.vGradient + ", sample=" + this.sample + "]";
         }
-
     }
 
     private int width = 0;
     private int height = 0;
     private int size = 0; // width * height
     private TexturePixel[] pixels = null;
-    private static final Logger logger = Logger.getLogger(TextureImage.class.getName()); // logger
+    private static final Logger logger = Logger.getLogger(GradientTextureImage.class.getName()); // logger
     public Double uMin = null;
     public Double uMax = null;
     public Double vMin = null;
@@ -103,13 +108,13 @@ public class TextureImage {
      * constructor
      * 
      */
-    public TextureImage() {
+    public GradientTextureImage() {
     }
 
     /**
      * Copy constructor
      */
-    public TextureImage(final TextureImage src) {
+    public GradientTextureImage(final GradientTextureImage src) {
         this.setDimension(src.width, src.height);
         for (int l = 0; l < src.size; l++) {
             this.pixels[l] = new TexturePixel(src.getPixels()[l]);
@@ -125,8 +130,38 @@ public class TextureImage {
      * @param height
      *            projected image height
      */
-    public TextureImage(final int width, final int height) {
+    public GradientTextureImage(final int width, final int height) {
         this.setDimension(width, height);
+    }
+
+    /**
+     * get the transformation applied to a rectangle at a given point
+     * 
+     * @param x
+     *            rectangle center X coordinate
+     * @param y
+     *            rectangle center Y coordinate
+     * @param width
+     *            rectangle width
+     * @param height
+     *            rectangle height
+     * @return
+     */
+    public AffineTransform tileTransform(int x, int y, int width, int height) {
+        TexturePixel pixel = this.getPixel(x, y);
+        if (pixel == null) {
+            return null;
+        }
+        // that's not really a good idea to set the gradient here. But sometimes
+        // (one pixel width lines) gradient cannot be computed...
+        if (pixel.vGradient == null) {
+            pixel.vGradient = new Point2d(0, 0);
+        }
+        Point2D rotation = new Point2D.Double(pixel.vGradient.x, pixel.vGradient.y);
+        AffineTransform transform = new AffineTransform(); // from tile to image pixel coordinates
+        transform.translate(x - width / 2., y - height / 2.);
+        transform.rotate(rotation.getX(), rotation.getY(), width / 2., height / 2.);
+        return transform;
     }
 
     /**

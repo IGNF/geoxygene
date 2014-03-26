@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.appli.ui.Message.MessageType;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
 import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
 
 /**

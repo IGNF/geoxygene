@@ -222,22 +222,21 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable, T
         Texture texture = symbolizer.getFill().getTexture();
         IFeatureCollection<IFeature> featureCollection = this.getFeature().getFeatureCollection(0);
         if (texture != null) {
-            //            texture.setTextureDimension(img.getWidth(), img.getHeight());
-            logger.debug("feature rendering : id=" + this.feature.getId() + " type=" + this.feature.getFeatureType() + " collections = "
-                    + this.feature.getFeatureCollections());
+            //            texture.setTextureDimension(2000, 2000);
+            //            logger.debug("feature rendering : id=" + this.feature.getId() + " type=" + this.feature.getFeatureType() + " collections = "
+            //                    + this.feature.getFeatureCollections());
             TextureTask<? extends Texture> textureTask = TextureManager.getInstance().getTextureTask(texture, featureCollection, this.getViewport());
             if (textureTask == null) {
                 return;
             }
             textureTask.addTaskListener(this);
+            texture.setTextureDimension(2000, 2000);
             textureTask.start();
             // wait for texture computation completion
             BufferedImage imgTexture = null;
-            while (textureTask.getState() != TaskState.FINISHED && textureTask.getState() != TaskState.ERROR) {
+            while (!textureTask.getState().isFinished()) {
                 try {
-                    if (textureTask.getState() != TaskState.FINISHED && textureTask.getState() != TaskState.ERROR) {
-                        this.wait();
-                    }
+                    this.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -351,7 +350,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable, T
 
     @Override
     synchronized public void onStateChange(Task task, TaskState oldState) {
-        if (task.getState() == TaskState.FINISHED || task.getState() == TaskState.ERROR) {
+        if (task.getState().isFinished()) {
             this.notify();
             task.removeTaskListener(this);
         }

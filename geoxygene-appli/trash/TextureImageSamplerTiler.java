@@ -40,11 +40,11 @@ import java.util.List;
 import javax.vecmath.Point2d;
 
 import utils.Pair;
-import fr.ign.cogit.geoxygene.api.texture.Sample;
-import fr.ign.cogit.geoxygene.api.texture.Tile;
 import fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage;
-import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
+import fr.ign.cogit.geoxygene.util.gl.Sample;
+import fr.ign.cogit.geoxygene.util.gl.Tile;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 
 /**
  * @author JeT
@@ -52,7 +52,7 @@ import fr.ign.cogit.geoxygene.util.gl.TextureImage.TexturePixel;
  */
 public class TextureImageSamplerTiler implements SamplingAlgorithm {
 
-    private TextureImage image = null;
+    private GradientTextureImage image = null;
     private double overlapRatio = 0.6; // max overlap between tile and image during initial sampling
     private List<Sample> samples = null;
     private double jitteringFactor = 0.5;
@@ -64,7 +64,7 @@ public class TextureImageSamplerTiler implements SamplingAlgorithm {
     /**
      * Default constructor
      */
-    public TextureImageSamplerTiler(TextureImage image, TileChooser tileChooser, double overlapRatio, double scale) {
+    public TextureImageSamplerTiler(GradientTextureImage image, TileChooser tileChooser, double overlapRatio, double scale) {
         this.image = image;
         this.overlapRatio = overlapRatio;
         this.tileChooser = tileChooser;
@@ -83,6 +83,18 @@ public class TextureImageSamplerTiler implements SamplingAlgorithm {
      */
     public TileChooser getTileChooser() {
         return this.tileChooser;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm#getSampleCount
+     * ()
+     */
+    @Override
+    public int getSampleCount() {
+        return this.getSamples() == null ? 0 : this.getSamples().size();
     }
 
     /**
@@ -255,7 +267,7 @@ public class TextureImageSamplerTiler implements SamplingAlgorithm {
         }
     }
 
-    private static Pair<Double, BufferedImage> evaluateTileMatching(Tile tile, Point p, TextureImage image, BufferedImage imageMask) {
+    private static Pair<Double, BufferedImage> evaluateTileMatching(Tile tile, Point p, GradientTextureImage image, BufferedImage imageMask) {
         //        int w = image.getWidth();
         //        int h = image.getHeight();
         TexturePixel pixel = image.getPixel(p.x, p.y);
@@ -317,7 +329,7 @@ public class TextureImageSamplerTiler implements SamplingAlgorithm {
         return new Pair<Double, BufferedImage>(Math.log(nbOverlapPixels * (1 - 0.3)) / Math.log(coveredTileBorder), mergedTile);
     }
 
-    private static List<Point> extractFrontier(TextureImage image) {
+    private static List<Point> extractFrontier(GradientTextureImage image) {
         List<Point> frontier = new ArrayList<Point>();
         int w = image.getWidth();
         int h = image.getHeight();
