@@ -72,31 +72,6 @@
 	<!-- =========================================================== -->
 	<profiles>
 	
-		<profile>
-			<id>Jenkins</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.lazerycode.jmeter</groupId>
-						<artifactId>jmeter-maven-plugin</artifactId>
-						<version>1.9.0</version>
-						<executions>
-							<execution>
-								<id>jmeter-tests</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>jmeter</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-			<modules>
-				<module>geoxygene-spatial</module>
-			</modules>
-		</profile>
-
 		<!-- <profile> <id>integration-test</id> <properties> --><!-- Only integration tests are run. -->
 		<!-- <skip.integration.tests>false</skip.integration.tests> -->
 		<!-- <skip.unit.tests>true</skip.unit.tests> -->
@@ -122,52 +97,12 @@
 					<!-- + la configuration dans les modules enfants -->
 				</plugins>
 			</build>
-			<modules>
-				<module>geoxygene-api</module>
-				<module>geoxygene-appli</module>
-				<module>geoxygene-scripting</module>
-				<module>geoxygene-cartagen</module>
-				<module>geoxygene-contrib</module>
-				<module>geoxygene-database</module>
-				<module>geoxygene-feature</module>
-				<module>geoxygene-filter</module>
-				<module>geoxygene-io</module>
-				<module>geoxygene-geopensim</module>
-				<module>geoxygene-pea-rep</module>
-				<module>geoxygene-schemageo</module>
-				<module>geoxygene-semio</module>
-				<module>geoxygene-sig3d</module>
-				<module>geoxygene-spatial</module>
-				<module>geoxygene-style</module>
-				<module>geoxygene-util</module>
-				<module>geoxygene-osm</module>
-			</modules>
 		</profile>
 		<profile>
 			<id>cogit</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<modules>
-				<module>geoxygene-api</module>
-				<module>geoxygene-appli</module>
-				<module>geoxygene-scripting</module>
-				<module>geoxygene-cartagen</module>
-				<module>geoxygene-contrib</module>
-				<module>geoxygene-database</module>
-				<module>geoxygene-feature</module>
-				<module>geoxygene-filter</module>
-				<module>geoxygene-io</module>
-				<module>geoxygene-geopensim</module>
-				<module>geoxygene-pea-rep</module>
-				<module>geoxygene-schemageo</module>
-				<module>geoxygene-semio</module>
-				<module>geoxygene-sig3d</module>
-				<module>geoxygene-spatial</module>
-				<module>geoxygene-style</module>
-				<module>geoxygene-util</module>
-				<module>geoxygene-osm</module>
-			</modules>
 		</profile>
 	</profiles>
 
@@ -694,7 +629,25 @@
 		</site>
 	</distributionManagement>
 
-  <modules>
-    <module>geoxygene-spatialrelation</module>
-  </modules>
+	<modules>
+		<module>geoxygene-api</module>
+		<module>geoxygene-appli</module>
+		<module>geoxygene-cartagen</module>
+		<module>geoxygene-contrib</module>
+		<module>geoxygene-database</module>
+		<module>geoxygene-feature</module>
+		<module>geoxygene-filter</module>
+		<module>geoxygene-io</module>
+		<module>geoxygene-geopensim</module>
+		<module>geoxygene-pea-rep</module>
+		<module>geoxygene-schemageo</module>
+		<module>geoxygene-scripting</module>
+		<module>geoxygene-semio</module>
+		<module>geoxygene-sig3d</module>
+		<module>geoxygene-spatial</module>
+		<module>geoxygene-style</module>
+		<module>geoxygene-util</module>
+		<module>geoxygene-osm</module>
+		<module>geoxygene-spatialrelation</module>
+	</modules>
 </project>
