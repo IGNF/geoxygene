@@ -16,4 +16,6 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.semio.SemioPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.osm.OSMPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.example.SLDDemoApplication</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.ResamplerPlugin</plugin>
 </GeOxygeneApplicationProperties>
