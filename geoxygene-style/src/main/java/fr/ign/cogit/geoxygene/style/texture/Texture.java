@@ -39,6 +39,10 @@ public abstract class Texture {
     private TextureDrawingMode textureDrawingMode = TextureDrawingMode.VIEWPORTSPACE;
     private BufferedImage textureImage = null;
 
+    public Texture(){
+      //Do nothing
+    }
+    
     /**
      * default constructor for
      */
