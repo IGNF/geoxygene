@@ -74,8 +74,6 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import com.vividsolutions.jts.geom.MultiPoint;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
@@ -141,6 +139,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
     private GLComplex screenQuad = null;
     private int fboId = -1;
     private int fboTextureId = -1;
+    private int fboImageWidth = -1;
+    private int fboImageHeight = -1;
 
     private boolean antialiasing = true;
 
@@ -376,7 +376,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
                 glEnable(GL_BLEND);
                 glDisable(GL11.GL_POLYGON_SMOOTH);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                this.directRendering(primitive);
+                this.normalRendering(primitive);
             }
         }
 
@@ -435,6 +435,24 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
         GLTools.glCheckError("entering FBO rendering");
         glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, this.fboId);
         GLTools.glCheckError("FBO bind Frame Buffer");
+
+        // check if the screen size has change since previous rendering
+        if (this.fboImageWidth != this.getCanvasWidth() || this.fboImageHeight != this.getCanvasHeight()) {
+            this.fboImageWidth = this.getCanvasWidth();
+            this.fboImageHeight = this.getCanvasHeight();
+            glBindFramebuffer(GL_FRAMEBUFFER, this.fboId);
+            glBindTexture(GL_TEXTURE_2D, this.fboTextureId);
+
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.fboImageWidth, this.fboImageHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this.fboTextureId, 0);
+            // check FBO status
+            int status = GL30.glCheckFramebufferStatus(GL_FRAMEBUFFER);
+            if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
+                logger.error("Frame Buffer Object is not correctly initialized");
+            }
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
         //        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
         //        GL11.glDepthMask(false);
         GL11.glViewport(0, 0, this.getCanvasWidth(), this.getCanvasHeight()); // set FBO viewport to screen size
@@ -454,7 +472,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
         glBlendFunc(GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         //GL14.glBlendFuncSeparate(GL11.GL_SRC_COLOR, GL11.GL_ONE, GL11.GL_CONSTANT_COLOR, GL11.GL_ONE);
         glDisable(GL11.GL_POLYGON_SMOOTH);
-        this.directRendering(primitive);
+        this.normalRendering(primitive);
         GLTools.glCheckError("FBO plain rendering");
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -484,7 +502,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
     /**
      * @param primitive
      */
-    private void directRendering(GLComplex primitive) {
+    private void normalRendering(GLComplex primitive) {
+
         GLTools.glCheckError("entering direct rendering");
 
         switch (primitive.getRenderingCapability()) {
@@ -507,7 +526,6 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
             GL20.glUniform1i(glGetUniformLocation(this.getCurrentProgramId(), "dMapTexture"), 4);
 
         }
-
         this.setGLViewMatrix(this.getViewport(), primitive.getMinX(), primitive.getMinY());
 
         GL30.glBindVertexArray(primitive.getVaoId());
@@ -664,9 +682,11 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
             logger.error("Unable to FBO texture");
         }
 
+        this.fboImageWidth = this.getCanvasWidth();
+        this.fboImageHeight = this.getCanvasHeight();
         glBindTexture(GL_TEXTURE_2D, this.fboTextureId);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.getCanvasWidth(), this.getCanvasHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.fboImageWidth, this.fboImageHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this.fboTextureId, 0);
         // check FBO status
         int status = GL30.glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -700,7 +720,9 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
         glUniform1f(glGetUniformLocation(this.getCurrentProgramId(), screenWidthUniformVarName), this.getCanvasWidth());
         glUniform1f(glGetUniformLocation(this.getCurrentProgramId(), screenHeightUniformVarName), this.getCanvasHeight());
 
-        //        System.err.println("x = " + (float) (modelToViewTransform.getTranslateX()) + " y = " + (modelToViewTransform.getTranslateY()));
+        //        System.err.println("translation x = " + (float) (modelToViewTransform.getTranslateX()) + " y = " + (modelToViewTransform.getTranslateY()));
+        //        System.err.println("scaling     x = " + (float) (modelToViewTransform.getScaleX()) + " y = " + (modelToViewTransform.getScaleY()));
+        //        System.err.println("canvas width = " + this.getCanvasWidth() + " height = " + this.getCanvasHeight());
         return true;
     }
 
