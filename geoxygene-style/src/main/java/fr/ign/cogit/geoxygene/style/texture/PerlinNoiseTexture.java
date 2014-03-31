@@ -27,7 +27,6 @@
 package fr.ign.cogit.geoxygene.style.texture;
 
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

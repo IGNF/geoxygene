@@ -84,6 +84,9 @@
                         <Fill>
                             <CssParameter name="fill">#d9d9d9</CssParameter>
                             <CssParameter name="fill-opacity">0.8</CssParameter>
+				<BasicTexture>
+					<url>file:src/main/resources/textures/texture-crayon.jpg</url>
+				</BasicTexture>
                         </Fill>
                     </PolygonSymbolizer>
                 </Rule>
@@ -129,7 +132,10 @@
                         <Fill>
                             <CssParameter name="fill">#000000</CssParameter>
                             <CssParameter name="fill-opacity">0.14</CssParameter>
-                        </Fill>
+				<BasicTexture>
+					<url>file:src/main/resources/textures/texture-crayon.jpg</url>
+				</BasicTexture>
+                       </Fill>
                     </PolygonSymbolizer>
                 </Rule>
             </FeatureTypeStyle>

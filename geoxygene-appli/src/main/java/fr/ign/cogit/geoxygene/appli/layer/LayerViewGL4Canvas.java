@@ -3,16 +3,24 @@
  */
 package fr.ign.cogit.geoxygene.appli.layer;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.PixelFormat;
 
 /** @author JeT GL drawable canvas inserted into a LayerViewLwjglPanel */
-public class LayerViewGL4Canvas extends LayerViewGLCanvas {
+public class LayerViewGL4Canvas extends LayerViewGLCanvas implements ComponentListener {
 
     private static final long serialVersionUID = 2813681374260169340L; // serializable
 
@@ -106,7 +114,8 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas {
             //            glLoadIdentity();
             //            glOrtho(0, this.getWidth(), this.getHeight(), 0, -1000, 1000);
             //            glMatrixMode(GL_MODELVIEW);
-            //            glViewport(0, 0, this.getWidth(), this.getHeight());
+            System.err.println("resize window to " + this.getWidth() + "x" + this.getHeight());
+            glViewport(0, 0, this.getWidth(), this.getHeight());
         } catch (Exception e1) {
             // don't know hot to prevent/check this exception.
             // isDisplayable() and isValid() are both true at this point...

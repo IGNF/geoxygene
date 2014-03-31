@@ -15,7 +15,7 @@ out vec4 vColor;
 out vec2 vTextureCoord;
 
 void main(void) {
-	gl_Position = vec4( 2 * (inPosition.x * m00 + m02) / (screenWidth-1) -1, 1 - 2 * ( inPosition.y * m11 + m12 ) / (screenHeight-1), 0, 1);
+	gl_Position = vec4( 2 * (inPosition.x * m00 + m02) / (screenWidth) -1, 1 - 2 * ( inPosition.y * m11 + m12 ) / (screenHeight), 0, 1);
 
 	vColor = inColor;
 	vTextureCoord = inTextureCoord;

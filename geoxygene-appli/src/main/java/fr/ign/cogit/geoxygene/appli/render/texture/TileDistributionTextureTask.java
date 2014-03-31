@@ -36,8 +36,8 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -48,14 +48,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.imageio.ImageIO;
 import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
 
 import test.app.DisplayPanel.ParameterizedPoint;
 import test.app.DisplayPanel.ParameterizedSegment;
-import test.app.DistanceFieldApplication;
 import test.app.DistanceTileProbability;
 import test.app.TextureImageSamplerMipMap;
 import test.app.TextureImageTileChooser;
@@ -73,14 +71,14 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldFrontierPixelRenderer;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
+import fr.ign.cogit.geoxygene.style.texture.DimensionDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.ProbabilistTileDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture.TileBlendingType;
 import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
+import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 import fr.ign.cogit.geoxygene.util.gl.Tile;
-import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
-import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
 import fr.ign.cogit.geoxygene.util.graphcut.DefaultTile;
 import fr.ign.cogit.geoxygene.util.graphcut.GraphCut;
 
@@ -406,6 +404,11 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
                 this.setState(TaskState.STOPPED);
                 return;
             }
+            this.getTexture().setxRepeat(false);
+            this.getTexture().setyRepeat(false);
+            this.getTexture().setDimension(new DimensionDescriptor(this.envelope.width(), this.envelope.length()));
+            this.getTexture().setTextureWidth(this.getTextureWidth());
+            this.getTexture().setTextureWidth(this.getTextureHeight());
 
             TextureImageTileChooser tileChooser = new TextureImageTileChooser();
             for (Pair<TileProbability, Tile> pair : this.tilesToBeApplied) {
@@ -426,7 +429,14 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
             bi = this.pasteTiles(this.texImage, this.tilesToBeApplied, sampler, this.featureShape);
             //            TextureImageUtil.save(this.texImage, "texturedImage");
             //            ImageIO.write(bi, "PNG", new File("texturedPolygon.png"));
+            // Flip the image vertically
+            AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
+            tx.translate(0, -bi.getHeight(null));
+            AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+            bi = op.filter(bi, null);
+
             this.getTexture().setTextureImage(bi);
+
             if (this.isStopRequested()) {
                 this.setState(TaskState.STOPPED);
             } else {

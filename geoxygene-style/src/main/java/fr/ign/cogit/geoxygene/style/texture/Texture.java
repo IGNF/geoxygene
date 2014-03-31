@@ -31,23 +31,65 @@ import java.awt.image.BufferedImage;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class Texture {
 
-    private int width, height; // image texture dimension
+    @XmlAttribute(name = "xRepeat")
+    private boolean xRepeat = false;
+    @XmlAttribute(name = "yRepeat")
+    private boolean yRepeat = false;
+
+    private int width, height; // image texture dimension (in pixels)
     private TextureDrawingMode textureDrawingMode = TextureDrawingMode.VIEWPORTSPACE;
     private BufferedImage textureImage = null;
 
-    public Texture(){
-      //Do nothing
-    }
-    
+    @XmlElement(name = "Dimension")
+    private DimensionDescriptor dimension = new DimensionDescriptor(); // image dimension (in world coordinates)
+
+    @XmlElement(name = "Displacement")
+    private PointDescriptor displacement = new PointDescriptor(); // image displacement (in world coordinates)
+
+    @XmlElement(name = "Rotation")
+    private final RotationDescriptor rotation = new RotationDescriptor(); // rotation angle
+
     /**
      * default constructor for
      */
     public Texture(TextureDrawingMode textureDrawingMode) {
         this.textureDrawingMode = textureDrawingMode;
+    }
+
+    /**
+     * @return the xRepeat
+     */
+    public boolean isRepeatedX() {
+        return this.xRepeat;
+    }
+
+    /**
+     * @param xRepeat
+     *            the xRepeat to set
+     */
+    public void setxRepeat(boolean xRepeat) {
+        this.xRepeat = xRepeat;
+    }
+
+    /**
+     * @return the yRepeat
+     */
+    public boolean isRepeatedY() {
+        return this.yRepeat;
+    }
+
+    /**
+     * @param yRepeat
+     *            the yRepeat to set
+     */
+    public void setyRepeat(boolean yRepeat) {
+        this.yRepeat = yRepeat;
     }
 
     /**
@@ -89,23 +131,30 @@ public abstract class Texture {
     }
 
     /**
-     * Set the texture image size
+     * @return the rotation
+     */
+    public RotationDescriptor getRotation() {
+        return this.rotation;
+    }
+
+    /**
+     * Set the texture image size in pixels. Shortcut to setWidth()/setHeight()
      */
     public void setTextureDimension(int width, int height) {
-        this.width = width;
-        this.height = height;
+        this.setTextureWidth(width);
+        this.setTextureHeight(height);
     }
 
     /**
-     * Set the texture image size
+     * Set the texture image size in pixels. Shortcut to setWidth()/setHeight()
      */
     public void setTextureDimension(Dimension textureDimension) {
-        this.width = textureDimension.width;
-        this.height = textureDimension.height;
+        this.setTextureWidth(textureDimension.width);
+        this.setTextureHeight(textureDimension.height);
     }
 
     /**
-     * @return the width
+     * @return image width in pixels
      */
     public int getTextureWidth() {
         return this.width;
@@ -113,14 +162,14 @@ public abstract class Texture {
 
     /**
      * @param width
-     *            the width to set
+     *            image width in pixels
      */
     public void setTextureWidth(int width) {
         this.width = width;
     }
 
     /**
-     * @return the height
+     * @return the image height in pixels
      */
     public int getTextureHeight() {
         return this.height;
@@ -128,10 +177,41 @@ public abstract class Texture {
 
     /**
      * @param height
-     *            the height to set
+     *            image height in pixels
      */
     public void setTextureHeight(int height) {
         this.height = height;
+    }
+
+    /**
+     * @return the texture dimension in world coordinates
+     */
+    public DimensionDescriptor getDimension() {
+        return this.dimension;
+    }
+
+    /**
+     * @param dimension
+     *            texture dimension in world coordinates (0 if internally
+     *            computed or screen space)
+     */
+    public void setDimension(DimensionDescriptor dimension) {
+        this.dimension = dimension;
+    }
+
+    /**
+     * @return the displacement
+     */
+    public PointDescriptor getDisplacement() {
+        return this.displacement;
+    }
+
+    /**
+     * @param displacement
+     *            the displacement to set
+     */
+    public void setDisplacement(PointDescriptor displacement) {
+        this.displacement = displacement;
     }
 
     /**

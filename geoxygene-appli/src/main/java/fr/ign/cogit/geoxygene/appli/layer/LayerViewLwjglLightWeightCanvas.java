@@ -97,7 +97,7 @@ public class LayerViewLwjglLightWeightCanvas extends GLJPanel implements Compone
     public void componentResized(ComponentEvent e) {
         // super.componentResized(e);
         try {
-            // TODO update component
+            System.err.println("LWJGLLightweightCanvas resized to " + this.getWidth() + "x" + this.getHeight());
         } catch (Exception e1) {
             logger.error("Error resizing the lightweight AWTGLCanvas : " + e1.getMessage());
             // e1.printStackTrace();

@@ -413,14 +413,14 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
         return this.currentProgramId;
     }
 
-    private int getScreenWidth() {
+    private int getCanvasWidth() {
         if (this.lwjglLayerRenderer != null && this.lwjglLayerRenderer.getLayerViewPanel() != null) {
             return this.lwjglLayerRenderer.getLayerViewPanel().getWidth();
         }
         return 0;
     }
 
-    private int getScreenHeight() {
+    private int getCanvasHeight() {
         if (this.lwjglLayerRenderer != null && this.lwjglLayerRenderer.getLayerViewPanel() != null) {
             return this.lwjglLayerRenderer.getLayerViewPanel().getHeight();
         }
@@ -437,13 +437,12 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
         GLTools.glCheckError("FBO bind Frame Buffer");
         //        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
         //        GL11.glDepthMask(false);
-        GL11.glViewport(0, 0, this.getScreenWidth(), this.getScreenHeight()); // set FBO viewport to screen size
+        GL11.glViewport(0, 0, this.getCanvasWidth(), this.getCanvasHeight()); // set FBO viewport to screen size
         GL11.glClearColor(1f, 1f, 1f, .0f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
         this.setCurrentProgram(this.glColorProgramId);
         if (this.getAntialiasing()) {
-            this.setCurrentProgram(this.glColorProgramId);
             glEnable(GL_BLEND);
             glEnable(GL_LINE_SMOOTH);
             glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
@@ -667,7 +666,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
 
         glBindTexture(GL_TEXTURE_2D, this.fboTextureId);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.getScreenWidth(), this.getScreenHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.getCanvasWidth(), this.getCanvasHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this.fboTextureId, 0);
         // check FBO status
         int status = GL30.glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -690,19 +689,16 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements TaskL
             logger.error("Non invertible viewport matrix");
             return false;
         }
-        LayerViewPanel lvp = viewport.getLayerViewPanels().iterator().next();
 
-        float windowWidth = lvp.getWidth();
-        float windowHeight = lvp.getHeight();
-
+        //        GL11.glViewport(0, 0, this.getCanvasWidth(), this.getCanvasHeight());
         glUniform1f(glGetUniformLocation(this.getCurrentProgramId(), m00ModelToViewMatrixUniformVarName), (float) modelToViewTransform.getScaleX());
         glUniform1f(glGetUniformLocation(this.getCurrentProgramId(), m02ModelToViewMatrixUniformVarName), (float) (modelToViewTransform.getTranslateX() + minX
                 * modelToViewTransform.getScaleX()));
         glUniform1f(glGetUniformLocation(this.getCurrentProgramId(), m11ModelToViewMatrixUniformVarName), (float) modelToViewTransform.getScaleY());
         glUniform1f(glGetUniformLocation(this.getCurrentProgramId(), m12ModelToViewMatrixUniformVarName), (float) (modelToViewTransform.getTranslateY() + minY
                 * modelToViewTransform.getScaleY()));
-        glUniform1f(glGetUniformLocation(this.getCurrentProgramId(), screenWidthUniformVarName), windowWidth);
-        glUniform1f(glGetUniformLocation(this.getCurrentProgramId(), screenHeightUniformVarName), windowHeight);
+        glUniform1f(glGetUniformLocation(this.getCurrentProgramId(), screenWidthUniformVarName), this.getCanvasWidth());
+        glUniform1f(glGetUniformLocation(this.getCurrentProgramId(), screenHeightUniformVarName), this.getCanvasHeight());
 
         //        System.err.println("x = " + (float) (modelToViewTransform.getTranslateX()) + " y = " + (modelToViewTransform.getTranslateY()));
         return true;
