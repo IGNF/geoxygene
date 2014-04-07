@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
+import fr.ign.cogit.geoxygene.style.gradient.GradientStroke;
 
 /**
  * @author Julien Perret
@@ -41,11 +42,11 @@ import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Stroke {
 
-  @SuppressWarnings("unused")
   static private Logger logger = Logger.getLogger(Stroke.class.getName());
 
   @XmlElements({ @XmlElement(name = "GraphicFill", type = GraphicFill.class),
-      @XmlElement(name = "GraphicStroke", type = GraphicStroke.class) })
+      @XmlElement(name = "GraphicStroke", type = GraphicStroke.class),
+      @XmlElement(name = "GradientStroke", type = GradientStroke.class) })
   private GraphicType graphicType = null;
 
   @XmlElements({ @XmlElement(name = "SvgParameter", type = SvgParameter.class),
@@ -152,7 +153,6 @@ public class Stroke {
           this.setStrokeDashArray(parameter.getValue());
         } else if (parameter.getName().equalsIgnoreCase("stroke-dashoffset")) { //$NON-NLS-1$
           this.setStrokeDashOffset(parameter.getValue());
-
         }
       }
     }
@@ -184,10 +184,6 @@ public class Stroke {
           String rgb = Integer.toHexString(stroke.getRGB());
           rgb = rgb.substring(2, rgb.length());
           parameter.setValue("#" + rgb); //$NON-NLS-1$
-          found = true;
-        } else if (parameter.getName().equalsIgnoreCase("stroke")) { //$NON-NLS-1$
-          String sRGB = Integer.toString(stroke.getRGB());
-          parameter.setValue(sRGB);
           found = true;
         }
       }
