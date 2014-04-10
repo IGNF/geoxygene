@@ -524,7 +524,7 @@
 		<repository>
 			<id>cogit-releases</id>
 			<name>Cogit Releases Repository</name>
-			<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/releases/</url>
+			<url>https://dionysos2.ign.fr/nexus-webapp-1.4.1/content/repositories/releases/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
