@@ -45,7 +45,8 @@ public class PerlinNoiseTexture extends Texture {
         super(TextureDrawingMode.VIEWPORTSPACE);
     }
 
-    public PerlinNoiseTexture(float scale, float amount, float angle, float stretch, Color color1, Color color2) {
+    public PerlinNoiseTexture(float scale, float amount, float angle,
+            float stretch, Color color1, Color color2) {
         this();
         this.scale = scale;
         this.amount = amount;
@@ -149,10 +150,15 @@ public class PerlinNoiseTexture extends Texture {
         int result = 1;
         result = prime * result + Float.floatToIntBits(this.amount);
         result = prime * result + Float.floatToIntBits(this.angle);
-        result = prime * result + ((this.color1 == null) ? 0 : this.color1.hashCode());
-        result = prime * result + ((this.color2 == null) ? 0 : this.color2.hashCode());
+        result = prime * result
+                + ((this.color1 == null) ? 0 : this.color1.hashCode());
+        result = prime * result
+                + ((this.color2 == null) ? 0 : this.color2.hashCode());
         result = prime * result + Float.floatToIntBits(this.scale);
         result = prime * result + Float.floatToIntBits(this.stretch);
+        long temp;
+        temp = Double.doubleToLongBits(this.textureResolution);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
 
@@ -173,10 +179,12 @@ public class PerlinNoiseTexture extends Texture {
             return false;
         }
         PerlinNoiseTexture other = (PerlinNoiseTexture) obj;
-        if (Float.floatToIntBits(this.amount) != Float.floatToIntBits(other.amount)) {
+        if (Float.floatToIntBits(this.amount) != Float
+                .floatToIntBits(other.amount)) {
             return false;
         }
-        if (Float.floatToIntBits(this.angle) != Float.floatToIntBits(other.angle)) {
+        if (Float.floatToIntBits(this.angle) != Float
+                .floatToIntBits(other.angle)) {
             return false;
         }
         if (this.color1 == null) {
@@ -193,10 +201,16 @@ public class PerlinNoiseTexture extends Texture {
         } else if (!this.color2.equals(other.color2)) {
             return false;
         }
-        if (Float.floatToIntBits(this.scale) != Float.floatToIntBits(other.scale)) {
+        if (Float.floatToIntBits(this.scale) != Float
+                .floatToIntBits(other.scale)) {
             return false;
         }
-        if (Float.floatToIntBits(this.stretch) != Float.floatToIntBits(other.stretch)) {
+        if (Float.floatToIntBits(this.stretch) != Float
+                .floatToIntBits(other.stretch)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.textureResolution) != Double
+                .doubleToLongBits(other.textureResolution)) {
             return false;
         }
         return true;
