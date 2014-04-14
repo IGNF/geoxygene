@@ -50,20 +50,26 @@ public class TextureTaskFactory {
         // factory class
     }
 
-    public static TextureTask<? extends Texture> createTextureTask(Texture texture, IFeatureCollection<IFeature> iFeatureCollection, Viewport viewport) {
+    public static TextureTask<? extends Texture> createTextureTask(
+            Texture texture, IFeatureCollection<IFeature> featureCollection,
+            Viewport viewport) {
         if (texture instanceof PerlinNoiseTexture) {
-            return new PerlinNoiseTextureTask((PerlinNoiseTexture) texture);
+            PerlinNoiseTextureTask task = new PerlinNoiseTextureTask(
+                    (PerlinNoiseTexture) texture, featureCollection, viewport);
+            return task;
         }
         if (texture instanceof BasicTexture) {
             return new BasicTextureTask((BasicTexture) texture);
         }
         if (texture instanceof TileDistributionTexture) {
-            TileDistributionTextureTask task = new TileDistributionTextureTask((TileDistributionTexture) texture);
-            task.setFeatureCollection(iFeatureCollection);
+            TileDistributionTextureTask task = new TileDistributionTextureTask(
+                    (TileDistributionTexture) texture);
+            task.setFeatureCollection(featureCollection);
             task.setViewport(viewport);
             return task;
         }
-        throw new IllegalStateException("Unknown task creation for texture " + texture.getClass().getSimpleName());
+        throw new IllegalStateException("Unknown task creation for texture "
+                + texture.getClass().getSimpleName());
     }
 
 }
