@@ -51,6 +51,10 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldFrontierPixelRenderer;
 import fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm;
+import fr.ign.cogit.geoxygene.appli.render.texture.TextureImageSamplerMipMap;
+import fr.ign.cogit.geoxygene.appli.render.texture.TextureImageSamplerUVSampler;
+import fr.ign.cogit.geoxygene.appli.render.texture.TextureImageTileChooser;
+import fr.ign.cogit.geoxygene.appli.render.texture.TileProbability;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -86,34 +90,33 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     }
 
     public static class ParameterizedPoint {
-        public double x, y; // point coordinates in world frame
-        public double u, v; // texture coordinates
+        public ParameterizedPoint data = new ParameterizedPoint();
 
         public ParameterizedPoint(double x, double y, double u, double v) {
             super();
-            this.x = x;
-            this.y = y;
-            this.u = u;
-            this.v = v;
+            this.data.x = x;
+            this.data.y = y;
+            this.data.u = u;
+            this.data.v = v;
         }
 
     }
 
     public static class ParameterizedSegment {
-        public ParameterizedPoint p1, p2;
+        public ParameterizedSegment data = new ParameterizedSegment();
 
         public ParameterizedSegment(ParameterizedPoint p1, ParameterizedPoint p2) {
             super();
-            this.p1 = p1;
-            this.p2 = p2;
+            this.data.p1 = p1;
+            this.data.p2 = p2;
         }
 
         public double getU(double t) {
-            return this.p1.u * (1 - t) + this.p2.u * t;
+            return this.data.p1.data.u * (1 - t) + this.data.p2.data.u * t;
         }
 
         public double getV(double t) {
-            return this.p1.v * (1 - t) + this.p2.v * t;
+            return this.data.p1.data.v * (1 - t) + this.data.p2.data.v * t;
         }
 
     }
@@ -357,8 +360,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
 
         @Override
         public int compare(ParameterizedSegment o1, ParameterizedSegment o2) {
-            double l1 = Math.sqrt((o1.p2.x - o1.p1.x) * (o1.p2.x - o1.p1.x) + (o1.p2.y - o1.p1.y) * (o1.p2.y - o1.p1.y));
-            double l2 = Math.sqrt((o2.p2.x - o2.p1.x) * (o2.p2.x - o2.p1.x) + (o2.p2.y - o2.p1.y) * (o2.p2.y - o2.p1.y));
+            double l1 = Math.sqrt((o1.data.p2.data.x - o1.data.p1.data.x) * (o1.data.p2.data.x - o1.data.p1.data.x) + (o1.data.p2.data.y - o1.data.p1.data.y) * (o1.data.p2.data.y - o1.data.p1.data.y));
+            double l2 = Math.sqrt((o2.data.p2.data.x - o2.data.p1.data.x) * (o2.data.p2.data.x - o2.data.p1.data.x) + (o2.data.p2.data.y - o2.data.p1.data.y) * (o2.data.p2.data.y - o2.data.p1.data.y));
             return l1 < l2 ? -1 : l2 > l1 ? +1 : 0;
         }
 
@@ -2142,8 +2145,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
     private void fillTextureCoordinatesHalfSpace(GradientTextureImage image, int x, int y, ParameterizedSegment segment) {
         TexturePixel pixel = image.getPixel(x, y);
 
-        Point2d p1 = new Point2d(segment.p1.x, segment.p1.y);
-        Point2d p2 = new Point2d(segment.p2.x, segment.p2.y);
+        Point2d p1 = new Point2d(segment.data.p1.data.x, segment.data.p1.data.y);
+        Point2d p2 = new Point2d(segment.data.p2.data.x, segment.data.p2.data.y);
         Point2d p1p2 = new Point2d(p2.x - p1.x, p2.y - p1.y);
         double p1p2l = norm(p1p2);
         System.err.println("Treat Segment length = " + p1p2l);
@@ -2227,7 +2230,7 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
      * @return
      */
     public static double distance(ParameterizedSegment segment, Point2d p) {
-        return distance(new Point2d(segment.p1.x, segment.p1.y), new Point2d(segment.p2.x, segment.p2.y), p);
+        return distance(new Point2d(segment.data.p1.data.x, segment.data.p1.data.y), new Point2d(segment.data.p2.data.x, segment.data.p2.data.y), p);
     }
 
     /**
@@ -2280,8 +2283,8 @@ public class DisplayPanel extends JPanel implements MouseListener, MouseMotionLi
      * @return
      */
     public static double getT(ParameterizedSegment segment, Point2d p) {
-        Point2d p1 = new Point2d(segment.p1.x, segment.p1.y);
-        Point2d p2 = new Point2d(segment.p2.x, segment.p2.y);
+        Point2d p1 = new Point2d(segment.data.p1.data.x, segment.data.p1.data.y);
+        Point2d p2 = new Point2d(segment.data.p2.data.x, segment.data.p2.data.y);
         Point2d p1p2 = new Point2d(p2.x - p1.x, p2.y - p1.y);
         double p1p2l = norm(p1p2);
         if (p1p2l < 1E-6) {

@@ -25,31 +25,42 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package test.app;
-
-import fr.ign.cogit.geoxygene.util.gl.Sample;
-import fr.ign.cogit.geoxygene.util.gl.Tile;
+package fr.ign.cogit.geoxygene.util.gl;
 
 /**
  * @author JeT
- *         algorithm used to choose a tile depending on a sample
+ *         Exception thrown on GL errors
  */
-public interface TileChooser {
+public class GLException extends Exception {
+
+    private static final long serialVersionUID = 7891501839219075124L; //  serailizable UID
 
     /**
-     * Choose a tile depending on a sample position
+     * Default constructor
      */
-    public Tile getTile(Sample sample);
+    public GLException() {
+    }
 
     /**
-     * Choose a tile depending on a sample position
+     * @param message
      */
-    public Tile setTile(Sample sample);
+    public GLException(String message) {
+        super(message);
+    }
 
     /**
-     * Method used to initialize tiling. Any call of getTile(Sample)
-     * will give repeatable results if done in the same order
+     * @param cause
      */
-    void initializeTiling();
+    public GLException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * @param message
+     * @param cause
+     */
+    public GLException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

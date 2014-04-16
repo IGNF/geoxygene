@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package test.app;
+package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import java.util.ArrayList;
 import java.util.List;

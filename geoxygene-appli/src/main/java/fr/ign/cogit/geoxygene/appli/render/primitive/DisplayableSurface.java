@@ -231,6 +231,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable, T
             }
             textureTask.addTaskListener(this);
             texture.setTextureDimension(2000, 2000);
+            // FIXME: is this dimension really useful ??? 
             textureTask.start();
             // wait for texture computation completion
             BufferedImage imgTexture = null;
@@ -246,7 +247,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable, T
             switch (texture.getTextureDrawingMode()) {
             case VIEWPORTSPACE:
                 IEnvelope envelope = featureCollection.envelope();
-                BasicParameterizer parameterizer = new BasicParameterizer(envelope);
+                BasicParameterizer parameterizer = new BasicParameterizer(envelope, false, true);
                 BasicTexture glTexture = new BasicTexture(imgTexture);
                 this.generateWithTextureAndParameterizer(glTexture, parameterizer, envelope);
                 break;
@@ -265,7 +266,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable, T
             double minX = envelope.minX();
             double minY = envelope.minY();
             SolidColorizer colorizer = new SolidColorizer(this.symbolizer.getStroke().getColor());
-            GLComplex content = GLComplexFactory.createFilledPolygons(this.polygons, colorizer, new BasicParameterizer(envelope), minX, minY);
+            GLComplex content = GLComplexFactory.createFilledPolygons(this.polygons, colorizer, new BasicParameterizer(envelope, false, false), minX, minY);
             content.setColor(symbolizer.getFill().getColor());
             complexes.add(content);
 

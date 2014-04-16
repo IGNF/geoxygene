@@ -102,7 +102,7 @@ public class TextureManager implements TaskListener<TextureTask<Texture>> {
         if (texture == null) {
             return null;
         }
-        // create a task to generate texture
+        // create a task to generate texture image
         synchronized (tasksMap) {
             TextureTask<? extends Texture> textureTask = tasksMap.get(texture);
             if (textureTask == null) {
@@ -124,16 +124,16 @@ public class TextureManager implements TaskListener<TextureTask<Texture>> {
         synchronized (tasksMap) {
             switch (task.getState()) {
             case FINISHED:
-                tasksMap.remove(task.getTexture());
+                //                tasksMap.remove(task.getTexture());
                 task.removeTaskListener(this);
                 if (task.getTexture().getTextureImage() == null) {
-                    logger.error("TextureTask has finished with no error but a null texture (its role is to fill texture.getTextureImage() method)");
+                    logger.error("TextureTask has finished with no error but a null texture (its role IS to fill texture.getTextureImage() method)");
                 }
                 GeOxygeneEventManager.refreshApplicationGui();
                 break;
             case ERROR:
             case STOPPED:
-                tasksMap.remove(task.getTexture());
+                //                tasksMap.remove(task.getTexture());
                 task.removeTaskListener(this);
                 break;
             default:

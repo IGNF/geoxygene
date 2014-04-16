@@ -25,27 +25,31 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.render.primitive;
+package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.render.RenderingException;
-import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.util.gl.Sample;
+import fr.ign.cogit.geoxygene.util.gl.Tile;
 
 /**
- * @author JeT Render features to the current context
+ * @author JeT
+ *         algorithm used to choose a tile depending on a sample
  */
-public interface FeatureRenderer {
+public interface TileChooser {
 
-    public Viewport getViewport();
+    /**
+     * Choose a tile depending on a sample position
+     */
+    public Tile getTile(Sample sample);
 
-    void initializeRendering() throws RenderingException;
+    /**
+     * Choose a tile depending on a sample position
+     */
+    public Tile setTile(Sample sample);
 
-    void render(IFeature feature, Layer layer, Symbolizer symbolizer,
-            Viewport viewport) throws RenderingException;
+    /**
+     * Method used to initialize tiling. Any call of getTile(Sample)
+     * will give repeatable results if done in the same order
+     */
+    void initializeTiling();
 
-    void finalizeRendering() throws RenderingException;
-
-    void reset();
 }

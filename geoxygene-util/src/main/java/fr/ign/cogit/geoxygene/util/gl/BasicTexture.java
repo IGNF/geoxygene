@@ -48,16 +48,18 @@ import org.lwjgl.opengl.GL13;
  */
 public class BasicTexture implements Texture {
 
-    private static final Logger logger = Logger.getLogger(BasicTexture.class.getName()); // logger
+    private static final Logger logger = Logger.getLogger(BasicTexture.class
+            .getName()); // logger
 
     private int textureId = -1;
+    private int textureSlot = GL13.GL_TEXTURE0;
     private String textureFilename = null;
     private BufferedImage textureImage = null;
 
-    //    private double minX = 0; // range of point coordinates in world space
-    //    private double maxX = 1; // range of point coordinates in world space
-    //    private double minY = 0; // range of point coordinates in world space
-    //    private double maxY = 1; // range of point coordinates in world space
+    // private double minX = 0; // range of point coordinates in world space
+    // private double maxX = 1; // range of point coordinates in world space
+    // private double minY = 0; // range of point coordinates in world space
+    // private double maxY = 1; // range of point coordinates in world space
 
     /**
      * Constructor
@@ -86,19 +88,35 @@ public class BasicTexture implements Texture {
     }
 
     /**
+     * @return the textureSlot
+     */
+    public int getTextureSlot() {
+        return this.textureSlot;
+    }
+
+    /**
+     * @param textureSlot
+     *            the textureSlot to set
+     */
+    public void setTextureSlot(int textureSlot) {
+        this.textureSlot = textureSlot;
+    }
+
+    /**
      * @return the generated texture id
      */
     protected final Integer getTextureId() {
         if (this.textureId < 0) {
-            GL13.glActiveTexture(GL13.GL_TEXTURE0);
+            GL13.glActiveTexture(this.textureSlot);
             BufferedImage textureImage = this.getTextureImage();
             if (textureImage != null) {
-                this.textureId = GLTools.loadTexture(textureImage);
-                //                try {
-                //                    ImageIO.write(textureImage, "PNG", new File("basicTexture-" + this.textureId + ".png"));
-                //                } catch (IOException e) {
-                //                    e.printStackTrace();
-                //                }
+                this.textureId = GLTools.loadOrRetrieveTexture(textureImage);
+                // try {
+                // ImageIO.write(textureImage, "PNG", new File("basicTexture-" +
+                // this.textureId + ".png"));
+                // } catch (IOException e) {
+                // e.printStackTrace();
+                // }
 
             }
         }
@@ -121,7 +139,8 @@ public class BasicTexture implements Texture {
             try {
                 this.textureImage = GLTools.loadImage(this.textureFilename);
             } catch (IOException e) {
-                logger.error("Cannot read file '" + this.getTextureFilename() + "'");
+                logger.error("Cannot read file '" + this.getTextureFilename()
+                        + "'");
                 e.printStackTrace();
             }
         }
@@ -165,35 +184,37 @@ public class BasicTexture implements Texture {
             return false;
         }
         glEnable(GL_TEXTURE_2D);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL13.glActiveTexture(this.textureSlot);
         glBindTexture(GL_TEXTURE_2D, texIndex);
         return true;
     }
 
-    //    /*
-    //     * (non-Javadoc)
-    //     * 
-    //     * @see
-    //     * fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(javax.vecmath
-    //     * .Point2d)
-    //     */
-    //    @Override
-    //    public Point2d vertexCoordinates(final Point2d p) {
-    //        return this.vertexCoordinates(p.x, p.y);
-    //    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see
+    // * fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(javax.vecmath
+    // * .Point2d)
+    // */
+    // @Override
+    // public Point2d vertexCoordinates(final Point2d p) {
+    // return this.vertexCoordinates(p.x, p.y);
+    // }
     //
-    //    /*
-    //     * (non-Javadoc)
-    //     * 
-    //     * @see fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(double,
-    //     * double)
-    //     */
-    //    @Override
-    //    public Point2d vertexCoordinates(final double x, final double y) {
-    //        Point2d p = new Point2d((x - this.minX) / (this.maxX - this.minX), (y - this.minY) / (this.maxY - this.minY));
-    //        System.err.println("return vertex coordinate(" + x + "," + y + ") = " + p);
-    //        return p;
-    //    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(double,
+    // * double)
+    // */
+    // @Override
+    // public Point2d vertexCoordinates(final double x, final double y) {
+    // Point2d p = new Point2d((x - this.minX) / (this.maxX - this.minX), (y -
+    // this.minY) / (this.maxY - this.minY));
+    // System.err.println("return vertex coordinate(" + x + "," + y + ") = " +
+    // p);
+    // return p;
+    // }
 
     /*
      * (non-Javadoc)
@@ -205,49 +226,50 @@ public class BasicTexture implements Texture {
 
     }
 
-    //    @Override
-    //    public void setRange(final double xmin, final double ymin, final double xmax, final double ymax) {
-    //        this.minX = xmin;
-    //        this.maxX = xmax;
-    //        this.minY = ymin;
-    //        this.maxY = ymax;
-    //    }
+    // @Override
+    // public void setRange(final double xmin, final double ymin, final double
+    // xmax, final double ymax) {
+    // this.minX = xmin;
+    // this.maxX = xmax;
+    // this.minY = ymin;
+    // this.maxY = ymax;
+    // }
     //
-    //    /**
-    //     * @return the minX
-    //     */
-    //    @Override
-    //    public double getMinX() {
-    //        return this.minX;
-    //    }
+    // /**
+    // * @return the minX
+    // */
+    // @Override
+    // public double getMinX() {
+    // return this.minX;
+    // }
     //
-    //    /**
-    //     * @return the maxX
-    //     */
-    //    @Override
-    //    public double getMaxX() {
-    //        return this.maxX;
-    //    }
+    // /**
+    // * @return the maxX
+    // */
+    // @Override
+    // public double getMaxX() {
+    // return this.maxX;
+    // }
     //
-    //    /**
-    //     * @return the minY
-    //     */
-    //    @Override
-    //    public double getMinY() {
-    //        return this.minY;
-    //    }
+    // /**
+    // * @return the minY
+    // */
+    // @Override
+    // public double getMinY() {
+    // return this.minY;
+    // }
     //
-    //    /**
-    //     * @return the maxY
-    //     */
-    //    @Override
-    //    public double getMaxY() {
-    //        return this.maxY;
-    //    }
+    // /**
+    // * @return the maxY
+    // */
+    // @Override
+    // public double getMaxY() {
+    // return this.maxY;
+    // }
 
     public void setTextureImage(BufferedImage textureImage) {
         this.textureImage = textureImage;
-        //        this.textureId = GLTools.loadTexture(this.textureImage);
+        // this.textureId = GLTools.loadTexture(this.textureImage);
 
     }
 

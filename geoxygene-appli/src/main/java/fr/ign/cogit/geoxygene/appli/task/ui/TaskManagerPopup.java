@@ -33,12 +33,15 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,6 +54,9 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.task.Task;
 import fr.ign.cogit.geoxygene.appli.task.TaskManager;
@@ -63,7 +69,8 @@ import fr.ign.cogit.geoxygene.appli.task.TaskManagerListener;
  */
 public class TaskManagerPopup implements TaskManagerListener, ItemListener, ComponentListener {
 
-    private static final int PROGRESS_TIMER_INTERVAL = 250;
+    private static final Logger logger = Logger.getLogger(TaskManagerPopup.class.getName()); // logger
+    private static final int PROGRESS_TIMER_INTERVAL = 500;
     private static final Dimension EpandButtonDimension = new Dimension(20, 20);
     private JPanel expandedPanel = null;
     private JDialog expandedDialog = null;
@@ -73,7 +80,9 @@ public class TaskManagerPopup implements TaskManagerListener, ItemListener, Comp
     private JToggleButton expandButton = null;
     private TaskManager taskManager = null;
     private final Map<Task, TaskControllerPanel> taskControllers = new HashMap<Task, TaskControllerPanel>();
+    private final Set<Task> prefinishedTasks = new HashSet<Task>(); // prefinishedTasks are those very shorts tasks finished before their GUI are displayed
     private Timer progressTimer = null;
+    private final Object progressTimerLock = new Object();
     private static final String expandIconFilename = "/images/icons/16x16/up.png";
     private static final String collapseIconFilename = "/images/icons/16x16/down.png";
     private static final ImageIcon expandIcon = new ImageIcon(TinyTaskControllerPanel.class.getResource(expandIconFilename));
@@ -95,12 +104,12 @@ public class TaskManagerPopup implements TaskManagerListener, ItemListener, Comp
 
             @Override
             public void run() {
+                boolean isProgressable = false;
+                double minProgress = 1;
                 synchronized (TaskManagerPopup.this.taskControllers) {
                     for (TaskControllerPanel controller : TaskManagerPopup.this.taskControllers.values()) {
                         controller.updateController();
                     }
-                    double minProgress = 1;
-                    boolean isProgressable = false;
                     for (Task task : TaskManagerPopup.this.taskControllers.keySet()) {
                         if (task.isProgressable()) {
                             isProgressable = true;
@@ -111,14 +120,17 @@ public class TaskManagerPopup implements TaskManagerListener, ItemListener, Comp
                         }
 
                     }
-                    if (isProgressable) {
-                        TaskManagerPopup.this.summaryProgress.setIndeterminate(false);
-                        TaskManagerPopup.this.summaryProgress.setValue((int) (minProgress * 100.));
-                    } else {
+                }
+                if (isProgressable) {
+                    TaskManagerPopup.this.summaryProgress.setIndeterminate(false);
+                    TaskManagerPopup.this.summaryProgress.setValue((int) (minProgress * 100.));
+                } else {
+                    try {
                         TaskManagerPopup.this.summaryProgress.setIndeterminate(true);
+                    } catch (java.lang.ArithmeticException e) {
+                        // There is a bug in Nimbus PLAF when setting progressBar to indeterminate
                     }
                 }
-
             }
 
         };
@@ -214,12 +226,17 @@ public class TaskManagerPopup implements TaskManagerListener, ItemListener, Comp
             @Override
             public void run() {
                 TaskManagerPopup.this.getExpandedDialog().pack();
+                Dimension expandedDialogSize = TaskManagerPopup.this.getExpandedDialog().getSize();
+                expandedDialogSize.width = TaskManagerPopup.this.getSummaryPanel().getWidth();
+                // limit dialog height
+                if (expandedDialogSize.height > Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2) {
+                    expandedDialogSize.height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2;
+                }
+                TaskManagerPopup.this.getExpandedDialog().setSize(expandedDialogSize);
                 Point location = TaskManagerPopup.this.getSummaryPanel().getLocationOnScreen();
                 if (location == null) {
                     return;
                 }
-                TaskManagerPopup.this.getExpandedDialog().setSize(TaskManagerPopup.this.getSummaryPanel().getWidth(),
-                        TaskManagerPopup.this.getExpandedDialog().getHeight());
                 TaskManagerPopup.this.getExpandedDialog().setLocation(location.x, location.y - TaskManagerPopup.this.getExpandedDialog().getHeight());
             }
         });
@@ -248,7 +265,11 @@ public class TaskManagerPopup implements TaskManagerListener, ItemListener, Comp
             this.summaryProgress.setMinimum(0);
             this.summaryProgress.setMaximum(100);
             this.summaryProgress.setStringPainted(true);
-            this.summaryProgress.setIndeterminate(false);
+            this.summaryProgress.setIndeterminate(true);
+            this.summaryProgress.setBorderPainted(false);
+            // bugfix in Motif LnF
+            UIManager.put("ProgressBar.repaintInterval", new Integer(250));
+            UIManager.put("ProgressBar.cycleTime", new Integer(5000));
         }
         return this.summaryProgress;
     }
@@ -285,53 +306,104 @@ public class TaskManagerPopup implements TaskManagerListener, ItemListener, Comp
         return this.getSummaryPanel();
     }
 
+    /**
+     * Update the message displayed in the summary progress bar
+     */
+    private void updateTaskCount() {
+        final int pendingTaskCount = this.getTaskManager().getPendingTaskCount();
+        final int runningTaskCount = this.getTaskManager().getRunningTaskCount();
+        final String runningMsg = (runningTaskCount == 0 ? "no task" : (runningTaskCount == 1 ? "a task is" : runningTaskCount + " tasks ")) + " running";
+        final String pendingMsg = (pendingTaskCount == 0 ? "no task" : (pendingTaskCount == 1 ? "a task is" : pendingTaskCount + " tasks ")) + " pending";
+        if (runningTaskCount == 0) {
+            synchronized (this.taskControllers) {
+                TaskManagerPopup.this.taskControllers.clear();
+            }
+            TaskManagerPopup.this.getControllerPanel().removeAll();
+            TaskManagerPopup.this.getSummaryProgress().setIndeterminate(false);
+            TaskManagerPopup.this.getSummaryProgress().setValue(0);
+        }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                TaskManagerPopup.this.getSummaryProgress().setString(runningMsg + " / " + pendingMsg);
+                TaskManagerPopup.this.getSummaryProgress().setEnabled((runningTaskCount != 0));
+            }
+        });
+
+    }
+
     @Override
     public void onTaskAdded(Task task) {
+        this.updateTaskCount();
+    }
+
+    @Override
+    public void onTaskStarted(final Task task) {
         final TinyTaskControllerPanel taskControllerPanel = new TinyTaskControllerPanel(task);
+        int taskControllerCount = 0;
+        //System.err.println("Task Manager Popup receive 'task started' " + task);
         synchronized (this.taskControllers) {
-            this.taskControllers.put(task, taskControllerPanel);
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    TaskManagerPopup.this.getControllerPanel().add(taskControllerPanel.getGui());
+            TaskControllerPanel previousPanel = this.taskControllers.put(task, taskControllerPanel);
+            if (previousPanel != null) {
+                logger.error("A task controller panel already exists for task " + task);
+            }
+            taskControllerCount = this.taskControllers.size();
+        }
+        //System.err.println("START TaskControllerPanel is created for " + task + " => " + this.taskControllers.size());
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JComponent gui;
+                synchronized (TaskManagerPopup.this.prefinishedTasks) {
+                    if (!TaskManagerPopup.this.prefinishedTasks.contains(task)) {
+                        gui = taskControllerPanel.getGui();
+                        TaskManagerPopup.this.getControllerPanel().add(gui);
+                        //System.err.println("GUI ADD !!!!!!!!!! Task Manager Popup added task from GUI " + gui.hashCode() + " task " + task);
+                    }
                 }
-            });
-            if (this.taskControllers.size() == 1) {
+            }
+        });
+        if (taskControllerCount > 0 && this.progressTimer == null) {
+            // start the timer
+            synchronized (this.progressTimerLock) {
                 this.progressTimer = new Timer();
                 this.progressTimer.scheduleAtFixedRate(this.createProgressTimerTask(), 0, PROGRESS_TIMER_INTERVAL);
                 //                this.displayExpandedPanel();
             }
-            this.getSummaryProgress().setIndeterminate(this.taskControllers.size() != 0);
-            this.getSummaryProgress().setString(this.taskControllers.size() == 0 ? "no tasks" : this.taskControllers.size() + " tasks running");
-            this.relocate();
         }
+        this.updateTaskCount();
+        this.relocate();
     }
 
     @Override
-    public void onTaskRemoved(Task task) {
+    public void onTaskRemoved(final Task task) {
+        int taskControllerCount = 0;
+        TaskControllerPanel taskControllerPanel = null;
         synchronized (this.taskControllers) {
-            final TaskControllerPanel taskControllerPanel = this.taskControllers.remove(task);
-            if (taskControllerPanel != null) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        TaskManagerPopup.this.getControllerPanel().remove(taskControllerPanel.getGui());
-                    }
-                });
+            taskControllerPanel = this.taskControllers.remove(task);
+            taskControllerCount = this.taskControllers.size();
+            //System.err.println("Task Manager Popup removed task from controller " + task + " controller size = " + this.taskControllers.size() + " value = "                    + taskControllerPanel);
+        }
+        //System.err.println("STOP " + task + " => " + this.taskControllers.size());
+        if (taskControllerPanel == null) {
+            synchronized (this.prefinishedTasks) {
+                this.prefinishedTasks.add(task);
             }
-            if (this.taskControllers.size() == 0) {
-                this.stopTimer();
-                this.displayExpandedPanel();
-            }
+        } else {
+            final JComponent gui = taskControllerPanel.getGui();
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    TaskManagerPopup.this.getSummaryProgress().setIndeterminate(TaskManagerPopup.this.taskControllers.size() != 0);
-                    TaskManagerPopup.this.getSummaryProgress().setString(
-                            TaskManagerPopup.this.taskControllers.size() == 0 ? "no tasks" : TaskManagerPopup.this.taskControllers.size() + " tasks running");
+                    TaskManagerPopup.this.getControllerPanel().remove(gui);
+                    //System.err.println("GUI REMOVE !!!!!!!!!! Task Manager Popup removed task from GUI " + gui.hashCode() + " task " + task);
                 }
             });
         }
+        if (taskControllerCount == 0) {
+            this.stopTimer();
+            this.hideExpandedPanel();
+        }
+        this.updateTaskCount();
         this.relocate();
     }
 
@@ -339,9 +411,14 @@ public class TaskManagerPopup implements TaskManagerListener, ItemListener, Comp
      * Stop progress timer if in use
      */
     public void stopTimer() {
-        if (this.progressTimer != null) {
-            this.progressTimer.cancel();
-            this.progressTimer = null;
+        if (this.progressTimer == null) {
+            return;
+        }
+        synchronized (this.progressTimerLock) {
+            if (this.progressTimer != null) {
+                this.progressTimer.cancel();
+                this.progressTimer = null;
+            }
         }
     }
 

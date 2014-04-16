@@ -42,14 +42,14 @@ public class SyncRenderingManager implements RenderingManager {
 
     private LayerViewGLPanel layerViewPanel = null; // managed LayerViewPanel
     private RenderingType renderingType = null;
-    private final LinkedHashMap<Layer, LayerRenderer> rendererMap = new LinkedHashMap<Layer, LayerRenderer>(); // Insertion-ordered
-                                                                                                               // map
-                                                                                                               // between
-                                                                                                               // a
-                                                                                                               // layer
-                                                                                                               // and
-                                                                                                               // its
-                                                                                                               // renderer.
+    private final LinkedHashMap<Layer, LwjglLayerRenderer> rendererMap = new LinkedHashMap<Layer, LwjglLayerRenderer>(); // Insertion-ordered
+    // map
+    // between
+    // a
+    // layer
+    // and
+    // its
+    // renderer.
     private SelectionRenderer selectionRenderer = null; // The selection renderer
                                                         // used to render the
                                                         // selected features.
@@ -102,7 +102,7 @@ public class SyncRenderingManager implements RenderingManager {
      * getRenderers()
      */
     @Override
-    public final Collection<LayerRenderer> getRenderers() {
+    public final Collection<LwjglLayerRenderer> getRenderers() {
         return this.rendererMap.values();
     }
 
@@ -143,7 +143,7 @@ public class SyncRenderingManager implements RenderingManager {
     public final void addLayer(final Layer layer) {
         synchronized (this.rendererMap) {
             if (this.rendererMap.get(layer) == null) {
-                LayerRenderer renderer = null;
+                LwjglLayerRenderer renderer = null;
                 switch (this.renderingType) {
                 case LWJGL:
                     renderer = new LwjglLayerRenderer(layer, this.getLayerViewPanel());

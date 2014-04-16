@@ -63,10 +63,14 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
     private LayerViewGLCanvas glCanvas = null; // canvas containing the GL
     private LayerViewGLCanvasType glType = null;
     private JToggleButton wireframeToggleButton = null;
+    private JToggleButton fboToggleButton = null;
+    private JToggleButton antialiasingToggleButton = null;
     private JButton clearCacheButton = null;
     private JButton awtComparButton = null;
     private JToolBar.Separator toolbarSeparator = null;
     private boolean wireframe = false;
+    private boolean antialiasing = true;
+    private boolean useFBO = true;
 
     public enum LayerViewGLCanvasType {
         GL1, GL4
@@ -85,7 +89,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
         this.addPaintListener(new ScalePaintListener());
         this.addPaintListener(new CompassPaintListener());
         this.addPaintListener(new LegendPaintListener());
-        this.setBackground(new Color(255, 255, 220));
+        //        this.setBackground(new Color(255, 255, 220));
         this.renderingManager = new SyncRenderingManager(this, RenderingType.LWJGL);
 
         this.glCanvas = LayerViewPanelFactory.newLayerViewGLCanvas(this, glType);
@@ -100,6 +104,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
     public void displayGui() {
         this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getToolbarSeparator());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getWireframeButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getAntialiasingButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getFBOButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getClearCacheButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getAWTComparButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().revalidate();
@@ -110,10 +116,36 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
     public void hideGui() {
         this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getToolbarSeparator());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getWireframeButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getAntialiasingButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getFBOButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getClearCacheButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getAWTComparButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar().revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
+    }
+
+    public boolean useFBO() {
+        return this.useFBO;
+    }
+
+    public void setFBO(boolean useFBO) {
+        this.useFBO = useFBO;
+    }
+
+    public boolean useAntialiasing() {
+        return this.antialiasing;
+    }
+
+    public void setAntialiasing(boolean b) {
+        this.antialiasing = b;
+    }
+
+    public boolean useWireframe() {
+        return this.wireframe;
+    }
+
+    public void setWireframe(boolean b) {
+        this.wireframe = b;
     }
 
     @Override
@@ -155,10 +187,32 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
             this.wireframeToggleButton = new JToggleButton();
             this.wireframeToggleButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/wireframe.png")));
             this.wireframeToggleButton.setToolTipText(I18N.getString("RenderingGL.ToggleWireframe"));
-            this.wireframeToggleButton.setSelected(this.isWireframe());
+            this.wireframeToggleButton.setSelected(this.useWireframe());
             this.wireframeToggleButton.addItemListener(this);
         }
         return this.wireframeToggleButton;
+    }
+
+    private JToggleButton getFBOButton() {
+        if (this.fboToggleButton == null) {
+            this.fboToggleButton = new JToggleButton();
+            this.fboToggleButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/fbo.png")));
+            this.fboToggleButton.setToolTipText(I18N.getString("RenderingGL.ToggleFBO"));
+            this.fboToggleButton.setSelected(this.useFBO());
+            this.fboToggleButton.addItemListener(this);
+        }
+        return this.fboToggleButton;
+    }
+
+    private JToggleButton getAntialiasingButton() {
+        if (this.antialiasingToggleButton == null) {
+            this.antialiasingToggleButton = new JToggleButton();
+            this.antialiasingToggleButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/antialiasing.png")));
+            this.antialiasingToggleButton.setToolTipText(I18N.getString("RenderingGL.ToggleAntialiasing"));
+            this.antialiasingToggleButton.setSelected(this.useAntialiasing());
+            this.antialiasingToggleButton.addItemListener(this);
+        }
+        return this.antialiasingToggleButton;
     }
 
     private JButton getAWTComparButton() {
@@ -179,13 +233,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
             this.clearCacheButton.addActionListener(this);
         }
         return this.clearCacheButton;
-    }
-
-    /**
-     * @return the wireframe
-     */
-    public boolean isWireframe() {
-        return this.wireframe;
     }
 
     @Override
@@ -327,7 +374,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() == this.getWireframeButton()) {
-            this.wireframe = this.getWireframeButton().isSelected();
+            this.setWireframe(this.getWireframeButton().isSelected());
+            this.repaint();
+        }
+        if (e.getSource() == this.getAntialiasingButton()) {
+            this.setAntialiasing(this.getAntialiasingButton().isSelected());
+            this.repaint();
+        }
+        if (e.getSource() == this.getFBOButton()) {
+            this.setFBO(this.getFBOButton().isSelected());
             this.repaint();
         }
     }
@@ -342,7 +397,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
         } else if (e.getSource() == this.getAWTComparButton()) {
             JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(this));
             ImageComparator imageComparator = new ImageComparator(this);
-            dialog.setSize(500, 500);
+
+            dialog.setSize(this.getWidth(), this.getHeight());
             dialog.setLocation(50, 50);
             //            dialog.setModalityType(ModalityType.APPLICATION_MODAL);
             dialog.getContentPane().add(imageComparator.getGui());

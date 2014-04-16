@@ -43,29 +43,37 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 /**
  * GL Primitive is a representation of a 2D Object with 2D coordinates, Texture
- * coordinates and Color components
- * It is composed of primitives types which are themselves composed of index
- * lists so it can mix different type of primitives, but the insertion order
- * is not kept
+ * coordinates and Color components It is composed of primitives types which are
+ * themselves composed of index lists so it can mix different type of
+ * primitives, but the insertion order is not kept
  * 
  * @author JeT
  * 
  */
 public class GLComplex {
 
-    private static final Logger logger = Logger.getLogger(GLComplex.class.getName()); // logger
+    private static final Logger logger = Logger.getLogger(GLComplex.class
+            .getName()); // logger
 
-    //    private static final Integer[] IntegerConversionObject = new Integer[] {}; // static object for list to array conversion
-    private final List<GLVertex> vertices = new ArrayList<GLVertex>(); // raw list of all vertices
+    // private static final Integer[] IntegerConversionObject = new Integer[]
+    // {}; // static object for list to array conversion
+    private final List<GLVertex> vertices = new ArrayList<GLVertex>(); // raw
+                                                                       // list
+                                                                       // of all
+                                                                       // vertices
     private final List<GLMesh> meshes = new ArrayList<GLMesh>();
-    private FloatBuffer verticesBuffer = null; // Vertex buffer (VBO array) constructed from vertices
-    private IntBuffer indicesBuffer = null; // Index Buffer (VBO indices) constructed from flattened indicesPerType
+    private FloatBuffer verticesBuffer = null; // Vertex buffer (VBO array)
+                                               // constructed from vertices
+    private IntBuffer indicesBuffer = null; // Index Buffer (VBO indices)
+                                            // constructed from flattened
+                                            // indicesPerType
     private Texture texture = null;
 
     private int vaoId = -1; // VAO index
@@ -75,7 +83,14 @@ public class GLComplex {
     private double minY = 0.;
     private double overallOpacity = 1.;
     private GLRenderingCapability renderingCapability = null;
-    private boolean mayOverlap = false; // set to true if polygons may overlap (invalid for transparency)
+    private boolean mayOverlap = false; // set to true if polygons may overlap
+                                        // (invalid for transparency)
+    private int stride = -1;
+    private final List<GLInput> inputs = new ArrayList<GLInput>();
+
+    private final int vertexPositionLocation = -1;
+    private final int vertexUVLocation = -1;
+    private final int vertexColorLocation = -1;
 
     public enum GLRenderingCapability {
         POSITION, COLOR, TEXTURE
@@ -87,6 +102,49 @@ public class GLComplex {
     public GLComplex(double minX, double minY) {
         this.minX = minX;
         this.minY = minY;
+        this.addInput(GLVertex.vertexPositionVariableName,
+                GLVertex.vertexPostionLocation, GL11.GL_FLOAT, 3, false);
+        this.addInput(GLVertex.vertexUVVariableName, GLVertex.vertexUVLocation,
+                GL11.GL_FLOAT, 2, false);
+        this.addInput(GLVertex.vertexColorVariableName,
+                GLVertex.vertexColorLocation, GL11.GL_FLOAT, 4, false);
+
+    }
+
+    /**
+     * stride is the size in bytes of one data chunk (GLVertex)
+     * 
+     * @return
+     */
+    public int getStride() {
+        if (this.stride <= 0) {
+            this.stride = 0;
+            for (GLInput input : this.inputs) {
+                this.stride += input.getComponentCount()
+                        * GLTools.sizeInBytes(input.getGlType());
+            }
+        }
+        return this.stride;
+    }
+
+    /**
+     * Add an input variable for the vertex shader
+     * 
+     * @param variableName
+     *            variable name as defined/used in the GLSL vertex shader
+     * @param variableType
+     *            variable type (GL_GLOAT, GL_DOUBLE, GL_INT, etc...)
+     * @param variableComponentCount
+     *            number of variable type in the variable (1, 2, 3 or 4)
+     *            corresponding to (type, vec2, vec3, vec4)
+     */
+    private final boolean addInput(String variableName, int variableLocation,
+            int variableType, int variableComponentCount, boolean normalized) {
+        GLInput input = new GLInput(variableLocation, variableName,
+                variableComponentCount, variableType, normalized);
+        this.inputs.add(input);
+        this.stride = -1; // invalidate stride value (lazy instantiation)
+        return true;
     }
 
     /**
@@ -98,14 +156,14 @@ public class GLComplex {
 
     /**
      * Overall opacity is used to set the opacity of the FBO in which this
-     * object has been drawn without an transparency.
-     * Set the vertices opacity to 1
+     * object has been drawn without an transparency. Set the vertices opacity
+     * to 1
      */
     public void setOverallOpacity(double overallOpacity) {
         this.overallOpacity = overallOpacity;
-        for (GLVertex vertex : this.vertices) {
-            vertex.setAlpha(1.f);
-        }
+        // for (GLVertex vertex : this.vertices) {
+        // vertex.setAlpha(1.f);
+        // }
     }
 
     /**
@@ -213,8 +271,8 @@ public class GLComplex {
     }
 
     /**
-     * add a vertex into the primitive and return the vertex index.
-     * Vertex content is copied into a new Vertex
+     * add a vertex into the primitive and return the vertex index. Vertex
+     * content is copied into a new Vertex
      * 
      * @param vertex
      * @return
@@ -226,9 +284,9 @@ public class GLComplex {
     }
 
     /**
-     * Add a gl primitive described by the connectivity between vertices
-     * The GLMesh is created and added to the complex
-     * The returned Mesh must be filled afterward
+     * Add a gl primitive described by the connectivity between vertices The
+     * GLMesh is created and added to the complex The returned Mesh must be
+     * filled afterward
      */
     public GLMesh addGLMesh(int glType) {
         GLMesh mesh = new GLMesh(glType, this);
@@ -249,21 +307,27 @@ public class GLComplex {
     }
 
     /**
-     * return the vertices buffer that has already been flipped at creation
-     * and is rewinded at each method call
+     * return the vertices buffer that has already been flipped at creation and
+     * is rewinded at each method call
      * 
      * @return the verticesBuffer
      */
     public FloatBuffer getFlippedVerticesBuffer() {
         if (this.verticesBuffer == null) {
-            this.verticesBuffer = BufferUtils.createFloatBuffer(this.vertices.size() * GLVertex.NumberOfFloatValues);
-            //BufferUtils.createByteBuffer(this.vertices.size() * GLVertex.VERTEX_BYTESIZE).asFloatBuffer();
+            this.verticesBuffer = BufferUtils.createFloatBuffer(this.vertices
+                    .size() * GLVertex.NumberOfFloatValues);
+            // BufferUtils.createByteBuffer(this.vertices.size() *
+            // GLVertex.VERTEX_BYTESIZE).asFloatBuffer();
             for (GLVertex vertex : this.vertices) {
                 // Add position, color and texture floats to the buffer
-                //                System.err.println("add XYZ to vertex buffer: " + Arrays.toString(vertex.getXYZ()));
-                //                System.err.println("add UV to vertex buffer: " + Arrays.toString(vertex.getUV()));
-                //                System.err.println("add RGBA to vertex buffer: " + Arrays.toString(vertex.getRGBA()));
-                this.verticesBuffer.put(new float[] { (vertex.getXYZ()[0]), (vertex.getXYZ()[1]), vertex.getXYZ()[2] });
+                // System.err.println("add XYZ to vertex buffer: " +
+                // Arrays.toString(vertex.getXYZ()));
+                // System.err.println("add UV to vertex buffer: " +
+                // Arrays.toString(vertex.getUV()));
+                // System.err.println("add RGBA to vertex buffer: " +
+                // Arrays.toString(vertex.getRGBA()));
+                this.verticesBuffer.put(new float[] { (vertex.getXYZ()[0]),
+                        (vertex.getXYZ()[1]), vertex.getXYZ()[2] });
                 this.verticesBuffer.put(vertex.getUV());
                 this.verticesBuffer.put(vertex.getRGBA());
 
@@ -277,8 +341,7 @@ public class GLComplex {
 
     /**
      * return the vertices index buffer that has already been flipped at
-     * creation
-     * and is rewinded at each method call
+     * creation and is rewinded at each method call
      * 
      * @return the indicesBuffer
      */
@@ -308,7 +371,8 @@ public class GLComplex {
         int currentStartIndex = 0;
         for (GLMesh mesh : this.getMeshes()) {
             for (int nIndex = 0; nIndex < mesh.getIndices().size(); nIndex++) {
-                this.indicesBuffer.put(mesh.getIndices().get(nIndex).intValue());
+                this.indicesBuffer
+                        .put(mesh.getIndices().get(nIndex).intValue());
             }
             mesh.setFirstIndex(currentStartIndex);
             currentStartIndex = currentStartIndex + mesh.getIndices().size();
@@ -320,7 +384,7 @@ public class GLComplex {
     /**
      * Bind Buffers with gl Context
      */
-    private void initializeShaderConfiguration() {
+    private void generateVao() {
         // Create a new Vertex Array Object in memory and select it (bind)
         this.vaoId = GL30.glGenVertexArrays();
         if (this.vaoId <= 0) {
@@ -334,23 +398,45 @@ public class GLComplex {
             logger.error("VBO(Vertices) ID is invalid " + this.vboVerticesId);
         }
         glBindBuffer(GL15.GL_ARRAY_BUFFER, this.vboVerticesId);
-        glBufferData(GL_ARRAY_BUFFER, this.getFlippedVerticesBuffer(), GL_STATIC_DRAW);
 
-        for (int nAttrib = 0; nAttrib < GLVertex.ATTRIBUTES_COUNT; nAttrib++) {
-
-            glEnableVertexAttribArray(GLVertex.ATTRIBUTES_ID[nAttrib]);
-            GL20.glVertexAttribPointer(GLVertex.ATTRIBUTES_ID[nAttrib], GLVertex.ATTRIBUTES_COMPONENT_NUMBER[nAttrib], GLVertex.ATTRIBUTES_TYPE[nAttrib],
-                    false, GLVertex.VERTEX_BYTESIZE, GLVertex.ATTRIBUTES_BYTEOFFSET[nAttrib]);
-            glEnableVertexAttribArray(GLVertex.ATTRIBUTES_ID[nAttrib]);
-            //                        System.err.println("index = " + GLVertex.ATTRIBUTES_ID[nAttrib] + " size = " + GLVertex.ATTRIBUTES_COMPONENT_NUMBER[nAttrib] + " type = "
-            //                                + GLVertex.ATTRIBUTES_TYPE[nAttrib] + " normalized = false stride = " + GLVertex.VERTEX_BYTESIZE + " offset = "
-            //                               + GLVertex.ATTRIBUTES_BYTEOFFSET[nAttrib]);
+        int byteShift = 0;
+        for (GLInput input : this.inputs) {
+            GL20.glVertexAttribPointer(input.getLocation(),
+                    input.getComponentCount(), input.getGlType(),
+                    input.isNormalized(), this.getStride(), byteShift);
+            // System.err
+            // .println("loc = " + input.getLocation() + " "
+            // + input.getComponentCount() + " "
+            // + input.getGlType() + " stride = "
+            // + this.getStride() + " shift = " + byteShift);
+            byteShift += input.getComponentCount()
+                    * GLTools.sizeInBytes(input.getGlType());
+            glEnableVertexAttribArray(input.getLocation());
 
         }
+        // System.err.println("previous");
+        // for (int nAttrib = 0; nAttrib < GLVertex.ATTRIBUTES_COUNT; nAttrib++)
+        // {
+        // GL20.glVertexAttribPointer(GLVertex.ATTRIBUTES_ID[nAttrib],
+        // GLVertex.ATTRIBUTES_COMPONENT_NUMBER[nAttrib],
+        // GLVertex.ATTRIBUTES_TYPE[nAttrib],
+        // false, GLVertex.VERTEX_BYTESIZE,
+        // GLVertex.ATTRIBUTES_BYTEOFFSET[nAttrib]);
+        // System.err.println("loc = " + GLVertex.ATTRIBUTES_ID[nAttrib] + " " +
+        // GLVertex.ATTRIBUTES_COMPONENT_NUMBER[nAttrib] + " "
+        // + GLVertex.ATTRIBUTES_TYPE[nAttrib] + " stride = " +
+        // GLVertex.VERTEX_BYTESIZE + " shift = " +
+        // GLVertex.ATTRIBUTES_BYTEOFFSET[nAttrib]);
+        // glEnableVertexAttribArray(GLVertex.ATTRIBUTES_ID[nAttrib]);
+        //
+        // }
 
-        //        displayBuffer(this.getFlippedVerticesBuffer());
+        glBufferData(GL_ARRAY_BUFFER, this.getFlippedVerticesBuffer(),
+                GL_STATIC_DRAW);
 
-        //        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        // displayBuffer(this.getFlippedVerticesBuffer());
+
+        // glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         // create the index VBO
         this.vboIndicesId = glGenBuffers();
@@ -359,9 +445,10 @@ public class GLComplex {
         }
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.vboIndicesId);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getFlippedIndicesBuffer(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getFlippedIndicesBuffer(),
+                GL_STATIC_DRAW);
 
-        //        displayBuffer(this.getFlippedIndicesBuffer());
+        // displayBuffer(this.getFlippedIndicesBuffer());
 
         glBindVertexArray(0);
 
@@ -369,7 +456,9 @@ public class GLComplex {
 
     private static void displayBuffer(FloatBuffer buffer) {
         buffer.mark();
-        System.err.println("Float buffer limit = " + buffer.limit() + " capacity = " + buffer.capacity() + " position = " + buffer.position());
+        System.err.println("Float buffer limit = " + buffer.limit()
+                + " capacity = " + buffer.capacity() + " position = "
+                + buffer.position());
         for (int i = 0; i < buffer.limit(); i++) {
             float value = buffer.get(i);
             System.err.println("\t#" + i + ":" + value);
@@ -379,7 +468,9 @@ public class GLComplex {
 
     private static void displayBuffer(IntBuffer buffer) {
         buffer.mark();
-        System.err.println("Int buffer limit = " + buffer.limit() + " capacity = " + buffer.capacity() + " position = " + buffer.position());
+        System.err.println("Int buffer limit = " + buffer.limit()
+                + " capacity = " + buffer.capacity() + " position = "
+                + buffer.position());
         for (int i = 0; i < buffer.limit(); i++) {
             int value = buffer.get(i);
             System.err.println("\t#" + i + ":" + value);
@@ -389,42 +480,42 @@ public class GLComplex {
 
     /**
      * Get the Vertex Array Object Index associated with one GLContext. If not
-     * defined already
-     * all VBA & VBOs are generated (binded to the open GL context)
+     * defined already all VBA & VBOs are generated (binded to the open GL
+     * context)
      * 
      * @return the vaoId
      */
     public int getVaoId() {
         if (this.vaoId <= 0) {
-            this.initializeShaderConfiguration();
+            this.generateVao();
         }
         return this.vaoId;
     }
 
     /**
      * Get the Vertex Buffer Object Index associated with one GLContext. If not
-     * defined already
-     * all VBA & VBOs are generated (binded to the open GL context)
+     * defined already all VBA & VBOs are generated (binded to the open GL
+     * context)
      * 
      * @return the vboArrayId
      */
     public int getVboVerticesId() {
         if (this.vboVerticesId <= 0) {
-            this.initializeShaderConfiguration();
+            this.generateVao();
         }
         return this.vboVerticesId;
     }
 
     /**
      * Get the Vertex Array Object Index associated with one GLContext. If not
-     * defined already
-     * all VBA & VBOs are generated (binded to the open GL context)
+     * defined already all VBA & VBOs are generated (binded to the open GL
+     * context)
      * 
      * @return the vboArrayId
      */
     public int getVboIndicesId() {
         if (this.vboIndicesId <= 0) {
-            this.initializeShaderConfiguration();
+            this.generateVao();
         }
         return this.vboIndicesId;
     }
@@ -469,7 +560,9 @@ public class GLComplex {
      */
     @Override
     public String toString() {
-        return "GLComplex [#vertices=" + this.vertices.size() + ", #meshes=" + this.meshes.size() + ", minX=" + this.minX + ", minY=" + this.minY + "]";
+        return "GLComplex [#vertices=" + this.vertices.size() + ", #meshes="
+                + this.meshes.size() + ", minX=" + this.minX + ", minY="
+                + this.minY + "]";
     }
 
 }

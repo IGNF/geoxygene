@@ -41,7 +41,7 @@ public class TexturedPolygonSymbolizer extends AbstractSymbolizer {
 
     public TexturedPolygonSymbolizer(IEnvelope envelope, Viewport viewport) {
         super();
-        this.parameterizer = new BasicParameterizer(envelope);
+        this.parameterizer = new BasicParameterizer(envelope, false, false);
     }
 
     @Override

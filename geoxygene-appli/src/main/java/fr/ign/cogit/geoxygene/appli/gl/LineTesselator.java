@@ -55,6 +55,7 @@ public class LineTesselator {
     private static final double anglePrecision = Math.PI / 40;
     private static final double epsilon = 1E-6;
     private static final int BEZIER_SAMPLE_COUNT = 20;
+    private static final Point2D.Double[] emptyPoint2DArray = new Point2D.Double[] {};
 
     /**
      * generate the outline of a collection of polygons
@@ -168,12 +169,17 @@ public class LineTesselator {
             throws FunctionEvaluationException {
         IDirectPositionList dlist = ring.coord();
         int pointCount = dlist.size();
-        Point2D[] polyline = new Point2D.Double[pointCount];
+        List<Point2D> polyline = new ArrayList<Point2D>();
+        Point2D p0 = null;
         for (int i = 0; i < pointCount; ++i) {
-            polyline[i] = new Point2D.Double(dlist.get(i).getX() - minX, dlist.get(i).getY() - minY);
+            Point2D.Double pi = new Point2D.Double(dlist.get(i).getX() - minX, dlist.get(i).getY() - minY);
+            if (p0 == null || LineTesselator.distance(p0, pi) > epsilon) {
+                polyline.add(pi);
+                p0 = pi;
+            }
         }
 
-        tesselateThickLine(complex, getWidth, polyline, join, cap, miterLimit, true);
+        tesselateThickLine(complex, getWidth, polyline.toArray(emptyPoint2DArray), join, cap, miterLimit, true);
     }
 
     /**

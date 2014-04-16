@@ -52,12 +52,6 @@ import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
 
-import test.app.DisplayPanel.ParameterizedPoint;
-import test.app.DisplayPanel.ParameterizedSegment;
-import test.app.DistanceTileProbability;
-import test.app.TextureImageSamplerMipMap;
-import test.app.TextureImageTileChooser;
-import test.app.TileProbability;
 import utils.Pair;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -116,6 +110,13 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
 
     private static final double CM_PER_INCH = 2.540005;
     private static final double M_PER_INCH = CM_PER_INCH / 100.;
+
+    /**
+     * @param texture
+     */
+    public TileDistributionTextureTask(TileDistributionTexture texture) {
+        super(texture);
+    }
 
     /**
      * Initialize tiles (the texture image must be previously generated)
@@ -312,7 +313,7 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      * @return the final image texture width
      */
     public int getTextureWidth() {
-        if (this.textureWidth < 0) {
+        if (this.textureWidth <= 0) {
             this.textureWidth = (int) (this.getEnvelope().width() * this.getMapScale() * this.getPrintResolution() / M_PER_INCH);
             if (this.textureWidth <= 0) {
                 logger.error("texture width is invalid: envelope height = " + this.getEnvelope().width() + " * scale = " + this.getMapScale()
@@ -329,7 +330,7 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      * @return the final image texture height
      */
     public int getTextureHeight() {
-        if (this.textureHeight < 0) {
+        if (this.textureHeight <= 0) {
             this.textureHeight = (int) (this.getEnvelope().length() * this.getMapScale() * this.getPrintResolution() / M_PER_INCH);
             if (this.textureHeight <= 0) {
                 logger.error("texture height is invalid: envelope height = " + this.getEnvelope().height() + " * scale = " + this.getMapScale()
@@ -349,13 +350,6 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
             this.computeEnvelope();
         }
         return this.envelope;
-    }
-
-    /**
-     * @param texture
-     */
-    public TileDistributionTextureTask(TileDistributionTexture texture) {
-        super(texture);
     }
 
     /*
@@ -476,7 +470,7 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
     private void generateGradientTextureImage() {
         // draw Frontiers into texture image
         DistanceFieldFrontierPixelRenderer pixelRenderer = new DistanceFieldFrontierPixelRenderer();
-
+        System.err.println("generateGradientTextureImage " + this.hashCode());
         for (IPolygon polygon : this.polygons) {
             pixelRenderer.getYs().clear(); // #note1
             // draw the outer frontier
@@ -713,7 +707,7 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
             pixelRenderer.setLinearParameterization(linearDistance, linearDistance + segmentLength);
             // special case not to set distance to zero in some cases (for outer sea limits which are not real coast lines
             if (segmentLength > this.getTexture().getMaxCoastlineLength()) {
-                System.err.println(segmentLength + "segment removed");
+                logger.debug("segment " + segmentLength + " long removed (>" + this.getTexture().getMaxCoastlineLength() + ")");
             }
             pixelRenderer.setDistanceToZero(segmentLength < this.getTexture().getMaxCoastlineLength());
             if (!(x1 == x2 && y1 == y2)) {
@@ -824,7 +818,7 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
             BufferedImage tileImage = tile.getImage();
 
             TexturePixel pixel = image.getPixel((int) xTexture, (int) yTexture);
-            if (pixel == null || !pixel.in || pixel.vGradient == null) {
+            if (pixel == null || !(pixel.in || pixel.frontier != 0) || pixel.vGradient == null) {
                 logger.warn("invalid pixel = " + pixel);
                 continue;
             } else {

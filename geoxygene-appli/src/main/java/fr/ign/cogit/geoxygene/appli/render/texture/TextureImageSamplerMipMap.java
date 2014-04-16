@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package test.app;
+package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
@@ -40,8 +40,6 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm;
-import fr.ign.cogit.geoxygene.appli.render.texture.TileDistributionTextureTask;
 import fr.ign.cogit.geoxygene.util.MipMapMask;
 import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
@@ -83,7 +81,7 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
     private void setImage(GradientTextureImage image) {
         this.image = image;
         this.imageMask = new MipMapMask();
-        logger.debug("Generate MipMap from image size " + this.image.getWidth() + "x" + image.getHeight());
+        logger.debug("Generate MipMap from image size " + this.image.getWidth() + "x" + image.getHeight() + " from gradient image " + this.image.hashCode());
         this.imageMask.setSize(image.getWidth(), image.getHeight());
         if (this.tileChooser == null) {
             throw new IllegalStateException("Tile Chooser must be set in MipMapSampler");

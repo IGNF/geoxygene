@@ -239,7 +239,6 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
     // }
 
     public static ByteBuffer loadTexture(final BufferedImage image) {
-
         int[] pixels = new int[image.getWidth() * image.getHeight()];
         image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
 
@@ -259,7 +258,7 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
 
         // You now have a ByteBuffer filled with the color data of each pixel.
         // Now just create a texture ID and bind it. Then you can load it using
-        // whatever OpenGL method you want, for example:
+        // whatever OpenGL method you want
 
         return buffer;
     }

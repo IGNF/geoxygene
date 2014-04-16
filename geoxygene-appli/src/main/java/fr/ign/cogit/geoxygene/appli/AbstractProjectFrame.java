@@ -25,6 +25,7 @@ import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory.LayerType;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory;
 import fr.ign.cogit.geoxygene.feature.DataSet;
@@ -72,6 +73,9 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         this.setMainFrame(frame);
         this.setLayerViewPanel(layerViewPanel);
         this.title = "Project #" + AbstractProjectFrame.PFID++;
+        if (layerViewPanel instanceof LayerViewGLPanel) {
+            this.title += " (GL)";
+        }
         this.sld = new StyledLayerDescriptor(new DataSet());
 
         // this.layerViewPanel.setModel(this.sld);
@@ -272,6 +276,9 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     }
 
     private void addLayerFromFileOrDirectory(File... files) {
+        if (files == null || files.length == 0) {
+            return;
+        }
         for (File file : files) {
             if (file.isDirectory()) {
                 this.addLayerFromFileOrDirectory(file.listFiles(new FileFilter() {

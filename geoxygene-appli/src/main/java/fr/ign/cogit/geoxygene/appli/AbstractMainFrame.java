@@ -69,484 +69,485 @@ import fr.ign.cogit.geoxygene.appli.ui.MessageConsole;
  * 
  * @author JeT
  */
-public abstract class AbstractMainFrame implements MainFrame,
-    TaskManagerListener, ChangeListener {
+public abstract class AbstractMainFrame implements MainFrame, TaskManagerListener, ChangeListener {
 
-  /** Logger. */
-  protected static Logger logger = Logger.getLogger(AbstractMainFrame.class
-      .getName());
+    /** Logger. */
+    protected static Logger logger = Logger.getLogger(AbstractMainFrame.class.getName());
 
-  /** The associated application. */
-  private GeOxygeneApplication application = null;
+    /** The associated application. */
+    private GeOxygeneApplication application = null;
 
-  /** frame title. */
-  private String title = null;
+    /** frame title. */
+    private String title = null;
 
-  /** The frame toolbar. */
-  private MainFrameToolBar modeSelector = null;
+    /** The frame toolbar. */
+    private MainFrameToolBar modeSelector = null;
 
-  /** The frame menu bar. */
-  private MainFrameMenuBar menuBar = null;
-  private JStatusBar statusBar = null;
+    /** The frame menu bar. */
+    private MainFrameMenuBar menuBar = null;
+    private JStatusBar statusBar = null;
 
-  /**
-   * Tabbed Panes which contains the desktop pane containing the project frames.
-   */
-  private JTabbedPane desktopTabbedPane = null;
+    /**
+     * Tabbed Panes which contains the desktop pane containing the project
+     * frames.
+     */
+    private JTabbedPane desktopTabbedPane = null;
 
-  /** Main GUI window. */
-  private JFrame frame = null;
+    /** Main GUI window. */
+    private JFrame frame = null;
 
-  /** The default width of the frame. */
-  private final int defaultFrameWidth = 800;
+    /** The default width of the frame. */
+    private final int defaultFrameWidth = 800;
 
-  /** The default height of the frame. */
-  private final int defaultFrameHeight = 800;
+    /** The default height of the frame. */
+    private final int defaultFrameHeight = 800;
 
-  /** message console displayed in the status bar */
-  private MessageConsole messageConsole = null;
+    /** message console displayed in the status bar */
+    private MessageConsole messageConsole = null;
 
-  /** gui associated with a task manager */
-  private TaskManagerPopup taskManagerGui = null;
+    /** gui associated with a task manager */
+    private TaskManagerPopup taskManagerGui = null;
 
-  /** memory bar */
-  private MemoryBar memoryBar = null;
+    /** memory bar */
+    private MemoryBar memoryBar = null;
 
-  /**
-   * Constructor
-   * 
-   * @param title frame title
-   * @param application associated application
-   */
-  public AbstractMainFrame(final String title,
-      final GeOxygeneApplication application) {
-    super();
-    this.setTitle(title);
-    this.application = application;
-    this.modeSelector = new MainFrameToolBar(this);
-    this.application.getTaskManager().addTaskManagerListener(this);
-  }
+    /**
+     * Constructor
+     * 
+     * @param title
+     *            frame title
+     * @param application
+     *            associated application
+     */
+    public AbstractMainFrame(final String title, final GeOxygeneApplication application) {
+        super();
+        this.setTitle(title);
+        this.application = application;
+        this.modeSelector = new MainFrameToolBar(this);
+        this.application.getTaskManager().addTaskManagerListener(this);
+    }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.appli.MainFrameTmp#newProjectFrame()
-   */
-  @Override
-  synchronized public final ProjectFrame newProjectFrame() {
-    return this.newProjectFrame(LayerViewPanelFactory.newLayerViewPanel());
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.MainFrameTmp#newProjectFrame()
+     */
+    @Override
+    synchronized public final ProjectFrame newProjectFrame() {
+        return this.newProjectFrame(LayerViewPanelFactory.newLayerViewPanel());
+    }
 
-  /**
-   * @return the main frame
-   */
-  public JFrame getFrame() {
-    if (this.frame == null) {
-      this.frame = new JFrame();
-      if (this.application.getIcon() != null) {
-        this.frame.setIconImage(this.application.getIcon().getImage());
-      }
-      this.frame.setLayout(new BorderLayout());
-      this.frame.setResizable(true);
-      this.frame.setSize(this.defaultFrameWidth, this.defaultFrameHeight);
-      this.frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+    /**
+     * @return the main frame
+     */
+    public JFrame getFrame() {
+        if (this.frame == null) {
+            this.frame = new JFrame();
+            if (this.application.getIcon() != null) {
+                this.frame.setIconImage(this.application.getIcon().getImage());
+            }
+            this.frame.setLayout(new BorderLayout());
+            this.frame.setResizable(true);
+            this.frame.setSize(this.defaultFrameWidth, this.defaultFrameHeight);
+            this.frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 
-      this.frame.setJMenuBar(this.getMenuBar());
-      this.frame.getContentPane().setLayout(new BorderLayout());
-      this.frame.getContentPane().add(this.getDesktopTabbedPane(),
-          BorderLayout.CENTER);
-      this.frame.getContentPane().add(this.getStatusBar().getGui(),
-          BorderLayout.SOUTH);
+            this.frame.setJMenuBar(this.getMenuBar());
+            this.frame.getContentPane().setLayout(new BorderLayout());
+            this.frame.getContentPane().add(this.getDesktopTabbedPane(), BorderLayout.CENTER);
+            this.frame.getContentPane().add(this.getStatusBar().getGui(), BorderLayout.SOUTH);
 
-      this.frame.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(final WindowEvent e) {
+            this.frame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(final WindowEvent e) {
 
-          AbstractMainFrame.this.getApplication().exit();
+                    AbstractMainFrame.this.getApplication().exit();
+                }
+            });
         }
-      });
+        return this.frame;
     }
-    return this.frame;
-  }
 
-  /**
-   * get the current selected Desktop or null if none
-   */
-  @Override
-  public JComponent getCurrentDesktop() {
-    return (JComponent) this.getDesktopTabbedPane().getSelectedComponent();
-  }
-
-  /**
-   * @return the tabbed pane containing all desktops
-   */
-  public final JTabbedPane getDesktopTabbedPane() {
-    if (this.desktopTabbedPane == null) {
-      this.desktopTabbedPane = new JTabbedPane(JTabbedPane.TOP);
-      this.desktopTabbedPane.addChangeListener(this);
+    /**
+     * get the current selected Desktop or null if none
+     */
+    @Override
+    public JComponent getCurrentDesktop() {
+        return (JComponent) this.getDesktopTabbedPane().getSelectedComponent();
     }
-    return this.desktopTabbedPane;
-  }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.appli.api.MainFrame#close()
-   */
-  @Override
-  public void close() {
-    this.getMemoryBar().stop();
-    this.getApplication().getTaskManager().removeTaskManagerListener(this);
-    this.getTaskManagerGui().stopTimer();
-    this.getTaskManagerGui().close();
-  }
+    /**
+     * @return the tabbed pane containing all desktops
+     */
+    public final JTabbedPane getDesktopTabbedPane() {
+        if (this.desktopTabbedPane == null) {
+            this.desktopTabbedPane = new JTabbedPane(JTabbedPane.TOP);
+            this.desktopTabbedPane.addChangeListener(this);
+        }
+        return this.desktopTabbedPane;
+    }
 
-  /**
-   * Create a new desktop Floating implementation creates a JDestopPane to dock
-   * JInternalFrame (Gui of FloatingProjectFrame). Tabbed implementation creates
-   * a JTabbedPane to dock JPanel (Gui of TabbedProjectFrame). This method
-   * should not be called directly. It is internally used by
-   * createNewDesktop(Title)
-   * 
-   * @return newly created Desktop component
-   */
-  abstract JComponent createNewDesktop();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.api.MainFrame#close()
+     */
+    @Override
+    public void close() {
+        this.getMemoryBar().stop();
+        this.getApplication().getTaskManager().removeTaskManagerListener(this);
+        this.getTaskManagerGui().stopTimer();
+        this.getTaskManagerGui().close();
+    }
 
-  @Override
-  public final void setTitle(final String title) {
-    this.title = title;
-  }
+    /**
+     * Create a new desktop Floating implementation creates a JDestopPane to
+     * dock
+     * JInternalFrame (Gui of FloatingProjectFrame). Tabbed implementation
+     * creates
+     * a JTabbedPane to dock JPanel (Gui of TabbedProjectFrame). This method
+     * should not be called directly. It is internally used by
+     * createNewDesktop(Title)
+     * 
+     * @return newly created Desktop component
+     */
+    abstract JComponent createNewDesktop();
 
-  @Override
-  public final GeOxygeneApplication getApplication() {
-    return this.application;
-  }
+    @Override
+    public final void setTitle(final String title) {
+        this.title = title;
+    }
 
-  @Override
-  public final MainFrameToolBar getMode() {
-    return this.modeSelector;
-  }
+    @Override
+    public final GeOxygeneApplication getApplication() {
+        return this.application;
+    }
 
-  /**
-   * @return the title
-   */
-  public String getTitle() {
-    return this.title;
-  }
+    @Override
+    public final MainFrameToolBar getMode() {
+        return this.modeSelector;
+    }
 
-  @Override
-  public boolean openFile(File file) {
-    ProjectFrame projectFrame = this.getSelectedProjectFrame();
-    if (projectFrame == null) {
-      if (this.getDesktopProjectFrames().length != 0) {
-        // TODO ask the user in which frame (s)he
-        // wants to load into?
-        projectFrame = this.getDesktopProjectFrames()[0];
-      } else {
-        // TODO create a new project frame?
-        logger.info(I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return this.title;
+    }
+
+    @Override
+    public boolean openFile(File file) {
+        ProjectFrame projectFrame = this.getSelectedProjectFrame();
+        if (projectFrame == null) {
+            if (this.getDesktopProjectFrames().length != 0) {
+                // TODO ask the user in which frame (s)he
+                // wants to load into?
+                projectFrame = this.getDesktopProjectFrames()[0];
+            } else {
+                // TODO create a new project frame?
+                logger.info(I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+                return false;
+            }
+        }
+        if (file != null) {
+            projectFrame.addLayer(file);
+            return true;
+        }
         return false;
-      }
     }
-    if (file != null) {
-      projectFrame.addLayer(file);
-      return true;
-    }
-    return false;
-  }
 
-  @Override
-  public MainFrameMenuBar getMenuBar() {
-    if (this.menuBar == null) {
-      this.menuBar = new MainFrameMenuBar(this);
-    }
-    return this.menuBar;
-  }
-
-  public JStatusBar getStatusBar() {
-    if (this.statusBar == null) {
-      this.statusBar = new JStatusBar();
-      this.statusBar
-          .addStatusBarComponent(this.getMessageConsole().getGui(), 1);
-      this.statusBar.addStatusBarComponent(this.getTaskManagerGui().getGui(),
-          0.3);
-      this.statusBar.addStatusBarComponent(this.getMemoryBar().getGui(), 0.);
-      JButton gcButton = new JButton("gc");
-      gcButton.setToolTipText("run garbage collector");
-      gcButton.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
-      gcButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          Runtime.getRuntime().gc();
+    @Override
+    public MainFrameMenuBar getMenuBar() {
+        if (this.menuBar == null) {
+            this.menuBar = new MainFrameMenuBar(this);
         }
-      });
-      this.statusBar.addStatusBarComponent(gcButton, 0.);
-    }
-    return this.statusBar;
-  }
-
-  private MessageConsole getMessageConsole() {
-    if (this.messageConsole == null) {
-      this.messageConsole = new MessageConsole();
-    }
-    return this.messageConsole;
-  }
-
-  private MemoryBar getMemoryBar() {
-    if (this.memoryBar == null) {
-      this.memoryBar = new MemoryBar();
-    }
-    return this.memoryBar;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * fr.ign.cogit.geoxygene.appli.api.MainFrame#addMessage(fr.ign.cogit.geoxygene
-   * .appli.Message.MessageType, java.lang.String)
-   */
-  @Override
-  public void addMessage(MessageType type, String message) {
-    this.getMessageConsole().addMessage(type, message);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * fr.ign.cogit.geoxygene.appli.api.MainFrame#setLookAndFeel(java.lang.String
-   * )
-   */
-  @Override
-  public boolean setLookAndFeel(final String className) {
-    if (className == null) {
-      return false;
-    }
-    try {
-      UIManager.setLookAndFeel(className);
-      SwingUtilities.updateComponentTreeUI(this.frame);
-      this.getFrame().repaint();
-      this.getApplication().getProperties().setDefaultLookAndFeel(className);
-    } catch (Exception e) {
-      logger.error(e.getMessage());
-      return false;
+        return this.menuBar;
     }
 
-    return true;
-  }
-
-  /**
-   * Get the GUI associated with the application Task Manager
-   * 
-   * @return
-   */
-  private TaskManagerPopup getTaskManagerGui() {
-    if (this.taskManagerGui == null) {
-      this.taskManagerGui = new TaskManagerPopup(this.getApplication()
-          .getTaskManager());
-    }
-    return this.taskManagerGui;
-  }
-
-  @Override
-  public final JComponent createNewDesktop(String title) {
-    int index = this.getDesktopTabbedPane().getTabCount();
-    JComponent newDesktop = this.createNewDesktop();
-
-    String tabTitle = "Desktop #" + (index + 1);
-    if (title != null && !title.isEmpty()) {
-      tabTitle = title;
+    public JStatusBar getStatusBar() {
+        if (this.statusBar == null) {
+            this.statusBar = new JStatusBar();
+            this.statusBar.addStatusBarComponent(this.getMessageConsole().getGui(), 1);
+            this.statusBar.addStatusBarComponent(this.getTaskManagerGui().getGui(), 0.3);
+            this.statusBar.addStatusBarComponent(this.getMemoryBar().getGui(), 0.);
+            JButton gcButton = new JButton("gc");
+            gcButton.setToolTipText("run garbage collector");
+            gcButton.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+            gcButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Runtime.getRuntime().gc();
+                }
+            });
+            this.statusBar.addStatusBarComponent(gcButton, 0.);
+        }
+        return this.statusBar;
     }
 
-    this.getDesktopTabbedPane().addTab(
-        tabTitle,
-        new ImageIcon(GeOxygeneApplication.class
-            .getResource("/images/icons/tab.png")), newDesktop);
-    // tabbedPane.setMnemonicAt(index, KeyEvent.KEY_LAST + 1);
-
-    this.getDesktopTabbedPane().setTabComponentAt(index,
-        new ButtonTabComponent(this.getDesktopTabbedPane()));
-    this.getDesktopTabbedPane().setSelectedIndex(index);
-    return newDesktop;
-  }
-
-  /**
-   * 
-   * @param desktopName
-   * @param desktopContent
-   */
-  @Override
-  public final void addFrameInDesktop(String desktopName,
-      JComponent desktopContent) {
-    logger.log(Level.DEBUG, "New frame");
-    // Add ProjectFrame to the selected desktop
-    JComponent currentDesktop = this.getDesktop(desktopName);
-    if (currentDesktop == null) {
-      logger.error("No desktop named '" + desktopName + "' found");
-      return;
+    private MessageConsole getMessageConsole() {
+        if (this.messageConsole == null) {
+            this.messageConsole = new MessageConsole();
+        }
+        return this.messageConsole;
     }
-    currentDesktop.add(desktopContent);
-  }
 
-  /**
-   * get a desktop by it's name
-   * 
-   * @param desktopName
-   * @return
-   */
-  public JComponent getDesktop(String desktopName) {
-    for (int i = 0; i < this.getDesktopTabbedPane().getTabCount(); i++) {
-      if (this.getDesktopTabbedPane().getTitleAt(i).equals(desktopName)) {
-        return (JComponent) this.getDesktopTabbedPane().getComponentAt(i);
-      }
+    private MemoryBar getMemoryBar() {
+        if (this.memoryBar == null) {
+            this.memoryBar = new MemoryBar();
+        }
+        return this.memoryBar;
     }
-    return null;
-  }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.appli.task.TaskManagerListener#onTaskAdded(fr.
-   * ign.cogit.geoxygene.appli.task.Task)
-   */
-  @Override
-  public void onTaskAdded(Task task) {
-
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.appli.task.TaskManagerListener#onTaskRemoved(fr
-   * .ign.cogit.geoxygene.appli.task.Task)
-   */
-  @Override
-  public void onTaskRemoved(Task task) {
-    TaskState state = task.getState();
-    this.getMessageConsole().addMessage(Message.MessageType.INFO,
-        "task " + task.getName() + " finished with state " + state.name());
-    if (state == TaskState.ERROR) {
-      this.getMessageConsole().addMessage(Message.MessageType.ERROR,
-          "\t" + task.getError());
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.api.MainFrame#addMessage(fr.ign.cogit.geoxygene
+     * .appli.Message.MessageType, java.lang.String)
+     */
+    @Override
+    public void addMessage(MessageType type, String message) {
+        this.getMessageConsole().addMessage(type, message);
     }
-  }
 
-  @Override
-  public void stateChanged(ChangeEvent e) {
-    if (e.getSource() == this.getDesktopTabbedPane()) {
-      // action to perform when a new desktop is selected
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.api.MainFrame#setLookAndFeel(java.lang.String
+     * )
+     */
+    @Override
+    public boolean setLookAndFeel(final String className) {
+        if (className == null) {
+            return false;
+        }
+        try {
+            UIManager.setLookAndFeel(className);
+            SwingUtilities.updateComponentTreeUI(this.frame);
+            this.getFrame().repaint();
+            this.getApplication().getProperties().setDefaultLookAndFeel(className);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return false;
+        }
+
+        return true;
     }
-  }
+
+    /**
+     * Get the GUI associated with the application Task Manager
+     * 
+     * @return
+     */
+    private TaskManagerPopup getTaskManagerGui() {
+        if (this.taskManagerGui == null) {
+            this.taskManagerGui = new TaskManagerPopup(this.getApplication().getTaskManager());
+        }
+        return this.taskManagerGui;
+    }
+
+    @Override
+    public final JComponent createNewDesktop(String title) {
+        int index = this.getDesktopTabbedPane().getTabCount();
+        JComponent newDesktop = this.createNewDesktop();
+
+        String tabTitle = "Desktop #" + (index + 1);
+        if (title != null && !title.isEmpty()) {
+            tabTitle = title;
+        }
+
+        this.getDesktopTabbedPane().addTab(tabTitle, new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/tab.png")), newDesktop);
+        // tabbedPane.setMnemonicAt(index, KeyEvent.KEY_LAST + 1);
+
+        this.getDesktopTabbedPane().setTabComponentAt(index, new ButtonTabComponent(this.getDesktopTabbedPane()));
+        this.getDesktopTabbedPane().setSelectedIndex(index);
+        return newDesktop;
+    }
+
+    /**
+     * 
+     * @param desktopName
+     * @param desktopContent
+     */
+    @Override
+    public final void addFrameInDesktop(String desktopName, JComponent desktopContent) {
+        logger.log(Level.DEBUG, "New frame");
+        // Add ProjectFrame to the selected desktop
+        JComponent currentDesktop = this.getDesktop(desktopName);
+        if (currentDesktop == null) {
+            logger.error("No desktop named '" + desktopName + "' found");
+            return;
+        }
+        currentDesktop.add(desktopContent);
+    }
+
+    /**
+     * get a desktop by it's name
+     * 
+     * @param desktopName
+     * @return
+     */
+    public JComponent getDesktop(String desktopName) {
+        for (int i = 0; i < this.getDesktopTabbedPane().getTabCount(); i++) {
+            if (this.getDesktopTabbedPane().getTitleAt(i).equals(desktopName)) {
+                return (JComponent) this.getDesktopTabbedPane().getComponentAt(i);
+            }
+        }
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.task.TaskManagerListener#onTaskAdded(fr.
+     * ign.cogit.geoxygene.appli.task.Task)
+     */
+    @Override
+    public void onTaskAdded(Task task) {
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.task.TaskManagerListener#onTaskAdded(fr.
+     * ign.cogit.geoxygene.appli.task.Task)
+     */
+    @Override
+    public void onTaskStarted(Task task) {
+        this.getMessageConsole().addMessage(Message.MessageType.INFO, "task " + task.getName() + " started");
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.task.TaskManagerListener#onTaskRemoved(fr
+     * .ign.cogit.geoxygene.appli.task.Task)
+     */
+    @Override
+    public void onTaskRemoved(Task task) {
+        TaskState state = task.getState();
+        this.getMessageConsole().addMessage(Message.MessageType.INFO, "task " + task.getName() + " finished with state " + state.name());
+        if (state == TaskState.ERROR) {
+            this.getMessageConsole().addMessage(Message.MessageType.ERROR, "\t" + task.getError());
+        }
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (e.getSource() == this.getDesktopTabbedPane()) {
+            // action to perform when a new desktop is selected
+        }
+    }
 }
 
 class ButtonTabComponent extends JPanel {
-  /**
+    /**
      * 
      */
-  private static final long serialVersionUID = 1L;
-  private final JTabbedPane pane;
-
-  public ButtonTabComponent(final JTabbedPane pane) {
-    // unset default FlowLayout' gaps
-    super(new FlowLayout(FlowLayout.LEFT, 0, 0));
-    if (pane == null) {
-      throw new NullPointerException("TabbedPane is null");
-    }
-    this.pane = pane;
-    this.setOpaque(false);
-
-    JLabel picLabel = new JLabel(new ImageIcon(GeOxygeneApplication.class
-        .getResource("/images/icons/tab.png").getPath()));
-    this.add(picLabel);
-
-    this.add(new JLabel("  "));
-
-    // make JLabel read titles from JTabbedPane
-    @SuppressWarnings("serial")
-    JLabel label = new JLabel() {
-      @Override
-      public String getText() {
-        int i = pane.indexOfTabComponent(ButtonTabComponent.this);
-        if (i != -1) {
-          return pane.getTitleAt(i);
-        }
-        return null;
-      }
-    };
-
-    this.add(label);
-    // add more space between the label and the button
-    label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-    // tab button
-    JButton button = new TabButton();
-    this.add(button);
-    // add more space to the top of the component
-    this.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
-  }
-
-  class TabButton extends JButton implements ActionListener {
-
-    /** Default serial ID. */
     private static final long serialVersionUID = 1L;
+    private final JTabbedPane pane;
 
-    /**
-     * Default constructor.
-     */
-    public TabButton() {
-      super(new ImageIcon(GeOxygeneApplication.class.getResource(
-          "/images/icons/16x16/delete.png").getPath()));
-      this.setToolTipText("close this tab");
-      // Make the button looks the same for all Laf's
-      this.setUI(new BasicButtonUI());
-      // Make it transparent
-      this.setContentAreaFilled(false);
-      // No need to be focusable
-      this.setFocusable(false);
-      this.setBorder(BorderFactory.createEtchedBorder());
-      this.setBorderPainted(false);
-      // Making nice rollover effect
-      // we use the same listener for all buttons
-      this.addMouseListener(buttonMouseListener);
-      this.setRolloverEnabled(true);
-      // Close the proper tab by clicking the button
-      this.addActionListener(this);
+    public ButtonTabComponent(final JTabbedPane pane) {
+        // unset default FlowLayout' gaps
+        super(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        if (pane == null) {
+            throw new NullPointerException("TabbedPane is null");
+        }
+        this.pane = pane;
+        this.setOpaque(false);
+
+        JLabel picLabel = new JLabel(new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/tab.png").getPath()));
+        this.add(picLabel);
+
+        this.add(new JLabel("  "));
+
+        // make JLabel read titles from JTabbedPane
+        @SuppressWarnings("serial")
+        JLabel label = new JLabel() {
+            @Override
+            public String getText() {
+                int i = pane.indexOfTabComponent(ButtonTabComponent.this);
+                if (i != -1) {
+                    return pane.getTitleAt(i);
+                }
+                return null;
+            }
+        };
+
+        this.add(label);
+        // add more space between the label and the button
+        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+        // tab button
+        JButton button = new TabButton();
+        this.add(button);
+        // add more space to the top of the component
+        this.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      int i = ButtonTabComponent.this.pane
-          .indexOfTabComponent(ButtonTabComponent.this);
-      if (i != -1) {
-        ButtonTabComponent.this.pane.remove(i);
-      }
+    class TabButton extends JButton implements ActionListener {
+
+        /** Default serial ID. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Default constructor.
+         */
+        public TabButton() {
+            super(new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/16x16/delete.png").getPath()));
+            this.setToolTipText("close this tab");
+            // Make the button looks the same for all Laf's
+            this.setUI(new BasicButtonUI());
+            // Make it transparent
+            this.setContentAreaFilled(false);
+            // No need to be focusable
+            this.setFocusable(false);
+            this.setBorder(BorderFactory.createEtchedBorder());
+            this.setBorderPainted(false);
+            // Making nice rollover effect
+            // we use the same listener for all buttons
+            this.addMouseListener(buttonMouseListener);
+            this.setRolloverEnabled(true);
+            // Close the proper tab by clicking the button
+            this.addActionListener(this);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int i = ButtonTabComponent.this.pane.indexOfTabComponent(ButtonTabComponent.this);
+            if (i != -1) {
+                ButtonTabComponent.this.pane.remove(i);
+            }
+        }
+
+        // we don't want to update UI for this button
+        @Override
+        public void updateUI() {
+        }
+
     }
 
-    // we don't want to update UI for this button
-    @Override
-    public void updateUI() {
-    }
+    private final static MouseListener buttonMouseListener = new MouseAdapter() {
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            Component component = e.getComponent();
+            if (component instanceof AbstractButton) {
+                AbstractButton button = (AbstractButton) component;
+                button.setBorderPainted(true);
+            }
+        }
 
-  }
-
-  private final static MouseListener buttonMouseListener = new MouseAdapter() {
-    @Override
-    public void mouseEntered(MouseEvent e) {
-      Component component = e.getComponent();
-      if (component instanceof AbstractButton) {
-        AbstractButton button = (AbstractButton) component;
-        button.setBorderPainted(true);
-      }
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-      Component component = e.getComponent();
-      if (component instanceof AbstractButton) {
-        AbstractButton button = (AbstractButton) component;
-        button.setBorderPainted(false);
-      }
-    }
-  };
+        @Override
+        public void mouseExited(MouseEvent e) {
+            Component component = e.getComponent();
+            if (component instanceof AbstractButton) {
+                AbstractButton button = (AbstractButton) component;
+                button.setBorderPainted(false);
+            }
+        }
+    };
 
 }

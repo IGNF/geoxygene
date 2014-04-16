@@ -43,8 +43,8 @@ import static org.lwjgl.opengl.GL11.glTexParameteri;
 import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
 import static org.lwjgl.opengl.GL20.glCompileShader;
 import static org.lwjgl.opengl.GL20.glCreateShader;
-import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
+import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 import static org.lwjgl.opengl.GL20.glGetShaderi;
 import static org.lwjgl.opengl.GL20.glShaderSource;
 
@@ -56,6 +56,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -64,6 +66,7 @@ import javax.vecmath.Point2d;
 import org.apache.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.OpenGLException;
 import org.lwjgl.opengl.Util;
 import org.lwjgl.util.Color;
@@ -77,7 +80,9 @@ import org.lwjgl.util.Color;
 public final class GLTools {
 
     private static final Random randomSeed = new Random(new Date().getTime());
-    private static final Logger logger = Logger.getLogger(GLTools.class.getName()); // logger
+    private static final Logger logger = Logger.getLogger(GLTools.class
+            .getName()); // logger
+    private static final Map<BufferedImage, Integer> existingTextureIDs = new HashMap<BufferedImage, Integer>();
 
     /**
      * Private constructor
@@ -94,20 +99,25 @@ public final class GLTools {
             Util.checkGLError();
             return true;
         } catch (OpenGLException e) {
-            logger.error("GL error [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            logger.error("GL error [" + e.getClass().getSimpleName() + "] "
+                    + e.getMessage());
             return false;
         }
     }
 
     /**
      * check GL errors. Log an error if one occurred
+     * 
+     * @return true if no error
      */
     public static boolean glCheckError(String msg) {
         try {
             Util.checkGLError();
             return true;
         } catch (OpenGLException e) {
-            logger.error(msg + " GL error [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            logger.error(msg + " GL error [" + e.getClass().getSimpleName()
+                    + "] " + e.getMessage());
+            Thread.dumpStack();
             return false;
         }
     }
@@ -130,15 +140,59 @@ public final class GLTools {
      * set gl color from a LWJGL Color object
      */
     public static void glColor(final Color color) {
-        GL11.glColor4d(color.getRed() / 255., color.getGreen() / 255., color.getBlue() / 255., color.getAlpha() / 255.);
+        GL11.glColor4d(color.getRed() / 255., color.getGreen() / 255.,
+                color.getBlue() / 255., color.getAlpha() / 255.);
     }
 
     /**
      * set gl color from an AWT Color object
      */
     public static void glColor(final java.awt.Color color) {
-        GL11.glColor4d(color.getRed() / 255., color.getGreen() / 255., color.getBlue() / 255., color.getAlpha() / 255.);
+        GL11.glColor4d(color.getRed() / 255., color.getGreen() / 255.,
+                color.getBlue() / 255., color.getAlpha() / 255.);
 
+    }
+
+    /**
+     * set gl clear color from a LWJGL Color object
+     */
+    public static void glClear(final Color color, int bufferId) {
+        GL11.glClearColor(color.getRed() / 255f, color.getGreen() / 255f,
+                color.getBlue() / 255f, color.getAlpha() / 255f);
+        GL11.glClear(bufferId);
+    }
+
+    /**
+     * set gl clear color from an AWT Color object
+     */
+    public static void glClear(final java.awt.Color color, int bufferId) {
+        GL11.glClearColor(color.getRed() / 255f, color.getGreen() / 255f,
+                color.getBlue() / 255f, color.getAlpha() / 255f);
+        GL11.glClear(bufferId);
+    }
+
+    /**
+     * set gl clear color from RGBA components
+     */
+    public static void glClear(float r, float g, float b, float a, int bufferId) {
+        GL11.glClearColor(r, g, b, a);
+        GL11.glClear(bufferId);
+    }
+
+    /**
+     * load a texture in GL Context. If the image has already a texture ID,
+     * retrieve it from a map value
+     * 
+     * @param image
+     * @return
+     */
+    public static int loadOrRetrieveTexture(final BufferedImage image) {
+        Integer existingTextureID = GLTools.existingTextureIDs.get(image);
+        if (existingTextureID == null) {
+            existingTextureID = loadTexture(image);
+            existingTextureIDs.put(image, existingTextureID);
+        }
+        return existingTextureID;
     }
 
     /**
@@ -148,53 +202,72 @@ public final class GLTools {
      * @return the generated texture id
      */
     public static int loadTexture(final BufferedImage image) {
-
         int[] pixels = new int[image.getWidth() * image.getHeight()];
-        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0,
+                image.getWidth());
 
-        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4); //4 for RGBA, 3 for RGB
+        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth()
+                * image.getHeight() * 4); // 4 for RGBA, 3 for RGB
 
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 int pixel = pixels[y * image.getWidth() + x];
-                buffer.put((byte) (pixel >> 16 & 0xFF));     // Red component
-                buffer.put((byte) (pixel >> 8 & 0xFF));      // Green component
-                buffer.put((byte) (pixel >> 0 & 0xFF));               // Blue component
-                buffer.put((byte) (pixel >> 24 & 0xFF));    // Alpha component. Only for RGBA
-                //        System.err.println("transparency = " + (pixel >> 24 & 0xFF));
+                buffer.put((byte) (pixel >> 16 & 0xFF)); // Red component
+                buffer.put((byte) (pixel >> 8 & 0xFF)); // Green component
+                buffer.put((byte) (pixel >> 0 & 0xFF)); // Blue component
+                buffer.put((byte) (pixel >> 24 & 0xFF)); // Alpha component.
+                                                         // Only for RGBA
+                // System.err.println("transparency = " + (pixel >> 24 & 0xFF));
             }
         }
 
         buffer.rewind();
 
         // You now have a ByteBuffer filled with the color data of each pixel.
-        // Now just create a texture ID and bind it. Then you can load it using 
+        // Now just create a texture ID and bind it. Then you can load it using
         // whatever OpenGL method you want, for example:
 
-        int textureID = glGenTextures(); //Generate texture ID
-        glBindTexture(GL_TEXTURE_2D, textureID); //Bind texture ID
+        int textureID = glGenTextures(); // Generate texture ID
+        glBindTexture(GL_TEXTURE_2D, textureID); // Bind texture ID
 
-        //Setup wrap mode
-        //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        // Setup wrap mode
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-        //Setup texture scaling filtering
+        // Setup texture scaling filtering
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        //Send texel data to OpenGL
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        // Send texel data to OpenGL
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(),
+                image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
-        //Return the texture ID so we can bind it later again
+        // Return the texture ID so we can bind it later again
         return textureID;
     }
 
-    public static int loadTexture(final String filename) throws IOException {
-        return loadTexture(loadImage(filename));
+    /**
+     * return the size in bytes of a gl primitive type
+     * 
+     * @param glType
+     *            GL_FLOAT, GL_INT, ...
+     * @return
+     */
+    public static int sizeInBytes(int glType) {
+        switch (glType) {
+        case GL11.GL_FLOAT:
+            return Float.SIZE / Byte.SIZE;
+        case GL11.GL_INT:
+            return Integer.SIZE / Byte.SIZE;
+        default:
+            throw new UnsupportedOperationException(
+                    "Don't know the size of gl type " + glType);
+
+        }
     }
 
     public static BufferedImage loadImage(final String loc) throws IOException {
@@ -683,7 +756,8 @@ public final class GLTools {
 
     public static org.lwjgl.util.Color glRandomColor() {
 
-        return new org.lwjgl.util.Color(randomSeed.nextInt(256), randomSeed.nextInt(256), randomSeed.nextInt(256));
+        return new org.lwjgl.util.Color(randomSeed.nextInt(256),
+                randomSeed.nextInt(256), randomSeed.nextInt(256));
     }
 
     /**
@@ -750,7 +824,8 @@ public final class GLTools {
      * @return
      * @throws Exception
      */
-    public static int createShader(String shaderFilename, int shaderType) throws Exception {
+    public static int createShader(String shaderFilename, int shaderType)
+            throws GLException {
         int shader = 0;
         try {
             shader = glCreateShader(shaderType);
@@ -760,13 +835,12 @@ public final class GLTools {
             glShaderSource(shader, readFileAsString(shaderFilename));
             glCompileShader(shader);
             if (glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
-                throw new RuntimeException("Error creating shader: " + getShaderLogInfo(shader));
+                throw new RuntimeException("Error compiling shader file '"
+                        + shaderFilename + "': " + getShaderLogInfo(shader));
             }
             return shader;
         } catch (Exception exc) {
-            // TODO: delete shader
-            //            glDeleteShader(shader);
-            throw exc;
+            throw new GLException(exc);
         }
     }
 

@@ -221,8 +221,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
     private void initializeGui() {
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.getEditionPanel(), this.getDisplayPanel());
         splitPane.setDividerSize(3);
-        splitPane.setDividerLocation(0.6);
-        splitPane.setResizeWeight(0.);
+        splitPane.setDividerLocation(0.7);
+        splitPane.setResizeWeight(1.);
         this.getContentPane().add(splitPane, BorderLayout.CENTER);
         JPanel cmdPanel = new JPanel(new BorderLayout());
         cmdPanel.add(this.getToolsPanel(), BorderLayout.SOUTH);

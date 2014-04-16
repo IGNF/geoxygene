@@ -33,10 +33,7 @@ import static org.lwjgl.util.glu.GLU.GLU_TESS_END;
 import static org.lwjgl.util.glu.GLU.GLU_TESS_VERTEX;
 import static org.lwjgl.util.glu.GLU.gluNewTess;
 
-import java.awt.BasicStroke;
 import java.awt.Shape;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.util.List;
@@ -52,13 +49,10 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Colorizer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer;
 import fr.ign.cogit.geoxygene.style.Stroke;
-import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLPrimitiveTessCallback;
@@ -327,7 +321,7 @@ public class GLComplexFactory {
             parameterizer.finalizeParameterization();
         }
         if (colorizer != null) {
-            colorizer.initializeColorization();
+            colorizer.finalizeColorization();
         }
     }
 
@@ -542,40 +536,40 @@ public class GLComplexFactory {
         //        }
     }
 
-    private static Path2D stroke(Shape shape, java.awt.Stroke stroke) {
-        return (Path2D) stroke.createStrokedShape(shape);
-    }
-
-    private static BasicStroke geoxygeneStrokeToAWTStroke(Viewport viewport, Symbolizer symbolizer) {
-        float strokeOpacity = symbolizer.getStroke().getStrokeOpacity();
-        if (strokeOpacity > 0f) {
-
-            double scale = 1;
-            if (symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
-                try {
-                    scale = 1. / viewport.getModelToViewTransform().getScaleX();
-                } catch (NoninvertibleTransformException e) {
-                    e.printStackTrace();
-                }
-            }
-            return (BasicStroke) symbolizer.getStroke().toAwtStroke((float) scale);
-        }
-        return null;
-    }
-
-    private static Path2D toShape(IRing ring) {
-        GeneralPath path = new GeneralPath();
-        boolean first = true;
-        for (IDirectPosition p : ring.coord()) {
-            if (first) {
-                path.moveTo(p.getX(), p.getY());
-                first = false;
-            } else {
-                path.lineTo(p.getX(), p.getY());
-            }
-        }
-        return path;
-    }
+    //    private static Path2D stroke(Shape shape, java.awt.Stroke stroke) {
+    //        return (Path2D) stroke.createStrokedShape(shape);
+    //    }
+    //
+    //    private static BasicStroke geoxygeneStrokeToAWTStroke(Viewport viewport, Symbolizer symbolizer) {
+    //        float strokeOpacity = symbolizer.getStroke().getStrokeOpacity();
+    //        if (strokeOpacity > 0f) {
+    //
+    //            double scale = 1;
+    //            if (symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
+    //                try {
+    //                    scale = 1. / viewport.getModelToViewTransform().getScaleX();
+    //                } catch (NoninvertibleTransformException e) {
+    //                    e.printStackTrace();
+    //                }
+    //            }
+    //            return (BasicStroke) symbolizer.getStroke().toAwtStroke((float) scale);
+    //        }
+    //        return null;
+    //    }
+    //
+    //    private static Path2D toShape(IRing ring) {
+    //        GeneralPath path = new GeneralPath();
+    //        boolean first = true;
+    //        for (IDirectPosition p : ring.coord()) {
+    //            if (first) {
+    //                path.moveTo(p.getX(), p.getY());
+    //                first = false;
+    //            } else {
+    //                path.lineTo(p.getX(), p.getY());
+    //            }
+    //        }
+    //        return path;
+    //    }
 
     /**
      * Create a polygon outline with the given "stroke"

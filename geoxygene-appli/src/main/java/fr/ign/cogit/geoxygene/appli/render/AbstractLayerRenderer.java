@@ -78,6 +78,13 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
     }
 
     /**
+     * @return the layerViewPanel
+     */
+    public LayerViewPanel getLayerViewPanel() {
+        return this.layerViewPanel;
+    }
+
+    /**
      * Adds an <code>ActionListener</code>.
      * 
      * @param l
@@ -121,7 +128,7 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
     }
 
     /** @return the layer view panel */
-    public final LayerViewPanel getLayerViewPanel() {
+    public final LayerViewPanel getLayerViewGLPanel() {
         return this.layerViewPanel;
     }
 

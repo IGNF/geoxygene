@@ -54,6 +54,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.BufferUtils;
@@ -160,6 +161,8 @@ public class ImageComparator implements MouseMotionListener, MouseListener, Mous
                     ImageComparator.this.update();
                 }
             });
+            this.cmpComboBox.setSelectedItem(RGB_BW_DIFF_ITEM);
+
         }
         return this.cmpComboBox;
     }
@@ -279,7 +282,8 @@ public class ImageComparator implements MouseMotionListener, MouseListener, Mous
             }
             this.awtImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
             Graphics2D g = (Graphics2D) this.awtImage.getGraphics();
-            g.setColor(this.awtLayerViewPanel.getBackground());
+            // use UIManager to get color. Since awtLayerPanel is not visible, it's color is not set
+            g.setColor(UIManager.getColor("Panel.background"));
             g.fillRect(0, 0, width, height);
             this.awtLayerViewPanel.getRenderingManager().copyTo(g);
         }

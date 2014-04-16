@@ -46,101 +46,110 @@ import org.w3c.dom.svg.SVGDocument;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ExternalGraphic {
-  @XmlElement(name = "href")
-  private String href;
+    @XmlElement(name = "href")
+    private String href;
 
-  /**
-   * Renvoie la valeur de l'attribut href.
-   * @return la valeur de l'attribut href
-   */
-  public String getHref() {
-    return this.href;
-  }
-
-  /**
-   * Affecte la valeur de l'attribut href.
-   * @param href l'attribut href à affecter
-   */
-  public void setHref(String href) {
-    this.href = href;
-  }
-
-  @XmlElement(name = "Format")
-  private String format;
-
-  /**
-   * Renvoie la valeur de l'attribut format.
-   * @return la valeur de l'attribut format
-   */
-  public String getFormat() {
-    return this.format;
-  }
-
-  /**
-   * Affecte la valeur de l'attribut format.
-   * @param format l'attribut format à affecter
-   */
-  public void setFormat(String format) {
-    this.format = format;
-  }
-
-  @XmlTransient
-  private Image onlineResource = null;
-
-  /**
-   * Renvoie la valeur de l'attribut onlineResource.
-   * @return la valeur de l'attribut onlineResource
-   */
-  public Image getOnlineResource() {
-    if (this.onlineResource == null) {
-      try {
-        URL url = ExternalGraphic.class.getResource(this.href);
-        if (url == null) {
-          url = new URL(this.href);
-        }
-        this.onlineResource = ImageIO.read(url);
-      } catch (IOException e) {
-        e.printStackTrace();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+    /**
+     * Renvoie la valeur de l'attribut href.
+     * 
+     * @return la valeur de l'attribut href
+     */
+    public String getHref() {
+        return this.href;
     }
-    return this.onlineResource;
-  }
 
-  public GraphicsNode getGraphicsNode() {
-    try {
-      String xmlParser = XMLResourceDescriptor.getXMLParserClassName();
-      SAXSVGDocumentFactory df = new SAXSVGDocumentFactory(xmlParser);
-      SVGDocument doc = null;
-      if (this.href != null) {
-        if (!this.href.substring(0, 4).equalsIgnoreCase("file")) {
-          doc = df.createSVGDocument(ExternalGraphic.class.getResource(
-              this.href).toString());
-        } else {
-          doc = df.createSVGDocument(this.href);
-        }
-      }
-      UserAgent userAgent = new UserAgentAdapter();
-      DocumentLoader loader = new DocumentLoader(userAgent);
-      BridgeContext ctx = new BridgeContext(userAgent, loader);
-      ctx.setDynamicState(BridgeContext.DYNAMIC);
-      GVTBuilder builder = new GVTBuilder();
-      GraphicsNode rootGN = builder.build(ctx, doc);
-      return rootGN;
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
+    /**
+     * Affecte la valeur de l'attribut href.
+     * 
+     * @param href
+     *            l'attribut href à affecter
+     */
+    public void setHref(String href) {
+        this.href = href;
     }
-    return null;
-  }
 
-  /**
-   * Affecte la valeur de l'attribut onlineResource.
-   * @param onlineResource l'attribut onlineResource à affecter
-   */
-  public void setOnlineResource(Image onlineResource) {
-    this.onlineResource = onlineResource;
-  }
+    @XmlElement(name = "Format")
+    private String format;
+
+    /**
+     * Renvoie la valeur de l'attribut format.
+     * 
+     * @return la valeur de l'attribut format
+     */
+    public String getFormat() {
+        return this.format;
+    }
+
+    /**
+     * Affecte la valeur de l'attribut format.
+     * 
+     * @param format
+     *            l'attribut format à affecter
+     */
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    @XmlTransient
+    private Image onlineResource = null;
+
+    /**
+     * Renvoie la valeur de l'attribut onlineResource.
+     * 
+     * @return la valeur de l'attribut onlineResource
+     */
+    public Image getOnlineResource() {
+        if (this.onlineResource == null) {
+            try {
+                URL url = ExternalGraphic.class.getResource(this.href);
+                if (url == null) {
+                    url = new URL(this.href);
+                }
+                System.err.println("try to read '" + url + "'");
+                this.onlineResource = ImageIO.read(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return this.onlineResource;
+    }
+
+    public GraphicsNode getGraphicsNode() {
+        try {
+            String xmlParser = XMLResourceDescriptor.getXMLParserClassName();
+            SAXSVGDocumentFactory df = new SAXSVGDocumentFactory(xmlParser);
+            SVGDocument doc = null;
+            if (this.href != null) {
+                if (!this.href.substring(0, 4).equalsIgnoreCase("file")) {
+                    doc = df.createSVGDocument(ExternalGraphic.class.getResource(this.href).toString());
+                } else {
+                    doc = df.createSVGDocument(this.href);
+                }
+            }
+            UserAgent userAgent = new UserAgentAdapter();
+            DocumentLoader loader = new DocumentLoader(userAgent);
+            BridgeContext ctx = new BridgeContext(userAgent, loader);
+            ctx.setDynamicState(BridgeContext.DYNAMIC);
+            GVTBuilder builder = new GVTBuilder();
+            GraphicsNode rootGN = builder.build(ctx, doc);
+            return rootGN;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Affecte la valeur de l'attribut onlineResource.
+     * 
+     * @param onlineResource
+     *            l'attribut onlineResource à affecter
+     */
+    public void setOnlineResource(Image onlineResource) {
+        this.onlineResource = onlineResource;
+    }
 }

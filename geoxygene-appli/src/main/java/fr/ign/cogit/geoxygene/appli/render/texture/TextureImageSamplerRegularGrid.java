@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package test.app;
+package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -35,7 +35,6 @@ import java.util.Random;
 
 import javax.vecmath.Point2d;
 
-import fr.ign.cogit.geoxygene.appli.render.texture.SamplingAlgorithm;
 import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 import fr.ign.cogit.geoxygene.util.gl.Tile;

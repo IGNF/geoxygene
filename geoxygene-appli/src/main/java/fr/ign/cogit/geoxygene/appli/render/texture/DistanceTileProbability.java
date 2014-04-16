@@ -25,8 +25,9 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package test.app;
+package fr.ign.cogit.geoxygene.appli.render.texture;
 
+import fr.ign.cogit.geoxygene.appli.render.texture.TileProbability;
 import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
 import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 

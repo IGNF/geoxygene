@@ -25,25 +25,71 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package test.app;
+package fr.ign.cogit.geoxygene.util.gl;
+
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author JeT
- *         Probabilistic function for tile apparition in a textured image
+ * 
  */
-public interface TileProbability {
+public class GLInput {
+    private int location = 0;
+    private String name = "unnamed";
+    private int componentCount = 1;
+    private int glType = GL11.GL_FLOAT;
+    private boolean normalized = false;
 
     /**
-     * return a probability of apparition. probability should be between 0 & 1
-     * but may
-     * be composed with other probability. 1 is not exactly the probabilistic
-     * "sure" value
-     * 
-     * @param x
-     *            position in texture image
-     * @param y
-     *            position in texture image
-     * @return
+     * @param location
+     * @param name
+     * @param componentCount
+     * @param glType
+     * @param normalized
+     * @param stride
      */
-    double getProbability(double x, double y);
+    public GLInput(int location, String name, int componentCount, int glType, boolean normalized) {
+        super();
+        this.location = location;
+        this.name = name;
+        this.componentCount = componentCount;
+        this.glType = glType;
+        this.normalized = normalized;
+    }
+
+    /**
+     * @return the location
+     */
+    public int getLocation() {
+        return this.location;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * @return the componentCount
+     */
+    public int getComponentCount() {
+        return this.componentCount;
+    }
+
+    /**
+     * @return the glType
+     */
+    public int getGlType() {
+        return this.glType;
+    }
+
+    /**
+     * @return the normalized
+     */
+    public boolean isNormalized() {
+        return this.normalized;
+    }
+
 }

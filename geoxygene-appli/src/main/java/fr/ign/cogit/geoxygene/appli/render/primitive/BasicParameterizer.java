@@ -50,24 +50,58 @@ public class BasicParameterizer implements Parameterizer {
     private double scaleY = 1.;
     private double translateX = 0.;
     private double translateY = 0.;
+    private boolean xFlip = false;
+    private boolean yFlip = false;
 
     /**
      * Constructor
      */
-    public BasicParameterizer(double minX, double minY, double maxX, double maxY) {
+    public BasicParameterizer(double minX, double minY, double maxX, double maxY, boolean xFlip, boolean yFlip) {
         this.setMinX(minX);
         this.setMaxX(maxX);
         this.setMinY(minY);
         this.setMaxY(maxY);
+        this.setXFlip(xFlip);
+        this.setYFlip(yFlip);
         //        logger.debug("Create Basic parameterizer with bounding box " + minX + "x" + minY + " /" + maxX + "x" + maxY);
     }
 
     /**
      * Constructor
      */
-    public BasicParameterizer(IEnvelope envelope) {
+    public BasicParameterizer(IEnvelope envelope, boolean xFlip, boolean yFlip) {
         // incoming coordinates are stored in object coordinates (0 -> max - min ) 
-        this(0, 0, envelope.maxX() - envelope.minX(), envelope.maxY() - envelope.minY());
+        this(0, 0, envelope.maxX() - envelope.minX(), envelope.maxY() - envelope.minY(), xFlip, yFlip);
+    }
+
+    /**
+     * @return the xFlip
+     */
+    public boolean getXFlip() {
+        return this.xFlip;
+    }
+
+    /**
+     * @param xFlip
+     *            the xFlip to set
+     */
+    public void setXFlip(boolean xFlip) {
+        this.xFlip = xFlip;
+    }
+
+    /**
+     * @return the yFlip
+     */
+    public boolean getYFlip() {
+        return this.yFlip;
+    }
+
+    /**
+     * @param yFlip
+     *            the yFlip to set
+     */
+    public void setYFlip(boolean yFlip) {
+        this.yFlip = yFlip;
     }
 
     /**
@@ -183,8 +217,15 @@ public class BasicParameterizer implements Parameterizer {
         //        System.err.println("vertex = " + vertex[0] + " x " + vertex[1]);
         //        System.err.println("min x = " + this.minX);
         //        System.err.println("max x = " + this.maxX);
-        return new Point2d(((vertex[0]) / (this.maxX - this.minX)) * this.scaleX + this.translateX, ((vertex[1]) / (this.maxY - this.minY)) * this.scaleY
-                + this.translateY);
+        double xTexture = ((vertex[0]) / (this.maxX - this.minX));
+        double yTexture = ((vertex[1]) / (this.maxY - this.minY));
+        if (this.getXFlip()) {
+            xTexture = 1 - xTexture;
+        }
+        if (this.getYFlip()) {
+            yTexture = 1 - yTexture;
+        }
+        return new Point2d(xTexture * this.scaleX + this.translateX, yTexture * this.scaleY + this.translateY);
     }
 
 }

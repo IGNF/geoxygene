@@ -27,6 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.ui;
 
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -35,11 +36,16 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -51,14 +57,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author JeT
  *         manage and display messages
  */
-public class MessageConsole implements MouseListener {
+public class MessageConsole implements MouseListener, WindowFocusListener {
     private static final Color backgroundColor = new Color(255, 250, 235);
     private static final int MAX_MESSAGE_NUMBER = 100;
-    private final List<Message> messages = new LimitedArrayList<Message>(MAX_MESSAGE_NUMBER);
+    private final Collection<Message> messages = Collections.synchronizedCollection(new LimitedQueue<Message>(MAX_MESSAGE_NUMBER));
     private JPanel mainPanel = null;
     private JLabel lastMessageLabel = null;
     static final DateFormat shortDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
@@ -66,6 +74,8 @@ public class MessageConsole implements MouseListener {
     private JDialog expandedDialog = null;
     boolean displayed = false; // expanded dialog visibility
     private static final ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
+
+    private static final Logger logger = Logger.getLogger(MessageConsole.class.getName()); // logger
 
     /**
      * Constructor
@@ -89,6 +99,7 @@ public class MessageConsole implements MouseListener {
             this.mainPanel = new JPanel(new BorderLayout());
             this.mainPanel.add(this.getLastMessageLabel(), BorderLayout.CENTER);
             this.mainPanel.setBackground(Color.white);
+            this.mainPanel.addMouseListener(this);
         }
         return this.mainPanel;
     }
@@ -118,7 +129,6 @@ public class MessageConsole implements MouseListener {
                 label.setBackground(backgroundColor);
                 label.setToolTipText(message.content);
                 this.expandedPanel.add(label);
-                this.expandedPanel.addMouseListener(this);
             }
         }
         return this.expandedPanel;
@@ -131,7 +141,14 @@ public class MessageConsole implements MouseListener {
         if (this.displayed) {
             return;
         }
+        this.getExpandedDialog().pack();
         Dimension size = this.getExpandedDialog().getSize();
+        // limit the dialog height
+        if (size.height > Toolkit.getDefaultToolkit().getScreenSize().height / 2) {
+            size.height = Toolkit.getDefaultToolkit().getScreenSize().height / 2;
+        }
+        size.width = this.getMainPanel().getWidth();
+        this.getExpandedDialog().setSize(size);
         Point location = this.getLastMessageLabel().getLocationOnScreen();
         if (location == null) {
             return;
@@ -179,6 +196,19 @@ public class MessageConsole implements MouseListener {
             this.expandedDialog.setModalityType(ModalityType.MODELESS);
             this.expandedDialog.setUndecorated(true);
             this.expandedDialog.setResizable(true);
+            this.expandedDialog.addWindowFocusListener(this);
+            Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
+                @Override
+                public void eventDispatched(AWTEvent event) {
+                    MouseEvent me = (MouseEvent) event;
+                    Component mouseComponent = me.getComponent();
+                    if (mouseComponent == MessageConsole.this.getExpandedDialog()) {
+                        if (me.getID() == MouseEvent.MOUSE_EXITED) {
+                            MessageConsole.this.requestCloseExpandedDialog();
+                        }
+                    }
+                }
+            }, AWTEvent.MOUSE_EVENT_MASK);
             this.expandedDialog.pack();
         }
         return this.expandedDialog;
@@ -193,6 +223,9 @@ public class MessageConsole implements MouseListener {
      *            message content
      */
     public void addMessage(final Message.MessageType type, final String messageContent) {
+        if (messageContent == null) {
+            logger.warn("try to add a null message");
+        }
         Message message = new Message(type, messageContent);
         this.messages.add(message);
         this.getLastMessageLabel().setText(this.generateLabelContent(message));
@@ -200,8 +233,7 @@ public class MessageConsole implements MouseListener {
 
     /**
      * Set the message content depending on message type.
-     * This method should be in an extern Renderer class to be modified by the
-     * user...
+     * This method should be in an extern Renderer class to be modified
      * 
      * @param message
      * @return
@@ -222,9 +254,34 @@ public class MessageConsole implements MouseListener {
             messageColor = Color.red;
         }
         String date = shortDateFormat.format(message.date);
-        return "<html><font color=" + String.format("#%06X", (0xFFFFFF & dateColor.getRGB())) + "><i>[" + date + "]</i></font>&nbsp;<font color="
+        return "<html><font color=" + String.format("#%06X", (0xFFFFFF & dateColor.getRGB())) + " size='2' ><i>[" + date + "]</i></font>&nbsp;<font color="
                 + String.format("#%06X", (0xFFFFFF & messageColor.getRGB())) + "><b>" + message.content + "</b></font></html>";
     }
+
+    //    /**
+    //     * constraints the list size to a limited number of elements.
+    //     * IMPORTANT: Use only add(T) method. Not add(index, T) or set()
+    //     * 
+    //     * @author JeT
+    //     * 
+    //     * @param <T>
+    //     */
+    //    private class LimitedArrayList<T> extends ArrayList<T> {
+    //        private static final long serialVersionUID = -4163971329925949275L; // serializable UID
+    //        private final int limit;
+    //
+    //        public LimitedArrayList(int limit) {
+    //            this.limit = limit;
+    //        }
+    //
+    //        @Override
+    //        public synchronized boolean add(T item) {
+    //            if (this.size() > this.limit) {
+    //                this.remove(0);
+    //            }
+    //            return super.add(item);
+    //        }
+    //    }
 
     /**
      * constraints the list size to a limited number of elements.
@@ -234,26 +291,29 @@ public class MessageConsole implements MouseListener {
      * 
      * @param <T>
      */
-    private class LimitedArrayList<T> extends ArrayList<T> {
-        private static final long serialVersionUID = -4163971329925949275L; // serializable UID
+    public class LimitedQueue<E> extends LinkedList<E> {
+        private static final long serialVersionUID = 1L;
         private final int limit;
 
-        public LimitedArrayList(int limit) {
+        public LimitedQueue(int limit) {
             this.limit = limit;
         }
 
         @Override
-        public synchronized boolean add(T item) {
-            if (this.size() > this.limit) {
-                this.remove(0);
+        public boolean add(E o) {
+            super.add(o);
+            while (this.size() > this.limit) {
+                super.remove();
             }
-            return super.add(item);
+            return true;
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        // nothing to do
+        if (((JComponent) e.getSource()).getParent() == this.getMainPanel() && e.getButton() == MouseEvent.BUTTON1) {
+            this.showExpandedDialog();
+        }
     }
 
     @Override
@@ -270,11 +330,19 @@ public class MessageConsole implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        this.showExpandedDialog();
+        if (e.getSource() instanceof JLabel && ((JComponent) e.getSource()).getParent() == this.getMainPanel()) {
+            this.showExpandedDialog();
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+    }
+
+    /**
+     * 
+     */
+    private void requestCloseExpandedDialog() {
         this.displayed = false;
         // wait a small time before really closing the dialog
         Runnable hideTask = new Runnable() {
@@ -285,7 +353,17 @@ public class MessageConsole implements MouseListener {
                 }
             }
         };
-        worker.schedule(hideTask, 1, TimeUnit.SECONDS);
+        worker.schedule(hideTask, 1, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void windowGainedFocus(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowLostFocus(WindowEvent e) {
+        this.requestCloseExpandedDialog();
     }
 
 }

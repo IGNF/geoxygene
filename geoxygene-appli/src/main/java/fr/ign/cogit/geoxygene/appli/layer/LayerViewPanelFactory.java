@@ -3,12 +3,9 @@
  */
 package fr.ign.cogit.geoxygene.appli.layer;
 
-import java.awt.Color;
-
 import org.apache.log4j.Logger;
 import org.lwjgl.LWJGLException;
 
-import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel.LayerViewGLCanvasType;
 
 /** @author JeT This factory creates LayerViewPanel class instances */
@@ -99,7 +96,6 @@ public final class LayerViewPanelFactory {
     private static LayerViewGL1Canvas newLayerViewGL1Canvas(final LayerViewGLPanel glPanel) {
         try {
             LayerViewGL1Canvas gl1Canvas = new LayerViewGL1Canvas(glPanel);
-            gl1Canvas.setBackground(new Color(255, 255, 220));
             return gl1Canvas;
         } catch (LWJGLException e) {
             logger.error("LWJGL creation error");
@@ -112,7 +108,6 @@ public final class LayerViewPanelFactory {
     private static LayerViewGL4Canvas newLayerViewGL4Canvas(final LayerViewGLPanel glPanel) {
         try {
             LayerViewGL4Canvas gl4Canvas = new LayerViewGL4Canvas(glPanel);
-            gl4Canvas.setBackground(new Color(255, 255, 220));
             return gl4Canvas;
         } catch (LWJGLException e) {
             logger.error("LWJGL creation error");

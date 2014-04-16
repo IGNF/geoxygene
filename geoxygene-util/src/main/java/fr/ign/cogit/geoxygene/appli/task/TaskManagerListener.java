@@ -41,6 +41,13 @@ public interface TaskManagerListener {
     public void onTaskAdded(final Task task);
 
     /**
+     * a task has been started in manager
+     * 
+     * @param task
+     */
+    public void onTaskStarted(final Task task);
+
+    /**
      * a task has been removed from a manager
      * 
      * @param task
