@@ -123,7 +123,7 @@
 			<classifier>COGIT</classifier>
 		</dependency>
 		<dependency>
-			<groupId>jfreechart</groupId>
+			<groupId>jfree</groupId>
 			<artifactId>jfreechart</artifactId>
 			<version>${jfreechart.version}</version>
 		</dependency>
