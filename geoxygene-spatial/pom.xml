@@ -93,5 +93,16 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
+	
+	<repositories>
+		<repository>
+			<id>IGetDB</id>
+			<url>http://igetdb.sourceforge.net/maven2-repository/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	
 
 </project>
