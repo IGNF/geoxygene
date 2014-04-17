@@ -375,12 +375,14 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
     public static final String globalOpacityUniformVarName = "globalOpacity";
     public static final String objectOpacityUniformVarName = "objectOpacity";
     public static final String colorTexture1UniformVarName = "colorTexture1";
+    public static final String antialiasingSizeUniformVarName = "antialiasingSize";
 
     public static final String basicProgramName = "Basic";
     public static final String worldspaceColorProgramName = "WorldspaceColor";
     public static final String worldspaceTextureProgramName = "WorldspaceTexture";
     public static final String screenspaceColorProgramName = "ScreenspaceColor";
     public static final String screenspaceTextureProgramName = "ScreenspaceTexture";
+    public static final String screenspaceAntialiasedTextureProgramName = "ScreenspaceAntialiasedTexture";
 
     /**
      * This static method creates one GLContext containing all programs used to
@@ -408,6 +410,8 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                     .addProgram(createScreenspaceColorProgram(screenspaceVertexShader));
             glContext
                     .addProgram(createScreenspaceTextureProgram(screenspaceVertexShader));
+            glContext
+                    .addProgram(createScreenspaceAntialiasedProgram(screenspaceVertexShader));
         }
         return glContext;
     }
@@ -548,6 +552,34 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         textureProgram.addUniform(colorTexture1UniformVarName);
 
         return textureProgram;
+    }
+
+    /**
+     * @param worldspaceVertexShader
+     * @throws GLException
+     */
+    private static GLProgram createScreenspaceAntialiasedProgram(
+            int screenspaceVertexShader) throws GLException {
+
+        int antialiasedFragmentShader = GLProgram
+                .createFragmentShader("./src/main/resources/shaders/antialiased.frag.glsl");
+        // color program
+        GLProgram antialisedProgram = new GLProgram(
+                screenspaceAntialiasedTextureProgramName);
+        antialisedProgram.setVertexShader(screenspaceVertexShader);
+        antialisedProgram.setFragmentShader(antialiasedFragmentShader);
+        antialisedProgram.addInputLocation(GLVertex.vertexUVVariableName,
+                GLVertex.vertexUVLocation);
+        antialisedProgram.addInputLocation(GLVertex.vertexPositionVariableName,
+                GLVertex.vertexPostionLocation);
+        antialisedProgram.addInputLocation(GLVertex.vertexColorVariableName,
+                GLVertex.vertexColorLocation);
+        antialisedProgram.addUniform(globalOpacityUniformVarName);
+        antialisedProgram.addUniform(objectOpacityUniformVarName);
+        antialisedProgram.addUniform(colorTexture1UniformVarName);
+        antialisedProgram.addUniform(antialiasingSizeUniformVarName);
+
+        return antialisedProgram;
     }
 
 }

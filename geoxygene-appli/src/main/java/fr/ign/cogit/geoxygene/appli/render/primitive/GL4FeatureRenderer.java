@@ -59,9 +59,11 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
@@ -300,7 +302,6 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
                 logger.warn("null geometry for feature " + feature.getId());
                 return;
             } else if (geometry.isPolygon()) {
-                logger.warn("polygon geometry for feature " + feature.getId());
                 DisplayableSurface displayablePolygon = new DisplayableSurface(
                         layer.getName() + "-polygon #" + feature.getId(),
                         viewport, (IPolygon) geometry, feature, symbolizer);
@@ -316,6 +317,11 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
                         layer.getName() + "-multicurve #" + feature.getId(),
                         viewport, (IMultiCurve<?>) geometry, symbolizer);
                 displayable = displayableCurve;
+            } else if (geometry.isLineString()) {
+                DisplayableCurve displayableLine = new DisplayableCurve(
+                        layer.getName() + "-linestring #" + feature.getId(),
+                        viewport, (ILineString) geometry, symbolizer);
+                displayable = displayableLine;
             } else if (geometry.isPoint() || (geometry instanceof IMultiPoint)) {
                 DisplayablePoint displayablePoint = new DisplayablePoint(
                         layer.getName() + "-multipoint #" + feature.getId(),
@@ -386,39 +392,56 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             throws GLException {
         // glEnableVertexAttribArray(COLOR_ATTRIBUTE_ID);
         if (this.getLayerViewPanel().useWireframe()) {
-            this.glContext
-                    .setCurrentProgram(LwjglLayerRenderer.worldspaceColorProgramName);
-
-            glEnable(GL_BLEND);
-            if (this.getLayerViewPanel().useAntialiasing()) {
-                glEnable(GL_LINE_SMOOTH);
-                glEnable(GL11.GL_POINT_SMOOTH);
-                glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-                glHint(GL11.GL_POINT_SMOOTH_HINT, GL_NICEST);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            } else {
-                glDisable(GL_LINE_SMOOTH);
-                glDisable(GL11.GL_POINT_SMOOTH);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            }
-            this.wireframeRendering(primitive, DEFAULT_LINE_WIDTH,
-                    DEFAULT_POINT_SIZE);
+            this.renderGLPrimitiveWireframe(primitive);
         } else {
-            this.fboRendering(primitive, opacity);
-            // if (this.getLayerViewPanel().useFBO() && primitive.mayOverlap())
-            // {
+            this.renderGLPrimitivePlain(primitive, opacity);
+        }
+
+    }
+
+    /**
+     * @param primitive
+     * @param opacity
+     * @throws GLException
+     */
+    private void renderGLPrimitivePlain(GLComplex primitive, double opacity)
+            throws GLException {
+        if (this.getLayerViewPanel().useFBO() && primitive.mayOverlap()) {
             // System.err.println("draw primitive with "
             // + primitive.getMeshes().size()
             // + " meshes using FBO rendering");
-            // this.fboRendering(primitive, opacity);
-            // } else {
+            this.fboRendering(primitive, opacity);
+        } else {
             // System.err.println("draw primitive with "
             // + primitive.getMeshes().size()
             // + " meshes using normal rendering");
-            // this.normalRendering(primitive, opacity);
-            // }
+            this.normalRendering(primitive, opacity);
         }
+    }
 
+    /**
+     * @param primitive
+     * @throws GLException
+     */
+    private void renderGLPrimitiveWireframe(GLComplex primitive)
+            throws GLException {
+        this.glContext
+                .setCurrentProgram(LwjglLayerRenderer.worldspaceColorProgramName);
+
+        glEnable(GL_BLEND);
+        if (this.getLayerViewPanel().getAntialiasingSize() > 0) {
+            glEnable(GL_LINE_SMOOTH);
+            glEnable(GL11.GL_POINT_SMOOTH);
+            glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+            glHint(GL11.GL_POINT_SMOOTH_HINT, GL_NICEST);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        } else {
+            glDisable(GL_LINE_SMOOTH);
+            glDisable(GL11.GL_POINT_SMOOTH);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
+        this.wireframeRendering(primitive, DEFAULT_LINE_WIDTH,
+                DEFAULT_POINT_SIZE);
     }
 
     /**
@@ -486,11 +509,12 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, this.fboId);
 
         // check if the screen size has change since previous rendering
-        if (this.fboImageWidth != this.getCanvasWidth()
-                || this.fboImageHeight != this.getCanvasHeight()) {
-            this.fboImageWidth = this.getCanvasWidth();
-            this.fboImageHeight = this.getCanvasHeight();
-            GL11.glViewport(0, 0, this.fboImageWidth, this.fboImageHeight);
+        int antialisingSize = this.getLayerViewPanel().getAntialiasingSize() + 1;
+        if (this.fboImageWidth != antialisingSize * this.getCanvasWidth()
+                || this.fboImageHeight != antialisingSize
+                        * this.getCanvasHeight()) {
+            this.fboImageWidth = antialisingSize * this.getCanvasWidth();
+            this.fboImageHeight = antialisingSize * this.getCanvasHeight();
 
             glBindTexture(GL_TEXTURE_2D, this.fboTextureId);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
@@ -526,31 +550,43 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
                 LwjglLayerRenderer.objectOpacityUniformVarName, 1f);
         this.glContext.getCurrentProgram().setUniform1f(
                 LwjglLayerRenderer.globalOpacityUniformVarName, 1f);
+        this.glContext.getCurrentProgram().setUniform1i(
+                LwjglLayerRenderer.colorTexture1UniformVarName,
+                COLORTEXTURE1_SLOT);
 
         GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
 
         glEnable(GL_TEXTURE_2D);
         GL11.glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
+        GL11.glViewport(0, 0, this.fboImageWidth, this.fboImageHeight);
+
         GL11.glClearColor(0.5f, 0.5f, 0.5f, 0f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
-        if (this.getLayerViewPanel().useAntialiasing()) {
-            glEnable(GL_LINE_SMOOTH);
-            glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            // 1.2 line width is a good value to be close to AWT antialiasing
-            this.wireframeRendering(primitive, 1.2f, 1.f);
-            GLTools.glCheckError("FBO Antialiasing wireframe rendering");
-        }
+        // if (this.getLayerViewPanel().useAntialiasing()) {
+        // glEnable(GL11.GL_BLEND);
+        // glEnable(GL_LINE_SMOOTH);
+        // glEnable(GL11.GL_POLYGON_SMOOTH);
+        // glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        // glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+        // GL14.glBlendFuncSeparate(GL11.GL_ONE, GL11.GL_ZERO,
+        // GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        // // // 1.2 - 1.5 line width are empirical good values to be close to
+        // // AWT
+        // // // antialiasing
+        // // this.wireframeRendering(primitive, 1.5f, 1.f);
+        // // GLTools.glCheckError("FBO Antialiasing wireframe rendering");
+        // } else {
+        // glDisable(GL_LINE_SMOOTH);
+        // glDisable(GL11.GL_POLYGON_SMOOTH);
+        // glDisable(GL11.GL_BLEND);
+        // glDisable(GL11.GL_DEPTH_TEST);
+        // }
         // then draw the polygon with no antialiasing and no blending
+
         glDisable(GL11.GL_BLEND);
-        glDisable(GL_LINE_SMOOTH);
-        glDisable(GL11.GL_POLYGON_SMOOTH);
-        // glBlendFunc(GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        // GL14.glBlendFuncSeparate(GL11.GL_SRC_COLOR, GL11.GL_ONE,
-        // GL11.GL_CONSTANT_COLOR, GL11.GL_ONE);
-        this.normalRendering(primitive, 1f);
+        this.normalRendering(primitive, opacity);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -559,14 +595,18 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         // display the computed texture on the screen
         // using object opacity * overall opacity
         this.glContext
-                .setCurrentProgram(LwjglLayerRenderer.screenspaceTextureProgramName);
-        GL11.glViewport(0, 0, this.fboImageWidth, this.fboImageHeight);
+                .setCurrentProgram(LwjglLayerRenderer.screenspaceAntialiasedTextureProgramName);
+        GL11.glViewport(0, 0, this.getCanvasWidth(), this.getCanvasHeight());
         GL11.glDrawBuffer(GL11.GL_BACK);
         glEnable(GL_TEXTURE_2D);
         glDisable(GL11.GL_POLYGON_SMOOTH);
+
         this.glContext.getCurrentProgram().setUniform1i(
                 LwjglLayerRenderer.colorTexture1UniformVarName,
                 COLORTEXTURE1_SLOT);
+        this.glContext.getCurrentProgram().setUniform1i(
+                LwjglLayerRenderer.antialiasingSizeUniformVarName,
+                antialisingSize);
         GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE1_SLOT);
         glBindTexture(GL_TEXTURE_2D, this.fboTextureId);
 

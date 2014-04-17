@@ -53,9 +53,11 @@ import fr.ign.cogit.geoxygene.util.gl.GLComplex;
  */
 public class DisplayableCurve extends AbstractTask implements GLDisplayable {
 
-    private static final Logger logger = Logger.getLogger(DisplayableCurve.class.getName()); // logger
+    private static final Logger logger = Logger
+            .getLogger(DisplayableCurve.class.getName()); // logger
 
-    private static final Colorizer partialColorizer = new SolidColorizer(Color.red);
+    private static final Colorizer partialColorizer = new SolidColorizer(
+            Color.red);
     private final List<ILineString> curves = new ArrayList<ILineString>();
     private Symbolizer symbolizer = null;
     private List<GLComplex> fullRepresentation = null;
@@ -63,15 +65,16 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
     private long displayCount = 0; // number of time it has been displayed
     private Date lastDisplayTime; // last time it has been displayed
 
-    //    private Colorizer colorizer = null;
-    //    private Parameterizer parameterizer = null;
+    // private Colorizer colorizer = null;
+    // private Parameterizer parameterizer = null;
 
-    //    private Texture texture = null;
+    // private Texture texture = null;
 
     /**
-     * Constructor using a IMultiSurface
+     * Constructor using a IMultiCurve
      */
-    public DisplayableCurve(String name, Viewport viewport, IMultiCurve<?> multiCurve, Symbolizer symbolizer) {
+    public DisplayableCurve(String name, Viewport viewport,
+            IMultiCurve<?> multiCurve, Symbolizer symbolizer) {
         super(name);
         this.symbolizer = symbolizer;
 
@@ -79,9 +82,20 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
             if (lineString instanceof ILineString) {
                 this.curves.add((ILineString) lineString);
             } else {
-                logger.warn("multisurface does not contain only ILineString but " + this.curves.getClass().getSimpleName());
+                logger.warn("multisurface does not contain only ILineString but "
+                        + this.curves.getClass().getSimpleName());
             }
         }
+    }
+
+    /**
+     * Constructor using a ILineString
+     */
+    public DisplayableCurve(String name, Viewport viewport,
+            ILineString lineString, Symbolizer symbolizer) {
+        super(name);
+        this.symbolizer = symbolizer;
+        this.curves.add(lineString);
     }
 
     /*
@@ -141,15 +155,16 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
         this.fullRepresentation = null;
         super.setState(TaskState.RUNNING);
 
-        //        if (this.getTexture() != null) {
-        //            this.generateWithDistanceField();
-        //        }
+        // if (this.getTexture() != null) {
+        // this.generateWithDistanceField();
+        // }
 
         if (this.symbolizer instanceof LineSymbolizer) {
             LineSymbolizer lineSymbolizer = (LineSymbolizer) this.symbolizer;
             this.generateWithLineSymbolizer(lineSymbolizer);
         } else {
-            logger.error("Curve rendering do not handle " + this.symbolizer.getClass().getSimpleName());
+            logger.error("Curve rendering do not handle "
+                    + this.symbolizer.getClass().getSimpleName());
             super.setState(TaskState.ERROR);
             return;
         }
@@ -159,14 +174,20 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
 
     private void generateWithLineSymbolizer(LineSymbolizer symbolizer) {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
-        //        return GLComplexFactory.createFilledPolygon(multiSurface, symbolizer.getStroke().getColor());
+        // return GLComplexFactory.createFilledPolygon(multiSurface,
+        // symbolizer.getStroke().getColor());
         IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
         double minX = envelope.minX();
         double minY = envelope.minY();
 
-        //        BasicStroke awtStroke = GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport, symbolizer);
-        //GLComplex outline = GLComplexFactory.createOutlineMultiSurface(this.polygons, awtStroke, minX, minY);
-        GLComplex line = LineTesselator.createThickLine(this.curves, symbolizer.getStroke(), minX, minY);
+        // BasicStroke awtStroke =
+        // GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport,
+        // symbolizer);
+        // GLComplex outline =
+        // GLComplexFactory.createOutlineMultiSurface(this.polygons, awtStroke,
+        // minX, minY);
+        GLComplex line = LineTesselator.createThickLine(this.curves,
+                symbolizer.getStroke(), minX, minY);
         line.setColor(symbolizer.getStroke().getColor());
         line.setOverallOpacity(symbolizer.getStroke().getColor().getAlpha());
         complexes.add(line);
@@ -185,7 +206,8 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
             IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
             double minX = envelope.minX();
             double minY = envelope.minY();
-            this.partialRepresentation = GLComplexFactory.createQuickLine(this.curves, partialColorizer, null, minX, minY);
+            this.partialRepresentation = GLComplexFactory.createQuickLine(
+                    this.curves, partialColorizer, null, minX, minY);
         }
         this.displayIncrement();
         return this.partialRepresentation;

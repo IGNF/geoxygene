@@ -1,10 +1,8 @@
 package fr.ign.cogit.geoxygene.appli.layer;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dialog.ModalityType;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,26 +48,29 @@ import fr.ign.cogit.geoxygene.util.ImageComparator;
  * @author turbet
  * 
  */
-public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, ActionListener {
+public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
+        ActionListener {
 
     private static final long serialVersionUID = -7181604491025859187L; // serializable
                                                                         // UID
     // private static final int GLASS_LAYER_INDEX = 10; // layer index on which
     // the overlay Swing stuff will be drawn
-    // private static final int GL_LAYER_INDEX = 1; // layer index on which the GL
+    // private static final int GL_LAYER_INDEX = 1; // layer index on which the
+    // GL
     // stuff will be rendered
-    private static Logger logger = Logger.getLogger(LayerViewGLPanel.class.getName());
+    private static Logger logger = Logger.getLogger(LayerViewGLPanel.class
+            .getName());
     private SyncRenderingManager renderingManager = null;
     private LayerViewGLCanvas glCanvas = null; // canvas containing the GL
     private LayerViewGLCanvasType glType = null;
     private JToggleButton wireframeToggleButton = null;
     private JToggleButton fboToggleButton = null;
-    private JToggleButton antialiasingToggleButton = null;
+    private JButton antialiasingButton = null;
     private JButton clearCacheButton = null;
     private JButton awtComparButton = null;
     private JToolBar.Separator toolbarSeparator = null;
     private boolean wireframe = false;
-    private boolean antialiasing = true;
+    private int antialiasing = 2;
     private boolean useFBO = true;
 
     public enum LayerViewGLCanvasType {
@@ -89,10 +90,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
         this.addPaintListener(new ScalePaintListener());
         this.addPaintListener(new CompassPaintListener());
         this.addPaintListener(new LegendPaintListener());
-        //        this.setBackground(new Color(255, 255, 220));
-        this.renderingManager = new SyncRenderingManager(this, RenderingType.LWJGL);
+        // this.setBackground(new Color(255, 255, 220));
+        this.renderingManager = new SyncRenderingManager(this,
+                RenderingType.LWJGL);
 
-        this.glCanvas = LayerViewPanelFactory.newLayerViewGLCanvas(this, glType);
+        this.glCanvas = LayerViewPanelFactory
+                .newLayerViewGLCanvas(this, glType);
         this.setGlType(glType);
         this.setLayout(new BorderLayout());
         // Attach LWJGL to the created canvas
@@ -102,25 +105,39 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
 
     @Override
     public void displayGui() {
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getToolbarSeparator());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getWireframeButton());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getAntialiasingButton());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getFBOButton());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getClearCacheButton());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().add(this.getAWTComparButton());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().revalidate();
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .add(this.getToolbarSeparator());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .add(this.getWireframeButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .add(this.getAntialiasingButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .add(this.getFBOButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .add(this.getClearCacheButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .add(this.getAWTComparButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
     }
 
     @Override
     public void hideGui() {
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getToolbarSeparator());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getWireframeButton());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getAntialiasingButton());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getFBOButton());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getClearCacheButton());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().remove(this.getAWTComparButton());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar().revalidate();
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .remove(this.getToolbarSeparator());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .remove(this.getWireframeButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .remove(this.getAntialiasingButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .remove(this.getFBOButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .remove(this.getClearCacheButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .remove(this.getAWTComparButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
     }
 
@@ -132,11 +149,11 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
         this.useFBO = useFBO;
     }
 
-    public boolean useAntialiasing() {
+    public int getAntialiasingSize() {
         return this.antialiasing;
     }
 
-    public void setAntialiasing(boolean b) {
+    public void setAntialiasing(int b) {
         this.antialiasing = b;
     }
 
@@ -185,8 +202,11 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
     private JToggleButton getWireframeButton() {
         if (this.wireframeToggleButton == null) {
             this.wireframeToggleButton = new JToggleButton();
-            this.wireframeToggleButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/wireframe.png")));
-            this.wireframeToggleButton.setToolTipText(I18N.getString("RenderingGL.ToggleWireframe"));
+            this.wireframeToggleButton.setIcon(new ImageIcon(
+                    MainFrameToolBar.class
+                            .getResource("/images/icons/16x16/wireframe.png")));
+            this.wireframeToggleButton.setToolTipText(I18N
+                    .getString("RenderingGL.ToggleWireframe"));
             this.wireframeToggleButton.setSelected(this.useWireframe());
             this.wireframeToggleButton.addItemListener(this);
         }
@@ -196,30 +216,40 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
     private JToggleButton getFBOButton() {
         if (this.fboToggleButton == null) {
             this.fboToggleButton = new JToggleButton();
-            this.fboToggleButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/fbo.png")));
-            this.fboToggleButton.setToolTipText(I18N.getString("RenderingGL.ToggleFBO"));
+            this.fboToggleButton.setIcon(new ImageIcon(MainFrameToolBar.class
+                    .getResource("/images/icons/16x16/fbo.png")));
+            this.fboToggleButton.setToolTipText(I18N
+                    .getString("RenderingGL.ToggleFBO"));
             this.fboToggleButton.setSelected(this.useFBO());
             this.fboToggleButton.addItemListener(this);
         }
         return this.fboToggleButton;
     }
 
-    private JToggleButton getAntialiasingButton() {
-        if (this.antialiasingToggleButton == null) {
-            this.antialiasingToggleButton = new JToggleButton();
-            this.antialiasingToggleButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/antialiasing.png")));
-            this.antialiasingToggleButton.setToolTipText(I18N.getString("RenderingGL.ToggleAntialiasing"));
-            this.antialiasingToggleButton.setSelected(this.useAntialiasing());
-            this.antialiasingToggleButton.addItemListener(this);
+    private JButton getAntialiasingButton() {
+        if (this.antialiasingButton == null) {
+            this.antialiasingButton = new JButton();
+            this.antialiasingButton
+                    .setIcon(new ImageIcon(
+                            MainFrameToolBar.class
+                                    .getResource("/images/icons/16x16/antialiasing.png")));
+            this.antialiasingButton.setToolTipText(I18N
+                    .getString("RenderingGL.ToggleAntialiasing"));
+
+            this.antialiasingButton.setText(String.valueOf(this
+                    .getAntialiasingSize()));
+            this.antialiasingButton.addActionListener(this);
         }
-        return this.antialiasingToggleButton;
+        return this.antialiasingButton;
     }
 
     private JButton getAWTComparButton() {
         if (this.awtComparButton == null) {
             this.awtComparButton = new JButton();
-            this.awtComparButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/compare.gif")));
-            this.awtComparButton.setToolTipText(I18N.getString("RenderingGL.ImageComparison"));
+            this.awtComparButton.setIcon(new ImageIcon(MainFrameToolBar.class
+                    .getResource("/images/icons/16x16/compare.gif")));
+            this.awtComparButton.setToolTipText(I18N
+                    .getString("RenderingGL.ImageComparison"));
             this.awtComparButton.addActionListener(this);
         }
         return this.awtComparButton;
@@ -228,8 +258,10 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
     private JButton getClearCacheButton() {
         if (this.clearCacheButton == null) {
             this.clearCacheButton = new JButton();
-            this.clearCacheButton.setIcon(new ImageIcon(MainFrameToolBar.class.getResource("/images/icons/16x16/clear.png")));
-            this.clearCacheButton.setToolTipText(I18N.getString("RenderingGL.ClearCache"));
+            this.clearCacheButton.setIcon(new ImageIcon(MainFrameToolBar.class
+                    .getResource("/images/icons/16x16/clear.png")));
+            this.clearCacheButton.setToolTipText(I18N
+                    .getString("RenderingGL.ClearCache"));
             this.clearCacheButton.addActionListener(this);
         }
         return this.clearCacheButton;
@@ -278,7 +310,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
                 }
                 this.glCanvas = null;
             } catch (Exception e) {
-                logger.error("An error occurred releasing GL context " + e.getMessage());
+                logger.error("An error occurred releasing GL context "
+                        + e.getMessage());
             }
         }
 
@@ -330,7 +363,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
     }
 
     @Override
-    public int print(final Graphics arg0, final PageFormat arg1, final int arg2) throws PrinterException {
+    public int print(final Graphics arg0, final PageFormat arg1, final int arg2)
+            throws PrinterException {
         logger.error("LayerViewGlPanel::print(...) not implemented yet");
         return 0;
     }
@@ -340,11 +374,14 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
         if (this.getRenderingManager().getLayers().isEmpty()) {
             return null;
         }
-        List<Layer> copy = new ArrayList<Layer>(this.getRenderingManager().getLayers());
+        List<Layer> copy = new ArrayList<Layer>(this.getRenderingManager()
+                .getLayers());
         Iterator<Layer> layerIterator = copy.iterator();
-        IEnvelope envelope = layerIterator.next().getFeatureCollection().envelope();
+        IEnvelope envelope = layerIterator.next().getFeatureCollection()
+                .envelope();
         while (layerIterator.hasNext()) {
-            IFeatureCollection<? extends IFeature> collection = layerIterator.next().getFeatureCollection();
+            IFeatureCollection<? extends IFeature> collection = layerIterator
+                    .next().getFeatureCollection();
             if (collection != null) {
                 IEnvelope env = collection.getEnvelope();
                 if (envelope == null) {
@@ -377,10 +414,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
             this.setWireframe(this.getWireframeButton().isSelected());
             this.repaint();
         }
-        if (e.getSource() == this.getAntialiasingButton()) {
-            this.setAntialiasing(this.getAntialiasingButton().isSelected());
-            this.repaint();
-        }
         if (e.getSource() == this.getFBOButton()) {
             this.setFBO(this.getFBOButton().isSelected());
             this.repaint();
@@ -390,7 +423,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this.getClearCacheButton()) {
-            for (LayerRenderer renderer : this.getRenderingManager().getRenderers()) {
+            for (LayerRenderer renderer : this.getRenderingManager()
+                    .getRenderers()) {
                 renderer.reset();
             }
             this.repaint();
@@ -400,10 +434,27 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener, Ac
 
             dialog.setSize(this.getWidth(), this.getHeight());
             dialog.setLocation(50, 50);
-            //            dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+            // dialog.setModalityType(ModalityType.APPLICATION_MODAL);
             dialog.getContentPane().add(imageComparator.getGui());
             dialog.setVisible(true);
             imageComparator.update();
+        } else if (e.getSource() == this.getAntialiasingButton()) {
+            int antialiasingValue = 1;
+            try {
+                antialiasingValue = Integer.parseInt(this
+                        .getAntialiasingButton().getText());
+                antialiasingValue++;
+                if (this.antialiasing >= 4) {
+                    antialiasingValue = 0;
+                }
+                this.getAntialiasingButton().setText(
+                        String.valueOf(antialiasingValue));
+                this.setAntialiasing(antialiasingValue);
+            } catch (Exception e2) {
+                this.getAntialiasingButton().setText(String.valueOf(1));
+                this.setAntialiasing(1);
+            }
+            this.repaint();
         } else {
             // old SLD events....
             this.repaint();
