@@ -124,6 +124,6 @@ public class BrowserMode extends AbstractMode {
 
   @Override
   protected String getToolTipText() {
-    return I18N.getString("SelectionMode.ToolTip"); //$NON-NLS-1$
+    return I18N.getString("BrowseMode.ToolTip"); //$NON-NLS-1$
   }
 }
