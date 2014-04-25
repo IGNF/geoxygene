@@ -56,15 +56,19 @@ import fr.ign.cogit.geoxygene.style.gl.TexturedPolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.texture.Texture;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 
 /**
  * @author JeT
  * 
  */
-public class DisplayableSurface extends AbstractTask implements GLDisplayable, TaskListener {
+public class DisplayableSurface extends AbstractTask implements GLDisplayable,
+        TaskListener {
 
-    private static final Logger logger = Logger.getLogger(DisplayableSurface.class.getName()); // logger
-    private static final Colorizer partialColorizer = new SolidColorizer(Color.blue);
+    private static final Logger logger = Logger
+            .getLogger(DisplayableSurface.class.getName()); // logger
+    private static final Colorizer partialColorizer = new SolidColorizer(
+            Color.blue);
 
     private IFeature feature = null;
     private Viewport viewport = null;
@@ -75,15 +79,17 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable, T
     private long displayCount = 0; // number of time it has been displayed
     private Date lastDisplayTime; // last time it has been displayed
 
-    //    private Colorizer colorizer = null;
-    //    private Parameterizer parameterizer = null;
+    // private Colorizer colorizer = null;
+    // private Parameterizer parameterizer = null;
 
-    //    private Texture texture = null;
+    // private Texture texture = null;
 
     /**
      * Constructor using a IMultiSurface
      */
-    public DisplayableSurface(String name, Viewport viewport, IMultiSurface<?> multiSurface, IFeature feature, Symbolizer symbolizer) {
+    public DisplayableSurface(String name, Viewport viewport,
+            IMultiSurface<?> multiSurface, IFeature feature,
+            Symbolizer symbolizer) {
         super(name);
         this.viewport = viewport;
         this.feature = feature;
@@ -94,7 +100,8 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable, T
                 this.polygons.add((IPolygon) polygon);
 
             } else {
-                logger.warn("multisurface does not contains only IPolygons but " + polygon.getClass().getSimpleName());
+                logger.warn("multisurface does not contains only IPolygons but "
+                        + polygon.getClass().getSimpleName());
             }
         }
     }
@@ -102,7 +109,8 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable, T
     /** 
      * 
      */
-    public DisplayableSurface(String name, Viewport viewport, IPolygon polygon, IFeature feature, Symbolizer symbolizer) {
+    public DisplayableSurface(String name, Viewport viewport, IPolygon polygon,
+            IFeature feature, Symbolizer symbolizer) {
         super(name);
         this.symbolizer = symbolizer;
         this.polygons.add(polygon);
@@ -197,9 +205,9 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable, T
         this.fullRepresentation = null;
         super.setState(TaskState.RUNNING);
 
-        //        if (this.getTexture() != null) {
-        //            this.generateWithDistanceField();
-        //        }
+        // if (this.getTexture() != null) {
+        // this.generateWithDistanceField();
+        // }
 
         if (this.symbolizer instanceof DistanceFieldTexturedPolygonSymbolizer) {
             DistanceFieldTexturedPolygonSymbolizer polygonSymbolizer = (DistanceFieldTexturedPolygonSymbolizer) this.symbolizer;
@@ -218,20 +226,25 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable, T
         super.setState(TaskState.FINISHED);
     }
 
-    synchronized private void generateWithPolygonSymbolizer(PolygonSymbolizer symbolizer) {
+    synchronized private void generateWithPolygonSymbolizer(
+            PolygonSymbolizer symbolizer) {
         Texture texture = symbolizer.getFill().getTexture();
-        IFeatureCollection<IFeature> featureCollection = this.getFeature().getFeatureCollection(0);
+        IFeatureCollection<IFeature> featureCollection = this.getFeature()
+                .getFeatureCollection(0);
         if (texture != null) {
-            //            texture.setTextureDimension(2000, 2000);
-            //            logger.debug("feature rendering : id=" + this.feature.getId() + " type=" + this.feature.getFeatureType() + " collections = "
-            //                    + this.feature.getFeatureCollections());
-            TextureTask<? extends Texture> textureTask = TextureManager.getInstance().getTextureTask(texture, featureCollection, this.getViewport());
+            // texture.setTextureDimension(2000, 2000);
+            // logger.debug("feature rendering : id=" + this.feature.getId() +
+            // " type=" + this.feature.getFeatureType() + " collections = "
+            // + this.feature.getFeatureCollections());
+            TextureTask<? extends Texture> textureTask = TextureManager
+                    .getInstance().getTextureTask(texture, featureCollection,
+                            this.getViewport());
             if (textureTask == null) {
                 return;
             }
             textureTask.addTaskListener(this);
             texture.setTextureDimension(2000, 2000);
-            // FIXME: is this dimension really useful ??? 
+            // FIXME: is this dimension really useful ???
             textureTask.start();
             // wait for texture computation completion
             BufferedImage imgTexture = null;
@@ -247,65 +260,90 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable, T
             switch (texture.getTextureDrawingMode()) {
             case VIEWPORTSPACE:
                 IEnvelope envelope = featureCollection.envelope();
-                BasicParameterizer parameterizer = new BasicParameterizer(envelope, false, true);
+                BasicParameterizer parameterizer = new BasicParameterizer(
+                        envelope, false, true);
                 BasicTexture glTexture = new BasicTexture(imgTexture);
-                this.generateWithTextureAndParameterizer(glTexture, parameterizer, envelope);
+                this.generateWithTextureAndParameterizer(glTexture,
+                        parameterizer, envelope);
                 break;
             case SCREENSPACE:
-                //drawTextureScreenspaceCoordinates(this.feature, this.viewport, imgTexture);
+                // drawTextureScreenspaceCoordinates(this.feature,
+                // this.viewport, imgTexture);
                 logger.warn("Screenspace coordinates textures are not yet implemented in GL rendering");
                 break;
             default:
-                logger.warn("Do not know how to draw texture type " + texture.getTextureDrawingMode());
+                logger.warn("Do not know how to draw texture type "
+                        + texture.getTextureDrawingMode());
             }
         } else {
 
             List<GLComplex> complexes = new ArrayList<GLComplex>();
-            //        return GLComplexFactory.createFilledPolygon(multiSurface, symbolizer.getStroke().getColor());
+            // return GLComplexFactory.createFilledPolygon(multiSurface,
+            // symbolizer.getStroke().getColor());
             IEnvelope envelope = IGeometryUtil.getEnvelope(this.polygons);
             double minX = envelope.minX();
             double minY = envelope.minY();
-            SolidColorizer colorizer = new SolidColorizer(this.symbolizer.getStroke().getColor());
-            GLComplex content = GLComplexFactory.createFilledPolygons(this.polygons, colorizer, new BasicParameterizer(envelope, false, false), minX, minY);
+            SolidColorizer colorizer = new SolidColorizer(symbolizer.getFill()
+                    .getColor());
+            GLSimpleComplex content = GLComplexFactory.createFilledPolygons(
+                    this.getName() + "-filled", this.polygons, colorizer,
+                    new BasicParameterizer(envelope, false, false), minX, minY);
             content.setColor(symbolizer.getFill().getColor());
             complexes.add(content);
 
-            //        BasicStroke awtStroke = GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport, symbolizer);
-            //GLComplex outline = GLComplexFactory.createOutlineMultiSurface(this.polygons, awtStroke, minX, minY);
-            GLComplex outline = GLComplexFactory.createPolygonOutlines(this.polygons, symbolizer.getStroke(), minX, minY);
+            // BasicStroke awtStroke =
+            // GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport,
+            // symbolizer);
+            // GLComplex outline =
+            // GLComplexFactory.createOutlineMultiSurface(this.polygons,
+            // awtStroke, minX, minY);
+            colorizer = new SolidColorizer(symbolizer.getStroke().getColor());
+            GLSimpleComplex outline = GLComplexFactory.createPolygonOutlines(
+                    this.getName() + "-outline", this.polygons,
+                    symbolizer.getStroke(), minX, minY);
             outline.setColor(symbolizer.getStroke().getColor());
             complexes.add(outline);
             this.fullRepresentation = complexes;
         }
     }
 
-    private void generateWithTexturedPolygonSymbolizer(TexturedPolygonSymbolizer symbolizer) {
-        throw new IllegalStateException("Set the envelope !. Should it be the feature collection, the polygon set or the feature envelope ???");
-        //        fr.ign.cogit.geoxygene.util.gl.Texture texture = symbolizer.getTexture();
-        //        Parameterizer parameterizer = symbolizer.getParameterizer();
-        //        this.generateWithTextureAndParameterizer(texture, parameterizer, );
+    private void generateWithTexturedPolygonSymbolizer(
+            TexturedPolygonSymbolizer symbolizer) {
+        throw new IllegalStateException(
+                "Set the envelope !. Should it be the feature collection, the polygon set or the feature envelope ???");
+        // fr.ign.cogit.geoxygene.util.gl.Texture texture =
+        // symbolizer.getTexture();
+        // Parameterizer parameterizer = symbolizer.getParameterizer();
+        // this.generateWithTextureAndParameterizer(texture, parameterizer, );
     }
 
     /**
      * @param texture
      * @param parameterizer
      */
-    private void generateWithTextureAndParameterizer(fr.ign.cogit.geoxygene.util.gl.Texture texture, Parameterizer parameterizer, IEnvelope envelope) {
+    private void generateWithTextureAndParameterizer(
+            fr.ign.cogit.geoxygene.util.gl.Texture texture,
+            Parameterizer parameterizer, IEnvelope envelope) {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
         double minX = envelope.minX();
         double minY = envelope.minY();
-        GLComplex content = GLComplexFactory.createFilledPolygons(this.polygons, null, parameterizer, minX, minY);
+        GLSimpleComplex content = GLComplexFactory.createFilledPolygons(
+                this.getName() + "-texture-filled", this.polygons, null,
+                parameterizer, minX, minY);
         content.setTexture(texture);
         complexes.add(content);
         this.fullRepresentation = complexes;
     }
 
-    private void generateWithDistanceFieldTexturedPolygonSymbolizer(DistanceFieldTexturedPolygonSymbolizer symbolizer) {
+    private void generateWithDistanceFieldTexturedPolygonSymbolizer(
+            DistanceFieldTexturedPolygonSymbolizer symbolizer) {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
         IEnvelope envelope = IGeometryUtil.getEnvelope(this.polygons);
         double minX = envelope.minX();
         double minY = envelope.minY();
-        GLComplex content = GLComplexFactory.createFilledPolygons(this.polygons, null, symbolizer.getParameterizer(), minX, minY);
+        GLSimpleComplex content = GLComplexFactory.createFilledPolygons(
+                this.getName() + "-dfield-filled", this.polygons, null,
+                symbolizer.getParameterizer(), minX, minY);
         content.setTexture(symbolizer.getTexture());
         complexes.add(content);
 
@@ -324,7 +362,9 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable, T
             IEnvelope envelope = IGeometryUtil.getEnvelope(this.polygons);
             double minX = envelope.minX();
             double minY = envelope.minY();
-            this.partialRepresentation = GLComplexFactory.createQuickPolygons(this.polygons, partialColorizer, null, minX, minY);
+            this.partialRepresentation = GLComplexFactory.createQuickPolygons(
+                    this.getName() + "-partial", this.polygons,
+                    partialColorizer, null, minX, minY);
         }
         this.displayIncrement();
         return this.partialRepresentation;

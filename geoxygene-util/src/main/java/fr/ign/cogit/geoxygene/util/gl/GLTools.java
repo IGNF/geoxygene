@@ -55,6 +55,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +68,6 @@ import javax.vecmath.Point2d;
 import org.apache.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.OpenGLException;
 import org.lwjgl.opengl.Util;
 import org.lwjgl.util.Color;
@@ -89,6 +90,40 @@ public final class GLTools {
      */
     private GLTools() {
         // utility class
+    }
+
+    /**
+     * Display the content of a float buffer
+     * 
+     * @param buffer
+     */
+    public static void displayBuffer(FloatBuffer buffer) {
+        buffer.mark();
+        System.err.println("Float buffer limit = " + buffer.limit()
+                + " capacity = " + buffer.capacity() + " position = "
+                + buffer.position());
+        for (int i = 0; i < buffer.limit(); i++) {
+            float value = buffer.get(i);
+            System.err.println("\t#" + i + ":" + value);
+        }
+        buffer.reset();
+    }
+
+    /**
+     * Display the content of a float buffer
+     * 
+     * @param buffer
+     */
+    public static void displayBuffer(IntBuffer buffer) {
+        buffer.mark();
+        System.err.println("Int buffer limit = " + buffer.limit()
+                + " capacity = " + buffer.capacity() + " position = "
+                + buffer.position());
+        for (int i = 0; i < buffer.limit(); i++) {
+            int value = buffer.get(i);
+            System.err.println("\t#" + i + ":" + value);
+        }
+        buffer.reset();
     }
 
     /**

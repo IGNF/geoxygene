@@ -46,6 +46,7 @@ import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 
 /**
  * @author JeT
@@ -186,8 +187,8 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
         // GLComplex outline =
         // GLComplexFactory.createOutlineMultiSurface(this.polygons, awtStroke,
         // minX, minY);
-        GLComplex line = LineTesselator.createThickLine(this.curves,
-                symbolizer.getStroke(), minX, minY);
+        GLSimpleComplex line = LineTesselator.createThickLine(this.getName()
+                + "-full", this.curves, symbolizer.getStroke(), minX, minY);
         line.setColor(symbolizer.getStroke().getColor());
         line.setOverallOpacity(symbolizer.getStroke().getColor().getAlpha());
         complexes.add(line);
@@ -207,7 +208,8 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
             double minX = envelope.minX();
             double minY = envelope.minY();
             this.partialRepresentation = GLComplexFactory.createQuickLine(
-                    this.curves, partialColorizer, null, minX, minY);
+                    this.getName() + "-partial", this.curves, partialColorizer,
+                    null, minX, minY);
         }
         this.displayIncrement();
         return this.partialRepresentation;

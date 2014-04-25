@@ -52,6 +52,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,8 +60,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.Util;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -84,8 +85,10 @@ import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex.GLSimpleRenderingCapability;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
-import fr.ign.cogit.geoxygene.util.gl.GLVertex;
 import fr.ign.cogit.geoxygene.util.gl.Texture;
 
 /**
@@ -118,7 +121,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
 
     private final Map<IFeature, GLDisplayable> displayables = new HashMap<IFeature, GLDisplayable>();
     private LwjglLayerRenderer lwjglLayerRenderer = null;
-    private GLComplex screenQuad = null;
+    private GLSimpleComplex screenQuad = null;
     private int fboId = -1;
     private int fboTextureId = -1;
     private int fboImageWidth = -1;
@@ -145,15 +148,15 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * 
      */
     private void initializeScreenQuad() {
-        this.screenQuad = new GLComplex(0f, 0f);
+        this.screenQuad = new GLSimpleComplex("scrren", 0f, 0f);
         GLMesh mesh = this.screenQuad.addGLMesh(GL11.GL_QUADS);
-        mesh.addIndex(this.screenQuad.addVertex(new GLVertex(
+        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
                 new Point2D.Double(-1, -1), new Point2D.Double(0, 0))));
-        mesh.addIndex(this.screenQuad.addVertex(new GLVertex(
+        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
                 new Point2D.Double(-1, 1), new Point2D.Double(0, 1))));
-        mesh.addIndex(this.screenQuad.addVertex(new GLVertex(
+        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
                 new Point2D.Double(1, 1), new Point2D.Double(1, 1))));
-        mesh.addIndex(this.screenQuad.addVertex(new GLVertex(
+        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
                 new Point2D.Double(1, -1), new Point2D.Double(1, 0))));
         this.screenQuad.setColor(Color.blue);
         this.screenQuad.setOverallOpacity(0.5);
@@ -162,7 +165,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     /**
      * @return the screenQuad
      */
-    public GLComplex getScreenQuad() {
+    public GLSimpleComplex getScreenQuad() {
         if (this.screenQuad == null) {
             this.initializeScreenQuad();
         }
@@ -270,7 +273,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     public void render(final IFeature feature, final Layer layer,
             final Symbolizer symbolizer, final Viewport viewport)
             throws RenderingException {
-        // this.checkCurrentProgram("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv render()");
+        GLTools.glCheckError("gl error ocurred before main render method");
         if (this.glContext == null) {
             logger.error("no GL Context defined");
             return;
@@ -346,6 +349,10 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             }
         }
 
+        if (!GLTools.glCheckError("gl error ocurred during rendering")) {
+            throw new RenderingException(Util.translateGLErrorString(GL11
+                    .glGetError()));
+        }
         // this.checkCurrentProgram("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ render()");
     }
 
@@ -406,6 +413,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      */
     private void renderGLPrimitivePlain(GLComplex primitive, double opacity)
             throws GLException {
+        System.err.println("rendering primitive "
+                + primitive.getMeshes().size() + " meshes");
         if (this.getLayerViewPanel().useFBO() && primitive.mayOverlap()) {
             // System.err.println("draw primitive with "
             // + primitive.getMeshes().size()
@@ -417,6 +426,30 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             // + " meshes using normal rendering");
             this.normalRendering(primitive, opacity);
         }
+    }
+
+    private void normalRendering(GLComplex primitive, double opacity)
+            throws GLException {
+        if (primitive instanceof GLSimpleComplex) {
+            this.normalSimpleRendering((GLSimpleComplex) primitive, opacity);
+            return;
+        }
+        throw new UnsupportedOperationException(
+                "GLComplex normal Rendering is not supported for Complex type "
+                        + primitive.getClass().getSimpleName());
+
+    }
+
+    private void fboRendering(GLComplex primitive, double opacity)
+            throws GLException {
+        if (primitive instanceof GLSimpleComplex) {
+            this.fboSimpleRendering((GLSimpleComplex) primitive, opacity);
+            return;
+        }
+        throw new UnsupportedOperationException(
+                "GLComplex FBO Rendering is not supported for Complex type "
+                        + primitive.getClass().getSimpleName());
+
     }
 
     /**
@@ -501,7 +534,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * @param primitive
      * @throws GLException
      */
-    private void fboRendering(GLComplex primitive, double opacity)
+    private void fboSimpleRendering(GLSimpleComplex primitive, double opacity)
             throws GLException {
         // render primitive in a FBO (offscreen rendering)
         GLTools.glCheckError("entering FBO rendering");
@@ -647,24 +680,26 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * @param primitive
      * @throws GLException
      */
-    private void normalRendering(GLComplex primitive, double opacity)
+    private void normalSimpleRendering(GLSimpleComplex primitive, double opacity)
             throws GLException {
+        GLTools.glCheckError("gl error before normal rendering");
 
-        switch (primitive.getRenderingCapability()) {
-        case TEXTURE:
+        if (Arrays.binarySearch(primitive.getRenderingCapabilities(),
+                GLSimpleRenderingCapability.TEXTURE) >= 0) {
+            System.err.println("use texture");
             this.glContext
                     .setCurrentProgram(LwjglLayerRenderer.worldspaceTextureProgramName);
-            break;
-        case POSITION:
-        case COLOR:
+        } else if (Arrays.binarySearch(primitive.getRenderingCapabilities(),
+                GLSimpleRenderingCapability.COLOR) >= 0
+                || Arrays.binarySearch(primitive.getRenderingCapabilities(),
+                        GLSimpleRenderingCapability.POSITION) >= 0) {
+            System.err.println("use color");
             this.glContext
                     .setCurrentProgram(LwjglLayerRenderer.worldspaceColorProgramName);
-            break;
-        default:
+        } else {
             logger.warn("Rendering capability "
-                    + primitive.getRenderingCapability()
+                    + Arrays.toString(primitive.getRenderingCapabilities())
                     + " is not handled by " + this.getClass().getSimpleName());
-            break;
         }
         this.glContext.getCurrentProgram().setUniform1f(
                 LwjglLayerRenderer.objectOpacityUniformVarName, 1f);
@@ -699,13 +734,14 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
         // this.checkCurrentProgram("normalRendering(): before drawComplex()");
 
+        GLTools.displayBuffer(primitive.getFlippedVerticesBuffer());
         this.drawComplex(primitive);
         // this.checkCurrentProgram("normalRendering(): after drawComplex()");
-        GLTools.glCheckError("direct rendering drawing glComplex class = "
+        GLTools.glCheckError("direct rendering drawing GLSimpleComplex class = "
                 + primitive.getClass().getSimpleName());
         if (texture != null) {
             texture.finalizeRendering();
-            GLTools.glCheckError("direct rendering finalizing texture rendering glComplex class = "
+            GLTools.glCheckError("direct rendering finalizing texture rendering GLSimpleComplex class = "
                     + primitive.getClass().getSimpleName());
         }
 

@@ -30,7 +30,6 @@ package fr.ign.cogit.geoxygene.appli.render.primitive;
 import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -47,8 +46,8 @@ import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.util.ColorUtil;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 
 /**
  * @author JeT
@@ -56,8 +55,10 @@ import fr.ign.cogit.geoxygene.util.gl.GLComplex;
  */
 public class DisplayablePoint extends AbstractTask implements GLDisplayable {
 
-    private static final Logger logger = Logger.getLogger(DisplayablePoint.class.getName()); // logger
-    private static final Colorizer partialColorizer = new SolidColorizer(Color.green);
+    private static final Logger logger = Logger
+            .getLogger(DisplayablePoint.class.getName()); // logger
+    private static final Colorizer partialColorizer = new SolidColorizer(
+            Color.green);
     private Symbolizer symbolizer = null;
     private List<GLComplex> fullRepresentation = null;
     private GLComplex partialRepresentation = null;
@@ -74,7 +75,8 @@ public class DisplayablePoint extends AbstractTask implements GLDisplayable {
      * @param multiPoints
      * @param symbolizer
      */
-    public DisplayablePoint(String name, Viewport viewport, IGeometry geometry, Symbolizer symbolizer) {
+    public DisplayablePoint(String name, Viewport viewport, IGeometry geometry,
+            Symbolizer symbolizer) {
         super(name);
         this.symbolizer = symbolizer;
         this.viewport = viewport;
@@ -130,9 +132,9 @@ public class DisplayablePoint extends AbstractTask implements GLDisplayable {
         this.fullRepresentation = null;
         super.setState(TaskState.RUNNING);
 
-        //        if (this.getTexture() != null) {
-        //            this.generateWithDistanceField();
-        //        }
+        // if (this.getTexture() != null) {
+        // this.generateWithDistanceField();
+        // }
 
         if (this.symbolizer instanceof PointSymbolizer) {
             PointSymbolizer pointSymbolizer = (PointSymbolizer) this.symbolizer;
@@ -154,23 +156,31 @@ public class DisplayablePoint extends AbstractTask implements GLDisplayable {
         for (Mark mark : symbolizer.getGraphic().getMarks()) {
             Shape markShape = mark.toShape();
             float size = symbolizer.getGraphic().getSize();
-            // create the shape fo the mark. daptive transform will be done for each point (location, size, etc...)
+            // create the shape fo the mark. daptive transform will be done for
+            // each point (location, size, etc...)
             AffineTransform at = new AffineTransform();
             at.scale(size, size);
             markShape = at.createTransformedShape(markShape);
 
             for (IGeometry geometry : this.geometries) {
                 AffineTransform atGeometry = new AffineTransform();
-                atGeometry.translate(geometry.centroid().getX(), geometry.centroid().getY());
-                Shape markShapeGeometry = atGeometry.createTransformedShape(markShape);
+                atGeometry.translate(geometry.centroid().getX(), geometry
+                        .centroid().getY());
+                Shape markShapeGeometry = atGeometry
+                        .createTransformedShape(markShape);
                 // TODO: add scale (viewport depend) and rotation
-                GLComplex markFillComplex = GLComplexFactory.toGLComplex(markShapeGeometry, minX, minY);
+                GLSimpleComplex markFillComplex = GLComplexFactory.toGLComplex(
+                        this.getName() + "-mark-filled", markShapeGeometry,
+                        minX, minY);
                 markFillComplex.setColor(mark.getFill().getColor());
                 complexes.add(markFillComplex);
 
                 if (mark.getStroke() != null) {
                     // TODO: add scale (viewport depend) and rotation
-                    GLComplex markOutlineComplex = GLComplexFactory.createShapeOutline(markShapeGeometry, mark.getStroke(), minX, minY);
+                    GLSimpleComplex markOutlineComplex = GLComplexFactory
+                            .createShapeOutline(this.getName()
+                                    + "-mark-outline", markShapeGeometry,
+                                    mark.getStroke(), minX, minY);
                     markOutlineComplex.setColor(mark.getStroke().getColor());
                     complexes.add(markOutlineComplex);
                 } else {
@@ -194,7 +204,9 @@ public class DisplayablePoint extends AbstractTask implements GLDisplayable {
             IEnvelope envelope = IGeometryUtil.getEnvelope(this.geometries);
             double minX = envelope.minX();
             double minY = envelope.minY();
-            this.partialRepresentation = GLComplexFactory.createQuickPoints(this.geometries, partialColorizer, null, minX, minY);
+            this.partialRepresentation = GLComplexFactory.createQuickPoints(
+                    this.getName() + "-partial", this.geometries,
+                    partialColorizer, null, minX, minY);
         }
         this.displayIncrement();
         return this.partialRepresentation;

@@ -42,8 +42,8 @@ import fr.ign.cogit.geoxygene.util.Pair;
 import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
-import fr.ign.cogit.geoxygene.util.gl.GLVertex;
 
 /**
  * A renderer to render a {@link Layer} into a {@link LayerViewLwjgl1Panel}. It
@@ -428,12 +428,13 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         GLProgram basicProgram = new GLProgram(basicProgramName);
         basicProgram.setVertexShader(basicVertexShader);
         basicProgram.setFragmentShader(basicFragmentShader);
-        basicProgram.addInputLocation(GLVertex.vertexPositionVariableName,
-                GLVertex.vertexPostionLocation);
-        basicProgram.addInputLocation(GLVertex.vertexUVVariableName,
-                GLVertex.vertexUVLocation);
-        basicProgram.addInputLocation(GLVertex.vertexColorVariableName,
-                GLVertex.vertexColorLocation);
+        basicProgram.addInputLocation(
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        basicProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        basicProgram.addInputLocation(GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
         return basicProgram;
     }
 
@@ -449,13 +450,15 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                 screenspaceColorProgramName);
         screenspaceColorProgram.setVertexShader(screenspaceVertexShader);
         screenspaceColorProgram.setFragmentShader(screenspaceFragmentShader);
-        screenspaceColorProgram.addInputLocation(GLVertex.vertexUVVariableName,
-                GLVertex.vertexUVLocation);
         screenspaceColorProgram.addInputLocation(
-                GLVertex.vertexPositionVariableName,
-                GLVertex.vertexPostionLocation);
+                GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
         screenspaceColorProgram.addInputLocation(
-                GLVertex.vertexColorVariableName, GLVertex.vertexColorLocation);
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        screenspaceColorProgram.addInputLocation(
+                GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
         screenspaceColorProgram.addUniform(globalOpacityUniformVarName);
         screenspaceColorProgram.addUniform(objectOpacityUniformVarName);
 
@@ -475,12 +478,14 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         screenspaceTextureProgram.setVertexShader(screenspaceVertexShader);
         screenspaceTextureProgram.setFragmentShader(screenspaceFragmentShader);
         screenspaceTextureProgram.addInputLocation(
-                GLVertex.vertexUVVariableName, GLVertex.vertexUVLocation);
+                GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
         screenspaceTextureProgram.addInputLocation(
-                GLVertex.vertexPositionVariableName,
-                GLVertex.vertexPostionLocation);
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
         screenspaceTextureProgram.addInputLocation(
-                GLVertex.vertexColorVariableName, GLVertex.vertexColorLocation);
+                GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
         screenspaceTextureProgram.addUniform(globalOpacityUniformVarName);
         screenspaceTextureProgram.addUniform(objectOpacityUniformVarName);
         screenspaceTextureProgram.addUniform(colorTexture1UniformVarName);
@@ -501,12 +506,13 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         GLProgram colorProgram = new GLProgram(worldspaceColorProgramName);
         colorProgram.setVertexShader(worldspaceVertexShader);
         colorProgram.setFragmentShader(colorFragmentShader);
-        colorProgram.addInputLocation(GLVertex.vertexUVVariableName,
-                GLVertex.vertexUVLocation);
-        colorProgram.addInputLocation(GLVertex.vertexPositionVariableName,
-                GLVertex.vertexPostionLocation);
-        colorProgram.addInputLocation(GLVertex.vertexColorVariableName,
-                GLVertex.vertexColorLocation);
+        colorProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        colorProgram.addInputLocation(
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        colorProgram.addInputLocation(GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
         colorProgram.addUniform(m00ModelToViewMatrixUniformVarName);
         colorProgram.addUniform(m02ModelToViewMatrixUniformVarName);
         colorProgram.addUniform(m00ModelToViewMatrixUniformVarName);
@@ -534,12 +540,13 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         GLProgram textureProgram = new GLProgram(worldspaceTextureProgramName);
         textureProgram.setVertexShader(worldspaceVertexShader);
         textureProgram.setFragmentShader(textureFragmentShader);
-        textureProgram.addInputLocation(GLVertex.vertexUVVariableName,
-                GLVertex.vertexUVLocation);
-        textureProgram.addInputLocation(GLVertex.vertexPositionVariableName,
-                GLVertex.vertexPostionLocation);
-        textureProgram.addInputLocation(GLVertex.vertexColorVariableName,
-                GLVertex.vertexColorLocation);
+        textureProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        textureProgram.addInputLocation(
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        textureProgram.addInputLocation(GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
         textureProgram.addUniform(m00ModelToViewMatrixUniformVarName);
         textureProgram.addUniform(m02ModelToViewMatrixUniformVarName);
         textureProgram.addUniform(m00ModelToViewMatrixUniformVarName);
@@ -568,12 +575,14 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                 screenspaceAntialiasedTextureProgramName);
         antialisedProgram.setVertexShader(screenspaceVertexShader);
         antialisedProgram.setFragmentShader(antialiasedFragmentShader);
-        antialisedProgram.addInputLocation(GLVertex.vertexUVVariableName,
-                GLVertex.vertexUVLocation);
-        antialisedProgram.addInputLocation(GLVertex.vertexPositionVariableName,
-                GLVertex.vertexPostionLocation);
-        antialisedProgram.addInputLocation(GLVertex.vertexColorVariableName,
-                GLVertex.vertexColorLocation);
+        antialisedProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        antialisedProgram.addInputLocation(
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        antialisedProgram.addInputLocation(
+                GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
         antialisedProgram.addUniform(globalOpacityUniformVarName);
         antialisedProgram.addUniform(objectOpacityUniformVarName);
         antialisedProgram.addUniform(colorTexture1UniformVarName);

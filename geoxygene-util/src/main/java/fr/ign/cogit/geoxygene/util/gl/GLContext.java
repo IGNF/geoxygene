@@ -77,17 +77,16 @@ public class GLContext {
      * @return false on error
      * @throws GLException
      */
-    public boolean setCurrentProgram(String programName) throws GLException {
+    public GLProgram setCurrentProgram(String programName) throws GLException {
         if (programName == null) {
             this.currentProgram = null;
-            return true;
+            return this.currentProgram;
         }
         GLProgram program = this.programNames.get(programName);
         if (program == null) {
-            return false;
+            return null;
         }
-        this.setCurrentProgram(program);
-        return true;
+        return this.setCurrentProgram(program);
     }
 
     /**
@@ -98,15 +97,15 @@ public class GLContext {
      *            program instance
      * @return false on error
      */
-    public boolean setCurrentProgram(GLProgram program) throws GLException {
+    public GLProgram setCurrentProgram(GLProgram program) throws GLException {
         if (program == null) {
             GL20.glUseProgram(0);
             this.currentProgram = null;
-            return true;
+            return null;
         }
         // check if the current program is already the requested one
         if (program == this.getCurrentProgram()) {
-            return true;
+            return program;
         }
         if (GL20.glIsProgram(program.getProgramId()) == false) {
             logger.error("Program Id " + program.getProgramId() + " ("
@@ -114,18 +113,18 @@ public class GLContext {
             Thread.dumpStack();
             GL20.glUseProgram(0);
             this.currentProgram = null;
-            return false;
+            return null;
         }
         GL20.glUseProgram(program.getProgramId());
         if (!GLTools.glCheckError("Use program '" + program.getName()
                 + "' id = " + program.getProgramId())) {
             GL20.glUseProgram(0);
             this.currentProgram = null;
-            return false;
+            return null;
         }
         this.currentProgram = program;
 
-        return true;
+        return program;
     }
 
     public void initializeContext() throws GLException {

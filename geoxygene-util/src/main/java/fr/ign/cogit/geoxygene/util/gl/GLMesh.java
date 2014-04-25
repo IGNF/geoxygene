@@ -33,20 +33,22 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * @author JeT
- *         A GL mesh is the definition of a topology in a vertices cloud. It is
- *         based
- *         on GL primitives definition (TRIANGLE, QUAD, FAN, STRIP, etc...)
+ * @author JeT A GL mesh is the definition of a topology in a vertices cloud. It
+ *         is based on GL primitives definition (TRIANGLE, QUAD, FAN, STRIP,
+ *         etc...)
  */
 public class GLMesh {
 
     private GLComplex complexParent = null;
-    private int glType = -1; // type of GL primitive of this mesh (TRIANGLE, QUAD, FAN, STRIP, etc...)
+    private int glType = -1; // type of GL primitive of this mesh (TRIANGLE,
+                             // QUAD, FAN, STRIP, etc...)
     private final List<Integer> indices = new ArrayList<Integer>();
-    private int firstIndex = -1; // first index in the parent vertex indices list (included)
-    private int lastIndex = -1; // last index in the parent vertex indices list (included)
+    private int firstIndex = -1; // first index in the parent vertex indices
+                                 // list (included)
+    private int lastIndex = -1; // last index in the parent vertex indices list
+                                // (included)
 
-    //    private final float[] color = new float[4];
+    // private final float[] color = new float[4];
 
     /**
      * Default constructor
@@ -67,24 +69,24 @@ public class GLMesh {
         return this.indices;
     }
 
-    //    /**
-    //     * @return the color
-    //     */
-    //    public float[] getColor() {
-    //        return this.color;
-    //    }
+    // /**
+    // * @return the color
+    // */
+    // public float[] getColor() {
+    // return this.color;
+    // }
 
-    /**
-     * Set the given to all points pointed by this mesh. If points are shared
-     * between meshes, the color is overridden !
-     * The full vbo is reconstructed
-     */
-    public void setColor(final java.awt.Color color2) {
-        for (int vertexIndex : this.indices) {
-            this.complexParent.getVertices().get(vertexIndex).setRGBA(color2);
-        }
-        this.complexParent.invalidateBuffers();
-    }
+    // /**
+    // * Set the given to all points pointed by this mesh. If points are shared
+    // * between meshes, the color is overridden !
+    // * The full vbo is reconstructed
+    // */
+    // public void setColor(final java.awt.Color color2) {
+    // for (int vertexIndex : this.indices) {
+    // this.complexParent.getVertices().get(vertexIndex).setRGBA(color2);
+    // }
+    // this.complexParent.invalidateBuffers();
+    // }
 
     /**
      * @return the glType
@@ -104,7 +106,7 @@ public class GLMesh {
      * Add a list of indices for this mesh
      */
     public void addIndices(final Integer... primitiveIndices) {
-        for (int index : primitiveIndices) {        	
+        for (int index : primitiveIndices) {
             this.indices.add(index);
         }
     }

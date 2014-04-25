@@ -26,26 +26,24 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-public class ParameterizedSegment {
-    public ParameterizedPoint p1;
-    public ParameterizedPoint p2;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ParameterizedLine {
+
+    private final List<ParameterizedSegment> segments = new ArrayList<ParameterizedSegment>();
 
     /**
-     * Default Constructor
+     * Default constructor
      */
-    public ParameterizedSegment() {
+    public ParameterizedLine() {
     }
 
-    /**
-     * Quick constructor
-     * 
-     * @param p1
-     * @param p2
-     */
-    public ParameterizedSegment(ParameterizedPoint p1, ParameterizedPoint p2) {
-        super();
-        this.p1 = p1;
-        this.p2 = p2;
+    public void addSegment(ParameterizedSegment segment) {
+        this.segments.add(segment);
     }
 
+    public List<ParameterizedSegment> getSegments() {
+        return this.segments;
+    }
 }

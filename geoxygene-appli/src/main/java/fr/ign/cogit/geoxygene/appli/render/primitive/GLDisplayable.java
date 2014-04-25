@@ -34,9 +34,8 @@ import fr.ign.cogit.geoxygene.appli.task.Task;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 
 /**
- * @author JeT
- *         A GLDisplayable is an object drawn in a GL Panel. Those objects are
- *         generated asynchronously and are able to give a fast and simple
+ * @author JeT A GLDisplayable is an object drawn in a GL Panel. Those objects
+ *         are generated asynchronously and are able to give a fast and simple
  *         representation of themselves during asynchronous GLComplex generation
  */
 public interface GLDisplayable extends Task {
