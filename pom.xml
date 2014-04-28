@@ -513,7 +513,7 @@
 		<repository>
 			<id>cogit-snapshots</id>
 			<name>Cogit Snapshots Repository</name>
-			<url>https://dionysos2.ign.fr/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
+			<url>https://forge-cogit.ign.fr/nexus/content/repositories/snapshots/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -524,7 +524,7 @@
 		<repository>
 			<id>cogit-releases</id>
 			<name>Cogit Releases Repository</name>
-			<url>https://dionysos2.ign.fr/nexus-webapp-1.4.1/content/repositories/releases/</url>
+			<url>https://forge-cogit.ign.fr/nexus/content/repositories/releases/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -615,12 +615,12 @@
 		<repository>
 			<id>releases</id>
 			<name>Nexus Releases Repository</name>
-			<url>https://dionysos2/nexus-webapp-1.4.1/content/repositories/releases</url>
+			<url>https://forge-cogit.ign.fr/nexus/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>Nexus Snapshots Repository</name>
-			<url>https://dionysos2/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
+			<url>https://forge-cogit.ign.fr/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
 		<site>
 			<id>oxygene-project.sf.net</id>
