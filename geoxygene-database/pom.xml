@@ -60,16 +60,21 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<repositories>
-	   <repository>
-            <id>hibernatespatial</id>
-            <name>hibernatespatial Repository</name>
-            <url>http://www.hibernatespatial.org/repository</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
+		<repository>
+			<id>cogit-releases</id>
+			<name>Cogit Releases Repository</name>
+			<url>https://forge-cogit.ign.fr/nexus/content/repositories/releases/</url>
+		</repository>
+		<repository>
+			<id>hibernatespatial</id>
+			<name>hibernatespatial Repository</name>
+			<url>http://www.hibernatespatial.org/repository</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -100,6 +105,8 @@
 			<version>1.0.rc6</version>
 			<classifier>COGIT</classifier>
 		</dependency>
+
+
 		<dependency>
 			<groupId>org.postgis</groupId>
 			<artifactId>postgis-jdbc</artifactId>
@@ -170,11 +177,11 @@
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>
