@@ -33,10 +33,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.contrib.I18N;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
@@ -47,8 +49,13 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * 
  * @author Mustiere - IGN / Laboratoire COGIT version 1.0
  * 
+ * @version 1.7  
+ * @author R. Cuissard 
+ * add creeARMPondere(points, reseau)
  */
 public class ARM {
+  
+  private static Logger LOGGER = Logger.getLogger(ARM.class.getName());
 
   /**
    * Création d'un ARM à partir d'un ensemble de points
@@ -66,21 +73,27 @@ public class ARM {
    *         les noeuds et les points).
    */
   public static CarteTopo creeARM(Collection<IFeature> points) {
+    
+    // CarteTopo to return 
+    CarteTopo arm = new CarteTopo("Minimum Spanning Tree");
+    
     Noeud noeud, nouveauNoeud;
     Arc arc;
     IFeature point;
     double dist, distMin;
-    CarteTopo arm = new CarteTopo(I18N.getString("ARM.MST")); //$NON-NLS-1$
     int i, j, imin = 0, jmin = 0;
     GM_LineString trait;
     List<IFeature> pointsCopie = new ArrayList<IFeature>(points);
+    
+    // If no point, return null
     if (pointsCopie.isEmpty()) {
       return null;
     }
+    
     // Amorce, on prend un point au hasard: le premier
     point = pointsCopie.get(0);
     if (!(point.getGeom() instanceof GM_Point)) {
-      System.out.println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
+      LOGGER.trace("An object is not a point, returning Null");
       return null;
     }
     pointsCopie.remove(point);
@@ -92,17 +105,19 @@ public class ARM {
       if (pointsCopie.isEmpty()) {
         break; // ça y est, on a relié tous les points
       }
-      // on cherche le couple noeud-point le pus proche (TRES bourrin)
+      // on cherche le couple noeud-point le plus proche (TRES bourrin)
       distMin = Double.MAX_VALUE;
       for (i = 0; i < pointsCopie.size(); i++) {
         point = pointsCopie.get(i);
+        System.out.print("Point initial = " + point.getId() + " ("+arm.getPopNoeuds().size()+") ");
         if (!(point.getGeom() instanceof GM_Point)) {
-          System.out.println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
+          LOGGER.trace("An object is not a point, returning Null");
           return null;
         }
         for (j = 0; j < arm.getPopNoeuds().size(); j++) {
           noeud = arm.getPopNoeuds().get(j);
           dist = noeud.getGeom().distance(point.getGeom());
+          System.out.println("Distance entre " + noeud.getId() + " et " + point.getId() + " = " + dist);
           if (dist < distMin) {
             distMin = dist;
             imin = i;
@@ -120,12 +135,124 @@ public class ARM {
       arc = arm.getPopArcs().nouvelElement();
       arc.setNoeudIni(noeud);
       arc.setNoeudFin(nouveauNoeud);
-      trait = new GM_LineString(arc.getNoeudIni().getGeometrie().getPosition(), arc.getNoeudFin()
-          .getGeometrie().getPosition());
+      trait = new GM_LineString(arc.getNoeudIni().getGeometrie().getPosition(), arc.getNoeudFin().getGeometrie()
+          .getPosition());
       arc.setGeometrie(trait);
     }
     return arm;
 
+  }
+
+  public static CarteTopo creeARMPondere(Collection<IFeature> points, CarteTopo reseau) {
+    Noeud noeud, nouveauNoeud;
+    Arc arc;
+    IFeature point;
+    double dist, distMin;
+    CarteTopo arm = new CarteTopo("Minimum Spanning Tree");
+    int i, j, imin = 0, jmin = 0;
+    GM_LineString trait;
+    List<IFeature> pointsCopie = new ArrayList<IFeature>(points);
+    if (pointsCopie.isEmpty()) {
+      return null;
+    }
+    // Amorce, on prend un point au hasard: le premier
+    point = pointsCopie.get(0);
+    if (!(point.getGeom() instanceof GM_Point)) {
+      LOGGER.trace("An object is not a point, returning Null");
+      return null;
+    }
+    pointsCopie.remove(point);
+    nouveauNoeud = arm.getPopNoeuds().nouvelElement();
+    nouveauNoeud.setGeom(point.getGeom());
+    nouveauNoeud.addCorrespondant(point);
+    // Ajout des points un à un
+    while (true) {
+      if (pointsCopie.isEmpty()) {
+        break; // ça y est, on a relié tous les points
+      }
+      // on cherche le couple noeud-point le pus proche (TRES bourrin)
+      distMin = Double.MAX_VALUE;
+      for (i = 0; i < pointsCopie.size(); i++) {
+        point = pointsCopie.get(i);
+        if (!(point.getGeom() instanceof GM_Point)) {
+          LOGGER.trace("An object is not a point, returning Null");
+          return null;
+        }
+        for (j = 0; j < arm.getPopNoeuds().size(); j++) {
+          noeud = arm.getPopNoeuds().get(j);
+          // dist = noeud.getGeom().distance(point.getGeom());
+          dist = ARM.distanceReseau((GM_Point) noeud.getGeom(), (GM_Point) point.getGeom(), reseau);
+          if (dist < distMin) {
+            distMin = dist;
+            imin = i;
+            jmin = j;
+          }
+        }
+      }
+      point = pointsCopie.get(imin);
+      noeud = arm.getPopNoeuds().get(jmin);
+      // on remplit l'ARM
+      pointsCopie.remove(point);
+      nouveauNoeud = arm.getPopNoeuds().nouvelElement();
+      nouveauNoeud.setGeom(point.getGeom());
+      nouveauNoeud.addCorrespondant(point);
+      arc = arm.getPopArcs().nouvelElement();
+      arc.setNoeudIni(noeud);
+      arc.setNoeudFin(nouveauNoeud);
+      trait = new GM_LineString(arc.getNoeudIni().getGeometrie().getPosition(), arc.getNoeudFin().getGeometrie()
+          .getPosition());
+      arc.setGeometrie(trait);
+    }
+    return arm;
+  }
+
+  /**
+   * 
+   * @param pt1
+   * @param pt2
+   * @param reseau
+   * @return
+   */
+  private static double distanceReseau(GM_Point pt1, GM_Point pt2, CarteTopo reseau) {
+    // recupére le noeud le plus proche de p1
+    Noeud noeud1 = null;
+    Collection<Noeud> ptsProches = reseau.getPopNoeuds().select(pt1.coord().get(0), 500); 
+                                                                                          
+    Iterator itPtsProches = ptsProches.iterator();
+    double distmin = 1000;
+
+    while (itPtsProches.hasNext()) {
+      Noeud noeud = (Noeud) itPtsProches.next();
+      if (pt1.distance(noeud.getGeom()) < distmin) {
+        distmin = pt1.distance(noeud.getGeom());
+        noeud1 = noeud;
+      }
+    }
+    if (noeud1 == null)
+      return 100000;
+
+    // recupére le noeud le plus proche de p2
+    Noeud noeud2 = null;
+    ptsProches = reseau.getPopNoeuds().select(pt2.coord().get(0), 110);
+    itPtsProches = ptsProches.iterator();
+    distmin = 1000;
+
+    while (itPtsProches.hasNext()) {
+      Noeud noeud = (Noeud) itPtsProches.next();
+      if (pt2.distance(noeud.getGeom()) < distmin) {
+        distmin = pt2.distance(noeud.getGeom());
+        noeud2 = noeud;
+      }
+    }
+    if (noeud2 == null)
+      return Double.POSITIVE_INFINITY;
+
+    // calcul le plus court chemin1
+    Groupe pcc = noeud1.plusCourtChemin(noeud2, 5000);
+    if (pcc != null)
+      return pcc.longueur();
+    else
+      return Double.POSITIVE_INFINITY;
   }
 
   /**
@@ -139,15 +266,14 @@ public class ARM {
    *         les noeuds et les points).
    * 
    */
-  public static CarteTopo creeARMsurObjetsQuelconques(
-      Collection<IFeature> objets) {
+  public static CarteTopo creeARMsurObjetsQuelconques(Collection<IFeature> objets) {
     Collection<IFeature> points = new HashSet<IFeature>();
 
     Iterator<IFeature> itObjets = objets.iterator();
     while (itObjets.hasNext()) {
       IFeature objet = itObjets.next();
       if (objet.getGeom() == null) {
-        System.out.println(I18N.getString("ARM.AnObjectHasNoGeometry")); //$NON-NLS-1$
+        LOGGER.trace("An object has no geometry, returning Null");
         return null;
       }
       Noeud objet2 = new Noeud();
