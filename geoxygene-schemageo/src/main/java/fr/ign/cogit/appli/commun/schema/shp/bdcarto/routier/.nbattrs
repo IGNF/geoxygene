@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<attributes version="1.0">
+   <fileobject name="ThemeRoutier.java">
+      <attr name="class_dependency_feature.DataSet" stringvalue="ThemeRoutier"/>
+      <attr name="class_dependency_feature.Theme" stringvalue="ThemeRoutier"/>
+   </fileobject>
+</attributes>
