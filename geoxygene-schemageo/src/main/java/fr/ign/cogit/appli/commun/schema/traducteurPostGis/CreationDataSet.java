@@ -10,7 +10,7 @@ import fr.ign.cogit.geoxygene.datatools.postgis.GeodatabaseOjbPostgis;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 
 /**
- * Création dans PostGis de la structure d'un DataSet.
+ * CrÃ©ation dans PostGis de la structure d'un DataSet.
  * A Integrer dans une petite interface
  * @author  mustiere - modif grosso pour postgis
  */
@@ -24,7 +24,7 @@ public class CreationDataSet {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
 		try {
-			System.out.println("CREATION de la structure d'un DataSet (définition des thèmes et des populations)");
+			System.out.println("CREATION de la structure d'un DataSet (dÃ©finition des thÃ¨mes et des populations)");
 			System.out.println("");
 
 			System.out.println("  Connexion au SGBD");
@@ -34,24 +34,24 @@ public class CreationDataSet {
 			System.out.println("");
 
 
-			System.out.println("Type de DataSet à créer ?");
-			System.out.println("1 : BDCARTO  au modèle shape ");
-			System.out.println("2 : BDPAYS   au modèle shape 2D");
-			System.out.println("3 : BDCARTO  au modèle interprétation (DAVID only) ");
-			System.out.println("4 : GEOROUTE  au modèle interprétation (DAVID only) ");
-			System.out.println("5 : BDCARTO  au modèle de travail pour l'appariement (Eric)");
-			System.out.println("6 : BDPAYS  au modèle de travail pour l'appariement (Eric)");
+			System.out.println("Type de DataSet Ã  crÃ©er ?");
+			System.out.println("1 : BDCARTO  au modÃ¨le shape ");
+			System.out.println("2 : BDPAYS   au modÃ¨le shape 2D");
+			System.out.println("3 : BDCARTO  au modÃ¨le interprÃ©tation (DAVID only) ");
+			System.out.println("4 : GEOROUTE  au modÃ¨le interprÃ©tation (DAVID only) ");
+			System.out.println("5 : BDCARTO  au modÃ¨le de travail pour l'appariement (Eric)");
+			System.out.println("6 : BDPAYS  au modÃ¨le de travail pour l'appariement (Eric)");
 
 			S = in.readLine();
 			type = Integer.valueOf(S).intValue();
 
 			System.out.println("");
-			System.out.println("Nom complet du package contenant les classes contrètes (ex: donnees.seb.bdcarto_dept7794) ?");
+			System.out.println("Nom complet du package contenant les classes contrï¿½tes (ex: donnees.seb.bdcarto_dept7794) ?");
 			package_concret = in.readLine();
 
 
 			System.out.println("");
-			System.out.println("Métadonnées...");
+			System.out.println("MÃ©tadonnÃ©es...");
 			System.out.println("Nom de la base (ex: 'bdcarto dept 77 en 2003') ?");
 			nom_logique = in.readLine();
 			metadonnees.add(nom_logique);
@@ -88,10 +88,10 @@ public class CreationDataSet {
 
 			System.out.println("  Fermeture de la transaction (commit)");
 			DataSet.db.commit();
-			System.out.println("  FIN de la création");
+			System.out.println("  FIN de la crÃ©ation");
 			System.out.println("");
 			System.out.println("---------------------------------------------------------");
-			System.out.println("-- LE JEU A ETE CREE AVEC L'IDENTIFIANT (à noter) : "+id);
+			System.out.println("-- LE JEU A ETE CREE AVEC L'IDENTIFIANT (Ã  noter) : "+id);
 			System.out.println("---------------------------------------------------------");
 
 
@@ -99,7 +99,7 @@ public class CreationDataSet {
 			System.out.println("");
 			System.out.println("");
 			System.out.println("TEST DE CHARGEMENT EN MEMOIRE DU JEU ");
-			System.out.println("  Début du chargement : "+(new Time(System.currentTimeMillis())).toString());
+			System.out.println("  DÃ©but du chargement : "+(new Time(System.currentTimeMillis())).toString());
 			System.out.println("  Chargement de la structure du jeu (jeux/populations)");
 			jeu = DataSet.db.load(DataSet.class, new Integer(id));
 			System.out.println("  Chargement des instances des populations");
