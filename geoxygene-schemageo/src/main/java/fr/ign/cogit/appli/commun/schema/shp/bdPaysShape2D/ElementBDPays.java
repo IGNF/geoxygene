@@ -2,8 +2,8 @@ package fr.ign.cogit.appli.commun.schema.shp.bdPaysShape2D;
 
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 
-/** Classe mère pour toute classe d'éléments de la BDTopo Pays au format de livraison shape2D.
- * NB: un attribut Identifiant doit être rajouté dans le futur, mais
+/** Classe mÃ¨re pour toute classe d'Ã©lÃ©ments de la BDTopo Pays au format de livraison shape2D.
+ * NB: un attribut Identifiant doit Ãªtre rajoutÃ© dans le futur, mais
  * cela n'est pas encore fait.
  */
 

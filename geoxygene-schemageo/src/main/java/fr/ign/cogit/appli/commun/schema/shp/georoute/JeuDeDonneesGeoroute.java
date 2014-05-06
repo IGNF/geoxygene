@@ -5,20 +5,20 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 
 public class JeuDeDonneesGeoroute extends DataSet {
 
-	/** Constructeur par défaut */
+	/** Constructeur par dÃ©faut */
 	public JeuDeDonneesGeoroute() {this.ojbConcreteClass = this.getClass().getName();}
 
-	/** Constructeur d'un jeu de données Géoroute au format shape :
-	 * - un jeu de données Géoroute contient les thèmes routier  :
-	 * - ces thèmes ont des noms par défaut à ne pas changer : "routier"
-	 * - les populations de ces thèmes ont des noms logique par défaut "Troncon de route", "Noeud routier", etc.
-	 * - leurs éléments se réalisent dans des classes contrètes du package nom_package.
-	 * - un jeu de données peut être persistant ou non
-	 * - un jeu de données a un nom logique (utile pour naviguer entre jeux de données).
+	/** Constructeur d'un jeu de donnÃ©es GÃ©oroute au format shape :
+	 * - un jeu de donnÃ©es GÃ©oroute contient les thÃ¨mes routier  :
+	 * - ces thÃ¨mes ont des noms par dÃ©faut Ã  ne pas changer : "routier"
+	 * - les populations de ces thÃ¨mes ont des noms logique par dÃ©faut "Troncon de route", "Noeud routier", etc.
+	 * - leurs Ã©lÃ©ments se rÃ©alisent dans des classes contretes du package nom_package.
+	 * - un jeu de donnÃ©es peut Ãªtre persistant ou non
+	 * - un jeu de donnÃ©es a un nom logique (utile pour naviguer entre jeux de donnÃ©es).
 	 */
 	public JeuDeDonneesGeoroute(boolean persistance, String nom_logique, String nom_package) {
-		this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour ojb
-		this.setTypeBD("Géoroute");
+		this.ojbConcreteClass = this.getClass().getName(); // nÃ©cessaire pour ojb
+		this.setTypeBD("GÃ©oroute");
 		this.setModele("Shape");
 		this.setNom(nom_logique);
 		if (persistance) DataSet.db.makePersistent(this);

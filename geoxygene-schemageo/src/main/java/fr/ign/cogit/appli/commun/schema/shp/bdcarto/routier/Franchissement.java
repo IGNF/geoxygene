@@ -5,9 +5,9 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 public abstract class Franchissement extends ElementBDCarto {
 
-	/** Renvoie la géométrie de self */
+	/** Renvoie la gÃ©omÃ©trie de self */
 	public GM_Point getGeometrie() {return (GM_Point)geom;}
-	/** Définit la géométrie de self */
+	/** DÃ©finit la gÃ©omÃ©trie de self */
 	public void setGeometrie(GM_Point G) {this.geom = G;}
 
 	protected String toponyme;

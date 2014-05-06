@@ -6,9 +6,9 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 public abstract class AccesEquipement extends ElementBDCarto {
 
-	/** Renvoie la géométrie de self */
+	/** Renvoie la gÃ©omÃ©trie de self */
 	public GM_LineString getGeometrie() {return (GM_LineString)geom;}
-	/** Définit la géométrie de self */
+	/** DÃ©finit la gÃ©omÃ©trie de self */
 	public void setGeometrie(GM_LineString G) {this.geom = G;}
 
 	protected double id_equipmt;

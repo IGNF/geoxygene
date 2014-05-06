@@ -7,9 +7,9 @@ public class TronconRoute extends ElementGeoroute {
 
 	//////////////// GEOMETRIE //////////////////
 	//     private GM_LineString geometrie = null;
-	/** Renvoie la géométrie de self */
+	/** Renvoie la gÃ©omÃ©trie de self */
 	public GM_LineString getGeometrie() {return (GM_LineString)geom;}
-	/** Définit la géométrie de self */
+	/** DÃ©finit la gÃ©omÃ©trie de self */
 	public void setGeometrie(GM_LineString G) {this.geom = G;}
 
 	protected String cl_fonc;

@@ -7,19 +7,19 @@ import java.util.List;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.Population;
 
-/** Classe mère pour toute classe d'éléments de la BDCarto V2 au format de livraison shape.
- * Document de référence: descriptif de livraison shapefile, edition 2, 2001.
+/** Classe mÃ¨re pour toute classe d'Ã©lÃ©ments de la BDCarto V2 au format de livraison shape.
+ * Document de rÃ©fÃ©rence: descriptif de livraison shapefile, edition 2, 2001.
  */
 
 @SuppressWarnings("unchecked")
 
 public abstract class ElementBDCarto extends FT_Feature {
 
-	/** Identifiant donné par la BDCarto */
+	/** Identifiant donnÃ© par la BDCarto */
 	protected double id_bdcarto;
-	/** Identifiant donné par la BDCarto */
+	/** Identifiant donnÃ© par la BDCarto */
 	public double getId_bdcarto() {return this.id_bdcarto; }
-	/** Identifiant donné par la BDCarto */
+	/** Identifiant donnÃ© par la BDCarto */
 	public void setId_bdcarto (double Id_bdcarto) {id_bdcarto = Id_bdcarto; }
 
 

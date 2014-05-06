@@ -5,9 +5,9 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 public abstract class LiaisonMaritime extends ElementBDCarto {
 
-	/** Renvoie la  geometrie de self */
+	/** Renvoie la géométrie de self */
 	public GM_LineString getGeometrie() {return (GM_LineString)geom;}
-	/** Definit la geometrie de self */
+	/** Définit la géométrie de self */
 	public void setGeometrie(GM_LineString G) {this.geom = G;}
 
 	protected String ouverture;

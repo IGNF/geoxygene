@@ -6,20 +6,20 @@ import fr.ign.cogit.geoxygene.feature.Population;
 
 public class ThemeRoutier extends DataSet {
 
-	/** Constructeur par d�faut */
+	/** Constructeur par défaut */
 	public ThemeRoutier() {this.ojbConcreteClass = this.getClass().getName();}
 
-	/** Constructeur d'un th�me routier de G�oroute au format shape :
-	 * - ce th�me contient les populations "troncons de route"...  :
-	 * - ces populations ont des noms par d�faut � ne pas changer.
-	 * - leurs �l�ments se r�alisent dans des classes contr�tes du package nom_package.
-	 * - un th�me peut �tre persistant ou non
-	 * - un th�me a un nom logique (utile pour naviguer entre th�mes).
+	/** Constructeur d'un thème routier de Géoroute au format shape :
+	 * - ce thème contient les populations "troncons de route"...  :
+	 * - ces populations ont des noms par défaut à ne pas changer.
+	 * - leurs éléments se réalisent dans des classes contrètes du package nom_package.
+	 * - un thème peut être persistant ou non
+	 * - un thème a un nom logique (utile pour naviguer entre thèmes).
 	 */
 	public ThemeRoutier(boolean persistance, String nom_package, DataSet DS) {
 		super(DS);
-		this.setTypeBD("Th�me routier de G�oroute");
-		this.ojbConcreteClass = this.getClass().getName(); // n�cessaire pour ojb
+		this.setTypeBD("Thème routier de Géoroute");
+		this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour ojb
 		Population<?> pop;
 		this.setNom("routier");
 		if (persistance) DataSet.db.makePersistent(this);
@@ -34,7 +34,7 @@ public class ThemeRoutier extends DataSet {
 			this.addPopulation(pop);
 		}
 		catch (Exception e) {
-			System.out.println("Probl�me de nom de package : "+nom_package);
+			System.out.println("Problème de nom de package : "+nom_package);
 		}
 	}
 

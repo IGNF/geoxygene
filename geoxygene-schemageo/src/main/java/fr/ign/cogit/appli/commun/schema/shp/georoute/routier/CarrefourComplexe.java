@@ -7,9 +7,9 @@ public class CarrefourComplexe extends ElementGeoroute {
 
 	//////////////// GEOMETRIE //////////////////
 	//    private GM_Polygon geometrie = null;
-	/** Renvoie le GM_Polygon qui définit la géométrie de self */
+	/** Renvoie le GM_Polygon qui dÃ©finit la gÃ©omÃ©trie de self */
 	public GM_Polygon getGeometrie() {return (GM_Polygon)this.geom;}
-	/** Définit le GM_Polygon qui définit la géométrie de self */
+	/** DÃ©finit le GM_Polygon qui dÃ©finit la gÃ©omÃ©trie de self */
 	public void setGeometrie(GM_Polygon geometrie) {this.geom = geometrie;}
 
 	protected String nature;

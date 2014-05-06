@@ -46,30 +46,30 @@ import fr.ign.cogit.geoxygene.feature.Population;
 
 public class CreationDataSet  {
 
-	/** Création des thèmes et des populations des thèmes
-	 * d'un jeu de données BDCarto suivant le modèle défini par l'export Shape.
+	/** CrÃ©ation des thÃ¨mes et des populations des thÃ¨mes
+	 * d'un jeu de donnÃ©es BDCarto suivant le modÃ¨le dÃ©fini par l'export Shape.
 	 * 
-	 * @param persistance : Définit si le jeu de données est persistant ou non.
-	 * Si il est persistant, tous les thèmes et populations créées le sont
-	 * aussi par défaut, mais cela peut être changé par la suite.
+	 * @param persistance : DÃ©finit si le jeu de donnÃ©es est persistant ou non.
+	 * Si il est persistant, tous les thÃ¨mes et populations crÃ©Ã©es le sont
+	 * aussi par dÃ©faut, mais cela peut Ãªtre changÃ© par la suite.
 	 * 
-	 * @param nom_package_jeu_complet : nom du package qui contient les classes concrètes
-	 * des populations du jeu de données (chemin complet du package contenant
-	 * les sous package des thèmes).
+	 * @param nom_package_jeu_complet : nom du package qui contient les classes concrÃ¨tes
+	 * des populations du jeu de donnÃ©es (chemin complet du package contenant
+	 * les sous package des thÃ¨mes).
 	 * 
-	 * @param metadonnees : Liste de string (peut-être null) représentant dans l'ordre:
-	 * - le nom logique de la base (texte libre pour la déco),
-	 * - la date des données
-	 * - la zone couverte par les données
+	 * @param metadonnees : Liste de string (peut-Ãªtre null) reprÃ©sentant dans l'ordre:
+	 * - le nom logique de la base (texte libre pour la dÃ©co),
+	 * - la date des donnÃ©es
+	 * - la zone couverte par les donnÃ©es
 	 * - un commentaire
-	 * Tous les textes sont libres et d'au plus 255 caractères
+	 * Tous les textes sont libres et d'au plus 255 caractÃ¨res
 	 * 
 	 */
 	public static DataSet nouveauDataSet(boolean persistance, String nom_package_jeu_complet, List<String> metadonnees) {
 		DataSet jeu = new DataSet();
 		if (persistance) DataSet.db.makePersistent(jeu);
 
-		//métadonnées
+		//mÃ©tadonnÃ©es
 		jeu.setTypeBD("BDCarto");
 		jeu.setModele("Shape");
 		if (metadonnees != null) {
@@ -80,7 +80,7 @@ public class CreationDataSet  {
 			if (itMD.hasNext()) jeu.setCommentaire(itMD.next());
 		}
 
-		// création des thèmes
+		// crÃ©ation des thÃ¨mes
 		ajouteThemeAdmin(jeu, nom_package_jeu_complet, persistance);
 		ajouteThemeEquipements(jeu, nom_package_jeu_complet, persistance);
 		ajouteThemeFerre(jeu, nom_package_jeu_complet, persistance);
@@ -96,7 +96,7 @@ public class CreationDataSet  {
 		DataSet theme = new DataSet(jeu);
 		if (persistance) DataSet.db.makePersistent(theme);
 		jeu.addComposant(theme);
-		theme.setTypeBD("Thème 'Administratif' de la BDCarto");
+		theme.setTypeBD("ThÃ¨me 'Administratif' de la BDCarto");
 		theme.setNom("Administratif");
 		String nom_package = nom_package_jeu_complet+".administratif";
 		try{
@@ -107,13 +107,13 @@ public class CreationDataSet  {
 			theme.addPopulation(pop);
 			pop = new Population<Commune>(persistance, "Communes", Class.forName(nom_package+".Commune"),true);
 			theme.addPopulation(pop);
-			pop = new Population<Departement>(persistance, "Départements", Class.forName(nom_package+".Departement"),true);
+			pop = new Population<Departement>(persistance, "DÃ©partements", Class.forName(nom_package+".Departement"),true);
 			theme.addPopulation(pop);
 			pop = new Population<LimiteAdministrative>(persistance, "Limites administratives", Class.forName(nom_package+".LimiteAdministrative"),true);
 			theme.addPopulation(pop);
 		}
 		catch (Exception e) {
-			System.out.println("Problème de nom de package : "+nom_package_jeu_complet);
+			System.out.println("ProblÃ¨me de nom de package : "+nom_package_jeu_complet);
 		}
 	}
 
@@ -121,32 +121,32 @@ public class CreationDataSet  {
 		DataSet theme = new DataSet(jeu);
 		if (persistance) DataSet.db.makePersistent(theme);
 		jeu.addComposant(theme);
-		theme.setTypeBD("Thème 'Equipements' de la BDCarto");
+		theme.setTypeBD("ThÃ¨me 'Equipements' de la BDCarto");
 		theme.setNom("Equipements");
 		String nom_package = nom_package_jeu_complet+".equipements";
 		try{
 			Population<?> pop;
-			pop = new Population<Aerodrome>(persistance, "Aérodromes", Class.forName(nom_package+".Aerodrome"),true);
+			pop = new Population<Aerodrome>(persistance, "AÃ©rodromes", Class.forName(nom_package+".Aerodrome"),true);
 			theme.addPopulation(pop);
-			pop = new Population<Cimetiere>(persistance, "Cimetières", Class.forName(nom_package+".Cimetiere"),true);
+			pop = new Population<Cimetiere>(persistance, "CimetiÃ¨res", Class.forName(nom_package+".Cimetiere"),true);
 			theme.addPopulation(pop);
-			pop = new Population<ConstructionElevee>(persistance, "Constructions élevées", Class.forName(nom_package+".ConstructionElevee"),true);
+			pop = new Population<ConstructionElevee>(persistance, "Constructions Ã©levÃ©es", Class.forName(nom_package+".ConstructionElevee"),true);
 			theme.addPopulation(pop);
 			pop = new Population<EnceinteMilitaire>(persistance, "Enceintes militaires", Class.forName(nom_package+".EnceinteMilitaire"),true);
 			theme.addPopulation(pop);
-			pop = new Population<LigneElectrique>(persistance, "Lignes électriques", Class.forName(nom_package+".LigneElectrique"),true);
+			pop = new Population<LigneElectrique>(persistance, "Lignes Ã©lectriques", Class.forName(nom_package+".LigneElectrique"),true);
 			theme.addPopulation(pop);
-			pop = new Population<PisteAerodrome>(persistance, "Pistes d'aérodromes", Class.forName(nom_package+".PisteAerodrome"),true);
+			pop = new Population<PisteAerodrome>(persistance, "Pistes d'aÃ©rodromes", Class.forName(nom_package+".PisteAerodrome"),true);
 			theme.addPopulation(pop);
 			pop = new Population<Digue>(persistance, "Digues", Class.forName(nom_package+".Digue"),true);
 			theme.addPopulation(pop);
 			pop = new Population<TransportParCable>(persistance, "Transports par cable", Class.forName(nom_package+".TransportParCable"),true);
 			theme.addPopulation(pop);
-			pop = new Population<MetroAerien>(persistance, "Métros aériens", Class.forName(nom_package+".MetroAerien"),true);
+			pop = new Population<MetroAerien>(persistance, "MÃ©tros aÃ©riens", Class.forName(nom_package+".MetroAerien"),true);
 			theme.addPopulation(pop);
 		}
 		catch (Exception e) {
-			System.out.println("Problème de nom de package : "+nom_package_jeu_complet);
+			System.out.println("ProblÃ¨me de nom de package : "+nom_package_jeu_complet);
 		}
 	}
 
@@ -154,18 +154,18 @@ public class CreationDataSet  {
 		DataSet theme = new DataSet(jeu);
 		if (persistance) DataSet.db.makePersistent(theme);
 		jeu.addComposant(theme);
-		theme.setTypeBD("Thème 'Réseau ferré' de la BDCarto");
-		theme.setNom("Ferré");
+		theme.setTypeBD("ThÃ¨me 'RÃ©seau ferrÃ©' de la BDCarto");
+		theme.setNom("FerrÃ©");
 		String nom_package = nom_package_jeu_complet+".ferre";
 		try{
 			Population<?> pop;
-			pop = new Population<NoeudFerre>(persistance, "Noeuds ferrés", Class.forName(nom_package+".NoeudFerre"),true);
+			pop = new Population<NoeudFerre>(persistance, "Noeuds ferrÃ©s", Class.forName(nom_package+".NoeudFerre"),true);
 			theme.addPopulation(pop);
-			pop = new Population<TronconVoieFerree>(persistance, "Tronçons de voie ferrée", Class.forName(nom_package+".TronconVoieFerree"),true);
+			pop = new Population<TronconVoieFerree>(persistance, "TronÃ§ons de voie ferrÃ©e", Class.forName(nom_package+".TronconVoieFerree"),true);
 			theme.addPopulation(pop);
 		}
 		catch (Exception e) {
-			System.out.println("Problème de nom de package : "+nom_package_jeu_complet);
+			System.out.println("ProblÃ¨me de nom de package : "+nom_package_jeu_complet);
 		}
 	}
 
@@ -173,7 +173,7 @@ public class CreationDataSet  {
 		DataSet theme = new DataSet(jeu);
 		if (persistance) DataSet.db.makePersistent(theme);
 		jeu.addComposant(theme);
-		theme.setTypeBD("Thème 'Habillage' de la BDCarto");
+		theme.setTypeBD("ThÃ¨me 'Habillage' de la BDCarto");
 		theme.setNom("Habillage");
 		String nom_package = nom_package_jeu_complet+".habillage";
 		try{
@@ -182,7 +182,7 @@ public class CreationDataSet  {
 			theme.addPopulation(pop);
 		}
 		catch (Exception e) {
-			System.out.println("Problème de nom de package : "+nom_package_jeu_complet);
+			System.out.println("ProblÃ¨me de nom de package : "+nom_package_jeu_complet);
 		}
 
 	}
@@ -191,24 +191,24 @@ public class CreationDataSet  {
 		DataSet theme = new DataSet(jeu);
 		if (persistance) DataSet.db.makePersistent(theme);
 		jeu.addComposant(theme);
-		theme.setTypeBD("Thème 'Hydrographie' de la BDCarto");
+		theme.setTypeBD("ThÃ¨me 'Hydrographie' de la BDCarto");
 		theme.setNom("Hydrographie");
 		String nom_package = nom_package_jeu_complet+".hydrographie";
 		try{
 			Population<?> pop;
-			pop = new Population<TronconHydrographique>(persistance, "Tronçons hydrographiques", Class.forName(nom_package+".TronconHydrographique"),true);
+			pop = new Population<TronconHydrographique>(persistance, "TronÃ§ons hydrographiques", Class.forName(nom_package+".TronconHydrographique"),true);
 			theme.addPopulation(pop);
 			pop = new Population<ObjetHydrographiquePonctuel>(persistance, "Objets hydrographiques ponctuels", Class.forName(nom_package+".ObjetHydrographiquePonctuel"),true);
 			theme.addPopulation(pop);
 			pop = new Population<ToponymeSurfaceHydrographique>(persistance, "Toponymes de surface hydrographique", Class.forName(nom_package+".ToponymeSurfaceHydrographique"),true);
 			theme.addPopulation(pop);
-			pop = new Population<Laisse>(persistance, "Tronçons de laisse", Class.forName(nom_package+".Laisse"),true);
+			pop = new Population<Laisse>(persistance, "TronÃ§ons de laisse", Class.forName(nom_package+".Laisse"),true);
 			theme.addPopulation(pop);
 			pop = new Population<ZoneHydrographiqueTexture>(persistance, "Zones hydrographiques de texture", Class.forName(nom_package+".ZoneHydrographiqueTexture"),true);
 			theme.addPopulation(pop);
 		}
 		catch (Exception e) {
-			System.out.println("Problème de nom de package : "+nom_package_jeu_complet);
+			System.out.println("ProblÃ¨me de nom de package : "+nom_package_jeu_complet);
 		}
 	}
 
@@ -216,16 +216,16 @@ public class CreationDataSet  {
 		DataSet theme = new DataSet(jeu);
 		if (persistance) DataSet.db.makePersistent(theme);
 		jeu.addComposant(theme);
-		theme.setTypeBD("Thème 'Réseau routier et franchissements' de la BDCarto");
+		theme.setTypeBD("ThÃ¨me 'RÃ©seau routier et franchissements' de la BDCarto");
 		theme.setNom("Routier");
 		String nom_package = nom_package_jeu_complet+".routier";
 		try{
 			Population<?> pop;
-			pop = new Population<AccesEquipement>(persistance, "Accès équipements", Class.forName(nom_package+".AccesEquipement"),true);
+			pop = new Population<AccesEquipement>(persistance, "AccÃ¨s Ã©quipements", Class.forName(nom_package+".AccesEquipement"),true);
 			theme.addPopulation(pop);
 			pop = new Population<CommunicationRestreinte>(persistance, "Communications restreintes", Class.forName(nom_package+".CommunicationRestreinte"),true);
 			theme.addPopulation(pop);
-			pop = new Population<DebutSection>(persistance, "Débuts de section", Class.forName(nom_package+".DebutSection"),true);
+			pop = new Population<DebutSection>(persistance, "DÃ©buts de section", Class.forName(nom_package+".DebutSection"),true);
 			theme.addPopulation(pop);
 			pop = new Population<EquipementRoutier>(persistance, "Equipements routiers", Class.forName(nom_package+".EquipementRoutier"),true);
 			theme.addPopulation(pop);
@@ -233,15 +233,15 @@ public class CreationDataSet  {
 			theme.addPopulation(pop);
 			pop = new Population<NoeudRoutier>(persistance, "Noeuds routiers", Class.forName(nom_package+".NoeudRoutier"),true);
 			theme.addPopulation(pop);
-			pop = new Population<TronconRoute>(persistance, "Tronçons de route", Class.forName(nom_package+".TronconRoute"),true);
+			pop = new Population<TronconRoute>(persistance, "TronÃ§ons de route", Class.forName(nom_package+".TronconRoute"),true);
 			theme.addPopulation(pop);
 			pop = new Population<LiaisonMaritime>(persistance, "Liaisons maritimes", Class.forName(nom_package+".LiaisonMaritime"),true);
 			theme.addPopulation(pop);
-			pop = new Population<Itineraire>(persistance, "Itinéraires routiers", Class.forName(nom_package+".Itineraire"),true);
+			pop = new Population<Itineraire>(persistance, "ItinÃ©raires routiers", Class.forName(nom_package+".Itineraire"),true);
 			theme.addPopulation(pop);
 		}
 		catch (Exception e) {
-			System.out.println("Problème de nom de package : "+nom_package_jeu_complet);
+			System.out.println("ProblÃ¨me de nom de package : "+nom_package_jeu_complet);
 		}
 
 	}
@@ -250,28 +250,28 @@ public class CreationDataSet  {
 		DataSet theme = new DataSet(jeu);
 		if (persistance) DataSet.db.makePersistent(theme);
 		jeu.addComposant(theme);
-		theme.setTypeBD("Thème 'Toponymes' de la BDCarto");
+		theme.setTypeBD("ThÃ¨me 'Toponymes' de la BDCarto");
 		theme.setNom("Toponymes");
 		String nom_package = nom_package_jeu_complet+".toponymes";
 		try{
 			Population<?> pop;
 			pop = new Population<Etablissement>(persistance, "Etablissements", Class.forName(nom_package+".Etablissement"),true);
 			theme.addPopulation(pop);
-			pop = new Population<MassifBoise>(persistance, "Massifs boisés", Class.forName(nom_package+".MassifBoise"),true);
+			pop = new Population<MassifBoise>(persistance, "Massifs boisÃ©s", Class.forName(nom_package+".MassifBoise"),true);
 			theme.addPopulation(pop);
 			pop = new Population<PointRemarquableDuRelief>(persistance, "Points remarquables du relief", Class.forName(nom_package+".PointRemarquableDuRelief"),true);
 			theme.addPopulation(pop);
-			pop = new Population<ZoneActivite>(persistance, "Zones d'activité", Class.forName(nom_package+".ZoneActivite"),true);
+			pop = new Population<ZoneActivite>(persistance, "Zones d'activitÃ©", Class.forName(nom_package+".ZoneActivite"),true);
 			theme.addPopulation(pop);
 			pop = new Population<ZoneHabitat>(persistance, "Zones d'habitat", Class.forName(nom_package+".ZoneHabitat"),true);
 			theme.addPopulation(pop);
-			pop = new Population<ZoneReglementeeTouristique>(persistance, "Zones réglementées touristiques", Class.forName(nom_package+".ZoneReglementeeTouristique"),true);
+			pop = new Population<ZoneReglementeeTouristique>(persistance, "Zones rÃ¨glementÃ©es touristiques", Class.forName(nom_package+".ZoneReglementeeTouristique"),true);
 			theme.addPopulation(pop);
 			pop = new Population<GR>(persistance, "GR", Class.forName(nom_package+".GR"),true);
 			theme.addPopulation(pop);
 		}
 		catch (Exception e) {
-			System.out.println("Problème de nom de package : "+nom_package_jeu_complet);
+			System.out.println("ProblÃ¨me de nom de package : "+nom_package_jeu_complet);
 		}
 	}
 }
