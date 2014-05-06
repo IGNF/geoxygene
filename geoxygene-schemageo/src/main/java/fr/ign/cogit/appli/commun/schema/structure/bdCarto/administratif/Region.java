@@ -11,11 +11,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 public abstract class Region extends ElementBDCarto {
 
 	/////////////// GEOMETRIE //////////////////
-	/** Attention: on peut avoir des géométries multiples (plusieurs tronçons) */
+	/** Attention: on peut avoir des geometries multiples (plusieurs troncons) */
 	//	  private GM_Curve geometrie = null;
-	/** Renvoie le GM_Polygon qui définit la géométrie de self */
+	/** Renvoie le GM_Polygon qui definit la geometrie de self */
 	public GM_Polygon getGeometrie() {return (GM_Polygon)geom;}
-	/** Définit le GM_Polygon qui définit la géométrie de self */
+	/** Definit le GM_Polygon qui definit la geometrie de self */
 	public void setGeometrie(GM_Polygon geometrie) {this.geom = geometrie;}
 
 	/////////////// ATTRIBUTS //////////////////
@@ -48,8 +48,8 @@ public abstract class Region extends ElementBDCarto {
 	 *  1 objet AAA est en relation avec n objets Departement (n pouvant etre nul).
 	 *  1 objet Departement est en relation avec 1 objet AAA au plus.
 	 *
-	 *  NB: un objet AAA ne doit pas être en relation plusieurs fois avec le même objet BBB :
-	 *  il est impossible de bien gérer des relations 1-n bidirectionnelles avec doublons.
+	 *  NB: un objet AAA ne doit pas etre en relation plusieurs fois avec le meme objet BBB :
+	 *  il est impossible de bien gerer des relations 1-n bidirectionnelles avec doublons.
 	 *
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec
 	 *  les methodes fournies.
@@ -59,10 +59,10 @@ public abstract class Region extends ElementBDCarto {
 	 */
 	private List<Departement> departements = new ArrayList<Departement>();
 
-	/** Récupère la liste des objets en relation. */
+	/** Recupere la liste des objets en relation. */
 	public List<Departement> getDepartements() {return departements ; }
 
-	/** Définit la liste des objets en relation, et met à jour la relation inverse. */
+	/** Definit la liste des objets en relation, et met a jour la relation inverse. */
 	public void setDepartements (List<Departement> L) {
 		List <Departement>old = new ArrayList<Departement>(departements);
 		Iterator<Departement> it1 = old.iterator();
@@ -77,24 +77,24 @@ public abstract class Region extends ElementBDCarto {
 		}
 	}
 
-	/** Récupère le ième élément de la liste des objets en relation. */
+	/** Recupere le ieme element de la liste des objets en relation. */
 	public Departement getDepartement(int i) {return departements.get(i) ; }
 
-	/** Ajoute un objet à la liste des objets en relation, et met à jour la relation inverse. */
+	/** Ajoute un objet a la liste des objets en relation, et met a jour la relation inverse. */
 	public void addDepartement (Departement O) {
 		if ( O == null ) return;
 		departements.add(O) ;
 		O.setRegion(this) ;
 	}
 
-	/** Enlève un élément de la liste des objets en relation, et met à jour la relation inverse. */
+	/** Enleve un element de la liste des objets en relation, et met a jour la relation inverse. */
 	public void removeDepartement (Departement O) {
 		if ( O == null ) return;
 		departements.remove(O) ;
 		O.setRegion(null);
 	}
 
-	/** Vide la liste des objets en relation, et met à jour la relation inverse. */
+	/** Vide la liste des objets en relation, et met a jour la relation inverse. */
 	public void emptyDepartements () {
 		List<Departement> old = new ArrayList<Departement>(departements);
 		Iterator<Departement> it = old.iterator();

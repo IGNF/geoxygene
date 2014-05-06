@@ -24,20 +24,20 @@ public abstract class CarrefourComplexe extends ElementBDCarto {
 	 *  1 objet Carrefour Complexe est en relation avec 1 ou n objets noeud.
 	 *  1 objet noeud est en relation avec 0 ou 1 objet Carrefour complexe.
 	 *
-	 *  NB: un objet route ne doit pas être en relation plusieurs fois avec le même objet troncon :
-	 *  il est impossible de bien gérer des relations 1-n bidirectionnelles avec doublons.
+	 *  NB: un objet route ne doit pas etre en relation plusieurs fois avec le meme objet troncon :
+	 *  il est impossible de bien gerer des relations 1-n bidirectionnelles avec doublons.
 	 *
-	 *  Les méthodes get (sans indice) et set sont nécessaires au mapping.
-	 *  Les autres méthodes sont là seulement pour faciliter l'utilisation de la relation.
+	 *  Les methodes get (sans indice) et set sont necessaires au mapping.
+	 *  Les autres methodes sont la seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
 	 */
 	protected List<NoeudRoutier> noeuds = new ArrayList<NoeudRoutier>();
 
-	/** Récupère la liste des noeuds. */
+	/** Recupere la liste des noeuds. */
 	public List<NoeudRoutier> getNoeuds() {return noeuds ; }
-	/** Définit la liste des Noeuds, et met à jour la relation inverse. */
+	/** Definit la liste des Noeuds, et met a jour la relation inverse. */
 	public void setNoeuds (List <NoeudRoutier>L) {
 		List<NoeudRoutier> old = new ArrayList<NoeudRoutier>(noeuds);
 		Iterator<NoeudRoutier> it1 = old.iterator();
@@ -51,21 +51,21 @@ public abstract class CarrefourComplexe extends ElementBDCarto {
 			O.setCarrefourComplexe(this);
 		}
 	}
-	/** Récupère le ième élément composant. */
+	/** Recupere le ieme element composant. */
 	public NoeudRoutier getNoeud(int i) {return noeuds.get(i) ; }
-	/** Ajoute un objet à la liste des objets en relation, et met à jour la relation inverse. */
+	/** Ajoute un objet a la liste des objets en relation, et met a jour la relation inverse. */
 	public void addNoeud(NoeudRoutier O) {
 		if ( O == null ) return;
 		noeuds.add(O) ;
 		O.setCarrefourComplexe(this) ;
 	}
-	/** Enlève un élément de la liste noeuds, et met à jour la relation inverse. */
+	/** Enleve un element de la liste noeuds, et met a jour la relation inverse. */
 	public void removeNoeud(NoeudRoutier O) {
 		if ( O == null ) return;
 		noeuds.remove(O) ;
 		O.setCarrefourComplexe(null);
 	}
-	/** Vide la liste des noeuds, et met à jour la relation inverse. */
+	/** Vide la liste des noeuds, et met a jour la relation inverse. */
 	public void emptyNoeuds() {
 		List<NoeudRoutier> old = new ArrayList<NoeudRoutier>(noeuds);
 		Iterator<NoeudRoutier> it = old.iterator();

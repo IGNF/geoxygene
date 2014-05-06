@@ -7,11 +7,11 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 public abstract class TronconFerre extends Troncon {
 
 	/////////////// GEOMETRIE //////////////////
-	/** Attention: on peut avoir des géométries multiples (plusieurs tronçons) */
+	/** Attention: on peut avoir des geometries multiples (plusieurs troncons) */
 	//    private GM_Curve geometrie = null;
-	/** Renvoie le GM_LineString qui définit la géométrie de self */
+	/** Renvoie le GM_LineString qui definit la geometrie de self */
 	public GM_LineString getGeometrie() {return (GM_LineString)geom;}
-	/** Définit le GM_LineString qui définit la géométrie de self */
+	/** Definit le GM_LineString qui definit la geometrie de self */
 	public void setGeometrie(GM_LineString G) {this.geom = G;}
 
 	/////////////// ATTRIBUTS //////////////////
@@ -56,19 +56,19 @@ public abstract class TronconFerre extends Troncon {
 
 	/////////////// RELATIONS //////////////////
 
-	/** Un tronçon a un noeud initial.
-	 *  1 objet Noeud est en relation "sortants" avec n objets TronçonFerre (n>0).
-	 *  1 objet TronçonFerre est en relation "ini" avec 1 objet Noeud.
+	/** Un tronÃ§on a un noeud initial.
+	 *  1 objet Noeud est en relation "sortants" avec n objets TronvonFerre (n>0).
+	 *  1 objet TronvonFerre est en relation "ini" avec 1 objet Noeud.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	private NoeudFerre ini;
-	/** Récupère le noeud initial. */
+	/** Recupere le noeud initial. */
 	public NoeudFerre getIni() {return ini;}
-	/** Définit le noeud initial, et met à jour la relation inverse. */
+	/** Definit le noeud initial, et met a jour la relation inverse. */
 	public void setIni(NoeudFerre O) {
 		NoeudFerre old = ini;
 		ini = O;
@@ -80,25 +80,25 @@ public abstract class TronconFerre extends Troncon {
 	}
 	/** Pour le mapping avec OJB, dans le cas d'une relation 1-n, du cote 1 de la relation */
 	private int iniID;
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public void setIniID(int I) {iniID = I;}
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public int getIniID() {return iniID;}
 
 
-	/** Un tronçon a un noeud final.
-	 *  1 objet Noeud est en relation "entrants" avec n objets TronçonFerre (n>0).
-	 *  1 objet TronçonFerre est en relation "fin" avec 1 objet Noeud.
+	/** Un troncon a un noeud final.
+	 *  1 objet Noeud est en relation "entrants" avec n objets TronconFerre (n>0).
+	 *  1 objet TronconFerre est en relation "fin" avec 1 objet Noeud.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	private NoeudFerre fin;
-	/** Récupère le noeud final. */
+	/** Recupere le noeud final. */
 	public NoeudFerre getFin() {return fin;}
-	/** Définit le noeud final, et met à jour la relation inverse. */
+	/** Definit le noeud final, et met a jour la relation inverse. */
 	public void setFin(NoeudFerre O) {
 		NoeudFerre old = fin;
 		fin = O;
@@ -110,9 +110,9 @@ public abstract class TronconFerre extends Troncon {
 	}
 	/** Pour le mapping avec OJB, dans le cas d'une relation 1-n, du cote 1 de la relation */
 	private int finID;
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public void setFinID(int I) {finID = I;}
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public int getFinID() {return finID;}
 
 
@@ -120,18 +120,18 @@ public abstract class TronconFerre extends Troncon {
 	 *  1 objet LigneCheminDeFer est en relation avec n objets TronconFerre (n pouvant etre nul).
 	 *  1 objet TronconFerre est en relation avec 1 objet LigneCheminDeFer au plus.
 	 *
-	 *  Les méthodes get et set sont utiles pour assurer la bidirection.
+	 *  Les methodes get et set sont utiles pour assurer la bidirection.
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	private LigneCheminDeFer ligneCheminDeFer;
 
-	/** Récupère l'objet en relation. */
+	/** Recupere l'objet en relation. */
 
 	public LigneCheminDeFer getLigneCheminDeFer() {return ligneCheminDeFer;  }
 
-	/** Définit l'objet en relation, et met à jour la relation inverse. */
+	/** Definit l'objet en relation, et met a jour la relation inverse. */
 	public void setLigneCheminDeFer(LigneCheminDeFer O) {
 		LigneCheminDeFer old = ligneCheminDeFer;
 		ligneCheminDeFer = O;

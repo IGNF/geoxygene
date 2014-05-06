@@ -8,11 +8,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 public abstract class Commune extends ElementBDCarto {
 
 	/////////////// GEOMETRIE //////////////////
-	/** Attention: on peut avoir des géométries multiples (plusieurs tronçons) */
+	/** Attention: on peut avoir des geometries multiples (plusieurs troncons) */
 	//	  private GM_Curve geometrie = null;
-	/** Renvoie le GM_Polygon qui définit la géométrie de self */
+	/** Renvoie le GM_Polygon qui definit la geometrie de self */
 	public GM_Polygon getGeometrie() {return (GM_Polygon)geom;}
-	/** Définit le GM_Polygon qui définit la géométrie de self */
+	/** Definit le GM_Polygon qui definit la geometrie de self */
 	public void setGeometrie(GM_Polygon geometrie) {this.geom = geometrie;}
 
 	/////////////// ATTRIBUTS //////////////////
@@ -56,15 +56,15 @@ public abstract class Commune extends ElementBDCarto {
 	 *  1 objet AAA est en relation avec n objets BBB (n pouvant etre nul).
 	 *  1 objet BBB est en relation avec 1 objet AAA au plus.
 	 *
-	 *  Les méthodes get et set sont utiles pour assurer la bidirection.
+	 *  Les methodes get et set sont utiles pour assurer la bidirection.
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	private Canton canton;
-	/** Récupère l'objet en relation. */
+	/** Recupere l'objet en relation. */
 	public Canton getCanton() {return canton;  }
-	/** Définit l'objet en relation, et met à jour la relation inverse. */
+	/** Definit l'objet en relation, et met a jour la relation inverse. */
 	public void setCanton(Canton O) {
 		Canton old = canton;
 		canton = O;

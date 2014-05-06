@@ -8,17 +8,17 @@ import fr.ign.cogit.appli.commun.schema.structure.bdCarto.franchissement.Troncon
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /**
- * Tronçon de route.
+ * Troncon de route.
  * <BR> <STRONG> Type </STRONG>:
  *      Objet simple
  * <BR> <STRONG> Localisation </STRONG>:
- *      Linéraire.
+ *      Lineraire.
  * <BR> <STRONG> Liens </STRONG>:
- *      //Compose (lien inverse) "Route numerotée ou nommée"
- * <BR> <STRONG> Définition </STRONG>:
- *      Les tronçons de route, chemins ou sentier. Les voies en construction sont retenues,
- *      sans raccordement au réseau existant, dans la mesure où les terrassements ont débuté sur le terrain.
- * <BR> <STRONG> Compatibilité entre attributs </STRONG> :
+ *      //Compose (lien inverse) "Route numerotee ou nommee"
+ * <BR> <STRONG> Definition </STRONG>:
+ *      Les troncons de route, chemins ou sentier. Les voies en construction sont retenues,
+ *      sans raccordement au reseau existant, dans la mesure ou les terrassements ont debute sur le terrain.
+ * <BR> <STRONG> Compatibilite entre attributs </STRONG> :
  * <UL>
  * <LI> Si "nbChaussees" = "2 chaussees" alors "nbVoies" = "sans objet" </LI>
  * <LI> Si "vocation" = "bretelle" alors "nbVoies" = "sans objet" </LI>
@@ -38,26 +38,26 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 public abstract class TronconRoute extends Troncon {
 
 	/////////////// GEOMETRIE //////////////////
-	/** Attention: on peut avoir des géoémtries multiples (plusieurs tronçons) */
+	/** Attention: on peut avoir des geometries multiples (plusieurs troncons) */
 	//    protected GM_Curve geometrie = null;
-	/** Renvoie le GM_LineString qui définit la géométrie de self */
+	/** Renvoie le GM_LineString qui definit la geometrie de self */
 	public GM_LineString getGeometrie() {return (GM_LineString)geom;}
-	/** Définit le GM_LineString qui définit la géométrie de self */
+	/** Definit le GM_LineString qui definit la geometrie de self */
 	public void setGeometrie(GM_LineString G) {this.geom = G;}
 
 	/////////////// ATTRIBUTS //////////////////
 	/** Vocation de la liaison.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *      Cet attribut matérialise une hiérarchisation du réseau routier basée, non pas sur un critère administratif,
-	 *      mais sur l'importance des tronçons de route pour le trafic routier.
-	 *      Ainsi, les 4 valeurs "type autoroutier" "liaison principale", "liaison régionale" et
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *      Cet attribut materialise une hierarchisation du reseau routier basee, non pas sur un critere administratif,
+	 *      mais sur l'importance des troncons de route pour le trafic routier.
+	 *      Ainsi, les 4 valeurs "type autoroutier" "liaison principale", "liaison regionale" et
 	 *      "liaison locale" permettent un maillage de plus en plus dense du territoire.
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 * <BR> <STRONG> Valeurs </STRONG>: <UL>
 	 * <LI>     1- "type autoroutier" </LI>
 	 * <LI>     2- "liaison principale" </LI>
-	 * <LI>     6- "liaison régionale" </LI>
+	 * <LI>     6- "liaison regionale" </LI>
 	 * <LI>     7- "liaison locale" </LI>
 	 * <LI>     8- "bretelle" </LI>
 	 * <LI>     10- "piste cyclable" </LI>
@@ -68,10 +68,10 @@ public abstract class TronconRoute extends Troncon {
 	public void setVocation(String vocation) { this.vocation = vocation; }
 
 
-	/** Nombre de chaussées.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *      Nombre de chaussées. Pour les voies à chaussées séparées: si elles sont contiguës, la BDCarto contient un tronçon à deux chaussées.
-	 *      Si elle sont éloignées de plus de 100 m sur au moins 1km de long, la BDCarto contient deux tronçons à une chaussée.
+	/** Nombre de chaussees.
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *      Nombre de chaussees. Pour les voies a chaussees separees: si elles sont contigues, la BDCarto contient un troncon a deux chaussees.
+	 *      Si elle sont eloignees de plus de 100 m sur au moins 1km de long, la BDCarto contient deux troncons a une chaussee.
 	 * <BR> <STRONG> int </STRONG>:
 	 *      entier.
 	 * <BR> <STRONG> Valeurs possibles </STRONG>: <UL>
@@ -85,17 +85,17 @@ public abstract class TronconRoute extends Troncon {
 
 
 	/** Nombre total de voies.
-	 * <BR> <STRONG> Définition </STRONG>:
+	 * <BR> <STRONG> Definition </STRONG>:
 	 *      Nombre total de voies.
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 * <BR> <STRONG> Valeurs </STRONG>: <UL>
-	 * <LI>     S- "sans objet" (valeur obligatoire pour les voies a 2 chaussées et les bretelles d'échangeurs) </LI>
+	 * <LI>     S- "sans objet" (valeur obligatoire pour les voies a 2 chaussees et les bretelles d'echangeurs) </LI>
 	 * <LI>     1- "1 voie" </LI>
-	 * <LI>     2- "2 voies étroites" </LI>
-	 * <LI>     3- "3 voies" (chaussée normalisée 10.50 m) </LI>
+	 * <LI>     2- "2 voies etroites" </LI>
+	 * <LI>     3- "3 voies" (chaussee normalisee 10.50 m) </LI>
 	 * <LI>     4- "4 voies" </LI>
-	 * <LI>     7- "2 voies normalisées" (chaussée normalisée 7 m) </LI>
+	 * <LI>     7- "2 voies normalisees" (chaussee normalisee 7 m) </LI>
 	 * <LI>     9- "plus de 4 voies" </LI>
 	 * </UL>
 	 */
@@ -105,35 +105,35 @@ public abstract class TronconRoute extends Troncon {
 
 
 	/** Etat physique de la route.
-	 * <BR> <STRONG> Définition </STRONG>:
+	 * <BR> <STRONG> Definition </STRONG>:
 	 *      Etat physique de la route.
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 * <BR> <STRONG> Valeurs </STRONG>: <UL>
-	 * <LI>     1- "route revêtue" </LI>
-	 * <LI>     2- "route non revêtue" </LI>
+	 * <LI>     1- "route revetue" </LI>
+	 * <LI>     2- "route non revetue" </LI>
 	 * <LI>     3- "en construction ou en projet" </LI>
 	 * <LI>     4- "chemin d'exploitation" </LI>
 	 * <LI>     5- "sentier" </LI>
 	 * </UL>
 	 * <BR> <STRONG> Remarques</STRONG>:
-	 *      Une route en construction ou en projet n'est pas raccordée au réseau existant.
+	 *      Une route en construction ou en projet n'est pas raccordee au reseau existant.
 	 */
 	protected String etatPhysique;
 	public String getEtatPhysique() { return etatPhysique; }
 	public void setEtatPhysique(String etatPhysique) { this.etatPhysique = etatPhysique; }
 
 
-	/** Accès.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *      Accès.
+	/** Acces.
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *      Acces.
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 * <BR> <STRONG> Valeurs </STRONG>: <UL>
 	 * <LI>     1- "libre" </LI>
-	 * <LI>     2- "à péage" </LI>
+	 * <LI>     2- "a peage" </LI>
 	 * <LI>     3- "interdit au public" </LI>
-	 * <LI>     6- "fermeture saisonnière" </LI>
+	 * <LI>     6- "fermeture saisonniere" </LI>
 	 * </UL>
 	 */
 	public String acces;
@@ -142,10 +142,10 @@ public abstract class TronconRoute extends Troncon {
 
 
 	/** Position par rapport au sol.
-	 * <BR> <STRONG> Définition </STRONG>:
+	 * <BR> <STRONG> Definition </STRONG>:
 	 *      Position par rapport au sol.
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 * <BR> <STRONG> Valeurs </STRONG>: <UL>
 	 * <LI>     1- "normal" </LI>
 	 * <LI>     2- "sur viaduc ou sur pont" </LI>
@@ -157,14 +157,14 @@ public abstract class TronconRoute extends Troncon {
 	public void setPositionSol(String positionSol) { this.positionSol = positionSol; }
 
 
-	/** Appartenance au réseau vert.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *      Il s'agit du réseau vert de transit (pas celui à l'intérieur des villes ni celui des poids-lourds).
+	/** Appartenance au reseau vert.
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *      Il s'agit du reseau vert de transit (pas celui a l'interieur des villes ni celui des poids-lourds).
 	 * <BR> <STRONG> Boolean </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 * <BR> <STRONG> Valeurs </STRONG>: <UL>
-	 * <LI>     TRUE : appartient au réseau vert </LI>
-	 * <LI>     FALSE : n'appartient pas au réseau vert </LI>
+	 * <LI>     TRUE : appartient au reseau vert </LI>
+	 * <LI>     FALSE : n'appartient pas au reseau vert </LI>
 	 * </UL>
 	 */
 	public boolean reseauVert;
@@ -173,16 +173,16 @@ public abstract class TronconRoute extends Troncon {
 
 
 	/** Sens.
-	 * <BR> <STRONG> Définition </STRONG>:
+	 * <BR> <STRONG> Definition </STRONG>:
 	 *      Sens de circulation (par rapport au sens noeud initial vers le noeud final).
-	 *      Il est géré de façon obligatoire sur les tronçons composant les voies à chaussées séparées éloignées
-	 *      et sur les tronçons constituant un échangeur détaillé. Dans les autres cas, le sens est géré si l'information est connue.
+	 *      Il est gere de facon obligatoire sur les troncons composant les voies a chaussees separees eloignees
+	 *      et sur les tronÃ§ons constituant un echangeur detaille. Dans les autres cas, le sens est gere si l'information est connue.
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 * <BR> <STRONG> Valeurs </STRONG>: <UL>
 	 * <LI>     0- "double sens"  </LI>
-	 * <LI>     2- "sens unique direct" (sens du tronçon) </LI>
-	 * <LI>     3- "sens unique inverse" (sens inverse du tronçon) </LI>
+	 * <LI>     2- "sens unique direct" (sens du troncon) </LI>
+	 * <LI>     3- "sens unique inverse" (sens inverse du troncon) </LI>
 	 * </UL>
 	 */
 	protected String sens;
@@ -190,12 +190,12 @@ public abstract class TronconRoute extends Troncon {
 	public void setSens(String sens) { this.sens = sens; }
 
 
-	/** Nombre de voies chaussées montante.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *      Concerne uniquement les tronçons à chaussée séparée.
-	 *      La chaussée montante est la chaussée dont la circulation se fait dansle sens noeud initial -> noeud final
+	/** Nombre de voies chaussees montante.
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *      Concerne uniquement les troncons a chaussee separee.
+	 *      La chaussee montante est la chaussee dont la circulation se fait dansle sens noeud initial -> noeud final
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 * <BR> <STRONG> Valeurs </STRONG>: <UL>
 	 * <LI>     S- "sans objet" </LI>
 	 * <LI>     1- "1 voie" </LI>
@@ -210,12 +210,12 @@ public abstract class TronconRoute extends Troncon {
 	public void setNbVoiesMontantes(String nbVoiesMontantes) { this.nbVoiesMontantes = nbVoiesMontantes; }
 
 
-	/** Nombre de voies chaussées descendante.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *      Concerne uniquement les tronçons à chaussée séparée.
-	 *      La chaussée montante est la chaussée dont la circulation se fait dansle sens noeud final -> noeud initial
+	/** Nombre de voies chaussees descendante.
+	 * <BR> <STRONG> definition </STRONG>:
+	 *      Concerne uniquement les troncons a chaussee separee.
+	 *      La chaussee montante est la chaussee dont la circulation se fait dansle sens noeud final -> noeud initial
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 * <BR> <STRONG> Valeurs </STRONG>: <UL>
 	 * <LI>     S- "sans objet" </LI>
 	 * <LI>     1- "1 voie" </LI>
@@ -231,15 +231,15 @@ public abstract class TronconRoute extends Troncon {
 
 
 	/** Toponyme.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 * Seuls les noms de pont, viaduc, tunnel, sont portés par les tronçons de route ;
-	 * les autres toponymes sont portés par des itinéraires routiers (voir plus loin B-c-3). Un toponyme est
-	 * composé de trois parties pouvant éventuellement ne porter aucune valeur (n'existe pas ou inconnu s'il s'agit de pont, viaduc ou tunnel et sans objet sinon) :
-	 * un terme générique ou une désignation, texte d'au plus 40 caractères.
-	 * un article, texte d'au plus cinq caractères ;
-	 * un élément spécifique, texte d'au plus 80 caractères ;
+	 * <BR> <STRONG> Definition </STRONG>:
+	 * Seuls les noms de pont, viaduc, tunnel, sont portes par les troncons de route ;
+	 * les autres toponymes sont portes par des itineraires routiers (voir plus loin B-c-3). Un toponyme est
+	 * compose de trois parties pouvant eventuellement ne porter aucune valeur (n'existe pas ou inconnu s'il s'agit de pont, viaduc ou tunnel et sans objet sinon) :
+	 * un terme generique ou une designation, texte d'au plus 40 caracteres.
+	 * un article, texte d'au plus cinq caracteres ;
+	 * un element specifique, texte d'au plus 80 caracteres ;
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 */
 	protected String toponyme;
 	public String getToponyme() { return toponyme; }
@@ -247,11 +247,11 @@ public abstract class TronconRoute extends Troncon {
 
 
 	/** Utilisation.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *      Permet de distinguer les tronçons en fonction leur utilisation potentielle
-	 *      pour la description de logique de communication et/ou une représentation cartographique.
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *      Permet de distinguer les troncons en fonction leur utilisation potentielle
+	 *      pour la description de logique de communication et/ou une representation cartographique.
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 * <BR> <STRONG> Valeurs </STRONG>: <UL>
 	 * <LI>     1- "logique et cartographique" </LI>
 	 * <LI>     2- "logique" </LI>
@@ -264,11 +264,11 @@ public abstract class TronconRoute extends Troncon {
 
 
 	/** Date de mise en service.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *      Cet attribut n'est rempli que pour les tronçons en construction : mois et année de mise en service pour les tronçons en travaux.
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *      Cet attribut n'est rempli que pour les troncons en construction : mois et annee de mise en service pour les troncons en travaux.
 	 *      Il est sans objet dans tous les autres cas.
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 */
 	protected String dateMiseEnService;
 	public String getDateMiseEnService() { return dateMiseEnService; }
@@ -277,20 +277,20 @@ public abstract class TronconRoute extends Troncon {
 
 	/////////////// RELATIONS //////////////////
 
-	/** Noeud initial du tronçon.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *      Relation topologique participant à la gestion de la logique de parcours du réseau routier :
-	 *      Elle précise lengthnoeud routier initial d'un tronçon de route.
+	/** Noeud initial du troncon.
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *      Relation topologique participant a la gestion de la logique de parcours du reseau routier :
+	 *      Elle precise lengthnoeud routier initial d'un troncon de route.
 	 * <BR> <STRONG> Type </STRONG>:
 	 *      NoeudRoutier.
-	 * <BR> <STRONG> Cardinalité de la relation </STRONG>:
-	 *      1 tronçon a 0 ou 1 noeud initial.
-	 *      1 noeud à 0 ou n tronçons sortants.
+	 * <BR> <STRONG> Cardinalite de la relation </STRONG>:
+	 *      1 troncon a 0 ou 1 noeud initial.
+	 *      1 noeud a 0 ou n troncons sortants.
 	 */
 	protected NoeudRoutier noeudIni;
-	/** Récupère le noeud initial. */
+	/** Recupere le noeud initial. */
 	public NoeudRoutier getNoeudIni() {return noeudIni;}
-	/** Définit le noeud initial, et met à jour la relation inverse. */
+	/** Definit le noeud initial, et met a jour la relation inverse. */
 	public void setNoeudIni(NoeudRoutier O) {
 		NoeudRoutier old = noeudIni;
 		noeudIni = O;
@@ -302,27 +302,27 @@ public abstract class TronconRoute extends Troncon {
 	}
 	/** Pour le mapping avec OJB, dans le cas d'une relation 1-n, du cote 1 de la relation */
 	protected int noeudIniID;
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public void setNoeudIniID(int I) {noeudIniID = I;}
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public int getNoeudIniID() {return noeudIniID;}
 
 
 
-	/** Noeud final du tronçon.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *      Relation topologique participant à la gestion de la logique de parcours du réseau routier :
-	 *      Elle précise lengthnoeud routier initial d'un tronçon de route.
+	/** Noeud final du troncon.
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *      Relation topologique participant a la gestion de la logique de parcours du reseau routier :
+	 *      Elle precise lengthnoeud routier initial d'un troncon de route.
 	 * <BR> <STRONG> Type </STRONG>:
 	 *      NoeudRoutier.
-	 * <BR> <STRONG> Cardinalité de la relation </STRONG>:
-	 *      1 tronçon a 0 ou 1 noeud initial.
-	 *      1 noeud à 0 ou n tronçons sortants.
+	 * <BR> <STRONG> Cardinalite de la relation </STRONG>:
+	 *      1 troncon a 0 ou 1 noeud initial.
+	 *      1 noeud a 0 ou n troncons sortants.
 	 */
 	protected NoeudRoutier noeudFin;
-	/** Récupère le noeud final. */
+	/** Recupere le noeud final. */
 	public NoeudRoutier getNoeudFin() {return noeudFin;}
-	/** Définit le noeud final, et met à jour la relation inverse. */
+	/** Definit le noeud final, et met a jour la relation inverse. */
 	public void setNoeudFin(NoeudRoutier O) {
 		NoeudRoutier old = noeudFin;
 		noeudFin = O;
@@ -334,9 +334,9 @@ public abstract class TronconRoute extends Troncon {
 	}
 	/** Pour le mapping avec OJB, dans le cas d'une relation 1-n, du cote 1 de la relation */
 	protected int noeudFinID;
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public void setNoeudFinID(int I) {noeudFinID = I;}
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public int getNoeudFinID() {return noeudFinID;}
 
 
@@ -344,15 +344,15 @@ public abstract class TronconRoute extends Troncon {
 	 *  1 objet Route est en relation avec 1 ou n objets troncons.
 	 *  1 objet Troncon est en relation avec 0 ou 1 objet route.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	protected Route route;
-	/** Récupère la route dont il est composant. */
+	/** Recupere la route dont il est composant. */
 	public Route getRoute() {return route;  }
-	/** Définit la route dont il est composant, et met à jour la relation inverse. */
+	/** Definit la route dont il est composant, et met a jour la relation inverse. */
 	public void setRoute(Route O) {
 		Route old = route;
 		route = O;
@@ -369,19 +369,19 @@ public abstract class TronconRoute extends Troncon {
 	public int getRouteID() {return routeID;}
 
 
-	/** Lien bidirectionnel précisant l'itinéraire dont il est composant.
-	 *  1 objet itinéraire est en relation avec 1 ou n objets tronçons.
-	 *  1 objet Troncon est en relation avec 0 ou n objet itinéraire.
+	/** Lien bidirectionnel precisant l'itineraire dont il est composant.
+	 *  1 objet itineraire est en relation avec 1 ou n objets troncons.
+	 *  1 objet Troncon est en relation avec 0 ou n objet itineraire.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	private List<ItineraireRoutier> itineraires = new ArrayList<ItineraireRoutier>();
-	/** Récupère les itineraires dont le tronçon fait partie */
+	/** Recupere les itineraires dont le troncon fait partie */
 	public List<ItineraireRoutier> getItineraires() {return itineraires ; }
-	/** Définit les itineraires en relation, et met à jour la relation inverse. */
+	/** Definit les itineraires en relation, et met a jour la relation inverse. */
 	public void setItineraires(List<ItineraireRoutier> L) {
 		List<ItineraireRoutier> old = new ArrayList<ItineraireRoutier>(itineraires);
 		Iterator<ItineraireRoutier> it1 = old.iterator();
@@ -397,21 +397,21 @@ public abstract class TronconRoute extends Troncon {
 			O.getTroncons().add(this);
 		}
 	}
-	/** Récupère le ième élément de la liste des itineraires en relation. */
+	/** Recupere le ieme element de la liste des itineraires en relation. */
 	public ItineraireRoutier getItineraire(int i) {return itineraires.get(i) ; }
-	/** Ajoute un élément à la liste des itineraires en relation, et met à jour la relation inverse. */
+	/** Ajoute un element a la liste des itineraires en relation, et met a jour la relation inverse. */
 	public void addItineraire(ItineraireRoutier O) {
 		if ( O == null ) return;
 		itineraires.add(O) ;
 		O.getTroncons().add(this);
 	}
-	/** Enlève un élément de la liste des itineraires en relation, et met à jour la relation inverse. */
+	/** Enleve un element de la liste des itineraires en relation, et met a jour la relation inverse. */
 	public void removeItineraire(ItineraireRoutier O) {
 		if ( O == null ) return;
 		itineraires.remove(O) ;
 		O.getTroncons().remove(this);
 	}
-	/** Vide la liste des itineraires en relation, et met à jour la relation inverse. */
+	/** Vide la liste des itineraires en relation, et met a jour la relation inverse. */
 	public void emptyItineraires() {
 		Iterator<ItineraireRoutier> it = itineraires.iterator();
 		while ( it.hasNext() ) {
@@ -421,22 +421,22 @@ public abstract class TronconRoute extends Troncon {
 		itineraires.clear();
 	}
 
-	/** Un troncon de route permet d'accéder à n équipements routier ,
-	 *  par l'intermédiaire de la classe-relation Accede.
+	/** Un troncon de route permet d'acceder a n equipements routier ,
+	 *  par l'intermediaire de la classe-relation Accede.
 	 *  1 objet troncon peut etre en relation avec 0 ou n "objets-relation" Accede.
 	 *  1 "objet-relation" Accede est en relation avec 1 objet troncon.
 	 *
-	 *  Les méthodes get (sans indice) et set sont nécessaires au mapping.
-	 *  Les autres méthodes sont là seulement pour faciliter l'utilisation de la relation.
+	 *  Les methodes get (sans indice) et set sont necessaires au mapping.
+	 *  Les autres methodes sont la seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
 	 */
 	protected List<Accede> accedent = new ArrayList<Accede>();
 
-	/** Récupère la liste des Accede en relation. */
+	/** Recupere la liste des Accede en relation. */
 	public List<Accede> getAccedent() {return accedent; }
-	/** Définit la liste des Accede en relation, et met à jour la relation inverse. */
+	/** Definit la liste des Accede en relation, et met a jour la relation inverse. */
 	public void setAccedent(List <Accede>L) {
 		List<Accede> old = new ArrayList<Accede>(accedent);
 		Iterator<Accede> it1 = old.iterator();
@@ -450,21 +450,21 @@ public abstract class TronconRoute extends Troncon {
 			O.setTroncon(this);
 		}
 	}
-	/** Récupère le ième élément de la liste des Accede en relation. */
+	/** Recupere le ieme element de la liste des Accede en relation. */
 	public Accede getAccede(int i) {return accedent.get(i) ; }
-	/** Ajoute un objet à la liste des objets en relation, et met à jour la relation inverse. */
+	/** Ajoute un objet a la liste des objets en relation, et met a jour la relation inverse. */
 	public void addAccede(Accede O) {
 		if ( O == null ) return;
 		accedent.add(O) ;
 		O.setTroncon(this) ;
 	}
-	/** Enlève un élément de la liste des Accede en relation, et met à jour la relation inverse. */
+	/** Enleve un element de la liste des Accede en relation, et met a jour la relation inverse. */
 	public void removeAccede(Accede O) {
 		if ( O == null ) return;
 		accedent.remove(O) ;
 		O.setTroncon(null);
 	}
-	/** Vide la liste des Accede en relation, et met à jour la relation inverse. */
+	/** Vide la liste des Accede en relation, et met a jour la relation inverse. */
 	public void emptyAccedent() {
 		List<Accede> old = new ArrayList<Accede>(accedent);
 		Iterator<Accede> it = old.iterator();
@@ -475,19 +475,19 @@ public abstract class TronconRoute extends Troncon {
 	}
 
 
-	/** Une début de section est située sur un troncon.
+	/** Une debut de section est situee sur un troncon.
 	 *  1 objet DebutSection est en relation avec 1 Troncon.
 	 *  1 objet Troncon est en relation avec 0 ou 1 objet DebutSection.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	protected DebutSection debutSection;
-	/** Récupère l'objet en relation. */
+	/** Recupere l'objet en relation. */
 	public DebutSection getDebutSection() {return debutSection;  }
-	/** Définit l'objet en relation, et met à jour la relation inverse. */
+	/** Definit l'objet en relation, et met a jour la relation inverse. */
 	public void setDebutSection(DebutSection O) {
 		DebutSection old = debutSection;
 		debutSection = O;

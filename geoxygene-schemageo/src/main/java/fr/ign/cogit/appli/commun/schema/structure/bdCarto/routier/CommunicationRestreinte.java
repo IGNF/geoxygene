@@ -20,15 +20,15 @@ public abstract class CommunicationRestreinte extends ElementBDCarto {
 	 *  1 objet CommunicationRoutiere est en relation avec 1 Noeud.
 	 *  1 objet Noeud est en relation avec 0 ou 1 objet CommunicationRoutiere.
 	 * 
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	protected NoeudRoutier noeud;
-	/** Récupère le noeud routier concerné */
+	/** Recupere le noeud routier concerne */
 	public NoeudRoutier getNoeud() {return noeud;}
-	/** Définit le noeud routier concerné, et met à jour la relation inverse. */
+	/** Definit le noeud routier concerne, et met a jour la relation inverse. */
 	public void setNoeud(NoeudRoutier O) {
 		NoeudRoutier old = noeud;
 		noeud = O;

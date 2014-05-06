@@ -12,19 +12,19 @@ public abstract class DebutSection extends ElementBDCarto {
 	public String getSens() {return sens; }
 	public void setSens (String S) {sens = S; }
 
-	/** Les débuts de section se suivent.
-	 *  1 objet Début de section a 1 ou 0 successeur.
-	 *  1 objet Début de section a 1 ou 0 predecesseur.
+	/** Les debuts de section se suivent.
+	 *  1 objet Debut de section a 1 ou 0 successeur.
+	 *  1 objet Debut de section a 1 ou 0 predecesseur.
 	 * 
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	protected DebutSection successeur;
-	/** Récupère le successeur */
+	/** Recupere le successeur */
 	public DebutSection getSuccesseur() {return successeur;}
-	/** Définit le successeur, et met à jour la relation inverse. */
+	/** Definit le successeur, et met a jour la relation inverse. */
 	public void setSuccesseur(DebutSection O) {
 		DebutSection old = successeur;
 		successeur = O;
@@ -42,9 +42,9 @@ public abstract class DebutSection extends ElementBDCarto {
 
 
 	protected DebutSection predecesseur;
-	/** Récupère le predecesseur*/
+	/** Recupere le predecesseur*/
 	public DebutSection getPredecesseur() {return predecesseur;}
-	/** Définit le predecesseur, et met à jour la relation inverse. */
+	/** Definit le predecesseur, et met a jour la relation inverse. */
 	public void setPredecesseur(DebutSection O) {
 		DebutSection old = predecesseur;
 		predecesseur = O;
@@ -61,19 +61,19 @@ public abstract class DebutSection extends ElementBDCarto {
 	public void setPredecesseurID (int I) {predecesseurID = I;}
 
 
-	/** Une début de section est située sur un troncon.
+	/** Une debut de section est situee sur un troncon.
 	 *  1 objet DebutSection est en relation avec 1 Troncon.
 	 *  1 objet Troncon est en relation avec 0 ou 1 objet DebutSection.
 	 * 
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	protected TronconRoute troncon;
-	/** Récupère le troncon routier concerné */
+	/** Recupere le troncon routier concerne */
 	public TronconRoute getTroncon() {return troncon;}
-	/** Définit le troncon routier concerné, et met à jour la relation inverse. */
+	/** Definit le troncon routier concerne, et met a jour la relation inverse. */
 	public void setTroncon(TronconRoute O) {
 		TronconRoute old = troncon;
 		troncon = O;

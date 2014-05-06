@@ -5,15 +5,15 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 
 /** Zone plate au drainage complexe dans laquelle circule un ensemble de portions de cours d'eau
- *  formant un entrelac de bras d'égale importance. */
+ *  formant un entrelac de bras d'egale importance. */
 public abstract class Laisse extends ElementBDCarto {
 
 	/////////////// GEOMETRIE //////////////////
-	/** Attention: on peut avoir des géoémtries multiples (plusieurs tronçons) */
+	/** Attention: on peut avoir des geometries multiples (plusieurs troncons) */
 	//    private GM_Curve geometrie = null;
-	/** Renvoie la géométrie de self */
+	/** Renvoie la geometrie de self */
 	public GM_LineString getGeometrie() {return (GM_LineString)geom;}
-	/** Définit la géométrie de self */
+	/** Definit la geometrie de self */
 	public void setGeometrie(GM_LineString G) {this.geom = G;}
 
 	/////////////// ATTRIBUTS //////////////////

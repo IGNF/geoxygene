@@ -13,9 +13,9 @@ public abstract class NoeudHydrographique extends ElementBDCarto {
 
 	/////////////// GEOMETRIE //////////////////
 	//    private GM_Point geometrie = null;
-	/** Renvoie le GM_Point qui définit la géométrie de self */
+	/** Renvoie le GM_Point qui definit la geometrie de self */
 	public GM_Point getGeometrie() {return (GM_Point)geom;}
-	/** Définit le GM_Point qui définit la géométrie de self */
+	/** Definit le GM_Point qui definit la geometrie de self */
 	public void setGeometrie(GM_Point geometrie) {this.geom = geometrie;}
 
 	/////////////// ATTRIBUTS //////////////////
@@ -31,12 +31,12 @@ public abstract class NoeudHydrographique extends ElementBDCarto {
 	public double getCote() {return this.cote; }
 	public void setCote (double Cote) {cote = Cote; }
 
-	// NB : impossible à remplir à partir des tables shape
+	// NB : impossible a remplir a partir des tables shape
 	protected int classification;
 	public int getClassification() {return this.classification; }
 	public void setClassification(int S) {classification = S; }
 
-	// NB : impossible à remplir à partir des tables shape
+	// NB : impossible a remplir a partir des tables shape
 	protected int caractereTouristique;
 	public int getCaractereTouristique() {return this.caractereTouristique; }
 	public void setCaractereTouristique(int S) {caractereTouristique = S; }
@@ -45,21 +45,21 @@ public abstract class NoeudHydrographique extends ElementBDCarto {
 
 
 	/////////////// RELATIONS //////////////////
-	/** Liste (non ordonnée) des arcs entrants de self
-	 *  1 objet Noeud est en relation "entrants" avec n objets TronçonHydrographique (n>0).
-	 *  1 objet TronçonHydrographique est en relation "fin" avec 1 objet Noeud.
+	/** Liste (non ordonnee) des arcs entrants de self
+	 *  1 objet Noeud est en relation "entrants" avec n objets TronconHydrographique (n>0).
+	 *  1 objet TronconHydrographique est en relation "fin" avec 1 objet Noeud.
 	 *
-	 *  Les méthodes get (sans indice) et set sont nécessaires au mapping.
-	 *  Les autres méthodes sont là seulement pour faciliter l'utilisation de la relation.
+	 *  Les methodes get (sans indice) et set sont necessaires au mapping.
+	 *  Les autres methodes sont la seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
 	 */
 	private List entrants = new ArrayList();
 
-	/** Récupère la liste des arcs entrants. */
+	/** Recupere la liste des arcs entrants. */
 	public List getEntrants() {return entrants ; }
-	/** Définit la liste des arcs entrants, et met à jour la relation inverse Fin. */
+	/** Definit la liste des arcs entrants, et met a jour la relation inverse Fin. */
 	public void setEntrants (List L) {
 		List old = new ArrayList(entrants);
 		Iterator it1 = old.iterator();
@@ -73,21 +73,21 @@ public abstract class NoeudHydrographique extends ElementBDCarto {
 			O.setFin(this);
 		}
 	}
-	/** Récupère le ième élément de la liste des arcs entrants. */
+	/** Recupere le ieme element de la liste des arcs entrants. */
 	public TronconHydrographique getEntrant(int i) {return (TronconHydrographique)entrants.get(i) ; }
-	/** Ajoute un objet à la liste des arcs entrants, et met à jour la relation inverse Fin. */
+	/** Ajoute un objet a la liste des arcs entrants, et met a jour la relation inverse Fin. */
 	public void addEntrant(TronconHydrographique O) {
 		if ( O == null ) return;
 		entrants.add(O) ;
 		O.setFin(this) ;
 	}
-	/** Enlève un élément de la liste des arcs entrants, et met à jour la relation inverse Fin. */
+	/** Enleve un element de la liste des arcs entrants, et met a jour la relation inverse Fin. */
 	public void removeEntrant(TronconHydrographique O) {
 		if ( O == null ) return;
 		entrants.remove(O) ;
 		O.setFin(null);
 	}
-	/** Vide la liste des arcs entrants, et met à jour la relation inverse Fin. */
+	/** Vide la liste des arcs entrants, et met a jour la relation inverse Fin. */
 	public void emptyEntrants() {
 		List old = new ArrayList(entrants);
 		Iterator it = old.iterator();
@@ -101,21 +101,21 @@ public abstract class NoeudHydrographique extends ElementBDCarto {
 
 
 
-	/** Liste (non ordonnée) des arcs sortants de self
-	 *  1 objet Noeud est en relation "sortants" avec n objets TronçonHydrographique (n>0).
-	 *  1 objet TronçonHydrographique est en relation "ini" avec 1 objet Noeud.
+	/** Liste (non ordonnee) des arcs sortants de self
+	 *  1 objet Noeud est en relation "sortants" avec n objets TronconHydrographique (n>0).
+	 *  1 objet TronconHydrographique est en relation "ini" avec 1 objet Noeud.
 	 *
-	 *  Les méthodes get (sans indice) et set sont nécessaires au mapping.
-	 *  Les autres méthodes sont là seulement pour faciliter l'utilisation de la relation.
+	 *  Les methodes get (sans indice) et set sont necessaires au mapping.
+	 *  Les autres methodes sont la seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
 	 */
 	private List sortants = new ArrayList();
 
-	/** Récupère la liste des arcs sortants. */
+	/** Recupere la liste des arcs sortants. */
 	public List getSortants() {return sortants ; }
-	/** Définit la liste des arcs sortants, et met à jour la relation inverse Ini. */
+	/** Definit la liste des arcs sortants, et met a jour la relation inverse Ini. */
 	public void setSortants(List L) {
 		List old = new ArrayList(sortants);
 		Iterator it1 = old.iterator();
@@ -129,21 +129,21 @@ public abstract class NoeudHydrographique extends ElementBDCarto {
 			O.setIni(this);
 		}
 	}
-	/** Récupère le ième élément de la liste des arcs sortants. */
+	/** Recupere le ieme element de la liste des arcs sortants. */
 	public TronconHydrographique getSortant(int i) {return (TronconHydrographique)sortants.get(i) ; }
-	/** Ajoute un objet à la liste des arcs sortants, et met à jour la relation inverse Ini. */
+	/** Ajoute un objet a la liste des arcs sortants, et met a jour la relation inverse Ini. */
 	public void addSortant(TronconHydrographique O) {
 		if ( O == null ) return;
 		sortants.add(O) ;
 		O.setIni(this) ;
 	}
-	/** Enlève un élément de la liste des arcs sortants, et met à jour la relation inverse Ini. */
+	/** Enleve un element de la liste des arcs sortants, et met a jour la relation inverse Ini. */
 	public void removeSortant(TronconHydrographique O) {
 		if ( O == null ) return;
 		sortants.remove(O) ;
 		O.setIni(null);
 	}
-	/** Vide la liste des arcs sortants, et met à jour la relation inverse Ini. */
+	/** Vide la liste des arcs sortants, et met a jour la relation inverse Ini. */
 	public void emptySortants() {
 		List old = new ArrayList(sortants);
 		Iterator it = old.iterator();

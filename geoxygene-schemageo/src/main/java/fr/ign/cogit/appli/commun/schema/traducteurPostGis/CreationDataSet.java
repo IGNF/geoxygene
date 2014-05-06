@@ -46,7 +46,7 @@ public class CreationDataSet {
 			type = Integer.valueOf(S).intValue();
 
 			System.out.println("");
-			System.out.println("Nom complet du package contenant les classes contr�tes (ex: donnees.seb.bdcarto_dept7794) ?");
+			System.out.println("Nom complet du package contenant les classes contretes (ex: donnees.seb.bdcarto_dept7794) ?");
 			package_concret = in.readLine();
 
 

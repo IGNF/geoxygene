@@ -26,8 +26,8 @@ public abstract class LigneCheminDeFer extends ElementBDCarto {
 	 *  1 objet LigneCheminDeFer est en relation avec n objets TronconFerre (n pouvant etre nul).
 	 *  1 objet TronconFerre est en relation avec 1 objet LigneCheminDeFer au plus.
 	 *
-	 *  NB: un objet LigneCheminDeFer ne doit pas être en relation plusieurs fois avec le même objet TronconFerre :
-	 *  il est impossible de bien gérer des relations 1-n bidirectionnelles avec doublons.
+	 *  NB: un objet LigneCheminDeFer ne doit pas etre en relation plusieurs fois avec le meme objet TronconFerre :
+	 *  il est impossible de bien gerer des relations 1-n bidirectionnelles avec doublons.
 	 *
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec
 	 *  les methodes fournies.
@@ -37,10 +37,10 @@ public abstract class LigneCheminDeFer extends ElementBDCarto {
 	 */
 	private List<TronconFerre> tronconFerre = new ArrayList<TronconFerre>();
 
-	/** Récupère la liste des objets en relation. */
+	/** Recupere la liste des objets en relation. */
 	public List<TronconFerre> getTronconFerre() {return tronconFerre ; }
 
-	/** Définit la liste des objets en relation, et met à jour la relation inverse. */
+	/** Definit la liste des objets en relation, et met a jour la relation inverse. */
 	public void setTronconFerre (List <TronconFerre>L) {
 		List<TronconFerre> old = new ArrayList<TronconFerre>(tronconFerre);
 		Iterator<TronconFerre> it1 = old.iterator();
@@ -55,24 +55,24 @@ public abstract class LigneCheminDeFer extends ElementBDCarto {
 		}
 	}
 
-	/** Récupère le ième élément de la liste des objets en relation. */
+	/** Recupere le ieme element de la liste des objets en relation. */
 	public TronconFerre getTronconFerre(int i) {return tronconFerre.get(i) ; }
 
-	/** Ajoute un objet à la liste des objets en relation, et met à jour la relation inverse. */
+	/** Ajoute un objet  a la liste des objets en relation, et met a jour la relation inverse. */
 	public void addTronconFerre (TronconFerre O) {
 		if ( O == null ) return;
 		tronconFerre.add(O) ;
 		O.setLigneCheminDeFer(this) ;
 	}
 
-	/** Enlève un élément de la liste des objets en relation, et met à jour la relation inverse. */
+	/** Enleve un element de la liste des objets en relation, et met a jour la relation inverse. */
 	public void removeTronconFerre (TronconFerre O) {
 		if ( O == null ) return;
 		tronconFerre.remove(O) ;
 		O.setLigneCheminDeFer(null);
 	}
 
-	/** Vide la liste des objets en relation, et met à jour la relation inverse. */
+	/** Vide la liste des objets en relation, et met a jour la relation inverse. */
 	public void emptyTronconFerre () {
 		List<TronconFerre> old = new ArrayList<TronconFerre>(tronconFerre);
 		Iterator<TronconFerre> it = old.iterator();

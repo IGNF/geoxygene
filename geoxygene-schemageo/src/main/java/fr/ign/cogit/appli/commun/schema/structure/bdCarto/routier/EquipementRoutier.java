@@ -14,13 +14,13 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * <BR> <STRONG> Localisation </STRONG>:
  *      Ponctuelle.
  * <BR> <STRONG> Liens </STRONG>:
- *      //Compose (lien inverse) "Route numerotée ou nommée"
- * <BR> <STRONG> Définition </STRONG>:
- *      La classe des équipements routiers regroupe : <UL>
- * <LI>     les aires de repos et les aires de service sur le réseau de type autoroutier ; </LI>
- * <LI>     les tunnels routiers d'une longueur inférieure à 200 mètres s'ils ne correspondent pas à une intersection avec d'autres tronçons des réseaux routier et ferré (sinon ce sont des franchissements) ; </LI>
- * <LI>     les gares de péage.  </LI> </UL>
- * <BR> <STRONG> Compatibilité entre attributs </STRONG> :
+ *      //Compose (lien inverse) "Route numerotee ou nommee"
+ * <BR> <STRONG> Definition </STRONG>:
+ *      La classe des equipements routiers regroupe : <UL>
+ * <LI>     les aires de repos et les aires de service sur le reseau de type autoroutier ; </LI>
+ * <LI>     les tunnels routiers d'une longueur inferieure a 200 metres s'ils ne correspondent pas a une intersection avec d'autres troncons des reseaux routier et ferre (sinon ce sont des franchissements) ; </LI>
+ * <LI>     les gares de peage.  </LI> </UL>
+ * <BR> <STRONG> Compatibilite entre attributs </STRONG> :
  * <UL>
  * <LI> compatiblite sur les toponymes ? </LI>
  * </UL>
@@ -30,21 +30,21 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 public abstract class EquipementRoutier extends ElementBDCarto {
 
 	//     protected GM_Point geometrie = null;
-	/** Renvoie la géométrie de self */
+	/** Renvoie la geometrie de self */
 	public GM_Point getGeometrie() {return (GM_Point)geom;}
-	/** Définit la géométrie de self */
+	/** Definit la geometrie de self */
 	public void setGeometrie(GM_Point geometrie) {this.geom = geometrie;}
 
 	/** Nature
-	 * <BR> <STRONG> Définition </STRONG>:
+	 * <BR> <STRONG> Definition </STRONG>:
 	 *      Nature.
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 * <BR> <STRONG> Valeurs </STRONG>: <UL>
 	 * <LI>     1- aire de service  </LI>
 	 * <LI>     2- aire de repos  </LI>
-	 * <LI>     5- tunnel de moins de 200 mètres  </LI>
-	 * <LI>     7- gare de péage </LI>
+	 * <LI>     5- tunnel de moins de 200 metres  </LI>
+	 * <LI>     7- gare de peage </LI>
 	 * </UL>
 	 */
 	protected String nature;
@@ -52,35 +52,35 @@ public abstract class EquipementRoutier extends ElementBDCarto {
 	public void setNature (String Nature) {nature = Nature; }
 
 	/** Toponyme.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *   Un équipement porte en général un toponyme.
-	 *   Il est composé de trois parties pouvant éventuellement ne porter aucune valeur (n'existe pas) :
-	 *   un terme générique ou une désignation, texte d'au plus 40 caractères.
-	 *   un article, texte d'au plus cinq caractères ;
-	 *   un élément spécifique, texte d'au plus 80 caractères ;
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *   Un equipement porte en general un toponyme.
+	 *   Il est compose de trois parties pouvant eventuellement ne porter aucune valeur (n'existe pas) :
+	 *   un terme generique ou une designation, texte d'au plus 40 caracteres.
+	 *   un article, texte d'au plus cinq caracteres ;
+	 *   un element specifique, texte d'au plus 80 caracteres ;
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      Chaine de caracteres.
 	 */
 	protected String toponyme;
 	public String getToponyme() {return this.toponyme; }
 	public void setToponyme (String Toponyme) {toponyme = Toponyme; }
 
-	/** Un troncon de route permet d'accéder à n équipements routier ,
-	 *  par l'intermédiaire de la classe-relation Accede.
-	 *  1 objet équipement peut etre en relation avec 0 ou n "objets-relation" Accede.
-	 *  1 "objet-relation" Accede est en relation avec 1 objet équipement.
+	/** Un troncon de route permet d'acceder a n equipements routier ,
+	 *  par l'intermediaire de la classe-relation Accede.
+	 *  1 objet equipement peut etre en relation avec 0 ou n "objets-relation" Accede.
+	 *  1 "objet-relation" Accede est en relation avec 1 objet equipement.
 	 *
-	 *  Les méthodes get (sans indice) et set sont nécessaires au mapping.
-	 *  Les autres méthodes sont là seulement pour faciliter l'utilisation de la relation.
+	 *  Les methodes get (sans indice) et set sont necessaires au mapping.
+	 *  Les autres methodes sont la seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
 	 */
 	protected List<Accede> accedent = new ArrayList<Accede>();
 
-	/** Récupère la liste des Accede en relation. */
+	/** Recupere la liste des Accede en relation. */
 	public List<Accede> getAccedent() {return accedent; }
-	/** Définit la liste des Accede en relation, et met à jour la relation inverse. */
+	/** Definit la liste des Accede en relation, et met a jour la relation inverse. */
 	public void setAccedent(List<Accede> L) {
 		List<Accede> old = new ArrayList<Accede>(accedent);
 		Iterator<Accede> it1 = old.iterator();
@@ -94,21 +94,21 @@ public abstract class EquipementRoutier extends ElementBDCarto {
 			O.setEquipement(this);
 		}
 	}
-	/** Récupère le ième élément de la liste des Accede en relation. */
+	/** Recupere le ieme element de la liste des Accede en relation. */
 	public Accede getAccede(int i) {return accedent.get(i) ; }
-	/** Ajoute un objet à la liste des objets en relation, et met à jour la relation inverse. */
+	/** Ajoute un objet a la liste des objets en relation, et met a jour la relation inverse. */
 	public void addAccede(Accede O) {
 		if ( O == null ) return;
 		accedent.add(O) ;
 		O.setEquipement(this) ;
 	}
-	/** Enlève un élément de la liste des Accede en relation, et met à jour la relation inverse. */
+	/** Enleve un element de la liste des Accede en relation, et met a jour la relation inverse. */
 	public void removeAccede(Accede O) {
 		if ( O == null ) return;
 		accedent.remove(O) ;
 		O.setEquipement(null);
 	}
-	/** Vide la liste des Accede en relation, et met à jour la relation inverse. */
+	/** Vide la liste des Accede en relation, et met a jour la relation inverse. */
 	public void emptyAccedent() {
 		List<Accede> old = new ArrayList<Accede>(accedent);
 		Iterator<Accede> it = old.iterator();

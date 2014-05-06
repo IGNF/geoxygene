@@ -282,7 +282,7 @@ public abstract class TronconRoute extends ElementGeoroute {
 		}
 	}
 
-	/** Liste (non ordonnee) des non communication FIN concern�es par self
+	/** Liste (non ordonnee) des non communication FIN concernees par self
 	 * <BR> <STRONG> Definition </STRONG>:
 	 *  1 objet Noeud est en relation "entrants" avec n objets TronconRoutier.
 	 *  1 objet TronconRoutier est en relation "fin" avec 1 objet Noeud.

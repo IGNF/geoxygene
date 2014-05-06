@@ -7,11 +7,11 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 public abstract class EnceinteMilitaire extends ElementBDCarto {
 
 	/////////////// GEOMETRIE //////////////////
-	/** Attention: on peut avoir des géométries multiples (plusieurs tronçons) */
+	/** Attention: on peut avoir des geometries multiples (plusieurs troncons) */
 	//	  private GM_Curve geometrie = null;
-	/** Renvoie le GM_Polygon qui définit la géométrie de self */
+	/** Renvoie le GM_Polygon qui definit la geometrie de self */
 	public GM_Polygon getGeometrie() {return (GM_Polygon)geom;}
-	/** Définit le GM_Polygon qui définit la géométrie de self */
+	/** Definit le GM_Polygon qui definit la geometrie de self */
 	public void setGeometrie(GM_Polygon geometrie) {this.geom = geometrie;}
 
 	/////////////// ATTRIBUTS //////////////////

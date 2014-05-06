@@ -7,9 +7,9 @@ public abstract class ConstructionElevee extends ElementBDCarto {
 
 	/////////////// GEOMETRIE //////////////////
 	//	  private GM_Point geometrie = null;
-	/** Renvoie le GM_Point qui définit la géométrie de self */
+	/** Renvoie le GM_Point qui definit la geometrie de self */
 	public GM_Point getGeometrie() {return (GM_Point)geom;}
-	/** Définit le GM_Point qui définit la géométrie de self */
+	/** Definit le GM_Point qui definit la geometrie de self */
 	public void setGeometrie(GM_Point geometrie) {this.geom = geometrie;}
 
 	/////////////// ATTRIBUTS //////////////////

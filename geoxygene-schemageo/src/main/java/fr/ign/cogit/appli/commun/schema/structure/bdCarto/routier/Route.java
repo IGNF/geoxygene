@@ -26,19 +26,19 @@ public abstract class Route extends ElementBDCarto{
 	 *  1 objet Route est en relation avec 1 ou n objets troncons.
 	 *  1 objet Troncon est en relation avec 0 ou n objets routes.
 	 *
-	 *  NB: un objet route ne doit pas être en relation plusieurs fois avec le même objet troncon :
-	 *  il est impossible de bien gérer des relations 1-n bidirectionnelles avec doublons.
+	 *  NB: un objet route ne doit pas etre en relation plusieurs fois avec le meme objet troncon :
+	 *  il est impossible de bien gerer des relations 1-n bidirectionnelles avec doublons.
 	 *
-	 *  Les méthodes get (sans indice) et set sont nécessaires au mapping.
-	 *  Les autres méthodes sont là seulement pour faciliter l'utilisation de la relation.
+	 *  Les methodes get (sans indice) et set sont necessaires au mapping.
+	 *  Les autres methodes sont la seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
 	 */
 	private List<TronconRoute> troncons = new ArrayList<TronconRoute>();
-	/** Récupère le troncon routier en relation */
+	/** Recupere le troncon routier en relation */
 	public List<TronconRoute> getTroncons() {return troncons ; }
-	/** Définit le troncon routier en relation, et met à jour la relation inverse. */
+	/** Definit le troncon routier en relation, et met a jour la relation inverse. */
 	public void setTroncons (List<TronconRoute> L) {
 		List<TronconRoute> old = new ArrayList<TronconRoute>(troncons);
 		Iterator<TronconRoute> it1 = old.iterator();
@@ -54,21 +54,21 @@ public abstract class Route extends ElementBDCarto{
 			O.setRoute(this);
 		}
 	}
-	/** Récupère le ième élément de la liste des troncons routier en relation. */
+	/** Recupere le ieme element de la liste des troncons routier en relation. */
 	public TronconRoute getTroncon(int i) {return troncons.get(i) ; }
-	/** Ajoute un élément à la liste des troncons routier en relation, et met à jour la relation inverse. */
+	/** Ajoute un element a la liste des troncons routier en relation, et met a jour la relation inverse. */
 	public void addTroncon(TronconRoute O) {
 		if ( O == null ) return;
 		troncons.add(O) ;
 		O.setRoute(this);
 	}
-	/** Enlève un élément de la liste des troncons routier en relation, et met à jour la relation inverse. */
+	/** Enleve un element de la liste des troncons routier en relation, et met a jour la relation inverse. */
 	public void removeTroncon(TronconRoute O) {
 		if ( O == null ) return;
 		troncons.remove(O) ;
 		O.setRoute(null);
 	}
-	/** Vide la liste des troncons routier en relation, et met à jour la relation inverse. */
+	/** Vide la liste des troncons routier en relation, et met a jour la relation inverse. */
 	public void emptyTroncons() {
 		Iterator<TronconRoute> it = troncons.iterator();
 		while ( it.hasNext() ) {

@@ -7,9 +7,9 @@ public abstract class ZoneReglementeeTouristique extends ElementBDCarto {
 
 	/////////////// GEOMETRIE //////////////////
 	//	  private GM_Point geometrie = null;
-	/** Renvoie le GM_Point qui définit la géométrie de self */
+	/** Renvoie le GM_Point qui definit la geometrie de self */
 	public GM_Polygon getGeometrie() {return (GM_Polygon)geom;}
-	/** Définit le GM_Point qui définit la géométrie de self */
+	/** Definit le GM_Point qui definit la geometrie de self */
 	public void setGeometrie(GM_Polygon geometrie) {this.geom = geometrie;}
 
 	/////////////// ATTRIBUTS //////////////////

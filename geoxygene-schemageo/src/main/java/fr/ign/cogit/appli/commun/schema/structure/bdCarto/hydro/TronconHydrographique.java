@@ -13,11 +13,11 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 public abstract class TronconHydrographique extends Troncon {
 
 	/////////////// GEOMETRIE //////////////////
-	/** Attention: on peut avoir des géoémtries multiples (plusieurs tronçons) */
+	/** Attention: on peut avoir des geometries multiples (plusieurs troncons) */
 	//    private GM_Curve geometrie = null;
-	/** Renvoie le GM_LineString qui définit la géométrie de self */
+	/** Renvoie le GM_LineString qui definit la geometrie de self */
 	public GM_LineString getGeometrie() {return (GM_LineString)geom;}
-	/** Définit le GM_LineString qui définit la géométrie de self */
+	/** Definit le GM_LineString qui definit la geometrie de self */
 	public void setGeometrie(GM_LineString G) {this.geom = G;}
 
 	/////////////// ATTRIBUTS //////////////////
@@ -53,19 +53,19 @@ public abstract class TronconHydrographique extends Troncon {
 
 	/////////////// RELATIONS //////////////////
 
-	/** Un tronçon peut appartenir à plusieurs cours d'eau
-	 * (relation n-m, a cours d'eau a au moins 1 tronçon, un tronçon fait partie de 0 à n cours d'eau.
+	/** Un troncon peut appartenir a plusieurs cours d'eau
+	 * (relation n-m, a cours d'eau a au moins 1 troncon, un troncon fait partie de 0 a n cours d'eau.
 	 *
-	 *  Les méthodes get (sans indice) et set sont nécessaires au mapping.
-	 *  Les autres méthodes sont là seulement pour faciliter l'utilisation de la relation.
+	 *  Les methodes get (sans indice) et set sont necessaires au mapping.
+	 *  Les autres methodes sont la seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
 	 */
 	private List coursDEau = new ArrayList();
-	/** Récupère le CoursDEau en relation */
+	/** Recupere le CoursDEau en relation */
 	public List getCoursDEau() {return coursDEau ; }
-	/** Définit le CoursDEau en relation, et met à jour la relation inverse. */
+	/** Definit le CoursDEau en relation, et met a jour la relation inverse. */
 	public void setCoursDEau(List L) {
 		List old = new ArrayList(coursDEau);
 		Iterator it1 = old.iterator();
@@ -81,21 +81,21 @@ public abstract class TronconHydrographique extends Troncon {
 			O.getTroncons().add(this);
 		}
 	}
-	/** Récupère le ième élément de la liste des CoursDEau en relation. */
+	/** Recupere le ieme element de la liste des CoursDEau en relation. */
 	public CoursDEau getCoursDEau(int i) {return (CoursDEau)coursDEau.get(i) ; }
-	/** Ajoute un élément à la liste des CoursDEau en relation, et met à jour la relation inverse. */
+	/** Ajoute un element a la liste des CoursDEau en relation, et met a jour la relation inverse. */
 	public void addCoursDEau(CoursDEau O) {
 		if ( O == null ) return;
 		coursDEau.add(O) ;
 		O.getTroncons().add(this);
 	}
-	/** Enlève un élément de la liste des CoursDEau en relation, et met à jour la relation inverse. */
+	/** Enleve un element de la liste des CoursDEau en relation, et met a jour la relation inverse. */
 	public void removeCoursDEau(CoursDEau O) {
 		if ( O == null ) return;
 		coursDEau.remove(O) ;
 		O.getTroncons().remove(this);
 	}
-	/** Vide la liste des CoursDEau en relation, et met à jour la relation inverse. */
+	/** Vide la liste des CoursDEau en relation, et met a jour la relation inverse. */
 	public void emptyCoursDEau() {
 		Iterator it = coursDEau.iterator();
 		while ( it.hasNext() ) {
@@ -107,19 +107,19 @@ public abstract class TronconHydrographique extends Troncon {
 
 
 
-	/** Un tronçon a un noeud initial.
-	 *  1 objet Noeud est en relation "sortants" avec n objets TronçonHydrographique (n>0).
-	 *  1 objet TronçonHydrographique est en relation "ini" avec 1 objet Noeud.
+	/** Un troncon a un noeud initial.
+	 *  1 objet Noeud est en relation "sortants" avec n objets TronconHydrographique (n>0).
+	 *  1 objet TronconHydrographique est en relation "ini" avec 1 objet Noeud.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	private NoeudHydrographique ini;
-	/** Récupère le noeud initial. */
+	/** Recupere le noeud initial. */
 	public NoeudHydrographique getIni() {return ini;}
-	/** Définit le noeud initial, et met à jour la relation inverse. */
+	/** Definit le noeud initial, et met a jour la relation inverse. */
 	public void setIni(NoeudHydrographique O) {
 		NoeudHydrographique old = ini;
 		ini = O;
@@ -131,25 +131,25 @@ public abstract class TronconHydrographique extends Troncon {
 	}
 	/** Pour le mapping avec OJB, dans le cas d'une relation 1-n, du cote 1 de la relation */
 	private int iniID;
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public void setIniID(int I) {iniID = I;}
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public int getIniID() {return iniID;}
 
 
-	/** Un tronçon a un noeud final.
-	 *  1 objet Noeud est en relation "entrants" avec n objets TronçonHydrographique (n>0).
-	 *  1 objet TronçonHydrographique est en relation "fin" avec 1 objet Noeud.
+	/** Un troncon a un noeud final.
+	 *  1 objet Noeud est en relation "entrants" avec n objets TronconHydrographique (n>0).
+	 *  1 objet TronconHydrographique est en relation "fin" avec 1 objet Noeud.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	private NoeudHydrographique fin;
-	/** Récupère le noeud final. */
+	/** Recupere le noeud final. */
 	public NoeudHydrographique getFin() {return fin;}
-	/** Définit le noeud final, et met à jour la relation inverse. */
+	/** Definit le noeud final, et met a jour la relation inverse. */
 	public void setFin(NoeudHydrographique O) {
 		NoeudHydrographique old = fin;
 		fin = O;
@@ -161,9 +161,9 @@ public abstract class TronconHydrographique extends Troncon {
 	}
 	/** Pour le mapping avec OJB, dans le cas d'une relation 1-n, du cote 1 de la relation */
 	private int finID;
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public void setFinID(int I) {finID = I;}
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public int getFinID() {return finID;}
 
 

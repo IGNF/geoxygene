@@ -19,7 +19,7 @@ public class JeuDeDonneesGeoroute extends DataSet {
 	 */
 
 	public JeuDeDonneesGeoroute(boolean persistance, String nom_logique, String nom_package) {
-		this.ojbConcreteClass = this.getClass().getName(); // n�cessaire pour ojb
+		this.ojbConcreteClass = this.getClass().getName(); // necessaire pour ojb
 		this.setTypeBD("Géoroute");
 		this.setModele("Structuré");
 		this.setNom(nom_logique);

@@ -10,11 +10,11 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 public abstract class Canton extends ElementBDCarto {
 
 	/////////////// GEOMETRIE //////////////////
-	/** Attention: on peut avoir des géométries multiples (plusieurs tronçons) */
+	/** Attention: on peut avoir des geometries multiples (plusieurs troncons) */
 	//	  private GM_Curve geometrie = null;
-	/** Renvoie le GM_Polygon qui définit la géométrie de self */
+	/** Renvoie le GM_Polygon qui definit la geometrie de self */
 	public GM_Polygon getGeometrie() {return (GM_Polygon)geom;}
-	/** Définit le GM_Polygon qui définit la géométrie de self */
+	/** Definit le GM_Polygon qui definit la geometrie de self */
 	public void setGeometrie(GM_Polygon geometrie) {this.geom = geometrie;}
 
 	/////////////// ATTRIBUTS //////////////////
@@ -30,8 +30,8 @@ public abstract class Canton extends ElementBDCarto {
 	 *  1 objet Canton est en relation avec n objets Commune (n pouvant etre nul).
 	 *  1 objet Commune est en relation avec 1 objet Canton au plus.
 	 *
-	 *  NB: un objet Canton ne doit pas être en relation plusieurs fois avec le même objet Commune :
-	 *  il est impossible de bien gérer des relations 1-n bidirectionnelles avec doublons.
+	 *  NB: un objet Canton ne doit pas etre en relation plusieurs fois avec le meme objet Commune :
+	 *  il est impossible de bien gerer des relations 1-n bidirectionnelles avec doublons.
 	 *
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec
 	 *  les methodes fournies.
@@ -41,10 +41,10 @@ public abstract class Canton extends ElementBDCarto {
 	 */
 	private List<Commune> communes = new ArrayList<Commune>();
 
-	/** Récupère la liste des objets en relation. */
+	/** Recupere la liste des objets en relation. */
 	public List<Commune> getCommunes() {return communes ; }
 
-	/** Définit la liste des objets en relation, et met à jour la relation inverse. */
+	/** Definit la liste des objets en relation, et met a jour la relation inverse. */
 	public void setCommunes (List<Commune> L) {
 		List <Commune>old = new ArrayList<Commune>(communes);
 		Iterator<Commune> it1 = old.iterator();
@@ -59,24 +59,24 @@ public abstract class Canton extends ElementBDCarto {
 		}
 	}
 
-	/** Récupère le ième élément de la liste des objets en relation. */
+	/** Recupere le ieme element de la liste des objets en relation. */
 	public Commune getCommune(int i) {return communes.get(i) ; }
 
-	/** Ajoute un objet à la liste des objets en relation, et met à jour la relation inverse. */
+	/** Ajoute un objet a la liste des objets en relation, et met a jour la relation inverse. */
 	public void addCommune (Commune O) {
 		if ( O == null ) return;
 		communes.add(O) ;
 		O.setCanton(this) ;
 	}
 
-	/** Enlève un élément de la liste des objets en relation, et met à jour la relation inverse. */
+	/** Enleve un element de la liste des objets en relation, et met a jour la relation inverse. */
 	public void removeCommune (Commune O) {
 		if ( O == null ) return;
 		communes.remove(O) ;
 		O.setCanton(null);
 	}
 
-	/** Vide la liste des objets en relation, et met à jour la relation inverse. */
+	/** Vide la liste des objets en relation, et met a jour la relation inverse. */
 	public void emptyCommunes () {
 		List<Commune> old = new ArrayList<Commune>(communes);
 		Iterator<Commune> it = old.iterator();
@@ -92,18 +92,18 @@ public abstract class Canton extends ElementBDCarto {
 	 *  1 objet Arrondissement est en relation avec n objets Canton (n pouvant etre nul).
 	 *  1 objet Canton est en relation avec 1 objet Arrondissement au plus.
 	 *
-	 *  Les méthodes get et set sont utiles pour assurer la bidirection.
+	 *  Les methodes get et set sont utiles pour assurer la bidirection.
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	private Arrondissement arrondissement;
 
-	/** Récupère l'objet en relation. */
+	/** Recupere l'objet en relation. */
 
 	public Arrondissement getArrondissement() {return arrondissement;  }
 
-	/** Définit l'objet en relation, et met à jour la relation inverse. */
+	/** Definit l'objet en relation, et met a jour la relation inverse. */
 	public void setArrondissement(Arrondissement O) {
 		Arrondissement old = arrondissement;
 		arrondissement = O;

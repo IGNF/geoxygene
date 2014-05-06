@@ -21,7 +21,7 @@ public class ThemeRoutier extends DataSet {
 		super(DS);
 		this.setTypeBD("Theme routier de Georoute");
 		Population<?> pop;
-		this.ojbConcreteClass = this.getClass().getName(); // n�cessaire pour ojb
+		this.ojbConcreteClass = this.getClass().getName(); // necessaire pour ojb
 		this.setNom("routier");
 		if (persistance) DataSet.db.makePersistent(this);
 		try{

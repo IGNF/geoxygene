@@ -9,17 +9,17 @@ public abstract class Accede extends ElementBDCarto {
 	public void setCote (String S) {cote = S; }
 
 	/////////////// RELATIONS //////////////////
-	/** Troncon concerné par la relation.
+	/** Troncon concerne par la relation.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	protected TronconRoute troncon;
-	/** Récupère le tronçon en relation. */
+	/** Recupere le troncon en relation. */
 	public TronconRoute getTroncon() {return troncon;  }
-	/** Définit le tronçon en relation, et met à jour la relation inverse. */
+	/** Definit le troncon en relation, et met a jour la relation inverse. */
 	public void setTroncon(TronconRoute O) {
 		TronconRoute old = troncon;
 		troncon = O;
@@ -37,18 +37,18 @@ public abstract class Accede extends ElementBDCarto {
 	public int getTronconID() {return tronconID;}
 
 
-	/** Equipement concerné par la relation.
+	/** Equipement concerne par la relation.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	/** Ne pas utiliser. Pour le mapping avec OJB, dans le cas d'une relation 1-n, du cote 1 de la relation */
 	protected EquipementRoutier equipement;
-	/** Récupère le equipement en relation. */
+	/** Recupere le equipement en relation. */
 	public EquipementRoutier getEquipement() {return equipement;  }
-	/** Définit le equipement en relation, et met à jour la relation inverse. */
+	/** Definit le equipement en relation, et met a jour la relation inverse. */
 	public void setEquipement(EquipementRoutier O) {
 		EquipementRoutier old = equipement;
 		equipement = O;
