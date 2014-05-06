@@ -9,18 +9,18 @@ import fr.ign.cogit.appli.commun.schema.structure.georoute.destination.Acces;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
- * Noeud du réseau routier.
+ * Noeud du rÃ©seau routier.
  * <BR> <STRONG> Type </STRONG>:
  *      Objet simple
  * <BR> <STRONG> Localisation </STRONG>:
  *      Ponctuelle.
  * <BR> <STRONG> Liens </STRONG>:
- *      //Compose (lien inverse) "Route numerotée ou nommée"
- * <BR> <STRONG> Définition </STRONG>:
- *      Un nœud du réseau routier correspond à une extrémité de tronçon de route. Il traduit une modification des
+ *      //Compose (lien inverse) "Route numerotÃ©e ou nommÃ©e"
+ * <BR> <STRONG> DÃ©finition </STRONG>:
+ *      Un noeud du rÃ©seau routier correspond Ã  une extrÃ©mitÃ© de tronÃ§on de route. Il traduit une modification des
  *      conditions de circulation.
- *      Pour les objets dans la partie interurbaine, les critères de sélection sont ceux de la BDCARTO V2 (cf.
- *      "Spécifications de contenu BDCARTO v2.3").
+ *      Pour les objets dans la partie interurbaine, les critÃ¨res de sÃ©lection sont ceux de la BDCARTO V2 (cf.
+ *      "SpÃ©cifications de contenu BDCARTO v2.3").
  */
 
 
@@ -28,61 +28,61 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 public abstract class NoeudRoutier extends ElementGeoroute {
 
 	//     private GM_Point geometrie = null;
-	/** Renvoie la géométrie de self */
+	/** Renvoie la gÃ©omÃ©trie de self */
 	public GM_Point getGeometrie() {return (GM_Point)geom;}
-	/** Définit la géométrie de self */
+	/** DÃ©finit la gÃ©omÃ©trie de self */
 	public void setGeometrie(GM_Point geometrie) {this.geom = geometrie;}
 
 	/** Nature de l'intersection.
-	 * <BR> <STRONG> Définition </STRONG>:
+	 * <BR> <STRONG> DÃ©finition </STRONG>:
 	 *      Nature de l'intersection.
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      ChaÃ®ne de caractÃ¨res.
 	 * <BR> <STRONG> Valeurs </STRONG>:
-	 *      - intersection simple : Endroit de l'espace routier où les routes se rejoignent ou se coupent au
-	 *        même niveau. On place également des intersections simples dans les extrémités d'impasses.
-	 *        Toute portion de l'espace routier symbolisant un choix d'au moins trois directions et de diamètre inférieur à 30 mètres lorsqu'on l'assimile à un
+	 *      - intersection simple : Endroit de l'espace routier oÃ¹ les routes se rejoignent ou se coupent au
+	 *        mÃªme niveau. On place Ã©galement des intersections simples dans les extrÃ©mitÃ©s d'impasses.
+	 *        Toute portion de l'espace routier symbolisant un choix d'au moins trois directions et de diamÃ¨tre infÃ©rieur Ã  30 mÃ¨tres lorsqu'on l'assimile Ã  un
 	 *        cercle.
-	 *      - rond-point simple : Endroit de l'espace routier où les routes se rejoignent au même niveau, de
-	 *         forme non exclusivement circulaire, possédant un terre-plein central infranchissable et ceinturé par une chaussée à sens unique. Les véhicules ne
+	 *      - rond-point simple : Endroit de l'espace routier oÃ¹ les routes se rejoignent au mÃªme niveau, de
+	 *         forme non exclusivement circulaire, possÃ©dant un terre-plein central infranchissable et ceinturÃ© par une chaussÃ©e Ã  sens unique. Les vÃ©hicules ne
 	 *           s'y croisent pas.
-	 *      - barrière de péage :  Lieu où l'on acquitte un droit de passage sur une voie publique ou un pont.
-	 *      - Changement d'attribut :  Élément signifiant un changement de valeur d'attribut (et notamment de
-	 *           commune) sur un tronçon de route. Il s'agit d'un objet virtuel. On prend en compte les attributs suivants : classement physique, niveau au
-	 *           franchissement, restriction d'accès, position par rapport au sol, nombres de
+	 *      - barriÃ¨re de pÃ©age :  Lieu oÃ¹ l'on acquitte un droit de passage sur une voie publique ou un pont.
+	 *      - Changement d'attribut :  Ã©lÃ©ment signifiant un changement de valeur d'attribut (et notamment de
+	 *           commune) sur un tronÃ§on de route. Il s'agit d'un objet virtuel. On prend en compte les attributs suivants : classement physique, niveau au
+	 *           franchissement, restriction d'accÃ¨s, position par rapport au sol, nombres de
 	 *           voies, INSEE commune gauche et droite ainsi que nom rue droite et
-	 *           gauche. Les autre attributs ne changent de valeur qu'à une intersection.. Un
-	 *           nœud ayant cette nature est appelé NCVA (voir glossaire)
-	 *      - noeud d'accès : Objet virtuel utilisé pour mettre en relation un Équipement (thème
-	 *           destination) avec le réseau routier lorsqu'il n'existe pas d'autres Nœuds du
-	 *           Réseau Routier à l'emplacement de l'accès. Les bornes postales au niveau
-	 *      - franchissement : - en urbain - Un aménagement routier est considéré comme ponctuel si sa longueur
-	 *           est inférieure à 50 mètres. L'objet ponctuel "franchissement" est placé à
-	 *           l'endroit du franchissement. Pour les aménagements de plus de 50 mètres,
-	 *           on place un objet ponctuel "franchissement" à l'emplacement réel du
+	 *           gauche. Les autre attributs ne changent de valeur qu'Ã  une intersection.. Un
+	 *           noeud ayant cette nature est appelÃ© NCVA (voir glossaire)
+	 *      - noeud d'accÃ¨s : Objet virtuel utilisÃ© pour mettre en relation un Ã©quipement (thÃ¨me
+	 *           destination) avec le rÃ©seau routier lorsqu'il n'existe pas d'autres Noeuds du
+	 *           RÃ©seau Routier Ã  l'emplacement de l'accÃ¨s. Les bornes postales au niveau
+	 *      - franchissement : - en urbain - Un amÃ©nagement routier est considÃ©rÃ© comme ponctuel si sa longueur
+	 *           est infÃ©rieure Ã  50 mÃ¨tres. L'objet ponctuel "franchissement" est placÃ© Ã 
+	 *           l'endroit du franchissement. Pour les amÃ©nagements de plus de 50 mÃ¨tres,
+	 *           on place un objet ponctuel "franchissement" Ã  l'emplacement rÃ©el du
 	 *           franchissement (cf. attribut "position par rapport au sol" de la classe
-	 *           "tronçon de route"). Dans le cas d'une intersection simple sur un
+	 *           "tronÃ§on de route"). Dans le cas d'une intersection simple sur un
 	 *           franchissement, on place seulement un franchissement sur le carrefour :
-	 *           On saisit également les franchissements sur les voies ferrées et l'hydrographie. On place alors simplement un franchissement entre deux
-	 *           tronçons de route, les tronçons portant le niveau 0 (pas d'information sur le fait qu'on passe sur de l'hydro ou une voie ferrée) : rivière
-	 *                  - en interurbain - Un aménagement routier est considéré comme ponctuel si sa longueur est
-	 *           inférieure à 200 mètres. On ne saisit pas les franchissements sur les voies ferrées ou sur l'hydrographie.
+	 *           On saisit Ã©galement les franchissements sur les voies ferrÃ©es et l'hydrographie. On place alors simplement un franchissement entre deux
+	 *           tronÃ§ons de route, les tronÃ§ons portant le niveau 0 (pas d'information sur le fait qu'on passe sur de l'hydro ou une voie ferrÃ©e) : riviÃ¨re
+	 *                  - en interurbain - Un amÃ©nagement routier est considÃ©rÃ© comme ponctuel si sa longueur est
+	 *           infÃ©rieure Ã  200 mÃ¨tres. On ne saisit pas les franchissements sur les voies ferrÃ©es ou sur l'hydrographie.
 	 */
 	public String nature;
 	public String getNature() {return nature;}
 	public void setNature(String nature) {this.nature = nature;}
 
 	/** Toponyme.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 * Dénomination usuelle du carrefour ou du franchissement. Il est composé d'un terme générique (rond-point de, place de, …) et d'un ou plusieurs
-	 * noms propres ou communs. Il est écrit en majuscules et sans accent. Les abréviations utilisées pour le terme générique sont standardisées
+	 * <BR> <STRONG> DÃ©finition </STRONG>:
+	 * DÃ©nomination usuelle du carrefour ou du franchissement. Il est composÃ© d'un terme gÃ©nÃ©rique (rond-point de, place de, Ã ) et d'un ou plusieurs
+	 * noms propres ou communs. Il est Ã©crit en majuscules et sans accent. Les abrÃ©viations utilisÃ©es pour le terme gÃ©nÃ©rique sont standardisÃ©es
 	 * Il peut prendre les valeurs suivantes : <UL>
-	 * <LI>     - sans objet : sur NCVA et Nœuds d'Accès </LI>
+	 * <LI>     - sans objet : sur NCVA et Noeuds d'AccÃ¨s </LI>
 	 * <LI>     - inconnu </LI>
 	 * <LI>     - "" : l'intersection ne porte pas de nom </LI>
 	 * </UL>
 	 * <BR> <STRONG> Type </STRONG>:
-	 *      Chaîne de caractères.
+	 *      ChaÃ®ne de caractÃ¨res.
 	 */
 	public String nom;
 	public String getNom() {return nom;}
@@ -90,26 +90,26 @@ public abstract class NoeudRoutier extends ElementGeoroute {
 
 
 
-	/** Liste (non ordonnée) des arcs sortants de self
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *  1 objet Noeud est en relation "sortants" avec n objets TronçonRoutier.
-	 *  1 objet TronçonRoutier est en relation "ini" avec 1 objet Noeud.
+	/** Liste (non ordonnÃ©e) des arcs sortants de self
+	 * <BR> <STRONG> DÃ©finition </STRONG>:
+	 *  1 objet Noeud est en relation "sortants" avec n objets TronconRoutier.
+	 *  1 objet TronconRoutier est en relation "ini" avec 1 objet Noeud.
 	 *
-	 *  Les méthodes get (sans indice) et set sont nécessaires au mapping.
-	 *  Les autres méthodes sont là seulement pour faciliter l'utilisation de la relation.
+	 *  Les mÃ©thodes get (sans indice) et set sont nÃ©cessaires au mapping.
+	 *  Les autres mÃ©thodes sont lÃ  seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
-	 *      Relation topologique participant à la gestion de la logique de parcours du réseau routier :
-	 *      Elle précise le noeud routier initial d'un tronçon de route.
-	 * <BR> <STRONG> Type des éléments de la liste </STRONG>:
+	 *      Relation topologique participant Ã  la gestion de la logique de parcours du rÃ©seau routier :
+	 *      Elle prÃ©cise le noeud routier initial d'un troncon de route.
+	 * <BR> <STRONG> Type des Ã©lÃ©ments de la liste </STRONG>:
 	 *      TronconRoute.
 	 */
 	protected List<TronconRoute> sortants = new ArrayList<TronconRoute>();
 
-	/** Récupère la liste des arcs sortants. */
+	/** RÃ©cupÃ¨re la liste des arcs sortants. */
 	public List<TronconRoute> getSortants() {return sortants ; }
-	/** Définit la liste des arcs sortants, et met à jour la relation inverse Ini. */
+	/** DÃ©finit la liste des arcs sortants, et met Ã  jour la relation inverse Ini. */
 	public void setSortants(List<TronconRoute> L) {
 		List<TronconRoute> old = new ArrayList<TronconRoute>(sortants);
 		Iterator<TronconRoute> it1 = old.iterator();
@@ -123,21 +123,21 @@ public abstract class NoeudRoutier extends ElementGeoroute {
 			O.setNoeudIni(this);
 		}
 	}
-	/** Récupère le ième élément de la liste des arcs sortants. */
+	/** RÃ©cupÃ¨re le iÃ¨me Ã©lÃ©ment de la liste des arcs sortants. */
 	public TronconRoute getSortant(int i) {return sortants.get(i) ; }
-	/** Ajoute un objet à la liste des arcs sortants, et met à jour la relation inverse Ini. */
+	/** Ajoute un objet Ã  la liste des arcs sortants, et met Ã  jour la relation inverse Ini. */
 	public void addSortant(TronconRoute O) {
 		if ( O == null ) return;
 		sortants.add(O) ;
 		O.setNoeudIni(this) ;
 	}
-	/** Enlève un élément de la liste des arcs sortants, et met à jour la relation inverse Ini. */
+	/** EnlÃ¨ve un Ã©lÃ¨ment de la liste des arcs sortants, et met Ã  jour la relation inverse Ini. */
 	public void removeSortant(TronconRoute O) {
 		if ( O == null ) return;
 		sortants.remove(O) ;
 		O.setNoeudIni(null);
 	}
-	/** Vide la liste des arcs sortants, et met à jour la relation inverse Ini. */
+	/** Vide la liste des arcs sortants, et met Ã  jour la relation inverse Ini. */
 	public void emptySortants() {
 		List<TronconRoute> old = new ArrayList<TronconRoute>(sortants);
 		Iterator<TronconRoute> it = old.iterator();
@@ -148,26 +148,26 @@ public abstract class NoeudRoutier extends ElementGeoroute {
 	}
 
 
-	/** Liste (non ordonnée) des arcs entrants de self
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *  1 objet Noeud est en relation "entrants" avec n objets TronçonRoutier.
-	 *  1 objet TronçonRoutier est en relation "fin" avec 1 objet Noeud.
+	/** Liste (non ordonnÃ©e) des arcs entrants de self
+	 * <BR> <STRONG> DÃ©finition </STRONG>:
+	 *  1 objet Noeud est en relation "entrants" avec n objets TronconRoutier.
+	 *  1 objet TronconRoutier est en relation "fin" avec 1 objet Noeud.
 	 *
-	 *  Les méthodes get (sans indice) et set sont nécessaires au mapping.
-	 *  Les autres méthodes sont là seulement pour faciliter l'utilisation de la relation.
+	 *  Les methodes get (sans indice) et set sont necessaires au mapping.
+	 *  Les autres methodes sont lÃ  seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
-	 *      Relation topologique participant à la gestion de la logique de parcours du réseau routier :
-	 *      Elle précise lengthnoeud routier initial d'un tronçon de route.
-	 * <BR> <STRONG> Type des éléments de la liste </STRONG>:
+	 *      Relation topologique participant Ã  la gestion de la logique de parcours du rÃ©seau routier :
+	 *      Elle prÃ©cise lengthnoeud routier initial d'un tronÃ§on de route.
+	 * <BR> <STRONG> Type des Ã©lÃ©ments de la liste </STRONG>:
 	 *      TronconRoute.
 	 */
 	protected List<TronconRoute> entrants = new ArrayList<TronconRoute>();
 
-	/** Récupère la liste des arcs entrants. */
+	/** RÃ©cupere la liste des arcs entrants. */
 	public List<TronconRoute> getEntrants() {return entrants ; }
-	/** Définit la liste des arcs entrants, et met à jour la relation inverse NoeudFin. */
+	/** Definit la liste des arcs entrants, et met a jour la relation inverse NoeudFin. */
 	public void setEntrants(List<TronconRoute> L) {
 		List<TronconRoute> old = new ArrayList<TronconRoute>(entrants);
 		Iterator<TronconRoute> it1 = old.iterator();
@@ -181,21 +181,21 @@ public abstract class NoeudRoutier extends ElementGeoroute {
 			O.setNoeudFin(this);
 		}
 	}
-	/** Récupère le ième élément de la liste des arcs entrants. */
+	/** Recupere le ieme element de la liste des arcs entrants. */
 	public TronconRoute getEntrant(int i) {return entrants.get(i) ; }
-	/** Ajoute un objet à la liste des arcs entrants, et met à jour la relation inverse NoeudFin. */
+	/** Ajoute un objet a la liste des arcs entrants, et met a jour la relation inverse NoeudFin. */
 	public void addEntrant(TronconRoute O) {
 		if ( O == null ) return;
 		entrants.add(O) ;
 		O.setNoeudFin(this) ;
 	}
-	/** Enlève un élément de la liste des arcs entrants, et met à jour la relation inverse NoeudFin. */
+	/** Enleve un element de la liste des arcs entrants, et met a jour la relation inverse NoeudFin. */
 	public void removeEntrant(TronconRoute O) {
 		if ( O == null ) return;
 		entrants.remove(O) ;
 		O.setNoeudFin(null);
 	}
-	/** Vide la liste des arcs entrants, et met à jour la relation inverse NoeudFin. */
+	/** Vide la liste des arcs entrants, et met a jour la relation inverse NoeudFin. */
 	public void emptyEntrants() {
 		List<TronconRoute> old = new ArrayList<TronconRoute>(entrants);
 		Iterator<TronconRoute> it = old.iterator();
@@ -207,26 +207,26 @@ public abstract class NoeudRoutier extends ElementGeoroute {
 
 
 
-	/** Liste (non ordonnée) des non communication concernées par self
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *  1 objet Noeud est en relation "entrants" avec n objets TronçonRoutier.
-	 *  1 objet TronçonRoutier est en relation "fin" avec 1 objet Noeud.
+	/** Liste (non ordonnee) des non communication concernees par self
+	 * <BR> <STRONG> definition </STRONG>:
+	 *  1 objet Noeud est en relation "entrants" avec n objets TronconRoutier.
+	 *  1 objet TronconRoutier est en relation "fin" avec 1 objet Noeud.
 	 *
-	 *  Les méthodes get (sans indice) et set sont nécessaires au mapping.
-	 *  Les autres méthodes sont là seulement pour faciliter l'utilisation de la relation.
+	 *  Les methodes get (sans indice) et set sont necessaires au mapping.
+	 *  Les autres methodes sont la seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
-	 *      Relation topologique participant à la gestion de la logique de parcours du réseau routier :
-	 *      Elle précise lengthnoeud routier initial d'un tronçon de route.
-	 * <BR> <STRONG> Type des éléments de la liste </STRONG>:
+	 *      Relation topologique participant a la gestion de la logique de parcours du reseau routier :
+	 *      Elle precise lengthnoeud routier initial d'un troncon de route.
+	 * <BR> <STRONG> Type des elements de la liste </STRONG>:
 	 *      TronconRoute.
 	 */
 	protected List<NonCommunication> nonCommunications = new ArrayList<NonCommunication>();
 
-	/** Récupère la liste des nonCommunications. */
+	/** Recupere la liste des nonCommunications. */
 	public List<NonCommunication> getNonCommunications() {return nonCommunications ; }
-	/** Définit la liste des nonCommunication, et met à jour la relation inverse. */
+	/** Definit la liste des nonCommunication, et met a jour la relation inverse. */
 	public void setNonCommunications(List<NonCommunication> L) {
 		List<NonCommunication> old = new ArrayList<NonCommunication>(nonCommunications);
 		Iterator<NonCommunication> it1 = old.iterator();
@@ -240,21 +240,21 @@ public abstract class NoeudRoutier extends ElementGeoroute {
 			O.setNoeud(this);
 		}
 	}
-	/** Récupère le ième élément de la liste des nonCommunications. */
+	/** Recupere le ieme element de la liste des nonCommunications. */
 	public NonCommunication getNonCommunication(int i) {return nonCommunications.get(i) ; }
-	/** Ajoute un objet à la liste des arcs entrants, et met à jour la relation inverse NoeudFin. */
+	/** Ajoute un objet Ã  la liste des arcs entrants, et met a jour la relation inverse NoeudFin. */
 	public void addNonCommunication(NonCommunication O) {
 		if ( O == null ) return;
 		nonCommunications.add(O) ;
 		O.setNoeud(this) ;
 	}
-	/** Enlève un élément de la liste des nonCommunications, et met à jour la relation inverse NoeudFin. */
+	/** Enleve un element de la liste des nonCommunications, et met a jour la relation inverse NoeudFin. */
 	public void removeNonCommunication(NonCommunication O) {
 		if ( O == null ) return;
 		nonCommunications.remove(O) ;
 		O.setNoeud(null);
 	}
-	/** Vide la liste des nonCommunications, et met à jour la relation inverse NoeudFin. */
+	/** Vide la liste des nonCommunications, et met a jour la relation inverse NoeudFin. */
 	public void emptyNonCommunications() {
 		List<NonCommunication> old = new ArrayList<NonCommunication>(nonCommunications);
 		Iterator<NonCommunication> it = old.iterator();
@@ -266,9 +266,9 @@ public abstract class NoeudRoutier extends ElementGeoroute {
 
 
 	protected Acces acces;
-	/** Récupère l'acces en relation */
+	/** Recupere l'acces en relation */
 	public Acces getAcces() {return acces;}
-	/** Définit l'acces en relation, et met à jour la relation inverse. */
+	/** Definit l'acces en relation, et met a jour la relation inverse. */
 	public void setAcces(Acces O) {
 		Acces old = acces;
 		acces = O;

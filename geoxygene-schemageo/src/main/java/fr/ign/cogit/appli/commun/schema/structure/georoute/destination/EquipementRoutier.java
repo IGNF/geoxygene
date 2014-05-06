@@ -11,7 +11,4 @@ public abstract class EquipementRoutier extends Equipement{
 	/**METTRE LES AUTRES ATTRIBUTS **/
 
 
-
-
-
 }

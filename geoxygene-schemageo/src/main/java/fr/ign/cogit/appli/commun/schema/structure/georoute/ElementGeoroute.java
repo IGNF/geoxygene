@@ -7,7 +7,7 @@ import fr.ign.cogit.geoxygene.feature.Population;
 
 public abstract class ElementGeoroute extends FT_Feature {
 
-	/** Identifiant donné par Géoroute */
+	/** Identifiant donnÃ© par GÃ©oroute */
 	protected int id_georoute;
 	public int getId_georoute() {return this.id_georoute; }
 	public void setId_georoute (int I) {id_georoute = I; }

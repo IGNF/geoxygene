@@ -6,17 +6,17 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 public abstract class NonCommunication extends ElementGeoroute {
 
 	//     private GM_Point geometrie = null;
-	/** Renvoie la géométrie de self */
+	/** Renvoie la geometrie de self */
 	public GM_Point getGeometrie() {return (GM_Point)geom;}
-	/** Définit la géométrie de self */
+	/** Definit la geometrie de self */
 	public void setGeometrie(GM_Point geometrie) {this.geom = geometrie;}
 
 
-	/** Un tronçon entrant concerne une non communication.
-	 *  1 objet NonCommunication est en relation avec 1 tronçon entrant.
-	 *  1 objet Tronçon entrant est en relation avec 0 ou 1 objet NonCommunication.
+	/** Un troncon entrant concerne une non communication.
+	 *  1 objet NonCommunication est en relation avec 1 troncon entrant.
+	 *  1 objet Troncon entrant est en relation avec 0 ou 1 objet NonCommunication.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
@@ -37,11 +37,11 @@ public abstract class NonCommunication extends ElementGeoroute {
 	public void setTronconEntrantID (int I) {tronconEntrantID = I;}
 
 
-	/** Un tronçon sortant concerne une non communication.
-	 *  1 objet NonCommunication est en relation avec 1 tronçon sortant.
-	 *  1 objet Tronçon sortant est en relation avec 0 ou 1 objet NonCommunication.
+	/** Un troncon sortant concerne une non communication.
+	 *  1 objet NonCommunication est en relation avec 1 troncon sortant.
+	 *  1 objet Troncon sortant est en relation avec 0 ou 1 objet NonCommunication.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
@@ -66,15 +66,15 @@ public abstract class NonCommunication extends ElementGeoroute {
 	 *  1 objet NonCommunication est en relation avec 1 Noeud.
 	 *  1 objet Noeud est en relation avec 0 ou 1 objet NonCommunication.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	protected NoeudRoutier noeud;
-	/** Récupère le noeud routier en relation */
+	/** Recupere le noeud routier en relation */
 	public NoeudRoutier getNoeud() {return noeud;}
-	/** Définit le noeud routier en relation, et met à jour la relation inverse. */
+	/** Definit le noeud routier en relation, et met a jour la relation inverse. */
 	public void setNoeud(NoeudRoutier O) {
 		NoeudRoutier old = noeud;
 		noeud = O;

@@ -12,9 +12,9 @@ public abstract class TronconRoute extends ElementGeoroute {
 
 	//////////////// GEOMETRIE //////////////////
 	//    private GM_LineString geometrie = null;
-	/** Renvoie la géométrie de self */
+	/** Renvoie la geometrie de self */
 	public GM_LineString getGeometrie() {return (GM_LineString)geom;}
-	/** Définit la géométrie de self */
+	/** Definit la geometrie de self */
 	public void setGeometrie(GM_LineString G) {this.geom = G;}
 
 	public String classementPhysique;
@@ -176,9 +176,9 @@ public abstract class TronconRoute extends ElementGeoroute {
 
 
 	protected NoeudRoutier noeudIni;
-	/** Récupère le noeud initial. */
+	/** Recupere le noeud initial. */
 	public NoeudRoutier getNoeudIni() {return noeudIni;}
-	/** Définit le noeud initial, et met à jour la relation inverse. */
+	/** Definit le noeud initial, et met a jour la relation inverse. */
 	public void setNoeudIni(NoeudRoutier O) {
 		NoeudRoutier old = noeudIni;
 		noeudIni = O;
@@ -190,24 +190,24 @@ public abstract class TronconRoute extends ElementGeoroute {
 	}
 	/** Pour le mapping avec OJB, dans le cas d'une relation 1-n, du cote 1 de la relation */
 	protected int noeudIniID;
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public void setNoeudIniID(int I) {noeudIniID = I;}
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public int getNoeudIniID() {return noeudIniID;}
 
 
 
-	/** Noeud final du tronçon.
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *      Relation topologique participant à la gestion de la logique de parcours du réseau routier :
-	 *      Elle précise le noeud routier initial d'un tronçon de route.
+	/** Noeud final du troncon.
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *      Relation topologique participant a la gestion de la logique de parcours du reseau routier :
+	 *      Elle precise le noeud routier initial d'un troncon de route.
 	 * <BR> <STRONG> Type </STRONG>:
 	 *      NoeudRoutier.
 	 */
 	protected NoeudRoutier noeudFin;
-	/** Récupère le noeud final. */
+	/** Recupere le noeud final. */
 	public NoeudRoutier getNoeudFin() {return noeudFin;}
-	/** Définit le noeud final, et met à jour la relation inverse. */
+	/** Definit le noeud final, et met a jour la relation inverse. */
 	public void setNoeudFin(NoeudRoutier O) {
 		NoeudRoutier old = noeudFin;
 		noeudFin = O;
@@ -219,32 +219,32 @@ public abstract class TronconRoute extends ElementGeoroute {
 	}
 	/** Pour le mapping avec OJB, dans le cas d'une relation 1-n, du cote 1 de la relation */
 	protected int noeudFinID;
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public void setNoeudFinID(int I) {noeudFinID = I;}
-	/** Ne pas utiliser, nécessaire au mapping*/
+	/** Ne pas utiliser, necessaire au mapping*/
 	public int getNoeudFinID() {return noeudFinID;}
 
 
-	/** Liste (non ordonnée) des non communication INI concernées par self
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *  1 objet Noeud est en relation "entrants" avec n objets TronçonRoutier.
-	 *  1 objet TronçonRoutier est en relation "fin" avec 1 objet Noeud.
+	/** Liste (non ordonnee) des non communication INI concernees par self
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *  1 objet Noeud est en relation "entrants" avec n objets TronconRoutier.
+	 *  1 objet TronconRoutier est en relation "fin" avec 1 objet Noeud.
 	 *
-	 *  Les méthodes get (sans indice) et set sont nécessaires au mapping.
-	 *  Les autres méthodes sont là seulement pour faciliter l'utilisation de la relation.
+	 *  Les methodes get (sans indice) et set sont necessaires au mapping.
+	 *  Les autres methodes sont la seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
-	 *      Relation topologique participant à la gestion de la logique de parcours du réseau routier :
-	 *      Elle précise lengthnoeud routier initial d'un tronçon de route.
-	 * <BR> <STRONG> Type des éléments de la liste </STRONG>:
+	 *      Relation topologique participant a la gestion de la logique de parcours du reseau routier :
+	 *      Elle precise lengthnoeud routier initial d'un troncon de route.
+	 * <BR> <STRONG> Type des elements de la liste </STRONG>:
 	 *      TronconRoute.
 	 */
 	protected List<NonCommunication> nonCommInis = new ArrayList<NonCommunication>();
 
-	/** Récupère la liste des nonCommInis. */
+	/** Recupere la liste des nonCommInis. */
 	public List<NonCommunication> getNonCommInis() {return nonCommInis ; }
-	/** Définit la liste des nonCommunication, et met à jour la relation inverse. */
+	/** Definit la liste des nonCommunication, et met a jour la relation inverse. */
 	public void setNonCommInis(List<NonCommunication> L) {
 		List<NonCommunication> old = new ArrayList<NonCommunication>(nonCommInis);
 		Iterator<NonCommunication> it1 = old.iterator();
@@ -258,21 +258,21 @@ public abstract class TronconRoute extends ElementGeoroute {
 			O.setTronconEntrant(this);
 		}
 	}
-	/** Récupère le ième élément de la liste des nonCommInis. */
+	/** Recupere le ieme element de la liste des nonCommInis. */
 	public NonCommunication getNonCommIni(int i) {return nonCommInis.get(i) ; }
-	/** Ajoute un objet à la liste des arcs entrants, et met à jour la relation inverse NoeudFin. */
+	/** Ajoute un objet a la liste des arcs entrants, et met a jour la relation inverse NoeudFin. */
 	public void addNonCommIni(NonCommunication O) {
 		if ( O == null ) return;
 		nonCommInis.add(O) ;
 		O.setTronconEntrant(this) ;
 	}
-	/** Enlève un élément de la liste des nonCommInis, et met à jour la relation inverse NoeudFin. */
+	/** Enleve un element de la liste des nonCommInis, et met a jour la relation inverse NoeudFin. */
 	public void removeNonCommIni(NonCommunication O) {
 		if ( O == null ) return;
 		nonCommInis.remove(O) ;
 		O.setTronconEntrant(null);
 	}
-	/** Vide la liste des nonCommInis, et met à jour la relation inverse NoeudFin. */
+	/** Vide la liste des nonCommInis, et met a jour la relation inverse NoeudFin. */
 	public void emptyNonCommInis() {
 		List<NonCommunication> old = new ArrayList<NonCommunication>(nonCommInis);
 		Iterator<NonCommunication> it = old.iterator();
@@ -282,26 +282,26 @@ public abstract class TronconRoute extends ElementGeoroute {
 		}
 	}
 
-	/** Liste (non ordonnée) des non communication FIN concernées par self
-	 * <BR> <STRONG> Définition </STRONG>:
-	 *  1 objet Noeud est en relation "entrants" avec n objets TronçonRoutier.
-	 *  1 objet TronçonRoutier est en relation "fin" avec 1 objet Noeud.
+	/** Liste (non ordonnee) des non communication FIN concernï¿½es par self
+	 * <BR> <STRONG> Definition </STRONG>:
+	 *  1 objet Noeud est en relation "entrants" avec n objets TronconRoutier.
+	 *  1 objet TronconRoutier est en relation "fin" avec 1 objet Noeud.
 	 *
-	 *  Les méthodes get (sans indice) et set sont nécessaires au mapping.
-	 *  Les autres méthodes sont là seulement pour faciliter l'utilisation de la relation.
+	 *  Les methodes get (sans indice) et set sont necessaires au mapping.
+	 *  Les autres methodes sont la seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
-	 *      Relation topologique participant à la gestion de la logique de parcours du réseau routier :
-	 *      Elle précise lengthnoeud routier initial d'un tronçon de route.
-	 * <BR> <STRONG> Type des éléments de la liste </STRONG>:
+	 *      Relation topologique participant a la gestion de la logique de parcours du reseau routier :
+	 *      Elle precise lengthnoeud routier initial d'un troncon de route.
+	 * <BR> <STRONG> Type des elements de la liste </STRONG>:
 	 *      TronconRoute.
 	 */
 	protected List<NonCommunication> nonCommFins = new ArrayList<NonCommunication>();
 
-	/** Récupère la liste des nonCommFins. */
+	/** Recupere la liste des nonCommFins. */
 	public List<NonCommunication> getNonCommFins() {return nonCommFins ; }
-	/** Définit la liste des nonCommunication, et met à jour la relation inverse. */
+	/** Definit la liste des nonCommunication, et met a jour la relation inverse. */
 	public void setNonCommFins(List<NonCommunication> L) {
 		List<NonCommunication> old = new ArrayList<NonCommunication>(nonCommFins);
 		Iterator<NonCommunication> it1 = old.iterator();
@@ -315,21 +315,21 @@ public abstract class TronconRoute extends ElementGeoroute {
 			O.setTronconSortant(this);
 		}
 	}
-	/** Récupère le ième élément de la liste des nonCommFins. */
+	/** Recupere le ieme element de la liste des nonCommFins. */
 	public NonCommunication getNonCommFin(int i) {return nonCommFins.get(i) ; }
-	/** Ajoute un objet à la liste des arcs entrants, et met à jour la relation inverse NoeudFin. */
+	/** Ajoute un objet a la liste des arcs entrants, et met a jour la relation inverse NoeudFin. */
 	public void addNonCommFin(NonCommunication O) {
 		if ( O == null ) return;
 		nonCommFins.add(O) ;
 		O.setTronconSortant(this) ;
 	}
-	/** Enlève un élément de la liste des nonCommFins, et met à jour la relation inverse NoeudFin. */
+	/** Enleve un element de la liste des nonCommFins, et met a jour la relation inverse NoeudFin. */
 	public void removeNonCommFin(NonCommunication O) {
 		if ( O == null ) return;
 		nonCommFins.remove(O) ;
 		O.setTronconSortant(null);
 	}
-	/** Vide la liste des nonCommFins, et met à jour la relation inverse NoeudFin. */
+	/** Vide la liste des nonCommFins, et met a jour la relation inverse NoeudFin. */
 	public void emptyNonCommFins() {
 		List<NonCommunication> old = new ArrayList<NonCommunication>(nonCommFins);
 		Iterator<NonCommunication> it = old.iterator();

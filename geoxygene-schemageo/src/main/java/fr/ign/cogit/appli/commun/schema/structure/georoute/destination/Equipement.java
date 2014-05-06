@@ -6,9 +6,9 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 public class Equipement extends  ElementGeoroute {
 
 	protected Acces acces;
-	/** Récupère l'acces en relation */
+	/** Recupere l'acces en relation */
 	public Acces getAcces() {return acces;}
-	/** Définit l'acces en relation, et met à jour la relation inverse. */
+	/** Definit l'acces en relation, et met a jour la relation inverse. */
 	public void setAcces(Acces O) {
 		Acces old = acces;
 		acces = O;
@@ -25,9 +25,9 @@ public class Equipement extends  ElementGeoroute {
 	public void setAccesID (int I) {accesID = I;}
 
 	//     private GM_Point geometrie = null;
-	/** Renvoie la géométrie de self */
+	/** Renvoie la geometrie de self */
 	public GM_Point getGeometrie() {return (GM_Point)geom;}
-	/** Définit la géométrie de self */
+	/** Definit la geometrie de self */
 	public void setGeometrie(GM_Point geometrie) {this.geom = geometrie;}
 
 }

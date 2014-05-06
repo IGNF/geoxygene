@@ -14,19 +14,19 @@ public abstract class Acces extends ElementGeoroute {
 	public void setNature(String nature) {this.nature = nature;}
 
 
-	/** Un NoeudRoutier concerne un accès.
+	/** Un NoeudRoutier concerne un acces.
 	 *  1 objet Acces est en relation avec 1 Noeud.
 	 *  1 objet Noeud est en relation avec 0 ou 1 objet Acces.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	protected NoeudRoutier noeud;
-	/** Récupère le noeud routier en relation */
+	/** Recupere le noeud routier en relation */
 	public NoeudRoutier getNoeud() {return noeud;}
-	/** Définit le noeud routier en relation, et met à jour la relation inverse. */
+	/** Definit le noeud routier en relation, et met a jour la relation inverse. */
 	public void setNoeud(NoeudRoutier O) {
 		NoeudRoutier old = noeud;
 		noeud = O;
@@ -44,19 +44,19 @@ public abstract class Acces extends ElementGeoroute {
 
 
 
-	/** Un EquipementRoutier concerne un accès.
+	/** Un EquipementRoutier concerne un acces.
 	 *  1 objet Acces est en relation avec 1 EquipementRoutier.
 	 *  1 objet EquipementRoutier est en relation avec 1 objet Acces.
 	 *
-	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas être utilisées
+	 *  Les methodes ...ID sont utiles uniquement au mapping et ne doivent pas etre utilisees
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	protected Equipement equipement;
-	/** Récupère le noeud routier en relation */
+	/** Recupere le noeud routier en relation */
 	public Equipement getEquipement() {return equipement;}
-	/** Définit le noeud routier en relation, et met à jour la relation inverse. */
+	/** Definit le noeud routier en relation, et met a jour la relation inverse. */
 	public void setEquipement(Equipement O) {
 		Equipement old = equipement;
 		equipement = O;
