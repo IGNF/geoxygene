@@ -2,7 +2,7 @@ package fr.ign.cogit.appli.commun.schema.structure.bdTopo;
 
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 
-/** Classe mère pour toute classe d'éléments de la BDTopo Pays
+/** Classe mere pour toute classe d'elements de la BDTopo Pays
  * AU FORMAT DE TRAVAIL pour l'appariement.
  */
 

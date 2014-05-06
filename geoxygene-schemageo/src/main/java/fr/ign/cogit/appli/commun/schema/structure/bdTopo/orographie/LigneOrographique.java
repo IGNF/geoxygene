@@ -6,9 +6,9 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 public abstract class LigneOrographique extends ElementBDTopo {
 
-	/** Renvoie la géométrie de l'objet, castée plus précisément qu'avec la méthode getGeom() */
+	/** Renvoie la gÃ©omÃ©trie de l'objet, castÃ©e plus prÃ©cisÃ©ment qu'avec la mÃ©thode getGeom() */
 	public GM_LineString getGeometrie() {return (GM_LineString)geom;}
-	/** Définit la géométrie de l'objet, castée plus précisément qu'avec la méthode setGeom() */
+	/** DÃ©finit la gÃ©omÃ©trie de l'objet, castÃ©e plus prÃ©cisÃ©ment qu'avec la mÃ©thode setGeom() */
 	public void setGeometrie(GM_LineString G) {this.geom = G;}
 
 	protected String nature;
