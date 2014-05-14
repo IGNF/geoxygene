@@ -1,7 +1,12 @@
 package fr.ign.cogit.geoxygene.http;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -108,6 +113,24 @@ public class SimpleHttpClient {
           throw new Exception("Unable to read input stream");
       }
       return response.toString();
+  }
+  
+  public void getResponseInFile(String filePath) throws Exception {
+      try {
+          
+    	  InputStream instream = server.getInputStream();
+    	  BufferedInputStream bis = new BufferedInputStream(instream);
+    	  BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
+    	  int inByte;
+    	  while ((inByte = bis.read()) != -1 ) {
+    		  bos.write(inByte);
+    	  }
+    	  bis.close();
+    	  bos.close();
+    	  
+      } catch (Exception e) {
+          throw new Exception("Unable to read input stream");
+      }
   }
   
   /**
