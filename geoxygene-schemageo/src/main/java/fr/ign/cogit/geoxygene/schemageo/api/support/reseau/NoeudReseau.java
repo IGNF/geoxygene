@@ -43,4 +43,16 @@ public interface NoeudReseau extends ElementDuReseau {
    * @return les arcs sortant du noeud
    */
   public Collection<ArcReseau> getArcsSortants();
+  
+  /**
+   * @author JTeulade-Denantes
+   * 
+   * this function counts the number of arcs included between two arcs in a clockwise or counterclockwise direction
+   * @param firstArc
+   * @param secondArc
+   * @param clockwise
+   * @return the number of arcs
+   */
+  public int clockwiseArcsCount(ArcReseau firstArc, ArcReseau secondArc, boolean clockwise);
+
 }

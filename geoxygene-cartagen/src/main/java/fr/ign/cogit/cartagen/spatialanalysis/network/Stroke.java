@@ -14,9 +14,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RoadStrokesNetwork;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -28,7 +30,9 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.AbstractFeature;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseauFlagPair;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.NoeudReseau;
+import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ArcReseauFlagPairImpl;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -37,7 +41,13 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   private static Logger logger = Logger.getLogger(Stroke.class.getName());
 
   private StrokesNetwork network;
-  private ArrayList<ArcReseau> features;
+  
+  /**
+   * @author JTeulade-Denantes
+   * 
+   * this change allows to know each arcReseau direction related to the stroke
+   */
+  private ArrayList<ArcReseauFlagPair> features;
   private ILineString geomStroke;
   private int id;
   private ArcReseau root;
@@ -51,11 +61,36 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     this.network = network;
   }
 
+  /**
+   * @author JTeulade-Denantes
+   * 
+   * @return the features without the flags
+   */
   public ArrayList<ArcReseau> getFeatures() {
+    ArrayList<ArcReseau> featuresWithoutFlag = new ArrayList<ArcReseau>();
+    for (ArcReseauFlagPair arcReseauFlagPair : features) {
+      featuresWithoutFlag.add(arcReseauFlagPair.getArcReseau());
+    }
+    return featuresWithoutFlag;
+  }
+  
+  /**
+   * @author JTeulade-Denantes
+   */
+  public void setFeatures(ArrayList<ArcReseau> features) {
+    ArrayList<ArcReseauFlagPair> featuresWithoutFlag = new ArrayList<ArcReseauFlagPair>();
+    for (ArcReseau arcReseau : features) {
+      featuresWithoutFlag.add(new ArcReseauFlagPairImpl(arcReseau));
+    }
+    this.features = featuresWithoutFlag;
+  }
+
+  
+  public ArrayList<ArcReseauFlagPair> getOrientedFeatures() {
     return this.features;
   }
 
-  public void setFeatures(ArrayList<ArcReseau> features) {
+  public void setOrientedFeatures(ArrayList<ArcReseauFlagPair> features) {
     this.features = features;
   }
 
@@ -113,20 +148,32 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   public Stroke(StrokesNetwork network, ArcReseau root) {
     this.network = network;
     this.setRoot(root);
-    this.features = new ArrayList<ArcReseau>();
-    this.features.add(root);
+    this.features = new ArrayList<ArcReseauFlagPair>();
+    this.features.add(new ArcReseauFlagPairImpl(root));
     this.id = COUNTER.getAndIncrement();
   }
 
+//  public Stroke(RoadStrokesNetwork network, ArrayList<ArcReseauFlagPair> features,
+//      ILineString geomStroke) {
+//    this.features = features;
+//    this.geomStroke = geomStroke;
+//    this.geom = geomStroke;
+//    this.network = network;
+//    this.setRoot(features.get(0).getArcReseau());
+//    this.id = this.getRoot().getId();
+//  }
+
+  
   public Stroke(RoadStrokesNetwork network, ArrayList<ArcReseau> features,
       ILineString geomStroke) {
-    this.features = features;
+    setFeatures(features);
     this.geomStroke = geomStroke;
     this.geom = geomStroke;
     this.network = network;
     this.setRoot(features.get(0));
     this.id = this.getRoot().getId();
   }
+  
 
   /**
    * <p>
@@ -177,9 +224,9 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
 
       // add this to the 2 sets (the network one and the stroke one)
       if (side) {
-        this.features.add(0, best);
+        this.features.add(0, new ArcReseauFlagPairImpl(best));
       } else {
-        this.features.add(best);
+        this.features.add(new ArcReseauFlagPairImpl(best));
       }
       this.network.getGroupedFeatures().add(best);
 
@@ -803,6 +850,9 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
         for (ArcReseau a : loopFoll) {
           // get the value of a for attribute
           Object valueA = a.getAttribute(attribute);
+          logger.debug("+++++++++ " + a.getClass());
+          logger.debug("+++++++++ " + attribute);
+          logger.debug("+++++++++ " + a.getAttribute(attribute));
           if (!value.equals(valueA)) {
             // remove 'a' from the followers set
             followers.remove(a);
@@ -826,7 +876,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
    */
   public void buildGeomStroke() {
     ArrayList<ILineString> geoms = new ArrayList<ILineString>();
-    for (ArcReseau arc : this.features) {
+    for (ArcReseau arc : this.getFeatures()) {
       geoms.add((ILineString) arc.getGeom());
     }
     this.setGeomStroke(this.joinStrokeFeatures(geoms));
@@ -835,11 +885,11 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     }
   }
 
-  private ILineString joinStrokeFeatures(ArrayList<ILineString> lines) {
+  protected ILineString joinStrokeFeatures(ArrayList<ILineString> lines) {
     IDirectPositionList pointsFinaux = new DirectPositionList();
     if (lines.size() == 0) {
-      Stroke.logger
-          .warning("ATTENTION. Erreur à la compilation de lignes : aucune ligne en entrée");
+      logger
+          .warn("ATTENTION. Erreur à la compilation de lignes : aucune ligne en entrée");
       return null;
     }
     if (lines.size() == 1) {
@@ -862,7 +912,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
       lineBefore = Operateurs.compileArcs(before);
       if (Distances.proche(this.root.getGeom().startPoint(),
           lineBefore.startPoint(), 0)) {
-        lineBefore.reverse();
+        lineBefore = lineBefore.reverse();
       }
       pointsFinaux.addAll(lineBefore.getControlPoint());
       pointsFinaux.remove(this.root.getGeom().startPoint());
@@ -877,7 +927,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
 
         if (Distances.proche(this.root.getGeom().endPoint(),
             lineAfter.endPoint(), 0)) {
-          lineAfter.reverse();
+          lineAfter = lineAfter.reverse();
         }
         pointsFinaux.addAll(lineAfter.getControlPoint());
       }
@@ -911,4 +961,111 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   public int compareTo(Stroke o) {
     return (int) Math.round(this.getLength() - o.getLength());
   }
+
+  /**
+   * @author JTeulade-Denantes
+   */
+  StrokeNode strokeInitialNode;
+  StrokeNode strokeFinalNode;
+  
+  public StrokeNode getStrokeInitialNode() {
+    return strokeInitialNode;
+  }
+
+  public StrokeNode getStrokeFinalNode() {
+    return strokeFinalNode;
+  }
+
+
+  /**
+   * @author JTeulade-Denantes
+   * 
+   * instantitate arcs flags (arcs directions) to have a consistent stroke which can be used afterwards
+   */
+  public void instantiateFlagsOfArcReseau() {
+    //for an unique arc, direction is not important
+    if (this.getOrientedFeatures().size() > 1) {
+      NoeudReseau previousNode = null;
+      ArcReseau firstArc= null;
+      ArrayList<ArcReseauFlagPair> orderedArcList = new ArrayList<ArcReseauFlagPair>();
+      //we need two sections to know the global direction of the stroke sections
+      boolean secondSection = false;
+      for (ArcReseau arc : this.getFeatures()) {
+        if (secondSection) {
+          //with the second section, we can find the stroke direction 
+          secondSection = false;
+          if (arc.getNoeudInitial() == firstArc.getNoeudFinal() || arc.getNoeudFinal() == firstArc.getNoeudFinal()) {
+            previousNode = firstArc.getNoeudFinal(); 
+            //don't forget to add the first section
+            orderedArcList.add(new ArcReseauFlagPairImpl(firstArc, true));
+          } else if (arc.getNoeudInitial() == firstArc.getNoeudInitial() || arc.getNoeudFinal() == firstArc.getNoeudInitial()) {
+            previousNode = firstArc.getNoeudInitial(); 
+            //this arc is not in the good direction
+            orderedArcList.add(new ArcReseauFlagPairImpl(firstArc, false));
+          } else
+            logger.info("error in strokes creation");
+        }
+        
+        if (firstArc == null) {
+          //we can't print the first section if we don't know the stroke direction, that's why we have to save it
+          firstArc = arc;      
+          //we are in the first section, so we'll see stroke direction with the second section in the next loop
+          secondSection=true;
+        } else {
+          //we need to deal with the local direction of each section
+          if (arc.getNoeudFinal() == previousNode) {
+            previousNode = arc.getNoeudInitial();
+            //this arc is not in the good direction
+            orderedArcList.add(new ArcReseauFlagPairImpl(arc, false));   
+          } else if (arc.getNoeudInitial() == previousNode) {
+            previousNode = arc.getNoeudFinal();
+            orderedArcList.add(new ArcReseauFlagPairImpl(arc, true));  
+          } else 
+            logger.info("error in strokes creation");
+        }  
+      }
+      this.setOrientedFeatures(orderedArcList);
+    } 
+  }
+  
+  /**
+   * @author JTeulade-Denantes
+   * 
+   * instantiate strokeInitialNode and strokeFinalNode thanks to the noeudReseau related
+   * @param strokeNodesMap saves the nodes which have already been seen
+   */
+  public void instantiateStrokeNodes(Map<NoeudReseau, StrokeNode> strokeNodesMap) {
+    
+    ArcReseauFlagPair initialArcPair = this.getOrientedFeatures().get(0);
+    ArcReseauFlagPair finalArcPair = this.getOrientedFeatures().get(this.getFeatures().size()-1); 
+    NoeudReseau noeudReseau;
+    
+    //strokeInitialNode instanciation
+    //we check the arc direction
+    if (initialArcPair.getFlag()) 
+      noeudReseau = initialArcPair.getArcReseau().getNoeudInitial();
+    else 
+      noeudReseau = initialArcPair.getArcReseau().getNoeudFinal();
+    //we check if this node has already been seen
+    if (strokeNodesMap.containsKey(noeudReseau))
+      strokeInitialNode = strokeNodesMap.get(noeudReseau);
+    else {
+      strokeInitialNode = new StrokeNode(noeudReseau, this.network);
+      strokeNodesMap.put(noeudReseau, strokeInitialNode);
+    }
+     
+    //strokeFinalNode instanciation
+    if (finalArcPair.getFlag()) 
+      noeudReseau = finalArcPair.getArcReseau().getNoeudFinal();
+     else 
+      noeudReseau = finalArcPair.getArcReseau().getNoeudInitial();
+    
+    if (strokeNodesMap.containsKey(noeudReseau))
+      strokeFinalNode = strokeNodesMap.get(noeudReseau);
+    else {
+      strokeFinalNode = new StrokeNode(noeudReseau, this.network);
+      strokeNodesMap.put(noeudReseau, strokeFinalNode);
+    }
+  }
+  
 }

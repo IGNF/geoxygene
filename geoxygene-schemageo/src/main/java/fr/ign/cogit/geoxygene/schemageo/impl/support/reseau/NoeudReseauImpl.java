@@ -20,8 +20,13 @@
  */
 package fr.ign.cogit.geoxygene.schemageo.impl.support.reseau;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
@@ -58,5 +63,137 @@ public class NoeudReseauImpl extends ElementDuReseauImpl implements NoeudReseau 
   public Collection<ArcReseau> getArcsSortants() {
     return this.arcsSortants;
   }
+  
+  /**
+   * @author JTeulade-Denantes
+   * 
+   * this function takes all the arcs related to the node in order to sort them in a clockwise direction
+   * @return the list node arcs in a clockwise direction 
+   */
+  private List<ArcReseau> getClockwiseArcs() {
+    
+    IDirectPosition positionNode = this.getGeom().getPosition();
+    //the position of each node arc
+    IDirectPosition positionArc;
+    List<Pair<ArcReseau, Double>> comparatorList = new ArrayList<Pair<ArcReseau,Double>>();
+    
+    for (ArcReseau arc : this.getArcsEntrants()) {
+      //for arcs going in the node, the last point is the node itself, that's why we need the second last one
+      positionArc = arc.getGeom().coord().get(arc.getGeom().coord().size()-2);
+      //we add the orientation between the two positions to the comparatorList
+      comparatorList.add(new Pair<ArcReseau, Double>(arc,positionArc.orientation(positionNode)));
+    }
+    
+    for (ArcReseau arc : this.getArcsSortants()) {
+      //for arcs going out the node, the first point is the node itself, that's why we need the second one
+      positionArc = arc.getGeom().coord().get(1);
+      comparatorList.add(new Pair<ArcReseau, Double>(arc,positionArc.orientation(positionNode)));
+    }
+    
+    //we sort the list according to the angles
+    Collections.sort(comparatorList, new Comparator<Pair<ArcReseau, Double>>(){
+      public int compare(Pair<ArcReseau, Double> p1, Pair<ArcReseau, Double> p2) {
+          return p1.second().compareTo(p2.second());
+      }
+    });
+    
+    //we return only the arcs without the angle related
+    List<ArcReseau> arcReseauList = new ArrayList<ArcReseau>();
+    for (Pair<ArcReseau, Double> arcReseauPair : comparatorList) {
+      arcReseauList.add(arcReseauPair.first());
+    }
+    return arcReseauList;
+    
+  }
+  
+  
+  /**
+   * @author JTeulade-Denantes
+   * 
+   * this function counts the number of arcs included between two arcs in a clockwise or counterclockwise direction
+   * @param firstArc
+   * @param secondArc
+   * @param clockwise
+   * @return the number of arcs
+   */
+  public int clockwiseArcsCount(ArcReseau firstArc, ArcReseau secondArc, boolean clockwise) {
+    //we get back sorted list
+    List<ArcReseau> clockwiseArcs = this.getClockwiseArcs();
 
+    int firstArcIndex = -1;
+    int secondArcIndex = -1;
+    
+    //we find the indexes of firstArc and secondArc in clockwiseArcs
+    for (int i = 0 ; i < clockwiseArcs.size() ; i++) {
+      if (clockwiseArcs.get(i).equals(firstArc)) {
+        firstArcIndex = i;
+      } else if (clockwiseArcs.get(i).equals(secondArc)) {
+        secondArcIndex = i;
+      }
+    }
+    
+    //we check whether firstArc and secondArc have been found in clockwiseArcs
+    if (firstArcIndex==-1 || secondArcIndex==-1) {
+      logger.info("error in clockwiseArcsCount function: one of the arcs doesn't belong to the current node");
+      return 0;
+    }
+    
+    int crossedRoadsNumber;
+    if (secondArcIndex > firstArcIndex)
+      crossedRoadsNumber = secondArcIndex - firstArcIndex;
+    else
+      crossedRoadsNumber = secondArcIndex + clockwiseArcs.size() - firstArcIndex;
+    
+    if (clockwise)
+      return crossedRoadsNumber - 1;
+    else
+      return clockwiseArcs.size() - crossedRoadsNumber - 1;
+    
+  }
+  
+  /**
+   * 
+   * @author JTeulade-Denantes
+   *
+   * @param <A>
+   * @param <B>
+   */
+  private class Pair<A, B>
+  {
+      private A element1;
+
+      private B element2;
+
+      public Pair(){}
+
+      public Pair(A element1, B element2)
+      {
+          this.element1 = element1;
+          this.element2 = element2;
+      }
+
+      public A first()
+      {
+          return element1;
+      }
+
+      public B second()
+      {
+          return element2;
+      }
+      public String toString()
+      {
+          return "(" + element1 + "," + element2 + ")";
+      }
+
+      public void set1(A element1)
+      {
+          this.element1 = element1;
+      }
+
+      public void set2(B element2)
+      {
+          this.element2 = element2;
+      }
+  }
 }
