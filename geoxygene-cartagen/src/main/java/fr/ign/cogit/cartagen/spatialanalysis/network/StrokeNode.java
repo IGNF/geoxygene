@@ -1,6 +1,11 @@
 package fr.ign.cogit.cartagen.spatialanalysis.network;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
@@ -90,6 +95,12 @@ public class StrokeNode extends AbstractFeature {
     return this.outStrokes;
   }
   
+  public Collection<Stroke> getAllStrokes() {
+    Collection<Stroke> allStrokes = new FT_FeatureCollection<Stroke>(this.outStrokes);
+    allStrokes.addAll(this.inStrokes);
+    return allStrokes;
+  }
+  
   public int strokesNumber() {
     return inStrokes.size() + outStrokes.size();
   }
@@ -104,6 +115,45 @@ public class StrokeNode extends AbstractFeature {
     return this.noeudReseau.getGeom();
   }
   
+  /**
+   * this function returns the strokes included between two strokes in a clockwise or counterclockwise direction
+   * @param firstStroke
+   * @param secondStroke
+   * @param clockwise
+   * @return the set of strokes
+   */
+  public Set<Stroke> clockwiseSelectedStrokes(Stroke firstStroke, Stroke secondStroke, boolean clockwise) {
+    ArcReseau firstArc = null, secondArc = null;
+    //we check if the stroke belongs to the node and we save the arc related to the node
+    if (firstStroke.getStrokeFinalNode().equals(this)) {
+      firstArc = firstStroke.getFeatures().get(firstStroke.getFeatures().size() - 1);
+    } else if (firstStroke.getStrokeInitialNode().equals(this)) {
+      firstArc = firstStroke.getFeatures().get(0);
+    } else {
+      logger.info("Problem : the first stroke is not related to the stroke node");
+    }
+    
+  //we check if the stroke belongs to the node and we save the arc related to the node
+    if (secondStroke.getStrokeFinalNode().equals(this)) {
+      secondArc = secondStroke.getFeatures().get(secondStroke.getFeatures().size() - 1);
+    } else if (secondStroke.getStrokeInitialNode().equals(this)) {
+      secondArc = secondStroke.getFeatures().get(0);
+    } else {
+      logger.info("Problem : the second stroke is not related to the stroke node");
+    }
+    
+    Set<Stroke> selectedStrokes = new HashSet<Stroke>();
+    //from all the selected arcs, we find the related strokes
+    for (ArcReseau arc : this.getNoeudReseau().clockwiseSelectedArcs(firstArc, secondArc, clockwise)) {
+      for (Stroke stroke : this.getAllStrokes()) {
+        if (stroke.getFeatures().get(0).equals(arc) || stroke.getFeatures().get(stroke.getFeatures().size() - 1).equals(arc)) {
+          selectedStrokes.add(stroke);
+          break;
+        }
+      }
+    }
+    return selectedStrokes;
+  }
   
   
 }

@@ -880,6 +880,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
       geoms.add((ILineString) arc.getGeom());
     }
     this.setGeomStroke(this.joinStrokeFeatures(geoms));
+    this.instantiateFlagsOfArcReseau();
     if (this.getGeomStroke() == null) {
       // System.out.println(this.features);
     }
@@ -982,7 +983,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
    * 
    * instantitate arcs flags (arcs directions) to have a consistent stroke which can be used afterwards
    */
-  public void instantiateFlagsOfArcReseau() {
+  private void instantiateFlagsOfArcReseau() {
     //for an unique arc, direction is not important
     if (this.getOrientedFeatures().size() > 1) {
       NoeudReseau previousNode = null;

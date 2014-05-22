@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
@@ -93,7 +94,7 @@ public class NoeudReseauImpl extends ElementDuReseauImpl implements NoeudReseau 
     //we sort the list according to the angles
     Collections.sort(comparatorList, new Comparator<Pair<ArcReseau, Double>>(){
       public int compare(Pair<ArcReseau, Double> p1, Pair<ArcReseau, Double> p2) {
-          return p1.second().compareTo(p2.second());
+          return -p1.second().compareTo(p2.second());
       }
     });
     
@@ -110,45 +111,40 @@ public class NoeudReseauImpl extends ElementDuReseauImpl implements NoeudReseau 
   /**
    * @author JTeulade-Denantes
    * 
-   * this function counts the number of arcs included between two arcs in a clockwise or counterclockwise direction
+   * this function returns the arcs included between two arcs in a clockwise or counterclockwise direction
    * @param firstArc
    * @param secondArc
    * @param clockwise
-   * @return the number of arcs
+   * @return the list of arcs
    */
-  public int clockwiseArcsCount(ArcReseau firstArc, ArcReseau secondArc, boolean clockwise) {
+  public List<ArcReseau> clockwiseSelectedArcs(ArcReseau firstArc, ArcReseau secondArc, boolean clockwise) {
     //we get back sorted list
     List<ArcReseau> clockwiseArcs = this.getClockwiseArcs();
 
-    int firstArcIndex = -1;
-    int secondArcIndex = -1;
-    
     //we find the indexes of firstArc and secondArc in clockwiseArcs
-    for (int i = 0 ; i < clockwiseArcs.size() ; i++) {
-      if (clockwiseArcs.get(i).equals(firstArc)) {
-        firstArcIndex = i;
-      } else if (clockwiseArcs.get(i).equals(secondArc)) {
-        secondArcIndex = i;
-      }
-    }
-    
+    int firstArcIndex = clockwiseArcs.indexOf(firstArc);
+    int secondArcIndex = clockwiseArcs.indexOf(secondArc);
+   
     //we check whether firstArc and secondArc have been found in clockwiseArcs
     if (firstArcIndex==-1 || secondArcIndex==-1) {
       logger.info("error in clockwiseArcsCount function: one of the arcs doesn't belong to the current node");
-      return 0;
+      return null;
     }
     
-    int crossedRoadsNumber;
-    if (secondArcIndex > firstArcIndex)
-      crossedRoadsNumber = secondArcIndex - firstArcIndex;
-    else
-      crossedRoadsNumber = secondArcIndex + clockwiseArcs.size() - firstArcIndex;
-    
-    if (clockwise)
-      return crossedRoadsNumber - 1;
-    else
-      return clockwiseArcs.size() - crossedRoadsNumber - 1;
-    
+    if (secondArcIndex > firstArcIndex) {
+      if (clockwise) {
+        clockwiseArcs = clockwiseArcs.subList(firstArcIndex+1, secondArcIndex);
+      } else {
+        clockwiseArcs.removeAll(clockwiseArcs.subList(firstArcIndex, secondArcIndex+1));
+      }
+    } else if (secondArcIndex < firstArcIndex) {
+      if (clockwise) {
+        clockwiseArcs.removeAll(clockwiseArcs.subList(secondArcIndex, firstArcIndex+1));
+      } else {
+        clockwiseArcs = clockwiseArcs.subList(secondArcIndex+1, firstArcIndex);
+      }
+    }
+    return clockwiseArcs;
   }
   
   /**

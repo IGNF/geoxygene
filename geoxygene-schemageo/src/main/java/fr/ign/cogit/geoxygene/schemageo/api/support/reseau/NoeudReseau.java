@@ -21,6 +21,8 @@
 package fr.ign.cogit.geoxygene.schemageo.api.support.reseau;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 
@@ -47,12 +49,12 @@ public interface NoeudReseau extends ElementDuReseau {
   /**
    * @author JTeulade-Denantes
    * 
-   * this function counts the number of arcs included between two arcs in a clockwise or counterclockwise direction
+   * this function returns the arcs included between two arcs in a clockwise or counterclockwise direction
    * @param firstArc
    * @param secondArc
    * @param clockwise
-   * @return the number of arcs
+   * @return the list of arcs
    */
-  public int clockwiseArcsCount(ArcReseau firstArc, ArcReseau secondArc, boolean clockwise);
+  public List<ArcReseau> clockwiseSelectedArcs(ArcReseau firstArc, ArcReseau secondArc, boolean clockwise);
 
 }
