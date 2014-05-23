@@ -37,6 +37,7 @@ import fr.ign.cogit.cartagen.software.dataset.DatabaseView;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
 import fr.ign.cogit.cartagen.software.interfacecartagen.menus.ConfigMenuComponent;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.AbstractMainFrame;
@@ -212,6 +213,7 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
     StyledLayerDescriptor defaultSld = StyledLayerDescriptor
         .unmarshall(IGeneObj.class.getClassLoader().getResourceAsStream(
             "XML/CartagenStyles.xml")); //$NON-NLS-1$
+    CartAGenDoc.getInstance().getCurrentDataset().setSld(defaultSld);
     float opacity = 0.8f;
     float strokeWidth = 1.0f;
     for (GeographicClass geoClass : db.getClasses()) {
@@ -224,6 +226,10 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
         if (defaultSld.getLayer(populationName) != null) {
           layer.getStyles().addAll(
               defaultSld.getLayer(populationName).getStyles());
+          // set features of differents layer
+          for (IFeature f : db.getDataSet().getPopulation(populationName)) {
+            ((IGeneObj) f).setSymbolId(-2);
+          }
         } else {
           UserStyle style = new UserStyle();
           style.setName("Style créé pour le layer " + populationName);//$NON-NLS-1$
@@ -239,6 +245,7 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
         frame.getSld().add(layer);
       }
     }
+
     // initialise the frame with cartagen plugin
     CartAGenProjectPlugin.getInstance().initialize(frame);
   }
