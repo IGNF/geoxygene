@@ -23,6 +23,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -55,7 +56,8 @@ public class UnionProcess extends ScaleMasterGeneProcess {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void execute(IFeatureCollection<? extends IGeneObj> features) {
+  public void execute(IFeatureCollection<? extends IGeneObj> features,
+      CartAGenDataSet currentDataset) {
     List<Geometry> list = new ArrayList<Geometry>();
     try {
       // Detection of invalid polygons

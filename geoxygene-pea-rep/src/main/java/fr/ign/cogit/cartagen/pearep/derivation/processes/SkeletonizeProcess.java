@@ -9,6 +9,7 @@ import fr.ign.cogit.cartagen.genealgorithms.polygon.Skeletonize;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -53,8 +54,8 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
   }
 
   @Override
-  public void execute(IFeatureCollection<? extends IGeneObj> features)
-      throws Exception {
+  public void execute(IFeatureCollection<? extends IGeneObj> features,
+      CartAGenDataSet currentDataset) throws Exception {
     IPopulation<IGeneObj> pop = CartAGenDocOld
         .getInstance()
         .getCurrentDataset()

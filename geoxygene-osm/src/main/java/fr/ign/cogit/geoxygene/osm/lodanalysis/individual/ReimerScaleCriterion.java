@@ -1,26 +1,27 @@
 package fr.ign.cogit.geoxygene.osm.lodanalysis.individual;
 
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.electretri.ELECTRECriterion;
-import fr.ign.cogit.geoxygene.osm.schema.OsmSource;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 /**
  * ELECTRE TRI criterion used to assess the Level of Detail of a feature. This
- * criterion uses the "source" OpenStreetMap tag to assess resolution.
+ * criterion computes the vertex density, i.e. the number of vertices divided by
+ * the length of the feature. The criterion is normalised according to the
+ * formula from (Reimer et al 14).
  * @author GTouya
  * 
  */
-public class SourceCriterion extends ELECTRECriterion {
+public class ReimerScaleCriterion extends ELECTRECriterion {
 
   // //////////////////////////////////////////
   // Fields //
   // //////////////////////////////////////////
 
   // All static fields //
-  private static Logger logger = Logger.getLogger(SourceCriterion.class
+  private static Logger logger = Logger.getLogger(ELECTRECriterion.class
       .getName());
 
   // Public fields //
@@ -40,12 +41,12 @@ public class SourceCriterion extends ELECTRECriterion {
   // //////////////////////////////////////////
 
   // Public constructors //
-  public SourceCriterion(String nom) {
+  public ReimerScaleCriterion(String nom) {
     super(nom);
-    this.setWeight(0.9);
+    this.setWeight(1.2);
     this.setIndifference(0.1);
     this.setPreference(0.2);
-    this.setVeto(0.6);
+    this.setVeto(0.5);
   }
 
   // Getters and setters //
@@ -53,33 +54,24 @@ public class SourceCriterion extends ELECTRECriterion {
   // Other public methods //
   @Override
   public double value(Map<String, Object> param) {
-    // get the source as parameter
-    double value = 0.5;
-    OsmSource source = (OsmSource) param.get("source");
-    if (source.equals(OsmSource.UNKNOWN))
-      value = 0.6;
-    if (source.equals(OsmSource.DGI))
-      value = 0.1;
-    if (source.equals(OsmSource.CORINE_LANDCOVER))
-      value = 0.7;
-    if (source.equals(OsmSource.BING))
-      value = 0.6;
-    if (source.equals(OsmSource.PGS))
-      value = 0.9;
-    if (source.equals(OsmSource.STATIONS_GPL))
-      value = 0.25;
-    if (source.equals(OsmSource.SURVEY))
-      value = 0.25;
-    if (source.equals(OsmSource.HISTORICAL))
-      value = 0.6;
-    if (source.equals(OsmSource.KNOWLEDGE))
-      value = 0.4;
-    if (source.equals(OsmSource.LOCAL_ADMIN))
-      value = 0.2;
-    if (source.equals(OsmSource.LANDSAT))
-      value = 0.7;
-    if (logger.isLoggable(Level.FINER))
-      logger.finer("criterion value: " + value);
+    IGeometry geom = (IGeometry) param.get("geometry");
+    if (geom == null)
+      return 0;
+    // length is in map millimeters at the 1:250000 scale
+    double density = geom.numPoints() / (geom.length() / 250.0);
+    double scale = 250000.0 * (1 / density) * (1 / density);
+    double value = 1.0;
+    if (scale < 15000.0)
+      value = scale / 15000.0 * 0.2;
+    else if (scale < 50000.0)
+      value = (scale - 15000.0) / 35000.0 * 0.2 + 0.2;
+    else if (scale < 150000.0)
+      value = (scale - 50000.0) / 100000.0 * 0.2 + 0.4;
+    else if (scale < 750000.0)
+      value = (scale - 150000.0) / 600000.0 * 0.2 + 0.6;
+    else
+      value = Math.min((scale - 750000.0) / 600000.0 * 0.2 + 0.8, 1.0);
+    logger.finer("criterion value: " + value + " with scale value of " + scale);
     return value;
   }
 

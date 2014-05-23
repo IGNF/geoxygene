@@ -15,6 +15,7 @@ import java.util.Set;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -43,7 +44,8 @@ public class FilteringProcess extends ScaleMasterGeneProcess {
   }
 
   @Override
-  public void execute(IFeatureCollection<? extends IGeneObj> features) {
+  public void execute(IFeatureCollection<? extends IGeneObj> features,
+      CartAGenDataSet currentDataset) {
     parameterise();
     for (IGeneObj obj : features) {
       if (obj.isDeleted())

@@ -28,7 +28,7 @@ public class VersionNumberCriterion extends ELECTRECriterion {
     double value = 0.5;
     int number = (Integer) param.get("version");
     if (number == 1)
-      value = 0.7;
+      value = 0.6;
     else if (number == 2)
       value = 0.5;
     else if (number == 3)

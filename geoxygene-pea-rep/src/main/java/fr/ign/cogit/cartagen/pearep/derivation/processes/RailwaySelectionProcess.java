@@ -18,6 +18,7 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
@@ -52,7 +53,8 @@ public class RailwaySelectionProcess extends ScaleMasterGeneProcess {
   }
 
   @Override
-  public void execute(IFeatureCollection<? extends IGeneObj> features) {
+  public void execute(IFeatureCollection<? extends IGeneObj> features,
+      CartAGenDataSet currentDataset) {
     this.parameterise();
 
     // make planar and enrich the road network

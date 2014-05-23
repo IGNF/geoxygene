@@ -62,6 +62,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
+import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.algo.SmallestSurroundingRectangleComputation;
 import fr.ign.cogit.geoxygene.util.algo.geomstructure.Rectangle;
 import fr.ign.cogit.geoxygene.util.algo.geomstructure.Segment;
@@ -1032,8 +1033,6 @@ public class CommonAlgorithmsFromCartAGen {
     // first, insert both pts as vertices of the line
     ILineString updatedLine = insertVertex(insertVertex(line, pt1, 0.01), pt2,
         0.01);
-    System.out.println(line);
-    System.out.println(updatedLine);
     IDirectPositionList subLine = new DirectPositionList();
     boolean start = false;
     boolean end = false;
@@ -1047,6 +1046,24 @@ public class CommonAlgorithmsFromCartAGen {
       if (vertex.equals(pt2))
         end = true;
       subLine.add(vertex);
+    }
+
+    // case where the line is not in the same direction as the given points
+    if (subLine.size() == 1) {
+      start = false;
+      end = false;
+      subLine.clear();
+      for (IDirectPosition vertex : updatedLine.coord().reverse()) {
+        if (vertex.equals(pt1))
+          start = true;
+        if (!start)
+          continue;
+        if (end)
+          break;
+        if (vertex.equals(pt2))
+          end = true;
+        subLine.add(vertex);
+      }
     }
 
     return new GM_LineString(subLine);
@@ -1361,5 +1378,30 @@ public class CommonAlgorithmsFromCartAGen {
     }
 
     return sharpVertices;
+  }
+
+  /**
+   * Compute the mean line between two lines. It's a very simple algorithm that
+   * may not work in complex cases like for instance lines that intersect. It
+   * loops on the points of the first line and searches the closest point on
+   * line 2, and takes the middle of both points.
+   * @param line1
+   * @param line2
+   * @return
+   */
+  public static ILineString getMeanLine(ILineString line1, ILineString line2) {
+    IDirectPositionList coordList = new DirectPositionList();
+    for (IDirectPosition pt : line1.coord()) {
+      // get the closest point on line2
+      IDirectPosition closest = JtsAlgorithms.getClosestPoint(pt, line2);
+      if (closest.equals(pt)) {
+        coordList.add(pt);
+        continue;
+      }
+      // add the middle point
+      IDirectPosition middle = new Segment(pt, closest).getMiddlePoint();
+      coordList.add(middle);
+    }
+    return new GM_LineString(coordList);
   }
 }

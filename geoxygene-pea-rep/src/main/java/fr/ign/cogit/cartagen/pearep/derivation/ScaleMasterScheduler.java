@@ -510,7 +510,7 @@ public class ScaleMasterScheduler {
             + elem.getClasses() + " de " + elem.getDbName());
         // execute the process on the features
         try {
-          process.execute(features);
+          process.execute(features, dataset);
           // update features
           for (IGeneObj objPop : dataset.getCartagenPop(dataset
               .getPopNameFromClass(classObj))) {

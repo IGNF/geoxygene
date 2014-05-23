@@ -22,6 +22,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -49,7 +50,8 @@ public class BridgeCollapseProcess extends ScaleMasterGeneProcess {
   }
 
   @Override
-  public void execute(IFeatureCollection<? extends IGeneObj> features) {
+  public void execute(IFeatureCollection<? extends IGeneObj> features,
+      CartAGenDataSet currentDataset) {
     parameterise();
     for (IGeneObj obj : features) {
       if (obj.isDeleted())

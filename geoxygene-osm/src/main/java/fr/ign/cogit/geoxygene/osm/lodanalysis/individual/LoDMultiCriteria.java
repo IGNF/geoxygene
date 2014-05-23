@@ -75,6 +75,7 @@ public class LoDMultiCriteria {
         || (crit instanceof GranularityCriterion)
         || (crit instanceof VertexDensityCriterion)
         || (crit instanceof SizeCriterion)
+        || (crit instanceof ReimerScaleCriterion)
         || (crit instanceof CoalescenceCriterion))
       param.put("geometry", obj.getGeom());
     if (crit instanceof SourceCriterion)

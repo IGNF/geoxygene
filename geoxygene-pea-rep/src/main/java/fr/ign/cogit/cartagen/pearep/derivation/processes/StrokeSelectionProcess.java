@@ -21,6 +21,7 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.pearep.enrichment.DeleteDoublePreProcess;
 import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanar;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
@@ -53,7 +54,8 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
   }
 
   @Override
-  public void execute(IFeatureCollection<? extends IGeneObj> features) {
+  public void execute(IFeatureCollection<? extends IGeneObj> features,
+      CartAGenDataSet currentDataset) {
     this.parameterise();
 
     // do the road enrichment

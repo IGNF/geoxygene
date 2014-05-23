@@ -93,6 +93,7 @@ public class OSMLoader extends SwingWorker<Void, Void> {
   private JDialog dialog;
   private OsmLoadingTask currentTask = OsmLoadingTask.POINTS;
   private Runnable fillLayersTask;
+  private String tagFilter;
   double xMin, yMin, xMax, yMax;
   double xCentr, yCentr;
   double surf;
@@ -100,11 +101,12 @@ public class OSMLoader extends SwingWorker<Void, Void> {
   private int nbNoeuds = 0, nbWays = 0, nbRels = 0, nbResources = 0;
 
   public OSMLoader(File fic, OsmDataset dataset, Runnable fillLayersTask,
-      String epsg) {
+      String epsg, String tagFilter) {
     this.fic = fic;
     this.dataset = dataset;
     this.fillLayersTask = fillLayersTask;
     this.convertor = new OsmGeometryConversion(epsg);
+    this.tagFilter = tagFilter;
   }
 
   public void importOsmData() throws Exception {
@@ -438,6 +440,10 @@ public class OSMLoader extends SwingWorker<Void, Void> {
         Collection<OSMResource> resources = this.getNodesFromTag(
             matching.getTag(), matching.getTagValues());
         for (OSMResource resource : resources) {
+          if (tagFilter != null) {
+            if (!resource.getTags().containsKey(tagFilter))
+              continue;
+          }
           OsmGeneObj obj = factory.createGeneObj(matching.getCartagenClass(),
               resource, this.nodes, convertor);
           obj.setCaptureTool(resource.getCaptureTool());
@@ -454,6 +460,10 @@ public class OSMLoader extends SwingWorker<Void, Void> {
       } else {
         Collection<OSMResource> resources = this.getWaysFromTag(matching);
         for (OSMResource resource : resources) {
+          if (tagFilter != null) {
+            if (!resource.getTags().containsKey(tagFilter))
+              continue;
+          }
           if (!isGeometryMatching((OSMWay) resource.getGeom(), matching))
             continue;
           OsmGeneObj obj = factory.createGeneObj(matching.getCartagenClass(),
@@ -537,8 +547,12 @@ public class OSMLoader extends SwingWorker<Void, Void> {
     if (resource.getVertices().get(0)
         .equals(resource.getVertices().get(resource.getVertices().size() - 1)))
       initialFinal = true;
-    if (matching.getType().equals(GeometryType.LINE) && initialFinal)
+    if (matching.getType().equals(GeometryType.LINE) && initialFinal
+        && !matching.isMayBeClosed())
       return false;
+    else if (matching.getType().equals(GeometryType.LINE) && initialFinal
+        && matching.isMayBeClosed())
+      return true;
     else if (matching.getType().equals(GeometryType.LINE) && !initialFinal)
       return true;
     else if (matching.getType().equals(GeometryType.POLYGON) && !initialFinal)

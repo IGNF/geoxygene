@@ -87,7 +87,7 @@ public class FeatureTypeCriterion extends ELECTRECriterion {
       value = 0.7;
     }
     if (obj instanceof ITreePoint) {
-      value = 0.6;
+      value = 0.3;
     }
     if (FeatureTypeCriterion.logger.isLoggable(Level.FINER)) {
       FeatureTypeCriterion.logger.finer("criterion value: " + value);

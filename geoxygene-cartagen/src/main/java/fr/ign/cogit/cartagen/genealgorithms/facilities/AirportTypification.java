@@ -30,7 +30,6 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea.TaxiwayType
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
 import fr.ign.cogit.cartagen.genealgorithms.polygon.Skeletonize;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.clustering.AdjacencyClustering;
@@ -86,10 +85,12 @@ public class AirportTypification {
   private Set<TaxiwayBranching> branchings;
   private Set<TaxiwayBranchingGroup> branchingGroups;
   private Set<TaxiwayBranchingCouple> branchingCouples;
+  private CartAGenDataSet dataset;
 
-  public AirportTypification(IAirportArea airport) {
+  public AirportTypification(IAirportArea airport, CartAGenDataSet dataset) {
     super();
     this.airport = airport;
+    this.dataset = dataset;
   }
 
   /**
@@ -97,8 +98,9 @@ public class AirportTypification {
    * object is created from the convex hull of the airport objects of the
    * dataset.
    */
-  public AirportTypification() {
+  public AirportTypification(CartAGenDataSet dataset) {
     super();
+    this.dataset = dataset;
     IFeatureCollection<IFeature> objects = new FT_FeatureCollection<IFeature>();
     objects.addAll(CartAGenDoc.getInstance().getCurrentDataset()
         .getRunwayLines());
@@ -144,8 +146,8 @@ public class AirportTypification {
         runway.eliminateBatch();
       }
       // build a new runway line
-      IRunwayLine line = CartagenApplication.getInstance().getCreationFactory()
-          .createRunwayLine(seg);
+      IRunwayLine line = dataset.getCartAGenDB().getGeneObjImpl()
+          .getCreationFactory().createRunwayLine(seg);
       pop.add(line);
       this.airport.getRunwayLines().add(line);
       CartAGenDoc.getInstance().getCurrentDataset()
@@ -229,7 +231,7 @@ public class AirportTypification {
               first = false;
               continue;
             }
-            ITaxiwayArea newTaxi = CartagenApplication.getInstance()
+            ITaxiwayArea newTaxi = dataset.getCartAGenDB().getGeneObjImpl()
                 .getCreationFactory()
                 .createTaxiwayArea((IPolygon) simple, taxi.getType());
             this.airport.getTaxiwayAreas().add(newTaxi);
@@ -244,7 +246,7 @@ public class AirportTypification {
           for (ILineString seg : Skeletonize.connectSkeletonToPolygon(skeleton,
               (IPolygon) thinParts)) {
             // build a new taxiway line
-            ITaxiwayLine line = CartagenApplication.getInstance()
+            ITaxiwayLine line = dataset.getCartAGenDB().getGeneObjImpl()
                 .getCreationFactory().createTaxiwayLine(seg, taxi.getType());
             this.airport.getTaxiwayLines().add(line);
           }
@@ -260,7 +262,7 @@ public class AirportTypification {
             for (ILineString seg : Skeletonize.connectSkeletonToPolygon(
                 skeleton, (IPolygon) simple)) {
               // build a new taxiway line
-              ITaxiwayLine line = CartagenApplication.getInstance()
+              ITaxiwayLine line = dataset.getCartAGenDB().getGeneObjImpl()
                   .getCreationFactory().createTaxiwayLine(seg, taxi.getType());
               this.airport.getTaxiwayLines().add(line);
             }
@@ -275,7 +277,7 @@ public class AirportTypification {
         for (ILineString seg : Skeletonize.connectSkeletonToPolygon(skeleton,
             iniGeom)) {
           // build a new taxiway line
-          ITaxiwayLine line = CartagenApplication.getInstance()
+          ITaxiwayLine line = dataset.getCartAGenDB().getGeneObjImpl()
               .getCreationFactory().createTaxiwayLine(seg, taxi.getType());
           this.airport.getTaxiwayLines().add(line);
         }
@@ -610,6 +612,14 @@ public class AirportTypification {
 
   public void setBranchingCouples(Set<TaxiwayBranchingCouple> branchingCouples) {
     this.branchingCouples = branchingCouples;
+  }
+
+  public IAirportArea getAirport() {
+    return airport;
+  }
+
+  public void setAirport(IAirportArea airport) {
+    this.airport = airport;
   }
 
   public class TaxiwayBranching extends DefaultFeature {

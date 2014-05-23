@@ -15,7 +15,7 @@
           <LineSymbolizer>
             <Stroke>
               <CssParameter name="stroke-linejoin">round</CssParameter>
-              <CssParameter name="stroke-width">5.5</CssParameter>
+              <CssParameter name="stroke-width">4.5</CssParameter>
               <CssParameter name="stroke">#999999</CssParameter>
             </Stroke>
           </LineSymbolizer>
@@ -37,7 +37,7 @@
 			</Geometry>
             <Stroke>
               <CssParameter name="stroke-linejoin">round</CssParameter>
-              <CssParameter name="stroke-width">4</CssParameter>
+              <CssParameter name="stroke-width">3</CssParameter>
               <CssParameter name="stroke">#f8f8fa</CssParameter>
             </Stroke>
           </LineSymbolizer>
@@ -59,7 +59,7 @@
 			</Geometry>          
             <Stroke>
               <CssParameter name="stroke">#999999</CssParameter>
-              <CssParameter name="stroke-width">4</CssParameter>
+              <CssParameter name="stroke-width">3</CssParameter>
               <CssParameter name="stroke-dasharray">10 14</CssParameter>
               <CssParameter name="stroke-linecap">square</CssParameter>
             </Stroke>

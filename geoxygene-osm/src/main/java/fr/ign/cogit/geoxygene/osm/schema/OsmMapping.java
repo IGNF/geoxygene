@@ -46,6 +46,7 @@ public class OsmMapping {
     private Class<?> cartagenClass;
     private GeometryType type;
     private Set<String> tagValues;
+    private boolean mayBeClosed = false;
 
     public String getTag() {
       return tag;
@@ -146,6 +147,14 @@ public class OsmMapping {
       return "OsmMatching [tag=" + tag + ", cartagenClass=" + cartagenClass
           + ", type=" + type + ", tagValues=" + tagValues + "]";
     }
+
+    public boolean isMayBeClosed() {
+      return mayBeClosed;
+    }
+
+    public void setMayBeClosed(boolean mayBeClosed) {
+      this.mayBeClosed = mayBeClosed;
+    }
   }
 
   /**
@@ -207,6 +216,8 @@ public class OsmMapping {
     roadmatching.addTagValue("motorway_link");
     roadmatching.addTagValue("motorway");
     roadmatching.addTagValue("trunk");
+    roadmatching.addTagValue("turning_circle");
+    roadmatching.setMayBeClosed(true);
     this.matchings.add(roadmatching);
 
     // paths matching

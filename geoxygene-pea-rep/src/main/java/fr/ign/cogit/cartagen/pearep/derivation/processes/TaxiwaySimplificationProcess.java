@@ -18,6 +18,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 
 /**
@@ -49,7 +50,8 @@ public class TaxiwaySimplificationProcess extends ScaleMasterGeneProcess {
   }
 
   @Override
-  public void execute(IFeatureCollection<? extends IGeneObj> features) {
+  public void execute(IFeatureCollection<? extends IGeneObj> features,
+      CartAGenDataSet currentDataset) {
     parameterise();
     Set<IAirportArea> treatedAirports = new HashSet<IAirportArea>();
 
@@ -62,7 +64,8 @@ public class TaxiwaySimplificationProcess extends ScaleMasterGeneProcess {
         continue;
       }
       treatedAirports.add(airport);
-      AirportTypification typif = new AirportTypification(airport);
+      AirportTypification typif = new AirportTypification(airport,
+          currentDataset);
       try {
         typif.setOpenThreshTaxi(minWidth);
         typif.setApronMinArea(apronMinArea);

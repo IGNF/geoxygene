@@ -29,10 +29,12 @@ public class TagNumberCriterion extends ELECTRECriterion {
     int number = (Integer) param.get("number");
     if (number == 1)
       value = 0.6;
-    else if (number <= 3)
+    else if (number <= 2)
       value = 0.5;
-    else if (number <= 4)
+    else if (number <= 3)
       value = 0.4;
+    else if (number <= 5)
+      value = 0.35;
     else if (number <= 8)
       value = 0.3;
     else if (number <= 15)

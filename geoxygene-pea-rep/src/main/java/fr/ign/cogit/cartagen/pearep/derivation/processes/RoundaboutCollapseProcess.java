@@ -20,6 +20,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
 import fr.ign.cogit.cartagen.genealgorithms.section.CollapseRoundabout;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.network.CrossRoadDetection;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
@@ -50,7 +51,8 @@ public class RoundaboutCollapseProcess extends ScaleMasterGeneProcess {
   }
 
   @Override
-  public void execute(IFeatureCollection<? extends IGeneObj> features) {
+  public void execute(IFeatureCollection<? extends IGeneObj> features,
+      CartAGenDataSet currentDataset) {
     this.parameterise();
 
     // enrich the road network
@@ -85,8 +87,8 @@ public class RoundaboutCollapseProcess extends ScaleMasterGeneProcess {
     algo.detectRoundaboutsAndBranchingCartagen(CartAGenDocOld.getInstance()
         .getCurrentDataset());
 
-    for (IRoundAbout roundabout : CartAGenDocOld.getInstance().getCurrentDataset()
-        .getRoundabouts()) {
+    for (IRoundAbout roundabout : CartAGenDocOld.getInstance()
+        .getCurrentDataset().getRoundabouts()) {
       CollapseRoundabout collapse = new CollapseRoundabout(diameter, roundabout);
       collapse.collapseToPoint();
     }

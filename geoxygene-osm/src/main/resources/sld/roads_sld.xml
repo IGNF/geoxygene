@@ -135,6 +135,10 @@
                 <PropertyName>highway</PropertyName>
                 <Literal>unclassified</Literal>
               </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>turning_circle</Literal>
+              </PropertyIsEqualTo>
             </Or>
           </Filter>
           <LineSymbolizer>
@@ -177,6 +181,10 @@
               <PropertyIsEqualTo>
                 <PropertyName>highway</PropertyName>
                 <Literal>unclassified</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>turning_circle</Literal>
               </PropertyIsEqualTo>
             </Or>
           </Filter>

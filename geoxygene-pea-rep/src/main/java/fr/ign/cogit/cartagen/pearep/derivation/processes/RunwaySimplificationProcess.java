@@ -18,6 +18,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 
 /**
@@ -42,7 +43,8 @@ public class RunwaySimplificationProcess extends ScaleMasterGeneProcess {
   }
 
   @Override
-  public void execute(IFeatureCollection<? extends IGeneObj> features) {
+  public void execute(IFeatureCollection<? extends IGeneObj> features,
+      CartAGenDataSet currentDataset) {
     parameterise();
     Set<IAirportArea> treatedAirports = new HashSet<IAirportArea>();
     if (merge) {
@@ -55,7 +57,8 @@ public class RunwaySimplificationProcess extends ScaleMasterGeneProcess {
           continue;
         }
         treatedAirports.add(airport);
-        AirportTypification typif = new AirportTypification(airport);
+        AirportTypification typif = new AirportTypification(airport,
+            currentDataset);
         try {
           typif.mergeRunways();
         } catch (Exception e) {
@@ -65,7 +68,8 @@ public class RunwaySimplificationProcess extends ScaleMasterGeneProcess {
     }
     if (collapse) {
       for (IAirportArea airport : treatedAirports) {
-        AirportTypification typif = new AirportTypification(airport);
+        AirportTypification typif = new AirportTypification(airport,
+            currentDataset);
         try {
           typif.collapseRunways();
         } catch (Exception e) {

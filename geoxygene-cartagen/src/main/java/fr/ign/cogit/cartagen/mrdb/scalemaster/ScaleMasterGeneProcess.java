@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 
 public abstract class ScaleMasterGeneProcess implements
@@ -60,8 +61,8 @@ public abstract class ScaleMasterGeneProcess implements
   /**
    * Execute the process with the given parameters.
    */
-  public abstract void execute(IFeatureCollection<? extends IGeneObj> features)
-      throws Exception;
+  public abstract void execute(IFeatureCollection<? extends IGeneObj> features,
+      CartAGenDataSet currentDataset) throws Exception;
 
   public abstract String getProcessName();
 
