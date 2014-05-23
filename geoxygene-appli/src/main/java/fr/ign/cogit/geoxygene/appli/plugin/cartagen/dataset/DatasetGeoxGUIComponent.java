@@ -1184,10 +1184,19 @@ public class DatasetGeoxGUIComponent extends JMenu {
       this.existingClasses = new HashSet<Class<?>>();
       this.additionalClasses = new HashSet<Class<?>>();
       this.mapNameClass = new HashMap<String, Class<? extends IFeature>>();
+      CartAGenDoc
+          .getInstance()
+          .getCurrentDataset()
+          .setSld(
+              CartAGenPlugin.getInstance().getApplication().getMainFrame()
+                  .getSelectedProjectFrame().getSld());
       StyledLayerDescriptor sld = CartAGenDoc.getInstance().getCurrentDataset()
           .getSld();
       sld.setDataSet(CartAGenDoc.getInstance().getCurrentDataset());
       for (Layer layer : sld.getLayers()) {
+        if (layer == null || layer.getFeatureCollection() == null) {
+          continue;
+        }
         ((NamedLayer) layer).setSld(sld);
         for (IFeature feat : layer.getFeatureCollection()) {
           Class<? extends IFeature> classObj = feat.getClass();
