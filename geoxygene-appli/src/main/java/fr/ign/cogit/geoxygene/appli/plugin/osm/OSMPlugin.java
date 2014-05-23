@@ -188,6 +188,7 @@ public class OSMPlugin implements ProjectFramePlugin,
 
     public File osmFile;
     public String epsg;
+    public String tagFilter;
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
@@ -234,7 +235,8 @@ public class OSMPlugin implements ProjectFramePlugin,
           }
         };
 
-        loader = new OSMLoader(osmFile, dataset, fillLayersTask, epsg);
+        loader = new OSMLoader(osmFile, dataset, fillLayersTask, epsg,
+            tagFilter);
         createDialog();
         loader.setDialog(dialog);
         dialog.setVisible(true);
@@ -305,6 +307,8 @@ public class OSMPlugin implements ProjectFramePlugin,
       private JButton browseBtn, usedBtn, cancelBtn, okBtn;
       private JComboBox usedCombo;
       private JCheckBox postGisCheck;
+      private JTextField txtTagFilter;
+      private JCheckBox chkTagFilter;
 
       /**
        * Constructor, build the frame.
@@ -352,6 +356,9 @@ public class OSMPlugin implements ProjectFramePlugin,
           action = "OK";
           importPlugin.epsg = txtEpsg.getText();
           importPlugin.osmFile = new File(txtPath.getText());
+          if (this.chkTagFilter.isSelected()
+              && !this.txtTagFilter.getText().equals(""))
+            importPlugin.tagFilter = this.txtTagFilter.getText();
           dispose();
         }
       }
@@ -363,17 +370,21 @@ public class OSMPlugin implements ProjectFramePlugin,
 
         FormLayout layout = new FormLayout(
             "20dlu, pref, pref, 10dlu, pref, pref, pref, pref, pref, pref, 20dlu", // Colonnes
-            "10dlu, pref, pref, 20dlu, pref, 20dlu"); // Lignes
+            "10dlu, pref, pref, 20dlu, pref, pref, 20dlu"); // Lignes
         setLayout(layout);
 
         CellConstraints cc = new CellConstraints();
 
         currentProjections.put("Lambert93", "2154");
+        currentProjections.put("Lambert Belge 2008", "3812");
         currentProjections.put("UTM 18N (New York)", "32618");
         currentProjections.put("UTM 51N (Philippines)", "32651");
         currentProjections.put("UTM 16N (Chicago)", "32616");
         currentProjections.put("UTM 28N (Dakar)", "32628");
+        currentProjections.put("UTM 32N (Italie)", "32632");
         currentProjections.put("UTM 33N (Vienna)", "32633");
+        currentProjections.put("UTM 35N (Ukraine)", "32635");
+        currentProjections.put("UTM 55S (Melbourne)", "32755");
         this.setPreferredSize(new Dimension(350, 150));
 
         // JPanel filePanel = new JPanel();
@@ -407,9 +418,19 @@ public class OSMPlugin implements ProjectFramePlugin,
         add(usedCombo, cc.xy(7, 3));
         add(new JLabel(" )  "), cc.xy(8, 3));
 
+        chkTagFilter = new JCheckBox("Filter tags");
+        chkTagFilter.setSelected(false);
+        add(chkTagFilter, cc.xy(2, 4));
+        txtTagFilter = new JTextField();
+        txtTagFilter.setPreferredSize(new Dimension(60, 20));
+        txtTagFilter.setMaximumSize(new Dimension(60, 20));
+        txtTagFilter.setMinimumSize(new Dimension(60, 20));
+        txtTagFilter.setText("");
+        add(txtTagFilter, cc.xy(3, 4));
+
         postGisCheck = new JCheckBox("Create PostGis Db");
         postGisCheck.setSelected(false);
-        add(postGisCheck, cc.xy(7, 4));
+        add(postGisCheck, cc.xy(3, 5));
 
         // Define a panel with the OK and Cancel buttons
         JPanel btnPanel = new JPanel();
@@ -422,7 +443,7 @@ public class OSMPlugin implements ProjectFramePlugin,
         btnPanel.add(okBtn);
         btnPanel.add(cancelBtn);
         btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
-        add(btnPanel, cc.xy(7, 5));
+        add(btnPanel, cc.xy(3, 6));
 
       }
 

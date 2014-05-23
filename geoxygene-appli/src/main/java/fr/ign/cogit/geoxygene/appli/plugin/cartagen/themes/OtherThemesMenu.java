@@ -11,6 +11,7 @@ package fr.ign.cogit.geoxygene.appli.plugin.cartagen.themes;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -36,9 +37,13 @@ import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
+import fr.ign.cogit.geoxygene.spatialrelation.properties.ParallelSection;
+import fr.ign.cogit.geoxygene.spatialrelation.relation.PartialParallelism2Lines;
+import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 
 public class OtherThemesMenu extends JMenu {
 
@@ -61,6 +66,7 @@ public class OtherThemesMenu extends JMenu {
     airportMenu.add(new JMenuItem(new TypifyTaxiwaysAction()));
     airportMenu.add(new JMenuItem(new SelectTaxiwaysAction()));
     airportMenu.add(new JMenuItem(new CollapseTaxiwayAreasAction()));
+    airportMenu.add(new JMenuItem(new CollapseRunwaysAction()));
     this.addSeparator();
     JMenu railMenu = new JMenu("Railroads");
     this.add(railMenu);
@@ -68,6 +74,7 @@ public class OtherThemesMenu extends JMenu {
     railMenu.add(new JMenuItem(new DisplaySideTracksAction()));
     railMenu.addSeparator();
     railMenu.add(new JMenuItem(new TypifySideTracksAction()));
+    railMenu.add(new JMenuItem(new CollapseRailsAction()));
 
   }
 
@@ -161,7 +168,8 @@ public class OtherThemesMenu extends JMenu {
         if (!(sel instanceof IAirportArea))
           continue;
         IAirportArea airport = (IAirportArea) sel;
-        AirportTypification algo = new AirportTypification(airport);
+        AirportTypification algo = new AirportTypification(airport, CartAGenDoc
+            .getInstance().getCurrentDataset());
         algo.setBranchingMaxArea(7000.0);
         algo.setMaxAngleBranching(14 * Math.PI / 20);
         algo.detectBranchingPatterns();
@@ -201,7 +209,8 @@ public class OtherThemesMenu extends JMenu {
         if (!(sel instanceof IAirportArea))
           continue;
         IAirportArea airport = (IAirportArea) sel;
-        AirportTypification algo = new AirportTypification(airport);
+        AirportTypification algo = new AirportTypification(airport, CartAGenDoc
+            .getInstance().getCurrentDataset());
         algo.setTaxiwayLengthThreshold(500.0);
         algo.makeTaxiwaysPlanar();
         algo.selectTaxiwayLines();
@@ -227,7 +236,8 @@ public class OtherThemesMenu extends JMenu {
           .getGeometryPool();
       pool.setSld(appli.getMainFrame().getSelectedProjectFrame().getSld());
       if (SelectionUtil.isEmpty(appli)) {
-        AirportTypification algo = new AirportTypification();
+        AirportTypification algo = new AirportTypification(CartAGenDoc
+            .getInstance().getCurrentDataset());
         algo.setOpenThreshTaxi(30.0);
         algo.collapseThinTaxiways();
         return;
@@ -236,7 +246,8 @@ public class OtherThemesMenu extends JMenu {
         if (!(sel instanceof IAirportArea))
           continue;
         IAirportArea airport = (IAirportArea) sel;
-        AirportTypification algo = new AirportTypification(airport);
+        AirportTypification algo = new AirportTypification(airport, CartAGenDoc
+            .getInstance().getCurrentDataset());
         algo.setTaxiwayLengthThreshold(500.0);
         algo.makeTaxiwaysPlanar();
         algo.selectTaxiwayLines();
@@ -246,6 +257,53 @@ public class OtherThemesMenu extends JMenu {
 
     public CollapseTaxiwayAreasAction() {
       this.putValue(Action.NAME, "Collapse taxiway areas");
+    }
+  }
+
+  private class CollapseRunwaysAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+          .getApplication();
+      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+          .getGeometryPool();
+      pool.setSld(appli.getMainFrame().getSelectedProjectFrame().getSld());
+      if (SelectionUtil.isEmpty(appli)) {
+        AirportTypification algo = new AirportTypification(CartAGenDoc
+            .getInstance().getCurrentDataset());
+        try {
+          algo.collapseRunways();
+        } catch (Exception e1) {
+          e1.printStackTrace();
+        }
+        for (IRunwayLine runway : algo.getAirport().getRunwayLines()) {
+          pool.addFeatureToGeometryPool(runway.getGeom(), Color.RED, 3);
+        }
+        return;
+      }
+      for (IFeature sel : SelectionUtil.getSelectedObjects(appli)) {
+        if (!(sel instanceof IAirportArea))
+          continue;
+        IAirportArea airport = (IAirportArea) sel;
+        AirportTypification algo = new AirportTypification(airport, CartAGenDoc
+            .getInstance().getCurrentDataset());
+        try {
+          algo.collapseRunways();
+        } catch (Exception e1) {
+          e1.printStackTrace();
+        }
+        for (IRunwayLine runway : airport.getRunwayLines()) {
+          pool.addFeatureToGeometryPool(runway.getGeom(), Color.RED, 3);
+        }
+      }
+    }
+
+    public CollapseRunwaysAction() {
+      this.putValue(Action.NAME, "Collapse runway areas");
     }
   }
 
@@ -290,6 +348,53 @@ public class OtherThemesMenu extends JMenu {
 
     public DisplaySideTracksAction() {
       this.putValue(Action.NAME, "Display Sidetracks in geometry pool");
+    }
+  }
+
+  private class CollapseRailsAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+          .getApplication();
+      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+          .getGeometryPool();
+      pool.setSld(appli.getMainFrame().getSelectedProjectFrame().getSld());
+      Iterator<IFeature> iter = SelectionUtil.getSelectedObjects(appli)
+          .iterator();
+      IFeature feat1 = iter.next();
+      IFeature feat2 = iter.next();
+      PartialParallelism2Lines relation = new PartialParallelism2Lines(feat1,
+          feat2);
+      relation.achievementAssessedBy().compute();
+      /*
+       * for (ConvergingPoint pt : relation.getConvergencePts()) { if
+       * (pt.isConverging())
+       * pool.addFeatureToGeometryPool(pt.getPosition().toGM_Point(), Color.RED,
+       * 2); if (pt.isDiverging())
+       * pool.addFeatureToGeometryPool(pt.getPosition().toGM_Point(),
+       * Color.GREEN, 2); }
+       */
+      for (ParallelSection section : relation.getParallelSections()) {
+        // pool.addFeatureToGeometryPool(((ILineString[])
+        // section.getValue())[0],
+        // Color.ORANGE, 1);
+        // pool.addFeatureToGeometryPool(((ILineString[])
+        // section.getValue())[1],
+        // Color.ORANGE, 1);
+        ILineString middle = CommonAlgorithmsFromCartAGen.getMeanLine(
+            ((ILineString[]) section.getValue())[0],
+            ((ILineString[]) section.getValue())[1]);
+        pool.addFeatureToGeometryPool(middle, Color.PINK, 2);
+      }
+    }
+
+    public CollapseRailsAction() {
+      this.putValue(Action.NAME, "Collapse parallel railways");
     }
   }
 }
