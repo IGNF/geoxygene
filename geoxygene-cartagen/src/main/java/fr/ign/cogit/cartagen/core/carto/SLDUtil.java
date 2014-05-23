@@ -13,6 +13,8 @@ import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObjLin;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
@@ -38,6 +40,8 @@ import fr.ign.cogit.geoxygene.style.UserStyle;
 
 public class SLDUtil {
 
+  private static Logger logger = Logger.getLogger(SLDUtil.class.getName());
+
   /**
    * Gets the symbol width of a linear object from the SLD value for this
    * object. The width value is in terrain meters.
@@ -47,6 +51,7 @@ public class SLDUtil {
   public static double getSymbolMaxWidth(IGeneObjLin obj) {
     String layerName = CartAGenDoc.getInstance().getCurrentDataset()
         .getPopNameFromObj(obj);
+
     StyledLayerDescriptor sld = CartAGenDoc.getInstance().getCurrentDataset()
         .getSld();
     Layer layer = sld.getLayer(layerName);
@@ -61,7 +66,7 @@ public class SLDUtil {
 
       for (Symbolizer symbolizer : rule.getSymbolizers()) {
         if (symbolizer instanceof LineSymbolizer)
-          width = symbolizer.getStroke().getStrokeWidth();
+          width = Math.max(symbolizer.getStroke().getStrokeWidth(), width);
       }
     }
     return width;
@@ -81,7 +86,7 @@ public class SLDUtil {
     Layer layer = sld.getLayer(layerName);
     // get the foreground style (inner width is the upper style width)
     Style style = layer.getStyles().get(layer.getStyles().size() - 1);
-    double width = 0.0;
+    double width = Double.MAX_VALUE;
     for (FeatureTypeStyle ftStyle : style.getFeatureTypeStyles()) {
       Rule rule = ftStyle.getRules().get(0);
       if (rule.getFilter() != null)
@@ -90,7 +95,7 @@ public class SLDUtil {
 
       for (Symbolizer symbolizer : rule.getSymbolizers()) {
         if (symbolizer instanceof LineSymbolizer)
-          width = symbolizer.getStroke().getStrokeWidth();
+          width = Math.min(symbolizer.getStroke().getStrokeWidth(), width);
       }
     }
     return width;

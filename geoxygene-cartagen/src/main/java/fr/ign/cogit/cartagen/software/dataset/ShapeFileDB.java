@@ -563,6 +563,7 @@ public class ShapeFileDB extends CartAGenDB {
         for (IWaterLine water : ShapeFileDB.this.getDataSet().getWaterLines()) {
           waterNet.addSection(water);
         }
+        // CartAGenDoc.getInstance().getCurrentDataset().addFeatureAttribute();
       } catch (SecurityException e) {
         e.printStackTrace();
       } catch (IllegalArgumentException e) {

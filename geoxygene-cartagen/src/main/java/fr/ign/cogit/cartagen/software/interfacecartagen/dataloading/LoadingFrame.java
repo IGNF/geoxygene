@@ -36,10 +36,7 @@ import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 
 /**
  * Shapefile data loader
@@ -251,10 +248,10 @@ public class LoadingFrame extends JFrame implements ActionListener {
           fos.close();
           // Added Cecile: Now we can set the systemPath of the CartAGenDB that
           // is associated to the current dataset that is being loaded
-          CartAGenDoc doc = CartAGenDoc.getInstance();
-          CartAGenDataSet curDS = doc.getCurrentDataset();
-          ShapeFileDB curDB = (ShapeFileDB) curDS.getCartAGenDB();
-          curDB.setSystemPath(destinationPath);
+          // CartAGenDoc doc = CartAGenDoc.getInstance();
+          // CartAGenDataSet curDS = doc.getCurrentDataset();
+          // ShapeFileDB curDB = (ShapeFileDB) curDS.getCartAGenDB();
+          // curDB.setSystemPath(destinationPath);
           // End added Cecile
           int rep = JOptionPane.showConfirmDialog(this,
               "Do you want to open this dataset ?");
