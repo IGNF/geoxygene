@@ -255,12 +255,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                 || !this.getLayer().isVisible()) {
             return;
         }
-        // if rendering has been cancelled or there is nothing to render, stop
-        if (this.isCancelled()
-                || this.getLayer().getFeatureCollection() == null
-                || !this.getLayer().isVisible()) {
-            return;
-        }
+
         int featureRenderIndex = 0;
         List<Pair<Symbolizer, IFeature>> featuresToRender = this
                 .generateFeaturesToRender(envelope);
