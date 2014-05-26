@@ -42,12 +42,21 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.parameters.Parameters;
 
 /**
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ *
  * Implementation of Li and Goodchild's approach for linear feature matching presented in
  * Linna Li & Michael Goodchild (2011): An optimisation model for linear feature matching in
  * geographical data conflation, International Journal of Image and Data Fusion, 2:4, 309-328.
  * <p>
  * TODO Use polynomialtransformation class and test withe rubbersheeting too as we're at it
  * TODO Cleanup the mess
+ * 
  * @author Julien Perret
  */
 public class LinearFeatureMatcher {
