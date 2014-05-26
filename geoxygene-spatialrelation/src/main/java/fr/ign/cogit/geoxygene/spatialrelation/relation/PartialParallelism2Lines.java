@@ -20,6 +20,8 @@ import fr.ign.cogit.geoxygene.spatialrelation.api.BinarySpatialRelation;
 import fr.ign.cogit.geoxygene.spatialrelation.api.PredicateSpatialRelation;
 import fr.ign.cogit.geoxygene.spatialrelation.api.RelationExpression;
 import fr.ign.cogit.geoxygene.spatialrelation.api.RelationProperty;
+import fr.ign.cogit.geoxygene.spatialrelation.api.SimpleOperator;
+import fr.ign.cogit.geoxygene.spatialrelation.expressions.DoubleComparator;
 import fr.ign.cogit.geoxygene.spatialrelation.expressions.ThresholdExpression;
 import fr.ign.cogit.geoxygene.spatialrelation.operations.PartialParallelismAchievement;
 import fr.ign.cogit.geoxygene.spatialrelation.properties.ConvergingPoint;
@@ -29,12 +31,25 @@ import fr.ign.cogit.geoxygene.spatialrelation.properties.ParallelSection;
 public class PartialParallelism2Lines implements BinarySpatialRelation,
     PredicateSpatialRelation {
 
+  private static final double MIN_DIST = 15.0;
   private IFeature member1, member2;
   private List<ConvergingPoint> convergingPts;
   private List<ParallelSection> parallelSections;
   private DistanceInParallelPortions distance;
   private PartialParallelismAchievement achievementOp;
   private ThresholdExpression expression;
+
+  public PartialParallelism2Lines(IFeature member1, IFeature member2) {
+    this.member1 = member1;
+    this.member2 = member2;
+    this.achievementOp = new PartialParallelismAchievement(member1, member2,
+        this);
+    this.convergingPts = new ArrayList<ConvergingPoint>();
+    this.parallelSections = new ArrayList<ParallelSection>();
+    this.distance = new DistanceInParallelPortions();
+    this.expression = new ThresholdExpression(MIN_DIST, SimpleOperator.EQ_INF,
+        new DoubleComparator());
+  }
 
   @Override
   public List<IFeature> getMembers() {

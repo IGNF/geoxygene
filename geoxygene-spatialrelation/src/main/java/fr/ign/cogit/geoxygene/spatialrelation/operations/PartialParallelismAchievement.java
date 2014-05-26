@@ -77,6 +77,12 @@ public class PartialParallelismAchievement implements
         }
       }
     }
+    // if the lines ended parallel, add a diverging point at the end
+    IDirectPosition finalPt = feature1.getGeom().coord()
+        .get(feature1.getGeom().coord().size() - 1);
+    divergingPts.add(finalPt);
+    pts.add(finalPt);
+
     // fill the relation fields if it is achieved
     if (convergingPts.size() + divergingPts.size() > 0) {
       // the relation is achieved

@@ -66,8 +66,8 @@ public class ThresholdExpression implements AchievementExpression {
     }
   }
 
-  public ThresholdExpression(Comparable<Object> thresholdValue,
-      SimpleOperator operator, Comparator<Object> comparator) {
+  public ThresholdExpression(Object thresholdValue, SimpleOperator operator,
+      Comparator<Object> comparator) {
     super();
     this.thresholdValue = thresholdValue;
     this.operator = operator;
