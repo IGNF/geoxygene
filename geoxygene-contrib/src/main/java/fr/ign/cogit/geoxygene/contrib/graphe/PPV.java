@@ -67,7 +67,7 @@ public class PPV {
    * @param distappa : distance maximale 
    * @return 
    */
-  public static Population<DefaultFeature> traiteCouche(IFeatureCollection<?> gravi, IFeatureCollection<IFeature> bdT,
+  public static Population<DefaultFeature> run(IFeatureCollection<?> gravi, IFeatureCollection<?> bdT,
       boolean deltaZOption, double distappa) {
     
     // Lecture de la couche gravi
@@ -75,8 +75,8 @@ public class PPV {
     LOGGER.info("nb de points = " + gravi.getElements().size());
     
     // Lecture de la couche bd topo
-    System.out.println("Lecture de la couche gravi...");
-    System.out.println("nb d'arcs = " + bdT.getElements().size());
+    LOGGER.info("Lecture de la couche bdtopo...");
+    LOGGER.info("nb d'arcs = " + bdT.getElements().size());
     
     // Préparation de la couche résultat
     FeatureType ftPoints = new FeatureType();
@@ -121,17 +121,17 @@ public class PPV {
       ptGravi.getGeom().coord().get(0).setZ(0);
 
       // Filtrage des troncons de route à moins de 100 000 m du point gravi
-      Collection<IFeature> selection = bdT.select(ptGravi.getGeom()
+      Collection<?> selection = bdT.select(ptGravi.getGeom()
           .coord().get(0), 100000);
 
       double distmin = distappa;
       IDirectPosition ptPlusProche = null;
       
       // Parcours des troncons de route pour détermination PPV et distance
-      for (IFeature ligneCourante : selection) {
+      for (Object ligneCourante : selection) {
         
         // Projection du point sur la ligne
-        IDirectPositionList listePoints = ligneCourante.getGeom().coord();
+        IDirectPositionList listePoints = ((IFeature) ligneCourante).getGeom().coord();
         GM_LineString gmL = new GM_LineString(listePoints);
         IDirectPosition ptProjete = Operateurs.projection(ptGravi
             .getGeom().coord().get(0), gmL);
