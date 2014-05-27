@@ -28,8 +28,13 @@ package fr.ign.cogit.geoxygene.util.gl;
 
 /**
  * Texture management. This class returns texture coordinates depending on the
- * kind of texture type
- * It maps 2D points to 2D texture coordinates
+ * kind of texture type It maps 2D points to 2D texture coordinates
+ * 
+ * paint method: texture.initializeRendering() ... drawElements ...
+ * texture.finalizeRendering()
+ * 
+ * shader usage: uniform sampler2D colorTexture1; in vec2 fragmentTextureCoord;
+ * vec4 tcolor = texture(colorTexture1, fragmentTextureCoord);
  * 
  * @author JeT
  * 

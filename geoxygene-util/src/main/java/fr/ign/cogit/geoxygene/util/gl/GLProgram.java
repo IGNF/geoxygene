@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 /**

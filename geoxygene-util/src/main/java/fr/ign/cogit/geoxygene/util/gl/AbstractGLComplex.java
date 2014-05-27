@@ -1,6 +1,5 @@
 package fr.ign.cogit.geoxygene.util.gl;
 
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -171,18 +170,6 @@ public abstract class AbstractGLComplex<VertexType extends GLVertex> implements
         }
         this.invalidateBuffers();
         return true;
-    }
-
-    public static void displayBuffer(IntBuffer buffer) {
-        buffer.mark();
-        System.err.println("Int buffer limit = " + buffer.limit()
-                + " capacity = " + buffer.capacity() + " position = "
-                + buffer.position());
-        for (int i = 0; i < buffer.limit(); i++) {
-            int value = buffer.get(i);
-            System.err.println("\t#" + i + ":" + value);
-        }
-        buffer.reset();
     }
 
     /*

@@ -68,6 +68,7 @@ import javax.vecmath.Point2d;
 import org.apache.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.OpenGLException;
 import org.lwjgl.opengl.Util;
 import org.lwjgl.util.Color;
@@ -221,10 +222,11 @@ public final class GLTools {
      * @param image
      * @return
      */
-    public static int loadOrRetrieveTexture(final BufferedImage image) {
+    public static int loadOrRetrieveTexture(final BufferedImage image,
+            boolean mipmap) {
         Integer existingTextureID = GLTools.existingTextureIDs.get(image);
         if (existingTextureID == null) {
-            existingTextureID = loadTexture(image);
+            existingTextureID = loadTexture(image, mipmap);
             existingTextureIDs.put(image, existingTextureID);
         }
         return existingTextureID;
@@ -236,7 +238,7 @@ public final class GLTools {
      * @param image
      * @return the generated texture id
      */
-    public static int loadTexture(final BufferedImage image) {
+    public static int loadTexture(final BufferedImage image, boolean mipmap) {
         int[] pixels = new int[image.getWidth() * image.getHeight()];
         image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0,
                 image.getWidth());
@@ -280,7 +282,13 @@ public final class GLTools {
         // Send texel data to OpenGL
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(),
                 image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-
+        if (mipmap) {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                    GL11.GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    GL11.GL_LINEAR_MIPMAP_LINEAR);
+            GL30.glGenerateMipmap(GL_TEXTURE_2D);
+        }
         // Return the texture ID so we can bind it later again
         return textureID;
     }

@@ -27,51 +27,68 @@
 package fr.ign.cogit.geoxygene.function;
 
 /**
- * @author JeT
- * composition function f( g (x ) )
- * parameterized by f and g
+ * @author JeT composition function f( g (x ) ) parameterized by f and g
  */
 public class ComposeFunction implements Function1D {
 
-  private Function1D f = null;
-  private Function1D g = null;
+    private Function1D f = null;
+    private Function1D g = null;
 
-  /**
-   * Constructor
-   */
-  public ComposeFunction() {
-    super();
-  }
-
-  /**
-   * Constructor
-   * @param a a parameter
-   * @param b b parameter
-   */
-  public ComposeFunction(final Function1D f, final Function1D g) {
-    super();
-    this.f = f;
-    this.g = g;
-  }
-
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.function.Function1D#help()
-   */
-  @Override
-  public String help() {
-    return "f(x)=u(v(x)). u,v two 1D functions";
-  }
-
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement(double)
-   */
-  @Override
-  public Double evaluate(final double x) throws FunctionEvaluationException {
-    try {
-      return this.f.evaluate(this.g.evaluate(x));
-    } catch (Exception e) {
-      throw new FunctionEvaluationException(e);
+    /**
+     * Constructor
+     */
+    public ComposeFunction() {
+        super();
     }
-  }
+
+    /**
+     * Constructor
+     * 
+     * @param a
+     *            a parameter
+     * @param b
+     *            b parameter
+     */
+    public ComposeFunction(final Function1D f, final Function1D g) {
+        super();
+        this.f = f;
+        this.g = g;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.function.Function1D#help()
+     */
+    @Override
+    public String help() {
+        return "f(x)=u(v(x)). u,v two 1D functions";
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement
+     * (double)
+     */
+    @Override
+    public Double evaluate(final double x) throws FunctionEvaluationException {
+        try {
+            return this.f.evaluate(this.g.evaluate(x));
+        } catch (Exception e) {
+            throw new FunctionEvaluationException(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return this.f + "( " + this.g + " )";
+    }
 
 }

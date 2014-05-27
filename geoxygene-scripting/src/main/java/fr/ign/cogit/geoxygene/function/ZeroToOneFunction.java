@@ -85,4 +85,14 @@ public class ZeroToOneFunction implements Function1D {
                 * x * x + this.d * x * x;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Sin[" + this.a + "," + this.b + "," + this.c + "," + this.d
+                + "]";
+    }
 }

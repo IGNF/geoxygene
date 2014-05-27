@@ -27,32 +27,47 @@
 package fr.ign.cogit.geoxygene.function;
 
 /**
- * @author JeT
- * Simple identity function f(x) = x
+ * @author JeT Simple identity function f(x) = x
  */
 public class IdentityFunction implements Function1D {
 
-  /**
-   * Constructor
-   */
-  public IdentityFunction() {
-    super();
-  }
+    /**
+     * Constructor
+     */
+    public IdentityFunction() {
+        super();
+    }
 
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.function.Function1D#help()
-   */
-  @Override
-  public String help() {
-    return "f(x)=x.";
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.function.Function1D#help()
+     */
+    @Override
+    public String help() {
+        return "f(x)=x.";
+    }
 
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement(double)
-   */
-  @Override
-  public Double evaluate(final double x) {
-    return x;
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement
+     * (double)
+     */
+    @Override
+    public Double evaluate(final double x) {
+        return x;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Identity";
+    }
 
 }

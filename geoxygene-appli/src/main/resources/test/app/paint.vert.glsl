@@ -7,6 +7,12 @@ uniform float m11 = 1.; // Y homothetic value in 3x3 matrix
 uniform float m12 = 0.; // Y translation value in 3x3 matrix
 uniform float screenWidth;
 uniform float screenHeight;
+uniform float mapScaleDiv1000 = 0.; // map scale
+uniform int brushWidth = 0; // brush texture width (pixels)
+uniform int brushHeight = 0; // brush texture height (pixels)
+uniform int brushStartWidth = 0; // brush texture width (pixels)
+uniform int brushEndWidth = 0; // brush texture height (pixels)
+uniform float brushScale = 0; // size in mm of one brush pixel
 
 
 in vec2 vertexPosition;
@@ -14,11 +20,14 @@ in vec2 vertexUV;
 in vec2 vertexNormal;
 in float vertexCurvature;
 in float vertexThickness;
+in vec4 vertexColor;
+in float uMax;
 
 out vec2 fragmentUV;
+out vec4 fragmentColor;
 out float fragmentCurvature;
 out float fragmentThickness;
-
+out float uMax_w;
 
 void main() {
 	//gl_Position = vec4 ( vertexPosition , 1f );
@@ -26,4 +35,6 @@ void main() {
 	fragmentUV = vertexUV;
 	fragmentCurvature = vertexCurvature;
 	fragmentThickness = vertexThickness;
+	fragmentColor = vertexColor;
+	uMax_w = uMax;
 }

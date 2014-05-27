@@ -25,35 +25,29 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.util.gl;
-
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glEnable;
+package test.App;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
+
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
  * @author JeT Basic texture returns the coordinates equal to the provided
  *         point. It manages a texture by its filename and is a good base class
  *         for inheritance
  */
-public class BasicTexture implements Texture {
+public class GLTexture {
 
-    private static final Logger logger = Logger.getLogger(BasicTexture.class
+    private static final Logger logger = Logger.getLogger(GLTexture.class
             .getName()); // logger
 
     private int textureId = -1;
-    private int textureSlot = GL13.GL_TEXTURE0;
     private String textureFilename = null;
     private BufferedImage textureImage = null;
-
-    private String uniformVarName;
+    private boolean mipmap = false;
 
     // private double minX = 0; // range of point coordinates in world space
     // private double maxX = 1; // range of point coordinates in world space
@@ -63,7 +57,22 @@ public class BasicTexture implements Texture {
     /**
      * Constructor
      */
-    public BasicTexture() {
+    public GLTexture() {
+    }
+
+    /**
+     * @return the mipmap
+     */
+    public boolean isMipmap() {
+        return this.mipmap;
+    }
+
+    /**
+     * @param mipmap
+     *            the mipmap to set
+     */
+    public void setMipmap(boolean mipmap) {
+        this.mipmap = mipmap;
     }
 
     /**
@@ -71,7 +80,7 @@ public class BasicTexture implements Texture {
      * 
      * @param textureFilename
      */
-    public BasicTexture(final String textureFilename) {
+    public GLTexture(final String textureFilename) {
         this();
         this.setTextureFilename(textureFilename);
     }
@@ -81,32 +90,9 @@ public class BasicTexture implements Texture {
      * 
      * @param textureImage
      */
-    public BasicTexture(BufferedImage textureImage) {
+    public GLTexture(BufferedImage textureImage) {
         this();
         this.textureImage = textureImage;
-    }
-
-    /**
-     * @return the textureSlot
-     */
-    public int getTextureSlot() {
-        return this.textureSlot;
-    }
-
-    /**
-     * @return the uniformVarName
-     */
-    public String getUniformVarName() {
-        return this.uniformVarName;
-    }
-
-    /**
-     * @param textureSlot
-     *            the textureSlot to set
-     */
-    public void setTextureSlot(String uniformVarName, int textureSlot) {
-        this.uniformVarName = uniformVarName;
-        this.textureSlot = textureSlot;
     }
 
     /**
@@ -114,18 +100,10 @@ public class BasicTexture implements Texture {
      */
     protected final Integer getTextureId() {
         if (this.textureId < 0) {
-            GL13.glActiveTexture(this.textureSlot);
             BufferedImage textureImage = this.getTextureImage();
             if (textureImage != null) {
                 this.textureId = GLTools.loadOrRetrieveTexture(textureImage,
-                        false);
-                // try {
-                // ImageIO.write(textureImage, "PNG", new File("basicTexture-" +
-                // this.textureId + ".png"));
-                // } catch (IOException e) {
-                // e.printStackTrace();
-                // }
-
+                        this.mipmap);
             }
         }
         return this.textureId;
@@ -158,7 +136,6 @@ public class BasicTexture implements Texture {
     /**
      * @return the texture image width (in pixels)
      */
-    @Override
     public final int getTextureWidth() {
         return this.getTextureImage().getWidth();
     }
@@ -166,7 +143,6 @@ public class BasicTexture implements Texture {
     /**
      * @return the texture image height (in pixels)
      */
-    @Override
     public final int getTextureHeight() {
         return this.getTextureImage().getHeight();
     }
@@ -181,102 +157,9 @@ public class BasicTexture implements Texture {
         this.textureImage = null;
     }
 
-    /**
-     * initialize the texture rendering
-     */
-    @Override
-    public boolean initializeRendering() {
-        Integer texIndex = this.getTextureId();
-        if (texIndex == null) {
-            GL11.glDisable(GL_TEXTURE_2D);
-            return false;
-        }
-        glEnable(GL_TEXTURE_2D);
-        GL13.glActiveTexture(this.textureSlot);
-        glBindTexture(GL_TEXTURE_2D, texIndex);
-        return true;
-    }
-
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see
-    // * fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(javax.vecmath
-    // * .Point2d)
-    // */
-    // @Override
-    // public Point2d vertexCoordinates(final Point2d p) {
-    // return this.vertexCoordinates(p.x, p.y);
-    // }
-    //
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see fr.ign.cogit.geoxygene.appli.gl.Texture#vertexCoordinates(double,
-    // * double)
-    // */
-    // @Override
-    // public Point2d vertexCoordinates(final double x, final double y) {
-    // Point2d p = new Point2d((x - this.minX) / (this.maxX - this.minX), (y -
-    // this.minY) / (this.maxY - this.minY));
-    // System.err.println("return vertex coordinate(" + x + "," + y + ") = " +
-    // p);
-    // return p;
-    // }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.gl.Texture#finalizeRendering()
-     */
-    @Override
-    public void finalizeRendering() {
-
-    }
-
-    // @Override
-    // public void setRange(final double xmin, final double ymin, final double
-    // xmax, final double ymax) {
-    // this.minX = xmin;
-    // this.maxX = xmax;
-    // this.minY = ymin;
-    // this.maxY = ymax;
-    // }
-    //
-    // /**
-    // * @return the minX
-    // */
-    // @Override
-    // public double getMinX() {
-    // return this.minX;
-    // }
-    //
-    // /**
-    // * @return the maxX
-    // */
-    // @Override
-    // public double getMaxX() {
-    // return this.maxX;
-    // }
-    //
-    // /**
-    // * @return the minY
-    // */
-    // @Override
-    // public double getMinY() {
-    // return this.minY;
-    // }
-    //
-    // /**
-    // * @return the maxY
-    // */
-    // @Override
-    // public double getMaxY() {
-    // return this.maxY;
-    // }
-
     public void setTextureImage(BufferedImage textureImage) {
         this.textureImage = textureImage;
+        this.textureId = -1;
         // this.textureId = GLTools.loadTexture(this.textureImage);
 
     }

@@ -148,6 +148,18 @@ public class GLMesh {
         this.lastIndex = lastIndex;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "GLMesh [complexParent=" + this.complexParent + ", glType="
+                + this.glType + ", indices=" + this.indices + ", firstIndex="
+                + this.firstIndex + ", lastIndex=" + this.lastIndex + "]";
+    }
+
     /**
      * Compare meshes on their type
      */

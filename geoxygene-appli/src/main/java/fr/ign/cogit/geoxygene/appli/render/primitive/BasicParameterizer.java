@@ -39,7 +39,8 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
  */
 public class BasicParameterizer implements Parameterizer {
 
-    private static final Logger logger = Logger.getLogger(BasicParameterizer.class.getName()); // logger
+    private static final Logger logger = Logger
+            .getLogger(BasicParameterizer.class.getName()); // logger
 
     private double minX = 0;
     private double minY = 0;
@@ -56,22 +57,26 @@ public class BasicParameterizer implements Parameterizer {
     /**
      * Constructor
      */
-    public BasicParameterizer(double minX, double minY, double maxX, double maxY, boolean xFlip, boolean yFlip) {
+    public BasicParameterizer(double minX, double minY, double maxX,
+            double maxY, boolean xFlip, boolean yFlip) {
         this.setMinX(minX);
         this.setMaxX(maxX);
         this.setMinY(minY);
         this.setMaxY(maxY);
         this.setXFlip(xFlip);
         this.setYFlip(yFlip);
-        //        logger.debug("Create Basic parameterizer with bounding box " + minX + "x" + minY + " /" + maxX + "x" + maxY);
+        // logger.debug("Create Basic parameterizer with bounding box " + minX +
+        // "x" + minY + " /" + maxX + "x" + maxY);
     }
 
     /**
      * Constructor
      */
     public BasicParameterizer(IEnvelope envelope, boolean xFlip, boolean yFlip) {
-        // incoming coordinates are stored in object coordinates (0 -> max - min ) 
-        this(0, 0, envelope.maxX() - envelope.minX(), envelope.maxY() - envelope.minY(), xFlip, yFlip);
+        // incoming coordinates are stored in object coordinates (0 -> max - min
+        // )
+        this(0, 0, envelope.maxX() - envelope.minX(), envelope.maxY()
+                - envelope.minY(), xFlip, yFlip);
     }
 
     /**
@@ -213,10 +218,10 @@ public class BasicParameterizer implements Parameterizer {
      * getTextureCoordinates(double[])
      */
     @Override
-    public Point2d getTextureCoordinates(double[] vertex) {
-        //        System.err.println("vertex = " + vertex[0] + " x " + vertex[1]);
-        //        System.err.println("min x = " + this.minX);
-        //        System.err.println("max x = " + this.maxX);
+    public Point2d getTextureCoordinates(double... vertex) {
+        // System.err.println("vertex = " + vertex[0] + " x " + vertex[1]);
+        // System.err.println("min x = " + this.minX);
+        // System.err.println("max x = " + this.maxX);
         double xTexture = ((vertex[0]) / (this.maxX - this.minX));
         double yTexture = ((vertex[1]) / (this.maxY - this.minY));
         if (this.getXFlip()) {
@@ -225,7 +230,8 @@ public class BasicParameterizer implements Parameterizer {
         if (this.getYFlip()) {
             yTexture = 1 - yTexture;
         }
-        return new Point2d(xTexture * this.scaleX + this.translateX, yTexture * this.scaleY + this.translateY);
+        return new Point2d(xTexture * this.scaleX + this.translateX, yTexture
+                * this.scaleY + this.translateY);
     }
 
 }

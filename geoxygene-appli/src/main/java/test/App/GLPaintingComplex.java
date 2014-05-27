@@ -50,7 +50,6 @@ import fr.ign.cogit.geoxygene.util.gl.AbstractGLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLInput;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLRenderingCapability;
-import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
@@ -97,6 +96,10 @@ public class GLPaintingComplex extends AbstractGLComplex<GLPaintingVertex> {
         this.addInput(GLPaintingVertex.vertexThicknessVariableName,
                 GLPaintingVertex.vertexThicknessLocation, GL11.GL_FLOAT, 1,
                 false);
+        this.addInput(GLPaintingVertex.vertexColorVariableName,
+                GLPaintingVertex.vertexColorLocation, GL11.GL_FLOAT, 4, false);
+        this.addInput(GLPaintingVertex.vertexMaxUVariableName,
+                GLPaintingVertex.vertexMaxULocation, GL11.GL_FLOAT, 1, false);
 
     }
 
@@ -121,15 +124,17 @@ public class GLPaintingComplex extends AbstractGLComplex<GLPaintingVertex> {
     @Override
     public FloatBuffer getFlippedVerticesBuffer() {
         if (this.verticesBuffer == null) {
-            this.verticesBuffer = BufferUtils.createFloatBuffer(this
-                    .getVertices().size() * GLSimpleVertex.NumberOfFloatValues);
+            this.verticesBuffer = BufferUtils
+                    .createFloatBuffer(this.getVertices().size()
+                            * this.getStride() / (Float.SIZE / 8));
             for (GLPaintingVertex vertex : this.getVertices()) {
                 this.verticesBuffer.put(vertex.getXY());
                 this.verticesBuffer.put(vertex.getUV());
                 this.verticesBuffer.put(vertex.getNormal());
                 this.verticesBuffer.put(vertex.getCurvature());
                 this.verticesBuffer.put(vertex.getThickness());
-
+                this.verticesBuffer.put(vertex.getColor());
+                this.verticesBuffer.put(vertex.getMaxU());
             }
             this.verticesBuffer.flip();
 

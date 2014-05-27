@@ -30,8 +30,7 @@ package fr.ign.cogit.geoxygene.appli.render.primitive;
 import javax.vecmath.Point2d;
 
 /**
- * @author JeT
- *         Implementations computes parameters for parameterized Primitives
+ * @author JeT Implementations computes parameters for parameterized Primitives
  *         Incoming coordinates (x,y) are expressed in object coordinates
  */
 public interface Parameterizer {
@@ -48,16 +47,15 @@ public interface Parameterizer {
 
     /**
      * method called during parameterization process. It computes a 2D
-     * parameterization
-     * with (x,y) local-object coordinates
+     * parameterization with (x,y) local-object coordinates
      */
-    Point2d getTextureCoordinates(double[] vertex);
+    Point2d getTextureCoordinates(double... vertex);
 
-    //    /**
-    //     * method called during parameterization process. It computes a 1D
-    //     * parameterization
-    //     * with (x,y) local-object coordinates
-    //     */
-    //    double getLinearParameter(double[] vertex);
+    // /**
+    // * method called during parameterization process. It computes a 1D
+    // * parameterization
+    // * with (x,y) local-object coordinates
+    // */
+    // double getLinearParameter(double[] vertex);
 
 }

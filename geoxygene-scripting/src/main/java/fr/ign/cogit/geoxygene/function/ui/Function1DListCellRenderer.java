@@ -25,30 +25,30 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.render.primitive;
+package fr.ign.cogit.geoxygene.function.ui;
 
-import java.awt.Color;
+import java.awt.Component;
+
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
+
+import fr.ign.cogit.geoxygene.function.Function1D;
 
 /**
- * @author JeT Implementations computes color values for geometric Primitives
- *         Incoming coordinates (x,y) are expressed in object coordinates
+ * @author JeT Describes how to represent a function into a CellList
  */
-public interface Colorizer {
+public class Function1DListCellRenderer extends JLabel implements
+        ListCellRenderer {
 
-    /**
-     * method called just before colorization process
-     */
-    void initializeColorization();
+    private static final long serialVersionUID = 3339214365714832883L;
 
-    /**
-     * method called after colorization process
-     */
-    void finalizeColorization();
-
-    /**
-     * method called during parameterization process. It computes an rgba color
-     * with (x,y) object coordinates
-     */
-    Color getColor(double... vertex);
-
+    @Override
+    public Component getListCellRendererComponent(final JList list,
+            final Object object, final int index, final boolean isSelected,
+            final boolean cellHasFocus) {
+        Function1D f = (Function1D) object;
+        this.setText(f.toString());
+        return this;
+    }
 }

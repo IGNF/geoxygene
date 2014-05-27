@@ -26,47 +26,55 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.function;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Pattern;
+
+import net.sourceforge.jeval.Evaluator;
 
 /**
- * @author JeT function composed of other function on different ranges
- *         parameterized by a and b
+ * @author JeT String function use a string evaluator based on JEval to compute
+ *         the function value from a human readable string
  */
-public class PiecewiseFunction implements Function1D {
+public class StringFunction implements Function1D {
 
-    private static class Piece {
-        public double xMin, xMax;
-        public Function1D f;
+    private String expression = "x * x";
+    private String evalExpression = null;
+    private final Pattern pattern = Pattern.compile(
+            "([^a-zA-Z]|^)x([^a-zA-Z]|$)", Pattern.DOTALL);
 
-        /**
-         * Constructor
-         * 
-         * @param xMin
-         * @param xMax
-         * @param f
-         */
-        public Piece(final double xMin, final double xMax, final Function1D f) {
-            super();
-            this.xMin = xMin;
-            this.xMax = xMax;
-            this.f = f;
-        }
-
-    }
-
-    private final List<Piece> pieces = new ArrayList<Piece>();
+    private final Evaluator evaluator = new Evaluator();
 
     /**
      * Constructor
      */
-    public PiecewiseFunction() {
+    public StringFunction() {
         super();
     }
 
-    public void addPiece(final double xMin, final double xMax,
-            final Function1D f) {
-        this.pieces.add(new Piece(xMin, xMax, f));
+    /**
+     * @return the expression
+     */
+    public String getExpression() {
+        return this.expression;
+    }
+
+    /**
+     * @param expression
+     *            the expression to set
+     */
+    public void setExpression(String expression) {
+        this.expression = expression;
+        this.evalExpression = this.pattern.matcher(expression).replaceAll(
+                "$1#{x}$2");
+        System.err.println("expression = " + this.expression + " => "
+                + this.evalExpression);
+    }
+
+    /**
+     * Constructor
+     */
+    public StringFunction(final String expression) {
+        super();
+        this.setExpression(expression);
     }
 
     /*
@@ -76,7 +84,7 @@ public class PiecewiseFunction implements Function1D {
      */
     @Override
     public String help() {
-        return "f(x)=f1(x), x C [a,b] | f2(x), x C [b,c] | ...";
+        return "f(x)=" + this.getExpression();
     }
 
     /*
@@ -88,12 +96,12 @@ public class PiecewiseFunction implements Function1D {
      */
     @Override
     public Double evaluate(final double x) throws FunctionEvaluationException {
-        for (Piece piece : this.pieces) {
-            if (x >= piece.xMin && x <= piece.xMax) {
-                return piece.f.evaluate(x);
-            }
+        try {
+            this.evaluator.putVariable("x", String.valueOf(x));
+            return this.evaluator.getNumberResult(this.getExpression());
+        } catch (Exception e) {
+            throw new FunctionEvaluationException(e);
         }
-        return null;
     }
 
     /*
@@ -103,7 +111,7 @@ public class PiecewiseFunction implements Function1D {
      */
     @Override
     public String toString() {
-        return "Piecewise[" + this.pieces.size() + "]";
+        return "String=" + this.getExpression();
     }
 
 }

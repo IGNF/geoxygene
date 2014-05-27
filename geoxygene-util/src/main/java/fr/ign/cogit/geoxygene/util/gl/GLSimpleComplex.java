@@ -191,8 +191,9 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
     @Override
     public FloatBuffer getFlippedVerticesBuffer() {
         if (this.verticesBuffer == null) {
-            this.verticesBuffer = BufferUtils.createFloatBuffer(this
-                    .getVertices().size() * GLSimpleVertex.NumberOfFloatValues);
+            this.verticesBuffer = BufferUtils
+                    .createFloatBuffer(this.getVertices().size()
+                            * this.getStride() / (Float.SIZE / 8));
             // BufferUtils.createByteBuffer(this.vertices.size() *
             // GLSimpleVertex.VERTEX_BYTESIZE).asFloatBuffer();
             for (GLSimpleVertex vertex : this.getVertices()) {

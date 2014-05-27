@@ -27,13 +27,15 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
+import java.awt.Color;
+
 /**
- * @author JeT
- *         this colorizer returns one solid color independently of the position
+ * @author JeT this colorizer returns one solid color independently of the
+ *         position
  */
 public class SolidColorizer implements Colorizer {
 
-    float[] rgba = new float[4];
+    private Color rgba = new Color(0, 0, 0, 255);
 
     /**
      * Quick constructor
@@ -43,10 +45,8 @@ public class SolidColorizer implements Colorizer {
      */
     public SolidColorizer(java.awt.Color color) {
         super();
-        this.rgba[0] = (float) (color.getRed() / 255.);
-        this.rgba[1] = (float) (color.getGreen() / 255.);
-        this.rgba[2] = (float) (color.getBlue() / 255.);
-        this.rgba[3] = (float) (color.getAlpha() / 255.);
+        this.rgba = new Color(color.getRed(), color.getGreen(),
+                color.getBlue(), color.getAlpha());
     }
 
     /*
@@ -80,7 +80,7 @@ public class SolidColorizer implements Colorizer {
      * [])
      */
     @Override
-    public float[] getColor(double[] vertex) {
+    public Color getColor(double... vertex) {
         return this.rgba;
     }
 

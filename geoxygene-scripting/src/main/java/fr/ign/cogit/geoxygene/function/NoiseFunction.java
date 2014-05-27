@@ -26,47 +26,60 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.function;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.jhlabs.math.Noise;
 
 /**
- * @author JeT function composed of other function on different ranges
- *         parameterized by a and b
+ * @author JeT Perlin 1D Noise function
  */
-public class PiecewiseFunction implements Function1D {
+public class NoiseFunction implements Function1D {
 
-    private static class Piece {
-        public double xMin, xMax;
-        public Function1D f;
-
-        /**
-         * Constructor
-         * 
-         * @param xMin
-         * @param xMax
-         * @param f
-         */
-        public Piece(final double xMin, final double xMax, final Function1D f) {
-            super();
-            this.xMin = xMin;
-            this.xMax = xMax;
-            this.f = f;
-        }
-
-    }
-
-    private final List<Piece> pieces = new ArrayList<Piece>();
+    private double wavelength = 1.; // noise wavelength (period)
+    private double amplitude = 1.; // noise amplitude (height)
+    private double phase = 0.; // noise phase (X translation factor)
+    private double shift = 0.; // noise shift (Y translation factor)
 
     /**
      * Constructor
      */
-    public PiecewiseFunction() {
+    public NoiseFunction() {
         super();
     }
 
-    public void addPiece(final double xMin, final double xMax,
-            final Function1D f) {
-        this.pieces.add(new Piece(xMin, xMax, f));
+    /**
+     * Constructor
+     * 
+     * @param wavelength
+     *            noise wavelength (period)
+     * @param amplitude
+     *            noise amplitude (height)
+     * @param phase
+     *            noise phase (X translation factor)
+     * @param shift
+     *            noise shift (Y translation factor)
+     */
+    public NoiseFunction(final double wavelength, final double amplitude,
+            final double phase, final double shift) {
+        super();
+        this.wavelength = wavelength;
+        this.amplitude = amplitude;
+        this.phase = phase;
+        this.shift = shift;
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param wavelength
+     *            noise wavelength (period)
+     * @param amplitude
+     *            noise amplitude (height)
+     */
+    public NoiseFunction(final double wavelength, final double amplitude) {
+        super();
+        this.wavelength = wavelength;
+        this.amplitude = amplitude;
+        this.phase = 0;
+        this.shift = 0;
     }
 
     /*
@@ -76,7 +89,7 @@ public class PiecewiseFunction implements Function1D {
      */
     @Override
     public String help() {
-        return "f(x)=f1(x), x C [a,b] | f2(x), x C [b,c] | ...";
+        return "f(x)=d + noise(c + x * a) * b. a,b,c,d real values (wavelength, amplitude, phase, shift)";
     }
 
     /*
@@ -87,13 +100,10 @@ public class PiecewiseFunction implements Function1D {
      * (double)
      */
     @Override
-    public Double evaluate(final double x) throws FunctionEvaluationException {
-        for (Piece piece : this.pieces) {
-            if (x >= piece.xMin && x <= piece.xMax) {
-                return piece.f.evaluate(x);
-            }
-        }
-        return null;
+    public Double evaluate(final double parameter) {
+        return this.shift
+                + Noise.noise1((float) (this.phase + parameter
+                        * this.wavelength)) * this.amplitude;
     }
 
     /*
@@ -103,7 +113,8 @@ public class PiecewiseFunction implements Function1D {
      */
     @Override
     public String toString() {
-        return "Piecewise[" + this.pieces.size() + "]";
+        return "noise[" + this.wavelength + "," + this.amplitude + ","
+                + this.phase + "," + this.shift + "]";
     }
 
 }

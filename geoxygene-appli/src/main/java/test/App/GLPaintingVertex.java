@@ -27,7 +27,7 @@
 
 package test.App;
 
-import java.awt.geom.Point2D;
+import java.util.Arrays;
 
 import fr.ign.cogit.geoxygene.util.gl.GLVertex;
 
@@ -42,17 +42,23 @@ public class GLPaintingVertex implements GLVertex {
     public float[] normal = { 0f, 0f };
     private float curvature = 0;
     private float thickness = 0;
+    public float[] color = { 0f, 0f, 0f, 0f };
+    public float maxU = 0f;
 
     public static final int vertexPositionLocation = 0;
     public static final int vertexUVLocation = 1;
     public static final int vertexNormalLocation = 2;
     public static final int vertexCurvatureLocation = 3;
     public static final int vertexThicknessLocation = 4;
+    public static final int vertexColorLocation = 5;
+    public static final int vertexMaxULocation = 6;
     public static final String vertexPositionVariableName = "vertexPosition";
     public static final String vertexUVVariableName = "vertexUV";
     public static final String vertexNormalVariableName = "vertexNormal";
     public static final String vertexCurvatureVariableName = "vertexCurvature";
     public static final String vertexThicknessVariableName = "vertexThickness";
+    public static final String vertexColorVariableName = "vertexColor";
+    public static final String vertexMaxUVariableName = "uMax";
 
     @Override
     public GLPaintingVertex clone() {
@@ -62,6 +68,8 @@ public class GLPaintingVertex implements GLVertex {
         vertex.setNormal(this.getNormal());
         vertex.setCurvature(this.getCurvature());
         vertex.setThickness(this.getThickness());
+        vertex.setColor(this.getColor());
+        vertex.setMaxU(this.getMaxU());
         return vertex;
     }
 
@@ -71,23 +79,61 @@ public class GLPaintingVertex implements GLVertex {
     public GLPaintingVertex() {
     }
 
-    /**
-     * 
-     */
-    public GLPaintingVertex(float x, float y) {
+    public GLPaintingVertex(float x, float y, float u, float v, float maxU,
+            float nx, float ny, float curvature, float thickness, float r,
+            float g, float b, float a) {
         this();
         this.setXY(x, y);
+        this.setUV(u, v);
+        this.setNormal(nx, ny);
+        this.setCurvature(curvature);
+        this.setThickness(thickness);
+        this.setColor(r, g, b, a);
+        this.setMaxU(maxU);
     }
 
-    public GLPaintingVertex(Point2D p) {
-        this((float) p.getX(), (float) p.getY());
-    }
+    // public GLPaintingVertex(Point2d p, Point2d uv, Point2d normal,
+    // float curvature, float thickness) {
+    // this((float) p.x, (float) p.y, (float) uv.x, (float) uv.y,
+    // (float) normal.x, (float) normal.y, curvature, thickness);
+    // }
+    //
+    // public GLPaintingVertex(float x, float y) {
+    // this(x, y, 0, 0, 0, 0, 0, 0);
+    // }
+    //
+    // public GLPaintingVertex(Point2D p) {
+    // this((float) p.getX(), (float) p.getY());
+    // }
+    //
+    // public GLPaintingVertex(Point2d p) {
+    // this((float) p.x, (float) p.y);
+    // }
+    //
+    // public GLPaintingVertex(Point2d p, Point2d uv) {
+    // this((float) p.x, (float) p.y);
+    // }
 
     /**
      * @return the xy
      */
     public float[] getXY() {
         return this.xy;
+    }
+
+    /**
+     * @return the maxU
+     */
+    public float getMaxU() {
+        return this.maxU;
+    }
+
+    /**
+     * @param maxU
+     *            the maxU to set
+     */
+    public void setMaxU(float maxU) {
+        this.maxU = maxU;
     }
 
     /**
@@ -131,6 +177,35 @@ public class GLPaintingVertex implements GLVertex {
     public void setUV(float[] uv) {
         this.uv[0] = uv[0];
         this.uv[1] = uv[1];
+    }
+
+    /**
+     * @param color
+     *            the color to set
+     */
+    public void setColor(float[] color) {
+        this.color[0] = color[0];
+        this.color[1] = color[1];
+        this.color[2] = color[2];
+        this.color[3] = color[3];
+    }
+
+    /**
+     * @return the uv
+     */
+    public float[] getColor() {
+        return this.color;
+    }
+
+    /**
+     * @param color
+     *            the color to set
+     */
+    public void setColor(float r, float g, float b, float a) {
+        this.color[0] = r;
+        this.color[1] = g;
+        this.color[2] = b;
+        this.color[3] = a;
     }
 
     /**
@@ -188,74 +263,17 @@ public class GLPaintingVertex implements GLVertex {
         this.thickness = thickness;
     }
 
-    /**
-     * @return the vertexpositionlocation
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
      */
-    public static int getVertexpositionlocation() {
-        return vertexPositionLocation;
-    }
-
-    /**
-     * @return the vertexuvlocation
-     */
-    public static int getVertexuvlocation() {
-        return vertexUVLocation;
-    }
-
-    /**
-     * @return the vertexnormallocation
-     */
-    public static int getVertexnormallocation() {
-        return vertexNormalLocation;
-    }
-
-    /**
-     * @return the vertexcurvaturelocation
-     */
-    public static int getVertexcurvaturelocation() {
-        return vertexCurvatureLocation;
-    }
-
-    /**
-     * @return the vertexthicknesslocation
-     */
-    public static int getVertexthicknesslocation() {
-        return vertexThicknessLocation;
-    }
-
-    /**
-     * @return the vertexpositionvariablename
-     */
-    public static String getVertexpositionvariablename() {
-        return vertexPositionVariableName;
-    }
-
-    /**
-     * @return the vertexuvvariablename
-     */
-    public static String getVertexuvvariablename() {
-        return vertexUVVariableName;
-    }
-
-    /**
-     * @return the vertexnormalvariablename
-     */
-    public static String getVertexnormalvariablename() {
-        return vertexNormalVariableName;
-    }
-
-    /**
-     * @return the vertexcurvaturevariablename
-     */
-    public static String getVertexcurvaturevariablename() {
-        return vertexCurvatureVariableName;
-    }
-
-    /**
-     * @return the vertexthicknessvariablename
-     */
-    public static String getVertexthicknessvariablename() {
-        return vertexThicknessVariableName;
+    @Override
+    public String toString() {
+        return "GLPaintingVertex [xy=" + Arrays.toString(this.xy) + ", uv="
+                + Arrays.toString(this.uv) + ", normal="
+                + Arrays.toString(this.normal) + ", curvature="
+                + this.curvature + ", thickness=" + this.thickness + "]";
     }
 
 }

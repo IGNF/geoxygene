@@ -28,27 +28,60 @@
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
 import java.awt.Color;
+import java.util.Random;
 
 /**
- * @author JeT Implementations computes color values for geometric Primitives
- *         Incoming coordinates (x,y) are expressed in object coordinates
+ * @author JeT this colorizer returns one solid color independently of the
+ *         position
  */
-public interface Colorizer {
+public class RandomColorizer implements Colorizer {
+
+    private final Random rnd = new Random();
 
     /**
-     * method called just before colorization process
+     * Quick constructor
+     * 
+     * @param color
+     *            color to set
      */
-    void initializeColorization();
+    public RandomColorizer() {
+        super();
+    }
 
-    /**
-     * method called after colorization process
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.render.primitive.Colorizer#
+     * initializeColorization()
      */
-    void finalizeColorization();
+    @Override
+    public void initializeColorization() {
+        // nothing to initialize
+    }
 
-    /**
-     * method called during parameterization process. It computes an rgba color
-     * with (x,y) object coordinates
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.primitive.Colorizer#finalizeColorization
+     * ()
      */
-    Color getColor(double... vertex);
+    @Override
+    public void finalizeColorization() {
+        // nothing to finalize
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.primitive.Colorizer#getColor(double
+     * [])
+     */
+    @Override
+    public Color getColor(double... vertex) {
+        return new Color(this.rnd.nextInt(256), this.rnd.nextInt(256),
+                this.rnd.nextInt(256), 255);
+    }
 
 }

@@ -27,51 +27,68 @@
 package fr.ign.cogit.geoxygene.function;
 
 /**
- * @author JeT
- * linear function a*x+b
- * parameterized by a and b
+ * @author JeT linear function a*x+b parameterized by a and b
  */
 public class LinearFunction implements Function1D {
 
-  private double a = 1.; // a parameter
-  private double b = 0.; // b parameter
+    private double a = 1.; // a parameter
+    private double b = 0.; // b parameter
 
-  /**
-   * Constructor
-   */
-  public LinearFunction() {
-    super();
-  }
-
-  /**
-   * Constructor
-   * @param a a parameter
-   * @param b b parameter
-   */
-  public LinearFunction(final double a, final double b) {
-    super();
-    this.a = a;
-    this.b = b;
-  }
-
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.function.Function1D#help()
-   */
-  @Override
-  public String help() {
-    return "f(x)=a*x+b. a,b real values";
-  }
-
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement(double)
-   */
-  @Override
-  public Double evaluate(final double x) throws FunctionEvaluationException {
-    try {
-      return this.a * x + this.b;
-    } catch (Exception e) {
-      throw new FunctionEvaluationException(e);
+    /**
+     * Constructor
+     */
+    public LinearFunction() {
+        super();
     }
-  }
+
+    /**
+     * Constructor
+     * 
+     * @param a
+     *            a parameter
+     * @param b
+     *            b parameter
+     */
+    public LinearFunction(final double a, final double b) {
+        super();
+        this.a = a;
+        this.b = b;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.function.Function1D#help()
+     */
+    @Override
+    public String help() {
+        return "f(x)=a*x+b. a,b real values";
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement
+     * (double)
+     */
+    @Override
+    public Double evaluate(final double x) throws FunctionEvaluationException {
+        try {
+            return this.a * x + this.b;
+        } catch (Exception e) {
+            throw new FunctionEvaluationException(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Linear[" + this.a + "," + this.b + "]";
+    }
 
 }

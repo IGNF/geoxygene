@@ -33,6 +33,7 @@ import static org.lwjgl.util.glu.GLU.GLU_TESS_END;
 import static org.lwjgl.util.glu.GLU.GLU_TESS_VERTEX;
 import static org.lwjgl.util.glu.GLU.gluNewTess;
 
+import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
@@ -68,7 +69,7 @@ public class GLComplexFactory {
             .getLogger(GLComplexFactory.class.getName()); // logger
     private static final int BEZIER_SAMPLE_COUNT = 20;
     private static final Point2d DEFAULT_UV = new Point2d(0, 0);
-    private static final float[] DEFAULT_COLOR = new float[] { 1f, 0f, 0f, 1f };
+    private static final Color DEFAULT_COLOR = Color.red;
 
     /**
      * Private constructor for utility class
@@ -121,14 +122,15 @@ public class GLComplexFactory {
             if (parameterizer != null) {
                 uv = parameterizer.getTextureCoordinates(p);
             }
-            float[] rgba = DEFAULT_COLOR;
+            Color rgba = DEFAULT_COLOR;
             if (colorizer != null) {
                 rgba = colorizer.getColor(p);
             }
             GLSimpleVertex vertex = new GLSimpleVertex();
             vertex.setXYZ((float) p[0], (float) p[1], (float) p[2]);
             vertex.setUV((float) uv.x, (float) uv.y);
-            vertex.setRGBA(rgba[0], rgba[1], rgba[2], rgba[3]);
+            vertex.setRGBA(rgba.getRed() / 255f, rgba.getGreen() / 255f,
+                    rgba.getBlue() / 255f, rgba.getAlpha() / 255f);
             outlineMesh.addIndex(primitive.addVertex(vertex));
         }
     }
@@ -193,7 +195,7 @@ public class GLComplexFactory {
             if (parameterizer != null) {
                 uv = parameterizer.getTextureCoordinates(p);
             }
-            float[] rgba = DEFAULT_COLOR;
+            Color rgba = DEFAULT_COLOR;
             if (colorizer != null) {
                 rgba = colorizer.getColor(p);
             }
@@ -201,7 +203,8 @@ public class GLComplexFactory {
             GLSimpleVertex vertex = new GLSimpleVertex();
             vertex.setXYZ((float) p[0], (float) p[1], (float) p[2]);
             vertex.setUV((float) uv.x, (float) uv.y);
-            vertex.setRGBA(rgba[0], rgba[1], rgba[2], rgba[3]);
+            vertex.setRGBA(rgba.getRed() / 255f, rgba.getGreen() / 255f,
+                    rgba.getBlue() / 255f, rgba.getAlpha() / 255f);
             int vertexId = primitive.addVertex(vertex);
             outlineMesh.addIndex(vertexId);
         }
@@ -225,7 +228,7 @@ public class GLComplexFactory {
                 if (parameterizer != null) {
                     uv = parameterizer.getTextureCoordinates(p);
                 }
-                float[] rgba = DEFAULT_COLOR;
+                Color rgba = DEFAULT_COLOR;
                 if (colorizer != null) {
                     rgba = colorizer.getColor(p);
                 }
@@ -233,7 +236,8 @@ public class GLComplexFactory {
                 GLSimpleVertex vertex = new GLSimpleVertex();
                 vertex.setXYZ((float) p[0], (float) p[1], (float) p[2]);
                 vertex.setUV((float) uv.x, (float) uv.y);
-                vertex.setRGBA(rgba[0], rgba[1], rgba[2], rgba[3]);
+                vertex.setRGBA(rgba.getRed() / 255f, rgba.getGreen() / 255f,
+                        rgba.getBlue() / 255f, rgba.getAlpha() / 255f);
                 int vertexId = primitive.addVertex(vertex);
                 outlineMesh.addIndex(vertexId);
             }
@@ -297,14 +301,15 @@ public class GLComplexFactory {
                 // parameterizer.getClass().getSimpleName());
             }
             // System.err.println("Filled polygon outer frontier uv = " + uv);
-            float[] rgba = DEFAULT_COLOR;
+            Color rgba = DEFAULT_COLOR;
             if (colorizer != null) {
                 rgba = colorizer.getColor(vertex);
             }
 
             float[] data = new float[] { (float) vertex[0], (float) vertex[1],
-                    (float) vertex[2], (float) uv.x, (float) uv.y, rgba[0],
-                    rgba[1], rgba[2], rgba[3] };
+                    (float) vertex[2], (float) uv.x, (float) uv.y,
+                    rgba.getRed() / 255f, rgba.getGreen() / 255f,
+                    rgba.getBlue() / 255f, rgba.getAlpha() / 255f };
             // System.err.println("tess input data = " + Arrays.toString(data));
             tesselator.gluTessVertex(vertex, 0, data);
             // System.err.println("set exterior #" + outerFrontierPointIndex +
@@ -337,14 +342,16 @@ public class GLComplexFactory {
                 if (parameterizer != null) {
                     uv = parameterizer.getTextureCoordinates(vertex);
                 }
-                float[] rgba = DEFAULT_COLOR;
+                Color rgba = DEFAULT_COLOR;
                 if (colorizer != null) {
                     rgba = colorizer.getColor(vertex);
                 }
 
                 float[] data = new float[] { (float) vertex[0],
                         (float) vertex[1], (float) vertex[2], (float) uv.x,
-                        (float) uv.y, rgba[0], rgba[1], rgba[2], rgba[3] };
+                        (float) uv.y, rgba.getRed() / 255f,
+                        rgba.getGreen() / 255f, rgba.getBlue() / 255f,
+                        rgba.getAlpha() / 255f };
                 tesselator.gluTessVertex(vertex, 0, data);
                 // System.err.println("set interior #" + innerFrontierIndex +
                 // " vertex " + vertex[0] + ", " + vertex[1] + ", " +
@@ -389,7 +396,7 @@ public class GLComplexFactory {
         if (parameterizer != null) {
             uv = parameterizer.getTextureCoordinates(p);
         }
-        float[] rgba = DEFAULT_COLOR;
+        Color rgba = DEFAULT_COLOR;
         if (colorizer != null) {
             rgba = colorizer.getColor(p);
         }
@@ -397,7 +404,8 @@ public class GLComplexFactory {
         GLSimpleVertex vertex = new GLSimpleVertex();
         vertex.setXYZ((float) p[0], (float) p[1], (float) p[2]);
         vertex.setUV((float) uv.x, (float) uv.y);
-        vertex.setRGBA(rgba);
+        vertex.setRGBA(rgba.getRed() / 255f, rgba.getGreen() / 255f,
+                rgba.getBlue() / 255f, rgba.getAlpha() / 255f);
         mesh.addIndex(primitive.addVertex(vertex));
     }
 

@@ -37,12 +37,12 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 
 /**
- * @author JeT
- *         Compute texture coordinates in world coordinates
+ * @author JeT Compute texture coordinates in world coordinates
  */
 public class WorldCoordinatesParameterizer implements Parameterizer {
 
-    private static Logger logger = Logger.getLogger(WorldCoordinatesParameterizer.class.getName());
+    private static Logger logger = Logger
+            .getLogger(WorldCoordinatesParameterizer.class.getName());
     private Viewport viewport = null;
     private Double previousX = null;
     private Double previousY = null;
@@ -104,10 +104,11 @@ public class WorldCoordinatesParameterizer implements Parameterizer {
      * getTextureCoordinates(double, double)
      */
     @Override
-    public Point2d getTextureCoordinates(final double[] vertex) {
+    public Point2d getTextureCoordinates(final double... vertex) {
         Point2D modelPoint;
         try {
-            modelPoint = this.viewport.toModelPoint(new Point2D.Double(vertex[0], vertex[1]));
+            modelPoint = this.viewport.toModelPoint(new Point2D.Double(
+                    vertex[0], vertex[1]));
         } catch (NoninvertibleTransformException e) {
             e.printStackTrace();
             return new Point2d();
@@ -115,27 +116,29 @@ public class WorldCoordinatesParameterizer implements Parameterizer {
         return new Point2d(modelPoint.getX(), modelPoint.getY());
     }
 
-    //    /*
-    //     * (non-Javadoc)
-    //     * 
-    //     * @see fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer#
-    //     * getLinearParameter(float, float)
-    //     */
-    //    @Override
-    //    public double getLinearParameter(final double[] vertex) {
-    //        try {
-    //            Point2D modelView = this.viewport.toModelPoint(new Point2D.Double(vertex[0], vertex[1]));
-    //            if (this.previousX != null && this.previousY != null) {
-    //                this.distance += Math.sqrt((this.previousX - modelView.getX()) * (this.previousX - modelView.getX()) + (this.previousY - modelView.getY())
-    //                        * (this.previousY - modelView.getY()));
-    //            }
-    //            this.previousX = modelView.getX();
-    //            this.previousY = modelView.getY();
-    //        } catch (NoninvertibleTransformException e) {
-    //            logger.error(e);
-    //            return this.distance;
-    //        }
-    //        return this.distance;
-    //    }
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer#
+    // * getLinearParameter(float, float)
+    // */
+    // @Override
+    // public double getLinearParameter(final double[] vertex) {
+    // try {
+    // Point2D modelView = this.viewport.toModelPoint(new
+    // Point2D.Double(vertex[0], vertex[1]));
+    // if (this.previousX != null && this.previousY != null) {
+    // this.distance += Math.sqrt((this.previousX - modelView.getX()) *
+    // (this.previousX - modelView.getX()) + (this.previousY - modelView.getY())
+    // * (this.previousY - modelView.getY()));
+    // }
+    // this.previousX = modelView.getX();
+    // this.previousY = modelView.getY();
+    // } catch (NoninvertibleTransformException e) {
+    // logger.error(e);
+    // return this.distance;
+    // }
+    // return this.distance;
+    // }
 
 }

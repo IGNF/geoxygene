@@ -27,54 +27,75 @@
 package fr.ign.cogit.geoxygene.function;
 
 /**
- * @author JeT
- * Gaussian function a*e^-((x-b)^2/(2c^2))
- * parameterized by a, b and c
+ * @author JeT Gaussian function a*e^-((x-b)^2/(2c^2)) parameterized by a, b and
+ *         c
  */
 public class GaussFunction implements Function1D {
 
-  private double a = 1.; // a parameter
-  private double b = 0.; // b parameter
-  private double c = 1.; // c parameter
+    private double a = 1.; // a parameter
+    private double b = 0.; // b parameter
+    private double c = 1.; // c parameter
 
-  /**
-   * Constructor
-   */
-  public GaussFunction() {
-    super();
-  }
-
-  /**
-   * Constructor
-   * @param a a parameter
-   * @param b b parameter
-   * @param c c parameter
-   */
-  public GaussFunction(final double a, final double b, final double c) {
-    super();
-    this.a = a;
-    this.b = b;
-    this.c = c;
-  }
-
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.function.Function1D#help()
-   */
-  @Override
-  public String help() {
-    return "f(x)=a*e^-((x-b)^2/(2c^2)). a,b,c double values";
-  }
-
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement(double)
-   */
-  @Override
-  public Double evaluate(final double x) throws FunctionEvaluationException {
-    try {
-      return this.a * Math.exp(-(x - this.b) * (x - this.b) / (2 * this.c * this.c));
-    } catch (Exception e) {
-      throw new FunctionEvaluationException(e);
+    /**
+     * Constructor
+     */
+    public GaussFunction() {
+        super();
     }
-  }
+
+    /**
+     * Constructor
+     * 
+     * @param a
+     *            a parameter
+     * @param b
+     *            b parameter
+     * @param c
+     *            c parameter
+     */
+    public GaussFunction(final double a, final double b, final double c) {
+        super();
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.function.Function1D#help()
+     */
+    @Override
+    public String help() {
+        return "f(x)=a*e^-((x-b)^2/(2c^2)). a,b,c double values";
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement
+     * (double)
+     */
+    @Override
+    public Double evaluate(final double x) throws FunctionEvaluationException {
+        try {
+            return this.a
+                    * Math.exp(-(x - this.b) * (x - this.b)
+                            / (2 * this.c * this.c));
+        } catch (Exception e) {
+            throw new FunctionEvaluationException(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Gauss[" + this.a + "," + this.b + "," + this.c + "]";
+    }
 
 }

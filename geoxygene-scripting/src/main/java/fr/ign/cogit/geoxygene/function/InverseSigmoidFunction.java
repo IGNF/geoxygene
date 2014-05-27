@@ -27,49 +27,69 @@
 package fr.ign.cogit.geoxygene.function;
 
 /**
- * @author JeT
- * Sigmoid inverse function a * 1 / ( 1+e^-(x-b)*c ) - 0.5
- * parameterized by a, b and c
+ * @author JeT Sigmoid inverse function a * 1 / ( 1+e^-(x-b)*c ) - 0.5
+ *         parameterized by a, b and c
  */
 public class InverseSigmoidFunction implements Function1D {
 
-  private double a = 1.; // a parameter
-  private double b = 0.; // b parameter
-  private double c = 1.; // c parameter
+    private double a = 1.; // a parameter
+    private double b = 0.; // b parameter
+    private double c = 1.; // c parameter
 
-  /**
-   * Constructor
-   */
-  public InverseSigmoidFunction() {
-    super();
-  }
+    /**
+     * Constructor
+     */
+    public InverseSigmoidFunction() {
+        super();
+    }
 
-  /**
-   * Constructor
-   * @param a a parameter
-   * @param b b parameter
-   * @param c c parameter
-   */
-  public InverseSigmoidFunction(final double a, final double b, final double c) {
-    super();
-    this.a = a;
-    this.b = b;
-    this.c = c;
-  }
+    /**
+     * Constructor
+     * 
+     * @param a
+     *            a parameter
+     * @param b
+     *            b parameter
+     * @param c
+     *            c parameter
+     */
+    public InverseSigmoidFunction(final double a, final double b, final double c) {
+        super();
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
 
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.function.Function1D#help()
-   */
-  @Override
-  public String help() {
-    return "f(x)=a*1/(1+e^-(x-b)*c)-0.5. a,b,c real values";
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.function.Function1D#help()
+     */
+    @Override
+    public String help() {
+        return "f(x)=a*1/(1+e^-(x-b)*c)-0.5. a,b,c real values";
+    }
 
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement(double)
-   */
-  @Override
-  public Double evaluate(final double x) {
-    return this.a / (1 + Math.exp(-(x - this.b) * this.c)) - 0.5;
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement
+     * (double)
+     */
+    @Override
+    public Double evaluate(final double x) {
+        return this.a / (1 + Math.exp(-(x - this.b) * this.c)) - 0.5;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "InverseSigmoide[" + this.a + "," + this.b + "," + this.c + "]";
+    }
+
 }

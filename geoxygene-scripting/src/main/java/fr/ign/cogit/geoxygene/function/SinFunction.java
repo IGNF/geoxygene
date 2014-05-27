@@ -27,65 +27,92 @@
 package fr.ign.cogit.geoxygene.function;
 
 /**
- * @author JeT
- * Simple sin function parameterized by wavelength, amplitude and phase
+ * @author JeT Simple sin function parameterized by wavelength, amplitude and
+ *         phase
  */
 public class SinFunction implements Function1D {
 
-  private double wavelength = 1.; // sin wavelength (period)
-  private double amplitude = 1.; // sin amplitude (height)
-  private double phase = 0.; // sin phase (X translation factor)
-  private double shift = 0.; // sin shift (Y translation factor)
+    private double wavelength = 1.; // sin wavelength (period)
+    private double amplitude = 1.; // sin amplitude (height)
+    private double phase = 0.; // sin phase (X translation factor)
+    private double shift = 0.; // sin shift (Y translation factor)
 
-  /**
-   * Constructor
-   */
-  public SinFunction() {
-    super();
-  }
+    /**
+     * Constructor
+     */
+    public SinFunction() {
+        super();
+    }
 
-  /**
-   * Constructor
-   * @param wavelength sin wavelength (period)
-   * @param amplitude sin amplitude (height)
-   * @param phase sin phase (X translation factor)
-   * @param shift sin shift (Y translation factor)
-   */
-  public SinFunction(final double wavelength, final double amplitude, final double phase, final double shift) {
-    super();
-    this.wavelength = wavelength;
-    this.amplitude = amplitude;
-    this.phase = phase;
-    this.shift = shift;
-  }
+    /**
+     * Constructor
+     * 
+     * @param wavelength
+     *            sin wavelength (period)
+     * @param amplitude
+     *            sin amplitude (height)
+     * @param phase
+     *            sin phase (X translation factor)
+     * @param shift
+     *            sin shift (Y translation factor)
+     */
+    public SinFunction(final double wavelength, final double amplitude,
+            final double phase, final double shift) {
+        super();
+        this.wavelength = wavelength;
+        this.amplitude = amplitude;
+        this.phase = phase;
+        this.shift = shift;
+    }
 
-  /**
-   * Constructor
-   * @param wavelength sin wavelength (period)
-   * @param amplitude sin amplitude (height)
-   */
-  public SinFunction(final double wavelength, final double amplitude) {
-    super();
-    this.wavelength = wavelength;
-    this.amplitude = amplitude;
-    this.phase = 0;
-    this.shift = 0;
-  }
+    /**
+     * Constructor
+     * 
+     * @param wavelength
+     *            sin wavelength (period)
+     * @param amplitude
+     *            sin amplitude (height)
+     */
+    public SinFunction(final double wavelength, final double amplitude) {
+        super();
+        this.wavelength = wavelength;
+        this.amplitude = amplitude;
+        this.phase = 0;
+        this.shift = 0;
+    }
 
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.function.Function1D#help()
-   */
-  @Override
-  public String help() {
-    return "f(x)=d + sin(c + x * a) * b. a,b,c,d real values (wavelength, amplitude, phase, shift)";
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.function.Function1D#help()
+     */
+    @Override
+    public String help() {
+        return "f(x)=d + sin(c + x * a) * b. a,b,c,d real values (wavelength, amplitude, phase, shift)";
+    }
 
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement(double)
-   */
-  @Override
-  public Double evaluate(final double parameter) {
-    return this.shift + Math.sin(this.phase + parameter * this.wavelength) * this.amplitude;
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement
+     * (double)
+     */
+    @Override
+    public Double evaluate(final double parameter) {
+        return this.shift + Math.sin(this.phase + parameter * this.wavelength)
+                * this.amplitude;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Sin[" + this.wavelength + "," + this.amplitude + ","
+                + this.phase + "," + this.shift + "]";
+    }
 
 }

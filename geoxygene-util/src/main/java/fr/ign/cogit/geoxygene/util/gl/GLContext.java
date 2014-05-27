@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 /**
@@ -132,7 +131,7 @@ public class GLContext {
 
     }
 
-    public void finalizeContext() throws GLException {
+    public void disposeContext() throws GLException {
         for (GLProgram program : this.programs) {
             GL20.glDeleteProgram(program.getProgramId());
         }

@@ -413,8 +413,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      */
     private void renderGLPrimitivePlain(GLComplex primitive, double opacity)
             throws GLException {
-        System.err.println("rendering primitive "
-                + primitive.getMeshes().size() + " meshes");
+        // System.err.println("rendering primitive "
+        // + primitive.getMeshes().size() + " meshes");
         if (this.getLayerViewPanel().useFBO() && primitive.mayOverlap()) {
             // System.err.println("draw primitive with "
             // + primitive.getMeshes().size()
@@ -686,14 +686,14 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
 
         if (Arrays.binarySearch(primitive.getRenderingCapabilities(),
                 GLSimpleRenderingCapability.TEXTURE) >= 0) {
-            System.err.println("use texture");
+            // System.err.println("use texture");
             this.glContext
                     .setCurrentProgram(LwjglLayerRenderer.worldspaceTextureProgramName);
         } else if (Arrays.binarySearch(primitive.getRenderingCapabilities(),
                 GLSimpleRenderingCapability.COLOR) >= 0
                 || Arrays.binarySearch(primitive.getRenderingCapabilities(),
                         GLSimpleRenderingCapability.POSITION) >= 0) {
-            System.err.println("use color");
+            // System.err.println("use color");
             this.glContext
                     .setCurrentProgram(LwjglLayerRenderer.worldspaceColorProgramName);
         } else {
@@ -734,7 +734,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
         // this.checkCurrentProgram("normalRendering(): before drawComplex()");
 
-        GLTools.displayBuffer(primitive.getFlippedVerticesBuffer());
+        // GLTools.displayBuffer(primitive.getFlippedVerticesBuffer());
         this.drawComplex(primitive);
         // this.checkCurrentProgram("normalRendering(): after drawComplex()");
         GLTools.glCheckError("direct rendering drawing GLSimpleComplex class = "

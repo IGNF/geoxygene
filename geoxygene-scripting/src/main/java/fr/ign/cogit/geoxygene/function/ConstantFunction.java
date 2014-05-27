@@ -27,43 +27,60 @@
 package fr.ign.cogit.geoxygene.function;
 
 /**
- * @author JeT
- * Simple constant function parameterized by the shift
+ * @author JeT Simple constant function parameterized by the shift
  */
 public class ConstantFunction implements Function1D {
 
-  private double shift = 1.; // constant shift (Y translation factor)
+    private double shift = 1.; // constant shift (Y translation factor)
 
-  /**
-   * Constructor
-   */
-  public ConstantFunction() {
-    super();
-  }
+    /**
+     * Constructor
+     */
+    public ConstantFunction() {
+        super();
+    }
 
-  /**
-   * Constructor
-   * @param shift Y shift value
-   */
-  public ConstantFunction(final double shift) {
-    super();
-    this.shift = shift;
-  }
+    /**
+     * Constructor
+     * 
+     * @param shift
+     *            Y shift value
+     */
+    public ConstantFunction(final double shift) {
+        super();
+        this.shift = shift;
+    }
 
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.function.Function1D#help()
-   */
-  @Override
-  public String help() {
-    return "f(x) = C. C real value";
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.function.Function1D#help()
+     */
+    @Override
+    public String help() {
+        return "f(x) = C. C real value";
+    }
 
-  /* (non-Javadoc)
-   * @see fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement(double)
-   */
-  @Override
-  public Double evaluate(final double parameter) {
-    return this.shift;
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.gl.GeoDisplacementFunction1D#displacement
+     * (double)
+     */
+    @Override
+    public Double evaluate(final double parameter) {
+        return this.shift;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Constant[" + this.shift + "]";
+    }
 
 }
