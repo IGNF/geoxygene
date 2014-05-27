@@ -66,7 +66,6 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
@@ -1003,6 +1002,8 @@ public class CartagenApplication {
   public void loadData(String absolutePath, SourceDLM bdsource, int scale,
       CartAGenDataSet dataset) {
 
+    System.out.println("dataset1 " + dataset);
+
     CartagenApplication.cartagenApplication.getFrameInit().lblLoading
         .setForeground(Color.BLACK);
     CartagenApplication.cartagenApplication.getFrameInit().repaint();
@@ -1584,14 +1585,13 @@ public class CartagenApplication {
           .zoomToFullExtent();
     } else {
       CartagenApplication.getInstance().getFrame().getVisuPanel()
-
-      .zoomToFullExtent();
-      CartAGenDocOld
-          .getInstance()
-          .getZone()
-          .setExtent(
-              new GM_Polygon(CartagenApplication.getInstance().getFrame()
-                  .getVisuPanel().getEnvelope()));
+          .zoomToFullExtent();
+      // CartAGenDocOld
+      // .getInstance()
+      // .getZone()
+      // .setExtent(
+      // new GM_Polygon(CartagenApplication.getInstance().getFrame()
+      // .getVisuPanel().getEnvelope()));
 
     }
 
