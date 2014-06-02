@@ -88,19 +88,26 @@ public class LinePaintingApplication {
     // "/home/turbet/export/geodata/basic-tests/line.5.points.open.shp";
     // private String shapeFilename =
     // "/home/turbet/export/geodata/basic-tests/line.2.points.shp";
-    private String shapeFilename = "/export/home/kandinsky/turbet/expressivemaps/data/100K_StJean_de_Luz/troncon_cours_d_eau_25.shp";
+    private String shapeFilename = "./src/main/resources/test/app/shapes/troncon_cours_d_eau_25.shp";
     public String paperTextureFilename = "./src/main/resources/test/app/papers/black-normalized.png";
-    public String brushTextureFilename = "./src/main/resources/test/app/brushes/pencil1-tiled-136-135.png";
-    public int brushStartLength = 136;
-    public int brushEndLength = 135;
+    public String brushTextureFilename = "./src/main/resources/test/app/brushes/chalk2-100-200.png";
+    public int brushStartLength = 100;
+    public int brushEndLength = 200;
     private final Preferences prefs = Preferences.userRoot();
     double sampleSize = 2.;
     double minAngle = 1.5;
-    double brushSize = 5;
+    double brushSize = 8;
     double paperScaleFactor = .5;
-    double paperDensity = 1.;
-    double brushDensity = 1.;
-    double strokePressure = 1.;
+    double paperDensity = 0.7;
+    double brushDensity = 1.9;
+    double strokePressure = 2.64;
+    double sharpness = 0.1;
+    double strokePressureVariationAmplitude = .32;
+    double strokePressureVariationFrequency = .025;
+    double strokeShiftVariationAmplitude = .92;
+    double strokeShiftVariationFrequency = .05;
+    double strokeThicknessVariationAmplitude = .07;
+    double strokeThicknessVariationFrequency = .05;
 
     private final List<ILineString> lines = new ArrayList<ILineString>();
     private IEnvelope envelope = null;
@@ -135,6 +142,13 @@ public class LinePaintingApplication {
     public static final String paperDensityUniformVarName = "paperDensity";
     public static final String brushDensityUniformVarName = "brushDensity";
     public static final String strokePressureUniformVarName = "strokePressure";
+    public static final String sharpnessUniformVarName = "sharpness";
+    public static final String strokePressureVariationAmplitudeUniformVarName = "pressureVariationAmplitude";
+    public static final String strokePressureVariationFrequencyUniformVarName = "pressureVariationFrequency";
+    public static final String strokeShiftVariationAmplitudeUniformVarName = "shiftVariationAmplitude";
+    public static final String strokeShiftVariationFrequencyUniformVarName = "shiftVariationFrequency";
+    public static final String strokeThicknessVariationAmplitudeUniformVarName = "thicknessVariationAmplitude";
+    public static final String strokeThicknessVariationFrequencyUniformVarName = "thicknessVariationFrequency";
 
     public LinePaintingApplication() throws Exception {
         this.initializeGui();
@@ -369,6 +383,7 @@ public class LinePaintingApplication {
             }
         });
         this.topPanel.add(lineWidthComboBox);
+        lineWidthComboBox.setSelectedIndex(1);
 
         JComboBox lineShiftComboBox = new JComboBox();
         lineShiftComboBox.setRenderer(new Function1DListCellRenderer());
@@ -396,7 +411,8 @@ public class LinePaintingApplication {
         });
         this.topPanel.add(lineShiftComboBox);
 
-        Dimension d = new Dimension(150, 50);
+        lineShiftComboBox.setSelectedIndex(0);
+        Dimension d = new Dimension(150, 40);
         SpinnerNumberModel model = new SpinnerNumberModel(this.sampleSize, 0.1,
                 1000., 1.);
         final JSpinner spinner = new JSpinner(model);
@@ -706,6 +722,177 @@ public class LinePaintingApplication {
             }
         });
         this.topPanel.add(pressureSpinner);
+        SpinnerNumberModel sharpnessModel = new SpinnerNumberModel(
+                this.sharpness, 0.0001, 10, .001);
+        final JSpinner sharpnessSpinner = new JSpinner(sharpnessModel);
+        JSpinner.NumberEditor sharpnessEditor = (JSpinner.NumberEditor) sharpnessSpinner
+                .getEditor();
+        sharpnessEditor.getTextField().setHorizontalAlignment(
+                SwingConstants.CENTER);
+        sharpnessSpinner.setPreferredSize(d);
+        sharpnessSpinner.setBorder(BorderFactory
+                .createTitledBorder("blending sharpness"));
+        sharpnessSpinner
+                .setToolTipText("blending contrast between brush and paper");
+        sharpnessSpinner.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                LinePaintingApplication.this.sharpness = (Double) (sharpnessSpinner
+                        .getValue());
+                LinePaintingApplication.this.refresh();
+
+            }
+        });
+        this.topPanel.add(sharpnessSpinner);
+
+        SpinnerNumberModel pressureVariationAmplitudeModel = new SpinnerNumberModel(
+                this.strokePressureVariationAmplitude, 0, 100, .1);
+        final JSpinner pressureVariationAmplitudeSpinner = new JSpinner(
+                pressureVariationAmplitudeModel);
+        JSpinner.NumberEditor pressureVariationAmplitudeEditor = (JSpinner.NumberEditor) pressureVariationAmplitudeSpinner
+                .getEditor();
+        pressureVariationAmplitudeEditor.getTextField().setHorizontalAlignment(
+                SwingConstants.CENTER);
+        pressureVariationAmplitudeSpinner.setPreferredSize(d);
+        pressureVariationAmplitudeSpinner.setBorder(BorderFactory
+                .createTitledBorder("pressure amplitude"));
+
+        pressureVariationAmplitudeSpinner
+                .addChangeListener(new ChangeListener() {
+
+                    @Override
+                    public void stateChanged(ChangeEvent e) {
+                        LinePaintingApplication.this.strokePressureVariationAmplitude = (Double) (pressureVariationAmplitudeSpinner
+                                .getValue());
+                        LinePaintingApplication.this.refresh();
+
+                    }
+                });
+        this.topPanel.add(pressureVariationAmplitudeSpinner);
+
+        SpinnerNumberModel pressureVariationFrequencyModel = new SpinnerNumberModel(
+                this.strokePressureVariationFrequency, 0.001, 1000, 0.025);
+        final JSpinner pressureVariationFrequencySpinner = new JSpinner(
+                pressureVariationFrequencyModel);
+        JSpinner.NumberEditor pressureVariationFrequencyEditor = (JSpinner.NumberEditor) pressureVariationFrequencySpinner
+                .getEditor();
+        pressureVariationFrequencyEditor.getTextField().setHorizontalAlignment(
+                SwingConstants.CENTER);
+        pressureVariationFrequencySpinner.setPreferredSize(d);
+        pressureVariationFrequencySpinner.setBorder(BorderFactory
+                .createTitledBorder("pressure frequency"));
+
+        pressureVariationFrequencySpinner
+                .addChangeListener(new ChangeListener() {
+
+                    @Override
+                    public void stateChanged(ChangeEvent e) {
+                        LinePaintingApplication.this.strokePressureVariationFrequency = (Double) (pressureVariationFrequencySpinner
+                                .getValue());
+                        LinePaintingApplication.this.refresh();
+
+                    }
+                });
+        this.topPanel.add(pressureVariationFrequencySpinner);
+
+        SpinnerNumberModel shiftVariationAmplitudeModel = new SpinnerNumberModel(
+                this.strokeShiftVariationAmplitude, 0, 1, .01);
+        final JSpinner shiftVariationAmplitudeSpinner = new JSpinner(
+                shiftVariationAmplitudeModel);
+        JSpinner.NumberEditor shiftVariationAmplitudeEditor = (JSpinner.NumberEditor) shiftVariationAmplitudeSpinner
+                .getEditor();
+        shiftVariationAmplitudeEditor.getTextField().setHorizontalAlignment(
+                SwingConstants.CENTER);
+        shiftVariationAmplitudeSpinner.setPreferredSize(d);
+        shiftVariationAmplitudeSpinner.setBorder(BorderFactory
+                .createTitledBorder("shift amplitude"));
+
+        shiftVariationAmplitudeSpinner.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                LinePaintingApplication.this.strokeShiftVariationAmplitude = (Double) (shiftVariationAmplitudeSpinner
+                        .getValue());
+                LinePaintingApplication.this.refresh();
+
+            }
+        });
+        this.topPanel.add(shiftVariationAmplitudeSpinner);
+
+        SpinnerNumberModel shiftVariationFrequencyModel = new SpinnerNumberModel(
+                this.strokeShiftVariationFrequency, 0.001, 1000, 0.025);
+        final JSpinner shiftVariationFrequencySpinner = new JSpinner(
+                shiftVariationFrequencyModel);
+        JSpinner.NumberEditor shiftVariationFrequencyEditor = (JSpinner.NumberEditor) shiftVariationFrequencySpinner
+                .getEditor();
+        shiftVariationFrequencyEditor.getTextField().setHorizontalAlignment(
+                SwingConstants.CENTER);
+        shiftVariationFrequencySpinner.setPreferredSize(d);
+        shiftVariationFrequencySpinner.setBorder(BorderFactory
+                .createTitledBorder("shift frequency"));
+
+        shiftVariationFrequencySpinner.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                LinePaintingApplication.this.strokeShiftVariationFrequency = (Double) (shiftVariationFrequencySpinner
+                        .getValue());
+                LinePaintingApplication.this.refresh();
+
+            }
+        });
+        this.topPanel.add(shiftVariationFrequencySpinner);
+
+        SpinnerNumberModel thicknessVariationAmplitudeModel = new SpinnerNumberModel(
+                this.strokeThicknessVariationAmplitude, 0, 1, .01);
+        final JSpinner thicknessVariationAmplitudeSpinner = new JSpinner(
+                thicknessVariationAmplitudeModel);
+        JSpinner.NumberEditor thicknessVariationAmplitudeEditor = (JSpinner.NumberEditor) thicknessVariationAmplitudeSpinner
+                .getEditor();
+        thicknessVariationAmplitudeEditor.getTextField()
+                .setHorizontalAlignment(SwingConstants.CENTER);
+        thicknessVariationAmplitudeSpinner.setPreferredSize(d);
+        thicknessVariationAmplitudeSpinner.setBorder(BorderFactory
+                .createTitledBorder("thickness amplitude"));
+
+        thicknessVariationAmplitudeSpinner
+                .addChangeListener(new ChangeListener() {
+
+                    @Override
+                    public void stateChanged(ChangeEvent e) {
+                        LinePaintingApplication.this.strokeThicknessVariationAmplitude = (Double) (thicknessVariationAmplitudeSpinner
+                                .getValue());
+                        LinePaintingApplication.this.refresh();
+
+                    }
+                });
+        this.topPanel.add(thicknessVariationAmplitudeSpinner);
+
+        SpinnerNumberModel thicknessVariationFrequencyModel = new SpinnerNumberModel(
+                this.strokeThicknessVariationFrequency, 0.001, 1000, 0.025);
+        final JSpinner thicknessVariationFrequencySpinner = new JSpinner(
+                thicknessVariationFrequencyModel);
+        JSpinner.NumberEditor thicknessVariationFrequencyEditor = (JSpinner.NumberEditor) thicknessVariationFrequencySpinner
+                .getEditor();
+        thicknessVariationFrequencyEditor.getTextField()
+                .setHorizontalAlignment(SwingConstants.CENTER);
+        thicknessVariationFrequencySpinner.setPreferredSize(d);
+        thicknessVariationFrequencySpinner.setBorder(BorderFactory
+                .createTitledBorder("thickness frequency"));
+
+        thicknessVariationFrequencySpinner
+                .addChangeListener(new ChangeListener() {
+
+                    @Override
+                    public void stateChanged(ChangeEvent e) {
+                        LinePaintingApplication.this.strokeThicknessVariationFrequency = (Double) (thicknessVariationFrequencySpinner
+                                .getValue());
+                        LinePaintingApplication.this.refresh();
+
+                    }
+                });
+        this.topPanel.add(thicknessVariationFrequencySpinner);
 
         this.bottomPanel = new JPanel();
         this.bottomPanel.setBorder(BorderFactory
@@ -936,6 +1123,15 @@ public class LinePaintingApplication {
         paintProgram.addUniform(paperDensityUniformVarName);
         paintProgram.addUniform(brushDensityUniformVarName);
         paintProgram.addUniform(strokePressureUniformVarName);
+        paintProgram.addUniform(sharpnessUniformVarName);
+        paintProgram.addUniform(strokePressureVariationAmplitudeUniformVarName);
+        paintProgram.addUniform(strokePressureVariationFrequencyUniformVarName);
+        paintProgram.addUniform(strokeShiftVariationAmplitudeUniformVarName);
+        paintProgram.addUniform(strokeShiftVariationFrequencyUniformVarName);
+        paintProgram
+                .addUniform(strokeThicknessVariationAmplitudeUniformVarName);
+        paintProgram
+                .addUniform(strokeThicknessVariationFrequencyUniformVarName);
 
         return paintProgram;
     }

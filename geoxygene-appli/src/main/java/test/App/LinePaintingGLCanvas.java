@@ -363,7 +363,27 @@ public class LinePaintingGLCanvas extends AWTGLCanvas implements MouseListener,
             program.setUniform1f(
                     LinePaintingApplication.strokePressureUniformVarName,
                     (float) (this.app.strokePressure));
-
+            program.setUniform1f(
+                    LinePaintingApplication.sharpnessUniformVarName,
+                    (float) (this.app.sharpness));
+            program.setUniform1f(
+                    LinePaintingApplication.strokePressureVariationAmplitudeUniformVarName,
+                    (float) (this.app.strokePressureVariationAmplitude));
+            program.setUniform1f(
+                    LinePaintingApplication.strokePressureVariationFrequencyUniformVarName,
+                    (float) (this.app.strokePressureVariationFrequency));
+            program.setUniform1f(
+                    LinePaintingApplication.strokeShiftVariationAmplitudeUniformVarName,
+                    (float) (this.app.strokeShiftVariationAmplitude));
+            program.setUniform1f(
+                    LinePaintingApplication.strokeShiftVariationFrequencyUniformVarName,
+                    (float) (this.app.strokeShiftVariationFrequency));
+            program.setUniform1f(
+                    LinePaintingApplication.strokeThicknessVariationAmplitudeUniformVarName,
+                    (float) (this.app.strokeThicknessVariationAmplitude));
+            program.setUniform1f(
+                    LinePaintingApplication.strokeThicknessVariationFrequencyUniformVarName,
+                    (float) (this.app.strokeThicknessVariationFrequency));
             // FIXME set textures
         } catch (GLException e1) {
             e1.printStackTrace();
