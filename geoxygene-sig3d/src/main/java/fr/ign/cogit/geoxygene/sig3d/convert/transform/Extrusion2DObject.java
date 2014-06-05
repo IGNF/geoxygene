@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -15,6 +17,8 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
 import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -33,11 +37,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -47,18 +51,36 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  * 
  * @version 0.1
  * 
- *
- * Classe utilitaire permettant d'effectuer des transformations entre
- * différentes géométries geoxygene. Permet de tansformer certains types
- * d'entites de la 2D à la 3D Class wich enable converting geomtry to one format
- * to an other one This class is utilized to transform Java3D Solid Geometry
- * into GeOxygene Geometry
+ * 
+ *          Classe utilitaire permettant d'effectuer des transformations entre
+ *          différentes géométries geoxygene. Permet de tansformer certains
+ *          types d'entites de la 2D à la 3D Class wich enable converting
+ *          geomtry to one format to an other one This class is utilized to
+ *          transform Java3D Solid Geometry into GeOxygene Geometry
  * 
  */
 public class Extrusion2DObject {
 
   private final static Logger logger = Logger.getLogger(Extrusion2DObject.class
       .getName());
+
+  public static IFeatureCollection<IFeature> convertFromFeatureColllection(
+      IFeatureCollection<IFeature> featC, double zMin, double zMax) {
+
+    IFeatureCollection<IFeature> featCollOut = new FT_FeatureCollection<>();
+
+    for (IFeature feat : featC) {
+      featCollOut.add(convertFromFeature(feat, zMin, zMax));
+
+    }
+
+    return featCollOut;
+  }
+
+  public static IFeature convertFromFeature(IFeature feat, double zMin,
+      double zMax) {
+    return new DefaultFeature(convertFromGeometry(feat.getGeom(), zMin, zMax));
+  }
 
   /**
    * Convertit une geometrie GeOxygene 2D en geometrie Geoxygene(en appliquant
@@ -74,8 +96,10 @@ public class Extrusion2DObject {
   @SuppressWarnings("unchecked")
   public static IGeometry convertFromGeometry(IGeometry geom, double zMin,
       double zMax) {
-	  
-	if (geom == null){return null;}
+
+    if (geom == null) {
+      return null;
+    }
 
     IGeometry geomFinale = null;
 
@@ -276,7 +300,7 @@ public class Extrusion2DObject {
       // On boucle en sens inverse pour des questions d'orientation
       // On 'saute' un point car la géométrie est fermée
       // et cela ferait une face avec 2 points
- 
+
       for (int j = nbpoints - 2; j >= 0; j--) {
         DirectPositionList fTemp = new DirectPositionList();
         dpInit = dPL.get(j);
@@ -311,10 +335,10 @@ public class Extrusion2DObject {
 
       }
 
-      if(lPFaceSup.size() == 0){
+      if (lPFaceSup.size() == 0) {
         return null;
       }
-      
+
       // On ferme
       lPFaceSup.add(lPFaceSup.get(0));
       lPFaceInf.add(lPFaceInf.get(0));
@@ -346,8 +370,8 @@ public class Extrusion2DObject {
         // On ajoute les faces sup et inf à la liste des faces formant
         // l'objet
         pLFacet.add(poly);
-        
-        //On inverse la face inférieure
+
+        // On inverse la face inférieure
 
         pLFacet.add(poly2);
 
@@ -402,8 +426,8 @@ public class Extrusion2DObject {
       // On applique la transformation a chaque polygone
       IPolygon p = (GM_Polygon) mp.get(indpoly);
       IGeometry obj = Extrusion2DObject.convertFromPolygon(p, zMin, zMax);
-      
-      if(obj == null){
+
+      if (obj == null) {
         continue;
       }
 
