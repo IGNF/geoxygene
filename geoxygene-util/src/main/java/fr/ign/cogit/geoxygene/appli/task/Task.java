@@ -27,12 +27,12 @@
 
 package fr.ign.cogit.geoxygene.appli.task;
 
+import java.lang.Thread.UncaughtExceptionHandler;
+
 /**
- * @author JeT
- *         A task is an asynchronous process which has some properties:
- *         - a name
- *         - its progress value can be followed between 0 and 1
- *         - task can be paused or stopped
+ * @author JeT A task is an asynchronous process which has some properties: - a
+ *         name - its progress value can be followed between 0 and 1 - task can
+ *         be paused or stopped
  */
 public interface Task extends Runnable {
     /**
@@ -46,6 +46,8 @@ public interface Task extends Runnable {
      * @return true if the task is correctly launched
      */
     public Thread start();
+
+    public Thread start(UncaughtExceptionHandler uncaughtExceptionHandler);
 
     /**
      * @return the task progress between 0 & 1
@@ -111,4 +113,5 @@ public interface Task extends Runnable {
      * @return the thread associated with this task. null if not started
      */
     public Thread getThread();
+
 }

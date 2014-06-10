@@ -24,7 +24,8 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  *******************************************************************************/
-package fr.ign.cogit.geoxygene.util.gl;
+
+package fr.ign.cogit.geoxygene.appli.gl;
 
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
@@ -45,53 +46,66 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.util.gl.AbstractGLComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLInput;
+import fr.ign.cogit.geoxygene.util.gl.GLMesh;
+import fr.ign.cogit.geoxygene.util.gl.GLRenderingCapability;
+import fr.ign.cogit.geoxygene.util.gl.GLTexture;
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
+
 /**
- * GL Primitive is a representation of a 2D Object with 2D coordinates, Texture
- * coordinates and Color components It is composed of primitives types which are
- * themselves composed of index lists so it can mix different type of
- * primitives, but the insertion order is not kept
- * 
  * @author JeT
  * 
  */
-public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
-        implements GLComplex {
+public class GLPaintingComplex extends AbstractGLComplex<GLPaintingVertex> {
 
-    private static final Logger logger = Logger.getLogger(GLSimpleComplex.class
-            .getName()); // logger
+    private static final Logger logger = Logger
+            .getLogger(GLPaintingComplex.class.getName()); // logger
 
     // private static final Integer[] IntegerConversionObject = new Integer[]
     // {}; // static object for list to array conversion
-    private FloatBuffer verticesBuffer = null; // Vertex buffer (VBO array)
-                                               // constructed from vertices
+    // raw list of all vertices
+    private FloatBuffer verticesBuffer = null; // Vertex buffer (VBO
+                                               // array)
+    // constructed from vertices
     private IntBuffer indicesBuffer = null; // Index Buffer (VBO indices)
-                                            // constructed from flattened
-                                            // indicesPerType
-    private Texture texture = null;
 
+    private double overallOpacity = 1.;
     private int vaoId = -1; // VAO index
     private int vboVerticesId = -1; // VBO Vertices index
     private int vboIndicesId = -1; // VBO Indices index
-    private double overallOpacity = 1.;
-    private GLSimpleRenderingCapability[] renderingCapabilities = null;
-    // (invalid for transparency)
-    int stride = -1;
+    private GLPaintingRenderingCapability[] renderingCapabilities = null;
+    private StrokeTextureExpressiveRendering expressiveRendering = null;
+    private GLTexture brushTexture = null;
+    private GLTexture paperTexture = null;
 
-    public enum GLSimpleRenderingCapability implements GLRenderingCapability {
-        POSITION, COLOR, TEXTURE,
+    public enum GLPaintingRenderingCapability implements GLRenderingCapability {
+        EXPRESSIVE_STROKE_TEXTURE
     }
 
     /**
      * Default constructor
      */
-    public GLSimpleComplex(String id, double minX, double minY) {
+    public GLPaintingComplex(String id, double minX, double minY) {
         super(id, minX, minY);
-        this.addInput(GLSimpleVertex.vertexPositionVariableName,
-                GLSimpleVertex.vertexPostionLocation, GL11.GL_FLOAT, 3, false);
-        this.addInput(GLSimpleVertex.vertexUVVariableName,
-                GLSimpleVertex.vertexUVLocation, GL11.GL_FLOAT, 2, false);
-        this.addInput(GLSimpleVertex.vertexColorVariableName,
-                GLSimpleVertex.vertexColorLocation, GL11.GL_FLOAT, 4, false);
+        this.addInput(GLPaintingVertex.vertexPositionVariableName,
+                GLPaintingVertex.vertexPositionLocation, GL11.GL_FLOAT, 2,
+                false);
+        this.addInput(GLPaintingVertex.vertexUVVariableName,
+                GLPaintingVertex.vertexUVLocation, GL11.GL_FLOAT, 2, false);
+        this.addInput(GLPaintingVertex.vertexNormalVariableName,
+                GLPaintingVertex.vertexNormalLocation, GL11.GL_FLOAT, 2, false);
+        this.addInput(GLPaintingVertex.vertexCurvatureVariableName,
+                GLPaintingVertex.vertexCurvatureLocation, GL11.GL_FLOAT, 1,
+                false);
+        this.addInput(GLPaintingVertex.vertexThicknessVariableName,
+                GLPaintingVertex.vertexThicknessLocation, GL11.GL_FLOAT, 1,
+                false);
+        this.addInput(GLPaintingVertex.vertexColorVariableName,
+                GLPaintingVertex.vertexColorLocation, GL11.GL_FLOAT, 4, false);
+        this.addInput(GLPaintingVertex.vertexMaxUVariableName,
+                GLPaintingVertex.vertexMaxULocation, GL11.GL_FLOAT, 1, false);
 
     }
 
@@ -115,56 +129,75 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
     }
 
     /**
-     * @return the renderingCapability
+     * @return the brushTexture
      */
-    @Override
-    public GLSimpleRenderingCapability[] getRenderingCapabilities() {
-        if (this.renderingCapabilities == null) {
-            if (this.getTexture() != null) {
-                this.renderingCapabilities = new GLSimpleRenderingCapability[] {
-                        GLSimpleRenderingCapability.COLOR,
-                        GLSimpleRenderingCapability.TEXTURE };
-            } else {
-                this.renderingCapabilities = new GLSimpleRenderingCapability[] { GLSimpleRenderingCapability.COLOR };
-            }
+    public GLTexture getBrushTexture() {
+        if (this.brushTexture == null) {
+            this.brushTexture = GLTextureManager.getInstance().getTexture(
+                    this.getExpressiveRendering().getBrushTextureFilename());
+            this.brushTexture.setMipmap(false);
         }
-        return this.renderingCapabilities;
+        return this.brushTexture;
     }
 
     /**
-     * @return the texture
+     * @param brushTexture
+     *            the brushTexture to set
      */
-    public Texture getTexture() {
-        return this.texture;
+    public void setBrushTexture(GLTexture brushTexture) {
+        this.brushTexture = brushTexture;
     }
 
     /**
-     * @param texture
-     *            the texture to set
+     * invalidate lazy getter
      */
-    public void setTexture(Texture texture) {
-        this.texture = texture;
-        this.renderingCapabilities = null;
-
+    public void invalidateBrushTexture() {
+        this.brushTexture = null;
     }
 
     /**
-     * Set the color of all vertices contained in this complex
-     * 
-     * @param color
-     *            color to be set to all vertices
+     * @return the paperTexture
      */
-    public void setColor(final java.awt.Color color) {
-        for (GLSimpleVertex vertex : this.getVertices()) {
-            vertex.setRGBA(color);
+    public GLTexture getPaperTexture() {
+        if (this.paperTexture == null) {
+            this.paperTexture = GLTextureManager.getInstance().getTexture(
+                    this.getExpressiveRendering().getPaperTextureFilename());
+            this.paperTexture.setMipmap(false);
         }
+        return this.paperTexture;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.util.gl.GLComplex#invalidateBuffers()
+    /**
+     * @param paperTexture
+     *            the paperTexture to set
      */
+    public void setPaperTexture(GLTexture paperTexture) {
+        this.paperTexture = paperTexture;
+    }
+
+    /**
+     * invalidate lazy getter
+     */
+    public void invalidatePaperTexture() {
+        this.paperTexture = null;
+    }
+
+    /**
+     * @return the expressiveRendering
+     */
+    public StrokeTextureExpressiveRendering getExpressiveRendering() {
+        return this.expressiveRendering;
+    }
+
+    /**
+     * @param expressiveRendering
+     *            the expressiveRendering to set
+     */
+    public void setExpressiveRendering(
+            StrokeTextureExpressiveRendering expressiveRendering) {
+        this.expressiveRendering = expressiveRendering;
+    }
+
     @Override
     public void invalidateBuffers() {
         if (this.vboIndicesId >= 0) {
@@ -183,32 +216,20 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.util.gl.GLComplex#getFlippedVerticesBuffer()
-     */
     @Override
     public FloatBuffer getFlippedVerticesBuffer() {
         if (this.verticesBuffer == null) {
             this.verticesBuffer = BufferUtils
                     .createFloatBuffer(this.getVertices().size()
                             * this.getStride() / (Float.SIZE / 8));
-            // BufferUtils.createByteBuffer(this.vertices.size() *
-            // GLSimpleVertex.VERTEX_BYTESIZE).asFloatBuffer();
-            for (GLSimpleVertex vertex : this.getVertices()) {
-                // Add position, color and texture floats to the buffer
-                // System.err.println("add XYZ to vertex buffer: " +
-                // Arrays.toString(vertex.getXYZ()));
-                // System.err.println("add UV to vertex buffer: " +
-                // Arrays.toString(vertex.getUV()));
-                // System.err.println("add RGBA to vertex buffer: " +
-                // Arrays.toString(vertex.getRGBA()));
-                this.verticesBuffer.put(new float[] { (vertex.getXYZ()[0]),
-                        (vertex.getXYZ()[1]), vertex.getXYZ()[2] });
+            for (GLPaintingVertex vertex : this.getVertices()) {
+                this.verticesBuffer.put(vertex.getXY());
                 this.verticesBuffer.put(vertex.getUV());
-                this.verticesBuffer.put(vertex.getRGBA());
-
+                this.verticesBuffer.put(vertex.getNormal());
+                this.verticesBuffer.put(vertex.getCurvature());
+                this.verticesBuffer.put(vertex.getThickness());
+                this.verticesBuffer.put(vertex.getColor());
+                this.verticesBuffer.put(vertex.getMaxU());
             }
             this.verticesBuffer.flip();
 
@@ -217,11 +238,6 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
         return this.verticesBuffer;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.util.gl.GLComplex#getFlippedIndicesBuffer()
-     */
     @Override
     public IntBuffer getFlippedIndicesBuffer() {
         if (this.indicesBuffer == null) {
@@ -373,42 +389,12 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
         return this.vboIndicesId;
     }
 
-    // /**
-    // * Add all meshes from a gl complex
-    // *
-    // * @param subComplex
-    // */
-    // @Override
-    // public void addGLComplex(GLComplex subComplex) {
-    //
-    // if (subComplex instanceof GLSimpleComplex) {
-    // GLSimpleComplex subComplex = (GLSimpleComplex) subComplex;
-    //
-    // }
-    // // map between old indices and new ones
-    // HashMap<Integer, Integer> indicesLUT = new HashMap<Integer, Integer>();
-    //
-    // if (subComplex == null) {
-    // return;
-    // }
-    // if (subComplex.mayOverlap()) {
-    // this.setMayOverlap(true);
-    // }
-    // // add all vertices
-    // int vertexOldIndex = 0;
-    // for (GLSimpleVertex vertex : subComplex.getVertices()) {
-    // int vertexNewIndex = this.addVertex(vertex);
-    // indicesLUT.put(vertexOldIndex, vertexNewIndex);
-    // vertexOldIndex++;
-    // }
-    // // add a copy of all meshes (map indices with computed LUT)
-    // for (GLMesh oldMesh : subComplex.getMeshes()) {
-    // GLMesh newMesh = this.addGLMesh(oldMesh.getGlType());
-    // for (int oldIndex : oldMesh.getIndices()) {
-    // newMesh.addIndex(indicesLUT.get(oldIndex));
-    // }
-    // }
-    // this.invalidateBuffers();
-    // }
+    @Override
+    public GLRenderingCapability[] getRenderingCapabilities() {
+        if (this.renderingCapabilities == null) {
+            this.renderingCapabilities = new GLPaintingRenderingCapability[] { GLPaintingRenderingCapability.EXPRESSIVE_STROKE_TEXTURE };
+        }
+        return this.renderingCapabilities;
+    }
 
 }

@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.Util;
 
+import test.app.GLPaintingVertex;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.Viewport;
@@ -372,7 +373,28 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
     public static final String colorTexture1UniformVarName = "colorTexture1";
     public static final String antialiasingSizeUniformVarName = "antialiasingSize";
 
+    public static final String paperTextureUniformVarName = "paperSampler";
+    public static final String brushTextureUniformVarName = "brushSampler";
+    public static final String brushWidthUniformVarName = "brushWidth";
+    public static final String brushHeightUniformVarName = "brushHeight";
+    public static final String brushStartWidthUniformVarName = "brushStartWidth";
+    public static final String brushEndWidthUniformVarName = "brushEndWidth";
+    // width of one brush pixel (mm)
+    public static final String brushScaleUniformVarName = "brushScale";
+    public static final String paperScaleUniformVarName = "paperScale";
+    public static final String paperDensityUniformVarName = "paperDensity";
+    public static final String brushDensityUniformVarName = "brushDensity";
+    public static final String strokePressureUniformVarName = "strokePressure";
+    public static final String sharpnessUniformVarName = "sharpness";
+    public static final String strokePressureVariationAmplitudeUniformVarName = "pressureVariationAmplitude";
+    public static final String strokePressureVariationWavelengthUniformVarName = "pressureVariationWavelength";
+    public static final String strokeShiftVariationAmplitudeUniformVarName = "shiftVariationAmplitude";
+    public static final String strokeShiftVariationWavelengthUniformVarName = "shiftVariationWavelength";
+    public static final String strokeThicknessVariationAmplitudeUniformVarName = "thicknessVariationAmplitude";
+    public static final String strokeThicknessVariationWavelengthUniformVarName = "thicknessVariationWavelength";
+
     public static final String basicProgramName = "Basic";
+    public static final String linePaintingProgramName = "LinePainting";
     public static final String worldspaceColorProgramName = "WorldspaceColor";
     public static final String worldspaceTextureProgramName = "WorldspaceTexture";
     public static final String screenspaceColorProgramName = "ScreenspaceColor";
@@ -407,8 +429,77 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                     .addProgram(createScreenspaceTextureProgram(screenspaceVertexShader));
             glContext
                     .addProgram(createScreenspaceAntialiasedProgram(screenspaceVertexShader));
+
+            // line painting
+            int paintVertexShader = GLProgram
+                    .createVertexShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/paint.vert.glsl");
+            int paintFragmentShader = GLProgram
+                    .createFragmentShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/paint.frag.glsl");
+            glContext.addProgram(createPaintProgram(paintVertexShader,
+                    paintFragmentShader));
         }
         return glContext;
+    }
+
+    /**
+     * line painting program
+     */
+    private static GLProgram createPaintProgram(int basicVertexShader,
+            int basicFragmentShader) throws GLException {
+        // basic program
+        GLProgram paintProgram = new GLProgram(linePaintingProgramName);
+        paintProgram.setVertexShader(basicVertexShader);
+        paintProgram.setFragmentShader(basicFragmentShader);
+        paintProgram.addInputLocation(
+                GLPaintingVertex.vertexPositionVariableName,
+                GLPaintingVertex.vertexPositionLocation);
+        paintProgram.addInputLocation(GLPaintingVertex.vertexUVVariableName,
+                GLPaintingVertex.vertexUVLocation);
+        paintProgram.addInputLocation(
+                GLPaintingVertex.vertexNormalVariableName,
+                GLPaintingVertex.vertexNormalLocation);
+        paintProgram.addInputLocation(
+                GLPaintingVertex.vertexCurvatureVariableName,
+                GLPaintingVertex.vertexCurvatureLocation);
+        paintProgram.addInputLocation(
+                GLPaintingVertex.vertexThicknessVariableName,
+                GLPaintingVertex.vertexThicknessLocation);
+        paintProgram.addInputLocation(GLPaintingVertex.vertexColorVariableName,
+                GLPaintingVertex.vertexColorLocation);
+        paintProgram.addInputLocation(GLPaintingVertex.vertexMaxUVariableName,
+                GLPaintingVertex.vertexMaxULocation);
+        paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m02ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m11ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m12ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(screenWidthUniformVarName);
+        paintProgram.addUniform(screenHeightUniformVarName);
+        paintProgram.addUniform(paperTextureUniformVarName);
+        paintProgram.addUniform(brushTextureUniformVarName);
+        paintProgram.addUniform(brushWidthUniformVarName);
+        paintProgram.addUniform(brushHeightUniformVarName);
+        paintProgram.addUniform(brushStartWidthUniformVarName);
+        paintProgram.addUniform(brushEndWidthUniformVarName);
+        paintProgram.addUniform(brushScaleUniformVarName);
+        paintProgram.addUniform(paperScaleUniformVarName);
+        paintProgram.addUniform(paperDensityUniformVarName);
+        paintProgram.addUniform(brushDensityUniformVarName);
+        paintProgram.addUniform(strokePressureUniformVarName);
+        paintProgram.addUniform(sharpnessUniformVarName);
+        paintProgram.addUniform(strokePressureVariationAmplitudeUniformVarName);
+        paintProgram
+                .addUniform(strokePressureVariationWavelengthUniformVarName);
+        paintProgram.addUniform(strokeShiftVariationAmplitudeUniformVarName);
+        paintProgram.addUniform(strokeShiftVariationWavelengthUniformVarName);
+        paintProgram
+                .addUniform(strokeThicknessVariationAmplitudeUniformVarName);
+        paintProgram
+                .addUniform(strokeThicknessVariationWavelengthUniformVarName);
+        paintProgram.addUniform(globalOpacityUniformVarName);
+        paintProgram.addUniform(objectOpacityUniformVarName);
+
+        return paintProgram;
     }
 
     /**

@@ -38,16 +38,19 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.util.ImageUtil;
 import fr.ign.cogit.geoxygene.util.gl.Tile;
 
 /**
- * @author JeT
- *         a Tile is a small image used to fill textures with
- *         it contains a mask extracted from the transparency 0: pixel 255:no
- *         pixel
+ * @author JeT a Tile is a small image used to fill textures with it contains a
+ *         mask extracted from the transparency 0: pixel 255:no pixel
  */
 public class DefaultTile implements Tile {
+
+    private static final Logger logger = Logger.getLogger(DefaultTile.class
+            .getName()); // logger
 
     private BufferedImage image = null;
     private List<Point> borders = null;
@@ -150,7 +153,12 @@ public class DefaultTile implements Tile {
      */
     public static Tile read(URL url) throws IOException {
         DefaultTile tile = new DefaultTile();
-        tile.setImage(ImageIO.read(url));
+        try {
+            tile.setImage(ImageIO.read(url));
+        } catch (IOException e) {
+            logger.error("Cannot read url '" + url + "'");
+            throw e;
+        }
         return tile;
     }
 
@@ -195,9 +203,8 @@ public class DefaultTile implements Tile {
     }
 
     /**
-     * create the mask and border of the tile.
-     * the tile image transparency is set to binary values (0 || 255)
-     * image alpha = 255 (opaque) when mask = 0
+     * create the mask and border of the tile. the tile image transparency is
+     * set to binary values (0 || 255) image alpha = 255 (opaque) when mask = 0
      * image alpha = 0 (transparent) when mask = 255
      */
     private void computeMaskAndBorders() {
@@ -210,9 +217,12 @@ public class DefaultTile implements Tile {
         this.size = 0;
         this.mask = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
         this.border = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
-        byte[] imagePixels = ((DataBufferByte) this.image.getRaster().getDataBuffer()).getData();
-        byte[] maskPixels = ((DataBufferByte) this.mask.getRaster().getDataBuffer()).getData();
-        byte[] borderPixels = ((DataBufferByte) this.border.getRaster().getDataBuffer()).getData();
+        byte[] imagePixels = ((DataBufferByte) this.image.getRaster()
+                .getDataBuffer()).getData();
+        byte[] maskPixels = ((DataBufferByte) this.mask.getRaster()
+                .getDataBuffer()).getData();
+        byte[] borderPixels = ((DataBufferByte) this.border.getRaster()
+                .getDataBuffer()).getData();
 
         for (int y = 0, lMask = 0; y < h; y++) {
             for (int x = 0; x < w; x++, lMask++) {
@@ -223,12 +233,20 @@ public class DefaultTile implements Tile {
                 if (in) {
                     this.size++;
                     maskPixels[lMask] = MASK_IN; // mask black : visible pixel
-                    imagePixels[lImage] = (byte) 255; // alpha = 255 : pure opaque pixel
+                    imagePixels[lImage] = (byte) 255; // alpha = 255 : pure
+                                                      // opaque pixel
                     // border
-                    //                    if (x == 0) {
-                    if (x == 0 || y == 0 || x == w - 1 || y == h - 1 || !this.imagePixelIsInMask(imagePixels, lImage - 4)
-                            || !this.imagePixelIsInMask(imagePixels, lImage + 4) || !this.imagePixelIsInMask(imagePixels, lImage - 4 * w)
-                            || !this.imagePixelIsInMask(imagePixels, lImage + 4 * w)) {
+                    // if (x == 0) {
+                    if (x == 0
+                            || y == 0
+                            || x == w - 1
+                            || y == h - 1
+                            || !this.imagePixelIsInMask(imagePixels, lImage - 4)
+                            || !this.imagePixelIsInMask(imagePixels, lImage + 4)
+                            || !this.imagePixelIsInMask(imagePixels, lImage - 4
+                                    * w)
+                            || !this.imagePixelIsInMask(imagePixels, lImage + 4
+                                    * w)) {
                         this.borders.add(new Point(x, y));
                         borderPixels[lMask] = MASK_IN;
 
@@ -237,8 +255,10 @@ public class DefaultTile implements Tile {
                     }
                 } else {
                     borderPixels[lMask] = MASK_OUT;
-                    maskPixels[lMask] = MASK_OUT; // mask white : invisible pixel
-                    imagePixels[lImage] = (byte) 0; // alpha = 0 : pure transparent pixel 
+                    maskPixels[lMask] = MASK_OUT; // mask white : invisible
+                                                  // pixel
+                    imagePixels[lImage] = (byte) 0; // alpha = 0 : pure
+                                                    // transparent pixel
                 }
             }
         }

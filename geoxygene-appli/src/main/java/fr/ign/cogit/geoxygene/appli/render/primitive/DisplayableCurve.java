@@ -40,11 +40,18 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
+import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
+import fr.ign.cogit.geoxygene.appli.gl.LinePaintingTesselator;
 import fr.ign.cogit.geoxygene.appli.gl.LineTesselator;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
+import fr.ign.cogit.geoxygene.function.ConstantFunction;
+import fr.ign.cogit.geoxygene.function.Function1D;
+import fr.ign.cogit.geoxygene.function.FunctionEvaluationException;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRendering;
+import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 
@@ -59,6 +66,10 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
 
     private static final Colorizer partialColorizer = new SolidColorizer(
             Color.red);
+    public static final Function1D DefaultLineWidthFunction = new ConstantFunction(
+            1);
+    public static final Function1D DefaultLineShiftFunction = new ConstantFunction(
+            0);
     private final List<ILineString> curves = new ArrayList<ILineString>();
     private Symbolizer symbolizer = null;
     private List<GLComplex> fullRepresentation = null;
@@ -162,7 +173,11 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
 
         if (this.symbolizer instanceof LineSymbolizer) {
             LineSymbolizer lineSymbolizer = (LineSymbolizer) this.symbolizer;
-            this.generateWithLineSymbolizer(lineSymbolizer);
+            if (lineSymbolizer.getExpressiveRendering() == null) {
+                this.generateWithLineSymbolizer(lineSymbolizer);
+            } else {
+                this.generateWithExpressiveLineSymbolizer(lineSymbolizer);
+            }
         } else {
             logger.error("Curve rendering do not handle "
                     + this.symbolizer.getClass().getSimpleName());
@@ -193,6 +208,85 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
         line.setOverallOpacity(symbolizer.getStroke().getColor().getAlpha());
         complexes.add(line);
         this.fullRepresentation = complexes;
+    }
+
+    private void generateWithExpressiveLineSymbolizer(LineSymbolizer symbolizer) {
+        ExpressiveRendering style = symbolizer.getExpressiveRendering();
+        if (!(style instanceof StrokeTextureExpressiveRendering)) {
+            throw new IllegalStateException(
+                    "LineSymbolizer can only handle StrokeTextureExpressiveRendering not "
+                            + style.getClass().getSimpleName());
+        }
+        StrokeTextureExpressiveRendering strtex = (StrokeTextureExpressiveRendering) style;
+        List<GLComplex> complexes = new ArrayList<GLComplex>();
+        // return GLComplexFactory.createFilledPolygon(multiSurface,
+        // symbolizer.getStroke().getColor());
+        IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
+        double minX = envelope.minX();
+        double minY = envelope.minY();
+
+        // BasicStroke awtStroke =
+        // GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport,
+        // symbolizer);
+        // GLComplex outline =
+        // GLComplexFactory.createOutlineMultiSurface(this.polygons, awtStroke,
+        // minX, minY);
+
+        // GLPaintingComplex complex = DisplayableCurve.createComplex(
+        // this.getName() + "-expressive-full", this.curves, minX, minY,
+        // new ConstantFunction(symbolizer.getStroke().getStrokeWidth()),
+        // DefaultLineShiftFunction, strtex.getSampleSize(), Math.PI
+        // * strtex.getMinAngle() / 180.);
+        GLPaintingComplex complex = new GLPaintingComplex(this.getName()
+                + "-expressive-full", minX, minY);
+        complex.setExpressiveRendering(strtex);
+        for (ILineString line : this.curves) {
+            try {
+                LinePaintingTesselator.tesselateThickLine(complex, line
+                        .getControlPoint(), DefaultLineWidthFunction,
+                        DefaultLineShiftFunction, strtex.getSampleSize(),
+                        strtex.getMinAngle(), minX, minY, new SolidColorizer(
+                                symbolizer.getStroke().getColor()));
+                // LinePaintingTesselator
+                // .tesselateThickLine(complex, line.getControlPoint(),
+                // widthFunction, shiftFunction, sampleSize,
+                // minAngle, minX, minY, new RandomColorizer());
+            } catch (FunctionEvaluationException e) {
+                e.printStackTrace();
+            }
+        }
+        // complex.setColor(symbolizer.getStroke().getColor());
+        complex.setOverallOpacity(symbolizer.getStroke().getColor().getAlpha());
+        complexes.add(complex);
+        this.fullRepresentation = complexes;
+    }
+
+    /**
+     * @param widthFunction
+     * @param shiftFunction
+     * @return
+     */
+    public static GLPaintingComplex createComplex(String id,
+            List<ILineString> lines, double minX, double minY,
+            Function1D widthFunction, Function1D shiftFunction,
+            double sampleSize, double minAngle) {
+        GLPaintingComplex complex = new GLPaintingComplex(id, minX, minY);
+        for (ILineString line : lines) {
+            try {
+                LinePaintingTesselator.tesselateThickLine(complex, line
+                        .getControlPoint(), widthFunction, shiftFunction,
+                        sampleSize, minAngle, minX, minY, new SolidColorizer(
+                                Color.black));
+                // LinePaintingTesselator
+                // .tesselateThickLine(complex, line.getControlPoint(),
+                // widthFunction, shiftFunction, sampleSize,
+                // minAngle, minX, minY, new RandomColorizer());
+            } catch (FunctionEvaluationException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return complex;
     }
 
     /*

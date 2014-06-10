@@ -80,6 +80,22 @@ public abstract class AbstractTask implements Task {
         return this.taskThread;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.task.Task#start()
+     */
+    @Override
+    public Thread start(Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+        if (this.taskThread != null) {
+            return null;
+        }
+        this.taskThread = new Thread(this, this.getName() + "-thread");
+        this.taskThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
+        this.taskThread.start();
+        return this.taskThread;
+    }
+
     /**
      * @return the thread associated with this task
      */

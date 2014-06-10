@@ -201,6 +201,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
      */
     @Override
     public void run() {
+        // System.err.println("********************** START " + this.getName());
         super.setState(TaskState.INITIALIZING);
         this.fullRepresentation = null;
         super.setState(TaskState.RUNNING);
@@ -214,9 +215,13 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
             this.generateWithDistanceFieldTexturedPolygonSymbolizer(polygonSymbolizer);
         } else if (this.symbolizer instanceof TexturedPolygonSymbolizer) {
             TexturedPolygonSymbolizer polygonSymbolizer = (TexturedPolygonSymbolizer) this.symbolizer;
+            // System.err.println("********************** GENERATE WITH TEXTURE "
+            // + this.getName());
             this.generateWithTexturedPolygonSymbolizer(polygonSymbolizer);
         } else if (this.symbolizer instanceof PolygonSymbolizer) {
             PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.symbolizer;
+            // System.err.println("********************** GENERATE WITH COLOR "
+            // + this.getName());
             this.generateWithPolygonSymbolizer(polygonSymbolizer);
         } else {
             super.setState(TaskState.ERROR);
@@ -224,6 +229,8 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
         }
         super.setState(TaskState.FINALIZING);
         super.setState(TaskState.FINISHED);
+        // System.err.println("********************** FINISHED " +
+        // this.getName());
     }
 
     synchronized private void generateWithPolygonSymbolizer(
@@ -243,17 +250,22 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
                 return;
             }
             textureTask.addTaskListener(this);
-            texture.setTextureDimension(2000, 2000);
-            // FIXME: is this dimension really useful ???
+            // texture.setTextureDimension(2000, 2000);
+            // // FIXME: is this dimension really useful ???
             textureTask.start();
             // wait for texture computation completion
             BufferedImage imgTexture = null;
-            while (!textureTask.getState().isFinished()) {
+            while (textureTask.getState().isRunning()) {
                 try {
-                    this.wait();
+                    this.wait(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+            if (textureTask.getState().isError()) {
+                logger.error("texture generation task "
+                        + textureTask.getState() + " finished with an error");
+                return;
             }
             imgTexture = textureTask.getTexture().getTextureImage();
             // draw the texture image into resulting image
@@ -285,9 +297,11 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
             double minY = envelope.minY();
             SolidColorizer colorizer = new SolidColorizer(symbolizer.getFill()
                     .getColor());
+            // System.err.println("create filled polygon " + this.getName());
             GLSimpleComplex content = GLComplexFactory.createFilledPolygons(
                     this.getName() + "-filled", this.polygons, colorizer,
                     new BasicParameterizer(envelope, false, false), minX, minY);
+            // System.err.println("created filled polygon " + this.getName());
             content.setColor(symbolizer.getFill().getColor());
             complexes.add(content);
 
@@ -298,9 +312,11 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
             // GLComplexFactory.createOutlineMultiSurface(this.polygons,
             // awtStroke, minX, minY);
             colorizer = new SolidColorizer(symbolizer.getStroke().getColor());
+            // System.err.println("create outlined polygon " + this.getName());
             GLSimpleComplex outline = GLComplexFactory.createPolygonOutlines(
                     this.getName() + "-outline", this.polygons,
                     symbolizer.getStroke(), minX, minY);
+            // System.err.println("created outlined polygon " + this.getName());
             outline.setColor(symbolizer.getStroke().getColor());
             complexes.add(outline);
             this.fullRepresentation = complexes;
@@ -391,7 +407,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
 
     @Override
     synchronized public void onStateChange(Task task, TaskState oldState) {
-        if (task.getState().isFinished()) {
+        if (!task.getState().isRunning()) {
             this.notify();
             task.removeTaskListener(this);
         }

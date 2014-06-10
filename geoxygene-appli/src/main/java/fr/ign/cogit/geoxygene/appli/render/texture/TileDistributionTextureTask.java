@@ -80,21 +80,25 @@ import fr.ign.cogit.geoxygene.util.graphcut.GraphCut;
  * @author JeT
  * 
  */
-public class TileDistributionTextureTask extends AbstractTextureTask<TileDistributionTexture> {
+public class TileDistributionTextureTask extends
+        AbstractTextureTask<TileDistributionTexture> {
 
-    private static final Logger logger = Logger.getLogger(TileDistributionTextureTask.class.getName()); // logger
+    private static final Logger logger = Logger
+            .getLogger(TileDistributionTextureTask.class.getName()); // logger
 
     private final List<Pair<TileProbability, Tile>> tilesToBeApplied = new ArrayList<Pair<TileProbability, Tile>>();
-    private GradientTextureImage texImage; // 
+    private GradientTextureImage texImage; //
     private IEnvelope envelope = null;
-    private Shape featureShape = null; // shape corresponding to the given feature in the image texture space
-    //    private final DistanceFieldTexture texture = null;
+    private Shape featureShape = null; // shape corresponding to the given
+                                       // feature in the image texture space
+    // private final DistanceFieldTexture texture = null;
     private double minX;
     private double minY;
     private double maxX;
     private double maxY;
     private int textureWidth = -1; // final textured image width & height
-    private int textureHeight = -1; // dimension are computed using resolution and map scale
+    private int textureHeight = -1; // dimension are computed using resolution
+                                    // and map scale
     private double printResolution = 600; // expressed in DPI
     private double mapScale = 1 / 100000.; // map scale
     private double imageToPolygonFactorX;
@@ -102,9 +106,9 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
     private final List<IPolygon> polygons = new ArrayList<IPolygon>();
     private final List<IRing> rings = new ArrayList<IRing>();
     private final List<ParameterizedSegment> segments = new ArrayList<ParameterizedSegment>();
-    //    private DistanceFieldFrontierPixelRenderer pixelRenderer = null;
-    //    private final Set<Point> modifiedPixels = new HashSet<Point>();
-    //    private final AffineTransform transform = new AffineTransform();
+    // private DistanceFieldFrontierPixelRenderer pixelRenderer = null;
+    // private final Set<Point> modifiedPixels = new HashSet<Point>();
+    // private final AffineTransform transform = new AffineTransform();
     private IFeatureCollection<IFeature> featureCollection = null;
     private Viewport viewport = null;
 
@@ -126,25 +130,33 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
     private final void initTiles() throws IOException {
         for (ProbabilistTileDescriptor tileDesc : this.getTexture().getTiles()) {
             Tile tile = DefaultTile.read(new URL(tileDesc.getUrl()));
-            DistanceTileProbability p = new DistanceTileProbability(this.texImage, tileDesc.getMinDistance(), tileDesc.getMaxDistance(),
-                    tileDesc.getInRangeProbability(), tileDesc.getOutOfRangeProbability());
+            DistanceTileProbability p = new DistanceTileProbability(
+                    this.texImage, tileDesc.getMinDistance(),
+                    tileDesc.getMaxDistance(),
+                    tileDesc.getInRangeProbability(),
+                    tileDesc.getOutOfRangeProbability());
             this.tilesToBeApplied.add(new Pair<TileProbability, Tile>(p, tile));
         }
     }
 
-    public void updateContent() throws NoninvertibleTransformException {
+    synchronized public void updateContent()
+            throws NoninvertibleTransformException {
         this.setPrintResolution(this.getTexture().getTextureResolution());
         this.computeEnvelope();
 
-        this.texImage = new GradientTextureImage(this.getTextureWidth(), this.getTextureHeight());
-        this.imageToPolygonFactorX = (this.maxX - this.minX) / (this.getTextureWidth() - 1);
-        this.imageToPolygonFactorY = (this.maxY - this.minY) / (this.getTextureHeight() - 1);
+        this.texImage = new GradientTextureImage(this.getTextureWidth(),
+                this.getTextureHeight());
+        this.imageToPolygonFactorX = (this.maxX - this.minX)
+                / (this.getTextureWidth() - 1);
+        this.imageToPolygonFactorY = (this.maxY - this.minY)
+                / (this.getTextureHeight() - 1);
 
         this.polygons.clear();
         // convert the multisurface as a collection of polygons
         for (IFeature feature : this.featureCollection) {
             if (feature.getGeom() instanceof IMultiSurface<?>) {
-                IMultiSurface<?> multiSurface = (IMultiSurface<?>) feature.getGeom();
+                IMultiSurface<?> multiSurface = (IMultiSurface<?>) feature
+                        .getGeom();
                 for (IOrientableSurface surface : multiSurface.getList()) {
                     if (surface instanceof IPolygon) {
                         IPolygon polygon = (IPolygon) surface;
@@ -156,7 +168,8 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
                 }
 
             } else {
-                System.err.println("geometry type not handled : " + feature.getGeom().getClass().getSimpleName());
+                System.err.println("geometry type not handled : "
+                        + feature.getGeom().getClass().getSimpleName());
             }
         }
         // collect all rings in one list
@@ -177,9 +190,11 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
                 IDirectPosition pd2 = ring.coord().get(j);
                 double segmentLength = pd2.distance(pd1);
 
-                ParameterizedPoint p1 = new ParameterizedPoint(pd1.getX(), pd1.getY(), u, 0);
+                ParameterizedPoint p1 = new ParameterizedPoint(pd1.getX(),
+                        pd1.getY(), u, 0);
                 u += segmentLength;
-                ParameterizedPoint p2 = new ParameterizedPoint(pd2.getX(), pd2.getY(), u, 0);
+                ParameterizedPoint p2 = new ParameterizedPoint(pd2.getX(),
+                        pd2.getY(), u, 0);
 
                 this.segments.add(new ParameterizedSegment(p1, p2));
             }
@@ -189,7 +204,8 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
         IDirectPositionList viewDirectPositionList = null;
         IDirectPosition lastPosition = null;
         for (IPolygon polygon : this.polygons) {
-            IDirectPositionList list = this.viewport.toViewDirectPositionList(polygon);
+            IDirectPositionList list = this.viewport
+                    .toViewDirectPositionList(polygon);
             if (viewDirectPositionList == null) {
                 viewDirectPositionList = list;
                 lastPosition = list.get(list.size() - 1);
@@ -201,7 +217,7 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
         this.featureShape = this.toPolygonShape(viewDirectPositionList);
 
         // sort segments to begin with smallest ones
-        //        Collections.sort(this.segments, new SegmentComparator());
+        // Collections.sort(this.segments, new SegmentComparator());
 
     }
 
@@ -254,7 +270,9 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
             for (int x = 0; x < this.texImage.getWidth(); x++) {
                 TexturePixel pixel = this.texImage.getPixel(x, y);
                 if (pixel.in) {
-                    //                    pixel.vGradient = new Point2d(Math.cos(pixel.mainDirection), Math.sin(pixel.mainDirection));
+                    // pixel.vGradient = new
+                    // Point2d(Math.cos(pixel.mainDirection),
+                    // Math.sin(pixel.mainDirection));
                     pixel.vGradient = computeGradient(this.texImage, x, y);
                 } else {
                     pixel.vGradient = null;
@@ -263,7 +281,8 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
         }
     }
 
-    private static Point2d computeGradient(GradientTextureImage image, int x, int y) {
+    private static Point2d computeGradient(GradientTextureImage image, int x,
+            int y) {
         TexturePixel p = image.getPixel(x, y);
         TexturePixel pxp1 = image.getPixel(x + 1, y);
         TexturePixel pxm1 = image.getPixel(x - 1, y);
@@ -294,7 +313,8 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      *            a direct position list in view coordinates
      * @return A shape representing the polygon in view coordinates
      */
-    private Shape toPolygonShape(final IDirectPositionList viewDirectPositionList) {
+    private Shape toPolygonShape(
+            final IDirectPositionList viewDirectPositionList) {
         int numPoints = viewDirectPositionList.size();
         int[] xpoints = new int[numPoints];
         int[] ypoints = new int[numPoints];
@@ -314,10 +334,14 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      */
     public int getTextureWidth() {
         if (this.textureWidth <= 0) {
-            this.textureWidth = (int) (this.getEnvelope().width() * this.getMapScale() * this.getPrintResolution() / M_PER_INCH);
+            this.textureWidth = (int) (this.getEnvelope().width()
+                    * this.getMapScale() * this.getPrintResolution() / M_PER_INCH);
             if (this.textureWidth <= 0) {
-                logger.error("texture width is invalid: envelope height = " + this.getEnvelope().width() + " * scale = " + this.getMapScale()
-                        + " resolution = " + this.getPrintResolution() + " /  MperINCH  = " + M_PER_INCH);
+                logger.error("texture width is invalid: envelope height = "
+                        + this.getEnvelope().width() + " * scale = "
+                        + this.getMapScale() + " resolution = "
+                        + this.getPrintResolution() + " /  MperINCH  = "
+                        + M_PER_INCH);
             }
         }
         return this.textureWidth;
@@ -331,10 +355,14 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      */
     public int getTextureHeight() {
         if (this.textureHeight <= 0) {
-            this.textureHeight = (int) (this.getEnvelope().length() * this.getMapScale() * this.getPrintResolution() / M_PER_INCH);
+            this.textureHeight = (int) (this.getEnvelope().length()
+                    * this.getMapScale() * this.getPrintResolution() / M_PER_INCH);
             if (this.textureHeight <= 0) {
-                logger.error("texture height is invalid: envelope height = " + this.getEnvelope().height() + " * scale = " + this.getMapScale()
-                        + " resolution = " + this.getPrintResolution() + " /  MperINCH  = " + M_PER_INCH);
+                logger.error("texture height is invalid: envelope height = "
+                        + this.getEnvelope().height() + " * scale = "
+                        + this.getMapScale() + " resolution = "
+                        + this.getPrintResolution() + " /  MperINCH  = "
+                        + M_PER_INCH);
             }
         }
         return this.textureHeight;
@@ -400,7 +428,9 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
             }
             this.getTexture().setxRepeat(false);
             this.getTexture().setyRepeat(false);
-            this.getTexture().setDimension(new DimensionDescriptor(this.envelope.width(), this.envelope.length()));
+            this.getTexture().setDimension(
+                    new DimensionDescriptor(this.envelope.width(),
+                            this.envelope.length()));
             this.getTexture().setTextureWidth(this.getTextureWidth());
             this.getTexture().setTextureWidth(this.getTextureHeight());
 
@@ -412,7 +442,8 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
                 this.setState(TaskState.STOPPED);
                 return;
             }
-            TextureImageSamplerMipMap sampler = new TextureImageSamplerMipMap(this.texImage, tileChooser);
+            TextureImageSamplerMipMap sampler = new TextureImageSamplerMipMap(
+                    this.texImage, tileChooser);
 
             if (this.isStopRequested()) {
                 this.setState(TaskState.STOPPED);
@@ -420,13 +451,15 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
             }
 
             BufferedImage bi = null;
-            bi = this.pasteTiles(this.texImage, this.tilesToBeApplied, sampler, this.featureShape);
-            //            TextureImageUtil.save(this.texImage, "texturedImage");
-            //            ImageIO.write(bi, "PNG", new File("texturedPolygon.png"));
+            bi = this.pasteTiles(this.texImage, this.tilesToBeApplied, sampler,
+                    this.featureShape);
+            // TextureImageUtil.save(this.texImage, "texturedImage");
+            // ImageIO.write(bi, "PNG", new File("texturedPolygon.png"));
             // Flip the image vertically
             AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
             tx.translate(0, -bi.getHeight(null));
-            AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+            AffineTransformOp op = new AffineTransformOp(tx,
+                    AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
             bi = op.filter(bi, null);
 
             this.getTexture().setTextureImage(bi);
@@ -448,7 +481,8 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      * @throws NoninvertibleTransformException
      * @throws IOException
      */
-    private boolean generateGradientTexture() throws NoninvertibleTransformException, IOException {
+    private boolean generateGradientTexture()
+            throws NoninvertibleTransformException, IOException {
         this.updateContent();
         if (this.isStopRequested()) {
             this.setState(TaskState.STOPPED);
@@ -477,58 +511,72 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
             this.drawFrontier(polygon.getExterior(), 1, pixelRenderer);
 
             // draw all inner frontiers
-            for (int innerFrontierIndex = 0; innerFrontierIndex < polygon.getInterior().size(); innerFrontierIndex++) {
-                IRing innerFrontier = polygon.getInterior().get(innerFrontierIndex);
-                this.drawFrontier(innerFrontier, -innerFrontierIndex - 1, pixelRenderer);
+            for (int innerFrontierIndex = 0; innerFrontierIndex < polygon
+                    .getInterior().size(); innerFrontierIndex++) {
+                IRing innerFrontier = polygon.getInterior().get(
+                        innerFrontierIndex);
+                this.drawFrontier(innerFrontier, -innerFrontierIndex - 1,
+                        pixelRenderer);
             }
 
             this.fillHorizontally(pixelRenderer.getYs()); // #note1
         }
         // #note1
-        // fillHorizontally was previously outside the polygon loop. It is valid if polygons
-        // do not self intersect. It has been modified due to a shape file that has a full duplicated geometry
-        // may be we can assert that polygons may not self intersect and get back to previous version...
+        // fillHorizontally was previously outside the polygon loop. It is valid
+        // if polygons
+        // do not self intersect. It has been modified due to a shape file that
+        // has a full duplicated geometry
+        // may be we can assert that polygons may not self intersect and get
+        // back to previous version...
 
-        //        try {
-        //            TextureImageUtil.save(this.texImage, "1-frontiers");
-        //        } catch (IOException e) {
-        //            // TODO Auto-generated catch block
-        //            e.printStackTrace();
-        //        }
-        //        for (Map.Entry<Integer, List<Integer>> entry : pixelRenderer.getYs().entrySet()) {
-        //            System.err.println("Y(" + entry.getKey() + ") = " + Arrays.toString(entry.getValue().toArray(new Integer[0])));
-        //        }
+        // try {
+        // TextureImageUtil.save(this.texImage, "1-frontiers");
+        // } catch (IOException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
+        // for (Map.Entry<Integer, List<Integer>> entry :
+        // pixelRenderer.getYs().entrySet()) {
+        // System.err.println("Y(" + entry.getKey() + ") = " +
+        // Arrays.toString(entry.getValue().toArray(new Integer[0])));
+        // }
         // fills the inner pixels
-        //        try {
-        //            TextureImageUtil.save(this.texImage, "2-filled");
-        //        } catch (IOException e) {
-        //            // TODO Auto-generated catch block
-        //            e.printStackTrace();
-        //        }
+        // try {
+        // TextureImageUtil.save(this.texImage, "2-filled");
+        // } catch (IOException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
         Set<Point> modifiedPixels = new HashSet<Point>();
 
-        // FIXME: HACK: remove long edges (for the sea outside borders not to be considered as sea edges)
-        modifiedPixels = this.getModifiedPixelsButInfiniteDistancePixels(pixelRenderer.getModifiedPixels());
+        // FIXME: HACK: remove long edges (for the sea outside borders not to be
+        // considered as sea edges)
+        modifiedPixels = this
+                .getModifiedPixelsButInfiniteDistancePixels(pixelRenderer
+                        .getModifiedPixels());
 
-        //        Set<Point> nonInfiniteModifiedPixels = pixelRenderer.getModifiedPixels();
+        // Set<Point> nonInfiniteModifiedPixels =
+        // pixelRenderer.getModifiedPixels();
         while (!modifiedPixels.isEmpty()) {
-            modifiedPixels = fillTextureCoordinates4(this.texImage, modifiedPixels, this.imageToPolygonFactorX, this.imageToPolygonFactorY);
+            modifiedPixels = fillTextureCoordinates4(this.texImage,
+                    modifiedPixels, this.imageToPolygonFactorX,
+                    this.imageToPolygonFactorY);
         }
-        //        try {
-        //            TextureImageUtil.save(this.texImage, "3-texcoord");
-        //        } catch (IOException e) {
-        //            // TODO Auto-generated catch block
-        //            e.printStackTrace();
-        //        }
+        // try {
+        // TextureImageUtil.save(this.texImage, "3-texcoord");
+        // } catch (IOException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
 
         scaleV(this.texImage, this.texImage.getdMax());
         this.computeGradient();
-        //        try {
-        //            TextureImageUtil.save(this.texImage, "4-gradient");
-        //        } catch (IOException e) {
-        //            // TODO Auto-generated catch block
-        //            e.printStackTrace();
-        //        }
+        // try {
+        // TextureImageUtil.save(this.texImage, "4-gradient");
+        // } catch (IOException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
 
     }
 
@@ -552,19 +600,31 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      * 
      * @param set
      */
-    private static Set<Point> fillTextureCoordinates4(GradientTextureImage image, Set<Point> set, final double pixelWidth, final double pixelHeight) {
-        //            System.err.println(modifiedPixels.size() + " modified pixels");
+    private static Set<Point> fillTextureCoordinates4(
+            GradientTextureImage image, Set<Point> set,
+            final double pixelWidth, final double pixelHeight) {
+        // System.err.println(modifiedPixels.size() + " modified pixels");
         HashSet<Point> newlyModifiedPixels = new HashSet<Point>();
         for (Point p : set) {
             TexturePixel pixel = image.getPixel(p.x, p.y);
             if (pixel == null) {
-                throw new IllegalStateException("modified pixels cannot be outside image ... " + p.x + "x" + p.y);
+                throw new IllegalStateException(
+                        "modified pixels cannot be outside image ... " + p.x
+                                + "x" + p.y);
             }
             double distance = pixel.distance;
-            fillTextureCoordinates(image, distance + pixelWidth, pixel.uTexture, new Point(p.x - 1, p.y), newlyModifiedPixels);
-            fillTextureCoordinates(image, distance + pixelWidth, pixel.uTexture, new Point(p.x + 1, p.y), newlyModifiedPixels);
-            fillTextureCoordinates(image, distance + pixelHeight, pixel.uTexture, new Point(p.x, p.y - 1), newlyModifiedPixels);
-            fillTextureCoordinates(image, distance + pixelHeight, pixel.uTexture, new Point(p.x, p.y + 1), newlyModifiedPixels);
+            fillTextureCoordinates(image, distance + pixelWidth,
+                    pixel.uTexture, new Point(p.x - 1, p.y),
+                    newlyModifiedPixels);
+            fillTextureCoordinates(image, distance + pixelWidth,
+                    pixel.uTexture, new Point(p.x + 1, p.y),
+                    newlyModifiedPixels);
+            fillTextureCoordinates(image, distance + pixelHeight,
+                    pixel.uTexture, new Point(p.x, p.y - 1),
+                    newlyModifiedPixels);
+            fillTextureCoordinates(image, distance + pixelHeight,
+                    pixel.uTexture, new Point(p.x, p.y + 1),
+                    newlyModifiedPixels);
         }
         return newlyModifiedPixels;
     }
@@ -581,7 +641,9 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      *            pixel position is added to this list if this pixel distance
      *            value has been modified
      */
-    private static boolean fillTextureCoordinates(GradientTextureImage texImage, double d, double uTexture, Point p, Set<Point> newlyModifiedPixels) {
+    private static boolean fillTextureCoordinates(
+            GradientTextureImage texImage, double d, double uTexture, Point p,
+            Set<Point> newlyModifiedPixels) {
         TexturePixel pixel = texImage.getPixel(p.x, p.y);
         if (pixel == null) {
             return false;
@@ -602,7 +664,8 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      * @param modifiedPixels
      * @return
      */
-    private Set<Point> getModifiedPixelsButInfiniteDistancePixels(Set<Point> modifiedPixels) {
+    private Set<Point> getModifiedPixelsButInfiniteDistancePixels(
+            Set<Point> modifiedPixels) {
         Set<Point> nonInfiniteModifiedPixels = new HashSet<Point>();
         for (Point p : modifiedPixels) {
             TexturePixel pixel = this.texImage.getPixel(p.x, p.y);
@@ -630,7 +693,8 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
             }
             Collections.sort(xs); // order by x values
             if (xs.size() % 2 != 0) {
-                logger.warn("x values count cannot be even ! y = " + y + " : " + xs.size() + " : " + xs);
+                logger.warn("x values count cannot be even ! y = " + y + " : "
+                        + xs.size() + " : " + xs);
             }
             // draw horizontal lines between xs pixel pairs/couples
             for (int n = 0; n < xs.size() / 2; n++) {
@@ -644,7 +708,8 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
                             pixel.distance = Double.MAX_VALUE;
                         }
                     } else {
-                        logger.warn("forget unknown pixel " + x + "x" + y + " = " + pixel);
+                        logger.warn("forget unknown pixel " + x + "x" + y
+                                + " = " + pixel);
                     }
 
                 }
@@ -659,23 +724,28 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      * @param frontier
      * @param pixelRenderer
      */
-    private void drawFrontier(IRing frontier, int frontierId, DistanceFieldFrontierPixelRenderer pixelRenderer) {
+    private void drawFrontier(IRing frontier, int frontierId,
+            DistanceFieldFrontierPixelRenderer pixelRenderer) {
         pixelRenderer.setCurrentFrontier(frontierId);
         int frontierSize = frontier.coord().size();
         if (frontierSize < 3) {
             logger.error("Cannot fill a polygon with less than 3 points");
             return;
         }
-        IDirectPosition p0 = frontier.coord().get(frontierSize - 1);// previous point
-        IDirectPosition p1 = frontier.coord().get(0); // start point line to draw
+        IDirectPosition p0 = frontier.coord().get(frontierSize - 1);// previous
+                                                                    // point
+        IDirectPosition p1 = frontier.coord().get(0); // start point line to
+                                                      // draw
         IDirectPosition p2 = frontier.coord().get(1); // end point line to draw
-        //        double frontierLength = frontier.length();
-        double segmentLength = Math.sqrt((p2.getX() - p1.getX()) * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY()) * (p2.getY() - p1.getY()));
+        // double frontierLength = frontier.length();
+        double segmentLength = Math.sqrt((p2.getX() - p1.getX())
+                * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY())
+                * (p2.getY() - p1.getY()));
         // convert world-based coordinates to projection-space coordinates
         Point2D proj0 = this.worldToProj(p0);
         Point2D proj1 = this.worldToProj(p1);
         Point2D proj2 = this.worldToProj(p2);
-        //                int x0 = (int) proj0.getX();
+        // int x0 = (int) proj0.getX();
         int y0 = (int) proj0.getY();
         int x1 = (int) proj1.getX();
         int y1 = (int) proj1.getY();
@@ -704,12 +774,16 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
             }
 
             // here we can choose the parameterization along frontiers
-            pixelRenderer.setLinearParameterization(linearDistance, linearDistance + segmentLength);
-            // special case not to set distance to zero in some cases (for outer sea limits which are not real coast lines
+            pixelRenderer.setLinearParameterization(linearDistance,
+                    linearDistance + segmentLength);
+            // special case not to set distance to zero in some cases (for outer
+            // sea limits which are not real coast lines
             if (segmentLength > this.getTexture().getMaxCoastlineLength()) {
-                logger.debug("segment " + segmentLength + " long removed (>" + this.getTexture().getMaxCoastlineLength() + ")");
+                logger.debug("segment " + segmentLength + " long removed (>"
+                        + this.getTexture().getMaxCoastlineLength() + ")");
             }
-            pixelRenderer.setDistanceToZero(segmentLength < this.getTexture().getMaxCoastlineLength());
+            pixelRenderer.setDistanceToZero(segmentLength < this.getTexture()
+                    .getMaxCoastlineLength());
             if (!(x1 == x2 && y1 == y2)) {
                 this.texImage.drawLine(x1, y1, x2, y2, pixelRenderer);
             }
@@ -718,7 +792,9 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
             p0 = p1;
             p1 = p2;
             p2 = frontier.coord().get((nPoint + 1) % frontierSize);
-            segmentLength = Math.sqrt((p2.getX() - p1.getX()) * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY()) * (p2.getY() - p1.getY()));
+            segmentLength = Math.sqrt((p2.getX() - p1.getX())
+                    * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY())
+                    * (p2.getY() - p1.getY()));
 
             proj0 = proj1;
             proj1 = proj2;
@@ -739,8 +815,10 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      * @return
      */
     public Point2D worldToProj(Point2D polygonCoordinates) {
-        return new Point2D.Double((polygonCoordinates.getX() - this.minX) / this.imageToPolygonFactorX, (polygonCoordinates.getY() - this.minY)
-                / this.imageToPolygonFactorY);
+        return new Point2D.Double((polygonCoordinates.getX() - this.minX)
+                / this.imageToPolygonFactorX,
+                (polygonCoordinates.getY() - this.minY)
+                        / this.imageToPolygonFactorY);
     }
 
     /**
@@ -750,8 +828,9 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      * @return
      */
     public Point2D worldToProj(Point2d polygonCoordinates) {
-        return new Point2D.Double((polygonCoordinates.x - this.minX) / this.imageToPolygonFactorX, (polygonCoordinates.y - this.minY)
-                / this.imageToPolygonFactorY);
+        return new Point2D.Double((polygonCoordinates.x - this.minX)
+                / this.imageToPolygonFactorX,
+                (polygonCoordinates.y - this.minY) / this.imageToPolygonFactorY);
     }
 
     /**
@@ -761,8 +840,10 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      * @return
      */
     public Point2D worldToProj(IDirectPosition polygonCoordinates) {
-        return new Point2D.Double((polygonCoordinates.getX() - this.minX) / this.imageToPolygonFactorX, (polygonCoordinates.getY() - this.minY)
-                / this.imageToPolygonFactorY);
+        return new Point2D.Double((polygonCoordinates.getX() - this.minX)
+                / this.imageToPolygonFactorX,
+                (polygonCoordinates.getY() - this.minY)
+                        / this.imageToPolygonFactorY);
     }
 
     /**
@@ -777,14 +858,16 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
      * @param clippingShape
      * @return
      */
-    private BufferedImage pasteTiles(GradientTextureImage image, List<Pair<TileProbability, Tile>> tilesToBeApplied, SamplingAlgorithm sampler,
-            Shape clippingShape) {
+    private BufferedImage pasteTiles(GradientTextureImage image,
+            List<Pair<TileProbability, Tile>> tilesToBeApplied,
+            SamplingAlgorithm sampler, Shape clippingShape) {
         image.invalidateUVBounds();
         TextureImageTileChooser tileChooser = new TextureImageTileChooser();
         for (Pair<TileProbability, Tile> pair : tilesToBeApplied) {
             tileChooser.addTile(pair.first(), pair.second());
         }
-        BufferedImage bi = new BufferedImage(this.getTextureWidth(), this.getTextureHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        BufferedImage bi = new BufferedImage(this.getTextureWidth(),
+                this.getTextureHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         GraphCut graphCut = null;
         if (this.getTexture().getBlending() == TileBlendingType.GRAPHCUT) {
             graphCut = new GraphCut(bi);
@@ -794,11 +877,13 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
         g2.setComposite(AlphaComposite.Clear);
         g2.fillRect(0, 0, this.getTextureWidth(), this.getTextureHeight());
         g2.setComposite(AlphaComposite.SrcOver);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        //        if (clippingShape != null) {
-        //            Shape screenSpaceShape = this.transform.createTransformedShape(clippingShape);
-        //            g2.setClip(screenSpaceShape);
-        //        }
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        // if (clippingShape != null) {
+        // Shape screenSpaceShape =
+        // this.transform.createTransformedShape(clippingShape);
+        // g2.setClip(screenSpaceShape);
+        // }
         int nbSamples = sampler.getSampleCount();
         int nSample = 0;
         Iterator<Sample> sampleIterator = sampler.getSampleIterator();
@@ -811,30 +896,37 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
             Sample sample = sampleIterator.next();
             double xTexture = sample.getLocation().getX();
             double yTexture = sample.getLocation().getY();
-            Tile tile = sample.getTile() != null ? sample.getTile() : tileChooser.getTile(sample);
+            Tile tile = sample.getTile() != null ? sample.getTile()
+                    : tileChooser.getTile(sample);
             if (tile == null) {
                 continue;
             }
             BufferedImage tileImage = tile.getImage();
 
             TexturePixel pixel = image.getPixel((int) xTexture, (int) yTexture);
-            if (pixel == null || !(pixel.in || pixel.frontier != 0) || pixel.vGradient == null) {
+            if (pixel == null || !(pixel.in || pixel.frontier != 0)
+                    || pixel.vGradient == null) {
                 logger.warn("invalid pixel = " + pixel);
                 continue;
             } else {
-                AffineTransform transform = image.tileTransform((int) xTexture, (int) yTexture, tileImage.getWidth(), tileImage.getHeight());
+                AffineTransform transform = image.tileTransform((int) xTexture,
+                        (int) yTexture, tileImage.getWidth(),
+                        tileImage.getHeight());
                 if (this.getTexture().getBlending() == TileBlendingType.GRAPHCUT) {
                     graphCut.pasteTile(tile, transform);
                 } else {
                     g2.drawImage(tileImage, transform, null);
-                    g2.fillRect(tileImage.getWidth() / 2, tileImage.getHeight() / 2, tileImage.getWidth(), tileImage.getHeight());
+                    g2.fillRect(tileImage.getWidth() / 2,
+                            tileImage.getHeight() / 2, tileImage.getWidth(),
+                            tileImage.getHeight());
                 }
-                //                try {
-                //                    ImageIO.write(bi, "PNG", new File("tile-" + nSample + ".png"));
-                //                } catch (IOException e) {
-                //                    // TODO Auto-generated catch block
-                //                    e.printStackTrace();
-                //                }
+                // try {
+                // ImageIO.write(bi, "PNG", new File("tile-" + nSample +
+                // ".png"));
+                // } catch (IOException e) {
+                // // TODO Auto-generated catch block
+                // e.printStackTrace();
+                // }
             }
             this.setProgress((double) nSample / nbSamples);
             nSample++;
@@ -842,7 +934,8 @@ public class TileDistributionTextureTask extends AbstractTextureTask<TileDistrib
         return bi;
     }
 
-    public void setFeatureCollection(IFeatureCollection<IFeature> iFeatureCollection) {
+    public void setFeatureCollection(
+            IFeatureCollection<IFeature> iFeatureCollection) {
         this.featureCollection = iFeatureCollection;
 
     }

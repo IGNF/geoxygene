@@ -22,7 +22,10 @@ package fr.ign.cogit.geoxygene.style;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRendering;
+import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.proxy.ProxySymbol;
 
 /**
@@ -31,53 +34,65 @@ import fr.ign.cogit.geoxygene.style.proxy.ProxySymbol;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LineSymbolizer extends AbstractSymbolizer {
 
-  @XmlElement(name = "ColorMap")
-  ColorMap colorMap = null;
+    @XmlElement(name = "ColorMap")
+    ColorMap colorMap = null;
 
-  @XmlElement(name = "CategorizedMap")
-  CategorizedMap categorizedMap = null;
+    @XmlElement(name = "CategorizedMap")
+    CategorizedMap categorizedMap = null;
 
-  @XmlElement(name = "PerpendicularOffset")
-  double perpendicularOffset = 0;
+    @XmlElement(name = "PerpendicularOffset")
+    double perpendicularOffset = 0;
 
-  @XmlElement(name = "ProxySymbol")
-  ProxySymbol proxySymbol = null;
+    @XmlElement(name = "ProxySymbol")
+    ProxySymbol proxySymbol = null;
 
-  @Override
-  public boolean isLineSymbolizer() {
-    return true;
-  }
+    @XmlElements({ @XmlElement(name = "StrokeTextureExpressiveRendering", type = StrokeTextureExpressiveRendering.class) })
+    ExpressiveRendering expressiveRendering = null;
 
-  public ColorMap getColorMap() {
-    return this.colorMap;
-  }
+    @Override
+    public boolean isLineSymbolizer() {
+        return true;
+    }
 
-  public void setColorMap(ColorMap colorMap) {
-    this.colorMap = colorMap;
-  }
+    public ColorMap getColorMap() {
+        return this.colorMap;
+    }
 
-  public CategorizedMap getCategorizedMap() {
-    return this.categorizedMap;
-  }
+    public void setColorMap(ColorMap colorMap) {
+        this.colorMap = colorMap;
+    }
 
-  public void setCategorizedMap(CategorizedMap categorizedMap) {
-    this.categorizedMap = categorizedMap;
-  }
+    public CategorizedMap getCategorizedMap() {
+        return this.categorizedMap;
+    }
 
-  public double getPerpendicularOffset() {
-    return this.perpendicularOffset;
-  }
+    public void setCategorizedMap(CategorizedMap categorizedMap) {
+        this.categorizedMap = categorizedMap;
+    }
 
-  public void setPerpendicularOffset(double perpendicularOffset) {
-    this.perpendicularOffset = perpendicularOffset;
-  }
+    public double getPerpendicularOffset() {
+        return this.perpendicularOffset;
+    }
 
-  public ProxySymbol getProxySymbol() {
-    return proxySymbol;
-  }
+    public void setPerpendicularOffset(double perpendicularOffset) {
+        this.perpendicularOffset = perpendicularOffset;
+    }
 
-  public void setProxySymbo(ProxySymbol proxySymbol) {
-    this.proxySymbol = proxySymbol;
-  }
+    public ProxySymbol getProxySymbol() {
+        return this.proxySymbol;
+    }
+
+    public void setProxySymbo(ProxySymbol proxySymbol) {
+        this.proxySymbol = proxySymbol;
+    }
+
+    public ExpressiveRendering getExpressiveRendering() {
+        return this.expressiveRendering;
+    }
+
+    public void setExpressiveRendering(
+            StrokeTextureExpressiveRendering expressiveRendering) {
+        this.expressiveRendering = expressiveRendering;
+    }
 
 }
