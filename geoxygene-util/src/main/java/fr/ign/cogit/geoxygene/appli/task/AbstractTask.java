@@ -254,6 +254,13 @@ public abstract class AbstractTask implements Task {
         }
     }
 
+    @Override
+    public int getTaskListenerCount() {
+        synchronized (this.listeners) {
+            return this.listeners.size();
+        }
+    }
+
     /**
      * fire an event 'state changed'
      * 

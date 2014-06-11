@@ -357,6 +357,34 @@ public class TaskManager implements TaskListener<Task> {
         }
     }
 
+    public static void startAndWait(final Task task)
+            throws InterruptedException {
+        if (task == null) {
+            return;
+        }
+        TaskTerminationWaiter taskTerminationWaiter = new TaskTerminationWaiter(
+                task);
+        task.addTaskListener(taskTerminationWaiter);
+        if (task.getState().isRunning() == false) {
+            task.start(new Thread.UncaughtExceptionHandler() {
+                @Override
+                public void uncaughtException(Thread th, Throwable ex) {
+                    logger.error("Uncaught exception from task "
+                            + task.getName() + ": " + ex);
+                    ex.printStackTrace();
+                }
+            });
+        }
+        while (task.getState().isRunning()
+                || task.getState() == TaskState.WAITING) {
+            synchronized (task) {
+                task.wait(100);
+            }
+        }
+        task.removeTaskListener(taskTerminationWaiter);
+
+    }
+
     // /**
     // * Wait for task termination. We should use a wait/notify method to avoid
     // * time consuming wait
@@ -383,6 +411,25 @@ public class TaskManager implements TaskListener<Task> {
     // task.removeTaskListener(taskWaiter);
     // return finished[0];
     // }
+    private static class TaskTerminationWaiter implements TaskListener<Task> {
+        private Task task = null;
+
+        public TaskTerminationWaiter(Task task) {
+            super();
+            this.task = task;
+        }
+
+        @Override
+        public void onStateChange(Task task, TaskState oldState) {
+            if (task == null) {
+                return;
+            }
+            synchronized (task) {
+                task.notify();
+            }
+        }
+
+    }
 }
 
 // class TaskWaiter implements TaskListener {

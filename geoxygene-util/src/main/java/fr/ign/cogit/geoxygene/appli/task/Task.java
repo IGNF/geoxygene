@@ -90,6 +90,11 @@ public interface Task extends Runnable {
     void removeAllTaskListener();
 
     /**
+     * get the number of listeners
+     */
+    public int getTaskListenerCount();
+
+    /**
      * @return true if the progress value is filled during the task progress
      */
     boolean isProgressable();

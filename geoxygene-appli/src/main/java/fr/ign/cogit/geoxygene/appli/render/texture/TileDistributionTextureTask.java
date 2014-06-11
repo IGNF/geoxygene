@@ -501,10 +501,9 @@ public class TileDistributionTextureTask extends
         return true;
     }
 
-    private void generateGradientTextureImage() {
+    synchronized private void generateGradientTextureImage() {
         // draw Frontiers into texture image
         DistanceFieldFrontierPixelRenderer pixelRenderer = new DistanceFieldFrontierPixelRenderer();
-        System.err.println("generateGradientTextureImage " + this.hashCode());
         for (IPolygon polygon : this.polygons) {
             pixelRenderer.getYs().clear(); // #note1
             // draw the outer frontier

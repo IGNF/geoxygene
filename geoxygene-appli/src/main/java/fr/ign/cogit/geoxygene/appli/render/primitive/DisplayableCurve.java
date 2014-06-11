@@ -44,6 +44,8 @@ import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
 import fr.ign.cogit.geoxygene.appli.gl.LinePaintingTesselator;
 import fr.ign.cogit.geoxygene.appli.gl.LineTesselator;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
+import fr.ign.cogit.geoxygene.appli.task.Task;
+import fr.ign.cogit.geoxygene.appli.task.TaskManager;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.function.ConstantFunction;
 import fr.ign.cogit.geoxygene.function.Function1D;
@@ -70,12 +72,16 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
             1);
     public static final Function1D DefaultLineShiftFunction = new ConstantFunction(
             0);
+
     private final List<ILineString> curves = new ArrayList<ILineString>();
     private Symbolizer symbolizer = null;
     private List<GLComplex> fullRepresentation = null;
     private GLComplex partialRepresentation = null;
     private long displayCount = 0; // number of time it has been displayed
     private Date lastDisplayTime; // last time it has been displayed
+    private final Object currentTaskLock = new Object();
+    private Task currentTask = null;
+    private int taskCount = 0;
 
     // private Colorizer colorizer = null;
     // private Parameterizer parameterizer = null;
@@ -240,18 +246,26 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
         GLPaintingComplex complex = new GLPaintingComplex(this.getName()
                 + "-expressive-full", minX, minY);
         complex.setExpressiveRendering(strtex);
+        synchronized (this.currentTaskLock) {
+            this.taskCount = this.curves.size();
+        }
         for (ILineString line : this.curves) {
             try {
-                LinePaintingTesselator.tesselateThickLine(complex, line
-                        .getControlPoint(), DefaultLineWidthFunction,
-                        DefaultLineShiftFunction, strtex.getSampleSize(),
-                        strtex.getMinAngle(), minX, minY, new SolidColorizer(
-                                symbolizer.getStroke().getColor()));
-                // LinePaintingTesselator
-                // .tesselateThickLine(complex, line.getControlPoint(),
-                // widthFunction, shiftFunction, sampleSize,
-                // minAngle, minX, minY, new RandomColorizer());
+                Task tesselateThickLineTask = LinePaintingTesselator
+                        .tesselateThickLine(this.getName(), complex, line
+                                .getControlPoint(), DefaultLineWidthFunction,
+                                DefaultLineShiftFunction, strtex
+                                        .getSampleSize(), strtex.getMinAngle(),
+                                minX, minY, new SolidColorizer(symbolizer
+                                        .getStroke().getColor()));
+                synchronized (this.currentTaskLock) {
+                    this.currentTask = tesselateThickLineTask;
+                }
+                tesselateThickLineTask.start();
+                TaskManager.startAndWait(tesselateThickLineTask);
             } catch (FunctionEvaluationException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -261,32 +275,53 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
         this.fullRepresentation = complexes;
     }
 
-    /**
-     * @param widthFunction
-     * @param shiftFunction
-     * @return
-     */
-    public static GLPaintingComplex createComplex(String id,
-            List<ILineString> lines, double minX, double minY,
-            Function1D widthFunction, Function1D shiftFunction,
-            double sampleSize, double minAngle) {
-        GLPaintingComplex complex = new GLPaintingComplex(id, minX, minY);
-        for (ILineString line : lines) {
-            try {
-                LinePaintingTesselator.tesselateThickLine(complex, line
-                        .getControlPoint(), widthFunction, shiftFunction,
-                        sampleSize, minAngle, minX, minY, new SolidColorizer(
-                                Color.black));
-                // LinePaintingTesselator
-                // .tesselateThickLine(complex, line.getControlPoint(),
-                // widthFunction, shiftFunction, sampleSize,
-                // minAngle, minX, minY, new RandomColorizer());
-            } catch (FunctionEvaluationException e) {
-                e.printStackTrace();
-            }
-        }
+    // /**
+    // * @param widthFunction
+    // * @param shiftFunction
+    // * @return
+    // */
+    // public GLPaintingComplex createComplex(String id, List<ILineString>
+    // lines,
+    // double minX, double minY, Function1D widthFunction,
+    // Function1D shiftFunction, double sampleSize, double minAngle) {
+    // GLPaintingComplex complex = new GLPaintingComplex(id, minX, minY);
+    // synchronized (this.currentTaskLock) {
+    // this.taskCount = lines.size();
+    // }
+    // for (ILineString line : lines) {
+    // try {
+    // Task tesselateThickLineTask = LinePaintingTesselator
+    // .tesselateThickLine(id, complex,
+    // line.getControlPoint(), widthFunction,
+    // shiftFunction, sampleSize, minAngle, minX,
+    // minY, new SolidColorizer(Color.black));
+    // synchronized (this.currentTaskLock) {
+    // this.currentTask = tesselateThickLineTask;
+    // }
+    // } catch (FunctionEvaluationException e) {
+    // e.printStackTrace();
+    // }
+    // }
+    //
+    // return complex;
+    // }
 
-        return complex;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.task.AbstractTask#getProgress()
+     */
+    @Override
+    public double getProgress() {
+        if (this.taskCount <= 0) {
+            return 0.;
+        }
+        synchronized (this.currentTaskLock) {
+            if (this.currentTask == null) {
+                return 0.;
+            }
+            return this.currentTask.getProgress() / this.taskCount;
+        }
     }
 
     /*
