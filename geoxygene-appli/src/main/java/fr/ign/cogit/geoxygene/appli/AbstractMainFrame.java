@@ -19,7 +19,6 @@
 package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -69,10 +68,12 @@ import fr.ign.cogit.geoxygene.appli.ui.MessageConsole;
  * 
  * @author JeT
  */
-public abstract class AbstractMainFrame implements MainFrame, TaskManagerListener, ChangeListener {
+public abstract class AbstractMainFrame implements MainFrame,
+        TaskManagerListener, ChangeListener {
 
     /** Logger. */
-    protected static Logger logger = Logger.getLogger(AbstractMainFrame.class.getName());
+    protected static Logger logger = Logger.getLogger(AbstractMainFrame.class
+            .getName());
 
     /** The associated application. */
     private GeOxygeneApplication application = null;
@@ -119,7 +120,8 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
      * @param application
      *            associated application
      */
-    public AbstractMainFrame(final String title, final GeOxygeneApplication application) {
+    public AbstractMainFrame(final String title,
+            final GeOxygeneApplication application) {
         super();
         this.setTitle(title);
         this.application = application;
@@ -153,8 +155,10 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
 
             this.frame.setJMenuBar(this.getMenuBar());
             this.frame.getContentPane().setLayout(new BorderLayout());
-            this.frame.getContentPane().add(this.getDesktopTabbedPane(), BorderLayout.CENTER);
-            this.frame.getContentPane().add(this.getStatusBar().getGui(), BorderLayout.SOUTH);
+            this.frame.getContentPane().add(this.getDesktopTabbedPane(),
+                    BorderLayout.CENTER);
+            this.frame.getContentPane().add(this.getStatusBar().getGui(),
+                    BorderLayout.SOUTH);
 
             this.frame.addWindowListener(new WindowAdapter() {
                 @Override
@@ -201,11 +205,9 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
 
     /**
      * Create a new desktop Floating implementation creates a JDestopPane to
-     * dock
-     * JInternalFrame (Gui of FloatingProjectFrame). Tabbed implementation
-     * creates
-     * a JTabbedPane to dock JPanel (Gui of TabbedProjectFrame). This method
-     * should not be called directly. It is internally used by
+     * dock JInternalFrame (Gui of FloatingProjectFrame). Tabbed implementation
+     * creates a JTabbedPane to dock JPanel (Gui of TabbedProjectFrame). This
+     * method should not be called directly. It is internally used by
      * createNewDesktop(Title)
      * 
      * @return newly created Desktop component
@@ -266,19 +268,23 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
     public JStatusBar getStatusBar() {
         if (this.statusBar == null) {
             this.statusBar = new JStatusBar();
-            this.statusBar.addStatusBarComponent(this.getMessageConsole().getGui(), 1);
-            this.statusBar.addStatusBarComponent(this.getTaskManagerGui().getGui(), 0.3);
-            this.statusBar.addStatusBarComponent(this.getMemoryBar().getGui(), 0.);
-            JButton gcButton = new JButton("gc");
-            gcButton.setToolTipText("run garbage collector");
-            gcButton.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
-            gcButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Runtime.getRuntime().gc();
-                }
-            });
-            this.statusBar.addStatusBarComponent(gcButton, 0.);
+            // this.statusBar.addStatusBarComponent(this.getMessageConsole().getGui(),
+            // 1);
+            // this.statusBar.addStatusBarComponent(this.getTaskManagerGui().getGui(),
+            // 0.3);
+            // this.statusBar.addStatusBarComponent(this.getMemoryBar().getGui(),
+            // 0.);
+            // JButton gcButton = new JButton("gc");
+            // gcButton.setToolTipText("run garbage collector");
+            // gcButton.setBorder(BorderFactory.createLineBorder(Color.gray,
+            // 1));
+            // gcButton.addActionListener(new ActionListener() {
+            // @Override
+            // public void actionPerformed(ActionEvent e) {
+            // Runtime.getRuntime().gc();
+            // }
+            // });
+            // this.statusBar.addStatusBarComponent(gcButton, 0.);
         }
         return this.statusBar;
     }
@@ -325,7 +331,8 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this.frame);
             this.getFrame().repaint();
-            this.getApplication().getProperties().setDefaultLookAndFeel(className);
+            this.getApplication().getProperties()
+                    .setDefaultLookAndFeel(className);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return false;
@@ -341,7 +348,8 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
      */
     private TaskManagerPopup getTaskManagerGui() {
         if (this.taskManagerGui == null) {
-            this.taskManagerGui = new TaskManagerPopup(this.getApplication().getTaskManager());
+            this.taskManagerGui = new TaskManagerPopup(this.getApplication()
+                    .getTaskManager());
         }
         return this.taskManagerGui;
     }
@@ -356,10 +364,14 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
             tabTitle = title;
         }
 
-        this.getDesktopTabbedPane().addTab(tabTitle, new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/tab.png")), newDesktop);
+        this.getDesktopTabbedPane().addTab(
+                tabTitle,
+                new ImageIcon(GeOxygeneApplication.class
+                        .getResource("/images/icons/tab.png")), newDesktop);
         // tabbedPane.setMnemonicAt(index, KeyEvent.KEY_LAST + 1);
 
-        this.getDesktopTabbedPane().setTabComponentAt(index, new ButtonTabComponent(this.getDesktopTabbedPane()));
+        this.getDesktopTabbedPane().setTabComponentAt(index,
+                new ButtonTabComponent(this.getDesktopTabbedPane()));
         this.getDesktopTabbedPane().setSelectedIndex(index);
         return newDesktop;
     }
@@ -370,7 +382,8 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
      * @param desktopContent
      */
     @Override
-    public final void addFrameInDesktop(String desktopName, JComponent desktopContent) {
+    public final void addFrameInDesktop(String desktopName,
+            JComponent desktopContent) {
         logger.log(Level.DEBUG, "New frame");
         // Add ProjectFrame to the selected desktop
         JComponent currentDesktop = this.getDesktop(desktopName);
@@ -390,7 +403,8 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
     public JComponent getDesktop(String desktopName) {
         for (int i = 0; i < this.getDesktopTabbedPane().getTabCount(); i++) {
             if (this.getDesktopTabbedPane().getTitleAt(i).equals(desktopName)) {
-                return (JComponent) this.getDesktopTabbedPane().getComponentAt(i);
+                return (JComponent) this.getDesktopTabbedPane().getComponentAt(
+                        i);
             }
         }
         return null;
@@ -416,7 +430,8 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
      */
     @Override
     public void onTaskStarted(Task task) {
-        this.getMessageConsole().addMessage(Message.MessageType.INFO, "task " + task.getName() + " started");
+        this.getMessageConsole().addMessage(Message.MessageType.INFO,
+                "task " + task.getName() + " started");
 
     }
 
@@ -430,9 +445,13 @@ public abstract class AbstractMainFrame implements MainFrame, TaskManagerListene
     @Override
     public void onTaskRemoved(Task task) {
         TaskState state = task.getState();
-        this.getMessageConsole().addMessage(Message.MessageType.INFO, "task " + task.getName() + " finished with state " + state.name());
+        this.getMessageConsole().addMessage(
+                Message.MessageType.INFO,
+                "task " + task.getName() + " finished with state "
+                        + state.name());
         if (state == TaskState.ERROR) {
-            this.getMessageConsole().addMessage(Message.MessageType.ERROR, "\t" + task.getError());
+            this.getMessageConsole().addMessage(Message.MessageType.ERROR,
+                    "\t" + task.getError());
         }
     }
 
@@ -460,7 +479,8 @@ class ButtonTabComponent extends JPanel {
         this.pane = pane;
         this.setOpaque(false);
 
-        JLabel picLabel = new JLabel(new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/tab.png").getPath()));
+        JLabel picLabel = new JLabel(new ImageIcon(GeOxygeneApplication.class
+                .getResource("/images/icons/tab.png").getPath()));
         this.add(picLabel);
 
         this.add(new JLabel("  "));
@@ -497,7 +517,8 @@ class ButtonTabComponent extends JPanel {
          * Default constructor.
          */
         public TabButton() {
-            super(new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/16x16/delete.png").getPath()));
+            super(new ImageIcon(GeOxygeneApplication.class.getResource(
+                    "/images/icons/16x16/delete.png").getPath()));
             this.setToolTipText("close this tab");
             // Make the button looks the same for all Laf's
             this.setUI(new BasicButtonUI());
@@ -517,7 +538,8 @@ class ButtonTabComponent extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int i = ButtonTabComponent.this.pane.indexOfTabComponent(ButtonTabComponent.this);
+            int i = ButtonTabComponent.this.pane
+                    .indexOfTabComponent(ButtonTabComponent.this);
             if (i != -1) {
                 ButtonTabComponent.this.pane.remove(i);
             }

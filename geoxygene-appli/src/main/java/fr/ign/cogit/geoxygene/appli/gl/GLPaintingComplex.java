@@ -160,6 +160,11 @@ public class GLPaintingComplex extends AbstractGLComplex<GLPaintingVertex> {
      */
     public GLTexture getPaperTexture() {
         if (this.paperTexture == null) {
+            if (this.getExpressiveRendering() == null) {
+                logger.error("try to get paper texture filename from a GL primitive that has no expressive rendering class set...");
+                logger.error("primitive ID = " + this.getId());
+                return null;
+            }
             this.paperTexture = GLTextureManager.getInstance().getTexture(
                     this.getExpressiveRendering().getPaperTextureFilename());
             this.paperTexture.setMipmap(false);

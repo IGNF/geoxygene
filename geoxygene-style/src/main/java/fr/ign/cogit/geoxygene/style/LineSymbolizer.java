@@ -22,10 +22,7 @@ package fr.ign.cogit.geoxygene.style;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 
-import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRendering;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.proxy.ProxySymbol;
 
 /**
@@ -45,9 +42,6 @@ public class LineSymbolizer extends AbstractSymbolizer {
 
     @XmlElement(name = "ProxySymbol")
     ProxySymbol proxySymbol = null;
-
-    @XmlElements({ @XmlElement(name = "StrokeTextureExpressiveRendering", type = StrokeTextureExpressiveRendering.class) })
-    ExpressiveRendering expressiveRendering = null;
 
     @Override
     public boolean isLineSymbolizer() {
@@ -84,15 +78,6 @@ public class LineSymbolizer extends AbstractSymbolizer {
 
     public void setProxySymbo(ProxySymbol proxySymbol) {
         this.proxySymbol = proxySymbol;
-    }
-
-    public ExpressiveRendering getExpressiveRendering() {
-        return this.expressiveRendering;
-    }
-
-    public void setExpressiveRendering(
-            StrokeTextureExpressiveRendering expressiveRendering) {
-        this.expressiveRendering = expressiveRendering;
     }
 
 }

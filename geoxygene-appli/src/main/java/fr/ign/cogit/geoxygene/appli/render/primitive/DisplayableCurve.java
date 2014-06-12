@@ -41,15 +41,12 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
-import fr.ign.cogit.geoxygene.appli.gl.LinePaintingTesselator;
 import fr.ign.cogit.geoxygene.appli.gl.LineTesselator;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.Task;
-import fr.ign.cogit.geoxygene.appli.task.TaskManager;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.function.ConstantFunction;
 import fr.ign.cogit.geoxygene.function.Function1D;
-import fr.ign.cogit.geoxygene.function.FunctionEvaluationException;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRendering;
@@ -80,8 +77,8 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
     private long displayCount = 0; // number of time it has been displayed
     private Date lastDisplayTime; // last time it has been displayed
     private final Object currentTaskLock = new Object();
-    private Task currentTask = null;
-    private int taskCount = 0;
+    private final Task currentTask = null;
+    private final int taskCount = 0;
 
     // private Colorizer colorizer = null;
     // private Parameterizer parameterizer = null;
@@ -179,10 +176,10 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
 
         if (this.symbolizer instanceof LineSymbolizer) {
             LineSymbolizer lineSymbolizer = (LineSymbolizer) this.symbolizer;
-            if (lineSymbolizer.getExpressiveRendering() == null) {
+            if (lineSymbolizer.getStroke().getExpressiveRendering() == null) {
                 this.generateWithLineSymbolizer(lineSymbolizer);
             } else {
-                this.generateWithExpressiveLineSymbolizer(lineSymbolizer);
+                this.generateWithExpressiveStroke(lineSymbolizer);
             }
         } else {
             logger.error("Curve rendering do not handle "
@@ -216,8 +213,13 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
         this.fullRepresentation = complexes;
     }
 
-    private void generateWithExpressiveLineSymbolizer(LineSymbolizer symbolizer) {
-        ExpressiveRendering style = symbolizer.getExpressiveRendering();
+    private void generateWithExpressiveStroke(LineSymbolizer symbolizer) {
+        ExpressiveRendering style = symbolizer.getStroke()
+                .getExpressiveRendering();
+        if (style == null) {
+            throw new IllegalStateException(
+                    "this method can only be called with a valid expressive stroke");
+        }
         if (!(style instanceof StrokeTextureExpressiveRendering)) {
             throw new IllegalStateException(
                     "LineSymbolizer can only handle StrokeTextureExpressiveRendering not "
@@ -231,46 +233,11 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
         double minX = envelope.minX();
         double minY = envelope.minY();
 
-        // BasicStroke awtStroke =
-        // GLComplexFactory.geoxygeneStrokeToAWTStroke(this.viewport,
-        // symbolizer);
-        // GLComplex outline =
-        // GLComplexFactory.createOutlineMultiSurface(this.polygons, awtStroke,
-        // minX, minY);
-
-        // GLPaintingComplex complex = DisplayableCurve.createComplex(
-        // this.getName() + "-expressive-full", this.curves, minX, minY,
-        // new ConstantFunction(symbolizer.getStroke().getStrokeWidth()),
-        // DefaultLineShiftFunction, strtex.getSampleSize(), Math.PI
-        // * strtex.getMinAngle() / 180.);
         GLPaintingComplex complex = new GLPaintingComplex(this.getName()
                 + "-expressive-full", minX, minY);
+        GLComplexFactory.createThickCurves(this.getName(), complex,
+                symbolizer.getStroke(), minX, minY, strtex, this.curves);
         complex.setExpressiveRendering(strtex);
-        synchronized (this.currentTaskLock) {
-            this.taskCount = this.curves.size();
-        }
-        for (ILineString line : this.curves) {
-            try {
-                Task tesselateThickLineTask = LinePaintingTesselator
-                        .tesselateThickLine(this.getName(), complex, line
-                                .getControlPoint(), DefaultLineWidthFunction,
-                                DefaultLineShiftFunction, strtex
-                                        .getSampleSize(), strtex.getMinAngle(),
-                                minX, minY, new SolidColorizer(symbolizer
-                                        .getStroke().getColor()));
-                synchronized (this.currentTaskLock) {
-                    this.currentTask = tesselateThickLineTask;
-                }
-                tesselateThickLineTask.start();
-                TaskManager.startAndWait(tesselateThickLineTask);
-            } catch (FunctionEvaluationException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        // complex.setColor(symbolizer.getStroke().getColor());
-        complex.setOverallOpacity(symbolizer.getStroke().getColor().getAlpha());
         complexes.add(complex);
         this.fullRepresentation = complexes;
     }

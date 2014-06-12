@@ -77,6 +77,17 @@ public class BasicTexture implements Texture {
     }
 
     /**
+     * Constructor with image dimension
+     * 
+     */
+    public BasicTexture(final int width, final int height) {
+        this();
+        BufferedImage img = new BufferedImage(width, height,
+                BufferedImage.TYPE_4BYTE_ABGR);
+        this.setTextureImage(img);
+    }
+
+    /**
      * Constructor with an image in memory
      * 
      * @param textureImage

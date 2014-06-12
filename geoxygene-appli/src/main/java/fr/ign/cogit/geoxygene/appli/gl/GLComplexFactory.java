@@ -37,6 +37,7 @@ import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.vecmath.Point2d;
@@ -48,12 +49,22 @@ import org.lwjgl.util.glu.GLUtessellator;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Colorizer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer;
+import fr.ign.cogit.geoxygene.appli.render.primitive.SolidColorizer;
+import fr.ign.cogit.geoxygene.appli.task.Task;
+import fr.ign.cogit.geoxygene.appli.task.TaskManager;
+import fr.ign.cogit.geoxygene.function.ConstantFunction;
+import fr.ign.cogit.geoxygene.function.FunctionEvaluationException;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.style.Stroke;
+import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLPrimitiveTessCallback;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
@@ -656,10 +667,71 @@ public class GLComplexFactory {
      * @param minY
      * @return
      */
-    public static GLSimpleComplex createPolygonOutlines(String id,
+    public static GLComplex createPolygonOutlines(String id,
             List<IPolygon> polygons, Stroke stroke, double minX, double minY) {
-        return LineTesselator.createPolygonOutlines(id, polygons, stroke, minX,
-                minY);
+        if (stroke.getExpressiveRendering() == null) {
+            GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
+            for (IPolygon polygon : polygons) {
+                LineTesselator.createPolygonOutline(primitive, polygon, stroke,
+                        minX, minY);
+            }
+            primitive.setColor(stroke.getColor());
+
+            return primitive;
+        }
+        if (stroke.getExpressiveRendering() instanceof StrokeTextureExpressiveRendering) {
+            StrokeTextureExpressiveRendering strtex = (StrokeTextureExpressiveRendering) stroke
+                    .getExpressiveRendering();
+            GLPaintingComplex complex = new GLPaintingComplex(id
+                    + "-expressive-full", minX, minY);
+            complex.setExpressiveRendering(strtex);
+            List<ILineString> curves = new ArrayList<ILineString>();
+            for (IPolygon polygon : polygons) {
+                curves.add(new GM_LineString(polygon.getExterior().coord()));
+                for (IRing interior : polygon.getInterior()) {
+                    curves.add(new GM_LineString(interior.coord()));
+                }
+            }
+
+            createThickCurves(id, complex, stroke, minX, minY, strtex, curves);
+            // complex.setColor(symbolizer.getStroke().getColor());
+            complex.setOverallOpacity(stroke.getColor().getAlpha());
+            return complex;
+        }
+        throw new IllegalStateException(
+                "Polygon outline does not handle stroke type " + stroke);
+    }
+
+    /**
+     * @param id
+     * @param stroke
+     * @param minX
+     * @param minY
+     * @param strtex
+     * @param complex
+     * @param curves
+     */
+    public static void createThickCurves(String id, GLPaintingComplex complex,
+            Stroke stroke, double minX, double minY,
+            StrokeTextureExpressiveRendering strtex, List<ILineString> curves) {
+        for (ILineString line : curves) {
+            try {
+                Task tesselateThickLineTask = LinePaintingTesselator
+                        .tesselateThickLine(id, complex,
+                                line.getControlPoint(), new ConstantFunction(
+                                        stroke.getStrokeWidth()),
+                                new ConstantFunction(0),
+                                strtex.getSampleSize(), strtex.getMinAngle(),
+                                minX, minY,
+                                new SolidColorizer(stroke.getColor()));
+                tesselateThickLineTask.start();
+                TaskManager.startAndWait(tesselateThickLineTask);
+            } catch (FunctionEvaluationException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**

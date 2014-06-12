@@ -72,26 +72,26 @@ public class LineTesselator {
     private static final int BEZIER_SAMPLE_COUNT = 20;
     private static final Point2D.Double[] emptyPoint2DArray = new Point2D.Double[] {};
 
-    /**
-     * generate the outline of a collection of polygons
-     * 
-     * @param polygons
-     * @param stroke
-     * @param minX
-     * @param minY
-     * @return
-     */
-    public static GLSimpleComplex createPolygonOutlines(String id,
-            List<? extends IPolygon> polygons, Stroke stroke, double minX,
-            double minY) {
-        GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
-
-        for (IPolygon polygon : polygons) {
-            createPolygonOutline(primitive, polygon, stroke, minX, minY);
-
-        }
-        return primitive;
-    }
+    // /**
+    // * generate the outline of a collection of polygons
+    // *
+    // * @param polygons
+    // * @param stroke
+    // * @param minX
+    // * @param minY
+    // * @return
+    // */
+    // public static GLSimpleComplex createPolygonOutlines(String id,
+    // List<? extends IPolygon> polygons, Stroke stroke, double minX,
+    // double minY) {
+    // GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
+    //
+    // for (IPolygon polygon : polygons) {
+    // createPolygonOutline(primitive, polygon, stroke, minX, minY);
+    //
+    // }
+    // return primitive;
+    // }
 
     public static void createPolygonOutline(GLSimpleComplex complex,
             IPolygon polygon, Stroke stroke, double minX, double minY) {

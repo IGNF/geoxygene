@@ -247,7 +247,7 @@ void main() {
 //	outColor = vec4( brushColor.rgb, 1);
 //	outColor = vec4( vec3( 0.5 ), 1.0 );
 //	outColor = vec4( fragmentUV, 0, 1. );
-	outColor = vec4( f, 1-(f.x+f.y+f.z)/3. );
+	outColor = vec4( fragmentColor.rgb, fragmentColor.a * (1-(f.x+f.y+f.z)/3. ));
 //	outColor = vec4( vec3( paperHeight ), 1.0 );
 
 // outColor = vec4(	vec3( myNoise( fragmentUV.xy / vec2(10.,.1), 5. ) +0.5 ) ,	 1.0);
