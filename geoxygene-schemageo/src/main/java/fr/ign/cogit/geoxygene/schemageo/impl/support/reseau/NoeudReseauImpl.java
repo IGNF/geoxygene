@@ -128,7 +128,7 @@ public class NoeudReseauImpl extends ElementDuReseauImpl implements NoeudReseau 
     //we check whether firstArc and secondArc have been found in clockwiseArcs
     if (firstArcIndex==-1 || secondArcIndex==-1) {
       logger.info("error in clockwiseArcsCount function: one of the arcs doesn't belong to the current node");
-      return null;
+      return new ArrayList<ArcReseau>();
     }
     
     if (secondArcIndex > firstArcIndex) {
