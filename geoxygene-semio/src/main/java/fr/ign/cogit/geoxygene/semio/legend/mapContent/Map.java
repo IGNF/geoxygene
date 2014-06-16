@@ -1,5 +1,7 @@
 package fr.ign.cogit.geoxygene.semio.legend.mapContent;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -374,11 +376,13 @@ public class Map {
 					// logger.info(collection.getName() + " : " + collection.getColor());
 					
 					// Getting the features of the symbolisedFeatureCollection
-					FT_FeatureCollection<FT_Feature> layerFeatureCollection = 
-						(FT_FeatureCollection<FT_Feature>) layer.getFeatureCollection();
-					collection.setFeatureType(layerFeatureCollection.getFeatureType());
-					for (FT_Feature layerFeature : layerFeatureCollection) {
-						SymbolisedFeatureDecorator feature = new SymbolisedFeatureDecorator(layerFeature);
+					IFeatureCollection<IFeature> layerFeatureCollection = (IFeatureCollection<IFeature>) layer
+							.getFeatureCollection();
+					collection.setFeatureType(layerFeatureCollection
+							.getFeatureType());
+					for (IFeature layerFeature : layerFeatureCollection) {
+						SymbolisedFeatureDecorator feature = new SymbolisedFeatureDecorator(
+								layerFeature);
 						feature.setSymbolisedFeatureCollection(collection);
 					}
 					collections.add(collection);
