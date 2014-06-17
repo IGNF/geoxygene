@@ -40,6 +40,7 @@ public class RenderingStatistics {
     private static final Logger logger = Logger
             .getLogger(RenderingStatistics.class.getName()); // logger
 
+    private static boolean on = false;
     private static long renderingStart = 0;
     private static long renderingEnd = 0;
     private static int nbProgramSwitch = 0;
@@ -56,40 +57,53 @@ public class RenderingStatistics {
     }
 
     public static void startRendering() {
-        renderingStart = new Date().getTime();
-        nbProgramSwitch = 0;
-        nbDrawCall = 0;
-        nbGLComplex = 0;
-        meshCount = 0;
-        vertexCount = 0;
+        if (on) {
+            renderingStart = new Date().getTime();
+            nbProgramSwitch = 0;
+            nbDrawCall = 0;
+            nbGLComplex = 0;
+            meshCount = 0;
+            vertexCount = 0;
+        }
     }
 
     public static void endRendering() {
-        renderingEnd = new Date().getTime();
+        if (on) {
+            renderingEnd = new Date().getTime();
+        }
     }
 
     public static void switchProgram() {
-        nbProgramSwitch++;
+        if (on) {
+            nbProgramSwitch++;
+        }
     }
 
     public static void doDrawCall() {
-        nbDrawCall++;
+        if (on) {
+            nbDrawCall++;
+        }
     }
 
     public static void drawGLComplex(GLComplex primitive) {
-        nbGLComplex++;
-        meshCount += primitive.getMeshes().size();
-        vertexCount += primitive.getVertices().size();
+        if (on) {
+            nbGLComplex++;
+            meshCount += primitive.getMeshes().size();
+            vertexCount += primitive.getVertices().size();
+        }
     }
 
     public static void printStatistics() {
-        logger.info("------------------------------------------------------");
-        logger.info("Rendering time = " + (renderingEnd - renderingStart)
-                + "ms");
-        logger.info("nb program switch = " + nbProgramSwitch);
-        logger.info("nb draw call = " + nbDrawCall);
-        logger.info("nb meshes = " + meshCount);
-        logger.info("nb vertices = " + vertexCount);
+        if (on) {
+            logger.info("------------------------------------------------------");
+            logger.info("Rendering time = " + (renderingEnd - renderingStart)
+                    + "ms");
+            logger.info("nb program switch = " + nbProgramSwitch);
+            logger.info("nb draw call = " + nbDrawCall);
+            logger.info("nb gl complex = " + nbGLComplex);
+            logger.info("nb meshes = " + meshCount);
+            logger.info("nb vertices = " + vertexCount);
+        }
     }
 
 }

@@ -195,11 +195,11 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                     }
                     // do the actual rendering
                     try {
-                        System.err.println("rendering layer "
-                                + LwjglLayerRenderer.this.getLayer().getName());
-                        System.err.println("rendering feature collection size "
-                                + LwjglLayerRenderer.this.getLayer()
-                                        .getFeatureCollection().size());
+                        // System.err.println("rendering layer "
+                        // + LwjglLayerRenderer.this.getLayer().getName());
+                        // System.err.println("rendering feature collection size "
+                        // + LwjglLayerRenderer.this.getLayer()
+                        // .getFeatureCollection().size());
                         LwjglLayerRenderer.getGL4Context().initializeContext();
                         // getGL4Context().checkContext();
                         LwjglLayerRenderer.this.renderHook(vp.getViewport()
@@ -263,6 +263,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         }
 
         int featureRenderIndex = 0;
+        // get only visible features
         List<Pair<Symbolizer, IFeature>> featuresToRender = this
                 .generateFeaturesToRender(envelope);
         if (featuresToRender != null) {
@@ -272,8 +273,8 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                 }
                 Symbolizer symbolizer = pair.getU();
                 IFeature feature = pair.getV();
-                System.err.println("rendering feature " + feature
-                        + " with symbolizer " + symbolizer);
+                // System.err.println("rendering feature " + feature
+                // + " with symbolizer " + symbolizer);
                 this.render(symbolizer, feature, this.getLayer());
                 featureRenderIndex++;
             }

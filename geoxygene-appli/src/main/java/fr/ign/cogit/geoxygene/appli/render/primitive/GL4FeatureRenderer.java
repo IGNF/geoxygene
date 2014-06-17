@@ -276,9 +276,10 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     public void render(final IFeature feature, final Layer layer,
             final Symbolizer symbolizer, final Viewport viewport)
             throws RenderingException {
-        System.err.println("rendering feature " + feature.getId() + " part of "
-                + feature.getFeatureCollections().size()
-                + " feature collections");
+        // System.err.println("rendering feature " + feature.getId() +
+        // " part of "
+        // + feature.getFeatureCollections().size()
+        // + " feature collections");
         GLTools.glCheckError("gl error ocurred before main render method");
         if (this.glContext == null) {
             logger.error("no GL Context defined");
@@ -599,7 +600,6 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
 
         glEnable(GL_TEXTURE_2D);
-        GL11.glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
         GL11.glViewport(0, 0, this.fboImageWidth, this.fboImageHeight);
 

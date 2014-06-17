@@ -239,7 +239,6 @@ public final class GLTools {
      * @return the generated texture id
      */
     public static int loadTexture(final BufferedImage image, boolean mipmap) {
-        System.err.println("load texture " + image.hashCode());
         int[] pixels = new int[image.getWidth() * image.getHeight()];
         image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0,
                 image.getWidth());

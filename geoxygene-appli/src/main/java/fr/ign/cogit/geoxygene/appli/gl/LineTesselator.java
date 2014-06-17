@@ -202,7 +202,7 @@ public class LineTesselator {
         vertexIndex0 = complex.addVertex(new GLSimpleVertex(vertex0));
         vertexIndex1 = complex.addVertex(new GLSimpleVertex(vertex1));
         if (!closedLine) { // initial cap
-            createCap(complex, l, cap, vertexIndex0, vertexIndex1, edge0,
+            createCap(complex, mesh, l, cap, vertexIndex0, vertexIndex1, edge0,
                     normal0, vertex0, vertex1, true);
         }
 
@@ -387,30 +387,31 @@ public class LineTesselator {
                     int nbJoinPoints = (int) Math.abs((alpha2 - alpha1)
                             / anglePrecision);
 
-                    GLMesh roundJoinMesh = complex
-                            .addGLMesh(GL11.GL_TRIANGLE_FAN);
-                    roundJoinMesh.addIndices(midVertexIndex); // triangle fan
-                                                              // center
                     if (sideToCap == 1) { // from vertex3 to vertex 4
-                        roundJoinMesh.addIndices(vertexIndex3); // first corner
-                        for (int n = 1; n < nbJoinPoints; n++) { // round part
+                        int previousVertexIndex = vertexIndex3;
+                        for (int n = 1; n <= nbJoinPoints; n++) { // round part
                             double angle = n * (alpha2 - alpha1) / nbJoinPoints;
-                            roundJoinMesh.addIndices(complex
+                            int currentVertexIndex = complex
                                     .addVertex(new GLSimpleVertex(addPoint2D(
                                             centerPoint,
-                                            rotateVector(border1, angle)))));
+                                            rotateVector(border1, angle))));
+                            mesh.addIndices(midVertexIndex,
+                                    previousVertexIndex, currentVertexIndex);
+                            previousVertexIndex = currentVertexIndex;
                         }
-                        roundJoinMesh.addIndices(vertexIndex4); // last corner
                     } else {// from vertex2 to vertex 4
-                        roundJoinMesh.addIndices(vertexIndex2); // first corner
-                        for (int n = 1; n < nbJoinPoints; n++) { // round part
+                        int previousVertexIndex = vertexIndex2;
+
+                        for (int n = 1; n <= nbJoinPoints; n++) { // round part
                             double angle = n * (alpha2 - alpha1) / nbJoinPoints;
-                            roundJoinMesh.addIndices(complex
+                            int currentVertexIndex = complex
                                     .addVertex(new GLSimpleVertex(addPoint2D(
                                             centerPoint,
-                                            rotateVector(border1, angle)))));
+                                            rotateVector(border1, angle))));
+                            mesh.addIndices(midVertexIndex,
+                                    previousVertexIndex, currentVertexIndex);
+                            previousVertexIndex = currentVertexIndex;
                         }
-                        roundJoinMesh.addIndices(vertexIndex4); // last corner
                     }
 
                     vertexIndex0 = (sideToCap == 1) ? vertexIndex2
@@ -431,7 +432,7 @@ public class LineTesselator {
             vertex1 = new Point2D.Double(complex.getVertices()
                     .get(vertexIndex1).getXYZ()[0], complex.getVertices()
                     .get(vertexIndex1).getXYZ()[1]);
-            createCap(complex, l, cap, vertexIndex0, vertexIndex1, edge0,
+            createCap(complex, mesh, l, cap, vertexIndex0, vertexIndex1, edge0,
                     normal0, vertex0, vertex1, false);
         }
     }
@@ -450,10 +451,10 @@ public class LineTesselator {
      * @param vertex1
      * @throws FunctionEvaluationException
      */
-    private static void createCap(GLSimpleComplex complex, double l, int cap,
-            int vertexIndex0, int vertexIndex1, Point2D edge0, Point2D normal0,
-            Point2D vertex0, Point2D vertex1, boolean startPoint)
-            throws FunctionEvaluationException {
+    private static void createCap(GLSimpleComplex complex, GLMesh mesh,
+            double l, int cap, int vertexIndex0, int vertexIndex1,
+            Point2D edge0, Point2D normal0, Point2D vertex0, Point2D vertex1,
+            boolean startPoint) throws FunctionEvaluationException {
         Point2D sideVector;
         switch (cap) {
         case BasicStroke.CAP_BUTT:
@@ -471,23 +472,25 @@ public class LineTesselator {
                     v1.getXYZ()[1]), dec));
             break;
         case BasicStroke.CAP_ROUND: {
-            GLMesh capMesh = complex.addGLMesh(GL11.GL_TRIANGLE_FAN);
             Point2D splitVertex = mulDoublePoint2D(0.5,
                     addPoint2D(vertex0, vertex1));
-            capMesh.addIndex(complex.addVertex(new GLSimpleVertex(splitVertex)));
+            int splitVertexIndex = complex.addVertex(new GLSimpleVertex(
+                    splitVertex));
             int nbCapPoints = Math.max(3, (int) (Math.PI / anglePrecision));
             sideVector = mulDoublePoint2D(l, normal0);
-            capMesh.addIndex(vertexIndex1);
-            for (int n = 1; n < nbCapPoints; n++) {
+            int previousVertexIndex = vertexIndex1;
+            for (int n = 1; n <= nbCapPoints; n++) {
                 double angle = n * Math.PI / nbCapPoints;
                 if (!startPoint) {
                     angle *= -1;
                 }
-                capMesh.addIndex(complex
+                int currentVertexIndex = complex
                         .addVertex(new GLSimpleVertex(addPoint2D(splitVertex,
-                                rotateVector(sideVector, angle)))));
+                                rotateVector(sideVector, angle))));
+                mesh.addIndices(splitVertexIndex, previousVertexIndex,
+                        currentVertexIndex);
+                previousVertexIndex = currentVertexIndex;
             }
-            capMesh.addIndex(vertexIndex0);
         }
             break;
         }

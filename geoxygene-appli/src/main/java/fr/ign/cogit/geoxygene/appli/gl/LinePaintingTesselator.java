@@ -258,6 +258,8 @@ public class LinePaintingTesselator {
                                 .getAlpha() / 255f));
                 // System.err.println("Add vertex with uv = " + uvLow + " / " +
                 // uvHigh + " on " + arcLength);
+
+                GLMesh mesh = this.complex.addGLMesh(GL11.GL_TRIANGLES);
                 while (currentEdgeAndPointIndex < edgeCount) {
                     if (this.isStopRequested()) {
                         this.setState(TaskState.STOPPED);
@@ -322,7 +324,6 @@ public class LinePaintingTesselator {
                                     / nbSegments);
                     double deltaParam = (nextParam - param) / nbSegments;
 
-                    GLMesh mesh = this.complex.addGLMesh(GL11.GL_TRIANGLES);
                     for (int nSegment = 1; nSegment <= nbSegments; nSegment++) {
                         // interpolated Low & High identity points
                         interpolatedIdentityLowPoint.x = identityLowPoint0.x
