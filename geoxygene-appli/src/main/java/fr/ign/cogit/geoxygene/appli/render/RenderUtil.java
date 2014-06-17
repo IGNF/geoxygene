@@ -1353,7 +1353,9 @@ public final class RenderUtil {
                             AlphaComposite.SRC_OVER, (float) opacity));
                     AffineTransform transform = new AffineTransform();
                     transform.translate(lower.getX(), upper.getY());
-                    transform.scale(pixelscaleX, pixelScaleY);
+                    transform.scale(pixelscaleX
+                            * texture.getScaleFactor().getX(), pixelScaleY
+                            * texture.getScaleFactor().getY());
                     transform.rotate(texture.getRotation().getAngleInRadians());
                     drawTexture(feature, shape, viewport, graphics, opacity,
                             imgTexture, transform, xRepeat, yRepeat);

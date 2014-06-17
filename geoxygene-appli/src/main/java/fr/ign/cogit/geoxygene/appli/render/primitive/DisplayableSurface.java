@@ -262,6 +262,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
             if (textureTask.getState().isError()) {
                 logger.error("texture generation task "
                         + textureTask.getState() + " finished with an error");
+                logger.error(textureTask.getError());
                 return;
             }
             // draw the texture image into resulting image
@@ -269,10 +270,21 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
             case VIEWPORTSPACE:
                 BasicParameterizer parameterizer = new BasicParameterizer(
                         envelope, false, true);
-                BasicTexture glTexture = new BasicTexture(textureTask
-                        .getTexture().getTextureImage());
-                this.generateWithTextureAndParameterizer(complexes, glTexture,
-                        parameterizer, envelope);
+                if (textureTask.getTextureWidth()
+                        * textureTask.getTextureHeight() != 0) {
+                    BasicTexture glTexture = new BasicTexture(
+                            textureTask.getTextureWidth(),
+                            textureTask.getTextureHeight());
+                    glTexture.setScaleX(textureTask.getTexture()
+                            .getScaleFactor().getX());
+                    glTexture.setScaleY(textureTask.getTexture()
+                            .getScaleFactor().getY());
+                    GLSimpleComplex primitive = this
+                            .generateWithTextureAndParameterizer(complexes,
+                                    glTexture, parameterizer, envelope);
+                    textureTask.addTaskListener(new TextureApplyer(primitive,
+                            textureTask));
+                }
                 break;
             case SCREENSPACE:
                 // drawTextureScreenspaceCoordinates(this.feature,
@@ -331,8 +343,10 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
     /**
      * @param texture
      * @param parameterizer
+     * @return
      */
-    private void generateWithTextureAndParameterizer(List<GLComplex> complexes,
+    private GLSimpleComplex generateWithTextureAndParameterizer(
+            List<GLComplex> complexes,
             fr.ign.cogit.geoxygene.util.gl.Texture texture,
             Parameterizer parameterizer, IEnvelope envelope) {
         double minX = envelope.minX();
@@ -342,6 +356,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
                 parameterizer, minX, minY);
         content.setTexture(texture);
         complexes.add(content);
+        return content;
     }
 
     // private void generateWithDistanceFieldTexturedPolygonSymbolizer(
@@ -401,10 +416,37 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
     synchronized public void onStateChange(TextureTask<?> task,
             TaskState oldState) {
         if (task.getState().isFinished()) {
+
             this.notify();
             task.removeTaskListener(this);
         }
 
     }
 
+    private static class TextureApplyer implements
+            TaskListener<TextureTask<Texture>> {
+
+        private final GLSimpleComplex primitive;
+
+        public TextureApplyer(GLSimpleComplex primitive,
+                TextureTask<? extends Texture> textureTask) {
+            this.primitive = primitive;
+            if (textureTask.getState().isFinished()) {
+                ((BasicTexture) this.primitive.getTexture())
+                        .setTextureImage(textureTask.getTexture()
+                                .getTextureImage());
+                textureTask.removeTaskListener(this);
+            }
+        }
+
+        @Override
+        public void onStateChange(TextureTask<Texture> task, TaskState oldState) {
+            if (task.getState().isFinished()) {
+                ((BasicTexture) this.primitive.getTexture())
+                        .setTextureImage(task.getTexture().getTextureImage());
+                task.removeTaskListener(this);
+            }
+        }
+
+    }
 }

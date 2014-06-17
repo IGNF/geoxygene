@@ -91,6 +91,7 @@ import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex.GLSimpleRenderingCapability;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
+import fr.ign.cogit.geoxygene.util.gl.RenderingStatistics;
 import fr.ign.cogit.geoxygene.util.gl.Texture;
 
 /**
@@ -275,6 +276,9 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     public void render(final IFeature feature, final Layer layer,
             final Symbolizer symbolizer, final Viewport viewport)
             throws RenderingException {
+        System.err.println("rendering feature " + feature.getId() + " part of "
+                + feature.getFeatureCollections().size()
+                + " feature collections");
         GLTools.glCheckError("gl error ocurred before main render method");
         if (this.glContext == null) {
             logger.error("no GL Context defined");
@@ -620,6 +624,9 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
 
         program.setUniform1i(LwjglLayerRenderer.colorTexture1UniformVarName,
                 COLORTEXTURE1_SLOT);
+        program.setUniform1i(
+                LwjglLayerRenderer.textureScaleFactorUniformVarName,
+                COLORTEXTURE1_SLOT);
         program.setUniform1i(LwjglLayerRenderer.antialiasingSizeUniformVarName,
                 antialisingSize);
         GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE1_SLOT);
@@ -699,6 +706,9 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             program.setUniform1i(
                     LwjglLayerRenderer.colorTexture1UniformVarName,
                     COLORTEXTURE1_SLOT);
+            program.setUniform2f(
+                    LwjglLayerRenderer.textureScaleFactorUniformVarName,
+                    (float) texture.getScaleX(), (float) texture.getScaleY());
             GLTools.glCheckError("initialize texture rendering vao = "
                     + primitive.getVaoId() + " current program = "
                     + program.getName());
@@ -978,7 +988,9 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      *            primitive to render
      */
     private void drawComplex(GLComplex primitive) {
+        RenderingStatistics.drawGLComplex(primitive);
         for (GLMesh mesh : primitive.getMeshes()) {
+            RenderingStatistics.doDrawCall();
             GL11.glDrawElements(mesh.getGlType(),
                     mesh.getLastIndex() - mesh.getFirstIndex() + 1,
                     GL11.GL_UNSIGNED_INT, mesh.getFirstIndex()

@@ -16,4 +16,14 @@ public interface TextureTask<TextureType extends Texture> extends Task {
      */
     public abstract void setTexture(TextureType texture);
 
+    /**
+     * @return the texture size once it will be generated
+     */
+    public abstract int getTextureWidth();
+
+    /**
+     * @return the texture size once it will be generated
+     */
+    public abstract int getTextureHeight();
+
 }

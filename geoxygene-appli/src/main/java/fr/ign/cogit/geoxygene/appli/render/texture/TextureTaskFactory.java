@@ -27,8 +27,6 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import java.awt.Shape;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.appli.Viewport;
@@ -56,10 +54,13 @@ public class TextureTaskFactory {
         if (texture instanceof PerlinNoiseTexture) {
             PerlinNoiseTextureTask task = new PerlinNoiseTextureTask(
                     (PerlinNoiseTexture) texture, featureCollection, viewport);
+
             return task;
         }
         if (texture instanceof BasicTexture) {
-            return new BasicTextureTask((BasicTexture) texture);
+            BasicTextureTask basicTextureTask = new BasicTextureTask(
+                    (BasicTexture) texture);
+            return basicTextureTask;
         }
         if (texture instanceof TileDistributionTexture) {
             TileDistributionTextureTask task = new TileDistributionTextureTask(

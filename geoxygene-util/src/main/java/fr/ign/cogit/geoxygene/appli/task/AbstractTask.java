@@ -88,7 +88,7 @@ public abstract class AbstractTask implements Task {
     @Override
     public Thread start(Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
         if (this.taskThread != null) {
-            return null;
+            return this.taskThread;
         }
         this.taskThread = new Thread(this, this.getName() + "-thread");
         this.taskThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);

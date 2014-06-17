@@ -199,6 +199,38 @@ public class DistanceFieldTexture implements Parameterizer, Texture {
 
     }
 
+    /**
+     * @return the uScale
+     */
+    @Override
+    public double getScaleX() {
+        return this.uScale;
+    }
+
+    /**
+     * @param uScale
+     *            the uScale to set
+     */
+    public void setuScale(double uScale) {
+        this.uScale = uScale;
+    }
+
+    /**
+     * @return the vScale
+     */
+    @Override
+    public double getScaleY() {
+        return this.vScale;
+    }
+
+    /**
+     * @param vScale
+     *            the vScale to set
+     */
+    public void setvScale(double vScale) {
+        this.vScale = vScale;
+    }
+
     /*
      * (non-Javadoc)
      * 

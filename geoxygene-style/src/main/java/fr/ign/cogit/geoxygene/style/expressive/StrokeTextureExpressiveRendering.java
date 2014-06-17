@@ -357,4 +357,153 @@ public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
         this.strokeThicknessVariationWavelength = strokeThicknessVariationWavelength;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        long temp;
+        temp = Double.doubleToLongBits(this.brushDensity);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + this.brushEndLength;
+        temp = Double.doubleToLongBits(this.brushSize);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + this.brushStartLength;
+        result = prime
+                * result
+                + ((this.brushTextureFilename == null) ? 0
+                        : this.brushTextureFilename.hashCode());
+        temp = Double.doubleToLongBits(this.minAngle);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.paperDensity);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.paperScaleFactor);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime
+                * result
+                + ((this.paperTextureFilename == null) ? 0
+                        : this.paperTextureFilename.hashCode());
+        temp = Double.doubleToLongBits(this.sampleSize);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.sharpness);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.strokePressure);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.strokePressureVariationAmplitude);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.strokePressureVariationWavelength);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.strokeShiftVariationAmplitude);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.strokeShiftVariationWavelength);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.strokeThicknessVariationAmplitude);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.strokeThicknessVariationWavelength);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        StrokeTextureExpressiveRendering other = (StrokeTextureExpressiveRendering) obj;
+        if (Double.doubleToLongBits(this.brushDensity) != Double
+                .doubleToLongBits(other.brushDensity)) {
+            return false;
+        }
+        if (this.brushEndLength != other.brushEndLength) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.brushSize) != Double
+                .doubleToLongBits(other.brushSize)) {
+            return false;
+        }
+        if (this.brushStartLength != other.brushStartLength) {
+            return false;
+        }
+        if (this.brushTextureFilename == null) {
+            if (other.brushTextureFilename != null) {
+                return false;
+            }
+        } else if (!this.brushTextureFilename
+                .equals(other.brushTextureFilename)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.minAngle) != Double
+                .doubleToLongBits(other.minAngle)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.paperDensity) != Double
+                .doubleToLongBits(other.paperDensity)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.paperScaleFactor) != Double
+                .doubleToLongBits(other.paperScaleFactor)) {
+            return false;
+        }
+        if (this.paperTextureFilename == null) {
+            if (other.paperTextureFilename != null) {
+                return false;
+            }
+        } else if (!this.paperTextureFilename
+                .equals(other.paperTextureFilename)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.sampleSize) != Double
+                .doubleToLongBits(other.sampleSize)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.sharpness) != Double
+                .doubleToLongBits(other.sharpness)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.strokePressure) != Double
+                .doubleToLongBits(other.strokePressure)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.strokePressureVariationAmplitude) != Double
+                .doubleToLongBits(other.strokePressureVariationAmplitude)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.strokePressureVariationWavelength) != Double
+                .doubleToLongBits(other.strokePressureVariationWavelength)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.strokeShiftVariationAmplitude) != Double
+                .doubleToLongBits(other.strokeShiftVariationAmplitude)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.strokeShiftVariationWavelength) != Double
+                .doubleToLongBits(other.strokeShiftVariationWavelength)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.strokeThicknessVariationAmplitude) != Double
+                .doubleToLongBits(other.strokeThicknessVariationAmplitude)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.strokeThicknessVariationWavelength) != Double
+                .doubleToLongBits(other.strokeThicknessVariationWavelength)) {
+            return false;
+        }
+        return true;
+    }
+
 }

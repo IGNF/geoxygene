@@ -65,4 +65,14 @@ public interface Texture {
      */
     int getTextureHeight();
 
+    /**
+     * @return the texture image width (in pixels)
+     */
+    double getScaleX();
+
+    /**
+     * @return the texture image height (in pixels)
+     */
+    double getScaleY();
+
 }

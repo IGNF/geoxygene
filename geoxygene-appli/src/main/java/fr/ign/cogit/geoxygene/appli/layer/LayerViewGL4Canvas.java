@@ -8,16 +8,34 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 
+import java.awt.Color;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.geom.Point2D;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL30;
 
+import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
+import fr.ign.cogit.geoxygene.appli.render.primitive.GL4FeatureRenderer;
+import fr.ign.cogit.geoxygene.util.gl.GLException;
+import fr.ign.cogit.geoxygene.util.gl.GLMesh;
+import fr.ign.cogit.geoxygene.util.gl.GLProgram;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
+import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
+import fr.ign.cogit.geoxygene.util.gl.RenderingStatistics;
 
 /** @author JeT GL drawable canvas inserted into a LayerViewLwjglPanel */
 public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
@@ -26,6 +44,8 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     private static final long serialVersionUID = 2813681374260169340L; // serializable
     private Thread glCanvasThreadOwner = null; // stores the thread that ows gl
                                                // context to check consistency
+    private GLSimpleComplex screenQuad = null;
+    private GLTexture backgroundTexture = null;
 
     /**
      * Constructor
@@ -47,7 +67,37 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         super.initGL();
         glViewport(0, 0, this.getWidth(), this.getHeight());
         // glEnable(GL13.GL_MULTISAMPLE);
+        this.backgroundTexture = new GLTexture(
+                "./src/main/resources/test/app/papers/black-bg.png");
 
+    }
+
+    /**
+     * 
+     */
+    private void initializeScreenQuad() {
+        this.screenQuad = new GLSimpleComplex("screen", 0f, 0f);
+        GLMesh mesh = this.screenQuad.addGLMesh(GL11.GL_QUADS);
+        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
+                new Point2D.Double(-1, -1), new Point2D.Double(0, 0))));
+        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
+                new Point2D.Double(-1, 1), new Point2D.Double(0, 1))));
+        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
+                new Point2D.Double(1, 1), new Point2D.Double(1, 1))));
+        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
+                new Point2D.Double(1, -1), new Point2D.Double(1, 0))));
+        this.screenQuad.setColor(Color.blue);
+        this.screenQuad.setOverallOpacity(0.5);
+    }
+
+    /**
+     * @return the screenQuad
+     */
+    public GLSimpleComplex getScreenQuad() {
+        if (this.screenQuad == null) {
+            this.initializeScreenQuad();
+        }
+        return this.screenQuad;
     }
 
     @Override
@@ -83,10 +133,15 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         }
 
         try {
+            RenderingStatistics.startRendering();
+
             // System.err.println("-------------------------------------------------- paint GL --------------------------------");
             // RenderGLUtil.glDraw(null);
             GLTools.glClear(this.getBackground(), GL_COLOR_BUFFER_BIT);
             GLTools.glClear(0f, 0f, 0f, 1f, GL_DEPTH_BUFFER_BIT);
+
+            this.drawBackground();
+
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);
             // this.parentPanel.repaint();
@@ -102,10 +157,77 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             }
 
             this.swapBuffers();
+            RenderingStatistics.endRendering();
+            RenderingStatistics.printStatistics();
         } catch (LWJGLException e) {
             logger.error("Error rendering the LwJGL : " + e.getMessage());
             // e.printStackTrace();
         }
+    }
+
+    private void drawBackground() {
+        try {
+            GLProgram program = LwjglLayerRenderer
+                    .getGL4Context()
+                    .setCurrentProgram(LwjglLayerRenderer.backgroundProgramName);
+            glEnable(GL_TEXTURE_2D);
+            glDisable(GL11.GL_POLYGON_SMOOTH);
+
+            Viewport viewport = this.getParentPanel().getViewport();
+            double translateX = 1
+                    * ((viewport.getViewOrigin().getX() * viewport.getScale()) % this
+                            .getWidth()) / this.getWidth();
+            double translateY = 1
+                    * ((viewport.getViewOrigin().getY() * viewport.getScale()) % this
+                            .getHeight()) / this.getHeight();
+            program.setUniform1f(
+                    LwjglLayerRenderer.m00ModelToViewMatrixUniformVarName,
+                    (float) viewport.getScale());
+            program.setUniform1f(
+                    LwjglLayerRenderer.m02ModelToViewMatrixUniformVarName,
+                    (float) translateX);
+            program.setUniform1f(
+                    LwjglLayerRenderer.m11ModelToViewMatrixUniformVarName,
+                    (float) viewport.getScale());
+            program.setUniform1f(
+                    LwjglLayerRenderer.m12ModelToViewMatrixUniformVarName,
+                    (float) translateY);
+            program.setUniform1f(LwjglLayerRenderer.screenWidthUniformVarName,
+                    this.getWidth());
+            program.setUniform1f(LwjglLayerRenderer.screenHeightUniformVarName,
+                    this.getHeight());
+            program.setUniform1i(
+                    LwjglLayerRenderer.colorTexture1UniformVarName,
+                    GL4FeatureRenderer.COLORTEXTURE1_SLOT);
+            GL13.glActiveTexture(GL13.GL_TEXTURE0
+                    + GL4FeatureRenderer.COLORTEXTURE1_SLOT);
+            glBindTexture(GL_TEXTURE_2D, this.backgroundTexture.getTextureId());
+            GL11.glDepthMask(false);
+            glDisable(GL11.GL_DEPTH_TEST);
+
+            GL30.glBindVertexArray(this.getScreenQuad().getVaoId());
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            //
+            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+
+            GLTools.glCheckError("before background drawing textured quad");
+            for (GLMesh mesh : this.getScreenQuad().getMeshes()) {
+                GL11.glDrawElements(mesh.getGlType(), mesh.getLastIndex()
+                        - mesh.getFirstIndex() + 1, GL11.GL_UNSIGNED_INT,
+                        mesh.getFirstIndex() * (Integer.SIZE / 8));
+            }
+            this.getScreenQuad().setColor(new Color(1f, 0f, 1f, 1f));
+            GLTools.glCheckError("background textured quad");
+            glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
+            GL30.glBindVertexArray(0); // unbind VAO
+            GLTools.glCheckError("exiting background rendering");
+        } catch (GLException e) {
+            logger.error("An error ocurred drawing background : "
+                    + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 
     @Override

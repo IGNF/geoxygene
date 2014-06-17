@@ -45,12 +45,12 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.texture.Texture;
 
 /**
- * @author JeT
- *         texture manager
+ * @author JeT texture manager
  */
 public class TextureManager implements TaskListener<TextureTask<Texture>> {
 
-    private static final Logger logger = Logger.getLogger(TextureManager.class.getName()); // logger
+    private static final Logger logger = Logger.getLogger(TextureManager.class
+            .getName()); // logger
 
     private static final Map<Texture, TextureTask<? extends Texture>> tasksMap = new HashMap<Texture, TextureTask<? extends Texture>>();
     private final static TextureManager instance = new TextureManager();
@@ -71,20 +71,22 @@ public class TextureManager implements TaskListener<TextureTask<Texture>> {
 
     /**
      * return the texture image if it has finished being computed or launch the
-     * texture image computation. the task is automatically started
-     * To be alerted about texture computation completion use getTextureTask()
+     * texture image computation. the task is automatically started To be
+     * alerted about texture computation completion use getTextureTask()
      * 
      * @param texture
      * @param iFeatureCollection
      * @param viewport
      * @return
      */
-    public BufferedImage getTextureImage(Texture texture, IFeatureCollection<IFeature> iFeatureCollection, Viewport viewport) {
+    public BufferedImage getTextureImage(Texture texture,
+            IFeatureCollection<IFeature> iFeatureCollection, Viewport viewport) {
         BufferedImage textureImage = texture.getTextureImage();
         if (textureImage != null) {
             return textureImage;
         }
-        TextureTask<? extends Texture> textureTask = this.getTextureTask(texture, iFeatureCollection, viewport);
+        TextureTask<? extends Texture> textureTask = this.getTextureTask(
+                texture, iFeatureCollection, viewport);
         textureTask.start();
         return textureTask.getTexture().getTextureImage();
     }
@@ -98,7 +100,8 @@ public class TextureManager implements TaskListener<TextureTask<Texture>> {
      * @param viewport
      * @return
      */
-    public TextureTask<? extends Texture> getTextureTask(Texture texture, IFeatureCollection<IFeature> iFeatureCollection, Viewport viewport) {
+    public TextureTask<? extends Texture> getTextureTask(Texture texture,
+            IFeatureCollection<IFeature> iFeatureCollection, Viewport viewport) {
         if (texture == null) {
             return null;
         }
@@ -106,13 +109,16 @@ public class TextureManager implements TaskListener<TextureTask<Texture>> {
         synchronized (tasksMap) {
             TextureTask<? extends Texture> textureTask = tasksMap.get(texture);
             if (textureTask == null) {
-                textureTask = TextureTaskFactory.createTextureTask(texture, iFeatureCollection, viewport);
+                textureTask = TextureTaskFactory.createTextureTask(texture,
+                        iFeatureCollection, viewport);
                 if (textureTask == null) {
-                    logger.error("Unable to create texture task for texture " + texture.getClass().getSimpleName());
+                    logger.error("Unable to create texture task for texture "
+                            + texture.getClass().getSimpleName());
                     return null;
                 }
                 tasksMap.put(texture, textureTask);
-                GeOxygeneEventManager.getInstance().getApplication().getTaskManager().addTask(textureTask);
+                GeOxygeneEventManager.getInstance().getApplication()
+                        .getTaskManager().addTask(textureTask);
                 textureTask.addTaskListener(this);
             }
             return textureTask;
@@ -124,7 +130,7 @@ public class TextureManager implements TaskListener<TextureTask<Texture>> {
         synchronized (tasksMap) {
             switch (task.getState()) {
             case FINISHED:
-                //                tasksMap.remove(task.getTexture());
+                // tasksMap.remove(task.getTexture());
                 task.removeTaskListener(this);
                 if (task.getTexture().getTextureImage() == null) {
                     logger.error("TextureTask has finished with no error but a null texture (its role IS to fill texture.getTextureImage() method)");
@@ -133,7 +139,7 @@ public class TextureManager implements TaskListener<TextureTask<Texture>> {
                 break;
             case ERROR:
             case STOPPED:
-                //                tasksMap.remove(task.getTexture());
+                // tasksMap.remove(task.getTexture());
                 task.removeTaskListener(this);
                 break;
             default:

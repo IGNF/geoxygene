@@ -57,7 +57,7 @@ public class Stroke {
     private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>(0);
 
     @XmlElements({ @XmlElement(name = "StrokeTextureExpressiveRendering", type = StrokeTextureExpressiveRendering.class) })
-    ExpressiveRendering expressiveRendering = null;
+    private ExpressiveRendering expressiveRendering = null;
 
     /**
      * The raw color of the stroke, without opacity information.
@@ -643,6 +643,14 @@ public class Stroke {
                 + ((this.color == null) ? 0 : this.color.hashCode());
         result = prime
                 * result
+                + ((this.colorPropertyName == null) ? 0
+                        : this.colorPropertyName.hashCode());
+        result = prime
+                * result
+                + ((this.expressiveRendering == null) ? 0
+                        : this.expressiveRendering.hashCode());
+        result = prime
+                * result
                 + ((this.graphicType == null) ? 0 : this.graphicType.hashCode());
         result = prime * result
                 + ((this.stroke == null) ? 0 : this.stroke.hashCode());
@@ -688,6 +696,20 @@ public class Stroke {
                 return false;
             }
         } else if (!this.color.equals(other.color)) {
+            return false;
+        }
+        if (this.colorPropertyName == null) {
+            if (other.colorPropertyName != null) {
+                return false;
+            }
+        } else if (!this.colorPropertyName.equals(other.colorPropertyName)) {
+            return false;
+        }
+        if (this.expressiveRendering == null) {
+            if (other.expressiveRendering != null) {
+                return false;
+            }
+        } else if (!this.expressiveRendering.equals(other.expressiveRendering)) {
             return false;
         }
         if (this.graphicType == null) {

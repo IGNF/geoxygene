@@ -89,12 +89,24 @@ public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
         this.setState(TaskState.RUNNING);
         try {
 
-            this.getTexture().setTextureImage(ImageIO.read(new URL(this.getTexture().getUrl())));
+            URL inputURL = new URL(this.getTexture().getUrl());
+            this.getTexture().setTextureImage(ImageIO.read(inputURL));
             this.setState(TaskState.FINISHED);
         } catch (Exception e) {
-            e.printStackTrace();
+            this.setError(e);
             this.setState(TaskState.ERROR);
+            e.printStackTrace();
         }
+    }
+
+    @Override
+    public int getTextureWidth() {
+        return this.getTexture().getTextureWidth();
+    }
+
+    @Override
+    public int getTextureHeight() {
+        return this.getTexture().getTextureHeight();
     }
 
 }

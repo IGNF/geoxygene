@@ -99,6 +99,7 @@ public class GLContext {
     public GLProgram setCurrentProgram(GLProgram program) throws GLException {
         if (program == null) {
             GL20.glUseProgram(0);
+            RenderingStatistics.switchProgram();
             this.currentProgram = null;
             return null;
         }
@@ -121,6 +122,7 @@ public class GLContext {
             this.currentProgram = null;
             return null;
         }
+        RenderingStatistics.switchProgram();
         this.currentProgram = program;
 
         return program;

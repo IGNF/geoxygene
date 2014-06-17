@@ -31,6 +31,9 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glEnable;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -48,10 +51,16 @@ public class BasicTexture implements Texture {
     private static final Logger logger = Logger.getLogger(BasicTexture.class
             .getName()); // logger
 
+    private static final int CHECKERBOARDSIZE = 20;
+
+    private static final Color[] CHECKERBOARDCOLOR = {
+            new Color(0.f, 0.f, 0.f, 0.25f), new Color(1.f, 1.f, 1.f, 0.25f) };
+
     private int textureId = -1;
     private int textureSlot = GL13.GL_TEXTURE0;
     private String textureFilename = null;
     private BufferedImage textureImage = null;
+    private double scaleX, scaleY;
 
     private String uniformVarName;
 
@@ -64,6 +73,8 @@ public class BasicTexture implements Texture {
      * Constructor
      */
     public BasicTexture() {
+        this.scaleX = 1.;
+        this.scaleY = 1.;
     }
 
     /**
@@ -82,8 +93,23 @@ public class BasicTexture implements Texture {
      */
     public BasicTexture(final int width, final int height) {
         this();
+        if (width * height == 0) {
+            throw new IllegalArgumentException(
+                    "Basic texture request with null size");
+        }
         BufferedImage img = new BufferedImage(width, height,
                 BufferedImage.TYPE_4BYTE_ABGR);
+        Graphics2D g2 = img.createGraphics();
+        g2.setComposite(AlphaComposite.Clear);
+        g2.fillRect(0, 0, width, height);
+        g2.setComposite(AlphaComposite.Src);
+        for (int y = 0; y < height; y += CHECKERBOARDSIZE) {
+            for (int x = 0; x < width; x += CHECKERBOARDSIZE) {
+                g2.setPaint(CHECKERBOARDCOLOR[(x / CHECKERBOARDSIZE + y
+                        / CHECKERBOARDSIZE) % 2]);
+                g2.fillRect(x, y, CHECKERBOARDSIZE, CHECKERBOARDSIZE);
+            }
+        }
         this.setTextureImage(img);
     }
 
@@ -95,6 +121,7 @@ public class BasicTexture implements Texture {
     public BasicTexture(BufferedImage textureImage) {
         this();
         this.textureImage = textureImage;
+        this.textureId = -1;
     }
 
     /**
@@ -109,6 +136,38 @@ public class BasicTexture implements Texture {
      */
     public String getUniformVarName() {
         return this.uniformVarName;
+    }
+
+    /**
+     * @return the scaleX
+     */
+    @Override
+    public double getScaleX() {
+        return this.scaleX;
+    }
+
+    /**
+     * @param scaleX
+     *            the scaleX to set
+     */
+    public void setScaleX(double scaleX) {
+        this.scaleX = scaleX;
+    }
+
+    /**
+     * @return the scaleY
+     */
+    @Override
+    public double getScaleY() {
+        return this.scaleY;
+    }
+
+    /**
+     * @param scaleY
+     *            the scaleY to set
+     */
+    public void setScaleY(double scaleY) {
+        this.scaleY = scaleY;
     }
 
     /**

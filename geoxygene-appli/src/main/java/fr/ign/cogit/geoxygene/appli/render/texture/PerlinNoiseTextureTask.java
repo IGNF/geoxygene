@@ -27,7 +27,6 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
 import org.apache.log4j.Logger;
@@ -56,6 +55,8 @@ public class PerlinNoiseTextureTask extends
 
     private IFeatureCollection<IFeature> featureCollection = null;
     private Viewport viewport = null;
+    private int width = 0;
+    private int height = 0;
 
     /**
      * @param texture
@@ -65,6 +66,8 @@ public class PerlinNoiseTextureTask extends
         super(texture);
         this.setViewport(viewport);
         this.setFeatureCollection(featureCollection);
+        this.computeTextureDimension(featureCollection.envelope(), viewport,
+                this.getTexture().getTextureResolution());
     }
 
     /**
@@ -150,10 +153,7 @@ public class PerlinNoiseTextureTask extends
                     .setDimension(
                             new DimensionDescriptor(envelope.width(), envelope
                                     .length()));
-            this.getTexture().setTextureDimension(
-                    PerlinNoiseTextureTask.computeTextureDimension(envelope,
-                            this.getViewport(), this.getTexture()
-                                    .getTextureResolution()));
+            this.getTexture().setTextureDimension(this.width, this.height);
             logger.debug("set perlin texture image size: "
                     + this.getTexture().getTextureWidth() + "x"
                     + this.getTexture().getTextureHeight());
@@ -176,10 +176,23 @@ public class PerlinNoiseTextureTask extends
      * 
      * @return
      */
-    private static Dimension computeTextureDimension(IEnvelope envelope,
-            Viewport viewport, double dpiResolution) {
-        int width = (int) (envelope.width() * Viewport.getMETERS_PER_PIXEL() * dpiResolution);
-        int height = (int) (envelope.length() * Viewport.getMETERS_PER_PIXEL() * dpiResolution);
-        return new Dimension(width, height);
+    private void computeTextureDimension(IEnvelope envelope, Viewport viewport,
+            double dpiResolution) {
+        if (envelope == null) {
+            throw new IllegalArgumentException("envelope is not set");
+        }
+        this.width = (int) (envelope.width() * Viewport.getMETERS_PER_PIXEL() * dpiResolution);
+        this.height = (int) (envelope.length() * Viewport.getMETERS_PER_PIXEL() * dpiResolution);
     }
+
+    @Override
+    public int getTextureWidth() {
+        return this.width;
+    }
+
+    @Override
+    public int getTextureHeight() {
+        return this.height;
+    }
+
 }

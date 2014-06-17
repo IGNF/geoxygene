@@ -46,34 +46,35 @@ public abstract class Texture {
     private TextureDrawingMode textureDrawingMode = TextureDrawingMode.VIEWPORTSPACE;
     private BufferedImage textureImage = null;
 
+    // image dimension (in world coordinates)
     // @XmlElement(name = "Dimension")
-    private DimensionDescriptor dimension = new DimensionDescriptor(); // image
-                                                                       // dimension
-                                                                       // (in
-                                                                       // world
-                                                                       // coordinates)
+    private DimensionDescriptor dimension = new DimensionDescriptor();
 
+    // image displacement (in world coordinates)
     @XmlElement(name = "Displacement")
-    private PointDescriptor displacement = new PointDescriptor(); // image
-                                                                  // displacement
-                                                                  // (in world
-                                                                  // coordinates)
+    private PointDescriptor displacement = new PointDescriptor();
 
+    // image scale factor
+    @XmlElement(name = "ScaleFactor")
+    private PointDescriptor scaleFactor = new PointDescriptor();
+
+    // rotation angle
     @XmlElement(name = "Rotation")
-    private final RotationDescriptor rotation = new RotationDescriptor(); // rotation
-                                                                          // angle
+    private final RotationDescriptor rotation = new RotationDescriptor();
 
     /**
      * default constructor
      */
     public Texture() {
-        // do nothing
+        this.scaleFactor.setX(1.);
+        this.scaleFactor.setY(1.);
     }
 
     /**
      * default constructor for
      */
     public Texture(TextureDrawingMode textureDrawingMode) {
+        this();
         this.textureDrawingMode = textureDrawingMode;
     }
 
@@ -149,6 +150,21 @@ public abstract class Texture {
      */
     public RotationDescriptor getRotation() {
         return this.rotation;
+    }
+
+    /**
+     * @return the scale
+     */
+    public PointDescriptor getScaleFactor() {
+        return this.scaleFactor;
+    }
+
+    /**
+     * @param scale
+     *            the scale to set
+     */
+    public void setScaleFactor(PointDescriptor scaleFactor) {
+        this.scaleFactor = scaleFactor;
     }
 
     /**

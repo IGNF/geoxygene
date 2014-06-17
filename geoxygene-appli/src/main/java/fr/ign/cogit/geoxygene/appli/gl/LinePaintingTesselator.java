@@ -34,6 +34,7 @@ import java.awt.Color;
 
 import javax.vecmath.Point2d;
 
+import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -50,6 +51,9 @@ import fr.ign.cogit.geoxygene.util.math.VectorUtil;
  * @author JeT Utility method to generate line painting geometry
  */
 public class LinePaintingTesselator {
+
+    private static final Logger logger = Logger
+            .getLogger(LinePaintingTesselator.class.getName()); // logger
 
     // private static final double anglePrecision = Math.PI / 40;
     // private static final double epsilon = 1E-6;
@@ -253,8 +257,7 @@ public class LinePaintingTesselator {
                         cHigh.getGreen() / 255f, cHigh.getBlue() / 255f, cHigh
                                 .getAlpha() / 255f));
                 // System.err.println("Add vertex with uv = " + uvLow + " / " +
-                // uvHigh
-                // + " on " + arcLength);
+                // uvHigh + " on " + arcLength);
                 while (currentEdgeAndPointIndex < edgeCount) {
                     if (this.isStopRequested()) {
                         this.setState(TaskState.STOPPED);
@@ -283,9 +286,6 @@ public class LinePaintingTesselator {
                     double alpha = 0;
                     if (cosAlpha >= 0.9999) {
                         alpha = 0;
-                    } else if (Math.abs(cosAlpha) < 0.001) {
-                        throw new IllegalArgumentException(
-                                "low cos case not implemented yet");
                     } else {
                         alpha = Math.acos(cosAlpha);
                     }

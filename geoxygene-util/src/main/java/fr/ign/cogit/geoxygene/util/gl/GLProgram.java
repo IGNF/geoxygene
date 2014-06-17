@@ -189,6 +189,20 @@ public class GLProgram {
     }
 
     /**
+     * set uniform value (int)
+     */
+    public void setUniform2f(final String uniformName, float x, float y)
+            throws GLException {
+        int uniformLocation = this.getUniformLocation(uniformName);
+        this.setUniform2f(uniformLocation, x, y);
+    }
+
+    public void setUniform2f(int uniformLocation, float x, float y) {
+        GL20.glUniform2f(uniformLocation, x, y);
+
+    }
+
+    /**
      * get or create a variable location in this program. If the uniform name is
      * not registered an exception is thrown
      * 

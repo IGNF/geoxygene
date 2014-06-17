@@ -49,7 +49,8 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
     private static final long serialVersionUID = 2813681374260169340L; // serializable
 
     /** @throws LWJGLException */
-    public LayerViewGL1Canvas(final LayerViewGLPanel parentPanel) throws LWJGLException {
+    public LayerViewGL1Canvas(final LayerViewGLPanel parentPanel)
+            throws LWJGLException {
         super(parentPanel);
     }
 
@@ -93,7 +94,8 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
         try {
             this.makeCurrent();
         } catch (LWJGLException exception) {
-            // if makeCurrent() throws an exception, then the canvas is not ready
+            // if makeCurrent() throws an exception, then the canvas is not
+            // ready
             return;
         }
 
@@ -102,12 +104,13 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
         try {
             // System.err.println("-------------------------------------------------- paint GL --------------------------------");
             // RenderGLUtil.glDraw(null);
-            glClearColor(1f, 1f, 0.9f, 1);
+            glClearColor(1f, 1f, 0f, 1);
             glClear(GL_COLOR_BUFFER_BIT);
             glClearColor(0f, 0f, 0f, 1);
             glClear(GL_DEPTH_BUFFER_BIT);
             // this.parentPanel.repaint();
-            if (this.getParentPanel() != null && this.getParentPanel().getRenderingManager() != null) {
+            if (this.getParentPanel() != null
+                    && this.getParentPanel().getRenderingManager() != null) {
                 this.getParentPanel().getRenderingManager().renderAll();
             }
 
@@ -139,7 +142,8 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
         try {
             this.makeCurrent();
         } catch (LWJGLException exception) {
-            // if makeCurrent() throws an exception, then the canvas is not ready
+            // if makeCurrent() throws an exception, then the canvas is not
+            // ready
             return;
         }
         try {
@@ -157,7 +161,8 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
         } catch (Exception e1) {
             // don't know hot to prevent/check this exception.
             // isDisplayable() and isValid() are both true at this point...
-            logger.warn("Error resizing the heavyweight AWTGLCanvas : " + e1.getMessage());
+            logger.warn("Error resizing the heavyweight AWTGLCanvas : "
+                    + e1.getMessage());
             // e1.printStackTrace();
         }
         this.repaint(); // super.componentResized(e);
@@ -169,7 +174,8 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
      */
     public void glPaintOverlays() {
         // create an image same as the GL window Size
-        BufferedImage overlay = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        BufferedImage overlay = new BufferedImage(this.getWidth(),
+                this.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D g = (Graphics2D) overlay.getGraphics();
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -190,7 +196,8 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
     // BufferedImage texImage;
     //
     // ColorModel glAlphaColorModel = new
-    // ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] {
+    // ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[]
+    // {
     // 8, 8, 8, 8 }, true, false,
     // Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
     //
@@ -225,7 +232,8 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
     // byte[] imageBuffer = new byte[width * height * 4];
     // for (int y = 0; y < height; y++) {
     // for (int x = 0; x < width; x++) {
-    // boolean cell = x < width / 2 && y < width / 2 || x > width / 2 && y > width
+    // boolean cell = x < width / 2 && y < width / 2 || x > width / 2 && y >
+    // width
     // / 2;
     // imageBuffer[(x + y * width) * 4 + 0] = (byte) (cell ? 255 : 0);
     // imageBuffer[(x + y * width) * 4 + 1] = (byte) (cell ? 255 : 0);
@@ -240,9 +248,11 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
 
     public static ByteBuffer loadTexture(final BufferedImage image) {
         int[] pixels = new int[image.getWidth() * image.getHeight()];
-        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0,
+                image.getWidth());
 
-        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4); // 4 for RGBA, 3 for RGB
+        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth()
+                * image.getHeight() * 4); // 4 for RGBA, 3 for RGB
 
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
@@ -250,7 +260,8 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
                 buffer.put((byte) (pixel >> 16 & 0xFF)); // Red component
                 buffer.put((byte) (pixel >> 8 & 0xFF)); // Green component
                 buffer.put((byte) (pixel & 0xFF)); // Blue component
-                buffer.put((byte) (pixel >> 24 & 0xFF)); // Alpha component. Only for
+                buffer.put((byte) (pixel >> 24 & 0xFF)); // Alpha component.
+                                                         // Only for
                                                          // RGBA
             }
         }
@@ -282,7 +293,8 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
      * @param width
      * @param height
      */
-    private void drawImage(final BufferedImage texture, final int x, final int y, final int width, final int height) {
+    private void drawImage(final BufferedImage texture, final int x,
+            final int y, final int width, final int height) {
 
         // System.err.println("<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>");
         // Thread.dumpStack();
@@ -312,7 +324,8 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
 
         ByteBuffer buf = loadTexture(texture);
         buf.rewind();
-        glTexImage2D(GL_TEXTURE_2D, 0, 4, texture.getWidth(), texture.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+        glTexImage2D(GL_TEXTURE_2D, 0, 4, texture.getWidth(),
+                texture.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glEnable(GL_BLEND);

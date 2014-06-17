@@ -239,6 +239,7 @@ public final class GLTools {
      * @return the generated texture id
      */
     public static int loadTexture(final BufferedImage image, boolean mipmap) {
+        System.err.println("load texture " + image.hashCode());
         int[] pixels = new int[image.getWidth() * image.getHeight()];
         image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0,
                 image.getWidth());
@@ -246,20 +247,24 @@ public final class GLTools {
         ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth()
                 * image.getHeight() * 4); // 4 for RGBA, 3 for RGB
 
-        for (int y = 0; y < image.getHeight(); y++) {
-            for (int x = 0; x < image.getWidth(); x++) {
-                int pixel = pixels[y * image.getWidth() + x];
-                buffer.put((byte) (pixel >> 16 & 0xFF)); // Red component
-                buffer.put((byte) (pixel >> 8 & 0xFF)); // Green component
-                buffer.put((byte) (pixel >> 0 & 0xFF)); // Blue component
-                buffer.put((byte) (pixel >> 24 & 0xFF)); // Alpha component.
-                                                         // Only for RGBA
-                // System.err.println("transparency = " + (pixel >> 24 & 0xFF));
-            }
-        }
+        fillBuffer(image, pixels, buffer);
 
         buffer.rewind();
 
+        int textureID = setGlTexture(image.getWidth(), image.getHeight(),
+                mipmap, buffer);
+        // Return the texture ID so we can bind it later again
+        return textureID;
+    }
+
+    /**
+     * @param image
+     * @param mipmap
+     * @param buffer
+     * @return
+     */
+    private static int setGlTexture(final int width, int height,
+            boolean mipmap, ByteBuffer buffer) {
         // You now have a ByteBuffer filled with the color data of each pixel.
         // Now just create a texture ID and bind it. Then you can load it using
         // whatever OpenGL method you want, for example:
@@ -280,8 +285,8 @@ public final class GLTools {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         // Send texel data to OpenGL
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(),
-                image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+                GL_UNSIGNED_BYTE, buffer);
         if (mipmap) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
                     GL11.GL_LINEAR);
@@ -289,8 +294,27 @@ public final class GLTools {
                     GL11.GL_LINEAR_MIPMAP_LINEAR);
             GL30.glGenerateMipmap(GL_TEXTURE_2D);
         }
-        // Return the texture ID so we can bind it later again
         return textureID;
+    }
+
+    /**
+     * @param image
+     * @param pixels
+     * @param buffer
+     */
+    private static void fillBuffer(final BufferedImage image, int[] pixels,
+            ByteBuffer buffer) {
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                int pixel = pixels[y * image.getWidth() + x];
+                buffer.put((byte) (pixel >> 16 & 0xFF)); // Red component
+                buffer.put((byte) (pixel >> 8 & 0xFF)); // Green component
+                buffer.put((byte) (pixel >> 0 & 0xFF)); // Blue component
+                buffer.put((byte) (pixel >> 24 & 0xFF)); // Alpha component.
+                                                         // Only for RGBA
+                // System.err.println("transparency = " + (pixel >> 24 & 0xFF));
+            }
+        }
     }
 
     /**

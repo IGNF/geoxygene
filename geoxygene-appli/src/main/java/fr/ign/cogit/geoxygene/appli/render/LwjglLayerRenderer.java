@@ -195,6 +195,11 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                     }
                     // do the actual rendering
                     try {
+                        System.err.println("rendering layer "
+                                + LwjglLayerRenderer.this.getLayer().getName());
+                        System.err.println("rendering feature collection size "
+                                + LwjglLayerRenderer.this.getLayer()
+                                        .getFeatureCollection().size());
                         LwjglLayerRenderer.getGL4Context().initializeContext();
                         // getGL4Context().checkContext();
                         LwjglLayerRenderer.this.renderHook(vp.getViewport()
@@ -211,7 +216,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                 } finally {
                     // we are no more in rendering progress
                     LwjglLayerRenderer.this.setRendering(false);
-                    // FIXME Is this operation really useful or is a patch?
+                    // FIXME Is this operation really useful or is it a patch?
                     vp.getRenderingManager().repaint();
                 }
             }
@@ -267,29 +272,8 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                 }
                 Symbolizer symbolizer = pair.getU();
                 IFeature feature = pair.getV();
-                // ///
-                // ////////////////////////////////////////////////////////////////////////////////////////////
-                // // FIXME: find a way to integrate/describe it into the SLD
-                // // bypass given symbolizers for some layers
-                // if (this.getLayer().getName().equals("PISTE_AERODROME")) {
-                // symbolizer =
-                // this.generateDistanceFieldTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(),
-                // feature);
-                // // symbolizer =
-                // this.generateTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(),
-                // feature);
-                // }
-                // if (this.getLayer().getName().equals("mer_sans_sable")) {
-                // symbolizer =
-                // this.generateDistanceFieldTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(),
-                // feature);
-                // // symbolizer =
-                // this.generateTexturedPolygonSymbolizer(this.getLayerViewPanel().getViewport(),
-                // feature);
-                // }
-                // FIXME: find a way to integrate/describe it into the SLD
-                // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
+                System.err.println("rendering feature " + feature
+                        + " with symbolizer " + symbolizer);
                 this.render(symbolizer, feature, this.getLayer());
                 featureRenderIndex++;
             }
@@ -371,6 +355,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
     public static final String globalOpacityUniformVarName = "globalOpacity";
     public static final String objectOpacityUniformVarName = "objectOpacity";
     public static final String colorTexture1UniformVarName = "colorTexture1";
+    public static final String textureScaleFactorUniformVarName = "textureScaleFactor";
     public static final String antialiasingSizeUniformVarName = "antialiasingSize";
 
     public static final String paperTextureUniformVarName = "paperSampler";
@@ -399,6 +384,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
     public static final String worldspaceTextureProgramName = "WorldspaceTexture";
     public static final String screenspaceColorProgramName = "ScreenspaceColor";
     public static final String screenspaceTextureProgramName = "ScreenspaceTexture";
+    public static final String backgroundProgramName = "BackgroundTexture";
     public static final String screenspaceAntialiasedTextureProgramName = "ScreenspaceAntialiasedTexture";
 
     /**
@@ -437,6 +423,9 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                     .createFragmentShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/paint.frag.glsl");
             glContext.addProgram(createPaintProgram(paintVertexShader,
                     paintFragmentShader));
+            // background paper
+            glContext.addProgram(createBackgroundTextureProgram());
+
         }
         return glContext;
     }
@@ -498,6 +487,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                 .addUniform(strokeThicknessVariationWavelengthUniformVarName);
         paintProgram.addUniform(globalOpacityUniformVarName);
         paintProgram.addUniform(objectOpacityUniformVarName);
+        paintProgram.addUniform(textureScaleFactorUniformVarName);
 
         return paintProgram;
     }
@@ -575,8 +565,40 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         screenspaceTextureProgram.addUniform(globalOpacityUniformVarName);
         screenspaceTextureProgram.addUniform(objectOpacityUniformVarName);
         screenspaceTextureProgram.addUniform(colorTexture1UniformVarName);
-
+        screenspaceTextureProgram.addUniform(textureScaleFactorUniformVarName);
         return screenspaceTextureProgram;
+    }
+
+    /**
+     * @throws GLException
+     */
+    private static GLProgram createBackgroundTextureProgram()
+            throws GLException {
+        int backgroundVertexShader = GLProgram
+                .createVertexShader("./src/main/resources/shaders/bg.vert.glsl");
+        int backgroundFragmentShader = GLProgram
+                .createFragmentShader("./src/main/resources/shaders/bg.frag.glsl");
+        // basic program
+        GLProgram backgroundTextureProgram = new GLProgram(
+                backgroundProgramName);
+        backgroundTextureProgram.setVertexShader(backgroundVertexShader);
+        backgroundTextureProgram.setFragmentShader(backgroundFragmentShader);
+        backgroundTextureProgram.addInputLocation(
+                GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        backgroundTextureProgram.addInputLocation(
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        backgroundTextureProgram.addUniform(colorTexture1UniformVarName);
+        backgroundTextureProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        backgroundTextureProgram.addUniform(m02ModelToViewMatrixUniformVarName);
+        backgroundTextureProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        backgroundTextureProgram.addUniform(m11ModelToViewMatrixUniformVarName);
+        backgroundTextureProgram.addUniform(m12ModelToViewMatrixUniformVarName);
+        backgroundTextureProgram.addUniform(screenWidthUniformVarName);
+        backgroundTextureProgram.addUniform(screenHeightUniformVarName);
+
+        return backgroundTextureProgram;
     }
 
     /**
@@ -643,6 +665,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         textureProgram.addUniform(globalOpacityUniformVarName);
         textureProgram.addUniform(objectOpacityUniformVarName);
         textureProgram.addUniform(colorTexture1UniformVarName);
+        textureProgram.addUniform(textureScaleFactorUniformVarName);
 
         return textureProgram;
     }
@@ -672,6 +695,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         antialisedProgram.addUniform(globalOpacityUniformVarName);
         antialisedProgram.addUniform(objectOpacityUniformVarName);
         antialisedProgram.addUniform(colorTexture1UniformVarName);
+        antialisedProgram.addUniform(textureScaleFactorUniformVarName);
         antialisedProgram.addUniform(antialiasingSizeUniformVarName);
 
         return antialisedProgram;
