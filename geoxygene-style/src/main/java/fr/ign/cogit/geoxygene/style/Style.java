@@ -50,6 +50,7 @@ public interface Style {
   Symbolizer getSymbolizer();
 
   List<FeatureTypeStyle> getFeatureTypeStyles();
+  void addFeatureTypeStyle(FeatureTypeStyle featureTypeStyle);
 
   void setGroup(String string);
 }

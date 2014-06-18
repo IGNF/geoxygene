@@ -37,4 +37,8 @@ public class NamedStyle extends AbstractStyle {
   public List<FeatureTypeStyle> getFeatureTypeStyles() {
     return null;
   }
+  
+  @Override
+  public void addFeatureTypeStyle(FeatureTypeStyle featureTypeStyle) {
+  }
 }

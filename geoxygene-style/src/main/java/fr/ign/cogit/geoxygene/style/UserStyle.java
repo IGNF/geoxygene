@@ -64,6 +64,10 @@ public class UserStyle extends AbstractStyle {
   public void setFeatureTypeStyles(List<FeatureTypeStyle> featureTypeStyles) {
     this.featureTypeStyles = featureTypeStyles;
   }
+  
+  public void addFeatureTypeStyle(FeatureTypeStyle featureTypeStyle) {
+	  featureTypeStyles.add(featureTypeStyle);
+  }
 
   /**
    * Title of the style.
