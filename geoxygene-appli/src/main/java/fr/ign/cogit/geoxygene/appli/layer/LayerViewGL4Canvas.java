@@ -28,6 +28,7 @@ import org.lwjgl.opengl.GL30;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.GL4FeatureRenderer;
+import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
@@ -51,6 +52,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
      * Constructor
      * 
      * @param parentPanel
+     * @param sld2
      * @throws LWJGLException
      */
     public LayerViewGL4Canvas(final LayerViewGLPanel parentPanel)
@@ -67,9 +69,16 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         super.initGL();
         glViewport(0, 0, this.getWidth(), this.getHeight());
         // glEnable(GL13.GL_MULTISAMPLE);
-        this.backgroundTexture = new GLTexture(
-                "./src/main/resources/test/app/papers/black-bg.png");
+    }
 
+    /**
+     * @param sld
+     *            the sld background to set
+     */
+    @Override
+    public void setViewBackground(BackgroundDescriptor background) {
+        super.setViewBackground(background);
+        // this.backgroundTexture = null;
     }
 
     /**
@@ -137,7 +146,12 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
 
             // System.err.println("-------------------------------------------------- paint GL --------------------------------");
             // RenderGLUtil.glDraw(null);
-            GLTools.glClear(this.getBackground(), GL_COLOR_BUFFER_BIT);
+            Color bgColor = this.getBackground();
+            if (this.getViewBackground() != null
+                    && this.getViewBackground().getColor() != null) {
+                bgColor = this.getViewBackground().getColor();
+            }
+            GLTools.glClear(bgColor, GL_COLOR_BUFFER_BIT);
             GLTools.glClear(0f, 0f, 0f, 1f, GL_DEPTH_BUFFER_BIT);
 
             this.drawBackground();
@@ -166,6 +180,10 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     }
 
     private void drawBackground() {
+        // if (this.getViewBackground() == null
+        // || this.getBackgroundTexture() == null) {
+        // return;
+        // }
         try {
             GLProgram program = LwjglLayerRenderer
                     .getGL4Context()
@@ -201,7 +219,8 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
                     GL4FeatureRenderer.COLORTEXTURE1_SLOT);
             GL13.glActiveTexture(GL13.GL_TEXTURE0
                     + GL4FeatureRenderer.COLORTEXTURE1_SLOT);
-            glBindTexture(GL_TEXTURE_2D, this.backgroundTexture.getTextureId());
+            glBindTexture(GL_TEXTURE_2D, this.getBackgroundTexture()
+                    .getTextureId());
             GL11.glDepthMask(false);
             glDisable(GL11.GL_DEPTH_TEST);
 
@@ -228,6 +247,26 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             e.printStackTrace();
         }
 
+    }
+
+    private GLTexture getBackgroundTexture() {
+        if (this.backgroundTexture == null) {
+            this.backgroundTexture = new GLTexture(
+                    "./src/main/resources/textures/papers/canvas-bg.png");
+        }
+        return this.backgroundTexture;
+
+        // if (this.getViewBackground() == null
+        // || this.getViewBackground().getTextureImage() == null) {
+        // return null;
+        // }
+        // if (this.backgroundTexture == null
+        // || this.backgroundTexture.getTextureImage() != this
+        // .getViewBackground().getTextureImage()) {
+        // this.backgroundTexture = new GLTexture(this.getViewBackground()
+        // .getTextureImage());
+        // }
+        // return this.backgroundTexture;
     }
 
     @Override

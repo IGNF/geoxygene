@@ -37,6 +37,7 @@ import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.SyncRenderingManager;
+import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.ImageComparator;
 
@@ -83,6 +84,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
     /**
      * 
+     * @param sld
      * @param frame
      */
     public LayerViewGLPanel(final LayerViewGLCanvasType glType) {
@@ -163,6 +165,11 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
     public void setWireframe(boolean b) {
         this.wireframe = b;
+    }
+
+    @Override
+    public void setViewBackground(BackgroundDescriptor background) {
+        this.glCanvas.setViewBackground(background);
     }
 
     @Override

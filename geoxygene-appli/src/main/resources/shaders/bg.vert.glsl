@@ -15,6 +15,6 @@ out vec2 fragmentUV;
 
 void main() {
 	gl_Position = vec4( vertexPosition, 1);
-	fragmentUV.x = vertexUV.x + m02;
-	fragmentUV.y = vertexUV.y + m12;
+	fragmentUV.x = 2.*(vertexUV.x + m02) / ( m00);
+	fragmentUV.y = 2.*(vertexUV.y + m12) / ( m11);
 }

@@ -64,8 +64,10 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
 
     private static final long serialVersionUID = 87814921699188942L;
 
-    private static Logger logger = Logger.getLogger(StyleEditionExpertFrame.class.getName());
-    private static Border border = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+    private static Logger logger = Logger
+            .getLogger(StyleEditionExpertFrame.class.getName());
+    private static Border border = BorderFactory
+            .createBevelBorder(BevelBorder.LOWERED);
 
     // Main GeOxygene application elements
     private LayerLegendPanel layerLegendPanel = null;
@@ -107,7 +109,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
      * @param layerLegendPanel
      *            the layerLegendPanel of the style to be modified.
      */
-    public StyleEditionExpertFrame(ProjectFrame projectFrame, LayerLegendPanel layerLegendPanel) {
+    public StyleEditionExpertFrame(ProjectFrame projectFrame,
+            LayerLegendPanel layerLegendPanel) {
         super(SwingUtilities.getWindowAncestor(layerLegendPanel));
         this.layerLegendPanel = layerLegendPanel;
         this.projectFrame = projectFrame;
@@ -124,7 +127,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
             this.setInitialSLD(this.layer.getSld());
         } else {
             this.getEditor().setEnabled(false);
-            this.info("Cannot edit Layer type " + layer.getClass().getSimpleName());
+            this.info("Cannot edit Layer type "
+                    + layer.getClass().getSimpleName());
         }
     }
 
@@ -164,14 +168,16 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
         StyledDocument doc = this.getResultDocument();
         if (message != null) {
             try {
-                doc.insertString(doc.getLength(), message + NEWLINE, this.criticAttr);
+                doc.insertString(doc.getLength(), message + NEWLINE,
+                        this.criticAttr);
             } catch (BadLocationException e1) {
                 logger.error(e1.getMessage());
             }
         }
         if (e != null) {
             try {
-                doc.insertString(doc.getLength(), e.getMessage() + NEWLINE, this.criticAttr);
+                doc.insertString(doc.getLength(), e.getMessage() + NEWLINE,
+                        this.criticAttr);
             } catch (BadLocationException e1) {
                 logger.error(e.getMessage());
             }
@@ -181,7 +187,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
                 str.append(this.formatStackTraceElement(ste) + NEWLINE);
             }
             try {
-                doc.insertString(doc.getLength(), str.toString(), this.errorAttr);
+                doc.insertString(doc.getLength(), str.toString(),
+                        this.errorAttr);
             } catch (BadLocationException e1) {
                 logger.error(str.toString());
             }
@@ -219,7 +226,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
     }
 
     private void initializeGui() {
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.getEditionPanel(), this.getDisplayPanel());
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                this.getEditionPanel(), this.getDisplayPanel());
         splitPane.setDividerSize(3);
         splitPane.setDividerLocation(0.7);
         splitPane.setResizeWeight(1.);
@@ -253,7 +261,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
 
     public JButton getValidButton() {
         if (this.validButton == null) {
-            this.validButton = new JButton(I18N.getString("StyleEditionFrame.Ok")); //$NON-NLS-1$
+            this.validButton = new JButton(
+                    I18N.getString("StyleEditionFrame.Ok")); //$NON-NLS-1$
             this.validButton.addActionListener(this);
             this.validButton.setBounds(50, 50, 100, 20);
         }
@@ -262,7 +271,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
 
     public JButton getCancelButton() {
         if (this.cancelButton == null) {
-            this.cancelButton = new JButton(I18N.getString("StyleEditionFrame.Cancel")); //$NON-NLS-1$
+            this.cancelButton = new JButton(
+                    I18N.getString("StyleEditionFrame.Cancel")); //$NON-NLS-1$
             this.cancelButton.addActionListener(this);
             this.cancelButton.setBounds(50, 50, 100, 20);
         }
@@ -271,7 +281,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
 
     public JButton getApplyButton() {
         if (this.applyButton == null) {
-            this.applyButton = new JButton(I18N.getString("StyleEditionFrame.Apply")); //$NON-NLS-1$
+            this.applyButton = new JButton(
+                    I18N.getString("StyleEditionFrame.Apply")); //$NON-NLS-1$
             this.applyButton.addActionListener(this);
             this.applyButton.setBounds(50, 50, 100, 20);
         }
@@ -298,8 +309,10 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
         if (this.displayPanel == null) {
             this.displayPanel = new JPanel(new BorderLayout());
             this.displayPanel.setBorder(border);
-            this.displayPanel.add(new JScrollPane(this.getDisplayTextPane(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
+            this.displayPanel.add(new JScrollPane(this.getDisplayTextPane(),
+                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),
+                    BorderLayout.CENTER);
         }
         return this.displayPanel;
     }
@@ -319,7 +332,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
             this.editor = new RSyntaxTextArea(20, 60);
             this.editor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
             this.editor.setCodeFoldingEnabled(true);
-            this.editor.setText("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+            this.editor
+                    .setText("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
         }
         return this.editor;
     }
@@ -327,17 +341,23 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
     public void applySld() {
         StyledLayerDescriptor sld = null;
         try {
-            ByteArrayInputStream in = new ByteArrayInputStream(this.getEditor().getText().getBytes("UTF-8"));
+            ByteArrayInputStream in = new ByteArrayInputStream(this.getEditor()
+                    .getText().getBytes("UTF-8"));
             sld = StyledLayerDescriptor.unmarshall(in);
             sld.setDataSet(this.getInitialSLD().getDataSet());
             this.layer.setSld(sld);
             if (sld != null) {
                 for (int i = 0; i < this.projectFrame.getLayers().size(); i++) {
-                    String name = this.projectFrame.getLayers().get(i).getName();
-                    this.projectFrame.getLayers().get(i).setStyles(sld.getLayer(name).getStyles());
+                    String name = this.projectFrame.getLayers().get(i)
+                            .getName();
+                    this.projectFrame.getLayers().get(i)
+                            .setStyles(sld.getLayer(name).getStyles());
                 }
+                // FIXME: this line removes dataset from the layers......???!!!
+                // this.projectFrame.setSld(sld);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             this.error(e.getClass().getName(), null);
             this.error("Error found in SLD file", e);
         }

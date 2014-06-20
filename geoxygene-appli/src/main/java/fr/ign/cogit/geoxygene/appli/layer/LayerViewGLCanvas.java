@@ -9,12 +9,19 @@ import org.apache.log4j.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.AWTGLCanvas;
 
-public abstract class LayerViewGLCanvas extends AWTGLCanvas implements ComponentListener, MouseListener, MouseMotionListener {
+import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
 
-    private static final long serialVersionUID = 1095977885262623231L; // Serializable UID
+public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
+        ComponentListener, MouseListener, MouseMotionListener {
+
+    private static final long serialVersionUID = 1095977885262623231L; // Serializable
+                                                                       // UID
     protected LayerViewGLPanel parentPanel = null;
     private final boolean doPaintOverlay = false;
-    protected static Logger logger = Logger.getLogger(LayerViewGL1Canvas.class.getName());
+    protected static Logger logger = Logger.getLogger(LayerViewGL1Canvas.class
+            .getName());
+
+    private BackgroundDescriptor background = null;
 
     /**
      * Constructor
@@ -22,16 +29,33 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements Component
      * @param parentPanel
      * @throws LWJGLException
      */
-    public LayerViewGLCanvas(LayerViewGLPanel parentPanel) throws LWJGLException {
+    public LayerViewGLCanvas(LayerViewGLPanel parentPanel)
+            throws LWJGLException {
         super();
         if (parentPanel == null) {
-            throw new IllegalArgumentException("invalid null parent Panel for " + this.getClass().getSimpleName());
+            throw new IllegalArgumentException("invalid null parent Panel for "
+                    + this.getClass().getSimpleName());
         }
         this.setParentPanel(parentPanel);
         this.addComponentListener(this);
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
 
+    }
+
+    /**
+     * @return the sld background
+     */
+    public BackgroundDescriptor getViewBackground() {
+        return this.background;
+    }
+
+    /**
+     * @param sld
+     *            the sld background to set
+     */
+    public void setViewBackground(BackgroundDescriptor background) {
+        this.background = background;
     }
 
     /**

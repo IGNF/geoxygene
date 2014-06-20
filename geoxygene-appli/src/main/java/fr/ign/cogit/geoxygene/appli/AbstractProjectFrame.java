@@ -49,7 +49,8 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 public abstract class AbstractProjectFrame implements ProjectFrame {
 
     /** Logger of the application. */
-    private static Logger logger = Logger.getLogger(AbstractProjectFrame.class.getName());
+    private static Logger logger = Logger.getLogger(AbstractProjectFrame.class
+            .getName());
     private MainFrame mainFrame = null;
     private final Map<IFeature, BufferedImage> featureToImageMap = new HashMap<IFeature, BufferedImage>();
     private LayerLegendPanel layerLegendPanel = null; // The layer legend panel
@@ -61,13 +62,15 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     private ImageIcon iconImage = null; // ProjectFrame icon
     private static int PFID = 1; // Frame id counter
     private String title = "untitled"; // tab title
+    private final Object sldLock = new Object();
 
     // descriptor
 
     /**
      * Constructor
      */
-    public AbstractProjectFrame(final MainFrame frame, final LayerViewPanel layerViewPanel, final ImageIcon iconImage) {
+    public AbstractProjectFrame(final MainFrame frame,
+            final LayerViewPanel layerViewPanel, final ImageIcon iconImage) {
         super();
         this.setIconImage(iconImage);
         this.setMainFrame(frame);
@@ -85,20 +88,21 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         this.sld.addSldListener(this.getLayerLegendPanel());
     }
 
-    //    /**
-    //     * Constructor
-    //     */
-    //    public AbstractProjectFrame(final MainFrame frame, final ImageIcon iconImage) {
-    //        super();
-    //        this.setIconImage(iconImage);
-    //        this.setMainFrame(frame);
-    //        this.title = "Project #" + AbstractProjectFrame.PFID++;
-    //        this.sld = new StyledLayerDescriptor(new DataSet());
-    //        // this.layerViewPanel.setModel(this.sld);
-    //        // this.layerLegendPanel.setModel(this.sld);
-    //        this.sld.addSldListener(this.getLayerViewPanel());
-    //        this.sld.addSldListener(this.getLayerLegendPanel());
-    //    }
+    // /**
+    // * Constructor
+    // */
+    // public AbstractProjectFrame(final MainFrame frame, final ImageIcon
+    // iconImage) {
+    // super();
+    // this.setIconImage(iconImage);
+    // this.setMainFrame(frame);
+    // this.title = "Project #" + AbstractProjectFrame.PFID++;
+    // this.sld = new StyledLayerDescriptor(new DataSet());
+    // // this.layerViewPanel.setModel(this.sld);
+    // // this.layerLegendPanel.setModel(this.sld);
+    // this.sld.addSldListener(this.getLayerViewPanel());
+    // this.sld.addSldListener(this.getLayerLegendPanel());
+    // }
 
     @Override
     public final void setTitle(final String string) {
@@ -174,7 +178,8 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * @param layerLegendPanel
      *            the layerLegendPanel to set
      */
-    public final void setLayerLegendPanel(final LayerLegendPanel layerLegendPanel) {
+    public final void setLayerLegendPanel(
+            final LayerLegendPanel layerLegendPanel) {
         this.layerLegendPanel = layerLegendPanel;
     }
 
@@ -215,7 +220,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final void addLayer(final Layer l) {
-        synchronized (this.getSld().lock) {
+        synchronized (this.sldLock) {
             this.getSld().add(l);
         }
     }
@@ -229,7 +234,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final void addLayer(final Layer l, final int index) {
-        synchronized (this.getSld().lock) {
+        synchronized (this.sldLock) {
             this.getSld().add(l, index);
         }
     }
@@ -243,7 +248,8 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     public final void addLayer(final File file) {
         if (file != null) {
             String fileName = file.getAbsolutePath();
-            String extention = fileName.substring(fileName.lastIndexOf('.') + 1);
+            String extention = fileName
+                    .substring(fileName.lastIndexOf('.') + 1);
             LayerFactory factory = new LayerFactory(this.getSld());
             Layer l = null;
             if (extention.equalsIgnoreCase("shp")) { //$NON-NLS-1$
@@ -256,7 +262,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
                 l = factory.createLayer(fileName, LayerType.TXT);
             }
             if (l != null) {
-                synchronized (this.getSld().lock) {
+                synchronized (this.sldLock) {
                     this.getSld().add(l);
                 }
             }
@@ -271,7 +277,8 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final void askAndAddNewLayer() {
-        File[] files = MainFrameMenuBar.fc.getFiles(this.getMainFrame().getGui());
+        File[] files = MainFrameMenuBar.fc.getFiles(this.getMainFrame()
+                .getGui());
         this.addLayerFromFileOrDirectory(files);
     }
 
@@ -281,13 +288,15 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         }
         for (File file : files) {
             if (file.isDirectory()) {
-                this.addLayerFromFileOrDirectory(file.listFiles(new FileFilter() {
+                this.addLayerFromFileOrDirectory(file
+                        .listFiles(new FileFilter() {
 
-                    @Override
-                    public boolean accept(File pathname) {
-                        return MainFrameMenuBar.fc.getFileChooser().getFileFilter().accept(pathname);
-                    }
-                }));
+                            @Override
+                            public boolean accept(File pathname) {
+                                return MainFrameMenuBar.fc.getFileChooser()
+                                        .getFileFilter().accept(pathname);
+                            }
+                        }));
             } else {
                 this.addLayer(file);
             }
@@ -298,21 +307,25 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * (non-Javadoc)
      * 
      * @see
-     * fr.ign.cogit.geoxygene.appli.ProjectFrame#addGpsTxtLayer(java.lang.String)
+     * fr.ign.cogit.geoxygene.appli.ProjectFrame#addGpsTxtLayer(java.lang.String
+     * )
      */
     @Override
     public final void addGpsTxtLayer(final String fileName) {
         int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
-        String populationName = fileName.substring(lastIndexOfSeparator + 1, fileName.lastIndexOf(".")); //$NON-NLS-1$
+        String populationName = fileName.substring(lastIndexOfSeparator + 1,
+                fileName.lastIndexOf(".")); //$NON-NLS-1$
         logger.info(populationName);
-        Population<DefaultFeature> population = GPSTextfileReader.read(fileName, populationName, this.getDataSet(), true);
+        Population<DefaultFeature> population = GPSTextfileReader.read(
+                fileName, populationName, this.getDataSet(), true);
         logger.info(population.size());
 
         if (population != null) {
             this.addFeatureCollection(population, population.getNom());
             if (this.getLayers().size() == 1) {
                 try {
-                    this.getLayerViewPanel().getViewport().zoom(population.envelope());
+                    this.getLayerViewPanel().getViewport()
+                            .zoom(population.envelope());
                 } catch (NoninvertibleTransformException e1) {
                     e1.printStackTrace();
                 }
@@ -324,22 +337,25 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * (non-Javadoc)
      * 
      * @see
-     * fr.ign.cogit.geoxygene.appli.ProjectFrame#addRoadNetworkTxtLayer(java.lang
-     * .String)
+     * fr.ign.cogit.geoxygene.appli.ProjectFrame#addRoadNetworkTxtLayer(java
+     * .lang .String)
      */
     @Override
     public final void addRoadNetworkTxtLayer(final String fileName) {
         int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
-        String populationName = fileName.substring(lastIndexOfSeparator + 1, fileName.lastIndexOf(".")); //$NON-NLS-1$
+        String populationName = fileName.substring(lastIndexOfSeparator + 1,
+                fileName.lastIndexOf(".")); //$NON-NLS-1$
         logger.info(populationName);
-        Population<DefaultFeature> population = RoadNetworkTextfileReader.read(fileName, populationName, this.getDataSet(), true);
+        Population<DefaultFeature> population = RoadNetworkTextfileReader.read(
+                fileName, populationName, this.getDataSet(), true);
         logger.info(population.size());
 
         if (population != null) {
             this.addFeatureCollection(population, population.getNom());
             if (this.getLayers().size() == 1) {
                 try {
-                    this.getLayerViewPanel().getViewport().zoom(population.envelope());
+                    this.getLayerViewPanel().getViewport()
+                            .zoom(population.envelope());
                 } catch (NoninvertibleTransformException e1) {
                     e1.printStackTrace();
                 }
@@ -351,17 +367,20 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * (non-Javadoc)
      * 
      * @see
-     * fr.ign.cogit.geoxygene.appli.ProjectFrame#addFeatureCollection(fr.ign.cogit
-     * .geoxygene.api.feature.IPopulation, java.lang.String,
+     * fr.ign.cogit.geoxygene.appli.ProjectFrame#addFeatureCollection(fr.ign
+     * .cogit .geoxygene.api.feature.IPopulation, java.lang.String,
      * org.opengis.referencing.crs.CoordinateReferenceSystem)
      */
     @Override
-    public final Layer addFeatureCollection(final IPopulation<? extends IFeature> population, final String name, final CoordinateReferenceSystem crs) {
+    public final Layer addFeatureCollection(
+            final IPopulation<? extends IFeature> population,
+            final String name, final CoordinateReferenceSystem crs) {
         LayerFactory factory = new LayerFactory(this.getSld());
-        Layer layer = factory.createLayer(name, population.getFeatureType().getGeometryType());
+        Layer layer = factory.createLayer(name, population.getFeatureType()
+                .getGeometryType());
         layer.setCRS(crs);
 
-        synchronized (this.getSld().lock) {
+        synchronized (this.sldLock) {
             this.getSld().add(layer);
         }
         return layer;
@@ -376,7 +395,9 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * org.opengis.referencing.crs.CoordinateReferenceSystem)
      */
     @Override
-    public final Layer addUserLayer(final IFeatureCollection<? extends IFeature> collection, final String name, final CoordinateReferenceSystem crs) {
+    public final Layer addUserLayer(
+            final IFeatureCollection<? extends IFeature> collection,
+            final String name, final CoordinateReferenceSystem crs) {
         UserLayerFactory factory = new UserLayerFactory();
         factory.setModel(this.getSld());
         factory.setName(name);
@@ -393,12 +414,13 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * (non-Javadoc)
      * 
      * @see
-     * fr.ign.cogit.geoxygene.appli.ProjectFrame#addFeatureCollection(fr.ign.cogit
-     * .geoxygene.api.feature.IPopulation, java.lang.String)
+     * fr.ign.cogit.geoxygene.appli.ProjectFrame#addFeatureCollection(fr.ign
+     * .cogit .geoxygene.api.feature.IPopulation, java.lang.String)
      */
     @Override
     @Deprecated
-    public final Layer addFeatureCollection(final IPopulation<?> population, final String name) {
+    public final Layer addFeatureCollection(final IPopulation<?> population,
+            final String name) {
         return this.addFeatureCollection(population, name, null);
     }
 
@@ -443,7 +465,8 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     @Override
     public void clearSelection() {
         this.getLayerViewPanel().getSelectedFeatures().clear();
-        this.getLayerViewPanel().getRenderingManager().getSelectionRenderer().clearImageCache();
+        this.getLayerViewPanel().getRenderingManager().getSelectionRenderer()
+                .clearImageCache();
         this.getLayerViewPanel().superRepaint();
     }
 
@@ -451,8 +474,8 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * (non-Javadoc)
      * 
      * @see
-     * fr.ign.cogit.geoxygene.appli.ProjectFrame#getLayerFromFeature(fr.ign.cogit
-     * .geoxygene.api.feature.IFeature)
+     * fr.ign.cogit.geoxygene.appli.ProjectFrame#getLayerFromFeature(fr.ign.
+     * cogit .geoxygene.api.feature.IFeature)
      */
     @Override
     public final Layer getLayerFromFeature(final IFeature ft) {
@@ -468,7 +491,8 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * (non-Javadoc)
      * 
      * @see
-     * fr.ign.cogit.geoxygene.appli.ProjectFrame#setGeometryToolsVisible(boolean)
+     * fr.ign.cogit.geoxygene.appli.ProjectFrame#setGeometryToolsVisible(boolean
+     * )
      */
     /**
      * Adapter::setGeometryToolsVisible() do nothing. let this behavior to
@@ -488,15 +512,22 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final void setSld(final StyledLayerDescriptor sld) {
-        synchronized (this.getSld().lock) {
+        synchronized (this.sldLock) {
             if (this.sld != null) {
                 this.sld.removeSldListener(this.getLayerViewPanel());
                 this.sld.removeSldListener(this.getLayerLegendPanel());
             }
             this.sld = sld;
-            if (this.sld != null) {
-                this.sld.addSldListener(this.getLayerViewPanel());
-                this.sld.addSldListener(this.getLayerLegendPanel());
+            System.err.println("Set Canvas background from SLD background = "
+                    + sld);
+            if (this.getLayerViewPanel() != null) {
+                if (this.sld != null) {
+                    this.getLayerViewPanel().setViewBackground(
+                            sld.getBackground());
+                    this.sld.addSldListener(this.getLayerViewPanel());
+                    this.sld.addSldListener(this.getLayerLegendPanel());
+
+                }
             }
         }
     }
@@ -518,15 +549,18 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * java.awt.image.BufferedImage, double[][])
      */
     @Override
-    public void addImage(final String name, final BufferedImage image, final double[][] range) {
-        DefaultFeature feature = new DefaultFeature(new GM_Envelope(range[0][0], range[0][1], range[1][0], range[1][1]).getGeom());
+    public void addImage(final String name, final BufferedImage image,
+            final double[][] range) {
+        DefaultFeature feature = new DefaultFeature(new GM_Envelope(
+                range[0][0], range[0][1], range[1][0], range[1][1]).getGeom());
         this.featureToImageMap.put(feature, image);
-        Population<DefaultFeature> population = new Population<DefaultFeature>(name);
+        Population<DefaultFeature> population = new Population<DefaultFeature>(
+                name);
         population.add(feature);
         this.getDataSet().addPopulation(population);
         LayerFactory factory = new LayerFactory(this.getSld());
         Layer layer = factory.createLayer(name);
-        synchronized (this.getSld().lock) {
+        synchronized (this.sldLock) {
             this.getSld().add(layer);
         }
     }
@@ -571,8 +605,10 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     @Override
     public final void saveAsShp(final String fileName, final Layer layer) {
         try {
-            // do we have to add ".shp" extension ? (FileUtil.changeExtension(fileName, "shp"))
-            ShapefileWriter.write(layer.getFeatureCollection(), fileName, layer.getCRS());
+            // do we have to add ".shp" extension ?
+            // (FileUtil.changeExtension(fileName, "shp"))
+            ShapefileWriter.write(layer.getFeatureCollection(), fileName,
+                    layer.getCRS());
         } catch (Exception e) {
             logger.error("Shapefile export failed! See stack trace below : "); //$NON-NLS-1$
             e.printStackTrace();
@@ -611,24 +647,36 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         {
 
             StyledLayerDescriptor new_sld;
-            synchronized (this.getSld().lock) {
-                new_sld = StyledLayerDescriptor.unmarshall(file.getAbsolutePath(), this.getDataSet());
+            synchronized (this.sldLock) {
+                new_sld = StyledLayerDescriptor.unmarshall(
+                        file.getAbsolutePath(), this.getDataSet());
                 if (new_sld != null) {
+                    // this.setSld(new_sld);
                     for (int i = 0; i < this.getLayers().size(); i++) {
                         String name = this.getLayers().get(i).getName();
-                        //logger.debug(name);
-                        //vérifier que le layer est décrit dans le SLD
+                        // logger.debug(name);
+                        // vérifier que le layer est décrit dans le SLD
                         if (new_sld.getLayer(name) != null) {
                             if (new_sld.getLayer(name).getStyles() != null) {
                                 // logger.debug(new_sld.getLayer(name).getStyles());
-                                this.getLayers().get(i).setStyles(new_sld.getLayer(name).getStyles());
+                                this.getLayers()
+                                        .get(i)
+                                        .setStyles(
+                                                new_sld.getLayer(name)
+                                                        .getStyles());
 
                             } else {
-                                logger.trace("Le layer " + name + " n'a pas de style défini dans le SLD");
+                                logger.trace("Le layer "
+                                        + name
+                                        + " n'a pas de style défini dans le SLD");
                             }
                         } else {
-                            logger.trace("Le layer " + name + " n'est pas décrit dans le SLD");
-                            this.getLayers().get(i).setStyles(this.sld.getLayer(name).getStyles());
+                            logger.trace("Le layer " + name
+                                    + " n'est pas décrit dans le SLD");
+                            this.getLayers()
+                                    .get(i)
+                                    .setStyles(
+                                            this.sld.getLayer(name).getStyles());
                         }
                     }
 
@@ -651,10 +699,11 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final void removeLayers(final List<Layer> toRemove) {
-        synchronized (this.getSld().lock) {
+        synchronized (this.sldLock) {
             this.getSld().remove(toRemove);
             for (Layer layer : toRemove) {
-                this.getLayerViewPanel().getRenderingManager().removeLayer(layer);
+                this.getLayerViewPanel().getRenderingManager()
+                        .removeLayer(layer);
             }
         }
     }
@@ -666,17 +715,18 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      */
     @Override
     public final DataSet getDataSet() {
-        synchronized (this.getSld().lock) {
+        synchronized (this.sldLock) {
             return this.getSld().getDataSet();
         }
     }
 
     /**
-     * Adapter::repaint() do nothing. let this behavior to subclasses
+     * repaint the current view
      */
     @Override
     public void repaint() {
-        // do nothing. let this behavior to subclasses
+        // repaint the current view
+        this.getLayerViewPanel().repaint();
     }
 
     @Override

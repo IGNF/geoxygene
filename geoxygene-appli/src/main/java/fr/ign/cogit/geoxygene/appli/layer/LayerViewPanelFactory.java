@@ -11,7 +11,8 @@ import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel.LayerViewGLCanvasType
 /** @author JeT This factory creates LayerViewPanel class instances */
 public final class LayerViewPanelFactory {
 
-    private static Logger logger = Logger.getLogger(LayerViewPanelFactory.class.getName());
+    private static Logger logger = Logger.getLogger(LayerViewPanelFactory.class
+            .getName());
 
     /** Layer view panel types */
     public enum RenderingType {
@@ -78,22 +79,27 @@ public final class LayerViewPanelFactory {
      * @return newly created layer view
      */
     public static LayerViewGLPanel newLayerViewGLPanel() {
-        LayerViewGLPanel glPanel = new LayerViewGLPanel(LayerViewGLCanvasType.GL4);
+        LayerViewGLPanel glPanel = new LayerViewGLPanel(
+                LayerViewGLCanvasType.GL4);
         return glPanel;
     }
 
-    public static LayerViewGLCanvas newLayerViewGLCanvas(final LayerViewGLPanel glPanel, LayerViewGLPanel.LayerViewGLCanvasType glType) {
+    public static LayerViewGLCanvas newLayerViewGLCanvas(
+            final LayerViewGLPanel glPanel,
+            LayerViewGLPanel.LayerViewGLCanvasType glType) {
         switch (glType) {
         case GL1:
             return newLayerViewGL1Canvas(glPanel);
         case GL4:
             return newLayerViewGL4Canvas(glPanel);
         default:
-            throw new IllegalArgumentException("Unknown gl canvas type : " + glType);
+            throw new IllegalArgumentException("Unknown gl canvas type : "
+                    + glType);
         }
     }
 
-    private static LayerViewGL1Canvas newLayerViewGL1Canvas(final LayerViewGLPanel glPanel) {
+    private static LayerViewGL1Canvas newLayerViewGL1Canvas(
+            final LayerViewGLPanel glPanel) {
         try {
             LayerViewGL1Canvas gl1Canvas = new LayerViewGL1Canvas(glPanel);
             return gl1Canvas;
@@ -105,7 +111,8 @@ public final class LayerViewPanelFactory {
         }
     }
 
-    private static LayerViewGL4Canvas newLayerViewGL4Canvas(final LayerViewGLPanel glPanel) {
+    private static LayerViewGL4Canvas newLayerViewGL4Canvas(
+            final LayerViewGLPanel glPanel) {
         try {
             LayerViewGL4Canvas gl4Canvas = new LayerViewGL4Canvas(glPanel);
             return gl4Canvas;

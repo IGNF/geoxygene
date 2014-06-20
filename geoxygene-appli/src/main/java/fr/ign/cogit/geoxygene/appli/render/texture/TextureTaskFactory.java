@@ -64,9 +64,8 @@ public class TextureTaskFactory {
         }
         if (texture instanceof TileDistributionTexture) {
             TileDistributionTextureTask task = new TileDistributionTextureTask(
-                    (TileDistributionTexture) texture);
-            task.setFeatureCollection(featureCollection);
-            task.setViewport(viewport);
+                    (TileDistributionTexture) texture, featureCollection,
+                    viewport);
             return task;
         }
         throw new IllegalStateException("Unknown task creation for texture "

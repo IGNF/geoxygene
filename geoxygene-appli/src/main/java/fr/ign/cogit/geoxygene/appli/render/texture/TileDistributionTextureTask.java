@@ -112,14 +112,25 @@ public class TileDistributionTextureTask extends
     private IFeatureCollection<IFeature> featureCollection = null;
     private Viewport viewport = null;
 
+    private final boolean memoryMonitoring = true;
+    private long previousUsedMemory = 0;
+
     private static final double CM_PER_INCH = 2.540005;
     private static final double M_PER_INCH = CM_PER_INCH / 100.;
 
     /**
      * @param texture
+     * @param featureCollection2
+     * @param viewport2
      */
-    public TileDistributionTextureTask(TileDistributionTexture texture) {
+    public TileDistributionTextureTask(TileDistributionTexture texture,
+            IFeatureCollection<IFeature> featureCollection2, Viewport viewport2) {
         super(texture);
+        this.setFeatureCollection(featureCollection2);
+        this.setViewport(viewport2);
+        this.setPrintResolution(texture.getTextureResolution());
+        this.computeEnvelope();
+
     }
 
     /**
@@ -234,6 +245,8 @@ public class TileDistributionTextureTask extends
      */
     public void setPrintResolution(double printResolution) {
         this.printResolution = printResolution;
+        this.textureWidth = -1;
+        this.textureHeight = -1;
     }
 
     /**
@@ -332,12 +345,13 @@ public class TileDistributionTextureTask extends
      * 
      * @return the final image texture width
      */
+    @Override
     public int getTextureWidth() {
         if (this.textureWidth <= 0) {
             this.textureWidth = (int) (this.getEnvelope().width()
                     * this.getMapScale() * this.getPrintResolution() / M_PER_INCH);
             if (this.textureWidth <= 0) {
-                logger.error("texture width is invalid: envelope height = "
+                logger.error("texture width is invalid: envelope width = "
                         + this.getEnvelope().width() + " * scale = "
                         + this.getMapScale() + " resolution = "
                         + this.getPrintResolution() + " /  MperINCH  = "
@@ -353,6 +367,7 @@ public class TileDistributionTextureTask extends
      * 
      * @return the final image texture height
      */
+    @Override
     public int getTextureHeight() {
         if (this.textureHeight <= 0) {
             this.textureHeight = (int) (this.getEnvelope().length()
@@ -422,10 +437,12 @@ public class TileDistributionTextureTask extends
         this.setState(TaskState.RUNNING);
         this.setProgress(0);
         try {
+            this.monitorMemory("Start");
             if (!this.generateGradientTexture()) {
                 this.setState(TaskState.STOPPED);
                 return;
             }
+            this.monitorMemory("after generate gradient texture");
             this.getTexture().setxRepeat(false);
             this.getTexture().setyRepeat(false);
             this.getTexture().setDimension(
@@ -434,10 +451,12 @@ public class TileDistributionTextureTask extends
             this.getTexture().setTextureWidth(this.getTextureWidth());
             this.getTexture().setTextureWidth(this.getTextureHeight());
 
+            this.monitorMemory("after setting dimension");
             TextureImageTileChooser tileChooser = new TextureImageTileChooser();
             for (Pair<TileProbability, Tile> pair : this.tilesToBeApplied) {
                 tileChooser.addTile(pair.first(), pair.second());
             }
+            this.monitorMemory("after tile chooser creation");
             if (this.isStopRequested()) {
                 this.setState(TaskState.STOPPED);
                 return;
@@ -450,9 +469,11 @@ public class TileDistributionTextureTask extends
                 return;
             }
 
+            this.monitorMemory("after sampler creation");
             BufferedImage bi = null;
             bi = this.pasteTiles(this.texImage, this.tilesToBeApplied, sampler,
                     this.featureShape);
+            this.monitorMemory("tiles pasted");
             // TextureImageUtil.save(this.texImage, "texturedImage");
             // ImageIO.write(bi, "PNG", new File("texturedPolygon.png"));
             // Flip the image vertically
@@ -462,14 +483,13 @@ public class TileDistributionTextureTask extends
                     AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
             bi = op.filter(bi, null);
 
+            this.monitorMemory("texture image transformed");
             this.getTexture().setTextureImage(bi);
-
-            if (this.isStopRequested()) {
-                this.setState(TaskState.STOPPED);
-            } else {
-                this.setProgress(1);
-                this.setState(TaskState.FINISHED);
-            }
+            System.err.println("final texture image is set : "
+                    + this.getTexture().getTextureImage());
+            this.setProgress(1);
+            this.setState(TaskState.FINISHED);
+            this.monitorMemory("termination");
         } catch (Exception e) {
             e.printStackTrace();
             this.setError(e);
@@ -943,4 +963,13 @@ public class TileDistributionTextureTask extends
         this.viewport = viewport;
     }
 
+    private final void monitorMemory(String message) {
+        if (this.memoryMonitoring) {
+            Runtime runtime = Runtime.getRuntime();
+            long usedMemory = runtime.totalMemory() - runtime.freeMemory();
+            System.err.println(message + " : "
+                    + (usedMemory - this.previousUsedMemory));
+            this.previousUsedMemory = usedMemory;
+        }
+    }
 }

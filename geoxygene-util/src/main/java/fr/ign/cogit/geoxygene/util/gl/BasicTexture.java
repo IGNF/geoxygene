@@ -347,6 +347,7 @@ public class BasicTexture implements Texture {
 
     public void setTextureImage(BufferedImage textureImage) {
         this.textureImage = textureImage;
+        this.textureId = -1;
         // this.textureId = GLTools.loadTexture(this.textureImage);
 
     }

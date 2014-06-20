@@ -236,6 +236,11 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
     synchronized private void generateWithPolygonSymbolizer(
             PolygonSymbolizer symbolizer) {
         Texture texture = symbolizer.getFill().getTexture();
+        if (this.getFeature().getFeatureCollections().size() != 1) {
+            logger.error("Feature "
+                    + this.getFeature()
+                    + " belongs to more than one feature collection, choose the first one arbitrarily");
+        }
         IFeatureCollection<IFeature> featureCollection = this.getFeature()
                 .getFeatureCollection(0);
         List<GLComplex> complexes = new ArrayList<GLComplex>();
@@ -245,17 +250,21 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
         double minY = envelope.minY();
         if (texture != null) {
             // texture.setTextureDimension(2000, 2000);
-            // logger.debug("feature rendering : id=" + this.feature.getId() +
-            // " type=" + this.feature.getFeatureType() + " collections = "
-            // + this.feature.getFeatureCollections());
-            TextureTask<? extends Texture> textureTask = TextureManager
-                    .getInstance().getTextureTask(texture, featureCollection,
-                            this.getViewport());
-            if (textureTask == null) {
-                return;
+            // logger.debug("feature rendering : id=" + this.feature.getId()
+            // + " type=" + this.feature.getFeatureType()
+            // + " collections = " + this.feature.getFeatureCollections());
+            TextureTask<? extends Texture> textureTask;
+            synchronized (TextureManager.getInstance()) {
+                textureTask = TextureManager.getInstance().getTextureTask(
+                        texture, featureCollection, this.getViewport());
+                if (textureTask == null) {
+                    logger.warn("textureTask returned a null value for feature "
+                            + featureCollection);
+                    return;
+                }
+                textureTask.addTaskListener(this);
+                textureTask.start();
             }
-            textureTask.addTaskListener(this);
-            textureTask.start();
 
             // do not wait for texture computation completion.
 
@@ -416,7 +425,6 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
     synchronized public void onStateChange(TextureTask<?> task,
             TaskState oldState) {
         if (task.getState().isFinished()) {
-
             this.notify();
             task.removeTaskListener(this);
         }

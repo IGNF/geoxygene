@@ -31,6 +31,7 @@ import fr.ign.cogit.geoxygene.appli.render.RenderingManager;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
@@ -39,13 +40,15 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * 
  * @author JeT
  */
-public abstract class LayerViewPanel extends JComponent implements Printable, SldListener, fr.ign.cogit.geoxygene.style.SldListener {
+public abstract class LayerViewPanel extends JComponent implements Printable,
+        SldListener, fr.ign.cogit.geoxygene.style.SldListener {
 
     /** Serializable UID. */
     private static final long serialVersionUID = -1275390035288869114L;
 
     /** The logger. */
-    private static Logger LOGGER = Logger.getLogger(LayerViewPanel.class.getName());
+    private static Logger LOGGER = Logger.getLogger(LayerViewPanel.class
+            .getName());
 
     /**
      * Taille d'un pixel en mètres (la longueur d'un coté de pixel de l'écran)
@@ -53,21 +56,25 @@ public abstract class LayerViewPanel extends JComponent implements Printable, Sl
      * à partir de la résolution de l'écran en DPI. Par exemple si la résolution
      * est 90DPI, c'est: 90 pix/inch = 1/90 inch/pix = 0.0254/90 meter/pix.
      */
-    private final static double METERS_PER_PIXEL = 0.02540005 / Toolkit.getDefaultToolkit().getScreenResolution();
+    private final static double METERS_PER_PIXEL = 0.02540005 / Toolkit
+            .getDefaultToolkit().getScreenResolution();
 
     private boolean recording = false;
     private String recordFileName = "";
     private int recordIndex = 0;
 
-    private Viewport viewport = null; // Viewport (coordinate systems conversion)
+    private Viewport viewport = null; // Viewport (coordinate systems
+                                      // conversion)
     private ProjectFrame projectFrame = null; // main parent Frame
+
+    private BackgroundDescriptor viewBackground; // bg color
 
     /** Private selected features. Use getter and setter. */
     private final Set<IFeature> selectedFeatures = new HashSet<IFeature>(0);
 
     /***********************************************************************
-     * Default Constructor. The parent project frame has to be set before
-     * using it
+     * Default Constructor. The parent project frame has to be set before using
+     * it
      */
     public LayerViewPanel() {
         super();
@@ -75,15 +82,15 @@ public abstract class LayerViewPanel extends JComponent implements Printable, Sl
         this.viewport = new Viewport(this);
     }
 
-    //    /***********************************************************************
-    //     * Default Constructor. Set the parent project frame and create a new
-    //     * Viewport
-    //     */
-    //    public LayerViewPanel(final ProjectFrame frame) {
-    //        super();
-    //        this.projectFrame = frame;
-    //        this.viewport = new Viewport(this);
-    //    }
+    // /***********************************************************************
+    // * Default Constructor. Set the parent project frame and create a new
+    // * Viewport
+    // */
+    // public LayerViewPanel(final ProjectFrame frame) {
+    // super();
+    // this.projectFrame = frame;
+    // this.viewport = new Viewport(this);
+    // }
 
     /**
      * Returns the size of a pixel in meters.
@@ -129,28 +136,38 @@ public abstract class LayerViewPanel extends JComponent implements Printable, Sl
     }
 
     protected void paintGeometryEdition(Graphics g) {
-        Mode mode = this.getProjectFrame().getMainFrame().getMode().getCurrentMode();
+        Mode mode = this.getProjectFrame().getMainFrame().getMode()
+                .getCurrentMode();
         g.setColor(new Color(1f, 0f, 0f));
         if (mode instanceof AbstractGeometryEditMode) {
             IDirectPositionList points = new DirectPositionList();
             points.addAll(((AbstractGeometryEditMode) mode).getPoints());
             if (mode instanceof CreateLineStringMode) {
                 if (!points.isEmpty()) {
-                    points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
-                    RenderUtil.draw(new GM_LineString(points), this.getViewport(), (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
+                    points.add(((AbstractGeometryEditMode) mode)
+                            .getCurrentPoint());
+                    RenderUtil.draw(new GM_LineString(points),
+                            this.getViewport(), (Graphics2D) g, 1.0f);// FIXME
+                                                                      // OPACITY
+                                                                      // FIX
                 }
             } else {
                 if (mode instanceof CreatePolygonMode) {
                     if (!points.isEmpty()) {
                         IDirectPosition start = points.get(0);
-                        points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
+                        points.add(((AbstractGeometryEditMode) mode)
+                                .getCurrentPoint());
                         if (points.size() > 2) {
                             points.add(start);
-                            RenderUtil.draw(new GM_Polygon(new GM_LineString(points)), this.getViewport(), (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
+                            RenderUtil.draw(new GM_Polygon(new GM_LineString(
+                                    points)), this.getViewport(),
+                                    (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
                         } else {
                             if (points.size() == 2) {
                                 points.add(start);
-                                RenderUtil.draw(new GM_LineString(points), this.getViewport(), (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
+                                RenderUtil.draw(new GM_LineString(points),
+                                        this.getViewport(), (Graphics2D) g,
+                                        1.0f);// FIXME OPACITY FIX
                             }
                         }
                     }
@@ -242,6 +259,14 @@ public abstract class LayerViewPanel extends JComponent implements Printable, Sl
      */
     public abstract IEnvelope getEnvelope();
 
+    public void setViewBackground(BackgroundDescriptor background) {
+        this.viewBackground = background;
+    }
+
+    public BackgroundDescriptor getViewBackground() {
+        return this.viewBackground;
+    }
+
     /**
      * Save the map into an image file. The file format is determined by the
      * given file extension. If there is none or if the given extension is
@@ -272,7 +297,8 @@ public abstract class LayerViewPanel extends JComponent implements Printable, Sl
     public abstract void superRepaint();
 
     /********************************* Paint listener management */
-    private final Set<PaintListener> overlayListeners = new HashSet<PaintListener>(0);
+    private final Set<PaintListener> overlayListeners = new HashSet<PaintListener>(
+            0);
 
     public void addPaintListener(PaintListener listener) {
         this.overlayListeners.add(listener);
@@ -289,14 +315,14 @@ public abstract class LayerViewPanel extends JComponent implements Printable, Sl
     }
 
     /**
-     * add GUI elements relative to this layer view panel.
-     * This method should be called when the layer view becomes active
+     * add GUI elements relative to this layer view panel. This method should be
+     * called when the layer view becomes active
      */
     public abstract void displayGui();
 
     /**
-     * remove GUI elements relative to this layer view panel.
-     * This method should be called when the layer view becomes inactive
+     * remove GUI elements relative to this layer view panel. This method should
+     * be called when the layer view becomes inactive
      */
     public abstract void hideGui();
 

@@ -78,17 +78,22 @@ import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "name", "layers" })
+@XmlType(name = "", propOrder = { "name", "background", "layers" })
 @XmlRootElement(name = "StyledLayerDescriptor")
 public class StyledLayerDescriptor implements FeatureCollectionListener {
 
-    static Logger logger = Logger.getLogger(StyledLayerDescriptor.class.getName());
+    static Logger logger = Logger.getLogger(StyledLayerDescriptor.class
+            .getName());
 
     @XmlTransient
-    public final Object lock = new Object(); // mutex used when changing SLD content (dataSet or layers)
+    public final Object lock = new Object(); // mutex used when changing SLD
+                                             // content (dataSet or layers)
 
     @XmlElement(name = "Name")
     protected String name;
+
+    @XmlElement(name = "Background")
+    protected BackgroundDescriptor background;
 
     @XmlAttribute(required = true)
     protected String version;
@@ -96,7 +101,8 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
     @XmlTransient
     private DataSet dataSet = null;
 
-    @XmlElements({ @XmlElement(name = "NamedLayer", type = NamedLayer.class), @XmlElement(name = "UserLayer", type = UserLayer.class) })
+    @XmlElements({ @XmlElement(name = "NamedLayer", type = NamedLayer.class),
+            @XmlElement(name = "UserLayer", type = UserLayer.class) })
     private LinkedList<Layer> layers = new LinkedList<Layer>();
 
     /**
@@ -130,6 +136,21 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
     }
 
     /**
+     * @return the background
+     */
+    public BackgroundDescriptor getBackground() {
+        return this.background;
+    }
+
+    /**
+     * @param background
+     *            the background to set
+     */
+    public void setBackground(BackgroundDescriptor background) {
+        this.background = background;
+    }
+
+    /**
      * Return the list of the colors of the layers of this SLD.
      * 
      * @return List of the colors of the layers of this SLD
@@ -142,12 +163,17 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
                     Symbolizer symbolizer = rule.getSymbolizers().get(0);
                     if (symbolizer.isLineSymbolizer()) {
                         if (symbolizer.getStroke() != null) {
-                            colors.add(new ColorimetricColor(symbolizer.getStroke().getStroke()));
+                            colors.add(new ColorimetricColor(symbolizer
+                                    .getStroke().getStroke()));
                         }
                     } else if (symbolizer.isPolygonSymbolizer()) {
-                        colors.add(new ColorimetricColor(((PolygonSymbolizer) symbolizer).getFill().getFill()));
+                        colors.add(new ColorimetricColor(
+                                ((PolygonSymbolizer) symbolizer).getFill()
+                                        .getFill()));
                     } else if (symbolizer.isPointSymbolizer()) {
-                        colors.add(new ColorimetricColor(((PointSymbolizer) symbolizer).getGraphic().getMarks().get(0).getFill().getFill()));
+                        colors.add(new ColorimetricColor(
+                                ((PointSymbolizer) symbolizer).getGraphic()
+                                        .getMarks().get(0).getFill().getFill()));
                     }
                 }
             }
@@ -209,10 +235,9 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
 
     /**
      * Inserts the specified layer at the specified position in the list of
-     * layers
-     * of this sld. Shifts the element currently at that position (if any) and
-     * any
-     * subsequent elements to the right (adds one to their indices).
+     * layers of this sld. Shifts the element currently at that position (if
+     * any) and any subsequent elements to the right (adds one to their
+     * indices).
      * 
      * @param layer
      *            the new layer
@@ -302,15 +327,21 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
         }
     }
 
-    public static StyledLayerDescriptor unmarshall(InputStream stream) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(StyledLayerDescriptor.class, NamedLayer.class, NamedStyle.class);
+    public static StyledLayerDescriptor unmarshall(InputStream stream)
+            throws JAXBException {
+        JAXBContext context = JAXBContext
+                .newInstance(StyledLayerDescriptor.class, NamedLayer.class,
+                        NamedStyle.class);
         Unmarshaller m = context.createUnmarshaller();
         StyledLayerDescriptor sld = (StyledLayerDescriptor) m.unmarshal(stream);
         return sld;
     }
 
-    public static StyledLayerDescriptor unmarshall(Reader reader) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(StyledLayerDescriptor.class, NamedLayer.class, NamedStyle.class);
+    public static StyledLayerDescriptor unmarshall(Reader reader)
+            throws JAXBException {
+        JAXBContext context = JAXBContext
+                .newInstance(StyledLayerDescriptor.class, NamedLayer.class,
+                        NamedStyle.class);
         Unmarshaller m = context.createUnmarshaller();
         StyledLayerDescriptor sld = (StyledLayerDescriptor) m.unmarshal(reader);
         return sld;
@@ -318,8 +349,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
 
     /**
      * Charge le SLD décrit dans le fichier XML. Si le fichier n'existe pas,
-     * crée
-     * un nouveau SLD vide.
+     * crée un nouveau SLD vide.
      * 
      * @param fileName
      *            fichier XML décrivant le SLD à charger
@@ -328,17 +358,20 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
      * @throws FileNotFoundException
      * @throws JAXBException
      */
-    public static StyledLayerDescriptor unmarshall(String fileName) throws FileNotFoundException, JAXBException {
+    public static StyledLayerDescriptor unmarshall(String fileName)
+            throws FileNotFoundException, JAXBException {
         return StyledLayerDescriptor.unmarshall(new FileInputStream(fileName));
     }
 
-    public static StyledLayerDescriptor unmarshall(String fileName, DataSet dataset) throws FileNotFoundException, JAXBException {
+    public static StyledLayerDescriptor unmarshall(String fileName,
+            DataSet dataset) throws FileNotFoundException, JAXBException {
         StyledLayerDescriptor sld = unmarshall(fileName);
         sld.dataSet = dataset;
         return sld;
     }
 
-    public static StyledLayerDescriptor unmarshall(InputStream stream, DataSet dataset) throws JAXBException {
+    public static StyledLayerDescriptor unmarshall(InputStream stream,
+            DataSet dataset) throws JAXBException {
         StyledLayerDescriptor sld = unmarshall(stream);
         sld.dataSet = dataset;
         return sld;
@@ -346,8 +379,11 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
 
     public void marshall(Writer writer) {
         try {
-            JAXBContext context = JAXBContext.newInstance(StyledLayerDescriptor.class, NamedLayer.class, NamedStyle.class);
-            final XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
+            JAXBContext context = JAXBContext.newInstance(
+                    StyledLayerDescriptor.class, NamedLayer.class,
+                    NamedStyle.class);
+            final XMLStreamWriter xmlStreamWriter = XMLOutputFactory
+                    .newInstance().createXMLStreamWriter(writer);
             xmlStreamWriter.setPrefix("sld", //$NON-NLS-1$
                     "http://www.example.com/myPO1"); //$NON-NLS-1$
             Marshaller m = context.createMarshaller();
@@ -364,7 +400,9 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
 
     public void marshall(OutputStream stream) {
         try {
-            JAXBContext context = JAXBContext.newInstance(StyledLayerDescriptor.class, NamedLayer.class, NamedStyle.class);
+            JAXBContext context = JAXBContext.newInstance(
+                    StyledLayerDescriptor.class, NamedLayer.class,
+                    NamedStyle.class);
             Marshaller m = context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             m.marshal(this, stream);
@@ -383,7 +421,8 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
         try {
             this.marshall(new FileOutputStream(fileName));
         } catch (FileNotFoundException e) {
-            StyledLayerDescriptor.logger.error("File " + fileName + " could not be written to"); //$NON-NLS-1$//$NON-NLS-2$
+            StyledLayerDescriptor.logger
+                    .error("File " + fileName + " could not be written to"); //$NON-NLS-1$//$NON-NLS-2$
         }
     }
 
@@ -398,19 +437,23 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
      * @param geometryType
      *            type of symbolizer
      */
-    public void addSymbolizer(String layerName, Class<? extends IGeometry> geometryType) {
+    public void addSymbolizer(String layerName,
+            Class<? extends IGeometry> geometryType) {
         Layer layer = this.getLayer(layerName);
         List<Style> styles = layer.getStyles();
         for (Style style : styles) {
             if (style.isUserStyle()) {
                 UserStyle userStyle = (UserStyle) style;
-                List<FeatureTypeStyle> ftsList = userStyle.getFeatureTypeStyles();
+                List<FeatureTypeStyle> ftsList = userStyle
+                        .getFeatureTypeStyles();
                 userStyle.setFeatureTypeStyles(ftsList);
                 for (FeatureTypeStyle fts : ftsList) {
                     List<Rule> rules = fts.getRules();
-                    if (geometryType.equals(GM_Polygon.class) || geometryType.equals(GM_MultiSurface.class)) {
+                    if (geometryType.equals(GM_Polygon.class)
+                            || geometryType.equals(GM_MultiSurface.class)) {
                         for (Rule rule : rules) {
-                            Stroke ruleStroke = rule.getSymbolizers().get(0).getStroke();
+                            Stroke ruleStroke = rule.getSymbolizers().get(0)
+                                    .getStroke();
                             if (ruleStroke == null) {
                                 ruleStroke = new Stroke();
                             }
@@ -423,9 +466,11 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
                             polygonSymbolizer.setFill(fill);
                             rule.getSymbolizers().add(polygonSymbolizer);
                         }
-                    } else if (geometryType.equals(GM_LineString.class) || geometryType.equals(GM_MultiCurve.class)) {
+                    } else if (geometryType.equals(GM_LineString.class)
+                            || geometryType.equals(GM_MultiCurve.class)) {
                         for (Rule rule : rules) {
-                            Stroke ruleStroke = rule.getSymbolizers().get(0).getStroke();
+                            Stroke ruleStroke = rule.getSymbolizers().get(0)
+                                    .getStroke();
                             if (ruleStroke == null) {
                                 ruleStroke = new Stroke();
                             }
@@ -433,9 +478,11 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
                             lineSymbolizer.setStroke(ruleStroke);
                             rule.getSymbolizers().add(lineSymbolizer);
                         }
-                    } else if (geometryType.equals(GM_Point.class) || geometryType.equals(GM_MultiPoint.class)) {
+                    } else if (geometryType.equals(GM_Point.class)
+                            || geometryType.equals(GM_MultiPoint.class)) {
                         for (Rule rule : rules) {
-                            Stroke ruleStroke = rule.getSymbolizers().get(0).getStroke();
+                            Stroke ruleStroke = rule.getSymbolizers().get(0)
+                                    .getStroke();
                             if (ruleStroke == null) {
                                 ruleStroke = new Stroke();
                             }
@@ -476,14 +523,16 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
      *            type de géométrie porté par le layer
      * @return layer portant le nom et la géométrie en paramètre
      */
-    public Layer createLayerRandomColor(String layerName, Class<? extends IGeometry> geometryType) {
+    public Layer createLayerRandomColor(String layerName,
+            Class<? extends IGeometry> geometryType) {
 
         // Selection of suitables colors from the COGIT reference colors.
 
         // Modification Lucille 12 / 08 / 2011
         // Pour le JAR, le getPath ne passe pas -> remplacé par
-        ColorReferenceSystem crs = ColorReferenceSystem.unmarshall(ColorReferenceSystem.class.getClassLoader().getResourceAsStream(
-                "color/ColorReferenceSystem.xml")); //$NON-NLS-1$
+        ColorReferenceSystem crs = ColorReferenceSystem
+                .unmarshall(ColorReferenceSystem.class.getClassLoader()
+                        .getResourceAsStream("color/ColorReferenceSystem.xml")); //$NON-NLS-1$
         List<ColorimetricColor> colors = new ArrayList<ColorimetricColor>(0);
         for (int i = 0; i < 12; i++) {
             for (ColorimetricColor c : crs.getSlice(0, i)) {
@@ -507,7 +556,8 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
             randoms.add((int) (colors.size() * Math.random()));
         }
 
-        return this.createLayer(layerName, geometryType, colors.get(randoms.get(randoms.size() - 1)).toColor());
+        return this.createLayer(layerName, geometryType,
+                colors.get(randoms.get(randoms.size() - 1)).toColor());
     }
 
     /**
@@ -523,8 +573,10 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
      *            la couleur de l'intérieur
      * @return layer portant le nom et la géométrie en paramètre
      */
-    public Layer createLayer(String layerName, Class<? extends IGeometry> geometryType, Color fillColor) {
-        return this.createLayer(layerName, geometryType, fillColor.darker(), fillColor);
+    public Layer createLayer(String layerName,
+            Class<? extends IGeometry> geometryType, Color fillColor) {
+        return this.createLayer(layerName, geometryType, fillColor.darker(),
+                fillColor);
     }
 
     /**
@@ -542,8 +594,11 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
      *            la couleur de remplissage
      * @return layer portant le nom et la géométrie en paramètre
      */
-    public Layer createLayer(String layerName, Class<? extends IGeometry> geometryType, Color strokeColor, Color fillColor) {
-        return this.createLayer(layerName, geometryType, strokeColor, fillColor, 0.8f);
+    public Layer createLayer(String layerName,
+            Class<? extends IGeometry> geometryType, Color strokeColor,
+            Color fillColor) {
+        return this.createLayer(layerName, geometryType, strokeColor,
+                fillColor, 0.8f);
     }
 
     /**
@@ -563,8 +618,11 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
      *            l'opacité des objets de la couche
      * @return layer portant le nom et la géométrie en paramètre
      */
-    public Layer createLayer(String layerName, Class<? extends IGeometry> geometryType, Color strokeColor, Color fillColor, float opacity) {
-        return this.createLayer(layerName, geometryType, strokeColor, fillColor, opacity, 1.0f);
+    public Layer createLayer(String layerName,
+            Class<? extends IGeometry> geometryType, Color strokeColor,
+            Color fillColor, float opacity) {
+        return this.createLayer(layerName, geometryType, strokeColor,
+                fillColor, opacity, 1.0f);
     }
 
     /**
@@ -587,13 +645,17 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
      *            la largeur du trait
      * @return layer portant le nom et la géométrie en paramètre
      */
-    public Layer createLayer(String layerName, Class<? extends IGeometry> geometryType, Color strokeColor, Color fillColor, float opacity, float strokeWidth) {
+    public Layer createLayer(String layerName,
+            Class<? extends IGeometry> geometryType, Color strokeColor,
+            Color fillColor, float opacity, float strokeWidth) {
         // if(this.getLayer(layerName)==null){
         Layer layer = new NamedLayer(this, layerName);
         UserStyle style = new UserStyle();
         style.setName(layerName);//$NON-NLS-1$
         FeatureTypeStyle fts = new FeatureTypeStyle();
-        fts.getRules().add(this.createRule(geometryType, strokeColor, fillColor, opacity, opacity, strokeWidth));
+        fts.getRules().add(
+                this.createRule(geometryType, strokeColor, fillColor, opacity,
+                        opacity, strokeWidth));
         style.getFeatureTypeStyles().add(fts);
         layer.getStyles().add(style);
         return layer;
@@ -622,17 +684,22 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
      *            la largeur du trait
      * @return style
      */
-    public Style createStyle(String groupName, Class<? extends IGeometry> geometryType, Color strokeColor, Color fillColor, float opacity, float strokeWidth) {
+    public Style createStyle(String groupName,
+            Class<? extends IGeometry> geometryType, Color strokeColor,
+            Color fillColor, float opacity, float strokeWidth) {
         UserStyle style = new UserStyle();
         style.setGroup(groupName);
         FeatureTypeStyle fts = new FeatureTypeStyle();
-        fts.getRules().add(this.createRule(geometryType, strokeColor, fillColor, opacity, opacity, strokeWidth));
+        fts.getRules().add(
+                this.createRule(geometryType, strokeColor, fillColor, opacity,
+                        opacity, strokeWidth));
         style.getFeatureTypeStyles().add(fts);
         return style;
     }
 
-    public Rule createRule(Class<? extends IGeometry> geometryType, Color strokeColor, Color fillColor, float strokeOpacity, float fillOpacity,
-            float strokeWidth) {
+    public Rule createRule(Class<? extends IGeometry> geometryType,
+            Color strokeColor, Color fillColor, float strokeOpacity,
+            float fillOpacity, float strokeWidth) {
         Rule rule = new Rule();
         rule.setLegendGraphic(new LegendGraphic());
         rule.getLegendGraphic().setGraphic(new Graphic());
@@ -650,7 +717,8 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
             rule.getSymbolizers().add(rasterSymbolizer);
             return rule;
         }
-        if (geometryType.equals(GM_Polygon.class) || geometryType.equals(GM_MultiSurface.class)) {
+        if (geometryType.equals(GM_Polygon.class)
+                || geometryType.equals(GM_MultiSurface.class)) {
             /** Ajoute un polygone symbolizer */
             PolygonSymbolizer polygonSymbolizer = new PolygonSymbolizer();
             polygonSymbolizer.setStroke(stroke);
@@ -658,14 +726,16 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
             rule.getSymbolizers().add(polygonSymbolizer);
             return rule;
         }
-        if (geometryType.equals(GM_LineString.class) || geometryType.equals(GM_MultiCurve.class)) {
+        if (geometryType.equals(GM_LineString.class)
+                || geometryType.equals(GM_MultiCurve.class)) {
             /** Ajoute un line symbolizer */
             LineSymbolizer lineSymbolizer = new LineSymbolizer();
             lineSymbolizer.setStroke(stroke);
             rule.getSymbolizers().add(lineSymbolizer);
             return rule;
         }
-        if (geometryType.equals(GM_Point.class) || geometryType.equals(GM_MultiPoint.class)) {
+        if (geometryType.equals(GM_Point.class)
+                || geometryType.equals(GM_MultiPoint.class)) {
             /** Ajoute un point symbolizer */
             PointSymbolizer pointSymbolizer = new PointSymbolizer();
             Graphic graphic = new Graphic();
@@ -682,8 +752,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
 
     /**
      * Créer un layer pour représenter une ligne utilisant deux styles: le
-     * premier
-     * pour la bordure de la ligne, le deuxième pour le trait central
+     * premier pour la bordure de la ligne, le deuxième pour le trait central
      * 
      * @param layerName
      *            le nom de la couche
@@ -698,11 +767,14 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
      * @return un nouveau layer permettant de représenter des lignes avec
      *         bordure
      */
-    public Layer createLayerWithBorder(String layerName, Color mainStrokeColor, Color borderStrokeColor, float mainStrokeWidth, float borderStrokeWidth) {
+    public Layer createLayerWithBorder(String layerName, Color mainStrokeColor,
+            Color borderStrokeColor, float mainStrokeWidth,
+            float borderStrokeWidth) {
         if (mainStrokeWidth > borderStrokeWidth) {
-            System.out.println("Le layer n'a pas été créé: " //$NON-NLS-1$
-                    + "La largeur du trait central ne peut " //$NON-NLS-1$
-                    + "pas être plus grande que celle du " + "trait de bordure"); //$NON-NLS-1$ //$NON-NLS-2$
+            System.out
+                    .println("Le layer n'a pas été créé: " //$NON-NLS-1$
+                            + "La largeur du trait central ne peut " //$NON-NLS-1$
+                            + "pas être plus grande que celle du " + "trait de bordure"); //$NON-NLS-1$ //$NON-NLS-2$
             return null;
         }
         Layer layer = new NamedLayer(this, layerName);
@@ -745,7 +817,8 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
      * @param strokeColor
      * @param fillColor
      */
-    public Layer createPointLayer(String layerName, String wellKnownText, Color strokeColor, Color fillColor) {
+    public Layer createPointLayer(String layerName, String wellKnownText,
+            Color strokeColor, Color fillColor) {
         Layer layer = new NamedLayer(this, layerName);
         UserStyle style = new UserStyle();
         style.setName(layerName); //$NON-NLS-1$
@@ -824,4 +897,73 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
         this.layers.add(sldIndex, l);
         this.fireActionLayerMoved(row, sldIndex);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((this.background == null) ? 0 : this.background.hashCode());
+        result = prime * result
+                + ((this.layers == null) ? 0 : this.layers.hashCode());
+        result = prime * result
+                + ((this.name == null) ? 0 : this.name.hashCode());
+        result = prime * result
+                + ((this.version == null) ? 0 : this.version.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        StyledLayerDescriptor other = (StyledLayerDescriptor) obj;
+        if (this.background == null) {
+            if (other.background != null) {
+                return false;
+            }
+        } else if (!this.background.equals(other.background)) {
+            return false;
+        }
+        if (this.layers == null) {
+            if (other.layers != null) {
+                return false;
+            }
+        } else if (!this.layers.equals(other.layers)) {
+            return false;
+        }
+        if (this.name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!this.name.equals(other.name)) {
+            return false;
+        }
+        if (this.version == null) {
+            if (other.version != null) {
+                return false;
+            }
+        } else if (!this.version.equals(other.version)) {
+            return false;
+        }
+        return true;
+    }
+
 }

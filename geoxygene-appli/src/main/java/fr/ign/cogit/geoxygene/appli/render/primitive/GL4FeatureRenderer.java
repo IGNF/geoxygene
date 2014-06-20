@@ -873,7 +873,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
                 .setCurrentProgram(LwjglLayerRenderer.linePaintingProgramName);
         StrokeTextureExpressiveRendering strtex = primitive
                 .getExpressiveRendering();
-        program.setUniform1f(LwjglLayerRenderer.objectOpacityUniformVarName, 1f);
+        program.setUniform1f(LwjglLayerRenderer.objectOpacityUniformVarName,
+                (float) primitive.getOverallOpacity());
         program.setUniform1f(LwjglLayerRenderer.globalOpacityUniformVarName,
                 (float) opacity);
         GLTools.glCheckError("program set to " + program.getName()
