@@ -78,6 +78,23 @@ public class Segment extends GM_LineSegment {
   }
 
   /**
+   * Get the bisection line of the segment, as another segment.
+   * @return
+   */
+  public Segment getBisectionSegment() {
+    // computes the equation of the perpendicular line y = ax+b
+    IDirectPosition middle = getMiddlePoint();
+    double aPrime = (getEndPoint().getY() - middle.getY())
+        / (getEndPoint().getX() - middle.getX());
+    double a = -1.0 / aPrime;
+    double b = middle.getY() - middle.getX() * a;
+    double perpX = middle.getX() + 1.0;
+    double perpY = a * perpX + b;
+    IDirectPosition perp = new DirectPosition(perpX, perpY);
+    return new Segment(middle, perp);
+  }
+
+  /**
    * Computes the intersection between two segments using the straight line
    * equations.
    * 
@@ -369,6 +386,27 @@ public class Segment extends GM_LineSegment {
   public IDirectPosition getMiddlePoint() {
     return new DirectPosition((startPoint().getX() + endPoint().getX()) / 2,
         (startPoint().getY() + endPoint().getY()) / 2);
+  }
+
+  /**
+   * Get the point that is the middle of the segment, weighted by a ratio: when
+   * the ratio tends to 0, the resulting point tends to the segment start point;
+   * when the ratio tends to infinity, the resulting point tends to segment end
+   * point; when the ratio tends to 1, the resulting point is the segment
+   * middle.
+   * @return
+   */
+  public IDirectPosition getWeightedMiddlePoint(double ratio) {
+    Vector2D vect = new Vector2D(getStartPoint(), getEndPoint());
+    if (ratio == 1.0)
+      return this.getMiddlePoint();
+    else if (ratio < 1) {
+      vect.scalarMultiplication(ratio / 2.0);
+      return vect.translate(getStartPoint());
+    } else {
+      vect.scalarMultiplication(3.0 / (2.0 * ratio));
+      return vect.translate(getStartPoint());
+    }
   }
 
   /**

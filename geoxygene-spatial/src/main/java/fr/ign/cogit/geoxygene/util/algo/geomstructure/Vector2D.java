@@ -207,4 +207,16 @@ public class Vector2D extends Vecteur {
       return true;
     return false;
   }
+
+  /**
+   * Project {@code this} vector in a given direction.
+   * @param direction in radians
+   * @return
+   */
+  public Vector2D project(double direction) {
+    // create the unit vector in direction angle
+    Vector2D unitVect = new Vector2D(direction, 1);
+    double norm = this.prodScalaire(unitVect);
+    return unitVect.changeNorm(norm);
+  }
 }

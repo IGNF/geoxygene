@@ -17,9 +17,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -48,45 +48,46 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
 public class GeneralisationConfigurationFrame extends JFrame {
   private static final long serialVersionUID = 1L;
 
-  public static GeneralisationConfigurationFrame geneConfigFrame;
+  private static GeneralisationConfigurationFrame geneConfigFrame;
 
   public static GeneralisationConfigurationFrame getInstance() {
     if (GeneralisationConfigurationFrame.geneConfigFrame == null) {
       GeneralisationConfigurationFrame.geneConfigFrame = new GeneralisationConfigurationFrame();
       GeneralisationConfigurationFrame.geneConfigFrame.resetValues();
     }
-    return GeneralisationConfigurationFrame.geneConfigFrame;
+    return geneConfigFrame;
   }
 
-  public static JTabbedPane panneauOnglets = new JTabbedPane();
+  public JTabbedPane panneauOnglets = new JTabbedPane();
 
   // general
-  public static JPanel pGeneral = new JPanel(new GridBagLayout());
-  public static JLabel lDescription = new JLabel("Description:");
-  public static JTextField tDescription = new JTextField(""
+  public JPanel pGeneral = new JPanel(new GridBagLayout());
+  public JLabel lDescription = new JLabel("Description:");
+  public JTextField tDescription = new JTextField(""
       + GeneralisationSpecifications.getDESCRIPTION());
-  public static JLabel lEchelleCible = new JLabel("Map scale   1:");
-  public static JTextField tEchelleCible = new JTextField(""
+  public JLabel lEchelleCible = new JLabel("Map scale   1:");
+  public JTextField tEchelleCible = new JTextField(""
       + Legend.getSYMBOLISATI0N_SCALE());
-  public static JLabel lResolution = new JLabel("Resolution");
-  public static JTextField tResolution = new JTextField(""
+  public JLabel lResolution = new JLabel("Resolution");
+  public JTextField tResolution = new JTextField(""
       + GeneralisationSpecifications.getRESOLUTION());
 
   // boutons
-  public static JPanel panneauBoutons = new JPanel(new GridBagLayout());
-  public static JButton bValider = new JButton("Validate");
-  public static JButton bAnnuler = new JButton("Reset values");
-  public static JButton bEnregistrer = new JButton("Save in XML");
+  public JPanel panneauBoutons = new JPanel(new GridBagLayout());
+  public JButton bValider = new JButton("Validate");
+  public JButton bAnnuler = new JButton("Reset values");
+  public JButton bEnregistrer = new JButton("Save in XML");
 
   private double oldScale;
 
-  public GeneralisationConfigurationFrame() {
+  private GeneralisationConfigurationFrame() {
     super("CartAGen - Generalisation configuration");
     this.setResizable(false);
     this.setSize(new Dimension(400, 300));
     this.setLocation(100, 100);
     this.setVisible(false);
     this.oldScale = Legend.getSYMBOLISATI0N_SCALE();
+    this.setAlwaysOnTop(true);
 
     GridBagConstraints c;
 
@@ -96,135 +97,83 @@ public class GeneralisationConfigurationFrame extends JFrame {
     c = new GridBagConstraints();
     c.gridx = 0;
     c.gridy = 0;
-    GeneralisationConfigurationFrame.pGeneral.add(
-        GeneralisationConfigurationFrame.lDescription, c);
+    pGeneral.add(lDescription, c);
 
     c = new GridBagConstraints();
     c.gridx = 1;
     c.gridy = 0;
     c.gridwidth = 3;
-    GeneralisationConfigurationFrame.tDescription.setColumns(30);
-    GeneralisationConfigurationFrame.pGeneral.add(
-        GeneralisationConfigurationFrame.tDescription, c);
+    tDescription.setColumns(30);
+    pGeneral.add(tDescription, c);
 
     // echelle cible
     c = new GridBagConstraints();
     c.gridx = 0;
     c.gridy = 1;
-    GeneralisationConfigurationFrame.pGeneral.add(
-        GeneralisationConfigurationFrame.lEchelleCible, c);
+    pGeneral.add(lEchelleCible, c);
 
     c = new GridBagConstraints();
     c.gridx = 1;
     c.gridy = 1;
-    GeneralisationConfigurationFrame.tEchelleCible.setColumns(10);
-    GeneralisationConfigurationFrame.pGeneral.add(
-        GeneralisationConfigurationFrame.tEchelleCible, c);
+    tEchelleCible.setColumns(10);
+    pGeneral.add(tEchelleCible, c);
 
     // resolution
     c = new GridBagConstraints();
     c.gridx = 0;
     c.gridy = 2;
-    GeneralisationConfigurationFrame.pGeneral.add(
-        GeneralisationConfigurationFrame.lResolution, c);
+    pGeneral.add(lResolution, c);
 
     c = new GridBagConstraints();
     c.gridx = 1;
     c.gridy = 2;
-    GeneralisationConfigurationFrame.tResolution.setColumns(10);
-    GeneralisationConfigurationFrame.pGeneral.add(
-        GeneralisationConfigurationFrame.tResolution, c);
+    tResolution.setColumns(10);
+    pGeneral.add(tResolution, c);
 
-    GeneralisationConfigurationFrame.panneauOnglets.addTab(
-        "General",
-        new ImageIcon(GeneralisationConfigurationFrame.class
-            .getResource("/images/co.gif").getPath().replaceAll("%20", " ")),
-        GeneralisationConfigurationFrame.pGeneral,
+    panneauOnglets.addTab("General", new ImageIcon(
+        GeneralisationConfigurationFrame.class.getResource("/images/co.gif")
+            .getPath().replaceAll("%20", " ")), pGeneral,
         "General parameters of generalisation");
 
     // panneau des boutons
 
     // bouton valider
-    GeneralisationConfigurationFrame.bValider.setPreferredSize(new Dimension(
-        110, 30));
-    GeneralisationConfigurationFrame.bValider
-        .addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent arg0) {
-            GeneralisationConfigurationFrame.this.validateValues();
-            GeneralisationConfigurationFrame.this.setVisible(false);
-          }
-        });
+    bValider.setPreferredSize(new Dimension(110, 30));
+    bValider.addActionListener(new ValidateAction(this));
     c = new GridBagConstraints();
     c.gridx = 0;
     c.gridy = 0;
     c.insets = new Insets(5, 5, 5, 5);
-    GeneralisationConfigurationFrame.panneauBoutons.add(
-        GeneralisationConfigurationFrame.bValider, c);
+    panneauBoutons.add(bValider, c);
 
     // bouton annuler
-    GeneralisationConfigurationFrame.bAnnuler.setPreferredSize(new Dimension(
-        110, 30));
-    GeneralisationConfigurationFrame.bAnnuler
-        .addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent arg0) {
-            GeneralisationConfigurationFrame.this.resetValues();
-          }
-        });
+    bAnnuler.setPreferredSize(new Dimension(110, 30));
+    bAnnuler.addActionListener(new ResetAction(this));
     c = new GridBagConstraints();
     c.gridx = 1;
     c.gridy = 0;
     c.insets = new Insets(5, 5, 5, 5);
-    GeneralisationConfigurationFrame.panneauBoutons.add(
-        GeneralisationConfigurationFrame.bAnnuler, c);
+    panneauBoutons.add(bAnnuler, c);
 
     // bouton enregistrer
-    GeneralisationConfigurationFrame.bEnregistrer
-        .setPreferredSize(new Dimension(110, 30));
-    GeneralisationConfigurationFrame.bEnregistrer
-        .addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent arg0) {
-            JFileChooser parcourir = new JFileChooser(new File(CartAGenPlugin
-                .getInstance().getCheminFichierConfigurationGene()));
-            parcourir.setDialogType(JFileChooser.SAVE_DIALOG);
-            parcourir.setApproveButtonText("Save");
-            parcourir.setDialogTitle("Save");
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                "XML MiraGe", "xml");
-            parcourir.setFileFilter(filter);
-            parcourir.setSelectedFile(new File(CartAGenPlugin.getInstance()
-                .getCheminFichierConfigurationGene()));
-            int res = parcourir.showOpenDialog(GeneralisationConfigurationFrame
-                .getInstance());
-            if (res == JFileChooser.APPROVE_OPTION) {
-              GeneralisationSpecifications.enregistrer(parcourir
-                  .getSelectedFile());
-            } else if (res == JFileChooser.ERROR_OPTION) {
-              JOptionPane.showMessageDialog(
-                  GeneralisationConfigurationFrame.getInstance(), "Error",
-                  "Error", JOptionPane.ERROR_MESSAGE);
-            }
-          }
-        });
+    bEnregistrer.setPreferredSize(new Dimension(110, 30));
+    bEnregistrer.addActionListener(new SaveAction(this));
     c = new GridBagConstraints();
     c.gridx = 2;
     c.gridy = 0;
     c.insets = new Insets(5, 5, 5, 5);
-    GeneralisationConfigurationFrame.panneauBoutons.add(
-        GeneralisationConfigurationFrame.bEnregistrer, c);
+    panneauBoutons.add(bEnregistrer, c);
 
     this.setLayout(new GridBagLayout());
     c = new GridBagConstraints();
     c.gridheight = 5;
-    this.add(GeneralisationConfigurationFrame.panneauOnglets, c);
+    this.add(panneauOnglets, c);
 
     c = new GridBagConstraints();
     c.gridheight = 1;
     c.gridx = 0;
     c.gridy = GridBagConstraints.RELATIVE;
-    this.add(GeneralisationConfigurationFrame.panneauBoutons, c);
+    this.add(panneauBoutons, c);
 
     this.pack();
 
@@ -233,24 +182,19 @@ public class GeneralisationConfigurationFrame extends JFrame {
   public void resetValues() {
 
     // general
-    GeneralisationConfigurationFrame.tDescription
-        .setText(GeneralisationSpecifications.getDESCRIPTION());
-    GeneralisationConfigurationFrame.tEchelleCible.setText(""
-        + Legend.getSYMBOLISATI0N_SCALE());
-    GeneralisationConfigurationFrame.tResolution.setText(""
-        + GeneralisationSpecifications.getRESOLUTION());
+    tDescription.setText(GeneralisationSpecifications.getDESCRIPTION());
+    tEchelleCible.setText("" + Legend.getSYMBOLISATI0N_SCALE());
+    tResolution.setText("" + GeneralisationSpecifications.getRESOLUTION());
 
   }
 
   public void validateValues() {
-
+    this.oldScale = Legend.getSYMBOLISATI0N_SCALE();
     // general
-    GeneralisationSpecifications
-        .setDESCRIPTION(GeneralisationConfigurationFrame.tDescription.getText());
-    Legend.setSYMBOLISATI0N_SCALE(Double
-        .parseDouble(GeneralisationConfigurationFrame.tEchelleCible.getText()));
-    GeneralisationSpecifications.setRESOLUTION(Double
-        .parseDouble(GeneralisationConfigurationFrame.tResolution.getText()));
+    GeneralisationSpecifications.setDESCRIPTION(tDescription.getText());
+    Legend.setSYMBOLISATI0N_SCALE(Double.parseDouble(tEchelleCible.getText()));
+    GeneralisationSpecifications.setRESOLUTION(Double.parseDouble(tResolution
+        .getText()));
 
     // update the SLD width values with the new scale value
     double scaleRatio = Legend.getSYMBOLISATI0N_SCALE() / oldScale;
@@ -274,4 +218,69 @@ public class GeneralisationConfigurationFrame extends JFrame {
         .getSelectedProjectFrame().getLayerViewPanel().repaint();
   }
 
+  class ValidateAction extends AbstractAction {
+    /****/
+    private static final long serialVersionUID = 1L;
+    private GeneralisationConfigurationFrame frame;
+
+    public ValidateAction(GeneralisationConfigurationFrame frame) {
+      super();
+      this.frame = frame;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      System.out.println("on rentre dans l'action");
+      this.frame.validateValues();
+      this.frame.setVisible(false);
+    }
+  }
+
+  class ResetAction extends AbstractAction {
+    /****/
+    private static final long serialVersionUID = 1L;
+    private GeneralisationConfigurationFrame frame;
+
+    public ResetAction(GeneralisationConfigurationFrame frame) {
+      super();
+      this.frame = frame;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      this.frame.resetValues();
+    }
+  }
+
+  class SaveAction extends AbstractAction {
+    /****/
+    private static final long serialVersionUID = 1L;
+    private GeneralisationConfigurationFrame frame;
+
+    public SaveAction(GeneralisationConfigurationFrame frame) {
+      super();
+      this.frame = frame;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      JFileChooser parcourir = new JFileChooser(new File(CartAGenPlugin
+          .getInstance().getCheminFichierConfigurationGene()));
+      parcourir.setDialogType(JFileChooser.SAVE_DIALOG);
+      parcourir.setApproveButtonText("Save");
+      parcourir.setDialogTitle("Save");
+      FileNameExtensionFilter filter = new FileNameExtensionFilter(
+          "XML MiraGe", "xml");
+      parcourir.setFileFilter(filter);
+      parcourir.setSelectedFile(new File(CartAGenPlugin.getInstance()
+          .getCheminFichierConfigurationGene()));
+      int res = parcourir.showOpenDialog(this.frame);
+      if (res == JFileChooser.APPROVE_OPTION) {
+        GeneralisationSpecifications.enregistrer(parcourir.getSelectedFile());
+      } else if (res == JFileChooser.ERROR_OPTION) {
+        JOptionPane.showMessageDialog(this.frame, "Error", "Error",
+            JOptionPane.ERROR_MESSAGE);
+      }
+    }
+  }
 }

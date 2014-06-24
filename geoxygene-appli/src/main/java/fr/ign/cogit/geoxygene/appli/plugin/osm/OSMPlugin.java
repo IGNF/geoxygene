@@ -385,6 +385,7 @@ public class OSMPlugin implements ProjectFramePlugin,
         currentProjections.put("UTM 33N (Vienna)", "32633");
         currentProjections.put("UTM 35N (Ukraine)", "32635");
         currentProjections.put("UTM 55S (Melbourne)", "32755");
+        currentProjections.put("Gauss-Krueger zone 4 (East Germany)", "31468");
         this.setPreferredSize(new Dimension(350, 150));
 
         // JPanel filePanel = new JPanel();

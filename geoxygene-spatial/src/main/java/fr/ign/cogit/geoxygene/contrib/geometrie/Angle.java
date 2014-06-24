@@ -140,7 +140,10 @@ public class Angle {
         .ecarttrigo(b, a).getValeur()));
   }
 
-  /** Angle entre 3 points; pt2 est le point central: angle(pt2pt1,pt2pt3). */
+  /**
+   * Angle entre 3 points; pt2 est le point central: angle(pt2pt1,pt2pt3). Entre
+   * 0 et 2Pi
+   */
   public static Angle angleTroisPoints(IDirectPosition pt1,
       IDirectPosition pt2, IDirectPosition pt3) {
     Angle angle1 = new Angle(pt2, pt1);
