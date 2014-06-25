@@ -31,7 +31,8 @@ import javax.xml.bind.annotation.XmlType;
  * @author Julien Perret
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {"name","title","abstractDescription","defaultStyle","featureTypeStyles"})
+@XmlType(propOrder = { "name", "title", "abstractDescription", "defaultStyle",
+    "featureTypeStyles" })
 public class UserStyle extends AbstractStyle {
 
   @XmlElement(name = "Name")
@@ -39,10 +40,11 @@ public class UserStyle extends AbstractStyle {
   public String getName() {
     return super.getName();
   }
+
   @Override
   public void setName(String newName) {
     super.setName(newName);
-  
+
   }
 
   private List<FeatureTypeStyle> featureTypeStyles = new ArrayList<FeatureTypeStyle>();
@@ -127,6 +129,8 @@ public class UserStyle extends AbstractStyle {
 
   @Override
   public Symbolizer getSymbolizer() {
-    return this.featureTypeStyles.get(0).getSymbolizer();
+    if (this.featureTypeStyles.size() > 0)
+      return this.featureTypeStyles.get(0).getSymbolizer();
+    return null;
   }
 }
