@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StyledLayerDescriptor version="1.0.20">
+  <NamedLayer>
+    <Name>roads</Name>
+	<UserStyle>
+      <Name>roads_casing</Name>
+      <FeatureTypeStyle>  
+        <Rule>
+          <Filter>
+            <Or>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>motorway</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>motorway_link</Literal>
+              </PropertyIsEqualTo>
+            </Or>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#97d397</CssParameter>
+              <CssParameter name="stroke-width">60</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>	  
+	  <FeatureTypeStyle>  
+        <Rule>
+          <Filter>
+            <Or>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>trunk</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>trunk_link</Literal>
+              </PropertyIsEqualTo>
+            </Or>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#477147</CssParameter>
+              <CssParameter name="stroke-width">55</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>	
+      <FeatureTypeStyle>  
+        <Rule>
+          <Filter>
+            <Or>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>primary</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>primary_link</Literal>
+              </PropertyIsEqualTo>
+            </Or>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#8D4346</CssParameter>
+              <CssParameter name="stroke-width">50</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+	  <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+            <Or>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>secondary</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>secondary_link</Literal>
+              </PropertyIsEqualTo>
+            </Or>
+          </Filter>
+         <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#a37b48</CssParameter>
+              <CssParameter name="stroke-width">45</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+	  <FeatureTypeStyle> 
+		<Rule>
+          <Filter>
+            <Or>
+            <PropertyIsEqualTo>
+              <PropertyName>highway</PropertyName>
+              <Literal>tertiary</Literal>
+            </PropertyIsEqualTo>
+            <PropertyIsEqualTo>
+              <PropertyName>highway</PropertyName>
+              <Literal>tertiary_link</Literal>
+            </PropertyIsEqualTo>
+            </Or>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#bbbbbb</CssParameter>
+              <CssParameter name="stroke-width">41</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+       <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+            <Or>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>residential</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>unclassified</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>turning_circle</Literal>
+              </PropertyIsEqualTo>
+            </Or>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#999999</CssParameter>
+              <CssParameter name="stroke-width">32.5</CssParameter>
+                <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>	
+       <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>service</Literal>
+              </PropertyIsEqualTo>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#999999</CssParameter>
+              <CssParameter name="stroke-width">28</CssParameter>
+                <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>	      	  
+    </UserStyle>	
+    <UserStyle>
+      <Name>roads_fill</Name>
+       <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+            <Or>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>residential</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>unclassified</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>turning_circle</Literal>
+              </PropertyIsEqualTo>
+            </Or>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#ffffff</CssParameter>
+              <CssParameter name="stroke-width">22.5</CssParameter>
+                <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>	
+       <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>service</Literal>
+              </PropertyIsEqualTo>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#ffffff</CssParameter>
+              <CssParameter name="stroke-width">18.5</CssParameter>
+                <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>      	  
+	  <FeatureTypeStyle> 
+		<Rule>
+          <Filter>
+            <Or>
+            <PropertyIsEqualTo>
+              <PropertyName>highway</PropertyName>
+              <Literal>tertiary</Literal>
+            </PropertyIsEqualTo>
+            <PropertyIsEqualTo>
+              <PropertyName>highway</PropertyName>
+              <Literal>tertiary_link</Literal>
+            </PropertyIsEqualTo>
+            </Or>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#ffffb3</CssParameter>
+              <CssParameter name="stroke-width">33</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>	  
+	  <FeatureTypeStyle>
+        <Rule>
+          <Filter>
+            <Or>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>secondary</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>secondary_link</Literal>
+              </PropertyIsEqualTo>
+            </Or>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#fecc8b</CssParameter>
+              <CssParameter name="stroke-width">35</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+      <FeatureTypeStyle>  
+        <Rule>
+          <Filter>
+            <Or>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>primary</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>primary_link</Literal>
+              </PropertyIsEqualTo>
+            </Or>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#ec989a</CssParameter>
+              <CssParameter name="stroke-width">40</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+      <FeatureTypeStyle>  
+        <Rule>
+          <Filter>
+            <Or>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>motorway</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>motorway_link</Literal>
+              </PropertyIsEqualTo>
+            </Or>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#506077</CssParameter>
+              <CssParameter name="stroke-width">47</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>	
+      <FeatureTypeStyle>  
+        <Rule>
+          <Filter>
+            <Or>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>trunk</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>trunk_link</Literal>
+              </PropertyIsEqualTo>
+            </Or>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#a9dba9</CssParameter>
+              <CssParameter name="stroke-width">45</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>	
+      <FeatureTypeStyle>  
+        <Rule>
+          <Filter>
+            <And>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>track</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>tracktype</PropertyName>
+                <Literal>grade1</Literal>
+              </PropertyIsEqualTo>
+            </And>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#b37700</CssParameter>
+              <CssParameter name="stroke-width">18</CssParameter>
+              <CssParameter name="stroke-linecap">butt</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+        <Rule>
+          <Filter>
+            <And>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>track</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>tracktype</PropertyName>
+                <Literal>grade2</Literal>
+              </PropertyIsEqualTo>
+            </And>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#a87000</CssParameter>
+              <CssParameter name="stroke-width">25</CssParameter>
+              <CssParameter name="stroke-linecap">butt</CssParameter>
+              <CssParameter name="stroke-dasharray">50 30</CssParameter>  
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+        <Rule>
+          <Filter>
+            <And>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>track</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>tracktype</PropertyName>
+                <Literal>grade3</Literal>
+              </PropertyIsEqualTo>
+            </And>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#996600</CssParameter>
+              <CssParameter name="stroke-width">16</CssParameter>
+              <CssParameter name="stroke-linecap">butt</CssParameter>
+              <CssParameter name="stroke-dasharray">30 22</CssParameter>              
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+        <Rule>
+          <Filter>
+            <And>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>track</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>tracktype</PropertyName>
+                <Literal>grade4</Literal>
+              </PropertyIsEqualTo>
+            </And>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#996600</CssParameter>
+              <CssParameter name="stroke-width">12</CssParameter>
+              <CssParameter name="stroke-linecap">butt</CssParameter>
+              <CssParameter name="stroke-dasharray">24 18 12 20</CssParameter>  
+            </Stroke>
+          </LineSymbolizer>
+        </Rule> 
+        <Rule>
+          <Filter>
+            <And>
+              <PropertyIsEqualTo>
+                <PropertyName>highway</PropertyName>
+                <Literal>track</Literal>
+              </PropertyIsEqualTo>
+              <PropertyIsEqualTo>
+                <PropertyName>tracktype</PropertyName>
+                <Literal>grade5</Literal>
+              </PropertyIsEqualTo>
+            </And>
+          </Filter>
+          <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#996600</CssParameter>
+              <CssParameter name="stroke-width">12.0</CssParameter>
+              <CssParameter name="stroke-linecap">butt</CssParameter>
+              <CssParameter name="stroke-dasharray">15 20</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>                                
+      </FeatureTypeStyle>	      	  
+    </UserStyle>
+  </NamedLayer>
+    <NamedLayer>
+    <Name>paths</Name>
+	<UserStyle>
+	 <FeatureTypeStyle>
+	 	<Rule>
+          <Filter>
+          	<PropertyIsEqualTo>
+         		<PropertyName>highway</PropertyName>
+         		 <Literal>path</Literal>
+          	</PropertyIsEqualTo>
+          </Filter>	 	
+	      <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#000000</CssParameter>
+              <CssParameter name="stroke-width">12</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+              <CssParameter name="stroke-dasharray">36 24</CssParameter>
+            </Stroke>
+          </LineSymbolizer>          	
+        </Rule>
+	    <Rule>
+          <Filter>
+          	<PropertyIsEqualTo>
+         		<PropertyName>highway</PropertyName>
+         		 <Literal>footway</Literal>
+          	</PropertyIsEqualTo>
+          </Filter>	 	
+	      <LineSymbolizer>
+            <Stroke>
+              <CssParameter name="stroke">#fa8072</CssParameter>
+              <CssParameter name="stroke-width">15</CssParameter>
+              <CssParameter name="stroke-linejoin">round</CssParameter>
+              <CssParameter name="stroke-linecap">round</CssParameter>
+              <CssParameter name="stroke-dasharray">12 30</CssParameter>
+            </Stroke>
+          </LineSymbolizer>          	
+        </Rule>       
+      </FeatureTypeStyle>		  
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>
