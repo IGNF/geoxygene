@@ -45,4 +45,17 @@ public class SegmentTest {
     Assert.assertTrue(segment.containsPoint(p3));
     Assert.assertFalse(segment.containsPoint(p4));
   }
+
+  @Test
+  public void testGetWeightedMiddlePoint() {
+    IDirectPosition p1 = new DirectPosition(0.0, 0.0);
+    IDirectPosition p2 = new DirectPosition(10.0, 10.0);
+    IDirectPosition p3 = new DirectPosition(5.0, 5.0);
+    IDirectPosition p4 = new DirectPosition(2.5, 2.5);
+    IDirectPosition p5 = new DirectPosition(7.5, 7.5);
+    Segment segment = new Segment(p1, p2);
+    Assert.assertTrue(p3.equals(segment.getWeightedMiddlePoint(1.0), 0.01));
+    Assert.assertTrue(p4.equals(segment.getWeightedMiddlePoint(0.5), 0.01));
+    Assert.assertTrue(p5.equals(segment.getWeightedMiddlePoint(2.0), 0.01));
+  }
 }
