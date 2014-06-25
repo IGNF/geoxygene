@@ -406,8 +406,8 @@ public class Graph implements IGraph {
         }
 
         // a new node is reached, it has to be initialised
-        mapNodeWghts.put(neighbour, new Double(neighWght
-            + mapNodeWghts.get(nearest).doubleValue()));
+        mapNodeWghts.put(neighbour,
+            new Double(neighWght + mapNodeWghts.get(nearest).doubleValue()));
         mapNodePrev.put(neighbour, nearest);
         mapNodePrevArc.put(neighbour, arc);
         // put this node in the stack
@@ -544,6 +544,10 @@ public class Graph implements IGraph {
 
   @Override
   public Set<IEdge> getEdgesConnectingNodes(INode node1, INode node2) {
+    if (node1 == null)
+      return new HashSet<IEdge>();
+    if (node2 == null)
+      return new HashSet<IEdge>();
     Set<IEdge> edges = node1.getEdges();
     edges.retainAll(node2.getEdges());
     return edges;
@@ -555,7 +559,7 @@ public class Graph implements IGraph {
    */
   public INode getNodeAt(IDirectPosition pt) {
     for (INode node : getNodes()) {
-      if (node.getPosition().equals(pt))
+      if (node.getPosition().equals(pt, 0.1))
         return node;
     }
     return null;

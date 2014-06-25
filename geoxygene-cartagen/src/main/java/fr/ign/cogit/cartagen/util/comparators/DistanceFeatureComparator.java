@@ -7,7 +7,7 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.util;
+package fr.ign.cogit.cartagen.util.comparators;
 
 import java.util.Comparator;
 

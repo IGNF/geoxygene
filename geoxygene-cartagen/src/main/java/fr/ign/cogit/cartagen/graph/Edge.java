@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.graph;
 
@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineSegment;
 
 /*
  * ###### IGN / CartAGen ###### Title: Arc Description: An arc of a Graph
@@ -124,6 +125,11 @@ public class Edge implements IEdge {
     this.finalNode = finalNode;
     this.geoObjects = new HashSet<IFeature>();
     this.id = 100000 + Edge.counter.incrementAndGet();
+    this.geom = new GM_LineSegment(initialNode.getPosition(),
+        finalNode.getPosition());
+    this.weight = geom.length();
+    this.initialNode.addEdgeOut(this);
+    this.finalNode.addEdgeIn(this);
   }
 
   @Override

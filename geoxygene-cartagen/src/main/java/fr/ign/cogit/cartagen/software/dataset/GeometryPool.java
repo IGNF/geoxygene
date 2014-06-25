@@ -2,6 +2,9 @@ package fr.ign.cogit.cartagen.software.dataset;
 
 import java.awt.Color;
 
+import fr.ign.cogit.cartagen.graph.IEdge;
+import fr.ign.cogit.cartagen.graph.IGraph;
+import fr.ign.cogit.cartagen.graph.INode;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.geompool.ColouredFeature;
 import fr.ign.cogit.geoxygene.api.feature.IDataSet;
@@ -89,5 +92,35 @@ public class GeometryPool {
       return;
     Style style = poolLayer.getStyles().get(0);
     style.getFeatureTypeStyles().add(colFeat.computeFeatureStyle());
+  }
+
+  /**
+   * Display a graph in the geometry pool with the given colors.
+   * @param feat
+   * @param color
+   */
+  @SuppressWarnings("unchecked")
+  public void addGraphToGeometryPool(IGraph graph, Color edgeColor,
+      Color nodeColor) {
+    for (IEdge edge : graph.getEdges()) {
+      ColouredFeature colFeat = new ColouredFeature(edge.getGeom(), edgeColor);
+      ((IPopulation<IFeature>) dataset.getPopulation(CartAGenDataSet.GEOM_POOL))
+          .add(colFeat);
+      Layer poolLayer = sld.getLayer(CartAGenDataSet.GEOM_POOL);
+      if (poolLayer == null)
+        return;
+      Style style = poolLayer.getStyles().get(0);
+      style.getFeatureTypeStyles().add(colFeat.computeFeatureStyle());
+    }
+    for (INode node : graph.getNodes()) {
+      ColouredFeature colFeat = new ColouredFeature(node.getGeom(), nodeColor);
+      ((IPopulation<IFeature>) dataset.getPopulation(CartAGenDataSet.GEOM_POOL))
+          .add(colFeat);
+      Layer poolLayer = sld.getLayer(CartAGenDataSet.GEOM_POOL);
+      if (poolLayer == null)
+        return;
+      Style style = poolLayer.getStyles().get(0);
+      style.getFeatureTypeStyles().add(colFeat.computeFeatureStyle());
+    }
   }
 }

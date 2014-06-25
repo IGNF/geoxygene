@@ -29,6 +29,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
+import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.GeneralisationConfigurationFrame;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.util.XMLUtil;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -361,6 +362,7 @@ public class CartAGenDoc {
       instance.currentDataset = dataset;
       database.populateDataset(database.getSymboScale());
       Legend.setSYMBOLISATI0N_SCALE(database.getSymboScale());
+      GeneralisationConfigurationFrame.getInstance().resetValues();
       // read the database view
       instance.getDatabaseViews().put(database.getName(),
           new DatabaseView(instance, dbElem));
