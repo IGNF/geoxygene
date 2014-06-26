@@ -419,9 +419,9 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
 
             // line painting
             int paintVertexShader = GLProgram
-                    .createVertexShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/paint.vert.glsl");
+                    .createVertexShader("./src/main/resources/shaders/line.vert.glsl");
             int paintFragmentShader = GLProgram
-                    .createFragmentShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/paint.frag.glsl");
+                    .createFragmentShader("./src/main/resources/shaders/line.frag.glsl");
             glContext.addProgram(createPaintProgram(paintVertexShader,
                     paintFragmentShader));
             // background paper

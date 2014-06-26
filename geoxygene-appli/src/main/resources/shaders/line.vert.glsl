@@ -7,7 +7,7 @@ uniform float m11 = 1.; // Y homothetic value in 3x3 matrix
 uniform float m12 = 0.; // Y translation value in 3x3 matrix
 uniform float screenWidth;
 uniform float screenHeight;
-
+uniform float mapScaleDiv1000 = 0.; // map scale
 uniform int brushWidth = 0; // brush texture width (pixels)
 uniform int brushHeight = 0; // brush texture height (pixels)
 uniform int brushStartWidth = 0; // brush texture width (pixels)
