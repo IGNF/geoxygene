@@ -230,7 +230,6 @@ public class GeneralisationConfigurationFrame extends JFrame {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      System.out.println("on rentre dans l'action");
       this.frame.validateValues();
       this.frame.setVisible(false);
     }

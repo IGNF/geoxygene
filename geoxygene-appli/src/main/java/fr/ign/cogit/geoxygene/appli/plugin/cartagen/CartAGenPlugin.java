@@ -193,6 +193,13 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
   }
 
   /**
+   * Adds the right panel of the CartAGen plugin
+   */
+  public void addRightPanel() {
+    splitPane.setRightComponent(rightPanel);
+  }
+
+  /**
    * Relates a {@link CartAGenDB} to a {@link ProjectFrame} of the application.
    * Fills the layers of the project frame with the database objects.
    * @param db
