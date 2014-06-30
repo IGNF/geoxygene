@@ -110,7 +110,7 @@ public class GLContext {
         if (GL20.glIsProgram(program.getProgramId()) == false) {
             logger.error("Program Id " + program.getProgramId() + " ("
                     + program.getName() + ") is not a valid GL program");
-            Thread.dumpStack();
+            // Thread.dumpStack();
             GL20.glUseProgram(0);
             this.currentProgram = null;
             return null;

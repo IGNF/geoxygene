@@ -55,7 +55,7 @@ import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Shadow;
-import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTexture;
+import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
 
 /**
  * Base class for GeOxygene applications.
@@ -467,9 +467,9 @@ public class SLDDemoApplication implements GeOxygeneApplicationPlugin,
         PolygonSymbolizer symbolizer = (PolygonSymbolizer) layer
                 .getSymbolizer();
 
-        PerlinNoiseTexture texture = new PerlinNoiseTexture();
+        PerlinNoiseTextureDescriptor texture = new PerlinNoiseTextureDescriptor();
         texture.setTextureResolution(6000);
-        symbolizer.getFill().setTexture(texture);
+        symbolizer.getFill().setTextureDescriptor(texture);
 
         Population<DefaultFeature> pop = new Population<DefaultFeature>(
                 "Texture"); //$NON-NLS-1$

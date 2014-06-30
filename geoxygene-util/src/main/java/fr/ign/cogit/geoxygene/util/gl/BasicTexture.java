@@ -93,12 +93,34 @@ public class BasicTexture implements Texture {
      */
     public BasicTexture(final int width, final int height) {
         this();
+        this.createTextureImage(width, height);
+    }
+
+    /**
+     * @param width
+     * @param height
+     * @return
+     */
+    public final void createTextureImage(final int width, final int height) {
         if (width * height == 0) {
             throw new IllegalArgumentException(
                     "Basic texture request with null size");
         }
-        BufferedImage img = new BufferedImage(width, height,
-                BufferedImage.TYPE_4BYTE_ABGR);
+        BufferedImage img = null;
+        try {
+            if (width > 3000) {
+                System.err.println();
+            }
+            // logger.debug("********************************************************************** Create a Buffered Texture Image "
+            // + width + "x" + height);
+            img = new BufferedImage(width, height,
+                    BufferedImage.TYPE_4BYTE_ABGR);
+        } catch (Throwable e) {
+            logger.error("An error ocurred creating RGBA image size " + width
+                    + "x" + height);
+            e.printStackTrace();
+            return;
+        }
         Graphics2D g2 = img.createGraphics();
         g2.setComposite(AlphaComposite.Clear);
         g2.fillRect(0, 0, width, height);
@@ -230,7 +252,10 @@ public class BasicTexture implements Texture {
      */
     @Override
     public final int getTextureWidth() {
-        return this.getTextureImage().getWidth();
+        if (this.textureImage == null) {
+            return 0;
+        }
+        return this.textureImage.getWidth();
     }
 
     /**
@@ -238,7 +263,10 @@ public class BasicTexture implements Texture {
      */
     @Override
     public final int getTextureHeight() {
-        return this.getTextureImage().getHeight();
+        if (this.textureImage == null) {
+            return 0;
+        }
+        return this.textureImage.getHeight();
     }
 
     /**

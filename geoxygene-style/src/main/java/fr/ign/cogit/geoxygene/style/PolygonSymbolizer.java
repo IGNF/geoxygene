@@ -82,9 +82,9 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     @Override
     public void reset() {
         super.reset();
-        if (this.getFill() != null && this.getFill().getTexture() != null) {
-            this.getFill().getTexture().invalidateTexture();
-        }
+        // if (this.getFill() != null && this.getFill().getTexture() != null) {
+        // this.getFill().getTexture().invalidateTexture();
+        // }
     }
 
     /*
@@ -96,9 +96,14 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((this.categorizedMap == null) ? 0 : this.categorizedMap.hashCode());
-        result = prime * result + ((this.colorMap == null) ? 0 : this.colorMap.hashCode());
-        result = prime * result + ((this.fill == null) ? 0 : this.fill.hashCode());
+        result = prime
+                * result
+                + ((this.categorizedMap == null) ? 0 : this.categorizedMap
+                        .hashCode());
+        result = prime * result
+                + ((this.colorMap == null) ? 0 : this.colorMap.hashCode());
+        result = prime * result
+                + ((this.fill == null) ? 0 : this.fill.hashCode());
         return result;
     }
 

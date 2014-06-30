@@ -32,7 +32,8 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
-import fr.ign.cogit.geoxygene.style.texture.BasicTexture;
+import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
+import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 
 /**
  * @author JeT
@@ -40,11 +41,18 @@ import fr.ign.cogit.geoxygene.style.texture.BasicTexture;
  */
 public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
 
+    // texture descriptor (from style)
+    private BasicTextureDescriptor textureDescriptor = null;
+    private BasicTexture basicTexture = null;
+
     /**
      * @param texture
      */
-    public BasicTextureTask(BasicTexture texture) {
-        super(texture);
+    public BasicTextureTask(String name,
+            BasicTextureDescriptor textureDescriptor) {
+        super("Basic" + name);
+        this.textureDescriptor = textureDescriptor;
+        this.basicTexture = new BasicTexture();
     }
 
     /*
@@ -89,7 +97,7 @@ public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
         this.setState(TaskState.RUNNING);
         try {
 
-            URL inputURL = new URL(this.getTexture().getUrl());
+            URL inputURL = new URL(this.textureDescriptor.getUrl());
             this.getTexture().setTextureImage(ImageIO.read(inputURL));
             this.setState(TaskState.FINISHED);
         } catch (Exception e) {
@@ -107,6 +115,11 @@ public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
     @Override
     public int getTextureHeight() {
         return this.getTexture().getTextureHeight();
+    }
+
+    @Override
+    public BasicTexture getTexture() {
+        return this.basicTexture;
     }
 
 }

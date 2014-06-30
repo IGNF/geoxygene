@@ -28,43 +28,22 @@
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
-import fr.ign.cogit.geoxygene.style.texture.Texture;
+import fr.ign.cogit.geoxygene.util.gl.Texture;
 
 /**
- * @author JeT
- *         Abstract task for async texture generation
+ * @author JeT Abstract task for async texture generation
  */
-public abstract class AbstractTextureTask<TextureType extends Texture> extends AbstractTask implements TextureTask<TextureType> {
-
-    private TextureType texture = null;
+public abstract class AbstractTextureTask<TextureType extends Texture> extends
+        AbstractTask implements TextureTask<TextureType> {
 
     /**
-     * Default constructor
-     */
-    public AbstractTextureTask(TextureType texture) {
-        super(texture.getClass().getSimpleName() + " texture generation");
-        this.texture = texture;
-    }
-
-    /*
-     * (non-Javadoc)
+     * constructor
      * 
-     * @see fr.ign.cogit.geoxygene.appli.render.texture.TextureTask#getTexture()
+     * @param name
+     *            task name
      */
-    @Override
-    public TextureType getTexture() {
-        return this.texture;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.render.texture.TextureTask#setTexture(
-     * TextureType)
-     */
-    @Override
-    public void setTexture(TextureType texture) {
-        this.texture = texture;
+    public AbstractTextureTask(String name) {
+        super(name);
     }
 
 }

@@ -29,10 +29,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
-import fr.ign.cogit.geoxygene.style.texture.BasicTexture;
-import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTexture;
-import fr.ign.cogit.geoxygene.style.texture.Texture;
-import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture;
+import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
 
 /**
  * @author Julien Perret
@@ -69,17 +68,19 @@ public class Fill {
         this.graphicFill = graphicFill;
     }
 
-    @XmlElements({ @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTexture.class), @XmlElement(name = "BasicTexture", type = BasicTexture.class),
-            @XmlElement(name = "TileDistributionTexture", type = TileDistributionTexture.class) })
-    private Texture texture = null;
+    @XmlElements({
+            @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTextureDescriptor.class),
+            @XmlElement(name = "BasicTexture", type = BasicTextureDescriptor.class),
+            @XmlElement(name = "TileDistributionTexture", type = TileDistributionTextureDescriptor.class) })
+    private BasicTextureDescriptor textureDescriptor = null;
 
     /**
      * Renvoie la texture.
      * 
      * @return la texture.
      */
-    public Texture getTexture() {
-        return this.texture;
+    public BasicTextureDescriptor getTextureDescriptor() {
+        return this.textureDescriptor;
     }
 
     /**
@@ -88,11 +89,13 @@ public class Fill {
      * @param texture
      *            la texture.
      */
-    public void setTexture(Texture texture) {
-        this.texture = texture;
+    public void setTextureDescriptor(BasicTextureDescriptor texture) {
+        this.textureDescriptor = texture;
     }
 
-    @XmlElements({ @XmlElement(name = "SvgParameter", type = SvgParameter.class), @XmlElement(name = "CssParameter", type = SvgParameter.class) })
+    @XmlElements({
+            @XmlElement(name = "SvgParameter", type = SvgParameter.class),
+            @XmlElement(name = "CssParameter", type = SvgParameter.class) })
     private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>();
 
     /**
@@ -123,7 +126,8 @@ public class Fill {
                 } else if (parameter.getName().equalsIgnoreCase("fill-opacity")) { //$NON-NLS-1$
                     this.setFillOpacity(Float.parseFloat(parameter.getValue()));
                 } else if (parameter.getName().equalsIgnoreCase("color")) { //$NON-NLS-1$
-                    this.setFill(new Color(Integer.parseInt(parameter.getValue())));
+                    this.setFill(new Color(Integer.parseInt(parameter
+                            .getValue())));
                 }
             }
         }
@@ -220,7 +224,9 @@ public class Fill {
             if (this.fillOpacity == 1.0f) {
                 this.color = this.fill;
             } else {
-                this.color = new Color(this.fill.getRed(), this.fill.getGreen(), this.fill.getBlue(), (int) (this.fillOpacity * 255f));
+                this.color = new Color(this.fill.getRed(),
+                        this.fill.getGreen(), this.fill.getBlue(),
+                        (int) (this.fillOpacity * 255f));
             }
         }
         return this.color;
@@ -234,7 +240,8 @@ public class Fill {
         if (this.fillOpacity == 1.0f) {
             this.color = this.fill;
         } else {
-            this.color = new Color(this.fill.getRed(), this.fill.getGreen(), this.fill.getBlue(), (int) (this.fillOpacity * 255f));
+            this.color = new Color(this.fill.getRed(), this.fill.getGreen(),
+                    this.fill.getBlue(), (int) (this.fillOpacity * 255f));
         }
     }
 
@@ -247,12 +254,20 @@ public class Fill {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.color == null) ? 0 : this.color.hashCode());
-        result = prime * result + ((this.fill == null) ? 0 : this.fill.hashCode());
+        result = prime * result
+                + ((this.color == null) ? 0 : this.color.hashCode());
+        result = prime * result
+                + ((this.fill == null) ? 0 : this.fill.hashCode());
         result = prime * result + Float.floatToIntBits(this.fillOpacity);
-        result = prime * result + ((this.graphicFill == null) ? 0 : this.graphicFill.hashCode());
-        result = prime * result + ((this.svgParameters == null) ? 0 : this.svgParameters.hashCode());
-        result = prime * result + ((this.texture == null) ? 0 : this.texture.hashCode());
+        result = prime
+                * result
+                + ((this.graphicFill == null) ? 0 : this.graphicFill.hashCode());
+        result = prime
+                * result
+                + ((this.svgParameters == null) ? 0 : this.svgParameters
+                        .hashCode());
+        result = prime * result
+                + ((this.textureDescriptor == null) ? 0 : this.textureDescriptor.hashCode());
         return result;
     }
 
@@ -287,7 +302,8 @@ public class Fill {
         } else if (!this.fill.equals(other.fill)) {
             return false;
         }
-        if (Float.floatToIntBits(this.fillOpacity) != Float.floatToIntBits(other.fillOpacity)) {
+        if (Float.floatToIntBits(this.fillOpacity) != Float
+                .floatToIntBits(other.fillOpacity)) {
             return false;
         }
         if (this.graphicFill == null) {
@@ -304,11 +320,11 @@ public class Fill {
         } else if (!this.svgParameters.equals(other.svgParameters)) {
             return false;
         }
-        if (this.texture == null) {
-            if (other.texture != null) {
+        if (this.textureDescriptor == null) {
+            if (other.textureDescriptor != null) {
                 return false;
             }
-        } else if (!this.texture.equals(other.texture)) {
+        } else if (!this.textureDescriptor.equals(other.textureDescriptor)) {
             return false;
         }
         return true;

@@ -39,16 +39,14 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
-import fr.ign.cogit.geoxygene.style.texture.DimensionDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTexture;
-import fr.ign.cogit.geoxygene.util.ImageUtil;
+import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
+import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 
 /**
  * @author JeT
  * 
  */
-public class PerlinNoiseTextureTask extends
-        AbstractTextureTask<PerlinNoiseTexture> {
+public class PerlinNoiseTextureTask extends AbstractTextureTask<BasicTexture> {
 
     private static final Logger logger = Logger
             .getLogger(PerlinNoiseTextureTask.class.getName()); // logger
@@ -58,16 +56,22 @@ public class PerlinNoiseTextureTask extends
     private int width = 0;
     private int height = 0;
 
+    private PerlinNoiseTextureDescriptor textureDescriptor = null;
+    private BasicTexture basicTexture = null;
+
     /**
      * @param texture
      */
-    public PerlinNoiseTextureTask(PerlinNoiseTexture texture,
+    public PerlinNoiseTextureTask(String name,
+            PerlinNoiseTextureDescriptor descriptor,
             IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
-        super(texture);
+        super("PerlinNoise" + name);
+        this.textureDescriptor = descriptor;
+        this.basicTexture = new BasicTexture();
         this.setViewport(viewport);
         this.setFeatureCollection(featureCollection);
         this.computeTextureDimension(featureCollection.envelope(), viewport,
-                this.getTexture().getTextureResolution());
+                this.getTextureDescriptor().getTextureResolution());
     }
 
     /**
@@ -83,6 +87,13 @@ public class PerlinNoiseTextureTask extends
      */
     public Viewport getViewport() {
         return this.viewport;
+    }
+
+    /**
+     * @return the textureDescriptor
+     */
+    public PerlinNoiseTextureDescriptor getTextureDescriptor() {
+        return this.textureDescriptor;
     }
 
     /**
@@ -142,24 +153,18 @@ public class PerlinNoiseTextureTask extends
         this.setState(TaskState.RUNNING);
         try {
             TextureFilter filter = new TextureFilter();
-            filter.setColormap(new LinearColormap(this.getTexture().getColor1()
-                    .getRGB(), this.getTexture().getColor2().getRGB()));
-            filter.setScale(this.getTexture().getScale());
-            filter.setStretch(this.getTexture().getStretch());
-            filter.setAmount(this.getTexture().getAmount());
-            filter.setAngle(this.getTexture().getAngle());
-            IEnvelope envelope = this.getFeatureCollection().envelope();
-            this.getTexture()
-                    .setDimension(
-                            new DimensionDescriptor(envelope.width(), envelope
-                                    .length()));
-            this.getTexture().setTextureDimension(this.width, this.height);
-            logger.debug("set perlin texture image size: "
-                    + this.getTexture().getTextureWidth() + "x"
-                    + this.getTexture().getTextureHeight());
-            BufferedImage imgTexture = ImageUtil.createBufferedImage(this
-                    .getTexture().getTextureWidth(), this.getTexture()
-                    .getTextureHeight());
+            filter.setColormap(new LinearColormap(this.getTextureDescriptor()
+                    .getColor1().getRGB(), this.getTextureDescriptor()
+                    .getColor2().getRGB()));
+            filter.setScale(this.getTextureDescriptor().getScale());
+            filter.setStretch(this.getTextureDescriptor().getStretch());
+            filter.setAmount(this.getTextureDescriptor().getAmount());
+            filter.setAngle(this.getTextureDescriptor().getAngle());
+            this.getTexture().createTextureImage(this.width, this.height);
+            // logger.debug("set perlin texture image size: "
+            // + this.getTexture().getTextureWidth() + "x"
+            // + this.getTexture().getTextureHeight());
+            BufferedImage imgTexture = this.getTexture().getTextureImage();
             filter.filter(imgTexture, imgTexture);
             this.getTexture().setTextureImage(imgTexture);
             this.setState(TaskState.FINISHED);
@@ -193,6 +198,11 @@ public class PerlinNoiseTextureTask extends
     @Override
     public int getTextureHeight() {
         return this.height;
+    }
+
+    @Override
+    public BasicTexture getTexture() {
+        return this.basicTexture;
     }
 
 }

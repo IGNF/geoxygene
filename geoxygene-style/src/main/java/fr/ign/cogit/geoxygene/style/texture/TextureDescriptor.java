@@ -26,29 +26,26 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.style.texture;
 
-import java.awt.Dimension;
-import java.awt.image.BufferedImage;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class Texture {
+public abstract class TextureDescriptor {
 
     @XmlAttribute(name = "xRepeat")
     private boolean xRepeat = false;
     @XmlAttribute(name = "yRepeat")
     private boolean yRepeat = false;
 
-    private int width, height; // image texture dimension (in pixels)
+    // private int width, height; // image texture dimension (in pixels)
     private TextureDrawingMode textureDrawingMode = TextureDrawingMode.VIEWPORTSPACE;
-    private BufferedImage textureImage = null;
-
-    // image dimension (in world coordinates)
-    // @XmlElement(name = "Dimension")
-    private DimensionDescriptor dimension = new DimensionDescriptor();
+    // private BufferedImage textureImage = null;
+    //
+    // // image dimension (in world coordinates)
+    // // @XmlElement(name = "Dimension")
+    // private DimensionDescriptor dimension = new DimensionDescriptor();
 
     // image displacement (in world coordinates)
     @XmlElement(name = "Displacement")
@@ -65,7 +62,7 @@ public abstract class Texture {
     /**
      * default constructor
      */
-    public Texture() {
+    public TextureDescriptor() {
         this.scaleFactor.setX(1.);
         this.scaleFactor.setY(1.);
     }
@@ -73,7 +70,7 @@ public abstract class Texture {
     /**
      * default constructor for
      */
-    public Texture(TextureDrawingMode textureDrawingMode) {
+    public TextureDescriptor(TextureDrawingMode textureDrawingMode) {
         this();
         this.textureDrawingMode = textureDrawingMode;
     }
@@ -108,43 +105,44 @@ public abstract class Texture {
         this.yRepeat = yRepeat;
     }
 
-    /**
-     * invalidate the precomputed image texture and force recomputation. For
-     * async generation this method should be overridden to stop potential
-     * in-progress generation
-     */
-    public void invalidateTexture() {
-        this.setTextureImage(null);
-    }
+    // /**
+    // * invalidate the precomputed image texture and force recomputation. For
+    // * async generation this method should be overridden to stop potential
+    // * in-progress generation
+    // */
+    // public void invalidateTexture() {
+    // this.setTextureImage(null);
+    // }
 
-    /**
-     * This set method breaks the object encapsulation paradigm. It is due to
-     * geoxygene Style module independence. Textures have to be declared into
-     * "Style" module but the implementation of how texture are generated and
-     * visualized must not be in style (they can have dependencies to appli or
-     * other modules). The generation has to be external and use this set method
-     * (carefully)
-     * 
-     * @param textureImage
-     *            the Texture Image to set
-     */
-    synchronized public void setTextureImage(BufferedImage textureImage) {
-        this.textureImage = textureImage;
-        if (this.textureImage != null) {
-            this.setTextureDimension(this.textureImage.getWidth(),
-                    this.textureImage.getHeight());
-        }
-    }
-
-    /**
-     * get the image texture
-     * 
-     * @return the image or null
-     */
-    public BufferedImage getTextureImage() {
-        return this.textureImage;
-    }
-
+    // /**
+    // * This set method breaks the object encapsulation paradigm. It is due to
+    // * geoxygene Style module independence. Textures have to be declared into
+    // * "Style" module but the implementation of how texture are generated and
+    // * visualized must not be in style (they can have dependencies to appli or
+    // * other modules). The generation has to be external and use this set
+    // method
+    // * (carefully)
+    // *
+    // * @param textureImage
+    // * the Texture Image to set
+    // */
+    // synchronized public void setTextureImage(BufferedImage textureImage) {
+    // this.textureImage = textureImage;
+    // if (this.textureImage != null) {
+    // this.setTextureDimension(this.textureImage.getWidth(),
+    // this.textureImage.getHeight());
+    // }
+    // }
+    //
+    // /**
+    // * get the image texture
+    // *
+    // * @return the image or null
+    // */
+    // public BufferedImage getTextureImage() {
+    // return this.textureImage;
+    // }
+    //
     /**
      * @return the rotation
      */
@@ -167,67 +165,69 @@ public abstract class Texture {
         this.scaleFactor = scaleFactor;
     }
 
-    /**
-     * Set the texture image size in pixels. Shortcut to setWidth()/setHeight()
-     */
-    public void setTextureDimension(int width, int height) {
-        this.setTextureWidth(width);
-        this.setTextureHeight(height);
-    }
+    // /**
+    // * Set the texture image size in pixels. Shortcut to
+    // setWidth()/setHeight()
+    // */
+    // public void setTextureDimension(int width, int height) {
+    // this.setTextureWidth(width);
+    // this.setTextureHeight(height);
+    // }
+    //
+    // /**
+    // * Set the texture image size in pixels. Shortcut to
+    // setWidth()/setHeight()
+    // */
+    // public void setTextureDimension(Dimension textureDimension) {
+    // this.setTextureWidth(textureDimension.width);
+    // this.setTextureHeight(textureDimension.height);
+    // }
+    //
+    // /**
+    // * @return image width in pixels
+    // */
+    // public int getTextureWidth() {
+    // return this.width;
+    // }
+    //
+    // /**
+    // * @param width
+    // * image width in pixels
+    // */
+    // public void setTextureWidth(int width) {
+    // this.width = width;
+    // }
+    //
+    // /**
+    // * @return the image height in pixels
+    // */
+    // public int getTextureHeight() {
+    // return this.height;
+    // }
+    //
+    // /**
+    // * @param height
+    // * image height in pixels
+    // */
+    // public void setTextureHeight(int height) {
+    // this.height = height;
+    // }
 
-    /**
-     * Set the texture image size in pixels. Shortcut to setWidth()/setHeight()
-     */
-    public void setTextureDimension(Dimension textureDimension) {
-        this.setTextureWidth(textureDimension.width);
-        this.setTextureHeight(textureDimension.height);
-    }
-
-    /**
-     * @return image width in pixels
-     */
-    public int getTextureWidth() {
-        return this.width;
-    }
-
-    /**
-     * @param width
-     *            image width in pixels
-     */
-    public void setTextureWidth(int width) {
-        this.width = width;
-    }
-
-    /**
-     * @return the image height in pixels
-     */
-    public int getTextureHeight() {
-        return this.height;
-    }
-
-    /**
-     * @param height
-     *            image height in pixels
-     */
-    public void setTextureHeight(int height) {
-        this.height = height;
-    }
-
-    /**
-     * @return the texture dimension in world coordinates
-     */
-    public DimensionDescriptor getDimension() {
-        return this.dimension;
-    }
-
-    /**
-     * @param dimension
-     *            texture dimension in world coordinates (0 if internally
-     *            computed or screen space)
-     */
-    public void setDimension(DimensionDescriptor dimension) {
-        this.dimension = dimension;
-    }
+    // /**
+    // * @return the texture dimension in world coordinates
+    // */
+    // public DimensionDescriptor getDimension() {
+    // return this.dimension;
+    // }
+    //
+    // /**
+    // * @param dimension
+    // * texture dimension in world coordinates (0 if internally
+    // * computed or screen space)
+    // */
+    // public void setDimension(DimensionDescriptor dimension) {
+    // this.dimension = dimension;
+    // }
 
     /**
      * @return the displacement

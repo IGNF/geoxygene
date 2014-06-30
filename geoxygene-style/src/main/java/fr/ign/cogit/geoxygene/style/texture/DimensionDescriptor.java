@@ -126,13 +126,26 @@ public class DimensionDescriptor {
             return false;
         }
         DimensionDescriptor other = (DimensionDescriptor) obj;
-        if (Double.doubleToLongBits(this.height) != Double.doubleToLongBits(other.height)) {
+        if (Double.doubleToLongBits(this.height) != Double
+                .doubleToLongBits(other.height)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.width) != Double.doubleToLongBits(other.width)) {
+        if (Double.doubleToLongBits(this.width) != Double
+                .doubleToLongBits(other.width)) {
             return false;
         }
         return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "DimensionDescriptor [width=" + this.width + ", height="
+                + this.height + "]";
     }
 
 }

@@ -591,6 +591,9 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         // // smoothness
         GLProgram program = this.glContext
                 .setCurrentProgram(LwjglLayerRenderer.worldspaceColorProgramName);
+        if (program == null) {
+            return;
+        }
         // no transparency at all
         program.setUniform1f(LwjglLayerRenderer.objectOpacityUniformVarName, 1f);
         program.setUniform1f(LwjglLayerRenderer.globalOpacityUniformVarName, 1f);

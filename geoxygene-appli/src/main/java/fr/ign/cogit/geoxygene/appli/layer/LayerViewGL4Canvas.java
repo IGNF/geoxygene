@@ -188,6 +188,9 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             GLProgram program = LwjglLayerRenderer
                     .getGL4Context()
                     .setCurrentProgram(LwjglLayerRenderer.backgroundProgramName);
+            if (program == null) {
+                return;
+            }
             glEnable(GL_TEXTURE_2D);
             glDisable(GL11.GL_POLYGON_SMOOTH);
 

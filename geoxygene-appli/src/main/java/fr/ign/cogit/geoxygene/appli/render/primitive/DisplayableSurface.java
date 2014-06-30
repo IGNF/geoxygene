@@ -46,10 +46,11 @@ import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureTask;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
+import fr.ign.cogit.geoxygene.appli.task.TaskManager;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.texture.Texture;
+import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
@@ -58,8 +59,7 @@ import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
  * @author JeT
  * 
  */
-public class DisplayableSurface extends AbstractTask implements GLDisplayable,
-        TaskListener<TextureTask<?>> {
+public class DisplayableSurface extends AbstractTask implements GLDisplayable {
 
     private static final Logger logger = Logger
             .getLogger(DisplayableSurface.class.getName()); // logger
@@ -224,6 +224,8 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
             // + this.getName());
             this.generateWithPolygonSymbolizer(polygonSymbolizer);
         } else {
+            super.setError(new IllegalStateException("task " + this.getName()
+                    + " has no PolygonSymbolizer"));
             super.setState(TaskState.ERROR);
             return;
         }
@@ -235,7 +237,8 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
 
     synchronized private void generateWithPolygonSymbolizer(
             PolygonSymbolizer symbolizer) {
-        Texture texture = symbolizer.getFill().getTexture();
+        BasicTextureDescriptor textureDescriptor = symbolizer.getFill()
+                .getTextureDescriptor();
         if (this.getFeature().getFeatureCollections().size() != 1) {
             logger.error("Feature "
                     + this.getFeature()
@@ -248,26 +251,31 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
         IEnvelope envelope = featureCollection.envelope();
         double minX = envelope.minX();
         double minY = envelope.minY();
-        if (texture != null) {
+        if (textureDescriptor != null) {
             // texture.setTextureDimension(2000, 2000);
             // logger.debug("feature rendering : id=" + this.feature.getId()
             // + " type=" + this.feature.getFeatureType()
-            // + " collections = " + this.feature.getFeatureCollections());
-            TextureTask<? extends Texture> textureTask;
+            // + " collection = " + featureCollection);
+            TextureTask<BasicTexture> textureTask;
             synchronized (TextureManager.getInstance()) {
                 textureTask = TextureManager.getInstance().getTextureTask(
-                        texture, featureCollection, this.getViewport());
-                if (textureTask == null) {
-                    logger.warn("textureTask returned a null value for feature "
-                            + featureCollection);
-                    return;
-                }
-                textureTask.addTaskListener(this);
-                textureTask.start();
+                        String.valueOf(this.feature.getId()),
+                        textureDescriptor, featureCollection,
+                        this.getViewport());
             }
-
-            // do not wait for texture computation completion.
-
+            if (textureTask == null) {
+                logger.warn("textureTask returned a null value for feature "
+                        + featureCollection);
+                return;
+            }
+            try {
+                TaskManager.waitForCompletion(textureTask);
+            } catch (InterruptedException e) {
+                logger.error("Texture Task error");
+                e.printStackTrace();
+            }
+            // logger.debug("textureTask " + textureTask.hashCode()
+            // + " terminated with glTexture " + textureTask.getTexture());
             if (textureTask.getState().isError()) {
                 logger.error("texture generation task "
                         + textureTask.getState() + " finished with an error");
@@ -275,25 +283,27 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
                 return;
             }
             // draw the texture image into resulting image
-            switch (texture.getTextureDrawingMode()) {
+            switch (textureDescriptor.getTextureDrawingMode()) {
             case VIEWPORTSPACE:
                 BasicParameterizer parameterizer = new BasicParameterizer(
                         envelope, false, true);
-                if (textureTask.getTextureWidth()
-                        * textureTask.getTextureHeight() != 0) {
-                    BasicTexture glTexture = new BasicTexture(
-                            textureTask.getTextureWidth(),
-                            textureTask.getTextureHeight());
-                    glTexture.setScaleX(textureTask.getTexture()
-                            .getScaleFactor().getX());
-                    glTexture.setScaleY(textureTask.getTexture()
-                            .getScaleFactor().getY());
-                    GLSimpleComplex primitive = this
-                            .generateWithTextureAndParameterizer(complexes,
-                                    glTexture, parameterizer, envelope);
-                    textureTask.addTaskListener(new TextureApplyer(primitive,
-                            textureTask));
+                if (textureTask.getTexture() != null) {
+                    this.generateWithTextureAndParameterizer(complexes,
+                            textureTask.getTexture(), parameterizer, envelope);
                 }
+                // if (textureTask.getTextureWidth()
+                // * textureTask.getTextureHeight() != 0) {
+                // BasicTexture glTexture = new BasicTexture(
+                // textureTask.getTextureWidth(),
+                // textureTask.getTextureHeight());
+                // glTexture.setScaleX(textureTask.getTexture().getScaleX());
+                // glTexture.setScaleY(textureTask.getTexture().getScaleX());
+                // GLSimpleComplex primitive = this
+                // .generateWithTextureAndParameterizer(complexes,
+                // textureTask.getTexture(), parameterizer, envelope);
+                // textureTask.addTaskListener(new TextureApplyer(primitive,
+                // textureTask));
+                // }
                 break;
             case SCREENSPACE:
                 // drawTextureScreenspaceCoordinates(this.feature,
@@ -302,7 +312,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
                 break;
             default:
                 logger.warn("Do not know how to draw texture type "
-                        + texture.getTextureDrawingMode());
+                        + textureDescriptor.getTextureDrawingMode());
             }
         } else {
 
@@ -363,6 +373,11 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
         GLSimpleComplex content = GLComplexFactory.createFilledPolygons(
                 this.getName() + "-texture-filled", this.polygons, null,
                 parameterizer, minX, minY);
+        // remove previous texture from texture manager
+        if (content.getTexture() != null) {
+            // FIXME
+            // TextureManager.getInstance().uncacheTexture(content.getTexture());
+        }
         content.setTexture(texture);
         complexes.add(content);
         return content;
@@ -421,23 +436,23 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
         return this.fullRepresentation;
     }
 
-    @Override
-    synchronized public void onStateChange(TextureTask<?> task,
-            TaskState oldState) {
-        if (task.getState().isFinished()) {
-            this.notify();
-            task.removeTaskListener(this);
-        }
-
-    }
+    // @Override
+    // synchronized public void onStateChange(TextureTask<?> task,
+    // TaskState oldState) {
+    // if (task.getState().isFinished()) {
+    // this.notify();
+    // task.removeTaskListener(this);
+    // }
+    //
+    // }
 
     private static class TextureApplyer implements
-            TaskListener<TextureTask<Texture>> {
+            TaskListener<TextureTask<BasicTexture>> {
 
         private final GLSimpleComplex primitive;
 
         public TextureApplyer(GLSimpleComplex primitive,
-                TextureTask<? extends Texture> textureTask) {
+                TextureTask<? extends BasicTexture> textureTask) {
             this.primitive = primitive;
             if (textureTask.getState().isFinished()) {
                 ((BasicTexture) this.primitive.getTexture())
@@ -448,7 +463,8 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable,
         }
 
         @Override
-        public void onStateChange(TextureTask<Texture> task, TaskState oldState) {
+        public void onStateChange(TextureTask<BasicTexture> task,
+                TaskState oldState) {
             if (task.getState().isFinished()) {
                 ((BasicTexture) this.primitive.getTexture())
                         .setTextureImage(task.getTexture().getTextureImage());

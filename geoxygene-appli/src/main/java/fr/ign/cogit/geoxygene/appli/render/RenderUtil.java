@@ -108,7 +108,7 @@ import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.TextSymbolizer;
 import fr.ign.cogit.geoxygene.style.gradient.GradientStroke;
-import fr.ign.cogit.geoxygene.style.texture.Texture;
+import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
 import fr.ign.cogit.geoxygene.style.thematic.DiagramSymbolizer;
 import fr.ign.cogit.geoxygene.style.thematic.ThematicClass;
 import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
@@ -1193,9 +1193,9 @@ public final class RenderUtil {
                         graphicFillPolygon(shape, graphic, viewport, graphics,
                                 opacity, rotation);
                     }
-                } else if (symbolizer.getFill().getTexture() != null) {
-                    texturePolygon(symbolizer.getFill().getTexture(), feature,
-                            shape, viewport, graphics, img, opacity);
+                } else if (symbolizer.getFill().getTextureDescriptor() != null) {
+                    texturePolygon(symbolizer.getFill().getTextureDescriptor(),
+                            feature, shape, viewport, graphics, img, opacity);
                 }
             }
         }
@@ -1301,9 +1301,9 @@ public final class RenderUtil {
      * @param img
      * @param opacity
      */
-    private static void texturePolygon(Texture texture, IFeature feature,
-            Shape shape, Viewport viewport, Graphics2D graphics,
-            BufferedImage img, double opacity) {
+    private static void texturePolygon(BasicTextureDescriptor texture,
+            IFeature feature, Shape shape, Viewport viewport,
+            Graphics2D graphics, BufferedImage img, double opacity) {
         // Example of copying the Graphics object
         // AffineTransform initialTransform = graphics.getTransform();
         // if (texture.getTextureWidth() == 0 || texture.getTextureHeight() ==
@@ -1311,30 +1311,29 @@ public final class RenderUtil {
         // texture.setTextureDimension(img.getWidth(), img.getHeight());
         // }
         BufferedImage imgTexture = TextureManager.getInstance()
-                .getTextureImage(texture, feature.getFeatureCollection(0),
-                        viewport);
+                .getTextureImage(String.valueOf(feature.getId()), texture,
+                        feature.getFeatureCollection(0), viewport);
 
         // draw the texture image into resulting image
         if (imgTexture != null) {
             boolean xRepeat = texture.isRepeatedX();
             boolean yRepeat = texture.isRepeatedY();
+            IFeatureCollection<IFeature> featureCollection = feature
+                    .getFeatureCollection(0);
+            // FIXME: what do we do if the feature belongs to multiple
+            // feature collections ??? (how to know which one is
+            // currently drawn??)
+            IEnvelope envelope = featureCollection.getEnvelope();
+            double pixelScaleX = envelope.width() / imgTexture.getWidth()
+                    * viewport.getScale();
+            double pixelScaleY = envelope.length() / imgTexture.getHeight()
+                    * viewport.getScale();
 
             switch (texture.getTextureDrawingMode()) {
             case VIEWPORTSPACE: {
                 try {
-                    double pixelscaleX = texture.getDimension().getWidth()
-                            / texture.getTextureWidth() * viewport.getScale();
-                    double pixelScaleY = texture.getDimension().getHeight()
-                            / texture.getTextureHeight() * viewport.getScale();
-                    IFeatureCollection<IFeature> featureCollection = feature
-                            .getFeatureCollection(0);
-                    IEnvelope envelope = featureCollection.getEnvelope();
                     Point2D upper = new Point2D.Double();
                     Point2D lower = new Point2D.Double();
-                    // FIXME: what do we do if the feature belongs to multiple
-                    // feature
-                    // collections ??? (how to know which one is currently
-                    // drawn??)
                     Point2D.Double displacedUpper = new Point2D.Double(envelope
                             .getUpperCorner().getX()
                             + texture.getDisplacement().getX(), envelope
@@ -1353,7 +1352,7 @@ public final class RenderUtil {
                             AlphaComposite.SRC_OVER, (float) opacity));
                     AffineTransform transform = new AffineTransform();
                     transform.translate(lower.getX(), upper.getY());
-                    transform.scale(pixelscaleX
+                    transform.scale(pixelScaleX
                             * texture.getScaleFactor().getX(), pixelScaleY
                             * texture.getScaleFactor().getY());
                     transform.rotate(texture.getRotation().getAngleInRadians());
@@ -1369,11 +1368,9 @@ public final class RenderUtil {
                 logger.warn("Screenspace textures have not been retested after changes. You're lucky if it works...");
                 double pixelDisplacementX = texture.getDisplacement().getX();
                 double pixelDisplacementY = texture.getDisplacement().getY();
-                double pixelscaleX = texture.getDimension().getWidth();
-                double pixelScaleY = texture.getDimension().getHeight();
                 AffineTransform transform = new AffineTransform();
                 transform.translate(pixelDisplacementX, pixelDisplacementY);
-                transform.scale(pixelscaleX, pixelScaleY);
+                transform.scale(pixelScaleX, pixelScaleY);
                 drawTexture(feature, shape, viewport, graphics, opacity,
                         imgTexture, transform, xRepeat, yRepeat);
             }

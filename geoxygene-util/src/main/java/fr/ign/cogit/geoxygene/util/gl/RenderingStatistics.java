@@ -48,6 +48,7 @@ public class RenderingStatistics {
     private static int nbGLComplex = 0;
     private static int meshCount = 0;
     private static int vertexCount = 0;
+    private static int triangleCount = 0;
 
     /**
      * private constructor
@@ -64,6 +65,7 @@ public class RenderingStatistics {
             nbGLComplex = 0;
             meshCount = 0;
             vertexCount = 0;
+            triangleCount = 0;
         }
     }
 
@@ -90,6 +92,9 @@ public class RenderingStatistics {
             nbGLComplex++;
             meshCount += primitive.getMeshes().size();
             vertexCount += primitive.getVertices().size();
+            for (GLMesh mesh : primitive.getMeshes()) {
+                triangleCount += (mesh.getLastIndex() - mesh.getFirstIndex()) / 3;
+            }
         }
     }
 
@@ -103,6 +108,7 @@ public class RenderingStatistics {
             logger.info("nb gl complex = " + nbGLComplex);
             logger.info("nb meshes = " + meshCount);
             logger.info("nb vertices = " + vertexCount);
+            logger.info("nb triangles (approx) = " + triangleCount);
         }
     }
 

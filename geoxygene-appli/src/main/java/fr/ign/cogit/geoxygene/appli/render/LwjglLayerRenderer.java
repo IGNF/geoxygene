@@ -170,14 +170,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         return new Runnable() {
             @Override
             public void run() {
-                // try {
-                // // System.out.println("isCurrent = " + Display.isCurrent() +
-                // " " + Display.isActive() + " " + Display.isCreated() + " "
-                // } catch (LWJGLException e1) {
-                // Log.warn("GL display is not ready. Rendering is aborted. " +
-                // e1.getMessage());
-                // return;
-                // }
                 LayerViewGLPanel vp = LwjglLayerRenderer.this
                         .getLayerViewPanel();
                 try {

@@ -135,14 +135,22 @@ public class GLTexture {
      * @return the texture image width (in pixels)
      */
     public final int getTextureWidth() {
-        return this.getTextureImage().getWidth();
+        BufferedImage img = this.getTextureImage();
+        if (img == null) {
+            return 0;
+        }
+        return img.getWidth();
     }
 
     /**
      * @return the texture image height (in pixels)
      */
     public final int getTextureHeight() {
-        return this.getTextureImage().getHeight();
+        BufferedImage img = this.getTextureImage();
+        if (img == null) {
+            return 0;
+        }
+        return img.getHeight();
     }
 
     /**

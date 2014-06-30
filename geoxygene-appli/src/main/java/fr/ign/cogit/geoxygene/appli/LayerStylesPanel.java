@@ -65,7 +65,7 @@ import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
 import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTexture;
+import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
 import fr.ign.cogit.geoxygene.util.ColorUtil;
 
 /**
@@ -383,11 +383,11 @@ public class LayerStylesPanel extends JPanel {
           rowHeight);
     }
     if (symbolizer.getFill() != null) {
-      if (symbolizer.getFill().getTexture() != null) {
-        if (PerlinNoiseTexture.class.isAssignableFrom(symbolizer.getFill()
-            .getTexture().getClass())) {
-          PerlinNoiseTexture texture = (PerlinNoiseTexture) symbolizer
-              .getFill().getTexture();
+      if (symbolizer.getFill().getTextureDescriptor() != null) {
+        if (PerlinNoiseTextureDescriptor.class.isAssignableFrom(symbolizer.getFill()
+            .getTextureDescriptor().getClass())) {
+          PerlinNoiseTextureDescriptor texture = (PerlinNoiseTextureDescriptor) symbolizer
+              .getFill().getTextureDescriptor();
           TextureFilter filter = new TextureFilter();
           filter.setColormap(new LinearColormap(texture.getColor1().getRGB(),
               texture.getColor2().getRGB()));

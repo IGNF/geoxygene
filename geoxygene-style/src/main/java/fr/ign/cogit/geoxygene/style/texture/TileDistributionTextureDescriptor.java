@@ -26,6 +26,9 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.style.texture;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -36,43 +39,75 @@ import javax.xml.bind.annotation.XmlElement;
  * @author JeT
  * 
  */
-@XmlAccessorType(XmlAccessType.NONE)
-public class BasicTexture extends Texture {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
 
-    @XmlElement(name = "url")
-    private String url = null;
+    // coast geometry segments greater than this value won't be considered as
+    // coast lines
+    @XmlElement(name = "MaxCoastlineLength")
+    private double maxCoastlineLength = Double.POSITIVE_INFINITY;
+
+    @XmlElement(name = "Tile")
+    private final List<ProbabilistTileDescriptor> tiles = new ArrayList<ProbabilistTileDescriptor>();
+
+    @XmlElement(name = "Resolution")
+    private double textureResolution = 600; // resolution in DPI
+
+    @XmlElement(name = "Blending")
+    private final TileBlendingType blending = TileBlendingType.NONE;
 
     /**
      * default constructor
      */
-    public BasicTexture() {
+    public TileDistributionTextureDescriptor() {
         super(TextureDrawingMode.VIEWPORTSPACE);
     }
 
     /**
-     * constructor
-     * 
-     * @param url
-     *            url to the texture image location
+     * @return the maxCoastlineLength
      */
-    public BasicTexture(String url) {
-        this();
-        this.url = url;
+    public double getMaxCoastlineLength() {
+        return this.maxCoastlineLength;
     }
 
     /**
-     * @return the url
+     * @param maxCoastlineLength
+     *            the maxCoastlineLength to set
      */
-    public String getUrl() {
-        return this.url;
+    public void setMaxCoastlineLength(double maxCoastlineLength) {
+        this.maxCoastlineLength = maxCoastlineLength;
     }
 
     /**
-     * @param url
-     *            the url to set
+     * @return the tiles
      */
-    public void setUrl(String url) {
-        this.url = url;
+    public List<ProbabilistTileDescriptor> getTiles() {
+        return this.tiles;
     }
 
+    /**
+     * @return the textureResolution
+     */
+    public double getTextureResolution() {
+        return this.textureResolution;
+    }
+
+    /**
+     * @param textureResolution
+     *            the textureResolution to set
+     */
+    public void setTextureResolution(double textureResolution) {
+        this.textureResolution = textureResolution;
+    }
+
+    /**
+     * @return the blending
+     */
+    public TileBlendingType getBlending() {
+        return this.blending;
+    }
+
+    public enum TileBlendingType {
+        NONE, ALPHA, GRAPHCUT
+    };
 }

@@ -65,10 +65,10 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldFrontierPixelRenderer;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
-import fr.ign.cogit.geoxygene.style.texture.DimensionDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.ProbabilistTileDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture;
-import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture.TileBlendingType;
+import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor.TileBlendingType;
+import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
 import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
@@ -81,7 +81,7 @@ import fr.ign.cogit.geoxygene.util.graphcut.GraphCut;
  * 
  */
 public class TileDistributionTextureTask extends
-        AbstractTextureTask<TileDistributionTexture> {
+        AbstractTextureTask<BasicTexture> {
 
     private static final Logger logger = Logger
             .getLogger(TileDistributionTextureTask.class.getName()); // logger
@@ -99,7 +99,7 @@ public class TileDistributionTextureTask extends
     private int textureWidth = -1; // final textured image width & height
     private int textureHeight = -1; // dimension are computed using resolution
                                     // and map scale
-    private double printResolution = 600; // expressed in DPI
+    private double printResolution = 72; // expressed in DPI
     private double mapScale = 1 / 100000.; // map scale
     private double imageToPolygonFactorX;
     private double imageToPolygonFactorY;
@@ -118,19 +118,32 @@ public class TileDistributionTextureTask extends
     private static final double CM_PER_INCH = 2.540005;
     private static final double M_PER_INCH = CM_PER_INCH / 100.;
 
+    private BasicTexture basicTexture = null;
+
+    private TileDistributionTextureDescriptor textureDescriptor = null;
+
     /**
-     * @param texture
-     * @param featureCollection2
-     * @param viewport2
+     * @param textureDescriptor
+     * @param featureCollection
+     * @param viewport
      */
-    public TileDistributionTextureTask(TileDistributionTexture texture,
-            IFeatureCollection<IFeature> featureCollection2, Viewport viewport2) {
-        super(texture);
-        this.setFeatureCollection(featureCollection2);
-        this.setViewport(viewport2);
-        this.setPrintResolution(texture.getTextureResolution());
+    public TileDistributionTextureTask(String name,
+            TileDistributionTextureDescriptor textureDescriptor,
+            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
+        super("TileDistribution" + name);
+        this.textureDescriptor = textureDescriptor;
+        this.basicTexture = new BasicTexture();
+        this.setFeatureCollection(featureCollection);
+        this.setViewport(viewport);
         this.computeEnvelope();
 
+    }
+
+    /**
+     * @return the textureDescriptor
+     */
+    public TileDistributionTextureDescriptor getTextureDescriptor() {
+        return this.textureDescriptor;
     }
 
     /**
@@ -139,7 +152,8 @@ public class TileDistributionTextureTask extends
      * @throws IOException
      */
     private final void initTiles() throws IOException {
-        for (ProbabilistTileDescriptor tileDesc : this.getTexture().getTiles()) {
+        for (ProbabilistTileDescriptor tileDesc : this.getTextureDescriptor()
+                .getTiles()) {
             Tile tile = DefaultTile.read(new URL(tileDesc.getUrl()));
             DistanceTileProbability p = new DistanceTileProbability(
                     this.texImage, tileDesc.getMinDistance(),
@@ -152,7 +166,8 @@ public class TileDistributionTextureTask extends
 
     synchronized public void updateContent()
             throws NoninvertibleTransformException {
-        this.setPrintResolution(this.getTexture().getTextureResolution());
+        this.setPrintResolution(this.getTextureDescriptor()
+                .getTextureResolution());
         this.computeEnvelope();
 
         this.texImage = new GradientTextureImage(this.getTextureWidth(),
@@ -348,10 +363,15 @@ public class TileDistributionTextureTask extends
     @Override
     public int getTextureWidth() {
         if (this.textureWidth <= 0) {
+            // logger.debug(this.getName() + " texture width: envelope width = "
+            // + this.getEnvelope().width() + " * scale = "
+            // + this.getMapScale() + " resolution = "
+            // + this.getPrintResolution() + " /  MperINCH  = "
+            // + M_PER_INCH);
             this.textureWidth = (int) (this.getEnvelope().width()
                     * this.getMapScale() * this.getPrintResolution() / M_PER_INCH);
             if (this.textureWidth <= 0) {
-                logger.error("texture width is invalid: envelope width = "
+                logger.debug("texture width is invalid: envelope width = "
                         + this.getEnvelope().width() + " * scale = "
                         + this.getMapScale() + " resolution = "
                         + this.getPrintResolution() + " /  MperINCH  = "
@@ -370,6 +390,11 @@ public class TileDistributionTextureTask extends
     @Override
     public int getTextureHeight() {
         if (this.textureHeight <= 0) {
+            logger.debug(this.getName() + " texture height: envelope height = "
+                    + this.getEnvelope().height() + " * scale = "
+                    + this.getMapScale() + " resolution = "
+                    + this.getPrintResolution() + " /  MperINCH  = "
+                    + M_PER_INCH);
             this.textureHeight = (int) (this.getEnvelope().length()
                     * this.getMapScale() * this.getPrintResolution() / M_PER_INCH);
             if (this.textureHeight <= 0) {
@@ -443,13 +468,10 @@ public class TileDistributionTextureTask extends
                 return;
             }
             this.monitorMemory("after generate gradient texture");
-            this.getTexture().setxRepeat(false);
-            this.getTexture().setyRepeat(false);
-            this.getTexture().setDimension(
-                    new DimensionDescriptor(this.envelope.width(),
-                            this.envelope.length()));
-            this.getTexture().setTextureWidth(this.getTextureWidth());
-            this.getTexture().setTextureWidth(this.getTextureHeight());
+            this.getTextureDescriptor().setxRepeat(false);
+            this.getTextureDescriptor().setyRepeat(false);
+            this.basicTexture.createTextureImage(this.getTextureWidth(),
+                    this.getTextureHeight());
 
             this.monitorMemory("after setting dimension");
             TextureImageTileChooser tileChooser = new TextureImageTileChooser();
@@ -797,12 +819,13 @@ public class TileDistributionTextureTask extends
                     linearDistance + segmentLength);
             // special case not to set distance to zero in some cases (for outer
             // sea limits which are not real coast lines
-            if (segmentLength > this.getTexture().getMaxCoastlineLength()) {
+            double maxCoastlineLength = this.getTextureDescriptor()
+                    .getMaxCoastlineLength();
+            if (segmentLength > maxCoastlineLength) {
                 logger.debug("segment " + segmentLength + " long removed (>"
-                        + this.getTexture().getMaxCoastlineLength() + ")");
+                        + maxCoastlineLength + ")");
             }
-            pixelRenderer.setDistanceToZero(segmentLength < this.getTexture()
-                    .getMaxCoastlineLength());
+            pixelRenderer.setDistanceToZero(segmentLength < maxCoastlineLength);
             if (!(x1 == x2 && y1 == y2)) {
                 this.texImage.drawLine(x1, y1, x2, y2, pixelRenderer);
             }
@@ -888,7 +911,7 @@ public class TileDistributionTextureTask extends
         BufferedImage bi = new BufferedImage(this.getTextureWidth(),
                 this.getTextureHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         GraphCut graphCut = null;
-        if (this.getTexture().getBlending() == TileBlendingType.GRAPHCUT) {
+        if (this.getTextureDescriptor().getBlending() == TileBlendingType.GRAPHCUT) {
             graphCut = new GraphCut(bi);
         }
 
@@ -931,7 +954,7 @@ public class TileDistributionTextureTask extends
                 AffineTransform transform = image.tileTransform((int) xTexture,
                         (int) yTexture, tileImage.getWidth(),
                         tileImage.getHeight());
-                if (this.getTexture().getBlending() == TileBlendingType.GRAPHCUT) {
+                if (this.getTextureDescriptor().getBlending() == TileBlendingType.GRAPHCUT) {
                     graphCut.pasteTile(tile, transform);
                 } else {
                     g2.drawImage(tileImage, transform, null);
@@ -972,4 +995,10 @@ public class TileDistributionTextureTask extends
             this.previousUsedMemory = usedMemory;
         }
     }
+
+    @Override
+    public BasicTexture getTexture() {
+        return this.basicTexture;
+    }
+
 }

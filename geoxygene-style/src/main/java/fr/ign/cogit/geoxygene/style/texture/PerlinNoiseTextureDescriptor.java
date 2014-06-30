@@ -36,16 +36,16 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorJaxbAdaptor;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class PerlinNoiseTexture extends Texture {
+public class PerlinNoiseTextureDescriptor extends BasicTextureDescriptor {
 
     @XmlElement(name = "Resolution")
     private double textureResolution = 600; // texture resolution in DPI
 
-    public PerlinNoiseTexture() {
-        super(TextureDrawingMode.VIEWPORTSPACE);
+    public PerlinNoiseTextureDescriptor() {
+        super();
     }
 
-    public PerlinNoiseTexture(float scale, float amount, float angle,
+    public PerlinNoiseTextureDescriptor(float scale, float amount, float angle,
             float stretch, Color color1, Color color2) {
         this();
         this.scale = scale;
@@ -178,7 +178,7 @@ public class PerlinNoiseTexture extends Texture {
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        PerlinNoiseTexture other = (PerlinNoiseTexture) obj;
+        PerlinNoiseTextureDescriptor other = (PerlinNoiseTextureDescriptor) obj;
         if (Float.floatToIntBits(this.amount) != Float
                 .floatToIntBits(other.amount)) {
             return false;

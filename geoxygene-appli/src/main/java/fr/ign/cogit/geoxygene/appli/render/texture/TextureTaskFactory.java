@@ -30,10 +30,11 @@ package fr.ign.cogit.geoxygene.appli.render.texture;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.style.texture.BasicTexture;
-import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTexture;
-import fr.ign.cogit.geoxygene.style.texture.Texture;
-import fr.ign.cogit.geoxygene.style.texture.TileDistributionTexture;
+import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
+import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 
 /**
  * @author JeT
@@ -48,28 +49,50 @@ public class TextureTaskFactory {
         // factory class
     }
 
-    public static TextureTask<? extends Texture> createTextureTask(
-            Texture texture, IFeatureCollection<IFeature> featureCollection,
-            Viewport viewport) {
-        if (texture instanceof PerlinNoiseTexture) {
-            PerlinNoiseTextureTask task = new PerlinNoiseTextureTask(
-                    (PerlinNoiseTexture) texture, featureCollection, viewport);
+    public static TextureTask<BasicTexture> createTextureTask(String name,
+            TextureDescriptor textureDescriptor,
+            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
+        if (textureDescriptor instanceof TileDistributionTextureDescriptor) {
+            return createTileDistributionTextureTask(name,
+                    (TileDistributionTextureDescriptor) textureDescriptor,
+                    featureCollection, viewport);
 
-            return task;
         }
-        if (texture instanceof BasicTexture) {
-            BasicTextureTask basicTextureTask = new BasicTextureTask(
-                    (BasicTexture) texture);
-            return basicTextureTask;
+        if (textureDescriptor instanceof PerlinNoiseTextureDescriptor) {
+            return createPerlinNoiseTextureTask(name,
+                    (PerlinNoiseTextureDescriptor) textureDescriptor,
+                    featureCollection, viewport);
+
         }
-        if (texture instanceof TileDistributionTexture) {
-            TileDistributionTextureTask task = new TileDistributionTextureTask(
-                    (TileDistributionTexture) texture, featureCollection,
-                    viewport);
-            return task;
+        if (textureDescriptor instanceof BasicTextureDescriptor) {
+            return createBasicTextureTask(name,
+                    (BasicTextureDescriptor) textureDescriptor,
+                    featureCollection, viewport);
+
         }
-        throw new IllegalStateException("Unknown task creation for texture "
-                + texture.getClass().getSimpleName());
+        throw new UnsupportedOperationException("texture descriptor type "
+                + textureDescriptor.getClass().getSimpleName()
+                + " is not supported");
+    }
+
+    public static BasicTextureTask createBasicTextureTask(String name,
+            BasicTextureDescriptor textureDescriptor,
+            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
+        return new BasicTextureTask(name, textureDescriptor);
+    }
+
+    public static PerlinNoiseTextureTask createPerlinNoiseTextureTask(
+            String name, PerlinNoiseTextureDescriptor textureDescriptor,
+            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
+        return new PerlinNoiseTextureTask(name, textureDescriptor,
+                featureCollection, viewport);
+    }
+
+    public static TileDistributionTextureTask createTileDistributionTextureTask(
+            String name, TileDistributionTextureDescriptor textureDescriptor,
+            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
+        return new TileDistributionTextureTask(name, textureDescriptor,
+                featureCollection, viewport);
     }
 
 }
