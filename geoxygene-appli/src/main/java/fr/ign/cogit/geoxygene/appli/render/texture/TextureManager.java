@@ -191,7 +191,9 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
     public void invalidateTextures(Layer layer) {
         for (Style style : layer.getStyles()) {
             Symbolizer symbolizer = style.getSymbolizer();
-            symbolizer.reset();
+            if (symbolizer != null) {
+                symbolizer.reset();
+            }
         }
     }
 }
