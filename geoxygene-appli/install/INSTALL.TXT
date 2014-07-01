@@ -3,6 +3,7 @@ GeOxygene, version 1.6.
 Basic installation instructions:
 -------------------------------
 
+
 In order to launch GeOxygene, please follow basic instructions detailled above : 
 
 1. You MUST have a Java SDK installed
