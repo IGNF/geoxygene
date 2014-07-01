@@ -126,7 +126,7 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>evidence4j</artifactId>
-			<version>1.7-SNAPSHOT</version>
+			<version>1.6</version>
 		</dependency>
 
 		<dependency>
@@ -163,12 +163,12 @@
 			<version>8.4-701.jdbc4</version>
 		</dependency>
 
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.geoserver.extension</groupId>
 			<artifactId>wps-core</artifactId>
 			<version>${geoserver.extension.version}</version>
 			<scope>test</scope>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>org.jgrapht</groupId>
 			<artifactId>jgrapht-core</artifactId>
