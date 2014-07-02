@@ -10,10 +10,19 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.geompool.Coloure
 import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 
 public class GeometryPool {
 
@@ -123,4 +132,42 @@ public class GeometryPool {
       style.getFeatureTypeStyles().add(colFeat.computeFeatureStyle());
     }
   }
+  
+
+  /**
+   * Add a given vector to the geometry pool with the given color, at the given
+   * position.
+   * @param feat
+   * @param color
+   */
+  @SuppressWarnings("unchecked")
+  public void addVectorToGeometryPool(Vector2D vector, IDirectPosition startPt,
+      Color color, int widthPixels) {
+    IMultiCurve<ILineString> geom = new GM_MultiCurve<ILineString>();
+    geom.add(vector.toGeom(startPt));
+    // draw the arrow of the vector
+    IDirectPosition endPt = vector.translate(startPt);
+    double direction1 = vector.direction().getValeur() + 0.75 * Math.PI;
+    if (direction1 > 2 * Math.PI)
+      direction1 -= 2 * Math.PI;
+    IDirectPositionList arrowList = new DirectPositionList();
+    Vector2D vect1 = new Vector2D(new Angle(direction1), vector.norme() / 5);
+    arrowList.add(vect1.translate(endPt));
+    arrowList.add(endPt);
+    double direction2 = vector.direction().getValeur() - 0.75 * Math.PI;
+    if (direction2 < 0)
+      direction2 += 2 * Math.PI;
+    Vector2D vect2 = new Vector2D(new Angle(direction2), vector.norme() / 5);
+    arrowList.add(vect2.translate(endPt));
+    geom.add(new GM_LineString(arrowList));
+    ColouredFeature colFeat = new ColouredFeature(geom, color, widthPixels);
+    ((IPopulation<IFeature>) dataset.getPopulation(CartAGenDataSet.GEOM_POOL))
+        .add(colFeat);
+    Layer poolLayer = sld.getLayer(CartAGenDataSet.GEOM_POOL);
+    if (poolLayer == null)
+      return;
+    Style style = poolLayer.getStyles().get(0);
+    style.getFeatureTypeStyles().add(colFeat.computeFeatureStyle());
+  }
+
 }
