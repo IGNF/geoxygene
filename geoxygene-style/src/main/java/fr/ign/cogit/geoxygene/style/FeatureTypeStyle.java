@@ -52,6 +52,14 @@ public class FeatureTypeStyle {
     public void setRules(List<Rule> rules) {
         this.rules = rules;
     }
+    
+    /**
+     * Ajoute une rule à la liste des rules.
+     * @param rule à ajouter
+     */
+    public void addRule(Rule rule) {
+    	this.rules.add(rule);
+    }
 
     /**
      * Renvoie la valeur de l'attribut name.
