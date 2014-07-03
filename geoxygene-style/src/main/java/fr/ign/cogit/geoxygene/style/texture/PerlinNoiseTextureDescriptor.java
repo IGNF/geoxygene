@@ -147,7 +147,7 @@ public class PerlinNoiseTextureDescriptor extends BasicTextureDescriptor {
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = 1;
+        int result = super.hashCode();
         result = prime * result + Float.floatToIntBits(this.amount);
         result = prime * result + Float.floatToIntBits(this.angle);
         result = prime * result
@@ -172,7 +172,7 @@ public class PerlinNoiseTextureDescriptor extends BasicTextureDescriptor {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (!super.equals(obj)) {
             return false;
         }
         if (this.getClass() != obj.getClass()) {
@@ -214,6 +214,21 @@ public class PerlinNoiseTextureDescriptor extends BasicTextureDescriptor {
             return false;
         }
         return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "PerlinNoiseTextureDescriptor [textureResolution="
+                + this.textureResolution + ", scale=" + this.scale
+                + ", amount=" + this.amount + ", angle=" + this.angle
+                + ", stretch=" + this.stretch + ", color1=" + this.color1
+                + ", color2=" + this.color2 + ", toString()="
+                + super.toString() + "]";
     }
 
 }

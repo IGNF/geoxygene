@@ -35,6 +35,7 @@ import fr.ign.cogit.geoxygene.util.gl.Texture;
  */
 public abstract class AbstractTextureTask<TextureType extends Texture> extends
         AbstractTask implements TextureTask<TextureType> {
+    private String id = "no texture task ID";
 
     /**
      * constructor
@@ -44,6 +45,33 @@ public abstract class AbstractTextureTask<TextureType extends Texture> extends
      */
     public AbstractTextureTask(String name) {
         super(name);
+    }
+
+    /**
+     * @return the id
+     */
+    @Override
+    public final String getID() {
+        return this.id;
+    }
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    @Override
+    public void setID(String id) {
+        this.id = id;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "AbstractTextureTask [id=" + this.id + "]";
     }
 
 }

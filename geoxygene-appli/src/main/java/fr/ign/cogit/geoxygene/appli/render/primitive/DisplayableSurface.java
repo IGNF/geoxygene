@@ -50,7 +50,7 @@ import fr.ign.cogit.geoxygene.appli.task.TaskManager;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
@@ -237,7 +237,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable {
 
     synchronized private void generateWithPolygonSymbolizer(
             PolygonSymbolizer symbolizer) {
-        BasicTextureDescriptor textureDescriptor = symbolizer.getFill()
+        TextureDescriptor textureDescriptor = symbolizer.getFill()
                 .getTextureDescriptor();
         if (this.getFeature().getFeatureCollections().size() != 1) {
             logger.error("Feature "
@@ -280,6 +280,7 @@ public class DisplayableSurface extends AbstractTask implements GLDisplayable {
                 logger.error("texture generation task "
                         + textureTask.getState() + " finished with an error");
                 logger.error(textureTask.getError());
+                textureTask.getError().printStackTrace();
                 return;
             }
             // draw the texture image into resulting image

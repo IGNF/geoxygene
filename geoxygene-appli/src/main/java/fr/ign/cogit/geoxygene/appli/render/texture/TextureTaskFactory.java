@@ -27,10 +27,13 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
+import java.io.File;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.GradientTextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
@@ -70,6 +73,12 @@ public class TextureTaskFactory {
                     featureCollection, viewport);
 
         }
+        if (textureDescriptor instanceof GradientTextureDescriptor) {
+            return createGradientTextureTask(name,
+                    (GradientTextureDescriptor) textureDescriptor,
+                    featureCollection, viewport);
+
+        }
         throw new UnsupportedOperationException("texture descriptor type "
                 + textureDescriptor.getClass().getSimpleName()
                 + " is not supported");
@@ -93,6 +102,18 @@ public class TextureTaskFactory {
             IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
         return new TileDistributionTextureTask(name, textureDescriptor,
                 featureCollection, viewport);
+    }
+
+    public static GradientTextureTask createGradientTextureTask(String name,
+            GradientTextureDescriptor textureDescriptor,
+            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
+        return new GradientTextureTask(name, textureDescriptor,
+                featureCollection);
+    }
+
+    public static TextureTask<BasicTexture> createBasicTextureTask(String name,
+            File file) {
+        return new BasicTextureTask(name, file);
     }
 
 }

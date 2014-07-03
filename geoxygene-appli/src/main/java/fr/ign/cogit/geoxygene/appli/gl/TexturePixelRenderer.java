@@ -1,4 +1,5 @@
-package fr.ign.cogit.geoxygene.util.gl;
+package fr.ign.cogit.geoxygene.appli.gl;
+
 
 
 /**

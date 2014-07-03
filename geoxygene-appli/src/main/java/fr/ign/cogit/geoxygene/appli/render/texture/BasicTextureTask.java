@@ -27,9 +27,12 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
+import java.io.File;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
+
+import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
@@ -45,6 +48,9 @@ public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
     private BasicTextureDescriptor textureDescriptor = null;
     private BasicTexture basicTexture = null;
 
+    private static final Logger logger = Logger
+            .getLogger(BasicTextureTask.class.getName()); // logger
+
     /**
      * @param texture
      */
@@ -53,6 +59,15 @@ public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
         super("Basic" + name);
         this.textureDescriptor = textureDescriptor;
         this.basicTexture = new BasicTexture();
+    }
+
+    /**
+     * @param texture
+     */
+    public BasicTextureTask(String name, File file) {
+        super("Basic" + name);
+        this.textureDescriptor = null;
+        this.basicTexture = new BasicTexture(file.getAbsolutePath());
     }
 
     /*
@@ -96,8 +111,17 @@ public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
         this.setState(TaskState.INITIALIZING);
         this.setState(TaskState.RUNNING);
         try {
-
-            URL inputURL = new URL(this.textureDescriptor.getUrl());
+            URL inputURL = null;
+            if (this.textureDescriptor != null) {
+                inputURL = new URL(this.textureDescriptor.getUrl());
+            } else if (this.basicTexture.getTextureFilename() != null) {
+                inputURL = new File(this.basicTexture.getTextureFilename())
+                        .toURI().toURL();
+            } else {
+                logger.error("No valid image description for basic texture: "
+                        + this.toString());
+            }
+            logger.debug("Reading file " + inputURL);
             this.getTexture().setTextureImage(ImageIO.read(inputURL));
             this.setState(TaskState.FINISHED);
         } catch (Exception e) {
@@ -120,6 +144,18 @@ public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
     @Override
     public BasicTexture getTexture() {
         return this.basicTexture;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "BasicTextureTask [textureDescriptor=" + this.textureDescriptor
+                + ", basicTexture=" + this.basicTexture + ", toString()="
+                + super.toString() + "]";
     }
 
 }

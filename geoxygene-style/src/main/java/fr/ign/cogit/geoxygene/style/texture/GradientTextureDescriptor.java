@@ -24,7 +24,6 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  *******************************************************************************/
-
 package fr.ign.cogit.geoxygene.style.texture;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -32,89 +31,89 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
+ * Simple texture containing a single image
+ * 
  * @author JeT
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class ProbabilistTileDescriptor extends TileDescriptor {
+public class GradientTextureDescriptor extends TextureDescriptor {
 
-    @XmlElement(name = "MinDistance")
-    private double minDistance = 0;
+    @XmlElement(name = "Resolution")
+    private double textureResolution = 72; // texture resolution in DPI
 
-    @XmlElement(name = "MaxDistance")
-    private double maxDistance = Double.POSITIVE_INFINITY;
+    @XmlElement(name = "MapScale")
+    private double mapScale = 100000; // map scale value 1:MapScale
 
-    @XmlElement(name = "InRangeProbability")
-    private double inRangeProbability = 1;
-
-    @XmlElement(name = "OutOfRangeProbability")
-    private double outRangeProbability = 0;
+    // coast geometry segments greater than this value won't be considered as
+    // coast lines
+    @XmlElement(name = "MaxCoastlineLength")
+    private double maxCoastlineLength = Double.POSITIVE_INFINITY;
 
     /**
-     * Default constructor
+     * default constructor
      */
-    public ProbabilistTileDescriptor() {
-        // nothing to initialize
+    public GradientTextureDescriptor() {
+        super(TextureDrawingMode.VIEWPORTSPACE);
     }
 
     /**
-     * @return the minDistance
+     * constructor
+     * 
+     * @param url
+     *            url to the texture image location
      */
-    public double getMinDistance() {
-        return this.minDistance;
+    public GradientTextureDescriptor(String url) {
+        this();
+    }
+
+    public GradientTextureDescriptor(TextureDrawingMode drawingMode) {
+        super(drawingMode);
     }
 
     /**
-     * @param minDistance
-     *            the minDistance to set
+     * @return the textureResolution
      */
-    public void setMinDistance(double minDistance) {
-        this.minDistance = minDistance;
+    public double getTextureResolution() {
+        return this.textureResolution;
     }
 
     /**
-     * @return the maxDistance
+     * @param textureResolution
+     *            the textureResolution to set
      */
-    public double getMaxDistance() {
-        return this.maxDistance;
+    public void setTextureResolution(double textureResolution) {
+        this.textureResolution = textureResolution;
     }
 
     /**
-     * @param maxDistance
-     *            the maxDistance to set
+     * @return the maxCoastlineLength
      */
-    public void setMaxDistance(double maxDistance) {
-        this.maxDistance = maxDistance;
+    public double getMaxCoastlineLength() {
+        return this.maxCoastlineLength;
     }
 
     /**
-     * @return the inRangeProbability
+     * @return the mapScale
      */
-    public double getInRangeProbability() {
-        return this.inRangeProbability;
+    public double getMapScale() {
+        return this.mapScale;
     }
 
     /**
-     * @param inRangeProbability
-     *            the inRangeProbability to set
+     * @param mapScale
+     *            the mapScale to set
      */
-    public void setInRangeProbability(double p) {
-        this.inRangeProbability = p;
+    public void setMapScale(double mapScale) {
+        this.mapScale = mapScale;
     }
 
     /**
-     * @return the outRangeProbability
+     * @param maxCoastlineLength
+     *            the maxCoastlineLength to set
      */
-    public double getOutOfRangeProbability() {
-        return this.outRangeProbability;
-    }
-
-    /**
-     * @param outRangeProbability
-     *            the outRangeProbability to set
-     */
-    public void setOutOfRangeProbability(double p) {
-        this.outRangeProbability = p;
+    public void setMaxCoastlineLength(double maxCoastlineLength) {
+        this.maxCoastlineLength = maxCoastlineLength;
     }
 
     /*
@@ -127,13 +126,11 @@ public class ProbabilistTileDescriptor extends TileDescriptor {
         final int prime = 31;
         int result = super.hashCode();
         long temp;
-        temp = Double.doubleToLongBits(this.inRangeProbability);
+        temp = Double.doubleToLongBits(this.mapScale);
         result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.maxDistance);
+        temp = Double.doubleToLongBits(this.maxCoastlineLength);
         result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.minDistance);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.outRangeProbability);
+        temp = Double.doubleToLongBits(this.textureResolution);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
@@ -154,24 +151,32 @@ public class ProbabilistTileDescriptor extends TileDescriptor {
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        ProbabilistTileDescriptor other = (ProbabilistTileDescriptor) obj;
-        if (Double.doubleToLongBits(this.inRangeProbability) != Double
-                .doubleToLongBits(other.inRangeProbability)) {
+        GradientTextureDescriptor other = (GradientTextureDescriptor) obj;
+        if (Double.doubleToLongBits(this.mapScale) != Double
+                .doubleToLongBits(other.mapScale)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.maxDistance) != Double
-                .doubleToLongBits(other.maxDistance)) {
+        if (Double.doubleToLongBits(this.maxCoastlineLength) != Double
+                .doubleToLongBits(other.maxCoastlineLength)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.minDistance) != Double
-                .doubleToLongBits(other.minDistance)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.outRangeProbability) != Double
-                .doubleToLongBits(other.outRangeProbability)) {
+        if (Double.doubleToLongBits(this.textureResolution) != Double
+                .doubleToLongBits(other.textureResolution)) {
             return false;
         }
         return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "GradientTextureDescriptor [textureResolution="
+                + this.textureResolution + ", mapScale=" + this.mapScale
+                + ", maxCoastlineLength=" + this.maxCoastlineLength + "]";
     }
 
 }

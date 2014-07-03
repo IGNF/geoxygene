@@ -33,10 +33,12 @@ import test.app.GLPaintingVertex;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.gl.GLTextureManager;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.render.primitive.FeatureRenderer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.GL4FeatureRenderer;
+import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.Pair;
@@ -334,6 +336,8 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
     @Override
     public void reset() {
         this.gl4Renderer.reset();
+        TextureManager.getInstance().clearCache();
+        GLTextureManager.getInstance().clearCache();
     }
 
     // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

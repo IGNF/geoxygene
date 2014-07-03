@@ -108,7 +108,7 @@ import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.TextSymbolizer;
 import fr.ign.cogit.geoxygene.style.gradient.GradientStroke;
-import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 import fr.ign.cogit.geoxygene.style.thematic.DiagramSymbolizer;
 import fr.ign.cogit.geoxygene.style.thematic.ThematicClass;
 import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
@@ -1194,7 +1194,8 @@ public final class RenderUtil {
                                 opacity, rotation);
                     }
                 } else if (symbolizer.getFill().getTextureDescriptor() != null) {
-                    texturePolygon(symbolizer.getFill().getTextureDescriptor(),
+                    texturePolygon(
+                            (symbolizer.getFill().getTextureDescriptor()),
                             feature, shape, viewport, graphics, img, opacity);
                 }
             }
@@ -1301,7 +1302,7 @@ public final class RenderUtil {
      * @param img
      * @param opacity
      */
-    private static void texturePolygon(BasicTextureDescriptor texture,
+    private static void texturePolygon(TextureDescriptor texture,
             IFeature feature, Shape shape, Viewport viewport,
             Graphics2D graphics, BufferedImage img, double opacity) {
         // Example of copying the Graphics object

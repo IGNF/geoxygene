@@ -28,8 +28,12 @@
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
@@ -43,6 +47,7 @@ import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 
 /**
@@ -53,8 +58,11 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
     private static final Logger logger = Logger.getLogger(TextureManager.class
             .getName()); // logger
 
-    private static final Map<BasicTextureDescriptor, TextureTask<BasicTexture>> tasksMap = new HashMap<BasicTextureDescriptor, TextureTask<BasicTexture>>();
+    private static final Map<TextureDescriptor, TextureTask<BasicTexture>> tasksMap = new HashMap<TextureDescriptor, TextureTask<BasicTexture>>();
+    private static final Map<File, TextureTask<BasicTexture>> readersMap = new HashMap<File, TextureTask<BasicTexture>>();
     private final static TextureManager instance = new TextureManager();
+
+    public static String DIRECTORY_CACHE_NAME = "cache";
 
     /**
      * private singleton constructor
@@ -81,7 +89,7 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
      * @return
      */
     public BufferedImage getTextureImage(String name,
-            BasicTextureDescriptor textureDescriptor,
+            TextureDescriptor textureDescriptor,
             IFeatureCollection<IFeature> iFeatureCollection, Viewport viewport) {
         TextureTask<BasicTexture> textureTask = this.getTextureTask(name,
                 textureDescriptor, iFeatureCollection, viewport);
@@ -106,7 +114,7 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
      * @return
      */
     public TextureTask<BasicTexture> getTextureTask(String name,
-            BasicTextureDescriptor textureDescriptor,
+            TextureDescriptor textureDescriptor,
             IFeatureCollection<IFeature> iFeatureCollection, Viewport viewport) {
         if (textureDescriptor == null) {
             return null;
@@ -115,9 +123,24 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
         // create a task to generate texture image
         synchronized (tasksMap) {
             textureTask = tasksMap.get(textureDescriptor);
+            // look for texture in memory
             if (textureTask != null) {
                 return textureTask;
             }
+            // look for texture on cache disk
+            File file = TextureManager.generateTextureUniqueFile(
+                    textureDescriptor, iFeatureCollection);
+            logger.debug("Look for file '" + file.getAbsolutePath() + "'");
+            logger.debug(textureDescriptor.toString());
+            if (file.isFile()) {
+                logger.info("reading disk-cached texture '"
+                        + file.getAbsolutePath() + "'");
+                textureTask = this.getTextureReaderTask(file);
+                textureTask.addTaskListener(this);
+                textureTask.start();
+                return textureTask;
+            }
+            // generate texture
             textureTask = TextureTaskFactory.createTextureTask(name,
                     textureDescriptor, iFeatureCollection, viewport);
             if (textureTask == null) {
@@ -125,6 +148,9 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
                         + textureDescriptor.getClass().getSimpleName());
                 return null;
             }
+            textureTask.setID(TextureManager.generateTextureUniqueFilename(
+                    textureDescriptor, iFeatureCollection));
+
             tasksMap.put(textureDescriptor, textureTask);
         }
         System.err.println("add task in cache. Cache size is now "
@@ -136,6 +162,22 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
         // .getTaskManager().addTask(textureTask);
         textureTask.addTaskListener(this);
         textureTask.start();
+        return textureTask;
+    }
+
+    /**
+     * @param file
+     * @return
+     */
+    private TextureTask<BasicTexture> getTextureReaderTask(File file) {
+        TextureTask<BasicTexture> textureTask = readersMap.get(file);
+        if (textureTask != null) {
+            return textureTask;
+        }
+        textureTask = TextureTaskFactory.createBasicTextureTask(
+                "reading texture " + file.getName(), file);
+        readersMap.put(file, textureTask);
+        textureTask.addTaskListener(this);
         return textureTask;
     }
 
@@ -164,6 +206,12 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
     public void onStateChange(TextureTask<BasicTexture> task, TaskState oldState) {
         switch (task.getState()) {
         case FINISHED:
+            if (task.getTexture().getTextureFilename() != null) {
+                synchronized (readersMap) {
+                    readersMap.remove(task.getTexture().getTextureFilename());
+                }
+
+            }
             synchronized (tasksMap) {
                 tasksMap.remove(task.getTexture());
             }
@@ -171,18 +219,91 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
             if (task.getTexture().getTextureImage() == null) {
                 logger.error("TextureTask has finished with no error but a null texture (its role IS to fill texture.getTextureImage() method)");
             }
+            // save texture on disk
+            this.saveTexture(task);
             GeOxygeneEventManager.refreshApplicationGui();
             break;
         case ERROR:
         case STOPPED:
             synchronized (tasksMap) {
-                tasksMap.remove(task.getTexture());
+                tasksMap.remove(task);
             }
             task.removeTaskListener(this);
             break;
         default:
             // do nothing special;
         }
+    }
+
+    /**
+     * Save texture on disk in cache directory asynchronously
+     * 
+     * @param texture
+     *            texture to save
+     */
+    private void saveTexture(final TextureTask<BasicTexture> task) {
+
+        if (task == null) {
+            throw new IllegalArgumentException("Cannot save null task");
+        }
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                BasicTexture texture = task.getTexture();
+                if (texture.getTextureImage() == null) {
+                    logger.error("Asked to save texture that has no generated image");
+                    return;
+                }
+                File file = new File(DIRECTORY_CACHE_NAME + File.separator
+                        + task.getID() + ".png");
+                File directory = file.getParentFile();
+                if (!directory.exists() && !directory.mkdirs()) {
+                    logger.error("Cannot create directory '"
+                            + directory.getAbsolutePath() + "'");
+                    logger.error("texture '" + file.getAbsolutePath()
+                            + "' won't be saved on disk");
+                    return;
+                }
+
+                try {
+                    logger.info("save texture on disk '"
+                            + file.getAbsolutePath() + "'");
+                    ImageIO.write(texture.getTextureImage(), "PNG", file);
+                } catch (IOException e) {
+                    logger.error("Cannot write texture "
+                            + file.getAbsolutePath() + " on disk");
+                    e.printStackTrace();
+                }
+
+            }
+
+        }, "save texture on disk").start();
+    }
+
+    private static String generateTextureUniqueFilename(
+            TextureDescriptor textureDescriptor,
+            IFeatureCollection<IFeature> featureCollection) {
+        return textureDescriptor.hashCode() + "-"
+                + generateHashCode(featureCollection);
+    }
+
+    private static int generateHashCode(
+            IFeatureCollection<IFeature> featureCollection) {
+        int result = 0;
+        for (IFeature feature : featureCollection) {
+            result = 31 * result + feature.getId();
+        }
+        return result;
+    }
+
+    private static File generateTextureUniqueFile(
+            TextureDescriptor textureDescriptor,
+            IFeatureCollection<IFeature> featureCollection) {
+        return new File(DIRECTORY_CACHE_NAME
+                + File.separator
+                + generateTextureUniqueFilename(textureDescriptor,
+                        featureCollection) + ".png");
     }
 
     /**
@@ -196,4 +317,15 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
             }
         }
     }
+
+    /**
+     * empty cache content
+     */
+    public void clearCache() {
+        synchronized (tasksMap) {
+            tasksMap.clear();
+        }
+
+    }
+
 }

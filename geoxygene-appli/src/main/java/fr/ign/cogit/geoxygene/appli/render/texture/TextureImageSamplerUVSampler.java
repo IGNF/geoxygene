@@ -38,9 +38,9 @@ import java.util.Set;
 
 import javax.vecmath.Point2d;
 
-import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
+import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage;
+import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
-import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 
 /**
  * @author JeT

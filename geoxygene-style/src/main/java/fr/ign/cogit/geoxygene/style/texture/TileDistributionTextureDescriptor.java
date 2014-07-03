@@ -109,5 +109,79 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
 
     public enum TileBlendingType {
         NONE, ALPHA, GRAPHCUT
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                + ((this.blending == null) ? 0 : this.blending.ordinal());
+        long temp;
+        temp = Double.doubleToLongBits(this.maxCoastlineLength);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.textureResolution);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result
+                + ((this.tiles == null) ? 0 : this.tiles.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        TileDistributionTextureDescriptor other = (TileDistributionTextureDescriptor) obj;
+        if (this.blending != other.blending) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.maxCoastlineLength) != Double
+                .doubleToLongBits(other.maxCoastlineLength)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.textureResolution) != Double
+                .doubleToLongBits(other.textureResolution)) {
+            return false;
+        }
+        if (this.tiles == null) {
+            if (other.tiles != null) {
+                return false;
+            }
+        } else if (!this.tiles.equals(other.tiles)) {
+            return false;
+        }
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "TileDistributionTextureDescriptor [maxCoastlineLength="
+                + this.maxCoastlineLength + ", tiles=" + this.tiles
+                + ", textureResolution=" + this.textureResolution
+                + ", blending=" + this.blending + ", toString()="
+                + super.toString() + "]";
     };
+
 }

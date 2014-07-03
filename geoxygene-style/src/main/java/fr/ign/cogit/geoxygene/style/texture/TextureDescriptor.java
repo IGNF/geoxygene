@@ -261,5 +261,98 @@ public abstract class TextureDescriptor {
 
     public static enum TextureDrawingMode {
         SCREENSPACE, VIEWPORTSPACE,
+
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime
+                * result
+                + ((this.displacement == null) ? 0 : this.displacement
+                        .hashCode());
+        result = prime * result
+                + ((this.rotation == null) ? 0 : this.rotation.hashCode());
+        result = prime
+                * result
+                + ((this.scaleFactor == null) ? 0 : this.scaleFactor.hashCode());
+        result = prime
+                * result
+                + ((this.textureDrawingMode == null) ? 0
+                        : this.textureDrawingMode.ordinal());
+        result = prime * result + (this.xRepeat ? 1231 : 1237);
+        result = prime * result + (this.yRepeat ? 1231 : 1237);
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        TextureDescriptor other = (TextureDescriptor) obj;
+        if (this.displacement == null) {
+            if (other.displacement != null) {
+                return false;
+            }
+        } else if (!this.displacement.equals(other.displacement)) {
+            return false;
+        }
+        if (this.rotation == null) {
+            if (other.rotation != null) {
+                return false;
+            }
+        } else if (!this.rotation.equals(other.rotation)) {
+            return false;
+        }
+        if (this.scaleFactor == null) {
+            if (other.scaleFactor != null) {
+                return false;
+            }
+        } else if (!this.scaleFactor.equals(other.scaleFactor)) {
+            return false;
+        }
+        if (this.textureDrawingMode != other.textureDrawingMode) {
+            return false;
+        }
+        if (this.xRepeat != other.xRepeat) {
+            return false;
+        }
+        if (this.yRepeat != other.yRepeat) {
+            return false;
+        }
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "TextureDescriptor [xRepeat=" + this.xRepeat + ", yRepeat="
+                + this.yRepeat + ", textureDrawingMode="
+                + this.textureDrawingMode + ", displacement="
+                + this.displacement + ", scaleFactor=" + this.scaleFactor
+                + ", rotation=" + this.rotation + "]";
+    }
+
 }

@@ -35,9 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
-import fr.ign.cogit.geoxygene.util.gl.TexturePixelRenderer;
-import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.TexturePixel;
 
 /**
  * @author JeT This pixel renderer is used to draw polygon frontiers in a

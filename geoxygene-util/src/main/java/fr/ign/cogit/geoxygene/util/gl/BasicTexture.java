@@ -87,14 +87,14 @@ public class BasicTexture implements Texture {
         this.setTextureFilename(textureFilename);
     }
 
-    /**
-     * Constructor with image dimension
-     * 
-     */
-    public BasicTexture(final int width, final int height) {
-        this();
-        this.createTextureImage(width, height);
-    }
+    // /**
+    // * Constructor with image dimension
+    // *
+    // */
+    // public BasicTexture(final int width, final int height) {
+    // this();
+    // this.createTextureImage(width, height);
+    // }
 
     /**
      * @param width

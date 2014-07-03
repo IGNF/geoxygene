@@ -31,6 +31,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 
 /**
@@ -38,9 +40,13 @@ import fr.ign.cogit.geoxygene.util.gl.GLTexture;
  */
 public final class GLTextureManager {
 
+    private static final Logger logger = Logger
+            .getLogger(GLTextureManager.class.getName()); // logger
+
     // singleton instance
     private static final GLTextureManager instance = new GLTextureManager();
     private final Map<File, GLTexture> textures = new HashMap<File, GLTexture>();
+    public boolean debug = true;
 
     /**
      * private singleton constructor
@@ -62,11 +68,46 @@ public final class GLTextureManager {
      */
     public GLTexture getTexture(String filename) {
         File f = new File(filename);
-        GLTexture texture = this.textures.get(f);
-        if (texture == null) {
-            texture = new GLTexture(filename);
-            this.textures.put(f, texture);
+        GLTexture texture = null;
+        synchronized (this.textures) {
+            texture = this.textures.get(f);
+            if (texture == null) {
+                texture = new GLTexture(filename);
+                this.textures.put(f, texture);
+                if (this.debug) {
+                    logger.info("Add texture '" + filename
+                            + "' in GL texture manager => "
+                            + this.textures.size() + " stored files");
+                }
+            }
         }
         return texture;
     }
+
+    /**
+     * remove a texture from the texture manager
+     * 
+     * @param filename
+     */
+    public void uncacheTexture(String filename) {
+        synchronized (this.textures) {
+            this.textures.remove(filename);
+        }
+        if (this.debug) {
+            logger.info("Remove texture '" + filename
+                    + "' from GL texture manager => " + this.textures.size()
+                    + " stored files");
+        }
+    }
+
+    /**
+     * empty cache content
+     */
+    public void clearCache() {
+        synchronized (this.textures) {
+            this.textures.clear();
+        }
+
+    }
+
 }

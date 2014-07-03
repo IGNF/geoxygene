@@ -40,12 +40,12 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage;
+import fr.ign.cogit.geoxygene.appli.gl.TextureImageUtil;
+import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.util.MipMapMask;
-import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
-import fr.ign.cogit.geoxygene.util.gl.TextureImageUtil;
 import fr.ign.cogit.geoxygene.util.gl.Tile;
-import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 
 /**
  * @author JeT

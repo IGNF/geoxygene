@@ -30,7 +30,9 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
 import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.GradientTextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
 
 /**
@@ -71,15 +73,16 @@ public class Fill {
     @XmlElements({
             @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTextureDescriptor.class),
             @XmlElement(name = "BasicTexture", type = BasicTextureDescriptor.class),
+            @XmlElement(name = "GradientTexture", type = GradientTextureDescriptor.class),
             @XmlElement(name = "TileDistributionTexture", type = TileDistributionTextureDescriptor.class) })
-    private BasicTextureDescriptor textureDescriptor = null;
+    private TextureDescriptor textureDescriptor = null;
 
     /**
      * Renvoie la texture.
      * 
      * @return la texture.
      */
-    public BasicTextureDescriptor getTextureDescriptor() {
+    public TextureDescriptor getTextureDescriptor() {
         return this.textureDescriptor;
     }
 
@@ -89,7 +92,7 @@ public class Fill {
      * @param texture
      *            la texture.
      */
-    public void setTextureDescriptor(BasicTextureDescriptor texture) {
+    public void setTextureDescriptor(TextureDescriptor texture) {
         this.textureDescriptor = texture;
     }
 
@@ -266,8 +269,10 @@ public class Fill {
                 * result
                 + ((this.svgParameters == null) ? 0 : this.svgParameters
                         .hashCode());
-        result = prime * result
-                + ((this.textureDescriptor == null) ? 0 : this.textureDescriptor.hashCode());
+        result = prime
+                * result
+                + ((this.textureDescriptor == null) ? 0
+                        : this.textureDescriptor.hashCode());
         return result;
     }
 

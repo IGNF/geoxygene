@@ -75,4 +75,45 @@ public abstract class TileDescriptor {
         this.textureImage = textureImage;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((this.url == null) ? 0 : this.url.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        TileDescriptor other = (TileDescriptor) obj;
+        if (this.url == null) {
+            if (other.url != null) {
+                return false;
+            }
+        } else if (!this.url.equals(other.url)) {
+            return false;
+        }
+        return true;
+    }
+
 }

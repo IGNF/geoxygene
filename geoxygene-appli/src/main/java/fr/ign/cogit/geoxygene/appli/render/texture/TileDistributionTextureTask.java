@@ -29,26 +29,18 @@ package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
 
@@ -63,14 +55,14 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.gl.DistanceFieldFrontierPixelRenderer;
+import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage;
+import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.GradientTextureImageParameters;
+import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.texture.ProbabilistTileDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor.TileBlendingType;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
-import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage;
-import fr.ign.cogit.geoxygene.util.gl.GradientTextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 import fr.ign.cogit.geoxygene.util.gl.Tile;
 import fr.ign.cogit.geoxygene.util.graphcut.DefaultTile;
@@ -92,17 +84,15 @@ public class TileDistributionTextureTask extends
     private Shape featureShape = null; // shape corresponding to the given
                                        // feature in the image texture space
     // private final DistanceFieldTexture texture = null;
-    private double minX;
-    private double minY;
-    private double maxX;
-    private double maxY;
+    // private double minX;
+    // private double minY;
+    // private double maxX;
+    // private double maxY;
     private int textureWidth = -1; // final textured image width & height
     private int textureHeight = -1; // dimension are computed using resolution
                                     // and map scale
     private double printResolution = 72; // expressed in DPI
     private double mapScale = 1 / 100000.; // map scale
-    private double imageToPolygonFactorX;
-    private double imageToPolygonFactorY;
     private final List<IPolygon> polygons = new ArrayList<IPolygon>();
     private final List<IRing> rings = new ArrayList<IRing>();
     private final List<ParameterizedSegment> segments = new ArrayList<ParameterizedSegment>();
@@ -112,11 +102,8 @@ public class TileDistributionTextureTask extends
     private IFeatureCollection<IFeature> featureCollection = null;
     private Viewport viewport = null;
 
-    private final boolean memoryMonitoring = true;
+    private final boolean memoryMonitoring = false;
     private long previousUsedMemory = 0;
-
-    private static final double CM_PER_INCH = 2.540005;
-    private static final double M_PER_INCH = CM_PER_INCH / 100.;
 
     private BasicTexture basicTexture = null;
 
@@ -135,8 +122,6 @@ public class TileDistributionTextureTask extends
         this.basicTexture = new BasicTexture();
         this.setFeatureCollection(featureCollection);
         this.setViewport(viewport);
-        this.computeEnvelope();
-
     }
 
     /**
@@ -168,14 +153,6 @@ public class TileDistributionTextureTask extends
             throws NoninvertibleTransformException {
         this.setPrintResolution(this.getTextureDescriptor()
                 .getTextureResolution());
-        this.computeEnvelope();
-
-        this.texImage = new GradientTextureImage(this.getTextureWidth(),
-                this.getTextureHeight());
-        this.imageToPolygonFactorX = (this.maxX - this.minX)
-                / (this.getTextureWidth() - 1);
-        this.imageToPolygonFactorY = (this.maxY - this.minY)
-                / (this.getTextureHeight() - 1);
 
         this.polygons.clear();
         // convert the multisurface as a collection of polygons
@@ -280,61 +257,6 @@ public class TileDistributionTextureTask extends
     }
 
     /**
-     * 
-     */
-    private void computeEnvelope() {
-        if (this.featureCollection == null) {
-            throw new IllegalStateException("Feature is not set");
-        }
-        this.envelope = this.featureCollection.getEnvelope();
-        this.minX = this.envelope.getLowerCorner().getX();
-        this.minY = this.envelope.getLowerCorner().getY();
-        this.maxX = this.envelope.getUpperCorner().getX();
-        this.maxY = this.envelope.getUpperCorner().getY();
-    }
-
-    private void computeGradient() {
-        for (int y = 0; y < this.texImage.getHeight(); y++) {
-            for (int x = 0; x < this.texImage.getWidth(); x++) {
-                TexturePixel pixel = this.texImage.getPixel(x, y);
-                if (pixel.in) {
-                    // pixel.vGradient = new
-                    // Point2d(Math.cos(pixel.mainDirection),
-                    // Math.sin(pixel.mainDirection));
-                    pixel.vGradient = computeGradient(this.texImage, x, y);
-                } else {
-                    pixel.vGradient = null;
-                }
-            }
-        }
-    }
-
-    private static Point2d computeGradient(GradientTextureImage image, int x,
-            int y) {
-        TexturePixel p = image.getPixel(x, y);
-        TexturePixel pxp1 = image.getPixel(x + 1, y);
-        TexturePixel pxm1 = image.getPixel(x - 1, y);
-        TexturePixel pyp1 = image.getPixel(x, y + 1);
-        TexturePixel pym1 = image.getPixel(x, y - 1);
-        double dx = 0, dy = 0;
-        if (pxp1 != null && pxm1 != null) {
-            dx = pxp1.vTexture - pxm1.vTexture;
-        } else if (pxp1 == null && pxm1 != null) {
-            dx = p.vTexture - pxm1.vTexture;
-        } else if (pxm1 == null && pxp1 != null) {
-            dx = pxp1.vTexture - p.vTexture;
-        }
-        if (pyp1 != null && pym1 != null) {
-            dy = pyp1.vTexture - pym1.vTexture;
-        } else if (pyp1 == null && pym1 != null) {
-            dy = p.vTexture - pym1.vTexture;
-        } else if (pym1 == null && pyp1 != null) {
-            dy = pyp1.vTexture - p.vTexture;
-        }
-        return new Point2d(-dy, dx);
-    }
-
-    /**
      * Transform a direct position list in view coordinates to an awt shape.
      * 
      * @param viewDirectPositionList
@@ -369,13 +291,13 @@ public class TileDistributionTextureTask extends
             // + this.getPrintResolution() + " /  MperINCH  = "
             // + M_PER_INCH);
             this.textureWidth = (int) (this.getEnvelope().width()
-                    * this.getMapScale() * this.getPrintResolution() / M_PER_INCH);
+                    * this.getMapScale() * this.getPrintResolution() / GradientTextureTask.M_PER_INCH);
             if (this.textureWidth <= 0) {
                 logger.debug("texture width is invalid: envelope width = "
                         + this.getEnvelope().width() + " * scale = "
                         + this.getMapScale() + " resolution = "
                         + this.getPrintResolution() + " /  MperINCH  = "
-                        + M_PER_INCH);
+                        + GradientTextureTask.M_PER_INCH);
             }
         }
         return this.textureWidth;
@@ -390,19 +312,14 @@ public class TileDistributionTextureTask extends
     @Override
     public int getTextureHeight() {
         if (this.textureHeight <= 0) {
-            logger.debug(this.getName() + " texture height: envelope height = "
-                    + this.getEnvelope().height() + " * scale = "
-                    + this.getMapScale() + " resolution = "
-                    + this.getPrintResolution() + " /  MperINCH  = "
-                    + M_PER_INCH);
             this.textureHeight = (int) (this.getEnvelope().length()
-                    * this.getMapScale() * this.getPrintResolution() / M_PER_INCH);
+                    * this.getMapScale() * this.getPrintResolution() / GradientTextureTask.M_PER_INCH);
             if (this.textureHeight <= 0) {
                 logger.error("texture height is invalid: envelope height = "
                         + this.getEnvelope().height() + " * scale = "
                         + this.getMapScale() + " resolution = "
                         + this.getPrintResolution() + " /  MperINCH  = "
-                        + M_PER_INCH);
+                        + GradientTextureTask.M_PER_INCH);
             }
         }
         return this.textureHeight;
@@ -415,7 +332,7 @@ public class TileDistributionTextureTask extends
      */
     private IEnvelope getEnvelope() {
         if (this.envelope == null) {
-            this.computeEnvelope();
+            this.envelope = this.featureCollection.getEnvelope();
         }
         return this.envelope;
     }
@@ -530,7 +447,13 @@ public class TileDistributionTextureTask extends
             this.setState(TaskState.STOPPED);
             return false;
         }
-        this.generateGradientTextureImage();
+        double maxCoastLine = this.getTextureDescriptor()
+                .getMaxCoastlineLength();
+        GradientTextureImageParameters params = new GradientTextureImageParameters(
+                this.getTextureWidth(), this.getTextureHeight(), this.polygons,
+                this.getEnvelope(), maxCoastLine);
+        this.texImage = GradientTextureImage
+                .generateGradientTextureImage(params);
         if (this.isStopRequested()) {
             this.setState(TaskState.STOPPED);
             return false;
@@ -541,351 +464,6 @@ public class TileDistributionTextureTask extends
             return false;
         }
         return true;
-    }
-
-    synchronized private void generateGradientTextureImage() {
-        // draw Frontiers into texture image
-        DistanceFieldFrontierPixelRenderer pixelRenderer = new DistanceFieldFrontierPixelRenderer();
-        for (IPolygon polygon : this.polygons) {
-            pixelRenderer.getYs().clear(); // #note1
-            // draw the outer frontier
-            this.drawFrontier(polygon.getExterior(), 1, pixelRenderer);
-
-            // draw all inner frontiers
-            for (int innerFrontierIndex = 0; innerFrontierIndex < polygon
-                    .getInterior().size(); innerFrontierIndex++) {
-                IRing innerFrontier = polygon.getInterior().get(
-                        innerFrontierIndex);
-                this.drawFrontier(innerFrontier, -innerFrontierIndex - 1,
-                        pixelRenderer);
-            }
-
-            this.fillHorizontally(pixelRenderer.getYs()); // #note1
-        }
-        // #note1
-        // fillHorizontally was previously outside the polygon loop. It is valid
-        // if polygons
-        // do not self intersect. It has been modified due to a shape file that
-        // has a full duplicated geometry
-        // may be we can assert that polygons may not self intersect and get
-        // back to previous version...
-
-        // try {
-        // TextureImageUtil.save(this.texImage, "1-frontiers");
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-        // for (Map.Entry<Integer, List<Integer>> entry :
-        // pixelRenderer.getYs().entrySet()) {
-        // System.err.println("Y(" + entry.getKey() + ") = " +
-        // Arrays.toString(entry.getValue().toArray(new Integer[0])));
-        // }
-        // fills the inner pixels
-        // try {
-        // TextureImageUtil.save(this.texImage, "2-filled");
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-        Set<Point> modifiedPixels = new HashSet<Point>();
-
-        // FIXME: HACK: remove long edges (for the sea outside borders not to be
-        // considered as sea edges)
-        modifiedPixels = this
-                .getModifiedPixelsButInfiniteDistancePixels(pixelRenderer
-                        .getModifiedPixels());
-
-        // Set<Point> nonInfiniteModifiedPixels =
-        // pixelRenderer.getModifiedPixels();
-        while (!modifiedPixels.isEmpty()) {
-            modifiedPixels = fillTextureCoordinates4(this.texImage,
-                    modifiedPixels, this.imageToPolygonFactorX,
-                    this.imageToPolygonFactorY);
-        }
-        // try {
-        // TextureImageUtil.save(this.texImage, "3-texcoord");
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-
-        scaleV(this.texImage, this.texImage.getdMax());
-        this.computeGradient();
-        // try {
-        // TextureImageUtil.save(this.texImage, "4-gradient");
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-
-    }
-
-    /**
-     * @param image
-     * @param maxDistance
-     */
-    private static void scaleV(GradientTextureImage image, double maxDistance) {
-        // fill yTexture coordinates as distance / maxDistance for any pixel
-        for (int y = 0; y < image.getHeight(); y++) {
-            for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
-                pixel.vTexture = pixel.distance / maxDistance;
-            }
-        }
-    }
-
-    /**
-     * Modify the neighbors pixel distance according to the current pixel
-     * distance
-     * 
-     * @param set
-     */
-    private static Set<Point> fillTextureCoordinates4(
-            GradientTextureImage image, Set<Point> set,
-            final double pixelWidth, final double pixelHeight) {
-        // System.err.println(modifiedPixels.size() + " modified pixels");
-        HashSet<Point> newlyModifiedPixels = new HashSet<Point>();
-        for (Point p : set) {
-            TexturePixel pixel = image.getPixel(p.x, p.y);
-            if (pixel == null) {
-                throw new IllegalStateException(
-                        "modified pixels cannot be outside image ... " + p.x
-                                + "x" + p.y);
-            }
-            double distance = pixel.distance;
-            fillTextureCoordinates(image, distance + pixelWidth,
-                    pixel.uTexture, new Point(p.x - 1, p.y),
-                    newlyModifiedPixels);
-            fillTextureCoordinates(image, distance + pixelWidth,
-                    pixel.uTexture, new Point(p.x + 1, p.y),
-                    newlyModifiedPixels);
-            fillTextureCoordinates(image, distance + pixelHeight,
-                    pixel.uTexture, new Point(p.x, p.y - 1),
-                    newlyModifiedPixels);
-            fillTextureCoordinates(image, distance + pixelHeight,
-                    pixel.uTexture, new Point(p.x, p.y + 1),
-                    newlyModifiedPixels);
-        }
-        return newlyModifiedPixels;
-    }
-
-    /**
-     * Modify the specified pixel with the given distance if it is smaller than
-     * the current stored
-     * 
-     * @param d
-     *            distance to try to set to current pixel
-     * @param point
-     *            current point to try to set distance
-     * @param newlyModifiedPixels
-     *            pixel position is added to this list if this pixel distance
-     *            value has been modified
-     */
-    private static boolean fillTextureCoordinates(
-            GradientTextureImage texImage, double d, double uTexture, Point p,
-            Set<Point> newlyModifiedPixels) {
-        TexturePixel pixel = texImage.getPixel(p.x, p.y);
-        if (pixel == null) {
-            return false;
-        }
-        if (pixel.in && pixel.distance > d) {
-            pixel.distance = d;
-            pixel.uTexture = uTexture;
-            newlyModifiedPixels.add(p);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Remove all pixels which have an infinite distance from the modified
-     * pixels.
-     * 
-     * @param modifiedPixels
-     * @return
-     */
-    private Set<Point> getModifiedPixelsButInfiniteDistancePixels(
-            Set<Point> modifiedPixels) {
-        Set<Point> nonInfiniteModifiedPixels = new HashSet<Point>();
-        for (Point p : modifiedPixels) {
-            TexturePixel pixel = this.texImage.getPixel(p.x, p.y);
-            if (pixel.distance != Double.POSITIVE_INFINITY) {
-                nonInfiniteModifiedPixels.add(p);
-            } else {
-                pixel.uTexture = 0;
-                pixel.vTexture = 0;
-            }
-        }
-        this.texImage.invalidateUVBounds();
-        return nonInfiniteModifiedPixels;
-    }
-
-    /**
-     * @param ys
-     *            list of y values containing a list of x-values
-     * @param image
-     */
-    private void fillHorizontally(Map<Integer, List<Integer>> ys) {
-        for (int y = 0; y < this.texImage.getHeight(); y++) {
-            List<Integer> xs = ys.get(y);
-            if (xs == null || xs.size() == 0) {
-                continue;
-            }
-            Collections.sort(xs); // order by x values
-            if (xs.size() % 2 != 0) {
-                logger.warn("x values count cannot be even ! y = " + y + " : "
-                        + xs.size() + " : " + xs);
-            }
-            // draw horizontal lines between xs pixel pairs/couples
-            for (int n = 0; n < xs.size() / 2; n++) {
-                int x1 = Math.min(xs.get(2 * n), xs.get(2 * n + 1));
-                int x2 = Math.max(xs.get(2 * n), xs.get(2 * n + 1));
-                for (int x = x1; x <= x2; x++) {
-                    TexturePixel pixel = this.texImage.getPixel(x, y);
-                    if (pixel != null) {
-                        pixel.in = true;
-                        if (pixel.frontier == 0) {
-                            pixel.distance = Double.MAX_VALUE;
-                        }
-                    } else {
-                        logger.warn("forget unknown pixel " + x + "x" + y
-                                + " = " + pixel);
-                    }
-
-                }
-            }
-
-        }
-    }
-
-    /**
-     * draw a polygon's frontier in the image using the selected renderer
-     * 
-     * @param frontier
-     * @param pixelRenderer
-     */
-    private void drawFrontier(IRing frontier, int frontierId,
-            DistanceFieldFrontierPixelRenderer pixelRenderer) {
-        pixelRenderer.setCurrentFrontier(frontierId);
-        int frontierSize = frontier.coord().size();
-        if (frontierSize < 3) {
-            logger.error("Cannot fill a polygon with less than 3 points");
-            return;
-        }
-        IDirectPosition p0 = frontier.coord().get(frontierSize - 1);// previous
-                                                                    // point
-        IDirectPosition p1 = frontier.coord().get(0); // start point line to
-                                                      // draw
-        IDirectPosition p2 = frontier.coord().get(1); // end point line to draw
-        // double frontierLength = frontier.length();
-        double segmentLength = Math.sqrt((p2.getX() - p1.getX())
-                * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY())
-                * (p2.getY() - p1.getY()));
-        // convert world-based coordinates to projection-space coordinates
-        Point2D proj0 = this.worldToProj(p0);
-        Point2D proj1 = this.worldToProj(p1);
-        Point2D proj2 = this.worldToProj(p2);
-        // int x0 = (int) proj0.getX();
-        int y0 = (int) proj0.getY();
-        int x1 = (int) proj1.getX();
-        int y1 = (int) proj1.getY();
-        int x2 = (int) proj2.getX();
-        int y2 = (int) proj2.getY();
-
-        // find last non null direction
-        int lastDirection = y1 - y0;
-        int index = frontierSize - 2;
-        while (lastDirection == 0 && index >= 0) {
-            y1 = y0;
-            y0 = (int) this.worldToProj(frontier.coord().get(index)).getY();
-            lastDirection = y1 - y0;
-            index--;
-        }
-        y0 = (int) proj0.getY();
-        y1 = (int) proj1.getY();
-
-        double linearDistance = 0; // linear parameterization along the frontier
-        for (int nPoint = 0; nPoint < frontierSize; nPoint++) {
-            // check if previous and next points are on the same Y side (cusp)
-            // if the line is horizontal, keep previous cusp
-            if (y1 != y2) {
-                pixelRenderer.setCusp(lastDirection * (y2 - y1) < 0);
-                lastDirection = y2 - y1;
-            }
-
-            // here we can choose the parameterization along frontiers
-            pixelRenderer.setLinearParameterization(linearDistance,
-                    linearDistance + segmentLength);
-            // special case not to set distance to zero in some cases (for outer
-            // sea limits which are not real coast lines
-            double maxCoastlineLength = this.getTextureDescriptor()
-                    .getMaxCoastlineLength();
-            if (segmentLength > maxCoastlineLength) {
-                logger.debug("segment " + segmentLength + " long removed (>"
-                        + maxCoastlineLength + ")");
-            }
-            pixelRenderer.setDistanceToZero(segmentLength < maxCoastlineLength);
-            if (!(x1 == x2 && y1 == y2)) {
-                this.texImage.drawLine(x1, y1, x2, y2, pixelRenderer);
-            }
-
-            linearDistance += segmentLength;
-            p0 = p1;
-            p1 = p2;
-            p2 = frontier.coord().get((nPoint + 1) % frontierSize);
-            segmentLength = Math.sqrt((p2.getX() - p1.getX())
-                    * (p2.getX() - p1.getX()) + (p2.getY() - p1.getY())
-                    * (p2.getY() - p1.getY()));
-
-            proj0 = proj1;
-            proj1 = proj2;
-            proj2 = this.worldToProj(p2);
-            y0 = y1;
-            x1 = x2;
-            y1 = y2;
-            x2 = (int) proj2.getX();
-            y2 = (int) proj2.getY();
-
-        }
-    }
-
-    /**
-     * convert point coordinates from polygon space to image space
-     * 
-     * @param polygonCoordinates
-     * @return
-     */
-    public Point2D worldToProj(Point2D polygonCoordinates) {
-        return new Point2D.Double((polygonCoordinates.getX() - this.minX)
-                / this.imageToPolygonFactorX,
-                (polygonCoordinates.getY() - this.minY)
-                        / this.imageToPolygonFactorY);
-    }
-
-    /**
-     * convert point coordinates from polygon space to image space
-     * 
-     * @param polygonCoordinates
-     * @return
-     */
-    public Point2D worldToProj(Point2d polygonCoordinates) {
-        return new Point2D.Double((polygonCoordinates.x - this.minX)
-                / this.imageToPolygonFactorX,
-                (polygonCoordinates.y - this.minY) / this.imageToPolygonFactorY);
-    }
-
-    /**
-     * convert point coordinates from polygon space to image space
-     * 
-     * @param polygonCoordinates
-     * @return
-     */
-    public Point2D worldToProj(IDirectPosition polygonCoordinates) {
-        return new Point2D.Double((polygonCoordinates.getX() - this.minX)
-                / this.imageToPolygonFactorX,
-                (polygonCoordinates.getY() - this.minY)
-                        / this.imageToPolygonFactorY);
     }
 
     /**
