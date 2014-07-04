@@ -39,9 +39,9 @@ import javax.xml.bind.annotation.XmlElement;
 public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
 
     @XmlElement(name = "PaperTexture")
-    private String paperTextureFilename = "./src/main/resources/test/app/papers/black-normalized.png";
+    private String paperTextureFilename = "./src/main/resources/textuures/papers/black-normalized.png";
     @XmlElement(name = "BrushTexture")
-    private String brushTextureFilename = "./src/main/resources/test/app/brushes/chalk2-100-200.png";
+    private String brushTextureFilename = "./src/main/resources/textures/brushes/chalk2-100-200.png";
     @XmlElement(name = "BrushStartLength")
     private int brushStartLength = 100;
     @XmlElement(name = "BrushEndLength")

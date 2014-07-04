@@ -139,7 +139,8 @@ public class TileDistributionTextureTask extends
     private final void initTiles() throws IOException {
         for (ProbabilistTileDescriptor tileDesc : this.getTextureDescriptor()
                 .getTiles()) {
-            Tile tile = DefaultTile.read(new URL(tileDesc.getUrl()));
+            Tile tile = DefaultTile.read(new URL(tileDesc.getUrl()),
+                    tileDesc.getScaleFactor());
             DistanceTileProbability p = new DistanceTileProbability(
                     this.texImage, tileDesc.getMinDistance(),
                     tileDesc.getMaxDistance(),

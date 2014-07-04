@@ -37,6 +37,10 @@ public abstract class TileDescriptor {
 
     @XmlElement(name = "url")
     private String url = null;
+
+    @XmlElement(name = "ScaleFactor")
+    private double scaleFactor = 1.;
+
     private BufferedImage textureImage = null;
 
     /**
@@ -75,6 +79,21 @@ public abstract class TileDescriptor {
         this.textureImage = textureImage;
     }
 
+    /**
+     * @return the scaleFactor
+     */
+    public double getScaleFactor() {
+        return this.scaleFactor;
+    }
+
+    /**
+     * @param scaleFactor
+     *            the scaleFactor to set
+     */
+    public void setScaleFactor(double scaleFactor) {
+        this.scaleFactor = scaleFactor;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -84,6 +103,9 @@ public abstract class TileDescriptor {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        long temp;
+        temp = Double.doubleToLongBits(this.scaleFactor);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result
                 + ((this.url == null) ? 0 : this.url.hashCode());
         return result;
@@ -106,6 +128,10 @@ public abstract class TileDescriptor {
             return false;
         }
         TileDescriptor other = (TileDescriptor) obj;
+        if (Double.doubleToLongBits(this.scaleFactor) != Double
+                .doubleToLongBits(other.scaleFactor)) {
+            return false;
+        }
         if (this.url == null) {
             if (other.url != null) {
                 return false;
@@ -114,6 +140,17 @@ public abstract class TileDescriptor {
             return false;
         }
         return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "TileDescriptor [url=" + this.url + ", scaleFactor="
+                + this.scaleFactor + "]";
     }
 
 }

@@ -268,7 +268,9 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
      *            the layerLegendPanel of the style to be modified.
      */
     public StyleEditionFrame(LayerLegendPanel layerLegendPanel) {
-        super(SwingUtilities.getWindowAncestor(layerLegendPanel));
+        super(SwingUtilities.getWindowAncestor(layerLegendPanel), I18N
+                .getString("StyleEditionFrame.StyleEdition"),
+                ModalityType.MODELESS);
         logger.info("StyleEditionFrame");
         this.layerLegendPanel = layerLegendPanel;
         this.layerViewPanel = this.layerLegendPanel.getLayerViewPanel();
@@ -315,14 +317,13 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         // is
         this.addExpressiveRenderingUI();
 
-        this.setTitle(I18N.getString("StyleEditionFrame.StyleEdition")); //$NON-NLS-1$
-        this.pack();
+        // this.pack();
         this.textStylePanel.setSize(600, 500);
         this.graphicStylePanel.setSize(600, 700);
         this.setSize(650, 750);
 
         this.setLocation(200, 200);
-        this.setAlwaysOnTop(true);
+        // this.setAlwaysOnTop(true);
     }
 
     // /**

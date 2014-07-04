@@ -28,6 +28,8 @@
 package fr.ign.cogit.geoxygene.util.graphcut;
 
 import java.awt.Point;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
@@ -160,6 +162,44 @@ public class DefaultTile implements Tile {
             throw e;
         }
         return tile;
+    }
+
+    /**
+     * read an image as tile
+     * 
+     * @param filename
+     *            file to read
+     * @return a newly created tile
+     * @throws IOException
+     *             on IO Error
+     */
+    public static Tile read(URL url, double scaleFactor) throws IOException {
+        DefaultTile tile = new DefaultTile();
+        try {
+            BufferedImage img = ImageIO.read(url);
+            tile.setImage(scaleImage(img, (int) (img.getWidth() * scaleFactor),
+                    (int) (img.getHeight() * scaleFactor)));
+        } catch (IOException e) {
+            logger.error("Cannot read url '" + url + "'");
+            throw e;
+        }
+        return tile;
+    }
+
+    public static BufferedImage scaleImage(BufferedImage image, int width,
+            int height) throws IOException {
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+
+        double scaleX = (double) width / imageWidth;
+        double scaleY = (double) height / imageHeight;
+        AffineTransform scaleTransform = AffineTransform.getScaleInstance(
+                scaleX, scaleY);
+        AffineTransformOp bilinearScaleOp = new AffineTransformOp(
+                scaleTransform, AffineTransformOp.TYPE_BILINEAR);
+
+        return bilinearScaleOp.filter(image, new BufferedImage(width, height,
+                image.getType()));
     }
 
     /*

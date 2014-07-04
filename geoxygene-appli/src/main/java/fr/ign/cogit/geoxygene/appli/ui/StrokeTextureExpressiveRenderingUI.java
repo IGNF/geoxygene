@@ -45,7 +45,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
@@ -53,6 +52,8 @@ import javax.swing.event.ChangeListener;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
+import fr.ign.util.ui.SliderWithSpinner;
+import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
 
 /**
  * @author JeT
@@ -75,11 +76,11 @@ public class StrokeTextureExpressiveRenderingUI implements
     double strokePressure = 2.64;
     double sharpness = 0.1;
     double strokePressureVariationAmplitude = .32;
-    double strokePressureVariationWavelength = .025;
+    double strokePressureVariationWavelength = 100;
     double strokeShiftVariationAmplitude = .92;
-    double strokeShiftVariationWavelength = .05;
+    double strokeShiftVariationWavelength = 100;
     double strokeThicknessVariationAmplitude = .07;
-    double strokeThicknessVariationWavelength = .05;
+    double strokeThicknessVariationWavelength = 100;
     public String paperTextureFilename = null;
     public String brushTextureFilename = null;
     public int brushStartLength = 100;
@@ -195,9 +196,9 @@ public class StrokeTextureExpressiveRenderingUI implements
             this.main.setBorder(BorderFactory
                     .createEtchedBorder(EtchedBorder.LOWERED));
             // Dimension d = new Dimension(150, 40);
-            SpinnerNumberModel model = new SpinnerNumberModel(this.sampleSize,
-                    0.1, 1000., 1.);
-            final JSpinner spinner = new JSpinner(model);
+            SliderWithSpinnerModel model = new SliderWithSpinnerModel(
+                    this.sampleSize, 0.1, 1000., 1.);
+            final SliderWithSpinner spinner = new SliderWithSpinner(model);
             JSpinner.NumberEditor editor = (JSpinner.NumberEditor) spinner
                     .getEditor();
             DecimalFormat format = editor.getFormat();
@@ -209,7 +210,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.sampleSize = (Double) (spinner
+                    StrokeTextureExpressiveRenderingUI.this.sampleSize = (spinner
                             .getValue());
                     StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -217,9 +218,10 @@ public class StrokeTextureExpressiveRenderingUI implements
             });
             this.main.add(spinner);
 
-            SpinnerNumberModel minAngleModel = new SpinnerNumberModel(
+            SliderWithSpinnerModel minAngleModel = new SliderWithSpinnerModel(
                     this.minAngle, 0, 180, .1);
-            final JSpinner minAngleSpinner = new JSpinner(minAngleModel);
+            final SliderWithSpinner minAngleSpinner = new SliderWithSpinner(
+                    minAngleModel);
             JSpinner.NumberEditor minAngleEditor = (JSpinner.NumberEditor) minAngleSpinner
                     .getEditor();
             minAngleEditor.getTextField().setHorizontalAlignment(
@@ -232,7 +234,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.minAngle = (Double) (minAngleSpinner
+                    StrokeTextureExpressiveRenderingUI.this.minAngle = (minAngleSpinner
                             .getValue());
                     StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -240,9 +242,10 @@ public class StrokeTextureExpressiveRenderingUI implements
             });
             this.main.add(minAngleSpinner);
 
-            SpinnerNumberModel brushSizeModel = new SpinnerNumberModel(
+            SliderWithSpinnerModel brushSizeModel = new SliderWithSpinnerModel(
                     this.brushSize, 0, 180, .1);
-            final JSpinner brushSizeSpinner = new JSpinner(brushSizeModel);
+            final SliderWithSpinner brushSizeSpinner = new SliderWithSpinner(
+                    brushSizeModel);
             JSpinner.NumberEditor brushSizeEditor = (JSpinner.NumberEditor) brushSizeSpinner
                     .getEditor();
             brushSizeEditor.getTextField().setHorizontalAlignment(
@@ -256,7 +259,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.brushSize = (Double) (brushSizeSpinner
+                    StrokeTextureExpressiveRenderingUI.this.brushSize = (brushSizeSpinner
                             .getValue());
                     StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -303,12 +306,14 @@ public class StrokeTextureExpressiveRenderingUI implements
 
             });
             this.main.add(paperBrowseButton);
-            this.paperFilenameLabel = new JLabel(this.paperTextureFilename);
+            this.paperFilenameLabel = new JLabel(
+                    this.paperTextureFilename
+                            .substring(this.paperTextureFilename.length() - 30));
             this.main.add(this.paperFilenameLabel);
 
-            SpinnerNumberModel paperScaleFactorModel = new SpinnerNumberModel(
+            SliderWithSpinnerModel paperScaleFactorModel = new SliderWithSpinnerModel(
                     this.paperScaleFactor, 0, 180, .1);
-            final JSpinner paperScaleFactorSpinner = new JSpinner(
+            final SliderWithSpinner paperScaleFactorSpinner = new SliderWithSpinner(
                     paperScaleFactorModel);
             JSpinner.NumberEditor paperScaleFactorEditor = (JSpinner.NumberEditor) paperScaleFactorSpinner
                     .getEditor();
@@ -322,7 +327,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.paperScaleFactor = (Double) (paperScaleFactorSpinner
+                    StrokeTextureExpressiveRenderingUI.this.paperScaleFactor = (paperScaleFactorSpinner
                             .getValue());
                     StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -330,9 +335,10 @@ public class StrokeTextureExpressiveRenderingUI implements
             });
             this.main.add(paperScaleFactorSpinner);
 
-            SpinnerNumberModel brushStartModel = new SpinnerNumberModel(
+            SliderWithSpinnerModel brushStartModel = new SliderWithSpinnerModel(
                     this.brushStartLength, 1, 5000, 1);
-            final JSpinner brushStartSpinner = new JSpinner(brushStartModel);
+            final SliderWithSpinner brushStartSpinner = new SliderWithSpinner(
+                    brushStartModel);
             JSpinner.NumberEditor brushStartEditor = (JSpinner.NumberEditor) brushStartSpinner
                     .getEditor();
             DecimalFormat intFormat = brushStartEditor.getFormat();
@@ -346,16 +352,17 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.brushStartLength = (Integer) (brushStartSpinner
+                    StrokeTextureExpressiveRenderingUI.this.brushStartLength = (int) (double) (brushStartSpinner
                             .getValue());
                     StrokeTextureExpressiveRenderingUI.this.refresh();
 
                 }
             });
 
-            SpinnerNumberModel brushEndModel = new SpinnerNumberModel(
+            SliderWithSpinnerModel brushEndModel = new SliderWithSpinnerModel(
                     this.brushEndLength, 1, 5000, 1);
-            final JSpinner brushEndSpinner = new JSpinner(brushEndModel);
+            final SliderWithSpinner brushEndSpinner = new SliderWithSpinner(
+                    brushEndModel);
             JSpinner.NumberEditor brushEndEditor = (JSpinner.NumberEditor) brushEndSpinner
                     .getEditor();
             intFormat.setMinimumFractionDigits(0);
@@ -368,7 +375,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.brushEndLength = (Integer) (brushEndSpinner
+                    StrokeTextureExpressiveRenderingUI.this.brushEndLength = (int) (double) (brushEndSpinner
                             .getValue());
                     StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -405,9 +412,9 @@ public class StrokeTextureExpressiveRenderingUI implements
                                 int end = Integer.valueOf(matcher.group(2));
                                 brushStartSpinner.setValue(start);
                                 brushEndSpinner.setValue(end);
-                                StrokeTextureExpressiveRenderingUI.this.brushStartLength = (Integer) (brushStartSpinner
+                                StrokeTextureExpressiveRenderingUI.this.brushStartLength = (int) (double) (brushStartSpinner
                                         .getValue());
-                                StrokeTextureExpressiveRenderingUI.this.brushEndLength = (Integer) (brushEndSpinner
+                                StrokeTextureExpressiveRenderingUI.this.brushEndLength = (int) (double) (brushEndSpinner
                                         .getValue());
                             }
                             StrokeTextureExpressiveRenderingUI.this.prefs.put(
@@ -427,15 +434,18 @@ public class StrokeTextureExpressiveRenderingUI implements
             });
             this.main.add(brushBrowseButton);
 
-            this.brushFilenameLabel = new JLabel(this.brushTextureFilename);
+            this.brushFilenameLabel = new JLabel(
+                    this.brushTextureFilename
+                            .substring(this.brushTextureFilename.length() - 30));
             this.main.add(this.brushFilenameLabel);
 
             this.main.add(brushStartSpinner);
             this.main.add(brushEndSpinner);
 
-            SpinnerNumberModel brushDensityModel = new SpinnerNumberModel(
+            SliderWithSpinnerModel brushDensityModel = new SliderWithSpinnerModel(
                     this.brushDensity, 0, 10, .1);
-            final JSpinner brushDensitySpinner = new JSpinner(brushDensityModel);
+            final SliderWithSpinner brushDensitySpinner = new SliderWithSpinner(
+                    brushDensityModel);
             JSpinner.NumberEditor brushDensityEditor = (JSpinner.NumberEditor) brushDensitySpinner
                     .getEditor();
             brushDensityEditor.getTextField().setHorizontalAlignment(
@@ -447,7 +457,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.brushDensity = (Double) (brushDensitySpinner
+                    StrokeTextureExpressiveRenderingUI.this.brushDensity = (brushDensitySpinner
                             .getValue());
                     StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -455,9 +465,10 @@ public class StrokeTextureExpressiveRenderingUI implements
             });
             this.main.add(brushDensitySpinner);
 
-            SpinnerNumberModel paperDensityModel = new SpinnerNumberModel(
-                    this.paperDensity, 0, 10, .1);
-            final JSpinner paperDensitySpinner = new JSpinner(paperDensityModel);
+            SliderWithSpinnerModel paperDensityModel = new SliderWithSpinner.SliderWithSpinnerModel(
+                    this.paperDensity, 0, 10, 0.1, .001);
+            final SliderWithSpinner paperDensitySpinner = new SliderWithSpinner(
+                    paperDensityModel);
             JSpinner.NumberEditor paperDensityEditor = (JSpinner.NumberEditor) paperDensitySpinner
                     .getEditor();
             paperDensityEditor.getTextField().setHorizontalAlignment(
@@ -469,7 +480,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.paperDensity = (Double) (paperDensitySpinner
+                    StrokeTextureExpressiveRenderingUI.this.paperDensity = (paperDensitySpinner
                             .getValue());
                     StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -477,9 +488,10 @@ public class StrokeTextureExpressiveRenderingUI implements
             });
             this.main.add(paperDensitySpinner);
 
-            SpinnerNumberModel pressureModel = new SpinnerNumberModel(
+            SliderWithSpinnerModel pressureModel = new SliderWithSpinnerModel(
                     this.strokePressure, 0.01, 100, .01);
-            final JSpinner pressureSpinner = new JSpinner(pressureModel);
+            final SliderWithSpinner pressureSpinner = new SliderWithSpinner(
+                    pressureModel);
             JSpinner.NumberEditor pressureEditor = (JSpinner.NumberEditor) pressureSpinner
                     .getEditor();
             pressureEditor.getTextField().setHorizontalAlignment(
@@ -491,16 +503,17 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.strokePressure = (Double) (pressureSpinner
+                    StrokeTextureExpressiveRenderingUI.this.strokePressure = (pressureSpinner
                             .getValue());
                     StrokeTextureExpressiveRenderingUI.this.refresh();
 
                 }
             });
             this.main.add(pressureSpinner);
-            SpinnerNumberModel sharpnessModel = new SpinnerNumberModel(
+            SliderWithSpinnerModel sharpnessModel = new SliderWithSpinnerModel(
                     this.sharpness, 0.0001, 10, .001);
-            final JSpinner sharpnessSpinner = new JSpinner(sharpnessModel);
+            final SliderWithSpinner sharpnessSpinner = new SliderWithSpinner(
+                    sharpnessModel);
             JSpinner.NumberEditor sharpnessEditor = (JSpinner.NumberEditor) sharpnessSpinner
                     .getEditor();
             sharpnessEditor.getTextField().setHorizontalAlignment(
@@ -513,7 +526,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.sharpness = (Double) (sharpnessSpinner
+                    StrokeTextureExpressiveRenderingUI.this.sharpness = (sharpnessSpinner
                             .getValue());
                     StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -521,9 +534,9 @@ public class StrokeTextureExpressiveRenderingUI implements
             });
             this.main.add(sharpnessSpinner);
 
-            SpinnerNumberModel pressureVariationAmplitudeModel = new SpinnerNumberModel(
+            SliderWithSpinnerModel pressureVariationAmplitudeModel = new SliderWithSpinnerModel(
                     this.strokePressureVariationAmplitude, 0, 100, .1);
-            final JSpinner pressureVariationAmplitudeSpinner = new JSpinner(
+            final SliderWithSpinner pressureVariationAmplitudeSpinner = new SliderWithSpinner(
                     pressureVariationAmplitudeModel);
             JSpinner.NumberEditor pressureVariationAmplitudeEditor = (JSpinner.NumberEditor) pressureVariationAmplitudeSpinner
                     .getEditor();
@@ -537,7 +550,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                         @Override
                         public void stateChanged(ChangeEvent e) {
-                            StrokeTextureExpressiveRenderingUI.this.strokePressureVariationAmplitude = (Double) (pressureVariationAmplitudeSpinner
+                            StrokeTextureExpressiveRenderingUI.this.strokePressureVariationAmplitude = (pressureVariationAmplitudeSpinner
                                     .getValue());
                             StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -545,9 +558,9 @@ public class StrokeTextureExpressiveRenderingUI implements
                     });
             this.main.add(pressureVariationAmplitudeSpinner);
 
-            SpinnerNumberModel pressureVariationWavelengthModel = new SpinnerNumberModel(
-                    this.strokePressureVariationWavelength, 0.001, 1000, 0.025);
-            final JSpinner pressureVariationWavelengthSpinner = new JSpinner(
+            SliderWithSpinnerModel pressureVariationWavelengthModel = new SliderWithSpinnerModel(
+                    this.strokePressureVariationWavelength, 0.001, 100000, 10);
+            final SliderWithSpinner pressureVariationWavelengthSpinner = new SliderWithSpinner(
                     pressureVariationWavelengthModel);
             JSpinner.NumberEditor pressureVariationWavelengthEditor = (JSpinner.NumberEditor) pressureVariationWavelengthSpinner
                     .getEditor();
@@ -561,7 +574,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                         @Override
                         public void stateChanged(ChangeEvent e) {
-                            StrokeTextureExpressiveRenderingUI.this.strokePressureVariationWavelength = (Double) (pressureVariationWavelengthSpinner
+                            StrokeTextureExpressiveRenderingUI.this.strokePressureVariationWavelength = (pressureVariationWavelengthSpinner
                                     .getValue());
                             StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -569,9 +582,9 @@ public class StrokeTextureExpressiveRenderingUI implements
                     });
             this.main.add(pressureVariationWavelengthSpinner);
 
-            SpinnerNumberModel shiftVariationAmplitudeModel = new SpinnerNumberModel(
+            SliderWithSpinnerModel shiftVariationAmplitudeModel = new SliderWithSpinnerModel(
                     this.strokeShiftVariationAmplitude, 0, 1, .01);
-            final JSpinner shiftVariationAmplitudeSpinner = new JSpinner(
+            final SliderWithSpinner shiftVariationAmplitudeSpinner = new SliderWithSpinner(
                     shiftVariationAmplitudeModel);
             JSpinner.NumberEditor shiftVariationAmplitudeEditor = (JSpinner.NumberEditor) shiftVariationAmplitudeSpinner
                     .getEditor();
@@ -585,7 +598,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                         @Override
                         public void stateChanged(ChangeEvent e) {
-                            StrokeTextureExpressiveRenderingUI.this.strokeShiftVariationAmplitude = (Double) (shiftVariationAmplitudeSpinner
+                            StrokeTextureExpressiveRenderingUI.this.strokeShiftVariationAmplitude = (shiftVariationAmplitudeSpinner
                                     .getValue());
                             StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -593,9 +606,9 @@ public class StrokeTextureExpressiveRenderingUI implements
                     });
             this.main.add(shiftVariationAmplitudeSpinner);
 
-            SpinnerNumberModel shiftVariationWavelengthModel = new SpinnerNumberModel(
-                    this.strokeShiftVariationWavelength, 0.001, 1000, 0.025);
-            final JSpinner shiftVariationWavelengthSpinner = new JSpinner(
+            SliderWithSpinnerModel shiftVariationWavelengthModel = new SliderWithSpinnerModel(
+                    this.strokeShiftVariationWavelength, 0.001, 100000, 10);
+            final SliderWithSpinner shiftVariationWavelengthSpinner = new SliderWithSpinner(
                     shiftVariationWavelengthModel);
             JSpinner.NumberEditor shiftVariationWavelengthEditor = (JSpinner.NumberEditor) shiftVariationWavelengthSpinner
                     .getEditor();
@@ -609,7 +622,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                         @Override
                         public void stateChanged(ChangeEvent e) {
-                            StrokeTextureExpressiveRenderingUI.this.strokeShiftVariationWavelength = (Double) (shiftVariationWavelengthSpinner
+                            StrokeTextureExpressiveRenderingUI.this.strokeShiftVariationWavelength = (shiftVariationWavelengthSpinner
                                     .getValue());
                             StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -617,9 +630,9 @@ public class StrokeTextureExpressiveRenderingUI implements
                     });
             this.main.add(shiftVariationWavelengthSpinner);
 
-            SpinnerNumberModel thicknessVariationAmplitudeModel = new SpinnerNumberModel(
+            SliderWithSpinnerModel thicknessVariationAmplitudeModel = new SliderWithSpinnerModel(
                     this.strokeThicknessVariationAmplitude, 0, 1, .01);
-            final JSpinner thicknessVariationAmplitudeSpinner = new JSpinner(
+            final SliderWithSpinner thicknessVariationAmplitudeSpinner = new SliderWithSpinner(
                     thicknessVariationAmplitudeModel);
             JSpinner.NumberEditor thicknessVariationAmplitudeEditor = (JSpinner.NumberEditor) thicknessVariationAmplitudeSpinner
                     .getEditor();
@@ -633,7 +646,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                         @Override
                         public void stateChanged(ChangeEvent e) {
-                            StrokeTextureExpressiveRenderingUI.this.strokeThicknessVariationAmplitude = (Double) (thicknessVariationAmplitudeSpinner
+                            StrokeTextureExpressiveRenderingUI.this.strokeThicknessVariationAmplitude = (thicknessVariationAmplitudeSpinner
                                     .getValue());
                             StrokeTextureExpressiveRenderingUI.this.refresh();
 
@@ -641,9 +654,9 @@ public class StrokeTextureExpressiveRenderingUI implements
                     });
             this.main.add(thicknessVariationAmplitudeSpinner);
 
-            SpinnerNumberModel thicknessVariationWavelengthModel = new SpinnerNumberModel(
-                    this.strokeThicknessVariationWavelength, 0.001, 1000, 0.025);
-            final JSpinner thicknessVariationWavelengthSpinner = new JSpinner(
+            SliderWithSpinnerModel thicknessVariationWavelengthModel = new SliderWithSpinnerModel(
+                    this.strokeThicknessVariationWavelength, 0.001, 100000, 10);
+            final SliderWithSpinner thicknessVariationWavelengthSpinner = new SliderWithSpinner(
                     thicknessVariationWavelengthModel);
             JSpinner.NumberEditor thicknessVariationWavelengthEditor = (JSpinner.NumberEditor) thicknessVariationWavelengthSpinner
                     .getEditor();
@@ -657,7 +670,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                         @Override
                         public void stateChanged(ChangeEvent e) {
-                            StrokeTextureExpressiveRenderingUI.this.strokeThicknessVariationWavelength = (Double) (thicknessVariationWavelengthSpinner
+                            StrokeTextureExpressiveRenderingUI.this.strokeThicknessVariationWavelength = (thicknessVariationWavelengthSpinner
                                     .getValue());
                             StrokeTextureExpressiveRenderingUI.this.refresh();
 

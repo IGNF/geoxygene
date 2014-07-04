@@ -28,15 +28,15 @@ uniform float brushDensity = 1.0; // brush height scale factor
 uniform float strokePressure = 1; // stroke pressure
 
 float thicknessVariationSeed = 43.214548;
-uniform float thicknessVariationFrequency = 0.05;
+uniform float thicknessVariationWavelength = 500;
 uniform float thicknessVariationAmplitude = 0.5;
 
 float shiftVariationSeed = 28.84321871;
-uniform float shiftVariationFrequency = 0.05;
+uniform float shiftVariationWavelength = 500;
 uniform float shiftVariationAmplitude = 0.1;
 
 float pressureVariationSeed = 128.84321871;
-uniform float pressureVariationFrequency = 0.05;
+uniform float pressureVariationWavelength = 500;
 uniform float pressureVariationAmplitude = 0.5;
 
 out vec4 outColor;
@@ -97,6 +97,7 @@ vec4 taylorInvSqrt(vec4 r)
 {
   return 1.79284291400159 - 0.85373472095314 * r;
 }
+//https://github.com/hughsk/glsl-noise/blob/master/simplex/3d.glsl
 
 float snoise(vec3 v)
   {
@@ -186,20 +187,26 @@ float vTextureScale( in float width, in float v ) {
 
 // return the computeStrokeWidth (0..1) depending on a linear coordinate
 float computeStrokeWidth( in float u ) {
-	vec3 p = vec3((u + thicknessVariationSeed)*thicknessVariationFrequency, 0, 0);
+
+	vec3 p = vec3((u + thicknessVariationSeed)/thicknessVariationWavelength, 0, 0);
 	return 1 - snoise(p)* thicknessVariationAmplitude;
 }
 
 // return the computeStrokeShift (-0.5..0.5) depending on a linear coordinate
 float computeStrokeShift( in float u ) {
-	return ( snoise(vec3((u + shiftVariationSeed)*shiftVariationFrequency,0,0)) ) * shiftVariationAmplitude;
+	return ( snoise(vec3((u + shiftVariationSeed)/shiftVariationWavelength,0,0)) ) * shiftVariationAmplitude;
 }
 
 // return the computeStrokePressure (-0.5..0.5) depending on a linear coordinate
 float computeStrokePressure( in float u ) {
-	return strokePressure + ( myNoise(u + pressureVariationSeed, pressureVariationFrequency) - 0.5) * pressureVariationAmplitude;
+	
+	float var = 1-clamp((snoise(vec3((u+pressureVariationSeed)/pressureVariationWavelength,0,0))*0.5+0.5)*pressureVariationAmplitude, 0.0, 10.0);
+	return strokePressure*var;
+		
+//	return strokePressure*(0.5+0.5*var)*	smoothstep(0, 150, fragmentUV.x)*	(1-smoothstep(uMax_w-150, uMax_w, fragmentUV.x));
+	//fragmentUV.x/uMax_w;
+	//return strokePressure*(snoise(vec3(u + pressureVariationSeed)/pressureVariationWavelength) * (1-pressureVariationAmplitude));
 }
-
 
 
 void main() {
@@ -237,22 +244,27 @@ void main() {
 	vec3 paperHeight = paperColor.rgb;
 
 //	float brushHeight = ( brushColor.r + brushColor.g + brushColor.b ) / 3.;
-	vec3 brushHeight = brushColor.rgb;
+	vec3 brushHeight = 1-brushColor.rgb;
 	
 //	float penetration = 1. / computeStrokePressure( fragmentUV.x ) - ( 1 - brushHeight * brushDensity ) - ( paperHeight * paperDensity);
-	vec3 penetration = vec3(1. / computeStrokePressure( fragmentUV.x )) - ( vec3(1.0) - brushHeight * brushDensity ) - ( paperHeight * paperDensity);
+	//vec3 penetration = vec3(1. / computeStrokePressure( fragmentUV.x )) - ( vec3(1.0) - brushHeight * brushDensity ) - ( paperHeight * paperDensity);
 	
-//	float f = smoothstep( -1, 1,  penetration );
-	vec3 f = smoothstep( -sharpness, sharpness,  penetration );
-//	outColor = vec4( brushColor.rgb, 1);
+	
+	float bh = computeStrokePressure(fragmentUV.x)*brushHeight.x*brushDensity;
+	float ph = (0.5 + (paperHeight.x-0.5)*paperDensity);
+	float penetration = clamp( ph - (1-bh), -1, 1);
+	float f = 1 - smoothstep( 0.0-sharpness, 0.0+sharpness,  penetration );
+		
+//	outColor = vec4( computeStrokePressure(fragmentUV.x),0,0,1 );
 //	outColor = vec4( vec3( 0.5 ), 1.0 );
 //	outColor = vec4( fragmentUV, 0, 1. );
-	outColor = vec4( fragmentColor.rgb, fragmentColor.a * (1-(f.x+f.y+f.z)/3. ));
-//	outColor = vec4( vec3( paperHeight ), 1.0 );
+	outColor = vec4( 0.2, 0.2, 0.2, 1-f );
+	
 
 // outColor = vec4(	vec3( myNoise( fragmentUV.xy / vec2(10.,.1), 5. ) +0.5 ) ,	 1.0);
-//	outColor  = vec4( fragmentUV, 0., 1. );
-//outColor = vec4(max(computeStrokeShift( fragmentUV.x ),0),max(-computeStrokeShift( fragmentUV.x ),0),0, 1);
+// outColor = vec4(	vec3( snoise( vec3(fragmentUV.xy/vec2(10,1), 0))*0.5+0.5) ,	 1.0);
+// outColor  = vec4( fragmentUV, 0., 1. );
+// outColor = vec4(max(computeStrokeShift( fragmentUV.x ),0),max(-computeStrokeShift( fragmentUV.x ),0),0, 1);
 }
 
 
