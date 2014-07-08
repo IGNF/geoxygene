@@ -2,11 +2,7 @@ package fr.ign.cogit.geoxygene.util.gl;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 public interface Tile {
 
@@ -20,9 +16,14 @@ public interface Tile {
     public abstract void setImage(BufferedImage image);
 
     /**
-     * @return the image
+     * @return the image with no transparency
      */
     public abstract BufferedImage getImage();
+
+    /**
+     * @return the image with transparency
+     */
+    public abstract BufferedImage getTransparentImage();
 
     /**
      * get tile width

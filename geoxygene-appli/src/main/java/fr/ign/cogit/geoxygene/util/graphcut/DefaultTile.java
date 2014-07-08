@@ -55,6 +55,7 @@ public class DefaultTile implements Tile {
             .getName()); // logger
 
     private BufferedImage image = null;
+    private BufferedImage tImage = null;
     private List<Point> borders = null;
     private int size = 0; // number of lighten mask pixels
     private BufferedImage mask = null;
@@ -81,7 +82,7 @@ public class DefaultTile implements Tile {
      */
     @Override
     public void setImage(BufferedImage image) {
-        this.image = ImageUtil.convert(image, BufferedImage.TYPE_4BYTE_ABGR);
+        this.tImage = ImageUtil.convert(image, BufferedImage.TYPE_4BYTE_ABGR);
         this.computeMaskAndBorders();
     }
 
@@ -93,6 +94,16 @@ public class DefaultTile implements Tile {
     @Override
     public BufferedImage getImage() {
         return this.image;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.util.graphcut.Tile#getImage()
+     */
+    @Override
+    public BufferedImage getTransparentImage() {
+        return this.tImage;
     }
 
     /*
@@ -248,15 +259,19 @@ public class DefaultTile implements Tile {
      * image alpha = 0 (transparent) when mask = 255
      */
     private void computeMaskAndBorders() {
-        if (this.image == null) {
+        if (this.tImage == null) {
             return;
         }
-        int w = this.image.getWidth();
-        int h = this.image.getHeight();
+        int w = this.tImage.getWidth();
+        int h = this.tImage.getHeight();
         this.borders = new ArrayList<Point>();
         this.size = 0;
         this.mask = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
         this.border = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
+        this.image = new BufferedImage(w, h, BufferedImage.TYPE_4BYTE_ABGR);
+        // this.image = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
+        byte[] imageSourcePixels = ((DataBufferByte) this.tImage.getRaster()
+                .getDataBuffer()).getData();
         byte[] imagePixels = ((DataBufferByte) this.image.getRaster()
                 .getDataBuffer()).getData();
         byte[] maskPixels = ((DataBufferByte) this.mask.getRaster()
@@ -267,7 +282,10 @@ public class DefaultTile implements Tile {
         for (int y = 0, lMask = 0; y < h; y++) {
             for (int x = 0; x < w; x++, lMask++) {
                 int lImage = lMask * 4;
-                boolean in = this.imagePixelIsInMask(imagePixels, lImage);
+                boolean in = this.imagePixelIsInMask(imageSourcePixels, lImage);
+                imagePixels[lImage + 1] = imageSourcePixels[lImage + 1];
+                imagePixels[lImage + 2] = imageSourcePixels[lImage + 2];
+                imagePixels[lImage + 3] = imageSourcePixels[lImage + 3];
 
                 // mask
                 if (in) {
@@ -281,12 +299,14 @@ public class DefaultTile implements Tile {
                             || y == 0
                             || x == w - 1
                             || y == h - 1
-                            || !this.imagePixelIsInMask(imagePixels, lImage - 4)
-                            || !this.imagePixelIsInMask(imagePixels, lImage + 4)
-                            || !this.imagePixelIsInMask(imagePixels, lImage - 4
-                                    * w)
-                            || !this.imagePixelIsInMask(imagePixels, lImage + 4
-                                    * w)) {
+                            || !this.imagePixelIsInMask(imageSourcePixels,
+                                    lImage - 4)
+                            || !this.imagePixelIsInMask(imageSourcePixels,
+                                    lImage + 4)
+                            || !this.imagePixelIsInMask(imageSourcePixels,
+                                    lImage - 4 * w)
+                            || !this.imagePixelIsInMask(imageSourcePixels,
+                                    lImage + 4 * w)) {
                         this.borders.add(new Point(x, y));
                         borderPixels[lMask] = MASK_IN;
 
@@ -297,8 +317,8 @@ public class DefaultTile implements Tile {
                     borderPixels[lMask] = MASK_OUT;
                     maskPixels[lMask] = MASK_OUT; // mask white : invisible
                                                   // pixel
-                    imagePixels[lImage] = (byte) 0; // alpha = 0 : pure
-                                                    // transparent pixel
+                    imageSourcePixels[lImage] = (byte) 0; // alpha = 0 : pure
+                    // transparent pixel
                 }
             }
         }

@@ -69,7 +69,7 @@ public class DistanceTileProbability implements TileProbability {
      *         this functions return 1 when the pixel distance is between min and
      *         max value. 0 elsewhere
      */
-    public double getProbability(double x, double y) {
+    public double getWeight(double x, double y) {
         TexturePixel pixel = this.image.getPixel((int) x, (int) y);
         //        System.err.println("DistanceTileProbability pixel = " + pixel + " distance = " + pixel.distance);
         if (pixel == null || pixel.distance == Double.NaN) {

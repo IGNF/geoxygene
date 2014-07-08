@@ -56,6 +56,9 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
     @XmlElement(name = "Blending")
     private final TileBlendingType blending = TileBlendingType.NONE;
 
+    @XmlElement(name = "DistributionManagement")
+    private DistributionManagementType distributionManagement = DistributionManagementType.EXACT;
+
     /**
      * default constructor
      */
@@ -107,8 +110,28 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
         return this.blending;
     }
 
+    /**
+     * @return the distributionManagement
+     */
+    public DistributionManagementType getDistributionManagement() {
+        return this.distributionManagement;
+    }
+
+    /**
+     * @param distributionManagement
+     *            the distributionManagement to set
+     */
+    public void setDistributionManagement(
+            DistributionManagementType distributionManagement) {
+        this.distributionManagement = distributionManagement;
+    }
+
     public enum TileBlendingType {
         NONE, ALPHA, GRAPHCUT
+    }
+
+    public enum DistributionManagementType {
+        EXACT, KEEP_OUTSIDE, CUT_OUTSIDE
     }
 
     /*
@@ -122,13 +145,15 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
         int result = super.hashCode();
         result = prime * result
                 + ((this.blending == null) ? 0 : this.blending.ordinal());
+        result = prime
+                * result
+                + ((this.distributionManagement == null) ? 0
+                        : this.distributionManagement.ordinal());
         long temp;
         temp = Double.doubleToLongBits(this.maxCoastlineLength);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(this.textureResolution);
         result = prime * result + (int) (temp ^ (temp >>> 32));
-        result = prime * result
-                + ((this.tiles == null) ? 0 : this.tiles.hashCode());
         return result;
     }
 
@@ -152,19 +177,15 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
         if (this.blending != other.blending) {
             return false;
         }
+        if (this.distributionManagement != other.distributionManagement) {
+            return false;
+        }
         if (Double.doubleToLongBits(this.maxCoastlineLength) != Double
                 .doubleToLongBits(other.maxCoastlineLength)) {
             return false;
         }
         if (Double.doubleToLongBits(this.textureResolution) != Double
                 .doubleToLongBits(other.textureResolution)) {
-            return false;
-        }
-        if (this.tiles == null) {
-            if (other.tiles != null) {
-                return false;
-            }
-        } else if (!this.tiles.equals(other.tiles)) {
             return false;
         }
         return true;
@@ -178,10 +199,10 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
     @Override
     public String toString() {
         return "TileDistributionTextureDescriptor [maxCoastlineLength="
-                + this.maxCoastlineLength + ", tiles=" + this.tiles
-                + ", textureResolution=" + this.textureResolution
-                + ", blending=" + this.blending + ", toString()="
-                + super.toString() + "]";
-    };
+                + this.maxCoastlineLength + ", textureResolution="
+                + this.textureResolution + ", blending=" + this.blending
+                + ", distributionManagement=" + this.distributionManagement
+                + ", toString()=" + super.toString() + "]";
+    }
 
 }

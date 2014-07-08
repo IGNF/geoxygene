@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Random;
 
 import utils.Pair;
+import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor.DistributionManagementType;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 import fr.ign.cogit.geoxygene.util.gl.Tile;
 
@@ -43,11 +44,16 @@ public class TextureImageTileChooser implements TileChooser {
 
     private Random rand = new Random(0);
     private final List<Pair<TileProbability, Tile>> tilesToBeApplied = new ArrayList<Pair<TileProbability, Tile>>();
+    private DistributionManagementType distributionManagement = DistributionManagementType.EXACT;
 
     /**
      * Default constructor
+     * 
+     * @param distributionManagementType
      */
-    public TextureImageTileChooser() {
+    public TextureImageTileChooser(
+            DistributionManagementType distributionManagement) {
+        this.distributionManagement = distributionManagement;
         this.initializeTiling();
     }
 
@@ -68,28 +74,34 @@ public class TextureImageTileChooser implements TileChooser {
      */
     @Override
     public Tile getTile(Sample sample) {
-        double sumProbability = 0;
-        double[] sumProbabilities = new double[this.tilesToBeApplied.size()];
+        double sumWeight = 0;
+        double[] weightSum = new double[this.tilesToBeApplied.size()];
         for (int n = 0; n < this.tilesToBeApplied.size(); n++) {
             Pair<TileProbability, Tile> pair = this.tilesToBeApplied.get(n);
-            sumProbability += pair.first().getProbability(sample.getLocation().getX(), sample.getLocation().getY());
-            sumProbabilities[n] = sumProbability;
+            sumWeight += pair.first().getWeight(
+                    sample.getLocation().getX(), sample.getLocation().getY());
+            weightSum[n] = sumWeight;
         }
-        if (sumProbability < 1E-6) {
+        if (sumWeight < 1E-6) {
             return null;
         }
-        double randomValue = this.rand.nextDouble() * sumProbability;
+        double randomValue = this.rand.nextDouble() * sumWeight;
         int n = 0;
         while (n < this.tilesToBeApplied.size()) {
-            if (randomValue < sumProbabilities[n]) {
-                //                System.err.println("probabilities: " + Arrays.toString(sumProbabilities) + " random value = " + randomValue + " => index = " + n + "["
-                //                        + sumProbabilities[n] + "]");
-                //                System.err.println("sample " + sample + " => tile " + this.tilesToBeApplied.get(n).second());
+            if (randomValue < weightSum[n]) {
+                // System.err.println("probabilities: " +
+                // Arrays.toString(sumProbabilities) + " random value = " +
+                // randomValue + " => index = " + n + "["
+                // + sumProbabilities[n] + "]");
+                // System.err.println("sample " + sample + " => tile " +
+                // this.tilesToBeApplied.get(n).second());
                 return this.tilesToBeApplied.get(n).second();
             }
             n++;
         }
-        throw new IllegalStateException("impossible case random value = " + randomValue + " max Value = " + sumProbabilities[sumProbabilities.length - 1]);
+        throw new IllegalStateException("impossible case random value = "
+                + randomValue + " max Value = "
+                + weightSum[weightSum.length - 1]);
     }
 
     /*

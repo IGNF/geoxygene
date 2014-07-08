@@ -45,5 +45,5 @@ public interface TileProbability {
      *            position in texture image
      * @return
      */
-    double getProbability(double x, double y);
+    double getWeight(double x, double y);
 }

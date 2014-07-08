@@ -61,6 +61,7 @@ import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.TexturePixel;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.texture.ProbabilistTileDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor.DistributionManagementType;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor.TileBlendingType;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
@@ -392,7 +393,8 @@ public class TileDistributionTextureTask extends
                     this.getTextureHeight());
 
             this.monitorMemory("after setting dimension");
-            TextureImageTileChooser tileChooser = new TextureImageTileChooser();
+            TextureImageTileChooser tileChooser = new TextureImageTileChooser(
+                    this.textureDescriptor.getDistributionManagement());
             for (Pair<TileProbability, Tile> pair : this.tilesToBeApplied) {
                 tileChooser.addTile(pair.first(), pair.second());
             }
@@ -401,8 +403,14 @@ public class TileDistributionTextureTask extends
                 this.setState(TaskState.STOPPED);
                 return;
             }
+            double visibilityRatioThreshold = 0;
+
+            if (this.textureDescriptor.getDistributionManagement() == DistributionManagementType.CUT_OUTSIDE) {
+                // keep only patchs > 80% visible
+                visibilityRatioThreshold = 0.8;
+            }
             TextureImageSamplerMipMap sampler = new TextureImageSamplerMipMap(
-                    this.texImage, tileChooser);
+                    this.texImage, tileChooser, visibilityRatioThreshold);
 
             if (this.isStopRequested()) {
                 this.setState(TaskState.STOPPED);
@@ -483,10 +491,10 @@ public class TileDistributionTextureTask extends
             List<Pair<TileProbability, Tile>> tilesToBeApplied,
             SamplingAlgorithm sampler, Shape clippingShape) {
         image.invalidateUVBounds();
-        TextureImageTileChooser tileChooser = new TextureImageTileChooser();
-        for (Pair<TileProbability, Tile> pair : tilesToBeApplied) {
-            tileChooser.addTile(pair.first(), pair.second());
-        }
+        // TextureImageTileChooser tileChooser = new TextureImageTileChooser();
+        // for (Pair<TileProbability, Tile> pair : tilesToBeApplied) {
+        // tileChooser.addTile(pair.first(), pair.second());
+        // }
         BufferedImage bi = new BufferedImage(this.getTextureWidth(),
                 this.getTextureHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         GraphCut graphCut = null;
@@ -517,37 +525,45 @@ public class TileDistributionTextureTask extends
             Sample sample = sampleIterator.next();
             double xTexture = sample.getLocation().getX();
             double yTexture = sample.getLocation().getY();
-            Tile tile = sample.getTile() != null ? sample.getTile()
-                    : tileChooser.getTile(sample);
+            Tile tile = sample.getTile();
+            // Tile tile = sample.getTile() != null ? sample.getTile()
+            // : tileChooser.getTile(sample);
             if (tile == null) {
                 continue;
             }
-            BufferedImage tileImage = tile.getImage();
-
+            if (tile.getImage() == null) {
+                throw new IllegalStateException("sample "
+                        + sample.getLocation()
+                        + " has an associated tile with no image");
+            }
             TexturePixel pixel = image.getPixel((int) xTexture, (int) yTexture);
             if (pixel == null || !(pixel.in || pixel.frontier != 0)
                     || pixel.vGradient == null) {
                 logger.warn("invalid pixel = " + pixel);
                 continue;
             } else {
+                // TODO: Check if the tile has a part outside geometry
+                // to not display it when DistributionManagement is CUT_OUTSIDE
                 AffineTransform transform = image.tileTransform((int) xTexture,
-                        (int) yTexture, tileImage.getWidth(),
-                        tileImage.getHeight());
+                        (int) yTexture, tile.getWidth(), tile.getHeight());
                 if (this.getTextureDescriptor().getBlending() == TileBlendingType.GRAPHCUT) {
                     graphCut.pasteTile(tile, transform);
                 } else {
+                    BufferedImage tileImage = tile.getTransparentImage();
                     g2.drawImage(tileImage, transform, null);
-                    g2.fillRect(tileImage.getWidth() / 2,
-                            tileImage.getHeight() / 2, tileImage.getWidth(),
-                            tileImage.getHeight());
+                    // g2.fillRect(tileImage.getWidth() / 2,
+                    // tileImage.getHeight() / 2, tileImage.getWidth(),
+                    // tileImage.getHeight());
+                    // try {
+                    // // ImageIO.write(tileImage, "PNG", new File("tile-"
+                    // // + nSample + "-2.png"));
+                    // ImageIO.write(bi, "PNG", new File("tile-" + nSample
+                    // + "-5.png"));
+                    // } catch (IOException e) {
+                    // // TODO Auto-generated catch block
+                    // e.printStackTrace();
+                    // }
                 }
-                // try {
-                // ImageIO.write(bi, "PNG", new File("tile-" + nSample +
-                // ".png"));
-                // } catch (IOException e) {
-                // // TODO Auto-generated catch block
-                // e.printStackTrace();
-                // }
             }
             this.setProgress((double) nSample / nbSamples);
             nSample++;
