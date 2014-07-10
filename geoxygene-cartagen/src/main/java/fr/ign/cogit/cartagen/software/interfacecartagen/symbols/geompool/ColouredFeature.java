@@ -227,6 +227,7 @@ public class ColouredFeature extends DefaultFeature {
       stroke.setStrokeWidth(0);
       mark.setStroke(stroke);
       graphic.getMarks().add(mark);
+      graphic.setSize(graphic.getSize() * widthPixels);
       symbolizer.setGraphic(graphic);
       return symbolizer;
     } else {
