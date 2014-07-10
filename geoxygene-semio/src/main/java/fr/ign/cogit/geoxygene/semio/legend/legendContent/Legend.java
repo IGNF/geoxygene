@@ -1,10 +1,12 @@
 package fr.ign.cogit.geoxygene.semio.legend.legendContent;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -355,6 +357,34 @@ public class Legend  {
             logger.error("File " + fileName + " could not be read");
             return new Legend();
         }
+    }
+    
+    /**
+     * Loads the Legend described in the XML file.
+     * If the file does'nt exist, a new empty Legend is created.
+     * @param XML file describing the Legend to load.
+     * @return The Legend described in the XML file or a new empty Legend if the file does'nt exist.
+     */
+    public static Legend unmarshall(File file) {
+        try {
+          JAXBContext context = JAXBContext.newInstance(Legend.class);
+          Unmarshaller unmarshaller = context.createUnmarshaller(); 
+          return (Legend) unmarshaller.unmarshal(file); 
+        } catch (Exception e) {
+            logger.error("File " + file.getName() + " could not be unmarshall");
+            return new Legend();
+        }
+    }
+    
+    public static Legend unmarshall(StringReader reader) throws Exception { 
+      try { 
+        JAXBContext context = JAXBContext.newInstance(Legend.class);
+        Unmarshaller msh = context.createUnmarshaller(); 
+        return(Legend)msh.unmarshal(reader); 
+      } catch (Exception e1) {
+        e1.printStackTrace(); 
+        throw e1;
+      }
     }
 
     /**
