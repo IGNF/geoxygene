@@ -153,26 +153,27 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     this.id = COUNTER.getAndIncrement();
   }
 
-//  public Stroke(RoadStrokesNetwork network, ArrayList<ArcReseauFlagPair> features,
-//      ILineString geomStroke) {
-//    this.features = features;
-//    this.geomStroke = geomStroke;
-//    this.geom = geomStroke;
-//    this.network = network;
-//    this.setRoot(features.get(0).getArcReseau());
-//    this.id = this.getRoot().getId();
-//  }
-
-  
-  public Stroke(RoadStrokesNetwork network, ArrayList<ArcReseau> features,
+  public Stroke(RoadStrokesNetwork network, ArrayList<ArcReseauFlagPair> features,
       ILineString geomStroke) {
-    setFeatures(features);
+    this.features = features;
     this.geomStroke = geomStroke;
     this.geom = geomStroke;
     this.network = network;
-    this.setRoot(features.get(0));
+    this.setRoot(features.get(0).getArcReseau());
     this.id = this.getRoot().getId();
   }
+
+  
+//  public Stroke(RoadStrokesNetwork network, ArrayList<ArcReseau> features,
+//      ILineString geomStroke) {
+//    setFeatures(features);
+//    this.geomStroke = geomStroke;
+//    this.geom = geomStroke;
+//    this.network = network;
+//    this.setRoot(features.get(0));
+////    this.id = this.getRoot().getId();
+//    this.id = COUNTER.getAndIncrement();
+//  }
   
 
   /**
@@ -886,6 +887,20 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     }
   }
 
+  /**
+   * Build the stroke geometry from the list of features composing the stroke without the flags
+   */
+  public void buildGeomStrokeWithoutFlags() {
+    ArrayList<ILineString> geoms = new ArrayList<ILineString>();
+    for (ArcReseau arc : this.getFeatures()) {
+      geoms.add((ILineString) arc.getGeom());
+    }
+    this.setGeomStroke(this.joinStrokeFeatures(geoms));
+    if (this.getGeomStroke() == null) {
+      // System.out.println(this.features);
+    }
+  }
+  
   protected ILineString joinStrokeFeatures(ArrayList<ILineString> lines) {
     IDirectPositionList pointsFinaux = new DirectPositionList();
     if (lines.size() == 0) {
@@ -978,6 +993,14 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   }
 
 
+  public void setStrokeInitialNode(StrokeNode strokeInitialNode) {
+    this.strokeInitialNode = strokeInitialNode;
+  }
+
+  public void setStrokeFinalNode(StrokeNode strokeFinalNode) {
+    this.strokeFinalNode = strokeFinalNode;
+  }
+
   /**
    * @author JTeulade-Denantes
    * 
@@ -1004,7 +1027,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
             //this arc is not in the good direction
             orderedArcList.add(new ArcReseauFlagPairImpl(firstArc, false));
           } else
-            logger.info("error in strokes creation");
+            logger.error("error in strokes creation");
         }
         
         if (firstArc == null) {
@@ -1022,7 +1045,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
             previousNode = arc.getNoeudFinal();
             orderedArcList.add(new ArcReseauFlagPairImpl(arc, true));  
           } else 
-            logger.info("error in strokes creation");
+            logger.error("error in strokes creation");
         }  
       }
       this.setOrientedFeatures(orderedArcList);
@@ -1038,7 +1061,6 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   public void instantiateStrokeNodes(Map<NoeudReseau, StrokeNode> strokeNodesMap) {
     
     ArcReseauFlagPair initialArcPair = this.getOrientedFeatures().get(0);
-    ArcReseauFlagPair finalArcPair = this.getOrientedFeatures().get(this.getFeatures().size()-1); 
     NoeudReseau noeudReseau;
     
     //strokeInitialNode instanciation
@@ -1054,7 +1076,10 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
       strokeInitialNode = new StrokeNode(noeudReseau, this.network);
       strokeNodesMap.put(noeudReseau, strokeInitialNode);
     }
-     
+
+    
+    ArcReseauFlagPair finalArcPair = this.getOrientedFeatures().get(this.getFeatures().size()-1); 
+    
     //strokeFinalNode instanciation
     if (finalArcPair.getFlag()) 
       noeudReseau = finalArcPair.getArcReseau().getNoeudFinal();

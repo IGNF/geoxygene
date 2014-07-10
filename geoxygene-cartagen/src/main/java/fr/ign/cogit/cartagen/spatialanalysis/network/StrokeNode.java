@@ -1,5 +1,6 @@
 package fr.ign.cogit.cartagen.spatialanalysis.network;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -95,12 +96,6 @@ public class StrokeNode extends AbstractFeature {
     return this.outStrokes;
   }
   
-  public Collection<Stroke> getAllStrokes() {
-    Collection<Stroke> allStrokes = new FT_FeatureCollection<Stroke>(this.outStrokes);
-    allStrokes.addAll(this.inStrokes);
-    return allStrokes;
-  }
-  
   public int strokesNumber() {
     return inStrokes.size() + outStrokes.size();
   }
@@ -145,7 +140,13 @@ public class StrokeNode extends AbstractFeature {
     Set<Stroke> selectedStrokes = new HashSet<Stroke>();
     //from all the selected arcs, we find the related strokes
     for (ArcReseau arc : this.getNoeudReseau().clockwiseSelectedArcs(firstArc, secondArc, clockwise)) {
-      for (Stroke stroke : this.getAllStrokes()) {
+      for (Stroke stroke : this.getInStrokes()) {
+        if (stroke.getFeatures().get(0).equals(arc) || stroke.getFeatures().get(stroke.getFeatures().size() - 1).equals(arc)) {
+          selectedStrokes.add(stroke);
+          break;
+        }
+      }
+      for (Stroke stroke : this.getOutStrokes()) {
         if (stroke.getFeatures().get(0).equals(arc) || stroke.getFeatures().get(stroke.getFeatures().size() - 1).equals(arc)) {
           selectedStrokes.add(stroke);
           break;
@@ -153,6 +154,41 @@ public class StrokeNode extends AbstractFeature {
       }
     }
     return selectedStrokes;
+  }
+  
+  /**
+   * This function returns ordered strokes related to this nodes
+   * @param routeStrokes 
+   * @return the ordered list of strokes
+   */
+  public List<Stroke> orderedStrokes() {
+    List<Stroke> orderedStrokes = new ArrayList<Stroke>();
+    boolean out;
+    //from all the selected arcs, we find the related strokes
+    for (ArcReseau arc : this.getNoeudReseau().getClockwiseArcs()) {
+      out = false;
+      for (Stroke stroke : this.getInStrokes()) {
+        if (stroke.getFeatures().get(0).equals(arc) || stroke.getFeatures().get(stroke.getFeatures().size() - 1).equals(arc)) {
+          orderedStrokes.add(stroke);
+          out = true;
+          break;
+        }
+      }
+      if (out) {
+        continue;
+      }
+      for (Stroke stroke : this.getOutStrokes()) {
+        if (stroke.getFeatures().get(0).equals(arc) || stroke.getFeatures().get(stroke.getFeatures().size() - 1).equals(arc)) {
+          orderedStrokes.add(stroke);
+          out = true;
+          break;
+        }
+      }
+      if (!out) {
+        orderedStrokes.add(null);
+      }
+    }
+    return orderedStrokes;
   }
   
   

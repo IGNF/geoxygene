@@ -21,6 +21,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.schemageo.api.routier.NoeudRoutier;
 import fr.ign.cogit.geoxygene.schemageo.api.routier.TronconDeRoute;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseauFlagPair;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.NoeudReseau;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -56,7 +57,7 @@ public class RoadStroke extends Stroke {
     super(network, root);
   }
 
-  public RoadStroke(RoadStrokesNetwork network, ArrayList<ArcReseau> features,
+  public RoadStroke(RoadStrokesNetwork network, ArrayList<ArcReseauFlagPair> features,
       ILineString geomStroke) {
     super(network, features, geomStroke);
   }
