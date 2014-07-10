@@ -130,9 +130,19 @@
 			<artifactId>geoxygene-io</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- xmlUnit for testing -->
+		<dependency>
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
+			<version>1.4</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project> 
