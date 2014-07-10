@@ -71,7 +71,7 @@ public class NoeudReseauImpl extends ElementDuReseauImpl implements NoeudReseau 
    * this function takes all the arcs related to the node in order to sort them in a clockwise direction
    * @return the list node arcs in a clockwise direction 
    */
-  private List<ArcReseau> getClockwiseArcs() {
+  public List<ArcReseau> getClockwiseArcs() {
     
     IDirectPosition positionNode = this.getGeom().getPosition();
     //the position of each node arc

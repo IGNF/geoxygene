@@ -49,6 +49,14 @@ public interface NoeudReseau extends ElementDuReseau {
   /**
    * @author JTeulade-Denantes
    * 
+   * this function takes all the arcs related to the node in order to sort them in a clockwise direction
+   * @return the list node arcs in a clockwise direction 
+   */
+  public List<ArcReseau> getClockwiseArcs();
+  
+  /**
+   * @author JTeulade-Denantes
+   * 
    * this function returns the arcs included between two arcs in a clockwise or counterclockwise direction
    * @param firstArc
    * @param secondArc
