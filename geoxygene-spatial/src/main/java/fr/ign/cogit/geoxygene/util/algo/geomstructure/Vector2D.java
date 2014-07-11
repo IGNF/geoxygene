@@ -215,7 +215,9 @@ public class Vector2D extends Vecteur {
    */
   public Vector2D project(double direction) {
     // create the unit vector in direction angle
-    Vector2D unitVect = new Vector2D(direction, 1);
+    if (direction >= Math.PI * 2)
+      direction = direction - Math.PI * 2;
+    Vector2D unitVect = new Vector2D(new Angle(direction), 1);
     double norm = this.prodScalaire(unitVect);
     return unitVect.changeNorm(norm);
   }
