@@ -106,6 +106,8 @@ public class GLPaintingComplex extends AbstractGLComplex<GLPaintingVertex> {
                 GLPaintingVertex.vertexColorLocation, GL11.GL_FLOAT, 4, false);
         this.addInput(GLPaintingVertex.vertexMaxUVariableName,
                 GLPaintingVertex.vertexMaxULocation, GL11.GL_FLOAT, 1, false);
+        this.addInput(GLPaintingVertex.vertexPaperUVVariableName,
+                GLPaintingVertex.vertexPaperUVLocation, GL11.GL_FLOAT, 2, false);
 
     }
 
@@ -235,6 +237,7 @@ public class GLPaintingComplex extends AbstractGLComplex<GLPaintingVertex> {
                 this.verticesBuffer.put(vertex.getThickness());
                 this.verticesBuffer.put(vertex.getColor());
                 this.verticesBuffer.put(vertex.getMaxU());
+                this.verticesBuffer.put(vertex.getPaperUV());
             }
             this.verticesBuffer.flip();
 

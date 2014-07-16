@@ -182,8 +182,13 @@ public final class VectorUtil {
 
     public static Point2d normalize(Point2d result, Point2d v) {
         double l = length(v);
-        result.x = v.x / l;
-        result.y = v.y / l;
+        if (l < 1e-6) {
+            result.x = 0;
+            result.y = 0;
+        } else {
+            result.x = v.x / l;
+            result.y = v.y / l;
+        }
         return result;
     }
 

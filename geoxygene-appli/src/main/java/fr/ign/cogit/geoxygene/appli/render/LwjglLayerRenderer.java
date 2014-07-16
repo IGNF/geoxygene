@@ -29,10 +29,10 @@ import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.Util;
 
-import test.app.GLPaintingVertex;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.gl.GLPaintingVertex;
 import fr.ign.cogit.geoxygene.appli.gl.GLTextureManager;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
@@ -94,8 +94,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         return (LayerViewGLPanel) super.getLayerViewPanel();
     }
 
-    private final FeatureRenderer getRenderer(Symbolizer symbolizer,
-            IFeature feature) {
+    private final FeatureRenderer getRenderer() {
         if (this.gl4Renderer == null) {
             try {
                 this.gl4Renderer = new GL4FeatureRenderer(this,
@@ -329,13 +328,16 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
     private void render(final Symbolizer symbolizer, final IFeature feature,
             final Layer layer) throws RenderingException {
         Viewport viewport = this.getLayerViewPanel().getViewport();
-        this.getRenderer(symbolizer, feature).render(feature, layer,
-                symbolizer, viewport);
+        this.getRenderer().render(feature, layer, symbolizer, viewport);
     }
 
     @Override
     public void reset() {
-        this.gl4Renderer.reset();
+        glContext = null;
+        if (this.gl4Renderer != null) {
+            this.gl4Renderer.reset();
+            this.gl4Renderer = null;
+        }
         TextureManager.getInstance().clearCache();
         GLTextureManager.getInstance().clearCache();
     }
@@ -454,6 +456,9 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                 GLPaintingVertex.vertexColorLocation);
         paintProgram.addInputLocation(GLPaintingVertex.vertexMaxUVariableName,
                 GLPaintingVertex.vertexMaxULocation);
+        paintProgram.addInputLocation(
+                GLPaintingVertex.vertexPaperUVVariableName,
+                GLPaintingVertex.vertexPaperUVLocation);
         paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
         paintProgram.addUniform(m02ModelToViewMatrixUniformVarName);
         paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
@@ -587,13 +592,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                 GLSimpleVertex.vertexPositionVariableName,
                 GLSimpleVertex.vertexPostionLocation);
         backgroundTextureProgram.addUniform(colorTexture1UniformVarName);
-        backgroundTextureProgram.addUniform(m00ModelToViewMatrixUniformVarName);
-        backgroundTextureProgram.addUniform(m02ModelToViewMatrixUniformVarName);
-        backgroundTextureProgram.addUniform(m00ModelToViewMatrixUniformVarName);
-        backgroundTextureProgram.addUniform(m11ModelToViewMatrixUniformVarName);
-        backgroundTextureProgram.addUniform(m12ModelToViewMatrixUniformVarName);
-        backgroundTextureProgram.addUniform(screenWidthUniformVarName);
-        backgroundTextureProgram.addUniform(screenHeightUniformVarName);
 
         return backgroundTextureProgram;
     }

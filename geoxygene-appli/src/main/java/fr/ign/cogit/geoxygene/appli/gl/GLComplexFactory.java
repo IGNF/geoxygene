@@ -69,6 +69,7 @@ import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLPrimitiveTessCallback;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
+import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 import fr.ign.cogit.geoxygene.util.math.Interpolation;
 
 /**
@@ -714,6 +715,13 @@ public class GLComplexFactory {
     public static void createThickCurves(String id, GLPaintingComplex complex,
             Stroke stroke, double minX, double minY,
             StrokeTextureExpressiveRendering strtex, List<ILineString> curves) {
+        GLTexture paperTexture = GLTextureManager.getInstance().getTexture(
+                strtex.getPaperTextureFilename());
+        int paperWidthInPixels = paperTexture.getTextureWidth();
+        int paperHeightInPixels = paperTexture.getTextureHeight();
+        double paperHeightInCm = strtex.getPaperScaleFactor();
+        double mapScale = strtex.getPaperReferenceMapScale();
+
         for (ILineString line : curves) {
             try {
                 Task tesselateThickLineTask = LinePaintingTesselator
@@ -723,7 +731,9 @@ public class GLComplexFactory {
                                 new ConstantFunction(0),
                                 strtex.getSampleSize(), strtex.getMinAngle(),
                                 minX, minY,
-                                new SolidColorizer(stroke.getColor()));
+                                new SolidColorizer(stroke.getColor()),
+                                paperWidthInPixels, paperHeightInPixels,
+                                paperHeightInCm, mapScale);
                 tesselateThickLineTask.start();
                 TaskManager.startAndWait(tesselateThickLineTask);
             } catch (FunctionEvaluationException e) {

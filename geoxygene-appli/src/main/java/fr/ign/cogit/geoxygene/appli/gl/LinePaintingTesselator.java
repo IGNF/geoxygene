@@ -82,7 +82,9 @@ public class LinePaintingTesselator {
     public static Task tesselateThickLine(String name,
             GLPaintingComplex complex, IDirectPositionList dlist,
             Function1D lineWidth, Function1D lineShift, double maxLength,
-            double minAngle, double minX, double minY, Colorizer c)
+            double minAngle, double minX, double minY, Colorizer c,
+            int paperWidthInPixels, int paperHeightInPixels,
+            double paperHeightInCm, double mapScale)
             throws FunctionEvaluationException {
         complex.setMayOverlap(true);
         int pointCount = dlist.size();
@@ -93,13 +95,16 @@ public class LinePaintingTesselator {
         }
 
         return tesselateThickLine(name, complex, lineWidth, lineShift,
-                polyline, maxLength, minAngle, false, c);
+                polyline, maxLength, minAngle, false, c, paperWidthInPixels,
+                paperHeightInPixels, paperHeightInCm, mapScale);
     }
 
     public static Task tesselateThickLine(String name,
             GLPaintingComplex complex, Function1D lineWidth,
             Function1D lineShift, Point2d[] polyline, double maxLength,
-            double minAngle, boolean closedLine, Colorizer colorizer)
+            double minAngle, boolean closedLine, Colorizer colorizer,
+            int paperWidthInPixels, int paperHeightInPixels,
+            double paperHeightInCm, double mapScale)
             throws FunctionEvaluationException {
 
         if (polyline.length < 2) {
@@ -108,8 +113,25 @@ public class LinePaintingTesselator {
             return null;
         }
         return new LinePaintingTesselatorTask(name, polyline, complex,
-                lineWidth, lineShift, maxLength, minAngle, colorizer);
+                lineWidth, lineShift, maxLength, minAngle, colorizer,
+                paperWidthInPixels, paperHeightInPixels, paperHeightInCm,
+                mapScale);
     }
+
+    // public static Task tesselateThickLine(String name,
+    // GLPaintingComplex complex, Function1D lineWidth,
+    // Function1D lineShift, Point2d[] polyline, double maxLength,
+    // double minAngle, boolean closedLine, Colorizer colorizer)
+    // throws FunctionEvaluationException {
+    //
+    // if (polyline.length < 2) {
+    // System.err.println("line tesselation does not handle "
+    // + polyline.length + " points counts");
+    // return null;
+    // }
+    // return new LinePaintingTesselatorTask(name, polyline, complex,
+    // lineWidth, lineShift, maxLength, minAngle, colorizer);
+    // }
 
     private static class LinePaintingTesselatorTask extends AbstractTask {
 
@@ -120,11 +142,14 @@ public class LinePaintingTesselator {
         private final double maxLength;
         private final double minAngle;
         private final Colorizer colorizer;
+        public double paperWidthInWorldCoordinates = 1.;
+        public double paperHeightInWorldCoordinates = 1.;
 
         private LinePaintingTesselatorTask(String name, Point2d[] polyline,
                 GLPaintingComplex complex, Function1D lineWidth,
                 Function1D lineShift, double maxLength, double minAngle,
-                Colorizer c) {
+                Colorizer c, int paperWidthInPixels, int paperHeightInPixels,
+                double paperHeightInCm, double mapScale) {
             super(name + "-tesselation");
             this.polyline = polyline;
             this.complex = complex;
@@ -133,6 +158,11 @@ public class LinePaintingTesselator {
             this.maxLength = maxLength;
             this.minAngle = minAngle;
             this.colorizer = c;
+
+            double psf = paperHeightInCm * mapScale
+                    / (100. * paperHeightInPixels);
+            this.paperWidthInWorldCoordinates = psf * paperWidthInPixels;
+            this.paperHeightInWorldCoordinates = psf * paperHeightInPixels;
         }
 
         @Override
@@ -244,18 +274,24 @@ public class LinePaintingTesselator {
                 uvHigh.y = 1;
                 Color cLow = this.colorizer.getColor(uvLow.x, uvLow.y);
                 Color cHigh = this.colorizer.getColor(uvHigh.x, uvHigh.y);
+                Point2d paperUV = this.computePaperUV(lowPoint0,
+                        this.complex.getMinX(), this.complex.getMinY());
+                System.err.println("paperUV low0 = " + paperUV);
                 int p0LowIndex = this.complex.addVertex(new GLPaintingVertex(
                         (float) lowPoint0.x, (float) lowPoint0.y,
-                        (float) uvLow.x, (float) uvLow.y, (float) arcLength,
-                        0f, 0f, 0f, 0f, cLow.getRed() / 255f,
-                        cLow.getGreen() / 255f, cLow.getBlue() / 255f, cLow
-                                .getAlpha() / 255f));
+                        (float) uvLow.x, (float) uvLow.y, (float) paperUV.x,
+                        (float) paperUV.y, (float) arcLength, 0f, 0f, 0f, 0f,
+                        cLow.getRed() / 255f, cLow.getGreen() / 255f, cLow
+                                .getBlue() / 255f, cLow.getAlpha() / 255f));
+                paperUV = this.computePaperUV(highPoint0,
+                        this.complex.getMinX(), this.complex.getMinY());
+                System.err.println("paperUV high0 = " + paperUV);
                 int p0HighIndex = this.complex.addVertex(new GLPaintingVertex(
                         (float) highPoint0.x, (float) highPoint0.y,
-                        (float) uvHigh.x, (float) uvHigh.y, (float) arcLength,
-                        0f, 0f, 0f, 0f, cHigh.getRed() / 255f,
-                        cHigh.getGreen() / 255f, cHigh.getBlue() / 255f, cHigh
-                                .getAlpha() / 255f));
+                        (float) uvHigh.x, (float) uvHigh.y, (float) paperUV.x,
+                        (float) paperUV.y, (float) arcLength, 0f, 0f, 0f, 0f,
+                        cHigh.getRed() / 255f, cHigh.getGreen() / 255f, cHigh
+                                .getBlue() / 255f, cHigh.getAlpha() / 255f));
                 // System.err.println("Add vertex with uv = " + uvLow + " / " +
                 // uvHigh + " on " + arcLength);
 
@@ -292,7 +328,8 @@ public class LinePaintingTesselator {
                         alpha = Math.acos(cosAlpha);
                     }
                     double factor = Math.tan(alpha / 2.);
-                    factor = 1 + factor * factor; // 1 + tan2 ( a / 2 )
+                    factor = Math.min(5, 1 + factor * factor); // 1 + tan2 ( a /
+                                                               // 2 )
 
                     Point2d middleNormal = new Point2d(factor * (n0.x + n1.x)
                             / 2., factor * (n0.y + n1.y) / 2.);
@@ -388,22 +425,33 @@ public class LinePaintingTesselator {
                             cLow = this.colorizer.getColor(uvLow.x, uvLow.y);
                             cHigh = this.colorizer.getColor(uvHigh.x, uvHigh.y);
 
+                            paperUV = this.computePaperUV(interpolatedLowPoint,
+                                    this.complex.getMinX(),
+                                    this.complex.getMinY());
                             int p1LowIndex = this.complex
                                     .addVertex(new GLPaintingVertex(
                                             (float) interpolatedLowPoint.x,
                                             (float) interpolatedLowPoint.y,
                                             (float) uvLow.x, (float) uvLow.y,
+                                            (float) paperUV.x,
+                                            (float) paperUV.y,
                                             (float) arcLength, (float) n.x,
                                             (float) n.y, 0f, 0f,
                                             cLow.getRed() / 255f, cLow
                                                     .getGreen() / 255f, cLow
                                                     .getBlue() / 255f, cLow
                                                     .getAlpha() / 255f));
+                            paperUV = this.computePaperUV(
+                                    interpolatedHighPoint,
+                                    this.complex.getMinX(),
+                                    this.complex.getMinY());
                             int p1HighIndex = this.complex
                                     .addVertex(new GLPaintingVertex(
                                             (float) interpolatedHighPoint.x,
                                             (float) interpolatedHighPoint.y,
                                             (float) uvHigh.x, (float) uvHigh.y,
+                                            (float) paperUV.x,
+                                            (float) paperUV.y,
                                             (float) arcLength, (float) n.x,
                                             (float) n.y, 0f, 0f,
                                             cHigh.getRed() / 255f, cHigh
@@ -454,6 +502,23 @@ public class LinePaintingTesselator {
                 this.setError(e);
                 this.setState(TaskState.ERROR);
             }
+        }
+
+        /**
+         * Compute texture coordinates for the given paper texture
+         * 
+         * @param p
+         *            point in world coordinates
+         * @return texture coordinates in paper coordinates
+         */
+        private Point2d computePaperUV(Point2d p, double minX, double minY) {
+            // TODO: may be we can use minX, minY to computed reduced texture
+            // coordinates... (p.xy can be large...)
+            double x = ((p.x + minX % this.paperWidthInWorldCoordinates))
+                    / this.paperWidthInWorldCoordinates;
+            double y = ((p.y + minY % this.paperHeightInWorldCoordinates))
+                    / this.paperHeightInWorldCoordinates;
+            return new Point2d(x, y);
         }
     }
 }

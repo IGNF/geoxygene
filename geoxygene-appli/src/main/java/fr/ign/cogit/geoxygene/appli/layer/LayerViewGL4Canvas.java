@@ -46,7 +46,14 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     private Thread glCanvasThreadOwner = null; // stores the thread that ows gl
                                                // context to check consistency
     private GLSimpleComplex screenQuad = null;
+    private GLSimpleVertex screenQuadNW = null;
+    private GLSimpleVertex screenQuadNE = null;
+    private GLSimpleVertex screenQuadSW = null;
+    private GLSimpleVertex screenQuadSE = null;
     private GLTexture backgroundTexture = null;
+    // these values should be read from SLD
+    private final double paperHeight = 4; // paper height in cm
+    private final double paperMapScale = 100000; // scale paper height
 
     /**
      * Constructor
@@ -58,6 +65,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     public LayerViewGL4Canvas(final LayerViewGLPanel parentPanel)
             throws LWJGLException {
         super(parentPanel);
+        this.initializeScreenQuad();
         // multisampling antialiasing doesn't work on my computer (freeze
         // application without message error)
         // PixelFormat pixelFormat = new PixelFormat().withSamples(4);
@@ -87,14 +95,18 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     private void initializeScreenQuad() {
         this.screenQuad = new GLSimpleComplex("screen", 0f, 0f);
         GLMesh mesh = this.screenQuad.addGLMesh(GL11.GL_QUADS);
-        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
-                new Point2D.Double(-1, -1), new Point2D.Double(0, 0))));
-        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
-                new Point2D.Double(-1, 1), new Point2D.Double(0, 1))));
-        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
-                new Point2D.Double(1, 1), new Point2D.Double(1, 1))));
-        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
-                new Point2D.Double(1, -1), new Point2D.Double(1, 0))));
+        mesh.addIndex(this.screenQuad
+                .addVertex(this.screenQuadSW = new GLSimpleVertex(
+                        new Point2D.Double(-1, -1), new Point2D.Double(0, 0))));
+        mesh.addIndex(this.screenQuad
+                .addVertex(this.screenQuadNW = new GLSimpleVertex(
+                        new Point2D.Double(-1, 1), new Point2D.Double(0, 1))));
+        mesh.addIndex(this.screenQuad
+                .addVertex(this.screenQuadNE = new GLSimpleVertex(
+                        new Point2D.Double(1, 1), new Point2D.Double(1, 1))));
+        mesh.addIndex(this.screenQuad
+                .addVertex(this.screenQuadSE = new GLSimpleVertex(
+                        new Point2D.Double(1, -1), new Point2D.Double(1, 0))));
         this.screenQuad.setColor(Color.blue);
         this.screenQuad.setOverallOpacity(0.5);
     }
@@ -195,28 +207,34 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             glDisable(GL11.GL_POLYGON_SMOOTH);
 
             Viewport viewport = this.getParentPanel().getViewport();
-            double translateX = 1
-                    * ((viewport.getViewOrigin().getX() * viewport.getScale()) % this
-                            .getWidth()) / this.getWidth();
-            double translateY = 1
-                    * ((viewport.getViewOrigin().getY() * viewport.getScale()) % this
-                            .getHeight()) / this.getHeight();
-            program.setUniform1f(
-                    LwjglLayerRenderer.m00ModelToViewMatrixUniformVarName,
-                    (float) viewport.getScale());
-            program.setUniform1f(
-                    LwjglLayerRenderer.m02ModelToViewMatrixUniformVarName,
-                    (float) translateX);
-            program.setUniform1f(
-                    LwjglLayerRenderer.m11ModelToViewMatrixUniformVarName,
-                    (float) viewport.getScale());
-            program.setUniform1f(
-                    LwjglLayerRenderer.m12ModelToViewMatrixUniformVarName,
-                    (float) translateY);
-            program.setUniform1f(LwjglLayerRenderer.screenWidthUniformVarName,
-                    this.getWidth());
-            program.setUniform1f(LwjglLayerRenderer.screenHeightUniformVarName,
-                    this.getHeight());
+            double scale = viewport.getScale();
+            // double mapScale = 1. / (Viewport.getMETERS_PER_PIXEL() * scale);
+            // double paperScale = this.paperHeight / 2.540005 * (this.printDPI)
+            // / this.getHeight();
+            // paper scale factor used to convert from map length to world
+            // length
+            double psf = this.paperHeight * this.paperMapScale
+                    / (100. * this.getBackgroundTexture().getTextureHeight());
+            double paperWidthInWorldCoordinates = this.getBackgroundTexture()
+                    .getTextureWidth() * psf;
+            double paperHeightInWorldCoordinates = this.getBackgroundTexture()
+                    .getTextureHeight() * psf;
+            double screenWidthInWorldCoordinates = this.getWidth() / scale;
+            double screenHeightInWorldCoordinates = this.getHeight() / scale;
+            double u0 = (viewport.getViewOrigin().getX() % paperWidthInWorldCoordinates)
+                    / paperWidthInWorldCoordinates;
+            double v0 = (viewport.getViewOrigin().getY() % paperHeightInWorldCoordinates)
+                    / paperHeightInWorldCoordinates;
+            double deltaU = screenWidthInWorldCoordinates
+                    / paperWidthInWorldCoordinates;
+            double deltaV = screenHeightInWorldCoordinates
+                    / paperHeightInWorldCoordinates;
+            this.screenQuadNW.setUV((float) u0, (float) (v0 + deltaV));
+            this.screenQuadNE.setUV((float) (u0 + deltaU),
+                    (float) (v0 + deltaV));
+            this.screenQuadSE.setUV((float) (u0 + deltaU), (float) v0);
+            this.screenQuadSW.setUV((float) u0, (float) v0);
+            this.getScreenQuad().invalidateBuffers();
             program.setUniform1i(
                     LwjglLayerRenderer.colorTexture1UniformVarName,
                     GL4FeatureRenderer.COLORTEXTURE1_SLOT);

@@ -211,6 +211,8 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
 
             }
             this.verticesBuffer.flip();
+            // System.err.println("create a new vertex buffer = ");
+            // GLTools.displayBuffer(this.verticesBuffer);
 
         }
         this.verticesBuffer.rewind();

@@ -18,7 +18,7 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
                                                                        // UID
     protected LayerViewGLPanel parentPanel = null;
     private final boolean doPaintOverlay = false;
-    protected static Logger logger = Logger.getLogger(LayerViewGL1Canvas.class
+    protected static Logger logger = Logger.getLogger(LayerViewGLCanvas.class
             .getName());
 
     private BackgroundDescriptor background = null;

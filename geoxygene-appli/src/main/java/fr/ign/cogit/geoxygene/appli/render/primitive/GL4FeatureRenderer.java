@@ -144,6 +144,21 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             throw new IllegalArgumentException("gl Context cannot be null");
         }
         this.lwjglLayerRenderer = lwjglLayerRenderer;
+        this.setGlContext(glContext);
+    }
+
+    /**
+     * @return the glContext
+     */
+    public GLContext getGlContext() {
+        return this.glContext;
+    }
+
+    /**
+     * @param glContext
+     *            the glContext to set
+     */
+    final public void setGlContext(GLContext glContext) {
         this.glContext = glContext;
     }
 
@@ -303,10 +318,15 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
                     throw new RenderingException(e);
                 }
                 return;
-            } else {
-
             }
-
+            // System.err.println("generate geometry from feature id = "
+            // + feature.getId());
+            // System.err.println("generate geometry from feature collection = "
+            // + feature.getFeatureCollection(0).hashCode());
+            // System.err.println("feature geom envelope = "
+            // + feature.getGeom().getEnvelope());
+            // System.err.println("feature collection envelope = "
+            // + feature.getFeatureCollection(0).getEnvelope());
             IGeometry geometry = feature.getGeom();
             if (geometry == null) {
                 logger.warn("null geometry for feature " + feature.getId());
@@ -1123,14 +1143,15 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         program.setUniform1f(LwjglLayerRenderer.screenHeightUniformVarName,
                 height);
 
-        // System.err.println("translation x = " + (float)
-        // (modelToViewTransform.getTranslateX()) + " y = " +
-        // (modelToViewTransform.getTranslateY()));
-        // System.err.println("scaling     x = " + (float)
-        // (modelToViewTransform.getScaleX()) + " y = " +
-        // (modelToViewTransform.getScaleY()));
-        // System.err.println("canvas width = " + this.getCanvasWidth() +
-        // " height = " + this.getCanvasHeight());
+        // System.err.println("translation x = "
+        // + (float) (modelToViewTransform.getTranslateX()) + " y = "
+        // + (modelToViewTransform.getTranslateY()));
+        // System.err.println("min x = " + (float) (minX) + " y = " + (minY));
+        // System.err.println("scaling     x = "
+        // + (float) (modelToViewTransform.getScaleX()) + " y = "
+        // + (modelToViewTransform.getScaleY()));
+        // System.err.println("canvas width = " + this.getCanvasWidth()
+        // + " height = " + this.getCanvasHeight());
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
         return true;
     }

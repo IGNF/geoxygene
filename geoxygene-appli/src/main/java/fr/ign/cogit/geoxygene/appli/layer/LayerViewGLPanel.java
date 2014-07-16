@@ -36,10 +36,12 @@ import fr.ign.cogit.geoxygene.appli.event.ScalePaintListener;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
+import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.SyncRenderingManager;
 import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.ImageComparator;
+import fr.ign.cogit.geoxygene.util.gl.GLException;
 
 /**
  * LayerViewGLPanel is the basic implementation of a GL Viewer. It adds a glass
@@ -430,6 +432,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this.getClearCacheButton()) {
+            // dispose gl context to force program (shaders) reloading
+            try {
+                this.activateGLContext();
+                LwjglLayerRenderer.getGL4Context().disposeContext();
+            } catch (GLException ex) {
+                logger.warn("Cannot dispose current GL context");
+                ex.printStackTrace();
+            }
+            // empty cache of all renderers
             for (LayerRenderer renderer : this.getRenderingManager()
                     .getRenderers()) {
                 renderer.reset();

@@ -22,8 +22,11 @@ in float vertexCurvature;
 in float vertexThickness;
 in vec4 vertexColor;
 in float uMax;
+in vec2 vertexPaperUV;
 
+out vec4 fragmentPosition;
 out vec2 fragmentUV;
+out vec2 fragmentPaperUV;
 out vec4 fragmentColor;
 out float fragmentCurvature;
 out float fragmentThickness;
@@ -32,7 +35,9 @@ out float uMax_w;
 void main() {
 	//gl_Position = vec4 ( vertexPosition , 1f );
 	gl_Position = vec4( -1 + 2 * (vertexPosition.x * m00 + m02) / (screenWidth + 1), 1 - 2 * ( vertexPosition.y * m11 + m12 ) / ( screenHeight + 1 ), 0, 1);
+	fragmentPosition = gl_Position;
 	fragmentUV = vertexUV;
+	fragmentPaperUV = vertexPaperUV;
 	fragmentCurvature = vertexCurvature;
 	fragmentThickness = vertexThickness;
 	fragmentColor = vertexColor;

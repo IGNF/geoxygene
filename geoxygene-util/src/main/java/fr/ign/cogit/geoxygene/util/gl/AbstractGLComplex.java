@@ -150,7 +150,10 @@ public abstract class AbstractGLComplex<VertexType extends GLVertex> implements
 
     @SuppressWarnings("unchecked")
     public final int addVertex(final VertexType vertex) {
-        this.vertices.add((VertexType) vertex.clone());
+        // previously vertices were cloned, but it doesn't allow
+        // further modifications, so I delete the clone...
+        // this.vertices.add((VertexType) vertex.clone());
+        this.vertices.add(vertex);
         this.invalidateBuffers();
         return this.vertices.size() - 1;
     }

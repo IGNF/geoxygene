@@ -6,6 +6,7 @@ uniform float m11 = 1.; // Y homothetic value in 3x3 matrix
 uniform float m12 = 0.; // Y translation value in 3x3 matrix
 uniform float screenWidth;
 uniform float screenHeight;
+uniform float paperScale = 10; 
 
 in vec3 vertexPosition;
 in vec2 vertexUV;
@@ -15,6 +16,7 @@ out vec2 fragmentUV;
 
 void main() {
 	gl_Position = vec4( vertexPosition, 1);
-	fragmentUV.x = 2.*(vertexUV.x + m02) / ( m00);
-	fragmentUV.y = 2.*(vertexUV.y + m12) / ( m11);
+	
+	fragmentUV.x = vertexUV.x;
+	fragmentUV.y = vertexUV.y;
 }

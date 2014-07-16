@@ -52,8 +52,10 @@ public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
     private double minAngle = 1.5;
     @XmlElement(name = "BrushAspectRatio")
     private double brushSize = 8;
-    @XmlElement(name = "PaperScaleFactor")
-    private double paperScaleFactor = .5;
+    @XmlElement(name = "PaperSizeInCm")
+    private double paperScaleFactor = 4;
+    @XmlElement(name = "PaperReferenceMapScale")
+    private double paperReferenceMapScale = 100000;
     @XmlElement(name = "PaperRoughness")
     private double paperDensity = 0.7;
     @XmlElement(name = "BrushRoughness")
@@ -199,6 +201,21 @@ public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
      */
     public void setPaperScaleFactor(double paperScaleFactor) {
         this.paperScaleFactor = paperScaleFactor;
+    }
+
+    /**
+     * @return the paperReferenceMapScale
+     */
+    public double getPaperReferenceMapScale() {
+        return this.paperReferenceMapScale;
+    }
+
+    /**
+     * @param paperReferenceMapScale
+     *            the paperReferenceMapScale to set
+     */
+    public void setPaperReferenceMapScale(double paperReferenceMapScale) {
+        this.paperReferenceMapScale = paperReferenceMapScale;
     }
 
     /**
@@ -383,6 +400,8 @@ public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
         result = prime * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(this.paperScaleFactor);
         result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.paperReferenceMapScale);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime
                 * result
                 + ((this.paperTextureFilename == null) ? 0
@@ -457,6 +476,10 @@ public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
         }
         if (Double.doubleToLongBits(this.paperScaleFactor) != Double
                 .doubleToLongBits(other.paperScaleFactor)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.paperReferenceMapScale) != Double
+                .doubleToLongBits(other.paperReferenceMapScale)) {
             return false;
         }
         if (this.paperTextureFilename == null) {
