@@ -28,10 +28,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import fr.ign.cogit.geoxygene.style.texture.DimensionDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.PointDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.RotationDescriptor;
-
 /**
  * @author JeT
  */
@@ -44,6 +40,10 @@ public class BackgroundDescriptor {
     private int width, height; // image texture dimension (in pixels)
     @XmlTransient
     private BufferedImage textureImage = null;
+    @XmlElement(name = "PaperHeightInCm")
+    private double paperHeightInCm = 4;
+    @XmlElement(name = "PaperReferenceMapScale")
+    private double paperReferenceMapScale = 100000;
 
     /**
      * The raw color of the stroke, without opacity information.
@@ -53,21 +53,6 @@ public class BackgroundDescriptor {
 
     @XmlElement(name = "Color")
     private String colorDescriptor = "#FFFFFF";
-
-    // image dimension (in world coordinates)
-    private DimensionDescriptor dimension = new DimensionDescriptor();
-
-    // image displacement (in world coordinates)
-    @XmlElement(name = "Displacement")
-    private PointDescriptor displacement = new PointDescriptor();
-
-    // image scale factor
-    @XmlElement(name = "ScaleFactor")
-    private PointDescriptor scaleFactor = new PointDescriptor();
-
-    // rotation angle
-    @XmlElement(name = "Rotation")
-    private final RotationDescriptor rotation = new RotationDescriptor();
 
     /**
      * default constructor
@@ -138,6 +123,36 @@ public class BackgroundDescriptor {
     }
 
     /**
+     * @return the paperScaleFactor
+     */
+    public double getPaperHeightInCm() {
+        return this.paperHeightInCm;
+    }
+
+    /**
+     * @param paperScaleFactor
+     *            the paperScaleFactor to set
+     */
+    public void setPaperHeightInCm(double paperHeightInCm) {
+        this.paperHeightInCm = paperHeightInCm;
+    }
+
+    /**
+     * @return the paperReferenceMapScale
+     */
+    public double getPaperReferenceMapScale() {
+        return this.paperReferenceMapScale;
+    }
+
+    /**
+     * @param paperReferenceMapScale
+     *            the paperReferenceMapScale to set
+     */
+    public void setPaperReferenceMapScale(double paperReferenceMapScale) {
+        this.paperReferenceMapScale = paperReferenceMapScale;
+    }
+
+    /**
      * invalidate the precomputed image texture and force recomputation. For
      * async generation this method should be overridden to stop potential
      * in-progress generation
@@ -172,28 +187,6 @@ public class BackgroundDescriptor {
      */
     public BufferedImage getTextureImage() {
         return this.textureImage;
-    }
-
-    /**
-     * @return the rotation
-     */
-    public RotationDescriptor getRotation() {
-        return this.rotation;
-    }
-
-    /**
-     * @return the scale
-     */
-    public PointDescriptor getScaleFactor() {
-        return this.scaleFactor;
-    }
-
-    /**
-     * @param scale
-     *            the scale to set
-     */
-    public void setScaleFactor(PointDescriptor scaleFactor) {
-        this.scaleFactor = scaleFactor;
     }
 
     /**
@@ -242,37 +235,6 @@ public class BackgroundDescriptor {
         this.height = height;
     }
 
-    /**
-     * @return the texture dimension in world coordinates
-     */
-    public DimensionDescriptor getDimension() {
-        return this.dimension;
-    }
-
-    /**
-     * @param dimension
-     *            texture dimension in world coordinates (0 if internally
-     *            computed or screen space)
-     */
-    public void setDimension(DimensionDescriptor dimension) {
-        this.dimension = dimension;
-    }
-
-    /**
-     * @return the displacement
-     */
-    public PointDescriptor getDisplacement() {
-        return this.displacement;
-    }
-
-    /**
-     * @param displacement
-     *            the displacement to set
-     */
-    public void setDisplacement(PointDescriptor displacement) {
-        this.displacement = displacement;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -286,17 +248,11 @@ public class BackgroundDescriptor {
                 * result
                 + ((this.colorDescriptor == null) ? 0 : this.colorDescriptor
                         .hashCode());
-        result = prime * result
-                + ((this.dimension == null) ? 0 : this.dimension.hashCode());
-        result = prime
-                * result
-                + ((this.displacement == null) ? 0 : this.displacement
-                        .hashCode());
-        result = prime * result
-                + ((this.rotation == null) ? 0 : this.rotation.hashCode());
-        result = prime
-                * result
-                + ((this.scaleFactor == null) ? 0 : this.scaleFactor.hashCode());
+        long temp;
+        temp = Double.doubleToLongBits(this.paperReferenceMapScale);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.paperHeightInCm);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result
                 + ((this.url == null) ? 0 : this.url.hashCode());
         return result;
@@ -326,32 +282,12 @@ public class BackgroundDescriptor {
         } else if (!this.colorDescriptor.equals(other.colorDescriptor)) {
             return false;
         }
-        if (this.dimension == null) {
-            if (other.dimension != null) {
-                return false;
-            }
-        } else if (!this.dimension.equals(other.dimension)) {
+        if (Double.doubleToLongBits(this.paperReferenceMapScale) != Double
+                .doubleToLongBits(other.paperReferenceMapScale)) {
             return false;
         }
-        if (this.displacement == null) {
-            if (other.displacement != null) {
-                return false;
-            }
-        } else if (!this.displacement.equals(other.displacement)) {
-            return false;
-        }
-        if (this.rotation == null) {
-            if (other.rotation != null) {
-                return false;
-            }
-        } else if (!this.rotation.equals(other.rotation)) {
-            return false;
-        }
-        if (this.scaleFactor == null) {
-            if (other.scaleFactor != null) {
-                return false;
-            }
-        } else if (!this.scaleFactor.equals(other.scaleFactor)) {
+        if (Double.doubleToLongBits(this.paperHeightInCm) != Double
+                .doubleToLongBits(other.paperHeightInCm)) {
             return false;
         }
         if (this.url == null) {

@@ -261,6 +261,7 @@ public abstract class LayerViewPanel extends JComponent implements Printable,
 
     public void setViewBackground(BackgroundDescriptor background) {
         this.viewBackground = background;
+
     }
 
     public BackgroundDescriptor getViewBackground() {

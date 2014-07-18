@@ -21,8 +21,6 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
     protected static Logger logger = Logger.getLogger(LayerViewGLCanvas.class
             .getName());
 
-    private BackgroundDescriptor background = null;
-
     /**
      * Constructor
      * 
@@ -47,15 +45,7 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
      * @return the sld background
      */
     public BackgroundDescriptor getViewBackground() {
-        return this.background;
-    }
-
-    /**
-     * @param sld
-     *            the sld background to set
-     */
-    public void setViewBackground(BackgroundDescriptor background) {
-        this.background = background;
+        return this.parentPanel.getViewBackground();
     }
 
     /**

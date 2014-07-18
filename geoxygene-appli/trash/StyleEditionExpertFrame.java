@@ -124,6 +124,9 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
         if (layer instanceof NamedLayer) {
             NamedLayer namedLayer = (NamedLayer) layer;
             this.layer = namedLayer;
+            System.err.println("ProjectFrame SLD = " + projectFrame.getSld());
+            System.err.println(this.getClass().getSimpleName() + " SLD = "
+                    + this.layer.getSld());
             this.setInitialSLD(this.layer.getSld());
         } else {
             this.getEditor().setEnabled(false);
@@ -239,7 +242,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
         this.pack();
         this.setSize(650, 750);
         this.setLocation(200, 200);
-        this.setAlwaysOnTop(true);
+        this.setAlwaysOnTop(false);
 
     }
 
@@ -339,49 +342,13 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
     }
 
     public void applySld() {
+        StyledLayerDescriptor sld = null;
         try {
             ByteArrayInputStream in = new ByteArrayInputStream(this.getEditor()
                     .getText().getBytes("UTF-8"));
-            StyledLayerDescriptor new_sld = StyledLayerDescriptor
-                    .unmarshall(in);
-
-            // copy/paste from AbstractProjectFrame::loadSld()
-            if (new_sld != null) {
-                this.layer.getSld().setBackground(new_sld.getBackground());
-                this.layerViewPanel.setViewBackground(new_sld.getBackground());
-                for (int i = 0; i < this.getInitialSLD().getLayers().size(); i++) {
-                    String name = this.layer.getSld().getLayers().get(i)
-                            .getName();
-                    // logger.debug(name);
-                    // vérifier que le layer est décrit dans le SLD
-                    if (new_sld.getLayer(name) != null) {
-                        if (new_sld.getLayer(name).getStyles() != null) {
-                            // logger.debug(new_sld.getLayer(name).getStyles());
-                            this.layer
-                                    .getSld()
-                                    .getLayers()
-                                    .get(i)
-                                    .setStyles(
-                                            new_sld.getLayer(name).getStyles());
-
-                        } else {
-                            logger.trace("Le layer " + name
-                                    + " n'a pas de style défini dans le SLD");
-                        }
-                    } else {
-                        logger.trace("Le layer " + name
-                                + " n'est pas décrit dans le SLD");
-                    }
-                }
-
-                this.layerLegendPanel.repaint();
-                this.layerViewPanel.repaint();
-
-                /**
-                 * // loading finished
-                 */
-            }
-
+            sld = StyledLayerDescriptor.unmarshall(in);
+            sld.setDataSet(this.getInitialSLD().getDataSet());
+            this.projectFrame.setSld(sld);
         } catch (Exception e) {
             e.printStackTrace();
             this.error(e.getClass().getName(), null);

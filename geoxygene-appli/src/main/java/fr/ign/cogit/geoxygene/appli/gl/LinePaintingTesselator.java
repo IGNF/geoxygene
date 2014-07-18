@@ -276,7 +276,6 @@ public class LinePaintingTesselator {
                 Color cHigh = this.colorizer.getColor(uvHigh.x, uvHigh.y);
                 Point2d paperUV = this.computePaperUV(lowPoint0,
                         this.complex.getMinX(), this.complex.getMinY());
-                System.err.println("paperUV low0 = " + paperUV);
                 int p0LowIndex = this.complex.addVertex(new GLPaintingVertex(
                         (float) lowPoint0.x, (float) lowPoint0.y,
                         (float) uvLow.x, (float) uvLow.y, (float) paperUV.x,
@@ -285,7 +284,6 @@ public class LinePaintingTesselator {
                                 .getBlue() / 255f, cLow.getAlpha() / 255f));
                 paperUV = this.computePaperUV(highPoint0,
                         this.complex.getMinX(), this.complex.getMinY());
-                System.err.println("paperUV high0 = " + paperUV);
                 int p0HighIndex = this.complex.addVertex(new GLPaintingVertex(
                         (float) highPoint0.x, (float) highPoint0.y,
                         (float) uvHigh.x, (float) uvHigh.y, (float) paperUV.x,

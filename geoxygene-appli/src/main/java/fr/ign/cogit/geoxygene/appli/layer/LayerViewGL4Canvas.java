@@ -51,9 +51,11 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     private GLSimpleVertex screenQuadSW = null;
     private GLSimpleVertex screenQuadSE = null;
     private GLTexture backgroundTexture = null;
-    // these values should be read from SLD
-    private final double paperHeight = 4; // paper height in cm
-    private final double paperMapScale = 100000; // scale paper height
+    private BackgroundDescriptor storedBackground = null;
+
+    // // these values should be read from SLD
+    // private final double paperHeight = 4; // paper height in cm
+    // private final double paperMapScale = 100000; // scale paper height
 
     /**
      * Constructor
@@ -77,16 +79,6 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         super.initGL();
         glViewport(0, 0, this.getWidth(), this.getHeight());
         // glEnable(GL13.GL_MULTISAMPLE);
-    }
-
-    /**
-     * @param sld
-     *            the sld background to set
-     */
-    @Override
-    public void setViewBackground(BackgroundDescriptor background) {
-        super.setViewBackground(background);
-        // this.backgroundTexture = null;
     }
 
     /**
@@ -192,10 +184,11 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     }
 
     private void drawBackground() {
-        // if (this.getViewBackground() == null
-        // || this.getBackgroundTexture() == null) {
-        // return;
-        // }
+        if (this.getViewBackground() == null
+                || this.getBackgroundTexture() == null
+                || this.getBackgroundTexture().getTextureFilename() == null) {
+            return;
+        }
         try {
             GLProgram program = LwjglLayerRenderer
                     .getGL4Context()
@@ -213,7 +206,8 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             // / this.getHeight();
             // paper scale factor used to convert from map length to world
             // length
-            double psf = this.paperHeight * this.paperMapScale
+            double psf = this.getViewBackground().getPaperHeightInCm()
+                    * this.getViewBackground().getPaperReferenceMapScale()
                     / (100. * this.getBackgroundTexture().getTextureHeight());
             double paperWidthInWorldCoordinates = this.getBackgroundTexture()
                     .getTextureWidth() * psf;
@@ -271,9 +265,16 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     }
 
     private GLTexture getBackgroundTexture() {
+        if (this.getViewBackground() != this.storedBackground) {
+            this.storedBackground = null;
+            this.backgroundTexture = null;
+        }
         if (this.backgroundTexture == null) {
-            this.backgroundTexture = new GLTexture(
-                    "./src/main/resources/textures/papers/canvas-bg.png");
+            if (this.getViewBackground() != null) {
+                this.backgroundTexture = new GLTexture(this.getViewBackground()
+                        .getUrl());
+                this.storedBackground = this.getViewBackground();
+            }
         }
         return this.backgroundTexture;
 
@@ -288,6 +289,10 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         // .getTextureImage());
         // }
         // return this.backgroundTexture;
+    }
+
+    public void invalidateBackgroundTexture() {
+        this.backgroundTexture = null;
     }
 
     @Override

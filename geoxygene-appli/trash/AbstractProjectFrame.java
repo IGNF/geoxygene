@@ -33,6 +33,7 @@ import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.NamedLayer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.UserLayerFactory;
 import fr.ign.cogit.geoxygene.util.conversion.GPSTextfileReader;
@@ -511,25 +512,53 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * .style.StyledLayerDescriptor)
      */
     @Override
-    public final void setSld(final StyledLayerDescriptor sld) {
+    public final void setSld(final StyledLayerDescriptor newSld) {
         synchronized (this.sldLock) {
             if (this.sld != null) {
                 this.sld.removeSldListener(this.getLayerViewPanel());
                 this.sld.removeSldListener(this.getLayerLegendPanel());
             }
-            this.sld = sld;
-            System.err.println("Set Canvas background from SLD background = "
-                    + sld);
-            if (this.getLayerViewPanel() != null) {
-                if (this.sld != null) {
-                    this.getLayerViewPanel().setViewBackground(
-                            sld.getBackground());
-                    this.sld.addSldListener(this.getLayerViewPanel());
-                    this.sld.addSldListener(this.getLayerLegendPanel());
+            StyledLayerDescriptor oldSld = this.sld;
+            if (newSld == null) {
+                this.sld = null;
+                return;
+            }
 
+            DataSet dataSet = null;
+            if (oldSld != null) {
+                dataSet = oldSld.getDataSet();
+            }
+            if (this.getLayerViewPanel() == null) {
+                return;
+            }
+            newSld.setDataSet(dataSet);
+            // this.setSld(new_sld);
+            this.getLayerViewPanel().setViewBackground(newSld.getBackground());
+
+            for (int i = 0; i < this.getLayers().size(); i++) {
+                String name = this.getLayers().get(i).getName();
+                // logger.debug(name);
+                // vérifier que le layer est décrit dans le SLD
+                NamedLayer newLayer = (NamedLayer) newSld.getLayer(name);
+                NamedLayer oldLayer = (NamedLayer) oldSld.getLayer(name);
+                if (oldLayer != null && newLayer == null) {
+                    oldSld.removeSldListener(this.getLayerViewPanel());
+                    oldSld.removeSldListener(this.getLayerLegendPanel());
+                    newSld.add(oldLayer);
+
+                } else {
+                    logger.trace("Le layer " + name
+                            + " n'est pas décrit dans le SLD");
+                }
+                if (newLayer != null) {
+                    newLayer.setSld(newSld);
                 }
             }
+            this.sld = newSld;
+            this.sld.addSldListener(this.getLayerViewPanel());
+            this.sld.addSldListener(this.getLayerLegendPanel());
         }
+
     }
 
     /*
@@ -647,50 +676,17 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         {
 
             StyledLayerDescriptor new_sld;
+            new_sld = StyledLayerDescriptor.unmarshall(file.getAbsolutePath(),
+                    this.getDataSet());
+            if (new_sld != null) {
+                this.setSld(new_sld);
 
-            synchronized (this.getSld().lock) {
-                new_sld = StyledLayerDescriptor.unmarshall(
-                        file.getAbsolutePath(), this.getDataSet());
-                if (new_sld != null) {
-                    this.getLayerViewPanel().setViewBackground(
-                            new_sld.getBackground());
-                    this.getSld().setBackground(new_sld.getBackground());
+                this.layerLegendPanel.repaint();
+                this.layerViewPanel.repaint();
 
-                    for (int i = 0; i < this.getLayers().size(); i++) {
-                        String name = this.getLayers().get(i).getName();
-                        // logger.debug(name);
-                        // vérifier que le layer est décrit dans le SLD
-                        if (new_sld.getLayer(name) != null) {
-                            if (new_sld.getLayer(name).getStyles() != null) {
-                                // logger.debug(new_sld.getLayer(name).getStyles());
-                                this.getLayers()
-                                        .get(i)
-                                        .setStyles(
-                                                new_sld.getLayer(name)
-                                                        .getStyles());
-
-                            } else {
-                                logger.trace("Le layer "
-                                        + name
-                                        + " n'a pas de style défini dans le SLD");
-                            }
-                        } else {
-                            logger.trace("Le layer " + name
-                                    + " n'est pas décrit dans le SLD");
-                            this.getLayers()
-                                    .get(i)
-                                    .setStyles(
-                                            this.sld.getLayer(name).getStyles());
-                        }
-                    }
-
-                    this.layerLegendPanel.repaint();
-                    this.layerViewPanel.repaint();
-
-                    /**
-                     * // loading finished
-                     */
-                }
+                /**
+                 * // loading finished
+                 */
             }
         }
     }
