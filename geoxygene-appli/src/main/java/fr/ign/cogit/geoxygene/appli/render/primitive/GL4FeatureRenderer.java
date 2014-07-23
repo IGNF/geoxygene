@@ -74,6 +74,7 @@ import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
+import fr.ign.cogit.geoxygene.appli.mode.RenderingTypeMode;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.RenderingException;
 import fr.ign.cogit.geoxygene.appli.task.Task;
@@ -440,9 +441,12 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      */
     private void renderGLPrimitivePlain(GLComplex primitive, double opacity)
             throws GLException {
+        boolean quickRendering = this.getLayerViewPanel().getProjectFrame()
+                .getMainFrame().getMode().getCurrentMode().getRenderingType() != RenderingTypeMode.FINAL;
         // System.err.println("rendering primitive "
         // + primitive.getMeshes().size() + " meshes");
-        if (this.getLayerViewPanel().useFBO() && primitive.mayOverlap()) {
+        if (this.getLayerViewPanel().useFBO() && primitive.mayOverlap()
+                && !quickRendering) {
             // System.err.println("draw primitive with "
             // + primitive.getMeshes().size()
             // + " meshes using FBO rendering");
@@ -1033,8 +1037,13 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         if (displayable == null) {
             return;
         }
+        // boolean quickRendering = this.getLayerViewPanel().getProjectFrame()
+        // .getMainFrame().getMode().getCurrentMode().getRenderingType() !=
+        // RenderingTypeMode.FINAL;
+
         Collection<GLComplex> fullRepresentation = displayable
                 .getFullRepresentation();
+        // if (quickRendering || fullRepresentation == null) {
         if (fullRepresentation == null) {
             this.renderGLPrimitive(displayable.getPartialRepresentation(),
                     opacity);

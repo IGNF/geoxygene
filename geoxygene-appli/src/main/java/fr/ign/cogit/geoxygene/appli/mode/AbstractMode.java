@@ -37,239 +37,272 @@ import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
  * @author Julien Perret
  */
 public abstract class AbstractMode implements Mode {
-  /**
-   * MainFrame.
-   */
-  protected MainFrame mainFrame;
-  /**
-   * Mode Selector.
-   */
-  private MainFrameToolBar modeSelector;
-  /**
-   * Button triggering the mode.
-   */
-  private JButton button;
+    /**
+     * MainFrame.
+     */
+    protected MainFrame mainFrame;
+    /**
+     * Mode Selector.
+     */
+    private MainFrameToolBar modeSelector;
+    /**
+     * Button triggering the mode.
+     */
+    private final JButton button;
 
-  /**
-   * Set the mode selector.
-   * @param theModeSelector the new mode selector
-   */
-  public final void setModeSelector(final MainFrameToolBar theModeSelector) {
-    this.modeSelector = theModeSelector;
-  }
+    /**
+     * Rendering type
+     */
+    private RenderingTypeMode renderingType = RenderingTypeMode.FINAL;
 
-  /**
-   * @return the mode selector
-   */
-  public final MainFrameToolBar getModeSelector() {
-    return this.modeSelector;
-  }
-
-  /**
-   * @return the button giving access to this mode
-   */
-  @Override
-  public final JButton getButton() {
-    return this.button;
-  }
-
-  /**
-   * Constructor.
-   * @param theMainFrame the associated application
-   * @param theModeSelector the mode selector
-   */
-  public AbstractMode(final MainFrame theMainFrame,
-      final MainFrameToolBar theModeSelector) {
-    this.mainFrame = theMainFrame;
-    this.setModeSelector(theModeSelector);
-    final Mode currentMode = this;
-    this.button = this.createButton();
-    this.button.setToolTipText(this.getToolTipText());
-    this.button.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        AbstractMode.this.getModeSelector().setCurrentMode(currentMode);
-      }
-    });
-    this.getModeSelector().getToolBar().add(this.getButton());
-  }
-
-  /**
-   * @return The ToolTipText associated with the button
-   */
-  protected abstract String getToolTipText();
-
-  /**
-   * Create a button.
-   * @return the created button
-   */
-  protected abstract JButton createButton();
-
-  @Override
-  public final void keyPressed(final KeyEvent e) {
-    ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-    if (frame == null) {
-      return;
+    /**
+     * Set the mode selector.
+     * 
+     * @param theModeSelector
+     *            the new mode selector
+     */
+    public final void setModeSelector(final MainFrameToolBar theModeSelector) {
+        this.modeSelector = theModeSelector;
     }
-    switch (e.getKeyCode()) {
-      case KeyEvent.VK_KP_UP:
-      case KeyEvent.VK_UP:
-        try {
-          frame.getLayerViewPanel().getViewport().moveUp();
-        } catch (NoninvertibleTransformException e2) {
-          e2.printStackTrace();
+
+    /**
+     * @return the mode selector
+     */
+    public final MainFrameToolBar getModeSelector() {
+        return this.modeSelector;
+    }
+
+    /**
+     * @return the button giving access to this mode
+     */
+    @Override
+    public final JButton getButton() {
+        return this.button;
+    }
+
+    /**
+     * @return the renderingType
+     */
+    @Override
+    public RenderingTypeMode getRenderingType() {
+        return this.renderingType;
+    }
+
+    /**
+     * @param renderingType
+     *            the renderingType to set
+     */
+    public void setRenderingType(RenderingTypeMode renderingType) {
+        this.renderingType = renderingType;
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param theMainFrame
+     *            the associated application
+     * @param theModeSelector
+     *            the mode selector
+     */
+    public AbstractMode(final MainFrame theMainFrame,
+            final MainFrameToolBar theModeSelector) {
+        this.mainFrame = theMainFrame;
+        this.setModeSelector(theModeSelector);
+        final Mode currentMode = this;
+        this.button = this.createButton();
+        this.button.setToolTipText(this.getToolTipText());
+        this.button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                AbstractMode.this.getModeSelector().setCurrentMode(currentMode);
+            }
+        });
+        this.getModeSelector().getToolBar().add(this.getButton());
+    }
+
+    /**
+     * @return The ToolTipText associated with the button
+     */
+    protected abstract String getToolTipText();
+
+    /**
+     * Create a button.
+     * 
+     * @return the created button
+     */
+    protected abstract JButton createButton();
+
+    @Override
+    public final void keyPressed(final KeyEvent e) {
+        ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
+        if (frame == null) {
+            return;
         }
-        break;
-      case KeyEvent.VK_KP_DOWN:
-      case KeyEvent.VK_DOWN:
-        try {
-          frame.getLayerViewPanel().getViewport().moveDown();
-        } catch (NoninvertibleTransformException e2) {
-          e2.printStackTrace();
+        switch (e.getKeyCode()) {
+        case KeyEvent.VK_KP_UP:
+        case KeyEvent.VK_UP:
+            try {
+                frame.getLayerViewPanel().getViewport().moveUp();
+            } catch (NoninvertibleTransformException e2) {
+                e2.printStackTrace();
+            }
+            break;
+        case KeyEvent.VK_KP_DOWN:
+        case KeyEvent.VK_DOWN:
+            try {
+                frame.getLayerViewPanel().getViewport().moveDown();
+            } catch (NoninvertibleTransformException e2) {
+                e2.printStackTrace();
+            }
+            break;
+        case KeyEvent.VK_KP_RIGHT:
+        case KeyEvent.VK_RIGHT:
+            try {
+                frame.getLayerViewPanel().getViewport().moveRight();
+            } catch (NoninvertibleTransformException e2) {
+                e2.printStackTrace();
+            }
+            break;
+        case KeyEvent.VK_KP_LEFT:
+        case KeyEvent.VK_LEFT:
+            try {
+                frame.getLayerViewPanel().getViewport().moveLeft();
+            } catch (NoninvertibleTransformException e2) {
+                e2.printStackTrace();
+            }
+            break;
+        case KeyEvent.VK_PAGE_UP:
+            try {
+                frame.getLayerViewPanel().getViewport().zoomIn();
+            } catch (NoninvertibleTransformException e1) {
+                e1.printStackTrace();
+            }
+            break;
+        case KeyEvent.VK_PAGE_DOWN:
+            try {
+                frame.getLayerViewPanel().getViewport().zoomOut();
+            } catch (NoninvertibleTransformException e1) {
+                e1.printStackTrace();
+            }
+            break;
+        default:
         }
-        break;
-      case KeyEvent.VK_KP_RIGHT:
-      case KeyEvent.VK_RIGHT:
-        try {
-          frame.getLayerViewPanel().getViewport().moveRight();
-        } catch (NoninvertibleTransformException e2) {
-          e2.printStackTrace();
+    }
+
+    @Override
+    public void keyReleased(final KeyEvent e) {
+    }
+
+    @Override
+    public void keyTyped(final KeyEvent e) {
+    }
+
+    @Override
+    public final void mouseClicked(final MouseEvent e) {
+        ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
+        if ((frame == null) || (e.getSource() != frame.getLayerViewPanel())) {
+            return;
         }
-        break;
-      case KeyEvent.VK_KP_LEFT:
-      case KeyEvent.VK_LEFT:
-        try {
-          frame.getLayerViewPanel().getViewport().moveLeft();
-        } catch (NoninvertibleTransformException e2) {
-          e2.printStackTrace();
+        switch (e.getButton()) {
+        case MouseEvent.BUTTON1:
+            this.leftMouseButtonClicked(e, frame);
+            break;
+        case MouseEvent.BUTTON2:
+            this.middleMouseButtonClicked(e, frame);
+            break;
+        case MouseEvent.BUTTON3:
+            this.rightMouseButtonClicked(e, frame);
+            break;
+        default:
         }
-        break;
-      case KeyEvent.VK_PAGE_UP:
+    }
+
+    /**
+     * @param e
+     *            mouse event
+     * @param frame
+     *            the project frame
+     */
+    public void leftMouseButtonClicked(final MouseEvent e,
+            final ProjectFrame frame) {
+    }
+
+    /**
+     * @param e
+     *            mouse event
+     * @param frame
+     *            the project frame
+     */
+    public final void middleMouseButtonClicked(final MouseEvent e,
+            final ProjectFrame frame) {
         try {
-          frame.getLayerViewPanel().getViewport().zoomIn();
+            frame.getLayerViewPanel().getViewport().moveTo(e.getPoint());
         } catch (NoninvertibleTransformException e1) {
-          e1.printStackTrace();
+            e1.printStackTrace();
         }
-        break;
-      case KeyEvent.VK_PAGE_DOWN:
+    }
+
+    /**
+     * @param e
+     *            mouse event
+     * @param frame
+     *            the project frame
+     */
+    public void rightMouseButtonClicked(final MouseEvent e,
+            final ProjectFrame frame) {
+    }
+
+    @Override
+    public void mouseEntered(final MouseEvent e) {
+        if (e.getSource() instanceof JComponent) {
+            ((JComponent) e.getSource()).requestFocus();
+        }
+    }
+
+    @Override
+    public void mouseExited(final MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(final MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(final MouseEvent e) {
+    }
+
+    @Override
+    public void mouseDragged(final MouseEvent e) {
+    }
+
+    @Override
+    public void mouseMoved(final MouseEvent e) {
+    }
+
+    @Override
+    public final void mouseWheelMoved(final MouseWheelEvent e) {
+        boolean zoomIn = e.getWheelRotation() < 0;
+        ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
+        if (frame == null) {
+            return;
+        }
         try {
-          frame.getLayerViewPanel().getViewport().zoomOut();
+            if (zoomIn) {
+                frame.getLayerViewPanel().getViewport().zoomInTo(e.getPoint());
+            } else {
+                frame.getLayerViewPanel().getViewport().zoomOutTo(e.getPoint());
+            }
         } catch (NoninvertibleTransformException e1) {
-          e1.printStackTrace();
+            e1.printStackTrace();
         }
-        break;
-      default:
     }
-  }
 
-  @Override
-  public void keyReleased(final KeyEvent e) {
-  }
-
-  @Override
-  public void keyTyped(final KeyEvent e) {
-  }
-
-  @Override
-  public final void mouseClicked(final MouseEvent e) {
-    ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-    if ((frame == null) || (e.getSource() != frame.getLayerViewPanel())) {
-      return;
+    @Override
+    public Cursor getCursor() {
+        return Cursor.getDefaultCursor();
     }
-    switch (e.getButton()) {
-      case MouseEvent.BUTTON1:
-        this.leftMouseButtonClicked(e, frame);
-        break;
-      case MouseEvent.BUTTON2:
-        this.middleMouseButtonClicked(e, frame);
-        break;
-      case MouseEvent.BUTTON3:
-        this.rightMouseButtonClicked(e, frame);
-        break;
-      default:
+
+    @Override
+    public void activated() {
     }
-  }
-
-  /**
-   * @param e mouse event
-   * @param frame the project frame
-   */
-  public void leftMouseButtonClicked(final MouseEvent e,
-      final ProjectFrame frame) {
-  }
-
-  /**
-   * @param e mouse event
-   * @param frame the project frame
-   */
-  public final void middleMouseButtonClicked(final MouseEvent e,
-      final ProjectFrame frame) {
-    try {
-      frame.getLayerViewPanel().getViewport().moveTo(e.getPoint());
-    } catch (NoninvertibleTransformException e1) {
-      e1.printStackTrace();
-    }
-  }
-
-  /**
-   * @param e mouse event
-   * @param frame the project frame
-   */
-  public void rightMouseButtonClicked(final MouseEvent e,
-      final ProjectFrame frame) {
-  }
-
-  @Override
-  public void mouseEntered(final MouseEvent e) {
-    if (e.getSource() instanceof JComponent) {
-      ((JComponent) e.getSource()).requestFocus();
-    }
-  }
-
-  @Override
-  public void mouseExited(final MouseEvent e) {
-  }
-
-  @Override
-  public void mousePressed(final MouseEvent e) {
-  }
-
-  @Override
-  public void mouseReleased(final MouseEvent e) {
-  }
-
-  @Override
-  public void mouseDragged(final MouseEvent e) {
-  }
-
-  @Override
-  public void mouseMoved(final MouseEvent e) {
-  }
-
-  @Override
-  public final void mouseWheelMoved(final MouseWheelEvent e) {
-    boolean zoomIn = e.getWheelRotation() < 0;
-    ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-    if (frame == null) {
-      return;
-    }
-    try {
-      if (zoomIn) {
-        frame.getLayerViewPanel().getViewport().zoomInTo(e.getPoint());
-      } else {
-        frame.getLayerViewPanel().getViewport().zoomOutTo(e.getPoint());
-      }
-    } catch (NoninvertibleTransformException e1) {
-      e1.printStackTrace();
-    }
-  }
-
-  @Override
-  public Cursor getCursor() {
-    return Cursor.getDefaultCursor();
-  }
-
-  @Override
-  public void activated() {
-  }
 }

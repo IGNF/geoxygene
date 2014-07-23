@@ -29,24 +29,30 @@ import javax.swing.JButton;
 
 /**
  * Interface for all modes.
+ * 
  * @author Julien Perret
  * 
  */
 public interface Mode extends KeyListener, MouseListener, MouseMotionListener,
-    MouseWheelListener {
-  /**
-   * @return The button triggering the mode.
-   */
-  JButton getButton();
+        MouseWheelListener {
+    /**
+     * @return The button triggering the mode.
+     */
+    JButton getButton();
 
-  /**
-   * @return The cursor associated with this mode.
-   */
-  Cursor getCursor();
+    /**
+     * @return The cursor associated with this mode.
+     */
+    Cursor getCursor();
 
-  /**
-   * Activate the mode. This is a hook in case a mode needs special
-   * initialization.
-   */
-  void activated();
+    /**
+     * Activate the mode. This is a hook in case a mode needs special
+     * initialization.
+     */
+    void activated();
+
+    /**
+     * Rendering type currently used for this mode (handle user interaction)
+     */
+    RenderingTypeMode getRenderingType();
 }

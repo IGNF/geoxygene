@@ -54,17 +54,20 @@ public class MoveMode extends AbstractMode {
      * @param theModeSelector
      *            the mode selector
      */
-    public MoveMode(final MainFrame theMainFrame, final MainFrameToolBar theModeSelector) {
+    public MoveMode(final MainFrame theMainFrame,
+            final MainFrameToolBar theModeSelector) {
         super(theMainFrame, theModeSelector);
     }
 
     @Override
     protected final JButton createButton() {
-        return new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/move.png"))); //$NON-NLS-1$
+        return new JButton(new ImageIcon(this.getClass().getResource(
+                "/images/icons/16x16/move.png"))); //$NON-NLS-1$
     }
 
     @Override
-    public final void leftMouseButtonClicked(final MouseEvent e, final ProjectFrame frame) {
+    public final void leftMouseButtonClicked(final MouseEvent e,
+            final ProjectFrame frame) {
         try {
             frame.getLayerViewPanel().getViewport().moveTo(e.getPoint());
         } catch (NoninvertibleTransformException e1) {
@@ -76,6 +79,7 @@ public class MoveMode extends AbstractMode {
     public void mousePressed(final MouseEvent e) {
         if ((SwingUtilities.isLeftMouseButton(e))) {
             this.initialPointView = e.getPoint();
+            this.setRenderingType(RenderingTypeMode.INTERACTIVE);
         }
     }
 
@@ -89,8 +93,10 @@ public class MoveMode extends AbstractMode {
                     this.initialPointView = new Point(this.currentPointView);
                 }
 
-                double xMove = this.initialPointView.getX() - this.currentPointView.getX();
-                double yMove = this.currentPointView.getY() - this.initialPointView.getY();
+                double xMove = this.initialPointView.getX()
+                        - this.currentPointView.getX();
+                double yMove = this.currentPointView.getY()
+                        - this.initialPointView.getY();
 
                 frame.getLayerViewPanel().getViewport().moveOf(xMove, yMove);
 
@@ -107,14 +113,17 @@ public class MoveMode extends AbstractMode {
     public void mouseReleased(final MouseEvent e) {
         ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
         if ((SwingUtilities.isLeftMouseButton(e))) {
+            this.setRenderingType(RenderingTypeMode.FINAL);
             try {
                 this.currentPointView = e.getPoint();
                 if (this.initialPointView == null) {
                     this.initialPointView = new Point(this.currentPointView);
                 }
 
-                double xMove = this.initialPointView.getX() - this.currentPointView.getX();
-                double yMove = this.currentPointView.getY() - this.initialPointView.getY();
+                double xMove = this.initialPointView.getX()
+                        - this.currentPointView.getX();
+                double yMove = this.currentPointView.getY()
+                        - this.initialPointView.getY();
 
                 frame.getLayerViewPanel().getViewport().moveOf(xMove, yMove);
 
