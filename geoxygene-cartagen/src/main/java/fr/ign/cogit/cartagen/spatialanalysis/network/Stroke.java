@@ -176,11 +176,15 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
 //  }
   
 
+  
   /**
+   * @author JTeulade-Denantes 
+   * 
    * <p>
    * From a network segment passed in the constructor, a stroke is built on one
    * side. This method has to be called for each side for the stroke to be
-   * completely built.
+   * completely built. 
+   * If you don't care about nodes of degree two, we use the same attributeNames in both case
    * 
    * @param side : the chosen side (initial or final) true is initial and false
    *          is final
@@ -189,9 +193,33 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
    * @param angle : the limit deviation angle for continuity
    * @param somme : the limit difference of deviation angles sum for consecutive
    *          points.
-   * 
    */
   public void buildOneSide(boolean side, Set<String> attributeNames,
+      double deviatAngle, double deviatSum, boolean noStop) {
+    buildOneSide(side, attributeNames, attributeNames, deviatAngle, deviatSum, noStop);
+  }
+  
+  /**
+   *  @author JTeulade-Denantes 
+   * 
+   * <p>
+   * From a network segment passed in the constructor, a stroke is built on one
+   * side. This method has to be called for each side for the stroke to be
+   * completely built. 
+   * If noStop=false, you can deal differently nodes of degree two and the other ones thanks to attributeNamesNodeOfDegreeTwo.
+   * 
+   * @param side : the chosen side (initial or final) true is initial and false
+   *          is final
+   * @param attributeNames : the names of the attribute used for attribute
+   *          continuity.
+   * @param attributeNamesNodeOfDegreeTwo : the names of the attribute used for attribute
+   *          continuity for nodes of degree two
+   * @param angle : the limit deviation angle for continuity
+   * @param somme : the limit difference of deviation angles sum for consecutive
+   *          points.
+   * 
+   */
+  public void buildOneSide(boolean side, Set<String> attributeNames, Set<String> attributeNamesNodeOfDegreeTwo,
       double deviatAngle, double deviatSum, boolean noStop) {
 
     // get the following network segments of the root of this stroke
@@ -214,7 +242,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
         best = this.chooseNextSegmentNoStop(next, followers, attributeNames,
             deviatAngle, deviatSum);
       } else {
-        best = this.chooseNextSegment(next, followers, attributeNames,
+        best = this.chooseNextSegment(next, followers, attributeNames, attributeNamesNodeOfDegreeTwo,
             deviatAngle, deviatSum);
       }
 
@@ -249,15 +277,60 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     }// while(continuity)
   }
 
+  /**
+   *  @author JTeulade-Denantes 
+   * 
+   * If you don't care about nodes of degree two, we use the same attributeNames in both case
+   * @param arc
+   * @param followers
+   * @param attributeNames
+   * @param deviatAngle
+   * @param deviatSum
+   * @return
+   */
   protected ArcReseau chooseNextSegment(ArcReseau arc,
       HashSet<ArcReseau> followers, Set<String> attributeNames,
       double deviatAngle, double deviatSum) {
-    // first, filter the followers
+    return chooseNextSegment(arc, followers, attributeNames, attributeNames, deviatAngle, deviatSum);
+  }
+  
+  /**
+   *  @author JTeulade-Denantes 
+   *  
+   * I added attributeNamesNodeOfDegreeTwo parameter which allows to deal differently node of degree two and the other ones
+   * @param arc
+   * @param followers
+   * @param attributeNames
+   * @param attributeNamesNodeOfDegreeTwo
+   * @param deviatAngle
+   * @param deviatSum
+   * @return
+   */
+  protected ArcReseau chooseNextSegment(ArcReseau arc,
+      HashSet<ArcReseau> followers, Set<String> attributeNames, Set<String> attributeNamesNodeOfDegreeTwo,
+      double deviatAngle, double deviatSum) {
+      
+    // first, if it's a node of degree two
+    if (followers.size() == 1) {
+      // we filter the followers from the attributeNamesNodeOfDegreeTwo
+      this.filterByAttributeContinuity(arc, followers, attributeNamesNodeOfDegreeTwo);
+      if (followers.size() == 0) {
+        return null;
+      }
+      ArcReseau follower = followers.iterator().next();
+      if (!this.features.contains(follower)) {
+        return follower;
+      }
+      return null;
+    }
+    
+    // then, filter the followers
     this.filterFollowers(arc, followers);
     if (followers.size() == 0) {
       return null;
     }
-    // then, filter the followers from the attributes
+
+    // then, filter the followers from the attributeNames
     this.filterByAttributeContinuity(arc, followers, attributeNames);
     if (followers.size() == 0) {
       return null;
