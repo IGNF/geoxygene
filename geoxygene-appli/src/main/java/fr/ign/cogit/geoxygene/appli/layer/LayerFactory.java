@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Logger;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.arcgrid.ArcGridReader;
 import org.geotools.gce.geotiff.GeoTiffReader;
@@ -120,11 +120,11 @@ public class LayerFactory {
       }
       return null;
     } catch (IOException e) {
-      logger.warning("IO exception, cannot create the layer!"); //$NON-NLS-1$
+      logger.error("IO exception, cannot create the layer!"); //$NON-NLS-1$
       e.printStackTrace();
       return null;
     } catch (IllegalArgumentException e1) {
-      logger.warning("InvalidArgumentException, cannot create the layer!"); //$NON-NLS-1$
+      logger.error("InvalidArgumentException, cannot create the layer!"); //$NON-NLS-1$
       e1.printStackTrace();
       return null;
     }
