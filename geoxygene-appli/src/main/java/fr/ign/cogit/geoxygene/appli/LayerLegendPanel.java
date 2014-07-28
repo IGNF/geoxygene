@@ -131,9 +131,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
      *
      */
     JTable layersTable = null;
-    JButton addShapeButton = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/page_white_add.png"))); //$NON-NLS-1$
+    JButton addLayerButton = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/page_white_add.png"))); //$NON-NLS-1$
     JButton addPostgisButton = new JButton(new ImageIcon(this.getClass().getResource("/images/toolbar/database_add.png"))); //$NON-NLS-1$
-    JButton addLayerButton = new JButton(new ImageIcon(this.getClass().getResource("/images/toolbar/page_white_paintbrush.png"))); //$NON-NLS-1$
+    JButton loadSLDButton = new JButton(new ImageIcon(this.getClass().getResource("/images/toolbar/page_white_paintbrush.png"))); //$NON-NLS-1$
 
     JButton topButton = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/arrow_top.png"))); //$NON-NLS-1$
     JButton upButton = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/arrow_up.png"))); //$NON-NLS-1$
@@ -186,12 +186,12 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
-        this.addShapeButton.setMargin(nullInsets);
-        this.addShapeButton.setToolTipText(I18N.getString("MainFrame.OpenFile"));
+        this.addLayerButton.setMargin(nullInsets);
+        this.addLayerButton.setToolTipText(I18N.getString("MainFrame.OpenFile"));
         this.addPostgisButton.setMargin(nullInsets);
         this.addPostgisButton.setToolTipText(I18N.getString("MainFrame.NewPgLayer"));
-        this.addLayerButton.setMargin(nullInsets);
-        this.addLayerButton.setToolTipText(I18N.getString("MainFrame.LoadSLD"));
+        this.loadSLDButton.setMargin(nullInsets);
+        this.loadSLDButton.setToolTipText(I18N.getString("MainFrame.LoadSLD"));
 
         this.topButton.setMargin(nullInsets);
         this.topButton.setToolTipText(I18N.getString("LayerLegendPanel.Top"));
@@ -205,10 +205,10 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         this.attributeButton.setMargin(nullInsets);
         this.attributeButton.setToolTipText(I18N.getString("LayerLegendPanel.EditAttributes"));
         panel.add(Box.createHorizontalGlue());
-        panel.add(this.addShapeButton);
+        panel.add(this.addLayerButton);
         panel.add(Box.createHorizontalGlue());
         panel.add(this.addPostgisButton);
-        panel.add(this.addLayerButton);
+        panel.add(this.loadSLDButton);
 
         panel.add(Box.createHorizontalGlue());
         panel.add(this.topButton);
@@ -227,12 +227,12 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
 
         this.minusButton.addActionListener(this);
         this.minusButton.setActionCommand("remove"); //$NON-NLS-1$
-        this.addShapeButton.addActionListener(this);
-        this.addShapeButton.setActionCommand("addShp"); //$NON-NLS-1$
+        this.addLayerButton.addActionListener(this);
+        this.addLayerButton.setActionCommand("addShp"); //$NON-NLS-1$
         this.addPostgisButton.addActionListener(this);
         this.addPostgisButton.setActionCommand("addPg"); //$NON-NLS-1$
-        this.addLayerButton.addActionListener(this);
-        this.addLayerButton.setActionCommand("addSLD"); //$NON-NLS-1$
+        this.loadSLDButton.addActionListener(this);
+        this.loadSLDButton.setActionCommand("addSLD"); //$NON-NLS-1$
         this.topButton.addActionListener(this);
         this.topButton.setActionCommand("top"); //$NON-NLS-1$
         this.bottomButton.addActionListener(this);
