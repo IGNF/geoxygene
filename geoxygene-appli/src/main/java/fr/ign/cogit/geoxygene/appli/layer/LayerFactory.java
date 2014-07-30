@@ -38,7 +38,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_Coverage;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
@@ -116,6 +115,8 @@ public class LayerFactory {
             return this.createTiffLayer(f);
           case ASC:
             return this.createAscLayer(f);
+		default:
+			return null;
         }
       }
       return null;
