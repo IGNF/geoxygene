@@ -38,6 +38,7 @@ import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.apache.log4j.Logger;
 import org.w3c.dom.svg.SVGDocument;
 
 /**
@@ -46,6 +47,10 @@ import org.w3c.dom.svg.SVGDocument;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ExternalGraphic {
+	
+	/** LOGGER. */
+    private final static Logger LOGGER = Logger.getLogger(ExternalGraphic.class.getName());
+	
     @XmlElement(name = "href")
     private String href;
 
@@ -105,7 +110,7 @@ public class ExternalGraphic {
                 if (url == null) {
                     url = new URL(this.href);
                 }
-                System.err.println("try to read '" + url + "'");
+                LOGGER.trace("try to read '" + url + "'");
                 this.onlineResource = ImageIO.read(url);
             } catch (IOException e) {
                 e.printStackTrace();
