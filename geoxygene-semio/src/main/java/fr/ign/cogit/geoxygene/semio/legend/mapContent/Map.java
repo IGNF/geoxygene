@@ -2,8 +2,6 @@ package fr.ign.cogit.geoxygene.semio.legend.mapContent;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Style;
@@ -393,7 +391,6 @@ public class Map {
 		this.setMapLegend(legend);
 	}
 	
-	@SuppressWarnings("unchecked")
     public Map(List<Layer> layers, Legend legend) {
         this(layers, legend, 5);
     }
