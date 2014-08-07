@@ -55,18 +55,20 @@ public class GeOxygeneApplication {
     private final static int MAX_CREATION_TIME = 5000;
 
     /** Logger. */
-    private static Logger logger = Logger.getLogger(GeOxygeneApplication.class.getName());
+    private static Logger logger = Logger.getLogger(GeOxygeneApplication.class
+            .getName());
 
     /**
      * The icon of the icon, i.e. the GeOxygene icon by default. Also used by
      * {@link LayerViewPanel}
      */
-    private ImageIcon applicationIcon = new ImageIcon(GeOxygeneApplication.class.getResource("/images/icone.gif")); //$NON-NLS-1$
+    private ImageIcon applicationIcon = new ImageIcon(
+            GeOxygeneApplication.class.getResource("/images/icone.gif")); //$NON-NLS-1$
 
     /**
      * GeOxygene task manager (async process management)
      */
-    private final TaskManager taskManager = new TaskManager();
+    private TaskManager taskManager = null;
 
     /**
      * @return the icon of the application
@@ -115,12 +117,18 @@ public class GeOxygeneApplication {
      * @param theApplicationIcon
      *            the application icon
      */
-    public GeOxygeneApplication(final String title, final ImageIcon theApplicationIcon) {
+    public GeOxygeneApplication(final String title,
+            final ImageIcon theApplicationIcon) {
 
         this.frameTitle = title;
         if (theApplicationIcon != null) {
             this.applicationIcon = theApplicationIcon;
         }
+
+        this.taskManager = new TaskManager();
+        int cores = Runtime.getRuntime().availableProcessors();
+        this.taskManager.setMaximumRunningThreadNumber(cores);
+        logger.info("Using " + cores + " logical processors");
 
         // register application in the event manager
         GeOxygeneEventManager.getInstance().setApplication(this);
@@ -133,11 +141,13 @@ public class GeOxygeneApplication {
         try {
             UIManager.setLookAndFeel(lafClassname);
         } catch (Exception e) {
-            logger.warn("Cannot restore Look and Feel '" + lafClassname + "'. Use default one");
+            logger.warn("Cannot restore Look and Feel '" + lafClassname
+                    + "'. Use default one");
         }
 
         // set last directory used
-        MainFrameMenuBar.fc.setPreviousDirectory(new File(GeOxygeneApplication.this.properties.getLastOpenedFile()));
+        MainFrameMenuBar.fc.setPreviousDirectory(new File(
+                GeOxygeneApplication.this.properties.getLastOpenedFile()));
 
         this.preload();
         // Initialize application plugins
@@ -163,21 +173,24 @@ public class GeOxygeneApplication {
      * Preload files defined in the configuration file <preload></preload>
      */
     private void preload() {
-        //        try { // ugly "synchronization"
-        //            Thread.sleep(500);
-        //        } catch (InterruptedException e1) {
-        //            e1.printStackTrace();
-        //        }
-        RenderingType renderingType = RenderingType.valueOf(this.properties.getDefaultVisualizationType());
+        // try { // ugly "synchronization"
+        // Thread.sleep(500);
+        // } catch (InterruptedException e1) {
+        // e1.printStackTrace();
+        // }
+        RenderingType renderingType = RenderingType.valueOf(this.properties
+                .getDefaultVisualizationType());
         LayerViewPanelFactory.setRenderingType(renderingType);
         final MainFrame mainFrame = this.getMainFrame();
         ProjectFrame projectFrame = null;
         // create a new project frame or use the existing one
         // wait for desktopFrames to be created
         long startTime = new Date().getTime();
-        while (projectFrame == null && new Date().getTime() - startTime < MAX_CREATION_TIME) {
+        while (projectFrame == null
+                && new Date().getTime() - startTime < MAX_CREATION_TIME) {
             if (mainFrame.getDesktopProjectFrames().length != 0) {
-                projectFrame = mainFrame.getDesktopProjectFrames()[mainFrame.getDesktopProjectFrames().length - 1];
+                projectFrame = mainFrame.getDesktopProjectFrames()[mainFrame
+                        .getDesktopProjectFrames().length - 1];
             }
             if (projectFrame == null) {
                 try {
@@ -188,8 +201,10 @@ public class GeOxygeneApplication {
             }
         }
 
-        for (String filename : GeOxygeneApplication.this.properties.getPreloads()) {
-            PreloadTask preloadTask = new PreloadTask(mainFrame, projectFrame, filename, renderingType);
+        for (String filename : GeOxygeneApplication.this.properties
+                .getPreloads()) {
+            PreloadTask preloadTask = new PreloadTask(mainFrame, projectFrame,
+                    filename, renderingType);
             preloadTask.run();
             // this.getTaskManager().addTask(preloadTask);
             // preloadTask.start();
@@ -206,7 +221,9 @@ public class GeOxygeneApplication {
     public static synchronized ImageIcon splashImage() {
         if (GeOxygeneApplication.splashImage == null) {
             synchronized (GeOxygeneApplication.class) {
-                GeOxygeneApplication.splashImage = new ImageIcon(GeOxygeneApplication.class.getResource("/images/geoxygene-logo.png")); //$NON-NLS-1$
+                GeOxygeneApplication.splashImage = new ImageIcon(
+                        GeOxygeneApplication.class
+                                .getResource("/images/geoxygene-logo.png")); //$NON-NLS-1$
             }
         }
         return GeOxygeneApplication.splashImage;
@@ -220,15 +237,25 @@ public class GeOxygeneApplication {
                 EventQueue.invokeAndWait(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println("GeOxygeneApplication.this.properties.getProjectFrameLayout() = "
-                                + GeOxygeneApplication.this.properties.getProjectFrameLayout());
-                        if (GeOxygeneApplication.this.properties.getProjectFrameLayout().compareToIgnoreCase("tabbed") == 0) {
-                            GeOxygeneApplication.this.frame = new TabbedMainFrame(GeOxygeneApplication.this.getFrameTitle(), GeOxygeneApplication.this);
+                        System.out
+                                .println("GeOxygeneApplication.this.properties.getProjectFrameLayout() = "
+                                        + GeOxygeneApplication.this.properties
+                                                .getProjectFrameLayout());
+                        if (GeOxygeneApplication.this.properties
+                                .getProjectFrameLayout().compareToIgnoreCase(
+                                        "tabbed") == 0) {
+                            GeOxygeneApplication.this.frame = new TabbedMainFrame(
+                                    GeOxygeneApplication.this.getFrameTitle(),
+                                    GeOxygeneApplication.this);
                         } else {
-                            GeOxygeneApplication.this.frame = new FloatingMainFrame(GeOxygeneApplication.this.getFrameTitle(), GeOxygeneApplication.this);
+                            GeOxygeneApplication.this.frame = new FloatingMainFrame(
+                                    GeOxygeneApplication.this.getFrameTitle(),
+                                    GeOxygeneApplication.this);
                         }
                         GeOxygeneApplication.this.frame.display(true);
-                        GeOxygeneApplication.this.frame.addMessage(Message.MessageType.INFO, "Welcome to GeOxygene");
+                        GeOxygeneApplication.this.frame.addMessage(
+                                Message.MessageType.INFO,
+                                "Welcome to GeOxygene");
                     }
                 });
             } catch (InvocationTargetException e1) {
@@ -249,7 +276,8 @@ public class GeOxygeneApplication {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        this.properties = GeOxygeneApplicationProperties.unmarshall(this.propertiesFile.getFile());
+        this.properties = GeOxygeneApplicationProperties
+                .unmarshall(this.propertiesFile.getFile());
     }
 
     /**
@@ -259,11 +287,15 @@ public class GeOxygeneApplication {
         for (String pluginName : this.properties.getPlugins()) {
             try {
                 Class<?> pluginClass = Class.forName(pluginName);
-                if (GeOxygeneApplicationPlugin.class.isAssignableFrom(pluginClass.newInstance().getClass())) {
-                    GeOxygeneApplicationPlugin plugin = (GeOxygeneApplicationPlugin) pluginClass.newInstance();
+                if (GeOxygeneApplicationPlugin.class
+                        .isAssignableFrom(pluginClass.newInstance().getClass())) {
+                    GeOxygeneApplicationPlugin plugin = (GeOxygeneApplicationPlugin) pluginClass
+                            .newInstance();
                     plugin.initialize(this);
-                } else if (ProjectFramePlugin.class.isAssignableFrom(pluginClass.newInstance().getClass())) {
-                    logger.error(pluginClass + " should not be called has a GeOxygeneApplicationPlugin, but as a ProjectFramePlugin");
+                } else if (ProjectFramePlugin.class
+                        .isAssignableFrom(pluginClass.newInstance().getClass())) {
+                    logger.error(pluginClass
+                            + " should not be called has a GeOxygeneApplicationPlugin, but as a ProjectFramePlugin");
                 }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -280,19 +312,25 @@ public class GeOxygeneApplication {
      */
     // This method is public to be called when creating a new ProjectFrame
     public void initializeProjectFramePlugins() {
-        if (this.properties.getProjectPlugins().size() != 0 && this.getMainFrame().getSelectedProjectFrame() == null) {
+        if (this.properties.getProjectPlugins().size() != 0
+                && this.getMainFrame().getSelectedProjectFrame() == null) {
             this.getMainFrame().newProjectFrame();
         }
         for (String pluginName : this.properties.getProjectPlugins()) {
             try {
                 Class<?> pluginClass = Class.forName(pluginName);
 
-                if (ProjectFramePlugin.class.isAssignableFrom(pluginClass.newInstance().getClass())) {
-                    ProjectFramePlugin plugin = (ProjectFramePlugin) pluginClass.newInstance();
-                    plugin.initialize(this.getMainFrame().getSelectedProjectFrame());
+                if (ProjectFramePlugin.class.isAssignableFrom(pluginClass
+                        .newInstance().getClass())) {
+                    ProjectFramePlugin plugin = (ProjectFramePlugin) pluginClass
+                            .newInstance();
+                    plugin.initialize(this.getMainFrame()
+                            .getSelectedProjectFrame());
                     this.getMainFrame().getGui().repaint();
-                } else if (GeOxygeneApplicationPlugin.class.isAssignableFrom(pluginClass.newInstance().getClass())) {
-                    logger.error(pluginClass + " should not be called has a ProjectFramePlugin, but as a GeOxygeneApplicationPlugin");
+                } else if (GeOxygeneApplicationPlugin.class
+                        .isAssignableFrom(pluginClass.newInstance().getClass())) {
+                    logger.error(pluginClass
+                            + " should not be called has a ProjectFramePlugin, but as a GeOxygeneApplicationPlugin");
                 }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -326,21 +364,26 @@ public class GeOxygeneApplication {
 
         // this library is added on Linux system to cover a lack of call of
         // XInitThread by the JVM
-        // this call should be placed inside the JVM loading, but this is the very
+        // this call should be placed inside the JVM loading, but this is the
+        // very
         // early place we can do it
         // this small hack is only for Linux, other platforms are ok with
         // multithreaded call to X11
-        if (System.getProperties().getProperty("java.awt.graphicsenv").contains("X11")) {
+        if (System.getProperties().getProperty("java.awt.graphicsenv")
+                .contains("X11")) {
             logger.info("Current display uses X11. Do a native call to 'xInitThread()' method");
             try {
                 System.loadLibrary("xinitthread");
             } catch (Throwable e) {
                 logger.error("The xinitthread library was not found. You should add ./lib/xinitthread/linux-amd64 to the library path (LD_LIBRARY_PATH)");
-                logger.info("Current LD_LIBRARY_PATH = " + System.getenv("LD_LIBRARY_PATH"));
-                logger.info("Current java.library.path = " + System.getProperty("java.library.path"));
+                logger.info("Current LD_LIBRARY_PATH = "
+                        + System.getenv("LD_LIBRARY_PATH"));
+                logger.info("Current java.library.path = "
+                        + System.getProperty("java.library.path"));
             }
         }
-        final SplashScreen splashScreen = new SplashScreen(GeOxygeneApplication.splashImage(), "GeOxygene"); //$NON-NLS-1$
+        final SplashScreen splashScreen = new SplashScreen(
+                GeOxygeneApplication.splashImage(), "GeOxygene"); //$NON-NLS-1$
         splashScreen.setVisible(true);
         final GeOxygeneApplication application = new GeOxygeneApplication();
         // application.getMainFrame().newProjectFrame();
