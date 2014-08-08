@@ -61,6 +61,7 @@ import org.hibernate.cfg.AnnotationConfiguration;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.core.genericschema.IPersistentObject;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
@@ -725,11 +726,11 @@ public class DatasetGeoxGUIComponent extends JMenu {
       public OverwriteFromShapeFrame() {
         super("Shapefiles to overwrite");
         this.setSize(200, 400);
-        System.out.println(CartAGenDoc.getInstance().getCurrentDataset());
-        System.out.println(CartAGenDoc.getInstance().getCurrentDataset()
-            .getCartAGenDB());
-        System.out.println(CartAGenDoc.getInstance().getCurrentDataset()
-            .getCartAGenDB().getClasses());
+        // System.out.println(CartAGenDoc.getInstance().getCurrentDataset());
+        // System.out.println(CartAGenDoc.getInstance().getCurrentDataset()
+        // .getCartAGenDB());
+        // System.out.println(CartAGenDoc.getInstance().getCurrentDataset()
+        // .getCartAGenDB().getClasses());
         for (GeographicClass geoClass : CartAGenDoc.getInstance()
             .getCurrentDataset().getCartAGenDB().getClasses()) {
           JCheckBox check = new JCheckBox(geoClass.getName());
@@ -932,7 +933,7 @@ public class DatasetGeoxGUIComponent extends JMenu {
         // get all the features of classObj in the current dataset
         IPopulation<? extends IGeneObj> pop = dataset.getCartagenPop(
             dataset.getPopNameFromClass(classObj), "");
-        for (IGeneObj obj : pop) {
+        for (IPersistentObject obj : pop) {
           try {
             obj.updateRelationIds();
           } catch (SecurityException e) {
@@ -1217,10 +1218,15 @@ public class DatasetGeoxGUIComponent extends JMenu {
       if (this.chkPersist.isSelected()) {
         // fill the persistent classes with the existing IGeneObj classes
         this.currentDb.getPersistentClasses().clear();
+        System.out.println(this.existingClasses);
         this.currentDb.getPersistentClasses()
             .addAll(
                 this.currentDb.getGeneObjImpl().filterClasses(
                     this.existingClasses));
+
+        System.out.println(this.currentDb.getGeneObjImpl().filterClasses(
+            this.existingClasses));
+
       } else {
         // remove the existing IGeneObj classes from the persistent classes
         this.currentDb.getPersistentClasses().removeAll(this.existingClasses);
