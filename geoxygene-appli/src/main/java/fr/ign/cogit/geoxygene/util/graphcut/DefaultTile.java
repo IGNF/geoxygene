@@ -187,12 +187,16 @@ public class DefaultTile implements Tile {
     public static Tile read(URL url, double scaleFactor) throws IOException {
         DefaultTile tile = new DefaultTile();
         try {
-            BufferedImage img = ImageIO.read(url);
+            BufferedImage img = ImageUtil.convert(ImageIO.read(url),
+                    BufferedImage.TYPE_4BYTE_ABGR);
             tile.setImage(scaleImage(img, (int) (img.getWidth() * scaleFactor),
                     (int) (img.getHeight() * scaleFactor)));
         } catch (IOException e) {
             logger.error("Cannot read url '" + url + "'");
             throw e;
+        } catch (Exception e) {
+            logger.error("Error reading url '" + url + "'");
+            e.printStackTrace();
         }
         return tile;
     }
