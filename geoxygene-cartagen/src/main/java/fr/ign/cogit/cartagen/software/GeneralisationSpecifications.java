@@ -93,6 +93,8 @@ public final class GeneralisationSpecifications {
   public static double DISTANCE_MAX_DEPLACEMENT_BATIMENT = 2.0;
   // distance minimale batiments-routes (en mm carte)
   public static double DISTANCE_SEPARATION_BATIMENT_ROUTE = 0.1;
+  // distance minimale étendues eau-routes (en mm carte)
+  public static double DISTANCE_SEPARATION_WATER_AREA_ROAD = 10;
   // lorsque les batiments ne peuvent pas etre deplaces pour resoudre conflit de
   // superposition, le batiment le plus en coflit est supprime.
   // ce seuil est le taux de superposition minimal que doit acvoir ce batiment
