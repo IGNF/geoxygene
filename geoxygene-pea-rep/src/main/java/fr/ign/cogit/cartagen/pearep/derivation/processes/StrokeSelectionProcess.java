@@ -42,6 +42,18 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
   private static StrokeSelectionProcess instance = null;
   private boolean deleted = true;
 
+  protected boolean isDeleted() {
+    return deleted;
+  }
+
+  protected String getAttributeName() {
+    return attributeName;
+  }
+
+  protected double getLengthThreshold() {
+    return lengthThreshold;
+  }
+
   protected StrokeSelectionProcess() {
     // Exists only to defeat instantiation.
   }
@@ -117,9 +129,9 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
     // then compute the strokes
     RoadStrokesNetwork network = new RoadStrokesNetwork(map.keySet());
     HashSet<String> attributeNames = new HashSet<String>();
-    if (this.attributeName != null) {
-      if (this.attributeName != "")
-        attributeNames.add(this.attributeName);
+    if (this.getAttributeName() != null) {
+      if (this.getAttributeName() != "")
+        attributeNames.add(this.getAttributeName());
     }
     network.buildStrokes(attributeNames, 112.5, 45.0, true);
     // select the strokes big enough
@@ -153,8 +165,7 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
   public void parameterise() {
     this.lengthThreshold = (Double) this.getParamValueFromName("min_length");
     if (this.hasParameter("name_attribute")) {
-      this.attributeName = (String) this
-          .getParamValueFromName("name_attribute");
+      attributeName = (String) this.getParamValueFromName("name_attribute");
     }
     if (this.hasParameter("deleted")) {
       this.deleted = (Boolean) this.getParamValueFromName("deleted");
