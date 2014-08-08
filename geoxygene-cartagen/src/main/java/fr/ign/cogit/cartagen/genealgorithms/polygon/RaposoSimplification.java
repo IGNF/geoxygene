@@ -72,12 +72,20 @@ public class RaposoSimplification {
     return firstFactor * secondFactor;
   }
 
+  /**
+   * Triggers the Raposo simplification on the line given as parameter. The
+   * options provide the degree of generalisation.
+   * @param line
+   * @return
+   */
   public ILineString simplify(ILineString line) {
     IDirectPositionList points = new DirectPositionList();
     // compute the hexagonal tessellation for this line
+    // first, the width of a cell that depends on the options of the algorithm.
     double width = computeToblerWidth();
     if (!toblerRes)
       width = computeRaposoWidth(line);
+    // the envelope of the line is computed to delimit the tessallation.
     IEnvelope envelope = line.getEnvelope();
     tess = new HexagonalTessellation(envelope, width);
     int currentIndex = 0;
@@ -85,6 +93,8 @@ public class RaposoSimplification {
     while (currentIndex < line.coord().size() - 1) {
       HexagonalCell current = null;
       // now loop on the vertices from current index
+      // builds a point cloud as a multi-point geometry with all line vertices
+      // contained in the current cell.
       IMultiPoint ptCloud = new GM_MultiPoint();
       for (int i = currentIndex; i < line.coord().size(); i++) {
         Set<HexagonalCell> containingCells = tess.getContainingCells(line
@@ -105,8 +115,11 @@ public class RaposoSimplification {
         }
       }
       if (method1)
+        // get the centroid of the point cloud to replace all the vertices
         points.add(ptCloud.centroid());
       else {
+        // in this option, the vertices are replaced by the nearest point in the
+        // line of the centroid of the point cloud.
         points.add(CommonAlgorithmsFromCartAGen.getNearestVertexFromPoint(line,
             ptCloud.centroid()));
       }

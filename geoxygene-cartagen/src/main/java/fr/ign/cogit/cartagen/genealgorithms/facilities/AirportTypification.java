@@ -28,6 +28,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea.TaxiwayType;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.genealgorithms.polygon.Skeletonize;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -62,6 +63,7 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.NoeudReseauImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.algo.OrientationMeasure;
@@ -76,8 +78,9 @@ public class AirportTypification {
 
   private IAirportArea airport;
   private boolean runwayAreaElim = true;
-  private double apronMinArea, apronSegLength;
+  private double apronMinArea, apronSegLength, apronClosingSize;
   private double openThreshTaxi;
+  private double terminalSegLength, terminalMinArea;
   /** The maximum area of a branching taxiway pattern. Default value = 7000 m² */
   private double branchingMaxArea;
   private double maxAngleBranching;
@@ -183,6 +186,25 @@ public class AirportTypification {
     }
   }
 
+  /**
+   * Simplify terminal buildings with Ruas' building simplification algorithm
+   * and eliminate small ones.
+   */
+  public void simplifyTerminals() {
+    for (IBuilding terminal : this.airport.getTerminals()) {
+
+      // check building size
+      if (terminal.getGeom().area() < this.terminalMinArea) {
+        terminal.eliminateBatch();
+        continue;
+      }
+      // simplify feature
+      IGeometry newGeom = SimplificationAlgorithm.simplification(
+          terminal.getGeom(), this.apronSegLength);
+      terminal.setGeom(newGeom);
+    }
+  }
+
   public void simplifyAprons() {
     for (ITaxiwayArea taxi : this.airport.getTaxiwayAreas()) {
       // check to it's an apron
@@ -198,6 +220,60 @@ public class AirportTypification {
       IGeometry newGeom = SimplificationAlgorithm.simplification(
           taxi.getGeom(), this.apronSegLength);
       taxi.setGeom(newGeom);
+    }
+  }
+
+  /**
+   * Amalgamate aprons by morphological closing operation.
+   */
+  @SuppressWarnings("unchecked")
+  public void amalgamateAprons() {
+    IPopulation<ITaxiwayArea> pop = dataset.getTaxiwayAreas();
+    IMultiSurface<IOrientableSurface> multiToClose = new GM_MultiSurface<IOrientableSurface>();
+    for (ITaxiwayArea taxi : this.airport.getTaxiwayAreas()) {
+      // check to it's an apron
+      if (taxi.getType().equals(TaxiwayType.TAXIWAY)) {
+        continue;
+      }
+      // add apron geometry to multi-polygon
+      multiToClose.add(taxi.getGeom());
+    }
+
+    // "close" the multi-polygon
+    MorphologyTransform morpho = new MorphologyTransform(apronClosingSize, 15);
+    IGeometry closed = morpho.closing(multiToClose);
+
+    // remove the current aprons
+    for (ITaxiwayArea taxi : this.airport.getTaxiwayAreas()) {
+      // check to it's an apron
+      if (taxi.getType().equals(TaxiwayType.TAXIWAY)) {
+        continue;
+      }
+      taxi.eliminateBatch();
+    }
+
+    // make the multi-polygons multiple objects
+    if (closed instanceof IPolygon) {
+      ITaxiwayArea apron = dataset.getCartAGenDB().getGeneObjImpl()
+          .getCreationFactory()
+          .createTaxiwayArea((IPolygon) closed, TaxiwayType.APRON);
+      this.airport.getTaxiwayAreas().add(apron);
+      dataset.getCartagenPop(CartAGenDataSet.TAXIWAY_AREA_POP).add(apron);
+      pop.add(apron);
+    } else if (closed instanceof IMultiSurface<?>) {
+      IMultiSurface<IOrientableSurface> multi = (IMultiSurface<IOrientableSurface>) closed;
+      for (IOrientableSurface simple : multi.getList()) {
+        if (simple == null)
+          continue;
+        if (simple.isEmpty())
+          continue;
+        ITaxiwayArea apron = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory()
+            .createTaxiwayArea((IPolygon) simple, TaxiwayType.APRON);
+        this.airport.getTaxiwayAreas().add(apron);
+        dataset.getCartagenPop(CartAGenDataSet.TAXIWAY_AREA_POP).add(apron);
+        pop.add(apron);
+      }
     }
   }
 
@@ -620,6 +696,30 @@ public class AirportTypification {
 
   public void setAirport(IAirportArea airport) {
     this.airport = airport;
+  }
+
+  public double getApronClosingSize() {
+    return apronClosingSize;
+  }
+
+  public void setApronClosingSize(double apronClosingSize) {
+    this.apronClosingSize = apronClosingSize;
+  }
+
+  public double getTerminalSegLength() {
+    return terminalSegLength;
+  }
+
+  public void setTerminalSegLength(double terminalSegLength) {
+    this.terminalSegLength = terminalSegLength;
+  }
+
+  public double getTerminalMinArea() {
+    return terminalMinArea;
+  }
+
+  public void setTerminalMinArea(double terminalMinArea) {
+    this.terminalMinArea = terminalMinArea;
   }
 
   public class TaxiwayBranching extends DefaultFeature {

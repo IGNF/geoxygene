@@ -928,6 +928,26 @@ public class CartAGenDataSet extends DataSet {
   }
 
   /**
+   * Gets the airport taxiway lines of the dataset
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<ITaxiwayLine> getTaxiwayLines() {
+    return (IPopulation<ITaxiwayLine>) this.getCartagenPop(
+        CartAGenDataSet.TAXIWAY_LINE_POP, ITaxiwayLine.FEAT_TYPE_NAME);
+  }
+
+  /**
+   * Gets the airport taxiway areas of the dataset
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<ITaxiwayArea> getTaxiwayAreas() {
+    return (IPopulation<ITaxiwayArea>) this.getCartagenPop(
+        CartAGenDataSet.TAXIWAY_AREA_POP, ITaxiwayArea.FEAT_TYPE_NAME);
+  }
+
+  /**
    * Gets the islands of the dataset
    * @return
    */
@@ -1920,7 +1940,6 @@ public class CartAGenDataSet extends DataSet {
    * .setEnabled(true);
    * GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
    * return true; }
-   *
    */
   /**
    * Charge des troncons de route depuis un shapefile lineaire. Adapte a la
@@ -2164,7 +2183,6 @@ public class CartAGenDataSet extends DataSet {
    * GeneralisationLeftPanelComplement.getInstance().lRR.setEnabled(true);
    * return true; }
    */
-
 
   // ///////////////////////////////////////
   // Hydro network
