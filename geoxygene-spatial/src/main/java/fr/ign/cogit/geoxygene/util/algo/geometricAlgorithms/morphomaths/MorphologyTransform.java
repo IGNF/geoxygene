@@ -90,6 +90,26 @@ public class MorphologyTransform {
   }
 
   /**
+   * Closing method for a multi-polygon.
+   * @param polygon
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IGeometry closing(IMultiSurface<IOrientableSurface> geom) {
+    try {
+      IMultiSurface<IOrientableSurface> buffer = (IMultiSurface<IOrientableSurface>) geom
+          .buffer(bufferSize, bufferStep);
+      // the buffered geometry is slightly filtered to avoid small geometry
+      // problems
+      IGeometry filtered = Filtering.DouglasPeucker(buffer, 1.0);
+      IGeometry closed = erosion((IMultiSurface<IOrientableSurface>) filtered);
+      return closed;
+    } catch (Exception e) {
+      return geom;
+    }
+  }
+
+  /**
    * <p>
    * Apply erosion on a polygon with no hole.<br>
    * 
