@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import fr.ign.cogit.cartagen.core.genericschema.AbstractCreationFactory;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -63,6 +64,12 @@ public abstract class ScaleMasterGeneProcess implements
    */
   public abstract void execute(IFeatureCollection<? extends IGeneObj> features,
       CartAGenDataSet currentDataset) throws Exception;
+
+  public void execute(IFeatureCollection<? extends IGeneObj> features,
+      CartAGenDataSet currentDataset, Set<Class<? extends IGeneObj>> classes,
+      AbstractCreationFactory factory) throws Exception {
+    execute(features, currentDataset);
+  }
 
   public abstract String getProcessName();
 

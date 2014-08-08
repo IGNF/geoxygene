@@ -54,6 +54,10 @@ public class SLDUtil {
 
     StyledLayerDescriptor sld = CartAGenDoc.getInstance().getCurrentDataset()
         .getSld();
+
+    if (sld == null) {
+      return 0.0;
+    }
     Layer layer = sld.getLayer(layerName);
     // get the background style (max width is the bottom style width)
     Style style = layer.getStyles().get(0);

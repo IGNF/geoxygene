@@ -253,6 +253,10 @@ public abstract class CartAGenDB {
     return classes;
   }
 
+  public void addClass(GeographicClass c) {
+    this.classes.add(c);
+  }
+
   public void setDataSet(CartAGenDataSet genDataSet) {
     this.dataSet = genDataSet;
     if (genDataSet.getCartAGenDB() == null)

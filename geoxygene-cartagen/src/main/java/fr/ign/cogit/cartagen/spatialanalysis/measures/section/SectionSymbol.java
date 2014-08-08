@@ -13,10 +13,15 @@ import org.apache.log4j.Logger;
 
 import com.vividsolutions.jts.operation.buffer.BufferParameters;
 
+import fr.ign.cogit.cartagen.core.genericschema.carringrelation.ICarrierNetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 
 public class SectionSymbol {
   private static Logger logger = Logger
@@ -51,6 +56,99 @@ public class SectionSymbol {
               + section.getGeom());
     }
     return g;
+  }
+
+  public static IGeometry getSymbolExtentWithCarriedObjects(
+      ICarrierNetworkSection section) {
+    // Compute the size of the buffer
+    double distanceLeft = section.distance(true);
+    System.out.println(distanceLeft);
+
+    ILineString l = JtsAlgorithms.offsetCurve(
+        section.getGeom(),
+        (section.getWidth() / 2 + distanceLeft) / 2
+            * Legend.getSYMBOLISATI0N_SCALE() / 1000).get(0);
+
+    // Compute the size of the buffer
+    double distanceRight = section.distance(false);
+    System.out.println(distanceRight);
+
+    System.out.println(section.getWidth());
+
+    ILineString r = JtsAlgorithms.offsetCurve(
+        section.getGeom(),
+        -(section.getWidth() / 2 + distanceRight) / 2
+            * Legend.getSYMBOLISATI0N_SCALE() / 1000).get(0);
+
+    if (l.coord().get(0).distance(section.getGeom().coord().get(0)) < l.coord()
+        .get(0).distance(r.coord().get(r.coord().size() - 1))) {
+      l.coord().inverseOrdre();
+    }
+
+    for (IDirectPosition position : r.coord()) {
+      l.coord().add(position);
+    }
+    l.coord().add(l.coord().get(0));
+    return new GM_Polygon(l);
+
+  }
+
+  public static IGeometry getSymbolExtentWithCarriedObjects(
+      ICarrierNetworkSection section, boolean left) {
+    // Compute the size of the buffer
+    double distance = section.distance(left);
+    distance *= left ? 1 : -1;
+
+    ILineString g = JtsAlgorithms.offsetCurve(
+        section.getGeom(),
+        (section.getWidth() / 2 + distance) / 2
+            * Legend.getSYMBOLISATI0N_SCALE() / 1000).get(0);
+
+    if (g.coord().get(0).distance(section.getGeom().coord().get(0)) < g
+        .coord()
+        .get(0)
+        .distance(
+            section.getGeom().coord().get(section.getGeom().coord().size() - 1))) {
+      g.coord().inverseOrdre();
+    }
+
+    for (IDirectPosition position : section.getGeom().coord()) {
+      g.coord().add(position);
+    }
+    g.coord().add(g.coord().get(0));
+    return new GM_Polygon(g);
+
+  }
+
+  public static IGeometry getMaxSymbolExtentWithCarriedObjects(
+      ICarrierNetworkSection section) {
+    return getMaxSymbolExtentWithCarriedObjects(section, 0);
+  }
+
+  public static IGeometry getMaxSymbolExtentWithCarriedObjects(
+      ICarrierNetworkSection section, double marge) {
+    // Compute the size of the buffer
+    double distance = section.maxWidth() + marge;
+
+    ILineString g = JtsAlgorithms.offsetCurve(
+        section.getGeom(),
+        (section.getWidth() / 2 + distance) / 2
+            * Legend.getSYMBOLISATI0N_SCALE() / 1000).get(0);
+
+    if (g.coord().get(0).distance(section.getGeom().coord().get(0)) < g
+        .coord()
+        .get(0)
+        .distance(
+            section.getGeom().coord().get(section.getGeom().coord().size()))) {
+      g.coord().inverseOrdre();
+    }
+
+    for (IDirectPosition position : section.getGeom().coord()) {
+      g.coord().add(position);
+    }
+    g.coord().add(g.coord().get(0));
+    return new GM_Polygon(g);
+
   }
 
   /**

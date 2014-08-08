@@ -780,8 +780,8 @@ public class DatasetGUIComponent extends JMenu {
       // a panel to choose the current database among the databases of the
       // document
       JPanel p1 = new JPanel();
-      this.databases = new JComboBox(CartAGenDocOld.getInstance().getDatabases()
-          .keySet().toArray());
+      this.databases = new JComboBox(CartAGenDocOld.getInstance()
+          .getDatabases().keySet().toArray());
       this.databases.setPreferredSize(new Dimension(150, 20));
       this.databases.setMaximumSize(new Dimension(150, 20));
       this.databases.setMinimumSize(new Dimension(150, 20));
@@ -849,8 +849,8 @@ public class DatasetGUIComponent extends JMenu {
         hibConfig.setProperty("hibernate.connection.url", PostgisDB.getUrl());
 
         // get the persistent classes
-        for (Class<?> classObj : CartAGenDocOld.getInstance().getCurrentDataset()
-            .getCartAGenDB().getPersistentClasses()) {
+        for (Class<?> classObj : CartAGenDocOld.getInstance()
+            .getCurrentDataset().getCartAGenDB().getPersistentClasses()) {
           // add the persistent class to the hibernate configuration
           hibConfig.addAnnotatedClass(classObj);
           // get the annotated interfaces or superclasses of the persistent
@@ -907,7 +907,8 @@ public class DatasetGUIComponent extends JMenu {
         return;
       }
 
-      CartAGenDataSet dataset = CartAGenDocOld.getInstance().getCurrentDataset();
+      CartAGenDataSet dataset = CartAGenDocOld.getInstance()
+          .getCurrentDataset();
       // loop on the persistent classes to save their features in the current DB
       for (Class<?> classObj : CartAGenDocOld.getInstance().getCurrentDataset()
           .getCartAGenDB().getPersistentClasses()) {
@@ -937,7 +938,8 @@ public class DatasetGUIComponent extends JMenu {
         }
       }
       // commit the transaction than close the session
-      CartAGenDocOld.getInstance().getPostGisSession().getTransaction().commit();
+      CartAGenDocOld.getInstance().getPostGisSession().getTransaction()
+          .commit();
     }
 
     public CommitAction() {
@@ -971,7 +973,8 @@ public class DatasetGUIComponent extends JMenu {
       }
 
       // rollback the transaction than close the session
-      CartAGenDocOld.getInstance().getPostGisSession().getTransaction().rollback();
+      CartAGenDocOld.getInstance().getPostGisSession().getTransaction()
+          .rollback();
     }
 
     public BackTrackAction() {
@@ -1047,8 +1050,8 @@ public class DatasetGUIComponent extends JMenu {
       this.persistList
           .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
       // the combo box with the databases
-      this.cbDatabases = new JComboBox(CartAGenDocOld.getInstance().getDatabases()
-          .values().toArray());
+      this.cbDatabases = new JComboBox(CartAGenDocOld.getInstance()
+          .getDatabases().values().toArray());
       this.cbDatabases.setPreferredSize(new Dimension(150, 20));
       this.cbDatabases.setMaximumSize(new Dimension(150, 20));
       this.cbDatabases.setMinimumSize(new Dimension(150, 20));

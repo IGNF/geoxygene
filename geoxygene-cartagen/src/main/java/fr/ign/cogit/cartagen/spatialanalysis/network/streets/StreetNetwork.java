@@ -54,6 +54,7 @@ import fr.ign.cogit.geoxygene.schemageo.api.bati.Ilot;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ArcReseauImpl;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.JTSAlgorithms;
@@ -1644,8 +1645,10 @@ public class StreetNetwork extends AbstractFeature {
       IGeometry cutGeom = block.getGeom().intersection(this.getGeom());
       block.setEdge(true);
 
-      // test if it is a simple geometry
-      if (cutGeom instanceof IPolygon) {
+      if (cutGeom instanceof GM_Aggregate) {
+        continue;
+      } else if (cutGeom instanceof IPolygon) { // test if it is a simple
+                                                // geometry
         // update the block geometry
         block.updateGeom((IPolygon) cutGeom);
       } else {

@@ -147,11 +147,16 @@ public class UrbanAlignmentsMeasures {
 
     // Enlargment of buildings
     for (IUrbanElement ag : align.getUrbanElements()) {
+      if (ag.getGeom() == null || !(ag.getGeom() instanceof IPolygon)) {
+        System.out.println("Problem with geometry of " + ag.getFeature()
+            + " : " + ag.getGeom());
+        continue;
+      }
       initialGeoms.put(ag, new GM_Polygon(new GM_LineString(ag.getGeom()
           .coord())));
       double goalArea = BlockBuildingsMeasures.getBuildingGoalArea(ag);
-      ag.setGeom(CommonAlgorithms.homothetie((IPolygon) ag.getGeom(), Math
-          .sqrt(goalArea / ag.getGeom().area())));
+      ag.setGeom(CommonAlgorithms.homothetie((IPolygon) ag.getGeom(),
+          Math.sqrt(goalArea / ag.getGeom().area())));
     }
 
     // Computation of superposition
@@ -198,8 +203,8 @@ public class UrbanAlignmentsMeasures {
       initialGeoms.put(ag, new GM_Polygon(new GM_LineString(ag.getGeom()
           .coord())));
       double goalArea = BlockBuildingsMeasures.getBuildingGoalArea(ag);
-      ag.setGeom(CommonAlgorithms.homothetie((IPolygon) ag.getGeom(), Math
-          .sqrt(goalArea / ag.getGeom().area())));
+      ag.setGeom(CommonAlgorithms.homothetie((IPolygon) ag.getGeom(),
+          Math.sqrt(goalArea / ag.getGeom().area())));
     }
 
     // Computation of superposition
@@ -277,9 +282,9 @@ public class UrbanAlignmentsMeasures {
     // Computation of sigma
     double sigma = 0.0;
     for (int i = 0; i < centroidLine.coord().size() - 1; i++) {
-      sigma += Math.pow(centroidLine.coord().get(i + 1).distance(
-          centroidLine.coord().get(i))
-          - mean, 2.0);
+      sigma += Math.pow(
+          centroidLine.coord().get(i + 1).distance(centroidLine.coord().get(i))
+              - mean, 2.0);
     }
     sigma = Math.sqrt(sigma);
     return sigma;
@@ -402,8 +407,7 @@ public class UrbanAlignmentsMeasures {
         }
         // Else, computation of overlapping
         overlappingRatio += (alignBis.getGeom().intersection(align.getGeom())
-            .area())
-            / align.getGeom().area();
+            .area()) / align.getGeom().area();
       }
 
       if (overlappingRatio > 0.5) {
