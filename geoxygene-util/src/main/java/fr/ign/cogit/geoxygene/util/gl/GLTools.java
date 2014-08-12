@@ -894,7 +894,8 @@ public final class GLTools {
             throws GLException {
         int shader = 0;
         try {
-            shader = glCreateShader(shaderType);
+          logger.debug("shader "+shaderFilename + "shaderType "+shaderType);  
+          shader = glCreateShader(shaderType);
             if (shader == 0) {
                 return 0;
             }
