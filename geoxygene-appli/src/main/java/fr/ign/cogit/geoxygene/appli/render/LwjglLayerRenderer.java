@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.Util;
 
+import test.app.GLBezierShadingVertex;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.Viewport;
@@ -67,6 +68,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
     // private final DensityFieldPrimitiveRenderer densityFieldPrimitiveRenderer
     // = new DensityFieldPrimitiveRenderer();
     private GL4FeatureRenderer gl4Renderer = null;
+    private LayerViewGLPanel layerViewPanel = null;
 
     /**
      * Constructor of renderer using a {@link Layer} and a
@@ -79,7 +81,16 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
      */
     public LwjglLayerRenderer(final Layer theLayer,
             final LayerViewGLPanel theLayerViewPanel) {
-        super(theLayer, theLayerViewPanel);
+        super(theLayer);
+        this.setLayerViewPanel(theLayerViewPanel);
+    }
+
+    /**
+     * @param layerViewPanel
+     *            the layerViewPanel to set
+     */
+    public void setLayerViewPanel(LayerViewGLPanel layerViewPanel) {
+        this.layerViewPanel = layerViewPanel;
     }
 
     /*
@@ -91,20 +102,25 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
      */
     @Override
     public LayerViewGLPanel getLayerViewPanel() {
-        return (LayerViewGLPanel) super.getLayerViewPanel();
+        return this.layerViewPanel;
     }
 
     private final FeatureRenderer getRenderer() {
         if (this.gl4Renderer == null) {
             try {
                 this.gl4Renderer = new GL4FeatureRenderer(this,
-                        LwjglLayerRenderer.getGL4Context());
+                        this.getGlContext());
             } catch (GLException e) {
                 logger.error("impossible to generate a valid GL4 Context");
                 e.printStackTrace();
             }
         }
         return this.gl4Renderer;
+    }
+
+    private GLContext getGlContext() throws GLException {
+
+        return this.getLayerViewPanel().getGlContext();
     }
 
     /**
@@ -193,7 +209,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
                         // System.err.println("rendering feature collection size "
                         // + LwjglLayerRenderer.this.getLayer()
                         // .getFeatureCollection().size());
-                        LwjglLayerRenderer.getGL4Context().initializeContext();
                         // getGL4Context().checkContext();
                         LwjglLayerRenderer.this.renderHook(vp.getViewport()
                                 .getEnvelopeInModelCoordinates());
@@ -333,17 +348,17 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
 
     @Override
     public void reset() {
-        glContext = null;
         if (this.gl4Renderer != null) {
             this.gl4Renderer.reset();
             this.gl4Renderer = null;
         }
+        this.getLayerViewPanel().reset();
         TextureManager.getInstance().clearCache();
         GLTextureManager.getInstance().clearCache();
     }
 
     // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private static GLContext glContext = null;
+    // private static GLContext glContext = null;
 
     public static final String m00ModelToViewMatrixUniformVarName = "m00";
     public static final String m02ModelToViewMatrixUniformVarName = "m02";
@@ -379,6 +394,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
 
     public static final String basicProgramName = "Basic";
     public static final String linePaintingProgramName = "LinePainting";
+    public static final String bezierLineProgramName = "BezierPainting";
     public static final String worldspaceColorProgramName = "WorldspaceColor";
     public static final String worldspaceTextureProgramName = "WorldspaceTexture";
     public static final String screenspaceColorProgramName = "ScreenspaceColor";
@@ -393,39 +409,46 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
      * @return
      * @throws GLException
      */
-    public static GLContext getGL4Context() throws GLException {
-        if (glContext == null) {
-            glContext = new GLContext();
+    public static GLContext createNewGL4Context() throws GLException {
+        GLContext glContext = new GLContext();
 
-            int worldspaceVertexShader = GLProgram
-                    .createVertexShader("./src/main/resources/shaders/worldspace.vert.glsl");
-            int screenspaceVertexShader = GLProgram
-                    .createVertexShader("./src/main/resources/shaders/screenspace.vert.glsl");
-            glContext.addProgram(createBasicProgram());
+        int worldspaceVertexShader = GLProgram
+                .createVertexShader("./src/main/resources/shaders/worldspace.vert.glsl");
+        int screenspaceVertexShader = GLProgram
+                .createVertexShader("./src/main/resources/shaders/screenspace.vert.glsl");
+        glContext.addProgram(createBasicProgram());
 
-            glContext
-                    .addProgram(createWorldspaceColorProgram(worldspaceVertexShader));
-            glContext
-                    .addProgram(createWorldspaceTextureProgram(worldspaceVertexShader));
+        glContext
+                .addProgram(createWorldspaceColorProgram(worldspaceVertexShader));
+        glContext
+                .addProgram(createWorldspaceTextureProgram(worldspaceVertexShader));
 
-            glContext
-                    .addProgram(createScreenspaceColorProgram(screenspaceVertexShader));
-            glContext
-                    .addProgram(createScreenspaceTextureProgram(screenspaceVertexShader));
-            glContext
-                    .addProgram(createScreenspaceAntialiasedProgram(screenspaceVertexShader));
+        glContext
+                .addProgram(createScreenspaceColorProgram(screenspaceVertexShader));
+        glContext
+                .addProgram(createScreenspaceTextureProgram(screenspaceVertexShader));
+        glContext
+                .addProgram(createScreenspaceAntialiasedProgram(screenspaceVertexShader));
 
-            // line painting
-            int paintVertexShader = GLProgram
-                    .createVertexShader("./src/main/resources/shaders/line.vert.glsl");
-            int paintFragmentShader = GLProgram
-                    .createFragmentShader("./src/main/resources/shaders/line.frag.glsl");
-            glContext.addProgram(createPaintProgram(paintVertexShader,
-                    paintFragmentShader));
-            // background paper
-            glContext.addProgram(createBackgroundTextureProgram());
+        // line painting
+        int paintVertexShader = GLProgram
+                .createVertexShader("./src/main/resources/shaders/line.vert.glsl");
+        int paintFragmentShader = GLProgram
+                .createFragmentShader("./src/main/resources/shaders/line.frag.glsl");
+        glContext.addProgram(createPaintProgram(paintVertexShader,
+                paintFragmentShader));
 
-        }
+        // line painting
+        int bezierVertexShader = GLProgram
+                .createVertexShader("./src/main/resources/shaders/bezier.vert.glsl");
+        int bezierFragmentShader = GLProgram
+                .createFragmentShader("./src/main/resources/shaders/bezier.frag.glsl");
+        glContext.addProgram(createBezierProgram(bezierVertexShader,
+                bezierFragmentShader));
+
+        // background paper
+        glContext.addProgram(createBackgroundTextureProgram());
+
         return glContext;
     }
 
@@ -490,6 +513,58 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         paintProgram.addUniform(globalOpacityUniformVarName);
         paintProgram.addUniform(objectOpacityUniformVarName);
         paintProgram.addUniform(textureScaleFactorUniformVarName);
+
+        return paintProgram;
+    }
+
+    /**
+     * line painting program
+     */
+    private static GLProgram createBezierProgram(int basicVertexShader,
+            int basicFragmentShader) throws GLException {
+        // basic program
+        GLProgram paintProgram = new GLProgram(bezierLineProgramName);
+        paintProgram.setVertexShader(basicVertexShader);
+        paintProgram.setFragmentShader(basicFragmentShader);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexPositionVariableName,
+                GLBezierShadingVertex.vertexPositionLocation);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexUVVariableName,
+                GLBezierShadingVertex.vertexUVLocation);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexColorVariableName,
+                GLBezierShadingVertex.vertexColorLocation);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexLineWidthVariableName,
+                GLBezierShadingVertex.vertexLineWidthLocation);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexMaxUVariableName,
+                GLBezierShadingVertex.vertexMaxULocation);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexP0VariableName,
+                GLBezierShadingVertex.vertexP0Location);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexP1VariableName,
+                GLBezierShadingVertex.vertexP1Location);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexP2VariableName,
+                GLBezierShadingVertex.vertexP2Location);
+
+        paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m02ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m11ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m12ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(screenWidthUniformVarName);
+        paintProgram.addUniform(screenHeightUniformVarName);
+        paintProgram.addUniform(brushTextureUniformVarName);
+        paintProgram.addUniform(brushWidthUniformVarName);
+        paintProgram.addUniform(brushHeightUniformVarName);
+        paintProgram.addUniform(brushScaleUniformVarName);
+        paintProgram.addUniform(globalOpacityUniformVarName);
+        paintProgram.addUniform(objectOpacityUniformVarName);
+        paintProgram.addUniform(colorTexture1UniformVarName);
 
         return paintProgram;
     }

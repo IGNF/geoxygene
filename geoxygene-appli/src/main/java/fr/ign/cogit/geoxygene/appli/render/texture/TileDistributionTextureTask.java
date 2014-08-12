@@ -467,7 +467,15 @@ public class TileDistributionTextureTask extends
             this.setState(TaskState.STOPPED);
             return false;
         }
-        this.initTiles();
+        try {
+            this.initTiles();
+        } catch (Exception e) {
+            logger.error("An error occurred during tile initialisation: ");
+            e.printStackTrace();
+            this.setError(e);
+            this.setState(TaskState.ERROR);
+            return false;
+        }
         if (this.isStopRequested()) {
             this.setState(TaskState.STOPPED);
             return false;

@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
+import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.gradient.GradientStroke;
@@ -56,7 +57,9 @@ public class Stroke {
             @XmlElement(name = "CssParameter", type = SvgParameter.class) })
     private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>(0);
 
-    @XmlElements({ @XmlElement(name = "StrokeTextureExpressiveRendering", type = StrokeTextureExpressiveRendering.class) })
+    @XmlElements({
+            @XmlElement(name = "StrokeTextureExpressiveRendering", type = StrokeTextureExpressiveRendering.class),
+            @XmlElement(name = "BasicTextureExpressiveRendering", type = BasicTextureExpressiveRendering.class) })
     private ExpressiveRendering expressiveRendering = null;
 
     /**

@@ -170,6 +170,14 @@ public final class VectorUtil {
         return result;
     }
 
+    public static Point2d normalizedVector(Point2d result, Point2d p1,
+            Point2d p2) {
+        result.x = p2.x - p1.x;
+        result.y = p2.y - p1.y;
+        normalize(result, result);
+        return result;
+    }
+
     public static double dot(Point2d a, Point2d b) {
         return a.x * b.x + a.y * b.y;
     }
@@ -192,6 +200,20 @@ public final class VectorUtil {
         return result;
     }
 
+    /**
+     * Compute the intersection between two vectorial lines
+     * 
+     * @param result
+     * @param p0
+     *            line1 point
+     * @param e0
+     *            line1 direction
+     * @param p1
+     *            line2 point
+     * @param e1
+     *            line2 direction
+     * @return
+     */
     public static Point2d lineIntersection(Point2d result, Point2d p0,
             Point2d e0, Point2d p1, Point2d e1) {
 
@@ -202,6 +224,13 @@ public final class VectorUtil {
         // v = (dy * ad.x - dx * ad.y) / det
         result.x = p0.x + u * e0.x;
         result.y = p0.y + u * e0.y;
+        return result;
+    }
+
+    public static Point2d interpolate(Point2d result, Point2d p0, Point2d p1,
+            double alpha) {
+        result.x = p0.x * (1 - alpha) + alpha * p1.x;
+        result.y = p0.y * (1 - alpha) + alpha * p1.y;
         return result;
     }
 

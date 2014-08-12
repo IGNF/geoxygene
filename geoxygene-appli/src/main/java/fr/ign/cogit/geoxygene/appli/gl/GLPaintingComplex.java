@@ -114,6 +114,7 @@ public class GLPaintingComplex extends AbstractGLComplex<GLPaintingVertex> {
     /**
      * @return the opacity for that entire complex
      */
+    @Override
     public double getOverallOpacity() {
         return this.overallOpacity;
     }

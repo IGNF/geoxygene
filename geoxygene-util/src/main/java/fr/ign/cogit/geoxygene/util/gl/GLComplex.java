@@ -96,6 +96,8 @@ public interface GLComplex {
 
     GLRenderingCapability[] getRenderingCapabilities();
 
+    public abstract double getOverallOpacity();
+
     // /**
     // * Add all meshes from a gl complex
     // *

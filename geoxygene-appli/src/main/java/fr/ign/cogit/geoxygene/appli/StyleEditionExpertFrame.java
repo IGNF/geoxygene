@@ -239,7 +239,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
         this.pack();
         this.setSize(650, 750);
         this.setLocation(200, 200);
-        this.setAlwaysOnTop(true);
+        this.setAlwaysOnTop(false);
 
     }
 

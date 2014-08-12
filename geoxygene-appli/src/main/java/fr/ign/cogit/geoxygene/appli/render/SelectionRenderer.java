@@ -42,8 +42,12 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
  * @see LayerViewPanel
  */
 public class SelectionRenderer extends AbstractLayerRenderer {
+
+    private LayerViewPanel layerViewPanel = null;
+
     /** The logger. */
-    private static Logger LOGGER = Logger.getLogger(SelectionRenderer.class.getName());
+    private static Logger LOGGER = Logger.getLogger(SelectionRenderer.class
+            .getName());
 
     /** The image the renderer renders into. */
     private BufferedImage image = null;
@@ -137,7 +141,8 @@ public class SelectionRenderer extends AbstractLayerRenderer {
         // if (feature.getGeom() == null) {
         // return;
         // }
-        // if (feature.getGeom().isPolygon() || feature.getGeom().isMultiSurface())
+        // if (feature.getGeom().isPolygon() ||
+        // feature.getGeom().isMultiSurface())
         // {
         // graphics.setColor(SelectionRenderer.this.getFillColor());
         // RenderUtil.fill(feature.getGeom(), viewport, graphics);
@@ -230,7 +235,8 @@ public class SelectionRenderer extends AbstractLayerRenderer {
      *            the panel to draws into
      */
     public SelectionRenderer(final LayerViewPanel theLayerViewPanel) {
-        super(null, theLayerViewPanel);
+        super(null);
+        this.setLayerViewPanel(theLayerViewPanel);
     }
 
     /**
@@ -246,10 +252,25 @@ public class SelectionRenderer extends AbstractLayerRenderer {
     }
 
     /**
+     * @return the layerViewPanel
+     */
+    @Override
+    public LayerViewPanel getLayerViewPanel() {
+        return this.layerViewPanel;
+    }
+
+    /**
+     * @param layerViewPanel
+     *            the layerViewPanel to set
+     */
+    public void setLayerViewPanel(LayerViewPanel layerViewPanel) {
+        this.layerViewPanel = layerViewPanel;
+    }
+
+    /**
      * Create a runnable for the renderer. A renderer create a new image to draw
      * into. If cancel() is called, the rendering stops as soon as possible.
-     * When
-     * finished, set the variable rendering to false.
+     * When finished, set the variable rendering to false.
      * 
      * @return a new runnable
      * @see Runnable
@@ -275,15 +296,21 @@ public class SelectionRenderer extends AbstractLayerRenderer {
                     }
                     // if either the width or the height of the panel is
                     // lesser or equal to 0, stop
-                    if (Math.min(SelectionRenderer.this.getLayerViewPanel().getWidth(), SelectionRenderer.this.getLayerViewPanel().getHeight()) <= 0) {
+                    if (Math.min(SelectionRenderer.this.getLayerViewPanel()
+                            .getWidth(), SelectionRenderer.this
+                            .getLayerViewPanel().getHeight()) <= 0) {
                         return;
                     }
                     // create a new image
-                    SelectionRenderer.this.setImage(new BufferedImage(SelectionRenderer.this.getLayerViewPanel().getWidth(), SelectionRenderer.this
-                            .getLayerViewPanel().getHeight(), BufferedImage.TYPE_INT_ARGB));
+                    SelectionRenderer.this.setImage(new BufferedImage(
+                            SelectionRenderer.this.getLayerViewPanel()
+                                    .getWidth(), SelectionRenderer.this
+                                    .getLayerViewPanel().getHeight(),
+                            BufferedImage.TYPE_INT_ARGB));
                     // do the actual rendering
                     try {
-                        SelectionRenderer.this.renderHook(SelectionRenderer.this.getImage());
+                        SelectionRenderer.this
+                                .renderHook(SelectionRenderer.this.getImage());
                     } catch (Throwable t) {
                         // TODO WARN THE USER?
                         t.printStackTrace(System.err);
@@ -295,9 +322,11 @@ public class SelectionRenderer extends AbstractLayerRenderer {
                     SelectionRenderer.this.setRendering(false);
                     SelectionRenderer.this.setRendered(true);
                     if (SelectionRenderer.LOGGER.isTraceEnabled()) {
-                        SelectionRenderer.LOGGER.trace("Selection Renderer finished"); //$NON-NLS-1$
+                        SelectionRenderer.LOGGER
+                                .trace("Selection Renderer finished"); //$NON-NLS-1$
                     }
-                    SelectionRenderer.this.getLayerViewPanel().getRenderingManager().repaint();
+                    SelectionRenderer.this.getLayerViewPanel()
+                            .getRenderingManager().repaint();
                 }
             }
         };
@@ -334,7 +363,9 @@ public class SelectionRenderer extends AbstractLayerRenderer {
      */
     private void render(final IFeature feature, final BufferedImage theImage) {
         // FIXME OPACITY FIX
-        RenderUtil.paint(this.symbolizer, feature, this.getLayerViewPanel().getViewport(), (Graphics2D) theImage.getGraphics(), 1.0f, theImage);
+        RenderUtil.paint(this.symbolizer, feature, this.getLayerViewPanel()
+                .getViewport(), (Graphics2D) theImage.getGraphics(), 1.0f,
+                theImage);
     }
 
     /** Clear the image cache, i.e. delete the current image. */
@@ -342,12 +373,15 @@ public class SelectionRenderer extends AbstractLayerRenderer {
         this.setImage(null);
     }
 
-    public final void clearImageCache(final int x, final int y, final int width, final int height) {
+    public final void clearImageCache(final int x, final int y,
+            final int width, final int height) {
         if (this.isCancelled()) {
             return;
         }
-        for (int i = Math.max(x, 0); i < Math.min(x + width, this.getLayerViewPanel().getWidth()); i++) {
-            for (int j = Math.max(y, 0); j < Math.min(y + height, this.getLayerViewPanel().getHeight()); j++) {
+        for (int i = Math.max(x, 0); i < Math.min(x + width, this
+                .getLayerViewPanel().getWidth()); i++) {
+            for (int j = Math.max(y, 0); j < Math.min(y + height, this
+                    .getLayerViewPanel().getHeight()); j++) {
                 this.getImage().setRGB(i, j, Transparency.TRANSLUCENT);
             }
         }

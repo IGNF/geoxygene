@@ -10,6 +10,8 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.AWTGLCanvas;
 
 import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
+import fr.ign.cogit.geoxygene.util.gl.GLContext;
+import fr.ign.cogit.geoxygene.util.gl.GLException;
 
 public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
         ComponentListener, MouseListener, MouseMotionListener {
@@ -130,5 +132,9 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
         }
 
     }
+
+    abstract public void reset();
+
+    public abstract GLContext getGlContext() throws GLException;
 
 }

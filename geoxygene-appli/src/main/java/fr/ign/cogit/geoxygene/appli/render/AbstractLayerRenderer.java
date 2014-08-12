@@ -63,9 +63,8 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
      * @param theLayerViewPanel
      *            the panel to draws into
      */
-    public AbstractLayerRenderer(final Layer theLayer, final LayerViewPanel theLayerViewPanel) {
+    public AbstractLayerRenderer(final Layer theLayer) {
         this.layer = theLayer;
-        this.setLayerViewPanel(theLayerViewPanel);
     }
 
     /** Layer to render. */
@@ -75,13 +74,6 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
     @Override
     public Layer getLayer() {
         return this.layer;
-    }
-
-    /**
-     * @return the layerViewPanel
-     */
-    public LayerViewPanel getLayerViewPanel() {
-        return this.layerViewPanel;
     }
 
     /**
@@ -112,24 +104,6 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
                 ((ActionListener) listeners[i + 1]).actionPerformed(event);
             }
         }
-    }
-
-    /** Layer view panel. */
-    private LayerViewPanel layerViewPanel = null;
-
-    /**
-     * Set the layer view panel.
-     * 
-     * @param theLayerViewPanel
-     *            the layer view panel
-     */
-    public final void setLayerViewPanel(final LayerViewPanel theLayerViewPanel) {
-        this.layerViewPanel = theLayerViewPanel;
-    }
-
-    /** @return the layer view panel */
-    public final LayerViewPanel getLayerViewGLPanel() {
-        return this.layerViewPanel;
     }
 
     /** True if rendering is finished. */
@@ -218,19 +192,23 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
      * @return a collection of symbolizer associated with feature or null if
      *         cancelled
      */
-    protected List<Pair<Symbolizer, IFeature>> generateFeaturesToRender(IEnvelope envelope) {
+    protected List<Pair<Symbolizer, IFeature>> generateFeaturesToRender(
+            IEnvelope envelope) {
         List<Pair<Symbolizer, IFeature>> featuresToRender = new ArrayList<Pair<Symbolizer, IFeature>>();
 
-        Collection<? extends IFeature> collection = this.getLayer().getFeatureCollection().select(envelope);
+        Collection<? extends IFeature> collection = this.getLayer()
+                .getFeatureCollection().select(envelope);
         int numberOfFeatureTypeStyle = 0;
         Collection<Style> activeStyles = this.getLayer().getActiveStyles();
         for (Style style : activeStyles) {
             if (style.isUserStyle()) {
-                numberOfFeatureTypeStyle += ((UserStyle) style).getFeatureTypeStyles().size();
+                numberOfFeatureTypeStyle += ((UserStyle) style)
+                        .getFeatureTypeStyles().size();
             }
         }
         // logger.info(numberOfFeatureTypeStyle + " fts");
-        this.fireActionPerformed(new ActionEvent(this, 3, "Rendering start", numberOfFeatureTypeStyle * collection.size())); //$NON-NLS-1$
+        this.fireActionPerformed(new ActionEvent(this, 3,
+                "Rendering start", numberOfFeatureTypeStyle * collection.size())); //$NON-NLS-1$
         int featureRenderIndex = 0;
         for (Style style : activeStyles) {
             if (this.isCancelled()) {
@@ -238,18 +216,24 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
             }
             if (style.isUserStyle()) {
                 UserStyle userStyle = (UserStyle) style;
-                for (FeatureTypeStyle featureTypeStyle : userStyle.getFeatureTypeStyles()) {
+                for (FeatureTypeStyle featureTypeStyle : userStyle
+                        .getFeatureTypeStyles()) {
                     if (this.isCancelled()) {
                         return null;
                     }
                     // creating a map between each rule and the
                     // corresponding features (filtered in)
-                    Map<Rule, Set<IFeature>> filteredFeatures = new HashMap<Rule, Set<IFeature>>(0);
-                    if (featureTypeStyle.getRules().size() == 1 && featureTypeStyle.getRules().get(0).getFilter() == null) {
-                        filteredFeatures.put(featureTypeStyle.getRules().get(0), new HashSet<IFeature>(collection));
+                    Map<Rule, Set<IFeature>> filteredFeatures = new HashMap<Rule, Set<IFeature>>(
+                            0);
+                    if (featureTypeStyle.getRules().size() == 1
+                            && featureTypeStyle.getRules().get(0).getFilter() == null) {
+                        filteredFeatures.put(
+                                featureTypeStyle.getRules().get(0),
+                                new HashSet<IFeature>(collection));
                     } else {
                         for (Rule rule : featureTypeStyle.getRules()) {
-                            filteredFeatures.put(rule, new HashSet<IFeature>(0));
+                            filteredFeatures
+                                    .put(rule, new HashSet<IFeature>(0));
                         }
                         IFeature[] list = new IFeature[0];
                         synchronized (collection) {
@@ -257,7 +241,8 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
                         }
                         for (IFeature feature : list) {
                             for (Rule rule : featureTypeStyle.getRules()) {
-                                if (rule.getFilter() == null || rule.getFilter().evaluate(feature)) {
+                                if (rule.getFilter() == null
+                                        || rule.getFilter().evaluate(feature)) {
                                     filteredFeatures.get(rule).add(feature);
                                     break;
                                 }
@@ -277,10 +262,16 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
                                 if (this.isCancelled()) {
                                     return null;
                                 }
-                                featuresToRender.add(new Pair<Symbolizer, IFeature>(symbolizer, feature));
+                                featuresToRender
+                                        .add(new Pair<Symbolizer, IFeature>(
+                                                symbolizer, feature));
                             }
-                            this.fireActionPerformed(new ActionEvent(this, 4, "Rendering feature", 100 * featureRenderIndex++ //$NON-NLS-1$
-                                    / (numberOfFeatureTypeStyle * collection.size())));
+                            this.fireActionPerformed(new ActionEvent(
+                                    this,
+                                    4,
+                                    "Rendering feature", 100 * featureRenderIndex++ //$NON-NLS-1$
+                                            / (numberOfFeatureTypeStyle * collection
+                                                    .size())));
                         }
                     }
                 }

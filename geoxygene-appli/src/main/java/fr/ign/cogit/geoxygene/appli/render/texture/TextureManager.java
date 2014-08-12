@@ -130,11 +130,11 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
             // look for texture on cache disk
             File file = TextureManager.generateTextureUniqueFile(
                     textureDescriptor, iFeatureCollection);
-            logger.debug("Look for file '" + file.getAbsolutePath() + "'");
-            logger.debug(textureDescriptor.toString());
+            // logger.debug("Look for file '" + file.getAbsolutePath() + "'");
+            // logger.debug(textureDescriptor.toString());
             if (file.isFile()) {
-                logger.info("reading disk-cached texture '"
-                        + file.getAbsolutePath() + "'");
+                // logger.info("reading disk-cached texture '"
+                // + file.getAbsolutePath() + "'");
                 textureTask = this.getTextureReaderTask(file);
                 textureTask.addTaskListener(this);
                 textureTask.start();
@@ -153,8 +153,6 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
 
             tasksMap.put(textureDescriptor, textureTask);
         }
-        System.err.println("add task in cache. Cache size is now "
-                + tasksMap.size());
 
         // do not add texture task to the task manager, they may not be
         // launched and geometry is waiting for them (to be verified)

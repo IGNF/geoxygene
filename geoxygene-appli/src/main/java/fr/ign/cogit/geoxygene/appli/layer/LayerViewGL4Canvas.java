@@ -29,6 +29,7 @@ import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.GL4FeatureRenderer;
 import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
+import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
@@ -52,6 +53,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     private GLSimpleVertex screenQuadSE = null;
     private GLTexture backgroundTexture = null;
     private BackgroundDescriptor storedBackground = null;
+    private GLContext glContext = null;
 
     // // these values should be read from SLD
     // private final double paperHeight = 4; // paper height in cm
@@ -183,6 +185,10 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         }
     }
 
+    public void reset() {
+        this.glContext = null;
+    }
+
     private void drawBackground() {
         if (this.getViewBackground() == null
                 || this.getBackgroundTexture() == null
@@ -190,9 +196,8 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             return;
         }
         try {
-            GLProgram program = LwjglLayerRenderer
-                    .getGL4Context()
-                    .setCurrentProgram(LwjglLayerRenderer.backgroundProgramName);
+            GLProgram program = this.getGlContext().setCurrentProgram(
+                    LwjglLayerRenderer.backgroundProgramName);
             if (program == null) {
                 return;
             }
@@ -262,6 +267,17 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * @return the glContext
+     * @throws GLException
+     */
+    public GLContext getGlContext() throws GLException {
+        if (this.glContext == null) {
+            this.glContext = LwjglLayerRenderer.createNewGL4Context();
+        }
+        return this.glContext;
     }
 
     private GLTexture getBackgroundTexture() {

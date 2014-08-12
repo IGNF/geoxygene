@@ -35,6 +35,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import test.app.GLBezierShadingComplex;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
@@ -49,6 +50,7 @@ import fr.ign.cogit.geoxygene.function.ConstantFunction;
 import fr.ign.cogit.geoxygene.function.Function1D;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
@@ -220,26 +222,43 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
             throw new IllegalStateException(
                     "this method can only be called with a valid expressive stroke");
         }
-        if (!(style instanceof StrokeTextureExpressiveRendering)) {
-            throw new IllegalStateException(
-                    "LineSymbolizer can only handle StrokeTextureExpressiveRendering not "
-                            + style.getClass().getSimpleName());
-        }
-        StrokeTextureExpressiveRendering strtex = (StrokeTextureExpressiveRendering) style;
-        List<GLComplex> complexes = new ArrayList<GLComplex>();
-        // return GLComplexFactory.createFilledPolygon(multiSurface,
-        // symbolizer.getStroke().getColor());
-        IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
-        double minX = envelope.minX();
-        double minY = envelope.minY();
+        if ((style instanceof StrokeTextureExpressiveRendering)) {
+            StrokeTextureExpressiveRendering strtex = (StrokeTextureExpressiveRendering) style;
+            List<GLComplex> complexes = new ArrayList<GLComplex>();
+            // return GLComplexFactory.createFilledPolygon(multiSurface,
+            // symbolizer.getStroke().getColor());
+            IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
+            double minX = envelope.minX();
+            double minY = envelope.minY();
 
-        GLPaintingComplex complex = new GLPaintingComplex(this.getName()
-                + "-expressive-full", minX, minY);
-        GLComplexFactory.createThickCurves(this.getName(), complex,
-                symbolizer.getStroke(), minX, minY, strtex, this.curves);
-        complex.setExpressiveRendering(strtex);
-        complexes.add(complex);
-        this.fullRepresentation = complexes;
+            GLPaintingComplex complex = new GLPaintingComplex(this.getName()
+                    + "-expressive-full", minX, minY);
+            GLComplexFactory.createThickCurves(this.getName(), complex,
+                    symbolizer.getStroke(), minX, minY, strtex, this.curves);
+            complex.setExpressiveRendering(strtex);
+            complexes.add(complex);
+            this.fullRepresentation = complexes;
+            return;
+        } else if ((style instanceof BasicTextureExpressiveRendering)) {
+            BasicTextureExpressiveRendering strtex = (BasicTextureExpressiveRendering) style;
+            List<GLComplex> complexes = new ArrayList<GLComplex>();
+            // return GLComplexFactory.createFilledPolygon(multiSurface,
+            // symbolizer.getStroke().getColor());
+            IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
+            double minX = envelope.minX();
+            double minY = envelope.minY();
+
+            GLBezierShadingComplex complex = new GLBezierShadingComplex(
+                    this.getName() + "-expressive-full", minX, minY);
+            GLComplexFactory.createThickCurves(this.getName(), complex,
+                    symbolizer.getStroke(), minX, minY, strtex, this.curves);
+            complex.setExpressiveRendering(strtex);
+            complexes.add(complex);
+            this.fullRepresentation = complexes;
+            return;
+        }
+        throw new IllegalStateException("LineSymbolizer cannot handle "
+                + style.getClass().getSimpleName());
     }
 
     // /**

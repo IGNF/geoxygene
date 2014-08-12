@@ -36,10 +36,10 @@ import fr.ign.cogit.geoxygene.appli.event.ScalePaintListener;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
-import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.SyncRenderingManager;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.ImageComparator;
+import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 
 /**
@@ -278,6 +278,10 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
     }
 
+    public GLContext getGlContext() throws GLException {
+        return this.glCanvas.getGlContext();
+    }
+
     @Override
     public final void paintComponent(final Graphics g) {
         try {
@@ -427,13 +431,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this.getClearCacheButton()) {
             // dispose gl context to force program (shaders) reloading
-            try {
-                this.activateGLContext();
-                LwjglLayerRenderer.getGL4Context().disposeContext();
-            } catch (GLException ex) {
-                logger.warn("Cannot dispose current GL context");
-                ex.printStackTrace();
-            }
+            this.reset();
             // empty cache of all renderers
             for (LayerRenderer renderer : this.getRenderingManager()
                     .getRenderers()) {
@@ -470,6 +468,13 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         } else {
             // old SLD events....
             this.repaint();
+        }
+
+    }
+
+    public void reset() {
+        if (this.glCanvas != null) {
+            this.glCanvas.reset();
         }
 
     }

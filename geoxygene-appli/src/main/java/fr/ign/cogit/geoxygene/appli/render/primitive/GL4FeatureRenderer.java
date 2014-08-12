@@ -63,6 +63,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.Util;
 
+import test.app.GLBezierShadingComplex;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -82,6 +83,7 @@ import fr.ign.cogit.geoxygene.appli.task.TaskListener;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLContext;
@@ -467,6 +469,10 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         } else if (primitive instanceof GLPaintingComplex) {
             this.normalPaintingRendering((GLPaintingComplex) primitive, opacity);
             return;
+        } else if (primitive instanceof GLBezierShadingComplex) {
+            this.normalBezierRendering((GLBezierShadingComplex) primitive,
+                    opacity);
+            return;
         }
         throw new UnsupportedOperationException(
                 "GLComplex normal Rendering is not supported for Complex type "
@@ -475,103 +481,6 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     }
 
     private void fboRendering(GLComplex primitive, double opacity)
-            throws GLException {
-        if (primitive instanceof GLSimpleComplex) {
-            this.fboSimpleRendering((GLSimpleComplex) primitive, opacity);
-            return;
-        } else if (primitive instanceof GLPaintingComplex) {
-            this.fboPaintingRendering((GLPaintingComplex) primitive, opacity);
-            return;
-        }
-        throw new UnsupportedOperationException(
-                "GLComplex FBO Rendering is not supported for Complex type "
-                        + primitive.getClass().getSimpleName());
-
-    }
-
-    /**
-     * @param primitive
-     * @throws GLException
-     */
-    private void renderGLPrimitiveWireframe(GLComplex primitive)
-            throws GLException {
-        GLProgram program = this.glContext
-                .setCurrentProgram(LwjglLayerRenderer.worldspaceColorProgramName);
-
-        glEnable(GL_BLEND);
-        if (this.getLayerViewPanel().getAntialiasingSize() > 0) {
-            glEnable(GL_LINE_SMOOTH);
-            glEnable(GL11.GL_POINT_SMOOTH);
-            glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-            glHint(GL11.GL_POINT_SMOOTH_HINT, GL_NICEST);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        } else {
-            glDisable(GL_LINE_SMOOTH);
-            glDisable(GL11.GL_POINT_SMOOTH);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        }
-        this.wireframeRendering(primitive, DEFAULT_LINE_WIDTH,
-                DEFAULT_POINT_SIZE);
-    }
-
-    /**
-     * 
-     */
-    // private void checkCurrentProgram(String message) {
-    // return;
-    // if (this.getCurrentProgramId() == -1) {
-    // return;
-    // }
-    // System.err.println("Check " + message + " app: " +
-    // this.getCurrentProgramId() + " gl: " +
-    // GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM));
-    // if (this.getCurrentProgramId() !=
-    // GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM)) {
-    // System.err.println("C'est quoi c'te merde !!!! " + message + " app: "
-    // + this.getCurrentProgramId() + " gl: "
-    // + GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM));
-    // }
-    // }
-
-    // /**
-    // * @return the currentProgramId
-    // */
-    // public GLProgram getCurrentProgram() {
-    // return program;
-    // }
-    //
-    // /**
-    // * @return the currentProgramId
-    // * @throws GLException
-    // */
-    // public int getCurrentProgramId() throws GLException {
-    // return program == null ? -1 : this.glContext.getCurrentProgram()
-    // .getProgramId();
-    // }
-
-    private int getCanvasWidth() {
-        if (this.lwjglLayerRenderer != null
-                && this.lwjglLayerRenderer.getLayerViewPanel() != null) {
-            return this.lwjglLayerRenderer.getLayerViewPanel().getWidth();
-        }
-        return 0;
-    }
-
-    private int getCanvasHeight() {
-        if (this.lwjglLayerRenderer != null
-                && this.lwjglLayerRenderer.getLayerViewPanel() != null) {
-            return this.lwjglLayerRenderer.getLayerViewPanel().getHeight();
-        }
-        return 0;
-    }
-
-    /**
-     * Draw a Primitive using FBOs
-     * 
-     * @param primitive
-     * @throws GLException
-     */
-    private void fboSimpleRendering(GLSimpleComplex primitive, double opacity)
             throws GLException {
         // render primitive in a FBO (offscreen rendering)
         GLTools.glCheckError("entering FBO rendering");
@@ -685,6 +594,83 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
         GL30.glBindVertexArray(0); // unbind VAO
         GLTools.glCheckError("exiting FBO rendering");
+
+    }
+
+    /**
+     * @param primitive
+     * @throws GLException
+     */
+    private void renderGLPrimitiveWireframe(GLComplex primitive)
+            throws GLException {
+        GLProgram program = this.glContext
+                .setCurrentProgram(LwjglLayerRenderer.worldspaceColorProgramName);
+
+        glEnable(GL_BLEND);
+        if (this.getLayerViewPanel().getAntialiasingSize() > 0) {
+            glEnable(GL_LINE_SMOOTH);
+            glEnable(GL11.GL_POINT_SMOOTH);
+            glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+            glHint(GL11.GL_POINT_SMOOTH_HINT, GL_NICEST);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        } else {
+            glDisable(GL_LINE_SMOOTH);
+            glDisable(GL11.GL_POINT_SMOOTH);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
+        this.wireframeRendering(primitive, DEFAULT_LINE_WIDTH,
+                DEFAULT_POINT_SIZE);
+    }
+
+    /**
+     * 
+     */
+    // private void checkCurrentProgram(String message) {
+    // return;
+    // if (this.getCurrentProgramId() == -1) {
+    // return;
+    // }
+    // System.err.println("Check " + message + " app: " +
+    // this.getCurrentProgramId() + " gl: " +
+    // GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM));
+    // if (this.getCurrentProgramId() !=
+    // GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM)) {
+    // System.err.println("C'est quoi c'te merde !!!! " + message + " app: "
+    // + this.getCurrentProgramId() + " gl: "
+    // + GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM));
+    // }
+    // }
+
+    // /**
+    // * @return the currentProgramId
+    // */
+    // public GLProgram getCurrentProgram() {
+    // return program;
+    // }
+    //
+    // /**
+    // * @return the currentProgramId
+    // * @throws GLException
+    // */
+    // public int getCurrentProgramId() throws GLException {
+    // return program == null ? -1 : this.glContext.getCurrentProgram()
+    // .getProgramId();
+    // }
+
+    private int getCanvasWidth() {
+        if (this.lwjglLayerRenderer != null
+                && this.lwjglLayerRenderer.getLayerViewPanel() != null) {
+            return this.lwjglLayerRenderer.getLayerViewPanel().getWidth();
+        }
+        return 0;
+    }
+
+    private int getCanvasHeight() {
+        if (this.lwjglLayerRenderer != null
+                && this.lwjglLayerRenderer.getLayerViewPanel() != null) {
+            return this.lwjglLayerRenderer.getLayerViewPanel().getHeight();
+        }
+        return 0;
     }
 
     /**
@@ -770,120 +756,69 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     }
 
     /**
-     * Draw a Primitive using FBOs
+     * Render representing a line. It does not use FBOs
      * 
      * @param primitive
      * @throws GLException
      */
-    private void fboPaintingRendering(GLPaintingComplex primitive,
+    private void normalBezierRendering(GLBezierShadingComplex primitive,
             double opacity) throws GLException {
-        // render primitive in a FBO (offscreen rendering)
-        GLTools.glCheckError("entering FBO rendering");
-        // bind a read-only framebuffer
-        glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, this.fboId);
+        GLTools.glCheckError("gl error before normal painting rendering");
 
-        // check if the screen size has change since previous rendering
-        int antialisingSize = this.getLayerViewPanel().getAntialiasingSize() + 1;
-        if (this.fboImageWidth != antialisingSize * this.getCanvasWidth()
-                || this.fboImageHeight != antialisingSize
-                        * this.getCanvasHeight()) {
-            this.fboImageWidth = antialisingSize * this.getCanvasWidth();
-            this.fboImageHeight = antialisingSize * this.getCanvasHeight();
-
-            glBindTexture(GL_TEXTURE_2D, this.fboTextureId);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-                    GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.fboImageWidth,
-                    this.fboImageHeight, 0, GL11.GL_RGBA,
-                    GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
-        }
-
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                GL_TEXTURE_2D, this.fboTextureId, 0);
-        // check FBO status
-
-        int status = GL30.glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
-            throw new GLException(
-                    "Frame Buffer Object is not correctly initialized");
-        }
-        GLTools.glCheckError("FBO initialization");
-
-        GL11.glDepthMask(false);
-        glDisable(GL11.GL_DEPTH_TEST);
-
-        // }
-        //
-        // // first draw the outline with smooth blending to get the polygon
-        // border
-        // // smoothness
         GLProgram program = this.glContext
-                .setCurrentProgram(LwjglLayerRenderer.worldspaceColorProgramName);
-        // no transparency at all
-        program.setUniform1f(LwjglLayerRenderer.objectOpacityUniformVarName, 1f);
-        program.setUniform1f(LwjglLayerRenderer.globalOpacityUniformVarName, 1f);
-        program.setUniform1i(LwjglLayerRenderer.colorTexture1UniformVarName,
-                COLORTEXTURE1_SLOT);
-
-        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
-
-        glEnable(GL_TEXTURE_2D);
-        GL11.glDrawBuffer(GL_COLOR_ATTACHMENT0);
-
-        GL11.glViewport(0, 0, this.fboImageWidth, this.fboImageHeight);
-
-        GL11.glClearColor(0.5f, 0.5f, 0.5f, 0f);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-
-        glDisable(GL11.GL_BLEND);
-        this.normalRendering(primitive, opacity);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        GLTools.glCheckError("FBO plain rendering");
-
-        // display the computed texture on the screen
-        // using object opacity * overall opacity
-        program = this.glContext
-                .setCurrentProgram(LwjglLayerRenderer.screenspaceAntialiasedTextureProgramName);
-        GL11.glViewport(0, 0, this.getCanvasWidth(), this.getCanvasHeight());
-        GL11.glDrawBuffer(GL11.GL_BACK);
-        glEnable(GL_TEXTURE_2D);
-        glDisable(GL11.GL_POLYGON_SMOOTH);
-
-        program.setUniform1i(LwjglLayerRenderer.colorTexture1UniformVarName,
-                COLORTEXTURE1_SLOT);
-        program.setUniform1i(LwjglLayerRenderer.antialiasingSizeUniformVarName,
-                antialisingSize);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE1_SLOT);
-        glBindTexture(GL_TEXTURE_2D, this.fboTextureId);
-
-        GL11.glDepthMask(false);
-        glDisable(GL11.GL_DEPTH_TEST);
-
-        GL30.glBindVertexArray(this.getScreenQuad().getVaoId());
-        // program.setUniform1f(
-        // LwjglLayerRenderer.objectOpacityUniformVarName,
-        // (float) primitive.getOverallOpacity());
-        // program
-        // .setUniform1f(LwjglLayerRenderer.globalOpacityUniformVarName,
-        // (float) opacity);
+                .setCurrentProgram(LwjglLayerRenderer.bezierLineProgramName);
+        BasicTextureExpressiveRendering strtex = primitive
+                .getExpressiveRendering();
         program.setUniform1f(LwjglLayerRenderer.objectOpacityUniformVarName,
                 (float) primitive.getOverallOpacity());
         program.setUniform1f(LwjglLayerRenderer.globalOpacityUniformVarName,
                 (float) opacity);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        //
-        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+        GLTools.glCheckError("program set to " + program.getName()
+                + " in normal painting rendering");
+        // this.checkCurrentProgram("normalRendering(): after setCurrentProgram");
 
-        GLTools.glCheckError("before FBO drawing textured quad");
-        this.drawComplex(this.getScreenQuad());
-        this.getScreenQuad().setColor(new Color(1f, 0f, 1f, .5f));
-        GLTools.glCheckError("FBO drawing textured quad");
-        glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
-        GL30.glBindVertexArray(0); // unbind VAO
-        GLTools.glCheckError("exiting FBO rendering");
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+        GL13.glActiveTexture(GL13.GL_TEXTURE1);
+        GLTools.glCheckError("active brushTexture");
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, primitive.getBrushTexture()
+                .getTextureId());
+        // GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
+        // GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+        // GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
+        // GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        GLTools.glCheckError("bind brushTexture");
+        program.setUniform1i(LwjglLayerRenderer.brushTextureUniformVarName, 1);
+
+        program.setUniform1i(LwjglLayerRenderer.colorTexture1UniformVarName,
+                COLORTEXTURE1_SLOT);
+        program.setUniform1i(LwjglLayerRenderer.brushWidthUniformVarName,
+                primitive.getBrushTexture().getTextureWidth());
+        program.setUniform1i(LwjglLayerRenderer.brushHeightUniformVarName,
+                primitive.getBrushTexture().getTextureHeight());
+        program.setUniform1f(LwjglLayerRenderer.brushScaleUniformVarName,
+                (float) (strtex.getAspectRation() / primitive.getBrushTexture()
+                        .getTextureHeight()));
+
+        this.setGLViewMatrix(this.getViewport(), primitive.getMinX(),
+                primitive.getMinY());
+        // this.checkCurrentProgram("normalRendering(): after setGLViewMatrix()");
+
+        GL30.glBindVertexArray(primitive.getVaoId());
+        GLTools.glCheckError("direct rendering binding vaoId = "
+                + primitive.getVaoId());
+        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+        // this.checkCurrentProgram("normalRendering(): before drawComplex()");
+
+        // GLTools.displayBuffer(primitive.getFlippedVerticesBuffer());
+        this.drawComplex(primitive);
+        // this.checkCurrentProgram("normalRendering(): after drawComplex()");
+        GLTools.glCheckError("direct rendering drawing GLSimpleComplex class = "
+                + primitive.getClass().getSimpleName());
+
+        GL30.glBindVertexArray(0);
+        GLTools.glCheckError("exiting direct rendering");
+        // this.checkCurrentProgram("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ exiting direct rendering");
     }
 
     /**

@@ -21,6 +21,7 @@ package fr.ign.cogit.geoxygene.appli.render;
 
 import java.awt.event.ActionListener;
 
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
@@ -53,11 +54,11 @@ public interface LayerRenderer {
      */
     void cancel();
 
-    //  /**
-    //   * Copy the rendered image the a 2D graphics.
-    //   * @param graphics the 2D graphics to draw into
-    //   */
-    //  void copyTo(Graphics2D graphics);
+    // /**
+    // * Copy the rendered image the a 2D graphics.
+    // * @param graphics the 2D graphics to draw into
+    // */
+    // void copyTo(Graphics2D graphics);
 
     /**
      * Create a runnable for the renderer. A renderer create a new image to draw
@@ -78,19 +79,24 @@ public interface LayerRenderer {
 
     void addActionListener(ActionListener l);
 
-    //    /** Clear the image cache, i.e. delete the current image. */
-    //    void clearImageCache();
-    //  
-    //    /**
-    //     * @param x the X coordinate of the upper left pixel of the region to clear
-    //     * @param y the y coordinate of the upper left pixel of the region to clear
-    //     * @param width width of the region to clear
-    //     * @param height height of the region to clear
-    //     */
-    //    void clearImageCache(int x, int y, int width, int height);
+    // /** Clear the image cache, i.e. delete the current image. */
+    // void clearImageCache();
+    //
+    // /**
+    // * @param x the X coordinate of the upper left pixel of the region to
+    // clear
+    // * @param y the y coordinate of the upper left pixel of the region to
+    // clear
+    // * @param width width of the region to clear
+    // * @param height height of the region to clear
+    // */
+    // void clearImageCache(int x, int y, int width, int height);
 
     /**
      * Reinitialize all cached data
      */
     void reset();
+
+    public abstract LayerViewPanel getLayerViewPanel();
+
 }

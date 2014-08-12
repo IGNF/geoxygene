@@ -60,10 +60,13 @@ import fr.ign.cogit.geoxygene.util.Pair;
 public class AwtLayerRenderer extends AbstractLayerRenderer {
 
     /** The logger. */
-    private static Logger LOGGER = Logger.getLogger(AwtLayerRenderer.class.getName());
+    private static Logger LOGGER = Logger.getLogger(AwtLayerRenderer.class
+            .getName());
     private BufferedImage image = null;
     private int offscreenWidth = 0;
     private int offscreenHeight = 0;
+    /** Layer view panel. */
+    private LayerViewPanel layerViewPanel = null;
 
     /**
      * Constructor of renderer using a {@link Layer} and a
@@ -74,8 +77,26 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
      * @param theLayerViewPanel
      *            the panel to draws into
      */
-    public AwtLayerRenderer(final Layer theLayer, final LayerViewPanel theLayerViewPanel) {
-        super(theLayer, theLayerViewPanel);
+    public AwtLayerRenderer(final Layer theLayer,
+            final LayerViewPanel theLayerViewPanel) {
+        super(theLayer);
+        this.setLayerViewPanel(theLayerViewPanel);
+    }
+
+    /**
+     * Set the layer view panel.
+     * 
+     * @param theLayerViewPanel
+     *            the layer view panel
+     */
+    public final void setLayerViewPanel(final LayerViewPanel theLayerViewPanel) {
+        this.layerViewPanel = theLayerViewPanel;
+    }
+
+    /** @return the layer view panel */
+    @Override
+    public final LayerViewPanel getLayerViewPanel() {
+        return this.layerViewPanel;
     }
 
     /**
@@ -137,8 +158,7 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
         if (this.getImage() != null) {
             /*
              * if (logger.isTraceEnabled()) { logger.trace("drawImage");
-             * //$NON-NLS-1$
-             * }
+             * //$NON-NLS-1$ }
              */
             graphics.drawImage(this.getImage(), 0, 0, null);
         } else {
@@ -150,10 +170,8 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
 
     /**
      * Create a runnable for the renderer. A renderer creates a new image to
-     * draw
-     * into. If cancel() is called, the rendering stops as soon as possible.
-     * When
-     * finished, set the variable rendering to false.
+     * draw into. If cancel() is called, the rendering stops as soon as
+     * possible. When finished, set the variable rendering to false.
      * 
      * @return a new runnable
      * @see Runnable
@@ -180,14 +198,18 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
                     }
                     // if either the width or the height of the panel is lesser
                     // or equal to 0, stop
-                    if (Math.min(AwtLayerRenderer.this.getWidth(), AwtLayerRenderer.this.getHeight()) <= 0) {
+                    if (Math.min(AwtLayerRenderer.this.getWidth(),
+                            AwtLayerRenderer.this.getHeight()) <= 0) {
                         return;
                     }
                     // do the actual rendering
                     try {
                         AwtLayerRenderer.this.initializeRendering();
-                        AwtLayerRenderer.this.renderHook(AwtLayerRenderer.this.getImage(), AwtLayerRenderer.this.getLayerViewPanel().getViewport()
-                                .getEnvelopeInModelCoordinates());
+                        AwtLayerRenderer.this.renderHook(
+                                AwtLayerRenderer.this.getImage(),
+                                AwtLayerRenderer.this.getLayerViewPanel()
+                                        .getViewport()
+                                        .getEnvelopeInModelCoordinates());
                     } catch (Throwable t) {
                         // TODO WARN THE USER?
                         t.printStackTrace(System.err);
@@ -200,10 +222,12 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
                     AwtLayerRenderer.this.setRendered(true);
                     if (LOGGER.isTraceEnabled()) {
                         LOGGER.trace("Renderer " //$NON-NLS-1$
-                                + AwtLayerRenderer.this.getLayer().getName() + " finished"); //$NON-NLS-1$
+                                + AwtLayerRenderer.this.getLayer().getName()
+                                + " finished"); //$NON-NLS-1$
                     }
                     // FIXME Is this operation really useful or is a patch?
-                    AwtLayerRenderer.this.getLayerViewPanel().getRenderingManager().repaint();
+                    AwtLayerRenderer.this.getLayerViewPanel()
+                            .getRenderingManager().repaint();
                 }
             }
         };
@@ -216,7 +240,8 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
     public void initializeRendering() {
         super.initializeRendering();
         this.clearImageCache();
-        this.setImage(new BufferedImage(AwtLayerRenderer.this.getWidth(), AwtLayerRenderer.this.getHeight(), BufferedImage.TYPE_INT_ARGB));
+        this.setImage(new BufferedImage(AwtLayerRenderer.this.getWidth(),
+                AwtLayerRenderer.this.getHeight(), BufferedImage.TYPE_INT_ARGB));
     }
 
     /**
@@ -230,11 +255,14 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
      */
     final void renderHook(final BufferedImage theImage, final IEnvelope envelope) {
         // if rendering has been cancelled or there is nothing to render, stop
-        if (this.isCancelled() || this.getLayer().getFeatureCollection() == null || !this.getLayer().isVisible()) {
+        if (this.isCancelled()
+                || this.getLayer().getFeatureCollection() == null
+                || !this.getLayer().isVisible()) {
             return;
         }
         int featureRenderIndex = 0;
-        List<Pair<Symbolizer, IFeature>> featuresToRender = this.generateFeaturesToRender(envelope);
+        List<Pair<Symbolizer, IFeature>> featuresToRender = this
+                .generateFeaturesToRender(envelope);
         if (featuresToRender != null) {
             for (Pair<Symbolizer, IFeature> pair : featuresToRender) {
                 if (this.isCancelled()) {
@@ -246,7 +274,8 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
                 featureRenderIndex++;
             }
         }
-        this.fireActionPerformed(new ActionEvent(this, 5, "Rendering finished", featureRenderIndex)); //$NON-NLS-1$
+        this.fireActionPerformed(new ActionEvent(this, 5,
+                "Rendering finished", featureRenderIndex)); //$NON-NLS-1$
     }
 
     /**
@@ -260,12 +289,14 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
      *            the envelope
      */
     @SuppressWarnings({ "unused", "unchecked" })
-    private void render(final Rule rule, final BufferedImage theImage, final IEnvelope envelope) {
+    private void render(final Rule rule, final BufferedImage theImage,
+            final IEnvelope envelope) {
         if (this.isCancelled()) {
             return;
         }
         // logger.info("using rule "+rule.getName());
-        Collection<? extends IFeature> collection = this.getLayer().getFeatureCollection().select(envelope);
+        Collection<? extends IFeature> collection = this.getLayer()
+                .getFeatureCollection().select(envelope);
         if (collection == null) {
             return;
         }
@@ -299,7 +330,9 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
      * @param theImage
      *            the image
      */
-    private void render(final Symbolizer symbolizer, final Collection<IFeature> featureCollection, final BufferedImage theImage) {
+    private void render(final Symbolizer symbolizer,
+            final Collection<IFeature> featureCollection,
+            final BufferedImage theImage) {
         IFeature[] collection = featureCollection.toArray(new IFeature[0]);
         for (IFeature feature : collection) {
             if (this.isCancelled()) {
@@ -322,13 +355,17 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
      * @param theImage
      *            the image
      */
-    protected void render(final Symbolizer symbolizer, final IFeature feature, final BufferedImage theImage) {
+    protected void render(final Symbolizer symbolizer, final IFeature feature,
+            final BufferedImage theImage) {
         if (theImage == null) {
             return;
         }
         Graphics2D graphics = theImage.createGraphics();
-        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        RenderUtil.paint(symbolizer, feature, this.getLayerViewPanel().getViewport(), graphics, this.getLayer().getOpacity(), theImage);
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        RenderUtil.paint(symbolizer, feature, this.getLayerViewPanel()
+                .getViewport(), graphics, this.getLayer().getOpacity(),
+                theImage);
     }
 
     /** Clear the image cache, i.e. delete the current image. */
@@ -336,12 +373,14 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
         this.setImage(null);
     }
 
-    public void clearImageCache(final int x, final int y, final int width, final int height) {
+    public void clearImageCache(final int x, final int y, final int width,
+            final int height) {
         if (this.isCancelled() || this.getImage() == null) {
             return;
         }
         for (int i = Math.max(x, 0); i < Math.min(x + width, this.getWidth()); i++) {
-            for (int j = Math.max(y, 0); j < Math.min(y + height, this.getHeight()); j++) {
+            for (int j = Math.max(y, 0); j < Math.min(y + height,
+                    this.getHeight()); j++) {
                 if (this.getImage() == null) {
                     return;
                 }
@@ -360,16 +399,17 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
      *         layer view panel is not displayed
      */
     private int getWidth() {
-        return (this.getLayerViewPanel().getWidth() != 0) ? this.getLayerViewPanel().getWidth() : this.getOffscreenWidth();
+        return (this.getLayerViewPanel().getWidth() != 0) ? this
+                .getLayerViewPanel().getWidth() : this.getOffscreenWidth();
     }
 
     /**
      * @return the rendering height: layer view panel width or offscreen height
-     *         if
-     *         layer view panel is not displayed
+     *         if layer view panel is not displayed
      */
     private int getHeight() {
-        return (this.getLayerViewPanel().getHeight() != 0) ? this.getLayerViewPanel().getHeight() : this.getOffscreenHeight();
+        return (this.getLayerViewPanel().getHeight() != 0) ? this
+                .getLayerViewPanel().getHeight() : this.getOffscreenHeight();
     }
 
     /**
@@ -388,7 +428,8 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
             }
             if (style.isUserStyle()) {
                 UserStyle userStyle = (UserStyle) style;
-                for (FeatureTypeStyle featureTypeStyle : userStyle.getFeatureTypeStyles()) {
+                for (FeatureTypeStyle featureTypeStyle : userStyle
+                        .getFeatureTypeStyles()) {
                     if (this.isCancelled()) {
                         return;
                     }
@@ -398,7 +439,8 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
                         }
                         Rule rule = featureTypeStyle.getRules().get(indexRule);
                         for (Symbolizer symbolizer : rule.getSymbolizers()) {
-                            if (rule.getFilter() == null || rule.getFilter().evaluate(feature)) {
+                            if (rule.getFilter() == null
+                                    || rule.getFilter().evaluate(feature)) {
                                 this.render(symbolizer, feature, theImage);
                             }
                         }
@@ -428,21 +470,27 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
         envelope.setLowerCorner(lowerCornerPosition);
         envelope.setUpperCorner(upperCornerPosition);
         try {
-            Point2D upperCorner = this.getLayerViewPanel().getViewport().toViewPoint(envelope.getUpperCorner());
-            Point2D lowerCorner = this.getLayerViewPanel().getViewport().toViewPoint(envelope.getLowerCorner());
-            this.clearImageCache((int) lowerCorner.getX(), (int) upperCorner.getY(), (int) (upperCorner.getX() - lowerCorner.getX() + 2),
+            Point2D upperCorner = this.getLayerViewPanel().getViewport()
+                    .toViewPoint(envelope.getUpperCorner());
+            Point2D lowerCorner = this.getLayerViewPanel().getViewport()
+                    .toViewPoint(envelope.getLowerCorner());
+            this.clearImageCache((int) lowerCorner.getX(),
+                    (int) upperCorner.getY(), (int) (upperCorner.getX()
+                            - lowerCorner.getX() + 2),
                     (int) (lowerCorner.getY() - upperCorner.getY() + 2));
         } catch (NoninvertibleTransformException e) {
             e.printStackTrace();
         }
-        Collection<? extends IFeature> visibleFeatures = this.getLayer().getFeatureCollection().select(envelope);
+        Collection<? extends IFeature> visibleFeatures = this.getLayer()
+                .getFeatureCollection().select(envelope);
         for (Style style : this.getLayer().getStyles()) {
             if (this.isCancelled()) {
                 return;
             }
             if (style.isUserStyle()) {
                 UserStyle userStyle = (UserStyle) style;
-                for (FeatureTypeStyle featureTypeStyle : userStyle.getFeatureTypeStyles()) {
+                for (FeatureTypeStyle featureTypeStyle : userStyle
+                        .getFeatureTypeStyles()) {
                     if (this.isCancelled()) {
                         return;
                     }
@@ -452,7 +500,8 @@ public class AwtLayerRenderer extends AbstractLayerRenderer {
                     }
                     for (IFeature feature : visibleFeatures) {
                         for (Rule rule : featureTypeStyle.getRules()) {
-                            if (rule.getFilter() == null || rule.getFilter().evaluate(feature)) {
+                            if (rule.getFilter() == null
+                                    || rule.getFilter().evaluate(feature)) {
                                 filteredFeatures.get(rule).add(feature);
                                 break;
                             }

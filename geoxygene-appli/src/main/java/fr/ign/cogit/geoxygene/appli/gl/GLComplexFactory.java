@@ -47,6 +47,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellator;
 
+import test.app.BezierTesselator;
+import test.app.GLBezierShadingComplex;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -63,6 +65,7 @@ import fr.ign.cogit.geoxygene.function.ConstantFunction;
 import fr.ign.cogit.geoxygene.function.FunctionEvaluationException;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.style.Stroke;
+import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
@@ -684,7 +687,7 @@ public class GLComplexFactory {
             StrokeTextureExpressiveRendering strtex = (StrokeTextureExpressiveRendering) stroke
                     .getExpressiveRendering();
             GLPaintingComplex complex = new GLPaintingComplex(id
-                    + "-expressive-full", minX, minY);
+                    + "-expressive-painting", minX, minY);
             complex.setExpressiveRendering(strtex);
             List<ILineString> curves = new ArrayList<ILineString>();
             for (IPolygon polygon : polygons) {
@@ -694,6 +697,23 @@ public class GLComplexFactory {
                 }
             }
 
+            createThickCurves(id, complex, stroke, minX, minY, strtex, curves);
+            // complex.setColor(symbolizer.getStroke().getColor());
+            complex.setOverallOpacity(stroke.getColor().getAlpha());
+            return complex;
+        } else if (stroke.getExpressiveRendering() instanceof BasicTextureExpressiveRendering) {
+            BasicTextureExpressiveRendering strtex = (BasicTextureExpressiveRendering) stroke
+                    .getExpressiveRendering();
+            GLBezierShadingComplex complex = new GLBezierShadingComplex(id
+                    + "-expressive-basic", minX, minY);
+            complex.setExpressiveRendering(strtex);
+            List<ILineString> curves = new ArrayList<ILineString>();
+            for (IPolygon polygon : polygons) {
+                curves.add(new GM_LineString(polygon.getExterior().coord()));
+                for (IRing interior : polygon.getInterior()) {
+                    curves.add(new GM_LineString(interior.coord()));
+                }
+            }
             createThickCurves(id, complex, stroke, minX, minY, strtex, curves);
             // complex.setColor(symbolizer.getStroke().getColor());
             complex.setOverallOpacity(stroke.getColor().getAlpha());
@@ -734,6 +754,37 @@ public class GLComplexFactory {
                                 new SolidColorizer(stroke.getColor()),
                                 paperWidthInPixels, paperHeightInPixels,
                                 paperHeightInCm, mapScale);
+                tesselateThickLineTask.start();
+                TaskManager.startAndWait(tesselateThickLineTask);
+            } catch (FunctionEvaluationException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * @param id
+     * @param stroke
+     * @param minX
+     * @param minY
+     * @param strtex
+     * @param complex
+     * @param curves
+     */
+    public static void createThickCurves(String id,
+            GLBezierShadingComplex complex, Stroke stroke, double minX,
+            double minY, BasicTextureExpressiveRendering strtex,
+            List<ILineString> curves) {
+        for (ILineString line : curves) {
+            try {
+                Task tesselateThickLineTask = BezierTesselator
+                        .tesselateThickLine(id, complex,
+                                line.getControlPoint(),
+                                stroke.getStrokeWidth(),
+                                strtex.getTransitionSize(), minX, minY,
+                                new SolidColorizer(stroke.getColor()));
                 tesselateThickLineTask.start();
                 TaskManager.startAndWait(tesselateThickLineTask);
             } catch (FunctionEvaluationException e) {

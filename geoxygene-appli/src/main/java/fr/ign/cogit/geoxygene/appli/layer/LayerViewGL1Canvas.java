@@ -43,6 +43,8 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.GL11;
 
+import fr.ign.cogit.geoxygene.util.gl.GLContext;
+
 /** @author JeT GL drawable canvas inserted into a LayerViewLwjglPanel */
 public class LayerViewGL1Canvas extends LayerViewGLCanvas {
 
@@ -354,6 +356,18 @@ public class LayerViewGL1Canvas extends LayerViewGLCanvas {
         glDisable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
 
+    }
+
+    @Override
+    public void reset() {
+        throw new UnsupportedOperationException(
+                "Added in API but not maintained");
+    }
+
+    @Override
+    public GLContext getGlContext() {
+        throw new UnsupportedOperationException(
+                "Added in API but not maintained");
     }
 
 }
