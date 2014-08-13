@@ -169,7 +169,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * 
      */
     private void initializeScreenQuad() {
-        this.screenQuad = new GLSimpleComplex("scrren", 0f, 0f);
+        this.screenQuad = new GLSimpleComplex("screen", 0f, 0f);
         GLMesh mesh = this.screenQuad.addGLMesh(GL11.GL_QUADS);
         mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
                 new Point2D.Double(-1, -1), new Point2D.Double(0, 0))));
@@ -523,14 +523,14 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         // border
         // // smoothness
         GLProgram program = this.glContext
-                .setCurrentProgram(LwjglLayerRenderer.worldspaceColorProgramName);
+                .setCurrentProgram(LayerViewGLPanel.worldspaceColorProgramName);
         if (program == null) {
             return;
         }
         // no transparency at all
-        program.setUniform1f(LwjglLayerRenderer.objectOpacityUniformVarName, 1f);
-        program.setUniform1f(LwjglLayerRenderer.globalOpacityUniformVarName, 1f);
-        program.setUniform1i(LwjglLayerRenderer.colorTexture1UniformVarName,
+        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
+        program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName, 1f);
+        program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
                 COLORTEXTURE1_SLOT);
 
         GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
@@ -552,18 +552,17 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         // display the computed texture on the screen
         // using object opacity * overall opacity
         program = this.glContext
-                .setCurrentProgram(LwjglLayerRenderer.screenspaceAntialiasedTextureProgramName);
+                .setCurrentProgram(LayerViewGLPanel.screenspaceAntialiasedTextureProgramName);
         GL11.glViewport(0, 0, this.getCanvasWidth(), this.getCanvasHeight());
         GL11.glDrawBuffer(GL11.GL_BACK);
         glEnable(GL_TEXTURE_2D);
         glDisable(GL11.GL_POLYGON_SMOOTH);
 
-        program.setUniform1i(LwjglLayerRenderer.colorTexture1UniformVarName,
+        program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
                 COLORTEXTURE1_SLOT);
-        program.setUniform1i(
-                LwjglLayerRenderer.textureScaleFactorUniformVarName,
+        program.setUniform1i(LayerViewGLPanel.textureScaleFactorUniformVarName,
                 COLORTEXTURE1_SLOT);
-        program.setUniform1i(LwjglLayerRenderer.antialiasingSizeUniformVarName,
+        program.setUniform1i(LayerViewGLPanel.antialiasingSizeUniformVarName,
                 antialisingSize);
         GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE1_SLOT);
         glBindTexture(GL_TEXTURE_2D, this.fboTextureId);
@@ -573,14 +572,14 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
 
         GL30.glBindVertexArray(this.getScreenQuad().getVaoId());
         // program.setUniform1f(
-        // LwjglLayerRenderer.objectOpacityUniformVarName,
+        // LayerViewGLPanel.objectOpacityUniformVarName,
         // (float) primitive.getOverallOpacity());
         // program
-        // .setUniform1f(LwjglLayerRenderer.globalOpacityUniformVarName,
+        // .setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
         // (float) opacity);
-        program.setUniform1f(LwjglLayerRenderer.objectOpacityUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName,
                 (float) primitive.getOverallOpacity());
-        program.setUniform1f(LwjglLayerRenderer.globalOpacityUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
                 (float) opacity);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -604,7 +603,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     private void renderGLPrimitiveWireframe(GLComplex primitive)
             throws GLException {
         GLProgram program = this.glContext
-                .setCurrentProgram(LwjglLayerRenderer.worldspaceColorProgramName);
+                .setCurrentProgram(LayerViewGLPanel.worldspaceColorProgramName);
 
         glEnable(GL_BLEND);
         if (this.getLayerViewPanel().getAntialiasingSize() > 0) {
@@ -688,14 +687,14 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
                 GLSimpleRenderingCapability.TEXTURE) >= 0) {
             // System.err.println("use texture");
             program = this.glContext
-                    .setCurrentProgram(LwjglLayerRenderer.worldspaceTextureProgramName);
+                    .setCurrentProgram(LayerViewGLPanel.worldspaceTextureProgramName);
         } else if (Arrays.binarySearch(primitive.getRenderingCapabilities(),
                 GLSimpleRenderingCapability.COLOR) >= 0
                 || Arrays.binarySearch(primitive.getRenderingCapabilities(),
                         GLSimpleRenderingCapability.POSITION) >= 0) {
             // System.err.println("use color");
             program = this.glContext
-                    .setCurrentProgram(LwjglLayerRenderer.worldspaceColorProgramName);
+                    .setCurrentProgram(LayerViewGLPanel.worldspaceColorProgramName);
         } else {
             logger.warn("Rendering capability "
                     + Arrays.toString(primitive.getRenderingCapabilities())
@@ -705,8 +704,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             logger.error("GL program cannot be set");
             return;
         }
-        program.setUniform1f(LwjglLayerRenderer.objectOpacityUniformVarName, 1f);
-        program.setUniform1f(LwjglLayerRenderer.globalOpacityUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
+        program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
                 (float) opacity);
         GLTools.glCheckError("program set to " + program.getName()
                 + " in normal rendering");
@@ -716,11 +715,10 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             GLTools.glCheckError("initializing texture");
             texture.initializeRendering();
             GLTools.glCheckError("texture initialized");
-            program.setUniform1i(
-                    LwjglLayerRenderer.colorTexture1UniformVarName,
+            program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
                     COLORTEXTURE1_SLOT);
             program.setUniform2f(
-                    LwjglLayerRenderer.textureScaleFactorUniformVarName,
+                    LayerViewGLPanel.textureScaleFactorUniformVarName,
                     (float) texture.getScaleX(), (float) texture.getScaleY());
             GLTools.glCheckError("initialize texture rendering vao = "
                     + primitive.getVaoId() + " current program = "
@@ -766,12 +764,12 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         GLTools.glCheckError("gl error before normal painting rendering");
 
         GLProgram program = this.glContext
-                .setCurrentProgram(LwjglLayerRenderer.bezierLineProgramName);
+                .setCurrentProgram(LayerViewGLPanel.bezierLineProgramName);
         BasicTextureExpressiveRendering strtex = primitive
                 .getExpressiveRendering();
-        program.setUniform1f(LwjglLayerRenderer.objectOpacityUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName,
                 (float) primitive.getOverallOpacity());
-        program.setUniform1f(LwjglLayerRenderer.globalOpacityUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
                 (float) opacity);
         GLTools.glCheckError("program set to " + program.getName()
                 + " in normal painting rendering");
@@ -788,16 +786,16 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         // GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
         // GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GLTools.glCheckError("bind brushTexture");
-        program.setUniform1i(LwjglLayerRenderer.brushTextureUniformVarName, 1);
+        program.setUniform1i(LayerViewGLPanel.brushTextureUniformVarName, 1);
 
-        program.setUniform1i(LwjglLayerRenderer.colorTexture1UniformVarName,
+        program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
                 COLORTEXTURE1_SLOT);
-        program.setUniform1i(LwjglLayerRenderer.brushWidthUniformVarName,
+        program.setUniform1i(LayerViewGLPanel.brushWidthUniformVarName,
                 primitive.getBrushTexture().getTextureWidth());
-        program.setUniform1i(LwjglLayerRenderer.brushHeightUniformVarName,
+        program.setUniform1i(LayerViewGLPanel.brushHeightUniformVarName,
                 primitive.getBrushTexture().getTextureHeight());
-        program.setUniform1f(LwjglLayerRenderer.brushScaleUniformVarName,
-                (float) (strtex.getAspectRation() / primitive.getBrushTexture()
+        program.setUniform1f(LayerViewGLPanel.brushScaleUniformVarName,
+                (float) (strtex.getAspectRatio() / primitive.getBrushTexture()
                         .getTextureHeight()));
 
         this.setGLViewMatrix(this.getViewport(), primitive.getMinX(),
@@ -832,12 +830,12 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         GLTools.glCheckError("gl error before normal painting rendering");
 
         GLProgram program = this.glContext
-                .setCurrentProgram(LwjglLayerRenderer.linePaintingProgramName);
+                .setCurrentProgram(LayerViewGLPanel.linePaintingProgramName);
         StrokeTextureExpressiveRendering strtex = primitive
                 .getExpressiveRendering();
-        program.setUniform1f(LwjglLayerRenderer.objectOpacityUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName,
                 (float) primitive.getOverallOpacity());
-        program.setUniform1f(LwjglLayerRenderer.globalOpacityUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
                 (float) opacity);
         GLTools.glCheckError("program set to " + program.getName()
                 + " in normal painting rendering");
@@ -850,7 +848,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, primitive.getPaperTexture()
                 .getTextureId());
         GLTools.glCheckError("bind paperTexture");
-        program.setUniform1i(LwjglLayerRenderer.paperTextureUniformVarName, 0);
+        program.setUniform1i(LayerViewGLPanel.paperTextureUniformVarName, 0);
 
         GL13.glActiveTexture(GL13.GL_TEXTURE1);
         GLTools.glCheckError("active brushTexture");
@@ -861,48 +859,48 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         // GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
         // GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GLTools.glCheckError("bind brushTexture");
-        program.setUniform1i(LwjglLayerRenderer.brushTextureUniformVarName, 1);
+        program.setUniform1i(LayerViewGLPanel.brushTextureUniformVarName, 1);
 
         GLTools.glCheckError("setUniform paperTexture");
 
-        program.setUniform1i(LwjglLayerRenderer.brushWidthUniformVarName,
+        program.setUniform1i(LayerViewGLPanel.brushWidthUniformVarName,
                 primitive.getBrushTexture().getTextureWidth());
-        program.setUniform1i(LwjglLayerRenderer.brushHeightUniformVarName,
+        program.setUniform1i(LayerViewGLPanel.brushHeightUniformVarName,
                 primitive.getBrushTexture().getTextureHeight());
-        program.setUniform1i(LwjglLayerRenderer.brushStartWidthUniformVarName,
+        program.setUniform1i(LayerViewGLPanel.brushStartWidthUniformVarName,
                 strtex.getBrushStartLength());
-        program.setUniform1i(LwjglLayerRenderer.brushEndWidthUniformVarName,
+        program.setUniform1i(LayerViewGLPanel.brushEndWidthUniformVarName,
                 strtex.getBrushEndLength());
-        program.setUniform1f(LwjglLayerRenderer.brushScaleUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.brushScaleUniformVarName,
                 (float) (strtex.getBrushSize() / primitive.getBrushTexture()
                         .getTextureHeight()));
-        program.setUniform1f(LwjglLayerRenderer.paperScaleUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.paperScaleUniformVarName,
                 (float) (strtex.getPaperScaleFactor()));
-        program.setUniform1f(LwjglLayerRenderer.paperDensityUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.paperDensityUniformVarName,
                 (float) (strtex.getPaperDensity()));
-        program.setUniform1f(LwjglLayerRenderer.brushDensityUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.brushDensityUniformVarName,
                 (float) (strtex.getBrushDensity()));
-        program.setUniform1f(LwjglLayerRenderer.strokePressureUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.strokePressureUniformVarName,
                 (float) (strtex.getStrokePressure()));
-        program.setUniform1f(LwjglLayerRenderer.sharpnessUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.sharpnessUniformVarName,
                 (float) (strtex.getSharpness()));
         program.setUniform1f(
-                LwjglLayerRenderer.strokePressureVariationAmplitudeUniformVarName,
+                LayerViewGLPanel.strokePressureVariationAmplitudeUniformVarName,
                 (float) (strtex.getStrokePressureVariationAmplitude()));
         program.setUniform1f(
-                LwjglLayerRenderer.strokePressureVariationWavelengthUniformVarName,
+                LayerViewGLPanel.strokePressureVariationWavelengthUniformVarName,
                 (float) (strtex.getStrokePressureVariationWavelength()));
         program.setUniform1f(
-                LwjglLayerRenderer.strokeShiftVariationAmplitudeUniformVarName,
+                LayerViewGLPanel.strokeShiftVariationAmplitudeUniformVarName,
                 (float) (strtex.getStrokeShiftVariationAmplitude()));
         program.setUniform1f(
-                LwjglLayerRenderer.strokeShiftVariationWavelengthUniformVarName,
+                LayerViewGLPanel.strokeShiftVariationWavelengthUniformVarName,
                 (float) (strtex.getStrokeShiftVariationWavelength()));
         program.setUniform1f(
-                LwjglLayerRenderer.strokeThicknessVariationAmplitudeUniformVarName,
+                LayerViewGLPanel.strokeThicknessVariationAmplitudeUniformVarName,
                 (float) (strtex.getStrokeThicknessVariationAmplitude()));
         program.setUniform1f(
-                LwjglLayerRenderer.strokeThicknessVariationWavelengthUniformVarName,
+                LayerViewGLPanel.strokeThicknessVariationWavelengthUniformVarName,
                 (float) (strtex.getStrokeThicknessVariationWavelength()));
 
         this.setGLViewMatrix(this.getViewport(), primitive.getMinX(),
@@ -1060,20 +1058,20 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         }
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
         program.setUniform1f(
-                LwjglLayerRenderer.m00ModelToViewMatrixUniformVarName,
+                LayerViewGLPanel.m00ModelToViewMatrixUniformVarName,
                 (float) (modelToViewTransform.getScaleX()));
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
         program.setUniform1f(
-                LwjglLayerRenderer.m02ModelToViewMatrixUniformVarName,
+                LayerViewGLPanel.m02ModelToViewMatrixUniformVarName,
                 (float) (modelToViewTransform.getTranslateX() + minX
                         * modelToViewTransform.getScaleX()));
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
         program.setUniform1f(
-                LwjglLayerRenderer.m11ModelToViewMatrixUniformVarName,
+                LayerViewGLPanel.m11ModelToViewMatrixUniformVarName,
                 (float) (modelToViewTransform.getScaleY()));
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
         program.setUniform1f(
-                LwjglLayerRenderer.m12ModelToViewMatrixUniformVarName,
+                LayerViewGLPanel.m12ModelToViewMatrixUniformVarName,
                 (float) (modelToViewTransform.getTranslateY() + minY
                         * modelToViewTransform.getScaleY()));
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
@@ -1081,10 +1079,9 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
         float height = this.getCanvasHeight();
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
-        program.setUniform1f(LwjglLayerRenderer.screenWidthUniformVarName,
-                width);
+        program.setUniform1f(LayerViewGLPanel.screenWidthUniformVarName, width);
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
-        program.setUniform1f(LwjglLayerRenderer.screenHeightUniformVarName,
+        program.setUniform1f(LayerViewGLPanel.screenHeightUniformVarName,
                 height);
 
         // System.err.println("translation x = "
