@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -132,6 +133,9 @@ public class GeOxygeneApplication {
 
         // register application in the event manager
         GeOxygeneEventManager.getInstance().setApplication(this);
+
+        // Globally use heavyweight components for all popup menus
+        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 
         // Load properties from geoxygene-configuation.xml file
         this.loadProperties("./geoxygene-configuration.xml");
