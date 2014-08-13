@@ -5,9 +5,9 @@ in VertexData {
 	vec4 color;
 	float lineWidth;
 	float uMax;
-	vec2 p0screen;
-	vec2 p1screen;
-	vec2 p2screen;
+	flat vec2 p0screen;
+	flat vec2 p1screen;
+	flat vec2 p2screen;
 } fragmentIn;
 
 

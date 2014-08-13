@@ -15,9 +15,9 @@ in vec2 vertexUV;
 in vec4 vertexColor;
 in float lineWidth;
 in float uMax;
-flat in vec2 p0;
-flat in vec2 p1;
-flat in vec2 p2;
+in vec2 p0;
+in vec2 p1;
+in vec2 p2;
 
 
 out VertexData {
@@ -25,9 +25,9 @@ out VertexData {
 	vec4 color;
 	float lineWidth;
 	float uMax;
-	vec2 p0screen;
-	vec2 p1screen;
-	vec2 p2screen;
+	flat vec2 p0screen;
+	flat vec2 p1screen;
+	flat vec2 p2screen;
 } vertexOut;
 
 // transform world coordinates to [-1 +1]
@@ -41,8 +41,8 @@ vec2 worldToIdentity( vec2 p ) {
 }
 
 void main() {
-	//gl_Position = vec4 ( vertexPosition.x, vertexPosition.y , 0f , 1f );
-	gl_Position = vec4( worldToScreen( vertexPosition ), 0f, 1f);
+	//gl_Position = vec4 ( vertexPosition.x, vertexPosition.y , 0. , 1. );
+	gl_Position = vec4( worldToScreen( vertexPosition ), 0., 1.);
 	vertexOut.uv = vertexUV;
 	vertexOut.color = vertexColor;
 	vertexOut.lineWidth = lineWidth * m00 / 2.;
