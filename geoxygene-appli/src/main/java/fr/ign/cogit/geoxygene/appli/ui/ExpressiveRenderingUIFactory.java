@@ -28,6 +28,7 @@
 package fr.ign.cogit.geoxygene.appli.ui;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
 
@@ -56,6 +57,10 @@ public class ExpressiveRenderingUIFactory {
             return getExpressiveRenderingUI(
                     (StrokeTextureExpressiveRendering) expressiveRendering,
                     projectFrame);
+        } else if (expressiveRendering instanceof BasicTextureExpressiveRendering) {
+            return getExpressiveRenderingUI(
+                    (BasicTextureExpressiveRendering) expressiveRendering,
+                    projectFrame);
         } else {
             throw new IllegalStateException("ExpressiveRendering type "
                     + expressiveRendering.getClass().getSimpleName() + " ");
@@ -71,7 +76,18 @@ public class ExpressiveRenderingUIFactory {
     private static StrokeTextureExpressiveRenderingUI getExpressiveRenderingUI(
             final StrokeTextureExpressiveRendering strtex,
             ProjectFrame projectFrame) {
-
         return new StrokeTextureExpressiveRenderingUI(strtex, projectFrame);
+    }
+
+    /**
+     * Create a basic texture Rendering UI
+     * 
+     * @param strtex
+     * @return
+     */
+    private static BasicTextureExpressiveRenderingUI getExpressiveRenderingUI(
+            final BasicTextureExpressiveRendering strtex,
+            ProjectFrame projectFrame) {
+        return new BasicTextureExpressiveRenderingUI(strtex, projectFrame);
     }
 }

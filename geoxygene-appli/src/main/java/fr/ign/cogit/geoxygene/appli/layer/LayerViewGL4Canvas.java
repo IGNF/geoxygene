@@ -26,7 +26,6 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.GL4FeatureRenderer;
 import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLContext;
@@ -185,6 +184,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         }
     }
 
+    @Override
     public void reset() {
         this.glContext = null;
     }
@@ -197,7 +197,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         }
         try {
             GLProgram program = this.getGlContext().setCurrentProgram(
-                    LwjglLayerRenderer.backgroundProgramName);
+                    LayerViewGLPanel.backgroundProgramName);
             if (program == null) {
                 return;
             }
@@ -234,8 +234,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             this.screenQuadSE.setUV((float) (u0 + deltaU), (float) v0);
             this.screenQuadSW.setUV((float) u0, (float) v0);
             this.getScreenQuad().invalidateBuffers();
-            program.setUniform1i(
-                    LwjglLayerRenderer.colorTexture1UniformVarName,
+            program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
                     GL4FeatureRenderer.COLORTEXTURE1_SLOT);
             GL13.glActiveTexture(GL13.GL_TEXTURE0
                     + GL4FeatureRenderer.COLORTEXTURE1_SLOT);
@@ -273,9 +272,10 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
      * @return the glContext
      * @throws GLException
      */
+    @Override
     public GLContext getGlContext() throws GLException {
         if (this.glContext == null) {
-            this.glContext = LwjglLayerRenderer.createNewGL4Context();
+            this.glContext = LayerViewGLPanel.createNewGL4Context();
         }
         return this.glContext;
     }

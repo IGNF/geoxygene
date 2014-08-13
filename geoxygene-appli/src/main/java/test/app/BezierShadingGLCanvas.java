@@ -29,6 +29,7 @@ import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
+import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessor;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
@@ -541,12 +542,18 @@ public class BezierShadingGLCanvas extends AWTGLCanvas implements
     public static GLContext getGL4Context() throws GLException {
         GLContext glContext = new GLContext();
 
-        int bezierVertexShader = GLProgram
-                .createVertexShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/bezier.vert.glsl");
-        int bezierFragmentShader = GLProgram
-                .createFragmentShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/bezier.frag.glsl");
-        glContext.addProgram(createPaintProgram(bezierProgramName,
-                bezierVertexShader, bezierFragmentShader));
+        glContext.addProgram(bezierProgramName, new GLProgramAccessor() {
+
+            @Override
+            public GLProgram getGLProgram() throws GLException {
+                final int bezierVertexShader = GLProgram
+                        .createVertexShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/bezier.vert.glsl");
+                final int bezierFragmentShader = GLProgram
+                        .createFragmentShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/bezier.frag.glsl");
+                return createPaintProgram(bezierProgramName,
+                        bezierVertexShader, bezierFragmentShader);
+            }
+        });
         return glContext;
     }
 

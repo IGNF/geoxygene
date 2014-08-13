@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
+import test.app.GLBezierShadingVertex;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
@@ -33,6 +34,7 @@ import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.event.CompassPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.ScalePaintListener;
+import fr.ign.cogit.geoxygene.appli.gl.GLPaintingVertex;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
@@ -41,6 +43,9 @@ import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.ImageComparator;
 import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
+import fr.ign.cogit.geoxygene.util.gl.GLProgram;
+import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessor;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 
 /**
  * LayerViewGLPanel is the basic implementation of a GL Viewer. It adds a glass
@@ -477,6 +482,474 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             this.glCanvas.reset();
         }
 
+    }
+
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // private static GLContext glContext = null;
+
+    public static final String m00ModelToViewMatrixUniformVarName = "m00";
+    public static final String m02ModelToViewMatrixUniformVarName = "m02";
+    public static final String m11ModelToViewMatrixUniformVarName = "m11";
+    public static final String m12ModelToViewMatrixUniformVarName = "m12";
+    public static final String screenWidthUniformVarName = "screenWidth";
+    public static final String screenHeightUniformVarName = "screenHeight";
+    public static final String globalOpacityUniformVarName = "globalOpacity";
+    public static final String objectOpacityUniformVarName = "objectOpacity";
+    public static final String colorTexture1UniformVarName = "colorTexture1";
+    public static final String textureScaleFactorUniformVarName = "textureScaleFactor";
+    public static final String antialiasingSizeUniformVarName = "antialiasingSize";
+
+    public static final String paperTextureUniformVarName = "paperSampler";
+    public static final String brushTextureUniformVarName = "brushSampler";
+    public static final String brushWidthUniformVarName = "brushWidth";
+    public static final String brushHeightUniformVarName = "brushHeight";
+    public static final String brushStartWidthUniformVarName = "brushStartWidth";
+    public static final String brushEndWidthUniformVarName = "brushEndWidth";
+    // width of one brush pixel (mm)
+    public static final String brushScaleUniformVarName = "brushScale";
+    public static final String paperScaleUniformVarName = "paperScale";
+    public static final String paperDensityUniformVarName = "paperDensity";
+    public static final String brushDensityUniformVarName = "brushDensity";
+    public static final String strokePressureUniformVarName = "strokePressure";
+    public static final String sharpnessUniformVarName = "sharpness";
+    public static final String strokePressureVariationAmplitudeUniformVarName = "pressureVariationAmplitude";
+    public static final String strokePressureVariationWavelengthUniformVarName = "pressureVariationWavelength";
+    public static final String strokeShiftVariationAmplitudeUniformVarName = "shiftVariationAmplitude";
+    public static final String strokeShiftVariationWavelengthUniformVarName = "shiftVariationWavelength";
+    public static final String strokeThicknessVariationAmplitudeUniformVarName = "thicknessVariationAmplitude";
+    public static final String strokeThicknessVariationWavelengthUniformVarName = "thicknessVariationWavelength";
+
+    public static final String basicProgramName = "Basic";
+    public static final String linePaintingProgramName = "LinePainting";
+    public static final String bezierLineProgramName = "BezierPainting";
+    public static final String worldspaceColorProgramName = "WorldspaceColor";
+    public static final String worldspaceTextureProgramName = "WorldspaceTexture";
+    public static final String screenspaceColorProgramName = "ScreenspaceColor";
+    public static final String screenspaceTextureProgramName = "ScreenspaceTexture";
+    public static final String backgroundProgramName = "BackgroundTexture";
+    public static final String screenspaceAntialiasedTextureProgramName = "ScreenspaceAntialiasedTexture";
+
+    /**
+     * This static method creates one GLContext containing all programs used to
+     * render GeOxygene graphics elements
+     * 
+     * @return
+     * @throws GLException
+     */
+    public static GLContext createNewGL4Context() throws GLException {
+        GLContext glContext = new GLContext();
+
+        final int worldspaceVertexShader = GLProgram
+                .createVertexShader("./src/main/resources/shaders/worldspace.vert.glsl");
+        final int screenspaceVertexShader = GLProgram
+                .createVertexShader("./src/main/resources/shaders/screenspace.vert.glsl");
+        glContext.addProgram(basicProgramName, new GLProgramAccessor() {
+
+            @Override
+            public GLProgram getGLProgram() throws GLException {
+                return createBasicProgram();
+            }
+        });
+
+        glContext.addProgram(worldspaceColorProgramName,
+                new GLProgramAccessor() {
+
+                    @Override
+                    public GLProgram getGLProgram() throws GLException {
+                        return createWorldspaceColorProgram(worldspaceVertexShader);
+                    }
+                });
+        glContext.addProgram(worldspaceTextureProgramName,
+                new GLProgramAccessor() {
+
+                    @Override
+                    public GLProgram getGLProgram() throws GLException {
+                        return createWorldspaceTextureProgram(worldspaceVertexShader);
+                    }
+                });
+
+        glContext.addProgram(screenspaceColorProgramName,
+                new GLProgramAccessor() {
+
+                    @Override
+                    public GLProgram getGLProgram() throws GLException {
+                        return createScreenspaceColorProgram(screenspaceVertexShader);
+                    }
+                });
+        glContext.addProgram(screenspaceTextureProgramName,
+                new GLProgramAccessor() {
+
+                    @Override
+                    public GLProgram getGLProgram() throws GLException {
+                        return createScreenspaceTextureProgram(screenspaceVertexShader);
+                    }
+                });
+        glContext.addProgram(screenspaceAntialiasedTextureProgramName,
+                new GLProgramAccessor() {
+
+                    @Override
+                    public GLProgram getGLProgram() throws GLException {
+                        return createScreenspaceAntialiasedProgram(screenspaceVertexShader);
+                    }
+                });
+
+        // line painting
+        glContext.addProgram(linePaintingProgramName, new GLProgramAccessor() {
+
+            @Override
+            public GLProgram getGLProgram() throws GLException {
+                final int paintVertexShader = GLProgram
+                        .createVertexShader("./src/main/resources/shaders/line.vert.glsl");
+                final int paintFragmentShader = GLProgram
+                        .createFragmentShader("./src/main/resources/shaders/line.frag.glsl");
+                return createPaintProgram(paintVertexShader,
+                        paintFragmentShader);
+            }
+        });
+
+        // bezier line painting
+        glContext.addProgram(bezierLineProgramName, new GLProgramAccessor() {
+
+            @Override
+            public GLProgram getGLProgram() throws GLException {
+                final int bezierVertexShader = GLProgram
+                        .createVertexShader("./src/main/resources/shaders/bezier.vert.glsl");
+                final int bezierFragmentShader = GLProgram
+                        .createFragmentShader("./src/main/resources/shaders/bezier.frag.glsl");
+                return createBezierProgram(bezierVertexShader,
+                        bezierFragmentShader);
+            }
+        });
+
+        // background paper
+        glContext.addProgram(backgroundProgramName, new GLProgramAccessor() {
+
+            @Override
+            public GLProgram getGLProgram() throws GLException {
+                return createBackgroundTextureProgram();
+            }
+        });
+
+        return glContext;
+    }
+
+    /**
+     * line painting program
+     */
+    private static GLProgram createPaintProgram(int basicVertexShader,
+            int basicFragmentShader) throws GLException {
+        // basic program
+        GLProgram paintProgram = new GLProgram(linePaintingProgramName);
+        paintProgram.setVertexShader(basicVertexShader);
+        paintProgram.setFragmentShader(basicFragmentShader);
+        paintProgram.addInputLocation(
+                GLPaintingVertex.vertexPositionVariableName,
+                GLPaintingVertex.vertexPositionLocation);
+        paintProgram.addInputLocation(GLPaintingVertex.vertexUVVariableName,
+                GLPaintingVertex.vertexUVLocation);
+        paintProgram.addInputLocation(
+                GLPaintingVertex.vertexNormalVariableName,
+                GLPaintingVertex.vertexNormalLocation);
+        paintProgram.addInputLocation(
+                GLPaintingVertex.vertexCurvatureVariableName,
+                GLPaintingVertex.vertexCurvatureLocation);
+        paintProgram.addInputLocation(
+                GLPaintingVertex.vertexThicknessVariableName,
+                GLPaintingVertex.vertexThicknessLocation);
+        paintProgram.addInputLocation(GLPaintingVertex.vertexColorVariableName,
+                GLPaintingVertex.vertexColorLocation);
+        paintProgram.addInputLocation(GLPaintingVertex.vertexMaxUVariableName,
+                GLPaintingVertex.vertexMaxULocation);
+        paintProgram.addInputLocation(
+                GLPaintingVertex.vertexPaperUVVariableName,
+                GLPaintingVertex.vertexPaperUVLocation);
+        paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m02ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m11ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m12ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(screenWidthUniformVarName);
+        paintProgram.addUniform(screenHeightUniformVarName);
+        paintProgram.addUniform(paperTextureUniformVarName);
+        paintProgram.addUniform(brushTextureUniformVarName);
+        paintProgram.addUniform(brushWidthUniformVarName);
+        paintProgram.addUniform(brushHeightUniformVarName);
+        paintProgram.addUniform(brushStartWidthUniformVarName);
+        paintProgram.addUniform(brushEndWidthUniformVarName);
+        paintProgram.addUniform(brushScaleUniformVarName);
+        paintProgram.addUniform(paperScaleUniformVarName);
+        paintProgram.addUniform(paperDensityUniformVarName);
+        paintProgram.addUniform(brushDensityUniformVarName);
+        paintProgram.addUniform(strokePressureUniformVarName);
+        paintProgram.addUniform(sharpnessUniformVarName);
+        paintProgram.addUniform(strokePressureVariationAmplitudeUniformVarName);
+        paintProgram
+                .addUniform(strokePressureVariationWavelengthUniformVarName);
+        paintProgram.addUniform(strokeShiftVariationAmplitudeUniformVarName);
+        paintProgram.addUniform(strokeShiftVariationWavelengthUniformVarName);
+        paintProgram
+                .addUniform(strokeThicknessVariationAmplitudeUniformVarName);
+        paintProgram
+                .addUniform(strokeThicknessVariationWavelengthUniformVarName);
+        paintProgram.addUniform(globalOpacityUniformVarName);
+        paintProgram.addUniform(objectOpacityUniformVarName);
+        paintProgram.addUniform(textureScaleFactorUniformVarName);
+
+        return paintProgram;
+    }
+
+    /**
+     * line painting program
+     */
+    private static GLProgram createBezierProgram(int basicVertexShader,
+            int basicFragmentShader) throws GLException {
+        // basic program
+        GLProgram paintProgram = new GLProgram(bezierLineProgramName);
+        paintProgram.setVertexShader(basicVertexShader);
+        paintProgram.setFragmentShader(basicFragmentShader);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexPositionVariableName,
+                GLBezierShadingVertex.vertexPositionLocation);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexUVVariableName,
+                GLBezierShadingVertex.vertexUVLocation);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexColorVariableName,
+                GLBezierShadingVertex.vertexColorLocation);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexLineWidthVariableName,
+                GLBezierShadingVertex.vertexLineWidthLocation);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexMaxUVariableName,
+                GLBezierShadingVertex.vertexMaxULocation);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexP0VariableName,
+                GLBezierShadingVertex.vertexP0Location);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexP1VariableName,
+                GLBezierShadingVertex.vertexP1Location);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexP2VariableName,
+                GLBezierShadingVertex.vertexP2Location);
+
+        paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m02ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m11ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(m12ModelToViewMatrixUniformVarName);
+        paintProgram.addUniform(screenWidthUniformVarName);
+        paintProgram.addUniform(screenHeightUniformVarName);
+        paintProgram.addUniform(brushTextureUniformVarName);
+        paintProgram.addUniform(brushWidthUniformVarName);
+        paintProgram.addUniform(brushHeightUniformVarName);
+        paintProgram.addUniform(brushScaleUniformVarName);
+        paintProgram.addUniform(globalOpacityUniformVarName);
+        paintProgram.addUniform(objectOpacityUniformVarName);
+        paintProgram.addUniform(colorTexture1UniformVarName);
+
+        return paintProgram;
+    }
+
+    /**
+     * @throws GLException
+     */
+    private static GLProgram createBasicProgram() throws GLException {
+        int basicVertexShader = GLProgram
+                .createVertexShader("./src/main/resources/shaders/basic.vert.glsl");
+        int basicFragmentShader = GLProgram
+                .createFragmentShader("./src/main/resources/shaders/basic.frag.glsl");
+        // basic program
+        GLProgram basicProgram = new GLProgram(basicProgramName);
+        basicProgram.setVertexShader(basicVertexShader);
+        basicProgram.setFragmentShader(basicFragmentShader);
+        basicProgram.addInputLocation(
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        basicProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        basicProgram.addInputLocation(GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
+        return basicProgram;
+    }
+
+    /**
+     * @throws GLException
+     */
+    private static GLProgram createScreenspaceColorProgram(
+            int screenspaceVertexShader) throws GLException {
+        int screenspaceFragmentShader = GLProgram
+                .createFragmentShader("./src/main/resources/shaders/polygon.color.frag.glsl");
+        // basic program
+        GLProgram screenspaceColorProgram = new GLProgram(
+                screenspaceColorProgramName);
+        screenspaceColorProgram.setVertexShader(screenspaceVertexShader);
+        screenspaceColorProgram.setFragmentShader(screenspaceFragmentShader);
+        screenspaceColorProgram.addInputLocation(
+                GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        screenspaceColorProgram.addInputLocation(
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        screenspaceColorProgram.addInputLocation(
+                GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
+        screenspaceColorProgram.addUniform(globalOpacityUniformVarName);
+        screenspaceColorProgram.addUniform(objectOpacityUniformVarName);
+
+        return screenspaceColorProgram;
+    }
+
+    /**
+     * @throws GLException
+     */
+    private static GLProgram createScreenspaceTextureProgram(
+            int screenspaceVertexShader) throws GLException {
+        int screenspaceFragmentShader = GLProgram
+                .createFragmentShader("./src/main/resources/shaders/polygon.texture.frag.glsl");
+        // basic program
+        GLProgram screenspaceTextureProgram = new GLProgram(
+                screenspaceTextureProgramName);
+        screenspaceTextureProgram.setVertexShader(screenspaceVertexShader);
+        screenspaceTextureProgram.setFragmentShader(screenspaceFragmentShader);
+        screenspaceTextureProgram.addInputLocation(
+                GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        screenspaceTextureProgram.addInputLocation(
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        screenspaceTextureProgram.addInputLocation(
+                GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
+        screenspaceTextureProgram.addUniform(globalOpacityUniformVarName);
+        screenspaceTextureProgram.addUniform(objectOpacityUniformVarName);
+        screenspaceTextureProgram.addUniform(colorTexture1UniformVarName);
+        screenspaceTextureProgram.addUniform(textureScaleFactorUniformVarName);
+        return screenspaceTextureProgram;
+    }
+
+    /**
+     * @throws GLException
+     */
+    private static GLProgram createBackgroundTextureProgram()
+            throws GLException {
+        int backgroundVertexShader = GLProgram
+                .createVertexShader("./src/main/resources/shaders/bg.vert.glsl");
+        int backgroundFragmentShader = GLProgram
+                .createFragmentShader("./src/main/resources/shaders/bg.frag.glsl");
+        // basic program
+        GLProgram backgroundTextureProgram = new GLProgram(
+                backgroundProgramName);
+        backgroundTextureProgram.setVertexShader(backgroundVertexShader);
+        backgroundTextureProgram.setFragmentShader(backgroundFragmentShader);
+        backgroundTextureProgram.addInputLocation(
+                GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        backgroundTextureProgram.addInputLocation(
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        backgroundTextureProgram.addUniform(colorTexture1UniformVarName);
+
+        return backgroundTextureProgram;
+    }
+
+    /**
+     * @param worldspaceVertexShader
+     * @throws GLException
+     */
+    private static GLProgram createWorldspaceColorProgram(
+            int worldspaceVertexShader) throws GLException {
+
+        int colorFragmentShader = GLProgram
+                .createFragmentShader("./src/main/resources/shaders/polygon.color.frag.glsl");
+        // color program
+        GLProgram colorProgram = new GLProgram(worldspaceColorProgramName);
+        colorProgram.setVertexShader(worldspaceVertexShader);
+        colorProgram.setFragmentShader(colorFragmentShader);
+        colorProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        colorProgram.addInputLocation(
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        colorProgram.addInputLocation(GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
+        colorProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        colorProgram.addUniform(m02ModelToViewMatrixUniformVarName);
+        colorProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        colorProgram.addUniform(m11ModelToViewMatrixUniformVarName);
+        colorProgram.addUniform(m12ModelToViewMatrixUniformVarName);
+        colorProgram.addUniform(screenWidthUniformVarName);
+        colorProgram.addUniform(screenHeightUniformVarName);
+        colorProgram.addUniform(globalOpacityUniformVarName);
+        colorProgram.addUniform(objectOpacityUniformVarName);
+        colorProgram.addUniform(colorTexture1UniformVarName);
+
+        return colorProgram;
+    }
+
+    /**
+     * @param worldspaceVertexShader
+     * @throws GLException
+     */
+    private static GLProgram createWorldspaceTextureProgram(
+            int worldspaceVertexShader) throws GLException {
+
+        int textureFragmentShader = GLProgram
+                .createFragmentShader("./src/main/resources/shaders/polygon.texture.frag.glsl");
+        // color program
+        GLProgram textureProgram = new GLProgram(worldspaceTextureProgramName);
+        textureProgram.setVertexShader(worldspaceVertexShader);
+        textureProgram.setFragmentShader(textureFragmentShader);
+        textureProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        textureProgram.addInputLocation(
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        textureProgram.addInputLocation(GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
+        textureProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        textureProgram.addUniform(m02ModelToViewMatrixUniformVarName);
+        textureProgram.addUniform(m00ModelToViewMatrixUniformVarName);
+        textureProgram.addUniform(m11ModelToViewMatrixUniformVarName);
+        textureProgram.addUniform(m12ModelToViewMatrixUniformVarName);
+        textureProgram.addUniform(screenWidthUniformVarName);
+        textureProgram.addUniform(screenHeightUniformVarName);
+        textureProgram.addUniform(globalOpacityUniformVarName);
+        textureProgram.addUniform(objectOpacityUniformVarName);
+        textureProgram.addUniform(colorTexture1UniformVarName);
+        textureProgram.addUniform(textureScaleFactorUniformVarName);
+
+        return textureProgram;
+    }
+
+    /**
+     * @param worldspaceVertexShader
+     * @throws GLException
+     */
+    private static GLProgram createScreenspaceAntialiasedProgram(
+            int screenspaceVertexShader) throws GLException {
+
+        int antialiasedFragmentShader = GLProgram
+                .createFragmentShader("./src/main/resources/shaders/antialiased.frag.glsl");
+        // color program
+        GLProgram antialisedProgram = new GLProgram(
+                screenspaceAntialiasedTextureProgramName);
+        antialisedProgram.setVertexShader(screenspaceVertexShader);
+        antialisedProgram.setFragmentShader(antialiasedFragmentShader);
+        antialisedProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        antialisedProgram.addInputLocation(
+                GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        antialisedProgram.addInputLocation(
+                GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
+        antialisedProgram.addUniform(globalOpacityUniformVarName);
+        antialisedProgram.addUniform(objectOpacityUniformVarName);
+        antialisedProgram.addUniform(colorTexture1UniformVarName);
+        antialisedProgram.addUniform(textureScaleFactorUniformVarName);
+        antialisedProgram.addUniform(antialiasingSizeUniformVarName);
+
+        return antialisedProgram;
     }
 
 }

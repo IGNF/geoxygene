@@ -63,7 +63,7 @@ public class BasicTextureExpressiveRendering extends ExpressiveRendering {
     /**
      * @return the aspectRation
      */
-    public double getAspectRation() {
+    public double getAspectRatio() {
         return this.aspectRation;
     }
 
@@ -71,7 +71,7 @@ public class BasicTextureExpressiveRendering extends ExpressiveRendering {
      * @param aspectRation
      *            the aspectRation to set
      */
-    public void setAspectRation(double aspectRation) {
+    public void setAspectRatio(double aspectRation) {
         this.aspectRation = aspectRation;
     }
 

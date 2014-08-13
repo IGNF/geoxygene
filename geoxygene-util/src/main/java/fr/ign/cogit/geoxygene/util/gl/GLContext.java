@@ -28,9 +28,7 @@
 package fr.ign.cogit.geoxygene.util.gl;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL20;
@@ -44,8 +42,8 @@ public class GLContext {
     private static final Logger logger = Logger.getLogger(GLContext.class
             .getName()); // logger
 
-    private final Map<String, GLProgram> programNames = new HashMap<String, GLProgram>();
-    private final Set<GLProgram> programs = new HashSet<GLProgram>();
+    private final Map<String, GLProgramAccessor> programAccessors = new HashMap<String, GLProgramAccessor>();
+    private final Map<String, GLProgram> programs = new HashMap<String, GLProgram>();
     private GLProgram currentProgram = null;
 
     /**
@@ -55,9 +53,9 @@ public class GLContext {
         // TODO Auto-generated constructor stub
     }
 
-    public void addProgram(GLProgram program) {
-        this.programs.add(program);
-        this.programNames.put(program.getName(), program);
+    public void addProgram(String progamName, GLProgramAccessor programAccessor) {
+        this.programs.put(progamName, null);
+        this.programAccessors.put(progamName, programAccessor);
     }
 
     /**
@@ -81,7 +79,11 @@ public class GLContext {
             this.currentProgram = null;
             return this.currentProgram;
         }
-        GLProgram program = this.programNames.get(programName);
+        GLProgram program = this.programs.get(programName);
+        if (program == null) {
+            program = this.programAccessors.get(programName).getGLProgram();
+            this.programs.put(programName, program);
+        }
         if (program == null) {
             return null;
         }
@@ -134,7 +136,7 @@ public class GLContext {
     }
 
     public void disposeContext() throws GLException {
-        for (GLProgram program : this.programs) {
+        for (GLProgram program : this.programs.values()) {
             GL20.glDeleteProgram(program.getProgramId());
         }
 
