@@ -11,6 +11,7 @@ import java.awt.event.ItemListener;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -19,7 +20,12 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
@@ -76,6 +82,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private JButton clearCacheButton = null;
     private JButton awtComparButton = null;
     private JToolBar.Separator toolbarSeparator = null;
+    private JMenu glMenu = null;
+    private JMenuItem glInformationMenu = null;
     private boolean wireframe = false;
     private int antialiasing = 2;
     private boolean useFBO = true;
@@ -128,6 +136,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
+
+        this.getProjectFrame().getMainFrame().getMenuBar()
+                .add(this.getGLMenu());
+        this.getProjectFrame().getMainFrame().getMenuBar().revalidate();
+        this.getProjectFrame().getMainFrame().getMenuBar().repaint();
+
     }
 
     @Override
@@ -147,6 +161,11 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
+
+        this.getProjectFrame().getMainFrame().getMenuBar()
+                .remove(this.getGLMenu());
+        this.getProjectFrame().getMainFrame().getMenuBar().revalidate();
+        this.getProjectFrame().getMainFrame().getMenuBar().repaint();
     }
 
     public boolean useFBO() {
@@ -261,6 +280,22 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             this.awtComparButton.addActionListener(this);
         }
         return this.awtComparButton;
+    }
+
+    private JMenuItem getGLInformationMenu() {
+        if (this.glInformationMenu == null) {
+            this.glInformationMenu = new JMenuItem("Information");
+            this.glInformationMenu.addActionListener(this);
+        }
+        return this.glInformationMenu;
+    }
+
+    private JMenu getGLMenu() {
+        if (this.glMenu == null) {
+            this.glMenu = new JMenu("GL");
+            this.glMenu.add(this.getGLInformationMenu());
+        }
+        return this.glMenu;
     }
 
     private JButton getClearCacheButton() {
@@ -434,7 +469,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == this.getClearCacheButton()) {
+        if (e.getSource() == this.getGLInformationMenu()) {
+            JOptionPane.showMessageDialog(SwingUtilities
+                    .getWindowAncestor(this), new JTextArea(
+                    this.getGLInformation(), 80, 40), "GL Information",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else if (e.getSource() == this.getClearCacheButton()) {
             // dispose gl context to force program (shaders) reloading
             this.reset();
             // empty cache of all renderers
@@ -475,6 +515,27 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             this.repaint();
         }
 
+    }
+
+    private String getGLInformation() {
+        StringBuilder str = new StringBuilder();
+        str.append("GLInformations\n");
+        Class<?> contextClass = org.lwjgl.opengl.GLContext.getCapabilities()
+                .getClass();
+        Field[] declaredFields = contextClass.getDeclaredFields();
+        for (Field field : declaredFields) {
+            if (java.lang.reflect.Modifier.isFinal(field.getModifiers())) {
+                try {
+                    str.append("\t" + field.getName() + " : "
+                            + field.getBoolean(field) + "\n");
+                } catch (Exception e) {
+                    str.append("\t" + field.getName() + " : error: "
+                            + e.getMessage() + "\n");
+                }
+            }
+        }
+        System.err.println(str.toString());
+        return str.toString();
     }
 
     public void reset() {
