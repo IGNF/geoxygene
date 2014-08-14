@@ -61,7 +61,7 @@ import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.cartagen.util.FileUtil;
-import fr.ign.cogit.cartagen.util.XMLUtil;
+import fr.ign.cogit.geoxygene.util.XMLUtil;
 
 public class EditPeaRepParamsFrame extends JFrame implements ActionListener,
     ListSelectionListener {

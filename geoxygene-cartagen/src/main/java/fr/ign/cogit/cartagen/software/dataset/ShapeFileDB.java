@@ -52,8 +52,8 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationLeftPanelC
 import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.CartAGenProgressBar;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolsUtil;
-import fr.ign.cogit.cartagen.util.XMLUtil;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.util.XMLUtil;
 
 public class ShapeFileDB extends CartAGenDB {
 

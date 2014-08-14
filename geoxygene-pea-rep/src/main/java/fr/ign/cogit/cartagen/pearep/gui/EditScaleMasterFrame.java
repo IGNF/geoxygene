@@ -97,10 +97,10 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponent
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.cartagen.util.FileUtil;
 import fr.ign.cogit.cartagen.util.Interval;
-import fr.ign.cogit.cartagen.util.XMLUtil;
 import fr.ign.cogit.cartagen.util.ontologies.OntologyUtil;
 import fr.ign.cogit.geoxygene.filter.BinaryComparisonOpsType;
 import fr.ign.cogit.geoxygene.filter.BinaryLogicOpsType;
+import fr.ign.cogit.geoxygene.util.XMLUtil;
 
 public class EditScaleMasterFrame extends JFrame implements ActionListener,
     ChangeListener, PropertyChangeListener, ItemListener, MouseListener {

@@ -25,7 +25,7 @@ import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
-import fr.ign.cogit.cartagen.util.XMLUtil;
+import fr.ign.cogit.geoxygene.util.XMLUtil;
 
 public class PeaRepDB extends ShapeFileDB {
 

@@ -33,7 +33,6 @@ import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.interfacecartagen.AbstractLayerGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.LayerGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
-import fr.ign.cogit.cartagen.util.XMLUtil;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
@@ -43,6 +42,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.util.XMLUtil;
 
 /**
  * this class represents work documents in CartAGen, as .mxd files in ArcGIS or
@@ -425,7 +425,8 @@ public class CartAGenDocOld {
         .getNodeValue());
     IDirectPosition lCorner = new DirectPosition(xlCorner, ylCorner);
     IDirectPosition uCorner = new DirectPosition(xuCorner, yuCorner);
-    CartAGenDocOld.instance.setDisplayEnvelope(new GM_Envelope(uCorner, lCorner));
+    CartAGenDocOld.instance
+        .setDisplayEnvelope(new GM_Envelope(uCorner, lCorner));
 
     // the dataset zone
     Element zoneElem = (Element) root.getElementsByTagName("dataset-zone")

@@ -26,6 +26,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import fr.ign.cogit.geoxygene.util.XMLUtil;
+
 public class LastSessionParameters {
 
   private Set<SessionParameter> parameters = new HashSet<SessionParameter>();
