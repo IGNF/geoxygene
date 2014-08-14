@@ -32,7 +32,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.leastsquares.core.LSScheduler.GeometryType;
 import fr.ign.cogit.geoxygene.feature.AbstractFeature;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.util.ReflectionUtil;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.LineDensification;
@@ -51,7 +50,6 @@ public class LSPoint extends AbstractFeature {
   private IDirectPosition iniPt;
   private double symbolWidth;
   private int id;
-  private LSScheduler sched;
 
   // la position sur la géométrie
   private double position;
@@ -653,9 +651,9 @@ public class LSPoint extends AbstractFeature {
     // on calcule l'écart de vertices entre les deux points
     IGeometry geom = obj.getGeom();
     if (sched.getObjsMalleables().contains(obj)
-        && geom.coord().size() < this.sched.getMapObjPts().get(obj).size()) {
-      geom = LineDensification.densification2((ILineString) geom, sched
-          .getMapspec().getDensStep());
+        && geom.coord().size() < sched.getMapObjPts().get(obj).size()) {
+      geom = LineDensification.densification2(geom, sched.getMapspec()
+          .getDensStep());
     }
     if (geom instanceof ILineString) {
       int ecart = 0;
@@ -799,9 +797,7 @@ public class LSPoint extends AbstractFeature {
 
   @Override
   public IFeature cloneGeom() throws CloneNotSupportedException {
-    return new LSPoint(this.objs.iterator().next(), new DirectPosition(
-        this.iniPt.getX(), this.iniPt.getY()), this.position, this.typeGeom,
-        this.pointIniFin, this.fixed, this.symbolWidth, this.sched);
+    return null;
   }
 
   @Override

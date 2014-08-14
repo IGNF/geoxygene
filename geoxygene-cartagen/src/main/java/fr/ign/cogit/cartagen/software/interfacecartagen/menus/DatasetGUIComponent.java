@@ -141,23 +141,23 @@ public class DatasetGUIComponent extends JMenu {
     this.recentDocs = new ArrayList<File>();
     LastSessionParameters params = LastSessionParameters.getInstance();
     if (params.hasParameter("Recent CartAGenDoc 1")) {
-      String path = (String) params.getParameter("Recent CartAGenDoc 1");
+      String path = (String) params.getParameterValue("Recent CartAGenDoc 1");
       this.recentDocs.add(new File(path));
     }
     if (params.hasParameter("Recent CartAGenDoc 2")) {
-      String path = (String) params.getParameter("Recent CartAGenDoc 2");
+      String path = (String) params.getParameterValue("Recent CartAGenDoc 2");
       this.recentDocs.add(new File(path));
     }
     if (params.hasParameter("Recent CartAGenDoc 3")) {
-      String path = (String) params.getParameter("Recent CartAGenDoc 3");
+      String path = (String) params.getParameterValue("Recent CartAGenDoc 3");
       this.recentDocs.add(new File(path));
     }
     if (params.hasParameter("Recent CartAGenDoc 4")) {
-      String path = (String) params.getParameter("Recent CartAGenDoc 4");
+      String path = (String) params.getParameterValue("Recent CartAGenDoc 4");
       this.recentDocs.add(new File(path));
     }
     if (params.hasParameter("Recent CartAGenDoc 5")) {
-      String path = (String) params.getParameter("Recent CartAGenDoc 5");
+      String path = (String) params.getParameterValue("Recent CartAGenDoc 5");
       this.recentDocs.add(new File(path));
     }
   }
@@ -166,7 +166,7 @@ public class DatasetGUIComponent extends JMenu {
     LastSessionParameters params = LastSessionParameters.getInstance();
     for (int i = 1; i <= this.recentDocs.size(); i++) {
       params.setParameter("Recent CartAGenDoc " + i, this.recentDocs.get(i - 1)
-          .getPath());
+          .getPath(), new HashMap<String, String>());
     }
   }
 

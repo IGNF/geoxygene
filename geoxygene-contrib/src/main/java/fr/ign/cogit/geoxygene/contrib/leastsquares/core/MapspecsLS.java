@@ -48,8 +48,8 @@ public class MapspecsLS {
 
   /**
    * Map qui contient des tableaux de String contenant le nom de la contrainte
-   * externe, le nom de la classe gothic 1 et le nom de la classe Gothic 2 et en
-   * valeur le seuil de séparation pour cette contrainte
+   * externe, le nom de la classe 1 et le nom de la classe 2 et en valeur le
+   * seuil de séparation pour cette contrainte
    */
   private Map<String[], Double> contraintesExternes = new HashMap<String[], Double>();
 

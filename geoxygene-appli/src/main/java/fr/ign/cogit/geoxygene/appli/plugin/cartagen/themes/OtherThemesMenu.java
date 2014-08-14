@@ -62,11 +62,13 @@ public class OtherThemesMenu extends JMenu {
     this.add(airportMenu);
     airportMenu.add(new JMenuItem(new SelectAction("airport")));
     airportMenu.add(new JMenuItem(new BuildAirportsAction()));
+    airportMenu.add(new JMenuItem(new GeneraliseAirportsAction()));
     airportMenu.addSeparator();
     airportMenu.add(new JMenuItem(new TypifyTaxiwaysAction()));
     airportMenu.add(new JMenuItem(new SelectTaxiwaysAction()));
     airportMenu.add(new JMenuItem(new CollapseTaxiwayAreasAction()));
     airportMenu.add(new JMenuItem(new CollapseRunwaysAction()));
+    airportMenu.add(new JMenuItem(new AmalgamateApronsAction()));
     this.addSeparator();
     JMenu railMenu = new JMenu("Railroads");
     this.add(railMenu);
@@ -260,6 +262,47 @@ public class OtherThemesMenu extends JMenu {
     }
   }
 
+  private class AmalgamateApronsAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+          .getApplication();
+      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+          .getGeometryPool();
+      pool.setSld(appli.getMainFrame().getSelectedProjectFrame().getSld());
+      if (SelectionUtil.isEmpty(appli)) {
+        AirportTypification algo = new AirportTypification(CartAGenDoc
+            .getInstance().getCurrentDataset());
+        algo.setApronClosingSize(50.0);
+        algo.setApronMinArea(1000.0);
+        algo.setApronSegLength(10.0);
+        algo.amalgamateAprons();
+        algo.simplifyAprons();
+        return;
+      }
+      for (IFeature sel : SelectionUtil.getSelectedObjects(appli)) {
+        if (!(sel instanceof IAirportArea))
+          continue;
+        IAirportArea airport = (IAirportArea) sel;
+        AirportTypification algo = new AirportTypification(airport, CartAGenDoc
+            .getInstance().getCurrentDataset());
+        algo.setApronClosingSize(25.0);
+        algo.setApronMinArea(1000.0);
+        algo.setApronSegLength(8.0);
+        algo.amalgamateAprons();
+        algo.simplifyAprons();
+      }
+    }
+
+    public AmalgamateApronsAction() {
+      this.putValue(Action.NAME, "Amalgamate apron areas");
+    }
+  }
+
   private class CollapseRunwaysAction extends AbstractAction {
 
     /****/
@@ -307,7 +350,7 @@ public class OtherThemesMenu extends JMenu {
     }
   }
 
-  private class TypifySideTracksAction extends AbstractAction {
+  private class GeneraliseAirportsAction extends AbstractAction {
 
     /****/
     private static final long serialVersionUID = 1L;
@@ -316,6 +359,72 @@ public class OtherThemesMenu extends JMenu {
     public void actionPerformed(ActionEvent e) {
       final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
           .getApplication();
+      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+          .getGeometryPool();
+      pool.setSld(appli.getMainFrame().getSelectedProjectFrame().getSld());
+
+      for (IFeature sel : SelectionUtil.getSelectedObjects(appli)) {
+        if (!(sel instanceof IAirportArea))
+          continue;
+        IAirportArea airport = (IAirportArea) sel;
+        AirportTypification algo = new AirportTypification(airport, CartAGenDoc
+            .getInstance().getCurrentDataset());
+
+        // collapse runways
+        try {
+          algo.collapseRunways();
+        } catch (Exception e1) {
+          e1.printStackTrace();
+        }
+
+        // typify taxiways
+        algo.setBranchingMaxArea(7000.0);
+        algo.setMaxAngleBranching(14 * Math.PI / 20);
+        algo.detectBranchingPatterns();
+        for (TaxiwayBranching branch : algo.getBranchings()) {
+          pool.addFeatureToGeometryPool(branch.getGeom(), Color.RED, 1);
+          branch.collapse();
+        }
+        for (TaxiwayBranchingGroup branch : algo.getDoubleBranchings()) {
+          pool.addFeatureToGeometryPool(branch.getGeom(), Color.PINK, 1);
+          branch.collapse();
+        }
+        for (TaxiwayBranchingCouple branch : algo.getBranchingCouples()) {
+          pool.addFeatureToGeometryPool(branch.getGeom(), Color.CYAN, 1);
+          branch.collapse();
+        }
+
+        // select taxiways
+        algo.setTaxiwayLengthThreshold(500.0);
+        algo.makeTaxiwaysPlanar();
+        algo.selectTaxiwayLines();
+
+        // amalgamate aprons
+        algo.setApronClosingSize(50.0);
+        algo.setApronMinArea(1000.0);
+        algo.setApronSegLength(10.0);
+        algo.amalgamateAprons();
+        algo.simplifyAprons();
+
+        // simplify terminals
+        algo.setTerminalMinArea(600.0);
+        algo.setTerminalSegLength(5.0);
+        algo.simplifyTerminals();
+      }
+    }
+
+    public GeneraliseAirportsAction() {
+      this.putValue(Action.NAME, "Generalise airports");
+    }
+  }
+
+  private class TypifySideTracksAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
       TypifySideTracks typify = new TypifySideTracks(100.0, CartAGenDoc
           .getInstance().getCurrentDataset());
       typify.typifySideTracks();
@@ -356,7 +465,6 @@ public class OtherThemesMenu extends JMenu {
     /****/
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unchecked")
     @Override
     public void actionPerformed(ActionEvent e) {
       final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
