@@ -25,12 +25,10 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.jdbc.postgis.ConnectionParam;
 
 /**
- * properties for geoxygene configuration
- * plugin: plugin package to load (multiple)
- * lastOpenedFile: directory for file/save file chooser (single)
- * preload: file to load at startup (multiple)
- * DefaultVisualizationType: "AWT" or "LWJGL" (single) if other, default is AWT
- * ConnectionParam: (single)
+ * properties for geoxygene configuration plugin: plugin package to load
+ * (multiple) lastOpenedFile: directory for file/save file chooser (single)
+ * preload: file to load at startup (multiple) DefaultVisualizationType: "AWT"
+ * or "LWJGL" (single) if other, default is AWT ConnectionParam: (single)
  * ProjectFrameLayout: "floating" or "tabbed" (single) default is Floating
  * 
  */
@@ -40,7 +38,8 @@ import fr.ign.cogit.geoxygene.jdbc.postgis.ConnectionParam;
 public class GeOxygeneApplicationProperties {
 
     /** Logger. */
-    static Logger logger = Logger.getLogger(GeOxygeneApplicationProperties.class.getName());
+    static Logger logger = Logger
+            .getLogger(GeOxygeneApplicationProperties.class.getName());
 
     @XmlElements(@XmlElement(name = "plugin", type = String.class))
     private final List<String> plugins = new ArrayList<String>();
@@ -53,6 +52,9 @@ public class GeOxygeneApplicationProperties {
 
     @XmlElements(@XmlElement(name = "preload", type = String.class))
     private final List<String> preloads = new ArrayList<String>();
+
+    @XmlElements(@XmlElement(name = "sld", type = String.class))
+    private final String sldFilename = new String();
 
     @XmlElement(name = "ConnectionParam")
     private ConnectionParam connectionParam = new ConnectionParam();
@@ -90,10 +92,19 @@ public class GeOxygeneApplicationProperties {
     /**
      * Return preload list.
      * 
-     * @return List<String>
+     * @return List<String> Shapefile filenames
      */
     public List<String> getPreloads() {
         return this.preloads;
+    }
+
+    /**
+     * Return Sld filename.
+     * 
+     * @return String SLD filename
+     */
+    public String getSld() {
+        return this.sldFilename;
     }
 
     /**
@@ -162,8 +173,8 @@ public class GeOxygeneApplicationProperties {
     }
 
     /**
-     * "floating" uses JInternal frames for ProjectFrames
-     * "tabbed" uses A JTabbedPane to dock ProjectFrames
+     * "floating" uses JInternal frames for ProjectFrames "tabbed" uses A
+     * JTabbedPane to dock ProjectFrames
      * 
      * @return the main frame layout:
      */
@@ -172,8 +183,8 @@ public class GeOxygeneApplicationProperties {
     }
 
     /**
-     * * "Floating" uses JInternal frames for ProjectFrames
-     * "Tabbed" uses A JTabbedPane to dock ProjectFrames
+     * * "Floating" uses JInternal frames for ProjectFrames "Tabbed" uses A
+     * JTabbedPane to dock ProjectFrames
      * 
      * @param projectFrameLayout
      *            "floating" or "tabbed"
@@ -195,9 +206,11 @@ public class GeOxygeneApplicationProperties {
      */
     public static GeOxygeneApplicationProperties unmarshall(InputStream stream) {
         try {
-            JAXBContext context = JAXBContext.newInstance(GeOxygeneApplicationProperties.class);
+            JAXBContext context = JAXBContext
+                    .newInstance(GeOxygeneApplicationProperties.class);
             Unmarshaller m = context.createUnmarshaller();
-            GeOxygeneApplicationProperties properties = (GeOxygeneApplicationProperties) m.unmarshal(stream);
+            GeOxygeneApplicationProperties properties = (GeOxygeneApplicationProperties) m
+                    .unmarshal(stream);
             return properties;
         } catch (JAXBException e) {
             e.printStackTrace();
@@ -214,9 +227,11 @@ public class GeOxygeneApplicationProperties {
      */
     public static GeOxygeneApplicationProperties unmarshall(String fileName) {
         try {
-            return GeOxygeneApplicationProperties.unmarshall(new FileInputStream(fileName));
+            return GeOxygeneApplicationProperties
+                    .unmarshall(new FileInputStream(fileName));
         } catch (FileNotFoundException e) {
-            GeOxygeneApplicationProperties.logger.error("File " + fileName + " could not be found"); //$NON-NLS-1$//$NON-NLS-2$
+            GeOxygeneApplicationProperties.logger
+                    .error("File " + fileName + " could not be found"); //$NON-NLS-1$//$NON-NLS-2$
             return new GeOxygeneApplicationProperties();
         }
     }
@@ -229,7 +244,8 @@ public class GeOxygeneApplicationProperties {
      */
     public void marshall(Writer writer) {
         try {
-            JAXBContext context = JAXBContext.newInstance(GeOxygeneApplicationProperties.class);
+            JAXBContext context = JAXBContext
+                    .newInstance(GeOxygeneApplicationProperties.class);
             Marshaller m = context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             m.marshal(this, writer);
@@ -246,7 +262,8 @@ public class GeOxygeneApplicationProperties {
      */
     public void marshall(OutputStream stream) {
         try {
-            JAXBContext context = JAXBContext.newInstance(GeOxygeneApplicationProperties.class);
+            JAXBContext context = JAXBContext
+                    .newInstance(GeOxygeneApplicationProperties.class);
             Marshaller m = context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             m.marshal(this, stream);
@@ -268,7 +285,8 @@ public class GeOxygeneApplicationProperties {
         try {
             this.marshall(new FileOutputStream(fileName));
         } catch (FileNotFoundException e) {
-            GeOxygeneApplicationProperties.logger.error("File " + fileName + " could not be written to");
+            GeOxygeneApplicationProperties.logger.error("File " + fileName
+                    + " could not be written to");
         }
     }
 

@@ -22,6 +22,7 @@ package fr.ign.cogit.geoxygene.appli;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,6 +32,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
@@ -153,7 +155,8 @@ public class GeOxygeneApplication {
         MainFrameMenuBar.fc.setPreviousDirectory(new File(
                 GeOxygeneApplication.this.properties.getLastOpenedFile()));
 
-        this.preload();
+        this.preloadShapefiles();
+        this.preloadSld();
         // Initialize application plugins
         this.initializeApplicationPlugins();
 
@@ -174,9 +177,37 @@ public class GeOxygeneApplication {
     }
 
     /**
+     * Preload sld file defined in the configuration file <sld></sld>
+     */
+    private void preloadSld() {
+        final MainFrame mainFrame = this.getMainFrame();
+        if (mainFrame == null) {
+            logger.error("no main frame defined. Cannot preload SLD");
+            return;
+        }
+        ProjectFrame projectFrame = mainFrame.getSelectedProjectFrame();
+        if (projectFrame == null) {
+            logger.error("no current project frame selected. Cannot preload SLD");
+            return;
+        }
+        try {
+            projectFrame.loadSLD(new File(this.properties.getSld()));
+            projectFrame.getLayerViewPanel().refresh();
+            projectFrame.getLayerViewPanel().repaint();
+        } catch (FileNotFoundException e) {
+            logger.error("SLD filename '" + this.properties.getSld()
+                    + "' does not exist or is unreadable");
+        } catch (JAXBException e) {
+            logger.error("Malformed SLD file '" + this.properties.getSld()
+                    + "'");
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Preload files defined in the configuration file <preload></preload>
      */
-    private void preload() {
+    private void preloadShapefiles() {
         // try { // ugly "synchronization"
         // Thread.sleep(500);
         // } catch (InterruptedException e1) {

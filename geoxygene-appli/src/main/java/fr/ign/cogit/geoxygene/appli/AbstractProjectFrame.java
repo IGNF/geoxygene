@@ -692,6 +692,19 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
                      */
                 }
             }
+        } else {
+            if (!(file.getAbsolutePath().endsWith(".xml") //$NON-NLS-1$
+            || file.getAbsolutePath().endsWith(".XML"))) {
+                logger.warn("SLD file must finish with '.xml' or '.XML' extension. Skip loading SLD '"
+                        + file.getAbsolutePath() + "'");
+            } else if (!file.isFile()) {
+                logger.warn("SLD filename '" + file.getAbsolutePath()
+                        + "' is not a file. Skip loading SLD.");
+            } else {
+                logger.warn("SLD filename '"
+                        + file.getAbsolutePath()
+                        + "' is not valid for an undetermined reason. Skip loading SLD.");
+            }
         }
     }
 

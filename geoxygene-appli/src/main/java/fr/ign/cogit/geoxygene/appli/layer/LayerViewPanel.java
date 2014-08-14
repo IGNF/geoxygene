@@ -26,6 +26,7 @@ import fr.ign.cogit.geoxygene.appli.mode.CreateInteriorRingMode;
 import fr.ign.cogit.geoxygene.appli.mode.CreateLineStringMode;
 import fr.ign.cogit.geoxygene.appli.mode.CreatePolygonMode;
 import fr.ign.cogit.geoxygene.appli.mode.Mode;
+import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.RenderUtil;
 import fr.ign.cogit.geoxygene.appli.render.RenderingManager;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -326,6 +327,20 @@ public abstract class LayerViewPanel extends JComponent implements Printable,
      * be called when the layer view becomes inactive
      */
     public abstract void hideGui();
+
+    /**
+     * refresh the layer view panel (empty caches, reset renderers, etc...)
+     * default baheviour is to reset all renderers. Override for another
+     * behaviour
+     */
+    public void refresh() {
+        // default behaviour is to reset renderers.
+        for (LayerRenderer layerRenderer : this.getRenderingManager()
+                .getRenderers()) {
+            layerRenderer.reset();
+        }
+        this.repaint();
+    }
 
     /** Paint listener management *********************************/
 

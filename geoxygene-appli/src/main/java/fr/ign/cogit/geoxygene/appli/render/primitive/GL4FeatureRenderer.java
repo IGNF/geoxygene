@@ -116,8 +116,6 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
 
     private boolean needInitialization = true;
 
-    private GLContext glContext = null;
-
     // Uniform Variables
 
     public static final int COLORTEXTURE1_SLOT = 0;
@@ -138,31 +136,19 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * 
      * @param lwjglLayerRenderer
      */
-    public GL4FeatureRenderer(LwjglLayerRenderer lwjglLayerRenderer,
-            GLContext glContext) {
+    public GL4FeatureRenderer(LwjglLayerRenderer lwjglLayerRenderer) {
         if (lwjglLayerRenderer == null) {
             throw new IllegalArgumentException("layer renderer cannot be null");
         }
-        if (glContext == null) {
-            throw new IllegalArgumentException("gl Context cannot be null");
-        }
         this.lwjglLayerRenderer = lwjglLayerRenderer;
-        this.setGlContext(glContext);
     }
 
     /**
      * @return the glContext
+     * @throws GLException
      */
-    public GLContext getGlContext() {
-        return this.glContext;
-    }
-
-    /**
-     * @param glContext
-     *            the glContext to set
-     */
-    final public void setGlContext(GLContext glContext) {
-        this.glContext = glContext;
+    public GLContext getGlContext() throws GLException {
+        return this.lwjglLayerRenderer.getGLContext();
     }
 
     /**
@@ -299,11 +285,16 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         // + feature.getFeatureCollections().size()
         // + " feature collections");
         GLTools.glCheckError("gl error ocurred before main render method");
-        if (this.glContext == null) {
-            logger.error("no GL Context defined");
-            return;
+        try {
+            if (this.getGlContext() == null) {
+                logger.error("no GL Context defined");
+                return;
+            }
+        } catch (GLException e1) {
+            logger.error("GL Context exception thrown: " + e1.getMessage());
+            e1.printStackTrace();
         }
-        // this.glContext.checkContext();
+        // this.getGlContext().checkContext();
         this.setViewport(viewport);
         if (this.needInitialization()) {
             this.initializeRendering();
@@ -522,8 +513,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         // // first draw the outline with smooth blending to get the polygon
         // border
         // // smoothness
-        GLProgram program = this.glContext
-                .setCurrentProgram(LayerViewGLPanel.worldspaceColorProgramName);
+        GLProgram program = this.getGlContext().setCurrentProgram(
+                LayerViewGLPanel.worldspaceColorProgramName);
         if (program == null) {
             return;
         }
@@ -551,8 +542,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
 
         // display the computed texture on the screen
         // using object opacity * overall opacity
-        program = this.glContext
-                .setCurrentProgram(LayerViewGLPanel.screenspaceAntialiasedTextureProgramName);
+        program = this.getGlContext().setCurrentProgram(
+                LayerViewGLPanel.screenspaceAntialiasedTextureProgramName);
         GL11.glViewport(0, 0, this.getCanvasWidth(), this.getCanvasHeight());
         GL11.glDrawBuffer(GL11.GL_BACK);
         glEnable(GL_TEXTURE_2D);
@@ -602,8 +593,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      */
     private void renderGLPrimitiveWireframe(GLComplex primitive)
             throws GLException {
-        GLProgram program = this.glContext
-                .setCurrentProgram(LayerViewGLPanel.worldspaceColorProgramName);
+        GLProgram program = this.getGlContext().setCurrentProgram(
+                LayerViewGLPanel.worldspaceColorProgramName);
 
         glEnable(GL_BLEND);
         if (this.getLayerViewPanel().getAntialiasingSize() > 0) {
@@ -652,7 +643,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     // * @throws GLException
     // */
     // public int getCurrentProgramId() throws GLException {
-    // return program == null ? -1 : this.glContext.getCurrentProgram()
+    // return program == null ? -1 : this.getGlContext().getCurrentProgram()
     // .getProgramId();
     // }
 
@@ -686,15 +677,15 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         if (Arrays.binarySearch(primitive.getRenderingCapabilities(),
                 GLSimpleRenderingCapability.TEXTURE) >= 0) {
             // System.err.println("use texture");
-            program = this.glContext
-                    .setCurrentProgram(LayerViewGLPanel.worldspaceTextureProgramName);
+            program = this.getGlContext().setCurrentProgram(
+                    LayerViewGLPanel.worldspaceTextureProgramName);
         } else if (Arrays.binarySearch(primitive.getRenderingCapabilities(),
                 GLSimpleRenderingCapability.COLOR) >= 0
                 || Arrays.binarySearch(primitive.getRenderingCapabilities(),
                         GLSimpleRenderingCapability.POSITION) >= 0) {
             // System.err.println("use color");
-            program = this.glContext
-                    .setCurrentProgram(LayerViewGLPanel.worldspaceColorProgramName);
+            program = this.getGlContext().setCurrentProgram(
+                    LayerViewGLPanel.worldspaceColorProgramName);
         } else {
             logger.warn("Rendering capability "
                     + Arrays.toString(primitive.getRenderingCapabilities())
@@ -763,8 +754,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             double opacity) throws GLException {
         GLTools.glCheckError("gl error before normal painting rendering");
 
-        GLProgram program = this.glContext
-                .setCurrentProgram(LayerViewGLPanel.bezierLineProgramName);
+        GLProgram program = this.getGlContext().setCurrentProgram(
+                LayerViewGLPanel.bezierLineProgramName);
         BasicTextureExpressiveRendering strtex = primitive
                 .getExpressiveRendering();
         program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName,
@@ -829,8 +820,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             double opacity) throws GLException {
         GLTools.glCheckError("gl error before normal painting rendering");
 
-        GLProgram program = this.glContext
-                .setCurrentProgram(LayerViewGLPanel.linePaintingProgramName);
+        GLProgram program = this.getGlContext().setCurrentProgram(
+                LayerViewGLPanel.linePaintingProgramName);
         StrokeTextureExpressiveRendering strtex = primitive
                 .getExpressiveRendering();
         program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName,
@@ -1051,7 +1042,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             return false;
         }
 
-        GLProgram program = this.glContext.getCurrentProgram();
+        GLProgram program = this.getGlContext().getCurrentProgram();
         if (program == null) {
             logger.error("setting GL view matrix with no current program. Exiting.");
             return false;

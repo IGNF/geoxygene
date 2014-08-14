@@ -24,7 +24,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
@@ -81,6 +80,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private JButton antialiasingButton = null;
     private JButton clearCacheButton = null;
     private JButton awtComparButton = null;
+    private JButton reloadShadersButton = null;
     private JToolBar.Separator toolbarSeparator = null;
     private JMenu glMenu = null;
     private JMenuItem glInformationMenu = null;
@@ -133,6 +133,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 .add(this.getClearCacheButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .add(this.getAWTComparButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .add(this.getReloadShadersButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
@@ -261,7 +263,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                             MainFrameToolBar.class
                                     .getResource("/images/icons/16x16/antialiasing.png")));
             this.antialiasingButton.setToolTipText(I18N
-                    .getString("RenderingGL.ToggleAntialiasing"));
+                    .getString("RenderingGL.LoopAntialiasing"));
 
             this.antialiasingButton.setText(String.valueOf(this
                     .getAntialiasingSize()));
@@ -280,6 +282,19 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             this.awtComparButton.addActionListener(this);
         }
         return this.awtComparButton;
+    }
+
+    private JButton getReloadShadersButton() {
+        if (this.reloadShadersButton == null) {
+            this.reloadShadersButton = new JButton();
+            this.reloadShadersButton.setIcon(new ImageIcon(
+                    MainFrameToolBar.class
+                            .getResource("/images/icons/16x16/refresh.png")));
+            this.reloadShadersButton.setToolTipText(I18N
+                    .getString("RenderingGL.ReloadShaders"));
+            this.reloadShadersButton.addActionListener(this);
+        }
+        return this.reloadShadersButton;
     }
 
     private JMenuItem getGLInformationMenu() {
@@ -470,18 +485,13 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this.getGLInformationMenu()) {
-            JOptionPane.showMessageDialog(SwingUtilities
-                    .getWindowAncestor(this), new JTextArea(
-                    this.getGLInformation(), 80, 40), "GL Information",
-                    JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    SwingUtilities.getWindowAncestor(this),
+                    new JTextArea(this.getGLInformation(), 80, 40),
+                    "GL Information", JOptionPane.INFORMATION_MESSAGE);
         } else if (e.getSource() == this.getClearCacheButton()) {
-            // dispose gl context to force program (shaders) reloading
-            this.reset();
-            // empty cache of all renderers
-            for (LayerRenderer renderer : this.getRenderingManager()
-                    .getRenderers()) {
-                renderer.reset();
-            }
+            this.reset(); // reload shaders
+            this.resetRenderers(); // refresh geometry
             this.repaint();
         } else if (e.getSource() == this.getAWTComparButton()) {
             JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(this));
@@ -493,6 +503,9 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             dialog.getContentPane().add(imageComparator.getGui());
             dialog.setVisible(true);
             imageComparator.update();
+        } else if (e.getSource() == this.getReloadShadersButton()) {
+            this.glCanvas.reset();
+            this.repaint();
         } else if (e.getSource() == this.getAntialiasingButton()) {
             int antialiasingValue = 1;
             try {
@@ -517,6 +530,30 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
     }
 
+    /**
+     * clear renderer caches. It forces recomputation of all geometries
+     */
+    public void resetRenderers() {
+        // empty cache of all renderers
+        for (LayerRenderer renderer : this.getRenderingManager().getRenderers()) {
+            renderer.reset();
+        }
+    }
+
+    /**
+     * clear renderer caches. It forces recomputation of a layer geometry
+     */
+    public void resetLayerRenderer(Layer layer) {
+
+        LayerRenderer renderer = this.getRenderingManager().getRenderer(layer);
+        if (renderer == null) {
+            logger.error("Layer " + layer.getName()
+                    + " has no associated renderer. Cannot reset it...");
+            return;
+        }
+        renderer.reset();
+    }
+
     private String getGLInformation() {
         StringBuilder str = new StringBuilder();
         str.append("GLInformations\n");
@@ -538,6 +575,9 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         return str.toString();
     }
 
+    /**
+     * Reset glCanvas (reload shaders)
+     */
     public void reset() {
         if (this.glCanvas != null) {
             this.glCanvas.reset();

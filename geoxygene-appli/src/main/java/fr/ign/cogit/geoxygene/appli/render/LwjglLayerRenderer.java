@@ -82,6 +82,13 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
     }
 
     /**
+     * get the GL context from the layer view panel
+     */
+    public GLContext getGLContext() throws GLException {
+        return this.layerViewPanel.getGlContext();
+    }
+
+    /**
      * @param layerViewPanel
      *            the layerViewPanel to set
      */
@@ -103,18 +110,12 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
 
     private final FeatureRenderer getRenderer() {
         if (this.gl4Renderer == null) {
-            try {
-                this.gl4Renderer = new GL4FeatureRenderer(this,
-                        this.getGlContext());
-            } catch (GLException e) {
-                logger.error("impossible to generate a valid GL4 Context");
-                e.printStackTrace();
-            }
+            this.gl4Renderer = new GL4FeatureRenderer(this);
         }
         return this.gl4Renderer;
     }
 
-    private GLContext getGlContext() throws GLException {
+    public GLContext getGlContext() throws GLException {
         return this.getLayerViewPanel().getGlContext();
     }
 
