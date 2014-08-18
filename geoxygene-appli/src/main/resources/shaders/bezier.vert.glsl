@@ -8,6 +8,8 @@ uniform float m11 = 1.; // Y homothetic value in 3x3 matrix
 uniform float m12 = 0.; // Y translation value in 3x3 matrix
 uniform float screenWidth;
 uniform float screenHeight;
+uniform float fboWidth=500;
+uniform float fboHeight=500;
 
 
 in vec2 vertexPosition;
@@ -30,6 +32,8 @@ out VertexData {
 	flat vec2 p2screen;
 } vertexOut;
 
+float screenRatio = fboWidth / screenWidth;
+
 // transform world coordinates to [-1 +1]
 vec2 worldToScreen( vec2 p ) {
 	return vec2( -1 + 2 * (p.x * m00 + m02) / (screenWidth + 1), 1 - 2 * ( p.y * m11 + m12 ) / ( screenHeight + 1 ) );
@@ -37,7 +41,7 @@ vec2 worldToScreen( vec2 p ) {
 
 // transform world coordinates to [0 1]
 vec2 worldToIdentity( vec2 p ) {
-	return vec2( (p.x * m00 + m02), screenHeight - ( p.y * m11 + m12 ) );
+	return vec2( (p.x * m00 + m02) * screenRatio,  ( p.y * m11 + m12 ) * screenRatio );
 }
 
 void main() {

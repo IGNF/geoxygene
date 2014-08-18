@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 /**
@@ -126,7 +127,19 @@ public class GLContext {
         }
         RenderingStatistics.switchProgram();
         this.currentProgram = program;
-
+        // check correctness
+        if (GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM) != this
+                .getCurrentProgram().getProgramId()
+                || program.getProgramId() != this.getCurrentProgram()
+                        .getProgramId()) {
+            logger.info("Set program id to " + program.getProgramId());
+            logger.info("Current program id to "
+                    + this.getCurrentProgram().getProgramId());
+            logger.info("GL Current program id "
+                    + GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM));
+            throw new GLException("Unable to set program id "
+                    + program.getProgramId() + " as current");
+        }
         return program;
     }
 

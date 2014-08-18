@@ -182,7 +182,14 @@ public class GLProgram {
     public void setUniform1i(final String uniformName, int value)
             throws GLException {
         int uniformLocation = this.getUniformLocation(uniformName);
-        this.setUniform1i(uniformLocation, value);
+        if (uniformLocation < 0) {
+            logger.error("uniform variable '" + uniformName
+                    + "' has invalid location " + uniformLocation
+                    + " in program '" + this.getName() + "'");
+            Thread.dumpStack();
+        } else {
+            this.setUniform1i(uniformLocation, value);
+        }
     }
 
     /**

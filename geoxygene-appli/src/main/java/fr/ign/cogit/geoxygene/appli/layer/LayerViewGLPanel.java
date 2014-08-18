@@ -594,6 +594,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String m12ModelToViewMatrixUniformVarName = "m12";
     public static final String screenWidthUniformVarName = "screenWidth";
     public static final String screenHeightUniformVarName = "screenHeight";
+    public static final String fboWidthUniformVarName = "fboWidth";
+    public static final String fboHeightUniformVarName = "fboHeight";
     public static final String globalOpacityUniformVarName = "globalOpacity";
     public static final String objectOpacityUniformVarName = "objectOpacity";
     public static final String colorTexture1UniformVarName = "colorTexture1";
@@ -740,63 +742,65 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private static GLProgram createPaintProgram(int basicVertexShader,
             int basicFragmentShader) throws GLException {
         // basic program
-        GLProgram paintProgram = new GLProgram(linePaintingProgramName);
-        paintProgram.setVertexShader(basicVertexShader);
-        paintProgram.setFragmentShader(basicFragmentShader);
-        paintProgram.addInputLocation(
+        GLProgram program = new GLProgram(linePaintingProgramName);
+        program.setVertexShader(basicVertexShader);
+        program.setFragmentShader(basicFragmentShader);
+        program.addInputLocation(
                 GLPaintingVertex.vertexPositionVariableName,
                 GLPaintingVertex.vertexPositionLocation);
-        paintProgram.addInputLocation(GLPaintingVertex.vertexUVVariableName,
+        program.addInputLocation(GLPaintingVertex.vertexUVVariableName,
                 GLPaintingVertex.vertexUVLocation);
-        paintProgram.addInputLocation(
+        program.addInputLocation(
                 GLPaintingVertex.vertexNormalVariableName,
                 GLPaintingVertex.vertexNormalLocation);
-        paintProgram.addInputLocation(
+        program.addInputLocation(
                 GLPaintingVertex.vertexCurvatureVariableName,
                 GLPaintingVertex.vertexCurvatureLocation);
-        paintProgram.addInputLocation(
+        program.addInputLocation(
                 GLPaintingVertex.vertexThicknessVariableName,
                 GLPaintingVertex.vertexThicknessLocation);
-        paintProgram.addInputLocation(GLPaintingVertex.vertexColorVariableName,
+        program.addInputLocation(GLPaintingVertex.vertexColorVariableName,
                 GLPaintingVertex.vertexColorLocation);
-        paintProgram.addInputLocation(GLPaintingVertex.vertexMaxUVariableName,
+        program.addInputLocation(GLPaintingVertex.vertexMaxUVariableName,
                 GLPaintingVertex.vertexMaxULocation);
-        paintProgram.addInputLocation(
+        program.addInputLocation(
                 GLPaintingVertex.vertexPaperUVVariableName,
                 GLPaintingVertex.vertexPaperUVLocation);
-        paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
-        paintProgram.addUniform(m02ModelToViewMatrixUniformVarName);
-        paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
-        paintProgram.addUniform(m11ModelToViewMatrixUniformVarName);
-        paintProgram.addUniform(m12ModelToViewMatrixUniformVarName);
-        paintProgram.addUniform(screenWidthUniformVarName);
-        paintProgram.addUniform(screenHeightUniformVarName);
-        paintProgram.addUniform(paperTextureUniformVarName);
-        paintProgram.addUniform(brushTextureUniformVarName);
-        paintProgram.addUniform(brushWidthUniformVarName);
-        paintProgram.addUniform(brushHeightUniformVarName);
-        paintProgram.addUniform(brushStartWidthUniformVarName);
-        paintProgram.addUniform(brushEndWidthUniformVarName);
-        paintProgram.addUniform(brushScaleUniformVarName);
-        paintProgram.addUniform(paperScaleUniformVarName);
-        paintProgram.addUniform(paperDensityUniformVarName);
-        paintProgram.addUniform(brushDensityUniformVarName);
-        paintProgram.addUniform(strokePressureUniformVarName);
-        paintProgram.addUniform(sharpnessUniformVarName);
-        paintProgram.addUniform(strokePressureVariationAmplitudeUniformVarName);
-        paintProgram
+        program.addUniform(m00ModelToViewMatrixUniformVarName);
+        program.addUniform(m02ModelToViewMatrixUniformVarName);
+        program.addUniform(m00ModelToViewMatrixUniformVarName);
+        program.addUniform(m11ModelToViewMatrixUniformVarName);
+        program.addUniform(m12ModelToViewMatrixUniformVarName);
+        program.addUniform(screenWidthUniformVarName);
+        program.addUniform(screenHeightUniformVarName);
+        program.addUniform(fboWidthUniformVarName);
+        program.addUniform(fboHeightUniformVarName);
+        program.addUniform(paperTextureUniformVarName);
+        program.addUniform(brushTextureUniformVarName);
+        program.addUniform(brushWidthUniformVarName);
+        program.addUniform(brushHeightUniformVarName);
+        program.addUniform(brushStartWidthUniformVarName);
+        program.addUniform(brushEndWidthUniformVarName);
+        program.addUniform(brushScaleUniformVarName);
+        program.addUniform(paperScaleUniformVarName);
+        program.addUniform(paperDensityUniformVarName);
+        program.addUniform(brushDensityUniformVarName);
+        program.addUniform(strokePressureUniformVarName);
+        program.addUniform(sharpnessUniformVarName);
+        program.addUniform(strokePressureVariationAmplitudeUniformVarName);
+        program
                 .addUniform(strokePressureVariationWavelengthUniformVarName);
-        paintProgram.addUniform(strokeShiftVariationAmplitudeUniformVarName);
-        paintProgram.addUniform(strokeShiftVariationWavelengthUniformVarName);
-        paintProgram
+        program.addUniform(strokeShiftVariationAmplitudeUniformVarName);
+        program.addUniform(strokeShiftVariationWavelengthUniformVarName);
+        program
                 .addUniform(strokeThicknessVariationAmplitudeUniformVarName);
-        paintProgram
+        program
                 .addUniform(strokeThicknessVariationWavelengthUniformVarName);
-        paintProgram.addUniform(globalOpacityUniformVarName);
-        paintProgram.addUniform(objectOpacityUniformVarName);
-        paintProgram.addUniform(textureScaleFactorUniformVarName);
+        program.addUniform(globalOpacityUniformVarName);
+        program.addUniform(objectOpacityUniformVarName);
+        program.addUniform(textureScaleFactorUniformVarName);
 
-        return paintProgram;
+        return program;
     }
 
     /**
@@ -805,50 +809,52 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private static GLProgram createBezierProgram(int basicVertexShader,
             int basicFragmentShader) throws GLException {
         // basic program
-        GLProgram paintProgram = new GLProgram(bezierLineProgramName);
-        paintProgram.setVertexShader(basicVertexShader);
-        paintProgram.setFragmentShader(basicFragmentShader);
-        paintProgram.addInputLocation(
+        GLProgram program = new GLProgram(bezierLineProgramName);
+        program.setVertexShader(basicVertexShader);
+        program.setFragmentShader(basicFragmentShader);
+        program.addInputLocation(
                 GLBezierShadingVertex.vertexPositionVariableName,
                 GLBezierShadingVertex.vertexPositionLocation);
-        paintProgram.addInputLocation(
+        program.addInputLocation(
                 GLBezierShadingVertex.vertexUVVariableName,
                 GLBezierShadingVertex.vertexUVLocation);
-        paintProgram.addInputLocation(
+        program.addInputLocation(
                 GLBezierShadingVertex.vertexColorVariableName,
                 GLBezierShadingVertex.vertexColorLocation);
-        paintProgram.addInputLocation(
+        program.addInputLocation(
                 GLBezierShadingVertex.vertexLineWidthVariableName,
                 GLBezierShadingVertex.vertexLineWidthLocation);
-        paintProgram.addInputLocation(
+        program.addInputLocation(
                 GLBezierShadingVertex.vertexMaxUVariableName,
                 GLBezierShadingVertex.vertexMaxULocation);
-        paintProgram.addInputLocation(
+        program.addInputLocation(
                 GLBezierShadingVertex.vertexP0VariableName,
                 GLBezierShadingVertex.vertexP0Location);
-        paintProgram.addInputLocation(
+        program.addInputLocation(
                 GLBezierShadingVertex.vertexP1VariableName,
                 GLBezierShadingVertex.vertexP1Location);
-        paintProgram.addInputLocation(
+        program.addInputLocation(
                 GLBezierShadingVertex.vertexP2VariableName,
                 GLBezierShadingVertex.vertexP2Location);
 
-        paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
-        paintProgram.addUniform(m02ModelToViewMatrixUniformVarName);
-        paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
-        paintProgram.addUniform(m11ModelToViewMatrixUniformVarName);
-        paintProgram.addUniform(m12ModelToViewMatrixUniformVarName);
-        paintProgram.addUniform(screenWidthUniformVarName);
-        paintProgram.addUniform(screenHeightUniformVarName);
-        paintProgram.addUniform(brushTextureUniformVarName);
-        paintProgram.addUniform(brushWidthUniformVarName);
-        paintProgram.addUniform(brushHeightUniformVarName);
-        paintProgram.addUniform(brushScaleUniformVarName);
-        paintProgram.addUniform(globalOpacityUniformVarName);
-        paintProgram.addUniform(objectOpacityUniformVarName);
-        paintProgram.addUniform(colorTexture1UniformVarName);
+        program.addUniform(m00ModelToViewMatrixUniformVarName);
+        program.addUniform(m02ModelToViewMatrixUniformVarName);
+        program.addUniform(m00ModelToViewMatrixUniformVarName);
+        program.addUniform(m11ModelToViewMatrixUniformVarName);
+        program.addUniform(m12ModelToViewMatrixUniformVarName);
+        program.addUniform(screenWidthUniformVarName);
+        program.addUniform(screenHeightUniformVarName);
+        program.addUniform(fboWidthUniformVarName);
+        program.addUniform(fboHeightUniformVarName);
+        program.addUniform(brushTextureUniformVarName);
+        program.addUniform(brushWidthUniformVarName);
+        program.addUniform(brushHeightUniformVarName);
+        program.addUniform(brushScaleUniformVarName);
+        program.addUniform(globalOpacityUniformVarName);
+        program.addUniform(objectOpacityUniformVarName);
+        program.addUniform(colorTexture1UniformVarName);
 
-        return paintProgram;
+        return program;
     }
 
     /**
@@ -980,6 +986,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         colorProgram.addUniform(m12ModelToViewMatrixUniformVarName);
         colorProgram.addUniform(screenWidthUniformVarName);
         colorProgram.addUniform(screenHeightUniformVarName);
+        colorProgram.addUniform(fboWidthUniformVarName);
+        colorProgram.addUniform(fboHeightUniformVarName);
         colorProgram.addUniform(globalOpacityUniformVarName);
         colorProgram.addUniform(objectOpacityUniformVarName);
         colorProgram.addUniform(colorTexture1UniformVarName);
@@ -1014,6 +1022,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         textureProgram.addUniform(m12ModelToViewMatrixUniformVarName);
         textureProgram.addUniform(screenWidthUniformVarName);
         textureProgram.addUniform(screenHeightUniformVarName);
+        textureProgram.addUniform(fboWidthUniformVarName);
+        textureProgram.addUniform(fboHeightUniformVarName);
         textureProgram.addUniform(globalOpacityUniformVarName);
         textureProgram.addUniform(objectOpacityUniformVarName);
         textureProgram.addUniform(colorTexture1UniformVarName);

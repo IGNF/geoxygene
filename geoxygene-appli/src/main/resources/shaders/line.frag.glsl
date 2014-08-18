@@ -253,7 +253,7 @@ void main() {
 	float penetration = clamp( ph - (1-bh), -1, 1);
 	float f = 1 - smoothstep( 0.0-sharpness, 0.0+sharpness,  penetration );
 		
-	outColor = vec4( brushColor.rgb, fragmentColor.a * ( 1-f ) );
+	outColor = vec4( fragmentColor.rgb * brushColor.rgb, fragmentColor.a * ( 1-f ) );
 }
 
 

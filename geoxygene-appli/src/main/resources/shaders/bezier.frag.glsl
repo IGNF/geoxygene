@@ -15,6 +15,8 @@ uniform sampler2D colorTexture1;
 uniform float globalOpacity = 1;
 uniform float screenWidth;
 uniform float screenHeight;
+uniform float fboWidth;
+uniform float fboHeight;
 
 out vec4 outColor;
 
@@ -102,7 +104,7 @@ vec2 DistanceToQBSpline(in vec2 P0, in vec2 P1, in vec2 P2, in vec2 p)
 
 void main() {
 	
-	vec2 p = vec2( gl_FragCoord.x, gl_FragCoord.y );
+	vec2 p = vec2( gl_FragCoord.x , fboHeight - gl_FragCoord.y  );
 	
 	vec2 p0 = fragmentIn.p0screen;
 	vec2 p1 = fragmentIn.p1screen;
@@ -111,15 +113,16 @@ void main() {
 	vec2 uv = DistanceToQBSpline(p0, p1, p2, p);
 	
 	float lineSoftness = 1.0;
-	uv.x = ( fragmentIn.uv.x + uv.x ) / fragmentIn.uMax;
-	uv.y = ( 1 - uv.y / fragmentIn.lineWidth );
+//	uv.x = fragmentIn.uv.x / fragmentIn.uMax + uv.x / fragmentIn.uMax;
+	uv.x = fragmentIn.uv.x;
+	float screenRatio = fboWidth / screenWidth;
+	uv.y =  (2 - uv.y / fragmentIn.lineWidth / screenRatio) / 2;
 	if ( uv.y < 0 ) discard;
-	uv.y = uv.y / 2 + 0.5; // rescale from -1..+1 to 0..+1
 		 
 	vec4 tcolor = texture(colorTexture1, uv );
-	tcolor.r = 1;
+	//if (p0.y < 0 ) outColor = vec4( 1, 0 , 0, 1); else
+//	outColor = vec4( uv, 0, tcolor.a * globalOpacity );
 	outColor = vec4( tcolor.rgb, tcolor.a * globalOpacity );
-	
 }
 
 
