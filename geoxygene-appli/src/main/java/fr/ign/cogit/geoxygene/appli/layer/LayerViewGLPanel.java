@@ -745,26 +745,21 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         GLProgram program = new GLProgram(linePaintingProgramName);
         program.setVertexShader(basicVertexShader);
         program.setFragmentShader(basicFragmentShader);
-        program.addInputLocation(
-                GLPaintingVertex.vertexPositionVariableName,
+        program.addInputLocation(GLPaintingVertex.vertexPositionVariableName,
                 GLPaintingVertex.vertexPositionLocation);
         program.addInputLocation(GLPaintingVertex.vertexUVVariableName,
                 GLPaintingVertex.vertexUVLocation);
-        program.addInputLocation(
-                GLPaintingVertex.vertexNormalVariableName,
+        program.addInputLocation(GLPaintingVertex.vertexNormalVariableName,
                 GLPaintingVertex.vertexNormalLocation);
-        program.addInputLocation(
-                GLPaintingVertex.vertexCurvatureVariableName,
+        program.addInputLocation(GLPaintingVertex.vertexCurvatureVariableName,
                 GLPaintingVertex.vertexCurvatureLocation);
-        program.addInputLocation(
-                GLPaintingVertex.vertexThicknessVariableName,
+        program.addInputLocation(GLPaintingVertex.vertexThicknessVariableName,
                 GLPaintingVertex.vertexThicknessLocation);
         program.addInputLocation(GLPaintingVertex.vertexColorVariableName,
                 GLPaintingVertex.vertexColorLocation);
         program.addInputLocation(GLPaintingVertex.vertexMaxUVariableName,
                 GLPaintingVertex.vertexMaxULocation);
-        program.addInputLocation(
-                GLPaintingVertex.vertexPaperUVVariableName,
+        program.addInputLocation(GLPaintingVertex.vertexPaperUVVariableName,
                 GLPaintingVertex.vertexPaperUVLocation);
         program.addUniform(m00ModelToViewMatrixUniformVarName);
         program.addUniform(m02ModelToViewMatrixUniformVarName);
@@ -788,14 +783,11 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         program.addUniform(strokePressureUniformVarName);
         program.addUniform(sharpnessUniformVarName);
         program.addUniform(strokePressureVariationAmplitudeUniformVarName);
-        program
-                .addUniform(strokePressureVariationWavelengthUniformVarName);
+        program.addUniform(strokePressureVariationWavelengthUniformVarName);
         program.addUniform(strokeShiftVariationAmplitudeUniformVarName);
         program.addUniform(strokeShiftVariationWavelengthUniformVarName);
-        program
-                .addUniform(strokeThicknessVariationAmplitudeUniformVarName);
-        program
-                .addUniform(strokeThicknessVariationWavelengthUniformVarName);
+        program.addUniform(strokeThicknessVariationAmplitudeUniformVarName);
+        program.addUniform(strokeThicknessVariationWavelengthUniformVarName);
         program.addUniform(globalOpacityUniformVarName);
         program.addUniform(objectOpacityUniformVarName);
         program.addUniform(textureScaleFactorUniformVarName);
@@ -815,27 +807,25 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         program.addInputLocation(
                 GLBezierShadingVertex.vertexPositionVariableName,
                 GLBezierShadingVertex.vertexPositionLocation);
-        program.addInputLocation(
-                GLBezierShadingVertex.vertexUVVariableName,
-                GLBezierShadingVertex.vertexUVLocation);
-        program.addInputLocation(
-                GLBezierShadingVertex.vertexColorVariableName,
+        program.addInputLocation(GLBezierShadingVertex.vertexUsVariableName,
+                GLBezierShadingVertex.vertexUsLocation);
+        program.addInputLocation(GLBezierShadingVertex.vertexColorVariableName,
                 GLBezierShadingVertex.vertexColorLocation);
         program.addInputLocation(
                 GLBezierShadingVertex.vertexLineWidthVariableName,
                 GLBezierShadingVertex.vertexLineWidthLocation);
-        program.addInputLocation(
-                GLBezierShadingVertex.vertexMaxUVariableName,
+        program.addInputLocation(GLBezierShadingVertex.vertexMaxUVariableName,
                 GLBezierShadingVertex.vertexMaxULocation);
-        program.addInputLocation(
-                GLBezierShadingVertex.vertexP0VariableName,
+        program.addInputLocation(GLBezierShadingVertex.vertexP0VariableName,
                 GLBezierShadingVertex.vertexP0Location);
-        program.addInputLocation(
-                GLBezierShadingVertex.vertexP1VariableName,
+        program.addInputLocation(GLBezierShadingVertex.vertexP1VariableName,
                 GLBezierShadingVertex.vertexP1Location);
-        program.addInputLocation(
-                GLBezierShadingVertex.vertexP2VariableName,
+        program.addInputLocation(GLBezierShadingVertex.vertexP2VariableName,
                 GLBezierShadingVertex.vertexP2Location);
+        program.addInputLocation(GLBezierShadingVertex.vertexN0VariableName,
+                GLBezierShadingVertex.vertexN0Location);
+        program.addInputLocation(GLBezierShadingVertex.vertexN2VariableName,
+                GLBezierShadingVertex.vertexN2Location);
 
         program.addUniform(m00ModelToViewMatrixUniformVarName);
         program.addUniform(m02ModelToViewMatrixUniformVarName);

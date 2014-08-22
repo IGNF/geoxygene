@@ -96,8 +96,8 @@ public class GLBezierShadingComplex extends
         this.addInput(GLBezierShadingVertex.vertexPositionVariableName,
                 GLBezierShadingVertex.vertexPositionLocation, GL11.GL_FLOAT, 2,
                 false);
-        this.addInput(GLBezierShadingVertex.vertexUVVariableName,
-                GLBezierShadingVertex.vertexUVLocation, GL11.GL_FLOAT, 2, false);
+        this.addInput(GLBezierShadingVertex.vertexUsVariableName,
+                GLBezierShadingVertex.vertexUsLocation, GL11.GL_FLOAT, 2, false);
         this.addInput(GLBezierShadingVertex.vertexColorVariableName,
                 GLBezierShadingVertex.vertexColorLocation, GL11.GL_FLOAT, 4,
                 false);
@@ -113,6 +113,10 @@ public class GLBezierShadingComplex extends
                 GLBezierShadingVertex.vertexP1Location, GL11.GL_FLOAT, 2, false);
         this.addInput(GLBezierShadingVertex.vertexP2VariableName,
                 GLBezierShadingVertex.vertexP2Location, GL11.GL_FLOAT, 2, false);
+        this.addInput(GLBezierShadingVertex.vertexN0VariableName,
+                GLBezierShadingVertex.vertexN0Location, GL11.GL_FLOAT, 2, false);
+        this.addInput(GLBezierShadingVertex.vertexN2VariableName,
+                GLBezierShadingVertex.vertexN2Location, GL11.GL_FLOAT, 2, false);
     }
 
     /**
@@ -138,6 +142,7 @@ public class GLBezierShadingComplex extends
     /**
      * @return the opacity for that entire complex
      */
+    @Override
     public double getOverallOpacity() {
         return this.overallOpacity;
     }
@@ -180,13 +185,15 @@ public class GLBezierShadingComplex extends
                             * this.getStride() / (Float.SIZE / 8));
             for (GLBezierShadingVertex vertex : this.getVertices()) {
                 this.verticesBuffer.put(vertex.getXY());
-                this.verticesBuffer.put(vertex.getUV());
+                this.verticesBuffer.put(vertex.getUs());
                 this.verticesBuffer.put(vertex.getColor());
                 this.verticesBuffer.put(vertex.getLineWidth());
                 this.verticesBuffer.put(vertex.getMaxU());
                 this.verticesBuffer.put(vertex.getP0());
                 this.verticesBuffer.put(vertex.getP1());
                 this.verticesBuffer.put(vertex.getP2());
+                this.verticesBuffer.put(vertex.getN0());
+                this.verticesBuffer.put(vertex.getN2());
             }
             this.verticesBuffer.flip();
 

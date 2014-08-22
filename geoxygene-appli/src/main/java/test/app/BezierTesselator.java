@@ -228,7 +228,7 @@ public class BezierTesselator {
 
                 GLMesh mesh = this.complex.addGLMesh(GL11.GL_TRIANGLES);
                 float outputU = this.createSegment(mesh, inputLow, inputHigh,
-                        uParams[0], this.polyline[0], edges, normals, uParams,
+                        uParams[0], this.polyline, edges, normals, uParams,
                         uMax, -1, 0, 1, outputLow, outputHigh);
                 VectorUtil.copy(inputLow, outputLow);
                 VectorUtil.copy(inputHigh, outputHigh);
@@ -246,9 +246,8 @@ public class BezierTesselator {
 
                     outputU = this
                             .createSegment(mesh, inputLow, inputHigh, outputU,
-                                    this.polyline[currentEdgeAndPointIndex],
-                                    edges, normals, uParams, uMax,
-                                    currentEdgeAndPointIndex - 1,
+                                    this.polyline, edges, normals, uParams,
+                                    uMax, currentEdgeAndPointIndex - 1,
                                     currentEdgeAndPointIndex,
                                     currentEdgeAndPointIndex + 1, outputLow,
                                     outputHigh);
@@ -258,9 +257,8 @@ public class BezierTesselator {
                     currentEdgeAndPointIndex++;
                 }
                 this.createSegment(mesh, inputLow, inputHigh, outputU,
-                        this.polyline[pointCount - 2], edges, normals, uParams,
-                        uMax, edgeCount - 2, edgeCount - 1, -1, outputLow,
-                        outputHigh);
+                        this.polyline, edges, normals, uParams, uMax,
+                        edgeCount - 2, edgeCount - 1, -1, outputLow, outputHigh);
 
                 this.setState(TaskState.FINALIZING);
                 this.colorizer.finalizeColorization();
@@ -273,10 +271,11 @@ public class BezierTesselator {
         }
 
         private float createSegment(GLMesh mesh, Point2d inputLow,
-                Point2d inputHigh, float u0, Point2d p0, Point2d[] edges,
+                Point2d inputHigh, float u0, Point2d[] points, Point2d[] edges,
                 Point2d[] normals, float[] uParams, float uMax,
                 int previousIndex, int currentIndex, int nextIndex,
                 Point2d outputLow, Point2d outputHigh) {
+            Point2d p0 = points[currentIndex];
             Point2d previousEdge = null;
             Point2d currentEdge = edges[currentIndex];
             Point2d nextEdge = null;
@@ -301,36 +300,55 @@ public class BezierTesselator {
                         currentNormal, uMax, u0, u1, outputLow, outputHigh);
                 return u1;
             }
-
             if (nextEdge != null) {
-                Point2d p1 = new Point2d(p0.x + currentEdge.x, p0.y
-                        + currentEdge.y);
+                Point2d pA = null;
+                double uA = 0;
+                Point2d p1 = points[nextIndex];
                 double currentLength = VectorUtil.length(currentEdge);
-                double nextLength = VectorUtil.length(nextEdge);
-                if (currentLength > this.transitionSize + EPSILON
-                        && nextLength > this.transitionSize * 2 + EPSILON) {
+                if (currentLength > this.transitionSize * 2 + EPSILON) {
                     double factorA = (currentLength - this.transitionSize)
-                            / VectorUtil.length(currentEdge);
-                    double factorB = this.transitionSize
-                            / VectorUtil.length(nextEdge);
-                    Point2d pA = new Point2d(p0.x + factorA * currentEdge.x,
-                            p0.y + factorA * currentEdge.y);
-                    Point2d pB = new Point2d(p1.x + factorB * nextEdge.x, p1.y
-                            + factorB * nextEdge.y);
-                    double uA = u0 + (currentLength - this.transitionSize);
-                    double uB = u1 + this.transitionSize;
+                            / currentLength;
+                    pA = new Point2d(p0.x + factorA * currentEdge.x, p0.y
+                            + factorA * currentEdge.y);
+                    uA = u0 + (u1 - u0) * factorA;
                     this.createStraightSegment(mesh, inputLow, inputHigh, pA,
                             currentNormal, uMax, u0, uA, outputLow, outputHigh);
-                    this.createBezierTurn(mesh, pA, pB, edges, normals, uA, uB,
-                            uMax, currentIndex, nextIndex, outputLow,
-                            outputHigh);
-                    return (float) uB;
                 } else {
-                    this.createAngularSegment(mesh, inputLow, inputHigh, p1,
-                            edges, normals, uParams, uMax, currentIndex,
-                            nextIndex, outputLow, outputHigh);
-                    return uParams[nextIndex];
+                    double factorA = 0.5;
+                    pA = new Point2d(p0.x + factorA * currentEdge.x, p0.y
+                            + factorA * currentEdge.y);
+                    uA = u0 + (u1 - u0) * factorA;
                 }
+
+                // create a bezier transition
+                float u2 = uParams[currentIndex + 2];
+                double nextLength = VectorUtil.length(nextEdge);
+                double factorB = (nextLength < this.transitionSize * 2
+                        + EPSILON) ? 0.5 : this.transitionSize / nextLength;
+                double uB = u1 + (u2 - u1) * factorB;
+                Point2d pB = new Point2d(p1.x + factorB * nextEdge.x, p1.y
+                        + factorB * nextEdge.y);
+
+                this.createBezierTurn(mesh, pA, pB, edges, normals, uA, uB,
+                        uMax, currentIndex, nextIndex, outputLow, outputHigh);
+                return (float) uB;
+                // double factorA = (currentLength - this.transitionSize)
+                // / VectorUtil.length(currentEdge);
+                // double factorB = this.transitionSize
+                // / VectorUtil.length(nextEdge);
+                // Point2d pA = new Point2d(p0.x + factorA * currentEdge.x,
+                // p0.y + factorA * currentEdge.y);
+                // Point2d pB = new Point2d(p1.x + factorB * nextEdge.x, p1.y
+                // + factorB * nextEdge.y);
+                // double uA = u0 + (u1 - u0) * factorA;
+                // double uB = u1 + (u2 - u1) * factorB;
+                // this.createStraightSegment(mesh, inputLow, inputHigh, pA,
+                // currentNormal, uMax, u0, uA, outputLow, outputHigh);
+                // this.createBezierTurn(mesh, pA, pB, edges, normals, uA, uB,
+                // uMax, currentIndex, nextIndex, outputLow,
+                // outputHigh);
+                // return (float) uB;
+                // }
 
             }
 
@@ -426,59 +444,87 @@ public class BezierTesselator {
             F.x = centerHigh.x;
             F.y = centerHigh.y;
             VectorUtil.copy(G, p0high);
-
-            Point2d uv = new Point2d(u0, 0);
+            Point2d I = new Point2d();
+            boolean selfIntersect = VectorUtil.segmentIntersection(I, A, G, D,
+                    E) != null;
+            Point2d uv = new Point2d(u0, u2);
             Color col = this.colorizer.getColor(uv.x, uv.y);
             GLBezierShadingVertex vertexA = new GLBezierShadingVertex(A, uv,
-                    col, (float) this.lineWidth, uMax, p0, p1, p2);
+                    col, (float) this.lineWidth, uMax, p0, p1, p2, n0, n2);
             int aIndex = this.complex.addVertex(vertexA);
-            uv = new Point2d((u0 + (u2 - u0) / 3), 0);
+            // uv = new Point2d((u0 + (u2 - u0) / 3), 0);
             col = this.colorizer.getColor(uv.x, uv.y);
             GLBezierShadingVertex vertexB = new GLBezierShadingVertex(B, uv,
-                    col, (float) this.lineWidth, uMax, p0, p1, p2);
+                    col, (float) this.lineWidth, uMax, p0, p1, p2, n0, n2);
             int bIndex = this.complex.addVertex(vertexB);
 
-            uv = new Point2d((u0 + 2 * (u2 - u0) / 3), 0);
+            // uv = new Point2d((u0 + 2 * (u2 - u0) / 3), 0);
             col = this.colorizer.getColor(uv.x, uv.y);
             GLBezierShadingVertex vertexC = new GLBezierShadingVertex(C, uv,
-                    col, (float) this.lineWidth, uMax, p0, p1, p2);
+                    col, (float) this.lineWidth, uMax, p0, p1, p2, n0, n2);
             int cIndex = this.complex.addVertex(vertexC);
 
-            uv = new Point2d(u2, 0);
+            // uv = new Point2d(u2, 0);
             col = this.colorizer.getColor(uv.x, uv.y);
             GLBezierShadingVertex vertexD = new GLBezierShadingVertex(D, uv,
-                    col, (float) this.lineWidth, uMax, p0, p1, p2);
+                    col, (float) this.lineWidth, uMax, p0, p1, p2, n0, n2);
             int dIndex = this.complex.addVertex(vertexD);
 
-            uv = new Point2d(u2, 1);
-            col = this.colorizer.getColor(uv.x, uv.y);
-            GLBezierShadingVertex vertexE = new GLBezierShadingVertex(E, uv,
-                    col, (float) this.lineWidth, uMax, p0, p1, p2);
-            int eIndex = this.complex.addVertex(vertexE);
+            selfIntersect = false;
 
-            uv = new Point2d((u0 + u2) / 2., 1);
-            col = this.colorizer.getColor(uv.x, uv.y);
-            GLBezierShadingVertex vertexF = new GLBezierShadingVertex(F, uv,
-                    col, (float) this.lineWidth, uMax, p0, p1, p2);
-            int fIndex = this.complex.addVertex(vertexF);
+            if (selfIntersect) {
+                // self intersection
+                // uv = new Point2d(u2, 1);
+                col = this.colorizer.getColor(uv.x, uv.y);
+                GLBezierShadingVertex vertexI = new GLBezierShadingVertex(I,
+                        uv, col, (float) this.lineWidth, uMax, p0, p1, p2, n0,
+                        n2);
+                int iIndex = this.complex.addVertex(vertexI);
 
-            uv = new Point2d(u0, 1);
-            col = this.colorizer.getColor(uv.x, uv.y);
-            GLBezierShadingVertex vertexG = new GLBezierShadingVertex(G, uv,
-                    col, (float) this.lineWidth, uMax, p0, p1, p2);
-            int gIndex = this.complex.addVertex(vertexG);
-
-            mesh.addIndices(aIndex, bIndex, gIndex);
-            mesh.addIndices(gIndex, bIndex, fIndex);
-            mesh.addIndices(fIndex, bIndex, cIndex);
-            mesh.addIndices(fIndex, cIndex, eIndex);
-            mesh.addIndices(eIndex, cIndex, dIndex);
-            if (sign < 0) {
-                VectorUtil.copy(outputLow, D);
-                VectorUtil.copy(outputHigh, E);
+                mesh.addIndices(aIndex, bIndex, iIndex);
+                mesh.addIndices(bIndex, cIndex, iIndex);
+                mesh.addIndices(cIndex, dIndex, iIndex);
+                if (sign < 0) {
+                    VectorUtil.copy(outputLow, D);
+                    VectorUtil.copy(outputHigh, I);
+                } else {
+                    VectorUtil.copy(outputLow, I);
+                    VectorUtil.copy(outputHigh, D);
+                }
             } else {
-                VectorUtil.copy(outputLow, E);
-                VectorUtil.copy(outputHigh, D);
+                // uv = new Point2d(u2, 1);
+                col = this.colorizer.getColor(uv.x, uv.y);
+                GLBezierShadingVertex vertexE = new GLBezierShadingVertex(E,
+                        uv, col, (float) this.lineWidth, uMax, p0, p1, p2, n0,
+                        n2);
+                int eIndex = this.complex.addVertex(vertexE);
+
+                // uv = new Point2d((u0 + u2) / 2., 1);
+                col = this.colorizer.getColor(uv.x, uv.y);
+                GLBezierShadingVertex vertexF = new GLBezierShadingVertex(F,
+                        uv, col, (float) this.lineWidth, uMax, p0, p1, p2, n0,
+                        n2);
+                int fIndex = this.complex.addVertex(vertexF);
+
+                // uv = new Point2d(u0, 1);
+                col = this.colorizer.getColor(uv.x, uv.y);
+                GLBezierShadingVertex vertexG = new GLBezierShadingVertex(G,
+                        uv, col, (float) this.lineWidth, uMax, p0, p1, p2, n0,
+                        n2);
+                int gIndex = this.complex.addVertex(vertexG);
+
+                mesh.addIndices(aIndex, bIndex, gIndex);
+                mesh.addIndices(gIndex, bIndex, fIndex);
+                mesh.addIndices(fIndex, bIndex, cIndex);
+                mesh.addIndices(fIndex, cIndex, eIndex);
+                mesh.addIndices(eIndex, cIndex, dIndex);
+                if (sign < 0) {
+                    VectorUtil.copy(outputLow, D);
+                    VectorUtil.copy(outputHigh, E);
+                } else {
+                    VectorUtil.copy(outputLow, E);
+                    VectorUtil.copy(outputHigh, D);
+                }
             }
         }
 
@@ -547,26 +593,27 @@ public class BezierTesselator {
             Point2d bezier0 = new Point2d(p0.x, p0.y);
             Point2d bezier1 = new Point2d((p0.x + p1.x) / 2, (p0.y + p1.y) / 2);
             Point2d bezier2 = new Point2d(p1.x, p1.y);
-            Point2d uv = new Point2d(u0, 0);
-            Color c = this.colorizer.getColor(uv.x, uv.y);
+            Point2d n0 = new Point2d(p0low.x - p0.x, p0low.y - p0.y);
+            Point2d n2 = new Point2d(p1low.x - p1.x, p1low.y - p1.y);
+            VectorUtil.normalize(n0, n0);
+            VectorUtil.normalize(n2, n2);
+            Point2d us = new Point2d(u0, u1);
+            Color c = this.colorizer.getColor(us.x, 0);
             GLBezierShadingVertex vertex0low = new GLBezierShadingVertex(p0low,
-                    uv, c, (float) this.lineWidth, uMax, bezier0, bezier1,
-                    bezier2);
-            uv = new Point2d(u0, 1);
-            c = this.colorizer.getColor(uv.x, uv.y);
+                    us, c, (float) this.lineWidth, uMax, bezier0, bezier1,
+                    bezier2, n0, n2);
+            c = this.colorizer.getColor(us.x, 1);
             GLBezierShadingVertex vertex0high = new GLBezierShadingVertex(
-                    p0high, uv, c, (float) this.lineWidth, uMax, bezier0,
-                    bezier1, bezier2);
-            uv = new Point2d(u1, 0);
-            c = this.colorizer.getColor(uv.x, uv.y);
+                    p0high, us, c, (float) this.lineWidth, uMax, bezier0,
+                    bezier1, bezier2, n0, n2);
+            c = this.colorizer.getColor(us.y, 1);
             GLBezierShadingVertex vertex1low = new GLBezierShadingVertex(p1low,
-                    uv, c, (float) this.lineWidth, uMax, bezier0, bezier1,
-                    bezier2);
-            uv = new Point2d(u1, 1);
-            c = this.colorizer.getColor(uv.x, uv.y);
+                    us, c, (float) this.lineWidth, uMax, bezier0, bezier1,
+                    bezier2, n0, n2);
+            c = this.colorizer.getColor(us.y, 0);
             GLBezierShadingVertex vertex1high = new GLBezierShadingVertex(
-                    p1high, uv, c, (float) this.lineWidth, uMax, bezier0,
-                    bezier1, bezier2);
+                    p1high, us, c, (float) this.lineWidth, uMax, bezier0,
+                    bezier1, bezier2, n0, n2);
             int p0lowIndex = this.complex.addVertex(vertex0low);
             int p0highIndex = this.complex.addVertex(vertex0high);
             int p1lowIndex = this.complex.addVertex(vertex1low);

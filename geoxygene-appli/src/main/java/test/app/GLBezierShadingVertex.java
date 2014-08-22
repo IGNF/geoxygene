@@ -41,42 +41,50 @@ import fr.ign.cogit.geoxygene.util.gl.GLVertex;
 public class GLBezierShadingVertex implements GLVertex {
 
     public float[] xy = { 0f, 0f };
-    public float[] uv = { 0f, 0f };
+    public float[] us = { 0f, 0f };
     public float[] color = { 0f, 0f, 0f, 0f };
     private float lineWidth = 0;
     public float maxU = 0f;
     public float[] p0 = { 0f, 0f };
     public float[] p1 = { 0f, 0f };
     public float[] p2 = { 0f, 0f };
+    public float[] n0 = { 0f, 0f };
+    public float[] n2 = { 0f, 0f };
 
     public static final int vertexPositionLocation = 0;
-    public static final int vertexUVLocation = 1;
+    public static final int vertexUsLocation = 1;
     public static final int vertexColorLocation = 2;
     public static final int vertexLineWidthLocation = 3;
     public static final int vertexMaxULocation = 4;
     public static final int vertexP0Location = 5;
     public static final int vertexP1Location = 6;
     public static final int vertexP2Location = 7;
+    public static final int vertexN0Location = 8;
+    public static final int vertexN2Location = 9;
     public static final String vertexPositionVariableName = "vertexPosition";
-    public static final String vertexUVVariableName = "vertexUV";
+    public static final String vertexUsVariableName = "vertexUs";
     public static final String vertexColorVariableName = "vertexColor";
     public static final String vertexLineWidthVariableName = "lineWidth";
     public static final String vertexMaxUVariableName = "uMax";
     public static final String vertexP0VariableName = "p0";
     public static final String vertexP1VariableName = "p1";
     public static final String vertexP2VariableName = "p2";
+    public static final String vertexN0VariableName = "n0";
+    public static final String vertexN2VariableName = "n2";
 
     @Override
     public GLBezierShadingVertex clone() {
         GLBezierShadingVertex vertex = new GLBezierShadingVertex();
         vertex.setXY(this.getXY());
-        vertex.setUV(this.getUV());
+        vertex.setUs(this.getUs());
         vertex.setLineWidth(this.getLineWidth());
         vertex.setColor(this.getColor());
         vertex.setMaxU(this.getMaxU());
         vertex.setP0(this.getP0());
         vertex.setP1(this.getP1());
         vertex.setP2(this.getP2());
+        vertex.setN0(this.getN0());
+        vertex.setN2(this.getN2());
         return vertex;
     }
 
@@ -86,27 +94,32 @@ public class GLBezierShadingVertex implements GLVertex {
     public GLBezierShadingVertex() {
     }
 
-    public GLBezierShadingVertex(float x, float y, float u, float v, float r,
+    public GLBezierShadingVertex(float x, float y, float u0, float u2, float r,
             float g, float b, float a, float curvature, float maxU, float p0x,
-            float p0y, float p1x, float p1y, float p2x, float p2y) {
+            float p0y, float p1x, float p1y, float p2x, float p2y, float n0x,
+            float n0y, float n2x, float n2y) {
         this();
         this.setXY(x, y);
-        this.setUV(u, v);
+        this.setUs(u0, u2);
         this.setColor(r, g, b, a);
         this.setLineWidth(curvature);
         this.setMaxU(maxU);
         this.setP0(p0x, p0y);
         this.setP1(p1x, p1y);
         this.setP2(p2x, p2y);
+        this.setN0(n0x, n0y);
+        this.setN2(n2x, n2y);
     }
 
-    public GLBezierShadingVertex(Point2d p, Point2d uv, Color c,
-            float curvature, float maxU, Point2d p0, Point2d p1, Point2d p2) {
-        this((float) p.x, (float) p.y, (float) uv.x, (float) uv.y,
+    public GLBezierShadingVertex(Point2d p, Point2d us, Color c,
+            float curvature, float maxU, Point2d p0, Point2d p1, Point2d p2,
+            Point2d n0, Point2d n2) {
+        this((float) p.x, (float) p.y, (float) us.x, (float) us.y,
                 c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f, c
                         .getAlpha() / 255f, curvature, maxU, (float) p0.x,
                 (float) p0.y, (float) p1.x, (float) p1.y, (float) p2.x,
-                (float) p2.y);
+                (float) p2.y, (float) n0.x, (float) n0.y, (float) n2.x,
+                (float) n2.y);
     }
 
     /**
@@ -141,12 +154,12 @@ public class GLBezierShadingVertex implements GLVertex {
     }
 
     /**
-     * @param xy
+     * @param f
      *            the xy to set
      */
-    public void setXY(float[] xy) {
-        this.xy[0] = xy[0];
-        this.xy[1] = xy[1];
+    public void setXY(float[] f) {
+        this.xy[0] = f[0];
+        this.xy[1] = f[1];
     }
 
     /**
@@ -157,12 +170,12 @@ public class GLBezierShadingVertex implements GLVertex {
     }
 
     /**
-     * @param p0
+     * @param f
      *            the p0 to set
      */
-    public void setP0(float[] p0) {
-        this.p0[0] = p0[0];
-        this.p0[1] = p0[1];
+    public void setP0(float[] f) {
+        this.p0[0] = f[0];
+        this.p0[1] = f[1];
     }
 
     /**
@@ -252,28 +265,96 @@ public class GLBezierShadingVertex implements GLVertex {
     }
 
     /**
+     * @return the p0
+     */
+    public float[] getN0() {
+        return this.n0;
+    }
+
+    /**
+     * @param p0
+     *            the p0 to set
+     */
+    public void setN0(float[] p) {
+        this.n0[0] = p[0];
+        this.n0[1] = p[1];
+    }
+
+    /**
+     * @param p0
+     *            the p0 to set
+     */
+    public void setN0(Point2d p) {
+        this.n0[0] = (float) p.x;
+        this.n0[1] = (float) p.y;
+    }
+
+    /**
+     * @param n2
+     *            the n2 to set
+     */
+    public void setN0(float n20, float n21) {
+        this.n0[0] = n20;
+        this.n0[1] = n21;
+    }
+
+    /**
+     * @return the p0
+     */
+    public float[] getN2() {
+        return this.n2;
+    }
+
+    /**
+     * @param p0
+     *            the p0 to set
+     */
+    public void setN2(float[] p) {
+        this.n2[0] = p[0];
+        this.n2[1] = p[1];
+    }
+
+    /**
+     * @param p0
+     *            the p0 to set
+     */
+    public void setN2(Point2d p) {
+        this.n2[0] = (float) p.x;
+        this.n2[1] = (float) p.y;
+    }
+
+    /**
+     * @param n2
+     *            the n2 to set
+     */
+    public void setN2(float n20, float n21) {
+        this.n2[0] = n20;
+        this.n2[1] = n21;
+    }
+
+    /**
      * @return the uv
      */
-    public float[] getUV() {
-        return this.uv;
+    public float[] getUs() {
+        return this.us;
     }
 
     /**
-     * @param uv
+     * @param us
      *            the uv to set
      */
-    public void setUV(float u, float v) {
-        this.uv[0] = u;
-        this.uv[1] = v;
+    public void setUs(float u, float v) {
+        this.us[0] = u;
+        this.us[1] = v;
     }
 
     /**
-     * @param uv
+     * @param us
      *            the uv to set
      */
-    public void setUV(float[] uv) {
-        this.uv[0] = this.uv[0];
-        this.uv[1] = this.uv[1];
+    public void setUs(float[] f) {
+        this.us[0] = f[0];
+        this.us[1] = f[1];
     }
 
     /**
@@ -328,7 +409,7 @@ public class GLBezierShadingVertex implements GLVertex {
     @Override
     public String toString() {
         return "GLBezierShadingVertex [xy=" + Arrays.toString(this.xy)
-                + ", uv=" + Arrays.toString(this.uv) + ", color="
+                + ", uv=" + Arrays.toString(this.us) + ", color="
                 + Arrays.toString(this.color) + ", width=" + this.lineWidth
                 + ", maxU=" + this.maxU + ", p0=" + Arrays.toString(this.p0)
                 + ", p1=" + Arrays.toString(this.p1) + ", p2="

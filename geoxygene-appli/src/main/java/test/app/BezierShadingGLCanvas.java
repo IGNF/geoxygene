@@ -571,8 +571,8 @@ public class BezierShadingGLCanvas extends AWTGLCanvas implements
                 GLBezierShadingVertex.vertexPositionVariableName,
                 GLBezierShadingVertex.vertexPositionLocation);
         paintProgram.addInputLocation(
-                GLBezierShadingVertex.vertexUVVariableName,
-                GLBezierShadingVertex.vertexUVLocation);
+                GLBezierShadingVertex.vertexUsVariableName,
+                GLBezierShadingVertex.vertexUsLocation);
         paintProgram.addInputLocation(
                 GLBezierShadingVertex.vertexColorVariableName,
                 GLBezierShadingVertex.vertexColorLocation);
@@ -591,6 +591,12 @@ public class BezierShadingGLCanvas extends AWTGLCanvas implements
         paintProgram.addInputLocation(
                 GLBezierShadingVertex.vertexP2VariableName,
                 GLBezierShadingVertex.vertexP2Location);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexN0VariableName,
+                GLBezierShadingVertex.vertexN0Location);
+        paintProgram.addInputLocation(
+                GLBezierShadingVertex.vertexN2VariableName,
+                GLBezierShadingVertex.vertexN2Location);
         paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);
         paintProgram.addUniform(m02ModelToViewMatrixUniformVarName);
         paintProgram.addUniform(m00ModelToViewMatrixUniformVarName);

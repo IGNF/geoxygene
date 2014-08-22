@@ -227,6 +227,38 @@ public final class VectorUtil {
         return result;
     }
 
+    /**
+     * Compute the intersection between two vectorial lines
+     * 
+     * @param result
+     * @param p0
+     *            line1 point
+     * @param e0
+     *            line1 direction
+     * @param p1
+     *            line2 point
+     * @param e1
+     *            line2 direction
+     * @return false if segments do not intersect. true if they do (result is
+     *         filled)
+     */
+    public static Point2d segmentIntersection(Point2d result, Point2d start0,
+            Point2d end0, Point2d start1, Point2d end1) {
+
+        double dx = start1.x - start0.x;
+        double dy = start1.y - start0.y;
+        double det = (end1.x - start1.x) * (end0.y - start0.y)
+                - (end1.y - start1.y) * (end0.x - start0.x);
+        double u = (dy * (end1.x - start1.x) - dx * (end1.y - start1.y)) / det;
+        // v = (dy * ad.x - dx * ad.y) / det
+        if (u < 0 || u > 1) {
+            return null;
+        }
+        result.x = start0.x * (1 - u) + u * end0.x;
+        result.y = start0.y * (1 - u) + u * end0.y;
+        return result;
+    }
+
     public static Point2d interpolate(Point2d result, Point2d p0, Point2d p1,
             double alpha) {
         result.x = p0.x * (1 - alpha) + alpha * p1.x;

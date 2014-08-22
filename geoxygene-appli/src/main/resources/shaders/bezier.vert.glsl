@@ -20,6 +20,8 @@ in float uMax;
 in vec2 p0;
 in vec2 p1;
 in vec2 p2;
+in vec2 n0;
+in vec2 n2;
 
 
 out VertexData {
@@ -30,6 +32,8 @@ out VertexData {
 	flat vec2 p0screen;
 	flat vec2 p1screen;
 	flat vec2 p2screen;
+	flat vec2 n0screen;
+	flat vec2 n2screen;
 } vertexOut;
 
 float screenRatio = fboWidth / screenWidth;
@@ -39,9 +43,14 @@ vec2 worldToScreen( vec2 p ) {
 	return vec2( -1 + 2 * (p.x * m00 + m02) / (screenWidth + 1), 1 - 2 * ( p.y * m11 + m12 ) / ( screenHeight + 1 ) );
 }
 
-// transform world coordinates to [0 1]
+// transform point world coordinates to [0 1]
 vec2 worldToIdentity( vec2 p ) {
 	return vec2( (p.x * m00 + m02) * screenRatio,  ( p.y * m11 + m12 ) * screenRatio );
+}
+
+// transform vector world coordinates to [0 1]
+vec2 worldToIdentityVector( vec2 p ) {
+	return vec2( (p.x * m00 ) * screenRatio,  ( p.y * m11 ) * screenRatio );
 }
 
 void main() {
@@ -54,4 +63,6 @@ void main() {
 	vertexOut.p0screen = worldToIdentity(p0);
 	vertexOut.p1screen = worldToIdentity(p1);
 	vertexOut.p2screen = worldToIdentity(p2);
+	vertexOut.n0screen = worldToIdentityVector(n0);
+	vertexOut.n2screen = worldToIdentityVector(n2);
 }

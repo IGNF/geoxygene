@@ -167,7 +167,7 @@ public class GLPaintingVertex implements GLVertex {
     }
 
     /**
-     * @param uv
+     * @param us
      *            the uv to set
      */
     public void setUV(float u, float v) {
