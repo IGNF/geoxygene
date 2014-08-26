@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
@@ -45,6 +46,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -75,6 +77,7 @@ import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.OsmFileFilter;
 import fr.ign.cogit.cartagen.spatialanalysis.clustering.AdjacencyClustering;
+import fr.ign.cogit.cartagen.util.LastSessionParameters;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.Criterion;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ClassificationResult;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ConclusionIntervals;
@@ -131,12 +134,26 @@ public class OSMPlugin implements ProjectFramePlugin,
 
   private GeOxygeneApplication application = null;
   private Runnable fillLayersTask;
+  private List<OSMFile> recentFiles;
+  private OSMLoader loader;
+  private JDialog dialog;
+  private JTextArea taskOutput;
+  private JProgressBar progressBar;
+  private JLabel taskLabel;
+  private OsmLoadingTask currentTask = OsmLoadingTask.POINTS;
+  private OpenStreetMapDb database;
 
   @Override
   public void initialize(GeOxygeneApplication application) {
     this.application = application;
+    loadRecentFiles();
     JMenu menu = new JMenu("OSM");
     menu.add(new JMenuItem(new ImportOSMFileAction()));
+    JMenu menuRecent = new JMenu("Import recent file");
+    for (OSMFile recentDoc : recentFiles) {
+      menuRecent.add(new JMenuItem(new ImportOSMNamedFileAction(recentDoc)));
+    }
+    menu.add(menuRecent);
     menu.addSeparator();
     menu.add(new JMenuItem(new BrowseTagsAction()));
     menu.addSeparator();
@@ -179,12 +196,6 @@ public class OSMPlugin implements ProjectFramePlugin,
 
     /****/
     private static final long serialVersionUID = 1L;
-    private JDialog dialog;
-    private JTextArea taskOutput;
-    private JProgressBar progressBar;
-    private JLabel taskLabel;
-    private OSMLoader loader;
-    private OsmLoadingTask currentTask = OsmLoadingTask.POINTS;
 
     public File osmFile;
     public String epsg;
@@ -208,12 +219,26 @@ public class OSMPlugin implements ProjectFramePlugin,
             }
           }
         }
-
+        try {
+          OSMFile file = new OSMFile(osmFile, epsg,
+              dialogImportOsmFrame.createPostGis(), tagFilter);
+          if (!recentFiles.contains(file))
+            recentFiles.add(0, file);
+          else {
+            recentFiles.remove(file);
+            recentFiles.add(0, file);
+          }
+          saveRecentFiles();
+        } catch (TransformerException e1) {
+          e1.printStackTrace();
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
         // build database & dataset
         CartAGenDoc.getInstance().setZone(new DataSetZone(name, null));
 
         // create the new CartAGen dataset
-        final OpenStreetMapDb database = new OpenStreetMapDb(name);
+        database = new OpenStreetMapDb(name);
         database.setSourceDLM(SourceDLM.OpenStreetMap);
         database.setSymboScale(25000);
         database.setDocument(CartAGenDoc.getInstance());
@@ -227,7 +252,7 @@ public class OSMPlugin implements ProjectFramePlugin,
           @Override
           public void run() {
             try {
-              addOsmDatabaseToFrame(database);
+              addOsmDatabaseToFrame();
             } catch (JAXBException e) {
               e.printStackTrace();
             }
@@ -237,7 +262,7 @@ public class OSMPlugin implements ProjectFramePlugin,
 
         loader = new OSMLoader(osmFile, dataset, fillLayersTask, epsg,
             tagFilter);
-        createDialog();
+        createProgressDialog();
         loader.setDialog(dialog);
         dialog.setVisible(true);
         application.getMainFrame().getGui()
@@ -262,34 +287,10 @@ public class OSMPlugin implements ProjectFramePlugin,
         taskOutput.append(String.format("Completed %d%% of task.\n",
             loader.getProgress()));
         if (!currentTask.equals(loader.getCurrentTask())) {
-          this.currentTask = loader.getCurrentTask();
+          currentTask = loader.getCurrentTask();
           taskLabel.setText(currentTask.getLabel() + " loading...");
         }
       }
-    }
-
-    private void createDialog() {
-      JPanel panel = new JPanel(new BorderLayout());
-
-      taskLabel = new JLabel(loader.getCurrentTask().getLabel() + " loading...");
-      progressBar = new JProgressBar(0, 100);
-      progressBar.setValue(0);
-      progressBar.setStringPainted(true);
-
-      taskOutput = new JTextArea(5, 20);
-      taskOutput.setMargin(new Insets(5, 5, 5, 5));
-      taskOutput.setEditable(false);
-
-      JPanel panel1 = new JPanel();
-      panel1.add(taskLabel);
-      panel1.add(progressBar);
-
-      panel.add(panel1, BorderLayout.PAGE_START);
-      panel.add(new JScrollPane(taskOutput), BorderLayout.CENTER);
-      panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-      dialog = new JDialog(application.getMainFrame().getGui());
-      dialog.add(panel);
-      dialog.pack();
     }
 
     class ImportOsmFileFrame extends JDialog implements ActionListener {
@@ -384,6 +385,7 @@ public class OSMPlugin implements ProjectFramePlugin,
         currentProjections.put("UTM 32N (Italie)", "32632");
         currentProjections.put("UTM 33N (Vienna)", "32633");
         currentProjections.put("UTM 35N (Ukraine)", "32635");
+        currentProjections.put("UTM 23S (Rio)", "32723");
         currentProjections.put("UTM 55S (Melbourne)", "32755");
         currentProjections.put("Gauss-Krueger zone 4 (East Germany)", "31468");
         this.setPreferredSize(new Dimension(350, 150));
@@ -500,6 +502,105 @@ public class OSMPlugin implements ProjectFramePlugin,
       this.putValue(Action.SHORT_DESCRIPTION,
           "Browse the OSM tags of the selected OSM features");
       this.putValue(Action.NAME, "Browse Tags");
+    }
+  }
+
+  /**
+   * @author GTouya
+   * 
+   */
+  class ImportOSMNamedFileAction extends AbstractAction implements
+      PropertyChangeListener {
+    private OSMFile file;
+    /**
+   * 
+   */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      CartAGenDoc doc = CartAGenDoc.getInstance();
+      String name = null;
+      if (doc.getName() == null) {
+        name = file.getFile().getName()
+            .substring(0, file.getFile().getName().length() - 4);
+        doc.setName(name);
+        if (file.isCreateDb()) {
+          try {
+            doc.setPostGisDb(PostgisDB.get(name, true));
+          } catch (Exception e) {
+            // do nothing
+          }
+        }
+      }
+      try {
+        if (!recentFiles.contains(file))
+          recentFiles.add(0, file);
+        else {
+          recentFiles.remove(file);
+          recentFiles.add(0, file);
+        }
+        saveRecentFiles();
+      } catch (TransformerException e1) {
+        e1.printStackTrace();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      }
+
+      // build database & dataset
+      CartAGenDoc.getInstance().setZone(new DataSetZone(name, null));
+
+      // create the new CartAGen dataset
+      database = new OpenStreetMapDb(name);
+      database.setSourceDLM(SourceDLM.OpenStreetMap);
+      database.setSymboScale(25000);
+      database.setDocument(CartAGenDoc.getInstance());
+      OsmDataset dataset = new OsmDataset();
+      CartAGenDoc.getInstance().addDatabase(name, database);
+      CartAGenDoc.getInstance().setCurrentDataset(dataset);
+      database.setDataSet(dataset);
+      database.setType(new DigitalCartographicModel());
+
+      fillLayersTask = new Runnable() {
+        @Override
+        public void run() {
+          try {
+            addOsmDatabaseToFrame();
+          } catch (JAXBException e) {
+            e.printStackTrace();
+          }
+          application.getMainFrame().getGui().setCursor(null);
+        }
+      };
+
+      loader = new OSMLoader(file.getFile(), dataset, fillLayersTask,
+          file.getEpsg(), file.getTagFilter());
+      createProgressDialog();
+      loader.setDialog(dialog);
+      dialog.setVisible(true);
+      application.getMainFrame().getGui()
+          .setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+      loader.addPropertyChangeListener(this);
+      loader.execute();
+    }
+
+    public ImportOSMNamedFileAction(OSMFile file) {
+      this.putValue(Action.NAME, file.getFile().getPath());
+      this.file = file;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+      if ("progress" == evt.getPropertyName()) {
+        int progress = (Integer) evt.getNewValue();
+        progressBar.setValue(progress);
+        taskOutput.append(String.format("Completed %d%% of task.\n",
+            loader.getProgress()));
+        if (!currentTask.equals(loader.getCurrentTask())) {
+          currentTask = loader.getCurrentTask();
+          taskLabel.setText(currentTask.getLabel() + " loading...");
+        }
+      }
     }
   }
 
@@ -1029,7 +1130,7 @@ public class OSMPlugin implements ProjectFramePlugin,
    * objects.
    * @param db
    */
-  public void addOsmDatabaseToFrame(OpenStreetMapDb db) throws JAXBException {
+  public void addOsmDatabaseToFrame() throws JAXBException {
     // s'il y a une seule project frame et qu'elle est vide, on la supprime
     if (application.getMainFrame().getDesktopProjectFrames().length == 1) {
       ProjectFrame frameIni = application.getMainFrame()
@@ -1039,17 +1140,17 @@ public class OSMPlugin implements ProjectFramePlugin,
       }
     }
     ProjectFrame frame = application.getMainFrame().newProjectFrame();
-    CartAGenPlugin.getInstance().getMapDbFrame().put(db.getName(), frame);
-    frame.getSld().setDataSet(db.getDataSet());
+    CartAGenPlugin.getInstance().getMapDbFrame().put(database.getName(), frame);
+    frame.getSld().setDataSet(database.getDataSet());
     frame.getLayerViewPanel().getRenderingManager().setHandlingDeletion(true);
     StyledLayerDescriptor defaultSld = compileOsmSlds();
-    db.getDataSet().setSld(defaultSld);
+    database.getDataSet().setSld(defaultSld);
     StyledLayerDescriptor.unmarshall(OSMLoader.class.getClassLoader()
         .getResourceAsStream("sld/roads_sld.xml")); //$NON-NLS-1$
     float opacity = 0.8f;
     float strokeWidth = 1.0f;
-    for (GeographicClass geoClass : db.getClasses()) {
-      String populationName = db.getDataSet().getPopNameFromFeatType(
+    for (GeographicClass geoClass : database.getClasses()) {
+      String populationName = database.getDataSet().getPopNameFromFeatType(
           geoClass.getFeatureTypeName());
       if (frame.getSld().getLayer(populationName) == null) {
         Color fillColor = new Color((float) Math.random(),
@@ -1188,4 +1289,185 @@ public class OSMPlugin implements ProjectFramePlugin,
     }
   }
 
+  private void loadRecentFiles() {
+    this.recentFiles = new ArrayList<OSMFile>();
+    LastSessionParameters params = LastSessionParameters.getInstance();
+    if (params.hasParameter("Recent OSM file 1")) {
+      String path = (String) params.getParameterValue("Recent OSM file 1");
+      Map<String, String> attrs = params
+          .getParameterAttributes("Recent OSM file 1");
+      String epsg = attrs.get("epsg");
+      boolean createDb = false;
+      if (attrs.get("createDb").equals("true"))
+        createDb = true;
+      String tagFilter = attrs.get("tagFilter");
+      this.recentFiles.add(new OSMFile(new File(path), epsg, createDb,
+          tagFilter));
+    }
+    if (params.hasParameter("Recent OSM file 2")) {
+      String path = (String) params.getParameterValue("Recent OSM file 2");
+      Map<String, String> attrs = params
+          .getParameterAttributes("Recent OSM file 2");
+      String epsg = attrs.get("epsg");
+      boolean createDb = false;
+      if (attrs.get("createDb").equals("true"))
+        createDb = true;
+      String tagFilter = attrs.get("tagFilter");
+      this.recentFiles.add(new OSMFile(new File(path), epsg, createDb,
+          tagFilter));
+    }
+    if (params.hasParameter("Recent OSM file 3")) {
+      String path = (String) params.getParameterValue("Recent OSM file 3");
+      Map<String, String> attrs = params
+          .getParameterAttributes("Recent OSM file 3");
+      String epsg = attrs.get("epsg");
+      boolean createDb = false;
+      if (attrs.get("createDb").equals("true"))
+        createDb = true;
+      String tagFilter = attrs.get("tagFilter");
+      this.recentFiles.add(new OSMFile(new File(path), epsg, createDb,
+          tagFilter));
+    }
+    if (params.hasParameter("Recent OSM file 4")) {
+      String path = (String) params.getParameterValue("Recent OSM file 4");
+      Map<String, String> attrs = params
+          .getParameterAttributes("Recent OSM file 4");
+      String epsg = attrs.get("epsg");
+      boolean createDb = false;
+      if (attrs.get("createDb").equals("true"))
+        createDb = true;
+      String tagFilter = attrs.get("tagFilter");
+      this.recentFiles.add(new OSMFile(new File(path), epsg, createDb,
+          tagFilter));
+    }
+    if (params.hasParameter("Recent OSM file 5")) {
+      String path = (String) params.getParameterValue("Recent OSM file 5");
+      Map<String, String> attrs = params
+          .getParameterAttributes("Recent OSM file 5");
+      String epsg = attrs.get("epsg");
+      boolean createDb = false;
+      if (attrs.get("createDb").equals("true"))
+        createDb = true;
+      String tagFilter = attrs.get("tagFilter");
+      this.recentFiles.add(new OSMFile(new File(path), epsg, createDb,
+          tagFilter));
+    }
+  }
+
+  private void saveRecentFiles() throws TransformerException, IOException {
+    LastSessionParameters params = LastSessionParameters.getInstance();
+    for (int i = 1; i <= Math.min(5, recentFiles.size()); i++) {
+      Map<String, String> attributes = new HashMap<String, String>();
+      attributes.put("epsg", recentFiles.get(i - 1).getEpsg());
+      attributes.put("createDb",
+          String.valueOf(recentFiles.get(i - 1).isCreateDb()));
+      attributes.put("tagFilter", recentFiles.get(i - 1).getTagFilter());
+      params.setParameter("Recent OSM file " + i, recentFiles.get(i - 1)
+          .getFile().getPath(), attributes);
+    }
+  }
+
+  private void createProgressDialog() {
+    JPanel panel = new JPanel(new BorderLayout());
+
+    taskLabel = new JLabel(loader.getCurrentTask().getLabel() + " loading...");
+    progressBar = new JProgressBar(0, 100);
+    progressBar.setValue(0);
+    progressBar.setStringPainted(true);
+
+    taskOutput = new JTextArea(5, 20);
+    taskOutput.setMargin(new Insets(5, 5, 5, 5));
+    taskOutput.setEditable(false);
+
+    JPanel panel1 = new JPanel();
+    panel1.add(taskLabel);
+    panel1.add(progressBar);
+
+    panel.add(panel1, BorderLayout.PAGE_START);
+    panel.add(new JScrollPane(taskOutput), BorderLayout.CENTER);
+    panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    dialog = new JDialog(application.getMainFrame().getGui());
+    dialog.add(panel);
+    dialog.pack();
+  }
+
+  class OSMFile {
+    private File file;
+    private String epsg;
+    private boolean createDb;
+    private String tagFilter;
+
+    public OSMFile(File file, String epsg, boolean createDb, String tagFilter) {
+      super();
+      this.file = file;
+      this.epsg = epsg;
+      this.createDb = createDb;
+      this.tagFilter = tagFilter;
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + getOuterType().hashCode();
+      result = prime * result + ((file == null) ? 0 : file.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      OSMFile other = (OSMFile) obj;
+      if (!getOuterType().equals(other.getOuterType()))
+        return false;
+      if (file == null) {
+        if (other.file != null)
+          return false;
+      } else if (!file.equals(other.file))
+        return false;
+      return true;
+    }
+
+    public File getFile() {
+      return file;
+    }
+
+    public void setFile(File file) {
+      this.file = file;
+    }
+
+    public String getEpsg() {
+      return epsg;
+    }
+
+    public void setEpsg(String epsg) {
+      this.epsg = epsg;
+    }
+
+    public boolean isCreateDb() {
+      return createDb;
+    }
+
+    public void setCreateDb(boolean createDb) {
+      this.createDb = createDb;
+    }
+
+    public String getTagFilter() {
+      return tagFilter;
+    }
+
+    public void setTagFilter(String tagFilter) {
+      this.tagFilter = tagFilter;
+    }
+
+    private OSMPlugin getOuterType() {
+      return OSMPlugin.this;
+    }
+
+  }
 }

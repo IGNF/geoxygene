@@ -71,7 +71,7 @@ public class LSScheduler {
     POINT, LINE, POLYGON, COMPLEX
   }
 
-  public MatrixSolver solver = MatrixSolver.COLT;
+  public MatrixSolver solver = MatrixSolver.JAMA;
 
   private Set<IFeature> objsFixes;
   private Set<IFeature> objsRigides;

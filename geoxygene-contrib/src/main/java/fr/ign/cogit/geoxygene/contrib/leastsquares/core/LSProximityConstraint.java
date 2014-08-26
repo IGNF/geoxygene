@@ -58,14 +58,14 @@ public class LSProximityConstraint extends LSExternalConstraint {
   @Override
   public EquationsSystem calculeSystemeEquations() {
 
-    // on v�rifie s'il y a overlap
+    // check if there is an overlap
     boolean overlap = false;
     IGeometry geom = this.getObj().getGeom();
     IGeometry geomVoisin = this.getNeighbour().getGeom();
     if (!geom.disjoint(geomVoisin)) {
       overlap = true;
     }
-    // on calcule le nouveau syst�me d'�quation en fonction du type de conflit
+    // compute the new equation system according to the type of spatial conflict
     EquationsSystem nouveau = null;
     if (this.conflict.isPToP()) {
       nouveau = this.calculePointToPoint(this.conflict.getPoint2(), overlap);

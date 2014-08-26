@@ -16,6 +16,17 @@ public class OsmTaxiwayArea extends OsmGeneObjSurf implements ITaxiwayArea {
       type = TaxiwayType.TAXIWAY;
   }
 
+  public OsmTaxiwayArea(IPolygon geom, TaxiwayType type) {
+    this(geom);
+    if (type.equals(TaxiwayType.APRON)) {
+      this.type = TaxiwayType.APRON;
+      this.getTags().put("aeroway", "apron");
+    } else {
+      this.type = TaxiwayType.TAXIWAY;
+      this.getTags().put("aeroway", "taxiway");
+    }
+  }
+
   @Override
   public TaxiwayType getType() {
     return type;

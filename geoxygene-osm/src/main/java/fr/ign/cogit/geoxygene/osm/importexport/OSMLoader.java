@@ -441,8 +441,9 @@ public class OSMLoader extends SwingWorker<Void, Void> {
             matching.getTag(), matching.getTagValues());
         for (OSMResource resource : resources) {
           if (tagFilter != null) {
-            if (!resource.getTags().containsKey(tagFilter))
-              continue;
+            if (!tagFilter.equals(""))
+              if (!resource.getTags().containsKey(tagFilter))
+                continue;
           }
           OsmGeneObj obj = factory.createGeneObj(matching.getCartagenClass(),
               resource, this.nodes, convertor);
@@ -461,8 +462,9 @@ public class OSMLoader extends SwingWorker<Void, Void> {
         Collection<OSMResource> resources = this.getWaysFromTag(matching);
         for (OSMResource resource : resources) {
           if (tagFilter != null) {
-            if (!resource.getTags().containsKey(tagFilter))
-              continue;
+            if (!tagFilter.equals(""))
+              if (!resource.getTags().containsKey(tagFilter))
+                continue;
           }
           if (!isGeometryMatching((OSMWay) resource.getGeom(), matching))
             continue;

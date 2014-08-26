@@ -20,12 +20,16 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
+import org.apache.xerces.dom.DocumentImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.util.XMLUtil;
 
 /**
  * @author G. Touya
@@ -217,8 +221,9 @@ public class MapspecsLS {
 
     // on parse enfin l'échelle
     Element echElem = (Element) doc.getElementsByTagName("echelle").item(0);
-    this.setEchelle(Double.parseDouble(echElem.getChildNodes().item(0)
-        .getNodeValue()));
+    if (echElem != null)
+      this.setEchelle(Double.parseDouble(echElem.getChildNodes().item(0)
+          .getNodeValue()));
   }
 
   public MapspecsLS(double echelle, Collection<IFeature> selectedObjects,
@@ -429,5 +434,103 @@ public class MapspecsLS {
 
   public void setMapSymbolWidth(Map<IFeature, Double> mapSymbolWidth) {
     this.mapSymbolWidth = mapSymbolWidth;
+  }
+
+  /**
+   * Save the mapspecs into a XML file.
+   * @param file
+   * @throws IOException
+   * @throws TransformerException
+   */
+  public void saveToXml(File file) throws TransformerException, IOException {
+    // build the DOM document
+    Document xmlDoc = new DocumentImpl();
+    Element root = xmlDoc.createElement("mapspecs");
+
+    // puis on écrit les classes fixes
+    if (getClassesFixes().size() > 0) {
+      Element fixElem = xmlDoc.createElement("objets-fixes");
+      for (String classe : getClassesFixes()) {
+        Element classElem = xmlDoc.createElement("classe");
+        Node n = xmlDoc.createTextNode(classe);
+        classElem.appendChild(n);
+        fixElem.appendChild(classElem);
+      }
+      root.appendChild(fixElem);
+    }
+
+    // puis on écrit les classes rigides
+    if (getClassesRigides().size() > 0) {
+      Element rigidElem = xmlDoc.createElement("objets-rigides");
+      for (String classe : getClassesRigides()) {
+        Element classElem = xmlDoc.createElement("classe");
+        Node n = xmlDoc.createTextNode(classe);
+        classElem.appendChild(n);
+        rigidElem.appendChild(classElem);
+      }
+      root.appendChild(rigidElem);
+    }
+
+    // puis on écrit les classes malléables
+    if (getClassesMalleables().size() > 0) {
+      Element mallElem = xmlDoc.createElement("objets-malleables");
+      for (String classe : getClassesMalleables()) {
+        Element classElem = xmlDoc.createElement("classe");
+        Node n = xmlDoc.createTextNode(classe);
+        classElem.appendChild(n);
+        mallElem.appendChild(classElem);
+      }
+      root.appendChild(mallElem);
+    }
+
+    // on écrit maintenant les contraintes externes
+    Element contrExtElem = xmlDoc.createElement("contraintes-externes");
+    for (String[] constrExt : getContraintesExternes().keySet()) {
+      Element contrainteElem = xmlDoc.createElement("contrainte");
+      // on écrit le nom
+      Element nomElem = xmlDoc.createElement("nom");
+      Node n = xmlDoc.createTextNode(constrExt[0]);
+      nomElem.appendChild(n);
+      contrainteElem.appendChild(nomElem);
+      // on écrit la classe1
+      Element classe1Elem = xmlDoc.createElement("classe1");
+      n = xmlDoc.createTextNode(constrExt[1]);
+      classe1Elem.appendChild(n);
+      contrainteElem.appendChild(classe1Elem);
+      // on écrit la classe2
+      Element classe2Elem = xmlDoc.createElement("classe2");
+      n = xmlDoc.createTextNode(constrExt[2]);
+      classe2Elem.appendChild(n);
+      contrainteElem.appendChild(classe2Elem);
+      // on écrit le seuil
+      Element seuilElem = xmlDoc.createElement("seuil");
+      n = xmlDoc.createTextNode(String.valueOf(getContraintesExternes().get(
+          constrExt)));
+      seuilElem.appendChild(n);
+      contrainteElem.appendChild(seuilElem);
+      contrExtElem.appendChild(contrainteElem);
+    }
+    root.appendChild(contrExtElem);
+
+    // on s'occupe maintenant des pondérations
+    Element pondElem = xmlDoc.createElement("ponderations");
+    for (String constraintName : poidsContraintes.keySet()) {
+      Element contrainteElem = xmlDoc.createElement("contrainte");
+      Element nomElem = xmlDoc.createElement("classe");
+      Node n = xmlDoc.createTextNode(constraintName);
+      nomElem.appendChild(n);
+      contrainteElem.appendChild(nomElem);
+      Element poidsElem = xmlDoc.createElement("poids");
+      n = xmlDoc.createTextNode(String.valueOf(poidsContraintes
+          .get(constraintName)));
+      poidsElem.appendChild(n);
+      contrainteElem.appendChild(poidsElem);
+      pondElem.appendChild(contrainteElem);
+    }
+    root.appendChild(pondElem);
+
+    xmlDoc.appendChild(root);
+    // write to XML file
+    XMLUtil.writeDocumentToXml(xmlDoc, file);
   }
 }

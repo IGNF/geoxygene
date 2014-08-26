@@ -142,7 +142,7 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
     if (ITaxiwayArea.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
-      return (OsmGeneObj) this.createTaxiwayArea(poly, null);
+      return (OsmGeneObj) this.createTaxiwayArea(poly);
     }
     if (ITaxiwayLine.class.isAssignableFrom(classObj)) {
       ILineString poly = convertor.convertOSMLine((OSMWay) resource.getGeom(),
@@ -358,6 +358,10 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
 
   @Override
   public ITaxiwayArea createTaxiwayArea(IPolygon simple, TaxiwayType type) {
+    return new OsmTaxiwayArea(simple, type);
+  }
+
+  public ITaxiwayArea createTaxiwayArea(IPolygon simple) {
     return new OsmTaxiwayArea(simple);
   }
 
