@@ -82,11 +82,20 @@ public class GLContext {
         }
         GLProgram program = this.programs.get(programName);
         if (program == null) {
-            program = this.programAccessors.get(programName).getGLProgram();
+            GLProgramAccessor glProgramAccessor = this.programAccessors
+                    .get(programName);
+            if (glProgramAccessor == null) {
+                logger.warn("Cannot create program named " + programName
+                        + ": no accessor is associated with");
+                return null;
+            }
+            program = glProgramAccessor.getGLProgram();
+            if (program == null) {
+                logger.warn("Cannot create program named " + programName
+                        + ": accessor returned a null program");
+                return null;
+            }
             this.programs.put(programName, program);
-        }
-        if (program == null) {
-            return null;
         }
         return this.setCurrentProgram(program);
     }

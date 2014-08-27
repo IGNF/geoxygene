@@ -132,7 +132,9 @@ void main() {
 	
 	vec4 tcolor = computeColor1( uv, fragmentIn.uMax, gl_FragCoord, screenWidth, screenHeight, fboWidth, fboHeight );
 //	tcolor = vec4( uv.x, uv.y, 0 , 1);
-	outColor = vec4( tcolor.rgb * fragmentIn.color.rgb, fragmentIn.color.a * tcolor.a * globalOpacity );
+	outColor = vec4( uv.xy,0 , fragmentIn.color.a  );
+//	outColor = vec4( tcolor.rgb * fragmentIn.color.rgb, fragmentIn.color.a * tcolor.a * globalOpacity );
+	
 }
 
 

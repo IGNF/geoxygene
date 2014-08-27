@@ -43,6 +43,8 @@ import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
 import fr.ign.cogit.geoxygene.appli.gl.LineTesselator;
+import fr.ign.cogit.geoxygene.appli.render.texture.BasicTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.appli.render.texture.StrokeTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.Task;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
@@ -50,9 +52,9 @@ import fr.ign.cogit.geoxygene.function.ConstantFunction;
 import fr.ign.cogit.geoxygene.function.Function1D;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRendering;
-import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRendering;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 
@@ -216,14 +218,14 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
     }
 
     private void generateWithExpressiveStroke(LineSymbolizer symbolizer) {
-        ExpressiveRendering style = symbolizer.getStroke()
+        ExpressiveRenderingDescriptor style = symbolizer.getStroke()
                 .getExpressiveRendering();
         if (style == null) {
             throw new IllegalStateException(
                     "this method can only be called with a valid expressive stroke");
         }
-        if ((style instanceof StrokeTextureExpressiveRendering)) {
-            StrokeTextureExpressiveRendering strtex = (StrokeTextureExpressiveRendering) style;
+        if ((style instanceof StrokeTextureExpressiveRenderingDescriptor)) {
+            StrokeTextureExpressiveRenderingDescriptor strtex = (StrokeTextureExpressiveRenderingDescriptor) style;
             List<GLComplex> complexes = new ArrayList<GLComplex>();
             // return GLComplexFactory.createFilledPolygon(multiSurface,
             // symbolizer.getStroke().getColor());
@@ -235,12 +237,13 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
                     + "-expressive-full", minX, minY);
             GLComplexFactory.createThickCurves(this.getName(), complex,
                     symbolizer.getStroke(), minX, minY, strtex, this.curves);
-            complex.setExpressiveRendering(strtex);
+            complex.setExpressiveRendering(new StrokeTextureExpressiveRendering(
+                    strtex));
             complexes.add(complex);
             this.fullRepresentation = complexes;
             return;
-        } else if ((style instanceof BasicTextureExpressiveRendering)) {
-            BasicTextureExpressiveRendering strtex = (BasicTextureExpressiveRendering) style;
+        } else if ((style instanceof BasicTextureExpressiveRenderingDescriptor)) {
+            BasicTextureExpressiveRenderingDescriptor strtex = (BasicTextureExpressiveRenderingDescriptor) style;
             List<GLComplex> complexes = new ArrayList<GLComplex>();
             // return GLComplexFactory.createFilledPolygon(multiSurface,
             // symbolizer.getStroke().getColor());
@@ -252,7 +255,8 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
                     this.getName() + "-expressive-full", minX, minY);
             GLComplexFactory.createThickCurves(this.getName(), complex,
                     symbolizer.getStroke(), minX, minY, strtex, this.curves);
-            complex.setExpressiveRendering(strtex);
+            complex.setExpressiveRendering(new BasicTextureExpressiveRendering(
+                    strtex));
             complexes.add(complex);
             this.fullRepresentation = complexes;
             return;

@@ -25,23 +25,12 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.ui;
-
-import javax.swing.JComponent;
+package fr.ign.cogit.geoxygene.style.expressive;
 
 /**
  * @author JeT
  * 
  */
-public interface ExpressiveRenderingUI {
-
-    JComponent getGui();
-
-    /**
-     * set variable values from stroke texture expressive rendering object
-     */
-    public void setValuesFromObject();
-
-    public void setValuesToObject();
+public abstract class ExpressiveRenderingDescriptor {
 
 }

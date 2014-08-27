@@ -21,8 +21,8 @@ package fr.ign.cogit.geoxygene.appli.render;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
-import org.apache.commons.jxpath.Pointer;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
@@ -38,21 +38,15 @@ import fr.ign.cogit.geoxygene.style.Layer;
  */
 public class SyncRenderingManager implements RenderingManager {
 
-    private static final Logger logger = Logger.getLogger(SyncRenderingManager.class.getName()); // logger
+    private static final Logger logger = Logger
+            .getLogger(SyncRenderingManager.class.getName()); // logger
 
     private LayerViewGLPanel layerViewPanel = null; // managed LayerViewPanel
     private RenderingType renderingType = null;
+    // map between a layer and its renderer.
     private final LinkedHashMap<Layer, LwjglLayerRenderer> rendererMap = new LinkedHashMap<Layer, LwjglLayerRenderer>(); // Insertion-ordered
-    // map
-    // between
-    // a
-    // layer
-    // and
-    // its
-    // renderer.
-    private SelectionRenderer selectionRenderer = null; // The selection renderer
-                                                        // used to render the
-                                                        // selected features.
+    // The selection renderer used to render the selected features
+    private SelectionRenderer selectionRenderer = null;
     private boolean handlingDeletion;
 
     /**
@@ -61,13 +55,16 @@ public class SyncRenderingManager implements RenderingManager {
      * @param theLayerViewPanel
      *            the panel the rendering manager draws into
      * @param renderingType
-     *            in sync rendering manager only JOGL and LWJGL types
-     *            are allowed
+     *            in sync rendering manager only JOGL and LWJGL types are
+     *            allowed
      */
-    public SyncRenderingManager(final LayerViewPanel theLayerViewPanel, final RenderingType renderingType) {
+    public SyncRenderingManager(final LayerViewPanel theLayerViewPanel,
+            final RenderingType renderingType) {
         this.setLayerViewPanel(theLayerViewPanel);
         if (renderingType != RenderingType.LWJGL) {
-            throw new IllegalStateException("in sync rendering manager only LWJGL types are allowed (not " + renderingType + ")");
+            throw new IllegalStateException(
+                    "in sync rendering manager only LWJGL types are allowed (not "
+                            + renderingType + ")");
         }
         this.renderingType = renderingType;
         this.selectionRenderer = new SelectionRenderer(theLayerViewPanel);
@@ -115,16 +112,43 @@ public class SyncRenderingManager implements RenderingManager {
      */
     @Override
     public final void renderAll() {
-        if (this.getLayerViewPanel() == null || this.getLayerViewPanel().getProjectFrame() == null) {
+        if (this.getLayerViewPanel() == null
+                || this.getLayerViewPanel().getProjectFrame() == null) {
+            logger.warn(this.getClass().getSimpleName()
+                    + " cannot render due to invalid parents : ");
+            logger.info("LayerViewPanel = " + this.getLayerViewPanel());
+            if (this.getLayerViewPanel() != null) {
+                logger.info("ProjectFrame =  "
+                        + this.getLayerViewPanel().getProjectFrame());
+            }
             return;
         }
         synchronized (this.getLayerViewPanel().getProjectFrame().getSld().lock) {
 
             // render all layers
-            for (Layer layer : this.getLayerViewPanel().getProjectFrame().getSld().getLayers()) {
+            for (Layer layer : this.getLayerViewPanel().getProjectFrame()
+                    .getSld().getLayers()) {
                 if (layer.isVisible()) {
                     synchronized (this.rendererMap) {
-                        this.render(this.rendererMap.get(layer));
+
+                        LwjglLayerRenderer renderer = this.rendererMap
+                                .get(layer);
+                        if (renderer == null) {
+                            renderer = new LwjglLayerRenderer(layer,
+                                    this.layerViewPanel);
+                            // logger.debug("No renderer associated with layer "
+                            // + layer.getName());
+                            // logger.debug("List of all associations: ");
+                            // for (Entry<Layer, LwjglLayerRenderer> r :
+                            // this.rendererMap
+                            // .entrySet()) {
+                            // logger.debug("\t" + r.getKey().getName()
+                            // + " associated with "
+                            // + r.getValue().hashCode());
+                            // }
+                            this.rendererMap.put(layer, renderer);
+                        }
+                        this.render(renderer);
                     }
                 }
             }
@@ -146,15 +170,23 @@ public class SyncRenderingManager implements RenderingManager {
                 LwjglLayerRenderer renderer = null;
                 switch (this.renderingType) {
                 case LWJGL:
-                    renderer = new LwjglLayerRenderer(layer, this.getLayerViewPanel());
+                    renderer = new LwjglLayerRenderer(layer,
+                            this.getLayerViewPanel());
                     break;
                 default:
-                    logger.error("Cannot handle rendering type " + this.renderingType + " in " + this.getClass().getSimpleName());
+                    logger.error("Cannot handle rendering type "
+                            + this.renderingType + " in "
+                            + this.getClass().getSimpleName());
                     return;
                 }
                 this.rendererMap.put(layer, renderer);
-                // Adding the layer legend panel to the listeners of the renderer
-                renderer.addActionListener(this.getLayerViewPanel().getProjectFrame().getLayerLegendPanel());
+                System.err.println("SyncRenderingManager associates layer "
+                        + layer.getName() + " with renderer type "
+                        + renderer.getClass().getSimpleName());
+                // Adding the layer legend panel to the listeners of the
+                // renderer
+                renderer.addActionListener(this.getLayerViewPanel()
+                        .getProjectFrame().getLayerLegendPanel());
             }
         }
     }
@@ -190,6 +222,9 @@ public class SyncRenderingManager implements RenderingManager {
         // if the renderer is already rendering, interrupt the current
         // rendering to start a new one
         if (renderer == null) {
+            logger.error(this.getClass().getSimpleName()
+                    + " is asked to render using a null renderer");
+            Thread.dumpStack();
             return;
         }
 
@@ -200,15 +235,17 @@ public class SyncRenderingManager implements RenderingManager {
         Runnable runnable = renderer.createRunnable();
         if (runnable != null) {
             try {
-                runnable.run(); // do not launch runnable into a thread, just call the
+                runnable.run(); // do not launch runnable into a thread, just
+                                // call the
                                 // run method synchronously
             } catch (Exception e) {
-                logger.error("An error occurred during Sync Rendering : " + e.getMessage());
+                logger.error("An error occurred during Sync Rendering : "
+                        + e.getMessage());
                 e.printStackTrace();
             }
         }
         // finalize rendering
-        //    renderer.finalizeRendering();
+        // renderer.finalizeRendering();
 
     }
 
@@ -273,8 +310,19 @@ public class SyncRenderingManager implements RenderingManager {
     /** Dispose of the manager. Cleans up all threads, renderers, daemons, etc. */
     @Override
     public final void dispose() {
+        this.reset();
+        this.rendererMap.clear();
+    }
+
+    /**
+     * empty all cached values
+     */
+    public void reset() {
         synchronized (this.rendererMap) {
-            this.rendererMap.clear();
+            for (Entry<Layer, LwjglLayerRenderer> r : this.rendererMap
+                    .entrySet()) {
+                r.getValue().reset();
+            }
         }
     }
 
@@ -295,7 +343,9 @@ public class SyncRenderingManager implements RenderingManager {
                 return;
             }
         }
-        if (this.selectionRenderer != null && (this.selectionRenderer.isRendering() || !this.selectionRenderer.isRendered())) {
+        if (this.selectionRenderer != null
+                && (this.selectionRenderer.isRendering() || !this.selectionRenderer
+                        .isRendered())) {
             if (SyncRenderingManager.logger.isTraceEnabled()) {
                 SyncRenderingManager.logger.trace("Renderer " //$NON-NLS-1$
                         + this.selectionRenderer.isRendering() + " - " //$NON-NLS-1$

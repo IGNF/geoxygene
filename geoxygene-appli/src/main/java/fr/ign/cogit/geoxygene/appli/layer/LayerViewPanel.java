@@ -333,7 +333,7 @@ public abstract class LayerViewPanel extends JComponent implements Printable,
      * default baheviour is to reset all renderers. Override for another
      * behaviour
      */
-    public void refresh() {
+    public void reset() {
         // default behaviour is to reset renderers.
         for (LayerRenderer layerRenderer : this.getRenderingManager()
                 .getRenderers()) {

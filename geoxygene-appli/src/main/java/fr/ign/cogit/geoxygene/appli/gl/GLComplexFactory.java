@@ -59,14 +59,16 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Colorizer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.Parameterizer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.SolidColorizer;
+import fr.ign.cogit.geoxygene.appli.render.texture.BasicTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.appli.render.texture.StrokeTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.appli.task.Task;
 import fr.ign.cogit.geoxygene.appli.task.TaskManager;
 import fr.ign.cogit.geoxygene.function.ConstantFunction;
 import fr.ign.cogit.geoxygene.function.FunctionEvaluationException;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.style.Stroke;
-import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRendering;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLPrimitiveTessCallback;
@@ -683,12 +685,13 @@ public class GLComplexFactory {
 
             return primitive;
         }
-        if (stroke.getExpressiveRendering() instanceof StrokeTextureExpressiveRendering) {
-            StrokeTextureExpressiveRendering strtex = (StrokeTextureExpressiveRendering) stroke
+        if (stroke.getExpressiveRendering() instanceof StrokeTextureExpressiveRenderingDescriptor) {
+            StrokeTextureExpressiveRenderingDescriptor strtex = (StrokeTextureExpressiveRenderingDescriptor) stroke
                     .getExpressiveRendering();
             GLPaintingComplex complex = new GLPaintingComplex(id
                     + "-expressive-painting", minX, minY);
-            complex.setExpressiveRendering(strtex);
+            complex.setExpressiveRendering(new StrokeTextureExpressiveRendering(
+                    strtex));
             List<ILineString> curves = new ArrayList<ILineString>();
             for (IPolygon polygon : polygons) {
                 curves.add(new GM_LineString(polygon.getExterior().coord()));
@@ -701,12 +704,13 @@ public class GLComplexFactory {
             // complex.setColor(symbolizer.getStroke().getColor());
             complex.setOverallOpacity(stroke.getColor().getAlpha());
             return complex;
-        } else if (stroke.getExpressiveRendering() instanceof BasicTextureExpressiveRendering) {
-            BasicTextureExpressiveRendering strtex = (BasicTextureExpressiveRendering) stroke
+        } else if (stroke.getExpressiveRendering() instanceof BasicTextureExpressiveRenderingDescriptor) {
+            BasicTextureExpressiveRenderingDescriptor strtex = (BasicTextureExpressiveRenderingDescriptor) stroke
                     .getExpressiveRendering();
             GLBezierShadingComplex complex = new GLBezierShadingComplex(id
                     + "-expressive-basic", minX, minY);
-            complex.setExpressiveRendering(strtex);
+            complex.setExpressiveRendering(new BasicTextureExpressiveRendering(
+                    strtex));
             List<ILineString> curves = new ArrayList<ILineString>();
             for (IPolygon polygon : polygons) {
                 curves.add(new GM_LineString(polygon.getExterior().coord()));
@@ -734,7 +738,8 @@ public class GLComplexFactory {
      */
     public static void createThickCurves(String id, GLPaintingComplex complex,
             Stroke stroke, double minX, double minY,
-            StrokeTextureExpressiveRendering strtex, List<ILineString> curves) {
+            StrokeTextureExpressiveRenderingDescriptor strtex,
+            List<ILineString> curves) {
         GLTexture paperTexture = GLTextureManager.getInstance().getTexture(
                 strtex.getPaperTextureFilename());
         int paperWidthInPixels = paperTexture.getTextureWidth();
@@ -775,7 +780,7 @@ public class GLComplexFactory {
      */
     public static void createThickCurves(String id,
             GLBezierShadingComplex complex, Stroke stroke, double minX,
-            double minY, BasicTextureExpressiveRendering strtex,
+            double minY, BasicTextureExpressiveRenderingDescriptor strtex,
             List<ILineString> curves) {
         for (ILineString line : curves) {
             try {

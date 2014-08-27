@@ -107,6 +107,7 @@ public class TaskManager implements TaskListener<Task> {
         if (task.getState() != TaskState.WAITING) {
             logger.warn("task " + task.getName()
                     + " added to task manager with state " + task.getState());
+            Thread.dumpStack();
         }
 
         task.addTaskListener(this);

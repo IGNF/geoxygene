@@ -25,23 +25,26 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.ui;
-
-import javax.swing.JComponent;
+package fr.ign.cogit.geoxygene.util.gl;
 
 /**
- * @author JeT
- * 
+ * @author JeT This accessor returns an already constructed program
  */
-public interface ExpressiveRenderingUI {
+public class GLProgramAccessorInstance implements GLProgramAccessor {
 
-    JComponent getGui();
+    private GLProgram program = null;
 
     /**
-     * set variable values from stroke texture expressive rendering object
+     * @param program
      */
-    public void setValuesFromObject();
+    public GLProgramAccessorInstance(GLProgram program) {
+        super();
+        this.program = program;
+    }
 
-    public void setValuesToObject();
+    @Override
+    public GLProgram getGLProgram() throws GLException {
+        return this.program;
+    }
 
 }

@@ -25,23 +25,19 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.ui;
+package fr.ign.cogit.geoxygene.style.expressive;
 
-import javax.swing.JComponent;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * @author JeT
  * 
  */
-public interface ExpressiveRenderingUI {
+@XmlAccessorType(XmlAccessType.NONE)
+public class ShaderDescriptor {
 
-    JComponent getGui();
-
-    /**
-     * set variable values from stroke texture expressive rendering object
-     */
-    public void setValuesFromObject();
-
-    public void setValuesToObject();
-
+    public String getId() {
+        return String.valueOf(this.hashCode());
+    }
 }

@@ -57,6 +57,7 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -890,20 +891,24 @@ public final class GLTools {
      * @return
      * @throws Exception
      */
-    public static int createShader(String shaderFilename, int shaderType)
+    public static int createShader(int shaderType, String... shaderFilenames)
             throws GLException {
         int shader = 0;
         try {
-          logger.debug("shader "+shaderFilename + "shaderType "+shaderType);  
-          shader = glCreateShader(shaderType);
+            logger.debug("shader " + Arrays.toString(shaderFilenames)
+                    + "shaderType " + shaderType);
+            shader = glCreateShader(shaderType);
             if (shader == 0) {
                 return 0;
             }
-            glShaderSource(shader, readFileAsString(shaderFilename));
+            for (String shaderFilename : shaderFilenames) {
+                glShaderSource(shader, readFileAsString(shaderFilename));
+            }
             glCompileShader(shader);
             if (glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
                 throw new RuntimeException("Error compiling shader file '"
-                        + shaderFilename + "': " + getShaderLogInfo(shader));
+                        + Arrays.toString(shaderFilenames) + "': "
+                        + getShaderLogInfo(shader));
             }
             return shader;
         } catch (Exception exc) {

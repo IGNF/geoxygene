@@ -25,23 +25,39 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.ui;
+package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import javax.swing.JComponent;
+import fr.ign.cogit.geoxygene.appli.gl.RandomVariationShader;
+import fr.ign.cogit.geoxygene.appli.gl.Shader;
+import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.RandomVariationShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
 
 /**
  * @author JeT
  * 
  */
-public interface ExpressiveRenderingUI {
+public class ShaderFactory {
 
-    JComponent getGui();
+    public static Shader createShader(ShaderDescriptor descriptor) {
+        if (descriptor instanceof RandomVariationShaderDescriptor) {
+            return createShader((RandomVariationShaderDescriptor) descriptor);
 
-    /**
-     * set variable values from stroke texture expressive rendering object
-     */
-    public void setValuesFromObject();
+        }
+        throw new IllegalStateException("Do not handle "
+                + descriptor.getClass().getSimpleName() + " shader descriptor");
+    }
 
-    public void setValuesToObject();
+    public static RandomVariationShader createShader(
+            RandomVariationShaderDescriptor descriptor) {
+        RandomVariationShader shader = new RandomVariationShader(descriptor);
+        return shader;
+    }
+
+    public static Shader createShader(
+            BasicTextureExpressiveRenderingDescriptor strtex) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

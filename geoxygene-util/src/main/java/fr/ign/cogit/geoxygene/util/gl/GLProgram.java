@@ -186,7 +186,6 @@ public class GLProgram {
             logger.error("uniform variable '" + uniformName
                     + "' has invalid location " + uniformLocation
                     + " in program '" + this.getName() + "'");
-            Thread.dumpStack();
         } else {
             this.setUniform1i(uniformLocation, value);
         }
@@ -268,29 +267,29 @@ public class GLProgram {
     /**
      * Try to create a compiled vertex shader
      * 
-     * @param filename
+     * @param filenames
      *            shader file
      * @return the shader id
      * @throws GLException
      *             on shader creation error
      */
-    public static final int createVertexShader(String filename)
+    public static final int createVertexShader(String... filenames)
             throws GLException {
-        return GLTools.createShader(filename, GL20.GL_VERTEX_SHADER);
+        return GLTools.createShader(GL20.GL_VERTEX_SHADER, filenames);
     }
 
     /**
      * Try to create a compiled geometry shader
      * 
-     * @param filename
+     * @param filenames
      *            shader file
      * @return the shader id
      * @throws GLException
      *             on shader creation error
      */
-    public static final int createGeometryShader(String filename)
+    public static final int createGeometryShader(String... filenames)
             throws GLException {
-        return GLTools.createShader(filename, GL32.GL_GEOMETRY_SHADER);
+        return GLTools.createShader(GL32.GL_GEOMETRY_SHADER, filenames);
     }
 
     /**
@@ -302,9 +301,9 @@ public class GLProgram {
      * @throws GLException
      *             on shader creation error
      */
-    public static final int createFragmentShader(String filename)
+    public static final int createFragmentShader(String... filenames)
             throws GLException {
-        return GLTools.createShader(filename, GL20.GL_FRAGMENT_SHADER);
+        return GLTools.createShader(GL20.GL_FRAGMENT_SHADER, filenames);
     }
 
     /*

@@ -28,9 +28,9 @@
 package fr.ign.cogit.geoxygene.appli.ui;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRendering;
-import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRendering;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 
 /**
  * @author JeT
@@ -48,46 +48,46 @@ public class ExpressiveRenderingUIFactory {
     /**
      * Create an expressiveRendering UI
      * 
-     * @param expressiveRendering
+     * @param descriptor
      * @return
      */
     public static ExpressiveRenderingUI getExpressiveRenderingUIFactory(
-            ExpressiveRendering expressiveRendering, ProjectFrame projectFrame) {
-        if (expressiveRendering instanceof StrokeTextureExpressiveRendering) {
+            ExpressiveRenderingDescriptor descriptor, ProjectFrame projectFrame) {
+        if (descriptor instanceof StrokeTextureExpressiveRenderingDescriptor) {
             return getExpressiveRenderingUI(
-                    (StrokeTextureExpressiveRendering) expressiveRendering,
+                    (StrokeTextureExpressiveRenderingDescriptor) descriptor,
                     projectFrame);
-        } else if (expressiveRendering instanceof BasicTextureExpressiveRendering) {
+        } else if (descriptor instanceof BasicTextureExpressiveRenderingDescriptor) {
             return getExpressiveRenderingUI(
-                    (BasicTextureExpressiveRendering) expressiveRendering,
+                    (BasicTextureExpressiveRenderingDescriptor) descriptor,
                     projectFrame);
         } else {
             throw new IllegalStateException("ExpressiveRendering type "
-                    + expressiveRendering.getClass().getSimpleName() + " ");
+                    + descriptor.getClass().getSimpleName() + " ");
         }
     }
 
     /**
      * Create a stroke texture Rendering UI
      * 
-     * @param strtex
+     * @param descriptor
      * @return
      */
     private static StrokeTextureExpressiveRenderingUI getExpressiveRenderingUI(
-            final StrokeTextureExpressiveRendering strtex,
+            final StrokeTextureExpressiveRenderingDescriptor descriptor,
             ProjectFrame projectFrame) {
-        return new StrokeTextureExpressiveRenderingUI(strtex, projectFrame);
+        return new StrokeTextureExpressiveRenderingUI(descriptor, projectFrame);
     }
 
     /**
      * Create a basic texture Rendering UI
      * 
-     * @param strtex
+     * @param descriptor
      * @return
      */
     private static BasicTextureExpressiveRenderingUI getExpressiveRenderingUI(
-            final BasicTextureExpressiveRendering strtex,
+            final BasicTextureExpressiveRenderingDescriptor descriptor,
             ProjectFrame projectFrame) {
-        return new BasicTextureExpressiveRenderingUI(strtex, projectFrame);
+        return new BasicTextureExpressiveRenderingUI(descriptor, projectFrame);
     }
 }

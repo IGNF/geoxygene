@@ -51,7 +51,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 import fr.ign.util.ui.SliderWithSpinner;
 import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
 
@@ -63,7 +63,7 @@ public class StrokeTextureExpressiveRenderingUI implements
         ExpressiveRenderingUI {
 
     private JPanel main = null;
-    private StrokeTextureExpressiveRendering strtex = null;
+    private StrokeTextureExpressiveRenderingDescriptor strtex = null;
 
     private final Preferences prefs = Preferences.userRoot();
     private ProjectFrame parentProjectFrame = null;
@@ -75,18 +75,14 @@ public class StrokeTextureExpressiveRenderingUI implements
     double brushDensity = 1.9;
     double strokePressure = 2.64;
     double sharpness = 0.1;
-    double strokePressureVariationAmplitude = .32;
-    double strokePressureVariationWavelength = 100;
-    double strokeShiftVariationAmplitude = .92;
-    double strokeShiftVariationWavelength = 100;
-    double strokeThicknessVariationAmplitude = .07;
-    double strokeThicknessVariationWavelength = 100;
     public String paperTextureFilename = null;
     public String brushTextureFilename = null;
     public int brushStartLength = 100;
     public int brushEndLength = 200;
+    public ExpressiveRenderingUI shaderUI = null;
     private JLabel paperFilenameLabel = null;
     private JLabel brushFilenameLabel = null;
+
     private static final String LAST_DIRECTORY = StrokeTextureExpressiveRenderingUI.class
             .getSimpleName() + ".lastDirectory";
     private static final String PAPER_LAST_DIRECTORY = StrokeTextureExpressiveRenderingUI.class
@@ -98,9 +94,12 @@ public class StrokeTextureExpressiveRenderingUI implements
      * Constructor
      */
     public StrokeTextureExpressiveRenderingUI(
-            StrokeTextureExpressiveRendering strtex, ProjectFrame projectFrame) {
+            StrokeTextureExpressiveRenderingDescriptor strtex,
+            ProjectFrame projectFrame) {
         this.parentProjectFrame = projectFrame;
+        this.main = null;
         this.setStrokeTextureExpressiveRendering(strtex);
+
     }
 
     /**
@@ -109,7 +108,7 @@ public class StrokeTextureExpressiveRenderingUI implements
      * @param strtex
      */
     private void setStrokeTextureExpressiveRendering(
-            StrokeTextureExpressiveRendering strtex) {
+            StrokeTextureExpressiveRenderingDescriptor strtex) {
         this.strtex = strtex;
         this.setValuesFromObject();
     }
@@ -117,7 +116,8 @@ public class StrokeTextureExpressiveRenderingUI implements
     /**
      * set variable values from stroke texture expressive rendering object
      */
-    private void setValuesFromObject() {
+    @Override
+    public void setValuesFromObject() {
         this.sampleSize = this.strtex.getSampleSize();
         this.minAngle = this.strtex.getMinAngle();
         this.brushSize = this.strtex.getBrushSize();
@@ -126,28 +126,26 @@ public class StrokeTextureExpressiveRenderingUI implements
         this.brushDensity = this.strtex.getBrushDensity();
         this.strokePressure = this.strtex.getStrokePressure();
         this.sharpness = this.strtex.getSharpness();
-        this.strokePressureVariationAmplitude = this.strtex
-                .getStrokePressureVariationAmplitude();
-        this.strokePressureVariationWavelength = this.strtex
-                .getStrokePressureVariationWavelength();
-        this.strokeShiftVariationAmplitude = this.strtex
-                .getStrokeShiftVariationAmplitude();
-        this.strokeShiftVariationWavelength = this.strtex
-                .getStrokeShiftVariationWavelength();
-        this.strokeThicknessVariationAmplitude = this.strtex
-                .getStrokeThicknessVariationAmplitude();
-        this.strokeThicknessVariationWavelength = this.strtex
-                .getStrokeThicknessVariationWavelength();
         this.paperTextureFilename = this.strtex.getPaperTextureFilename();
         this.brushTextureFilename = this.strtex.getBrushTextureFilename();
         this.brushStartLength = this.strtex.getBrushStartLength();
         this.brushEndLength = this.strtex.getBrushEndLength();
+        this.getShaderUI().setValuesFromObject();
+    }
+
+    private ExpressiveRenderingUI getShaderUI() {
+        if (this.shaderUI == null) {
+            this.shaderUI = ShaderUIFactory.getShaderUI(
+                    this.strtex.getShaderDescriptor(), this.parentProjectFrame);
+        }
+        return this.shaderUI;
     }
 
     /**
      * set variable values from stroke texture expressive rendering object
      */
-    private void setValuesToObject() {
+    @Override
+    public void setValuesToObject() {
         this.strtex.setSampleSize(this.sampleSize);
         this.strtex.setMinAngle(this.minAngle);
         this.strtex.setBrushSize(this.brushSize);
@@ -156,22 +154,11 @@ public class StrokeTextureExpressiveRenderingUI implements
         this.strtex.setBrushDensity(this.brushDensity);
         this.strtex.setStrokePressure(this.strokePressure);
         this.strtex.setSharpness(this.sharpness);
-        this.strtex
-                .setStrokePressureVariationAmplitude(this.strokePressureVariationAmplitude);
-        this.strtex
-                .setStrokePressureVariationWavelength(this.strokePressureVariationWavelength);
-        this.strtex
-                .setStrokeShiftVariationAmplitude(this.strokeShiftVariationAmplitude);
-        this.strtex
-                .setStrokeShiftVariationWavelength(this.strokeShiftVariationWavelength);
-        this.strtex
-                .setStrokeThicknessVariationAmplitude(this.strokeThicknessVariationAmplitude);
-        this.strtex
-                .setStrokeThicknessVariationWavelength(this.strokeThicknessVariationWavelength);
         this.strtex.setPaperTextureFilename(this.paperTextureFilename);
         this.strtex.setBrushTextureFilename(this.brushTextureFilename);
         this.strtex.setBrushStartLength(this.brushStartLength);
         this.strtex.setBrushEndLength(this.brushEndLength);
+        this.shaderUI.setValuesToObject();
     }
 
     /*
@@ -534,149 +521,7 @@ public class StrokeTextureExpressiveRenderingUI implements
             });
             this.main.add(sharpnessSpinner);
 
-            SliderWithSpinnerModel pressureVariationAmplitudeModel = new SliderWithSpinnerModel(
-                    this.strokePressureVariationAmplitude, 0, 100, .1);
-            final SliderWithSpinner pressureVariationAmplitudeSpinner = new SliderWithSpinner(
-                    pressureVariationAmplitudeModel);
-            JSpinner.NumberEditor pressureVariationAmplitudeEditor = (JSpinner.NumberEditor) pressureVariationAmplitudeSpinner
-                    .getEditor();
-            pressureVariationAmplitudeEditor.getTextField()
-                    .setHorizontalAlignment(SwingConstants.CENTER);
-            pressureVariationAmplitudeSpinner.setBorder(BorderFactory
-                    .createTitledBorder("pressure amplitude"));
-
-            pressureVariationAmplitudeSpinner
-                    .addChangeListener(new ChangeListener() {
-
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            StrokeTextureExpressiveRenderingUI.this.strokePressureVariationAmplitude = (pressureVariationAmplitudeSpinner
-                                    .getValue());
-                            StrokeTextureExpressiveRenderingUI.this.refresh();
-
-                        }
-                    });
-            this.main.add(pressureVariationAmplitudeSpinner);
-
-            SliderWithSpinnerModel pressureVariationWavelengthModel = new SliderWithSpinnerModel(
-                    this.strokePressureVariationWavelength, 0.001, 100000, 10);
-            final SliderWithSpinner pressureVariationWavelengthSpinner = new SliderWithSpinner(
-                    pressureVariationWavelengthModel);
-            JSpinner.NumberEditor pressureVariationWavelengthEditor = (JSpinner.NumberEditor) pressureVariationWavelengthSpinner
-                    .getEditor();
-            pressureVariationWavelengthEditor.getTextField()
-                    .setHorizontalAlignment(SwingConstants.CENTER);
-            pressureVariationWavelengthSpinner.setBorder(BorderFactory
-                    .createTitledBorder("pressure Wavelength"));
-
-            pressureVariationWavelengthSpinner
-                    .addChangeListener(new ChangeListener() {
-
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            StrokeTextureExpressiveRenderingUI.this.strokePressureVariationWavelength = (pressureVariationWavelengthSpinner
-                                    .getValue());
-                            StrokeTextureExpressiveRenderingUI.this.refresh();
-
-                        }
-                    });
-            this.main.add(pressureVariationWavelengthSpinner);
-
-            SliderWithSpinnerModel shiftVariationAmplitudeModel = new SliderWithSpinnerModel(
-                    this.strokeShiftVariationAmplitude, 0, 1, .01);
-            final SliderWithSpinner shiftVariationAmplitudeSpinner = new SliderWithSpinner(
-                    shiftVariationAmplitudeModel);
-            JSpinner.NumberEditor shiftVariationAmplitudeEditor = (JSpinner.NumberEditor) shiftVariationAmplitudeSpinner
-                    .getEditor();
-            shiftVariationAmplitudeEditor.getTextField()
-                    .setHorizontalAlignment(SwingConstants.CENTER);
-            shiftVariationAmplitudeSpinner.setBorder(BorderFactory
-                    .createTitledBorder("shift amplitude"));
-
-            shiftVariationAmplitudeSpinner
-                    .addChangeListener(new ChangeListener() {
-
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            StrokeTextureExpressiveRenderingUI.this.strokeShiftVariationAmplitude = (shiftVariationAmplitudeSpinner
-                                    .getValue());
-                            StrokeTextureExpressiveRenderingUI.this.refresh();
-
-                        }
-                    });
-            this.main.add(shiftVariationAmplitudeSpinner);
-
-            SliderWithSpinnerModel shiftVariationWavelengthModel = new SliderWithSpinnerModel(
-                    this.strokeShiftVariationWavelength, 0.001, 100000, 10);
-            final SliderWithSpinner shiftVariationWavelengthSpinner = new SliderWithSpinner(
-                    shiftVariationWavelengthModel);
-            JSpinner.NumberEditor shiftVariationWavelengthEditor = (JSpinner.NumberEditor) shiftVariationWavelengthSpinner
-                    .getEditor();
-            shiftVariationWavelengthEditor.getTextField()
-                    .setHorizontalAlignment(SwingConstants.CENTER);
-            shiftVariationWavelengthSpinner.setBorder(BorderFactory
-                    .createTitledBorder("shift Wavelength"));
-
-            shiftVariationWavelengthSpinner
-                    .addChangeListener(new ChangeListener() {
-
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            StrokeTextureExpressiveRenderingUI.this.strokeShiftVariationWavelength = (shiftVariationWavelengthSpinner
-                                    .getValue());
-                            StrokeTextureExpressiveRenderingUI.this.refresh();
-
-                        }
-                    });
-            this.main.add(shiftVariationWavelengthSpinner);
-
-            SliderWithSpinnerModel thicknessVariationAmplitudeModel = new SliderWithSpinnerModel(
-                    this.strokeThicknessVariationAmplitude, 0, 1, .01);
-            final SliderWithSpinner thicknessVariationAmplitudeSpinner = new SliderWithSpinner(
-                    thicknessVariationAmplitudeModel);
-            JSpinner.NumberEditor thicknessVariationAmplitudeEditor = (JSpinner.NumberEditor) thicknessVariationAmplitudeSpinner
-                    .getEditor();
-            thicknessVariationAmplitudeEditor.getTextField()
-                    .setHorizontalAlignment(SwingConstants.CENTER);
-            thicknessVariationAmplitudeSpinner.setBorder(BorderFactory
-                    .createTitledBorder("thickness amplitude"));
-
-            thicknessVariationAmplitudeSpinner
-                    .addChangeListener(new ChangeListener() {
-
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            StrokeTextureExpressiveRenderingUI.this.strokeThicknessVariationAmplitude = (thicknessVariationAmplitudeSpinner
-                                    .getValue());
-                            StrokeTextureExpressiveRenderingUI.this.refresh();
-
-                        }
-                    });
-            this.main.add(thicknessVariationAmplitudeSpinner);
-
-            SliderWithSpinnerModel thicknessVariationWavelengthModel = new SliderWithSpinnerModel(
-                    this.strokeThicknessVariationWavelength, 0.001, 100000, 10);
-            final SliderWithSpinner thicknessVariationWavelengthSpinner = new SliderWithSpinner(
-                    thicknessVariationWavelengthModel);
-            JSpinner.NumberEditor thicknessVariationWavelengthEditor = (JSpinner.NumberEditor) thicknessVariationWavelengthSpinner
-                    .getEditor();
-            thicknessVariationWavelengthEditor.getTextField()
-                    .setHorizontalAlignment(SwingConstants.CENTER);
-            thicknessVariationWavelengthSpinner.setBorder(BorderFactory
-                    .createTitledBorder("thickness Wavelength"));
-
-            thicknessVariationWavelengthSpinner
-                    .addChangeListener(new ChangeListener() {
-
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            StrokeTextureExpressiveRenderingUI.this.strokeThicknessVariationWavelength = (thicknessVariationWavelengthSpinner
-                                    .getValue());
-                            StrokeTextureExpressiveRenderingUI.this.refresh();
-
-                        }
-                    });
-            this.main.add(thicknessVariationWavelengthSpinner);
+            this.main.add(this.shaderUI.getGui());
         }
         return this.main;
     }

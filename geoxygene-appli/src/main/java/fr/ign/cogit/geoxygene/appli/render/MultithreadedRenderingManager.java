@@ -37,7 +37,8 @@ import fr.ign.cogit.geoxygene.style.Layer;
  */
 public class MultithreadedRenderingManager implements RenderingManager {
 
-    private static final Logger LOGGER = Logger.getLogger(MultithreadedRenderingManager.class.getName()); // logger
+    private static final Logger LOGGER = Logger
+            .getLogger(MultithreadedRenderingManager.class.getName()); // logger
 
     private LayerViewPanel layerViewPanel = null; // managed LayerViewPanel
     private boolean handlingDeletion;
@@ -94,10 +95,14 @@ public class MultithreadedRenderingManager implements RenderingManager {
                 try {
                     for (;;) {
                         Runnable runnable;
-                        synchronized (MultithreadedRenderingManager.this.getRunnableQueue()) {
-                            if (MultithreadedRenderingManager.this.getRunnableQueue().isEmpty()) {
+                        synchronized (MultithreadedRenderingManager.this
+                                .getRunnableQueue()) {
+                            if (MultithreadedRenderingManager.this
+                                    .getRunnableQueue().isEmpty()) {
                                 try {
-                                    MultithreadedRenderingManager.this.getRunnableQueue().wait(MultithreadedRenderingManager.DAEMON_MAXIMUM_WAITING_TIME);
+                                    MultithreadedRenderingManager.this
+                                            .getRunnableQueue()
+                                            .wait(MultithreadedRenderingManager.DAEMON_MAXIMUM_WAITING_TIME);
                                 } catch (InterruptedException ie) {
                                     if (LOGGER.isTraceEnabled()) {
                                         LOGGER.trace(ie.getMessage());
@@ -105,9 +110,12 @@ public class MultithreadedRenderingManager implements RenderingManager {
                                     }
                                 }
                             }
-                            runnable = MultithreadedRenderingManager.this.getRunnableQueue().poll();
+                            runnable = MultithreadedRenderingManager.this
+                                    .getRunnableQueue().poll();
                             if (LOGGER.isTraceEnabled()) {
-                                LOGGER.trace(MultithreadedRenderingManager.this.getRunnableQueue().size() + " runnables in the queue" //$NON-NLS-1$
+                                LOGGER.trace(MultithreadedRenderingManager.this
+                                        .getRunnableQueue().size()
+                                        + " runnables in the queue" //$NON-NLS-1$
                                 );
                             }
                             if (runnable == null) {
@@ -170,7 +178,8 @@ public class MultithreadedRenderingManager implements RenderingManager {
                 this.daemon.interrupt();
             }
         }
-        if (this.getLayerViewPanel().getProjectFrame() == null || this.getLayerViewPanel().getProjectFrame().getSld() == null) {
+        if (this.getLayerViewPanel().getProjectFrame() == null
+                || this.getLayerViewPanel().getProjectFrame().getSld() == null) {
             return;
         }
         // create a new daemon
@@ -180,9 +189,11 @@ public class MultithreadedRenderingManager implements RenderingManager {
         // start the new daemon
         this.daemon.start();
 
-        synchronized (this.getLayerViewPanel().getProjectFrame().getSld().getLayers()) {
+        synchronized (this.getLayerViewPanel().getProjectFrame().getSld()
+                .getLayers()) {
             // render all layers
-            for (Layer layer : this.getLayerViewPanel().getProjectFrame().getSld().getLayers()) {
+            for (Layer layer : this.getLayerViewPanel().getProjectFrame()
+                    .getSld().getLayers()) {
                 if (layer.isVisible()) {
                     this.render(this.rendererMap.get(layer));
                 }
@@ -202,13 +213,17 @@ public class MultithreadedRenderingManager implements RenderingManager {
     public final void addLayer(final Layer layer) {
         synchronized (this.rendererMap) {
             if (this.rendererMap.get(layer) == null) {
-                AwtLayerRenderer renderer = new AwtLayerRenderer(layer, this.getLayerViewPanel());
+                AwtLayerRenderer renderer = new AwtLayerRenderer(layer,
+                        this.getLayerViewPanel());
                 if (this.isHandlingDeletion()) {
-                    renderer = new AwtLayerRendererWithDeletion(layer, this.getLayerViewPanel());
+                    renderer = new AwtLayerRendererWithDeletion(layer,
+                            this.getLayerViewPanel());
                 }
                 this.rendererMap.put(layer, renderer);
-                // Adding the layer legend panel to the listeners of the renderer
-                renderer.addActionListener(this.getLayerViewPanel().getProjectFrame().getLayerLegendPanel());
+                // Adding the layer legend panel to the listeners of the
+                // renderer
+                renderer.addActionListener(this.getLayerViewPanel()
+                        .getProjectFrame().getLayerLegendPanel());
             }
         }
     }
@@ -313,15 +328,15 @@ public class MultithreadedRenderingManager implements RenderingManager {
 
     /**
      * Copy the rendered images to a 2D graphics in the same order the layers
-     * were
-     * added to the manager.
+     * were added to the manager.
      * 
      * @param destination
      *            a 2D graphics to copy the images to
      */
     public final void copyTo(final Graphics2D destination) {
         synchronized (this.getLayerViewPanel().getProjectFrame().getSld()) {
-            for (Layer layer : this.getLayerViewPanel().getProjectFrame().getSld().getLayers()) {
+            for (Layer layer : this.getLayerViewPanel().getProjectFrame()
+                    .getSld().getLayers()) {
                 AwtLayerRenderer layerRenderer = this.rendererMap.get(layer);
                 if (layer.getOpacity() > 0.0d && layerRenderer != null) {
                     layerRenderer.copyTo(destination);
@@ -349,8 +364,8 @@ public class MultithreadedRenderingManager implements RenderingManager {
      * (non-Javadoc)
      * 
      * @see
-     * fr.ign.cogit.geoxygene.appli.render.MultithreadedRenderingManager#repaint(
-     * )
+     * fr.ign.cogit.geoxygene.appli.render.MultithreadedRenderingManager#repaint
+     * ( )
      */
     @Override
     public void repaint() {
@@ -365,7 +380,9 @@ public class MultithreadedRenderingManager implements RenderingManager {
                 return;
             }
         }
-        if (this.selectionRenderer != null && (this.selectionRenderer.isRendering() || !this.selectionRenderer.isRendered())) {
+        if (this.selectionRenderer != null
+                && (this.selectionRenderer.isRendering() || !this.selectionRenderer
+                        .isRendered())) {
             return;
         }
         if (LOGGER.isTraceEnabled()) {
@@ -407,4 +424,5 @@ public class MultithreadedRenderingManager implements RenderingManager {
     public void setHandlingDeletion(boolean handlingDeletion) {
         this.handlingDeletion = handlingDeletion;
     }
+
 }

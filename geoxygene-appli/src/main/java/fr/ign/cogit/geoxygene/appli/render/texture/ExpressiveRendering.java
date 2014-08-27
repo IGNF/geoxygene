@@ -25,12 +25,12 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.style.expressive;
+package fr.ign.cogit.geoxygene.appli.render.texture;
 
 /**
  * @author JeT
- * 
+ *
  */
-public abstract class ExpressiveRendering {
+public interface ExpressiveRendering {
 
 }

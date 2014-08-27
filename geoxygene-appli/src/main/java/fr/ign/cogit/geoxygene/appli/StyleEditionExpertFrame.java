@@ -413,7 +413,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
             this.layerLegendPanel.getModel().fireActionPerformed(null);
             this.layerLegendPanel.repaint();
             this.layerViewPanel.repaint();
-            this.layerViewPanel.refresh();
+            this.layerViewPanel.reset();
             StyleEditionExpertFrame.this.dispose();
         }
 

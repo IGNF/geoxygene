@@ -381,17 +381,19 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         if (this.layer.getSymbolizer().isPolygonSymbolizer()
                 && ((PolygonSymbolizer) (this.layer.getSymbolizer()))
                         .getStroke().getExpressiveRendering() != null) {
+            PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.layer
+                    .getSymbolizer();
             ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUIFactory(
-                    ((PolygonSymbolizer) this.layer.getSymbolizer())
-                            .getStroke().getExpressiveRendering(),
+                    polygonSymbolizer.getStroke().getExpressiveRendering(),
                     this.layerViewPanel.getProjectFrame());
         } else if (this.layer.getSymbolizer().isLineSymbolizer()
                 && ((LineSymbolizer) (this.layer.getSymbolizer())).getStroke()
                         .getExpressiveRendering() != null) {
+            LineSymbolizer lineSymbolizer = (LineSymbolizer) this.layer
+                    .getSymbolizer();
             ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUIFactory(
-                    ((LineSymbolizer) this.layer.getSymbolizer()).getStroke()
-                            .getExpressiveRendering(), this.layerViewPanel
-                            .getProjectFrame());
+                    lineSymbolizer.getStroke().getExpressiveRendering(),
+                    this.layerViewPanel.getProjectFrame());
         }
         if (ui == null) {
             return;

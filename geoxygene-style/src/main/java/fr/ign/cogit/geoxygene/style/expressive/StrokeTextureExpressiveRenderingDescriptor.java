@@ -30,13 +30,15 @@ package fr.ign.cogit.geoxygene.style.expressive;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 
 /**
  * @author JeT
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
+public class StrokeTextureExpressiveRenderingDescriptor extends
+        ExpressiveRenderingDescriptor {
 
     @XmlElement(name = "PaperTexture")
     private String paperTextureFilename = "./src/main/resources/textures/papers/black-normalized.png";
@@ -64,23 +66,30 @@ public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
     private double strokePressure = 2.64;
     @XmlElement(name = "StrokeSoftness")
     private double sharpness = 0.1;
-    @XmlElement(name = "StrokePressureVariationAmplitude")
-    private double strokePressureVariationAmplitude = .32;
-    @XmlElement(name = "StrokePressureVariationWavelength")
-    private double strokePressureVariationWavelength = 1. / .025;
-    @XmlElement(name = "StrokeShiftVariationAmplitude")
-    private double strokeShiftVariationAmplitude = .92;
-    @XmlElement(name = "StrokeShiftVariationWavelength")
-    private double strokeShiftVariationWavelength = 1. / .05;
-    @XmlElement(name = "StrokeThicknessVariationAmplitude")
-    private double strokeThicknessVariationAmplitude = .07;
-    @XmlElement(name = "StrokeThicknessVariationWavelength")
-    private double strokeThicknessVariationWavelength = 1. / .05;
+
+    @XmlElements({ @XmlElement(name = "RandomShader", type = ShaderDescriptor.class) })
+    private ShaderDescriptor shader = new RandomVariationShaderDescriptor();
 
     /**
      * 
      */
-    public StrokeTextureExpressiveRendering() {
+    public StrokeTextureExpressiveRenderingDescriptor() {
+    }
+
+    /**
+     * @return the shader
+     */
+    public ShaderDescriptor getShaderDescriptor() {
+        return this.shader;
+    }
+
+    /**
+     * @param shader
+     *            the shader to set
+     */
+    public void setShader(
+            RandomVariationShaderDescriptor shader) {
+        this.shader = shader;
     }
 
     /**
@@ -278,102 +287,6 @@ public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
         this.sharpness = sharpness;
     }
 
-    /**
-     * @return the strokePressureVariationAmplitude
-     */
-    public double getStrokePressureVariationAmplitude() {
-        return this.strokePressureVariationAmplitude;
-    }
-
-    /**
-     * @param strokePressureVariationAmplitude
-     *            the strokePressureVariationAmplitude to set
-     */
-    public void setStrokePressureVariationAmplitude(
-            double strokePressureVariationAmplitude) {
-        this.strokePressureVariationAmplitude = strokePressureVariationAmplitude;
-    }
-
-    /**
-     * @return the strokePressureVariationWavelength
-     */
-    public double getStrokePressureVariationWavelength() {
-        return this.strokePressureVariationWavelength;
-    }
-
-    /**
-     * @param strokePressureVariationWavelength
-     *            the strokePressureVariationWavelength to set
-     */
-    public void setStrokePressureVariationWavelength(
-            double strokePressureVariationWavelength) {
-        this.strokePressureVariationWavelength = strokePressureVariationWavelength;
-    }
-
-    /**
-     * @return the strokeShiftVariationAmplitude
-     */
-    public double getStrokeShiftVariationAmplitude() {
-        return this.strokeShiftVariationAmplitude;
-    }
-
-    /**
-     * @param strokeShiftVariationAmplitude
-     *            the strokeShiftVariationAmplitude to set
-     */
-    public void setStrokeShiftVariationAmplitude(
-            double strokeShiftVariationAmplitude) {
-        this.strokeShiftVariationAmplitude = strokeShiftVariationAmplitude;
-    }
-
-    /**
-     * @return the strokeShiftVariationWavelength
-     */
-    public double getStrokeShiftVariationWavelength() {
-        return this.strokeShiftVariationWavelength;
-    }
-
-    /**
-     * @param strokeShiftVariationWavelength
-     *            the strokeShiftVariationWavelength to set
-     */
-    public void setStrokeShiftVariationWavelength(
-            double strokeShiftVariationWavelength) {
-        this.strokeShiftVariationWavelength = strokeShiftVariationWavelength;
-    }
-
-    /**
-     * @return the strokeThicknessVariationAmplitude
-     */
-    public double getStrokeThicknessVariationAmplitude() {
-        return this.strokeThicknessVariationAmplitude;
-    }
-
-    /**
-     * @param strokeThicknessVariationAmplitude
-     *            the strokeThicknessVariationAmplitude to set
-     */
-    public void setStrokeThicknessVariationAmplitude(
-            double strokeThicknessVariationAmplitude) {
-        this.strokeThicknessVariationAmplitude = strokeThicknessVariationAmplitude;
-    }
-
-    /**
-     * @return the strokeThicknessVariationWavelength
-     */
-    public double getStrokeThicknessVariationWavelength() {
-        return this.strokeThicknessVariationWavelength;
-    }
-
-    /**
-     * @param strokeThicknessVariationWavelength
-     *            the strokeThicknessVariationWavelength to set
-     */
-    public void setStrokeThicknessVariationWavelength(
-            double strokeThicknessVariationWavelength) {
-        this.strokeThicknessVariationWavelength = strokeThicknessVariationWavelength;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -398,9 +311,9 @@ public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
         result = prime * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(this.paperDensity);
         result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.paperScaleFactor);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(this.paperReferenceMapScale);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.paperScaleFactor);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime
                 * result
@@ -408,21 +321,11 @@ public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
                         : this.paperTextureFilename.hashCode());
         temp = Double.doubleToLongBits(this.sampleSize);
         result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result
+                + ((this.shader == null) ? 0 : this.shader.hashCode());
         temp = Double.doubleToLongBits(this.sharpness);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(this.strokePressure);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.strokePressureVariationAmplitude);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.strokePressureVariationWavelength);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.strokeShiftVariationAmplitude);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.strokeShiftVariationWavelength);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.strokeThicknessVariationAmplitude);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.strokeThicknessVariationWavelength);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
@@ -443,7 +346,7 @@ public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        StrokeTextureExpressiveRendering other = (StrokeTextureExpressiveRendering) obj;
+        StrokeTextureExpressiveRenderingDescriptor other = (StrokeTextureExpressiveRenderingDescriptor) obj;
         if (Double.doubleToLongBits(this.brushDensity) != Double
                 .doubleToLongBits(other.brushDensity)) {
             return false;
@@ -474,12 +377,12 @@ public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
                 .doubleToLongBits(other.paperDensity)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.paperScaleFactor) != Double
-                .doubleToLongBits(other.paperScaleFactor)) {
-            return false;
-        }
         if (Double.doubleToLongBits(this.paperReferenceMapScale) != Double
                 .doubleToLongBits(other.paperReferenceMapScale)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.paperScaleFactor) != Double
+                .doubleToLongBits(other.paperScaleFactor)) {
             return false;
         }
         if (this.paperTextureFilename == null) {
@@ -494,36 +397,19 @@ public class StrokeTextureExpressiveRendering extends ExpressiveRendering {
                 .doubleToLongBits(other.sampleSize)) {
             return false;
         }
+        if (this.shader == null) {
+            if (other.shader != null) {
+                return false;
+            }
+        } else if (!this.shader.equals(other.shader)) {
+            return false;
+        }
         if (Double.doubleToLongBits(this.sharpness) != Double
                 .doubleToLongBits(other.sharpness)) {
             return false;
         }
         if (Double.doubleToLongBits(this.strokePressure) != Double
                 .doubleToLongBits(other.strokePressure)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.strokePressureVariationAmplitude) != Double
-                .doubleToLongBits(other.strokePressureVariationAmplitude)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.strokePressureVariationWavelength) != Double
-                .doubleToLongBits(other.strokePressureVariationWavelength)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.strokeShiftVariationAmplitude) != Double
-                .doubleToLongBits(other.strokeShiftVariationAmplitude)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.strokeShiftVariationWavelength) != Double
-                .doubleToLongBits(other.strokeShiftVariationWavelength)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.strokeThicknessVariationAmplitude) != Double
-                .doubleToLongBits(other.strokeThicknessVariationAmplitude)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.strokeThicknessVariationWavelength) != Double
-                .doubleToLongBits(other.strokeThicknessVariationWavelength)) {
             return false;
         }
         return true;

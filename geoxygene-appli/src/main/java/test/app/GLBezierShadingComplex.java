@@ -47,7 +47,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.appli.gl.GLTextureManager;
-import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.appli.render.texture.BasicTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.util.gl.AbstractGLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLInput;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;

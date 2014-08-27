@@ -30,13 +30,15 @@ package fr.ign.cogit.geoxygene.style.expressive;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 
 /**
  * @author JeT
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class BasicTextureExpressiveRendering extends ExpressiveRendering {
+public class BasicTextureExpressiveRenderingDescriptor extends
+        ExpressiveRenderingDescriptor {
 
     @XmlElement(name = "BrushTexture")
     private String brushTextureFilename = "./src/main/resources/textures/brushes/chalk2-100-200.png";
@@ -44,6 +46,27 @@ public class BasicTextureExpressiveRendering extends ExpressiveRendering {
     private double aspectRation = 8;
     @XmlElement(name = "TransitionSize")
     private double transitionSize = 10;
+
+    @XmlElements({
+            @XmlElement(name = "RandomShader", type = RandomVariationShaderDescriptor.class),
+            @XmlElement(name = "UserShader", type = UserShaderDescriptor.class) })
+    private ShaderDescriptor shader = new RandomVariationShaderDescriptor();
+
+    /**
+     * @return the shader
+     */
+    public ShaderDescriptor getShaderDescriptor() {
+        return this.shader;
+    }
+
+    /**
+     * @param shader
+     *            the shader to set
+     */
+    public void setShader(
+            RandomVariationShaderDescriptor shader) {
+        this.shader = shader;
+    }
 
     /**
      * @return the brushTextureFilename
@@ -127,7 +150,7 @@ public class BasicTextureExpressiveRendering extends ExpressiveRendering {
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        BasicTextureExpressiveRendering other = (BasicTextureExpressiveRendering) obj;
+        BasicTextureExpressiveRenderingDescriptor other = (BasicTextureExpressiveRenderingDescriptor) obj;
         if (Double.doubleToLongBits(this.aspectRation) != Double
                 .doubleToLongBits(other.aspectRation)) {
             return false;

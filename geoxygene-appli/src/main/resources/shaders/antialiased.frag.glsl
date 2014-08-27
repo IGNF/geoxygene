@@ -23,5 +23,6 @@ void main(void) {
     }
     vec3 interpolatedColor = sumRGB / sumAlpha;
     float interpolatedAlpha = sumAlpha / (antialiasingSize * antialiasingSize);
-    outColor = vec4( interpolatedColor.rgb, globalOpacity * objectOpacity * interpolatedAlpha);
+ //   outColor = vec4( objectOpacity/256.);
+    outColor = vec4( interpolatedColor.rgb, globalOpacity * objectOpacity * interpolatedAlpha );
 }

@@ -25,23 +25,29 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.ui;
+package fr.ign.cogit.geoxygene.appli.gl;
 
-import javax.swing.JComponent;
+import fr.ign.cogit.geoxygene.util.gl.GLException;
+import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 
 /**
  * @author JeT
  * 
  */
-public interface ExpressiveRenderingUI {
-
-    JComponent getGui();
+public interface Shader {
 
     /**
-     * set variable values from stroke texture expressive rendering object
+     * declare the uniforms variables used in this shader
+     * 
+     * @param program
      */
-    public void setValuesFromObject();
+    public void declareUniforms(GLProgram program);
 
-    public void setValuesToObject();
+    /**
+     * Initialize the shader before rendering (set uniforms)
+     * 
+     * @throws GLException
+     */
+    public void setUniforms(GLProgram program) throws GLException;
 
 }

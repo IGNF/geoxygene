@@ -412,7 +412,7 @@ public class MainFrameMenuBar extends JMenuBar {
                                     .getProperties()
                                     .setLastOpenedFile(file.getAbsolutePath());
                             fc.setPreviousDirectory(file);
-                            projectFrame.getLayerViewPanel().refresh();
+                            projectFrame.getLayerViewPanel().reset();
                         } catch (Exception e1) {
                             e1.printStackTrace();
                         }

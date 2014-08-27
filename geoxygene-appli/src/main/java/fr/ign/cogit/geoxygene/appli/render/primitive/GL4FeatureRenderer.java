@@ -38,7 +38,6 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glGenTextures;
 import static org.lwjgl.opengl.GL11.glHint;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
@@ -52,7 +51,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +61,6 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.Util;
 
-import test.app.GLBezierShadingComplex;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -73,7 +70,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.mode.RenderingTypeMode;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
@@ -83,30 +79,27 @@ import fr.ign.cogit.geoxygene.appli.task.TaskListener;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
-import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex.GLSimpleRenderingCapability;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 import fr.ign.cogit.geoxygene.util.gl.RenderingStatistics;
-import fr.ign.cogit.geoxygene.util.gl.Texture;
 
 /**
  * @author JeT This renderer writes GL Code to perform GL rendering
  */
-public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
-        TaskListener {
+public abstract class GL4FeatureRenderer extends AbstractFeatureRenderer
+        implements TaskListener {
 
     private static final float DEFAULT_POINT_SIZE = 3f;
     private static final float DEFAULT_LINE_WIDTH = 1f;
 
-    private static Logger logger = Logger.getLogger(GL4FeatureRenderer.class
-            .getName());
+    private final static Logger logger = Logger
+            .getLogger(GL4FeatureRenderer.class.getName());
 
     private Color backgroundColor = Color.white;
     private Color foregroundColor = Color.black;
@@ -120,7 +113,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     public static final int COLORTEXTURE1_SLOT = 0;
     public static final int DMAPTEXTURE_SLOT = 4;
 
-    // private int screenHeightLocation = -1; // GLSL
+    // private final int screenHeightLocation = -1; // GLSL
 
     private final Map<IFeature, GLDisplayable> displayables = new HashMap<IFeature, GLDisplayable>();
     private LwjglLayerRenderer lwjglLayerRenderer = null;
@@ -129,6 +122,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     private int fboTextureId = -1;
     private int fboImageWidth = -1;
     private int fboImageHeight = -1;
+    private boolean fboRendering; // true if fbo rendering is in progress
+    private GL4FeatureRendererBasic partialRenderer = null;
 
     /**
      * Constructor
@@ -140,20 +135,26 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             throw new IllegalArgumentException("layer renderer cannot be null");
         }
         this.lwjglLayerRenderer = lwjglLayerRenderer;
+        if (this instanceof GL4FeatureRendererBasic) {
+            this.partialRenderer = (GL4FeatureRendererBasic) this;
+        } else {
+            this.partialRenderer = new GL4FeatureRendererBasic(
+                    lwjglLayerRenderer);
+        }
     }
 
     /**
      * @return the glContext
      * @throws GLException
      */
-    public GLContext getGlContext() throws GLException {
+    public final GLContext getGlContext() throws GLException {
         return this.lwjglLayerRenderer.getGLContext();
     }
 
     /**
      * 
      */
-    private void initializeScreenQuad() {
+    private final void initializeScreenQuad() {
         this.screenQuad = new GLSimpleComplex("screen", 0f, 0f);
         GLMesh mesh = this.screenQuad.addGLMesh(GL11.GL_QUADS);
         mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
@@ -171,7 +172,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     /**
      * @return the screenQuad
      */
-    public GLSimpleComplex getScreenQuad() {
+    public final GLSimpleComplex getScreenQuad() {
         if (this.screenQuad == null) {
             this.initializeScreenQuad();
         }
@@ -184,7 +185,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     // * @param backgroundColor
     // * @param foregroundColor
     // */
-    // public GL4FeatureRenderer(LwjglLayerRenderer lwjglLayerRenderer, final
+    // public final GL4FeatureRenderer(LwjglLayerRenderer lwjglLayerRenderer,
+    // final
     // Color backgroundColor, final Color foregroundColor) {
     // this(lwjglLayerRenderer);
     // this.backgroundColor = backgroundColor;
@@ -194,28 +196,28 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     /**
      * @return the lwjglLayerRenderer
      */
-    public LwjglLayerRenderer getLayerRenderer() {
+    public final LwjglLayerRenderer getLayerRenderer() {
         return this.lwjglLayerRenderer;
     }
 
     /**
      * @return the lwjglLayerRenderer
      */
-    public LayerViewGLPanel getLayerViewPanel() {
+    public final LayerViewGLPanel getLayerViewPanel() {
         return this.lwjglLayerRenderer.getLayerViewPanel();
     }
 
     /**
      * @return the needInitialization
      */
-    public boolean needInitialization() {
+    public final boolean needInitialization() {
         return this.needInitialization;
     }
 
     /**
      * @return the lineWidth
      */
-    public float getLineWidth() {
+    public final float getLineWidth() {
         return this.lineWidth;
     }
 
@@ -223,14 +225,14 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * @param lineWidth
      *            the lineWidth to set
      */
-    public void setLineWidth(final float lineWidth) {
+    public final void setLineWidth(final float lineWidth) {
         this.lineWidth = lineWidth;
     }
 
     /**
      * @return the pointWidth
      */
-    public float getPointWidth() {
+    public final float getPointWidth() {
         return this.pointWidth;
     }
 
@@ -238,14 +240,14 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * @param pointWidth
      *            the pointWidth to set
      */
-    public void setPointWidth(final float pointWidth) {
+    public final void setPointWidth(final float pointWidth) {
         this.pointWidth = pointWidth;
     }
 
     /**
      * @return the backgroundColor
      */
-    public Color getBackgroundColor() {
+    public final Color getBackgroundColor() {
         return this.backgroundColor;
     }
 
@@ -253,14 +255,14 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * @param backgroundColor
      *            the backgroundColor to set
      */
-    public void setBackgroundColor(final Color backgroundColor) {
+    public final void setBackgroundColor(final Color backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 
     /**
      * @return the foregroundColor
      */
-    public Color getForegroundColor() {
+    public final Color getForegroundColor() {
         return this.foregroundColor;
     }
 
@@ -268,7 +270,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * @param foregroundColor
      *            the foregroundColor to set
      */
-    public void setForegroundColor(final Color foregroundColor) {
+    public final void setForegroundColor(final Color foregroundColor) {
         this.foregroundColor = foregroundColor;
     }
 
@@ -276,7 +278,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * Render one Feature
      */
     @Override
-    public void render(final IFeature feature, final Layer layer,
+    public final void render(final IFeature feature, final Layer layer,
             final Symbolizer symbolizer, final Viewport viewport)
             throws RenderingException {
         // System.err.println("rendering feature " + feature.getId() +
@@ -300,18 +302,10 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         }
 
         double layerOpacity = layer.getOpacity();
+        GLDisplayable displayable = null;
         synchronized (this.displayables) {
-            // try to retrieve previously generated geometry matching the given
-            // view environment
-            GLDisplayable displayable = this.getDisplayable(feature);
-            if (displayable != null) {
-                try {
-                    this.renderDisplayable(displayable, layerOpacity);
-                } catch (GLException e) {
-                    throw new RenderingException(e);
-                }
-                return;
-            }
+            // try to retrieve previously generated geometry
+            displayable = this.getDisplayable(feature);
             // System.err.println("generate geometry from feature id = "
             // + feature.getId());
             // System.err.println("generate geometry from feature collection = "
@@ -320,53 +314,35 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             // + feature.getGeom().getEnvelope());
             // System.err.println("feature collection envelope = "
             // + feature.getFeatureCollection(0).getEnvelope());
-            IGeometry geometry = feature.getGeom();
-            if (geometry == null) {
-                logger.warn("null geometry for feature " + feature.getId());
-                return;
-            } else if (geometry.isPolygon()) {
-                DisplayableSurface displayablePolygon = new DisplayableSurface(
-                        layer.getName() + "-polygon #" + feature.getId(),
-                        viewport, (IPolygon) geometry, feature, symbolizer);
-                displayable = displayablePolygon;
-            } else if (geometry.isMultiSurface()) {
-                DisplayableSurface displayablePolygon = new DisplayableSurface(
-                        layer.getName() + "-multisurface #" + feature.getId(),
-                        viewport, (IMultiSurface<?>) geometry, feature,
-                        symbolizer);
-                displayable = displayablePolygon;
-            } else if (geometry.isMultiCurve()) {
-                DisplayableCurve displayableCurve = new DisplayableCurve(
-                        layer.getName() + "-multicurve #" + feature.getId(),
-                        viewport, (IMultiCurve<?>) geometry, symbolizer);
-                displayable = displayableCurve;
-            } else if (geometry.isLineString()) {
-                DisplayableCurve displayableLine = new DisplayableCurve(
-                        layer.getName() + "-linestring #" + feature.getId(),
-                        viewport, (ILineString) geometry, symbolizer);
-                displayable = displayableLine;
-            } else if (geometry.isPoint() || (geometry instanceof IMultiPoint)) {
-                DisplayablePoint displayablePoint = new DisplayablePoint(
-                        layer.getName() + "-multipoint #" + feature.getId(),
-                        viewport, geometry, symbolizer);
-                displayable = displayablePoint;
-            } else {
-                logger.warn("GL4FeatureRenderer cannot handle geometry type "
-                        + geometry.getClass().getSimpleName());
+            if (displayable == null) {
+                // if no displayable exists, create a new one
+                IGeometry geometry = feature.getGeom();
+                displayable = this.generateDisplayable(feature, layer,
+                        symbolizer, viewport, displayable, geometry);
+                // stores generated geom
+                this.addDisplayable(feature, displayable);
             }
-            if (displayable != null) {
-                this.addDisplayable(feature, displayable); // stores generated
-                                                           // geometry
-                try {
-                    this.renderDisplayable(displayable, layerOpacity);
-                } catch (GLException e) {
-                    throw new RenderingException(e);
+        }
+        if (displayable != null) {
+            try {
+                Collection<GLComplex> fullRepresentation = displayable
+                        .getFullRepresentation();
+                if (fullRepresentation == null) {
+                    this.partialRenderer.setViewport(viewport);
+                    this.partialRenderer.setFBORendering(false);
+                    this.partialRenderer.normalRendering(
+                            displayable.getPartialRepresentation(),
+                            layerOpacity);
+                } else {
+                    this.renderGLPrimitive(fullRepresentation, layerOpacity);
                 }
-            } else {
-                logger.warn(this.getClass().getSimpleName()
-                        + " do not know how to render feature "
-                        + feature.getGeom().getClass().getSimpleName());
+            } catch (GLException e) {
+                throw new RenderingException(e);
             }
+        } else {
+            logger.warn(this.getClass().getSimpleName()
+                    + " do not know how to render feature "
+                    + feature.getGeom().getClass().getSimpleName());
         }
 
         if (!GLTools.glCheckError("gl error ocurred during rendering")) {
@@ -376,7 +352,56 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         // this.checkCurrentProgram("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ render()");
     }
 
-    private void addDisplayable(IFeature feature, GLDisplayable displayable) {
+    /**
+     * @param feature
+     * @param layer
+     * @param symbolizer
+     * @param viewport
+     * @param displayable
+     * @param geometry
+     * @return
+     */
+    private GLDisplayable generateDisplayable(final IFeature feature,
+            final Layer layer, final Symbolizer symbolizer,
+            final Viewport viewport, GLDisplayable displayable,
+            IGeometry geometry) {
+        if (geometry == null) {
+            logger.warn("null geometry for feature " + feature.getId());
+            return null;
+        } else if (geometry.isPolygon()) {
+            DisplayableSurface displayablePolygon = new DisplayableSurface(
+                    layer.getName() + "-polygon #" + feature.getId(), viewport,
+                    (IPolygon) geometry, feature, symbolizer);
+            displayable = displayablePolygon;
+        } else if (geometry.isMultiSurface()) {
+            DisplayableSurface displayablePolygon = new DisplayableSurface(
+                    layer.getName() + "-multisurface #" + feature.getId(),
+                    viewport, (IMultiSurface<?>) geometry, feature, symbolizer);
+            displayable = displayablePolygon;
+        } else if (geometry.isMultiCurve()) {
+            DisplayableCurve displayableCurve = new DisplayableCurve(
+                    layer.getName() + "-multicurve #" + feature.getId(),
+                    viewport, (IMultiCurve<?>) geometry, symbolizer);
+            displayable = displayableCurve;
+        } else if (geometry.isLineString()) {
+            DisplayableCurve displayableLine = new DisplayableCurve(
+                    layer.getName() + "-linestring #" + feature.getId(),
+                    viewport, (ILineString) geometry, symbolizer);
+            displayable = displayableLine;
+        } else if (geometry.isPoint() || (geometry instanceof IMultiPoint)) {
+            DisplayablePoint displayablePoint = new DisplayablePoint(
+                    layer.getName() + "-multipoint #" + feature.getId(),
+                    viewport, geometry, symbolizer);
+            displayable = displayablePoint;
+        } else {
+            logger.warn("GL4FeatureRenderer cannot handle geometry type "
+                    + geometry.getClass().getSimpleName());
+        }
+        return displayable;
+    }
+
+    private final void addDisplayable(IFeature feature,
+            GLDisplayable displayable) {
         this.displayables.put(feature, displayable);
         // task is automatically started when added to the manager
         GeOxygeneEventManager.getInstance().getApplication().getTaskManager()
@@ -384,7 +409,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         displayable.addTaskListener(this);
     }
 
-    private void removeDisplayable(IFeature feature) {
+    private final void removeDisplayable(IFeature feature) {
         GLDisplayable displayable = this.displayables.remove(feature);
         if (displayable != null) {
             displayable.removeTaskListener(this);
@@ -398,7 +423,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * @param viewport
      * @throws GLException
      */
-    private void renderGLPrimitive(Collection<GLComplex> complexes,
+    private final void renderGLPrimitive(Collection<GLComplex> complexes,
             double opacity) throws GLException {
         for (GLComplex complex : complexes) {
             this.renderGLPrimitive(complex, opacity);
@@ -406,7 +431,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
 
     }
 
-    private GLDisplayable getDisplayable(IFeature feature) {
+    private final GLDisplayable getDisplayable(IFeature feature) {
         return this.displayables.get(feature);
     }
 
@@ -415,7 +440,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * 
      * @throws GLException
      */
-    private void renderGLPrimitive(GLComplex primitive, double opacity)
+    private final void renderGLPrimitive(GLComplex primitive, double opacity)
             throws GLException {
         // glEnableVertexAttribArray(COLOR_ATTRIBUTE_ID);
         if (this.getLayerViewPanel().useWireframe()) {
@@ -431,8 +456,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * @param opacity
      * @throws GLException
      */
-    private void renderGLPrimitivePlain(GLComplex primitive, double opacity)
-            throws GLException {
+    private final void renderGLPrimitivePlain(GLComplex primitive,
+            double opacity) throws GLException {
         boolean quickRendering = this.getLayerViewPanel().getProjectFrame()
                 .getMainFrame().getMode().getCurrentMode().getRenderingType() != RenderingTypeMode.FINAL;
         // System.err.println("rendering primitive "
@@ -447,29 +472,9 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
             // System.err.println("draw primitive with "
             // + primitive.getMeshes().size()
             // + " meshes using normal rendering");
-            this.normalRendering(primitive, opacity, false);
+            this.setFBORendering(false);
+            this.normalRendering(primitive, opacity);
         }
-    }
-
-    private void normalRendering(GLComplex primitive, double opacity,
-            boolean inFBO) throws GLException {
-        if (primitive instanceof GLSimpleComplex) {
-            this.normalSimpleRendering((GLSimpleComplex) primitive, opacity,
-                    inFBO);
-            return;
-        } else if (primitive instanceof GLPaintingComplex) {
-            this.normalPaintingRendering((GLPaintingComplex) primitive,
-                    opacity, inFBO);
-            return;
-        } else if (primitive instanceof GLBezierShadingComplex) {
-            this.normalBezierRendering((GLBezierShadingComplex) primitive,
-                    opacity, inFBO);
-            return;
-        }
-        throw new UnsupportedOperationException(
-                "GLComplex normal Rendering is not supported for Complex type "
-                        + primitive.getClass().getSimpleName());
-
     }
 
     private void fboRendering(GLComplex primitive, double opacity)
@@ -478,25 +483,24 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         GLTools.glCheckError("entering FBO rendering");
         // bind a read-only framebuffer
         glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, this.fboId);
-
+        this.setFBORendering(true);
         // check if the screen size has change since previous rendering
         int antialisingSize = this.getLayerViewPanel().getAntialiasingSize() + 1;
         if (this.fboImageWidth != antialisingSize * this.getCanvasWidth()
                 || this.fboImageHeight != antialisingSize
                         * this.getCanvasHeight()) {
-            this.fboImageWidth = antialisingSize * this.getCanvasWidth();
-            this.fboImageHeight = antialisingSize * this.getCanvasHeight();
+            this.invalidateFBO();
 
-            glBindTexture(GL_TEXTURE_2D, this.fboTextureId);
+            glBindTexture(GL_TEXTURE_2D, this.getFBOTextureId());
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
                     GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.fboImageWidth,
-                    this.fboImageHeight, 0, GL11.GL_RGBA,
-                    GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8,
+                    this.getFBOImageWidth(), this.getFBOImageHeight(), 0,
+                    GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
         }
 
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                GL_TEXTURE_2D, this.fboTextureId, 0);
+                GL_TEXTURE_2D, this.getFBOTextureId(), 0);
         // check FBO status
 
         int status = GL30.glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -525,16 +529,24 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         // using object opacity * overall opacity
 
         GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+        GLTools.glCheckError("after setting draw buffer");
 
         glEnable(GL_TEXTURE_2D);
 
-        GL11.glViewport(0, 0, this.fboImageWidth, this.fboImageHeight);
+        // System.err.println("fbo image size = " + this.getFBOImageWidth() +
+        // "x"
+        // + this.getFBOImageHeight() + " " + this.getFBORendering());
+        GL11.glViewport(0, 0, this.getFBOImageWidth(), this.getFBOImageHeight());
+        GLTools.glCheckError("after setting viewport");
 
-        GL11.glClearColor(0.5f, 0.5f, 0.5f, 0f);
+        GL11.glClearColor(0f, 0f, 0f, 0f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
         glDisable(GL11.GL_BLEND);
-        this.normalRendering(primitive, opacity, true);
+        GLTools.glCheckError("just before launching normal rendering within FBO context");
+
+        this.normalRendering(primitive, opacity);
+        this.setFBORendering(false);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -564,7 +576,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         GLTools.glCheckError("FBO activate texture");
         GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE1_SLOT);
         GLTools.glCheckError("FBO bound texture");
-        glBindTexture(GL_TEXTURE_2D, this.fboTextureId);
+        glBindTexture(GL_TEXTURE_2D, this.getFBOTextureId());
         GLTools.glCheckError("FBO bound texture");
 
         GL11.glDepthMask(false);
@@ -583,12 +595,14 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
                 (float) opacity);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
+                GL11.GL_LINEAR);
         //
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
         GLTools.glCheckError("before FBO drawing textured quad");
         this.drawComplex(this.getScreenQuad());
-        this.getScreenQuad().setColor(new Color(1f, 0f, 1f, .5f));
+        // this.getScreenQuad().setColor(new Color(1f, 1f, 1f, .5f));
         GLTools.glCheckError("FBO drawing textured quad");
         glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
         GL30.glBindVertexArray(0); // unbind VAO
@@ -596,11 +610,24 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
 
     }
 
+    private int getFBOTextureId() {
+        if (this.fboTextureId == -1) {
+            this.fboTextureId = GL11.glGenTextures();
+            if (this.fboTextureId < 0) {
+                logger.error("Unable to use FBO texture");
+            }
+        }
+        return this.fboTextureId;
+    }
+
+    public abstract void normalRendering(GLComplex primitive, double opacity)
+            throws GLException;
+
     /**
      * @param primitive
      * @throws GLException
      */
-    private void renderGLPrimitiveWireframe(GLComplex primitive)
+    private final void renderGLPrimitiveWireframe(GLComplex primitive)
             throws GLException {
         GLProgram program = this.getGlContext().setCurrentProgram(
                 LayerViewGLPanel.worldspaceColorProgramName);
@@ -621,42 +648,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
                 DEFAULT_POINT_SIZE);
     }
 
-    /**
-     * 
-     */
-    // private void checkCurrentProgram(String message) {
-    // return;
-    // if (this.getCurrentProgramId() == -1) {
-    // return;
-    // }
-    // System.err.println("Check " + message + " app: " +
-    // this.getCurrentProgramId() + " gl: " +
-    // GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM));
-    // if (this.getCurrentProgramId() !=
-    // GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM)) {
-    // System.err.println("C'est quoi c'te merde !!!! " + message + " app: "
-    // + this.getCurrentProgramId() + " gl: "
-    // + GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM));
-    // }
-    // }
-
-    // /**
-    // * @return the currentProgramId
-    // */
-    // public GLProgram getCurrentProgram() {
-    // return program;
-    // }
-    //
-    // /**
-    // * @return the currentProgramId
-    // * @throws GLException
-    // */
-    // public int getCurrentProgramId() throws GLException {
-    // return program == null ? -1 : this.getGlContext().getCurrentProgram()
-    // .getProgramId();
-    // }
-
-    private int getCanvasWidth() {
+    public final int getCanvasWidth() {
         if (this.lwjglLayerRenderer != null
                 && this.lwjglLayerRenderer.getLayerViewPanel() != null) {
             return this.lwjglLayerRenderer.getLayerViewPanel().getWidth();
@@ -664,7 +656,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         return 0;
     }
 
-    private int getCanvasHeight() {
+    public final int getCanvasHeight() {
         if (this.lwjglLayerRenderer != null
                 && this.lwjglLayerRenderer.getLayerViewPanel() != null) {
             return this.lwjglLayerRenderer.getLayerViewPanel().getHeight();
@@ -672,293 +664,60 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         return 0;
     }
 
-    /**
-     * Render a polygon using color, texture or wireframe GL_BLEND has to be set
-     * before this rendering method. It does not use FBOs
-     * 
-     * @param primitive
-     * @throws GLException
-     */
-    private void normalSimpleRendering(GLSimpleComplex primitive,
-            double opacity, boolean inFBO) throws GLException {
-        GLTools.glCheckError("gl error before normal rendering");
-        GLProgram program = null;
-        if (Arrays.binarySearch(primitive.getRenderingCapabilities(),
-                GLSimpleRenderingCapability.TEXTURE) >= 0) {
-            // System.err.println("use texture");
-            program = this.getGlContext().setCurrentProgram(
-                    LayerViewGLPanel.worldspaceTextureProgramName);
-        } else if (Arrays.binarySearch(primitive.getRenderingCapabilities(),
-                GLSimpleRenderingCapability.COLOR) >= 0
-                || Arrays.binarySearch(primitive.getRenderingCapabilities(),
-                        GLSimpleRenderingCapability.POSITION) >= 0) {
-            // System.err.println("use color");
-            program = this.getGlContext().setCurrentProgram(
-                    LayerViewGLPanel.worldspaceColorProgramName);
+    public final int getFBOImageWidth() {
+        if (this.getFBORendering()) {
+            if (this.fboImageWidth == -1) {
+                this.computeFBOImageSize();
+            }
+            return this.fboImageWidth;
         } else {
-            logger.warn("Rendering capability "
-                    + Arrays.toString(primitive.getRenderingCapabilities())
-                    + " is not handled by " + this.getClass().getSimpleName());
+            return this.getCanvasWidth();
         }
-        if (program == null) {
-            logger.error("GL program cannot be set");
-            return;
-        }
+    }
 
-        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
-        program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
-                (float) opacity);
-
-        if (inFBO) {
-            program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName,
-                    this.fboImageWidth);
-            program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName,
-                    this.fboImageHeight);
+    public final int getFBOImageHeight() {
+        if (this.getFBORendering()) {
+            if (this.fboImageHeight == -1) {
+                this.computeFBOImageSize();
+            }
+            return this.fboImageHeight;
         } else {
-            program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName,
-                    this.getCanvasWidth());
-            program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName,
-                    this.getCanvasHeight());
-
+            return this.getCanvasHeight();
         }
-        GLTools.glCheckError("program set to " + program.getName()
-                + " in normal rendering");
-        // this.checkCurrentProgram("normalRendering(): after setCurrentProgram");
-        Texture texture = primitive.getTexture();
-        if (texture != null) {
-            GLTools.glCheckError("initializing texture");
-            texture.initializeRendering();
-            GLTools.glCheckError("texture initialized");
-            program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
-                    COLORTEXTURE1_SLOT);
-            program.setUniform2f(
-                    LayerViewGLPanel.textureScaleFactorUniformVarName,
-                    (float) texture.getScaleX(), (float) texture.getScaleY());
-            GLTools.glCheckError("initialize texture rendering vao = "
-                    + primitive.getVaoId() + " current program = "
-                    + program.getName());
-            // this.checkCurrentProgram("normalRendering(): after texture::initializeRendering()");
-        }
-
-        // this.checkCurrentProgram("normalRendering(): before setGLViewMatrix()");
-        this.setGLViewMatrix(this.getViewport(), primitive.getMinX(),
-                primitive.getMinY());
-        // this.checkCurrentProgram("normalRendering(): after setGLViewMatrix()");
-
-        GL30.glBindVertexArray(primitive.getVaoId());
-        GLTools.glCheckError("direct rendering binding vaoId = "
-                + primitive.getVaoId());
-        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-        // this.checkCurrentProgram("normalRendering(): before drawComplex()");
-
-        // GLTools.displayBuffer(primitive.getFlippedVerticesBuffer());
-        this.drawComplex(primitive);
-        // this.checkCurrentProgram("normalRendering(): after drawComplex()");
-        GLTools.glCheckError("direct rendering drawing GLSimpleComplex class = "
-                + primitive.getClass().getSimpleName());
-        if (texture != null) {
-            texture.finalizeRendering();
-            GLTools.glCheckError("direct rendering finalizing texture rendering GLSimpleComplex class = "
-                    + primitive.getClass().getSimpleName());
-        }
-
-        GL30.glBindVertexArray(0);
-        GLTools.glCheckError("exiting direct rendering");
-        // this.checkCurrentProgram("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ exiting direct rendering");
     }
 
     /**
-     * Render representing a line. It does not use FBOs
      * 
-     * @param primitive
-     * @throws GLException
      */
-    private void normalBezierRendering(GLBezierShadingComplex primitive,
-            double opacity, boolean inFBO) throws GLException {
-        GLTools.glCheckError("gl error before normal painting rendering");
+    private final void computeFBOImageSize() {
+        int antialisingSize = this.getLayerViewPanel().getAntialiasingSize() + 1;
 
-        GLProgram program = this.getGlContext().setCurrentProgram(
-                LayerViewGLPanel.bezierLineProgramName);
-        // BasicTextureExpressiveRendering strtex = primitive
-        // .getExpressiveRendering();
-        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName,
-                (float) primitive.getOverallOpacity());
-        program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
-                (float) opacity);
-        if (inFBO) {
-            program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName,
-                    this.fboImageWidth);
-            program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName,
-                    this.fboImageHeight);
-        } else {
-            program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName,
-                    this.getCanvasWidth());
-            program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName,
-                    this.getCanvasHeight());
+        this.fboImageWidth = antialisingSize * this.getCanvasWidth();
+        this.fboImageHeight = antialisingSize * this.getCanvasHeight();
+    }
 
-        }
-        GLTools.glCheckError("program set to " + program.getName()
-                + " in normal painting rendering");
-        // this.checkCurrentProgram("normalRendering(): after setCurrentProgram");
+    public final void invalidateFBO() {
+        this.fboImageWidth = -1;
+        this.fboImageHeight = -1;
+    }
 
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-
-        GL13.glActiveTexture(GL13.GL_TEXTURE1);
-        GLTools.glCheckError("active brushTexture");
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, primitive.getBrushTexture()
-                .getTextureId());
-        // GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-        // GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-        // GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-        // GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
-        program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
-                COLORTEXTURE1_SLOT + 1);
-
-        this.setGLViewMatrix(this.getViewport(), primitive.getMinX(),
-                primitive.getMinY());
-        // this.checkCurrentProgram("normalRendering(): after setGLViewMatrix()");
-
-        GL30.glBindVertexArray(primitive.getVaoId());
-        GLTools.glCheckError("direct rendering binding vaoId = "
-                + primitive.getVaoId());
-        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-        // this.checkCurrentProgram("normalRendering(): before drawComplex()");
-
-        // GLTools.displayBuffer(primitive.getFlippedVerticesBuffer());
-        this.drawComplex(primitive);
-        // this.checkCurrentProgram("normalRendering(): after drawComplex()");
-        GLTools.glCheckError("direct rendering drawing GLSimpleComplex class = "
-                + primitive.getClass().getSimpleName());
-
-        GL30.glBindVertexArray(0);
-        GLTools.glCheckError("exiting direct rendering");
-        // this.checkCurrentProgram("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ exiting direct rendering");
+    public boolean getFBORendering() {
+        return this.fboRendering;
     }
 
     /**
-     * Render representing a line. It does not use FBOs
-     * 
-     * @param primitive
-     * @throws GLException
+     * @param fboRendering
+     *            the fboRendering to set
      */
-    private void normalPaintingRendering(GLPaintingComplex primitive,
-            double opacity, boolean inFBO) throws GLException {
-        GLTools.glCheckError("gl error before normal painting rendering");
-
-        GLProgram program = this.getGlContext().setCurrentProgram(
-                LayerViewGLPanel.linePaintingProgramName);
-        StrokeTextureExpressiveRendering strtex = primitive
-                .getExpressiveRendering();
-        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName,
-                (float) primitive.getOverallOpacity());
-        program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
-                (float) opacity);
-        if (inFBO) {
-            program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName,
-                    this.fboImageWidth);
-            program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName,
-                    this.fboImageHeight);
-        } else {
-            program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName,
-                    this.getCanvasWidth());
-            program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName,
-                    this.getCanvasHeight());
-
-        }
-
-        GLTools.glCheckError("program set to " + program.getName()
-                + " in normal painting rendering");
-        // this.checkCurrentProgram("normalRendering(): after setCurrentProgram");
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GLTools.glCheckError("enable paperTexture");
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GLTools.glCheckError("active paperTexture");
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, primitive.getPaperTexture()
-                .getTextureId());
-        GLTools.glCheckError("bind paperTexture");
-        program.setUniform1i(LayerViewGLPanel.paperTextureUniformVarName, 0);
-
-        GL13.glActiveTexture(GL13.GL_TEXTURE1);
-        GLTools.glCheckError("active brushTexture");
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, primitive.getBrushTexture()
-                .getTextureId());
-        // GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-        // GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-        // GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-        // GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GLTools.glCheckError("bind brushTexture");
-        program.setUniform1i(LayerViewGLPanel.brushTextureUniformVarName, 1);
-
-        GLTools.glCheckError("setUniform paperTexture");
-
-        program.setUniform1i(LayerViewGLPanel.brushWidthUniformVarName,
-                primitive.getBrushTexture().getTextureWidth());
-        program.setUniform1i(LayerViewGLPanel.brushHeightUniformVarName,
-                primitive.getBrushTexture().getTextureHeight());
-        program.setUniform1i(LayerViewGLPanel.brushStartWidthUniformVarName,
-                strtex.getBrushStartLength());
-        program.setUniform1i(LayerViewGLPanel.brushEndWidthUniformVarName,
-                strtex.getBrushEndLength());
-        program.setUniform1f(LayerViewGLPanel.brushScaleUniformVarName,
-                (float) (strtex.getBrushSize() / primitive.getBrushTexture()
-                        .getTextureHeight()));
-        program.setUniform1f(LayerViewGLPanel.paperScaleUniformVarName,
-                (float) (strtex.getPaperScaleFactor()));
-        program.setUniform1f(LayerViewGLPanel.paperDensityUniformVarName,
-                (float) (strtex.getPaperDensity()));
-        program.setUniform1f(LayerViewGLPanel.brushDensityUniformVarName,
-                (float) (strtex.getBrushDensity()));
-        program.setUniform1f(LayerViewGLPanel.strokePressureUniformVarName,
-                (float) (strtex.getStrokePressure()));
-        program.setUniform1f(LayerViewGLPanel.sharpnessUniformVarName,
-                (float) (strtex.getSharpness()));
-        program.setUniform1f(
-                LayerViewGLPanel.strokePressureVariationAmplitudeUniformVarName,
-                (float) (strtex.getStrokePressureVariationAmplitude()));
-        program.setUniform1f(
-                LayerViewGLPanel.strokePressureVariationWavelengthUniformVarName,
-                (float) (strtex.getStrokePressureVariationWavelength()));
-        program.setUniform1f(
-                LayerViewGLPanel.strokeShiftVariationAmplitudeUniformVarName,
-                (float) (strtex.getStrokeShiftVariationAmplitude()));
-        program.setUniform1f(
-                LayerViewGLPanel.strokeShiftVariationWavelengthUniformVarName,
-                (float) (strtex.getStrokeShiftVariationWavelength()));
-        program.setUniform1f(
-                LayerViewGLPanel.strokeThicknessVariationAmplitudeUniformVarName,
-                (float) (strtex.getStrokeThicknessVariationAmplitude()));
-        program.setUniform1f(
-                LayerViewGLPanel.strokeThicknessVariationWavelengthUniformVarName,
-                (float) (strtex.getStrokeThicknessVariationWavelength()));
-
-        this.setGLViewMatrix(this.getViewport(), primitive.getMinX(),
-                primitive.getMinY());
-        // this.checkCurrentProgram("normalRendering(): after setGLViewMatrix()");
-
-        GL30.glBindVertexArray(primitive.getVaoId());
-        GLTools.glCheckError("direct rendering binding vaoId = "
-                + primitive.getVaoId());
-        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-        // this.checkCurrentProgram("normalRendering(): before drawComplex()");
-
-        // GLTools.displayBuffer(primitive.getFlippedVerticesBuffer());
-        this.drawComplex(primitive);
-        // this.checkCurrentProgram("normalRendering(): after drawComplex()");
-        GLTools.glCheckError("direct rendering drawing GLSimpleComplex class = "
-                + primitive.getClass().getSimpleName());
-
-        GL30.glBindVertexArray(0);
-        GLTools.glCheckError("exiting direct rendering");
-        // this.checkCurrentProgram("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ exiting direct rendering");
+    public final void setFBORendering(boolean fboRendering) {
+        this.fboRendering = fboRendering;
     }
 
     /**
      * @param primitive
      * @throws GLException
      */
-    private void wireframeRendering(GLComplex primitive, float lineWidth,
+    private final void wireframeRendering(GLComplex primitive, float lineWidth,
             float pointSize) throws GLException {
         this.setGLViewMatrix(this.getViewport(), primitive.getMinX(),
                 primitive.getMinY());
@@ -978,7 +737,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * @param primitive
      *            primitive to render
      */
-    private void drawComplex(GLComplex primitive) {
+    protected final void drawComplex(GLComplex primitive) {
         RenderingStatistics.drawGLComplex(primitive);
         for (GLMesh mesh : primitive.getMeshes()) {
             RenderingStatistics.doDrawCall();
@@ -986,32 +745,6 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
                     mesh.getLastIndex() - mesh.getFirstIndex() + 1,
                     GL11.GL_UNSIGNED_INT, mesh.getFirstIndex()
                             * (Integer.SIZE / 8));
-        }
-    }
-
-    /**
-     * Draw a displayable with full or partial representation depending on the
-     * displayable termination
-     * 
-     * @throws GLException
-     */
-    private void renderDisplayable(GLDisplayable displayable, double opacity)
-            throws GLException {
-        if (displayable == null) {
-            return;
-        }
-        // boolean quickRendering = this.getLayerViewPanel().getProjectFrame()
-        // .getMainFrame().getMode().getCurrentMode().getRenderingType() !=
-        // RenderingTypeMode.FINAL;
-
-        Collection<GLComplex> fullRepresentation = displayable
-                .getFullRepresentation();
-        // if (quickRendering || fullRepresentation == null) {
-        if (fullRepresentation == null) {
-            this.renderGLPrimitive(displayable.getPartialRepresentation(),
-                    opacity);
-        } else {
-            this.renderGLPrimitive(fullRepresentation, opacity);
         }
     }
 
@@ -1026,23 +759,20 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
         // nothing to finalize
     }
 
-    public void initShader() {
+    public final void initShader() {
         this.initializeFBO();
     }
 
     /**
      * initialize Frame Buffer Object and Unit Quad
      */
-    private void initializeFBO() {
+    private final void initializeFBO() {
         this.fboId = glGenFramebuffers();
         if (this.fboId < 0) {
             logger.error("Unable to create frame buffer");
         }
 
-        this.fboTextureId = glGenTextures();
-        if (this.fboTextureId < 0) {
-            logger.error("Unable to use FBO texture");
-        }
+        this.fboTextureId = -1;
 
         this.fboImageWidth = -1;
         this.fboImageHeight = -1;
@@ -1055,8 +785,8 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
      * 
      * @throws GLException
      */
-    private boolean setGLViewMatrix(final Viewport viewport, final double minX,
-            final double minY) throws GLException {
+    protected final boolean setGLViewMatrix(final Viewport viewport,
+            final double minX, final double minY) throws GLException {
         AffineTransform modelToViewTransform = null;
 
         try {
@@ -1114,7 +844,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     }
 
     @Override
-    public void reset() {
+    public final void reset() {
         synchronized (this.displayables) {
             this.displayables.clear();
         }
@@ -1122,7 +852,7 @@ public class GL4FeatureRenderer extends AbstractFeatureRenderer implements
     }
 
     @Override
-    public void onStateChange(Task task, TaskState oldState) {
+    public final void onStateChange(Task task, TaskState oldState) {
         if (!task.getState().isRunning()) {
             GeOxygeneEventManager.getInstance().getApplication().getMainFrame()
                     .getCurrentDesktop().repaint();

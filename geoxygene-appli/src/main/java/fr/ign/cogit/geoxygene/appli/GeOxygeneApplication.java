@@ -192,7 +192,7 @@ public class GeOxygeneApplication {
         }
         try {
             projectFrame.loadSLD(new File(this.properties.getSld()));
-            projectFrame.getLayerViewPanel().refresh();
+            projectFrame.getLayerViewPanel().reset();
             projectFrame.getLayerViewPanel().repaint();
         } catch (FileNotFoundException e) {
             logger.error("SLD filename '" + this.properties.getSld()

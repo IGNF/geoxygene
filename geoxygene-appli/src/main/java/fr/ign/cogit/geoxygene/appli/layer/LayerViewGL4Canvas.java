@@ -275,7 +275,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     @Override
     public GLContext getGlContext() throws GLException {
         if (this.glContext == null) {
-            this.glContext = LayerViewGLPanel.createNewGL4Context();
+            this.glContext = this.getParentPanel().createNewGL4Context();
         }
         return this.glContext;
     }

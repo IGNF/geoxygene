@@ -34,9 +34,9 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
-import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRendering;
-import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRendering;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.gradient.GradientStroke;
 
 /**
@@ -58,9 +58,9 @@ public class Stroke {
     private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>(0);
 
     @XmlElements({
-            @XmlElement(name = "StrokeTextureExpressiveRendering", type = StrokeTextureExpressiveRendering.class),
-            @XmlElement(name = "BasicTextureExpressiveRendering", type = BasicTextureExpressiveRendering.class) })
-    private ExpressiveRendering expressiveRendering = null;
+            @XmlElement(name = "StrokeTextureExpressiveRendering", type = StrokeTextureExpressiveRenderingDescriptor.class),
+            @XmlElement(name = "BasicTextureExpressiveRendering", type = BasicTextureExpressiveRenderingDescriptor.class) })
+    private ExpressiveRenderingDescriptor expressiveRendering = null;
 
     /**
      * The raw color of the stroke, without opacity information.
@@ -458,12 +458,12 @@ public class Stroke {
         return this.strokeDashOffset;
     }
 
-    public ExpressiveRendering getExpressiveRendering() {
+    public ExpressiveRenderingDescriptor getExpressiveRendering() {
         return this.expressiveRendering;
     }
 
     public void setExpressiveRendering(
-            StrokeTextureExpressiveRendering expressiveRendering) {
+            StrokeTextureExpressiveRenderingDescriptor expressiveRendering) {
         this.expressiveRendering = expressiveRendering;
     }
 

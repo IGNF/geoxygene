@@ -49,7 +49,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
 import fr.ign.util.ui.SliderWithSpinner;
 import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
 
@@ -60,7 +60,7 @@ import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
 public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI {
 
     private JPanel main = null;
-    private BasicTextureExpressiveRendering strtex = null;
+    private BasicTextureExpressiveRenderingDescriptor strtex = null;
 
     private final Preferences prefs = Preferences.userRoot();
     private ProjectFrame parentProjectFrame = null;
@@ -75,7 +75,8 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
      * Constructor
      */
     public BasicTextureExpressiveRenderingUI(
-            BasicTextureExpressiveRendering strtex, ProjectFrame projectFrame) {
+            BasicTextureExpressiveRenderingDescriptor strtex,
+            ProjectFrame projectFrame) {
         this.parentProjectFrame = projectFrame;
         this.setBasicTextureExpressiveRendering(strtex);
     }
@@ -86,15 +87,17 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
      * @param strtex
      */
     private void setBasicTextureExpressiveRendering(
-            BasicTextureExpressiveRendering strtex) {
+            BasicTextureExpressiveRenderingDescriptor strtex) {
         this.strtex = strtex;
+        this.main = null;
         this.setValuesFromObject();
     }
 
     /**
      * set variable values from stroke texture expressive rendering object
      */
-    private void setValuesFromObject() {
+    @Override
+    public void setValuesFromObject() {
         this.aspectRatio = this.strtex.getAspectRatio();
         this.transitionSize = this.strtex.getTransitionSize();
         this.brushTextureFilename = this.strtex.getBrushTextureFilename();
@@ -103,7 +106,8 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
     /**
      * set variable values from stroke texture expressive rendering object
      */
-    private void setValuesToObject() {
+    @Override
+    public void setValuesToObject() {
         this.strtex.setAspectRatio(this.aspectRatio);
         this.strtex.setTransitionSize(this.transitionSize);
         this.strtex.setBrushTextureFilename(this.brushTextureFilename);

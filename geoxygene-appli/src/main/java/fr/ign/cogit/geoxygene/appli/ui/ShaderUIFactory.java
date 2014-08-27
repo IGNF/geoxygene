@@ -27,21 +27,26 @@
 
 package fr.ign.cogit.geoxygene.appli.ui;
 
-import javax.swing.JComponent;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.style.expressive.RandomVariationShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
 
 /**
  * @author JeT
  * 
  */
-public interface ExpressiveRenderingUI {
+public class ShaderUIFactory {
 
-    JComponent getGui();
+    public static ExpressiveRenderingUI getShaderUI(
+            ShaderDescriptor descriptor, ProjectFrame projectFrame) {
+        if (descriptor instanceof RandomVariationShaderDescriptor) {
+            return new RandomVariationShaderUI(
+                    ((RandomVariationShaderDescriptor) descriptor),
+                    projectFrame);
 
-    /**
-     * set variable values from stroke texture expressive rendering object
-     */
-    public void setValuesFromObject();
-
-    public void setValuesToObject();
+        }
+        throw new UnsupportedOperationException("Shader UI type "
+                + descriptor.getClass().getSimpleName() + " is not defined");
+    }
 
 }

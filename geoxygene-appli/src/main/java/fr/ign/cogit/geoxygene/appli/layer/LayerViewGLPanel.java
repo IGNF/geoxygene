@@ -40,16 +40,22 @@ import fr.ign.cogit.geoxygene.appli.event.CompassPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.ScalePaintListener;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingVertex;
+import fr.ign.cogit.geoxygene.appli.gl.Shader;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.SyncRenderingManager;
+import fr.ign.cogit.geoxygene.appli.render.texture.ShaderFactory;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
 import fr.ign.cogit.geoxygene.util.ImageComparator;
 import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessor;
+import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessorInstance;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 
 /**
@@ -63,6 +69,17 @@ import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         ActionListener {
 
+    private static final String backgroundVertexShaderFilename = "./src/main/resources/shaders/bg.vert.glsl";
+    private static final String backgroundFragmentShaderFilename = "./src/main/resources/shaders/bg.frag.glsl";
+    private static final String antialiasedFragmentShaderFilename = "./src/main/resources/shaders/antialiased.frag.glsl";
+    private static final String colorFragmentShaderFilename = "./src/main/resources/shaders/polygon.color.frag.glsl";
+    private static final String textureFragmentShaderFilename = "./src/main/resources/shaders/polygon.texture.frag.glsl";
+    private static final String screenspaceVertexShaderFilename = "./src/main/resources/shaders/screenspace.vert.glsl";
+    private static final String bezierFragmentShaderFilename = "./src/main/resources/shaders/bezier.frag.glsl";
+    private static final String bezierVertexShaderFilename = "./src/main/resources/shaders/bezier.vert.glsl";
+    private static final String linePaintingFragmentShaderFilename = "./src/main/resources/shaders/line.frag.glsl";
+    private static final String linePaintingVertexShaderFilename = "./src/main/resources/shaders/line.vert.glsl";
+    private static final String worldspaceVertexShaderFilename = "./src/main/resources/shaders/worldspace.vert.glsl";
     private static final long serialVersionUID = -7181604491025859187L; // serializable
                                                                         // UID
     // private static final int GLASS_LAYER_INDEX = 10; // layer index on which
@@ -72,6 +89,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     // stuff will be rendered
     private static Logger logger = Logger.getLogger(LayerViewGLPanel.class
             .getName());
+
     private SyncRenderingManager renderingManager = null;
     private LayerViewGLCanvas glCanvas = null; // canvas containing the GL
     private LayerViewGLCanvasType glType = null;
@@ -98,8 +116,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
     /**
      * 
-     * @param sld
-     * @param frame
      */
     public LayerViewGLPanel(final LayerViewGLCanvasType glType) {
         super();
@@ -117,6 +133,10 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         // Attach LWJGL to the created canvas
         this.setGLComponent(this.glCanvas);
 
+    }
+
+    public StyledLayerDescriptor getSld() {
+        return this.getProjectFrame().getSld();
     }
 
     @Override
@@ -365,18 +385,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     /** Dispose panel and its rendering manager. */
     @Override
     public void dispose() {
-        if (this.glCanvas != null) {
-            try {
-                if (this.glCanvas.getContext() != null) {
-                    this.glCanvas.releaseContext();
-                }
-                this.glCanvas = null;
-            } catch (Exception e) {
-                logger.error("An error occurred releasing GL context "
-                        + e.getMessage());
-            }
-        }
-
+        this.reset();
         if (this.getRenderingManager() != null) {
             this.getRenderingManager().dispose();
         }
@@ -578,9 +587,13 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     /**
      * Reset glCanvas (reload shaders)
      */
+    @Override
     public void reset() {
         if (this.glCanvas != null) {
             this.glCanvas.reset();
+        }
+        if (this.renderingManager != null) {
+            this.renderingManager.dispose();
         }
 
     }
@@ -615,12 +628,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String brushDensityUniformVarName = "brushDensity";
     public static final String strokePressureUniformVarName = "strokePressure";
     public static final String sharpnessUniformVarName = "sharpness";
-    public static final String strokePressureVariationAmplitudeUniformVarName = "pressureVariationAmplitude";
-    public static final String strokePressureVariationWavelengthUniformVarName = "pressureVariationWavelength";
-    public static final String strokeShiftVariationAmplitudeUniformVarName = "shiftVariationAmplitude";
-    public static final String strokeShiftVariationWavelengthUniformVarName = "shiftVariationWavelength";
-    public static final String strokeThicknessVariationAmplitudeUniformVarName = "thicknessVariationAmplitude";
-    public static final String strokeThicknessVariationWavelengthUniformVarName = "thicknessVariationWavelength";
 
     public static final String basicProgramName = "Basic";
     public static final String linePaintingProgramName = "LinePainting";
@@ -632,6 +639,116 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String backgroundProgramName = "BackgroundTexture";
     public static final String screenspaceAntialiasedTextureProgramName = "ScreenspaceAntialiasedTexture";
 
+    private GLProgramAccessor basicAccessor = null;
+    private GLProgramAccessor screenspaceTextureAccessor = null;
+    private GLProgramAccessor screenspaceColorAccessor = null;
+    private GLProgramAccessor screenspaceAntialiasedAccessor = null;
+    private GLProgramAccessor backgroundAccessor = null;
+    private GLProgramAccessor worldspaceColorAccessor = null;
+    private GLProgramAccessor worldspaceTextureAccessor = null;
+
+    private int worldspaceVertexShaderId = -1;
+    private int screenspaceVertexShaderId = -1;
+    private int colorFragmentShaderId = -1;
+    private int bgFragmentShaderId = -1;
+    private int bgVertexShaderId = -1;
+    private int textureFragmentShaderId = -1;
+    private int antialiasedFragmentShaderId = -1;
+    private int linePaintingVertexShaderId = -1;
+    private int linePaintingFragmentShaderId = -1;
+    private int bezierVertexShaderId = -1;
+
+    public int getWorldspaceVertexShaderId() throws GLException {
+        if (this.worldspaceVertexShaderId == -1) {
+            this.worldspaceVertexShaderId = GLProgram
+                    .createVertexShader(worldspaceVertexShaderFilename);
+        }
+        return this.worldspaceVertexShaderId;
+    }
+
+    public int getLinePaintingVertexShaderId() throws GLException {
+        if (this.linePaintingVertexShaderId == -1) {
+            this.linePaintingVertexShaderId = GLProgram
+                    .createVertexShader(linePaintingVertexShaderFilename);
+        }
+        return this.linePaintingVertexShaderId;
+    }
+
+    public int getLinePaintingFragmentShaderId() throws GLException {
+        if (this.linePaintingFragmentShaderId == -1) {
+            this.linePaintingFragmentShaderId = GLProgram
+                    .createFragmentShader(linePaintingFragmentShaderFilename);
+        }
+        return this.linePaintingFragmentShaderId;
+    }
+
+    public int getBezierVertexShaderId() throws GLException {
+        if (this.bezierVertexShaderId == -1) {
+            this.bezierVertexShaderId = GLProgram
+                    .createVertexShader(bezierVertexShaderFilename);
+        }
+        return this.bezierVertexShaderId;
+    }
+
+    public int createBezierFragmentShaderId(ShaderDescriptor descriptor)
+            throws GLException {
+        if (descriptor instanceof UserShaderDescriptor) {
+            UserShaderDescriptor userShaderDescriptor = (UserShaderDescriptor) descriptor;
+            return GLProgram.createFragmentShader(bezierFragmentShaderFilename,
+                    userShaderDescriptor.getFilename());
+        } else {
+            return GLProgram.createFragmentShader(bezierFragmentShaderFilename);
+        }
+    }
+
+    public int getScreenspaceVertexShaderId() throws GLException {
+        if (this.screenspaceVertexShaderId == -1) {
+            this.screenspaceVertexShaderId = GLProgram
+                    .createVertexShader(screenspaceVertexShaderFilename);
+        }
+        return this.screenspaceVertexShaderId;
+    }
+
+    public int getTextureFragmentShaderId() throws GLException {
+        if (this.textureFragmentShaderId == -1) {
+            this.textureFragmentShaderId = GLProgram
+                    .createVertexShader(textureFragmentShaderFilename);
+        }
+        return this.textureFragmentShaderId;
+    }
+
+    private int getColorFragmentShaderId() throws GLException {
+        if (this.colorFragmentShaderId == -1) {
+            this.colorFragmentShaderId = GLProgram
+                    .createFragmentShader(colorFragmentShaderFilename);
+        }
+        return this.colorFragmentShaderId;
+    }
+
+    private int getAntialiasedFragmentShaderId() throws GLException {
+        if (this.antialiasedFragmentShaderId == -1) {
+            this.antialiasedFragmentShaderId = GLProgram
+                    .createFragmentShader(antialiasedFragmentShaderFilename);
+        }
+        return this.antialiasedFragmentShaderId;
+    }
+
+    private int getBackgroundFragmentShaderId() throws GLException {
+        if (this.bgFragmentShaderId == -1) {
+            this.bgFragmentShaderId = GLProgram
+                    .createFragmentShader(backgroundFragmentShaderFilename);
+        }
+        return this.bgFragmentShaderId;
+    }
+
+    private int getBackgroundVertexShaderId() throws GLException {
+        if (this.bgVertexShaderId == -1) {
+            this.bgVertexShaderId = GLProgram
+                    .createVertexShader(backgroundVertexShaderFilename);
+        }
+        return this.bgVertexShaderId;
+    }
+
     /**
      * This static method creates one GLContext containing all programs used to
      * render GeOxygene graphics elements
@@ -639,112 +756,285 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      * @return
      * @throws GLException
      */
-    public static GLContext createNewGL4Context() throws GLException {
+    public GLContext createNewGL4Context() throws GLException {
         GLContext glContext = new GLContext();
-
-        final int worldspaceVertexShader = GLProgram
-                .createVertexShader("./src/main/resources/shaders/worldspace.vert.glsl");
-        final int screenspaceVertexShader = GLProgram
-                .createVertexShader("./src/main/resources/shaders/screenspace.vert.glsl");
-        glContext.addProgram(basicProgramName, new GLProgramAccessor() {
-
-            @Override
-            public GLProgram getGLProgram() throws GLException {
-                return createBasicProgram();
-            }
-        });
-
+        glContext.addProgram(basicProgramName, this.getBasicAccessor());
         glContext.addProgram(worldspaceColorProgramName,
-                new GLProgramAccessor() {
-
-                    @Override
-                    public GLProgram getGLProgram() throws GLException {
-                        return createWorldspaceColorProgram(worldspaceVertexShader);
-                    }
-                });
+                this.getWorldspaceColorAccessor());
         glContext.addProgram(worldspaceTextureProgramName,
-                new GLProgramAccessor() {
-
-                    @Override
-                    public GLProgram getGLProgram() throws GLException {
-                        return createWorldspaceTextureProgram(worldspaceVertexShader);
-                    }
-                });
-
+                this.getWorldspaceTextureAccessor());
         glContext.addProgram(screenspaceColorProgramName,
-                new GLProgramAccessor() {
-
-                    @Override
-                    public GLProgram getGLProgram() throws GLException {
-                        return createScreenspaceColorProgram(screenspaceVertexShader);
-                    }
-                });
+                this.getScreenspaceColorAccessor());
         glContext.addProgram(screenspaceTextureProgramName,
-                new GLProgramAccessor() {
-
-                    @Override
-                    public GLProgram getGLProgram() throws GLException {
-                        return createScreenspaceTextureProgram(screenspaceVertexShader);
-                    }
-                });
+                this.getScreenspaceTextureAccessor());
         glContext.addProgram(screenspaceAntialiasedTextureProgramName,
-                new GLProgramAccessor() {
-
-                    @Override
-                    public GLProgram getGLProgram() throws GLException {
-                        return createScreenspaceAntialiasedProgram(screenspaceVertexShader);
-                    }
-                });
-
-        // line painting
-        glContext.addProgram(linePaintingProgramName, new GLProgramAccessor() {
-
-            @Override
-            public GLProgram getGLProgram() throws GLException {
-                final int paintVertexShader = GLProgram
-                        .createVertexShader("./src/main/resources/shaders/line.vert.glsl");
-                final int paintFragmentShader = GLProgram
-                        .createFragmentShader("./src/main/resources/shaders/line.frag.glsl");
-                return createPaintProgram(paintVertexShader,
-                        paintFragmentShader);
-            }
-        });
-
-        // bezier line painting
-        glContext.addProgram(bezierLineProgramName, new GLProgramAccessor() {
-
-            @Override
-            public GLProgram getGLProgram() throws GLException {
-                final int bezierVertexShader = GLProgram
-                        .createVertexShader("./src/main/resources/shaders/bezier.vert.glsl");
-                final int bezierFragmentShader = GLProgram
-                        .createFragmentShader("./src/main/resources/shaders/bezier.frag.glsl");
-                return createBezierProgram(bezierVertexShader,
-                        bezierFragmentShader);
-            }
-        });
-
-        // background paper
-        glContext.addProgram(backgroundProgramName, new GLProgramAccessor() {
-
-            @Override
-            public GLProgram getGLProgram() throws GLException {
-                return createBackgroundTextureProgram();
-            }
-        });
-
+                this.getScreenspaceAntialiasedAccessor());
+        glContext.addProgram(backgroundProgramName,
+                this.getBackgroundAccessor());
+        // bezier & line painting programs are not created here because we don't
+        // know the SLD content at this point.
         return glContext;
+    }
+
+    /**
+     * @return
+     * @throws GLException
+     */
+    public GLProgramAccessor getBasicAccessor() {
+        if (this.basicAccessor == null) {
+            try {
+                this.basicAccessor = new GLProgramAccessorInstance(
+                        createBasicProgram());
+            } catch (GLException e) {
+                logger.error("An error occurred during GL program creation : "
+                        + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return this.basicAccessor;
+    }
+
+    /**
+     * @return
+     * @throws GLException
+     */
+    public GLProgramAccessor getWorldspaceColorAccessor() {
+        if (this.worldspaceColorAccessor == null) {
+            try {
+                this.worldspaceColorAccessor = new GLProgramAccessorInstance(
+                        this.createWorldspaceColorProgram());
+            } catch (GLException e) {
+                logger.error("An error occurred during GL program creation : "
+                        + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return this.worldspaceColorAccessor;
+    }
+
+    /**
+     * @return
+     * @throws GLException
+     */
+    public GLProgramAccessor getWorldspaceTextureAccessor() {
+        if (this.worldspaceTextureAccessor == null) {
+            try {
+                this.worldspaceTextureAccessor = new GLProgramAccessorInstance(
+                        this.createWorldspaceTextureProgram());
+            } catch (GLException e) {
+                logger.error("An error occurred during GL program creation : "
+                        + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return this.worldspaceTextureAccessor;
+    }
+
+    /**
+     * @param screenspaceVertexShaderId
+     * @return
+     */
+    public GLProgramAccessor getScreenspaceColorAccessor() {
+        if (this.screenspaceColorAccessor == null) {
+            try {
+                this.screenspaceColorAccessor = new GLProgramAccessorInstance(
+                        this.createScreenspaceColorProgram());
+            } catch (GLException e) {
+                logger.error("An error occurred during GL program creation : "
+                        + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return this.screenspaceColorAccessor;
+    }
+
+    /**
+     * @param screenspaceVertexShaderId
+     * @return
+     */
+    public GLProgramAccessor getScreenspaceTextureAccessor() {
+        if (this.screenspaceTextureAccessor == null) {
+            try {
+                this.screenspaceTextureAccessor = new GLProgramAccessorInstance(
+                        this.createScreenspaceTextureProgram());
+            } catch (GLException e) {
+                logger.error("An error occurred during GL program creation : "
+                        + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return this.screenspaceTextureAccessor;
+    }
+
+    /**
+     * @param screenspaceVertexShaderId
+     * @return
+     */
+    public GLProgramAccessor getScreenspaceAntialiasedAccessor() {
+        if (this.screenspaceAntialiasedAccessor == null) {
+            try {
+                this.screenspaceAntialiasedAccessor = new GLProgramAccessorInstance(
+                        this.createScreenspaceAntialiasedProgram());
+            } catch (GLException e) {
+                logger.error("An error occurred during GL program creation : "
+                        + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return this.screenspaceAntialiasedAccessor;
+    }
+
+    /**
+     * @return
+     */
+    public GLProgramAccessor getBackgroundAccessor() {
+        if (this.backgroundAccessor == null) {
+            try {
+                this.backgroundAccessor = new GLProgramAccessorInstance(
+                        this.createBackgroundProgram());
+            } catch (GLException e) {
+                logger.error("An error occurred during GL program creation : "
+                        + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return this.backgroundAccessor;
+    }
+
+    /**
+     * @return
+     */
+    public GLProgramAccessor createBezierAccessor(
+            final ShaderDescriptor shaderDescriptor) {
+        return new GLProgramAccessorBezier(shaderDescriptor);
+    }
+
+    /**
+     * @return
+     */
+    public GLProgramAccessor createLinePaintingAccessor(
+            final ShaderDescriptor shaderDescriptor) {
+        return new GLProgramAccessorLinePainting(shaderDescriptor);
+    }
+
+    /**
+     * @author JeT This accessor returns a program created using the given
+     *         shader descriptor
+     */
+    private class GLProgramAccessorBezier implements GLProgramAccessor {
+
+        private ShaderDescriptor descriptor = null;
+        private GLProgram program = null;
+
+        /**
+         * @param program
+         */
+        public GLProgramAccessorBezier(ShaderDescriptor descriptor) {
+            super();
+            this.descriptor = descriptor;
+        }
+
+        @Override
+        public GLProgram getGLProgram() throws GLException {
+            if (this.program == null) {
+                this.program = LayerViewGLPanel.this
+                        .createBezierProgram(this.descriptor);
+            }
+            return this.program;
+        }
+    }
+
+    /**
+     * @author JeT This accessor returns a program created using the given
+     *         shader descriptor
+     */
+    private class GLProgramAccessorLinePainting implements GLProgramAccessor {
+
+        private ShaderDescriptor descriptor = null;
+        private GLProgram program = null;
+
+        /**
+         * @param program
+         */
+        public GLProgramAccessorLinePainting(ShaderDescriptor descriptor) {
+            super();
+            this.descriptor = descriptor;
+        }
+
+        @Override
+        public GLProgram getGLProgram() throws GLException {
+            if (this.program == null) {
+                this.program = LayerViewGLPanel.this
+                        .createLinePaintingProgram(this.descriptor);
+            }
+            return this.program;
+        }
     }
 
     /**
      * line painting program
      */
-    private static GLProgram createPaintProgram(int basicVertexShader,
-            int basicFragmentShader) throws GLException {
+    private GLProgram createBezierProgram(ShaderDescriptor shaderDescriptor)
+            throws GLException {
+        // basic program
+        GLProgram program = new GLProgram(bezierLineProgramName);
+        program.setVertexShader(this.getBezierVertexShaderId());
+        program.setFragmentShader(this
+                .createBezierFragmentShaderId(shaderDescriptor));
+        program.addInputLocation(
+                GLBezierShadingVertex.vertexPositionVariableName,
+                GLBezierShadingVertex.vertexPositionLocation);
+        program.addInputLocation(GLBezierShadingVertex.vertexUsVariableName,
+                GLBezierShadingVertex.vertexUsLocation);
+        program.addInputLocation(GLBezierShadingVertex.vertexColorVariableName,
+                GLBezierShadingVertex.vertexColorLocation);
+        program.addInputLocation(
+                GLBezierShadingVertex.vertexLineWidthVariableName,
+                GLBezierShadingVertex.vertexLineWidthLocation);
+        program.addInputLocation(GLBezierShadingVertex.vertexMaxUVariableName,
+                GLBezierShadingVertex.vertexMaxULocation);
+        program.addInputLocation(GLBezierShadingVertex.vertexP0VariableName,
+                GLBezierShadingVertex.vertexP0Location);
+        program.addInputLocation(GLBezierShadingVertex.vertexP1VariableName,
+                GLBezierShadingVertex.vertexP1Location);
+        program.addInputLocation(GLBezierShadingVertex.vertexP2VariableName,
+                GLBezierShadingVertex.vertexP2Location);
+        program.addInputLocation(GLBezierShadingVertex.vertexN0VariableName,
+                GLBezierShadingVertex.vertexN0Location);
+        program.addInputLocation(GLBezierShadingVertex.vertexN2VariableName,
+                GLBezierShadingVertex.vertexN2Location);
+        program.addUniform(m00ModelToViewMatrixUniformVarName);
+        program.addUniform(m02ModelToViewMatrixUniformVarName);
+        program.addUniform(m00ModelToViewMatrixUniformVarName);
+        program.addUniform(m11ModelToViewMatrixUniformVarName);
+        program.addUniform(m12ModelToViewMatrixUniformVarName);
+        program.addUniform(screenWidthUniformVarName);
+        program.addUniform(screenHeightUniformVarName);
+        program.addUniform(fboWidthUniformVarName);
+        program.addUniform(fboHeightUniformVarName);
+        program.addUniform(brushTextureUniformVarName);
+        program.addUniform(brushWidthUniformVarName);
+        program.addUniform(brushHeightUniformVarName);
+        program.addUniform(brushScaleUniformVarName);
+        program.addUniform(globalOpacityUniformVarName);
+        program.addUniform(objectOpacityUniformVarName);
+        program.addUniform(colorTexture1UniformVarName);
+
+        Shader shader = ShaderFactory.createShader(shaderDescriptor);
+        shader.declareUniforms(program);
+
+        return program;
+    }
+
+    /**
+     * line painting program
+     */
+    private GLProgram createLinePaintingProgram(
+            ShaderDescriptor shaderDescriptor) throws GLException {
         // basic program
         GLProgram program = new GLProgram(linePaintingProgramName);
-        program.setVertexShader(basicVertexShader);
-        program.setFragmentShader(basicFragmentShader);
+        program.setVertexShader(this.getLinePaintingVertexShaderId());
+        program.setFragmentShader(this.getLinePaintingFragmentShaderId());
         program.addInputLocation(GLPaintingVertex.vertexPositionVariableName,
                 GLPaintingVertex.vertexPositionLocation);
         program.addInputLocation(GLPaintingVertex.vertexUVVariableName,
@@ -782,67 +1072,11 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         program.addUniform(brushDensityUniformVarName);
         program.addUniform(strokePressureUniformVarName);
         program.addUniform(sharpnessUniformVarName);
-        program.addUniform(strokePressureVariationAmplitudeUniformVarName);
-        program.addUniform(strokePressureVariationWavelengthUniformVarName);
-        program.addUniform(strokeShiftVariationAmplitudeUniformVarName);
-        program.addUniform(strokeShiftVariationWavelengthUniformVarName);
-        program.addUniform(strokeThicknessVariationAmplitudeUniformVarName);
-        program.addUniform(strokeThicknessVariationWavelengthUniformVarName);
         program.addUniform(globalOpacityUniformVarName);
         program.addUniform(objectOpacityUniformVarName);
         program.addUniform(textureScaleFactorUniformVarName);
-
-        return program;
-    }
-
-    /**
-     * line painting program
-     */
-    private static GLProgram createBezierProgram(int basicVertexShader,
-            int basicFragmentShader) throws GLException {
-        // basic program
-        GLProgram program = new GLProgram(bezierLineProgramName);
-        program.setVertexShader(basicVertexShader);
-        program.setFragmentShader(basicFragmentShader);
-        program.addInputLocation(
-                GLBezierShadingVertex.vertexPositionVariableName,
-                GLBezierShadingVertex.vertexPositionLocation);
-        program.addInputLocation(GLBezierShadingVertex.vertexUsVariableName,
-                GLBezierShadingVertex.vertexUsLocation);
-        program.addInputLocation(GLBezierShadingVertex.vertexColorVariableName,
-                GLBezierShadingVertex.vertexColorLocation);
-        program.addInputLocation(
-                GLBezierShadingVertex.vertexLineWidthVariableName,
-                GLBezierShadingVertex.vertexLineWidthLocation);
-        program.addInputLocation(GLBezierShadingVertex.vertexMaxUVariableName,
-                GLBezierShadingVertex.vertexMaxULocation);
-        program.addInputLocation(GLBezierShadingVertex.vertexP0VariableName,
-                GLBezierShadingVertex.vertexP0Location);
-        program.addInputLocation(GLBezierShadingVertex.vertexP1VariableName,
-                GLBezierShadingVertex.vertexP1Location);
-        program.addInputLocation(GLBezierShadingVertex.vertexP2VariableName,
-                GLBezierShadingVertex.vertexP2Location);
-        program.addInputLocation(GLBezierShadingVertex.vertexN0VariableName,
-                GLBezierShadingVertex.vertexN0Location);
-        program.addInputLocation(GLBezierShadingVertex.vertexN2VariableName,
-                GLBezierShadingVertex.vertexN2Location);
-
-        program.addUniform(m00ModelToViewMatrixUniformVarName);
-        program.addUniform(m02ModelToViewMatrixUniformVarName);
-        program.addUniform(m00ModelToViewMatrixUniformVarName);
-        program.addUniform(m11ModelToViewMatrixUniformVarName);
-        program.addUniform(m12ModelToViewMatrixUniformVarName);
-        program.addUniform(screenWidthUniformVarName);
-        program.addUniform(screenHeightUniformVarName);
-        program.addUniform(fboWidthUniformVarName);
-        program.addUniform(fboHeightUniformVarName);
-        program.addUniform(brushTextureUniformVarName);
-        program.addUniform(brushWidthUniformVarName);
-        program.addUniform(brushHeightUniformVarName);
-        program.addUniform(brushScaleUniformVarName);
-        program.addUniform(globalOpacityUniformVarName);
-        program.addUniform(objectOpacityUniformVarName);
-        program.addUniform(colorTexture1UniformVarName);
+        Shader shader = ShaderFactory.createShader(shaderDescriptor);
+        shader.declareUniforms(program);
 
         return program;
     }
@@ -872,15 +1106,14 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     /**
      * @throws GLException
      */
-    private static GLProgram createScreenspaceColorProgram(
-            int screenspaceVertexShader) throws GLException {
-        int screenspaceFragmentShader = GLProgram
-                .createFragmentShader("./src/main/resources/shaders/polygon.color.frag.glsl");
+    private GLProgram createScreenspaceColorProgram() throws GLException {
         // basic program
         GLProgram screenspaceColorProgram = new GLProgram(
                 screenspaceColorProgramName);
-        screenspaceColorProgram.setVertexShader(screenspaceVertexShader);
-        screenspaceColorProgram.setFragmentShader(screenspaceFragmentShader);
+        screenspaceColorProgram.setVertexShader(this
+                .getScreenspaceVertexShaderId());
+        screenspaceColorProgram.setFragmentShader(this
+                .getColorFragmentShaderId());
         screenspaceColorProgram.addInputLocation(
                 GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
@@ -899,15 +1132,14 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     /**
      * @throws GLException
      */
-    private static GLProgram createScreenspaceTextureProgram(
-            int screenspaceVertexShader) throws GLException {
-        int screenspaceFragmentShader = GLProgram
-                .createFragmentShader("./src/main/resources/shaders/polygon.texture.frag.glsl");
+    private GLProgram createScreenspaceTextureProgram() throws GLException {
         // basic program
         GLProgram screenspaceTextureProgram = new GLProgram(
                 screenspaceTextureProgramName);
-        screenspaceTextureProgram.setVertexShader(screenspaceVertexShader);
-        screenspaceTextureProgram.setFragmentShader(screenspaceFragmentShader);
+        screenspaceTextureProgram.setVertexShader(this
+                .getScreenspaceVertexShaderId());
+        screenspaceTextureProgram.setFragmentShader(this
+                .getTextureFragmentShaderId());
         screenspaceTextureProgram.addInputLocation(
                 GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
@@ -927,17 +1159,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     /**
      * @throws GLException
      */
-    private static GLProgram createBackgroundTextureProgram()
-            throws GLException {
-        int backgroundVertexShader = GLProgram
-                .createVertexShader("./src/main/resources/shaders/bg.vert.glsl");
-        int backgroundFragmentShader = GLProgram
-                .createFragmentShader("./src/main/resources/shaders/bg.frag.glsl");
+    private GLProgram createBackgroundProgram() throws GLException {
+
         // basic program
         GLProgram backgroundTextureProgram = new GLProgram(
                 backgroundProgramName);
-        backgroundTextureProgram.setVertexShader(backgroundVertexShader);
-        backgroundTextureProgram.setFragmentShader(backgroundFragmentShader);
+        backgroundTextureProgram.setVertexShader(this
+                .getBackgroundVertexShaderId());
+        backgroundTextureProgram.setFragmentShader(this
+                .getBackgroundFragmentShaderId());
         backgroundTextureProgram.addInputLocation(
                 GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
@@ -950,18 +1180,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     }
 
     /**
-     * @param worldspaceVertexShader
+     * @param worldspaceVertexShaderId
      * @throws GLException
      */
-    private static GLProgram createWorldspaceColorProgram(
-            int worldspaceVertexShader) throws GLException {
+    private GLProgram createWorldspaceColorProgram() throws GLException {
 
-        int colorFragmentShader = GLProgram
-                .createFragmentShader("./src/main/resources/shaders/polygon.color.frag.glsl");
         // color program
         GLProgram colorProgram = new GLProgram(worldspaceColorProgramName);
-        colorProgram.setVertexShader(worldspaceVertexShader);
-        colorProgram.setFragmentShader(colorFragmentShader);
+        colorProgram.setVertexShader(this.getWorldspaceVertexShaderId());
+        colorProgram.setFragmentShader(this.getColorFragmentShaderId());
         colorProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
         colorProgram.addInputLocation(
@@ -986,18 +1213,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     }
 
     /**
-     * @param worldspaceVertexShader
+     * @param worldspaceVertexShaderId
      * @throws GLException
      */
-    private static GLProgram createWorldspaceTextureProgram(
-            int worldspaceVertexShader) throws GLException {
+    private GLProgram createWorldspaceTextureProgram() throws GLException {
 
-        int textureFragmentShader = GLProgram
-                .createFragmentShader("./src/main/resources/shaders/polygon.texture.frag.glsl");
         // color program
         GLProgram textureProgram = new GLProgram(worldspaceTextureProgramName);
-        textureProgram.setVertexShader(worldspaceVertexShader);
-        textureProgram.setFragmentShader(textureFragmentShader);
+        textureProgram.setVertexShader(this.getWorldspaceVertexShaderId());
+        textureProgram.setFragmentShader(this.getTextureFragmentShaderId());
         textureProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
         textureProgram.addInputLocation(
@@ -1023,19 +1247,17 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     }
 
     /**
-     * @param worldspaceVertexShader
+     * @param worldspaceVertexShaderId
      * @throws GLException
      */
-    private static GLProgram createScreenspaceAntialiasedProgram(
-            int screenspaceVertexShader) throws GLException {
+    private GLProgram createScreenspaceAntialiasedProgram() throws GLException {
 
-        int antialiasedFragmentShader = GLProgram
-                .createFragmentShader("./src/main/resources/shaders/antialiased.frag.glsl");
         // color program
         GLProgram antialisedProgram = new GLProgram(
                 screenspaceAntialiasedTextureProgramName);
-        antialisedProgram.setVertexShader(screenspaceVertexShader);
-        antialisedProgram.setFragmentShader(antialiasedFragmentShader);
+        antialisedProgram.setVertexShader(this.getScreenspaceVertexShaderId());
+        antialisedProgram.setFragmentShader(this
+                .getAntialiasedFragmentShaderId());
         antialisedProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
         antialisedProgram.addInputLocation(
@@ -1052,5 +1274,4 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
         return antialisedProgram;
     }
-
 }

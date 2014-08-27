@@ -21,7 +21,9 @@ package fr.ign.cogit.geoxygene.appli.render;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.event.EventListenerList;
 
@@ -37,6 +39,7 @@ import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.render.primitive.FeatureRenderer;
 import fr.ign.cogit.geoxygene.appli.render.primitive.GL4FeatureRenderer;
+import fr.ign.cogit.geoxygene.appli.render.primitive.GL4FeatureRendererFactory;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
@@ -63,7 +66,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
     // private PrimitiveRenderer defaultRenderer = null;
     // private final DensityFieldPrimitiveRenderer densityFieldPrimitiveRenderer
     // = new DensityFieldPrimitiveRenderer();
-    private GL4FeatureRenderer gl4Renderer = null;
+    private final Map<IFeature, GL4FeatureRenderer> renderers = new HashMap<IFeature, GL4FeatureRenderer>();
     private LayerViewGLPanel layerViewPanel = null;
 
     /**
@@ -108,11 +111,16 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         return this.layerViewPanel;
     }
 
-    private final FeatureRenderer getRenderer() {
-        if (this.gl4Renderer == null) {
-            this.gl4Renderer = new GL4FeatureRenderer(this);
+    private final FeatureRenderer getFeatureRenderer(Layer layer,
+            IFeature feature, Symbolizer symbolizer) {
+        GL4FeatureRenderer featureRenderer = this.renderers.get(feature);
+        if (featureRenderer != null) {
+            return featureRenderer;
         }
-        return this.gl4Renderer;
+        featureRenderer = GL4FeatureRendererFactory.createRenderer(layer,
+                symbolizer, this);
+        this.renderers.put(feature, featureRenderer);
+        return featureRenderer;
     }
 
     public GLContext getGlContext() throws GLException {
@@ -243,7 +251,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
         // e.printStackTrace();
         // }
         // }
-
         super.initializeRendering();
     }
 
@@ -339,16 +346,21 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer {
     private void render(final Symbolizer symbolizer, final IFeature feature,
             final Layer layer) throws RenderingException {
         Viewport viewport = this.getLayerViewPanel().getViewport();
-        this.getRenderer().render(feature, layer, symbolizer, viewport);
+        FeatureRenderer renderer = this.getFeatureRenderer(layer, feature,
+                symbolizer);
+        if (renderer == null) {
+            logger.error("No feature renderer associated to layer "
+                    + layer.getName() + " and symbolizer " + symbolizer);
+            return;
+        }
+        renderer.render(feature, layer, symbolizer, viewport);
     }
 
     @Override
     public void reset() {
-        if (this.gl4Renderer != null) {
-            this.gl4Renderer.reset();
-            this.gl4Renderer = null;
+        for (GL4FeatureRenderer renderer : this.renderers.values()) {
+            renderer.reset();
         }
-        this.getLayerViewPanel().reset();
         TextureManager.getInstance().clearCache();
         GLTextureManager.getInstance().clearCache();
     }
