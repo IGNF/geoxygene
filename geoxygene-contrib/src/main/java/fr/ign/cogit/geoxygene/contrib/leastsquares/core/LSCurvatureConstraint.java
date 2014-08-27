@@ -265,7 +265,7 @@ public class LSCurvatureConstraint extends LSInternalConstraint {
 
   @Override
   public double getWeightFactor() {
-    if (minSegLength < thresholdMinLength)
+    if (minSegLength != null && minSegLength < thresholdMinLength)
       return super.getWeightFactor() * 10.0;
     return super.getWeightFactor();
   }

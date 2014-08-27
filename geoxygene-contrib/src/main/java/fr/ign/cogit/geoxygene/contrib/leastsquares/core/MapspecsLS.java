@@ -155,28 +155,31 @@ public class MapspecsLS {
     // on parse maintenant les contraintes externes
     Element contrExtElem = (Element) mapspecElem.getElementsByTagName(
         "contraintes-externes").item(0);
-    for (int i = 0; i < contrExtElem.getElementsByTagName("contrainte")
-        .getLength(); i++) {
-      Element contrainteElem = (Element) contrExtElem.getElementsByTagName(
-          "contrainte").item(i);
-      // on r�cup�re le nom
-      Element nomElem = (Element) contrainteElem.getElementsByTagName("nom")
-          .item(0);
-      String nom = nomElem.getChildNodes().item(0).getNodeValue();
-      // on récupère la classe1
-      Element classe1Elem = (Element) contrainteElem.getElementsByTagName(
-          "classe1").item(0);
-      String classe1 = classe1Elem.getChildNodes().item(0).getNodeValue();
-      // on récupère la classe2
-      Element classe2Elem = (Element) contrainteElem.getElementsByTagName(
-          "classe2").item(0);
-      String classe2 = classe2Elem.getChildNodes().item(0).getNodeValue();
-      // on récupère le seuil
-      Element seuilElem = (Element) contrainteElem
-          .getElementsByTagName("seuil").item(0);
-      String seuil = seuilElem.getChildNodes().item(0).getNodeValue();
-      String[] cleMap = { nom, classe1, classe2 };
-      this.contraintesExternes.put(cleMap, new Double(seuil));
+    if (contrExtElem != null
+        && contrExtElem.getElementsByTagName("contrainte") != null) {
+      for (int i = 0; i < contrExtElem.getElementsByTagName("contrainte")
+          .getLength(); i++) {
+        Element contrainteElem = (Element) contrExtElem.getElementsByTagName(
+            "contrainte").item(i);
+        // on r�cup�re le nom
+        Element nomElem = (Element) contrainteElem.getElementsByTagName("nom")
+            .item(0);
+        String nom = nomElem.getChildNodes().item(0).getNodeValue();
+        // on récupère la classe1
+        Element classe1Elem = (Element) contrainteElem.getElementsByTagName(
+            "classe1").item(0);
+        String classe1 = classe1Elem.getChildNodes().item(0).getNodeValue();
+        // on récupère la classe2
+        Element classe2Elem = (Element) contrainteElem.getElementsByTagName(
+            "classe2").item(0);
+        String classe2 = classe2Elem.getChildNodes().item(0).getNodeValue();
+        // on récupère le seuil
+        Element seuilElem = (Element) contrainteElem.getElementsByTagName(
+            "seuil").item(0);
+        String seuil = seuilElem.getChildNodes().item(0).getNodeValue();
+        String[] cleMap = { nom, classe1, classe2 };
+        this.contraintesExternes.put(cleMap, new Double(seuil));
+      }
     }
 
     // on s'occupe maintenant des pond�rations
@@ -221,9 +224,17 @@ public class MapspecsLS {
 
     // on parse enfin l'échelle
     Element echElem = (Element) doc.getElementsByTagName("echelle").item(0);
-    if (echElem != null)
+
+    if (echElem != null) {
       this.setEchelle(Double.parseDouble(echElem.getChildNodes().item(0)
           .getNodeValue()));
+    }
+  }
+
+  public MapspecsLS(File fic, Collection<IFeature> selectedObjects, double scale)
+      throws SAXException, IOException, ParserConfigurationException {
+    this(fic, selectedObjects);
+    this.setEchelle(scale);
   }
 
   public MapspecsLS(double echelle, Collection<IFeature> selectedObjects,
