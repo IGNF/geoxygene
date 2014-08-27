@@ -93,7 +93,6 @@ public class GeometryPool {
   @SuppressWarnings("unchecked")
   public void addFeatureToGeometryPool(IFeature feat, Color color) {
     ColouredFeature colFeat = new ColouredFeature(feat.getGeom(), color);
-    System.out.println(colFeat);
     ((IPopulation<IFeature>) dataset.getPopulation(CartAGenDataSet.GEOM_POOL))
         .add(colFeat);
     Layer poolLayer = sld.getLayer(CartAGenDataSet.GEOM_POOL);
@@ -132,7 +131,6 @@ public class GeometryPool {
       style.getFeatureTypeStyles().add(colFeat.computeFeatureStyle());
     }
   }
-  
 
   /**
    * Add a given vector to the geometry pool with the given color, at the given

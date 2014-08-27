@@ -41,11 +41,12 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   private static Logger logger = Logger.getLogger(Stroke.class.getName());
 
   private StrokesNetwork network;
-  
+
   /**
    * @author JTeulade-Denantes
    * 
-   * this change allows to know each arcReseau direction related to the stroke
+   *         this change allows to know each arcReseau direction related to the
+   *         stroke
    */
   private ArrayList<ArcReseauFlagPair> features;
   private ILineString geomStroke;
@@ -73,7 +74,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     }
     return featuresWithoutFlag;
   }
-  
+
   /**
    * @author JTeulade-Denantes
    */
@@ -85,7 +86,6 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     this.features = featuresWithoutFlag;
   }
 
-  
   public ArrayList<ArcReseauFlagPair> getOrientedFeatures() {
     return this.features;
   }
@@ -153,8 +153,8 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     this.id = COUNTER.getAndIncrement();
   }
 
-  public Stroke(RoadStrokesNetwork network, ArrayList<ArcReseauFlagPair> features,
-      ILineString geomStroke) {
+  public Stroke(RoadStrokesNetwork network,
+      ArrayList<ArcReseauFlagPair> features, ILineString geomStroke) {
     this.features = features;
     this.geomStroke = geomStroke;
     this.geom = geomStroke;
@@ -163,28 +163,25 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     this.id = this.getRoot().getId();
   }
 
-  
-//  public Stroke(RoadStrokesNetwork network, ArrayList<ArcReseau> features,
-//      ILineString geomStroke) {
-//    setFeatures(features);
-//    this.geomStroke = geomStroke;
-//    this.geom = geomStroke;
-//    this.network = network;
-//    this.setRoot(features.get(0));
-////    this.id = this.getRoot().getId();
-//    this.id = COUNTER.getAndIncrement();
-//  }
-  
+  // public Stroke(RoadStrokesNetwork network, ArrayList<ArcReseau> features,
+  // ILineString geomStroke) {
+  // setFeatures(features);
+  // this.geomStroke = geomStroke;
+  // this.geom = geomStroke;
+  // this.network = network;
+  // this.setRoot(features.get(0));
+  // // this.id = this.getRoot().getId();
+  // this.id = COUNTER.getAndIncrement();
+  // }
 
-  
   /**
-   * @author JTeulade-Denantes 
+   * @author JTeulade-Denantes
    * 
-   * <p>
-   * From a network segment passed in the constructor, a stroke is built on one
-   * side. This method has to be called for each side for the stroke to be
-   * completely built. 
-   * If you don't care about nodes of degree two, we use the same attributeNames in both case
+   *         <p>
+   *         From a network segment passed in the constructor, a stroke is built
+   *         on one side. This method has to be called for each side for the
+   *         stroke to be completely built. If you don't care about nodes of
+   *         degree two, we use the same attributeNames in both case
    * 
    * @param side : the chosen side (initial or final) true is initial and false
    *          is final
@@ -196,31 +193,34 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
    */
   public void buildOneSide(boolean side, Set<String> attributeNames,
       double deviatAngle, double deviatSum, boolean noStop) {
-    buildOneSide(side, attributeNames, attributeNames, deviatAngle, deviatSum, noStop);
+    buildOneSide(side, attributeNames, attributeNames, deviatAngle, deviatSum,
+        noStop);
   }
-  
+
   /**
-   *  @author JTeulade-Denantes 
+   * @author JTeulade-Denantes
    * 
-   * <p>
-   * From a network segment passed in the constructor, a stroke is built on one
-   * side. This method has to be called for each side for the stroke to be
-   * completely built. 
-   * If noStop=false, you can deal differently nodes of degree two and the other ones thanks to attributeNamesNodeOfDegreeTwo.
+   *         <p>
+   *         From a network segment passed in the constructor, a stroke is built
+   *         on one side. This method has to be called for each side for the
+   *         stroke to be completely built. If noStop=false, you can deal
+   *         differently nodes of degree two and the other ones thanks to
+   *         attributeNamesNodeOfDegreeTwo.
    * 
    * @param side : the chosen side (initial or final) true is initial and false
    *          is final
    * @param attributeNames : the names of the attribute used for attribute
    *          continuity.
-   * @param attributeNamesNodeOfDegreeTwo : the names of the attribute used for attribute
-   *          continuity for nodes of degree two
+   * @param attributeNamesNodeOfDegreeTwo : the names of the attribute used for
+   *          attribute continuity for nodes of degree two
    * @param angle : the limit deviation angle for continuity
    * @param somme : the limit difference of deviation angles sum for consecutive
    *          points.
    * 
    */
-  public void buildOneSide(boolean side, Set<String> attributeNames, Set<String> attributeNamesNodeOfDegreeTwo,
-      double deviatAngle, double deviatSum, boolean noStop) {
+  public void buildOneSide(boolean side, Set<String> attributeNames,
+      Set<String> attributeNamesNodeOfDegreeTwo, double deviatAngle,
+      double deviatSum, boolean noStop) {
 
     // get the following network segments of the root of this stroke
     NoeudReseau node = null;
@@ -242,8 +242,8 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
         best = this.chooseNextSegmentNoStop(next, followers, attributeNames,
             deviatAngle, deviatSum);
       } else {
-        best = this.chooseNextSegment(next, followers, attributeNames, attributeNamesNodeOfDegreeTwo,
-            deviatAngle, deviatSum);
+        best = this.chooseNextSegment(next, followers, attributeNames,
+            attributeNamesNodeOfDegreeTwo, deviatAngle, deviatSum);
       }
 
       // if best is null, break
@@ -278,9 +278,10 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   }
 
   /**
-   *  @author JTeulade-Denantes 
+   * @author JTeulade-Denantes
    * 
-   * If you don't care about nodes of degree two, we use the same attributeNames in both case
+   *         If you don't care about nodes of degree two, we use the same
+   *         attributeNames in both case
    * @param arc
    * @param followers
    * @param attributeNames
@@ -291,13 +292,15 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   protected ArcReseau chooseNextSegment(ArcReseau arc,
       HashSet<ArcReseau> followers, Set<String> attributeNames,
       double deviatAngle, double deviatSum) {
-    return chooseNextSegment(arc, followers, attributeNames, attributeNames, deviatAngle, deviatSum);
+    return chooseNextSegment(arc, followers, attributeNames, attributeNames,
+        deviatAngle, deviatSum);
   }
-  
+
   /**
-   *  @author JTeulade-Denantes 
-   *  
-   * I added attributeNamesNodeOfDegreeTwo parameter which allows to deal differently node of degree two and the other ones
+   * @author JTeulade-Denantes
+   * 
+   *         I added attributeNamesNodeOfDegreeTwo parameter which allows to
+   *         deal differently node of degree two and the other ones
    * @param arc
    * @param followers
    * @param attributeNames
@@ -307,13 +310,15 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
    * @return
    */
   protected ArcReseau chooseNextSegment(ArcReseau arc,
-      HashSet<ArcReseau> followers, Set<String> attributeNames, Set<String> attributeNamesNodeOfDegreeTwo,
-      double deviatAngle, double deviatSum) {
-      
+      HashSet<ArcReseau> followers, Set<String> attributeNames,
+      Set<String> attributeNamesNodeOfDegreeTwo, double deviatAngle,
+      double deviatSum) {
+
     // first, if it's a node of degree two
     if (followers.size() == 1) {
       // we filter the followers from the attributeNamesNodeOfDegreeTwo
-      this.filterByAttributeContinuity(arc, followers, attributeNamesNodeOfDegreeTwo);
+      this.filterByAttributeContinuity(arc, followers,
+          attributeNamesNodeOfDegreeTwo);
       if (followers.size() == 0) {
         return null;
       }
@@ -323,7 +328,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
       }
       return null;
     }
-    
+
     // then, filter the followers
     this.filterFollowers(arc, followers);
     if (followers.size() == 0) {
@@ -961,7 +966,8 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   }
 
   /**
-   * Build the stroke geometry from the list of features composing the stroke without the flags
+   * Build the stroke geometry from the list of features composing the stroke
+   * without the flags
    */
   public void buildGeomStrokeWithoutFlags() {
     ArrayList<ILineString> geoms = new ArrayList<ILineString>();
@@ -973,7 +979,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
       // System.out.println(this.features);
     }
   }
-  
+
   protected ILineString joinStrokeFeatures(ArrayList<ILineString> lines) {
     IDirectPositionList pointsFinaux = new DirectPositionList();
     if (lines.size() == 0) {
@@ -999,12 +1005,14 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
 
     if (index != 0) {
       lineBefore = Operateurs.compileArcs(before);
-      if (Distances.proche(this.root.getGeom().startPoint(),
-          lineBefore.startPoint(), 0)) {
-        lineBefore = lineBefore.reverse();
+      if (lineBefore != null) {
+        if (Distances.proche(this.root.getGeom().startPoint(),
+            lineBefore.startPoint(), 0)) {
+          lineBefore = lineBefore.reverse();
+        }
+        pointsFinaux.addAll(lineBefore.getControlPoint());
+        pointsFinaux.remove(this.root.getGeom().startPoint());
       }
-      pointsFinaux.addAll(lineBefore.getControlPoint());
-      pointsFinaux.remove(this.root.getGeom().startPoint());
     }
 
     pointsFinaux.addAll(((ILineString) this.root.getGeom()).getControlPoint());
@@ -1056,7 +1064,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
    */
   StrokeNode strokeInitialNode;
   StrokeNode strokeFinalNode;
-  
+
   public StrokeNode getStrokeInitialNode() {
     return strokeInitialNode;
   }
@@ -1064,7 +1072,6 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   public StrokeNode getStrokeFinalNode() {
     return strokeFinalNode;
   }
-
 
   public void setStrokeInitialNode(StrokeNode strokeInitialNode) {
     this.strokeInitialNode = strokeInitialNode;
@@ -1077,72 +1084,79 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   /**
    * @author JTeulade-Denantes
    * 
-   * instantitate arcs flags (arcs directions) to have a consistent stroke which can be used afterwards
+   *         instantitate arcs flags (arcs directions) to have a consistent
+   *         stroke which can be used afterwards
    */
-  private void instantiateFlagsOfArcReseau() {
-    //for an unique arc, direction is not important
+  public void instantiateFlagsOfArcReseau() {
+    // for an unique arc, direction is not important
     if (this.getOrientedFeatures().size() > 1) {
       NoeudReseau previousNode = null;
-      ArcReseau firstArc= null;
+      ArcReseau firstArc = null;
       ArrayList<ArcReseauFlagPair> orderedArcList = new ArrayList<ArcReseauFlagPair>();
-      //we need two sections to know the global direction of the stroke sections
+      // we need two sections to know the global direction of the stroke
+      // sections
       boolean secondSection = false;
       for (ArcReseau arc : this.getFeatures()) {
         if (secondSection) {
-          //with the second section, we can find the stroke direction 
+          // with the second section, we can find the stroke direction
           secondSection = false;
-          if (arc.getNoeudInitial() == firstArc.getNoeudFinal() || arc.getNoeudFinal() == firstArc.getNoeudFinal()) {
-            previousNode = firstArc.getNoeudFinal(); 
-            //don't forget to add the first section
+          if (arc.getNoeudInitial() == firstArc.getNoeudFinal()
+              || arc.getNoeudFinal() == firstArc.getNoeudFinal()) {
+            previousNode = firstArc.getNoeudFinal();
+            // don't forget to add the first section
             orderedArcList.add(new ArcReseauFlagPairImpl(firstArc, true));
-          } else if (arc.getNoeudInitial() == firstArc.getNoeudInitial() || arc.getNoeudFinal() == firstArc.getNoeudInitial()) {
-            previousNode = firstArc.getNoeudInitial(); 
-            //this arc is not in the good direction
+          } else if (arc.getNoeudInitial() == firstArc.getNoeudInitial()
+              || arc.getNoeudFinal() == firstArc.getNoeudInitial()) {
+            previousNode = firstArc.getNoeudInitial();
+            // this arc is not in the good direction
             orderedArcList.add(new ArcReseauFlagPairImpl(firstArc, false));
           } else
             logger.error("error in strokes creation");
         }
-        
+
         if (firstArc == null) {
-          //we can't print the first section if we don't know the stroke direction, that's why we have to save it
-          firstArc = arc;      
-          //we are in the first section, so we'll see stroke direction with the second section in the next loop
-          secondSection=true;
+          // we can't print the first section if we don't know the stroke
+          // direction, that's why we have to save it
+          firstArc = arc;
+          // we are in the first section, so we'll see stroke direction with the
+          // second section in the next loop
+          secondSection = true;
         } else {
-          //we need to deal with the local direction of each section
+          // we need to deal with the local direction of each section
           if (arc.getNoeudFinal() == previousNode) {
             previousNode = arc.getNoeudInitial();
-            //this arc is not in the good direction
-            orderedArcList.add(new ArcReseauFlagPairImpl(arc, false));   
+            // this arc is not in the good direction
+            orderedArcList.add(new ArcReseauFlagPairImpl(arc, false));
           } else if (arc.getNoeudInitial() == previousNode) {
             previousNode = arc.getNoeudFinal();
-            orderedArcList.add(new ArcReseauFlagPairImpl(arc, true));  
-          } else 
+            orderedArcList.add(new ArcReseauFlagPairImpl(arc, true));
+          } else
             logger.error("error in strokes creation");
-        }  
+        }
       }
       this.setOrientedFeatures(orderedArcList);
-    } 
+    }
   }
-  
+
   /**
    * @author JTeulade-Denantes
    * 
-   * instantiate strokeInitialNode and strokeFinalNode thanks to the noeudReseau related
+   *         instantiate strokeInitialNode and strokeFinalNode thanks to the
+   *         noeudReseau related
    * @param strokeNodesMap saves the nodes which have already been seen
    */
   public void instantiateStrokeNodes(Map<NoeudReseau, StrokeNode> strokeNodesMap) {
-    
+
     ArcReseauFlagPair initialArcPair = this.getOrientedFeatures().get(0);
     NoeudReseau noeudReseau;
-    
-    //strokeInitialNode instanciation
-    //we check the arc direction
-    if (initialArcPair.getFlag()) 
+
+    // strokeInitialNode instanciation
+    // we check the arc direction
+    if (initialArcPair.getFlag())
       noeudReseau = initialArcPair.getArcReseau().getNoeudInitial();
-    else 
+    else
       noeudReseau = initialArcPair.getArcReseau().getNoeudFinal();
-    //we check if this node has already been seen
+    // we check if this node has already been seen
     if (strokeNodesMap.containsKey(noeudReseau))
       strokeInitialNode = strokeNodesMap.get(noeudReseau);
     else {
@@ -1150,15 +1164,15 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
       strokeNodesMap.put(noeudReseau, strokeInitialNode);
     }
 
-    
-    ArcReseauFlagPair finalArcPair = this.getOrientedFeatures().get(this.getFeatures().size()-1); 
-    
-    //strokeFinalNode instanciation
-    if (finalArcPair.getFlag()) 
+    ArcReseauFlagPair finalArcPair = this.getOrientedFeatures().get(
+        this.getFeatures().size() - 1);
+
+    // strokeFinalNode instanciation
+    if (finalArcPair.getFlag())
       noeudReseau = finalArcPair.getArcReseau().getNoeudFinal();
-     else 
+    else
       noeudReseau = finalArcPair.getArcReseau().getNoeudInitial();
-    
+
     if (strokeNodesMap.containsKey(noeudReseau))
       strokeFinalNode = strokeNodesMap.get(noeudReseau);
     else {
@@ -1166,5 +1180,5 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
       strokeNodesMap.put(noeudReseau, strokeFinalNode);
     }
   }
-  
+
 }
