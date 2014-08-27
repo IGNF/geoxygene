@@ -324,6 +324,7 @@ public class GM_Polygon extends GM_SurfacePatch implements IPolygon {
     for (int i = 0; i < this.sizeInterior(); i++) {
       poly.addInterior((IRing) this.getInterior(i).clone());
     }
+    poly.setCRS(this.getCRS());
     return poly;
   }
 

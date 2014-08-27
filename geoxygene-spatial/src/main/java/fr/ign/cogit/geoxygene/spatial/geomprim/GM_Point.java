@@ -102,7 +102,9 @@ public class GM_Point extends GM_Primitive implements IPoint {
 
   @Override
   public Object clone() {
-    return new GM_Point((IDirectPosition) this.position.clone());
+    GM_Point o = new GM_Point((IDirectPosition) this.position.clone());
+    o.setCRS(this.getCRS());
+    return o;
   }
 
   @Override

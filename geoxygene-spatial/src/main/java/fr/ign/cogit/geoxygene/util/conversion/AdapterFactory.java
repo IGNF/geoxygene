@@ -126,18 +126,18 @@ public class AdapterFactory {
           factory, coord);
       if (sequence.size() > 3
           && sequence.getCoordinate(0).equals(
-              sequence.getCoordinate(sequence.size() - 1)) || sequence.size() == 0) {
+              sequence.getCoordinate(sequence.size() - 1))
+          || sequence.size() == 0) {
         result = factory.createLinearRing(sequence);
         result.setSRID(geom.getCRS());
         return result;
       }
-//      logger.error(sequence.size() + " " + sequence.getCoordinate(0).equals(
-//              sequence.getCoordinate(sequence.size() - 1)));
-//      logger.error(sequence.getCoordinate(0));
-//      logger.error(sequence.getCoordinate(sequence.size() - 1));
-//      System.exit(0);
-      throw new Exception(I18N
-              .getString("AdapterFactory.RingNotClosed")); //$NON-NLS-1$
+      // logger.error(sequence.size() + " " + sequence.getCoordinate(0).equals(
+      // sequence.getCoordinate(sequence.size() - 1)));
+      // logger.error(sequence.getCoordinate(0));
+      // logger.error(sequence.getCoordinate(sequence.size() - 1));
+      // System.exit(0);
+      throw new Exception(I18N.getString("AdapterFactory.RingNotClosed")); //$NON-NLS-1$
     }
     if (geom instanceof ILineString) {
       result = AdapterFactory.toLineString(factory, (GM_LineString) geom);
@@ -146,10 +146,11 @@ public class AdapterFactory {
     }
     if (geom instanceof ICurve) {
       // other than linestring
-      ILineString line = ((ICurve) geom).asLineString(AdapterFactory.getSpacing(), 0);
-//      logger.error("ICURVE " + line);
+      ILineString line = ((ICurve) geom).asLineString(
+          AdapterFactory.getSpacing(), 0);
+      // logger.error("ICURVE " + line);
       result = AdapterFactory.toLineString(factory, line);
-//      logger.error("ICURVE " + result);
+      // logger.error("ICURVE " + result);
       result.setSRID(geom.getCRS());
       return result;
     }
@@ -224,9 +225,11 @@ public class AdapterFactory {
   }
 
   private static double SPACING = 1.0;
+
   public static void setSpacing(double s) {
     AdapterFactory.SPACING = s;
   }
+
   public static double getSpacing() {
     return AdapterFactory.SPACING;
   }
@@ -502,25 +505,34 @@ public class AdapterFactory {
       return null;
     }
     if (geom instanceof IPoint) {
-      return new GM_Point(AdapterFactory.to2DDirectPosition(((GM_Point) geom)
-          .getPosition()));
+      IGeometry toReturn = new GM_Point(
+          AdapterFactory.to2DDirectPosition(((GM_Point) geom).getPosition()));
+      toReturn.setCRS(geom.getCRS());
+      return toReturn;
     }
     if (geom instanceof IRing) {
-      return new GM_Ring(new GM_LineString(
+      IGeometry toReturn = new GM_Ring(new GM_LineString(
           AdapterFactory.to2DDirectPositionList(geom.coord())));
+      toReturn.setCRS(geom.getCRS());
+      return toReturn;
     }
     if (geom instanceof ILineString) {
-      return new GM_LineString(AdapterFactory.to2DDirectPositionList(geom
-          .coord()));
+      IGeometry toReturn = new GM_LineString(
+          AdapterFactory.to2DDirectPositionList(geom.coord()));
+      toReturn.setCRS(geom.getCRS());
+      return toReturn;
     }
     if (geom instanceof GM_Polygon) {
       GM_Polygon polygon = new GM_Polygon(new GM_Ring(new GM_LineString(
           AdapterFactory.to2DDirectPositionList(((GM_Polygon) geom)
               .exteriorCoord()))));
+      polygon.setCRS(geom.getCRS());
       for (int index = 0; index < ((IPolygon) geom).sizeInterior(); index++) {
         ILineString ring = ((IPolygon) geom).interiorLineString(index);
-        polygon.addInterior(new GM_Ring((GM_LineString) AdapterFactory
-            .to2DGM_Object(ring)));
+        IRing o = new GM_Ring(
+            (GM_LineString) AdapterFactory.to2DGM_Object(ring));
+        o.setCRS(geom.getCRS());
+        polygon.addInterior(o);
       }
       return polygon;
     }
@@ -530,6 +542,7 @@ public class AdapterFactory {
       for (int i = 0; i < mp.size(); i++) {
         multiPoint.add((IPoint) AdapterFactory.to2DGM_Object(mp.get(i)));
       }
+      multiPoint.setCRS(geom.getCRS());
       return multiPoint;
     }
     if (geom instanceof IMultiCurve) {
@@ -539,6 +552,7 @@ public class AdapterFactory {
         multiLineString.add((IOrientableCurve) AdapterFactory.to2DGM_Object(mls
             .get(i)));
       }
+      multiLineString.setCRS(geom.getCRS());
       return multiLineString;
     }
     if (geom instanceof IMultiSurface) {
@@ -548,6 +562,7 @@ public class AdapterFactory {
         multiPolygon.add((GM_OrientableSurface) AdapterFactory
             .to2DGM_Object(multiPolygon.get(i)));
       }
+      multiPolygon.setCRS(geom.getCRS());
       return multiPolygon;
     }
     if (geom instanceof IAggregate) {
@@ -556,6 +571,7 @@ public class AdapterFactory {
       for (int i = 0; i < gc.size(); i++) {
         aggregate.add(AdapterFactory.to2DGM_Object(gc.get(i)));
       }
+      aggregate.setCRS(geom.getCRS());
       return aggregate;
     }
     throw new Exception(

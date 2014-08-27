@@ -124,7 +124,9 @@ public class GM_Ring extends GM_CompositeCurve implements IRing {
 
   @Override
   public Object clone() {
-    return new GM_Ring(new GM_LineString((IDirectPositionList) this.coord()
-        .clone()));
+    GM_Ring o = new GM_Ring(new GM_LineString((IDirectPositionList) this
+        .coord().clone()));
+    o.setCRS(this.getCRS());
+    return o;
   }
 }

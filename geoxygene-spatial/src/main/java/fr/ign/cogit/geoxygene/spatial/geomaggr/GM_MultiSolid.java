@@ -73,6 +73,7 @@ public class GM_MultiSolid<SolidType extends ISolid> extends
     for (ISolid elt : this.element) {
       agg.add((ISolid) elt.clone());
     }
+    agg.setCRS(this.getCRS());
     return agg;
   }
 }

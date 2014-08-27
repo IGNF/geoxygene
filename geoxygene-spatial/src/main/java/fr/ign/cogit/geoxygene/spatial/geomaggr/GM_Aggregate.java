@@ -195,6 +195,7 @@ public class GM_Aggregate<GeomType extends IGeometry> extends GM_Object
     for (GeomType elt : this.element) {
       agg.add((GeomType) elt.clone());
     }
+    agg.setCRS(this.getCRS());
     return agg;
   }
 }

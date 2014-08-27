@@ -139,7 +139,9 @@ public abstract class GM_Object implements Cloneable, IGeometry {
   public Object clone() {
     // FIXME j'ai comme un doute que ça marche ça
     try {
-      return super.clone();
+      GM_Object o = (GM_Object) super.clone();
+      o.setCRS(this.getCRS());
+      return o;
     } catch (Exception e) {
       e.printStackTrace();
       return null;
@@ -174,7 +176,8 @@ public abstract class GM_Object implements Cloneable, IGeometry {
    * geom2},"/home/users/truc/essai.jpg", new Color[] {Color.RED, Color.BLUE},
    * Color.WHITE, 150, 80)
    */
-  public static void exportImage(IGeometry[] geoms, String path, Color foreground[], Color background, int width, int height) {
+  public static void exportImage(IGeometry[] geoms, String path,
+      Color foreground[], Color background, int width, int height) {
     try {
       ImgUtil.saveImage(geoms, path, foreground, background, width, height);
     } catch (Exception e) {
@@ -191,7 +194,8 @@ public abstract class GM_Object implements Cloneable, IGeometry {
    * geom2},"/home/users/truc/essai.jpg", new Color[] {Color.RED, Color.BLUE},
    * Color.WHITE, 150, 80)
    */
-  public static void exportSvgz(IGeometry[] geoms, String path, Color foreground[], Color background, int width, int height) {
+  public static void exportSvgz(IGeometry[] geoms, String path,
+      Color foreground[], Color background, int width, int height) {
     try {
       ImgUtil.saveSvgz(geoms, path, foreground, background, width, height);
     } catch (Exception e) {
@@ -243,7 +247,8 @@ public abstract class GM_Object implements Cloneable, IGeometry {
 
   @Override
   public boolean intersectsStrictement(IGeometry geom) {
-    return (this.intersects(geom) && !this.contains(geom) && !geom.contains(this) && !this.touches(geom));
+    return (this.intersects(geom) && !this.contains(geom)
+        && !geom.contains(this) && !this.touches(geom));
   }
 
   @Override
@@ -319,16 +324,16 @@ public abstract class GM_Object implements Cloneable, IGeometry {
     if (this == o) {
       return true;
     }
-    
-    // 
-    if (!(o instanceof GM_Object)) { 
+
+    //
+    if (!(o instanceof GM_Object)) {
       return false;
     }
 
-    GM_Object oo = (GM_Object)o;
+    GM_Object oo = (GM_Object) o;
     return this.equals(oo);
     // if (this.getClass().equals(o.getClass())) {
-    //   return this.equals((IGeometry) o);
+    // return this.equals((IGeometry) o);
     // }
     // return false;
   }

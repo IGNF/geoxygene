@@ -49,9 +49,10 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
  */
 
 public class GM_LineString extends GM_CurveSegment implements ILineString {
-    
-    /** Classic logger. */
-    private static Logger LOGGER = Logger.getLogger(GM_LineString.class.getName());
+
+  /** Classic logger. */
+  private static Logger LOGGER = Logger
+      .getLogger(GM_LineString.class.getName());
 
   /**
    * Points pour le dessin de la polyligne : séquence de DirectPosition. Le
@@ -132,10 +133,11 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
     this.segment.add(this);
     this.controlPoint = new DirectPositionList();
     this.controlPoint.addAll(points);
-//    if (this.controlPoint.size() == 1) {
-//      System.out.println("CREATING A LINE WITH A SINGLE POINT " + points.size() + " = " + points.get(0));
-//      System.exit(0);
-//    }
+    // if (this.controlPoint.size() == 1) {
+    // System.out.println("CREATING A LINE WITH A SINGLE POINT " + points.size()
+    // + " = " + points.get(0));
+    // System.exit(0);
+    // }
     //    this.interpolation = "linear"; //$NON-NLS-1$
   }
 
@@ -148,8 +150,8 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
       this.addControlPoint(p, allowRepeated);
     }
     if (this.controlPoint.size() == 1) {
-        LOGGER.trace("CREATING A LINE WITH A SINGLE POINT " + points.get(0));
-        return;// System.exit(0);
+      LOGGER.trace("CREATING A LINE WITH A SINGLE POINT " + points.get(0));
+      return;// System.exit(0);
     }
   }
 
@@ -192,7 +194,10 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
 
   @Override
   public Object clone() {
-    return new GM_LineString((IDirectPositionList) this.controlPoint.clone());
+    GM_LineString o = new GM_LineString(
+        (IDirectPositionList) this.controlPoint.clone());
+    o.setCRS(o.getCRS());
+    return o;
   }
 
   @Override
@@ -212,6 +217,7 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
   public String getInterpolation() {
     return "linear"; //$NON-NLS-1$
   }
+
   @Override
   public IDirectPosition param(double s) {
     double d = 0;

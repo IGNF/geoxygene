@@ -101,6 +101,7 @@ public class GM_MultiSurface<GeomType extends IOrientableSurface> extends
     for (GeomType elt : this.element) {
       agg.add((GeomType) elt.clone());
     }
+    agg.setCRS(this.getCRS());
     return agg;
   }
 }

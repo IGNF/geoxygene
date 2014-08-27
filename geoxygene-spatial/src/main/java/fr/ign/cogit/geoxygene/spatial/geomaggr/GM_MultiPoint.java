@@ -77,6 +77,7 @@ public class GM_MultiPoint extends GM_MultiPrimitive<IPoint> implements
     for (IPoint elt : this.element) {
       agg.add((IPoint) elt.clone());
     }
+    agg.setCRS(this.getCRS());
     return agg;
   }
 

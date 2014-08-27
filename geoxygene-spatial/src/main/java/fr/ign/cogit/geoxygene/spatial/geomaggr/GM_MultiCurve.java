@@ -99,6 +99,7 @@ public class GM_MultiCurve<CurveType extends IOrientableCurve> extends
     for (CurveType elt : this.element) {
       agg.add((CurveType) elt.clone());
     }
+    agg.setCRS(this.getCRS());
     return agg;
   }
 }
