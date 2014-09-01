@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.util.gl;
 
 import org.apache.log4j.Logger;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellatorCallbackAdapter;
 
@@ -9,7 +10,9 @@ import org.lwjgl.util.glu.GLUtessellatorCallbackAdapter;
  * 
  */
 /**
- * Callback class used in gl tesselation process
+ * Callback class used in gl tesselation process. It is intended to create only
+ * ONE GLMesh with triangles in it, but it may depend on tesselation
+ * algorithm...
  * 
  * @author JeT
  * 
@@ -19,7 +22,12 @@ public class GLPrimitiveTessCallback extends GLUtessellatorCallbackAdapter {
     private static final Logger logger = Logger
             .getLogger(GLPrimitiveTessCallback.class.getName()); // logger
     private GLSimpleComplex primitive = null;
-    private GLMesh currentGLMesh = null;
+    // private GLMesh currentGLMesh = null;
+    private GLMesh trianglesGLMesh = null;
+    private boolean triangleFan = false;
+    private boolean triangleStrip = false;
+    private int vertexIndex1 = -1;
+    private int vertexIndex2 = -1;
 
     /**
      * Constructor
@@ -29,6 +37,7 @@ public class GLPrimitiveTessCallback extends GLUtessellatorCallbackAdapter {
      */
     public GLPrimitiveTessCallback(final GLSimpleComplex primitive) {
         this.primitive = primitive;
+        this.trianglesGLMesh = this.primitive.addGLMesh(GL11.GL_TRIANGLES);
     }
 
     @Override
@@ -100,8 +109,22 @@ public class GLPrimitiveTessCallback extends GLUtessellatorCallbackAdapter {
 
     @Override
     public void begin(final int type) {
-        this.currentGLMesh = this.primitive.addGLMesh(type);
-        // System.err.println("begin " + type);
+        this.triangleFan = false;
+        this.triangleStrip = false;
+        this.vertexIndex1 = -1;
+        this.vertexIndex2 = -1;
+        if (type == GL11.GL_TRIANGLES) {
+            // nothing particular to do
+        } else if (type == GL11.GL_TRIANGLE_FAN) {
+            this.triangleFan = true;
+        } else if (type == GL11.GL_TRIANGLE_STRIP) {
+            this.triangleStrip = true;
+        } else {
+            logger.warn("GLU tesselation creates primitives type "
+                    + type
+                    + " which are not correctly handled by GeOxygene primitives");
+        }
+
         // System.err.println("GL_TRIANGLE_FAN = " + GL11.GL_TRIANGLE_FAN);
         // System.err.println("GL_TRIANGLE_STRIP = " + GL11.GL_TRIANGLE_STRIP);
         // System.err.println("GL_TRIANGLES = " + GL11.GL_TRIANGLES);
@@ -111,7 +134,8 @@ public class GLPrimitiveTessCallback extends GLUtessellatorCallbackAdapter {
 
     @Override
     public void end() {
-        this.currentGLMesh = null;
+        // this.currentGLMesh = null;
+        this.triangleFan = false;
         // System.err.println("end");
     }
 
@@ -122,16 +146,39 @@ public class GLPrimitiveTessCallback extends GLUtessellatorCallbackAdapter {
         // System.err.println("tess     uv " + coords[3] + " " + coords[4]);
         // System.err.println("tess   rgba " + coords[5] + " " + coords[6] + " "
         // + coords[7] + " " + coords[8]);
-        // glTexCoord2d(coords[3], coords[4]);
         GLSimpleVertex vertex = new GLSimpleVertex();
         vertex.setXYZ(coords[0], coords[1], coords[2]);
         vertex.setUV(coords[3], coords[4]);
         vertex.setRGBA(coords[5], coords[6], coords[7], coords[8]);
         int vertexId = this.primitive.addVertex(vertex);
-        if (this.currentGLMesh != null) {
-
-            this.currentGLMesh.addIndex(vertexId);
+        if (this.triangleFan) {
+            if (this.vertexIndex1 == -1) {
+                this.vertexIndex1 = vertexId;
+            } else if (this.vertexIndex2 == -1) {
+                this.vertexIndex2 = vertexId;
+            } else {
+                this.trianglesGLMesh.addIndices(this.vertexIndex1,
+                        this.vertexIndex2, vertexId);
+                this.vertexIndex2 = vertexId;
+            }
+        } else if (this.triangleStrip) {
+            if (this.vertexIndex1 == -1) {
+                this.vertexIndex1 = vertexId;
+            } else if (this.vertexIndex2 == -1) {
+                this.vertexIndex2 = vertexId;
+            } else {
+                this.trianglesGLMesh.addIndices(this.vertexIndex1,
+                        this.vertexIndex2, vertexId);
+                this.vertexIndex1 = this.vertexIndex2;
+                this.vertexIndex2 = vertexId;
+            }
+        } else {
+            this.trianglesGLMesh.addIndex(vertexId);
         }
+        // if (this.currentGLMesh != null) {
+        //
+        // this.currentGLMesh.addIndex(vertexId);
+        // }
     }
 
     @Override
