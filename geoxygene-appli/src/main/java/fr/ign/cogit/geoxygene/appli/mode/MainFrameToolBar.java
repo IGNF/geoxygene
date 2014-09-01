@@ -311,6 +311,12 @@ public class MainFrameToolBar implements ContainerListener, KeyListener,
   public final List<Mode> getRegisteredModes() {
     return this.modes;
   }
+  
+  public void addMode(Mode mode) {
+	  if (this.modes != null) {
+		  this.modes.add(mode);
+	  }
+  }
 
   /**
    * Set the current mode.
