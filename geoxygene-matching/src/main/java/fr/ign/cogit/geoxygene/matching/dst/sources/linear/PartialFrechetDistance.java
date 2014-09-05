@@ -42,7 +42,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  */
 public class PartialFrechetDistance extends GeoSource {
 
-  private float threshold = 10f;
+  private float threshold = 100f;
 
   public float getThreshold() {
     return this.threshold;
@@ -81,17 +81,19 @@ public class PartialFrechetDistance extends GeoSource {
 
   @Override
   public String getName() {
-    return "Distance Fréchet Partielle";// TODO using I18N
+	// TODO using I18N
+	return "Distance Fréchet Partielle";
   }
 
   private double compute(IGeometry geo1, IGeometry geo2) {
     ILineString l1 = new GM_LineString(geo1.coord());
     ILineString l2 = new GM_LineString(geo2.coord());
-//    System.out.println("l1 = " + l1);
-//    System.out.println("l2 = " + l2);
+    //    System.out.println("l1 = " + l1);
+    //    System.out.println("l2 = " + l2);
     double v = Frechet.partialFrechet(l1, l2);
     return v;
   }
+  
   @Override
   public double evaluate(IFeature ref, GeomHypothesis candidate) {
     double distance = compute(ref.getGeom(), candidate.getGeom());

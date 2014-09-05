@@ -2,6 +2,7 @@
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -12,7 +13,13 @@
 
 	<artifactId>geoxygene-matching</artifactId>
 	<packaging>jar</packaging>
+	
 	<name>geoxygene-matching</name>
+	<description>
+		- Matching with Dempster Shafer Theory
+		- Implementation of Li and Goodchild's approach for linear feature matching
+		- Minimalistic implementation of &quot;Hidden Markov Map Matching Through Noise and Sparseness&quot;
+	</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,6 +27,16 @@
 
 	<build>
 		<plugins>
+			<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>cobertura-maven-plugin</artifactId>
+					<version>2.6</version>
+					<configuration>
+						<formats>
+							<format>xml</format>
+						</formats>
+					</configuration>
+				</plugin>
 		</plugins>
 	</build>
 
@@ -97,8 +114,4 @@
 		
 	</dependencies>
 	
-	
-	<description>- Matching with Dempster Shafer Theory
-- Implementation of Li and Goodchild's approach for linear feature matching
-- Minimalistic implementation of &quot;Hidden Markov Map Matching Through Noise and Sparseness&quot;</description>
 </project>

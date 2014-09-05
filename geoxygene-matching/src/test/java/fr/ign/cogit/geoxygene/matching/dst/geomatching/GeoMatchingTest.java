@@ -1,5 +1,6 @@
 package fr.ign.cogit.geoxygene.matching.dst.geomatching;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,31 +23,35 @@ public class GeoMatchingTest {
   @Test
   public void testRunLine() throws Exception {
     
-	  GeoMatching matching = new GeoMatching();
-    
-	  /*Collection<Source<GeomHypothesis, Float>> criteria = new ArrayList<Source<GeomHypothesis, Float>>();
-	  criteria.add(new PartialFrechetDistance(), 0.3f);
+	  Collection<Source<IFeature, GeomHypothesis>> criteria = new ArrayList<Source<IFeature, GeomHypothesis>>();
+	  criteria.add(new PartialFrechetDistance());
 	  criteria.add(new LineOrientation());
     
-	  IPopulation<IFeature> bdtopo = ShapefileReader
-        .read("H:\\Data\\SIGPARIS\\rues\\poubelle\\test.shp");
-	  IPopulation<IFeature> vasserot = ShapefileReader
-        .read("H:\\Data\\SIGPARIS\\rues\\vasserot\\test.shp");
-	  IFeature reference = bdtopo.get(1);
-	    List<IFeature> candidates = new ArrayList<IFeature>(vasserot.select(reference.getGeom().buffer(
-	        20)));
-	    boolean closed = true;
-	    System.out.println(candidates.size() + " candidates");
-	    EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates,
+	  // D:\Data\Appariement\MesTests\Paris\filaires\poubelle
+	  
+	  URL urlPoubelle = new URL("file", "", "./data/poubelle/streets_l.shp");
+	  IPopulation<IFeature> poubelle = ShapefileReader.read(urlPoubelle.getPath());
+	  IFeature reference = poubelle.get(1);
+	  
+	  URL urlVasserot = new URL("file", "", "./data/vasserot/streets2.shp");
+	  IPopulation<IFeature> vasserot = ShapefileReader.read(urlVasserot.getPath());
+	  
+	  
+	  List<IFeature> candidates = new ArrayList<IFeature>(vasserot.select(reference.getGeom().buffer(20)));
+	  boolean closed = true;
+	  System.out.println(candidates.size() + " candidates");
+	  
+	  GeoMatching matching = new GeoMatching();
+	  EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates,
 	        ChoiceType.PIGNISTIC, closed);
-	    System.out.println("result = " + result);
-	    System.out.println("reference = " + reference.getGeom());
-	    System.out.println("value = " + result.getValue());
-	    System.out.println("conflict = " + result.getConflict());
-	    System.out.println("with " + result.getHypothesis().size());
-	    for (int i = 0; i < result.getHypothesis().size(); i++) {
+	  System.out.println("result = " + result);
+	  System.out.println("reference = " + reference.getGeom());
+	  System.out.println("value = " + result.getValue());
+	  System.out.println("conflict = " + result.getConflict());
+	  System.out.println("with " + result.getHypothesis().size());
+	  for (int i = 0; i < result.getHypothesis().size(); i++) {
 	      System.out.println("\tobj " + i + " = " + result.getHypothesis().get(i));
-	    }*/
+	  }
   }
   
   /*@Test
