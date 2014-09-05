@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: fr.ign.cogit.geoxygene.matching.dst.operators.DempsterOpTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.04 sec - in fr.ign.cogit.geoxygene.matching.dst.operators.DempsterOpTest

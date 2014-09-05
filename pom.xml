@@ -649,5 +649,7 @@
 		<module>geoxygene-util</module>
 		<module>geoxygene-osm</module>
 		<module>geoxygene-spatialrelation</module>
+		<module>geoxygene-matching</module>
+		<module>geoxygene-graph</module>
 	</modules>
 </project>

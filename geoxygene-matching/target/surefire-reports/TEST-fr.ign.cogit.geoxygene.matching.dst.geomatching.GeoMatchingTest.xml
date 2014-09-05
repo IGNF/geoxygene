@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoMatchingTest" time="0" tests="1" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="D:\MesProgrammes\Java\jdk1.7.0_03\jre\bin"/>
+    <property name="java.vm.version" value="22.1-b02"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="java.vendor.url" value="http://java.oracle.com/"/>
+    <property name="path.separator" value=";"/>
+    <property name="guice.disable.misplaced.annotation.check" value="true"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.script" value=""/>
+    <property name="user.country" value="FR"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="Service Pack 1"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="E:\Workspace\geoxygene\geoxygene-matching"/>
+    <property name="java.runtime.version" value="1.7.0_03-b05"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
+    <property name="java.endorsed.dirs" value="D:\MesProgrammes\Java\jdk1.7.0_03\jre\lib\endorsed"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.io.tmpdir" value="C:\Users\MDVAN-~1\AppData\Local\Temp\"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.variant" value=""/>
+    <property name="os.name" value="Windows 7"/>
+    <property name="classworlds.conf" value="E:\Workspace\.metadata\.plugins\org.eclipse.m2e.launching\launches\m2conf754767571170511044.tmp"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="D:\MesProgrammes\Java\jdk1.7.0_03\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files (x86)\Internet Explorer;D:\MesProgrammes\Maven\apache-maven-3.0.4\bin;D:\MesProgrammes\PostgreSQL\9.2\bin;D:\MesProgrammes\PostgreSQL\9.2\lib;D:\MesProgrammes\Python33;C:\Program Files (x86)\Graphviz 2.28\bin;C:\Program Files (x86)\Graphviz 2.28\bin;D:\MesProgrammes\R\R-2.15.0\bin;D:\MesProgrammes\UML\UMLGraph-5.6\UMLGraph-5.6\bin;D:\MesProgrammes\MiKTeX\MiKTeX_2.9\miktex\bin\x64\;D:\MesProgrammes\Java\jdk1.7.0_03\bin;D:\Téléchargement\curl-7.29.0-ssl-sspi-zlib-static-bin-w32\curl-7.29.0-ssl-sspi-zlib-static-bin-w32;D:\MesProgrammes\Ant\apache-ant-1.9.0\bin;D:\MesProgrammes\Tortoise\bin;D:\MesProgrammes\Git\bin;D:\MesProgrammes\TortoiseGit\bin;D:\MesProgrammes\Python33\Scripts;C:\Program Files\SlikSvn\bin;D:\MesProgrammes\OpenLDAP\2-4-35\bin;C:\Users\mdvan-damme\AppData\Roaming\MiKTeX\2.9\miktex\bin\x64\;C:\Program Files (x86)\CVSNT\;."/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="51.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="os.version" value="6.1"/>
+    <property name="user.home" value="C:\Users\mdvan-damme"/>
+    <property name="user.timezone" value="Europe/Paris"/>
+    <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
+    <property name="java.specification.version" value="1.7"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="user.name" value="MDVan-Damme"/>
+    <property name="java.class.path" value="/D:/MesProgrammes/Eclipse/kepler-restauration/eclipse/configuration/org.eclipse.osgi/bundles/535/1/.cp/jars/plexus-classworlds-2.4.jar"/>
+    <property name="java.vm.specification.version" value="1.7"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="D:\MesProgrammes\Java\jdk1.7.0_03\jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -B -s C:\Users\mdvan-damme\.m2\settings.xml install"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.language" value="fr"/>
+    <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.7.0_03"/>
+    <property name="java.ext.dirs" value="D:\MesProgrammes\Java\jdk1.7.0_03\jre\lib\ext;C:\Windows\Sun\Java\lib\ext"/>
+    <property name="sun.boot.class.path" value="D:\MesProgrammes\Java\jdk1.7.0_03\jre\lib\resources.jar;D:\MesProgrammes\Java\jdk1.7.0_03\jre\lib\rt.jar;D:\MesProgrammes\Java\jdk1.7.0_03\jre\lib\sunrsasign.jar;D:\MesProgrammes\Java\jdk1.7.0_03\jre\lib\jsse.jar;D:\MesProgrammes\Java\jdk1.7.0_03\jre\lib\jce.jar;D:\MesProgrammes\Java\jdk1.7.0_03\jre\lib\charsets.jar;D:\MesProgrammes\Java\jdk1.7.0_03\jre\classes"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="maven.home" value="E:\Workspace\geoxygene\geoxygene-matching\EMBEDDED"/>
+    <property name="file.separator" value="\"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
+    <property name="maven.bootclasspath" value="/D:/MesProgrammes/Eclipse/kepler-restauration/eclipse/configuration/org.eclipse.osgi/bundles/535/1/.cp/jars/plexus-classworlds-2.4.jar"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.desktop" value="windows"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+  </properties>
+  <testcase name="testRunLine" classname="fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoMatchingTest" time="0"/>
+</testsuite>

@@ -41,10 +41,10 @@ public class GeoMatchingTest {
     }
   }*/
 
-  /*@Test
+  @Test
   public void testRunLine() throws Exception {
     GeoMatching matching = new GeoMatching();
-    Collection<Source<GeomHypothesis>> criteria = new ArrayList<Source<GeomHypothesis>>();
+    /*Collection<Source<GeomHypothesis>> criteria = new ArrayList<Source<GeomHypothesis>>();
     criteria.add(new PartialFrechetDistance());
     criteria.add(new LineOrientation());
     IPopulation<IFeature> bdtopo = ShapefileReader
@@ -65,6 +65,7 @@ public class GeoMatchingTest {
     System.out.println("with " + result.getHypothesis().size());
     for (int i = 0; i < result.getHypothesis().size(); i++) {
       System.out.println("\tobj " + i + " = " + result.getHypothesis().get(i));
-    }
-  }*/
+    }*/
+  }
+
 }

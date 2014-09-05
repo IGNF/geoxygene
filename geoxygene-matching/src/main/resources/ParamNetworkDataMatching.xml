@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ParamNetworkDataMatching version="1.0.0">
+	
+	<!-- ECARTS DE DISTANCE AUTORISES -->
+	<NoeudsMax>25</NoeudsMax>
+	<ArcsMax>25</ArcsMax>
+	<ArcsMin>10</ArcsMin>
+	<NoeudsImpassesMax>-1</NoeudsImpassesMax>
+	
+	<!-- TRAITEMENTS TOPOLOGIQUES A L'IMPORT -->
+	
+	
+	
+</ParamNetworkDataMatching>

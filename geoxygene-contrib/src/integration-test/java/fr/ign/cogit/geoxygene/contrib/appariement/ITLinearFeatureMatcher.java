@@ -7,8 +7,6 @@ import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.matching.Matchings;
-import fr.ign.cogit.geoxygene.matching.optimisation.LinearFeatureMatcher;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 import fr.ign.parameters.Parameters;
 

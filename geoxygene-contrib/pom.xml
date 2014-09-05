@@ -123,11 +123,7 @@
 			<artifactId>geoxygene-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>evidence4j</artifactId>
-			<version>1.6</version>
-		</dependency>
+		
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -163,27 +159,15 @@
 			<version>8.4-701.jdbc4</version>
 		</dependency>
 
+<!-- 
 		<dependency>
 			<groupId>org.geoserver.extension</groupId>
 			<artifactId>wps-core</artifactId>
 			<version>${geoserver.extension.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.jgrapht</groupId>
-			<artifactId>jgrapht-core</artifactId>
-			<version>${jgrapht.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scpsolver</groupId>
-			<artifactId>scpsolver</artifactId>
-			<version>20130227</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scpsolver</groupId>
-			<artifactId>lpsolvesolverpack</artifactId>
-			<version>20130227</version>
-		</dependency>
+ -->
+		
 		<dependency>
 			<groupId>net.sourceforge.collections</groupId>
 			<artifactId>collections-generic</artifactId>
