@@ -98,4 +98,7 @@
 	</dependencies>
 	
 	
+	<description>- Matching with Dempster Shafer Theory
+- Implementation of Li and Goodchild's approach for linear feature matching
+- Minimalistic implementation of &quot;Hidden Markov Map Matching Through Noise and Sparseness&quot;</description>
 </project>
