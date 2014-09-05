@@ -247,7 +247,7 @@ public class Reader {
      * @return the class of the given geometry type
      */
     private static Class<? extends GM_Object> geometryType(ShapeType type) {
-        LOGGER.log(Level.TRACE, "shapeType = " + type); //$NON-NLS-1$
+//        LOGGER.log(Level.TRACE, "shapeType = " + type); //$NON-NLS-1$
         if (type.isPointType()) {
             return GM_Point.class;
         }

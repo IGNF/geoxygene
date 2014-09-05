@@ -402,10 +402,10 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
     } else {
       this.xmin = this.xmax = this.ymin = this.ymax = 0;
     }
-    if (Tiling.logger.isEnabledFor(Level.TRACE)) {
-      Tiling.logger.log(Level.TRACE, "envelope = " + this.xmin + "," + this.xmax + "," //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-          + this.ymin + "," + this.ymax + " - size = " + this.size); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+//    if (Tiling.logger.isEnabledFor(Level.TRACE)) {
+//      Tiling.logger.log(Level.TRACE, "envelope = " + this.xmin + "," + this.xmax + "," //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//          + this.ymin + "," + this.ymax + " - size = " + this.size); //$NON-NLS-1$ //$NON-NLS-2$
+//    }
     // calcul de dX et dY
     this.dX = (this.xmax - this.xmin) / this.size;
     this.dY = (this.ymax - this.ymin) / this.size;
