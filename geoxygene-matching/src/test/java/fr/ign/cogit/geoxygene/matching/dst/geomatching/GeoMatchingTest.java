@@ -16,7 +16,39 @@ import fr.ign.cogit.geoxygene.matching.dst.sources.linear.PartialFrechetDistance
 import fr.ign.cogit.geoxygene.matching.dst.sources.surface.SurfaceDistance;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
+
 public class GeoMatchingTest {
+
+  @Test
+  public void testRunLine() throws Exception {
+    
+	  GeoMatching matching = new GeoMatching();
+    
+	  /*Collection<Source<GeomHypothesis, Float>> criteria = new ArrayList<Source<GeomHypothesis, Float>>();
+	  criteria.add(new PartialFrechetDistance(), 0.3f);
+	  criteria.add(new LineOrientation());
+    
+	  IPopulation<IFeature> bdtopo = ShapefileReader
+        .read("H:\\Data\\SIGPARIS\\rues\\poubelle\\test.shp");
+	  IPopulation<IFeature> vasserot = ShapefileReader
+        .read("H:\\Data\\SIGPARIS\\rues\\vasserot\\test.shp");
+	  IFeature reference = bdtopo.get(1);
+	    List<IFeature> candidates = new ArrayList<IFeature>(vasserot.select(reference.getGeom().buffer(
+	        20)));
+	    boolean closed = true;
+	    System.out.println(candidates.size() + " candidates");
+	    EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates,
+	        ChoiceType.PIGNISTIC, closed);
+	    System.out.println("result = " + result);
+	    System.out.println("reference = " + reference.getGeom());
+	    System.out.println("value = " + result.getValue());
+	    System.out.println("conflict = " + result.getConflict());
+	    System.out.println("with " + result.getHypothesis().size());
+	    for (int i = 0; i < result.getHypothesis().size(); i++) {
+	      System.out.println("\tobj " + i + " = " + result.getHypothesis().get(i));
+	    }*/
+  }
+  
   /*@Test
   public void testRunSurface() throws Exception {
     GeoMatching matching = new GeoMatching();
@@ -40,32 +72,5 @@ public class GeoMatchingTest {
       System.out.println("\tobj " + i + " = " + result.getHypothesis().get(i));
     }
   }*/
-
-  @Test
-  public void testRunLine() throws Exception {
-    GeoMatching matching = new GeoMatching();
-    /*Collection<Source<GeomHypothesis>> criteria = new ArrayList<Source<GeomHypothesis>>();
-    criteria.add(new PartialFrechetDistance());
-    criteria.add(new LineOrientation());
-    IPopulation<IFeature> bdtopo = ShapefileReader
-        .read("H:\\Data\\SIGPARIS\\rues\\poubelle\\test.shp");
-    IPopulation<IFeature> vasserot = ShapefileReader
-        .read("H:\\Data\\SIGPARIS\\rues\\vasserot\\test.shp");
-    IFeature reference = bdtopo.get(1);
-    List<IFeature> candidates = new ArrayList<IFeature>(vasserot.select(reference.getGeom().buffer(
-        20)));
-    boolean closed = true;
-    System.out.println(candidates.size() + " candidates");
-    EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates,
-        ChoiceType.PIGNISTIC, closed);
-    System.out.println("result = " + result);
-    System.out.println("reference = " + reference.getGeom());
-    System.out.println("value = " + result.getValue());
-    System.out.println("conflict = " + result.getConflict());
-    System.out.println("with " + result.getHypothesis().size());
-    for (int i = 0; i < result.getHypothesis().size(); i++) {
-      System.out.println("\tobj " + i + " = " + result.getHypothesis().get(i));
-    }*/
-  }
 
 }
