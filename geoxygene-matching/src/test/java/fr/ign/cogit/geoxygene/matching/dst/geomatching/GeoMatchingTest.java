@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -27,19 +28,16 @@ public class GeoMatchingTest {
     try {
 	  Collection<Source<IFeature, GeomHypothesis>> criteria = new ArrayList<Source<IFeature, GeomHypothesis>>();
 	  criteria.add(new PartialFrechetDistance());
-	  criteria.add(new LineOrientation());
+	  // criteria.add(new LineOrientation());
     
-	  // D:\Data\Appariement\MesTests\Paris\filaires\poubelle
+	  URL urlReseau1 = new URL("file", "", "./data/reseau1.shp");
+	  IPopulation<IFeature> reseau1 = ShapefileReader.read(urlReseau1.getPath());
+	  IFeature reference = reseau1.get(1);
 	  
-	  URL urlPoubelle = new URL("file", "", "./data/poubelle/streets_l.shp");
-	  IPopulation<IFeature> poubelle = ShapefileReader.read(urlPoubelle.getPath());
-	  IFeature reference = poubelle.get(1);
+	  URL urlReseau2 = new URL("file", "", "./data/reseau2.shp");
+	  IPopulation<IFeature> reseau2 = ShapefileReader.read(urlReseau2.getPath());
 	  
-	  URL urlVasserot = new URL("file", "", "./data/vasserot/streets2.shp");
-	  IPopulation<IFeature> vasserot = ShapefileReader.read(urlVasserot.getPath());
-	  
-	  
-	  List<IFeature> candidates = new ArrayList<IFeature>(vasserot.select(reference.getGeom().buffer(20)));
+	  List<IFeature> candidates = new ArrayList<IFeature>(reseau2.select(reference.getGeom().buffer(20)));
 	  boolean closed = true;
 	  System.out.println(candidates.size() + " candidates");
 	  
@@ -54,6 +52,10 @@ public class GeoMatchingTest {
 	  for (int i = 0; i < result.getHypothesis().size(); i++) {
 	      System.out.println("\tobj " + i + " = " + result.getHypothesis().get(i));
 	  }
+	  
+	  Assert.assertTrue(true);
+	  
+	  System.out.println("\n====== Fin du test ======");
 	  
     } catch (Exception e) {
     	e.printStackTrace();
