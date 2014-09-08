@@ -24,6 +24,27 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	
+	<developers>
+		<developer>
+			<id>julien-perret</id>
+			<name>Julien Perret</name>
+			<email>julien.perret(at)gmail.com</email>
+			<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Julien&amp;nom=Perret</url>
+			<organization>Laboratoire COGIT, IGN</organization>
+			<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
+			<roles>
+				<role>Administrator</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>bdumenieu</id>
+			<name>Bertrand Dumenieu</name>
+			<email>bertranddumenieu(at)gmail.com</email>
+			<organization>Laboratoire LaDéHiS, EHESS</organization>
+			<organizationUrl>http://www.ehess.fr/ldh/</organizationUrl>
+		</developer>
+	</developers>
 
 	<build>
 		<plugins>

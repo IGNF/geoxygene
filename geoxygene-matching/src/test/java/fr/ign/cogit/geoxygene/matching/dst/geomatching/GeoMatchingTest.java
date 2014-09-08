@@ -22,7 +22,9 @@ public class GeoMatchingTest {
 
   @Test
   public void testRunLine() throws Exception {
-    
+	  
+	  
+    try {
 	  Collection<Source<IFeature, GeomHypothesis>> criteria = new ArrayList<Source<IFeature, GeomHypothesis>>();
 	  criteria.add(new PartialFrechetDistance());
 	  criteria.add(new LineOrientation());
@@ -52,6 +54,10 @@ public class GeoMatchingTest {
 	  for (int i = 0; i < result.getHypothesis().size(); i++) {
 	      System.out.println("\tobj " + i + " = " + result.getHypothesis().get(i));
 	  }
+	  
+    } catch (Exception e) {
+    	e.printStackTrace();
+    }
   }
   
   /*@Test
