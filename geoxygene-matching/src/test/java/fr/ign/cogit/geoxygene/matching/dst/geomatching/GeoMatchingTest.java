@@ -34,20 +34,20 @@ public class GeoMatchingTest {
     
 	  URL urlReseau1 = new URL("file", "", "./data/reseau1.shp");
 	  IPopulation<IFeature> reseau1 = ShapefileReader.read(urlReseau1.getPath());
-	  IFeature reference = reseau1.get(1);
+	  IFeature reference = reseau1.get(0);
 	  LOGGER.trace("Reference id = " + reference.getId());
 	  
 	  URL urlReseau2 = new URL("file", "", "./data/reseau2.shp");
 	  IPopulation<IFeature> reseau2 = ShapefileReader.read(urlReseau2.getPath());
 	  
-	  List<IFeature> candidates = new ArrayList<IFeature>(reseau2.select(reference.getGeom().buffer(20)));
+	  List<IFeature> candidates = new ArrayList<IFeature>(reseau2.select(reference.getGeom().buffer(50)));
 	  boolean closed = true;
-	  LOGGER.trace(candidates.size() + " candidates");
+	  LOGGER.debug(candidates.size() + " candidates");
 	  
 	  GeoMatching matching = new GeoMatching();
 	  EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates,
 	        ChoiceType.PIGNISTIC, closed);
-	  LOGGER.trace("result = " + result);
+	  LOGGER.info("result = " + result);
 	  LOGGER.trace("reference = " + reference.getGeom());
 	  LOGGER.trace("value = " + result.getValue());
 	  LOGGER.trace("conflict = " + result.getConflict());

@@ -61,9 +61,12 @@ public class PartialFrechetDistance extends GeoSource {
   @Override
   public List<Pair<byte[], Float>> evaluate(IFeature reference,
       final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
+	  
     List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
+    
     float sum = 0;
     for (GeomHypothesis h : candidates) {
+    	System.out.println("** " + h.getId() + ", " + sum);
       float distance = (float) this.compute(reference.getGeom(), h.getGeom());
       if (distance < this.threshold) {
         distance = (this.threshold - distance) / this.threshold;
@@ -76,6 +79,7 @@ public class PartialFrechetDistance extends GeoSource {
       st.setSecond(st.getSecond() / sum);
     }
     CombinationAlgos.sortKernel(weightedfocalset);
+    
     return weightedfocalset;
   }
 
