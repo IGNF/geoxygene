@@ -1253,6 +1253,13 @@ public abstract class AbstractCreationFactory {
   }
 
   @SuppressWarnings("unused")
+  public ICoastLine createBayLine(ILineString line) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for ICoastLine");
+    return null;
+  }
+
+  @SuppressWarnings("unused")
   public ISquareArea createSquareArea(IPolygon poly) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for ICoastLine");
