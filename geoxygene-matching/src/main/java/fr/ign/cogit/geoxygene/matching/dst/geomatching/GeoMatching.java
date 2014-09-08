@@ -55,9 +55,20 @@ public class GeoMatching {
   public GeoMatching() {
   }
 
+  /**
+   * 
+   * @param criteria
+   * @param reference
+   * @param candidates
+   * @param choice
+   * @param closed
+   * @return
+   * @throws Exception
+   */
   public EvidenceResult<GeomHypothesis> run(Collection<Source<IFeature, GeomHypothesis>> criteria,
       IFeature reference, List<IFeature> candidates, ChoiceType choice, boolean closed)
       throws Exception {
+	  
     // Création des hypothèses d'appariement.
     LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
     List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
@@ -81,7 +92,7 @@ public class GeoMatching {
     return decisionOp.resolve();
   }
 
-  public EvidenceResult<GeomHypothesis> runAppriou(List<Source<IFeature, GeomHypothesis>> criteria,
+  /*public EvidenceResult<GeomHypothesis> runAppriou(List<Source<IFeature, GeomHypothesis>> criteria,
       IFeature reference, List<IFeature> candidates, List<Double> weights, ChoiceType choice, boolean closed)
       throws Exception {
     // Création des hypothèses d'appariement.
@@ -131,5 +142,5 @@ public class GeoMatching {
     DecisionOp<GeomHypothesis> decisionOp = new DecisionOp<GeomHypothesis>(result, op.getConflict(),
         choice, codec, true);
     return decisionOp.resolve();
-  }
+  }*/
 }
