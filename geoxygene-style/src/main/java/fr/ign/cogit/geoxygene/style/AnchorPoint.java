@@ -28,41 +28,88 @@ import javax.xml.bind.annotation.XmlElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AnchorPoint {
-  @XmlElement(name = "AnchorPointX")
-  private float x = 0.5f;
+    @XmlElement(name = "AnchorPointX")
+    private float x = 0.5f;
 
-  /**
-   * Renvoie la valeur de l'attribut x.
-   * @return la valeur de l'attribut x
-   */
-  public float getAnchorPointX() {
-    return this.x;
-  }
+    /**
+     * Renvoie la valeur de l'attribut x.
+     * 
+     * @return la valeur de l'attribut x
+     */
+    public float getAnchorPointX() {
+        return this.x;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut x.
-   * @param x l'attribut x à affecter
-   */
-  public void setAnchorPointX(float x) {
-    this.x = x;
-  }
+    /**
+     * Affecte la valeur de l'attribut x.
+     * 
+     * @param x
+     *            l'attribut x à affecter
+     */
+    public void setAnchorPointX(float x) {
+        this.x = x;
+    }
 
-  @XmlElement(name = "AnchorPointY")
-  private float y = 0.5f;
+    @XmlElement(name = "AnchorPointY")
+    private float y = 0.5f;
 
-  /**
-   * Renvoie la valeur de l'attribut y.
-   * @return la valeur de l'attribut y
-   */
-  public float getAnchorPointY() {
-    return this.y;
-  }
+    /**
+     * Renvoie la valeur de l'attribut y.
+     * 
+     * @return la valeur de l'attribut y
+     */
+    public float getAnchorPointY() {
+        return this.y;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut y.
-   * @param y l'attribut y à affecter
-   */
-  public void setAnchorPointY(float y) {
-    this.y = y;
-  }
+    /**
+     * Affecte la valeur de l'attribut y.
+     * 
+     * @param y
+     *            l'attribut y à affecter
+     */
+    public void setAnchorPointY(float y) {
+        this.y = y;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Float.floatToIntBits(this.x);
+        result = prime * result + Float.floatToIntBits(this.y);
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        AnchorPoint other = (AnchorPoint) obj;
+        if (Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y)) {
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -31,8 +31,6 @@ import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -41,31 +39,25 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
-import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
-import fr.ign.cogit.geoxygene.appli.task.TaskState;
+import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 
 /**
  * @author JeT
  * 
  */
-public class DisplayablePoint extends AbstractTask implements GLDisplayable {
+public class DisplayablePoint extends AbstractDisplayable {
 
     private static final Logger logger = Logger
             .getLogger(DisplayablePoint.class.getName()); // logger
     private static final Colorizer partialColorizer = new SolidColorizer(
             Color.green);
-    private Symbolizer symbolizer = null;
-    private List<GLComplex> fullRepresentation = null;
-    private GLComplex partialRepresentation = null;
     private final List<IGeometry> geometries = new ArrayList<IGeometry>();
-    private long displayCount = 0; // number of time it has been displayed
-    private Date lastDisplayTime; // last time it has been displayed
-    private Viewport viewport = null;
 
     /**
      * Constructor
@@ -76,11 +68,21 @@ public class DisplayablePoint extends AbstractTask implements GLDisplayable {
      * @param symbolizer
      */
     public DisplayablePoint(String name, Viewport viewport, IGeometry geometry,
-            Symbolizer symbolizer) {
-        super(name);
-        this.symbolizer = symbolizer;
-        this.viewport = viewport;
+            Symbolizer symbolizer, LwjglLayerRenderer layerRenderer,
+            GLComplexRenderer partialRenderer) {
+        super(name, viewport, layerRenderer, symbolizer);
         this.addGeometry(geometry);
+        this.generatePartialRepresentation(partialRenderer);
+    }
+
+    private final void generatePartialRepresentation(
+            GLComplexRenderer partialRenderer) {
+        IEnvelope envelope = IGeometryUtil.getEnvelope(this.geometries);
+        double minX = envelope.minX();
+        double minY = envelope.minY();
+        this.setPartialRepresentation(GLComplexFactory.createQuickPoints(
+                this.getName() + "-partial", this.geometries, partialColorizer,
+                null, minX, minY, partialRenderer));
     }
 
     /**
@@ -105,49 +107,27 @@ public class DisplayablePoint extends AbstractTask implements GLDisplayable {
         return false;
     }
 
-    /**
-     * @return the displayCount
-     */
-    @Override
-    public long getDisplayCount() {
-        return this.displayCount;
-    }
-
-    /**
-     * @return the lastDisplayTime
-     */
-    @Override
-    public Date getLastDisplayTime() {
-        return this.lastDisplayTime;
-    }
-
     /*
      * (non-Javadoc)
      * 
      * @see java.lang.Runnable#run()
      */
     @Override
-    public void run() {
-        super.setState(TaskState.INITIALIZING);
-        this.fullRepresentation = null;
-        super.setState(TaskState.RUNNING);
+    public List<GLComplex> generateFullRepresentation() {
+        List<GLComplex> complexes = new ArrayList<GLComplex>();
 
-        // if (this.getTexture() != null) {
-        // this.generateWithDistanceField();
-        // }
-
-        if (this.symbolizer instanceof PointSymbolizer) {
-            PointSymbolizer pointSymbolizer = (PointSymbolizer) this.symbolizer;
-            this.generateWithPointSymbolizer(pointSymbolizer);
+        if (this.getSymbolizer() instanceof PointSymbolizer) {
+            PointSymbolizer pointSymbolizer = (PointSymbolizer) this
+                    .getSymbolizer();
+            complexes.addAll(this.generateWithPointSymbolizer(pointSymbolizer));
+            return complexes;
         } else {
-            super.setState(TaskState.ERROR);
-            return;
+            return null;
         }
-        super.setState(TaskState.FINALIZING);
-        super.setState(TaskState.FINISHED);
     }
 
-    private void generateWithPointSymbolizer(PointSymbolizer symbolizer) {
+    private List<GLComplex> generateWithPointSymbolizer(
+            PointSymbolizer symbolizer) {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
         IEnvelope envelope = IGeometryUtil.getEnvelope(this.geometries);
         double minX = envelope.minX();
@@ -169,18 +149,23 @@ public class DisplayablePoint extends AbstractTask implements GLDisplayable {
                 Shape markShapeGeometry = atGeometry
                         .createTransformedShape(markShape);
                 // TODO: add scale (viewport depend) and rotation
+                GeoxComplexRenderer renderer = GeoxRendererManager
+                        .getOrCreateSurfaceRenderer(symbolizer,
+                                this.getLayerRenderer());
                 GLSimpleComplex markFillComplex = GLComplexFactory.toGLComplex(
                         this.getName() + "-mark-filled", markShapeGeometry,
-                        minX, minY);
+                        minX, minY, renderer);
                 markFillComplex.setColor(mark.getFill().getColor());
                 complexes.add(markFillComplex);
 
                 if (mark.getStroke() != null) {
                     // TODO: add scale (viewport depend) and rotation
+                    renderer = GeoxRendererManager.getOrCreateLineRenderer(
+                            symbolizer, this.getLayerRenderer());
                     GLSimpleComplex markOutlineComplex = GLComplexFactory
                             .createShapeOutline(this.getName()
                                     + "-mark-outline", markShapeGeometry,
-                                    mark.getStroke(), minX, minY);
+                                    mark.getStroke(), minX, minY, renderer);
                     markOutlineComplex.setColor(mark.getStroke().getColor());
                     complexes.add(markOutlineComplex);
                 } else {
@@ -189,46 +174,7 @@ public class DisplayablePoint extends AbstractTask implements GLDisplayable {
             }
 
         }
-        this.fullRepresentation = complexes;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.render.primitive.GLDisplayable#
-     * getPartialRepresentation()
-     */
-    @Override
-    public GLComplex getPartialRepresentation() {
-        if (this.partialRepresentation == null) {
-            IEnvelope envelope = IGeometryUtil.getEnvelope(this.geometries);
-            double minX = envelope.minX();
-            double minY = envelope.minY();
-            this.partialRepresentation = GLComplexFactory.createQuickPoints(
-                    this.getName() + "-partial", this.geometries,
-                    partialColorizer, null, minX, minY);
-        }
-        this.displayIncrement();
-        return this.partialRepresentation;
-    }
-
-    private void displayIncrement() {
-        this.displayCount++;
-        this.lastDisplayTime = new Date();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.render.primitive.GLDisplayable#
-     * getFullRepresentation()
-     */
-    @Override
-    public Collection<GLComplex> getFullRepresentation() {
-        if (this.fullRepresentation != null) {
-            this.displayIncrement();
-        }
-        return this.fullRepresentation;
+        return complexes;
     }
 
 }

@@ -26,7 +26,6 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.render.primitive.GL4FeatureRenderer;
 import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
@@ -43,6 +42,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         ComponentListener {
 
     private static final long serialVersionUID = 2813681374260169340L; // serializable
+    private static final int COLORTEXTURE1_SLOT = 1;
     private Thread glCanvasThreadOwner = null; // stores the thread that ows gl
                                                // context to check consistency
     private GLSimpleComplex screenQuad = null;
@@ -174,10 +174,10 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             if (this.doPaintOverlay()) {
                 this.glPaintOverlays();
             }
-
             this.swapBuffers();
             RenderingStatistics.endRendering();
             RenderingStatistics.printStatistics();
+            // GL20.glUseProgram(0);
         } catch (LWJGLException e) {
             logger.error("Error rendering the LwJGL : " + e.getMessage());
             // e.printStackTrace();
@@ -235,9 +235,9 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             this.screenQuadSW.setUV((float) u0, (float) v0);
             this.getScreenQuad().invalidateBuffers();
             program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
-                    GL4FeatureRenderer.COLORTEXTURE1_SLOT);
+                    LayerViewGL4Canvas.COLORTEXTURE1_SLOT);
             GL13.glActiveTexture(GL13.GL_TEXTURE0
-                    + GL4FeatureRenderer.COLORTEXTURE1_SLOT);
+                    + LayerViewGL4Canvas.COLORTEXTURE1_SLOT);
             glBindTexture(GL_TEXTURE_2D, this.getBackgroundTexture()
                     .getTextureId());
             GL11.glDepthMask(false);

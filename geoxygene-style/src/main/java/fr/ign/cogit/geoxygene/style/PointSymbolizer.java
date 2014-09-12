@@ -28,17 +28,16 @@ import javax.xml.bind.annotation.XmlElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PointSymbolizer extends AbstractSymbolizer {
-    
+
     @XmlElement(name = "Graphic")
     private Graphic graphic = null;
-    
+
     @XmlElement(name = "ColorMap")
     private ColorMap colorMap = null;
-    
+
     @XmlElement(name = "CategorizedMap")
     private CategorizedMap categorizedMap = null;
-    
-    
+
     @Override
     public boolean isPointSymbolizer() {
         return true;
@@ -66,6 +65,67 @@ public class PointSymbolizer extends AbstractSymbolizer {
 
     public void setCategorizedMap(CategorizedMap categorizedMap) {
         this.categorizedMap = categorizedMap;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime
+                * result
+                + ((this.categorizedMap == null) ? 0 : this.categorizedMap
+                        .hashCode());
+        result = prime * result
+                + ((this.colorMap == null) ? 0 : this.colorMap.hashCode());
+        result = prime * result
+                + ((this.graphic == null) ? 0 : this.graphic.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        PointSymbolizer other = (PointSymbolizer) obj;
+        if (this.categorizedMap == null) {
+            if (other.categorizedMap != null) {
+                return false;
+            }
+        } else if (!this.categorizedMap.equals(other.categorizedMap)) {
+            return false;
+        }
+        if (this.colorMap == null) {
+            if (other.colorMap != null) {
+                return false;
+            }
+        } else if (!this.colorMap.equals(other.colorMap)) {
+            return false;
+        }
+        if (this.graphic == null) {
+            if (other.graphic != null) {
+                return false;
+            }
+        } else if (!this.graphic.equals(other.graphic)) {
+            return false;
+        }
+        return true;
     }
 
 }

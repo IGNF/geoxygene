@@ -27,22 +27,22 @@ import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
  * @author Julien Perret
  */
 public class TextSymbolizer extends AbstractSymbolizer {
-    
+
     @XmlElement(name = "Label")
     private Label label;
-    
+
     @XmlElement(name = "Font")
     private Font font;
-  
+
     @XmlElement(name = "LabelPlacement")
     private LabelPlacement labelPlacement;
 
     @XmlElement(name = "Halo")
     private Halo halo;
-    
+
     @XmlElement(name = "Fill")
     private Fill fill;
-    
+
     @Override
     public boolean isTextSymbolizer() {
         return true;
@@ -50,15 +50,19 @@ public class TextSymbolizer extends AbstractSymbolizer {
 
     /**
      * Renvoie la valeur de l'attribut label.
+     * 
      * @return la valeur de l'attribut label
      */
     public String getLabel() {
-        return this.label == null ? null : this.label.getPropertyName().toString();
+        return this.label == null ? null : this.label.getPropertyName()
+                .toString();
     }
 
     /**
      * Affecte la valeur de l'attribut label.
-     * @param label l'attribut label à affecter
+     * 
+     * @param label
+     *            l'attribut label à affecter
      */
     public void setLabel(String label) {
         if (this.label == null) {
@@ -70,6 +74,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
 
     /**
      * Renvoie la valeur de l'attribut font.
+     * 
      * @return la valeur de l'attribut font
      */
     public Font getFont() {
@@ -78,7 +83,9 @@ public class TextSymbolizer extends AbstractSymbolizer {
 
     /**
      * Affecte la valeur de l'attribut font.
-     * @param font l'attribut font à affecter
+     * 
+     * @param font
+     *            l'attribut font à affecter
      */
     public void setFont(Font font) {
         this.font = font;
@@ -86,6 +93,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
 
     /**
      * Renvoie la valeur de l'attribut labelPlacement.
+     * 
      * @return la valeur de l'attribut labelPlacement
      */
     public LabelPlacement getLabelPlacement() {
@@ -94,7 +102,9 @@ public class TextSymbolizer extends AbstractSymbolizer {
 
     /**
      * Affecte la valeur de l'attribut labelPlacement.
-     * @param labelPlacement l'attribut labelPlacement à affecter
+     * 
+     * @param labelPlacement
+     *            l'attribut labelPlacement à affecter
      */
     public void setLabelPlacement(LabelPlacement labelPlacement) {
         this.labelPlacement = labelPlacement;
@@ -102,6 +112,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
 
     /**
      * Renvoie la valeur de l'attribut halo.
+     * 
      * @return la valeur de l'attribut halo
      */
     public Halo getHalo() {
@@ -110,7 +121,9 @@ public class TextSymbolizer extends AbstractSymbolizer {
 
     /**
      * Affecte la valeur de l'attribut halo.
-     * @param halo l'attribut halo à affecter
+     * 
+     * @param halo
+     *            l'attribut halo à affecter
      */
     public void setHalo(Halo halo) {
         this.halo = halo;
@@ -118,6 +131,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
 
     /**
      * Renvoie la valeur de l'attribut fill.
+     * 
      * @return la valeur de l'attribut fill
      */
     public Fill getFill() {
@@ -126,10 +140,91 @@ public class TextSymbolizer extends AbstractSymbolizer {
 
     /**
      * Affecte la valeur de l'attribut fill.
-     * @param fill l'attribut fill à affecter
+     * 
+     * @param fill
+     *            l'attribut fill à affecter
      */
     public void setFill(Fill fill) {
         this.fill = fill;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                + ((this.fill == null) ? 0 : this.fill.hashCode());
+        result = prime * result
+                + ((this.font == null) ? 0 : this.font.hashCode());
+        result = prime * result
+                + ((this.halo == null) ? 0 : this.halo.hashCode());
+        result = prime * result
+                + ((this.label == null) ? 0 : this.label.hashCode());
+        result = prime
+                * result
+                + ((this.labelPlacement == null) ? 0 : this.labelPlacement
+                        .hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        TextSymbolizer other = (TextSymbolizer) obj;
+        if (this.fill == null) {
+            if (other.fill != null) {
+                return false;
+            }
+        } else if (!this.fill.equals(other.fill)) {
+            return false;
+        }
+        if (this.font == null) {
+            if (other.font != null) {
+                return false;
+            }
+        } else if (!this.font.equals(other.font)) {
+            return false;
+        }
+        if (this.halo == null) {
+            if (other.halo != null) {
+                return false;
+            }
+        } else if (!this.halo.equals(other.halo)) {
+            return false;
+        }
+        if (this.label == null) {
+            if (other.label != null) {
+                return false;
+            }
+        } else if (!this.label.equals(other.label)) {
+            return false;
+        }
+        if (this.labelPlacement == null) {
+            if (other.labelPlacement != null) {
+                return false;
+            }
+        } else if (!this.labelPlacement.equals(other.labelPlacement)) {
+            return false;
+        }
+        return true;
     }
 
 }

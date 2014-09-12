@@ -70,6 +70,7 @@ import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLPrimitiveTessCallback;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
@@ -104,12 +105,14 @@ public class GLComplexFactory {
      */
     public static GLSimpleComplex createQuickLine(String id,
             List<? extends ICurve> curves, final Colorizer colorizer,
-            final Parameterizer parameterizer, double minX, double minY) {
+            final Parameterizer parameterizer, double minX, double minY,
+            GLComplexRenderer renderer) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
 
         for (ICurve curve : curves) {
             createQuickLine(primitive, curve, colorizer, parameterizer);
         }
+        primitive.setRenderer(renderer);
         return primitive;
     }
 
@@ -161,12 +164,14 @@ public class GLComplexFactory {
      */
     public static GLSimpleComplex createQuickPolygons(String id,
             List<IPolygon> polygons, final Colorizer colorizer,
-            final Parameterizer parameterizer, double minX, double minY) {
+            final Parameterizer parameterizer, double minX, double minY,
+            GLComplexRenderer renderer) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
 
         for (IPolygon polygon : polygons) {
             createQuickPolygon(primitive, polygon, colorizer, parameterizer);
         }
+        primitive.setRenderer(renderer);
         return primitive;
     }
 
@@ -175,12 +180,14 @@ public class GLComplexFactory {
      */
     public static GLSimpleComplex createFilledPolygons(String id,
             List<IPolygon> polygons, final Colorizer colorizer,
-            final Parameterizer parameterizer, double minX, double minY) {
+            final Parameterizer parameterizer, double minX, double minY,
+            GLComplexRenderer renderer) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
 
         for (IPolygon polygon : polygons) {
             createFilledPolygon(primitive, polygon, colorizer, parameterizer);
         }
+        primitive.setRenderer(renderer);
         return primitive;
     }
 
@@ -389,7 +396,8 @@ public class GLComplexFactory {
 
     public static GLSimpleComplex createQuickPoints(String id,
             List<IGeometry> geometries, final Colorizer colorizer,
-            final Parameterizer parameterizer, double minX, double minY) {
+            final Parameterizer parameterizer, double minX, double minY,
+            GLComplexRenderer renderer) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
         GLMesh mesh = primitive.addGLMesh(GL11.GL_POINTS);
 
@@ -397,6 +405,7 @@ public class GLComplexFactory {
             createQuickPoints(primitive, mesh, geometry, colorizer,
                     parameterizer);
         }
+        primitive.setRenderer(renderer);
         return primitive;
     }
 
@@ -428,9 +437,10 @@ public class GLComplexFactory {
 
     public static GLSimpleComplex createColorizedPoints(String id,
             IGeometry geometry, final Colorizer colorizer,
-            final Parameterizer parameterizer, double minX, double minY) {
+            final Parameterizer parameterizer, double minX, double minY,
+            GLComplexRenderer renderer) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
-
+        primitive.setRenderer(renderer);
         return primitive;
     }
 
@@ -441,20 +451,23 @@ public class GLComplexFactory {
      * Tesselate a list of java shape2D into a GLPrimitive
      */
     public static GLSimpleComplex toGLComplex(String id,
-            final List<? extends Shape> shapes, double minX, double minY) {
+            final List<? extends Shape> shapes, double minX, double minY,
+            GLComplexRenderer renderer) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
 
         for (Shape shape : shapes) {
             toGLComplex(primitive, shape);
         }
+        primitive.setRenderer(renderer);
         return primitive;
     }
 
     public static GLSimpleComplex toGLComplex(String id, Shape shape,
-            double minX, double minY) {
+            double minX, double minY, GLComplexRenderer renderer) {
         GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
 
         toGLComplex(primitive, shape);
+        primitive.setRenderer(renderer);
         return primitive;
     }
 
@@ -674,7 +687,8 @@ public class GLComplexFactory {
      * @return
      */
     public static GLComplex createPolygonOutlines(String id,
-            List<IPolygon> polygons, Stroke stroke, double minX, double minY) {
+            List<IPolygon> polygons, Stroke stroke, double minX, double minY,
+            GLComplexRenderer renderer) {
         if (stroke.getExpressiveRendering() == null) {
             GLSimpleComplex primitive = new GLSimpleComplex(id, minX, minY);
             for (IPolygon polygon : polygons) {
@@ -682,7 +696,7 @@ public class GLComplexFactory {
                         minX, minY);
             }
             primitive.setColor(stroke.getColor());
-
+            primitive.setRenderer(renderer);
             return primitive;
         }
         if (stroke.getExpressiveRendering() instanceof StrokeTextureExpressiveRenderingDescriptor) {
@@ -700,9 +714,11 @@ public class GLComplexFactory {
                 }
             }
 
-            createThickCurves(id, complex, stroke, minX, minY, strtex, curves);
+            createPaintingThickCurves(id, complex, stroke, minX, minY, strtex,
+                    curves);
             // complex.setColor(symbolizer.getStroke().getColor());
             complex.setOverallOpacity(stroke.getColor().getAlpha());
+            complex.setRenderer(renderer);
             return complex;
         } else if (stroke.getExpressiveRendering() instanceof BasicTextureExpressiveRenderingDescriptor) {
             BasicTextureExpressiveRenderingDescriptor strtex = (BasicTextureExpressiveRenderingDescriptor) stroke
@@ -718,13 +734,37 @@ public class GLComplexFactory {
                     curves.add(new GM_LineString(interior.coord()));
                 }
             }
-            createThickCurves(id, complex, stroke, minX, minY, strtex, curves);
+            createBezierThickCurves(id, complex, stroke, minX, minY, strtex,
+                    curves);
             // complex.setColor(symbolizer.getStroke().getColor());
             complex.setOverallOpacity(stroke.getColor().getAlpha());
+            complex.setRenderer(renderer);
             return complex;
         }
         throw new IllegalStateException(
                 "Polygon outline does not handle stroke type " + stroke);
+    }
+
+    public static GLPaintingComplex createPaintingThickCurves(String id,
+            Stroke stroke, double minX, double minY,
+            StrokeTextureExpressiveRenderingDescriptor strtex,
+            List<ILineString> curves, GLComplexRenderer renderer) {
+        GLPaintingComplex complex = new GLPaintingComplex(id, minX, minY);
+        createPaintingThickCurves(id, complex, stroke, minX, minY, strtex,
+                curves);
+        complex.setRenderer(renderer);
+        return complex;
+    }
+
+    public static GLBezierShadingComplex createBezierThickCurves(String id,
+            Stroke stroke, double minX, double minY,
+            BasicTextureExpressiveRenderingDescriptor strtex,
+            List<ILineString> curves, GLComplexRenderer renderer) {
+        GLBezierShadingComplex complex = new GLBezierShadingComplex(id, minX,
+                minY);
+        createBezierThickCurves(id, complex, stroke, minX, minY, strtex, curves);
+        complex.setRenderer(renderer);
+        return complex;
     }
 
     /**
@@ -736,8 +776,8 @@ public class GLComplexFactory {
      * @param complex
      * @param curves
      */
-    public static void createThickCurves(String id, GLPaintingComplex complex,
-            Stroke stroke, double minX, double minY,
+    private static void createPaintingThickCurves(String id,
+            GLPaintingComplex complex, Stroke stroke, double minX, double minY,
             StrokeTextureExpressiveRenderingDescriptor strtex,
             List<ILineString> curves) {
         GLTexture paperTexture = GLTextureManager.getInstance().getTexture(
@@ -778,7 +818,7 @@ public class GLComplexFactory {
      * @param complex
      * @param curves
      */
-    public static void createThickCurves(String id,
+    private static void createBezierThickCurves(String id,
             GLBezierShadingComplex complex, Stroke stroke, double minX,
             double minY, BasicTextureExpressiveRenderingDescriptor strtex,
             List<ILineString> curves) {
@@ -803,15 +843,19 @@ public class GLComplexFactory {
     /**
      * Create a polygon outline with the given "stroke"
      * 
-     * @param polygons
+     * @param data
+     *            .getPolygons()
      * @param stroke
      * @param minX
      * @param minY
      * @return
      */
     public static GLSimpleComplex createShapeOutline(String id, Shape shape,
-            Stroke stroke, double minX, double minY) {
-        return LineTesselator.createThickLine(id, shape, stroke, minX, minY);
+            Stroke stroke, double minX, double minY, GLComplexRenderer renderer) {
+        GLSimpleComplex primitive = LineTesselator.createThickLine(id, shape,
+                stroke, minX, minY);
+        primitive.setRenderer(renderer);
+        return primitive;
     }
 
 }

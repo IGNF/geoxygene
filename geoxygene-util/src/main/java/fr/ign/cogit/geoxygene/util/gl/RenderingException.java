@@ -25,36 +25,50 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.render.primitive;
-
-import fr.ign.cogit.geoxygene.appli.Viewport;
+package fr.ign.cogit.geoxygene.util.gl;
 
 /**
  * @author JeT
- * 
+ * Exception thrown if any kind of error occurs during rendering
  */
-public abstract class AbstractFeatureRenderer implements FeatureRenderer {
+public class RenderingException extends Exception {
 
-    private Viewport viewport = null;
+  private static final long serialVersionUID = -6750162544823956453L;
 
-    /**
-     * @param viewport
-     *            the viewport to set
-     */
-    public final void setViewport(Viewport viewport) {
-        this.viewport = viewport;
-    }
+  /**
+   * Constructor
+   */
+  public RenderingException() {
+    super();
+    // nothing to do but calling super constructor
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * fr.ign.cogit.geoxygene.appli.render.primitive.FeatureRenderer#getViewport
-     * ()
-     */
-    @Override
-    public Viewport getViewport() {
-        return this.viewport;
-    }
+  /**
+   * Constructor
+   * @param message
+   */
+  public RenderingException(final String message) {
+    super(message);
+    // nothing to do but calling super constructor
+  }
+
+  /**
+   * Constructor
+   * @param cause
+   */
+  public RenderingException(final Throwable cause) {
+    super(cause);
+    // nothing to do but calling super constructor
+  }
+
+  /**
+   * Constructor
+   * @param message
+   * @param cause
+   */
+  public RenderingException(final String message, final Throwable cause) {
+    super(message, cause);
+    // nothing to do but calling super constructor
+  }
 
 }

@@ -35,22 +35,22 @@ import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
-import fr.ign.cogit.geoxygene.appli.render.RenderingException;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex.GLSimpleRenderingCapability;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
+import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 import fr.ign.cogit.geoxygene.util.gl.Texture;
 
 /**
  * @author JeT This renderer writes GL Code to perform GL rendering
  */
-public class GL4FeatureRendererBasic extends GL4FeatureRenderer {
+public class GeoxComplexRendererBasic extends AbstractGeoxComplexRenderer {
 
     private static Logger logger = Logger
-            .getLogger(GL4FeatureRendererBasic.class.getName());
+            .getLogger(GeoxComplexRendererBasic.class.getName());
 
     // Uniform Variables
 
@@ -61,13 +61,13 @@ public class GL4FeatureRendererBasic extends GL4FeatureRenderer {
      * 
      * @param lwjglLayerRenderer
      */
-    public GL4FeatureRendererBasic(LwjglLayerRenderer lwjglLayerRenderer) {
+    public GeoxComplexRendererBasic(LwjglLayerRenderer lwjglLayerRenderer) {
         super(lwjglLayerRenderer);
     }
 
     @Override
-    public void normalRendering(GLComplex primitive, double opacity)
-            throws GLException {
+    public void localRendering(GLComplex primitive, double opacity)
+            throws RenderingException, GLException {
         if (primitive instanceof GLSimpleComplex) {
             this.normalSimpleRendering((GLSimpleComplex) primitive, opacity);
             return;
@@ -86,7 +86,7 @@ public class GL4FeatureRendererBasic extends GL4FeatureRenderer {
      * @throws GLException
      */
     private void normalSimpleRendering(GLSimpleComplex primitive, double opacity)
-            throws GLException {
+            throws RenderingException, GLException {
         GLTools.glCheckError("gl error before normal rendering");
         GLProgram program = null;
         if (Arrays.binarySearch(primitive.getRenderingCapabilities(),
@@ -139,7 +139,7 @@ public class GL4FeatureRendererBasic extends GL4FeatureRenderer {
         }
 
         // this.checkCurrentProgram("normalRendering(): before setGLViewMatrix()");
-        this.setGLViewMatrix(this.getViewport(), primitive.getMinX(),
+        this.getLayerRenderer().setGLViewMatrix(primitive.getMinX(),
                 primitive.getMinY());
         // this.checkCurrentProgram("normalRendering(): after setGLViewMatrix()");
 

@@ -11,6 +11,7 @@ import java.awt.event.ItemListener;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,18 +46,18 @@ import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.SyncRenderingManager;
+import fr.ign.cogit.geoxygene.appli.render.primitive.GeoxRendererManager;
 import fr.ign.cogit.geoxygene.appli.render.texture.ShaderFactory;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
 import fr.ign.cogit.geoxygene.util.ImageComparator;
 import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessor;
-import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessorInstance;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
  * LayerViewGLPanel is the basic implementation of a GL Viewer. It adds a glass
@@ -69,6 +70,8 @@ import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         ActionListener {
 
+    private static final String basicFragmentShaderFilename = "./src/main/resources/shaders/basic.frag.glsl";
+    private static final String basicVertexShaderFilename = "./src/main/resources/shaders/basic.vert.glsl";
     private static final String backgroundVertexShaderFilename = "./src/main/resources/shaders/bg.vert.glsl";
     private static final String backgroundFragmentShaderFilename = "./src/main/resources/shaders/bg.frag.glsl";
     private static final String antialiasedFragmentShaderFilename = "./src/main/resources/shaders/antialiased.frag.glsl";
@@ -77,8 +80,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private static final String screenspaceVertexShaderFilename = "./src/main/resources/shaders/screenspace.vert.glsl";
     private static final String bezierFragmentShaderFilename = "./src/main/resources/shaders/bezier.frag.glsl";
     private static final String bezierVertexShaderFilename = "./src/main/resources/shaders/bezier.vert.glsl";
-    private static final String linePaintingFragmentShaderFilename = "./src/main/resources/shaders/line.frag.glsl";
-    private static final String linePaintingVertexShaderFilename = "./src/main/resources/shaders/line.vert.glsl";
+    private static final String linePaintingFragmentShaderFilename = "./src/main/resources/shaders/linepainting.frag.glsl";
+    private static final String linePaintingVertexShaderFilename = "./src/main/resources/shaders/linepainting.vert.glsl";
     private static final String worldspaceVertexShaderFilename = "./src/main/resources/shaders/worldspace.vert.glsl";
     private static final long serialVersionUID = -7181604491025859187L; // serializable
                                                                         // UID
@@ -92,6 +95,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
     private SyncRenderingManager renderingManager = null;
     private LayerViewGLCanvas glCanvas = null; // canvas containing the GL
+                                               // context
     private LayerViewGLCanvasType glType = null;
     private JToggleButton wireframeToggleButton = null;
     private JToggleButton fboToggleButton = null;
@@ -513,7 +517,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             dialog.setVisible(true);
             imageComparator.update();
         } else if (e.getSource() == this.getReloadShadersButton()) {
-            this.glCanvas.reset();
+            GeoxRendererManager.reset();
+            this.reset();
             this.repaint();
         } else if (e.getSource() == this.getAntialiasingButton()) {
             int antialiasingValue = 1;
@@ -585,10 +590,19 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     }
 
     /**
-     * Reset glCanvas (reload shaders)
+     * 
      */
     @Override
     public void reset() {
+        try {
+            this.activateGLContext();
+            GLTools.glCheckError("GL Context activation for program destruction");
+            this.getGlContext().disposeContext();
+            GLTools.glCheckError("GLContext destruction");
+        } catch (GLException e) {
+            logger.error("Error in dispose context : " + e.getMessage());
+            e.printStackTrace();
+        }
         if (this.glCanvas != null) {
             this.glCanvas.reset();
         }
@@ -647,107 +661,163 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private GLProgramAccessor worldspaceColorAccessor = null;
     private GLProgramAccessor worldspaceTextureAccessor = null;
 
-    private int worldspaceVertexShaderId = -1;
-    private int screenspaceVertexShaderId = -1;
-    private int colorFragmentShaderId = -1;
-    private int bgFragmentShaderId = -1;
-    private int bgVertexShaderId = -1;
-    private int textureFragmentShaderId = -1;
-    private int antialiasedFragmentShaderId = -1;
-    private int linePaintingVertexShaderId = -1;
-    private int linePaintingFragmentShaderId = -1;
-    private int bezierVertexShaderId = -1;
-
-    public int getWorldspaceVertexShaderId() throws GLException {
-        if (this.worldspaceVertexShaderId == -1) {
-            this.worldspaceVertexShaderId = GLProgram
-                    .createVertexShader(worldspaceVertexShaderFilename);
-        }
-        return this.worldspaceVertexShaderId;
-    }
-
-    public int getLinePaintingVertexShaderId() throws GLException {
-        if (this.linePaintingVertexShaderId == -1) {
-            this.linePaintingVertexShaderId = GLProgram
-                    .createVertexShader(linePaintingVertexShaderFilename);
-        }
-        return this.linePaintingVertexShaderId;
-    }
-
-    public int getLinePaintingFragmentShaderId() throws GLException {
-        if (this.linePaintingFragmentShaderId == -1) {
-            this.linePaintingFragmentShaderId = GLProgram
-                    .createFragmentShader(linePaintingFragmentShaderFilename);
-        }
-        return this.linePaintingFragmentShaderId;
-    }
-
-    public int getBezierVertexShaderId() throws GLException {
-        if (this.bezierVertexShaderId == -1) {
-            this.bezierVertexShaderId = GLProgram
-                    .createVertexShader(bezierVertexShaderFilename);
-        }
-        return this.bezierVertexShaderId;
-    }
-
-    public int createBezierFragmentShaderId(ShaderDescriptor descriptor)
-            throws GLException {
-        if (descriptor instanceof UserShaderDescriptor) {
-            UserShaderDescriptor userShaderDescriptor = (UserShaderDescriptor) descriptor;
-            return GLProgram.createFragmentShader(bezierFragmentShaderFilename,
-                    userShaderDescriptor.getFilename());
-        } else {
-            return GLProgram.createFragmentShader(bezierFragmentShaderFilename);
-        }
-    }
-
-    public int getScreenspaceVertexShaderId() throws GLException {
-        if (this.screenspaceVertexShaderId == -1) {
-            this.screenspaceVertexShaderId = GLProgram
-                    .createVertexShader(screenspaceVertexShaderFilename);
-        }
-        return this.screenspaceVertexShaderId;
-    }
-
-    public int getTextureFragmentShaderId() throws GLException {
-        if (this.textureFragmentShaderId == -1) {
-            this.textureFragmentShaderId = GLProgram
-                    .createVertexShader(textureFragmentShaderFilename);
-        }
-        return this.textureFragmentShaderId;
-    }
-
-    private int getColorFragmentShaderId() throws GLException {
-        if (this.colorFragmentShaderId == -1) {
-            this.colorFragmentShaderId = GLProgram
-                    .createFragmentShader(colorFragmentShaderFilename);
-        }
-        return this.colorFragmentShaderId;
-    }
-
-    private int getAntialiasedFragmentShaderId() throws GLException {
-        if (this.antialiasedFragmentShaderId == -1) {
-            this.antialiasedFragmentShaderId = GLProgram
-                    .createFragmentShader(antialiasedFragmentShaderFilename);
-        }
-        return this.antialiasedFragmentShaderId;
-    }
-
-    private int getBackgroundFragmentShaderId() throws GLException {
-        if (this.bgFragmentShaderId == -1) {
-            this.bgFragmentShaderId = GLProgram
-                    .createFragmentShader(backgroundFragmentShaderFilename);
-        }
-        return this.bgFragmentShaderId;
-    }
-
-    private int getBackgroundVertexShaderId() throws GLException {
-        if (this.bgVertexShaderId == -1) {
-            this.bgVertexShaderId = GLProgram
-                    .createVertexShader(backgroundVertexShaderFilename);
-        }
-        return this.bgVertexShaderId;
-    }
+    // public List<Integer> getWorldspaceVertexShaderId() throws GLException {
+    // if (this.shareShaders) {
+    // if (this.worldspaceVertexShaderId == null) {
+    // this.worldspaceVertexShaderId = GLProgram
+    // .createVertexShaders(worldspaceVertexShaderFilename);
+    // }
+    // return this.worldspaceVertexShaderId;
+    // } else {
+    // return GLProgram
+    // .createVertexShaders(worldspaceVertexShaderFilename);
+    // }
+    // }
+    //
+    // public List<Integer> getLinePaintingVertexShaderId() throws GLException {
+    // if (this.shareShaders) {
+    // if (this.linePaintingVertexShaderId == null) {
+    // this.linePaintingVertexShaderId = GLProgram
+    // .createVertexShaders(linePaintingVertexShaderFilename);
+    // }
+    // return this.linePaintingVertexShaderId;
+    // } else {
+    // return GLProgram
+    // .createVertexShaders(linePaintingVertexShaderFilename);
+    // }
+    // }
+    //
+    // public List<Integer> getLinePaintingFragmentShaderId() throws GLException
+    // {
+    // if (this.shareShaders) {
+    // if (this.linePaintingFragmentShaderId == null) {
+    // this.linePaintingFragmentShaderId = GLProgram
+    // .createFragmentShaders(linePaintingFragmentShaderFilename);
+    // }
+    // return this.linePaintingFragmentShaderId;
+    // } else {
+    // return GLProgram
+    // .createFragmentShaders(linePaintingFragmentShaderFilename);
+    // }
+    // }
+    //
+    // public List<Integer> getBezierVertexShaderId() throws GLException {
+    // if (this.shareShaders) {
+    // if (this.bezierVertexShaderId == null) {
+    // this.bezierVertexShaderId = GLProgram
+    // .createVertexShaders(bezierVertexShaderFilename);
+    // }
+    // return this.bezierVertexShaderId;
+    // } else {
+    // return GLProgram.createVertexShaders(bezierVertexShaderFilename);
+    // }
+    // }
+    //
+    // public List<Integer> createBezierFragmentShaderId(
+    // ShaderDescriptor descriptor) throws GLException {
+    // if (this.shareShaders) {
+    // if (descriptor instanceof UserShaderDescriptor) {
+    // UserShaderDescriptor userShaderDescriptor = (UserShaderDescriptor)
+    // descriptor;
+    // return GLProgram.createFragmentShaders(
+    // bezierFragmentShaderFilename,
+    // userShaderDescriptor.getFilename());
+    // } else {
+    // return GLProgram
+    // .createFragmentShaders(bezierFragmentShaderFilename);
+    // }
+    // } else {
+    // if (descriptor instanceof UserShaderDescriptor) {
+    // UserShaderDescriptor userShaderDescriptor = (UserShaderDescriptor)
+    // descriptor;
+    // return GLProgram.createFragmentShaders(
+    // bezierFragmentShaderFilename,
+    // userShaderDescriptor.getFilename());
+    // } else {
+    // return GLProgram
+    // .createFragmentShaders(bezierFragmentShaderFilename);
+    // }
+    // }
+    // }
+    //
+    // public List<Integer> getScreenspaceVertexShaderId() throws GLException {
+    // if (this.shareShaders) {
+    // if (this.screenspaceVertexShaderId == null) {
+    // this.screenspaceVertexShaderId = GLProgram
+    // .createVertexShaders(screenspaceVertexShaderFilename);
+    // }
+    // return this.screenspaceVertexShaderId;
+    // } else {
+    // return GLProgram
+    // .createVertexShaders(screenspaceVertexShaderFilename);
+    // }
+    // }
+    //
+    // public List<Integer> getTextureFragmentShaderId() throws GLException {
+    // if (this.shareShaders) {
+    // if (this.textureFragmentShaderId == null) {
+    // this.textureFragmentShaderId = GLProgram
+    // .createFragmentShaders(textureFragmentShaderFilename);
+    // }
+    // return this.textureFragmentShaderId;
+    // } else {
+    // return GLProgram
+    // .createFragmentShaders(textureFragmentShaderFilename);
+    // }
+    // }
+    //
+    // private List<Integer> getColorFragmentShaderId() throws GLException {
+    // if (this.shareShaders) {
+    // if (this.colorFragmentShaderId == null) {
+    // this.colorFragmentShaderId = GLProgram
+    // .createFragmentShaders(colorFragmentShaderFilename);
+    // }
+    // return this.colorFragmentShaderId;
+    // } else {
+    // return GLProgram.createFragmentShaders(colorFragmentShaderFilename);
+    // }
+    // }
+    //
+    // private List<Integer> getAntialiasedFragmentShaderId() throws GLException
+    // {
+    // if (this.shareShaders) {
+    // if (this.antialiasedFragmentShaderId == null) {
+    // this.antialiasedFragmentShaderId = GLProgram
+    // .createFragmentShaders(antialiasedFragmentShaderFilename);
+    // }
+    // return this.antialiasedFragmentShaderId;
+    // } else {
+    // return GLProgram
+    // .createFragmentShaders(antialiasedFragmentShaderFilename);
+    // }
+    // }
+    //
+    // private List<Integer> getBackgroundFragmentShaderId() throws GLException
+    // {
+    // if (this.shareShaders) {
+    // if (this.bgFragmentShaderId == null) {
+    // this.bgFragmentShaderId = GLProgram
+    // .createFragmentShaders(backgroundFragmentShaderFilename);
+    // }
+    // return this.bgFragmentShaderId;
+    // } else {
+    // return GLProgram
+    // .createFragmentShaders(backgroundFragmentShaderFilename);
+    // }
+    // }
+    //
+    // private List<Integer> getBackgroundVertexShaderId() throws GLException {
+    // if (this.shareShaders) {
+    // if (this.bgVertexShaderId == null) {
+    // this.bgVertexShaderId = GLProgram
+    // .createVertexShaders(backgroundVertexShaderFilename);
+    // }
+    // return this.bgVertexShaderId;
+    // } else {
+    // return GLProgram
+    // .createVertexShaders(backgroundVertexShaderFilename);
+    // }
+    // }
 
     /**
      * This static method creates one GLContext containing all programs used to
@@ -782,14 +852,16 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      */
     public GLProgramAccessor getBasicAccessor() {
         if (this.basicAccessor == null) {
-            try {
-                this.basicAccessor = new GLProgramAccessorInstance(
-                        createBasicProgram());
-            } catch (GLException e) {
-                logger.error("An error occurred during GL program creation : "
-                        + e.getMessage());
-                e.printStackTrace();
-            }
+            this.basicAccessor = new GLProgramAccessor() {
+                @Override
+                public GLProgram getGLProgram() throws GLException {
+                    try {
+                        return createBasicProgram();
+                    } catch (IOException e) {
+                        throw new GLException(e);
+                    }
+                }
+            };
         }
         return this.basicAccessor;
     }
@@ -800,14 +872,18 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      */
     public GLProgramAccessor getWorldspaceColorAccessor() {
         if (this.worldspaceColorAccessor == null) {
-            try {
-                this.worldspaceColorAccessor = new GLProgramAccessorInstance(
-                        this.createWorldspaceColorProgram());
-            } catch (GLException e) {
-                logger.error("An error occurred during GL program creation : "
-                        + e.getMessage());
-                e.printStackTrace();
-            }
+            this.worldspaceColorAccessor = new GLProgramAccessor() {
+
+                @Override
+                public GLProgram getGLProgram() throws GLException {
+                    try {
+                        return LayerViewGLPanel.this
+                                .createWorldspaceColorProgram();
+                    } catch (IOException e) {
+                        throw new GLException(e);
+                    }
+                }
+            };
         }
         return this.worldspaceColorAccessor;
     }
@@ -818,14 +894,20 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      */
     public GLProgramAccessor getWorldspaceTextureAccessor() {
         if (this.worldspaceTextureAccessor == null) {
-            try {
-                this.worldspaceTextureAccessor = new GLProgramAccessorInstance(
-                        this.createWorldspaceTextureProgram());
-            } catch (GLException e) {
-                logger.error("An error occurred during GL program creation : "
-                        + e.getMessage());
-                e.printStackTrace();
-            }
+            this.worldspaceTextureAccessor = new GLProgramAccessor() {
+
+                @Override
+                public GLProgram getGLProgram() throws GLException {
+                    try {
+                        return LayerViewGLPanel.this
+                                .createWorldspaceTextureProgram();
+                    } catch (IOException e) {
+                        throw new GLException(e);
+
+                    }
+                }
+            };
+
         }
         return this.worldspaceTextureAccessor;
     }
@@ -836,14 +918,19 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      */
     public GLProgramAccessor getScreenspaceColorAccessor() {
         if (this.screenspaceColorAccessor == null) {
-            try {
-                this.screenspaceColorAccessor = new GLProgramAccessorInstance(
-                        this.createScreenspaceColorProgram());
-            } catch (GLException e) {
-                logger.error("An error occurred during GL program creation : "
-                        + e.getMessage());
-                e.printStackTrace();
-            }
+            this.screenspaceColorAccessor = new GLProgramAccessor() {
+
+                @Override
+                public GLProgram getGLProgram() throws GLException {
+                    try {
+                        return LayerViewGLPanel.this
+                                .createScreenspaceColorProgram();
+                    } catch (IOException e) {
+                        throw new GLException(e);
+
+                    }
+                }
+            };
         }
         return this.screenspaceColorAccessor;
     }
@@ -854,14 +941,19 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      */
     public GLProgramAccessor getScreenspaceTextureAccessor() {
         if (this.screenspaceTextureAccessor == null) {
-            try {
-                this.screenspaceTextureAccessor = new GLProgramAccessorInstance(
-                        this.createScreenspaceTextureProgram());
-            } catch (GLException e) {
-                logger.error("An error occurred during GL program creation : "
-                        + e.getMessage());
-                e.printStackTrace();
-            }
+            this.screenspaceTextureAccessor = new GLProgramAccessor() {
+
+                @Override
+                public GLProgram getGLProgram() throws GLException {
+                    try {
+                        return LayerViewGLPanel.this
+                                .createScreenspaceTextureProgram();
+                    } catch (IOException e) {
+                        throw new GLException(e);
+
+                    }
+                }
+            };
         }
         return this.screenspaceTextureAccessor;
     }
@@ -872,14 +964,19 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      */
     public GLProgramAccessor getScreenspaceAntialiasedAccessor() {
         if (this.screenspaceAntialiasedAccessor == null) {
-            try {
-                this.screenspaceAntialiasedAccessor = new GLProgramAccessorInstance(
-                        this.createScreenspaceAntialiasedProgram());
-            } catch (GLException e) {
-                logger.error("An error occurred during GL program creation : "
-                        + e.getMessage());
-                e.printStackTrace();
-            }
+            this.screenspaceAntialiasedAccessor = new GLProgramAccessor() {
+
+                @Override
+                public GLProgram getGLProgram() throws GLException {
+                    try {
+                        return LayerViewGLPanel.this
+                                .createScreenspaceAntialiasedProgram();
+                    } catch (IOException e) {
+                        throw new GLException(e);
+
+                    }
+                }
+            };
         }
         return this.screenspaceAntialiasedAccessor;
     }
@@ -889,14 +986,18 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      */
     public GLProgramAccessor getBackgroundAccessor() {
         if (this.backgroundAccessor == null) {
-            try {
-                this.backgroundAccessor = new GLProgramAccessorInstance(
-                        this.createBackgroundProgram());
-            } catch (GLException e) {
-                logger.error("An error occurred during GL program creation : "
-                        + e.getMessage());
-                e.printStackTrace();
-            }
+            this.backgroundAccessor = new GLProgramAccessor() {
+
+                @Override
+                public GLProgram getGLProgram() throws GLException {
+                    try {
+                        return LayerViewGLPanel.this.createBackgroundProgram();
+                    } catch (IOException e) {
+                        throw new GLException(e);
+
+                    }
+                }
+            };
         }
         return this.backgroundAccessor;
     }
@@ -924,7 +1025,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private class GLProgramAccessorBezier implements GLProgramAccessor {
 
         private ShaderDescriptor descriptor = null;
-        private GLProgram program = null;
 
         /**
          * @param program
@@ -936,11 +1036,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
         @Override
         public GLProgram getGLProgram() throws GLException {
-            if (this.program == null) {
-                this.program = LayerViewGLPanel.this
-                        .createBezierProgram(this.descriptor);
-            }
-            return this.program;
+            return LayerViewGLPanel.this.createBezierProgram(this.descriptor);
         }
     }
 
@@ -951,7 +1047,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private class GLProgramAccessorLinePainting implements GLProgramAccessor {
 
         private ShaderDescriptor descriptor = null;
-        private GLProgram program = null;
 
         /**
          * @param program
@@ -963,11 +1058,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
         @Override
         public GLProgram getGLProgram() throws GLException {
-            if (this.program == null) {
-                this.program = LayerViewGLPanel.this
+            try {
+                return LayerViewGLPanel.this
                         .createLinePaintingProgram(this.descriptor);
+            } catch (IOException e) {
+                throw new GLException(e);
             }
-            return this.program;
         }
     }
 
@@ -977,10 +1073,19 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private GLProgram createBezierProgram(ShaderDescriptor shaderDescriptor)
             throws GLException {
         // basic program
+        Shader shader = ShaderFactory.createShader(shaderDescriptor);
+
         GLProgram program = new GLProgram(bezierLineProgramName);
-        program.setVertexShader(this.getBezierVertexShaderId());
-        program.setFragmentShader(this
-                .createBezierFragmentShaderId(shaderDescriptor));
+        try {
+            program.addVertexShader(GLTools
+                    .readFileAsString(bezierVertexShaderFilename));
+            program.addFragmentShader(GLTools
+                    .readFileAsString(bezierFragmentShaderFilename));
+        } catch (IOException e) {
+            throw new GLException(e);
+        }
+        shader.configureProgram(program);
+
         program.addInputLocation(
                 GLBezierShadingVertex.vertexPositionVariableName,
                 GLBezierShadingVertex.vertexPositionLocation);
@@ -1020,7 +1125,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         program.addUniform(objectOpacityUniformVarName);
         program.addUniform(colorTexture1UniformVarName);
 
-        Shader shader = ShaderFactory.createShader(shaderDescriptor);
         shader.declareUniforms(program);
 
         return program;
@@ -1030,11 +1134,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      * line painting program
      */
     private GLProgram createLinePaintingProgram(
-            ShaderDescriptor shaderDescriptor) throws GLException {
+            ShaderDescriptor shaderDescriptor) throws GLException, IOException {
+        Shader shader = ShaderFactory.createShader(shaderDescriptor);
         // basic program
         GLProgram program = new GLProgram(linePaintingProgramName);
-        program.setVertexShader(this.getLinePaintingVertexShaderId());
-        program.setFragmentShader(this.getLinePaintingFragmentShaderId());
+        program.addVertexShader(GLTools
+                .readFileAsString(linePaintingVertexShaderFilename));
+        program.addFragmentShader(GLTools
+                .readFileAsString(linePaintingFragmentShaderFilename));
+        shader.configureProgram(program);
         program.addInputLocation(GLPaintingVertex.vertexPositionVariableName,
                 GLPaintingVertex.vertexPositionLocation);
         program.addInputLocation(GLPaintingVertex.vertexUVVariableName,
@@ -1075,7 +1183,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         program.addUniform(globalOpacityUniformVarName);
         program.addUniform(objectOpacityUniformVarName);
         program.addUniform(textureScaleFactorUniformVarName);
-        Shader shader = ShaderFactory.createShader(shaderDescriptor);
         shader.declareUniforms(program);
 
         return program;
@@ -1083,16 +1190,16 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
     /**
      * @throws GLException
+     *             , IOException
      */
-    private static GLProgram createBasicProgram() throws GLException {
-        int basicVertexShader = GLProgram
-                .createVertexShader("./src/main/resources/shaders/basic.vert.glsl");
-        int basicFragmentShader = GLProgram
-                .createFragmentShader("./src/main/resources/shaders/basic.frag.glsl");
+    private static GLProgram createBasicProgram() throws GLException,
+            IOException {
         // basic program
         GLProgram basicProgram = new GLProgram(basicProgramName);
-        basicProgram.setVertexShader(basicVertexShader);
-        basicProgram.setFragmentShader(basicFragmentShader);
+        basicProgram.addVertexShader(GLTools
+                .readFileAsString(basicVertexShaderFilename));
+        basicProgram.addFragmentShader(GLTools
+                .readFileAsString(basicFragmentShaderFilename));
         basicProgram.addInputLocation(
                 GLSimpleVertex.vertexPositionVariableName,
                 GLSimpleVertex.vertexPostionLocation);
@@ -1106,14 +1213,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     /**
      * @throws GLException
      */
-    private GLProgram createScreenspaceColorProgram() throws GLException {
+    private GLProgram createScreenspaceColorProgram() throws GLException,
+            IOException {
         // basic program
         GLProgram screenspaceColorProgram = new GLProgram(
                 screenspaceColorProgramName);
-        screenspaceColorProgram.setVertexShader(this
-                .getScreenspaceVertexShaderId());
-        screenspaceColorProgram.setFragmentShader(this
-                .getColorFragmentShaderId());
+        screenspaceColorProgram.addVertexShader(GLTools
+                .readFileAsString(screenspaceVertexShaderFilename));
+        screenspaceColorProgram.addFragmentShader(GLTools
+                .readFileAsString(textureFragmentShaderFilename));
         screenspaceColorProgram.addInputLocation(
                 GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
@@ -1132,14 +1240,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     /**
      * @throws GLException
      */
-    private GLProgram createScreenspaceTextureProgram() throws GLException {
+    private GLProgram createScreenspaceTextureProgram() throws GLException,
+            IOException {
         // basic program
         GLProgram screenspaceTextureProgram = new GLProgram(
                 screenspaceTextureProgramName);
-        screenspaceTextureProgram.setVertexShader(this
-                .getScreenspaceVertexShaderId());
-        screenspaceTextureProgram.setFragmentShader(this
-                .getTextureFragmentShaderId());
+        screenspaceTextureProgram.addVertexShader(GLTools
+                .readFileAsString(screenspaceVertexShaderFilename));
+        screenspaceTextureProgram.addFragmentShader(GLTools
+                .readFileAsString(textureFragmentShaderFilename));
         screenspaceTextureProgram.addInputLocation(
                 GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
@@ -1159,15 +1268,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     /**
      * @throws GLException
      */
-    private GLProgram createBackgroundProgram() throws GLException {
+    private GLProgram createBackgroundProgram() throws GLException, IOException {
 
         // basic program
         GLProgram backgroundTextureProgram = new GLProgram(
                 backgroundProgramName);
-        backgroundTextureProgram.setVertexShader(this
-                .getBackgroundVertexShaderId());
-        backgroundTextureProgram.setFragmentShader(this
-                .getBackgroundFragmentShaderId());
+        backgroundTextureProgram.addVertexShader(GLTools
+                .readFileAsString(backgroundVertexShaderFilename));
+        backgroundTextureProgram.addFragmentShader(GLTools
+                .readFileAsString(backgroundFragmentShaderFilename));
         backgroundTextureProgram.addInputLocation(
                 GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
@@ -1183,12 +1292,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      * @param worldspaceVertexShaderId
      * @throws GLException
      */
-    private GLProgram createWorldspaceColorProgram() throws GLException {
+    private GLProgram createWorldspaceColorProgram() throws GLException,
+            IOException {
 
         // color program
         GLProgram colorProgram = new GLProgram(worldspaceColorProgramName);
-        colorProgram.setVertexShader(this.getWorldspaceVertexShaderId());
-        colorProgram.setFragmentShader(this.getColorFragmentShaderId());
+        colorProgram.addVertexShader(GLTools
+                .readFileAsString(worldspaceVertexShaderFilename));
+        colorProgram.addFragmentShader(GLTools
+                .readFileAsString(colorFragmentShaderFilename));
         colorProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
         colorProgram.addInputLocation(
@@ -1216,12 +1328,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      * @param worldspaceVertexShaderId
      * @throws GLException
      */
-    private GLProgram createWorldspaceTextureProgram() throws GLException {
+    private GLProgram createWorldspaceTextureProgram() throws GLException,
+            IOException {
 
         // color program
         GLProgram textureProgram = new GLProgram(worldspaceTextureProgramName);
-        textureProgram.setVertexShader(this.getWorldspaceVertexShaderId());
-        textureProgram.setFragmentShader(this.getTextureFragmentShaderId());
+        textureProgram.addVertexShader(GLTools
+                .readFileAsString(worldspaceVertexShaderFilename));
+        textureProgram.addFragmentShader(GLTools
+                .readFileAsString(textureFragmentShaderFilename));
         textureProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
         textureProgram.addInputLocation(
@@ -1250,14 +1365,16 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      * @param worldspaceVertexShaderId
      * @throws GLException
      */
-    private GLProgram createScreenspaceAntialiasedProgram() throws GLException {
+    private GLProgram createScreenspaceAntialiasedProgram() throws GLException,
+            IOException {
 
         // color program
         GLProgram antialisedProgram = new GLProgram(
                 screenspaceAntialiasedTextureProgramName);
-        antialisedProgram.setVertexShader(this.getScreenspaceVertexShaderId());
-        antialisedProgram.setFragmentShader(this
-                .getAntialiasedFragmentShaderId());
+        antialisedProgram.addVertexShader(GLTools
+                .readFileAsString(screenspaceVertexShaderFilename));
+        antialisedProgram.addFragmentShader(GLTools
+                .readFileAsString(antialiasedFragmentShaderFilename));
         antialisedProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
         antialisedProgram.addInputLocation(
@@ -1274,4 +1391,5 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
         return antialisedProgram;
     }
+
 }

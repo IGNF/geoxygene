@@ -29,8 +29,6 @@ package fr.ign.cogit.geoxygene.appli.render.primitive;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -43,10 +41,9 @@ import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
 import fr.ign.cogit.geoxygene.appli.gl.LineTesselator;
+import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.texture.BasicTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.appli.render.texture.StrokeTextureExpressiveRendering;
-import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
-import fr.ign.cogit.geoxygene.appli.task.Task;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.function.ConstantFunction;
 import fr.ign.cogit.geoxygene.function.Function1D;
@@ -56,13 +53,14 @@ import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDe
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 
 /**
  * @author JeT
  * 
  */
-public class DisplayableCurve extends AbstractTask implements GLDisplayable {
+public class DisplayableCurve extends AbstractDisplayable {
 
     private static final Logger logger = Logger
             .getLogger(DisplayableCurve.class.getName()); // logger
@@ -75,14 +73,6 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
             0);
 
     private final List<ILineString> curves = new ArrayList<ILineString>();
-    private Symbolizer symbolizer = null;
-    private List<GLComplex> fullRepresentation = null;
-    private GLComplex partialRepresentation = null;
-    private long displayCount = 0; // number of time it has been displayed
-    private Date lastDisplayTime; // last time it has been displayed
-    private final Object currentTaskLock = new Object();
-    private final Task currentTask = null;
-    private final int taskCount = 0;
 
     // private Colorizer colorizer = null;
     // private Parameterizer parameterizer = null;
@@ -93,9 +83,10 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
      * Constructor using a IMultiCurve
      */
     public DisplayableCurve(String name, Viewport viewport,
-            IMultiCurve<?> multiCurve, Symbolizer symbolizer) {
-        super(name);
-        this.symbolizer = symbolizer;
+            IMultiCurve<?> multiCurve, Symbolizer symbolizer,
+            LwjglLayerRenderer lwjglLayerRenderer,
+            GLComplexRenderer partialRenderer) {
+        super(name, viewport, lwjglLayerRenderer, symbolizer);
 
         for (Object lineString : multiCurve.getList()) {
             if (lineString instanceof ILineString) {
@@ -105,16 +96,28 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
                         + this.curves.getClass().getSimpleName());
             }
         }
+        this.generatePartialRepresentation(partialRenderer);
     }
 
     /**
      * Constructor using a ILineString
      */
     public DisplayableCurve(String name, Viewport viewport,
-            ILineString lineString, Symbolizer symbolizer) {
-        super(name);
-        this.symbolizer = symbolizer;
+            ILineString lineString, Symbolizer symbolizer,
+            LwjglLayerRenderer lwjglLayerRenderer,
+            GLComplexRenderer partialRenderer) {
+        super(name, viewport, lwjglLayerRenderer, symbolizer);
         this.curves.add(lineString);
+        this.generatePartialRepresentation(partialRenderer);
+    }
+
+    public void generatePartialRepresentation(GLComplexRenderer partialRenderer) {
+        IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
+        double minX = envelope.minX();
+        double minY = envelope.minY();
+        this.setPartialRepresentation(GLComplexFactory.createQuickLine(
+                this.getName() + "-partial", this.curves, partialColorizer,
+                null, minX, minY, partialRenderer));
     }
 
     /*
@@ -125,22 +128,6 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
     @Override
     public boolean isProgressable() {
         return false;
-    }
-
-    /**
-     * @return the displayCount
-     */
-    @Override
-    public long getDisplayCount() {
-        return this.displayCount;
-    }
-
-    /**
-     * @return the lastDisplayTime
-     */
-    @Override
-    public Date getLastDisplayTime() {
-        return this.lastDisplayTime;
     }
 
     /*
@@ -169,33 +156,35 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
      * @see java.lang.Runnable#run()
      */
     @Override
-    public void run() {
-        super.setState(TaskState.INITIALIZING);
-        this.fullRepresentation = null;
+    public List<GLComplex> generateFullRepresentation() {
+        // System.err.println("Displayable curve start");
         super.setState(TaskState.RUNNING);
 
         // if (this.getTexture() != null) {
         // this.generateWithDistanceField();
         // }
 
-        if (this.symbolizer instanceof LineSymbolizer) {
-            LineSymbolizer lineSymbolizer = (LineSymbolizer) this.symbolizer;
+        if (this.getSymbolizer() instanceof LineSymbolizer) {
+            List<GLComplex> complexes = new ArrayList<GLComplex>();
+            LineSymbolizer lineSymbolizer = (LineSymbolizer) this
+                    .getSymbolizer();
             if (lineSymbolizer.getStroke().getExpressiveRendering() == null) {
-                this.generateWithLineSymbolizer(lineSymbolizer);
+                complexes.addAll(this
+                        .generateWithLineSymbolizer(lineSymbolizer));
             } else {
-                this.generateWithExpressiveStroke(lineSymbolizer);
+                complexes.addAll(this
+                        .generateWithExpressiveStroke(lineSymbolizer));
             }
+            return complexes;
         } else {
             logger.error("Curve rendering do not handle "
-                    + this.symbolizer.getClass().getSimpleName());
+                    + this.getSymbolizer().getClass().getSimpleName());
             super.setState(TaskState.ERROR);
-            return;
+            return null;
         }
-        super.setState(TaskState.FINALIZING);
-        super.setState(TaskState.FINISHED);
     }
 
-    private void generateWithLineSymbolizer(LineSymbolizer symbolizer) {
+    private List<GLComplex> generateWithLineSymbolizer(LineSymbolizer symbolizer) {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
         // return GLComplexFactory.createFilledPolygon(multiSurface,
         // symbolizer.getStroke().getColor());
@@ -213,61 +202,70 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
                 + "-full", this.curves, symbolizer.getStroke(), minX, minY);
         line.setColor(symbolizer.getStroke().getColor());
         line.setOverallOpacity(symbolizer.getStroke().getColor().getAlpha());
+        line.setRenderer(GeoxRendererManager.getOrCreateLineRenderer(
+                symbolizer, this.getLayerRenderer()));
+
         complexes.add(line);
-        this.fullRepresentation = complexes;
+        return complexes;
     }
 
-    private void generateWithExpressiveStroke(LineSymbolizer symbolizer) {
+    private List<GLComplex> generateWithExpressiveStroke(
+            LineSymbolizer symbolizer) {
+        List<GLComplex> complexes = new ArrayList<GLComplex>();
         ExpressiveRenderingDescriptor style = symbolizer.getStroke()
                 .getExpressiveRendering();
         if (style == null) {
             throw new IllegalStateException(
                     "this method can only be called with a valid expressive stroke");
         }
+
         if ((style instanceof StrokeTextureExpressiveRenderingDescriptor)) {
             StrokeTextureExpressiveRenderingDescriptor strtex = (StrokeTextureExpressiveRenderingDescriptor) style;
-            List<GLComplex> complexes = new ArrayList<GLComplex>();
             // return GLComplexFactory.createFilledPolygon(multiSurface,
             // symbolizer.getStroke().getColor());
             IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
             double minX = envelope.minX();
             double minY = envelope.minY();
 
-            GLPaintingComplex complex = new GLPaintingComplex(this.getName()
-                    + "-expressive-full", minX, minY);
-            GLComplexFactory.createThickCurves(this.getName(), complex,
-                    symbolizer.getStroke(), minX, minY, strtex, this.curves);
+            GeoxComplexRenderer renderer = GeoxRendererManager
+                    .getOrCreateLineRenderer(symbolizer,
+                            this.getLayerRenderer());
+
+            GLPaintingComplex complex = GLComplexFactory
+                    .createPaintingThickCurves(this.getName()
+                            + "-expressive-painting", symbolizer.getStroke(),
+                            minX, minY, strtex, this.curves, renderer);
             complex.setExpressiveRendering(new StrokeTextureExpressiveRendering(
                     strtex));
             complexes.add(complex);
-            this.fullRepresentation = complexes;
-            return;
+            return complexes;
         } else if ((style instanceof BasicTextureExpressiveRenderingDescriptor)) {
             BasicTextureExpressiveRenderingDescriptor strtex = (BasicTextureExpressiveRenderingDescriptor) style;
-            List<GLComplex> complexes = new ArrayList<GLComplex>();
             // return GLComplexFactory.createFilledPolygon(multiSurface,
             // symbolizer.getStroke().getColor());
             IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
             double minX = envelope.minX();
             double minY = envelope.minY();
 
-            GLBezierShadingComplex complex = new GLBezierShadingComplex(
-                    this.getName() + "-expressive-full", minX, minY);
-            GLComplexFactory.createThickCurves(this.getName(), complex,
-                    symbolizer.getStroke(), minX, minY, strtex, this.curves);
+            GeoxComplexRenderer renderer = GeoxRendererManager
+                    .getOrCreateLineRenderer(symbolizer,
+                            this.getLayerRenderer());
+            GLBezierShadingComplex complex = GLComplexFactory
+                    .createBezierThickCurves(this.getName()
+                            + "-expressive-bezier", symbolizer.getStroke(),
+                            minX, minY, strtex, this.curves, renderer);
             complex.setExpressiveRendering(new BasicTextureExpressiveRendering(
                     strtex));
             complexes.add(complex);
-            this.fullRepresentation = complexes;
-            return;
+            this.setFullRepresentation(complexes);
+            return complexes;
         }
         throw new IllegalStateException("LineSymbolizer cannot handle "
                 + style.getClass().getSimpleName());
     }
-
     // /**
     // * @param widthFunction
-    // * @param shiftFunction
+    // * @param shiftFunctioncurrentTask
     // * @return
     // */
     // public GLPaintingComplex createComplex(String id, List<ILineString>
@@ -295,62 +293,5 @@ public class DisplayableCurve extends AbstractTask implements GLDisplayable {
     //
     // return complex;
     // }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.task.AbstractTask#getProgress()
-     */
-    @Override
-    public double getProgress() {
-        if (this.taskCount <= 0) {
-            return 0.;
-        }
-        synchronized (this.currentTaskLock) {
-            if (this.currentTask == null) {
-                return 0.;
-            }
-            return this.currentTask.getProgress() / this.taskCount;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.render.primitive.GLDisplayable#
-     * getPartialRepresentation()
-     */
-    @Override
-    public GLComplex getPartialRepresentation() {
-        if (this.partialRepresentation == null) {
-            IEnvelope envelope = IGeometryUtil.getEnvelope(this.curves);
-            double minX = envelope.minX();
-            double minY = envelope.minY();
-            this.partialRepresentation = GLComplexFactory.createQuickLine(
-                    this.getName() + "-partial", this.curves, partialColorizer,
-                    null, minX, minY);
-        }
-        this.displayIncrement();
-        return this.partialRepresentation;
-    }
-
-    private void displayIncrement() {
-        this.displayCount++;
-        this.lastDisplayTime = new Date();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.ign.cogit.geoxygene.appli.render.primitive.GLDisplayable#
-     * getFullRepresentation()
-     */
-    @Override
-    public Collection<GLComplex> getFullRepresentation() {
-        if (this.fullRepresentation != null) {
-            this.displayIncrement();
-        }
-        return this.fullRepresentation;
-    }
 
 }

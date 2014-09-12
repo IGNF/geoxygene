@@ -22,6 +22,7 @@ package fr.ign.cogit.geoxygene.filter.expression;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -39,89 +40,128 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "PropertyName")
 public class PropertyName extends Expression {
-  static Logger logger = Logger.getLogger(PropertyName.class.getName());
+    static Logger logger = Logger.getLogger(PropertyName.class.getName());
 
-  /**
+    /**
      *
      */
-  public PropertyName() {
-  }
-
-  /**
-   * @param name
-   */
-  public PropertyName(String name) {
-    this.setPropertyName(name);
-  }
-
-  @XmlMixed
-  private String[] propertyName = new String[1];
-
-  /**
-   * @return the name of the PropertyName
-   */
-  public String getPropertyName() {
-    return this.propertyName[0];
-  }
-
-  /**
-   * @param propertyName
-   */
-  public void setPropertyName(String propertyName) {
-    this.propertyName[0] = propertyName;
-  }
-
-  @Override
-  public Object evaluate(Object object) {
-    String getterName = "get" + this.getPropertyName().substring(0, 1).toUpperCase() + this.getPropertyName().substring(1); //$NON-NLS-1$
-    if (object instanceof IFeature) {
-        IFeature feature = (IFeature) object;
-      Object resultat = feature.getAttribute(this.getPropertyName());
-      if (resultat instanceof Number) {
-        return new BigDecimal(((Number) resultat).doubleValue());
-      }
-      // if (resultat instanceof Boolean) return new
-      // BigDecimal(((Boolean)resultat).booleanValue()?0:1);
-      return resultat;
+    public PropertyName() {
     }
-    Class<?> classe = object.getClass();
-    while (!classe.equals(Object.class)) {
-      try {
-        Method getter = classe.getMethod(getterName, new Class<?>[0]);
-        Object resultat = getter.invoke(object, new Object[0]);
-        if (resultat instanceof Number) {
-          return new BigDecimal(((Number) resultat).doubleValue());
+
+    /**
+     * @param name
+     */
+    public PropertyName(String name) {
+        this.setPropertyName(name);
+    }
+
+    @XmlMixed
+    private final String[] propertyName = new String[1];
+
+    /**
+     * @return the name of the PropertyName
+     */
+    public String getPropertyName() {
+        return this.propertyName[0];
+    }
+
+    /**
+     * @param propertyName
+     */
+    public void setPropertyName(String propertyName) {
+        this.propertyName[0] = propertyName;
+    }
+
+    @Override
+    public Object evaluate(Object object) {
+        String getterName = "get" + this.getPropertyName().substring(0, 1).toUpperCase() + this.getPropertyName().substring(1); //$NON-NLS-1$
+        if (object instanceof IFeature) {
+            IFeature feature = (IFeature) object;
+            Object resultat = feature.getAttribute(this.getPropertyName());
+            if (resultat instanceof Number) {
+                return new BigDecimal(((Number) resultat).doubleValue());
+            }
+            // if (resultat instanceof Boolean) return new
+            // BigDecimal(((Boolean)resultat).booleanValue()?0:1);
+            return resultat;
         }
-        return resultat;
-      } catch (SecurityException e) {
-        PropertyName.logger.error("La méthode " + getterName
-            + " n'est pas autorisée sur la classe " + object.getClass() + " / "
-            + classe);
-      } catch (NoSuchMethodException e) {
-        PropertyName.logger.error("La méthode " + getterName
-            + " n'existe pas dans la classe " + object.getClass() + " / "
-            + classe);
-      } catch (IllegalArgumentException e) {
-        PropertyName.logger.error("Arguments illégaux pour la méthode "
-            + getterName + " de la classe " + object.getClass() + " / "
-            + classe);
-      } catch (IllegalAccessException e) {
-        PropertyName.logger.error("accès illégal à la méthode " + getterName
-            + " de la classe " + object.getClass() + " / " + classe);
-      } catch (InvocationTargetException e) {
-        PropertyName.logger
-            .error("problème pendant l'invocation de la méthode " + getterName
-                + " sur la classe " + object.getClass() + " / " + classe);
-      }
-      classe = classe.getSuperclass();
+        Class<?> classe = object.getClass();
+        while (!classe.equals(Object.class)) {
+            try {
+                Method getter = classe.getMethod(getterName, new Class<?>[0]);
+                Object resultat = getter.invoke(object, new Object[0]);
+                if (resultat instanceof Number) {
+                    return new BigDecimal(((Number) resultat).doubleValue());
+                }
+                return resultat;
+            } catch (SecurityException e) {
+                PropertyName.logger.error("La méthode " + getterName
+                        + " n'est pas autorisée sur la classe "
+                        + object.getClass() + " / " + classe);
+            } catch (NoSuchMethodException e) {
+                PropertyName.logger.error("La méthode " + getterName
+                        + " n'existe pas dans la classe " + object.getClass()
+                        + " / " + classe);
+            } catch (IllegalArgumentException e) {
+                PropertyName.logger.error("Arguments illégaux pour la méthode "
+                        + getterName + " de la classe " + object.getClass()
+                        + " / " + classe);
+            } catch (IllegalAccessException e) {
+                PropertyName.logger.error("accès illégal à la méthode "
+                        + getterName + " de la classe " + object.getClass()
+                        + " / " + classe);
+            } catch (InvocationTargetException e) {
+                PropertyName.logger
+                        .error("problème pendant l'invocation de la méthode "
+                                + getterName + " sur la classe "
+                                + object.getClass() + " / " + classe);
+            }
+            classe = classe.getSuperclass();
+        }
+        PropertyName.logger.error("On a échoué sur l'objet " + object
+                + " avec le getter " + getterName);
+        return null;
     }
-    PropertyName.logger.error("On a échoué sur l'objet " + object
-        + " avec le getter " + getterName);
-    return null;
-  }
 
-  @Override
-  public String toString() {
-    return this.getPropertyName();
-  }
+    @Override
+    public String toString() {
+        return this.getPropertyName();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(this.propertyName);
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        PropertyName other = (PropertyName) obj;
+        if (!Arrays.equals(this.propertyName, other.propertyName)) {
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -20,6 +20,7 @@
 package fr.ign.cogit.geoxygene.filter.expression;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -33,51 +34,88 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "Literal")
 public class Literal extends Expression {
 
-  /**
+    /**
 	 * 
 	 */
-  public Literal() {
-  }
-
-  /**
-   * @param value
-   */
-  public Literal(String value) {
-    this.setValue(value);
-  }
-
-  @XmlMixed
-  private String[] value = new String[1];
-
-  /**
-   * @return the value of the Literal
-   */
-  public String getValue() {
-    return this.value[0];
-  }
-
-  /**
-   * @param value
-   */
-  public void setValue(String value) {
-    this.value[0] = value;
-  }
-
-  @Override
-  public Object evaluate(Object object) {
-    return new BigDecimal(this.getValue());
-  }
-
-  @Override
-  public String toString() {
-    return this.getValue();
-  }
-  @Override
-  public boolean equals(Object o) {
-    if (!Literal.class.isAssignableFrom(o.getClass())) {
-      return false;
+    public Literal() {
     }
-    Literal l = (Literal) o;
-    return l.getValue().equals(this.getValue());
-  }
+
+    /**
+     * @param value
+     */
+    public Literal(String value) {
+        this.setValue(value);
+    }
+
+    @XmlMixed
+    private final String[] value = new String[1];
+
+    /**
+     * @return the value of the Literal
+     */
+    public String getValue() {
+        return this.value[0];
+    }
+
+    /**
+     * @param value
+     */
+    public void setValue(String value) {
+        this.value[0] = value;
+    }
+
+    @Override
+    public Object evaluate(Object object) {
+        return new BigDecimal(this.getValue());
+    }
+
+    @Override
+    public String toString() {
+        return this.getValue();
+    }
+
+    // @Override
+    // public boolean equals(Object o) {
+    // if (!Literal.class.isAssignableFrom(o.getClass())) {
+    // return false;
+    // }
+    // Literal l = (Literal) o;
+    // return l.getValue().equals(this.getValue());
+    // }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(this.value);
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        Literal other = (Literal) obj;
+        if (!this.getValue().equals(other.getValue())) {
+            return false;
+        }
+        return true;
+    }
 }

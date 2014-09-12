@@ -37,49 +37,146 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
  * 
  */
 public class RasterSymbolizer extends AbstractSymbolizer {
-  @XmlElement(name = "ShadedRelief")
-  ShadedRelief shadedRelief = null;
-  private double opacity = 1.0d;
+    @XmlElement(name = "ShadedRelief")
+    ShadedRelief shadedRelief = null;
+    private double opacity = 1.0d;
 
-  public ShadedRelief getShadedRelief() {
-    return this.shadedRelief;
-  }
+    public ShadedRelief getShadedRelief() {
+        return this.shadedRelief;
+    }
 
-  public void setShadedRelief(ShadedRelief shadedRelief) {
-    this.shadedRelief = shadedRelief;
-  }
+    public void setShadedRelief(ShadedRelief shadedRelief) {
+        this.shadedRelief = shadedRelief;
+    }
 
-  @XmlElement(name = "ColorMap")
-  ColorMap colorMap = null;
+    @XmlElement(name = "ColorMap")
+    ColorMap colorMap = null;
 
-  public ColorMap getColorMap() {
-    return this.colorMap;
-  }
+    public ColorMap getColorMap() {
+        return this.colorMap;
+    }
 
-  public void setColorMap(ColorMap colorMap) {
-    this.colorMap = colorMap;
-  }
+    public void setColorMap(ColorMap colorMap) {
+        this.colorMap = colorMap;
+    }
 
-  @Override
-  public boolean isRasterSymbolizer() {
-    return true;
-  }
+    @Override
+    public boolean isRasterSymbolizer() {
+        return true;
+    }
 
-  @XmlTransient
-  Map<IFeature, GM_MultiSurface<GM_Triangle>> map = new HashMap<IFeature, GM_MultiSurface<GM_Triangle>>();
-  @XmlTransient
-  Map<GM_Triangle, Vecteur> normalMap = new HashMap<GM_Triangle, Vecteur>();
-  @XmlTransient
-  Map<IDirectPosition, List<GM_Triangle>> triangleMap = new HashMap<IDirectPosition, List<GM_Triangle>>();
-  @XmlTransient
-  Map<IDirectPosition, Vecteur> positionMap = new HashMap<IDirectPosition, Vecteur>();
+    @XmlTransient
+    Map<IFeature, GM_MultiSurface<GM_Triangle>> map = new HashMap<IFeature, GM_MultiSurface<GM_Triangle>>();
+    @XmlTransient
+    Map<GM_Triangle, Vecteur> normalMap = new HashMap<GM_Triangle, Vecteur>();
+    @XmlTransient
+    Map<IDirectPosition, List<GM_Triangle>> triangleMap = new HashMap<IDirectPosition, List<GM_Triangle>>();
+    @XmlTransient
+    Map<IDirectPosition, Vecteur> positionMap = new HashMap<IDirectPosition, Vecteur>();
 
-  public double getOpacity() {
-    return this.opacity;
-  }
+    public double getOpacity() {
+        return this.opacity;
+    }
 
-  public void setOpacity(double opacity) {
-    this.opacity = opacity;
-  }
-  
+    public void setOpacity(double opacity) {
+        this.opacity = opacity;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                + ((this.colorMap == null) ? 0 : this.colorMap.hashCode());
+        result = prime * result
+                + ((this.map == null) ? 0 : this.map.hashCode());
+        result = prime * result
+                + ((this.normalMap == null) ? 0 : this.normalMap.hashCode());
+        long temp;
+        temp = Double.doubleToLongBits(this.opacity);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime
+                * result
+                + ((this.positionMap == null) ? 0 : this.positionMap.hashCode());
+        result = prime
+                * result
+                + ((this.shadedRelief == null) ? 0 : this.shadedRelief
+                        .hashCode());
+        result = prime
+                * result
+                + ((this.triangleMap == null) ? 0 : this.triangleMap.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        RasterSymbolizer other = (RasterSymbolizer) obj;
+        if (this.colorMap == null) {
+            if (other.colorMap != null) {
+                return false;
+            }
+        } else if (!this.colorMap.equals(other.colorMap)) {
+            return false;
+        }
+        if (this.map == null) {
+            if (other.map != null) {
+                return false;
+            }
+        } else if (!this.map.equals(other.map)) {
+            return false;
+        }
+        if (this.normalMap == null) {
+            if (other.normalMap != null) {
+                return false;
+            }
+        } else if (!this.normalMap.equals(other.normalMap)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.opacity) != Double
+                .doubleToLongBits(other.opacity)) {
+            return false;
+        }
+        if (this.positionMap == null) {
+            if (other.positionMap != null) {
+                return false;
+            }
+        } else if (!this.positionMap.equals(other.positionMap)) {
+            return false;
+        }
+        if (this.shadedRelief == null) {
+            if (other.shadedRelief != null) {
+                return false;
+            }
+        } else if (!this.shadedRelief.equals(other.shadedRelief)) {
+            return false;
+        }
+        if (this.triangleMap == null) {
+            if (other.triangleMap != null) {
+                return false;
+            }
+        } else if (!this.triangleMap.equals(other.triangleMap)) {
+            return false;
+        }
+        return true;
+    }
+
 }

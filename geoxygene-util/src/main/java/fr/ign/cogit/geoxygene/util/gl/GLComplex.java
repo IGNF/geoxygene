@@ -105,4 +105,7 @@ public interface GLComplex {
     // */
     // public abstract void addGLComplex(GLComplex subComplex);
 
+    public abstract void setRenderer(GLComplexRenderer renderer);
+
+    public abstract GLComplexRenderer getRenderer();
 }

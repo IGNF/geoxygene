@@ -47,6 +47,7 @@ public class TaskManager implements TaskListener<Task> {
 
     private static final boolean debug = false;
     private static final TaskManagerListener[] DUMMYTASKMANAGERLISTENERARRAY = new TaskManagerListener[] {};
+    private final Object taskLock = new Object();
     private final Queue<Task> pendingTasks = new LinkedList<Task>();
     private final Map<Thread, Task> runningTasks = new HashMap<Thread, Task>();
     private final Map<Task, Date> removedTasks = new HashMap<Task, Date>();
@@ -98,22 +99,36 @@ public class TaskManager implements TaskListener<Task> {
      * @return true if task is correctly added
      */
     public boolean addTask(final Task task) {
-        // //System.err.println("ask to add task " + task);
-
         if (task == null) {
+            if (debug) {
+                System.err.println("asked to add a null task");
+            }
             return false;
+        }
+        if (debug) {
+            System.err.println("asked to add task '" + task.getName()
+                    + "' hash=" + task.hashCode());
         }
         // check if the task has already been launched
         if (task.getState() != TaskState.WAITING) {
             logger.warn("task " + task.getName()
                     + " added to task manager with state " + task.getState());
-            Thread.dumpStack();
         }
 
-        task.addTaskListener(this);
-        synchronized (this.pendingTasks) {
-            if (this.pendingTasks.contains(task)
-                    || !this.pendingTasks.add(task)) {
+        synchronized (this.taskLock) {
+            if (this.pendingTasks.contains(task)) {
+                logger.warn("Try to ask task " + task.getName() + " ("
+                        + task.hashCode()
+                        + ") which is already in pending list. Skip it.");
+                return false;
+            }
+            if (this.runningTasks.containsValue(task)) {
+                logger.warn("Try to ask task " + task.getName() + " ("
+                        + task.hashCode()
+                        + ") which is already in running list. Skip it.");
+                return false;
+            }
+            if (!this.pendingTasks.add(task)) {
                 if (debug) {
                     System.err.println("unable to add task " + task.getName()
                             + " to pending tasks");
@@ -144,21 +159,20 @@ public class TaskManager implements TaskListener<Task> {
         }
         while (this.runningTasks.size() < this.getMaximumRunningThreadNumber()) {
             Task task = null;
-            synchronized (this.pendingTasks) {
+            synchronized (this.taskLock) {
                 task = this.pendingTasks.poll(); // removed from pending
                 // System.err.println("task removed to pending list " + task +
                 // " => " + this.pendingTasks.size());
                 // //System.err.println("task removed from pending " + task);
-            }
-            if (task == null) {
-                return; // no task to start
-            }
-            if (debug) {
-                System.err.println("task " + task.getName()
-                        + " removed from pending tasks");
-            }
-            // //System.err.println("start task " + task);
-            synchronized (this.runningTasks) {
+                if (task == null) {
+                    return; // no task to start
+                }
+                if (debug) {
+                    System.err.println("task " + task.getName()
+                            + " removed from pending tasks");
+                }
+                // //System.err.println("start task " + task);
+                task.addTaskListener(this);
                 Thread taskThread = task.start(this.uncaughtExceptionHandler); // start
                                                                                // task
                 if (taskThread == null) {
@@ -200,7 +214,7 @@ public class TaskManager implements TaskListener<Task> {
                     + " which has no valid thread : " + task.getThread());
             return false;
         }
-        synchronized (this.runningTasks) {
+        synchronized (this.taskLock) {
             if (this.runningTasks.remove(task.getThread()) == null) {
                 logger.warn("trying to remove task " + task.getName()
                         + " which is not in the list of running tasks");
@@ -250,7 +264,7 @@ public class TaskManager implements TaskListener<Task> {
      * @return the number of pending tasks
      */
     public int getPendingTaskCount() {
-        synchronized (this.pendingTasks) {
+        synchronized (this.taskLock) {
             return this.pendingTasks.size();
         }
     }
@@ -259,7 +273,7 @@ public class TaskManager implements TaskListener<Task> {
      * @return the number of currently running tasks
      */
     public int getRunningTaskCount() {
-        synchronized (this.runningTasks) {
+        synchronized (this.taskLock) {
             return this.runningTasks.size();
         }
     }
@@ -271,6 +285,10 @@ public class TaskManager implements TaskListener<Task> {
                     + oldState + " to " + task.getState());
         }
         if (!task.getState().isRunning()) {
+            if (debug) {
+                System.err.println("Task " + task.getName()
+                        + " is no longer running. Stop listening to it");
+            }
             this.removeRunningTask(task);
         }
 

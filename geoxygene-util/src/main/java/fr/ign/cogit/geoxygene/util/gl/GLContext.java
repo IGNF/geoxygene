@@ -55,8 +55,10 @@ public class GLContext {
     }
 
     public void addProgram(String progamName, GLProgramAccessor programAccessor) {
-        this.programs.put(progamName, null);
-        this.programAccessors.put(progamName, programAccessor);
+        synchronized (this.programs) {
+            this.programs.put(progamName, null);
+            this.programAccessors.put(progamName, programAccessor);
+        }
     }
 
     /**
@@ -80,22 +82,37 @@ public class GLContext {
             this.currentProgram = null;
             return this.currentProgram;
         }
-        GLProgram program = this.programs.get(programName);
-        if (program == null) {
-            GLProgramAccessor glProgramAccessor = this.programAccessors
-                    .get(programName);
-            if (glProgramAccessor == null) {
-                logger.warn("Cannot create program named " + programName
-                        + ": no accessor is associated with");
-                return null;
-            }
-            program = glProgramAccessor.getGLProgram();
+        GLProgram program;
+        synchronized (this.programs) {
+            program = this.programs.get(programName);
             if (program == null) {
-                logger.warn("Cannot create program named " + programName
-                        + ": accessor returned a null program");
-                return null;
+                GLProgramAccessor glProgramAccessor = this.programAccessors
+                        .get(programName);
+                if (glProgramAccessor == null) {
+                    logger.warn("Cannot create program named " + programName
+                            + ": no accessor is associated with this name");
+                    for (Map.Entry<String, GLProgramAccessor> entry : this.programAccessors
+                            .entrySet()) {
+                        logger.debug("\t" + entry.getKey() + " => "
+                                + entry.getValue());
+                    }
+                    return null;
+                }
+                program = glProgramAccessor.getGLProgram();
+                if (program == null) {
+                    logger.warn("Cannot create program named " + programName
+                            + ": accessor returned a null program");
+                    return null;
+                }
+                if (!GL20.glIsProgram(program.getProgramId())) {
+                    logger.warn("Invalid creation of program named "
+                            + programName + ". Id = " + program.getProgramId());
+                    return null;
+                }
+                logger.info("GL program creation " + programName
+                        + " complete with Id " + program.getProgramId());
+                this.programs.put(programName, program);
             }
-            this.programs.put(programName, program);
         }
         return this.setCurrentProgram(program);
     }
@@ -122,7 +139,7 @@ public class GLContext {
         if (GL20.glIsProgram(program.getProgramId()) == false) {
             logger.error("Program Id " + program.getProgramId() + " ("
                     + program.getName() + ") is not a valid GL program");
-            // Thread.dumpStack();
+            Thread.dumpStack();
             GL20.glUseProgram(0);
             this.currentProgram = null;
             return null;
@@ -158,8 +175,14 @@ public class GLContext {
     }
 
     public void disposeContext() throws GLException {
-        for (GLProgram program : this.programs.values()) {
-            GL20.glDeleteProgram(program.getProgramId());
+
+        synchronized (this.programs) {
+            for (GLProgram program : this.programs.values()) {
+                if (program != null) {
+                    program.dispose();
+                }
+            }
+            this.programs.clear();
         }
 
     }

@@ -20,6 +20,7 @@
 package fr.ign.cogit.geoxygene.style;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -37,14 +38,17 @@ import fr.ign.cogit.geoxygene.filter.expression.Literal;
  * @author Julien Perret
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Graphic", propOrder = { "marks", "opacity", "size", "rotation", "externalGraphics" })
+@XmlType(name = "Graphic", propOrder = { "marks", "opacity", "size",
+        "rotation", "externalGraphics" })
 public class Graphic {
 
     @XmlElement(name = "ExternalGraphic")
-    private List<ExternalGraphic> externalGraphics = new ArrayList<ExternalGraphic>(0);
+    private List<ExternalGraphic> externalGraphics = new ArrayList<ExternalGraphic>(
+            0);
 
     /**
      * Renvoie la valeur de l'attribut externalGraphics.
+     * 
      * @return la valeur de l'attribut externalGraphics
      */
     public List<ExternalGraphic> getExternalGraphics() {
@@ -53,7 +57,9 @@ public class Graphic {
 
     /**
      * Affecte la valeur de l'attribut externalGraphics.
-     * @param externalGraphics l'attribut externalGraphics à affecter
+     * 
+     * @param externalGraphics
+     *            l'attribut externalGraphics à affecter
      */
     public void setExternalGraphics(List<ExternalGraphic> externalGraphics) {
         this.externalGraphics = externalGraphics;
@@ -64,6 +70,7 @@ public class Graphic {
 
     /**
      * Renvoie la valeur de l'attribut marks.
+     * 
      * @return la valeur de l'attribut marks
      */
     public List<Mark> getMarks() {
@@ -72,7 +79,9 @@ public class Graphic {
 
     /**
      * Affecte la valeur de l'attribut marks.
-     * @param marks l'attribut marks à affecter
+     * 
+     * @param marks
+     *            l'attribut marks à affecter
      */
     public void setMarks(List<Mark> marks) {
         this.marks = marks;
@@ -82,6 +91,7 @@ public class Graphic {
 
     /**
      * Renvoie la valeur de l'attribut opacity.
+     * 
      * @return la valeur de l'attribut opacity
      */
     public float getOpacity() {
@@ -90,7 +100,9 @@ public class Graphic {
 
     /**
      * Affecte la valeur de l'attribut opacity.
-     * @param opacity l'attribut opacity à affecter
+     * 
+     * @param opacity
+     *            l'attribut opacity à affecter
      */
     public void setOpacity(float opacity) {
         this.opacity = opacity;
@@ -101,6 +113,7 @@ public class Graphic {
 
     /**
      * Renvoie la valeur de l'attribut size.
+     * 
      * @return la valeur de l'attribut size
      */
     public float getSize() {
@@ -109,7 +122,9 @@ public class Graphic {
 
     /**
      * Affecte la valeur de l'attribut size.
-     * @param size l'attribut size à affecter
+     * 
+     * @param size
+     *            l'attribut size à affecter
      */
     public void setSize(float size) {
         this.size = size;
@@ -117,10 +132,11 @@ public class Graphic {
 
     @XmlElementRefs({ @XmlElementRef })
     @XmlElementWrapper(name = "Rotation")
-    private Expression[] rotation = new Expression[] { new Literal("0") };
+    private final Expression[] rotation = new Expression[] { new Literal("0") };
 
     /**
      * Renvoie la valeur de l'attribut rotation.
+     * 
      * @return la valeur de l'attribut rotation
      */
     public Expression getRotation() {
@@ -129,7 +145,9 @@ public class Graphic {
 
     /**
      * Affecte la valeur de l'attribut rotation.
-     * @param rotation l'attribut rotation à affecter
+     * 
+     * @param rotation
+     *            l'attribut rotation à affecter
      */
     public void setRotation(Expression rotation) {
         this.rotation[0] = rotation;
@@ -139,4 +157,70 @@ public class Graphic {
         // TODO handle external graphics width according to aspect ratio
         return this.size;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime
+                * result
+                + ((this.externalGraphics == null) ? 0 : this.externalGraphics
+                        .hashCode());
+        result = prime * result
+                + ((this.marks == null) ? 0 : this.marks.hashCode());
+        result = prime * result + Float.floatToIntBits(this.opacity);
+        result = prime * result + Arrays.hashCode(this.rotation);
+        result = prime * result + Float.floatToIntBits(this.size);
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        Graphic other = (Graphic) obj;
+        if (this.externalGraphics == null) {
+            if (other.externalGraphics != null) {
+                return false;
+            }
+        } else if (!this.externalGraphics.equals(other.externalGraphics)) {
+            return false;
+        }
+        if (this.marks == null) {
+            if (other.marks != null) {
+                return false;
+            }
+        } else if (!this.marks.equals(other.marks)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.opacity) != Float
+                .floatToIntBits(other.opacity)) {
+            return false;
+        }
+        if (!Arrays.equals(this.rotation, other.rotation)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.size) != Float.floatToIntBits(other.size)) {
+            return false;
+        }
+        return true;
+    }
+
 }

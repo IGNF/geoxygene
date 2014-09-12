@@ -37,9 +37,12 @@ import static org.lwjgl.opengl.GL20.glLinkProgram;
 import static org.lwjgl.opengl.GL20.glValidateProgram;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -65,9 +68,12 @@ public class GLProgram {
     private final Map<String, Integer> inputLocations = new HashMap<String, Integer>();
     // uniform values
     private final List<GLUniform> uniforms = new ArrayList<GLUniform>();
-    private int vertexShaderId = -1;
-    private int fragmentShaderId = -1;
-    private int geometryShaderId = -1;
+    private final Map<String, Integer> vertexShaderIds = new HashMap<String, Integer>();
+    private final Map<String, Integer> fragmentShaderIds = new HashMap<String, Integer>();
+    private final Map<String, Integer> geometryShaderIds = new HashMap<String, Integer>();
+    // list of uniform with errors already logged (display only once an error
+    // message)
+    private final Set<String> uniformErrorLogged = new HashSet<String>();
 
     /**
      * @param name
@@ -109,39 +115,94 @@ public class GLProgram {
     /**
      * @return the programId
      */
-    public int getProgramId() throws GLException {
+    public synchronized int getProgramId() throws GLException {
         if (this.programId < 0) {
             int newProgramId = glCreateProgram();
             if (newProgramId <= 0) {
                 throw new GLException("Unable to create GL program "
                         + this.getName() + " using vertex shader "
-                        + this.vertexShaderId + " and fragment shader "
-                        + this.fragmentShaderId);
+                        + this.vertexShaderIds.size() + " and fragment shader "
+                        + this.fragmentShaderIds.size());
             }
 
             // if the vertex and fragment shaders setup successfully,
             // attach them to the shader program, link the shader program
             // into the GL context, and validate
-            glAttachShader(newProgramId, this.vertexShaderId);
-            glAttachShader(newProgramId, this.fragmentShaderId);
-            if (this.geometryShaderId >= 0) {
-                glAttachShader(newProgramId, this.geometryShaderId);
+            for (Entry<String, Integer> entry : this.vertexShaderIds.entrySet()) {
+                String content = entry.getKey();
+                int shaderId = GLProgram.createVertexShader(content);
+                this.vertexShaderIds.put(content, shaderId);
+                glAttachShader(newProgramId, shaderId);
             }
-            // glAttachShader(newProgramId, fragLineShader);
-            for (String varName : this.inputLocations.keySet()) {
-                GL20.glBindAttribLocation(newProgramId,
-                        this.inputLocations.get(varName), varName);
+
+            for (Entry<String, Integer> entry : this.fragmentShaderIds
+                    .entrySet()) {
+                String content = entry.getKey();
+                int shaderId = GLProgram.createFragmentShader(content);
+                this.fragmentShaderIds.put(content, shaderId);
+                glAttachShader(newProgramId, shaderId);
+            }
+
+            for (Entry<String, Integer> entry : this.geometryShaderIds
+                    .entrySet()) {
+                String content = entry.getKey();
+                int shaderId = GLProgram.createGeometryShader(content);
+                this.geometryShaderIds.put(content, shaderId);
+                glAttachShader(newProgramId, shaderId);
             }
 
             glLinkProgram(newProgramId);
             if (glGetProgrami(newProgramId, GL_LINK_STATUS) == GL_FALSE) {
-                throw new GLException("GL program link error: "
+                logger.error("Link error in program " + this.getName());
+                for (Entry<String, Integer> entry : this.vertexShaderIds
+                        .entrySet()) {
+                    String content = entry.getKey();
+                    int shaderId = entry.getValue();
+                    logger.error("id = " + shaderId + " content = '" + content
+                            + "'");
+                }
+
+                for (Entry<String, Integer> entry : this.fragmentShaderIds
+                        .entrySet()) {
+                    String content = entry.getKey();
+                    int shaderId = entry.getValue();
+                    logger.error("id = " + shaderId + " content = '" + content
+                            + "'");
+                }
+
+                for (Entry<String, Integer> entry : this.geometryShaderIds
+                        .entrySet()) {
+                    String content = entry.getKey();
+                    int shaderId = entry.getValue();
+                    logger.error("id = " + shaderId + " content = '" + content
+                            + "'");
+                }
+
+                throw new GLException("GL program '" + this.getName()
+                        + "' link error: "
                         + GLTools.getProgramLogInfo(newProgramId));
             }
             glValidateProgram(newProgramId);
             if (glGetProgrami(newProgramId, GL_VALIDATE_STATUS) == GL_FALSE) {
-                throw new GLException("GL program validation error: "
+                throw new GLException("GL program '" + this.getName()
+                        + "' validation error: "
                         + GLTools.getProgramLogInfo(newProgramId));
+            } else {
+                logger.info("\tProgram '" + this.getName()
+                        + "' created and validated. Vertex shader count="
+                        + this.vertexShaderIds.size());
+                // // detach all shaders
+                //
+                // for (int vertexShaderId : this.vertexShaderIds) {
+                // GL20.glDetachShader(this.programId, vertexShaderId);
+                // }
+                // for (int fragmentShaderId : this.fragmentShaderIds) {
+                // GL20.glDetachShader(this.programId, fragmentShaderId);
+                // }
+                // for (int geometryShaderId : this.geometryShaderIds) {
+                // GL20.glDetachShader(this.programId, geometryShaderId);
+                // }
+
             }
 
             this.programId = newProgramId;
@@ -182,10 +243,18 @@ public class GLProgram {
     public void setUniform1i(final String uniformName, int value)
             throws GLException {
         int uniformLocation = this.getUniformLocation(uniformName);
-        if (uniformLocation < 0) {
+        if (uniformLocation < 0
+                && !this.uniformErrorLogged.contains(uniformName)) {
+            this.uniformErrorLogged.add(uniformName);
             logger.error("uniform variable '" + uniformName
                     + "' has invalid location " + uniformLocation
                     + " in program '" + this.getName() + "'");
+            logger.info("Registered uniforms:");
+            for (Map.Entry<String, Integer> entry : this.uniformLocations
+                    .entrySet()) {
+                logger.info("\t" + entry.getKey() + " : " + entry.getValue());
+            }
+            // Thread.dumpStack();
         } else {
             this.setUniform1i(uniformLocation, value);
         }
@@ -240,8 +309,15 @@ public class GLProgram {
      * @param vertShader
      *            shader id generated by glGenShader
      */
-    public void setVertexShader(int vertShaderId) throws GLException {
-        this.vertexShaderId = vertShaderId;
+    public void addVertexShader(String shaderSource) {
+        this.vertexShaderIds.put(shaderSource, -1);
+    }
+
+    public void addVertexShader(Collection<String> shaderSources)
+            throws GLException {
+        for (String source : shaderSources) {
+            this.addVertexShader(source);
+        }
     }
 
     /**
@@ -250,8 +326,14 @@ public class GLProgram {
      * @param fragShader
      *            shader id generated by glGenShader
      */
-    public void setFragmentShader(int fragShaderId) throws GLException {
-        this.fragmentShaderId = fragShaderId;
+    public void addFragmentShader(String shaderSource) {
+        this.fragmentShaderIds.put(shaderSource, -1);
+    }
+
+    public void addFragmentShader(Collection<String> shaderSources) {
+        for (String source : shaderSources) {
+            this.addFragmentShader(source);
+        }
     }
 
     /**
@@ -260,8 +342,20 @@ public class GLProgram {
      * @param geomShader
      *            shader id generated by glGenShader
      */
-    public void setGeometryShader(int geomShaderId) throws GLException {
-        this.geometryShaderId = geomShaderId;
+    /**
+     * Set fragment shader
+     * 
+     * @param fragShader
+     *            shader id generated by glGenShader
+     */
+    public void addGeometryShader(String shaderSource) {
+        this.geometryShaderIds.put(shaderSource, -1);
+    }
+
+    public void addGeometryShader(Collection<String> shaderSources) {
+        for (String source : shaderSources) {
+            this.addGeometryShader(source);
+        }
     }
 
     /**
@@ -273,9 +367,9 @@ public class GLProgram {
      * @throws GLException
      *             on shader creation error
      */
-    public static final int createVertexShader(String... filenames)
+    public static final List<Integer> createVertexShaders(String... filenames)
             throws GLException {
-        return GLTools.createShader(GL20.GL_VERTEX_SHADER, filenames);
+        return GLTools.createShaders(GL20.GL_VERTEX_SHADER, filenames);
     }
 
     /**
@@ -287,9 +381,9 @@ public class GLProgram {
      * @throws GLException
      *             on shader creation error
      */
-    public static final int createGeometryShader(String... filenames)
+    public static final List<Integer> createGeometryShaders(String... filenames)
             throws GLException {
-        return GLTools.createShader(GL32.GL_GEOMETRY_SHADER, filenames);
+        return GLTools.createShaders(GL32.GL_GEOMETRY_SHADER, filenames);
     }
 
     /**
@@ -301,9 +395,51 @@ public class GLProgram {
      * @throws GLException
      *             on shader creation error
      */
-    public static final int createFragmentShader(String... filenames)
+    public static final List<Integer> createFragmentShaders(String... filenames)
             throws GLException {
-        return GLTools.createShader(GL20.GL_FRAGMENT_SHADER, filenames);
+        return GLTools.createShaders(GL20.GL_FRAGMENT_SHADER, filenames);
+    }
+
+    /**
+     * Try to create a compiled vertex shader
+     * 
+     * @param shaderContent
+     *            shader content as string shader file
+     * @return the shader id
+     * @throws GLException
+     *             on shader creation error
+     */
+    public static final int createVertexShader(String shaderContent)
+            throws GLException {
+        return GLTools.createShader(GL20.GL_VERTEX_SHADER, shaderContent);
+    }
+
+    /**
+     * Try to create a compiled geometry shader
+     * 
+     * @param filenames
+     *            shader file
+     * @return the shader id
+     * @throws GLException
+     *             on shader creation error
+     */
+    public static final int createGeometryShader(String filename)
+            throws GLException {
+        return GLTools.createShader(GL32.GL_GEOMETRY_SHADER, filename);
+    }
+
+    /**
+     * Try to create a compiled fragment shader
+     * 
+     * @param filename
+     *            shader file
+     * @return the shader id
+     * @throws GLException
+     *             on shader creation error
+     */
+    public static final int createFragmentShader(String filename)
+            throws GLException {
+        return GLTools.createShader(GL20.GL_FRAGMENT_SHADER, filename);
     }
 
     /*
@@ -317,4 +453,29 @@ public class GLProgram {
                 + "]";
     }
 
+    /**
+     * Mark all shaders and program for deletion
+     */
+    public synchronized void dispose() {
+        if (this.programId != -1) {
+            GLTools.glCheckError("before program " + this.getName()
+                    + " shader detach");
+            for (int vertexShaderId : this.vertexShaderIds.values()) {
+                GL20.glDetachShader(this.programId, vertexShaderId);
+            }
+            for (int fragmentShaderId : this.fragmentShaderIds.values()) {
+                GL20.glDetachShader(this.programId, fragmentShaderId);
+            }
+            for (int geometryShaderId : this.geometryShaderIds.values()) {
+                GL20.glDetachShader(this.programId, geometryShaderId);
+            }
+            GLTools.glCheckError("before program " + this.getName()
+                    + " deletion");
+            GL20.glDeleteProgram(this.programId);
+            GLTools.glCheckError("after program " + this.getName()
+                    + " deletion");
+            this.programId = -1;
+            this.uniformLocations.clear();
+        }
+    }
 }

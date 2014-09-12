@@ -35,21 +35,21 @@ import org.lwjgl.opengl.GL30;
 import test.app.GLBezierShadingComplex;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
-import fr.ign.cogit.geoxygene.appli.render.RenderingException;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessor;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
+import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 
 /**
  * @author JeT This renderer writes GL Code to perform GL rendering
  */
-public class GL4FeatureRendererBezier extends GL4FeatureRenderer {
+public class GeoxComplexRendererBezier extends AbstractGeoxComplexRenderer {
 
     private static Logger logger = Logger
-            .getLogger(GL4FeatureRendererBezier.class.getName());
+            .getLogger(GeoxComplexRendererBezier.class.getName());
 
     // Uniform Variables
     public static final int COLORTEXTURE1_SLOT = 0;
@@ -62,7 +62,7 @@ public class GL4FeatureRendererBezier extends GL4FeatureRenderer {
      * @param lwjglLayerRenderer
      * @param strtex
      */
-    public GL4FeatureRendererBezier(
+    public GeoxComplexRendererBezier(
             final LwjglLayerRenderer lwjglLayerRenderer,
             final BasicTextureExpressiveRenderingDescriptor strtex) {
         super(lwjglLayerRenderer);
@@ -70,7 +70,7 @@ public class GL4FeatureRendererBezier extends GL4FeatureRenderer {
     }
 
     @Override
-    public void normalRendering(GLComplex primitive, double opacity)
+    public void localRendering(GLComplex primitive, double opacity)
             throws GLException {
         if (primitive instanceof GLBezierShadingComplex) {
             this.bezierRendering((GLBezierShadingComplex) primitive, opacity);
@@ -93,14 +93,13 @@ public class GL4FeatureRendererBezier extends GL4FeatureRenderer {
         GLProgram program = this.setOrCreateBezierProgram();
         // BasicTextureExpressiveRendering strtex = primitive
         // .getExpressiveRendering();
-        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName,
-                (float) primitive.getOverallOpacity());
+        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
         program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
                 (float) opacity);
-        program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName,
-                this.getFBOImageWidth());
-        program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName,
-                this.getFBOImageHeight());
+        program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName, this
+                .getLayerRenderer().getFBOImageWidth());
+        program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName, this
+                .getLayerRenderer().getFBOImageHeight());
         GLTools.glCheckError("program set to " + program.getName()
                 + " in normal painting rendering");
         //
@@ -119,7 +118,7 @@ public class GL4FeatureRendererBezier extends GL4FeatureRenderer {
         program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
                 COLORTEXTURE1_SLOT);
 
-        this.setGLViewMatrix(this.getViewport(), primitive.getMinX(),
+        this.getLayerRenderer().setGLViewMatrix(primitive.getMinX(),
                 primitive.getMinY());
         //
 

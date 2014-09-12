@@ -36,21 +36,64 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({ Add.class, Divide.class, Multiply.class, Subtract.class })
 public abstract class BinaryExpression extends Expression {
-  static MathContext mc = new MathContext((int) Math.min(
-      9 + (long) Math.ceil(30.0), Integer.MAX_VALUE), RoundingMode.HALF_EVEN);
+    static MathContext mc = new MathContext((int) Math.min(
+            9 + (long) Math.ceil(30.0), Integer.MAX_VALUE),
+            RoundingMode.HALF_EVEN);
 
-  @XmlElementRefs(@XmlElementRef)
-  private List<Expression> parameters = new ArrayList<Expression>();
+    @XmlElementRefs(@XmlElementRef)
+    private final List<Expression> parameters = new ArrayList<Expression>();
 
-  public List<Expression> getParameters() {
-    return this.parameters;
-  }
+    public List<Expression> getParameters() {
+        return this.parameters;
+    }
 
-  public Expression getExpression1() {
-    return this.parameters.get(0);
-  }
+    public Expression getExpression1() {
+        return this.parameters.get(0);
+    }
 
-  public Expression getExpression2() {
-    return this.parameters.get(1);
-  }
+    public Expression getExpression2() {
+        return this.parameters.get(1);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((this.parameters == null) ? 0 : this.parameters.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        BinaryExpression other = (BinaryExpression) obj;
+        if (this.parameters == null) {
+            if (other.parameters != null) {
+                return false;
+            }
+        } else if (!this.parameters.equals(other.parameters)) {
+            return false;
+        }
+        return true;
+    }
+
 }

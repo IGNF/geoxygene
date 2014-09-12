@@ -190,17 +190,18 @@ public class GeOxygeneApplication {
             logger.error("no current project frame selected. Cannot preload SLD");
             return;
         }
-        try {
-            projectFrame.loadSLD(new File(this.properties.getSld()));
-            projectFrame.getLayerViewPanel().reset();
-            projectFrame.getLayerViewPanel().repaint();
-        } catch (FileNotFoundException e) {
-            logger.error("SLD filename '" + this.properties.getSld()
-                    + "' does not exist or is unreadable");
-        } catch (JAXBException e) {
-            logger.error("Malformed SLD file '" + this.properties.getSld()
-                    + "'");
-            e.printStackTrace();
+        String sld = this.properties.getSld();
+        if (sld != null && !sld.isEmpty()) {
+            try {
+                projectFrame.loadSLD(new File(sld));
+                projectFrame.getLayerViewPanel().repaint();
+            } catch (FileNotFoundException e) {
+                logger.error("SLD filename '" + sld
+                        + "' does not exist or is unreadable");
+            } catch (JAXBException e) {
+                logger.error("Malformed SLD file '" + sld + "'");
+                e.printStackTrace();
+            }
         }
     }
 

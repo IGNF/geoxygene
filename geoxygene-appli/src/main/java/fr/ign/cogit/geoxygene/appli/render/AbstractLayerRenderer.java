@@ -42,6 +42,7 @@ import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 import fr.ign.cogit.geoxygene.util.Pair;
+import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 
 /**
  * A renderer to render a {@link Layer} into a {@link LayerViewPanel}.
@@ -278,6 +279,11 @@ public abstract class AbstractLayerRenderer implements LayerRenderer {
             }
         }
         return featuresToRender;
+    }
+
+    public void finalizeRendering() throws RenderingException {
+        // TODO Auto-generated method stub
+
     }
 
 }

@@ -80,4 +80,73 @@ public class LineSymbolizer extends AbstractSymbolizer {
         this.proxySymbol = proxySymbol;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime
+                * result
+                + ((this.categorizedMap == null) ? 0 : this.categorizedMap
+                        .hashCode());
+        result = prime * result
+                + ((this.colorMap == null) ? 0 : this.colorMap.hashCode());
+        long temp;
+        temp = Double.doubleToLongBits(this.perpendicularOffset);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime
+                * result
+                + ((this.proxySymbol == null) ? 0 : this.proxySymbol.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        LineSymbolizer other = (LineSymbolizer) obj;
+        if (this.categorizedMap == null) {
+            if (other.categorizedMap != null) {
+                return false;
+            }
+        } else if (!this.categorizedMap.equals(other.categorizedMap)) {
+            return false;
+        }
+        if (this.colorMap == null) {
+            if (other.colorMap != null) {
+                return false;
+            }
+        } else if (!this.colorMap.equals(other.colorMap)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.perpendicularOffset) != Double
+                .doubleToLongBits(other.perpendicularOffset)) {
+            return false;
+        }
+        if (this.proxySymbol == null) {
+            if (other.proxySymbol != null) {
+                return false;
+            }
+        } else if (!this.proxySymbol.equals(other.proxySymbol)) {
+            return false;
+        }
+        return true;
+    }
+
 }

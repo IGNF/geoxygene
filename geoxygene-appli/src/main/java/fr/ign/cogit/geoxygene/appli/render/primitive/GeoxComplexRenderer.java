@@ -27,25 +27,38 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.render.RenderingException;
-import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.util.gl.GLComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
+import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 
 /**
- * @author JeT Render features to the current context
+ * @author JeT This renderer writes GL Code to perform GL rendering
  */
-public interface FeatureRenderer {
+public interface GeoxComplexRenderer extends GLComplexRenderer {
 
-    public Viewport getViewport();
-
+    @Override
     void initializeRendering() throws RenderingException;
 
-    void render(IFeature feature, Layer layer, Symbolizer symbolizer,
-            Viewport viewport) throws RenderingException;
+    @Override
+    void render(GLComplex complex, double opacity) throws RenderingException;
 
+    @Override
     void finalizeRendering() throws RenderingException;
 
+    @Override
     void reset();
+
+    /**
+     * @return if rendering is done inside a FBO context or not
+     */
+    public boolean getFBORendering();
+
+    /**
+     * this method has to be called before launching render if the rendering is
+     * done in a FBO context
+     * 
+     * @param fboRendering
+     *            the fboRendering to set
+     */
+    public void setFBORendering(boolean fboRendering);
 }

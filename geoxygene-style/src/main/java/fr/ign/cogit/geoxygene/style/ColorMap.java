@@ -27,10 +27,10 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ColorMap {
-    
+
     @XmlElement(name = "PropertyName")
     String propertyName = null;
-    
+
     @XmlElement(name = "Interpolate")
     Interpolate interpolate = null;
 
@@ -54,12 +54,14 @@ public class ColorMap {
     public int getColor(double value) {
         if (this.interpolate != null) {
             InterpolationPoint previous = null;
-            for (InterpolationPoint point : this.interpolate.getInterpolationPoint()) {
+            for (InterpolationPoint point : this.interpolate
+                    .getInterpolationPoint()) {
                 if (value <= point.getData()) {
                     if (previous == null) {
                         return point.getColor().getRGB();
                     }
-                    return this.interpolateColor(value, previous.getData(), previous.getColor(), point.getData(),
+                    return this.interpolateColor(value, previous.getData(),
+                            previous.getColor(), point.getData(),
                             point.getColor()).getRGB();
                 }
                 previous = point;
@@ -69,18 +71,76 @@ public class ColorMap {
         return 0;
     }
 
-    private Color interpolateColor(double value, double data1, Color color1, double data2, Color color2) {
+    private Color interpolateColor(double value, double data1, Color color1,
+            double data2, Color color2) {
         double r1 = color1.getRed();
         double g1 = color1.getGreen();
         double b1 = color1.getBlue();
         double r2 = color2.getRed();
         double g2 = color2.getGreen();
         double b2 = color2.getBlue();
-        return new Color((float) this.interpolate(value, data1, r1, data2, r2) / 255f, (float) this.interpolate(value,
-                data1, g1, data2, g2) / 255f, (float) this.interpolate(value, data1, b1, data2, b2) / 255f);
+        return new Color(
+                (float) this.interpolate(value, data1, r1, data2, r2) / 255f,
+                (float) this.interpolate(value, data1, g1, data2, g2) / 255f,
+                (float) this.interpolate(value, data1, b1, data2, b2) / 255f);
     }
 
-    private double interpolate(double value, double data1, double value1, double data2, double value2) {
+    private double interpolate(double value, double data1, double value1,
+            double data2, double value2) {
         return value1 + (value - data1) * (value2 - value1) / (data2 - data1);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime
+                * result
+                + ((this.interpolate == null) ? 0 : this.interpolate.hashCode());
+        result = prime
+                * result
+                + ((this.propertyName == null) ? 0 : this.propertyName
+                        .hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        ColorMap other = (ColorMap) obj;
+        if (this.interpolate == null) {
+            if (other.interpolate != null) {
+                return false;
+            }
+        } else if (!this.interpolate.equals(other.interpolate)) {
+            return false;
+        }
+        if (this.propertyName == null) {
+            if (other.propertyName != null) {
+                return false;
+            }
+        } else if (!this.propertyName.equals(other.propertyName)) {
+            return false;
+        }
+        return true;
+    }
+
 }

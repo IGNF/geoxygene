@@ -15,6 +15,7 @@ public abstract class AbstractGLComplex<VertexType extends GLVertex> implements
     private final List<GLMesh> meshes = new ArrayList<GLMesh>();
     private int stride = -1;
     private String id = "no id defined";
+    private GLComplexRenderer renderer = null;
 
     /**
      * Default constructor
@@ -27,6 +28,22 @@ public abstract class AbstractGLComplex<VertexType extends GLVertex> implements
         this.setId(id);
         this.setMinX(minX);
         this.setMinY(minY);
+    }
+
+    /**
+     * @return the renderer
+     */
+    public GLComplexRenderer getRenderer() {
+        return this.renderer;
+    }
+
+    /**
+     * @param renderer
+     *            the renderer to set
+     */
+    @Override
+    public void setRenderer(GLComplexRenderer renderer) {
+        this.renderer = renderer;
     }
 
     /**

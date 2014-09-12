@@ -50,4 +50,15 @@ public interface Shader {
      */
     public void setUniforms(GLProgram program) throws GLException;
 
+    /**
+     * configure the shader in the given program. Set fragment, shaders used by
+     * program. This method must be called before using
+     * GLProgram::getProgramId() method which generates the program (compile,
+     * link)
+     * 
+     * @param program
+     * @throws GLException
+     */
+    public void configureProgram(GLProgram program) throws GLException;
+
 }

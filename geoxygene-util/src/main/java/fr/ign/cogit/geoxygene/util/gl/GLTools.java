@@ -57,9 +57,10 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -69,7 +70,11 @@ import javax.vecmath.Point2d;
 import org.apache.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL32;
+import org.lwjgl.opengl.GL40;
+import org.lwjgl.opengl.GL43;
 import org.lwjgl.opengl.OpenGLException;
 import org.lwjgl.opengl.Util;
 import org.lwjgl.util.Color;
@@ -86,6 +91,17 @@ public final class GLTools {
     private static final Logger logger = Logger.getLogger(GLTools.class
             .getName()); // logger
     private static final Map<BufferedImage, Integer> existingTextureIDs = new HashMap<BufferedImage, Integer>();
+    public static Map<Integer, String> shaderTypeNames = new HashMap<Integer, String>();
+    static {
+        shaderTypeNames.put(GL20.GL_FRAGMENT_SHADER, "GL_FRAGMENT_SHADER");
+        shaderTypeNames.put(GL20.GL_VERTEX_SHADER, "GL_VERTEX_SHADER");
+        shaderTypeNames.put(GL32.GL_GEOMETRY_SHADER, "GL_GEOMETRY_SHADER");
+        shaderTypeNames.put(GL43.GL_COMPUTE_SHADER, "GL_COMPUTE_SHADER");
+        shaderTypeNames.put(GL40.GL_TESS_EVALUATION_SHADER,
+                "GL_TESS_EVALUATION_SHADER");
+        shaderTypeNames.put(GL40.GL_TESS_CONTROL_SHADER,
+                "GL_TESS_CONTROL_SHADER");
+    }
 
     /**
      * Private constructor
@@ -835,25 +851,25 @@ public final class GLTools {
      * @return the file content as a single string
      * @throws Exception
      */
-    public static String readFileAsString(String filename) throws Exception {
+    public static String readFileAsString(String filename) throws IOException {
         StringBuilder source = new StringBuilder();
         FileInputStream in = new FileInputStream(filename);
-        Exception exception = null;
+        IOException exception = null;
         BufferedReader reader;
         try {
             reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            Exception innerExc = null;
+            IOException innerExc = null;
             try {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     source.append(line).append('\n');
                 }
-            } catch (Exception exc) {
+            } catch (IOException exc) {
                 exception = exc;
             } finally {
                 try {
                     reader.close();
-                } catch (Exception exc) {
+                } catch (IOException exc) {
                     if (innerExc == null) {
                         innerExc = exc;
                     } else {
@@ -864,12 +880,11 @@ public final class GLTools {
             if (innerExc != null) {
                 throw innerExc;
             }
-        } catch (Exception exc) {
-            exception = exc;
+
         } finally {
             try {
                 in.close();
-            } catch (Exception exc) {
+            } catch (IOException exc) {
                 if (exception == null) {
                     exception = exc;
                 } else {
@@ -891,24 +906,34 @@ public final class GLTools {
      * @return
      * @throws Exception
      */
-    public static int createShader(int shaderType, String... shaderFilenames)
+    public static List<Integer> createShaders(int shaderType,
+            String... shaderFilenames) throws GLException {
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        for (String shaderFilename : shaderFilenames) {
+            ids.add(createShader(shaderType, shaderFilename));
+        }
+        return ids;
+    }
+
+    public static int createShader(int shaderType, String shaderContent)
             throws GLException {
         int shader = 0;
         try {
-            logger.debug("shader " + Arrays.toString(shaderFilenames)
-                    + "shaderType " + shaderType);
+            // logger.debug("shader " + shaderFilename
+            // + " shaderType " + shaderTypeNames.get(shaderType));
             shader = glCreateShader(shaderType);
             if (shader == 0) {
                 return 0;
             }
-            for (String shaderFilename : shaderFilenames) {
-                glShaderSource(shader, readFileAsString(shaderFilename));
-            }
+            glShaderSource(shader, shaderContent);
             glCompileShader(shader);
             if (glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
+                logger.error("shader type " + shaderTypeNames.get(shaderType)
+                        + "'" + shaderContent + "'");
+                logger.error("shader content '" + shaderContent + "'");
+
                 throw new RuntimeException("Error compiling shader file '"
-                        + Arrays.toString(shaderFilenames) + "': "
-                        + getShaderLogInfo(shader));
+                        + shaderContent + "': " + getShaderLogInfo(shader));
             }
             return shader;
         } catch (Exception exc) {

@@ -735,7 +735,7 @@ public final class RenderUtil {
   }
 
   /**
-   * @param symbolizer a line symbolizer
+   * @param data.getSymbolizer() a line symbolizer
    * @param line the geometry of the line
    * @param viewport the viewport used for rendering
    * @param fill true if the stroke width should be used to build the shapes, ie
@@ -1224,7 +1224,7 @@ public final class RenderUtil {
   /**
    * Draw a polygon using the Fill.Texture
    * 
-   * @param symbolizer
+   * @param data.getSymbolizer()
    * @param shape
    * @param graphics
    * @param img

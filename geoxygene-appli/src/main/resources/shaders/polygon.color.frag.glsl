@@ -10,5 +10,7 @@ in vec4 fragmentColor;
 out vec4 outColor;
 
 void main(void) {
-	outColor = vec4( fragmentColor.rgb, globalOpacity * objectOpacity * fragmentColor.a);
+	// outColor = vec4( fragmentColor.rgb, globalOpacity );
+	outColor = vec4( fragmentColor.rgb, globalOpacity * objectOpacity * fragmentColor.a *256);
+	//outColor = vec4(0,0,1,1);
 }

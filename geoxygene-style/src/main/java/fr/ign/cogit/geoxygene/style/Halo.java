@@ -28,38 +28,89 @@ import javax.xml.bind.annotation.XmlElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Halo {
-  @XmlElement(name = "Radius")
-  private float radius = 1.0f;
+    @XmlElement(name = "Radius")
+    private float radius = 1.0f;
 
-  /**
-   * Renvoie la valeur de l'attribut radius.
-   * @return la valeur de l'attribut radius
-   */
-  public float getRadius() {
-    return this.radius;
-  }
+    /**
+     * Renvoie la valeur de l'attribut radius.
+     * 
+     * @return la valeur de l'attribut radius
+     */
+    public float getRadius() {
+        return this.radius;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut radius.
-   * @param radius l'attribut radius à affecter
-   */
-  public void setRadius(float radius) {
-    this.radius = radius;
-  }
-  @XmlElement(name = "Fill")
-  private Fill fill = null;
+    /**
+     * Affecte la valeur de l'attribut radius.
+     * 
+     * @param radius
+     *            l'attribut radius à affecter
+     */
+    public void setRadius(float radius) {
+        this.radius = radius;
+    }
 
-  /**
-   * @return the Fill properties to be used for drawing this Halo
-   */
-  public Fill getFill() {
-    return this.fill;
-  }
+    @XmlElement(name = "Fill")
+    private Fill fill = null;
 
-  /**
-   * @param fill
-   */
-  public void setFill(Fill fill) {
-    this.fill = fill;
-  }
+    /**
+     * @return the Fill properties to be used for drawing this Halo
+     */
+    public Fill getFill() {
+        return this.fill;
+    }
+
+    /**
+     * @param fill
+     */
+    public void setFill(Fill fill) {
+        this.fill = fill;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((this.fill == null) ? 0 : this.fill.hashCode());
+        result = prime * result + Float.floatToIntBits(this.radius);
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        Halo other = (Halo) obj;
+        if (this.fill == null) {
+            if (other.fill != null) {
+                return false;
+            }
+        } else if (!this.fill.equals(other.fill)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.radius) != Float
+                .floatToIntBits(other.radius)) {
+            return false;
+        }
+        return true;
+    }
+
 }

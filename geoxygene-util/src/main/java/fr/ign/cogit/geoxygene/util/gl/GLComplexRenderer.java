@@ -25,50 +25,36 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.render;
+package fr.ign.cogit.geoxygene.util.gl;
 
 /**
- * @author JeT
- * Exception thrown if any kind of error occurs during rendering
+ * @author JeT Handle the rendering of a GLComplex object
  */
-public class RenderingException extends Exception {
+public interface GLComplexRenderer {
 
-  private static final long serialVersionUID = -6750162544823956453L;
+    /**
+     * initialize rendering
+     * 
+     * @throws RenderingException
+     */
+    void initializeRendering() throws RenderingException;
 
-  /**
-   * Constructor
-   */
-  public RenderingException() {
-    super();
-    // nothing to do but calling super constructor
-  }
+    /**
+     * Render a GLComplex
+     * 
+     * @param complex
+     * @throws GLException
+     */
+    void render(GLComplex complex, double opacity) throws RenderingException,
+            GLException;
 
-  /**
-   * Constructor
-   * @param message
-   */
-  public RenderingException(final String message) {
-    super(message);
-    // nothing to do but calling super constructor
-  }
+    /**
+     * finalize rendering
+     */
+    void finalizeRendering() throws RenderingException;
 
-  /**
-   * Constructor
-   * @param cause
-   */
-  public RenderingException(final Throwable cause) {
-    super(cause);
-    // nothing to do but calling super constructor
-  }
-
-  /**
-   * Constructor
-   * @param message
-   * @param cause
-   */
-  public RenderingException(final String message, final Throwable cause) {
-    super(message, cause);
-    // nothing to do but calling super constructor
-  }
-
+    /**
+     * reset the renderer
+     */
+    void reset();
 }

@@ -39,55 +39,119 @@ import fr.ign.cogit.geoxygene.filter.expression.Function;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "Function")
 public class FunctionImpl extends Function {
-  String fallbackValue;
+    String fallbackValue;
 
-  @Override
-  public String getFallbackValue() {
-    return this.fallbackValue;
-  }
-
-  @Override
-  public void setFallbackValue(String fallbackValue) {
-    this.fallbackValue = fallbackValue;
-  }
-
-  @XmlAttribute
-  String name = "Function default implementation"; //$NON-NLS-1$
-
-  @Override
-  public String getName() {
-    return this.name;
-  }
-
-  @XmlElementRefs(@XmlElementRef)
-  List<Expression> parameters = new ArrayList<Expression>();
-
-  @Override
-  public List<Expression> getParameters() {
-    return this.parameters;
-  }
-
-  /**
-   * Affecte la valeur de l'attribut parameters.
-   * @param parameters l'attribut parameters à affecter
-   */
-  @Override
-  public void setParameters(List<Expression> parameters) {
-    this.parameters = parameters;
-  }
-
-  @Override
-  public Object evaluate(Object object) {
-    Function function = ExpressionFactory.createFunction(this.name);
-    if (function != null) {
-      function.getParameters().addAll(this.parameters);
-      return function.evaluate(object);
+    @Override
+    public String getFallbackValue() {
+        return this.fallbackValue;
     }
-    return this.getFallbackValue();
-  }
 
-  @Override
-  public String toString() {
-    return this.getName();
-  }
+    @Override
+    public void setFallbackValue(String fallbackValue) {
+        this.fallbackValue = fallbackValue;
+    }
+
+    @XmlAttribute
+    String name = "Function default implementation"; //$NON-NLS-1$
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @XmlElementRefs(@XmlElementRef)
+    List<Expression> parameters = new ArrayList<Expression>();
+
+    @Override
+    public List<Expression> getParameters() {
+        return this.parameters;
+    }
+
+    /**
+     * Affecte la valeur de l'attribut parameters.
+     * 
+     * @param parameters
+     *            l'attribut parameters à affecter
+     */
+    @Override
+    public void setParameters(List<Expression> parameters) {
+        this.parameters = parameters;
+    }
+
+    @Override
+    public Object evaluate(Object object) {
+        Function function = ExpressionFactory.createFunction(this.name);
+        if (function != null) {
+            function.getParameters().addAll(this.parameters);
+            return function.evaluate(object);
+        }
+        return this.getFallbackValue();
+    }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime
+                * result
+                + ((this.fallbackValue == null) ? 0 : this.fallbackValue
+                        .hashCode());
+        result = prime * result
+                + ((this.name == null) ? 0 : this.name.hashCode());
+        result = prime * result
+                + ((this.parameters == null) ? 0 : this.parameters.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        FunctionImpl other = (FunctionImpl) obj;
+        if (this.fallbackValue == null) {
+            if (other.fallbackValue != null) {
+                return false;
+            }
+        } else if (!this.fallbackValue.equals(other.fallbackValue)) {
+            return false;
+        }
+        if (this.name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!this.name.equals(other.name)) {
+            return false;
+        }
+        if (this.parameters == null) {
+            if (other.parameters != null) {
+                return false;
+            }
+        } else if (!this.parameters.equals(other.parameters)) {
+            return false;
+        }
+        return true;
+    }
+
 }

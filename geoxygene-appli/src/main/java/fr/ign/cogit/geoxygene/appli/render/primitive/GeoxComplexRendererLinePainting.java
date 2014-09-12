@@ -35,7 +35,6 @@ import org.lwjgl.opengl.GL30;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
-import fr.ign.cogit.geoxygene.appli.render.RenderingException;
 import fr.ign.cogit.geoxygene.appli.render.texture.StrokeTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
@@ -43,14 +42,16 @@ import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessor;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
+import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 
 /**
  * @author JeT This renderer writes GL Code to perform GL rendering
  */
-public class GL4FeatureRendererLinePainting extends GL4FeatureRenderer {
+public class GeoxComplexRendererLinePainting extends
+        AbstractGeoxComplexRenderer {
 
     private static Logger logger = Logger
-            .getLogger(GL4FeatureRendererLinePainting.class.getName());
+            .getLogger(GeoxComplexRendererLinePainting.class.getName());
 
     // Uniform Variables
 
@@ -62,7 +63,7 @@ public class GL4FeatureRendererLinePainting extends GL4FeatureRenderer {
      * 
      * @param lwjglLayerRenderer
      */
-    public GL4FeatureRendererLinePainting(
+    public GeoxComplexRendererLinePainting(
             LwjglLayerRenderer lwjglLayerRenderer,
             StrokeTextureExpressiveRenderingDescriptor shaderDescriptor) {
         super(lwjglLayerRenderer);
@@ -77,7 +78,7 @@ public class GL4FeatureRendererLinePainting extends GL4FeatureRenderer {
     }
 
     @Override
-    public void normalRendering(GLComplex primitive, double opacity)
+    public void localRendering(GLComplex primitive, double opacity)
             throws GLException {
         if (primitive instanceof GLPaintingComplex) {
             this.paintingRendering((GLPaintingComplex) primitive, opacity);
@@ -102,14 +103,13 @@ public class GL4FeatureRendererLinePainting extends GL4FeatureRenderer {
         GLProgram program = this.setOrCreateLinePaintingProgram();
         StrokeTextureExpressiveRendering strtex = primitive
                 .getExpressiveRendering();
-        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName,
-                (float) primitive.getOverallOpacity());
+        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
         program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
                 (float) opacity);
-        program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName,
-                this.getFBOImageWidth());
-        program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName,
-                this.getFBOImageHeight());
+        program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName, this
+                .getLayerRenderer().getFBOImageWidth());
+        program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName, this
+                .getLayerRenderer().getFBOImageHeight());
 
         GLTools.glCheckError("program set to " + program.getName()
                 + " in normal painting rendering");
@@ -159,7 +159,7 @@ public class GL4FeatureRendererLinePainting extends GL4FeatureRenderer {
         program.setUniform1f(LayerViewGLPanel.sharpnessUniformVarName,
                 (float) (strtex.getSharpness()));
         strtex.getShader().setUniforms(program);
-        this.setGLViewMatrix(this.getViewport(), primitive.getMinX(),
+        this.getLayerRenderer().setGLViewMatrix(primitive.getMinX(),
                 primitive.getMinY());
         //
 
@@ -185,7 +185,8 @@ public class GL4FeatureRendererLinePainting extends GL4FeatureRenderer {
      * @throws GLException
      */
     private GLProgram setOrCreateLinePaintingProgram() throws GLException {
-        String shaderId = this.shaderDescriptor.getShaderDescriptor().getId();
+        String shaderId = "linePainting-subshader-"
+                + this.shaderDescriptor.getShaderDescriptor().getId();
         GLProgram program = this.getGlContext().setCurrentProgram(shaderId);
         if (program == null) {
             // set the accessor

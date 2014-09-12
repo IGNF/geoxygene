@@ -27,15 +27,23 @@
 
 package fr.ign.cogit.geoxygene.appli.gl;
 
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.style.expressive.RandomVariationShaderDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
  * @author JeT
  * 
  */
 public class RandomVariationShader implements Shader {
+
+    private static final Logger logger = Logger
+            .getLogger(RandomVariationShader.class.getName()); // logger
 
     public static final String strokePressureVariationAmplitudeUniformVarName = "pressureVariationAmplitude";
     public static final String strokePressureVariationWavelengthUniformVarName = "pressureVariationWavelength";
@@ -44,10 +52,11 @@ public class RandomVariationShader implements Shader {
     public static final String strokeThicknessVariationAmplitudeUniformVarName = "thicknessVariationAmplitude";
     public static final String strokeThicknessVariationWavelengthUniformVarName = "thicknessVariationWavelength";
 
+    private static final String randomVariationSubshaderFilename = "./src/main/resources/shaders/linepainting.subshader.penetration.glsl";
+
     private RandomVariationShaderDescriptor descriptor = null;
 
-    public RandomVariationShader(
-            RandomVariationShaderDescriptor descriptor) {
+    public RandomVariationShader(RandomVariationShaderDescriptor descriptor) {
         if (descriptor == null) {
             throw new IllegalArgumentException("Null descriptor");
         }
@@ -89,4 +98,14 @@ public class RandomVariationShader implements Shader {
 
     }
 
+    @Override
+    public void configureProgram(GLProgram program) throws GLException {
+        try {
+            program.addFragmentShader(GLTools
+                    .readFileAsString(randomVariationSubshaderFilename));
+        } catch (IOException e) {
+            throw new GLException(e);
+        }
+
+    }
 }

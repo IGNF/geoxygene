@@ -8,6 +8,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -538,6 +539,8 @@ public class BezierShadingGLCanvas extends AWTGLCanvas implements
     public static final String screenWidthUniformVarName = "screenWidth";
     public static final String screenHeightUniformVarName = "screenHeight";
     public static final String bezierProgramName = "Bezier";
+    private static final String bezierFragmentShaderFilename = "/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/bezier.frag.glsl";
+    private static final String bezierVertexShaderFilename = "/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/bezier.vert.glsl";
 
     public static GLContext getGL4Context() throws GLException {
         GLContext glContext = new GLContext();
@@ -546,12 +549,19 @@ public class BezierShadingGLCanvas extends AWTGLCanvas implements
 
             @Override
             public GLProgram getGLProgram() throws GLException {
-                final int bezierVertexShader = GLProgram
-                        .createVertexShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/bezier.vert.glsl");
-                final int bezierFragmentShader = GLProgram
-                        .createFragmentShader("/home/turbet/projects/geoxygene/dev/geoxygene/geoxygene-appli/src/main/resources/test/app/bezier.frag.glsl");
-                return createPaintProgram(bezierProgramName,
-                        bezierVertexShader, bezierFragmentShader);
+                String bezierVertexShader;
+                try {
+                    bezierVertexShader = GLTools
+                            .readFileAsString(bezierVertexShaderFilename);
+                    final String bezierFragmentShader = GLTools
+                            .readFileAsString(bezierFragmentShaderFilename);
+                    return createPaintProgram(bezierProgramName,
+                            bezierVertexShader, bezierFragmentShader);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    return null;
+                }
             }
         });
         return glContext;
@@ -561,11 +571,12 @@ public class BezierShadingGLCanvas extends AWTGLCanvas implements
      * @throws GLException
      */
     private static GLProgram createPaintProgram(String paintProgramName,
-            int basicVertexShader, int basicFragmentShader) throws GLException {
+            String basicVertexShader, String basicFragmentShader)
+            throws GLException {
         // basic program
         GLProgram paintProgram = new GLProgram(paintProgramName);
-        paintProgram.setVertexShader(basicVertexShader);
-        paintProgram.setFragmentShader(basicFragmentShader);
+        paintProgram.addVertexShader(basicVertexShader);
+        paintProgram.addFragmentShader(basicFragmentShader);
 
         paintProgram.addInputLocation(
                 GLBezierShadingVertex.vertexPositionVariableName,

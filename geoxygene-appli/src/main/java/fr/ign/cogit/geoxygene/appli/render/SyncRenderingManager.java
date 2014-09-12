@@ -180,9 +180,9 @@ public class SyncRenderingManager implements RenderingManager {
                     return;
                 }
                 this.rendererMap.put(layer, renderer);
-                System.err.println("SyncRenderingManager associates layer "
-                        + layer.getName() + " with renderer type "
-                        + renderer.getClass().getSimpleName());
+                // System.err.println("SyncRenderingManager associates layer "
+                // + layer.getName() + " with renderer type "
+                // + renderer.getClass().getSimpleName());
                 // Adding the layer legend panel to the listeners of the
                 // renderer
                 renderer.addActionListener(this.getLayerViewPanel()

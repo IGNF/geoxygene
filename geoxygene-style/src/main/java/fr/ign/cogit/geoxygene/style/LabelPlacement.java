@@ -30,24 +30,69 @@ import javax.xml.bind.annotation.XmlElements;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LabelPlacement {
 
-  @XmlElements({
-      @XmlElement(name = "LinePlacement", type = LinePlacement.class),
-      @XmlElement(name = "PointPlacement", type = PointPlacement.class) })
-  private Placement placement = null;
+    @XmlElements({
+            @XmlElement(name = "LinePlacement", type = LinePlacement.class),
+            @XmlElement(name = "PointPlacement", type = PointPlacement.class) })
+    private Placement placement = null;
 
-  /**
-   * Renvoie la valeur de l'attribut placement.
-   * @return la valeur de l'attribut placement
-   */
-  public Placement getPlacement() {
-    return this.placement;
-  }
+    /**
+     * Renvoie la valeur de l'attribut placement.
+     * 
+     * @return la valeur de l'attribut placement
+     */
+    public Placement getPlacement() {
+        return this.placement;
+    }
 
-  /**
-   * Affecte la valeur de l'attribut placement.
-   * @param placement l'attribut placement à affecter
-   */
-  public void setPlacement(Placement placement) {
-    this.placement = placement;
-  }
+    /**
+     * Affecte la valeur de l'attribut placement.
+     * 
+     * @param placement
+     *            l'attribut placement à affecter
+     */
+    public void setPlacement(Placement placement) {
+        this.placement = placement;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((this.placement == null) ? 0 : this.placement.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        LabelPlacement other = (LabelPlacement) obj;
+        if (this.placement == null) {
+            if (other.placement != null) {
+                return false;
+            }
+        } else if (!this.placement.equals(other.placement)) {
+            return false;
+        }
+        return true;
+    }
+
 }
