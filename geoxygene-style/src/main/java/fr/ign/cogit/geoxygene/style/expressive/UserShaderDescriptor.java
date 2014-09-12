@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlElement;
 public class UserShaderDescriptor extends ShaderDescriptor {
 
     @XmlElement(name = "File")
-    private String filename = "";
+    private String filename = "./src/main/resources/shaders/linepainting.subshader.default.glsl";
 
     /**
      * @return the filename

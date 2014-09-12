@@ -123,7 +123,7 @@ void main() {
 	vec2 uv = DistanceToQBSpline(p0, p1, p2, p, n0, n2 );
 	float lineSoftness = 1.0;
 	uv.x = fragmentIn.uv.x + uv.x * ( fragmentIn.uv.y - fragmentIn.uv.x );
-	uv.x /= 10;
+	uv.x /= 1;
 	float screenRatio = fboWidth / screenWidth;
 	uv.y =  (1 + uv.y / fragmentIn.lineWidth / screenRatio) /2 ;
 //	if ( uv.y > 1 ) { outColor = vec4( 0, 0, 1, 1); return; }

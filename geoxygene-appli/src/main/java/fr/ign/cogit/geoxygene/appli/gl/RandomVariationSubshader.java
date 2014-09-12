@@ -40,10 +40,10 @@ import fr.ign.cogit.geoxygene.util.gl.GLTools;
  * @author JeT
  * 
  */
-public class RandomVariationShader implements Shader {
+public class RandomVariationSubshader implements Subshader {
 
     private static final Logger logger = Logger
-            .getLogger(RandomVariationShader.class.getName()); // logger
+            .getLogger(RandomVariationSubshader.class.getName()); // logger
 
     public static final String strokePressureVariationAmplitudeUniformVarName = "pressureVariationAmplitude";
     public static final String strokePressureVariationWavelengthUniformVarName = "pressureVariationWavelength";
@@ -56,7 +56,7 @@ public class RandomVariationShader implements Shader {
 
     private RandomVariationShaderDescriptor descriptor = null;
 
-    public RandomVariationShader(RandomVariationShaderDescriptor descriptor) {
+    public RandomVariationSubshader(RandomVariationShaderDescriptor descriptor) {
         if (descriptor == null) {
             throw new IllegalArgumentException("Null descriptor");
         }

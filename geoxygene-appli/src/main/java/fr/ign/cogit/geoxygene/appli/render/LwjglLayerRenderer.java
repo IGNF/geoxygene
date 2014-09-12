@@ -515,9 +515,11 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         if (this.getLayerViewPanel().useFBO() && primitive.mayOverlap()
                 && !quickRendering) {
             this.setFBORendering(true);
+            renderer.setFBORendering(true);
             this.fboRendering(primitive, renderer, opacity);
         } else {
             renderer.setFBORendering(false);
+            this.setFBORendering(false);
             renderer.render(primitive, opacity);
         }
     }

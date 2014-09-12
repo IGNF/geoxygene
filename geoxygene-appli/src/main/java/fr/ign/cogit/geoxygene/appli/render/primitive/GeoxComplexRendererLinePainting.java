@@ -110,7 +110,6 @@ public class GeoxComplexRendererLinePainting extends
                 .getLayerRenderer().getFBOImageWidth());
         program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName, this
                 .getLayerRenderer().getFBOImageHeight());
-
         GLTools.glCheckError("program set to " + program.getName()
                 + " in normal painting rendering");
         //

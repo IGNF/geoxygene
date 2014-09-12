@@ -27,38 +27,51 @@
 
 package fr.ign.cogit.geoxygene.appli.gl;
 
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.style.expressive.DefaultShaderDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
  * @author JeT
  * 
  */
-public interface Shader {
+public class DefaultSubshader implements Subshader {
 
-    /**
-     * declare the uniforms variables used in this shader
-     * 
-     * @param program
-     */
-    public void declareUniforms(GLProgram program);
+    private static final Logger logger = Logger
+            .getLogger(DefaultSubshader.class.getName()); // logger
+
+    private static final String subshaderFilename = "./src/main/resources/shaders/linepainting.subshader.default.glsl";
+
+    public DefaultSubshader(DefaultShaderDescriptor descriptor) {
+    }
+
+    @Override
+    public void declareUniforms(GLProgram program) {
+    }
 
     /**
      * Initialize the shader before rendering (set uniforms)
      * 
      * @throws GLException
      */
-    public void setUniforms(GLProgram program) throws GLException;
+    @Override
+    public void setUniforms(GLProgram program) throws GLException {
 
-    /**
-     * configure the shader in the given program. Set fragment, shaders used by
-     * program. This method must be called before using
-     * GLProgram::getProgramId() method which generates the program (compile,
-     * link)
-     * 
-     * @param program
-     * @throws GLException
-     */
-    public void configureProgram(GLProgram program) throws GLException;
+    }
 
+    @Override
+    public void configureProgram(GLProgram program) throws GLException {
+        try {
+            program.addFragmentShader(GLTools
+                    .readFileAsString(subshaderFilename));
+        } catch (IOException e) {
+            throw new GLException(e);
+        }
+
+    }
 }

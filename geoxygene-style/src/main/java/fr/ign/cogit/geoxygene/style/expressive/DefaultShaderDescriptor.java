@@ -35,6 +35,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class ExpressiveRenderingDescriptor {
+public class DefaultShaderDescriptor extends ShaderDescriptor {
 
 }

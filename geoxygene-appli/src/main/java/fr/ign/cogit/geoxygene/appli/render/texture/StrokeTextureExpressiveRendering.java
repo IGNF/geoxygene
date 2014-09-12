@@ -27,7 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import fr.ign.cogit.geoxygene.appli.gl.Shader;
+import fr.ign.cogit.geoxygene.appli.gl.Subshader;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 
 /**
@@ -36,7 +36,7 @@ import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingD
  */
 public class StrokeTextureExpressiveRendering implements ExpressiveRendering {
     private StrokeTextureExpressiveRenderingDescriptor descriptor = null;
-    private Shader shader = null;
+    private Subshader shader = null;
 
     /**
      * @param descriptor
@@ -70,7 +70,7 @@ public class StrokeTextureExpressiveRendering implements ExpressiveRendering {
      * @return
      * @see fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor#getShaderDescriptor()
      */
-    public Shader getShader() {
+    public Subshader getShader() {
         return this.shader;
     }
 

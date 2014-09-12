@@ -27,11 +27,14 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import fr.ign.cogit.geoxygene.appli.gl.RandomVariationShader;
-import fr.ign.cogit.geoxygene.appli.gl.Shader;
-import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.appli.gl.DefaultSubshader;
+import fr.ign.cogit.geoxygene.appli.gl.RandomVariationSubshader;
+import fr.ign.cogit.geoxygene.appli.gl.Subshader;
+import fr.ign.cogit.geoxygene.appli.gl.UserSubshader;
+import fr.ign.cogit.geoxygene.style.expressive.DefaultShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.RandomVariationShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
 
 /**
  * @author JeT
@@ -39,25 +42,35 @@ import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
  */
 public class ShaderFactory {
 
-    public static Shader createShader(ShaderDescriptor descriptor) {
+    public static Subshader createShader(ShaderDescriptor descriptor) {
         if (descriptor instanceof RandomVariationShaderDescriptor) {
-            return createShader((RandomVariationShaderDescriptor) descriptor);
+            return createRndShader((RandomVariationShaderDescriptor) descriptor);
+
+        }
+        if (descriptor instanceof DefaultShaderDescriptor) {
+            return createDefaultShader((DefaultShaderDescriptor) descriptor);
+
+        }
+        if (descriptor instanceof UserShaderDescriptor) {
+            return createUserShader((UserShaderDescriptor) descriptor);
 
         }
         throw new IllegalStateException("Do not handle "
                 + descriptor.getClass().getSimpleName() + " shader descriptor");
     }
 
-    public static RandomVariationShader createShader(
+    public static RandomVariationSubshader createRndShader(
             RandomVariationShaderDescriptor descriptor) {
-        RandomVariationShader shader = new RandomVariationShader(descriptor);
-        return shader;
+        return new RandomVariationSubshader(descriptor);
     }
 
-    public static Shader createShader(
-            BasicTextureExpressiveRenderingDescriptor strtex) {
-        // TODO Auto-generated method stub
-        return null;
+    public static DefaultSubshader createDefaultShader(
+            DefaultShaderDescriptor descriptor) {
+        return new DefaultSubshader(descriptor);
+    }
+
+    public static UserSubshader createUserShader(UserShaderDescriptor descriptor) {
+        return new UserSubshader(descriptor);
     }
 
 }

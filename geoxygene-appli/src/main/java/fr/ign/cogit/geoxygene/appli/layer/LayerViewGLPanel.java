@@ -41,7 +41,7 @@ import fr.ign.cogit.geoxygene.appli.event.CompassPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.ScalePaintListener;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingVertex;
-import fr.ign.cogit.geoxygene.appli.gl.Shader;
+import fr.ign.cogit.geoxygene.appli.gl.Subshader;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
@@ -1073,7 +1073,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private GLProgram createBezierProgram(ShaderDescriptor shaderDescriptor)
             throws GLException {
         // basic program
-        Shader shader = ShaderFactory.createShader(shaderDescriptor);
+        Subshader shader = ShaderFactory.createShader(shaderDescriptor);
 
         GLProgram program = new GLProgram(bezierLineProgramName);
         try {
@@ -1135,7 +1135,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      */
     private GLProgram createLinePaintingProgram(
             ShaderDescriptor shaderDescriptor) throws GLException, IOException {
-        Shader shader = ShaderFactory.createShader(shaderDescriptor);
+        Subshader shader = ShaderFactory.createShader(shaderDescriptor);
         // basic program
         GLProgram program = new GLProgram(linePaintingProgramName);
         program.addVertexShader(GLTools

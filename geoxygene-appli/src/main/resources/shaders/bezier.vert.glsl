@@ -8,8 +8,8 @@ uniform float m11 = 1.; // Y homothetic value in 3x3 matrix
 uniform float m12 = 0.; // Y translation value in 3x3 matrix
 uniform float screenWidth;
 uniform float screenHeight;
-uniform float fboWidth=500;
-uniform float fboHeight=500;
+uniform float fboWidth=5000;
+uniform float fboHeight=5000;
 
 
 in vec2 vertexPosition;

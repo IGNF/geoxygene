@@ -48,9 +48,10 @@ public class BasicTextureExpressiveRenderingDescriptor extends
     private double transitionSize = 10;
 
     @XmlElements({
+            @XmlElement(name = "DefaultShader", type = DefaultShaderDescriptor.class),
             @XmlElement(name = "RandomShader", type = RandomVariationShaderDescriptor.class),
             @XmlElement(name = "UserShader", type = UserShaderDescriptor.class) })
-    private ShaderDescriptor shader = new RandomVariationShaderDescriptor();
+    private ShaderDescriptor shader = new DefaultShaderDescriptor();
 
     /**
      * @return the shader
@@ -63,8 +64,7 @@ public class BasicTextureExpressiveRenderingDescriptor extends
      * @param shader
      *            the shader to set
      */
-    public void setShader(
-            RandomVariationShaderDescriptor shader) {
+    public void setShader(RandomVariationShaderDescriptor shader) {
         this.shader = shader;
     }
 
