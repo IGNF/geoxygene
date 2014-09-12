@@ -211,8 +211,8 @@ public class Arc extends ElementCarteTopo {
     if (ptmin == points.get(last - 1)) {
       return null;
     }
-    logger.trace("Splitting edge " + this);
-    logger.trace("With " + p + " At " + ptmin.toGM_Point() + " " + positionMin);
+    logger.debug("Splitting edge " + this);
+    logger.debug("With " + p + " At " + ptmin.toGM_Point() + " " + positionMin);
     // création du nouveau noeud
     Noeud nouveauNoeud = popNoeuds.nouvelElement(new GM_Point(ptmin));
     // création des nouveaux arcs

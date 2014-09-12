@@ -130,11 +130,11 @@ public class ExportAttribut {
                                     if (attribut.equals("OBJECTID1") && attributArc1.equals("OBJECTID")) {
                                         valAttribute[cpt] = objetCT1.getAttribute("OBJECTID");
                                         cpt++;
-                                        LOGGER.trace("Attribut " + attributArc1 + " transféré.");
+                                        LOGGER.debug("Attribut " + attributArc1 + " transféré.");
                                     } else if (attributArc1.equals(attribut)) {
                                         valAttribute[cpt] = objetCT1.getAttribute(attributArc1);
                                         cpt++;
-                                        LOGGER.trace("Attribut " + attributArc1 + " transféré.");
+                                        LOGGER.debug("Attribut " + attributArc1 + " transféré.");
                                     }
                                 }
                                 
@@ -146,11 +146,11 @@ public class ExportAttribut {
                                     if (attribut.equals("OBJECTID2") && attributArc2.equals("OBJECTID")) {
                                         valAttribute[cpt] = objetCT2.getAttribute("OBJECTID");
                                         cpt++;
-                                        LOGGER.trace("Attribut " + attributArc2 + " transféré.");
+                                        LOGGER.debug("Attribut " + attributArc2 + " transféré.");
                                     } else if (attributArc2.equals(attribut)) {
                                         valAttribute[cpt] = objetCT2.getAttribute(attributArc2);
                                         cpt++;
-                                        LOGGER.trace("Attribut " + attributArc2 + " transféré.");
+                                        LOGGER.debug("Attribut " + attributArc2 + " transféré.");
                                     }
                                 }
                                 

@@ -365,11 +365,11 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
                                             new_sld.getLayer(name).getStyles());
 
                         } else {
-                            logger.trace("Le layer " + name
+                            logger.warn("Le layer " + name
                                     + " n'a pas de style défini dans le SLD");
                         }
                     } else {
-                        logger.trace("Le layer " + name
+                        logger.warn("Le layer " + name
                                 + " n'est pas décrit dans le SLD");
                     }
                 }

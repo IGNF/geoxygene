@@ -152,14 +152,14 @@ public class Chargeur {
 
               // Gestion de la direction
               if (orientationDouble) {
-                  LOGGER.trace("Population " + networkName + " avec direction double sens");
+                  LOGGER.debug("Population " + networkName + " avec direction double sens");
                   arc.setOrientation(2);
               } else {
-                  LOGGER.trace("Population " + networkName + " avec direction dynamique");
+                  LOGGER.debug("Population " + networkName + " avec direction dynamique");
                   String attribute = attributOrientation;
                   if (attribute.isEmpty()) {
                       arc.setOrientation(1);
-                      LOGGER.trace("Populations avec orientation simple");
+                      LOGGER.debug("Populations avec orientation simple");
                   } else {
                       Object value = element.getAttribute(attribute);
                       // System.out.println(attribute + " = " + value);
@@ -178,7 +178,7 @@ public class Chargeur {
                                 value + " ? " + valAttribut);
                             if (value != null && valAttribut.equals(value.toString())) {
                                 arc.setOrientation(orientationMap.get(valAttribut));
-                                LOGGER.trace("Population " + networkName + " - orientation arc = " + orientationMap.get(valAttribut));
+                                LOGGER.debug("Population " + networkName + " - orientation arc = " + orientationMap.get(valAttribut));
                             }
                           }
                           /*

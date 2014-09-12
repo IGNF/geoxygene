@@ -168,7 +168,11 @@ public class EquiSurfaceDistribution {
 
   }
 
-  private double corrected_rand;
+  private double corrected_rand = -1;
+  
+  public double getCorrectedRand(){
+    return corrected_rand;
+  }
 
   /**
    * Fonction permettant de retourner un point tiré aléatoirement sur la surface

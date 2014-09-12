@@ -115,7 +115,7 @@ public class PPV {
     // Parcours des points gravi
     int cpt = 1;
     for (IFeature ptGravi : gravi) {
-      LOGGER.trace("Pt " + cpt + "/" + gravi.size());
+      LOGGER.debug("Pt " + cpt + "/" + gravi.size());
       
       // Ajout d'un Z bidon au point gravi
       ptGravi.getGeom().coord().get(0).setZ(0);

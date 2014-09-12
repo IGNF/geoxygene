@@ -670,12 +670,12 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
                                                         .getStyles());
 
                             } else {
-                                logger.trace("Le layer "
+                                logger.warn("Le layer "
                                         + name
                                         + " n'a pas de style défini dans le SLD");
                             }
                         } else {
-                            logger.trace("Le layer " + name
+                            logger.warn("Le layer " + name
                                     + " n'est pas décrit dans le SLD");
                             this.getLayers()
                                     .get(i)

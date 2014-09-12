@@ -687,7 +687,7 @@ public abstract class Operateurs {
     if (Operateurs.logger.isDebugEnabled()) {
       Operateurs.logger.debug("compile geometries");
       for (ILineString l : geometries) {
-        Operateurs.logger.trace("\t" + l);
+        Operateurs.logger.debug("\t" + l);
       }
     }
     return Operateurs.compileArcs(geometries, 0d);
@@ -745,10 +745,10 @@ public abstract class Operateurs {
 
       return null;
     }
-    Operateurs.logger.trace("currentPoint = " + currentPoint.toGM_Point());
+    Operateurs.logger.debug("currentPoint = " + currentPoint.toGM_Point());
     for (int i = 1; i < geometries.size(); i++) {
       nextLine = geometries.get(i);
-      Operateurs.logger.trace("copying " + nextLine.getControlPoint().size()
+      Operateurs.logger.debug("copying " + nextLine.getControlPoint().size()
           + " = " + nextLine);
       ILineString lineCopy = new GM_LineString(nextLine.getControlPoint());
       if (Distances.proche(currentPoint, nextLine.startPoint(), tolerance)) {
@@ -772,7 +772,7 @@ public abstract class Operateurs {
         return null;
       }
     }
-    Operateurs.logger.trace("new line with " + finalPoints.size());
+    Operateurs.logger.debug("new line with " + finalPoints.size());
     return new GM_LineString(finalPoints, false);
   }
 

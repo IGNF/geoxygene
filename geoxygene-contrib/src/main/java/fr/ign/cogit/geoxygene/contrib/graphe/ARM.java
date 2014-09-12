@@ -93,7 +93,7 @@ public class ARM {
     // Amorce, on prend un point au hasard: le premier
     point = pointsCopie.get(0);
     if (!(point.getGeom() instanceof GM_Point)) {
-      LOGGER.trace("An object is not a point, returning Null");
+      LOGGER.debug("An object is not a point, returning Null");
       return null;
     }
     pointsCopie.remove(point);
@@ -111,7 +111,7 @@ public class ARM {
         point = pointsCopie.get(i);
         System.out.print("Point initial = " + point.getId() + " ("+arm.getPopNoeuds().size()+") ");
         if (!(point.getGeom() instanceof GM_Point)) {
-          LOGGER.trace("An object is not a point, returning Null");
+          LOGGER.debug("An object is not a point, returning Null");
           return null;
         }
         for (j = 0; j < arm.getPopNoeuds().size(); j++) {
@@ -158,7 +158,7 @@ public class ARM {
     // Amorce, on prend un point au hasard: le premier
     point = pointsCopie.get(0);
     if (!(point.getGeom() instanceof GM_Point)) {
-      LOGGER.trace("An object is not a point, returning Null");
+      LOGGER.debug("An object is not a point, returning Null");
       return null;
     }
     pointsCopie.remove(point);
@@ -175,7 +175,7 @@ public class ARM {
       for (i = 0; i < pointsCopie.size(); i++) {
         point = pointsCopie.get(i);
         if (!(point.getGeom() instanceof GM_Point)) {
-          LOGGER.trace("An object is not a point, returning Null");
+          LOGGER.debug("An object is not a point, returning Null");
           return null;
         }
         for (j = 0; j < arm.getPopNoeuds().size(); j++) {
@@ -273,7 +273,7 @@ public class ARM {
     while (itObjets.hasNext()) {
       IFeature objet = itObjets.next();
       if (objet.getGeom() == null) {
-        LOGGER.trace("An object has no geometry, returning Null");
+        LOGGER.debug("An object has no geometry, returning Null");
         return null;
       }
       Noeud objet2 = new Noeud();

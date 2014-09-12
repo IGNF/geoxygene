@@ -150,7 +150,7 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
       this.addControlPoint(p, allowRepeated);
     }
     if (this.controlPoint.size() == 1) {
-      LOGGER.trace("CREATING A LINE WITH A SINGLE POINT " + points.get(0));
+      LOGGER.warn("CREATING A LINE WITH A SINGLE POINT " + points.get(0));
       return;// System.exit(0);
     }
   }

@@ -88,12 +88,12 @@ public class ARMTest {
     points.add(nH);
     popNoeudsToCompare.add(nH);
     
-    LOGGER.trace("DateSet for ARM tests : " + points.toString());
+    LOGGER.debug("DateSet for ARM tests : " + points.toString());
   }
 
   @Test
   public void testCreeARM() {
-    LOGGER.trace("Start testing createARM");
+    LOGGER.debug("Start testing createARM");
     
     CarteTopo arm = ARM.creeARM(points);
     

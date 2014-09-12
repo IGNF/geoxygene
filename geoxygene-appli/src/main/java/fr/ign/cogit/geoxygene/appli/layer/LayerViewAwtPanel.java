@@ -133,7 +133,7 @@ public class LayerViewAwtPanel extends LayerViewPanel {
     }
 
     private void saveImage() {
-        LayerViewAwtPanel.logger.trace("record"); //$NON-NLS-1$
+        LayerViewAwtPanel.logger.debug("record"); //$NON-NLS-1$
         Color bg = this.getBackground();
         BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = image.createGraphics();

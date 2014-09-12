@@ -47,7 +47,7 @@ public class PointsConvexHull {
     }
 
     if (hull == null || !(hull instanceof IPolygon)) {
-      PointsConvexHull.logger.trace("Non valid convex hull");
+      PointsConvexHull.logger.debug("Non valid convex hull");
       return new GM_Polygon(new GM_LineString(new DirectPositionList()));
     }
 

@@ -176,10 +176,10 @@ public class TextureManager {
     File[] lf = directoryToScan.listFiles();
 
     if (lf == null) {
-      log.trace("Nb textures par defaut = NULL");
+      log.info("Nb textures par defaut = NULL");
       return formatsDisponibles;
     }
-    log.trace("Nb textures par defaut = " + lf.length);
+    log.info("Nb textures par defaut = " + lf.length);
 
     int nbFichiers = lf.length;
 
