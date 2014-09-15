@@ -35,12 +35,12 @@ float vTextureScale( in float width, in float v ) {
 }
 
 /************************************************************************************/
-vec2 computeBrushTextureCoordinates( Data fragmentIn ) {
-	return vec2(0,0);
+vec2 computeBrushTextureCoordinates( Data fragmentData ) {
+	return vec2(fragmentData.uv);
 }
 
 /************************************************************************************/
 vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in Data fragmentData ) {
 
-	return vec4( 1,0,0,1 );
+	return vec4( paperColor.rgb , 1 );
 }

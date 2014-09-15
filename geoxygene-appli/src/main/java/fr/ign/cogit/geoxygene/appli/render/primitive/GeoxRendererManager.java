@@ -83,17 +83,18 @@ public class GeoxRendererManager {
                         && (style instanceof StrokeTextureExpressiveRenderingDescriptor)) {
                     StrokeTextureExpressiveRenderingDescriptor strtex = (StrokeTextureExpressiveRenderingDescriptor) style;
                     GeoxComplexRendererLinePainting gl4FeatureRendererLinePainting = new GeoxComplexRendererLinePainting(
-                            layerRenderer, strtex);
+                            layerRenderer, symbolizer, strtex);
                     renderer = gl4FeatureRendererLinePainting;
                 } else if (style != null
                         && (style instanceof BasicTextureExpressiveRenderingDescriptor)) {
                     BasicTextureExpressiveRenderingDescriptor strtex = (BasicTextureExpressiveRenderingDescriptor) style;
                     renderer = new GeoxComplexRendererBezier(layerRenderer,
-                            strtex);
+                            symbolizer, strtex);
                 }
             }
             if (renderer == null) {
-                renderer = new GeoxComplexRendererBasic(layerRenderer);
+                renderer = new GeoxComplexRendererBasic(layerRenderer,
+                        symbolizer);
                 // logger.error("No known association between symbolizer "
                 // + symbolizer + " and a Line Renderer...");
                 // return null;
@@ -111,7 +112,7 @@ public class GeoxRendererManager {
                 return renderer;
             }
 
-            renderer = new GeoxComplexRendererBasic(layerRenderer);
+            renderer = new GeoxComplexRendererBasic(layerRenderer, symbolizer);
             surfaceRenderers.put(symbolizer, renderer);
             logger.debug("a surface renderer is created for symbolizer "
                     + symbolizer);
@@ -126,7 +127,7 @@ public class GeoxRendererManager {
             if (renderer != null) {
                 return renderer;
             }
-            renderer = new GeoxComplexRendererBasic(layerRenderer);
+            renderer = new GeoxComplexRendererBasic(layerRenderer, symbolizer);
             pointRenderers.put(symbolizer, renderer);
             logger.debug("a point renderer is created for symbolizer "
                     + symbolizer);

@@ -246,7 +246,7 @@ public class GLProgram {
         if (uniformLocation < 0
                 && !this.uniformErrorLogged.contains(uniformName)) {
             this.uniformErrorLogged.add(uniformName);
-            logger.error("uniform variable '" + uniformName
+            logger.warn("uniform variable '" + uniformName
                     + "' has invalid location " + uniformLocation
                     + " in program '" + this.getName() + "'");
             logger.info("Registered uniforms:");

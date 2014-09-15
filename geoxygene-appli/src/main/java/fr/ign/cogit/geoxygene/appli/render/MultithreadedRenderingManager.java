@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 
 /**
  * A rendering manager responsible for rendering layers in a
@@ -268,7 +269,11 @@ public class MultithreadedRenderingManager implements RenderingManager {
         }
 
         // clear the image cache
-        renderer.initializeRendering();
+        try {
+            renderer.initializeRendering();
+        } catch (RenderingException e) {
+            e.printStackTrace();
+        }
 
         // create a new runnable for the rendering
         Runnable runnable = renderer.createRunnable();

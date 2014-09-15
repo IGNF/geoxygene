@@ -35,6 +35,7 @@ import org.lwjgl.opengl.GL30;
 import test.app.GLBezierShadingComplex;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
+import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
@@ -63,9 +64,9 @@ public class GeoxComplexRendererBezier extends AbstractGeoxComplexRenderer {
      * @param strtex
      */
     public GeoxComplexRendererBezier(
-            final LwjglLayerRenderer lwjglLayerRenderer,
+            final LwjglLayerRenderer lwjglLayerRenderer, Symbolizer symbolizer,
             final BasicTextureExpressiveRenderingDescriptor strtex) {
-        super(lwjglLayerRenderer);
+        super(lwjglLayerRenderer, symbolizer);
         this.shaderDescriptor = strtex;
     }
 

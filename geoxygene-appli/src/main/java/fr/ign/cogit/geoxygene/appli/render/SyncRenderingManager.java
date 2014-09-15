@@ -29,6 +29,7 @@ import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 
 /**
  * A rendering manager responsible for rendering layers in a
@@ -228,24 +229,27 @@ public class SyncRenderingManager implements RenderingManager {
             return;
         }
 
-        // initialize rendering
-        renderer.initializeRendering();
+        try {
+            // initialize rendering
+            renderer.initializeRendering();
 
-        // create a new runnable for the rendering
-        Runnable runnable = renderer.createRunnable();
-        if (runnable != null) {
-            try {
-                runnable.run(); // do not launch runnable into a thread, just
-                                // call the
-                                // run method synchronously
-            } catch (Exception e) {
-                logger.error("An error occurred during Sync Rendering : "
-                        + e.getMessage());
-                e.printStackTrace();
+            // create a new runnable for the rendering
+            Runnable runnable = renderer.createRunnable();
+            if (runnable != null) {
+                try {
+                    runnable.run(); // do not launch runnable into a thread,
+                                    // just call the run method synchronously
+                } catch (Exception e) {
+                    logger.error("An error occurred during Sync Rendering : "
+                            + e.getMessage());
+                    e.printStackTrace();
+                }
             }
+            // clear the image cache
+            renderer.finalizeRendering();
+        } catch (RenderingException e) {
+            e.printStackTrace();
         }
-        // finalize rendering
-        // renderer.finalizeRendering();
 
     }
 

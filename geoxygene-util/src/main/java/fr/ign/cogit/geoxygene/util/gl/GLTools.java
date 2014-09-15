@@ -318,7 +318,7 @@ public final class GLTools {
      * @param pixels
      * @param buffer
      */
-    private static void fillBuffer(final BufferedImage image, int[] pixels,
+    public static void fillBuffer(final BufferedImage image, int[] pixels,
             ByteBuffer buffer) {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
@@ -947,6 +947,26 @@ public final class GLTools {
 
     public static String getProgramLogInfo(int obj) {
         return glGetProgramInfoLog(obj, 4096);
+    }
+
+    /**
+     * do a GL draw call for all complex meshes
+     * 
+     * @param primitive
+     *            primitive to render
+     */
+    public static void drawComplex(GLComplex primitive) {
+        RenderingStatistics.drawGLComplex(primitive);
+        for (GLMesh mesh : primitive.getMeshes()) {
+            RenderingStatistics.doDrawCall();
+            // System.err.println("draw call for mesh " + mesh +
+            // " indices from "
+            // + mesh.getFirstIndex() + " to " + mesh.getLastIndex());
+            GL11.glDrawElements(mesh.getGlType(),
+                    mesh.getLastIndex() - mesh.getFirstIndex() + 1,
+                    GL11.GL_UNSIGNED_INT, mesh.getFirstIndex()
+                            * (Integer.SIZE / 8));
+        }
     }
 
 }

@@ -32,8 +32,9 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 
 /**
- * @author JeT
- * 
+ * @author JeT RenderingStatistics is a GL/Geoxygene specific static class. Just
+ *         set the "on" static boolean to true to enable displaying statistics
+ *         on the rendering process
  */
 public class RenderingStatistics {
 

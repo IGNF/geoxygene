@@ -35,6 +35,7 @@ import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
+import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
@@ -61,8 +62,9 @@ public class GeoxComplexRendererBasic extends AbstractGeoxComplexRenderer {
      * 
      * @param lwjglLayerRenderer
      */
-    public GeoxComplexRendererBasic(LwjglLayerRenderer lwjglLayerRenderer) {
-        super(lwjglLayerRenderer);
+    public GeoxComplexRendererBasic(LwjglLayerRenderer lwjglLayerRenderer,
+            Symbolizer symbolizer) {
+        super(lwjglLayerRenderer, symbolizer);
     }
 
     @Override

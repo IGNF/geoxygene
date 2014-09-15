@@ -89,7 +89,6 @@ import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 import fr.ign.cogit.geoxygene.util.gl.RenderingException;
-import fr.ign.cogit.geoxygene.util.gl.RenderingStatistics;
 
 /**
  * A renderer to render a {@link Layer} into a {@link LayerViewLwjgl1Panel}. It
@@ -128,6 +127,9 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
     private int previousFBOImageHeight = -1;
     private boolean fboRendering = false;
     private boolean needInitialization = false;
+    private Symbolizer fboSymbolizer = null;
+    private GLComplex fboPrimitive = null;
+    private double fboOpacity = 1.;
 
     /**
      * Constructor of renderer using a {@link Layer} and a
@@ -142,7 +144,8 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             final LayerViewGLPanel theLayerViewPanel) {
         super(theLayer);
         this.setLayerViewPanel(theLayerViewPanel);
-        this.partialRenderer = new GeoxComplexRendererBasic(this);
+        this.partialRenderer = new GeoxComplexRendererBasic(this, null);
+        this.initializeScreenQuad();
     }
 
     /**
@@ -275,6 +278,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                     if (Math.min(vp.getWidth(), vp.getHeight()) <= 0) {
                         return;
                     }
+                    LwjglLayerRenderer.this.initializeRendering();
                     // do the actual rendering
                     try {
                         // System.err.println("rendering layer "
@@ -295,6 +299,12 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                         return;
                     }
                 } finally {
+                    try {
+                        LwjglLayerRenderer.this.finalizeRendering();
+                    } catch (RenderingException e) {
+                        logger.error("An error ocurred finalizing "
+                                + this.getClass().getSimpleName());
+                    }
                     // we are no more in rendering progress
                     LwjglLayerRenderer.this.setRendering(false);
                     // FIXME Is this operation really useful or is it a patch?
@@ -393,9 +403,50 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
 
     private void render(final Symbolizer symbolizer, final IFeature feature,
             final Layer layer) throws RenderingException {
+
         Viewport viewport = this.getLayerViewPanel().getViewport();
 
-        GLDisplayable displayable = null;
+        GLDisplayable displayable = this.getDisplayable(symbolizer, feature,
+                layer, viewport);
+
+        if (displayable != null) {
+            try {
+                double layerOpacity = this.getLayer().getOpacity();
+                Collection<GLComplex> fullRepresentation = displayable
+                        .getFullRepresentation();
+                if (fullRepresentation == null) {
+                    GeoxComplexRendererBasic partialRenderer = this
+                            .getPartialRenderer(feature);
+                    partialRenderer.setFBORendering(false);
+                    partialRenderer.localRendering(
+                            displayable.getPartialRepresentation(),
+                            layerOpacity);
+                } else {
+                    for (GLComplex complex : fullRepresentation) {
+                        this.renderGLPrimitive(complex, layerOpacity);
+                    }
+                }
+            } catch (GLException e) {
+                throw new RenderingException(e);
+            }
+        } else {
+            logger.warn(this.getClass().getSimpleName()
+                    + " do not know how to render feature "
+                    + feature.getGeom().getClass().getSimpleName());
+        }
+
+    }
+
+    /**
+     * @param symbolizer
+     * @param feature
+     * @param layer
+     * @param viewport
+     * @return
+     */
+    private GLDisplayable getDisplayable(final Symbolizer symbolizer,
+            final IFeature feature, final Layer layer, Viewport viewport) {
+        GLDisplayable displayable;
         synchronized (this.displayables) {
             // try to retrieve previously generated geometry
             displayable = this.getDisplayable(feature, symbolizer);
@@ -422,34 +473,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             // + " already associated to displayable " + displayable);
             // }
         }
-
-        double layerOpacity = this.getLayer().getOpacity();
-
-        if (displayable != null) {
-            try {
-                Collection<GLComplex> fullRepresentation = displayable
-                        .getFullRepresentation();
-                if (fullRepresentation == null) {
-                    GeoxComplexRendererBasic partialRenderer = this
-                            .getPartialRenderer(feature);
-                    partialRenderer.setFBORendering(false);
-                    partialRenderer.localRendering(
-                            displayable.getPartialRepresentation(),
-                            layerOpacity);
-                } else {
-                    for (GLComplex complex : fullRepresentation) {
-                        this.renderGLPrimitive(complex, layerOpacity);
-                    }
-                }
-            } catch (GLException e) {
-                throw new RenderingException(e);
-            }
-        } else {
-            logger.warn(this.getClass().getSimpleName()
-                    + " do not know how to render feature "
-                    + feature.getGeom().getClass().getSimpleName());
-        }
-
+        return displayable;
     }
 
     /**
@@ -550,91 +574,61 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         this.previousFBOImageHeight = -1;
     }
 
+    /**
+     * Render a GL Primitive into a FBO
+     * 
+     * @param primitive
+     * @param renderer
+     * @param opacity
+     * @throws GLException
+     * @throws RenderingException
+     */
     private void fboRendering(GLComplex primitive,
             GeoxComplexRenderer renderer, double opacity) throws GLException,
             RenderingException {
         this.setFBORendering(true);
-        if (this.previousFBOImageWidth == -1
-                || this.previousFBOImageHeight == -1) {
-            this.initializeFBO();
-            GLTools.glCheckError("FBO init");
+        // if (this.previousFBOImageWidth == -1
+        // || this.previousFBOImageHeight == -1) {
+        // this.initializeFBO();
+        // GLTools.glCheckError("FBO init");
+        // }
+        Symbolizer currentSymbolizer = renderer.getSymbolizer();
+        if (currentSymbolizer != this.fboSymbolizer
+                || this.fboSymbolizer == null) {
+            if (this.fboSymbolizer != null) {
+                int antialisingSize = this.getLayerViewPanel()
+                        .getAntialiasingSize() + 1;
+                this.drawFBO(
+                        this.fboOpacity * this.fboPrimitive.getOverallOpacity(),
+                        antialisingSize);
+            }
+            this.initializeFBO(primitive, opacity, currentSymbolizer);
         }
-        // render primitive in a FBO (offscreen rendering)
-        // bind a read-only framebuffer
-        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, this.getFboId());
-        // this.setFBORendering(true);
-        // check if the screen size has change since previous rendering
-
-        int antialisingSize = this.getLayerViewPanel().getAntialiasingSize() + 1;
-        int fboImageWidth = this.getFBOImageWidth();
-        int fboImageHeight = this.getFBOImageHeight();
-        if (this.previousFBOImageWidth != fboImageWidth
-                || this.previousFBOImageHeight != fboImageHeight) {
-            this.previousFBOImageWidth = fboImageWidth;
-            this.previousFBOImageHeight = fboImageHeight;
-
-            glBindTexture(GL_TEXTURE_2D, this.getFBOTextureId());
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-                    GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, fboImageWidth,
-                    fboImageHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
-                    (ByteBuffer) null);
-            GLTools.glCheckError("FBO size modification");
-        }
-        GL11.glViewport(0, 0, fboImageWidth, fboImageHeight);
-
-        GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER,
-                GL30.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                this.getFBOTextureId(), 0);
-        // check FBO status
-
-        int status = GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER);
-        if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
-            throw new GLException(
-                    "Frame Buffer Object is not correctly initialized");
-        }
-        GLTools.glCheckError("FBO initialization");
-
         GL11.glDepthMask(false);
         glDisable(GL11.GL_DEPTH_TEST);
 
-        // }
-        //
-        // // first draw the outline with smooth blending to get the polygon
-        // border
-        // // smoothness
-        // GLProgram program = this.getGlContext().setCurrentProgram(
-        // LayerViewGLPanel.worldspaceColorProgramName); hd
-        // if (program == null) {
-        // return;
-        // }
-        // no transparency at all
-
-        // display the computed texture on the screen
-        // using object opacity * overall opacity
-
+        GL11.glViewport(0, 0, this.getFBOImageWidth(), this.getFBOImageHeight());
         GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
         GLTools.glCheckError("after setting draw buffer");
 
         glEnable(GL_TEXTURE_2D);
-
-        // System.err.println("fbo image size = " + fboImageWidth + "x"
-        // + fboImageHeight + " " + this.getFBORendering());
-        // System.err.println("antialiasing size = "
-        // + this.getLayerViewPanel().getAntialiasingSize());
-        GL11.glViewport(0, 0, fboImageWidth, fboImageHeight);
-        GLTools.glCheckError("after setting viewport");
-
-        GL11.glClearColor(0f, 0f, 0f, 0f);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-
-        glDisable(GL11.GL_BLEND);
-        GLTools.glCheckError("just before launching normal rendering within FBO context");
+        // display the computed texture on the screen
+        // using object opacity * overall opacity
 
         renderer.setFBORendering(true);
         renderer.render(primitive, 1f);
         renderer.setFBORendering(false);
 
+    }
+
+    /**
+     * @param primitive
+     * @param opacity
+     * @param antialisingSize
+     * @throws GLException
+     */
+    private void drawFBO(double opacity, int antialisingSize)
+            throws GLException {
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 
         GLProgram program = this.getGlContext().setCurrentProgram(
@@ -681,7 +675,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         // + opacity);
         program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
         program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
-                (float) (opacity * primitive.getOverallOpacity()));
+                (float) (opacity));
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
@@ -690,13 +684,13 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
         GLTools.glCheckError("before FBO drawing textured quad");
-        this.drawComplex(this.getScreenQuad());
+        GLTools.drawComplex(this.getScreenQuad());
         // this.getScreenQuad().setColor(new Color(1f, 1f, 1f, .5f));
         GLTools.glCheckError("FBO drawing textured quad");
-        glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
+
         GL30.glBindVertexArray(0); // unbind VAO
         GLTools.glCheckError("exiting FBO rendering");
-
+        glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
     }
 
     private int getFBOTextureId() {
@@ -765,61 +759,101 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         GL11.glLineWidth(lineWidth);
         GL11.glPointSize(pointSize);
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-        this.drawComplex(primitive);
+        GLTools.drawComplex(primitive);
         GL30.glBindVertexArray(0);
-    }
-
-    /**
-     * do a GL draw call for all complex meshes
-     * 
-     * @param primitive
-     *            primitive to render
-     */
-    protected final void drawComplex(GLComplex primitive) {
-        RenderingStatistics.drawGLComplex(primitive);
-        for (GLMesh mesh : primitive.getMeshes()) {
-            RenderingStatistics.doDrawCall();
-            // System.err.println("draw call for mesh " + mesh +
-            // " indices from "
-            // + mesh.getFirstIndex() + " to " + mesh.getLastIndex());
-            GL11.glDrawElements(mesh.getGlType(),
-                    mesh.getLastIndex() - mesh.getFirstIndex() + 1,
-                    GL11.GL_UNSIGNED_INT, mesh.getFirstIndex()
-                            * (Integer.SIZE / 8));
-        }
     }
 
     @Override
     public void initializeRendering() {
-        if (this.needInitialization) {
-            this.initShader();
-            this.needInitialization = false;
+        if (this.fboId == -1) {
+            // generate an ID for the FBO
+            this.fboId = glGenFramebuffers();
+            if (this.fboId < 0) {
+                logger.error("Unable to create frame buffer for FBO rendering");
+            }
+
         }
     }
 
     @Override
-    public void finalizeRendering() {
-        // nothing to finalize
-    }
-
-    public final void initShader() {
-        this.initializeFBO();
+    public void finalizeRendering() throws RenderingException {
+        int antialisingSize = this.getLayerViewPanel().getAntialiasingSize() + 1;
+        if (this.fboSymbolizer != null) {
+            try {
+                this.drawFBO(
+                        this.fboOpacity * this.fboPrimitive.getOverallOpacity(),
+                        antialisingSize);
+            } catch (GLException e) {
+                throw new RenderingException(e);
+            }
+            this.fboSymbolizer = null;
+        }
     }
 
     /**
-     * initialize Frame Buffer Object and Unit Quad
+     * @param primitive
+     * @param opacity
+     * @param currentSymbolizer
+     * @throws GLException
      */
-    private final void initializeFBO() {
-        this.fboId = glGenFramebuffers();
-        if (this.fboId < 0) {
-            logger.error("Unable to create frame buffer for FBO rendering");
+    private void initializeFBO(GLComplex primitive, double opacity,
+            Symbolizer currentSymbolizer) throws GLException {
+        // prepare next FBO
+        this.fboSymbolizer = currentSymbolizer;
+        this.fboOpacity = opacity;
+        this.fboPrimitive = primitive;
+        // render primitive in a FBO (offscreen rendering)
+        // bind a read-only framebuffer
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, this.getFboId());
+        // this.setFBORendering(true);
+        // check if the screen size has change since previous rendering
+
+        int fboImageWidth = this.getFBOImageWidth();
+        int fboImageHeight = this.getFBOImageHeight();
+        if (this.previousFBOImageWidth != fboImageWidth
+                || this.previousFBOImageHeight != fboImageHeight) {
+            this.previousFBOImageWidth = fboImageWidth;
+            this.previousFBOImageHeight = fboImageHeight;
+            logger.debug("FBO size modification " + fboImageWidth + "x"
+                    + fboImageHeight);
+
+            glBindTexture(GL_TEXTURE_2D, this.getFBOTextureId());
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
+                    GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, fboImageWidth,
+                    fboImageHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
+                    (ByteBuffer) null);
+            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER,
+                    GL30.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                    this.getFBOTextureId(), 0);
+            GLTools.glCheckError("FBO size modification");
+            GL11.glViewport(0, 0, fboImageWidth, fboImageHeight);
+
+            // check FBO status
+
+            int status = GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER);
+            if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
+                throw new GLException(
+                        "Frame Buffer Object is not correctly initialized");
+            }
+            GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+            GLTools.glCheckError("after setting draw buffer");
+
+            glEnable(GL_TEXTURE_2D);
+
+            // System.err.println("fbo image size = " + fboImageWidth + "x"
+            // + fboImageHeight + " " + this.getFBORendering());
+            // System.err.println("antialiasing size = "
+            // + this.getLayerViewPanel().getAntialiasingSize());
+            GLTools.glCheckError("after setting viewport");
+
+            glDisable(GL11.GL_BLEND);
+            GLTools.glCheckError("just before launching normal rendering within FBO context");
+
+            GLTools.glCheckError("FBO initialization");
         }
-
-        this.fboTextureId = -1;
-
-        this.previousFBOImageWidth = -1;
-        this.previousFBOImageHeight = -1;
-        this.initializeScreenQuad();
+        GL11.glClearColor(0f, 0f, 0f, 0f);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
     }
 
     public boolean getFBORendering() {

@@ -27,6 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.render.primitive;
 
+import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 import fr.ign.cogit.geoxygene.util.gl.RenderingException;
@@ -47,6 +48,11 @@ public interface GeoxComplexRenderer extends GLComplexRenderer {
 
     @Override
     void reset();
+
+    /**
+     * Get the symbolizer used to create this renderer
+     */
+    public Symbolizer getSymbolizer();
 
     /**
      * @return if rendering is done inside a FBO context or not

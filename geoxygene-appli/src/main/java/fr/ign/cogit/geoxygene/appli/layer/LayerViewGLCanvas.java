@@ -19,7 +19,7 @@ public abstract class LayerViewGLCanvas extends AWTGLCanvas implements
     private static final long serialVersionUID = 1095977885262623231L; // Serializable
                                                                        // UID
     protected LayerViewGLPanel parentPanel = null;
-    private final boolean doPaintOverlay = false;
+    private final boolean doPaintOverlay = true;
     protected static Logger logger = Logger.getLogger(LayerViewGLCanvas.class
             .getName());
 

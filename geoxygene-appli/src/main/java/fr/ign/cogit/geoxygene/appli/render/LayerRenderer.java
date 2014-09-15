@@ -23,6 +23,7 @@ import java.awt.event.ActionListener;
 
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 
 /**
  * Renderer interface.
@@ -75,7 +76,14 @@ public interface LayerRenderer {
     /**
      * Method called once before creating runnables
      */
-    void initializeRendering();
+    void initializeRendering() throws RenderingException;
+
+    /**
+     * Method called once after runnables termination
+     * 
+     * @throws RenderingException
+     */
+    void finalizeRendering() throws RenderingException;
 
     void addActionListener(ActionListener l);
 

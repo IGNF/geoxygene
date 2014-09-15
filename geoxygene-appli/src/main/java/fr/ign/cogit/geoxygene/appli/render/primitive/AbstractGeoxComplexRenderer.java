@@ -35,6 +35,7 @@ import org.lwjgl.opengl.Util;
 
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
+import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
@@ -67,6 +68,7 @@ public abstract class AbstractGeoxComplexRenderer implements
     // private final Map<IFeature, GLDisplayable> displayables = new
     // HashMap<IFeature, GLDisplayable>();
     private LwjglLayerRenderer lwjglLayerRenderer = null;
+    private Symbolizer symbolizer = null;
     private boolean fboRendering; // true if fbo rendering is in progress
 
     // private Viewport viewport = null;
@@ -76,11 +78,22 @@ public abstract class AbstractGeoxComplexRenderer implements
      * 
      * @param lwjglLayerRenderer
      */
-    public AbstractGeoxComplexRenderer(LwjglLayerRenderer lwjglLayerRenderer) {
+    public AbstractGeoxComplexRenderer(LwjglLayerRenderer lwjglLayerRenderer,
+            Symbolizer symbolizer) {
         if (lwjglLayerRenderer == null) {
             throw new IllegalArgumentException("layer renderer cannot be null");
         }
+
+        this.symbolizer = symbolizer;
         this.lwjglLayerRenderer = lwjglLayerRenderer;
+    }
+
+    /**
+     * @return the symbolizer
+     */
+    @Override
+    public Symbolizer getSymbolizer() {
+        return this.symbolizer;
     }
 
     /**

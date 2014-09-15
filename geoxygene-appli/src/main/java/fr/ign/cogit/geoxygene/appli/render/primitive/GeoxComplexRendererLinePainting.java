@@ -36,6 +36,7 @@ import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.texture.StrokeTextureExpressiveRendering;
+import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
@@ -64,9 +65,9 @@ public class GeoxComplexRendererLinePainting extends
      * @param lwjglLayerRenderer
      */
     public GeoxComplexRendererLinePainting(
-            LwjglLayerRenderer lwjglLayerRenderer,
+            LwjglLayerRenderer lwjglLayerRenderer, Symbolizer symbolizer,
             StrokeTextureExpressiveRenderingDescriptor shaderDescriptor) {
-        super(lwjglLayerRenderer);
+        super(lwjglLayerRenderer, symbolizer);
         this.shaderDescriptor = shaderDescriptor;
     }
 
