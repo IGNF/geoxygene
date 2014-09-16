@@ -21,6 +21,7 @@ import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
 import fr.ign.cogit.geoxygene.matching.dst.sources.punctual.EuclidianDist;
+import fr.ign.cogit.geoxygene.matching.dst.sources.text.LevenshteinDist;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -87,21 +88,21 @@ public class GeoMatchingPointTest {
 		
 		Collection<Source<IFeature, GeomHypothesis>> criteria = new ArrayList<Source<IFeature, GeomHypothesis>>();
 		criteria.add(new EuclidianDist());
+		criteria.add(new LevenshteinDist());
 		
 		boolean closed = true;
 		GeoMatching matching = new GeoMatching();
 		EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates,
 		        ChoiceType.PIGNISTIC, closed);
 		
-		
 		LOGGER.info("result = " + result);
-		  LOGGER.trace("reference = " + reference.getGeom());
-		  LOGGER.trace("value = " + result.getValue());
-		  LOGGER.trace("conflict = " + result.getConflict());
-		  LOGGER.trace("with " + result.getHypothesis().size());
-		  for (int i = 0; i < result.getHypothesis().size(); i++) {
-			  LOGGER.trace("\tobj " + i + " = " + result.getHypothesis().get(i));
-		  }
+		LOGGER.trace("reference = " + reference.getGeom());
+		LOGGER.trace("value = " + result.getValue());
+		LOGGER.trace("conflict = " + result.getConflict());
+		LOGGER.trace("with " + result.getHypothesis().size());
+		for (int i = 0; i < result.getHypothesis().size(); i++) {
+			LOGGER.trace("\tobj " + i + " = " + result.getHypothesis().get(i));
+		}
 		  
 		  Assert.assertTrue(true);
 		  

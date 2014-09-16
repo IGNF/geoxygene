@@ -68,14 +68,11 @@ public class EuclidianDist extends GeoSource {
 	      final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
 	
 		List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
-	    // List<byte[]> focalset = new ArrayList<byte[]>();
-	    // IFeature reference = GeoMatching.getInstance().getReference();
 	    float sum = 0;
 	    for (GeomHypothesis h : candidates) {
 	        float distance = (float) this.compute(reference.getGeom(), h.getGeom());
 	        if (distance < this.threshold) {
 	        	distance = (this.threshold - distance) / this.threshold;
-	    	    System.out.println("Distance = " + distance);
 	    	    byte[] encoded = codec.encode(new GeomHypothesis[] { h });
 	    	    weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
 	    	    sum += distance;
