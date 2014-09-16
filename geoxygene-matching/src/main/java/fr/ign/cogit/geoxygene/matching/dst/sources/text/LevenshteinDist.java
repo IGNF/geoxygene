@@ -46,7 +46,7 @@ public class LevenshteinDist extends GeoSource {
 	    for (GeomHypothesis h : candidates) {
 	    	
 	    	System.out.print(h.getClass() + " - ");
-	    	System.out.println(h.getFeatureType().getFeatureAttributes().size());
+	    	// System.out.println(h.getFeatureType().getFeatureAttributes().size());
 	    	
 	        float distance = (float) 0.8;   // StringUtils.getLevenshteinDistance(reference.getGeom(), h.getGeom());
 	        if (distance < this.threshold) {
