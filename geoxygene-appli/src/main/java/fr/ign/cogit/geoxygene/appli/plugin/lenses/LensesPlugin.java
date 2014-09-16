@@ -1,5 +1,6 @@
 package fr.ign.cogit.geoxygene.appli.plugin.lenses;
 
+import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 
@@ -33,7 +35,7 @@ public class LensesPlugin implements ProjectFramePlugin,
 
   private GeOxygeneApplication application = null;
   @SuppressWarnings("unused")
-  private JCheckBoxMenuItem mFishEye, mJelly;
+  private JCheckBoxMenuItem mFishEye, mJelly, mPierce;
 
   @Override
   public void initialize(GeOxygeneApplication application) {
@@ -41,7 +43,9 @@ public class LensesPlugin implements ProjectFramePlugin,
     JMenu menu = new JMenu("Lenses");
     mFishEye = new JCheckBoxMenuItem(new FishEyeAction());
     mJelly = new JCheckBoxMenuItem(new JellyLensAction());
+    mPierce = new JCheckBoxMenuItem(new PierceLensAction());
     menu.add(mFishEye);
+    menu.add(mPierce);
     // menu.add(mJelly);
     menu.add(new JMenuItem(new LensParamsAction()));
     application.getMainFrame().getMenuBar()
@@ -125,6 +129,49 @@ public class LensesPlugin implements ProjectFramePlugin,
   }
 
   /**
+   * Adds a lens that pierces the map around the cursor to display another
+   * layer, such as a photograph.
+   * 
+   * @author GTouya
+   * 
+   */
+  class PierceLensAction extends AbstractAction {
+
+    /**
+   * 
+   */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      LayerViewPanel layerViewPanel = application.getMainFrame()
+          .getSelectedProjectFrame().getLayerViewPanel();
+      if (!mPierce.isSelected()) {
+        for (PaintListener listener : layerViewPanel.getOverlayListeners()) {
+          if (listener instanceof PierceLensPaintListener) {
+            layerViewPanel.getOverlayListeners().remove(listener);
+            break;
+          }
+        }
+      } else {
+        PierceLensPaintListener listener = new PierceLensPaintListener(
+            CartAGenPlugin.getInstance().getApplication().getMainFrame(),
+            CartAGenPlugin.getInstance().getApplication().getMainFrame()
+                .getMode(), mPierce);
+        layerViewPanel.getOverlayListeners().add(listener);
+        CartAGenPlugin.getInstance().getApplication().getMainFrame().getMode()
+            .setCurrentMode(listener);
+      }
+    }
+
+    public PierceLensAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Adds a lens that pierces the map around the cursor to display another layer");
+      this.putValue(Action.NAME, "Pierce Lens");
+    }
+  }
+
+  /**
    * Create a new empty dataset, with its zone details, in which data can be
    * added later.
    * 
@@ -150,7 +197,8 @@ public class LensesPlugin implements ProjectFramePlugin,
   class LensParamsFrame extends JFrame implements ActionListener {
 
     private JTabbedPane tabs;
-    private JSpinner spinFishFocus, spinFishTrans;
+    private JSpinner spinFishFocus, spinFishTrans, spinPierceRadius;
+    private JTextField txtPierceLayer;
 
     /****/
     private static final long serialVersionUID = 1L;
@@ -164,18 +212,33 @@ public class LensesPlugin implements ProjectFramePlugin,
       tabs = new JTabbedPane();
       // a panel for the Fisheye Lens
       JPanel panelFish = new JPanel();
-      SpinnerModel fishFocusModel = new SpinnerNumberModel(50.0, 10.0, 500.0,
-          5.0);
+      SpinnerModel fishFocusModel = new SpinnerNumberModel(
+          FishEyeLens.FOCUS_RADIUS, 10.0, 500.0, 5.0);
       spinFishFocus = new JSpinner(fishFocusModel);
-      SpinnerModel fishTransModel = new SpinnerNumberModel(100.0, 0.0, 500.0,
-          5.0);
+      SpinnerModel fishTransModel = new SpinnerNumberModel(
+          FishEyeLens.TRANSITION_RADIUS, 0.0, 500.0, 5.0);
       spinFishTrans = new JSpinner(fishTransModel);
       panelFish.add(new JLabel("Focus radius (px) "));
       panelFish.add(spinFishFocus);
       panelFish.add(new JLabel("Transition radius (px) "));
       panelFish.add(spinFishTrans);
       panelFish.setLayout(new BoxLayout(panelFish, BoxLayout.X_AXIS));
+      // a panel for the Fisheye Lens
+      JPanel panelPierce = new JPanel();
+      txtPierceLayer = new JTextField();
+      txtPierceLayer.setMaximumSize(new Dimension(140, 20));
+      txtPierceLayer.setMinimumSize(new Dimension(140, 20));
+      txtPierceLayer.setPreferredSize(new Dimension(140, 20));
+      SpinnerModel pierceRadiusModel = new SpinnerNumberModel(
+          PierceLens.LENS_RADIUS, 10.0, 500.0, 5.0);
+      spinPierceRadius = new JSpinner(pierceRadiusModel);
+      panelPierce.add(new JLabel("Layer to display in the Lens: "));
+      panelPierce.add(txtPierceLayer);
+      panelPierce.add(new JLabel("Lens radius (px) "));
+      panelPierce.add(spinPierceRadius);
+      panelPierce.setLayout(new BoxLayout(panelPierce, BoxLayout.X_AXIS));
       tabs.add(panelFish, "FishEye");
+      tabs.add(panelPierce, "Pierce");
       tabs.setSelectedIndex(0);
 
       // OK button frame
@@ -204,24 +267,46 @@ public class LensesPlugin implements ProjectFramePlugin,
       if (e.getActionCommand().equals("cancel")) {
         this.dispose();
       } else if (e.getActionCommand().equals("OK")) {
-        FishEyeLens.FOCUS_RADIUS = (Double) spinFishFocus.getValue();
-        FishEyeLens.TRANSITION_RADIUS = (Double) spinFishTrans.getValue();
-        if (mFishEye.isSelected()) {
+        if (tabs.getSelectedIndex() == 0) {
+          FishEyeLens.FOCUS_RADIUS = (Double) spinFishFocus.getValue();
+          FishEyeLens.TRANSITION_RADIUS = (Double) spinFishTrans.getValue();
+          if (mFishEye.isSelected()) {
+            LayerViewPanel layerViewPanel = application.getMainFrame()
+                .getSelectedProjectFrame().getLayerViewPanel();
+            for (PaintListener listener : layerViewPanel.getOverlayListeners()) {
+              if (listener instanceof LensPaintListener) {
+                layerViewPanel.getOverlayListeners().remove(listener);
+                break;
+              }
+            }
+            LensPaintListener listener = new LensPaintListener(CartAGenPlugin
+                .getInstance().getApplication().getMainFrame(), CartAGenPlugin
+                .getInstance().getApplication().getMainFrame().getMode(),
+                mFishEye);
+            layerViewPanel.getOverlayListeners().add(listener);
+            CartAGenPlugin.getInstance().getApplication().getMainFrame()
+                .getMode().setCurrentMode(listener);
+          }
+        } else if (tabs.getSelectedIndex() == 1) {
+          PierceLens.LENS_RADIUS = (Double) spinPierceRadius.getValue();
+          PierceLens.LAYER_NAME = (String) txtPierceLayer.getText();
           LayerViewPanel layerViewPanel = application.getMainFrame()
               .getSelectedProjectFrame().getLayerViewPanel();
-          for (PaintListener listener : layerViewPanel.getOverlayListeners()) {
-            if (listener instanceof LensPaintListener) {
-              layerViewPanel.getOverlayListeners().remove(listener);
-              break;
+          if (mPierce.isSelected()) {
+            for (PaintListener listener : layerViewPanel.getOverlayListeners()) {
+              if (listener instanceof PierceLensPaintListener) {
+                layerViewPanel.getOverlayListeners().remove(listener);
+                break;
+              }
             }
+            PierceLensPaintListener listener = new PierceLensPaintListener(
+                CartAGenPlugin.getInstance().getApplication().getMainFrame(),
+                CartAGenPlugin.getInstance().getApplication().getMainFrame()
+                    .getMode(), mPierce);
+            layerViewPanel.getOverlayListeners().add(listener);
+            CartAGenPlugin.getInstance().getApplication().getMainFrame()
+                .getMode().setCurrentMode(listener);
           }
-          LensPaintListener listener = new LensPaintListener(CartAGenPlugin
-              .getInstance().getApplication().getMainFrame(), CartAGenPlugin
-              .getInstance().getApplication().getMainFrame().getMode(),
-              mFishEye);
-          layerViewPanel.getOverlayListeners().add(listener);
-          CartAGenPlugin.getInstance().getApplication().getMainFrame()
-              .getMode().setCurrentMode(listener);
         }
         this.dispose();
       }
