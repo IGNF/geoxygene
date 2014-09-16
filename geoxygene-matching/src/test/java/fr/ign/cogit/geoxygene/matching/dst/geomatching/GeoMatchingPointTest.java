@@ -56,21 +56,26 @@ public class GeoMatchingPointTest {
 	    pointFeatureType.addFeatureAttribute(idTextNature);
 	    
 	    // Création d'un schéma associé au featureType
-	    SchemaDefaultFeature schema = new SchemaDefaultFeature();
-	    schema.setFeatureType(pointFeatureType);
-	    pointFeatureType.setSchema(schema);
+	    // SchemaDefaultFeature schema = new SchemaDefaultFeature();
+	    // schema.setFeatureType(pointFeatureType);
+	    // pointFeatureType.setSchema(schema);
 	    
-	    Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>(0);
-	    attLookup.put(new Integer(0), new String[] { "nature", "nature" });
-	    schema.setAttLookup(attLookup);
+	    // Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>(0);
+	    // attLookup.put(new Integer(0), new String[] { "nature", "nature" });
+	    // schema.setAttLookup(attLookup);
 	    
 	    Object[] attributes = new Object[] { "Saint-Paul" };
-	    p1.setSchema(schema);
+	    p1.setFeatureType(pointFeatureType);
+	    // p1.setSchema(schema);
 	    p1.setAttributes(attributes);
-	    p2.setSchema(schema);
+	    
+	    // p2.setSchema(schema);
+	    p2.setFeatureType(pointFeatureType);
 	    p2.setAttributes(attributes);
+	    
 	    attributes = new Object[] { "Saint-Jean" };
-	    p3.setSchema(schema);
+	    // p3.setSchema(schema);
+	    p3.setFeatureType(pointFeatureType);
 	    p3.setAttributes(attributes);
 	    
 	    candidates.add(p1);
@@ -79,7 +84,7 @@ public class GeoMatchingPointTest {
 	    
 	    //
 	    reference = new DefaultFeature(new GM_Point(new DirectPosition(0, 0)));
-	    reference.setSchema(schema);
+	    // reference.setSchema(schema);
 	    reference.setAttributes(attributes);
 	}
 	
