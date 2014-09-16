@@ -82,7 +82,7 @@ public class GeoMatchingPointTest {
 	    
 	}
 	
-	/*@Test
+	@Test
 	public void testPointCritereDistance() throws Exception {
 		
 		Collection<Source<IFeature, GeomHypothesis>> criteria = new ArrayList<Source<IFeature, GeomHypothesis>>();
@@ -95,7 +95,7 @@ public class GeoMatchingPointTest {
 		
 		
 		Assert.assertTrue(true);
-	}*/
+	}
 	
 	
 	@Test
