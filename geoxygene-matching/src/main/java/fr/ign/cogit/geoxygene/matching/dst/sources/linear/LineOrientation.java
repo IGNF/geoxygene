@@ -60,6 +60,7 @@ public class LineOrientation extends GeoSource {
   @Override
   public List<Pair<byte[], Float>> evaluate(IFeature reference,
       final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
+	  
     List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
     // IFeature reference = GeoMatching.getInstance().getReference();
     float sum = 0;

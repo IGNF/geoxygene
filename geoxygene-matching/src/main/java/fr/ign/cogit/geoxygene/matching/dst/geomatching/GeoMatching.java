@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
@@ -46,6 +48,8 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  * @author Bertrand Dumenieu
  */
 public class GeoMatching {
+	
+	private final static Logger LOGGER = Logger.getLogger(GeoMatching.class);
 
   // List<Hypothesis> candidates;
 
@@ -71,6 +75,7 @@ public class GeoMatching {
 	  
     // Création des hypothèses d'appariement.
     LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
+    LOGGER.debug(combinations.size() + " candidates");
     
     // 
     List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
@@ -95,7 +100,7 @@ public class GeoMatching {
     return decisionOp.resolve();
   }
 
-  public EvidenceResult<GeomHypothesis> runAppriou(List<Source<IFeature, GeomHypothesis>> criteria,
+  /*public EvidenceResult<GeomHypothesis> runAppriou(List<Source<IFeature, GeomHypothesis>> criteria,
       IFeature reference, List<IFeature> candidates, List<Double> weights, ChoiceType choice, boolean closed)
       throws Exception {
     // Création des hypothèses d'appariement.
@@ -145,5 +150,5 @@ public class GeoMatching {
     DecisionOp<GeomHypothesis> decisionOp = new DecisionOp<GeomHypothesis>(result, op.getConflict(),
         choice, codec, true);
     return decisionOp.resolve();
-  }
+  }*/
 }

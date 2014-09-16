@@ -56,9 +56,10 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
   /**
    * 
    */
-  Logger logger = Logger.getLogger(MatchingProcess.class);
+  private final static Logger LOGGER = Logger.getLogger(MatchingProcess.class);
 
   private Collection<Source<F, Hyp>> criteria;
+  
   // Cadre de discernement : stocke les candidats
   private List<Hyp> frame;
   private List<List<Pair<byte[], Float>>> beliefs;
@@ -73,7 +74,6 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
    */
   public MatchingProcess(Collection<Source<F, Hyp>> criteria, List<Hyp> candidates,
       EvidenceCodec<Hyp> codec, boolean isworldclosed) {
-    this.logger.debug(candidates.size() + " candidates");
     this.codec = codec;
     this.frame = Collections.unmodifiableList(candidates);
     this.criteria = criteria;
@@ -95,65 +95,68 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
    * @throws Exception
    */
   public List<Pair<byte[], Float>> combinationProcess(F reference) throws Exception {
-    logger.info("RUNNING MATCHING PROCESS UNDER " + (this.closedworld() ? "CLOSED" : "OPEN")
+    
+	  LOGGER.info("RUNNING MATCHING PROCESS UNDER " + (this.closedworld() ? "CLOSED" : "OPEN")
         + " WORLD ASSUMPTION...");
-    double start = System.currentTimeMillis();
-    this.beliefs.clear();
-    // ----------------EVALUATION------------------------
-    // On récupère les éléments focaux de la masse de croyance et on ordonne la
-    // liste afin de permettre la combinaison de critères.
-    for (Source<F, Hyp> src : this.criteria) {
-      List<Pair<byte[], Float>> kernel = src.evaluate(reference, this.frame, this.codec);
-      // On s'assure que sum(m(j)) = 1 sinon erreur.
-      float sum = 0;
-      for (Pair<byte[], Float> pair : kernel) {
-        sum += pair.getSecond();
-      }
-      if (1 - sum > 0.001) {
-        logger
-            .error("mass potential != 1("
-                + sum
+	  double start = System.currentTimeMillis();
+	  this.beliefs.clear();
+	  
+	  // ---------------- EVALUATION ------------------------
+	  // On récupère les éléments focaux de la masse de croyance et on ordonne la
+	  // liste afin de permettre la combinaison de critères.
+	  for (Source<F, Hyp> src : this.criteria) {
+		  
+		  List<Pair<byte[], Float>> kernel = src.evaluate(reference, this.frame, this.codec);
+		  // On s'assure que sum(m(j)) = 1 sinon erreur.
+		  float sum = 0;
+		  for (Pair<byte[], Float> pair : kernel) {
+			  sum += pair.getSecond();
+		  }
+		  if (1 - sum > 0.001) {
+			  LOGGER.error("mass potential != 1(" + sum
                 + "), the process can not continue. Please check if belief functions ensure that sum(m(A))=1");
-        throw new Exception();
-      }
+			  throw new Exception();
+		  }
+		  LOGGER.debug("Verification somme des masses = 1");
 
-      // On vérifie qu'il n'y a pas plusieurs fois une hypothèse A, sinon on les
-      // fusionne
-      CombinationAlgos.deleteDoubles(kernel);
-      // Finalement on trie la liste des ensemble focaux
-      CombinationAlgos.sortKernel(kernel);
-      logger.debug("----HYPOTHESIS FOR FUNCTION " + src.getName() + "----");
-      for (Pair<byte[], Float> focal : kernel) {
-        logger.debug(focal.getSecond() + " " + Arrays.toString(focal.getFirst()));
-      }
-      this.beliefs.add(kernel);
-    }
-    // ----------------FUSION------------------------
-    // Phase de combinaison des masses de croyance.
-    // Si on se trouve dans l'hypothèse d'un monde clos, alors on utilise
-    // l'opérateur de Dempster, sinon on utilise la règle de Smets.
-    List<Pair<byte[], Float>> massresult = null;
-    if (this.closedworld()) {
-      massresult = new DempsterOp(this.isworldclosed).combine(this.beliefs);
-    } else {
-      massresult = new SmetsOp(this.isworldclosed).combine(this.beliefs);
-    }
-    if (logger.isDebugEnabled()) {
-      if (!massresult.isEmpty() && Utils.isEmpty(massresult.get(0).getFirst())) {
-        if (this.closedworld()) {
-          logger
+	      // On vérifie qu'il n'y a pas plusieurs fois une hypothèse A, sinon on les fusionne
+	      CombinationAlgos.deleteDoubles(kernel);
+	      // Finalement on trie la liste des ensemble focaux
+	      CombinationAlgos.sortKernel(kernel);
+      
+	      LOGGER.debug("----HYPOTHESIS FOR FUNCTION " + src.getName() + "----");
+	      for (Pair<byte[], Float> focal : kernel) {
+	    	  LOGGER.debug(focal.getSecond() + " " + Arrays.toString(focal.getFirst()));
+	      }
+	      this.beliefs.add(kernel);
+	  }
+    
+	  // ----------------FUSION------------------------
+	  // Phase de combinaison des masses de croyance.
+	  // Si on se trouve dans l'hypothèse d'un monde clos, alors on utilise
+	  // l'opérateur de Dempster, sinon on utilise la règle de Smets.
+	  List<Pair<byte[], Float>> massresult = null;
+	  if (this.closedworld()) {
+		  massresult = new DempsterOp(this.isworldclosed).combine(this.beliefs);
+	  } else {
+		  massresult = new SmetsOp(this.isworldclosed).combine(this.beliefs);
+	  }
+	  if (LOGGER.isDebugEnabled()) {
+		  if (!massresult.isEmpty() && Utils.isEmpty(massresult.get(0).getFirst())) {
+			  if (this.closedworld()) {
+				  LOGGER
               .debug("Warning : Non null empty hypothesis under closed world hypothesis! value : "
                   + massresult.get(0).getSecond());
         } else {
-          logger.debug("Empty hypothesis value : " + massresult.get(0).getSecond());
+        	LOGGER.debug("Empty hypothesis value : " + massresult.get(0).getSecond());
         }
       }
     }
     if (massresult == null || massresult.isEmpty()) {
-      logger.error("Error : The combination result is null or empty");
+    	LOGGER.error("Error : The combination result is null or empty");
     }
     double elapsed = System.currentTimeMillis() - start;
-    logger.info("The combination process took " + elapsed / 1000 + " seconds");
+    LOGGER.info("The combination process took " + elapsed / 1000 + " seconds");
     return massresult;
   }
 

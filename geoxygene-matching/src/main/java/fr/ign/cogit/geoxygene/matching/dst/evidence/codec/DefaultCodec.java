@@ -22,6 +22,7 @@
 package fr.ign.cogit.geoxygene.matching.dst.evidence.codec;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,6 +38,7 @@ import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
 public class DefaultCodec<H extends Hypothesis> implements EvidenceCodec<H> {
 
   Logger logger = Logger.getLogger(DefaultCodec.class);
+  
   // L'ordre de la liste ne doit pas être modifié!.
   private final List<H> hypotheses;
 
@@ -46,11 +48,11 @@ public class DefaultCodec<H extends Hypothesis> implements EvidenceCodec<H> {
 
   @Override
   public List<H> decode(byte[] encoded) {
-//    logger.info("decoding " + Arrays.toString(encoded));
+	logger.trace("decoding " + Arrays.toString(encoded));
     List<H> decoded = new ArrayList<H>();
     for (int i = 0; i < encoded.length; i++) {
       if (encoded[i] == (byte) 1) {
-//        logger.info("\t adding " + i + " = " + this.hypotheses.get(i));
+    	logger.info("\t adding " + i + " = " + this.hypotheses.get(i));
         decoded.add(this.hypotheses.get(i));
       }
     }
@@ -70,4 +72,5 @@ public class DefaultCodec<H extends Hypothesis> implements EvidenceCodec<H> {
     }
     return encoded;
   }
+
 }

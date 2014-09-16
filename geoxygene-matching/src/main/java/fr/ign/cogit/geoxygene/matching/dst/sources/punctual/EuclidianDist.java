@@ -25,10 +25,44 @@
 
 package fr.ign.cogit.geoxygene.matching.dst.sources.punctual;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
+import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
+import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
+import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
+
 /**
  * @author Julien Perret
  *
  */
-public class EuclidianDist {
+public class EuclidianDist extends GeoSource {
+	
+	@Override
+	public String getName() {
+		return "Distance Euclidienne ";
+	}
+
+	@Override
+	public double evaluate(IFeature ref, GeomHypothesis candidate) {
+		return 0;
+	}
+	
+	@Override
+	public List<Pair<byte[], Float>> evaluate(IFeature reference,
+	      final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
+	
+		List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
+		
+		for (GeomHypothesis h : candidates) {
+			byte[] encoded = codec.encode(new GeomHypothesis[] { h });
+			float distance = 1f;
+			weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
+		}
+		
+		return weightedfocalset;
+	}
 
 }

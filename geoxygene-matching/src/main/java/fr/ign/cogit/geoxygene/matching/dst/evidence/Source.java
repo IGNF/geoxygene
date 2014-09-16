@@ -28,18 +28,21 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  * @author Bertrand Dumenieu
  */
 public interface Source<F, T extends Hypothesis> {
-  /**
-   * A source can evaluate candidates. Actually, it is what it does.
-   * @param candidates the candidates to evaluate.
-   * @param codec a codec to transform the candidates to byte[].
-   * @return a list of pairs of candidates and their corresponding masses.
-   */
-  List<Pair<byte[], Float>> evaluate(final F ref, final List<T> candidates, EvidenceCodec<T> codec);
-  double evaluate(final F ref, final T candidate);
+  
+	/**
+     * A source can evaluate candidates. Actually, it is what it does.
+     * @param candidates the candidates to evaluate.
+     * @param codec a codec to transform the candidates to byte[].
+     * @return a list of pairs of candidates and their corresponding masses.
+     */
+    List<Pair<byte[], Float>> evaluate(final F ref, final List<T> candidates, EvidenceCodec<T> codec);
+  
+    double evaluate(final F ref, final T candidate);
 
-  /**
-   * A source has a name.
-   * @return the name of the source.
-   */
-  String getName();
+    /**
+     * A source has a name.
+     * @return the name of the source.
+     */
+    String getName();
+
 }

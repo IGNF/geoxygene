@@ -22,6 +22,7 @@
 package fr.ign.cogit.geoxygene.matching.dst.sources.linear;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -61,26 +62,28 @@ public class PartialFrechetDistance extends GeoSource {
   @Override
   public List<Pair<byte[], Float>> evaluate(IFeature reference,
       final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
-	  
-    List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
+
+	  List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
     
-    float sum = 0;
-    for (GeomHypothesis h : candidates) {
-    	System.out.println("** " + h.getId() + ", " + sum);
-      float distance = (float) this.compute(reference.getGeom(), h.getGeom());
-      if (distance < this.threshold) {
-        distance = (this.threshold - distance) / this.threshold;
-        byte[] encoded = codec.encode(new GeomHypothesis[] { h });
-        weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
-        sum += distance;
-      }
-    }
-    for (Pair<byte[], Float> st : weightedfocalset) {
-      st.setSecond(st.getSecond() / sum);
-    }
-    CombinationAlgos.sortKernel(weightedfocalset);
+	  float sum = 0;
+	  for (GeomHypothesis h : candidates) {
+		  // System.out.println("** " + h.getClass());
+		  float distance = (float) this.compute(reference.getGeom(), h.getGeom());
+		  if (distance < this.threshold) {
+			  distance = (this.threshold - distance) / this.threshold;
+			  
+			  byte[] encoded = codec.encode(new GeomHypothesis[] { h });
+			  weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
+			  sum += distance;
+		  }
+	  }
+	  for (Pair<byte[], Float> st : weightedfocalset) {
+		  st.setSecond(st.getSecond() / sum);
+	  }
+	  CombinationAlgos.sortKernel(weightedfocalset);
     
-    return weightedfocalset;
+	  // System.out.println("   " + Arrays.toString(weightedfocalset.get(0).getFirst()));
+	  return weightedfocalset;
   }
 
   @Override
