@@ -29,9 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
+import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 /**
@@ -40,9 +42,20 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  */
 public class EuclidianDist extends GeoSource {
 	
+	/** Seuil de distance en m. */
+	private float threshold = 100f;
+
+	public float getThreshold() {
+		return this.threshold;
+	}
+
+	public void setThreshold(float t) {
+		this.threshold = t;
+	}
+	
 	@Override
 	public String getName() {
-		return "Distance Euclidienne ";
+		return "Distance Euclidienne";
 	}
 
 	@Override
@@ -55,14 +68,33 @@ public class EuclidianDist extends GeoSource {
 	      final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
 	
 		List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
-		
-		for (GeomHypothesis h : candidates) {
-			byte[] encoded = codec.encode(new GeomHypothesis[] { h });
-			float distance = 1f;
-			weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
-		}
-		
-		return weightedfocalset;
+	    // List<byte[]> focalset = new ArrayList<byte[]>();
+	    // IFeature reference = GeoMatching.getInstance().getReference();
+	    float sum = 0;
+	    for (GeomHypothesis h : candidates) {
+	        float distance = (float) this.compute(reference.getGeom(), h.getGeom());
+	        if (distance < this.threshold) {
+	        	distance = (this.threshold - distance) / this.threshold;
+	    	    System.out.println("Distance = " + distance);
+	    	    byte[] encoded = codec.encode(new GeomHypothesis[] { h });
+	    	    weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
+	    	    sum += distance;
+	        }
+	    }
+	    for (Pair<byte[], Float> st : weightedfocalset) {
+	        st.setSecond(st.getSecond() / sum);
+	    }
+	    CombinationAlgos.sortKernel(weightedfocalset);
+	    return weightedfocalset;
+	}
+	
+	/**
+	 * @param geom
+	 * @param geom2
+	 * @return
+	 */
+	private float compute(IGeometry geom, IGeometry geom2) {
+	    return (float) geom.distance(geom2);
 	}
 
 }

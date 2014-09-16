@@ -8,20 +8,18 @@ import java.util.Map;
 
 import no.priv.garshol.duke.comparators.JaroWinkler;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
-import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
-import fr.ign.cogit.geoxygene.matching.dst.sources.linear.PartialFrechetDistance;
 import fr.ign.cogit.geoxygene.matching.dst.sources.punctual.EuclidianDist;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
@@ -35,18 +33,19 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  */
 public class GeoMatchingPointTest {
 	
+	private static final Logger LOGGER = Logger.getLogger(GeoMatchingPointTest.class);
+	
 	private List<IFeature> candidates;
-	private IFeature reference;
+	private DefaultFeature reference;
 	
 	@Before
 	public void setUp() {
 		//candidates = new Population<IFeature>("Point");
 		candidates = new ArrayList<IFeature>();
 	    
-		DefaultFeature p1 = new DefaultFeature(new GM_Point(new DirectPosition(0, 0)));
-		DefaultFeature p2 = new DefaultFeature(new GM_Point(new DirectPosition(0, 50)));
-	    DefaultFeature p3 = new DefaultFeature(new GM_Point(new DirectPosition(50, 0)));
-	    
+		DefaultFeature p1 = new DefaultFeature(new GM_Point(new DirectPosition(15, 15)));
+		DefaultFeature p2 = new DefaultFeature(new GM_Point(new DirectPosition(10, -10)));
+	    DefaultFeature p3 = new DefaultFeature(new GM_Point(new DirectPosition(-12, 10)));
 		
 	    FeatureType pointFeatureType = new FeatureType();
 	    pointFeatureType.setTypeName("nature");
@@ -64,12 +63,12 @@ public class GeoMatchingPointTest {
 	    attLookup.put(new Integer(0), new String[] { "nature", "nature" });
 	    schema.setAttLookup(attLookup);
 	    
-	    Object[] attributes = new Object[] { "p1" };
+	    Object[] attributes = new Object[] { "Saint-Paul" };
 	    p1.setSchema(schema);
 	    p1.setAttributes(attributes);
 	    p2.setSchema(schema);
 	    p2.setAttributes(attributes);
-	    attributes = new Object[] { "p3" };
+	    attributes = new Object[] { "Saint-Jean" };
 	    p3.setSchema(schema);
 	    p3.setAttributes(attributes);
 	    
@@ -78,8 +77,9 @@ public class GeoMatchingPointTest {
 	    candidates.add(p3);
 	    
 	    //
-	    reference = new DefaultFeature(new GM_Point(new DirectPosition(50, 50)));
-	    
+	    reference = new DefaultFeature(new GM_Point(new DirectPosition(0, 0)));
+	    reference.setSchema(schema);
+	    reference.setAttributes(attributes);
 	}
 	
 	@Test
@@ -94,11 +94,22 @@ public class GeoMatchingPointTest {
 		        ChoiceType.PIGNISTIC, closed);
 		
 		
-		Assert.assertTrue(true);
+		LOGGER.info("result = " + result);
+		  LOGGER.trace("reference = " + reference.getGeom());
+		  LOGGER.trace("value = " + result.getValue());
+		  LOGGER.trace("conflict = " + result.getConflict());
+		  LOGGER.trace("with " + result.getHypothesis().size());
+		  for (int i = 0; i < result.getHypothesis().size(); i++) {
+			  LOGGER.trace("\tobj " + i + " = " + result.getHypothesis().get(i));
+		  }
+		  
+		  Assert.assertTrue(true);
+		  
+		  LOGGER.trace("\n====== Fin du test ======");
 	}
 	
 	
-	@Test
+	/*@Test
 	public void testJaroWinckler() {
 		// 0.961
 		System.out.println("MARTHA & MARHTA (0.961) : "
@@ -150,6 +161,6 @@ public class GeoMatchingPointTest {
 		System.out.println("Saint-Jean de la Ruelle & Saint-Pol de la Ruelle : "
 				+ JaroWinkler.similarity("Saint-Jean de la Ruelle", "Saint-Pol de la Ruelle"));
 			
-	}
+	}*/
 
 }
