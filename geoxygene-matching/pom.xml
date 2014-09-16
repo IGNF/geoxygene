@@ -131,7 +131,6 @@
 			<version>20130227</version>
 		</dependency>
 		
-		
 		<dependency>
     		<groupId>no.priv.garshol.duke</groupId>
     		<artifactId>duke</artifactId>
