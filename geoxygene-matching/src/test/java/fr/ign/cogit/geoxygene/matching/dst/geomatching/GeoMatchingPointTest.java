@@ -84,7 +84,7 @@ public class GeoMatchingPointTest {
 	}
 	
 	@Test
-	public void testPointCritereDistance() throws Exception {
+	public void testPoint2Criteres() throws Exception {
 		
 		Collection<Source<IFeature, GeomHypothesis>> criteria = new ArrayList<Source<IFeature, GeomHypothesis>>();
 		criteria.add(new EuclidianDist());
@@ -104,9 +104,9 @@ public class GeoMatchingPointTest {
 			LOGGER.trace("\tobj " + i + " = " + result.getHypothesis().get(i));
 		}
 		  
-		  Assert.assertTrue(true);
+		Assert.assertTrue(true);
 		  
-		  LOGGER.trace("\n====== Fin du test ======");
+		LOGGER.trace("\n====== Fin du test ======");
 	}
 	
 	

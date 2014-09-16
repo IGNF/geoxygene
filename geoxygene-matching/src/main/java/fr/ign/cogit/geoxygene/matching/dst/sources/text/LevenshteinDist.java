@@ -14,6 +14,8 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 public class LevenshteinDist extends GeoSource {
 	
+	private String attributeName = "nature";
+	
 	/** Seuil de distance en m. */
 	private float threshold = 100f;
 
@@ -42,6 +44,9 @@ public class LevenshteinDist extends GeoSource {
 		List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
 	    float sum = 0;
 	    for (GeomHypothesis h : candidates) {
+	    	
+	    	// System.out.println(h.getFeatureType().getFeatureAttributes().size());
+	    	
 	        float distance = (float) 0.8;// StringUtils.getLevenshteinDistance(reference.getGeom(), h.getGeom());
 	        if (distance < this.threshold) {
 	        	distance = (this.threshold - distance) / this.threshold;
