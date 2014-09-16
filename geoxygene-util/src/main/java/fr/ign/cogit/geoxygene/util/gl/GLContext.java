@@ -54,10 +54,11 @@ public class GLContext {
         // TODO Auto-generated constructor stub
     }
 
-    public void addProgram(String progamName, GLProgramAccessor programAccessor) {
+    public void addProgram(String programName, GLProgramAccessor programAccessor) {
         synchronized (this.programs) {
-            this.programs.put(progamName, null);
-            this.programAccessors.put(progamName, programAccessor);
+            this.programs.put(programName, null);
+            this.programAccessors.put(programName, programAccessor);
+            logger.debug("Add program accessor to '" + programName + "'");
         }
     }
 
@@ -91,6 +92,7 @@ public class GLContext {
                 if (glProgramAccessor == null) {
                     logger.warn("Cannot create program named " + programName
                             + ": no accessor is associated with this name");
+                    Thread.dumpStack();
                     for (Map.Entry<String, GLProgramAccessor> entry : this.programAccessors
                             .entrySet()) {
                         logger.debug("\t" + entry.getKey() + " => "
@@ -185,6 +187,16 @@ public class GLContext {
             this.programs.clear();
         }
 
+    }
+
+    /**
+     * This getter retrieves a program name accessor or null if it doesn't exist
+     * 
+     * @param programName
+     * @return
+     */
+    public GLProgramAccessor getProgramAccessor(String programName) {
+        return this.programAccessors.get(programName);
     }
 
     // public void checkContext() {

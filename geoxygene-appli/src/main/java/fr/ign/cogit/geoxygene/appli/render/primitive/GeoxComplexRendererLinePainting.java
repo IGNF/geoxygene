@@ -180,15 +180,14 @@ public class GeoxComplexRendererLinePainting extends
         //
     }
 
-    /**
-     * @return
-     * @throws GLException
-     */
     private GLProgram setOrCreateLinePaintingProgram() throws GLException {
         String shaderId = "linePainting-subshader-"
                 + this.shaderDescriptor.getShaderDescriptor().getId();
-        GLProgram program = this.getGlContext().setCurrentProgram(shaderId);
-        if (program == null) {
+
+        GLProgramAccessor accessor = this.getGlContext().getProgramAccessor(
+                shaderId);
+        GLProgram program = null;
+        if (accessor == null) {
             // set the accessor
             GLProgramAccessor linePaintingAccessor = this
                     .getLayerRenderer()
@@ -196,9 +195,8 @@ public class GeoxComplexRendererLinePainting extends
                     .createLinePaintingAccessor(
                             this.shaderDescriptor.getShaderDescriptor());
             this.getGlContext().addProgram(shaderId, linePaintingAccessor);
-            // generate the program by calling the accessor
-            program = this.getGlContext().setCurrentProgram(shaderId);
         }
+        program = this.getGlContext().setCurrentProgram(shaderId);
         return program;
     }
 

@@ -145,9 +145,12 @@ public class GeoxComplexRendererBezier extends AbstractGeoxComplexRenderer {
      * @throws GLException
      */
     private GLProgram setOrCreateBezierProgram() throws GLException {
-        String shaderId = this.shaderDescriptor.getShaderDescriptor().getId();
-        GLProgram program = this.getGlContext().setCurrentProgram(shaderId);
-        if (program == null) {
+        String shaderId = "bezier-subshader-"
+                + this.shaderDescriptor.getShaderDescriptor().getId();
+        GLProgramAccessor accessor = this.getGlContext().getProgramAccessor(
+                shaderId);
+        GLProgram program = null;
+        if (accessor == null) {
             // set the accessor
             GLProgramAccessor bezierAccessor = this
                     .getLayerRenderer()
@@ -155,9 +158,8 @@ public class GeoxComplexRendererBezier extends AbstractGeoxComplexRenderer {
                     .createBezierAccessor(
                             this.shaderDescriptor.getShaderDescriptor());
             this.getGlContext().addProgram(shaderId, bezierAccessor);
-            // generate the program by calling the accessor
-            program = this.getGlContext().setCurrentProgram(shaderId);
         }
+        program = this.getGlContext().setCurrentProgram(shaderId);
         return program;
     }
 
