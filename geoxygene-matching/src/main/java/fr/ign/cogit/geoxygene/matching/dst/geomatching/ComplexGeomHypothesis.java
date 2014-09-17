@@ -82,6 +82,7 @@ public class ComplexGeomHypothesis extends SimpleGeomHypothesis {
           geoms.add(f.getGeom());
         }
         merged.setGeom(JtsAlgorithms.union(geoms));
+        merged.setFeatureType(this.fromfeatures.get(0).getFeatureType());
         this.decoratedFeature = merged;
       } else {
         logger.debug("Creating a complex geometry hypothesis with only 1 object");
