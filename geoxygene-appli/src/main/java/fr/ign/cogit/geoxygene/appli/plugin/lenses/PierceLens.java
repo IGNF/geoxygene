@@ -29,28 +29,27 @@ import fr.ign.cogit.geoxygene.style.Layer;
  */
 public class PierceLens extends AbstractLens {
 
-  public static double LENS_RADIUS = 100.0;
-  public static String LAYER_NAME = "";
+  public static double FOCUS_RADIUS = 50.0;
+  public static String FOCUS_LAYER_NAME = "";
+
   private GeOxygeneApplication appli;
 
-  public PierceLens(GeOxygeneApplication application, double lensRadius,
-      String layerName) {
+  public PierceLens(GeOxygeneApplication application, double focusRadius,
+      double transitionRadius) {
     super();
     this.appli = application;
-    this.setFocusRegion(new FishEyeLensZoneShape(1, 1, lensRadius));
-
+    this.setFocusRegion(new FishEyeLensZoneShape(1, 1, focusRadius));
   }
 
   public PierceLens(GeOxygeneApplication application) {
     super();
     this.appli = application;
-    this.setFocusRegion(new FishEyeLensZoneShape(1, 1, LENS_RADIUS));
+    this.setFocusRegion(new FishEyeLensZoneShape(1, 1, FOCUS_RADIUS));
   }
 
   @Override
   protected void changeShapes(int x, int y) {
     this.getFocusRegion().setCenter(x, y);
-
   }
 
   @Override
@@ -90,7 +89,7 @@ public class PierceLens extends AbstractLens {
 
     // get the layer from layer name
     Layer layer = appli.getMainFrame().getSelectedProjectFrame()
-        .getLayer(LAYER_NAME);
+        .getLayer(FOCUS_LAYER_NAME);
     GridCoverage2D coverage = null;
     if (layer != null) {
       IFeature feat = layer.getFeatureCollection().iterator().next();
@@ -108,7 +107,7 @@ public class PierceLens extends AbstractLens {
 
         if (getFocusRegion().contains(x + rectangle.x, y + rectangle.y)) {
           // Apply modification on the focus region
-          int[] colorCoords = new int[3];
+          int[] colorCoords = new int[4];
           IDirectPosition pointCoord;
           try {
             pointCoord = appli
@@ -135,6 +134,5 @@ public class PierceLens extends AbstractLens {
       }
     }
     g2d.drawImage(imageToDraw, rectangle.x, rectangle.y, getVisuPanel());
-
   }
 }

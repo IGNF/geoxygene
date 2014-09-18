@@ -22,6 +22,12 @@ public class LensPaintListener extends AbstractMode implements PaintListener {
 
   private AbstractButton button = new JButton();
 
+  public final static int FISHEYE_LENS = 0;
+  public final static int JELLY_LENS = 1;
+  public final static int PIERCE_LENS = 2;
+  public final static int DOUBLE_PIERCE_LENS = 3;
+  public final static int FUZZY_PIERCE_LENS = 4;
+
   public LensPaintListener(MainFrame theMainFrame,
       MainFrameToolBar theModeSelector, AbstractButton button) {
     super(theMainFrame, theModeSelector);
@@ -37,7 +43,31 @@ public class LensPaintListener extends AbstractMode implements PaintListener {
     // });
   }
 
-  private ILens lens = new FishEyeLens();
+  private ILens lens;
+
+  public ILens getLens() {
+    return lens;
+  }
+
+  public void setLens(int type_lens) {
+    switch (type_lens) {
+      case FISHEYE_LENS:
+        this.lens = new FishEyeLens();
+        break;
+      case PIERCE_LENS:
+        this.lens = new PierceLens(this.mainFrame.getApplication());
+        break;
+      case FUZZY_PIERCE_LENS:
+        this.lens = new FuzzyPierceLens(this.mainFrame.getApplication());
+        break;
+      case DOUBLE_PIERCE_LENS:
+        this.lens = new DoublePierceLens(this.mainFrame.getApplication());
+        break;
+      default:
+        this.lens = new FishEyeLens();
+        break;
+    }
+  }
 
   @Override
   public void paint(LayerViewPanel layerViewPanel, Graphics graphics) {
