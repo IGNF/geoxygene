@@ -53,9 +53,9 @@ public class StrokeTextureExpressiveRenderingDescriptor extends
     @XmlElement(name = "minAngle")
     private double minAngle = 1.5;
     @XmlElement(name = "BrushAspectRatio")
-    private double brushSize = 8;
+    private double brushAspectRatio = 8;
     @XmlElement(name = "PaperSizeInCm")
-    private double paperScaleFactor = 4;
+    private double PaperSizeInCm = 4;
     @XmlElement(name = "PaperReferenceMapScale")
     private double paperReferenceMapScale = 100000;
     @XmlElement(name = "PaperRoughness")
@@ -187,23 +187,23 @@ public class StrokeTextureExpressiveRenderingDescriptor extends
     /**
      * @return the brushSize
      */
-    public double getBrushSize() {
-        return this.brushSize;
+    public double getBrushAspectRatio() {
+        return this.brushAspectRatio;
     }
 
     /**
      * @param brushSize
      *            the brushSize to set
      */
-    public void setBrushSize(double brushSize) {
-        this.brushSize = brushSize;
+    public void setBrushAspectRatio(double brushAspectRatio) {
+        this.brushAspectRatio = brushAspectRatio;
     }
 
     /**
      * @return the paperScaleFactor
      */
     public double getPaperScaleFactor() {
-        return this.paperScaleFactor;
+        return this.PaperSizeInCm;
     }
 
     /**
@@ -211,7 +211,7 @@ public class StrokeTextureExpressiveRenderingDescriptor extends
      *            the paperScaleFactor to set
      */
     public void setPaperScaleFactor(double paperScaleFactor) {
-        this.paperScaleFactor = paperScaleFactor;
+        this.PaperSizeInCm = paperScaleFactor;
     }
 
     /**

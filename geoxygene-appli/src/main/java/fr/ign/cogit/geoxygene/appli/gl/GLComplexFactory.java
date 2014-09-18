@@ -47,8 +47,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellator;
 
-import test.app.BezierTesselator;
-import test.app.GLBezierShadingComplex;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -717,7 +715,7 @@ public class GLComplexFactory {
             createPaintingThickCurves(id, complex, stroke, minX, minY, strtex,
                     curves);
             // complex.setColor(symbolizer.getStroke().getColor());
-            complex.setOverallOpacity(stroke.getColor().getAlpha());
+            complex.setOverallOpacity(stroke.getColor().getAlpha() / 255.);
             complex.setRenderer(renderer);
             return complex;
         } else if (stroke.getExpressiveRendering() instanceof BasicTextureExpressiveRenderingDescriptor) {
@@ -737,7 +735,7 @@ public class GLComplexFactory {
             createBezierThickCurves(id, complex, stroke, minX, minY, strtex,
                     curves);
             // complex.setColor(symbolizer.getStroke().getColor());
-            complex.setOverallOpacity(stroke.getColor().getAlpha());
+            complex.setOverallOpacity(stroke.getColor().getAlpha() / 255.);
             complex.setRenderer(renderer);
             return complex;
         }
@@ -822,6 +820,14 @@ public class GLComplexFactory {
             GLBezierShadingComplex complex, Stroke stroke, double minX,
             double minY, BasicTextureExpressiveRenderingDescriptor strtex,
             List<ILineString> curves) {
+
+        GLTexture paperTexture = GLTextureManager.getInstance().getTexture(
+                strtex.getPaperTextureFilename());
+        int paperWidthInPixels = paperTexture.getTextureWidth();
+        int paperHeightInPixels = paperTexture.getTextureHeight();
+        double paperHeightInCm = strtex.getPaperSizeInCm();
+        double mapScale = strtex.getPaperReferenceMapScale();
+
         for (ILineString line : curves) {
             try {
                 Task tesselateThickLineTask = BezierTesselator
@@ -829,7 +835,9 @@ public class GLComplexFactory {
                                 line.getControlPoint(),
                                 stroke.getStrokeWidth(),
                                 strtex.getTransitionSize(), minX, minY,
-                                new SolidColorizer(stroke.getColor()));
+                                new SolidColorizer(stroke.getColor()),
+                                paperWidthInPixels, paperHeightInPixels,
+                                paperHeightInCm, mapScale);
                 tesselateThickLineTask.start();
                 TaskManager.startAndWait(tesselateThickLineTask);
             } catch (FunctionEvaluationException e) {

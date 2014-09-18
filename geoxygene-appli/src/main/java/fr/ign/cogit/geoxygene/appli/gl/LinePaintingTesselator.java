@@ -135,6 +135,8 @@ public class LinePaintingTesselator {
 
     private static class LinePaintingTesselatorTask extends AbstractTask {
 
+        private static boolean first = true;
+
         private final Point2d[] polyline;
         private final GLPaintingComplex complex;
         private final Function1D lineWidth;
@@ -276,20 +278,35 @@ public class LinePaintingTesselator {
                 Color cHigh = this.colorizer.getColor(uvHigh.x, uvHigh.y);
                 Point2d paperUV = this.computePaperUV(lowPoint0,
                         this.complex.getMinX(), this.complex.getMinY());
+                if (first) {
+                    cLow = Color.red;
+                    cHigh = Color.red;
+                }
+
                 int p0LowIndex = this.complex.addVertex(new GLPaintingVertex(
                         (float) lowPoint0.x, (float) lowPoint0.y,
-                        (float) uvLow.x, (float) uvLow.y, (float) paperUV.x,
-                        (float) paperUV.y, (float) arcLength, 0f, 0f, 0f, 0f,
-                        cLow.getRed() / 255f, cLow.getGreen() / 255f, cLow
-                                .getBlue() / 255f, cLow.getAlpha() / 255f));
+                        (float) uvLow.x, (float) uvLow.y, (float) arcLength,
+                        0f, 0f, 0f, 0f, cLow.getRed() / 255f,
+                        cLow.getGreen() / 255f, cLow.getBlue() / 255f, cLow
+                                .getAlpha() / 255f, (float) paperUV.x,
+                        (float) paperUV.y));
+                if (first) {
+                    System.err.println("Point low 0 = " + lowPoint0
+                            + " paperUV = " + paperUV);
+                }
                 paperUV = this.computePaperUV(highPoint0,
                         this.complex.getMinX(), this.complex.getMinY());
                 int p0HighIndex = this.complex.addVertex(new GLPaintingVertex(
                         (float) highPoint0.x, (float) highPoint0.y,
-                        (float) uvHigh.x, (float) uvHigh.y, (float) paperUV.x,
-                        (float) paperUV.y, (float) arcLength, 0f, 0f, 0f, 0f,
-                        cHigh.getRed() / 255f, cHigh.getGreen() / 255f, cHigh
-                                .getBlue() / 255f, cHigh.getAlpha() / 255f));
+                        (float) uvHigh.x, (float) uvHigh.y, (float) arcLength,
+                        0f, 0f, 0f, 0f, cHigh.getRed() / 255f,
+                        cHigh.getGreen() / 255f, cHigh.getBlue() / 255f, cHigh
+                                .getAlpha() / 255f, (float) paperUV.x,
+                        (float) paperUV.y));
+                if (first) {
+                    System.err.println("Point high 0 = " + highPoint0
+                            + " paperUV = " + paperUV);
+                }
                 // System.err.println("Add vertex with uv = " + uvLow + " / " +
                 // uvHigh + " on " + arcLength);
 
@@ -426,36 +443,55 @@ public class LinePaintingTesselator {
                             paperUV = this.computePaperUV(interpolatedLowPoint,
                                     this.complex.getMinX(),
                                     this.complex.getMinY());
+                            if (first) {
+                                cLow = Color.red;
+                            }
+
                             int p1LowIndex = this.complex
                                     .addVertex(new GLPaintingVertex(
                                             (float) interpolatedLowPoint.x,
                                             (float) interpolatedLowPoint.y,
                                             (float) uvLow.x, (float) uvLow.y,
-                                            (float) paperUV.x,
-                                            (float) paperUV.y,
                                             (float) arcLength, (float) n.x,
                                             (float) n.y, 0f, 0f,
                                             cLow.getRed() / 255f, cLow
                                                     .getGreen() / 255f, cLow
                                                     .getBlue() / 255f, cLow
-                                                    .getAlpha() / 255f));
+                                                    .getAlpha() / 255f,
+                                            (float) paperUV.x,
+                                            (float) paperUV.y));
+                            if (first) {
+                                System.err.println("Point low(i) = "
+                                        + interpolatedLowPoint + " paperUV = "
+                                        + paperUV);
+                            }
+
                             paperUV = this.computePaperUV(
                                     interpolatedHighPoint,
                                     this.complex.getMinX(),
                                     this.complex.getMinY());
+                            if (first) {
+                                cHigh = Color.red;
+                            }
                             int p1HighIndex = this.complex
                                     .addVertex(new GLPaintingVertex(
                                             (float) interpolatedHighPoint.x,
                                             (float) interpolatedHighPoint.y,
                                             (float) uvHigh.x, (float) uvHigh.y,
-                                            (float) paperUV.x,
-                                            (float) paperUV.y,
                                             (float) arcLength, (float) n.x,
                                             (float) n.y, 0f, 0f,
                                             cHigh.getRed() / 255f, cHigh
                                                     .getGreen() / 255f, cHigh
                                                     .getBlue() / 255f, cHigh
-                                                    .getAlpha() / 255f));
+                                                    .getAlpha() / 255f,
+                                            (float) paperUV.x,
+                                            (float) paperUV.y));
+                            if (first) {
+                                System.err.println("Point high(i) = "
+                                        + interpolatedHighPoint + " paperUV = "
+                                        + paperUV);
+                            }
+
                             // System.err.println("Add vertex with uv = " +
                             // uvLow +
                             // " / "
@@ -496,6 +532,7 @@ public class LinePaintingTesselator {
                 this.setState(TaskState.FINALIZING);
                 this.colorizer.finalizeColorization();
                 this.setState(TaskState.FINISHED);
+                first = true;
             } catch (Exception e) {
                 this.setError(e);
                 this.setState(TaskState.ERROR);
@@ -510,7 +547,7 @@ public class LinePaintingTesselator {
          * @return texture coordinates in paper coordinates
          */
         private Point2d computePaperUV(Point2d p, double minX, double minY) {
-            // TODO: may be we can use minX, minY to computed reduced texture
+            // TODO: may be we can use minX, minY to computed reduced texture //
             // coordinates... (p.xy can be large...)
             double x = ((p.x + minX % this.paperWidthInWorldCoordinates))
                     / this.paperWidthInWorldCoordinates;

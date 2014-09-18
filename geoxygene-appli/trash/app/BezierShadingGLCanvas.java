@@ -21,6 +21,10 @@ import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.appli.gl.BezierTesselator;
+import fr.ign.cogit.geoxygene.appli.gl.GLBezierShadingComplex;
+import fr.ign.cogit.geoxygene.appli.gl.GLBezierShadingVertex;
+import fr.ign.cogit.geoxygene.appli.gl.GLTextureManager;
 import fr.ign.cogit.geoxygene.appli.render.primitive.RandomColorizer;
 import fr.ign.cogit.geoxygene.appli.task.Task;
 import fr.ign.cogit.geoxygene.appli.task.TaskManager;
@@ -31,6 +35,7 @@ import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessor;
+import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
@@ -220,11 +225,19 @@ public class BezierShadingGLCanvas extends AWTGLCanvas implements
             double minX, double minY, double lineWidth, double transitionSize) {
         GLBezierShadingComplex complex = new GLBezierShadingComplex(id, minX,
                 minY);
+        GLTexture paperTexture = GLTextureManager.getInstance().getTexture(
+                strtex.getPaperTextureFilename());
+        int paperWidthInPixels = paperTexture.getTextureWidth();
+        int paperHeightInPixels = paperTexture.getTextureHeight();
+        double paperHeightInCm = strtex.getPaperSizeInCm();
+        double mapScale = strtex.getPaperReferenceMapScale();
+
         for (ILineString line : lines) {
             try {
                 Task task = BezierTesselator.tesselateThickLine(id, complex,
                         line.getControlPoint(), lineWidth, transitionSize,
-                        minX, minY, new RandomColorizer());
+                        minX, minY, new RandomColorizer(), paperWidthInPixels,
+                        paperHeightInPixels, paperHeightInCm, mapScale);
                 task.start();
                 TaskManager.startAndWait(task);
                 // LinePaintingTesselator

@@ -86,8 +86,9 @@ public class UserSubshader implements Subshader {
     @Override
     public void configureProgram(GLProgram program) throws GLException {
         try {
-            program.addFragmentShader(GLTools
-                    .readFileAsString(this.subshaderFilename));
+            program.addFragmentShader(
+                    GLTools.readFileAsString(this.subshaderFilename),
+                    this.subshaderFilename);
         } catch (IOException e) {
             throw new GLException(e);
         }

@@ -172,18 +172,18 @@ public class StrokeTextureExpressiveRendering implements ExpressiveRendering {
 
     /**
      * @return
-     * @see fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor#getBrushSize()
+     * @see fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor#getBrushAspectRatio()
      */
     public double getBrushSize() {
-        return this.descriptor.getBrushSize();
+        return this.descriptor.getBrushAspectRatio();
     }
 
     /**
      * @param brushSize
-     * @see fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor#setBrushSize(double)
+     * @see fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor#setBrushAspectRatio(double)
      */
     public void setBrushSize(double brushSize) {
-        this.descriptor.setBrushSize(brushSize);
+        this.descriptor.setBrushAspectRatio(brushSize);
     }
 
     /**

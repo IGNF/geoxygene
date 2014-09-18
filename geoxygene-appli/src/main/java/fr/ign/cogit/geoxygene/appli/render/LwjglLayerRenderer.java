@@ -814,8 +814,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                 || this.previousFBOImageHeight != fboImageHeight) {
             this.previousFBOImageWidth = fboImageWidth;
             this.previousFBOImageHeight = fboImageHeight;
-            logger.debug("FBO size modification " + fboImageWidth + "x"
-                    + fboImageHeight);
 
             glBindTexture(GL_TEXTURE_2D, this.getFBOTextureId());
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D,

@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package test.app;
+package fr.ign.cogit.geoxygene.appli.gl;
 
 import static fr.ign.cogit.geoxygene.util.math.VectorUtil.length;
 import static fr.ign.cogit.geoxygene.util.math.VectorUtil.normalize;
@@ -108,7 +108,9 @@ public class BezierTesselator {
     public static Task tesselateThickLine(String name,
             GLBezierShadingComplex complex, IDirectPositionList dlist,
             double lineWidth, double transitionSize, double minX, double minY,
-            Colorizer c) throws FunctionEvaluationException {
+            Colorizer c, int paperWidthInPixels, int paperHeightInPixels,
+            double paperHeightInCm, double mapScale)
+            throws FunctionEvaluationException {
         complex.setMayOverlap(true);
         int pointCount = dlist.size();
         Point2d[] polyline = new Point2d[pointCount];
@@ -118,12 +120,15 @@ public class BezierTesselator {
         }
 
         return tesselateThickLine(name, complex, polyline, lineWidth,
-                transitionSize, c);
+                transitionSize, c, paperWidthInPixels, paperHeightInPixels,
+                paperHeightInCm, mapScale);
     }
 
     public static Task tesselateThickLine(String name,
             GLBezierShadingComplex complex, Point2d[] polyline,
-            double lineWidth, double transitionSize, Colorizer colorizer)
+            double lineWidth, double transitionSize, Colorizer colorizer,
+            int paperWidthInPixels, int paperHeightInPixels,
+            double paperHeightInCm, double mapScale)
             throws FunctionEvaluationException {
 
         if (polyline.length < 2) {
@@ -132,7 +137,8 @@ public class BezierTesselator {
             return null;
         }
         return new BezierTesselatorTask(name, polyline, complex, lineWidth,
-                transitionSize, colorizer);
+                transitionSize, colorizer, paperWidthInPixels,
+                paperHeightInPixels, paperHeightInCm, mapScale);
     }
 
     // public static Task tesselateThickLine(String name,
@@ -158,16 +164,24 @@ public class BezierTesselator {
         private final double lineWidth;
         private final double transitionSize;
         private final Colorizer colorizer;
+        public double paperWidthInWorldCoordinates = 1.;
+        public double paperHeightInWorldCoordinates = 1.;
 
         private BezierTesselatorTask(String name, Point2d[] polyline,
                 GLBezierShadingComplex complex, double lineWidth,
-                double transitionSize, Colorizer c) {
+                double transitionSize, Colorizer c, int paperWidthInPixels,
+                int paperHeightInPixels, double paperHeightInCm, double mapScale) {
             super(name + "-tesselation");
             this.polyline = polyline;
             this.complex = complex;
             this.lineWidth = lineWidth;
             this.transitionSize = transitionSize;
             this.colorizer = c;
+
+            double psf = paperHeightInCm * mapScale
+                    / (100. * paperHeightInPixels);
+            this.paperWidthInWorldCoordinates = psf * paperWidthInPixels;
+            this.paperHeightInWorldCoordinates = psf * paperHeightInPixels;
         }
 
         @Override
@@ -449,25 +463,39 @@ public class BezierTesselator {
                     E) != null;
             Point2d uv = new Point2d(u0, u2);
             Color col = this.colorizer.getColor(uv.x, uv.y);
+            Point2d paperUV = this.computePaperUV(A, this.complex.getMinX(),
+                    this.complex.getMinY());
+
             GLBezierShadingVertex vertexA = new GLBezierShadingVertex(A, uv,
-                    col, (float) this.lineWidth, uMax, p0, p1, p2, n0, n2);
+                    col, (float) this.lineWidth, uMax, p0, p1, p2, n0, n2,
+                    paperUV);
             int aIndex = this.complex.addVertex(vertexA);
             // uv = new Point2d((u0 + (u2 - u0) / 3), 0);
             col = this.colorizer.getColor(uv.x, uv.y);
+            paperUV = this.computePaperUV(B, this.complex.getMinX(),
+                    this.complex.getMinY());
             GLBezierShadingVertex vertexB = new GLBezierShadingVertex(B, uv,
-                    col, (float) this.lineWidth, uMax, p0, p1, p2, n0, n2);
+                    col, (float) this.lineWidth, uMax, p0, p1, p2, n0, n2,
+                    paperUV);
             int bIndex = this.complex.addVertex(vertexB);
 
             // uv = new Point2d((u0 + 2 * (u2 - u0) / 3), 0);
             col = this.colorizer.getColor(uv.x, uv.y);
+            paperUV = this.computePaperUV(C, this.complex.getMinX(),
+                    this.complex.getMinY());
+
             GLBezierShadingVertex vertexC = new GLBezierShadingVertex(C, uv,
-                    col, (float) this.lineWidth, uMax, p0, p1, p2, n0, n2);
+                    col, (float) this.lineWidth, uMax, p0, p1, p2, n0, n2,
+                    paperUV);
             int cIndex = this.complex.addVertex(vertexC);
 
             // uv = new Point2d(u2, 0);
             col = this.colorizer.getColor(uv.x, uv.y);
+            paperUV = this.computePaperUV(D, this.complex.getMinX(),
+                    this.complex.getMinY());
             GLBezierShadingVertex vertexD = new GLBezierShadingVertex(D, uv,
-                    col, (float) this.lineWidth, uMax, p0, p1, p2, n0, n2);
+                    col, (float) this.lineWidth, uMax, p0, p1, p2, n0, n2,
+                    paperUV);
             int dIndex = this.complex.addVertex(vertexD);
 
             selfIntersect = false;
@@ -476,9 +504,11 @@ public class BezierTesselator {
                 // self intersection
                 // uv = new Point2d(u2, 1);
                 col = this.colorizer.getColor(uv.x, uv.y);
+                paperUV = this.computePaperUV(I, this.complex.getMinX(),
+                        this.complex.getMinY());
                 GLBezierShadingVertex vertexI = new GLBezierShadingVertex(I,
                         uv, col, (float) this.lineWidth, uMax, p0, p1, p2, n0,
-                        n2);
+                        n2, paperUV);
                 int iIndex = this.complex.addVertex(vertexI);
 
                 mesh.addIndices(aIndex, bIndex, iIndex);
@@ -494,23 +524,30 @@ public class BezierTesselator {
             } else {
                 // uv = new Point2d(u2, 1);
                 col = this.colorizer.getColor(uv.x, uv.y);
+                paperUV = this.computePaperUV(E, this.complex.getMinX(),
+                        this.complex.getMinY());
+
                 GLBezierShadingVertex vertexE = new GLBezierShadingVertex(E,
                         uv, col, (float) this.lineWidth, uMax, p0, p1, p2, n0,
-                        n2);
+                        n2, paperUV);
                 int eIndex = this.complex.addVertex(vertexE);
 
                 // uv = new Point2d((u0 + u2) / 2., 1);
                 col = this.colorizer.getColor(uv.x, uv.y);
+                paperUV = this.computePaperUV(F, this.complex.getMinX(),
+                        this.complex.getMinY());
                 GLBezierShadingVertex vertexF = new GLBezierShadingVertex(F,
                         uv, col, (float) this.lineWidth, uMax, p0, p1, p2, n0,
-                        n2);
+                        n2, paperUV);
                 int fIndex = this.complex.addVertex(vertexF);
 
                 // uv = new Point2d(u0, 1);
                 col = this.colorizer.getColor(uv.x, uv.y);
+                paperUV = this.computePaperUV(G, this.complex.getMinX(),
+                        this.complex.getMinY());
                 GLBezierShadingVertex vertexG = new GLBezierShadingVertex(G,
                         uv, col, (float) this.lineWidth, uMax, p0, p1, p2, n0,
-                        n2);
+                        n2, paperUV);
                 int gIndex = this.complex.addVertex(vertexG);
 
                 mesh.addIndices(aIndex, bIndex, gIndex);
@@ -599,21 +636,31 @@ public class BezierTesselator {
             VectorUtil.normalize(n2, n2);
             Point2d us = new Point2d(u0, u1);
             Color c = this.colorizer.getColor(us.x, 0);
+            Point2d paperUV = this.computePaperUV(p0low,
+                    this.complex.getMinX(), this.complex.getMinY());
             GLBezierShadingVertex vertex0low = new GLBezierShadingVertex(p0low,
                     us, c, (float) this.lineWidth, uMax, bezier0, bezier1,
-                    bezier2, n0, n2);
+                    bezier2, n0, n2, paperUV);
             c = this.colorizer.getColor(us.x, 1);
+            paperUV = this.computePaperUV(p0high, this.complex.getMinX(),
+                    this.complex.getMinY());
+
             GLBezierShadingVertex vertex0high = new GLBezierShadingVertex(
                     p0high, us, c, (float) this.lineWidth, uMax, bezier0,
-                    bezier1, bezier2, n0, n2);
+                    bezier1, bezier2, n0, n2, paperUV);
             c = this.colorizer.getColor(us.y, 1);
+            paperUV = this.computePaperUV(p1low, this.complex.getMinX(),
+                    this.complex.getMinY());
             GLBezierShadingVertex vertex1low = new GLBezierShadingVertex(p1low,
                     us, c, (float) this.lineWidth, uMax, bezier0, bezier1,
-                    bezier2, n0, n2);
+                    bezier2, n0, n2, paperUV);
             c = this.colorizer.getColor(us.y, 0);
+            paperUV = this.computePaperUV(p1high, this.complex.getMinX(),
+                    this.complex.getMinY());
+
             GLBezierShadingVertex vertex1high = new GLBezierShadingVertex(
                     p1high, us, c, (float) this.lineWidth, uMax, bezier0,
-                    bezier1, bezier2, n0, n2);
+                    bezier1, bezier2, n0, n2, paperUV);
             int p0lowIndex = this.complex.addVertex(vertex0low);
             int p0highIndex = this.complex.addVertex(vertex0high);
             int p1lowIndex = this.complex.addVertex(vertex1low);
@@ -645,6 +692,23 @@ public class BezierTesselator {
             iHigh.x = p1.x - sign * middleNormal.x * lineWidth / 2;
             iHigh.y = p1.y - sign * middleNormal.y * lineWidth / 2;
 
+        }
+
+        /**
+         * Compute texture coordinates for the given paper texture
+         * 
+         * @param p
+         *            point in world coordinates
+         * @return texture coordinates in paper coordinates
+         */
+        private Point2d computePaperUV(Point2d p, double minX, double minY) {
+            // TODO: may be we can use minX, minY to computed reduced texture //
+            // coordinates... (p.xy can be large...)
+            double x = ((p.x + minX % this.paperWidthInWorldCoordinates))
+                    / this.paperWidthInWorldCoordinates;
+            double y = ((p.y + minY % this.paperHeightInWorldCoordinates))
+                    / this.paperHeightInWorldCoordinates;
+            return new Point2d(x, y);
         }
     }
 }

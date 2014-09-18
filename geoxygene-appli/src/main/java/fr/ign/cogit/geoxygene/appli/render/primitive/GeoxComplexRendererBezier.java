@@ -32,9 +32,10 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 
-import test.app.GLBezierShadingComplex;
+import fr.ign.cogit.geoxygene.appli.gl.GLBezierShadingComplex;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
+import fr.ign.cogit.geoxygene.appli.render.texture.BasicTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
@@ -92,8 +93,8 @@ public class GeoxComplexRendererBezier extends AbstractGeoxComplexRenderer {
         GLTools.glCheckError("gl error before normal painting rendering");
 
         GLProgram program = this.setOrCreateBezierProgram();
-        // BasicTextureExpressiveRendering strtex = primitive
-        // .getExpressiveRendering();
+        BasicTextureExpressiveRendering strtex = primitive
+                .getExpressiveRendering();
         program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
         program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
                 (float) opacity);
@@ -106,6 +107,13 @@ public class GeoxComplexRendererBezier extends AbstractGeoxComplexRenderer {
         //
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GLTools.glCheckError("enable paperTexture");
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GLTools.glCheckError("active paperTexture");
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, primitive.getPaperTexture()
+                .getTextureId());
+        GLTools.glCheckError("bind paperTexture");
+        program.setUniform1i(LayerViewGLPanel.paperTextureUniformVarName, 0);
 
         GL13.glActiveTexture(GL13.GL_TEXTURE1);
         GLTools.glCheckError("active brushTexture");
@@ -115,10 +123,34 @@ public class GeoxComplexRendererBezier extends AbstractGeoxComplexRenderer {
         // GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
         // GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
         // GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        GLTools.glCheckError("bind brushTexture");
+        program.setUniform1i(LayerViewGLPanel.brushTextureUniformVarName, 1);
 
-        program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
-                COLORTEXTURE1_SLOT);
+        GLTools.glCheckError("setUniform paperTexture");
 
+        program.setUniform1i(LayerViewGLPanel.brushWidthUniformVarName,
+                primitive.getBrushTexture().getTextureWidth());
+        program.setUniform1i(LayerViewGLPanel.brushHeightUniformVarName,
+                primitive.getBrushTexture().getTextureHeight());
+        program.setUniform1i(LayerViewGLPanel.brushStartWidthUniformVarName,
+                strtex.getBrushStartLength());
+        program.setUniform1i(LayerViewGLPanel.brushEndWidthUniformVarName,
+                strtex.getBrushEndLength());
+        program.setUniform1f(LayerViewGLPanel.brushScaleUniformVarName,
+                (float) (strtex.getBrushAspectRatio() / primitive
+                        .getBrushTexture().getTextureHeight()));
+        program.setUniform1f(LayerViewGLPanel.paperScaleUniformVarName,
+                (float) (strtex.getPaperSizeInCm()));
+        program.setUniform1f(LayerViewGLPanel.paperDensityUniformVarName,
+                (float) (strtex.getPaperDensity()));
+        program.setUniform1f(LayerViewGLPanel.brushDensityUniformVarName,
+                (float) (strtex.getBrushDensity()));
+        program.setUniform1f(LayerViewGLPanel.strokePressureUniformVarName,
+                (float) (strtex.getStrokePressure()));
+        program.setUniform1f(LayerViewGLPanel.sharpnessUniformVarName,
+                (float) (strtex.getSharpness()));
+
+        strtex.getShader().setUniforms(program);
         this.getLayerRenderer().setGLViewMatrix(primitive.getMinX(),
                 primitive.getMinY());
         //

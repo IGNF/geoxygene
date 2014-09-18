@@ -78,7 +78,8 @@ public class Viewport {
      */
     private Point2D viewOrigin = new Point2D.Double(0, 0);
     /** The layer view panels. */
-    private final Collection<LayerViewPanel> layerViewPanels = new ArrayList<LayerViewPanel>(0);
+    private final Collection<LayerViewPanel> layerViewPanels = new ArrayList<LayerViewPanel>(
+            0);
     /**
      * The number of pixels used to approximate a curve. It is used both when
      * transforming a curve to a linestring (especially for rendering).
@@ -113,19 +114,18 @@ public class Viewport {
     /**
      * Taille d'un pixel en m (la longueur d'un cote de pixel de l'ecran)
      * utilise pour le calcul de l'echelle courante de la vue. Elle est calculée
-     * à
-     * partir de la résolution de l'écran en DPI. par exemple si la résolution
+     * à partir de la résolution de l'écran en DPI. par exemple si la résolution
      * est 90DPI, c'est: 90 pix/inch = 1/90 inch/pix = 0.0254/90 meter/pix.
      */
     private final static double METERS_PER_PIXEL;
     static {
-        METERS_PER_PIXEL = 0.02540005 / Toolkit.getDefaultToolkit().getScreenResolution();
+        METERS_PER_PIXEL = 0.02540005 / Toolkit.getDefaultToolkit()
+                .getScreenResolution();
     }
 
     /**
      * @return Taille d'un pixel en m (la longueur d'un cote de pixel de
-     *         l'ecran)
-     *         utilise pour le calcul de l'echelle courante de la vue.
+     *         l'ecran) utilise pour le calcul de l'echelle courante de la vue.
      */
     public static double getMETERS_PER_PIXEL() {
         return Viewport.METERS_PER_PIXEL;
@@ -149,7 +149,8 @@ public class Viewport {
      *             throws an exception when the transformation fails
      * @see #update()
      */
-    public final AffineTransform getModelToViewTransform() throws NoninvertibleTransformException {
+    public final AffineTransform getModelToViewTransform()
+            throws NoninvertibleTransformException {
         if (this.modelToViewTransform == null) {
             this.update();
         }
@@ -164,7 +165,9 @@ public class Viewport {
      * @see #modelToViewTransform
      */
     public final void update() throws NoninvertibleTransformException {
-        this.modelToViewTransform = Viewport.modelToViewTransform(this.scale, this.viewOrigin, this.layerViewPanels.iterator().next().getHeight());
+        this.modelToViewTransform = Viewport.modelToViewTransform(this.scale,
+                this.viewOrigin, this.layerViewPanels.iterator().next()
+                        .getHeight());
         for (LayerViewPanel lvp : this.layerViewPanels) {
             lvp.repaint();
         }
@@ -187,7 +190,8 @@ public class Viewport {
      * @see #getEnvelopeInModelCoordinates()
      * @see #update()
      */
-    public static AffineTransform modelToViewTransform(final double xScale, final double yScale, final Point2D viewOrigin, final double height) {
+    public static AffineTransform modelToViewTransform(final double xScale,
+            final double yScale, final Point2D viewOrigin, final double height) {
         AffineTransform modelToViewTransform = new AffineTransform();
         modelToViewTransform.translate(0, height);
         modelToViewTransform.scale(1, -1);
@@ -211,16 +215,19 @@ public class Viewport {
      * @see #getEnvelopeInModelCoordinates()
      * @see #update()
      */
-    public static AffineTransform modelToViewTransform(final double scale, final Point2D viewOrigin, final double height) {
+    public static AffineTransform modelToViewTransform(final double scale,
+            final Point2D viewOrigin, final double height) {
         return Viewport.modelToViewTransform(scale, scale, viewOrigin, height);
     }
 
     /** The affine transformation from view to model. */
     private AffineTransform viewToModelTransform = null;
 
-    public final AffineTransform getViewToModelTransform() throws NoninvertibleTransformException {
+    public final AffineTransform getViewToModelTransform()
+            throws NoninvertibleTransformException {
         if (this.viewToModelTransform == null) {
-            this.viewToModelTransform = this.getModelToViewTransform().createInverse();
+            this.viewToModelTransform = this.getModelToViewTransform()
+                    .createInverse();
         }
         return this.viewToModelTransform;
     }
@@ -240,8 +247,9 @@ public class Viewport {
         LayerViewPanel lvp = this.layerViewPanels.iterator().next();
         double widthAsPerceivedByModel = lvp.getWidth() / this.scale;
         double heightAsPerceivedByModel = lvp.getHeight() / this.scale;
-        return new GM_Envelope(this.viewOrigin.getX(), this.viewOrigin.getX() + widthAsPerceivedByModel, this.viewOrigin.getY(), this.viewOrigin.getY()
-                + heightAsPerceivedByModel);
+        return new GM_Envelope(this.viewOrigin.getX(), this.viewOrigin.getX()
+                + widthAsPerceivedByModel, this.viewOrigin.getY(),
+                this.viewOrigin.getY() + heightAsPerceivedByModel);
     }
 
     /**
@@ -257,13 +265,17 @@ public class Viewport {
      *            height of the envelope
      * @return The envelope of the panel in model coordinates
      */
-    public final IEnvelope getEnvelopeInModelCoordinates(final int x, final int y, final int width, final int height) {
+    public final IEnvelope getEnvelopeInModelCoordinates(final int x,
+            final int y, final int width, final int height) {
         double xAsPerceivedByModel = x / this.scale;
         double yAsPerceivedByModel = y / this.scale;
         double widthAsPerceivedByModel = width / this.scale;
         double heightAsPerceivedByModel = height / this.scale;
-        return new GM_Envelope(this.viewOrigin.getX() + xAsPerceivedByModel, this.viewOrigin.getX() + xAsPerceivedByModel + widthAsPerceivedByModel,
-                this.viewOrigin.getY() + yAsPerceivedByModel, this.viewOrigin.getY() + yAsPerceivedByModel + heightAsPerceivedByModel);
+        return new GM_Envelope(this.viewOrigin.getX() + xAsPerceivedByModel,
+                this.viewOrigin.getX() + xAsPerceivedByModel
+                        + widthAsPerceivedByModel, this.viewOrigin.getY()
+                        + yAsPerceivedByModel, this.viewOrigin.getY()
+                        + yAsPerceivedByModel + heightAsPerceivedByModel);
     }
 
     /**
@@ -273,7 +285,8 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final Shape toShape(final IGeometry geometry) throws NoninvertibleTransformException {
+    public final Shape toShape(final IGeometry geometry)
+            throws NoninvertibleTransformException {
         if (geometry == null) {
             return null;
         }
@@ -313,7 +326,8 @@ public class Viewport {
             if (geometry instanceof IAggregate<?>) {
                 return null;
             }
-            throw new IllegalArgumentException(I18N.getString("Viewport.UnhandledGeometryClass" //$NON-NLS-1$
+            throw new IllegalArgumentException(
+                    I18N.getString("Viewport.UnhandledGeometryClass" //$NON-NLS-1$
                     ) + geometry.getClass());
         } catch (Exception e) {
             Viewport.logger.info(I18N.getString("Viewport.Geometry") //$NON-NLS-1$
@@ -333,12 +347,14 @@ public class Viewport {
      *             throws an exception when the transformation fails
      * @see #toViewDirectPositionList(IPolygon p)
      */
-    private Shape toShape(final IMultiSurface<?> geometry) throws NoninvertibleTransformException {
+    private Shape toShape(final IMultiSurface<?> geometry)
+            throws NoninvertibleTransformException {
         IDirectPositionList viewDirectPositionList = null;
         IDirectPosition lastPosition = null;
         for (IOrientableSurface surface : geometry) {
             if (IPolygon.class.isAssignableFrom(surface.getClass())) {
-                IDirectPositionList list = this.toViewDirectPositionList((IPolygon) surface);
+                IDirectPositionList list = this
+                        .toViewDirectPositionList((IPolygon) surface);
                 if (viewDirectPositionList == null) {
                     viewDirectPositionList = list;
                     lastPosition = list.get(list.size() - 1);
@@ -361,7 +377,8 @@ public class Viewport {
      *             throws an exception when the transformation fails
      * @see #toViewDirectPositionList(IPolygon p)
      */
-    private Shape toShape(final IPolygon p) throws NoninvertibleTransformException {
+    private Shape toShape(final IPolygon p)
+            throws NoninvertibleTransformException {
         return this.toPolygonShape(this.toViewDirectPositionList(p));
     }
 
@@ -374,14 +391,18 @@ public class Viewport {
      *         coordinates.
      * @throws NoninvertibleTransformException
      */
-    public final IDirectPositionList toViewDirectPositionList(final IPolygon p) throws NoninvertibleTransformException {
-        IDirectPositionList viewDirectPositionList = this.toViewDirectPositionList(p.getExterior().coord());
+    public final IDirectPositionList toViewDirectPositionList(final IPolygon p)
+            throws NoninvertibleTransformException {
+        IDirectPositionList viewDirectPositionList = this
+                .toViewDirectPositionList(p.getExterior().coord());
         if (viewDirectPositionList.isEmpty()) {
             return null;
         }
-        IDirectPosition lastExteriorRingDirectPosition = viewDirectPositionList.get(viewDirectPositionList.size() - 1);
+        IDirectPosition lastExteriorRingDirectPosition = viewDirectPositionList
+                .get(viewDirectPositionList.size() - 1);
         for (int i = 0; i < p.sizeInterior(); i++) {
-            viewDirectPositionList.addAll(this.toViewDirectPositionList(p.getInterior(i).coord()));
+            viewDirectPositionList.addAll(this.toViewDirectPositionList(p
+                    .getInterior(i).coord()));
             viewDirectPositionList.add(lastExteriorRingDirectPosition);
         }
         return viewDirectPositionList;
@@ -394,7 +415,8 @@ public class Viewport {
      *            a direct position list in view coordinates
      * @return A shape representing the polygon in view coordinates
      */
-    private Shape toPolygonShape(final IDirectPositionList viewDirectPositionList) {
+    private Shape toPolygonShape(
+            final IDirectPositionList viewDirectPositionList) {
         int numPoints = viewDirectPositionList.size();
         int[] xpoints = new int[numPoints];
         int[] ypoints = new int[numPoints];
@@ -417,12 +439,13 @@ public class Viewport {
      *            a direct position list in model coordinates
      * @return a DirectPositionList of DirectPosition in the screen coordinate
      *         system corresponding to the given DirectPositionList in model
-     *         coordinate
-     *         system
+     *         coordinate system
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final IDirectPositionList toViewDirectPositionList(final IDirectPositionList modelDirectPositionList) throws NoninvertibleTransformException {
+    public final IDirectPositionList toViewDirectPositionList(
+            final IDirectPositionList modelDirectPositionList)
+            throws NoninvertibleTransformException {
         IDirectPositionList viewDirectPositionList = new DirectPositionList();
         if (modelDirectPositionList.isEmpty()) {
             return viewDirectPositionList;
@@ -439,16 +462,20 @@ public class Viewport {
             // we keep the first 4 points, the last point and all points
             // whose distance with the last point is greater than the
             // threshold
-            if (xDifference >= threshold || yDifference >= threshold || numberOfPoints < Viewport.MINIMUM_NUMBER_OF_POINTS || i == numberOfModelPoints - 1) {
+            if (xDifference >= threshold || yDifference >= threshold
+                    || numberOfPoints < Viewport.MINIMUM_NUMBER_OF_POINTS
+                    || i == numberOfModelPoints - 1) {
                 Point2D point2D = this.toViewPoint(pi);
-                viewDirectPositionList.add(new DirectPosition(point2D.getX(), point2D.getY()));
+                viewDirectPositionList.add(new DirectPosition(point2D.getX(),
+                        point2D.getY()));
                 previousPoint = pi;
                 numberOfPoints++;
             }
         }
         if (numberOfPoints != numberOfModelPoints) {
             while (viewDirectPositionList.size() > numberOfPoints) {
-                viewDirectPositionList.remove(viewDirectPositionList.size() - 1);
+                viewDirectPositionList
+                        .remove(viewDirectPositionList.size() - 1);
             }
             return viewDirectPositionList;
         }
@@ -465,8 +492,10 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final Point2D toViewPoint(final IDirectPosition modelDirectPosition) throws NoninvertibleTransformException {
-        Point2D.Double pt = new Point2D.Double(modelDirectPosition.getX(), modelDirectPosition.getY());
+    public final Point2D toViewPoint(final IDirectPosition modelDirectPosition)
+            throws NoninvertibleTransformException {
+        Point2D.Double pt = new Point2D.Double(modelDirectPosition.getX(),
+                modelDirectPosition.getY());
         return this.getModelToViewTransform().transform(pt, pt);
     }
 
@@ -479,25 +508,35 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    private Shape toShape(final ICurve curve) throws NoninvertibleTransformException {
+    private Shape toShape(final ICurve curve)
+            throws NoninvertibleTransformException {
         if (IBezier.class.isAssignableFrom(curve.getClass())) {
             IBezier b = (IBezier) curve;
             if (b.getDegree() == 2) {
-                IDirectPositionList list = this.toViewDirectPositionList(curve.coord());
-                java.awt.geom.QuadCurve2D.Double quadratic = new java.awt.geom.QuadCurve2D.Double(list.get(0).getX(), list.get(0).getY(), list.get(1).getX(),
-                        list.get(1).getY(), list.get(2).getX(), list.get(2).getY());
+                IDirectPositionList list = this.toViewDirectPositionList(curve
+                        .coord());
+                java.awt.geom.QuadCurve2D.Double quadratic = new java.awt.geom.QuadCurve2D.Double(
+                        list.get(0).getX(), list.get(0).getY(), list.get(1)
+                                .getX(), list.get(1).getY(),
+                        list.get(2).getX(), list.get(2).getY());
                 return quadratic;
             }
             if (b.getDegree() == 3) {
-                IDirectPositionList list = this.toViewDirectPositionList(curve.coord());
-                java.awt.geom.CubicCurve2D.Double cubic = new java.awt.geom.CubicCurve2D.Double(list.get(0).getX(), list.get(0).getY(), list.get(1).getX(),
-                        list.get(1).getY(), list.get(2).getX(), list.get(2).getY(), list.get(3).getX(), list.get(3).getY());
+                IDirectPositionList list = this.toViewDirectPositionList(curve
+                        .coord());
+                java.awt.geom.CubicCurve2D.Double cubic = new java.awt.geom.CubicCurve2D.Double(
+                        list.get(0).getX(), list.get(0).getY(), list.get(1)
+                                .getX(), list.get(1).getY(),
+                        list.get(2).getX(), list.get(2).getY(), list.get(3)
+                                .getX(), list.get(3).getY());
                 return cubic;
             }
         }
-        // sample the curve using the current scale of the viewport to compute the
+        // sample the curve using the current scale of the viewport to compute
+        // the
         // spacing for the approximation
-        ILineString linestring = curve.asLineString(this.getSpacingInPixels() / this.getScale(), 0);
+        ILineString linestring = curve.asLineString(this.getSpacingInPixels()
+                / this.getScale(), 0);
         return this.toShape(linestring);
     }
 
@@ -510,7 +549,8 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    private GeneralPath toShape(final ILineString lineString) throws NoninvertibleTransformException {
+    private GeneralPath toShape(final ILineString lineString)
+            throws NoninvertibleTransformException {
         return this.toShape(lineString.coord());
     }
 
@@ -523,8 +563,10 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public GeneralPath toShape(final IDirectPositionList list) throws NoninvertibleTransformException {
-        IDirectPositionList viewPositionList = this.toViewDirectPositionList(list);
+    public GeneralPath toShape(final IDirectPositionList list)
+            throws NoninvertibleTransformException {
+        IDirectPositionList viewPositionList = this
+                .toViewDirectPositionList(list);
         GeneralPath shape = new GeneralPath();
         IDirectPosition p = viewPositionList.get(0);
         shape.moveTo(p.getX(), p.getY());
@@ -544,7 +586,8 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    private GeneralPath toShape(final IPoint point) throws NoninvertibleTransformException {
+    private GeneralPath toShape(final IPoint point)
+            throws NoninvertibleTransformException {
         Point2D p = this.toViewPoint(point.getPosition());
         GeneralPath shape = new GeneralPath();
         shape.moveTo(p.getX(), p.getY());
@@ -569,15 +612,20 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final void zoom(final IEnvelope extent) throws NoninvertibleTransformException {
-        if (extent == null || extent.isEmpty() || extent.width() == 0 || extent.height() == 0) {
+    public final void zoom(final IEnvelope extent)
+            throws NoninvertibleTransformException {
+        if (extent == null || extent.isEmpty() || extent.width() == 0
+                || extent.height() == 0) {
             return;
         }
         LayerViewPanel lvp = this.layerViewPanels.iterator().next();
-        this.scale = Math.min(lvp.getWidth() / extent.width(), lvp.getHeight() / extent.length());
+        this.scale = Math.min(lvp.getWidth() / extent.width(), lvp.getHeight()
+                / extent.length());
         double xCenteringOffset = (lvp.getWidth() / this.scale - extent.width()) / 2d;
-        double yCenteringOffset = (lvp.getHeight() / this.scale - extent.length()) / 2d;
-        this.viewOrigin = new Point2D.Double(extent.minX() - xCenteringOffset, extent.minY() - yCenteringOffset);
+        double yCenteringOffset = (lvp.getHeight() / this.scale - extent
+                .length()) / 2d;
+        this.viewOrigin = new Point2D.Double(extent.minX() - xCenteringOffset,
+                extent.minY() - yCenteringOffset);
         this.update();
     }
 
@@ -589,11 +637,14 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final void center(final IDirectPosition centroid) throws NoninvertibleTransformException {
+    public final void center(final IDirectPosition centroid)
+            throws NoninvertibleTransformException {
         LayerViewPanel lvp = this.layerViewPanels.iterator().next();
         double xCenteringOffset = lvp.getWidth() / this.scale / 2d;
         double yCenteringOffset = lvp.getHeight() / this.scale / 2d;
-        this.viewOrigin = new Point2D.Double(centroid.getX() - xCenteringOffset, centroid.getY() - yCenteringOffset);
+        this.viewOrigin = new Point2D.Double(
+                centroid.getX() - xCenteringOffset, centroid.getY()
+                        - yCenteringOffset);
         this.update();
     }
 
@@ -605,7 +656,8 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final void center(final IFeature feature) throws NoninvertibleTransformException {
+    public final void center(final IFeature feature)
+            throws NoninvertibleTransformException {
         if (feature == null || feature.getGeom() == null) {
             return;
         }
@@ -626,7 +678,8 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final void zoom(final Point2D p, final double factor) throws NoninvertibleTransformException {
+    public final void zoom(final Point2D p, final double factor)
+            throws NoninvertibleTransformException {
         Point2D zoomPoint = this.toModelPoint(p);
         IEnvelope modelEnvelope = this.getEnvelopeInModelCoordinates();
         IDirectPosition centre = modelEnvelope.center();
@@ -634,9 +687,12 @@ public class Viewport {
         double height = modelEnvelope.length();
         double dx = (zoomPoint.getX() - centre.getX()) / factor;
         double dy = (zoomPoint.getY() - centre.getY()) / factor;
-        IEnvelope zoomModelEnvelope = new GM_Envelope(zoomPoint.getX() - Viewport.ZERO_POINT_FIVE * (width / factor) - dx, zoomPoint.getX()
-                + Viewport.ZERO_POINT_FIVE * (width / factor) - dx, zoomPoint.getY() - Viewport.ZERO_POINT_FIVE * (height / factor) - dy, zoomPoint.getY()
-                + Viewport.ZERO_POINT_FIVE * (height / factor) - dy);
+        IEnvelope zoomModelEnvelope = new GM_Envelope(zoomPoint.getX()
+                - Viewport.ZERO_POINT_FIVE * (width / factor) - dx,
+                zoomPoint.getX() + Viewport.ZERO_POINT_FIVE * (width / factor)
+                        - dx, zoomPoint.getY() - Viewport.ZERO_POINT_FIVE
+                        * (height / factor) - dy, zoomPoint.getY()
+                        + Viewport.ZERO_POINT_FIVE * (height / factor) - dy);
         this.zoom(zoomModelEnvelope);
     }
 
@@ -654,15 +710,21 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final void zoom(final int x, final int y, final double widthOfNewView, final double heightOfNewView) throws NoninvertibleTransformException {
+    public final void zoom(final int x, final int y,
+            final double widthOfNewView, final double heightOfNewView)
+            throws NoninvertibleTransformException {
         LayerViewPanel lvp = this.layerViewPanels.iterator().next();
-        double zoomFactor = Math.min(lvp.getWidth() / widthOfNewView, lvp.getHeight() / heightOfNewView);
+        double zoomFactor = Math.min(lvp.getWidth() / widthOfNewView,
+                lvp.getHeight() / heightOfNewView);
         double realWidthOfNewView = lvp.getWidth() / zoomFactor;
         double realHeightOfNewView = lvp.getHeight() / zoomFactor;
         IEnvelope zoomEnvelope;
         try {
-            zoomEnvelope = this.toModelEnvelope(x - Viewport.ZERO_POINT_FIVE * realWidthOfNewView, x + Viewport.ZERO_POINT_FIVE * realWidthOfNewView, y
-                    - Viewport.ZERO_POINT_FIVE * realHeightOfNewView, y + Viewport.ZERO_POINT_FIVE * realHeightOfNewView);
+            zoomEnvelope = this.toModelEnvelope(x - Viewport.ZERO_POINT_FIVE
+                    * realWidthOfNewView, x + Viewport.ZERO_POINT_FIVE
+                    * realWidthOfNewView, y - Viewport.ZERO_POINT_FIVE
+                    * realHeightOfNewView, y + Viewport.ZERO_POINT_FIVE
+                    * realHeightOfNewView);
         } catch (NoninvertibleTransformException ex) {
             this.zoomToFullExtent();
             return;
@@ -687,8 +749,12 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    private IEnvelope toModelEnvelope(final double xMin, final double xMax, final double yMin, final double yMax) throws NoninvertibleTransformException {
-        return new GM_Envelope(this.toModelDirectPosition(new Point2D.Double(xMax, yMin)), this.toModelDirectPosition(new Point2D.Double(xMin, yMax)));
+    private IEnvelope toModelEnvelope(final double xMin, final double xMax,
+            final double yMin, final double yMax)
+            throws NoninvertibleTransformException {
+        return new GM_Envelope(this.toModelDirectPosition(new Point2D.Double(
+                xMax, yMin)), this.toModelDirectPosition(new Point2D.Double(
+                xMin, yMax)));
     }
 
     /**
@@ -702,7 +768,8 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final DirectPosition toModelDirectPosition(final Point2D viewPoint) throws NoninvertibleTransformException {
+    public final DirectPosition toModelDirectPosition(final Point2D viewPoint)
+            throws NoninvertibleTransformException {
         Point2D p = this.toModelPoint(viewPoint);
         return new DirectPosition(p.getX(), p.getY());
     }
@@ -717,8 +784,10 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final Point2D toModelPoint(final Point2D viewPoint) throws NoninvertibleTransformException {
-        return this.getModelToViewTransform().inverseTransform(toPoint2DDouble(viewPoint), null);
+    public final Point2D toModelPoint(final Point2D viewPoint)
+            throws NoninvertibleTransformException {
+        return this.getModelToViewTransform().inverseTransform(
+                toPoint2DDouble(viewPoint), null);
     }
 
     /**
@@ -737,8 +806,7 @@ public class Viewport {
 
     /**
      * Conversion function from an IDirectPosition to the equivalent
-     * Point2D.Double.
-     * Only X & Y values are used. Z is ignored
+     * Point2D.Double. Only X & Y values are used. Z is ignored
      * 
      * @param p
      *            an IDirectPosition
@@ -780,7 +848,8 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final void zoomInTo(final Point2D p) throws NoninvertibleTransformException {
+    public final void zoomInTo(final Point2D p)
+            throws NoninvertibleTransformException {
         this.zoom(p, Viewport.ZOOM_FACTOR);
     }
 
@@ -792,11 +861,13 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final void zoomOutTo(final Point2D p) throws NoninvertibleTransformException {
+    public final void zoomOutTo(final Point2D p)
+            throws NoninvertibleTransformException {
         this.zoom(p, 1 / Viewport.ZOOM_FACTOR);
     }
 
-    public final void zoomToScale(final double scale) throws NoninvertibleTransformException {
+    public final void zoomToScale(final double scale)
+            throws NoninvertibleTransformException {
         IDirectPosition p = this.getEnvelopeInModelCoordinates().center();
         this.scale = scale;
         this.update();
@@ -810,7 +881,8 @@ public class Viewport {
      *             throws an exception when the transformation fails
      */
     public final void moveUp() throws NoninvertibleTransformException {
-        this.moveOf(0, this.layerViewPanels.iterator().next().getHeight() * Viewport.MOVE_FACTOR);
+        this.moveOf(0, this.layerViewPanels.iterator().next().getHeight()
+                * Viewport.MOVE_FACTOR);
     }
 
     /**
@@ -820,7 +892,8 @@ public class Viewport {
      *             throws an exception when the transformation fails
      */
     public final void moveDown() throws NoninvertibleTransformException {
-        this.moveOf(0, -this.layerViewPanels.iterator().next().getHeight() * Viewport.MOVE_FACTOR);
+        this.moveOf(0, -this.layerViewPanels.iterator().next().getHeight()
+                * Viewport.MOVE_FACTOR);
     }
 
     /**
@@ -830,7 +903,8 @@ public class Viewport {
      *             throws an exception when the transformation fails
      */
     public final void moveRight() throws NoninvertibleTransformException {
-        this.moveOf(this.layerViewPanels.iterator().next().getWidth() * Viewport.MOVE_FACTOR, 0);
+        this.moveOf(this.layerViewPanels.iterator().next().getWidth()
+                * Viewport.MOVE_FACTOR, 0);
     }
 
     /**
@@ -840,7 +914,8 @@ public class Viewport {
      *             throws an exception when the transformation fails
      */
     public final void moveLeft() throws NoninvertibleTransformException {
-        this.moveOf(-this.layerViewPanels.iterator().next().getWidth() * Viewport.MOVE_FACTOR, 0);
+        this.moveOf(-this.layerViewPanels.iterator().next().getWidth()
+                * Viewport.MOVE_FACTOR, 0);
     }
 
     /**
@@ -853,9 +928,11 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final void moveOf(final double x, final double y) throws NoninvertibleTransformException {
+    public final void moveOf(final double x, final double y)
+            throws NoninvertibleTransformException {
         // logger.debug(getMETERS_PER_PIXEL());
-        this.viewOrigin.setLocation(this.viewOrigin.getX() + x / this.scale, this.viewOrigin.getY() + y / this.scale);
+        this.viewOrigin.setLocation(this.viewOrigin.getX() + x / this.scale,
+                this.viewOrigin.getY() + y / this.scale);
         this.update();
     }
 
@@ -867,10 +944,13 @@ public class Viewport {
      * @throws NoninvertibleTransformException
      *             throws an exception when the transformation fails
      */
-    public final void moveTo(final Point point) throws NoninvertibleTransformException {
+    public final void moveTo(final Point point)
+            throws NoninvertibleTransformException {
         Point2D modelPoint = this.toModelPoint(point);
         LayerViewPanel lvp = this.layerViewPanels.iterator().next();
-        modelPoint.setLocation(modelPoint.getX() - lvp.getWidth() / (2 * this.scale), modelPoint.getY() - lvp.getHeight() / (2 * this.scale));
+        modelPoint.setLocation(modelPoint.getX() - lvp.getWidth()
+                / (2 * this.scale), modelPoint.getY() - lvp.getHeight()
+                / (2 * this.scale));
         this.viewOrigin.setLocation(modelPoint);
         this.update();
     }
@@ -889,7 +969,9 @@ public class Viewport {
         AdapterFactory.setSpacing(this.getSpacingInPixels() / this.getScale());
         Point2D modelPoint = new Point2D.Double(center.getX(), center.getY());
         LayerViewPanel lvp = this.layerViewPanels.iterator().next();
-        modelPoint.setLocation(modelPoint.getX() - lvp.getWidth() / (2 * this.scale), modelPoint.getY() - lvp.getHeight() / (2 * this.scale));
+        modelPoint.setLocation(modelPoint.getX() - lvp.getWidth()
+                / (2 * this.scale), modelPoint.getY() - lvp.getHeight()
+                / (2 * this.scale));
         this.viewOrigin.setLocation(modelPoint);
         try {
             this.update();
@@ -899,7 +981,10 @@ public class Viewport {
     }
 
     /**
-     * @return the viewOrigin
+     * get the position of the display window top-left corner in world
+     * coordinates
+     * 
+     * @return the viewOrigin in world coordinates
      */
     public Point2D getViewOrigin() {
         return this.viewOrigin;
@@ -912,7 +997,9 @@ public class Viewport {
      */
     @Override
     public String toString() {
-        return "Viewport [viewOrigin=" + this.viewOrigin + ", scale=" + this.scale + ", modelToViewTransform=" + this.modelToViewTransform + "]";
+        return "Viewport [viewOrigin=" + this.viewOrigin + ", scale="
+                + this.scale + ", modelToViewTransform="
+                + this.modelToViewTransform + "]";
     }
 
 }

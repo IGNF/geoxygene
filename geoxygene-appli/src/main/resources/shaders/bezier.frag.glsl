@@ -1,10 +1,12 @@
 #version 400
 
 in VertexData {
+	vec4 position;
 	vec2 uv;
 	vec4 color;
 	float lineWidth;
 	float uMax;
+	vec2 paperUV;
 	flat vec2 p0screen;
 	flat vec2 p1screen;
 	flat vec2 p2screen;
@@ -12,6 +14,30 @@ in VertexData {
 	flat vec2 n2screen;
 } fragmentIn;
 
+/* Data structure sent to subshaders */
+struct DataPainting {
+	float screenWidth; 		// screen width in pixels 
+	float screenHeight;		// screen height in pixels
+	float mapScaleDiv1000;  // map scale divide by 1000 (e.g. 1:100000 maps, this value is 100)
+	int brushWidth; 	    // brush texture width in pixels
+	int brushHeight;        // brush texture height in pixels
+	int brushStartWidth;    // start texture length in pixels for the brush
+	int brushEndWidth;      // end texture length in pixels for the brush
+	float brushScale;       // size in mm of one brush pixel
+	float paperScale;       // scaling factor for paper
+	float sharpness;        // brush-paper blending sharpness
+	
+	float paperDensity;     // paper height scale factor
+	float brushDensity;     // brush height scale factor
+	float strokePressure;   // stroke pressure
+	vec4 position;          // current point position in world coordinates
+	vec2 uv;                // UV coordinates texture (u in world coordinates, v between 0 and 1)
+	vec4 color;             // point color
+	float thickness;        // line thickness in world coordinates
+	float uMax;             // maximum u coordinate in one polyline (in wolrd coordinates)
+	vec2 tan;               // tangent vector at the given point (in world coordinates)
+	
+};
 
 uniform sampler2D colorTexture1;
 uniform float globalOpacity = 1;
@@ -20,11 +46,17 @@ uniform float screenHeight;
 uniform float fboWidth;
 uniform float fboHeight;
 
+uniform sampler2D paperSampler;
+uniform sampler2D brushSampler;
+uniform float paperDensity = 0.3; // paper height scale factor
+uniform float brushDensity = 1.0; // brush height scale factor
+uniform float strokePressure = 1; // stroke pressure
+
 out vec4 outColor;
 
-
-vec4 computeColor1( vec2 us, float uMax, vec4 gl_FragCoord, float screenWidth, float screenHeight, float fboWidth, float fboHeight );
-	
+/*************************************************************************************
+ *                                     BEZIER                                        *
+ *************************************************************************************/	
 float det( vec2 v1, vec2 v2 ) {
 	return v2.y * v1.x - v1.y * v2.x;
 }
@@ -110,6 +142,58 @@ vec2 DistanceToQBSpline(in vec2 P0, in vec2 P1, in vec2 P2, in vec2 p, in vec2 n
 	return vec2( t[nMin], dis[nMin]);
 }
 
+
+
+
+/***********************************************************
+ *             Generic algorithm methods                   *
+ * these methods have to be defined in another mini shader *
+ ***********************************************************/ 
+ 
+vec2 computeBrushTextureCoordinates( in DataPainting fragmentIn );
+vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData );
+
+
+/************************************************************
+ *                       MAIN                               *
+ ************************************************************/
+
+void main() {
+	vec2 p = vec2( gl_FragCoord.x , fboHeight - gl_FragCoord.y  );
+	
+	vec2 p0 = fragmentIn.p0screen;
+	vec2 p1 = fragmentIn.p1screen;
+	vec2 p2 = fragmentIn.p2screen;
+	vec2 n0 = fragmentIn.n0screen;
+	vec2 n2 = fragmentIn.n2screen;
+	
+	vec2 uv = DistanceToQBSpline(p0, p1, p2, p, n0, n2 );
+	float lineSoftness = 1.0;
+//	uv.x = fragmentIn.uv.x + uv.x * ( fragmentIn.uv.y - fragmentIn.uv.x );
+//	uv.x = uv.x / 1000;
+	float screenRatio = fboWidth / screenWidth;
+	uv.y =  (1 + uv.y / fragmentIn.lineWidth / screenRatio) /2 ;
+//	if ( uv.y > 1 ) { outColor = vec4( 0, 0, 1, 1); return; }
+//	if ( uv.y < 0 ) { outColor = vec4( 0, 1, 0, 1); return; }
+	if ( uv.y < 0 || uv.y > 1 ) { discard; }
+
+	DataPainting fragmentData = DataPainting(screenWidth, screenHeight, 0, 0, 0,
+		0, 0, 0, 0, 0.5, paperDensity, brushDensity, strokePressure,
+		fragmentIn.position, uv, fragmentIn.color, fragmentIn.lineWidth, fragmentIn.uMax,
+		vec2(0,0) );
+	vec2 brushUV = computeBrushTextureCoordinates( fragmentData );
+	
+	vec4 brushColor = texture( brushSampler, brushUV );
+	vec4 paperColor = texture( paperSampler, fragmentIn.paperUV );
+	
+	outColor = computeFragmentColor( brushColor, paperColor, fragmentData );
+	outColor = vec4( paperColor.rgb, fragmentIn.color.a  );
+}
+
+
+
+/***********************************************************************************
+
 void main() {
 	//outColor = vec4( 0,0,1,1); return;
 	vec2 p = vec2( gl_FragCoord.x , fboHeight - gl_FragCoord.y  );
@@ -122,8 +206,8 @@ void main() {
 	
 	vec2 uv = DistanceToQBSpline(p0, p1, p2, p, n0, n2 );
 	float lineSoftness = 1.0;
-	uv.x = fragmentIn.uv.x + uv.x * ( fragmentIn.uv.y - fragmentIn.uv.x );
-	uv.x /= 1;
+//	uv.x = fragmentIn.uv.x + uv.x * ( fragmentIn.uv.y - fragmentIn.uv.x );
+//	uv.x = uv.x / 1000;
 	float screenRatio = fboWidth / screenWidth;
 	uv.y =  (1 + uv.y / fragmentIn.lineWidth / screenRatio) /2 ;
 //	if ( uv.y > 1 ) { outColor = vec4( 0, 0, 1, 1); return; }
@@ -132,12 +216,8 @@ void main() {
 	
 	vec4 tcolor = computeColor1( uv, fragmentIn.uMax, gl_FragCoord, screenWidth, screenHeight, fboWidth, fboHeight );
 //	tcolor = vec4( uv.x, uv.y, 0 , 1);
-	outColor = vec4( uv.xy,0 , fragmentIn.color.a  );
+	outColor = vec4( fragmentIn.paperUV, 0 , 1  );
 //	outColor = vec4( tcolor.rgb * fragmentIn.color.rgb, fragmentIn.color.a * tcolor.a * globalOpacity );
 	
 }
-
-
-vec4 computeColor1( vec2 uv, float uMax, vec4 gl_FragCoord, float screenWidth, float screenHeight, float fboWidth, float fboHeight ) {
-	return texture( colorTexture1, uv / vec2(10,1) );
-}
+*******************************************************************************************/

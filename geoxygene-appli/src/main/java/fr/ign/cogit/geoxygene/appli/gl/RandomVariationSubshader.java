@@ -101,8 +101,9 @@ public class RandomVariationSubshader implements Subshader {
     @Override
     public void configureProgram(GLProgram program) throws GLException {
         try {
-            program.addFragmentShader(GLTools
-                    .readFileAsString(randomVariationSubshaderFilename));
+            program.addFragmentShader(
+                    GLTools.readFileAsString(randomVariationSubshaderFilename),
+                    randomVariationSubshaderFilename);
         } catch (IOException e) {
             throw new GLException(e);
         }

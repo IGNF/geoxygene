@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package test.app;
+package fr.ign.cogit.geoxygene.appli.gl;
 
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
@@ -46,7 +46,6 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import fr.ign.cogit.geoxygene.appli.gl.GLTextureManager;
 import fr.ign.cogit.geoxygene.appli.render.texture.BasicTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.util.gl.AbstractGLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLInput;
@@ -83,6 +82,7 @@ public class GLBezierShadingComplex extends
     private double overallOpacity = 1.;
 
     private GLTexture brushTexture = null;
+    private GLTexture paperTexture = null;
 
     public enum GLPaintingRenderingCapability implements GLRenderingCapability {
         POSITION, COLOR, TEXTURE
@@ -117,6 +117,41 @@ public class GLBezierShadingComplex extends
                 GLBezierShadingVertex.vertexN0Location, GL11.GL_FLOAT, 2, false);
         this.addInput(GLBezierShadingVertex.vertexN2VariableName,
                 GLBezierShadingVertex.vertexN2Location, GL11.GL_FLOAT, 2, false);
+        this.addInput(GLBezierShadingVertex.vertexPaperUVVariableName,
+                GLBezierShadingVertex.vertexPaperUVLocation, GL11.GL_FLOAT, 2,
+                false);
+    }
+
+    /**
+     * @return the paperTexture
+     */
+    public GLTexture getPaperTexture() {
+        if (this.paperTexture == null) {
+            if (this.getExpressiveRendering() == null) {
+                logger.error("try to get paper texture filename from a GL primitive that has no expressive rendering class set...");
+                logger.error("primitive ID = " + this.getId());
+                return null;
+            }
+            this.paperTexture = GLTextureManager.getInstance().getTexture(
+                    this.getExpressiveRendering().getPaperTextureFilename());
+            this.paperTexture.setMipmap(false);
+        }
+        return this.paperTexture;
+    }
+
+    /**
+     * @param paperTexture
+     *            the paperTexture to set
+     */
+    public void setPaperTexture(GLTexture paperTexture) {
+        this.paperTexture = paperTexture;
+    }
+
+    /**
+     * invalidate lazy getter
+     */
+    public void invalidatePaperTexture() {
+        this.paperTexture = null;
     }
 
     /**
@@ -194,6 +229,7 @@ public class GLBezierShadingComplex extends
                 this.verticesBuffer.put(vertex.getP2());
                 this.verticesBuffer.put(vertex.getN0());
                 this.verticesBuffer.put(vertex.getN2());
+                this.verticesBuffer.put(vertex.getPaperUV());
             }
             this.verticesBuffer.flip();
 

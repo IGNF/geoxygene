@@ -63,6 +63,16 @@ public class GLPaintingVertex implements GLVertex {
     public static final String vertexMaxUVariableName = "uMax";
     public static final String vertexPaperUVVariableName = "vertexPaperUV";
 
+    // layout(location = 0) in vec2 vertexPosition;
+    // layout(location = 1) in vec2 vertexUV;
+    // layout(location = 2) in vec2 vertexNormal;
+    // layout(location = 3) in float vertexCurvature;
+    // layout(location = 4) in float vertexThickness;
+    // layout(location = 5) in vec4 vertexColor;
+    // layout(location = 6) in float uMax;
+    // layout(location = 7) in vec2 vertexPaperUV;
+    //
+
     @Override
     public GLPaintingVertex clone() {
         GLPaintingVertex vertex = new GLPaintingVertex();
@@ -83,9 +93,9 @@ public class GLPaintingVertex implements GLVertex {
     public GLPaintingVertex() {
     }
 
-    public GLPaintingVertex(float x, float y, float u, float v, float paperU,
-            float paperV, float maxU, float nx, float ny, float curvature,
-            float thickness, float r, float g, float b, float a) {
+    public GLPaintingVertex(float x, float y, float u, float v, float maxU,
+            float nx, float ny, float curvature, float thickness, float r,
+            float g, float b, float a, float paperU, float paperV) {
         this();
         this.setXY(x, y);
         this.setUV(u, v);
@@ -95,6 +105,7 @@ public class GLPaintingVertex implements GLVertex {
         this.setColor(r, g, b, a);
         this.setMaxU(maxU);
         this.setPaperUV(paperU, paperV);
+        System.err.println("vertex " + this.toString());
     }
 
     // public GLPaintingVertex(Point2d p, Point2d uv, Point2d normal,
@@ -185,28 +196,28 @@ public class GLPaintingVertex implements GLVertex {
     }
 
     /**
-     * @param paperUV
-     *            the paperUV to set
-     */
-    public void setPaperUV(float[] paperUV) {
-        this.paperUV[0] = paperUV[0];
-        this.paperUV[1] = paperUV[1];
-    }
-
-    /**
-     * @return the paperUV
+     * @return the uv
      */
     public float[] getPaperUV() {
         return this.paperUV;
     }
 
     /**
-     * @param paperUV
+     * @param us
      *            the uv to set
      */
     public void setPaperUV(float u, float v) {
         this.paperUV[0] = u;
         this.paperUV[1] = v;
+    }
+
+    /**
+     * @param uv
+     *            the uv to set
+     */
+    public void setPaperUV(float[] uv) {
+        this.paperUV[0] = uv[0];
+        this.paperUV[1] = uv[1];
     }
 
     /**
@@ -301,10 +312,11 @@ public class GLPaintingVertex implements GLVertex {
     @Override
     public String toString() {
         return "GLPaintingVertex [xy=" + Arrays.toString(this.xy) + ", uv="
-                + Arrays.toString(this.uv) + ", paper uv="
-                + Arrays.toString(this.paperUV) + ", normal="
+                + Arrays.toString(this.uv) + ", normal="
                 + Arrays.toString(this.normal) + ", curvature="
-                + this.curvature + ", thickness=" + this.thickness + "]";
+                + this.curvature + ", thickness=" + this.thickness + ", color="
+                + Arrays.toString(this.color) + ", maxU=" + this.maxU
+                + ", paperUV=" + Arrays.toString(this.paperUV) + "]";
     }
 
 }

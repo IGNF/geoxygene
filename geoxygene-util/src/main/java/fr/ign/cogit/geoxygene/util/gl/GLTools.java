@@ -57,10 +57,8 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -898,25 +896,42 @@ public final class GLTools {
         return source.toString();
     }
 
-    /**
-     * Method to create a new shader
-     * 
-     * @param filename
-     * @param shaderType
-     * @return
-     * @throws Exception
-     */
-    public static List<Integer> createShaders(int shaderType,
-            String... shaderFilenames) throws GLException {
-        ArrayList<Integer> ids = new ArrayList<Integer>();
-        for (String shaderFilename : shaderFilenames) {
-            ids.add(createShader(shaderType, shaderFilename));
-        }
-        return ids;
-    }
+    // /**
+    // * Load sources, compile and check a new shader
+    // * @param shaderType
+    // * GL_FRAGMENT, GL_VERTEX, GL_GEOMETRY, etc...
+    // * @param shaderContent
+    // * shader content as a string
+    // * @param filename
+    // * file containing the shader content. It can be null, it is used
+    // * only to display the filename when an error occured
+    // * @return
+    // * @throws GLException
+    // */
+    // public static List<Integer> createShaders(int shaderType,
+    // String... shaderContents) throws GLException {
+    // ArrayList<Integer> ids = new ArrayList<Integer>();
+    // for (String shaderContent : shaderContents) {
+    // ids.add(createShader(shaderType, shaderContent));
+    // }
+    // return ids;
+    // }
 
-    public static int createShader(int shaderType, String shaderContent)
-            throws GLException {
+    /**
+     * Load sources, compile and check a new shader
+     * 
+     * @param shaderType
+     *            GL_FRAGMENT, GL_VERTEX, GL_GEOMETRY, etc...
+     * @param shaderContent
+     *            shader content as a string
+     * @param filename
+     *            file containing the shader content. It can be null, it is used
+     *            only to display the filename when an error occured
+     * @return
+     * @throws GLException
+     */
+    public static int createShader(int shaderType, String shaderContent,
+            String filename) throws GLException {
         int shader = 0;
         try {
             // logger.debug("shader " + shaderFilename
@@ -927,13 +942,14 @@ public final class GLTools {
             }
             glShaderSource(shader, shaderContent);
             glCompileShader(shader);
+
             if (glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
                 logger.error("shader type " + shaderTypeNames.get(shaderType)
                         + "'" + shaderContent + "'");
                 logger.error("shader content '" + shaderContent + "'");
 
                 throw new RuntimeException("Error compiling shader file '"
-                        + shaderContent + "': " + getShaderLogInfo(shader));
+                        + filename + "' ===> " + getShaderLogInfo(shader));
             }
             return shader;
         } catch (Exception exc) {

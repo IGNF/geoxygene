@@ -33,11 +33,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import test.app.GLBezierShadingComplex;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.gl.GLBezierShadingComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
 import fr.ign.cogit.geoxygene.appli.gl.LineTesselator;
@@ -201,7 +201,7 @@ public class DisplayableCurve extends AbstractDisplayable {
         GLSimpleComplex line = LineTesselator.createThickLine(this.getName()
                 + "-full", this.curves, symbolizer.getStroke(), minX, minY);
         line.setColor(symbolizer.getStroke().getColor());
-        line.setOverallOpacity(symbolizer.getStroke().getColor().getAlpha());
+        line.setOverallOpacity(symbolizer.getStroke().getColor().getAlpha() / 255.);
         line.setRenderer(GeoxRendererManager.getOrCreateLineRenderer(
                 symbolizer, this.getLayerRenderer()));
 

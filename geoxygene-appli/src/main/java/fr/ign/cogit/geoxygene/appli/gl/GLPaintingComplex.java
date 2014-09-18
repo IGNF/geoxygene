@@ -307,11 +307,11 @@ public class GLPaintingComplex extends AbstractGLComplex<GLPaintingVertex> {
             GL20.glVertexAttribPointer(input.getLocation(),
                     input.getComponentCount(), input.getGlType(),
                     input.isNormalized(), this.getStride(), byteShift);
-            // System.err
-            // .println("loc = " + input.getLocation() + " "
-            // + input.getComponentCount() + " "
-            // + input.getGlType() + " stride = "
-            // + this.getStride() + " shift = " + byteShift);
+            // System.err.println("loc = " + input.getLocation() + " "
+            // + input.getComponentCount() + " " + input.getGlType()
+            // + " stride = " + this.getStride() + " shift = " + byteShift
+            // + " name = " + input.getName() + " ("
+            // + this.getClass().getSimpleName() + ")");
             byteShift += input.getComponentCount()
                     * GLTools.sizeInBytes(input.getGlType());
             glEnableVertexAttribArray(input.getLocation());
@@ -338,8 +338,11 @@ public class GLPaintingComplex extends AbstractGLComplex<GLPaintingVertex> {
 
         glBufferData(GL_ARRAY_BUFFER, this.getFlippedVerticesBuffer(),
                 GL_STATIC_DRAW);
-
-        // displayBuffer(this.getFlippedVerticesBuffer());
+        // System.err
+        // .println("Buffer à la construction ********************************");
+        // GLTools.displayBuffer(this.getFlippedVerticesBuffer());
+        // System.err
+        // .println("Buffer à la construction ---------------------------------");
 
         // glBindBuffer(GL_ARRAY_BUFFER, 0);
 

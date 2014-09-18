@@ -32,7 +32,6 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
-import test.app.GLBezierShadingVertex;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
@@ -40,6 +39,7 @@ import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.event.CompassPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.ScalePaintListener;
+import fr.ign.cogit.geoxygene.appli.gl.GLBezierShadingVertex;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingVertex;
 import fr.ign.cogit.geoxygene.appli.gl.Subshader;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
@@ -619,6 +619,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String m02ModelToViewMatrixUniformVarName = "m02";
     public static final String m11ModelToViewMatrixUniformVarName = "m11";
     public static final String m12ModelToViewMatrixUniformVarName = "m12";
+
     public static final String screenWidthUniformVarName = "screenWidth";
     public static final String screenHeightUniformVarName = "screenHeight";
     public static final String fboWidthUniformVarName = "fboWidth";
@@ -1077,10 +1078,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
         GLProgram program = new GLProgram(bezierLineProgramName);
         try {
-            program.addVertexShader(GLTools
-                    .readFileAsString(bezierVertexShaderFilename));
-            program.addFragmentShader(GLTools
-                    .readFileAsString(bezierFragmentShaderFilename));
+            program.addVertexShader(
+                    GLTools.readFileAsString(bezierVertexShaderFilename),
+                    bezierVertexShaderFilename);
+            program.addFragmentShader(
+                    GLTools.readFileAsString(bezierFragmentShaderFilename),
+                    bezierFragmentShaderFilename);
         } catch (IOException e) {
             throw new GLException(e);
         }
@@ -1108,22 +1111,33 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 GLBezierShadingVertex.vertexN0Location);
         program.addInputLocation(GLBezierShadingVertex.vertexN2VariableName,
                 GLBezierShadingVertex.vertexN2Location);
+        program.addInputLocation(
+                GLBezierShadingVertex.vertexPaperUVVariableName,
+                GLBezierShadingVertex.vertexPaperUVLocation);
         program.addUniform(m00ModelToViewMatrixUniformVarName);
         program.addUniform(m02ModelToViewMatrixUniformVarName);
-        program.addUniform(m00ModelToViewMatrixUniformVarName);
         program.addUniform(m11ModelToViewMatrixUniformVarName);
         program.addUniform(m12ModelToViewMatrixUniformVarName);
+
         program.addUniform(screenWidthUniformVarName);
         program.addUniform(screenHeightUniformVarName);
         program.addUniform(fboWidthUniformVarName);
         program.addUniform(fboHeightUniformVarName);
+        program.addUniform(paperTextureUniformVarName);
         program.addUniform(brushTextureUniformVarName);
         program.addUniform(brushWidthUniformVarName);
         program.addUniform(brushHeightUniformVarName);
+        program.addUniform(brushStartWidthUniformVarName);
+        program.addUniform(brushEndWidthUniformVarName);
         program.addUniform(brushScaleUniformVarName);
+        program.addUniform(paperScaleUniformVarName);
+        program.addUniform(paperDensityUniformVarName);
+        program.addUniform(brushDensityUniformVarName);
+        program.addUniform(strokePressureUniformVarName);
+        program.addUniform(sharpnessUniformVarName);
         program.addUniform(globalOpacityUniformVarName);
         program.addUniform(objectOpacityUniformVarName);
-        program.addUniform(colorTexture1UniformVarName);
+        program.addUniform(textureScaleFactorUniformVarName);
 
         shader.declareUniforms(program);
 
@@ -1138,10 +1152,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         Subshader shader = ShaderFactory.createShader(shaderDescriptor);
         // basic program
         GLProgram program = new GLProgram(linePaintingProgramName);
-        program.addVertexShader(GLTools
-                .readFileAsString(linePaintingVertexShaderFilename));
-        program.addFragmentShader(GLTools
-                .readFileAsString(linePaintingFragmentShaderFilename));
+        program.addVertexShader(
+                GLTools.readFileAsString(linePaintingVertexShaderFilename),
+                linePaintingVertexShaderFilename);
+        program.addFragmentShader(
+                GLTools.readFileAsString(linePaintingFragmentShaderFilename),
+                linePaintingFragmentShaderFilename);
         shader.configureProgram(program);
         program.addInputLocation(GLPaintingVertex.vertexPositionVariableName,
                 GLPaintingVertex.vertexPositionLocation);
@@ -1164,6 +1180,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         program.addUniform(m00ModelToViewMatrixUniformVarName);
         program.addUniform(m11ModelToViewMatrixUniformVarName);
         program.addUniform(m12ModelToViewMatrixUniformVarName);
+
         program.addUniform(screenWidthUniformVarName);
         program.addUniform(screenHeightUniformVarName);
         program.addUniform(fboWidthUniformVarName);
@@ -1196,10 +1213,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             IOException {
         // basic program
         GLProgram basicProgram = new GLProgram(basicProgramName);
-        basicProgram.addVertexShader(GLTools
-                .readFileAsString(basicVertexShaderFilename));
-        basicProgram.addFragmentShader(GLTools
-                .readFileAsString(basicFragmentShaderFilename));
+        basicProgram.addVertexShader(
+                GLTools.readFileAsString(basicVertexShaderFilename),
+                basicVertexShaderFilename);
+        basicProgram.addFragmentShader(
+                GLTools.readFileAsString(basicFragmentShaderFilename),
+                basicFragmentShaderFilename);
         basicProgram.addInputLocation(
                 GLSimpleVertex.vertexPositionVariableName,
                 GLSimpleVertex.vertexPostionLocation);
@@ -1218,10 +1237,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         // basic program
         GLProgram screenspaceColorProgram = new GLProgram(
                 screenspaceColorProgramName);
-        screenspaceColorProgram.addVertexShader(GLTools
-                .readFileAsString(screenspaceVertexShaderFilename));
-        screenspaceColorProgram.addFragmentShader(GLTools
-                .readFileAsString(textureFragmentShaderFilename));
+        screenspaceColorProgram.addVertexShader(
+                GLTools.readFileAsString(screenspaceVertexShaderFilename),
+                screenspaceVertexShaderFilename);
+        screenspaceColorProgram.addFragmentShader(
+                GLTools.readFileAsString(textureFragmentShaderFilename),
+                textureFragmentShaderFilename);
         screenspaceColorProgram.addInputLocation(
                 GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
@@ -1245,10 +1266,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         // basic program
         GLProgram screenspaceTextureProgram = new GLProgram(
                 screenspaceTextureProgramName);
-        screenspaceTextureProgram.addVertexShader(GLTools
-                .readFileAsString(screenspaceVertexShaderFilename));
-        screenspaceTextureProgram.addFragmentShader(GLTools
-                .readFileAsString(textureFragmentShaderFilename));
+        screenspaceTextureProgram.addVertexShader(
+                GLTools.readFileAsString(screenspaceVertexShaderFilename),
+                screenspaceVertexShaderFilename);
+        screenspaceTextureProgram.addFragmentShader(
+                GLTools.readFileAsString(textureFragmentShaderFilename),
+                textureFragmentShaderFilename);
         screenspaceTextureProgram.addInputLocation(
                 GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
@@ -1273,10 +1296,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         // basic program
         GLProgram backgroundTextureProgram = new GLProgram(
                 backgroundProgramName);
-        backgroundTextureProgram.addVertexShader(GLTools
-                .readFileAsString(backgroundVertexShaderFilename));
-        backgroundTextureProgram.addFragmentShader(GLTools
-                .readFileAsString(backgroundFragmentShaderFilename));
+        backgroundTextureProgram.addVertexShader(
+                GLTools.readFileAsString(backgroundVertexShaderFilename),
+                backgroundVertexShaderFilename);
+        backgroundTextureProgram.addFragmentShader(
+                GLTools.readFileAsString(backgroundFragmentShaderFilename),
+                backgroundFragmentShaderFilename);
         backgroundTextureProgram.addInputLocation(
                 GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
@@ -1297,10 +1322,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
         // color program
         GLProgram colorProgram = new GLProgram(worldspaceColorProgramName);
-        colorProgram.addVertexShader(GLTools
-                .readFileAsString(worldspaceVertexShaderFilename));
-        colorProgram.addFragmentShader(GLTools
-                .readFileAsString(colorFragmentShaderFilename));
+        colorProgram.addVertexShader(
+                GLTools.readFileAsString(worldspaceVertexShaderFilename),
+                worldspaceVertexShaderFilename);
+        colorProgram.addFragmentShader(
+                GLTools.readFileAsString(colorFragmentShaderFilename),
+                colorFragmentShaderFilename);
         colorProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
         colorProgram.addInputLocation(
@@ -1333,10 +1360,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
         // color program
         GLProgram textureProgram = new GLProgram(worldspaceTextureProgramName);
-        textureProgram.addVertexShader(GLTools
-                .readFileAsString(worldspaceVertexShaderFilename));
-        textureProgram.addFragmentShader(GLTools
-                .readFileAsString(textureFragmentShaderFilename));
+        textureProgram.addVertexShader(
+                GLTools.readFileAsString(worldspaceVertexShaderFilename),
+                worldspaceVertexShaderFilename);
+        textureProgram.addFragmentShader(
+                GLTools.readFileAsString(textureFragmentShaderFilename),
+                textureFragmentShaderFilename);
         textureProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
         textureProgram.addInputLocation(
@@ -1371,10 +1400,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         // color program
         GLProgram antialisedProgram = new GLProgram(
                 screenspaceAntialiasedTextureProgramName);
-        antialisedProgram.addVertexShader(GLTools
-                .readFileAsString(screenspaceVertexShaderFilename));
-        antialisedProgram.addFragmentShader(GLTools
-                .readFileAsString(antialiasedFragmentShaderFilename));
+        antialisedProgram.addVertexShader(
+                GLTools.readFileAsString(screenspaceVertexShaderFilename),
+                screenspaceVertexShaderFilename);
+        antialisedProgram.addFragmentShader(
+                GLTools.readFileAsString(antialiasedFragmentShaderFilename),
+                antialiasedFragmentShaderFilename);
         antialisedProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
         antialisedProgram.addInputLocation(

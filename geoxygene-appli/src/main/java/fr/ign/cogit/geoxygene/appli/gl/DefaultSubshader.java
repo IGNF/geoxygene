@@ -67,8 +67,9 @@ public class DefaultSubshader implements Subshader {
     @Override
     public void configureProgram(GLProgram program) throws GLException {
         try {
-            program.addFragmentShader(GLTools
-                    .readFileAsString(subshaderFilename));
+            program.addFragmentShader(
+                    GLTools.readFileAsString(subshaderFilename),
+                    subshaderFilename);
         } catch (IOException e) {
             throw new GLException(e);
         }

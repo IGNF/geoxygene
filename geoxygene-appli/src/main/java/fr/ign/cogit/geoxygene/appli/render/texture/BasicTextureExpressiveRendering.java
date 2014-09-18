@@ -27,7 +27,9 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
+import fr.ign.cogit.geoxygene.appli.gl.Subshader;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
 
 /**
  * @author JeT
@@ -35,6 +37,7 @@ import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDe
  */
 public class BasicTextureExpressiveRendering implements ExpressiveRendering {
     private BasicTextureExpressiveRenderingDescriptor descriptor = null;
+    private Subshader shader = null;
 
     /**
      * @param strtex
@@ -43,7 +46,27 @@ public class BasicTextureExpressiveRendering implements ExpressiveRendering {
     public BasicTextureExpressiveRendering(
             BasicTextureExpressiveRenderingDescriptor descriptor) {
         super();
+        this.setDescriptor(descriptor);
+    }
+
+    /**
+     * @param descriptor
+     *            the descriptor to set
+     */
+    public final void setDescriptor(
+            BasicTextureExpressiveRenderingDescriptor descriptor) {
         this.descriptor = descriptor;
+
+        this.shader = ShaderFactory.createShader(this.descriptor
+                .getShaderDescriptor());
+    }
+
+    /**
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor#getShaderDescriptor()
+     */
+    public Subshader getShader() {
+        return this.shader;
     }
 
     /**
@@ -55,38 +78,6 @@ public class BasicTextureExpressiveRendering implements ExpressiveRendering {
 
     /**
      * @return
-     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getBrushTextureFilename()
-     */
-    public String getBrushTextureFilename() {
-        return this.descriptor.getBrushTextureFilename();
-    }
-
-    /**
-     * @param brushTextureFilename
-     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#setBrushTextureFilename(java.lang.String)
-     */
-    public void setBrushTextureFilename(String brushTextureFilename) {
-        this.descriptor.setBrushTextureFilename(brushTextureFilename);
-    }
-
-    /**
-     * @return
-     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getAspectRatio()
-     */
-    public double getAspectRatio() {
-        return this.descriptor.getAspectRatio();
-    }
-
-    /**
-     * @param aspectRation
-     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#setAspectRatio(double)
-     */
-    public void setAspectRatio(double aspectRation) {
-        this.descriptor.setAspectRatio(aspectRation);
-    }
-
-    /**
-     * @return
      * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getTransitionSize()
      */
     public double getTransitionSize() {
@@ -94,11 +85,99 @@ public class BasicTextureExpressiveRendering implements ExpressiveRendering {
     }
 
     /**
-     * @param transitionSize
-     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#setTransitionSize(double)
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getShaderDescriptor()
      */
-    public void setTransitionSize(double transitionSize) {
-        this.descriptor.setTransitionSize(transitionSize);
+    public ShaderDescriptor getShaderDescriptor() {
+        return this.descriptor.getShaderDescriptor();
+    }
+
+    /**
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getPaperTextureFilename()
+     */
+    public String getPaperTextureFilename() {
+        return this.descriptor.getPaperTextureFilename();
+    }
+
+    /**
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getBrushTextureFilename()
+     */
+    public String getBrushTextureFilename() {
+        return this.descriptor.getBrushTextureFilename();
+    }
+
+    /**
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getBrushStartLength()
+     */
+    public int getBrushStartLength() {
+        return this.descriptor.getBrushStartLength();
+    }
+
+    /**
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getBrushEndLength()
+     */
+    public int getBrushEndLength() {
+        return this.descriptor.getBrushEndLength();
+    }
+
+    /**
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getBrushAspectRatio()
+     */
+    public double getBrushAspectRatio() {
+        return this.descriptor.getBrushAspectRatio();
+    }
+
+    /**
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getPaperSizeInCm()
+     */
+    public double getPaperSizeInCm() {
+        return this.descriptor.getPaperSizeInCm();
+    }
+
+    /**
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getPaperReferenceMapScale()
+     */
+    public double getPaperReferenceMapScale() {
+        return this.descriptor.getPaperReferenceMapScale();
+    }
+
+    /**
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getPaperDensity()
+     */
+    public double getPaperDensity() {
+        return this.descriptor.getPaperDensity();
+    }
+
+    /**
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getBrushDensity()
+     */
+    public double getBrushDensity() {
+        return this.descriptor.getBrushDensity();
+    }
+
+    /**
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getStrokePressure()
+     */
+    public double getStrokePressure() {
+        return this.descriptor.getStrokePressure();
+    }
+
+    /**
+     * @return
+     * @see fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor#getSharpness()
+     */
+    public double getSharpness() {
+        return this.descriptor.getSharpness();
     }
 
 }

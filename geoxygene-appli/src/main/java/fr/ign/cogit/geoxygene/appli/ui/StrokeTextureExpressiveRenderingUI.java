@@ -27,6 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.ui;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -69,7 +70,7 @@ public class StrokeTextureExpressiveRenderingUI implements
     private ProjectFrame parentProjectFrame = null;
     double sampleSize = 2.;
     double minAngle = 1.5;
-    double brushSize = 8;
+    double brushAspectRatio = 8;
     double paperScaleFactor = .5;
     double paperDensity = 0.7;
     double brushDensity = 1.9;
@@ -120,7 +121,7 @@ public class StrokeTextureExpressiveRenderingUI implements
     public void setValuesFromObject() {
         this.sampleSize = this.strtex.getSampleSize();
         this.minAngle = this.strtex.getMinAngle();
-        this.brushSize = this.strtex.getBrushSize();
+        this.brushAspectRatio = this.strtex.getBrushAspectRatio();
         this.paperScaleFactor = this.strtex.getPaperScaleFactor();
         this.paperDensity = this.strtex.getPaperDensity();
         this.brushDensity = this.strtex.getBrushDensity();
@@ -148,7 +149,7 @@ public class StrokeTextureExpressiveRenderingUI implements
     public void setValuesToObject() {
         this.strtex.setSampleSize(this.sampleSize);
         this.strtex.setMinAngle(this.minAngle);
-        this.strtex.setBrushSize(this.brushSize);
+        this.strtex.setBrushAspectRatio(this.brushAspectRatio);
         this.strtex.setPaperScaleFactor(this.paperScaleFactor);
         this.strtex.setPaperDensity(this.paperDensity);
         this.strtex.setBrushDensity(this.brushDensity);
@@ -229,30 +230,30 @@ public class StrokeTextureExpressiveRenderingUI implements
             });
             this.main.add(minAngleSpinner);
 
-            SliderWithSpinnerModel brushSizeModel = new SliderWithSpinnerModel(
-                    this.brushSize, 0, 180, .1);
-            final SliderWithSpinner brushSizeSpinner = new SliderWithSpinner(
-                    brushSizeModel);
-            JSpinner.NumberEditor brushSizeEditor = (JSpinner.NumberEditor) brushSizeSpinner
+            SliderWithSpinnerModel brushAspectRatioModel = new SliderWithSpinnerModel(
+                    this.brushAspectRatio, 0, 180, .1);
+            final SliderWithSpinner brushAspectRatioSpinner = new SliderWithSpinner(
+                    brushAspectRatioModel);
+            JSpinner.NumberEditor brushSizeEditor = (JSpinner.NumberEditor) brushAspectRatioSpinner
                     .getEditor();
             brushSizeEditor.getTextField().setHorizontalAlignment(
                     SwingConstants.CENTER);
-            brushSizeSpinner.setBorder(BorderFactory
-                    .createTitledBorder("brush size"));
-            brushSizeSpinner
+            brushAspectRatioSpinner.setBorder(BorderFactory
+                    .createTitledBorder("brush aspect ratio"));
+            brushAspectRatioSpinner
                     .setToolTipText("size of one pixel of the brush (in mm)");
 
-            brushSizeSpinner.addChangeListener(new ChangeListener() {
+            brushAspectRatioSpinner.addChangeListener(new ChangeListener() {
 
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.brushSize = (brushSizeSpinner
+                    StrokeTextureExpressiveRenderingUI.this.brushAspectRatio = (brushAspectRatioSpinner
                             .getValue());
                     StrokeTextureExpressiveRenderingUI.this.refresh();
 
                 }
             });
-            this.main.add(brushSizeSpinner);
+            this.main.add(brushAspectRatioSpinner);
 
             JButton paperBrowseButton = new JButton("paper browse...");
             paperBrowseButton.setBorder(BorderFactory.createEmptyBorder(2, 2,
@@ -521,7 +522,12 @@ public class StrokeTextureExpressiveRenderingUI implements
             });
             this.main.add(sharpnessSpinner);
 
-            this.main.add(this.shaderUI.getGui());
+            JPanel subShaderPanel = new JPanel(new BorderLayout());
+            subShaderPanel.setBorder(BorderFactory
+                    .createTitledBorder("subshader parameters"));
+
+            subShaderPanel.add(this.getShaderUI().getGui());
+            this.main.add(subShaderPanel);
         }
         return this.main;
     }

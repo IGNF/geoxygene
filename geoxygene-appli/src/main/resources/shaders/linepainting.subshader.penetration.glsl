@@ -12,28 +12,29 @@ float pressureVariationSeed = 128.84321871;
 uniform float pressureVariationWavelength = 500;
 uniform float pressureVariationAmplitude = 0.5;
 
-struct Data {
-	float screenWidth;
-	float screenHeight;
-	float mapScaleDiv1000; // map scale
-	int brushWidth; // brush texture width (pixels)
-	int brushHeight; // brush texture height (pixels)
-	int brushStartWidth; // brush texture width (pixels)
-	int brushEndWidth; // brush texture height (pixels)
-	float brushScale; // size in mm of one brush pixel
-	float paperScale; // scaling factor for paper
-	float sharpness; // brush-paper blending sharpness
+/* Data structure sent to subshaders */
+struct DataPainting {
+	float screenWidth; 		// screen width in pixels 
+	float screenHeight;		// screen height in pixels
+	float mapScaleDiv1000;  // map scale divide by 1000 (e.g. 1:100000 maps, this value is 100)
+	int brushWidth; 	    // brush texture width in pixels
+	int brushHeight;        // brush texture height in pixels
+	int brushStartWidth;    // start texture length in pixels for the brush
+	int brushEndWidth;      // end texture length in pixels for the brush
+	float brushScale;       // size in mm of one brush pixel
+	float paperScale;       // scaling factor for paper
+	float sharpness;        // brush-paper blending sharpness
 	
-	float paperDensity; // paper height scale factor
-	float brushDensity; // brush height scale factor
-	float strokePressure; // stroke pressure
-	vec4 position;
-	vec2 uv;
-	vec2 paperUV;
-	vec4 color;
-	float curvature;
-	float thickness;
-	float uMax;
+	float paperDensity;     // paper height scale factor
+	float brushDensity;     // brush height scale factor
+	float strokePressure;   // stroke pressure
+	vec4 position;          // current point position in world coordinates
+	vec2 uv;                // UV coordinates texture (u in world coordinates, v between 0 and 1)
+	vec4 color;             // point color
+	float thickness;        // line thickness in world coordinates
+	float uMax;             // maximum u coordinate in one polyline (in wolrd coordinates)
+	vec2 tan;               // tangent vector at the given point (in world coordinates)
+	
 };
 
 
@@ -203,24 +204,24 @@ float computeStrokePressure( in float u, in float uMax ) {
 }
 
 /************************************************************************************/
-vec2 computeBrushTextureCoordinates( Data fragmentIn ) {
-	float u_w = fragmentIn.uv.x;
+vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
+	float u_w = fragmentData.uv.x;
 	float u_tex = 0;
-	float strokeWidth = computeStrokeWidth( fragmentIn.uv.x, fragmentIn.uMax);
-	float v_tex = vTextureScale( strokeWidth , fragmentIn.uv.y ) + strokeWidth * ( 1 - strokeWidth );
+	float strokeWidth = computeStrokeWidth( fragmentData.uv.x, fragmentData.uMax);
+	float v_tex = vTextureScale( strokeWidth , fragmentData.uv.y ) + strokeWidth * ( 1 - strokeWidth );
 
-	float brushStartLength_w = fragmentIn.brushStartWidth * fragmentIn.brushScale;
-	float brushEndLength_w = fragmentIn.brushEndWidth * fragmentIn.brushScale;
-	float brushMiddleLength_w = (fragmentIn.brushWidth - fragmentIn.brushStartWidth - fragmentIn.brushEndWidth) * fragmentIn.brushScale;
+	float brushStartLength_w = fragmentData.brushStartWidth * fragmentData.brushScale;
+	float brushEndLength_w = fragmentData.brushEndWidth * fragmentData.brushScale;
+	float brushMiddleLength_w = (fragmentData.brushWidth - fragmentData.brushStartWidth - fragmentData.brushEndWidth) * fragmentData.brushScale;
 	
-	float brush0_tex = fragmentIn.brushStartWidth / float(fragmentIn.brushWidth);
-	float brush1_tex = 1f - fragmentIn.brushEndWidth / float(fragmentIn.brushWidth);
+	float brush0_tex = fragmentData.brushStartWidth / float(fragmentData.brushWidth);
+	float brush1_tex = 1f - fragmentData.brushEndWidth / float(fragmentData.brushWidth);
 	if ( u_w <= brushStartLength_w ) {
 		u_tex = (u_w / brushStartLength_w) * brush0_tex;
-	} else if ( u_w >= fragmentIn.uMax - brushEndLength_w ) {
-		u_tex = ( u_w - fragmentIn.uMax ) * ( 1 - brush1_tex ) / brushEndLength_w - 1;   
+	} else if ( u_w >= fragmentData.uMax - brushEndLength_w ) {
+		u_tex = ( u_w - fragmentData.uMax ) * ( 1 - brush1_tex ) / brushEndLength_w - 1;   
 	} else {
-		float polylineMiddleLength_w = fragmentIn.uMax - (brushStartLength_w + brushEndLength_w);
+		float polylineMiddleLength_w = fragmentData.uMax - (brushStartLength_w + brushEndLength_w);
 		int nbTiles = max ( int( round( polylineMiddleLength_w / brushMiddleLength_w ) ), 1 );
 		int nTile = int((u_w - brushStartLength_w )/(polylineMiddleLength_w / float(nbTiles)));
 		float tileSize_w = polylineMiddleLength_w / float(nbTiles);
@@ -230,14 +231,14 @@ vec2 computeBrushTextureCoordinates( Data fragmentIn ) {
 }
 
 /************************************************************************************/
-vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in Data fragmentData ) {
+vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
 
 	vec3 paperHeightField = paperColor.rgb;
 	float brushHeightField = ( brushColor.r + brushColor.g + brushColor.b ) / 3.;
 //	vec3 brushHeightField = 1-brushColor.rgb;
 	
-//	float penetration = 1. / computeStrokePressure( fragmentIn.uv.x, fragmentIn.uMax ) - ( 1 - brushHeightField * fragmentData.brushDensity ) - ( paperHeightField * fragmentData.paperDensity);
-//vec3 penetration = vec3(1. / computeStrokePressure( fragmentIn.uv.x, fragmentIn.uMax )) - ( vec3(1.0) - brushHeightField * fragmentData.brushDensity ) - ( paperHeightField * fragmentData.paperDensity);
+//	float penetration = 1. / computeStrokePressure( fragmentData.uv.x, fragmentData.uMax ) - ( 1 - brushHeightField * fragmentData.brushDensity ) - ( paperHeightField * fragmentData.paperDensity);
+//vec3 penetration = vec3(1. / computeStrokePressure( fragmentData.uv.x, fragmentData.uMax )) - ( vec3(1.0) - brushHeightField * fragmentData.brushDensity ) - ( paperHeightField * fragmentData.paperDensity);
 	
 	
 	float bh = fragmentData.strokePressure * computeStrokePressure( fragmentData.uv.x, fragmentData.uMax ) * brushHeightField * fragmentData.brushDensity;

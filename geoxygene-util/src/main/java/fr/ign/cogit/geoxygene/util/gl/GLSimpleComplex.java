@@ -98,6 +98,7 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
     /**
      * @return the opacity for that entire complex
      */
+    @Override
     public double getOverallOpacity() {
         return this.overallOpacity;
     }
@@ -284,11 +285,11 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
             GL20.glVertexAttribPointer(input.getLocation(),
                     input.getComponentCount(), input.getGlType(),
                     input.isNormalized(), this.getStride(), byteShift);
-            // System.err
-            // .println("loc = " + input.getLocation() + " "
-            // + input.getComponentCount() + " "
-            // + input.getGlType() + " stride = "
-            // + this.getStride() + " shift = " + byteShift);
+            // System.err.println("loc = " + input.getLocation() + " "
+            // + input.getComponentCount() + " " + input.getGlType()
+            // + " stride = " + this.getStride() + " shift = " + byteShift
+            // + " name = " + input.getName() + " "
+            // + this.getClass().getSimpleName());
             byteShift += input.getComponentCount()
                     * GLTools.sizeInBytes(input.getGlType());
             glEnableVertexAttribArray(input.getLocation());
