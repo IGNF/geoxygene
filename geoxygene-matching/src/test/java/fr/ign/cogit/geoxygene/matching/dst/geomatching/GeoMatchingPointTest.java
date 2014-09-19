@@ -1,3 +1,24 @@
+/*******************************************************************************
+ * This file is part of the GeOxygene project source files.
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * See: http://oxygene-project.sourceforge.net
+ * Copyright (C) 2005 Institut Géographique National
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
+ *******************************************************************************/
+
 package fr.ign.cogit.geoxygene.matching.dst.geomatching;
 
 import java.util.ArrayList;
@@ -23,6 +44,7 @@ import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
 import fr.ign.cogit.geoxygene.matching.dst.sources.punctual.EuclidianDist;
 import fr.ign.cogit.geoxygene.matching.dst.sources.text.LevenshteinDist;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureAttributeValue;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
@@ -41,7 +63,7 @@ public class GeoMatchingPointTest {
 	
 	@Before
 	public void setUp() {
-		//candidates = new Population<IFeature>("Point");
+		// candidates = new Population<IFeature>("Point");
 		candidates = new ArrayList<IFeature>();
 	    
 		DefaultFeature p1 = new DefaultFeature(new GM_Point(new DirectPosition(15, 15)));
@@ -56,26 +78,27 @@ public class GeoMatchingPointTest {
 	    pointFeatureType.addFeatureAttribute(idTextNature);
 	    
 	    // Création d'un schéma associé au featureType
-	    // SchemaDefaultFeature schema = new SchemaDefaultFeature();
-	    // schema.setFeatureType(pointFeatureType);
-	    // pointFeatureType.setSchema(schema);
+	    SchemaDefaultFeature schema = new SchemaDefaultFeature();
+	    schema.setFeatureType(pointFeatureType);
+	    pointFeatureType.setSchema(schema);
 	    
-	    // Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>(0);
-	    // attLookup.put(new Integer(0), new String[] { "nature", "nature" });
-	    // schema.setAttLookup(attLookup);
+	    Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>(0);
+	    attLookup.put(new Integer(0), new String[] { "nature", "nature" });
+	    schema.setAttLookup(attLookup);
+	    
+	    p1.setFeatureType(pointFeatureType);
+	    p2.setFeatureType(pointFeatureType);
+	    p3.setFeatureType(pointFeatureType);
 	    
 	    Object[] attributes = new Object[] { "Saint-Paul" };
-	    p1.setFeatureType(pointFeatureType);
 	    // p1.setSchema(schema);
 	    p1.setAttributes(attributes);
 	    
 	    // p2.setSchema(schema);
-	    p2.setFeatureType(pointFeatureType);
 	    p2.setAttributes(attributes);
 	    
 	    attributes = new Object[] { "Saint-Jean" };
 	    // p3.setSchema(schema);
-	    p3.setFeatureType(pointFeatureType);
 	    p3.setAttributes(attributes);
 	    
 	    candidates.add(p1);
@@ -94,6 +117,8 @@ public class GeoMatchingPointTest {
 		Collection<Source<IFeature, GeomHypothesis>> criteria = new ArrayList<Source<IFeature, GeomHypothesis>>();
 		criteria.add(new EuclidianDist());
 		criteria.add(new LevenshteinDist());
+		/*criteria.add(new LevenshteinDist("nature"));
+		criteria.add(new JaroWinklerDist("nature"));*/
 		
 		boolean closed = true;
 		GeoMatching matching = new GeoMatching();

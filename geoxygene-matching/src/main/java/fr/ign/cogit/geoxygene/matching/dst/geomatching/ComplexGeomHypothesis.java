@@ -35,14 +35,11 @@ import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
  * @author Bertrand Dumenieu
  */
 public class ComplexGeomHypothesis extends SimpleGeomHypothesis {
-  /**
-   * The logger.
-   */
-  Logger logger = Logger.getLogger(ComplexGeomHypothesis.class);
+  
+  /** The logger. */
+  static final Logger LOGGER = Logger.getLogger(ComplexGeomHypothesis.class);
 
-  /**
-   * Features of the hypothesis.
-   */
+  /** Features of the hypothesis. */
   List<IFeature> fromfeatures;
 
   /**
@@ -72,7 +69,7 @@ public class ComplexGeomHypothesis extends SimpleGeomHypothesis {
           }
         }
         if (!ok) {
-          logger.error("Complex Geometrical Hypothesis with several Feature types!");
+          LOGGER.error("Complex Geometrical Hypothesis with several Feature types!");
           return;
         }
         // create the merged feature with the union of the geometries of its features
@@ -85,7 +82,7 @@ public class ComplexGeomHypothesis extends SimpleGeomHypothesis {
         merged.setFeatureType(this.fromfeatures.get(0).getFeatureType());
         this.decoratedFeature = merged;
       } else {
-        logger.debug("Creating a complex geometry hypothesis with only 1 object");
+        LOGGER.debug("Creating a complex geometry hypothesis with only 1 object");
         this.decoratedFeature = fromfeatures.get(0);
         this.fromfeatures.add(fromfeatures.get(0));
       }
@@ -101,7 +98,11 @@ public class ComplexGeomHypothesis extends SimpleGeomHypothesis {
     if (!ComplexGeomHypothesis.class.isAssignableFrom(o.getClass())) {
       return false;
     }
+    
+    // Cast to ComplexGeomHypothesis
     ComplexGeomHypothesis h = (ComplexGeomHypothesis) o;
+    
+    // 
     return this.decoratedFeature.equals(h.decoratedFeature)
         && this.fromfeatures.containsAll(h.fromfeatures)
         && h.fromfeatures.containsAll(this.fromfeatures);

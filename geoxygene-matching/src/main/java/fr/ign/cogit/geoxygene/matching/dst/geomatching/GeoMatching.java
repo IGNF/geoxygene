@@ -75,7 +75,7 @@ public class GeoMatching {
 	  
     // Création des hypothèses d'appariement.
     LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
-    LOGGER.debug(combinations.size() + " candidates");
+    LOGGER.debug(combinations.size() + " hypotheses");
     
     // 
     List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
