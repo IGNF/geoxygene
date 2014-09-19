@@ -25,8 +25,6 @@ struct DataPainting {
 	
 };
 
-uniform float x;
-uniform float y;
 
 // v is scaled from [0..1] to [0.5-width/2..0.5+width/2]
 float vTextureScale( in float width, in float v ) {
@@ -38,11 +36,10 @@ float vTextureScale( in float width, in float v ) {
 
 /************************************************************************************/
 vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
-	return vec2(fragmentData.uv);
+	return vec2(fragmentData.uv.x / fragmentData.uMax, fragmentData.uv.y);
 }
 
 /************************************************************************************/
 vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
-
-	return vec4( x,x,x , 1 );
+	return vec4( fragmentData.color.rgb * brushColor.rgb * paperColor.rgb, fragmentData.color.a );
 }

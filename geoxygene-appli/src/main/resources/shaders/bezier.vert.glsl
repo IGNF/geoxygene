@@ -28,7 +28,7 @@ layout(location = 6) in vec2 p1;
 layout(location = 7) in vec2 p2;
 layout(location = 8) in vec2 n0;
 layout(location = 9) in vec2 n2;
-layout(location = 10) in vec2 paperUV;
+layout(location = 10) in vec2 vertexPaperUV;
 
 
 
@@ -72,7 +72,7 @@ void main() {
 	vertexOut.color = vertexColor;
 	vertexOut.lineWidth = lineWidth * m00 / 2.;
 	vertexOut.uMax = uMax;
-	vertexOut.paperUV = paperUV;
+	vertexOut.paperUV = vertexPaperUV;
 	vertexOut.p0screen = worldToIdentity(p0);
 	vertexOut.p1screen = worldToIdentity(p1);
 	vertexOut.p2screen = worldToIdentity(p2);

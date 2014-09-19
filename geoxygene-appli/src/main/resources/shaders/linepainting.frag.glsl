@@ -74,7 +74,7 @@ vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainti
  ************************************************************/
 
 void main() {
-	 
+ 
 	DataPainting fragmentData = DataPainting(screenWidth, screenHeight, mapScaleDiv1000, brushWidth, brushHeight,
 		brushStartWidth, brushEndWidth, brushScale, paperScale, sharpness, paperDensity, brushDensity, strokePressure,
 		fragmentIn.position, fragmentIn.uv, fragmentIn.color, fragmentIn.thickness, fragmentIn.uMax, vec2(0,0)
@@ -85,6 +85,6 @@ void main() {
 	vec4 paperColor = texture( paperSampler, fragmentIn.paperUV);
 	
 	outColor = computeFragmentColor( brushColor, paperColor, fragmentData );
-	//outColor = paperColor;
+//	outColor = brushColor;
 }
 

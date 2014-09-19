@@ -28,11 +28,11 @@
 package fr.ign.cogit.geoxygene.appli.gl;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorFloat;
 import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
@@ -50,7 +50,6 @@ public class UserSubshader implements Subshader {
     private String subshaderFilename = "./src/main/resources/shaders/linepainting.subshader.default.glsl";
 
     private UserShaderDescriptor descriptor = null;
-    private final Map<String, Float> variables = new HashMap<String, Float>();
 
     public UserSubshader(UserShaderDescriptor descriptor) {
         if (descriptor == null) {
@@ -58,14 +57,12 @@ public class UserSubshader implements Subshader {
         }
         this.descriptor = descriptor;
         this.subshaderFilename = descriptor.getFilename();
-        // we should fill the variables list with those defined in the
-        // descriptor
     }
 
     @Override
-    public void declareUniforms(GLProgram program) {
-        for (Map.Entry<String, Float> entry : this.variables.entrySet()) {
-            program.addUniform(entry.getKey());
+    public void declareUniforms(GLProgram program) throws GLException {
+        for (ParameterDescriptor param : this.descriptor.getParameters()) {
+            program.addUniform(param.getName());
         }
     }
 
@@ -76,11 +73,25 @@ public class UserSubshader implements Subshader {
      */
     @Override
     public void setUniforms(GLProgram program) throws GLException {
-
-        for (Map.Entry<String, Float> entry : this.variables.entrySet()) {
-            program.setUniform1f(entry.getKey(), (entry.getValue()));
+        for (ParameterDescriptor param : this.descriptor.getParameters()) {
+            this.setUniform(program, param);
         }
+    }
 
+    /**
+     * @param program
+     * @param param
+     * @throws GLException
+     */
+    private void setUniform(GLProgram program, ParameterDescriptor param)
+            throws GLException {
+        if (param instanceof ParameterDescriptorFloat) {
+            ParameterDescriptorFloat floatParam = (ParameterDescriptorFloat) param;
+            program.setUniform1f(floatParam.getName(), floatParam.getValue());
+        } else {
+            throw new IllegalStateException("no uniform set for "
+                    + param.getClass().getSimpleName());
+        }
     }
 
     @Override
@@ -94,4 +105,57 @@ public class UserSubshader implements Subshader {
         }
 
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((this.descriptor == null) ? 0 : this.descriptor.hashCode());
+        result = prime
+                * result
+                + ((this.subshaderFilename == null) ? 0
+                        : this.subshaderFilename.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        UserSubshader other = (UserSubshader) obj;
+        if (this.descriptor == null) {
+            if (other.descriptor != null) {
+                return false;
+            }
+        } else if (!this.descriptor.equals(other.descriptor)) {
+            return false;
+        }
+        if (this.subshaderFilename == null) {
+            if (other.subshaderFilename != null) {
+                return false;
+            }
+        } else if (!this.subshaderFilename.equals(other.subshaderFilename)) {
+            return false;
+        }
+        return true;
+    }
+
 }

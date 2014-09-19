@@ -105,7 +105,6 @@ public class GLPaintingVertex implements GLVertex {
         this.setColor(r, g, b, a);
         this.setMaxU(maxU);
         this.setPaperUV(paperU, paperV);
-        System.err.println("vertex " + this.toString());
     }
 
     // public GLPaintingVertex(Point2d p, Point2d uv, Point2d normal,

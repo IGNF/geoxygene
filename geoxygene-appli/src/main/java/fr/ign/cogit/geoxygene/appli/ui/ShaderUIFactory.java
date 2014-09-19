@@ -31,6 +31,7 @@ import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.style.expressive.DefaultShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.RandomVariationShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
 
 /**
  * @author JeT
@@ -47,7 +48,13 @@ public class ShaderUIFactory {
 
         }
         if (descriptor instanceof DefaultShaderDescriptor) {
-            return new DefaultShaderUI((DefaultShaderDescriptor)(descriptor), projectFrame);
+            return new DefaultShaderUI((DefaultShaderDescriptor) (descriptor),
+                    projectFrame);
+
+        }
+        if (descriptor instanceof UserShaderDescriptor) {
+            return new UserShaderUI((UserShaderDescriptor) (descriptor),
+                    projectFrame);
 
         }
         return new NoShaderUI(descriptor, projectFrame);

@@ -58,7 +58,7 @@ public class GLContext {
         synchronized (this.programs) {
             this.programs.put(programName, null);
             this.programAccessors.put(programName, programAccessor);
-            logger.debug("Add program accessor to '" + programName + "'");
+            // logger.debug("Add program accessor to '" + programName + "'");
         }
     }
 

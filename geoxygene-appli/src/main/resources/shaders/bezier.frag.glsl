@@ -39,15 +39,21 @@ struct DataPainting {
 	
 };
 
-uniform sampler2D colorTexture1;
-uniform float globalOpacity = 1;
 uniform float screenWidth;
 uniform float screenHeight;
 uniform float fboWidth;
 uniform float fboHeight;
-
 uniform sampler2D paperSampler;
 uniform sampler2D brushSampler;
+uniform float mapScaleDiv1000 = 0.; // map scale
+uniform int brushWidth = 0; // brush texture width (pixels)
+uniform int brushHeight = 0; // brush texture height (pixels)
+uniform int brushStartWidth = 0; // brush texture width (pixels)
+uniform int brushEndWidth = 0; // brush texture height (pixels)
+uniform float brushScale = 0; // size in mm of one brush pixel
+uniform float paperScale = 0; // scaling factor for paper
+uniform float sharpness = 0; // brush-paper blending sharpness
+
 uniform float paperDensity = 0.3; // paper height scale factor
 uniform float brushDensity = 1.0; // brush height scale factor
 uniform float strokePressure = 1; // stroke pressure
@@ -112,6 +118,7 @@ vec2 DistanceToQBSpline(in vec2 P0, in vec2 P1, in vec2 P2, in vec2 p, in vec2 n
 	if ( abs(dotSc) < 0.001 ) {
 		float normsd = sqrt(sC/2);
 		float u = abs( dot( P0P2, D ) / (dot(P0P2,P0P2) ));
+//		return vec2(u,500000);
 			return vec2(u, ( D.y * sd.x - D.x * sd.y ) / normsd );
 	}
 	
@@ -169,55 +176,23 @@ void main() {
 	
 	vec2 uv = DistanceToQBSpline(p0, p1, p2, p, n0, n2 );
 	float lineSoftness = 1.0;
-//	uv.x = fragmentIn.uv.x + uv.x * ( fragmentIn.uv.y - fragmentIn.uv.x );
-//	uv.x = uv.x / 1000;
+	uv.x = fragmentIn.uv.x + uv.x * ( fragmentIn.uv.y - fragmentIn.uv.x );
 	float screenRatio = fboWidth / screenWidth;
 	uv.y =  (1 + uv.y / fragmentIn.lineWidth / screenRatio) /2 ;
 //	if ( uv.y > 1 ) { outColor = vec4( 0, 0, 1, 1); return; }
 //	if ( uv.y < 0 ) { outColor = vec4( 0, 1, 0, 1); return; }
 	if ( uv.y < 0 || uv.y > 1 ) { discard; }
 
-	DataPainting fragmentData = DataPainting(screenWidth, screenHeight, 0, 0, 0,
-		0, 0, 0, 0, 0.5, paperDensity, brushDensity, strokePressure,
-		fragmentIn.position, uv, fragmentIn.color, fragmentIn.lineWidth, fragmentIn.uMax,
-		vec2(0,0) );
+	DataPainting fragmentData = DataPainting(screenWidth, screenHeight, mapScaleDiv1000, brushWidth, brushHeight,
+		brushStartWidth, brushEndWidth, brushScale, paperScale, sharpness, paperDensity, brushDensity, strokePressure,
+		fragmentIn.position, uv, fragmentIn.color, fragmentIn.lineWidth, fragmentIn.uMax, vec2(0,0)
+		);
 	vec2 brushUV = computeBrushTextureCoordinates( fragmentData );
 	
 	vec4 brushColor = texture( brushSampler, brushUV );
 	vec4 paperColor = texture( paperSampler, fragmentIn.paperUV );
 	
 	outColor = computeFragmentColor( brushColor, paperColor, fragmentData );
-	outColor = vec4( paperColor.rgb, fragmentIn.color.a  );
+	
+	//outColor = fragmentData.color;
 }
-
-
-
-/***********************************************************************************
-
-void main() {
-	//outColor = vec4( 0,0,1,1); return;
-	vec2 p = vec2( gl_FragCoord.x , fboHeight - gl_FragCoord.y  );
-	
-	vec2 p0 = fragmentIn.p0screen;
-	vec2 p1 = fragmentIn.p1screen;
-	vec2 p2 = fragmentIn.p2screen;
-	vec2 n0 = fragmentIn.n0screen;
-	vec2 n2 = fragmentIn.n2screen;
-	
-	vec2 uv = DistanceToQBSpline(p0, p1, p2, p, n0, n2 );
-	float lineSoftness = 1.0;
-//	uv.x = fragmentIn.uv.x + uv.x * ( fragmentIn.uv.y - fragmentIn.uv.x );
-//	uv.x = uv.x / 1000;
-	float screenRatio = fboWidth / screenWidth;
-	uv.y =  (1 + uv.y / fragmentIn.lineWidth / screenRatio) /2 ;
-//	if ( uv.y > 1 ) { outColor = vec4( 0, 0, 1, 1); return; }
-//	if ( uv.y < 0 ) { outColor = vec4( 0, 1, 0, 1); return; }
-	if ( uv.y < 0 || uv.y > 1 ) { discard; }
-	
-	vec4 tcolor = computeColor1( uv, fragmentIn.uMax, gl_FragCoord, screenWidth, screenHeight, fboWidth, fboHeight );
-//	tcolor = vec4( uv.x, uv.y, 0 , 1);
-	outColor = vec4( fragmentIn.paperUV, 0 , 1  );
-//	outColor = vec4( tcolor.rgb * fragmentIn.color.rgb, fragmentIn.color.a * tcolor.a * globalOpacity );
-	
-}
-*******************************************************************************************/

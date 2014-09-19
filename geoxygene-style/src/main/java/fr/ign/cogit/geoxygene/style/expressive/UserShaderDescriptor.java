@@ -27,9 +27,13 @@
 
 package fr.ign.cogit.geoxygene.style.expressive;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 
 /**
  * @author JeT
@@ -40,6 +44,9 @@ public class UserShaderDescriptor extends ShaderDescriptor {
 
     @XmlElement(name = "File")
     private String filename = "./src/main/resources/shaders/linepainting.subshader.default.glsl";
+
+    @XmlElements({ @XmlElement(name = "Float", type = ParameterDescriptorFloat.class) })
+    private final List<ParameterDescriptor> parameters = new ArrayList<ParameterDescriptor>();
 
     /**
      * @return the filename
@@ -56,6 +63,13 @@ public class UserShaderDescriptor extends ShaderDescriptor {
         this.filename = filename;
     }
 
+    /**
+     * @return the parameters
+     */
+    public List<ParameterDescriptor> getParameters() {
+        return this.parameters;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -67,6 +81,8 @@ public class UserShaderDescriptor extends ShaderDescriptor {
         int result = 1;
         result = prime * result
                 + ((this.filename == null) ? 0 : this.filename.hashCode());
+        result = prime * result
+                + ((this.parameters == null) ? 0 : this.parameters.hashCode());
         return result;
     }
 
@@ -92,6 +108,13 @@ public class UserShaderDescriptor extends ShaderDescriptor {
                 return false;
             }
         } else if (!this.filename.equals(other.filename)) {
+            return false;
+        }
+        if (this.parameters == null) {
+            if (other.parameters != null) {
+                return false;
+            }
+        } else if (!this.parameters.equals(other.parameters)) {
             return false;
         }
         return true;

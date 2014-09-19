@@ -25,41 +25,24 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.gl;
+package fr.ign.cogit.geoxygene.style.expressive;
 
-import fr.ign.cogit.geoxygene.util.gl.GLException;
-import fr.ign.cogit.geoxygene.util.gl.GLProgram;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * @author JeT
  * 
  */
-public interface Subshader {
+@XmlAccessorType(XmlAccessType.FIELD)
+public abstract class ParameterDescriptor {
 
-    /**
-     * declare the uniforms variables used in this shader
-     * 
-     * @param program
-     * @throws GLException
-     */
-    public void declareUniforms(GLProgram program) throws GLException;
+    public abstract String getName();
 
-    /**
-     * Initialize the shader before rendering (set uniforms)
-     * 
-     * @throws GLException
-     */
-    public void setUniforms(GLProgram program) throws GLException;
-
-    /**
-     * configure the shader in the given program. Set fragment, shaders used by
-     * program. This method must be called before using
-     * GLProgram::getProgramId() method which generates the program (compile,
-     * link)
-     * 
-     * @param program
-     * @throws GLException
-     */
-    public void configureProgram(GLProgram program) throws GLException;
+    // it is completely normal that hashCode and equals are not overloaded in
+    // the ParameterDescriptor subclasses
+    // when objects value change, object are the same, use onParameterChange
+    // event to know when the value change (not the object content:
+    // hashCode/equals)
 
 }
