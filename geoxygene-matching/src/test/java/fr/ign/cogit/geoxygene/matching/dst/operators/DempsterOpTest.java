@@ -9,6 +9,93 @@ import org.junit.Test;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 public class DempsterOpTest {
+  
+  /**
+   * Tests from Andino Maseleno and Md. Mahmud Hasan (2013),
+   * "The Dempster-Shafer Theory Algorithm and its Application to Insect Diseases Detection", International Journal of Advanced Science and Technology.
+   * Vol. 50 January, 2013
+   */
+  @Test
+  public void testInsectDiseaseDetection() {
+    
+    DempsterOp op = new DempsterOp(true);
+    List<List<Pair<byte[], Float>>> masspotentials = new ArrayList<List<Pair<byte[], Float>>>();
+    
+    byte[] B = new byte[] { 1, 0, 0, 0, 0 };
+    byte[] DF = new byte[] { 0, 1, 0, 0, 0 };
+    byte[] M = new byte[] { 0, 0, 1, 0, 0 };
+    byte[] L = new byte[] { 0, 0, 0, 0, 1 };
+    byte[] G1 = new byte[] { 1,1, 1, 1, 0 };
+    byte[] OMEGA = new byte[] { 1,1, 1, 1, 1 };
+    
+    // Symptom 1 : fever
+    List<Pair<byte[], Float>> source1 = new ArrayList<Pair<byte[], Float>>();
+    masspotentials.add(source1);
+    source1.add(new Pair<byte[], Float>(G1, 0.45f));
+    source1.add(new Pair<byte[], Float>(OMEGA, 0.55f));
+    
+    // Symptom 2 : Red Urine
+    List<Pair<byte[], Float>> source2 = new ArrayList<Pair<byte[], Float>>();
+    masspotentials.add(source2);
+    source2.add(new Pair<byte[], Float>(B, 0.55f));
+    source2.add(new Pair<byte[], Float>(OMEGA, 0.45f));
+    
+    // Symptom 3 : Skin Rash
+    List<Pair<byte[], Float>> source3 = new ArrayList<Pair<byte[], Float>>();
+    masspotentials.add(source3);
+    source3.add(new Pair<byte[], Float>(L, 0.45f));
+    source3.add(new Pair<byte[], Float>(OMEGA, 0.55f));
+    
+    // Symptom 4 : Paralysis
+    List<Pair<byte[], Float>> source4 = new ArrayList<Pair<byte[], Float>>();
+    masspotentials.add(source4);
+    source4.add(new Pair<byte[], Float>(L, 0.45f));
+    source4.add(new Pair<byte[], Float>(OMEGA, 0.55f));
+    
+    // Symptom 5 : Headache
+    List<Pair<byte[], Float>> source5 = new ArrayList<Pair<byte[], Float>>();
+    masspotentials.add(source5);
+    source5.add(new Pair<byte[], Float>(M, 0.55f));
+    source5.add(new Pair<byte[], Float>(OMEGA, 0.45f));
+    
+    // Symptom 6 : Arithritis
+    List<Pair<byte[], Float>> source6 = new ArrayList<Pair<byte[], Float>>();
+    masspotentials.add(source6);
+    source6.add(new Pair<byte[], Float>(DF, 0.65f));
+    source6.add(new Pair<byte[], Float>(OMEGA, 0.35f));
+    
+    // Combinaison des 6 symptomes
+    List<Pair<byte[], Float>> result = op.combine(masspotentials);
+    /*System.out.println(result.get(0));
+    System.out.println(result.get(1));
+    System.out.println(result.get(2));
+    System.out.println(result.get(3));
+    System.out.println(result.get(4));
+    System.out.println(result.get(5));*/
+    
+    /*
+     * L'article arrondi beaucoup trop, les résultats finaux ne sont pas assez précis pour tester.
+     * 
+    List<Pair<byte[], Float>> expectedArticle = new ArrayList<Pair<byte[], Float>>();
+    expectedArticle.add(new Pair<byte[], Float>(B, 0.17f));
+    expectedArticle.add(new Pair<byte[], Float>(G1, 0.04f));
+    expectedArticle.add(new Pair<byte[], Float>(L, 0.17f));
+    expectedArticle.add(new Pair<byte[], Float>(M, 0.13f));
+    expectedArticle.add(new Pair<byte[], Float>(DF, 0.19f));
+    expectedArticle.add(new Pair<byte[], Float>(OMEGA, 0.06f));
+    assertEquals(expectedArticle, result);
+    */
+    
+    List<Pair<byte[], Float>> expectedR = new ArrayList<Pair<byte[], Float>>();
+    expectedR.add(new Pair<byte[], Float>(B, 0.1860373f));
+    expectedR.add(new Pair<byte[], Float>(G1, 0.06849556f));
+    expectedR.add(new Pair<byte[], Float>(L, 0.1930329f));
+    expectedR.add(new Pair<byte[], Float>(M, 0.1860373f));
+    expectedR.add(new Pair<byte[], Float>(DF, 0.2826801f));
+    expectedR.add(new Pair<byte[], Float>(OMEGA, 0.08371679f));
+    assertEquals(expectedR, result);
+    
+  }
 
   /**
    * Tests from Don Koks and Subhash Challa (2003),
