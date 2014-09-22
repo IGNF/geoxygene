@@ -98,6 +98,11 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
     }
 
     private void setImage(GradientTextureImage image) {
+        if (image == null) {
+
+            throw new IllegalStateException("null image set in "
+                    + this.getClass().getSimpleName());
+        }
         this.image = image;
         this.imageMask = new MipMapMask();
         logger.debug("Generate MipMap from image size " + this.image.getWidth()

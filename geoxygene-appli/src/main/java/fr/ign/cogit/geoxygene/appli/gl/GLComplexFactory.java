@@ -694,6 +694,7 @@ public class GLComplexFactory {
                         minX, minY);
             }
             primitive.setColor(stroke.getColor());
+            primitive.setOverallOpacity(stroke.getColor().getAlpha() / 255.);
             primitive.setRenderer(renderer);
             return primitive;
         }

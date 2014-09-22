@@ -290,6 +290,7 @@ public class BasicTexture implements Texture {
             return false;
         }
         glEnable(GL_TEXTURE_2D);
+        glEnable(GL11.GL_BLEND);
         GL13.glActiveTexture(this.textureSlot);
         glBindTexture(GL_TEXTURE_2D, texIndex);
         return true;

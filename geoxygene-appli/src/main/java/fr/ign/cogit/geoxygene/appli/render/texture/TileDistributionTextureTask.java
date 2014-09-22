@@ -463,6 +463,12 @@ public class TileDistributionTextureTask extends
                 this.getEnvelope(), maxCoastLine);
         this.texImage = GradientTextureImage
                 .generateGradientTextureImage(params);
+        if (this.texImage == null) {
+            this.setError(new IllegalStateException(
+                    "Gradient Image generation returns a null value"));
+            this.setState(TaskState.ERROR);
+            return false;
+        }
         if (this.isStopRequested()) {
             this.setState(TaskState.STOPPED);
             return false;

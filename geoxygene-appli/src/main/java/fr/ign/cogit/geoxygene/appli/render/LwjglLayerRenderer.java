@@ -126,7 +126,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
     private int previousFBOImageWidth = -1;
     private int previousFBOImageHeight = -1;
     private boolean fboRendering = false;
-    private boolean needInitialization = false;
+    // private boolean needInitialization = false;
     private Symbolizer fboSymbolizer = null;
     private GLComplex fboPrimitive = null;
     private double fboOpacity = 1.;
@@ -536,8 +536,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                     + this.getLayer().getName());
         }
 
-        if (this.getLayerViewPanel().useFBO() && primitive.mayOverlap()
-                && !quickRendering) {
+        if (this.getLayerViewPanel().useFBO() && !quickRendering) {
             this.setFBORendering(true);
             renderer.setFBORendering(true);
             this.fboRendering(primitive, renderer, opacity);
@@ -612,8 +611,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         GLTools.glCheckError("after setting draw buffer");
 
         glEnable(GL_TEXTURE_2D);
-        // display the computed texture on the screen
-        // using object opacity * overall opacity
+        // display the layer
 
         renderer.setFBORendering(true);
         renderer.render(primitive, 1f);
@@ -633,10 +631,14 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
 
         GLProgram program = this.getGlContext().setCurrentProgram(
                 LayerViewGLPanel.screenspaceAntialiasedTextureProgramName);
-
+        // System.err.println("FBO opacity = " + this.fboOpacity);
+        // System.err.println("FBO primitive opacity = "
+        // + this.fboPrimitive.getOverallOpacity());
+        // System.err.println("primitive = " + this.fboPrimitive);
         GLTools.glCheckError("FBO plain rendering");
         GL11.glViewport(0, 0, this.getCanvasWidth(), this.getCanvasHeight());
         GL11.glDrawBuffer(GL11.GL_BACK);
+        glDisable(GL_BLEND);
         glEnable(GL_TEXTURE_2D);
         glDisable(GL11.GL_POLYGON_SMOOTH);
 
@@ -684,6 +686,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
         GLTools.glCheckError("before FBO drawing textured quad");
+        this.getScreenQuad().setOverallOpacity(1.);
         GLTools.drawComplex(this.getScreenQuad());
         // this.getScreenQuad().setColor(new Color(1f, 1f, 1f, .5f));
         GLTools.glCheckError("FBO drawing textured quad");
@@ -780,6 +783,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         int antialisingSize = this.getLayerViewPanel().getAntialiasingSize() + 1;
         if (this.fboSymbolizer != null) {
             try {
+
                 this.drawFBO(
                         this.fboOpacity * this.fboPrimitive.getOverallOpacity(),
                         antialisingSize);
@@ -845,11 +849,11 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             // + this.getLayerViewPanel().getAntialiasingSize());
             GLTools.glCheckError("after setting viewport");
 
-            glDisable(GL11.GL_BLEND);
-            GLTools.glCheckError("just before launching normal rendering within FBO context");
-
             GLTools.glCheckError("FBO initialization");
         }
+        glDisable(GL11.GL_BLEND);
+        GLTools.glCheckError("just before launching normal rendering within FBO context");
+
         GL11.glClearColor(0f, 0f, 0f, 0f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
     }
@@ -894,7 +898,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         // }
         TextureManager.getInstance().clearCache();
         GLTextureManager.getInstance().clearCache();
-        this.needInitialization = true;
+        // this.needInitialization = true;
     }
 
     /**

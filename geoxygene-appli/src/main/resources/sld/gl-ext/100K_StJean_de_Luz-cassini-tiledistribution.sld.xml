@@ -1,6 +1,79 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
     <NamedLayer>
+        <Name>hydro_100</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer hydro_100</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#de17d9</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#9b1097</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+    <StrokeTextureExpressiveRendering>
+        <PaperTexture>./src/main/resources/textures/papers/black-normalized.png</PaperTexture>
+        <BrushTexture>./src/main/resources/textures/brushes/chalk2-100-200.png</BrushTexture>
+        <BrushStartLength>100</BrushStartLength>
+        <BrushEndLength>200</BrushEndLength>
+        <SampleSize>2.0</SampleSize>
+        <minAngle>1.5</minAngle>
+        <BrushAspectRatio>8.0</BrushAspectRatio>
+        <PaperSizeInCm>4.0</PaperSizeInCm>
+        <PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
+        <PaperRoughness>0.7</PaperRoughness>
+        <BrushRoughness>1.9</BrushRoughness>
+        <StrokePressure>2.64</StrokePressure>
+        <StrokeSoftness>0.1</StrokeSoftness>
+        <DefaultShader/>
+    </StrokeTextureExpressiveRendering>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#9b1097</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                            <StrokeTextureExpressiveRendering>
+<PaperTexture>./src/main/resources/textures/papers/black-normalized.png</PaperTexture>
+<BrushTexture>./src/main/resources/textures/brushes/chalk2-100-200.png</BrushTexture>
+<BrushStartLength>100</BrushStartLength>
+<BrushEndLength>200</BrushEndLength>
+<SampleSize>2.0</SampleSize>
+<minAngle>1.5</minAngle>
+<BrushAspectRatio>8.0</BrushAspectRatio>
+<PaperSizeInCm>4.0</PaperSizeInCm>
+<PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
+<PaperRoughness>0.7</PaperRoughness>
+<BrushRoughness>1.9</BrushRoughness>
+<StrokePressure>2.64</StrokePressure>
+<StrokeSoftness>0.1</StrokeSoftness>
+<DefaultShader/>
+                            </StrokeTextureExpressiveRendering>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
         <Name>mer_OCS_100</Name>
         <UserStyle>
             <Name>Style créé pour le layer mer_OCS_100</Name>
@@ -43,6 +116,7 @@
 <MaxCoastlineLength>1000.0</MaxCoastlineLength>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/coast-1.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>20.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -50,6 +124,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/coast-2.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>20.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -57,6 +132,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/coast-3.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>20.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -64,6 +140,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/coast-4.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>20.0</MaxDistance>
     <InRangeProbability>3.0</InRangeProbability>
@@ -71,6 +148,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/coast-5.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>20.0</MaxDistance>
     <InRangeProbability>3.0</InRangeProbability>
@@ -78,6 +156,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/coast-5.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>20.0</MaxDistance>
     <InRangeProbability>3.0</InRangeProbability>
@@ -85,6 +164,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/merI-1.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>150.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -92,6 +172,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/merI-2.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>150.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -99,6 +180,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/merI-3.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>150.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -106,6 +188,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/merII-1.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>100.0</MinDistance>
     <MaxDistance>200.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -113,6 +196,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/merII-2.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>100.0</MinDistance>
     <MaxDistance>200.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -120,6 +204,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/merII-3.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>100.0</MinDistance>
     <MaxDistance>200.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -127,6 +212,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/merIII-1.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>190.0</MinDistance>
     <MaxDistance>250.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -134,6 +220,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/merIII-2.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>190.0</MinDistance>
     <MaxDistance>250.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -141,6 +228,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/merIII-3.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>190.0</MinDistance>
     <MaxDistance>250.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -148,16 +236,62 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/merIV-1.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>250.0</MinDistance>
     <MaxDistance>INF</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
     <OutOfRangeProbability>0.0</OutOfRangeProbability>
 </Tile>
-<Resolution>2500.0</Resolution>
+<Resolution>500.0</Resolution>
 <Blending>ALPHA</Blending>
+<DistributionManagement>EXACT</DistributionManagement>
                             </TileDistributionTexture>
                             <CssParameter name="fill">#dcdb72</CssParameter>
                             <CssParameter name="fill-opacity">0.8</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>rochy_OCS_100</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer rochy_OCS_100</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#869753</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#5d693a</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.43</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#d9d9d9</CssParameter>
+                            <CssParameter name="fill-opacity">0.47</CssParameter>
                         </Fill>
                     </PolygonSymbolizer>
                 </Rule>
@@ -200,17 +334,13 @@
 <SampleSize>2.0</SampleSize>
 <minAngle>1.5</minAngle>
 <BrushAspectRatio>8.0</BrushAspectRatio>
-<PaperScaleFactor>1.7999999999999998</PaperScaleFactor>
+<PaperSizeInCm>4.0</PaperSizeInCm>
+<PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
 <PaperRoughness>2.2</PaperRoughness>
 <BrushRoughness>10.0</BrushRoughness>
 <StrokePressure>1.34</StrokePressure>
 <StrokeSoftness>1.0</StrokeSoftness>
-<StrokePressureVariationAmplitude>0.62</StrokePressureVariationAmplitude>
-<StrokePressureVariationWavelength>10.0</StrokePressureVariationWavelength>
-<StrokeShiftVariationAmplitude>0.92</StrokeShiftVariationAmplitude>
-<StrokeShiftVariationWavelength>10.0</StrokeShiftVariationWavelength>
-<StrokeThicknessVariationAmplitude>0.13</StrokeThicknessVariationAmplitude>
-<StrokeThicknessVariationWavelength>100.0</StrokeThicknessVariationWavelength>
+<DefaultShader/>
                             </StrokeTextureExpressiveRendering>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
@@ -263,6 +393,7 @@
 <MaxCoastlineLength>1000.0</MaxCoastlineLength>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/sandI-1.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>20.0</MaxDistance>
     <InRangeProbability>0.3</InRangeProbability>
@@ -270,6 +401,7 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/sandI-2.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>20.0</MaxDistance>
     <InRangeProbability>0.3</InRangeProbability>
@@ -277,13 +409,15 @@
 </Tile>
 <Tile>
     <url>file:src/main/resources/textures/cassini/StJeanDeLuz/sandII-1.png</url>
+    <ScaleFactor>1.0</ScaleFactor>
     <MinDistance>10.0</MinDistance>
     <MaxDistance>INF</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
     <OutOfRangeProbability>0.0</OutOfRangeProbability>
 </Tile>
-<Resolution>1500.0</Resolution>
+<Resolution>500.0</Resolution>
 <Blending>ALPHA</Blending>
+<DistributionManagement>EXACT</DistributionManagement>
                             </TileDistributionTexture>
                             <CssParameter name="fill">#6fbc08</CssParameter>
                             <CssParameter name="fill-opacity">0.8</CssParameter>
@@ -334,17 +468,13 @@
 <SampleSize>2.0</SampleSize>
 <minAngle>1.5</minAngle>
 <BrushAspectRatio>8.0</BrushAspectRatio>
-<PaperScaleFactor>1.9000000000000001</PaperScaleFactor>
+<PaperSizeInCm>4.0</PaperSizeInCm>
+<PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
 <PaperRoughness>0.7999999999999999</PaperRoughness>
 <BrushRoughness>4.5</BrushRoughness>
 <StrokePressure>0.78</StrokePressure>
 <StrokeSoftness>0.745</StrokeSoftness>
-<StrokePressureVariationAmplitude>0.01</StrokePressureVariationAmplitude>
-<StrokePressureVariationWavelength>100.0</StrokePressureVariationWavelength>
-<StrokeShiftVariationAmplitude>1.0</StrokeShiftVariationAmplitude>
-<StrokeShiftVariationWavelength>100.72500000000001</StrokeShiftVariationWavelength>
-<StrokeThicknessVariationAmplitude>0.0</StrokeThicknessVariationAmplitude>
-<StrokeThicknessVariationWavelength>99.875</StrokeThicknessVariationWavelength>
+<DefaultShader/>
                             </StrokeTextureExpressiveRendering>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
@@ -359,87 +489,6 @@
                             <CssParameter name="fill-opacity">1.0</CssParameter>
                         </Fill>
                     </PolygonSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-    </NamedLayer>
-    <NamedLayer>
-        <Name>hydro_100</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer hydro_100</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#de17d9</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#9b1097</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-    <StrokeTextureExpressiveRendering>
-        <PaperTexture>./src/main/resources/textures/papers/black-normalized.png</PaperTexture>
-        <BrushTexture>./src/main/resources/textures/brushes/chalk2-100-200.png</BrushTexture>
-        <BrushStartLength>100</BrushStartLength>
-        <BrushEndLength>200</BrushEndLength>
-        <SampleSize>2.0</SampleSize>
-        <minAngle>1.5</minAngle>
-        <BrushAspectRatio>8.0</BrushAspectRatio>
-        <PaperScaleFactor>0.5</PaperScaleFactor>
-        <PaperRoughness>0.7</PaperRoughness>
-        <BrushRoughness>1.9</BrushRoughness>
-        <StrokePressure>2.64</StrokePressure>
-        <StrokeSoftness>0.1</StrokeSoftness>
-        <StrokePressureVariationAmplitude>0.32</StrokePressureVariationAmplitude>
-        <StrokePressureVariationWavelength>40.0</StrokePressureVariationWavelength>
-        <StrokeShiftVariationAmplitude>0.92</StrokeShiftVariationAmplitude>
-        <StrokeShiftVariationWavelength>20.0</StrokeShiftVariationWavelength>
-        <StrokeThicknessVariationAmplitude>0.07</StrokeThicknessVariationAmplitude>
-        <StrokeThicknessVariationWavelength>20.0</StrokeThicknessVariationWavelength>
-    </StrokeTextureExpressiveRendering>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#9b1097</CssParameter>
-                            <CssParameter name="stroke-opacity">0.8</CssParameter>
-                            <CssParameter name="stroke-width">1.0</CssParameter>
-                            <StrokeTextureExpressiveRendering>
-<PaperTexture>./src/main/resources/textures/papers/black-normalized.png</PaperTexture>
-<BrushTexture>./src/main/resources/textures/brushes/chalk2-100-200.png</BrushTexture>
-<BrushStartLength>100</BrushStartLength>
-<BrushEndLength>200</BrushEndLength>
-<SampleSize>2.0</SampleSize>
-<minAngle>1.5</minAngle>
-<BrushAspectRatio>8.0</BrushAspectRatio>
-<PaperScaleFactor>0.5</PaperScaleFactor>
-<PaperRoughness>0.7</PaperRoughness>
-<BrushRoughness>1.9</BrushRoughness>
-<StrokePressure>2.64</StrokePressure>
-<StrokeSoftness>0.1</StrokeSoftness>
-<StrokePressureVariationAmplitude>0.32</StrokePressureVariationAmplitude>
-<StrokePressureVariationWavelength>40.0</StrokePressureVariationWavelength>
-<StrokeShiftVariationAmplitude>0.92</StrokeShiftVariationAmplitude>
-<StrokeShiftVariationWavelength>20.0</StrokeShiftVariationWavelength>
-<StrokeThicknessVariationAmplitude>0.07</StrokeThicknessVariationAmplitude>
-<StrokeThicknessVariationWavelength>20.0</StrokeThicknessVariationWavelength>
-                            </StrokeTextureExpressiveRendering>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <PerpendicularOffset>0.0</PerpendicularOffset>
-                    </LineSymbolizer>
                 </Rule>
             </FeatureTypeStyle>
         </UserStyle>

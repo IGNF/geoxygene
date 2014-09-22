@@ -24,5 +24,7 @@ void main(void) {
     vec3 interpolatedColor = sumRGB / sumAlpha;
     float interpolatedAlpha = sumAlpha / (antialiasingSize * antialiasingSize);
     //outColor = vec4( 1,0,0,1);
-    outColor = vec4( interpolatedColor.rgb, globalOpacity * objectOpacity * interpolatedAlpha );
+    outColor = vec4( interpolatedColor.rgb,  globalOpacity * objectOpacity * interpolatedAlpha  );
+//    outColor = vec4(  interpolatedColor.rgb, globalOpacity * objectOpacity * interpolatedAlpha);
+//    outColor = vec4( texelFetch(colorTexture1, textureNWPixel, 0).rgb, globalOpacity*interpolatedAlpha );
 }

@@ -238,9 +238,12 @@ public class DisplayableSurface extends AbstractDisplayable {
                     GeoxComplexRenderer renderer = GeoxRendererManager
                             .getOrCreateSurfaceRenderer(symbolizer,
                                     this.getLayerRenderer());
-                    GLComplex inner = this.generateWithTextureAndParameterizer(
-                            textureTask.getTexture(), parameterizer, envelope,
-                            renderer);
+                    GLSimpleComplex inner = this
+                            .generateWithTextureAndParameterizer(
+                                    textureTask.getTexture(), parameterizer,
+                                    envelope, renderer);
+                    inner.setOverallOpacity(symbolizer.getFill()
+                            .getFillOpacity());
                     complexes.add(inner);
 
                 }
@@ -306,6 +309,7 @@ public class DisplayableSurface extends AbstractDisplayable {
                 renderer);
         // System.err.println("created filled polygon " + this.getName());
         content.setColor(symbolizer.getFill().getColor());
+        content.setOverallOpacity(symbolizer.getFill().getFillOpacity());
         complexes.add(content);
         return complexes;
     }
@@ -340,6 +344,7 @@ public class DisplayableSurface extends AbstractDisplayable {
             // TextureManager.getInstance().uncacheTexture(content.getTexture());
         }
         content.setTexture(texture);
+
         return content;
     }
 
