@@ -3,12 +3,15 @@ package fr.ign.cogit.geoxygene.matching.dst.operators;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 public class DempsterOpTest {
+  
+  private final static Logger LOGGER = Logger.getLogger(DempsterOpTest.class);
   
   /**
    * Tests from Andino Maseleno and Md. Mahmud Hasan (2013),
@@ -66,12 +69,12 @@ public class DempsterOpTest {
     
     // Combinaison des 6 symptomes
     List<Pair<byte[], Float>> result = op.combine(masspotentials);
-    /*System.out.println(result.get(0));
-    System.out.println(result.get(1));
-    System.out.println(result.get(2));
-    System.out.println(result.get(3));
-    System.out.println(result.get(4));
-    System.out.println(result.get(5));*/
+    LOGGER.trace(result.get(0));
+    LOGGER.trace(result.get(1));
+    LOGGER.trace(result.get(2));
+    LOGGER.trace(result.get(3));
+    LOGGER.trace(result.get(4));
+    LOGGER.trace(result.get(5));
     
     /*
      * L'article arrondi beaucoup trop, les résultats finaux ne sont pas assez précis pour tester.
@@ -103,28 +106,36 @@ public class DempsterOpTest {
    */
   @Test
   public void testCombine() {
+    
     DempsterOp op = new DempsterOp(true);
+    
     List<List<Pair<byte[], Float>>> masspotentials = new ArrayList<List<Pair<byte[], Float>>>();
+    
     byte[] f111 = new byte[] { 1, 0, 0 };
     byte[] fa18 = new byte[] { 0, 1, 0 };
     byte[] p3c = new byte[] { 0, 0, 1 };
     byte[] fast = new byte[] { 1, 1, 0 };
     byte[] unknown = new byte[] { 1, 1, 1 };
+    
     List<Pair<byte[], Float>> source1 = new ArrayList<Pair<byte[], Float>>();
-    List<Pair<byte[], Float>> source2 = new ArrayList<Pair<byte[], Float>>();
     masspotentials.add(source1);
+    
+    List<Pair<byte[], Float>> source2 = new ArrayList<Pair<byte[], Float>>();
     masspotentials.add(source2);
+    
     // Table 3: Mass assignments for the various aircraft
     source1.add(new Pair<byte[], Float>(f111, 0.3f));
     source1.add(new Pair<byte[], Float>(fa18, 0.15f));
     source1.add(new Pair<byte[], Float>(p3c, 0.03f));
     source1.add(new Pair<byte[], Float>(fast, 0.42f));
     source1.add(new Pair<byte[], Float>(unknown, 0.1f));
+    
     source2.add(new Pair<byte[], Float>(f111, 0.4f));
     source2.add(new Pair<byte[], Float>(fa18, 0.1f));
     source2.add(new Pair<byte[], Float>(p3c, 0.02f));
     source2.add(new Pair<byte[], Float>(fast, 0.45f));
     source2.add(new Pair<byte[], Float>(unknown, 0.03f));
+    
     List<Pair<byte[], Float>> result = op.combine(masspotentials);
     List<Pair<byte[], Float>> expected = new ArrayList<Pair<byte[], Float>>();
     expected.add(new Pair<byte[], Float>(f111, 0.55f));
@@ -133,6 +144,7 @@ public class DempsterOpTest {
     expected.add(new Pair<byte[], Float>(fast, 0.29f));
     expected.add(new Pair<byte[], Float>(unknown, 0.003f));
     assertEquals(expected, result);
+    
     // Table 4: A new set of mass assignments, to highlight the "fast" subset anomaly in Table 3
     source2.clear();
     source2.add(new Pair<byte[], Float>(f111, 0.5f));

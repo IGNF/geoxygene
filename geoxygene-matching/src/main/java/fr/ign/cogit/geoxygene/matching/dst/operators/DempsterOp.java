@@ -30,7 +30,10 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
  * @author Julien Perret
  */
 public class DempsterOp implements CombinationOp {
-  Logger logger = Logger.getLogger(DempsterOp.class);
+  
+  /** Logger. */
+  private static final Logger LOGGER = Logger.getLogger(DempsterOp.class);
+  
   public Float conflict;
   public boolean worldclosed = true;
 
@@ -40,29 +43,31 @@ public class DempsterOp implements CombinationOp {
 
   @Override
   public List<Pair<byte[], Float>> combine(List<List<Pair<byte[], Float>>> masspotentials) {
-//    logger.info("Combination using dempster operator");
+
+    // logger.info("Combination using dempster operator");
     SmetsOp sop = new SmetsOp(this.worldclosed);
     List<Pair<byte[], Float>> mresult = sop.combine(masspotentials);
+    
     // On force l'ensemble vide à 0 = on le supprime du noyau
     if (!mresult.isEmpty()) {
       if (Utils.isEmpty(mresult.get(0).getFirst())) {
-        logger.info("Estimated conflict between mass information sources : "
+        LOGGER.info("Estimated conflict between mass information sources : "
             + mresult.get(0).getSecond());
         this.conflict = mresult.get(0).getSecond();
         mresult.remove(0);
       }
     }
     if (mresult.isEmpty()) {
-      logger.info("TOTAL CONFLICT BETWEEN SOURCES, THERE IS NO SOLUTION");
+      LOGGER.info("TOTAL CONFLICT BETWEEN SOURCES, THERE IS NO SOLUTION");
       return null;
     }
     float sum = 0.0f;
     for (Pair<byte[], Float> hyp : mresult) {
       sum += hyp.getSecond();
     }
-    if (logger.isDebugEnabled()) {
+    if (LOGGER.isDebugEnabled()) {
       if (sum < 0 || sum == 0) {
-        logger.debug("Warning : normalization by " + sum
+        LOGGER.debug("Warning : normalization by " + sum
             + " may result in an invalid mass potential");
       }
     }

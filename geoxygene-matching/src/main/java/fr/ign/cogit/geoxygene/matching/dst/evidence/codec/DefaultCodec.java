@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.matching.dst.evidence.Hypothesis;
  */
 public class DefaultCodec<H extends Hypothesis> implements EvidenceCodec<H> {
 
-  Logger logger = Logger.getLogger(DefaultCodec.class);
+  private static final Logger LOGGER = Logger.getLogger(DefaultCodec.class);
   
   // L'ordre de la liste ne doit pas être modifié!.
   private final List<H> hypotheses;
@@ -48,25 +48,28 @@ public class DefaultCodec<H extends Hypothesis> implements EvidenceCodec<H> {
 
   @Override
   public List<H> decode(byte[] encoded) {
-	logger.trace("decoding " + Arrays.toString(encoded));
+    LOGGER.debug("decoding " + Arrays.toString(encoded));
     List<H> decoded = new ArrayList<H>();
     for (int i = 0; i < encoded.length; i++) {
       if (encoded[i] == (byte) 1) {
-    	logger.info("\t adding " + i + " = " + this.hypotheses.get(i));
+        LOGGER.debug("\t adding " + i + " = " + this.hypotheses.get(i));
         decoded.add(this.hypotheses.get(i));
       }
     }
     return decoded;
   }
 
+  /**
+   * 
+   */
   @Override
   public byte[] encode(H... hyps) {
     byte[] encoded = new byte[this.hypotheses.size()];
     for (int i = 0; i < hyps.length; i++) {
       if (!this.hypotheses.contains(hyps[i])) {
-        logger.error("Unknown hypothesis");
+        LOGGER.error("Unknown hypothesis");
         return null;
-      }
+      } 
       int id = this.hypotheses.indexOf(hyps[i]);
       encoded[id] = (byte) 1;
     }

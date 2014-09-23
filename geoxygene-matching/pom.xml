@@ -2,7 +2,7 @@
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	
+
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -13,18 +13,17 @@
 
 	<artifactId>geoxygene-matching</artifactId>
 	<packaging>jar</packaging>
-	
+
 	<name>geoxygene-matching</name>
 	<description>
 		- Matching with Dempster Shafer Theory
 		- Implementation of Li and Goodchild's approach for linear feature matching
-		- Minimalistic implementation of &quot;Hidden Markov Map Matching Through Noise and Sparseness&quot;
-	</description>
+		- Minimalistic implementation of &quot;Hidden Markov Map Matching Through Noise and Sparseness&quot; </description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<developers>
 		<developer>
 			<id>julien-perret</id>
@@ -49,14 +48,26 @@
 	<build>
 		<plugins>
 			<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>cobertura-maven-plugin</artifactId>
-					<configuration>
-						<formats>
-							<format>xml</format>
-						</formats>
-					</configuration>
-				</plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<configuration>
+					<formats>
+						<format>xml</format>
+					</formats>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<!-- Skips unit tests if the value of skip.unit.tests property is true -->
+					<skipTests>false</skipTests>
+					<!-- Excludes R tests temporarely. -->
+					<excludes>
+						<exclude>**/RDempsterOpCompareTest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -82,7 +93,7 @@
 			<artifactId>geoxygene-feature</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-io</artifactId>
@@ -114,7 +125,7 @@
 			<artifactId>gov.nist.math.jama</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.jgrapht</groupId>
 			<artifactId>jgrapht-core</artifactId>
@@ -130,13 +141,35 @@
 			<artifactId>lpsolvesolverpack</artifactId>
 			<version>20130227</version>
 		</dependency>
-		
+
 		<dependency>
-    		<groupId>no.priv.garshol.duke</groupId>
-    		<artifactId>duke</artifactId>
-    		<version>1.2</version>
+			<groupId>no.priv.garshol.duke</groupId>
+			<artifactId>duke</artifactId>
+			<version>1.2</version>
 		</dependency>
-		
+
+		<!-- For R tests : rosuda -->
+		<!-- GNU Lesser General Public License -->
+		<dependency>
+			<groupId>org.nuiton.thirdparty</groupId>
+			<artifactId>JRI</artifactId>
+			<version>0.9-6</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nuiton.thirdparty</groupId>
+			<artifactId>Rserve</artifactId>
+			<version>1.7-3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nuiton.thirdparty</groupId>
+			<artifactId>REngine</artifactId>
+			<version>0.6-0</version>
+			<scope>test</scope>
+		</dependency>
+
+
 	</dependencies>
-	
+
 </project>

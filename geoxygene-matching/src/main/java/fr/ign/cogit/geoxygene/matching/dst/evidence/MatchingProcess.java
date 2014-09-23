@@ -106,13 +106,14 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
 	  // liste afin de permettre la combinaison de critères.
 	  for (Source<F, Hyp> src : this.criteria) {
 		  
-		  List<Pair<byte[], Float>> kernel = src.evaluate(reference, this.frame, this.codec);
-		  // On s'assure que sum(m(j)) = 1 sinon erreur.
-		  float sum = 0;
-		  for (Pair<byte[], Float> pair : kernel) {
-			  sum += pair.getSecond();
-		  }
-		  if (1 - sum > 0.001) {
+	    List<Pair<byte[], Float>> kernel = src.evaluate(reference, this.frame, this.codec);
+	    // System.out.println(kernel);
+		// On s'assure que sum(m(j)) = 1 sinon erreur.
+		float sum = 0;
+		for (Pair<byte[], Float> pair : kernel) {
+		  sum += pair.getSecond();
+		}
+		if (1 - sum > 0.001) {
 			  LOGGER.error("mass potential != 1(" + sum
                 + "), the process can not continue. Please check if belief functions ensure that sum(m(A))=1");
 			  throw new Exception();
@@ -130,16 +131,16 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
 	      }
 	      this.beliefs.add(kernel);
 	  }
-    
+	  
 	  // ----------------FUSION------------------------
 	  // Phase de combinaison des masses de croyance.
 	  // Si on se trouve dans l'hypothèse d'un monde clos, alors on utilise
 	  // l'opérateur de Dempster, sinon on utilise la règle de Smets.
 	  List<Pair<byte[], Float>> massresult = null;
 	  if (this.closedworld()) {
-		  massresult = new DempsterOp(this.isworldclosed).combine(this.beliefs);
+	    massresult = new DempsterOp(this.isworldclosed).combine(this.beliefs);
 	  } else {
-		  massresult = new SmetsOp(this.isworldclosed).combine(this.beliefs);
+		massresult = new SmetsOp(this.isworldclosed).combine(this.beliefs);
 	  }
 	  if (LOGGER.isDebugEnabled()) {
 		  if (!massresult.isEmpty() && Utils.isEmpty(massresult.get(0).getFirst())) {
