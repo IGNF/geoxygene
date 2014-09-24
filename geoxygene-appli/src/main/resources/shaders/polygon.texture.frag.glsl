@@ -12,5 +12,6 @@ out vec4 outColor;
 
 void main(void) {
 	vec4 tcolor = texture(colorTexture1, fragmentTextureCoord * textureScaleFactor );
+	if ( tcolor.a < 0.01 ) { outColor = vec4( 1,0,0,0.5); return; }
 	outColor = vec4( tcolor.rgb, objectOpacity * globalOpacity * tcolor.a);
 }

@@ -109,13 +109,13 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
      * when completed Task.getTextureImage() won't be null
      * 
      * @param texture
-     * @param iFeatureCollection
+     * @param featureCollection
      * @param viewport
      * @return
      */
     public TextureTask<BasicTexture> getTextureTask(String name,
             TextureDescriptor textureDescriptor,
-            IFeatureCollection<IFeature> iFeatureCollection, Viewport viewport) {
+            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
         if (textureDescriptor == null) {
             return null;
         }
@@ -129,7 +129,7 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
             }
             // look for texture on cache disk
             File file = TextureManager.generateTextureUniqueFile(
-                    textureDescriptor, iFeatureCollection);
+                    textureDescriptor, featureCollection);
             // logger.debug("Look for file '" + file.getAbsolutePath() + "'");
             // logger.debug(textureDescriptor.toString());
             if (file.isFile()) {
@@ -142,14 +142,14 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
             }
             // generate texture
             textureTask = TextureTaskFactory.createTextureTask(name,
-                    textureDescriptor, iFeatureCollection, viewport);
+                    textureDescriptor, featureCollection, viewport);
             if (textureTask == null) {
                 logger.error("Unable to create texture task for texture "
                         + textureDescriptor.getClass().getSimpleName());
                 return null;
             }
             textureTask.setID(TextureManager.generateTextureUniqueFilename(
-                    textureDescriptor, iFeatureCollection));
+                    textureDescriptor, featureCollection));
 
             tasksMap.put(textureDescriptor, textureTask);
         }

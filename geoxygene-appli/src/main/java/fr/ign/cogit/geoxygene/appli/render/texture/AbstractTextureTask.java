@@ -35,7 +35,7 @@ import fr.ign.cogit.geoxygene.util.gl.Texture;
  */
 public abstract class AbstractTextureTask<TextureType extends Texture> extends
         AbstractTask implements TextureTask<TextureType> {
-    private String id = "no texture task ID";
+    private String id = null;
 
     /**
      * constructor

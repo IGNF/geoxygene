@@ -81,7 +81,6 @@ public class TileDistributionTextureTask extends
 
     private final List<Pair<TileProbability, Tile>> tilesToBeApplied = new ArrayList<Pair<TileProbability, Tile>>();
     private GradientTextureImage texImage; //
-    private IEnvelope envelope = null;
     private Shape featureShape = null; // shape corresponding to the given
                                        // feature in the image texture space
     // private final DistanceFieldTexture texture = null;
@@ -173,7 +172,7 @@ public class TileDistributionTextureTask extends
                 }
 
             } else {
-                System.err.println("geometry type not handled : "
+                logger.error("geometry type not handled : "
                         + feature.getGeom().getClass().getSimpleName());
             }
         }
@@ -333,10 +332,7 @@ public class TileDistributionTextureTask extends
      * @return the feature collection envelope
      */
     private IEnvelope getEnvelope() {
-        if (this.envelope == null) {
-            this.envelope = this.featureCollection.getEnvelope();
-        }
-        return this.envelope;
+        return this.featureCollection.getEnvelope();
     }
 
     /*
@@ -433,8 +429,6 @@ public class TileDistributionTextureTask extends
 
             this.monitorMemory("texture image transformed");
             this.getTexture().setTextureImage(bi);
-            System.err.println("final texture image is set : "
-                    + this.getTexture().getTextureImage());
             this.setProgress(1);
             this.setState(TaskState.FINISHED);
             this.monitorMemory("termination");

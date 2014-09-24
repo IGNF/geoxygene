@@ -569,6 +569,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     }
 
     private String getGLInformation() {
+        this.activateGLContext();
         StringBuilder str = new StringBuilder();
         str.append("GLInformations\n");
         Class<?> contextClass = org.lwjgl.opengl.GLContext.getCapabilities()

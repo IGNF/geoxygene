@@ -32,6 +32,7 @@ import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -468,7 +469,19 @@ public class GradientTextureImage {
             // draw the outer frontier
             drawFrontier(texImage, polygon.getExterior(), 1, pixelRenderer,
                     params);
-
+            // double minX = Double.MAX_VALUE;
+            // double minY = Double.MAX_VALUE;
+            // double maxX = -Double.MAX_VALUE;
+            // double maxY = -Double.MAX_VALUE;
+            // for (IDirectPosition pos : polygon.getExterior().coord()) {
+            // minX = Math.min(minX, pos.getX());
+            // minY = Math.min(minY, pos.getY());
+            // maxX = Math.max(maxX, pos.getX());
+            // maxY = Math.max(maxY, pos.getY());
+            // }
+            // System.err.println("exterior frontier " + minX + "x" + minY +
+            // "  "
+            // + maxX + "x" + maxY);
             // draw all inner frontiers
             for (int innerFrontierIndex = 0; innerFrontierIndex < polygon
                     .getInterior().size(); innerFrontierIndex++) {
@@ -488,12 +501,12 @@ public class GradientTextureImage {
         // may be we can assert that polygons may not self intersect and get
         // back to previous version...
 
-        // try {
-        // TextureImageUtil.save(texImage, "1-frontiers");
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
+        try {
+            TextureImageUtil.save(texImage, "1-frontiers");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         // for (Map.Entry<Integer, List<Integer>> entry :
         // pixelRenderer.getYs().entrySet()) {
         // System.err.println("Y(" + entry.getKey() + ") = " +

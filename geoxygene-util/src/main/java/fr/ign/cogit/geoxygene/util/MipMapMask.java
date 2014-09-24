@@ -27,7 +27,6 @@
 
 package fr.ign.cogit.geoxygene.util;
 
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -37,20 +36,19 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /**
- * @author JeT
- *         Image pyramids containing only black and white pixel counts.
+ * @author JeT Image pyramids containing only black and white pixel counts.
  *         level 0 is the full image scaled to the closest greater power of two.
- *         level one is half size, etc.
- *         each cell contains a number of black & white points
- *         level getMipmapNbLevels()-1 has only one pixel image
+ *         level one is half size, etc. each cell contains a number of black &
+ *         white points level getMipmapNbLevels()-1 has only one pixel image
  *         image at level 0 has (2^(nbLevels-1))² pixels
  */
 public class MipMapMask {
 
-    private int fullMipmapImageWidth = 0; // number of pixels of the level 0 image
+    private int fullMipmapImageWidth = 0; // number of pixels of the level 0
+                                          // image
     private int imageWidth = 0; // source image width
     private int imageHeight = 0; // source image Height
-    private int mipmapNbLevels = 0; // image pyramid number of levels 
+    private int mipmapNbLevels = 0; // image pyramid number of levels
 
     /**
      * @return the mipmapSize
@@ -91,13 +89,13 @@ public class MipMapMask {
     private int mipmapImageWidthPerLevel[] = null;
     private static final Point zeroPoint = new Point(0, 0);
 
-    //    /**
-    //     * @param source
-    //     */
-    //    public MipMapMask(BufferedImage source) {
-    //        super();
-    //        this.setSource(source);
-    //    }
+    // /**
+    // * @param source
+    // */
+    // public MipMapMask(BufferedImage source) {
+    // super();
+    // this.setSource(source);
+    // }
     //
     /**
      * @param source
@@ -109,8 +107,10 @@ public class MipMapMask {
     public void setSize(int width, int height) {
         this.imageWidth = width;
         this.imageHeight = height;
-        // just count the number of zero in binary representation to get the closest power of two (+1 for the ceil value)
-        this.mipmapNbLevels = 32 - Integer.numberOfLeadingZeros((int) Math.ceil((Math.max(this.imageWidth, this.imageHeight)))) + 1;
+        // just count the number of zero in binary representation to get the
+        // closest power of two (+1 for the ceil value)
+        this.mipmapNbLevels = 32 - Integer.numberOfLeadingZeros((int) Math
+                .ceil((Math.max(this.imageWidth, this.imageHeight)))) + 1;
         this.fullMipmapImageWidth = 1 << (this.mipmapNbLevels - 1);
         this.mipmapImages = new MipMapImage[this.mipmapNbLevels];
 
@@ -118,33 +118,39 @@ public class MipMapMask {
 
         for (int mipmapImageWidth = this.fullMipmapImageWidth, level = 0; level < this.mipmapNbLevels; level++, mipmapImageWidth /= 2) {
             this.mipmapImageWidthPerLevel[level] = mipmapImageWidth;
-            this.mipmapImages[level] = new MipMapImage(this, mipmapImageWidth, level);
+            this.mipmapImages[level] = new MipMapImage(this, mipmapImageWidth,
+                    level);
         }
+
     }
 
-    //    public void setSource(BufferedImage source) {
-    //        if (source.getType() != BufferedImage.TYPE_BYTE_GRAY) {
-    //            throw new IllegalArgumentException("mipmap Image type must be grayscale");
-    //        }
-    //        this.setSize(source.getWidth(), source.getHeight());
-    //        byte[] sourcePixels = ((DataBufferByte) source.getRaster().getDataBuffer()).getData();
+    // public void setSource(BufferedImage source) {
+    // if (source.getType() != BufferedImage.TYPE_BYTE_GRAY) {
+    // throw new
+    // IllegalArgumentException("mipmap Image type must be grayscale");
+    // }
+    // this.setSize(source.getWidth(), source.getHeight());
+    // byte[] sourcePixels = ((DataBufferByte)
+    // source.getRaster().getDataBuffer()).getData();
     //
-    //        for (int y = 0, l = 0; y < this.imageHeight; y++) {
-    //            for (int x = 0; x < this.imageWidth; x++, l++) {
-    //                System.err.println("image source " + l + " = " + sourcePixels[l]);
-    //                int pixel = sourcePixels[l] & 0xFF;
-    //                if (pixel != 0) {
-    //                    System.err.println("image source is not null at " + x + "x" + y);
-    //                    this.addWhitePixel(x, y);
-    //                    for (int level = 0; level < this.getMipmapNbLevels(); level++) {
-    //                        System.err.println("pixel " + x + "x" + y + " level " + level + " nbWhite = "
-    //                                + this.getCell(this.source2MipMapCoordinate(x, y, level), level).nbWhite);
-    //                    }
-    //                }
-    //            }
-    //        }
+    // for (int y = 0, l = 0; y < this.imageHeight; y++) {
+    // for (int x = 0; x < this.imageWidth; x++, l++) {
+    // System.err.println("image source " + l + " = " + sourcePixels[l]);
+    // int pixel = sourcePixels[l] & 0xFF;
+    // if (pixel != 0) {
+    // System.err.println("image source is not null at " + x + "x" + y);
+    // this.addWhitePixel(x, y);
+    // for (int level = 0; level < this.getMipmapNbLevels(); level++) {
+    // System.err.println("pixel " + x + "x" + y + " level " + level +
+    // " nbWhite = "
+    // + this.getCell(this.source2MipMapCoordinate(x, y, level),
+    // level).nbWhite);
+    // }
+    // }
+    // }
+    // }
     //
-    //    }
+    // }
 
     /**
      * X & Y coordinates are expressed as pixel coordinates in source image
@@ -159,7 +165,8 @@ public class MipMapMask {
      *         image
      */
     public Point source2MipMapCoordinate(double x, double y, int level) {
-        return new Point((int) (x * this.mipmapImageWidthPerLevel[level] / this.imageWidth),
+        return new Point(
+                (int) (x * this.mipmapImageWidthPerLevel[level] / this.imageWidth),
                 (int) (y * this.mipmapImageWidthPerLevel[level] / this.imageHeight));
     }
 
@@ -177,10 +184,13 @@ public class MipMapMask {
      *         given level
      */
     public Point mipmap2SourceCoordinates(Point p) {
-        //        System.err.println(" convert from mipmap = " + p.x + "x" + p.y + " to " + (((double) p.x / this.getMipmapSize() * this.getImageWidth())) + "x"
-        //                + (((double) p.y / this.getMipmapSize() * this.getImageHeight())));
-        return new Point((int) Math.round((double) p.x / this.getMipmapSize() * this.getImageWidth()), (int) Math.round((double) p.y / this.getMipmapSize()
-                * this.getImageHeight()));
+        // System.err.println(" convert from mipmap = " + p.x + "x" + p.y +
+        // " to " + (((double) p.x / this.getMipmapSize() *
+        // this.getImageWidth())) + "x"
+        // + (((double) p.y / this.getMipmapSize() * this.getImageHeight())));
+        return new Point((int) Math.round((double) p.x / this.getMipmapSize()
+                * this.getImageWidth()), (int) Math.round((double) p.y
+                / this.getMipmapSize() * this.getImageHeight()));
     }
 
     /**
@@ -251,7 +261,8 @@ public class MipMapMask {
      */
     public void addWhitePixel(int x, int y) {
         for (int level = 0; level < this.mipmapNbLevels; level++) {
-            this.mipmapImages[level].getCell(this.source2MipMapCoordinate(x, y, level)).nbWhite++;
+            this.mipmapImages[level].getCell(this.source2MipMapCoordinate(x, y,
+                    level)).nbWhite++;
         }
     }
 
@@ -265,7 +276,8 @@ public class MipMapMask {
      */
     public void removeWhitePixel(int x, int y) {
         for (int level = 0; level < this.mipmapNbLevels; level++) {
-            this.mipmapImages[level].getCell(this.source2MipMapCoordinate(x, y, level)).nbWhite--;
+            this.mipmapImages[level].getCell(this.source2MipMapCoordinate(x, y,
+                    level)).nbWhite--;
         }
     }
 
@@ -278,12 +290,15 @@ public class MipMapMask {
      *            y coordinate expressed in image source coordinate system
      */
     public int getWhitePixelCount(int x, int y) {
-        return this.mipmapImages[0].getCell(this.source2MipMapCoordinate(x, y, 0)).nbWhite;
+        return this.mipmapImages[0].getCell(this.source2MipMapCoordinate(x, y,
+                0)).nbWhite;
     }
 
     public int getNbWhite() {
-        if (this.mipmapImages == null || this.mipmapImages[this.mipmapNbLevels - 1] == null
-                || this.mipmapImages[this.mipmapNbLevels - 1].getCell(zeroPoint) == null) {
+        if (this.mipmapImages == null
+                || this.mipmapImages[this.mipmapNbLevels - 1] == null
+                || this.mipmapImages[this.mipmapNbLevels - 1]
+                        .getCell(zeroPoint) == null) {
             return 0;
         }
         return this.mipmapImages[this.mipmapNbLevels - 1].getCell(zeroPoint).nbWhite;
@@ -339,8 +354,10 @@ public class MipMapMask {
     }
 
     public static void save(MipMapMask mask, String filename) {
-        BufferedImage bi = new BufferedImage(3 * mask.getMipmapSize() / 2, mask.getMipmapSize(), BufferedImage.TYPE_4BYTE_ABGR);
-        byte[] pixels = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
+        BufferedImage bi = new BufferedImage(3 * mask.getMipmapSize() / 2,
+                mask.getMipmapSize(), BufferedImage.TYPE_4BYTE_ABGR);
+        byte[] pixels = ((DataBufferByte) bi.getRaster().getDataBuffer())
+                .getData();
 
         saveMipMapLevel(pixels, 0, 0, mask, 0);
         int y = 0;
@@ -355,14 +372,20 @@ public class MipMapMask {
         }
     }
 
-    private static void saveMipMapLevel(byte[] pixels, int x0, int y0, MipMapMask mipmap, int level) {
+    private static void saveMipMapLevel(byte[] pixels, int x0, int y0,
+            MipMapMask mipmap, int level) {
         int ly = (x0 + y0 * 3 * mipmap.getMipmapSize() / 2) * 4;
         for (int y = 0; y < mipmap.getMipmapImageWidthPerLevel(level); y++) {
             int l = ly + (y * 3 * mipmap.getMipmapSize() / 2) * 4;
             for (int x = 0; x < mipmap.getMipmapImageWidthPerLevel(level); x++, l += 4) {
-                double pixelDensity = mipmap.getImageWidth() * mipmap.getImageHeight()
-                        / (mipmap.getMipmapImageWidthPerLevel(level) * mipmap.getMipmapImageWidthPerLevel(level));
-                int v = Math.max(0, Math.min(255, (int) (255 * mipmap.getCell(x, y, level).nbWhite / pixelDensity)));
+                double pixelDensity = mipmap.getImageWidth()
+                        * mipmap.getImageHeight()
+                        / (mipmap.getMipmapImageWidthPerLevel(level) * mipmap
+                                .getMipmapImageWidthPerLevel(level));
+                int v = Math
+                        .max(0,
+                                Math.min(255, (int) (255 * mipmap.getCell(x, y,
+                                        level).nbWhite / pixelDensity)));
                 pixels[l + 0] = (byte) 255;
                 if (mipmap.getCell(x, y, level).nbWhite == 0) {
                     pixels[l + 1] = (byte) 0;

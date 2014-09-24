@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.lwjgl.opengl.GL11;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -52,7 +53,9 @@ import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
+import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 
 /**
  * @author JeT A displayable surface is a displayable containing GL geometries
@@ -194,7 +197,7 @@ public class DisplayableSurface extends AbstractDisplayable {
                 .getFeatureCollection(0);
         List<GLComplex> complexes = new ArrayList<GLComplex>();
         // IEnvelope envelope = IGeometryUtil.getEnvelope(this.polygons);
-        IEnvelope envelope = featureCollection.envelope();
+        IEnvelope envelope = featureCollection.getEnvelope();
         double minX = envelope.minX();
         double minY = envelope.minY();
         if (textureDescriptor != null) {
@@ -234,6 +237,10 @@ public class DisplayableSurface extends AbstractDisplayable {
             case VIEWPORTSPACE:
                 BasicParameterizer parameterizer = new BasicParameterizer(
                         envelope, false, true);
+                // logger.debug("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ generate textured polygon with parameterizer "
+                // + parameterizer + " with envelope " + envelope);
+                // logger.debug("envelope = " + envelope.hashCode());
+
                 if (textureTask.getTexture() != null) {
                     GeoxComplexRenderer renderer = GeoxRendererManager
                             .getOrCreateSurfaceRenderer(symbolizer,
@@ -338,6 +345,9 @@ public class DisplayableSurface extends AbstractDisplayable {
         GLSimpleComplex content = GLComplexFactory.createFilledPolygons(
                 this.getName() + "-texture-filled", this.polygons, null,
                 parameterizer, minX, minY, renderer);
+        // GLSimpleComplex content = this.GLComplexQuadEnvelope(this.getName()
+        // + "-texture-envelope", envelope, null, parameterizer, minX,
+        // minY, renderer);
         // remove previous texture from texture manager
         if (content.getTexture() != null) {
             // FIXME
@@ -371,6 +381,47 @@ public class DisplayableSurface extends AbstractDisplayable {
     // }
     //
     // }
+
+    /**
+     * Create a quad on an envelope (useful for debug purpose)
+     * 
+     * @param name
+     * @param envelope
+     * @param object
+     * @param parameterizer
+     * @param minX
+     * @param minY
+     * @param renderer
+     * @return
+     */
+    private GLSimpleComplex GLComplexQuadEnvelope(String name,
+            IEnvelope envelope, Object object, Parameterizer parameterizer,
+            double minX, double minY, GLComplexRenderer renderer) {
+        GLSimpleComplex primitive = new GLSimpleComplex(name + "-envelope",
+                minX, minY);
+        GLMesh quad = primitive.addGLMesh(GL11.GL_TRIANGLES);
+        int nw = primitive.addVertex(new GLSimpleVertex(new float[] {
+                (float) (envelope.getLowerCorner().getX() - minX),
+                (float) (envelope.getLowerCorner().getY() - minY), 0 },
+                new float[] { 0, 1 }));
+        int ne = primitive.addVertex(new GLSimpleVertex(new float[] {
+                (float) (envelope.getLowerCorner().getX() - minX),
+                (float) (envelope.getUpperCorner().getY() - minY), 0 },
+                new float[] { 0, 0 }));
+        int sw = primitive.addVertex(new GLSimpleVertex(new float[] {
+                (float) (envelope.getUpperCorner().getX() - minX),
+                (float) (envelope.getLowerCorner().getY() - minY), 0 },
+                new float[] { 1, 1 }));
+        int se = primitive.addVertex(new GLSimpleVertex(new float[] {
+                (float) (envelope.getUpperCorner().getX() - minX),
+                (float) (envelope.getUpperCorner().getY() - minY), 0 },
+                new float[] { 1, 0 }));
+        quad.addIndices(nw, ne, se);
+        quad.addIndices(nw, se, sw);
+        primitive.setRenderer(new GeoxComplexRendererBasic(this
+                .getLayerRenderer(), this.getSymbolizer()));
+        return primitive;
+    }
 
     private static class TextureApplyer implements
             TaskListener<TextureTask<BasicTexture>> {

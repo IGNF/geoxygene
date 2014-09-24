@@ -130,7 +130,6 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
                     sample.setTile(tile);
                 }
             }
-
         }
         // MipMapMask.save(this.imageMask, "initialMipMap.png");
     }
@@ -181,8 +180,8 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
                 this.samples.add(sample);
             }
 
-            // MipMapMask.save(this.imageMask, "./mipmap" + count + "-" +
-            // this.imageMask.getNbWhite() + ".png");
+            // MipMapMask.save(this.imageMask, "./mipmap" + count + "-"
+            // + this.imageMask.getNbWhite() + ".png");
             // System.err.println("save file mipmap.png");
             // System.err.println("count = " + count);
             // count++;

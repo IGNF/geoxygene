@@ -65,8 +65,8 @@ public class BasicParameterizer implements Parameterizer {
         this.setMaxY(maxY);
         this.setXFlip(xFlip);
         this.setYFlip(yFlip);
-        // logger.debug("Create Basic parameterizer with bounding box " + minX +
-        // "x" + minY + " /" + maxX + "x" + maxY);
+        logger.debug("Create Basic parameterizer with bounding box " + minX
+                + "x" + minY + " /" + maxX + "x" + maxY);
     }
 
     /**
@@ -219,9 +219,6 @@ public class BasicParameterizer implements Parameterizer {
      */
     @Override
     public Point2d getTextureCoordinates(double... vertex) {
-        // System.err.println("vertex = " + vertex[0] + " x " + vertex[1]);
-        // System.err.println("min x = " + this.minX);
-        // System.err.println("max x = " + this.maxX);
         double xTexture = ((vertex[0]) / (this.maxX - this.minX));
         double yTexture = ((vertex[1]) / (this.maxY - this.minY));
         if (this.getXFlip()) {
@@ -230,6 +227,9 @@ public class BasicParameterizer implements Parameterizer {
         if (this.getYFlip()) {
             yTexture = 1 - yTexture;
         }
+        // System.err.println("scale = " + this.scaleX + " " + this.scaleY);
+        // System.err.println("translate = " + this.translateX + " "
+        // + this.translateY);
         return new Point2d(xTexture * this.scaleX + this.translateX, yTexture
                 * this.scaleY + this.translateY);
     }
