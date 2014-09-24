@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
+import fr.ign.cogit.AssertPair;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 public class DempsterOpTest {
@@ -24,12 +25,12 @@ public class DempsterOpTest {
     DempsterOp op = new DempsterOp(true);
     List<List<Pair<byte[], Float>>> masspotentials = new ArrayList<List<Pair<byte[], Float>>>();
     
-    byte[] B = new byte[] { 1, 0, 0, 0, 0 };
-    byte[] DF = new byte[] { 0, 1, 0, 0, 0 };
-    byte[] M = new byte[] { 0, 0, 1, 0, 0 };
-    byte[] L = new byte[] { 0, 0, 0, 0, 1 };
-    byte[] G1 = new byte[] { 1,1, 1, 1, 0 };
-    byte[] OMEGA = new byte[] { 1,1, 1, 1, 1 };
+    byte[] B     = new byte[] { 1, 0, 0, 0, 0 };
+    byte[] DF    = new byte[] { 0, 1, 0, 0, 0 };
+    byte[] L     = new byte[] { 0, 0, 1, 0, 0 };
+    byte[] M     = new byte[] { 0, 0, 0, 1, 0 };
+    byte[] G1    = new byte[] { 1, 1, 0, 1, 1 };
+    byte[] OMEGA = new byte[] { 1, 1, 1, 1, 1 };
     
     // Symptom 1 : fever
     List<Pair<byte[], Float>> source1 = new ArrayList<Pair<byte[], Float>>();
@@ -96,7 +97,7 @@ public class DempsterOpTest {
     expectedR.add(new Pair<byte[], Float>(M, 0.1860373f));
     expectedR.add(new Pair<byte[], Float>(DF, 0.2826801f));
     expectedR.add(new Pair<byte[], Float>(OMEGA, 0.08371679f));
-    assertEquals(expectedR, result);
+    AssertPair.assertEquals(expectedR, result);
     
   }
 
@@ -143,7 +144,7 @@ public class DempsterOpTest {
     expected.add(new Pair<byte[], Float>(p3c, 0.004f));
     expected.add(new Pair<byte[], Float>(fast, 0.29f));
     expected.add(new Pair<byte[], Float>(unknown, 0.003f));
-    assertEquals(expected, result);
+    AssertPair.assertEquals(expected, result);
     
     // Table 4: A new set of mass assignments, to highlight the "fast" subset anomaly in Table 3
     source2.clear();
@@ -158,7 +159,7 @@ public class DempsterOpTest {
     expected.add(new Pair<byte[], Float>(p3c, 0.035f));
     expected.add(new Pair<byte[], Float>(fast, 0.02f));
     expected.add(new Pair<byte[], Float>(unknown, 0.005f));
-    assertEquals(expected, result);
+    AssertPair.assertEquals(expected, result);
 
     // Table 5: Allocating masses when the target is a decoy, but with no "Decoy" state speciﬁed
     source2.clear();
@@ -174,7 +175,7 @@ public class DempsterOpTest {
     expected.add(new Pair<byte[], Float>(p3c, 0.07f));
     expected.add(new Pair<byte[], Float>(fast, 0.07f));
     expected.add(new Pair<byte[], Float>(unknown, 0.02f));
-    assertEquals(expected, result);
+    AssertPair.assertEquals(expected, result);
 
     // Table 6: Allocating masses when the target is a decoy, still with no "Decoy" state specified;
     // but now sensor 2 realises there is a problem in its measurements
@@ -191,7 +192,7 @@ public class DempsterOpTest {
     expected.add(new Pair<byte[], Float>(p3c, 0.04f));
     expected.add(new Pair<byte[], Float>(fast, 0.34f));
     expected.add(new Pair<byte[], Float>(unknown, 0.08f));
-    assertEquals(expected, result);
+    AssertPair.assertEquals(expected, result);
 
     // Table 7: Now introducing a "Decoy" state
     f111 = new byte[] { 1, 0, 0, 0 };
@@ -222,44 +223,9 @@ public class DempsterOpTest {
     expected.add(new Pair<byte[], Float>(fast, 0.06f));
     expected.add(new Pair<byte[], Float>(decoy, 0.5f));
     expected.add(new Pair<byte[], Float>(unknown, 0.02f));
-    assertEquals(expected, result);
+    AssertPair.assertEquals(expected, result);
   }
 
-  private void assertEquals(List<Pair<byte[], Float>> expected, List<Pair<byte[], Float>> result) {
-    Assert.assertEquals(expected.size(), result.size());
-    for (Pair<byte[], Float> expectedPair : expected) {
-      Pair<byte[], Float> actualPair = null;
-      for (Pair<byte[], Float> pair : result) {
-        if (equals(expectedPair.getFirst(), pair.getFirst())) {
-          actualPair = pair;
-          break;
-        }
-      }
-      if (actualPair == null) {
-        Assert.fail("pair not found: " + toString(expectedPair.getFirst()));
-      }
-      Assert.assertEquals(expectedPair.getSecond(), actualPair.getSecond(), 0.006);
-    }
-  }
-
-  private boolean equals(byte[] array1, byte[] array2) {
-    if (array1.length != array2.length) {
-      return false;
-    }
-    for (int i = 0; i < array1.length; i++) {
-      if (array1[i] != array2[i]) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private String toString(byte[] array) {
-    String result = "";
-    for (byte b : array) {
-      result += b;
-    }
-    return result;
-  }
+  
 
 }

@@ -10,10 +10,13 @@ import org.rosuda.JRI.Rengine;
 import org.rosuda.JRI.REXP;
 import org.rosuda.JRI.RList;
 
+import fr.ign.cogit.AssertPair;
 import fr.ign.cogit.geoxygene.matching.dst.operators.DempsterOp;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 public class RDempsterOpCompareTest {
+  
+  public enum Disease {B, DF, M, WN, L}
 
   
   @Test
@@ -45,6 +48,10 @@ public class RDempsterOpCompareTest {
     // High-level API - do not use RNI methods unless there is no other way
     // to accomplish what you want
     try {
+      
+      // ====================================
+      //   DempsterOp dans R
+      // ====================================
 
       // Declare a R object
       REXP m11;
@@ -81,19 +88,47 @@ public class RDempsterOpCompareTest {
       // System.out.println(re.eval("m11@\"focal\""));
       RList v1 = re.eval("m11@\"focal\"").asList();
       
+      
+      List<Pair<byte[], Float>> resultR = new ArrayList<Pair<byte[], Float>>();
       for (int i=0; i < v1.keys().length; i++) { 
-        System.out.println(v1.keys()[i] + " : " + v1.at(i).asDouble());
+        String disease = v1.keys()[i];
+        
+        if (disease.equals("B")) {
+          resultR.add(new Pair<byte[], Float>(new byte[] { 1, 0, 0, 0, 0 }, Float.parseFloat(Double.toString(v1.at(i).asDouble()))));
+        }
+        if (disease.equals("DF")) {
+          resultR.add(new Pair<byte[], Float>(new byte[] { 0, 1, 0, 0, 0 }, Float.parseFloat(Double.toString(v1.at(i).asDouble()))));
+        }
+        if (disease.equals("L")) {
+          resultR.add(new Pair<byte[], Float>(new byte[] { 0, 0, 1, 0, 0 }, Float.parseFloat(Double.toString(v1.at(i).asDouble()))));
+        }
+        if (disease.equals("M")) {
+          resultR.add(new Pair<byte[], Float>(new byte[] { 0, 0, 0, 1, 0 }, Float.parseFloat(Double.toString(v1.at(i).asDouble()))));
+        }
+        if (disease.equals("B/DF/M/WN")) {
+          resultR.add(new Pair<byte[], Float>(new byte[] { 1, 1, 0, 1, 1 }, Float.parseFloat(Double.toString(v1.at(i).asDouble()))));
+        }
+        if (disease.equals("B/DF/M/WN/L")) {
+          resultR.add(new Pair<byte[], Float>(new byte[] { 1, 1, 1, 1, 1 }, Float.parseFloat(Double.toString(v1.at(i).asDouble()))));
+        }
+        // System.out.println(v1.keys()[i] + " : " + v1.at(i).asDouble());
       }
+      
+      
+      // ====================================
+      //   DempsterOp dans GeOxygene
+      // ====================================
       
       DempsterOp op = new DempsterOp(true);
       List<List<Pair<byte[], Float>>> masspotentials = new ArrayList<List<Pair<byte[], Float>>>();
       
-      byte[] B = new byte[] { 1, 0, 0, 0, 0 };
-      byte[] DF = new byte[] { 0, 1, 0, 0, 0 };
-      byte[] M = new byte[] { 0, 0, 1, 0, 0 };
-      byte[] L = new byte[] { 0, 0, 0, 0, 1 };
-      byte[] G1 = new byte[] { 1,1, 1, 1, 0 };
-      byte[] OMEGA = new byte[] { 1,1, 1, 1, 1 };
+      byte[] B     = new byte[] { 1, 0, 0, 0, 0 };
+      byte[] DF    = new byte[] { 0, 1, 0, 0, 0 };
+      byte[] L     = new byte[] { 0, 0, 1, 0, 0 };
+      byte[] M     = new byte[] { 0, 0, 0, 1, 0 };
+      byte[] WN    = new byte[] { 0, 0, 0, 0, 1 };
+      byte[] G1    = new byte[] { 1, 1, 0, 1, 1 };
+      byte[] OMEGA = new byte[] { 1, 1, 1, 1, 1 };
       
       // Symptom 1 : fever
       List<Pair<byte[], Float>> source1 = new ArrayList<Pair<byte[], Float>>();
@@ -132,13 +167,13 @@ public class RDempsterOpCompareTest {
       source6.add(new Pair<byte[], Float>(OMEGA, 0.35f));
       
       // Combinaison des 6 symptomes
-      List<Pair<byte[], Float>> result = op.combine(masspotentials);
-      System.out.println(Arrays.toString(result.get(0).getFirst()) + ", " + result.get(0).getSecond());
-      System.out.println(Arrays.toString(result.get(1).getFirst()) + ", " + result.get(1).getSecond());
-      System.out.println(Arrays.toString(result.get(2).getFirst()) + ", " + result.get(2).getSecond());
-      System.out.println(Arrays.toString(result.get(3).getFirst()) + ", " + result.get(3).getSecond());
-      System.out.println(Arrays.toString(result.get(4).getFirst()) + ", " + result.get(4).getSecond());
-      System.out.println(Arrays.toString(result.get(5).getFirst()) + ", " + result.get(5).getSecond());
+      List<Pair<byte[], Float>> resultGeox = op.combine(masspotentials);
+      
+      
+      // ==============================================================
+      //   Compare les 2 résultats des DempsterOp
+      // ==============================================================
+      AssertPair.assertEquals(resultR, resultGeox);
 
 
     } catch (Exception e) {
