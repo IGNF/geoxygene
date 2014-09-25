@@ -736,7 +736,7 @@ public class Arc extends ElementCarteTopo {
       }
     }
     // ajout du dernier point pour finir la boucle du polygone
-    if (contourPoints.get(contourPoints.size() - 1).distance2D(contourPoints.get(0)) > 0) {
+    if (contourPoints.size() == 1 || contourPoints.get(contourPoints.size() - 1).distance2D(contourPoints.get(0)) > 0) {
       contourPoints.add(contourPoints.get(0));
     }
     return new Cycle(arcsDuCycle, orientationsDuCycle, new GM_LineString(contourPoints), aGauche);

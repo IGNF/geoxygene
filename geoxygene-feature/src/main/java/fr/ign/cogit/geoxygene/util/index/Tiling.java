@@ -34,7 +34,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -402,10 +401,10 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
     } else {
       this.xmin = this.xmax = this.ymin = this.ymax = 0;
     }
-//    if (Tiling.logger.isEnabledFor(Level.TRACE)) {
-//      Tiling.logger.log(Level.TRACE, "envelope = " + this.xmin + "," + this.xmax + "," //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-//          + this.ymin + "," + this.ymax + " - size = " + this.size); //$NON-NLS-1$ //$NON-NLS-2$
-//    }
+    // if (Tiling.logger.isEnabledFor(Level.TRACE)) {
+    //      Tiling.logger.log(Level.TRACE, "envelope = " + this.xmin + "," + this.xmax + "," //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    //          + this.ymin + "," + this.ymax + " - size = " + this.size); //$NON-NLS-1$ //$NON-NLS-2$
+    // }
     // calcul de dX et dY
     this.dX = (this.xmax - this.xmin) / this.size;
     this.dY = (this.ymax - this.ymin) / this.size;
@@ -535,7 +534,8 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
       }
     } else if (cas == -1) {// suppression
       IEnvelope[] envs = this.getDallage(value);
-      for (@SuppressWarnings("unused") IEnvelope env : envs) {
+      for (@SuppressWarnings("unused")
+      IEnvelope env : envs) {
         Iterator<List<Integer>> itDallesConcernees = this.getNumDallage(value)
             .iterator();
         while (itDallesConcernees.hasNext()) {

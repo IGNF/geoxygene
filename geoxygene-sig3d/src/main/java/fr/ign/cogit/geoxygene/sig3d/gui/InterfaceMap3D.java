@@ -320,7 +320,7 @@ public class InterfaceMap3D extends JPanel {
     pointlight.setEnable(true);
     pointlight.setColor(new Color3f(1f, 1f, 1f));
     pointlight.setPosition(new Point3f(2500f, 2500f, 250.0f));
-    pointlight.setAttenuation(0f, 0f, 0f);
+    pointlight.setAttenuation(1f, 0f, 0f);
     pointlight.setInfluencingBounds(new BoundingSphere(new Point3d(), Double.POSITIVE_INFINITY));
     pointlight.setCapability(Light.ALLOW_COLOR_READ);
     pointlight.setCapability(Light.ALLOW_COLOR_WRITE);
@@ -576,7 +576,7 @@ public class InterfaceMap3D extends JPanel {
     System.out.println(this.getTranslate());
     pointlight.setPosition(new Point3f(x + this.getTranslate().x, y + +this.getTranslate().y, z
         + +this.getTranslate().z));
-    pointlight.setAttenuation(0f, 0f, 0f);
+    pointlight.setAttenuation(1f, 0f, 0f);
     pointlight.setInfluencingBounds(new BoundingSphere(new Point3d(), Double.POSITIVE_INFINITY));
     pointlight.setCapability(Light.ALLOW_COLOR_READ);
     pointlight.setCapability(Light.ALLOW_COLOR_WRITE);
