@@ -261,7 +261,8 @@ public final class SliderWithSpinner extends JPanel {
          */
         public SliderWithSpinnerModel(double value, double minimum,
                 double maximum, double increment, double precision) {
-            assert minimum <= value && value <= maximum;
+            minimum = Math.min(minimum, value);
+            maximum = Math.max(maximum, value);
             this.precision = precision;
             this.increment = increment;
             this.boundedRangeModel = new DefaultBoundedRangeModel(

@@ -77,6 +77,8 @@ public class GLProgram {
     // message)
     private final Set<String> uniformErrorLogged = new HashSet<String>();
 
+    private boolean displayWarnings = false;
+
     /**
      * @param name
      */
@@ -248,21 +250,36 @@ public class GLProgram {
     public void setUniform1i(final String uniformName, int value)
             throws GLException {
         int uniformLocation = this.getUniformLocation(uniformName);
-        if (uniformLocation < 0
-                && !this.uniformErrorLogged.contains(uniformName)) {
-            this.uniformErrorLogged.add(uniformName);
-            logger.warn("uniform variable '" + uniformName
-                    + "' has invalid location " + uniformLocation
-                    + " in program '" + this.getName() + "'");
-            logger.info("Registered uniforms:");
-            for (Map.Entry<String, Integer> entry : this.uniformLocations
-                    .entrySet()) {
-                logger.info("\t" + entry.getKey() + " : " + entry.getValue());
+        if (uniformLocation < 0) {
+            if (this.displayWarnings()
+                    && !this.uniformErrorLogged.contains(uniformName)) {
+                this.uniformErrorLogged.add(uniformName);
+                logger.warn("uniform variable '" + uniformName
+                        + "' has invalid location " + uniformLocation
+                        + " in program '" + this.getName() + "'");
+                logger.info("Registered uniforms:");
+                for (Map.Entry<String, Integer> entry : this.uniformLocations
+                        .entrySet()) {
+                    logger.info("\t" + entry.getKey() + " : "
+                            + entry.getValue());
+                }
             }
             // Thread.dumpStack();
         } else {
             this.setUniform1i(uniformLocation, value);
         }
+    }
+
+    private boolean displayWarnings() {
+        return this.displayWarnings;
+    }
+
+    /**
+     * @param displayWarnings
+     *            the displayWarnings to set
+     */
+    public void setDisplayWarnings(boolean displayWarnings) {
+        this.displayWarnings = displayWarnings;
     }
 
     /**

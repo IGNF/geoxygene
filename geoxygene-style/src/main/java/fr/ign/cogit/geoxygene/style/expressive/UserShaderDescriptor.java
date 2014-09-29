@@ -45,7 +45,10 @@ public class UserShaderDescriptor extends ShaderDescriptor {
     @XmlElement(name = "File")
     private String filename = "./src/main/resources/shaders/linepainting.subshader.default.glsl";
 
-    @XmlElements({ @XmlElement(name = "Float", type = ParameterDescriptorFloat.class) })
+    @XmlElements({
+            @XmlElement(name = "Float", type = ParameterDescriptorFloat.class),
+            @XmlElement(name = "Int", type = ParameterDescriptorInteger.class),
+            @XmlElement(name = "Time", type = ParameterDescriptorTime.class) })
     private final List<ParameterDescriptor> parameters = new ArrayList<ParameterDescriptor>();
 
     /**
