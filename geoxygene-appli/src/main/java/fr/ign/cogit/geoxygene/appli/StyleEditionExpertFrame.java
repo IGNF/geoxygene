@@ -225,6 +225,10 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
         return this.layer;
     }
 
+    private void reloadSldContent() {
+        this.setInitialSLD(this.initialSLD);
+    }
+
     private void initializeGui() {
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                 this.getEditionPanel(), this.getDisplayPanel());
@@ -394,6 +398,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
         // When the user apply style modifications to the map and the legend
         if (e.getSource() == this.getApplyButton()) {
             this.applySld();
+            this.reloadSldContent();
             this.layerLegendPanel.getModel().fireActionPerformed(null);
             this.layerLegendPanel.repaint();
             this.layerViewPanel.repaint();
