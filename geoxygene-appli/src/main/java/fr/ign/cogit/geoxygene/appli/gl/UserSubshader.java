@@ -33,6 +33,8 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorFloat;
+import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorInteger;
+import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorTime;
 import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
@@ -88,10 +90,21 @@ public class UserSubshader implements Subshader {
         if (param instanceof ParameterDescriptorFloat) {
             ParameterDescriptorFloat floatParam = (ParameterDescriptorFloat) param;
             program.setUniform1f(floatParam.getName(), floatParam.getValue());
-        } else {
-            throw new IllegalStateException("no uniform set for "
-                    + param.getClass().getSimpleName());
+            return;
         }
+        if (param instanceof ParameterDescriptorInteger) {
+            ParameterDescriptorInteger intParam = (ParameterDescriptorInteger) param;
+            program.setUniform1i(intParam.getName(), intParam.getValue());
+            return;
+        }
+        if (param instanceof ParameterDescriptorTime) {
+            ParameterDescriptorTime timeParam = (ParameterDescriptorTime) param;
+            program.setUniform1i(timeParam.getName(), timeParam.getValue());
+            return;
+        }
+
+        throw new IllegalStateException("no uniform set for "
+                + param.getClass().getSimpleName());
     }
 
     @Override

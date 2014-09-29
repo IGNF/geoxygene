@@ -65,8 +65,6 @@ public class BasicParameterizer implements Parameterizer {
         this.setMaxY(maxY);
         this.setXFlip(xFlip);
         this.setYFlip(yFlip);
-        logger.debug("Create Basic parameterizer with bounding box " + minX
-                + "x" + minY + " /" + maxX + "x" + maxY);
     }
 
     /**

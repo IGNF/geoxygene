@@ -29,6 +29,8 @@ package fr.ign.cogit.geoxygene.appli.ui;
 
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorFloat;
+import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorInteger;
+import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorTime;
 
 /**
  * @author JeT
@@ -51,6 +53,14 @@ public final class ParameterUIFactory {
             return createFloatUI((ParameterDescriptorFloat) descriptor);
 
         }
+        if (descriptor instanceof ParameterDescriptorInteger) {
+            return createIntegerUI((ParameterDescriptorInteger) descriptor);
+
+        }
+        if (descriptor instanceof ParameterDescriptorTime) {
+            return createTimeUI((ParameterDescriptorTime) descriptor);
+
+        }
         throw new IllegalStateException("Parameter Descriptor "
                 + descriptor.getClass().getSimpleName()
                 + " is not associated with any User Interface");
@@ -64,5 +74,26 @@ public final class ParameterUIFactory {
      */
     private static ParameterUI createFloatUI(ParameterDescriptorFloat descriptor) {
         return new ParameterUIFloat(descriptor);
+    }
+
+    /**
+     * Create a User interface for Integer parameter types
+     * 
+     * @param descriptor
+     * @return
+     */
+    private static ParameterUI createIntegerUI(
+            ParameterDescriptorInteger descriptor) {
+        return new ParameterUIInteger(descriptor);
+    }
+
+    /**
+     * Create a User interface for Time parameter types
+     * 
+     * @param descriptor
+     * @return
+     */
+    private static ParameterUI createTimeUI(ParameterDescriptorTime descriptor) {
+        return new ParameterUITime(descriptor);
     }
 }

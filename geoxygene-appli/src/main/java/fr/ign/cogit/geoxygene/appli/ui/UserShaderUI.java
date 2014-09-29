@@ -27,6 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -117,11 +118,12 @@ public class UserShaderUI implements ExpressiveRenderingUI,
             this.main.setLayout(new BoxLayout(this.main, BoxLayout.Y_AXIS));
             this.main.setBorder(BorderFactory
                     .createEtchedBorder(EtchedBorder.LOWERED));
-            JButton paperBrowseButton = new JButton("paper browse...");
-            paperBrowseButton.setBorder(BorderFactory.createEmptyBorder(2, 2,
+            JPanel shaderPanel = new JPanel(new BorderLayout());
+            JButton shaderBrowseButton = new JButton("shader browse...");
+            shaderBrowseButton.setBorder(BorderFactory.createEmptyBorder(2, 2,
                     2, 2));
-            paperBrowseButton.setToolTipText("Load background paper file");
-            paperBrowseButton.addActionListener(new ActionListener() {
+            shaderBrowseButton.setToolTipText("Load background paper file");
+            shaderBrowseButton.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -153,12 +155,13 @@ public class UserShaderUI implements ExpressiveRenderingUI,
                 }
 
             });
-            this.main.add(paperBrowseButton);
             this.subshaderFilenameLabel = new JLabel(
                     this.subshaderFilename.substring(this.subshaderFilename
                             .length() - 30));
-            this.main.add(this.subshaderFilenameLabel);
+            shaderPanel.add(shaderBrowseButton, BorderLayout.WEST);
+            shaderPanel.add(this.subshaderFilenameLabel, BorderLayout.CENTER);
 
+            this.main.add(shaderPanel);
             for (ParameterUI editor : this.editors) {
                 Component gui = editor.getGui();
                 editor.addParameterChangedListener(this);

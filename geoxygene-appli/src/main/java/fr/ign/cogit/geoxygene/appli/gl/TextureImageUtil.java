@@ -35,7 +35,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import javax.imageio.ImageIO;
 import javax.vecmath.Point2d;
 
 import org.apache.log4j.Logger;
@@ -243,8 +242,8 @@ public class TextureImageUtil {
                 rgbImage.setRGB(x, y, rgb.getRGB());
             }
         }
-        logger.debug("Save image '" + f.getName() + "'");
-        ImageIO.write(rgbImage, "png", f);
+        // logger.debug("Save image '" + f.getName() + "'");
+        // ImageIO.write(rgbImage, "png", f);
     }
 
     /**
@@ -274,8 +273,8 @@ public class TextureImageUtil {
 
         }
 
-        logger.debug("Save image '" + f.getName() + "'");
-        ImageIO.write(rgbImage, "png", f);
+        // logger.debug("Save image '" + f.getName() + "'");
+        // ImageIO.write(rgbImage, "png", f);
     }
 
     /**

@@ -287,8 +287,8 @@ public abstract class LayerViewPanel extends JComponent implements Printable,
 
     public abstract void dispose();
 
-    @Override
-    public abstract void repaint();
+    // @Override
+    // public abstract void repaint();
 
     /**
      * Repaint the panel using the repaint method of the super class

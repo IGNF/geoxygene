@@ -99,6 +99,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private LayerViewGLCanvasType glType = null;
     private JToggleButton wireframeToggleButton = null;
     private JToggleButton fboToggleButton = null;
+    private JToggleButton animationButton = null;
     private JButton antialiasingButton = null;
     private JButton clearCacheButton = null;
     private JButton awtComparButton = null;
@@ -109,6 +110,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private boolean wireframe = false;
     private int antialiasing = 2;
     private boolean useFBO = true;
+    private boolean useContinuousRendering = false;
 
     public enum LayerViewGLCanvasType {
         GL1, GL4
@@ -160,6 +162,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .add(this.getReloadShadersButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .add(this.getAnimationButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
 
@@ -185,6 +189,10 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .remove(this.getAWTComparButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .remove(this.getReloadShadersButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .remove(this.getAnimationButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
 
@@ -200,6 +208,21 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
     public void setFBO(boolean useFBO) {
         this.useFBO = useFBO;
+    }
+
+    /**
+     * @return the useContinuousRendering
+     */
+    public boolean useContinuousRendering() {
+        return this.useContinuousRendering;
+    }
+
+    /**
+     * @param useContinuousRendering
+     *            the useContinuousRendering to set
+     */
+    public void setContinuousRendering(boolean useContinuousRendering) {
+        this.useContinuousRendering = useContinuousRendering;
     }
 
     public int getAntialiasingSize() {
@@ -279,6 +302,19 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         return this.fboToggleButton;
     }
 
+    private JToggleButton getAnimationButton() {
+        if (this.animationButton == null) {
+            this.animationButton = new JToggleButton();
+            this.animationButton.setIcon(new ImageIcon(MainFrameToolBar.class
+                    .getResource("/images/icons/16x16/animate.png")));
+            this.animationButton.setToolTipText(I18N
+                    .getString("RenderingGL.ToggleAnimation"));
+            this.animationButton.setSelected(this.useContinuousRendering());
+            this.animationButton.addItemListener(this);
+        }
+        return this.animationButton;
+    }
+
     private JButton getAntialiasingButton() {
         if (this.antialiasingButton == null) {
             this.antialiasingButton = new JButton();
@@ -349,13 +385,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         return this.clearCacheButton;
     }
 
-    @Override
-    public final void repaint() {
-        if (this.glCanvas != null) {
-            this.glCanvas.repaint();
-        }
-
-    }
+    // @Override
+    // public final void repaint() {
+    // if (this.glCanvas != null) {
+    // this.glCanvas.repaint();
+    // }
+    // if (this.useContinuousRendering()) {
+    // this.repaint();
+    // }
+    // }
 
     public GLContext getGlContext() throws GLException {
         return this.glCanvas.getGlContext();
@@ -369,6 +407,9 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         } catch (Exception e1) {
             // e1.printStackTrace();
             logger.error(I18N.getString("LayerViewPanel.PaintError") + " " + e1.getMessage()); //$NON-NLS-1$
+        }
+        if (this.useContinuousRendering()) {
+            this.repaint();
         }
     }
 
@@ -493,6 +534,10 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             this.setFBO(this.getFBOButton().isSelected());
             this.repaint();
         }
+        if (e.getSource() == this.getAnimationButton()) {
+            this.setContinuousRendering(this.getAnimationButton().isSelected());
+            this.repaint();
+        }
     }
 
     @Override
@@ -519,6 +564,9 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         } else if (e.getSource() == this.getReloadShadersButton()) {
             GeoxRendererManager.reset();
             this.reset();
+            this.repaint();
+        } else if (e.getSource() == this.getReloadShadersButton()) {
+            this.setContinuousRendering(this.getAnimationButton().isSelected());
             this.repaint();
         } else if (e.getSource() == this.getAntialiasingButton()) {
             int antialiasingValue = 1;
