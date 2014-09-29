@@ -791,7 +791,7 @@ public class GLComplexFactory {
                 Task tesselateThickLineTask = LinePaintingTesselator
                         .tesselateThickLine(id, complex,
                                 line.getControlPoint(), new ConstantFunction(
-                                        stroke.getStrokeWidth()),
+                                        stroke.getStrokeWidth() / 2.),
                                 new ConstantFunction(0),
                                 strtex.getSampleSize(), strtex.getMinAngle(),
                                 minX, minY,
