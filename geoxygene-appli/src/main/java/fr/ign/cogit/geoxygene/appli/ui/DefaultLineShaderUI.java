@@ -27,49 +27,70 @@
 
 package fr.ign.cogit.geoxygene.appli.ui;
 
+import java.awt.FlowLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
+
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.style.expressive.DefaultFill2DShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.DefaultLineShaderDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.RandomVariationShaderDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.UserFill2DShaderDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.UserLineShaderDescriptor;
 
 /**
  * @author JeT
  * 
  */
-public class ShaderUIFactory {
+public class DefaultLineShaderUI implements ExpressiveRenderingUI {
 
-    public static ExpressiveRenderingUI getShaderUI(
-            ShaderDescriptor descriptor, ProjectFrame projectFrame) {
-        if (descriptor instanceof RandomVariationShaderDescriptor) {
-            return new RandomVariationShaderUI(
-                    ((RandomVariationShaderDescriptor) descriptor),
-                    projectFrame);
+    private JPanel main = null;
+    private ProjectFrame parentProjectFrame = null;
+    private DefaultLineShaderDescriptor strtex = null;
 
+    /**
+     * Constructor
+     */
+    public DefaultLineShaderUI(DefaultLineShaderDescriptor shaderDescriptor,
+            ProjectFrame projectFrame) {
+        this.parentProjectFrame = projectFrame;
+        this.strtex = shaderDescriptor;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.appli.ui.ExpressiveRenderingUI#getGui()
+     */
+    @Override
+    public JComponent getGui() {
+        if (this.main == null) {
+            this.main = new JPanel();
+            this.main.setLayout(new FlowLayout());
+            this.main.setBorder(BorderFactory
+                    .createEtchedBorder(EtchedBorder.LOWERED));
+            this.main.add(new JLabel("Default Shader type has no parameters"));
         }
-        if (descriptor instanceof DefaultLineShaderDescriptor) {
-            return new DefaultLineShaderUI(
-                    (DefaultLineShaderDescriptor) (descriptor), projectFrame);
+        return this.main;
+    }
 
-        }
-        if (descriptor instanceof UserLineShaderDescriptor) {
-            return new UserLineShaderUI(
-                    (UserLineShaderDescriptor) (descriptor), projectFrame);
+    /**
+     * set variable values from stroke texture expressive rendering object
+     */
+    @Override
+    public void setValuesFromObject() {
+    }
 
-        }
-        if (descriptor instanceof DefaultFill2DShaderDescriptor) {
-            return new DefaultFill2DShaderUI(
-                    (DefaultFill2DShaderDescriptor) (descriptor), projectFrame);
+    /**
+     * set variable values from stroke texture expressive rendering object
+     */
+    @Override
+    public void setValuesToObject() {
+    }
 
-        }
-        if (descriptor instanceof UserFill2DShaderDescriptor) {
-            return new UserFill2DShaderUI(
-                    (UserFill2DShaderDescriptor) (descriptor), projectFrame);
-
-        }
-        return new NoShaderUI(descriptor, projectFrame);
+    protected void refresh() {
+        this.setValuesToObject();
+        this.parentProjectFrame.repaint();
     }
 
 }

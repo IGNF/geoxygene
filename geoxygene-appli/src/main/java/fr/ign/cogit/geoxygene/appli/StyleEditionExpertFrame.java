@@ -21,6 +21,9 @@ package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
@@ -33,10 +36,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -58,7 +65,8 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  * 
  * @author JeT
  */
-public class StyleEditionExpertFrame extends JDialog implements ActionListener {
+public class StyleEditionExpertFrame extends JDialog implements ActionListener,
+        ListSelectionListener {
 
     private static final String NEWLINE = System.getProperty("line.separator");
 
@@ -130,6 +138,10 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
             this.info("Cannot edit Layer type "
                     + layer.getClass().getSimpleName());
         }
+
+        // listen to layers selection change
+        this.layerLegendPanel.addSelectionChangeListener(this);
+
     }
 
     private void initializeColors() {
@@ -219,6 +231,56 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
         this.getEditor().setText(baos.toString());
         this.getEditor().setEditable(true);
         this.getEditor().setEnabled(true);
+
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        // center view when the window is displayed
+        this.gotoSelectedLayer();
+    }
+
+    /**
+     * 
+     */
+    private void gotoSelectedLayer() {
+        if (this.layerLegendPanel.getSelectedLayers().size() == 1) {
+            int caret = this
+                    .getEditor()
+                    .getText()
+                    .toLowerCase()
+                    .indexOf(
+                            "<name>" + this.layer.getName().toLowerCase()
+                                    + "</name>");
+            if (caret >= 0) {
+                this.getEditor().setCaretPosition(caret);
+                centerLineInScrollPane(this.getEditor());
+            }
+        }
+    }
+
+    private static void centerLineInScrollPane(JTextComponent component) {
+        Container container = SwingUtilities.getAncestorOfClass(
+                JViewport.class, component);
+
+        if (container == null) {
+            return;
+        }
+
+        try {
+            Rectangle r = component.modelToView(component.getCaretPosition());
+            JViewport viewport = (JViewport) container;
+
+            int extentHeight = viewport.getExtentSize().height;
+            int viewHeight = viewport.getViewSize().height;
+
+            int y = Math.max(0, r.y - extentHeight / 4);
+            y = Math.min(y, viewHeight - extentHeight);
+
+            viewport.setViewPosition(new Point(0, y));
+        } catch (BadLocationException ble) {
+        }
     }
 
     public Layer getLayer() {
@@ -226,7 +288,9 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
     }
 
     private void reloadSldContent() {
+        int caret = this.getEditor().getCaretPosition();
         this.setInitialSLD(this.initialSLD);
+        this.getEditor().setCaretPosition(caret);
     }
 
     private void initializeGui() {
@@ -409,6 +473,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
             this.layer.setSld(this.getInitialSLD());
             this.layerLegendPanel.repaint();
             this.layerViewPanel.repaint();
+            this.layerLegendPanel.removeSelectionChangeListener(this);
             StyleEditionExpertFrame.this.dispose();
         }
 
@@ -419,9 +484,28 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener {
             this.layerViewPanel.reset();
             this.layerLegendPanel.repaint();
             this.layerViewPanel.repaint();
+            this.layerLegendPanel.removeSelectionChangeListener(this);
             StyleEditionExpertFrame.this.dispose();
         }
 
+    }
+
+    /**
+     * Callback called when the selction changed in LayerLegendPanel
+     * 
+     * @param e
+     */
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (this.layerLegendPanel.getSelectedLayers().size() == 1) {
+            Layer layer = this.layerLegendPanel.getSelectedLayers().iterator()
+                    .next();
+            if (layer instanceof NamedLayer) {
+                NamedLayer namedLayer = (NamedLayer) layer;
+                this.layer = namedLayer;
+            }
+        }
+        this.gotoSelectedLayer();
     }
 
 }

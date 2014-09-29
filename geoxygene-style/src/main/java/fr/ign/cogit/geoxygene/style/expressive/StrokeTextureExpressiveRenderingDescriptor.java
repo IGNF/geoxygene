@@ -68,10 +68,10 @@ public class StrokeTextureExpressiveRenderingDescriptor extends
     private double sharpness = 0.1;
 
     @XmlElements({
-            @XmlElement(name = "DefaultShader", type = DefaultShaderDescriptor.class),
+            @XmlElement(name = "DefaultShader", type = DefaultLineShaderDescriptor.class),
             @XmlElement(name = "RandomShader", type = RandomVariationShaderDescriptor.class),
-            @XmlElement(name = "UserShader", type = UserShaderDescriptor.class) })
-    private ShaderDescriptor shader = new DefaultShaderDescriptor();
+            @XmlElement(name = "UserShader", type = UserLineShaderDescriptor.class) })
+    private ShaderDescriptor shader = new DefaultLineShaderDescriptor();
 
     /**
      * 

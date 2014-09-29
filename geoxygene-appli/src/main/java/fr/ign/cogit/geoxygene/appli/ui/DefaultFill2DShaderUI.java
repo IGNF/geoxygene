@@ -36,22 +36,23 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.style.expressive.DefaultShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.DefaultFill2DShaderDescriptor;
 
 /**
  * @author JeT
  * 
  */
-public class DefaultShaderUI implements ExpressiveRenderingUI {
+public class DefaultFill2DShaderUI implements ExpressiveRenderingUI {
 
     private JPanel main = null;
     private ProjectFrame parentProjectFrame = null;
-    private DefaultShaderDescriptor strtex = null;
+    private DefaultFill2DShaderDescriptor strtex = null;
 
     /**
      * Constructor
      */
-    public DefaultShaderUI(DefaultShaderDescriptor shaderDescriptor,
+    public DefaultFill2DShaderUI(
+            DefaultFill2DShaderDescriptor shaderDescriptor,
             ProjectFrame projectFrame) {
         this.parentProjectFrame = projectFrame;
         this.strtex = shaderDescriptor;

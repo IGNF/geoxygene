@@ -48,13 +48,13 @@ import javax.swing.border.EtchedBorder;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.UserFill2DShaderDescriptor;
 
 /**
  * @author JeT
  * 
  */
-public class UserShaderUI implements ExpressiveRenderingUI,
+public class UserFill2DShaderUI implements ExpressiveRenderingUI,
         ParameterChangeListener {
 
     private final List<ParameterUI> editors = new ArrayList<ParameterUI>();
@@ -63,14 +63,15 @@ public class UserShaderUI implements ExpressiveRenderingUI,
             .getSimpleName() + ".subshaderLastDirectory";
     private JPanel main = null;
     private ProjectFrame parentProjectFrame = null;
-    private UserShaderDescriptor strtex = null;
+    private UserFill2DShaderDescriptor strtex = null;
     private String subshaderFilename = null;
     private JLabel subshaderFilenameLabel = null;
 
     /**
      * Constructor
      */
-    public UserShaderUI(UserShaderDescriptor strtex, ProjectFrame projectFrame) {
+    public UserFill2DShaderUI(UserFill2DShaderDescriptor strtex,
+            ProjectFrame projectFrame) {
         this.parentProjectFrame = projectFrame;
         this.setUserShaderDescriptor(strtex);
     }
@@ -78,7 +79,7 @@ public class UserShaderUI implements ExpressiveRenderingUI,
     /**
      * @return the strtex
      */
-    public UserShaderDescriptor getUserShaderDescriptor() {
+    public UserFill2DShaderDescriptor getUserShaderDescriptor() {
         return this.strtex;
     }
 
@@ -86,7 +87,7 @@ public class UserShaderUI implements ExpressiveRenderingUI,
      * @param strtex
      *            the strtex to set
      */
-    public void setUserShaderDescriptor(UserShaderDescriptor strtex) {
+    public void setUserShaderDescriptor(UserFill2DShaderDescriptor strtex) {
         this.dispose();
         this.strtex = strtex;
         for (ParameterDescriptor param : strtex.getParameters()) {
@@ -127,27 +128,28 @@ public class UserShaderUI implements ExpressiveRenderingUI,
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JFileChooser fc = new JFileChooser(UserShaderUI.this.prefs
-                            .get(SUBSHADER_LAST_DIRECTORY, "."));
-                    if (fc.showOpenDialog(UserShaderUI.this.parentProjectFrame
+                    JFileChooser fc = new JFileChooser(
+                            UserFill2DShaderUI.this.prefs.get(
+                                    SUBSHADER_LAST_DIRECTORY, "."));
+                    if (fc.showOpenDialog(UserFill2DShaderUI.this.parentProjectFrame
                             .getGui()) == JFileChooser.APPROVE_OPTION) {
                         try {
                             File selectedFile = fc.getSelectedFile();
-                            UserShaderUI.this.subshaderFilename = selectedFile
+                            UserFill2DShaderUI.this.subshaderFilename = selectedFile
                                     .getAbsolutePath();
-                            UserShaderUI.this.subshaderFilenameLabel
-                                    .setText(UserShaderUI.this.subshaderFilename
-                                            .substring(UserShaderUI.this.subshaderFilename
+                            UserFill2DShaderUI.this.subshaderFilenameLabel
+                                    .setText(UserFill2DShaderUI.this.subshaderFilename
+                                            .substring(UserFill2DShaderUI.this.subshaderFilename
                                                     .length() - 30));
 
-                            UserShaderUI.this.prefs.put(
+                            UserFill2DShaderUI.this.prefs.put(
                                     SUBSHADER_LAST_DIRECTORY,
                                     selectedFile.getAbsolutePath());
 
-                            UserShaderUI.this.refresh();
+                            UserFill2DShaderUI.this.refresh();
                         } catch (Exception e1) {
                             JOptionPane.showMessageDialog(
-                                    UserShaderUI.this.parentProjectFrame
+                                    UserFill2DShaderUI.this.parentProjectFrame
                                             .getGui(), e1.getMessage());
                             e1.printStackTrace();
                         }

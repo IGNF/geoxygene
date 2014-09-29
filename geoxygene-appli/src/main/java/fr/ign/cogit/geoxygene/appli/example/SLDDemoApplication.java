@@ -469,7 +469,7 @@ public class SLDDemoApplication implements GeOxygeneApplicationPlugin,
 
         PerlinNoiseTextureDescriptor texture = new PerlinNoiseTextureDescriptor();
         texture.setTextureResolution(6000);
-        symbolizer.getFill().setTextureDescriptor(texture);
+        symbolizer.getFill().setFill2DDescriptor(texture);
 
         Population<DefaultFeature> pop = new Population<DefaultFeature>(
                 "Texture"); //$NON-NLS-1$

@@ -29,10 +29,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
+import fr.ign.cogit.geoxygene.style.expressive.GradientExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.GradientTextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
 
 /**
@@ -74,16 +74,17 @@ public class Fill {
             @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTextureDescriptor.class),
             @XmlElement(name = "BasicTexture", type = BasicTextureDescriptor.class),
             @XmlElement(name = "GradientTexture", type = GradientTextureDescriptor.class),
+            @XmlElement(name = "GradientExpressiveRendering", type = GradientExpressiveRenderingDescriptor.class),
             @XmlElement(name = "TileDistributionTexture", type = TileDistributionTextureDescriptor.class) })
-    private TextureDescriptor textureDescriptor = null;
+    private Fill2DDescriptor fill2dDescriptor = null;
 
     /**
      * Renvoie la texture.
      * 
      * @return la texture.
      */
-    public TextureDescriptor getTextureDescriptor() {
-        return this.textureDescriptor;
+    public Fill2DDescriptor getFill2DDescriptor() {
+        return this.fill2dDescriptor;
     }
 
     /**
@@ -92,8 +93,8 @@ public class Fill {
      * @param texture
      *            la texture.
      */
-    public void setTextureDescriptor(TextureDescriptor texture) {
-        this.textureDescriptor = texture;
+    public void setFill2DDescriptor(Fill2DDescriptor d) {
+        this.fill2dDescriptor = d;
     }
 
     @XmlElements({
@@ -271,8 +272,8 @@ public class Fill {
                         .hashCode());
         result = prime
                 * result
-                + ((this.textureDescriptor == null) ? 0
-                        : this.textureDescriptor.hashCode());
+                + ((this.fill2dDescriptor == null) ? 0 : this.fill2dDescriptor
+                        .hashCode());
         return result;
     }
 
@@ -325,11 +326,11 @@ public class Fill {
         } else if (!this.svgParameters.equals(other.svgParameters)) {
             return false;
         }
-        if (this.textureDescriptor == null) {
-            if (other.textureDescriptor != null) {
+        if (this.fill2dDescriptor == null) {
+            if (other.fill2dDescriptor != null) {
                 return false;
             }
-        } else if (!this.textureDescriptor.equals(other.textureDescriptor)) {
+        } else if (!this.fill2dDescriptor.equals(other.fill2dDescriptor)) {
             return false;
         }
         return true;

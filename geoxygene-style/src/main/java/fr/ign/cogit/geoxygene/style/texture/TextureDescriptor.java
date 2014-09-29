@@ -31,8 +31,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
+import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
+
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class TextureDescriptor {
+public abstract class TextureDescriptor extends Fill2DDescriptor {
 
     @XmlAttribute(name = "xRepeat")
     private boolean xRepeat = false;

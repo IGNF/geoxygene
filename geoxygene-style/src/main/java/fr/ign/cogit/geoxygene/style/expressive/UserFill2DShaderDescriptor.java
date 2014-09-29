@@ -40,10 +40,10 @@ import javax.xml.bind.annotation.XmlElements;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class UserShaderDescriptor extends ShaderDescriptor {
+public class UserFill2DShaderDescriptor extends Fill2DShaderDescriptor {
 
     @XmlElement(name = "File")
-    private String filename = "./src/main/resources/shaders/linepainting.subshader.default.glsl";
+    private String filename = "./src/main/resources/shaders/subshader2d.default.glsl";
 
     @XmlElements({
             @XmlElement(name = "Float", type = ParameterDescriptorFloat.class),
@@ -105,7 +105,7 @@ public class UserShaderDescriptor extends ShaderDescriptor {
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        UserShaderDescriptor other = (UserShaderDescriptor) obj;
+        UserFill2DShaderDescriptor other = (UserFill2DShaderDescriptor) obj;
         if (this.filename == null) {
             if (other.filename != null) {
                 return false;

@@ -144,11 +144,11 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result
-                + ((this.blending == null) ? 0 : this.blending.hashCode());
+                + ((this.blending == null) ? 0 : this.blending.ordinal());
         result = prime
                 * result
                 + ((this.distributionManagement == null) ? 0
-                        : this.distributionManagement.hashCode());
+                        : this.distributionManagement.ordinal());
         long temp;
         temp = Double.doubleToLongBits(this.maxCoastlineLength);
         result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -179,7 +179,8 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
         if (this.blending != other.blending) {
             return false;
         }
-        if (this.distributionManagement != other.distributionManagement) {
+        if (this.distributionManagement.ordinal() != other.distributionManagement
+                .ordinal()) {
             return false;
         }
         if (Double.doubleToLongBits(this.maxCoastlineLength) != Double

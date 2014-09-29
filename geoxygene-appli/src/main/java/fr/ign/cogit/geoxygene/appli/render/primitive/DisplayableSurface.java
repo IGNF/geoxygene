@@ -47,6 +47,7 @@ import fr.ign.cogit.geoxygene.appli.render.texture.TextureTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
 import fr.ign.cogit.geoxygene.appli.task.TaskManager;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
+import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
@@ -186,8 +187,14 @@ public class DisplayableSurface extends AbstractDisplayable {
 
     synchronized private List<GLComplex> generateWithPolygonSymbolizer(
             PolygonSymbolizer symbolizer) {
-        TextureDescriptor textureDescriptor = symbolizer.getFill()
-                .getTextureDescriptor();
+        Fill2DDescriptor fill2dDescriptor = symbolizer.getFill()
+                .getFill2DDescriptor();
+
+        TextureDescriptor textureDescriptor = null;
+        if (fill2dDescriptor instanceof TextureDescriptor) {
+            textureDescriptor = (TextureDescriptor) fill2dDescriptor;
+
+        }
         if (this.getFeature().getFeatureCollections().size() != 1) {
             logger.error("Feature "
                     + this.getFeature()

@@ -324,6 +324,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
 
         this.setLocation(200, 200);
         // this.setAlwaysOnTop(true);
+
     }
 
     // /**

@@ -35,7 +35,7 @@ import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorFloat;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorInteger;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorTime;
-import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.UserLineShaderDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
@@ -51,9 +51,9 @@ public class UserSubshader implements Subshader {
 
     private String subshaderFilename = "./src/main/resources/shaders/linepainting.subshader.default.glsl";
 
-    private UserShaderDescriptor descriptor = null;
+    private UserLineShaderDescriptor descriptor = null;
 
-    public UserSubshader(UserShaderDescriptor descriptor) {
+    public UserSubshader(UserLineShaderDescriptor descriptor) {
         if (descriptor == null) {
             throw new IllegalArgumentException("Null descriptor");
         }

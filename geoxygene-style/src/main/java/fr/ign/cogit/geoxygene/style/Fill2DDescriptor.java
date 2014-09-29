@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.style.expressive;
+package fr.ign.cogit.geoxygene.style;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -35,6 +35,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class DefaultShaderDescriptor extends ShaderDescriptor {
+public abstract class Fill2DDescriptor {
 
 }

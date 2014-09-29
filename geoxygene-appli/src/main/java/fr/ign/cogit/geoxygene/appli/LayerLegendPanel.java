@@ -91,7 +91,8 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  * @author Sylvain Becuwe
  * @author Charlotte Hoarau
  */
-public class LayerLegendPanel extends JPanel implements ChangeListener, ActionListener, SldListener {
+public class LayerLegendPanel extends JPanel implements ChangeListener,
+        ActionListener, SldListener {
     private static final Insets nullInsets = new Insets(0, 0, 0, 0);
 
     public final static int FULL_OPAQUE = 100;
@@ -101,7 +102,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
      */
     private static final long serialVersionUID = -6860364246334166387L;
 
-    private static Logger LOGGER = Logger.getLogger(LayerLegendPanel.class.getName());
+    private static Logger LOGGER = Logger.getLogger(LayerLegendPanel.class
+            .getName());
 
     /**
      * Model for the layerlegendpanel
@@ -131,38 +133,59 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
      *
      */
     JTable layersTable = null;
-    JButton addLayerButton = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/page_white_add.png"))); //$NON-NLS-1$
-    JButton addPostgisButton = new JButton(new ImageIcon(this.getClass().getResource("/images/toolbar/database_add.png"))); //$NON-NLS-1$
-    JButton loadSLDButton = new JButton(new ImageIcon(this.getClass().getResource("/images/toolbar/page_white_paintbrush.png"))); //$NON-NLS-1$
+    JButton addLayerButton = new JButton(new ImageIcon(this.getClass()
+            .getResource("/images/icons/16x16/page_white_add.png"))); //$NON-NLS-1$
+    JButton addPostgisButton = new JButton(new ImageIcon(this.getClass()
+            .getResource("/images/toolbar/database_add.png"))); //$NON-NLS-1$
+    JButton loadSLDButton = new JButton(new ImageIcon(this.getClass()
+            .getResource("/images/toolbar/page_white_paintbrush.png"))); //$NON-NLS-1$
 
-    JButton topButton = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/arrow_top.png"))); //$NON-NLS-1$
-    JButton upButton = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/arrow_up.png"))); //$NON-NLS-1$
-    JButton downButton = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/arrow_down.png"))); //$NON-NLS-1$
-    JButton bottomButton = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/arrow_bottom.png"))); //$NON-NLS-1$
+    JButton topButton = new JButton(new ImageIcon(this.getClass().getResource(
+            "/images/icons/16x16/arrow_top.png"))); //$NON-NLS-1$
+    JButton upButton = new JButton(new ImageIcon(this.getClass().getResource(
+            "/images/icons/16x16/arrow_up.png"))); //$NON-NLS-1$
+    JButton downButton = new JButton(new ImageIcon(this.getClass().getResource(
+            "/images/icons/16x16/arrow_down.png"))); //$NON-NLS-1$
+    JButton bottomButton = new JButton(new ImageIcon(this.getClass()
+            .getResource("/images/icons/16x16/arrow_bottom.png"))); //$NON-NLS-1$
 
-    JButton minusButton = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/delete.png"))); //$NON-NLS-1$
-    JButton attributeButton = new JButton(new ImageIcon(this.getClass().getResource("/images/icons/16x16/table.png"))); //$NON-NLS-1$
+    JButton minusButton = new JButton(new ImageIcon(this.getClass()
+            .getResource("/images/icons/16x16/delete.png"))); //$NON-NLS-1$
+    JButton attributeButton = new JButton(new ImageIcon(this.getClass()
+            .getResource("/images/icons/16x16/table.png"))); //$NON-NLS-1$
 
     JPopupMenu popupMenu = new JPopupMenu();
-    JMenuItem newLayerMenuItem = new JMenuItem(I18N.getString("LayerLegendPanel.CreateLayer")); //$NON-NLS-1$
-    JMenuItem selectMenuItem = new JMenuItem(I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
-            "SelectAllObjectsInLayer")); //$NON-NLS-1$
-    JMenuItem unselectMenuItem = new JMenuItem(I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
-            "UnselectAllObjectsInLayer")); //$NON-NLS-1$
-    JMenuItem renameMenuItem = new JMenuItem(I18N.getString("LayerLegendPanel.RenameLayer")); //$NON-NLS-1$
+    JMenuItem newLayerMenuItem = new JMenuItem(
+            I18N.getString("LayerLegendPanel.CreateLayer")); //$NON-NLS-1$
+    JMenuItem selectMenuItem = new JMenuItem(
+            I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
+                    "SelectAllObjectsInLayer")); //$NON-NLS-1$
+    JMenuItem unselectMenuItem = new JMenuItem(
+            I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
+                    "UnselectAllObjectsInLayer")); //$NON-NLS-1$
+    JMenuItem renameMenuItem = new JMenuItem(
+            I18N.getString("LayerLegendPanel.RenameLayer")); //$NON-NLS-1$
     JMenuItem editMenuItem = new JMenuItem(I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
             "EditLayerAttributes"), //$NON-NLS-1$
-            new ImageIcon(this.getClass().getResource("/images/icons/16x16/editAttributes.png"))); //$NON-NLS-1$
-    JMenuItem deleteMenuItem = new JMenuItem(I18N.getString("LayerLegendPanel.DeleteLayer")); //$NON-NLS-1$
-    JMenuItem editSldMenuItem = new JMenuItem(I18N.getString("LayerLegendPanel.EditStyle"), //$NON-NLS-1$
-            new ImageIcon(this.getClass().getResource("/images/icons/16x16/editStyles.png"))); //$NON-NLS-1$
-    JMenuItem editSldExpertMenuItem = new JMenuItem(I18N.getString("LayerLegendPanel.EditStyleExpert"), //$NON-NLS-1$
-            new ImageIcon(this.getClass().getResource("/images/icons/16x16/editStyles.png"))); //$NON-NLS-1$
-    JMenuItem saveAsShpMenuItem = new JMenuItem(I18N.getString("MainFrame.SaveAsShp"), //$NON-NLS-1$
+            new ImageIcon(this.getClass().getResource(
+                    "/images/icons/16x16/editAttributes.png"))); //$NON-NLS-1$
+    JMenuItem deleteMenuItem = new JMenuItem(
+            I18N.getString("LayerLegendPanel.DeleteLayer")); //$NON-NLS-1$
+    JMenuItem editSldMenuItem = new JMenuItem(
+            I18N.getString("LayerLegendPanel.EditStyle"), //$NON-NLS-1$
+            new ImageIcon(this.getClass().getResource(
+                    "/images/icons/16x16/editStyles.png"))); //$NON-NLS-1$
+    JMenuItem editSldExpertMenuItem = new JMenuItem(
+            I18N.getString("LayerLegendPanel.EditStyleExpert"), //$NON-NLS-1$
+            new ImageIcon(this.getClass().getResource(
+                    "/images/icons/16x16/editStyles.png"))); //$NON-NLS-1$
+    JMenuItem saveAsShpMenuItem = new JMenuItem(
+            I18N.getString("MainFrame.SaveAsShp"), //$NON-NLS-1$
             new ImageIcon(this.getClass().getResource("/images/icons/disk.png"))); //$NON-NLS-1$
     JMenu changeStyleMenu = new JMenu("Change Style"); //$NON-NLS-1$
-    JMenuItem centerViewMenuItem = new JMenuItem(I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
-            "CenterViewOnLayer")); //$NON-NLS-1$
+    JMenuItem centerViewMenuItem = new JMenuItem(
+            I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
+                    "CenterViewOnLayer")); //$NON-NLS-1$
 
     ImageIcon[] images = new ImageIcon[21];
 
@@ -176,20 +199,26 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         this.parent = parentPFrame;
 
         for (int n = 0; n < 20; n++) {
-            ImageIcon image = new ImageIcon(LayerLegendPanel.class.getResource("/images/icons/32x32/munsellcolorwheel_" //$NON-NLS-1$
-                    + n + ".png")); //$NON-NLS-1$
+            ImageIcon image = new ImageIcon(
+                    LayerLegendPanel.class
+                            .getResource("/images/icons/32x32/munsellcolorwheel_" //$NON-NLS-1$
+                                    + n + ".png")); //$NON-NLS-1$
             this.images[n] = image;
         }
-        ImageIcon image = new ImageIcon(LayerLegendPanel.class.getResource("/images/icons/32x32/munsellcolorwheel.png")); //$NON-NLS-1$
+        ImageIcon image = new ImageIcon(
+                LayerLegendPanel.class
+                        .getResource("/images/icons/32x32/munsellcolorwheel.png")); //$NON-NLS-1$
         this.images[20] = image;
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
         this.addLayerButton.setMargin(nullInsets);
-        this.addLayerButton.setToolTipText(I18N.getString("MainFrame.OpenFile"));
+        this.addLayerButton
+                .setToolTipText(I18N.getString("MainFrame.OpenFile"));
         this.addPostgisButton.setMargin(nullInsets);
-        this.addPostgisButton.setToolTipText(I18N.getString("MainFrame.NewPgLayer"));
+        this.addPostgisButton.setToolTipText(I18N
+                .getString("MainFrame.NewPgLayer"));
         this.loadSLDButton.setMargin(nullInsets);
         this.loadSLDButton.setToolTipText(I18N.getString("MainFrame.LoadSLD"));
 
@@ -200,10 +229,12 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         this.downButton.setMargin(nullInsets);
         this.downButton.setToolTipText(I18N.getString("LayerLegendPanel.Down"));
         this.bottomButton.setMargin(nullInsets);
-        this.bottomButton.setToolTipText(I18N.getString("LayerLegendPanel.Bottom"));
+        this.bottomButton.setToolTipText(I18N
+                .getString("LayerLegendPanel.Bottom"));
         this.minusButton.setMargin(nullInsets);
         this.attributeButton.setMargin(nullInsets);
-        this.attributeButton.setToolTipText(I18N.getString("LayerLegendPanel.EditAttributes"));
+        this.attributeButton.setToolTipText(I18N
+                .getString("LayerLegendPanel.EditAttributes"));
         panel.add(Box.createHorizontalGlue());
         panel.add(this.addLayerButton);
         panel.add(Box.createHorizontalGlue());
@@ -249,13 +280,18 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
 
         this.layersTable.setDragEnabled(false);
         this.layersTable.setSize(this.getSize());
-        this.layersTable.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+        this.layersTable
+                .setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
 
-        this.layersTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        this.layersTable
+                .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-        Icon selectionIcon = new ImageIcon(this.getClass().getResource("/images/toolbar/pencil.png")); //$NON-NLS-1$
-        Icon visibleIcon = new ImageIcon(this.getClass().getResource("/images/icons/16x16/visible.png")); //$NON-NLS-1$
-        Icon symbolizeIcon = new ImageIcon(this.getClass().getResource("/images/icons/16x16/symbolize.png")); //$NON-NLS-1$
+        Icon selectionIcon = new ImageIcon(this.getClass().getResource(
+                "/images/toolbar/pencil.png")); //$NON-NLS-1$
+        Icon visibleIcon = new ImageIcon(this.getClass().getResource(
+                "/images/icons/16x16/visible.png")); //$NON-NLS-1$
+        Icon symbolizeIcon = new ImageIcon(this.getClass().getResource(
+                "/images/icons/16x16/symbolize.png")); //$NON-NLS-1$
         JLabel selectionLabel = new JLabel("", selectionIcon, //$NON-NLS-1$
                 SwingConstants.CENTER);
         selectionLabel.setBorder(UIManager.getBorder("TableHeader.cellBorder")); //$NON-NLS-1$
@@ -329,9 +365,11 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             @Override
             public void keyReleased(KeyEvent e) {
                 if (LayerLegendPanel.this.getSelectedLayers().size() == 1) {
-                    Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator().next();
+                    Layer layer = LayerLegendPanel.this.getSelectedLayers()
+                            .iterator().next();
                     String newName = ((JTextField) e.getSource()).getText();
-                    LayerLegendPanel.this.parent.getDataSet().getPopulation(layer.getName()).setNom(newName);
+                    LayerLegendPanel.this.parent.getDataSet()
+                            .getPopulation(layer.getName()).setNom(newName);
                     layer.setName(newName);
                 }
             }
@@ -350,7 +388,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         col.setWidth(50);
         col.setResizable(false);
 
-        //        this.layersTable.setFillsViewportHeight(true);
+        // this.layersTable.setFillsViewportHeight(true);
         this.layersTable.setRowHeight(40);
         this.layersTable.setRowMargin(3);
         this.layersTable.addKeyListener(new KeyListener() {
@@ -369,15 +407,18 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             public void keyTyped(KeyEvent e) {
             }
         });
-        this.layersTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                LayerLegendPanel.this.update();
-            }
-        });
+        this.layersTable.getSelectionModel().addListSelectionListener(
+                new ListSelectionListener() {
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        LayerLegendPanel.this.update();
+                    }
+                });
         JScrollPane layersTableScrollPane = new JScrollPane(this.layersTable);
-        layersTableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        layersTableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        layersTableScrollPane
+                .setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        layersTableScrollPane
+                .setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.add(layersTableScrollPane, BorderLayout.CENTER);
         layersTableScrollPane.addMouseListener(new PopupListener());
 
@@ -390,36 +431,43 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         this.selectMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LayerViewPanel lvPanel = LayerLegendPanel.this.getLayerViewPanel();
+                LayerViewPanel lvPanel = LayerLegendPanel.this
+                        .getLayerViewPanel();
                 Collection<IFeature> features = lvPanel.getSelectedFeatures();
                 for (Layer layer : LayerLegendPanel.this.getSelectedLayers()) {
                     features.addAll(layer.getFeatureCollection());
                 }
-                lvPanel.getRenderingManager().render(lvPanel.getRenderingManager().getSelectionRenderer());
+                lvPanel.getRenderingManager().render(
+                        lvPanel.getRenderingManager().getSelectionRenderer());
                 lvPanel.superRepaint();
             }
         });
         this.unselectMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LayerViewPanel lvPanel = LayerLegendPanel.this.getLayerViewPanel();
+                LayerViewPanel lvPanel = LayerLegendPanel.this
+                        .getLayerViewPanel();
                 Collection<IFeature> features = lvPanel.getSelectedFeatures();
                 for (Layer layer : LayerLegendPanel.this.getSelectedLayers()) {
                     features.removeAll(layer.getFeatureCollection());
                 }
-                lvPanel.getRenderingManager().render(lvPanel.getRenderingManager().getSelectionRenderer());
+                lvPanel.getRenderingManager().render(
+                        lvPanel.getRenderingManager().getSelectionRenderer());
                 lvPanel.superRepaint();
             }
         });
         this.centerViewMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LayerViewPanel lvPanel = LayerLegendPanel.this.getLayerViewPanel();
+                LayerViewPanel lvPanel = LayerLegendPanel.this
+                        .getLayerViewPanel();
                 if (LayerLegendPanel.this.getSelectedLayers().size() == 1) {
-                    Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator().next();
+                    Layer layer = LayerLegendPanel.this.getSelectedLayers()
+                            .iterator().next();
                     if (layer.getFeatureCollection() != null) {
                         try {
-                            lvPanel.getViewport().zoom(layer.getFeatureCollection().envelope());
+                            lvPanel.getViewport().zoom(
+                                    layer.getFeatureCollection().envelope());
                         } catch (NoninvertibleTransformException e1) {
                             e1.printStackTrace();
                         }
@@ -432,12 +480,16 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (LayerLegendPanel.this.getSelectedLayers().size() == 1) {
-                    Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator().next();
-                    String newName = JOptionPane.showInputDialog(LayerLegendPanel.this, I18N.getString("LayerLegendPanel.RenameLayer")); //$NON-NLS-1$
+                    Layer layer = LayerLegendPanel.this.getSelectedLayers()
+                            .iterator().next();
+                    String newName = JOptionPane.showInputDialog(
+                            LayerLegendPanel.this,
+                            I18N.getString("LayerLegendPanel.RenameLayer")); //$NON-NLS-1$
                     if (newName == null || newName.isEmpty()) {
                         return;
                     }
-                    LayerLegendPanel.this.parent.getDataSet().getPopulation(layer.getName()).setNom(newName);
+                    LayerLegendPanel.this.parent.getDataSet()
+                            .getPopulation(layer.getName()).setNom(newName);
                     layer.setName(newName);
 
                     LayerLegendPanel.this.repaint();
@@ -448,21 +500,24 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (LayerLegendPanel.this.getSelectedLayers().size() == 1) {
-                    LayerLegendPanel.this.parent.getMainFrame().getMenuBar().saveAsShp();
+                    LayerLegendPanel.this.parent.getMainFrame().getMenuBar()
+                            .saveAsShp();
                 }
             }
         });
         this.editSldMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                StyleEditionFrame styleEditionFrame = new StyleEditionFrame(LayerLegendPanel.this);
+                StyleEditionFrame styleEditionFrame = new StyleEditionFrame(
+                        LayerLegendPanel.this);
                 styleEditionFrame.setVisible(true);
             }
         });
         this.editSldExpertMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                StyleEditionExpertFrame styleEditionFrame = new StyleEditionExpertFrame(LayerLegendPanel.this.parent, LayerLegendPanel.this);
+                StyleEditionExpertFrame styleEditionFrame = new StyleEditionExpertFrame(
+                        LayerLegendPanel.this.parent, LayerLegendPanel.this);
                 styleEditionFrame.setVisible(true);
             }
         });
@@ -503,21 +558,44 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
     }
 
     /**
+     * Add a listener on layer selection change
+     * 
+     * @param listener
+     */
+    public void addSelectionChangeListener(ListSelectionListener listener) {
+        this.layersTable.getSelectionModel().addListSelectionListener(listener);
+    }
+
+    /**
+     * Remove a listener on layer selection change
+     * 
+     * @param listener
+     */
+    public void removeSelectionChangeListener(ListSelectionListener listener) {
+        this.layersTable.getSelectionModel().removeListSelectionListener(
+                listener);
+    }
+
+    /**
      * Update and repaint the layer legend panel.
      */
     void update() {
         boolean isSelectionEmpty = this.layersTable.getSelectedRows().length == 0;
-        this.minusButton.setEnabled(!isSelectionEmpty && this.layersTable.getRowCount() > 0);
+        this.minusButton.setEnabled(!isSelectionEmpty
+                && this.layersTable.getRowCount() > 0);
         if (isSelectionEmpty || this.layersTable.getRowCount() <= 1) {
             this.downButton.setEnabled(false);
             this.bottomButton.setEnabled(false);
             this.upButton.setEnabled(false);
             this.topButton.setEnabled(false);
         } else {
-            boolean containsTopRow = (Arrays.binarySearch(this.layersTable.getSelectedRows(), 0) == 0);
+            boolean containsTopRow = (Arrays.binarySearch(
+                    this.layersTable.getSelectedRows(), 0) == 0);
             this.upButton.setEnabled(!containsTopRow);
             this.topButton.setEnabled(!containsTopRow);
-            boolean containsBottomRow = (Arrays.binarySearch(this.layersTable.getSelectedRows(), this.layersTable.getRowCount() - 1) >= 0);
+            boolean containsBottomRow = (Arrays.binarySearch(
+                    this.layersTable.getSelectedRows(),
+                    this.layersTable.getRowCount() - 1) >= 0);
             this.downButton.setEnabled(!containsBottomRow);
             this.bottomButton.setEnabled(!containsBottomRow);
         }
@@ -628,14 +706,18 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             this.getModel().moveLayer(row, sldIndex);
             end--;
         }
-        this.layersTable.setRowSelectionInterval(this.layersTable.getRowCount() - liste.length, this.layersTable.getRowCount() - 1);
+        this.layersTable.setRowSelectionInterval(this.layersTable.getRowCount()
+                - liste.length, this.layersTable.getRowCount() - 1);
     }
 
     private void displayAttributeTable() {
-        AttributeTable ta = new AttributeTable(LayerLegendPanel.this.getLayerViewPanel().getProjectFrame(), I18N.getString("LayerLegendPanel.EditAttributes"), //$NON-NLS-1$
+        AttributeTable ta = new AttributeTable(LayerLegendPanel.this
+                .getLayerViewPanel().getProjectFrame(),
+                I18N.getString("LayerLegendPanel.EditAttributes"), //$NON-NLS-1$
                 LayerLegendPanel.this.getLayerViewPanel().getFeatures());
         ta.setVisible(true);
-        ta.setIconImage(new ImageIcon(AttributeTable.class.getResource("/images/icons/16x16/table.png")).getImage());
+        ta.setIconImage(new ImageIcon(AttributeTable.class
+                .getResource("/images/icons/16x16/table.png")).getImage());
     }
 
     private void displayAddPostgisLayer() {
@@ -648,11 +730,15 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             LOGGER.info("Cannot save SLD, no selected project");
             return;
         }
-        JFileChooser chooser = new JFileChooser(this.parent.getMainFrame().getMenuBar().fc.getPreviousDirectory());
+        JFileChooser chooser = new JFileChooser(this.parent.getMainFrame()
+                .getMenuBar().fc.getPreviousDirectory());
         chooser.setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File f) {
-                return (f.isFile() && (f.getAbsolutePath().endsWith(".xml") || f.getAbsolutePath().endsWith(".XML")) || f.isDirectory());
+                return (f.isFile()
+                        && (f.getAbsolutePath().endsWith(".xml") || f
+                                .getAbsolutePath().endsWith(".XML")) || f
+                        .isDirectory());
             }
 
             @Override
@@ -660,15 +746,18 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                 return "XMLfileReader";
             }
         });
-        int result = chooser.showOpenDialog(this.parent.getMainFrame().getGui());
+        int result = chooser
+                .showOpenDialog(this.parent.getMainFrame().getGui());
         if (result == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             if (file != null) {
                 // String fileName = file.getAbsolutePath();
                 try {
                     this.parent.loadSLD(file);
-                    this.parent.getMainFrame().getApplication().getProperties().setLastOpenedFile(file.getAbsolutePath());
-                    this.parent.getMainFrame().getMenuBar().fc.setPreviousDirectory(file);
+                    this.parent.getMainFrame().getApplication().getProperties()
+                            .setLastOpenedFile(file.getAbsolutePath());
+                    this.parent.getMainFrame().getMenuBar().fc
+                            .setPreviousDirectory(file);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
@@ -704,7 +793,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
 
         @Override
         public int getRowCount() {
-            return (LayerLegendPanel.this.getModel() == null) ? 0 : LayerLegendPanel.this.getModel().layersCount();
+            return (LayerLegendPanel.this.getModel() == null) ? 0
+                    : LayerLegendPanel.this.getModel().layersCount();
 
         }
 
@@ -795,7 +885,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                 }
                 layer.setName(newLayerName);
                 // frame.getPanelVisu().setSld(sld);
-                for (int i = 0; i < LayerLegendPanel.this.getModel().layersCount(); i++) {
+                for (int i = 0; i < LayerLegendPanel.this.getModel()
+                        .layersCount(); i++) {
                     String layerName = layer.getName();
                     if (layerName.equals(oldLayerName)) {
                         layer.setName(newLayerName);
@@ -804,7 +895,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                         this.fireTableCellUpdated(i, col);
                     }
                 }
-                // String fileName = frame.session.getFichiers().get(oldLayerName);
+                // String fileName =
+                // frame.session.getFichiers().get(oldLayerName);
                 // fichiers.remove(oldLayerName);
                 // fichiers.put(newLayerName, fileName);
             } else {
@@ -826,7 +918,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         }
 
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean hasFocus, int row,
+                int col) {
             int val = ((Integer) value).intValue();
 
             this.setValue(val);
@@ -838,12 +932,14 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         }
     }
 
-    private class SliderEditor extends AbstractCellEditor implements TableCellEditor {
+    private class SliderEditor extends AbstractCellEditor implements
+            TableCellEditor {
         private static final long serialVersionUID = 24362462L;
         private final SliderRenderer renderer = new SliderRenderer();
 
         @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
+        public Component getTableCellEditorComponent(JTable table,
+                Object value, boolean isSelected, int row, int col) {
             int val = ((Integer) value).intValue();
             this.renderer.setValue(val);
             return this.renderer;
@@ -871,7 +967,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
      */
     class JComponentTableCellRenderer implements TableCellRenderer {
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean hasFocus, int row,
+                int column) {
             return (JComponent) value;
         }
     }
@@ -893,7 +991,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         }
 
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean hasFocus, int row,
+                int col) {
             Layer layer = LayerLegendPanel.this.getLayer(row);
             if (row < LayerLegendPanel.this.getModel().layersCount()) {
                 if (isSelected) {
@@ -912,8 +1012,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                         this.setSelected(layer.isVisible());
                     } else {
                         if (col == 2) {
-                            this.setToolTipText(I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
-                                    "SymbolizedToolTip")); //$NON-NLS-1$
+                            this.setToolTipText(I18N
+                                    .getString("LayerLegendPanel." + //$NON-NLS-1$
+                                            "SymbolizedToolTip")); //$NON-NLS-1$
                             this.setSelected(layer.isSymbolized());
                         }
                     }
@@ -926,7 +1027,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
 
     /**
      */
-    class LayersNameCellRenderer extends JTextField implements TableCellRenderer {
+    class LayersNameCellRenderer extends JTextField implements
+            TableCellRenderer {
         /**
          * Serial uid.
          */
@@ -941,7 +1043,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         }
 
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean hasFocus, int row,
+                int col) {
             Layer layer = LayerLegendPanel.this.getLayer(row);
             if (row < LayerLegendPanel.this.getModel().layersCount()) {
                 if (isSelected) {
@@ -962,7 +1066,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         private static final long serialVersionUID = 1L;
 
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean isFocus, int row, int col) {
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean isFocus, int row,
+                int col) {
             Layer layer = LayerLegendPanel.this.getLayer(row);
             LayerStylesPanel panel = new LayerStylesPanel(layer);
             return panel;
@@ -988,12 +1094,15 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         }
 
         @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        public Component getTableCellEditorComponent(JTable table,
+                Object value, boolean isSelected, int row, int column) {
             LayerLegendPanel layerLegendPanel = LayerLegendPanel.this;
 
-            StyleEditionFrame styleEditionFrame = new StyleEditionFrame(layerLegendPanel);
+            StyleEditionFrame styleEditionFrame = new StyleEditionFrame(
+                    layerLegendPanel);
 
-            layerLegendPanel.getSelectedLayers().iterator().next().setStyles(styleEditionFrame.getLayer().getStyles());
+            layerLegendPanel.getSelectedLayers().iterator().next()
+                    .setStyles(styleEditionFrame.getLayer().getStyles());
 
             JPanel pan = new LayerStylesPanel(styleEditionFrame.getLayer());
 
@@ -1090,30 +1199,34 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
 
         /**
          * Affiche un menu popup si l'évènement souris est l'évènement
-         * d'affichage
-         * du menu popup.
+         * d'affichage du menu popup.
          * 
          * @param e
          *            évènement souris
          */
         private void maybeShowPopup(MouseEvent e) {
-            int selectedRow = e.getY() / LayerLegendPanel.this.layersTable.getRowHeight();
+            int selectedRow = e.getY()
+                    / LayerLegendPanel.this.layersTable.getRowHeight();
             if (SwingUtilities.isRightMouseButton(e)) {
-                if (selectedRow < LayerLegendPanel.this.layersTable.getRowCount()) {
+                if (selectedRow < LayerLegendPanel.this.layersTable
+                        .getRowCount()) {
                     LayerLegendPanel.this.centerViewMenuItem.setEnabled(true);
                     LayerLegendPanel.this.unselectMenuItem.setEnabled(true);
                     LayerLegendPanel.this.selectMenuItem.setEnabled(true);
                     LayerLegendPanel.this.deleteMenuItem.setEnabled(true);
                     LayerLegendPanel.this.renameMenuItem.setEnabled(true);
                     LayerLegendPanel.this.editSldMenuItem.setEnabled(true);
-                    LayerLegendPanel.this.editSldExpertMenuItem.setEnabled(true);
+                    LayerLegendPanel.this.editSldExpertMenuItem
+                            .setEnabled(true);
                     LayerLegendPanel.this.editMenuItem.setEnabled(true);
                     LayerLegendPanel.this.changeStyleMenu.removeAll();
                     LayerLegendPanel.this.changeStyleMenu.setEnabled(false);
                     if (!LayerLegendPanel.this.getSelectedLayers().isEmpty()) {
-                        Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator().next();
+                        Layer layer = LayerLegendPanel.this.getSelectedLayers()
+                                .iterator().next();
                         if (layer.getGroups().size() > 1) {
-                            LayerLegendPanel.this.changeStyleMenu.setEnabled(true);
+                            LayerLegendPanel.this.changeStyleMenu
+                                    .setEnabled(true);
                         }
                         for (final String group : layer.getGroups()) {
                             JMenuItem item = new JMenuItem(group);
@@ -1121,16 +1234,21 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                             item.addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
-                                    Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator().next();
+                                    Layer layer = LayerLegendPanel.this
+                                            .getSelectedLayers().iterator()
+                                            .next();
                                     layer.setActiveGroup(group);
-                                    LayerViewPanel lvPanel = LayerLegendPanel.this.getLayerViewPanel();
+                                    LayerViewPanel lvPanel = LayerLegendPanel.this
+                                            .getLayerViewPanel();
                                     lvPanel.repaint();
                                 }
                             });
                         }
                     }
-                    LayerLegendPanel.this.layersTable.setRowSelectionInterval(selectedRow, selectedRow);
-                    LayerLegendPanel.this.popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                    LayerLegendPanel.this.layersTable.setRowSelectionInterval(
+                            selectedRow, selectedRow);
+                    LayerLegendPanel.this.popupMenu.show(e.getComponent(),
+                            e.getX(), e.getY());
                 } else {
                     LayerLegendPanel.this.centerViewMenuItem.setEnabled(false);
                     LayerLegendPanel.this.unselectMenuItem.setEnabled(false);
@@ -1138,14 +1256,21 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                     LayerLegendPanel.this.editMenuItem.setEnabled(false);
                     LayerLegendPanel.this.renameMenuItem.setEnabled(false);
                     LayerLegendPanel.this.editSldMenuItem.setEnabled(false);
-                    LayerLegendPanel.this.editSldExpertMenuItem.setEnabled(false);
+                    LayerLegendPanel.this.editSldExpertMenuItem
+                            .setEnabled(false);
                     LayerLegendPanel.this.deleteMenuItem.setEnabled(false);
-                    LayerLegendPanel.this.popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                    LayerLegendPanel.this.popupMenu.show(e.getComponent(),
+                            e.getX(), e.getY());
                 }
             } else {
                 if (SwingUtilities.isLeftMouseButton(e)) {
-                    if (LayerLegendPanel.this.tablemodel.getRowCount() > 0 && selectedRow >= LayerLegendPanel.this.tablemodel.getRowCount()) {
-                        LayerLegendPanel.this.layersTable.removeRowSelectionInterval(0, LayerLegendPanel.this.tablemodel.getRowCount() - 1);
+                    if (LayerLegendPanel.this.tablemodel.getRowCount() > 0
+                            && selectedRow >= LayerLegendPanel.this.tablemodel
+                                    .getRowCount()) {
+                        LayerLegendPanel.this.layersTable
+                                .removeRowSelectionInterval(0,
+                                        LayerLegendPanel.this.tablemodel
+                                                .getRowCount() - 1);
                     }
                 }
             }

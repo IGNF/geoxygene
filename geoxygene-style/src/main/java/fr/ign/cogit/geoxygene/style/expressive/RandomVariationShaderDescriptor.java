@@ -36,8 +36,7 @@ import javax.xml.bind.annotation.XmlElement;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class RandomVariationShaderDescriptor extends
-        ShaderDescriptor {
+public class RandomVariationShaderDescriptor extends LineShaderDescriptor {
 
     @XmlElement(name = "StrokePressureVariationAmplitude")
     private double strokePressureVariationAmplitude = .32;
