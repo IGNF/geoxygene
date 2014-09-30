@@ -53,12 +53,12 @@ public class GeoMatchingTest {
 	  criteria.add(new PartialFrechetDistance());
 	  criteria.add(new LineOrientation());
     
-	  URL urlReseau1 = new URL("file", "", "./data/reseau1.shp");
+	  URL urlReseau1 = new URL("file", "", "./data/ign-lineaire/reseau1.shp");
 	  IPopulation<IFeature> reseau1 = ShapefileReader.read(urlReseau1.getPath());
 	  IFeature reference = reseau1.get(0);
 	  LOGGER.trace("Reference id = " + reference.getId());
 	  
-	  URL urlReseau2 = new URL("file", "", "./data/reseau2.shp");
+	  URL urlReseau2 = new URL("file", "", "./data/ign-lineaire/reseau2.shp");
 	  IPopulation<IFeature> reseau2 = ShapefileReader.read(urlReseau2.getPath());
 	  
 	  List<IFeature> candidates = new ArrayList<IFeature>(reseau2.select(reference.getGeom().buffer(50)));
@@ -69,10 +69,10 @@ public class GeoMatchingTest {
 	  EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates,
 	        ChoiceType.PIGNISTIC, closed);
 	  LOGGER.info("result = " + result);
-	  LOGGER.trace("reference = " + reference.getGeom());
-	  LOGGER.trace("value = " + result.getValue());
-	  LOGGER.trace("conflict = " + result.getConflict());
-	  LOGGER.trace("with " + result.getHypothesis().size());
+	  // LOGGER.info("reference = " + reference.getGeom());
+	  LOGGER.info("value = " + result.getValue());
+	  LOGGER.info("conflict = " + result.getConflict());
+	  LOGGER.info("with " + result.getHypothesis().size());
 	  for (int i = 0; i < result.getHypothesis().size(); i++) {
 		  LOGGER.trace("\tobj " + i + " = " + result.getHypothesis().get(i));
 	  }
@@ -86,28 +86,4 @@ public class GeoMatchingTest {
     }
   }
   
-  /*@Test
-  public void testRunSurface() throws Exception {
-    GeoMatching matching = new GeoMatching();
-    Collection<Source<GeomHypothesis>> criteria = new ArrayList<Source<GeomHypothesis>>();
-    criteria.add(new SurfaceDistance());
-    IPopulation<IFeature> bdtopo = ShapefileReader.read("H:\\Data\\SIGPARIS\\parcelles_bdtopo.shp");
-    IPopulation<IFeature> vasserot = ShapefileReader
-        .read("H:\\Data\\SIGPARIS\\parcelles_vasserot.shp");
-    IFeature reference = bdtopo.get(0);
-    List<IFeature> candidates = new ArrayList<IFeature>(vasserot.select(reference.getGeom()));
-    boolean closed = false;
-    System.out.println(candidates.size() + " candidates");
-    EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates,
-        ChoiceType.PIGNISTIC, closed);
-    System.out.println("result = " + result);
-    System.out.println("reference = " + reference.getGeom());
-    System.out.println("value = " + result.getValue());
-    System.out.println("conflict = " + result.getConflict());
-    System.out.println("with " + result.getHypothesis().size());
-    for (int i = 0; i < result.getHypothesis().size(); i++) {
-      System.out.println("\tobj " + i + " = " + result.getHypothesis().get(i));
-    }
-  }*/
-
 }

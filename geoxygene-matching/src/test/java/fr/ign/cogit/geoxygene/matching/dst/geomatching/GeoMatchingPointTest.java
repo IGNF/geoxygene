@@ -90,14 +90,14 @@ public class GeoMatchingPointTest {
 	    p2.setFeatureType(pointFeatureType);
 	    p3.setFeatureType(pointFeatureType);
 	    
-	    Object[] attributes = new Object[] { "Saint-Paul" };
+	    Object[] attributes = new Object[] { "boulevard du général de Gaulle" };
 	    // p1.setSchema(schema);
 	    p1.setAttributes(attributes);
 	    
 	    // p2.setSchema(schema);
 	    p2.setAttributes(attributes);
 	    
-	    attributes = new Object[] { "Saint-Jean" };
+	    attributes = new Object[] { "bld du gal de Gaulle" };
 	    // p3.setSchema(schema);
 	    p3.setAttributes(attributes);
 	    

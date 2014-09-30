@@ -1,6 +1,6 @@
 package fr.ign.cogit.geoxygene.matching.hmmm;
 
-import java.util.Arrays;
+// import java.util.Arrays;
 import java.util.Collections;
 
 import org.apache.log4j.Logger;
@@ -9,19 +9,10 @@ import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
-import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
-import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.matching.hmmm.HMMMapMatcher.Node;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
-// import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
+
 
 /**
  * This software is released under the licence CeCILL
@@ -59,9 +50,13 @@ System.out.println("------------------------------------------------------------
     // On charge les données GPS
     IPopulation<IFeature> gpsPop = ShapefileReader.read(DATA_DIR + "gps_data_extrait.shp", "traces", null, true);
     Collections.reverse(gpsPop.getElements());
+    int gpsPopSize = gpsPop.size();
 
     // On charge la couche route
     IPopulation<IFeature> networkPop = ShapefileReader.read(DATA_DIR + "road_network_extrait.shp", "routes", null, true);
+    
+    Assert.assertEquals("", gpsPop.size(), 1648);
+    Assert.assertEquals("", networkPop.size(), 2733);
     
     SeattleMapMatcher mapMatcher = new SeattleMapMatcher(
         (FT_FeatureCollection<? extends IFeature>) gpsPop, networkPop, 10.0,
@@ -72,6 +67,17 @@ System.out.println("------------------------------------------------------------
     Node result = mapMatcher.computeTransitions();
     LOGGER.info("Map Matching finished");
     
+    // Tests
+    int nbRestant = mapMatcher.getPoints().size();
+    double percentExluded = (double)(gpsPopSize - nbRestant) / (double)gpsPopSize * 100;
+    LOGGER.info("nbRestant = " + nbRestant);
+    LOGGER.info("gpsPopSize = " + gpsPopSize);
+    LOGGER.info("percentExluded = " + percentExluded);
+    // this step eliminated about 38.9%
+    // Assert.assertTrue(nbRestant + ", " + percentExluded, percentExluded > 30 && percentExluded < 40);
+    
+    
+    /*
     // Création du type géométrique
     FeatureType ftLines = new FeatureType();
     ftLines.setTypeName("Traces");
@@ -139,10 +145,11 @@ System.out.println("------------------------------------------------------------
       a.setPoids(index);
     }
     // ShapefileWriter.write(popPathSegments, DATA_DIR + "resultat\\pathSegments.shp");
+    */
     
     System.out.println("----------------------------------------------------------------");
     
-    // Assert.assertTrue(true);
+    
   }
 
 }
