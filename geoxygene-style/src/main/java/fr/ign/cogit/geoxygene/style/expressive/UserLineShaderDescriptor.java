@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.XmlElements;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class UserLineShaderDescriptor extends LineShaderDescriptor {
+public class UserLineShaderDescriptor extends LineShaderDescriptor implements UserShaderDescriptor {
 
     @XmlElement(name = "File")
     private String filename = "./src/main/resources/shaders/linepainting.subshader.default.glsl";
@@ -51,24 +51,26 @@ public class UserLineShaderDescriptor extends LineShaderDescriptor {
             @XmlElement(name = "Time", type = ParameterDescriptorTime.class) })
     private final List<ParameterDescriptor> parameters = new ArrayList<ParameterDescriptor>();
 
-    /**
-     * @return the filename
+    /* (non-Javadoc)
+     * @see fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor#getFilename()
      */
+    @Override
     public String getFilename() {
         return this.filename;
     }
 
-    /**
-     * @param filename
-     *            the filename to set
+    /* (non-Javadoc)
+     * @see fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor#setFilename(java.lang.String)
      */
+    @Override
     public void setFilename(String filename) {
         this.filename = filename;
     }
 
-    /**
-     * @return the parameters
+    /* (non-Javadoc)
+     * @see fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor#getParameters()
      */
+    @Override
     public List<ParameterDescriptor> getParameters() {
         return this.parameters;
     }

@@ -296,21 +296,6 @@ public class SyncRenderingManager implements RenderingManager {
         }
     }
 
-    // /**
-    // * Copy the rendered images to a 2D graphics in the same order the layers
-    // were added to the manager.
-    // * @param destination a 2D graphics to copy the images to
-    // */
-    // public final void copyTo(final Graphics2D destination) {
-    // for (Layer layer :
-    // this.getLayerViewPanel().getProjectFrame().getSld().getLayers()) {
-    // if (layer.getOpacity() > 0.0d && this.rendererMap.get(layer) != null) {
-    // this.rendererMap.get(layer).copyTo(destination);
-    // }
-    // }
-    // this.selectionRenderer.copyTo(destination);
-    // }
-
     /** Dispose of the manager. Cleans up all threads, renderers, daemons, etc. */
     @Override
     public final void dispose() {

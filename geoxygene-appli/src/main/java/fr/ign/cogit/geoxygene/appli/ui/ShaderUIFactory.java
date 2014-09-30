@@ -34,6 +34,7 @@ import fr.ign.cogit.geoxygene.style.expressive.RandomVariationShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.UserFill2DShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.UserLineShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
 
 /**
  * @author JeT
@@ -56,7 +57,7 @@ public class ShaderUIFactory {
         }
         if (descriptor instanceof UserLineShaderDescriptor) {
             return new UserLineShaderUI(
-                    (UserLineShaderDescriptor) (descriptor), projectFrame);
+                    (UserShaderDescriptor) (descriptor), projectFrame);
 
         }
         if (descriptor instanceof DefaultFill2DShaderDescriptor) {

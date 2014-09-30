@@ -40,7 +40,8 @@ import javax.xml.bind.annotation.XmlElements;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class UserFill2DShaderDescriptor extends Fill2DShaderDescriptor {
+public class UserFill2DShaderDescriptor extends Fill2DShaderDescriptor
+        implements UserShaderDescriptor {
 
     @XmlElement(name = "File")
     private String filename = "./src/main/resources/shaders/subshader2d.default.glsl";
@@ -54,6 +55,7 @@ public class UserFill2DShaderDescriptor extends Fill2DShaderDescriptor {
     /**
      * @return the filename
      */
+    @Override
     public String getFilename() {
         return this.filename;
     }
@@ -62,6 +64,7 @@ public class UserFill2DShaderDescriptor extends Fill2DShaderDescriptor {
      * @param filename
      *            the filename to set
      */
+    @Override
     public void setFilename(String filename) {
         this.filename = filename;
     }
@@ -69,6 +72,7 @@ public class UserFill2DShaderDescriptor extends Fill2DShaderDescriptor {
     /**
      * @return the parameters
      */
+    @Override
     public List<ParameterDescriptor> getParameters() {
         return this.parameters;
     }

@@ -34,7 +34,9 @@ import fr.ign.cogit.geoxygene.appli.gl.UserSubshader;
 import fr.ign.cogit.geoxygene.style.expressive.DefaultLineShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.RandomVariationShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.UserFill2DShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.UserLineShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
 
 /**
  * @author JeT
@@ -52,7 +54,11 @@ public class ShaderFactory {
 
         }
         if (descriptor instanceof UserLineShaderDescriptor) {
-            return createUserShader((UserLineShaderDescriptor) descriptor);
+            return createUserShader((UserShaderDescriptor) descriptor);
+
+        }
+        if (descriptor instanceof UserFill2DShaderDescriptor) {
+            return createUserFillSubshader((UserFill2DShaderDescriptor) descriptor);
 
         }
         throw new IllegalStateException("Do not handle "
@@ -69,7 +75,13 @@ public class ShaderFactory {
         return new DefaultSubshader(descriptor);
     }
 
-    public static UserSubshader createUserShader(UserLineShaderDescriptor descriptor) {
+    public static UserSubshader createUserShader(
+            UserShaderDescriptor descriptor) {
+        return new UserSubshader(descriptor);
+    }
+
+    public static UserSubshader createUserFillSubshader(
+            UserFill2DShaderDescriptor descriptor) {
         return new UserSubshader(descriptor);
     }
 

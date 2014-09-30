@@ -32,21 +32,78 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 
+import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
+
 /**
  * @author JeT
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class GradientExpressiveRenderingDescriptor extends
-        ExpressiveRenderingDescriptor {
+public class GradientSubshaderDescriptor extends Fill2DDescriptor {
 
     @XmlElements({ @XmlElement(name = "UserShader", type = UserFill2DShaderDescriptor.class) })
     private Fill2DShaderDescriptor shader = new DefaultFill2DShaderDescriptor();
 
+    @XmlElement(name = "Resolution")
+    private double textureResolution = 72; // texture resolution in DPI
+
+    @XmlElement(name = "MapScale")
+    private double mapScale = 100000; // map scale value 1:MapScale
+
+    // coast geometry segments greater than this value won't be considered as
+    // coast lines
+    @XmlElement(name = "MaxCoastlineLength")
+    private double maxCoastlineLength = Double.POSITIVE_INFINITY;
+
+    /**
+     * @return the textureResolution
+     */
+    public double getTextureResolution() {
+        return this.textureResolution;
+    }
+
+    /**
+     * @param textureResolution
+     *            the textureResolution to set
+     */
+    public void setTextureResolution(double textureResolution) {
+        this.textureResolution = textureResolution;
+    }
+
+    /**
+     * @return the maxCoastlineLength
+     */
+    public double getMaxCoastlineLength() {
+        return this.maxCoastlineLength;
+    }
+
+    /**
+     * @return the mapScale
+     */
+    public double getMapScale() {
+        return this.mapScale;
+    }
+
+    /**
+     * @param mapScale
+     *            the mapScale to set
+     */
+    public void setMapScale(double mapScale) {
+        this.mapScale = mapScale;
+    }
+
+    /**
+     * @param maxCoastlineLength
+     *            the maxCoastlineLength to set
+     */
+    public void setMaxCoastlineLength(double maxCoastlineLength) {
+        this.maxCoastlineLength = maxCoastlineLength;
+    }
+
     /**
      * @return the shader
      */
-    public Fill2DShaderDescriptor getShader() {
+    public Fill2DShaderDescriptor getShaderDescriptor() {
         return this.shader;
     }
 
@@ -54,7 +111,7 @@ public class GradientExpressiveRenderingDescriptor extends
      * @param shader
      *            the shader to set
      */
-    public void setShader(Fill2DShaderDescriptor shader) {
+    public void setShaderDescriptor(Fill2DShaderDescriptor shader) {
         this.shader = shader;
     }
 
@@ -67,8 +124,15 @@ public class GradientExpressiveRenderingDescriptor extends
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        long temp;
+        temp = Double.doubleToLongBits(this.mapScale);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(this.maxCoastlineLength);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result
                 + ((this.shader == null) ? 0 : this.shader.hashCode());
+        temp = Double.doubleToLongBits(this.textureResolution);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
 
@@ -88,12 +152,24 @@ public class GradientExpressiveRenderingDescriptor extends
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        GradientExpressiveRenderingDescriptor other = (GradientExpressiveRenderingDescriptor) obj;
+        GradientSubshaderDescriptor other = (GradientSubshaderDescriptor) obj;
+        if (Double.doubleToLongBits(this.mapScale) != Double
+                .doubleToLongBits(other.mapScale)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.maxCoastlineLength) != Double
+                .doubleToLongBits(other.maxCoastlineLength)) {
+            return false;
+        }
         if (this.shader == null) {
             if (other.shader != null) {
                 return false;
             }
         } else if (!this.shader.equals(other.shader)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.textureResolution) != Double
+                .doubleToLongBits(other.textureResolution)) {
             return false;
         }
         return true;

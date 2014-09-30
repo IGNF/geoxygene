@@ -75,12 +75,14 @@ import javax.xml.bind.JAXBException;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.panel.COGITColorChooserPanel;
+import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.appli.ui.ExpressiveRenderingUI;
 import fr.ign.cogit.geoxygene.appli.ui.ExpressiveRenderingUIFactory;
 import fr.ign.cogit.geoxygene.feature.DataSet;
@@ -88,6 +90,7 @@ import fr.ign.cogit.geoxygene.style.CategorizedMap;
 import fr.ign.cogit.geoxygene.style.ColorMap;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Fill;
+import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
 import fr.ign.cogit.geoxygene.style.Interpolate;
 import fr.ign.cogit.geoxygene.style.InterpolationPoint;
 import fr.ign.cogit.geoxygene.style.LabelPlacement;
@@ -104,6 +107,8 @@ import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.TextSymbolizer;
+import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 
 /**
  * Style Edition Main Frame.
@@ -114,6 +119,8 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         MouseListener, ChangeListener, ItemListener {
 
     private static final long serialVersionUID = 1L;
+
+    private static final String CR = System.getProperty("line.separator");
 
     private static Logger logger = Logger.getLogger(StyleEditionFrame.class
             .getName());
@@ -171,6 +178,8 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
     private final JPanel textStylePanel;
     private JPanel mainStylePanel;
     private final JPanel graphicStylePanel;
+    private final JPanel infoPanel;
+    private final JTextArea infoTextArea;
 
     // Work variables
     private Color fillColor;
@@ -301,16 +310,34 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
             this.initPoint();
         }
 
+        // /////////////////////////////////// SYMBOLOGY
         this.textStylePanel = new JPanel();
         this.textStylePanel.setLayout(new BoxLayout(this.textStylePanel,
                 BoxLayout.Y_AXIS));
 
         this.initTextStylePanel();
+
+        // //////////////////////////////////// INFO
+        this.infoPanel = new JPanel(new BorderLayout());
+        this.infoTextArea = new JTextArea();
+        this.infoPanel.add(new JScrollPane(this.infoTextArea),
+                BorderLayout.CENTER);
+        // //////////////////////////////////// TABBED PANELS
         this.tabPane = new JTabbedPane();
         this.tabPane
                 .add(I18N.getString("StyleEditionFrame.Symbology"), this.graphicStylePanel); //$NON-NLS-1$
         this.tabPane
                 .add(I18N.getString("StyleEditionFrame.Toponyms"), this.textStylePanel); //$NON-NLS-1$
+        this.tabPane.add(
+                I18N.getString("StyleEditionFrame.Info"), this.infoPanel); //$NON-NLS-1$
+        this.tabPane.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                StyleEditionFrame.this.updateInfoPanel();
+
+            }
+        });
         this.add(this.tabPane);
 
         // this.addPrimitiveRendererUI(); // see method comments to know what it
@@ -372,6 +399,37 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
     // // }
     //
     // }
+
+    protected void updateInfoPanel() {
+        IFeatureCollection<IFeature> collection = (IFeatureCollection<IFeature>) this.layer
+                .getFeatureCollection();
+
+        StringBuilder str = new StringBuilder();
+        str.append("Symbolizer class : "
+                + this.layer.getSymbolizer().getClass().getSimpleName() + CR);
+        str.append("Symbolizer toString: " + this.symbolizer.toString());
+        if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
+            PolygonSymbolizer pol = ((PolygonSymbolizer) (this.layer
+                    .getSymbolizer()));
+
+            Fill2DDescriptor fill2dDescriptor = pol.getFill()
+                    .getFill2DDescriptor();
+            if (fill2dDescriptor instanceof TextureDescriptor) {
+                TextureDescriptor textureDescriptor = (TextureDescriptor) fill2dDescriptor;
+                String textureUID = TextureManager
+                        .generateTextureUniqueFilename(textureDescriptor,
+                                collection);
+                str.append("texture filename : '" + textureUID + "'" + CR);
+
+            }
+            if (fill2dDescriptor instanceof GradientSubshaderDescriptor) {
+                GradientSubshaderDescriptor gradientDescriptor = (GradientSubshaderDescriptor) fill2dDescriptor;
+                // str.append("texture filename : '" + textureUID + "'" + CR);
+
+            }
+        }
+        this.infoTextArea.setText(str.toString());
+    }
 
     private void addExpressiveRenderingUI() {
         if (this.tabPane == null) {

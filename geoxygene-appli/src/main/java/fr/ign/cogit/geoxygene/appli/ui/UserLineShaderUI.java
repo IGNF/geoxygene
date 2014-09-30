@@ -48,7 +48,7 @@ import javax.swing.border.EtchedBorder;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.UserLineShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
 
 /**
  * @author JeT
@@ -63,14 +63,14 @@ public class UserLineShaderUI implements ExpressiveRenderingUI,
             .getSimpleName() + ".subshaderLastDirectory";
     private JPanel main = null;
     private ProjectFrame parentProjectFrame = null;
-    private UserLineShaderDescriptor strtex = null;
+    private UserShaderDescriptor strtex = null;
     private String subshaderFilename = null;
     private JLabel subshaderFilenameLabel = null;
 
     /**
      * Constructor
      */
-    public UserLineShaderUI(UserLineShaderDescriptor strtex, ProjectFrame projectFrame) {
+    public UserLineShaderUI(UserShaderDescriptor strtex, ProjectFrame projectFrame) {
         this.parentProjectFrame = projectFrame;
         this.setUserShaderDescriptor(strtex);
     }
@@ -78,7 +78,7 @@ public class UserLineShaderUI implements ExpressiveRenderingUI,
     /**
      * @return the strtex
      */
-    public UserLineShaderDescriptor getUserShaderDescriptor() {
+    public UserShaderDescriptor getUserShaderDescriptor() {
         return this.strtex;
     }
 
@@ -86,7 +86,7 @@ public class UserLineShaderUI implements ExpressiveRenderingUI,
      * @param strtex
      *            the strtex to set
      */
-    public void setUserShaderDescriptor(UserLineShaderDescriptor strtex) {
+    public void setUserShaderDescriptor(UserShaderDescriptor strtex) {
         this.dispose();
         this.strtex = strtex;
         for (ParameterDescriptor param : strtex.getParameters()) {

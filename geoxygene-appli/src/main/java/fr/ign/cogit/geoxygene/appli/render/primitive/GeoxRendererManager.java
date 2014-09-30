@@ -33,6 +33,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
+import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
@@ -40,6 +41,7 @@ import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 
 /**
@@ -112,10 +114,32 @@ public class GeoxRendererManager {
                 return renderer;
             }
 
-            renderer = new GeoxComplexRendererBasic(layerRenderer, symbolizer);
-            surfaceRenderers.put(symbolizer, renderer);
-            logger.debug("a surface renderer is created for symbolizer "
-                    + symbolizer);
+            if (!(symbolizer instanceof PolygonSymbolizer)) {
+                logger.error("No known association between symbolizer "
+                        + symbolizer.getClass().getSimpleName()
+                        + " and a SurfaceRenderer...");
+                return null;
+            }
+            PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) symbolizer;
+            Stroke stroke = polygonSymbolizer.getStroke();
+            Fill2DDescriptor fill2dDescriptor = polygonSymbolizer.getFill()
+                    .getFill2DDescriptor();
+            if (fill2dDescriptor instanceof GradientSubshaderDescriptor) {
+                // GradientTextureDescriptor gradientDescriptor =
+                // (GradientTextureDescriptor) fill2dDescriptor;
+                renderer = new GeoxComplexRendererGradient(layerRenderer,
+                        polygonSymbolizer);
+                return renderer;
+            }
+
+            // default renderer if none has been set
+            if (renderer == null) {
+                renderer = new GeoxComplexRendererBasic(layerRenderer,
+                        symbolizer);
+                surfaceRenderers.put(symbolizer, renderer);
+                logger.debug("a surface renderer is created for symbolizer "
+                        + symbolizer);
+            }
             return renderer;
         }
     }

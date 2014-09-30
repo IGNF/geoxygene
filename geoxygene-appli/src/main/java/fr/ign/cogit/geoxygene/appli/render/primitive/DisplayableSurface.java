@@ -50,6 +50,8 @@ import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.GradientTextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
@@ -187,14 +189,7 @@ public class DisplayableSurface extends AbstractDisplayable {
 
     synchronized private List<GLComplex> generateWithPolygonSymbolizer(
             PolygonSymbolizer symbolizer) {
-        Fill2DDescriptor fill2dDescriptor = symbolizer.getFill()
-                .getFill2DDescriptor();
 
-        TextureDescriptor textureDescriptor = null;
-        if (fill2dDescriptor instanceof TextureDescriptor) {
-            textureDescriptor = (TextureDescriptor) fill2dDescriptor;
-
-        }
         if (this.getFeature().getFeatureCollections().size() != 1) {
             logger.error("Feature "
                     + this.getFeature()
@@ -202,16 +197,43 @@ public class DisplayableSurface extends AbstractDisplayable {
         }
         IFeatureCollection<IFeature> featureCollection = this.getFeature()
                 .getFeatureCollection(0);
+        // this complexes collection will contain inner and outline
         List<GLComplex> complexes = new ArrayList<GLComplex>();
-        // IEnvelope envelope = IGeometryUtil.getEnvelope(this.polygons);
-        IEnvelope envelope = featureCollection.getEnvelope();
-        double minX = envelope.minX();
-        double minY = envelope.minY();
-        if (textureDescriptor != null) {
-            // texture.setTextureDimension(2000, 2000);
-            // logger.debug("feature rendering : id=" + this.feature.getId()
-            // + " type=" + this.feature.getFeatureType()
-            // + " collection = " + featureCollection);
+
+        // generate Inner Polygon part
+        this.createInnerPolygon(symbolizer, featureCollection, complexes);
+
+        // generate Polygon Outline
+        this.generatePolygonOutline(symbolizer, featureCollection, complexes);
+
+        return complexes;
+
+    }
+
+    /**
+     * @param symbolizer
+     * @param featureCollection
+     * @param complexes
+     */
+    private boolean createInnerPolygon(PolygonSymbolizer symbolizer,
+            IFeatureCollection<IFeature> featureCollection,
+            List<GLComplex> complexes) {
+        Fill2DDescriptor fill2dDescriptor = symbolizer.getFill()
+                .getFill2DDescriptor();
+        if (fill2dDescriptor instanceof TextureDescriptor) {
+            TextureDescriptor textureDescriptor = (TextureDescriptor) fill2dDescriptor;
+
+            this.createWithTextureDescriptor(symbolizer, featureCollection,
+                    complexes, textureDescriptor);
+        } else if (fill2dDescriptor instanceof GradientSubshaderDescriptor) {
+            GradientSubshaderDescriptor expressiveDescriptor = (GradientSubshaderDescriptor) fill2dDescriptor;
+            GradientTextureDescriptor textureDescriptor = new GradientTextureDescriptor();
+            textureDescriptor.setMapScale(expressiveDescriptor.getMapScale());
+            textureDescriptor.setMaxCoastlineLength(expressiveDescriptor
+                    .getMaxCoastlineLength());
+            textureDescriptor.setTextureResolution(expressiveDescriptor
+                    .getTextureResolution());
+            IEnvelope envelope = featureCollection.getEnvelope();
             TextureTask<BasicTexture> textureTask;
             synchronized (TextureManager.getInstance()) {
                 textureTask = TextureManager.getInstance().getTextureTask(
@@ -222,7 +244,7 @@ public class DisplayableSurface extends AbstractDisplayable {
             if (textureTask == null) {
                 logger.warn("textureTask returned a null value for feature "
                         + featureCollection);
-                return null;
+                return false;
             }
             try {
                 TaskManager.waitForCompletion(textureTask);
@@ -237,69 +259,131 @@ public class DisplayableSurface extends AbstractDisplayable {
                         + textureTask.getState() + " finished with an error");
                 logger.error(textureTask.getError());
                 textureTask.getError().printStackTrace();
-                return null;
+                return false;
             }
-            // draw the texture image into resulting image
-            switch (textureDescriptor.getTextureDrawingMode()) {
-            case VIEWPORTSPACE:
+
+            if (textureTask.getTexture() != null) {
+                GeoxComplexRenderer renderer = GeoxRendererManager
+                        .getOrCreateSurfaceRenderer(symbolizer,
+                                this.getLayerRenderer());
                 BasicParameterizer parameterizer = new BasicParameterizer(
                         envelope, false, true);
-                // logger.debug("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ generate textured polygon with parameterizer "
-                // + parameterizer + " with envelope " + envelope);
-                // logger.debug("envelope = " + envelope.hashCode());
+                GLSimpleComplex inner = this
+                        .generateWithTextureAndParameterizer(
+                                textureTask.getTexture(), parameterizer,
+                                envelope, renderer);
+                inner.setOverallOpacity(symbolizer.getFill().getFillOpacity());
+                complexes.add(inner);
 
-                if (textureTask.getTexture() != null) {
-                    GeoxComplexRenderer renderer = GeoxRendererManager
-                            .getOrCreateSurfaceRenderer(symbolizer,
-                                    this.getLayerRenderer());
-                    GLSimpleComplex inner = this
-                            .generateWithTextureAndParameterizer(
-                                    textureTask.getTexture(), parameterizer,
-                                    envelope, renderer);
-                    inner.setOverallOpacity(symbolizer.getFill()
-                            .getFillOpacity());
-                    complexes.add(inner);
-
-                }
-                // if (textureTask.getTextureWidth()
-                // * textureTask.getTextureHeight() != 0) {
-                // BasicTexture glTexture = new BasicTexture(
-                // textureTask.getTextureWidth(),
-                // textureTask.getTextureHeight());
-                // glTexture.setScaleX(textureTask.getTexture().getScaleX());
-                // glTexture.setScaleY(textureTask.getTexture().getScaleX());
-                // GLSimpleComplex primitive = this
-                // .generateWithTextureAndParameterizer(complexes,
-                // textureTask.getTexture(), parameterizer, envelope);
-                // textureTask.addTaskListener(new TextureApplyer(primitive,
-                // textureTask));
-                // }
-                break;
-            case SCREENSPACE:
-                // drawTextureScreenspaceCoordinates(this.feature,
-                // this.viewport, imgTexture);
-                logger.warn("Screenspace coordinates textures are not yet implemented in GL rendering");
-                break;
-            default:
-                logger.warn("Do not know how to draw texture type "
-                        + textureDescriptor.getTextureDrawingMode());
             }
         } else {
+            IEnvelope envelope = featureCollection.getEnvelope();
+            double minX = envelope.minX();
+            double minY = envelope.minY();
             GeoxComplexRenderer renderer = GeoxRendererManager
                     .getOrCreateSurfaceRenderer(symbolizer,
                             this.getLayerRenderer());
             complexes.addAll(this.generateWithSolidColor(symbolizer, envelope,
                     minX, minY, renderer));
+            return true;
         }
+        return true;
+    }
+
+    /**
+     * @param symbolizer
+     * @param featureCollection
+     * @return
+     */
+    private GLComplex generatePolygonOutline(PolygonSymbolizer symbolizer,
+            IFeatureCollection<IFeature> featureCollection,
+            List<GLComplex> complexes) {
+        IEnvelope envelope = featureCollection.getEnvelope();
+        double minX = envelope.minX();
+        double minY = envelope.minY();
         GeoxComplexRenderer renderer = GeoxRendererManager
                 .getOrCreateLineRenderer(symbolizer, this.getLayerRenderer());
         GLComplex outline = GLComplexFactory.createPolygonOutlines(
                 this.getName() + "-outline", this.polygons,
                 symbolizer.getStroke(), minX, minY, renderer);
         complexes.add(outline);
-        // Thread.dumpStack();
-        return complexes;
 
+        return outline;
+    }
+
+    /**
+     * @param symbolizer
+     * @param featureCollection
+     * @param complexes
+     * @param envelope
+     * @param textureDescriptor
+     */
+    private boolean createWithTextureDescriptor(PolygonSymbolizer symbolizer,
+            IFeatureCollection<IFeature> featureCollection,
+            List<GLComplex> complexes, TextureDescriptor textureDescriptor) {
+        IEnvelope envelope = featureCollection.getEnvelope();
+        // logger.debug("feature rendering : id=" + this.feature.getId()
+        // + " type=" + this.feature.getFeatureType()
+        // + " collection = " + featureCollection);
+        TextureTask<BasicTexture> textureTask;
+        synchronized (TextureManager.getInstance()) {
+            textureTask = TextureManager.getInstance().getTextureTask(
+                    String.valueOf(this.getFeature().getId()),
+                    textureDescriptor, featureCollection, this.getViewport());
+        }
+        if (textureTask == null) {
+            logger.warn("textureTask returned a null value for feature "
+                    + featureCollection);
+            return false;
+        }
+        try {
+            TaskManager.waitForCompletion(textureTask);
+        } catch (InterruptedException e) {
+            logger.error("Texture Task error");
+            e.printStackTrace();
+        }
+        // logger.debug("textureTask " + textureTask.hashCode()
+        // + " terminated with glTexture " + textureTask.getTexture());
+        if (textureTask.getState().isError()) {
+            logger.error("texture generation task " + textureTask.getState()
+                    + " finished with an error");
+            logger.error(textureTask.getError());
+            textureTask.getError().printStackTrace();
+            return false;
+        }
+        // draw the texture image into resulting image
+        switch (textureDescriptor.getTextureDrawingMode()) {
+        case VIEWPORTSPACE:
+            BasicParameterizer parameterizer = new BasicParameterizer(envelope,
+                    false, true);
+            // logger.debug("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ generate textured polygon with parameterizer "
+            // + parameterizer + " with envelope " + envelope);
+            // logger.debug("envelope = " + envelope.hashCode());
+
+            if (textureTask.getTexture() != null) {
+                GeoxComplexRenderer renderer = GeoxRendererManager
+                        .getOrCreateSurfaceRenderer(symbolizer,
+                                this.getLayerRenderer());
+                GLSimpleComplex inner = this
+                        .generateWithTextureAndParameterizer(
+                                textureTask.getTexture(), parameterizer,
+                                envelope, renderer);
+                inner.setOverallOpacity(symbolizer.getFill().getFillOpacity());
+                complexes.add(inner);
+
+            }
+
+            break;
+        case SCREENSPACE:
+            // drawTextureScreenspaceCoordinates(this.feature,
+            // this.viewport, imgTexture);
+            logger.warn("Screenspace coordinates textures are not yet implemented in GL rendering");
+            break;
+        default:
+            logger.warn("Do not know how to draw texture type "
+                    + textureDescriptor.getTextureDrawingMode());
+        }
+        return true;
     }
 
     /**

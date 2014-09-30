@@ -32,6 +32,11 @@ import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -56,7 +61,7 @@ import fr.ign.cogit.geoxygene.util.gl.Sample;
  */
 public class GradientTextureImage {
 
-    public class TexturePixel {
+    public static class TexturePixel {
         public double uTexture = 0;
         public double vTexture = 0;
         public double uTextureWeightSum = 0;
@@ -75,8 +80,10 @@ public class GradientTextureImage {
         public double mainDirection; //
         public Sample sample = null; // associated sample (or null)
 
+        /**
+         * default constructor
+         */
         public TexturePixel() {
-
         }
 
         public TexturePixel(final TexturePixel src) {
@@ -144,6 +151,20 @@ public class GradientTextureImage {
     // }
     //
     // }
+
+    /**
+     * constructor
+     * 
+     * @param width
+     *            projected image width
+     * @param height
+     *            projected image height
+     */
+    public GradientTextureImage() {
+        this.width = 0;
+        this.height = 0;
+        this.size = 0;
+    }
 
     /**
      * constructor
@@ -1072,6 +1093,115 @@ public class GradientTextureImage {
             }
         }
         return bi;
+    }
+
+    public static GradientTextureImage readTextureImage(File textureFile)
+            throws IOException {
+        GradientTextureImage img = new GradientTextureImage(0, 0);
+        FileInputStream is = null;
+        DataInputStream dis = null;
+        try {
+            is = new FileInputStream(textureFile);
+            dis = new DataInputStream(is);
+
+            int width = dis.readInt();
+            int height = dis.readInt();
+
+            img.setDimension(width, height);
+            TexturePixel pixel = new TexturePixel();
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    readTexturePixel(pixel, dis);
+
+                }
+            }
+
+        } finally {
+
+            // releases all system resources from the streams
+            if (is != null) {
+                is.close();
+            }
+            if (dis != null) {
+                dis.close();
+            }
+        }
+        return img;
+    }
+
+    public static void writeTextureImage(File textureFile,
+            GradientTextureImage img) throws IOException {
+        FileOutputStream fos = null;
+        DataOutputStream dos = null;
+        try {
+            fos = new FileOutputStream(textureFile);
+            dos = new DataOutputStream(fos);
+
+            dos.writeInt(img.getWidth());
+            dos.writeInt(img.getHeight());
+
+            for (int y = 0; y < img.getHeight(); y++) {
+                for (int x = 0; x < img.getWidth(); x++) {
+                    TexturePixel pixel = img.getPixel(x, y);
+
+                    writeTexturePixel(pixel, dos);
+
+                }
+            }
+
+            dos.flush();
+        } finally {
+
+            if (dos != null) {
+                dos.close();
+            }
+            if (fos != null) {
+                fos.close();
+            }
+        }
+    }
+
+    private static void writeTexturePixel(TexturePixel pixel,
+            DataOutputStream dis) throws IOException {
+        dis.writeDouble(pixel.uTexture);
+        dis.writeDouble(pixel.vTexture);
+        dis.writeDouble(pixel.uTextureWeightSum);
+        dis.writeDouble(pixel.vTextureWeightSum);
+        dis.writeDouble(pixel.distance);
+        dis.writeDouble(pixel.linearParameter);
+        dis.writeInt(pixel.closestFrontier);
+        dis.writeDouble(pixel.closestPoint.x);
+        dis.writeDouble(pixel.closestPoint.y);
+        dis.writeBoolean(pixel.in);
+        dis.writeInt(pixel.frontier);
+        dis.writeDouble(pixel.weightSum);
+        dis.writeDouble(pixel.vGradient.x);
+        dis.writeDouble(pixel.vGradient.y);
+        dis.writeDouble(pixel.mainDirection);
+        pixel.sample = null;
+    }
+
+    private static void readTexturePixel(TexturePixel pixel, DataInputStream dis)
+            throws IOException {
+        pixel.uTexture = dis.readDouble();
+        pixel.vTexture = dis.readDouble();
+        pixel.uTextureWeightSum = dis.readDouble();
+        pixel.vTextureWeightSum = dis.readDouble();
+        pixel.distance = dis.readDouble();
+        pixel.linearParameter = dis.readDouble();
+        pixel.closestFrontier = dis.readInt();
+        double x, y;
+        x = dis.readDouble();
+        y = dis.readDouble();
+        pixel.closestPoint = new Point2d(x, y);
+        pixel.in = dis.readBoolean();
+        pixel.frontier = dis.readInt();
+        pixel.weightSum = dis.readDouble();
+        x = dis.readDouble();
+        y = dis.readDouble();
+        pixel.vGradient = new Point2d(x, y);
+        pixel.mainDirection = dis.readDouble();
+        pixel.sample = null;
     }
 
 }

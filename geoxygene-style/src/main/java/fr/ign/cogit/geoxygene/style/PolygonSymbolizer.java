@@ -30,6 +30,8 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PolygonSymbolizer extends AbstractSymbolizer {
 
+    private static final String CR = System.getProperty("line.separator");
+
     @XmlElement(name = "Fill")
     private Fill fill = null;
 

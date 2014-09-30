@@ -31,11 +31,8 @@ import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
@@ -52,8 +49,8 @@ import fr.ign.cogit.geoxygene.style.texture.GradientTextureDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 
 /**
- * @author JeT
- * 
+ * @author JeT This Task generates a GradientImage and transform it into a
+ *         gradient image with false colors
  */
 public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
 
@@ -73,7 +70,7 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
     public GradientTextureTask(String name,
             GradientTextureDescriptor textureDescriptor,
             IFeatureCollection<IFeature> featureCollection) {
-        super("Basic" + name);
+        super("GradientTexture" + name);
         this.textureDescriptor = textureDescriptor;
         this.basicTexture = new BasicTexture();
         this.featureCollection = featureCollection;
@@ -177,7 +174,7 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
                     AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
             image = op.filter(image, null);
 
-            ImageIO.write(image, "PNG", new File("gradient.png"));
+            // ImageIO.write(image, "PNG", new File("gradient.png"));
             this.getTexture().setTextureImage(image);
             this.setState(TaskState.FINISHED);
         } catch (Exception e) {

@@ -41,34 +41,44 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.task.Task;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.GradientTextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 
 /**
  * @author JeT texture manager
  */
-public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
+public class TextureManager {
 
     private static final Logger logger = Logger.getLogger(TextureManager.class
             .getName()); // logger
 
     private static final Map<TextureDescriptor, TextureTask<BasicTexture>> tasksMap = new HashMap<TextureDescriptor, TextureTask<BasicTexture>>();
     private static final Map<File, TextureTask<BasicTexture>> readersMap = new HashMap<File, TextureTask<BasicTexture>>();
+
+    private static final Map<GradientTextureDescriptor, GradientImageTask> gradientTasksMap = new HashMap<GradientTextureDescriptor, GradientImageTask>();
+    private static final Map<File, GradientImageTask> gradientReadersMap = new HashMap<File, GradientImageTask>();
+
     private final static TextureManager instance = new TextureManager();
 
     public static String DIRECTORY_CACHE_NAME = "cache";
+
+    private BasicTextureTaskListener basicListener = null;
+    private GradientTextureTaskListener gradientListener = null;
 
     /**
      * private singleton constructor
      */
     private TextureManager() {
-        // singleton
+        this.basicListener = new BasicTextureTaskListener(this);
+        this.gradientListener = new GradientTextureTaskListener(this);
     }
 
     /**
@@ -136,7 +146,7 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
                 // logger.info("reading disk-cached texture '"
                 // + file.getAbsolutePath() + "'");
                 textureTask = this.getTextureReaderTask(file);
-                textureTask.addTaskListener(this);
+                textureTask.addTaskListener(this.basicListener);
                 textureTask.start();
                 return textureTask;
             }
@@ -158,7 +168,63 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
         // launched and geometry is waiting for them (to be verified)
         // GeOxygeneEventManager.getInstance().getApplication()
         // .getTaskManager().addTask(textureTask);
-        textureTask.addTaskListener(this);
+        textureTask.addTaskListener(this.basicListener);
+        textureTask.start();
+        return textureTask;
+    }
+
+    /**
+     * Create or return a texture task. The task is NOT automatically started
+     * when completed Task.getTextureImage() won't be null
+     * 
+     * @param texture
+     * @param featureCollection
+     * @param viewport
+     * @return
+     */
+    public Task getGradientTextureTask(String name,
+            GradientTextureDescriptor gradientTextureDescriptor,
+            IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
+        if (gradientTextureDescriptor == null) {
+            return null;
+        }
+        GradientImageTask textureTask = null;
+        // create a task to generate texture image
+        synchronized (gradientTasksMap) {
+            textureTask = gradientTasksMap.get(gradientTextureDescriptor);
+            // look for texture in memory
+            if (textureTask != null) {
+                return textureTask;
+            }
+            // look for texture on cache disk
+            File file = TextureManager.generateGradientTextureUniqueFile(
+                    gradientTextureDescriptor, featureCollection);
+            // logger.debug("Look for file '" + file.getAbsolutePath() + "'");
+            // logger.debug(textureDescriptor.toString());
+            if (file.isFile()) {
+                // logger.info("reading disk-cached texture '"
+                // + file.getAbsolutePath() + "'");
+                textureTask = this.getGradientImageReaderTask(file);
+                textureTask.addTaskListener(this.gradientListener);
+                textureTask.start();
+                return textureTask;
+            }
+            // generate texture
+            textureTask = new GradientImageTask(name,
+                    gradientTextureDescriptor, featureCollection);
+            if (textureTask == null) {
+                logger.error("Unable to create texture task for texture "
+                        + gradientTextureDescriptor.getClass().getSimpleName());
+                return null;
+            }
+            gradientTasksMap.put(gradientTextureDescriptor, textureTask);
+        }
+
+        // do not add texture task to the task manager, they may not be
+        // launched and geometry is waiting for them (to be verified)
+        // GeOxygeneEventManager.getInstance().getApplication()
+        // .getTaskManager().addTask(textureTask);
+        textureTask.addTaskListener(this.gradientListener);
         textureTask.start();
         return textureTask;
     }
@@ -175,7 +241,23 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
         textureTask = TextureTaskFactory.createBasicTextureTask(
                 "reading texture " + file.getName(), file);
         readersMap.put(file, textureTask);
-        textureTask.addTaskListener(this);
+        textureTask.addTaskListener(this.basicListener);
+        return textureTask;
+    }
+
+    /**
+     * @param file
+     * @return
+     */
+    private GradientImageTask getGradientImageReaderTask(File file) {
+        GradientImageTask textureTask = gradientReadersMap.get(file);
+        if (textureTask != null) {
+            return textureTask;
+        }
+        textureTask = new GradientImageTask("reading gradient texture "
+                + file.getName(), file);
+        gradientReadersMap.put(file, textureTask);
+        textureTask.addTaskListener(this.gradientListener);
         return textureTask;
     }
 
@@ -196,40 +278,102 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
             tasksMap.remove(textureDescriptor);
         }
         textureTask.requestStop();
-        textureTask.removeTaskListener(this);
+        textureTask.removeTaskListener(this.basicListener);
         return true;
     }
 
-    @Override
-    public void onStateChange(TextureTask<BasicTexture> task, TaskState oldState) {
-        switch (task.getState()) {
-        case FINISHED:
-            if (task.getTexture().getTextureFilename() != null) {
-                synchronized (readersMap) {
-                    readersMap.remove(task.getTexture().getTextureFilename());
-                }
+    private class BasicTextureTaskListener implements
+            TaskListener<TextureTask<BasicTexture>> {
+        private TextureManager manager = null;
 
+        /**
+         * @param manager
+         */
+        public BasicTextureTaskListener(TextureManager manager) {
+            super();
+            this.manager = manager;
+        }
+
+        @Override
+        public void onStateChange(TextureTask<BasicTexture> task,
+                TaskState oldState) {
+            switch (task.getState()) {
+            case FINISHED:
+                if (task.getTexture().getTextureFilename() != null) {
+                    synchronized (readersMap) {
+                        readersMap.remove(task.getTexture()
+                                .getTextureFilename());
+                    }
+
+                }
+                synchronized (tasksMap) {
+                    tasksMap.remove(task.getTexture());
+                }
+                task.removeTaskListener(this);
+                if (task.getTexture().getTextureImage() == null) {
+                    logger.error("TextureTask has finished with no error but a null texture (its role IS to fill texture.getTextureImage() method)");
+                }
+                // save texture on disk
+                this.manager.saveTexture(task);
+                GeOxygeneEventManager.refreshApplicationGui();
+                break;
+            case ERROR:
+            case STOPPED:
+                synchronized (tasksMap) {
+                    tasksMap.remove(task);
+                }
+                task.removeTaskListener(this);
+                break;
+            default:
+                // do nothing special;
             }
-            synchronized (tasksMap) {
-                tasksMap.remove(task.getTexture());
+        }
+    }
+
+    private class GradientTextureTaskListener implements
+            TaskListener<GradientTextureTask> {
+        private TextureManager manager = null;
+
+        /**
+         * @param manager
+         */
+        public GradientTextureTaskListener(TextureManager manager) {
+            super();
+            this.manager = manager;
+        }
+
+        @Override
+        public void onStateChange(GradientTextureTask task, TaskState oldState) {
+            switch (task.getState()) {
+            case FINISHED:
+                if (task.getTexture().getTextureFilename() != null) {
+                    synchronized (readersMap) {
+                        readersMap.remove(task.getTexture()
+                                .getTextureFilename());
+                    }
+
+                }
+                synchronized (tasksMap) {
+                    tasksMap.remove(task.getTexture());
+                }
+                task.removeTaskListener(this);
+                if (task.getTexture().getTextureImage() == null) {
+                    logger.error("TextureTask has finished with no error but a null texture (its role IS to fill texture.getTextureImage() method)");
+                }
+                // save texture on disk
+                this.manager.saveTexture(task);
+                GeOxygeneEventManager.refreshApplicationGui();
+                break;
+            case ERROR:
+            case STOPPED:
+                synchronized (tasksMap) {
+                    tasksMap.remove(task);
+                }
+                task.removeTaskListener(this);
+                break;
+            default:
+                // do nothing special;
             }
-            task.removeTaskListener(this);
-            if (task.getTexture().getTextureImage() == null) {
-                logger.error("TextureTask has finished with no error but a null texture (its role IS to fill texture.getTextureImage() method)");
-            }
-            // save texture on disk
-            this.saveTexture(task);
-            GeOxygeneEventManager.refreshApplicationGui();
-            break;
-        case ERROR:
-        case STOPPED:
-            synchronized (tasksMap) {
-                tasksMap.remove(task);
-            }
-            task.removeTaskListener(this);
-            break;
-        default:
-            // do nothing special;
         }
     }
 
@@ -279,8 +423,33 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
         }, "save texture on disk").start();
     }
 
-    private static String generateTextureUniqueFilename(
+    public static String generateTextureUniqueFilename(
             TextureDescriptor textureDescriptor,
+            IFeatureCollection<IFeature> featureCollection) {
+        return textureDescriptor.hashCode() + "-"
+                + generateHashCode(featureCollection);
+    }
+
+    private static File generateTextureUniqueFile(
+            TextureDescriptor textureDescriptor,
+            IFeatureCollection<IFeature> featureCollection) {
+        return new File(DIRECTORY_CACHE_NAME
+                + File.separator
+                + generateTextureUniqueFilename(textureDescriptor,
+                        featureCollection) + ".png");
+    }
+
+    private static File generateGradientTextureUniqueFile(
+            GradientTextureDescriptor textureDescriptor,
+            IFeatureCollection<IFeature> featureCollection) {
+        return new File(DIRECTORY_CACHE_NAME
+                + File.separator
+                + generateGradientTextureUniqueFilename(textureDescriptor,
+                        featureCollection) + ".png");
+    }
+
+    public static String generateGradientTextureUniqueFilename(
+            GradientTextureDescriptor textureDescriptor,
             IFeatureCollection<IFeature> featureCollection) {
         return textureDescriptor.hashCode() + "-"
                 + generateHashCode(featureCollection);
@@ -293,15 +462,6 @@ public class TextureManager implements TaskListener<TextureTask<BasicTexture>> {
             result = 31 * result + feature.getId();
         }
         return result;
-    }
-
-    private static File generateTextureUniqueFile(
-            TextureDescriptor textureDescriptor,
-            IFeatureCollection<IFeature> featureCollection) {
-        return new File(DIRECTORY_CACHE_NAME
-                + File.separator
-                + generateTextureUniqueFilename(textureDescriptor,
-                        featureCollection) + ".png");
     }
 
     /**

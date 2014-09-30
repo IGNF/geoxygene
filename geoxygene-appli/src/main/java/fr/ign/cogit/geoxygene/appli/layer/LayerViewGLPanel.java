@@ -74,6 +74,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private static final String basicVertexShaderFilename = "./src/main/resources/shaders/basic.vert.glsl";
     private static final String backgroundVertexShaderFilename = "./src/main/resources/shaders/bg.vert.glsl";
     private static final String backgroundFragmentShaderFilename = "./src/main/resources/shaders/bg.frag.glsl";
+    private static final String gradientVertexShaderFilename = "./src/main/resources/shaders/gradient.vert.glsl";
+    private static final String gradientFragmentShaderFilename = "./src/main/resources/shaders/gradient.frag.glsl";
     private static final String antialiasedFragmentShaderFilename = "./src/main/resources/shaders/antialiased.frag.glsl";
     private static final String colorFragmentShaderFilename = "./src/main/resources/shaders/polygon.color.frag.glsl";
     private static final String textureFragmentShaderFilename = "./src/main/resources/shaders/polygon.texture.frag.glsl";
@@ -658,7 +660,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         if (this.renderingManager != null) {
             this.renderingManager.dispose();
         }
-
     }
 
     // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -676,6 +677,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String globalOpacityUniformVarName = "globalOpacity";
     public static final String objectOpacityUniformVarName = "objectOpacity";
     public static final String colorTexture1UniformVarName = "colorTexture1";
+    public static final String gradientTextureUniformVarName = "gradientTexture";
     public static final String textureScaleFactorUniformVarName = "textureScaleFactor";
     public static final String antialiasingSizeUniformVarName = "antialiasingSize";
 
@@ -702,6 +704,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String screenspaceTextureProgramName = "ScreenspaceTexture";
     public static final String backgroundProgramName = "BackgroundTexture";
     public static final String screenspaceAntialiasedTextureProgramName = "ScreenspaceAntialiasedTexture";
+    public static final String gradientProgramName = "gradientTexture";
 
     private GLProgramAccessor basicAccessor = null;
     private GLProgramAccessor screenspaceTextureAccessor = null;
@@ -1069,6 +1072,14 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     }
 
     /**
+     * @return
+     */
+    public GLProgramAccessor createGradientSubshaderAccessor(
+            final ShaderDescriptor shaderDescriptor) {
+        return new GLProgramAccessorGradientSubshader(shaderDescriptor);
+    }
+
+    /**
      * @author JeT This accessor returns a program created using the given
      *         shader descriptor
      */
@@ -1118,7 +1129,75 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     }
 
     /**
-     * line painting program
+     * @author JeT This accessor returns a program created using the given
+     *         shader descriptor
+     */
+    private class GLProgramAccessorGradientSubshader implements
+            GLProgramAccessor {
+
+        private ShaderDescriptor descriptor = null;
+
+        /**
+         * @param program
+         */
+        public GLProgramAccessorGradientSubshader(ShaderDescriptor descriptor) {
+            super();
+            this.descriptor = descriptor;
+        }
+
+        @Override
+        public GLProgram getGLProgram() throws GLException {
+            try {
+                return LayerViewGLPanel.this
+                        .createGradientSubshaderProgram(this.descriptor);
+            } catch (IOException e) {
+                throw new GLException(e);
+            }
+        }
+    }
+
+    /**
+     * gradient program use a subshader
+     */
+    private GLProgram createGradientSubshaderProgram(
+            ShaderDescriptor shaderDescriptor) throws GLException, IOException {
+        // basic program
+        Subshader shader = ShaderFactory.createShader(shaderDescriptor);
+
+        GLProgram program = new GLProgram(gradientProgramName);
+        program.addVertexShader(
+                GLTools.readFileAsString(gradientVertexShaderFilename),
+                gradientVertexShaderFilename);
+        program.addFragmentShader(
+                GLTools.readFileAsString(gradientFragmentShaderFilename),
+                gradientFragmentShaderFilename);
+        shader.configureProgram(program);
+
+        program.addInputLocation(GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        program.addInputLocation(GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        program.addInputLocation(GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
+        program.addUniform(m00ModelToViewMatrixUniformVarName);
+        program.addUniform(m02ModelToViewMatrixUniformVarName);
+        program.addUniform(m11ModelToViewMatrixUniformVarName);
+        program.addUniform(m12ModelToViewMatrixUniformVarName);
+
+        program.addUniform(screenWidthUniformVarName);
+        program.addUniform(screenHeightUniformVarName);
+        program.addUniform(fboWidthUniformVarName);
+        program.addUniform(fboHeightUniformVarName);
+        program.addUniform(globalOpacityUniformVarName);
+        program.addUniform(objectOpacityUniformVarName);
+        program.addUniform(gradientTextureUniformVarName);
+        shader.declareUniforms(program);
+
+        return program;
+    }
+
+    /**
+     * bezier painting program
      */
     private GLProgram createBezierProgram(ShaderDescriptor shaderDescriptor)
             throws GLException {

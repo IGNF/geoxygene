@@ -31,7 +31,8 @@ import org.apache.log4j.Logger;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractSymbolizer implements Symbolizer {
-    protected static Logger logger = Logger.getLogger(AbstractSymbolizer.class.getName());
+    protected static Logger logger = Logger.getLogger(AbstractSymbolizer.class
+            .getName());
 
     @XmlElement(name = "Stroke")
     private Stroke stroke = null;
@@ -142,10 +143,16 @@ public abstract class AbstractSymbolizer implements Symbolizer {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.geometryPropertyName == null) ? 0 : this.geometryPropertyName.hashCode());
-        result = prime * result + ((this.shadow == null) ? 0 : this.shadow.hashCode());
-        result = prime * result + ((this.stroke == null) ? 0 : this.stroke.hashCode());
-        result = prime * result + ((this.uom == null) ? 0 : this.uom.hashCode());
+        result = prime
+                * result
+                + ((this.geometryPropertyName == null) ? 0
+                        : this.geometryPropertyName.hashCode());
+        result = prime * result
+                + ((this.shadow == null) ? 0 : this.shadow.hashCode());
+        result = prime * result
+                + ((this.stroke == null) ? 0 : this.stroke.hashCode());
+        result = prime * result
+                + ((this.uom == null) ? 0 : this.uom.hashCode());
         return result;
     }
 
@@ -170,7 +177,8 @@ public abstract class AbstractSymbolizer implements Symbolizer {
             if (other.geometryPropertyName != null) {
                 return false;
             }
-        } else if (!this.geometryPropertyName.equals(other.geometryPropertyName)) {
+        } else if (!this.geometryPropertyName
+                .equals(other.geometryPropertyName)) {
             return false;
         }
         if (this.shadow == null) {

@@ -98,11 +98,12 @@ public interface Symbolizer {
      */
     public void reset();
 
-    //  /**
-    //   * Paint a feature using a viewport and a graphics.
-    //   * @param feature the feature to paint
-    //   * @param viewport the viewport in which to paint
-    //   * @param graphics the graphics used to paint into
-    //   */
-    //  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics);
+    // /**
+    // * Paint a feature using a viewport and a graphics.
+    // * @param feature the feature to paint
+    // * @param viewport the viewport in which to paint
+    // * @param graphics the graphics used to paint into
+    // */
+    // public void paint(IFeature feature, Viewport viewport, Graphics2D
+    // graphics);
 }
