@@ -31,27 +31,56 @@ import java.util.List;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
+import fr.ign.cogit.geoxygene.matching.dst.function.Function;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 /**
+ * 
  * @author Julien Perret
- *
  */
 public class EuclidianDist extends GeoSource {
 	
-	/** Seuil de distance en m. */
-	private float threshold = 100f;
-
-	public float getThreshold() {
-		return this.threshold;
+	private Function[] f1x;
+	private Function[] f1y;
+	
+	private Function[] f2x;
+	private Function[] f2y;
+	
+	private Function[] f3x;
+	private Function[] f3y;
+	
+	private double bornemax;
+	
+	public void setBornemax(double bornemax) {
+	  this.bornemax = bornemax;
 	}
-
-	public void setThreshold(float t) {
-		this.threshold = t;
-	}
+	
+	public void setF1x(Function... f1x) {
+      this.f1x = f1x;
+    }
+	
+	public void setF1y(Function... f1y) {
+      this.f1y = f1y;
+    }
+	
+	public void setF2x(Function... f2x) {
+      this.f2x = f2x;
+    }
+	
+	public void setF2y(Function... f2y) {
+      this.f2y = f2y;
+    }
+	
+	public void setF3x(Function... f3x) {
+      this.f3x = f3x;
+    }
+	
+	public void setF3y(Function... f3y) {
+      this.f3y = f3y;
+    }
 	
 	@Override
 	public String getName() {
@@ -67,22 +96,26 @@ public class EuclidianDist extends GeoSource {
 	public List<Pair<byte[], Float>> evaluate(IFeature reference,
 	      final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
 	
-		List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
-	    float sum = 0;
-	    for (GeomHypothesis h : candidates) {
-	        float distance = (float) this.compute(reference.getGeom(), h.getGeom());
-	        if (distance < this.threshold) {
-	        	distance = (this.threshold - distance) / this.threshold;
-	    	    byte[] encoded = codec.encode(new GeomHypothesis[] { h });
-	    	    weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
-	    	    sum += distance;
-	        }
-	    }
-	    for (Pair<byte[], Float> st : weightedfocalset) {
-	        st.setSecond(st.getSecond() / sum);
-	    }
-	    CombinationAlgos.sortKernel(weightedfocalset);
-	    return weightedfocalset;
+	  List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
+      for (GeomHypothesis h : candidates) {
+        
+        byte[] encoded = codec.encode(new GeomHypothesis[] { h });  
+        float distance = (float) this.compute(reference.getGeom(), h.getGeom());
+          
+        // On cherche les masses de croyance associées
+          
+        // F1
+        float masse1 = 0.0f;
+        for (Function f : f1x) {
+          masse1 = 1.0f;
+        }
+          
+        weightedfocalset.add(new Pair<byte[], Float>(encoded, masse1));
+          
+      }
+      CombinationAlgos.sortKernel(weightedfocalset);
+      return weightedfocalset;
+	
 	}
 	
 	/**

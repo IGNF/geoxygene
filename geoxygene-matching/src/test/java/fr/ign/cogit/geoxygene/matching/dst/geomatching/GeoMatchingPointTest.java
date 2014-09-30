@@ -41,6 +41,10 @@ import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
+import fr.ign.cogit.geoxygene.matching.dst.function.Arithmetic;
+import fr.ign.cogit.geoxygene.matching.dst.function.Constant;
+import fr.ign.cogit.geoxygene.matching.dst.function.Function;
+import fr.ign.cogit.geoxygene.matching.dst.function.T;
 import fr.ign.cogit.geoxygene.matching.dst.sources.punctual.EuclidianDist;
 import fr.ign.cogit.geoxygene.matching.dst.sources.text.LevenshteinDist;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
@@ -115,8 +119,19 @@ public class GeoMatchingPointTest {
 	public void testPoint2Criteres() throws Exception {
 		
 		Collection<Source<IFeature, GeomHypothesis>> criteria = new ArrayList<Source<IFeature, GeomHypothesis>>();
-		criteria.add(new EuclidianDist());
-		criteria.add(new LevenshteinDist());
+		
+		// Distance euclidienne
+		EuclidianDist source = new EuclidianDist();
+		// F1
+	    Function f11x = new Arithmetic('*', new Constant(75), new T());
+	    Function f12x = new Arithmetic('+', new Constant(75), new Arithmetic('*', new Constant(25), new T()));
+	    Function f11y = new Arithmetic('-', new Constant(1), new Arithmetic('*', new Constant(0.9), new T()));
+	    Function f12y = new Constant(0.1);
+	    source.setF1x(new Function[] { f11x, f12x });
+	    source.setF1y(new Function[] { f11y, f12y });
+		
+		criteria.add(source);
+		// criteria.add(new LevenshteinDist());
 		/*criteria.add(new LevenshteinDist("nature"));
 		criteria.add(new JaroWinklerDist("nature"));*/
 		
