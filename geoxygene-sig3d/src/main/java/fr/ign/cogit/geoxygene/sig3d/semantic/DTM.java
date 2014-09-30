@@ -122,7 +122,7 @@ public class DTM extends AbstractDTM {
 	 * @param imageEnvelope coordonnées min et max de l'image
 	 */
 	public DTM(String file, String layerName, boolean fill, int exager,
-			String imageFileName, GM_Envelope imageEnvelope) {
+			String imageFileName, IEnvelope imageEnvelope) {
 		super(layerName, file, null, imageFileName, imageEnvelope, exager, fill);
 
 		this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
