@@ -29,8 +29,8 @@ struct DataPainting {
 // v is scaled from [0..1] to [0.5-width/2..0.5+width/2]
 float vTextureScale( in float width, in float v ) {
 	float scaledV = 0.5 + (v - 0.5) / width;
-	if ( scaledV < 0 ) return 0;
-	if ( scaledV > 1 ) return 1;
+	if ( scaledV < 0.0 ) return 0.0;
+	if ( scaledV > 1.0 ) return 1.0;
 	return scaledV;
 }
 
@@ -46,7 +46,7 @@ vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
 	float brushMiddleLength_w = (fragmentData.brushWidth - fragmentData.brushStartWidth - fragmentData.brushEndWidth) * fragmentData.brushScale;
 	
 	float brush0_tex = fragmentData.brushStartWidth / float(fragmentData.brushWidth);
-	float brush1_tex = 1f - fragmentData.brushEndWidth / float(fragmentData.brushWidth);
+	float brush1_tex = 1.0 - fragmentData.brushEndWidth / float(fragmentData.brushWidth);
 	if ( u_w <= brushStartLength_w ) {
 		u_tex = (u_w / brushStartLength_w) * brush0_tex;
 	} else if ( u_w >= fragmentData.uMax - brushEndLength_w ) {
