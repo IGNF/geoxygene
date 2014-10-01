@@ -70,6 +70,11 @@ public class PostgisManager {
   public static String SQL_BOOLEAN = "boolean";
   public static String SQL_UNKNOWN = "varchar";
   public static String SQL_OTHER = "varchar";
+  
+  
+  
+  // Nom de l'opérateur traduisant en wkt (cela dépend de la version de PostGIS)
+  public static String OP_ASEWKT = "st_asewkt";
 
   /**
    * Cette fonction permet de récupérer la liste des tables possédant de la
@@ -237,7 +242,7 @@ public class PostgisManager {
 
       
       
-      String requestSelect = "SELECT asewkt(" + nomColonneGeom
+      String requestSelect = "SELECT "+OP_ASEWKT+"(" + nomColonneGeom
       + ") as asewkt,* FROM " + table;
       
       
