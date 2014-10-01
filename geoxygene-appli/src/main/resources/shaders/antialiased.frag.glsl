@@ -14,8 +14,8 @@ void main(void) {
 	float sumAlpha = 0;
 	vec3 sumRGB = vec3( 0. );
 
-    for ( int j = 0; j < antialiasingSize; j++ ) { 
-      for ( int i = 0; i < antialiasingSize; i++ ) {
+    for ( int j = 0.0; j < antialiasingSize; j++ ) { 
+      for ( int i = 0.0; i < antialiasingSize; i++ ) {
         vec4 pixel = texelFetch(colorTexture1, textureNWPixel + ivec2( i, j ) , 0);
 		sumAlpha += pixel.a;
 		sumRGB += pixel.rgb * pixel.a;

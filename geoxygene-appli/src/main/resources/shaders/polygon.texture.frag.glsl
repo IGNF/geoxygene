@@ -1,8 +1,8 @@
 #version 150 core
 
 uniform sampler2D colorTexture1;
-uniform float globalOpacity = 1;
-uniform float objectOpacity = 1;
+uniform float globalOpacity = 1.0;
+uniform float objectOpacity = 1.0;
 uniform vec2 textureScaleFactor = vec2(1., 1.);
 
 in vec4 fragmentColor;

@@ -9,11 +9,11 @@ uniform float m12 = 0.; // Y translation value in 3x3 matrix
 uniform float screenWidth;
 uniform float screenHeight;
 uniform float mapScaleDiv1000 = 0.; // map scale
-uniform int brushWidth = 0; // brush texture width (pixels)
-uniform int brushHeight = 0; // brush texture height (pixels)
-uniform int brushStartWidth = 0; // brush texture width (pixels)
-uniform int brushEndWidth = 0; // brush texture height (pixels)
-uniform float brushScale = 0; // size in mm of one brush pixel
+uniform int brushWidth = 0.0; // brush texture width (pixels)
+uniform int brushHeight = 0.0; // brush texture height (pixels)
+uniform int brushStartWidth = 0.0; // brush texture width (pixels)
+uniform int brushEndWidth = 0.0; // brush texture height (pixels)
+uniform float brushScale = 0.0; // size in mm of one brush pixel
 
 
 layout(location = 0) in vec2 vertexPosition;
@@ -38,7 +38,7 @@ out VertexData {
 void main() {
 
 	//gl_Position = vec4 ( vertexPosition , 1f );
-	gl_Position = vec4( -1 + 2 * (vertexPosition.x * m00 + m02) / (screenWidth + 1), 1 - 2 * ( vertexPosition.y * m11 + m12 ) / ( screenHeight + 1 ), 0, 1);
+	gl_Position = vec4( -1.0 + 2.0 * (vertexPosition.x * m00 + m02) / (screenWidth + 1.0), 1.0 - 2.0 * ( vertexPosition.y * m11 + m12 ) / ( screenHeight + 1.0 ), 0.0, 1.0);
 	vertexOut.position = gl_Position;
 	vertexOut.uv = vertexUV ;
 	vertexOut.paperUV = vertexPaperUV;

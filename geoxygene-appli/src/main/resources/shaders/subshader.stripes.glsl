@@ -27,15 +27,15 @@ struct DataPainting {
 
 uniform int nb_stripes;
 uniform int time;
-uniform float globalOpacity = 1;
+uniform float globalOpacity = 1.0;
 
 #define PI 3.1415926535897932384626433832795
 
-// v is scaled from [0..1] to [0.5-width/2..0.5+width/2]
+// v is scaled from [0..1] to [0.5-width/2..0.5+width/2.0]
 float vTextureScale( in float width, in float v ) {
 	float scaledV = 0.5 + (v - 0.5) / width;
-	if ( scaledV < 0 ) return 0;
-	if ( scaledV > 1 ) return 1;
+	if ( scaledV < 0.0 ) return 0.0;
+	if ( scaledV > 1.0 ) return 1.0;
 	return scaledV;
 }
 
@@ -175,7 +175,7 @@ float snoise(vec3 v)
 
 /************************************************************************************/
 vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
-	vec2 uv = vec2( fragmentData.uv.x / 100, fragmentData.uv.y );
+	vec2 uv = vec2( fragmentData.uv.x / 100.0, fragmentData.uv.y );
 	return uv;
 }
 
@@ -183,8 +183,8 @@ vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
 vec4 computeFragmentColorStripes( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
 
 	float v = fragmentData.uv.y;
-	if ( int( v * nb_stripes) % 2 == 0  ) { discard; } 
-	return vec4( brushColor.rgb , 1 );
+	if ( int( v * nb_stripes) % 2 == 0.0  ) { discard; } 
+	return vec4( brushColor.rgb , 1.0 );
 }
 
 /************************************************************************************/
@@ -192,7 +192,7 @@ vec4 computeFragmentColorAnimatedStripes( in vec4 brushColor, in vec4 paperColor
 
 	float v = fragmentData.uv.y;
 	int n = time / 100 % 20;
-	if ( int( v * n) % 2 == 0  ) { discard; } 
+	if ( int( v * n) % 2 == 0.0  ) { discard; } 
 	return vec4( brushColor.rgb , 1 );
 }
 
@@ -201,8 +201,8 @@ vec4 computeFragmentColorDots( in vec4 brushColor, in vec4 paperColor, in DataPa
 
 	float dotSize = fragmentData.thickness;
 	float dotSpace = 2 * fragmentData.thickness;
-	float x = mod( fragmentData.uv.x, dotSpace ) - dotSpace / 2;
-	float y = (fragmentData.uv.y * 2 - 1 ) * fragmentData.thickness;
+	float x = mod( fragmentData.uv.x, dotSpace ) - dotSpace / 2.0;
+	float y = (fragmentData.uv.y * 2.0 - 1.0 ) * fragmentData.thickness;
 	float d = sqrt( x * x + y * y ); 
 	if ( d >  dotSize  ) { discard; } 
 	return vec4( brushColor.rgb , brushColor.a );
@@ -215,8 +215,8 @@ vec4 computeFragmentColorDots( in vec4 brushColor, in vec4 paperColor, in DataPa
 vec4 computeFragmentColorWater( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
 	vec2 sp = vec2( fragmentData.uv.x, fragmentData.uv.y * fragmentData.thickness);
 	
-    sp.x = mod( sp.x, 1 );
-    sp.y = mod( sp.y, 1 );
+    sp.x = mod( sp.x, 1.0 );
+    sp.y = mod( sp.y, 1.0 );
 	
 	vec2 p = sp;
 	vec2 i = p;

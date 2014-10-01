@@ -1,7 +1,7 @@
 #version 150 core
 
-uniform float globalOpacity = 1;
-uniform float objectOpacity = 1;
+uniform float globalOpacity = 1.0;
+uniform float objectOpacity = 1.0;
 in vec4 fragmentColor;
 
 // specify location 0. This fragment shader is used
@@ -11,6 +11,6 @@ out vec4 outColor;
 
 void main(void) {
 	// outColor = vec4( fragmentColor.rgb, globalOpacity );
-	outColor = vec4( fragmentColor.rgb, globalOpacity * objectOpacity * fragmentColor.a *256);
+	outColor = vec4( fragmentColor.rgb, globalOpacity * objectOpacity * fragmentColor.a *256.0);
 	//outColor = vec4(0,0,1,1);
 }

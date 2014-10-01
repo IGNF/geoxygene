@@ -25,7 +25,7 @@ struct DataPainting {
 	
 };
 
-uniform float globalOpacity = 1;
+uniform float globalOpacity = 1.0;
 
 uniform float brushSpace;
 uniform float strokeThickness;
@@ -40,11 +40,11 @@ uniform int nbSeeds;
 
 #define PI 3.1415926535897932384626433832795
 
-// v is scaled from [0..1] to [0.5-width/2..0.5+width/2]
+// v is scaled from [0..1] to [0.5-width/2..0.5+width/2.0]
 float vTextureScale( in float width, in float v ) {
 	float scaledV = 0.5 + (v - 0.5) / width;
-	if ( scaledV < 0 ) return 0;
-	if ( scaledV > 1 ) return 1;
+	if ( scaledV < 0.0 ) return 0.0;
+	if ( scaledV > 1.0 ) return 1.0;
 	return scaledV;
 }
 
@@ -182,7 +182,7 @@ float snoise(vec3 v) {
 
 /************************************************************************************/
 vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
-	vec2 uv = vec2( fragmentData.uv.x / 100, fragmentData.uv.y );
+	vec2 uv = vec2( fragmentData.uv.x / 100.0, fragmentData.uv.y );
 	return uv;
 }
 
@@ -203,17 +203,17 @@ float rotringStroke( in vec2 uv, in float brushShift, in float brushSpace, in fl
 
 /************************************************************************************/
 vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
-	float l = 0;
+	float l = 0.0;
 	vec2 uv = vec2( fragmentData.uv.x, (fragmentData.uv.y - 0.5) * fragmentData.thickness );
 
-	for ( int nSeed = 0; nSeed < nbSeeds; nSeed++ ) {
+	for ( int nSeed = 0.0; nSeed < nbSeeds; nSeed++ ) {
 
 		float randomSeed = 521.465 + nSeed * 353119.6841;
-		float shiftRand = brushSpace  * snoise( vec3(uv.x / noiseWavelength + 3*randomSeed ,0 , 0) );
-		float uRand = snoise( vec3(uv.x / noiseWavelength + randomSeed ,0 , 0) );
+		float shiftRand = brushSpace  * snoise( vec3(uv.x / noiseWavelength + 3*randomSeed ,0.0 , 0.0) );
+		float uRand = snoise( vec3(uv.x / noiseWavelength + randomSeed ,0.0 , 0.0) );
 		float angleRand = uRand * 10;
-		float vRand = snoise( vec3(0 ,uv.y + randomSeed, 0) );
-		float uvRand = snoise( vec3(uv.x / noiseWavelength + randomSeed ,uv.y + randomSeed, 0) );
+		float vRand = snoise( vec3(0 ,uv.y + randomSeed, 0.0) );
+		float uvRand = snoise( vec3(uv.x / noiseWavelength + randomSeed ,uv.y + randomSeed, 0.0) );
 
 		l += rotringStroke( uv, shiftRand, brushSpace , strokeThickness * ( 1 + uRand), fragmentData.thickness, angle + angleRand, nSeed );
 	}

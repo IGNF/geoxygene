@@ -17,7 +17,7 @@ out VertexData {
 } vertexOut;
 
 void main(void) {
-	gl_Position = vec4( -1 + 2 * (vertexPosition.x * m00 + m02) / (screenWidth + 1), 1 - 2 * ( vertexPosition.y * m11 + m12 ) / ( screenHeight + 1 ), 0, 1);
+	gl_Position = vec4( -1.0 + 2.0 * (vertexPosition.x * m00 + m02) / (screenWidth + 1.0), 1.0 - 2.0 * ( vertexPosition.y * m11 + m12 ) / ( screenHeight + 1.0 ), 0.0, 1.0);
 	vertexOut.color = vertexColor;
 	vertexOut.gradientUV = vertexTextureCoord;
 }

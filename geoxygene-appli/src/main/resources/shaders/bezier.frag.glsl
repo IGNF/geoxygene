@@ -178,14 +178,14 @@ void main() {
 	float lineSoftness = 1.0;
 	uv.x = fragmentIn.uv.x + uv.x * ( fragmentIn.uv.y - fragmentIn.uv.x );
 	float screenRatio = fboWidth / screenWidth;
-	uv.y =  (1 + uv.y / fragmentIn.lineWidth / screenRatio) /2 ;
-//	if ( uv.y > 1 ) { outColor = vec4( 0, 0, 1, 1); return; }
-//	if ( uv.y < 0 ) { outColor = vec4( 0, 1, 0, 1); return; }
-	if ( uv.y < 0 || uv.y > 1 ) { discard; }
+	uv.y =  (1 + uv.y / fragmentIn.lineWidth / screenRatio) /2.0 ;
+//	if ( uv.y > 1.0 ) { outColor = vec4( 0.0, 0.0, 1.0, 1.0); return; }
+//	if ( uv.y < 0.0 ) { outColor = vec4( 0.0, 1.0, 0.0, 1.0); return; }
+	if ( uv.y < 0.0 || uv.y > 1.0 ) { discard; }
 
 	DataPainting fragmentData = DataPainting(screenWidth, screenHeight, mapScaleDiv1000, brushWidth, brushHeight,
 		brushStartWidth, brushEndWidth, brushScale, paperScale, sharpness, paperDensity, brushDensity, strokePressure,
-		fragmentIn.position, uv, fragmentIn.color, fragmentIn.lineWidth, fragmentIn.uMax, vec2(0,0)
+		fragmentIn.position, uv, fragmentIn.color, fragmentIn.lineWidth, fragmentIn.uMax, vec2(0.0,0.0)
 		);
 	vec2 brushUV = computeBrushTextureCoordinates( fragmentData );
 	

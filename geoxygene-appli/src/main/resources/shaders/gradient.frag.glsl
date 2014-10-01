@@ -1,7 +1,7 @@
 #version 150 core
 
-uniform float globalOpacity = 1;
-uniform float objectOpacity = 1;
+uniform float globalOpacity = 1.0;
+uniform float objectOpacity = 1.0;
 uniform sampler2D gradientTexture;
 
 in VertexData {
@@ -11,7 +11,7 @@ in VertexData {
 
 // specify location 0. This fragment shader is used
 // in normal rendering and FBO rendering with COLOR_ATTACHMENT0
-//layout (location = 0) out vec4 outColor;
+//layout (location = 0.0) out vec4 outColor;
 out vec4 outColor;
 
 struct DataGradient {
