@@ -1,4 +1,4 @@
-#version 150 core
+#version 410 core
 
 uniform sampler2D colorTexture1;
 
