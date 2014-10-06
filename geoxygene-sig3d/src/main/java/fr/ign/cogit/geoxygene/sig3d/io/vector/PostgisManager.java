@@ -75,6 +75,11 @@ public class PostgisManager {
   
   // Nom de l'opérateur traduisant en wkt (cela dépend de la version de PostGIS)
   public static String OP_ASEWKT = "st_asewkt";
+  public static String OP_GEOM_FROM_TEXT = "ST_GeomFromText";
+  
+  public static String SRID  = "-1";
+  
+  
 
   /**
    * Cette fonction permet de récupérer la liste des tables possédant de la
@@ -469,8 +474,8 @@ public class PostgisManager {
         IFeature featTemp = featColl.get(i);
         // On ajoute la géométrie
         String geom = WktGeOxygene.makeWkt(featTemp.getGeom());
-        String sql_insert = "insert into " + table + " VALUES(geomfromewkt('"
-            + geom + "')";
+        String sql_insert = "insert into " + table + " VALUES(" + OP_GEOM_FROM_TEXT+"('"
+            + geom + "', "+SRID +" )";
 
         if (lAtt != null) {
           // On parcourt les attributs et on crée les colonnes ad hoc
