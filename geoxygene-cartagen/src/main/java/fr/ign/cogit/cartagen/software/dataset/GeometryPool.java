@@ -1,6 +1,7 @@
 package fr.ign.cogit.cartagen.software.dataset;
 
 import java.awt.Color;
+import java.util.Map;
 
 import fr.ign.cogit.cartagen.graph.IEdge;
 import fr.ign.cogit.cartagen.graph.IGraph;
@@ -12,12 +13,16 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Style;
@@ -76,6 +81,25 @@ public class GeometryPool {
   public void addFeatureToGeometryPool(IGeometry geom, Color color,
       int widthPixels) {
     ColouredFeature colFeat = new ColouredFeature(geom, color, widthPixels);
+    ((IPopulation<IFeature>) dataset.getPopulation(CartAGenDataSet.GEOM_POOL))
+        .add(colFeat);
+    Layer poolLayer = sld.getLayer(CartAGenDataSet.GEOM_POOL);
+    if (poolLayer == null)
+      return;
+    Style style = poolLayer.getStyles().get(0);
+    style.getFeatureTypeStyles().add(colFeat.computeFeatureStyle());
+  }
+
+  /**
+   * Add a given feature to the geometry pool with the given color.
+   * @param feat
+   * @param color
+   */
+  @SuppressWarnings("unchecked")
+  public void addPolygonToGeometryPool(IPolygon geom, Color fillColor,
+      Color strokeColor, int widthPixels) {
+    ColouredFeature colFeat = new ColouredFeature(geom, fillColor, strokeColor,
+        widthPixels);
     ((IPopulation<IFeature>) dataset.getPopulation(CartAGenDataSet.GEOM_POOL))
         .add(colFeat);
     Layer poolLayer = sld.getLayer(CartAGenDataSet.GEOM_POOL);
@@ -168,4 +192,61 @@ public class GeometryPool {
     style.getFeatureTypeStyles().add(colFeat.computeFeatureStyle());
   }
 
+  public void addGridValueToPool(Map<Integer, Map<Integer, Double>> grid,
+      Color color, IEnvelope env) {
+    // first get the min and max values
+    double min = Double.MAX_VALUE;
+    double max = 0.0;
+    for (Integer i : grid.keySet()) {
+      for (Integer j : grid.get(i).keySet()) {
+        double value = grid.get(i).get(j);
+        if (value > max)
+          max = value;
+        if (value < min)
+          min = value;
+      }
+    }
+
+    double step = (max - min) / 8;
+    // compute cell size
+    double cellSize = env.width() / grid.get(0).size();
+
+    for (Integer i : grid.keySet()) {
+      for (Integer j : grid.get(i).keySet()) {
+        double value = grid.get(i).get(j);
+        // compute the color
+        Color cellColor = new Color(255, 247, 236);
+        if (value > max - 7 * step)
+          cellColor = new Color(254, 232, 200);
+        if (value > max - 6 * step)
+          cellColor = new Color(253, 212, 158);
+        if (value > max - 5 * step)
+          cellColor = new Color(253, 187, 132);
+        if (value > max - 4 * step)
+          cellColor = new Color(252, 141, 89);
+        if (value > max - 3 * step)
+          cellColor = new Color(239, 101, 72);
+        if (value > max - 2 * step)
+          cellColor = new Color(215, 48, 31);
+        if (value > max - step)
+          cellColor = new Color(153, 0, 0);
+
+        // compute the cell geometry
+        IDirectPositionList coords = new DirectPositionList();
+        coords.add(new DirectPosition(env.minX() + j * cellSize, env.minY() + i
+            * cellSize));
+        coords.add(new DirectPosition(env.minX() + (j + 1) * cellSize, env
+            .minY() + i * cellSize));
+        coords.add(new DirectPosition(env.minX() + (j + 1) * cellSize, env
+            .minY() + (i + 1) * cellSize));
+        coords.add(new DirectPosition(env.minX() + j * cellSize, env.minY()
+            + (i + 1) * cellSize));
+        coords.add(new DirectPosition(env.minX() + j * cellSize, env.minY() + i
+            * cellSize));
+
+        addPolygonToGeometryPool(new GM_Polygon(new GM_LineString(coords)),
+            cellColor, color, 2);
+      }
+    }
+  }
 }

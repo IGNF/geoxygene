@@ -2581,6 +2581,8 @@ public class CartAGenDataSet extends DataSet {
       throws IOException {
     ShapefileReader shr = null;
     DbaseFileReader dbr = null;
+    if (chemin.contains(".shp"))
+      chemin = chemin.substring(0, chemin.length() - 4);
     try {
       ShpFiles shpf = new ShpFiles(chemin + ".shp");
       shr = new ShapefileReader(shpf, true, false, new GeometryFactory());

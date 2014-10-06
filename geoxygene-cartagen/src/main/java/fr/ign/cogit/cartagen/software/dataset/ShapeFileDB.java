@@ -14,9 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -59,11 +57,6 @@ public class ShapeFileDB extends CartAGenDB {
 
   private static Logger logger = Logger.getLogger(ShapeFileDB.class.getName());
 
-  /**
-   * Override the classes field with shapefile classes.
-   */
-  private List<ShapeFileClass> classes;
-
   private String systemPath;
 
   private OpenDatasetTask task;
@@ -74,7 +67,6 @@ public class ShapeFileDB extends CartAGenDB {
   }
 
   public ShapeFileDB(String name) {
-    this.classes = new ArrayList<ShapeFileClass>();
     this.setName(name);
     this.setPersistentClasses(new HashSet<Class<?>>());
   }
@@ -123,7 +115,6 @@ public class ShapeFileDB extends CartAGenDB {
     this.setSourceDLM(source);
 
     // the list of classes
-    this.classes = new ArrayList<ShapeFileClass>();
     Element classesElem = (Element) root.getElementsByTagName("classes-list")
         .item(0);
     for (int i = 0; i < classesElem.getElementsByTagName("class").getLength(); i++) {
@@ -148,8 +139,7 @@ public class ShapeFileDB extends CartAGenDB {
       if (classElem.getElementsByTagName("geometry-type").getLength() != 0) {
         // TODO
       }
-      this.classes
-          .add(new ShapeFileClass(this, path, featureType, geometryType));
+      this.addClass(new ShapeFileClass(this, path, featureType, geometryType));
     }
 
     // the enrichments
@@ -271,11 +261,11 @@ public class ShapeFileDB extends CartAGenDB {
 
     // the list of classes
     Element classesElem = xmlDoc.createElement("classes-list");
-    for (ShapeFileClass c : this.classes) {
+    for (GeographicClass c : this.getClasses()) {
       Element classeElem = xmlDoc.createElement("class");
       // the class path
       Element classPathElem = xmlDoc.createElement("path");
-      n = xmlDoc.createTextNode(c.getPath());
+      n = xmlDoc.createTextNode(((ShapeFileClass) c).getPath());
       classPathElem.appendChild(n);
       classeElem.appendChild(classPathElem);
       // the population name
@@ -344,8 +334,7 @@ public class ShapeFileDB extends CartAGenDB {
    */
   public void addShapeFile(String path, String populationName,
       Class<? extends IGeometry> geometryType) {
-    this.classes.add(new ShapeFileClass(this, path, populationName,
-        geometryType));
+    this.addClass(new ShapeFileClass(this, path, populationName, geometryType));
   }
 
   @Override
@@ -509,9 +498,9 @@ public class ShapeFileDB extends CartAGenDB {
     @Override
     protected Void doInBackground() throws Exception {
       // loop on the classes to import them into the generalisation dataset
-      int step = Math.round(100 / ShapeFileDB.this.classes.size());
+      int step = Math.round(100 / ShapeFileDB.this.getClasses().size());
       int value = 0;
-      for (ShapeFileClass shapefile : ShapeFileDB.this.classes) {
+      for (GeographicClass shapefile : getClasses()) {
         // test if the shapefile correspond to a persistent class
         boolean persistent = false;
         for (Class<?> classObj : ShapeFileDB.this.getPersistentClasses()) {
@@ -608,19 +597,14 @@ public class ShapeFileDB extends CartAGenDB {
 
   @Override
   public void addCartagenId() {
-    for (ShapeFileClass shape : this.classes) {
+    for (GeographicClass shape : this.getClasses()) {
       shape.addCartAGenId();
     }
   }
 
-  @Override
-  public List<GeographicClass> getClasses() {
-    return new ArrayList<GeographicClass>(this.classes);
-  }
-
   public void print() {
     System.out.println("ShapeFileDB: " + this.getName());
-    System.out.println("classes: " + this.classes);
+    System.out.println("classes: " + this.getClasses());
     System.out.println("path: " + this.systemPath);
   }
 }

@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -118,6 +119,7 @@ public abstract class CartAGenDB {
   public CartAGenDB() {
     this.geneObjImpl = CartagenApplication.getInstance()
         .getStandardImplementation();
+    classes = new ArrayList<GeographicClass>();
   }
 
   /**

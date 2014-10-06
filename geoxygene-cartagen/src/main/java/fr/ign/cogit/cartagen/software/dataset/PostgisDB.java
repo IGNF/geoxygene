@@ -268,8 +268,21 @@ public class PostgisDB {
   /**
    * Create a new database into PostGIS with the dbName, using SQL query.
    */
-  public static void createPostGisDb() {
+  public static void createPostGisDb1() {
     String sql = "CREATE DATABASE " + dbName + " TEMPLATE=template_postgis";
+    exeSQL(sql);
+  }
+
+  /**
+   * Create a new database into PostGIS with the dbName, using SQL query, with
+   * the PostGIS2.0 syntax.
+   */
+  public static void createPostGisDb() {
+    String sql = "CREATE DATABASE " + dbName;
+    exeSQL(sql);
+    sql = "CREATE EXTENSION postgis";
+    exeSQL(sql);
+    sql = "CREATE EXTENSION postgis_topology";
     exeSQL(sql);
   }
 

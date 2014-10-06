@@ -62,6 +62,7 @@ public class ColouredFeature extends DefaultFeature {
    * {@code this.symbolisation} is {@code null}
    */
   private Color symbolColour = null;
+  private Color fillColour = null;
 
   private int widthPixels = 1;
   /**
@@ -117,6 +118,20 @@ public class ColouredFeature extends DefaultFeature {
     } else {
       this.symbolColour = colour;
     }
+  }
+
+  /**
+   * Constructor with colour. Sets the colour, symbolisation left empty.
+   * @param geom
+   * @param colour
+   */
+  public ColouredFeature(IPolygon geom, Color fillColour, Color strokeColour,
+      int widthPixels) {
+    super(geom);
+    this.setId(idCounter.getAndIncrement());
+    this.fillColour = fillColour;
+    this.symbolColour = strokeColour;
+    this.widthPixels = widthPixels;
   }
 
   /**
@@ -208,7 +223,10 @@ public class ColouredFeature extends DefaultFeature {
       symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
       symbolizer.setStroke(stroke);
       Fill fill = new Fill();
-      fill.setColor(symbolColour);
+      if (fillColour == null)
+        fill.setColor(symbolColour);
+      else
+        fill.setColor(fillColour);
       fill.setFillOpacity((float) 0.5);
       symbolizer.setFill(fill);
       return symbolizer;
