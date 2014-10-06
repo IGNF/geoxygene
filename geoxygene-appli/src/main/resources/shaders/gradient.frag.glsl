@@ -9,10 +9,7 @@ in VertexData {
 	vec2 gradientUV;
 } fragmentIn;
 
-// specify location 0. This fragment shader is used
-// in normal rendering and FBO rendering with COLOR_ATTACHMENT0
-//layout (location = 0.0) out vec4 outColor;
-out vec4 outColor;
+layout (location = 0) out vec4 outColor;
 
 struct DataGradient {
 	vec4 color;

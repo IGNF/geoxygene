@@ -7,9 +7,9 @@ uniform float m12 = 0.; // Y translation value in 3x3 matrix
 uniform float screenWidth;
 uniform float screenHeight;
 
-in vec3 vertexPosition;
-in vec2 vertexTextureCoord;
-in vec4 vertexColor;
+layout (location = 0) in vec3 vertexPosition;
+layout (location = 1) in vec2 vertexTextureCoord;
+layout (location = 2) in vec4 vertexColor;
 
 out VertexData {
 	vec4 color;

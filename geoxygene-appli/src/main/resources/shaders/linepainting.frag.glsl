@@ -34,7 +34,7 @@ uniform float brushDensity = 1.0; // brush height scale factor
 uniform float strokePressure = 1; // stroke pressure
 
 
-out vec4 outColor;
+layout (location = 0) out vec4 outColor;
 
 /* Data structure sent to subshaders */
 struct DataPainting {

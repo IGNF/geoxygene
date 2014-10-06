@@ -7,12 +7,12 @@ uniform float m12 = 0.; // Y translation value in 3x3 matrix
 uniform float screenWidth;
 uniform float screenHeight;
 
-in vec3 vertexPosition;
-in vec2 vertexTextureCoord;
-in vec4 vertexColor;
+layout (location = 0) in vec3 vertexPosition;
+layout (location = 1) in vec2 vertexTextureCoord;
+layout (location = 2) in vec4 vertexColor;
 
-out vec4 fragmentColor;
-out vec2 fragmentTextureCoord;
+layout (location = 0) out vec4 fragmentColor;
+layout (location = 1) out vec2 fragmentTextureCoord;
 
 void main(void) {
 	gl_Position = vec4( -1.0 + 2.0 * (vertexPosition.x * m00 + m02) / (screenWidth + 1.0), 1.0 - 2.0 * ( vertexPosition.y * m11 + m12 ) / ( screenHeight + 1.0 ), 0.0, 1.0);

@@ -1,14 +1,21 @@
-#version 150 core
+#version 400 core
 
 uniform sampler2D colorTexture1;
 uniform float globalOpacity = 1;
 uniform float objectOpacity = 1;
 uniform int antialiasingSize = 1;
-in vec4 fragmentColor;
+uniform int screenWidth;
+uniform int screenHeight;
 
-out vec4 outColor;
+layout (location = 0) in vec4 fragmentColor;
+layout (location = 1) in vec2 fragmentTextureCoord;
+
+layout (location = 0) out vec4 outColor;
 
 void main(void) {
+//    outColor = vec4( fragmentTextureCoord.xy, 1.0, 1.0 );
+//    return;
+
 	ivec2 screenPixel = ivec2( gl_FragCoord.xy - vec2( .5 ));
 	ivec2 textureNWPixel = screenPixel * antialiasingSize; // North-West pixel
 	float sumAlpha = 0;
