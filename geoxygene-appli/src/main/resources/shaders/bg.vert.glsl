@@ -1,4 +1,4 @@
-#version 150 core
+#version 410
 
 uniform float m00 = 1.; // X homothetic value in 3x3 matrix
 uniform float m02 = 0.; // X translation value in 3x3 matrix
@@ -12,7 +12,7 @@ layout (location = 0) in vec3 vertexPosition;
 layout (location = 1) in vec2 vertexUV;
 layout (location = 2) in vec4 vertexColor;
 
-layout (location = 0) out vec2 fragmentUV;
+out vec2 fragmentUV;
 
 void main() {
 	gl_Position = vec4( vertexPosition, 1);

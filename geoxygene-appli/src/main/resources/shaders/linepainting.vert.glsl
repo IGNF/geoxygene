@@ -1,4 +1,4 @@
-#version 400 core
+#version 410
 
 
 uniform float m00 = 1.; // X homothetic value in 3x3 matrix
@@ -25,7 +25,7 @@ layout(location = 5) in vec4 vertexColor;
 layout(location = 6) in float uMax;
 layout(location = 7) in vec2 vertexPaperUV;
 
-layout (location = 0) out VertexData {
+out VertexData {
 	vec4 position;
 	vec2 uv;
 	vec4 color;

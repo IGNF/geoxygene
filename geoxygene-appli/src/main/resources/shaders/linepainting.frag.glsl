@@ -1,4 +1,4 @@
-#version 150 core
+#version 410
 // _w : length in world coordinates (meters)
 // _pix : length in pixels
 // _mm : length in millimeters
@@ -34,7 +34,7 @@ uniform float brushDensity = 1.0; // brush height scale factor
 uniform float strokePressure = 1; // stroke pressure
 
 
-layout (location = 0) out vec4 outColor;
+out vec4 outColor;
 
 /* Data structure sent to subshaders */
 struct DataPainting {

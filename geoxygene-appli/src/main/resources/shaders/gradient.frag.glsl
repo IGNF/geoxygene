@@ -1,4 +1,4 @@
-#version 150 core
+#version 410
 
 uniform float globalOpacity = 1.0;
 uniform float objectOpacity = 1.0;
@@ -9,7 +9,7 @@ in VertexData {
 	vec2 gradientUV;
 } fragmentIn;
 
-layout (location = 0) out vec4 outColor;
+out vec4 outColor;
 
 struct DataGradient {
 	vec4 color;

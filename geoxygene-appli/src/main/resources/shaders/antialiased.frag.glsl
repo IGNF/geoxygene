@@ -1,4 +1,4 @@
-#version 400 core
+#version 410
 
 uniform sampler2D colorTexture1;
 uniform float globalOpacity = 1;
@@ -7,10 +7,10 @@ uniform int antialiasingSize = 1;
 uniform int screenWidth;
 uniform int screenHeight;
 
-layout (location = 0) in vec4 fragmentColor;
-layout (location = 1) in vec2 fragmentTextureCoord;
+in vec4 fragmentColor;
+in vec2 fragmentTextureCoord;
 
-layout (location = 0) out vec4 outColor;
+out vec4 outColor;
 
 void main(void) {
 //    outColor = vec4( fragmentTextureCoord.xy, 1.0, 1.0 );

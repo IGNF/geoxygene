@@ -1,4 +1,4 @@
-#version 400
+#version 410
 
 in VertexData {
 	vec4 position;
@@ -58,7 +58,7 @@ uniform float paperDensity = 0.3; // paper height scale factor
 uniform float brushDensity = 1.0; // brush height scale factor
 uniform float strokePressure = 1; // stroke pressure
 
-layout (location = 0) out vec4 outColor;
+out vec4 outColor;
 
 /*************************************************************************************
  *                                     BEZIER                                        *

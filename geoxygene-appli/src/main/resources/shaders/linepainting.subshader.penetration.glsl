@@ -1,4 +1,4 @@
-#version 150
+#version 410
 
 float thicknessVariationSeed = 43.214548;
 uniform float thicknessVariationWavelength = 500;
