@@ -12,10 +12,10 @@ uniform float screenHeight;
 uniform float fboWidth=5000.0;
 uniform float fboHeight=5000.0;
 uniform float mapScaleDiv1000 = 0.; // map scale
-uniform int brushWidth = 0.0; // brush texture width (pixels)
-uniform int brushHeight = 0.0; // brush texture height (pixels)
-uniform int brushStartWidth = 0.0; // brush texture width (pixels)
-uniform int brushEndWidth = 0.0; // brush texture height (pixels)
+uniform int brushWidth = 0; // brush texture width (pixels)
+uniform int brushHeight = 0; // brush texture height (pixels)
+uniform int brushStartWidth = 0; // brush texture width (pixels)
+uniform int brushEndWidth = 0; // brush texture height (pixels)
 uniform float brushScale = 0.0; // size in mm of one brush pixel
 
 layout(location = 0) in vec2 vertexPosition;

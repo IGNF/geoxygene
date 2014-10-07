@@ -1,17 +1,5 @@
 #version 410
 
-float thicknessVariationSeed = 43.214548;
-uniform float thicknessVariationWavelength = 500;
-uniform float thicknessVariationAmplitude = 0.5;
-
-float shiftVariationSeed = 28.84321871;
-uniform float shiftVariationWavelength = 500;
-uniform float shiftVariationAmplitude = 0.1;
-
-float pressureVariationSeed = 128.84321871;
-uniform float pressureVariationWavelength = 500;
-uniform float pressureVariationAmplitude = 0.5;
-
 /* Data structure sent to subshaders */
 struct DataPainting {
 	float screenWidth; 		// screen width in pixels 
@@ -37,7 +25,28 @@ struct DataPainting {
 	
 };
 
+uniform float globalOpacity = 1.0;
 
+uniform float brushSpace;
+uniform float strokeThickness;
+uniform float angle;
+uniform float noiseWavelength;
+uniform float brushSpaceNoiseSize;
+uniform float x;
+uniform float y;
+uniform float z;
+uniform int nbSeeds;
+
+
+#define PI 3.1415926535897932384626433832795
+
+// v is scaled from [0..1] to [0.5-width/2..0.5+width/2]
+float vTextureScale( in float width, in float v ) {
+	float scaledV = 0.5 + (v - 0.5) / width;
+	if ( scaledV < 0.0 ) return 0.0;
+	if ( scaledV > 1.0 ) return 1.0;
+	return scaledV;
+}
 
 /************************************************************
  *                       NOISE                              *
@@ -95,8 +104,8 @@ vec4 taylorInvSqrt(vec4 r)
 }
 //https://github.com/hughsk/glsl-noise/blob/master/simplex/3d.glsl
 
-float snoise(vec3 v)
-  {
+// return values are in -1..+1 range
+float snoise(vec3 v) {
   const vec2 C = vec2(1.0/6.0, 1.0/3.0) ;
   const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
 
@@ -166,86 +175,48 @@ float snoise(vec3 v)
 // Mix final noise value
   vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
   m = m * m;
-  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),
+  return 42 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),
                                 dot(p2,x2), dot(p3,x3) ) );
-  } 
- 
-/**************************************************************************************/
+} 
 
-// v is scaled from [0..1] to [0.5-width/2..0.5+width/2]
-float vTextureScale( in float width, in float v ) {
-	float scaledV = 0.5 + (v - 0.5) / width;
-	if ( scaledV < 0.0 ) return 0.0;
-	if ( scaledV > 1.0 ) return 1.0;
-	return scaledV;
-}
-
-// return the computeStrokeWidth (0..1) depending on a linear coordinate
-float computeStrokeWidth( in float u, in float uMax ) {
-
-	vec3 p = vec3((u + thicknessVariationSeed)/thicknessVariationWavelength, 0, 0);
-	return 1 - snoise(p)* thicknessVariationAmplitude;
-}
-
-// return the computeStrokeShift (-0.5..0.5) depending on a linear coordinate
-float computeStrokeShift( in float u, in float uMax ) {
-	return ( snoise(vec3((u + shiftVariationSeed)/shiftVariationWavelength,0,0)) ) * shiftVariationAmplitude;
-}
-
-// return the computeStrokePressure (-0.5..0.5) depending on a linear coordinate
-float computeStrokePressure( in float u, in float uMax ) {
-	
-	float var = 1-clamp((snoise(vec3((u+pressureVariationSeed)/pressureVariationWavelength,0,0))*0.5+0.5)*pressureVariationAmplitude, 0.0, 10.0);
-	return var;
-		
-//	return strokePressure*(0.5+0.5*var)*	smoothstep(0, 150, fragmentIn.uv.x)*	(1-smoothstep(fragmentIn.uMax-150, fragmentIn.uMax, fragmentIn.uv.x));
-	//fragmentIn.uv.x/fragmentIn.uMax;
-	//return strokePressure*(snoise(vec3(u + pressureVariationSeed)/pressureVariationWavelength) * (1-pressureVariationAmplitude));
-}
 
 /************************************************************************************/
 vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
-	float u_w = fragmentData.uv.x;
-	float u_tex = 0;
-	float strokeWidth = computeStrokeWidth( fragmentData.uv.x, fragmentData.uMax);
-	float v_tex = vTextureScale( strokeWidth , fragmentData.uv.y ) + strokeWidth * ( 1 - strokeWidth );
+	vec2 uv = vec2( fragmentData.uv.x / 100, fragmentData.uv.y );
+	return uv;
+}
 
-	float brushStartLength_w = fragmentData.brushStartWidth * fragmentData.brushScale;
-	float brushEndLength_w = fragmentData.brushEndWidth * fragmentData.brushScale;
-	float brushMiddleLength_w = (fragmentData.brushWidth - fragmentData.brushStartWidth - fragmentData.brushEndWidth) * fragmentData.brushScale;
-	
-	float brush0_tex = fragmentData.brushStartWidth / float(fragmentData.brushWidth);
-	float brush1_tex = 1.0 - fragmentData.brushEndWidth / float(fragmentData.brushWidth);
-	if ( u_w <= brushStartLength_w ) {
-		u_tex = (u_w / brushStartLength_w) * brush0_tex;
-	} else if ( u_w >= fragmentData.uMax - brushEndLength_w ) {
-		u_tex = ( u_w - fragmentData.uMax ) * ( 1.0 - brush1_tex ) / brushEndLength_w - 1.0;   
-	} else {
-		float polylineMiddleLength_w = fragmentData.uMax - (brushStartLength_w + brushEndLength_w);
-		int nbTiles = max ( int( round( polylineMiddleLength_w / brushMiddleLength_w ) ), 1 );
-		int nTile = int((u_w - brushStartLength_w )/(polylineMiddleLength_w / float(nbTiles)));
-		float tileSize_w = polylineMiddleLength_w / float(nbTiles);
-		u_tex = mod( u_w - brushStartLength_w, tileSize_w) / tileSize_w * ( brush1_tex - brush0_tex ) + brush0_tex; 
-	}
-	return vec2(u_tex, v_tex);
+
+/************************************************************************************/
+float rotringStroke( in vec2 uv, in float brushShift, in float brushSpace, in float brushThickness, in float roadThickness, in float angle, in int index ) {
+
+	float c = cos ( angle * PI / 180. );
+	float s = sin ( angle * PI / 180. );
+	float x = mod( uv.x + brushShift, brushSpace ) - brushSpace / 2.;
+	float y = uv.y;
+	vec2 tuv = vec2( x*c - y*s, s*x + y*c );
+	//float modifiedStrokeThickness = smoothstep( -roadThickness, -roadThickness * 0.8, uv.y ) * brushThickness * (1-smoothstep( roadThickness * 0.95, roadThickness, uv.y ));
+	float modifiedStrokeThickness = uv.y;
+	float d  = smoothstep( 0, modifiedStrokeThickness, sqrt( tuv.x * tuv.x ) );
+	return 1 - d;
 }
 
 /************************************************************************************/
 vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
+	float l = 0;
+	vec2 uv = vec2( fragmentData.uv.x, (fragmentData.uv.y - 0.5) * fragmentData.thickness );
 
-	vec3 paperHeightField = paperColor.rgb;
-	float brushHeightField = ( brushColor.r + brushColor.g + brushColor.b ) / 3.;
-//	vec3 brushHeightField = 1-brushColor.rgb;
-	
-//	float penetration = 1. / computeStrokePressure( fragmentData.uv.x, fragmentData.uMax ) - ( 1 - brushHeightField * fragmentData.brushDensity ) - ( paperHeightField * fragmentData.paperDensity);
-//vec3 penetration = vec3(1. / computeStrokePressure( fragmentData.uv.x, fragmentData.uMax )) - ( vec3(1.0) - brushHeightField * fragmentData.brushDensity ) - ( paperHeightField * fragmentData.paperDensity);
-	
-	
-	float bh = fragmentData.strokePressure * computeStrokePressure( fragmentData.uv.x, fragmentData.uMax ) * brushHeightField * fragmentData.brushDensity;
-	float ph = (0.5 + (paperHeightField.x-0.5) * fragmentData.paperDensity);
-	float penetration = clamp( ph - (1-bh), -1, 1);
-	float f = smoothstep( 0.0 - fragmentData.sharpness, 0.0 + fragmentData.sharpness,  penetration );
-	
-	//return vec4(1,0,0,1);
-	return vec4( fragmentData.color.rgb * brushColor.rgb, fragmentData.color.a * ( 1-f ) );
+	for ( int nSeed = 0; nSeed < nbSeeds; nSeed++ ) {
+
+		float randomSeed = 521.465 + nSeed * 353119.6841;
+		float shiftRand = brushSpace  * snoise( vec3(uv.x / noiseWavelength + 3*randomSeed ,0 , 0) );
+		float uRand = snoise( vec3(uv.x / noiseWavelength + randomSeed ,0 , 0) );
+		float angleRand = uRand * 10;
+		float vRand = snoise( vec3(0 ,uv.y + randomSeed, 0) );
+		float uvRand = snoise( vec3(uv.x / noiseWavelength + randomSeed ,uv.y + randomSeed, 0) );
+
+		l += rotringStroke( uv, shiftRand, brushSpace , strokeThickness * ( 1 + uRand), fragmentData.thickness, angle + angleRand, nSeed );
+	}
+	return vec4(fragmentData.color.rgb, fragmentData.color.a * globalOpacity * l );
 }
+

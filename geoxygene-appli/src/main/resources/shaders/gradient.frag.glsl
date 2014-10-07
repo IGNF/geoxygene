@@ -17,7 +17,15 @@ struct DataGradient {
 	float gradientValue;
 };
 
+vec4 computeColor( DataGradient data ) {
+    return vec4(1.0,0.0,0.0,1.0);
+}
+
+
 void main(void) {
 	vec4 tcolor = texture(gradientTexture, fragmentIn.gradientUV );
-	outColor = vec4( tcolor.rgb, objectOpacity * globalOpacity * tcolor.a);
+	float gradientValue = (tcolor.r + tcolor.g + tcolor.b ) / 3.0;
+	DataGradient data = DataGradient( fragmentIn.color, fragmentIn.gradientUV, gradientValue ); 
+	vec4 color = computeColor( data );
+	outColor = vec4( color.rgb, objectOpacity * globalOpacity * color.a);
 }
