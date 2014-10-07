@@ -68,10 +68,6 @@ public class StrokeTextureExpressiveRenderingUI implements
 
     private final Preferences prefs = Preferences.userRoot();
     private ProjectFrame parentProjectFrame = null;
-    double sampleSize = 2.;
-    double minAngle = 1.5;
-    double brushAspectRatio = 8;
-    double paperScaleFactor = .5;
     double paperDensity = 0.7;
     double brushDensity = 1.9;
     double strokePressure = 2.64;
@@ -119,10 +115,6 @@ public class StrokeTextureExpressiveRenderingUI implements
      */
     @Override
     public void setValuesFromObject() {
-        this.sampleSize = this.strtex.getSampleSize();
-        this.minAngle = this.strtex.getMinAngle();
-        this.brushAspectRatio = this.strtex.getBrushAspectRatio();
-        this.paperScaleFactor = this.strtex.getPaperScaleFactor();
         this.paperDensity = this.strtex.getPaperDensity();
         this.brushDensity = this.strtex.getBrushDensity();
         this.strokePressure = this.strtex.getStrokePressure();
@@ -147,10 +139,6 @@ public class StrokeTextureExpressiveRenderingUI implements
      */
     @Override
     public void setValuesToObject() {
-        this.strtex.setSampleSize(this.sampleSize);
-        this.strtex.setMinAngle(this.minAngle);
-        this.strtex.setBrushAspectRatio(this.brushAspectRatio);
-        this.strtex.setPaperScaleFactor(this.paperScaleFactor);
         this.strtex.setPaperDensity(this.paperDensity);
         this.strtex.setBrushDensity(this.brushDensity);
         this.strtex.setStrokePressure(this.strokePressure);
@@ -183,77 +171,6 @@ public class StrokeTextureExpressiveRenderingUI implements
             this.main.setLayout(new BoxLayout(this.main, BoxLayout.Y_AXIS));
             this.main.setBorder(BorderFactory
                     .createEtchedBorder(EtchedBorder.LOWERED));
-            // Dimension d = new Dimension(150, 40);
-            SliderWithSpinnerModel model = new SliderWithSpinnerModel(
-                    this.sampleSize, 0.1, 1000., 1.);
-            final SliderWithSpinner spinner = new SliderWithSpinner(model);
-            JSpinner.NumberEditor editor = (JSpinner.NumberEditor) spinner
-                    .getEditor();
-            DecimalFormat format = editor.getFormat();
-            format.setMinimumFractionDigits(3);
-            editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
-            spinner.setBorder(BorderFactory.createTitledBorder("sample size"));
-            spinner.setToolTipText("distance between samples during line tesselation");
-            spinner.addChangeListener(new ChangeListener() {
-
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.sampleSize = (spinner
-                            .getValue());
-                    StrokeTextureExpressiveRenderingUI.this.refresh();
-
-                }
-            });
-            this.main.add(spinner);
-
-            SliderWithSpinnerModel minAngleModel = new SliderWithSpinnerModel(
-                    this.minAngle, 0, 180, .1);
-            final SliderWithSpinner minAngleSpinner = new SliderWithSpinner(
-                    minAngleModel);
-            JSpinner.NumberEditor minAngleEditor = (JSpinner.NumberEditor) minAngleSpinner
-                    .getEditor();
-            minAngleEditor.getTextField().setHorizontalAlignment(
-                    SwingConstants.CENTER);
-            minAngleSpinner.setBorder(BorderFactory
-                    .createTitledBorder("min angle"));
-            minAngleSpinner
-                    .setToolTipText("minimum angle in tesselation under which edges are considered colinear");
-            minAngleSpinner.addChangeListener(new ChangeListener() {
-
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.minAngle = (minAngleSpinner
-                            .getValue());
-                    StrokeTextureExpressiveRenderingUI.this.refresh();
-
-                }
-            });
-            this.main.add(minAngleSpinner);
-
-            SliderWithSpinnerModel brushAspectRatioModel = new SliderWithSpinnerModel(
-                    this.brushAspectRatio, 0, 180, .1);
-            final SliderWithSpinner brushAspectRatioSpinner = new SliderWithSpinner(
-                    brushAspectRatioModel);
-            JSpinner.NumberEditor brushSizeEditor = (JSpinner.NumberEditor) brushAspectRatioSpinner
-                    .getEditor();
-            brushSizeEditor.getTextField().setHorizontalAlignment(
-                    SwingConstants.CENTER);
-            brushAspectRatioSpinner.setBorder(BorderFactory
-                    .createTitledBorder("brush aspect ratio"));
-            brushAspectRatioSpinner
-                    .setToolTipText("size of one pixel of the brush (in mm)");
-
-            brushAspectRatioSpinner.addChangeListener(new ChangeListener() {
-
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.brushAspectRatio = (brushAspectRatioSpinner
-                            .getValue());
-                    StrokeTextureExpressiveRenderingUI.this.refresh();
-
-                }
-            });
-            this.main.add(brushAspectRatioSpinner);
 
             JButton paperBrowseButton = new JButton("paper browse...");
             paperBrowseButton.setBorder(BorderFactory.createEmptyBorder(2, 2,
@@ -294,34 +211,6 @@ public class StrokeTextureExpressiveRenderingUI implements
 
             });
             this.main.add(paperBrowseButton);
-            this.paperFilenameLabel = new JLabel(
-                    this.paperTextureFilename
-                            .substring(this.paperTextureFilename.length() - 30));
-            this.main.add(this.paperFilenameLabel);
-
-            SliderWithSpinnerModel paperScaleFactorModel = new SliderWithSpinnerModel(
-                    this.paperScaleFactor, 0, 180, .1);
-            final SliderWithSpinner paperScaleFactorSpinner = new SliderWithSpinner(
-                    paperScaleFactorModel);
-            JSpinner.NumberEditor paperScaleFactorEditor = (JSpinner.NumberEditor) paperScaleFactorSpinner
-                    .getEditor();
-            paperScaleFactorEditor.getTextField().setHorizontalAlignment(
-                    SwingConstants.CENTER);
-            paperScaleFactorSpinner.setBorder(BorderFactory
-                    .createTitledBorder("paper scale"));
-            paperScaleFactorSpinner
-                    .setToolTipText("paper texture scale factor");
-            paperScaleFactorSpinner.addChangeListener(new ChangeListener() {
-
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    StrokeTextureExpressiveRenderingUI.this.paperScaleFactor = (paperScaleFactorSpinner
-                            .getValue());
-                    StrokeTextureExpressiveRenderingUI.this.refresh();
-
-                }
-            });
-            this.main.add(paperScaleFactorSpinner);
 
             SliderWithSpinnerModel brushStartModel = new SliderWithSpinnerModel(
                     this.brushStartLength, 1, 5000, 1);

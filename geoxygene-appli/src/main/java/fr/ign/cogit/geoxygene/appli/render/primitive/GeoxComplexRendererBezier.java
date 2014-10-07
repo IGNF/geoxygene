@@ -136,11 +136,16 @@ public class GeoxComplexRendererBezier extends AbstractGeoxComplexRenderer {
                 strtex.getBrushStartLength());
         program.setUniform1i(LayerViewGLPanel.brushEndWidthUniformVarName,
                 strtex.getBrushEndLength());
-        program.setUniform1f(LayerViewGLPanel.brushScaleUniformVarName,
-                (float) (strtex.getBrushAspectRatio() / primitive
+        program.setUniform1f(
+                LayerViewGLPanel.brushScaleUniformVarName,
+                (float) (this.getSymbolizer().getStroke().getStrokeWidth() / primitive
                         .getBrushTexture().getTextureHeight()));
+
+        // program.setUniform1f(LayerViewGLPanel.paperScaleUniformVarName,
+        // (float) (strtex.getPaperSizeInCm()));
+
         program.setUniform1f(LayerViewGLPanel.paperScaleUniformVarName,
-                (float) (strtex.getPaperSizeInCm()));
+                (float) (1));
         program.setUniform1f(LayerViewGLPanel.paperDensityUniformVarName,
                 (float) (strtex.getPaperDensity()));
         program.setUniform1f(LayerViewGLPanel.brushDensityUniformVarName,

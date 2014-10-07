@@ -145,11 +145,18 @@ public class GeoxComplexRendererLinePainting extends
                 strtex.getBrushStartLength());
         program.setUniform1i(LayerViewGLPanel.brushEndWidthUniformVarName,
                 strtex.getBrushEndLength());
-        program.setUniform1f(LayerViewGLPanel.brushScaleUniformVarName,
-                (float) (strtex.getBrushSize() / primitive.getBrushTexture()
-                        .getTextureHeight()));
+        program.setUniform1f(
+                LayerViewGLPanel.brushScaleUniformVarName,
+                (float) (this.getSymbolizer().getStroke().getStrokeWidth() / primitive
+                        .getBrushTexture().getTextureHeight()));
+
+        // program.setUniform1f(LayerViewGLPanel.brushScaleUniformVarName,
+        // (float) (strtex.getBrushSize() / primitive.getBrushTexture()
+        // .getTextureHeight()));
         program.setUniform1f(LayerViewGLPanel.paperScaleUniformVarName,
-                (float) (strtex.getPaperScaleFactor()));
+                (float) (1));
+        // program.setUniform1f(LayerViewGLPanel.paperScaleUniformVarName,
+        // (float) (strtex.getPaperScaleFactor()));
         program.setUniform1f(LayerViewGLPanel.paperDensityUniformVarName,
                 (float) (strtex.getPaperDensity()));
         program.setUniform1f(LayerViewGLPanel.brushDensityUniformVarName,

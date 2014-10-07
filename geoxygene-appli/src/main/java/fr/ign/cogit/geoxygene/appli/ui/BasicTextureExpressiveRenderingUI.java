@@ -68,7 +68,6 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
     private final Preferences prefs = Preferences.userRoot();
     private ProjectFrame parentProjectFrame = null;
     double transitionSize = .5;
-    double brushAspectRatio = 8;
     double paperSizeInCm = .5;
     double paperDensity = 0.7;
     double brushDensity = 1.9;
@@ -118,7 +117,6 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
     @Override
     public void setValuesFromObject() {
         this.transitionSize = this.strtex.getTransitionSize();
-        this.brushAspectRatio = this.strtex.getBrushAspectRatio();
         this.paperSizeInCm = this.strtex.getPaperSizeInCm();
         this.paperDensity = this.strtex.getPaperDensity();
         this.brushDensity = this.strtex.getBrushDensity();
@@ -145,7 +143,6 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
     @Override
     public void setValuesToObject() {
         this.strtex.setTransitionSize(this.transitionSize);
-        this.strtex.setBrushAspectRatio(this.brushAspectRatio);
         this.strtex.setPaperSizeInCm(this.paperSizeInCm);
         this.strtex.setPaperDensity(this.paperDensity);
         this.strtex.setBrushDensity(this.brushDensity);
@@ -179,31 +176,6 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
             this.main.setLayout(new BoxLayout(this.main, BoxLayout.Y_AXIS));
             this.main.setBorder(BorderFactory
                     .createEtchedBorder(EtchedBorder.LOWERED));
-
-            SliderWithSpinnerModel brushAspectRatioModel = new SliderWithSpinnerModel(
-                    this.brushAspectRatio, 0, 180, .1);
-            final SliderWithSpinner brushAspectRatioSpinner = new SliderWithSpinner(
-                    brushAspectRatioModel);
-            JSpinner.NumberEditor brushSizeEditor = (JSpinner.NumberEditor) brushAspectRatioSpinner
-                    .getEditor();
-            brushSizeEditor.getTextField().setHorizontalAlignment(
-                    SwingConstants.CENTER);
-            brushAspectRatioSpinner.setBorder(BorderFactory
-                    .createTitledBorder("brush aspect ratio"));
-            brushAspectRatioSpinner
-                    .setToolTipText("size of one pixel of the brush (in mm)");
-
-            brushAspectRatioSpinner.addChangeListener(new ChangeListener() {
-
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    BasicTextureExpressiveRenderingUI.this.brushAspectRatio = (brushAspectRatioSpinner
-                            .getValue());
-                    BasicTextureExpressiveRenderingUI.this.refresh();
-
-                }
-            });
-            this.main.add(brushAspectRatioSpinner);
 
             JButton paperBrowseButton = new JButton("paper browse...");
             paperBrowseButton.setBorder(BorderFactory.createEmptyBorder(2, 2,
