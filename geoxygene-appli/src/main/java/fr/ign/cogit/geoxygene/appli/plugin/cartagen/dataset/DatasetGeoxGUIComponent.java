@@ -71,7 +71,6 @@ import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
 import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.CartAGenProgressBar;
-import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.ImportDataFrame;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.cartagen.util.LastSessionParameters;
@@ -96,6 +95,7 @@ public class DatasetGeoxGUIComponent extends JMenu {
    * 
    */
   private static final long serialVersionUID = 1L;
+  private static DatasetGeoxGUIComponent menu;
 
   private List<File> recentDocs;
   private String lblRecentDocs;
@@ -114,7 +114,7 @@ public class DatasetGeoxGUIComponent extends JMenu {
     }
     this.add(recentDocsMenu);
     this.addSeparator();
-    this.add(new JMenuItem(new ImportDataShape1SimpleAction()));
+    this.add(new JMenuItem(new AddShapefileAction()));
     JMenu importDataMenu = new JMenu("Import Data");
     importDataMenu.add(new JMenuItem(new ImportDataShape1Action()));
     importDataMenu.add(new JMenuItem(new ImportDataXMLAction()));
@@ -136,6 +136,18 @@ public class DatasetGeoxGUIComponent extends JMenu {
     this.add(new JMenuItem(new EditPersistentClassesAction()));
     this.addSeparator();
     this.add(new JMenuItem(new LaunchEnrichmentWindowAction()));
+    menu = this;
+  }
+
+  /**
+   * Method to access the singleton Dataset menu.
+   * @return
+   */
+  public static DatasetGeoxGUIComponent getInstance() {
+    if (DatasetGeoxGUIComponent.menu == null) {
+      return new DatasetGeoxGUIComponent("Dataset");
+    }
+    return DatasetGeoxGUIComponent.menu;
   }
 
   /**
@@ -510,62 +522,13 @@ public class DatasetGeoxGUIComponent extends JMenu {
   }
 
   /**
-   * Action that allows to import data from shapefiles using the simple system
-   * developed during the training course of M. Vieira. This is a simple copy of
-   * it that gives a name by default for the cartagen document in the case of
-   * not having one.
-   * @author KJaara
-   * 
-   */
-  class ImportDataShape1SimpleAction extends AbstractAction {
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-
-      if (CartAGenDoc.getInstance().getName() == null) {
-        /*
-         * JOptionPane.showMessageDialog(CartagenApplication.getInstance()
-         * .getFrame(), "No CartAGen document open, create or load one first",
-         * "Warning", JOptionPane.WARNING_MESSAGE);
-         */
-
-        CartAGenDoc doc = CartAGenDoc.getInstance();
-        doc.setName("Kusay");
-        doc.setPostGisDb(PostgisDB.get("Kusay", true));
-
-        // return;
-      }
-
-      /*
-       * if (CartAGenDoc.getInstance().getName() == null) {
-       * JOptionPane.showMessageDialog(CartagenApplication.getInstance()
-       * .getFrame(), "No CartAGen document open, create or load one first",
-       * "Warning", JOptionPane.WARNING_MESSAGE); return; }
-       */
-      ImportDataFrame frame = ImportDataFrame.getInstance(false);
-      frame.setVisible(true);
-    }
-
-    public ImportDataShape1SimpleAction() {
-      this.putValue(Action.SHORT_DESCRIPTION,
-          "Import from Shapefile using the plug-in from M. Vieira");
-      this.putValue(Action.NAME, "Simple import From Shapefile");
-    }
-
-  }
-
-  /**
-   * Action that allows to import data from shapefiles using the symbolisation
-   * files, developed by Kusay Jaara.
+   * Action to add a given shapefile as a layer of the current database. A frame
+   * helps to choose if you want the shapefile to be a road, or a building, etc.
+   * If there is no current database and/or document, default ones are created.
    * @author GTouya
    * 
    */
-  class ImportDataShape2Action extends AbstractAction {
+  class AddShapefileAction extends AbstractAction {
 
     /**
      * 
@@ -574,77 +537,15 @@ public class DatasetGeoxGUIComponent extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      /*
-       * LoadingFrameMultiBD form = new LoadingFrameMultiBD(); form.pack();
-       * 
-       * form.setLocation(500,300); form.setVisible(true);
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * 
-       * CartagenApplication.getInstance().loadAndEnrichData2(form.bdsource,form.
-       * echelle); CartagenApplication.getInstance().initGeneralisation();
-       */
+
+      AddShapefileFrame frame = new AddShapefileFrame();
+      frame.setVisible(true);
     }
 
-    public ImportDataShape2Action() {
-      this.putValue(Action.SHORT_DESCRIPTION,
-          "Import from Shapefile using the Symbol files");
-      this.putValue(Action.NAME, "Import From Shapefile");
+    public AddShapefileAction() {
+      this.putValue(Action.NAME, "Add a Shapefile as new layer");
     }
+
   }
 
   /**

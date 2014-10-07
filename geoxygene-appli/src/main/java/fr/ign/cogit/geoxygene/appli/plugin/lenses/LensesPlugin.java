@@ -36,6 +36,8 @@ public class LensesPlugin implements ProjectFramePlugin,
   @SuppressWarnings("unused")
   private JCheckBoxMenuItem mFishEye, mJelly, mPierce, mFuzzyPierce,
       mDoublePierce;
+  private JCheckBoxMenuItem current;
+  private PaintListener listener;
 
   @Override
   public void initialize(GeOxygeneApplication application) {
