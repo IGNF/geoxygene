@@ -62,6 +62,7 @@ import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
  */
 public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI {
 
+    private static final int FILE_LENGTH_DISPLAY = 50;
     private JPanel main = null;
     private BasicTextureExpressiveRenderingDescriptor strtex = null;
 
@@ -177,9 +178,9 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
             this.main.setBorder(BorderFactory
                     .createEtchedBorder(EtchedBorder.LOWERED));
 
+            JPanel paperPanel = new JPanel(new BorderLayout());
+
             JButton paperBrowseButton = new JButton("paper browse...");
-            paperBrowseButton.setBorder(BorderFactory.createEmptyBorder(2, 2,
-                    2, 2));
             paperBrowseButton.setToolTipText("Load background paper file");
             paperBrowseButton.addActionListener(new ActionListener() {
 
@@ -197,7 +198,8 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
                             BasicTextureExpressiveRenderingUI.this.paperFilenameLabel
                                     .setText(BasicTextureExpressiveRenderingUI.this.paperTextureFilename
                                             .substring(BasicTextureExpressiveRenderingUI.this.paperTextureFilename
-                                                    .length() - 30));
+                                                    .length()
+                                                    - FILE_LENGTH_DISPLAY));
 
                             BasicTextureExpressiveRenderingUI.this.prefs.put(
                                     PAPER_LAST_DIRECTORY,
@@ -215,35 +217,15 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
                 }
 
             });
-            this.main.add(paperBrowseButton);
+
+            paperPanel.add(paperBrowseButton, BorderLayout.EAST);
             this.paperFilenameLabel = new JLabel(
                     this.paperTextureFilename
-                            .substring(this.paperTextureFilename.length() - 30));
-            this.main.add(this.paperFilenameLabel);
+                            .substring(this.paperTextureFilename.length()
+                                    - FILE_LENGTH_DISPLAY));
+            paperPanel.add(this.paperFilenameLabel, BorderLayout.CENTER);
 
-            SliderWithSpinnerModel paperScaleFactorModel = new SliderWithSpinnerModel(
-                    this.paperSizeInCm, 0, 180, .1);
-            final SliderWithSpinner paperScaleFactorSpinner = new SliderWithSpinner(
-                    paperScaleFactorModel);
-            JSpinner.NumberEditor paperScaleFactorEditor = (JSpinner.NumberEditor) paperScaleFactorSpinner
-                    .getEditor();
-            paperScaleFactorEditor.getTextField().setHorizontalAlignment(
-                    SwingConstants.CENTER);
-            paperScaleFactorSpinner.setBorder(BorderFactory
-                    .createTitledBorder("paper scale"));
-            paperScaleFactorSpinner
-                    .setToolTipText("paper texture scale factor");
-            paperScaleFactorSpinner.addChangeListener(new ChangeListener() {
-
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    BasicTextureExpressiveRenderingUI.this.paperSizeInCm = (paperScaleFactorSpinner
-                            .getValue());
-                    BasicTextureExpressiveRenderingUI.this.refresh();
-
-                }
-            });
-            this.main.add(paperScaleFactorSpinner);
+            this.main.add(paperPanel);
 
             SliderWithSpinnerModel brushStartModel = new SliderWithSpinnerModel(
                     this.brushStartLength, 1, 5000, 1);
@@ -292,9 +274,9 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
                 }
             });
 
+            JPanel brushPanel = new JPanel(new BorderLayout());
+
             JButton brushBrowseButton = new JButton("brush browser...");
-            brushBrowseButton.setBorder(BorderFactory.createEmptyBorder(2, 2,
-                    2, 2));
             brushBrowseButton.setToolTipText("Load brush file");
             brushBrowseButton.addActionListener(new ActionListener() {
 
@@ -312,7 +294,8 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
                             BasicTextureExpressiveRenderingUI.this.brushFilenameLabel
                                     .setText(BasicTextureExpressiveRenderingUI.this.brushTextureFilename
                                             .substring(BasicTextureExpressiveRenderingUI.this.brushTextureFilename
-                                                    .length() - 30));
+                                                    .length()
+                                                    - FILE_LENGTH_DISPLAY));
                             Pattern pattern = Pattern
                                     .compile("([0-9]+)-([0-9]+)");
                             Matcher matcher = pattern
@@ -342,15 +325,15 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
                 }
 
             });
-            this.main.add(brushBrowseButton);
 
             this.brushFilenameLabel = new JLabel(
                     this.brushTextureFilename
-                            .substring(this.brushTextureFilename.length() - 30));
-            this.main.add(this.brushFilenameLabel);
+                            .substring(this.brushTextureFilename.length()
+                                    - FILE_LENGTH_DISPLAY));
+            brushPanel.add(brushBrowseButton, BorderLayout.EAST);
+            brushPanel.add(this.brushFilenameLabel, BorderLayout.CENTER);
 
-            this.main.add(brushStartSpinner);
-            this.main.add(brushEndSpinner);
+            this.main.add(brushPanel);
 
             SliderWithSpinnerModel brushDensityModel = new SliderWithSpinnerModel(
                     this.brushDensity, 0, 10, .1);

@@ -63,6 +63,7 @@ import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
 public class StrokeTextureExpressiveRenderingUI implements
         ExpressiveRenderingUI {
 
+    private static final int FILE_LENGTH_DISPLAY = 50;
     private JPanel main = null;
     private StrokeTextureExpressiveRenderingDescriptor strtex = null;
 
@@ -171,10 +172,9 @@ public class StrokeTextureExpressiveRenderingUI implements
             this.main.setLayout(new BoxLayout(this.main, BoxLayout.Y_AXIS));
             this.main.setBorder(BorderFactory
                     .createEtchedBorder(EtchedBorder.LOWERED));
+            JPanel paperPanel = new JPanel(new BorderLayout());
 
             JButton paperBrowseButton = new JButton("paper browse...");
-            paperBrowseButton.setBorder(BorderFactory.createEmptyBorder(2, 2,
-                    2, 2));
             paperBrowseButton.setToolTipText("Load background paper file");
             paperBrowseButton.addActionListener(new ActionListener() {
 
@@ -192,7 +192,8 @@ public class StrokeTextureExpressiveRenderingUI implements
                             StrokeTextureExpressiveRenderingUI.this.paperFilenameLabel
                                     .setText(StrokeTextureExpressiveRenderingUI.this.paperTextureFilename
                                             .substring(StrokeTextureExpressiveRenderingUI.this.paperTextureFilename
-                                                    .length() - 30));
+                                                    .length()
+                                                    - FILE_LENGTH_DISPLAY));
 
                             StrokeTextureExpressiveRenderingUI.this.prefs.put(
                                     PAPER_LAST_DIRECTORY,
@@ -210,7 +211,15 @@ public class StrokeTextureExpressiveRenderingUI implements
                 }
 
             });
-            this.main.add(paperBrowseButton);
+
+            paperPanel.add(paperBrowseButton, BorderLayout.EAST);
+            this.paperFilenameLabel = new JLabel(
+                    this.paperTextureFilename
+                            .substring(this.paperTextureFilename.length()
+                                    - FILE_LENGTH_DISPLAY));
+            paperPanel.add(this.paperFilenameLabel, BorderLayout.CENTER);
+
+            this.main.add(paperPanel);
 
             SliderWithSpinnerModel brushStartModel = new SliderWithSpinnerModel(
                     this.brushStartLength, 1, 5000, 1);
@@ -259,9 +268,9 @@ public class StrokeTextureExpressiveRenderingUI implements
                 }
             });
 
+            JPanel brushPanel = new JPanel(new BorderLayout());
+
             JButton brushBrowseButton = new JButton("brush browser...");
-            brushBrowseButton.setBorder(BorderFactory.createEmptyBorder(2, 2,
-                    2, 2));
             brushBrowseButton.setToolTipText("Load brush file");
             brushBrowseButton.addActionListener(new ActionListener() {
 
@@ -279,7 +288,8 @@ public class StrokeTextureExpressiveRenderingUI implements
                             StrokeTextureExpressiveRenderingUI.this.brushFilenameLabel
                                     .setText(StrokeTextureExpressiveRenderingUI.this.brushTextureFilename
                                             .substring(StrokeTextureExpressiveRenderingUI.this.brushTextureFilename
-                                                    .length() - 30));
+                                                    .length()
+                                                    - FILE_LENGTH_DISPLAY));
                             Pattern pattern = Pattern
                                     .compile("([0-9]+)-([0-9]+)");
                             Matcher matcher = pattern
@@ -309,12 +319,15 @@ public class StrokeTextureExpressiveRenderingUI implements
                 }
 
             });
-            this.main.add(brushBrowseButton);
 
             this.brushFilenameLabel = new JLabel(
                     this.brushTextureFilename
-                            .substring(this.brushTextureFilename.length() - 30));
-            this.main.add(this.brushFilenameLabel);
+                            .substring(this.brushTextureFilename.length()
+                                    - FILE_LENGTH_DISPLAY));
+            brushPanel.add(brushBrowseButton, BorderLayout.EAST);
+            brushPanel.add(this.brushFilenameLabel, BorderLayout.CENTER);
+
+            this.main.add(brushPanel);
 
             this.main.add(brushStartSpinner);
             this.main.add(brushEndSpinner);
