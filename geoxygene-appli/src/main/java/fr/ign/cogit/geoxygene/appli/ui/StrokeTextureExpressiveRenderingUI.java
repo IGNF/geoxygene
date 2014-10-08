@@ -190,10 +190,11 @@ public class StrokeTextureExpressiveRenderingUI implements
                             StrokeTextureExpressiveRenderingUI.this.paperTextureFilename = selectedFile
                                     .getAbsolutePath();
                             StrokeTextureExpressiveRenderingUI.this.paperFilenameLabel
-                                    .setText(StrokeTextureExpressiveRenderingUI.this.paperTextureFilename
-                                            .substring(StrokeTextureExpressiveRenderingUI.this.paperTextureFilename
-                                                    .length()
-                                                    - FILE_LENGTH_DISPLAY));
+                                    .setText(StrokeTextureExpressiveRenderingUI.this.paperTextureFilename.substring(Math
+                                            .max(0,
+                                                    StrokeTextureExpressiveRenderingUI.this.paperTextureFilename
+                                                            .length()
+                                                            - FILE_LENGTH_DISPLAY)));
 
                             StrokeTextureExpressiveRenderingUI.this.prefs.put(
                                     PAPER_LAST_DIRECTORY,
@@ -214,9 +215,9 @@ public class StrokeTextureExpressiveRenderingUI implements
 
             paperPanel.add(paperBrowseButton, BorderLayout.EAST);
             this.paperFilenameLabel = new JLabel(
-                    this.paperTextureFilename
-                            .substring(this.paperTextureFilename.length()
-                                    - FILE_LENGTH_DISPLAY));
+                    this.paperTextureFilename.substring(Math.max(0,
+                            this.paperTextureFilename.length()
+                                    - FILE_LENGTH_DISPLAY)));
             paperPanel.add(this.paperFilenameLabel, BorderLayout.CENTER);
 
             this.main.add(paperPanel);
@@ -286,10 +287,11 @@ public class StrokeTextureExpressiveRenderingUI implements
                             StrokeTextureExpressiveRenderingUI.this.brushTextureFilename = selectedFile
                                     .getAbsolutePath();
                             StrokeTextureExpressiveRenderingUI.this.brushFilenameLabel
-                                    .setText(StrokeTextureExpressiveRenderingUI.this.brushTextureFilename
-                                            .substring(StrokeTextureExpressiveRenderingUI.this.brushTextureFilename
-                                                    .length()
-                                                    - FILE_LENGTH_DISPLAY));
+                                    .setText(StrokeTextureExpressiveRenderingUI.this.brushTextureFilename.substring(Math
+                                            .max(0,
+                                                    StrokeTextureExpressiveRenderingUI.this.brushTextureFilename
+                                                            .length()
+                                                            - FILE_LENGTH_DISPLAY)));
                             Pattern pattern = Pattern
                                     .compile("([0-9]+)-([0-9]+)");
                             Matcher matcher = pattern
@@ -321,9 +323,9 @@ public class StrokeTextureExpressiveRenderingUI implements
             });
 
             this.brushFilenameLabel = new JLabel(
-                    this.brushTextureFilename
-                            .substring(this.brushTextureFilename.length()
-                                    - FILE_LENGTH_DISPLAY));
+                    this.brushTextureFilename.substring(Math.max(0,
+                            this.brushTextureFilename.length()
+                                    - FILE_LENGTH_DISPLAY)));
             brushPanel.add(brushBrowseButton, BorderLayout.EAST);
             brushPanel.add(this.brushFilenameLabel, BorderLayout.CENTER);
 

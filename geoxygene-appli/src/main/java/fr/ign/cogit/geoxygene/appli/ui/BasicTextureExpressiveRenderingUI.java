@@ -196,10 +196,11 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
                             BasicTextureExpressiveRenderingUI.this.paperTextureFilename = selectedFile
                                     .getAbsolutePath();
                             BasicTextureExpressiveRenderingUI.this.paperFilenameLabel
-                                    .setText(BasicTextureExpressiveRenderingUI.this.paperTextureFilename
-                                            .substring(BasicTextureExpressiveRenderingUI.this.paperTextureFilename
-                                                    .length()
-                                                    - FILE_LENGTH_DISPLAY));
+                                    .setText(BasicTextureExpressiveRenderingUI.this.paperTextureFilename.substring(Math
+                                            .max(0,
+                                                    BasicTextureExpressiveRenderingUI.this.paperTextureFilename
+                                                            .length()
+                                                            - FILE_LENGTH_DISPLAY)));
 
                             BasicTextureExpressiveRenderingUI.this.prefs.put(
                                     PAPER_LAST_DIRECTORY,
@@ -220,9 +221,9 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
 
             paperPanel.add(paperBrowseButton, BorderLayout.EAST);
             this.paperFilenameLabel = new JLabel(
-                    this.paperTextureFilename
-                            .substring(this.paperTextureFilename.length()
-                                    - FILE_LENGTH_DISPLAY));
+                    this.paperTextureFilename.substring(Math.max(0,
+                            this.paperTextureFilename.length()
+                                    - FILE_LENGTH_DISPLAY)));
             paperPanel.add(this.paperFilenameLabel, BorderLayout.CENTER);
 
             this.main.add(paperPanel);
@@ -292,10 +293,11 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
                             BasicTextureExpressiveRenderingUI.this.brushTextureFilename = selectedFile
                                     .getAbsolutePath();
                             BasicTextureExpressiveRenderingUI.this.brushFilenameLabel
-                                    .setText(BasicTextureExpressiveRenderingUI.this.brushTextureFilename
-                                            .substring(BasicTextureExpressiveRenderingUI.this.brushTextureFilename
-                                                    .length()
-                                                    - FILE_LENGTH_DISPLAY));
+                                    .setText(BasicTextureExpressiveRenderingUI.this.brushTextureFilename.substring(Math
+                                            .max(0,
+                                                    BasicTextureExpressiveRenderingUI.this.brushTextureFilename
+                                                            .length()
+                                                            - FILE_LENGTH_DISPLAY)));
                             Pattern pattern = Pattern
                                     .compile("([0-9]+)-([0-9]+)");
                             Matcher matcher = pattern
@@ -327,9 +329,9 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
             });
 
             this.brushFilenameLabel = new JLabel(
-                    this.brushTextureFilename
-                            .substring(this.brushTextureFilename.length()
-                                    - FILE_LENGTH_DISPLAY));
+                    this.brushTextureFilename.substring(Math.max(0,
+                            this.brushTextureFilename.length()
+                                    - FILE_LENGTH_DISPLAY)));
             brushPanel.add(brushBrowseButton, BorderLayout.EAST);
             brushPanel.add(this.brushFilenameLabel, BorderLayout.CENTER);
 
