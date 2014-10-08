@@ -33,7 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import fr.ign.cogit.geoxygene.function.Function1D;
+import com.jhlabs.math.Function1D;
 
 /**
  * @author JeT Describes how to represent a function into a CellList

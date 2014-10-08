@@ -253,13 +253,13 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-scripting</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>fr.ign.cogit</groupId>
 			<artifactId>geoxygene-osm</artifactId>

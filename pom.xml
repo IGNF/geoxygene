@@ -651,7 +651,6 @@
 		<module>geoxygene-geopensim</module>
 		<module>geoxygene-pea-rep</module>
 		<module>geoxygene-schemageo</module>
-		<module>geoxygene-scripting</module>
 		<module>geoxygene-semio</module>
 		<module>geoxygene-sig3d</module>
 		<module>geoxygene-spatial</module>

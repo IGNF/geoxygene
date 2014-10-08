@@ -34,47 +34,47 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import fr.ign.cogit.geoxygene.function.Function1D;
+import com.jhlabs.math.Function1D;
 
 /**
- * @author JeT
- * Describes how to represent a function into a CellList
+ * @author JeT Describes how to represent a function into a CellList
  */
 public class FunctionClassRenderer extends JLabel implements ListCellRenderer {
 
-  private static final long serialVersionUID = 3339214365714832883L;
+    private static final long serialVersionUID = 3339214365714832883L;
 
-  @Override
-  public Component getListCellRendererComponent(final JList list, final Object object, final int index, final boolean isSelected,
-      final boolean cellHasFocus) {
-    StringBuilder str = new StringBuilder();
-    Class<?> clazz = (Class<?>) object;
-    String shortClassName = clazz.getSimpleName();
-    String fullClassName = clazz.getName();
-    str.append(shortClassName);
-    Constructor<?>[] constructors = ((Class<?>) clazz).getConstructors();
-    for (Constructor<?> constructor : constructors) {
-      str.append("(");
-      boolean one = true;
-      for (Class<?> pClazz : constructor.getParameterTypes()) {
-        if (!one) {
-          str.append(", ");
+    @Override
+    public Component getListCellRendererComponent(final JList list,
+            final Object object, final int index, final boolean isSelected,
+            final boolean cellHasFocus) {
+        StringBuilder str = new StringBuilder();
+        Class<?> clazz = (Class<?>) object;
+        String shortClassName = clazz.getSimpleName();
+        String fullClassName = clazz.getName();
+        str.append(shortClassName);
+        Constructor<?>[] constructors = ((Class<?>) clazz).getConstructors();
+        for (Constructor<?> constructor : constructors) {
+            str.append("(");
+            boolean one = true;
+            for (Class<?> pClazz : constructor.getParameterTypes()) {
+                if (!one) {
+                    str.append(", ");
+                }
+                str.append(pClazz.getSimpleName());
+                one = false;
+            }
+            str.append(")");
         }
-        str.append(pClazz.getSimpleName());
-        one = false;
-      }
-      str.append(")");
+        Function1D instance;
+        try {
+            instance = (Function1D) clazz.newInstance();
+            str.append(" " + instance.help());
+        } catch (InstantiationException e) {
+            // no default constructor
+        } catch (IllegalAccessException e) {
+            // cannot create a new class
+        }
+        this.setText(str.toString());
+        return this;
     }
-    Function1D instance;
-    try {
-      instance = (Function1D) clazz.newInstance();
-      str.append(" " + instance.help());
-    } catch (InstantiationException e) {
-      // no default constructor
-    } catch (IllegalAccessException e) {
-      // cannot create a new class
-    }
-    this.setText(str.toString());
-    return this;
-  }
 }
