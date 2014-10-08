@@ -141,7 +141,7 @@ public class SLDUtil {
     ftStyle.getRules().add(rule);
     IFeature feat = layer.getFeatureCollection().get(0);
     if (feat.getGeom() instanceof IPolygon) {
-      Symbolizer symbolizer = new LineSymbolizer();
+      Symbolizer symbolizer = new PolygonSymbolizer();
       symbolizer.setGeometryPropertyName("initialGeom");
       Stroke stroke = new Stroke();
       stroke.setColor(color);
@@ -150,7 +150,7 @@ public class SLDUtil {
       symbolizer.setStroke(stroke);
       rule.getSymbolizers().add(symbolizer);
     } else if (feat.getGeom() instanceof ILineString) {
-      PolygonSymbolizer symbolizer = new PolygonSymbolizer();
+      Symbolizer symbolizer = new LineSymbolizer();
       symbolizer.setGeometryPropertyName("initialGeom");
       Stroke stroke = new Stroke();
       stroke.setColor(color);
