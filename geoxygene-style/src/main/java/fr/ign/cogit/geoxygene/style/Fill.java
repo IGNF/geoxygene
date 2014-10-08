@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.GradientTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
 
@@ -73,7 +73,7 @@ public class Fill {
     @XmlElements({
             @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTextureDescriptor.class),
             @XmlElement(name = "BasicTexture", type = BasicTextureDescriptor.class),
-            @XmlElement(name = "GradientTexture", type = GradientTextureDescriptor.class),
+            @XmlElement(name = "GradientTexture", type = BinaryGradientImageDescriptor.class),
             @XmlElement(name = "GradientExpressiveRendering", type = GradientSubshaderDescriptor.class),
             @XmlElement(name = "TileDistributionTexture", type = TileDistributionTextureDescriptor.class) })
     private Fill2DDescriptor fill2dDescriptor = null;

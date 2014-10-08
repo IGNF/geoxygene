@@ -55,9 +55,9 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage;
-import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.GradientTextureImageParameters;
-import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.BinaryGradientImageParameters;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.GradientPixel;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.texture.ProbabilistTileDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
@@ -80,7 +80,7 @@ public class TileDistributionTextureTask extends
             .getLogger(TileDistributionTextureTask.class.getName()); // logger
 
     private final List<Pair<TileProbability, Tile>> tilesToBeApplied = new ArrayList<Pair<TileProbability, Tile>>();
-    private GradientTextureImage texImage; //
+    private BinaryGradientImage texImage; //
     private Shape featureShape = null; // shape corresponding to the given
                                        // feature in the image texture space
     // private final DistanceFieldTexture texture = null;
@@ -452,11 +452,17 @@ public class TileDistributionTextureTask extends
         }
         double maxCoastLine = this.getTextureDescriptor()
                 .getMaxCoastlineLength();
-        GradientTextureImageParameters params = new GradientTextureImageParameters(
+        BinaryGradientImageParameters params = new BinaryGradientImageParameters(
                 this.getTextureWidth(), this.getTextureHeight(), this.polygons,
                 this.getEnvelope(), maxCoastLine);
-        this.texImage = GradientTextureImage
-                .generateGradientTextureImage(params);
+        try {
+            this.texImage = BinaryGradientImage
+                    .generateBinaryGradientImage(params);
+        } catch (Exception e1) {
+            logger.error("An exception has been thrown generating Binary Gradient Image in "
+                    + this.getClass().getSimpleName());
+            e1.printStackTrace();
+        }
         if (this.texImage == null) {
             this.setError(new IllegalStateException(
                     "Gradient Image generation returns a null value"));
@@ -495,7 +501,7 @@ public class TileDistributionTextureTask extends
      * @param clippingShape
      * @return
      */
-    private BufferedImage pasteTiles(GradientTextureImage image,
+    private BufferedImage pasteTiles(BinaryGradientImage image,
             List<Pair<TileProbability, Tile>> tilesToBeApplied,
             SamplingAlgorithm sampler, Shape clippingShape) {
         image.invalidateUVBounds();
@@ -544,7 +550,8 @@ public class TileDistributionTextureTask extends
                         + sample.getLocation()
                         + " has an associated tile with no image");
             }
-            TexturePixel pixel = image.getPixel((int) xTexture, (int) yTexture);
+            GradientPixel pixel = image
+                    .getPixel((int) xTexture, (int) yTexture);
             if (pixel == null || !(pixel.in || pixel.frontier != 0)
                     || pixel.vGradient == null) {
                 logger.warn("invalid pixel = " + pixel);

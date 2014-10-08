@@ -38,8 +38,8 @@ import java.util.Set;
 
 import javax.vecmath.Point2d;
 
-import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage;
-import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.GradientPixel;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 
 /**
@@ -48,7 +48,7 @@ import fr.ign.cogit.geoxygene.util.gl.Sample;
  */
 public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
 
-    private GradientTextureImage image = null;
+    private BinaryGradientImage image = null;
     private double scale = 1;
     private double vDistanceInPixels = 50;
     private double minDistanceInPixels = 50;
@@ -60,7 +60,7 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
     /**
      * Default constructor
      */
-    public TextureImageSamplerUVSampler(GradientTextureImage image, double minDistanceInPixels, double vDistanceInPixels) {
+    public TextureImageSamplerUVSampler(BinaryGradientImage image, double minDistanceInPixels, double vDistanceInPixels) {
         this.image = image;
         this.vDistanceInPixels = vDistanceInPixels;
         this.minDistanceInPixels = minDistanceInPixels;
@@ -133,7 +133,7 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
 
         for (int y = 0; y < this.image.getHeight(); y++) {
             for (int x = 0; x < this.image.getWidth(); x++) {
-                TexturePixel pixel = this.image.getPixel(x, y);
+                GradientPixel pixel = this.image.getPixel(x, y);
                 pixel.weightSum = 1; // weightSum is used to mark pixels as treated when = 0 (Ugly)
                 if (pixel.in && pixel.frontier != 0 && pixel.distance < 0.0001) {
                     pixelsToTreat.add(new Point(x, y));
@@ -144,7 +144,7 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
             Set<Point> neighborhood = new HashSet<Point>();
 
             for (Point p : pixelsToTreat) {
-                TexturePixel pixel = this.image.getPixel(p.x, p.y);
+                GradientPixel pixel = this.image.getPixel(p.x, p.y);
                 pixel.weightSum = 0;
                 //                this.tryToAddSample(p.x, p.y, pixel.vGradient.x, pixel.vGradient.y);
                 this.tryToAddSampleMinimizeCoverage(p.x, p.y, pixel.vGradient.x, pixel.vGradient.y);
@@ -170,7 +170,7 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
     }
 
     private void tryToAddNeighbor(int x, int y, Set<Point> neighborhood) {
-        TexturePixel pixel = this.image.getPixel(x, y);
+        GradientPixel pixel = this.image.getPixel(x, y);
         if (pixel != null && pixel.in && pixel.weightSum > 0.5) {
             neighborhood.add(new Point(x, y));
             pixel.weightSum = 0;
@@ -187,7 +187,7 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
      * @param vGradient
      */
     private boolean tryToAddSample(int x, int y, double xGradient, double yGradient) {
-        TexturePixel pixel = this.image.getPixel(x, y);
+        GradientPixel pixel = this.image.getPixel(x, y);
         if (pixel != null && pixel.in) {
             if (this.isDistanceStep(pixel, x + 1, y) || this.isDistanceStep(pixel, x - 1, y) || this.isDistanceStep(pixel, x, y + 1)
                     || this.isDistanceStep(pixel, x, y - 1)) {
@@ -209,7 +209,7 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
      * @param vGradient
      */
     private boolean tryToAddSampleMinimizeCoverage(int x, int y, double xGradient, double yGradient) {
-        TexturePixel pixel = this.image.getPixel(x, y);
+        GradientPixel pixel = this.image.getPixel(x, y);
         if (pixel != null && pixel.in) {
             if (this.isDistanceStep(pixel, x + 1, y) || this.isDistanceStep(pixel, x - 1, y) || this.isDistanceStep(pixel, x, y + 1)
                     || this.isDistanceStep(pixel, x, y - 1)) {
@@ -222,8 +222,8 @@ public class TextureImageSamplerUVSampler implements SamplingAlgorithm {
         return false;
     }
 
-    private boolean isDistanceStep(TexturePixel pixel, int x, int y) {
-        TexturePixel neighbor = this.image.getPixel(x, y);
+    private boolean isDistanceStep(GradientPixel pixel, int x, int y) {
+        GradientPixel neighbor = this.image.getPixel(x, y);
         if (neighbor == null || !neighbor.in || neighbor.distance == Double.POSITIVE_INFINITY || neighbor.distance == Double.NaN) {
             return false;
         }

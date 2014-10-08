@@ -31,13 +31,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
- * Simple texture containing a single image
+ * 
  * 
  * @author JeT
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class GradientTextureDescriptor extends TextureDescriptor {
+public class BinaryGradientImageDescriptor extends TextureDescriptor {
 
     @XmlElement(name = "Resolution")
     private double textureResolution = 72; // texture resolution in DPI
@@ -53,7 +53,7 @@ public class GradientTextureDescriptor extends TextureDescriptor {
     /**
      * default constructor
      */
-    public GradientTextureDescriptor() {
+    public BinaryGradientImageDescriptor() {
         super(TextureDrawingMode.VIEWPORTSPACE);
     }
 
@@ -63,11 +63,11 @@ public class GradientTextureDescriptor extends TextureDescriptor {
      * @param url
      *            url to the texture image location
      */
-    public GradientTextureDescriptor(String url) {
+    public BinaryGradientImageDescriptor(String url) {
         this();
     }
 
-    public GradientTextureDescriptor(TextureDrawingMode drawingMode) {
+    public BinaryGradientImageDescriptor(TextureDrawingMode drawingMode) {
         super(drawingMode);
     }
 
@@ -151,7 +151,7 @@ public class GradientTextureDescriptor extends TextureDescriptor {
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        GradientTextureDescriptor other = (GradientTextureDescriptor) obj;
+        BinaryGradientImageDescriptor other = (BinaryGradientImageDescriptor) obj;
         if (Double.doubleToLongBits(this.mapScale) != Double
                 .doubleToLongBits(other.mapScale)) {
             return false;

@@ -40,8 +40,11 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientTexture;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
+import fr.ign.cogit.geoxygene.appli.render.texture.BinaryGradientImageTask;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
@@ -51,7 +54,7 @@ import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.GradientTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
@@ -63,6 +66,10 @@ import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 /**
  * @author JeT A displayable surface is a displayable containing GL geometries
  *         matching IMultiSurfaces or IPolygon geoxygen geometries
+ */
+/**
+ * @author Adminlocal
+ * 
  */
 public class DisplayableSurface extends AbstractDisplayable {
 
@@ -227,67 +234,109 @@ public class DisplayableSurface extends AbstractDisplayable {
                     complexes, textureDescriptor);
         } else if (fill2dDescriptor instanceof GradientSubshaderDescriptor) {
             GradientSubshaderDescriptor expressiveDescriptor = (GradientSubshaderDescriptor) fill2dDescriptor;
-            GradientTextureDescriptor textureDescriptor = new GradientTextureDescriptor();
+            BinaryGradientImageDescriptor textureDescriptor = new BinaryGradientImageDescriptor();
             textureDescriptor.setMapScale(expressiveDescriptor.getMapScale());
             textureDescriptor.setMaxCoastlineLength(expressiveDescriptor
                     .getMaxCoastlineLength());
             textureDescriptor.setTextureResolution(expressiveDescriptor
                     .getTextureResolution());
-            IEnvelope envelope = featureCollection.getEnvelope();
-            TextureTask<BasicTexture> textureTask;
-            synchronized (TextureManager.getInstance()) {
-                textureTask = TextureManager.getInstance().getTextureTask(
-                        String.valueOf(this.getFeature().getId()),
-                        textureDescriptor, featureCollection,
-                        this.getViewport());
-            }
-            if (textureTask == null) {
-                logger.warn("textureTask returned a null value for feature "
-                        + featureCollection);
-                return false;
-            }
-            try {
-                TaskManager.waitForCompletion(textureTask);
-            } catch (InterruptedException e) {
-                logger.error("Texture Task error");
-                e.printStackTrace();
-            }
-            // logger.debug("textureTask " + textureTask.hashCode()
-            // + " terminated with glTexture " + textureTask.getTexture());
-            if (textureTask.getState().isError()) {
-                logger.error("texture generation task "
-                        + textureTask.getState() + " finished with an error");
-                logger.error(textureTask.getError());
-                textureTask.getError().printStackTrace();
-                return false;
-            }
-
-            if (textureTask.getTexture() != null) {
-                GeoxComplexRenderer renderer = GeoxRendererManager
-                        .getOrCreateSurfaceRenderer(symbolizer,
-                                this.getLayerRenderer());
-                BasicParameterizer parameterizer = new BasicParameterizer(
-                        envelope, false, true);
-                GLSimpleComplex inner = this
-                        .generateWithTextureAndParameterizer(
-                                textureTask.getTexture(), parameterizer,
-                                envelope, renderer);
-                inner.setOverallOpacity(symbolizer.getFill().getFillOpacity());
-                complexes.add(inner);
-
-            }
+            createWithGradientTextureDescriptor(symbolizer, featureCollection,
+                    complexes, textureDescriptor);
         } else {
-            IEnvelope envelope = featureCollection.getEnvelope();
-            double minX = envelope.minX();
-            double minY = envelope.minY();
-            GeoxComplexRenderer renderer = GeoxRendererManager
-                    .getOrCreateSurfaceRenderer(symbolizer,
-                            this.getLayerRenderer());
-            complexes.addAll(this.generateWithSolidColor(symbolizer, envelope,
-                    minX, minY, renderer));
+
+            complexes.addAll(this.generateWithSolidColor(symbolizer,
+                    featureCollection));
             return true;
         }
         return true;
+    }
+
+    /**
+     * @param symbolizer
+     * @param featureCollection
+     * @param complexes
+     * @param textureDescriptor
+     * @return
+     */
+    private boolean createWithGradientTextureDescriptor(
+            PolygonSymbolizer symbolizer,
+            IFeatureCollection<IFeature> featureCollection,
+            List<GLComplex> complexes,
+            BinaryGradientImageDescriptor textureDescriptor) {
+
+        BinaryGradientImageTask gradientTextureTask = null;
+        synchronized (TextureManager.getInstance()) {
+            gradientTextureTask = TextureManager
+                    .getInstance()
+                    .getGradientTextureTask(
+                            "GradientTexture-"
+                                    + String.valueOf(this.getFeature().getId()),
+                            textureDescriptor, featureCollection,
+                            this.getViewport());
+        }
+        try {
+            TaskManager.waitForCompletion(gradientTextureTask);
+        } catch (InterruptedException e) {
+            logger.error("Texture Task error");
+            e.printStackTrace();
+        }
+        // logger.debug("textureTask " + textureTask.hashCode()
+        // + " terminated with glTexture " + textureTask.getTexture());
+        if (gradientTextureTask.getState().isError()) {
+            logger.error("gradient image generation task "
+                    + gradientTextureTask.getState()
+                    + " finished with an error");
+            logger.error(gradientTextureTask.getError());
+            gradientTextureTask.getError().printStackTrace();
+            return false;
+        }
+
+        if (gradientTextureTask.getBinaryGradientImage() != null) {
+
+            return this.generateWithGradientTexture(complexes,
+                    featureCollection, symbolizer,
+                    gradientTextureTask.getBinaryGradientImage());
+        }
+        throw new IllegalStateException(
+                "createWithGradientTextureDescriptor has no valid options");
+    }
+
+    /**
+     * @param complexes
+     *            complex list to be filled
+     * @param featureCollection
+     *            feature collection containing the GeOx-geometry
+     * @param symbolizer
+     *            symbolizer
+     * @param gradientTextureImage
+     *            gradient texture image generated from symbolizer
+     * @return
+     */
+    private boolean generateWithGradientTexture(List<GLComplex> complexes,
+            IFeatureCollection<IFeature> featureCollection,
+            PolygonSymbolizer symbolizer,
+            BinaryGradientImage binaryGradientImage) {
+        IEnvelope envelope = featureCollection.getEnvelope();
+        BasicParameterizer parameterizer = new BasicParameterizer(envelope,
+                false, true);
+        SolidColorizer colorizer = new SolidColorizer(symbolizer.getFill()
+                .getColor());
+
+        double minX = envelope.minX();
+        double minY = envelope.minY();
+        GeoxComplexRenderer renderer = GeoxRendererManager
+                .getOrCreateSurfaceRenderer(symbolizer, this.getLayerRenderer());
+        GLSimpleComplex content = GLComplexFactory.createFilledPolygons(
+                this.getName() + "-filled", this.polygons, colorizer,
+                parameterizer, minX, minY, renderer);
+        BinaryGradientTexture texture = new BinaryGradientTexture(
+                binaryGradientImage);
+        content.setTexture(texture);
+        content.setColor(symbolizer.getFill().getColor());
+        content.setOverallOpacity(symbolizer.getFill().getFillOpacity());
+        complexes.add(content);
+        return true;
+
     }
 
     /**
@@ -312,11 +361,19 @@ public class DisplayableSurface extends AbstractDisplayable {
     }
 
     /**
+     * Generate GL-geometry for a given feature collection using a simple
+     * texture. A basic Parameterizer is used and a BasicRenderer is assigned to
+     * GL-geometry
+     * 
      * @param symbolizer
+     *            symbolizer containing the textureDescriptor
      * @param featureCollection
+     *            GeOx-geometry to be transformed to GL-geometry
      * @param complexes
-     * @param envelope
+     *            GL-complexes list to be filled with new GL-geometry
      * @param textureDescriptor
+     *            texture descriptor extracted from symbolizer
+     * @return
      */
     private boolean createWithTextureDescriptor(PolygonSymbolizer symbolizer,
             IFeatureCollection<IFeature> featureCollection,
@@ -387,19 +444,25 @@ public class DisplayableSurface extends AbstractDisplayable {
     }
 
     /**
+     * Generates the GL-geometry for the inner part of 'this.polygons'
+     * GeOx-geometry using a polygon symbolizer containing a simple color. A
+     * 
      * @param symbolizer
-     * @param complexes
-     * @param envelope
-     * @param minX
-     * @param minY
+     * @param featureCollection
+     * @return
      */
     private List<GLComplex> generateWithSolidColor(
-            PolygonSymbolizer symbolizer, IEnvelope envelope, double minX,
-            double minY, GLComplexRenderer renderer) {
+            PolygonSymbolizer symbolizer,
+            IFeatureCollection<IFeature> featureCollection) {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
         SolidColorizer colorizer = new SolidColorizer(symbolizer.getFill()
                 .getColor());
+        IEnvelope envelope = featureCollection.getEnvelope();
 
+        double minX = envelope.minX();
+        double minY = envelope.minY();
+        GeoxComplexRenderer renderer = GeoxRendererManager
+                .getOrCreateSurfaceRenderer(symbolizer, this.getLayerRenderer());
         // System.err.println("create filled polygon " + this.getName());
         GLSimpleComplex content = GLComplexFactory.createFilledPolygons(
                 this.getName() + "-filled", this.polygons, colorizer,

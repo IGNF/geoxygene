@@ -40,7 +40,7 @@ import javax.vecmath.Point2d;
 import org.apache.log4j.Logger;
 import org.lwjgl.BufferUtils;
 
-import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.GradientPixel;
 
 /**
  * @author JeT Tool collection for texture images
@@ -59,11 +59,11 @@ public class TextureImageUtil {
      * @param blurWindowHalfSize
      *            half size of the blur square
      */
-    public static void blurDistance(GradientTextureImage image,
+    public static void blurDistance(BinaryGradientImage image,
             int blurWindowHalfSize) {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 pixel.distance = blurDistanceNeighborhood(image, x, y,
                         blurWindowHalfSize);
             }
@@ -83,7 +83,7 @@ public class TextureImageUtil {
      *            half size of the blur window
      * @return
      */
-    private static double blurDistanceNeighborhood(GradientTextureImage image,
+    private static double blurDistanceNeighborhood(BinaryGradientImage image,
             int x, int y, int blurWindowHalfSize) {
         double neighborsWeightSum = 0.;
         double blurredDistance = 0;
@@ -91,7 +91,7 @@ public class TextureImageUtil {
 
             for (int dx = -blurWindowHalfSize; dx <= blurWindowHalfSize; dx++) {
                 double neighborWeight = 1.;
-                TexturePixel neighbor = image.getPixel(x + dx, y + dy);
+                GradientPixel neighbor = image.getPixel(x + dx, y + dy);
                 if (neighbor != null && neighbor.in) {
                     blurredDistance += neighbor.distance;
                     neighborsWeightSum += neighborWeight;
@@ -110,11 +110,11 @@ public class TextureImageUtil {
      * @param image
      * @param scaleFactor
      */
-    public static void rescaleTextureCoordinates(GradientTextureImage image,
+    public static void rescaleTextureCoordinates(BinaryGradientImage image,
             double uScaleFactor, double vScaleFactor) {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 if (pixel.in) {
                     pixel.uTexture *= uScaleFactor;
                     pixel.vTexture *= vScaleFactor;
@@ -124,12 +124,12 @@ public class TextureImageUtil {
 
     }
 
-    public static void blurTextureCoordinates(GradientTextureImage image,
+    public static void blurTextureCoordinates(BinaryGradientImage image,
             int blurWindowHalfSize) {
         image.invalidateUVBounds();
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 Point2d textureCoordinates = blurTextureCoordinatesNeighborhood(
                         image, x, y, blurWindowHalfSize);
                 pixel.uTexture = textureCoordinates.x;
@@ -140,7 +140,7 @@ public class TextureImageUtil {
     }
 
     public static Point2d blurTextureCoordinatesNeighborhood(
-            GradientTextureImage image, int x, int y, int blurWindowHalfSize) {
+            BinaryGradientImage image, int x, int y, int blurWindowHalfSize) {
         double blurredUcos = 0.;
         double blurredUsin = 0.;
         double neighborsWeightSum = 0.;
@@ -149,7 +149,7 @@ public class TextureImageUtil {
 
             for (int dx = -blurWindowHalfSize; dx <= blurWindowHalfSize; dx++) {
                 double neighborWeight = 1.;
-                TexturePixel neighbor = image.getPixel(x + dx, y + dy);
+                GradientPixel neighbor = image.getPixel(x + dx, y + dy);
                 if (neighbor != null && (neighbor.in || neighbor.frontier != 0)
                         && neighbor.vTexture != Double.POSITIVE_INFINITY) {
                     blurredV += neighbor.vTexture * neighborWeight;
@@ -187,7 +187,7 @@ public class TextureImageUtil {
         }
     }
 
-    public static void save(GradientTextureImage image, String filename)
+    public static void save(BinaryGradientImage image, String filename)
             throws IOException {
         saveTextureCoordinates(image, filename + "-t");
         saveHeight(image, filename + "-h");
@@ -201,7 +201,7 @@ public class TextureImageUtil {
      * @param filename
      * @throws IOException
      */
-    public static void saveHeight(GradientTextureImage image, String filename)
+    public static void saveHeight(BinaryGradientImage image, String filename)
             throws IOException {
         File f = new File(filename + ".png");
         BufferedImage rgbImage = new BufferedImage(image.getWidth(),
@@ -210,7 +210,7 @@ public class TextureImageUtil {
         double maxD = -Double.MAX_VALUE;
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 double d = pixel.distance;
                 if (d > maxD) {
                     maxD = d;
@@ -223,7 +223,7 @@ public class TextureImageUtil {
         }
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 int rValue = (int) (255. * (pixel.distance - minD) / (maxD - minD));
                 rValue = Math.max(0, Math.min(255, rValue));
 
@@ -253,14 +253,14 @@ public class TextureImageUtil {
      * @param filename
      * @throws IOException
      */
-    public static void saveTextureCoordinates(GradientTextureImage image,
+    public static void saveTextureCoordinates(BinaryGradientImage image,
             String filename) throws IOException {
         File f = new File(filename + ".png");
         BufferedImage rgbImage = new BufferedImage(image.getWidth(),
                 image.getHeight(), BufferedImage.TYPE_INT_RGB);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 int rgb = 0;
                 if (pixel.in || pixel.frontier != 0) {
                     double u = pixel.uTexture;
@@ -281,7 +281,7 @@ public class TextureImageUtil {
      * Apply a texture using (u,v) coordinates contained in the TextureImage. An
      * RGB image with transparent background is generated and returned
      */
-    public static BufferedImage applyTexture(GradientTextureImage image,
+    public static BufferedImage applyTexture(BinaryGradientImage image,
             BufferedImage texture) {
         // create an image with transparent background
         BufferedImage bufferedImage = new BufferedImage(image.getWidth(),
@@ -293,7 +293,7 @@ public class TextureImageUtil {
         g2d.setComposite(AlphaComposite.Src);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 int rgb = 0;
                 if (pixel.in || pixel.frontier != 0) {
                     int xTexture = (int) Math.abs(pixel.uTexture
@@ -316,7 +316,7 @@ public class TextureImageUtil {
      * code texture coordinates (u,v) with saturation and hue. u & v coordinates
      * must be between 0 & 1
      */
-    public static BufferedImage toHSB(GradientTextureImage image) {
+    public static BufferedImage toHSB(BinaryGradientImage image) {
         // create an image with transparent background
         BufferedImage bufferedImage = new BufferedImage(image.getWidth(),
                 image.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -327,7 +327,7 @@ public class TextureImageUtil {
         g2d.setComposite(AlphaComposite.Src);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 int rgb = 0;
                 if (pixel.in || pixel.frontier != 0) {
                     double u = pixel.uTexture;
@@ -344,13 +344,13 @@ public class TextureImageUtil {
      * code texture coordinates (u,v) with saturation and hue. u & v coordinates
      * must be between 0 & 1
      */
-    public static BufferedImage toColors(GradientTextureImage image,
+    public static BufferedImage toColors(BinaryGradientImage image,
             Color uMinColor, Color uMaxColor, Color vMaxColor) {
         double uMin = Double.MAX_VALUE, uMax = -Double.MAX_VALUE;
         double vMin = Double.MAX_VALUE, vMax = -Double.MAX_VALUE;
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 int rgb = 0;
                 if (pixel.in || pixel.frontier != 0) {
                     double u = pixel.uTexture;
@@ -372,7 +372,7 @@ public class TextureImageUtil {
         g2d.setComposite(AlphaComposite.Src);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 int rgb = 0;
                 if (pixel.in || pixel.frontier != 0) {
                     double u = pixel.uTexture;
@@ -401,12 +401,12 @@ public class TextureImageUtil {
     /**
      * code v texture coordinates as level of colors
      */
-    public static BufferedImage toHeight(GradientTextureImage image,
+    public static BufferedImage toHeight(BinaryGradientImage image,
             Color vMinColor, Color vMaxColor) {
         double vMin = Double.MAX_VALUE, vMax = -Double.MAX_VALUE;
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 if (pixel.in || pixel.frontier != 0) {
                     double v = pixel.vTexture;
                     vMin = Math.min(vMin, v);
@@ -424,7 +424,7 @@ public class TextureImageUtil {
         g2d.setComposite(AlphaComposite.Src);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 int rgb = 0;
                 if (pixel.in || pixel.frontier != 0) {
                     double v = pixel.vTexture;
@@ -448,10 +448,10 @@ public class TextureImageUtil {
      * 
      * @param textureImage
      */
-    public static void checkTextureCoordinates(GradientTextureImage image) {
+    public static void checkTextureCoordinates(BinaryGradientImage image) {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 if (pixel.in || pixel.frontier != 0) {
                     if (pixel.uTexture > 1. && pixel.uTexture < 0.
                             || pixel.vTexture > 1. && pixel.vTexture < 0.) {
@@ -474,7 +474,7 @@ public class TextureImageUtil {
      *            image to be converted
      * @return
      */
-    public static ByteBuffer toFloatBuffer(GradientTextureImage image) {
+    public static ByteBuffer toFloatBuffer(BinaryGradientImage image) {
         if (image == null) {
             return null;
         }
@@ -486,7 +486,7 @@ public class TextureImageUtil {
             for (int x = 0; x < image.getWidth(); x++) {
                 // byteBuffer.putFloat((float) x / (float) image.getWidth());
                 // byteBuffer.putFloat((float) y / (float) image.getHeight());
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 if (pixel.in) {
                     // System.err.println("uv texture (" + x + "," + y + ") = "
                     // + pixel.uTexture + "x" + pixel.vTexture);
@@ -513,8 +513,8 @@ public class TextureImageUtil {
         return byteBuffer;
     }
 
-    public static void displayPixel(GradientTextureImage texImage, int i, int j) {
-        TexturePixel pixel = texImage.getPixel(i, j);
+    public static void displayPixel(BinaryGradientImage texImage, int i, int j) {
+        GradientPixel pixel = texImage.getPixel(i, j);
         System.err.println("pixel(" + i + "," + j + ") = " + pixel.uTexture
                 + "x" + pixel.vTexture + " "
                 + (pixel.in ? "inside" : "outside") + " frontier = "

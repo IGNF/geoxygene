@@ -217,6 +217,6 @@ vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainti
 
 		l += rotringStroke( uv, shiftRand, brushSpace , strokeThickness * ( 1 + uRand), fragmentData.thickness, angle + angleRand, nSeed );
 	}
-	return vec4(fragmentData.color.rgb, fragmentData.color.a * globalOpacity * l );
+	return vec4(0.0,1.0,0.0, fragmentData.color.a * globalOpacity * l );
 }
 

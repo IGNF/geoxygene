@@ -57,7 +57,7 @@ public class GeoxComplexRendererGradient extends AbstractGeoxComplexRenderer {
     // Uniform Variables
 
     public static final int COLORTEXTURE1_SLOT = 0;
-    private GradientSubshaderDescriptor gradientDescriptor = null;
+    private GradientSubshaderDescriptor gradientSubshaderDescriptor = null;
 
     /**
      * Constructor
@@ -75,7 +75,7 @@ public class GeoxComplexRendererGradient extends AbstractGeoxComplexRenderer {
                     + " cannot handle fill descriptor type "
                     + fill2dDescriptor.getClass().getSimpleName());
         }
-        this.gradientDescriptor = (GradientSubshaderDescriptor) fill2dDescriptor;
+        this.gradientSubshaderDescriptor = (GradientSubshaderDescriptor) fill2dDescriptor;
     }
 
     @Override
@@ -113,13 +113,10 @@ public class GeoxComplexRendererGradient extends AbstractGeoxComplexRenderer {
         program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
                 (float) opacity);
 
-        // program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName,
-        // this.getFBOImageWidth());
-        // program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName,
-        // this.getFBOImageHeight());
         GLTools.glCheckError("program set to " + program.getName()
                 + " in normal rendering");
         // this.checkCurrentProgram("normalRendering(): after setCurrentProgram");
+        // Texture texture = primitive.getTexture();
         Texture texture = primitive.getTexture();
         if (texture != null) {
             GLTools.glCheckError("initializing texture");
@@ -148,13 +145,13 @@ public class GeoxComplexRendererGradient extends AbstractGeoxComplexRenderer {
         // GLTools.displayBuffer(primitive.getFlippedVerticesBuffer());
         this.drawComplex(primitive);
         // this.checkCurrentProgram("normalRendering(): after drawComplex()");
-        GLTools.glCheckError("direct rendering drawing GLSimpleComplex class = "
+        GLTools.glCheckError("direct rendering drawing class = "
                 + primitive.getClass().getSimpleName());
-        if (texture != null) {
-            texture.finalizeRendering();
-            GLTools.glCheckError("direct rendering finalizing texture rendering GLSimpleComplex class = "
-                    + primitive.getClass().getSimpleName());
-        }
+        // if (texture != null) {
+        // texture.finalizeRendering();
+        // GLTools.glCheckError("direct rendering finalizing texture rendering GLSimpleComplex class = "
+        // + primitive.getClass().getSimpleName());
+        // }
 
         GL30.glBindVertexArray(0);
         GLTools.glCheckError("exiting direct rendering");
@@ -167,7 +164,8 @@ public class GeoxComplexRendererGradient extends AbstractGeoxComplexRenderer {
      */
     private GLProgram setOrCreateGradientSubshaderProgram() throws GLException {
         String shaderId = "gradient-subshader-"
-                + this.gradientDescriptor.getShaderDescriptor().getId();
+                + this.gradientSubshaderDescriptor.getShaderDescriptor()
+                        .getId();
         GLProgramAccessor accessor = this.getGlContext().getProgramAccessor(
                 shaderId);
         GLProgram program = null;
@@ -177,7 +175,8 @@ public class GeoxComplexRendererGradient extends AbstractGeoxComplexRenderer {
                     .getLayerRenderer()
                     .getLayerViewPanel()
                     .createGradientSubshaderAccessor(
-                            this.gradientDescriptor.getShaderDescriptor());
+                            this.gradientSubshaderDescriptor
+                                    .getShaderDescriptor());
             this.getGlContext().addProgram(shaderId, gradientAccessor);
         }
         program = this.getGlContext().setCurrentProgram(shaderId);

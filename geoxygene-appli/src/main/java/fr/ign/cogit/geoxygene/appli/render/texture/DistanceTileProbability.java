@@ -27,8 +27,8 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage;
-import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.GradientPixel;
 import fr.ign.cogit.geoxygene.appli.render.texture.TileProbability;
 
 /**
@@ -38,7 +38,7 @@ import fr.ign.cogit.geoxygene.appli.render.texture.TileProbability;
  */
 public class DistanceTileProbability implements TileProbability {
 
-    private GradientTextureImage image = null;
+    private BinaryGradientImage image = null;
     private double distanceMin = 0;
     private double distanceMax = 0;
     private double inRangeProbability = 1;
@@ -50,7 +50,7 @@ public class DistanceTileProbability implements TileProbability {
      * @param image
      * @param probability
      */
-    public DistanceTileProbability(GradientTextureImage image, double distanceMin, double distanceMax, double inRangeProbability, double outRangeProbability) {
+    public DistanceTileProbability(BinaryGradientImage image, double distanceMin, double distanceMax, double inRangeProbability, double outRangeProbability) {
         super();
         this.image = image;
         this.distanceMin = distanceMin;
@@ -70,7 +70,7 @@ public class DistanceTileProbability implements TileProbability {
      *         max value. 0 elsewhere
      */
     public double getWeight(double x, double y) {
-        TexturePixel pixel = this.image.getPixel((int) x, (int) y);
+        GradientPixel pixel = this.image.getPixel((int) x, (int) y);
         //        System.err.println("DistanceTileProbability pixel = " + pixel + " distance = " + pixel.distance);
         if (pixel == null || pixel.distance == Double.NaN) {
             return this.outRangeProbability;

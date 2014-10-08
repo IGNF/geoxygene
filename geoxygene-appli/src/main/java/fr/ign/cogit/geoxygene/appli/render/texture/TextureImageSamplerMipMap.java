@@ -38,8 +38,8 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage;
-import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.GradientPixel;
 import fr.ign.cogit.geoxygene.util.MipMapMask;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 import fr.ign.cogit.geoxygene.util.gl.Tile;
@@ -53,14 +53,14 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
     private static final Logger logger = Logger
             .getLogger(TextureImageSamplerMipMap.class.getName()); // logger
 
-    private GradientTextureImage image = null;
+    private BinaryGradientImage image = null;
     private List<Sample> samples = null;
     private TileChooser tileChooser = null;
     private MipMapMask imageMask = null;
     // if visibility ratio is under threshold, reject sample
     private double visibilityRatioThreshold = 0.;
 
-    public TextureImageSamplerMipMap(GradientTextureImage image,
+    public TextureImageSamplerMipMap(BinaryGradientImage image,
             TileChooser tileChooser, double visibilityRatioThreshold) {
         super();
         this.tileChooser = tileChooser;
@@ -97,7 +97,7 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
         return this.getSamples() == null ? 0 : this.getSamples().size();
     }
 
-    private void setImage(GradientTextureImage image) {
+    private void setImage(BinaryGradientImage image) {
         if (image == null) {
 
             throw new IllegalStateException("null image set in "
@@ -117,7 +117,7 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
 
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 if (pixel == null) {
                     throw new IllegalStateException("Impossible case. pixel "
                             + x + "x" + y + " must be valid in texture image");
@@ -162,7 +162,7 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
         while ((p = this.nextWhitePixel(rand)) != null) {
             // System.err.println("Chosen sample = " + p + " between " +
             // this.imageMask.getNbWhite() + " white pixels");
-            TexturePixel pixel = this.image.getPixel(p.x, p.y);
+            GradientPixel pixel = this.image.getPixel(p.x, p.y);
             // System.err.println("pixel = " + pixel);
             Sample sample = pixel.sample;
             if (sample == null) {
@@ -239,7 +239,7 @@ public class TextureImageSamplerMipMap implements SamplingAlgorithm {
                     continue;
                 }
                 // count pixels that are inside "geometry"
-                TexturePixel pixel = this.image.getPixel(xImage, yImage);
+                GradientPixel pixel = this.image.getPixel(xImage, yImage);
                 if (pixel != null && (pixel.in)) {
                     inCount++;
                 } else {

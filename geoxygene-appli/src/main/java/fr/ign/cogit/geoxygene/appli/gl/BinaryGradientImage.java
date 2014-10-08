@@ -59,9 +59,9 @@ import fr.ign.cogit.geoxygene.util.gl.Sample;
  *         and linear parameterization informations. each pixel contains texture
  *         coordinates and some temporary information
  */
-public class GradientTextureImage {
+public class BinaryGradientImage {
 
-    public static class TexturePixel {
+    public static class GradientPixel {
         public double uTexture = 0;
         public double vTexture = 0;
         public double uTextureWeightSum = 0;
@@ -83,10 +83,10 @@ public class GradientTextureImage {
         /**
          * default constructor
          */
-        public TexturePixel() {
+        public GradientPixel() {
         }
 
-        public TexturePixel(final TexturePixel src) {
+        public GradientPixel(final GradientPixel src) {
             this.uTexture = src.uTexture;
             this.vTexture = src.vTexture;
             this.uTextureWeightSum = src.uTextureWeightSum;
@@ -124,9 +124,9 @@ public class GradientTextureImage {
     private int width = 0;
     private int height = 0;
     private int size = 0; // width * height
-    private TexturePixel[] pixels = null;
+    private GradientPixel[] pixels = null;
     private static final Logger logger = Logger
-            .getLogger(GradientTextureImage.class.getName()); // logger
+            .getLogger(BinaryGradientImage.class.getName()); // logger
     public Double uMin = null;
     public Double uMax = null;
     public Double vMin = null;
@@ -160,21 +160,8 @@ public class GradientTextureImage {
      * @param height
      *            projected image height
      */
-    public GradientTextureImage() {
-        this.width = 0;
-        this.height = 0;
-        this.size = 0;
-    }
+    public BinaryGradientImage(final int width, final int height) {
 
-    /**
-     * constructor
-     * 
-     * @param width
-     *            projected image width
-     * @param height
-     *            projected image height
-     */
-    public GradientTextureImage(final int width, final int height) {
         this.setDimension(width, height);
     }
 
@@ -192,7 +179,7 @@ public class GradientTextureImage {
      * @return
      */
     public AffineTransform tileTransform(int x, int y, int width, int height) {
-        TexturePixel pixel = this.getPixel(x, y);
+        GradientPixel pixel = this.getPixel(x, y);
         if (pixel == null) {
             return null;
         }
@@ -224,12 +211,12 @@ public class GradientTextureImage {
         this.height = height;
         this.size = width * height;
         if (this.size <= 1) {
-            throw new IllegalStateException("image too small = " + width + "x"
-                    + height + " = " + this.size);
-        }
-        this.pixels = new TexturePixel[this.size];
-        for (int l = 0; l < this.size; l++) {
-            this.pixels[l] = new TexturePixel();
+            this.pixels = null;
+        } else {
+            this.pixels = new GradientPixel[this.size];
+            for (int l = 0; l < this.size; l++) {
+                this.pixels[l] = new GradientPixel();
+            }
         }
 
     }
@@ -306,7 +293,7 @@ public class GradientTextureImage {
         double dMax = -Double.MAX_VALUE;
         for (int y = 0; y < this.getHeight(); y++) {
             for (int x = 0; x < this.getWidth(); x++) {
-                TexturePixel pixel = this.getPixel(x, y);
+                GradientPixel pixel = this.getPixel(x, y);
                 // System.err.println("calcul distance d = " + pixel.distance +
                 // " min = " + dMin + " max = " + dMax);
                 if (pixel.uTexture < uMin) {
@@ -367,7 +354,7 @@ public class GradientTextureImage {
     /**
      * get the specified pixel
      */
-    public TexturePixel getPixel(int x, int y) {
+    public GradientPixel getPixel(int x, int y) {
         if (x < 0 || x >= this.getWidth() || y < 0 || y >= this.getHeight()) {
             return null;
         }
@@ -406,7 +393,7 @@ public class GradientTextureImage {
     /**
      * get all pixels
      */
-    public TexturePixel[] getPixels() {
+    public GradientPixel[] getPixels() {
         return this.pixels;
     }
 
@@ -472,15 +459,19 @@ public class GradientTextureImage {
         }
     }
 
-    public static GradientTextureImage generateGradientTextureImage(
-            GradientTextureImageParameters params) {
-        GradientTextureImage texImage = null;
+    public static BinaryGradientImage generateBinaryGradientImage(
+            BinaryGradientImageParameters params) {
+        BinaryGradientImage gradientImage = null;
         try {
-            texImage = new GradientTextureImage(params.getWidth(),
+            gradientImage = new BinaryGradientImage(params.getWidth(),
                     params.getHeight());
         } catch (Throwable e) {
             logger.error("Something wrong occurred generating gradient image size "
-                    + params.getWidth() + "x" + params.getHeight());
+                    + params.getWidth()
+                    + "x"
+                    + params.getHeight()
+                    + " : "
+                    + e.getMessage());
             return null;
         }
         // draw Frontiers into texture image
@@ -488,8 +479,8 @@ public class GradientTextureImage {
         for (IPolygon polygon : params.getPolygons()) {
             pixelRenderer.getYs().clear(); // #note1
             // draw the outer frontier
-            drawFrontier(texImage, polygon.getExterior(), 1, pixelRenderer,
-                    params);
+            drawFrontier(gradientImage, polygon.getExterior(), 1,
+                    pixelRenderer, params);
             // double minX = Double.MAX_VALUE;
             // double minY = Double.MAX_VALUE;
             // double maxX = -Double.MAX_VALUE;
@@ -508,11 +499,11 @@ public class GradientTextureImage {
                     .getInterior().size(); innerFrontierIndex++) {
                 IRing innerFrontier = polygon.getInterior().get(
                         innerFrontierIndex);
-                drawFrontier(texImage, innerFrontier, -innerFrontierIndex - 1,
-                        pixelRenderer, params);
+                drawFrontier(gradientImage, innerFrontier,
+                        -innerFrontierIndex - 1, pixelRenderer, params);
             }
 
-            fillHorizontally(texImage, pixelRenderer.getYs(), params); // #note1
+            fillHorizontally(gradientImage, pixelRenderer.getYs(), params); // #note1
         }
         // #note1
         // fillHorizontally was previously outside the polygon loop. It is valid
@@ -523,7 +514,7 @@ public class GradientTextureImage {
         // back to previous version...
 
         try {
-            TextureImageUtil.save(texImage, "1-frontiers");
+            TextureImageUtil.save(gradientImage, "1-frontiers");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -544,14 +535,14 @@ public class GradientTextureImage {
 
         // FIXME: HACK: remove long edges (for the sea outside borders not to be
         // considered as sea edges)
-        modifiedPixels = getModifiedPixelsButInfiniteDistancePixels(texImage,
-                pixelRenderer.getModifiedPixels());
+        modifiedPixels = getModifiedPixelsButInfiniteDistancePixels(
+                gradientImage, pixelRenderer.getModifiedPixels());
 
         // Set<Point> nonInfiniteModifiedPixels =
         // pixelRenderer.getModifiedPixels();
         while (!modifiedPixels.isEmpty()) {
-            modifiedPixels = fillTextureCoordinates4(texImage, modifiedPixels,
-                    params.getImageToPolygonFactorX(),
+            modifiedPixels = fillTextureCoordinates4(gradientImage,
+                    modifiedPixels, params.getImageToPolygonFactorX(),
                     params.getImageToPolygonFactorY());
         }
         // try {
@@ -561,21 +552,21 @@ public class GradientTextureImage {
         // e.printStackTrace();
         // }
 
-        scaleV(texImage, texImage.getdMax());
-        computeGradient(texImage);
+        scaleV(gradientImage, gradientImage.getdMax());
+        computeGradient(gradientImage);
         // try {
         // TextureImageUtil.save(texImage, "4-gradient");
         // } catch (IOException e) {
         // // TODO Auto-generated catch block
         // e.printStackTrace();
         // }
-        return texImage;
+        return gradientImage;
     }
 
-    private static void computeGradient(GradientTextureImage texImage) {
+    private static void computeGradient(BinaryGradientImage texImage) {
         for (int y = 0; y < texImage.getHeight(); y++) {
             for (int x = 0; x < texImage.getWidth(); x++) {
-                TexturePixel pixel = texImage.getPixel(x, y);
+                GradientPixel pixel = texImage.getPixel(x, y);
                 if (pixel.in) {
                     // pixel.vGradient = new
                     // Point2d(Math.cos(pixel.mainDirection),
@@ -588,13 +579,13 @@ public class GradientTextureImage {
         }
     }
 
-    private static Point2d computeGradient(GradientTextureImage image, int x,
+    private static Point2d computeGradient(BinaryGradientImage image, int x,
             int y) {
-        TexturePixel p = image.getPixel(x, y);
-        TexturePixel pxp1 = image.getPixel(x + 1, y);
-        TexturePixel pxm1 = image.getPixel(x - 1, y);
-        TexturePixel pyp1 = image.getPixel(x, y + 1);
-        TexturePixel pym1 = image.getPixel(x, y - 1);
+        GradientPixel p = image.getPixel(x, y);
+        GradientPixel pxp1 = image.getPixel(x + 1, y);
+        GradientPixel pxm1 = image.getPixel(x - 1, y);
+        GradientPixel pyp1 = image.getPixel(x, y + 1);
+        GradientPixel pym1 = image.getPixel(x, y - 1);
         double dx = 0, dy = 0;
         if (pxp1 != null && pxm1 != null) {
             dx = pxp1.vTexture - pxm1.vTexture;
@@ -617,11 +608,11 @@ public class GradientTextureImage {
      * @param image
      * @param maxDistance
      */
-    private static void scaleV(GradientTextureImage image, double maxDistance) {
+    private static void scaleV(BinaryGradientImage image, double maxDistance) {
         // fill yTexture coordinates as distance / maxDistance for any pixel
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 pixel.vTexture = pixel.distance / maxDistance;
             }
         }
@@ -634,12 +625,12 @@ public class GradientTextureImage {
      * @param set
      */
     private static Set<Point> fillTextureCoordinates4(
-            GradientTextureImage image, Set<Point> set,
-            final double pixelWidth, final double pixelHeight) {
+            BinaryGradientImage image, Set<Point> set, final double pixelWidth,
+            final double pixelHeight) {
         // System.err.println(modifiedPixels.size() + " modified pixels");
         HashSet<Point> newlyModifiedPixels = new HashSet<Point>();
         for (Point p : set) {
-            TexturePixel pixel = image.getPixel(p.x, p.y);
+            GradientPixel pixel = image.getPixel(p.x, p.y);
             if (pixel == null) {
                 throw new IllegalStateException(
                         "modified pixels cannot be outside image ... " + p.x
@@ -674,10 +665,9 @@ public class GradientTextureImage {
      *            pixel position is added to this list if this pixel distance
      *            value has been modified
      */
-    private static boolean fillTextureCoordinates(
-            GradientTextureImage texImage, double d, double uTexture, Point p,
-            Set<Point> newlyModifiedPixels) {
-        TexturePixel pixel = texImage.getPixel(p.x, p.y);
+    private static boolean fillTextureCoordinates(BinaryGradientImage texImage,
+            double d, double uTexture, Point p, Set<Point> newlyModifiedPixels) {
+        GradientPixel pixel = texImage.getPixel(p.x, p.y);
         if (pixel == null) {
             return false;
         }
@@ -698,10 +688,10 @@ public class GradientTextureImage {
      * @return
      */
     private static Set<Point> getModifiedPixelsButInfiniteDistancePixels(
-            GradientTextureImage texImage, Set<Point> modifiedPixels) {
+            BinaryGradientImage texImage, Set<Point> modifiedPixels) {
         Set<Point> nonInfiniteModifiedPixels = new HashSet<Point>();
         for (Point p : modifiedPixels) {
-            TexturePixel pixel = texImage.getPixel(p.x, p.y);
+            GradientPixel pixel = texImage.getPixel(p.x, p.y);
             if (pixel.distance != Double.POSITIVE_INFINITY) {
                 nonInfiniteModifiedPixels.add(p);
             } else {
@@ -718,9 +708,8 @@ public class GradientTextureImage {
      *            list of y values containing a list of x-values
      * @param image
      */
-    private static void fillHorizontally(GradientTextureImage texImage,
-            Map<Integer, List<Integer>> ys,
-            GradientTextureImageParameters params) {
+    private static void fillHorizontally(BinaryGradientImage texImage,
+            Map<Integer, List<Integer>> ys, BinaryGradientImageParameters params) {
         for (int y = 0; y < texImage.getHeight(); y++) {
             List<Integer> xs = ys.get(y);
             if (xs == null || xs.size() == 0) {
@@ -736,7 +725,7 @@ public class GradientTextureImage {
                 int x1 = Math.min(xs.get(2 * n), xs.get(2 * n + 1));
                 int x2 = Math.max(xs.get(2 * n), xs.get(2 * n + 1));
                 for (int x = x1; x <= x2; x++) {
-                    TexturePixel pixel = texImage.getPixel(x, y);
+                    GradientPixel pixel = texImage.getPixel(x, y);
                     if (pixel != null) {
                         pixel.in = true;
                         if (pixel.frontier == 0) {
@@ -759,10 +748,10 @@ public class GradientTextureImage {
      * @param frontier
      * @param pixelRenderer
      */
-    private static void drawFrontier(GradientTextureImage texImage,
+    private static void drawFrontier(BinaryGradientImage texImage,
             IRing frontier, int frontierId,
             DistanceFieldFrontierPixelRenderer pixelRenderer,
-            GradientTextureImageParameters params) {
+            BinaryGradientImageParameters params) {
         pixelRenderer.setCurrentFrontier(frontierId);
         int frontierSize = frontier.coord().size();
         if (frontierSize < 3) {
@@ -845,7 +834,7 @@ public class GradientTextureImage {
         }
     }
 
-    public static class GradientTextureImageParameters {
+    public static class BinaryGradientImageParameters {
 
         private final int width;
         private final int height;
@@ -856,7 +845,7 @@ public class GradientTextureImage {
         private final double imageToPolygonFactorY;
         private final double maxCoastlineLength;
 
-        public GradientTextureImageParameters(int width, int height,
+        public BinaryGradientImageParameters(int width, int height,
                 List<IPolygon> polygons, IEnvelope envelope,
                 double maxCoastlineLength) {
             super();
@@ -969,13 +958,13 @@ public class GradientTextureImage {
     }
 
     public static BufferedImage toBufferedImageDistance(
-            GradientTextureImage image, Color c1, Color c2) {
+            BinaryGradientImage image, Color c1, Color c2) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(),
                 image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 if (pixel.closestFrontier != 0) {
                     bi.setRGB(x, y, Color.yellow.getRGB());
                 } else if (pixel.distance == Double.POSITIVE_INFINITY
@@ -1000,13 +989,13 @@ public class GradientTextureImage {
     }
 
     public static BufferedImage toBufferedImageDistanceHSV(
-            GradientTextureImage image) {
+            BinaryGradientImage image) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(),
                 image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 if (pixel.closestFrontier != 0) {
                     bi.setRGB(x, y, Color.yellow.getRGB());
                 } else if (pixel.distance == Double.POSITIVE_INFINITY
@@ -1026,13 +1015,13 @@ public class GradientTextureImage {
     }
 
     public static BufferedImage toBufferedImageDistanceStrip(
-            GradientTextureImage image, int nbStrips) {
+            BinaryGradientImage image, int nbStrips) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(),
                 image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 if (pixel.closestFrontier != 0) {
                     bi.setRGB(x, y, Color.yellow.getRGB());
                 } else if (pixel.distance == Double.POSITIVE_INFINITY
@@ -1050,13 +1039,13 @@ public class GradientTextureImage {
         return bi;
     }
 
-    public static BufferedImage toBufferedImageU(GradientTextureImage image) {
+    public static BufferedImage toBufferedImageU(BinaryGradientImage image) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(),
                 image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 if (!pixel.in) {
                     bi.setRGB(x, y, Color.black.getRGB());
                 } else {
@@ -1070,7 +1059,7 @@ public class GradientTextureImage {
         return bi;
     }
 
-    public static BufferedImage toBufferedImageUV(GradientTextureImage image) {
+    public static BufferedImage toBufferedImageUV(BinaryGradientImage image) {
         if (image == null) {
             return null;
         }
@@ -1079,7 +1068,7 @@ public class GradientTextureImage {
                 image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                TexturePixel pixel = image.getPixel(x, y);
+                GradientPixel pixel = image.getPixel(x, y);
                 if (!pixel.in) {
                     bi.setRGB(x, y, Color.black.getRGB());
                 } else {
@@ -1095,20 +1084,25 @@ public class GradientTextureImage {
         return bi;
     }
 
-    public static GradientTextureImage readTextureImage(File textureFile)
+    public static BinaryGradientImage readBinaryGradientImage(File gradientFile)
             throws IOException {
-        GradientTextureImage img = new GradientTextureImage(0, 0);
+        BinaryGradientImage img = new BinaryGradientImage(0, 0);
         FileInputStream is = null;
         DataInputStream dis = null;
         try {
-            is = new FileInputStream(textureFile);
+            is = new FileInputStream(gradientFile);
             dis = new DataInputStream(is);
 
             int width = dis.readInt();
             int height = dis.readInt();
 
-            img.setDimension(width, height);
-            TexturePixel pixel = new TexturePixel();
+            try {
+                img.setDimension(width, height);
+            } catch (Error e) {
+                logger.error("An error occurred allocating " + width + "x"
+                        + height + " Gradient image from " + gradientFile);
+            }
+            GradientPixel pixel = new GradientPixel();
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     readTexturePixel(pixel, dis);
@@ -1129,12 +1123,12 @@ public class GradientTextureImage {
         return img;
     }
 
-    public static void writeTextureImage(File textureFile,
-            GradientTextureImage img) throws IOException {
+    public static void writeBinaryGradientImage(File gradientFile,
+            BinaryGradientImage img) throws IOException {
         FileOutputStream fos = null;
         DataOutputStream dos = null;
         try {
-            fos = new FileOutputStream(textureFile);
+            fos = new FileOutputStream(gradientFile);
             dos = new DataOutputStream(fos);
 
             dos.writeInt(img.getWidth());
@@ -1142,7 +1136,7 @@ public class GradientTextureImage {
 
             for (int y = 0; y < img.getHeight(); y++) {
                 for (int x = 0; x < img.getWidth(); x++) {
-                    TexturePixel pixel = img.getPixel(x, y);
+                    GradientPixel pixel = img.getPixel(x, y);
 
                     writeTexturePixel(pixel, dos);
 
@@ -1161,7 +1155,7 @@ public class GradientTextureImage {
         }
     }
 
-    private static void writeTexturePixel(TexturePixel pixel,
+    private static void writeTexturePixel(GradientPixel pixel,
             DataOutputStream dis) throws IOException {
         dis.writeDouble(pixel.uTexture);
         dis.writeDouble(pixel.vTexture);
@@ -1181,8 +1175,8 @@ public class GradientTextureImage {
         pixel.sample = null;
     }
 
-    private static void readTexturePixel(TexturePixel pixel, DataInputStream dis)
-            throws IOException {
+    private static void readTexturePixel(GradientPixel pixel,
+            DataInputStream dis) throws IOException {
         pixel.uTexture = dis.readDouble();
         pixel.vTexture = dis.readDouble();
         pixel.uTextureWeightSum = dis.readDouble();

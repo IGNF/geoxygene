@@ -41,14 +41,14 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.appli.task.Task;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.GradientTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 
@@ -63,22 +63,22 @@ public class TextureManager {
     private static final Map<TextureDescriptor, TextureTask<BasicTexture>> tasksMap = new HashMap<TextureDescriptor, TextureTask<BasicTexture>>();
     private static final Map<File, TextureTask<BasicTexture>> readersMap = new HashMap<File, TextureTask<BasicTexture>>();
 
-    private static final Map<GradientTextureDescriptor, GradientImageTask> gradientTasksMap = new HashMap<GradientTextureDescriptor, GradientImageTask>();
-    private static final Map<File, GradientImageTask> gradientReadersMap = new HashMap<File, GradientImageTask>();
+    private static final Map<BinaryGradientImageDescriptor, BinaryGradientImageTask> gradientTasksMap = new HashMap<BinaryGradientImageDescriptor, BinaryGradientImageTask>();
+    private static final Map<File, BinaryGradientImageTask> gradientReadersMap = new HashMap<File, BinaryGradientImageTask>();
 
     private final static TextureManager instance = new TextureManager();
 
     public static String DIRECTORY_CACHE_NAME = "cache";
 
     private BasicTextureTaskListener basicListener = null;
-    private GradientTextureTaskListener gradientListener = null;
+    private BinaryGradientImageTaskListener gradientListener = null;
 
     /**
      * private singleton constructor
      */
     private TextureManager() {
         this.basicListener = new BasicTextureTaskListener(this);
-        this.gradientListener = new GradientTextureTaskListener(this);
+        this.gradientListener = new BinaryGradientImageTaskListener(this);
     }
 
     /**
@@ -174,21 +174,28 @@ public class TextureManager {
     }
 
     /**
-     * Create or return a texture task. The task is NOT automatically started
-     * when completed Task.getTextureImage() won't be null
+     * Create or return a Gradient Image task. The task is NOT automatically
+     * started when completed Task.getTextureImage() won't be null. Gradient
+     * Image is a float image containing gradient values for a given feature
+     * collection. This image is not directly displayable
      * 
-     * @param texture
+     * @param name
+     *            task name
+     * @param gradientTextureDescriptor
+     *            gradient texture descriptor described in the SLD
      * @param featureCollection
+     *            feature collection to generate gradient image
      * @param viewport
-     * @return
+     *            display viewport
+     * @return a non started GradientTexture task
      */
-    public Task getGradientTextureTask(String name,
-            GradientTextureDescriptor gradientTextureDescriptor,
+    public BinaryGradientImageTask getGradientTextureTask(String name,
+            BinaryGradientImageDescriptor gradientTextureDescriptor,
             IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
         if (gradientTextureDescriptor == null) {
             return null;
         }
-        GradientImageTask textureTask = null;
+        BinaryGradientImageTask textureTask = null;
         // create a task to generate texture image
         synchronized (gradientTasksMap) {
             textureTask = gradientTasksMap.get(gradientTextureDescriptor);
@@ -197,7 +204,7 @@ public class TextureManager {
                 return textureTask;
             }
             // look for texture on cache disk
-            File file = TextureManager.generateGradientTextureUniqueFile(
+            File file = TextureManager.generateBinaryGradientImageUniqueFile(
                     gradientTextureDescriptor, featureCollection);
             // logger.debug("Look for file '" + file.getAbsolutePath() + "'");
             // logger.debug(textureDescriptor.toString());
@@ -210,13 +217,13 @@ public class TextureManager {
                 return textureTask;
             }
             // generate texture
-            textureTask = new GradientImageTask(name,
+            textureTask = new BinaryGradientImageTask(name,
                     gradientTextureDescriptor, featureCollection);
-            if (textureTask == null) {
-                logger.error("Unable to create texture task for texture "
-                        + gradientTextureDescriptor.getClass().getSimpleName());
-                return null;
-            }
+            // if (textureTask == null) {
+            // logger.error("Unable to create texture task for texture "
+            // + gradientTextureDescriptor.getClass().getSimpleName());
+            // return null;
+            // }
             gradientTasksMap.put(gradientTextureDescriptor, textureTask);
         }
 
@@ -249,12 +256,12 @@ public class TextureManager {
      * @param file
      * @return
      */
-    private GradientImageTask getGradientImageReaderTask(File file) {
-        GradientImageTask textureTask = gradientReadersMap.get(file);
+    private BinaryGradientImageTask getGradientImageReaderTask(File file) {
+        BinaryGradientImageTask textureTask = gradientReadersMap.get(file);
         if (textureTask != null) {
             return textureTask;
         }
-        textureTask = new GradientImageTask("reading gradient texture "
+        textureTask = new BinaryGradientImageTask("reading gradient texture "
                 + file.getName(), file);
         gradientReadersMap.put(file, textureTask);
         textureTask.addTaskListener(this.gradientListener);
@@ -330,44 +337,47 @@ public class TextureManager {
         }
     }
 
-    private class GradientTextureTaskListener implements
-            TaskListener<GradientTextureTask> {
+    private class BinaryGradientImageTaskListener implements
+            TaskListener<BinaryGradientImageTask> {
         private TextureManager manager = null;
 
         /**
          * @param manager
          */
-        public GradientTextureTaskListener(TextureManager manager) {
+        public BinaryGradientImageTaskListener(TextureManager manager) {
             super();
             this.manager = manager;
         }
 
         @Override
-        public void onStateChange(GradientTextureTask task, TaskState oldState) {
+        public void onStateChange(BinaryGradientImageTask task,
+                TaskState oldState) {
             switch (task.getState()) {
             case FINISHED:
-                if (task.getTexture().getTextureFilename() != null) {
-                    synchronized (readersMap) {
-                        readersMap.remove(task.getTexture()
-                                .getTextureFilename());
+                BinaryGradientImage binaryGradientImage = task
+                        .getBinaryGradientImage();
+                if (binaryGradientImage != null) {
+                    synchronized (gradientReadersMap) {
+                        gradientReadersMap.remove(task
+                                .getBinaryGradientImageFile());
                     }
 
                 }
-                synchronized (tasksMap) {
-                    tasksMap.remove(task.getTexture());
+                synchronized (gradientTasksMap) {
+                    gradientTasksMap.remove(task);
                 }
                 task.removeTaskListener(this);
-                if (task.getTexture().getTextureImage() == null) {
+                if (binaryGradientImage == null) {
                     logger.error("TextureTask has finished with no error but a null texture (its role IS to fill texture.getTextureImage() method)");
                 }
                 // save texture on disk
-                this.manager.saveTexture(task);
+                this.manager.saveBinaryGradientImage(task);
                 GeOxygeneEventManager.refreshApplicationGui();
                 break;
             case ERROR:
             case STOPPED:
-                synchronized (tasksMap) {
-                    tasksMap.remove(task);
+                synchronized (gradientTasksMap) {
+                    gradientTasksMap.remove(task);
                 }
                 task.removeTaskListener(this);
                 break;
@@ -375,6 +385,7 @@ public class TextureManager {
                 // do nothing special;
             }
         }
+
     }
 
     /**
@@ -423,6 +434,54 @@ public class TextureManager {
         }, "save texture on disk").start();
     }
 
+    private void saveBinaryGradientImage(final BinaryGradientImageTask task) {
+        if (task == null) {
+            throw new IllegalArgumentException("Cannot save null task");
+        }
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                BinaryGradientImage binaryGradientImage = task.getBinaryGradientImage();
+                if (binaryGradientImage == null) {
+                    logger.error("Asked to save gradient image that has no generated content");
+                    return;
+                }
+                File file = task.getBinaryGradientImageFile();
+                File directory = file.getParentFile();
+                if (!directory.exists() && !directory.mkdirs()) {
+                    logger.error("Cannot create directory '"
+                            + directory.getAbsolutePath() + "'");
+                    logger.error("texture '" + file.getAbsolutePath()
+                            + "' won't be saved on disk");
+                    return;
+                }
+
+                try {
+                    logger.info("save gradient image on disk '"
+                            + file.getAbsolutePath() + "'");
+                    BinaryGradientImage.writeBinaryGradientImage(file,
+                            binaryGradientImage);
+                } catch (IOException e) {
+                    logger.error("Cannot write gradient image "
+                            + file.getAbsolutePath() + " on disk");
+                    e.printStackTrace();
+                }
+
+            }
+
+        }, "save texture on disk").start();
+
+    }
+
+    /**
+     * Generate a unique filename for a texture decriptor and a feature
+     * collection
+     * 
+     * @param textureDescriptor
+     * @param featureCollection
+     * @return
+     */
     public static String generateTextureUniqueFilename(
             TextureDescriptor textureDescriptor,
             IFeatureCollection<IFeature> featureCollection) {
@@ -430,7 +489,15 @@ public class TextureManager {
                 + generateHashCode(featureCollection);
     }
 
-    private static File generateTextureUniqueFile(
+    /**
+     * Generate a unique file for a texture decriptor and a feature collection.
+     * It uses the texture filename
+     * 
+     * @param textureDescriptor
+     * @param featureCollection
+     * @return
+     */
+    public static File generateTextureUniqueFile(
             TextureDescriptor textureDescriptor,
             IFeatureCollection<IFeature> featureCollection) {
         return new File(DIRECTORY_CACHE_NAME
@@ -439,19 +506,35 @@ public class TextureManager {
                         featureCollection) + ".png");
     }
 
-    private static File generateGradientTextureUniqueFile(
-            GradientTextureDescriptor textureDescriptor,
+    /**
+     * Generate a unique file for a binary gradient image decriptor and a
+     * feature collection. It uses the gradientImage filename
+     * 
+     * @param descriptor
+     * @param featureCollection
+     * @return
+     */
+    public static File generateBinaryGradientImageUniqueFile(
+            BinaryGradientImageDescriptor descriptor,
             IFeatureCollection<IFeature> featureCollection) {
         return new File(DIRECTORY_CACHE_NAME
                 + File.separator
-                + generateGradientTextureUniqueFilename(textureDescriptor,
+                + generateBinaryGradientImageUniqueFilename(descriptor,
                         featureCollection) + ".png");
     }
 
-    public static String generateGradientTextureUniqueFilename(
-            GradientTextureDescriptor textureDescriptor,
+    /**
+     * Generate a unique filename for a binary gradient image decriptor and a
+     * feature collection
+     * 
+     * @param descriptor
+     * @param featureCollection
+     * @return
+     */
+    public static String generateBinaryGradientImageUniqueFilename(
+            BinaryGradientImageDescriptor descriptor,
             IFeatureCollection<IFeature> featureCollection) {
-        return textureDescriptor.hashCode() + "-"
+        return descriptor.hashCode() + "-"
                 + generateHashCode(featureCollection);
     }
 

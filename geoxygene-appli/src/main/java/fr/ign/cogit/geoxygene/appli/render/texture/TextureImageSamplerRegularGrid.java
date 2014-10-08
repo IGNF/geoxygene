@@ -35,8 +35,8 @@ import java.util.Random;
 
 import javax.vecmath.Point2d;
 
-import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage;
-import fr.ign.cogit.geoxygene.appli.gl.GradientTextureImage.TexturePixel;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
+import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.GradientPixel;
 import fr.ign.cogit.geoxygene.util.gl.Sample;
 import fr.ign.cogit.geoxygene.util.gl.Tile;
 
@@ -47,7 +47,7 @@ import fr.ign.cogit.geoxygene.util.gl.Tile;
 public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
 
     private static final Point2D unitScaleFactor = new Point2D.Double(1., 1.);
-    private GradientTextureImage image = null;
+    private BinaryGradientImage image = null;
     private double scale = 1;
     private double sampleX = 1;
     private double sampleY = 1;
@@ -58,7 +58,7 @@ public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
     /**
      * Default constructor
      */
-    public TextureImageSamplerRegularGrid(GradientTextureImage image, double sampleX, double sampleY, double scale) {
+    public TextureImageSamplerRegularGrid(BinaryGradientImage image, double sampleX, double sampleY, double scale) {
         this.image = image;
         this.scale = scale;
         this.sampleX = sampleX;
@@ -68,7 +68,7 @@ public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
     /**
      * Default constructor
      */
-    public TextureImageSamplerRegularGrid(GradientTextureImage image, double sampleX, double sampleY, double scale, TileChooser tileChooser) {
+    public TextureImageSamplerRegularGrid(BinaryGradientImage image, double sampleX, double sampleY, double scale, TileChooser tileChooser) {
         this.image = image;
         this.scale = scale;
         this.sampleX = sampleX;
@@ -132,7 +132,7 @@ public class TextureImageSamplerRegularGrid implements SamplingAlgorithm {
         this.samples.clear();
         for (double y = 0; y < this.image.getHeight(); y += ySampleRate) {
             for (double x = 0; x < this.image.getWidth(); x += xSampleRate) {
-                TexturePixel pixel = this.image.getPixel((int) x, (int) y);
+                GradientPixel pixel = this.image.getPixel((int) x, (int) y);
                 if (pixel.in) {
                     double jitterX = 0.;
                     double jitterY = 0.;

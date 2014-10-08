@@ -33,7 +33,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.style.texture.BasicTextureDescriptor;
-import fr.ign.cogit.geoxygene.style.texture.GradientTextureDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TileDistributionTextureDescriptor;
@@ -73,9 +73,9 @@ public class TextureTaskFactory {
                     featureCollection, viewport);
 
         }
-        if (textureDescriptor instanceof GradientTextureDescriptor) {
+        if (textureDescriptor instanceof BinaryGradientImageDescriptor) {
             return createGradientTextureTask(name,
-                    (GradientTextureDescriptor) textureDescriptor,
+                    (BinaryGradientImageDescriptor) textureDescriptor,
                     featureCollection, viewport);
 
         }
@@ -105,7 +105,7 @@ public class TextureTaskFactory {
     }
 
     public static GradientTextureTask createGradientTextureTask(String name,
-            GradientTextureDescriptor textureDescriptor,
+            BinaryGradientImageDescriptor textureDescriptor,
             IFeatureCollection<IFeature> featureCollection, Viewport viewport) {
         return new GradientTextureTask(name, textureDescriptor,
                 featureCollection);

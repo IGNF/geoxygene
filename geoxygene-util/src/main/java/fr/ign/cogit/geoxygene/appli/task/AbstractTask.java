@@ -267,12 +267,13 @@ public abstract class AbstractTask implements Task {
      * @param oldState
      *            old task state
      */
+    @SuppressWarnings("unchecked")
     public void fireStateChanged(final TaskState oldState) {
-        final TaskListener[] listeners;
+        final TaskListener<Task>[] listeners;
         synchronized (this.listeners) {
             listeners = this.listeners.toArray(DUMMYTASKLISTENERARRAY);
         }
-        for (TaskListener listener : listeners) {
+        for (TaskListener<Task> listener : listeners) {
             listener.onStateChange(this, oldState);
         }
     }

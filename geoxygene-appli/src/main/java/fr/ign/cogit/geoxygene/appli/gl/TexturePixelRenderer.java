@@ -18,7 +18,7 @@ public interface TexturePixelRenderer {
      * @param image
      *            image to set point
      */
-    void renderFirstPixel(int x, int y, GradientTextureImage image);
+    void renderFirstPixel(int x, int y, BinaryGradientImage image);
 
     /**
      * @param x
@@ -28,7 +28,7 @@ public interface TexturePixelRenderer {
      * @param image
      *            image to set point
      */
-    void renderPixel(int x, int y, GradientTextureImage image);
+    void renderPixel(int x, int y, BinaryGradientImage image);
 
     /**
      * @param x
@@ -38,7 +38,7 @@ public interface TexturePixelRenderer {
      * @param image
      *            image to set point
      */
-    void renderLastPixel(int x, int y, GradientTextureImage image);
+    void renderLastPixel(int x, int y, BinaryGradientImage image);
 
     /**
      * describe the current drawn line

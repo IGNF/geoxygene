@@ -27,10 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import java.awt.Color;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,36 +41,86 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.BinaryGradientImageParameters;
+import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
-import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 
 /**
- * @author JeT This Task generates a GradientImage and transform it into a
- *         gradient image with false colors
+ * @author JeT This Task generates a BinaryGradientImage. It does not transform
+ *         it into a gradient image with false colors as GradientTextureTask
+ *         does
  */
-public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
+public class BinaryGradientImageTask extends AbstractTask {
 
     private static final Logger logger = Logger
-            .getLogger(GradientTextureTask.class.getName()); // logger
+            .getLogger(BinaryGradientImageTask.class.getName()); // logger
     // texture descriptor (from style)
-    private BinaryGradientImageDescriptor textureDescriptor = null;
-    private BasicTexture basicTexture = null;
+    private BinaryGradientImageDescriptor binaryGradientImageDescriptor = null;
+    private BinaryGradientImage binaryGradientImage = null;
     private IFeatureCollection<IFeature> featureCollection = null;
+    private File binaryGradientImageFile = null;
 
     public static final double CM_PER_INCH = 2.540005;
     public static final double M_PER_INCH = CM_PER_INCH / 100.;
 
     /**
+     * Using this constructor, the gradient image will be generated with the
+     * descriptor and the feature collection
+     * 
      * @param texture
      */
-    public GradientTextureTask(String name,
+    public BinaryGradientImageTask(String name,
             BinaryGradientImageDescriptor textureDescriptor,
             IFeatureCollection<IFeature> featureCollection) {
-        super("GradientTexture" + name);
-        this.textureDescriptor = textureDescriptor;
-        this.basicTexture = new BasicTexture();
+        super("Gradient" + name);
+        this.binaryGradientImageDescriptor = textureDescriptor;
         this.featureCollection = featureCollection;
+        this.binaryGradientImageFile = null;
+    }
+
+    /**
+     * Using this constructor the gradient image will be read from the given
+     * file
+     * 
+     * @param texture
+     */
+    public BinaryGradientImageTask(String name, File file) {
+        super("Gradient" + name);
+        this.binaryGradientImageDescriptor = null;
+        this.featureCollection = null;
+        this.binaryGradientImageFile = file;
+    }
+
+    /**
+     * get the image descriptor used to generate the gradient image. It can be
+     * null if the gradient image has been read from a file
+     * 
+     * @return
+     */
+    public BinaryGradientImageDescriptor getBinaryGradientImageDescriptor() {
+        return binaryGradientImageDescriptor;
+    }
+
+    /**
+     * get the file associated with this gradient image generation/read task
+     * 
+     * @return
+     */
+    public File getBinaryGradientImageFile() {
+        if (binaryGradientImageFile != null)
+            return binaryGradientImageFile;
+        return TextureManager.generateBinaryGradientImageUniqueFile(
+                this.binaryGradientImageDescriptor, featureCollection);
+    }
+
+    /**
+     * get the feature collection used to generate the gradient image. It can be
+     * null if the gradient image has been read from a file
+     * 
+     * @return
+     */
+    public IFeatureCollection<IFeature> getFeatureCollection() {
+        return featureCollection;
     }
 
     /*
@@ -113,15 +160,26 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
      */
     @Override
     public void run() {
+        if (this.binaryGradientImageFile != null) {
+            readBinaryGradientImageFile();
+        } else {
+            generateBinaryGradientImage();
+        }
+    }
+
+    /**
+     * Generate the gradient image from 'this.binaryGradientImageDescriptor'
+     */
+    private void generateBinaryGradientImage() {
         this.setState(TaskState.WAITING);
         this.setState(TaskState.INITIALIZING);
         IEnvelope envelope = this.featureCollection.getEnvelope();
 
-        double mapScale = this.textureDescriptor.getMapScale();
+        double mapScale = this.binaryGradientImageDescriptor.getMapScale();
         int textureWidth = (int) (envelope.width()
-                * this.textureDescriptor.getTextureResolution() / (M_PER_INCH * mapScale));
+                * this.binaryGradientImageDescriptor.getTextureResolution() / (M_PER_INCH * mapScale));
         int textureHeight = (int) (envelope.length()
-                * this.textureDescriptor.getTextureResolution() / (M_PER_INCH * mapScale));
+                * this.binaryGradientImageDescriptor.getTextureResolution() / (M_PER_INCH * mapScale));
 
         List<IPolygon> polygons = new ArrayList<IPolygon>();
         // convert the multisurface as a collection of polygons
@@ -144,7 +202,7 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
                         + feature.getGeom().getClass().getSimpleName());
             }
         }
-        double maxCoastLineLength = this.textureDescriptor
+        double maxCoastLineLength = this.binaryGradientImageDescriptor
                 .getMaxCoastlineLength();
 
         this.setState(TaskState.RUNNING);
@@ -152,30 +210,14 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
             BinaryGradientImageParameters params = new BinaryGradientImageParameters(
                     textureWidth, textureHeight, polygons, envelope,
                     maxCoastLineLength);
-            BinaryGradientImage texImage = BinaryGradientImage
+            this.binaryGradientImage = BinaryGradientImage
                     .generateBinaryGradientImage(params);
-            if (texImage == null) {
+            if (this.binaryGradientImage == null) {
                 this.setError(new IllegalStateException(
                         "GradientTextureImage returned a null texture"));
                 this.setState(TaskState.ERROR);
                 return;
             }
-            // BufferedImage image = GradientTextureImage
-            // .toBufferedImageDistanceStrip(texImage, 20);
-            // BufferedImage image = GradientTextureImage
-            // .toBufferedImageUV(texImage);
-            BufferedImage image = BinaryGradientImage.toBufferedImageDistance(
-                    texImage, Color.white, Color.red);
-
-            // Flip the image vertically
-            AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
-            tx.translate(0, -image.getHeight(null));
-            AffineTransformOp op = new AffineTransformOp(tx,
-                    AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-            image = op.filter(image, null);
-
-            // ImageIO.write(image, "PNG", new File("gradient.png"));
-            this.getTexture().setTextureImage(image);
             this.setState(TaskState.FINISHED);
         } catch (Exception e) {
             this.setError(e);
@@ -184,19 +226,32 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
         }
     }
 
-    @Override
-    public int getTextureWidth() {
-        return this.getTexture().getTextureWidth();
+    /**
+     * Read the gradient image from 'this.binaryGradientImageFile'
+     */
+    private void readBinaryGradientImageFile() {
+        this.setState(TaskState.WAITING);
+        this.setState(TaskState.INITIALIZING);
+        try {
+
+            this.binaryGradientImage = BinaryGradientImage
+                    .readBinaryGradientImage(this.binaryGradientImageFile);
+            if (this.binaryGradientImage == null) {
+                this.setError(new IllegalStateException(
+                        "GradientTextureImage returned a null texture"));
+                this.setState(TaskState.ERROR);
+                return;
+            }
+            this.setState(TaskState.FINISHED);
+        } catch (Exception e) {
+            this.setError(e);
+            this.setState(TaskState.ERROR);
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public int getTextureHeight() {
-        return this.getTexture().getTextureHeight();
-    }
-
-    @Override
-    public BasicTexture getTexture() {
-        return this.basicTexture;
+    public BinaryGradientImage getBinaryGradientImage() {
+        return this.binaryGradientImage;
     }
 
     /*
@@ -206,9 +261,10 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
      */
     @Override
     public String toString() {
-        return "BasicTextureTask [textureDescriptor=" + this.textureDescriptor
-                + ", basicTexture=" + this.basicTexture + ", toString()="
-                + super.toString() + "]";
+        return "GradientImageTask [textureDescriptor="
+                + this.binaryGradientImageDescriptor
+                + ", gradientTextureImage=" + this.binaryGradientImage
+                + ", featureCollection=" + this.featureCollection + "]";
     }
 
 }
