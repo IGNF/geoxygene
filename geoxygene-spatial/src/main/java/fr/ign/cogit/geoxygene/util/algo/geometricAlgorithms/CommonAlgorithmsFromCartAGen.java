@@ -1037,30 +1037,30 @@ public class CommonAlgorithmsFromCartAGen {
     boolean start = false;
     boolean end = false;
     for (IDirectPosition vertex : updatedLine.coord()) {
-      if (vertex.equals(pt1))
+      if (vertex.equals(pt1, 0.01))
         start = true;
-      if (!start)
-        continue;
       if (end)
         break;
-      if (vertex.equals(pt2))
+      if (vertex.equals(pt2, 0.01))
         end = true;
+      if (!start)
+        continue;
       subLine.add(vertex);
     }
 
     // case where the line is not in the same direction as the given points
-    if (subLine.size() == 1) {
+    if (subLine.size() == 0) {
       start = false;
       end = false;
       subLine.clear();
       for (IDirectPosition vertex : updatedLine.coord().reverse()) {
-        if (vertex.equals(pt1))
+        if (vertex.equals(pt1, 0.01))
           start = true;
         if (!start)
           continue;
         if (end)
           break;
-        if (vertex.equals(pt2))
+        if (vertex.equals(pt2, 0.01))
           end = true;
         subLine.add(vertex);
       }
