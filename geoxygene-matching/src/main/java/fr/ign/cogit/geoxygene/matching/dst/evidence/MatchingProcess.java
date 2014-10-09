@@ -148,17 +148,17 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
 				  LOGGER
               .debug("Warning : Non null empty hypothesis under closed world hypothesis! value : "
                   + massresult.get(0).getSecond());
-        } else {
-        	LOGGER.debug("Empty hypothesis value : " + massresult.get(0).getSecond());
-        }
-      }
-    }
-    if (massresult == null || massresult.isEmpty()) {
+			  } else {
+        	    LOGGER.debug("Empty hypothesis value : " + massresult.get(0).getSecond());
+			  }
+		  }
+	  }
+      if (massresult == null || massresult.isEmpty()) {
     	LOGGER.error("Error : The combination result is null or empty");
-    }
-    double elapsed = System.currentTimeMillis() - start;
-    LOGGER.info("The combination process took " + elapsed / 1000 + " seconds");
-    return massresult;
+      }
+      double elapsed = System.currentTimeMillis() - start;
+      LOGGER.info("The combination process took " + elapsed / 1000 + " seconds");
+      return massresult;
   }
 
   /**

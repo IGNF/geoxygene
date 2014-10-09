@@ -53,7 +53,7 @@ public class SimpleGeomHypothesis extends AbstractGeomHypothesis {
   protected SimpleGeomHypothesis() {
     super();
   }
-
+  
   @Override
   public int getId() {
     return this.decoratedFeature.getId();

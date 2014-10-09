@@ -152,7 +152,7 @@ public class DecisionOp<H extends Hypothesis> {
         pignistic += value.getSecond() / (cardinal * (1 - mvoid));
       }
     }
-//    logger.debug("Pignistic value : " + pignistic + " for hypothesis" + Arrays.toString(hyp));
+    // logger.debug("Pignistic value : " + pignistic + " for hypothesis" + Arrays.toString(hyp));
     return pignistic;
   }
 
@@ -220,6 +220,7 @@ public class DecisionOp<H extends Hypothesis> {
    */
   private Pair<byte[], Float> maxPignistic(List<Pair<byte[], Float>> masspotentials,
       boolean onsingles) {
+    
     float maxpig = 0.0f;
     byte[] maxpignistic = null;
     for (Pair<byte[], Float> hyp : masspotentials) {

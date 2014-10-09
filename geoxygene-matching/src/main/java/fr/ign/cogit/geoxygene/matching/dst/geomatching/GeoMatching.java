@@ -49,7 +49,7 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  */
 public class GeoMatching {
 	
-	private final static Logger LOGGER = Logger.getLogger(GeoMatching.class);
+  private final static Logger LOGGER = Logger.getLogger(GeoMatching.class);
 
   // List<Hypothesis> candidates;
 
@@ -82,11 +82,12 @@ public class GeoMatching {
     for (List<IFeature> l : combinations) {
       if (l.size() == 1) {
         hypotheses.add(new SimpleGeomHypothesis(l.get(0)));
-      } else
+      } else {
         if (l.size() > 1) {
           IFeature[] featarray = new IFeature[l.size()];
           hypotheses.add(new ComplexGeomHypothesis(l.toArray(featarray)));
         }
+      }
     }
     
     EvidenceCodec<GeomHypothesis> codec = new DefaultCodec<GeomHypothesis>(hypotheses);

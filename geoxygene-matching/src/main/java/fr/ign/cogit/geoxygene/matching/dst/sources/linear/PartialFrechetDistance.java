@@ -43,6 +43,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  */
 public class PartialFrechetDistance extends GeoSource {
 
+  /** Seuil de distance en m. */
   private float threshold = 100f;
 
   public float getThreshold() {

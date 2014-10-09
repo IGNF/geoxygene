@@ -31,7 +31,7 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  * @author Bertrand Dumenieu
  */
 public abstract class GeoSource implements Source<IFeature, GeomHypothesis> {
-
+  
   @Override
   public String toString() {
     return this.getName();

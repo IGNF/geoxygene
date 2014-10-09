@@ -30,56 +30,23 @@ import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.function.Function1D;
+import fr.ign.cogit.geoxygene.function.FunctionEvaluationException;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
-import fr.ign.cogit.geoxygene.matching.dst.function.Function;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 /**
- * 
  * @author Julien Perret
  */
 public class EuclidianDist extends GeoSource {
 	
-	private Function[] f1x;
-	private Function[] f1y;
+	private Function1D[] fs;
 	
-	private Function[] f2x;
-	private Function[] f2y;
-	
-	private Function[] f3x;
-	private Function[] f3y;
-	
-	private double bornemax;
-	
-	public void setBornemax(double bornemax) {
-	  this.bornemax = bornemax;
-	}
-	
-	public void setF1x(Function... f1x) {
-      this.f1x = f1x;
-    }
-	
-	public void setF1y(Function... f1y) {
-      this.f1y = f1y;
-    }
-	
-	public void setF2x(Function... f2x) {
-      this.f2x = f2x;
-    }
-	
-	public void setF2y(Function... f2y) {
-      this.f2y = f2y;
-    }
-	
-	public void setF3x(Function... f3x) {
-      this.f3x = f3x;
-    }
-	
-	public void setF3y(Function... f3y) {
-      this.f3y = f3y;
+	public void setF(Function1D... fs1d) {
+      this.fs = fs1d;
     }
 	
 	@Override
@@ -105,12 +72,21 @@ public class EuclidianDist extends GeoSource {
         // On cherche les masses de croyance associées
           
         // F1
-        float masse1 = 0.0f;
-        for (Function f : f1x) {
-          masse1 = 1.0f;
-        }
+        float masse = 0.0f;
+        if (fs != null) {
+          for (Function1D f : fs) {
           
-        weightedfocalset.add(new Pair<byte[], Float>(encoded, masse1));
+            if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
+              try {
+                masse = f.evaluate(distance).floatValue();
+              } catch (FunctionEvaluationException e) {
+                e.printStackTrace();
+              }
+            }
+          }
+          masse = 1.0f;
+        }          
+        weightedfocalset.add(new Pair<byte[], Float>(encoded, masse));
           
       }
       CombinationAlgos.sortKernel(weightedfocalset);
