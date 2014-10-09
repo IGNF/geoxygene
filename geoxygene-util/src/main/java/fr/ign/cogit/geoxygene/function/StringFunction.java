@@ -34,7 +34,7 @@ import net.sourceforge.jeval.Evaluator;
  * @author JeT String function use a string evaluator based on JEval to compute
  *         the function value from a human readable string
  */
-public class StringFunction implements Function1D {
+public class StringFunction extends AbstractFunction1D {
 
     private String expression = "x * x";
     private String evalExpression = null;

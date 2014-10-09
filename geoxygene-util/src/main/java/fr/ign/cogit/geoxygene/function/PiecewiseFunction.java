@@ -33,7 +33,7 @@ import java.util.List;
  * @author JeT function composed of other function on different ranges
  *         parameterized by a and b
  */
-public class PiecewiseFunction implements Function1D {
+public class PiecewiseFunction extends AbstractFunction1D {
 
     private static class Piece {
         public double xMin, xMax;

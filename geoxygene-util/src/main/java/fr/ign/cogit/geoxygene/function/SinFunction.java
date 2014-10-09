@@ -30,7 +30,7 @@ package fr.ign.cogit.geoxygene.function;
  * @author JeT Simple sin function parameterized by wavelength, amplitude and
  *         phase
  */
-public class SinFunction implements Function1D {
+public class SinFunction extends AbstractFunction1D {
 
     private double wavelength = 1.; // sin wavelength (period)
     private double amplitude = 1.; // sin amplitude (height)

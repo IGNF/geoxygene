@@ -33,7 +33,7 @@ package fr.ign.cogit.geoxygene.function;
  * 
  *         parameterized by alpha
  */
-public class ZeroToOneFunction implements Function1D {
+public class ZeroToOneFunction extends AbstractFunction1D {
 
     private double a = 1.; // a parameter
     private double b = 0.; // b parameter

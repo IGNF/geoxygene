@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.function;
 /**
  * @author JeT Simple identity function f(x) = x
  */
-public class IdentityFunction implements Function1D {
+public class IdentityFunction extends AbstractFunction1D {
 
     /**
      * Constructor

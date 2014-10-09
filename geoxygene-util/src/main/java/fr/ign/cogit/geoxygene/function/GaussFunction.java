@@ -30,7 +30,7 @@ package fr.ign.cogit.geoxygene.function;
  * @author JeT Gaussian function a*e^-((x-b)^2/(2c^2)) parameterized by a, b and
  *         c
  */
-public class GaussFunction implements Function1D {
+public class GaussFunction extends AbstractFunction1D {
 
     private double a = 1.; // a parameter
     private double b = 0.; // b parameter

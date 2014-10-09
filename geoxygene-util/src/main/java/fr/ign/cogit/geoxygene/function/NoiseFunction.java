@@ -31,7 +31,7 @@ import com.jhlabs.math.Noise;
 /**
  * @author JeT Perlin 1D Noise function
  */
-public class NoiseFunction implements Function1D {
+public class NoiseFunction extends AbstractFunction1D {
 
     private double wavelength = 1.; // noise wavelength (period)
     private double amplitude = 1.; // noise amplitude (height)

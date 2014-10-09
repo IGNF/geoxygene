@@ -30,7 +30,7 @@ package fr.ign.cogit.geoxygene.function;
  * @author JeT Sigmoid inverse function a * 1 / ( 1+e^-(x-b)*c ) - 0.5
  *         parameterized by a, b and c
  */
-public class InverseSigmoidFunction implements Function1D {
+public class InverseSigmoidFunction extends AbstractFunction1D {
 
     private double a = 1.; // a parameter
     private double b = 0.; // b parameter

@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.function;
 /**
  * @author JeT Simple constant function parameterized by the shift
  */
-public class ConstantFunction implements Function1D {
+public class ConstantFunction extends AbstractFunction1D {
 
     private double shift = 1.; // constant shift (Y translation factor)
 
@@ -61,6 +61,9 @@ public class ConstantFunction implements Function1D {
         return "f(x) = C. C real value";
     }
 
+    
+    
+    
     /*
      * (non-Javadoc)
      * 

@@ -44,4 +44,16 @@ public interface Function1D {
    */
   Double evaluate(final double x) throws FunctionEvaluationException;
 
+  /**
+   * Set Domain of Function.
+   * 
+   * @param binf : borne inferieur
+   * @param bsup
+   * @param leftEq
+   * @param rightEq
+   */
+  void setDomainOfFunction(Double lower, double upper, boolean minf, boolean msup);
+  double getLowerBoundDF();
+  double getUpperBoundDF();
+  
 }

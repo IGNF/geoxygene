@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.function;
 /**
  * @author JeT linear function a*x+b parameterized by a and b
  */
-public class LinearFunction implements Function1D {
+public class LinearFunction extends AbstractFunction1D {
 
     private double a = 1.; // a parameter
     private double b = 0.; // b parameter

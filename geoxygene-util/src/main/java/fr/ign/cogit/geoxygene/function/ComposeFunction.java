@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.function;
 /**
  * @author JeT composition function f( g (x ) ) parameterized by f and g
  */
-public class ComposeFunction implements Function1D {
+public class ComposeFunction extends AbstractFunction1D {
 
     private Function1D f = null;
     private Function1D g = null;
