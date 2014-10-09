@@ -148,7 +148,7 @@
                             <CssParameter name="stroke-linecap">round</CssParameter>
                             <BasicTextureExpressiveRendering>
 <TransitionSize>10.0</TransitionSize>
-<PaperTexture>./src/main/resources/textures/papers/black-normalized.png</PaperTexture>
+<PaperTexture>./src/main/resources/textures/papers/canvas-normalized.png</PaperTexture>
 <BrushTexture>./src/main/resources/textures/brushes/brush2-335-311.png</BrushTexture>
 <BrushStartLength>335</BrushStartLength>
 <BrushEndLength>311</BrushEndLength>
@@ -207,7 +207,7 @@
                             <CssParameter name="stroke-linecap">round</CssParameter>
                             <BasicTextureExpressiveRendering>
 <TransitionSize>5.0</TransitionSize>
-<PaperTexture>./samples/derain/derain-collioure/images/black-normalized.png</PaperTexture>
+<PaperTexture>./samples/derain/derain-collioure/images/canvas-normalized.png</PaperTexture>
 <BrushTexture>./samples/derain/derain-collioure/images/brush2-335-311.png</BrushTexture>
 <BrushStartLength>335</BrushStartLength>
 <BrushEndLength>311</BrushEndLength>
