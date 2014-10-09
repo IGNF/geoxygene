@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
     <Background>
-        <url>D:/ANR_MAPSTYLE/data/derain-collioure/images/canvas-bg.png</url>
+        <url>>./samples/derain/derain-collioure/images/canvas-bg.png</url>
         <PaperHeightInCm>1.0</PaperHeightInCm>
         <PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
         <Color>#FFFFFF</Color>
@@ -88,8 +88,8 @@
                             <CssParameter name="stroke-linecap">round</CssParameter>
                             <BasicTextureExpressiveRendering>
 <TransitionSize>10.0</TransitionSize>
-<PaperTexture>D:/ANR_MAPSTYLE/data/derain-collioure/images/canvas-normalized.png</PaperTexture>
-<BrushTexture>D:/ANR_MAPSTYLE/data/derain-collioure/images/brush2-335-311.png</BrushTexture>
+<PaperTexture>>./samples/derain/derain-collioure/images/canvas-normalized.png</PaperTexture>
+<BrushTexture>>./samples/derain/derain-collioure/images/brush2-335-311.png</BrushTexture>
 <BrushStartLength>335</BrushStartLength>
 <BrushEndLength>311</BrushEndLength>
 <BrushAspectRatio>0.0</BrushAspectRatio>
@@ -100,7 +100,7 @@
 <StrokePressure>1.971</StrokePressure>
 <StrokeSoftness>0.72</StrokeSoftness>
 <UserShader>
-    <File>D:/ANR_MAPSTYLE/data/derain-collioure/shaders/subshader1d.derain.glsl</File>
+    <File>>./samples/derain/derain-collioure/shaders/subshader1d.derain.glsl</File>
 </UserShader>
                             </BasicTextureExpressiveRendering>
                         </Stroke>
@@ -160,7 +160,7 @@
 <StrokePressure>2.64</StrokePressure>
 <StrokeSoftness>0.1</StrokeSoftness>
 <UserShader>
-    <File>D:/ANR_MAPSTYLE/data/derain-collioure/shaders/subshader1d.derain.glsl</File>
+    <File>>./samples/derain/derain-collioure/shaders/subshader1d.derain.glsl</File>
 </UserShader>
                             </BasicTextureExpressiveRendering>
                         </Stroke>
