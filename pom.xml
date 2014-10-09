@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -71,7 +72,7 @@
 	<!-- -->
 	<!-- =========================================================== -->
 	<profiles>
-	
+
 		<!-- <profile> <id>integration-test</id> <properties> --><!-- Only integration tests are run. -->
 		<!-- <skip.integration.tests>false</skip.integration.tests> -->
 		<!-- <skip.unit.tests>true</skip.unit.tests> -->
@@ -201,6 +202,21 @@
 			<organization>Laboratoire COGIT, IGN</organization>
 			<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
 		</developer>
+		<developer>
+            <id>amaudet</id>
+            <name>Adrien Maudet</name>
+            <email>adrien.maudet(at)ign.fr</email>
+            <url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Adrien&amp;nom=Maudet</url>
+            <organization>Laboratoire COGIT, IGN</organization>
+            <organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
+        </developer>
+		<developer>
+            <id>JeT</id>
+            <name>Jérémie Turbet</name>
+            <email>Jeremie.Turbet(at)irit.fr</email>
+            <organization>Laboratoire IRIT</organization>
+            <organizationUrl>http://www.irit.fr/</organizationUrl>
+        </developer>
 	</developers>
 
 	<contributors>
@@ -232,37 +248,6 @@
 	</contributors>
 
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.1</version>
-					<configuration>
-						<compilerVersion>1.6</compilerVersion>
-						<source>1.6</source>
-						<complianceLevel>1.6</complianceLevel>
-						<target>1.6</target>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>cobertura-maven-plugin</artifactId>
-					<version>2.6</version>
-					<configuration>
-						<formats>
-							<format>xml</format>
-						</formats>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.16</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<resources>
@@ -283,11 +268,36 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<compilerVersion>1.6</compilerVersion>
-					<source>1.6</source>
-					<complianceLevel>1.6</complianceLevel>
-					<target>1.6</target>
+					<compilerVersion>1.7</compilerVersion>
+					<source>1.7</source>
+					<complianceLevel>1.7</complianceLevel>
+					<target>1.7</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0-alpha-2</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>set-system-properties</goal>
+						</goals>
+						<configuration>
+							<properties>
+								<property>
+									<name>maven.wagon.http.ssl.insecure</name>
+									<value>true</value>
+								</property>
+								<property>
+									<name>maven.wagon.http.ssl.allowall</name>
+									<value>true</value>
+								</property>
+							</properties>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -339,6 +349,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
 				<configuration>
 					<!-- Skips unit tests if the value of skip.unit.tests property is true -->
 					<!-- <skipTests>${skip.unit.tests}</skipTests> -->
@@ -532,7 +543,7 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
-		
+
 		<repository>
 			<id>boundless</id>
 			<name>Boundless Maven Repository</name>
@@ -540,7 +551,7 @@
 			<url>http://repo.boundlessgeo.com/main</url>
 			<snapshots>
 				<enabled>true</enabled>
-			</snapshots>	
+			</snapshots>
 		</repository>
 		<repository>
 			<id>osgeo</id>
@@ -613,7 +624,7 @@
 				<version>4.10</version>
 				<scope>test</scope>
 			</dependency>
-			
+
 		</dependencies>
 	</dependencyManagement>
 
