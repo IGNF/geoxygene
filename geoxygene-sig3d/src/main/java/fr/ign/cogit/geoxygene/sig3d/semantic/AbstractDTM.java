@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.vecmath.Color4f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -101,9 +99,6 @@ public abstract class AbstractDTM extends DefaultLayer {
 
   // Indique que le MNT est rempli
   protected boolean isFilled;
-
-  // Si on applique un dégradé de couleur
-  protected Color4f[] color4fShade = null;
 
   protected AbstractDTM() {
     super();
@@ -313,7 +308,7 @@ public abstract class AbstractDTM extends DefaultLayer {
 
         } else if (geomTemp instanceof IMultiSurface<?>) {
           resultMS.addAll((IMultiSurface<?>) geomTemp);
-        }else if (geomTemp instanceof IPolygon){
+        } else if (geomTemp instanceof IPolygon) {
           resultMS.add((IPolygon) geomTemp);
         }
 
@@ -598,7 +593,6 @@ public abstract class AbstractDTM extends DefaultLayer {
         }
       }
 
-
       int nbInterior = poly.getNumInteriorRing();
 
       LinearRing[] holes = new LinearRing[nbInterior];
@@ -610,7 +604,6 @@ public abstract class AbstractDTM extends DefaultLayer {
 
       }
       return fac.createPolygon(gls, holes);
-
 
     }
     // Cas sur échantillonné
@@ -644,9 +637,8 @@ public abstract class AbstractDTM extends DefaultLayer {
 
         com.vividsolutions.jts.geom.Geometry ob = multiP.getGeometryN(i)
             .intersection(poly);
-        
-        
-        if(ob == null || ob.getNumPoints() == 0){
+
+        if (ob == null || ob.getNumPoints() == 0) {
           continue;
         }
 
@@ -658,13 +650,10 @@ public abstract class AbstractDTM extends DefaultLayer {
 
           LineString ls = this.mapCurve(p1.get(k).getExteriorRing(), altMax,
               isHeigth, false);
-          
-          
+
           Polygon pNew = fac.createPolygon(
               fac.createLinearRing(ls.getCoordinates()), null);
 
-     
-          
           lPoly.add(pNew);
         }
 
@@ -682,8 +671,6 @@ public abstract class AbstractDTM extends DefaultLayer {
     return fac.createMultiPolygon(polygons);
 
   }
-
- 
 
   private List<Polygon> returnIntersectionFromPolygon(
       com.vividsolutions.jts.geom.Geometry geom) {

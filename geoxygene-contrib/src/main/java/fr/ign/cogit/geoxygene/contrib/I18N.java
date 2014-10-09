@@ -12,36 +12,44 @@ import java.util.ResourceBundle;
  * @author Julien Perret
  */
 public final class I18N {
-    /**
-     * Private Bundle name pointing to where the language files are.
-     */
-    private static final String BUNDLE_NAME = "language/geoxygene-contrib"; //$NON-NLS-1$
+  /**
+   * Private Bundle name pointing to where the language files are.
+   */
+  private static final String BUNDLE_NAME = "language/geoxygene-contrib"; //$NON-NLS-1$
 
-    /**
-     * Private resource Bundle using the bundle name and default locale.
-     * 
-     * @see #BUNDLE_NAME
-     * @see #getString(String)
-     */
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-            .getBundle(I18N.BUNDLE_NAME, Locale.getDefault());
+  /**
+   * Private resource Bundle using the bundle name and default locale.
+   * 
+   * @see #BUNDLE_NAME
+   * @see #getString(String)
+   */
+  private static ResourceBundle RESOURCE_BUNDLE = null;
 
-    /**
-     * Private Default Constructor.
-     */
-    private I18N() {
+  /**
+   * Private Default Constructor.
+   */
+  private I18N() {
+  }
+
+  /**
+   * @param key string identifier of the internationalised test
+   * @return the internationalised string corresponding to the given key
+   */
+  public static String getString(final String key) {
+
+    if (RESOURCE_BUNDLE == null) {
+      try {
+        RESOURCE_BUNDLE = ResourceBundle.getBundle(I18N.BUNDLE_NAME,
+            Locale.getDefault());
+      } catch (Exception e) {
+        return '!' + key + '!';
+      }
     }
 
-    /**
-     * @param key
-     *            string identifier of the internationalised test
-     * @return the internationalised string corresponding to the given key
-     */
-    public static String getString(final String key) {
-        try {
-            return I18N.RESOURCE_BUNDLE.getString(key);
-        } catch (MissingResourceException e) {
-            return '!' + key + '!';
-        }
+    try {
+      return I18N.RESOURCE_BUNDLE.getString(key);
+    } catch (MissingResourceException e) {
+      return '!' + key + '!';
     }
+  }
 }

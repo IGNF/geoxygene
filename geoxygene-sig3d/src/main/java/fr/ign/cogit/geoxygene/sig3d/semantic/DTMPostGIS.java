@@ -88,8 +88,12 @@ public class DTMPostGIS extends AbstractDTM {
   protected double stepY;
   protected int nX;
   protected int nY;
-  protected TriangleStripArray strip;
   protected double noDataValue;
+  
+  
+  
+
+  protected TriangleStripArray strip;
 
   // Echantillonnage
   protected int sampling;
