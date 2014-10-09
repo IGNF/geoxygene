@@ -149,9 +149,9 @@
                             <BasicTextureExpressiveRendering>
 <TransitionSize>10.0</TransitionSize>
 <PaperTexture>./src/main/resources/textures/papers/black-normalized.png</PaperTexture>
-<BrushTexture>./src/main/resources/textures/brushes/chalk2-100-200.png</BrushTexture>
-<BrushStartLength>100</BrushStartLength>
-<BrushEndLength>200</BrushEndLength>
+<BrushTexture>./src/main/resources/textures/brushes/brush2-335-311.png</BrushTexture>
+<BrushStartLength>335</BrushStartLength>
+<BrushEndLength>311</BrushEndLength>
 <BrushAspectRatio>8.0</BrushAspectRatio>
 <PaperSizeInCm>4.0</PaperSizeInCm>
 <PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
@@ -208,9 +208,9 @@
                             <BasicTextureExpressiveRendering>
 <TransitionSize>5.0</TransitionSize>
 <PaperTexture>./samples/derain/derain-collioure/images/black-normalized.png</PaperTexture>
-<BrushTexture>./samples/derain/derain-collioure/images/chalk1-155-142.png</BrushTexture>
-<BrushStartLength>155</BrushStartLength>
-<BrushEndLength>142</BrushEndLength>
+<BrushTexture>./samples/derain/derain-collioure/images/brush2-335-311.png</BrushTexture>
+<BrushStartLength>335</BrushStartLength>
+<BrushEndLength>311</BrushEndLength>
 <BrushAspectRatio>8.0</BrushAspectRatio>
 <PaperSizeInCm>4.0</PaperSizeInCm>
 <PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
