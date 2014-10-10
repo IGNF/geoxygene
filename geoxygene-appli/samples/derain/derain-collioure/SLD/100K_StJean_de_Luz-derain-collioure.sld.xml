@@ -371,28 +371,10 @@
                     </LegendGraphic>
                     <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
                         <Stroke>
-                            <CssParameter name="stroke">#e5ebe1</CssParameter>
-                            <CssParameter name="stroke-opacity">0.68</CssParameter>
-                            <CssParameter name="stroke-width">100.0</CssParameter>
+                            <CssParameter name="stroke">#4d9221</CssParameter>
+                            <CssParameter name="stroke-opacity">0.91</CssParameter>
+                            <CssParameter name="stroke-width">30.0</CssParameter>
                             <CssParameter name="stroke-linecap">round</CssParameter>
-                            <BasicTextureExpressiveRendering>
-<TransitionSize>5.0</TransitionSize>
-<PaperTexture>./samples/derain/derain-collioure/images/canvas-normalized.png</PaperTexture>
-<BrushTexture>./samples/derain/derain-collioure/images/pencil1-tiled-136-135.png</BrushTexture>
-<BrushStartLength>136</BrushStartLength>
-<BrushEndLength>135</BrushEndLength>
-<BrushAspectRatio>8.0</BrushAspectRatio>
-<PaperSizeInCm>4.0</PaperSizeInCm>
-<PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
-<PaperRoughness>5.208</PaperRoughness>
-<BrushRoughness>5.402</BrushRoughness>
-<StrokePressure>3.611</StrokePressure>
-<StrokeSoftness>2.44</StrokeSoftness>
-<UserShader>
-    <File>./samples/derain/derain-collioure/shaders/subshader1d.derain.glsl</File>
-    <Float name="extremitiesLength" value="210.375" description="no description" min="0.0" max="1000.0" increment="10.0"/>
-</UserShader>
-                            </BasicTextureExpressiveRendering>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
                         <Fill>
@@ -429,7 +411,7 @@
 <Blending>ALPHA</Blending>
 <DistributionManagement>EXACT</DistributionManagement>
                             </TileDistributionTexture>
-                            <CssParameter name="fill">#808080</CssParameter>
+                            <CssParameter name="fill">#97c955</CssParameter>
                             <CssParameter name="fill-opacity">1.0</CssParameter>
                         </Fill>
                     </PolygonSymbolizer>

@@ -522,13 +522,13 @@
                     <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
                         <Stroke>
                             <CssParameter name="stroke">#000000</CssParameter>
-                            <CssParameter name="stroke-opacity">0.89</CssParameter>
+                            <CssParameter name="stroke-opacity">0.69</CssParameter>
                             <CssParameter name="stroke-width">15.0</CssParameter>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
                         <Fill>
                             <CssParameter name="fill">#808080</CssParameter>
-                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                            <CssParameter name="fill-opacity">0.76</CssParameter>
                         </Fill>
                     </PolygonSymbolizer>
                 </Rule>
