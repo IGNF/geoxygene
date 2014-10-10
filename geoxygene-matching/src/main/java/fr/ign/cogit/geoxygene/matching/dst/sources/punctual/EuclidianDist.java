@@ -36,6 +36,7 @@ import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
+import fr.ign.cogit.geoxygene.matching.dst.operators.DempsterOp;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 /**
@@ -43,11 +44,7 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  */
 public class EuclidianDist extends GeoSource {
 	
-	private Function1D[] fs;
 	
-	public void setF(Function1D... fs1d) {
-      this.fs = fs1d;
-    }
 	
 	@Override
 	public String getName() {
@@ -66,30 +63,62 @@ public class EuclidianDist extends GeoSource {
 	  List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
       for (GeomHypothesis h : candidates) {
         
-        byte[] encoded = codec.encode(new GeomHypothesis[] { h });  
+        byte[] encoded = codec.encode(new GeomHypothesis[] { h });
         float distance = (float) this.compute(reference.getGeom(), h.getGeom());
           
-        // On cherche les masses de croyance associées
-          
-        // F1
-        float masse = 0.0f;
-        if (fs != null) {
-          for (Function1D f : fs) {
-          
+        // Fonction EstApparie
+        float masse1 = 0.0f;
+        if (fEA != null) {
+          for (Function1D f : fEA) {
             if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
               try {
-                masse = f.evaluate(distance).floatValue();
+                masse1 = f.evaluate(distance).floatValue();
               } catch (FunctionEvaluationException e) {
                 e.printStackTrace();
               }
             }
           }
-          masse = 1.0f;
-        }          
-        weightedfocalset.add(new Pair<byte[], Float>(encoded, masse));
-          
+          // masse = 1.0f / 7;
+        }
+        weightedfocalset.add(new Pair<byte[], Float>(encoded, masse1));
+        
+        // Fonction NonApparie
+        float masse2 = 0.0f;
+        if (fNA != null) {
+          for (Function1D f : fNA) {
+            if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
+              try {
+                masse2 = f.evaluate(distance).floatValue();
+              } catch (FunctionEvaluationException e) {
+                e.printStackTrace();
+              }
+            }
+          }
+          // masse = 1.0f / 7;
+        }
+        weightedfocalset.add(new Pair<byte[], Float>(encoded, masse2));
+        
+        // Fonction PrononcePas
+        float masse3 = 0.0f;
+        if (fPP != null) {
+          for (Function1D f : fPP) {
+            if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
+              try {
+                masse3 = f.evaluate(distance).floatValue();
+              } catch (FunctionEvaluationException e) {
+                e.printStackTrace();
+              }
+            }
+          }
+          // masse = 1.0f / 7;
+        }
+        weightedfocalset.add(new Pair<byte[], Float>(encoded, masse3));
       }
+      
+      // 
       CombinationAlgos.sortKernel(weightedfocalset);
+      
+      // Retour 
       return weightedfocalset;
 	
 	}

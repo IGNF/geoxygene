@@ -22,6 +22,7 @@ package fr.ign.cogit.geoxygene.matching.dst.geomatching;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.function.Function1D;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
@@ -31,6 +32,34 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  * @author Bertrand Dumenieu
  */
 public abstract class GeoSource implements Source<IFeature, GeomHypothesis> {
+  
+  protected Function1D[] fEA;
+  protected Function1D[] fNA;
+  protected Function1D[] fPP;
+  
+  public void setFEA(Function1D... fea) {
+    this.fEA = fea;
+  }
+  
+  public Function1D[] getFEA() {
+    return this.fEA;
+  }
+  
+  public void setFNA(Function1D... fna) {
+    this.fNA = fna;
+  }
+  
+  public Function1D[] getFNA() {
+    return this.fNA;
+  }
+  
+  public void setFPP(Function1D... fpp) {
+    this.fPP = fpp;
+  }
+  
+  public Function1D[] getFPP() {
+    return this.fPP;
+  }
   
   @Override
   public String toString() {

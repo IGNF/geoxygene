@@ -38,6 +38,9 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
+import fr.ign.cogit.geoxygene.function.ConstantFunction;
+import fr.ign.cogit.geoxygene.function.Function1D;
+import fr.ign.cogit.geoxygene.function.LinearFunction;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
@@ -113,28 +116,57 @@ public class GeoMatchingPointTest {
 	
 	@Test
 	public void testPoint2Criteres() throws Exception {
-		
+	  
 		Collection<Source<IFeature, GeomHypothesis>> criteria = new ArrayList<Source<IFeature, GeomHypothesis>>();
 		
 		// Distance euclidienne
 		EuclidianDist source = new EuclidianDist();
 		
-		// F1
-	    //Function f11x = new Arithmetic('*', new Constant(75), new T());
-	    //Function f12x = new Arithmetic('+', new Constant(75), new Arithmetic('*', new Constant(25), new T()));
-	    //Function f11y = new Arithmetic('-', new Constant(1), new Arithmetic('*', new Constant(0.9), new T()));
-	    //Function f12y = new Constant(0.1);
-	    // source.setF1x(new Function[] { f11x, f12x });
-	    // source.setF1y(new Function[] { f11y, f12y });
+		// Fonction EstApparie
+		Function1D[] listFEA = new Function1D[2];
+		// LinearFunction f11 = new LinearFunction(-0.9/75, 1);
+		ConstantFunction f11 = new ConstantFunction(0.9);
+		f11.setDomainOfFunction(0., 75., true, false);
+		listFEA[0] = f11;
+		ConstantFunction f12 = new ConstantFunction(0.1);
+        f12.setDomainOfFunction(75., 100., true, true);
+        listFEA[1] = f12;
+        source.setFEA(listFEA);
+        
+        // Fonction NonApparie
+        Function1D[] listFNA = new Function1D[3];
+        ConstantFunction f21 = new ConstantFunction(0.);
+        f21.setDomainOfFunction(0., 50., true, false);
+        listFNA[0] = f21;
+        // LinearFunction f22 = new LinearFunction(0.8/25, -1.6);
+        ConstantFunction f22 = new ConstantFunction(0.05);
+        f22.setDomainOfFunction(50., 75., true, false);
+        listFNA[1] = f22;
+        ConstantFunction f23 = new ConstantFunction(0.8);
+        f23.setDomainOfFunction(75., 100., true, true);
+        listFNA[2] = f23;
+        source.setFNA(listFNA);
+		
+		// Fonction PrononcePas
+        Function1D[] listFPP = new Function1D[3];
+        // LinearFunction f31 = new LinearFunction(0.4/50, 0.);
+        ConstantFunction f31 = new ConstantFunction(0.1);
+        f31.setDomainOfFunction(0., 50., true, false);
+        listFPP[0] = f31;
+        // LinearFunction f32 = new LinearFunction(-0.3/25, 1.);
+        ConstantFunction f32 = new ConstantFunction(0.05);
+        f32.setDomainOfFunction(50., 75., true, false);
+        listFPP[1] = f32;
+        ConstantFunction f33 = new ConstantFunction(0.1);
+        f33.setDomainOfFunction(75., 100., true, true);
+        listFPP[2] = f33;
+        source.setFPP(listFPP);
 	    
-	    //
-		
+        //
 		criteria.add(source);
-		// criteria.add(new LevenshteinDist());
-		/*criteria.add(new LevenshteinDist("nature"));
-		criteria.add(new JaroWinklerDist("nature"));*/
 		
-		/*boolean closed = true;
+		
+		boolean closed = true;
 		GeoMatching matching = new GeoMatching();
 		EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates,
 		        ChoiceType.PIGNISTIC, closed);
@@ -146,11 +178,11 @@ public class GeoMatchingPointTest {
 		LOGGER.trace("with " + result.getHypothesis().size());
 		for (int i = 0; i < result.getHypothesis().size(); i++) {
 			LOGGER.trace("\tobj " + i + " = " + result.getHypothesis().get(i));
-		}*/
+		}
 		  
 		Assert.assertTrue(true);
 		  
-		LOGGER.trace("\n====== Fin du test ======");
+		LOGGER.info("\n====== Fin du test ======");
 	}
 	
 	

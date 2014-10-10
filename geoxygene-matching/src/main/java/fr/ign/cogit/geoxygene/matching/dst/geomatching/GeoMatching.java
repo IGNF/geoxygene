@@ -74,6 +74,7 @@ public class GeoMatching {
       throws Exception {
 	  
     // Création des hypothèses d'appariement.
+    LOGGER.debug(candidates.size() + " candidates");
     LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
     LOGGER.debug(combinations.size() + " hypotheses");
     
@@ -93,9 +94,13 @@ public class GeoMatching {
     EvidenceCodec<GeomHypothesis> codec = new DefaultCodec<GeomHypothesis>(hypotheses);
     MatchingProcess<IFeature, GeomHypothesis> matchingProcess = new MatchingProcess<IFeature, GeomHypothesis>(
         criteria, hypotheses, codec, closed);
+    
+    // Get Result
     List<Pair<byte[], Float>> result = matchingProcess.combinationProcess(reference);
     CombinationAlgos.sortKernel(result);
     CombinationAlgos.deleteDoubles(result);
+    
+    // Décision 
     DecisionOp<GeomHypothesis> decisionOp = new DecisionOp<GeomHypothesis>(result, 0f, choice,
         codec, false);
     return decisionOp.resolve();

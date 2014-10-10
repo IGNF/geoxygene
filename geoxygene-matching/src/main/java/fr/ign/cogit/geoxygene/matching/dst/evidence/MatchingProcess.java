@@ -107,29 +107,32 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
 	  for (Source<F, Hyp> src : this.criteria) {
 		  
 	    List<Pair<byte[], Float>> kernel = src.evaluate(reference, this.frame, this.codec);
-	    // System.out.println(kernel);
+
 		// On s'assure que sum(m(j)) = 1 sinon erreur.
-		float sum = 0;
+		/*float sum = 0;
 		for (Pair<byte[], Float> pair : kernel) {
+		  // System.out.print(pair.getSecond() + " + ");
 		  sum += pair.getSecond();
 		}
-		if (1 - sum > 0.001) {
-			  LOGGER.error("mass potential != 1(" + sum
+		// System.out.println (" , somme = " + sum);
+		if ((1 - sum > 0.001) || (1 - sum) < -0.001) {
+		  LOGGER.error("mass potential != 1(" + sum
                 + "), the process can not continue. Please check if belief functions ensure that sum(m(A))=1");
-			  throw new Exception();
-		  }
-		  LOGGER.debug("Verification somme des masses = 1");
+		  throw new Exception();
+		}
+		LOGGER.debug("Fin de la vérification somme des masses = 1"); */
 
-	      // On vérifie qu'il n'y a pas plusieurs fois une hypothèse A, sinon on les fusionne
-	      CombinationAlgos.deleteDoubles(kernel);
-	      // Finalement on trie la liste des ensemble focaux
-	      CombinationAlgos.sortKernel(kernel);
+	    // On vérifie qu'il n'y a pas plusieurs fois une hypothèse A, sinon on les fusionne
+	    CombinationAlgos.deleteDoubles(kernel);
+	    // Finalement on trie la liste des ensemble focaux
+	    CombinationAlgos.sortKernel(kernel);
       
-	      LOGGER.debug("----HYPOTHESIS FOR FUNCTION " + src.getName() + "----");
-	      for (Pair<byte[], Float> focal : kernel) {
-	    	  LOGGER.debug(focal.getSecond() + " " + Arrays.toString(focal.getFirst()));
-	      }
-	      this.beliefs.add(kernel);
+	    LOGGER.debug("----HYPOTHESIS FOR FUNCTION " + src.getName() + "----");
+	    for (Pair<byte[], Float> focal : kernel) {
+	      LOGGER.debug(focal.getSecond() + " " + Arrays.toString(focal.getFirst()));
+	    }
+	    this.beliefs.add(kernel);
+	  
 	  }
 	  
 	  // ----------------FUSION------------------------
