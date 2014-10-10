@@ -1,4 +1,4 @@
-#version 410
+#version 400
 
 uniform float globalOpacity = 1.0;
 uniform float objectOpacity = 1.0;

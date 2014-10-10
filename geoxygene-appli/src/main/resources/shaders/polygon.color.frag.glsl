@@ -1,9 +1,9 @@
-#version 410
+#version 400
 
 uniform float globalOpacity = 1.0;
 uniform float objectOpacity = 1.0;
-layout (location = 0) in vec4 fragmentColor;
-layout (location = 1) in vec2 fragmentTextureCoord;
+in vec4 fragmentColor;
+in vec2 fragmentTextureCoord;
 
 out vec4 outColor;
 

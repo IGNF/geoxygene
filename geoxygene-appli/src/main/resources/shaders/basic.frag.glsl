@@ -1,7 +1,7 @@
-#version 410
+#version 400
 
-layout (location = 0) in vec4 fragmentColor;
-layout (location = 1) in vec2 fragmentUV;
+in vec4 fragmentColor;
+in vec2 fragmentUV;
 
 out vec4 outColor;
 

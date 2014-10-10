@@ -1,4 +1,4 @@
-#version 410
+#version 400
 
 uniform sampler2D colorTexture1;
 uniform float globalOpacity = 1;

@@ -1,4 +1,4 @@
-#version 410
+#version 400
 // _w : length in world coordinates (meters)
 // _pix : length in pixels
 // _mm : length in millimeters
