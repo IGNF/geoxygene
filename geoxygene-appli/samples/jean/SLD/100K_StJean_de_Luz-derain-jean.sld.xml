@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
     <Background>
-        <url>./samples/jean/images/canvas-bg.jpg</url>
+        <url>./samples/jean/images/canvas-bg.png</url>
         <PaperHeightInCm>4.0</PaperHeightInCm>
         <PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
         <Color>#FFFFFF</Color>
@@ -88,7 +88,7 @@
                             <CssParameter name="stroke-linecap">round</CssParameter>
                             <BasicTextureExpressiveRendering>
 <TransitionSize>5.0</TransitionSize>
-<PaperTexture>./samples/jean/images/jean-normalized.jpg</PaperTexture>
+<PaperTexture>./samples/jean/images/jean_normalized.jpeg</PaperTexture>
 <BrushTexture>./samples/jean/images/jean_couture.jpg</BrushTexture>
 <BrushStartLength>136</BrushStartLength>
 <BrushEndLength>135</BrushEndLength>
@@ -149,7 +149,7 @@
                             <CssParameter name="stroke-linecap">round</CssParameter>
                             <BasicTextureExpressiveRendering>
 <TransitionSize>5.0</TransitionSize>
-<PaperTexture>./samples/jean/images/jean-normalized.jpg</PaperTexture>
+<PaperTexture>./samples/jean/images/jean_normalized.jpeg</PaperTexture>
 <BrushTexture>./samples/jean/images/jean_couture.jpg</BrushTexture>
 <BrushStartLength>136</BrushStartLength>
 <BrushEndLength>135</BrushEndLength>
@@ -209,7 +209,7 @@
                             <CssParameter name="stroke-linecap">round</CssParameter>
                             <BasicTextureExpressiveRendering>
 <TransitionSize>5.0</TransitionSize>
-<PaperTexture>./samples/jean/images/jean-normalized.jpg</PaperTexture>
+<PaperTexture>./samples/jean/images/jean_normalized.jpeg</PaperTexture>
 <BrushTexture>./samples/jean/images/jean_couture.jpg</BrushTexture>
 <BrushStartLength>136</BrushStartLength>
 <BrushEndLength>135</BrushEndLength>
