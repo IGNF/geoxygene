@@ -240,8 +240,8 @@ public class DisplayableSurface extends AbstractDisplayable {
                     .getMaxCoastlineLength());
             textureDescriptor.setTextureResolution(expressiveDescriptor
                     .getTextureResolution());
-            createWithGradientTextureDescriptor(symbolizer, featureCollection,
-                    complexes, textureDescriptor);
+            this.createWithGradientTextureDescriptor(symbolizer,
+                    featureCollection, complexes, textureDescriptor);
         } else {
 
             complexes.addAll(this.generateWithSolidColor(symbolizer,
@@ -413,6 +413,10 @@ public class DisplayableSurface extends AbstractDisplayable {
         case VIEWPORTSPACE:
             BasicParameterizer parameterizer = new BasicParameterizer(envelope,
                     false, true);
+            parameterizer
+                    .scaleX(1. / textureDescriptor.getScaleFactor().getX());
+            parameterizer
+                    .scaleY(1. / textureDescriptor.getScaleFactor().getY());
             // logger.debug("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ generate textured polygon with parameterizer "
             // + parameterizer + " with envelope " + envelope);
             // logger.debug("envelope = " + envelope.hashCode());
