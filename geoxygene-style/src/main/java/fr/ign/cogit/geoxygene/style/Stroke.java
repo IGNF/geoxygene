@@ -59,6 +59,7 @@ public class Stroke {
 
     @XmlElements({
             @XmlElement(name = "StrokeTextureExpressiveRendering", type = StrokeTextureExpressiveRenderingDescriptor.class),
+            @XmlElement(name = "ExpressiveStroke", type = BasicTextureExpressiveRenderingDescriptor.class),
             @XmlElement(name = "BasicTextureExpressiveRendering", type = BasicTextureExpressiveRenderingDescriptor.class) })
     private ExpressiveRenderingDescriptor expressiveRendering = null;
 

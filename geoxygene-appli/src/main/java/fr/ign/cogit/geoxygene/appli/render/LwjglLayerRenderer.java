@@ -291,8 +291,10 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                                 .getEnvelopeInModelCoordinates());
                         GLTools.glCheckError("LWJGLLayerRenderer::renderHook()");
                     } catch (Throwable t) {
-                        logger.warn("LwJGL Rendering failed: " + t.getMessage()
-                                + " (" + t.getClass().getSimpleName() + ")");
+                        logger.warn("LwJGL Rendering failed for layer '"
+                                + LwjglLayerRenderer.this.getLayer().getName()
+                                + "': " + t.getMessage() + " ("
+                                + t.getClass().getSimpleName() + ")");
                         logger.warn("Open GL Error message = "
                                 + Util.translateGLErrorString(GL11.glGetError()));
                         t.printStackTrace();

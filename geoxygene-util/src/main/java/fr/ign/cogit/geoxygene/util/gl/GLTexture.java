@@ -28,7 +28,6 @@
 package fr.ign.cogit.geoxygene.util.gl;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
@@ -122,7 +121,7 @@ public class GLTexture {
             // if the texture image is not set, try to read it from a file
             try {
                 this.textureImage = GLTools.loadImage(this.textureFilename);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error("Cannot read file '" + this.getTextureFilename()
                         + "'");
                 e.printStackTrace();

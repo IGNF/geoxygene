@@ -23,7 +23,7 @@ vec4 computeColor( DataGradient data ) {
 
 
 void main(void) {
-	vec3 tcolor = texture(gradientTexture, fragmentIn.gradientUV );
+	vec4 tcolor = texture(gradientTexture, fragmentIn.gradientUV );
 	float gradientValue = (tcolor.r + tcolor.g + tcolor.b ) / 3.0;
 	DataGradient data = DataGradient( fragmentIn.color, fragmentIn.gradientUV, gradientValue ); 
 	vec4 color = computeColor( data );

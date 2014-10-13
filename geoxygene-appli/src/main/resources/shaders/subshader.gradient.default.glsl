@@ -206,7 +206,7 @@ vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainti
 	float l = 0.0;
 	vec2 uv = vec2( fragmentData.uv.x, (fragmentData.uv.y - 0.5) * fragmentData.thickness );
 
-	for ( int nSeed = 0.0; nSeed < nbSeeds; nSeed++ ) {
+	for ( int nSeed = 0; nSeed < nbSeeds; nSeed++ ) {
 
 		float randomSeed = 521.465 + nSeed * 353119.6841;
 		float shiftRand = brushSpace  * snoise( vec3(uv.x / noiseWavelength + 3*randomSeed ,0.0 , 0.0) );

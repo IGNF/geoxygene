@@ -89,6 +89,7 @@ vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
 
 /************************************************************************************/
 vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
+//	return brushColor;
 	return brushColor * fragmentData.color;
 }
 
