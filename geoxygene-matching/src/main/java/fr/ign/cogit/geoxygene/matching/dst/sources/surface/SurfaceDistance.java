@@ -89,8 +89,8 @@ public class SurfaceDistance extends GeoSource {
     return Math.max(Math.min(value, 1d), 0d);
   }
 
-  @Override
+  /*@Override
   public double evaluate(IFeature ref, GeomHypothesis candidate) {
     return compute(ref.getGeom(), candidate.getGeom());
-  }
+  }*/
 }

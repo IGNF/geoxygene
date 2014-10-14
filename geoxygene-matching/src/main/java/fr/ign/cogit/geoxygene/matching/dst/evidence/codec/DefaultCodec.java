@@ -50,10 +50,12 @@ public class DefaultCodec<H extends Hypothesis> implements EvidenceCodec<H> {
   public List<H> decode(byte[] encoded) {
     LOGGER.debug("decoding " + Arrays.toString(encoded));
     List<H> decoded = new ArrayList<H>();
-    for (int i = 0; i < encoded.length; i++) {
-      if (encoded[i] == (byte) 1) {
-        LOGGER.debug("\t adding " + i + " = " + this.hypotheses.get(i));
-        decoded.add(this.hypotheses.get(i));
+    if (encoded != null) {
+      for (int i = 0; i < encoded.length; i++) {
+        if (encoded[i] == (byte) 1) {
+          LOGGER.debug("\t adding " + i + " = " + this.hypotheses.get(i));
+          decoded.add(this.hypotheses.get(i));
+        }
       }
     }
     return decoded;

@@ -93,6 +93,11 @@
 			<artifactId>geoxygene-feature</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>geoxygene-filter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>

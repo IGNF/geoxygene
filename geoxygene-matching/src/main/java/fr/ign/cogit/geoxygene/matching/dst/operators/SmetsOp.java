@@ -22,6 +22,7 @@
 package fr.ign.cogit.geoxygene.matching.dst.operators;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -33,6 +34,7 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
  * @author Julien Perret
  */
 public class SmetsOp implements CombinationOp {
+  
   Logger logger = Logger.getLogger(SmetsOp.class);
   private boolean worldclosed = true;
 
@@ -45,7 +47,8 @@ public class SmetsOp implements CombinationOp {
 
   @Override
   public List<Pair<byte[], Float>> combine(List<List<Pair<byte[], Float>>> masspotentials) {
-//    logger.info(masspotentials.size());
+
+    // logger.info(masspotentials.size());
     if (masspotentials.size() == 1) {
       return masspotentials.get(0);
     }
@@ -59,6 +62,7 @@ public class SmetsOp implements CombinationOp {
         }
         cores.add(core);
       }
+      
       byte[] combined;
       try {
         combined = CombinationAlgos.combine(cores);

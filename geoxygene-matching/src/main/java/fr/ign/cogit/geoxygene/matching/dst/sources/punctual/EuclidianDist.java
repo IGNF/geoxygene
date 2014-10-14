@@ -36,7 +36,6 @@ import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
-import fr.ign.cogit.geoxygene.matching.dst.operators.DempsterOp;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 /**
@@ -44,22 +43,71 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
  */
 public class EuclidianDist extends GeoSource {
 	
-	
+  // private final static Logger LOGGER = Logger.getLogger(EuclidianDist.class);
 	
 	@Override
 	public String getName() {
-		return "Distance Euclidienne";
+		return "Distance Euclidienne (dim=1)";
 	}
 
 	@Override
-	public double evaluate(IFeature ref, GeomHypothesis candidate) {
-		return 0;
+	public double[] evaluate(IFeature reference, GeomHypothesis candidate) {
+	  double[] masses = new double[3];
+	  
+	  float distance = this.compute(reference.getGeom(), candidate.getGeom());
+	  
+	  // Fonction EstApparie
+      float masse1 = 0.0f;
+      if (fEA != null) {
+        for (Function1D f : fEA) {
+          if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
+            try {
+              masse1 = f.evaluate(distance).floatValue();
+            } catch (FunctionEvaluationException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+      masses[0] = masse1;
+      
+      // Fonction NonApparie
+      float masse2 = 0.0f;
+      if (fNA != null) {
+        for (Function1D f : fNA) {
+          if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
+            try {
+              masse2 = f.evaluate(distance).floatValue();
+            } catch (FunctionEvaluationException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+      masses[1] = masse2;
+      
+      // Fonction PrononcePas
+      float masse3 = 0.0f;
+      if (fPP != null) {
+        for (Function1D f : fPP) {
+          if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
+            try {
+              masse3 = f.evaluate(distance).floatValue();
+            } catch (FunctionEvaluationException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+      masses[2] = masse3;
+	   
+	  return masses;
 	}
 	
 	@Override
 	public List<Pair<byte[], Float>> evaluate(IFeature reference,
 	      final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
-	
+	  
 	  List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
       for (GeomHypothesis h : candidates) {
         
@@ -78,7 +126,6 @@ public class EuclidianDist extends GeoSource {
               }
             }
           }
-          // masse = 1.0f / 7;
         }
         weightedfocalset.add(new Pair<byte[], Float>(encoded, masse1));
         
@@ -94,7 +141,6 @@ public class EuclidianDist extends GeoSource {
               }
             }
           }
-          // masse = 1.0f / 7;
         }
         weightedfocalset.add(new Pair<byte[], Float>(encoded, masse2));
         
@@ -110,7 +156,6 @@ public class EuclidianDist extends GeoSource {
               }
             }
           }
-          // masse = 1.0f / 7;
         }
         weightedfocalset.add(new Pair<byte[], Float>(encoded, masse3));
       }

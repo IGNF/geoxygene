@@ -106,11 +106,27 @@ public class GeoMatching {
     return decisionOp.resolve();
   }
 
-  /*public EvidenceResult<GeomHypothesis> runAppriou(List<Source<IFeature, GeomHypothesis>> criteria,
-      IFeature reference, List<IFeature> candidates, List<Double> weights, ChoiceType choice, boolean closed)
+  /**
+   * 
+   * @param criteria
+   * @param reference
+   * @param candidates
+   * @param weights
+   * @param choice
+   * @param closed
+   * @return
+   * @throws Exception
+   */
+  public EvidenceResult<GeomHypothesis> runAppriou(List<Source<IFeature, GeomHypothesis>> criteria,
+      IFeature reference, List<IFeature> candidates, ChoiceType choice, boolean closed)
       throws Exception {
+    
     // Création des hypothèses d'appariement.
+    LOGGER.debug(candidates.size() + " candidates");
     LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
+    LOGGER.debug(combinations.size() + " hypotheses");
+    
+    // 
     List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
     for (List<IFeature> l : combinations) {
       if (l.size() == 1) {
@@ -121,21 +137,13 @@ public class GeoMatching {
           hypotheses.add(new ComplexGeomHypothesis(l.toArray(featarray)));
         }
     }
-//    AppriouMapper mapper = new AppriouMapper();
+
     List<List<Pair<byte[], Float>>> beliefs = new ArrayList<List<Pair<byte[], Float>>>();
     DefaultCodec<GeomHypothesis> codec = new DefaultCodec<GeomHypothesis>(hypotheses);
     for (GeomHypothesis candidate : hypotheses) {
-      // Création des hypothèses focalisées A et !A. L'Hypothèse inconnue étant
-      // Teta, elle sera directement évaluée par les sources focalisées en tant
-      // qu'ensemble de 2Teta.
       for (int j = 0; j < criteria.size(); j++) {
         Source<IFeature, GeomHypothesis> source = criteria.get(j);
-        double weight = weights.get(j);
-        double mij = source.evaluate(reference, candidate);
-        // model1
-        // alpha*mij
-        // alpha*(1-mij)
-        // 1-alpha
+        double[] mij = source.evaluate(reference, candidate);
         List<Pair<byte[], Float>> kernel = new ArrayList<Pair<byte[], Float>>();
         byte[] code = codec.encode(candidate);
         byte[] codeComplement = new byte[hypotheses.size()];
@@ -145,16 +153,19 @@ public class GeoMatching {
         }
         byte[] codeUnknown = new byte[hypotheses.size()];
         Arrays.fill(codeUnknown, (byte)1);
-        kernel.add(new Pair<byte[], Float>(code, new Float(weight * mij)));
-        kernel.add(new Pair<byte[], Float>(codeComplement, new Float(weight * (1 - mij))));
-        kernel.add(new Pair<byte[], Float>(codeUnknown, new Float(1 - weight)));
+        kernel.add(new Pair<byte[], Float>(code, new Float(mij[0])));
+        kernel.add(new Pair<byte[], Float>(codeComplement, new Float(mij[1])));
+        kernel.add(new Pair<byte[], Float>(codeUnknown, new Float(mij[2])));
         beliefs.add(kernel);
       }
     }
+    
     CombinationOp op = closed ? new DempsterOp(closed) : new SmetsOp(closed);
     List<Pair<byte[], Float>> result = op.combine(beliefs);
+    
     DecisionOp<GeomHypothesis> decisionOp = new DecisionOp<GeomHypothesis>(result, op.getConflict(),
         choice, codec, true);
     return decisionOp.resolve();
-  }*/
+
+  }
 }

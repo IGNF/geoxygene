@@ -51,14 +51,14 @@ public class DempsterOp implements CombinationOp {
     // On force l'ensemble vide à 0 = on le supprime du noyau
     if (!mresult.isEmpty()) {
       if (Utils.isEmpty(mresult.get(0).getFirst())) {
-        LOGGER.info("Estimated conflict between mass information sources : "
+        LOGGER.debug("Estimated conflict between mass information sources : "
             + mresult.get(0).getSecond());
         this.conflict = mresult.get(0).getSecond();
         mresult.remove(0);
       }
     }
     if (mresult.isEmpty()) {
-      LOGGER.info("TOTAL CONFLICT BETWEEN SOURCES, THERE IS NO SOLUTION");
+      LOGGER.debug("TOTAL CONFLICT BETWEEN SOURCES, THERE IS NO SOLUTION");
       return null;
     }
     float sum = 0.0f;
@@ -72,6 +72,7 @@ public class DempsterOp implements CombinationOp {
       }
     }
     for (Pair<byte[], Float> hyp : mresult) {
+      // System.out.println(hyp.getSecond() + " / " + sum);
       hyp.setSecond(hyp.getSecond() / sum);
     }
 //    if (logger.isDebugEnabled()) {

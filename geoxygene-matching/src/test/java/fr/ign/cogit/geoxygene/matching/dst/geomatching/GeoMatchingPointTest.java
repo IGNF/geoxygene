@@ -117,7 +117,7 @@ public class GeoMatchingPointTest {
 	@Test
 	public void testPoint2Criteres() throws Exception {
 	  
-		Collection<Source<IFeature, GeomHypothesis>> criteria = new ArrayList<Source<IFeature, GeomHypothesis>>();
+		List<Source<IFeature, GeomHypothesis>> criteria = new ArrayList<Source<IFeature, GeomHypothesis>>();
 		
 		// Distance euclidienne
 		EuclidianDist source = new EuclidianDist();
@@ -125,7 +125,7 @@ public class GeoMatchingPointTest {
 		// Fonction EstApparie
 		Function1D[] listFEA = new Function1D[2];
 		// LinearFunction f11 = new LinearFunction(-0.9/75, 1);
-		ConstantFunction f11 = new ConstantFunction(0.9);
+		ConstantFunction f11 = new ConstantFunction(0.8);
 		f11.setDomainOfFunction(0., 75., true, false);
 		listFEA[0] = f11;
 		ConstantFunction f12 = new ConstantFunction(0.1);
@@ -135,11 +135,11 @@ public class GeoMatchingPointTest {
         
         // Fonction NonApparie
         Function1D[] listFNA = new Function1D[3];
-        ConstantFunction f21 = new ConstantFunction(0.);
+        ConstantFunction f21 = new ConstantFunction(0.05);
         f21.setDomainOfFunction(0., 50., true, false);
         listFNA[0] = f21;
         // LinearFunction f22 = new LinearFunction(0.8/25, -1.6);
-        ConstantFunction f22 = new ConstantFunction(0.05);
+        ConstantFunction f22 = new ConstantFunction(0.1);
         f22.setDomainOfFunction(50., 75., true, false);
         listFNA[1] = f22;
         ConstantFunction f23 = new ConstantFunction(0.8);
@@ -150,11 +150,11 @@ public class GeoMatchingPointTest {
 		// Fonction PrononcePas
         Function1D[] listFPP = new Function1D[3];
         // LinearFunction f31 = new LinearFunction(0.4/50, 0.);
-        ConstantFunction f31 = new ConstantFunction(0.1);
+        ConstantFunction f31 = new ConstantFunction(0.15);
         f31.setDomainOfFunction(0., 50., true, false);
         listFPP[0] = f31;
         // LinearFunction f32 = new LinearFunction(-0.3/25, 1.);
-        ConstantFunction f32 = new ConstantFunction(0.05);
+        ConstantFunction f32 = new ConstantFunction(0.1);
         f32.setDomainOfFunction(50., 75., true, false);
         listFPP[1] = f32;
         ConstantFunction f33 = new ConstantFunction(0.1);
@@ -165,24 +165,25 @@ public class GeoMatchingPointTest {
         //
 		criteria.add(source);
 		
-		
-		boolean closed = true;
+		boolean closed = false;
 		GeoMatching matching = new GeoMatching();
-		EvidenceResult<GeomHypothesis> result = matching.run(criteria, reference, candidates,
-		        ChoiceType.PIGNISTIC, closed);
+		EvidenceResult<GeomHypothesis> result = matching.runAppriou(criteria, reference, candidates,
+		    ChoiceType.PIGNISTIC, closed);
 		
 		LOGGER.info("result = " + result);
-		LOGGER.trace("reference = " + reference.getGeom());
-		LOGGER.trace("value = " + result.getValue());
-		LOGGER.trace("conflict = " + result.getConflict());
-		LOGGER.trace("with " + result.getHypothesis().size());
+		LOGGER.info("reference = " + reference.getGeom());
+		LOGGER.info("value = " + result.getValue());
+		LOGGER.info("conflict = " + result.getConflict());
+		LOGGER.info("nb " + result.getHypothesis().size());
 		for (int i = 0; i < result.getHypothesis().size(); i++) {
-			LOGGER.trace("\tobj " + i + " = " + result.getHypothesis().get(i));
+			LOGGER.info("obj " + i + " = " + result.getHypothesis().get(i).getId());
 		}
+		
+		
 		  
 		Assert.assertTrue(true);
 		  
-		LOGGER.info("\n====== Fin du test ======");
+		LOGGER.debug("====== Fin du test ======");
 	}
 	
 	

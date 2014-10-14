@@ -81,10 +81,12 @@ public class EuclidianDistance extends GeoSource {
   private float compute(IGeometry geom, IGeometry geom2) {
     return (float) geom.distance(geom2);
   }
-  @Override
+  
+  /*@Override
   public double evaluate(IFeature ref, GeomHypothesis candidate) {
     return compute(ref.getGeom(), candidate.getGeom());
-  }
+  }*/
+  
   @Override
   public String getName() {
     return "Distance Euclidienne";

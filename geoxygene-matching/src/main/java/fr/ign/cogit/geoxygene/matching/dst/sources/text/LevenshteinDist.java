@@ -54,10 +54,10 @@ public class LevenshteinDist extends GeoSource {
 		return "Distance de Levenshtein";
 	}
 
-	@Override
+	/*@Override
 	public double evaluate(IFeature ref, GeomHypothesis candidate) {
 		return 0;
-	}
+	}*/
 	
 	@Override
 	public List<Pair<byte[], Float>> evaluate(IFeature reference,

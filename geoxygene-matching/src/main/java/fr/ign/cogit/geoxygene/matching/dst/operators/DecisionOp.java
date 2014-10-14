@@ -89,7 +89,10 @@ public class DecisionOp<H extends Hypothesis> {
 
       case PIGNISTIC:
         Pair<byte[], Float> maxpig = this.maxPignistic(masspotentials, this.isChoiceOnSinglesOnly);
-        logger.info("MAX PIGNISTIC HYPOTHESIS : " + maxpig.getSecond() + " for "
+        // System.out.println("MaxPig = ");
+        // System.out.println(maxpig.getSecond());
+        // System.out.println(maxpig.getFirst().length);
+        logger.debug("MAX PIGNISTIC HYPOTHESIS : " + maxpig.getSecond() + " for "
             + Arrays.toString(maxpig.getFirst()));
         decoded = decoder.decode(maxpig.getFirst());
         return new EvidenceResult<H>(choice, conflict, decoded, maxpig.getSecond());
@@ -149,6 +152,7 @@ public class DecisionOp<H extends Hypothesis> {
             cardinal++;
           }
         }
+        // logger.debug(value.getSecond() + ", " + cardinal + ", " + mvoid);
         pignistic += value.getSecond() / (cardinal * (1 - mvoid));
       }
     }
@@ -235,6 +239,7 @@ public class DecisionOp<H extends Hypothesis> {
           continue;
       }
       float bel = this.pignistic(hyp.getFirst(), masspotentials);
+      // System.out.println("bel = " + bel + ", maxpig = " + maxpig);
       if (bel > maxpig) {
         maxpig = bel;
         maxpignistic = hyp.getFirst();

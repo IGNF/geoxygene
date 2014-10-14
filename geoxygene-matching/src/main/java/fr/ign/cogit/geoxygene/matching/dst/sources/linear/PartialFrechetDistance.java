@@ -102,10 +102,10 @@ public class PartialFrechetDistance extends GeoSource {
     return v;
   }
   
-  @Override
+  /*@Override
   public double evaluate(IFeature ref, GeomHypothesis candidate) {
     double distance = compute(ref.getGeom(), candidate.getGeom());
     distance = (this.threshold - distance) / this.threshold;
     return Math.min(1, Math.max(0, distance));
-  }
+  }*/
 }

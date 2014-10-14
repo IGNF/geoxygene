@@ -100,8 +100,8 @@ public class LineOrientation extends GeoSource {
     return result;
   }
 
-  @Override
-  public double evaluate(IFeature ref, GeomHypothesis candidate) {
+  /*@Override
+  public double[] evaluate(IFeature ref, GeomHypothesis candidate) {
     double distance = compute(ref.getGeom(), candidate.getGeom());
     if (distance >= this.threshold) {
       distance = 0.5 * (distance - this.threshold) / (Math.PI - this.threshold);
@@ -109,5 +109,5 @@ public class LineOrientation extends GeoSource {
       distance = 0.5 * (this.threshold - distance) / this.threshold;
     }
     return distance;
-  }
+  }*/
 }

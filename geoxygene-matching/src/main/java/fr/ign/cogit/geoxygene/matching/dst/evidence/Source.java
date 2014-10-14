@@ -37,7 +37,7 @@ public interface Source<F, T extends Hypothesis> {
      */
     List<Pair<byte[], Float>> evaluate(final F ref, final List<T> candidates, EvidenceCodec<T> codec);
   
-    double evaluate(final F ref, final T candidate);
+    double[] evaluate(final F ref, final T candidate);
 
     /**
      * A source has a name.

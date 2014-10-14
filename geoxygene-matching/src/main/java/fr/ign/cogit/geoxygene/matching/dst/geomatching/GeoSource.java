@@ -87,4 +87,9 @@ public abstract class GeoSource implements Source<IFeature, GeomHypothesis> {
       EvidenceCodec<GeomHypothesis> codec) {
     return null;
   }
+  
+  @Override
+  public double[] evaluate(IFeature reference, final GeomHypothesis candidates) {
+    return null;
+  }
 }
