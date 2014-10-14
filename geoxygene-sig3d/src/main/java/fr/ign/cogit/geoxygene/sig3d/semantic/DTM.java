@@ -73,7 +73,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  *          it or with a ColorShade
  * 
  */
-public class DTM extends AbstractDTM {
+public class DTM extends AbstractDTMLayer {
 
   public int echantillonage = 1;
 
@@ -123,8 +123,11 @@ public class DTM extends AbstractDTM {
    */
   public DTM(String file, String layerName, boolean fill, int exager,
       String imageFileName, IEnvelope imageEnvelope) {
-    super(layerName, file, null, imageFileName, imageEnvelope, exager, fill);
+    super(  file, layerName, fill,  exager,   imageFileName, imageEnvelope);
+  
 
+
+    
     this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
         exager, imageFileName, imageEnvelope));
 
@@ -469,7 +472,8 @@ public class DTM extends AbstractDTM {
   public DTM(String file, String layerName, boolean fill, int exager,
       Color[] colorGradation) {
 
-    super(layerName, file, colorGradation, null, null, 1, fill);
+    super(file, layerName,  fill, exager, colorGradation);
+    
     this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
         exager, colorGradation));
 

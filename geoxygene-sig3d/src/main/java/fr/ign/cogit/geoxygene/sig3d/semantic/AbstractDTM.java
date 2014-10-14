@@ -77,7 +77,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  *          following methods : --processSurfacicGrid --getGeometryAt
  *          --castCoordinate --get3DEnvelope
  */
-public abstract class AbstractDTM extends DefaultLayer {
+public abstract class AbstractDTM {
 
   // Emprise 3D du MNT
   protected Box3D emprise = null;
@@ -115,7 +115,7 @@ public abstract class AbstractDTM extends DefaultLayer {
    * @param exageration
    * @param isFilled
    */
-  public AbstractDTM(String layerName, String path, Color[] colorShade,
+  public AbstractDTM(String path, Color[] colorShade,
       String imagePath, IEnvelope imageEnvelope, int exageration,
       boolean isFilled) {
     super();
@@ -125,7 +125,6 @@ public abstract class AbstractDTM extends DefaultLayer {
     this.colorShade = colorShade;
     this.imageEnvelope = imageEnvelope;
     this.isFilled = isFilled;
-    this.layerName = layerName;
   }
 
   /**
@@ -168,12 +167,6 @@ public abstract class AbstractDTM extends DefaultLayer {
     return c;
 
   }
-
-  /**
-   * Renvoie la boite 3D du MNT
-   */
-  @Override
-  abstract public Box3D get3DEnvelope();
 
   /**
    * Permet de plaquer un shapefile sur le MNT sans extrusion.
@@ -1026,11 +1019,6 @@ public abstract class AbstractDTM extends DefaultLayer {
 
     return true;
 
-  }
-
-  @Override
-  public String getLayerName() {
-    return this.layerName;
   }
 
   /**

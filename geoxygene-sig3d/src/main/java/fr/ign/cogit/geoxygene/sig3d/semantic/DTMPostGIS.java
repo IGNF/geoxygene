@@ -64,7 +64,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * 
  * 
  */
-public class DTMPostGIS extends AbstractDTM {
+public class DTMPostGIS extends AbstractDTMLayer {
 
   public int echantillonage = 1;
 
@@ -89,9 +89,6 @@ public class DTMPostGIS extends AbstractDTM {
   protected int nX;
   protected int nY;
   protected double noDataValue;
-  
-  
-  
 
   protected TriangleStripArray strip;
 
@@ -135,7 +132,7 @@ public class DTMPostGIS extends AbstractDTM {
     this.colorShade = colorGradation;
     this.imageEnvelope = null;
     this.isFilled = fill;
-    this.layerName = layerName;
+
     this.pw = pw;
     this.user = user;
 
@@ -186,13 +183,13 @@ public class DTMPostGIS extends AbstractDTM {
         + ",  false) As b1val FROM mnt CROSS JOIN generate_series(1, " + nbCol
         + "," + this.echantillonage + ") As y ;";
     logger.debug(sql);
- 
+
     return s.executeQuery(sql);
 
   }
 
   /**
-   * Calcul l'objet 3D permettant de représenter un MNT en appliquant un
+   * Calcul l'objet 3D permettant SELECT y, ST_Value(rast, 1, y, 2,  false) As b1val FROM mnt CROSS JOIN generate_series(1, 7,1) As y ;SELECT y, ST_Value(rast, 1, y, 2,  false) As b1val FROM mnt CROSS JOIN generate_series(1, 7,1) As y ;SELECT y, ST_Value(rast, 1, y, 2,  false) As b1val FROM mnt CROSS JOIN generate_series(1, 7,1) As y ;SELECT y, ST_Value(rast, 1, y, 2,  false) As b1val FROM mnt CROSS JOIN generate_series(1, 7,1) As y ;SELECT y, ST_Value(rast, 1, y, 2,  false) As b1val FROM mnt CROSS JOIN generate_series(1, 7,1) As y ;représenter un MNT en appliquant un
    * dégradé.
    * 
    * @param file

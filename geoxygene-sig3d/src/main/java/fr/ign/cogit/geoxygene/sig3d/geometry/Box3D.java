@@ -5,6 +5,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.calculation.Calculation3D;
+import fr.ign.cogit.geoxygene.sig3d.convert.transform.Extrusion2DObject;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -12,11 +13,11 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -24,11 +25,10 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  * 
  * @author Brasebin Mickaël
  * 
- * @version 0.1
- * Il s'agit d'une boite englobante 3D avec bords respectivement parallèles aux
- * plans (z =0,y = 0 et z =0) Cette classe sert notamment à gèrer l'emprise 3D
- * d'une couche ou d'une carte Minimum bounding box with axes paralelle to X,Y
- * and Z axis
+ * @version 0.1 Il s'agit d'une boite englobante 3D avec bords respectivement
+ *          parallèles aux plans (z =0,y = 0 et z =0) Cette classe sert
+ *          notamment à gèrer l'emprise 3D d'une couche ou d'une carte Minimum
+ *          bounding box with axes paralelle to X,Y and Z axis
  */
 public class Box3D {
 
@@ -126,38 +126,48 @@ public class Box3D {
   public boolean intersect(Box3D b) {
 
     // Correction
-	  
-	double xmin1 = pMin.getX(); double xmin2 = b.pMin.getX();
-	double xmax1 = pMax.getX(); double xmax2 = b.pMax.getX();
-	double ymin1 = pMin.getY(); double ymin2 = b.pMin.getY();
-	double ymax1 = pMax.getY(); double ymax2 = b.pMax.getY();
-	double zmin1 = pMin.getZ(); double zmin2 = b.pMin.getZ();
-	double zmax1 = pMax.getZ(); double zmax2 = b.pMin.getZ();
-	
-	boolean bx = ((xmin2<=xmax1)&&(xmin2>=xmin1))||((xmin1<=xmax2)&&(xmin1>=xmin2));
-	boolean by = ((ymin2<=ymax1)&&(ymin2>=ymin1))||((ymin1<=ymax2)&&(ymin1>=ymin2));
-	boolean bz = ((zmin2<=zmax1)&&(zmin2>=zmin1))||((zmin1<=zmax2)&&(zmin1>=zmin2));
-	
-	return bx&&by&&bz;
-	  
-	/* // -------------------------------------------------------------------  
-	IDirectPosition pMin = b.getLLDP();
-    IDirectPosition pMax = b.getURDP();
 
-    if (b.pMin.getX() <= pMax.getX() && b.pMin.getY() <= pMax.getY()
-        && b.pMin.getZ() <= pMax.getZ()) {
+    double xmin1 = pMin.getX();
+    double xmin2 = b.pMin.getX();
+    double xmax1 = pMax.getX();
+    double xmax2 = b.pMax.getX();
+    double ymin1 = pMin.getY();
+    double ymin2 = b.pMin.getY();
+    double ymax1 = pMax.getY();
+    double ymax2 = b.pMax.getY();
+    double zmin1 = pMin.getZ();
+    double zmin2 = b.pMin.getZ();
+    double zmax1 = pMax.getZ();
+    double zmax2 = b.pMin.getZ();
 
-      if (pMin.getX() <= b.pMax.getX() && pMin.getY() <= b.pMax.getY()
-          && pMin.getZ() <= b.pMax.getZ()) {
+    boolean bx = ((xmin2 <= xmax1) && (xmin2 >= xmin1))
+        || ((xmin1 <= xmax2) && (xmin1 >= xmin2));
+    boolean by = ((ymin2 <= ymax1) && (ymin2 >= ymin1))
+        || ((ymin1 <= ymax2) && (ymin1 >= ymin2));
+    boolean bz = ((zmin2 <= zmax1) && (zmin2 >= zmin1))
+        || ((zmin1 <= zmax2) && (zmin1 >= zmin2));
 
-        return true;
+    return bx && by && bz;
 
-      }
-
-    }
-
-    return false;
-    // ------------------------------------------------------------------- */
+    /*
+     * // -------------------------------------------------------------------
+     * IDirectPosition pMin = b.getLLDP(); IDirectPosition pMax = b.getURDP();
+     * 
+     * if (b.pMin.getX() <= pMax.getX() && b.pMin.getY() <= pMax.getY() &&
+     * b.pMin.getZ() <= pMax.getZ()) {
+     * 
+     * if (pMin.getX() <= b.pMax.getX() && pMin.getY() <= b.pMax.getY() &&
+     * pMin.getZ() <= b.pMax.getZ()) {
+     * 
+     * return true;
+     * 
+     * }
+     * 
+     * }
+     * 
+     * return false; //
+     * -------------------------------------------------------------------
+     */
 
   }
 
@@ -168,46 +178,42 @@ public class Box3D {
    * @return
    */
   public Box3D intersection(Box3D b) {
-	 
-	  
-	  if (!intersect(b)){return null;}
-	  
-	  double xmin = Math.max(pMin.getX(), b.pMin.getX());
-	  double ymin = Math.max(pMin.getY(), b.pMin.getY());
-	  double zmin = Math.max(pMin.getZ(), b.pMin.getZ());
-	  double xmax = Math.min(pMax.getX(), b.pMax.getX());
-	  double ymax = Math.min(pMax.getY(), b.pMax.getY());
-	  double zmax = Math.min(pMax.getZ(), b.pMax.getZ());
-	  
-	  DirectPosition pmin = new DirectPosition(xmin,ymin,zmin);
-	  DirectPosition pmax = new DirectPosition(xmax,ymax,zmax);
-	  
-	  return new Box3D(pmin,pmax);
 
-	 /* // -------------------------------------------------------------------  
-    IDirectPosition pMin = b.getLLDP();
-    IDirectPosition pMax = b.getURDP();
-
-    double xMin = Math.max(pMin.getX(), this.pMin.getX());
-    double xMax = Math.min(pMax.getX(), this.pMax.getX());
-    if (xMin < xMax) {
+    if (!intersect(b)) {
       return null;
     }
 
-    double yMin = Math.max(pMin.getY(), this.pMin.getY());
-    double yMax = Math.min(pMax.getY(), this.pMax.getY());
-    if (yMin < yMax) {
-      return null;
-    }
+    double xmin = Math.max(pMin.getX(), b.pMin.getX());
+    double ymin = Math.max(pMin.getY(), b.pMin.getY());
+    double zmin = Math.max(pMin.getZ(), b.pMin.getZ());
+    double xmax = Math.min(pMax.getX(), b.pMax.getX());
+    double ymax = Math.min(pMax.getY(), b.pMax.getY());
+    double zmax = Math.min(pMax.getZ(), b.pMax.getZ());
 
-    double zMin = Math.max(pMin.getZ(), this.pMin.getZ());
-    double zMax = Math.min(pMax.getZ(), this.pMax.getZ());
-    if (zMin < zMax) {
-      return null;
-    }
+    DirectPosition pmin = new DirectPosition(xmin, ymin, zmin);
+    DirectPosition pmax = new DirectPosition(xmax, ymax, zmax);
 
-    return new Box3D(xMin, yMin, zMin, xMax, yMax, zMax);
-     // ------------------------------------------------------------------- */
+    return new Box3D(pmin, pmax);
+
+    /*
+     * // -------------------------------------------------------------------
+     * IDirectPosition pMin = b.getLLDP(); IDirectPosition pMax = b.getURDP();
+     * 
+     * double xMin = Math.max(pMin.getX(), this.pMin.getX()); double xMax =
+     * Math.min(pMax.getX(), this.pMax.getX()); if (xMin < xMax) { return null;
+     * }
+     * 
+     * double yMin = Math.max(pMin.getY(), this.pMin.getY()); double yMax =
+     * Math.min(pMax.getY(), this.pMax.getY()); if (yMin < yMax) { return null;
+     * }
+     * 
+     * double zMin = Math.max(pMin.getZ(), this.pMin.getZ()); double zMax =
+     * Math.min(pMax.getZ(), this.pMax.getZ()); if (zMin < zMax) { return null;
+     * }
+     * 
+     * return new Box3D(xMin, yMin, zMin, xMax, yMax, zMax); //
+     * -------------------------------------------------------------------
+     */
 
   }
 
@@ -249,6 +255,20 @@ public class Box3D {
     dpl.add(new DirectPosition(this.getLLDP().getX(), this.getLLDP().getY(), 0));
 
     return new GM_Polygon(new GM_LineString(dpl));
+
+  }
+  
+  
+  /**
+   * 
+   * @return return box as a Geometrie
+   */
+  public IGeometry createGeometry() {
+
+    IPolygon p = this.to_2D();
+
+    return Extrusion2DObject.convertFromGeometry(p, this.getLLDP().getZ(), this
+        .getURDP().getZ());
 
   }
 
