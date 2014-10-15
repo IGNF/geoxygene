@@ -101,7 +101,7 @@
           <skipTests>false</skipTests>
           <!-- Excludes integration tests when unit tests are run. -->
           <excludes>
-            <exclude>**/LucilContrastAnalysisTest.java</exclude>
+            <exclude>**/OsmXmlLoaderTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -201,6 +201,11 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>geoxygene-cartagen</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>geoxygene-io</artifactId>
       <version>${project.version}</version>
     </dependency>
 
