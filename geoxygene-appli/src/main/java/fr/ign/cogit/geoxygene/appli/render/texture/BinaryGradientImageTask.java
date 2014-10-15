@@ -59,7 +59,8 @@ public class BinaryGradientImageTask extends AbstractTask {
     private BinaryGradientImage binaryGradientImage = null;
     private IFeatureCollection<IFeature> featureCollection = null;
     private File binaryGradientImageFile = null;
-
+    private boolean needWriting = false; // set to true after generation (not
+                                         // when read)
     public static final double CM_PER_INCH = 2.540005;
     public static final double M_PER_INCH = CM_PER_INCH / 100.;
 
@@ -76,6 +77,7 @@ public class BinaryGradientImageTask extends AbstractTask {
         this.binaryGradientImageDescriptor = textureDescriptor;
         this.featureCollection = featureCollection;
         this.binaryGradientImageFile = null;
+        this.needWriting = true;
     }
 
     /**
@@ -89,6 +91,7 @@ public class BinaryGradientImageTask extends AbstractTask {
         this.binaryGradientImageDescriptor = null;
         this.featureCollection = null;
         this.binaryGradientImageFile = file;
+        this.needWriting = false;
     }
 
     /**
@@ -98,7 +101,7 @@ public class BinaryGradientImageTask extends AbstractTask {
      * @return
      */
     public BinaryGradientImageDescriptor getBinaryGradientImageDescriptor() {
-        return binaryGradientImageDescriptor;
+        return this.binaryGradientImageDescriptor;
     }
 
     /**
@@ -107,10 +110,11 @@ public class BinaryGradientImageTask extends AbstractTask {
      * @return
      */
     public File getBinaryGradientImageFile() {
-        if (binaryGradientImageFile != null)
-            return binaryGradientImageFile;
+        if (this.binaryGradientImageFile != null) {
+            return this.binaryGradientImageFile;
+        }
         return TextureManager.generateBinaryGradientImageUniqueFile(
-                this.binaryGradientImageDescriptor, featureCollection);
+                this.binaryGradientImageDescriptor, this.featureCollection);
     }
 
     /**
@@ -120,7 +124,7 @@ public class BinaryGradientImageTask extends AbstractTask {
      * @return
      */
     public IFeatureCollection<IFeature> getFeatureCollection() {
-        return featureCollection;
+        return this.featureCollection;
     }
 
     /*
@@ -161,9 +165,9 @@ public class BinaryGradientImageTask extends AbstractTask {
     @Override
     public void run() {
         if (this.binaryGradientImageFile != null) {
-            readBinaryGradientImageFile();
+            this.readBinaryGradientImageFile();
         } else {
-            generateBinaryGradientImage();
+            this.generateBinaryGradientImage();
         }
     }
 
@@ -244,9 +248,10 @@ public class BinaryGradientImageTask extends AbstractTask {
             }
             this.setState(TaskState.FINISHED);
         } catch (Exception e) {
+            logger.error("An error occurred reading binary gradient image '"
+                    + this.binaryGradientImageFile.getAbsolutePath() + "'");
             this.setError(e);
             this.setState(TaskState.ERROR);
-            e.printStackTrace();
         }
     }
 
@@ -265,6 +270,10 @@ public class BinaryGradientImageTask extends AbstractTask {
                 + this.binaryGradientImageDescriptor
                 + ", gradientTextureImage=" + this.binaryGradientImage
                 + ", featureCollection=" + this.featureCollection + "]";
+    }
+
+    public boolean needWriting() {
+        return this.needWriting;
     }
 
 }

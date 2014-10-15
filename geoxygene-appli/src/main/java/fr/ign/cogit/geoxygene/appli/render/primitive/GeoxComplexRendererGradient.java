@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
+import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
@@ -40,7 +41,6 @@ import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessor;
-import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 import fr.ign.cogit.geoxygene.util.gl.Texture;
@@ -113,6 +113,9 @@ public class GeoxComplexRendererGradient extends AbstractGeoxComplexRenderer {
         program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
                 (float) opacity);
 
+        if (primitive.getExpressiveRendering() != null) {
+            primitive.getExpressiveRendering().initializeRendering(program);
+        }
         GLTools.glCheckError("program set to " + program.getName()
                 + " in normal rendering");
         // this.checkCurrentProgram("normalRendering(): after setCurrentProgram");
@@ -120,7 +123,7 @@ public class GeoxComplexRendererGradient extends AbstractGeoxComplexRenderer {
         Texture texture = primitive.getTexture();
         if (texture != null) {
             GLTools.glCheckError("initializing texture");
-            texture.initializeRendering();
+            texture.initializeRendering(program.getProgramId());
             GLTools.glCheckError("texture initialized");
             program.setUniform1i(
                     LayerViewGLPanel.gradientTextureUniformVarName,
@@ -153,6 +156,9 @@ public class GeoxComplexRendererGradient extends AbstractGeoxComplexRenderer {
         // + primitive.getClass().getSimpleName());
         // }
 
+        if (primitive.getExpressiveRendering() != null) {
+            primitive.getExpressiveRendering().finalizeRendering(program);
+        }
         GL30.glBindVertexArray(0);
         GLTools.glCheckError("exiting direct rendering");
         // this.checkCurrentProgram("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ exiting direct rendering");

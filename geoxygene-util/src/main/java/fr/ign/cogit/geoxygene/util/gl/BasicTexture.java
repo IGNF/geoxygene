@@ -283,7 +283,7 @@ public class BasicTexture implements Texture {
      * initialize the texture rendering
      */
     @Override
-    public boolean initializeRendering() {
+    public boolean initializeRendering(int programId) {
         Integer texIndex = this.getTextureId();
         if (texIndex == null) {
             GL11.glDisable(GL_TEXTURE_2D);

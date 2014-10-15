@@ -24,7 +24,7 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  *******************************************************************************/
-package fr.ign.cogit.geoxygene.util.gl;
+package fr.ign.cogit.geoxygene.appli.gl;
 
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
@@ -44,6 +44,16 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+
+import fr.ign.cogit.geoxygene.appli.render.texture.ExpressiveRendering;
+import fr.ign.cogit.geoxygene.util.gl.AbstractGLComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLComplex;
+import fr.ign.cogit.geoxygene.util.gl.GLInput;
+import fr.ign.cogit.geoxygene.util.gl.GLMesh;
+import fr.ign.cogit.geoxygene.util.gl.GLRenderingCapability;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
+import fr.ign.cogit.geoxygene.util.gl.Texture;
 
 /**
  * GL Primitive is a representation of a 2D Object with 2D coordinates, Texture
@@ -74,7 +84,7 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
     private int vboIndicesId = -1; // VBO Indices index
     private double overallOpacity = 1.;
     private GLSimpleRenderingCapability[] renderingCapabilities = null;
-    // (invalid for transparency)
+    private ExpressiveRendering expressiveRendering = null;
     int stride = -1;
 
     public enum GLSimpleRenderingCapability implements GLRenderingCapability {
@@ -101,6 +111,21 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
     @Override
     public double getOverallOpacity() {
         return this.overallOpacity;
+    }
+
+    /**
+     * @param expressiveRendering
+     *            the expressiveRendering to set
+     */
+    public void setExpressiveRendering(ExpressiveRendering expressiveRendering) {
+        this.expressiveRendering = expressiveRendering;
+    }
+
+    /**
+     * @return the expressiveRendering
+     */
+    public ExpressiveRendering getExpressiveRendering() {
+        return this.expressiveRendering;
     }
 
     /**

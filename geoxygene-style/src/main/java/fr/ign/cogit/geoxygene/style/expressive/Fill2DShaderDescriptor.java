@@ -37,4 +37,21 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.NONE)
 public class Fill2DShaderDescriptor extends ShaderDescriptor {
 
+    private ShaderDescriptor shaderDescriptor = null;
+
+    /**
+     * @return the shaderDescriptor
+     */
+    public ShaderDescriptor getShaderDescriptor() {
+        return this.shaderDescriptor;
+    }
+
+    /**
+     * @param shaderDescriptor
+     *            the shaderDescriptor to set
+     */
+    public void setShaderDescriptor(ShaderDescriptor shaderDescriptor) {
+        this.shaderDescriptor = shaderDescriptor;
+    }
+
 }

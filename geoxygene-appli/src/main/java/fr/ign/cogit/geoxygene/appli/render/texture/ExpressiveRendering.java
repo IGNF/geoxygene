@@ -27,10 +27,25 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
+import fr.ign.cogit.geoxygene.util.gl.GLProgram;
+import fr.ign.cogit.geoxygene.util.gl.RenderingException;
+
 /**
  * @author JeT
- *
+ * 
  */
 public interface ExpressiveRendering {
+
+    /**
+     * Method called before rendering
+     * 
+     * @throws RenderingException
+     */
+    void initializeRendering(GLProgram programId) throws RenderingException;
+
+    /**
+     * Method called after rendering
+     */
+    void finalizeRendering(GLProgram programId) throws RenderingException;
 
 }

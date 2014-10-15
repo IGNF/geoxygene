@@ -29,6 +29,8 @@ package fr.ign.cogit.geoxygene.appli.render.texture;
 
 import fr.ign.cogit.geoxygene.appli.gl.Subshader;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.util.gl.GLProgram;
+import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 
 /**
  * @author JeT
@@ -280,6 +282,18 @@ public class StrokeTextureExpressiveRendering implements ExpressiveRendering {
      */
     public void setSharpness(double sharpness) {
         this.descriptor.setSharpness(sharpness);
+    }
+
+    @Override
+    public void initializeRendering(GLProgram programId)
+            throws RenderingException {
+        // nothing to perform
+    }
+
+    @Override
+    public void finalizeRendering(GLProgram programId)
+            throws RenderingException {
+        // nothing to perform
     }
 
 }

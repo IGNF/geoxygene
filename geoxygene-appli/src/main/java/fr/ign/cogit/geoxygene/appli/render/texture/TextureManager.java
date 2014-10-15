@@ -30,6 +30,8 @@ package fr.ign.cogit.geoxygene.appli.render.texture;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,6 +73,7 @@ public class TextureManager {
     public static String DIRECTORY_CACHE_NAME = "cache";
 
     private BasicTextureTaskListener basicListener = null;
+    // 2 different readers for reading or generating binary gradient image
     private BinaryGradientImageTaskListener gradientListener = null;
 
     /**
@@ -264,7 +267,6 @@ public class TextureManager {
         textureTask = new BinaryGradientImageTask("reading gradient texture "
                 + file.getName(), file);
         gradientReadersMap.put(file, textureTask);
-        textureTask.addTaskListener(this.gradientListener);
         return textureTask;
     }
 
@@ -371,7 +373,9 @@ public class TextureManager {
                     logger.error("TextureTask has finished with no error but a null texture (its role IS to fill texture.getTextureImage() method)");
                 }
                 // save texture on disk
-                this.manager.saveBinaryGradientImage(task);
+                if (task.needWriting()) {
+                    this.manager.saveBinaryGradientImage(task);
+                }
                 GeOxygeneEventManager.refreshApplicationGui();
                 break;
             case ERROR:
@@ -458,10 +462,19 @@ public class TextureManager {
                 }
 
                 try {
+                    // use a temp file to avoid writing and reading at the same
+                    // time
+                    File tmpFile = File.createTempFile("gradientBinaryImage",
+                            ".tmp", directory);
                     logger.info("save gradient image on disk '"
-                            + file.getAbsolutePath() + "'");
-                    BinaryGradientImage.writeBinaryGradientImage(file,
+                            + file.getAbsolutePath() + "' tmp file = '"
+                            + tmpFile.getAbsolutePath() + "'");
+                    BinaryGradientImage.writeBinaryGradientImage(tmpFile,
                             binaryGradientImage);
+                    // move temp file to regular file
+                    Files.move(tmpFile.toPath(), file.toPath(),
+                            StandardCopyOption.REPLACE_EXISTING,
+                            StandardCopyOption.ATOMIC_MOVE);
                 } catch (IOException e) {
                     logger.error("Cannot write gradient image "
                             + file.getAbsolutePath() + " on disk");
@@ -490,7 +503,7 @@ public class TextureManager {
     }
 
     /**
-     * Generate a unique file for a texture decriptor and a feature collection.
+     * Generate a unique file for a texture descriptor and a feature collection.
      * It uses the texture filename
      * 
      * @param textureDescriptor
@@ -520,7 +533,7 @@ public class TextureManager {
         return new File(DIRECTORY_CACHE_NAME
                 + File.separator
                 + generateBinaryGradientImageUniqueFilename(descriptor,
-                        featureCollection) + ".png");
+                        featureCollection) + ".bgi");
     }
 
     /**

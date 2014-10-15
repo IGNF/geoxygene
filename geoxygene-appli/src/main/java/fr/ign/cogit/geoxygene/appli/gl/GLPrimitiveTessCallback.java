@@ -1,9 +1,12 @@
-package fr.ign.cogit.geoxygene.util.gl;
+package fr.ign.cogit.geoxygene.appli.gl;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellatorCallbackAdapter;
+
+import fr.ign.cogit.geoxygene.util.gl.GLMesh;
+import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 
 /**
  * @author JeT

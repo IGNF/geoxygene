@@ -33,14 +33,14 @@ import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
+import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
+import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex.GLSimpleRenderingCapability;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
-import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
-import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex.GLSimpleRenderingCapability;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 import fr.ign.cogit.geoxygene.util.gl.Texture;
@@ -127,7 +127,7 @@ public class GeoxComplexRendererBasic extends AbstractGeoxComplexRenderer {
         Texture texture = primitive.getTexture();
         if (texture != null) {
             GLTools.glCheckError("initializing texture");
-            texture.initializeRendering();
+            texture.initializeRendering(program.getProgramId());
             GLTools.glCheckError("texture initialized");
             program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
                     COLORTEXTURE1_SLOT);

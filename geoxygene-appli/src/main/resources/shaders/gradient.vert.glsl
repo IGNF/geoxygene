@@ -13,12 +13,12 @@ layout (location = 2) in vec4 vertexColor;
 
 out VertexData {
 	vec4 color;
-	vec2 gradientUV;
+	vec2 textureUV;
 } vertexOut;
 
 void main(void) {
 	gl_Position = vec4( -1.0 + 2.0 * (vertexPosition.x * m00 + m02) / (screenWidth + 1.0), 1.0 - 2.0 * ( vertexPosition.y * m11 + m12 ) / ( screenHeight + 1.0 ), 0.0, 1.0);
 	vertexOut.color = vertexColor;
-	vertexOut.gradientUV = vertexTextureCoord;
+	vertexOut.textureUV = vertexTextureCoord;
 }
 

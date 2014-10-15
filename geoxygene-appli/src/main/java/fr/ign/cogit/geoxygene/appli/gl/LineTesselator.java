@@ -48,7 +48,6 @@ import fr.ign.cogit.geoxygene.function.Function1D;
 import fr.ign.cogit.geoxygene.function.FunctionEvaluationException;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
-import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.math.Interpolation;
 

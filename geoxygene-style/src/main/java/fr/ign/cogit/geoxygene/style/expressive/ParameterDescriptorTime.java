@@ -84,7 +84,7 @@ public class ParameterDescriptorTime extends ParameterDescriptor {
         this.description = description;
     }
 
-    // it is completely normal that hashCode and equals are not overloaded
+    // it is completely normal that hashCode and equals are not overloaded.
     // when objects value change, object are the same, and a onParameterChange
     // event is thrown
 }

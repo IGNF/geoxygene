@@ -552,7 +552,8 @@ public class BinaryGradientImage {
         // e.printStackTrace();
         // }
 
-        scaleV(gradientImage, gradientImage.getdMax());
+        fillVWithDistance(gradientImage);
+        // scaleV(gradientImage, gradientImage.getdMax());
         computeGradient(gradientImage);
         // try {
         // TextureImageUtil.save(texImage, "4-gradient");
@@ -614,6 +615,20 @@ public class BinaryGradientImage {
             for (int x = 0; x < image.getWidth(); x++) {
                 GradientPixel pixel = image.getPixel(x, y);
                 pixel.vTexture = pixel.distance / maxDistance;
+            }
+        }
+    }
+
+    /**
+     * @param image
+     * @param maxDistance
+     */
+    private static void fillVWithDistance(BinaryGradientImage image) {
+        // fill yTexture coordinates as distance / maxDistance for any pixel
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                GradientPixel pixel = image.getPixel(x, y);
+                pixel.vTexture = pixel.distance;
             }
         }
     }
@@ -1102,11 +1117,10 @@ public class BinaryGradientImage {
                 logger.error("An error occurred allocating " + width + "x"
                         + height + " Gradient image from " + gradientFile);
             }
-            GradientPixel pixel = new GradientPixel();
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
+                    GradientPixel pixel = img.getPixel(x, y);
                     readTexturePixel(pixel, dis);
-
                 }
             }
 
@@ -1137,7 +1151,6 @@ public class BinaryGradientImage {
             for (int y = 0; y < img.getHeight(); y++) {
                 for (int x = 0; x < img.getWidth(); x++) {
                     GradientPixel pixel = img.getPixel(x, y);
-
                     writeTexturePixel(pixel, dos);
 
                 }
@@ -1164,13 +1177,23 @@ public class BinaryGradientImage {
         dis.writeDouble(pixel.distance);
         dis.writeDouble(pixel.linearParameter);
         dis.writeInt(pixel.closestFrontier);
-        dis.writeDouble(pixel.closestPoint.x);
-        dis.writeDouble(pixel.closestPoint.y);
+        if (pixel.closestPoint != null) {
+            dis.writeDouble(pixel.closestPoint.x);
+            dis.writeDouble(pixel.closestPoint.y);
+        } else {
+            dis.writeDouble(Double.POSITIVE_INFINITY);
+            dis.writeDouble(Double.POSITIVE_INFINITY);
+        }
         dis.writeBoolean(pixel.in);
         dis.writeInt(pixel.frontier);
         dis.writeDouble(pixel.weightSum);
-        dis.writeDouble(pixel.vGradient.x);
-        dis.writeDouble(pixel.vGradient.y);
+        if (pixel.vGradient != null) {
+            dis.writeDouble(pixel.vGradient.x);
+            dis.writeDouble(pixel.vGradient.y);
+        } else {
+            dis.writeDouble(Double.POSITIVE_INFINITY);
+            dis.writeDouble(Double.POSITIVE_INFINITY);
+        }
         dis.writeDouble(pixel.mainDirection);
         pixel.sample = null;
     }
@@ -1196,6 +1219,7 @@ public class BinaryGradientImage {
         pixel.vGradient = new Point2d(x, y);
         pixel.mainDirection = dis.readDouble();
         pixel.sample = null;
+
     }
 
 }

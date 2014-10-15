@@ -43,11 +43,12 @@ public interface Texture {
 
     /**
      * Texture initialization. This method must be called before
-     * vertexCoordinates() method calls
+     * vertexCoordinates() method calls It can use the current GLSL program Id
+     * (to set uniforms)
      * 
      * @return true if texture is valid
      */
-    boolean initializeRendering();
+    boolean initializeRendering(int programId);
 
     /**
      * Finalize rendering. After this call, vertexCoordinates() method calls

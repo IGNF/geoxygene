@@ -70,8 +70,6 @@ import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingD
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
-import fr.ign.cogit.geoxygene.util.gl.GLPrimitiveTessCallback;
-import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 import fr.ign.cogit.geoxygene.util.math.Interpolation;

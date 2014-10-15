@@ -29,13 +29,11 @@ package fr.ign.cogit.geoxygene.appli.gl;
 
 import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_REPEAT;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
 import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glGenTextures;
@@ -48,6 +46,7 @@ import org.apache.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.GradientPixel;
@@ -63,13 +62,16 @@ public class BinaryGradientTexture implements Texture {
     private static final Logger logger = Logger
             .getLogger(BinaryGradientTexture.class.getName()); // logger
 
+    public static final String gradientUVMinUniformVarname = "uvMinGradientTexture";
+    public static final String gradientUVRangeUniformVarname = "uvRangeGradientTexture";
+
     private int textureId = -1;
     private int textureSlot = GL13.GL_TEXTURE0;
     private String textureFilename = null;
     private BinaryGradientImage binaryGradientImage = null;
     private double scaleX, scaleY;
 
-    private String uniformVarName;
+    private String samplerUniformVarName;
 
     // private double minX = 0; // range of point coordinates in world space
     // private double maxX = 1; // range of point coordinates in world space
@@ -81,7 +83,7 @@ public class BinaryGradientTexture implements Texture {
      */
     public BinaryGradientTexture() {
         this.scaleX = 1.;
-        this.scaleY = 1.;
+        this.scaleY = -1.;
     }
 
     /**
@@ -125,7 +127,7 @@ public class BinaryGradientTexture implements Texture {
      * @return the uniformVarName
      */
     public String getUniformVarName() {
-        return this.uniformVarName;
+        return this.samplerUniformVarName;
     }
 
     /**
@@ -165,7 +167,7 @@ public class BinaryGradientTexture implements Texture {
      *            the textureSlot to set
      */
     public void setTextureSlot(String uniformVarName, int textureSlot) {
-        this.uniformVarName = uniformVarName;
+        this.samplerUniformVarName = uniformVarName;
         this.textureSlot = textureSlot;
     }
 
@@ -179,17 +181,31 @@ public class BinaryGradientTexture implements Texture {
 
             int width = gradientImage.getWidth();
             int height = gradientImage.getHeight();
-            ByteBuffer buffer = BufferUtils
-                    .createByteBuffer(width * height * 4);
-            for (int y = 0; y < height; y++)
+            // 16 = 4 floats (float = 4 bytes) = 16
+            ByteBuffer buffer = BufferUtils.createByteBuffer(width * height
+                    * 16);
+            double uMin = gradientImage.getuMin();
+            double vMin = gradientImage.getvMin();
+            double uRange = gradientImage.getuMax() - gradientImage.getuMin();
+            double vRange = gradientImage.getvMax() - gradientImage.getvMin();
+            for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     GradientPixel pixel = gradientImage.getPixel(x, y);
-                    buffer.putFloat((float) pixel.uTexture);
-                    buffer.putFloat((float) pixel.vTexture);
-                    // !! compute tangent !!
-                    buffer.putFloat((float) 0f);
-                    buffer.putFloat((float) 0f);
+                    buffer.putFloat((float) ((pixel.uTexture - uMin) / uRange));
+                    buffer.putFloat((float) ((pixel.vTexture - vMin) / vRange));
+                    // System.err.println("uvTexture = "
+                    // + (float) ((pixel.uTexture - uMin) / uRange) + "x"
+                    // + (float) ((pixel.vTexture - vMin) / vRange));
+                    if (pixel.vGradient != null) {
+                        buffer.putFloat((float) pixel.vGradient.x);
+                        buffer.putFloat((float) pixel.vGradient.y);
+                    } else {
+                        // TODO: !! compute gradient !!
+                        buffer.putFloat(0f);
+                        buffer.putFloat(0f);
+                    }
                 }
+            }
 
             buffer.rewind();
 
@@ -200,18 +216,13 @@ public class BinaryGradientTexture implements Texture {
             // whatever OpenGL method you want, for example:
 
             this.textureId = glGenTextures(); // Generate texture ID
-            glBindTexture(GL_TEXTURE_2D, textureId); // Bind texture ID
+            glBindTexture(GL_TEXTURE_2D, this.textureId); // Bind texture ID
 
             glTexImage2D(GL_TEXTURE_2D, 0, GL30.GL_RGBA32F, width, height, 0,
                     GL11.GL_RGBA, GL11.GL_FLOAT, buffer);
-
             // Setup texture scaling filtering
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-            // Send texel data to OpenGL
-            glTexImage2D(GL_TEXTURE_2D, 0, GL30.GL_R32F, width, height, 0,
-                    GL_RGBA, GL_UNSIGNED_BYTE, buffer);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
             // Return the texture ID so we can bind it later again
@@ -269,7 +280,7 @@ public class BinaryGradientTexture implements Texture {
      * initialize the texture rendering
      */
     @Override
-    public boolean initializeRendering() {
+    public boolean initializeRendering(int programId) {
         Integer texIndex = this.getTextureId();
         if (texIndex == null) {
             GL11.glDisable(GL_TEXTURE_2D);
@@ -279,6 +290,17 @@ public class BinaryGradientTexture implements Texture {
         glEnable(GL11.GL_BLEND);
         GL13.glActiveTexture(this.textureSlot);
         glBindTexture(GL_TEXTURE_2D, texIndex);
+        // vMin has a special value '-1' = out of polygon
+        // consider that vMin is always equal to zero
+        float uMin = (float) (double) this.binaryGradientImage.getuMin();
+        float vMin = 0;
+        float uRange = (float) (this.binaryGradientImage.getuMax() - this.binaryGradientImage
+                .getuMin());
+        float vRange = (float) (double) (this.binaryGradientImage.getvMax());
+        GL20.glUniform2f(GL20.glGetUniformLocation(programId,
+                gradientUVMinUniformVarname), uMin, vMin);
+        GL20.glUniform2f(GL20.glGetUniformLocation(programId,
+                gradientUVRangeUniformVarname), uRange, vRange);
         return true;
     }
 

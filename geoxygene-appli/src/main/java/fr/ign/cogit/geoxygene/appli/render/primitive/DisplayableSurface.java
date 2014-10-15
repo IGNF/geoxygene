@@ -43,8 +43,10 @@ import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientTexture;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
+import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.texture.BinaryGradientImageTask;
+import fr.ign.cogit.geoxygene.appli.render.texture.GradientExpressiveRendering;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
@@ -60,7 +62,6 @@ import fr.ign.cogit.geoxygene.util.gl.BasicTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
-import fr.ign.cogit.geoxygene.util.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 
 /**
@@ -334,6 +335,20 @@ public class DisplayableSurface extends AbstractDisplayable {
         content.setTexture(texture);
         content.setColor(symbolizer.getFill().getColor());
         content.setOverallOpacity(symbolizer.getFill().getFillOpacity());
+        Fill2DDescriptor fill2dDescriptor = symbolizer.getFill()
+                .getFill2DDescriptor();
+        if (fill2dDescriptor != null) {
+            if (fill2dDescriptor instanceof GradientSubshaderDescriptor) {
+                GradientSubshaderDescriptor gradientSubshaderDescriptor = (GradientSubshaderDescriptor) fill2dDescriptor;
+                content.setExpressiveRendering(new GradientExpressiveRendering(
+                        gradientSubshaderDescriptor));
+            } else {
+                throw new UnsupportedOperationException(this.getClass()
+                        .getSimpleName()
+                        + " Cannot handle "
+                        + fill2dDescriptor.getClass().getSimpleName());
+            }
+        }
         complexes.add(content);
         return true;
 

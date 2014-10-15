@@ -30,6 +30,7 @@ package fr.ign.cogit.geoxygene.appli.render.texture;
 import fr.ign.cogit.geoxygene.appli.gl.Subshader;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
+import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 
 /**
  * @author JeT
@@ -178,6 +179,18 @@ public class BasicTextureExpressiveRendering implements ExpressiveRendering {
      */
     public double getSharpness() {
         return this.descriptor.getSharpness();
+    }
+
+    @Override
+    public void initializeRendering(GLProgram programId) {
+        // nothing to perform
+
+    }
+
+    @Override
+    public void finalizeRendering(GLProgram programId) {
+        // nothing to perform
+
     }
 
 }
