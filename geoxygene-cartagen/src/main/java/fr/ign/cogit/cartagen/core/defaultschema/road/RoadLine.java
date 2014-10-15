@@ -36,6 +36,7 @@ import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Direction;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.NoeudReseau;
 import fr.ign.cogit.geoxygene.schemageo.impl.routier.TronconDeRouteImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /*
  * ###### IGN / CartAGen ###### Title: RoadLine Description: Tronçons de route
@@ -84,7 +85,7 @@ public class RoadLine extends NetworkSection implements IRoadLine {
   public RoadLine(ILineString line, int importance) {
     super();
     this.geoxObj = new TronconDeRouteImpl(new ReseauImpl(), false, line);
-    this.setInitialGeom(line);
+    this.setInitialGeom(new GM_LineString(line.coord()));
     this.setEliminated(false);
     this.setImportance(importance);
     this.deadEnd = false;
@@ -95,7 +96,7 @@ public class RoadLine extends NetworkSection implements IRoadLine {
   public RoadLine(ILineString line, int importance, int symbolId) {
     super();
     this.geoxObj = new TronconDeRouteImpl(new ReseauImpl(), false, line);
-    this.setInitialGeom(line);
+    this.setInitialGeom(new GM_LineString(line.coord()));
     this.setEliminated(false);
     this.setImportance(importance);
     this.setSymbolId(symbolId);

@@ -38,6 +38,8 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
 @Access(AccessType.PROPERTY)
 public class RailwayLine extends NetworkSection implements IRailwayLine {
 
+  public static final Class<?> associatedNodeClass = RailwayNode.class;
+
   /**
    * Associated Geoxygene schema object
    */
