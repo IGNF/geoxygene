@@ -46,7 +46,10 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
-
+/**
+ * 
+ * @author MDVan-Damme
+ */
 public class OsmXmlParser {
   
   private static final Logger LOGGER = Logger.getLogger(OsmXmlParser.class);
