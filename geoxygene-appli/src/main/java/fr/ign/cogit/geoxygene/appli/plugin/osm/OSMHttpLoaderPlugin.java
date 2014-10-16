@@ -67,6 +67,8 @@ public class OSMHttpLoaderPlugin implements GeOxygeneApplicationPlugin, ActionLi
   public void initialize(GeOxygeneApplication application) {
     this.application = application;
     
+    System.out.println("ici ???");
+    
     // Check if the DataMatching menu exists. If not we create it.
     JMenu menu = null;
     String menuName = "OSM";
@@ -82,10 +84,14 @@ public class OSMHttpLoaderPlugin implements GeOxygeneApplicationPlugin, ActionLi
         menu = new JMenu(menuName);
     }
 
-    // Add network data matching menu item to the menu.
+    // Add osm http loader menu item to the menu.
     JMenuItem menuItem = new JMenuItem("Load OSM via HTTP");
     menuItem.addActionListener(this);
     menu.add(menuItem);
+    
+    // Refresh menu of the application
+    int menuComponentCount = application.getMainFrame().getMenuBar().getComponentCount();
+    application.getMainFrame().getMenuBar().add(menu, menuComponentCount - 2);
     
   }
   
