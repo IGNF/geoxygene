@@ -41,6 +41,7 @@ public abstract class AbstractFunction1D implements Function1D {
   /**
    * TODO : il y a surement mieux.
    */ 
+  @Override
   public boolean isBetween(double d) {
     if (withMatchLowerBound) {
       if (withMatchUpperBound) {

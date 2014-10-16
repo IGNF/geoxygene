@@ -56,4 +56,6 @@ public interface Function1D {
   double getLowerBoundDF();
   double getUpperBoundDF();
   
+  boolean isBetween(double d);
+  
 }
