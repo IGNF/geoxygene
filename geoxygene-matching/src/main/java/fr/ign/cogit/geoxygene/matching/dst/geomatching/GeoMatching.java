@@ -50,6 +50,7 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 public class GeoMatching {
 	
   private final static Logger LOGGER = Logger.getLogger(GeoMatching.class);
+  private static Logger DST_LOGGER = Logger.getLogger("DSTLogger");
 
   // List<Hypothesis> candidates;
 
@@ -72,7 +73,7 @@ public class GeoMatching {
   public EvidenceResult<GeomHypothesis> run(Collection<Source<IFeature, GeomHypothesis>> criteria,
       IFeature reference, List<IFeature> candidates, ChoiceType choice, boolean closed)
       throws Exception {
-	  
+    
     // Création des hypothèses d'appariement.
     LOGGER.debug(candidates.size() + " candidates");
     LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
@@ -121,6 +122,8 @@ public class GeoMatching {
       IFeature reference, List<IFeature> candidates, ChoiceType choice, boolean closed)
       throws Exception {
     
+    DST_LOGGER.info("Appariement du toponyme " + reference.getAttribute("toponyme"));
+    
     // Création des hypothèses d'appariement.
     LOGGER.debug(candidates.size() + " candidates");
     LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
@@ -130,6 +133,7 @@ public class GeoMatching {
     List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
     for (List<IFeature> l : combinations) {
       if (l.size() == 1) {
+        // System.out.println(l.get(0).getFeatureType().getFeatureAttributes().size());
         hypotheses.add(new SimpleGeomHypothesis(l.get(0)));
       } else
         if (l.size() > 1) {
@@ -143,7 +147,9 @@ public class GeoMatching {
     for (GeomHypothesis candidate : hypotheses) {
       for (int j = 0; j < criteria.size(); j++) {
         Source<IFeature, GeomHypothesis> source = criteria.get(j);
+        DST_LOGGER.info("   " + source.getName());
         double[] mij = source.evaluate(reference, candidate);
+        DST_LOGGER.info("        [" + mij[0] + ", " + mij[1] + ", " + mij[2] + "]");
         List<Pair<byte[], Float>> kernel = new ArrayList<Pair<byte[], Float>>();
         byte[] code = codec.encode(candidate);
         byte[] codeComplement = new byte[hypotheses.size()];

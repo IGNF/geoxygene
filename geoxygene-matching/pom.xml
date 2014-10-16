@@ -94,10 +94,10 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>geoxygene-filter</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-filter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -109,13 +109,9 @@
 			<artifactId>geoxygene-contrib</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
 		
-		<dependency>
-		    <groupId>${project.groupId}</groupId>
-		    <artifactId>geoxygene-util</artifactId>
-		    <version>${project.version}</version>
-		</dependency>
-		
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>evidence4j</artifactId>
@@ -153,6 +149,12 @@
 			<groupId>no.priv.garshol.duke</groupId>
 			<artifactId>duke</artifactId>
 			<version>1.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
 		</dependency>
 
 		<!-- For R tests : rosuda -->

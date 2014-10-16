@@ -28,6 +28,8 @@ package fr.ign.cogit.geoxygene.matching.dst.sources.punctual;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.function.Function1D;
@@ -44,7 +46,8 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 public class EuclidianDist extends GeoSource {
 	
   // private final static Logger LOGGER = Logger.getLogger(EuclidianDist.class);
-	
+  private static Logger DST_LOGGER = Logger.getLogger("DSTLogger");
+  
 	@Override
 	public String getName() {
 		return "Distance Euclidienne (dim=1)";
@@ -55,12 +58,13 @@ public class EuclidianDist extends GeoSource {
 	  double[] masses = new double[3];
 	  
 	  float distance = this.compute(reference.getGeom(), candidate.getGeom());
+	  DST_LOGGER.debug("        distance = " + distance);
 	  
 	  // Fonction EstApparie
       float masse1 = 0.0f;
       if (fEA != null) {
         for (Function1D f : fEA) {
-          if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
+          if (f.isBetween(distance)) {
             try {
               masse1 = f.evaluate(distance).floatValue();
             } catch (FunctionEvaluationException e) {
@@ -75,7 +79,7 @@ public class EuclidianDist extends GeoSource {
       float masse2 = 0.0f;
       if (fNA != null) {
         for (Function1D f : fNA) {
-          if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
+          if (f.isBetween(distance)) {
             try {
               masse2 = f.evaluate(distance).floatValue();
             } catch (FunctionEvaluationException e) {
@@ -90,7 +94,7 @@ public class EuclidianDist extends GeoSource {
       float masse3 = 0.0f;
       if (fPP != null) {
         for (Function1D f : fPP) {
-          if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
+          if (f.isBetween(distance)) {
             try {
               masse3 = f.evaluate(distance).floatValue();
             } catch (FunctionEvaluationException e) {
@@ -118,7 +122,7 @@ public class EuclidianDist extends GeoSource {
         float masse1 = 0.0f;
         if (fEA != null) {
           for (Function1D f : fEA) {
-            if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
+            if (f.isBetween(distance)) {
               try {
                 masse1 = f.evaluate(distance).floatValue();
               } catch (FunctionEvaluationException e) {
@@ -133,7 +137,7 @@ public class EuclidianDist extends GeoSource {
         float masse2 = 0.0f;
         if (fNA != null) {
           for (Function1D f : fNA) {
-            if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
+            if (f.isBetween(distance)) {
               try {
                 masse2 = f.evaluate(distance).floatValue();
               } catch (FunctionEvaluationException e) {
@@ -148,7 +152,7 @@ public class EuclidianDist extends GeoSource {
         float masse3 = 0.0f;
         if (fPP != null) {
           for (Function1D f : fPP) {
-            if (f.getLowerBoundDF() < distance && distance < f.getUpperBoundDF()) {
+            if (f.isBetween(distance)) {
               try {
                 masse3 = f.evaluate(distance).floatValue();
               } catch (FunctionEvaluationException e) {
