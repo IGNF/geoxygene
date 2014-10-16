@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.render.primitive;
+package fr.ign.cogit.geoxygene.appli.render;
 
 import java.util.Arrays;
 
@@ -36,7 +36,6 @@ import org.lwjgl.opengl.GL30;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex.GLSimpleRenderingCapability;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
-import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLException;

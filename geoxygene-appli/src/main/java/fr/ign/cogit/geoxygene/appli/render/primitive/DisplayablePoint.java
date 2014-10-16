@@ -40,6 +40,8 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
+import fr.ign.cogit.geoxygene.appli.render.GeoxComplexRenderer;
+import fr.ign.cogit.geoxygene.appli.render.GeoxRendererManager;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;

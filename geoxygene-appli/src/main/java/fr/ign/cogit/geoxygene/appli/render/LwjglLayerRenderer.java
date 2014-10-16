@@ -56,11 +56,6 @@ import org.lwjgl.opengl.Util;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
-import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
-import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
-import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.Viewport;
@@ -69,12 +64,8 @@ import fr.ign.cogit.geoxygene.appli.gl.GLTextureManager;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.mode.RenderingTypeMode;
-import fr.ign.cogit.geoxygene.appli.render.primitive.DisplayableCurve;
-import fr.ign.cogit.geoxygene.appli.render.primitive.DisplayablePoint;
-import fr.ign.cogit.geoxygene.appli.render.primitive.DisplayableSurface;
+import fr.ign.cogit.geoxygene.appli.render.primitive.DisplayableFactory;
 import fr.ign.cogit.geoxygene.appli.render.primitive.GLDisplayable;
-import fr.ign.cogit.geoxygene.appli.render.primitive.GeoxComplexRenderer;
-import fr.ign.cogit.geoxygene.appli.render.primitive.GeoxComplexRendererBasic;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
@@ -278,7 +269,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                     if (Math.min(vp.getWidth(), vp.getHeight()) <= 0) {
                         return;
                     }
-                    LwjglLayerRenderer.this.initializeRendering();
                     // do the actual rendering
                     try {
                         // System.err.println("rendering layer "
@@ -301,16 +291,8 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                         return;
                     }
                 } finally {
-                    try {
-                        LwjglLayerRenderer.this.finalizeRendering();
-                    } catch (RenderingException e) {
-                        logger.error("An error ocurred finalizing "
-                                + this.getClass().getSimpleName());
-                    }
                     // we are no more in rendering progress
                     LwjglLayerRenderer.this.setRendering(false);
-                    // FIXME Is this operation really useful or is it a patch?
-                    vp.getRenderingManager().repaint();
                 }
             }
         };
@@ -346,7 +328,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                 }
                 Symbolizer symbolizer = pair.getU();
                 IFeature feature = pair.getV();
-                this.render(symbolizer, feature, this.getLayer());
+                this.render(symbolizer, feature);
                 featureRenderIndex++;
             }
         }
@@ -403,38 +385,34 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
      *            the feature
      */
 
-    private void render(final Symbolizer symbolizer, final IFeature feature,
-            final Layer layer) throws RenderingException {
+    private void render(final Symbolizer symbolizer, final IFeature feature)
+            throws RenderingException {
 
-        Viewport viewport = this.getLayerViewPanel().getViewport();
+        GLDisplayable displayable = this.getDisplayable(symbolizer, feature);
 
-        GLDisplayable displayable = this.getDisplayable(symbolizer, feature,
-                layer, viewport);
-
-        if (displayable != null) {
-            try {
-                double layerOpacity = this.getLayer().getOpacity();
-                Collection<GLComplex> fullRepresentation = displayable
-                        .getFullRepresentation();
-                if (fullRepresentation == null) {
-                    GeoxComplexRendererBasic partialRenderer = this
-                            .getPartialRenderer(feature);
-                    partialRenderer.setFBORendering(false);
-                    partialRenderer.localRendering(
-                            displayable.getPartialRepresentation(),
-                            layerOpacity);
-                } else {
-                    for (GLComplex complex : fullRepresentation) {
-                        this.renderGLPrimitive(complex, layerOpacity);
-                    }
-                }
-            } catch (GLException e) {
-                throw new RenderingException(e);
-            }
-        } else {
+        if (displayable == null) {
             logger.warn(this.getClass().getSimpleName()
                     + " do not know how to render feature "
                     + feature.getGeom().getClass().getSimpleName());
+            return;
+        }
+        try {
+            double layerOpacity = this.getLayer().getOpacity();
+            Collection<GLComplex> fullRepresentation = displayable
+                    .getFullRepresentation();
+            if (fullRepresentation == null) {
+                GeoxComplexRendererBasic partialRenderer = this
+                        .getPartialRenderer(feature);
+                partialRenderer.setFBORendering(false);
+                partialRenderer.localRendering(
+                        displayable.getPartialRepresentation(), layerOpacity);
+            } else {
+                for (GLComplex complex : fullRepresentation) {
+                    this.renderGLPrimitive(complex, layerOpacity);
+                }
+            }
+        } catch (GLException e) {
+            throw new RenderingException(e);
         }
 
     }
@@ -447,7 +425,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
      * @return
      */
     private GLDisplayable getDisplayable(final Symbolizer symbolizer,
-            final IFeature feature, final Layer layer, Viewport viewport) {
+            final IFeature feature) {
         GLDisplayable displayable;
         synchronized (this.displayables) {
             // try to retrieve previously generated geometry
@@ -463,9 +441,19 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             // + feature.getFeatureCollection(0).getEnvelope());
             if (displayable == null) {
                 // if no displayable exists, create a new one
+
                 IGeometry geometry = feature.getGeom();
-                displayable = this.generateDisplayable(feature, layer,
-                        symbolizer, viewport, displayable, geometry);
+                LwjglLayerRenderer layerRenderer = this;
+                Viewport viewport = layerRenderer.getLayerViewPanel()
+                        .getViewport();
+                Layer layer = layerRenderer.getLayer();
+                if (geometry == null) {
+                    logger.warn("null geometry for feature " + feature.getId());
+                    return null;
+                }
+                displayable = DisplayableFactory.generateDisplayable(feature,
+                        symbolizer, geometry, layerRenderer, viewport, layer);
+
                 // stores generated geom
                 this.addDisplayable(feature, symbolizer, displayable);
             }
@@ -605,10 +593,8 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             }
             this.initializeFBO(primitive, opacity, currentSymbolizer);
         }
-        GL11.glDepthMask(false);
-        glDisable(GL11.GL_DEPTH_TEST);
-
         GL11.glViewport(0, 0, this.getFBOImageWidth(), this.getFBOImageHeight());
+
         GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
         GLTools.glCheckError("after setting draw buffer");
 
@@ -851,12 +837,11 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             // + this.getLayerViewPanel().getAntialiasingSize());
             GLTools.glCheckError("after setting viewport");
 
-            GLTools.glCheckError("FBO initialization");
         }
         glDisable(GL11.GL_BLEND);
         GLTools.glCheckError("just before launching normal rendering within FBO context");
 
-        GL11.glClearColor(0f, 0f, 0f, 0f);
+        GL11.glClearColor(1f, 1f, 1f, 0f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
     }
 
@@ -966,59 +951,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         // height);
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
         return true;
-    }
-
-    /**
-     * @param feature
-     * @param layer
-     * @param symbolizer
-     * @param viewport
-     * @param displayable
-     * @param geometry
-     * @return
-     */
-    private GLDisplayable generateDisplayable(final IFeature feature,
-            final Layer layer, final Symbolizer symbolizer,
-            final Viewport viewport, GLDisplayable displayable,
-            IGeometry geometry) {
-        if (geometry == null) {
-            logger.warn("null geometry for feature " + feature.getId());
-            return null;
-        } else if (geometry.isPolygon()) {
-            DisplayableSurface displayablePolygon = new DisplayableSurface(
-                    layer.getName() + "-polygon #" + feature.getId(), viewport,
-                    (IPolygon) geometry, feature, symbolizer, this,
-                    this.getPartialRenderer(feature));
-            displayable = displayablePolygon;
-        } else if (geometry.isMultiSurface()) {
-            DisplayableSurface displayablePolygon = new DisplayableSurface(
-                    layer.getName() + "-multisurface #" + feature.getId(),
-                    viewport, (IMultiSurface<?>) geometry, feature, symbolizer,
-                    this, this.getPartialRenderer(feature));
-            displayable = displayablePolygon;
-        } else if (geometry.isMultiCurve()) {
-            DisplayableCurve displayableCurve = new DisplayableCurve(
-                    layer.getName() + "-multicurve #" + feature.getId(),
-                    viewport, (IMultiCurve<?>) geometry, symbolizer, this,
-                    this.getPartialRenderer(feature));
-            displayable = displayableCurve;
-        } else if (geometry.isLineString()) {
-            DisplayableCurve displayableLine = new DisplayableCurve(
-                    layer.getName() + "-linestring #" + feature.getId(),
-                    viewport, (ILineString) geometry, symbolizer, this,
-                    this.getPartialRenderer(feature));
-            displayable = displayableLine;
-        } else if (geometry.isPoint() || (geometry instanceof IMultiPoint)) {
-            DisplayablePoint displayablePoint = new DisplayablePoint(
-                    layer.getName() + "-multipoint #" + feature.getId(),
-                    viewport, geometry, symbolizer, this,
-                    this.getPartialRenderer(feature));
-            displayable = displayablePoint;
-        } else {
-            logger.warn("LwjglLayerRenderer cannot handle geometry type "
-                    + geometry.getClass().getSimpleName());
-        }
-        return displayable;
     }
 
     private final void addDisplayable(IFeature feature, Symbolizer symbolizer,

@@ -5,8 +5,6 @@ package fr.ign.cogit.geoxygene.appli.layer;
 
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
@@ -179,12 +177,11 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
                 bgColor = this.getViewBackground().getColor();
             }
             GLTools.glClear(bgColor, GL_COLOR_BUFFER_BIT);
-            GLTools.glClear(0f, 0f, 0f, 1f, GL_DEPTH_BUFFER_BIT);
 
             this.drawBackground();
 
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glEnable(GL_BLEND);
+            // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            // glEnable(GL_BLEND);
             // this.parentPanel.repaint();
             if (this.getParentPanel() != null
                     && this.getParentPanel().getRenderingManager() != null) {

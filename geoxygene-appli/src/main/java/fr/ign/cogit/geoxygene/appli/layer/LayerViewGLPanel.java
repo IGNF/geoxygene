@@ -44,9 +44,9 @@ import fr.ign.cogit.geoxygene.appli.gl.GLPaintingVertex;
 import fr.ign.cogit.geoxygene.appli.gl.Subshader;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
+import fr.ign.cogit.geoxygene.appli.render.GeoxRendererManager;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.SyncRenderingManager;
-import fr.ign.cogit.geoxygene.appli.render.primitive.GeoxRendererManager;
 import fr.ign.cogit.geoxygene.appli.render.texture.ShaderFactory;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
@@ -404,7 +404,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     @Override
     public final void paintComponent(final Graphics g) {
         try {
-
             this.glCanvas.doPaint();
         } catch (Exception e1) {
             // e1.printStackTrace();

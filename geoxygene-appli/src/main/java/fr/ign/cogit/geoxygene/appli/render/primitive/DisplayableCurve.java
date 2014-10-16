@@ -42,6 +42,8 @@ import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.gl.LineTesselator;
+import fr.ign.cogit.geoxygene.appli.render.GeoxComplexRenderer;
+import fr.ign.cogit.geoxygene.appli.render.GeoxRendererManager;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.texture.BasicTextureExpressiveRendering;
 import fr.ign.cogit.geoxygene.appli.render.texture.StrokeTextureExpressiveRendering;
