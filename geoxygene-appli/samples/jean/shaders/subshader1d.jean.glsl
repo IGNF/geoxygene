@@ -20,8 +20,9 @@ struct DataPainting {
 	vec2 uv;                // UV coordinates texture (u in world coordinates, v between 0 and 1)
 	vec4 color;             // point color
 	float thickness;        // line thickness in world coordinates
-	float uMax;             // maximum u coordinate in one polyline (in world coordinates)
+	float uMax;             // maximum u coordinate in one polyline (in wolrd coordinates)
 	vec2 tan;               // tangent vector at the given point (in world coordinates)
+	float curvature;        // signed curvature estimation
 	
 };
 

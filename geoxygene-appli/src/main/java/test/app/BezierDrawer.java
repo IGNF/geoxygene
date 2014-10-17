@@ -27,6 +27,7 @@
 
 package test.app;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -35,9 +36,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.vecmath.Point2d;
@@ -50,7 +55,30 @@ import fr.ign.cogit.geoxygene.util.math.VectorUtil;
  */
 public class BezierDrawer {
 
-    private static JSlider slider = null;
+    private static JSlider widthSlider = null;
+    private static JSlider sampleSlider = null;
+    private static JSlider scaleSlider = null;
+    private static JCheckBox curveCheckbox = null;
+    private static JCheckBox normalCheckbox = null;
+    private static JCheckBox controlCheckbox = null;
+    private static JCheckBox strokeCheckbox = null;
+    private static JCheckBox widthCheckbox = null;
+    private static JCheckBox derivativeCheckbox = null;
+    private static JCheckBox curvatureCheckbox = null;
+    private static JCheckBox falseCurvatureCheckbox = null;
+
+    private static BezierPanel panel = new BezierPanel();
+    private static ChangeListener repaint = null;
+    static {
+        repaint = new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                panel.repaint();
+
+            }
+        };
+    }
 
     /**
      * @param args
@@ -60,20 +88,80 @@ public class BezierDrawer {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(1024, 768);
 
-        final BezierPanel panel = new BezierPanel();
+        panel = new BezierPanel();
         panel.addMouseListener(panel);
         panel.addMouseMotionListener(panel);
         f.getContentPane().add(panel, BorderLayout.CENTER);
-        slider = new JSlider(1, 1000, 100);
-        slider.addChangeListener(new ChangeListener() {
+        JPanel toolsPanel = new JPanel();
+        JPanel slidersPanel = new JPanel();
+        JPanel southPanel = new JPanel(new BorderLayout());
+        southPanel.setBorder(BorderFactory
+                .createBevelBorder(BevelBorder.LOWERED));
+        southPanel.add(toolsPanel, BorderLayout.SOUTH);
+        southPanel.add(slidersPanel, BorderLayout.NORTH);
+        f.getContentPane().add(southPanel, BorderLayout.SOUTH);
 
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                panel.repaint();
+        widthSlider = new JSlider(1, 1000, 100);
+        widthSlider.setPaintTicks(true);
+        widthSlider.setMinorTickSpacing(10);
+        widthSlider.setMajorTickSpacing(100);
+        widthSlider.setPaintTicks(true);
+        widthSlider.addChangeListener(repaint);
+        slidersPanel.add(new JLabel("width"));
+        slidersPanel.add(widthSlider);
 
-            }
-        });
-        f.getContentPane().add(slider, BorderLayout.SOUTH);
+        sampleSlider = new JSlider(10, 1000, 100);
+        sampleSlider.setPaintTicks(true);
+        sampleSlider.setMinorTickSpacing(10);
+        sampleSlider.setMajorTickSpacing(100);
+        sampleSlider.setPaintTicks(true);
+        sampleSlider.addChangeListener(repaint);
+        slidersPanel.add(new JLabel("samples"));
+        slidersPanel.add(sampleSlider);
+
+        scaleSlider = new JSlider(-1000, 1000, 00);
+        scaleSlider.setPaintTicks(true);
+        scaleSlider.setMinorTickSpacing(10);
+        scaleSlider.setMajorTickSpacing(100);
+        scaleSlider.setPaintTicks(true);
+        scaleSlider.addChangeListener(repaint);
+        slidersPanel.add(new JLabel("scale"));
+        slidersPanel.add(scaleSlider);
+
+        curveCheckbox = new JCheckBox("curve");
+        curveCheckbox.addChangeListener(repaint);
+        curveCheckbox.setSelected(true);
+        toolsPanel.add(curveCheckbox);
+
+        controlCheckbox = new JCheckBox("control");
+        controlCheckbox.addChangeListener(repaint);
+        controlCheckbox.setSelected(true);
+        toolsPanel.add(controlCheckbox);
+
+        normalCheckbox = new JCheckBox("normal");
+        normalCheckbox.addChangeListener(repaint);
+        toolsPanel.add(normalCheckbox);
+
+        strokeCheckbox = new JCheckBox("stroke");
+        strokeCheckbox.addChangeListener(repaint);
+        toolsPanel.add(strokeCheckbox);
+
+        widthCheckbox = new JCheckBox("width");
+        widthCheckbox.addChangeListener(repaint);
+        toolsPanel.add(widthCheckbox);
+
+        derivativeCheckbox = new JCheckBox("derivative");
+        derivativeCheckbox.addChangeListener(repaint);
+        toolsPanel.add(derivativeCheckbox);
+
+        curvatureCheckbox = new JCheckBox("curvature");
+        curvatureCheckbox.addChangeListener(repaint);
+        toolsPanel.add(curvatureCheckbox);
+
+        falseCurvatureCheckbox = new JCheckBox("false curvature");
+        falseCurvatureCheckbox.addChangeListener(repaint);
+        toolsPanel.add(falseCurvatureCheckbox);
+
         f.setVisible(true);
 
     }
@@ -95,20 +183,51 @@ public class BezierDrawer {
          * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
          */
         @Override
-        protected void paintComponent(Graphics g) {
-            this.lineWidth = slider.getValue();
+        protected void paintComponent(Graphics g1) {
+            Graphics2D g = (Graphics2D) g1;
+            this.lineWidth = widthSlider.getValue();
             this.p[2].x = this.p[1].x;
             this.p[2].y = this.p[1].y;
             super.paintComponent(g);
-            g.setColor(Color.blue);
-            this.drawWidth((Graphics2D) g);
-            // this.drawTangents((Graphics2D) g);
-            g.setColor(Color.red);
-            this.drawCurve((Graphics2D) g);
-            g.setColor(Color.pink);
-            this.drawStroke((Graphics2D) g);
-            g.setColor(Color.black);
-            this.drawControlPoints((Graphics2D) g);
+            if (widthCheckbox.isSelected()) {
+                g.setColor(Color.blue);
+                this.drawWidth(g);
+            }
+            if (normalCheckbox.isSelected()) {
+                g.setColor(Color.green);
+                g.setStroke(new BasicStroke(1));
+                this.drawNormals(g);
+            }
+            if (curveCheckbox.isSelected()) {
+                g.setColor(Color.red);
+                g.setStroke(new BasicStroke(5));
+                this.drawCurve(g);
+            }
+            if (strokeCheckbox.isSelected()) {
+                g.setColor(Color.pink);
+                g.setStroke(new BasicStroke(1));
+                this.drawStroke(g);
+            }
+            if (controlCheckbox.isSelected()) {
+                g.setColor(Color.black);
+                g.setStroke(new BasicStroke(1));
+                this.drawControlPoints(g);
+            }
+            if (derivativeCheckbox.isSelected()) {
+                g.setColor(Color.yellow);
+                g.setStroke(new BasicStroke(1));
+                this.drawDerivative(g);
+            }
+            if (curvatureCheckbox.isSelected()) {
+                g.setColor(Color.blue);
+                g.setStroke(new BasicStroke(1));
+                this.drawCurvature(g);
+            }
+            if (falseCurvatureCheckbox.isSelected()) {
+                g.setColor(Color.cyan);
+                g.setStroke(new BasicStroke(1));
+                this.drawFalseCurvature(g);
+            }
         }
 
         private void drawControlPoints(Graphics2D g) {
@@ -131,7 +250,7 @@ public class BezierDrawer {
          * @param g
          */
         private void drawCurve(Graphics2D g) {
-            double incT = 0.01;
+            double incT = .1 / sampleSlider.getValue();
             double p0x = this.p[0].x;
             double p0y = this.p[0].y;
             double p1x = this.p[1].x;
@@ -141,11 +260,143 @@ public class BezierDrawer {
             double x0 = p0x;
             double y0 = p0y;
             for (double t = incT; t <= 1 + incT; t += incT) {
-                double x1 = this.quadraticValue(p0x, p1x, p2x, t);
-                double y1 = this.quadraticValue(p0y, p1y, p2y, t);
+                double x1 = BezierPanel.quadraticValue(p0x, p1x, p2x, t);
+                double y1 = BezierPanel.quadraticValue(p0y, p1y, p2y, t);
                 g.drawLine((int) x0, (int) y0, (int) x1, (int) y1);
                 x0 = x1;
                 y0 = y1;
+            }
+        }
+
+        /**
+         * @param g
+         */
+        private void drawDerivative(Graphics2D g) {
+            double incT = 1. / sampleSlider.getValue();
+            double scale = Math.exp(scaleSlider.getValue() / 100.);
+            double p0x = this.p[0].x;
+            double p0y = this.p[0].y;
+            double p1x = this.p[1].x;
+            double p1y = this.p[1].y;
+            double p2x = this.p[3].x;
+            double p2y = this.p[3].y;
+            for (double t = 0; t <= 1; t += incT) {
+                double x1 = BezierPanel.quadraticValue(p0x, p1x, p2x, t);
+                double y1 = BezierPanel.quadraticValue(p0y, p1y, p2y, t);
+                double xp1 = BezierPanel.quadraticDerivative(p0x, p1x, p2x, t);
+                double yp1 = BezierPanel.quadraticDerivative(p0y, p1y, p2y, t);
+                g.drawLine((int) x1, (int) y1, (int) (x1 + xp1 * scale),
+                        (int) (y1 + yp1 * scale));
+            }
+        }
+
+        /**
+         * @param g
+         */
+        private void drawCurvature(Graphics2D g) {
+            double incT = 1. / sampleSlider.getValue();
+            double scale = Math.exp(scaleSlider.getValue() / 100.);
+            double p0x = this.p[0].x;
+            double p0y = this.p[0].y;
+            double p1x = this.p[1].x;
+            double p1y = this.p[1].y;
+            double p2x = this.p[3].x;
+            double p2y = this.p[3].y;
+            for (double t = 0; t <= 1; t += incT) {
+                double x1 = BezierPanel.quadraticValue(p0x, p1x, p2x, t);
+                double y1 = BezierPanel.quadraticValue(p0y, p1y, p2y, t);
+                double xp1 = BezierPanel.quadraticDerivative(p0x, p1x, p2x, t);
+                double yp1 = BezierPanel.quadraticDerivative(p0y, p1y, p2y, t);
+
+                double xpp1 = BezierPanel.quadraticSecondDerivative(p0x, p1x,
+                        p2x, t);
+                double ypp1 = BezierPanel.quadraticSecondDerivative(p0y, p1y,
+                        p2y, t);
+                double curvature = Math.abs(xp1 * ypp1 - yp1 * xpp1)
+                        / Math.pow(Math.sqrt(xp1 * xp1 + yp1 * yp1), 3);
+
+                double xn = -yp1;
+                double yn = xp1;
+                double normn = Math.sqrt(xn * xn + yn * yn);
+                xn /= normn;
+                yn /= normn;
+
+                double r = 1. / curvature;
+
+                double xc = x1 + xn * r;
+                double yc = y1 + yn * r;
+                if (curvature > 0) {
+                    // g.drawOval((int) (x1 - curvature * scale / 2.),
+                    // (int) (y1 - curvature * scale / 2.),
+                    // (int) (curvature * scale),
+                    // (int) (curvature * scale));
+                    g.drawOval((int) (xc - r), (int) (yc - r), (int) (2 * r),
+                            (int) (2 * r));
+                } else {
+                    // g.drawRect((int) (x1 + curvature * scale / 2.),
+                    // (int) (y1 + curvature * scale / 2.),
+                    // (int) (-curvature * scale),
+                    // (int) (-curvature * scale));
+                    g.drawOval((int) (xc + r), (int) (yc + r), (int) (-2 * r),
+                            (int) (-2 * r));
+                }
+            }
+        }
+
+        /**
+         * @param g
+         */
+        private void drawFalseCurvature(Graphics2D g) {
+            double incT = 1. / sampleSlider.getValue();
+            double scale = Math.exp(scaleSlider.getValue() / 100.);
+            double p0x = this.p[0].x;
+            double p0y = this.p[0].y;
+            double p1x = this.p[1].x;
+            double p1y = this.p[1].y;
+            double p2x = this.p[3].x;
+            double p2y = this.p[3].y;
+            for (double t = 0; t <= 1; t += incT) {
+                double x1 = BezierPanel.quadraticValue(p0x, p1x, p2x, t);
+                double y1 = BezierPanel.quadraticValue(p0y, p1y, p2y, t);
+                double xp1 = BezierPanel.quadraticDerivative(p0x, p1x, p2x, t);
+                double yp1 = BezierPanel.quadraticDerivative(p0y, p1y, p2y, t);
+                double normp1 = Math.sqrt(xp1 * xp1 + yp1 * yp1);
+                xp1 /= Math.pow(normp1, 2);
+                yp1 /= Math.pow(normp1, 2);
+                double nn1 = xp1 * (p2y - p1y) - yp1 * (p2x - p1x);
+                double nn2 = xp1 * (p0y - p1y) - yp1 * (p0x - p1x);
+                double falseCurvature = nn1;
+                if (Math.abs(nn2) < Math.abs(nn1)) {
+                    falseCurvature = nn2;
+                }
+                double curvature = falseCurvature;
+
+                double xn = -yp1;
+                double yn = xp1;
+                double normn = Math.sqrt(xn * xn + yn * yn);
+                xn /= normn;
+                yn /= normn;
+                double r = 1. / curvature;
+
+                double xc = x1 + xn * r;
+                double yc = y1 + yn * r;
+
+                if (curvature > 0) {
+                    g.drawOval((int) (x1 - curvature * scale / 2.),
+                            (int) (y1 - curvature * scale / 2.),
+                            (int) (curvature * scale),
+                            (int) (curvature * scale));
+                    // g.drawOval((int) (xc - r), (int) (yc - r), (int) (2 * r),
+                    // (int) (2 * r));
+                } else {
+                    g.drawRect((int) (x1 + curvature * scale / 2.),
+                            (int) (y1 + curvature * scale / 2.),
+                            (int) (-curvature * scale),
+                            (int) (-curvature * scale));
+                    // g.drawOval((int) (xc + r), (int) (yc + r), (int) (-2 *
+                    // r),
+                    // (int) (-2 * r));
+                }
             }
         }
 
@@ -161,20 +412,26 @@ public class BezierDrawer {
             return -2 * p0 * (1 - t) + 2 * p1 * (1 - 2 * t) + 2 * p2 * t;
         }
 
-        /**
-         */
-        private static double cubicValue(double p0, double p1, double p2,
-                double p3, double t) {
-            return p0 * (1 - t) * (1 - t) * (1 - t) + 3 * p1 * t * (1 - t)
-                    * (1 - t) + 3 * p2 * t * t * (1 - t) + p3 * t * t * t;
+        private static double quadraticSecondDerivative(double p0, double p1,
+                double p2, double t) {
+            return 2 * p0 - 4 * p1 + 2 * p2;
         }
 
-        private static double cubicDerivative(double p0, double p1, double p2,
-                double p3, double t) {
-            return -3 * p0 * (1 - t) * (1 - t) + p1
-                    * (3 * (1 - t) * (1 - t) - 6 * (1 - t) * t) + p2
-                    * (6 * t * (1 - t) - 3 * t * t) + 3 * p3 * t * t;
-        }
+        /**
+         */
+        // private static double cubicValue(double p0, double p1, double p2,
+        // double p3, double t) {
+        // return p0 * (1 - t) * (1 - t) * (1 - t) + 3 * p1 * t * (1 - t)
+        // * (1 - t) + 3 * p2 * t * t * (1 - t) + p3 * t * t * t;
+        // }
+        //
+        // private static double cubicDerivative(double p0, double p1, double
+        // p2,
+        // double p3, double t) {
+        // return -3 * p0 * (1 - t) * (1 - t) + p1
+        // * (3 * (1 - t) * (1 - t) - 6 * (1 - t) * t) + p2
+        // * (6 * t * (1 - t) - 3 * t * t) + 3 * p3 * t * t;
+        // }
 
         /**
          * @param g
@@ -220,17 +477,17 @@ public class BezierDrawer {
             double py = quadraticValue(p0.y, p1.y, p2.y, 0.5);
             double vx = quadraticDerivative(p0.x, p1.x, p2.x, 0.5);
             double vy = quadraticDerivative(p0.y, p1.y, p2.y, 0.5);
-            Point2d tangent = new Point2d(vx, vy);
-            VectorUtil.normalize(tangent, tangent);
+            Point2d normal = new Point2d(vx, vy);
+            VectorUtil.normalize(normal, normal);
 
-            Point2d centerHigh = new Point2d(px - sign * tangent.y
-                    * this.lineWidth / 2, py + sign * tangent.x
-                    * this.lineWidth / 2);
-            Point2d centerLow = new Point2d(px + sign * tangent.y
-                    * this.lineWidth / 2, py - sign * tangent.x
-                    * this.lineWidth / 2);
-            VectorUtil.lineIntersection(B, centerLow, tangent, p0low, n0);
-            VectorUtil.lineIntersection(C, centerLow, tangent, p2low, n2);
+            Point2d centerHigh = new Point2d(px - sign * normal.y
+                    * this.lineWidth / 2, py + sign * normal.x * this.lineWidth
+                    / 2);
+            Point2d centerLow = new Point2d(px + sign * normal.y
+                    * this.lineWidth / 2, py - sign * normal.x * this.lineWidth
+                    / 2);
+            VectorUtil.lineIntersection(B, centerLow, normal, p0low, n0);
+            VectorUtil.lineIntersection(C, centerLow, normal, p2low, n2);
 
             VectorUtil.copy(A, p0low);
             VectorUtil.copy(D, p2low);
@@ -287,18 +544,19 @@ public class BezierDrawer {
         /**
          * @param g
          */
-        private void drawTangents(Graphics2D g) {
-            double incT = 0.1;
+        private void drawNormals(Graphics2D g) {
+            double incT = 1. / sampleSlider.getValue();
+            double scale = Math.exp(scaleSlider.getValue() / 100.);
             for (double t = 0; t <= 1; t += incT) {
-                double x = this.quadraticValue(this.p[0].x, this.p[1].x,
+                double x = BezierPanel.quadraticValue(this.p[0].x, this.p[1].x,
                         this.p[3].x, t);
-                double y = this.quadraticValue(this.p[0].y, this.p[1].y,
+                double y = BezierPanel.quadraticValue(this.p[0].y, this.p[1].y,
                         this.p[3].y, t);
-                double dx = this.quadraticDerivative(this.p[0].x, this.p[1].x,
-                        this.p[3].x, t);
-                double dy = this.quadraticDerivative(this.p[0].y, this.p[1].y,
-                        this.p[3].y, t);
-                this.drawLine(g, x, y, -dy, dx, 1);
+                double dx = BezierPanel.quadraticDerivative(this.p[0].x,
+                        this.p[1].x, this.p[3].x, t);
+                double dy = BezierPanel.quadraticDerivative(this.p[0].y,
+                        this.p[1].y, this.p[3].y, t);
+                this.drawLine(g, x, y, -dy * scale, dx * scale, 1);
             }
         }
 
@@ -306,16 +564,16 @@ public class BezierDrawer {
          * @param g
          */
         private void drawWidth(Graphics2D g) {
-            double incT = 0.01;
+            double incT = 1. / sampleSlider.getValue();
             for (double t = 0; t <= 1; t += incT) {
-                double x = this.quadraticValue(this.p[0].x, this.p[1].x,
+                double x = BezierPanel.quadraticValue(this.p[0].x, this.p[1].x,
                         this.p[3].x, t);
-                double y = this.quadraticValue(this.p[0].y, this.p[1].y,
+                double y = BezierPanel.quadraticValue(this.p[0].y, this.p[1].y,
                         this.p[3].y, t);
-                double dx = this.quadraticDerivative(this.p[0].x, this.p[1].x,
-                        this.p[3].x, t);
-                double dy = this.quadraticDerivative(this.p[0].y, this.p[1].y,
-                        this.p[3].y, t);
+                double dx = BezierPanel.quadraticDerivative(this.p[0].x,
+                        this.p[1].x, this.p[3].x, t);
+                double dy = BezierPanel.quadraticDerivative(this.p[0].y,
+                        this.p[1].y, this.p[3].y, t);
                 double norm = Math.sqrt(dx * dx + dy * dy);
                 dx = dx / norm;
                 dy = dy / norm;

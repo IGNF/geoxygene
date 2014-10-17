@@ -39,6 +39,11 @@ out VertexData {
 	float lineWidth;
 	float uMax;
 	vec2 paperUV;
+    vec2 p0;
+    vec2 p1;
+    vec2 p2;
+    vec2 n0;
+    vec2 n2;
 	flat vec2 p0screen;
 	flat vec2 p1screen;
 	flat vec2 p2screen;
@@ -73,6 +78,11 @@ void main() {
 	vertexOut.lineWidth = lineWidth * m00 / 2.;
 	vertexOut.uMax = uMax;
 	vertexOut.paperUV = vertexPaperUV;
+	vertexOut.p0 = p0;
+	vertexOut.p1 = p1;
+	vertexOut.p2 = p2;
+	vertexOut.n0 = n0;
+	vertexOut.n2 = n2;
 	vertexOut.p0screen = worldToIdentity(p0);
 	vertexOut.p1screen = worldToIdentity(p1);
 	vertexOut.p2screen = worldToIdentity(p2);
