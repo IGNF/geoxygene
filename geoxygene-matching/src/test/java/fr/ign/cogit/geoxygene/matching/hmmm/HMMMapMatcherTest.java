@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  */
 public class HMMMapMatcherTest {
   
-  private static final String DATA_DIR = "./data/Seattle\\";
+  private static final String DATA_DIR = "./data/seattle/";
   /** Static logger. */
   private static final Logger LOGGER = Logger.getLogger(HMMMapMatcherTest.class.getName());
 
@@ -46,7 +46,8 @@ public class HMMMapMatcherTest {
   public void testTest()  {
     
 System.out.println("----------------------------------------------------------------");
-    
+
+
     // On charge les données GPS
     IPopulation<IFeature> gpsPop = ShapefileReader.read(DATA_DIR + "gps_data_extrait.shp", "traces", null, true);
     Collections.reverse(gpsPop.getElements());
