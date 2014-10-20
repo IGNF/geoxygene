@@ -60,7 +60,9 @@ public class OsmXmlHttpClient {
     StringBuffer response = new StringBuffer();
     try {
       
-      URL url = new URL(URL_OVERPASS_API + "?data=" + URLEncoder.encode(data, "UTF-8"));
+      String urlTxt = URL_OVERPASS_API + "?data=" + URLEncoder.encode(data, "UTF-8");
+      // System.out.println(urlTxt);
+      URL url = new URL(urlTxt);
       URLConnection urlConn; 
       
       // Connection
