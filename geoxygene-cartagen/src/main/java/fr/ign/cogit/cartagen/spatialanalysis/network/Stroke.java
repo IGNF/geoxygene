@@ -25,6 +25,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
@@ -101,6 +102,14 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   public void setGeomStroke(ILineString geomStroke) {
     this.geomStroke = geomStroke;
     this.setGeom(geomStroke);
+  }
+
+  @Override
+  public IGeometry getGeom() {
+    if (geomStroke != null)
+      return geomStroke;
+    buildGeomStrokeWithoutFlags();
+    return geomStroke;
   }
 
   @Override
@@ -235,6 +244,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     ArcReseau next = this.getRoot();
     boolean continuity = true;
     while (continuity) {
+
       // get the best candidate among the followers (the one with best
       // continuity)
       ArcReseau best = null;
@@ -244,6 +254,11 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
       } else {
         best = this.chooseNextSegment(next, followers, attributeNames,
             attributeNamesNodeOfDegreeTwo, deviatAngle, deviatSum);
+      }
+
+      if (logger.isDebugEnabled()) {
+        logger.debug("continuity with " + best);
+        logger.debug(followers);
       }
 
       // if best is null, break
@@ -258,6 +273,10 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
         this.features.add(new ArcReseauFlagPairImpl(best));
       }
       this.network.getGroupedFeatures().add(best);
+      if (logger.isDebugEnabled()) {
+        logger.debug("the grouped features are "
+            + this.network.getGroupedFeatures());
+      }
 
       // get the followers of 'best'
       followers.clear();
@@ -391,7 +410,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   }
 
   protected double goodContinuityDifference(ICurve tempGeom, ICurve geomFoll,
-      double deviatAngle, @SuppressWarnings("unused") double deviatSum) {
+      double deviatAngle, double deviatSum) {
     // first convert the parameters into radians
     double angleThresh = deviatAngle / 180.0 * Math.PI;
     double sumThresh = deviatAngle / 180.0 * Math.PI;
@@ -568,7 +587,7 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
   }
 
   private boolean isGoodContinuity(ICurve tempGeom, ICurve geomFoll,
-      double deviatAngle, @SuppressWarnings("unused") double deviatSum) {
+      double deviatAngle, double deviatSum) {
     // first convert the parameters into radians
     double angleThresh = deviatAngle / 180.0 * Math.PI;
     double sumThresh = deviatAngle / 180.0 * Math.PI;
@@ -753,10 +772,13 @@ public class Stroke extends AbstractFeature implements Comparable<Stroke> {
     // first, no stop case
     if (followers.size() == 1) {
       ArcReseau follower = followers.iterator().next();
-      if (!this.features.contains(follower)) {
-        return follower;
+      if (this.features.contains(follower)) {
+        return null;
       }
-      return null;
+      if (this.network.getGroupedFeatures().contains(follower)) {
+        return null;
+      }
+      return follower;
     }
 
     // first, filter the followers

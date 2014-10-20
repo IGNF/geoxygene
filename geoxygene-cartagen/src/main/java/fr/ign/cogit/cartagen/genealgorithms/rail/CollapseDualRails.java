@@ -131,7 +131,8 @@ public class CollapseDualRails {
       Stroke match = null;
       for (Stroke neighbour : neighbours) {
         // filter the candidates with length, as matched strokes should have
-        // approximately the
+        // approximately the same length
+        // TODO
       }
 
       // if no correct match has been found, continue

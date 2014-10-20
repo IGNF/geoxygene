@@ -14,10 +14,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 
 public class StrokesNetwork {
+
+  private static Logger logger = Logger.getLogger(StrokesNetwork.class
+      .getName());
 
   private Set<Stroke> strokes;
   private Set<ArcReseau> features;
@@ -102,6 +107,8 @@ public class StrokesNetwork {
 
     // loop on the network features
     for (ArcReseau obj : this.features) {
+      if (logger.isDebugEnabled())
+        logger.debug("one feature treated out of " + features.size());
       // test if the feature has already been treated
       if (this.groupedFeatures.contains(obj)) {
         continue;
