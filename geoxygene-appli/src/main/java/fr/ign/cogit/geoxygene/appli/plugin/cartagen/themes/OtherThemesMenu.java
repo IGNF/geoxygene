@@ -11,7 +11,9 @@ package fr.ign.cogit.geoxygene.appli.plugin.cartagen.themes;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -25,6 +27,8 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
+import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification;
@@ -35,12 +39,21 @@ import fr.ign.cogit.cartagen.genealgorithms.rail.TypifySideTracks;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
+import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
+import fr.ign.cogit.cartagen.spatialanalysis.network.StrokesNetwork;
+import fr.ign.cogit.cartagen.spatialanalysis.network.railways.ParallelRailsGroup;
+import fr.ign.cogit.cartagen.spatialanalysis.network.railways.ParallelStroke;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.NoeudReseau;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineSegment;
+import fr.ign.cogit.geoxygene.spatialrelation.properties.ConvergingPoint;
 import fr.ign.cogit.geoxygene.spatialrelation.properties.ParallelSection;
 import fr.ign.cogit.geoxygene.spatialrelation.relation.PartialParallelism2Lines;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
@@ -77,6 +90,7 @@ public class OtherThemesMenu extends JMenu {
     railMenu.addSeparator();
     railMenu.add(new JMenuItem(new TypifySideTracksAction()));
     railMenu.add(new JMenuItem(new CollapseRailsAction()));
+    railMenu.add(new JMenuItem(new GroupParallelRailsAction()));
 
   }
 
@@ -479,24 +493,64 @@ public class OtherThemesMenu extends JMenu {
       PartialParallelism2Lines relation = new PartialParallelism2Lines(feat1,
           feat2);
       relation.achievementAssessedBy().compute();
-      /*
-       * for (ConvergingPoint pt : relation.getConvergencePts()) { if
-       * (pt.isConverging())
-       * pool.addFeatureToGeometryPool(pt.getPosition().toGM_Point(), Color.RED,
-       * 2); if (pt.isDiverging())
-       * pool.addFeatureToGeometryPool(pt.getPosition().toGM_Point(),
-       * Color.GREEN, 2); }
-       */
+
+      for (ConvergingPoint pt : relation.getConvergencePts()) {
+        if (pt.isConverging())
+          pool.addFeatureToGeometryPool(pt.getPosition().toGM_Point(),
+              Color.RED, 2);
+        if (pt.isDiverging())
+          pool.addFeatureToGeometryPool(pt.getPosition().toGM_Point(),
+              Color.GREEN, 2);
+      }
+
       for (ParallelSection section : relation.getParallelSections()) {
-        // pool.addFeatureToGeometryPool(((ILineString[])
-        // section.getValue())[0],
-        // Color.ORANGE, 1);
-        // pool.addFeatureToGeometryPool(((ILineString[])
-        // section.getValue())[1],
-        // Color.ORANGE, 1);
-        ILineString middle = CommonAlgorithmsFromCartAGen.getMeanLine(
-            ((ILineString[]) section.getValue())[0],
-            ((ILineString[]) section.getValue())[1]);
+        ILineString line1 = ((ILineString[]) section.getValue())[0];
+        ILineString line2 = ((ILineString[]) section.getValue())[1];
+        IDirectPosition start1 = line1.coord().get(0);
+        IDirectPosition end1 = line1.coord().get((line1.coord().size() - 1));
+        IDirectPosition start2 = line2.coord().get(0);
+        IDirectPosition end2 = line2.coord().get((line2.coord().size() - 1));
+        pool.addFeatureToGeometryPool(line1, Color.ORANGE, 1);
+        pool.addFeatureToGeometryPool(line2, Color.ORANGE, 1);
+        ILineString middle = CommonAlgorithmsFromCartAGen.getMeanLine(line1,
+            line2);
+        // reconnection
+        middle.removeControlPoint(0);
+        middle.removeControlPoint(middle.coord().size() - 1);
+        // extend middle at its start
+        IDirectPosition start = middle.coord().get(0);
+        if (start.distance2D(start1) < start.distance2D(end1)) {
+          pool.addFeatureToGeometryPool(new GM_LineSegment(start, start1),
+              Color.PINK, 2);
+        } else {
+          pool.addFeatureToGeometryPool(new GM_LineSegment(start, end1),
+              Color.PINK, 2);
+        }
+        if (start.distance2D(start2) < start.distance2D(end2)) {
+          pool.addFeatureToGeometryPool(new GM_LineSegment(start, start2),
+              Color.PINK, 2);
+        } else {
+          pool.addFeatureToGeometryPool(new GM_LineSegment(start, end2),
+              Color.PINK, 2);
+        }
+
+        // extend middle at its end
+        IDirectPosition end = middle.coord().get((middle.coord().size() - 1));
+        if (end.distance2D(start1) < end.distance2D(end1)) {
+          pool.addFeatureToGeometryPool(new GM_LineSegment(end, start1),
+              Color.PINK, 2);
+        } else {
+          pool.addFeatureToGeometryPool(new GM_LineSegment(end, end1),
+              Color.PINK, 2);
+        }
+        if (end.distance2D(start2) < end.distance2D(end2)) {
+          pool.addFeatureToGeometryPool(new GM_LineSegment(end, start2),
+              Color.PINK, 2);
+        } else {
+          pool.addFeatureToGeometryPool(new GM_LineSegment(end, end2),
+              Color.PINK, 2);
+        }
+
         pool.addFeatureToGeometryPool(middle, Color.PINK, 2);
       }
     }
@@ -505,4 +559,91 @@ public class OtherThemesMenu extends JMenu {
       this.putValue(Action.NAME, "Collapse parallel railways");
     }
   }
+
+  /**
+   * @author GTouya
+   * 
+   */
+  class GroupParallelRailsAction extends AbstractAction {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+          .getApplication();
+      CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
+      // enrich the network if necessary
+      Set<IFeature> selectedObjs = SelectionUtil.getSelectedObjects(appli);
+      if (selectedObjs.size() == 0)
+        return;
+      IFeature feature = selectedObjs.iterator().next();
+      if (!(feature instanceof IGeneObj))
+        return;
+      INetwork net = dataset
+          .getNetworkFromClass((Class<? extends IGeneObj>) feature.getClass());
+      if (net.getNodes().size() == 0) {
+        if (net.getSections().size() == 0) {
+          for (IFeature section : selectedObjs)
+            net.addSection((INetworkSection) section);
+        }
+        NetworkEnrichment.buildTopology(dataset, net, false);
+      }
+
+      HashSet<ArcReseau> arcs = new HashSet<ArcReseau>();
+      HashSet<NoeudReseau> noeuds = new HashSet<NoeudReseau>();
+      for (IFeature feat : selectedObjs) {
+        if (feat instanceof IGeneObj) {
+          arcs.add((ArcReseau) ((IGeneObj) feat).getGeoxObj());
+          NoeudReseau noeudIni = ((ArcReseau) ((IGeneObj) feat).getGeoxObj())
+              .getNoeudInitial();
+          NoeudReseau noeudFin = ((ArcReseau) ((IGeneObj) feat).getGeoxObj())
+              .getNoeudFinal();
+          noeuds.add(noeudIni);
+          noeuds.add(noeudFin);
+        }
+      }
+
+      StrokesNetwork network = new StrokesNetwork(arcs);
+      HashSet<String> attributeNames = new HashSet<String>();
+      attributeNames.add("nom");
+      network.buildStrokes(attributeNames, 112.5, 45.0, true);
+
+      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+          .getGeometryPool();
+      pool.setSld(appli.getMainFrame().getSelectedProjectFrame().getSld());
+
+      Set<ParallelRailsGroup> groups = ParallelRailsGroup
+          .findParallelRailsGroup(network, 800.0, 10.0);
+      System.out.println(groups.size());
+      for (ParallelRailsGroup group : groups) {
+        /*
+         * IPolygon bufferL = BufferComputing.buildLineHalfBuffer(group
+         * .getCentreStroke().getGeomStroke(), 12, Side.LEFT); IPolygon bufferR
+         * = BufferComputing.buildLineHalfBuffer(group
+         * .getCentreStroke().getGeomStroke(), 12, Side.RIGHT);
+         * pool.addFeatureToGeometryPool(bufferL, Color.ORANGE, 1);
+         * pool.addFeatureToGeometryPool(bufferR, Color.PINK, 1);
+         */
+        pool.addFeatureToGeometryPool(group.getCentreStroke().getGeomStroke(),
+            Color.RED, 4);
+
+        System.out.println("centreStroke: " + group.getCentreStroke());
+        for (ParallelStroke pStroke : group.getParallelStrokes()) {
+          System.out.println("position: " + pStroke.getPosition());
+          pool.addFeatureToGeometryPool(pStroke.getStroke().getGeomStroke(),
+              pStroke.getColor(), 3);
+        }
+      }
+    }
+
+    public GroupParallelRailsAction() {
+      this.putValue(Action.NAME, "Group parallel railways");
+    }
+  }
+
 }

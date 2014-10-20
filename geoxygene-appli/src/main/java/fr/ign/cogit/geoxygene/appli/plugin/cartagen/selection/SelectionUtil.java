@@ -17,8 +17,10 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 
@@ -74,6 +76,21 @@ public class SelectionUtil {
       IGeneObj feature) {
     appli.getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
         .getSelectedFeatures().add(feature);
+  }
+
+  /**
+   * Shortcut to get all the objects of the selected layer by code.
+   * @return
+   */
+  public static IFeatureCollection<? extends IFeature> getSelectedLayer(
+      GeOxygeneApplication appli) {
+    Set<Layer> layers = appli.getMainFrame().getSelectedProjectFrame()
+        .getLayerLegendPanel().getSelectedLayers();
+    if (layers.size() > 1) {
+      Layer layer = layers.iterator().next();
+      return layer.getFeatureCollection();
+    }
+    return new FT_FeatureCollection<IFeature>();
   }
 
   /**
