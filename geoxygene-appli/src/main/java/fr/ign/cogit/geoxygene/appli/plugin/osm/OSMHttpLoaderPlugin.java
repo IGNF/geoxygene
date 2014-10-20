@@ -26,6 +26,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -52,8 +54,11 @@ import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.http.OsmXmlHttpClient;
 import fr.ign.cogit.geoxygene.osm.importexport.OsmXmlParser;
+import fr.ign.cogit.geoxygene.style.ExternalGraphic;
+import fr.ign.cogit.geoxygene.style.Graphic;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
+import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 
 
 public class OSMHttpLoaderPlugin implements GeOxygeneApplicationPlugin, ActionListener {
@@ -61,13 +66,25 @@ public class OSMHttpLoaderPlugin implements GeOxygeneApplicationPlugin, ActionLi
   private GeOxygeneApplication application = null;
   
   private boolean withProxy = true;
-  private String dataRequest = "";
+  private String dataRequest = "<osm-script>\n"
+      + "   <union>\n"
+      + "      <query type=\"node\">\n"
+      + "         <bbox-query e=\"1.9037\" n=\"47.8681\" s=\"47.8567\" w=\"1.8783\" />\n"
+      + "      </query>\n"
+      + "      <query type=\"way\">\n"
+      + "         <bbox-query e=\"1.9037\" n=\"47.8681\" s=\"47.8587\" w=\"1.8783\" />\n"
+      + "      </query>\n"
+      + "      <query type=\"relation\">\n"
+      + "         <bbox-query e=\"1.9037\" n=\"47.8681\" s=\"47.8587\" w=\"1.8783\" />\n"
+      + "      </query>\n"
+      + "   </union>\n"
+      + "   <print mode=\"meta\"/>\n"
+      + "</osm-script>\n";
   
   @Override
   public void initialize(GeOxygeneApplication application) {
-    this.application = application;
     
-    System.out.println("ici ???");
+    this.application = application;
     
     // Check if the DataMatching menu exists. If not we create it.
     JMenu menu = null;
@@ -99,7 +116,7 @@ public class OSMHttpLoaderPlugin implements GeOxygeneApplicationPlugin, ActionLi
   public void actionPerformed(final ActionEvent e) {
     
     // Launch parameter osm loader panel.
-    EditParamOsmLoaderPanel dialogParamOsmLoader = new EditParamOsmLoaderPanel(this);
+    EditParamOsmLoaderPanel dialogParamOsmLoader = new EditParamOsmLoaderPanel(this, dataRequest);
     if (dialogParamOsmLoader.getAction().equals("LAUNCH")) {
         doOsmXmlLoader(this.dataRequest);
     }
@@ -109,6 +126,81 @@ public class OSMHttpLoaderPlugin implements GeOxygeneApplicationPlugin, ActionLi
   private void doOsmXmlLoader(String dataRequest) {
 
     try {
+      
+      /*dataRequest = "<osm-script>"
+          + "<query type=\"node\">"
+          + "<has-kv k=\"name\" v=\"Gielgen\"/>"
+          + "<has-kv k=\"place\" v=\"suburb\"/>"
+          + "</query>"
+          + "<print mode=\"meta\"/>"
+          + "</osm-script>";*/
+      
+      dataRequest = "<osm-script>"
+          + "<union>"
+          + "<query type=\"node\">"
+          //+ "<has-kv k=\"name\" regv=\"holtorf\" />"
+          + "<bbox-query e=\"1.9037\" n=\"47.8681\" s=\"47.8567\" w=\"1.8783\" />"
+          + "</query>"
+          + "<query type=\"way\">"
+          //+ "<has-kv k=\"name\" regv=\"holtorf\" />"
+          + "<bbox-query e=\"1.9037\" n=\"47.8681\" s=\"47.8587\" w=\"1.8783\" />"
+          + "</query>"
+          + "<query type=\"relation\">"
+          //+ "<has-kv k=\"name\" regv=\"holtorf\" />"
+          + "<bbox-query e=\"1.9037\" n=\"47.8681\" s=\"47.8587\" w=\"1.8783\" />"
+          + "</query>"
+          /*+ "<query type=\"node\">"
+          + "<has-kv k=\"highway\" />"
+          + "<area-query from=\"area\"/>"
+          + "</query>"
+          + "<query type=\"way\">"
+          + "<has-kv k=\"highway\"/>"
+          + "<area-query from=\"area\"/>"
+          + "</query>"
+          + "<query type=\"relation\">"
+          + "<has-kv k=\"highway\"/>"
+          + "<area-query from=\"area\"/>"
+          + "</query>"
+          + "<query type=\"way\">"
+          + "<has-kv k=\"building\"/>"
+          + "<area-query from=\"area\"/>"
+          + "</query>"
+          + "<query type=\"relation\">"
+          + "<has-kv k=\"building\"/>"
+          + "<area-query from=\"area\"/>"
+          + "</query>"*/
+          + "</union>"
+          + "<print mode=\"meta\"/>"
+          + "</osm-script>";
+      
+      /*dataRequest = "<osm-script output=\"xml\" timeout=\"250\">"
+          + "<id-query {{nominatimArea:Flemish Brabant}} into=\"area\"/>"
+          + "<union>"
+          + "<query type=\"node\">"
+          + "<has-kv k=\"highway\"/>"
+          + "<area-query from=\"area\"/>"
+          + "</query>"
+          + "<query type=\"way\">"
+          + "<has-kv k=\"highway\"/>"
+          + "<area-query from=\"area\"/>"
+          + "</query>"
+          + "<query type=\"relation\">"
+          + "<has-kv k=\"highway\"/>"
+          + "<area-query from=\"area\"/>"
+          + "</query>"
+          + "<query type=\"way\">"
+          + "<has-kv k=\"building\"/>"
+          + "<area-query from=\"area\"/>"
+          + "</query>"
+          + "<query type=\"relation\">"
+          + "<has-kv k=\"building\"/>"
+          + "<area-query from=\"area\"/>"
+          + "</query>"
+          + "</union>"
+          + "<print mode=\"meta\"/>"
+          + "<recurse type=\"down\"/>"
+          + "<print mode=\"meta\" order=\"quadtile\"/>"
+          + "</osm-script>";*/
       
       String xml = OsmXmlHttpClient.getOsmXML(dataRequest, this.withProxy);
       
@@ -123,18 +215,53 @@ public class OSMHttpLoaderPlugin implements GeOxygeneApplicationPlugin, ActionLi
       Population<DefaultFeature> popPoint = loader.getPopPoint();
       Population<DefaultFeature> popLigne = loader.getPopLigne();
       System.out.println("Nb point pop = " + popPoint.size());
+      System.out.println("Nb ligne pop = " + popLigne.size());
       
       ProjectFrame p1 = this.application.getMainFrame().newProjectFrame();
       p1.setTitle("Get XML OSM data from Overpass API");
       
-      /*Layer layerPoint = this.application.getMainFrame().getSelectedProjectFrame().addUserLayer(popPoint, "Point OSM", null);
+      Layer layerPoint = this.application.getMainFrame().getSelectedProjectFrame().addUserLayer(popPoint, "Point OSM", null);
       PointSymbolizer symbolizerP1 = (PointSymbolizer) layerPoint.getSymbolizer();
       symbolizerP1.setUnitOfMeasurePixel();
       symbolizerP1.getGraphic().setSize(6);
       symbolizerP1.getGraphic().getMarks().get(0).setWellKnownName("square");
       symbolizerP1.getGraphic().getMarks().get(0).getStroke().setStrokeWidth(1);
       symbolizerP1.getGraphic().getMarks().get(0).getStroke().setColor(new Color(74, 163, 202));
-      symbolizerP1.getGraphic().getMarks().get(0).getFill().setColor(new Color(169, 209, 116));*/
+      symbolizerP1.getGraphic().getMarks().get(0).getFill().setColor(new Color(169, 209, 116));
+      
+      Layer layerParking = this.application.getMainFrame().getSelectedProjectFrame().addUserLayer(loader.getPopParking(), "Parking", null);
+      PointSymbolizer symbolizerP2 = (PointSymbolizer) layerParking.getSymbolizer();
+      Graphic g2 = symbolizerP2.getGraphic();
+      ExternalGraphic eg2 = new ExternalGraphic();
+      eg2.setHref("/symbols/osm/parking.p.16.png");
+      eg2.setFormat("png");
+      List<ExternalGraphic> l2 = new ArrayList<ExternalGraphic>();
+      l2.add(eg2);
+      g2.setExternalGraphics(l2);
+      
+      Layer layerPolice = this.application.getMainFrame().getSelectedProjectFrame().addUserLayer(loader.getPopPolice(), "Police", null);
+      PointSymbolizer symbolizerP3 = (PointSymbolizer) layerPolice.getSymbolizer();
+      Graphic g3 = symbolizerP3.getGraphic();
+      ExternalGraphic eg3 = new ExternalGraphic();
+      eg3.setHref("/symbols/osm/police.p.16.png");
+      eg3.setFormat("png");
+      List<ExternalGraphic> l3 = new ArrayList<ExternalGraphic>();
+      l3.add(eg3);
+      g3.setExternalGraphics(l3);
+      
+      Layer layerSchool = this.application.getMainFrame().getSelectedProjectFrame().addUserLayer(loader.getPopSchool(), "School", null);
+      PointSymbolizer symbolizerP4 = (PointSymbolizer) layerSchool.getSymbolizer();
+      //symbolizerP4.setUnitOfMeasurePixel();
+      symbolizerP4.setUnitOfMeasureMetre();
+      Graphic g4 = symbolizerP4.getGraphic();
+      ExternalGraphic eg4 = new ExternalGraphic();
+      eg4.setHref("/symbols/osm/school.png");
+      eg4.setFormat("png");
+      List<ExternalGraphic> l4 = new ArrayList<ExternalGraphic>();
+      l4.add(eg4);
+      g4.setExternalGraphics(l4);
+      
+     
       
       Layer layerLigne = this.application.getMainFrame().getSelectedProjectFrame().addUserLayer(popLigne, "Ligne OSM", null);
       LineSymbolizer symbolizerL1 = (LineSymbolizer) layerLigne.getSymbolizer();
@@ -167,6 +294,7 @@ class EditParamOsmLoaderPanel extends JDialog implements ActionListener {
   /** Origin Frame. */
   private OSMHttpLoaderPlugin osmHttpLoaderPlugin;
   private String action;
+  private String dataRequest;
   
   /** 2 buttons : launch, cancel. */
   private JButton launchButton = null;
@@ -184,8 +312,9 @@ class EditParamOsmLoaderPanel extends JDialog implements ActionListener {
    * Constructor.
    * @param olp
    */
-  public EditParamOsmLoaderPanel(OSMHttpLoaderPlugin olp) {
+  public EditParamOsmLoaderPanel(OSMHttpLoaderPlugin olp, String dataRequest) {
     this.osmHttpLoaderPlugin = olp;
+    this.dataRequest = dataRequest;
     
     setModal(true);
     setTitle("Initialisation des paramètres");
@@ -232,17 +361,17 @@ class EditParamOsmLoaderPanel extends JDialog implements ActionListener {
     CellConstraints cc = new CellConstraints();
     
     withProxy = new JCheckBox();
-    withProxy.setSelected(true);
+    withProxy.setSelected(false);
     paramPanel.add(withProxy, cc.xy(2, 2));
     paramPanel.add(new JLabel("Proxy IGN"), cc.xy(3, 2));
     
     paramPanel.add(new JLabel("Paramètres de la requête : "), cc.xy(3, 4));
     
     textParam = new JTextArea();
-    textParam.setText("area[name=\"Hoogstade\"];(node(area);<;);out meta qt;");
+    textParam.setText(this.dataRequest); // "area[name=\"Hoogstade\"];(node(area);<;);out meta qt;"
     textParam.setColumns(40);
     textParam.setRows(8);
-    textParam.setEnabled(false);
+    // textParam.setEnabled(false);
     paramPanel.add(textParam, cc.xy(3, 6));
     
     JLabel avert = new JLabel(" ! Attention la requête peut être un peu longue ...");
