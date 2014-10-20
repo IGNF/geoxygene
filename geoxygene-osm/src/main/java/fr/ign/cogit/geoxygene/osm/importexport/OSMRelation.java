@@ -1,10 +1,12 @@
 package fr.ign.cogit.geoxygene.osm.importexport;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class OSMRelation extends PrimitiveGeomOSM {
   private TypeRelation type;
-  private List<OsmRelationMember> membres;
+  private List<OsmRelationMember> members;
 
   public enum TypeRelation {
     MULTIPOLYGON, NON_DEF;
@@ -38,17 +40,42 @@ public class OSMRelation extends PrimitiveGeomOSM {
     this.type = type;
   }
 
-  public void setMembres(List<OsmRelationMember> membres) {
-    this.membres = membres;
+  public void setMembers(List<OsmRelationMember> members) {
+    this.members = members;
   }
 
-  public List<OsmRelationMember> getMembres() {
-    return membres;
+  public List<OsmRelationMember> getMembers() {
+    return members;
   }
 
-  public OSMRelation(TypeRelation type, List<OsmRelationMember> membres) {
+  public OSMRelation(TypeRelation type, List<OsmRelationMember> members) {
     this.type = type;
-    this.membres = membres;
+    this.members = members;
   }
 
+  /**
+   * Get the members of this relation with the role "outer".
+   * @return
+   */
+  public Set<OsmRelationMember> getOuterMembers() {
+    Set<OsmRelationMember> outers = new HashSet<OsmRelationMember>();
+    for (OsmRelationMember member : this.getMembers()) {
+      if (member.getRole().equals(RoleMembre.OUTER))
+        outers.add(member);
+    }
+    return outers;
+  }
+
+  /**
+   * Get the members of this relation with the role "inner".
+   * @return
+   */
+  public Set<OsmRelationMember> getInnerMembers() {
+    Set<OsmRelationMember> inners = new HashSet<OsmRelationMember>();
+    for (OsmRelationMember member : this.getMembers()) {
+      if (member.getRole().equals(RoleMembre.INNER))
+        inners.add(member);
+    }
+    return inners;
+  }
 }

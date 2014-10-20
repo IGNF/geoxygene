@@ -43,6 +43,8 @@ public class AdjustBoundsToComponents {
     IDirectPositionList coord = bounds.coord();
     for (IPolygon component : componentsToInclude) {
       IPolygon currentPol = new GM_Polygon(new GM_LineString(coord));
+      if (!component.intersects(currentPol))
+        continue;
       IGeometry union = currentPol.union(component);
       if (union == null) {
         union = currentPol.buffer(0.1).union(component.buffer(0.1));

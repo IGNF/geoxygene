@@ -88,31 +88,45 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
     if (IRoadLine.class.isAssignableFrom(classObj)) {
       ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
           nodes);
+      if (line.coord().size() == 1)
+        return null;
       return (OsmGeneObj) this.createRoadLine(line, 0);
     }
     if (ICable.class.isAssignableFrom(classObj)) {
       ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
           nodes);
+      if (line.coord().size() == 1)
+        return null;
       return (OsmGeneObj) this.createCable(line);
     }
     if (IBuilding.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
+      if (poly == null)
+        return null;
+      if (poly.coord().size() < 4)
+        return null;
       return (OsmGeneObj) this.createBuilding(poly);
     }
     if (ISportsField.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
+      if (poly.coord().size() < 4)
+        return null;
       return (OsmGeneObj) this.createSportsField(poly);
     }
     if (IWaterLine.class.isAssignableFrom(classObj)) {
       ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
           nodes);
+      if (line.coord().size() == 1)
+        return null;
       return (OsmGeneObj) this.createWaterLine(line, 0);
     }
     if (IWaterArea.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
+      if (poly.coord().size() < 4)
+        return null;
       return (OsmGeneObj) this.createWaterArea(poly);
     }
     if (IBuildPoint.class.isAssignableFrom(classObj)) {
@@ -122,36 +136,50 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
     if (IWaterArea.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
+      if (poly.coord().size() < 4)
+        return null;
       return (OsmGeneObj) this.createWaterArea(poly);
     }
     if (IAirportArea.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
+      if (poly.coord().size() < 4)
+        return null;
       return (OsmGeneObj) this.createAirportArea(poly);
     }
     if (IRunwayArea.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
+      if (poly.coord().size() < 4)
+        return null;
       return (OsmGeneObj) this.createRunwayArea(poly);
     }
     if (IRunwayLine.class.isAssignableFrom(classObj)) {
-      ILineString poly = convertor.convertOSMLine((OSMWay) resource.getGeom(),
+      ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
           nodes);
-      return (OsmGeneObj) this.createRunwayLine(poly);
+      if (line.coord().size() == 1)
+        return null;
+      return (OsmGeneObj) this.createRunwayLine(line);
     }
     if (ITaxiwayArea.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
+      if (poly.coord().size() < 4)
+        return null;
       return (OsmGeneObj) this.createTaxiwayArea(poly);
     }
     if (ITaxiwayLine.class.isAssignableFrom(classObj)) {
-      ILineString poly = convertor.convertOSMLine((OSMWay) resource.getGeom(),
+      ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
           nodes);
-      return (OsmGeneObj) this.createTaxiwayLine(poly, null);
+      if (line.coord().size() == 1)
+        return null;
+      return (OsmGeneObj) this.createTaxiwayLine(line, null);
     }
     if (ISimpleLandUseArea.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
+      if (poly == null || poly.coord().size() < 4)
+        return null;
       return (OsmGeneObj) this.createSimpleLandUseArea(poly, 0);
     }
     if (IPointOfInterest.class.isAssignableFrom(classObj)) {
@@ -170,11 +198,15 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
     if (IRailwayLine.class.isAssignableFrom(classObj)) {
       ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
           nodes);
+      if (line.coord().size() == 1)
+        return null;
       return (OsmGeneObj) this.createRailwayLine(line, 0);
     }
     if (IPathLine.class.isAssignableFrom(classObj)) {
       ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
           nodes);
+      if (line.coord().size() == 1)
+        return null;
       return (OsmGeneObj) this.createPath(line, 0);
     }
     if (IReliefElementPoint.class.isAssignableFrom(classObj)) {
@@ -184,26 +216,36 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
     if (ICoastLine.class.isAssignableFrom(classObj)) {
       ILineString line = convertor.convertOSMLine((OSMWay) resource.getGeom(),
           nodes);
+      if (line.coord().size() == 1)
+        return null;
       return (OsmGeneObj) this.createCoastline(line);
     }
     if (ISquareArea.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
+      if (poly.coord().size() < 4)
+        return null;
       return (OsmGeneObj) this.createSquareArea(poly);
     }
     if (OsmCemetery.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
+      if (poly.coord().size() < 4)
+        return null;
       return new OsmCemetery(poly);
     }
     if (OsmSchool.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
+      if (poly.coord().size() < 4)
+        return null;
       return new OsmSchool(poly);
     }
     if (OsmHospital.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
           nodes);
+      if (poly.coord().size() < 4)
+        return null;
       return new OsmHospital(poly);
     }
     // TODO

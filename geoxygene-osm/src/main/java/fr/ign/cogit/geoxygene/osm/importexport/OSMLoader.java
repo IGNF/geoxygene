@@ -17,8 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,6 +46,8 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.util.CRSConversion;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation.RoleMembre;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation.TypeRelation;
 import fr.ign.cogit.geoxygene.osm.schema.OSMSchemaFactory;
@@ -68,7 +72,7 @@ public class OSMLoader extends SwingWorker<Void, Void> {
   public static final String TAG_MAX_LON = "maxlon";
 
   public enum OsmLoadingTask {
-    POINTS, LINES, RELATIONS, OBJECTS, PARSING;
+    POINTS, LINES, RELATIONS, OBJECTS, PARSING, MULTIGEOMETRIES;
 
     public String getLabel() {
       if (this.equals(POINTS))
@@ -81,6 +85,8 @@ public class OSMLoader extends SwingWorker<Void, Void> {
         return "Parsing";
       else if (this.equals(OBJECTS))
         return "Objects";
+      else if (this.equals(MULTIGEOMETRIES))
+        return "Multiple Geometries";
       return "";
     }
   }
@@ -287,6 +293,9 @@ public class OSMLoader extends SwingWorker<Void, Void> {
         long ref = Long.valueOf(ndElem.getAttribute("ref"));
         vertices.add(ref);
       }
+      // on ne charge pas les lignes ne contenant qu'un point
+      if (vertices.size() == 1)
+        continue;
       OSMWay geom = new OSMWay(vertices);
       // on construit le nouvel objet ponctuel
       OSMResource obj = new OSMResource(contributeur, geom, id, changeSet,
@@ -413,6 +422,7 @@ public class OSMLoader extends SwingWorker<Void, Void> {
       Thread.sleep(1);
     } catch (InterruptedException ignore) {
     }
+    Map<Long, IGeneObj> mapIdObj = new HashMap<Long, IGeneObj>();
     this.currentTask = OsmLoadingTask.OBJECTS;
     this.setProgress(0);
     // get the Gene Obj factory
@@ -447,6 +457,8 @@ public class OSMLoader extends SwingWorker<Void, Void> {
           }
           OsmGeneObj obj = factory.createGeneObj(matching.getCartagenClass(),
               resource, this.nodes, convertor);
+          if (obj == null)
+            continue;
           obj.setCaptureTool(resource.getCaptureTool());
           obj.setChangeSet(resource.getChangeSet());
           obj.setOsmId(resource.getId());
@@ -457,6 +469,7 @@ public class OSMLoader extends SwingWorker<Void, Void> {
           obj.setVersion(resource.getVersion());
           obj.setUid(resource.getUid());
           pop.add(obj);
+          mapIdObj.put(resource.getId(), obj);
         }
       } else {
         Collection<OSMResource> resources = this.getWaysFromTag(matching);
@@ -470,6 +483,8 @@ public class OSMLoader extends SwingWorker<Void, Void> {
             continue;
           OsmGeneObj obj = factory.createGeneObj(matching.getCartagenClass(),
               resource, this.nodes, convertor);
+          if (obj == null)
+            continue;
           obj.setCaptureTool(resource.getCaptureTool());
           obj.setChangeSet(resource.getChangeSet());
           obj.setOsmId(resource.getId());
@@ -480,6 +495,7 @@ public class OSMLoader extends SwingWorker<Void, Void> {
           obj.setVersion(resource.getVersion());
           obj.setUid(resource.getUid());
           pop.add(obj);
+          mapIdObj.put(resource.getId(), obj);
           if (matching.getTag().equals("landuse")
               && obj instanceof ISimpleLandUseArea) {
             ((OsmSimpleLandUseArea) obj).setType(OsmLandUseTypology
@@ -495,6 +511,63 @@ public class OSMLoader extends SwingWorker<Void, Void> {
       i++;
       setProgress(i * 100 / mapping.getMatchings().size());
     }
+    // compute multipolygons
+    this.currentTask = OsmLoadingTask.OBJECTS;
+    this.setProgress(0);
+    i = 0;
+    for (OSMResource rel : relations) {
+      // Sleep for up to one second.
+      try {
+        Thread.sleep(1);
+      } catch (InterruptedException ignore) {
+      }
+      // check if it's a multipolygon relation
+      if (rel.getTags().containsKey("type")) {
+        if (rel.getTags().get("type").equals("multipolygon")) {
+          OSMRelation primitive = (OSMRelation) rel.getGeom();
+          Set<OsmRelationMember> outers = primitive.getOuterMembers();
+          Set<OsmRelationMember> inners = primitive.getInnerMembers();
+          for (OsmRelationMember outer : outers) {
+            IGeneObj outerObj = mapIdObj.get(outer.getRef());
+            if (outerObj == null)
+              continue;
+            // only polygons can have inner rings
+            if (!(outerObj.getGeom() instanceof IPolygon))
+              continue;
+            // add inner rings in the outer geometry
+            for (OsmRelationMember inner : inners) {
+              // get the geneobj corresponding to this osm id
+              IGeneObj obj = mapIdObj.get(inner.getRef());
+              // case of untagged inner geometry
+              if (obj == null) {
+                OSMResource resource = getWayFromId(inner.getRef());
+                if (resource == null)
+                  continue;
+                IPolygon polygon = (IPolygon) ((IPolygon) outerObj.getGeom())
+                    .clone();
+                IRing ring = convertor.convertOSMPolygon(
+                    (OSMWay) resource.getGeom(), nodes).getExterior();
+                if (ring.coord().size() < 4)
+                  continue;
+                polygon.addInterior(ring);
+                if (polygon.getExterior().coord().size() >= 4)
+                  outerObj.setGeom(polygon);
+                continue;
+              }
+              IPolygon polygon = (IPolygon) ((IPolygon) outerObj.getGeom())
+                  .clone();
+              IRing ring = ((IPolygon) obj.getGeom()).getExterior();
+              polygon.addInterior(ring);
+              if (polygon.getExterior().coord().size() >= 4)
+                outerObj.setGeom(polygon);
+            }
+          }
+        }
+      }
+      i++;
+      setProgress(i * 100 / nbRels);
+    }
+
   }
 
   private Collection<OSMResource> getNodesFromTag(String tag,
@@ -542,6 +615,16 @@ public class OSMLoader extends SwingWorker<Void, Void> {
       }
     }
     return resources;
+  }
+
+  private OSMResource getWayFromId(long id) {
+    for (OSMResource way : this.ways) {
+      if (way.getId() != id)
+        continue;
+
+      return way;
+    }
+    return null;
   }
 
   private boolean isGeometryMatching(OSMWay resource, OsmMatching matching) {

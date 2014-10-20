@@ -9,6 +9,8 @@
  ******************************************************************************/
 package fr.ign.cogit.geoxygene.osm.schema.rail;
 
+import java.util.Map;
+
 import javax.persistence.Transient;
 
 import fr.ign.cogit.cartagen.core.carto.SLDUtil;
@@ -22,6 +24,8 @@ import fr.ign.cogit.geoxygene.schemageo.impl.ferre.TronconFerreImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
 
 public class OsmRailwayLine extends OsmNetworkSection implements IRailwayLine {
+
+  public static final Class<?> associatedNodeClass = OsmRailwayNode.class;
 
   /**
    * Associated Geoxygene schema object
@@ -39,17 +43,14 @@ public class OsmRailwayLine extends OsmNetworkSection implements IRailwayLine {
     this.setInitialGeom(geoxObj.getGeom());
     this.setEliminated(false);
     this.setImportance(importance);
-    if (getTags().containsKey("service"))
-      this.sidetrack = true;
   }
 
   public OsmRailwayLine(ILineString line) {
     super();
     this.geoxObj = new TronconFerreImpl(new ReseauImpl(), false, line);
+    this.geoxObj.setId(getId());
     this.setInitialGeom(line);
     this.setEliminated(false);
-    if (getTags().containsKey("service"))
-      this.sidetrack = true;
   }
 
   @Override
@@ -98,6 +99,15 @@ public class OsmRailwayLine extends OsmNetworkSection implements IRailwayLine {
     if (sidetrack == null)
       computeSideTrack();
     return sidetrack;
+  }
+
+  @Override
+  public void setTags(Map<String, String> tags) {
+    super.setTags(tags);
+    if (getTags().containsKey("service"))
+      this.sidetrack = true;
+    if (getTags().containsKey("name"))
+      this.geoxObj.setNom(getTags().get("name"));
   }
 
   /**

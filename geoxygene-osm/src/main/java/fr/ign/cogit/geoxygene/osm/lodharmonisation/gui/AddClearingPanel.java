@@ -33,7 +33,7 @@ public class AddClearingPanel extends HarmonisationPanel {
 
   /****/
   private static final long serialVersionUID = 1L;
-  private JSpinner spinErosion, spinOverlap, spinRadius;
+  private JSpinner spinErosion, spinOverlap, spinRadius, spinBigBuilding;
   private JComboBox shapeCombo;
   private JCheckBox networkCheck;
   private IFeatureCollection<IGeneObj> buildings, blocks, forests;
@@ -55,12 +55,21 @@ public class AddClearingPanel extends HarmonisationPanel {
     spinRadius.setPreferredSize(new Dimension(60, 20));
     spinRadius.setMaximumSize(new Dimension(60, 20));
     spinRadius.setMinimumSize(new Dimension(60, 20));
+    SpinnerModel bigBuildModel = new SpinnerNumberModel(1500.0, 10.0, 10000.0,
+        10.0);
+    spinBigBuilding = new JSpinner(bigBuildModel);
+    spinBigBuilding.setPreferredSize(new Dimension(60, 20));
+    spinBigBuilding.setMaximumSize(new Dimension(60, 20));
+    spinBigBuilding.setMinimumSize(new Dimension(60, 20));
     detectionPanel.add(new JLabel(I18N
         .getString("AddClearingPanel.overlapThresh")));
     detectionPanel.add(spinOverlap);
     detectionPanel.add(new JLabel(I18N
         .getString("AddClearingPanel.radiusThresh")));
     detectionPanel.add(spinRadius);
+    detectionPanel.add(new JLabel(I18N
+        .getString("AddClearingPanel.bigBuildThresh")));
+    detectionPanel.add(spinBigBuilding);
 
     // fill the harmonisation panel
     networkCheck = new JCheckBox(I18N.getString("AddClearingPanel.cutNetwork"));
@@ -129,7 +138,11 @@ public class AddClearingPanel extends HarmonisationPanel {
     clusters.setDebug(false);
     for (Set<IGeneObj> cluster : clusters.getClusters().keySet()) {
       if (cluster.size() < 4) {
-        continue;
+        double totalArea = 0.0;
+        for (IGeneObj obj : cluster)
+          totalArea += obj.getGeom().area();
+        if (totalArea < (Double) spinBigBuilding.getValue())
+          continue;
       }
       Collection<IUrbanElement> buildingGroup = new HashSet<IUrbanElement>();
       for (IGeneObj obj : cluster) {
