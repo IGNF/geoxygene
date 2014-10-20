@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPopupMenu;
@@ -56,6 +57,7 @@ public class GeOxygeneApplication {
     /** The splash Image used when running the application. */
     private static ImageIcon splashImage;
     private final static int MAX_CREATION_TIME = 5000;
+    public final static int MAX_RECENT_FILES = 20;
 
     /** Logger. */
     private static Logger logger = Logger.getLogger(GeOxygeneApplication.class
@@ -154,6 +156,8 @@ public class GeOxygeneApplication {
         // set last directory used
         MainFrameMenuBar.fc.setPreviousDirectory(new File(
                 GeOxygeneApplication.this.properties.getLastOpenedFile()));
+        MainFrameMenuBar.fc.setRecents(GeOxygeneApplication.this.properties
+                .getRecents());
 
         this.preloadShapefiles();
         this.preloadSld();
@@ -380,6 +384,12 @@ public class GeOxygeneApplication {
 
     /** Exit the application. */
     public final void exit() {
+        this.properties.clearRecents();
+        List<String> recents = MainFrameMenuBar.fc.getFileChooser()
+                .getRecentDirectories();
+        for (int n = 0; n < recents.size(); n++) {
+            this.properties.addRecent(recents.get(recents.size() - 1 - n));
+        }
         File previous = MainFrameMenuBar.fc.getPreviousDirectory();
         if (previous != null) {
             this.properties.setLastOpenedFile(previous.getAbsolutePath());
@@ -450,4 +460,5 @@ public class GeOxygeneApplication {
     public void setPropertiesFile(URL propertiesFile) {
         this.propertiesFile = propertiesFile;
     }
+
 }

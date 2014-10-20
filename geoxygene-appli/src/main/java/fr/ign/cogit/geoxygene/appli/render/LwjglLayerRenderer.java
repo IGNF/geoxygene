@@ -626,7 +626,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         GLTools.glCheckError("FBO plain rendering");
         GL11.glViewport(0, 0, this.getCanvasWidth(), this.getCanvasHeight());
         GL11.glDrawBuffer(GL11.GL_BACK);
-        glDisable(GL_BLEND);
         glEnable(GL_TEXTURE_2D);
         glDisable(GL11.GL_POLYGON_SMOOTH);
 

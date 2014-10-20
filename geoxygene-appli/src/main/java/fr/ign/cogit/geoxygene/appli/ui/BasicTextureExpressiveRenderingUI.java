@@ -53,6 +53,7 @@ import javax.swing.event.ChangeListener;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
+import fr.ign.util.ui.JRecentFileChooser;
 import fr.ign.util.ui.SliderWithSpinner;
 import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
 
@@ -186,7 +187,7 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JFileChooser fc = new JFileChooser(
+                    JFileChooser fc = new JRecentFileChooser(
                             BasicTextureExpressiveRenderingUI.this.prefs.get(
                                     PAPER_LAST_DIRECTORY, "."));
                     if (fc.showOpenDialog(BasicTextureExpressiveRenderingUI.this.parentProjectFrame
@@ -283,7 +284,7 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JFileChooser fc = new JFileChooser(
+                    JFileChooser fc = new JRecentFileChooser(
                             BasicTextureExpressiveRenderingUI.this.prefs.get(
                                     BRUSH_LAST_DIRECTORY, "."));
                     if (fc.showOpenDialog(BasicTextureExpressiveRenderingUI.this.parentProjectFrame
@@ -597,7 +598,7 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
     //
     // @Override
     // public void actionPerformed(ActionEvent e) {
-    // JFileChooser fc = new JFileChooser(
+    // JFileChooser fc = new JRecentFileChooser(
     // BasicTextureExpressiveRenderingUI.this.prefs.get(
     // BRUSH_LAST_DIRECTORY, "."));
     // if

@@ -95,7 +95,8 @@ public interface MainFrame {
      * 
      * @return the newly created project frame
      */
-    public abstract ProjectFrame newProjectFrame(final LayerViewPanel layerViewPanel);
+    public abstract ProjectFrame newProjectFrame(
+            final LayerViewPanel layerViewPanel);
 
     /**
      * Create and return a new project frame.

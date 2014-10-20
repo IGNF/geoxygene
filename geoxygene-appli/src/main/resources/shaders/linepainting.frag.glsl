@@ -58,6 +58,7 @@ struct DataPainting {
 	float thickness;        // line thickness in world coordinates
 	float uMax;             // maximum u coordinate in one polyline (in wolrd coordinates)
 	vec2 tan;               // tangent vector at the given point (in world coordinates)
+	float curvature;        // signed curvature estimation
 	
 };
 
@@ -77,7 +78,7 @@ void main() {
  
 	DataPainting fragmentData = DataPainting(screenWidth, screenHeight, mapScaleDiv1000, brushWidth, brushHeight,
 		brushStartWidth, brushEndWidth, brushScale, paperScale, sharpness, paperDensity, brushDensity, strokePressure,
-		fragmentIn.position, fragmentIn.uv, fragmentIn.color, fragmentIn.thickness, fragmentIn.uMax, vec2(0,0)
+		fragmentIn.position, fragmentIn.uv, fragmentIn.color, fragmentIn.thickness, fragmentIn.uMax, vec2(0,0), 0.0
 		);
 	vec2 brushUV = computeBrushTextureCoordinates( fragmentData );
 	

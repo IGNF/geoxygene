@@ -3,6 +3,7 @@ package fr.ign.cogit.geoxygene.appli.panel;
 import java.awt.Component;
 import java.awt.Frame;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -10,6 +11,7 @@ import javax.swing.filechooser.FileFilter;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.I18N;
+import fr.ign.util.ui.JRecentFileChooser;
 
 /**
  * File Choosers.
@@ -18,7 +20,7 @@ import fr.ign.cogit.geoxygene.appli.I18N;
  */
 public class FileChooser {
 
-    private JFileChooser fileChooser;
+    private JRecentFileChooser fileChooser;
 
     /** The previous opened directory. */
     private File previousDirectory = new File(""); //$NON-NLS-1$
@@ -43,7 +45,7 @@ public class FileChooser {
     }
 
     public FileChooser() {
-        this.fileChooser = new JFileChooser();
+        this.fileChooser = new JRecentFileChooser();
         FileFilter shapefileFilter = new FileFilter() {
             @Override
             public boolean accept(final File f) {
@@ -116,23 +118,32 @@ public class FileChooser {
         this.fileChooser.addChoosableFileFilter(gpsTextFilter);
         this.fileChooser.addChoosableFileFilter(roadNetworkTextFilter);
         this.fileChooser.setFileFilter(shapefileFilter);
-        this.fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        this.fileChooser
+                .setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         this.fileChooser.setMultiSelectionEnabled(false);
         this.fileChooser.setAcceptAllFileFilterUsed(false);
         this.fileChooser.setCurrentDirectory(this.getPreviousDirectory());
     }
 
-    public JFileChooser getFileChooser() {
+    public JRecentFileChooser getFileChooser() {
+        return this.fileChooser;
+    }
+
+    public JRecentFileChooser getFileChooser(String directory) {
+        this.fileChooser.setCurrentDirectory(new File(directory));
         return this.fileChooser;
     }
 
     public File getFile(Component parent) {
         this.fileChooser.setCurrentDirectory(this.getPreviousDirectory());
         Frame window = new Frame();
-        window.setIconImage(new ImageIcon(GeOxygeneApplication.class.getResource("/images/icons/16x16/page_white_add.png")).getImage());
+        window.setIconImage(new ImageIcon(GeOxygeneApplication.class
+                .getResource("/images/icons/16x16/page_white_add.png"))
+                .getImage());
         int returnVal = this.fileChooser.showOpenDialog(window);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            this.setPreviousDirectory(new File(this.fileChooser.getSelectedFile().getAbsolutePath()));
+            this.setPreviousDirectory(new File(this.fileChooser
+                    .getSelectedFile().getAbsolutePath()));
             return this.fileChooser.getSelectedFile();
         }
         return null;
@@ -143,7 +154,8 @@ public class FileChooser {
         this.fileChooser.setCurrentDirectory(this.getPreviousDirectory());
         int returnVal = this.fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            this.setPreviousDirectory(new File(this.fileChooser.getSelectedFile().getAbsolutePath()));
+            this.setPreviousDirectory(new File(this.fileChooser
+                    .getSelectedFile().getAbsolutePath()));
             return this.fileChooser.getSelectedFiles();
         }
         return null;
@@ -152,4 +164,13 @@ public class FileChooser {
     public String getDescription() {
         return this.fileChooser.getFileFilter().getDescription();
     }
+
+    public void setRecents(List<String> recents) {
+        this.fileChooser.clearRecentDirectories();
+        for (String s : recents) {
+            this.fileChooser.addRecentDirectories(new File(s));
+        }
+
+    }
+
 }

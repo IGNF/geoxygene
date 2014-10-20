@@ -51,6 +51,7 @@ import fr.ign.cogit.geoxygene.appli.panel.AddPostgisLayer;
 import fr.ign.cogit.geoxygene.appli.panel.FileChooser;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.util.ui.JRecentFileChooser;
 
 /**
  * File, view, configuration and help menu in GeOxygene main frame.
@@ -383,8 +384,10 @@ public class MainFrameMenuBar extends JMenuBar {
                     LOGGER.info("Cannot save SLD, no selected project");
                     return;
                 }
-                JFileChooser chooser = new JFileChooser(fc
-                        .getPreviousDirectory());
+                JRecentFileChooser chooser = new JRecentFileChooser(fc
+                        .getPreviousDirectory(), GeOxygeneEventManager
+                        .getInstance().getApplication().getProperties()
+                        .getRecents());
                 chooser.setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(File f) {
@@ -412,6 +415,7 @@ public class MainFrameMenuBar extends JMenuBar {
                                     .getProperties()
                                     .setLastOpenedFile(file.getAbsolutePath());
                             fc.setPreviousDirectory(file);
+                            fc.setRecents(chooser.getRecentDirectories());
                             projectFrame.getLayerViewPanel().reset();
                             projectFrame.getLayerViewPanel().repaint();
                         } catch (Exception e1) {
@@ -495,8 +499,11 @@ public class MainFrameMenuBar extends JMenuBar {
                                 return;
                             }
                         }
-                        JFileChooser chooser = new JFileChooser(fc
-                                .getPreviousDirectory());
+                        JRecentFileChooser chooser = new JRecentFileChooser(fc
+                                .getPreviousDirectory(), GeOxygeneEventManager
+                                .getInstance().getApplication().getProperties()
+                                .getRecents());
+
                         int result = chooser
                                 .showSaveDialog(MainFrameMenuBar.this.mainFrame
                                         .getGui());
@@ -506,6 +513,8 @@ public class MainFrameMenuBar extends JMenuBar {
                                 String fileName = file.getAbsolutePath();
                                 projectFrame.saveAsImage(fileName);
                             }
+                            fc.setRecents(chooser.getRecentDirectories());
+
                         }
                     }
                 });
@@ -524,10 +533,13 @@ public class MainFrameMenuBar extends JMenuBar {
                             LOGGER.info("Cannot save SLD, no selected project");
                             return;
                         }
-                        JFileChooser chooser = new JFileChooser(
-                                MainFrameMenuBar.this.mainFrame
+                        JRecentFileChooser chooser = new JRecentFileChooser(
+                                new File(MainFrameMenuBar.this.mainFrame
                                         .getApplication().getProperties()
-                                        .getLastOpenedFile());
+                                        .getLastOpenedFile()),
+                                GeOxygeneEventManager.getInstance()
+                                        .getApplication().getProperties()
+                                        .getRecents());
                         int result = chooser
                                 .showSaveDialog(MainFrameMenuBar.this.mainFrame
                                         .getGui());
@@ -540,6 +552,8 @@ public class MainFrameMenuBar extends JMenuBar {
                                         .getApplication().getProperties()
                                         .setLastOpenedFile(fileName);
                                 fc.setPreviousDirectory(file);
+                                fc.setRecents(chooser.getRecentDirectories());
+
                             }
                         }
                     }
@@ -620,7 +634,10 @@ public class MainFrameMenuBar extends JMenuBar {
             LOGGER.error("The layer selected does not contain any feature."); //$NON-NLS-1$
             return;
         }
-        JFileChooser chooser = new JFileChooser(fc.getPreviousDirectory());
+        JRecentFileChooser chooser = new JRecentFileChooser(
+                fc.getPreviousDirectory(), GeOxygeneEventManager.getInstance()
+                        .getApplication().getProperties().getRecents());
+
         int result = chooser.showSaveDialog(MainFrameMenuBar.this.mainFrame
                 .getGui());
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -628,6 +645,8 @@ public class MainFrameMenuBar extends JMenuBar {
             if (file != null) {
                 String fileName = file.getAbsolutePath();
                 project.saveAsShp(fileName, layer);
+                fc.setRecents(chooser.getRecentDirectories());
+
             }
         }
     }

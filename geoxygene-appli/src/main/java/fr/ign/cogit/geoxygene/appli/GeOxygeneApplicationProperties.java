@@ -71,6 +71,9 @@ public class GeOxygeneApplicationProperties {
     // LAF class name
     private String defaultLookAndFeel = "";
 
+    @XmlElements(@XmlElement(name = "recent", type = String.class))
+    private final List<String> recents = new ArrayList<String>();
+
     /**
      * Return plugin list.
      * 
@@ -96,6 +99,30 @@ public class GeOxygeneApplicationProperties {
      */
     public List<String> getPreloads() {
         return this.preloads;
+    }
+
+    /**
+     * Return recent opened directories list.
+     * 
+     * @return List<String> directories filenames
+     */
+    public List<String> getRecents() {
+        return this.recents;
+    }
+
+    /**
+     * Clear recent opened directories list.
+     */
+    public void clearRecents() {
+        this.recents.clear();
+        ;
+    }
+
+    /**
+     * add recent opened directory in list.
+     */
+    public void addRecent(String directoryFilepath) {
+        this.recents.add(directoryFilepath);
     }
 
     /**

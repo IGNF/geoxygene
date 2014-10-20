@@ -51,8 +51,10 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import fr.ign.cogit.geoxygene.appli.MainFrameMenuBar;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
+import fr.ign.util.ui.JRecentFileChooser;
 import fr.ign.util.ui.SliderWithSpinner;
 import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
 
@@ -180,7 +182,7 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JFileChooser fc = new JFileChooser(
+                    JFileChooser fc = new JRecentFileChooser(
                             StrokeTextureExpressiveRenderingUI.this.prefs.get(
                                     PAPER_LAST_DIRECTORY, "."));
                     if (fc.showOpenDialog(StrokeTextureExpressiveRenderingUI.this.parentProjectFrame
@@ -277,9 +279,9 @@ public class StrokeTextureExpressiveRenderingUI implements
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JFileChooser fc = new JFileChooser(
-                            StrokeTextureExpressiveRenderingUI.this.prefs.get(
-                                    BRUSH_LAST_DIRECTORY, "."));
+                    JFileChooser fc = MainFrameMenuBar.fc
+                            .getFileChooser(StrokeTextureExpressiveRenderingUI.this.prefs
+                                    .get(BRUSH_LAST_DIRECTORY, "."));
                     if (fc.showOpenDialog(StrokeTextureExpressiveRenderingUI.this.parentProjectFrame
                             .getGui()) == JFileChooser.APPROVE_OPTION) {
                         try {

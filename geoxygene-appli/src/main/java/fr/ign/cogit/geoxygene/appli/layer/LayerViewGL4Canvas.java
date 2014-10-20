@@ -191,7 +191,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             // System.err.println("-------------------------------------------------- swap buffers --------------------------------");
 
             if (this.doPaintOverlay()) {
-                this.glPaintOverlays();
+                // this.glPaintOverlays();
             }
             this.swapBuffers();
             RenderingStatistics.endRendering();
