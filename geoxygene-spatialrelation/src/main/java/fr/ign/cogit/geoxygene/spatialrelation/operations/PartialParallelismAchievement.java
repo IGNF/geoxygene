@@ -49,6 +49,10 @@ public class PartialParallelismAchievement implements
     this.divergingPts = new ArrayList<IDirectPosition>();
   }
 
+  /**
+   * Loop on the feature1 vertices to identify where parallelism between both
+   * features and where it ends.
+   */
   @Override
   public void compute() {
     boolean parallel = false;
@@ -69,7 +73,8 @@ public class PartialParallelismAchievement implements
           parallel = false;
         }
       } else {
-        // else, check if this point is a converging point
+        // else, check if this point is a converging point, i.e. the points are
+        // close to each other
         if (relation.getConditionOfAchievement().validate(new Double(dist))) {
           convergingPts.add(pt);
           pts.add(pt);
@@ -77,11 +82,13 @@ public class PartialParallelismAchievement implements
         }
       }
     }
-    // if the lines ended parallel, add a diverging point at the end
-    IDirectPosition finalPt = feature1.getGeom().coord()
-        .get(feature1.getGeom().coord().size() - 1);
-    divergingPts.add(finalPt);
-    pts.add(finalPt);
+    if (parallel) {
+      // if the lines ended parallel, add a diverging point at the end
+      IDirectPosition finalPt = feature1.getGeom().coord()
+          .get(feature1.getGeom().coord().size() - 1);
+      divergingPts.add(finalPt);
+      pts.add(finalPt);
+    }
 
     // fill the relation fields if it is achieved
     if (convergingPts.size() + divergingPts.size() > 0) {
@@ -94,6 +101,9 @@ public class PartialParallelismAchievement implements
       else if (feature1.getGeom() instanceof IPolygon)
         line1 = ((IPolygon) feature1.getGeom()).exteriorLineString();
       IDirectPosition lastConverging = null;
+
+      // loop on the characteristic points of the relation (either converging or
+      // diverging)
       for (IDirectPosition pt : pts) {
         boolean converging = true;
         if (divergingPts.contains(pt))
