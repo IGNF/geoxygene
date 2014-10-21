@@ -23,11 +23,9 @@ package fr.ign.cogit.geoxygene.matching.dst.sources.text;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.function.Function1D;
 import fr.ign.cogit.geoxygene.function.FunctionEvaluationException;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
@@ -35,6 +33,11 @@ import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
+/**
+ * Critère basé sur la distance de Levenshtein.
+ * 
+ * @author Marie-Dominique Van Damme
+ */
 public class LevenshteinDist extends GeoSource {
   
   private static Logger DST_LOGGER = Logger.getLogger("DSTLogger");
@@ -44,7 +47,8 @@ public class LevenshteinDist extends GeoSource {
   
   @Override
   public String getName() {
-      return "Distance de Levenshtein sur les attributs " + attributeName1 + " et " + attributeName2;
+      return "Distance de Levenshtein";
+      // sur les attributs " + attributeName1 + " et " + attributeName2
   }
 
   @Override

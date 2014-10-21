@@ -122,12 +122,24 @@ public class GeoMatching {
       IFeature reference, List<IFeature> candidates, ChoiceType choice, boolean closed)
       throws Exception {
     
+    DST_LOGGER.info("");
     DST_LOGGER.info("Appariement du toponyme " + reference.getAttribute("toponyme"));
+    DST_LOGGER.info("   " + candidates.size() + " candidat(s)");
     
     // Création des hypothèses d'appariement.
     LOGGER.debug(candidates.size() + " candidates");
     LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
+    
+    /*
+    LinkedList<List<IFeature>> combinations = new LinkedList<List<IFeature>>();
+    for (int i = 1; i <= candidates.size(); i++) {
+      combinations.add(candidates.get(i));
+    }
+    System.out.println(combinations.toString());
+    */
+    
     LOGGER.debug(combinations.size() + " hypotheses");
+    DST_LOGGER.info("   " + combinations.size() + " hypothese(s)");
     
     // 
     List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
@@ -146,10 +158,13 @@ public class GeoMatching {
     DefaultCodec<GeomHypothesis> codec = new DefaultCodec<GeomHypothesis>(hypotheses);
     for (GeomHypothesis candidate : hypotheses) {
       for (int j = 0; j < criteria.size(); j++) {
+        
         Source<IFeature, GeomHypothesis> source = criteria.get(j);
-        DST_LOGGER.info("   " + source.getName());
+        DST_LOGGER.info("   " + source.getName() + " pour candidat " + candidate.getAttribute("NOM"));
+        
         double[] mij = source.evaluate(reference, candidate);
         DST_LOGGER.info("        [" + mij[0] + ", " + mij[1] + ", " + mij[2] + "]");
+        
         List<Pair<byte[], Float>> kernel = new ArrayList<Pair<byte[], Float>>();
         byte[] code = codec.encode(candidate);
         byte[] codeComplement = new byte[hypotheses.size()];
@@ -163,6 +178,7 @@ public class GeoMatching {
         kernel.add(new Pair<byte[], Float>(codeComplement, new Float(mij[1])));
         kernel.add(new Pair<byte[], Float>(codeUnknown, new Float(mij[2])));
         beliefs.add(kernel);
+      
       }
     }
     
