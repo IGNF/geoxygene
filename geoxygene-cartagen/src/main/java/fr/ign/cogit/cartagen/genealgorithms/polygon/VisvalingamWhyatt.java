@@ -156,7 +156,7 @@ public class VisvalingamWhyatt {
    * @param IFeatureCollection<IFeature> lignes
    * @return IFeatureCollection<IFeature> lignes
    */
-  public IFeatureCollection<IFeature> simplify(IFeatureCollection<IFeature> lignes) {
+  public IFeatureCollection<IFeature> simplifyDebugVersion(IFeatureCollection<IFeature> lignes) {
     IFeatureCollection<IFeature> copy = new FT_FeatureCollection<>(lignes);
     int i=0;
     long startTime , endTime;
@@ -180,23 +180,26 @@ public class VisvalingamWhyatt {
           double area = triangle.area();
           endTime = System.nanoTime();
           sumtimeArea += (endTime - startTime); 
-          if (area < areaMin && !containsAnotherPoint(l, pt)) {
-            areaMin = area;
-            if (lignesEnvConv == null){
+          if (area < areaMin && !containsAnotherPoint(l, pt)) {            
+            if (area < areaTolerance ){
+              if (lignesEnvConv == null){
+                startTime = System.nanoTime();
+                //lignesEnvConv = new FT_FeatureCollection<>(lignes.select(l.convexHull().getEnvelope()));
+                lignesEnvConv = new FT_FeatureCollection<>(lignes.select(l.convexHull()));
+                endTime = System.nanoTime();
+                sumSimp += (endTime - startTime);
+              }
               startTime = System.nanoTime();
-              lignesEnvConv = new FT_FeatureCollection<>(lignes.select(l.convexHull().getEnvelope()));
+              if (lignesEnvConv.select(triangle).size() < 2){
+                ptAreaMin = pt;
+                areaMin = area;
+                //System.out.println("pt to remove found");
+                }
               endTime = System.nanoTime();
-              sumSimp += (endTime - startTime);
+              sumtimeSelect += (endTime - startTime);
+              }
             }
-            startTime = System.nanoTime();
-            if (area < areaTolerance && lignesEnvConv.select(triangle).size() < 2){
-              ptAreaMin = pt;
-              //System.out.println("pt to remove found");
-            }
-            endTime = System.nanoTime();
-            sumtimeSelect += (endTime - startTime);
           }
-        }
         if (ptAreaMin == null)
           break;
         // remove the point
@@ -215,7 +218,50 @@ public class VisvalingamWhyatt {
     return copy;
   }
 
-  
+  /**
+   * Visvalingam-Whyatt simplification of a collection of line string.
+   * @param IFeatureCollection<IFeature> lignes
+   * @return IFeatureCollection<IFeature> lignes
+   */
+  public IFeatureCollection<IFeature> simplify(IFeatureCollection<IFeature> lignes) {
+    IFeatureCollection<IFeature> copy = new FT_FeatureCollection<>(lignes);
+    int i = 0;
+    System.out.println("methode avec enveloppe convexe préalable");
+    for (IFeature f: copy){
+      boolean pointPoidsMinExists = true;
+      ILineString line = (ILineString) f.getGeom();
+      IFeatureCollection<IFeature> lignesInterConvexHull = null;
+      while(pointPoidsMinExists){
+        double areaMin = Double.MAX_VALUE;
+        IDirectPosition pointMin = null;
+        for (IDirectPosition point: line.coord()){
+          if ( point.equals(line.startPoint()) || point.equals(line.endPoint()) )
+            continue;
+          IGeometry triangle = getTriangle(line, point);
+          double areaTriangle = triangle.area();
+          if (areaTriangle < areaMin && !containsAnotherPoint(line, point))
+            if (areaTriangle < areaTolerance) {
+              if (lignesInterConvexHull == null)
+                lignesInterConvexHull = new FT_FeatureCollection<>(lignes.select(line.convexHull()));
+              if (lignesInterConvexHull.select(triangle).size() < 2){
+                areaMin = areaTriangle;
+                pointMin = point;
+              }
+            }
+        } //fin d'un parcours d'une ligne
+        if (pointMin != null) {
+          IDirectPositionList newCoord = line.coord();
+          newCoord.remove(pointMin);
+          line = new GM_LineString(newCoord);       
+          ++i;
+        } else
+            pointPoidsMinExists = false;   
+      }// c'est fini pour la ligne, on passe à la suivante
+      f.setGeom(line);
+    }
+    System.out.println(i + " points supprimés");
+    return copy;
+  }
   
   
   /**
