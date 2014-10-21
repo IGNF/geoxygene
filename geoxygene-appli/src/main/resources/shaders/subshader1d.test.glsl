@@ -27,6 +27,7 @@ struct DataPainting {
 };
 
 uniform int time;
+uniform vec4 col;
 
 // v is scaled from [0..1] to [0.5-width/2..0.5+width/2]
 float vTextureScale( in float width, in float v ) {
@@ -80,6 +81,7 @@ vec4 computeFragmentColorCurvature( in vec4 brushColor, in vec4 paperColor, in D
 
 
 vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
+return col;
 	return computeFragmentColorCurvature( brushColor, paperColor, fragmentData );
 	// return computeFragmentColorRainbow( brushColor, paperColor, fragmentData );
 }

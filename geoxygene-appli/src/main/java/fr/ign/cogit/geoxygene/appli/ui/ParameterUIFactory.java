@@ -28,6 +28,7 @@
 package fr.ign.cogit.geoxygene.appli.ui;
 
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorColor;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorFloat;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorInteger;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorTime;
@@ -61,9 +62,23 @@ public final class ParameterUIFactory {
             return createTimeUI((ParameterDescriptorTime) descriptor);
 
         }
+        if (descriptor instanceof ParameterDescriptorColor) {
+            return createColorUI((ParameterDescriptorColor) descriptor);
+
+        }
         throw new IllegalStateException("Parameter Descriptor "
                 + descriptor.getClass().getSimpleName()
                 + " is not associated with any User Interface");
+    }
+
+    /**
+     * Create a User interface for Float parameter types
+     * 
+     * @param descriptor
+     * @return
+     */
+    private static ParameterUI createColorUI(ParameterDescriptorColor descriptor) {
+        return new ParameterUIColor(descriptor);
     }
 
     /**

@@ -49,7 +49,8 @@ public class UserFill2DShaderDescriptor extends Fill2DShaderDescriptor
     @XmlElements({
             @XmlElement(name = "Float", type = ParameterDescriptorFloat.class),
             @XmlElement(name = "Int", type = ParameterDescriptorInteger.class),
-            @XmlElement(name = "Time", type = ParameterDescriptorTime.class) })
+            @XmlElement(name = "Time", type = ParameterDescriptorTime.class),
+            @XmlElement(name = "Color", type = ParameterDescriptorColor.class) })
     private final List<ParameterDescriptor> parameters = new ArrayList<ParameterDescriptor>();
 
     /**

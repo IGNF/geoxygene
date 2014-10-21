@@ -237,11 +237,29 @@ public class GLProgram {
     }
 
     /**
+     * set uniform value (vec4 / color)
+     */
+    public void setUniform4f(final String uniformName, float... values)
+            throws GLException {
+        int uniformLocation = this.getUniformLocation(uniformName);
+        this.setUniform4f(uniformLocation, values);
+    }
+
+    /**
      * @param value
      * @param uniformLocation
      */
     private void setUniform1f(int uniformLocation, float value) {
         GL20.glUniform1f(uniformLocation, value);
+    }
+
+    /**
+     * @param value
+     * @param uniformLocation
+     */
+    private void setUniform4f(int uniformLocation, float... values) {
+        GL20.glUniform4f(uniformLocation, values[0], values[1], values[2],
+                values[3]);
     }
 
     /**

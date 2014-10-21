@@ -27,11 +27,13 @@
 
 package fr.ign.cogit.geoxygene.appli.gl;
 
+import java.awt.Color;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorColor;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorFloat;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorInteger;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorTime;
@@ -109,6 +111,13 @@ public class UserSubshader implements Subshader {
         if (param instanceof ParameterDescriptorTime) {
             ParameterDescriptorTime timeParam = (ParameterDescriptorTime) param;
             program.setUniform1i(timeParam.getName(), timeParam.getValue());
+            return;
+        }
+        if (param instanceof ParameterDescriptorColor) {
+            ParameterDescriptorColor colorParam = (ParameterDescriptorColor) param;
+            Color color = colorParam.getValue();
+            program.setUniform4f(colorParam.getName(),
+                    color.getRGBComponents(null));
             return;
         }
 

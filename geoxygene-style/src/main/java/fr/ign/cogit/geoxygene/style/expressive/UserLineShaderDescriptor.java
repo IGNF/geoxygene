@@ -40,35 +40,49 @@ import javax.xml.bind.annotation.XmlElements;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class UserLineShaderDescriptor extends LineShaderDescriptor implements UserShaderDescriptor {
+public class UserLineShaderDescriptor extends LineShaderDescriptor implements
+        UserShaderDescriptor {
 
     @XmlElement(name = "File")
-    private String filename = "./src/main/resources/shaders/linepainting.subshader.default.glsl";
+    private String filename = "./src/main/resources/shaders/subshader1d.default.glsl";
 
     @XmlElements({
             @XmlElement(name = "Float", type = ParameterDescriptorFloat.class),
             @XmlElement(name = "Int", type = ParameterDescriptorInteger.class),
-            @XmlElement(name = "Time", type = ParameterDescriptorTime.class) })
+            @XmlElement(name = "Time", type = ParameterDescriptorTime.class),
+            @XmlElement(name = "Color", type = ParameterDescriptorColor.class) })
     private final List<ParameterDescriptor> parameters = new ArrayList<ParameterDescriptor>();
 
-    /* (non-Javadoc)
-     * @see fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor#getFilename()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor#getFilename
+     * ()
      */
     @Override
     public String getFilename() {
         return this.filename;
     }
 
-    /* (non-Javadoc)
-     * @see fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor#setFilename(java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor#setFilename
+     * (java.lang.String)
      */
     @Override
     public void setFilename(String filename) {
         this.filename = filename;
     }
 
-    /* (non-Javadoc)
-     * @see fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor#getParameters()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor#getParameters
+     * ()
      */
     @Override
     public List<ParameterDescriptor> getParameters() {
