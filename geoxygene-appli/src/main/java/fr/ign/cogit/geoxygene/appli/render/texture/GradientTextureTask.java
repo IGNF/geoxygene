@@ -146,12 +146,13 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
         }
         double maxCoastLineLength = this.textureDescriptor
                 .getMaxCoastlineLength();
+        int blurSize = this.textureDescriptor.getBlurSize();
 
         this.setState(TaskState.RUNNING);
         try {
             BinaryGradientImageParameters params = new BinaryGradientImageParameters(
                     textureWidth, textureHeight, polygons, envelope,
-                    maxCoastLineLength);
+                    maxCoastLineLength, blurSize);
             BinaryGradientImage texImage = BinaryGradientImage
                     .generateBinaryGradientImage(params);
             if (texImage == null) {

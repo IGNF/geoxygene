@@ -45,11 +45,11 @@ import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage.GradientPixel;
 /**
  * @author JeT Tool collection for texture images
  */
-public class TextureImageUtil {
+public class BinaryGradientImageUtil {
 
     private static final double PI2 = Math.PI * 2;
     private static final Logger logger = Logger
-            .getLogger(TextureImageUtil.class.getName()); // logger
+            .getLogger(BinaryGradientImageUtil.class.getName()); // logger
 
     /**
      * Blur the 'distance' pixel member with a square window
@@ -520,4 +520,5 @@ public class TextureImageUtil {
                 + (pixel.in ? "inside" : "outside") + " frontier = "
                 + (pixel.frontier));
     }
+
 }

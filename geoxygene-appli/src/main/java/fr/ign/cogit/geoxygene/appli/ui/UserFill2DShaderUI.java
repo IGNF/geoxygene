@@ -46,9 +46,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
+import fr.ign.cogit.geoxygene.appli.MainFrameMenuBar;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.UserFill2DShaderDescriptor;
+import fr.ign.util.ui.JRecentFileChooser;
 
 /**
  * @author JeT
@@ -128,13 +131,18 @@ public class UserFill2DShaderUI implements ExpressiveRenderingUI,
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JFileChooser fc = new JFileChooser(
-                            UserFill2DShaderUI.this.prefs.get(
-                                    SUBSHADER_LAST_DIRECTORY, "."));
-                    if (fc.showOpenDialog(UserFill2DShaderUI.this.parentProjectFrame
-                            .getGui()) == JFileChooser.APPROVE_OPTION) {
+                    JRecentFileChooser chooser = new JRecentFileChooser(
+                            new File(UserFill2DShaderUI.this.prefs.get(
+                                    SUBSHADER_LAST_DIRECTORY, ".")),
+                            GeOxygeneEventManager.getInstance()
+                                    .getApplication().getProperties()
+                                    .getRecents());
+
+                    if (chooser
+                            .showOpenDialog(UserFill2DShaderUI.this.parentProjectFrame
+                                    .getGui()) == JFileChooser.APPROVE_OPTION) {
                         try {
-                            File selectedFile = fc.getSelectedFile();
+                            File selectedFile = chooser.getSelectedFile();
                             UserFill2DShaderUI.this.subshaderFilename = selectedFile
                                     .getAbsolutePath();
                             UserFill2DShaderUI.this.subshaderFilenameLabel
@@ -145,6 +153,8 @@ public class UserFill2DShaderUI implements ExpressiveRenderingUI,
                             UserFill2DShaderUI.this.prefs.put(
                                     SUBSHADER_LAST_DIRECTORY,
                                     selectedFile.getAbsolutePath());
+                            MainFrameMenuBar.fc.setRecents(chooser
+                                    .getRecentDirectories());
 
                             UserFill2DShaderUI.this.refresh();
                         } catch (Exception e1) {

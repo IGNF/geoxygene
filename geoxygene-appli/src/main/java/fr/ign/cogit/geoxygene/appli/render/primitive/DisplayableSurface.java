@@ -244,6 +244,7 @@ public class DisplayableSurface extends AbstractDisplayable {
                     .getMaxCoastlineLength());
             textureDescriptor.setTextureResolution(expressiveDescriptor
                     .getTextureResolution());
+            textureDescriptor.setBlurSize(expressiveDescriptor.getBlurSize());
             this.createWithGradientTextureDescriptor(symbolizer,
                     featureCollection, complexes, textureDescriptor);
         } else {

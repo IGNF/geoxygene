@@ -50,6 +50,10 @@ public class BinaryGradientImageDescriptor extends TextureDescriptor {
     @XmlElement(name = "MaxCoastlineLength")
     private double maxCoastlineLength = Double.POSITIVE_INFINITY;
 
+    // size of the bluring filter
+    @XmlElement(name = "BlurSize")
+    private int blurSize = 2;
+
     /**
      * default constructor
      */
@@ -94,6 +98,21 @@ public class BinaryGradientImageDescriptor extends TextureDescriptor {
     }
 
     /**
+     * @return the blurSize
+     */
+    public int getBlurSize() {
+        return this.blurSize;
+    }
+
+    /**
+     * @param blurSize
+     *            the blurSize to set
+     */
+    public void setBlurSize(int blurSize) {
+        this.blurSize = blurSize;
+    }
+
+    /**
      * @return the mapScale
      */
     public double getMapScale() {
@@ -125,6 +144,7 @@ public class BinaryGradientImageDescriptor extends TextureDescriptor {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
+        result = prime * result + this.blurSize;
         long temp;
         temp = Double.doubleToLongBits(this.mapScale);
         result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -152,6 +172,9 @@ public class BinaryGradientImageDescriptor extends TextureDescriptor {
             return false;
         }
         BinaryGradientImageDescriptor other = (BinaryGradientImageDescriptor) obj;
+        if (this.blurSize != other.blurSize) {
+            return false;
+        }
         if (Double.doubleToLongBits(this.mapScale) != Double
                 .doubleToLongBits(other.mapScale)) {
             return false;
@@ -174,9 +197,10 @@ public class BinaryGradientImageDescriptor extends TextureDescriptor {
      */
     @Override
     public String toString() {
-        return "GradientTextureDescriptor [textureResolution="
+        return "BinaryGradientImageDescriptor [textureResolution="
                 + this.textureResolution + ", mapScale=" + this.mapScale
-                + ", maxCoastlineLength=" + this.maxCoastlineLength + "]";
+                + ", maxCoastlineLength=" + this.maxCoastlineLength
+                + ", blurSize=" + this.blurSize + "]";
     }
 
 }

@@ -59,6 +59,9 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
     @XmlElement(name = "DistributionManagement")
     private DistributionManagementType distributionManagement = DistributionManagementType.EXACT;
 
+    @XmlElement(name = "BlurSize")
+    private int blurSize = 2;
+
     /**
      * default constructor
      */
@@ -104,6 +107,21 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
     }
 
     /**
+     * @return the blurSize
+     */
+    public int getBlurSize() {
+        return this.blurSize;
+    }
+
+    /**
+     * @param blurSize
+     *            the blurSize to set
+     */
+    public void setBlurSize(int blurSize) {
+        this.blurSize = blurSize;
+    }
+
+    /**
      * @return the blending
      */
     public TileBlendingType getBlending() {
@@ -137,6 +155,20 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
     /*
      * (non-Javadoc)
      * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "TileDistributionTextureDescriptor [maxCoastlineLength="
+                + this.maxCoastlineLength + ", textureResolution="
+                + this.textureResolution + ", blending=" + this.blending
+                + ", distributionManagement=" + this.distributionManagement
+                + ", toString()=" + super.toString() + "]";
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -145,6 +177,7 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
         int result = super.hashCode();
         result = prime * result
                 + ((this.blending == null) ? 0 : this.blending.ordinal());
+        result = prime * result + this.blurSize;
         result = prime
                 * result
                 + ((this.distributionManagement == null) ? 0
@@ -176,7 +209,10 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
             return false;
         }
         TileDistributionTextureDescriptor other = (TileDistributionTextureDescriptor) obj;
-        if (this.blending != other.blending) {
+        if (this.blending.ordinal() != other.blending.ordinal()) {
+            return false;
+        }
+        if (this.blurSize != other.blurSize) {
             return false;
         }
         if (this.distributionManagement.ordinal() != other.distributionManagement
@@ -199,20 +235,6 @@ public class TileDistributionTextureDescriptor extends BasicTextureDescriptor {
             return false;
         }
         return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "TileDistributionTextureDescriptor [maxCoastlineLength="
-                + this.maxCoastlineLength + ", textureResolution="
-                + this.textureResolution + ", blending=" + this.blending
-                + ", distributionManagement=" + this.distributionManagement
-                + ", toString()=" + super.toString() + "]";
     }
 
 }

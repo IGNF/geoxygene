@@ -83,6 +83,7 @@ import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.SldListener;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.util.ui.JRecentFileChooser;
 
 /**
  * Panel displaying layer legends.
@@ -730,8 +731,11 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
             LOGGER.info("Cannot save SLD, no selected project");
             return;
         }
-        JFileChooser chooser = new JFileChooser(this.parent.getMainFrame()
-                .getMenuBar().fc.getPreviousDirectory());
+        JRecentFileChooser chooser = new JRecentFileChooser(new File(
+                MainFrameMenuBar.fc.getPreviousDirectory(), "."),
+                GeOxygeneEventManager.getInstance().getApplication()
+                        .getProperties().getRecents());
+
         chooser.setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File f) {
@@ -756,8 +760,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
                     this.parent.loadSLD(file);
                     this.parent.getMainFrame().getApplication().getProperties()
                             .setLastOpenedFile(file.getAbsolutePath());
-                    this.parent.getMainFrame().getMenuBar().fc
-                            .setPreviousDirectory(file);
+                    MainFrameMenuBar.fc.setPreviousDirectory(file);
+                    MainFrameMenuBar.fc.setRecents(chooser
+                            .getRecentDirectories());
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }

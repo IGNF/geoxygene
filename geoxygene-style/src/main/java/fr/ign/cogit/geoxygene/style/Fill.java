@@ -74,7 +74,7 @@ public class Fill {
             @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTextureDescriptor.class),
             @XmlElement(name = "BasicTexture", type = BasicTextureDescriptor.class),
             @XmlElement(name = "GradientTexture", type = BinaryGradientImageDescriptor.class),
-            @XmlElement(name = "GradientExpressiveRendering", type = GradientSubshaderDescriptor.class),
+            @XmlElement(name = "ExpressiveGradient", type = GradientSubshaderDescriptor.class),
             @XmlElement(name = "TileDistributionTexture", type = TileDistributionTextureDescriptor.class) })
     private Fill2DDescriptor fill2dDescriptor = null;
 

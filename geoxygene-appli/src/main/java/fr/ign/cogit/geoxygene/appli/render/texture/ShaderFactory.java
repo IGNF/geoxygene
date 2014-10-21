@@ -27,10 +27,12 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
-import fr.ign.cogit.geoxygene.appli.gl.DefaultSubshader;
+import fr.ign.cogit.geoxygene.appli.gl.DefaultSubshader1D;
+import fr.ign.cogit.geoxygene.appli.gl.DefaultSubshader2D;
 import fr.ign.cogit.geoxygene.appli.gl.RandomVariationSubshader;
 import fr.ign.cogit.geoxygene.appli.gl.Subshader;
 import fr.ign.cogit.geoxygene.appli.gl.UserSubshader;
+import fr.ign.cogit.geoxygene.style.expressive.DefaultFill2DShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.DefaultLineShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.RandomVariationShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
@@ -61,6 +63,10 @@ public class ShaderFactory {
             return createUserFillSubshader((UserFill2DShaderDescriptor) descriptor);
 
         }
+        if (descriptor instanceof DefaultFill2DShaderDescriptor) {
+            return createDefaultFillSubshader((DefaultFill2DShaderDescriptor) descriptor);
+
+        }
         throw new IllegalStateException("Do not handle "
                 + descriptor.getClass().getSimpleName() + " shader descriptor");
     }
@@ -70,19 +76,23 @@ public class ShaderFactory {
         return new RandomVariationSubshader(descriptor);
     }
 
-    public static DefaultSubshader createDefaultShader(
+    public static DefaultSubshader1D createDefaultShader(
             DefaultLineShaderDescriptor descriptor) {
-        return new DefaultSubshader(descriptor);
+        return new DefaultSubshader1D(descriptor);
     }
 
-    public static UserSubshader createUserShader(
-            UserShaderDescriptor descriptor) {
+    public static UserSubshader createUserShader(UserShaderDescriptor descriptor) {
         return new UserSubshader(descriptor);
     }
 
     public static UserSubshader createUserFillSubshader(
             UserFill2DShaderDescriptor descriptor) {
         return new UserSubshader(descriptor);
+    }
+
+    public static DefaultSubshader2D createDefaultFillSubshader(
+            DefaultFill2DShaderDescriptor descriptor) {
+        return new DefaultSubshader2D(descriptor);
     }
 
 }

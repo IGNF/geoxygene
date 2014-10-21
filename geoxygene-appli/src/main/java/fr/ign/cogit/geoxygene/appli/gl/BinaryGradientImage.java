@@ -513,12 +513,12 @@ public class BinaryGradientImage {
         // may be we can assert that polygons may not self intersect and get
         // back to previous version...
 
-        try {
-            TextureImageUtil.save(gradientImage, "1-frontiers");
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        // try {
+        // BinaryGradientImageUtil.save(gradientImage, "1-frontiers");
+        // } catch (IOException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
         // for (Map.Entry<Integer, List<Integer>> entry :
         // pixelRenderer.getYs().entrySet()) {
         // System.err.println("Y(" + entry.getKey() + ") = " +
@@ -555,6 +555,10 @@ public class BinaryGradientImage {
         fillVWithDistance(gradientImage);
         // scaleV(gradientImage, gradientImage.getdMax());
         computeGradient(gradientImage);
+        // blurring filter to eliminate some high frequencies
+
+        BinaryGradientImageUtil.blurTextureCoordinates(gradientImage,
+                params.blurValue);
         // try {
         // TextureImageUtil.save(texImage, "4-gradient");
         // } catch (IOException e) {
@@ -859,10 +863,11 @@ public class BinaryGradientImage {
         private final double imageToPolygonFactorX;
         private final double imageToPolygonFactorY;
         private final double maxCoastlineLength;
+        private int blurValue = 0; // half size of a square window around pixel
 
         public BinaryGradientImageParameters(int width, int height,
                 List<IPolygon> polygons, IEnvelope envelope,
-                double maxCoastlineLength) {
+                double maxCoastlineLength, int blurValue) {
             super();
             this.width = width;
             this.height = height;
@@ -876,6 +881,7 @@ public class BinaryGradientImage {
             this.imageToPolygonFactorY = (this.maxY - this.minY)
                     / (this.height - 1);
             this.maxCoastlineLength = maxCoastlineLength;
+            this.blurValue = blurValue;
         }
 
         /**

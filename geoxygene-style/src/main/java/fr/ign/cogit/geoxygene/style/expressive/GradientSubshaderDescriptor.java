@@ -55,6 +55,11 @@ public class GradientSubshaderDescriptor extends Fill2DDescriptor {
     @XmlElement(name = "MaxCoastlineLength")
     private double maxCoastlineLength = Double.POSITIVE_INFINITY;
 
+    // size of the bluring filter
+    @XmlElement(name = "BlurSize")
+    private int blurSize = 2;
+
+
     /**
      * @return the textureResolution
      */
@@ -115,64 +120,81 @@ public class GradientSubshaderDescriptor extends Fill2DDescriptor {
         this.shader = shader;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
+     * @return the blurSize
+     */
+    public int getBlurSize() {
+        return this.blurSize;
+    }
+
+    /**
+     * @param blurSize
+     *            the blurSize to set
+     */
+    public void setBlurSize(int blurSize) {
+        this.blurSize = blurSize;
+    }
+
+    /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + blurSize;
         long temp;
-        temp = Double.doubleToLongBits(this.mapScale);
+        temp = Double.doubleToLongBits(mapScale);
         result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.maxCoastlineLength);
+        temp = Double.doubleToLongBits(maxCoastlineLength);
         result = prime * result + (int) (temp ^ (temp >>> 32));
-        result = prime * result
-                + ((this.shader == null) ? 0 : this.shader.hashCode());
-        temp = Double.doubleToLongBits(this.textureResolution);
+        result = prime * result + ((shader == null) ? 0 : shader.hashCode());
+        temp = Double.doubleToLongBits(textureResolution);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (obj == null) {
+        if (obj == null)
             return false;
-        }
-        if (this.getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass())
             return false;
-        }
         GradientSubshaderDescriptor other = (GradientSubshaderDescriptor) obj;
-        if (Double.doubleToLongBits(this.mapScale) != Double
-                .doubleToLongBits(other.mapScale)) {
+        if (blurSize != other.blurSize)
             return false;
-        }
-        if (Double.doubleToLongBits(this.maxCoastlineLength) != Double
-                .doubleToLongBits(other.maxCoastlineLength)) {
+        if (Double.doubleToLongBits(mapScale) != Double
+                .doubleToLongBits(other.mapScale))
             return false;
-        }
-        if (this.shader == null) {
-            if (other.shader != null) {
+        if (Double.doubleToLongBits(maxCoastlineLength) != Double
+                .doubleToLongBits(other.maxCoastlineLength))
+            return false;
+        if (shader == null) {
+            if (other.shader != null)
                 return false;
-            }
-        } else if (!this.shader.equals(other.shader)) {
+        } else if (!shader.equals(other.shader))
             return false;
-        }
-        if (Double.doubleToLongBits(this.textureResolution) != Double
-                .doubleToLongBits(other.textureResolution)) {
+        if (Double.doubleToLongBits(textureResolution) != Double
+                .doubleToLongBits(other.textureResolution))
             return false;
-        }
         return true;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "GradientSubshaderDescriptor [shader=" + shader
+                + ", textureResolution=" + textureResolution + ", mapScale="
+                + mapScale + ", maxCoastlineLength=" + maxCoastlineLength
+                + ", blurSize=" + blurSize + "]";
+    }
+
 
 }

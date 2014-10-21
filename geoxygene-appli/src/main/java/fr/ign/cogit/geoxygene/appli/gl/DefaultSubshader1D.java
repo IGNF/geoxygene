@@ -40,14 +40,14 @@ import fr.ign.cogit.geoxygene.util.gl.GLTools;
  * @author JeT
  * 
  */
-public class DefaultSubshader implements Subshader {
+public class DefaultSubshader1D implements Subshader {
 
     private static final Logger logger = Logger
-            .getLogger(DefaultSubshader.class.getName()); // logger
+            .getLogger(DefaultSubshader1D.class.getName()); // logger
 
-    private static final String subshaderFilename = "./src/main/resources/shaders/linepainting.subshader.default.glsl";
+    private static final String subshaderFilename = "./src/main/resources/shaders/subshader1d.default.glsl";
 
-    public DefaultSubshader(DefaultLineShaderDescriptor descriptor) {
+    public DefaultSubshader1D(DefaultLineShaderDescriptor descriptor) {
     }
 
     @Override

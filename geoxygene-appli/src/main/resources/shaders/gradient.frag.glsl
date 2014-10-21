@@ -45,7 +45,7 @@ void main(void) {
 	vec4 color = computeColor( fragmentOut );
 	
 	// return computed color using object & global opacity
-	outColor = vec4( color.rgb, objectOpacity * globalOpacity * color.a);
+	outColor = vec4( color.rgb, objectOpacity  * color.a);
 
 // DEBUG
 //outColor = vec4( fragmentOut.worldUV, 0.0 , 1.0 );	

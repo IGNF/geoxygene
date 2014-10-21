@@ -44,7 +44,7 @@
                         <Fill>
                             <ExpressiveGradient>
 <UserShader>
-    <File>./samples/animated/shaders/subshader2d.sea.glsl</File>
+    <File>./src/main/resources/shaders/subshader2d.test.glsl</File>
     <Time name="time" description="no description"/>
 </UserShader>
 <Resolution>72.0</Resolution>
@@ -92,9 +92,7 @@
                         <Stroke>
                             <CssParameter name="stroke">#925f73</CssParameter>
                             <CssParameter name="stroke-opacity">0.8</CssParameter>
-                            <CssParameter name="stroke-width">20.0</CssParameter>
-                            <CssParameter name="stroke-linejoin">round</CssParameter>
-                            <CssParameter name="stroke-linecap">round</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
                         <PerpendicularOffset>0.0</PerpendicularOffset>
@@ -133,14 +131,14 @@
                     </LegendGraphic>
                     <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
                         <Stroke>
-                            <CssParameter name="stroke">#36489e</CssParameter>
-                            <CssParameter name="stroke-opacity">0.53</CssParameter>
-                            <CssParameter name="stroke-width">10.0</CssParameter>
+                            <CssParameter name="stroke">#97709c</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
                         <Fill>
-                            <CssParameter name="fill">#807dba</CssParameter>
-                            <CssParameter name="fill-opacity">0.53</CssParameter>
+                            <CssParameter name="fill">#d9a0e0</CssParameter>
+                            <CssParameter name="fill-opacity">0.8</CssParameter>
                         </Fill>
                     </PolygonSymbolizer>
                 </Rule>
@@ -179,9 +177,7 @@
                         <Stroke>
                             <CssParameter name="stroke">#738989</CssParameter>
                             <CssParameter name="stroke-opacity">0.8</CssParameter>
-                            <CssParameter name="stroke-width">20.0</CssParameter>
-                            <CssParameter name="stroke-linejoin">round</CssParameter>
-                            <CssParameter name="stroke-linecap">round</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
                         <PerpendicularOffset>0.0</PerpendicularOffset>
@@ -220,23 +216,14 @@
                     </LegendGraphic>
                     <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
                         <Stroke>
-                            <CssParameter name="stroke">#111184</CssParameter>
-                            <CssParameter name="stroke-opacity">0.53</CssParameter>
-                            <CssParameter name="stroke-width">10.0</CssParameter>
+                            <CssParameter name="stroke">#ae0e6d</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
                         <Fill>
-                            <ExpressiveGradient>
-<UserShader>
-    <File>./samples/animated/shaders/subshader2d.forest.glsl</File>
-</UserShader>
-<Resolution>72.0</Resolution>
-<MapScale>100000.0</MapScale>
-<MaxCoastlineLength>INF</MaxCoastlineLength>
-<BlurSize>3</BlurSize>
-                            </ExpressiveGradient>
-                            <CssParameter name="fill">#36489e</CssParameter>
-                            <CssParameter name="fill-opacity">0.54</CssParameter>
+                            <CssParameter name="fill">#f9159c</CssParameter>
+                            <CssParameter name="fill-opacity">0.8</CssParameter>
                         </Fill>
                     </PolygonSymbolizer>
                 </Rule>
@@ -317,24 +304,14 @@
                     </LegendGraphic>
                     <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
                         <Stroke>
-                            <CssParameter name="stroke">#276419</CssParameter>
-                            <CssParameter name="stroke-opacity">0.82</CssParameter>
-                            <CssParameter name="stroke-width">10.0</CssParameter>
+                            <CssParameter name="stroke">#1c8d45</CssParameter>
+                            <CssParameter name="stroke-opacity">0.8</CssParameter>
+                            <CssParameter name="stroke-width">1.0</CssParameter>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
                         <Fill>
-                            <ExpressiveGradient>
-<UserShader>
-    <File>./samples/animated/shaders/subshader2d.forest.glsl</File>
-    <Time name="time" description="no description"/>
-</UserShader>
-<Resolution>72.0</Resolution>
-<MapScale>100000.0</MapScale>
-<MaxCoastlineLength>INF</MaxCoastlineLength>
-<BlurSize>2</BlurSize>
-                            </ExpressiveGradient>
-                            <CssParameter name="fill">#97c955</CssParameter>
-                            <CssParameter name="fill-opacity">0.65</CssParameter>
+                            <CssParameter name="fill">#29ca63</CssParameter>
+                            <CssParameter name="fill-opacity">0.8</CssParameter>
                         </Fill>
                     </PolygonSymbolizer>
                 </Rule>

@@ -452,9 +452,10 @@ public class TileDistributionTextureTask extends
         }
         double maxCoastLine = this.getTextureDescriptor()
                 .getMaxCoastlineLength();
+        int blurSize = this.getTextureDescriptor().getBlurSize();
         BinaryGradientImageParameters params = new BinaryGradientImageParameters(
                 this.getTextureWidth(), this.getTextureHeight(), this.polygons,
-                this.getEnvelope(), maxCoastLine);
+                this.getEnvelope(), maxCoastLine, blurSize);
         try {
             this.texImage = BinaryGradientImage
                     .generateBinaryGradientImage(params);

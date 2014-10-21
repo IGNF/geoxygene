@@ -25,16 +25,54 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.style;
+package fr.ign.cogit.geoxygene.appli.gl;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.style.expressive.DefaultFill2DShaderDescriptor;
+import fr.ign.cogit.geoxygene.util.gl.GLException;
+import fr.ign.cogit.geoxygene.util.gl.GLProgram;
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
  * @author JeT
  * 
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-public abstract class Fill2DDescriptor {
+public class DefaultSubshader2D implements Subshader {
 
+    private static final Logger logger = Logger
+            .getLogger(DefaultSubshader2D.class.getName()); // logger
+
+    private static final String subshaderFilename = "./src/main/resources/shaders/subshader2d.default.glsl";
+
+    public DefaultSubshader2D(DefaultFill2DShaderDescriptor descriptor) {
+    }
+
+    @Override
+    public void declareUniforms(GLProgram program) {
+    }
+
+    /**
+     * Initialize the shader before rendering (set uniforms)
+     * 
+     * @throws GLException
+     */
+    @Override
+    public void setUniforms(GLProgram program) throws GLException {
+
+    }
+
+    @Override
+    public void configureProgram(GLProgram program) throws GLException {
+        try {
+            program.addFragmentShader(
+                    GLTools.readFileAsString(subshaderFilename),
+                    subshaderFilename);
+        } catch (IOException e) {
+            throw new GLException(e);
+        }
+
+    }
 }

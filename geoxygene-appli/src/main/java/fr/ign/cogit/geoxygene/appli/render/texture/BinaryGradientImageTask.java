@@ -184,6 +184,7 @@ public class BinaryGradientImageTask extends AbstractTask {
                 * this.binaryGradientImageDescriptor.getTextureResolution() / (M_PER_INCH * mapScale));
         int textureHeight = (int) (envelope.length()
                 * this.binaryGradientImageDescriptor.getTextureResolution() / (M_PER_INCH * mapScale));
+        int blurSize = this.binaryGradientImageDescriptor.getBlurSize();
 
         List<IPolygon> polygons = new ArrayList<IPolygon>();
         // convert the multisurface as a collection of polygons
@@ -213,7 +214,7 @@ public class BinaryGradientImageTask extends AbstractTask {
         try {
             BinaryGradientImageParameters params = new BinaryGradientImageParameters(
                     textureWidth, textureHeight, polygons, envelope,
-                    maxCoastLineLength);
+                    maxCoastLineLength, blurSize);
             this.binaryGradientImage = BinaryGradientImage
                     .generateBinaryGradientImage(params);
             if (this.binaryGradientImage == null) {

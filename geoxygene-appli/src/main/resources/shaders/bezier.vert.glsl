@@ -1,3 +1,9 @@
+// line painting and bezier (vertex and fragment) shaders share
+// the same API.
+// Line painting is associated with <StrokeTextureExpressiveRendering> tag in SLD 
+// Bezier is associated with <ExpressiveStroke> tag in SLD (and previously <BasicTextureExpressiveRendering>
+// They only differ by how lines are tesselated. Bezier is better (smoother) than LinePainting
+// LinePainting should be now considered as deprecated 
 #version 400
 
 

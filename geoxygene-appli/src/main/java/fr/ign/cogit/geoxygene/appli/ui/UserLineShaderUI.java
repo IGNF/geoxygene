@@ -46,9 +46,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
+import fr.ign.cogit.geoxygene.appli.MainFrameMenuBar;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
+import fr.ign.util.ui.JRecentFileChooser;
 
 /**
  * @author JeT
@@ -70,7 +73,8 @@ public class UserLineShaderUI implements ExpressiveRenderingUI,
     /**
      * Constructor
      */
-    public UserLineShaderUI(UserShaderDescriptor strtex, ProjectFrame projectFrame) {
+    public UserLineShaderUI(UserShaderDescriptor strtex,
+            ProjectFrame projectFrame) {
         this.parentProjectFrame = projectFrame;
         this.setUserShaderDescriptor(strtex);
     }
@@ -127,12 +131,19 @@ public class UserLineShaderUI implements ExpressiveRenderingUI,
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JFileChooser fc = new JFileChooser(UserLineShaderUI.this.prefs
-                            .get(SUBSHADER_LAST_DIRECTORY, "."));
-                    if (fc.showOpenDialog(UserLineShaderUI.this.parentProjectFrame
-                            .getGui()) == JFileChooser.APPROVE_OPTION) {
+
+                    JRecentFileChooser chooser = new JRecentFileChooser(
+                            new File(UserLineShaderUI.this.prefs.get(
+                                    SUBSHADER_LAST_DIRECTORY, ".")),
+                            GeOxygeneEventManager.getInstance()
+                                    .getApplication().getProperties()
+                                    .getRecents());
+
+                    if (chooser
+                            .showOpenDialog(UserLineShaderUI.this.parentProjectFrame
+                                    .getGui()) == JFileChooser.APPROVE_OPTION) {
                         try {
-                            File selectedFile = fc.getSelectedFile();
+                            File selectedFile = chooser.getSelectedFile();
                             UserLineShaderUI.this.subshaderFilename = selectedFile
                                     .getAbsolutePath();
                             UserLineShaderUI.this.subshaderFilenameLabel
@@ -143,6 +154,8 @@ public class UserLineShaderUI implements ExpressiveRenderingUI,
                             UserLineShaderUI.this.prefs.put(
                                     SUBSHADER_LAST_DIRECTORY,
                                     selectedFile.getAbsolutePath());
+                            MainFrameMenuBar.fc.setRecents(chooser
+                                    .getRecentDirectories());
 
                             UserLineShaderUI.this.refresh();
                         } catch (Exception e1) {
