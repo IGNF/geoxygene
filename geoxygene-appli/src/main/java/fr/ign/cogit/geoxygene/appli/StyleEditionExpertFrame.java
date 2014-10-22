@@ -26,16 +26,22 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.JToolBar;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
@@ -52,6 +58,8 @@ import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.fife.ui.rtextarea.SearchContext;
+import org.fife.ui.rtextarea.SearchEngine;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
@@ -67,6 +75,10 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  */
 public class StyleEditionExpertFrame extends JDialog implements ActionListener,
         ListSelectionListener {
+
+    private static final String FIND_PREV_COMMAND = "FindPrev";
+
+    private static final String FIND_NEXT_COMMAND = "FindNext";
 
     private static final String NEWLINE = System.getProperty("line.separator");
 
@@ -84,6 +96,10 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
     private NamedLayer layer = null;
     // Main Dialog Elements
     private JPanel editionPanel = null;
+    private JPanel searchPanel = null;
+    private JTextField searchField = null;
+    private JCheckBox regexCB = null;
+    private JCheckBox matchCaseCB = null;
     private JPanel toolsPanel = null;
     private JPanel displayPanel = null;
     private RSyntaxTextArea editor = null;
@@ -323,8 +339,41 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
             sp.setFoldIndicatorEnabled(true);
 
             this.editionPanel.add(sp, BorderLayout.CENTER);
+            this.editionPanel.add(this.getSearchPanel(), BorderLayout.NORTH);
         }
         return this.editionPanel;
+    }
+
+    private JPanel getSearchPanel() {
+        if (this.searchPanel == null) {
+            this.searchPanel = new JPanel(new BorderLayout());
+
+            // Create a toolbar with searching options.
+            JToolBar toolBar = new JToolBar();
+            this.searchField = new JTextField(30);
+            toolBar.add(this.searchField);
+            final JButton nextButton = new JButton("Next");
+            nextButton.setActionCommand(FIND_NEXT_COMMAND);
+            nextButton.addActionListener(this);
+            toolBar.add(nextButton);
+            this.searchField.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    nextButton.doClick(0);
+                }
+            });
+            JButton prevButton = new JButton("Prev");
+            prevButton.setActionCommand(FIND_PREV_COMMAND);
+            prevButton.addActionListener(this);
+            toolBar.add(prevButton);
+            this.regexCB = new JCheckBox("Regex");
+            toolBar.add(this.regexCB);
+            this.matchCaseCB = new JCheckBox("Case");
+            toolBar.add(this.matchCaseCB);
+            this.searchPanel.add(toolBar, BorderLayout.NORTH);
+
+        }
+        return this.searchPanel;
     }
 
     public JButton getValidButton() {
@@ -400,8 +449,27 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
             this.editor = new RSyntaxTextArea(20, 60);
             this.editor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
             this.editor.setCodeFoldingEnabled(true);
+            this.editor.setAntiAliasingEnabled(true);
             this.editor
                     .setText("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+            this.editor.addKeyListener(new KeyListener() {
+
+                @Override
+                public void keyTyped(KeyEvent e) {
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_S
+                            && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+                        StyleEditionExpertFrame.this.applyButton.doClick();
+                    }
+                }
+            });
         }
         return this.editor;
     }
@@ -459,6 +527,29 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        // "FindNext" => search forward, "FindPrev" => search backward
+        if (e.getActionCommand().equals(FIND_NEXT_COMMAND)
+                || e.getActionCommand().equals(FIND_PREV_COMMAND)) {
+            String command = e.getActionCommand();
+            boolean forward = FIND_NEXT_COMMAND.equals(command);
+
+            // Create an object defining our search parameters.
+            SearchContext context = new SearchContext();
+            String text = this.searchField.getText();
+            if (text.length() == 0) {
+                return;
+            }
+            context.setSearchFor(text);
+            context.setMatchCase(this.matchCaseCB.isSelected());
+            context.setRegularExpression(this.regexCB.isSelected());
+            context.setSearchForward(forward);
+            context.setWholeWord(false);
+
+            boolean found = SearchEngine.find(this.editor, context);
+            if (!found) {
+                JOptionPane.showMessageDialog(this, "Text not found");
+            }
+        }
         // When the user apply style modifications to the map and the legend
         if (e.getSource() == this.getApplyButton()) {
             this.applySld();
