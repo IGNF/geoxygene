@@ -127,19 +127,8 @@ public class GeoMatching {
     DST_LOGGER.info("   " + candidates.size() + " candidat(s)");
     
     // Création des hypothèses d'appariement.
-    LOGGER.debug(candidates.size() + " candidates");
     LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
-    
-    /*
-    LinkedList<List<IFeature>> combinations = new LinkedList<List<IFeature>>();
-    for (int i = 1; i <= candidates.size(); i++) {
-      combinations.add(candidates.get(i));
-    }
-    System.out.println(combinations.toString());
-    */
-    
-    LOGGER.debug(combinations.size() + " hypotheses");
-    DST_LOGGER.info("   " + combinations.size() + " hypothese(s)");
+    DST_LOGGER.info("   " + combinations.size() + " combinaison(s)");
     
     // 
     List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
@@ -153,6 +142,7 @@ public class GeoMatching {
           hypotheses.add(new ComplexGeomHypothesis(l.toArray(featarray)));
         }
     }
+    DST_LOGGER.info("   " + hypotheses.size() + " hypothese(s)");
 
     List<List<Pair<byte[], Float>>> beliefs = new ArrayList<List<Pair<byte[], Float>>>();
     DefaultCodec<GeomHypothesis> codec = new DefaultCodec<GeomHypothesis>(hypotheses);
@@ -180,6 +170,7 @@ public class GeoMatching {
         beliefs.add(kernel);
       
       }
+      
     }
     
     CombinationOp op = closed ? new DempsterOp(closed) : new SmetsOp(closed);
@@ -188,6 +179,5 @@ public class GeoMatching {
     DecisionOp<GeomHypothesis> decisionOp = new DecisionOp<GeomHypothesis>(result, op.getConflict(),
         choice, codec, true);
     return decisionOp.resolve();
-
   }
 }

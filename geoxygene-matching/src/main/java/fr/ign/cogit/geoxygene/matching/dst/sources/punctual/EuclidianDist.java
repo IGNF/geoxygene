@@ -58,7 +58,7 @@ public class EuclidianDist extends GeoSource {
 	  double[] masses = new double[3];
 	  
 	  float distance = this.compute(reference.getGeom(), candidate.getGeom());
-	  DST_LOGGER.debug("        distance = " + distance);
+	  DST_LOGGER.info("        distance = " + distance);
 	  
 	  // Fonction EstApparie
       float masse1 = 0.0f;
