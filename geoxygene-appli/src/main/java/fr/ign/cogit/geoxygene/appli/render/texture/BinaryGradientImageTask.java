@@ -73,7 +73,7 @@ public class BinaryGradientImageTask extends AbstractTask {
     public BinaryGradientImageTask(String name,
             BinaryGradientImageDescriptor textureDescriptor,
             IFeatureCollection<IFeature> featureCollection) {
-        super("Gradient" + name);
+        super("Gradient-" + name);
         this.binaryGradientImageDescriptor = textureDescriptor;
         this.featureCollection = featureCollection;
         this.binaryGradientImageFile = null;
@@ -87,7 +87,7 @@ public class BinaryGradientImageTask extends AbstractTask {
      * @param texture
      */
     public BinaryGradientImageTask(String name, File file) {
-        super("Gradient" + name);
+        super("Gradient-" + name);
         this.binaryGradientImageDescriptor = null;
         this.featureCollection = null;
         this.binaryGradientImageFile = file;
@@ -175,6 +175,7 @@ public class BinaryGradientImageTask extends AbstractTask {
      * Generate the gradient image from 'this.binaryGradientImageDescriptor'
      */
     private void generateBinaryGradientImage() {
+        this.needWriting = false;
         this.setState(TaskState.WAITING);
         this.setState(TaskState.INITIALIZING);
         IEnvelope envelope = this.featureCollection.getEnvelope();
@@ -223,6 +224,7 @@ public class BinaryGradientImageTask extends AbstractTask {
                 this.setState(TaskState.ERROR);
                 return;
             }
+            this.needWriting = true;
             this.setState(TaskState.FINISHED);
         } catch (Exception e) {
             this.setError(e);

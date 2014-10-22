@@ -114,6 +114,7 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
     @Override
     public void run() {
         this.setState(TaskState.WAITING);
+        this.setNeedWriting(false);
         this.setState(TaskState.INITIALIZING);
         IEnvelope envelope = this.featureCollection.getEnvelope();
 
@@ -177,6 +178,7 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
 
             // ImageIO.write(image, "PNG", new File("gradient.png"));
             this.getTexture().setTextureImage(image);
+            this.setNeedWriting(true);
             this.setState(TaskState.FINISHED);
         } catch (Exception e) {
             this.setError(e);

@@ -123,8 +123,10 @@ public class BasicTextureTask extends AbstractTextureTask<BasicTexture> {
             }
             logger.debug("Reading file " + inputURL);
             this.getTexture().setTextureImage(ImageIO.read(inputURL));
+            this.setNeedWriting(false);
             this.setState(TaskState.FINISHED);
         } catch (Exception e) {
+            this.setNeedWriting(false);
             this.setError(e);
             this.setState(TaskState.ERROR);
             e.printStackTrace();

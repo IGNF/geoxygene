@@ -323,7 +323,9 @@ public class TextureManager {
                     logger.error("TextureTask has finished with no error but a null texture (its role IS to fill texture.getTextureImage() method)");
                 }
                 // save texture on disk
-                this.manager.saveTexture(task);
+                if (task.needWriting()) {
+                    this.manager.saveTexture(task);
+                }
                 GeOxygeneEventManager.refreshApplicationGui();
                 break;
             case ERROR:
@@ -372,7 +374,7 @@ public class TextureManager {
                 if (binaryGradientImage == null) {
                     logger.error("TextureTask has finished with no error but a null texture (its role IS to fill texture.getTextureImage() method)");
                 }
-                // save texture on disk
+                // save texture on disk if it has been generated
                 if (task.needWriting()) {
                     this.manager.saveBinaryGradientImage(task);
                 }
@@ -400,8 +402,8 @@ public class TextureManager {
      */
     private void saveTexture(final TextureTask<BasicTexture> task) {
 
-        if (task == null) {
-            throw new IllegalArgumentException("Cannot save null task");
+        if (task == null || task.getID() == null) {
+            throw new IllegalArgumentException("Cannot save " + task + " task");
         }
         new Thread(new Runnable() {
 
@@ -412,6 +414,8 @@ public class TextureManager {
                     logger.error("Asked to save texture that has no generated image");
                     return;
                 }
+                logger.debug("save image task id " + task.getID()
+                        + " task name = " + task.getName());
                 File file = new File(DIRECTORY_CACHE_NAME + File.separator
                         + task.getID() + ".png");
                 File directory = file.getParentFile();

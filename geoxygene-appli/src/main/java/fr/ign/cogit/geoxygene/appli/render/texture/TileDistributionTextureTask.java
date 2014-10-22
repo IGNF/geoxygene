@@ -373,6 +373,7 @@ public class TileDistributionTextureTask extends
     @Override
     public void run() {
         this.setState(TaskState.WAITING);
+        this.setNeedWriting(false);
         this.setState(TaskState.INITIALIZING);
         this.setState(TaskState.RUNNING);
         this.setProgress(0);
@@ -430,6 +431,7 @@ public class TileDistributionTextureTask extends
             this.monitorMemory("texture image transformed");
             this.getTexture().setTextureImage(bi);
             this.setProgress(1);
+            this.setNeedWriting(true);
             this.setState(TaskState.FINISHED);
             this.monitorMemory("termination");
         } catch (Exception e) {

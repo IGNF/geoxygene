@@ -27,4 +27,8 @@ public interface TextureTask<TextureType extends Texture> extends Task {
      */
     public abstract int getTextureHeight();
 
+    /**
+     * @return true if the result of the task has to be stored in cache
+     */
+    public abstract boolean needWriting();
 }

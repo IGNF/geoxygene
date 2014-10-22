@@ -36,6 +36,7 @@ import fr.ign.cogit.geoxygene.util.gl.Texture;
 public abstract class AbstractTextureTask<TextureType extends Texture> extends
         AbstractTask implements TextureTask<TextureType> {
     private String id = null;
+    private boolean needWriting = false;
 
     /**
      * constructor
@@ -62,6 +63,21 @@ public abstract class AbstractTextureTask<TextureType extends Texture> extends
     @Override
     public void setID(String id) {
         this.id = id;
+    }
+
+    /**
+     * @return the needWriting
+     */
+    public boolean needWriting() {
+        return this.needWriting;
+    }
+
+    /**
+     * @param needWriting
+     *            the needWriting to set
+     */
+    public void setNeedWriting(boolean needWriting) {
+        this.needWriting = needWriting;
     }
 
     /*
