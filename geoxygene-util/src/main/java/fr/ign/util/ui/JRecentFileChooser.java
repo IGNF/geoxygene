@@ -33,6 +33,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +72,7 @@ public class JRecentFileChooser extends JFileChooser implements
     private static final Color validDirectoryForegroundColor = Color.black;
     private static final Color invalidDirectoryForegroundColor = Color.red;
     private JList recentList = null;
+    private DefaultListModel lm = null; // mutable list model for JList
 
     private JPanel recentPanel = null;
 
@@ -136,9 +139,8 @@ public class JRecentFileChooser extends JFileChooser implements
      */
     public List<String> getRecentDirectories() {
         ArrayList<String> recents = new ArrayList<String>();
-        for (int n = 0; n < this.recentList.getModel().getSize(); n++) {
-            recents.add(((File) this.recentList.getModel().getElementAt(n))
-                    .getAbsolutePath());
+        for (int n = 0; n < this.lm.getSize(); n++) {
+            recents.add(((File) this.lm.getElementAt(n)).getAbsolutePath());
         }
         return recents;
     }
@@ -147,45 +149,59 @@ public class JRecentFileChooser extends JFileChooser implements
      * set the list of recent directories
      */
     public void setRecentDirectories(List<File> directories) {
-        DefaultListModel lm = new DefaultListModel();
+        this.lm.removeAllElements();
         ArrayList<File> recents = new ArrayList<File>();
         for (int n = 0; n < directories.size(); n++) {
-            lm.addElement(directories.get(n));
+            this.lm.addElement(directories.get(n));
         }
-        this.recentList.setModel(lm);
     }
 
     /**
      * add a directory to the list of recent directories
      */
     public void addRecentDirectories(File directory) {
-        DefaultListModel lm = new DefaultListModel();
-        List<String> recents = this.getRecentDirectories();
-        recents.add(directory.getAbsolutePath());
-        for (int n = 0; n < recents.size(); n++) {
-            File elem = new File(recents.get(n));
-            if (!lm.contains(elem)) {
-                lm.addElement(elem);
-            }
+        if (!this.lm.contains(directory)) {
+            this.lm.addElement(directory);
         }
-        this.recentList.setModel(lm);
     }
 
     /**
      * clear recent directories list
      */
     public void clearRecentDirectories() {
-        DefaultListModel lm = new DefaultListModel();
-        this.recentList.setModel(lm);
+        this.lm.removeAllElements();
     }
 
     private void initializeGUI() {
         this.recentPanel = new JPanel(new BorderLayout());
         // this.recentPanel.setBorder(BorderFactory
         // .createBevelBorder(BevelBorder.LOWERED));
-        this.recentList = new JList();
+        this.lm = new DefaultListModel();
+        this.recentList = new JList(this.lm);
         this.recentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.recentList.setCellRenderer(new CellRendererFile());
+        this.recentList.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                // everything is done in keyPressed
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // everything is done in keyPressed
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    JRecentFileChooser.this.lm
+                            .removeElementAt(JRecentFileChooser.this.recentList
+                                    .getSelectedIndex());
+                }
+
+            }
+        });
         this.recentPanel.add(new JScrollPane(this.recentList),
                 BorderLayout.CENTER);
         this.recentPanel.add(new JLabel("previous"), BorderLayout.NORTH);
@@ -243,16 +259,23 @@ public class JRecentFileChooser extends JFileChooser implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("ApproveSelection")) {
+        if (e.getActionCommand().equals(JFileChooser.APPROVE_SELECTION)) {
             File selectedFile = this.getSelectedFile();
             if (selectedFile == null) {
+                File[] selectedFiles = this.getSelectedFiles();
+                if (selectedFiles == null || selectedFiles.length <= 0) {
+                    return;
+                }
+                selectedFile = selectedFiles[0];
+            }
+            File file = selectedFile;
+            if (!file.isDirectory()) {
+                file = file.getParentFile();
+            }
+            if (file == null) {
                 return;
             }
-            File parentFile = selectedFile.getParentFile();
-            if (parentFile == null) {
-                return;
-            }
-            this.addRecentDirectories(parentFile);
+            this.addRecentDirectories(file);
         }
     }
 }
