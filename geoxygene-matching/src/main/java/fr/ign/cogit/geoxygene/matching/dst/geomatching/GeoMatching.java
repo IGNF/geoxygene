@@ -179,5 +179,6 @@ public class GeoMatching {
     DecisionOp<GeomHypothesis> decisionOp = new DecisionOp<GeomHypothesis>(result, op.getConflict(),
         choice, codec, true);
     return decisionOp.resolve();
+  
   }
 }
