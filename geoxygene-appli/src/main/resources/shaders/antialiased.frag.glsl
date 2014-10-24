@@ -20,7 +20,8 @@ void main(void) {
 	ivec2 textureNWPixel = screenPixel * antialiasingSize; // North-West pixel
 	float sumAlpha = 0;
 	vec3 sumRGB = vec3( 0. );
-
+	
+// compute the average value of the neighborhood
     for ( int j = 0; j < antialiasingSize; j++ ) { 
       for ( int i = 0; i < antialiasingSize; i++ ) {
         vec4 pixel = texelFetch(colorTexture1, textureNWPixel + ivec2( i, j ) , 0);
@@ -30,9 +31,7 @@ void main(void) {
     }
     vec3 interpolatedColor = sumRGB / sumAlpha;
     float interpolatedAlpha = sumAlpha / (antialiasingSize * antialiasingSize);
-    //outColor = vec4( 1,0,0,1);
-  // outColor = vec4(  vec3(interpolatedAlpha),1.0 );
-    outColor = vec4( interpolatedColor.rgb,   interpolatedAlpha  );
-//    outColor = vec4(  interpolatedColor.rgb, globalOpacity * objectOpacity * interpolatedAlpha);
-//    outColor = vec4( texelFetch(colorTexture1, textureNWPixel, 0).rgb, globalOpacity*interpolatedAlpha );
+    
+//    outColor = vec4(  interpolatedColor.rgb, 1);
+    outColor = vec4( interpolatedColor.rgb, interpolatedAlpha * globalOpacity );
 }

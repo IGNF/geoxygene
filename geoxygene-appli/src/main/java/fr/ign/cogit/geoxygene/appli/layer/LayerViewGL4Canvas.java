@@ -180,9 +180,6 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
 
             this.drawBackground();
 
-            // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            // glEnable(GL_BLEND);
-            // this.parentPanel.repaint();
             if (this.getParentPanel() != null
                     && this.getParentPanel().getRenderingManager() != null) {
                 this.getParentPanel().getRenderingManager().renderAll();
@@ -411,7 +408,6 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         }
         buffer.rewind();
 
-        glEnable(GL_BLEND);
         glBindTexture(GL_TEXTURE_2D, this.getOverlayTextureId());
 
         GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S,

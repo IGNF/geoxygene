@@ -51,6 +51,8 @@ import javax.swing.event.EventListenerList;
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.Util;
 
@@ -398,6 +400,8 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         }
         try {
             double layerOpacity = this.getLayer().getOpacity();
+            // System.err.println("layer " + this.getLayer().getName()
+            // + " opacity = " + layerOpacity);
             Collection<GLComplex> fullRepresentation = displayable
                     .getFullRepresentation();
             if (fullRepresentation == null) {
@@ -587,9 +591,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             if (this.fboSymbolizer != null) {
                 int antialisingSize = this.getLayerViewPanel()
                         .getAntialiasingSize() + 1;
-                this.drawFBO(
-                        this.fboOpacity * this.fboPrimitive.getOverallOpacity(),
-                        antialisingSize);
+                this.drawFBO(this.fboOpacity, antialisingSize);
             }
             this.initializeFBO(primitive, opacity, currentSymbolizer);
         }
@@ -770,10 +772,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         int antialisingSize = this.getLayerViewPanel().getAntialiasingSize() + 1;
         if (this.fboSymbolizer != null) {
             try {
-
-                this.drawFBO(
-                        this.fboOpacity * this.fboPrimitive.getOverallOpacity(),
-                        antialisingSize);
+                this.drawFBO(this.fboOpacity, antialisingSize);
             } catch (GLException e) {
                 throw new RenderingException(e);
             }
@@ -837,11 +836,16 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             GLTools.glCheckError("after setting viewport");
 
         }
-        glDisable(GL11.GL_BLEND);
-        GLTools.glCheckError("just before launching normal rendering within FBO context");
-
+        // Blending mode in FBO drawing.
         GL11.glClearColor(1f, 1f, 1f, 0f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+
+        glEnable(GL11.GL_BLEND);
+        GL20.glBlendEquationSeparate(GL14.GL_FUNC_ADD, GL14.GL_MAX);
+        GL14.glBlendFuncSeparate(GL11.GL_ONE, GL11.GL_ZERO, GL11.GL_ZERO,
+                GL11.GL_ZERO);
+        GLTools.glCheckError("just before launching normal rendering within FBO context");
+
     }
 
     public boolean getFBORendering() {

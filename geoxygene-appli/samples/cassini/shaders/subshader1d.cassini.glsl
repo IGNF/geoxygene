@@ -104,7 +104,7 @@ vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainti
 	vec3 f = smoothstep(sharpness, 1.0-sharpness, penetration );
 //	f = f * clamp( fragmentData.uv.y, 0.0, strokeWidthModifier( fragmentData.uv.x, fragmentData.uMax ));
 	
-	return vec4( f * fragmentData.color.rgb, globalOpacity * brushOpacity * f );
-//	return vec4( fragmentData.uv.y,0.0,0.0, globalOpacity);
+	return vec4( f * fragmentData.color.rgb, fragmentData.color.a * brushOpacity * f );
+//	return vec4( fragmentData.uv.y,0.0,0.0, fragmentData.color.a );
 }
 

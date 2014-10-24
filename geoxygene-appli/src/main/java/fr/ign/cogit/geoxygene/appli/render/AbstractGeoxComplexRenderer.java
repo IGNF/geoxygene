@@ -224,11 +224,9 @@ public abstract class AbstractGeoxComplexRenderer implements
             GLTools.glCheckError("gl error ocurred after rendering initialization");
         }
 
-        double layerOpacity = this.getLayerRenderer().getLayer().getOpacity();
         try {
             GLTools.glCheckError("gl error before rendering");
-            this.localRendering(complex, complex.getOverallOpacity()
-                    * layerOpacity);
+            this.localRendering(complex, opacity);
             GLTools.glCheckError("gl error after rendering");
         } catch (GLException e) {
             throw new RenderingException(e);

@@ -70,8 +70,6 @@ import fr.ign.cogit.geoxygene.util.gl.GLTools;
 public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         ActionListener {
 
-    private static final String basicFragmentShaderFilename = "./src/main/resources/shaders/basic.frag.glsl";
-    private static final String basicVertexShaderFilename = "./src/main/resources/shaders/basic.vert.glsl";
     private static final String backgroundVertexShaderFilename = "./src/main/resources/shaders/bg.vert.glsl";
     private static final String backgroundFragmentShaderFilename = "./src/main/resources/shaders/bg.frag.glsl";
     private static final String gradientVertexShaderFilename = "./src/main/resources/shaders/gradient.vert.glsl";
@@ -575,7 +573,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 antialiasingValue = Integer.parseInt(this
                         .getAntialiasingButton().getText());
                 antialiasingValue++;
-                if (this.antialiasing >= 4) {
+                if (this.antialiasing >= 9) {
                     antialiasingValue = 0;
                 }
                 this.getAntialiasingButton().setText(
@@ -705,7 +703,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String screenspaceAntialiasedTextureProgramName = "ScreenspaceAntialiasedTexture";
     public static final String gradientProgramName = "gradientTexture";
 
-    private GLProgramAccessor basicAccessor = null;
+    private final GLProgramAccessor basicAccessor = null;
     private GLProgramAccessor screenspaceTextureAccessor = null;
     private GLProgramAccessor screenspaceColorAccessor = null;
     private GLProgramAccessor screenspaceAntialiasedAccessor = null;
@@ -880,7 +878,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
      */
     public GLContext createNewGL4Context() throws GLException {
         GLContext glContext = new GLContext();
-        glContext.addProgram(basicProgramName, this.getBasicAccessor());
         glContext.addProgram(worldspaceColorProgramName,
                 this.getWorldspaceColorAccessor());
         glContext.addProgram(worldspaceTextureProgramName,
@@ -896,26 +893,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         // bezier & line painting programs are not created here because we don't
         // know the SLD content at this point.
         return glContext;
-    }
-
-    /**
-     * @return
-     * @throws GLException
-     */
-    public GLProgramAccessor getBasicAccessor() {
-        if (this.basicAccessor == null) {
-            this.basicAccessor = new GLProgramAccessor() {
-                @Override
-                public GLProgram getGLProgram() throws GLException {
-                    try {
-                        return createBasicProgram();
-                    } catch (IOException e) {
-                        throw new GLException(e);
-                    }
-                }
-            };
-        }
-        return this.basicAccessor;
     }
 
     /**
@@ -1330,30 +1307,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         shader.declareUniforms(program);
 
         return program;
-    }
-
-    /**
-     * @throws GLException
-     *             , IOException
-     */
-    private static GLProgram createBasicProgram() throws GLException,
-            IOException {
-        // basic program
-        GLProgram basicProgram = new GLProgram(basicProgramName);
-        basicProgram.addVertexShader(
-                GLTools.readFileAsString(basicVertexShaderFilename),
-                basicVertexShaderFilename);
-        basicProgram.addFragmentShader(
-                GLTools.readFileAsString(basicFragmentShaderFilename),
-                basicFragmentShaderFilename);
-        basicProgram.addInputLocation(
-                GLSimpleVertex.vertexPositionVariableName,
-                GLSimpleVertex.vertexPostionLocation);
-        basicProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
-                GLSimpleVertex.vertexUVLocation);
-        basicProgram.addInputLocation(GLSimpleVertex.vertexColorVariableName,
-                GLSimpleVertex.vertexColorLocation);
-        return basicProgram;
     }
 
     /**

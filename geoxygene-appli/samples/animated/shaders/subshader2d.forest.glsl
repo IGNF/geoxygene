@@ -64,7 +64,7 @@ vec4 computeColor( DataGradient fragmentData ) {
 	float timeNoise =  1.0; //0.5 + fnoise( 0.10 * fragmentData.worldUV * fragmentData.worldUVRange  + t);
 	float posNoise = length(noise2(-uv * ( 1 + fnoise(vec2(time / 20000., time / 15000.))) +
 	                        0.8 * 	noise2( 50 * uv * ( 1.0 + sin(time / 15000. )))));
-	return vec4(fragmentData.color.rgb * timeNoise * posNoise, globalOpacity );
+	return vec4(fragmentData.color.rgb * timeNoise * posNoise, fragmentData.color.a );
 }
 
 

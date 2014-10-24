@@ -287,7 +287,6 @@ public class BinaryGradientTexture implements Texture {
             return false;
         }
         glEnable(GL_TEXTURE_2D);
-        glEnable(GL11.GL_BLEND);
         GL13.glActiveTexture(this.textureSlot);
         glBindTexture(GL_TEXTURE_2D, texIndex);
         // vMin has a special value '-1' = out of polygon

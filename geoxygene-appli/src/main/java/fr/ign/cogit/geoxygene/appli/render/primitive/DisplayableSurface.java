@@ -445,7 +445,7 @@ public class DisplayableSurface extends AbstractDisplayable {
                         .getOrCreateSurfaceRenderer(symbolizer,
                                 this.getLayerRenderer());
                 GLSimpleComplex inner = this
-                        .generateWithTextureAndParameterizer(
+                        .generateWithTextureAndParameterizer(symbolizer,
                                 textureTask.getTexture(), parameterizer,
                                 envelope, renderer);
                 inner.setOverallOpacity(symbolizer.getFill().getFillOpacity());
@@ -514,13 +514,17 @@ public class DisplayableSurface extends AbstractDisplayable {
      * @return
      */
     private GLSimpleComplex generateWithTextureAndParameterizer(
+            PolygonSymbolizer symbolizer,
             fr.ign.cogit.geoxygene.util.gl.Texture texture,
             Parameterizer parameterizer, IEnvelope envelope,
             GLComplexRenderer renderer) {
         double minX = envelope.minX();
         double minY = envelope.minY();
+        SolidColorizer colorizer = new SolidColorizer(symbolizer.getFill()
+                .getColor());
+
         GLSimpleComplex content = GLComplexFactory.createFilledPolygons(
-                this.getName() + "-texture-filled", this.polygons, null,
+                this.getName() + "-texture-filled", this.polygons, colorizer,
                 parameterizer, minX, minY, renderer);
         // GLSimpleComplex content = this.GLComplexQuadEnvelope(this.getName()
         // + "-texture-envelope", envelope, null, parameterizer, minX,
