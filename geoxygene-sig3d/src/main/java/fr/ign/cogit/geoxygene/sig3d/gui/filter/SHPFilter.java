@@ -23,11 +23,19 @@ package fr.ign.cogit.geoxygene.sig3d.gui.filter;
  */
 
 import java.io.File;
+import java.io.FilenameFilter;
 
 import javax.swing.filechooser.FileFilter;
 
-public class SHPFilter extends FileFilter {
+public class SHPFilter extends FileFilter implements FilenameFilter {
 
+  @Override
+  public boolean accept(File dir, String name) {
+
+    return accept(new File(dir.getAbsolutePath() + name));
+  }
+  
+  
   /**
    * Acceptation du fichier
    */
@@ -70,4 +78,6 @@ public class SHPFilter extends FileFilter {
 
     return ext;
   }
+
+
 }
