@@ -19,6 +19,7 @@ import fr.ign.cogit.cartagen.core.defaultschema.admin.AdminCapital;
 import fr.ign.cogit.cartagen.core.defaultschema.admin.AdminLimit;
 import fr.ign.cogit.cartagen.core.defaultschema.admin.CompositeAdminUnit;
 import fr.ign.cogit.cartagen.core.defaultschema.admin.SimpleAdminUnit;
+import fr.ign.cogit.cartagen.core.defaultschema.hydro.CoastLine;
 import fr.ign.cogit.cartagen.core.defaultschema.hydro.WaterArea;
 import fr.ign.cogit.cartagen.core.defaultschema.hydro.WaterCourse;
 import fr.ign.cogit.cartagen.core.defaultschema.hydro.WaterLine;
@@ -74,6 +75,7 @@ import fr.ign.cogit.cartagen.core.genericschema.admin.IAdminLimit;
 import fr.ign.cogit.cartagen.core.genericschema.admin.ICompositeAdminUnit;
 import fr.ign.cogit.cartagen.core.genericschema.admin.ISimpleAdminUnit;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterCourse;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
@@ -999,6 +1001,13 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   @Override
   public IMask createMask(ILineString line) {
     return new Mask(line);
+  }
+
+  @Override
+  public ICoastLine createCoastline(ILineString line) {
+    ICoastLine coastLine = new CoastLine();
+    coastLine.setGeom(line);
+    return coastLine;
   }
 
 }
