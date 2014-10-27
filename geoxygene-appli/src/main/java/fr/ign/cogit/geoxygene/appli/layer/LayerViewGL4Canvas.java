@@ -31,6 +31,7 @@ import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
+import fr.ign.cogit.geoxygene.appli.mode.RenderingTypeMode;
 import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
@@ -60,6 +61,8 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     private GLContext glContext = null;
     private BufferedImage bg = null;
     private int overlayTextureId = -1;
+    private ByteBuffer buffer = null;
+    private int[] pixels = null;
 
     // // these values should be read from SLD
     // private final double paperHeight = 4; // paper height in cm
@@ -186,9 +189,11 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             }
 
             // System.err.println("-------------------------------------------------- swap buffers --------------------------------");
-
-            if (this.doPaintOverlay()) {
-                // this.glPaintOverlays();
+            boolean quickRendering = this.getParentPanel().getProjectFrame()
+                    .getMainFrame().getMode().getCurrentMode()
+                    .getRenderingType() != RenderingTypeMode.FINAL;
+            if (this.doPaintOverlay() && !quickRendering) {
+                this.glPaintOverlays();
             }
             this.swapBuffers();
             RenderingStatistics.endRendering();
@@ -377,6 +382,9 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
                 || this.bg.getHeight() != this.getHeight()) {
             this.bg = new BufferedImage(this.getWidth(), this.getHeight(),
                     BufferedImage.TYPE_4BYTE_ABGR);
+            this.buffer = BufferUtils.createByteBuffer(this.bg.getWidth()
+                    * this.bg.getHeight() * 4); // 4 for RGBA, 3 for RGB
+            this.pixels = new int[this.bg.getWidth() * this.bg.getHeight()];
         }
         Graphics2D g = this.bg.createGraphics();
         g.setComposite(AlphaComposite.Clear);
@@ -387,27 +395,23 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
                 .getInstance(AlphaComposite.SRC_OVER, 1f);
         g.setComposite(fade);
         this.parentPanel.paintOverlays(g);
-
-        int[] pixels = new int[this.bg.getWidth() * this.bg.getHeight()];
-        this.bg.getRGB(0, 0, this.bg.getWidth(), this.bg.getHeight(), pixels,
-                0, this.bg.getWidth());
-
-        ByteBuffer buffer = BufferUtils.createByteBuffer(this.bg.getWidth()
-                * this.bg.getHeight() * 4); // 4 for RGBA, 3 for RGB
-
+        this.bg.getRGB(0, 0, this.bg.getWidth(), this.bg.getHeight(),
+                this.pixels, 0, this.bg.getWidth());
+        this.buffer.clear();
         for (int y = this.bg.getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x < this.bg.getWidth(); x++) {
-                int pixel = pixels[y * this.bg.getWidth() + x];
-                buffer.put((byte) (pixel >> 16 & 0xFF)); // Red component
-                buffer.put((byte) (pixel >> 8 & 0xFF)); // Green component
-                buffer.put((byte) (pixel >> 0 & 0xFF)); // Blue component
-                buffer.put((byte) (pixel >> 24 & 0xFF)); // Alpha component.
+                int pixel = this.pixels[y * this.bg.getWidth() + x];
+                this.buffer.put((byte) (pixel >> 16 & 0xFF)); // Red component
+                this.buffer.put((byte) (pixel >> 8 & 0xFF)); // Green component
+                this.buffer.put((byte) (pixel >> 0 & 0xFF)); // Blue component
+                this.buffer.put((byte) (pixel >> 24 & 0xFF)); // Alpha
+                                                              // component.
                 // Only for RGBA
                 // System.err.println("transparency = " + (pixel >> 24 & 0xFF));
             }
         }
-        buffer.rewind();
-
+        this.buffer.rewind();
+        g.dispose();
         glBindTexture(GL_TEXTURE_2D, this.getOverlayTextureId());
 
         GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S,
@@ -425,11 +429,12 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
                 GL11.GL_LINEAR);
         GL11.glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.getWidth(),
                 this.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
-                buffer);
+                this.buffer);
 
         GLProgram program = this.getGlContext().setCurrentProgram(
                 LayerViewGLPanel.screenspaceAntialiasedTextureProgramName);
 
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
         GL11.glViewport(0, 0, this.getWidth(), this.getHeight());
         GL11.glDrawBuffer(GL11.GL_BACK);
         glEnable(GL_TEXTURE_2D);
@@ -448,7 +453,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         GL11.glDepthMask(false);
         glDisable(GL11.GL_DEPTH_TEST);
 
-        GL30.glBindVertexArray(this.getScreenQuad().getVaoId());
+        GL30.glBindVertexArray(LayerViewGLPanel.getScreenQuad().getVaoId());
 
         program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
         program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName, 1f);
@@ -460,8 +465,9 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
         GLTools.glCheckError("before FBO drawing textured quad");
-        GLTools.drawComplex(this.getScreenQuad());
-        // this.getScreenQuad().setColor(new Color(1f, 1f, 1f, .5f));
+        GLTools.drawComplex(LayerViewGLPanel.getScreenQuad());
+        // LayerViewGLPanel.getScreenQuad().setColor(new Color(1f, 1f, 1f,
+        // .5f));
         GLTools.glCheckError("FBO drawing textured quad");
 
         GL30.glBindVertexArray(0); // unbind VAO

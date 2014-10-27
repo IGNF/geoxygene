@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.appli.layer;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Graphics;
@@ -9,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
 import java.io.IOException;
@@ -31,6 +33,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
+import org.lwjgl.opengl.GL11;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -41,6 +44,7 @@ import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.ScalePaintListener;
 import fr.ign.cogit.geoxygene.appli.gl.GLBezierShadingVertex;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingVertex;
+import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.gl.Subshader;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
@@ -54,6 +58,7 @@ import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
 import fr.ign.cogit.geoxygene.util.ImageComparator;
 import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
+import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessor;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
@@ -96,6 +101,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private SyncRenderingManager renderingManager = null;
     private LayerViewGLCanvas glCanvas = null; // canvas containing the GL
                                                // context
+    private static GLSimpleComplex screenQuad; // quad drawn on the full screen
     private LayerViewGLCanvasType glType = null;
     private JToggleButton wireframeToggleButton = null;
     private JToggleButton fboToggleButton = null;
@@ -657,6 +663,34 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         if (this.renderingManager != null) {
             this.renderingManager.dispose();
         }
+    }
+
+    /**
+     * @return the screenQuad
+     */
+    public static final GLSimpleComplex getScreenQuad() {
+        if (LayerViewGLPanel.screenQuad == null) {
+            LayerViewGLPanel.initializeScreenQuad();
+        }
+        return LayerViewGLPanel.screenQuad;
+    }
+
+    /**
+     * 
+     */
+    private static final void initializeScreenQuad() {
+        LayerViewGLPanel.screenQuad = new GLSimpleComplex("screen", 0f, 0f);
+        GLMesh mesh = LayerViewGLPanel.screenQuad.addGLMesh(GL11.GL_QUADS);
+        mesh.addIndex(LayerViewGLPanel.screenQuad.addVertex(new GLSimpleVertex(
+                new Point2D.Double(-1, -1), new Point2D.Double(0, 0))));
+        mesh.addIndex(LayerViewGLPanel.screenQuad.addVertex(new GLSimpleVertex(
+                new Point2D.Double(-1, 1), new Point2D.Double(0, 1))));
+        mesh.addIndex(LayerViewGLPanel.screenQuad.addVertex(new GLSimpleVertex(
+                new Point2D.Double(1, 1), new Point2D.Double(1, 1))));
+        mesh.addIndex(LayerViewGLPanel.screenQuad.addVertex(new GLSimpleVertex(
+                new Point2D.Double(1, -1), new Point2D.Double(1, 0))));
+        LayerViewGLPanel.screenQuad.setColor(Color.blue);
+        LayerViewGLPanel.screenQuad.setOverallOpacity(0.5);
     }
 
     // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

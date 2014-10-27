@@ -44,6 +44,7 @@ import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientImage;
 import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientTexture;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
+import fr.ign.cogit.geoxygene.appli.gl.GLTextComplex;
 import fr.ign.cogit.geoxygene.appli.render.GeoxComplexRenderer;
 import fr.ign.cogit.geoxygene.appli.render.GeoxComplexRendererBasic;
 import fr.ign.cogit.geoxygene.appli.render.GeoxRendererManager;
@@ -58,6 +59,7 @@ import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.TextSymbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
@@ -180,7 +182,7 @@ public class DisplayableSurface extends AbstractDisplayable {
     @Override
     public List<GLComplex> generateFullRepresentation() {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
-        if (this.getSymbolizer() instanceof PolygonSymbolizer) {
+        if (this.getSymbolizer().isPolygonSymbolizer()) {
             PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this
                     .getSymbolizer();
             // System.err.println("********************** GENERATE WITH COLOR "
@@ -190,12 +192,20 @@ public class DisplayableSurface extends AbstractDisplayable {
             if (fullRep != null) {
                 complexes.addAll(fullRep);
             }
-        } else {
-            super.setError(new IllegalStateException("task " + this.getName()
-                    + " has no PolygonSymbolizer"));
-            return null;
+            return complexes;
+        } else if (this.getSymbolizer().isTextSymbolizer()) {
+            TextSymbolizer symbolizer = (TextSymbolizer) this.getSymbolizer();
+            GLTextComplex primitive = new GLTextComplex("toponym-"
+                    + this.getName(), 0, 0);
+            primitive.setRenderer(GeoxRendererManager.getOrCreateTextRenderer(
+                    symbolizer, this.getLayerRenderer()));
+            complexes.add(primitive);
+            return complexes;
         }
-        return complexes;
+        logger.error("Surface rendering do not handle "
+                + this.getSymbolizer().getClass().getSimpleName());
+        super.setState(TaskState.ERROR);
+        return null;
     }
 
     synchronized private List<GLComplex> generateWithPolygonSymbolizer(

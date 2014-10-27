@@ -34,12 +34,10 @@ import static org.lwjgl.opengl.GL11.glHint;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
@@ -77,9 +75,7 @@ import fr.ign.cogit.geoxygene.util.Pair;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
-import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
-import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 
@@ -101,7 +97,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
 
     private static final int COLORTEXTURE1_SLOT = 0;
     protected EventListenerList listenerList = new EventListenerList();
-    private GLSimpleComplex screenQuad = null;
+    private final GLSimpleComplex screenQuad = null;
     // private final Map<String, PrimitiveRenderer> renderers = new
     // HashMap<String, PrimitiveRenderer>();
     // private PrimitiveRenderer defaultRenderer = null;
@@ -123,6 +119,8 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
     private Symbolizer fboSymbolizer = null;
     private GLComplex fboPrimitive = null;
     private double fboOpacity = 1.;
+    // stored renderer used to group successive render calls
+    private GeoxComplexRenderer previousRenderer = null;
 
     /**
      * Constructor of renderer using a {@link Layer} and a
@@ -138,7 +136,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         super(theLayer);
         this.setLayerViewPanel(theLayerViewPanel);
         this.partialRenderer = new GeoxComplexRendererBasic(this, null);
-        this.initializeScreenQuad();
     }
 
     /**
@@ -287,8 +284,9 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                                 + LwjglLayerRenderer.this.getLayer().getName()
                                 + "': " + t.getMessage() + " ("
                                 + t.getClass().getSimpleName() + ")");
-                        logger.warn("Open GL Error message = "
-                                + Util.translateGLErrorString(GL11.glGetError()));
+                        logger.warn("GL Status is '"
+                                + Util.translateGLErrorString(GL11.glGetError())
+                                + "'");
                         t.printStackTrace();
                         return;
                     }
@@ -523,21 +521,34 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                 .getMainFrame().getMode().getCurrentMode().getRenderingType() != RenderingTypeMode.FINAL;
         // System.err.println("rendering primitive "
         // + primitive.getMeshes().size() + " meshes");
-        GeoxComplexRenderer renderer = (GeoxComplexRenderer) primitive
+        GeoxComplexRenderer currentRenderer = (GeoxComplexRenderer) primitive
                 .getRenderer();
-        if (renderer == null) {
-            logger.error("No renderer associated with full representation a feature in layer "
+        if (currentRenderer == null) {
+            logger.error("No renderer associated with full representation in layer "
                     + this.getLayer().getName());
+            return;
         }
-
+        if (currentRenderer instanceof GeoxComplexRendererText
+                && (quickRendering || !this.getLayerViewPanel().useFBO())) {
+            // text rendering is a little bit time consuming. Skip it in quick
+            // rendering mode
+            return;
+        }
+        if (this.previousRenderer != currentRenderer) {
+            if (this.previousRenderer != null) {
+                this.previousRenderer.switchRenderer();
+            }
+            currentRenderer.activateRenderer();
+            this.previousRenderer = currentRenderer;
+        }
         if (this.getLayerViewPanel().useFBO() && !quickRendering) {
             this.setFBORendering(true);
-            renderer.setFBORendering(true);
-            this.fboRendering(primitive, renderer, opacity);
+            currentRenderer.setFBORendering(true);
+            this.fboRendering(primitive, currentRenderer, opacity);
         } else {
-            renderer.setFBORendering(false);
+            currentRenderer.setFBORendering(false);
             this.setFBORendering(false);
-            renderer.render(primitive, opacity);
+            currentRenderer.render(primitive, opacity);
         }
     }
 
@@ -654,7 +665,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         GL11.glDepthMask(false);
         glDisable(GL11.GL_DEPTH_TEST);
 
-        GL30.glBindVertexArray(this.getScreenQuad().getVaoId());
+        GL30.glBindVertexArray(LayerViewGLPanel.getScreenQuad().getVaoId());
         // program.setUniform1f(
         // LayerViewGLPanel.objectOpacityUniformVarName,
         // (float) primitive.getOverallOpacity());
@@ -675,8 +686,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
         GLTools.glCheckError("before FBO drawing textured quad");
-        this.getScreenQuad().setOverallOpacity(1.);
-        GLTools.drawComplex(this.getScreenQuad());
+        GLTools.drawComplex(LayerViewGLPanel.getScreenQuad());
         // this.getScreenQuad().setColor(new Color(1f, 1f, 1f, .5f));
         GLTools.glCheckError("FBO drawing textured quad");
 
@@ -757,6 +767,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
 
     @Override
     public void initializeRendering() {
+        this.previousRenderer = null;
         if (this.fboId == -1) {
             // generate an ID for the FBO
             this.fboId = glGenFramebuffers();
@@ -770,6 +781,10 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
     @Override
     public void finalizeRendering() throws RenderingException {
         int antialisingSize = this.getLayerViewPanel().getAntialiasingSize() + 1;
+        if (this.previousRenderer != null) {
+            this.previousRenderer.switchRenderer();
+            this.previousRenderer = null;
+        }
         if (this.fboSymbolizer != null) {
             try {
                 this.drawFBO(this.fboOpacity, antialisingSize);
@@ -980,34 +995,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                 displayable.removeTaskListener(this);
             }
         }
-    }
-
-    /**
-     * @return the screenQuad
-     */
-    public final GLSimpleComplex getScreenQuad() {
-        if (this.screenQuad == null) {
-            this.initializeScreenQuad();
-        }
-        return this.screenQuad;
-    }
-
-    /**
-     * 
-     */
-    private final void initializeScreenQuad() {
-        this.screenQuad = new GLSimpleComplex("screen", 0f, 0f);
-        GLMesh mesh = this.screenQuad.addGLMesh(GL11.GL_QUADS);
-        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
-                new Point2D.Double(-1, -1), new Point2D.Double(0, 0))));
-        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
-                new Point2D.Double(-1, 1), new Point2D.Double(0, 1))));
-        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
-                new Point2D.Double(1, 1), new Point2D.Double(1, 1))));
-        mesh.addIndex(this.screenQuad.addVertex(new GLSimpleVertex(
-                new Point2D.Double(1, -1), new Point2D.Double(1, 0))));
-        this.screenQuad.setColor(Color.blue);
-        this.screenQuad.setOverallOpacity(0.5);
     }
 
     @Override

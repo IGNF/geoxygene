@@ -105,6 +105,7 @@ public abstract class AbstractDisplayable extends AbstractTask implements
         this.setState(TaskState.RUNNING);
         List<GLComplex> primitives = this.generateFullRepresentation();
         this.setState(TaskState.FINALIZING);
+
         if (primitives == null || primitives.size() == 0) {
             if (this.getError() == null) {
                 logger.error(this.getClass().getSimpleName()

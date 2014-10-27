@@ -37,6 +37,24 @@ import fr.ign.cogit.geoxygene.util.gl.RenderingException;
  */
 public interface GeoxComplexRenderer extends GLComplexRenderer {
 
+    /**
+     * this method is called the first time a rendering is requested of this
+     * renderer. Multiple cycle initialize/render/finalize rendering can be
+     * called between activate and switch methods
+     * 
+     * @throws RenderingException
+     */
+    void activateRenderer() throws RenderingException;
+
+    /**
+     * this method is called just before changing type of renderer or at the end
+     * of global rendering. Multiple cycle initialize/render/finalize rendering
+     * can be called between activate and switch methods
+     * 
+     * @throws RenderingException
+     */
+    void switchRenderer() throws RenderingException;
+
     @Override
     void initializeRendering() throws RenderingException;
 

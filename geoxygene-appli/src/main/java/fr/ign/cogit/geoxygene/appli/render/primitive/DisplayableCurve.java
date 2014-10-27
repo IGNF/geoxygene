@@ -41,6 +41,7 @@ import fr.ign.cogit.geoxygene.appli.gl.GLBezierShadingComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
+import fr.ign.cogit.geoxygene.appli.gl.GLTextComplex;
 import fr.ign.cogit.geoxygene.appli.gl.LineTesselator;
 import fr.ign.cogit.geoxygene.appli.render.GeoxComplexRenderer;
 import fr.ign.cogit.geoxygene.appli.render.GeoxRendererManager;
@@ -52,6 +53,7 @@ import fr.ign.cogit.geoxygene.function.ConstantFunction;
 import fr.ign.cogit.geoxygene.function.Function1D;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.TextSymbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
@@ -166,8 +168,8 @@ public class DisplayableCurve extends AbstractDisplayable {
         // this.generateWithDistanceField();
         // }
 
-        if (this.getSymbolizer() instanceof LineSymbolizer) {
-            List<GLComplex> complexes = new ArrayList<GLComplex>();
+        List<GLComplex> complexes = new ArrayList<GLComplex>();
+        if (this.getSymbolizer().isLineSymbolizer()) {
             LineSymbolizer lineSymbolizer = (LineSymbolizer) this
                     .getSymbolizer();
             if (lineSymbolizer.getStroke().getExpressiveRendering() == null) {
@@ -178,12 +180,19 @@ public class DisplayableCurve extends AbstractDisplayable {
                         .generateWithExpressiveStroke(lineSymbolizer));
             }
             return complexes;
-        } else {
-            logger.error("Curve rendering do not handle "
-                    + this.getSymbolizer().getClass().getSimpleName());
-            super.setState(TaskState.ERROR);
-            return null;
+        } else if (this.getSymbolizer().isTextSymbolizer()) {
+            TextSymbolizer symbolizer = (TextSymbolizer) this.getSymbolizer();
+            GLTextComplex primitive = new GLTextComplex("toponym-"
+                    + this.getName(), 0, 0);
+            primitive.setRenderer(GeoxRendererManager.getOrCreateTextRenderer(
+                    symbolizer, this.getLayerRenderer()));
+            complexes.add(primitive);
+            return complexes;
         }
+        logger.error("Curve rendering do not handle "
+                + this.getSymbolizer().getClass().getSimpleName());
+        super.setState(TaskState.ERROR);
+        return null;
     }
 
     private List<GLComplex> generateWithLineSymbolizer(LineSymbolizer symbolizer) {

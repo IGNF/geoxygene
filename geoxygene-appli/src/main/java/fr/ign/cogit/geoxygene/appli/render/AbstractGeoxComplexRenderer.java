@@ -87,6 +87,29 @@ public abstract class AbstractGeoxComplexRenderer implements
         this.lwjglLayerRenderer = lwjglLayerRenderer;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.GeoxComplexRenderer#activateRenderer
+     * ()
+     */
+    @Override
+    public void activateRenderer() throws RenderingException {
+        // default behaviour is to do nothing
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.GeoxComplexRenderer#swicthRenderer()
+     */
+    @Override
+    public void switchRenderer() throws RenderingException {
+        // default behaviour is to do nothing
+    }
+
     /**
      * @return the symbolizer
      */
@@ -221,7 +244,7 @@ public abstract class AbstractGeoxComplexRenderer implements
         // this.getGlContext().checkContext();
         if (this.needInitialization()) {
             this.initializeRendering();
-            GLTools.glCheckError("gl error ocurred after rendering initialization");
+            GLTools.glCheckError("gl error ocurred after renderer initialization");
         }
 
         try {
@@ -233,7 +256,8 @@ public abstract class AbstractGeoxComplexRenderer implements
         }
 
         this.finalizeRendering();
-        if (!GLTools.glCheckError("gl error ocurred during rendering")) {
+        if (!GLTools
+                .glCheckError("gl error ocurred during renderer finalization")) {
             throw new RenderingException(Util.translateGLErrorString(GL11
                     .glGetError()));
         }

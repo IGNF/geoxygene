@@ -28,7 +28,9 @@
 package fr.ign.cogit.geoxygene.appli.render;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -38,10 +40,12 @@ import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.TextSymbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 
 /**
  * @author JeT
@@ -55,6 +59,28 @@ public class GeoxRendererManager {
     private static final Map<Symbolizer, GeoxComplexRenderer> pointRenderers = new HashMap<Symbolizer, GeoxComplexRenderer>();
     private static final Map<Symbolizer, GeoxComplexRenderer> lineRenderers = new HashMap<Symbolizer, GeoxComplexRenderer>();
     private static final Map<Symbolizer, GeoxComplexRenderer> surfaceRenderers = new HashMap<Symbolizer, GeoxComplexRenderer>();
+    private static final Map<Symbolizer, GeoxComplexRenderer> textRenderers = new HashMap<Symbolizer, GeoxComplexRenderer>();
+    private static Set<GeoxComplexRenderer> renderers = null;
+
+    private GeoxRendererManager() {
+        // private constructor
+    }
+
+    /**
+     * Get all managed renderers
+     * 
+     * @return
+     */
+    public static Set<GeoxComplexRenderer> getRenderers() {
+        if (renderers == null) {
+            renderers = new HashSet<GeoxComplexRenderer>();
+        }
+        return renderers;
+    }
+
+    private static void invalidateRenderers() {
+        renderers = null;
+    }
 
     public static GeoxComplexRenderer getOrCreateLineRenderer(
             Symbolizer symbolizer, LwjglLayerRenderer layerRenderer) {
@@ -101,6 +127,7 @@ public class GeoxRendererManager {
                 // return null;
             }
             lineRenderers.put(symbolizer, renderer);
+            invalidateRenderers();
             return renderer;
         }
     }
@@ -113,32 +140,51 @@ public class GeoxRendererManager {
                 return renderer;
             }
 
-            if (!(symbolizer instanceof PolygonSymbolizer)) {
+            if (symbolizer.isPolygonSymbolizer()) {
+                PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) symbolizer;
+                Stroke stroke = polygonSymbolizer.getStroke();
+                Fill2DDescriptor fill2dDescriptor = polygonSymbolizer.getFill()
+                        .getFill2DDescriptor();
+                if (fill2dDescriptor instanceof GradientSubshaderDescriptor) {
+                    // GradientTextureDescriptor gradientDescriptor =
+                    // (GradientTextureDescriptor) fill2dDescriptor;
+                    renderer = new GeoxComplexRendererGradient(layerRenderer,
+                            polygonSymbolizer);
+                }
+
+            } else if (symbolizer.isPointSymbolizer()) {
+                // default renderer is ok
+            } else {
                 logger.error("No known association between symbolizer "
                         + symbolizer.getClass().getSimpleName()
                         + " and a SurfaceRenderer...");
                 return null;
             }
-            PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) symbolizer;
-            Stroke stroke = polygonSymbolizer.getStroke();
-            Fill2DDescriptor fill2dDescriptor = polygonSymbolizer.getFill()
-                    .getFill2DDescriptor();
-            if (fill2dDescriptor instanceof GradientSubshaderDescriptor) {
-                // GradientTextureDescriptor gradientDescriptor =
-                // (GradientTextureDescriptor) fill2dDescriptor;
-                renderer = new GeoxComplexRendererGradient(layerRenderer,
-                        polygonSymbolizer);
-                return renderer;
-            }
-
             // default renderer if none has been set
             if (renderer == null) {
                 renderer = new GeoxComplexRendererBasic(layerRenderer,
                         symbolizer);
-                surfaceRenderers.put(symbolizer, renderer);
                 logger.debug("a surface renderer is created for symbolizer "
                         + symbolizer);
             }
+            surfaceRenderers.put(symbolizer, renderer);
+            invalidateRenderers();
+            return renderer;
+        }
+    }
+
+    public static GLComplexRenderer getOrCreateTextRenderer(
+            TextSymbolizer symbolizer, LwjglLayerRenderer layerRenderer) {
+        synchronized (textRenderers) {
+            GeoxComplexRenderer renderer = textRenderers.get(symbolizer);
+            if (renderer != null) {
+                return renderer;
+            }
+            renderer = new GeoxComplexRendererText(layerRenderer, symbolizer);
+            textRenderers.put(symbolizer, renderer);
+            invalidateRenderers();
+            logger.debug("a text renderer is created for symbolizer "
+                    + symbolizer);
             return renderer;
         }
     }
@@ -152,6 +198,7 @@ public class GeoxRendererManager {
             }
             renderer = new GeoxComplexRendererBasic(layerRenderer, symbolizer);
             pointRenderers.put(symbolizer, renderer);
+            invalidateRenderers();
             logger.debug("a point renderer is created for symbolizer "
                     + symbolizer);
             return renderer;
@@ -178,6 +225,13 @@ public class GeoxRendererManager {
             }
             surfaceRenderers.clear();
         }
+        synchronized (textRenderers) {
+            for (GeoxComplexRenderer renderer : textRenderers.values()) {
+                renderer.reset();
+            }
+            surfaceRenderers.clear();
+        }
+        invalidateRenderers();
     }
 
 }

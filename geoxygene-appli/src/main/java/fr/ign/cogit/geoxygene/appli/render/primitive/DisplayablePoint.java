@@ -40,12 +40,15 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
+import fr.ign.cogit.geoxygene.appli.gl.GLTextComplex;
 import fr.ign.cogit.geoxygene.appli.render.GeoxComplexRenderer;
 import fr.ign.cogit.geoxygene.appli.render.GeoxRendererManager;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
+import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.TextSymbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 
@@ -118,14 +121,29 @@ public class DisplayablePoint extends AbstractDisplayable {
     public List<GLComplex> generateFullRepresentation() {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
 
-        if (this.getSymbolizer() instanceof PointSymbolizer) {
+        if (this.getSymbolizer().isPointSymbolizer()) {
             PointSymbolizer pointSymbolizer = (PointSymbolizer) this
                     .getSymbolizer();
             complexes.addAll(this.generateWithPointSymbolizer(pointSymbolizer));
             return complexes;
-        } else {
-            return null;
+        } else if (this.getSymbolizer().isTextSymbolizer()) {
+            TextSymbolizer symbolizer = (TextSymbolizer) this.getSymbolizer();
+            GLTextComplex primitive = new GLTextComplex("toponym-"
+                    + this.getName(), 0, 0);
+            primitive.setRenderer(GeoxRendererManager.getOrCreateTextRenderer(
+                    symbolizer, this.getLayerRenderer()));
+            complexes.add(primitive);
+            return complexes;
         }
+        logger.error("Do not handle points with "
+                + this.getSymbolizer().getClass().getSimpleName()
+                + " symbolizer");
+        super.setError(new UnsupportedOperationException(
+                "Do not handle points with "
+                        + this.getSymbolizer().getClass().getSimpleName()
+                        + " symbolizer"));
+        super.setState(TaskState.ERROR);
+        return null;
     }
 
     private List<GLComplex> generateWithPointSymbolizer(
