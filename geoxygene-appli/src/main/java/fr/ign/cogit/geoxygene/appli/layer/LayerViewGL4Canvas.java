@@ -30,17 +30,18 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.gl.GLContext;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.mode.RenderingTypeMode;
+import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
+import fr.ign.cogit.geoxygene.appli.render.stats.RenderingStatistics;
 import fr.ign.cogit.geoxygene.style.BackgroundDescriptor;
-import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTexture;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
-import fr.ign.cogit.geoxygene.util.gl.RenderingStatistics;
 
 /** @author JeT GL drawable canvas inserted into a LayerViewLwjglPanel */
 public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
@@ -193,11 +194,13 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
                     .getMainFrame().getMode().getCurrentMode()
                     .getRenderingType() != RenderingTypeMode.FINAL;
             if (this.doPaintOverlay() && !quickRendering) {
+                RenderingStatistics.startOverlayRendering();
                 this.glPaintOverlays();
+                RenderingStatistics.endOverlayRendering();
             }
             this.swapBuffers();
             RenderingStatistics.endRendering();
-            RenderingStatistics.printStatistics();
+            RenderingStatistics.printStatistics(System.err);
             // GL20.glUseProgram(0);
         } catch (Exception e) {
             logger.error("Error rendering the LwJGL : " + e.getMessage());
@@ -465,7 +468,8 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
         GLTools.glCheckError("before FBO drawing textured quad");
-        GLTools.drawComplex(LayerViewGLPanel.getScreenQuad());
+        LwjglLayerRenderer.drawComplex(LayerViewGLPanel.getScreenQuad());
+
         // LayerViewGLPanel.getScreenQuad().setColor(new Color(1f, 1f, 1f,
         // .5f));
         GLTools.glCheckError("FBO drawing textured quad");
@@ -475,4 +479,5 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
 
     }
+
 }

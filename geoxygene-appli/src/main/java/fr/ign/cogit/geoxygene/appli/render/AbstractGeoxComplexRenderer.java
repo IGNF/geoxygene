@@ -33,15 +33,15 @@ import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.Util;
 
+import fr.ign.cogit.geoxygene.appli.gl.GLContext;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
+import fr.ign.cogit.geoxygene.appli.render.stats.RenderingStatistics;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
-import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 import fr.ign.cogit.geoxygene.util.gl.RenderingException;
-import fr.ign.cogit.geoxygene.util.gl.RenderingStatistics;
 
 /**
  * @author JeT Viewport is contained into the LwjglLayerRenderer
@@ -96,7 +96,7 @@ public abstract class AbstractGeoxComplexRenderer implements
      */
     @Override
     public void activateRenderer() throws RenderingException {
-        // default behaviour is to do nothing
+        RenderingStatistics.doActivateRenderer(this);
     }
 
     /*
@@ -107,7 +107,30 @@ public abstract class AbstractGeoxComplexRenderer implements
      */
     @Override
     public void switchRenderer() throws RenderingException {
-        // default behaviour is to do nothing
+        RenderingStatistics.doSwitchRenderer(this);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.GeoxComplexRenderer#activateRenderer
+     * ()
+     */
+    @Override
+    public void initializeRendering() throws RenderingException {
+        RenderingStatistics.doInitializeRenderer(this);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.render.GeoxComplexRenderer#swicthRenderer()
+     */
+    @Override
+    public void finalizeRendering() throws RenderingException {
+        RenderingStatistics.doFinalizeRenderer(this);
     }
 
     /**
@@ -247,6 +270,7 @@ public abstract class AbstractGeoxComplexRenderer implements
             GLTools.glCheckError("gl error ocurred after renderer initialization");
         }
 
+        RenderingStatistics.doStartRendering(this);
         try {
             GLTools.glCheckError("gl error before rendering");
             this.localRendering(complex, opacity);
@@ -254,6 +278,7 @@ public abstract class AbstractGeoxComplexRenderer implements
         } catch (GLException e) {
             throw new RenderingException(e);
         }
+        RenderingStatistics.doStopRendering(this);
 
         this.finalizeRendering();
         if (!GLTools
@@ -335,17 +360,6 @@ public abstract class AbstractGeoxComplexRenderer implements
                     GL11.GL_UNSIGNED_INT, mesh.getFirstIndex()
                             * (Integer.SIZE / 8));
         }
-    }
-
-    //
-    @Override
-    public void initializeRendering() throws RenderingException {
-        this.initShader();
-    }
-
-    @Override
-    public void finalizeRendering() throws RenderingException {
-        // nothing to finalize
     }
 
     public final void initShader() {

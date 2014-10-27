@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.util.gl;
+package fr.ign.cogit.geoxygene.appli.gl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +33,12 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+
+import fr.ign.cogit.geoxygene.appli.render.stats.RenderingStatistics;
+import fr.ign.cogit.geoxygene.util.gl.GLException;
+import fr.ign.cogit.geoxygene.util.gl.GLProgram;
+import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessor;
+import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
  * @author JeT This class manages a GL3/4 context with gl-programs and

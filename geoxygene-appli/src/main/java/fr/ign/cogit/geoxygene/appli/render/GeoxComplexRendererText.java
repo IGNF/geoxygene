@@ -233,7 +233,7 @@ public class GeoxComplexRendererText extends AbstractGeoxComplexRenderer {
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
         GLTools.glCheckError("before FBO drawing textured quad");
-        GLTools.drawComplex(LayerViewGLPanel.getScreenQuad());
+        LwjglLayerRenderer.drawComplex(LayerViewGLPanel.getScreenQuad());
         // LayerViewGLPanel.getScreenQuad().setColor(new Color(1f, 1f, 1f,
         // .5f));
         GLTools.glCheckError("FBO drawing textured quad");

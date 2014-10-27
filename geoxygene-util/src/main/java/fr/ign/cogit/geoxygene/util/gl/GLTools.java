@@ -965,24 +965,24 @@ public final class GLTools {
         return glGetProgramInfoLog(obj, 4096);
     }
 
-    /**
-     * do a GL draw call for all complex meshes
-     * 
-     * @param primitive
-     *            primitive to render
-     */
-    public static void drawComplex(GLComplex primitive) {
-        RenderingStatistics.drawGLComplex(primitive);
-        for (GLMesh mesh : primitive.getMeshes()) {
-            RenderingStatistics.doDrawCall();
-            // System.err.println("draw call for mesh " + mesh +
-            // " indices from "
-            // + mesh.getFirstIndex() + " to " + mesh.getLastIndex());
-            GL11.glDrawElements(mesh.getGlType(),
-                    mesh.getLastIndex() - mesh.getFirstIndex() + 1,
-                    GL11.GL_UNSIGNED_INT, mesh.getFirstIndex()
-                            * (Integer.SIZE / 8));
-        }
-    }
+    // /**
+    // * do a GL draw call for all complex meshes
+    // *
+    // * @param primitive
+    // * primitive to render
+    // */
+    // public static void drawComplex(GLComplex primitive) {
+    // RenderingStatistics.drawGLComplex(primitive);
+    // for (GLMesh mesh : primitive.getMeshes()) {
+    // RenderingStatistics.doDrawCall();
+    // // System.err.println("draw call for mesh " + mesh +
+    // // " indices from "
+    // // + mesh.getFirstIndex() + " to " + mesh.getLastIndex());
+    // GL11.glDrawElements(mesh.getGlType(),
+    // mesh.getLastIndex() - mesh.getFirstIndex() + 1,
+    // GL11.GL_UNSIGNED_INT, mesh.getFirstIndex()
+    // * (Integer.SIZE / 8));
+    // }
+    // }
 
 }

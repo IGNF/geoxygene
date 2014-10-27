@@ -43,7 +43,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.GL11;
 
-import fr.ign.cogit.geoxygene.util.gl.GLContext;
+import fr.ign.cogit.geoxygene.appli.gl.GLContext;
 
 /** @author JeT GL drawable canvas inserted into a LayerViewLwjglPanel */
 public class LayerViewGL1Canvas extends LayerViewGLCanvas {

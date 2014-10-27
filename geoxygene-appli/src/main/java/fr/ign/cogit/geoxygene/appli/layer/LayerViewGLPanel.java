@@ -43,6 +43,7 @@ import fr.ign.cogit.geoxygene.appli.event.CompassPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.ScalePaintListener;
 import fr.ign.cogit.geoxygene.appli.gl.GLBezierShadingVertex;
+import fr.ign.cogit.geoxygene.appli.gl.GLContext;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingVertex;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.gl.Subshader;
@@ -51,12 +52,12 @@ import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
 import fr.ign.cogit.geoxygene.appli.render.GeoxRendererManager;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.appli.render.SyncRenderingManager;
+import fr.ign.cogit.geoxygene.appli.render.stats.RenderingStatistics;
 import fr.ign.cogit.geoxygene.appli.render.texture.ShaderFactory;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
 import fr.ign.cogit.geoxygene.util.ImageComparator;
-import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
@@ -106,6 +107,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private JToggleButton wireframeToggleButton = null;
     private JToggleButton fboToggleButton = null;
     private JToggleButton animationButton = null;
+    private JToggleButton statisticsButton = null;
     private JButton antialiasingButton = null;
     private JButton clearCacheButton = null;
     private JButton awtComparButton = null;
@@ -170,6 +172,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .add(this.getAnimationButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .add(this.getStatisticsButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
 
@@ -198,6 +202,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 .remove(this.getReloadShadersButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .remove(this.getAnimationButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .remove(this.getStatisticsButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
@@ -319,6 +325,19 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             this.animationButton.addItemListener(this);
         }
         return this.animationButton;
+    }
+
+    private JToggleButton getStatisticsButton() {
+        if (this.statisticsButton == null) {
+            this.statisticsButton = new JToggleButton();
+            this.statisticsButton.setIcon(new ImageIcon(MainFrameToolBar.class
+                    .getResource("/images/icons/16x16/statistics.png")));
+            this.statisticsButton.setToolTipText(I18N
+                    .getString("RenderingGL.ToggleStatistics"));
+            this.statisticsButton.setSelected(this.useContinuousRendering());
+            this.statisticsButton.addItemListener(this);
+        }
+        return this.statisticsButton;
     }
 
     private JButton getAntialiasingButton() {
@@ -541,6 +560,11 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         }
         if (e.getSource() == this.getAnimationButton()) {
             this.setContinuousRendering(this.getAnimationButton().isSelected());
+            this.repaint();
+        }
+        if (e.getSource() == this.getStatisticsButton()) {
+            RenderingStatistics.setStatistics(this.getStatisticsButton()
+                    .isSelected());
             this.repaint();
         }
     }

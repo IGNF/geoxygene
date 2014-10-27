@@ -59,6 +59,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.gl.GLContext;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLTextureManager;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
@@ -66,6 +67,7 @@ import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.mode.RenderingTypeMode;
 import fr.ign.cogit.geoxygene.appli.render.primitive.DisplayableFactory;
 import fr.ign.cogit.geoxygene.appli.render.primitive.GLDisplayable;
+import fr.ign.cogit.geoxygene.appli.render.stats.RenderingStatistics;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
@@ -73,8 +75,8 @@ import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.Pair;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
-import fr.ign.cogit.geoxygene.util.gl.GLContext;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
+import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 import fr.ign.cogit.geoxygene.util.gl.RenderingException;
@@ -328,6 +330,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                 }
                 Symbolizer symbolizer = pair.getU();
                 IFeature feature = pair.getV();
+
                 this.render(symbolizer, feature);
                 featureRenderIndex++;
             }
@@ -396,6 +399,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                     + feature.getGeom().getClass().getSimpleName());
             return;
         }
+        RenderingStatistics.renderCoupleFeatureSymbolizer(feature, symbolizer);
         try {
             double layerOpacity = this.getLayer().getOpacity();
             // System.err.println("layer " + this.getLayer().getName()
@@ -502,6 +506,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             throws GLException, RenderingException {
         // glEnableVertexAttribArray(COLOR_ATTRIBUTE_ID);
         if (this.getLayerViewPanel().useWireframe()) {
+            RenderingStatistics.setUserMessage("Wireframe rendering");
             this.renderGLPrimitiveWireframe(primitive);
         } else {
             this.renderGLPrimitivePlain(primitive, opacity);
@@ -542,11 +547,13 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             this.previousRenderer = currentRenderer;
         }
         if (this.getLayerViewPanel().useFBO() && !quickRendering) {
+            RenderingStatistics.setUserMessage("FBO is on");
             this.setFBORendering(true);
             currentRenderer.setFBORendering(true);
             this.fboRendering(primitive, currentRenderer, opacity);
         } else {
             currentRenderer.setFBORendering(false);
+            RenderingStatistics.setUserMessage("FBO is off");
             this.setFBORendering(false);
             currentRenderer.render(primitive, opacity);
         }
@@ -686,7 +693,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
         GLTools.glCheckError("before FBO drawing textured quad");
-        GLTools.drawComplex(LayerViewGLPanel.getScreenQuad());
+        LwjglLayerRenderer.drawComplex(LayerViewGLPanel.getScreenQuad());
         // this.getScreenQuad().setColor(new Color(1f, 1f, 1f, .5f));
         GLTools.glCheckError("FBO drawing textured quad");
 
@@ -761,7 +768,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         GL11.glLineWidth(lineWidth);
         GL11.glPointSize(pointSize);
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-        GLTools.drawComplex(primitive);
+        LwjglLayerRenderer.drawComplex(primitive);
         GL30.glBindVertexArray(0);
     }
 
@@ -1003,6 +1010,26 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         if (!displayable.getState().isRunning()) {
             GeOxygeneEventManager.getInstance().getApplication().getMainFrame()
                     .getCurrentDesktop().repaint();
+        }
+    }
+
+    /**
+     * do a GL draw call for all complex meshes
+     * 
+     * @param primitive
+     *            primitive to render
+     */
+    public static void drawComplex(GLComplex primitive) {
+        RenderingStatistics.drawGLComplex(primitive);
+        for (GLMesh mesh : primitive.getMeshes()) {
+            RenderingStatistics.doDrawCall();
+            // System.err.println("draw call for mesh " + mesh +
+            // " indices from "
+            // + mesh.getFirstIndex() + " to " + mesh.getLastIndex());
+            GL11.glDrawElements(mesh.getGlType(),
+                    mesh.getLastIndex() - mesh.getFirstIndex() + 1,
+                    GL11.GL_UNSIGNED_INT, mesh.getFirstIndex()
+                            * (Integer.SIZE / 8));
         }
     }
 
