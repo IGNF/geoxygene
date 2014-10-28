@@ -42,4 +42,10 @@ public class CoastLine extends GeneObjLinDefault implements ICoastLine {
     return super.getId();
   }
 
+  public CoastLine(ILineString line) {
+    super();
+    this.setInitialGeom(line);
+    this.setGeom(line);
+  }
+
 }

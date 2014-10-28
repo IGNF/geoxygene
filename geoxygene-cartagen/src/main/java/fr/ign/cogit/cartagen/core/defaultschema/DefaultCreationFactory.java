@@ -697,6 +697,21 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   public IWaterArea createWaterArea(SurfaceDEau geoxObj) {
     return new WaterArea(geoxObj);
   }
+  
+  // CoastLine
+  
+  @Override
+  public ICoastLine createCoastline(ILineString line) {
+    return new CoastLine(line);
+  }
+//  @Override
+//  public ICoastLine createCoastline(ILineString line) {
+//    ICoastLine coastLine = new CoastLine();
+//    coastLine.setGeom(line);
+//    return coastLine;
+//  }
+
+
 
   // /////////////////
   // RELIEF
@@ -1003,11 +1018,5 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
     return new Mask(line);
   }
 
-  @Override
-  public ICoastLine createCoastline(ILineString line) {
-    ICoastLine coastLine = new CoastLine();
-    coastLine.setGeom(line);
-    return coastLine;
-  }
 
 }

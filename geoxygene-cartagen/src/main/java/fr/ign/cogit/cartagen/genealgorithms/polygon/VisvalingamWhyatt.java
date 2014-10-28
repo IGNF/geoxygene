@@ -256,7 +256,7 @@ public class VisvalingamWhyatt {
           ++i;
         } else
             pointPoidsMinExists = false;   
-      }// c'est fini pour la ligne, on passe à la suivante
+      } //c'est fini pour la ligne, on passe à la suivante
       f.setGeom(line);
     }
     System.out.println(i + " points supprimés");
