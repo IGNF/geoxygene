@@ -49,6 +49,8 @@ public interface IUrbanBlock extends IGeneObjSurf {
 
   public void setUrbanElements(IFeatureCollection<IUrbanElement> urbanElements);
 
+  void addUrbanElement(IUrbanElement urbanElement);
+
   /**
    * Gets the inner alignments of the block
    * @return

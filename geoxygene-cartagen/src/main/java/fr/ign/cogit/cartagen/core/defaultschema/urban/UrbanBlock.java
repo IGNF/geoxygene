@@ -727,4 +727,10 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
     }
   }
 
+  @Override
+  public void addUrbanElement(IUrbanElement urbanElement) {
+    // TODO Auto-generated method stub
+
+  }
+
 }
