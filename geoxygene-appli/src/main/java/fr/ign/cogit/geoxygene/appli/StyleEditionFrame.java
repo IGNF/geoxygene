@@ -436,13 +436,14 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
             throw new IllegalStateException(
                     "this method can only be called after tabPane creation");
         }
+        // Stroke Expressive UI
         ExpressiveRenderingUI ui = null;
         if (this.layer.getSymbolizer().isPolygonSymbolizer()
                 && ((PolygonSymbolizer) (this.layer.getSymbolizer()))
                         .getStroke().getExpressiveRendering() != null) {
             PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.layer
                     .getSymbolizer();
-            ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUIFactory(
+            ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
                     polygonSymbolizer.getStroke().getExpressiveRendering(),
                     this.layerViewPanel.getProjectFrame());
         } else if (this.layer.getSymbolizer().isLineSymbolizer()
@@ -450,14 +451,27 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
                         .getExpressiveRendering() != null) {
             LineSymbolizer lineSymbolizer = (LineSymbolizer) this.layer
                     .getSymbolizer();
-            ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUIFactory(
+            ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
                     lineSymbolizer.getStroke().getExpressiveRendering(),
                     this.layerViewPanel.getProjectFrame());
         }
-        if (ui == null) {
-            return;
+        if (ui != null) {
+            this.tabPane.add("Expressive Stroke", new JScrollPane(ui.getGui()));
         }
-        this.tabPane.add("Expressive Rendering", new JScrollPane(ui.getGui()));
+        // Fill expressive UI
+        ui = null;
+        if (this.layer.getSymbolizer().isPolygonSymbolizer()
+                && ((PolygonSymbolizer) (this.layer.getSymbolizer())).getFill()
+                        .getFill2DDescriptor() != null) {
+            PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.layer
+                    .getSymbolizer();
+            ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
+                    polygonSymbolizer.getFill().getFill2DDescriptor(),
+                    this.layerViewPanel.getProjectFrame());
+        }
+        if (ui != null) {
+            this.tabPane.add("Expressive Fill", new JScrollPane(ui.getGui()));
+        }
     }
 
     public void initTextStylePanel() {

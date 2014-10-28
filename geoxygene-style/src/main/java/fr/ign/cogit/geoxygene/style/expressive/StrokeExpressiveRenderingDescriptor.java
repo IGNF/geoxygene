@@ -31,12 +31,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * Expressive Rendering Descriptor is the base class for SLD extensions found in
- * 'FILL' and 'STROKE' tags
- * 
  * @author JeT
+ * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class ExpressiveRenderingDescriptor {
+public abstract class StrokeExpressiveRenderingDescriptor extends
+        ExpressiveRenderingDescriptor {
 
 }

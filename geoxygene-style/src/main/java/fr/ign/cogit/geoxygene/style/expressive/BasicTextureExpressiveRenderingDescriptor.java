@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlElements;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class BasicTextureExpressiveRenderingDescriptor extends
-        ExpressiveRenderingDescriptor {
+        StrokeExpressiveRenderingDescriptor {
 
     @XmlElement(name = "TransitionSize")
     private double transitionSize = 10;

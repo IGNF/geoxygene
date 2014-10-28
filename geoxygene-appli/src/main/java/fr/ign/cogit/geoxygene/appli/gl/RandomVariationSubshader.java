@@ -52,7 +52,7 @@ public class RandomVariationSubshader implements Subshader {
     public static final String strokeThicknessVariationAmplitudeUniformVarName = "thicknessVariationAmplitude";
     public static final String strokeThicknessVariationWavelengthUniformVarName = "thicknessVariationWavelength";
 
-    private static final String randomVariationSubshaderFilename = "./src/main/resources/shaders/linepainting.subshader.penetration.glsl";
+    private static final String randomVariationSubshaderFilename = "./src/main/resources/shaders/subshader1d.penetration.glsl";
 
     private RandomVariationShaderDescriptor descriptor = null;
 

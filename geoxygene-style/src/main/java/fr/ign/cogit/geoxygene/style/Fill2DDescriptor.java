@@ -30,11 +30,13 @@ package fr.ign.cogit.geoxygene.style;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
+
 /**
  * @author JeT
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class Fill2DDescriptor {
+public abstract class Fill2DDescriptor extends ExpressiveRenderingDescriptor {
 
 }

@@ -28,8 +28,11 @@
 package fr.ign.cogit.geoxygene.appli.ui;
 
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 
 /**
@@ -51,8 +54,28 @@ public class ExpressiveRenderingUIFactory {
      * @param descriptor
      * @return
      */
-    public static ExpressiveRenderingUI getExpressiveRenderingUIFactory(
+    public static ExpressiveRenderingUI getExpressiveRenderingUI(
             ExpressiveRenderingDescriptor descriptor, ProjectFrame projectFrame) {
+        if (descriptor instanceof StrokeExpressiveRenderingDescriptor) {
+            return getStrokeExpressiveRenderingUI(
+                    (StrokeExpressiveRenderingDescriptor) descriptor,
+                    projectFrame);
+        } else if (descriptor instanceof Fill2DDescriptor) {
+            return getFillExpressiveRenderingUI((Fill2DDescriptor) descriptor,
+                    projectFrame);
+        }
+        return new NoExpressiveRenderingUI(descriptor, projectFrame);
+    }
+
+    /**
+     * Create an expressiveRendering UI for Strokes (1D)
+     * 
+     * @param descriptor
+     * @return
+     */
+    public static ExpressiveRenderingUI getStrokeExpressiveRenderingUI(
+            StrokeExpressiveRenderingDescriptor descriptor,
+            ProjectFrame projectFrame) {
         if (descriptor instanceof StrokeTextureExpressiveRenderingDescriptor) {
             return getExpressiveRenderingUI(
                     (StrokeTextureExpressiveRenderingDescriptor) descriptor,
@@ -61,10 +84,8 @@ public class ExpressiveRenderingUIFactory {
             return getExpressiveRenderingUI(
                     (BasicTextureExpressiveRenderingDescriptor) descriptor,
                     projectFrame);
-        } else {
-            throw new IllegalStateException("ExpressiveRendering type "
-                    + descriptor.getClass().getSimpleName() + " ");
         }
+        return new NoExpressiveRenderingUI(descriptor, projectFrame);
     }
 
     /**
@@ -90,4 +111,33 @@ public class ExpressiveRenderingUIFactory {
             ProjectFrame projectFrame) {
         return new BasicTextureExpressiveRenderingUI(descriptor, projectFrame);
     }
+
+    /**
+     * Create an expressiveRendering UI for Fill (2D)
+     * 
+     * @param descriptor
+     * @return
+     */
+    public static ExpressiveRenderingUI getFillExpressiveRenderingUI(
+            Fill2DDescriptor descriptor, ProjectFrame projectFrame) {
+        if (descriptor instanceof GradientSubshaderDescriptor) {
+            GradientSubshaderDescriptor gradientDescriptor = (GradientSubshaderDescriptor) descriptor;
+            return getExpressiveRenderingUI(gradientDescriptor, projectFrame);
+        }
+
+        return new NoExpressiveRenderingUI(descriptor, projectFrame);
+    }
+
+    /**
+     * Create a gradient texture Rendering UI
+     * 
+     * @param descriptor
+     * @return
+     */
+    private static GradientExpressiveRenderingUI getExpressiveRenderingUI(
+            final GradientSubshaderDescriptor descriptor,
+            ProjectFrame projectFrame) {
+        return new GradientExpressiveRenderingUI(descriptor, projectFrame);
+    }
+
 }

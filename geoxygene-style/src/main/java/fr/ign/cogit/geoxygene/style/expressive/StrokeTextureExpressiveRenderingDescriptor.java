@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlElements;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class StrokeTextureExpressiveRenderingDescriptor extends
-        ExpressiveRenderingDescriptor {
+        StrokeExpressiveRenderingDescriptor {
 
     @XmlElement(name = "PaperTexture")
     private String paperTextureFilename = "./src/main/resources/textures/papers/black-normalized.png";

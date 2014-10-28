@@ -55,7 +55,7 @@ import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.TextSymbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
@@ -223,7 +223,7 @@ public class DisplayableCurve extends AbstractDisplayable {
     private List<GLComplex> generateWithExpressiveStroke(
             LineSymbolizer symbolizer) {
         List<GLComplex> complexes = new ArrayList<GLComplex>();
-        ExpressiveRenderingDescriptor style = symbolizer.getStroke()
+        StrokeExpressiveRenderingDescriptor style = symbolizer.getStroke()
                 .getExpressiveRendering();
         if (style == null) {
             throw new IllegalStateException(
