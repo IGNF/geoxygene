@@ -365,6 +365,11 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   }
 
   @Override
+  public IRoadLine createRoadLine(ILineString line) {
+    return new RoadLine(line, 0);
+  }
+
+  @Override
   public IRoadLine createRoadLine(ILineString line, int importance, int symbolId) {
     return new RoadLine(line, importance, symbolId);
   }
@@ -635,6 +640,11 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   }
 
   @Override
+  public IWaterLine createWaterLine(ILineString line) {
+    return createWaterLine(line, 0);
+  }
+
+  @Override
   public IWaterLine createWaterLine(TronconHydrographique geoxObj,
       int importance) {
     return new WaterLine(geoxObj, importance);
@@ -701,7 +711,7 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   // CoastLine
   
   @Override
-  public ICoastLine createCoastline(ILineString line) {
+  public ICoastLine createCoastLine(ILineString line) {
     return new CoastLine(line);
   }
 //  @Override

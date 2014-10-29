@@ -377,6 +377,13 @@ public abstract class AbstractCreationFactory {
   }
 
   @SuppressWarnings("unused")
+  public IRoadLine createRoadLine(ILineString line) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for IRoadLine");
+    return null;
+  }
+
+  @SuppressWarnings("unused")
   public IRoadLine createRoadLine(ILineString line, int importance, int symbolId) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IRoadLine");
@@ -718,6 +725,13 @@ public abstract class AbstractCreationFactory {
     return null;
   }
 
+  @SuppressWarnings("unused")
+  public IWaterLine createWaterLine(ILineString line) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for IWaterLine");
+    return null;
+  }
+  
   @SuppressWarnings("unused")
   public IWaterLine createWaterLine(ILineString line, int importance) {
     AbstractCreationFactory.logger
@@ -1246,7 +1260,7 @@ public abstract class AbstractCreationFactory {
   }
 
   @SuppressWarnings("unused")
-  public ICoastLine createCoastline(ILineString line) {
+  public ICoastLine createCoastLine(ILineString line) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for ICoastLine");
     return null;
