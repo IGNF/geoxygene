@@ -57,6 +57,8 @@ import fr.ign.cogit.geoxygene.appli.render.texture.ShaderFactory;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
+import fr.ign.cogit.geoxygene.style.filter.LayerFilterIdentity;
 import fr.ign.cogit.geoxygene.util.ImageComparator;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
@@ -764,7 +766,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private final GLProgramAccessor basicAccessor = null;
     private GLProgramAccessor screenspaceTextureAccessor = null;
     private GLProgramAccessor screenspaceColorAccessor = null;
-    private GLProgramAccessor screenspaceAntialiasedAccessor = null;
+    private final GLProgramAccessor screenspaceAntialiasedAccessor = null;
     private GLProgramAccessor backgroundAccessor = null;
     private GLProgramAccessor worldspaceColorAccessor = null;
     private GLProgramAccessor worldspaceTextureAccessor = null;
@@ -944,12 +946,19 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 this.getScreenspaceColorAccessor());
         glContext.addProgram(screenspaceTextureProgramName,
                 this.getScreenspaceTextureAccessor());
+        // the null value for screenspace is special. It creates a program with
+        // a LayerFilterIdentity but does not add the filter name at the end of
+        // the program. This is just because this shader is used directly by
+        // some rendering process. It avoids to do setCurrentProgram(
+        // screenspaceAntialiasedTextureProgramName +
+        // LayerFilterIdentity.getClass().getSimpleName() )
         glContext.addProgram(screenspaceAntialiasedTextureProgramName,
-                this.getScreenspaceAntialiasedAccessor());
+                this.createScreenspaceAntialiasedAccessor(null));
         glContext.addProgram(backgroundProgramName,
                 this.getBackgroundAccessor());
         // bezier & line painting programs are not created here because we don't
         // know the SLD content at this point.
+        // idem for screenspace program (parameterized by a LayerFilter)
         return glContext;
     }
 
@@ -1046,29 +1055,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     }
 
     /**
-     * @param screenspaceVertexShaderId
-     * @return
-     */
-    public GLProgramAccessor getScreenspaceAntialiasedAccessor() {
-        if (this.screenspaceAntialiasedAccessor == null) {
-            this.screenspaceAntialiasedAccessor = new GLProgramAccessor() {
-
-                @Override
-                public GLProgram getGLProgram() throws GLException {
-                    try {
-                        return LayerViewGLPanel.this
-                                .createScreenspaceAntialiasedProgram();
-                    } catch (IOException e) {
-                        throw new GLException(e);
-
-                    }
-                }
-            };
-        }
-        return this.screenspaceAntialiasedAccessor;
-    }
-
-    /**
      * @return
      */
     public GLProgramAccessor getBackgroundAccessor() {
@@ -1087,6 +1073,31 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             };
         }
         return this.backgroundAccessor;
+    }
+
+    /**
+     * @param screenspaceVertexShaderId
+     * @return
+     */
+    public GLProgramAccessor createScreenspaceAntialiasedAccessor(
+            LayerFilter filter) {
+        return new GLProgramAccessorScreenspace(filter);
+        // if (this.screenspaceAntialiasedAccessor == null) {
+        // this.screenspaceAntialiasedAccessor = new GLProgramAccessor() {
+        //
+        // @Override
+        // public GLProgram getGLProgram() throws GLException {
+        // try {
+        // return LayerViewGLPanel.this
+        // .createScreenspaceAntialiasedProgram();
+        // } catch (IOException e) {
+        // throw new GLException(e);
+        //
+        // }
+        // }
+        // };
+        // }
+        // return this.screenspaceAntialiasedAccessor;
     }
 
     /**
@@ -1184,6 +1195,33 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             try {
                 return LayerViewGLPanel.this
                         .createGradientSubshaderProgram(this.descriptor);
+            } catch (IOException e) {
+                throw new GLException(e);
+            }
+        }
+    }
+
+    /**
+     * @author JeT This accessor returns a program created using the given
+     *         shader descriptor
+     */
+    private class GLProgramAccessorScreenspace implements GLProgramAccessor {
+
+        private LayerFilter filter = null;
+
+        /**
+         * @param program
+         */
+        public GLProgramAccessorScreenspace(LayerFilter filter) {
+            super();
+            this.filter = filter;
+        }
+
+        @Override
+        public GLProgram getGLProgram() throws GLException {
+            try {
+                return LayerViewGLPanel.this
+                        .createScreenspaceAntialiasedProgram(this.filter);
             } catch (IOException e) {
                 throw new GLException(e);
             }
@@ -1368,6 +1406,49 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     }
 
     /**
+     * @param worldspaceVertexShaderId
+     * @throws GLException
+     */
+    public GLProgram createScreenspaceAntialiasedProgram(LayerFilter filter)
+            throws GLException, IOException {
+
+        // color program
+        String filterCode = "";
+        Subshader shader = null;
+        // special cases with null, the program name is not changed but a
+        // LayerFilterIdentity is used
+        if (filter != null) {
+            filterCode = filter.getClass().getSimpleName();
+            shader = ShaderFactory.createFilterShader(filter);
+        } else {
+            shader = ShaderFactory
+                    .createFilterShader(new LayerFilterIdentity());
+        }
+        GLProgram program = new GLProgram(
+                screenspaceAntialiasedTextureProgramName + filterCode);
+        program.addVertexShader(
+                GLTools.readFileAsString(screenspaceVertexShaderFilename),
+                screenspaceVertexShaderFilename);
+        program.addFragmentShader(
+                GLTools.readFileAsString(antialiasedFragmentShaderFilename),
+                antialiasedFragmentShaderFilename);
+        shader.configureProgram(program);
+        program.addInputLocation(GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        program.addInputLocation(GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        program.addInputLocation(GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
+        program.addUniform(globalOpacityUniformVarName);
+        program.addUniform(objectOpacityUniformVarName);
+        program.addUniform(colorTexture1UniformVarName);
+        program.addUniform(textureScaleFactorUniformVarName);
+        program.addUniform(antialiasingSizeUniformVarName);
+        shader.declareUniforms(program);
+        return program;
+    }
+
+    /**
      * @throws GLException
      */
     private GLProgram createScreenspaceColorProgram() throws GLException,
@@ -1526,39 +1607,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         textureProgram.addUniform(textureScaleFactorUniformVarName);
 
         return textureProgram;
-    }
-
-    /**
-     * @param worldspaceVertexShaderId
-     * @throws GLException
-     */
-    private GLProgram createScreenspaceAntialiasedProgram() throws GLException,
-            IOException {
-
-        // color program
-        GLProgram antialisedProgram = new GLProgram(
-                screenspaceAntialiasedTextureProgramName);
-        antialisedProgram.addVertexShader(
-                GLTools.readFileAsString(screenspaceVertexShaderFilename),
-                screenspaceVertexShaderFilename);
-        antialisedProgram.addFragmentShader(
-                GLTools.readFileAsString(antialiasedFragmentShaderFilename),
-                antialiasedFragmentShaderFilename);
-        antialisedProgram.addInputLocation(GLSimpleVertex.vertexUVVariableName,
-                GLSimpleVertex.vertexUVLocation);
-        antialisedProgram.addInputLocation(
-                GLSimpleVertex.vertexPositionVariableName,
-                GLSimpleVertex.vertexPostionLocation);
-        antialisedProgram.addInputLocation(
-                GLSimpleVertex.vertexColorVariableName,
-                GLSimpleVertex.vertexColorLocation);
-        antialisedProgram.addUniform(globalOpacityUniformVarName);
-        antialisedProgram.addUniform(objectOpacityUniformVarName);
-        antialisedProgram.addUniform(colorTexture1UniformVarName);
-        antialisedProgram.addUniform(textureScaleFactorUniformVarName);
-        antialisedProgram.addUniform(antialiasingSizeUniformVarName);
-
-        return antialisedProgram;
     }
 
 }

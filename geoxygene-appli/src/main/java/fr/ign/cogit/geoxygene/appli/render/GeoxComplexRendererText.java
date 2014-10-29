@@ -200,11 +200,9 @@ public class GeoxComplexRendererText extends AbstractGeoxComplexRenderer {
 
         GLProgram program = this.getGlContext().setCurrentProgram(
                 LayerViewGLPanel.screenspaceAntialiasedTextureProgramName);
-
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 
         GL11.glViewport(0, 0, width, height);
-        GL11.glDrawBuffer(GL11.GL_BACK);
         glEnable(GL_TEXTURE_2D);
         glDisable(GL11.GL_POLYGON_SMOOTH);
 
@@ -241,6 +239,7 @@ public class GeoxComplexRendererText extends AbstractGeoxComplexRenderer {
         GL30.glBindVertexArray(0); // unbind VAO
         GLTools.glCheckError("exiting FBO rendering");
         glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
+
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 
     }

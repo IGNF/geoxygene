@@ -27,8 +27,10 @@
 
 package fr.ign.cogit.geoxygene.appli.render.texture;
 
+import fr.ign.cogit.geoxygene.appli.gl.ContrastSubshaderFilter;
 import fr.ign.cogit.geoxygene.appli.gl.DefaultSubshader1D;
 import fr.ign.cogit.geoxygene.appli.gl.DefaultSubshader2D;
+import fr.ign.cogit.geoxygene.appli.gl.IdentitySubshaderFilter;
 import fr.ign.cogit.geoxygene.appli.gl.RandomVariationSubshader;
 import fr.ign.cogit.geoxygene.appli.gl.Subshader;
 import fr.ign.cogit.geoxygene.appli.gl.UserSubshader;
@@ -39,6 +41,9 @@ import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.UserFill2DShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.UserLineShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
+import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
+import fr.ign.cogit.geoxygene.style.filter.LayerFilterContrast;
+import fr.ign.cogit.geoxygene.style.filter.LayerFilterIdentity;
 
 /**
  * @author JeT
@@ -93,6 +98,31 @@ public class ShaderFactory {
     public static DefaultSubshader2D createDefaultFillSubshader(
             DefaultFill2DShaderDescriptor descriptor) {
         return new DefaultSubshader2D(descriptor);
+    }
+
+    public static Subshader createFilterShader(LayerFilter filter) {
+        // special case for the null filter
+        if (filter == null || filter instanceof LayerFilterIdentity) {
+            return createFilterShaderIdentity((LayerFilterIdentity) filter);
+
+        }
+        if (filter instanceof LayerFilterContrast) {
+            return createFilterShaderContrast((LayerFilterContrast) filter);
+
+        }
+        throw new IllegalStateException("Do not handle "
+                + filter.getClass().getSimpleName()
+                + " filter shader descriptor");
+    }
+
+    private static Subshader createFilterShaderContrast(
+            LayerFilterContrast filter) {
+        return new ContrastSubshaderFilter(filter);
+    }
+
+    private static Subshader createFilterShaderIdentity(
+            LayerFilterIdentity filter) {
+        return new IdentitySubshaderFilter(filter);
     }
 
 }

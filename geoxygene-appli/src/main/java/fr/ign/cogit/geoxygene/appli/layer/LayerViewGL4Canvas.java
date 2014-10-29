@@ -203,8 +203,9 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             RenderingStatistics.printStatistics(System.err);
             // GL20.glUseProgram(0);
         } catch (Exception e) {
-            logger.error("Error rendering the LwJGL : " + e.getMessage());
-            // e.printStackTrace();
+            logger.error("Error rendering the LwJGL : " + e.getMessage() + " ["
+                    + e.getClass().getSimpleName() + "]");
+            e.printStackTrace();
         }
     }
 

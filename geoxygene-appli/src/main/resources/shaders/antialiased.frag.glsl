@@ -12,6 +12,8 @@ in vec2 fragmentTextureCoord;
 
 out vec4 outColor;
 
+vec4 colorFilter( vec4 col );
+
 void main(void) {
 //    outColor = vec4( fragmentTextureCoord.xy, 1.0, 1.0 );
 //    return;
@@ -33,5 +35,6 @@ void main(void) {
     float interpolatedAlpha = sumAlpha / (antialiasingSize * antialiasingSize);
     
 //    outColor = vec4(  interpolatedColor.rgb, 1);
-    outColor = vec4( interpolatedColor.rgb, interpolatedAlpha * globalOpacity );
+    outColor = colorFilter( vec4( interpolatedColor.rgb, interpolatedAlpha * globalOpacity ) );
+//	outColor = vec4( 1.0, 0.0, 1.0, interpolatedAlpha * globalOpacity );
 }

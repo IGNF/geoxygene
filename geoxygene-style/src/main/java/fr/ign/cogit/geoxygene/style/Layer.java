@@ -29,102 +29,117 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 
 /**
  * The Layer class.
+ * 
  * @see NamedLayer
  * @see UserLayer
  * @author Julien Perret
  */
 @XmlTransient
 public interface Layer {
-  /**
-   * Renvoie la valeur de l'attribut name.
-   * @return la valeur de l'attribut name
-   */
-  public String getName();
+    /**
+     * Renvoie la valeur de l'attribut name.
+     * 
+     * @return la valeur de l'attribut name
+     */
+    public String getName();
 
-  /**
-   * Affecte la valeur de l'attribut name.
-   * @param name l'attribut name à affecter
-   */
-  public void setName(String name);
+    /**
+     * Affecte la valeur de l'attribut name.
+     * 
+     * @param name
+     *            l'attribut name à affecter
+     */
+    public void setName(String name);
 
-  public String getDescription();
+    public String getDescription();
 
-  public void setDescription(String description);
+    public void setDescription(String description);
 
-  /**
-   * Renvoie la valeur de l'attribut styles.
-   * @return la valeur de l'attribut styles
-   */
-  public List<Style> getStyles();
+    /**
+     * Renvoie la valeur de l'attribut styles.
+     * 
+     * @return la valeur de l'attribut styles
+     */
+    public List<Style> getStyles();
 
-  /**
-   * Affecte la valeur de l'attribut styles.
-   * @param styles l'attribut styles à affecter
-   */
-  public void setStyles(List<Style> styles);
+    /**
+     * Renvoie le filtre associé à ce layer
+     */
+    public LayerFilter getFilter();
 
-  public List<Style> getActiveStyles();
+    public void setFilter(LayerFilter filter);
 
-  /**
-   * @return les features de la couche
-   */
-  public IFeatureCollection<? extends IFeature> getFeatureCollection();
+    /**
+     * Affecte la valeur de l'attribut styles.
+     * 
+     * @param styles
+     *            l'attribut styles à affecter
+     */
+    public void setStyles(List<Style> styles);
 
-  /**
-   * @return <code>true</code> if the layer is visible in the LayerViewPanel by
-   *         the user; <code>false</code> otherwise.
-   */
-  public boolean isVisible();
+    public List<Style> getActiveStyles();
 
-  public void setOpacity(double opacity);
+    /**
+     * @return les features de la couche
+     */
+    public IFeatureCollection<? extends IFeature> getFeatureCollection();
 
-  /**
-   * @param visible
-   */
-  public void setVisible(boolean visible);
+    /**
+     * @return <code>true</code> if the layer is visible in the LayerViewPanel
+     *         by the user; <code>false</code> otherwise.
+     */
+    public boolean isVisible();
 
-  /**
-   * @return <code>true</code> if the layer is selectable by the user;
-   *         <code>false</code> otherwise.
-   */
-  public boolean isSelectable();
+    public void setOpacity(double opacity);
 
-  /**
-   * @param selectable
-   */
-  public void setSelectable(boolean selectable);
+    /**
+     * @param visible
+     */
+    public void setVisible(boolean visible);
 
-  /**
-   * @return <code>true</code> if the layer is symbolized; <code>false</code>
-   *         otherwise.
-   */
-  public boolean isSymbolized();
+    /**
+     * @return <code>true</code> if the layer is selectable by the user;
+     *         <code>false</code> otherwise.
+     */
+    public boolean isSelectable();
 
-  /**
-   * @param symbolized
-   */
-  public void setSymbolized(boolean symbolized);
+    /**
+     * @param selectable
+     */
+    public void setSelectable(boolean selectable);
 
-  public Symbolizer getSymbolizer();
+    /**
+     * @return <code>true</code> if the layer is symbolized; <code>false</code>
+     *         otherwise.
+     */
+    public boolean isSymbolized();
 
-  public String getActiveGroup();
+    /**
+     * @param symbolized
+     */
+    public void setSymbolized(boolean symbolized);
 
-  public void setActiveGroup(String activeGroup);
+    public Symbolizer getSymbolizer();
 
-  public Collection<String> getGroups();
+    public String getActiveGroup();
 
-  public void setCRS(CoordinateReferenceSystem crs);
+    public void setActiveGroup(String activeGroup);
 
-  public CoordinateReferenceSystem getCRS();
+    public Collection<String> getGroups();
 
-  void destroy();
+    public void setCRS(CoordinateReferenceSystem crs);
 
-  public ImageIcon getIcon();
+    public CoordinateReferenceSystem getCRS();
 
-  public void setIcon(ImageIcon image);
+    void destroy();
 
-  double getOpacity();
+    public ImageIcon getIcon();
+
+    public void setIcon(ImageIcon image);
+
+    double getOpacity();
 }
