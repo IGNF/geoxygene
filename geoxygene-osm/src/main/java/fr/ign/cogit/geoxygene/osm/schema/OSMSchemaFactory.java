@@ -218,7 +218,7 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
           nodes);
       if (line.coord().size() == 1)
         return null;
-      return (OsmGeneObj) this.createCoastline(line);
+      return (OsmGeneObj) this.createCoastLine(line);
     }
     if (ISquareArea.class.isAssignableFrom(classObj)) {
       IPolygon poly = convertor.convertOSMPolygon((OSMWay) resource.getGeom(),
@@ -389,7 +389,7 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
   }
 
   @Override
-  public ICoastLine createCoastline(ILineString line) {
+  public ICoastLine createCoastLine(ILineString line) {
     return new OsmCoastline(line);
   }
 
