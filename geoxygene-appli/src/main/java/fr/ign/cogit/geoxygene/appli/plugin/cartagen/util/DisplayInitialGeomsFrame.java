@@ -143,10 +143,12 @@ public class DisplayInitialGeomsFrame extends JFrame implements ActionListener {
         else
           width = (Integer) widthVal;
         SLDUtil.addInitialGeomDisplay(layer, color, width);
+        frame.getLayerViewPanel().getRenderingManager().addLayer(layer);
       } else
         SLDUtil.removeInitialGeomDisplay(layer);
     }
-    frame.getLayerViewPanel().repaint();
+    frame.getLayerViewPanel().getRenderingManager().renderAll();
+    // frame.getLayerViewPanel().repaint();
   }
 
   /**
