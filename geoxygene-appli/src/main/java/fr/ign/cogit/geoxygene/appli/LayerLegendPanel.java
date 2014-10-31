@@ -93,7 +93,7 @@ import fr.ign.util.ui.JRecentFileChooser;
  * @author Charlotte Hoarau
  */
 public class LayerLegendPanel extends JPanel implements ChangeListener,
-        ActionListener, SldListener {
+        ActionListener, SldListener, KeyListener {
     private static final Insets nullInsets = new Insets(0, 0, 0, 0);
 
     public final static int FULL_OPAQUE = 100;
@@ -286,6 +286,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
 
         this.layersTable
                 .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        this.layersTable.addKeyListener(this);
 
         Icon selectionIcon = new ImageIcon(this.getClass().getResource(
                 "/images/toolbar/pencil.png")); //$NON-NLS-1$
@@ -1319,6 +1320,51 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
 
     public JTable getLayersTable() {
         return this.layersTable;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+     */
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+     */
+    @Override
+    public void keyPressed(KeyEvent e) {
+        System.err.println("miaouh " + e);
+        if (e.getKeyCode() == KeyEvent.VK_UP && e.isControlDown()) {
+            this.moveSelectedLayersUp();
+            this.layersTable.revalidate();
+            this.layersTable.repaint();
+            return;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_DOWN && e.isControlDown()) {
+            this.moveSelectedLayersDown();
+            this.layersTable.revalidate();
+            this.layersTable.repaint();
+            return;
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+     */
+    @Override
+    public void keyReleased(KeyEvent e) {
+        // TODO Auto-generated method stub
+
     }
 
 }
