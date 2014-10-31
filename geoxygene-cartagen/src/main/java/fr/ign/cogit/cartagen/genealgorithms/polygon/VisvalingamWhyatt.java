@@ -79,77 +79,6 @@ public class VisvalingamWhyatt {
     return copy;
   }
 
-  /**
-   * Visvalingam-Whyatt simplification of a collection of line string.
-   * @param IFeatureCollection<IFeature> lignes
-   * @return IFeatureCollection<IFeature> lignes
-   */
-  public IFeatureCollection<IFeature> simplifyOld(IFeatureCollection<IFeature> lignes) {
-    IFeatureCollection<IFeature> copy = new FT_FeatureCollection<>(lignes); 
-    int i=0;
-    long startTime , endTime;//= System.nanoTime();
-    long sumtimeArea = 0, sumtimeSelect = 0;
-    System.out.println("methode sans enveloppe convexe préalable");
-    startTime = System.nanoTime();
-    copy.initSpatialIndex(Tiling.class, false, 160);
-    endTime = System.nanoTime();
-    System.out.println("index spatial initialisé en "+ (endTime - startTime)/1000000 + " ms");
-    //SpatialIndex<IFeature> index = copy.getSpatialIndex();
-    if (copy.hasSpatialIndex())
-      System.out.println("index spatial ok");
-    
-    for (IFeature f: copy){
-      ILineString l = (ILineString)f.getGeom();
-      boolean loop = true;
-      while (loop) {
-        IDirectPosition ptAreaMin = null;
-        double areaMin = Double.MAX_VALUE;
-        for (IDirectPosition pt : l.coord()) {
-          //System.out.println("parcours des pts d'une ligne");
-          if (pt.equals(l.startPoint()))
-            continue;
-          if (pt.equals(l.endPoint()))
-            continue;
-          IGeometry triangle = getTriangle(l, pt);
-          //double ar = computeEffectiveArea(l, pt);
-//          Triangle t = new Triangle(new Coordinate(triangle.coord().get(0).getX(), triangle.coord().get(0).getY()),
-//                                    new Coordinate(triangle.coord().get(1).getX(), triangle.coord().get(1).getY()),
-//                                    new Coordinate(triangle.coord().get(2).getX(), triangle.coord().get(2).getY())
-//                                    );
-          startTime = System.nanoTime();
-          double area = triangle.area();
-          endTime = System.nanoTime();
-          sumtimeArea += (endTime - startTime); 
-          //double area = fastArea(triangle);
-          //il sufit de commenter le && pour avoir l'algo initial
-          if (area < areaMin && !containsAnotherPoint(l, pt)) {
-            areaMin = area;
-            //System.out.println("area < areaMin");
-            startTime = System.nanoTime();
-            if (area < areaTolerance && lignes.select(triangle).size() < 2){
-              ptAreaMin = pt;
-              //System.out.println("pt to remove found");
-            }
-            endTime = System.nanoTime();
-            sumtimeSelect += (endTime - startTime);
-          }
-        }
-        if (ptAreaMin == null)
-          break;
-        // remove the point
-        //System.out.println("point removed");
-        IDirectPositionList newCoord = l.coord();
-        newCoord.remove(ptAreaMin);
-        l = new GM_LineString(newCoord);
-        ++i;
-      }   
-      f.setGeom(l);
-    }
-    System.out.println(i + " points supprimés");
-    System.out.println(" Temps passé pour calcul aire : "+ sumtimeArea/1000000);
-    System.out.println(" Temps passé pour select : "+ sumtimeSelect/1000000);
-    return copy;
-  }
 
   /**
    * Visvalingam-Whyatt simplification of a collection of line string.
@@ -184,7 +113,6 @@ public class VisvalingamWhyatt {
             if (area < areaTolerance ){
               if (lignesEnvConv == null){
                 startTime = System.nanoTime();
-                //lignesEnvConv = new FT_FeatureCollection<>(lignes.select(l.convexHull().getEnvelope()));
                 lignesEnvConv = new FT_FeatureCollection<>(lignes.select(l.convexHull()));
                 endTime = System.nanoTime();
                 sumSimp += (endTime - startTime);
@@ -330,7 +258,7 @@ public class VisvalingamWhyatt {
    // return 0.25*Math.sqrt( (a+b+c)*(a+b-c)*(b+c-a)*(a-b+c));
   }
   
-  // returns true if the triangle surrounding b in the line string line
+  // returns true if the triangle surrounding b in the linestring line
   // contains another point of the line string, false otherwise
   private boolean containsAnotherPoint(ILineString line, IDirectPosition b){
     IDirectPosition a = null, c = null;

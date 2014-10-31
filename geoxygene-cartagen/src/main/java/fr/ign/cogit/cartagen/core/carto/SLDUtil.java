@@ -172,7 +172,7 @@ public class SLDUtil {
       symbolizer.setGraphic(graphic);
       rule.getSymbolizers().add(symbolizer);
     }
-
+    System.out.println(style);
     // add the new style to the layer
     layer.getStyles().add(style);
   }
