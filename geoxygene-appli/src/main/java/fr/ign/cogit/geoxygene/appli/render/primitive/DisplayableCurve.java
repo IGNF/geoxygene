@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
@@ -87,10 +88,10 @@ public class DisplayableCurve extends AbstractDisplayable {
      * Constructor using a IMultiCurve
      */
     public DisplayableCurve(String name, Viewport viewport,
-            IMultiCurve<?> multiCurve, Symbolizer symbolizer,
+            IMultiCurve<?> multiCurve, IFeature feature, Symbolizer symbolizer,
             LwjglLayerRenderer lwjglLayerRenderer,
             GLComplexRenderer partialRenderer) {
-        super(name, viewport, lwjglLayerRenderer, symbolizer);
+        super(name, viewport, lwjglLayerRenderer, feature, symbolizer);
 
         for (Object lineString : multiCurve.getList()) {
             if (lineString instanceof ILineString) {
@@ -107,10 +108,10 @@ public class DisplayableCurve extends AbstractDisplayable {
      * Constructor using a ILineString
      */
     public DisplayableCurve(String name, Viewport viewport,
-            ILineString lineString, Symbolizer symbolizer,
+            ILineString lineString, IFeature feature, Symbolizer symbolizer,
             LwjglLayerRenderer lwjglLayerRenderer,
             GLComplexRenderer partialRenderer) {
-        super(name, viewport, lwjglLayerRenderer, symbolizer);
+        super(name, viewport, lwjglLayerRenderer, feature, symbolizer);
         this.curves.add(lineString);
         this.generatePartialRepresentation(partialRenderer);
     }
@@ -183,7 +184,7 @@ public class DisplayableCurve extends AbstractDisplayable {
         } else if (this.getSymbolizer().isTextSymbolizer()) {
             TextSymbolizer symbolizer = (TextSymbolizer) this.getSymbolizer();
             GLTextComplex primitive = new GLTextComplex("toponym-"
-                    + this.getName(), 0, 0);
+                    + this.getName(), this.getFeature(), 0, 0);
             primitive.setRenderer(GeoxRendererManager.getOrCreateTextRenderer(
                     symbolizer, this.getLayerRenderer()));
             complexes.add(primitive);

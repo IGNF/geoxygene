@@ -45,6 +45,7 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.render.texture.ExpressiveRendering;
 import fr.ign.cogit.geoxygene.util.gl.AbstractGLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
@@ -64,8 +65,8 @@ import fr.ign.cogit.geoxygene.util.gl.Texture;
  * @author JeT
  * 
  */
-public class GLTextComplex extends AbstractGLComplex<GLSimpleVertex>
-        implements GLComplex {
+public class GLTextComplex extends AbstractGLComplex<GLSimpleVertex> implements
+        GLComplex {
 
     private static final Logger logger = Logger.getLogger(GLTextComplex.class
             .getName()); // logger
@@ -85,6 +86,7 @@ public class GLTextComplex extends AbstractGLComplex<GLSimpleVertex>
     private double overallOpacity = 1.;
     private GLSimpleRenderingCapability[] renderingCapabilities = null;
     private ExpressiveRendering expressiveRendering = null;
+    private IFeature feature = null;
     int stride = -1;
 
     public enum GLSimpleRenderingCapability implements GLRenderingCapability {
@@ -94,8 +96,9 @@ public class GLTextComplex extends AbstractGLComplex<GLSimpleVertex>
     /**
      * Default constructor
      */
-    public GLTextComplex(String id, double minX, double minY) {
+    public GLTextComplex(String id, IFeature feature, double minX, double minY) {
         super(id, minX, minY);
+        this.feature = feature;
         this.addInput(GLSimpleVertex.vertexPositionVariableName,
                 GLSimpleVertex.vertexPostionLocation, GL11.GL_FLOAT, 3, false);
         this.addInput(GLSimpleVertex.vertexUVVariableName,
@@ -103,6 +106,13 @@ public class GLTextComplex extends AbstractGLComplex<GLSimpleVertex>
         this.addInput(GLSimpleVertex.vertexColorVariableName,
                 GLSimpleVertex.vertexColorLocation, GL11.GL_FLOAT, 4, false);
 
+    }
+
+    /**
+     * @return the feature
+     */
+    public IFeature getFeature() {
+        return this.feature;
     }
 
     /**

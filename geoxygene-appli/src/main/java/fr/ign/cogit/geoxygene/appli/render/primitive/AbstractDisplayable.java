@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.render.LwjglLayerRenderer;
 import fr.ign.cogit.geoxygene.appli.task.AbstractTask;
@@ -25,13 +26,31 @@ public abstract class AbstractDisplayable extends AbstractTask implements
     private GLComplex partialRepresentation;
     private long displayCount;
     private Date lastDisplayTime;
+    private IFeature feature = null;
 
     public AbstractDisplayable(String name, Viewport viewport,
-            LwjglLayerRenderer layerRenderer, Symbolizer symbolizer) {
+            LwjglLayerRenderer layerRenderer, IFeature feature,
+            Symbolizer symbolizer) {
         super(name);
         this.setViewport(viewport);
         this.setLayerRenderer(layerRenderer);
         this.setSymbolizer(symbolizer);
+        this.setFeature(feature);
+    }
+
+    /**
+     * @return the feature
+     */
+    public IFeature getFeature() {
+        return this.feature;
+    }
+
+    /**
+     * @param feature
+     *            the feature to set
+     */
+    public void setFeature(IFeature feature) {
+        this.feature = feature;
     }
 
     public final Viewport getViewport() {

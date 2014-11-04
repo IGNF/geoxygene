@@ -662,6 +662,11 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
                         // vérifier que le layer est décrit dans le SLD
                         if (new_sld.getLayer(name) != null) {
                             if (new_sld.getLayer(name).getStyles() != null) {
+                                this.getLayers()
+                                        .get(i)
+                                        .setFilter(
+                                                new_sld.getLayer(name)
+                                                        .getFilter());
                                 // logger.debug(new_sld.getLayer(name).getStyles());
                                 this.getLayers()
                                         .get(i)

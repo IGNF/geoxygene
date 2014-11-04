@@ -94,11 +94,12 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     }
 
     private int getOverlayTextureId() {
-        // System.err.println("get FBO texture ID : " + this.fboTextureId);
+        // System.err.println("get Overlay texture ID : " +
+        // this.OverlayTextureId);
         if (this.overlayTextureId == -1) {
             this.overlayTextureId = GL11.glGenTextures();
-            // System.err.println("generated FBO texture ID : "
-            // + this.fboTextureId);
+            // System.err.println("generated Overlay texture ID : "
+            // + this.overlayTextureId);
             if (this.overlayTextureId < 0) {
                 logger.error("Unable to use Overlay texture");
             }
@@ -446,13 +447,13 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
 
         program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
                 COLORTEXTURE2_SLOT);
-        GLTools.glCheckError("FBO bind antialiasing");
+        GLTools.glCheckError("Overlay bind antialiasing");
         program.setUniform1i(LayerViewGLPanel.antialiasingSizeUniformVarName, 1);
-        GLTools.glCheckError("FBO activate texture");
+        GLTools.glCheckError("Overlay activate texture");
         GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE2_SLOT);
-        GLTools.glCheckError("FBO bound texture");
+        GLTools.glCheckError("Overlay bound texture");
         glBindTexture(GL_TEXTURE_2D, this.getOverlayTextureId());
-        GLTools.glCheckError("FBO bound texture");
+        GLTools.glCheckError("Overlay bound texture");
 
         GL11.glDepthMask(false);
         glDisable(GL11.GL_DEPTH_TEST);
@@ -468,15 +469,15 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         //
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
-        GLTools.glCheckError("before FBO drawing textured quad");
+        GLTools.glCheckError("before Overlay drawing textured quad");
         LwjglLayerRenderer.drawComplex(LayerViewGLPanel.getScreenQuad());
 
         // LayerViewGLPanel.getScreenQuad().setColor(new Color(1f, 1f, 1f,
         // .5f));
-        GLTools.glCheckError("FBO drawing textured quad");
+        GLTools.glCheckError("Overlay drawing textured quad");
 
         GL30.glBindVertexArray(0); // unbind VAO
-        GLTools.glCheckError("exiting FBO rendering");
+        GLTools.glCheckError("exiting Overlay rendering");
         glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
 
     }

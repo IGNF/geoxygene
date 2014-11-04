@@ -88,19 +88,19 @@ public final class DisplayableFactory {
         } else if (geometry.isMultiCurve()) {
             DisplayableCurve displayableCurve = new DisplayableCurve(
                     layer.getName() + "-multicurve #" + feature.getId(),
-                    viewport, (IMultiCurve<?>) geometry, symbolizer,
+                    viewport, (IMultiCurve<?>) geometry, feature, symbolizer,
                     layerRenderer, partialRenderer);
             return displayableCurve;
         } else if (geometry.isLineString()) {
             DisplayableCurve displayableLine = new DisplayableCurve(
                     layer.getName() + "-linestring #" + feature.getId(),
-                    viewport, (ILineString) geometry, symbolizer,
+                    viewport, (ILineString) geometry, feature, symbolizer,
                     layerRenderer, partialRenderer);
             return displayableLine;
         } else if (geometry.isPoint() || (geometry instanceof IMultiPoint)) {
             DisplayablePoint displayablePoint = new DisplayablePoint(
                     layer.getName() + "-multipoint #" + feature.getId(),
-                    viewport, geometry, symbolizer, layerRenderer,
+                    viewport, geometry, feature, symbolizer, layerRenderer,
                     partialRenderer);
             return displayablePoint;
         }

@@ -32,7 +32,6 @@ import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glHint;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -116,8 +115,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
     private LayerViewGLPanel layerViewPanel = null;
     private final Map<IFeature, Map<Symbolizer, GLDisplayable>> displayables = new HashMap<IFeature, Map<Symbolizer, GLDisplayable>>();
     private GeoxComplexRendererBasic partialRenderer = null;
-    private int fboId = -1;
-    private int fboTextureId = -1;
     private int previousFBOImageWidth = -1;
     private int previousFBOImageHeight = -1;
     private boolean fboRendering = false;
@@ -479,13 +476,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         return displayable;
     }
 
-    /**
-     * @return the fboId
-     */
-    public int getFboId() {
-        return this.fboId;
-    }
-
     // /**
     // * Render a list of primitives
     // *
@@ -530,7 +520,8 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
     private final void renderGLPrimitivePlain(GLComplex primitive,
             double opacity) throws GLException, RenderingException {
         boolean quickRendering = this.getLayerViewPanel().getProjectFrame()
-                .getMainFrame().getMode().getCurrentMode().getRenderingType() != RenderingTypeMode.FINAL;
+                .getMainFrame().getMode().getCurrentMode().getRenderingType() != RenderingTypeMode.FINAL
+                && !this.getLayerViewPanel().useFBO();
         // System.err.println("rendering primitive "
         // + primitive.getMeshes().size() + " meshes");
         GeoxComplexRenderer currentRenderer = (GeoxComplexRenderer) primitive
@@ -546,23 +537,16 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             // rendering mode
             return;
         }
-        if (this.previousRenderer != currentRenderer) {
-            if (this.previousRenderer != null) {
-                this.previousRenderer.switchRenderer();
-            }
-            currentRenderer.activateRenderer();
-            this.previousRenderer = currentRenderer;
-        }
-        if (this.getLayerViewPanel().useFBO() && !quickRendering) {
-            RenderingStatistics.setUserMessage("FBO is on");
-            this.setFBORendering(true);
-            currentRenderer.setFBORendering(true);
-            this.fboRendering(primitive, currentRenderer, opacity);
-        } else {
+        if (quickRendering) {
             currentRenderer.setFBORendering(false);
             RenderingStatistics.setUserMessage("FBO is off");
             this.setFBORendering(false);
             currentRenderer.render(primitive, opacity);
+        } else {
+            RenderingStatistics.setUserMessage("FBO is on");
+            this.setFBORendering(true);
+            currentRenderer.setFBORendering(true);
+            this.fboRendering(primitive, currentRenderer, opacity);
         }
     }
 
@@ -618,14 +602,13 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             if (this.fboSymbolizer != null) {
                 int antialisingSize = this.getLayerViewPanel()
                         .getAntialiasingSize() + 1;
-                System.err.println("Draw FBO for symbolizer "
-                        + this.fboSymbolizer);
                 this.drawFBO(this.fboOpacity, antialisingSize);
                 GLTools.glCheckError("after drawing FBO");
             }
             this.initializeFBO(primitive, opacity, currentSymbolizer);
             GLTools.glCheckError("after FBO initialization");
         }
+
         GL11.glViewport(0, 0, this.getFBOImageWidth(), this.getFBOImageHeight());
         GLTools.glCheckError("viewport");
         GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
@@ -634,6 +617,13 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         glEnable(GL_TEXTURE_2D);
         // display the layer
 
+        if (this.previousRenderer != renderer) {
+            if (this.previousRenderer != null) {
+                this.previousRenderer.switchRenderer();
+            }
+            renderer.activateRenderer();
+            this.previousRenderer = renderer;
+        }
         renderer.setFBORendering(true);
         renderer.render(primitive, 1f);
         renderer.setFBORendering(false);
@@ -706,7 +696,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         GLTools.glCheckError("FBO activate texture");
         GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE1_SLOT);
         GLTools.glCheckError("FBO bound texture");
-        glBindTexture(GL_TEXTURE_2D, this.getFBOTextureId());
+        glBindTexture(GL_TEXTURE_2D, this.getLayerViewPanel().getFBOTextureId());
         GLTools.glCheckError("FBO bound texture");
 
         GL11.glDepthMask(false);
@@ -741,19 +731,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         GLTools.glCheckError("exiting FBO rendering");
         glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
 
-    }
-
-    private int getFBOTextureId() {
-        // System.err.println("get FBO texture ID : " + this.fboTextureId);
-        if (this.fboTextureId == -1) {
-            this.fboTextureId = GL11.glGenTextures();
-            // System.err.println("generated FBO texture ID : "
-            // + this.fboTextureId);
-            if (this.fboTextureId < 0) {
-                logger.error("Unable to use FBO texture");
-            }
-        }
-        return this.fboTextureId;
     }
 
     public final int getCanvasWidth() {
@@ -816,14 +793,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
     @Override
     public void initializeRendering() {
         this.previousRenderer = null;
-        if (this.fboId == -1) {
-            // generate an ID for the FBO
-            this.fboId = glGenFramebuffers();
-            if (this.fboId < 0) {
-                logger.error("Unable to create frame buffer for FBO rendering");
-            }
-
-        }
     }
 
     @Override
@@ -857,7 +826,8 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         this.fboPrimitive = primitive;
         // render primitive in a FBO (offscreen rendering)
         // bind a read-only framebuffer
-        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, this.getFboId());
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, this
+                .getLayerViewPanel().getFboId());
         // this.setFBORendering(true);
         // check if the screen size has change since previous rendering
 
@@ -868,15 +838,15 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             this.previousFBOImageWidth = fboImageWidth;
             this.previousFBOImageHeight = fboImageHeight;
 
-            glBindTexture(GL_TEXTURE_2D, this.getFBOTextureId());
+            int fboTextureId = this.getLayerViewPanel().getFBOTextureId();
+            glBindTexture(GL_TEXTURE_2D, fboTextureId);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
                     GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
             glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, fboImageWidth,
                     fboImageHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
                     (ByteBuffer) null);
             GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER,
-                    GL30.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                    this.getFBOTextureId(), 0);
+                    GL30.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fboTextureId, 0);
             GLTools.glCheckError("FBO size modification");
             GL11.glViewport(0, 0, fboImageWidth, fboImageHeight);
 

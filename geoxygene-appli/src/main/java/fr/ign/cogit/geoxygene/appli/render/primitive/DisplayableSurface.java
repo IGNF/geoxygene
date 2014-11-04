@@ -94,7 +94,7 @@ public class DisplayableSurface extends AbstractDisplayable {
             IMultiSurface<?> multiSurface, IFeature feature,
             Symbolizer symbolizer, LwjglLayerRenderer layerRenderer,
             GLComplexRenderer partialRenderer) {
-        super(name, viewport, layerRenderer, symbolizer);
+        super(name, viewport, layerRenderer, feature, symbolizer);
         this.setFeature(feature);
         for (Object polygon : multiSurface.getList()) {
             if (polygon instanceof IPolygon) {
@@ -114,7 +114,7 @@ public class DisplayableSurface extends AbstractDisplayable {
     public DisplayableSurface(String name, Viewport viewport, IPolygon polygon,
             IFeature feature, Symbolizer symbolizer,
             LwjglLayerRenderer layerRenderer, GLComplexRenderer partialRenderer) {
-        super(name, viewport, layerRenderer, symbolizer);
+        super(name, viewport, layerRenderer, feature, symbolizer);
         this.setFeature(feature);
         this.polygons.add(polygon);
         this.generatePartialRepresentation(partialRenderer);
@@ -132,6 +132,7 @@ public class DisplayableSurface extends AbstractDisplayable {
     /**
      * @return the feature
      */
+    @Override
     public IFeature getFeature() {
         return this.feature;
     }
@@ -140,6 +141,7 @@ public class DisplayableSurface extends AbstractDisplayable {
      * @param feature
      *            the feature to set
      */
+    @Override
     public void setFeature(IFeature feature) {
         this.feature = feature;
     }
@@ -196,7 +198,7 @@ public class DisplayableSurface extends AbstractDisplayable {
         } else if (this.getSymbolizer().isTextSymbolizer()) {
             TextSymbolizer symbolizer = (TextSymbolizer) this.getSymbolizer();
             GLTextComplex primitive = new GLTextComplex("toponym-"
-                    + this.getName(), 0, 0);
+                    + this.getName(), this.getFeature(), 0, 0);
             primitive.setRenderer(GeoxRendererManager.getOrCreateTextRenderer(
                     symbolizer, this.getLayerRenderer()));
             complexes.add(primitive);

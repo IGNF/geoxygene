@@ -72,8 +72,11 @@ public class GeoxComplexRendererText extends AbstractGeoxComplexRenderer {
     public static final int COLORTEXTURE1_SLOT = 1;
     private static final int COLORTEXTURE2_SLOT = 2;
     private BufferedImage textImage = null;
+    private Graphics2D textImageGraphics = null;
     private ByteBuffer buffer = null;
     private int textTextureId = -1;
+    private int previousWidth = -1;
+    private int previousHeight = -1;
     private int[] pixels = null;
 
     /**
@@ -108,7 +111,7 @@ public class GeoxComplexRendererText extends AbstractGeoxComplexRenderer {
     public void switchRenderer() throws RenderingException {
         super.switchRenderer();
         try {
-            this.drawFBO();
+            this.drawText();
         } catch (GLException e) {
             throw new RenderingException(e);
         }
@@ -140,33 +143,44 @@ public class GeoxComplexRendererText extends AbstractGeoxComplexRenderer {
     }
 
     private void initTextImage() {
-        if (this.textImage == null
-                || this.textImage.getWidth() != this.getLayerViewPanel()
-                        .getWidth()
-                || this.textImage.getHeight() != this.getLayerViewPanel()
-                        .getHeight()) {
-            this.textImage = new BufferedImage(this.getLayerViewPanel()
-                    .getWidth(), this.getLayerViewPanel().getHeight(),
-                    BufferedImage.TYPE_4BYTE_ABGR);
-            this.buffer = BufferUtils.createByteBuffer(this.textImage
-                    .getWidth() * this.textImage.getHeight() * 4);
-            this.pixels = new int[this.textImage.getWidth()
-                    * this.textImage.getHeight()];
-
-        }
-        Graphics2D g = this.textImage.createGraphics();
-        g.setComposite(AlphaComposite.Clear);
-        g.setColor(Color.red);
-        g.fillRect(0, 0, this.textImage.getWidth(), this.textImage.getHeight());
-
+        int width = this.getLayerRenderer().getCanvasWidth();
+        int height = this.getLayerRenderer().getCanvasHeight();
+        this.textImage = new BufferedImage(width, height,
+                BufferedImage.TYPE_4BYTE_ABGR);
+        this.textImageGraphics = this.textImage.createGraphics();
+        // clear all image with a transparent bg
+        this.textImageGraphics.setComposite(AlphaComposite.Clear);
+        this.textImageGraphics.setColor(Color.black);
+        this.textImageGraphics.fillRect(0, 0, width, height);
+        // reinit compositing to default behaviour (transparency fading enabled)
         Composite fade = AlphaComposite
                 .getInstance(AlphaComposite.SRC_OVER, 1f);
-        g.setComposite(fade);
+        this.textImageGraphics.setComposite(fade);
     }
 
-    private void drawFBO() throws GLException {
-        int height = this.textImage.getHeight();
-        int width = this.textImage.getWidth();
+    /**
+     * Draw the complete text image into the current image
+     * 
+     * @throws GLException
+     */
+    private void drawText() throws GLException {
+        int width = this.getLayerRenderer().getCanvasWidth();
+        int height = this.getLayerRenderer().getCanvasHeight();
+        if (width != this.previousWidth || height != this.previousHeight
+                || this.buffer == null || this.pixels == null) {
+            this.buffer = BufferUtils.createByteBuffer(width * height * 4);
+            this.pixels = new int[width * height];
+            this.previousWidth = width;
+            this.previousHeight = height;
+        }
+        // try {
+        // ImageIO.write(this.textImage, "PNG", new File("toponyms-drawn.png"));
+        // } catch (IOException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
+        this.textImage.getRGB(0, 0, width, height, this.pixels, 0, width);
+        this.buffer.rewind();
         for (int y = height - 1; y >= 0; y--) {
             for (int x = 0; x < width; x++) {
                 int pixel = this.pixels[y * width + x];
@@ -180,100 +194,81 @@ public class GeoxComplexRendererText extends AbstractGeoxComplexRenderer {
             }
         }
         this.buffer.rewind();
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.getTextTextureId());
-
-        GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S,
-                GL11.GL_REPEAT);
-        GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T,
-                GL11.GL_REPEAT);
+        this.textImageGraphics.dispose();
+        glEnable(GL_TEXTURE_2D);
+        GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE2_SLOT);
+        glBindTexture(GL_TEXTURE_2D, this.getTextTextureId());
 
         // Setup texture scaling filtering
         GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
                 GL11.GL_LINEAR);
         GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,
                 GL11.GL_LINEAR);
-
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
-                GL11.GL_LINEAR);
         GL11.glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0,
                 GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, this.buffer);
 
         GLProgram program = this.getGlContext().setCurrentProgram(
-                LayerViewGLPanel.screenspaceAntialiasedTextureProgramName);
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-
-        GL11.glViewport(0, 0, width, height);
-        glEnable(GL_TEXTURE_2D);
+                LayerViewGLPanel.textLayerProgramName);
+        GL11.glViewport(0, 0, this.getLayerRenderer().getFBOImageWidth(), this
+                .getLayerRenderer().getFBOImageHeight());
         glDisable(GL11.GL_POLYGON_SMOOTH);
 
-        program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
+        program.setUniform1i(LayerViewGLPanel.colorTexture2UniformVarName,
                 COLORTEXTURE2_SLOT);
-        GLTools.glCheckError("FBO bind antialiasing");
-        program.setUniform1i(LayerViewGLPanel.antialiasingSizeUniformVarName, 1);
-        GLTools.glCheckError("FBO activate texture");
-        GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE2_SLOT);
-        GLTools.glCheckError("FBO bound texture");
-        glBindTexture(GL_TEXTURE_2D, this.getTextTextureId());
-        GLTools.glCheckError("FBO bound texture");
+        GLTools.glCheckError("texture binding");
 
         GL11.glDepthMask(false);
         glDisable(GL11.GL_DEPTH_TEST);
 
         GL30.glBindVertexArray(LayerViewGLPanel.getScreenQuad().getVaoId());
+        GLTools.glCheckError("before drawing textured quad VAO binding");
 
         program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
         program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName, 1f);
         glEnable(GL_BLEND);
         GL11.glBlendFunc(GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
-                GL11.GL_LINEAR);
-        //
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+        GLTools.glCheckError("blending set for textured quad");
 
-        GLTools.glCheckError("before FBO drawing textured quad");
         LwjglLayerRenderer.drawComplex(LayerViewGLPanel.getScreenQuad());
-        // LayerViewGLPanel.getScreenQuad().setColor(new Color(1f, 1f, 1f,
-        // .5f));
-        GLTools.glCheckError("FBO drawing textured quad");
+        GLTools.glCheckError("Drawing textured quad");
 
         GL30.glBindVertexArray(0); // unbind VAO
-        GLTools.glCheckError("exiting FBO rendering");
+        GLTools.glCheckError("exiting Text rendering");
         glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
-
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 
     }
 
     /**
      * Render toponyms into an AWT graphics
+     * 
+     * @param primitive
      */
-    private void awtRendering() {
+    private void awtRendering(GLTextComplex primitive) {
         TextSymbolizer symbolizer = this.getSymbolizer();
         Viewport viewport = this.getLayerViewPanel().getViewport();
-        if (symbolizer.getLabel() == null) {
+
+        if (symbolizer.getLabel() == null || viewport == null) {
             return;
         }
-        this.textImage.getRGB(0, 0, this.textImage.getWidth(),
-                this.textImage.getHeight(), this.pixels, 0,
-                this.textImage.getWidth());
-        Graphics2D g = this.textImage.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        this.textImageGraphics = this.textImage.createGraphics();
+        this.textImageGraphics.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
-        for (IFeature feature : this.getLayerRenderer().getLayer()
-                .getFeatureCollection()) {
+        IFeature feature = primitive.getFeature();
 
-            Object value = feature.getAttribute(symbolizer.getLabel());
-            String text = (value == null) ? null : value.toString();
-            if (text != null) {
-                RenderUtil.paint(symbolizer, text, feature.getGeom(), viewport,
-                        g, 1.);
-            }
+        Object value = feature.getAttribute(symbolizer.getLabel());
+        String text = (value == null) ? null : value.toString();
+
+        if (text != null) {
+            RenderUtil.paint(symbolizer, text, feature.getGeom(), viewport,
+                    this.textImageGraphics, 1.);
         }
-        g.dispose();
 
         // try {
-        // ImageIO.write(this.textImage, "PNG", new File("toponyms.png"));
+        // ImageIO.write(this.textImage, "PNG", new File("toponyms-render"
+        // + (new Date().getTime()) + ".png"));
         // } catch (IOException e) {
         // // TODO Auto-generated catch block
         // e.printStackTrace();
@@ -282,13 +277,13 @@ public class GeoxComplexRendererText extends AbstractGeoxComplexRenderer {
     }
 
     private int getTextTextureId() {
-        // System.err.println("get FBO texture ID : " + this.fboTextureId);
+        // System.err.println("get Text texture ID : " + this.fboTextureId);
         if (this.textTextureId == -1) {
             this.textTextureId = GL11.glGenTextures();
-            // System.err.println("generated FBO texture ID : "
+            // System.err.println("generated Text texture ID : "
             // + this.fboTextureId);
             if (this.textTextureId < 0) {
-                logger.error("Unable to use Overlay texture");
+                logger.error("Unable to use Text texture");
             }
         }
         return this.textTextureId;
@@ -296,8 +291,8 @@ public class GeoxComplexRendererText extends AbstractGeoxComplexRenderer {
 
     /**
      * Render a polygon using color, texture or wireframe GL_BLEND has to be set
-     * before this rendering method. It uses FBOs. FBO initialization is donne
-     * in activateRenderer() and drawing FBO is done in switchRenderer() methods
+     * before this rendering method. It uses FBOs. FBO initialization is dnne in
+     * activateRenderer() and drawing FBO is done in switchRenderer() methods
      * 
      * @param primitive
      * @throws GLException
@@ -307,7 +302,7 @@ public class GeoxComplexRendererText extends AbstractGeoxComplexRenderer {
         GLTools.glCheckError("gl error before text normal rendering");
 
         // AWT toponyms rendering in the this.textImage
-        this.awtRendering();
+        this.awtRendering(primitive);
 
     }
 

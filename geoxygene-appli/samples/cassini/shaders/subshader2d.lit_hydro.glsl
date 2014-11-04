@@ -66,6 +66,7 @@ float fnoise(in vec2 p) {
 
 
 vec4 computeColor( DataGradient fragmentData ) {
+//return vec4( vec3(mod(fragmentData.worldUV.x* fragmentData.worldUVRange.x,100.0) / 100.0) ,1.0);
 	float worldU = fragmentData.worldUV.x * fragmentData.worldUVRange.x;
 	float unitV = fragmentData.worldUV.y;
 	float trait = mod( worldU, strokeDistance ) - strokeDistance / 2.0; // u => -strokeDistance / 2 .. +strokeDistance / 2

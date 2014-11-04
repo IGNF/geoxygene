@@ -1,5 +1,7 @@
 package fr.ign.cogit.geoxygene.appli.layer;
 
+import static org.lwjgl.opengl.GL30.glGenFramebuffers;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -83,6 +85,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private static final String gradientVertexShaderFilename = "./src/main/resources/shaders/gradient.vert.glsl";
     private static final String gradientFragmentShaderFilename = "./src/main/resources/shaders/gradient.frag.glsl";
     private static final String antialiasedFragmentShaderFilename = "./src/main/resources/shaders/antialiased.frag.glsl";
+    private static final String textScreenspaceVertexShaderFilename = "./src/main/resources/shaders/text-screenspace.vert.glsl";
+    private static final String textLayerFragmentShaderFilename = "./src/main/resources/shaders/text-layer.frag.glsl";
     private static final String colorFragmentShaderFilename = "./src/main/resources/shaders/polygon.color.frag.glsl";
     private static final String textureFragmentShaderFilename = "./src/main/resources/shaders/polygon.texture.frag.glsl";
     private static final String screenspaceVertexShaderFilename = "./src/main/resources/shaders/screenspace.vert.glsl";
@@ -121,6 +125,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private int antialiasing = 2;
     private boolean useFBO = true;
     private boolean useContinuousRendering = false;
+    private int fboId = -1;
+    private int fboTextureId = -1;
 
     public enum LayerViewGLCanvasType {
         GL1, GL4
@@ -222,6 +228,35 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
     public void setFBO(boolean useFBO) {
         this.useFBO = useFBO;
+    }
+
+    /**
+     * @return the fboId
+     */
+    public int getFboId() {
+        if (this.fboId == -1) {
+            // generate an ID for the FBO
+            this.fboId = glGenFramebuffers();
+            System.err.println("generate FBO id : " + this.fboId);
+            if (this.fboId < 0) {
+                logger.error("Unable to create frame buffer for FBO rendering");
+            }
+
+        }
+        return this.fboId;
+    }
+
+    public int getFBOTextureId() {
+        // System.err.println("get FBO texture ID : " + this.fboTextureId);
+        if (this.fboTextureId == -1) {
+            this.fboTextureId = GL11.glGenTextures();
+            // System.err.println("generated FBO texture ID : "
+            // + this.fboTextureId);
+            if (this.fboTextureId < 0) {
+                logger.error("Unable to use FBO texture");
+            }
+        }
+        return this.fboTextureId;
     }
 
     /**
@@ -734,6 +769,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String globalOpacityUniformVarName = "globalOpacity";
     public static final String objectOpacityUniformVarName = "objectOpacity";
     public static final String colorTexture1UniformVarName = "colorTexture1";
+    public static final String colorTexture2UniformVarName = "colorTexture2";
     public static final String gradientTextureUniformVarName = "gradientTexture";
     public static final String textureScaleFactorUniformVarName = "textureScaleFactor";
     public static final String antialiasingSizeUniformVarName = "antialiasingSize";
@@ -761,13 +797,15 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String screenspaceTextureProgramName = "ScreenspaceTexture";
     public static final String backgroundProgramName = "BackgroundTexture";
     public static final String screenspaceAntialiasedTextureProgramName = "ScreenspaceAntialiasedTexture";
-    public static final String gradientProgramName = "gradientTexture";
+    public static final String textLayerProgramName = "TextLayer";
+    public static final String gradientProgramName = "GradientTexture";
 
     private final GLProgramAccessor basicAccessor = null;
     private GLProgramAccessor screenspaceTextureAccessor = null;
     private GLProgramAccessor screenspaceColorAccessor = null;
     private final GLProgramAccessor screenspaceAntialiasedAccessor = null;
     private GLProgramAccessor backgroundAccessor = null;
+    private GLProgramAccessor textLayerAccessor = null;
     private GLProgramAccessor worldspaceColorAccessor = null;
     private GLProgramAccessor worldspaceTextureAccessor = null;
 
@@ -956,6 +994,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 this.createScreenspaceAntialiasedAccessor(null));
         glContext.addProgram(backgroundProgramName,
                 this.getBackgroundAccessor());
+        glContext.addProgram(textLayerProgramName, this.getTextLayerAccessor());
         // bezier & line painting programs are not created here because we don't
         // know the SLD content at this point.
         // idem for screenspace program (parameterized by a LayerFilter)
@@ -1073,6 +1112,27 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             };
         }
         return this.backgroundAccessor;
+    }
+
+    /**
+     * @return
+     */
+    public GLProgramAccessor getTextLayerAccessor() {
+        if (this.textLayerAccessor == null) {
+            this.textLayerAccessor = new GLProgramAccessor() {
+
+                @Override
+                public GLProgram getGLProgram() throws GLException {
+                    try {
+                        return LayerViewGLPanel.this.createTextLayerProgram();
+                    } catch (IOException e) {
+                        throw new GLException(e);
+
+                    }
+                }
+            };
+        }
+        return this.textLayerAccessor;
     }
 
     /**
@@ -1445,6 +1505,31 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         program.addUniform(textureScaleFactorUniformVarName);
         program.addUniform(antialiasingSizeUniformVarName);
         shader.declareUniforms(program);
+        return program;
+    }
+
+    /**
+     * @param worldspaceVertexShaderId
+     * @throws GLException
+     */
+    public GLProgram createTextLayerProgram() throws GLException, IOException {
+
+        GLProgram program = new GLProgram(textLayerProgramName);
+        program.addVertexShader(
+                GLTools.readFileAsString(textScreenspaceVertexShaderFilename),
+                textScreenspaceVertexShaderFilename);
+        program.addFragmentShader(
+                GLTools.readFileAsString(textLayerFragmentShaderFilename),
+                textLayerFragmentShaderFilename);
+        program.addInputLocation(GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        program.addInputLocation(GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        program.addInputLocation(GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
+        program.addUniform(globalOpacityUniformVarName);
+        program.addUniform(objectOpacityUniformVarName);
+        program.addUniform(colorTexture2UniformVarName);
         return program;
     }
 

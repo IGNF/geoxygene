@@ -478,13 +478,12 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         // Initialisation du symboliser s'il y a lieu
         Style lastStyle = this.layer.getStyles().get(
                 this.layer.getStyles().size() - 1);
-        if (lastStyle.getFeatureTypeStyles()
+        Symbolizer featureSymbolizer = lastStyle.getFeatureTypeStyles()
                 .get(lastStyle.getFeatureTypeStyles().size() - 1)
-                .getSymbolizer().isTextSymbolizer()
+                .getSymbolizer();
+        if (featureSymbolizer != null && featureSymbolizer.isTextSymbolizer()
                 && this.symbolizer == null) {
-            this.symbolizer = (TextSymbolizer) lastStyle.getFeatureTypeStyles()
-                    .get(lastStyle.getFeatureTypeStyles().size() - 1)
-                    .getSymbolizer();
+            this.symbolizer = (TextSymbolizer) featureSymbolizer;
         }
         if (this.symbolizer == null) {
             this.createTextSymbolizer();

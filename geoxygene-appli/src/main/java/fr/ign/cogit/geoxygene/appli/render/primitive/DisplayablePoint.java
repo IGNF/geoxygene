@@ -35,6 +35,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
@@ -73,9 +74,9 @@ public class DisplayablePoint extends AbstractDisplayable {
      * @param symbolizer
      */
     public DisplayablePoint(String name, Viewport viewport, IGeometry geometry,
-            Symbolizer symbolizer, LwjglLayerRenderer layerRenderer,
-            GLComplexRenderer partialRenderer) {
-        super(name, viewport, layerRenderer, symbolizer);
+            IFeature feature, Symbolizer symbolizer,
+            LwjglLayerRenderer layerRenderer, GLComplexRenderer partialRenderer) {
+        super(name, viewport, layerRenderer, feature, symbolizer);
         this.addGeometry(geometry);
         this.generatePartialRepresentation(partialRenderer);
     }
@@ -129,7 +130,7 @@ public class DisplayablePoint extends AbstractDisplayable {
         } else if (this.getSymbolizer().isTextSymbolizer()) {
             TextSymbolizer symbolizer = (TextSymbolizer) this.getSymbolizer();
             GLTextComplex primitive = new GLTextComplex("toponym-"
-                    + this.getName(), 0, 0);
+                    + this.getName(), this.getFeature(), 0, 0);
             primitive.setRenderer(GeoxRendererManager.getOrCreateTextRenderer(
                     symbolizer, this.getLayerRenderer()));
             complexes.add(primitive);

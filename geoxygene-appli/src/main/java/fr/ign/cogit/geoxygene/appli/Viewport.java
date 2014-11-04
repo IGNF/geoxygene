@@ -242,6 +242,24 @@ public class Viewport {
         this.layerViewPanels.add(aLayerViewPanel);
     }
 
+    /**
+     * Copy constructor
+     * 
+     * @param src
+     */
+    public Viewport(final Viewport src) {
+        this.layerViewPanels.addAll(src.getLayerViewPanels());
+        this.modelToViewTransform = src.modelToViewTransform == null ? null
+                : new AffineTransform(src.modelToViewTransform);
+        this.scale = src.scale;
+        this.spacingInPixels = src.spacingInPixels;
+        this.viewOrigin = this.viewOrigin == null ? null : new Point2D.Double(
+                src.viewOrigin.getX(), src.viewOrigin.getY());
+
+        this.viewToModelTransform = src.viewToModelTransform == null ? null
+                : new AffineTransform(src.viewToModelTransform);
+    }
+
     /** @return The envelope of the panel in model coordinates. */
     public final IEnvelope getEnvelopeInModelCoordinates() {
         LayerViewPanel lvp = this.layerViewPanels.iterator().next();
