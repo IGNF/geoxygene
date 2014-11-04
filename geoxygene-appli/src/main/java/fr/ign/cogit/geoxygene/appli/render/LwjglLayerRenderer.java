@@ -521,7 +521,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             double opacity) throws GLException, RenderingException {
         boolean quickRendering = this.getLayerViewPanel().getProjectFrame()
                 .getMainFrame().getMode().getCurrentMode().getRenderingType() != RenderingTypeMode.FINAL
-                && !this.getLayerViewPanel().useFBO();
+                || !this.getLayerViewPanel().useFBO();
         // System.err.println("rendering primitive "
         // + primitive.getMeshes().size() + " meshes");
         GeoxComplexRenderer currentRenderer = (GeoxComplexRenderer) primitive
@@ -531,12 +531,12 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                     + this.getLayer().getName());
             return;
         }
-        if (currentRenderer instanceof GeoxComplexRendererText
-                && (quickRendering || !this.getLayerViewPanel().useFBO())) {
-            // text rendering is a little bit time consuming. Skip it in quick
-            // rendering mode
-            return;
-        }
+        // if (currentRenderer instanceof GeoxComplexRendererText
+        // && (quickRendering || !this.getLayerViewPanel().useFBO())) {
+        // // text rendering is a little bit time consuming. Skip it in quick
+        // // rendering mode
+        // return;
+        // }
         if (quickRendering) {
             currentRenderer.setFBORendering(false);
             RenderingStatistics.setUserMessage("FBO is off");
