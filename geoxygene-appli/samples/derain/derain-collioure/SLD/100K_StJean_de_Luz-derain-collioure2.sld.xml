@@ -7,62 +7,6 @@
         <Color>#FFFFFF</Color>
     </Background>
     <NamedLayer>
-        <Name>petite_emprise</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer petite_emprise</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#db47d2</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#993193</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#993193</CssParameter>
-                            <CssParameter name="stroke-opacity">0.8</CssParameter>
-                            <CssParameter name="stroke-width">1.0</CssParameter>
-                            <CssParameter name="stroke-linecap">round</CssParameter>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <Fill>
-                            <BasicTexture xRepeat="false" yRepeat="false">
-<Displacement x="0.0" y="0.0"/>
-<ScaleFactor x="0.1" y="0.1"/>
-<Rotation angle="0.0"/>
-<url>file:./samples/derain/derain-collioure/images/fond-vert-bleu.png</url>
-                            </BasicTexture>
-                            <CssParameter name="fill">#ffffff</CssParameter>
-                            <CssParameter name="fill-opacity">1.0</CssParameter>
-                        </Fill>
-                    </PolygonSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-        <ContrastFilter>
-            <Contrast>1.5</Contrast>
-            <Brightness>0.03</Brightness>
-            <Gamma>1.0</Gamma>
-        </ContrastFilter>
-    </NamedLayer>
-    <NamedLayer>
         <Name>lit_hydro_100</Name>
         <UserStyle>
             <Name>Style créé pour le layer lit_hydro_100</Name>
@@ -108,6 +52,67 @@
                             <CssParameter name="fill-opacity">0.8</CssParameter>
                         </Fill>
                     </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+    <NamedLayer>
+        <Name>hydro_100</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer hydro_100</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#a1ad1c</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#707913</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#2070b1</CssParameter>
+                            <CssParameter name="stroke-opacity">1.0</CssParameter>
+                            <CssParameter name="stroke-width">150.0</CssParameter>
+                            <CssParameter name="stroke-linejoin">round</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                            <BasicTextureExpressiveRendering>
+<TransitionSize>5.0</TransitionSize>
+<PaperTexture>./samples/derain/derain-collioure/images/canvas-normalized.png</PaperTexture>
+<BrushTexture>./samples/derain/derain-collioure/images/pencil1-tiled-136-135.png</BrushTexture>
+<BrushStartLength>136</BrushStartLength>
+<BrushEndLength>135</BrushEndLength>
+<BrushAspectRatio>8.0</BrushAspectRatio>
+<PaperSizeInCm>4.0</PaperSizeInCm>
+<PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
+<PaperRoughness>7.839</PaperRoughness>
+<BrushRoughness>2.992</BrushRoughness>
+<StrokePressure>6.053</StrokePressure>
+<StrokeSoftness>4.5840000000000005</StrokeSoftness>
+<UserShader>
+    <File>./samples/derain/derain-collioure/shaders/subshader1d.derain.glsl</File>
+    <Float name="extremitiesLength" value="210.375" description="no description" min="0.0" max="1000.0" increment="10.0"/>
+</UserShader>
+                            </BasicTextureExpressiveRendering>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                    </LineSymbolizer>
                 </Rule>
             </FeatureTypeStyle>
         </UserStyle>
@@ -282,67 +287,6 @@
         </UserStyle>
     </NamedLayer>
     <NamedLayer>
-        <Name>hydro_100</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer hydro_100</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#a1ad1c</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#707913</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#2070b1</CssParameter>
-                            <CssParameter name="stroke-opacity">1.0</CssParameter>
-                            <CssParameter name="stroke-width">150.0</CssParameter>
-                            <CssParameter name="stroke-linejoin">round</CssParameter>
-                            <CssParameter name="stroke-linecap">round</CssParameter>
-                            <BasicTextureExpressiveRendering>
-<TransitionSize>5.0</TransitionSize>
-<PaperTexture>./samples/derain/derain-collioure/images/canvas-normalized.png</PaperTexture>
-<BrushTexture>./samples/derain/derain-collioure/images/pencil1-tiled-136-135.png</BrushTexture>
-<BrushStartLength>136</BrushStartLength>
-<BrushEndLength>135</BrushEndLength>
-<BrushAspectRatio>8.0</BrushAspectRatio>
-<PaperSizeInCm>4.0</PaperSizeInCm>
-<PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
-<PaperRoughness>7.839</PaperRoughness>
-<BrushRoughness>2.992</BrushRoughness>
-<StrokePressure>6.053</StrokePressure>
-<StrokeSoftness>4.5840000000000005</StrokeSoftness>
-<UserShader>
-    <File>./samples/derain/derain-collioure/shaders/subshader1d.derain.glsl</File>
-    <Float name="extremitiesLength" value="210.375" description="no description" min="0.0" max="1000.0" increment="10.0"/>
-</UserShader>
-                            </BasicTextureExpressiveRendering>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <PerpendicularOffset>0.0</PerpendicularOffset>
-                    </LineSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-    </NamedLayer>
-    <NamedLayer>
         <Name>rochy_OCS_100</Name>
         <UserStyle>
             <Name>Style créé pour le layer rochy_OCS_100</Name>
@@ -468,7 +412,7 @@
 <StrokeSoftness>4.224</StrokeSoftness>
 <UserShader>
     <File>./samples/derain/derain-collioure/shaders/subshader1d.derain.glsl</File>
-    <Float name="extremitiesLength" value="126.543" description="no description" min="0.0" max="1000.0" increment="10.0"/>
+    <Float name="extremitiesLength" value="277.778" description="no description" min="0.0" max="1000.0" increment="10.0"/>
 </UserShader>
                             </BasicTextureExpressiveRendering>
                         </Stroke>
@@ -618,90 +562,6 @@
         </UserStyle>
     </NamedLayer>
     <NamedLayer>
-        <Name>vegetation_OCS_100</Name>
-        <UserStyle>
-            <Name>Style créé pour le layer vegetation_OCS_100</Name>
-            <IsDefault>false</IsDefault>
-            <FeatureTypeStyle>
-                <Rule>
-                    <LegendGraphic>
-                        <Graphic>
-                            <Mark>
-<WellKnownName>square</WellKnownName>
-<Fill>
-    <CssParameter name="fill">#0f3f40</CssParameter>
-    <CssParameter name="fill-opacity">0.8</CssParameter>
-</Fill>
-<Stroke>
-    <CssParameter name="stroke">#0a2c2c</CssParameter>
-    <CssParameter name="stroke-opacity">0.8</CssParameter>
-    <CssParameter name="stroke-width">1.0</CssParameter>
-</Stroke>
-                            </Mark>
-                            <opacity>1.0</opacity>
-                            <Size>6.0</Size>
-                            <Rotation>
-<Literal>0</Literal>
-                            </Rotation>
-                        </Graphic>
-                    </LegendGraphic>
-                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
-                        <Stroke>
-                            <CssParameter name="stroke">#4d9221</CssParameter>
-                            <CssParameter name="stroke-opacity">0.91</CssParameter>
-                            <CssParameter name="stroke-width">5.0</CssParameter>
-                            <CssParameter name="stroke-linecap">round</CssParameter>
-                        </Stroke>
-                        <GeometryPropertyName>geom</GeometryPropertyName>
-                        <Fill>
-                            <TileDistributionTexture xRepeat="false" yRepeat="false">
-<Displacement x="0.0" y="0.0"/>
-<ScaleFactor x="1.0" y="1.0"/>
-<Rotation angle="0.0"/>
-<MaxCoastlineLength>1000.0</MaxCoastlineLength>
-<Tile>
-    <url>file:./samples/derain/derain-collioure/images/stroke-green-1.png</url>
-    <ScaleFactor>0.3</ScaleFactor>
-    <MinDistance>0.0</MinDistance>
-    <MaxDistance>INF</MaxDistance>
-    <InRangeProbability>1.0</InRangeProbability>
-    <OutOfRangeProbability>0.0</OutOfRangeProbability>
-</Tile>
-<Tile>
-    <url>file:./samples/derain/derain-collioure/images/stroke-green-2.png</url>
-    <ScaleFactor>0.3</ScaleFactor>
-    <MinDistance>0.0</MinDistance>
-    <MaxDistance>INF</MaxDistance>
-    <InRangeProbability>1.0</InRangeProbability>
-    <OutOfRangeProbability>0.0</OutOfRangeProbability>
-</Tile>
-<Tile>
-    <url>file:./samples/derain/derain-collioure/images/stroke-green-3.png</url>
-    <ScaleFactor>0.3</ScaleFactor>
-    <MinDistance>0.0</MinDistance>
-    <MaxDistance>INF</MaxDistance>
-    <InRangeProbability>1.0</InRangeProbability>
-    <OutOfRangeProbability>0.0</OutOfRangeProbability>
-</Tile>
-<Resolution>300.0</Resolution>
-<Blending>ALPHA</Blending>
-<DistributionManagement>EXACT</DistributionManagement>
-<BlurSize>2</BlurSize>
-                            </TileDistributionTexture>
-                            <CssParameter name="fill">#ffffff</CssParameter>
-                            <CssParameter name="fill-opacity">1.0</CssParameter>
-                        </Fill>
-                    </PolygonSymbolizer>
-                </Rule>
-            </FeatureTypeStyle>
-        </UserStyle>
-        <ContrastFilter>
-            <Contrast>1.5</Contrast>
-            <Brightness>-0.03</Brightness>
-            <Gamma>1.2</Gamma>
-        </ContrastFilter>
-    </NamedLayer>
-    <NamedLayer>
         <Name>toponyme_droit_25_emprise_100K</Name>
         <UserStyle>
             <Name>Style créé pour le layer toponyme_droit_25_emprise_100K</Name>
@@ -734,6 +594,12 @@
             </FeatureTypeStyle>
             <FeatureTypeStyle>
                 <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>symbolisat</PropertyName>
+                            <Literal>102</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
                     <TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
                         <GeometryPropertyName>geom</GeometryPropertyName>
                         <Label>
@@ -743,7 +609,7 @@
                             <CssParameter name="font-family">Serif</CssParameter>
                             <CssParameter name="font-style">normal</CssParameter>
                             <CssParameter name="font-weight">bold</CssParameter>
-                            <CssParameter name="font-size">20.0</CssParameter>
+                            <CssParameter name="font-size">15.0</CssParameter>
                         </Font>
                         <LabelPlacement>
                             <PointPlacement>
@@ -751,7 +617,33 @@
                             </PointPlacement>
                         </LabelPlacement>
                         <Halo>
-                            <Radius>5.0</Radius>
+                            <Radius>3.0</Radius>
+                        </Halo>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                        </Fill>
+                    </TextSymbolizer>
+                </Rule>
+                <Rule>
+                    <ElseFilter/>
+                    <TextSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Label>
+                            <PropertyName>ref_ecritu</PropertyName>
+                        </Label>
+                        <Font>
+                            <CssParameter name="font-family">Serif</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">normal</CssParameter>
+                            <CssParameter name="font-size">10.0</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+<Rotation>0.0</Rotation>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Halo>
+                            <Radius>2.0</Radius>
                         </Halo>
                         <Fill>
                             <CssParameter name="fill">#000000</CssParameter>

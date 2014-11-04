@@ -26,32 +26,22 @@ struct DataPainting {
 	
 };
 
-uniform float globalOpacity = 1.0;
 
-uniform float brushSpace;
-uniform float strokeThickness;
-uniform float angle;
-uniform float noiseWavelength;
-uniform float brushSpaceNoiseSize;
-uniform float x;
-uniform float y;
-uniform float z;
-uniform int nbSeeds;
-uniform float extremitiesLength;
-
-
-float extremitiesModifier( in float u, in float uMax ) {
-	return (1.0-0.6*smoothstep(uMax - extremitiesLength, uMax, u ));
-//return smoothstep(0, extremitiesLength, u ) * (1.0-smoothstep(uMax - extremitiesLength, uMax, u ));
+// v is scaled from [0..1] to [0.5-width/2..0.5+width/2]
+float vTextureScale( in float width, in float v ) {
+    return (v - 0.5 + width/2.0)/width;
+	float scaledV = 0.5 + (v - 0.5) / width;
+	if ( scaledV < 0 ) return 0;
+	if ( scaledV > 1 ) return 1;
+	return scaledV;
 }
 
-float strokeWidthModifier( in float u, in float uMax ) {
-return 1.;
-	//return extremitiesModifier( u, uMax );
+float computeStrokeWidth( in float u, in float uMax ) {
+	return 1;
 }
 
-float strokePressureModifier( in float u, in float uMax ) {
-	return extremitiesModifier( u, uMax );
+float computeStrokePressure( in float u, in float uMax ) {
+      return  u/uMax;
 }
 
 
@@ -59,19 +49,15 @@ float strokePressureModifier( in float u, in float uMax ) {
 vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
 	float u_w = fragmentData.uv.x;
 	float u_tex = 0;
-	// v_w is 'v' scaled from [0..1] to [-width/2..+width/2]
-	float v_w = (fragmentData.uv.y - 0.5) * fragmentData.brushWidth ;
+	float strokeWidth = computeStrokeWidth( fragmentData.uv.x, fragmentData.uMax);
+	float v_tex = vTextureScale( strokeWidth , fragmentData.uv.y );
 
-	float widthModifier = strokeWidthModifier( u_w, fragmentData.uMax );
-	float vSign = sign( v_w );
-	v_w =  vSign * pow( (2.0 * abs(v_w) / fragmentData.brushWidth), widthModifier ) * fragmentData.brushWidth / 2.0;
-	
 	float brushStartLength_w = fragmentData.brushStartWidth * fragmentData.brushScale;
 	float brushEndLength_w = fragmentData.brushEndWidth * fragmentData.brushScale;
 	float brushMiddleLength_w = (fragmentData.brushWidth - fragmentData.brushStartWidth - fragmentData.brushEndWidth) * fragmentData.brushScale;
 	
 	float brush0_tex = fragmentData.brushStartWidth / float(fragmentData.brushWidth);
-	float brush1_tex = 1.0 - fragmentData.brushEndWidth / float(fragmentData.brushWidth);
+	float brush1_tex = 1f - fragmentData.brushEndWidth / float(fragmentData.brushWidth);
 	if ( u_w <= brushStartLength_w ) {
 		u_tex = (u_w / brushStartLength_w) * brush0_tex;
 	} else if ( u_w >= fragmentData.uMax - brushEndLength_w ) {
@@ -83,30 +69,20 @@ vec2 computeBrushTextureCoordinates( DataPainting fragmentData ) {
 		float tileSize_w = polylineMiddleLength_w / float(nbTiles);
 		u_tex = mod( u_w - brushStartLength_w, tileSize_w) / tileSize_w * ( brush1_tex - brush0_tex ) + brush0_tex; 
 	}
-	// v_tex is 'v_w' scaled from [-width/2..+width/2] to [0..1]
-	float v_tex = v_w / fragmentData.brushWidth + 0.5;
+
 	return vec2(u_tex, v_tex);
+	
 }
-
-
 
 /************************************************************************************/
-vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {
-	float brushOpacity = 1.0 - (brushColor.r + brushColor.g + brushColor.b ) / 3.0 ;
-	float strokePressure = clamp( fragmentData.strokePressure / 10.0 * strokePressureModifier( fragmentData.uv.x, fragmentData.uMax ), 0.0, 1.0);
-	float sharpness = clamp( fragmentData.sharpness / 10.0, 0.0, 1.0 );
-	// distance: [0 .. brushDensity+paperDensity]
-	float brushPaperDistance = (1.0 - strokePressure) * ( fragmentData.brushDensity + fragmentData.paperDensity );
-	// paperField: [0 .. paperDensity]
-	vec3 paperHeightField = ( 1.0 - paperColor.rgb ) * fragmentData.paperDensity;
-	// brushField: [0 .. brushDensity]
-	vec3 brushHeightField = (1.0 - brushColor.rgb ) * fragmentData.brushDensity;
-	
-	vec3 penetration = (1 -(brushPaperDistance - ( paperHeightField + brushHeightField )) / ( fragmentData.brushDensity + fragmentData.paperDensity )) / 2.0;
-	vec3 f = smoothstep(sharpness, 1.0-sharpness, penetration );
-//	f = f * clamp( fragmentData.uv.y, 0.0, strokeWidthModifier( fragmentData.uv.x, fragmentData.uMax ));
-	
-	return vec4( fragmentData.color.rgb, globalOpacity * brushOpacity * f );
-//	return vec4( fragmentData.uv.y,0.0,0.0, globalOpacity);
+vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainting fragmentData ) {     
+	vec3 paperHeightField = paperColor.rgb;	
+	float pressure = computeStrokePressure(fragmentData.uv.x, fragmentData.uMax) * fragmentData.strokePressure;
+	float bh = 1-(1-brushColor.r) * pressure;
+	float ph = (0.8 + (paperHeightField.x-0.5)*0.2);
+	float penetration = clamp( ph - (1-bh), -1, 1);
+	float f = smoothstep( 0.5 -.04, 0.5 +0.04,  penetration );
+//	return vec4( vec3(penetration), 1 );
+//	return vec4( computeBrushTextureCoordinates(fragmentData), 0, 1 );
+	return vec4( fragmentData.color.rgb, ( 1.0 - f ) );
 }
-

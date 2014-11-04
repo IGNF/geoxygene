@@ -33,6 +33,8 @@ uniform float strokeLength = 0.5;
 uniform float strokeStartShift = 0.05;
 uniform float strokeStartLength = 0.05;
 uniform float strokeEndLength = 0.05;
+uniform float dotSize = 0.05;
+uniform int nbDots = 15;
 
 float ambient = .8;
 
@@ -64,6 +66,16 @@ float fnoise(in vec2 p) {
 	return .5 * noise(p) + .25 * noise(p*2.03) + .125 * noise(p*3.99);
 }
 
+float dotism(float x) {
+	float v = 1.;
+	int i;
+	float d = 0;
+	for ( i = 0; i < nbDots; i++) {
+		d = float(i * i *i) / float(nbDots * nbDots * nbDots);
+		v = v * ((1.0-smoothstep( d - dotSize, d, x)) + smoothstep( d, d+dotSize, x));
+	}
+	return v;
+}
 
 vec4 computeColor( DataGradient fragmentData ) {
 //return vec4( vec3(mod(fragmentData.worldUV.x* fragmentData.worldUVRange.x,100.0) / 100.0) ,1.0);
@@ -73,6 +85,7 @@ vec4 computeColor( DataGradient fragmentData ) {
 	trait = smoothstep( -strokeThickness, 0, trait ) * (1-smoothstep( 0, strokeThickness, trait )); // stroke thickness 
 	trait = trait * (1-smoothstep(strokeLength - strokeEndLength, strokeLength, unitV )); // stroke length
 	trait = smoothstep(strokeStartShift, strokeStartShift + strokeStartLength, unitV) * trait; // smooth start of the stroke
+	trait = trait * dotism(unitV);
 	float opacity = trait;
 	return vec4(fragmentData.color.rgb, fragmentData.color.a * opacity );
 }
