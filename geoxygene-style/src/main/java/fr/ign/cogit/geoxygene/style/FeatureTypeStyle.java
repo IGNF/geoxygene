@@ -39,6 +39,7 @@ public class FeatureTypeStyle {
 
     /**
      * Renvoie la valeur de l'attribut rules.
+     * 
      * @return la valeur de l'attribut rules
      */
     public List<Rule> getRules() {
@@ -47,22 +48,27 @@ public class FeatureTypeStyle {
 
     /**
      * Affecte la valeur de l'attribut rules.
-     * @param rules l'attribut rules à affecter
+     * 
+     * @param rules
+     *            l'attribut rules à affecter
      */
     public void setRules(List<Rule> rules) {
         this.rules = rules;
     }
-    
+
     /**
      * Ajoute une rule à la liste des rules.
-     * @param rule à ajouter
+     * 
+     * @param rule
+     *            à ajouter
      */
     public void addRule(Rule rule) {
-    	this.rules.add(rule);
+        this.rules.add(rule);
     }
 
     /**
      * Renvoie la valeur de l'attribut name.
+     * 
      * @return la valeur de l'attribut name
      */
     public String getName() {
@@ -71,7 +77,9 @@ public class FeatureTypeStyle {
 
     /**
      * Affecte la valeur de l'attribut name.
-     * @param name l'attribut name à affecter
+     * 
+     * @param name
+     *            l'attribut name à affecter
      */
     public void setName(String name) {
         this.name = name;
@@ -87,6 +95,11 @@ public class FeatureTypeStyle {
     }
 
     public Symbolizer getSymbolizer() {
+        if (this.getRules().isEmpty() || this.getRules().get(0) == null
+                || this.getRules().get(0).getSymbolizers().isEmpty()
+                || this.getRules().get(0).getSymbolizers().get(0) == null) {
+            return null;
+        }
         return this.getRules().get(0).getSymbolizers().get(0);
     }
 }
