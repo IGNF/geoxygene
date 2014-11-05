@@ -207,7 +207,7 @@
 <MaxCoastlineLength>1000.0</MaxCoastlineLength>
 <Tile>
     <url>file:./samples/cassini/images/StJeanDeLuz/coast-1.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
+    <ScaleFactor>0.8</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>300.0</MaxDistance>
     <InRangeProbability>10.0</InRangeProbability>
@@ -215,7 +215,7 @@
 </Tile>
 <Tile>
     <url>file:./samples/cassini/images/StJeanDeLuz/coast-2.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
+    <ScaleFactor>0.8</ScaleFactor>
     <MinDistance>0.0</MinDistance>
     <MaxDistance>300.0</MaxDistance>
     <InRangeProbability>10.0</InRangeProbability>
@@ -223,7 +223,7 @@
 </Tile>
 <Tile>
     <url>file:./samples/cassini/images/StJeanDeLuz/merI-1.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
+    <ScaleFactor>0.7</ScaleFactor>
     <MinDistance>100.0</MinDistance>
     <MaxDistance>2000.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -231,7 +231,7 @@
 </Tile>
 <Tile>
     <url>file:./samples/cassini/images/StJeanDeLuz/merI-2.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
+    <ScaleFactor>0.7</ScaleFactor>
     <MinDistance>100.0</MinDistance>
     <MaxDistance>2000.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -239,7 +239,7 @@
 </Tile>
 <Tile>
     <url>file:./samples/cassini/images/StJeanDeLuz/merI-3.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
+    <ScaleFactor>0.7</ScaleFactor>
     <MinDistance>100.0</MinDistance>
     <MaxDistance>2000.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -247,7 +247,7 @@
 </Tile>
 <Tile>
     <url>file:./samples/cassini/images/StJeanDeLuz/merI-4.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
+    <ScaleFactor>0.7</ScaleFactor>
     <MinDistance>100.0</MinDistance>
     <MaxDistance>2000.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -255,7 +255,7 @@
 </Tile>
 <Tile>
     <url>file:./samples/cassini/images/StJeanDeLuz/merII-1.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
+    <ScaleFactor>0.7</ScaleFactor>
     <MinDistance>1000.0</MinDistance>
     <MaxDistance>3000.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -263,7 +263,7 @@
 </Tile>
 <Tile>
     <url>file:./samples/cassini/images/StJeanDeLuz/merII-2.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
+    <ScaleFactor>0.7</ScaleFactor>
     <MinDistance>1000.0</MinDistance>
     <MaxDistance>3000.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -271,7 +271,7 @@
 </Tile>
 <Tile>
     <url>file:./samples/cassini/images/StJeanDeLuz/merII-3.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
+    <ScaleFactor>0.7</ScaleFactor>
     <MinDistance>1000.0</MinDistance>
     <MaxDistance>3000.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
@@ -279,31 +279,31 @@
 </Tile>
 <Tile>
     <url>file:./samples/cassini/images/StJeanDeLuz/merIII-1.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
-    <MinDistance>3000.0</MinDistance>
+    <ScaleFactor>0.7</ScaleFactor>
+    <MinDistance>2500.0</MinDistance>
     <MaxDistance>3500.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
     <OutOfRangeProbability>0.0</OutOfRangeProbability>
 </Tile>
 <Tile>
     <url>file:./samples/cassini/images/StJeanDeLuz/merIII-2.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
-    <MinDistance>3000.0</MinDistance>
+    <ScaleFactor>0.7</ScaleFactor>
+    <MinDistance>25000.0</MinDistance>
     <MaxDistance>3500.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
     <OutOfRangeProbability>0.0</OutOfRangeProbability>
 </Tile>
 <Tile>
     <url>file:./samples/cassini/images/StJeanDeLuz/merIII-3.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
-    <MinDistance>3000.0</MinDistance>
+    <ScaleFactor>0.7</ScaleFactor>
+    <MinDistance>2500.0</MinDistance>
     <MaxDistance>3500.0</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>
     <OutOfRangeProbability>0.0</OutOfRangeProbability>
 </Tile>
 <Tile>
     <url>file:./samples/cassini/images/fond de mer.png</url>
-    <ScaleFactor>1.0</ScaleFactor>
+    <ScaleFactor>0.7</ScaleFactor>
     <MinDistance>3500.0</MinDistance>
     <MaxDistance>INF</MaxDistance>
     <InRangeProbability>1.0</InRangeProbability>

@@ -39,15 +39,15 @@ float vTextureScale( in float width, in float v ) {
 }
 
 float computeStrokeWidth( in float u, in float uMax ) {
-    return cos(gl_FragCoord.x/500.0)*0.3+0.7;
-    //return  (1.0-u/uMax);
+    //return cos(gl_FragCoord.x/500.0)*0.3+0.7;
+    return  (1.0-u/uMax);
     return strokeWidth;
 }
 
 float computeStrokePressure( in float u, in float uMax ) {
-    return 1.;
+//    return 1.;
     float begin = 1-clamp(u, 0.0, 300.0)/300.0;
-    return  (begin+0.5)*(1.0-u/uMax);
+    return  (begin+5.0)*(1.0-u/uMax);
 }
 
 

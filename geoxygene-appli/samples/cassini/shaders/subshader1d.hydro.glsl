@@ -88,6 +88,11 @@ vec4 computeFragmentColor( in vec4 brushColor, in vec4 paperColor, in DataPainti
 	float widthOpacity = exp( -pow( 1.0 / width * thickness * (0.5 - uv.y), 2.0) ); 
 	float opacity = 1.0 * start * end * widthOpacity;
 	opacity = smoothstep(0.5-hardness / 2.0, 0.5 + hardness / 2.0, opacity);
-	return vec4( fragmentData.color.rgb, globalOpacity * opacity * fragmentData.color.a);
+	vec3 color = fragmentData.color.rgb;
+//	if ( opacity < 0.9 && opacity > 0.0 ) {
+//		color = vec3( 1.0 );
+//		opacity = 1.0;
+//	}
+	return vec4( color, globalOpacity * opacity * fragmentData.color.a);
 }
 

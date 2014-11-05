@@ -130,8 +130,24 @@ public class BinaryGradientImageUtil {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 GradientPixel pixel = image.getPixel(x, y);
+                // find the largest Half Window Size fully in gradient image
+                // polygon
+                int halfSize = blurWindowHalfSize;
+                for (int y2 = y - blurWindowHalfSize; y2 <= y
+                        + blurWindowHalfSize; y2++) {
+                    for (int x2 = x - blurWindowHalfSize; x2 <= x
+                            + blurWindowHalfSize; x2++) {
+                        GradientPixel neighbor = image.getPixel(x2, y2);
+                        if (neighbor == null || !neighbor.in) {
+                            halfSize = Math.min(halfSize, Math.min(
+                                    Math.abs(x2 - x), Math.abs(y2 - y)));
+                        }
+                    }
+                }
+
+                // blur using computed half size
                 Point2d textureCoordinates = blurTextureCoordinatesNeighborhood(
-                        image, x, y, blurWindowHalfSize);
+                        image, x, y, halfSize);
                 pixel.uTexture = textureCoordinates.x;
                 pixel.vTexture = textureCoordinates.y;
             }

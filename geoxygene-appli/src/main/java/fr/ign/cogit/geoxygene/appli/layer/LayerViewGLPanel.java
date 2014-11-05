@@ -237,7 +237,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         if (this.fboId == -1) {
             // generate an ID for the FBO
             this.fboId = glGenFramebuffers();
-            System.err.println("generate FBO id : " + this.fboId);
             if (this.fboId < 0) {
                 logger.error("Unable to create frame buffer for FBO rendering");
             }

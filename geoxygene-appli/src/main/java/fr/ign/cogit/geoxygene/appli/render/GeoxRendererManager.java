@@ -42,8 +42,8 @@ import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.TextSymbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
-import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 
@@ -164,8 +164,8 @@ public class GeoxRendererManager {
             if (renderer == null) {
                 renderer = new GeoxComplexRendererBasic(layerRenderer,
                         symbolizer);
-                logger.debug("a surface renderer is created for symbolizer "
-                        + symbolizer);
+                // logger.debug("a surface renderer is created for symbolizer "
+                // + symbolizer);
             }
             surfaceRenderers.put(symbolizer, renderer);
             invalidateRenderers();

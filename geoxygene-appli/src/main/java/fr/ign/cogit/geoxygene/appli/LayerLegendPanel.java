@@ -1340,7 +1340,6 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        System.err.println("miaouh " + e);
         if (e.getKeyCode() == KeyEvent.VK_UP && e.isControlDown()) {
             this.moveSelectedLayersUp();
             this.layersTable.revalidate();
