@@ -43,8 +43,8 @@ public class LevenshteinDist extends GeoSource {
   
   private static Logger DST_LOGGER = Logger.getLogger("DSTLogger");
   
-  private String attributeName1 = "nature";  // toponyme
-  private String attributeName2 = "NATURE";  // NOM
+  private String attributeName1 = "toponyme";  // nature
+  private String attributeName2 = "NOM";  // NATURE
   
   @Override
   public String getName() {
@@ -57,13 +57,14 @@ public class LevenshteinDist extends GeoSource {
     double[] masses = new double[3];
     
     Object bdcNature = ref.getAttribute(attributeName1).toString();
-    Object bdnNature = candidate.getAttribute("NATURE");
+    Object bdnNature = candidate.getAttribute(attributeName2);
     // System.out.print(ref.getFeatureType().getFeatureAttributes().size() + ", " + candidate.getFeatureType().getFeatureAttributes().size() + " -- ");
     
     if (bdcNature != null && bdnNature != null) {
       
-      float distance = compute(bdcNature.toString(), bdnNature.toString());
-      DST_LOGGER.info("        distance = " + distance + "(bdcNature = " + bdcNature.toString() + ", bdnNature = " + bdnNature.toString() + ")");
+      double distance = compute(bdcNature.toString(), bdnNature.toString());
+      // DST_LOGGER.info("        distance = " + distance + "(bdcNature = " + bdcNature.toString() + ", bdnNature = " + bdnNature.toString() + ")");
+      DST_LOGGER.info("        distance = " + distance + " (bdc = " + bdcNature.toString() + ", bdn = " + bdnNature.toString() + ")");
       // System.out.println(" bdcNature = " + bdcNature.toString() + ", bdnNature = " + bdnNature.toString() + " => " + distance);
       
       // Fonction EstApparie
@@ -170,12 +171,15 @@ public class LevenshteinDist extends GeoSource {
    * @return int
    *    as coefficient de similarité
    */
-  private int compute(String s, String t) {
+  private double compute(String s, String t) {
     if (s == null || t == null) {
       throw new IllegalArgumentException("Strings must not be null");
     }
 
-    return 1 - StringUtils.getLevenshteinDistance(s, t) / Math.max (s.length(), t.length());
+    double l = StringUtils.getLevenshteinDistance(s, t);
+    DST_LOGGER.info("        StringUtils.getLevenshteinDistance : " + l);
+    // return 1.0 - l / Math.max (s.length(), t.length());
+    return l / Math.max (s.length(), t.length());
   }    
     
 

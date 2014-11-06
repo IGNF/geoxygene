@@ -39,6 +39,7 @@ public class DempsterOp implements CombinationOp {
 
   public DempsterOp(boolean isworldclosed) {
     this.worldclosed = isworldclosed;
+    this.conflict = 0.0f;
   }
 
   @Override

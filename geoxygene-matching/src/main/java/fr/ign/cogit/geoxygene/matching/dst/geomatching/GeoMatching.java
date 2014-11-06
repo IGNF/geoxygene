@@ -126,15 +126,16 @@ public class GeoMatching {
     DST_LOGGER.info("Appariement du toponyme " + reference.getAttribute("toponyme"));
     DST_LOGGER.info("   " + candidates.size() + " candidat(s)");
     
-    // Création des hypothèses d'appariement.
-    LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
-    DST_LOGGER.info("   " + combinations.size() + " combinaison(s)");
+    // Choix de l'opérateur
+    CombinationOp op = new DempsterOp(closed);
     
-    // 
+    // ========================
+    //   Hypotheses
+    // ========================
+    LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
     List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
     for (List<IFeature> l : combinations) {
       if (l.size() == 1) {
-        // System.out.println(l.get(0).getFeatureType().getFeatureAttributes().size());
         hypotheses.add(new SimpleGeomHypothesis(l.get(0)));
       } else
         if (l.size() > 1) {
@@ -143,42 +144,74 @@ public class GeoMatching {
         }
     }
     DST_LOGGER.info("   " + hypotheses.size() + " hypothese(s)");
-
-    List<List<Pair<byte[], Float>>> beliefs = new ArrayList<List<Pair<byte[], Float>>>();
+    
+    //List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
+    
+    
+    
     DefaultCodec<GeomHypothesis> codec = new DefaultCodec<GeomHypothesis>(hypotheses);
-    for (GeomHypothesis candidate : hypotheses) {
+    
+    // 
+    List<List<Pair<byte[], Float>>> beliefsCandidats = new ArrayList<List<Pair<byte[], Float>>>();
+    
+    // On boucle sur les candidats d'abord
+    int cptCandidat = 0;
+    for (IFeature candidat : candidates) {
+      
+      List<List<Pair<byte[], Float>>> beliefsCritere = new ArrayList<List<Pair<byte[], Float>>>();
+      
       for (int j = 0; j < criteria.size(); j++) {
-        
         Source<IFeature, GeomHypothesis> source = criteria.get(j);
-        DST_LOGGER.info("   " + source.getName() + " pour candidat " + candidate.getAttribute("NOM"));
+        DST_LOGGER.info("   " + source.getName() + " pour candidat " + candidat.getAttribute("NOM"));
         
-        double[] mij = source.evaluate(reference, candidate);
+        double[] mij = source.evaluate(reference, new SimpleGeomHypothesis(candidat));
         DST_LOGGER.info("        [" + mij[0] + ", " + mij[1] + ", " + mij[2] + "]");
         
         List<Pair<byte[], Float>> kernel = new ArrayList<Pair<byte[], Float>>();
-        byte[] code = codec.encode(candidate);
-        byte[] codeComplement = new byte[hypotheses.size()];
+
+        byte[] code = new byte[candidates.size()];
+        Arrays.fill(code, (byte)0);
+        code[cptCandidat] = (byte)1;
+        DST_LOGGER.info("   " + Arrays.toString(code).toString());
+
+        byte[] codeComplement = new byte[candidates.size()];
         Arrays.fill(codeComplement, (byte)1);
         for (int i = 0; i < code.length; i++) {
           codeComplement[i] -= code[i];
         }
-        byte[] codeUnknown = new byte[hypotheses.size()];
+        // System.out.println(Arrays.toString(codeComplement).toString());
+        
+        byte[] codeUnknown = new byte[candidates.size()];
         Arrays.fill(codeUnknown, (byte)1);
+        // System.out.println(Arrays.toString(codeUnknown).toString());
+        
         kernel.add(new Pair<byte[], Float>(code, new Float(mij[0])));
         kernel.add(new Pair<byte[], Float>(codeComplement, new Float(mij[1])));
         kernel.add(new Pair<byte[], Float>(codeUnknown, new Float(mij[2])));
-        beliefs.add(kernel);
-      
+        beliefsCritere.add(kernel);
       }
       
+      // Fusion des critères
+      List<Pair<byte[], Float>> result = op.combine(beliefsCritere);
+      beliefsCandidats.add(result);
+      /*System.out.println("----");
+      for (int j = 0; j < result.size(); j++) {
+        Pair<byte[], Float> paire = result.get(j);
+        if (paire.getSecond() > 0) {
+          System.out.println(Arrays.toString(paire.getFirst()) + " : " + paire.getSecond());
+        }
+      }
+      System.out.println("----");*/
+      
+      cptCandidat++;
     }
     
-    CombinationOp op = closed ? new DempsterOp(closed) : new SmetsOp(closed);
-    List<Pair<byte[], Float>> result = op.combine(beliefs);
-    
-    DecisionOp<GeomHypothesis> decisionOp = new DecisionOp<GeomHypothesis>(result, op.getConflict(),
+    // Fusion des candidats
+    List<Pair<byte[], Float>> result = op.combine(beliefsCandidats);
+    DecisionOp<GeomHypothesis> decisionOp;
+    decisionOp = new DecisionOp<GeomHypothesis>(result, op.getConflict(),
         choice, codec, true);
     return decisionOp.resolve();
-  
+    
   }
 }

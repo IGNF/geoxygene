@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.matching.dst.operators;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -226,5 +227,146 @@ public class DempsterOpTest {
   }
 
   
-
+  /**
+   *   Test :
+   *   
+   *   m21 <- mass(list("CS"=0.5753, "TP/GM"=0, "CS/TP/GM"=0.4247), stateSpace)
+   *   m22 <- mass(list("CS"=1, "TP/GM"=0, "CS/TP/GM"=0), stateSpace)
+   *   m2 <- dComb(m21, m22)
+   *   
+   *   m11 <- mass(list("TP"=0.723, "CS/GM"=0, "CS/TP/GM"=0.277), stateSpace)
+   *   m12 <- mass(list("TP"=0.6975, "CS/GM"=0.1681, "CS/TP/GM"=0.1344), stateSpace)
+   *   m1 <- dComb(m11, m12)
+   *   
+   *   m31 <- mass(list("GM"=0.4913, "CS/TP"=0.1044, "CS/TP/GM"=0.4043), stateSpace)
+   *   m32 <- mass(list("GM"=0.6975, "CS/TP"=0.1681, "CS/TP/GM"=0.1344), stateSpace)
+   *   m3 <- dComb(m31, m32)
+   *
+   *   m123 <- dComb(m1, m2, m3)
+   */
+  @Test
+  public void testColSiberie() {
+    
+    DempsterOp op = new DempsterOp(false);
+    
+    // ----------------------------------------------------------------------------
+  
+    List<List<Pair<byte[], Float>>> m1 = new ArrayList<List<Pair<byte[], Float>>>();
+    
+    byte[] CS = new byte[] { 1, 0, 0 };
+    byte[] TP_GM = new byte[] { 0, 1, 1 };
+    byte[] TOUT = new byte[] { 1, 1, 1 };
+    
+    List<Pair<byte[], Float>> source11 = new ArrayList<Pair<byte[], Float>>();
+    m1.add(source11);
+    
+    List<Pair<byte[], Float>> source12 = new ArrayList<Pair<byte[], Float>>();
+    m1.add(source12);
+    
+    // 
+    source11.add(new Pair<byte[], Float>(CS, 0.5753f));
+    source11.add(new Pair<byte[], Float>(TP_GM, 0f));
+    source11.add(new Pair<byte[], Float>(TOUT, 0.4247f));
+    
+    //
+    source12.add(new Pair<byte[], Float>(CS, 1f));
+    source12.add(new Pair<byte[], Float>(TP_GM, 0f));
+    source12.add(new Pair<byte[], Float>(TOUT, 0f));
+    
+    List<Pair<byte[], Float>> result1 = op.combine(m1);
+    
+    List<Pair<byte[], Float>> expected1 = new ArrayList<Pair<byte[], Float>>();
+    expected1.add(new Pair<byte[], Float>(CS, 1f));
+    expected1.add(new Pair<byte[], Float>(TP_GM, 0f));
+    expected1.add(new Pair<byte[], Float>(TOUT, 0f));
+    
+    AssertPair.assertEquals(expected1, result1);
+    
+    // ----------------------------------------------------------------------------
+    
+    List<List<Pair<byte[], Float>>> m2 = new ArrayList<List<Pair<byte[], Float>>>();
+    
+    byte[] TP = new byte[] { 0, 1, 0 };
+    byte[] CS_GM = new byte[] { 1, 0, 1 };
+    
+    List<Pair<byte[], Float>> source21 = new ArrayList<Pair<byte[], Float>>();
+    m2.add(source21);
+    
+    List<Pair<byte[], Float>> source22 = new ArrayList<Pair<byte[], Float>>();
+    m2.add(source22);
+    
+    // 
+    source21.add(new Pair<byte[], Float>(TP, 0.723f));
+    source21.add(new Pair<byte[], Float>(CS_GM, 0f));
+    source21.add(new Pair<byte[], Float>(TOUT, 0.277f));
+    
+    //
+    source22.add(new Pair<byte[], Float>(TP, 0.6975f));
+    source22.add(new Pair<byte[], Float>(CS_GM, 0.1681f));
+    source22.add(new Pair<byte[], Float>(TOUT, 0.1344f));
+    
+    List<Pair<byte[], Float>> result2 = op.combine(m2);
+    
+    List<Pair<byte[], Float>> expected2 = new ArrayList<Pair<byte[], Float>>();
+    expected2.add(new Pair<byte[], Float>(TP, 0.9046147f));
+    expected2.add(new Pair<byte[], Float>(CS_GM, 0.05300583f));
+    expected2.add(new Pair<byte[], Float>(TOUT, 0.04237944f));
+    
+    AssertPair.assertEquals(expected2, result2);
+    
+    // ----------------------------------------------------------------------------
+    
+    List<List<Pair<byte[], Float>>> m3 = new ArrayList<List<Pair<byte[], Float>>>();
+    
+    byte[] GM = new byte[] { 0, 0, 1 };
+    byte[] CS_TP = new byte[] { 1, 1, 0 };
+    
+    List<Pair<byte[], Float>> source31 = new ArrayList<Pair<byte[], Float>>();
+    m3.add(source31);
+    
+    List<Pair<byte[], Float>> source32 = new ArrayList<Pair<byte[], Float>>();
+    m3.add(source32);
+    
+    // 
+    source31.add(new Pair<byte[], Float>(GM, 0.4913f));
+    source31.add(new Pair<byte[], Float>(CS_TP, 0.1044f));
+    source31.add(new Pair<byte[], Float>(TOUT, 0.4043f));
+    
+    //
+    source32.add(new Pair<byte[], Float>(GM, 0.6975f));
+    source32.add(new Pair<byte[], Float>(CS_TP, 0.1681f));
+    source32.add(new Pair<byte[], Float>(TOUT, 0.1344f));
+    
+    List<Pair<byte[], Float>> result3 = op.combine(m3);
+    
+    List<Pair<byte[], Float>> expected3 = new ArrayList<Pair<byte[], Float>>();
+    expected3.add(new Pair<byte[], Float>(GM, 0.8178038f));
+    expected3.add(new Pair<byte[], Float>(CS_TP, 0.1178601f));
+    expected3.add(new Pair<byte[], Float>(TOUT, 0.06433618f));
+    
+    AssertPair.assertEquals(expected3, result3);
+    
+    // ----------------------------------------------------------------------------
+    
+    List<List<Pair<byte[], Float>>> m = new ArrayList<List<Pair<byte[], Float>>>();
+    
+    m.add(result1);
+    m.add(result2);
+    m.add(result3);
+    
+    List<Pair<byte[], Float>> result = op.combine(m);
+    for (int i = 0; i < result.size(); i++) {
+      LOGGER.trace(Arrays.toString(result.get(i).getFirst()) + " : " + result.get(i).getSecond());
+    }
+    List<Pair<byte[], Float>> expected = new ArrayList<Pair<byte[], Float>>();
+    expected.add(new Pair<byte[], Float>(GM, 0f));
+    expected.add(new Pair<byte[], Float>(CS, 1f));
+    expected.add(new Pair<byte[], Float>(TP, 0f));
+    expected.add(new Pair<byte[], Float>(CS_TP, 0f));
+    expected.add(new Pair<byte[], Float>(CS_GM, 0f));
+    expected.add(new Pair<byte[], Float>(TP_GM, 0f));
+    expected.add(new Pair<byte[], Float>(TOUT, 0f));
+    
+    AssertPair.assertEquals(expected, result);
+  }
 }

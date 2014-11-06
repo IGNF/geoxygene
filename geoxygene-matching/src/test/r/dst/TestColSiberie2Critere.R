@@ -5,12 +5,12 @@
 # 23/10/2014
 # version 1.0-SNAPSHOT
 ###############################################################################
-# Appariement "Appriou" avec 2 critères : 
-#   - le critère de distance 
-#   - le critère toponymique
+# Appariement "Appriou" avec 2 criteres : 
+#   - le critere de distance 
+#   - le critere toponymique
 #
 ###############################################################################
-
+library(stringdist)
 library(maptools)
 library(EvCombR)
 library(sp)
@@ -22,7 +22,7 @@ distanceTopo <- function (VecteurMot2) {
   return (d)
 }
 
-# Définition des connaissances
+# Definition des connaissances
 connaissanceDistEucli <- function (type, dist) {
   retour <- 0
   if (type == 'AppC') {
@@ -80,9 +80,9 @@ connaissanceDistTopo <- function (type, dist) {
 
 
 # on recupere les jeux de donnees
-jd1 <- readShapePoints("E:/Workspace/geoxygene/geoxygene-matching/data/colsiberie/jd1_col_siberie.shp", 
+jd1 <- readShapePoints("D:/SVN/geoxygene/opensource/geoxygene/geoxygene-matching/data/colsiberie/jd1_col_siberie.shp", 
                        proj4string=CRS("+proj=utm +zone=33 +datum=WGS84"))
-jd2 <- readShapePoints("E:/Workspace/geoxygene/geoxygene-matching/data/colsiberie/jd2_col_siberie.shp", 
+jd2 <- readShapePoints("D:/SVN/geoxygene/opensource/geoxygene/geoxygene-matching/data/colsiberie/jd2_col_siberie.shp", 
                        proj4string=CRS("+proj=utm +zone=33 +datum=WGS84"))
 
 # on affiche les points
@@ -113,9 +113,10 @@ tabDistTopo
 nCandidat <- length(jd2)
 nCandidat
 beliefs <- list()
-for (i in 1:nCandidat) {
+#for (i in 1:nCandidat) {
   
-  nom <- as.character(jd2$NOM[i])
+  #nom <- as.character(jd2$NOM[i])
+  nom <- as.character(jd2$NOM[1])
   
   ch1 <- ''
   ch2 <- ''
@@ -150,9 +151,12 @@ for (i in 1:nCandidat) {
   names(list11) <- c(ch1, ch2, ch3)
   # print(list11)
   # print(str(list11))
+str(list11)
   print(list11)
   print(stateSpace)
   m11 <- mass(list11, stateSpace)
+  m11 <- mass(list("tÃªte du pis"=0.723, "grande montagne/col de la sibÃ©rie"=0.104, 
+                   "tÃªte du pis/grande montagne/col de la sibÃ©rie"=0.424), stateSpace)
   # print(m11)
   
   # m12 <- mass(list("TP"=0.6975, "CS/GM"=0.1681, "CS/TP/GM"=0.1344), stateSpace)
@@ -164,7 +168,7 @@ for (i in 1:nCandidat) {
   #m12 <- mass(list12, stateSpace)
   #print (m12)
   
-  # fusion des critères 
+  # fusion des criteres 
   #m1 <- dComb(m11, m12)
   #print (m1)
   
@@ -197,5 +201,4 @@ for (i in 1:nCandidat) {
 
 # decision
 # c2 <- pign(m123)
-
 

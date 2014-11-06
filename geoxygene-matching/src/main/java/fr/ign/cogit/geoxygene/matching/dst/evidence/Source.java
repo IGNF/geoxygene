@@ -21,6 +21,7 @@ package fr.ign.cogit.geoxygene.matching.dst.evidence;
 
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.function.Function1D;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
@@ -44,5 +45,10 @@ public interface Source<F, T extends Hypothesis> {
      * @return the name of the source.
      */
     String getName();
+    
+    /** Functions. */
+    public Function1D[] getFEA();
+    public Function1D[] getFNA();
+    public Function1D[] getFPP();
 
 }

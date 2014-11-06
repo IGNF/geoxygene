@@ -28,13 +28,14 @@ package fr.ign.cogit.geoxygene.matching.dst.util;
 import java.util.Arrays;
 
 /**
+ * For example : focal element of a mass function like : 
+ *    [1,0,0]:0.4913
+ *    [0,1,1]:0.1044 
+ * 
  * @author Julien Perret
- *
  */
-public class Pair<E ,V>{
+public class Pair<E ,V> {
   
-
-
   private E first;
   public V second;
   
@@ -60,7 +61,6 @@ public class Pair<E ,V>{
     this.second = _second;
   }
   
-  @SuppressWarnings("unchecked")
   @Override
   public String toString() {
     String fstring = this.first.toString();
@@ -73,9 +73,5 @@ public class Pair<E ,V>{
     }
     return "{"+fstring+":"+sstring+"}";
   }
-  
-  
-
-
   
 }

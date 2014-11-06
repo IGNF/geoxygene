@@ -35,7 +35,7 @@ import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
  */
 public class SmetsOp implements CombinationOp {
   
-  Logger logger = Logger.getLogger(SmetsOp.class);
+  private static final Logger LOGGER = Logger.getLogger(SmetsOp.class);
   private boolean worldclosed = true;
 
   /**
@@ -52,7 +52,9 @@ public class SmetsOp implements CombinationOp {
     if (masspotentials.size() == 1) {
       return masspotentials.get(0);
     }
+    
     if (masspotentials.size() >= 2) {
+      
       // 1 - Calculer le noyau combiné de toutes les masses de croyance;
       List<List<byte[]>> cores = new ArrayList<List<byte[]>>();
       for (List<Pair<byte[], Float>> massvalues : masspotentials) {
@@ -63,11 +65,10 @@ public class SmetsOp implements CombinationOp {
         cores.add(core);
       }
       
-      byte[] combined;
       try {
-        combined = CombinationAlgos.combine(cores);
+        byte[] combined = CombinationAlgos.combine(cores);
         if (Utils.isEmpty(combined)) {
-          logger.info("Les masses de croyances sont en total désaccord...");
+          LOGGER.info("Les masses de croyances sont en total désaccord...");
           if (this.worldclosed) {
             List<Pair<byte[], Float>> result = new ArrayList<Pair<byte[], Float>>();
             result.add(new Pair<byte[], Float>(new byte[combined.length], 1.0f));
@@ -80,7 +81,7 @@ public class SmetsOp implements CombinationOp {
               this.worldclosed);
           if (conditionned.isEmpty()) {
             conditionnedMassPotentials.add(mass);
-            logger.error("CAS MAL GERE : MASSE CONDITIONNEE NON DEFINIE!");
+            LOGGER.error("CAS MAL GERE : MASSE CONDITIONNEE NON DEFINIE!");
           } else {
             conditionnedMassPotentials.add(conditionned);
           }
@@ -105,8 +106,9 @@ public class SmetsOp implements CombinationOp {
 //            }
 //          }
           return m1values;
+        
         } catch (Exception e) {
-          logger
+          LOGGER
               .error("Dammit captain, the combination of 2 masses bloody crashed! Maybe ya should"
                   + " take a look at this damn report just below!");
           e.printStackTrace();
