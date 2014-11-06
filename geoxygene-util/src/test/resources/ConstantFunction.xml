@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConstantFunction lowerBoundDF="800.0" upperBoundDF="1500.0" withMatchLowerBound="true" withMatchUpperBound="true">
+    <shift>0.1</shift>
+</ConstantFunction>

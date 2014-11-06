@@ -26,22 +26,36 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.function;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author JeT Simple constant function parameterized by the shift
  */
+@XmlRootElement(name = "ConstantFunction")
 public class ConstantFunction extends AbstractFunction1D {
 
-    private double shift = 1.; // constant shift (Y translation factor)
+  @XmlElement(name="shift")
+  private double shift = 1.; // constant shift (Y translation factor)
 
     /**
-     * Constructor
+     * Constructor.
      */
     public ConstantFunction() {
         super();
     }
+    
+    /**
+     * Renvoi la constante.
+     * 
+     * @return Shift
+     */
+    public double getShift() {
+      return shift;
+    }
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param shift
      *            Y shift value
@@ -85,5 +99,7 @@ public class ConstantFunction extends AbstractFunction1D {
     public String toString() {
         return "Constant[" + this.shift + "]";
     }
+    
+    
 
 }

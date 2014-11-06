@@ -26,13 +26,20 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.function;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author JeT linear function a*x+b parameterized by a and b
  */
+@XmlRootElement(name = "LinearFunction")
 public class LinearFunction extends AbstractFunction1D {
 
-    private double a = 1.; // a parameter
-    private double b = 0.; // b parameter
+  @XmlElement(name="a")
+  private double a = 1.; // a parameter
+  
+  @XmlElement(name="b")
+  private double b = 0.; // b parameter
 
     /**
      * Constructor
@@ -53,6 +60,24 @@ public class LinearFunction extends AbstractFunction1D {
         super();
         this.a = a;
         this.b = b;
+    }
+    
+    /**
+     * Renvoi la pente de l'équation.
+     * 
+     * @return a
+     */
+    public double getA() {
+      return a;
+    }
+    
+    /**
+     * Renvoi l'abscisse à l'origine.
+     * 
+     * @return b
+     */
+    public double getB() {
+      return b;
     }
 
     /*

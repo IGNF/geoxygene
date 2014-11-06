@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearFunction lowerBoundDF="0.0" upperBoundDF="400.0" withMatchLowerBound="true" withMatchUpperBound="false">
+    <a>-0.001125</a>
+    <b>1</b>
+</LinearFunction>
