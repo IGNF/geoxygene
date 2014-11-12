@@ -34,7 +34,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
-import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
+import fr.ign.cogit.geoxygene.matching.dst.sources.Source;
 import fr.ign.cogit.geoxygene.matching.dst.sources.linear.LineOrientation;
 import fr.ign.cogit.geoxygene.matching.dst.sources.linear.PartialFrechetDistance;
 import fr.ign.cogit.geoxygene.matching.dst.sources.surface.SurfaceDistance;

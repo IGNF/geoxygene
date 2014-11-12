@@ -33,7 +33,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.MatchingProcess;
-import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.DefaultCodec;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
@@ -41,6 +40,7 @@ import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationOp;
 import fr.ign.cogit.geoxygene.matching.dst.operators.DecisionOp;
 import fr.ign.cogit.geoxygene.matching.dst.operators.DempsterOp;
 import fr.ign.cogit.geoxygene.matching.dst.operators.SmetsOp;
+import fr.ign.cogit.geoxygene.matching.dst.sources.Source;
 import fr.ign.cogit.geoxygene.matching.dst.util.Combinations;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 

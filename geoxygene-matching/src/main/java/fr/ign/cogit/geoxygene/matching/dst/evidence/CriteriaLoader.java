@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import fr.ign.cogit.geoxygene.matching.dst.FactoryType;
+import fr.ign.cogit.geoxygene.matching.dst.sources.Source;
 
 /**
  * A class to load sources. It should be made more flexible.

@@ -21,24 +21,21 @@
 
 package fr.ign.cogit.geoxygene.matching.dst.sources.text;
 
-import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.function.Function1D;
-import fr.ign.cogit.geoxygene.function.FunctionEvaluationException;
-import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
-import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
-import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
+import fr.ign.cogit.geoxygene.matching.dst.sources.GeoSource;
 
 /**
  * Critère basé sur la distance de Levenshtein.
  * 
  * @author Marie-Dominique Van Damme
  */
+@XmlRootElement(name = "LevenshteinDist")
 public class LevenshteinDist extends GeoSource {
   
   private static Logger DST_LOGGER = Logger.getLogger("DSTLogger");
@@ -54,7 +51,6 @@ public class LevenshteinDist extends GeoSource {
 
   @Override
   public double[] evaluate(IFeature ref, GeomHypothesis candidate) {
-    double[] masses = new double[3];
     
     Object bdcNature = ref.getAttribute(attributeName1).toString();
     Object bdnNature = candidate.getAttribute(attributeName2);
@@ -67,57 +63,16 @@ public class LevenshteinDist extends GeoSource {
       DST_LOGGER.info("        distance = " + distance + " (bdc = " + bdcNature.toString() + ", bdn = " + bdnNature.toString() + ")");
       // System.out.println(" bdcNature = " + bdcNature.toString() + ", bdnNature = " + bdnNature.toString() + " => " + distance);
       
-      // Fonction EstApparie
-      float masse1 = 0.0f;
-      if (fEA != null) {
-        for (Function1D f : fEA) {
-          if (f.isBetween(distance)) {
-            try {
-              masse1 = f.evaluate(distance).floatValue();
-            } catch (FunctionEvaluationException e) {
-              e.printStackTrace();
-            }
-          }
-        }
-      }
-      masses[0] = masse1;
-      
-      // Fonction NonApparie
-      float masse2 = 0.0f;
-      if (fNA != null) {
-        for (Function1D f : fNA) {
-          if (f.isBetween(distance)) {
-            try {
-              masse2 = f.evaluate(distance).floatValue();
-            } catch (FunctionEvaluationException e) {
-              e.printStackTrace();
-            }
-          }
-        }
-      }
-      masses[1] = masse2;
-      
-      // Fonction PrononcePas
-      float masse3 = 0.0f;
-      if (fPP != null) {
-        for (Function1D f : fPP) {
-          if (f.isBetween(distance)) {
-            try {
-              masse3 = f.evaluate(distance).floatValue();
-            } catch (FunctionEvaluationException e) {
-              e.printStackTrace();
-            }
-          }
-        }
-      }
-      masses[2] = masse3;
+      return getMasses(distance);
       
     } else {
+      double[] masses = new double[3];
       masses[0] = 0;
       masses[1] = 0;
       masses[2] = 0;
       
       System.out.println(ref.getFeatureType().getFeatureAttributes().size() + ", " + candidate.getFeatureType().getFeatureAttributes().size() + " -- ");
+      return masses;
       /*for (int i = 0; i < ref.getFeatureType().getFeatureAttributes().size(); i++) {
         System.out.print(ref.getFeatureType().getFeatureAttributes().get(i).getMemberName()+", ");
       }
@@ -129,38 +84,8 @@ public class LevenshteinDist extends GeoSource {
       
     }
      
-    return masses;
+    
   }
-  
-  @Override
-  public List<Pair<byte[], Float>> evaluate(IFeature reference,
-        final List<GeomHypothesis> candidates, EvidenceCodec<GeomHypothesis> codec) {
-  
-      /*List<Pair<byte[], Float>> weightedfocalset = new ArrayList<Pair<byte[], Float>>();
-      float sum = 0;
-      for (GeomHypothesis h : candidates) {
-          
-          System.out.print(h.getClass() + " - ");
-          System.out.print(h.getFeatureType().getFeatureAttributes().size() + " - ");
-          System.out.print(h.getFeatureType().getFeatureAttributeByName("nature") + " - ");
-          System.out.println("");
-          
-          float distance = (float) 0.8;   // StringUtils.getLevenshteinDistance(reference.getGeom(), h.getGeom());
-          if (distance < this.threshold) {
-              distance = (this.threshold - distance) / this.threshold;
-              byte[] encoded = codec.encode(new GeomHypothesis[] { h });
-              weightedfocalset.add(new Pair<byte[], Float>(encoded, distance));
-              sum += distance;
-          }
-      }
-      for (Pair<byte[], Float> st : weightedfocalset) {
-          st.setSecond(st.getSecond() / sum);
-      }
-      CombinationAlgos.sortKernel(weightedfocalset);
-      return weightedfocalset;*/
-    return null;
-  }
-  
   
   /**
    * Mesure de similarité définie par Samal, A., Seth, S. et Cueto, K. A feature-based approach to conflation
@@ -180,7 +105,6 @@ public class LevenshteinDist extends GeoSource {
     DST_LOGGER.info("        StringUtils.getLevenshteinDistance : " + l);
     // return 1.0 - l / Math.max (s.length(), t.length());
     return l / Math.max (s.length(), t.length());
-  }    
-    
+  }
 
 }

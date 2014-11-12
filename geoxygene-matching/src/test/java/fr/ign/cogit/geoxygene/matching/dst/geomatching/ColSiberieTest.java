@@ -14,7 +14,7 @@ import fr.ign.cogit.geoxygene.function.Function1D;
 import fr.ign.cogit.geoxygene.function.LinearFunction;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
-import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
+import fr.ign.cogit.geoxygene.matching.dst.sources.Source;
 import fr.ign.cogit.geoxygene.matching.dst.sources.punctual.EuclidianDist;
 import fr.ign.cogit.geoxygene.matching.dst.sources.text.LevenshteinDist;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
@@ -38,7 +38,7 @@ public class ColSiberieTest {
     ConstantFunction f12 = new ConstantFunction(0.1);
     f12.setDomainOfFunction(800., 1500., true, true);
     listFEA[1] = f12;
-    source.setFEA(listFEA);
+    source.setMasseAppCi(listFEA);
     
     // Fonction NonApparie
     Function1D[] listFNA = new Function1D[3];
@@ -51,7 +51,7 @@ public class ColSiberieTest {
     ConstantFunction f23 = new ConstantFunction(0.8);
     f23.setDomainOfFunction(800., 1500., true, true);
     listFNA[2] = f23;
-    source.setFNA(listFNA);
+    source.setMasseAppPasCi(listFNA);
     
     // Fonction PrononcePas
     Function1D[] listFPP = new Function1D[3];
@@ -64,7 +64,7 @@ public class ColSiberieTest {
     ConstantFunction f33 = new ConstantFunction(0.1);
     f33.setDomainOfFunction(800., 1500., true, true);
     listFPP[2] = f33;
-    source.setFPP(listFPP);
+    source.setMasseIgnorance(listFPP);
     
     criteria.add(source);
     
@@ -107,7 +107,7 @@ public class ColSiberieTest {
     ConstantFunction f12 = new ConstantFunction(0.1);
     f12.setDomainOfFunction(800., 1500., true, true);
     listFEA[1] = f12;
-    source.setFEA(listFEA);
+    source.setMasseAppCi(listFEA);
     
     // Fonction NonApparie
     Function1D[] listFNA = new Function1D[3];
@@ -120,7 +120,7 @@ public class ColSiberieTest {
     ConstantFunction f23 = new ConstantFunction(0.8);
     f23.setDomainOfFunction(800., 1500., true, true);
     listFNA[2] = f23;
-    source.setFNA(listFNA);
+    source.setMasseAppPasCi(listFNA);
     
     // Fonction PrononcePas
     Function1D[] listFPP = new Function1D[3];
@@ -133,7 +133,7 @@ public class ColSiberieTest {
     ConstantFunction f33 = new ConstantFunction(0.1);
     f33.setDomainOfFunction(800., 1500., true, true);
     listFPP[2] = f33;
-    source.setFPP(listFPP);
+    source.setMasseIgnorance(listFPP);
     
     criteria.add(source);
     
@@ -150,7 +150,7 @@ public class ColSiberieTest {
     f12 = new ConstantFunction(0.1);
     f12.setDomainOfFunction(t, 3, true, true);
     listFEA[1] = f12;
-    levenshteinSource.setFEA(listFEA);
+    levenshteinSource.setMasseAppCi(listFEA);
     
     // Fonction NonApparie
     listFNA = new Function1D[2];
@@ -160,7 +160,7 @@ public class ColSiberieTest {
     f23 = new ConstantFunction(0.5);
     f23.setDomainOfFunction(t, 3, true, true);
     listFNA[1] = f23;
-    levenshteinSource.setFNA(listFNA);
+    levenshteinSource.setMasseAppPasCi(listFNA);
     
     // Fonction PrononcePas
     listFPP = new Function1D[2];
@@ -170,7 +170,7 @@ public class ColSiberieTest {
     ConstantFunction fL32 = new ConstantFunction(0.4);
     fL32.setDomainOfFunction(t, 3, true, false);
     listFPP[1] = fL32;
-    levenshteinSource.setFPP(listFPP);
+    levenshteinSource.setMasseIgnorance(listFPP);
     
     criteria.add(levenshteinSource);
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LevenshteinDist>
+    <MasseAppCi>
+        <LinearFunction lowerBoundDF="0.0" upperBoundDF="0.7" withMatchLowerBound="true" withMatchUpperBound="false">
+            <a>-1.2857142857142858</a>
+            <b>1.0</b>
+        </LinearFunction>
+        <ConstantFunction lowerBoundDF="0.7" upperBoundDF="3.0" withMatchLowerBound="true" withMatchUpperBound="true">
+            <shift>0.1</shift>
+        </ConstantFunction>
+    </MasseAppCi>
+    <masseAppPasCi>
+        <LinearFunction lowerBoundDF="0.0" upperBoundDF="0.7" withMatchLowerBound="true" withMatchUpperBound="false">
+            <a>0.7142857142857143</a>
+            <b>0.0</b>
+        </LinearFunction>
+        <ConstantFunction lowerBoundDF="0.7" upperBoundDF="3.0" withMatchLowerBound="true" withMatchUpperBound="true">
+            <shift>0.5</shift>
+        </ConstantFunction>
+    </masseAppPasCi>
+    <masseIgnorance>
+        <LinearFunction lowerBoundDF="0.0" upperBoundDF="0.7" withMatchLowerBound="true" withMatchUpperBound="false">
+            <a>0.5714285714285715</a>
+            <b>0.0</b>
+        </LinearFunction>
+        <ConstantFunction lowerBoundDF="0.7" upperBoundDF="3.0" withMatchLowerBound="true" withMatchUpperBound="false">
+            <shift>0.4</shift>
+        </ConstantFunction>
+    </masseIgnorance>
+</LevenshteinDist>

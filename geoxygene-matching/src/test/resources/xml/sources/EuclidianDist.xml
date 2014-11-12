@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EuclidianDist>
+	<MasseAppCi>
+		<LinearFunction lowerBoundDF="0" upperBoundDF="800"
+			withMatchLowerBound="true" withMatchUpperBound="false">
+			<a>-0.9/800</a>
+			<b>1</b>
+		</LinearFunction>
+		<ConstantFunction lowerBoundDF="800.0" upperBoundDF="1500.0"
+			withMatchLowerBound="true" withMatchUpperBound="true">
+			<shift>0.1</shift>
+		</ConstantFunction>
+	</MasseAppCi>
+	<MasseAppPasCi>
+		<ConstantFunction lowerBoundDF="0" upperBoundDF="400"
+			withMatchLowerBound="true" withMatchUpperBound="false">
+			<shift>0</shift>
+		</ConstantFunction>
+		<LinearFunction lowerBoundDF="400" upperBoundDF="800"
+			withMatchLowerBound="true" withMatchUpperBound="false">
+			<a>0.8/400</a>
+			<b>-0.8</b>
+		</LinearFunction>
+		<ConstantFunction lowerBoundDF="800" upperBoundDF="1500"
+			withMatchLowerBound="true" withMatchUpperBound="true">
+			<shift>0.8</shift>
+		</ConstantFunction>
+	</MasseAppPasCi>
+	<MasseIgnorance>
+		<LinearFunction lowerBoundDF="0" upperBoundDF="400"
+			withMatchLowerBound="true" withMatchUpperBound="false">
+			<a>0.45/400</a>
+			<b>0</b>
+		</LinearFunction>
+		<LinearFunction lowerBoundDF="400" upperBoundDF="800"
+			withMatchLowerBound="true" withMatchUpperBound="false">
+			<a>-0.35/400</a>
+			<b>0.8</b>
+		</LinearFunction>
+		<ConstantFunction lowerBoundDF="800" upperBoundDF="1500"
+			withMatchLowerBound="true" withMatchUpperBound="true">
+			<shift>0.1</shift>
+		</ConstantFunction>
+	</MasseIgnorance>
+</EuclidianDist>

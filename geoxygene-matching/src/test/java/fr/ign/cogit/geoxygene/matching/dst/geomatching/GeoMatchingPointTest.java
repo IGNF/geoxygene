@@ -43,7 +43,7 @@ import fr.ign.cogit.geoxygene.function.Function1D;
 import fr.ign.cogit.geoxygene.function.LinearFunction;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
-import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
+import fr.ign.cogit.geoxygene.matching.dst.sources.Source;
 import fr.ign.cogit.geoxygene.matching.dst.sources.punctual.EuclidianDist;
 import fr.ign.cogit.geoxygene.matching.dst.sources.text.LevenshteinDist;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
@@ -131,7 +131,7 @@ public class GeoMatchingPointTest {
 		ConstantFunction f12 = new ConstantFunction(0.1);
         f12.setDomainOfFunction(75., 100., true, true);
         listFEA[1] = f12;
-        source.setFEA(listFEA);
+        source.setMasseAppCi(listFEA);
         
         // Fonction NonApparie
         Function1D[] listFNA = new Function1D[3];
@@ -145,7 +145,7 @@ public class GeoMatchingPointTest {
         ConstantFunction f23 = new ConstantFunction(0.8);
         f23.setDomainOfFunction(75., 100., true, true);
         listFNA[2] = f23;
-        source.setFNA(listFNA);
+        source.setMasseAppPasCi(listFNA);
 		
 		// Fonction PrononcePas
         Function1D[] listFPP = new Function1D[3];
@@ -160,7 +160,7 @@ public class GeoMatchingPointTest {
         ConstantFunction f33 = new ConstantFunction(0.1);
         f33.setDomainOfFunction(75., 100., true, true);
         listFPP[2] = f33;
-        source.setFPP(listFPP);
+        source.setMasseIgnorance(listFPP);
 	    
         //
 		criteria.add(source);

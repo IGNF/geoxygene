@@ -109,7 +109,6 @@
 			<artifactId>geoxygene-contrib</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		
 
 		<dependency>
@@ -122,6 +121,12 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+		<dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
 
 		<dependency>
 			<groupId>gov.nist.math.jama</groupId>
@@ -179,6 +184,11 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-util</artifactId>
+			<version>1.7-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 </project>

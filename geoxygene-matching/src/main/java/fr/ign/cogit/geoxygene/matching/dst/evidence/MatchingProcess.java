@@ -33,6 +33,7 @@ import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
 import fr.ign.cogit.geoxygene.matching.dst.operators.DempsterOp;
 import fr.ign.cogit.geoxygene.matching.dst.operators.SmetsOp;
+import fr.ign.cogit.geoxygene.matching.dst.sources.Source;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
 

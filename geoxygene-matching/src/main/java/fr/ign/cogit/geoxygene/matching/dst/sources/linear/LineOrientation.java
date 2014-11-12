@@ -28,10 +28,11 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
+import fr.ign.cogit.geoxygene.function.Function1D;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
-import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
+import fr.ign.cogit.geoxygene.matching.dst.sources.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 
 /**

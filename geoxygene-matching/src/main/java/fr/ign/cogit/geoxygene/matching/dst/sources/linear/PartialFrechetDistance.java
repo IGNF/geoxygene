@@ -29,10 +29,11 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.distance.Frechet;
+import fr.ign.cogit.geoxygene.function.Function1D;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.codec.EvidenceCodec;
-import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
+import fr.ign.cogit.geoxygene.matching.dst.sources.GeoSource;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
@@ -101,7 +102,7 @@ public class PartialFrechetDistance extends GeoSource {
     double v = Frechet.partialFrechet(l1, l2);
     return v;
   }
-  
+
   /*@Override
   public double evaluate(IFeature ref, GeomHypothesis candidate) {
     double distance = compute(ref.getGeom(), candidate.getGeom());
