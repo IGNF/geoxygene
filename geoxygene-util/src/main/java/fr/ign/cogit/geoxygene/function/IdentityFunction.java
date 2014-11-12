@@ -26,9 +26,12 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.function;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author JeT Simple identity function f(x) = x
  */
+@XmlRootElement(name = "LinearFunction")
 public class IdentityFunction extends AbstractFunction1D {
 
     /**

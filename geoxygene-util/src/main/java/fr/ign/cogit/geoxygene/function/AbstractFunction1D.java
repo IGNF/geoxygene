@@ -9,14 +9,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 /** 
  *
  */
-@XmlRootElement(name = "Function1D")
-@XmlType(name = "Function1D")
 public abstract class AbstractFunction1D implements Function1D {
   
   /** The lower bound of the domain of the function. */
@@ -34,6 +30,12 @@ public abstract class AbstractFunction1D implements Function1D {
   /** If upper bound is accepted in domain of the function. */
   @XmlAttribute(name = "withMatchUpperBound")
   private boolean withMatchUpperBound;
+
+  /**
+   * Default constructor.
+   */
+  public AbstractFunction1D() {
+  }
 
   @Override
   public abstract String help();
@@ -91,7 +93,7 @@ public abstract class AbstractFunction1D implements Function1D {
   
   public void marshall() {
     try {
-      JAXBContext jc = JAXBContext.newInstance(AbstractFunction1D.class, ConstantFunction.class,
+      JAXBContext jc = JAXBContext.newInstance(ConstantFunction.class,
           LinearFunction.class, IdentityFunction.class);
       Marshaller marshaller = jc.createMarshaller();
       marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -103,7 +105,7 @@ public abstract class AbstractFunction1D implements Function1D {
   
   public void marshall(String filename) {
     try {
-      JAXBContext context = JAXBContext.newInstance(AbstractFunction1D.class, ConstantFunction.class,
+      JAXBContext context = JAXBContext.newInstance(ConstantFunction.class,
           LinearFunction.class, IdentityFunction.class);
       Marshaller marshaller = context.createMarshaller();
       marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -115,7 +117,7 @@ public abstract class AbstractFunction1D implements Function1D {
   
   public void marshall(StringWriter w) {
     try {
-      JAXBContext context = JAXBContext.newInstance(AbstractFunction1D.class, ConstantFunction.class,
+      JAXBContext context = JAXBContext.newInstance(ConstantFunction.class,
           LinearFunction.class, IdentityFunction.class);
       Marshaller marshaller = context.createMarshaller();
       marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -133,7 +135,7 @@ public abstract class AbstractFunction1D implements Function1D {
    */
   public static AbstractFunction1D unmarshall(File file) throws Exception { 
     try {
-      JAXBContext context = JAXBContext.newInstance(AbstractFunction1D.class, ConstantFunction.class,
+      JAXBContext context = JAXBContext.newInstance(ConstantFunction.class,
           LinearFunction.class, IdentityFunction.class);
       Unmarshaller unmarshaller = context.createUnmarshaller(); 
       AbstractFunction1D root = (AbstractFunction1D) unmarshaller.unmarshal(file); 
@@ -151,7 +153,7 @@ public abstract class AbstractFunction1D implements Function1D {
    */
   public static AbstractFunction1D unmarshall(String inputXML) throws Exception { 
     try { 
-      JAXBContext context = JAXBContext.newInstance(AbstractFunction1D.class, ConstantFunction.class,
+      JAXBContext context = JAXBContext.newInstance(ConstantFunction.class,
           LinearFunction.class, IdentityFunction.class);
       Unmarshaller msh = context.createUnmarshaller(); 
       StringReader reader = new StringReader(inputXML); 

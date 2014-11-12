@@ -26,11 +26,13 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.function;
 
+
 /**
  * @author JeT
  * these functions are used to evaluate a simple function depending on a 1D variable
  */
 public interface Function1D {
+  
   /**
    * Returns a String explaining the function and its arguments 
    * @return
