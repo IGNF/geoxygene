@@ -22,7 +22,7 @@ import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.plugin.cartetopo.TopologieReseauPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartetopo.data.ParamDoingTopologicalStructure;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
+import fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.data.ParamFilenamePopulationEdgesNetwork;
 
 /**
  * 

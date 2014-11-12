@@ -24,7 +24,7 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  *******************************************************************************/
-package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
+package fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.gui;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -42,9 +42,10 @@ import javax.swing.filechooser.FileFilter;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.data.ParamFilenamePopulationEdgesNetwork;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
+
 
 /**
  * 

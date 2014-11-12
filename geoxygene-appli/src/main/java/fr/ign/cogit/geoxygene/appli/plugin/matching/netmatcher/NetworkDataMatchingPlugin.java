@@ -24,7 +24,7 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  *******************************************************************************/
-package fr.ign.cogit.geoxygene.appli.plugin.datamatching;
+package fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -42,6 +42,9 @@ import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.data.ParamFilenamePopulationEdgesNetwork;
+import fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.data.ParamPluginNetworkDataMatching;
+import fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.gui.EditParamPanel;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -52,9 +55,6 @@ import fr.ign.cogit.geoxygene.appli.MainFrameMenuBar;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui.EditParamPanel;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;

@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
+package fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -13,7 +13,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
+import fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.data.ParamPluginNetworkDataMatching;
 import fr.ign.parameters.Parameters;
 
 /**

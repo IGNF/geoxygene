@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
+package fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.gui;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;

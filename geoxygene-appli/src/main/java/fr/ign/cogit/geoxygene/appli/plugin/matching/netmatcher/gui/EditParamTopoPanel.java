@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
+package fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.gui;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;

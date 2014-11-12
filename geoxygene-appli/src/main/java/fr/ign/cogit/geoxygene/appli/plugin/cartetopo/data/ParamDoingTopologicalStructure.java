@@ -1,6 +1,6 @@
 package fr.ign.cogit.geoxygene.appli.plugin.cartetopo.data;
 
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
+import fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.data.ParamFilenamePopulationEdgesNetwork;
 
 public class ParamDoingTopologicalStructure {
 

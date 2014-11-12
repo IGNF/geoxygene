@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <GeOxygeneApplicationProperties>
-    <plugin>fr.ign.cogit.geoxygene.appli.plugin.datamatching.DataMatchingPlugin</plugin>
-    <plugin>fr.ign.cogit.geoxygene.appli.plugin.datamatching.NetworkDataMatchingPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.DataMatchingPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.NetworkDataMatchingPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.matching.dst.EvidencePlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.BuildingBlocksCreationPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.TopologieReseauPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartetopo.ImportAsEdgesPlugin</plugin>

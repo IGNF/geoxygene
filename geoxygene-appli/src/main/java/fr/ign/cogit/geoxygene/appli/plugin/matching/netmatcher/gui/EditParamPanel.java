@@ -25,7 +25,7 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.appli.plugin.datamatching.gui;
+package fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -40,11 +40,11 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.NetworkDataMatchingPlugin;
+import fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.data.ParamFilenamePopulationEdgesNetwork;
+import fr.ign.cogit.geoxygene.appli.plugin.matching.netmatcher.data.ParamPluginNetworkDataMatching;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.NetworkDataMatchingPlugin;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamFilenamePopulationEdgesNetwork;
-import fr.ign.cogit.geoxygene.appli.plugin.datamatching.data.ParamPluginNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 
 
