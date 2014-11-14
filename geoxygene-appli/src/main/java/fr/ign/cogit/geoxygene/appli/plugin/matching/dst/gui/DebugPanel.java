@@ -16,6 +16,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 
@@ -35,15 +36,16 @@ public class DebugPanel extends JPanel {
   
   /** Population des liens. */
   private Population<DefaultFeature> popLien;
+  private GF_FeatureType featureLien;
   
   /** Default serial ID. */
   private static final long serialVersionUID = 1L;
-    
+  
   /**
    * Constructor.
    */
   public DebugPanel() {
-    initPanel();
+    
   }
   
   public void setPopLien(Population<DefaultFeature> popLien) {
@@ -51,7 +53,7 @@ public class DebugPanel extends JPanel {
     LOGGER.trace("Nb colonne " + popLien.getFeatureType().getFeatureAttributes().size());
   }
     
-  private void initPanel() {
+  public void initPanel() {
       
     FormLayout layout = new FormLayout(
                 "50dlu, pref, 20dlu",
@@ -68,16 +70,10 @@ public class DebugPanel extends JPanel {
     Vector<Vector<String>> data = new Vector<Vector<String>>();
     Vector<String> title = new Vector<String>();
         
-    title.add("nature1");
-    title.add("bdcToponyme");
-    title.add("NbCandidat");
-    title.add("NATURE2");
-    title.add("bdnToponyme");
-    title.add("MaxPign");
-    title.add("Zoom");
-    /*for (GF_AttributeType attributeType : popLien.getFeatureType().getFeatureAttributes()) {
+    featureLien = popLien.getFeatureType();
+    for (GF_AttributeType attributeType : featureLien.getFeatureAttributes()) {
       title.add(attributeType.getMemberName());
-    }*/
+    }
       
     // data
     /*for (DefaultFeature lien : popLien) {
@@ -130,7 +126,21 @@ public class DebugPanel extends JPanel {
     
     for (DefaultFeature lien : popLien) {
       
-      String nature2 = "";
+      Object[] ligne = new Object[featureLien.getFeatureAttributes().size()];
+      int c = 0;
+      for (GF_AttributeType attributeType : featureLien.getFeatureAttributes()) {
+        Object col = lien.getAttribute(attributeType.getMemberName());
+        if (col != null) {
+          ligne[c] = col;
+        } else {
+          ligne[c] = "";
+        }
+        c++;
+      }
+      
+      dm.addRow(ligne);
+      
+      /*String nature2 = "";
       if (lien.getAttribute("NATURE2") != null) {
         nature2 = lien.getAttribute("NATURE2").toString();
       }
@@ -149,7 +159,7 @@ public class DebugPanel extends JPanel {
           nature2,
           topo2, 
           maxPign
-      });
+      });*/
     }
     
   }

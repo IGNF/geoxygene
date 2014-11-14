@@ -106,8 +106,8 @@ public class MatriceConfusionPanel extends JDialog implements ActionListener {
     att2Value.add(""); // pour la colonne des libellés
     
     for (DefaultFeature point : popLien) {
-      Object att1O = point.getAttribute(this.attribute1 + "1");
-      Object att2O = point.getAttribute(this.attribute2 + "2");
+      Object att1O = point.getAttribute(this.attribute1 + "");
+      Object att2O = point.getAttribute(this.attribute2 + "");
       
       int j = 0;
       if (att2O != null) {

@@ -370,7 +370,7 @@ public class CriterePanel extends JPanel implements ActionListener {
       }
     } else if (source == matriceConfusionButton) {
       MatriceConfusionPanel matriceConfusionPanel = new MatriceConfusionPanel(this.evidencePlugin.getPopLien(), 
-          this.evidencePlugin.getFeatureTypeLien(), "nature", "NATURE");
+          this.evidencePlugin.getFeatureTypeLien(), "nature1", "NATURE2");
       matriceConfusionPanel.setLocation(new Point (100, 100));
     } else if (source == configLayerButton) {
       configLayer();

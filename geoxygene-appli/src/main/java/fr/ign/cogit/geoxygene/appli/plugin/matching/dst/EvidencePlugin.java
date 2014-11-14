@@ -169,7 +169,7 @@ public class EvidencePlugin implements GeOxygeneApplicationPlugin, ActionListene
     listFPP[1] = fL32;
     levenshteinSource.setMasseIgnorance(listFPP);
     
-    criteria.add(levenshteinSource);
+    // criteria.add(levenshteinSource);
     
     
     // ==================================================================================== 
@@ -279,6 +279,8 @@ public class EvidencePlugin implements GeOxygeneApplicationPlugin, ActionListene
       
       // DebugPanel
       debugPanel = new DebugPanel();
+      debugPanel.setPopLien(popLien);
+      debugPanel.initPanel();
       
       double w = application.getMainFrame().getSize().getWidth();
       double h = application.getMainFrame().getSize().getHeight();
@@ -489,7 +491,7 @@ public class EvidencePlugin implements GeOxygeneApplicationPlugin, ActionListene
               DST_NA_LOGGER.info("   candidat = " + candidat.get(i).getAttribute("NOM"));
             }
           }          
-        }
+      }
       }
       
     
