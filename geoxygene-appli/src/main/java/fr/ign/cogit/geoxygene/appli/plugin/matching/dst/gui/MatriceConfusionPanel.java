@@ -177,12 +177,16 @@ class ColorRedRenderer extends DefaultTableCellRenderer {
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
       super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-      if (Integer.parseInt(value.toString()) > 0) {
-        setBackground(Color.ORANGE);
-        // setForeground(Color.RED);
+      if (value != null) {
+        if (Integer.parseInt(value.toString()) > 0) {
+          setBackground(Color.ORANGE);
+          // setForeground(Color.RED);
+        } else {
+          setBackground(Color.WHITE);
+          // setForeground(Color.BLACK);
+        }
       } else {
         setBackground(Color.WHITE);
-        // setForeground(Color.BLACK);
       }
 
       return this;
