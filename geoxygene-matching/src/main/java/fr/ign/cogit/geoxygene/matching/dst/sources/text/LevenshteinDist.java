@@ -41,7 +41,7 @@ public class LevenshteinDist extends GeoSource {
   private static Logger DST_LOGGER = Logger.getLogger("DSTLogger");
   
   private String attributeName1 = "toponyme";  // nature
-  private String attributeName2 = "NOM";  // NATURE
+  private String attributeName2 = "TOPONYME";  // NATURE
   
   @Override
   public String getName() {
@@ -69,7 +69,7 @@ public class LevenshteinDist extends GeoSource {
       double[] masses = new double[3];
       masses[0] = 0;
       masses[1] = 0;
-      masses[2] = 0;
+      masses[2] = 1;
       
       System.out.println(ref.getFeatureType().getFeatureAttributes().size() + ", " + candidate.getFeatureType().getFeatureAttributes().size() + " -- ");
       return masses;
