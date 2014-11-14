@@ -140,26 +140,6 @@ public class DebugPanel extends JPanel {
       
       dm.addRow(ligne);
       
-      /*String nature2 = "";
-      if (lien.getAttribute("NATURE2") != null) {
-        nature2 = lien.getAttribute("NATURE2").toString();
-      }
-      String topo2 = "";
-      if (lien.getAttribute("bdnToponyme") != null) {
-        topo2 = lien.getAttribute("bdnToponyme").toString();
-      }
-      String maxPign = "";
-      if (lien.getAttribute("MaxPign") != null) {
-        maxPign = lien.getAttribute("MaxPign").toString();
-      }
-      
-      dm.addRow(new Object[] { lien.getAttribute("nature1").toString(), 
-          lien.getAttribute("bdcToponyme").toString(),
-          lien.getAttribute("NbCandidat").toString(),
-          nature2,
-          topo2, 
-          maxPign
-      });*/
     }
     
   }
