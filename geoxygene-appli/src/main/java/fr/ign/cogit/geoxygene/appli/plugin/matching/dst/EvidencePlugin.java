@@ -135,8 +135,8 @@ public class EvidencePlugin implements GeOxygeneApplicationPlugin, ActionListene
     criteria.add(source);
     
     // ==================================================================================== 
-    
-    LevenshteinDist levenshteinSource = new LevenshteinDist();
+
+    LevenshteinDist levenshteinSource = new LevenshteinDist("toponyme", "NOM");
     double t = 0.7;
 
     // Fonction EstApparie
@@ -169,7 +169,7 @@ public class EvidencePlugin implements GeOxygeneApplicationPlugin, ActionListene
     listFPP[1] = fL32;
     levenshteinSource.setMasseIgnorance(listFPP);
     
-    // criteria.add(levenshteinSource);
+    criteria.add(levenshteinSource);
     
     
     // ==================================================================================== 
