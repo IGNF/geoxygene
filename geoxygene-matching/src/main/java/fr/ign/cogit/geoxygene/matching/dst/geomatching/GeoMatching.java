@@ -132,7 +132,7 @@ public class GeoMatching {
     // ========================
     //   Hypotheses
     // ========================
-    LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
+    /*LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
     List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
     for (List<IFeature> l : combinations) {
       if (l.size() == 1) {
@@ -142,6 +142,10 @@ public class GeoMatching {
           IFeature[] featarray = new IFeature[l.size()];
           hypotheses.add(new ComplexGeomHypothesis(l.toArray(featarray)));
         }
+    }*/
+    List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
+    for (IFeature feat : candidates) {
+      hypotheses.add(new SimpleGeomHypothesis(feat));
     }
     DST_LOGGER.info("   " + hypotheses.size() + " hypothese(s)");
     
@@ -188,26 +192,67 @@ public class GeoMatching {
         kernel.add(new Pair<byte[], Float>(code, new Float(mij[0])));
         kernel.add(new Pair<byte[], Float>(codeComplement, new Float(mij[1])));
         kernel.add(new Pair<byte[], Float>(codeUnknown, new Float(mij[2])));
+        
+        CombinationAlgos.deleteDoubles(kernel);
+        CombinationAlgos.sortKernel(kernel);
+        
         beliefsCritere.add(kernel);
       }
       
       // Fusion des critères
       List<Pair<byte[], Float>> result = op.combine(beliefsCritere);
+      CombinationAlgos.deleteDoubles(result);
+      CombinationAlgos.sortKernel(result);
       beliefsCandidats.add(result);
-      /*System.out.println("----");
-      for (int j = 0; j < result.size(); j++) {
-        Pair<byte[], Float> paire = result.get(j);
-        if (paire.getSecond() > 0) {
-          System.out.println(Arrays.toString(paire.getFirst()) + " : " + paire.getSecond());
-        }
-      }
-      System.out.println("----");*/
-      
+
       cptCandidat++;
     }
     
     // Fusion des candidats
-    List<Pair<byte[], Float>> result = op.combine(beliefsCandidats);
+    System.out.println("Fusion des candidats avant");
+    List<Pair<byte[], Float>> result = null;
+    if (beliefsCandidats.size() < 10) {
+      result = op.combine(beliefsCandidats);
+    } else {
+      // en plusieurs temps
+      int borne = 5;
+      int nbIteration = beliefsCandidats.size() / borne;
+      int reste = beliefsCandidats.size() - nbIteration * borne;
+      int cpt = 0, cptp = 0;
+      List<Pair<byte[], Float>> resultTmp = null;
+      
+      // les tranches de 10
+      List<List<Pair<byte[], Float>>>  beliefsCandidatsShortList;
+      for (int i = 0; i < nbIteration; i++) {
+        beliefsCandidatsShortList = new ArrayList<List<Pair<byte[], Float>>>();
+        cptp = cpt;
+        for (int j = 0; j < borne; j++) {
+          beliefsCandidatsShortList.add(beliefsCandidats.get(cpt));
+          cpt++;
+        }
+        System.out.println("cpt = [" + cptp + ", " + cpt + "[");
+        // On ajoute le resultat precedent dans les candidats
+        if (i > 0) {
+          beliefsCandidatsShortList.add(resultTmp);
+        }
+        resultTmp = op.combine(beliefsCandidatsShortList);
+        CombinationAlgos.deleteDoubles(resultTmp);
+        CombinationAlgos.sortKernel(resultTmp);
+      }
+      
+      // Reste les x derniers
+      beliefsCandidatsShortList = new ArrayList<List<Pair<byte[], Float>>>();
+      cptp = cpt;
+      for (int j = 0; j < reste; j++) {
+        beliefsCandidatsShortList.add(beliefsCandidats.get(cpt));
+        cpt++;
+      }
+      beliefsCandidatsShortList.add(resultTmp);
+      result = op.combine(beliefsCandidatsShortList);
+      System.out.println("cpt = [" + cptp + ", " + cpt + "[");
+    } 
+    
+    System.out.println("Fusion des candidats apres");
     DecisionOp<GeomHypothesis> decisionOp;
     decisionOp = new DecisionOp<GeomHypothesis>(result, op.getConflict(),
         choice, codec, true);

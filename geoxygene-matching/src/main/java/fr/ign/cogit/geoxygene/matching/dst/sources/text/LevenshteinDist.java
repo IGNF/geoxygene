@@ -40,8 +40,14 @@ public class LevenshteinDist extends GeoSource {
   
   private static Logger DST_LOGGER = Logger.getLogger("DSTLogger");
   
-  private String attributeName1 = "toponyme";  // toponyme
-  private String attributeName2 = "NOM";  // TOPONYME
+  private String attributeName1 = "";
+  private String attributeName2 = "";
+  
+  
+  public LevenshteinDist(String att1, String att2) {
+    this.attributeName1 = att1;
+    this.attributeName2 = att2;
+  }
   
   @Override
   public String getName() {
@@ -61,7 +67,7 @@ public class LevenshteinDist extends GeoSource {
       double distance = compute(bdcNature.toString(), bdnNature.toString());
       // DST_LOGGER.info("        distance = " + distance + "(bdcNature = " + bdcNature.toString() + ", bdnNature = " + bdnNature.toString() + ")");
       DST_LOGGER.info("        distance = " + distance + " (bdc = " + bdcNature.toString() + ", bdn = " + bdnNature.toString() + ")");
-      System.out.println(" bdcNature = " + bdcNature.toString() + ", bdnNature = " + bdnNature.toString() + " => " + distance);
+      // System.out.println(" bdcNature = " + bdcNature.toString() + ", bdnNature = " + bdnNature.toString() + " => " + distance);
       
       return getMasses(distance);
       

@@ -140,7 +140,7 @@ public class EscarpuTest {
     
     // ==================================================================================== 
     
-    LevenshteinDist levenshteinSource = new LevenshteinDist();
+    LevenshteinDist levenshteinSource = new LevenshteinDist("toponyme", "NOM");
     double t = 0.7;
 
     // Fonction EstApparie

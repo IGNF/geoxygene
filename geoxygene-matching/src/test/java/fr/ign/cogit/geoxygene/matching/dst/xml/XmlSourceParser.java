@@ -83,7 +83,7 @@ public class XmlSourceParser extends XMLTestCase {
   
   @Test
   public void testMarshallLevensteinDistance() {
-    LevenshteinDist levenshteinSource = new LevenshteinDist();
+    LevenshteinDist levenshteinSource = new LevenshteinDist("toponyme", "NOM");
     double t = 0.7;
     
     Function1D[] list = new Function1D[2];
