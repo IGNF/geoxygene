@@ -194,8 +194,6 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
                 GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this
                         .getParentPanel().getFboId());
                 GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT1);
-                GL11.glClearColor(0f, 0f, 0f, 0f);
-                GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
                 this.drawBackground(this.getParentPanel().getFBOImageWidth(),
                         this.getParentPanel().getFBOImageHeight());

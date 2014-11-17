@@ -12,10 +12,16 @@ out vec4 outColor;
 in vec4 fragmentColor;
 in vec2 fragmentTextureCoord;
 
-const vec3 identityElement = vec3( 1.0, 1.0, 1.0 );
-const float EPSILON = 0.001;
-
 vec4 colorFilter( vec4 col );
+
+// source: http://cairographics.org/operators/
+vec3 overlay( vec3 A, vec3 B ) {
+	vec3 resultColor;
+	resultColor.r = ( B.r <= 0.5 ) ? 2 * A.r * B.r : 1 - 2 * ( 1 - A.r) * ( 1 - B.r ); 
+	resultColor.g = ( B.g <= 0.5 ) ? 2 * A.g * B.g : 1 - 2 * ( 1 - A.g) * ( 1 - B.g ); 
+	resultColor.b = ( B.b <= 0.5 ) ? 2 * A.b * B.b : 1 - 2 * ( 1 - A.b) * ( 1 - B.b );
+	return resultColor; 
+}
 
 void main(void) {
  //   outColor = vec4( fragmentTextureCoord.xy, 1.0, 1.0 );
@@ -24,13 +30,19 @@ void main(void) {
 	vec3 resultColor = vec3(0);
 	vec4 foregroundColor = colorFilter( texture( foregroundTexture, fragmentTextureCoord.xy ) );
 	vec4 backgroundColor = texture( backgroundTexture, fragmentTextureCoord.xy );
-	foregroundColor.rgb = foregroundColor.rgb * foregroundColor.a + identityElement * ( 1.0 - foregroundColor.a );
-	backgroundColor.rgb = backgroundColor.rgb * backgroundColor.a + identityElement * ( 1.0 - backgroundColor.a );
-	float sumAlpha = foregroundColor.a + backgroundColor.a;
-	resultColor.r = ( foregroundColor.r > 0.5 ) ? 2 * foregroundColor.r * backgroundColor.r : 1 - 2 * ( 1 - foregroundColor.r) * ( 1 - backgroundColor.r ); 
-	resultColor.g = ( foregroundColor.g > 0.5 ) ? 2 * foregroundColor.g * backgroundColor.g : 1 - 2 * ( 1 - foregroundColor.g) * ( 1 - backgroundColor.g ); 
-	resultColor.b = ( foregroundColor.b > 0.5 ) ? 2 * foregroundColor.b * backgroundColor.b : 1 - 2 * ( 1 - foregroundColor.b) * ( 1 - backgroundColor.b );
-	if ( sumAlpha > EPSILON ) resultColor /= sumAlpha;  
- 
-	outColor = vec4( resultColor, max( foregroundColor.a, foregroundColor.a ) );
+	
+	float aA = foregroundColor.a * globalOpacity;
+	float aB = backgroundColor.a;
+	vec3 xA = foregroundColor.rgb;
+	vec3 xB = backgroundColor.rgb;
+	vec3 xaA = aA * xA;
+	vec3 xaB = aB * xB;
+	
+	float aR = aA + aB * ( 1.0 - aA );
+
+	float f = overlay( xA, xB );
+	resultColor = ( 1.0 - aB ) * xaA + ( 1- aA ) * xaB + aA * aB * f; 	
+	if ( aR > 0.001 ) resultColor /= aR;
+
+	outColor = vec4( resultColor, aR );
 }

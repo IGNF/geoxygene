@@ -24,12 +24,11 @@ void main(void) {
 	vec3 resultColor = vec3(0);
 	vec4 foregroundColor = colorFilter( texture( foregroundTexture, fragmentTextureCoord.xy ) );
 	vec4 backgroundColor = texture( backgroundTexture, fragmentTextureCoord.xy );
-	foregroundColor.rgb = foregroundColor.rgb * foregroundColor.a + identityElement * ( 1.0 - foregroundColor.a );
-	backgroundColor.rgb = backgroundColor.rgb * backgroundColor.a + identityElement * ( 1.0 - backgroundColor.a );
+	foregroundColor.rgb = foregroundColor.rgb * foregroundColor.a;
+	backgroundColor.rgb = backgroundColor.rgb * backgroundColor.a;
 	float sumAlpha = foregroundColor.a + backgroundColor.a;
 
 	resultColor = foregroundColor.rgb * foregroundColor.a + backgroundColor.rgb * (1.0 - foregroundColor.a );
-	if ( sumAlpha > EPSILON ) resultColor /= sumAlpha;  
 
-	outColor = vec4( resultColor, max( foregroundColor.a, foregroundColor.a ) );
+	outColor = vec4( resultColor, backgroundColor.a );
 }

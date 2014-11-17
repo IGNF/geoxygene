@@ -145,7 +145,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private int fboTextureId1 = -1;
     private int previousFBOImageWidth = -1;
     private int previousFBOImageHeight = -1;
-    private int currentFboPingPongIndex = 1; // alternate 1 & 2
+    private int currentFboPingPongIndex = 2; // alternate 1 & 2
 
     // private final JLayeredPane layeredPane = null;
     // private final JPanel glPanel = null;
@@ -427,10 +427,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         GL11.glClearColor(0f, 0f, 0f, 0f);
         GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT1);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT2);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        // GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT1);
+        // GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        // GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT2);
+        // GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+
+        this.currentFboPingPongIndex = 2;
 
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
         glEnable(GL_TEXTURE_2D);
@@ -535,12 +537,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.getFboId());
         if (this.currentFboPingPongIndex != 1) {
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT2);
-            GL11.glClearColor(0f, 1f, 0.f, 1.f);
+            GL11.glClearColor(0f, 0f, 0.f, 0f);
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
             GLTools.glCheckError("FBO ATTACHMENT 2 clear");
         } else {
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT1);
-            GL11.glClearColor(0f, 0f, 1f, 1f);
+            GL11.glClearColor(0f, 0f, 0f, 0f);
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
             GLTools.glCheckError("FBO ATTACHMENT 1 clear");
         }

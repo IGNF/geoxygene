@@ -12,10 +12,12 @@ out vec4 outColor;
 in vec4 fragmentColor;
 in vec2 fragmentTextureCoord;
 
-const float EPSILON = 0.001;
-const vec3 identityElement = vec3( 1.0, 1.0, 1.0 );
-
 vec4 colorFilter( vec4 col );
+
+// source: http://cairographics.org/operators/
+vec3 multiply( vec3 A, vec3 B ) {
+	return A * B;
+}
 
 void main(void) {
  //   outColor = vec4( fragmentTextureCoord.xy, 1.0, 1.0 );
@@ -24,12 +26,19 @@ void main(void) {
 	vec3 resultColor = vec3(0);
 	vec4 foregroundColor = colorFilter( texture( foregroundTexture, fragmentTextureCoord.xy ) );
 	vec4 backgroundColor = texture( backgroundTexture, fragmentTextureCoord.xy );
-	foregroundColor.rgb = foregroundColor.rgb * foregroundColor.a + identityElement * ( 1.0 - foregroundColor.a );
-	backgroundColor.rgb = backgroundColor.rgb * backgroundColor.a + identityElement * ( 1.0 - backgroundColor.a );
-	float sumAlpha = foregroundColor.a + backgroundColor.a;
-
-	resultColor = foregroundColor.rgb * backgroundColor.rgb;
-	if ( sumAlpha > EPSILON ) resultColor /= sumAlpha;  
 	
-	outColor = vec4( resultColor, max( foregroundColor.a, foregroundColor.a ));
+	float aA = foregroundColor.a * globalOpacity;
+	float aB = backgroundColor.a;
+	vec3 xA = foregroundColor.rgb;
+	vec3 xB = backgroundColor.rgb;
+	vec3 xaA = aA * xA;
+	vec3 xaB = aB * xB;
+	
+	float aR = aA + aB * ( 1.0 - aA );
+
+	float f = multiply( xA, xB );
+	resultColor = ( 1.0 - aB ) * xaA + ( 1- aA ) * xaB + aA * aB * f; 	
+	if ( aR > 0.001 ) resultColor /= aR;
+
+	outColor = vec4( resultColor, aR );
 }
