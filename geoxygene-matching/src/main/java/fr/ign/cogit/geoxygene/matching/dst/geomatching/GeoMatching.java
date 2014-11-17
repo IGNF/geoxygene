@@ -39,7 +39,7 @@ import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationAlgos;
 import fr.ign.cogit.geoxygene.matching.dst.operators.CombinationOp;
 import fr.ign.cogit.geoxygene.matching.dst.operators.DecisionOp;
 import fr.ign.cogit.geoxygene.matching.dst.operators.DempsterOp;
-import fr.ign.cogit.geoxygene.matching.dst.operators.SmetsOp;
+// import fr.ign.cogit.geoxygene.matching.dst.operators.SmetsOp;
 import fr.ign.cogit.geoxygene.matching.dst.sources.Source;
 import fr.ign.cogit.geoxygene.matching.dst.util.Combinations;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
@@ -132,26 +132,11 @@ public class GeoMatching {
     // ========================
     //   Hypotheses
     // ========================
-    /*LinkedList<List<IFeature>> combinations = Combinations.enumerate(candidates);
-    List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
-    for (List<IFeature> l : combinations) {
-      if (l.size() == 1) {
-        hypotheses.add(new SimpleGeomHypothesis(l.get(0)));
-      } else
-        if (l.size() > 1) {
-          IFeature[] featarray = new IFeature[l.size()];
-          hypotheses.add(new ComplexGeomHypothesis(l.toArray(featarray)));
-        }
-    }*/
     List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
     for (IFeature feat : candidates) {
       hypotheses.add(new SimpleGeomHypothesis(feat));
     }
     DST_LOGGER.info("   " + hypotheses.size() + " hypothese(s)");
-    
-    //List<GeomHypothesis> hypotheses = new ArrayList<GeomHypothesis>();
-    
-    
     
     DefaultCodec<GeomHypothesis> codec = new DefaultCodec<GeomHypothesis>(hypotheses);
     
@@ -176,7 +161,7 @@ public class GeoMatching {
         byte[] code = new byte[candidates.size()];
         Arrays.fill(code, (byte)0);
         code[cptCandidat] = (byte)1;
-        DST_LOGGER.info("   " + Arrays.toString(code).toString());
+        // DST_LOGGER.info("   " + Arrays.toString(code).toString());
 
         byte[] codeComplement = new byte[candidates.size()];
         Arrays.fill(codeComplement, (byte)1);
@@ -208,51 +193,20 @@ public class GeoMatching {
       cptCandidat++;
     }
     
-    // Fusion des candidats
-    System.out.println("Fusion des candidats avant");
-    List<Pair<byte[], Float>> result = null;
-    if (beliefsCandidats.size() < 10) {
-      result = op.combine(beliefsCandidats);
-    } else {
-      // en plusieurs temps
-      int borne = 5;
-      int nbIteration = beliefsCandidats.size() / borne;
-      int reste = beliefsCandidats.size() - nbIteration * borne;
-      int cpt = 0, cptp = 0;
-      List<Pair<byte[], Float>> resultTmp = null;
-      
-      // les tranches de 10
-      List<List<Pair<byte[], Float>>>  beliefsCandidatsShortList;
-      for (int i = 0; i < nbIteration; i++) {
-        beliefsCandidatsShortList = new ArrayList<List<Pair<byte[], Float>>>();
-        cptp = cpt;
-        for (int j = 0; j < borne; j++) {
-          beliefsCandidatsShortList.add(beliefsCandidats.get(cpt));
-          cpt++;
-        }
-        System.out.println("cpt = [" + cptp + ", " + cpt + "[");
-        // On ajoute le resultat precedent dans les candidats
-        if (i > 0) {
-          beliefsCandidatsShortList.add(resultTmp);
-        }
-        resultTmp = op.combine(beliefsCandidatsShortList);
-        CombinationAlgos.deleteDoubles(resultTmp);
-        CombinationAlgos.sortKernel(resultTmp);
+    DST_LOGGER.info("    Nb sources = " + beliefsCandidats.size());
+    for (int k = 0; k < beliefsCandidats.size(); k++) {
+      for (int i = 0; i < beliefsCandidats.get(k).size(); i++) {
+        DST_LOGGER.info("   " + Arrays.toString(beliefsCandidats.get(k).get(i).getFirst()) + " : " + beliefsCandidats.get(k).get(i).getSecond());
       }
-      
-      // Reste les x derniers
-      beliefsCandidatsShortList = new ArrayList<List<Pair<byte[], Float>>>();
-      cptp = cpt;
-      for (int j = 0; j < reste; j++) {
-        beliefsCandidatsShortList.add(beliefsCandidats.get(cpt));
-        cpt++;
-      }
-      beliefsCandidatsShortList.add(resultTmp);
-      result = op.combine(beliefsCandidatsShortList);
-      System.out.println("cpt = [" + cptp + ", " + cpt + "[");
-    } 
+    }
     
-    System.out.println("Fusion des candidats apres");
+    // Fusion des candidats
+    System.out.println("Avant fusion des candidats.");
+    List<Pair<byte[], Float>> result = null;
+    result = op.combine(beliefsCandidats);
+    System.out.println("Après fusion des candidats.");
+    
+    // 
     DecisionOp<GeomHypothesis> decisionOp;
     decisionOp = new DecisionOp<GeomHypothesis>(result, op.getConflict(),
         choice, codec, true);

@@ -162,7 +162,7 @@ public final class CombinationAlgos {
    * @param conditionnedlist
    */
   public static void deleteDoubles(List<Pair<byte[], Float>> conditionnedlist) {
-    List<Pair<byte[], Float>> toremove = new ArrayList<Pair<byte[], Float>>(10);
+    List<Pair<byte[], Float>> toremove = new ArrayList<Pair<byte[], Float>>();
     for (int i = 0; i < conditionnedlist.size() - 1; i++) {
       Pair<byte[], Float> pair = conditionnedlist.get(i);
       Pair<byte[], Float> pair2 = conditionnedlist.get(i + 1);
