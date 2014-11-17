@@ -4,7 +4,6 @@
 package fr.ign.cogit.geoxygene.appli.layer;
 
 import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
@@ -174,31 +173,53 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         try {
             RenderingStatistics.startRendering();
 
-            // System.err.println("-------------------------------------------------- paint GL --------------------------------");
             // RenderGLUtil.glDraw(null);
             Color bgColor = this.getBackground();
             if (this.getViewBackground() != null
                     && this.getViewBackground().getColor() != null) {
                 bgColor = this.getViewBackground().getColor();
             }
-            GLTools.glClear(bgColor, GL_COLOR_BUFFER_BIT);
 
-            this.drawBackground();
-
-            if (this.getParentPanel() != null
-                    && this.getParentPanel().getRenderingManager() != null) {
-                this.getParentPanel().getRenderingManager().renderAll();
+            if (this.getParentPanel() == null
+                    || this.getParentPanel().getRenderingManager() == null) {
+                logger.warn("canvas try to render a non initialized LayerViewGLPanel. Skip rendering.");
+                return;
             }
-
-            // System.err.println("-------------------------------------------------- swap buffers --------------------------------");
             boolean quickRendering = this.getParentPanel().getProjectFrame()
                     .getMainFrame().getMode().getCurrentMode()
-                    .getRenderingType() != RenderingTypeMode.FINAL;
+                    .getRenderingType() != RenderingTypeMode.FINAL
+                    || !this.getParentPanel().useFBO();
+            if (!quickRendering) {
+                this.getParentPanel().initializeFBO();
+                GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this
+                        .getParentPanel().getFboId());
+                GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT1);
+                GL11.glClearColor(0f, 0f, 0f, 0f);
+                GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+
+                this.drawBackground(this.getParentPanel().getFBOImageWidth(),
+                        this.getParentPanel().getFBOImageHeight());
+                GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+
+            } else {
+                GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+                GL11.glDrawBuffer(GL11.GL_BACK);
+                GLTools.glClear(bgColor, GL11.GL_COLOR_BUFFER_BIT);
+                this.drawBackground(this.getParentPanel().getCanvasWidth(),
+                        this.getParentPanel().getCanvasHeight());
+            }
+            this.getParentPanel().getRenderingManager().renderAll();
+
+            if (!quickRendering) {
+                this.drawFBOPingPongInBackBuffer();
+            }
+
             if (this.doPaintOverlay() && !quickRendering) {
                 RenderingStatistics.startOverlayRendering();
                 this.glPaintOverlays();
                 RenderingStatistics.endOverlayRendering();
             }
+            // System.err.println("-------------------------------------------------- swap buffers --------------------------------");
             this.swapBuffers();
             RenderingStatistics.endRendering();
             RenderingStatistics.printStatistics(System.err);
@@ -210,12 +231,61 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         }
     }
 
+    private void drawFBOPingPongInBackBuffer() {
+        // Draw the Ping-Pong FBO into the Back Buffer
+        try {
+            GLProgram program = this.getGlContext().setCurrentProgram(
+                    LayerViewGLPanel.screenspaceAntialiasedTextureProgramName);
+            this.getParentPanel().drawInBackBuffer();
+            this.getParentPanel().readFromPingPong(program);
+
+            GL11.glDepthMask(false);
+            glDisable(GL11.GL_DEPTH_TEST);
+
+            GL30.glBindVertexArray(LayerViewGLPanel.getScreenQuad().getVaoId());
+            // program.setUniform1f(
+            // LayerViewGLPanel.objectOpacityUniformVarName,
+            // (float) primitive.getOverallOpacity());
+            // program
+            // .setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
+            // (float) opacity);
+            // System.err.println("render FBO quad with object opacity = "
+            // + primitive.getOverallOpacity() + " & globalOpacity = "
+            // + opacity);
+            program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName,
+                    1f);
+            program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
+                    1f);
+            program.setUniform1i(LayerViewGLPanel.screenWidthUniformVarName,
+                    this.getWidth());
+            program.setUniform1i(LayerViewGLPanel.screenHeightUniformVarName,
+                    this.getHeight());
+            program.setUniform1i(
+                    LayerViewGLPanel.antialiasingSizeUniformVarName, this
+                            .getParentPanel().getAntialiasingSize());
+
+            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+
+            GLTools.glCheckError("before FBO drawing textured quad");
+            LwjglLayerRenderer.drawComplex(LayerViewGLPanel.getScreenQuad());
+            // this.getScreenQuad().setColor(new Color(1f, 1f, 1f, .5f));
+            GLTools.glCheckError("FBO drawing textured quad");
+
+            GL30.glBindVertexArray(0); // unbind VAO
+            GLTools.glCheckError("exiting FBO rendering");
+            glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
+        } catch (GLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Override
     public void reset() {
         this.glContext = null;
     }
 
-    private void drawBackground() {
+    private void drawBackground(int width, int height) {
         if (this.getViewBackground() == null
                 || this.getBackgroundTexture() == null
                 || this.getBackgroundTexture().getTextureFilename() == null) {
@@ -229,7 +299,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             }
             glEnable(GL_TEXTURE_2D);
             glDisable(GL11.GL_POLYGON_SMOOTH);
-
+            glViewport(0, 0, width, height);
             Viewport viewport = this.getParentPanel().getViewport();
             double scale = viewport.getScale();
             // double mapScale = 1. / (Viewport.getMETERS_PER_PIXEL() * scale);
@@ -266,6 +336,17 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
                     + LayerViewGL4Canvas.COLORTEXTURE1_SLOT);
             glBindTexture(GL_TEXTURE_2D, this.getBackgroundTexture()
                     .getTextureId());
+
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S,
+                    GL11.GL_REPEAT);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T,
+                    GL11.GL_REPEAT);
+
+            // Setup texture scaling filtering
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
+                    GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,
+                    GL11.GL_LINEAR);
             GL11.glDepthMask(false);
             glDisable(GL11.GL_DEPTH_TEST);
 
@@ -364,8 +445,6 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             // glLoadIdentity();
             // glOrtho(0, this.getWidth(), this.getHeight(), 0, -1000, 1000);
             // glMatrixMode(GL_MODELVIEW);
-            System.err.println("resize window to " + this.getWidth() + "x"
-                    + this.getHeight());
             glViewport(0, 0, this.getWidth(), this.getHeight());
         } catch (Exception e1) {
             // don't know hot to prevent/check this exception.

@@ -1,5 +1,10 @@
 package fr.ign.cogit.geoxygene.appli.layer;
 
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 
 import java.awt.BorderLayout;
@@ -17,6 +22,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,6 +42,10 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL30;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -48,6 +58,7 @@ import fr.ign.cogit.geoxygene.appli.gl.GLBezierShadingVertex;
 import fr.ign.cogit.geoxygene.appli.gl.GLContext;
 import fr.ign.cogit.geoxygene.appli.gl.GLPaintingVertex;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
+import fr.ign.cogit.geoxygene.appli.gl.GeoxygeneBlendingMode;
 import fr.ign.cogit.geoxygene.appli.gl.Subshader;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
 import fr.ign.cogit.geoxygene.appli.mode.MainFrameToolBar;
@@ -89,14 +100,18 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private static final String textLayerFragmentShaderFilename = "./src/main/resources/shaders/text-layer.frag.glsl";
     private static final String colorFragmentShaderFilename = "./src/main/resources/shaders/polygon.color.frag.glsl";
     private static final String textureFragmentShaderFilename = "./src/main/resources/shaders/polygon.texture.frag.glsl";
-    private static final String screenspaceVertexShaderFilename = "./src/main/resources/shaders/screenspace.vert.glsl";
+    public static final String screenspaceVertexShaderFilename = "./src/main/resources/shaders/screenspace.vert.glsl";
     private static final String bezierFragmentShaderFilename = "./src/main/resources/shaders/bezier.frag.glsl";
     private static final String bezierVertexShaderFilename = "./src/main/resources/shaders/bezier.vert.glsl";
     private static final String linePaintingFragmentShaderFilename = "./src/main/resources/shaders/linepainting.frag.glsl";
     private static final String linePaintingVertexShaderFilename = "./src/main/resources/shaders/linepainting.vert.glsl";
     private static final String worldspaceVertexShaderFilename = "./src/main/resources/shaders/worldspace.vert.glsl";
     private static final long serialVersionUID = -7181604491025859187L; // serializable
-                                                                        // UID
+    private static final int COLORTEXTURE0_SLOT = 1;
+    private static final int COLORTEXTURE1_SLOT = 2;
+    private static final int COLORTEXTURE2_SLOT = 3;
+
+    // UID
     // private static final int GLASS_LAYER_INDEX = 10; // layer index on which
     // the overlay Swing stuff will be drawn
     // private static final int GL_LAYER_INDEX = 1; // layer index on which the
@@ -109,7 +124,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private LayerViewGLCanvas glCanvas = null; // canvas containing the GL
                                                // context
     private static GLSimpleComplex screenQuad; // quad drawn on the full screen
-    private LayerViewGLCanvasType glType = null;
     private JToggleButton wireframeToggleButton = null;
     private JToggleButton fboToggleButton = null;
     private JToggleButton animationButton = null;
@@ -125,12 +139,13 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private int antialiasing = 2;
     private boolean useFBO = true;
     private boolean useContinuousRendering = false;
+    private int layerFboTextureId = -1;
     private int fboId = -1;
-    private int fboTextureId = -1;
-
-    public enum LayerViewGLCanvasType {
-        GL1, GL4
-    }
+    private int fboPingPongId0 = -1;
+    private int fboTextureId1 = -1;
+    private int previousFBOImageWidth = -1;
+    private int previousFBOImageHeight = -1;
+    private int currentFboPingPongIndex = 1; // alternate 1 & 2
 
     // private final JLayeredPane layeredPane = null;
     // private final JPanel glPanel = null;
@@ -139,7 +154,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     /**
      * 
      */
-    public LayerViewGLPanel(final LayerViewGLCanvasType glType) {
+    public LayerViewGLPanel() {
         super();
         this.addPaintListener(new ScalePaintListener());
         this.addPaintListener(new CompassPaintListener());
@@ -148,12 +163,11 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         this.renderingManager = new SyncRenderingManager(this,
                 RenderingType.LWJGL);
 
-        this.glCanvas = LayerViewPanelFactory
-                .newLayerViewGLCanvas(this, glType);
-        this.setGlType(glType);
+        this.glCanvas = LayerViewPanelFactory.newLayerViewGLCanvas(this);
         this.setLayout(new BorderLayout());
         // Attach LWJGL to the created canvas
         this.setGLComponent(this.glCanvas);
+        this.currentFboPingPongIndex = 0;
 
     }
 
@@ -240,22 +254,296 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             if (this.fboId < 0) {
                 logger.error("Unable to create frame buffer for FBO rendering");
             }
-
         }
         return this.fboId;
     }
 
-    public int getFBOTextureId() {
+    public int getFboLayerTextureId() {
         // System.err.println("get FBO texture ID : " + this.fboTextureId);
-        if (this.fboTextureId == -1) {
-            this.fboTextureId = GL11.glGenTextures();
+        if (this.layerFboTextureId == -1) {
+            this.layerFboTextureId = GL11.glGenTextures();
             // System.err.println("generated FBO texture ID : "
             // + this.fboTextureId);
-            if (this.fboTextureId < 0) {
+            if (this.layerFboTextureId < 0) {
                 logger.error("Unable to use FBO texture");
             }
         }
-        return this.fboTextureId;
+        return this.layerFboTextureId;
+    }
+
+    public int getFboPingPongTextureId1() {
+        // System.err.println("get FBO texture ID : " + this.fboTextureId);
+        if (this.fboPingPongId0 == -1) {
+            this.fboPingPongId0 = GL11.glGenTextures();
+            // System.err.println("generated FBO texture ID : "
+            // + this.fboTextureId);
+            if (this.fboPingPongId0 < 0) {
+                logger.error("Unable to use FBO texture 0");
+            }
+        }
+        return this.fboPingPongId0;
+    }
+
+    public int getFboPingPongTextureId2() {
+        // System.err.println("get FBO texture ID : " + this.fboTextureId);
+        if (this.fboTextureId1 == -1) {
+            this.fboTextureId1 = GL11.glGenTextures();
+            // System.err.println("generated FBO texture ID : "
+            // + this.fboTextureId);
+            if (this.fboTextureId1 < 0) {
+                logger.error("Unable to use FBO texture ");
+            }
+        }
+        return this.fboTextureId1;
+    }
+
+    public final void invalidateFBO() {
+        this.previousFBOImageWidth = -1;
+        this.previousFBOImageHeight = -1;
+    }
+
+    public int getCanvasWidth() {
+        return this.glCanvas.getWidth();
+    }
+
+    public int getCanvasHeight() {
+        return this.glCanvas.getHeight();
+    }
+
+    public final int getFBOImageWidth() {
+        int antialisingSize = this.getAntialiasingSize() + 1;
+        return antialisingSize * this.getCanvasWidth();
+    }
+
+    public final int getFBOImageHeight() {
+        int antialisingSize = this.getAntialiasingSize() + 1;
+        return antialisingSize * this.getCanvasHeight();
+    }
+
+    public void initializeFBO() throws GLException {
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.getFboId());
+
+        int fboImageWidth = this.getFBOImageWidth();
+        int fboImageHeight = this.getFBOImageHeight();
+        if (this.previousFBOImageWidth != fboImageWidth
+                || this.previousFBOImageHeight != fboImageHeight) {
+            this.previousFBOImageWidth = fboImageWidth;
+            this.previousFBOImageHeight = fboImageHeight;
+            // initialize FBO layer texture
+            int fboLayerTextureId = this.getFboLayerTextureId();
+            GLTools.glCheckError("FBO size modification");
+            glBindTexture(GL_TEXTURE_2D, fboLayerTextureId);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,
+                    GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
+                    GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S,
+                    GL12.GL_CLAMP_TO_EDGE);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T,
+                    GL12.GL_CLAMP_TO_EDGE);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL14.GL_GENERATE_MIPMAP,
+                    GL11.GL_FALSE);
+            GLTools.glCheckError("texture initialization");
+
+            glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, fboImageWidth,
+                    fboImageHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
+                    (ByteBuffer) null);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            // initialize FBO ping-pong texture 0
+            int fboPingPongTextureId0 = this.getFboPingPongTextureId1();
+            glBindTexture(GL_TEXTURE_2D, fboPingPongTextureId0);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,
+                    GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
+                    GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S,
+                    GL12.GL_CLAMP_TO_EDGE);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T,
+                    GL12.GL_CLAMP_TO_EDGE);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL14.GL_GENERATE_MIPMAP,
+                    GL11.GL_FALSE);
+            GLTools.glCheckError("texture initialization");
+            glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, fboImageWidth,
+                    fboImageHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
+                    (ByteBuffer) null);
+
+            // initialize FBO ping-pong texture 1
+            int fboPingPongTextureId1 = this.getFboPingPongTextureId2();
+            glBindTexture(GL_TEXTURE_2D, fboPingPongTextureId1);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,
+                    GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
+                    GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S,
+                    GL12.GL_CLAMP_TO_EDGE);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T,
+                    GL12.GL_CLAMP_TO_EDGE);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL14.GL_GENERATE_MIPMAP,
+                    GL11.GL_FALSE);
+            GLTools.glCheckError("texture initialization");
+            glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, fboImageWidth,
+                    fboImageHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
+                    (ByteBuffer) null);
+
+            GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.getFboId());
+            // bind FBO layer texture to ATT0
+            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER,
+                    GL30.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                    fboLayerTextureId, 0);
+            int status = GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER);
+            if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
+                throw new GLException(
+                        "Frame Buffer Object is not correctly initialized");
+            }
+
+            // bind FBO ping-pong texture 0 to ATT1
+            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER,
+                    GL30.GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D,
+                    fboPingPongTextureId0, 0);
+            status = GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER);
+            if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
+                throw new GLException(
+                        "Frame Buffer Object is not correctly initialized");
+            }
+
+            // bind FBO ping-pong texture 1 to ATT2
+            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER,
+                    GL30.GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D,
+                    fboPingPongTextureId1, 0);
+            status = GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER);
+            if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
+                throw new GLException(
+                        "Frame Buffer Object is not correctly initialized");
+            }
+
+            // System.err.println("fbo image size = " + fboImageWidth + "x"
+            // + fboImageHeight + " " + this.getFBORendering());
+            // System.err.println("antialiasing size = "
+            // + this.getLayerViewPanel().getAntialiasingSize());
+            GLTools.glCheckError("FBO initialization ended");
+        }
+        // clear all buffers
+        GL11.glClearColor(0f, 0f, 0f, 0f);
+        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT1);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT2);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+        glEnable(GL_TEXTURE_2D);
+
+    }
+
+    public void drawInBackBuffer() throws GLException {
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+        GLTools.glCheckError("viewport");
+        GL11.glDrawBuffer(GL11.GL_BACK);
+        GL11.glViewport(0, 0, this.getCanvasWidth(), this.getCanvasHeight());
+        GLTools.glCheckError("draw Buffer BACK");
+    }
+
+    public void drawInFBOLayer() throws GLException {
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.getFboId());
+        GL11.glViewport(0, 0, this.getFBOImageWidth(), this.getFBOImageHeight());
+        GLTools.glCheckError("viewport");
+        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+        GLTools.glCheckError("draw Buffer COLOR ATT 0");
+        glEnable(GL_TEXTURE_2D);
+    }
+
+    public void readFromPingPong(GLProgram program) throws GLException {
+        if (this.currentFboPingPongIndex != 1) {
+            GLTools.glCheckError("FBO ATTACHMENT  bound");
+            GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE1_SLOT);
+            GLTools.glCheckError("FBO bound texture 1");
+            glBindTexture(GL_TEXTURE_2D, this.getFboPingPongTextureId1());
+            GLTools.glCheckError("FBO bound texture");
+            program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
+                    COLORTEXTURE1_SLOT);
+        } else {
+            GLTools.glCheckError("FBO ATTACHMENT 2 bound");
+            GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE2_SLOT);
+            GLTools.glCheckError("FBO bound texture 2");
+            glBindTexture(GL_TEXTURE_2D, this.getFboPingPongTextureId2());
+            GLTools.glCheckError("FBO bound texture");
+            program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
+                    COLORTEXTURE2_SLOT);
+
+        }
+
+    }
+
+    public void drawInPingPong(GLProgram program) throws GLException {
+        GLTools.glCheckError("FBO Ping Pong Rendering");
+        glEnable(GL_TEXTURE_2D);
+        glDisable(GL11.GL_POLYGON_SMOOTH);
+
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.getFboId());
+        GL11.glViewport(0, 0, this.getFBOImageWidth(), this.getFBOImageHeight());
+        if (this.currentFboPingPongIndex != 1) {
+            GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT2);
+            GLTools.glCheckError("FBO ATTACHMENT 2 bound");
+
+            GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE1_SLOT);
+            glBindTexture(GL_TEXTURE_2D, this.getFboPingPongTextureId1());
+
+            GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE0_SLOT);
+            GLTools.glCheckError("FBO bound texture ");
+            glBindTexture(GL_TEXTURE_2D, this.getFboLayerTextureId());
+
+            GLTools.glCheckError("FBO bound texture");
+            program.setUniform1i(
+                    LayerViewGLPanel.backgroundTextureUniformVarName,
+                    COLORTEXTURE1_SLOT);
+            program.setUniform1i(
+                    LayerViewGLPanel.foregroundTextureUniformVarName,
+                    COLORTEXTURE0_SLOT);
+            this.currentFboPingPongIndex = 1;
+        } else {
+            GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT1);
+            GLTools.glCheckError("FBO ATTACHMENT 2 bound");
+
+            GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE1_SLOT);
+            glBindTexture(GL_TEXTURE_2D, this.getFboPingPongTextureId2());
+
+            GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE0_SLOT);
+            GLTools.glCheckError("FBO bound texture 2");
+            glBindTexture(GL_TEXTURE_2D, this.getFboLayerTextureId());
+
+            GLTools.glCheckError("FBO bound texture");
+            program.setUniform1i(
+                    LayerViewGLPanel.backgroundTextureUniformVarName,
+                    COLORTEXTURE1_SLOT);
+            program.setUniform1i(
+                    LayerViewGLPanel.foregroundTextureUniformVarName,
+                    COLORTEXTURE0_SLOT);
+            this.currentFboPingPongIndex = 2;
+        }
+        GLTools.glCheckError("FBO bind color texture");
+        program.setUniform1i(LayerViewGLPanel.antialiasingSizeUniformVarName,
+                this.getAntialiasingSize());
+        GLTools.glCheckError("FBO ping pong end");
+
+    }
+
+    public void clearCurrentPingPongFBO() throws GLException {
+        GLTools.glCheckError("FBO Ping Pong Clear");
+
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.getFboId());
+        if (this.currentFboPingPongIndex != 1) {
+            GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT2);
+            GL11.glClearColor(0f, 1f, 0.f, 1.f);
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+            GLTools.glCheckError("FBO ATTACHMENT 2 clear");
+        } else {
+            GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT1);
+            GL11.glClearColor(0f, 0f, 1f, 1f);
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+            GLTools.glCheckError("FBO ATTACHMENT 1 clear");
+        }
     }
 
     /**
@@ -576,14 +864,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
     }
 
-    public LayerViewGLCanvasType getGlType() {
-        return this.glType;
-    }
-
-    private final void setGlType(LayerViewGLCanvasType glType) {
-        this.glType = glType;
-    }
-
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() == this.getWireframeButton()) {
@@ -769,6 +1049,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String objectOpacityUniformVarName = "objectOpacity";
     public static final String colorTexture1UniformVarName = "colorTexture1";
     public static final String colorTexture2UniformVarName = "colorTexture2";
+    public static final String foregroundTextureUniformVarName = "foregroundTexture";
+    public static final String backgroundTextureUniformVarName = "backgroundTexture";
     public static final String gradientTextureUniformVarName = "gradientTexture";
     public static final String textureScaleFactorUniformVarName = "textureScaleFactor";
     public static final String antialiasingSizeUniformVarName = "antialiasingSize";
@@ -796,6 +1078,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String screenspaceTextureProgramName = "ScreenspaceTexture";
     public static final String backgroundProgramName = "BackgroundTexture";
     public static final String screenspaceAntialiasedTextureProgramName = "ScreenspaceAntialiasedTexture";
+    public static final String screenspaceBlendingProgramName = "ScreenspaceBlending";
     public static final String textLayerProgramName = "TextLayer";
     public static final String gradientProgramName = "GradientTexture";
 
@@ -1288,6 +1571,20 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     }
 
     /**
+     * @return
+     */
+    public static String getBlendingProgramName(
+            GeoxygeneBlendingMode blendingMode) {
+        String name = LayerViewGLPanel.screenspaceBlendingProgramName + "-"
+                + blendingMode.getPrefix();
+        LayerFilter filter = blendingMode.getFilter();
+        if (filter != null) {
+            name = name + "-" + filter.getId();
+        }
+        return name;
+    }
+
+    /**
      * gradient program use a subshader
      */
     private GLProgram createGradientSubshaderProgram(
@@ -1503,6 +1800,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         program.addUniform(colorTexture1UniformVarName);
         program.addUniform(textureScaleFactorUniformVarName);
         program.addUniform(antialiasingSizeUniformVarName);
+        program.addUniform(screenWidthUniformVarName);
+        program.addUniform(screenHeightUniformVarName);
         shader.declareUniforms(program);
         return program;
     }

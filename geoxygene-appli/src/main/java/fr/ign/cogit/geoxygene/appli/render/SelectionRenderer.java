@@ -28,9 +28,11 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
+import fr.ign.cogit.geoxygene.style.BlendingMode;
 import fr.ign.cogit.geoxygene.style.Shadow;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 
 /**
  * A renderer to render a {@link fr.ign.cogit.geoxygene.style.Layer} into a
@@ -225,6 +227,25 @@ public class SelectionRenderer extends AbstractLayerRenderer {
         @Override
         public void reset() {
         }
+
+        @Override
+        public BlendingMode getBlendingMode() {
+            return null;
+        }
+
+        @Override
+        public void setBlendingMode(BlendingMode blendingMode) {
+        }
+
+        @Override
+        public LayerFilter getFilter() {
+            return null;
+        }
+
+        @Override
+        public void setFilter(LayerFilter filter) {
+        }
+
     };
 
     /**

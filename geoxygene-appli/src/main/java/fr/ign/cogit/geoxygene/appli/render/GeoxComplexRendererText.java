@@ -209,8 +209,8 @@ public class GeoxComplexRendererText extends AbstractGeoxComplexRenderer {
 
         GLProgram program = this.getGlContext().setCurrentProgram(
                 LayerViewGLPanel.textLayerProgramName);
-        GL11.glViewport(0, 0, this.getLayerRenderer().getFBOImageWidth(), this
-                .getLayerRenderer().getFBOImageHeight());
+        GL11.glViewport(0, 0, this.getLayerViewPanel().getFBOImageWidth(), this
+                .getLayerViewPanel().getFBOImageHeight());
         glDisable(GL11.GL_POLYGON_SMOOTH);
 
         program.setUniform1i(LayerViewGLPanel.colorTexture2UniformVarName,

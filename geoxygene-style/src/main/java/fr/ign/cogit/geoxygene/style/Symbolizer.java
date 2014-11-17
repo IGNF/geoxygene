@@ -19,6 +19,8 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
+
 /**
  * @author Julien Perret
  */
@@ -42,6 +44,14 @@ public interface Symbolizer {
     public Shadow getShadow();
 
     public void setShadow(Shadow shadow);
+
+    public BlendingMode getBlendingMode();
+
+    public void setBlendingMode(BlendingMode blendingMode);
+
+    public LayerFilter getFilter();
+
+    public void setFilter(LayerFilter filter);
 
     public boolean isTextSymbolizer();
 

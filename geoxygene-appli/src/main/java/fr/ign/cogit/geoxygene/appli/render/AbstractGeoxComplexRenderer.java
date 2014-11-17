@@ -146,7 +146,7 @@ public abstract class AbstractGeoxComplexRenderer implements
      * @throws GLException
      */
     public final GLContext getGlContext() throws GLException {
-        return this.lwjglLayerRenderer.getGLContext();
+        return this.lwjglLayerRenderer.getGlContext();
     }
 
     // /**

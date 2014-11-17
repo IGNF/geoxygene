@@ -107,9 +107,9 @@ public class GeoxComplexRendererLinePainting extends
         program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
                 (float) opacity);
         program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName, this
-                .getLayerRenderer().getFBOImageWidth());
+                .getLayerViewPanel().getFBOImageWidth());
         program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName, this
-                .getLayerRenderer().getFBOImageHeight());
+                .getLayerViewPanel().getFBOImageHeight());
         GLTools.glCheckError("program set to " + program.getName()
                 + " in normal painting rendering");
         //
@@ -144,16 +144,14 @@ public class GeoxComplexRendererLinePainting extends
                 strtex.getBrushStartLength());
         program.setUniform1i(LayerViewGLPanel.brushEndWidthUniformVarName,
                 strtex.getBrushEndLength());
-        program.setUniform1f(
-                LayerViewGLPanel.brushScaleUniformVarName,
-                (float) (this.getSymbolizer().getStroke().getStrokeWidth() / primitive
-                        .getBrushTexture().getTextureHeight()));
+        program.setUniform1f(LayerViewGLPanel.brushScaleUniformVarName, this
+                .getSymbolizer().getStroke().getStrokeWidth()
+                / primitive.getBrushTexture().getTextureHeight());
 
         // program.setUniform1f(LayerViewGLPanel.brushScaleUniformVarName,
         // (float) (strtex.getBrushSize() / primitive.getBrushTexture()
         // .getTextureHeight()));
-        program.setUniform1f(LayerViewGLPanel.paperScaleUniformVarName,
-                (float) (1));
+        program.setUniform1f(LayerViewGLPanel.paperScaleUniformVarName, (1));
         // program.setUniform1f(LayerViewGLPanel.paperScaleUniformVarName,
         // (float) (strtex.getPaperScaleFactor()));
         program.setUniform1f(LayerViewGLPanel.paperDensityUniformVarName,

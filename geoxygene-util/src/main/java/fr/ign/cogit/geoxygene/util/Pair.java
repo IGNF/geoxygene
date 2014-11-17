@@ -28,8 +28,7 @@
 package fr.ign.cogit.geoxygene.util;
 
 /**
- * @author JeT
- *         Class containing two objects
+ * @author JeT Class containing two objects
  */
 public class Pair<U, V> {
 
@@ -83,6 +82,54 @@ public class Pair<U, V> {
      */
     public void setV(V v) {
         this.v = v;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.u == null) ? 0 : this.u.hashCode());
+        result = prime * result + ((this.v == null) ? 0 : this.v.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        Pair other = (Pair) obj;
+        if (this.u == null) {
+            if (other.u != null) {
+                return false;
+            }
+        } else if (!this.u.equals(other.u)) {
+            return false;
+        }
+        if (this.v == null) {
+            if (other.v != null) {
+                return false;
+            }
+        } else if (!this.v.equals(other.v)) {
+            return false;
+        }
+        return true;
     }
 
 }

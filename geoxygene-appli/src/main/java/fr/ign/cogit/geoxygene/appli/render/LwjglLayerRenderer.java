@@ -31,13 +31,11 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glHint;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
-import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +45,6 @@ import javax.swing.event.EventListenerList;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -59,8 +56,9 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.appli.gl.GLContext;
-import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLTextureManager;
+import fr.ign.cogit.geoxygene.appli.gl.GeoxygeneBlendingFactory;
+import fr.ign.cogit.geoxygene.appli.gl.GeoxygeneBlendingMode;
 import fr.ign.cogit.geoxygene.appli.gl.Subshader;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
@@ -74,13 +72,11 @@ import fr.ign.cogit.geoxygene.appli.task.TaskListener;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
-import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 import fr.ign.cogit.geoxygene.util.Pair;
 import fr.ign.cogit.geoxygene.util.gl.GLComplex;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
-import fr.ign.cogit.geoxygene.util.gl.GLProgramAccessor;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 import fr.ign.cogit.geoxygene.util.gl.RenderingException;
 
@@ -100,23 +96,10 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
     private static final float DEFAULT_POINT_SIZE = 3f;
     private static final float DEFAULT_LINE_WIDTH = 1f;
 
-    private static final int COLORTEXTURE1_SLOT = 0;
     protected EventListenerList listenerList = new EventListenerList();
-    private final GLSimpleComplex screenQuad = null;
-    // private final Map<String, PrimitiveRenderer> renderers = new
-    // HashMap<String, PrimitiveRenderer>();
-    // private PrimitiveRenderer defaultRenderer = null;
-    // private final DensityFieldPrimitiveRenderer densityFieldPrimitiveRenderer
-    // = new DensityFieldPrimitiveRenderer();
-
-    // REF1
-    // private final Map<IFeature, GeoxComplexRenderer> renderers = new
-    // HashMap<IFeature, GeoxComplexRenderer>();
     private LayerViewGLPanel layerViewPanel = null;
     private final Map<IFeature, Map<Symbolizer, GLDisplayable>> displayables = new HashMap<IFeature, Map<Symbolizer, GLDisplayable>>();
     private GeoxComplexRendererBasic partialRenderer = null;
-    private int previousFBOImageWidth = -1;
-    private int previousFBOImageHeight = -1;
     private boolean fboRendering = false;
     // private boolean needInitialization = false;
     private Symbolizer fboSymbolizer = null;
@@ -124,7 +107,12 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
     private double fboOpacity = 1.;
     // stored renderer used to group successive render calls
     private GeoxComplexRenderer previousRenderer = null;
-    private Subshader filterSubshader = null;
+    private Subshader layerFilterSubshader = null; // filter associated to this
+                                                   // layer
+    private final Map<Symbolizer, Subshader> subshaders = new HashMap<Symbolizer, Subshader>();
+
+    // WARNING: there is a filter associated with each symbolizer too ! do not
+    // mix them
 
     /**
      * Constructor of renderer using a {@link Layer} and a
@@ -138,7 +126,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
     public LwjglLayerRenderer(final Layer theLayer,
             final LayerViewGLPanel theLayerViewPanel) {
         super(theLayer);
-        this.filterSubshader = ShaderFactory.createFilterShader(theLayer
+        this.layerFilterSubshader = ShaderFactory.createFilterShader(theLayer
                 .getFilter());
         this.setLayerViewPanel(theLayerViewPanel);
         this.partialRenderer = new GeoxComplexRendererBasic(this, null);
@@ -150,13 +138,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
      */
     public GeoxComplexRendererBasic getPartialRenderer(IFeature feature) {
         return this.partialRenderer;
-    }
-
-    /**
-     * get the GL context from the layer view panel
-     */
-    public GLContext getGLContext() throws GLException {
-        return this.layerViewPanel.getGlContext();
     }
 
     /**
@@ -550,36 +531,11 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         }
     }
 
-    public final int getFBOImageWidth() {
-        if (this.getFBORendering()) {
-            int antialisingSize = this.getLayerViewPanel()
-                    .getAntialiasingSize() + 1;
-
-            return antialisingSize * this.getCanvasWidth();
-        } else {
-            return this.getCanvasWidth();
-        }
-    }
-
-    public final int getFBOImageHeight() {
-        if (this.getFBORendering()) {
-            int antialisingSize = this.getLayerViewPanel()
-                    .getAntialiasingSize() + 1;
-            return antialisingSize * this.getCanvasHeight();
-        } else {
-            return this.getCanvasHeight();
-        }
-    }
-
-    public final void invalidateFBO() {
-        this.previousFBOImageWidth = -1;
-        this.previousFBOImageHeight = -1;
-    }
-
     static GeoxComplexRenderer staticPreviousRenderer = null;
 
     /**
-     * Render a GL Primitive into a FBO
+     * Render a GL Primitive into the layer FBO. It waits for symbolizer changes
+     * to draw the layer FBO into the PingPong FBO (drawLayerFBOinPingPongFBO)
      * 
      * @param primitive
      * @param renderer
@@ -602,19 +558,17 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             if (this.fboSymbolizer != null) {
                 int antialisingSize = this.getLayerViewPanel()
                         .getAntialiasingSize() + 1;
-                this.drawFBO(this.fboOpacity, antialisingSize);
-                GLTools.glCheckError("after drawing FBO");
+                this.drawLayerFBOinPingPongFBO(this.fboSymbolizer,
+                        this.fboOpacity, antialisingSize);
+                GLTools.glCheckError("after drawing FBO Layer in FBO ping-pong");
             }
-            this.initializeFBO(primitive, opacity, currentSymbolizer);
+            this.clearFBOLayer(primitive, opacity, currentSymbolizer);
+            this.clearCurrentPingPongFBO();
             GLTools.glCheckError("after FBO initialization");
         }
 
-        GL11.glViewport(0, 0, this.getFBOImageWidth(), this.getFBOImageHeight());
-        GLTools.glCheckError("viewport");
-        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+        this.getLayerViewPanel().drawInFBOLayer();
 
-        GLTools.glCheckError("draw Buffer COLOR ATT 0");
-        glEnable(GL_TEXTURE_2D);
         // display the layer
 
         if (this.previousRenderer != renderer) {
@@ -632,75 +586,28 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
     }
 
     /**
-     * @return
-     * @throws GLException
-     */
-    public GLProgram setOrCreateScreenspaceProgram(LayerFilter filter)
-            throws GLException {
-        String programName = LayerViewGLPanel.screenspaceAntialiasedTextureProgramName;
-        if (filter != null) {
-            programName = programName + filter.getClass().getSimpleName();
-        }
-        GLProgramAccessor accessor = this.getGlContext().getProgramAccessor(
-                programName);
-        GLProgram program = null;
-        if (accessor == null) {
-            // set the accessor
-            GLProgramAccessor screenspaceAccessor = this.getLayerViewPanel()
-                    .createScreenspaceAntialiasedAccessor(filter);
-            this.getGlContext().addProgram(programName, screenspaceAccessor);
-        }
-        program = this.getGlContext().setCurrentProgram(programName);
-        return program;
-    }
-
-    /**
+     * Draw the Rendered FBO into the Ping Pong FBO
+     * 
      * @param primitive
      * @param opacity
      * @param antialisingSize
      * @throws GLException
      */
-    private void drawFBO(double opacity, int antialisingSize)
-            throws GLException {
+    private void drawLayerFBOinPingPongFBO(Symbolizer symbolizer,
+            double opacity, int antialisingSize) throws GLException {
 
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-
-        LayerFilter filter = this.getLayer().getFilter();
-        GLProgram program = this.setOrCreateScreenspaceProgram(filter);
         // System.err.println("FBO opacity = " + this.fboOpacity);
         // System.err.println("FBO primitive opacity = "
         // + this.fboPrimitive.getOverallOpacity());
         // System.err.println("primitive = " + this.fboPrimitive);
-        GLTools.glCheckError("FBO plain rendering");
-        GL11.glViewport(0, 0, this.getCanvasWidth(), this.getCanvasHeight());
-        GL11.glDrawBuffer(GL11.GL_BACK);
-        glEnable(GL_TEXTURE_2D);
-        glDisable(GL11.GL_POLYGON_SMOOTH);
-        GLTools.glCheckError("FBO bind color texture");
-        // System.err.println("Current program = "
-        // + GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM));
-        // System.err.println("set color texture 1 to " + COLORTEXTURE1_SLOT
-        // + " in program " + program.getName() + " ("
-        // + program.getProgramId() + ")");
-        // for (String uniform : program.getUniformNames()) {
-        // System.err.println("\t- " + uniform);
-        // }
-        program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
-                COLORTEXTURE1_SLOT);
-        GLTools.glCheckError("FBO bind antialiasing");
-        program.setUniform1i(LayerViewGLPanel.antialiasingSizeUniformVarName,
-                antialisingSize);
-
-        this.filterSubshader.setUniforms(program);
-
-        GLTools.glCheckError("FBO activate texture");
-        GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE1_SLOT);
-        GLTools.glCheckError("FBO bound texture");
-        glBindTexture(GL_TEXTURE_2D, this.getLayerViewPanel().getFBOTextureId());
-        GLTools.glCheckError("FBO bound texture");
-
-        GL11.glDepthMask(false);
-        glDisable(GL11.GL_DEPTH_TEST);
+        GeoxygeneBlendingMode blendingMode = GeoxygeneBlendingFactory
+                .getGeoxygeneBlendingMode(symbolizer.getBlendingMode(),
+                        symbolizer.getFilter(), this.getLayerViewPanel());
+        GLProgram program = blendingMode.getProgram();
+        Subshader symbolizerFilterSubshader = this
+                .getFilterSubshader(symbolizer);
+        symbolizerFilterSubshader.setUniforms(program);
+        this.getLayerViewPanel().drawInPingPong(program);
 
         GL30.glBindVertexArray(LayerViewGLPanel.getScreenQuad().getVaoId());
         // program.setUniform1f(
@@ -715,11 +622,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
         program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
         program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
                 (float) (opacity));
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
-                GL11.GL_LINEAR);
-        //
+
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 
         GLTools.glCheckError("before FBO drawing textured quad");
@@ -733,16 +636,26 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
 
     }
 
+    private Subshader getFilterSubshader(Symbolizer symbolizer) {
+        Subshader subshader = this.subshaders.get(symbolizer);
+        if (subshader == null) {
+            subshader = ShaderFactory
+                    .createFilterShader(symbolizer.getFilter());
+            this.subshaders.put(symbolizer, subshader);
+        }
+        return subshader;
+    }
+
     public final int getCanvasWidth() {
         if (this.getLayerViewPanel() != null) {
-            return this.getLayerViewPanel().getWidth();
+            return this.getLayerViewPanel().getCanvasWidth();
         }
         return 0;
     }
 
     public final int getCanvasHeight() {
         if (this.getLayerViewPanel() != null) {
-            return this.getLayerViewPanel().getHeight();
+            return this.getLayerViewPanel().getCanvasHeight();
         }
         return 0;
     }
@@ -802,83 +715,62 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             this.previousRenderer.switchRenderer();
             this.previousRenderer = null;
         }
+        // draw the last FBO layer into Ping-Pong FBO
         if (this.fboSymbolizer != null) {
             try {
-                this.drawFBO(this.fboOpacity, antialisingSize);
+                this.drawLayerFBOinPingPongFBO(this.fboSymbolizer,
+                        this.fboOpacity, antialisingSize);
             } catch (GLException e) {
                 throw new RenderingException(e);
             }
             this.fboSymbolizer = null;
+
         }
     }
 
+    private void clearCurrentPingPongFBO() throws GLException {
+        GLTools.glCheckError("preparing next FBO Layer");
+        this.getLayerViewPanel().clearCurrentPingPongFBO();
+    }
+
     /**
+     * Initialize layer FBO to receive GL primitives from a set of identical
+     * symbolizers
+     * 
      * @param primitive
      * @param opacity
      * @param currentSymbolizer
      * @throws GLException
      */
-    private void initializeFBO(GLComplex primitive, double opacity,
+    private void clearFBOLayer(GLComplex primitive, double opacity,
             Symbolizer currentSymbolizer) throws GLException {
+        GLTools.glCheckError("preparing next FBO Layer");
         // prepare next FBO
         this.fboSymbolizer = currentSymbolizer;
         this.fboOpacity = opacity;
         this.fboPrimitive = primitive;
-        // render primitive in a FBO (offscreen rendering)
-        // bind a read-only framebuffer
+
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, this
                 .getLayerViewPanel().getFboId());
-        // this.setFBORendering(true);
-        // check if the screen size has change since previous rendering
+        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
 
-        int fboImageWidth = this.getFBOImageWidth();
-        int fboImageHeight = this.getFBOImageHeight();
-        if (this.previousFBOImageWidth != fboImageWidth
-                || this.previousFBOImageHeight != fboImageHeight) {
-            this.previousFBOImageWidth = fboImageWidth;
-            this.previousFBOImageHeight = fboImageHeight;
+        GLTools.glCheckError("bind frame buffer");
 
-            int fboTextureId = this.getLayerViewPanel().getFBOTextureId();
-            glBindTexture(GL_TEXTURE_2D, fboTextureId);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-                    GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, fboImageWidth,
-                    fboImageHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
-                    (ByteBuffer) null);
-            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER,
-                    GL30.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fboTextureId, 0);
-            GLTools.glCheckError("FBO size modification");
-            GL11.glViewport(0, 0, fboImageWidth, fboImageHeight);
-
-            // check FBO status
-
-            int status = GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER);
-            if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
-                throw new GLException(
-                        "Frame Buffer Object is not correctly initialized");
-            }
-            GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
-            GLTools.glCheckError("after setting draw buffer");
-
-            glEnable(GL_TEXTURE_2D);
-
-            // System.err.println("fbo image size = " + fboImageWidth + "x"
-            // + fboImageHeight + " " + this.getFBORendering());
-            // System.err.println("antialiasing size = "
-            // + this.getLayerViewPanel().getAntialiasingSize());
-            GLTools.glCheckError("after setting viewport");
-
-        }
         // Blending mode in FBO drawing.
-        GL11.glClearColor(1f, 1f, 1f, 0f);
+        GLTools.glCheckError("finalizing FBO initialization");
+        GL11.glClearColor(0f, 0f, 0f, 0f);
+        GLTools.glCheckError("finalizing FBO initialization");
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
+        GLTools.glCheckError("finalizing FBO initialization");
         glEnable(GL11.GL_BLEND);
+        GLTools.glCheckError("finalizing FBO initialization");
         GL20.glBlendEquationSeparate(GL14.GL_FUNC_ADD, GL14.GL_MAX);
+        GLTools.glCheckError("finalizing FBO initialization");
         GL14.glBlendFuncSeparate(GL11.GL_ONE, GL11.GL_ZERO, GL11.GL_ZERO,
                 GL11.GL_ZERO);
-        GLTools.glCheckError("just before launching normal rendering within FBO context");
-
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
+        GLTools.glCheckError("finalizing FBO initialization");
     }
 
     public boolean getFBORendering() {
@@ -966,14 +858,11 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
                 (float) (modelToViewTransform.getTranslateY() + minY
                         * modelToViewTransform.getScaleY()));
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
-        float width = this.getCanvasWidth();
+        program.setUniform1f(LayerViewGLPanel.screenWidthUniformVarName, this
+                .getLayerViewPanel().getCanvasWidth());
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
-        float height = this.getCanvasHeight();
-        GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
-        program.setUniform1f(LayerViewGLPanel.screenWidthUniformVarName, width);
-        GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
-        program.setUniform1f(LayerViewGLPanel.screenHeightUniformVarName,
-                height);
+        program.setUniform1f(LayerViewGLPanel.screenHeightUniformVarName, this
+                .getLayerViewPanel().getCanvasHeight());
         GLTools.glCheckError("GL4FeatureRenderer::setGLViewMatrix()");
 
         // System.err.println("translation x = "

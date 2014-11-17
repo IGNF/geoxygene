@@ -23,8 +23,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 
 import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
+import fr.ign.cogit.geoxygene.style.filter.LayerFilterContrast;
+import fr.ign.cogit.geoxygene.style.filter.LayerFilterIdentity;
 
 /**
  * @author Julien Perret
@@ -126,12 +131,53 @@ public abstract class AbstractSymbolizer implements Symbolizer {
         this.shadow = shadow;
     }
 
+    @XmlElements({
+            @XmlElement(name = "NormalBlending", type = BlendingModeNormal.class),
+            @XmlElement(name = "OverlayBlending", type = BlendingModeOverlay.class),
+            @XmlElement(name = "MultiplyBlending", type = BlendingModeMultiply.class) })
+    private BlendingMode blendingMode = null;
+
     @Override
-    public String toString() {
-        String result = this.getClass().getSimpleName() + ":"; //$NON-NLS-1$
-        result += this.getGeometryPropertyName() + " ("; //$NON-NLS-1$
-        result += this.getUnitOfMeasure() + ")"; //$NON-NLS-1$
-        return result;
+    public BlendingMode getBlendingMode() {
+        return this.blendingMode;
+    }
+
+    @Override
+    public void setBlendingMode(BlendingMode blendingMode) {
+        this.blendingMode = blendingMode;
+    }
+
+    @XmlElements({
+            @XmlElement(name = "ContrastFilter", type = LayerFilterContrast.class),
+            @XmlElement(name = "NoFilter", type = LayerFilterIdentity.class) })
+    LayerFilter filter = null;
+
+    /**
+     * @return the filters
+     */
+    @Override
+    public LayerFilter getFilter() {
+        return this.filter;
+    }
+
+    /**
+     * @param filters
+     *            the filters to set
+     */
+    @Override
+    public void setFilter(LayerFilter filter) {
+        this.filter = filter;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fr.ign.cogit.geoxygene.style.Symbolizer#reset()
+     */
+    @Override
+    public void reset() {
+        // default behavior is to do nothing
+
     }
 
     /*
@@ -143,6 +189,10 @@ public abstract class AbstractSymbolizer implements Symbolizer {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime
+                * result
+                + ((this.blendingMode == null) ? 0 : this.blendingMode
+                        .hashCode());
         result = prime
                 * result
                 + ((this.geometryPropertyName == null) ? 0
@@ -173,6 +223,13 @@ public abstract class AbstractSymbolizer implements Symbolizer {
             return false;
         }
         AbstractSymbolizer other = (AbstractSymbolizer) obj;
+        if (this.blendingMode == null) {
+            if (other.blendingMode != null) {
+                return false;
+            }
+        } else if (!this.blendingMode.equals(other.blendingMode)) {
+            return false;
+        }
         if (this.geometryPropertyName == null) {
             if (other.geometryPropertyName != null) {
                 return false;
@@ -208,12 +265,14 @@ public abstract class AbstractSymbolizer implements Symbolizer {
     /*
      * (non-Javadoc)
      * 
-     * @see fr.ign.cogit.geoxygene.style.Symbolizer#reset()
+     * @see java.lang.Object#toString()
      */
     @Override
-    public void reset() {
-        // default behavior is to do nothing
-
+    public String toString() {
+        return "AbstractSymbolizer [stroke=" + this.stroke
+                + ", geometryPropertyName=" + this.geometryPropertyName
+                + ", uom=" + this.uom + ", shadow=" + this.shadow
+                + ", blendingMode=" + this.blendingMode + "]";
     }
 
 }

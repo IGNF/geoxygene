@@ -34,4 +34,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "Filter")
 public abstract class LayerFilter {
 
+    /**
+     * @param id
+     */
+    public LayerFilter() {
+        super();
+    }
+
+    public final String getId() {
+        return "filter:" + this.getClass().getSimpleName() + "/"
+                + String.valueOf(this.hashCode());
+
+    }
 }

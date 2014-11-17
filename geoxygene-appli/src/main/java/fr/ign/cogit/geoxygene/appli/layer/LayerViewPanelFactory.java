@@ -6,8 +6,6 @@ package fr.ign.cogit.geoxygene.appli.layer;
 import org.apache.log4j.Logger;
 import org.lwjgl.LWJGLException;
 
-import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel.LayerViewGLCanvasType;
-
 /** @author JeT This factory creates LayerViewPanel class instances */
 public final class LayerViewPanelFactory {
 
@@ -79,36 +77,12 @@ public final class LayerViewPanelFactory {
      * @return newly created layer view
      */
     public static LayerViewGLPanel newLayerViewGLPanel() {
-        LayerViewGLPanel glPanel = new LayerViewGLPanel(
-                LayerViewGLCanvasType.GL4);
-        return glPanel;
+        return new LayerViewGLPanel();
     }
 
     public static LayerViewGLCanvas newLayerViewGLCanvas(
-            final LayerViewGLPanel glPanel,
-            LayerViewGLPanel.LayerViewGLCanvasType glType) {
-        switch (glType) {
-        case GL1:
-            return newLayerViewGL1Canvas(glPanel);
-        case GL4:
-            return newLayerViewGL4Canvas(glPanel);
-        default:
-            throw new IllegalArgumentException("Unknown gl canvas type : "
-                    + glType);
-        }
-    }
-
-    private static LayerViewGL1Canvas newLayerViewGL1Canvas(
             final LayerViewGLPanel glPanel) {
-        try {
-            LayerViewGL1Canvas gl1Canvas = new LayerViewGL1Canvas(glPanel);
-            return gl1Canvas;
-        } catch (LWJGLException e) {
-            logger.error("LWJGL creation error");
-            logger.error(e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
+        return newLayerViewGL4Canvas(glPanel);
     }
 
     private static LayerViewGL4Canvas newLayerViewGL4Canvas(

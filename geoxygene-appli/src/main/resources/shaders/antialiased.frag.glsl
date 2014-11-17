@@ -15,8 +15,10 @@ out vec4 outColor;
 vec4 colorFilter( vec4 col );
 
 void main(void) {
-//    outColor = vec4( fragmentTextureCoord.xy, 1.0, 1.0 );
-//    return;
+    vec2 texCoord =  fragmentTextureCoord;
+	outColor = texture( colorTexture1, texCoord );
+//	outColor = vec4(texCoord,0,1);
+    return;
 
 	ivec2 screenPixel = ivec2( gl_FragCoord.xy - vec2( .5 ));
 	ivec2 textureNWPixel = screenPixel * antialiasingSize; // North-West pixel

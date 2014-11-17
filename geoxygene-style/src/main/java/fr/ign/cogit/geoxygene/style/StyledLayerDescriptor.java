@@ -890,7 +890,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
     }
 
     public void moveLayer(int row, int sldIndex) {
-        if (sldIndex < 0 || sldIndex > this.layersCount() || row == sldIndex) {
+        if (sldIndex < 0 || sldIndex >= this.layersCount() || row == sldIndex) {
             return;
         }
         Layer l = this.layers.remove(row);
