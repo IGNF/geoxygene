@@ -35,6 +35,10 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
+import fr.ign.cogit.geoxygene.style.filter.LayerFilterContrast;
+import fr.ign.cogit.geoxygene.style.filter.LayerFilterIdentity;
+
 /**
  * @author Julien Perret
  */
@@ -84,6 +88,28 @@ public abstract class AbstractLayer implements Layer {
     @Override
     public void setStyles(List<Style> styles) {
         this.styles = styles;
+    }
+
+    @XmlElements({
+            @XmlElement(name = "ContrastFilter", type = LayerFilterContrast.class),
+            @XmlElement(name = "NoFilter", type = LayerFilterIdentity.class) })
+    LayerFilter filter = null;
+
+    /**
+     * @return the filters
+     */
+    @Override
+    public LayerFilter getFilter() {
+        return this.filter;
+    }
+
+    /**
+     * @param filters
+     *            the filters to set
+     */
+    @Override
+    public void setFilter(LayerFilter filter) {
+        this.filter = filter;
     }
 
     @XmlTransient
