@@ -48,7 +48,7 @@ public class SmetsOp implements CombinationOp {
   @Override
   public List<Pair<byte[], Float>> combine(List<List<Pair<byte[], Float>>> masspotentials) {
 
-    LOGGER.info("Début SmetsOp.");
+    LOGGER.trace("Début SmetsOp.");
     // logger.info(masspotentials.size());
     if (masspotentials.size() == 1) {
       return masspotentials.get(0);
@@ -57,7 +57,7 @@ public class SmetsOp implements CombinationOp {
     if (masspotentials.size() >= 2) {
       
       // 1 - Calculer le noyau combiné de toutes les masses de croyance;
-      LOGGER.info("1 - Calculer le noyau combiné de toutes les masses de croyance.");
+      LOGGER.trace("1 - Calculer le noyau combiné de toutes les masses de croyance.");
       List<List<byte[]>> cores = new ArrayList<List<byte[]>>();
       for (List<Pair<byte[], Float>> massvalues : masspotentials) {
         List<byte[]> core = new ArrayList<byte[]>();
@@ -70,14 +70,14 @@ public class SmetsOp implements CombinationOp {
       try {
         byte[] combined = CombinationAlgos.combine(cores);
         if (Utils.isEmpty(combined)) {
-          LOGGER.info("Les masses de croyances sont en total désaccord...");
+          LOGGER.trace("Les masses de croyances sont en total désaccord...");
           if (this.worldclosed) {
             List<Pair<byte[], Float>> result = new ArrayList<Pair<byte[], Float>>();
             result.add(new Pair<byte[], Float>(new byte[combined.length], 1.0f));
           }
         }
         // 2 - Conditionnement des masses existantes par le noyau combiné.
-        LOGGER.info("2 - Conditionnement des masses existantes par le noyau combiné.");
+        LOGGER.trace("2 - Conditionnement des masses existantes par le noyau combiné.");
         List<List<Pair<byte[], Float>>> conditionnedMassPotentials = new ArrayList<List<Pair<byte[], Float>>>();
         for (List<Pair<byte[], Float>> mass : masspotentials) {
           List<Pair<byte[], Float>> conditionned = CombinationAlgos.conditionning(mass, combined,
@@ -91,18 +91,18 @@ public class SmetsOp implements CombinationOp {
         }
         // 3 - Trier les masses de croyance : on utilise l'heuristique simple de
         // la longueur moyenne du coeur.
-        LOGGER.info("3 - Trier les masses de croyance : on utilise l'heuristique simple de la longueur moyenne du coeur.");
+        LOGGER.trace("3 - Trier les masses de croyance : on utilise l'heuristique simple de la longueur moyenne du coeur.");
         List<List<Pair<byte[], Float>>> orderedmass = CombinationAlgos
             .orderMass(conditionnedMassPotentials);
 
         // 4 - Fusion 2 à 2 des masses de croyances
-        LOGGER.info("4 - Fusion 2 à 2 des masses de croyances");
+        LOGGER.trace("4 - Fusion 2 à 2 des masses de croyances");
         try {
           List<Pair<byte[], Float>> m1values = conditionnedMassPotentials.get(0);
           for (int i = 1; i < orderedmass.size(); i++) {
             List<Pair<byte[], Float>> m2values = conditionnedMassPotentials.get(i);
             m1values = this.smetsOp2mass(m1values, m2values);
-            LOGGER.info("Taille des listes = " + m1values.size() + " et " + m2values.size());
+            LOGGER.trace("Taille des listes = " + m1values.size() + " et " + m2values.size());
           }
           return m1values;
         

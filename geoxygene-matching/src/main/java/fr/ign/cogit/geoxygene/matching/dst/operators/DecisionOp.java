@@ -235,9 +235,12 @@ public class DecisionOp<H extends Hypothesis> {
             cardinal++;
           }
         }
-        if (cardinal > 1)
+        if (cardinal > 1) {
           continue;
+        }
       }
+      
+      //
       float bel = this.pignistic(hyp.getFirst(), masspotentials);
       // System.out.println("bel = " + bel + ", maxpig = " + maxpig);
       if (bel > maxpig) {
