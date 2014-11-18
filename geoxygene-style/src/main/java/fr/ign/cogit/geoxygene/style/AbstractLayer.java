@@ -35,10 +35,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
-import fr.ign.cogit.geoxygene.style.filter.LayerFilterContrast;
-import fr.ign.cogit.geoxygene.style.filter.LayerFilterIdentity;
-
 /**
  * @author Julien Perret
  */
@@ -88,28 +84,6 @@ public abstract class AbstractLayer implements Layer {
     @Override
     public void setStyles(List<Style> styles) {
         this.styles = styles;
-    }
-
-    @XmlElements({
-            @XmlElement(name = "ContrastFilter", type = LayerFilterContrast.class),
-            @XmlElement(name = "NoFilter", type = LayerFilterIdentity.class) })
-    LayerFilter filter = null;
-
-    /**
-     * @return the filters
-     */
-    @Override
-    public LayerFilter getFilter() {
-        return this.filter;
-    }
-
-    /**
-     * @param filters
-     *            the filters to set
-     */
-    @Override
-    public void setFilter(LayerFilter filter) {
-        this.filter = filter;
     }
 
     @XmlTransient
@@ -274,72 +248,6 @@ public abstract class AbstractLayer implements Layer {
             this.opacity = 1.0d;
         }
         this.opacity = opacity;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-                + ((this.filter == null) ? 0 : this.filter.hashCode());
-        result = prime * result
-                + ((this.name == null) ? 0 : this.name.hashCode());
-        long temp;
-        temp = Double.doubleToLongBits(this.opacity);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        result = prime * result
-                + ((this.styles == null) ? 0 : this.styles.hashCode());
-        return result;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (this.getClass() != obj.getClass()) {
-            return false;
-        }
-        AbstractLayer other = (AbstractLayer) obj;
-        if (this.filter == null) {
-            if (other.filter != null) {
-                return false;
-            }
-        } else if (!this.filter.equals(other.filter)) {
-            return false;
-        }
-        if (this.name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!this.name.equals(other.name)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.opacity) != Double
-                .doubleToLongBits(other.opacity)) {
-            return false;
-        }
-        if (this.styles == null) {
-            if (other.styles != null) {
-                return false;
-            }
-        } else if (!this.styles.equals(other.styles)) {
-            return false;
-        }
-        return true;
     }
 
 }
