@@ -25,6 +25,7 @@
 
 package fr.ign.cogit.geoxygene.matching.dst.util;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -34,7 +35,7 @@ import java.util.Arrays;
  * 
  * @author Julien Perret
  */
-public class Pair<E ,V> {
+public class Pair<E ,V> implements Serializable {
   
   private E first;
   public V second;

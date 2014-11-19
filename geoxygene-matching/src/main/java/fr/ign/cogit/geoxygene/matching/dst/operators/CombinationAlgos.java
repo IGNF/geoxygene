@@ -25,9 +25,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
+
+import com.vividsolutions.jts.util.Assert;
 
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
 import fr.ign.cogit.geoxygene.matching.dst.util.Utils;
@@ -162,6 +170,7 @@ public final class CombinationAlgos {
    * @param conditionnedlist
    */
   public static void deleteDoubles(List<Pair<byte[], Float>> conditionnedlist) {
+    
     List<Pair<byte[], Float>> toremove = new ArrayList<Pair<byte[], Float>>();
     for (int i = 0; i < conditionnedlist.size() - 1; i++) {
       Pair<byte[], Float> pair = conditionnedlist.get(i);
@@ -172,6 +181,47 @@ public final class CombinationAlgos {
       }
     }
     conditionnedlist.removeAll(toremove);
+    
+    // Convert to Map
+    /*Map<Integer,Pair<byte[], Float>> map = new HashMap<Integer,Pair<byte[], Float>>();
+    int cpt = 0;
+    for (Pair<byte[], Float> i : conditionnedlist) { 
+      map.put(cpt,i);
+      cpt++;
+    }
+    
+    // Delete doublon
+    Set<String> mySet = new HashSet<String>();
+    int cpt2 = 0;
+    for (Iterator<Entry<Integer, Pair<byte[], Float>>> itr = map.entrySet().iterator(); itr.hasNext();) {
+        Map.Entry<Integer, Pair<byte[], Float>> entrySet = (Map.Entry<Integer, Pair<byte[], Float>>) itr.next();
+        
+        byte[] value = entrySet.getValue().getFirst();
+        if (!mySet.add(Arrays.toString(value))) {
+          
+          int key = -1;
+          
+          for (Map.Entry entry: map.entrySet()) {
+            if (Arrays.toString(value).equals(Arrays.toString(((Pair<byte[], Float>)entry.getValue()).getFirst()))) {
+                key = (int) entry.getKey();
+                break; // breaking because its one to one map
+            }
+          }
+          if (key != -1) {
+            System.out.println(map.get(key).getSecond() + " + " + entrySet.getValue().getSecond() + "(" + key + ", " + cpt2 + ")");
+            map.put(key, new Pair(entrySet.getValue().getFirst(), 
+                map.get(key).getSecond() + entrySet.getValue().getSecond()));
+          }
+
+          // 
+          itr.remove();               
+        }
+        cpt2++;
+    }
+    
+    // Convert to List
+    conditionnedlist = new ArrayList<Pair<byte[], Float>>(map.values());
+    System.out.println("-----");*/
   }
 
   /**

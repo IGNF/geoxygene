@@ -65,6 +65,7 @@
 					<!-- Excludes R tests temporarely. -->
 					<excludes>
 						<exclude>**/RDempsterOpCompareTest.java</exclude>
+						<exclude>**/DeleteDoubleCombinationTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

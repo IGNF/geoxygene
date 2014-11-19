@@ -193,18 +193,18 @@ public class GeoMatching {
       cptCandidat++;
     }
     
-    DST_LOGGER.info("    Nb sources = " + beliefsCandidats.size());
+    /*DST_LOGGER.info("    Nb sources = " + beliefsCandidats.size());
     for (int k = 0; k < beliefsCandidats.size(); k++) {
       for (int i = 0; i < beliefsCandidats.get(k).size(); i++) {
         DST_LOGGER.info("   " + Arrays.toString(beliefsCandidats.get(k).get(i).getFirst()) + " : " + beliefsCandidats.get(k).get(i).getSecond());
       }
-    }
+    }*/
     
     // Fusion des candidats
-    System.out.println("Avant fusion des candidats.");
+    // System.out.println("Avant fusion des candidats.");
     List<Pair<byte[], Float>> result = null;
     result = op.combine(beliefsCandidats);
-    System.out.println("Après fusion des candidats.");
+    // System.out.println("Après fusion des candidats.");
     
     // 
     DecisionOp<GeomHypothesis> decisionOp;
