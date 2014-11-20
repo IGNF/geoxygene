@@ -49,7 +49,7 @@ System.out.println("------------------------------------------------------------
 
 
     // On charge les données GPS
-    IPopulation<IFeature> gpsPop = ShapefileReader.read(DATA_DIR + "gps_data_extrait.shp", "traces", null, true);
+    /*IPopulation<IFeature> gpsPop = ShapefileReader.read(DATA_DIR + "gps_data_extrait.shp", "traces", null, true);
     Collections.reverse(gpsPop.getElements());
     int gpsPopSize = gpsPop.size();
 
@@ -76,7 +76,7 @@ System.out.println("------------------------------------------------------------
     LOGGER.info("percentExluded = " + percentExluded);
     // this step eliminated about 38.9%
     // Assert.assertTrue(nbRestant + ", " + percentExluded, percentExluded > 30 && percentExluded < 40);
-    
+    */
     
     /*
     // Création du type géométrique

@@ -124,7 +124,7 @@ public class MatchingProcess<F, Hyp extends Hypothesis> {
 		LOGGER.debug("Fin de la vérification somme des masses = 1"); */
 
 	    // On vérifie qu'il n'y a pas plusieurs fois une hypothèse A, sinon on les fusionne
-	    CombinationAlgos.deleteDoubles(kernel);
+	    kernel = CombinationAlgos.deleteDoubles(kernel);
 	    // Finalement on trie la liste des ensemble focaux
 	    CombinationAlgos.sortKernel(kernel);
       

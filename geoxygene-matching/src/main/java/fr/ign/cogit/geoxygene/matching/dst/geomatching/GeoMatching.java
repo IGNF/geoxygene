@@ -99,7 +99,7 @@ public class GeoMatching {
     // Get Result
     List<Pair<byte[], Float>> result = matchingProcess.combinationProcess(reference);
     CombinationAlgos.sortKernel(result);
-    CombinationAlgos.deleteDoubles(result);
+    result = CombinationAlgos.deleteDoubles(result);
     
     // Décision 
     DecisionOp<GeomHypothesis> decisionOp = new DecisionOp<GeomHypothesis>(result, 0f, choice,
@@ -178,7 +178,7 @@ public class GeoMatching {
         kernel.add(new Pair<byte[], Float>(codeComplement, new Float(mij[1])));
         kernel.add(new Pair<byte[], Float>(codeUnknown, new Float(mij[2])));
         
-        CombinationAlgos.deleteDoubles(kernel);
+        kernel = CombinationAlgos.deleteDoubles(kernel);
         CombinationAlgos.sortKernel(kernel);
         
         beliefsCritere.add(kernel);
@@ -186,7 +186,7 @@ public class GeoMatching {
       
       // Fusion des critères
       List<Pair<byte[], Float>> result = op.combine(beliefsCritere);
-      CombinationAlgos.deleteDoubles(result);
+      result = CombinationAlgos.deleteDoubles(result);
       CombinationAlgos.sortKernel(result);
       beliefsCandidats.add(result);
 

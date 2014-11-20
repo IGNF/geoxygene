@@ -28,7 +28,7 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Chargeur;
  *      In this implementation, we only use the proposed emission and transition
  *      probabilities but most of the breaks were ignored.
  */
-public class SeattleMapMatcher extends HMMMapMatcher {
+public class SeattleMapMatcher /*extends HMMMapMatcher */{
   
   /**
    * @param gpsPop
@@ -38,7 +38,7 @@ public class SeattleMapMatcher extends HMMMapMatcher {
    * @param beta
    * @param distanceLimit
    */
-  public SeattleMapMatcher(IFeatureCollection<? extends IFeature> gpsPop,
+  /*public SeattleMapMatcher(IFeatureCollection<? extends IFeature> gpsPop,
       IFeatureCollection<? extends IFeature> networkPop, double sigmaZ,
       double selection, double beta, double distanceLimit) {
     
@@ -61,6 +61,6 @@ public class SeattleMapMatcher extends HMMMapMatcher {
     
     Chargeur.importAsEdges(network, this.getNetworkMap(), attribute,
         orientationMap, "", null, groundAttribute, tolerance);
-  }
+  }*/
 
 }
