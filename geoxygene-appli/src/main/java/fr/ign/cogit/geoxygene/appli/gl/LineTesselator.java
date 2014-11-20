@@ -387,29 +387,47 @@ public class LineTesselator {
                             / anglePrecision);
 
                     if (sideToCap == 1) { // from vertex3 to vertex 4
-                        int previousVertexIndex = vertexIndex3;
-                        for (int n = 1; n <= nbJoinPoints; n++) { // round part
-                            double angle = n * (alpha2 - alpha1) / nbJoinPoints;
-                            int currentVertexIndex = complex
-                                    .addVertex(new GLSimpleVertex(addPoint2D(
-                                            centerPoint,
-                                            rotateVector(border1, angle))));
-                            mesh.addIndices(midVertexIndex,
-                                    previousVertexIndex, currentVertexIndex);
-                            previousVertexIndex = currentVertexIndex;
+                        if (nbJoinPoints == 0) {
+                            mesh.addIndices(midVertexIndex, vertexIndex3,
+                                    vertexIndex4);
+                        } else {
+                            int previousVertexIndex = vertexIndex3;
+                            for (int n = 1; n <= nbJoinPoints; n++) { // round
+                                                                      // part
+                                double angle = n * (alpha2 - alpha1)
+                                        / nbJoinPoints;
+                                int currentVertexIndex = complex
+                                        .addVertex(new GLSimpleVertex(
+                                                addPoint2D(
+                                                        centerPoint,
+                                                        rotateVector(border1,
+                                                                angle))));
+                                mesh.addIndices(midVertexIndex,
+                                        previousVertexIndex, currentVertexIndex);
+                                previousVertexIndex = currentVertexIndex;
+                            }
                         }
                     } else {// from vertex2 to vertex 4
-                        int previousVertexIndex = vertexIndex2;
+                        if (nbJoinPoints == 0) {
+                            mesh.addIndices(midVertexIndex, vertexIndex2,
+                                    vertexIndex4);
+                        } else {
+                            int previousVertexIndex = vertexIndex2;
 
-                        for (int n = 1; n <= nbJoinPoints; n++) { // round part
-                            double angle = n * (alpha2 - alpha1) / nbJoinPoints;
-                            int currentVertexIndex = complex
-                                    .addVertex(new GLSimpleVertex(addPoint2D(
-                                            centerPoint,
-                                            rotateVector(border1, angle))));
-                            mesh.addIndices(midVertexIndex,
-                                    previousVertexIndex, currentVertexIndex);
-                            previousVertexIndex = currentVertexIndex;
+                            for (int n = 1; n <= nbJoinPoints; n++) { // round
+                                                                      // part
+                                double angle = n * (alpha2 - alpha1)
+                                        / nbJoinPoints;
+                                int currentVertexIndex = complex
+                                        .addVertex(new GLSimpleVertex(
+                                                addPoint2D(
+                                                        centerPoint,
+                                                        rotateVector(border1,
+                                                                angle))));
+                                mesh.addIndices(midVertexIndex,
+                                        previousVertexIndex, currentVertexIndex);
+                                previousVertexIndex = currentVertexIndex;
+                            }
                         }
                     }
 
