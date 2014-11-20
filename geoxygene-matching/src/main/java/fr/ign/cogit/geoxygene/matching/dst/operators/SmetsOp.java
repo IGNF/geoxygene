@@ -102,7 +102,7 @@ public class SmetsOp implements CombinationOp {
           for (int i = 1; i < orderedmass.size(); i++) {
             List<Pair<byte[], Float>> m2values = conditionnedMassPotentials.get(i);
             m1values = this.smetsOp2mass(m1values, m2values);
-            LOGGER.info("Taille des listes = " + m1values.size() + " et " + m2values.size());
+            LOGGER.trace("Taille des listes = " + m1values.size() + " et " + m2values.size());
           }
           return m1values;
         
