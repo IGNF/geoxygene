@@ -196,6 +196,8 @@ public class MultithreadedRenderingManager implements RenderingManager {
             for (Layer layer : this.getLayerViewPanel().getProjectFrame()
                     .getSld().getLayers()) {
                 if (layer.isVisible()) {
+                    System.err.println("layer " + layer.getName()
+                            + " renderer : " + this.rendererMap.get(layer));
                     this.render(this.rendererMap.get(layer));
                 }
             }

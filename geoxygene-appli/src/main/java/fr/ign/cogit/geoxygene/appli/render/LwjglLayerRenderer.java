@@ -126,8 +126,7 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
     public LwjglLayerRenderer(final Layer theLayer,
             final LayerViewGLPanel theLayerViewPanel) {
         super(theLayer);
-        this.layerFilterSubshader = ShaderFactory.createFilterShader(theLayer
-                .getFilter());
+        this.layerFilterSubshader = ShaderFactory.createFilterShader(null);
         this.setLayerViewPanel(theLayerViewPanel);
         this.partialRenderer = new GeoxComplexRendererBasic(this, null);
     }
@@ -666,7 +665,6 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
      */
     private final void renderGLPrimitiveWireframe(GLComplex primitive)
             throws GLException {
-
         glEnable(GL_BLEND);
         if (this.getLayerViewPanel().getAntialiasingSize() > 0) {
             glEnable(GL_LINE_SMOOTH);

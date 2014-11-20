@@ -492,14 +492,6 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
                     // vérifier que le layer est décrit dans le SLD
                     if (new_sld.getLayer(name) != null) {
                         if (new_sld.getLayer(name).getStyles() != null) {
-                            this.layer
-                                    .getSld()
-                                    .getLayers()
-                                    .get(i)
-                                    .setFilter(
-                                            new_sld.getLayer(name).getFilter());
-                        }
-                        if (new_sld.getLayer(name).getStyles() != null) {
                             // logger.debug(new_sld.getLayer(name).getStyles());
                             this.layer
                                     .getSld()

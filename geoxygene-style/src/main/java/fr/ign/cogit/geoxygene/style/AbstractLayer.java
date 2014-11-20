@@ -95,23 +95,6 @@ public abstract class AbstractLayer implements Layer {
             @XmlElement(name = "NoFilter", type = LayerFilterIdentity.class) })
     LayerFilter filter = null;
 
-    /**
-     * @return the filters
-     */
-    @Override
-    public LayerFilter getFilter() {
-        return this.filter;
-    }
-
-    /**
-     * @param filters
-     *            the filters to set
-     */
-    @Override
-    public void setFilter(LayerFilter filter) {
-        this.filter = filter;
-    }
-
     @XmlTransient
     private boolean visible = true;
 

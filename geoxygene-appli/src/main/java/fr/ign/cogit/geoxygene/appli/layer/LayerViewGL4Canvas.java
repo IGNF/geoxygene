@@ -188,13 +188,14 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             boolean quickRendering = this.getParentPanel().getProjectFrame()
                     .getMainFrame().getMode().getCurrentMode()
                     .getRenderingType() != RenderingTypeMode.FINAL
-                    || !this.getParentPanel().useFBO();
+                    || !this.getParentPanel().useFBO()
+                    || this.getParentPanel().useWireframe();
             if (!quickRendering) {
                 this.getParentPanel().initializeFBO();
                 GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this
                         .getParentPanel().getFboId());
                 GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT1);
-
+                GLTools.glClear(bgColor, GL11.GL_COLOR_BUFFER_BIT);
                 this.drawBackground(this.getParentPanel().getFBOImageWidth(),
                         this.getParentPanel().getFBOImageHeight());
                 GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);

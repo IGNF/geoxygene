@@ -16,10 +16,11 @@ vec4 colorFilter( vec4 col );
 
 // source: http://cairographics.org/operators/
 vec3 overlay( vec3 A, vec3 B ) {
-	vec3 resultColor;
+	vec3 resultColor;	
 	resultColor.r = ( B.r <= 0.5 ) ? 2 * A.r * B.r : 1 - 2 * ( 1 - A.r) * ( 1 - B.r ); 
 	resultColor.g = ( B.g <= 0.5 ) ? 2 * A.g * B.g : 1 - 2 * ( 1 - A.g) * ( 1 - B.g ); 
 	resultColor.b = ( B.b <= 0.5 ) ? 2 * A.b * B.b : 1 - 2 * ( 1 - A.b) * ( 1 - B.b );
+
 	return resultColor; 
 }
 
@@ -40,9 +41,9 @@ void main(void) {
 	
 	float aR = aA + aB * ( 1.0 - aA );
 
-	float f = overlay( xA, xB );
+	vec3 f = overlay( xA, xB );
 	resultColor = ( 1.0 - aB ) * xaA + ( 1- aA ) * xaB + aA * aB * f; 	
 	if ( aR > 0.001 ) resultColor /= aR;
 
-	outColor = vec4( resultColor, aR );
+	outColor = vec4( resultColor, aR );	
 }

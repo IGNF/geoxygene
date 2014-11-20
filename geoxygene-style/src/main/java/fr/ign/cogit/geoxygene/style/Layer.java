@@ -29,7 +29,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
-import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 
 /**
  * The Layer class.
@@ -65,13 +64,6 @@ public interface Layer {
      * @return la valeur de l'attribut styles
      */
     public List<Style> getStyles();
-
-    /**
-     * Renvoie le filtre associé à ce layer
-     */
-    public LayerFilter getFilter();
-
-    public void setFilter(LayerFilter filter);
 
     /**
      * Affecte la valeur de l'attribut styles.

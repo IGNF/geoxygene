@@ -616,6 +616,12 @@ public class DisplayableSurface extends AbstractDisplayable {
         return primitive;
     }
 
+    /**
+     * Apply texture when it has finished being generated
+     * 
+     * @author JeT
+     * 
+     */
     private static class TextureApplyer implements
             TaskListener<TextureTask<BasicTexture>> {
 
