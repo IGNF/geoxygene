@@ -230,8 +230,9 @@ public class BezierTesselator {
                 uParams[pointCount - 1] = currentLength;
                 float uMax = currentLength;
 
-                Point2d p0 = this.polyline[0];
+                Point2d p0 = new Point2d(this.polyline[0]);
                 Point2d n0 = normals[0];
+                Point2d outputP = new Point2d();
                 Point2d inputLow = new Point2d(
                         p0.x + this.lineWidth / 2 * n0.x, p0.y + this.lineWidth
                                 / 2 * n0.y);
@@ -241,11 +242,14 @@ public class BezierTesselator {
                 Point2d outputHigh = new Point2d();
 
                 GLMesh mesh = this.complex.addGLMesh(GL11.GL_TRIANGLES);
-                float outputU = this.createSegment(mesh, inputLow, inputHigh,
-                        uParams[0], this.polyline, edges, normals, uParams,
-                        uMax, -1, 0, 1, outputLow, outputHigh);
+                float outputU = this
+                        .createSegment(mesh, inputLow, p0, inputHigh,
+                                uParams[0], this.polyline, edges, normals,
+                                uParams, uMax, -1, 0, 1, outputLow, outputP,
+                                outputHigh);
                 VectorUtil.copy(inputLow, outputLow);
                 VectorUtil.copy(inputHigh, outputHigh);
+                VectorUtil.copy(p0, outputP);
                 int currentEdgeAndPointIndex = 1; // get to second point
                 while (currentEdgeAndPointIndex < edgeCount - 1) {
                     // System.err.println("p[" + currentEdgeAndPointIndex +
@@ -258,21 +262,23 @@ public class BezierTesselator {
                     this.setProgress(currentEdgeAndPointIndex
                             / (double) edgeCount);
 
-                    outputU = this
-                            .createSegment(mesh, inputLow, inputHigh, outputU,
-                                    this.polyline, edges, normals, uParams,
-                                    uMax, currentEdgeAndPointIndex - 1,
-                                    currentEdgeAndPointIndex,
-                                    currentEdgeAndPointIndex + 1, outputLow,
-                                    outputHigh);
+                    outputU = this.createSegment(mesh, inputLow, p0, inputHigh,
+                            outputU, this.polyline, edges, normals, uParams,
+                            uMax, currentEdgeAndPointIndex - 1,
+                            currentEdgeAndPointIndex,
+                            currentEdgeAndPointIndex + 1, outputLow, outputP,
+                            outputHigh);
 
+                    VectorUtil.copy(p0, outputP);
                     VectorUtil.copy(inputLow, outputLow);
                     VectorUtil.copy(inputHigh, outputHigh);
                     currentEdgeAndPointIndex++;
                 }
-                this.createSegment(mesh, inputLow, inputHigh, outputU,
-                        this.polyline, edges, normals, uParams, uMax,
-                        edgeCount - 2, edgeCount - 1, -1, outputLow, outputHigh);
+
+                Point2d p1 = this.polyline[pointCount - 1];
+                this.createStraightSegment(mesh, inputLow, inputHigh, p1,
+                        normals[edgeCount - 1], uMax, outputU, uMax, outputLow,
+                        outputP, outputHigh);
 
                 this.setState(TaskState.FINALIZING);
                 this.colorizer.finalizeColorization();
@@ -284,14 +290,46 @@ public class BezierTesselator {
             }
         }
 
-        private float createSegment(GLMesh mesh, Point2d inputLow,
+        /**
+         * method called for each segment. depending on the previous/next
+         * segments, it creates straight segments or bezier turns
+         * 
+         * @param mesh
+         * @param inputLow
+         *            first low point
+         * @param inputHigh
+         *            first high point
+         * @param u0
+         *            first point linear parameterization value
+         * @param points
+         *            polyline points
+         * @param edges
+         *            polyline edges
+         * @param normals
+         *            polyline normals
+         * @param uParams
+         *            polyline linear parameterization
+         * @param uMax
+         *            linear parameterization maximum value
+         * @param previousIndex
+         *            previous segment index
+         * @param currentIndex
+         *            current segment index
+         * @param nextIndex
+         *            next segment index
+         * @param outputLow
+         *            return value containing the low output point
+         * @param outputHigh
+         *            return value containing the high output point
+         * @return
+         */
+        private float createSegment(GLMesh mesh, Point2d inputLow, Point2d p0,
                 Point2d inputHigh, float u0, Point2d[] points, Point2d[] edges,
                 Point2d[] normals, float[] uParams, float uMax,
                 int previousIndex, int currentIndex, int nextIndex,
-                Point2d outputLow, Point2d outputHigh) {
-            Point2d p0 = points[currentIndex];
+                Point2d outputLow, Point2d outputP, Point2d outputHigh) {
             Point2d previousEdge = null;
-            Point2d currentEdge = edges[currentIndex];
+            Point2d currentEdge = new Point2d();
             Point2d nextEdge = null;
             Point2d previousNormal = null;
             Point2d currentNormal = normals[currentIndex];
@@ -300,51 +338,85 @@ public class BezierTesselator {
 
             if (previousIndex >= 0) {
                 previousEdge = edges[previousIndex];
-                previousNormal = edges[previousIndex];
+                previousNormal = normals[previousIndex];
             }
             if (nextIndex >= 0 && nextIndex < edges.length) {
                 nextEdge = edges[nextIndex];
-                nextNormal = edges[nextIndex];
+                nextNormal = normals[nextIndex];
             }
             // isolated segment
             if (previousEdge == null && nextEdge == null) {
                 Point2d p1 = new Point2d(p0.x + currentEdge.x, p0.y
                         + currentEdge.y);
+                VectorUtil.vector(currentEdge, p0, p1);
                 this.createStraightSegment(mesh, inputLow, inputHigh, p1,
-                        currentNormal, uMax, u0, u1, outputLow, outputHigh);
+                        currentNormal, uMax, u0, u1, outputLow, outputP,
+                        outputHigh);
                 return u1;
             }
             if (nextEdge != null) {
                 Point2d pA = null;
                 double uA = 0;
                 Point2d p1 = points[nextIndex];
+                VectorUtil.vector(currentEdge, p0, p1);
                 double currentLength = VectorUtil.length(currentEdge);
-                if (currentLength > this.transitionSize * 2 + EPSILON) {
-                    double factorA = (currentLength - this.transitionSize)
-                            / currentLength;
-                    pA = new Point2d(p0.x + factorA * currentEdge.x, p0.y
-                            + factorA * currentEdge.y);
-                    uA = u0 + (u1 - u0) * factorA;
+
+                // check if edges self intersect...
+                Point2d n1 = nextNormal;
+                Point2d p1Low = new Point2d(p1.x + this.lineWidth / 2 * n1.x,
+                        p1.y + this.lineWidth / 2 * n1.y);
+                Point2d p1High = new Point2d(p1.x - this.lineWidth / 2 * n1.x,
+                        p1.y - this.lineWidth / 2 * n1.y);
+                double tLowA = VectorUtil.lineIntersection(inputLow,
+                        currentEdge, p1Low, nextEdge);
+                double tHighA = VectorUtil.lineIntersection(inputHigh,
+                        currentEdge, p1High, nextEdge);
+                double factorA = Math.max(0,
+                        (currentLength - this.transitionSize) / currentLength);
+                if (tLowA >= 0 && tLowA < 1) {
+                    factorA = Math.min(factorA, tLowA);
+                }
+                if (tHighA >= 0 && tHighA < 1) {
+                    factorA = Math.min(factorA, tHighA);
+                }
+                pA = new Point2d(p0.x + factorA * currentEdge.x, p0.y + factorA
+                        * currentEdge.y);
+                uA = u0 + (u1 - u0) * factorA;
+                if (factorA > 0.05) {
                     this.createStraightSegment(mesh, inputLow, inputHigh, pA,
-                            currentNormal, uMax, u0, uA, outputLow, outputHigh);
-                } else {
-                    double factorA = 0.5;
-                    pA = new Point2d(p0.x + factorA * currentEdge.x, p0.y
-                            + factorA * currentEdge.y);
-                    uA = u0 + (u1 - u0) * factorA;
+                            currentNormal, uMax, u0, uA, outputLow, outputP,
+                            outputHigh);
                 }
 
+                // if (previousEdge == null) {
+                // this.createStraightSegment(mesh, inputLow, inputHigh, pA,
+                // currentNormal, uMax, u0, uA, outputLow, outputP,
+                // outputHigh);
+                // }
                 // create a bezier transition
                 float u2 = uParams[currentIndex + 2];
                 double nextLength = VectorUtil.length(nextEdge);
+                double tLowB = VectorUtil.lineIntersection(p1Low, nextEdge,
+                        inputLow, currentEdge);
+                double tHighB = VectorUtil.lineIntersection(p1High, nextEdge,
+                        inputHigh, currentEdge);
+
                 double factorB = (nextLength < this.transitionSize * 2
                         + EPSILON) ? 0.5 : this.transitionSize / nextLength;
+                if (tLowB >= 0 && tLowB < 1) {
+                    factorB = Math.max(factorB, tLowB);
+                }
+                if (tHighB >= 0 && tHighB < 1) {
+                    factorB = Math.max(factorB, tHighB);
+                }
+
                 double uB = u1 + (u2 - u1) * factorB;
                 Point2d pB = new Point2d(p1.x + factorB * nextEdge.x, p1.y
                         + factorB * nextEdge.y);
 
                 this.createBezierTurn(mesh, pA, pB, edges, normals, uA, uB,
-                        uMax, currentIndex, nextIndex, outputLow, outputHigh);
+                        uMax, currentIndex, nextIndex, outputLow, outputP,
+                        outputHigh);
                 return (float) uB;
                 // double factorA = (currentLength - this.transitionSize)
                 // / VectorUtil.length(currentEdge);
@@ -370,7 +442,8 @@ public class BezierTesselator {
                 Point2d p1 = new Point2d(p0.x + currentEdge.x, p0.y
                         + currentEdge.y);
                 this.createStraightSegment(mesh, inputLow, inputHigh, p1,
-                        currentNormal, uMax, u0, u1, outputLow, outputHigh);
+                        currentNormal, uMax, u0, u1, outputLow, outputP,
+                        outputHigh);
                 return u1;
 
             }
@@ -395,10 +468,14 @@ public class BezierTesselator {
             return v;
         }
 
+        /**
+         * Create a Bezier turn between p0 and p2. p1 is computed as the edges
+         * intersection
+         */
         private void createBezierTurn(GLMesh mesh, Point2d p0, Point2d p2,
                 Point2d[] edges, Point2d[] normals, double u0, double u2,
                 float uMax, int index0, int index2, Point2d outputLow,
-                Point2d outputHigh) {
+                Point2d outputP, Point2d outputHigh) {
             Point2d p1 = new Point2d();
             VectorUtil.lineIntersection(p1, p0, edges[index0], p2,
                     edges[index2]);
@@ -563,6 +640,8 @@ public class BezierTesselator {
                     VectorUtil.copy(outputHigh, D);
                 }
             }
+            outputP.x = (outputLow.x + outputHigh.x) / 2.;
+            outputP.y = (outputLow.y + outputHigh.y) / 2.;
         }
 
         private void createAngularSegment(GLMesh mesh, Point2d inputLow,
@@ -595,7 +674,8 @@ public class BezierTesselator {
          */
         private void createStraightSegment(GLMesh mesh, Point2d inputLow,
                 Point2d inputHigh, Point2d p1, Point2d n1, float uMax,
-                double u0, double u1, Point2d outputLow, Point2d outputHigh) {
+                double u0, double u1, Point2d outputLow, Point2d outputP,
+                Point2d outputHigh) {
 
             Point2d p1low = new Point2d(p1.x + n1.x * this.lineWidth / 2, p1.y
                     + n1.y * this.lineWidth / 2);
@@ -605,6 +685,7 @@ public class BezierTesselator {
                     (inputLow.y + inputHigh.y) / 2);
             this.addPolygon(mesh, p0, p1, inputLow, p1low, p1high, inputHigh,
                     u0, u1, uMax);
+            VectorUtil.copy(outputP, p1);
             VectorUtil.copy(outputLow, p1low);
             VectorUtil.copy(outputHigh, p1high);
         }

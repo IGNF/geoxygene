@@ -239,6 +239,34 @@ public final class VectorUtil {
      *            line2 point
      * @param e1
      *            line2 direction
+     * @return the intersection parameter value (between 0 & 1 if segments
+     *         intersects). POSITIVE_INFINITY if parallel
+     */
+    public static double lineIntersection(Point2d p0, Point2d e0, Point2d p1,
+            Point2d e1) {
+
+        double dx = p1.x - p0.x;
+        double dy = p1.y - p0.y;
+        double det = e1.x * e0.y - e1.y * e0.x;
+        if (Math.abs(det) < 0.0001) {
+            return Double.POSITIVE_INFINITY;
+        }
+        double u = (dy * e1.x - dx * e1.y) / det;
+        return u;
+    }
+
+    /**
+     * Compute the intersection between two vectorial lines
+     * 
+     * @param result
+     * @param p0
+     *            line1 point
+     * @param e0
+     *            line1 direction
+     * @param p1
+     *            line2 point
+     * @param e1
+     *            line2 direction
      * @return false if segments do not intersect. true if they do (result is
      *         filled)
      */
