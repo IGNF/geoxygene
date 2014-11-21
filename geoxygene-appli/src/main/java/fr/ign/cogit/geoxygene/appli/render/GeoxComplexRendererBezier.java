@@ -97,10 +97,17 @@ public class GeoxComplexRendererBezier extends AbstractGeoxComplexRenderer {
         program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
         program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
                 (float) opacity);
-        program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName, this
-                .getLayerViewPanel().getFBOImageWidth());
-        program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName, this
-                .getLayerViewPanel().getFBOImageHeight());
+        if (this.getFBORendering()) {
+            program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName, this
+                    .getLayerViewPanel().getFBOImageWidth());
+            program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName, this
+                    .getLayerViewPanel().getFBOImageHeight());
+        } else {
+            program.setUniform1f(LayerViewGLPanel.fboWidthUniformVarName, this
+                    .getLayerViewPanel().getCanvasWidth());
+            program.setUniform1f(LayerViewGLPanel.fboHeightUniformVarName, this
+                    .getLayerViewPanel().getCanvasHeight());
+        }
         GLTools.glCheckError("program set to " + program.getName()
                 + " in normal painting rendering");
         //
