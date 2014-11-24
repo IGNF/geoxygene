@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.cartagen.util.comparators.DistanceFeatureComparator;
+import fr.ign.cogit.cartagen.util.comparators.DistanceFeatureComparator.DistanceType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
@@ -56,7 +57,8 @@ public class JellyLens extends AbstractLens {
     // logger.debug("convX : " + convX);
     // logger.debug("convY : " + convY);
 
-    Comparator<IFeature> c = new DistanceFeatureComparator<IFeature>(cursor);
+    Comparator<IFeature> c = new DistanceFeatureComparator<IFeature>(cursor,
+        DistanceType.MIN_DIST);
     // featuresList.
 
     Collections.sort(featuresList, c);

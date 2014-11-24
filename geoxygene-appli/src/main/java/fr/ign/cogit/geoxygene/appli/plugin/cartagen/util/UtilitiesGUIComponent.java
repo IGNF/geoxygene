@@ -40,6 +40,7 @@ import fr.ign.cogit.geoxygene.appli.plugin.cartagen.bookmarks.Bookmark;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.bookmarks.BookmarkSet;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.bookmarks.LoadBookmarkFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.AttributeQueryAction;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.LoadLastSelection;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.LoadObjectSelection;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SaveObjectSelection;
 
@@ -70,6 +71,7 @@ public class UtilitiesGUIComponent extends JMenu {
     selectionMenu.add(new JMenuItem(new AttributeQueryAction()));
     selectionMenu.add(new JMenuItem(new SaveObjectSelection(appli)));
     selectionMenu.add(new JMenuItem(new LoadObjectSelection(appli)));
+    selectionMenu.add(new JMenuItem(new LoadLastSelection(appli)));
     this.add(selectionMenu);
     this.addSeparator();
     this.add(new JMenuItem(new ShowWktAction()));
@@ -189,6 +191,7 @@ public class UtilitiesGUIComponent extends JMenu {
     InternationalisationFrame() {
       super(I18N.getString("MainLabels.changeLanguage"));
       this.setSize(200, 150);
+      this.setAlwaysOnTop(true);
       combo = new JComboBox(new Locale[] { Locale.FRANCE, Locale.ENGLISH });
       combo.setPreferredSize(new Dimension(150, 20));
       combo.setMaximumSize(new Dimension(150, 20));

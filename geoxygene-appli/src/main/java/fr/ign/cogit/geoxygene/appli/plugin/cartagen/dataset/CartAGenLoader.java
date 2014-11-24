@@ -113,7 +113,7 @@ public class CartAGenLoader {
       progressFrame.setTextAndValue("Loading railo roads and electric network",
           70);
       if (dataSet.loadRailwayLineFromSHP(absolutePath + "/troncon_voie_ferree",
-          dataSet.getSymbols())) {
+          dataSet.getSymbols(), null)) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/troncon_voie_ferree", IRailwayLine.FEAT_TYPE_NAME,
@@ -275,7 +275,7 @@ public class CartAGenLoader {
 
       if (dataSet.loadRailwayLineFromSHP(absolutePath
           + "/B_VOIES_FERREES_ET_AUTRES/TRONCON_VOIE_FERREE",
-          dataSet.getSymbols())) {
+          dataSet.getSymbols(), null)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/B_VOIES_FERREES_ET_AUTRES/TRONCON_VOIE_FERREE",
             IRailwayLine.FEAT_TYPE_NAME, ILineString.class);

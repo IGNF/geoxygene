@@ -51,7 +51,7 @@ public class PartialParallelismAchievement implements
 
   /**
    * Loop on the feature1 vertices to identify where parallelism between both
-   * features and where it ends.
+   * features starts and where it ends.
    */
   @Override
   public void compute() {

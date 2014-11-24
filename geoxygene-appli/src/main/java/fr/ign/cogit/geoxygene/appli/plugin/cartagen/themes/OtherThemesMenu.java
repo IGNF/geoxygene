@@ -11,6 +11,7 @@ package fr.ign.cogit.geoxygene.appli.plugin.cartagen.themes;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -35,6 +36,7 @@ import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification;
 import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification.TaxiwayBranching;
 import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification.TaxiwayBranchingCouple;
 import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification.TaxiwayBranchingGroup;
+import fr.ign.cogit.cartagen.genealgorithms.rail.CollapseParallelRailways;
 import fr.ign.cogit.cartagen.genealgorithms.rail.TypifySideTracks;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -43,6 +45,7 @@ import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.cartagen.spatialanalysis.network.StrokesNetwork;
 import fr.ign.cogit.cartagen.spatialanalysis.network.railways.ParallelRailsGroup;
 import fr.ign.cogit.cartagen.spatialanalysis.network.railways.ParallelStroke;
+import fr.ign.cogit.cartagen.spatialanalysis.network.railways.ParallelismEndingType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -91,6 +94,7 @@ public class OtherThemesMenu extends JMenu {
     railMenu.add(new JMenuItem(new TypifySideTracksAction()));
     railMenu.add(new JMenuItem(new CollapseRailsAction()));
     railMenu.add(new JMenuItem(new GroupParallelRailsAction()));
+    railMenu.add(new JMenuItem(new CollapseParallelRailsAction()));
 
   }
 
@@ -440,7 +444,7 @@ public class OtherThemesMenu extends JMenu {
     @Override
     public void actionPerformed(ActionEvent e) {
       TypifySideTracks typify = new TypifySideTracks(100.0, CartAGenDoc
-          .getInstance().getCurrentDataset());
+          .getInstance().getCurrentDataset(), 6.0);
       typify.typifySideTracks();
 
     }
@@ -635,6 +639,23 @@ public class OtherThemesMenu extends JMenu {
         System.out.println("centreStroke: " + group.getCentreStroke());
         for (ParallelStroke pStroke : group.getParallelStrokes()) {
           System.out.println("position: " + pStroke.getPosition());
+          Color colorStart = Color.YELLOW;
+          if (pStroke.getStart().getType()
+              .equals(ParallelismEndingType.CONVERGING))
+            colorStart = Color.GREEN;
+          if (pStroke.getStart().getType()
+              .equals(ParallelismEndingType.DANGLING))
+            colorStart = Color.PINK;
+          pool.addFeatureToGeometryPool(pStroke.getStart().getPosition()
+              .toGM_Point(), colorStart, 5);
+          Color colorEnd = Color.ORANGE;
+          if (pStroke.getEnd().getType()
+              .equals(ParallelismEndingType.CONVERGING))
+            colorEnd = Color.GREEN;
+          if (pStroke.getEnd().getType().equals(ParallelismEndingType.DANGLING))
+            colorEnd = Color.PINK;
+          pool.addFeatureToGeometryPool(pStroke.getEnd().getPosition()
+              .toGM_Point(), colorEnd, 5);
           pool.addFeatureToGeometryPool(pStroke.getStroke().getGeomStroke(),
               pStroke.getColor(), 3);
         }
@@ -643,6 +664,34 @@ public class OtherThemesMenu extends JMenu {
 
     public GroupParallelRailsAction() {
       this.putValue(Action.NAME, "Group parallel railways");
+    }
+  }
+
+  /**
+   * @author GTouya
+   * 
+   */
+  class CollapseParallelRailsAction extends AbstractAction {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      final GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+          .getApplication();
+      CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
+      Collection<IRailwayLine> railways = dataset.getRailwayLines();
+
+      CollapseParallelRailways algorithm = new CollapseParallelRailways(
+          railways);
+      algorithm.collapseParallelRailwayGroups();
+    }
+
+    public CollapseParallelRailsAction() {
+      this.putValue(Action.NAME, "Collapse parallel railway groups");
     }
   }
 

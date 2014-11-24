@@ -115,7 +115,8 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
             .getParent(), IRailwayLine.FEAT_TYPE_NAME, ILineString.class));
         try {
           currentDb.getDataSet().loadRailwayLineFromSHP(
-              panel.getFile().getPath(), symbols);
+              panel.getFile().getPath(), symbols,
+              panel.getAttributeMapping().get("Sidetrack"));
         } catch (IOException e1) {
           e1.printStackTrace();
         }

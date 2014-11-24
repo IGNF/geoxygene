@@ -15,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -27,11 +29,13 @@ import javax.swing.ListSelectionModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import fr.ign.cogit.cartagen.util.LastSessionParameters;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 
 public class LoadSelectionFrame extends JFrame implements ActionListener {
@@ -40,14 +44,25 @@ public class LoadSelectionFrame extends JFrame implements ActionListener {
   private static final long serialVersionUID = 1L;
   private GeOxygeneApplication appli;
 
-  ArrayList<ObjectSelection> sels = new ArrayList<ObjectSelection>();
-  JList liste;
+  private ArrayList<ObjectSelection> sels = new ArrayList<ObjectSelection>();
+  private JList liste;
+  private File file;
 
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getActionCommand().equals("Load")) {
       ObjectSelection sel = (ObjectSelection) liste.getSelectedValue();
       sel.addToSelection();
+      LastSessionParameters params = LastSessionParameters.getInstance();
+      Map<String, String> attributes = new HashMap<String, String>();
+      attributes.put("selectionName", sel.getName());
+      try {
+        params
+            .setParameter("last object selection", file.getPath(), attributes);
+      } catch (TransformerException | IOException e1) {
+        e1.printStackTrace();
+      }
+
     } else if (e.getActionCommand().equals("Close")) {
       this.setVisible(false);
     }
@@ -58,6 +73,7 @@ public class LoadSelectionFrame extends JFrame implements ActionListener {
     super("Load an object selection");
     this.setSize(400, 400);
     this.appli = appli;
+    this.file = file;
 
     // ***********************************
     // PANNEAU CONTENANT LES BOUTONS CHARGER ET FERMER

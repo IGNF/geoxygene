@@ -48,9 +48,9 @@ public class BottomLegendToolbar extends JToolBar {
   private ProjectFrame frame;
   private LayerLegendPanel panel;
   private GeOxygeneApplication appli;
-  private JToggleButton rawDisplayBtn, idDisplayBtn;
+  private JToggleButton rawDisplayBtn, idDisplayBtn, eliminatedBtn;
   private JButton initGeomBtn;
-  private StyledLayerDescriptor initialSld, rawSld;
+  private StyledLayerDescriptor initialSld, rawSld, elimSld;
 
   public BottomLegendToolbar(ProjectFrame frame, LayerLegendPanel panel,
       GeOxygeneApplication appli) {
@@ -62,10 +62,12 @@ public class BottomLegendToolbar extends JToolBar {
     this.initGeomBtn = new JButton(new ShowIniGeomAction(appli));
     this.rawDisplayBtn = new JToggleButton(new RawDisplayAction());
     this.idDisplayBtn = new JToggleButton(new DisplayIdAction());
+    this.eliminatedBtn = new JToggleButton(new ShowEliminatedAction());
 
     this.add(rawDisplayBtn);
     this.add(initGeomBtn);
     this.add(idDisplayBtn);
+    this.add(eliminatedBtn);
     this.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
     this.setFloatable(false);
     this.setOrientation(HORIZONTAL);
@@ -172,4 +174,33 @@ public class BottomLegendToolbar extends JToolBar {
     }
   }
 
+  class ShowEliminatedAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (eliminatedBtn.isSelected()) {
+        // store the symbolised sld
+        if (initialSld == null)
+          initialSld = frame.getSld();
+        if (elimSld == null) {
+          // generate the raw sld from the symbolised sld
+          elimSld = SLDUtil.computeEliminatedSld(initialSld);
+          frame.setSld(elimSld);
+          for (Layer layer : elimSld.getLayers())
+            frame.getLayerViewPanel().layerAdded(layer);
+        } else
+          frame.setSld(elimSld);
+      } else {
+        frame.setSld(initialSld);
+      }
+      frame.getLayerViewPanel().repaint();
+    }
+
+    public ShowEliminatedAction() {
+      putValue(Action.NAME, "Eliminated");
+    }
+  }
 }
