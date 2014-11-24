@@ -272,7 +272,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
             .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
         JtsAlgorithms.logger.debug(e.getMessage());
       }
-      e.printStackTrace();
+      if (JtsAlgorithms.logger.isDebugEnabled())
+        e.printStackTrace();
       return null;
     }
   }
@@ -744,7 +745,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     } catch (Exception e) {
       // Continuer pour les autres types de géométries
     }
-    
+
     List<Geometry> listeGeometriesJts = new ArrayList<Geometry>(0);
     for (IGeometry geom : listeGeometries) {
       try {
