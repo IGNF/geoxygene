@@ -56,12 +56,15 @@ public class OsmXmlParser {
   private static final Logger LOGGER = Logger.getLogger(OsmXmlParser.class);
   
   private Set<OSMResource> nodes;
+  private Set<OSMResource> ways;
+  private Set<OSMResource> relations;
   
   private Population<DefaultFeature> popParking;
   private Population<DefaultFeature> popPolice;
   private Population<DefaultFeature> popSchool;
   private Population<DefaultFeature> popPointOSM;
   private Population<DefaultFeature> popLigneOSM;
+  private Population<DefaultFeature> popRouteOSM;
   
   public Population<DefaultFeature> getPopParking() {
     return this.popParking;
@@ -75,12 +78,16 @@ public class OsmXmlParser {
     return this.popSchool;
   }
   
-  public Population<DefaultFeature> getPopPoint() {
+  public Population<DefaultFeature> getPopPointOSM() {
     return this.popPointOSM;
   }
   
-  public Population<DefaultFeature> getPopLigne() {
+  public Population<DefaultFeature> getPopLigneOSM() {
     return this.popLigneOSM;
+  }
+  
+  public Population<DefaultFeature> getPopRouteOSM() {
+    return this.popRouteOSM;
   }
   
   /**
@@ -94,6 +101,8 @@ public class OsmXmlParser {
     ParserConfigurationException {
     
     this.nodes = new HashSet<OSMResource>();
+    this.ways = new HashSet<OSMResource>();
+    this.relations = new HashSet<OSMResource>();
     
     // popParking  popPolice   popSchool
     popParking = new Population<DefaultFeature>(false, "parkings", DefaultFeature.class, true);
@@ -122,9 +131,15 @@ public class OsmXmlParser {
     
     popLigneOSM = new Population<DefaultFeature>(false, "lignes", DefaultFeature.class, true);
     FeatureType ligneFeatureType = new FeatureType();
-    ligneFeatureType.setTypeName("point");
+    ligneFeatureType.setTypeName("ligne");
     ligneFeatureType.setGeometryType(ILineString.class);
     popLigneOSM.setFeatureType(ligneFeatureType);
+    
+    popRouteOSM = new Population<DefaultFeature>(false, "Routes", DefaultFeature.class, true);
+    FeatureType routeFeatureType = new FeatureType();
+    routeFeatureType.setTypeName("route");
+    routeFeatureType.setGeometryType(ILineString.class);
+    popRouteOSM.setFeatureType(ligneFeatureType);
     
     doc.getDocumentElement().normalize();
     Element root = (Element) doc.getElementsByTagName("osm").item(0);
@@ -180,6 +195,34 @@ public class OsmXmlParser {
       Element elem = (Element) root.getElementsByTagName(OsmGeneObj.TAG_WAY)
           .item(i);
       
+      // on récupère les attributs de l'élément
+      int id = Integer.valueOf(elem.getAttribute(OsmGeneObj.ATTR_ID));
+      
+      boolean isRoad = false;
+      if (elem.getElementsByTagName("tag").getLength() > 0) {
+        for (int j = 0; j < elem.getElementsByTagName("tag").getLength(); j++) {
+          Element tagElem = (Element) elem.getElementsByTagName("tag").item(j);
+          String cle = tagElem.getAttribute("k");
+          if (cle.equals("highway")) {
+            isRoad = true;
+            /*String value = this.getTags().get("highway");
+            if (value.equals("motorway") || value.equals("motorway_link")
+                || value.equals("trunk") || value.equals("trunk_link"))
+              setImportance(4);
+            else if (value.equals("primary") || value.equals("primary_link"))
+              setImportance(3);
+            else if (value.equals("secondary") || value.equals("secondary_link")
+                || value.equals("tertiary") || value.equals("tertiary_link"))
+              setImportance(2);
+            else if (value.equals("road") || value.equals("residential")
+                || value.equals("pedestrian"))
+              setImportance(1);
+            else
+              setImportance(0);*/
+          }
+        }
+      }
+      
       // On récupère sa géométrie
       ArrayList<Long> vertices = new ArrayList<Long>();
       for (int j = 0; j < elem.getElementsByTagName("nd").getLength(); j++) {
@@ -189,7 +232,7 @@ public class OsmXmlParser {
       }
       OSMWay way = new OSMWay(vertices);
       
-      // on récupère sa géométrie
+      // On récupère sa géométrie
       IDirectPositionList coord = new DirectPositionList();
       for (long index : way.getVertices()) {
         OSMNode vertex = null;
@@ -206,9 +249,23 @@ public class OsmXmlParser {
         }
       }
       if (coord.size() > 1) {
-        DefaultFeature n = popLigneOSM.nouvelElement(new GM_LineString(coord));
+        DefaultFeature n = null;
+        if (isRoad) {
+          n = popRouteOSM.nouvelElement(new GM_LineString(coord));
+        } else {
+          n = popLigneOSM.nouvelElement(new GM_LineString(coord));
+        }
+        
         n.setFeatureType(ligneFeatureType);
         this.instancierTagsObjet(elem);
+        
+        OSMWay geom = new OSMWay(vertices);
+        // on construit le nouvel objet ponctuel
+        OSMResource obj = new OSMResource("", geom, id, 0, 0, 1, null);
+        geom.setObjet(obj);
+        
+        // On ajoute obj aux objets chargés
+        this.ways.add(obj);
       }
     }
     LOGGER.info(nbWays + " lignes chargées");
@@ -219,6 +276,9 @@ public class OsmXmlParser {
       
       Element elem = (Element) root.getElementsByTagName(OsmGeneObj.TAG_REL)
           .item(i);
+      
+      // on récupère les attributs de l'élément
+      int id = Integer.valueOf(elem.getAttribute(OsmGeneObj.ATTR_ID));
       
       // On récupère sa primitive
       TypeRelation type = TypeRelation.NON_DEF;
@@ -237,8 +297,12 @@ public class OsmXmlParser {
         membres.add(new OsmRelationMember(RoleMembre.valueOfTexte(role), true,
             ref));
       }
-      //OSMRelation geom = new OSMRelation(type, membres);
-      
+      OSMRelation geom = new OSMRelation(type, membres);
+      OSMResource obj = new OSMResource("", geom, id, 0, 0, 1, null);
+      geom.setObjet(obj);
+      // On lui assigne ses tags
+      instancierTagsObjet(elem);
+      this.relations.add(obj);
     }
     LOGGER.info(nbRels + " relations chargées");
     

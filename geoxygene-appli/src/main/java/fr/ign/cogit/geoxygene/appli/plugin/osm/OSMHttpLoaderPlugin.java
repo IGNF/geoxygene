@@ -212,8 +212,9 @@ public class OSMHttpLoaderPlugin implements GeOxygeneApplicationPlugin, ActionLi
       OsmXmlParser loader = new OsmXmlParser();
       loader.loadOsm(doc);
       
-      Population<DefaultFeature> popPoint = loader.getPopPoint();
-      Population<DefaultFeature> popLigne = loader.getPopLigne();
+      Population<DefaultFeature> popPoint = loader.getPopPointOSM();
+      Population<DefaultFeature> popLigne = loader.getPopLigneOSM();
+      Population<DefaultFeature> popRoute = loader.getPopRouteOSM();
       System.out.println("Nb point pop = " + popPoint.size());
       System.out.println("Nb ligne pop = " + popLigne.size());
       
@@ -268,6 +269,13 @@ public class OSMHttpLoaderPlugin implements GeOxygeneApplicationPlugin, ActionLi
       symbolizerL1.setUnitOfMeasurePixel();
       symbolizerL1.getStroke().setStrokeWidth(1);
       symbolizerL1.getStroke().setStroke(new Color(74, 163, 202));
+      
+      Layer layerRoute = this.application.getMainFrame().getSelectedProjectFrame().addUserLayer(popRoute, "Route OSM", null);
+      LineSymbolizer symbolizerL2 = (LineSymbolizer) layerRoute.getSymbolizer();
+      symbolizerL2.setUnitOfMeasurePixel();
+      symbolizerL2.getStroke().setStrokeWidth(1);
+      symbolizerL2.getStroke().setStroke(Color.RED);
+      
       
     } catch (Exception ex) {
       ex.printStackTrace();
