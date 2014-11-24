@@ -117,7 +117,7 @@ public class ARM {
         for (j = 0; j < arm.getPopNoeuds().size(); j++) {
           noeud = arm.getPopNoeuds().get(j);
           dist = noeud.getGeom().distance(point.getGeom());
-          System.out.println("Distance entre " + noeud.getId() + " et " + point.getId() + " = " + dist);
+          // System.out.println("Distance entre " + noeud.getId() + " et " + point.getId() + " = " + dist);
           if (dist < distMin) {
             distMin = dist;
             imin = i;
