@@ -48,7 +48,7 @@ public class RailwaySelectionProcess2 extends ScaleMasterGeneProcess {
       CartAGenDataSet currentDataset) {
     this.parameterise();
     TypifySideTracks algo = new TypifySideTracks(this.lengthThreshold,
-        CartAGenDocOld.getInstance().getCurrentDataset());
+        CartAGenDocOld.getInstance().getCurrentDataset(), -1);
     algo.typifySideTracks();
   }
 
