@@ -166,6 +166,13 @@ vec2 DistanceToQBSpline(in vec2 P0, in vec2 P1, in vec2 P2, in vec2 p, in vec2 n
 			nMin = i;
 		}
 	} 
+	if ( t[nMin] < 0.01 ) { // special case to avoid numeric precision artifacts
+		float normsd = sqrt(sC/2);
+		float u = abs( dot( P0P2, D ) / (dot(P0P2,P0P2) ));
+			return vec2(t[nMin], ( D.y * sd.x - D.x * sd.y ) / normsd );
+	}
+
+	
 	return vec2( t[nMin], dis[nMin]);
 }
 

@@ -1070,6 +1070,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String brushDensityUniformVarName = "brushDensity";
     public static final String strokePressureUniformVarName = "strokePressure";
     public static final String sharpnessUniformVarName = "sharpness";
+    public static final String bezierLineRatioUniformVarName = "bezierLineRatio";
 
     public static final String basicProgramName = "Basic";
     public static final String linePaintingProgramName = "LinePainting";
@@ -1681,6 +1682,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         program.addUniform(screenHeightUniformVarName);
         program.addUniform(fboWidthUniformVarName);
         program.addUniform(fboHeightUniformVarName);
+        program.addUniform(bezierLineRatioUniformVarName);
         program.addUniform(paperTextureUniformVarName);
         program.addUniform(brushTextureUniformVarName);
         program.addUniform(brushWidthUniformVarName);
