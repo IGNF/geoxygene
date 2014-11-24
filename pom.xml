@@ -690,13 +690,12 @@
 		<module>geoxygene-api</module>
 		<module>geoxygene-appli</module>
 		<module>geoxygene-cartagen</module>
+		<module>geoxygene-carto</module>
 		<module>geoxygene-contrib</module>
 		<module>geoxygene-database</module>
 		<module>geoxygene-feature</module>
 		<module>geoxygene-filter</module>
 		<module>geoxygene-io</module>
-		<module>geoxygene-geopensim</module>
-		<module>geoxygene-pea-rep</module>
 		<module>geoxygene-schemageo</module>
 		<module>geoxygene-semio</module>
 		<module>geoxygene-sig3d</module>
@@ -707,6 +706,5 @@
 		<module>geoxygene-spatialrelation</module>
 		<module>geoxygene-matching</module>
 		<module>geoxygene-graph</module>
-    <module>geoxygene-carto</module>
   </modules>
 </project>
