@@ -43,13 +43,15 @@ public class TypifySideTracks {
   private AbstractCreationFactory factory;
   private CartAGenDataSet dataset;
 
-  public TypifySideTracks(double minLength, CartAGenDataSet dataset) {
+  public TypifySideTracks(double minLength, CartAGenDataSet dataset,
+      double symbolWidth) {
     super();
     this.minLength = minLength;
     attributeNames = new HashSet<String>();
     this.factory = dataset.getCartAGenDB().getGeneObjImpl()
         .getCreationFactory();
     this.dataset = dataset;
+    this.symbolWidth = symbolWidth;
   }
 
   public void typifySideTracks() {

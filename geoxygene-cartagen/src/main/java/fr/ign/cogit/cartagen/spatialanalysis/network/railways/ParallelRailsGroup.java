@@ -3,15 +3,14 @@ package fr.ign.cogit.cartagen.spatialanalysis.network.railways;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
 import fr.ign.cogit.cartagen.spatialanalysis.network.StrokesNetwork;
 import fr.ign.cogit.cartagen.util.comparators.DistanceFeatureComparator;
+import fr.ign.cogit.cartagen.util.comparators.DistanceFeatureComparator.DistanceType;
 import fr.ign.cogit.cartagen.util.comparators.StrokeLengthComparator;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -20,6 +19,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.generalisation.Filtering;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
@@ -97,11 +97,14 @@ public class ParallelRailsGroup {
       // first search parallel tracks on the left
       IFeatureCollection<Stroke> strokeFc = new FT_FeatureCollection<Stroke>();
       strokeFc.addAll(strokeList);
+      Set<Stroke> addedStrokes = new HashSet<>();
       parallelStrokes.addAll(recursiveSearchForParallelStrokes(longest,
-          Side.LEFT, 0, parallelStrokes, strokeFc, maxDist, longest));
+          Side.LEFT, 0, parallelStrokes, strokeFc, maxDist, longest,
+          addedStrokes));
       // then search parallel tracks on the right
       parallelStrokes.addAll(recursiveSearchForParallelStrokes(longest,
-          Side.RIGHT, 0, parallelStrokes, strokeFc, maxDist, longest));
+          Side.RIGHT, 0, parallelStrokes, strokeFc, maxDist, longest,
+          addedStrokes));
 
       ParallelRailsGroup group = new ParallelRailsGroup(longest,
           parallelStrokes);
@@ -127,10 +130,15 @@ public class ParallelRailsGroup {
    */
   private static Set<ParallelStroke> recursiveSearchForParallelStrokes(
       Stroke stroke, Side side, int position, Set<ParallelStroke> pStrokes,
-      IFeatureCollection<Stroke> strokes, double maxDist, Stroke centralStroke) {
+      IFeatureCollection<Stroke> strokes, double maxDist, Stroke centralStroke,
+      Set<Stroke> addedStrokes) {
     Set<ParallelStroke> parallelStrokes = new HashSet<ParallelStroke>();
     IPolygon buffer = BufferComputing.buildLineHalfBuffer(
         stroke.getGeomStroke(), maxDist, side);
+    if (buffer == null) {
+      buffer = BufferComputing.buildHalfOffsetBuffer(side,
+          stroke.getGeomStroke(), maxDist);
+    }
     Collection<Stroke> neighbours = strokes.select(buffer);
     neighbours.remove(stroke);
     neighbours.remove(centralStroke);
@@ -142,21 +150,32 @@ public class ParallelRailsGroup {
     // order neighbours by proximity to the central stroke
     List<Stroke> orderedNeighbours = new ArrayList<Stroke>(neighbours);
     Collections.sort(orderedNeighbours, new DistanceFeatureComparator<Stroke>(
-        centralStroke.getGeomStroke()));
+        centralStroke.getGeomStroke(), DistanceType.MEDIAN2));
 
     for (Stroke neighbour : orderedNeighbours) {
+      if (addedStrokes.contains(neighbour))
+        continue;
       // check it's a parallel neighbour or just a punctual neighbourhood
       IGeometry intersection = buffer.intersection(neighbour.getGeom());
       if (intersection == null) {
         // there is a JTS intersection problem. Try with a slightly different
         // buffer
-        IGeometry differentBuffer = buffer.buffer(0.2);
+        IGeometry differentBuffer = stroke.getGeomStroke()
+            .buffer(maxDist + 0.2);
         intersection = differentBuffer.intersection(neighbour.getGeom());
-        if (intersection == null)
-          continue;
+        if (intersection == null || intersection.length() <= 0.001) {
+          differentBuffer = stroke.getGeomStroke().buffer(maxDist + 1.0);
+          ILineString line = Filtering.DouglasPeuckerLineString(
+              neighbour.getGeomStroke(), 1.0);
+          intersection = differentBuffer.intersection(line);
+          if (intersection == null) {
+            continue;
+          }
+        }
       }
-      if (intersection.length() < 100.0)
+      if (intersection.length() < 100.0) {
         continue;
+      }
 
       // increment the position
       if (position == 0) {
@@ -180,51 +199,41 @@ public class ParallelRailsGroup {
         // if it is a parallel section, check if it's a diverging point or a
         // converging point
         if (parallel) {
-          if (dist == 0.0) {
+          if (dist <= 0.001) {
             // it's a converging point that finishes parallelism
-            Map<ILineString, IDirectPosition> positionOnLines = new HashMap<ILineString, IDirectPosition>();
-            positionOnLines.put(line2, pt);
-            positionOnLines.put(neighbour.getGeomStroke(), pt);
-            end = new ParallelismEnding(ParallelismEndingType.CONVERGING,
-                positionOnLines);
+            end = new ParallelismEnding(ParallelismEndingType.CONVERGING, pt,
+                pt);
             parallelGeomCoord.add(pt);
             parallel = false;
             continue;
           }
           if (dist > maxDist) {
             // it's a diverging point
-            Map<ILineString, IDirectPosition> positionOnLines = new HashMap<ILineString, IDirectPosition>();
-            positionOnLines.put(line2, closest);
-            positionOnLines.put(neighbour.getGeomStroke(), pt);
-            end = new ParallelismEnding(ParallelismEndingType.DIVERGING,
-                positionOnLines);
+            end = new ParallelismEnding(ParallelismEndingType.DIVERGING, pt,
+                closest);
             parallelGeomCoord.add(pt);
             parallel = false;
             continue;
           }
+          parallelGeomCoord.add(pt);
+          continue;
         }
-        if (dist == 0.0) {
+        if (dist <= 0.001) {
           // the parallelism starts with a converging point
-          Map<ILineString, IDirectPosition> positionOnLines = new HashMap<ILineString, IDirectPosition>();
-          positionOnLines.put(line2, pt);
-          positionOnLines.put(neighbour.getGeomStroke(), pt);
-          start = new ParallelismEnding(ParallelismEndingType.CONVERGING,
-              positionOnLines);
+          start = new ParallelismEnding(ParallelismEndingType.CONVERGING, pt,
+              pt);
           parallelGeomCoord.add(pt);
           parallel = true;
           continue;
         }
         if (dist < maxDist) {
           // it's a diverging/dangling point that starts parallelism
-          Map<ILineString, IDirectPosition> positionOnLines = new HashMap<ILineString, IDirectPosition>();
-          positionOnLines.put(line2, closest);
-          positionOnLines.put(neighbour.getGeomStroke(), pt);
-          if (pt.equals(neighbour.getGeomStroke().startPoint())) {
-            start = new ParallelismEnding(ParallelismEndingType.DANGLING,
-                positionOnLines);
+          if (pt.equals2D(neighbour.getGeomStroke().startPoint(), 0.001)) {
+            start = new ParallelismEnding(ParallelismEndingType.DANGLING, pt,
+                closest);
           } else {
-            start = new ParallelismEnding(ParallelismEndingType.DIVERGING,
-                positionOnLines);
+            start = new ParallelismEnding(ParallelismEndingType.DIVERGING, pt,
+                closest);
           }
           parallelGeomCoord.add(pt);
           parallel = true;
@@ -233,18 +242,15 @@ public class ParallelRailsGroup {
       }
       // if end is still null, it means that end is a dangling ending
       if (end == null) {
-        Map<ILineString, IDirectPosition> positionOnLines = new HashMap<ILineString, IDirectPosition>();
         IDirectPosition pt = neighbour.getGeomStroke().endPoint();
         IDirectPosition closest = JtsAlgorithms.getClosestPoint(pt, line2);
-        positionOnLines.put(line2, closest);
-        positionOnLines.put(neighbour.getGeomStroke(), pt);
-        end = new ParallelismEnding(ParallelismEndingType.DANGLING,
-            positionOnLines);
+        end = new ParallelismEnding(ParallelismEndingType.DANGLING, pt, closest);
       }
       ILineString parallelGeom = new GM_LineString(parallelGeomCoord);
       ParallelStroke pStroke = new ParallelStroke(neighbour, position,
           parallelGeom, start, end);
       parallelStrokes.add(pStroke);
+      addedStrokes.add(neighbour);
       // recursively search for parallel neighbours for neighbour
       IFeatureCollection<Stroke> remainingStrokes = new FT_FeatureCollection<Stroke>();
       remainingStrokes.addAll(strokes);
@@ -261,7 +267,7 @@ public class ParallelRailsGroup {
       }
       parallelStrokes.addAll(recursiveSearchForParallelStrokes(neighbour,
           newSide, position, parallelStrokes, remainingStrokes, maxDist,
-          centralStroke));
+          centralStroke, addedStrokes));
     }
     return parallelStrokes;
   }

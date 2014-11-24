@@ -92,4 +92,23 @@ public class ParallelStroke {
       return new Color(239, 243, 255);
     return Color.WHITE;
   }
+
+  /**
+   * A parallel stroke is collapsible if both its endings are not diverging.
+   * @return
+   */
+  public boolean isCollapsible() {
+    if (getStart().getType().equals(ParallelismEndingType.DIVERGING))
+      return false;
+    if (getEnd().getType().equals(ParallelismEndingType.DIVERGING))
+      return false;
+
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return stroke.toString() + " (" + position + ")";
+  }
+
 }

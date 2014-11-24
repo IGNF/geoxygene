@@ -2577,10 +2577,11 @@ public class CartAGenDataSet extends DataSet {
    * @param symbols TODO used to get symbol from official map list
    * @throws IOException
    */
-  public boolean loadRailwayLineFromSHP(String chemin, SymbolList symbols)
-      throws IOException {
+  public boolean loadRailwayLineFromSHP(String chemin, SymbolList symbols,
+      String sidetrackField) throws IOException {
     ShapefileReader shr = null;
     DbaseFileReader dbr = null;
+    String sidetrackValue = null;
     if (chemin.contains(".shp"))
       chemin = chemin.substring(0, chemin.length() - 4);
     try {
@@ -2608,6 +2609,23 @@ public class CartAGenDataSet extends DataSet {
       Map<String, Object> fields = new HashMap<String, Object>();
       for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
         fields.put(dbr.getHeader().getFieldName(i), champs[i]);
+        if (sidetrackField != null) {
+          if (dbr.getHeader().getFieldName(i).equals(sidetrackField)) {
+            if (champs[i] instanceof Boolean) {
+              if ((Boolean) champs[i] == false)
+                sidetrackValue = "false";
+              else
+                sidetrackValue = "true";
+            } else if (champs[i] instanceof String)
+              sidetrackValue = (String) champs[i];
+            else if (champs[i] instanceof Integer) {
+              if ((Integer) champs[i] == 0)
+                sidetrackValue = "false";
+              else
+                sidetrackValue = "true";
+            }
+          }
+        }
       }
 
       IGeometry geom = null;
@@ -2625,6 +2643,8 @@ public class CartAGenDataSet extends DataSet {
             .createRailwayLine(
                 new TronconFerreImpl((Reseau) this.getRailwayNetwork()
                     .getGeoxObj(), false, (ILineString) geom), 0);
+        if (sidetrackValue != null)
+          tr.setSidetrack(new Boolean(sidetrackValue));
         if (fields.containsKey("CARTAGEN_ID")) {
           tr.setId((Integer) fields.get("CARTAGEN_ID"));
         } else {
@@ -2641,6 +2661,8 @@ public class CartAGenDataSet extends DataSet {
                   new TronconFerreImpl((Reseau) this.getRailwayNetwork()
                       .getGeoxObj(), false,
                       (ILineString) ((IMultiCurve<?>) geom).get(i)), 0);
+          if (sidetrackValue != null)
+            tr.setSidetrack(new Boolean(sidetrackValue));
           if (fields.containsKey("CARTAGEN_ID")) {
             tr.setId((Integer) fields.get("CARTAGEN_ID"));
           } else {

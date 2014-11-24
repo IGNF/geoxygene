@@ -20,6 +20,7 @@ import java.util.Vector;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.util.comparators.DistanceFeatureComparator;
+import fr.ign.cogit.cartagen.util.comparators.DistanceFeatureComparator.DistanceType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -58,8 +59,8 @@ public class SpatialQuery {
       SecurityException, IllegalAccessException, NoSuchFieldException {
     String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME").get(
         null);
-    IPopulation<IGeneObj> pop = CartAGenDocOld.getInstance().getCurrentDataset()
-        .getCartagenPop(popName);
+    IPopulation<IGeneObj> pop = CartAGenDocOld.getInstance()
+        .getCurrentDataset().getCartagenPop(popName);
     return pop.select(center, radius);
   }
 
@@ -79,8 +80,8 @@ public class SpatialQuery {
       IllegalAccessException, NoSuchFieldException {
     String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME").get(
         null);
-    IPopulation<IGeneObj> pop = CartAGenDocOld.getInstance().getCurrentDataset()
-        .getCartagenPop(popName);
+    IPopulation<IGeneObj> pop = CartAGenDocOld.getInstance()
+        .getCurrentDataset().getCartagenPop(popName);
     return pop.select(line);
   }
 
@@ -319,7 +320,8 @@ public class SpatialQuery {
         closeObjs.add(feat);
     }
     Set<IFeature> nearests = new HashSet<IFeature>();
-    Collections.sort(closeObjs, new DistanceFeatureComparator<IFeature>(geom));
+    Collections.sort(closeObjs, new DistanceFeatureComparator<IFeature>(geom,
+        DistanceType.MIN_DIST));
     for (int i = 0; i < n; i++)
       nearests.add(closeObjs.get(i));
     return nearests;

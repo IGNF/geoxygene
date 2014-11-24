@@ -376,7 +376,8 @@ public class ShapeFileDB extends CartAGenDB {
         this.getDataSet().loadWaterAreasFromSHP(shape.getPath(), symbols);
       }
       if (shape.getFeatureTypeName().equals(IRailwayLine.FEAT_TYPE_NAME)) {
-        this.getDataSet().loadRailwayLineFromSHP(shape.getPath(), symbols);
+        this.getDataSet()
+            .loadRailwayLineFromSHP(shape.getPath(), symbols, null);
       }
       if (shape.getFeatureTypeName().equals(IElectricityLine.FEAT_TYPE_NAME)) {
         this.getDataSet().loadElectricityLinesFromSHP(shape.getPath(), symbols);

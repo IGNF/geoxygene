@@ -210,6 +210,9 @@ public class GeometryPool {
     double step = (max - min) / 8;
     // compute cell size
     double cellSize = env.width() / grid.get(0).size();
+    System.out.println("max: " + max);
+    System.out.println("min: " + min);
+    System.out.println("step: " + step);
 
     for (Integer i : grid.keySet()) {
       for (Integer j : grid.get(i).keySet()) {

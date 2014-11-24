@@ -22,6 +22,10 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.filter.Filter;
+import fr.ign.cogit.geoxygene.filter.PropertyIsEqualTo;
+import fr.ign.cogit.geoxygene.filter.expression.Literal;
+import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.Graphic;
@@ -244,11 +248,75 @@ public class SLDUtil {
     return rawSld;
   }
 
+  /**
+   * Compute a SLD that only displays the eliminated features from the layers of
+   * a given sld.
+   * @param initialSld
+   * @return
+   */
+  public static StyledLayerDescriptor computeEliminatedSld(
+      StyledLayerDescriptor initialSld) {
+    StyledLayerDescriptor elimSld = new StyledLayerDescriptor(
+        initialSld.getDataSet());
+    for (Layer layer : initialSld.getLayers()) {
+      NamedLayer newLayer = new NamedLayer(elimSld, layer.getName());
+      newLayer.setSld(elimSld);
+      newLayer.getStyles().add(computeEliminatedStyle(layer));
+      elimSld.add(newLayer);
+    }
+    return elimSld;
+  }
+
   private static Style computeRawStyle(Layer layer) {
     Style rawStyle = new UserStyle();
     FeatureTypeStyle ftStyle = new FeatureTypeStyle();
     rawStyle.getFeatureTypeStyles().add(ftStyle);
     Rule rule = new Rule();
+    ftStyle.getRules().add(rule);
+    Color color = getRawColor(layer);
+    if (layer.getSymbolizer() instanceof PointSymbolizer) {
+      PointSymbolizer symbolizer = new PointSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      Graphic graphic = new Graphic();
+      Mark mark = new Mark();
+      mark.setWellKnownName("cross");
+      Fill fill = new Fill();
+      fill.setColor(color);
+      mark.setFill(fill);
+      graphic.getMarks().add(mark);
+      symbolizer.setGraphic(graphic);
+      rule.getSymbolizers().add(symbolizer);
+    } else if (layer.getSymbolizer() instanceof PolygonSymbolizer) {
+      PolygonSymbolizer symbolizer = new PolygonSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      Stroke stroke = new Stroke();
+      stroke.setColor(color);
+      stroke.setStrokeWidth(1);
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      symbolizer.setStroke(stroke);
+      rule.getSymbolizers().add(symbolizer);
+    } else if (layer.getSymbolizer() instanceof LineSymbolizer) {
+      Symbolizer symbolizer = new LineSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      Stroke stroke = new Stroke();
+      stroke.setColor(color);
+      stroke.setStrokeWidth(2);
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      symbolizer.setStroke(stroke);
+      rule.getSymbolizers().add(symbolizer);
+    }
+    return rawStyle;
+  }
+
+  private static Style computeEliminatedStyle(Layer layer) {
+    Style rawStyle = new UserStyle();
+    FeatureTypeStyle ftStyle = new FeatureTypeStyle();
+    rawStyle.getFeatureTypeStyles().add(ftStyle);
+    Rule rule = new Rule();
+    Filter filter = new PropertyIsEqualTo(new PropertyName("eliminated"),
+        new Literal("true"));
+    rule.setFilter(filter);
     ftStyle.getRules().add(rule);
     Color color = getRawColor(layer);
     if (layer.getSymbolizer() instanceof PointSymbolizer) {
