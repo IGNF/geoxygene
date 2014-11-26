@@ -706,5 +706,6 @@
 		<module>geoxygene-spatialrelation</module>
 		<module>geoxygene-matching</module>
 		<module>geoxygene-graph</module>
+    <module>geoxygene-ontology</module>
   </modules>
 </project>
