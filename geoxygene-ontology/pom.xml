@@ -8,7 +8,6 @@
     <version>1.7-SNAPSHOT</version>
   </parent>
   <artifactId>geoxygene-ontology</artifactId>
-  <version>1.0-SNAPSHOT</version>
   <name>geoxygene-ontology</name>
   <url>http://maven.apache.org</url>
   <properties>
