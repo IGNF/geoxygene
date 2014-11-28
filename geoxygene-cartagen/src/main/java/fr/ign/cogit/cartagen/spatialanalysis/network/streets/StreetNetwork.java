@@ -1214,14 +1214,16 @@ public class StreetNetwork extends AbstractFeature {
     for (IUrbanBlock block : this.cityBlocks) {
 
       // if the block is already the aggregation of several small blocks, add it
-      if (block.getInitialGeoxBlocks().size() > 1) {
-        treated.add(block);
-        continue;
-        // else if there is no initial geox block, the city block has been
-        // created by cutting the with the city limits: add it.
-      } else if (block.getInitialGeoxBlocks().size() == 0) {
-        treated.add(block);
-        continue;
+      if (block.getInitialGeoxBlocks() != null) {
+        if (block.getInitialGeoxBlocks().size() > 1) {
+          treated.add(block);
+          continue;
+          // else if there is no initial geox block, the city block has been
+          // created by cutting the with the city limits: add it.
+        } else if (block.getInitialGeoxBlocks().size() == 0) {
+          treated.add(block);
+          continue;
+        }
       }
 
       // test if the block is a road structure
@@ -1346,15 +1348,22 @@ public class StreetNetwork extends AbstractFeature {
       proximity = block.getPartition().getMeanProxi();
       degree = block.getPartition().getMeanDegree();
     }
-
+    IGeometry newGeom = block.getGeom().union(neigh.getGeom());
     // compute the aggregated block geometry
-    IPolygon newGeom = (IPolygon) block.getGeom().union(neigh.getGeom());
-    double newArea = newGeom.area();
+    IPolygon newPoly = null;
+    if (newGeom instanceof IPolygon) {
+      newPoly = (IPolygon) newGeom;
+    } else if (newGeom.isMultiSurface()) {
+      // TODO not satisfying. Muste never occurs, but occurs when we get very
+      // small geometry in the union (bug jts ?)
+      newPoly = ((IMultiSurface<IPolygon>) newGeom).get(0);
+    }
+    double newArea = newPoly.area();
 
     // compute the new block compactness (Miller's Index)
     double compactness = 0.0001;// mais le coefficient à 1
     if (this.criteria.compactCrit) {
-      compactness = new Compactness(newGeom).getMillerIndex();
+      compactness = new Compactness(newPoly).getMillerIndex();
     }
 
     // Now get the common strokes and roads between the blocks
