@@ -25,9 +25,9 @@ import javax.swing.JTextField;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fr.ign.cogit.geoxygene.appli.plugin.matching.dst.EvidencePlugin;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.appli.plugin.matching.dst.EvidencePlugin;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.matching.dst.geomatching.GeomHypothesis;
@@ -70,7 +70,7 @@ public class CriterePanel extends JPanel implements ActionListener {
   private JRadioButton radioCredibility;
   private JRadioButton radioPlausibility;
   private JRadioButton radioPignistic;
-  
+
   private JButton matriceConfusionButton;
   private JButton configLayerButton;
   private JButton razButton;
@@ -79,10 +79,10 @@ public class CriterePanel extends JPanel implements ActionListener {
 
   private JComboBox<String> comboListeJeu1;
   private JComboBox<String> comboListeJeu2;
-  
+
   private List<String> listAttr1;
   private List<String> listAttr2;
-  
+
   private boolean affTopo = false;
 
   /**
@@ -104,19 +104,19 @@ public class CriterePanel extends JPanel implements ActionListener {
       height = height + "pref, pref, 5dlu, ";
     }
 
-    layout = new FormLayout("10dlu, pref, 10dlu, pref, pref, 10dlu", 
-        height + "10dlu, pref, 2dlu, pref, 10dlu");
+    layout = new FormLayout("10dlu, pref, 10dlu, pref, pref, 10dlu", height
+        + "10dlu, pref, 2dlu, pref, 10dlu");
     setLayout(layout);
     cc = new CellConstraints();
 
     listAttr1 = new ArrayList<String>();
     listAttr1.add("toponyme");
     listAttr1.add("nature");
-    
+
     listAttr2 = new ArrayList<String>();
     listAttr2.add("NOM");
     listAttr2.add("NATURE");
-    
+
     initPanel();
 
   }
@@ -151,24 +151,23 @@ public class CriterePanel extends JPanel implements ActionListener {
     add(comboListeJeu2, cc.xy(4, 4));
 
     // ---------------------------------------------------------------
-    //   Attributs
+    // Attributs
     add(new JLabel("Attributs : "), cc.xy(2, 6));
-    
+
     // Jd1
     JPanel attrJeu = new JPanel();
     attrJeu.setBackground(Color.white);
     FormLayout layoutAttrPanel = new FormLayout(
-        "4dlu, pref, 10dlu, pref, 4dlu", 
-        "4dlu, pref, pref, 4dlu");
+        "4dlu, pref, 10dlu, pref, 4dlu", "4dlu, pref, pref, 4dlu");
     attrJeu.setLayout(layoutAttrPanel);
     CellConstraints ccAP = new CellConstraints();
-    
+
     attrJeu.add(new JLabel("toponyme"), ccAP.xy(2, 2));
     attrJeu.add(new JLabel("nature"), ccAP.xy(2, 3));
     attrJeu.add(new JLabel("NOM"), ccAP.xy(4, 2));
     attrJeu.add(new JLabel("NATURE"), ccAP.xy(4, 3));
     add(attrJeu, cc.xy(4, 6));
-    
+
     // Sélection des candidats
     add(new JLabel("Sélection des candidats : "), cc.xy(2, 8));
     distanceSelectionField = new JTextField(4);
@@ -318,14 +317,13 @@ public class CriterePanel extends JPanel implements ActionListener {
     boutonPanel.add(razButton);
 
     add(boutonPanel, cc.xyw(2, 20 + 3 * criteria.size(), 4));
-    
-    
+
     // ----------------------------------------------------------------
-    //    Resultat boutons panel
+    // Resultat boutons panel
     JPanel resultatPanel = new JPanel();
     resultatPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
     resultatPanel.setBackground(Color.WHITE);
-    
+
     configLayerButton = new JButton();
     configLayerButton.setIcon(new ImageIcon(EvidencePlugin.class
         .getResource("/images/icons/layers.png")));
@@ -334,7 +332,7 @@ public class CriterePanel extends JPanel implements ActionListener {
     configLayerButton.setEnabled(false);
     configLayerButton.addActionListener(this);
     resultatPanel.add(configLayerButton);
-    
+
     matriceConfusionButton = new JButton();
     matriceConfusionButton.setIcon(new ImageIcon(EvidencePlugin.class
         .getResource("/images/icons/table.png")));
@@ -343,7 +341,7 @@ public class CriterePanel extends JPanel implements ActionListener {
     matriceConfusionButton.setEnabled(false);
     matriceConfusionButton.addActionListener(this);
     resultatPanel.add(matriceConfusionButton);
-    
+
     JButton jeuMasseButton = new JButton();
     jeuMasseButton.setIcon(new ImageIcon(EvidencePlugin.class
         .getResource("/images/icons/chart_bar.png")));
@@ -353,9 +351,20 @@ public class CriterePanel extends JPanel implements ActionListener {
     jeuMasseButton.setEnabled(false);
     jeuMasseButton.addActionListener(this);
     resultatPanel.add(jeuMasseButton);
-    
+
     add(resultatPanel, cc.xyw(2, 22 + 3 * criteria.size(), 4));
 
+  }
+
+  private void updateAvailableLayers() {
+    // Liste des layers
+    List<Layer> layersDispo = evidencePlugin.getApplication().getMainFrame()
+        .getSelectedProjectFrame().getLayers();
+
+    for (Layer layer : layersDispo) {
+      comboListeJeu1.addItem(layer.getName());
+      comboListeJeu2.addItem(layer.getName());
+    }
   }
 
   @Override
@@ -369,9 +378,10 @@ public class CriterePanel extends JPanel implements ActionListener {
         System.out.println("!!!!");
       }
     } else if (source == matriceConfusionButton) {
-      MatriceConfusionPanel matriceConfusionPanel = new MatriceConfusionPanel(this.evidencePlugin.getPopLien(), 
+      MatriceConfusionPanel matriceConfusionPanel = new MatriceConfusionPanel(
+          this.evidencePlugin.getPopLien(),
           this.evidencePlugin.getFeatureTypeLien(), "nature1", "NATURE2");
-      matriceConfusionPanel.setLocation(new Point (100, 100));
+      matriceConfusionPanel.setLocation(new Point(100, 100));
     } else if (source == configLayerButton) {
       configLayer();
     } else if (source == razButton) {
@@ -391,47 +401,51 @@ public class CriterePanel extends JPanel implements ActionListener {
       }
     }
   }
-  
-  
+
   public void remiseAZero() {
-    
+    updateAvailableLayers();
     // supprime le layer lien
-    this.evidencePlugin.getApplication().getMainFrame().getSelectedProjectFrame().removeLayers(
-        this.evidencePlugin.getListLayer());
-    
+    this.evidencePlugin.getApplication().getMainFrame()
+        .getSelectedProjectFrame()
+        .removeLayers(this.evidencePlugin.getListLayer());
+
     // on rafraichit le tableau des liens
-    Population<DefaultFeature>popLien = new Population<DefaultFeature>(false, "Liens", DefaultFeature.class, true);
+    Population<DefaultFeature> popLien = new Population<DefaultFeature>(false,
+        "Liens", DefaultFeature.class, true);
     popLien.setFeatureType(this.evidencePlugin.getFeatureTypeLien());
     this.evidencePlugin.setPopLien(popLien);
     this.evidencePlugin.initLien();
-    
+
     // On rafraichit le debugPanel
     this.evidencePlugin.getDebugPanel().setPopLien(popLien);
     this.evidencePlugin.getDebugPanel().refreshLightDebug();
-    
+
     // desactive
     setEnableMatriceConfusionButton(false);
     setEnableConfigLayerButton(false);
   }
-  
+
   /**
    * Option : affiche ou non les toponymes.
    */
   private void configLayer() {
-    
-    Layer layerRef = this.evidencePlugin.getApplication().getMainFrame().getSelectedProjectFrame().getLayer(getLayerNameDataset1());
-    Layer layerPoint = this.evidencePlugin.getApplication().getMainFrame().getSelectedProjectFrame().getLayer(getLayerNameDataset2());
-    
+
+    Layer layerRef = this.evidencePlugin.getApplication().getMainFrame()
+        .getSelectedProjectFrame().getLayer(getLayerNameDataset1());
+    Layer layerPoint = this.evidencePlugin.getApplication().getMainFrame()
+        .getSelectedProjectFrame().getLayer(getLayerNameDataset2());
+
     if (!affTopo) {
-      
+
       affTopo = true;
       TextSymbolizer txtSymbolizer = new TextSymbolizer();
       txtSymbolizer.setUnitOfMeasurePixel();
-      fr.ign.cogit.geoxygene.style.Font sldFont = new fr.ign.cogit.geoxygene.style.Font(new Font("Verdana", Font.PLAIN, 10));
+      fr.ign.cogit.geoxygene.style.Font sldFont = new fr.ign.cogit.geoxygene.style.Font(
+          new Font("Verdana", Font.PLAIN, 10));
       txtSymbolizer.setFont(sldFont);
       // build the symbolizer fill
       Fill txtFill = new Fill();
-      
+
       txtSymbolizer.setFill(txtFill);
       Stroke txtStroke = new Stroke();
       txtStroke.setColor(Color.BLACK);
@@ -441,11 +455,11 @@ public class CriterePanel extends JPanel implements ActionListener {
       txtFill.setColor(new Color(0, 90, 50));
       LabelPlacement placement = new LabelPlacement();
       PointPlacement ptPlacement = new PointPlacement();
-      
+
       placement.setPlacement(ptPlacement);
       ptPlacement.setRotation(0.0f);
       txtSymbolizer.setLabelPlacement(placement);
-    
+
       FeatureTypeStyle ftStyle2 = new FeatureTypeStyle();
       Rule rule2 = new Rule();
       List<Symbolizer> listSymbolizer = new ArrayList<Symbolizer>();
@@ -454,9 +468,9 @@ public class CriterePanel extends JPanel implements ActionListener {
       List<Rule> listRule2 = new ArrayList<Rule>();
       listRule2.add(rule2);
       ftStyle2.setRules(listRule2);
-      
+
       layerPoint.getStyles().get(0).getFeatureTypeStyles().add(ftStyle2);
-      
+
       txtSymbolizer = new TextSymbolizer();
       txtSymbolizer.setUnitOfMeasurePixel();
       txtSymbolizer.setFont(sldFont);
@@ -468,13 +482,13 @@ public class CriterePanel extends JPanel implements ActionListener {
       txtStroke.setStrokeWidth(1.5f);
       txtSymbolizer.setStroke(txtStroke);
       txtSymbolizer.setLabel("toponyme");
-    
+
       placement = new LabelPlacement();
       ptPlacement = new PointPlacement();
       placement.setPlacement(ptPlacement);
       ptPlacement.setRotation(0.0f);
       txtSymbolizer.setLabelPlacement(placement);
-    
+
       ftStyle2 = new FeatureTypeStyle();
       rule2 = new Rule();
       listSymbolizer = new ArrayList<Symbolizer>();
@@ -484,26 +498,27 @@ public class CriterePanel extends JPanel implements ActionListener {
       listRule2.add(rule2);
       ftStyle2.setRules(listRule2);
       layerRef.getStyles().get(0).getFeatureTypeStyles().add(ftStyle2);
-      
-      this.evidencePlugin.getApplication().getMainFrame().getSelectedProjectFrame().getLayerViewPanel().repaint();
-      
+
+      this.evidencePlugin.getApplication().getMainFrame()
+          .getSelectedProjectFrame().getLayerViewPanel().repaint();
+
     } else {
       affTopo = false;
       layerPoint.getStyles().get(0).getFeatureTypeStyles().remove(1);
       layerRef.getStyles().get(0).getFeatureTypeStyles().remove(1);
-      this.evidencePlugin.getApplication().getMainFrame().getSelectedProjectFrame().getLayerViewPanel().repaint();
+      this.evidencePlugin.getApplication().getMainFrame()
+          .getSelectedProjectFrame().getLayerViewPanel().repaint();
     }
   }
 
-  
   public double getDistanceSelection() {
     return Double.parseDouble(distanceSelectionField.getText());
   }
-  
+
   public String getLayerNameDataset1() {
     return this.comboListeJeu1.getSelectedItem().toString();
   }
-  
+
   public String getLayerNameDataset2() {
     return this.comboListeJeu2.getSelectedItem().toString();
   }
@@ -531,19 +546,19 @@ public class CriterePanel extends JPanel implements ActionListener {
       return (IPopulation<IFeature>) layerJeu2.getFeatureCollection();
     }
   }
-  
+
   public List<String> getListAttr1() {
     return listAttr1;
   }
-  
+
   public List<String> getListAttr2() {
     return listAttr2;
   }
-  
+
   public void setEnableMatriceConfusionButton(boolean b) {
     matriceConfusionButton.setEnabled(b);
   }
-  
+
   public void setEnableConfigLayerButton(boolean b) {
     configLayerButton.setEnabled(b);
   }
