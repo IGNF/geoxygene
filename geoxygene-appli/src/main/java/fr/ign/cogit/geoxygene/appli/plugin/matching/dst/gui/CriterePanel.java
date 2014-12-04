@@ -141,7 +141,7 @@ public class CriterePanel extends JPanel implements ActionListener {
     add(comboListeJeu1, cc.xy(4, 2));
 
     // Sélection du jeu 2
-    add(new JLabel("Jeu n°2 : "), cc.xy(2, 4));
+    add(new JLabel("Jeu candidat : "), cc.xy(2, 4));
     comboListeJeu2 = new JComboBox<String>();
     comboListeJeu2.addItem("--");
     for (int l = 0; l < layersDispo.size(); l++) {
