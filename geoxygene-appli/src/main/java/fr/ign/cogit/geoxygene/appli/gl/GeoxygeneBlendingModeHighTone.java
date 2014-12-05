@@ -25,24 +25,52 @@
  * 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.style;
+package fr.ign.cogit.geoxygene.appli.gl;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
+import fr.ign.cogit.geoxygene.style.BlendingModeHighTone;
+import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 
 /**
- * Multiply blend mode f(a,b) = a * b;
- * 
  * @author JeT
+ * 
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-public class BlendingModeMultiply implements BlendingMode {
+public class GeoxygeneBlendingModeHighTone extends
+        AbstractGeoxygeneBlendingMode {
+
+    public static final String FragmentShaderFilename = "./src/main/resources/shaders/blending-hightone.frag.glsl";
+
+    public static final String BlendingMultiplyPrefix = "hightone";
+    private BlendingModeHighTone blendingMode = null;
 
     /**
-     * default constructor
+     * @param blendingMode
      */
-    public BlendingModeMultiply() {
-        super();
+    public GeoxygeneBlendingModeHighTone(BlendingModeHighTone blendingMode,
+            LayerFilter filter, LayerViewGLPanel glPanel) {
+        super(filter, glPanel);
+        this.blendingMode = blendingMode;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * fr.ign.cogit.geoxygene.appli.gl.GeoxygeneBlendingMode#getBlendingMode()
+     */
+    @Override
+    public BlendingModeHighTone getBlendingMode() {
+        return this.blendingMode;
+    }
+
+    @Override
+    public String getPrefix() {
+        return BlendingMultiplyPrefix;
+    }
+
+    @Override
+    public String getFragmentShaderFilename() {
+        return FragmentShaderFilename;
     }
 
 }

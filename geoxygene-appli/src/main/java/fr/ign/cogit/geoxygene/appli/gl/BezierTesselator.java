@@ -414,9 +414,12 @@ public class BezierTesselator {
                 Point2d pB = new Point2d(p1.x + factorB * nextEdge.x, p1.y
                         + factorB * nextEdge.y);
 
-                this.createBezierTurn(mesh, pA, pB, edges, normals, uA, uB,
-                        uMax, currentIndex, nextIndex, outputLow, outputP,
-                        outputHigh);
+                // this.createBezierTurn(mesh, pA, pB, edges, normals, uA, uB,
+                // uMax, currentIndex, nextIndex, outputLow, outputP,
+                // outputHigh);
+                this.createAngularSegment(mesh, inputLow, inputHigh, pA, edges,
+                        normals, uParams, uMax, currentIndex, nextIndex,
+                        outputLow, outputHigh);
                 return (float) uB;
                 // double factorA = (currentLength - this.transitionSize)
                 // / VectorUtil.length(currentEdge);

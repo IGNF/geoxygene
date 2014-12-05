@@ -134,6 +134,7 @@ public abstract class AbstractSymbolizer implements Symbolizer {
     @XmlElements({
             @XmlElement(name = "NormalBlending", type = BlendingModeNormal.class),
             @XmlElement(name = "OverlayBlending", type = BlendingModeOverlay.class),
+            @XmlElement(name = "HighToneBlending", type = BlendingModeHighTone.class),
             @XmlElement(name = "MultiplyBlending", type = BlendingModeMultiply.class) })
     private BlendingMode blendingMode = null;
 

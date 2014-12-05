@@ -31,7 +31,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * Normal blend mode f(a,b) = b;
+ * Overlay blend mode see http://cairographics.org/operators/
+ * http://stackoverflow
+ * .com/questions/4689096/how-to-handle-alpha-in-a-manual-overlay
+ * -blend-operation
  * 
  * @author JeT
  */

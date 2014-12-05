@@ -32,6 +32,7 @@ import java.util.Map;
 
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.style.BlendingMode;
+import fr.ign.cogit.geoxygene.style.BlendingModeHighTone;
 import fr.ign.cogit.geoxygene.style.BlendingModeMultiply;
 import fr.ign.cogit.geoxygene.style.BlendingModeNormal;
 import fr.ign.cogit.geoxygene.style.BlendingModeOverlay;
@@ -98,6 +99,10 @@ public class GeoxygeneBlendingFactory {
         if (blendingMode instanceof BlendingModeMultiply) {
             return new GeoxygeneBlendingModeMultiply(
                     (BlendingModeMultiply) blendingMode, filter, glPanel);
+        }
+        if (blendingMode instanceof BlendingModeHighTone) {
+            return new GeoxygeneBlendingModeHighTone(
+                    (BlendingModeHighTone) blendingMode, filter, glPanel);
         }
         throw new UnsupportedOperationException("Blending mode "
                 + blendingMode.getClass().getSimpleName() + " is not supported");

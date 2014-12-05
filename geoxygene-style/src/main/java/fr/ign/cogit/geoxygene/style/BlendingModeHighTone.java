@@ -31,17 +31,18 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * Multiply blend mode f(a,b) = a * b;
+ * high tone blend mode. Quite like overlay mode, more specific to watercolor
+ * painting
  * 
  * @author JeT
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class BlendingModeMultiply implements BlendingMode {
+public class BlendingModeHighTone implements BlendingMode {
 
     /**
      * default constructor
      */
-    public BlendingModeMultiply() {
+    public BlendingModeHighTone() {
         super();
     }
 
