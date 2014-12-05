@@ -98,7 +98,9 @@ public interface ProjectFrame {
      * @param name
      *            the name of the population
      */
-    public abstract Layer addFeatureCollection(IPopulation<? extends IFeature> population, String name, CoordinateReferenceSystem crs);
+    public abstract Layer addFeatureCollection(
+            IPopulation<? extends IFeature> population, String name,
+            CoordinateReferenceSystem crs);
 
     /**
      * Add a feature collection to the project.
@@ -108,7 +110,9 @@ public interface ProjectFrame {
      * @param name
      *            the name of the population
      */
-    public abstract Layer addUserLayer(IFeatureCollection<? extends IFeature> collection, String name, CoordinateReferenceSystem crs);
+    public abstract Layer addUserLayer(
+            IFeatureCollection<? extends IFeature> collection, String name,
+            CoordinateReferenceSystem crs);
 
     /**
      * @author Bertrand Dumenieu
@@ -116,7 +120,8 @@ public interface ProjectFrame {
      *             now a CRS. Only here to ensure backward compatibility
      */
     @Deprecated
-    public abstract Layer addFeatureCollection(IPopulation<?> population, String name);
+    public abstract Layer addFeatureCollection(IPopulation<?> population,
+            String name);
 
     /** @return The list of the project's layers */
     public abstract List<Layer> getLayers();
@@ -138,16 +143,15 @@ public interface ProjectFrame {
 
     public abstract void setGeometryToolsVisible(boolean b);
 
-    public abstract void addImage(String name, BufferedImage image, double[][] range);
+    public abstract void addImage(String name, BufferedImage image,
+            double[][] range);
 
     public abstract BufferedImage getImage(IFeature feature);
 
     /**
      * Save the map into an image file. The file format is determined by the
-     * given
-     * file extension. If there is none or if the given extension is
-     * unsupported,
-     * the image is saved in PNG format.
+     * given file extension. If there is none or if the given extension is
+     * unsupported, the image is saved in PNG format.
      * 
      * @param fileName
      *            the image file to save into.
@@ -173,8 +177,7 @@ public interface ProjectFrame {
 
     /**
      * SCH load the described styles in an xml file and apply them to a
-     * predefined
-     * dataset.
+     * predefined dataset.
      * 
      * @param fileName
      *            the xml file to load.
@@ -227,5 +230,14 @@ public interface ProjectFrame {
      * Validates this container and all of its subcomponents.
      */
     public abstract void validate();
+
+    /**
+     * return true if SLD is currently in edition
+     * 
+     * @return
+     */
+    public boolean getSldEditionLock();
+
+    public void setSldEditionLock(boolean lock);
 
 }

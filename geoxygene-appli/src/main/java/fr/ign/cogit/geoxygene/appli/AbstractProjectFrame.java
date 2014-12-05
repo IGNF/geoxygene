@@ -55,6 +55,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     private final Map<IFeature, BufferedImage> featureToImageMap = new HashMap<IFeature, BufferedImage>();
     private LayerLegendPanel layerLegendPanel = null; // The layer legend panel
     private StyledLayerDescriptor sld = null; // The project styled layer
+    private boolean sldEditionLocked = false; // sld locked by edition frames
     private JSplitPane splitPane = null; // The split pane
     private static final int DEFAULT_DIVIDER_LOCATION = 200;
     private static final int DEFAULT_DIVIDER_SIZE = 5;
@@ -107,6 +108,21 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     @Override
     public final void setTitle(final String string) {
         this.title = string;
+    }
+
+    /**
+     * @return the sldLocked
+     */
+    public boolean getSldEditionLock() {
+        return this.sldEditionLocked;
+    }
+
+    /**
+     * @param sldLocked
+     *            the sldLocked to set
+     */
+    public void setSldEditionLock(boolean sldLocked) {
+        this.sldEditionLocked = sldLocked;
     }
 
     @Override

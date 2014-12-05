@@ -28,6 +28,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
@@ -35,6 +37,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -83,6 +86,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
     private static final String NEWLINE = System.getProperty("line.separator");
 
     private static final long serialVersionUID = 87814921699188942L;
+
+    private static final int borderSize = 20;
 
     private static Logger logger = Logger
             .getLogger(StyleEditionExpertFrame.class.getName());
@@ -157,6 +162,46 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
 
         // listen to layers selection change
         this.layerLegendPanel.addSelectionChangeListener(this);
+
+        if (layerLegendPanel.getLayerViewPanel().getProjectFrame()
+                .getSldEditionLock()) {
+            JPanel panel = new JPanel(new BorderLayout());
+            JLabel label = new JLabel(
+                    "<html><center><font color='red' family='bold' size='+2'>"
+                            + I18N.getString("EditionFrame.SLDInEditionWarningMessage")
+                            + "</font></center></html>");
+
+            label.setBorder(BorderFactory.createEmptyBorder(borderSize,
+                    borderSize, borderSize, borderSize));
+            label.setOpaque(true);
+            label.setBackground(Color.white);
+            panel.add(label, BorderLayout.CENTER);
+            JButton button = new JButton("OK");
+            button.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    StyleEditionExpertFrame.this.dispose();
+                }
+            });
+            panel.add(button, BorderLayout.SOUTH);
+            this.setContentPane(panel);
+            this.setModalityType(ModalityType.APPLICATION_MODAL);
+            this.pack();
+            return;
+
+        } else {
+            this.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    StyleEditionExpertFrame.this.layerLegendPanel
+                            .getLayerViewPanel().getProjectFrame()
+                            .setSldEditionLock(false);
+                }
+            });
+            layerLegendPanel.getLayerViewPanel().getProjectFrame()
+                    .setSldEditionLock(true);
+        }
 
     }
 

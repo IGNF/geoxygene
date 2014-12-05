@@ -122,6 +122,8 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
 
     private static final String CR = System.getProperty("line.separator");
 
+    private static final int borderSize = 20;
+
     private static Logger logger = Logger.getLogger(StyleEditionFrame.class
             .getName());
 
@@ -351,6 +353,45 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
 
         this.setLocation(200, 200);
         // this.setAlwaysOnTop(true);
+
+        if (layerLegendPanel.getLayerViewPanel().getProjectFrame()
+                .getSldEditionLock()) {
+            JPanel panel = new JPanel(new BorderLayout());
+            JLabel label = new JLabel(
+                    "<html><center><font color='red' family='bold' size='+2'>"
+                            + I18N.getString("EditionFrame.SLDInEditionWarningMessage")
+                            + "</font></center></html>");
+
+            label.setBorder(BorderFactory.createEmptyBorder(borderSize,
+                    borderSize, borderSize, borderSize));
+            label.setOpaque(true);
+            label.setBackground(Color.white);
+            panel.add(label, BorderLayout.CENTER);
+            JButton button = new JButton("OK");
+            button.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    StyleEditionFrame.this.dispose();
+                }
+            });
+            panel.add(button, BorderLayout.SOUTH);
+            this.setContentPane(panel);
+            this.setModalityType(ModalityType.APPLICATION_MODAL);
+            this.pack();
+            return;
+
+        } else {
+            this.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    StyleEditionFrame.this.layerLegendPanel.getLayerViewPanel()
+                            .getProjectFrame().setSldEditionLock(false);
+                }
+            });
+            layerLegendPanel.getLayerViewPanel().getProjectFrame()
+                    .setSldEditionLock(true);
+        }
 
     }
 
