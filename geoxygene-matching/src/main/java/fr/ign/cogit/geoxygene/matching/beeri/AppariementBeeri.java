@@ -18,9 +18,11 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
+import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
@@ -55,18 +57,10 @@ public class AppariementBeeri {
    *         créés. Leur évaluation est égale à 1 si on est sûr du résultat, à
    *         0.5 sinon.
    */
-  public static EnsembleDeLiens appariementPPV(IFeatureCollection<?> popRef,
-      IFeatureCollection<?> popComp, double seuilDistanceMax) {
+  public static EnsembleDeLiens appariementPPV(IPopulation<IFeature> popRef,
+      IPopulation<IFeature> popComp, double seuilDistanceMax) {
     
     EnsembleDeLiens liens = new EnsembleDeLiens();
-    Lien lien;
-    IFeature objetRef, objetComp;
-    int nblien;
-    nblien = 0;
-    double distance, distPP;
-    IFeatureCollection<?> candidatsApp;
-    IFeature candidatRetenu;
-    Iterator<?> itCandidatsApp;
     ApproximateMatcher AM = new ApproximateMatcher();
     AM.setIgnoreCase(true);
     
@@ -81,33 +75,35 @@ public class AppariementBeeri {
     }
     
     // On parcourt les objets ref un par un
-    Iterator<?> itPopRef = popRef.getElements().iterator();
-    while (itPopRef.hasNext()) {
-      candidatRetenu = null;
-      objetRef = (IFeature) itPopRef.next();
-      candidatsApp = (IFeatureCollection<?>) popComp.select(
-          ((GM_Point) objetRef.getGeom()).getPosition(), seuilDistanceMax);
-      if (candidatsApp.size() == 0)
+    for (IFeature objetRef : popRef) {
+      
+      IPopulation<IFeature> pop1Ref = new Population<IFeature>("Ref");
+      pop1Ref.setFeatureType(objetRef.getFeatureType());
+      pop1Ref.add(objetRef);
+      
+      // .select(((GM_Point) objetRef.getGeom()).getPosition(), seuilDistanceMax)
+      IPopulation<IFeature> candidatsApp = popComp.selectionElementsProchesGenerale(pop1Ref, seuilDistanceMax);
+      LOGGER.debug("Nb candidat = " + candidatsApp.size());
+      if (candidatsApp.size() == 0) {
         continue;
-      // Pour chaque objet ref on calcule la distance à tous les objets comp
-      // proches
+      }
+      
+      // Pour chaque objet ref on calcule la distance à tous les objets comp proches
       // pour ne garder que le plus proche
-      itCandidatsApp = candidatsApp.getElements().iterator();
-      distPP = seuilDistanceMax;
-      while (itCandidatsApp.hasNext()) {
-        objetComp = (IFeature) itCandidatsApp.next();
-        distance = Distances.distance(
-            ((GM_Point) objetRef.getGeom()).getPosition(),
-            ((GM_Point) objetComp.getGeom()).getPosition());
+      IFeature candidatRetenu = null;
+      double distPP = seuilDistanceMax;
+      for (IFeature objetComp : candidatsApp) {
+        double distance = ((GM_Point) objetRef.getGeom()).getPosition().distance(((GM_Point) objetComp.getGeom()).getPosition());
+        LOGGER.trace("Distance entre ref et comp = " + distance);
         if (distance <= distPP) {
           distPP = distance;
           candidatRetenu = objetComp;
         }
       }
+      
       // On crée un nouveau lien avec sa géométrie et son évaluation
       if (candidatRetenu != null) {
-        lien = liens.nouvelElement();
-        nblien++;
+        Lien lien = liens.nouvelElement();
         lien.addObjetRef(objetRef);
         lien.addObjetComp(candidatRetenu);
         GM_LineString ligne = new GM_LineString();
@@ -117,7 +113,8 @@ public class AppariementBeeri {
         lien.setGeom(ligne);
       }
     }
-    System.out.println("nb lien :" + nblien);
+    
+    LOGGER.info("Nombre de liens trouvés = " + liens.size());
     return liens;
   }
   
