@@ -135,9 +135,9 @@ public class AppariementBeeri {
    *         créés. Leur évaluation est égale à 1 si on est sûr du résultat(
    *         confiance>0.5), et à 0.5 sinon (confiance<0.5, !=0).
    */
-  public static EnsembleDeLiens appariementPPVDansLesDeuxSens(
-      IFeatureCollection<?> popRef, IFeatureCollection<?> popComp,
-      double seuilDistanceMax) {
+  public static EnsembleDeLiens appariementPPVDansLesDeuxSens(IPopulation<IFeature> popRef, 
+      IPopulation<IFeature> popComp, double seuilDistanceMax) {
+    
     // déterminer les liens d'appariement
     EnsembleDeLiens liensAppariement = new EnsembleDeLiens();
     Integer nbObj = 0, nbObjNonAp = 0, nbLienSur = 0, nbLienIncertain = 0, nbLiensNonAcceptes = 0, nbLienTresIncertain = 0;
@@ -147,8 +147,8 @@ public class AppariementBeeri {
     // On calcule les liens avec la methode PPV de comp vers ref
     // On compare les deux ensemble de liens obtenus
 
-    // EnsembleDeLiens lienDirect=appariementPPV(popRef, popComp, 200, 0.5);
-    // EnsembleDeLiens leinsInvers=appariementPPV( popComp, popRef, 200, 0.5);
+    // EnsembleDeLiens lienDirect = appariementPPV(popRef, popComp, 200, 0.5);
+    // EnsembleDeLiens leinsInvers = appariementPPV( popComp, popRef, 200, 0.5);
 
     // ////// 2eme façon de faire
     // On calcule les liens comme avec la methode PPV de ref vers comp
