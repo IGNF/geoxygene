@@ -135,7 +135,7 @@ public class LieuHabiteTest {
     double seuilEcart = 20.0;
     double seuilDistanceMax = 50.0;
     EnsembleDeLiens edl = AppariementBeeri.appariementPPVEvalTop(popRef, popComp, seuilEcart, seuilDistanceMax, "NOM", "TOPONYME");
-    System.out.println(edl.size());
+    Assert.assertEquals("Nombre de liens trouvés = ", 33, edl.size());
   }
     
 }
