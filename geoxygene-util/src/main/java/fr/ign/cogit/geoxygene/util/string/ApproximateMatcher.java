@@ -1,3 +1,13 @@
+/**
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ * 
+ */
 package fr.ign.cogit.geoxygene.util.string;
 
 /**
@@ -7,10 +17,12 @@ package fr.ign.cogit.geoxygene.util.string;
  * transformations (elimination, remplacement, insertion de lettres) pour passer
  * d'une chaîne à l'autre. Cette distance est très utilisée pour comparer des
  * chaînes caractères.
+ * 
  * @author Julien Perret
  * @author Eric Grosso
  */
 final public class ApproximateMatcher {
+  
   private boolean ignoreAccent = false;
   private boolean ignoreCase = false;
   private boolean ignoreDash = false;
