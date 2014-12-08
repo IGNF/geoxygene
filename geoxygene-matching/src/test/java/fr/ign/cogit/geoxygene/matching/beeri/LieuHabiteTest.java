@@ -84,7 +84,7 @@ public class LieuHabiteTest {
     Assert.assertEquals("Aucun lien pour sainte-colombe. ", false, trouveSainteColombe);
   }
   
-  /*@Test
+  @Test
   public void testAppariementPPVDansLesDeuxSens() {
 
     // Load dataset
@@ -93,9 +93,10 @@ public class LieuHabiteTest {
     Assert.assertEquals("Pop lieu dit habite mal chargee : ", 445, popComp.size());
     Assert.assertEquals("Pop zone habitat mal chargée : ", 65, popRef.size());
 
-    double seuilDistanceMax = 120.0;
+    double seuilDistanceMax = 50.0;
     EnsembleDeLiens edl = AppariementBeeri.appariementPPVDansLesDeuxSens(popRef, popComp, seuilDistanceMax);
+    Assert.assertEquals("Nombre de liens trouvés = ", 33, edl.size());
     
-  }*/
+  }
     
 }

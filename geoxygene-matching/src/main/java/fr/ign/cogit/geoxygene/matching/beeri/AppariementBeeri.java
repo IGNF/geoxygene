@@ -140,8 +140,7 @@ public class AppariementBeeri {
     
     // déterminer les liens d'appariement
     EnsembleDeLiens liensAppariement = new EnsembleDeLiens();
-    Integer nbObj = 0, nbObjNonAp = 0, nbLienSur = 0, nbLienIncertain = 0, nbLiensNonAcceptes = 0, nbLienTresIncertain = 0;
-
+    
     // ////// 1ere façon de faire
     // On calcule les liens avec la methode PPV de ref vers comp
     // On calcule les liens avec la methode PPV de comp vers ref
@@ -154,72 +153,63 @@ public class AppariementBeeri {
     // On calcule les liens comme avec la methode PPV de ref vers comp
     // et quand on a trouvé un lien on vérifie que ça marche dans l'autre sens
 
-    double distance, distPP, distPP1, distanceCompRef;
-    IFeatureCollection<?> candidatsApp;
-    IFeature candidatRetenu, candidatRetenu1;
-    IFeature objetRef, objetRef1, objetComp;
     List<IFeature> listNonApp = new ArrayList<IFeature>();
-    Iterator<?> itCandidatsApp;
-    Lien lien;
+    
     // Indexation de la population de comparaison
     if (!popComp.hasSpatialIndex()) {
-      System.out.println("Indexation des oronymes");
+      LOGGER.info("Indexation de popComp (oronymes)");
       popComp.initSpatialIndex(Tiling.class, true, 10);
     }
     if (!popRef.hasSpatialIndex()) {
-      System.out.println("Indexation des points remarquable de relief");
+      LOGGER.info("Indexation de popRef (points remarquable de relief).");
       popRef.initSpatialIndex(Tiling.class, true, 10);
     }
 
     // On parcourt les objets ref un par un
-    Iterator<?> itPopRef = popRef.getElements().iterator();
-    while (itPopRef.hasNext()) {
-      objetRef = (IFeature) itPopRef.next();
-      candidatRetenu = null;
-      candidatsApp = (IFeatureCollection<?>) popComp.select(
-          ((GM_Point) objetRef.getGeom()).getPosition(), seuilDistanceMax);
+    for (IFeature objetRef : popRef) {
+      IFeature candidatRetenu = null;
+      
+      IPopulation<IFeature> pop1Ref = new Population<IFeature>("Ref");
+      pop1Ref.setFeatureType(objetRef.getFeatureType());
+      pop1Ref.add(objetRef);
+      
+      // .select(((GM_Point) objetRef.getGeom()).getPosition(), seuilDistanceMax)
+      IPopulation<IFeature> candidatsApp = popComp.selectionElementsProchesGenerale(pop1Ref, seuilDistanceMax);
+      
       if (candidatsApp.size() == 0) {
         listNonApp.add(objetRef);
-        nbObjNonAp++;
         continue;
       }
+      
       // Pour chaque objet ref on calcule la distance à tous les objets comp
-      // proches
-      // pour ne garder que le plus proche
-      itCandidatsApp = candidatsApp.getElements().iterator();
-      distPP = seuilDistanceMax;
-      while (itCandidatsApp.hasNext()) {
-        objetComp = (IFeature) itCandidatsApp.next();
-        distance = Distances.distance(
-            ((GM_Point) objetRef.getGeom()).getPosition(),
-            ((GM_Point) objetComp.getGeom()).getPosition());
+      // proches pour ne garder que le plus proche
+      // itCandidatsApp = candidatsApp.getElements().iterator();
+      double distPP = seuilDistanceMax;
+      for (IFeature objetComp : candidatsApp) {
+        double distance = ((GM_Point) objetRef.getGeom()).getPosition().distance(((GM_Point) objetComp.getGeom()).getPosition());
         if (distance <= distPP) {
           distPP = distance;
           candidatRetenu = objetComp;
         }
       }
-      if (candidatRetenu == null)
+      if (candidatRetenu == null) {
         continue;
-      // pour l'objet candidat retenu on calcule la distance à tous les objets
-      // ref
-      // afin de garder que le plus proche objet; on teste si comp=pp(ref) et
-      // ref=pp(comp)
-      distPP1 = seuilDistanceMax;
-      candidatRetenu1 = null;
-      Iterator<?> itPopRef1 = popRef.getElements().iterator();
-
-      while (itPopRef1.hasNext()) {
-        objetRef1 = (IFeature) itPopRef1.next();
-        distanceCompRef = Distances.distance(
-            ((GM_Point) objetRef1.getGeom()).getPosition(),
-            ((GM_Point) candidatRetenu.getGeom()).getPosition());
+      }
+      // pour l'objet candidat retenu on calcule la distance à tous les objets ref
+      // afin de garder que le plus proche objet; on teste si comp=pp(ref) et ref=pp(comp)
+      double distPP1 = seuilDistanceMax;
+      IFeature candidatRetenu1 = null;
+      for (IFeature objetRef1 : popRef) {
+        double distanceCompRef = ((GM_Point) objetRef1.getGeom()).getPosition().distance(((GM_Point) candidatRetenu.getGeom()).getPosition());
         if (distanceCompRef <= distPP1) {
           distPP1 = distanceCompRef;
           candidatRetenu1 = objetRef1;
         }
       }
+      
+      // 
       if (candidatRetenu1 == objetRef) {
-        lien = liensAppariement.nouvelElement();
+        Lien lien = liensAppariement.nouvelElement();
         lien.addObjetRef(objetRef);
         lien.addObjetComp(candidatRetenu);
         GM_LineString ligne = new GM_LineString();
@@ -227,13 +217,11 @@ public class AppariementBeeri {
         ligne.addControlPoint(((GM_Point) candidatRetenu.getGeom())
             .getPosition());
         lien.setGeom(ligne);
-        nbObj++;
       } else {
         listNonApp.add(objetRef);
-        nbObjNonAp++;
       }
     } // fin boucle 1 sur les ojets ref
-    System.out.println("objets appariés :" + nbObj);
+    LOGGER.info("objets appariés :" + liensAppariement.size());
 
     // On crée un nouveau lien avec sa géométrie et son évaluation
     // On évalue la confiance des liens d'appariement,
@@ -250,6 +238,7 @@ public class AppariementBeeri {
     // si le lien est très incertain
     // si non il n'est pas accepté;
 
+    int nbLienSur = 0, nbLienIncertain = 0, nbLiensNonAcceptes = 0, nbLienTresIncertain = 0;
     Iterator<?> itLiensAppariement = liensAppariement.getElements().iterator();
     while (itLiensAppariement.hasNext()) {
       lienApp = (Lien) itLiensAppariement.next();
@@ -271,46 +260,40 @@ public class AppariementBeeri {
         nbLienIncertain++;
       }
     }
-    System.out.println("LiensSurs :" + nbLienSur);
-    System.out.println("LiensIncertains :" + nbLienIncertain);
-    System.out.println("LiensTrèsIncertains :" + nbLienTresIncertain);
-    System.out.println("LiensNonAccepté :" + nbLiensNonAcceptes);
+    LOGGER.info("LiensSurs :" + nbLienSur);
+    LOGGER.info("LiensIncertains :" + nbLienIncertain);
+    LOGGER.info("LiensTrèsIncertains :" + nbLienTresIncertain);
+    LOGGER.info("LiensNonAccepté :" + nbLiensNonAcceptes);
 
     return liensAppariementSurs;
   }
 
-  // ////////////////////////////////////////////////
-  // Evaluation de la qualité du lien d'appariement/
-  // ////////////////////////////////////////////////
-
+  
+  // ================================================================================
+  //    Evaluation de la qualité du lien d'appariement/
+  // ================================================================================
   /**
    * Mesure de confiance d'un appariement entre points, telle que proposée dans
    * [Beeri et al. 2004]
    * 
    */
-  public static double confiance(Lien lien, IFeatureCollection<?> popRef,
-      IFeatureCollection<?> popComp, double seuilDistanceMax) {
+  private static double confiance(Lien lien, IPopulation<IFeature> popRef,
+      IPopulation<IFeature> popComp, double seuilDistanceMax) {
+    
     // A est l'objet ref du lien
-
     IFeature A = (IFeature) lien.getObjetsRef().get(0);
     IFeature B = (IFeature) lien.getObjetsComp().get(0);
 
     // calcul de la distance de A à B (A et B sont les objets ref et comp
     // pointés par le lien this)
-    double dAB, dAB2, dBA2, confiance;
-    dAB2 = 0;
-    dBA2 = 0;
-
-    // dAB=A.getGeom().distance((GM_Object)B.getGeom());
-    dAB = Distances.distance(((GM_Point) B.getGeom()).getPosition(),
-        ((GM_Point) A.getGeom()).getPosition());
-    dAB2 = CalculDistance.deuxiemePlusProcheVoisin(A, B, popComp,
+    double dAB = ((GM_Point) B.getGeom()).getPosition().distance(((GM_Point) A.getGeom()).getPosition());
+    double dAB2 = CalculDistance.deuxiemePlusProcheVoisin(A, B, popComp,
         seuilDistanceMax);
-    dBA2 = CalculDistance.deuxiemePlusProcheVoisin(B, A, popRef,
+    double dBA2 = CalculDistance.deuxiemePlusProcheVoisin(B, A, popRef,
         seuilDistanceMax);
 
     // calcul de la confiance
-    confiance = 1 - dAB / (Math.min(dAB2, dBA2));
+    double confiance = 1 - dAB / (Math.min(dAB2, dBA2));
     return confiance;
   }
 
