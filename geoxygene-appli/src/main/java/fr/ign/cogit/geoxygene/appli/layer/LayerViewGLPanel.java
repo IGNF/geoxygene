@@ -349,6 +349,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                     fboImageHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
                     (ByteBuffer) null);
             glBindTexture(GL_TEXTURE_2D, 0);
+            GLTools.glCheckError("texture memory alloc");
 
             // initialize FBO ping-pong texture 0
             int fboPingPongTextureId0 = this.getFboPingPongTextureId1();
@@ -396,6 +397,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 throw new GLException(
                         "Frame Buffer Object is not correctly initialized");
             }
+            GLTools.glCheckError("bind framebuffer");
 
             // bind FBO ping-pong texture 0 to ATT1
             GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER,
@@ -406,6 +408,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 throw new GLException(
                         "Frame Buffer Object is not correctly initialized");
             }
+            GLTools.glCheckError("bind framebuffer ping-pong 0");
 
             // bind FBO ping-pong texture 1 to ATT2
             GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER,
@@ -567,8 +570,18 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         return this.antialiasing;
     }
 
-    public void setAntialiasing(int b) {
+    public boolean setAntialiasing(int b) {
+        int prevAntialising = this.antialiasing;
         this.antialiasing = b;
+
+        int fboImageWidth = this.getFBOImageWidth();
+        int fboImageHeight = this.getFBOImageHeight();
+        int fboSizeMax = GL11.glGetInteger(GL11.GL_MAX_TEXTURE_SIZE);
+        if (fboImageHeight > fboSizeMax || fboImageWidth > fboSizeMax) {
+            this.antialiasing = prevAntialising;
+            return false;
+        }
+        return true;
     }
 
     public boolean useWireframe() {
@@ -916,20 +929,19 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             this.setContinuousRendering(this.getAnimationButton().isSelected());
             this.repaint();
         } else if (e.getSource() == this.getAntialiasingButton()) {
-            int antialiasingValue = 1;
-            try {
-                antialiasingValue = Integer.parseInt(this
-                        .getAntialiasingButton().getText());
-                antialiasingValue++;
-                if (this.antialiasing >= 9) {
-                    antialiasingValue = 0;
-                }
-                this.getAntialiasingButton().setText(
-                        String.valueOf(antialiasingValue));
-                this.setAntialiasing(antialiasingValue);
-            } catch (Exception e2) {
-                this.getAntialiasingButton().setText(String.valueOf(1));
-                this.setAntialiasing(1);
+            int antialiasingValue = Integer.parseInt(this
+                    .getAntialiasingButton().getText());
+            antialiasingValue++;
+            if (this.antialiasing >= 9) {
+                antialiasingValue = 0;
+            }
+            this.getAntialiasingButton().setText(
+                    String.valueOf(antialiasingValue));
+            if (!this.setAntialiasing(antialiasingValue)) {
+                logger.warn("Reaching maximum antialiasing level supported("
+                        + (antialiasingValue - 1) + ")");
+                this.getAntialiasingButton().setText(String.valueOf(0));
+                this.setAntialiasing(0);
             }
             this.repaint();
         } else {
