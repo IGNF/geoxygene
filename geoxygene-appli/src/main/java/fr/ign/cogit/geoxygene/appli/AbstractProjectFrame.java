@@ -6,8 +6,10 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -55,7 +57,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     private final Map<IFeature, BufferedImage> featureToImageMap = new HashMap<IFeature, BufferedImage>();
     private LayerLegendPanel layerLegendPanel = null; // The layer legend panel
     private StyledLayerDescriptor sld = null; // The project styled layer
-    private boolean sldEditionLocked = false; // sld locked by edition frames
+    private final Set<Object> sldEditionOwners = new HashSet<Object>();
     private JSplitPane splitPane = null; // The split pane
     private static final int DEFAULT_DIVIDER_LOCATION = 200;
     private static final int DEFAULT_DIVIDER_SIZE = 5;
@@ -110,19 +112,26 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
         this.title = string;
     }
 
-    /**
-     * @return the sldLocked
-     */
-    public boolean getSldEditionLock() {
-        return this.sldEditionLocked;
+    @Override
+    public void releaseSldEditionLock(Object owner) {
+        this.sldEditionOwners.remove(owner);
     }
 
-    /**
-     * @param sldLocked
-     *            the sldLocked to set
-     */
-    public void setSldEditionLock(boolean sldLocked) {
-        this.sldEditionLocked = sldLocked;
+    @Override
+    public void addSldEditionLock(Object owner) {
+        this.sldEditionOwners.add(owner);
+    }
+
+    @Override
+    public Set<Object> getSldEditionOwners() {
+        return this.sldEditionOwners;
+
+    }
+
+    @Override
+    public void clearAllSldEditionOwner() {
+        this.sldEditionOwners.clear();
+
     }
 
     @Override

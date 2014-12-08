@@ -1106,6 +1106,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
 
             StyleEditionFrame styleEditionFrame = new StyleEditionFrame(
                     layerLegendPanel);
+            styleEditionFrame.setVisible(true);
 
             layerLegendPanel.getSelectedLayers().iterator().next()
                     .setStyles(styleEditionFrame.getLayer().getStyles());

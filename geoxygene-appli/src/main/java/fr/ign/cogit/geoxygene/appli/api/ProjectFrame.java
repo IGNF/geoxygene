@@ -22,6 +22,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuBar;
@@ -236,8 +237,11 @@ public interface ProjectFrame {
      * 
      * @return
      */
-    public boolean getSldEditionLock();
+    public void releaseSldEditionLock(Object owner);
 
-    public void setSldEditionLock(boolean lock);
+    public void addSldEditionLock(Object owner);
 
+    public Set<Object> getSldEditionOwners();
+
+    public void clearAllSldEditionOwner();
 }

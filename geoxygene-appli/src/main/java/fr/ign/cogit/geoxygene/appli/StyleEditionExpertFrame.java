@@ -22,6 +22,9 @@ package fr.ign.cogit.geoxygene.appli;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -145,63 +148,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
         this.projectFrame = projectFrame;
         this.layerViewPanel = this.layerLegendPanel.getLayerViewPanel();
         this.initializeColors();
-        this.initializeGui();
-        Layer layer = null;
-        if (layerLegendPanel.getSelectedLayers().size() == 1) {
-            layer = this.layerLegendPanel.getSelectedLayers().iterator().next();
-        }
-        if (layer instanceof NamedLayer) {
-            NamedLayer namedLayer = (NamedLayer) layer;
-            this.layer = namedLayer;
-            this.setInitialSLD(this.layer.getSld());
-        } else {
-            this.getEditor().setEnabled(false);
-            this.info("Cannot edit Layer type "
-                    + layer.getClass().getSimpleName());
-        }
-
-        // listen to layers selection change
-        this.layerLegendPanel.addSelectionChangeListener(this);
-
-        if (layerLegendPanel.getLayerViewPanel().getProjectFrame()
-                .getSldEditionLock()) {
-            JPanel panel = new JPanel(new BorderLayout());
-            JLabel label = new JLabel(
-                    "<html><center><font color='red' family='bold' size='+2'>"
-                            + I18N.getString("EditionFrame.SLDInEditionWarningMessage")
-                            + "</font></center></html>");
-
-            label.setBorder(BorderFactory.createEmptyBorder(borderSize,
-                    borderSize, borderSize, borderSize));
-            label.setOpaque(true);
-            label.setBackground(Color.white);
-            panel.add(label, BorderLayout.CENTER);
-            JButton button = new JButton("OK");
-            button.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    StyleEditionExpertFrame.this.dispose();
-                }
-            });
-            panel.add(button, BorderLayout.SOUTH);
-            this.setContentPane(panel);
-            this.setModalityType(ModalityType.APPLICATION_MODAL);
-            this.pack();
-            return;
-
-        } else {
-            this.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    StyleEditionExpertFrame.this.layerLegendPanel
-                            .getLayerViewPanel().getProjectFrame()
-                            .setSldEditionLock(false);
-                }
-            });
-            layerLegendPanel.getLayerViewPanel().getProjectFrame()
-                    .setSldEditionLock(true);
-        }
+        this.initializeGui(false);
 
     }
 
@@ -298,7 +245,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        // center view when the window is displayed
+        // center view on current selected layer when the window is displayed
         this.gotoSelectedLayer();
     }
 
@@ -354,16 +301,102 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
         this.getEditor().setCaretPosition(caret);
     }
 
-    private void initializeGui() {
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                this.getEditionPanel(), this.getDisplayPanel());
-        splitPane.setDividerSize(3);
-        splitPane.setDividerLocation(0.7);
-        splitPane.setResizeWeight(1.);
-        this.getContentPane().add(splitPane, BorderLayout.CENTER);
-        JPanel cmdPanel = new JPanel(new BorderLayout());
-        cmdPanel.add(this.getToolsPanel(), BorderLayout.SOUTH);
-        this.getContentPane().add(cmdPanel, BorderLayout.SOUTH);
+    private void initializeGui(boolean forceEdition) {
+
+        this.getContentPane().removeAll();
+        this.getContentPane().setLayout(new BorderLayout());
+        Layer layer = null;
+        if (this.layerLegendPanel.getSelectedLayers().size() == 1) {
+            layer = this.layerLegendPanel.getSelectedLayers().iterator().next();
+        }
+        if (layer instanceof NamedLayer) {
+            NamedLayer namedLayer = (NamedLayer) layer;
+            this.layer = namedLayer;
+            this.setInitialSLD(this.layer.getSld());
+        } else {
+            this.getEditor().setEnabled(false);
+            this.info("Cannot edit Layer type "
+                    + layer.getClass().getSimpleName());
+        }
+
+        // listen to layers selection change
+        this.layerLegendPanel.addSelectionChangeListener(this);
+
+        if (!forceEdition
+                && this.layerLegendPanel.getLayerViewPanel().getProjectFrame()
+                        .getSldEditionOwners().size() > 0) {
+            JPanel panel = new JPanel(new GridBagLayout());
+            JLabel label = new JLabel(
+                    "<html><center><font color='red' family='bold' size='+2'>"
+                            + I18N.getString("EditionFrame.SLDInEditionWarningMessage")
+                            + "</font></center></html>");
+
+            label.setBorder(BorderFactory.createEmptyBorder(borderSize,
+                    borderSize, borderSize, borderSize));
+            label.setOpaque(true);
+            label.setBackground(Color.white);
+            Insets insets = new Insets(2, 2, 2, 2);
+            panel.add(label, new GridBagConstraints(0, 0, 2, 1, 1, 1,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets,
+                    borderSize, borderSize));
+            JButton buttonOk = new JButton("Close");
+            buttonOk.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    StyleEditionExpertFrame.this.dispose();
+                }
+            });
+            panel.add(buttonOk, new GridBagConstraints(1, 1, 1, 1, 0, 0,
+                    GridBagConstraints.CENTER, GridBagConstraints.NONE, insets,
+                    borderSize, borderSize));
+            JButton buttonForceEdition = new JButton(
+                    "Edit at your own risk anyway");
+            buttonForceEdition.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    StyleEditionExpertFrame.this.initializeGui(true);
+                }
+            });
+            panel.add(buttonForceEdition, new GridBagConstraints(0, 1, 1, 1, 0,
+                    0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                    insets, borderSize, borderSize));
+            this.setContentPane(panel);
+            this.setModalityType(ModalityType.APPLICATION_MODAL);
+            this.pack();
+            return;
+
+        } else {
+            JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                    this.getEditionPanel(), this.getDisplayPanel());
+            splitPane.setDividerSize(3);
+            splitPane.setDividerLocation(0.7);
+            splitPane.setResizeWeight(1.);
+            this.getContentPane().add(splitPane, BorderLayout.CENTER);
+            JPanel cmdPanel = new JPanel(new BorderLayout());
+            cmdPanel.add(this.getToolsPanel(), BorderLayout.SOUTH);
+            this.getContentPane().add(cmdPanel, BorderLayout.SOUTH);
+
+            this.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    StyleEditionExpertFrame.this.layerLegendPanel
+                            .getLayerViewPanel()
+                            .getProjectFrame()
+                            .releaseSldEditionLock(StyleEditionExpertFrame.this);
+                }
+            });
+            this.layerLegendPanel.getLayerViewPanel().getProjectFrame()
+                    .addSldEditionLock(this);
+        }
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                ((JDialog) e.getSource()).dispose();
+            }
+        });
+
         this.setTitle(I18N.getString("StyleEditionFrame.StyleEdition")); //$NON-NLS-1$
         this.pack();
         this.setSize(650, 750);

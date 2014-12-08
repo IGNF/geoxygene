@@ -29,6 +29,9 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -176,12 +179,12 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
     private JButton btnApply;
     private JButton btnValid;
     private JButton btnCancel;
-    private final JTabbedPane tabPane;
-    private final JPanel textStylePanel;
+    private JTabbedPane tabPane;
+    private JPanel textStylePanel;
     private JPanel mainStylePanel;
     private final JPanel graphicStylePanel;
-    private final JPanel infoPanel;
-    private final JTextArea infoTextArea;
+    private JPanel infoPanel;
+    private JTextArea infoTextArea;
 
     // Work variables
     private Color fillColor;
@@ -280,8 +283,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
      */
     public StyleEditionFrame(LayerLegendPanel layerLegendPanel) {
         super(SwingUtilities.getWindowAncestor(layerLegendPanel), I18N
-                .getString("StyleEditionFrame.StyleEdition"),
-                ModalityType.MODELESS);
+                .getString("StyleEditionFrame.StyleEdition"));
         logger.info("StyleEditionFrame");
         this.layerLegendPanel = layerLegendPanel;
         this.layerViewPanel = this.layerLegendPanel.getLayerViewPanel();
@@ -311,52 +313,57 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         } else if (this.layer.getSymbolizer().isPointSymbolizer()) {
             this.initPoint();
         }
+        this.initializeGui(false);
+    }
 
-        // /////////////////////////////////// SYMBOLOGY
-        this.textStylePanel = new JPanel();
-        this.textStylePanel.setLayout(new BoxLayout(this.textStylePanel,
-                BoxLayout.Y_AXIS));
+    private void initializeGui(boolean forceEdition) {
 
-        this.initTextStylePanel();
+        this.getContentPane().removeAll();
+        this.getContentPane().setLayout(new BorderLayout());
 
-        // //////////////////////////////////// INFO
-        this.infoPanel = new JPanel(new BorderLayout());
-        this.infoTextArea = new JTextArea();
-        this.infoPanel.add(new JScrollPane(this.infoTextArea),
-                BorderLayout.CENTER);
-        // //////////////////////////////////// TABBED PANELS
-        this.tabPane = new JTabbedPane();
-        this.tabPane
-                .add(I18N.getString("StyleEditionFrame.Symbology"), this.graphicStylePanel); //$NON-NLS-1$
-        this.tabPane
-                .add(I18N.getString("StyleEditionFrame.Toponyms"), this.textStylePanel); //$NON-NLS-1$
-        this.tabPane.add(
-                I18N.getString("StyleEditionFrame.Info"), this.infoPanel); //$NON-NLS-1$
-        this.tabPane.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                StyleEditionFrame.this.updateInfoPanel();
-
-            }
-        });
-        this.add(this.tabPane);
-
-        // this.addPrimitiveRendererUI(); // see method comments to know what it
-        // is
-        this.addExpressiveRenderingUI();
-
+        // if (layerLegendPanel.getLayerViewPanel().getProjectFrame()
+        // .getSldEditionLock()) {
+        // JPanel panel = new JPanel(new BorderLayout());
+        // JLabel label = new JLabel(
+        // "<html><center><font color='red' family='bold' size='+2'>"
+        // + I18N.getString("EditionFrame.SLDInEditionWarningMessage")
+        // + "</font></center></html>");
+        //
+        // label.setBorder(BorderFactory.createEmptyBorder(borderSize,
+        // borderSize, borderSize, borderSize));
+        // label.setOpaque(true);
+        // label.setBackground(Color.white);
+        // panel.add(label, BorderLayout.CENTER);
+        // JButton button = new JButton("OK");
+        // button.addActionListener(new ActionListener() {
+        //
+        // @Override
+        // public void actionPerformed(ActionEvent e) {
+        // StyleEditionFrame.this.dispose();
+        // }
+        // });
+        // panel.add(button, BorderLayout.SOUTH);
+        // this.setContentPane(panel);
+        // this.setModalityType(ModalityType.APPLICATION_MODAL);
         // this.pack();
-        this.textStylePanel.setSize(600, 500);
-        this.graphicStylePanel.setSize(600, 700);
-        this.setSize(650, 750);
+        // return;
+        //
+        // } else {
+        // this.addWindowListener(new WindowAdapter() {
+        // @Override
+        // public void windowClosed(WindowEvent e) {
+        // StyleEditionFrame.this.layerLegendPanel.getLayerViewPanel()
+        // .getProjectFrame().setSldEditionLock(false);
+        // }
+        // });
+        // layerLegendPanel.getLayerViewPanel().getProjectFrame()
+        // .setSldEditionLock(true);
+        // }
 
-        this.setLocation(200, 200);
-        // this.setAlwaysOnTop(true);
-
-        if (layerLegendPanel.getLayerViewPanel().getProjectFrame()
-                .getSldEditionLock()) {
-            JPanel panel = new JPanel(new BorderLayout());
+        if (!forceEdition
+                && this.layerLegendPanel.getLayerViewPanel().getProjectFrame()
+                        .getSldEditionOwners().size() > 0) {
+            JPanel panel = new JPanel(new GridBagLayout());
             JLabel label = new JLabel(
                     "<html><center><font color='red' family='bold' size='+2'>"
                             + I18N.getString("EditionFrame.SLDInEditionWarningMessage")
@@ -366,32 +373,97 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
                     borderSize, borderSize, borderSize));
             label.setOpaque(true);
             label.setBackground(Color.white);
-            panel.add(label, BorderLayout.CENTER);
-            JButton button = new JButton("OK");
-            button.addActionListener(new ActionListener() {
+            Insets insets = new Insets(2, 2, 2, 2);
+            panel.add(label, new GridBagConstraints(0, 0, 2, 1, 1, 1,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets,
+                    borderSize, borderSize));
+            JButton buttonOk = new JButton("Close");
+            buttonOk.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     StyleEditionFrame.this.dispose();
                 }
             });
-            panel.add(button, BorderLayout.SOUTH);
+            panel.add(buttonOk, new GridBagConstraints(1, 1, 1, 1, 0, 0,
+                    GridBagConstraints.CENTER, GridBagConstraints.NONE, insets,
+                    borderSize, borderSize));
+            JButton buttonForceEdition = new JButton(
+                    "Edit at your own risk anyway");
+            buttonForceEdition.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    StyleEditionFrame.this.initializeGui(true);
+                }
+            });
+            panel.add(buttonForceEdition, new GridBagConstraints(0, 1, 1, 1, 0,
+                    0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                    insets, borderSize, borderSize));
             this.setContentPane(panel);
             this.setModalityType(ModalityType.APPLICATION_MODAL);
             this.pack();
             return;
 
         } else {
+            // /////////////////////////////////// SYMBOLOGY
+            this.textStylePanel = new JPanel();
+            this.textStylePanel.setLayout(new BoxLayout(this.textStylePanel,
+                    BoxLayout.Y_AXIS));
+
+            this.initTextStylePanel();
+
+            // //////////////////////////////////// INFO
+            this.infoPanel = new JPanel(new BorderLayout());
+            this.infoTextArea = new JTextArea();
+            this.infoPanel.add(new JScrollPane(this.infoTextArea),
+                    BorderLayout.CENTER);
+            // //////////////////////////////////// TABBED PANELS
+            this.tabPane = new JTabbedPane();
+            this.tabPane
+                    .add(I18N.getString("StyleEditionFrame.Symbology"), this.graphicStylePanel); //$NON-NLS-1$
+            this.tabPane
+                    .add(I18N.getString("StyleEditionFrame.Toponyms"), this.textStylePanel); //$NON-NLS-1$
+            this.tabPane.add(
+                    I18N.getString("StyleEditionFrame.Info"), this.infoPanel); //$NON-NLS-1$
+            this.tabPane.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    StyleEditionFrame.this.updateInfoPanel();
+
+                }
+            });
+            this.add(this.tabPane);
+
+            this.addExpressiveRenderingUI();
+
             this.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent e) {
                     StyleEditionFrame.this.layerLegendPanel.getLayerViewPanel()
-                            .getProjectFrame().setSldEditionLock(false);
+                            .getProjectFrame()
+                            .releaseSldEditionLock(StyleEditionFrame.this);
                 }
             });
-            layerLegendPanel.getLayerViewPanel().getProjectFrame()
-                    .setSldEditionLock(true);
+            this.layerLegendPanel.getLayerViewPanel().getProjectFrame()
+                    .addSldEditionLock(this);
+
         }
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                ((JDialog) e.getSource()).dispose();
+            }
+        });
+
+        // this.pack();
+        this.textStylePanel.setSize(600, 500);
+        this.graphicStylePanel.setSize(600, 700);
+        this.setSize(650, 750);
+
+        this.setLocation(200, 200);
+        this.setAlwaysOnTop(false);
 
     }
 
@@ -985,16 +1057,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         this.graphicStylePanel.add(this.mainStylePanel, BorderLayout.CENTER);
 
         this.pack();
-        this.pack();
-        this.repaint();
-        this.setVisible(true);
 
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                ((JDialog) e.getSource()).dispose();
-            }
-        });
     }
 
     public void initLine() {
@@ -1115,16 +1178,8 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         this.graphicStylePanel.add(this.mainStylePanel, BorderLayout.CENTER);
 
         this.pack();
-        this.pack();
         this.repaint();
-        this.setVisible(true);
 
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                ((JDialog) e.getSource()).dispose();
-            }
-        });
     }
 
     public void initPoint() {
@@ -1246,16 +1301,8 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         this.graphicStylePanel.add(this.mainStylePanel, BorderLayout.CENTER);
 
         this.pack();
-        this.pack();
         this.repaint();
-        this.setVisible(true);
 
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                ((JDialog) e.getSource()).dispose();
-            }
-        });
     }
 
     /**
