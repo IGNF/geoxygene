@@ -26,9 +26,14 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.style.texture;
 
+import java.awt.Color;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import fr.ign.cogit.geoxygene.style.colorimetry.ColorJaxbAdaptor;
 
 /**
  * 
@@ -53,6 +58,21 @@ public class BinaryGradientImageDescriptor extends TextureDescriptor {
     // size of the bluring filter
     @XmlElement(name = "BlurSize")
     private int blurSize = 2;
+
+    // border color
+    @XmlJavaTypeAdapter(ColorJaxbAdaptor.class)
+    @XmlElement(name = "BorderColor")
+    private Color borderColor = Color.green;
+
+    // color 1
+    @XmlJavaTypeAdapter(ColorJaxbAdaptor.class)
+    @XmlElement(name = "Color1")
+    private Color color1 = Color.white;
+
+    // color 2
+    @XmlJavaTypeAdapter(ColorJaxbAdaptor.class)
+    @XmlElement(name = "Color2")
+    private Color color2 = Color.black;
 
     /**
      * default constructor
@@ -135,16 +155,42 @@ public class BinaryGradientImageDescriptor extends TextureDescriptor {
         this.maxCoastlineLength = maxCoastlineLength;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
+    public Color getBorderColor() {
+        return this.borderColor;
+    }
+
+    public void setBorderColor(Color borderColor) {
+        this.borderColor = borderColor;
+    }
+
+    public Color getColor1() {
+        return this.color1;
+    }
+
+    public void setColor1(Color color1) {
+        this.color1 = color1;
+    }
+
+    public Color getColor2() {
+        return this.color2;
+    }
+
+    public void setColor2(Color color2) {
+        this.color2 = color2;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + this.blurSize;
+        result = prime
+                * result
+                + ((this.borderColor == null) ? 0 : this.borderColor.hashCode());
+        result = prime * result
+                + ((this.color1 == null) ? 0 : this.color1.hashCode());
+        result = prime * result
+                + ((this.color2 == null) ? 0 : this.color2.hashCode());
         long temp;
         temp = Double.doubleToLongBits(this.mapScale);
         result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -155,38 +201,41 @@ public class BinaryGradientImageDescriptor extends TextureDescriptor {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!super.equals(obj)) {
+        if (!super.equals(obj))
             return false;
-        }
-        if (this.getClass() != obj.getClass()) {
+        if (this.getClass() != obj.getClass())
             return false;
-        }
         BinaryGradientImageDescriptor other = (BinaryGradientImageDescriptor) obj;
-        if (this.blurSize != other.blurSize) {
+        if (this.blurSize != other.blurSize)
             return false;
-        }
+        if (this.borderColor == null) {
+            if (other.borderColor != null)
+                return false;
+        } else if (!this.borderColor.equals(other.borderColor))
+            return false;
+        if (this.color1 == null) {
+            if (other.color1 != null)
+                return false;
+        } else if (!this.color1.equals(other.color1))
+            return false;
+        if (this.color2 == null) {
+            if (other.color2 != null)
+                return false;
+        } else if (!this.color2.equals(other.color2))
+            return false;
         if (Double.doubleToLongBits(this.mapScale) != Double
-                .doubleToLongBits(other.mapScale)) {
+                .doubleToLongBits(other.mapScale))
             return false;
-        }
         if (Double.doubleToLongBits(this.maxCoastlineLength) != Double
-                .doubleToLongBits(other.maxCoastlineLength)) {
+                .doubleToLongBits(other.maxCoastlineLength))
             return false;
-        }
         if (Double.doubleToLongBits(this.textureResolution) != Double
-                .doubleToLongBits(other.textureResolution)) {
+                .doubleToLongBits(other.textureResolution))
             return false;
-        }
         return true;
     }
 

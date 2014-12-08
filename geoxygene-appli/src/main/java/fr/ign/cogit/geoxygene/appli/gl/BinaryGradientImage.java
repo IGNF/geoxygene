@@ -979,7 +979,7 @@ public class BinaryGradientImage {
     }
 
     public static BufferedImage toBufferedImageDistance(
-            BinaryGradientImage image, Color c1, Color c2) {
+            BinaryGradientImage image, Color c1, Color c2, Color cborder) {
         image.invalidateUVBounds();
         BufferedImage bi = new BufferedImage(image.getWidth(),
                 image.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -987,7 +987,7 @@ public class BinaryGradientImage {
             for (int x = 0; x < image.getWidth(); x++) {
                 GradientPixel pixel = image.getPixel(x, y);
                 if (pixel.closestFrontier != 0) {
-                    bi.setRGB(x, y, Color.yellow.getRGB());
+                    bi.setRGB(x, y, cborder.getRGB());
                 } else if (pixel.distance == Double.POSITIVE_INFINITY
                         || pixel.distance == Double.MAX_VALUE) {
                     bi.setRGB(x, y, Color.red.getRGB());

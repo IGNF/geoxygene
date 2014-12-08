@@ -167,7 +167,10 @@ public class GradientTextureTask extends AbstractTextureTask<BasicTexture> {
             // BufferedImage image = GradientTextureImage
             // .toBufferedImageUV(texImage);
             BufferedImage image = BinaryGradientImage.toBufferedImageDistance(
-                    texImage, Color.white, Color.red);
+                    texImage, 
+                    this.textureDescriptor.getColor1(), 
+                    this.textureDescriptor.getColor2(), 
+                    this.textureDescriptor.getBorderColor());
 
             // Flip the image vertically
             AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
