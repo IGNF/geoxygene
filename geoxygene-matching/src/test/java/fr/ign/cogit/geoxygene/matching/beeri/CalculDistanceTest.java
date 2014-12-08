@@ -109,6 +109,30 @@ public class CalculDistanceTest {
     popPoint.add(p4);
     d = CalculDistance.deuxiemePlusProcheVoisin(p1, p2, popPoint, 100.0);
     Assert.assertEquals(20.0, d, 0);
+    
+    // ============================================================================
+    // 
+    popPoint = new Population<IFeature>("Point");
+    p2 = new DefaultFeature(new GM_Point(new DirectPosition(0, 10)));
+    p3 = new DefaultFeature(new GM_Point(new DirectPosition(20, 0)));
+    p4 = new DefaultFeature(new GM_Point(new DirectPosition(0, 20)));
+    popPoint.add(p2);
+    popPoint.add(p3);
+    popPoint.add(p4);
+    d = CalculDistance.deuxiemePlusProcheVoisin(p1, p2, popPoint, 7.0);
+    Assert.assertEquals(Double.MAX_VALUE, d, 0);
+    
+    // ============================================================================
+    // 
+    popPoint = new Population<IFeature>("Point");
+    p2 = new DefaultFeature(new GM_Point(new DirectPosition(0, 10)));
+    p3 = new DefaultFeature(new GM_Point(new DirectPosition(20, 0)));
+    p4 = new DefaultFeature(new GM_Point(new DirectPosition(0, 20)));
+    popPoint.add(p2);
+    popPoint.add(p3);
+    popPoint.add(p4);
+    d = CalculDistance.deuxiemePlusProcheVoisin(p1, p2, popPoint, 50.0);
+    Assert.assertEquals(20.0, d, 0);
   }
 
 }

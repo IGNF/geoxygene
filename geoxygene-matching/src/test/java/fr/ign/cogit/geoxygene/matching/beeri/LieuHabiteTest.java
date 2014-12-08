@@ -98,5 +98,44 @@ public class LieuHabiteTest {
     Assert.assertEquals("Nombre de liens trouvés = ", 33, edl.size());
     
   }
+  
+  @Test
+  public void testAppariementProbabilite() {
+    IPopulation<IFeature> popComp = ShapefileReader.read("./data/ign-point/LIEU_DIT_HABITE.shp", "oronyme", null, true);
+    IPopulation<IFeature> popRef = ShapefileReader.read("./data/ign-point/ZONE_HABITAT.shp", "Relief", null, true);
+    Assert.assertEquals("Pop lieu dit habite mal chargee : ", 445, popComp.size());
+    Assert.assertEquals("Pop zone habitat mal chargée : ", 65, popRef.size());
+    
+    double seuilDistance = 50.0;
+    double alpha = 1.1;
+    EnsembleDeLiens edl = AppariementBeeri.appariementProbabilite(popRef, popComp, seuilDistance, alpha);
+    System.out.println(edl.size());
+  }
+  
+  @Test
+  public void testRemplissageMatriceApp() {
+    IPopulation<IFeature> popComp = ShapefileReader.read("./data/ign-point/LIEU_DIT_HABITE.shp", "oronyme", null, true);
+    IPopulation<IFeature> popRef = ShapefileReader.read("./data/ign-point/ZONE_HABITAT.shp", "Relief", null, true);
+    Assert.assertEquals("Pop lieu dit habite mal chargee : ", 445, popComp.size());
+    Assert.assertEquals("Pop zone habitat mal chargée : ", 65, popRef.size());
+    
+    double seuilDistance = 50.0;
+    double alpha = 1.1;
+    EnsembleDeLiens edl = AppariementBeeri.remplissageMatriceApp(popRef, popComp, seuilDistance, alpha);
+    System.out.println(edl.size());
+  }
+
+  @Test
+  public void testAppariementPPVEvalTop() {
+    IPopulation<IFeature> popComp = ShapefileReader.read("./data/ign-point/LIEU_DIT_HABITE.shp", "oronyme", null, true);
+    IPopulation<IFeature> popRef = ShapefileReader.read("./data/ign-point/ZONE_HABITAT.shp", "Relief", null, true);
+    Assert.assertEquals("Pop lieu dit habite mal chargee : ", 445, popComp.size());
+    Assert.assertEquals("Pop zone habitat mal chargée : ", 65, popRef.size());
+    
+    double seuilEcart = 20.0;
+    double seuilDistanceMax = 50.0;
+    EnsembleDeLiens edl = AppariementBeeri.appariementPPVEvalTop(popRef, popComp, seuilEcart, seuilDistanceMax, "NOM", "TOPONYME");
+    System.out.println(edl.size());
+  }
     
 }

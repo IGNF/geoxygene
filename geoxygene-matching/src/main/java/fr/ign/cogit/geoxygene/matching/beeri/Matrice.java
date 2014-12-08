@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.util.string.TraitementChainesDeCaracteres;
 
 public class Matrice {
@@ -34,26 +35,28 @@ public class Matrice {
       this.nbLignes = matriceATraiter.length;
       this.nbColonnes = matriceATraiter[0].length;
   }
-  //matrice pour deux populations d'objets géo
-  public Matrice(IFeatureCollection<?> popRef, IFeatureCollection<?> popComp){
+  
+  // Matrice pour deux populations d'objets géo
+  public Matrice(IPopulation<IFeature> popRef, IPopulation<IFeature> popComp) {
       this.nbLignes = popRef.size()+1 ;
       this.nbColonnes = popComp.size()+1;
       this.valeurs = new double[this.nbLignes][this.nbColonnes];
-      
   }
-  //matrice pour deux strings
-  public Matrice(String ch1, String ch2){
+  
+  // Matrice pour deux strings
+  public Matrice(String ch1, String ch2) {
       this.nbLignes = TraitementChainesDeCaracteres.compteToken(ch1);
       this.nbColonnes = TraitementChainesDeCaracteres.compteToken(ch2);
       this.valeurs = new double[this.nbLignes][this.nbColonnes];
   }
   
-  public Matrice(Set<?> ensemble){
+  public Matrice(Set<?> ensemble) {
       this.nbLignes = 2;//ligne 1 = influence; ligne 2 = passivité;
       this.nbColonnes = ensemble.size();
       this.valeurs = new double[this.nbLignes][this.nbColonnes];
   }
-  //méthode qui calcule la somme des éléments d'une colonne et qui renvoie une liste
+  
+  // Méthode qui calcule la somme des éléments d'une colonne et qui renvoie une liste
   public List<Double> sommeColonneMatriceList() {
       double sommeC;
       List<Double> listSommes =new ArrayList<Double>();
@@ -67,7 +70,8 @@ public class Matrice {
       
       return listSommes;
   }
-  //méthode qui calcule la somme des éléments d'une ligne et qui renvoie une liste
+  
+  // Méthode qui calcule la somme des éléments d'une ligne et qui renvoie une liste
   private List<Double> sommeLigneMatriceList() {
       double sommeL = 0;
       List<Double> listSommes =new ArrayList<Double>();
@@ -81,7 +85,7 @@ public class Matrice {
       return listSommes;
   }
   
-  //méthode qui calcule la somme des éléments d'une colonne et qui renvoie une liste
+  // Méthode qui calcule la somme des éléments d'une colonne et qui renvoie une liste
   public Double sommeLigneMatrice(int ligne) {
       double sommeC=0;
       for ( int j = 0 ; j < this.nbColonnes; j++ ){
