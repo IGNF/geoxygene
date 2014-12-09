@@ -141,21 +141,6 @@ public class BezierTesselator {
                 paperHeightInPixels, paperHeightInCm, mapScale);
     }
 
-    // public static Task tesselateThickLine(String name,
-    // GLPaintingComplex complex, Function1D lineWidth,
-    // Function1D lineShift, Point2d[] polyline, double maxLength,
-    // double minAngle, boolean closedLine, Colorizer colorizer)
-    // throws FunctionEvaluationException {
-    //
-    // if (polyline.length < 2) {
-    // System.err.println("line tesselation does not handle "
-    // + polyline.length + " points counts");
-    // return null;
-    // }
-    // return new LinePaintingTesselatorTask(name, polyline, complex,
-    // lineWidth, lineShift, maxLength, minAngle, colorizer);
-    // }
-
     private static class BezierTesselatorTask extends AbstractTask {
 
         private static final double EPSILON = 1E-3;
@@ -252,9 +237,6 @@ public class BezierTesselator {
                 VectorUtil.copy(p0, outputP);
                 int currentEdgeAndPointIndex = 1; // get to second point
                 while (currentEdgeAndPointIndex < edgeCount - 1) {
-                    // System.err.println("p[" + currentEdgeAndPointIndex +
-                    // "] = "
-                    // + this.polyline[currentEdgeAndPointIndex]);
                     if (this.isStopRequested()) {
                         this.setState(TaskState.STOPPED);
                         return;
@@ -414,30 +396,21 @@ public class BezierTesselator {
                 Point2d pB = new Point2d(p1.x + factorB * nextEdge.x, p1.y
                         + factorB * nextEdge.y);
 
-                // this.createBezierTurn(mesh, pA, pB, edges, normals, uA, uB,
-                // uMax, currentIndex, nextIndex, outputLow, outputP,
-                // outputHigh);
-                this.createAngularSegment(mesh, inputLow, inputHigh, pA, edges,
-                        normals, uParams, uMax, currentIndex, nextIndex,
-                        outputLow, outputHigh);
+                double cosAngle = VectorUtil.dot(currentNormal, nextNormal);
+                if (Math.abs(cosAngle) > 1 - EPSILON) {
+                    this.createStraightSegment(mesh, inputLow, inputHigh, pA,
+                            currentNormal, uMax, uA, uB, outputLow, outputP,
+                            outputHigh);
+                } else {
+                    this.createBezierTurn(mesh, pA, pB, edges, normals, uA, uB,
+                            uMax, currentIndex, nextIndex, outputLow, outputP,
+                            outputHigh);
+                }
+                // this.createAngularSegment(mesh, inputLow, inputHigh, pA,
+                // edges,
+                // normals, uParams, uMax, currentIndex, nextIndex,
+                // outputLow, outputHigh);
                 return (float) uB;
-                // double factorA = (currentLength - this.transitionSize)
-                // / VectorUtil.length(currentEdge);
-                // double factorB = this.transitionSize
-                // / VectorUtil.length(nextEdge);
-                // Point2d pA = new Point2d(p0.x + factorA * currentEdge.x,
-                // p0.y + factorA * currentEdge.y);
-                // Point2d pB = new Point2d(p1.x + factorB * nextEdge.x, p1.y
-                // + factorB * nextEdge.y);
-                // double uA = u0 + (u1 - u0) * factorA;
-                // double uB = u1 + (u2 - u1) * factorB;
-                // this.createStraightSegment(mesh, inputLow, inputHigh, pA,
-                // currentNormal, uMax, u0, uA, outputLow, outputHigh);
-                // this.createBezierTurn(mesh, pA, pB, edges, normals, uA, uB,
-                // uMax, currentIndex, nextIndex, outputLow,
-                // outputHigh);
-                // return (float) uB;
-                // }
 
             }
 
@@ -498,15 +471,6 @@ public class BezierTesselator {
                     / 2, p2.y + sign * n2.x * this.lineWidth / 2);
             Point2d p1low = this.intersection(p0low, n0, p2low, n2);
             Point2d p1high = this.intersection(p0high, n0, p2high, n2);
-            // System.err.println("angle = " + angle);
-            // this.drawLine(g, p0, p0low);
-            // this.drawLine(g, p0low, p1low);
-            // this.drawLine(g, p1low, p2low);
-            // this.drawLine(g, p2low, p2);
-            // this.drawLine(g, p2, p2high);
-            // this.drawLine(g, p2high, p1high);
-            // this.drawLine(g, p1high, p0high);
-            // this.drawLine(g, p0high, p0);
 
             Point2d A = p0low;
             Point2d B = new Point2d();
