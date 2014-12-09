@@ -14,9 +14,12 @@ in vec2 fragmentTextureCoord;
 
 vec4 colorFilter( vec4 col );
 
-// source: http://cairographics.org/operators/
-vec3 multiply( vec3 A, vec3 B ) {
-	return A * B;
+vec3 hightoneBlend( vec3 A, vec3 B ){
+     float beta = 1.0; // a mettre en uniform ?
+     float T = 1.0- A.r; // prendre 1.0 - luminance ?
+
+     float d =1.0+beta*(T-0.5);
+     return B-(B-B*B)*(d-1);
 }
 
 void main(void) {
@@ -36,7 +39,7 @@ void main(void) {
 	
 	float aR = aA + aB * ( 1.0 - aA );
 
-	float f = multiply( xA, xB );
+	float f = hightoneBlend( xA, xB );
 	resultColor = ( 1.0 - aB ) * xaA + ( 1- aA ) * xaB + aA * aB * f; 	
 	if ( aR > 0.001 ) resultColor /= aR;
 
