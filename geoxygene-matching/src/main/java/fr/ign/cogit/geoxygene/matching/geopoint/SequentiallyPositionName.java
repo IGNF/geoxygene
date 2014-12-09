@@ -7,7 +7,6 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.matching.beeri.AppariementBeeri;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.index.Tiling;

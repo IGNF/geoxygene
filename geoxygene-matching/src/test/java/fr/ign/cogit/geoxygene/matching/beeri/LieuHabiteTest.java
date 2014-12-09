@@ -125,17 +125,6 @@ public class LieuHabiteTest {
     System.out.println(edl.size());
   }
 
-  @Test
-  public void testAppariementPPVEvalTop() {
-    IPopulation<IFeature> popComp = ShapefileReader.read("./data/ign-point/LIEU_DIT_HABITE.shp", "oronyme", null, true);
-    IPopulation<IFeature> popRef = ShapefileReader.read("./data/ign-point/ZONE_HABITAT.shp", "Relief", null, true);
-    Assert.assertEquals("Pop lieu dit habite mal chargee : ", 445, popComp.size());
-    Assert.assertEquals("Pop zone habitat mal chargée : ", 65, popRef.size());
-    
-    double seuilEcart = 20.0;
-    double seuilDistanceMax = 50.0;
-    EnsembleDeLiens edl = AppariementBeeri.appariementPPVEvalTop(popRef, popComp, seuilEcart, seuilDistanceMax, "NOM", "TOPONYME");
-    Assert.assertEquals("Nombre de liens trouvés = ", 33, edl.size());
-  }
+  
     
 }
