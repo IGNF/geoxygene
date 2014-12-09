@@ -1,7 +1,6 @@
 package fr.ign.cogit.geoxygene.matching.geopoint;
 
 import org.apache.log4j.Logger;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
@@ -90,16 +89,16 @@ public class SequentiallyPositionName {
       ligne.addControlPoint(((GM_Point) candidatRetenu.getGeom()).getPosition());
       lien.setGeom(ligne);
       
-      String oronyme = candidatRetenu.getAttribute(attributeRef).toString();
-      oronyme = AM.processAccent(oronyme);
-      String toponyme = objetRef.getAttribute(attributeComp).toString();
-      toponyme = AM.processAccent(toponyme);
+      String featureComp = candidatRetenu.getAttribute(attributeComp).toString();
+      featureComp = AM.processAccent(featureComp);
+      String featureRef = objetRef.getAttribute(attributeRef).toString();
+      featureRef = AM.processAccent(featureRef);
       
-      int ecart = AM.match(toponyme, oronyme);
-      int ecartRelatif = 100 * ecart / Math.max(toponyme.length(), oronyme.length());
-      if (ecart <= seuilEcart || oronyme.startsWith(toponyme)) {
+      int ecart = AM.match(featureRef, featureComp);
+      int ecartRelatif = 100 * ecart / Math.max(featureRef.length(), featureComp.length());
+      if (ecart <= seuilEcart || featureComp.startsWith(featureRef)) {
         if (ecartRelatif > 50) {
-          if (oronyme.startsWith(toponyme) || oronyme.endsWith(toponyme)) {
+          if (featureComp.startsWith(featureRef) || featureComp.endsWith(featureRef)) {
             lien.setEvaluation(0.5);
           } else {
             lien.setEvaluation(0);
@@ -115,6 +114,7 @@ public class SequentiallyPositionName {
     
     return liens;
   }
+ 
  
 
 }
