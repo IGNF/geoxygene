@@ -6,7 +6,6 @@ import org.junit.Test;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
-import fr.ign.cogit.geoxygene.matching.beeri.AppariementBeeri;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 public class PositionNameTest {
