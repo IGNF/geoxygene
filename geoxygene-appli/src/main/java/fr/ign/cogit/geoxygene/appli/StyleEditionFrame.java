@@ -2181,6 +2181,8 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
     }
 
     public void reset() {
+        logger.warn("Fields are copied manually, so expressive fields are not handled yet (please ask the dev. team to implement clonable SLD elements !)");
+
         Symbolizer symbolizer = this.layer.getStyles().get(0).getSymbolizer();
 
         // Reset style modifications using the initialSLD.
