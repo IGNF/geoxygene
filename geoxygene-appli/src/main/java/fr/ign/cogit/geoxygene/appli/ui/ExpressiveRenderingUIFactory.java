@@ -34,6 +34,7 @@ import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.texture.BinaryGradientImageDescriptor;
 
 /**
  * @author JeT
@@ -123,9 +124,24 @@ public class ExpressiveRenderingUIFactory {
         if (descriptor instanceof GradientSubshaderDescriptor) {
             GradientSubshaderDescriptor gradientDescriptor = (GradientSubshaderDescriptor) descriptor;
             return getExpressiveRenderingUI(gradientDescriptor, projectFrame);
+        } else if (descriptor instanceof BinaryGradientImageDescriptor) {
+            return getExpressiveRenderingUI(
+                    (BinaryGradientImageDescriptor) descriptor, projectFrame);
         }
 
         return new NoExpressiveRenderingUI(descriptor, projectFrame);
+    }
+
+    /**
+     * Create a stroke texture Rendering UI
+     * 
+     * @param descriptor
+     * @return
+     */
+    private static BinaryGradientImageUI getExpressiveRenderingUI(
+            final BinaryGradientImageDescriptor descriptor,
+            ProjectFrame projectFrame) {
+        return new BinaryGradientImageUI(descriptor, projectFrame);
     }
 
     /**
