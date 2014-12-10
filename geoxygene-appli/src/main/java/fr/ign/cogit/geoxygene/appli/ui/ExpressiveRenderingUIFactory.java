@@ -57,6 +57,9 @@ public class ExpressiveRenderingUIFactory {
      */
     public static ExpressiveRenderingUI getExpressiveRenderingUI(
             ExpressiveRenderingDescriptor descriptor, ProjectFrame projectFrame) {
+        if (descriptor == null) {
+            return null;
+        }
         if (descriptor instanceof StrokeExpressiveRenderingDescriptor) {
             return getStrokeExpressiveRenderingUI(
                     (StrokeExpressiveRenderingDescriptor) descriptor,

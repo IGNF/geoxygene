@@ -27,7 +27,9 @@
 
 package fr.ign.cogit.geoxygene.util;
 
+import java.io.File;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,184 +37,264 @@ import java.util.Stack;
 
 /**
  * This class gathers static methods to ease reflection procedures.
+ * 
  * @author GTouya
  * 
  */
 public class ReflectionUtil {
 
-  /**
-   * Get all the superclasses of a given class.
-   * @param classObj
-   * @return
-   */
-  public static Set<Class<?>> getSuperClasses(Class<?> classObj) {
-    Set<Class<?>> classList = new HashSet<Class<?>>();
-    Class<?> superclass = classObj.getSuperclass();
-    classList.add(superclass);
-    while (superclass != null) {
-      superclass = superclass.getSuperclass();
-      classList.add(superclass);
-    }
-    return classList;
-  }
-
-  /**
-   * Get all the superclasses and interfaces of a given class.
-   * @param classObj
-   * @return
-   */
-  public static Set<Class<?>> getSuperClassesAndInterfaces(Class<?> classObj) {
-    Set<Class<?>> classList = new HashSet<Class<?>>();
-    // first get the superclasses
-    Class<?> superclass = classObj.getSuperclass();
-    if (superclass != null) {
-      classList.add(superclass);
-    }
-    while (superclass != null) {
-      superclass = superclass.getSuperclass();
-      if (superclass != null) {
+    /**
+     * Get all the superclasses of a given class.
+     * 
+     * @param classObj
+     * @return
+     */
+    public static Set<Class<?>> getSuperClasses(Class<?> classObj) {
+        Set<Class<?>> classList = new HashSet<Class<?>>();
+        Class<?> superclass = classObj.getSuperclass();
         classList.add(superclass);
-      }
-    }
-
-    // then get the interfaces
-    Stack<Class<?>> stack = new Stack<Class<?>>();
-    for (Class<?> c : classObj.getInterfaces()) {
-      stack.add(c);
-    }
-    while (!stack.isEmpty()) {
-      Class<?> current = stack.pop();
-      classList.add(current);
-      for (Class<?> c : current.getInterfaces()) {
-        if (!classList.contains(c)) {
-          stack.add(c);
+        while (superclass != null) {
+            superclass = superclass.getSuperclass();
+            classList.add(superclass);
         }
-      }
+        return classList;
     }
 
-    return classList;
-  }
-
-  /**
-   * Get the method of a class declared in the class or in its superclasses.
-   * Returns null when method isn't found.
-   * @param classObj
-   * @param methodName
-   * @param parameterTypes
-   * @return
-   * @throws SecurityException
-   */
-  public static Method getInheritedMethod(Class<?> classObj, String methodName,
-      Class<?>... parameterTypes) throws SecurityException {
-    Class<?> currentClass = classObj;
-    boolean found = false;
-    while (!found) {
-      try {
-        Method meth = currentClass
-            .getDeclaredMethod(methodName, parameterTypes);
-        return meth;
-      } catch (NoSuchMethodException e) {
-        if (currentClass.equals(Object.class)) {
-          return null;
+    /**
+     * Get all the superclasses and interfaces of a given class.
+     * 
+     * @param classObj
+     * @return
+     */
+    public static Set<Class<?>> getSuperClassesAndInterfaces(Class<?> classObj) {
+        Set<Class<?>> classList = new HashSet<Class<?>>();
+        // first get the superclasses
+        Class<?> superclass = classObj.getSuperclass();
+        if (superclass != null) {
+            classList.add(superclass);
         }
-        currentClass = currentClass.getSuperclass();
-      }
-    }
-    return null;
-  }
+        while (superclass != null) {
+            superclass = superclass.getSuperclass();
+            if (superclass != null) {
+                classList.add(superclass);
+            }
+        }
 
-  /**
-   * Determine the depth of inheritance between a super class (baseClass) and
-   * one of its sub classes (subClass). It corresponds to the number
-   * inheritances in the OO hierarchy of classes (and interfaces) between both
-   * classes (e.g. 1 for direct inheritance).
-   * 
-   * @param baseClass
-   * @param subClass
-   * @return the depth of inheritance (-1 if baseClass is not assignable from
-   *         subClass)
-   */
-  public static int getInheritanceDepth(Class<?> baseClass, Class<?> subClass) {
-    if (!baseClass.isAssignableFrom(subClass))
-      return -1;
-    if (baseClass.equals(subClass))
-      return 0;
-    // direct inheritance case
-    if (ReflectionUtil.isDirectBaseClass(baseClass, subClass))
-      return 1;
+        // then get the interfaces
+        Stack<Class<?>> stack = new Stack<Class<?>>();
+        for (Class<?> c : classObj.getInterfaces()) {
+            stack.add(c);
+        }
+        while (!stack.isEmpty()) {
+            Class<?> current = stack.pop();
+            classList.add(current);
+            for (Class<?> c : current.getInterfaces()) {
+                if (!classList.contains(c)) {
+                    stack.add(c);
+                }
+            }
+        }
 
-    // general case
-    int level = 1;
-    boolean direct = false;
-    Set<Class<?>> baseClasses = getSuperClassesAndInterfaces(subClass);
-    while (direct) {
-      Set<Class<?>> loopSet = new HashSet<Class<?>>(baseClasses);
-      baseClasses.clear();
-      for (Class<?> bClass : loopSet) {
-        if (ReflectionUtil.isDirectBaseClass(bClass, baseClass))
-          break;
-        baseClasses.addAll(getSuperClassesAndInterfaces(bClass));
-      }
-      level++;
+        return classList;
     }
-    return level;
-  }
 
-  /**
-   * Determine if a class object (baseClass) is a direct base class in the OO
-   * sense of another class (subClass). In Java, it means that baseClass is the
-   * superclass or one of the implemented interfaces of subClass.
-   * @param baseClass
-   * @param subClass
-   * @return
-   */
-  public static boolean isDirectBaseClass(Class<?> baseClass, Class<?> subClass) {
-    if (baseClass.equals(subClass.getSuperclass()))
-      return true;
-    for (Class<?> interfaceObj : subClass.getInterfaces()) {
-      if (interfaceObj.equals(baseClass))
-        return true;
+    /**
+     * Get the method of a class declared in the class or in its superclasses.
+     * Returns null when method isn't found.
+     * 
+     * @param classObj
+     * @param methodName
+     * @param parameterTypes
+     * @return
+     * @throws SecurityException
+     */
+    public static Method getInheritedMethod(Class<?> classObj,
+            String methodName, Class<?>... parameterTypes)
+            throws SecurityException {
+        Class<?> currentClass = classObj;
+        boolean found = false;
+        while (!found) {
+            try {
+                Method meth = currentClass.getDeclaredMethod(methodName,
+                        parameterTypes);
+                return meth;
+            } catch (NoSuchMethodException e) {
+                if (currentClass.equals(Object.class)) {
+                    return null;
+                }
+                currentClass = currentClass.getSuperclass();
+            }
+        }
+        return null;
     }
-    return false;
-  }
 
-  /**
-   * Return all getters of a given class that have their return type contained
-   * in the paramater collection of accepted types.
-   * @param classObj
-   * @param types
-   * @return
-   */
-  public static Collection<Method> getAllGetters(Class<?> classObj,
-      Collection<Class<?>> types) {
-    Collection<Method> methods = new HashSet<Method>();
-    for (Method meth : classObj.getMethods()) {
-      if (!meth.getName().startsWith("get"))
-        continue;
-      if (types.contains(meth.getReturnType()))
-        methods.add(meth);
-    }
-    return methods;
-  }
+    /**
+     * Determine the depth of inheritance between a super class (baseClass) and
+     * one of its sub classes (subClass). It corresponds to the number
+     * inheritances in the OO hierarchy of classes (and interfaces) between both
+     * classes (e.g. 1 for direct inheritance).
+     * 
+     * @param baseClass
+     * @param subClass
+     * @return the depth of inheritance (-1 if baseClass is not assignable from
+     *         subClass)
+     */
+    public static int getInheritanceDepth(Class<?> baseClass, Class<?> subClass) {
+        if (!baseClass.isAssignableFrom(subClass)) {
+            return -1;
+        }
+        if (baseClass.equals(subClass)) {
+            return 0;
+        }
+        // direct inheritance case
+        if (ReflectionUtil.isDirectBaseClass(baseClass, subClass)) {
+            return 1;
+        }
 
-  /**
-   * When working with String class names, returns true if a collection contains
-   * a given class name or the names of one superclass of the given class name.
-   * @param classNames
-   * @param className
-   * @return
-   * @throws ClassNotFoundException
-   */
-  public static boolean containsClassOrSuper(Collection<String> classNames,
-      String className) throws ClassNotFoundException {
-    if (classNames.contains(className))
-      return true;
-    Class<?> classToCompare = Class.forName(className);
-    for (String name : classNames) {
-      Class<?> currentClass = Class.forName(name);
-      if (currentClass.isAssignableFrom(classToCompare))
-        return true;
+        // general case
+        int level = 1;
+        boolean direct = false;
+        Set<Class<?>> baseClasses = getSuperClassesAndInterfaces(subClass);
+        while (direct) {
+            Set<Class<?>> loopSet = new HashSet<Class<?>>(baseClasses);
+            baseClasses.clear();
+            for (Class<?> bClass : loopSet) {
+                if (ReflectionUtil.isDirectBaseClass(bClass, baseClass)) {
+                    break;
+                }
+                baseClasses.addAll(getSuperClassesAndInterfaces(bClass));
+            }
+            level++;
+        }
+        return level;
     }
-    return false;
-  }
+
+    /**
+     * Determine if a class object (baseClass) is a direct base class in the OO
+     * sense of another class (subClass). In Java, it means that baseClass is
+     * the superclass or one of the implemented interfaces of subClass.
+     * 
+     * @param baseClass
+     * @param subClass
+     * @return
+     */
+    public static boolean isDirectBaseClass(Class<?> baseClass,
+            Class<?> subClass) {
+        if (baseClass.equals(subClass.getSuperclass())) {
+            return true;
+        }
+        for (Class<?> interfaceObj : subClass.getInterfaces()) {
+            if (interfaceObj.equals(baseClass)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Return all getters of a given class that have their return type contained
+     * in the paramater collection of accepted types.
+     * 
+     * @param classObj
+     * @param types
+     * @return
+     */
+    public static Collection<Method> getAllGetters(Class<?> classObj,
+            Collection<Class<?>> types) {
+        Collection<Method> methods = new HashSet<Method>();
+        for (Method meth : classObj.getMethods()) {
+            if (!meth.getName().startsWith("get")) {
+                continue;
+            }
+            if (types.contains(meth.getReturnType())) {
+                methods.add(meth);
+            }
+        }
+        return methods;
+    }
+
+    /**
+     * When working with String class names, returns true if a collection
+     * contains a given class name or the names of one superclass of the given
+     * class name.
+     * 
+     * @param classNames
+     * @param className
+     * @return
+     * @throws ClassNotFoundException
+     */
+    public static boolean containsClassOrSuper(Collection<String> classNames,
+            String className) throws ClassNotFoundException {
+        if (classNames.contains(className)) {
+            return true;
+        }
+        Class<?> classToCompare = Class.forName(className);
+        for (String name : classNames) {
+            Class<?> currentClass = Class.forName(name);
+            if (currentClass.isAssignableFrom(classToCompare)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Scan a package for class implementation of a given interface. It scans
+     * the files contained in the pkgname. It returns the class names which are
+     * implementing the interface AND has a default empty constructor
+     * 
+     * @param pckgname
+     */
+    public static Set<String> findImplementations(String pckgname,
+            Class<?> baseClass) {
+        Set<String> implementations = new HashSet<String>();
+        // Code from JWhich
+        // ======
+        // Translate the package name into an absolute path
+        String name = new String(pckgname);
+        if (!name.startsWith("/")) {
+            name = "/" + name;
+        }
+        name = name.replace('.', '/');
+
+        // Get a File object for the package
+        URL url = ReflectionUtil.class.getResource(name);
+        File directory = new File(url.getFile());
+        if (directory.exists()) {
+            File[] files = directory.listFiles();
+            // Get the list of the files contained in the package
+            for (File file : files) {
+                String filename = file.getName();
+                if (file.isDirectory()) {
+                    implementations.addAll(findImplementations(pckgname + "."
+                            + filename, baseClass));
+                } else {
+                    // we are only interested in .class files
+                    if (filename.endsWith(".class")) {
+                        // removes the .class extension
+                        String classname = filename.substring(0,
+                                filename.length() - 6);
+                        try {
+                            // Try to create an instance of the object
+                            Object o = Class
+                                    .forName(pckgname + "." + classname)
+                                    .newInstance();
+                            if (baseClass.isAssignableFrom(o.getClass())) {
+                                implementations.add(classname);
+                            }
+                        } catch (ClassNotFoundException cnfex) {
+                            System.err.println(cnfex);
+                        } catch (InstantiationException iex) {
+                            // We try to instantiate an interface
+                            // or an object that does not have a
+                            // default constructor
+                        } catch (IllegalAccessException iaex) {
+                            // The class is not public
+                        }
+                    }
+                }
+            }
+        }
+        return implementations;
+    }
 }

@@ -70,13 +70,15 @@ public class Fill {
         this.graphicFill = graphicFill;
     }
 
+    // this field is set as public intentionally. It is due to reflection search
+    // in tags that
     @XmlElements({
             @XmlElement(name = "PerlinNoiseTexture", type = PerlinNoiseTextureDescriptor.class),
             @XmlElement(name = "BasicTexture", type = BasicTextureDescriptor.class),
             @XmlElement(name = "GradientTexture", type = BinaryGradientImageDescriptor.class),
             @XmlElement(name = "ExpressiveGradient", type = GradientSubshaderDescriptor.class),
             @XmlElement(name = "TileDistributionTexture", type = TileDistributionTextureDescriptor.class) })
-    private Fill2DDescriptor fill2dDescriptor = null;
+    public Fill2DDescriptor fill2dDescriptor = null;
 
     /**
      * Renvoie la texture.

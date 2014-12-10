@@ -44,7 +44,10 @@ import java.awt.image.BufferedImage;
 import java.io.CharArrayReader;
 import java.io.CharArrayWriter;
 import java.io.Reader;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -74,6 +77,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 
 import org.apache.log4j.Logger;
 
@@ -89,6 +94,7 @@ import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.appli.ui.ExpressiveRenderingUI;
 import fr.ign.cogit.geoxygene.appli.ui.ExpressiveRenderingUIFactory;
 import fr.ign.cogit.geoxygene.feature.DataSet;
+import fr.ign.cogit.geoxygene.style.AbstractSymbolizer;
 import fr.ign.cogit.geoxygene.style.CategorizedMap;
 import fr.ign.cogit.geoxygene.style.ColorMap;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
@@ -106,11 +112,13 @@ import fr.ign.cogit.geoxygene.style.PointPlacement;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Rule;
+import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.TextSymbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.TextureDescriptor;
 
 /**
@@ -126,6 +134,8 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
     private static final String CR = System.getProperty("line.separator");
 
     private static final int borderSize = 20;
+
+    private static final String NO_EXPRESSIVE_TAG = "No expressive description";
 
     private static Logger logger = Logger.getLogger(StyleEditionFrame.class
             .getName());
@@ -274,6 +284,11 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
     private JLabel textPreviewLabel;
     private JComboBox placements;
     private JCheckBox repeatBtn;
+
+    private JComboBox expressiveStrokeComboBox;
+    private JComboBox expressiveFillComboBox;
+    private final JScrollPane fillExpressiveScrollPane = new JScrollPane();
+    private final JScrollPane strokeExpressiveScrollPane = new JScrollPane();
 
     /**
      * Style Edition Main Frame.
@@ -436,7 +451,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
             });
             this.add(this.tabPane);
 
-            this.addExpressiveRenderingUI();
+            this.addOrReplaceExpressiveRenderingUI();
 
             this.addWindowListener(new WindowAdapter() {
                 @Override
@@ -544,32 +559,27 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         this.infoTextArea.setText(str.toString());
     }
 
-    private void addExpressiveRenderingUI() {
+    private void addOrReplaceExpressiveRenderingUI() {
         if (this.tabPane == null) {
             throw new IllegalStateException(
                     "this method can only be called after tabPane creation");
         }
+        String tabTooltip = "";
+        this.tabPane.remove(this.fillExpressiveScrollPane);
+        this.tabPane.remove(this.strokeExpressiveScrollPane);
         // Stroke Expressive UI
         ExpressiveRenderingUI ui = null;
-        if (this.layer.getSymbolizer().isPolygonSymbolizer()
-                && ((PolygonSymbolizer) (this.layer.getSymbolizer()))
-                        .getStroke().getExpressiveRendering() != null) {
-            PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.layer
-                    .getSymbolizer();
+        StrokeExpressiveRenderingDescriptor expressiveStroke = ((AbstractSymbolizer) (this.layer
+                .getSymbolizer())).getStroke().getExpressiveRendering();
+        if (expressiveStroke != null) {
             ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
-                    polygonSymbolizer.getStroke().getExpressiveRendering(),
-                    this.layerViewPanel.getProjectFrame());
-        } else if (this.layer.getSymbolizer().isLineSymbolizer()
-                && ((LineSymbolizer) (this.layer.getSymbolizer())).getStroke()
-                        .getExpressiveRendering() != null) {
-            LineSymbolizer lineSymbolizer = (LineSymbolizer) this.layer
-                    .getSymbolizer();
-            ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
-                    lineSymbolizer.getStroke().getExpressiveRendering(),
-                    this.layerViewPanel.getProjectFrame());
+                    expressiveStroke, this.layerViewPanel.getProjectFrame());
+            tabTooltip = expressiveStroke.getClass().getSimpleName();
         }
         if (ui != null) {
-            this.tabPane.add("Expressive Stroke", new JScrollPane(ui.getGui()));
+            this.strokeExpressiveScrollPane.setViewportView(ui.getGui());
+            this.tabPane.addTab("Expressive Stroke", null,
+                    this.strokeExpressiveScrollPane, tabTooltip);
         }
         // Fill expressive UI
         ui = null;
@@ -578,12 +588,18 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
                         .getFill2DDescriptor() != null) {
             PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.layer
                     .getSymbolizer();
-            ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
-                    polygonSymbolizer.getFill().getFill2DDescriptor(),
-                    this.layerViewPanel.getProjectFrame());
+            Fill2DDescriptor expressiveFill = polygonSymbolizer.getFill()
+                    .getFill2DDescriptor();
+            if (expressiveFill != null) {
+                ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
+                        expressiveFill, this.layerViewPanel.getProjectFrame());
+                tabTooltip = expressiveFill.getClass().getSimpleName();
+            }
         }
         if (ui != null) {
-            this.tabPane.add("Expressive Fill", new JScrollPane(ui.getGui()));
+            this.fillExpressiveScrollPane.setViewportView(ui.getGui());
+            this.tabPane.addTab("Expressive Fill", null,
+                    this.fillExpressiveScrollPane, tabTooltip);
         }
     }
 
@@ -979,7 +995,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         fillTitleBorder.setTitle(I18N
                 .getString("StyleEditionFrame.PolygonFill")); //$NON-NLS-1$
         this.fillPanel.setBorder(fillTitleBorder);
-        this.fillPanel.setPreferredSize(new Dimension(420, 200));
+        this.fillPanel.setPreferredSize(new Dimension(420, 150));
 
         PolygonSymbolizer symbolizer = (PolygonSymbolizer) this.layer
                 .getStyles().get(0).getSymbolizer();
@@ -1008,7 +1024,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         strokeTitleBorder.setTitle(I18N
                 .getString("StyleEditionFrame.PolygonStroke")); //$NON-NLS-1$
         this.strokePanel.setBorder(strokeTitleBorder);
-        this.strokePanel.setPreferredSize(new Dimension(420, 200));
+        this.strokePanel.setPreferredSize(new Dimension(420, 250));
 
         this.strokeColor = ((PolygonSymbolizer) this.layer.getStyles().get(0)
                 .getSymbolizer()).getStroke().getStroke();
@@ -1030,6 +1046,8 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         this.strokePanel.add(this.createJoinCapPanel(this.strokeLineJoin,
                 this.strokeLineCap));
 
+        this.strokePanel.add(this.getExpressiveStrokeComboBox());
+
         this.mainStylePanel = new JPanel();
         this.mainStylePanel.setLayout(new BoxLayout(this.mainStylePanel,
                 BoxLayout.Y_AXIS));
@@ -1037,6 +1055,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         titleLabel.setAlignmentX(LEFT_ALIGNMENT);
         this.mainStylePanel.add(titleLabel);
 
+        this.fillPanel.add(this.getExpressiveFillComboBox());
         this.fillPanel.setAlignmentX(LEFT_ALIGNMENT);
         this.mainStylePanel.add(this.fillPanel);
 
@@ -1058,6 +1077,209 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
 
         this.pack();
 
+    }
+
+    private JComboBox getExpressiveStrokeComboBox() {
+        if (this.expressiveStrokeComboBox == null) {
+            Vector<XmlElement> descriptors = new Vector<XmlElement>();
+            final String fieldName = "expressiveRendering";
+            Class<Stroke> strokeClass = Stroke.class;
+            XmlElement currentSelectedObject = null;
+            try {
+                // Check field class type
+                Field field = strokeClass.getField(fieldName);
+                if (!field.getType().equals(
+                        StrokeExpressiveRenderingDescriptor.class)) {
+                    logger.error(fieldName
+                            + " field from "
+                            + strokeClass.getSimpleName()
+                            + " is intended to be of type 'StrokeExpressiveRenderingDescriptor' not "
+                            + field.getType().getSimpleName());
+                    this.expressiveStrokeComboBox = new JComboBox();
+                    return this.expressiveStrokeComboBox;
+                }
+                StrokeExpressiveRenderingDescriptor currentStroke = ((AbstractSymbolizer) StyleEditionFrame.this.layer
+                        .getStyles().get(0).getSymbolizer()).getStroke()
+                        .getExpressiveRendering();
+                Class<?> currentExpressiveStrokeClass = currentStroke == null ? null
+                        : currentStroke.getClass();
+                // get XmlElements annotations
+                for (Annotation annotation : field.getDeclaredAnnotations()) {
+                    if (annotation instanceof XmlElements) {
+                        XmlElements elts = (XmlElements) annotation;
+                        for (XmlElement elt : elts.value()) {
+                            descriptors.add(elt);
+                            if (elt.type().equals(currentExpressiveStrokeClass)) {
+                                currentSelectedObject = elt;
+                            }
+                        }
+                    } else {
+                        logger.warn(fieldName
+                                + " field from "
+                                + strokeClass.getSimpleName()
+                                + " is intended to have only '@XmlElements' annotation. Ignore '@"
+                                + annotation.annotationType().getSimpleName()
+                                + "' annotation");
+                    }
+
+                }
+            } catch (NoSuchFieldException e) {
+                logger.error("Field '" + fieldName
+                        + "' does not exist in class " + strokeClass.getName());
+            } catch (SecurityException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            descriptors.add(null);
+            this.expressiveStrokeComboBox = new JComboBox(descriptors);
+            this.expressiveStrokeComboBox
+                    .setSelectedItem(currentSelectedObject);
+            this.expressiveStrokeComboBox
+                    .setRenderer(new ListCellRenderer<XmlElement>() {
+                        private final JLabel label = new JLabel();
+
+                        @Override
+                        public Component getListCellRendererComponent(
+                                JList<? extends XmlElement> list,
+                                XmlElement value, int index,
+                                boolean isSelected, boolean cellHasFocus) {
+
+                            this.label
+                                    .setText(value == null ? NO_EXPRESSIVE_TAG
+                                            : value.name());
+                            return this.label;
+                        }
+                    });
+            this.expressiveStrokeComboBox
+                    .addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            XmlElement elt = (XmlElement) StyleEditionFrame.this.expressiveStrokeComboBox
+                                    .getSelectedItem();
+                            StrokeExpressiveRenderingDescriptor expressiveStroke;
+                            try {
+                                expressiveStroke = elt == null ? null
+                                        : (StrokeExpressiveRenderingDescriptor) elt
+                                                .type().newInstance();
+                                // Updating the layer style
+                                AbstractSymbolizer abstractSymbolizer = (AbstractSymbolizer) StyleEditionFrame.this.layer
+                                        .getStyles().get(0).getSymbolizer();
+                                abstractSymbolizer.getStroke()
+                                        .setExpressiveRendering(
+                                                expressiveStroke);
+                                StyleEditionFrame.this.updateExpressivePanel();
+                            } catch (InstantiationException e1) {
+                                e1.printStackTrace();
+                            } catch (IllegalAccessException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+
+                    });
+        }
+        return this.expressiveStrokeComboBox;
+    }
+
+    private JComboBox getExpressiveFillComboBox() {
+        if (this.expressiveFillComboBox == null) {
+            Vector<XmlElement> descriptors = new Vector<XmlElement>();
+            final String fieldName = "fill2dDescriptor";
+            Class<Fill> fillClass = Fill.class;
+            XmlElement currentSelectedObject = null;
+            try {
+                // Check field class type
+                Field field = fillClass.getField(fieldName);
+                if (!field.getType().equals(Fill2DDescriptor.class)) {
+                    logger.error(fieldName
+                            + " field from "
+                            + fillClass.getSimpleName()
+                            + " is intended to be of type 'Fill2DDescriptor' not "
+                            + field.getType().getSimpleName());
+                    this.expressiveFillComboBox = new JComboBox();
+                    return this.expressiveFillComboBox;
+                }
+                Fill2DDescriptor currentFill = ((PolygonSymbolizer) StyleEditionFrame.this.layer
+                        .getStyles().get(0).getSymbolizer()).getFill()
+                        .getFill2DDescriptor();
+                Class<?> currentExpressiveFillClass = currentFill == null ? null
+                        : currentFill.getClass();
+                // get XmlElements annotations
+                for (Annotation annotation : field.getDeclaredAnnotations()) {
+                    if (annotation instanceof XmlElements) {
+                        XmlElements elts = (XmlElements) annotation;
+                        for (XmlElement elt : elts.value()) {
+                            descriptors.add(elt);
+                            if (elt.type().equals(currentExpressiveFillClass)) {
+                                currentSelectedObject = elt;
+                            }
+                        }
+                    } else {
+                        logger.warn(fieldName
+                                + " field from "
+                                + fillClass.getSimpleName()
+                                + " is intended to have only '@XmlElements' annotation. Ignore '@"
+                                + annotation.annotationType().getSimpleName()
+                                + "' annotation");
+                    }
+
+                }
+            } catch (NoSuchFieldException e) {
+                logger.error("Field '" + fieldName
+                        + "' does not exist in class " + fillClass.getName());
+            } catch (SecurityException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            descriptors.add(null);
+            this.expressiveFillComboBox = new JComboBox(descriptors);
+            this.expressiveFillComboBox.setSelectedItem(currentSelectedObject);
+            this.expressiveFillComboBox
+                    .setRenderer(new ListCellRenderer<XmlElement>() {
+                        private final JLabel label = new JLabel();
+
+                        @Override
+                        public Component getListCellRendererComponent(
+                                JList<? extends XmlElement> list,
+                                XmlElement value, int index,
+                                boolean isSelected, boolean cellHasFocus) {
+
+                            this.label
+                                    .setText(value == null ? NO_EXPRESSIVE_TAG
+                                            : value.name());
+                            return this.label;
+                        }
+                    });
+            this.expressiveFillComboBox.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    XmlElement elt = (XmlElement) StyleEditionFrame.this.expressiveFillComboBox
+                            .getSelectedItem();
+                    Fill2DDescriptor expressiveFill;
+                    try {
+                        expressiveFill = elt == null ? null
+                                : (Fill2DDescriptor) elt.type().newInstance();
+                        // Updating the layer style
+                        PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) StyleEditionFrame.this.layer
+                                .getStyles().get(0).getSymbolizer();
+                        polygonSymbolizer.getFill().setFill2DDescriptor(
+                                expressiveFill);
+                        StyleEditionFrame.this.updateExpressivePanel();
+                    } catch (InstantiationException e1) {
+                        e1.printStackTrace();
+                    } catch (IllegalAccessException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+
+            });
+        }
+        return this.expressiveFillComboBox;
+    }
+
+    private void updateExpressivePanel() {
+        this.addOrReplaceExpressiveRenderingUI();
     }
 
     public void initLine() {
@@ -1109,6 +1331,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
                 I18N.getString("StyleEditionFrame.AddCategorizedMap")); //$NON-NLS-1$
         this.addCategorizedMapButton.addActionListener(this);
         this.strokePanel.add(this.addCategorizedMapButton);
+        this.strokePanel.add(this.getExpressiveStrokeComboBox());
 
         if (this.layer.getStyles().size() == 2) {
             this.strokePanel2 = new JPanel();
@@ -1197,7 +1420,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         fillTitleBorder.setTitleFont(new Font("Verdana", Font.BOLD, 16)); //$NON-NLS-1$
         fillTitleBorder.setTitle(I18N.getString("StyleEditionFrame.PointFill")); //$NON-NLS-1$
         this.fillPanel.setBorder(fillTitleBorder);
-        this.fillPanel.setPreferredSize(new Dimension(420, 180));
+        this.fillPanel.setPreferredSize(new Dimension(420, 150));
 
         this.fillColor = ((PointSymbolizer) this.layer.getStyles().get(0)
                 .getSymbolizer()).getGraphic().getMarks().get(0).getFill()
@@ -1226,7 +1449,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         strokeTitleBorder.setTitle(I18N
                 .getString("StyleEditionFrame.PointStroke")); //$NON-NLS-1$
         this.strokePanel.setBorder(strokeTitleBorder);
-        this.strokePanel.setPreferredSize(new Dimension(420, 200));
+        this.strokePanel.setPreferredSize(new Dimension(420, 250));
 
         this.strokeColor = ((PointSymbolizer) this.layer.getStyles().get(0)
                 .getSymbolizer()).getGraphic().getMarks().get(0).getStroke()
@@ -1311,7 +1534,6 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
      * @return the panel showing the style.
      */
     public JPanel createVisuPanel() {
-
         JPanel visuPanel = new JPanel();
         visuPanel.setPreferredSize(new Dimension(150, 600));
         visuPanel.setBackground(Color.white);

@@ -61,7 +61,7 @@ public class Stroke {
             @XmlElement(name = "StrokeTextureExpressiveRendering", type = StrokeTextureExpressiveRenderingDescriptor.class),
             @XmlElement(name = "BasicTextureExpressiveRendering", type = BasicTextureExpressiveRenderingDescriptor.class),
             @XmlElement(name = "ExpressiveStroke", type = BasicTextureExpressiveRenderingDescriptor.class) })
-    private StrokeExpressiveRenderingDescriptor expressiveRendering = null;
+    public StrokeExpressiveRenderingDescriptor expressiveRendering = null;
 
     /**
      * The raw color of the stroke, without opacity information.
@@ -464,7 +464,7 @@ public class Stroke {
     }
 
     public void setExpressiveRendering(
-            StrokeTextureExpressiveRenderingDescriptor expressiveRendering) {
+            StrokeExpressiveRenderingDescriptor expressiveRendering) {
         this.expressiveRendering = expressiveRendering;
     }
 
