@@ -207,6 +207,10 @@ public class BezierTesselator {
                     normals[edgeIndex] = new Point2d(p0.y - p1.y, p1.x - p0.x);
                     normalize(normals[edgeIndex], normals[edgeIndex]);
                 }
+                boolean loop = (this.polyline[0]
+                        .equals(this.polyline[edgeCount]));
+                System.err.println("loop = " + loop);
+
                 if (this.isStopRequested()) {
                     this.setState(TaskState.STOPPED);
                     return;
@@ -226,6 +230,27 @@ public class BezierTesselator {
                 Point2d outputLow = new Point2d();
                 Point2d outputHigh = new Point2d();
 
+                Point2d loopLow = new Point2d();
+                Point2d loopHigh = new Point2d();
+                Point2d loop0 = new Point2d();
+                float loopU = 0;
+
+                if (loop) {
+                    double alpha = this.transitionSize;
+                    Point2d e0 = new Point2d(alpha * edges[0].x / uParams[1],
+                            alpha * edges[0].y / uParams[1]);
+                    inputLow.x += e0.x;
+                    inputLow.y += e0.y;
+                    inputHigh.x += e0.x;
+                    inputHigh.y += e0.y;
+                    p0.x += e0.x;
+                    p0.y += e0.y;
+                    uParams[0] += alpha * uParams[1];
+                    VectorUtil.copy(loop0, p0);
+                    VectorUtil.copy(loopLow, inputLow);
+                    VectorUtil.copy(loopHigh, inputHigh);
+                    loopU = uParams[0];
+                }
                 GLMesh mesh = this.complex.addGLMesh(GL11.GL_TRIANGLES);
                 float outputU = this
                         .createSegment(mesh, inputLow, p0, inputHigh,
@@ -257,11 +282,30 @@ public class BezierTesselator {
                     currentEdgeAndPointIndex++;
                 }
 
-                Point2d p1 = this.polyline[pointCount - 1];
-                this.createStraightSegment(mesh, inputLow, inputHigh, p1,
-                        normals[edgeCount - 1], uMax, outputU, uMax, outputLow,
-                        outputP, outputHigh);
-
+                if (!loop) {
+                    Point2d p1 = this.polyline[pointCount - 1];
+                    this.createStraightSegment(mesh, inputLow, inputHigh, p1,
+                            normals[edgeCount - 1], uMax, outputU, uMax,
+                            outputLow, outputP, outputHigh);
+                } else {
+                    Point2d p1 = this.polyline[pointCount - 1];
+                    double alpha = -this.transitionSize;
+                    Point2d e0 = new Point2d(
+                            alpha
+                                    * edges[edgeCount - 1].x
+                                    / (uParams[edgeCount] - uParams[edgeCount - 1]),
+                            alpha
+                                    * edges[edgeCount - 1].y
+                                    / (uParams[edgeCount] - uParams[edgeCount - 1]));
+                    p1.x += e0.x;
+                    p1.y += e0.y;
+                    this.createStraightSegment(mesh, inputLow, inputHigh, p1,
+                            normals[edgeCount - 1], uMax, outputU,
+                            uMax + alpha, outputLow, outputP, outputHigh);
+                    this.createBezierTurn(mesh, outputP, loop0, edges, normals,
+                            outputU, uMax - alpha, uMax, edgeCount - 1, 0,
+                            outputLow, outputP, outputHigh);
+                }
                 this.setState(TaskState.FINALIZING);
                 this.colorizer.finalizeColorization();
                 this.setState(TaskState.FINISHED);
