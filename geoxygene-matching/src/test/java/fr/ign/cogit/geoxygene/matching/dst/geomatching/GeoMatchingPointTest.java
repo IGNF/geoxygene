@@ -22,12 +22,11 @@
 package fr.ign.cogit.geoxygene.matching.dst.geomatching;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.priv.garshol.duke.comparators.JaroWinkler;
+// import no.priv.garshol.duke.comparators.JaroWinkler;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -40,14 +39,11 @@ import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.function.ConstantFunction;
 import fr.ign.cogit.geoxygene.function.Function1D;
-import fr.ign.cogit.geoxygene.function.LinearFunction;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.ChoiceType;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceResult;
 import fr.ign.cogit.geoxygene.matching.dst.sources.Source;
 import fr.ign.cogit.geoxygene.matching.dst.sources.punctual.EuclidianDist;
-import fr.ign.cogit.geoxygene.matching.dst.sources.text.LevenshteinDist;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureAttributeValue;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
