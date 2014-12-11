@@ -181,6 +181,12 @@ public abstract class AbstractSymbolizer implements Symbolizer {
 
     }
 
+    @Override
+    public void updateInternal() {
+        // default behavior is to do nothing
+
+    }
+
     /*
      * (non-Javadoc)
      * 
