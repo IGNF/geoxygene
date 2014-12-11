@@ -50,145 +50,155 @@ import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "name", "title", "description",
-    "legendGraphic", "filter", "elseFilter", "minScaleDenominator",
-    "maxScaleDenominator", "symbolizers" })
+        "legendGraphic", "filter", "elseFilter", "minScaleDenominator",
+        "maxScaleDenominator", "symbolizers" })
 @XmlRootElement(name = "Rule")
 public class Rule {
 
-  @XmlElement(name = "Name")
-  protected String name;
-  @XmlElement(name = "Description")
-  protected String description;
-  @XmlElement(name = "LegendGraphic")
-  protected LegendGraphic legendGraphic = null;
+    @XmlElement(name = "Name")
+    protected String name;
+    @XmlElement(name = "Description")
+    protected String description;
+    @XmlElement(name = "LegendGraphic")
+    protected LegendGraphic legendGraphic = null;
 
-  public LegendGraphic getLegendGraphic() {
-    return this.legendGraphic;
-  }
-
-  public void setLegendGraphic(LegendGraphic legendGraphic) {
-    this.legendGraphic = legendGraphic;
-  }
-
-  // protected FilterType filter;
-  @XmlElement(name = "MinScaleDenominator")
-  protected Double minScaleDenominator;
-  @XmlElement(name = "MaxScaleDenominator")
-  protected Double maxScaleDenominator;
-
-  /**
-   * Renvoie la valeur de l'attribut name.
-   * @return la valeur de l'attribut name
-   */
-  public String getName() {
-    return this.name;
-  }
-
-  /**
-   * Affecte la valeur de l'attribut name.
-   * @param name l'attribut name à affecter
-   */
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getDescription() {
-    return this.description;
-  }
-
-  public void setDescription(String d) {
-    this.description = d;
-  }
-
-  @XmlElement(name = "Title")
-  private String title;
-
-  public String getTitle() {
-    return this.title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  @XmlElements({
-      @XmlElement(name = "PropertyIsEqualTo", type = PropertyIsEqualTo.class),
-      @XmlElement(name = "PropertyIsGreaterThan", type = PropertyIsGreaterThan.class),
-      @XmlElement(name = "PropertyIsGreaterThanOrEqualTo", type = PropertyIsGreaterThanOrEqualTo.class),
-      @XmlElement(name = "PropertyIsLessThan", type = PropertyIsLessThan.class),
-      @XmlElement(name = "PropertyIsLessThanOrEqualTo", type = PropertyIsLessThanOrEqualTo.class),
-      @XmlElement(name = "PropertyIsNotEqualTo", type = PropertyIsNotEqualTo.class),
-      @XmlElement(name = "PropertyIsLike", type = PropertyIsLike.class),
-      @XmlElement(name = "And", type = And.class),
-      @XmlElement(name = "Or", type = Or.class),
-      @XmlElement(name = "Not", type = Not.class) })
-  @XmlElementWrapper(name = "Filter")
-  // @XmlElement(name = "Filter", namespace = "http://www.opengis.net/ogc")
-  private Filter[] filter = null;
-
-  /**
-   * Renvoie la valeur de l'attribut filter.
-   * @return la valeur de l'attribut filter
-   */
-  public Filter getFilter() {
-    return (this.filter == null) ? null : this.filter[0];
-  }
-
-  /**
-   * Affecte la valeur de l'attribut filter.
-   * @param filter l'attribut filter à affecter
-   */
-  public void setFilter(Filter filter) {
-    if (this.filter == null) {
-      this.filter = new Filter[1];
+    public LegendGraphic getLegendGraphic() {
+        return this.legendGraphic;
     }
-    this.filter[0] = filter;
-  }
 
-  @XmlElement(name = "ElseFilter", type = ElseFilterImpl.class)
-  protected ElseFilter elseFilter = null;
-
-  // public void setElseFilter(ElseFilter elseFilter) {this.elseFilter =
-  // elseFilter;}
-  // public ElseFilter getElseFilter() {return elseFilter;}
-
-  // @XmlElementRef(name = "symbolizers", namespace =
-  // "http://www.opengis.net/sld", type = Symbolizer.class)
-  // protected List<JAXBElement<? extends SymbolType>> symbol;
-  @XmlElements({
-      @XmlElement(name = "LineSymbolizer", type = LineSymbolizer.class),
-      @XmlElement(name = "PointSymbolizer", type = PointSymbolizer.class),
-      @XmlElement(name = "PolygonSymbolizer", type = PolygonSymbolizer.class),
-      @XmlElement(name = "RasterSymbolizer", type = RasterSymbolizer.class),
-      @XmlElement(name = "TextSymbolizer", type = TextSymbolizer.class),
-      @XmlElement(name = "ThematicSymbolizer", type = ThematicSymbolizer.class) })
-  private List<Symbolizer> symbolizers = new ArrayList<Symbolizer>(0);
-
-  /**
-   * Renvoie la valeur de l'attribut symbolizers.
-   * @return la valeur de l'attribut symbolizers
-   */
-  public List<Symbolizer> getSymbolizers() {
-    return this.symbolizers;
-  }
-
-  /**
-   * Affecte la valeur de l'attribut symbolizers.
-   * @param symbolizers l'attribut symbolizers à affecter
-   */
-  public void setSymbolizers(List<Symbolizer> symbolizers) {
-    this.symbolizers = symbolizers;
-  }
-
-  @Override
-  public String toString() {
-    String result = "Rule " + this.getName() //$NON-NLS-1$
-        + "\n"; //$NON-NLS-1$
-    result += "\tFilter " + this.getFilter() //$NON-NLS-1$
-        + "\n"; //$NON-NLS-1$
-    for (Symbolizer symbolizer : this.getSymbolizers()) {
-      result += "\t" + symbolizer + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
+    public void setLegendGraphic(LegendGraphic legendGraphic) {
+        this.legendGraphic = legendGraphic;
     }
-    return result;
-  }
+
+    // protected FilterType filter;
+    @XmlElement(name = "MinScaleDenominator")
+    protected Double minScaleDenominator;
+    @XmlElement(name = "MaxScaleDenominator")
+    protected Double maxScaleDenominator;
+
+    /**
+     * Renvoie la valeur de l'attribut name.
+     * 
+     * @return la valeur de l'attribut name
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Affecte la valeur de l'attribut name.
+     * 
+     * @param name
+     *            l'attribut name à affecter
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String d) {
+        this.description = d;
+    }
+
+    @XmlElement(name = "Title")
+    private String title;
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @XmlElements({
+            @XmlElement(name = "PropertyIsEqualTo", type = PropertyIsEqualTo.class),
+            @XmlElement(name = "PropertyIsGreaterThan", type = PropertyIsGreaterThan.class),
+            @XmlElement(name = "PropertyIsGreaterThanOrEqualTo", type = PropertyIsGreaterThanOrEqualTo.class),
+            @XmlElement(name = "PropertyIsLessThan", type = PropertyIsLessThan.class),
+            @XmlElement(name = "PropertyIsLessThanOrEqualTo", type = PropertyIsLessThanOrEqualTo.class),
+            @XmlElement(name = "PropertyIsNotEqualTo", type = PropertyIsNotEqualTo.class),
+            @XmlElement(name = "PropertyIsLike", type = PropertyIsLike.class),
+            @XmlElement(name = "And", type = And.class),
+            @XmlElement(name = "Or", type = Or.class),
+            @XmlElement(name = "Not", type = Not.class) })
+    @XmlElementWrapper(name = "Filter")
+    // @XmlElement(name = "Filter", namespace = "http://www.opengis.net/ogc")
+    private Filter[] filter = null;
+
+    /**
+     * Renvoie la valeur de l'attribut filter.
+     * 
+     * @return la valeur de l'attribut filter
+     */
+    public Filter getFilter() {
+        return (this.filter == null) ? null : this.filter[0];
+    }
+
+    /**
+     * Affecte la valeur de l'attribut filter.
+     * 
+     * @param filter
+     *            l'attribut filter à affecter
+     */
+    public void setFilter(Filter filter) {
+        if (this.filter == null) {
+            this.filter = new Filter[1];
+        }
+        this.filter[0] = filter;
+    }
+
+    @XmlElement(name = "ElseFilter", type = ElseFilterImpl.class)
+    protected ElseFilter elseFilter = null;
+
+    // public void setElseFilter(ElseFilter elseFilter) {this.elseFilter =
+    // elseFilter;}
+    // public ElseFilter getElseFilter() {return elseFilter;}
+
+    // @XmlElementRef(name = "symbolizers", namespace =
+    // "http://www.opengis.net/sld", type = Symbolizer.class)
+    // protected List<JAXBElement<? extends SymbolType>> symbol;
+    @XmlElements({
+            @XmlElement(name = "LineSymbolizer", type = LineSymbolizer.class),
+            @XmlElement(name = "PointSymbolizer", type = PointSymbolizer.class),
+            @XmlElement(name = "PolygonSymbolizer", type = PolygonSymbolizer.class),
+            @XmlElement(name = "PolygonInterpolationSymbolizer", type = PolygonInterpolationSymbolizer.class),
+            @XmlElement(name = "RasterSymbolizer", type = RasterSymbolizer.class),
+            @XmlElement(name = "TextSymbolizer", type = TextSymbolizer.class),
+            @XmlElement(name = "ThematicSymbolizer", type = ThematicSymbolizer.class) })
+    private List<Symbolizer> symbolizers = new ArrayList<Symbolizer>(0);
+
+    /**
+     * Renvoie la valeur de l'attribut symbolizers.
+     * 
+     * @return la valeur de l'attribut symbolizers
+     */
+    public List<Symbolizer> getSymbolizers() {
+        return this.symbolizers;
+    }
+
+    /**
+     * Affecte la valeur de l'attribut symbolizers.
+     * 
+     * @param symbolizers
+     *            l'attribut symbolizers à affecter
+     */
+    public void setSymbolizers(List<Symbolizer> symbolizers) {
+        this.symbolizers = symbolizers;
+    }
+
+    @Override
+    public String toString() {
+        String result = "Rule " + this.getName() //$NON-NLS-1$
+                + "\n"; //$NON-NLS-1$
+        result += "\tFilter " + this.getFilter() //$NON-NLS-1$
+                + "\n"; //$NON-NLS-1$
+        for (Symbolizer symbolizer : this.getSymbolizers()) {
+            result += "\t" + symbolizer + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return result;
+    }
 }
