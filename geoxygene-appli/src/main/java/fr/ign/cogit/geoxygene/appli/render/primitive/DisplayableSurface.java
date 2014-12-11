@@ -223,7 +223,7 @@ public class DisplayableSurface extends AbstractDisplayable {
         // this complexes collection will contain inner and outline
         List<GLComplex> complexes = new ArrayList<GLComplex>();
 
-        // generate Inner Polygon part
+        // generate Inner Polygon part)
         this.createInnerPolygon(symbolizer, featureCollection, complexes);
 
         // generate Polygon Outline
@@ -241,6 +241,8 @@ public class DisplayableSurface extends AbstractDisplayable {
     private boolean createInnerPolygon(PolygonSymbolizer symbolizer,
             IFeatureCollection<IFeature> featureCollection,
             List<GLComplex> complexes) {
+        if (symbolizer.getFill() == null)
+            return false;
         Fill2DDescriptor fill2dDescriptor = symbolizer.getFill()
                 .getFill2DDescriptor();
         if (fill2dDescriptor instanceof TextureDescriptor) {
@@ -375,9 +377,12 @@ public class DisplayableSurface extends AbstractDisplayable {
      * @param featureCollection
      * @return
      */
-    private GLComplex generatePolygonOutline(PolygonSymbolizer symbolizer,
+    private boolean generatePolygonOutline(PolygonSymbolizer symbolizer,
             IFeatureCollection<IFeature> featureCollection,
             List<GLComplex> complexes) {
+        if (symbolizer.getStroke() == null)
+            return false;
+
         IEnvelope envelope = featureCollection.getEnvelope();
         double minX = envelope.minX();
         double minY = envelope.minY();
@@ -388,7 +393,7 @@ public class DisplayableSurface extends AbstractDisplayable {
                 symbolizer.getStroke(), minX, minY, renderer);
         complexes.add(outline);
 
-        return outline;
+        return true;
     }
 
     /**
