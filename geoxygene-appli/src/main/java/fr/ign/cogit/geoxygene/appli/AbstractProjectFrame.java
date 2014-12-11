@@ -676,46 +676,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
             synchronized (this.getSld().lock) {
                 new_sld = StyledLayerDescriptor.unmarshall(
                         file.getAbsolutePath(), this.getDataSet());
-                if (new_sld != null) {
-                    this.getLayerViewPanel().setViewBackground(
-                            new_sld.getBackground());
-                    this.getSld().setBackground(new_sld.getBackground());
-
-                    for (int i = 0; i < this.getLayers().size(); i++) {
-                        String name = this.getLayers().get(i).getName();
-                        // logger.debug(name);
-                        // vérifier que le layer est décrit dans le SLD
-                        if (new_sld.getLayer(name) != null) {
-                            if (new_sld.getLayer(name).getStyles() != null) {
-                                // logger.debug(new_sld.getLayer(name).getStyles());
-                                this.getLayers()
-                                        .get(i)
-                                        .setStyles(
-                                                new_sld.getLayer(name)
-                                                        .getStyles());
-
-                            } else {
-                                logger.warn("Le layer "
-                                        + name
-                                        + " n'a pas de style défini dans le SLD");
-                            }
-                        } else {
-                            logger.warn("Le layer " + name
-                                    + " n'est pas décrit dans le SLD");
-                            this.getLayers()
-                                    .get(i)
-                                    .setStyles(
-                                            this.sld.getLayer(name).getStyles());
-                        }
-                    }
-
-                    this.layerLegendPanel.repaint();
-                    this.layerViewPanel.repaint();
-
-                    /**
-                     * // loading finished
-                     */
-                }
+                this.loadSLD(new_sld);
             }
         } else {
             if (!(file.getAbsolutePath().endsWith(".xml") //$NON-NLS-1$
@@ -730,6 +691,46 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
                         + file.getAbsolutePath()
                         + "' is not valid for an undetermined reason. Skip loading SLD.");
             }
+        }
+    }
+
+    /**
+     * @param new_sld
+     */
+    @Override
+    public void loadSLD(StyledLayerDescriptor new_sld) {
+        if (new_sld != null) {
+            this.getLayerViewPanel().setViewBackground(new_sld.getBackground());
+            this.getSld().setBackground(new_sld.getBackground());
+
+            for (int i = 0; i < this.getLayers().size(); i++) {
+                String name = this.getLayers().get(i).getName();
+                // logger.debug(name);
+                // vérifier que le layer est décrit dans le SLD
+                if (new_sld.getLayer(name) != null) {
+                    if (new_sld.getLayer(name).getStyles() != null) {
+                        // logger.debug(new_sld.getLayer(name).getStyles());
+                        this.getLayers().get(i)
+                                .setStyles(new_sld.getLayer(name).getStyles());
+
+                    } else {
+                        logger.warn("Le layer " + name
+                                + " n'a pas de style défini dans le SLD");
+                    }
+                } else {
+                    logger.warn("Le layer " + name
+                            + " n'est pas décrit dans le SLD");
+                    this.getLayers().get(i)
+                            .setStyles(this.sld.getLayer(name).getStyles());
+                }
+            }
+
+            this.layerLegendPanel.repaint();
+            this.layerViewPanel.repaint();
+
+            /**
+             * // loading finished
+             */
         }
     }
 

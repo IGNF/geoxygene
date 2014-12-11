@@ -188,6 +188,8 @@ public interface ProjectFrame {
 
     public void loadSLD(File file) throws FileNotFoundException, JAXBException;
 
+    public void loadSLD(StyledLayerDescriptor new_sld);
+
     public abstract void removeLayers(List<Layer> toRemove);
 
     public abstract DataSet getDataSet();
@@ -244,4 +246,5 @@ public interface ProjectFrame {
     public Set<Object> getSldEditionOwners();
 
     public void clearAllSldEditionOwner();
+
 }

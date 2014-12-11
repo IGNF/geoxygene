@@ -35,6 +35,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.CharArrayReader;
+import java.io.CharArrayWriter;
+import java.io.Reader;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -59,6 +62,7 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -226,11 +230,22 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
     }
 
     /**
-     * @param initialSLD
+     * @param sldToCopy
      *            The initial SLD styles before modifications
      */
-    public void setInitialSLD(StyledLayerDescriptor initialSLD) {
-        this.initialSLD = initialSLD;
+    public void copyInitialSLD(StyledLayerDescriptor sldToCopy) {
+        if (sldToCopy == null) {
+            return;
+        }
+        CharArrayWriter writer = new CharArrayWriter();
+        sldToCopy.marshall(writer);
+        Reader reader = new CharArrayReader(writer.toCharArray());
+        try {
+            this.initialSLD = StyledLayerDescriptor.unmarshall(reader);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        this.getInitialSLD().setDataSet(sldToCopy.getDataSet());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         if (this.initialSLD != null) {
@@ -297,7 +312,11 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
 
     private void reloadSldContent() {
         int caret = this.getEditor().getCaretPosition();
-        this.setInitialSLD(this.initialSLD);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.layerViewPanel.getProjectFrame().getSld().marshall(baos);
+        this.getEditor().setText(baos.toString());
+
         this.getEditor().setCaretPosition(caret);
     }
 
@@ -312,7 +331,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
         if (layer instanceof NamedLayer) {
             NamedLayer namedLayer = (NamedLayer) layer;
             this.layer = namedLayer;
-            this.setInitialSLD(this.layer.getSld());
+            this.copyInitialSLD(this.layer.getSld());
         } else {
             this.getEditor().setEnabled(false);
             this.info("Cannot edit Layer type "
@@ -554,50 +573,13 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
 
     public void applySld() {
         try {
+
             ByteArrayInputStream in = new ByteArrayInputStream(this.getEditor()
                     .getText().getBytes("UTF-8"));
             StyledLayerDescriptor new_sld = StyledLayerDescriptor
                     .unmarshall(in);
-
-            // copy/paste from AbstractProjectFrame::loadSld()
-            if (new_sld != null) {
-                new_sld.updateSymbolizers();
-
-                this.layer.getSld().setBackground(new_sld.getBackground());
-                this.layerViewPanel.setViewBackground(new_sld.getBackground());
-                for (int i = 0; i < this.getInitialSLD().getLayers().size(); i++) {
-                    String name = this.layer.getSld().getLayers().get(i)
-                            .getName();
-                    // logger.debug(name);
-                    // vérifier que le layer est décrit dans le SLD
-                    if (new_sld.getLayer(name) != null) {
-                        if (new_sld.getLayer(name).getStyles() != null) {
-                            // logger.debug(new_sld.getLayer(name).getStyles());
-                            this.layer
-                                    .getSld()
-                                    .getLayers()
-                                    .get(i)
-                                    .setStyles(
-                                            new_sld.getLayer(name).getStyles());
-
-                        } else {
-                            logger.warn("Le layer " + name
-                                    + " n'a pas de style défini dans le SLD");
-                        }
-                    } else {
-                        logger.warn("Le layer " + name
-                                + " n'est pas décrit dans le SLD");
-                    }
-                }
-
-                this.layerLegendPanel.repaint();
-                this.layerViewPanel.repaint();
-
-                /**
-                 * // loading finished
-                 */
-            }
-
+            new_sld.updateSymbolizers();
+            this.layerViewPanel.getProjectFrame().loadSLD(new_sld);
         } catch (Exception e) {
             e.printStackTrace();
             this.error(e.getClass().getName(), null);
@@ -632,7 +614,9 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
         }
         // When the user apply style modifications to the map and the legend
         if (e.getSource() == this.getApplyButton()) {
+
             this.applySld();
+
             this.reloadSldContent();
             this.layerLegendPanel.getModel().fireActionPerformed(null);
             this.layerLegendPanel.repaint();
@@ -641,7 +625,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
 
         // When the user cancel style modifications in the main interface
         if (e.getSource() == this.getCancelButton()) {
-            this.layer.setSld(this.getInitialSLD());
+            this.layerViewPanel.getProjectFrame().loadSLD(this.getInitialSLD());
             this.layerLegendPanel.repaint();
             this.layerViewPanel.repaint();
             this.layerLegendPanel.removeSelectionChangeListener(this);

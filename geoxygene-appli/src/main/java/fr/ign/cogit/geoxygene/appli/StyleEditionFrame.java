@@ -166,11 +166,22 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
     }
 
     /**
-     * @param initialSLD
+     * @param sldToCopy
      *            The initial SLD styles before modifications
      */
-    public void setInitialSLD(StyledLayerDescriptor initialSLD) {
-        this.initialSLD = initialSLD;
+    public void copyInitialSLD(StyledLayerDescriptor sldToCopy) {
+        if (sldToCopy == null) {
+            return;
+        }
+        CharArrayWriter writer = new CharArrayWriter();
+        sldToCopy.marshall(writer);
+        Reader reader = new CharArrayReader(writer.toCharArray());
+        try {
+            this.initialSLD = StyledLayerDescriptor.unmarshall(reader);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        this.getInitialSLD().setDataSet(sldToCopy.getDataSet());
     }
 
     // Main Dialog Elements
@@ -311,16 +322,8 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
                 .getProjectFrame().getDataSet();
 
         // Saving the initial SLD
-        this.setInitialSLD(new StyledLayerDescriptor(dataset));
-        CharArrayWriter writer = new CharArrayWriter();
-        layerLegendPanel.getModel().marshall(writer);
-        Reader reader = new CharArrayReader(writer.toCharArray());
-        try {
-            this.setInitialSLD(StyledLayerDescriptor.unmarshall(reader));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-        this.getInitialSLD().setDataSet(dataset);
+        this.copyInitialSLD(this.layerViewPanel.getProjectFrame().getSld());
+
         if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
             this.initPolygon();
         } else if (this.layer.getSymbolizer().isLineSymbolizer()) {
@@ -2200,10 +2203,6 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         // When the user cancel style modifications in the main interface
         if (e.getSource() == this.btnCancel) {
             this.reset();
-            this.updateLayer();
-            this.layerLegendPanel.repaint();
-            this.layerViewPanel.repaint();
-
             StyleEditionFrame.this.dispose();
         }
 
@@ -2403,66 +2402,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
     }
 
     public void reset() {
-        logger.warn("Fields are copied manually, so expressive fields are not handled yet (please ask the dev. team to implement clonable SLD elements !)");
-
-        Symbolizer symbolizer = this.layer.getStyles().get(0).getSymbolizer();
-
-        // Reset style modifications using the initialSLD.
-        if (symbolizer.isPolygonSymbolizer()) {
-            PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.initialSLD
-                    .getLayer(this.layer.getName()).getStyles().get(0)
-                    .getSymbolizer();
-
-            this.fillColor = polygonSymbolizer.getFill().getColor();
-            this.fillOpacity = polygonSymbolizer.getFill().getFillOpacity();
-            this.strokeColor = polygonSymbolizer.getStroke().getColor();
-            this.strokeOpacity = polygonSymbolizer.getStroke()
-                    .getStrokeOpacity();
-            this.strokeWidth = polygonSymbolizer.getStroke().getStrokeWidth();
-            this.unit = polygonSymbolizer.getUnitOfMeasure();
-
-        } else if (symbolizer.isLineSymbolizer()) {
-            LineSymbolizer lineSymbolizer = (LineSymbolizer) this
-                    .getInitialSLD().getLayer(this.layer.getName()).getStyles()
-                    .get(0).getSymbolizer();
-
-            this.strokeColor = lineSymbolizer.getStroke().getColor();
-            this.strokeOpacity = lineSymbolizer.getStroke().getStrokeOpacity();
-            this.strokeWidth = lineSymbolizer.getStroke().getStrokeWidth();
-            this.unit = lineSymbolizer.getUnitOfMeasure();
-
-            if (this.layer.getStyles().size() == 2) {
-                LineSymbolizer lineSymbolizer2 = (LineSymbolizer) this
-                        .getInitialSLD().getLayer(this.layer.getName())
-                        .getStyles().get(1).getSymbolizer();
-
-                this.strokeColor2 = lineSymbolizer2.getStroke().getColor();
-                this.strokeOpacity2 = lineSymbolizer2.getStroke()
-                        .getStrokeOpacity();
-                this.strokeOpacitySlider2
-                        .setValue((int) this.strokeOpacity2 * 100);
-                this.strokeWidth2 = lineSymbolizer2.getStroke()
-                        .getStrokeWidth();
-                this.strokeWidthSpinner2.setValue(this.strokeWidth2);
-                this.unit = lineSymbolizer2.getUnitOfMeasure();
-            }
-        } else if (symbolizer.isPointSymbolizer()) {
-            PointSymbolizer pointSymbolizer = (PointSymbolizer) this
-                    .getInitialSLD().getLayer(this.layer.getName()).getStyles()
-                    .get(0).getSymbolizer();
-            Mark mark = pointSymbolizer.getGraphic().getMarks().get(0);
-            this.fillColor = mark.getFill().getColor();
-            this.fillOpacity = mark.getFill().getFillOpacity();
-            this.fillOpacitySlider.setValue((int) this.fillOpacity * 100);
-            this.strokeColor = mark.getStroke().getColor();
-            this.strokeOpacity = mark.getStroke().getStrokeOpacity();
-            this.strokeOpacitySlider.setValue((int) this.strokeOpacity * 100);
-            this.strokeWidth = mark.getStroke().getStrokeWidth();
-            this.strokeWidthSpinner.setValue(this.strokeWidth);
-            this.symbolShape = mark.getWellKnownName();
-            this.unit = pointSymbolizer.getUnitOfMeasure();
-            this.symbolSize = pointSymbolizer.getGraphic().getSize();
-        }
+        this.layerViewPanel.getProjectFrame().loadSLD(this.initialSLD);
 
         // Updating the preview style panel
         this.stylePanel.paintComponent(this.stylePanel.getGraphics());
