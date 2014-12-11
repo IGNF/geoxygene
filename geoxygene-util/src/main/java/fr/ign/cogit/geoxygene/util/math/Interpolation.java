@@ -27,55 +27,155 @@
 
 package fr.ign.cogit.geoxygene.util.math;
 
+import java.awt.Color;
+
 /**
- * @author JeT
+ * @brief Static class providing interpolation functions between two values. *
  * 
+ *        This class provides an alternative to javax.media.jai.Interpolate for
+ *        1D interpolation
+ *
+ *        Interpolation methods are specified using functors implementing
+ *        {@link Functor} and {@link ExtendedFunctor}. Parameter-free methods
+ *        can be accessed as static members of {@link Interpolation} (e.g.
+ *        {@link #linearFunctor}, {@link #cosineFunctor} and
+ *        {@link #cubicFunctor} ), while more complex approaches must be
+ *        allocated manually, such as {@link HermiteFunctor}.
+ * 
+ *        Note that alternative interpolation methods can be defined outside of
+ *        this class.
+ * 
+ * @author nmellado
+ * 
+ * @see http://paulbourke.net/miscellaneous/interpolation/ for more details
  */
 public class Interpolation {
+    public static final LinearFunctor linearFunctor = new LinearFunctor();
+    public static final CosineFunctor cosineFunctor = new CosineFunctor();
+    public static final CubicFunctor cubicFunctor = new CubicFunctor();
+
+    private Interpolation() {
+
+    }
+
+    /************************************************************************
+     * Interpolation Functions
+     */
+
+    public static double interpolate(double y1, double y2, double mu,
+            Interpolation.Functor interFun) {
+        return interFun.eval(y1, y2, mu);
+    }
+
+    public static double interpolate(double y0, double y1, double y2,
+            double y3, double mu, Interpolation.ExtendedFunctor interFun) {
+        return interFun.eval(y0, y1, y2, y3, mu);
+    }
+
+    public static Color interpolateRGB(Color c1, Color c2, double mu,
+            Interpolation.Functor interFun) {
+
+        double red = interFun.eval(c1.getRed(), c2.getRed(), mu);
+        double green = interFun.eval(c1.getGreen(), c2.getGreen(), mu);
+        double blue = interFun.eval(c1.getBlue(), c2.getBlue(), mu);
+        return new Color((float) red / 255.f, (float) green / 255.f,
+                (float) blue / 255.f);
+    }
+
+    /************************************************************************
+     * Functor Interfaces
+     */
 
     /**
-     * Private constructor
+     * @brief Functor interpolating between y1 (mu=0.) and y2 (mu=1.)
+     * 
+     * @param y1
+     *            Starting point for the interpolation
+     * @param y2
+     *            End point for the interpolation
      */
-    private Interpolation() {
-        // TODO Auto-generated constructor stub
+    public static interface Functor {
+        public double eval(double y1, double y2, double mu);
     }
 
-    // cubic bernstein polynom
-    static public float bernstein3(int i, float t) {
-        switch (i) {
-        case 0:
-            return (1 - t) * (1 - t) * (1 - t);
-        case 1:
-            return 3 * t * (1 - t) * (1 - t);
-        case 2:
-            return 3 * t * t * (1 - t);
-        case 3:
-            return t * t * t;
+    /**
+     * @brief Functor interpolating between y1 (mu=0.) and y2 (mu=1.)
+     * 
+     *        With this interpolation, points before y1 and after y2 are also
+     *        required
+     * 
+     * @param y0
+     *            Point before y1
+     * @param y1
+     *            Starting point for the interpolation
+     * @param y2
+     *            End point for the interpolation
+     * @param y3
+     *            Point after y2
+     */
+    public static interface ExtendedFunctor {
+        public double eval(double y0, double y1, double y2, double y3, double mu);
+    }
+
+    /************************************************************************
+     * Functor Implementations
+     */
+    public static class LinearFunctor implements Functor {
+        @Override
+        public double eval(double y1, double y2, double mu) {
+            return (y1 * (1. - mu) + y2 * mu);
         }
-        return 0; //we only get here if an invalid i is specified
     }
 
-    // quadratic bernstein polynom
-    static public float bernstein2(int i, float t) {
-        switch (i) {
-        case 0:
-            return (1 - t) * (1 - t);
-        case 1:
-            return 2 * t * (1 - t);
-        case 2:
-            return t * t;
+    public static class CosineFunctor implements Functor {
+        @Override
+        public double eval(double y1, double y2, double mu) {
+            double mu2 = (1. - Math.cos(mu * Math.PI)) / 2;
+            return (y1 * (1. - mu2) + y2 * mu2);
         }
-        return 0; //we only get here if an invalid i is specified
     }
 
-    //evaluate a point on the B spline
-    public static double interpolateQuadratic(double v0, double v1, double v2, float t) {
-        return bernstein2(0, t) * v0 + bernstein2(1, t) * v1 + bernstein2(2, t) * v2;
+    public static class CubicFunctor implements ExtendedFunctor {
+        @Override
+        public double eval(double y0, double y1, double y2, double y3, double mu) {
+            double mu2 = mu * mu;
+            double a0 = y3 - y2 - y0 + y1;
+            double a1 = y0 - y1 - a0;
+            double a2 = y2 - y0;
+            double a3 = y1;
+
+            return a0 * mu * mu2 + a1 * mu2 + a2 * mu + a3;
+        }
     }
 
-    //evaluate a point on the B spline
-    public static double interpolateCubic(double v0, double v1, double v2, double v3, float t) {
-        return bernstein3(0, t) * v0 + bernstein3(1, t) * v1 + bernstein3(2, t) * v2 + bernstein3(3, t) * v3;
-    }
+    public static class HermiteFunctor implements ExtendedFunctor {
+        /**
+         * @brief 1 is high, 0 normal, -1 is low
+         */
+        public double tension = 0.;
+        /**
+         * @brief 0 is even, positive is towards first segment, negative towards
+         *        the other
+         */
+        public double bias = 0.;
 
+        @Override
+        public double eval(double y0, double y1, double y2, double y3, double mu) {
+            double m0, m1, mu2, mu3;
+            double a0, a1, a2, a3;
+
+            mu2 = mu * mu;
+            mu3 = mu2 * mu;
+            m0 = (y1 - y0) * (1. + this.bias) * (1. - this.tension) / 2.;
+            m0 += (y2 - y1) * (1. - this.bias) * (1. - this.tension) / 2.;
+            m1 = (y2 - y1) * (1. + this.bias) * (1. - this.tension) / 2.;
+            m1 += (y3 - y2) * (1. - this.bias) * (1. - this.tension) / 2.;
+            a0 = 2. * mu3 - 3. * mu2 + 1;
+            a1 = mu3 - 2. * mu2 + mu;
+            a2 = mu3 - mu2;
+            a3 = -2. * mu3 + 3. * mu2;
+
+            return (a0 * y1 + a1 * m0 + a2 * m1 + a3 * y2);
+        }
+    }
 }
