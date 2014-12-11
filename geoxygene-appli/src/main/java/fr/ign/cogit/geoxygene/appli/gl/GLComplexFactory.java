@@ -72,7 +72,7 @@ import fr.ign.cogit.geoxygene.util.gl.GLComplexRenderer;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTexture;
-import fr.ign.cogit.geoxygene.util.math.Interpolation;
+import fr.ign.cogit.geoxygene.util.math.BernsteinPolynomial;
 
 /**
  * @author JeT Utility functions for GL drawing
@@ -512,8 +512,8 @@ public class GLComplexFactory {
         float[] coords = new float[6];
 
         PathIterator iter = shape.getPathIterator(null); // ,5) add a number on
-                                                         // here to simplify
-                                                         // verts
+        // here to simplify
+        // verts
 
         int rule = iter.getWindingRule();
         switch (rule) {
@@ -564,9 +564,9 @@ public class GLComplexFactory {
                 for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
                     float t = i / (float) BEZIER_SAMPLE_COUNT;
 
-                    double px = Interpolation.interpolateQuadratic(lastX,
+                    double px = BernsteinPolynomial.evalQuadratic(lastX,
                             coords[0], coords[2], t);
-                    double py = Interpolation.interpolateQuadratic(lastY,
+                    double py = BernsteinPolynomial.evalQuadratic(lastY,
                             coords[1], coords[3], t);
                     vertex = new double[] { px, py, 0 };
                     data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0,
@@ -585,10 +585,10 @@ public class GLComplexFactory {
                 for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
                     float t = i / (float) BEZIER_SAMPLE_COUNT;
 
-                    double px = Interpolation.interpolateCubic(lastX,
-                            coords[0], coords[2], coords[4], t);
-                    double py = Interpolation.interpolateCubic(lastY,
-                            coords[1], coords[3], coords[5], t);
+                    double px = BernsteinPolynomial.evalCubic(lastX, coords[0],
+                            coords[2], coords[4], t);
+                    double py = BernsteinPolynomial.evalCubic(lastY, coords[1],
+                            coords[3], coords[5], t);
                     vertex = new double[] { px, py, 0 };
                     data = new float[] { (float) px, (float) py, 0, 0, 0, 0, 0,
                             0, 0 };
@@ -790,12 +790,12 @@ public class GLComplexFactory {
                         .tesselateThickLine(id, complex,
                                 line.getControlPoint(), new ConstantFunction(
                                         stroke.getStrokeWidth() / 2.),
-                                new ConstantFunction(0),
-                                strtex.getSampleSize(), strtex.getMinAngle(),
-                                minX, minY,
-                                new SolidColorizer(stroke.getColor()),
-                                paperWidthInPixels, paperHeightInPixels,
-                                paperHeightInCm, mapScale);
+                                        new ConstantFunction(0),
+                                        strtex.getSampleSize(), strtex.getMinAngle(),
+                                        minX, minY,
+                                        new SolidColorizer(stroke.getColor()),
+                                        paperWidthInPixels, paperHeightInPixels,
+                                        paperHeightInCm, mapScale);
                 tesselateThickLineTask.start();
                 TaskManager.startAndWait(tesselateThickLineTask);
             } catch (FunctionEvaluationException e) {

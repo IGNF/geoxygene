@@ -49,7 +49,7 @@ import fr.ign.cogit.geoxygene.function.FunctionEvaluationException;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
 import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
-import fr.ign.cogit.geoxygene.util.math.Interpolation;
+import fr.ign.cogit.geoxygene.util.math.BernsteinPolynomial;
 
 /**
  * Tesselator class specialized in tesselating lines (closed or opened)
@@ -62,10 +62,10 @@ public class LineTesselator {
     private static final Logger logger = Logger.getLogger(LineTesselator.class
             .getName()); // logger
     private static final double DEFAULT_AWT_MITERLIMIT = 10.; // 10 is the
-                                                              // default miter
-                                                              // limit defined
-                                                              // by
-                                                              // java.awt.BasiStroke
+    // default miter
+    // limit defined
+    // by
+    // java.awt.BasiStroke
     private static final double anglePrecision = Math.PI / 40;
     private static final double epsilon = 1E-6;
     private static final int BEZIER_SAMPLE_COUNT = 20;
@@ -393,7 +393,7 @@ public class LineTesselator {
                         } else {
                             int previousVertexIndex = vertexIndex3;
                             for (int n = 1; n <= nbJoinPoints; n++) { // round
-                                                                      // part
+                                // part
                                 double angle = n * (alpha2 - alpha1)
                                         / nbJoinPoints;
                                 int currentVertexIndex = complex
@@ -415,7 +415,7 @@ public class LineTesselator {
                             int previousVertexIndex = vertexIndex2;
 
                             for (int n = 1; n <= nbJoinPoints; n++) { // round
-                                                                      // part
+                                // part
                                 double angle = n * (alpha2 - alpha1)
                                         / nbJoinPoints;
                                 int currentVertexIndex = complex
@@ -637,9 +637,9 @@ public class LineTesselator {
                 for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
                     float t = i / (float) BEZIER_SAMPLE_COUNT;
 
-                    double px = Interpolation.interpolateQuadratic(lastX,
+                    double px = BernsteinPolynomial.evalQuadratic(lastX,
                             coords[0], coords[2], t);
-                    double py = Interpolation.interpolateQuadratic(lastY,
+                    double py = BernsteinPolynomial.evalQuadratic(lastY,
                             coords[1], coords[3], t);
                     polyline.add(new Point2D.Double(px, py));
                 }
@@ -653,10 +653,10 @@ public class LineTesselator {
                 for (int i = 1; i <= BEZIER_SAMPLE_COUNT; i++) {
                     float t = i / (float) BEZIER_SAMPLE_COUNT;
 
-                    double px = Interpolation.interpolateCubic(lastX,
-                            coords[0], coords[2], coords[4], t);
-                    double py = Interpolation.interpolateCubic(lastY,
-                            coords[1], coords[3], coords[5], t);
+                    double px = BernsteinPolynomial.evalCubic(lastX, coords[0],
+                            coords[2], coords[4], t);
+                    double py = BernsteinPolynomial.evalCubic(lastY, coords[1],
+                            coords[3], coords[5], t);
                     polyline.add(new Point2D.Double(px, py));
                 }
                 lastX = coords[4];

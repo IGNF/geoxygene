@@ -31,7 +31,7 @@ import javax.vecmath.Point2d;
 
 import org.junit.Test;
 
-import fr.ign.cogit.geoxygene.util.math.Interpolation;
+import fr.ign.cogit.geoxygene.util.math.BernsteinPolynomial;
 
 /**
  * @author JeT
@@ -47,8 +47,10 @@ public class GLComplexFactoryTest {
         final Point2d p3 = new Point2d(1, 0);
         System.err.println("Cubic interpolation");
         for (float t = 0f; t <= 1f; t += 0.01f) {
-            double px = Interpolation.interpolateCubic(p0.x, p1.x, p2.x, p3.x, t);
-            double py = Interpolation.interpolateCubic(p0.y, p1.y, p2.y, p3.y, t);
+            double px = BernsteinPolynomial
+                    .evalCubic(p0.x, p1.x, p2.x, p3.x, t);
+            double py = BernsteinPolynomial
+                    .evalCubic(p0.y, p1.y, p2.y, p3.y, t);
             System.err.println(px + " " + py);
         }
     }
@@ -60,8 +62,8 @@ public class GLComplexFactoryTest {
         final Point2d p2 = new Point2d(1, 0);
         System.err.println("Quadratic interpolation");
         for (float t = 0f; t <= 1f; t += 0.01f) {
-            double px = Interpolation.interpolateQuadratic(p0.x, p1.x, p2.x, t);
-            double py = Interpolation.interpolateQuadratic(p0.y, p1.y, p2.y, t);
+            double px = BernsteinPolynomial.evalQuadratic(p0.x, p1.x, p2.x, t);
+            double py = BernsteinPolynomial.evalQuadratic(p0.y, p1.y, p2.y, t);
             System.err.println(px + " " + py);
         }
     }
@@ -74,8 +76,10 @@ public class GLComplexFactoryTest {
         final Point2d p3 = new Point2d(100000000f, -1000000f);
         System.err.println("High Range Cubic interpolation");
         for (float t = 0f; t <= 1f; t += 0.01f) {
-            double px = Interpolation.interpolateCubic(p0.x, p1.x, p2.x, p3.x, t);
-            double py = Interpolation.interpolateCubic(p0.y, p1.y, p2.y, p3.y, t);
+            double px = BernsteinPolynomial
+                    .evalCubic(p0.x, p1.x, p2.x, p3.x, t);
+            double py = BernsteinPolynomial
+                    .evalCubic(p0.y, p1.y, p2.y, p3.y, t);
             System.err.println(px + " " + py);
         }
     }
