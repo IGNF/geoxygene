@@ -561,6 +561,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
 
             // copy/paste from AbstractProjectFrame::loadSld()
             if (new_sld != null) {
+                new_sld.updateSymbolizers();
+
                 this.layer.getSld().setBackground(new_sld.getBackground());
                 this.layerViewPanel.setViewBackground(new_sld.getBackground());
                 for (int i = 0; i < this.getInitialSLD().getLayers().size(); i++) {
