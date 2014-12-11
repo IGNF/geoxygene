@@ -182,6 +182,20 @@ public class StyledLayerDescriptor implements FeatureCollectionListener {
     }
 
     /**
+     * Update the internal state of the symbolizers
+     */
+    public void updateSymbolizers() {
+        for (Layer layer : this.getLayers()) {
+            for (Style style : layer.getStyles()) {
+                for (Rule rule : style.getFeatureTypeStyles().get(0).getRules()) {
+                    Symbolizer symbolizer = rule.getSymbolizers().get(0);
+                    symbolizer.updateInternal();
+                }
+            }
+        }
+    }
+
+    /**
      * Test if the given color exist in the existing layers of this SLD.
      * 
      * @param c
