@@ -182,13 +182,15 @@ public interface ProjectFrame {
      * 
      * @param fileName
      *            the xml file to load.
+     * @param validate
+     *            Enable the validation of the sld elements
      * @throws JAXBException
      * @throws FileNotFoundException
      */
 
     public void loadSLD(File file) throws FileNotFoundException, JAXBException;
 
-    public void loadSLD(StyledLayerDescriptor new_sld);
+    public void loadSLD(StyledLayerDescriptor new_sld, boolean validate);
 
     public abstract void removeLayers(List<Layer> toRemove);
 

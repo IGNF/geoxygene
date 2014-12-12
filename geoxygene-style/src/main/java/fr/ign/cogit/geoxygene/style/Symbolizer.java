@@ -108,11 +108,6 @@ public interface Symbolizer {
      */
     public void reset();
 
-    /**
-     * Update the internal state of the symbolizer
-     */
-    public void updateInternal();
-
     // /**
     // * Paint a feature using a viewport and a graphics.
     // * @param feature the feature to paint

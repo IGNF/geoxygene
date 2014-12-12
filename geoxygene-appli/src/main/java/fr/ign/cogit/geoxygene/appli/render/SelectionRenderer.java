@@ -229,10 +229,6 @@ public class SelectionRenderer extends AbstractLayerRenderer {
         }
 
         @Override
-        public void updateInternal() {
-        }
-
-        @Override
         public BlendingMode getBlendingMode() {
             return null;
         }

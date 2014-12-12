@@ -132,10 +132,10 @@ public abstract class AbstractSymbolizer implements Symbolizer {
     }
 
     @XmlElements({
-            @XmlElement(name = "NormalBlending", type = BlendingModeNormal.class),
-            @XmlElement(name = "OverlayBlending", type = BlendingModeOverlay.class),
-            @XmlElement(name = "HighToneBlending", type = BlendingModeHighTone.class),
-            @XmlElement(name = "MultiplyBlending", type = BlendingModeMultiply.class) })
+        @XmlElement(name = "NormalBlending", type = BlendingModeNormal.class),
+        @XmlElement(name = "OverlayBlending", type = BlendingModeOverlay.class),
+        @XmlElement(name = "HighToneBlending", type = BlendingModeHighTone.class),
+        @XmlElement(name = "MultiplyBlending", type = BlendingModeMultiply.class) })
     private BlendingMode blendingMode = null;
 
     @Override
@@ -149,8 +149,8 @@ public abstract class AbstractSymbolizer implements Symbolizer {
     }
 
     @XmlElements({
-            @XmlElement(name = "ContrastFilter", type = LayerFilterContrast.class),
-            @XmlElement(name = "NoFilter", type = LayerFilterIdentity.class) })
+        @XmlElement(name = "ContrastFilter", type = LayerFilterContrast.class),
+        @XmlElement(name = "NoFilter", type = LayerFilterIdentity.class) })
     LayerFilter filter = null;
 
     /**
@@ -177,12 +177,6 @@ public abstract class AbstractSymbolizer implements Symbolizer {
      */
     @Override
     public void reset() {
-        // default behavior is to do nothing
-
-    }
-
-    @Override
-    public void updateInternal() {
         // default behavior is to do nothing
 
     }

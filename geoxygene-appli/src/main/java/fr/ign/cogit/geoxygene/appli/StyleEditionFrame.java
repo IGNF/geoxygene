@@ -2402,7 +2402,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
     }
 
     public void reset() {
-        this.layerViewPanel.getProjectFrame().loadSLD(this.initialSLD);
+        this.layerViewPanel.getProjectFrame().loadSLD(this.initialSLD, true);
 
         // Updating the preview style panel
         this.stylePanel.paintComponent(this.stylePanel.getGraphics());

@@ -10,8 +10,15 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
- * @author nmellado
+ * @author Nicolas Mellado
  *
+ *         Symboliser that describes one style interpolated from two other ones
+ *         (stored in the instance).
+ * 
+ *         Note that this class represent only the logic, and not the processing
+ *         functions.
+ * 
+ * @see Validation mechanisms in package geoxygene.appli.validation
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PolygonInterpolationSymbolizer extends PolygonSymbolizer {
@@ -27,6 +34,12 @@ public class PolygonInterpolationSymbolizer extends PolygonSymbolizer {
 
     public PolygonInterpolationSymbolizer() {
         super();
+        this.reset();
+    }
+
+    @Override
+    public void reset() {
+
         this.firstSymbolizer = new PolygonSymbolizer();
         this.secondSymbolizer = new PolygonSymbolizer();
 
@@ -58,8 +71,36 @@ public class PolygonInterpolationSymbolizer extends PolygonSymbolizer {
         this.setStroke(stroke);
         this.firstSymbolizer.setStroke(subStroke1);
         this.secondSymbolizer.setStroke(subStroke2);
+    }
 
-        this.updateInternal();
+    /**
+     * @return the firstSymbolizer
+     */
+    public PolygonSymbolizer getFirstSymbolizer() {
+        return this.firstSymbolizer;
+    }
+
+    /**
+     * @param firstSymbolizer
+     *            the firstSymbolizer to set
+     */
+    public void setFirstSymbolizer(PolygonSymbolizer firstSymbolizer) {
+        this.firstSymbolizer = firstSymbolizer;
+    }
+
+    /**
+     * @return the secondSymbolizer
+     */
+    public PolygonSymbolizer getSecondSymbolizer() {
+        return this.secondSymbolizer;
+    }
+
+    /**
+     * @param secondSymbolizer
+     *            the secondSymbolizer to set
+     */
+    public void setSecondSymbolizer(PolygonSymbolizer secondSymbolizer) {
+        this.secondSymbolizer = secondSymbolizer;
     }
 
     /**
@@ -75,65 +116,6 @@ public class PolygonInterpolationSymbolizer extends PolygonSymbolizer {
      */
     public void setAlpha(float alpha) {
         this.alpha = alpha;
-        this.updateInternal();
-    }
-
-    // Would be better to hide this function to allow to change easily between
-    // different interpolation functions.
-    private static float linearInterpolation(float v1, float v2, float alpha) {
-        return v1 * alpha + v2 * (1.f - alpha);
-    }
-
-    private static Color interpolateRGBColors(Color x, Color y, float alpha) {
-        float red = linearInterpolation(x.getRed(), y.getRed(), alpha);
-        float green = linearInterpolation(x.getGreen(), y.getGreen(), alpha);
-        float blue = linearInterpolation(x.getBlue(), y.getBlue(), alpha);
-
-        System.out.println(x + " -- " + y);
-
-        // note that if i pass float values they have to be in the range of
-        // 0.0-1.0
-        // and not in 0-255 like the ones i get returned by the getters.
-        return new Color(red / 255.f, green / 255.f, blue / 255.f);
-    }
-
-    private static float interpolateScalars(float x, float y, float alpha) {
-        return linearInterpolation(x, y, alpha);
-    }
-
-    @Override
-    public void updateInternal() {
-        // TODO Auto-generated method stub
-        super.updateInternal();
-
-        // update fill
-        Fill subFill1 = this.firstSymbolizer.getFill();
-        Fill subFill2 = this.secondSymbolizer.getFill();
-        this.getFill().setColor(
-                interpolateRGBColors(subFill1.getColor(), subFill2.getColor(),
-                        this.alpha));
-        this.getFill().setFillOpacity(
-                interpolateScalars(subFill1.getFillOpacity(),
-                        subFill2.getFillOpacity(), this.alpha));
-
-        // update stroke
-        Stroke subStroke1 = this.firstSymbolizer.getStroke();
-        Stroke subStroke2 = this.secondSymbolizer.getStroke();
-
-        // HACK: need to call this function to update internal transcient fields
-        // according to css properties
-        subStroke1.getColor();
-        subStroke2.getColor();
-
-        this.getStroke().setStroke(
-                interpolateRGBColors(subStroke1.getStroke(),
-                        subStroke2.getStroke(), this.alpha));
-        this.getStroke().setStrokeOpacity(
-                interpolateScalars(subStroke1.getStrokeOpacity(),
-                        subStroke2.getStrokeOpacity(), this.alpha));
-        this.getStroke().setStrokeWidth(
-                interpolateScalars(subStroke1.getStrokeWidth(),
-                        subStroke2.getStrokeWidth(), this.alpha));
     }
 
     /*

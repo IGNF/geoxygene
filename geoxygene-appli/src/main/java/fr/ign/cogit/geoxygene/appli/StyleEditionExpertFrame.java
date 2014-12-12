@@ -29,6 +29,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -52,6 +53,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
@@ -84,7 +86,7 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  * @author JeT
  */
 public class StyleEditionExpertFrame extends JDialog implements ActionListener,
-        ListSelectionListener {
+ListSelectionListener {
 
     private static final String FIND_PREV_COMMAND = "FindPrev";
 
@@ -275,7 +277,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
                     .toLowerCase()
                     .indexOf(
                             "<name>" + this.layer.getName().toLowerCase()
-                                    + "</name>");
+                            + "</name>");
             if (caret >= 0) {
                 this.getEditor().setCaretPosition(caret);
                 centerLineInScrollPane(this.getEditor());
@@ -343,7 +345,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
 
         if (!forceEdition
                 && this.layerLegendPanel.getLayerViewPanel().getProjectFrame()
-                        .getSldEditionOwners().size() > 0) {
+                .getSldEditionOwners().size() > 0) {
             JPanel panel = new JPanel(new GridBagLayout());
             JLabel label = new JLabel(
                     "<html><center><font color='red' family='bold' size='+2'>"
@@ -401,13 +403,13 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
                 @Override
                 public void windowClosed(WindowEvent e) {
                     StyleEditionExpertFrame.this.layerLegendPanel
-                            .getLayerViewPanel()
-                            .getProjectFrame()
-                            .releaseSldEditionLock(StyleEditionExpertFrame.this);
+                    .getLayerViewPanel()
+                    .getProjectFrame()
+                    .releaseSldEditionLock(StyleEditionExpertFrame.this);
                 }
             });
             this.layerLegendPanel.getLayerViewPanel().getProjectFrame()
-                    .addSldEditionLock(this);
+            .addSldEditionLock(this);
         }
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -524,8 +526,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
             this.displayPanel = new JPanel(new BorderLayout());
             this.displayPanel.setBorder(border);
             this.displayPanel.add(new JScrollPane(this.getDisplayTextPane(),
-                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),
+                    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED),
                     BorderLayout.CENTER);
         }
         return this.displayPanel;
@@ -548,7 +550,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
             this.editor.setCodeFoldingEnabled(true);
             this.editor.setAntiAliasingEnabled(true);
             this.editor
-                    .setText("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+            .setText("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
             this.editor.addKeyListener(new KeyListener() {
 
                 @Override
@@ -562,7 +564,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
                 @Override
                 public void keyPressed(KeyEvent e) {
                     if (e.getKeyCode() == KeyEvent.VK_S
-                            && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+                            && (e.getModifiers() & InputEvent.CTRL_MASK) != 0) {
                         StyleEditionExpertFrame.this.applyButton.doClick();
                     }
                 }
@@ -578,8 +580,7 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
                     .getText().getBytes("UTF-8"));
             StyledLayerDescriptor new_sld = StyledLayerDescriptor
                     .unmarshall(in);
-            new_sld.updateSymbolizers();
-            this.layerViewPanel.getProjectFrame().loadSLD(new_sld);
+            this.layerViewPanel.getProjectFrame().loadSLD(new_sld, true);
         } catch (Exception e) {
             e.printStackTrace();
             this.error(e.getClass().getName(), null);
@@ -625,7 +626,8 @@ public class StyleEditionExpertFrame extends JDialog implements ActionListener,
 
         // When the user cancel style modifications in the main interface
         if (e.getSource() == this.getCancelButton()) {
-            this.layerViewPanel.getProjectFrame().loadSLD(this.getInitialSLD());
+            this.layerViewPanel.getProjectFrame().loadSLD(this.getInitialSLD(),
+                    true);
             this.layerLegendPanel.repaint();
             this.layerViewPanel.repaint();
             this.layerLegendPanel.removeSelectionChangeListener(this);

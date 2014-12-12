@@ -30,12 +30,18 @@ import fr.ign.cogit.geoxygene.appli.layer.LayerFactory.LayerType;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory;
+import fr.ign.cogit.geoxygene.appli.validation.SymbolizerValidator;
+import fr.ign.cogit.geoxygene.appli.validation.SymbolizerValidator.InvalidSymbolizerException;
+import fr.ign.cogit.geoxygene.appli.validation.SymbolizerValidatorFactory;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.Rule;
+import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.UserLayerFactory;
 import fr.ign.cogit.geoxygene.util.conversion.GPSTextfileReader;
 import fr.ign.cogit.geoxygene.util.conversion.RoadNetworkTextfileReader;
@@ -663,7 +669,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
      * @throws JAXBException
      * @throws FileNotFoundException
      */
-
+     
     @Override
     public void loadSLD(File file) throws FileNotFoundException, JAXBException {
 
@@ -676,7 +682,7 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
             synchronized (this.getSld().lock) {
                 new_sld = StyledLayerDescriptor.unmarshall(
                         file.getAbsolutePath(), this.getDataSet());
-                this.loadSLD(new_sld);
+                this.loadSLD(new_sld, true);
             }
         } else {
             if (!(file.getAbsolutePath().endsWith(".xml") //$NON-NLS-1$
@@ -695,11 +701,40 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     }
 
     /**
+     * @author Nicolas Mellado
+     * @brief Validate the content of the SLD. For now only {@link Symbolizer}
+     *        are validated
+     * @param sld
+     */
+    private void validateSLD(StyledLayerDescriptor sld) {
+        for (Layer layer : sld.getLayers()) {
+            for (Style style : layer.getStyles()) {
+                for (Rule rule : style.getFeatureTypeStyles().get(0).getRules()) {
+                    Symbolizer symbolizer = rule.getSymbolizers().get(0);
+
+                    SymbolizerValidator validator = SymbolizerValidatorFactory
+                            .getOrCreateValidator(symbolizer);
+                    if (validator != null)
+                        try {
+                            validator.validate(symbolizer);
+                        } catch (InvalidSymbolizerException e) {
+                            logger.error(e.getStackTrace().toString());
+                        }
+                }
+            }
+        }
+    }
+
+    /**
      * @param new_sld
      */
     @Override
-    public void loadSLD(StyledLayerDescriptor new_sld) {
+    public void loadSLD(StyledLayerDescriptor new_sld, boolean validate) {
         if (new_sld != null) {
+            if (validate) {
+                this.validateSLD(new_sld);
+            }
+
             this.getLayerViewPanel().setViewBackground(new_sld.getBackground());
             this.getSld().setBackground(new_sld.getBackground());
 
