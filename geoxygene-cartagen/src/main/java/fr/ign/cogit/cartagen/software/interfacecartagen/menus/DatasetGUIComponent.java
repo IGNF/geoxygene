@@ -74,9 +74,9 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.cartagen.util.FileUtil;
 import fr.ign.cogit.cartagen.util.LastSessionParameters;
-import fr.ign.cogit.cartagen.util.ReflectionUtil;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.util.ReflectionUtil;
 
 /**
  * This menu allows to manipulate the CartAGen datasets, import data or export

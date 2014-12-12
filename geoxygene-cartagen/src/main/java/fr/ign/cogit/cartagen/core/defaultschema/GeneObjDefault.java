@@ -38,13 +38,13 @@ import fr.ign.cogit.cartagen.graph.INode;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
-import fr.ign.cogit.cartagen.util.ReflectionUtil;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
+import fr.ign.cogit.geoxygene.util.ReflectionUtil;
 import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
 
 /**

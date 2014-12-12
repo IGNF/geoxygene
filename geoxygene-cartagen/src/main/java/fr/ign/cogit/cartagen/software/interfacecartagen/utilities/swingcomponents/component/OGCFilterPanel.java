@@ -44,7 +44,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
-import fr.ign.cogit.cartagen.util.ReflectionUtil;
 import fr.ign.cogit.geoxygene.filter.And;
 import fr.ign.cogit.geoxygene.filter.BinaryComparisonOpsType;
 import fr.ign.cogit.geoxygene.filter.BinaryLogicOpsType;
@@ -62,6 +61,7 @@ import fr.ign.cogit.geoxygene.filter.PropertyIsNull;
 import fr.ign.cogit.geoxygene.filter.UnaryLogicOpsType;
 import fr.ign.cogit.geoxygene.filter.expression.Literal;
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
+import fr.ign.cogit.geoxygene.util.ReflectionUtil;
 
 /**
  * A GUI to manually create OGC Filters.

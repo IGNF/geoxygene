@@ -28,7 +28,7 @@ import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.renderer.ClassSimpleNameTreeRenderer;
 import fr.ign.cogit.cartagen.util.FileUtil;
-import fr.ign.cogit.cartagen.util.ReflectionUtil;
+import fr.ign.cogit.geoxygene.util.ReflectionUtil;
 
 /**
  * This swing component is a JTree that displays either all classes or all
@@ -119,8 +119,8 @@ public class GeneObjClassTree extends JTree {
       if (!file.getName().endsWith(".class")) {
         continue;
       }
-      if (file.getName().substring(0, file.getName().length() - 6).equals(
-          "GothicObjectDiffusion")) {
+      if (file.getName().substring(0, file.getName().length() - 6)
+          .equals("GothicObjectDiffusion")) {
         continue;
       }
 
