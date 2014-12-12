@@ -19,6 +19,7 @@
 package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -40,6 +41,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
@@ -272,19 +274,18 @@ public abstract class AbstractMainFrame implements MainFrame,
             // 1);
             // this.statusBar.addStatusBarComponent(this.getTaskManagerGui().getGui(),
             // 0.3);
-            // this.statusBar.addStatusBarComponent(this.getMemoryBar().getGui(),
-            // 0.);
-            // JButton gcButton = new JButton("gc");
-            // gcButton.setToolTipText("run garbage collector");
-            // gcButton.setBorder(BorderFactory.createLineBorder(Color.gray,
-            // 1));
-            // gcButton.addActionListener(new ActionListener() {
-            // @Override
-            // public void actionPerformed(ActionEvent e) {
-            // Runtime.getRuntime().gc();
-            // }
-            // });
-            // this.statusBar.addStatusBarComponent(gcButton, 0.);
+            this.statusBar.addStatusBarComponent(this.getMemoryBar().getGui(),
+                    0.);
+            JButton gcButton = new JButton("gc");
+            gcButton.setToolTipText("run garbage collector");
+            gcButton.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+            gcButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Runtime.getRuntime().gc();
+                }
+            });
+            this.statusBar.addStatusBarComponent(gcButton, 0.);
         }
         return this.statusBar;
     }
