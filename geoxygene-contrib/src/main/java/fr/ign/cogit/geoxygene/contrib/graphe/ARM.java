@@ -218,7 +218,7 @@ public class ARM {
     Noeud noeud1 = null;
     Collection<Noeud> ptsProches = reseau.getPopNoeuds().select(pt1.coord().get(0), 500); 
                                                                                           
-    Iterator itPtsProches = ptsProches.iterator();
+    Iterator<Noeud> itPtsProches = ptsProches.iterator();
     double distmin = 1000;
 
     while (itPtsProches.hasNext()) {
@@ -228,8 +228,9 @@ public class ARM {
         noeud1 = noeud;
       }
     }
-    if (noeud1 == null)
+    if (noeud1 == null) {
       return 100000;
+    }
 
     // recupére le noeud le plus proche de p2
     Noeud noeud2 = null;
