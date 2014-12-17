@@ -2,6 +2,7 @@ package fr.ign.cogit.ontology.similarite;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.hp.hpl.jena.ontology.OntClass;
@@ -33,13 +34,20 @@ public class TestWuPalmer {
         TestWuPalmer.class.getClassLoader().getResource("topo.rdf").getPath());
     // ontoTopo.affiche();
     
+    OntClass val1 = ontoTopo.getOWLModel().getOntClass("http://data.ign.fr/def/topo#ElementDuRelief");
+    if (val1 != null) {
+      Assert.assertEquals("Entité topographique correspondant à une rupture de pente artificielle, ou à un élément remarquable du relief nommé.", val1.getComment("fr"));
+      Assert.assertEquals("ElementDuRelief", val1.getLocalName());
+    }
+    
+    OntClass val2 = ontoTopo.getOWLModel().getOntClass("http://data.ign.fr/def/topo#ZoneDeVegetation");
+    if (val2 != null) {
+      Assert.assertEquals("Espace végétal naturel ou non différencié selon le couvert forestier.", val2.getComment("fr"));
+      Assert.assertEquals("ZoneDeVegetation", val2.getLocalName());
+    }
+
     // Calcul des similarité sémantiques
     MesureSimilariteSemantique mesureSim = new WuPalmerSemanticSimilarity(ontoTopo);
-    
-    OntClass val1 = ontoTopo.getOWLModel().getOntClass("caserne de pompiers");
-    OntClass val2 = ontoTopo.getOWLModel().getOntClass("Parking");
-    //System.out.println(val1.getComment("fr"));
-    
     // double scoreSimilariteSemantique = mesureSim.calcule(val1, val2);
     // System.out.println("Score de similarité sémantique = " + scoreSimilariteSemantique);
     
