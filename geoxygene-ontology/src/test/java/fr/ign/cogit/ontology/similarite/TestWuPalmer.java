@@ -46,8 +46,11 @@ public class TestWuPalmer {
       Assert.assertEquals("ZoneDeVegetation", val2.getLocalName());
     }
 
+    OntClass c = ontoTopo.getPPPC(val1, val2);
+    
+    
     // Calcul des similarité sémantiques
-    MesureSimilariteSemantique mesureSim = new WuPalmerSemanticSimilarity(ontoTopo);
+    // MesureSimilariteSemantique mesureSim = new WuPalmerSemanticSimilarity(ontoTopo);
     // double scoreSimilariteSemantique = mesureSim.calcule(val1, val2);
     // System.out.println("Score de similarité sémantique = " + scoreSimilariteSemantique);
     

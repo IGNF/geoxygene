@@ -193,7 +193,7 @@ public final class OntologieOWL {
    * @return le plus petit parent commun des deux classes en entrée
    * 
    */
-  public OWLClass getPPPC(OntClass c1, OntClass c2) {
+  public OntClass getPPPC(OntClass c1, OntClass c2) {
     
     LOGGER.info("Calcul du plus petit subsumant commun");
     
@@ -202,8 +202,11 @@ public final class OntologieOWL {
      * on considère que le plus parent commun est la racine de l'arbre, 
      * et que la distance min de ce PPPC aux 2 classes vaut l'infini (=1000000);
      */
-    // this.getOWLModel().getOWLThingClass();
-    // OWLClass thing = owlmodel.get
+    List<OntClass> list = owlmodel.listHierarchyRootClasses().toList();
+    for (int i = 0; i< list.size(); i++) {
+      System.out.println(list.get(i).getLocalName());
+    }
+    // OWLClass thing = owlmodel.getOWLThingClass();
     // OWLClass pppc = thing;
     int distMin = 1000000;
 
