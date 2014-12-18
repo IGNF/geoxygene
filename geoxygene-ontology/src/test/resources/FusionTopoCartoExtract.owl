@@ -1,0 +1,467 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.owl-ontologies.com/Ontology1176738221.owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xml:base="http://www.owl-ontologies.com/Ontology1176738221.owl">
+  <owl:Ontology rdf:about=""/>
+  <owl:Class rdf:ID="falaise">
+    <rdfs:label xml:lang="en">cliff</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="escarpement"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="val">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="vallée"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">narrow valley</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="entité_du_relief_terrestre">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="entites_topographiques_naturelles"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">relief feature</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="grève">
+    <rdfs:label xml:lang="en">gravel beach</rdfs:label>
+    <rdfs:label xml:lang="en">gravelly beach</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="plage"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="coteau">
+    <rdfs:label xml:lang="en">hill-side</rdfs:label>
+    <rdfs:label xml:lang="en">hillside</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="versant"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="éboulis">
+    <rdfs:label xml:lang="en">scree</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="rocher"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="isthme">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="presqu_île"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">isthmus</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="hauts-fonds">
+    <rdfs:label xml:lang="en">shoal</rdfs:label>
+    <rdfs:label xml:lang="en">shelf</rdfs:label>
+    <rdfs:label xml:lang="en">shallow</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="banc"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="mamelon">
+    <rdfs:label xml:lang="en">rounded hillock</rdfs:label>
+    <rdfs:label xml:lang="en">knoll</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="sommet"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="récif">
+    <rdfs:label xml:lang="en">reef</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="entité_maritime"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="cap">
+    <rdfs:label xml:lang="en">course</rdfs:label>
+    <rdfs:label xml:lang="en">heading</rdfs:label>
+    <rdfs:label xml:lang="en">bearing</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="espace_côtier"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="goulet">
+    <rdfs:label xml:lang="en">gut</rdfs:label>
+    <rdfs:label xml:lang="en">narrows</rdfs:label>
+    <rdfs:label xml:lang="en">sound</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#espace_côtier"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="combe">
+    <rdfs:label xml:lang="en">coomb</rdfs:label>
+    <rdfs:label xml:lang="en">anticlinal valley</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#vallée"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="ravin">
+    <rdfs:label xml:lang="en">ravine</rdfs:label>
+    <rdfs:label xml:lang="en">gully</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="gorge"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="grotte">
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+    <rdfs:label xml:lang="en">cave</rdfs:label>
+    <rdfs:label xml:lang="en">grotto</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="crête">
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+    <rdfs:label xml:lang="en">crest</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="mangrove">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#espace_côtier"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">mangrove swamp</rdfs:label>
+    <rdfs:label xml:lang="en">mangrove</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="lagune">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#espace_côtier"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">lagoon</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="volcan">
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+    <rdfs:label xml:lang="en">volcano</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="barre_rocheuse">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#escarpement"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">rocky hog back</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#sommet">
+    <rdfs:label xml:lang="en">summit</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+  </owl:Class>
+  <owl:Class rdf:ID="plaine">
+    <rdfs:label xml:lang="en">plain</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+  </owl:Class>
+  <owl:Class rdf:ID="aiguille">
+    <rdfs:label xml:lang="en">stack</rdfs:label>
+    <rdfs:label xml:lang="en">peak</rdfs:label>
+    <rdfs:label xml:lang="en">spine</rdfs:label>
+    <rdfs:label xml:lang="en">needle</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="pic"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="névé">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="glacier"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">firn</rdfs:label>
+    <rdfs:label xml:lang="en">neve</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#plage">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="estran"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >beach</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="dépression">
+    <rdfs:label xml:lang="en">depression</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+  </owl:Class>
+  <owl:Class rdf:ID="crevasse">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#glacier"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">crevasse</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="rocher_marin">
+    <rdfs:label xml:lang="en">skerry</rdfs:label>
+    <rdfs:label xml:lang="en">low tide rocks</rdfs:label>
+    <rdfs:label xml:lang="en">rock exposed at the hydrographic datum</rdfs:label>
+    <rdfs:label xml:lang="en">sgeir</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#récif"/>
+    <rdfs:label xml:lang="en">drying rock</rdfs:label>
+    <rdfs:label xml:lang="en">exposed rock</rdfs:label>
+    <rdfs:label xml:lang="en">sunken rock</rdfs:label>
+    <rdfs:label xml:lang="en">awash rock</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="plateau">
+    <rdfs:label xml:lang="en">table-land</rdfs:label>
+    <rdfs:label xml:lang="en">plateau</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+  </owl:Class>
+  <owl:Class rdf:ID="mont">
+    <rdfs:subClassOf rdf:resource="#sommet"/>
+    <rdfs:label xml:lang="en">mount</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#escarpement">
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+    <rdfs:label xml:lang="en">escarpment</rdfs:label>
+    <rdfs:label xml:lang="en">scarp</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="cordon_littoral">
+    <rdfs:label xml:lang="en">barrier beach</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#estran"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="île">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#entité_maritime"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">island</rdfs:label>
+    <rdfs:label xml:lang="en">isle</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="chaos">
+    <rdfs:label xml:lang="en">rockslide</rdfs:label>
+    <rdfs:label xml:lang="en">chaos</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#rocher"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#estran">
+    <rdfs:label xml:lang="en">foreshore</rdfs:label>
+    <rdfs:label xml:lang="en">strand</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#espace_côtier"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="arête">
+    <rdfs:label xml:lang="en">edge</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#crête"/>
+  </owl:Class>
+  <owl:Class rdf:ID="montagne">
+    <rdfs:subClassOf rdf:resource="#sommet"/>
+    <rdfs:label xml:lang="en">mountain</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="laisse_de_basses_mers">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="limite_côtière"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">low water line</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#glacier">
+    <rdfs:label xml:lang="en">glacier</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+  </owl:Class>
+  <owl:Class rdf:ID="vallon">
+    <rdfs:label xml:lang="en">small valley</rdfs:label>
+    <rdfs:label xml:lang="en">dingle</rdfs:label>
+    <rdfs:label xml:lang="en">dell</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#vallée"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="promontoire">
+    <rdfs:subClassOf rdf:resource="#cap"/>
+    <rdfs:label xml:lang="en">headland</rdfs:label>
+    <rdfs:label xml:lang="en">promontory</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="laisse_de_hautes_mers">
+    <rdfs:label xml:lang="en">high water line</rdfs:label>
+    <rdfs:label xml:lang="en">high water mark</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#limite_côtière"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="chenal">
+    <rdfs:label xml:lang="en">channel</rdfs:label>
+    <rdfs:label xml:lang="en">gat</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#espace_côtier"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="cuvette">
+    <rdfs:subClassOf rdf:resource="#dépression"/>
+    <rdfs:label xml:lang="en">hollow</rdfs:label>
+    <rdfs:label xml:lang="en">depression</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#versant">
+    <rdfs:label xml:lang="en">slope</rdfs:label>
+    <rdfs:label xml:lang="en">side</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+  </owl:Class>
+  <owl:Class rdf:ID="thalweg">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#vallée"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">valley line</rdfs:label>
+    <rdfs:label xml:lang="en">thalweg</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="colline">
+    <rdfs:subClassOf rdf:resource="#sommet"/>
+    <rdfs:label xml:lang="en">hill</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="chaîne_de_montagne">
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+    <rdfs:label xml:lang="en">range of mountains</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="ligne_de_faîte">
+    <rdfs:label xml:lang="en">ridge</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+  </owl:Class>
+  <owl:Class rdf:ID="col">
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+    <rdfs:label xml:lang="en">mountain pass</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="doline">
+    <rdfs:label xml:lang="en">sink hole</rdfs:label>
+    <rdfs:label xml:lang="en">swallow-hole</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#dépression"/>
+  </owl:Class>
+  <owl:Class rdf:ID="canyon">
+    <rdfs:label xml:lang="en">canyon</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#gorge"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#limite_côtière">
+    <rdfs:label xml:lang="en">coast line</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#estran"/>
+  </owl:Class>
+  <owl:Class rdf:about="#rocher">
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+    <rdfs:label xml:lang="en">crag</rdfs:label>
+    <rdfs:label xml:lang="en">rock</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="anse">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="baie"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">cove</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="sérac">
+    <rdfs:subClassOf rdf:resource="#glacier"/>
+    <rdfs:label xml:lang="en">serac</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="défilé">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#gorge"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">pass</rdfs:label>
+    <rdfs:label xml:lang="en">defile</rdfs:label>
+    <rdfs:label xml:lang="en">gorge</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="dune">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#espace_côtier"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">dune</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="calanque">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#baie"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">cala</rdfs:label>
+    <rdfs:label xml:lang="en">cove</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="massif_rocheux">
+    <rdfs:label xml:lang="en">rocky highland</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+  </owl:Class>
+  <owl:Class rdf:about="#baie">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#entité_maritime"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">bay</rdfs:label>
+    <rdfs:label xml:lang="en">bight</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="brisant">
+    <rdfs:label xml:lang="en">breaker</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#récif"/>
+  </owl:Class>
+  <owl:Class rdf:ID="face_abrupte">
+    <rdfs:label xml:lang="en">abrupt face</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#escarpement"/>
+  </owl:Class>
+  <owl:Class rdf:ID="cratère">
+    <rdfs:subClassOf rdf:resource="#volcan"/>
+    <rdfs:label xml:lang="en">crater</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#gorge">
+    <rdfs:label xml:lang="en">gorge</rdfs:label>
+    <rdfs:label xml:lang="en">glen</rdfs:label>
+    <rdfs:label xml:lang="en">gleann</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+  </owl:Class>
+  <owl:Class rdf:ID="îlot">
+    <rdfs:label xml:lang="en">islet</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#île"/>
+  </owl:Class>
+  <owl:Class rdf:about="#espace_côtier">
+    <rdfs:label xml:lang="en">seacoast</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#entité_maritime"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="golfe">
+    <rdfs:label xml:lang="en">gulf</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#baie"/>
+  </owl:Class>
+  <owl:Class rdf:ID="moraine">
+    <rdfs:label xml:lang="en">moraine</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#glacier"/>
+  </owl:Class>
+  <owl:Class rdf:ID="crique">
+    <rdfs:subClassOf rdf:resource="#baie"/>
+    <rdfs:label xml:lang="en">inlet</rdfs:label>
+    <rdfs:label xml:lang="en">creek</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="piton">
+    <rdfs:label xml:lang="en">peak</rdfs:label>
+    <rdfs:label xml:lang="en">bell-turret</rdfs:label>
+    <rdfs:label xml:lang="en">pinnacle</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#pic"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#banc">
+    <rdfs:label xml:lang="en">tidal flat</rdfs:label>
+    <rdfs:label xml:lang="en">ledge</rdfs:label>
+    <rdfs:label xml:lang="en">bank</rdfs:label>
+    <rdfs:label xml:lang="en">mudbank</rdfs:label>
+    <rdfs:label xml:lang="en">sandbank</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#entité_maritime"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="cirque">
+    <rdfs:label xml:lang="en">corrie</rdfs:label>
+    <rdfs:label xml:lang="en">cirque</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+  </owl:Class>
+  <owl:Class rdf:about="#vallée">
+    <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
+    <rdfs:label xml:lang="en">valley</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#presqu_île">
+    <rdfs:label xml:lang="en">peninsula</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#espace_côtier"/>
+  </owl:Class>
+  <owl:Class rdf:ID="cluse">
+    <rdfs:subClassOf rdf:resource="#gorge"/>
+    <rdfs:label xml:lang="en">cluse</rdfs:label>
+    <rdfs:label xml:lang="en">transverse valley</rdfs:label>
+    <rdfs:label xml:lang="en">cross-valley</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#pic">
+    <rdfs:subClassOf rdf:resource="#sommet"/>
+    <rdfs:label xml:lang="en">peak</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="pierrier">
+    <rdfs:subClassOf rdf:resource="#rocher"/>
+    <rdfs:label xml:lang="en">pile of stones</rdfs:label>
+    <rdfs:label xml:lang="en">scree</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#entité_maritime">
+    <rdfs:subClassOf rdf:resource="#entites_topographiques_naturelles"/>
+    <rdfs:label xml:lang="en">maritime space</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="pointe">
+    <rdfs:label xml:lang="en">point</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#cap"/>
+  </owl:Class>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 3.2.1, Build 365)  http://protege.stanford.edu -->

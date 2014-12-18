@@ -1,6 +1,6 @@
 package fr.ign.cogit.ontology;
 
-import org.semanticweb.owlapi.io.RDFResource;
+import com.hp.hpl.jena.ontology.OntClass;
 
 /**
  * 
@@ -8,8 +8,8 @@ import org.semanticweb.owlapi.io.RDFResource;
  */
 public class ValeurMatriceCreuse {
 	
-  private RDFResource line;
-  private RDFResource row;
+  private OntClass line;
+  private OntClass row;
   private Integer value;
 	
   /**
@@ -18,26 +18,26 @@ public class ValeurMatriceCreuse {
    * @param row RDFResource
    * @param value value
    */
-  public ValeurMatriceCreuse(RDFResource line, RDFResource row, int value) {
+  public ValeurMatriceCreuse(OntClass line, OntClass row, int value) {
     super();
     this.line = line;
     this.row = row;
     this.value = value;
   }
 	
-	public RDFResource getLine() {
+	public OntClass getLine() {
 		return line;
 	}
-	public RDFResource getRow() {
+	public OntClass getRow() {
 		return row;
 	}
 	public Integer getValue() {
 		return value;
 	}
-	public void setLine(RDFResource line) {
+	public void setLine(OntClass line) {
 		this.line = line;
 	}
-	public void setRow(RDFResource row) {
+	public void setRow(OntClass row) {
 		this.row = row;
 	}
 	public void setValue(Integer value) {

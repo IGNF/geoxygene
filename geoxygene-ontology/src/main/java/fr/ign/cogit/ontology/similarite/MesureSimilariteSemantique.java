@@ -11,6 +11,8 @@ package fr.ign.cogit.ontology.similarite;
 
 import org.semanticweb.owlapi.io.RDFResource;
 
+import com.hp.hpl.jena.ontology.OntClass;
+
 import fr.ign.cogit.ontology.OntologieOWL;
 
 /**
