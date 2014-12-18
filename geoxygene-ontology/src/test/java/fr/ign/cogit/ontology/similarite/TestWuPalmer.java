@@ -27,7 +27,7 @@ public class TestWuPalmer {
     System.out.println("----------------");
   }
   
-  @Test
+  /*@Test
   public void testWP2() {
     
     // On charge l'ontologie 'spatial relations'
@@ -52,7 +52,7 @@ public class TestWuPalmer {
     // Close
     ontoTopo.close();
     System.out.println("----------------");
-  }
+  }*/
   
   @Test
   public void testWP3() {
