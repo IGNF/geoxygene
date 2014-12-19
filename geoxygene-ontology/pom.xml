@@ -45,24 +45,44 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.semanticweb</groupId>
-			<artifactId>owlapi</artifactId>
-			<version>3.0.0</version>
-			<scope>compile</scope>
-		</dependency>
-		
-		<dependency>
 			<groupId>net.sourceforge.owlapi</groupId>
 			<artifactId>owlapi-api</artifactId>
-			<version>3.5.1</version>
+			<version>3.4.5</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.owlapi</groupId>
+			<artifactId>owlapi-apibinding</artifactId>
+			<version>3.4.5</version>
+		</dependency>
+
+		<!-- <dependency> <groupId>org.semanticweb</groupId> <artifactId>owlapi</artifactId> 
+			<version>3.0.0</version> <scope>compile</scope> </dependency> -->
+		<!-- <dependency> <groupId>net.sourceforge.owlapi</groupId> <artifactId>owlapi-api</artifactId> 
+			<version>3.5.1</version> </dependency> -->
 
 		<dependency>
-		    <groupId>org.apache.jena</groupId>
-		    <artifactId>jena-core</artifactId>
-		    <version>2.12.1</version>
+			<groupId>edu.stanford</groupId>
+			<artifactId>protege</artifactId>
+			<version>3.2.1</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/protege-3.2.1.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>edu.stanford</groupId>
+			<artifactId>protege-owl</artifactId>
+			<version>3.2.1</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/protege-owl-3.2.1.jar</systemPath>
+		</dependency>
+		<dependency>
+            <groupId>com.hp.hpl.jena</groupId>
+            <artifactId>jena</artifactId>
+            <version>2.6.2</version>
+        </dependency>
 
+
+		<!-- <dependency> <groupId>org.apache.jena</groupId> <artifactId>jena-core</artifactId> 
+			<version>2.12.1</version> </dependency> -->
 
 	</dependencies>
 </project>

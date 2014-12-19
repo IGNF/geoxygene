@@ -140,7 +140,6 @@
     <rdfs:label xml:lang="en">rocky hog back</rdfs:label>
   </owl:Class>
   <owl:Class rdf:about="#sommet">
-    <rdfs:label xml:lang="fr">sommet</rdfs:label>
     <rdfs:label xml:lang="en">summit</rdfs:label>
     <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
   </owl:Class>
@@ -203,9 +202,8 @@
   </owl:Class>
   <owl:Class rdf:about="#escarpement">
     <rdfs:subClassOf rdf:resource="#entité_du_relief_terrestre"/>
-    <rdfs:label xml:lang="fr">escarpement</rdfs:label>
-    <rdfs:label xml:lang="en">scarp</rdfs:label>
     <rdfs:label xml:lang="en">escarpment</rdfs:label>
+    <rdfs:label xml:lang="en">scarp</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="cordon_littoral">
     <rdfs:label xml:lang="en">barrier beach</rdfs:label>
@@ -240,7 +238,6 @@
   </owl:Class>
   <owl:Class rdf:ID="montagne">
     <rdfs:subClassOf rdf:resource="#sommet"/>
-    <rdfs:label xml:lang="fr">montagne</rdfs:label>
     <rdfs:label xml:lang="en">mountain</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="laisse_de_basses_mers">
@@ -459,7 +456,6 @@
   </owl:Class>
   <owl:Class rdf:about="#pic">
     <rdfs:subClassOf rdf:resource="#sommet"/>
-    <rdfs:label xml:lang="fr">pic</rdfs:label>
     <rdfs:label xml:lang="en">peak</rdfs:label>
   </owl:Class>
   <owl:Class rdf:ID="pierrier">

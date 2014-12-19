@@ -1,13 +1,19 @@
+/*******************************************************************************
+ * This software is released under the licence CeCILL
+ *  
+ *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ *  
+ *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ *  
+ *  @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.ontology.similarite;
-
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.semanticweb.owlapi.io.RDFResource;
 
-import com.hp.hpl.jena.ontology.OntClass;
-
+import edu.stanford.smi.protegex.owl.model.OWLNamedClass;
+import edu.stanford.smi.protegex.owl.model.RDFResource;
 import fr.ign.cogit.ontology.OntologieOWL;
 
 /**
@@ -17,62 +23,47 @@ import fr.ign.cogit.ontology.OntologieOWL;
 public class TestWuPalmer {
   
   @Test
-  public void testWP1() {
+  public void testSommetMontagnePicEscarpement() {
     
-    // On charge l'ontologie 'spatial relations'
-    OntologieOWL ontologie = new OntologieOWL("Spatial relations", 
-        TestWuPalmer.class.getClassLoader().getResource("spatialrelations2.owl").getPath());
-    // ontologie.affiche();
-    ontologie.close();
-    System.out.println("----------------");
-  }
-  
-  /*@Test
-  public void testWP2() {
+    // On charge l'ontologie 'FusionTopoCartoExtract'
+    OntologieOWL ontoTopoCarto = new OntologieOWL("FusionTopoCartoExtract", 
+        TestWuPalmer.class.getClassLoader().getResource("FusionTopoCartoExtract.owl").getPath());
+    // ontoTopoCarto.affiche();
     
-    // On charge l'ontologie 'spatial relations'
-    OntologieOWL ontoTopo = new OntologieOWL("Topo", 
-        TestWuPalmer.class.getClassLoader().getResource("topo.rdf").getPath());
-    // ontoTopo.affiche();
+    RDFResource rSommet = ontoTopoCarto.getOWLModel().getRDFResource("sommet");
+    Assert.assertEquals("", "sommet", rSommet.getLocalName());
     
-    OntClass val1 = ontoTopo.getOWLModel().getOntClass("http://data.ign.fr/def/topo#ElementDuRelief");
-    if (val1 != null) {
-      Assert.assertEquals("Entité topographique correspondant à une rupture de pente artificielle, ou à un élément remarquable du relief nommé.", val1.getComment("fr"));
-      Assert.assertEquals("ElementDuRelief", val1.getLocalName());
-    }
+    RDFResource rMontagne = ontoTopoCarto.getOWLModel().getRDFResource("montagne");
+    Assert.assertEquals("", "montagne", rMontagne.getLocalName());
     
-    OntClass val2 = ontoTopo.getOWLModel().getOntClass("http://data.ign.fr/def/topo#ZoneDeVegetation");
-    if (val2 != null) {
-      Assert.assertEquals("Espace végétal naturel ou non différencié selon le couvert forestier.", val2.getComment("fr"));
-      Assert.assertEquals("ZoneDeVegetation", val2.getLocalName());
-    }
+    RDFResource rEscarpement = ontoTopoCarto.getOWLModel().getRDFResource("escarpement");
+    Assert.assertEquals("", "escarpement", rEscarpement.getLocalName());
+    
+    RDFResource rPic = ontoTopoCarto.getOWLModel().getRDFResource("pic");
+    Assert.assertEquals("", "pic", rPic.getLocalName());
+    
+    // PPPC
+    OWLNamedClass pppc = ontoTopoCarto.getPPPC((OWLNamedClass)rSommet, (OWLNamedClass)rMontagne);
+    Assert.assertEquals("Plus petit parent commun. ", "sommet", pppc.getLocalName());
 
-    OntClass c = ontoTopo.getPPPC(val1, val2);
-    
-    // Close
-    ontoTopo.close();
-    System.out.println("----------------");
-  }*/
-  
-  @Test
-  public void testWP3() {
-    
-    // On charge l'ontologie 'spatial relations'
-    OntologieOWL ontoTopo = new OntologieOWL("TopoCarto", 
-        TestWuPalmer.class.getClassLoader().getResource("FusionTopoCarto2.owl").getPath());
-    // ontoTopo.affiche();
-    
-    //RDFResource val1 = (RDFResource) ontoTopo.getOWLModel().getOntClass("http://www.owl-ontologies.com/Ontology1176999717.owl#parc_à_huîtres");
-    OntClass val2 = ontoTopo.getOWLModel().getOntClass("http://www.owl-ontologies.com/Ontology1176999717.owl#hôtel_de_préfecture");
+    // Distance à la racine
+    Assert.assertEquals("distance(pppc, thing)" , 3, pppc.getSuperclasses(true).size());
+    Assert.assertEquals("distance(pppc, sommet)" , 3, ((OWLNamedClass)rSommet).getSuperclasses(true).size());
+    Assert.assertEquals("distance(pppc, montagne)" , 4, ((OWLNamedClass)rMontagne).getSuperclasses(true).size());
+    Assert.assertEquals("distance(pppc, escarpement)" , 3, ((OWLNamedClass)rEscarpement).getSuperclasses(true).size());
+    Assert.assertEquals("distance(pppc, pic)." , 4, ((OWLNamedClass)rPic).getSuperclasses(true).size());
     
     // Calcul des similarité sémantiques
-    MesureSimilariteSemantique mesureSim = new WuPalmerSemanticSimilarity(ontoTopo);
-    //double scoreSimilariteSemantique = mesureSim.calcule(val1, val2);
-    //System.out.println("Score de similarité sémantique = " + scoreSimilariteSemantique);
+    MesureSimilariteSemantique mesureSim = new WuPalmerSemanticSimilarity(ontoTopoCarto);
     
-    System.out.println("----------------");
-  
+    // SOMMET-MONTAGNE
+    double scoreSimilariteSemantique = 1 - mesureSim.calcule(rSommet, rMontagne);
+    Assert.assertEquals("d(sommet,montagne)", 0.143, scoreSimilariteSemantique, 0.001);
+    
+    // PIC-ESCARPEMENT
+    scoreSimilariteSemantique = 1 - mesureSim.calcule(rPic, rEscarpement);
+    Assert.assertEquals("d(sommet,montagne)", 0.429, scoreSimilariteSemantique, 0.001);
   }
-
+  
 }
 

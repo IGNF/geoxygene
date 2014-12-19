@@ -9,8 +9,10 @@
  ******************************************************************************/
 package fr.ign.cogit.ontology;
 
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,14 +20,12 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.hp.hpl.jena.ontology.AnnotationProperty;
-import com.hp.hpl.jena.ontology.DatatypeProperty;
-import com.hp.hpl.jena.ontology.OntClass;
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntProperty;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.OWL;
+import edu.stanford.smi.protegex.owl.ProtegeOWL;
+import edu.stanford.smi.protegex.owl.jena.JenaOWLModel;
+import edu.stanford.smi.protegex.owl.model.OWLDatatypeProperty;
+import edu.stanford.smi.protegex.owl.model.OWLNamedClass;
+import edu.stanford.smi.protegex.owl.model.OWLObjectProperty;
+import edu.stanford.smi.protegex.owl.model.RDFResource;
 
 /**
  * 
@@ -43,17 +43,17 @@ public final class OntologieOWL {
   private String nom;
   
   /** Modele OWL */
-  private OntModel owlmodel;
+  private JenaOWLModel owlmodel;
   
   /** Stockage des plus courts chemins entre une classe et thing. */
-  private HashMap<OntClass, Integer> pcc;
+  private HashMap<OWLNamedClass, Integer> pcc;
 
   /**
    * Default constructor.
    */
   public OntologieOWL() {
-    this.owlmodel = ModelFactory.createOntologyModel();
-    this.pcc = new HashMap<OntClass, Integer>();
+    this.owlmodel = ProtegeOWL.createJenaOWLModel();
+    this.pcc = new HashMap<OWLNamedClass, Integer>();
   }
   
   /**
@@ -63,7 +63,7 @@ public final class OntologieOWL {
    */
   public OntologieOWL(String nom, String uri) {
     this.nom = nom;
-    this.pcc = new HashMap<OntClass, Integer>();
+    this.pcc = new HashMap<OWLNamedClass, Integer>();
     this.loadOntologie(uri);
   }
   
@@ -85,20 +85,20 @@ public final class OntologieOWL {
   }
   
   /** Renvoie le modele de cette ontologie */
-  public OntModel getOWLModel() {
+  public JenaOWLModel getOWLModel() {
     return this.owlmodel;
   }
 
   /** Affecte un modele owl a cette ontologie */
-  public void setOWLModel(OntModel model) {
+  public void setOWLModel(JenaOWLModel model) {
     this.owlmodel = model;
   }
   
-  public HashMap<OntClass, Integer> getPcc() {
+  public HashMap<OWLNamedClass, Integer> getPcc() {
     return pcc;
   }
 
-  public void setPcc(HashMap<OntClass, Integer> pcc) {
+  public void setPcc(HashMap<OWLNamedClass, Integer> pcc) {
     this.pcc = pcc;
   }
 
@@ -109,18 +109,10 @@ public final class OntologieOWL {
    */
   public void loadOntologie(String uri) {
     
-    owlmodel = ModelFactory.createOntologyModel();
-    
-    // On charge l'ontologie a partir du fichier OWL
     try {
-      InputStream in = FileManager.get().open(uri);
-      if (in == null) {
-        throw new IllegalArgumentException("File: " + uri + " not found");
-      }
-      owlmodel.read(in, "");
-      // owlmodel.close();
-      in.close();
-      
+      // On charge l'ontologie a partir du fichier OWL
+      FileInputStream fis = new FileInputStream(new File(uri));
+      this.owlmodel = ProtegeOWL.createJenaOWLModelFromInputStream(fis);
     } catch (Exception ex) {
       ex.printStackTrace();
     }
@@ -145,41 +137,38 @@ public final class OntologieOWL {
    * Affiche le contenu d'une ontologie dans la console
    * @param uri
    */
+  @SuppressWarnings("unchecked")
   public void affiche() {
     
     // On lit la liste des classes utilisateur (pas les classes systeme!) de notre ontologie
     LOGGER.info("Classes");
-    List<OntClass> listClass = owlmodel.listClasses().toList();
-    for (int i = 0; i < listClass.size(); i++) {
-      OntClass essaClasse = listClass.get(i);
-      if (essaClasse.getLocalName() != null) {
-        String vClasse = essaClasse.getLocalName().toString();
+    Iterator<OWLNamedClass> itc1 = this.owlmodel.getUserDefinedOWLNamedClasses().iterator();
+    while (itc1.hasNext()) {
+      OWLNamedClass cls = itc1.next();
+      if (cls.getLocalName() != null) {
+        String vClasse = cls.getLocalName().toString();
         LOGGER.info("  " + vClasse);
       }
     }
     
     LOGGER.info("Properties");
-    List<OntProperty> listObProperty = owlmodel.listOntProperties().toList();
-    for (int i = 0; i < listObProperty.size(); i++) {
-      OntProperty obProperty = listObProperty.get(i);
-      String vClasse = obProperty.getLocalName().toString();
-      LOGGER.info("  " + vClasse);
+    Iterator<OWLObjectProperty> itc2 = this.owlmodel
+        .getUserDefinedOWLObjectProperties().iterator();
+    while (itc2.hasNext()) {
+      LOGGER.info("  " + itc2.next().getLocalName());
     }
     
     LOGGER.info("Datatype Properties");
-    List<DatatypeProperty> listDataType = owlmodel.listDatatypeProperties().toList();
-    for (int i = 0; i < listDataType.size(); i++) {
-      DatatypeProperty datatypeProperty = listDataType.get(i);
-      String vClasse = datatypeProperty.getLocalName().toString();
-      LOGGER.info("  " + vClasse);
+    Iterator<OWLDatatypeProperty> itc3 = this.owlmodel
+        .getUserDefinedOWLDatatypeProperties().iterator();
+    while (itc3.hasNext()) {
+      LOGGER.info("  " + itc3.next().getLocalName());
     }
 
     LOGGER.info("Annotations");
-    List<AnnotationProperty> listAnnotation = owlmodel.listAnnotationProperties().toList();
-    for (int i = 0; i < listAnnotation.size(); i++) {
-      AnnotationProperty annotationProperty = listAnnotation.get(i);
-      String vClasse = annotationProperty.getLocalName().toString();
-      LOGGER.info("  " + vClasse);
+    Iterator<?> itc4 = this.owlmodel.getOWLAnnotationProperties().iterator();
+    while (itc4.hasNext()) {
+      LOGGER.info("  " + itc4.next().toString());
     }
 
   }
@@ -194,7 +183,8 @@ public final class OntologieOWL {
    * @return le plus petit parent commun des deux classes en entrée
    * 
    */
-  public OntClass getPPPC(OntClass c1, OntClass c2) {
+  @SuppressWarnings("unchecked")
+  public OWLNamedClass getPPPC(OWLNamedClass c1, OWLNamedClass c2) {
     
     LOGGER.info("Calcul du plus petit subsumant commun");
     
@@ -203,19 +193,19 @@ public final class OntologieOWL {
      * on considère que le plus parent commun est la racine de l'arbre, 
      * et que la distance min de ce PPPC aux 2 classes vaut l'infini (=1000000);
      */
-    OntClass thing = owlmodel.getOntClass(OWL.Thing.getURI());
-    OntClass pppc = thing;
+    OWLNamedClass thing = this.getOWLModel().getOWLThingClass();
+    OWLNamedClass pppc = thing;
     int distMin = 1000000;
 
     // Récupère la collection des superclasses à comparer pour C1
-    List<OntClass> superClassesC1 = c1.listSuperClasses().toList();
+    Collection<OWLNamedClass> superClassesC1 = c1.getNamedSuperclasses(true);
     if (!superClassesC1.contains(thing)) {
       superClassesC1.add(thing);
     }
     LOGGER.info("SuperClassesC1 OK");
     
     // Récupère la collection des superclasses à comparer pour C2
-    List<OntClass> superClassesC2 = c2.listSuperClasses().toList();
+    Collection<OWLNamedClass> superClassesC2 = c2.getNamedSuperclasses(true);
     if (!superClassesC2.contains(thing)) {
       superClassesC2.add(thing);
     }
@@ -226,7 +216,7 @@ public final class OntologieOWL {
 
     if (c1.equals(c2)) {
       LOGGER.info("C1 == C2");
-      int distC1C2 = 0;
+      // int distC1C2 = 0;
       pppc = c1;
       distMin = 0;
       return pppc;
@@ -266,9 +256,9 @@ public final class OntologieOWL {
      * Cherchons quel est leur plus petit parent commun!
      */
     int distanceToClasses = 1000000;
-    Iterator<OntClass> it = superClassesC1.iterator();
+    Iterator<OWLNamedClass> it = superClassesC1.iterator();
     while (it.hasNext()) {
-      OntClass superC = (OntClass) it.next();
+      OWLNamedClass superC = (OWLNamedClass) it.next();
       // Si cette classe est commune aux deux listes...
       if (superClassesC2.contains(superC)) {
         LOGGER.info("PPPC potentiel: " + superC.getLocalName());
@@ -307,8 +297,8 @@ public final class OntologieOWL {
    * @param end la classe d'arrivée
    * @return la distance entre start et end en nombre d'arcs (ie. relations isA)
    */
-  public int getShortestPathViaXLengthWithoutMatrix(OntClass start,
-      OntClass via, OntClass end) {
+  public int getShortestPathViaXLengthWithoutMatrix(OWLNamedClass start,
+      OWLNamedClass via, OWLNamedClass end) {
     LOGGER.info("Calcul de plus court chemin via X");
     int length = 0;
     length = this.getShortestPathLengthWithoutMatrix(start, via);
@@ -328,7 +318,9 @@ public final class OntologieOWL {
    * @param end la classe d'arrivée
    * @return la distance entre start et end en nombre d'arcs (ie. relations isA)
    */
-  public int getShortestPathLengthWithoutMatrix(OntClass start, OntClass end) {
+  @SuppressWarnings("unchecked")
+  public int getShortestPathLengthWithoutMatrix(OWLNamedClass start,
+      OWLNamedClass end) {
     
     int length = 0;
 
@@ -347,28 +339,28 @@ public final class OntologieOWL {
     // là où les classes ont une relation de subsomption
     List<ValeurMatriceCreuse> adj = new ArrayList<ValeurMatriceCreuse>();
 
-    // List<OntClass> nodes = this.getOWLModel().getUserDefinedOWLNamedClasses();
-    List<OntClass> nodes = this.getOWLModel().listNamedClasses().toList();
-    nodes.add(owlmodel.getOntClass(OWL.Thing.getURI()));
-    for (OntClass cls : nodes) {
+    List<OWLNamedClass> nodes = (List<OWLNamedClass>) this.getOWLModel()
+        .getUserDefinedOWLNamedClasses();
+    nodes.add(this.getOWLModel().getOWLThingClass());
+    for (OWLNamedClass cls : nodes) {
       // On récupère la liste des voisines de cls
-      List<OntClass> voisines = new ArrayList<OntClass>();
-      List<OntClass> directClasses1 = new ArrayList<OntClass>();
-      directClasses1.addAll(cls.listSubClasses(false).toList());
-      directClasses1.addAll(cls.listSuperClasses(false).toList());
-      for (OntClass owlNamedClass : directClasses1) {
-        /*if ((!owlNamedClass..isSystem()) && (!owlNamedClass.isAnonymous())) {
+      List<OWLNamedClass> voisines = new ArrayList<OWLNamedClass>();
+      List<OWLNamedClass> directClasses1 = new ArrayList<OWLNamedClass>();
+      directClasses1.addAll(cls.getNamedSubclasses(false));
+      directClasses1.addAll(cls.getNamedSuperclasses(false));
+      for (RDFResource owlNamedClass : directClasses1) {
+        if ((!owlNamedClass.isSystem()) && (!owlNamedClass.isAnonymous())) {
           if (!owlNamedClass.equals(cls)) {
             voisines.add((OWLNamedClass) owlNamedClass);
           }
-        } else*/ if (owlNamedClass == this.getOWLModel().getOntClass(OWL.Thing.getURI())) {
-          voisines.add((OntClass) owlNamedClass);
+        } else if (owlNamedClass == this.getOWLModel().getOWLThingClass()) {
+          voisines.add((OWLNamedClass) owlNamedClass);
         } else {
           continue;
         }
       }
 
-      for (OntClass v : voisines) {
+      for (OWLNamedClass v : voisines) {
         ValeurMatriceCreuse val = new ValeurMatriceCreuse(cls, v, 1);
         adj.add(val);
       }
@@ -377,10 +369,10 @@ public final class OntologieOWL {
     // Initialisation du critère d'arrêt
     Integer valeurStop = 0;
     // Initialisation du vecteur startVector
-    HashMap<OntClass, Integer> startVector = new HashMap<OntClass, Integer>();
+    HashMap<OWLNamedClass, Integer> startVector = new HashMap<OWLNamedClass, Integer>();
     for (ValeurMatriceCreuse val : adj) {
       if (val.getLine() == start) {
-        startVector.put((OntClass) val.getRow(), val.getValue());
+        startVector.put((OWLNamedClass) val.getRow(), val.getValue());
       }
     }
 
@@ -391,9 +383,9 @@ public final class OntologieOWL {
 
     if (valeurStop == 1) {
       // les classes sont voisines directes: on sort
-      /*length = 1;
-      logger.info("Longueur plus court chemin entre " + start.getLocalName()
-          + " et " + end.getLocalName() + " = " + length);*/
+      length = 1;
+      LOGGER.info("Longueur plus court chemin entre " + start.getLocalName()
+          + " et " + end.getLocalName() + " = " + length);
       return length;
     } else {
       // les classes ne sont pas voisines directes: on calcule la longueur
@@ -401,19 +393,19 @@ public final class OntologieOWL {
       int puissance = 1;
       while (valeurStop == 0) {
         // Calcul des puissances du vecteur startVector
-        HashMap<OntClass, Integer> temp = new HashMap<OntClass, Integer>();
-        Set<OntClass> colonnes = startVector.keySet();
+        HashMap<OWLNamedClass, Integer> temp = new HashMap<OWLNamedClass, Integer>();
+        Set<OWLNamedClass> colonnes = startVector.keySet();
 
-        for (OntClass c : colonnes) {
-          OntClass cL = start;
-          OntClass c1 = c;
+        for (OWLNamedClass c : colonnes) {
+          // OWLNamedClass cL = start;
+          OWLNamedClass c1 = c;
           for (ValeurMatriceCreuse val : adj) {
-            OntClass c2 = (OntClass) val.getLine();
-            OntClass cC = (OntClass) val.getRow();
+            OWLNamedClass c2 = (OWLNamedClass) val.getLine();
+            OWLNamedClass cC = (OWLNamedClass) val.getRow();
             if (c1 == c2) {
               if (temp.keySet().size() != 0) {
                 boolean found = false;
-                for (OntClass t : temp.keySet()) {
+                for (OWLNamedClass t : temp.keySet()) {
                   if (t == cC) {
                     int old = temp.get(t);
                     temp.put(t, old + startVector.get(c1) * val.getValue());

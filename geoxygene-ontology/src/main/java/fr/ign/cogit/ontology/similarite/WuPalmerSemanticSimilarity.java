@@ -10,10 +10,9 @@
 package fr.ign.cogit.ontology.similarite;
 
 import org.apache.log4j.Logger;
-import org.semanticweb.owlapi.io.RDFResource;
 
-import com.hp.hpl.jena.ontology.OntClass;
-import com.hp.hpl.jena.vocabulary.OWL;
+import edu.stanford.smi.protegex.owl.model.OWLNamedClass;
+import edu.stanford.smi.protegex.owl.model.RDFResource;
 
 import fr.ign.cogit.ontology.OntologieOWL;
 
@@ -40,8 +39,8 @@ public class WuPalmerSemanticSimilarity extends MesureSimilariteSemantique {
 		
     /* Initialisation des variables */
 	double sim = 0;
-	OntClass cls1 = (OntClass) c1;
-	OntClass cls2 = (OntClass) c2;
+	OWLNamedClass cls1 = (OWLNamedClass) c1;
+	OWLNamedClass cls2 = (OWLNamedClass) c2;
 	LOGGER.info("Similarite entre " + cls1.getLocalName() + " et " + cls2.getLocalName());
     
 	if(c1.equals(c2)){
@@ -51,11 +50,11 @@ public class WuPalmerSemanticSimilarity extends MesureSimilariteSemantique {
     }
 	
 	// Calcul du plus petit parent commun à nos deux classes
-	OntClass C = this.getOnto().getPPPC(cls1, cls2);
+	OWLNamedClass C = this.getOnto().getPPPC(cls1, cls2);
     LOGGER.info("Plus petit parent commun: " + C);
     
     // Calcul de la distance du PPPC et des classes à la racine
-    OntClass thing = this.getOnto().getOWLModel().getOntClass(OWL.Thing.getURI());
+    OWLNamedClass thing = this.getOnto().getOWLModel().getOWLThingClass();
 	if (C.equals(thing)) {
 	  sim = 0.0;
 	} else {

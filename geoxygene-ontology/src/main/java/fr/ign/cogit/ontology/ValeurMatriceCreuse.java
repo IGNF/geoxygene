@@ -1,6 +1,6 @@
 package fr.ign.cogit.ontology;
 
-import com.hp.hpl.jena.ontology.OntClass;
+import edu.stanford.smi.protegex.owl.model.RDFResource;
 
 /**
  * 
@@ -8,8 +8,8 @@ import com.hp.hpl.jena.ontology.OntClass;
  */
 public class ValeurMatriceCreuse {
 	
-  private OntClass line;
-  private OntClass row;
+  private RDFResource line;
+  private RDFResource row;
   private Integer value;
 	
   /**
@@ -18,26 +18,26 @@ public class ValeurMatriceCreuse {
    * @param row RDFResource
    * @param value value
    */
-  public ValeurMatriceCreuse(OntClass line, OntClass row, int value) {
+  public ValeurMatriceCreuse(RDFResource line, RDFResource row, int value) {
     super();
     this.line = line;
     this.row = row;
     this.value = value;
   }
 	
-	public OntClass getLine() {
+	public RDFResource getLine() {
 		return line;
 	}
-	public OntClass getRow() {
+	public RDFResource getRow() {
 		return row;
 	}
 	public Integer getValue() {
 		return value;
 	}
-	public void setLine(OntClass line) {
+	public void setLine(RDFResource line) {
 		this.line = line;
 	}
-	public void setRow(OntClass row) {
+	public void setRow(RDFResource row) {
 		this.row = row;
 	}
 	public void setValue(Integer value) {
