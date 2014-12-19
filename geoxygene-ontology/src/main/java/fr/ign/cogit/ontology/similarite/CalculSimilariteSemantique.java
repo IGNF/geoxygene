@@ -145,49 +145,12 @@ public class CalculSimilariteSemantique {
       dist = 1 - sim;
       // distCube = Math.pow(dist, 3);
       System.out.println(c1.getLocalName() + "-" + c2.getLocalName()
-          + ": dist = " + dist + " ppc = " + pppc.getLocalName() + " profC = " + profC);
+          + ": dist = " + dist + " ppc = " + pppc.getLocalName() + " profC1 = " + profC1);
       // System.out.println("Similarite ("+c1.getLocalName()+"-"+c2.getLocalName()+") ="+sim);
       // System.out.println("Distance ("+c1.getLocalName()+"-"+c2.getLocalName()+") ="+dist);
       // System.out.println("Distance au cube ("+c1.getLocalName()+"-"+c2.getLocalName()+") ="+distCube);
       return;
     }
   }
-
-  @SuppressWarnings("unchecked")
-  public static void main(String[] args) {
-    
-    // Notre ontologie au format owl
-    String uri = CalculSimilariteSemantique.class.getClassLoader().getResource("FusionTopoCartoExtract.owl").getPath();
-
-    // On crée un modele à partir de notre ontologie
-    OWLModel owlModel = ProtegeOWL.createJenaOWLModel();
-    try {
-      owlModel = ProtegeOWL
-          .createJenaOWLModelFromInputStream(new FileInputStream(new File(uri)));
-    } catch (Exception ex) {
-    }
-
-    // On lit la liste des classes utilisateur (pas les classes systeme!) de
-    // notre ontologie
-    Iterator<OWLNamedClass> itc1 = owlModel.getUserDefinedOWLNamedClasses()
-        .iterator();
-
-    while (itc1.hasNext()) {
-      OWLNamedClass c1 = itc1.next();
-      // Pour chaque classe on calcule les similarités, distances, etc...aux
-      // autres classes
-      Iterator<OWLNamedClass> itc2 = owlModel.getUserDefinedOWLNamedClasses()
-          .iterator();
-      while (itc2.hasNext()) {
-        OWLNamedClass c2 = itc2.next();
-        if (
-            (c2.getLocalName().equals("montagne") || c2.getLocalName().equals("sommet") || c2.getLocalName().equals("pic") || c2.getLocalName().equals("escarpement"))
-            && (c1.getLocalName().equals("montagne") || c1.getLocalName().equals("sommet") || c1.getLocalName().equals("pic") || c1.getLocalName().equals("escarpement"))) {
-          CalculSimilariteSemantique.similarite(owlModel, c1, c2);
-        }
-      }
-    }
-
-  }// Fin du main
 
 }// Fin de ma classe

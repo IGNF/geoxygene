@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
+        <uri id="Automatically generated entry, Timestamp=1419005277213" name="http://data.ordnancesurvey.co.uk/ontology/spatialrelations/" uri="spatialrelations2.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1419005277213" name="http://www.owl-ontologies.com/Ontology1176738221.owl" uri="FusionTopoCartoExtract.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1419005277213" name="http://www.owl-ontologies.com/Ontology1176999717.owl" uri="FusionTopoCarto2.owl"/>
+    </group>
+</catalog>

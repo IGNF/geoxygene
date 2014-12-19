@@ -9,6 +9,10 @@
  ******************************************************************************/
 package fr.ign.cogit.ontology.similarite;
 
+import static org.junit.Assert.fail;
+
+import java.net.URL;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,11 +29,17 @@ public class TestWuPalmer {
   @Test
   public void testSommetMontagnePicEscarpement() {
     
-    // On charge l'ontologie 'FusionTopoCartoExtract'
-    OntologieOWL ontoTopoCarto = new OntologieOWL("FusionTopoCartoExtract", 
-        TestWuPalmer.class.getClassLoader().getResource("FusionTopoCartoExtract.owl").getPath());
-    // ontoTopoCarto.affiche();
+    OntologieOWL ontoTopoCarto = null;
     
+    try {
+      // On charge l'ontologie 'FusionTopoCartoExtract'
+      URL u = new URL("file", "", "./data/FusionTopoCartoExtract.owl");
+      ontoTopoCarto = new OntologieOWL("FusionTopoCartoExtract", u.getFile());
+      // ontoTopoCarto.affiche();
+    } catch(Exception e) {
+      fail();
+    }
+        
     RDFResource rSommet = ontoTopoCarto.getOWLModel().getRDFResource("sommet");
     Assert.assertEquals("", "sommet", rSommet.getLocalName());
     
