@@ -1,9 +1,0 @@
-<!-- fichier de mapping OJB pour GeOxygene : exemple de mapping pour la classe fr.ign.cogit.geoxygene.example.tutorial.MyClass -->
-
-<class-descriptor class="fr.ign.cogit.geoxygene.example.tutorial.MyClass" table="MA_CLASSE"  >
-  <field-descriptor name="id" column="ID" jdbc-type="INTEGER" primarykey="true" autoincrement="true" />
-  <field-descriptor name="field0" column="FIELD0" jdbc-type="INTEGER" />
-  <field-descriptor name="field1" column="FIELD1" jdbc-type="VARCHAR" />   
-  <field-descriptor name="field2" column="FIELD2" jdbc-type="BIT" />     
-  <field-descriptor name="field3" column="FIELD3" jdbc-type="DOUBLE" />       
-</class-descriptor>   

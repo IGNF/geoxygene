@@ -1,6 +1,0 @@
-<class-descriptor class="fr.ign.cogit.geoxygene.tutorial.data.BdCartoTrRoute" table="bdc_tr_route" >
-  <field-descriptor name="id"  column="COGITID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"/>
-  <field-descriptor name="gid" column="gid" jdbc-type="INTEGER" />
-  <field-descriptor name="geom" column="the_geom" jdbc-type="STRUCT" conversion="fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms" />
-</class-descriptor>
-
