@@ -9,11 +9,12 @@
  ******************************************************************************/
 package fr.ign.cogit.ontology.similarite;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 
 import edu.stanford.smi.protegex.owl.model.OWLNamedClass;
 import edu.stanford.smi.protegex.owl.model.RDFResource;
-
 import fr.ign.cogit.ontology.OntologieOWL;
 
 /**
@@ -41,8 +42,15 @@ public class WuPalmerSemanticSimilarity extends MesureSimilariteSemantique {
 	double sim = 0;
 	OWLNamedClass cls1 = (OWLNamedClass) c1;
 	OWLNamedClass cls2 = (OWLNamedClass) c2;
+	
+	if (cls1 == null || cls2 == null) {
+	  sim=0.0;
+      LOGGER.info("Valeur = " + sim);
+      return sim;
+	}
+	
 	LOGGER.info("Similarite entre " + cls1.getLocalName() + " et " + cls2.getLocalName());
-    
+	
 	if(c1.equals(c2)){
       sim=1.0;
       LOGGER.info("Valeur = " + sim);
@@ -71,6 +79,34 @@ public class WuPalmerSemanticSimilarity extends MesureSimilariteSemantique {
 
 	LOGGER.info("Valeur = " + sim);
 	return sim;
+  }
+  
+  
+  public static double getEvaluation(String filepath, String s, String t) {
+    OntologieOWL ontoTopoCarto = null;
+    try {
+      // On charge l'ontologie 
+      LOGGER.info("On charge l'ontologie.");
+      File file = new File(WuPalmerSemanticSimilarity.class.getClassLoader().getResource(filepath).getFile());
+      LOGGER.info(file.getAbsolutePath());
+      ontoTopoCarto = new OntologieOWL("Onto", file.getPath());
+      // ontoTopoCarto.affiche();
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+    
+    LOGGER.trace("s = " + s);
+    LOGGER.trace("t = " + t);
+    
+    RDFResource rS = ontoTopoCarto.getOWLModel().getRDFResource(s.toLowerCase());
+    RDFResource rT = ontoTopoCarto.getOWLModel().getRDFResource(t.toLowerCase());
+    
+    MesureSimilariteSemantique mesureSim = new WuPalmerSemanticSimilarity(ontoTopoCarto);
+    
+    // SOMMET-MONTAGNE
+    double scoreSimilariteSemantique = 1 - mesureSim.calcule(rS, rT);
+    LOGGER.debug("scoreSimilariteSemantique = " + scoreSimilariteSemantique);
+    return scoreSimilariteSemantique;
   }
 
 }

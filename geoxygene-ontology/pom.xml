@@ -17,20 +17,29 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
+	
 	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-			</testResource>
-		</testResources>
+	   <plugins>
+	       <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.5.3</version>
+                <executions>
+                    <execution>
+                        <id>ontology-resources</id>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/resources.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+	   </plugins>
 	</build>
 
 	<dependencies>
@@ -64,22 +73,17 @@
 			<groupId>edu.stanford</groupId>
 			<artifactId>protege</artifactId>
 			<version>3.2.1</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/protege-3.2.1.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>edu.stanford</groupId>
 			<artifactId>protege-owl</artifactId>
 			<version>3.2.1</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/protege-owl-3.2.1.jar</systemPath>
 		</dependency>
 		<dependency>
             <groupId>com.hp.hpl.jena</groupId>
             <artifactId>jena</artifactId>
             <version>2.6.2</version>
         </dependency>
-
 
 		<!-- <dependency> <groupId>org.apache.jena</groupId> <artifactId>jena-core</artifactId> 
 			<version>2.12.1</version> </dependency> -->

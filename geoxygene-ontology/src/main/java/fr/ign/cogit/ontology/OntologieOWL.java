@@ -114,6 +114,8 @@ public final class OntologieOWL {
       FileInputStream fis = new FileInputStream(new File(uri));
       this.owlmodel = ProtegeOWL.createJenaOWLModelFromInputStream(fis);
     } catch (Exception ex) {
+      System.out.println("-------------------------------");
+      LOGGER.info(uri);
       ex.printStackTrace();
     }
 

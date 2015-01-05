@@ -33,7 +33,7 @@ public class TestWuPalmer {
     
     try {
       // On charge l'ontologie 'FusionTopoCartoExtract'
-      URL u = new URL("file", "", "./data/FusionTopoCartoExtract.owl");
+      URL u = new URL("file", "", "./data/FusionTopoCarto2.owl");
       ontoTopoCarto = new OntologieOWL("FusionTopoCartoExtract", u.getFile());
       // ontoTopoCarto.affiche();
     } catch(Exception e) {
@@ -63,7 +63,7 @@ public class TestWuPalmer {
     Assert.assertEquals("distance(pppc, escarpement)" , 3, ((OWLNamedClass)rEscarpement).getSuperclasses(true).size());
     Assert.assertEquals("distance(pppc, pic)." , 4, ((OWLNamedClass)rPic).getSuperclasses(true).size());
     
-    // Calcul des similarité sémantiques
+    // Calcul des similarités sémantiques
     MesureSimilariteSemantique mesureSim = new WuPalmerSemanticSimilarity(ontoTopoCarto);
     
     // SOMMET-MONTAGNE
@@ -72,7 +72,7 @@ public class TestWuPalmer {
     
     // PIC-ESCARPEMENT
     scoreSimilariteSemantique = 1 - mesureSim.calcule(rPic, rEscarpement);
-    Assert.assertEquals("d(sommet,montagne)", 0.429, scoreSimilariteSemantique, 0.001);
+    Assert.assertEquals("d(pic,escarpement)", 0.429, scoreSimilariteSemantique, 0.001);
   }
   
 }
