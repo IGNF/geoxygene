@@ -79,13 +79,21 @@ public class SymbolizerValidatorFactory {
                 validator = (SymbolizerValidator) Class.forName(
                         validatorNames.get(sname)).newInstance();
                 validatorCache.put(sname, validator);
-            } catch (InstantiationException | IllegalAccessException
-                    | ClassNotFoundException e) {
+                return validator;
+                // do not use multi-catch parameters to be compatible to java
+                // versions < 1.7:
+            } // catch (InstantiationException | IllegalAccessException
+              // | ClassNotFoundException e) {
+            catch (InstantiationException e) {
+                logger.error(e.getStackTrace().toString());
+                return null;
+            } catch (IllegalAccessException e) {
+                logger.error(e.getStackTrace().toString());
+                return null;
+            } catch (ClassNotFoundException e) {
                 logger.error(e.getStackTrace().toString());
                 return null;
             }
         }
-
-        return validator;
     }
 }
