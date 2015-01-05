@@ -185,12 +185,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache</groupId>
-			<artifactId>ojb</artifactId>
-			<version>1.0.rc6</version>
-			<classifier>COGIT</classifier>
-		</dependency>
-		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>8.4-701.jdbc4</version>
