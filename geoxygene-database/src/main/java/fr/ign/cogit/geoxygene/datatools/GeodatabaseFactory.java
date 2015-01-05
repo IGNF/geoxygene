@@ -20,7 +20,6 @@
 package fr.ign.cogit.geoxygene.datatools;
 
 import fr.ign.cogit.geoxygene.datatools.hibernate.GeodatabaseHibernate;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.datatools.postgis.GeodatabaseHibernatePostgis;
 
 /**
@@ -41,6 +40,6 @@ public class GeodatabaseFactory {
         return new GeodatabaseHibernatePostgis();
       }
     }
-    return GeodatabaseOjbFactory.newInstance();
+    return null;
   }
 }
