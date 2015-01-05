@@ -17,7 +17,9 @@ import scpsolver.constraints.LinearSmallerThanEqualsConstraint;
 import scpsolver.lpsolver.LinearProgramSolver;
 import scpsolver.lpsolver.SolverFactory;
 import scpsolver.problems.LinearProgram;
+
 import Jama.Matrix;
+
 import fr.ign.cogit.evidence.configuration.Configuration;
 import fr.ign.cogit.evidence.configuration.ConfigurationSet;
 import fr.ign.cogit.evidence.variable.Variable;
@@ -60,6 +62,7 @@ import fr.ign.parameters.Parameters;
  * @author Julien Perret
  */
 public class LinearFeatureMatcher {
+  
   double a;
   double gamma;
   double selection;

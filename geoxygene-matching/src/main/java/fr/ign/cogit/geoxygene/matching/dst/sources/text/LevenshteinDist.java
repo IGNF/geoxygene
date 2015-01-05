@@ -79,14 +79,6 @@ public class LevenshteinDist extends GeoSource {
       
       System.out.println(ref.getFeatureType().getFeatureAttributes().size() + ", " + candidate.getFeatureType().getFeatureAttributes().size() + " -- ");
       return masses;
-      /*for (int i = 0; i < ref.getFeatureType().getFeatureAttributes().size(); i++) {
-        System.out.print(ref.getFeatureType().getFeatureAttributes().get(i).getMemberName()+", ");
-      }
-      System.out.print(" -- ");
-      for (int i = 0; i < candidate.getFeatureType().getFeatureAttributes().size(); i++) {
-        System.out.print(candidate.getFeatureType().getFeatureAttributes().get(i).getMemberName()+", ");
-      }
-      System.out.println("");*/
       
     }
      

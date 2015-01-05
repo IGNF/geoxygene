@@ -81,10 +81,10 @@ public class SmetsOpTest {
     CombinationOp op = new SmetsOp(true);
     List<Pair<byte[], Float>> result = op.combine(beliefs);
     
-    System.out.println("Result");
-    for (Pair<byte[], Float> test : result) {
-      System.out.println(Arrays.toString(test.getFirst()) + ", " + test.getSecond());
-    }
+    // System.out.println("Result");
+    // for (Pair<byte[], Float> test : result) {
+      // System.out.println(Arrays.toString(test.getFirst()) + ", " + test.getSecond());
+    // }
     
   }
 

@@ -80,7 +80,7 @@ public class AppariementBeeri {
       
       // .select(((GM_Point) objetRef.getGeom()).getPosition(), seuilDistanceMax)
       IPopulation<IFeature> candidatsApp = popComp.selectionElementsProchesGenerale(pop1Ref, seuilDistanceMax);
-      LOGGER.debug("Nb candidat = " + candidatsApp.size());
+      // LOGGER.debug("Nb candidat = " + candidatsApp.size());
       if (candidatsApp.size() == 0) {
         continue;
       }

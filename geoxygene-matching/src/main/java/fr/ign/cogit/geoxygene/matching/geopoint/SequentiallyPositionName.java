@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.matching.geopoint;
 
 import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
@@ -19,14 +20,21 @@ import fr.ign.cogit.geoxygene.util.string.ApproximateMatcher;
 
 
 public class SequentiallyPositionName {
+  
+  /** Logger. */
   private static final Logger LOGGER = Logger.getLogger(SequentiallyPositionName.class);
+  
   /**
-   * Appariement par recherche du plus proche voisin et qui prend en compte les
-   * toponymes. Chaque élément de popRef est apparié avec son plus proche voisin
+   * Appariement par recherche du plus proche voisin 
+   *    et qui prend en compte les toponymes. 
+   * Chaque élément de popRef est apparié avec son plus proche voisin
    * dans popComp
    * 
-   * @param popComp Population d'objets avec une géomtrie ponctuelle.
-   * @param popRef Population d'objets avec une géomtrie ponctuelle.
+   * @param popRef Population d'objets avec une géomtrie ponctuelle 
+   *               pour lesquels on cherche un appariement.
+   * @param popComp Population d'objets candidats avec une géomtrie ponctuelle.
+   * 
+   * @param seuilEcart seuil distance textuelle
    * @param seuilDistanceMax Seuil de distance au dessous duquel on n'apparie
    *          pas deux objets.
    * @param attributeRef
@@ -79,6 +87,7 @@ public class SequentiallyPositionName {
           candidatRetenu = objetComp;
         }
       }
+      
       // On crée un nouveau lien avec sa géométrie et son évaluation
       Lien lien = liens.nouvelElement();
       lien.addObjetRef(objetRef);
@@ -95,6 +104,7 @@ public class SequentiallyPositionName {
       featureRef = AM.processAccent(featureRef);
       
       int ecart = AM.match(featureRef, featureComp);
+      // System.out.println(ecart + "(" + featureRef + ", " + featureComp + ")");
       int ecartRelatif = 100 * ecart / Math.max(featureRef.length(), featureComp.length());
       if (ecart <= seuilEcart || featureComp.startsWith(featureRef)) {
         if (ecartRelatif > 50) {
@@ -108,8 +118,10 @@ public class SequentiallyPositionName {
         } else {
           lien.setEvaluation(1);
         }
-      } else
+      } else {
         lien.setEvaluation(0);
+      }
+    
     }
     
     return liens;

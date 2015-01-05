@@ -173,7 +173,7 @@ public class CalculProbabilites {
         distanceTotale = distance +distanceTotale;
       }
       if(distanceTotale == 0) {
-          System.out.println("une distanceTotale nulle trouvée");
+          LOGGER.warn("une distanceTotale nulle trouvée");
           return Double.MAX_VALUE;
       } else { 
         return distanceTotale;
