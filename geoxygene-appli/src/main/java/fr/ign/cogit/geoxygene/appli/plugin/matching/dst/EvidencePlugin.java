@@ -174,7 +174,7 @@ public class EvidencePlugin implements GeOxygeneApplicationPlugin,
     criteria.add(levenshteinSource);
 
     // ====================================================================================
-    WuPalmerDistance wuPalmerDistance = new WuPalmerDistance();
+    /*WuPalmerDistance wuPalmerDistance = new WuPalmerDistance("nature", "NATURE");
     t = 0.6;
 
     // Fonction EstApparie
@@ -205,7 +205,7 @@ public class EvidencePlugin implements GeOxygeneApplicationPlugin,
     fL32 = new ConstantFunction(0.1);
     fL32.setDomainOfFunction(t, 3, true, false);
     listFPP[1] = fL32;
-    wuPalmerDistance.setMasseIgnorance(listFPP);
+    wuPalmerDistance.setMasseIgnorance(listFPP);*/
 
     // criteria.add(wuPalmerDistance);
   }
