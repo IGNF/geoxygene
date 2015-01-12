@@ -79,7 +79,7 @@ public class MapTest extends TestCase {
 	  @Before
 	  public void setUp() {
 	    
-	    System.out.println("oo");
+	    // System.out.println("oo");
 	    UserLayerFactory factory = new UserLayerFactory();
 	    StyledLayerDescriptor sld;
 	    try {
@@ -107,7 +107,7 @@ public class MapTest extends TestCase {
 	    List<Layer> layers = new ArrayList<Layer>();
 	    layers.add(layerCarre);
 	   
-	    double metersPerPixel = 0.02540005 / Toolkit.getDefaultToolkit().getScreenResolution();
+	    double metersPerPixel = 0.02540005 / 120;
 	    carte = new Map(layers, legendCarre, metersPerPixel);
 	    carte.setName("Carte des carrés");
 	    
