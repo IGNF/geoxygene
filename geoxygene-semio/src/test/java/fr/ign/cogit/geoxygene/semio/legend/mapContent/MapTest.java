@@ -29,10 +29,8 @@ import fr.ign.cogit.geoxygene.style.UserLayerFactory;
 public class MapTest extends TestCase {
 	
 	private Map carte;
-	  private final static double METERS_PER_PIXEL;
-	  static {
-	      METERS_PER_PIXEL = 0.02540005 / Toolkit.getDefaultToolkit().getScreenResolution();
-	  }
+	  
+	  
 	  
 	  private static Population<DefaultFeature> getPopCarre() {
 	    
@@ -109,7 +107,8 @@ public class MapTest extends TestCase {
 	    List<Layer> layers = new ArrayList<Layer>();
 	    layers.add(layerCarre);
 	   
-	    carte = new Map(layers, legendCarre, METERS_PER_PIXEL);
+	    double metersPerPixel = 0.02540005 / Toolkit.getDefaultToolkit().getScreenResolution();
+	    carte = new Map(layers, legendCarre, metersPerPixel);
 	    carte.setName("Carte des carrés");
 	    
 	    
