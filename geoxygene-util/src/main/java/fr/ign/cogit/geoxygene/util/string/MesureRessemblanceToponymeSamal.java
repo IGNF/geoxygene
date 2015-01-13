@@ -16,9 +16,10 @@ import java.util.StringTokenizer;
 
 public class MesureRessemblanceToponymeSamal {
   
+  
   @SuppressWarnings("unused")
-  public static double mesureRessemblanceToponymeSamal(String string1,
-      String string2) {
+  public static double mesureRessemblanceToponymeSamal(String string1, String string2) {
+  
     List<String> tokenLigne = new ArrayList<String>();
     List<String> tokenColonne = new ArrayList<String>();
     ApproximateMatcher matcher = new ApproximateMatcher();
