@@ -361,7 +361,9 @@ public class MainFrameToolBar implements ContainerListener, KeyListener,
   public final void componentAdded(final ContainerEvent e) {
     ProjectFrame projectFrame = this.getMainFrame().getProjectFrameFromGui(
         e.getChild());
-    this.addComponent(projectFrame.getLayerViewPanel());
+    if (projectFrame != null && projectFrame instanceof ProjectFrame) {
+      this.addComponent(projectFrame.getLayerViewPanel());
+    }
   }
 
   /**
