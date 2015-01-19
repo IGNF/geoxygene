@@ -190,6 +190,19 @@ public class CommonAlgorithms {
     return poly;
   }
 
+  public static IPolygon homothetie(IPolygon geom, double scale,
+      IDirectPosition center) {
+    IPolygon poly = null;
+    try {
+      poly = (IPolygon) AdapterFactory.toGM_Object(CommonAlgorithms.homothetie(
+          (Polygon) AdapterFactory.toGeometry(new GeometryFactory(), geom),
+          center.getX(), center.getY(), scale));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return poly;
+  }
+
   public static Geometry translation(Geometry geom, double dx, double dy) {
     if (geom instanceof Polygon) {
       return CommonAlgorithms.translation(geom, dx, dy);
