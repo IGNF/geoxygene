@@ -151,7 +151,7 @@ public class GeoMatching {
       
       for (int j = 0; j < criteria.size(); j++) {
         Source<IFeature, GeomHypothesis> source = criteria.get(j);
-        DST_LOGGER.info("   " + source.getName() + " pour candidat " + candidat.getAttribute("NOM"));
+        DST_LOGGER.info("   " + source.getName() + " pour candidat " + candidat.getAttribute("toponyme"));
         
         double[] mij = source.evaluate(reference, new SimpleGeomHypothesis(candidat));
         DST_LOGGER.info("        [" + mij[0] + ", " + mij[1] + ", " + mij[2] + "]");

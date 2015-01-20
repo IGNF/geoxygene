@@ -99,7 +99,7 @@ public class LevenshteinDist extends GeoSource {
       throw new IllegalArgumentException("Strings must not be null");
     }
 
-    double l = StringUtils.getLevenshteinDistance(s, t);
+    double l = StringUtils.getLevenshteinDistance(s.toLowerCase(), t.toLowerCase());
     DST_LOGGER.info("        StringUtils.getLevenshteinDistance : " + l);
     // return 1.0 - l / Math.max (s.length(), t.length());
     return l / Math.max (s.length(), t.length());
