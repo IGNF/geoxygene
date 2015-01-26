@@ -40,34 +40,30 @@ public class LevenshteinDist extends GeoSource {
   
   private static Logger DST_LOGGER = Logger.getLogger("DSTLogger");
   
-  private String attributeName1 = "";
-  private String attributeName2 = "";
+  private String attributeNameRef = "";
+  private String attributeNameCandidat = "";
   
   
   public LevenshteinDist(String att1, String att2) {
-    this.attributeName1 = att1;
-    this.attributeName2 = att2;
+    this.attributeNameRef = att1;
+    this.attributeNameCandidat = att2;
   }
   
   @Override
   public String getName() {
       return "Distance de Levenshtein";
-      // sur les attributs " + attributeName1 + " et " + attributeName2
   }
 
   @Override
   public double[] evaluate(IFeature ref, GeomHypothesis candidate) {
     
-    Object bdcNature = ref.getAttribute(attributeName1).toString();
-    Object bdnNature = candidate.getAttribute(attributeName2);
-    // System.out.print(ref.getFeatureType().getFeatureAttributes().size() + ", " + candidate.getFeatureType().getFeatureAttributes().size() + " -- ");
+    Object valueRef = ref.getAttribute(attributeNameRef);
+    Object valueCandidat = candidate.getAttribute(attributeNameCandidat);
     
-    if (bdcNature != null && bdnNature != null) {
+    if (valueRef != null && valueCandidat != null) {
       
-      double distance = compute(bdcNature.toString(), bdnNature.toString());
-      // DST_LOGGER.info("        distance = " + distance + "(bdcNature = " + bdcNature.toString() + ", bdnNature = " + bdnNature.toString() + ")");
-      DST_LOGGER.info("        distance = " + distance + " (bdc = " + bdcNature.toString() + ", bdn = " + bdnNature.toString() + ")");
-      // System.out.println(" bdcNature = " + bdcNature.toString() + ", bdnNature = " + bdnNature.toString() + " => " + distance);
+      double distance = compute(valueRef.toString(), valueCandidat.toString());
+      DST_LOGGER.info("        distance = " + distance + " (ref = " + valueRef.toString() + ", candidat = " + valueCandidat.toString() + ")");
       
       return getMasses(distance);
       
@@ -86,21 +82,21 @@ public class LevenshteinDist extends GeoSource {
   }
   
   /**
-   * Mesure de similarité définie par Samal, A., Seth, S. et Cueto, K. A feature-based approach to conflation
-   *     of geospatial sources. IJGIS, juillet-août 2004, vol. 18, n°5, p. 459-489
+   * Mesure de Levenshtein.
    * 
    * @param s
    * @param t
    * @return int
    *    as coefficient de similarité
    */
-  private double compute(String s, String t) {
+  public double compute(String s, String t) {
     if (s == null || t == null) {
       throw new IllegalArgumentException("Strings must not be null");
     }
 
     double l = StringUtils.getLevenshteinDistance(s.toLowerCase(), t.toLowerCase());
     DST_LOGGER.info("        StringUtils.getLevenshteinDistance : " + l);
+    
     // return 1.0 - l / Math.max (s.length(), t.length());
     return l / Math.max (s.length(), t.length());
   }
