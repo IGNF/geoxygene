@@ -198,6 +198,9 @@ public class ConvertBuilding {
                 .getLod3MultiSurface().getMultiSurface().getSurfaceMember(), b);
           } else {
 
+            
+   
+            
             featTempColl = Util
                 .processSurfaceProperties(bs.getLod3MultiSurface()
                     .getMultiSurface().getSurfaceMember(), bs);

@@ -34,21 +34,23 @@ public class DTMDisplay {
     // Exemple de chargement de MNT
     public static void main(String[] args) {
 
-        boolean orthoPhoto = false;
+        boolean orthoPhoto = true;
 
         // Chemin du fichier .asc à charger
         // String mntFile = RGE.class.getResource("/demo3D/bdalti/MNT250_L93_FRANCE.ASC").getPath().toString();
-        String mntFile = RGE.class.getResource("/demo3D/bdalti/echantillon72/MNT_50M_asc.asc").getPath().toString();
+        String mntFile = RGE.class.getResource("/demo3D/bdalti/echantillon72/MNT_25M_asc.asc").getPath().toString();
         DTM mnt;
         if (orthoPhoto) {
 
             // Chemin de l'orthophoto à plaquer
             String imageAPlaquer = RGE.class.getResource(
-                    "/demo3D/bdortho/FF0-Gard-5667.jpg").toString();
+                    "/demo3D/bdortho/echantillon72/BD_ORTHO_1m/72-2010-0468-6740-LA93-NB.tif").toString();
 
+            
+            
             // Emprise de l'orthophoto
-            DirectPosition pMinPhoto = new DirectPosition(915500.00, 6453000.00);
-            DirectPosition pMaxPhoto = new DirectPosition(920500.00, 6458000.00);
+            DirectPosition pMinPhoto = new DirectPosition(468000.00, 6736000.00);
+            DirectPosition pMaxPhoto = new DirectPosition(472000.00, 6740000.00);
             GM_Envelope env = new GM_Envelope(pMaxPhoto, pMinPhoto);
 
             // Création du MNT

@@ -41,7 +41,7 @@ public class RGE {
    */
   public static void main(String[] args) throws URISyntaxException {
     // 2 possibilités avec ou sans ortho
-    boolean orthophoto = false;
+    boolean orthophoto = true;
 
     // Avec ou sans surechantillonnage
     boolean echantillonnage = true;
@@ -51,16 +51,18 @@ public class RGE {
     String vecteurAplaquer = schemaFile.getPath().toString();
 
     // On récupère le MNT qui sera affiché
-    String mntFile = RGE.class.getResource("/demo3D/mnt/ISERE_100_asc.asc")
+    String mntFile = RGE.class.getResource("/demo3D/bdalti/echantillon38/ISERE_100_asc.asc")
         .getPath().toString();
     // On utilise MNTRGE extension de MNT pour cet exemple
     // Cette classe propose d'autres possibilités de plaquage des données
     MNTRGE mnt;
+    
+    MNTRGE.CONSTANT_OFFSET = 2;
 
     if (orthophoto) {
       // Cas ou l'on souhaite l'orthophoto
       String imageAPlaquer = RGE.class.getResource(
-          "/demo3D/orthophoto/orthophoto.jpg").toString();
+          "/demo3D/bdortho/echantillon38/orthophoto.jpg").toString();
 
       // On récupère l'emprise de l'ortho
       DirectPosition pMinPhoto = new DirectPosition(915500.00, 6453000.00);
