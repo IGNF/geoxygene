@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.style.LineInterpolationSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonInterpolationSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 
@@ -47,7 +48,9 @@ public class SymbolizerValidatorFactory {
     static {
         Map<String, String> aMap = new HashMap<String, String>();
         aMap.put(PolygonInterpolationSymbolizer.class.getName(),
-                PolygonInterpolationSymbolizerValidator.class.getName());
+            PolygonInterpolationSymbolizerValidator.class.getName());
+        aMap.put(LineInterpolationSymbolizer.class.getName(),
+            LineInterpolationSymbolizerValidator.class.getName());
 
         validatorNames = Collections.unmodifiableMap(aMap);
     }

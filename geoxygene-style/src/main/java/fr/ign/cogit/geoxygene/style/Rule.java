@@ -163,6 +163,7 @@ public class Rule {
     // protected List<JAXBElement<? extends SymbolType>> symbol;
     @XmlElements({
             @XmlElement(name = "LineSymbolizer", type = LineSymbolizer.class),
+            @XmlElement(name = "LineInterpolationSymbolizer", type = LineInterpolationSymbolizer.class),
             @XmlElement(name = "PointSymbolizer", type = PointSymbolizer.class),
             @XmlElement(name = "PolygonSymbolizer", type = PolygonSymbolizer.class),
             @XmlElement(name = "PolygonInterpolationSymbolizer", type = PolygonInterpolationSymbolizer.class),
