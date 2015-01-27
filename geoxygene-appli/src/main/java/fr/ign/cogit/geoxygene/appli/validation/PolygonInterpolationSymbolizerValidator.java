@@ -44,7 +44,8 @@ public class PolygonInterpolationSymbolizerValidator implements
 
     @Override
     public boolean validate(Symbolizer s) throws InvalidSymbolizerException {
-        System.out.println("Validating PolygonInterpolationSymbolizer");
+        System.out.print("Validating PolygonInterpolationSymbolizer ...");
+        System.out.flush();
 
         if (s == null)
             throw new InvalidSymbolizerException("null Symbolizer ");
@@ -55,6 +56,8 @@ public class PolygonInterpolationSymbolizerValidator implements
 
         updated = this.updateFill(symbolizer) || updated;
         updated = this.updateStroke(symbolizer) || updated;
+        
+        System.out.println("Done");
 
         return updated;
     }

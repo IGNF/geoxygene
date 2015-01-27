@@ -43,7 +43,8 @@ public class LineInterpolationSymbolizerValidator implements
 
     @Override
     public boolean validate(Symbolizer s) throws InvalidSymbolizerException {
-        System.out.println("Validating LineInterpolationSymbolizer");
+      System.out.print("Validating LineInterpolationSymbolizer ...");
+      System.out.flush();
 
         if (s == null)
             throw new InvalidSymbolizerException("null Symbolizer ");
@@ -53,6 +54,8 @@ public class LineInterpolationSymbolizerValidator implements
         boolean updated = false;
 
         updated = this.updateStroke(symbolizer) || updated;
+        
+        System.out.println("Done");
 
         return updated;
     }
