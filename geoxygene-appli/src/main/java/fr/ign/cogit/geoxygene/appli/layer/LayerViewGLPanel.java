@@ -20,6 +20,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -50,6 +51,7 @@ import org.lwjgl.opengl.GL30;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.event.CompassPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
@@ -698,8 +700,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                     .getResource("/images/toolbar/page_white_paintbrush.png")));
             this.interpolationSecondSLDButton.setToolTipText(I18N
                     .getString("StyleInterpolation.LoadSecondSLD"));
-            this.interpolationSecondSLDButton.setSelected(this.loadSecondSLD());
-            this.interpolationSecondSLDButton.addItemListener(this);
+            this.interpolationSecondSLDButton.addActionListener(this);
         }
         return this.interpolationSecondSLDButton;
     }
@@ -923,9 +924,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                     .isSelected());
             this.repaint();
         }
-        if (e.getSource() == this.getInterpolationSecondSLDButton()) {
-            System.out.println("Unimplemented");
-        }
     }
 
     @Override
@@ -972,11 +970,18 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 this.setAntialiasing(0);
             }
             this.repaint();
-        } else {
+        } else if (e.getSource() == this.getInterpolationSecondSLDButton()) {
+            if (this.getProjectFrame() == null) {
+                  logger.info("Cannot save SLD, no selected project");
+                return;
+            }        
+            File file = GeOxygeneEventManager.getInstance().getApplication().displayLoadSLDDialog();
+            if (file != null)
+                System.out.println("Not-implemented yet");            
+        }else {
             // old SLD events....
             this.repaint();
         }
-
     }
 
     /**
