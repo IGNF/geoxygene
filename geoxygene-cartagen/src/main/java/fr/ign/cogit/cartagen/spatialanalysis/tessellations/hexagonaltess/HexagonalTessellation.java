@@ -7,7 +7,7 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.spatialanalysis.hexagonaltess;
+package fr.ign.cogit.cartagen.spatialanalysis.tessellations.hexagonaltess;
 
 import java.util.ArrayList;
 import java.util.Collection;
