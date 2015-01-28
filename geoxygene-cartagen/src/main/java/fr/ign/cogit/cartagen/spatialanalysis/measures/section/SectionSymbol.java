@@ -93,15 +93,14 @@ public class SectionSymbol {
 
   }
 
-  public static IGeometry getSymbolExtentWithCarriedObjects(
-      ICarrierNetworkSection section, boolean left) {
-    // Compute the size of the buffer
+  public static ILineString getSymbolExtentAsAnOffsetWithCarriedObjects(
+      ICarrierNetworkSection section, boolean left, double offsetAdjust) {
     double distance = section.distance(left);
     distance *= left ? 1 : -1;
-
+    offsetAdjust *= left ? 1 : -1;
     ILineString g = JtsAlgorithms.offsetCurve(
         section.getGeom(),
-        (section.getWidth() / 2 + distance) / 2
+        offsetAdjust + ((left ? 1 : -1) * section.getWidth() / 2 + distance)
             * Legend.getSYMBOLISATI0N_SCALE() / 1000).get(0);
 
     if (g.coord().get(0).distance(section.getGeom().coord().get(0)) < g
@@ -111,7 +110,18 @@ public class SectionSymbol {
             section.getGeom().coord().get(section.getGeom().coord().size() - 1))) {
       g.coord().inverseOrdre();
     }
+    return g;
+  }
 
+  public static ILineString getSymbolExtentAsAnOffsetWithCarriedObjects(
+      ICarrierNetworkSection section, boolean left) {
+    return getSymbolExtentAsAnOffsetWithCarriedObjects(section, left, 0.0);
+  }
+
+  public static IGeometry getSymbolExtentWithCarriedObjects(
+      ICarrierNetworkSection section, boolean left) {
+
+    ILineString g = getSymbolExtentAsAnOffsetWithCarriedObjects(section, left);
     for (IDirectPosition position : section.getGeom().coord()) {
       g.coord().add(position);
     }
