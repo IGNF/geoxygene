@@ -27,6 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.validation;
 
+import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.InterpolationSymbolizerInterface;
 import fr.ign.cogit.geoxygene.style.LineInterpolationSymbolizer;
 import fr.ign.cogit.geoxygene.style.Stroke;
@@ -53,12 +54,13 @@ public class LineInterpolationSymbolizerValidator extends
 
         boolean updated = false;
 
-        updated = this.updateStroke(
-            symbolizer.getFirstSymbolizer().getStroke(), 
+        // need to change the update functions to return the stroke: can be null
+        // add cap and joints interpolation        
+        symbolizer.setStroke(this.interpolate(
+            symbolizer.getFirstSymbolizer().getStroke(),
             symbolizer.getSecondSymbolizer().getStroke(), 
-            symbolizer.getAlpha(), interFun, 
-            symbolizer.getStroke()) || updated;
-        
+            symbolizer.getAlpha(), interFun));
+         
         System.out.println("Done");
 
         return updated;

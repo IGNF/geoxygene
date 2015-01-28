@@ -42,24 +42,8 @@ implements InterpolationSymbolizerInterface {
 
     @Override
     public void reset() {
-
         this.firstSymbolizer = new LineSymbolizer();
         this.secondSymbolizer = new LineSymbolizer();
-
-        // preset, generated automatically to avoid to generate
-        // an empty structure in the SLD
-        // Stroke
-        Stroke stroke = new Stroke(), subStroke1 = new Stroke(), subStroke2 = new Stroke();
-        subStroke1.setStroke(Color.black);
-        subStroke2.setStroke(Color.green);
-        subStroke1.setStrokeOpacity(1.f);
-        subStroke2.setStrokeOpacity(1.f);
-        subStroke1.setStrokeWidth(5.f);
-        subStroke2.setStrokeWidth(10.f);
-
-        this.setStroke(stroke);
-        this.firstSymbolizer.setStroke(subStroke1);
-        this.secondSymbolizer.setStroke(subStroke2);
     }
 
     /**

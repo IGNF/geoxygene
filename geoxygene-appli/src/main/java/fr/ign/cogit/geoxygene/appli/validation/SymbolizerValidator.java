@@ -26,6 +26,8 @@
  *******************************************************************************/
 package fr.ign.cogit.geoxygene.appli.validation;
 
+import java.awt.Color;
+
 import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.InterpolationSymbolizerInterface;
 import fr.ign.cogit.geoxygene.style.Stroke;
@@ -59,40 +61,75 @@ public abstract class SymbolizerValidator {
     public abstract boolean validate(InterpolationSymbolizerInterface s) throws InvalidSymbolizerException;
     
     
-    protected boolean updateStroke(Stroke subStroke1, Stroke subStroke2, 
-                                   double alpha, Interpolation.Functor interFun,
-                                   Stroke out) {
+    protected Stroke interpolate(Stroke subStroke1, Stroke subStroke2, 
+                                   double alpha, Interpolation.Functor interFun) {
+      Color outStroke  = null;
+      float outOpacity = (float) -1.;
+      float outWidth   = (float) -1.;
       
-
-      // HACK: need to call getColor and not getStroke to update internal
-      // transient fields according to the css properties
+      Stroke out = new Stroke();
       
-      out.setStroke(
-              Interpolation.interpolateRGB(subStroke1.getColor(),
-                      subStroke2.getColor(), alpha, interFun));
-      out.setStrokeOpacity(
-              (float) Interpolation.interpolate(
-                      subStroke1.getStrokeOpacity(),
-                      subStroke2.getStrokeOpacity(), alpha, interFun));
-      out.setStrokeWidth(
-              (float) Interpolation.interpolate(subStroke1.getStrokeWidth(),
-                      subStroke2.getStrokeWidth(), alpha, interFun));
+      if (subStroke1 == null ){
+        if (subStroke2 == null)
+          return null;
+        outStroke  = subStroke2.getColor();
+        outOpacity = subStroke2.getStrokeOpacity();
+        outWidth   = subStroke2.getStrokeWidth();
+      }else if (subStroke2 == null){
+        outStroke  = subStroke1.getColor();
+        outOpacity = subStroke1.getStrokeOpacity();
+        outWidth   = subStroke1.getStrokeWidth();
+      }else {
 
-      return true;
-  }
+        // HACK: need to call getColor and not getStroke to update internal
+        // transient fields according to the css properties
+        outStroke =
+            Interpolation.interpolateRGB(subStroke1.getColor(),
+                subStroke2.getColor(), alpha, interFun);
+        outOpacity =
+            (float) Interpolation.interpolate(
+                subStroke1.getStrokeOpacity(),
+                subStroke2.getStrokeOpacity(), alpha, interFun);
+        outWidth = 
+            (float) Interpolation.interpolate(subStroke1.getStrokeWidth(),
+                subStroke2.getStrokeWidth(), alpha, interFun);
+      }
+
+      if (outStroke  != null) out.setStroke(outStroke);
+      if (outOpacity >= 0)    out.setStrokeOpacity(outOpacity);
+      if (outWidth >= 0)      out.setStrokeWidth(outWidth);
+      
+      return out;
+    }
+
+
     
+    protected Fill interpolate(Fill subFill1, Fill subFill2, 
+        double alpha, Interpolation.Functor interFun) {
+      // interpolated parameters
+      Color outColor = null;
+      float outOpacity = (float) -1.0;
+      
+      Fill out = new Fill();
+      
+      if (subFill1 == null){
+        if (subFill2 == null)
+          return null;
+        outColor   = subFill2.getColor();
+        outOpacity = subFill2.getFillOpacity();
+      }else if (subFill2 == null){
+        outColor   = subFill1.getColor();
+        outOpacity = subFill1.getFillOpacity();
+      }else {
+        outColor = Interpolation.interpolateRGB(subFill1.getColor(),
+            subFill2.getColor(), alpha, interFun);
+        outOpacity = (float) Interpolation.interpolate(subFill1.getFillOpacity(),
+            subFill2.getFillOpacity(), alpha, interFun);
+      }
 
-    
-    protected boolean updateFill(Fill subFill1, Fill subFill2, 
-        double alpha, Interpolation.Functor interFun,
-        Fill out) {
-      out.setColor(
-          Interpolation.interpolateRGB(subFill1.getColor(),
-              subFill2.getColor(), alpha, interFun));
-      out.setFillOpacity(
-          (float) Interpolation.interpolate(subFill1.getFillOpacity(),
-              subFill2.getFillOpacity(), alpha, interFun));
-
-      return true;
+      if (outColor  != null) out.setColor(outColor);
+      if (outOpacity >= 0)   out.setFillOpacity(outOpacity);
+      
+      return out;
     }
 }

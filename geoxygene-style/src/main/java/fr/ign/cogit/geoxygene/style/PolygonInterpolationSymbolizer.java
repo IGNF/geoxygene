@@ -44,35 +44,6 @@ implements InterpolationSymbolizerInterface {
 
         this.firstSymbolizer = new PolygonSymbolizer();
         this.secondSymbolizer = new PolygonSymbolizer();
-
-        // preset, generated automatically to avoid to generate
-        // an empty structure in the SLD
-        // Fill
-        // Stroke
-        Fill fill = new Fill(), subFill1 = new Fill(), subFill2 = new Fill();
-
-        subFill1.setFill(Color.blue);
-        subFill2.setFill(Color.red);
-
-        subFill1.setFillOpacity(1.f);
-        subFill2.setFillOpacity(1.f);
-
-        this.setFill(fill);
-        this.firstSymbolizer.setFill(subFill1);
-        this.secondSymbolizer.setFill(subFill2);
-
-        // Stroke
-        Stroke stroke = new Stroke(), subStroke1 = new Stroke(), subStroke2 = new Stroke();
-        subStroke1.setStroke(Color.black);
-        subStroke2.setStroke(Color.green);
-        subStroke1.setStrokeOpacity(1.f);
-        subStroke2.setStrokeOpacity(1.f);
-        subStroke1.setStrokeWidth(5.f);
-        subStroke2.setStrokeWidth(10.f);
-
-        this.setStroke(stroke);
-        this.firstSymbolizer.setStroke(subStroke1);
-        this.secondSymbolizer.setStroke(subStroke2);
     }
 
     /**

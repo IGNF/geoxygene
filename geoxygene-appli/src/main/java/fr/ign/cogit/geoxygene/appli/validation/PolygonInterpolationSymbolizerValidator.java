@@ -27,6 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.validation;
 
+import java_cup.symbol;
 import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.InterpolationSymbolizerInterface;
 import fr.ign.cogit.geoxygene.style.PolygonInterpolationSymbolizer;
@@ -51,23 +52,19 @@ public class PolygonInterpolationSymbolizerValidator extends
             throw new InvalidSymbolizerException("null Symbolizer ");
 
         PolygonInterpolationSymbolizer symbolizer = (PolygonInterpolationSymbolizer) s;
-
-        boolean updated = false;
-
-        updated = this.updateStroke(
-            symbolizer.getFirstSymbolizer().getStroke(), 
+        
+        symbolizer.setStroke(this.interpolate(
+            symbolizer.getFirstSymbolizer().getStroke(),
             symbolizer.getSecondSymbolizer().getStroke(), 
-            symbolizer.getAlpha(), interFun, 
-            symbolizer.getStroke()) || updated;
-
-        updated = this.updateFill(
-            symbolizer.getFirstSymbolizer().getFill(), 
+            symbolizer.getAlpha(), interFun));
+        
+        symbolizer.setFill(this.interpolate(
+            symbolizer.getFirstSymbolizer().getFill(),
             symbolizer.getSecondSymbolizer().getFill(), 
-            symbolizer.getAlpha(), interFun, 
-            symbolizer.getFill()) || updated;
+            symbolizer.getAlpha(), interFun));
         
         System.out.println("Done");
 
-        return updated;
+        return true;
     }
 }
