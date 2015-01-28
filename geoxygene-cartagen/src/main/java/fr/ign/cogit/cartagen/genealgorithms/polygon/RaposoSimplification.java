@@ -12,8 +12,8 @@ package fr.ign.cogit.cartagen.genealgorithms.polygon;
 import java.util.Set;
 
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
-import fr.ign.cogit.cartagen.spatialanalysis.hexagonaltess.HexagonalCell;
-import fr.ign.cogit.cartagen.spatialanalysis.hexagonaltess.HexagonalTessellation;
+import fr.ign.cogit.cartagen.spatialanalysis.tessellations.hexagonaltess.HexagonalCell;
+import fr.ign.cogit.cartagen.spatialanalysis.tessellations.hexagonaltess.HexagonalTessellation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
