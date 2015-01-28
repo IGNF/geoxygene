@@ -30,9 +30,11 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileFilter;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
@@ -46,6 +48,7 @@ import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.ProjectFramePlugin;
 import fr.ign.cogit.geoxygene.appli.task.TaskManager;
 import fr.ign.cogit.geoxygene.appli.ui.Message;
+import fr.ign.util.ui.JRecentFileChooser;
 
 /**
  * Base class for GeOxygene applications.
@@ -250,6 +253,45 @@ public class GeOxygeneApplication {
             // preloadTask.start();
         }
 
+    }
+
+    /** @return Display a dialog to open a SLD, and return the selected File. */
+    public File displayLoadSLDDialog(){
+      JRecentFileChooser chooser = new JRecentFileChooser(new File(
+          MainFrameMenuBar.fc.getPreviousDirectory(), "."),
+          GeOxygeneEventManager.getInstance().getApplication()
+          .getProperties().getRecents());
+
+      chooser.setFileFilter(new FileFilter() {
+        @Override
+        public boolean accept(File f) {
+          return (f.isFile()
+              && (f.getAbsolutePath().endsWith(".xml") || f
+                  .getAbsolutePath().endsWith(".XML")) || f
+                  .isDirectory());
+        }
+
+        @Override
+        public String getDescription() {
+          return "XMLfileReader";
+        }
+      });
+      int result = chooser
+          .showOpenDialog(this.getMainFrame().getGui());
+      if (result == JFileChooser.APPROVE_OPTION){
+        File file = chooser.getSelectedFile();
+        try {
+          this.getProperties()
+          .setLastOpenedFile(file.getAbsolutePath());
+          MainFrameMenuBar.fc.setPreviousDirectory(file);
+          MainFrameMenuBar.fc.setRecents(chooser
+              .getRecentDirectories());
+        } catch (Exception e1) {
+          e1.printStackTrace();
+        }
+        return chooser.getSelectedFile();    
+      }
+      return null;
     }
 
     /** @return The font to be used for all menus, etc. */
