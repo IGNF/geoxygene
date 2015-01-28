@@ -99,6 +99,15 @@ public abstract class SymbolizerValidator {
       if (outOpacity >= 0)    out.setStrokeOpacity(outOpacity);
       if (outWidth >= 0)      out.setStrokeWidth(outWidth);
       
+      // update non-continuous parameters
+      if (alpha < 0.5f){
+        out.setStrokeLineCap(subStroke1.getStrokeLineCap());
+        out.setStrokeLineJoin(subStroke1.getStrokeLineJoin());
+      }else {
+        out.setStrokeLineCap(subStroke2.getStrokeLineCap());
+        out.setStrokeLineJoin(subStroke2.getStrokeLineJoin());
+      }
+      
       return out;
     }
 
