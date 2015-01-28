@@ -37,6 +37,7 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import fr.ign.cogit.geoxygene.style.InterpolationSymbolizerInterface;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Style;
@@ -711,15 +712,18 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
             for (Style style : layer.getStyles()) {
                 for (Rule rule : style.getFeatureTypeStyles().get(0).getRules()) {
                     Symbolizer symbolizer = rule.getSymbolizers().get(0);
-
-                    SymbolizerValidator validator = SymbolizerValidatorFactory
-                            .getOrCreateValidator(symbolizer);
-                    if (validator != null)
+                    
+                    if (symbolizer instanceof InterpolationSymbolizerInterface){
+                      InterpolationSymbolizerInterface interSymbolizer = (InterpolationSymbolizerInterface)symbolizer;
+                      SymbolizerValidator validator = SymbolizerValidatorFactory
+                          .getOrCreateValidator(interSymbolizer);
+                      if (validator != null)
                         try {
-                            validator.validate(symbolizer);
+                          validator.validate(interSymbolizer);
                         } catch (InvalidSymbolizerException e) {
-                            logger.error(e.getStackTrace().toString());
+                          logger.error(e.getStackTrace().toString());
                         }
+                    }
                 }
             }
         }

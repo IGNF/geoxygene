@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.style.InterpolationSymbolizerInterface;
 import fr.ign.cogit.geoxygene.style.LineInterpolationSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonInterpolationSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
@@ -67,7 +68,7 @@ public class SymbolizerValidatorFactory {
      * @return null if no {@link SymbolizerValidator} can be associated to the
      *         input {@link Symbolizer}
      */
-    public static SymbolizerValidator getOrCreateValidator(Symbolizer s) {
+    public static SymbolizerValidator getOrCreateValidator(InterpolationSymbolizerInterface s) {
         String sname = s.getClass().getName();
         SymbolizerValidator validator = null;
 

@@ -22,7 +22,9 @@ import javax.xml.bind.annotation.XmlElement;
  * @see geoxygene.style.Rule Rules to use in SLD are described in 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class LineInterpolationSymbolizer extends LineSymbolizer {
+public class LineInterpolationSymbolizer 
+extends LineSymbolizer
+implements InterpolationSymbolizerInterface {
 
     @XmlElement(name = "FirstSymbolizer")
     private LineSymbolizer firstSymbolizer = null;

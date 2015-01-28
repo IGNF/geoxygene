@@ -27,22 +27,22 @@
 
 package fr.ign.cogit.geoxygene.appli.validation;
 
+import fr.ign.cogit.geoxygene.style.InterpolationSymbolizerInterface;
 import fr.ign.cogit.geoxygene.style.LineInterpolationSymbolizer;
 import fr.ign.cogit.geoxygene.style.Stroke;
-import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.util.math.Interpolation;
 
 /**
  * @author Nicolas Mellado
  *
  */
-public class LineInterpolationSymbolizerValidator implements
+public class LineInterpolationSymbolizerValidator extends
         SymbolizerValidator {
 
     private static Interpolation.Functor interFun = Interpolation.linearFunctor;
 
     @Override
-    public boolean validate(Symbolizer s) throws InvalidSymbolizerException {
+    public boolean validate(InterpolationSymbolizerInterface s) throws InvalidSymbolizerException {
       System.out.print("Validating LineInterpolationSymbolizer ...");
       System.out.flush();
 
@@ -53,35 +53,14 @@ public class LineInterpolationSymbolizerValidator implements
 
         boolean updated = false;
 
-        updated = this.updateStroke(symbolizer) || updated;
+        updated = this.updateStroke(
+            symbolizer.getFirstSymbolizer().getStroke(), 
+            symbolizer.getSecondSymbolizer().getStroke(), 
+            symbolizer.getAlpha(), interFun, 
+            symbolizer.getStroke()) || updated;
         
         System.out.println("Done");
 
         return updated;
     }
-
-    private boolean updateStroke(LineInterpolationSymbolizer s) {
-        double alpha = s.getAlpha();
-
-        // update stroke
-        Stroke subStroke1 = s.getFirstSymbolizer().getStroke();
-        Stroke subStroke2 = s.getSecondSymbolizer().getStroke();
-
-        // HACK: need to call getColor and not getStroke to update internal
-        // transient fields according to the css properties
-
-        s.getStroke().setStroke(
-                Interpolation.interpolateRGB(subStroke1.getColor(),
-                        subStroke2.getColor(), alpha, interFun));
-        s.getStroke().setStrokeOpacity(
-                (float) Interpolation.interpolate(
-                        subStroke1.getStrokeOpacity(),
-                        subStroke2.getStrokeOpacity(), alpha, interFun));
-        s.getStroke().setStrokeWidth(
-                (float) Interpolation.interpolate(subStroke1.getStrokeWidth(),
-                        subStroke2.getStrokeWidth(), alpha, interFun));
-
-        return true;
-    }
-
 }

@@ -21,7 +21,9 @@ import javax.xml.bind.annotation.XmlElement;
  * @see Validation mechanisms in package geoxygene.appli.validation
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PolygonInterpolationSymbolizer extends PolygonSymbolizer {
+public class PolygonInterpolationSymbolizer 
+extends PolygonSymbolizer 
+implements InterpolationSymbolizerInterface {
 
     @XmlElement(name = "FirstSymbolizer")
     private PolygonSymbolizer firstSymbolizer = null;
