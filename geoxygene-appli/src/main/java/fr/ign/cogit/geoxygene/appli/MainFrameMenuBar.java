@@ -381,47 +381,19 @@ public class MainFrameMenuBar extends JMenuBar {
                 ProjectFrame projectFrame = MainFrameMenuBar.this.mainFrame
                         .getSelectedProjectFrame();
                 if (projectFrame == null) {
-                    LOGGER.info("Cannot save SLD, no selected project");
+                    LOGGER.info("Cannot load SLD, no selected project");
                     return;
                 }
-                JRecentFileChooser chooser = new JRecentFileChooser(fc
-                        .getPreviousDirectory(), GeOxygeneEventManager
-                        .getInstance().getApplication().getProperties()
-                        .getRecents());
-                chooser.setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(File f) {
-                        return (f.isFile()
-                                && (f.getAbsolutePath().endsWith(".xml") || f
-                                        .getAbsolutePath().endsWith(".XML")) || f
-                                .isDirectory());
+                
+                File file = GeOxygeneEventManager.getInstance().getApplication().displayLoadSLDDialog();
+                if (file != null) {
+                    try {
+                      projectFrame.loadSLD(file);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
                     }
-
-                    @Override
-                    public String getDescription() {
-                        return "XMLfileReader";
-                    }
-                });
-                int result = chooser
-                        .showOpenDialog(MainFrameMenuBar.this.mainFrame
-                                .getGui());
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    File file = chooser.getSelectedFile();
-                    if (file != null) {
-                        // String fileName = file.getAbsolutePath();
-                        try {
-                            projectFrame.loadSLD(file);
-                            MainFrameMenuBar.this.mainFrame.getApplication()
-                                    .getProperties()
-                                    .setLastOpenedFile(file.getAbsolutePath());
-                            fc.setPreviousDirectory(file);
-                            fc.setRecents(chooser.getRecentDirectories());
-                            projectFrame.getLayerViewPanel().reset();
-                            projectFrame.getLayerViewPanel().repaint();
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-                    }
+                    projectFrame.getLayerViewPanel().reset();
+                    projectFrame.getLayerViewPanel().repaint();
                 }
             }
         });

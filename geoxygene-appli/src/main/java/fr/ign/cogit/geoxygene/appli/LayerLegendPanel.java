@@ -31,6 +31,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.NoninvertibleTransformException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -71,6 +72,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
@@ -731,44 +733,14 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
         if (this.parent == null) {
             LOGGER.info("Cannot save SLD, no selected project");
             return;
-        }
-        JRecentFileChooser chooser = new JRecentFileChooser(new File(
-                MainFrameMenuBar.fc.getPreviousDirectory(), "."),
-                GeOxygeneEventManager.getInstance().getApplication()
-                        .getProperties().getRecents());
-
-        chooser.setFileFilter(new FileFilter() {
-            @Override
-            public boolean accept(File f) {
-                return (f.isFile()
-                        && (f.getAbsolutePath().endsWith(".xml") || f
-                                .getAbsolutePath().endsWith(".XML")) || f
-                        .isDirectory());
-            }
-
-            @Override
-            public String getDescription() {
-                return "XMLfileReader";
-            }
-        });
-        int result = chooser
-                .showOpenDialog(this.parent.getMainFrame().getGui());
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-            if (file != null) {
-                // String fileName = file.getAbsolutePath();
-                try {
-                    this.parent.loadSLD(file);
-                    this.parent.getMainFrame().getApplication().getProperties()
-                            .setLastOpenedFile(file.getAbsolutePath());
-                    MainFrameMenuBar.fc.setPreviousDirectory(file);
-                    MainFrameMenuBar.fc.setRecents(chooser
-                            .getRecentDirectories());
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-            }
-        }
+        }        
+        File file = GeOxygeneEventManager.getInstance().getApplication().displayLoadSLDDialog();
+        if (file != null)
+            try {
+                this.parent.loadSLD(file);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+        }       
     }
 
     /**

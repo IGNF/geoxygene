@@ -128,6 +128,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private JToggleButton fboToggleButton = null;
     private JToggleButton animationButton = null;
     private JToggleButton statisticsButton = null;
+    private JButton interpolationSecondSLDButton = null;
     private JButton antialiasingButton = null;
     private JButton clearCacheButton = null;
     private JButton awtComparButton = null;
@@ -196,6 +197,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .add(this.getStatisticsButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .add(this.getInterpolationSecondSLDButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
 
@@ -226,6 +229,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 .remove(this.getAnimationButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .remove(this.getStatisticsButton());
+        this.getProjectFrame().getMainFrame().getMode().getToolBar()
+                .remove(this.getInterpolationSecondSLDButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
@@ -559,6 +564,13 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     }
 
     /**
+     * @return the useContinuousRendering
+     */
+    public boolean loadSecondSLD() {
+        return this.useContinuousRendering;
+    }
+
+    /**
      * @param useContinuousRendering
      *            the useContinuousRendering to set
      */
@@ -677,6 +689,19 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             this.statisticsButton.addItemListener(this);
         }
         return this.statisticsButton;
+    }
+
+    private JButton getInterpolationSecondSLDButton() {
+        if (this.interpolationSecondSLDButton == null) {
+            this.interpolationSecondSLDButton = new JButton();
+            this.interpolationSecondSLDButton.setIcon(new ImageIcon(MainFrameToolBar.class
+                    .getResource("/images/toolbar/page_white_paintbrush.png")));
+            this.interpolationSecondSLDButton.setToolTipText(I18N
+                    .getString("StyleInterpolation.LoadSecondSLD"));
+            this.interpolationSecondSLDButton.setSelected(this.loadSecondSLD());
+            this.interpolationSecondSLDButton.addItemListener(this);
+        }
+        return this.interpolationSecondSLDButton;
     }
 
     private JButton getAntialiasingButton() {
@@ -897,6 +922,9 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             RenderingStatistics.setStatistics(this.getStatisticsButton()
                     .isSelected());
             this.repaint();
+        }
+        if (e.getSource() == this.getInterpolationSecondSLDButton()) {
+            System.out.println("Unimplemented");
         }
     }
 
