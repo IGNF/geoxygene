@@ -43,6 +43,8 @@ import fr.ign.cogit.geoxygene.filter.PropertyIsLessThan;
 import fr.ign.cogit.geoxygene.filter.PropertyIsLessThanOrEqualTo;
 import fr.ign.cogit.geoxygene.filter.PropertyIsLike;
 import fr.ign.cogit.geoxygene.filter.PropertyIsNotEqualTo;
+import fr.ign.cogit.geoxygene.style.interpolation.LineInterpolationSymbolizer;
+import fr.ign.cogit.geoxygene.style.interpolation.PolygonInterpolationSymbolizer;
 import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 
 /**

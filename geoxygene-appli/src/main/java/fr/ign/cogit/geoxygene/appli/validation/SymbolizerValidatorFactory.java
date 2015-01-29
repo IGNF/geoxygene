@@ -32,10 +32,10 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.style.InterpolationSymbolizerInterface;
-import fr.ign.cogit.geoxygene.style.LineInterpolationSymbolizer;
-import fr.ign.cogit.geoxygene.style.PolygonInterpolationSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.interpolation.InterpolationSymbolizerInterface;
+import fr.ign.cogit.geoxygene.style.interpolation.LineInterpolationSymbolizer;
+import fr.ign.cogit.geoxygene.style.interpolation.PolygonInterpolationSymbolizer;
 
 public class SymbolizerValidatorFactory {
     private static final Logger logger = Logger

@@ -29,8 +29,8 @@ package fr.ign.cogit.geoxygene.appli.validation;
 import java.awt.Color;
 
 import fr.ign.cogit.geoxygene.style.Fill;
-import fr.ign.cogit.geoxygene.style.InterpolationSymbolizerInterface;
 import fr.ign.cogit.geoxygene.style.Stroke;
+import fr.ign.cogit.geoxygene.style.interpolation.InterpolationSymbolizerInterface;
 import fr.ign.cogit.geoxygene.util.math.Interpolation;
 
 /**

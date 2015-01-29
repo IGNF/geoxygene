@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.style;
+package fr.ign.cogit.geoxygene.style.interpolation;
 
 public interface InterpolationSymbolizerInterface {
 

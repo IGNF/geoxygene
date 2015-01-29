@@ -29,9 +29,9 @@ package fr.ign.cogit.geoxygene.appli.validation;
 
 import java_cup.symbol;
 import fr.ign.cogit.geoxygene.style.Fill;
-import fr.ign.cogit.geoxygene.style.InterpolationSymbolizerInterface;
-import fr.ign.cogit.geoxygene.style.PolygonInterpolationSymbolizer;
 import fr.ign.cogit.geoxygene.style.Stroke;
+import fr.ign.cogit.geoxygene.style.interpolation.InterpolationSymbolizerInterface;
+import fr.ign.cogit.geoxygene.style.interpolation.PolygonInterpolationSymbolizer;
 import fr.ign.cogit.geoxygene.util.math.Interpolation;
 
 /**

@@ -972,7 +972,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             this.repaint();
         } else if (e.getSource() == this.getInterpolationSecondSLDButton()) {
             if (this.getProjectFrame() == null) {
-                  logger.info("Cannot save SLD, no selected project");
+                  logger.info("Cannot load SLD, no selected project");
                 return;
             }        
             File file = GeOxygeneEventManager.getInstance().getApplication().displayLoadSLDDialog();
