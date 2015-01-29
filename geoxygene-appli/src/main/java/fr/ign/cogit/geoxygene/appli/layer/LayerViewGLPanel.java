@@ -21,6 +21,7 @@ import java.awt.geom.Point2D;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -40,6 +41,7 @@ import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
@@ -74,6 +76,7 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilterIdentity;
+import fr.ign.cogit.geoxygene.style.interpolation.SLDMixer;
 import fr.ign.cogit.geoxygene.util.ImageComparator;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
@@ -976,8 +979,22 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 return;
             }        
             File file = GeOxygeneEventManager.getInstance().getApplication().displayLoadSLDDialog();
-            if (file != null)
-                System.out.println("Not-implemented yet");            
+            if (file != null){
+                StyledLayerDescriptor new_sld;
+                try {
+                    new_sld = StyledLayerDescriptor.unmarshall(
+                              file.getAbsolutePath(), this.getProjectFrame().getDataSet());
+
+                    StyledLayerDescriptor mixSLD = SLDMixer.mix(this.getSld(), new_sld);
+                    this.getProjectFrame().loadSLD(mixSLD, true);
+
+                    this.getProjectFrame().getLayerViewPanel().reset();
+                    this.getProjectFrame().getLayerViewPanel().repaint();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+                            
         }else {
             // old SLD events....
             this.repaint();
