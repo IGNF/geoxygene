@@ -1,3 +1,15 @@
+/**
+ * 
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * 
+ * @copyright IGN
+ * 
+ */
 package fr.ign.cogit.geoxygene.contrib.algorithms;
 
 import java.util.ArrayList;
@@ -20,18 +32,20 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * Galton, A., Duckham, M. (2006) What is the Region Occupied by a Set of
  * Points? In Raubal, M., Miller, H., Frank, A., and Goodchild, M. (eds) Lecture
  * Notes in Computer Science 4197. Springer, Berlin.
+ * </p>
+ * 
  * @author J. Renard (d'après Galton & Duckham) 11/08/2009
  */
 public class SwingingArmNonConvexHull {
-  public final static Logger logger = Logger
+  
+  /** LOGGER. */
+  public final static Logger LOGGER = Logger
       .getLogger(SwingingArmNonConvexHull.class.getName());
-  /**
-   * Points to construct the hull
-   */
+  
+  /** Points to construct the hull. */
   private List<IDirectPosition> points;
-  /**
-   * Swinging arm radius
-   */
+  
+  /** Swinging arm radius. */
   private double radius = 0.0;
 
   /**
@@ -49,30 +63,28 @@ public class SwingingArmNonConvexHull {
    */
   public IGeometry compute() {
     if (this.points.isEmpty()) {
-      if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
-        SwingingArmNonConvexHull.logger
-            .debug("No points to construct the hull"); //$NON-NLS-1$
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("No points to construct the hull"); //$NON-NLS-1$
       }
       return null;
     }
-    if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
-      SwingingArmNonConvexHull.logger
-          .debug("Computation of the non-convex hull using Swinging Arm method with radius=" //$NON-NLS-1$
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Computation of the non-convex hull using Swinging Arm method with radius=" //$NON-NLS-1$
               + this.radius);
     }
     // Swinging arm clockwise
-    if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
-      SwingingArmNonConvexHull.logger.debug("clockwise"); //$NON-NLS-1$
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("clockwise"); //$NON-NLS-1$
     }
     IGeometry clockWise = this.swingingArmCompute(-1.0);
     // Swinging arm anticlockwise
-    if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
-      SwingingArmNonConvexHull.logger.debug("anticlockwise"); //$NON-NLS-1$
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("anticlockwise"); //$NON-NLS-1$
     }
     IGeometry antiClockWise = this.swingingArmCompute(1.0);
     // Union of the two geometries
-    if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
-      SwingingArmNonConvexHull.logger.debug("union of the two hulls"); //$NON-NLS-1$
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("union of the two hulls"); //$NON-NLS-1$
     }
     if (!clockWise.isValid() || !antiClockWise.isValid()) {
       return null;
@@ -95,9 +107,8 @@ public class SwingingArmNonConvexHull {
   private IGeometry swingingArmCompute(double direction) {
     // if there is no point, return a null hull
     if (this.points.isEmpty()) {
-      if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
-        SwingingArmNonConvexHull.logger
-            .debug("No points to construct the hull"); //$NON-NLS-1$
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("No points to construct the hull"); //$NON-NLS-1$
       }
       return null;
     }
@@ -284,8 +295,7 @@ public class SwingingArmNonConvexHull {
             }
           }
           if (!connexComponent.isValid()) {
-            SwingingArmNonConvexHull.logger
-                .error("non valid connex component: " + connexComponent); //$NON-NLS-1$
+            LOGGER.error("non valid connex component: " + connexComponent); //$NON-NLS-1$
           }
           nbConnexComponents++;
           // Addition of all interior points to unavailable points
@@ -301,8 +311,8 @@ public class SwingingArmNonConvexHull {
         }
       }
     }
-    if (SwingingArmNonConvexHull.logger.isDebugEnabled()) {
-      SwingingArmNonConvexHull.logger.debug("non-convex-hull containing " //$NON-NLS-1$
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("non-convex-hull containing " //$NON-NLS-1$
           + nbConnexComponents + " connex components"); //$NON-NLS-1$
     }
     return hull;
