@@ -598,12 +598,14 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         this.tabPane.remove(this.strokeExpressiveScrollPane);
         // Stroke Expressive UI
         GenericParameterUI ui = null;
-        StrokeExpressiveRenderingDescriptor expressiveStroke = ((AbstractSymbolizer) (this.layer
-                .getSymbolizer())).getStroke().getExpressiveRendering();
-        if (expressiveStroke != null) {
-            ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
-                    expressiveStroke, this.layerViewPanel.getProjectFrame());
-            tabTooltip = expressiveStroke.getClass().getSimpleName();
+        if (((AbstractSymbolizer) this.layer.getSymbolizer()).getStroke() != null) {
+            StrokeExpressiveRenderingDescriptor expressiveStroke = ((AbstractSymbolizer) (this.layer
+                    .getSymbolizer())).getStroke().getExpressiveRendering();
+            if (expressiveStroke != null) {
+                ui = ExpressiveRenderingUIFactory.getExpressiveRenderingUI(
+                        expressiveStroke, this.layerViewPanel.getProjectFrame());
+                tabTooltip = expressiveStroke.getClass().getSimpleName();
+            }
         }
         if (ui != null) {
             this.strokeExpressiveScrollPane.setViewportView(ui.getGui());
@@ -1045,37 +1047,41 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         this.addCategorizedMapButton.addActionListener(this);
         this.fillPanel.add(this.addCategorizedMapButton);
 
-        this.strokePanel = new JPanel();
-        this.strokePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        TitledBorder strokeTitleBorder = BorderFactory.createTitledBorder(""); //$NON-NLS-1$
-        strokeTitleBorder.setTitleColor(fillTitleBorder.getTitleColor());
-        strokeTitleBorder.setTitleFont(fillTitleBorder.getTitleFont());
-        strokeTitleBorder.setTitle(I18N
-                .getString("StyleEditionFrame.PolygonStroke")); //$NON-NLS-1$
-        this.strokePanel.setBorder(strokeTitleBorder);
-        this.strokePanel.setPreferredSize(new Dimension(420, 250));
-        
-        this.strokeColor = ((PolygonSymbolizer) this.layer.getStyles().get(0)
-                .getSymbolizer()).getStroke().getStroke();
-        this.strokeOpacity = ((PolygonSymbolizer) this.layer.getStyles().get(0)
-                .getSymbolizer()).getStroke().getStrokeOpacity();
-        this.strokeWidth = ((PolygonSymbolizer) this.layer.getStyles().get(0)
-                .getSymbolizer()).getStroke().getStrokeWidth();
-        this.strokeLineJoin = ((PolygonSymbolizer) this.layer.getStyles()
-                .get(0).getSymbolizer()).getStroke().getStrokeLineJoin();
-        this.strokeLineCap = ((PolygonSymbolizer) this.layer.getStyles().get(0)
-                .getSymbolizer()).getStroke().getStrokeLineCap();
-        this.unit = ((PolygonSymbolizer) this.layer.getStyles().get(0)
-                .getSymbolizer()).getUnitOfMeasure();
-
-        this.strokePanel.add(this.createColorPreviewPanel(this.strokeColor,
-                this.strokeOpacity));
-        this.strokePanel
-                .add(this.createWidthPanel(this.strokeWidth, this.unit));
-        this.strokePanel.add(this.createJoinCapPanel(this.strokeLineJoin,
-                this.strokeLineCap));
-
-        this.strokePanel.add(this.getExpressiveStrokeComboBox());
+        if (((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer()).getStroke() != null)
+        {        
+            this.strokePanel = new JPanel();
+            this.strokePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+            TitledBorder strokeTitleBorder = BorderFactory.createTitledBorder(""); //$NON-NLS-1$
+            strokeTitleBorder.setTitleColor(fillTitleBorder.getTitleColor());
+            strokeTitleBorder.setTitleFont(fillTitleBorder.getTitleFont());
+            strokeTitleBorder.setTitle(I18N
+                    .getString("StyleEditionFrame.PolygonStroke")); //$NON-NLS-1$
+            this.strokePanel.setBorder(strokeTitleBorder);
+            this.strokePanel.setPreferredSize(new Dimension(420, 250));
+            
+            this.strokeColor = ((PolygonSymbolizer) this.layer.getStyles().get(0)
+                    .getSymbolizer()).getStroke().getStroke();
+            this.strokeOpacity = ((PolygonSymbolizer) this.layer.getStyles().get(0)
+                    .getSymbolizer()).getStroke().getStrokeOpacity();
+            this.strokeWidth = ((PolygonSymbolizer) this.layer.getStyles().get(0)
+                    .getSymbolizer()).getStroke().getStrokeWidth();
+            this.strokeLineJoin = ((PolygonSymbolizer) this.layer.getStyles()
+                    .get(0).getSymbolizer()).getStroke().getStrokeLineJoin();
+            this.strokeLineCap = ((PolygonSymbolizer) this.layer.getStyles().get(0)
+                    .getSymbolizer()).getStroke().getStrokeLineCap();
+            this.unit = ((PolygonSymbolizer) this.layer.getStyles().get(0)
+                    .getSymbolizer()).getUnitOfMeasure();
+    
+            this.strokePanel.add(this.createColorPreviewPanel(this.strokeColor,
+                    this.strokeOpacity));
+            this.strokePanel
+                    .add(this.createWidthPanel(this.strokeWidth, this.unit));
+            this.strokePanel.add(this.createJoinCapPanel(this.strokeLineJoin,
+                    this.strokeLineCap));
+    
+            this.strokePanel.add(this.getExpressiveStrokeComboBox());
+        }else
+            this.strokePanel = null;
 
         this.mainStylePanel = new JPanel();
         this.mainStylePanel.setLayout(new BoxLayout(this.mainStylePanel,
@@ -1088,8 +1094,10 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         this.fillPanel.setAlignmentX(LEFT_ALIGNMENT);
         this.mainStylePanel.add(this.fillPanel);
 
-        this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
-        this.mainStylePanel.add(this.strokePanel);
+        if (strokePanel != null) {
+            this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
+            this.mainStylePanel.add(this.strokePanel);
+        }
 
         JButton buttonApply = this.createButtonApply();
         JButton buttonValid = this.createButtonValid();
