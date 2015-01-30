@@ -80,6 +80,7 @@ implements InterpolationSymbolizerInterface {
 
     /**
      * @return the alpha
+     * @Override
      */
     public float getAlpha() {
         return this.alpha;
@@ -88,6 +89,7 @@ implements InterpolationSymbolizerInterface {
     /**
      * @param alpha
      *            the alpha to set
+     * @Override
      */
     public void setAlpha(float alpha) {
         this.alpha = alpha;
