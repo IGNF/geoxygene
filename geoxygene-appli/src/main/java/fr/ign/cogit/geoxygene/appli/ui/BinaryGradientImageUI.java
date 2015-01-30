@@ -68,7 +68,7 @@ import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
  * 
  */
 public class BinaryGradientImageUI extends JDialog implements
-        ExpressiveRenderingUI, MouseListener, ActionListener {
+        GenericParameterUI, MouseListener, ActionListener {
 
     /**
      * 

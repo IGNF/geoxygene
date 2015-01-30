@@ -50,7 +50,7 @@ import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
  * @author JeT
  * 
  */
-public class GradientExpressiveRenderingUI implements ExpressiveRenderingUI {
+public class GradientExpressiveRenderingUI implements GenericParameterUI {
 
     private JPanel main = null;
     private GradientSubshaderDescriptor strtex = null;
@@ -60,7 +60,7 @@ public class GradientExpressiveRenderingUI implements ExpressiveRenderingUI {
     double maxCoastLineLength = 1000;
     double resolution = 150;
     int blurSize = 2;
-    public ExpressiveRenderingUI shaderUI = null;
+    public GenericParameterUI shaderUI = null;
 
     /**
      * Constructor
@@ -97,7 +97,7 @@ public class GradientExpressiveRenderingUI implements ExpressiveRenderingUI {
         this.getShaderUI().setValuesFromObject();
     }
 
-    private ExpressiveRenderingUI getShaderUI() {
+    private GenericParameterUI getShaderUI() {
         if (this.shaderUI == null) {
             this.shaderUI = ShaderUIFactory.getShaderUI(
                     this.strtex.getShaderDescriptor(), this.parentProjectFrame);

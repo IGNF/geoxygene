@@ -42,7 +42,7 @@ import fr.ign.cogit.geoxygene.style.expressive.UserShaderDescriptor;
  */
 public class ShaderUIFactory {
 
-    public static ExpressiveRenderingUI getShaderUI(
+    public static GenericParameterUI getShaderUI(
             ShaderDescriptor descriptor, ProjectFrame projectFrame) {
         if (descriptor instanceof RandomVariationShaderDescriptor) {
             return new RandomVariationShaderUI(

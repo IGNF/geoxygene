@@ -61,7 +61,7 @@ import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
  * @author JeT
  * 
  */
-public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI {
+public class BasicTextureExpressiveRenderingUI implements GenericParameterUI {
 
     private static final int FILE_LENGTH_DISPLAY = 50;
     private JPanel main = null;
@@ -79,7 +79,7 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
     public String brushTextureFilename = null;
     public int brushStartLength = 100;
     public int brushEndLength = 200;
-    public ExpressiveRenderingUI shaderUI = null;
+    public GenericParameterUI shaderUI = null;
     private JLabel paperFilenameLabel = null;
     private JLabel brushFilenameLabel = null;
 
@@ -131,7 +131,7 @@ public class BasicTextureExpressiveRenderingUI implements ExpressiveRenderingUI 
         this.getShaderUI().setValuesFromObject();
     }
 
-    private ExpressiveRenderingUI getShaderUI() {
+    private GenericParameterUI getShaderUI() {
         if (this.shaderUI == null) {
             this.shaderUI = ShaderUIFactory.getShaderUI(
                     this.strtex.getShaderDescriptor(), this.parentProjectFrame);

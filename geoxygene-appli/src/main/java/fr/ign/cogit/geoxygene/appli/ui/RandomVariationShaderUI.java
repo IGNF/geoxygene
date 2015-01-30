@@ -46,7 +46,7 @@ import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
  * @author JeT
  * 
  */
-public class RandomVariationShaderUI implements ExpressiveRenderingUI {
+public class RandomVariationShaderUI implements GenericParameterUI {
 
     double strokePressureVariationAmplitude = .32;
     double strokePressureVariationWavelength = 100;

@@ -42,7 +42,7 @@ import fr.ign.cogit.geoxygene.style.expressive.DefaultLineShaderDescriptor;
  * @author JeT
  * 
  */
-public class DefaultLineShaderUI implements ExpressiveRenderingUI {
+public class DefaultLineShaderUI implements GenericParameterUI {
 
     private JPanel main = null;
     private ProjectFrame parentProjectFrame = null;

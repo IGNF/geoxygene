@@ -42,7 +42,7 @@ import fr.ign.cogit.geoxygene.style.expressive.DefaultFill2DShaderDescriptor;
  * @author JeT
  * 
  */
-public class DefaultFill2DShaderUI implements ExpressiveRenderingUI {
+public class DefaultFill2DShaderUI implements GenericParameterUI {
 
     private JPanel main = null;
     private ProjectFrame parentProjectFrame = null;

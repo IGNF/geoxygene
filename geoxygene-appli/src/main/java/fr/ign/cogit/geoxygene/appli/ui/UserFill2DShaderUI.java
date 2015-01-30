@@ -57,7 +57,7 @@ import fr.ign.util.ui.JRecentFileChooser;
  * @author JeT
  * 
  */
-public class UserFill2DShaderUI implements ExpressiveRenderingUI,
+public class UserFill2DShaderUI implements GenericParameterUI,
         ParameterChangeListener {
 
     private final List<ParameterUI> editors = new ArrayList<ParameterUI>();

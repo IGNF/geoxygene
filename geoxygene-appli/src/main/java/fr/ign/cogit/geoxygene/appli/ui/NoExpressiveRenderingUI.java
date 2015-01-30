@@ -42,7 +42,7 @@ import fr.ign.cogit.geoxygene.style.expressive.ExpressiveRenderingDescriptor;
  * @author JeT
  * 
  */
-public class NoExpressiveRenderingUI implements ExpressiveRenderingUI {
+public class NoExpressiveRenderingUI implements GenericParameterUI {
 
     private JPanel main = null;
     private ProjectFrame parentProjectFrame = null;

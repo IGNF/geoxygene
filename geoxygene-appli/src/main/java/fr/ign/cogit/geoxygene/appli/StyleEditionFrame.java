@@ -91,7 +91,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.panel.COGITColorChooserPanel;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
-import fr.ign.cogit.geoxygene.appli.ui.ExpressiveRenderingUI;
+import fr.ign.cogit.geoxygene.appli.ui.GenericParameterUI;
 import fr.ign.cogit.geoxygene.appli.ui.ExpressiveRenderingUIFactory;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.style.AbstractSymbolizer;
@@ -571,7 +571,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
         this.tabPane.remove(this.fillExpressiveScrollPane);
         this.tabPane.remove(this.strokeExpressiveScrollPane);
         // Stroke Expressive UI
-        ExpressiveRenderingUI ui = null;
+        GenericParameterUI ui = null;
         StrokeExpressiveRenderingDescriptor expressiveStroke = ((AbstractSymbolizer) (this.layer
                 .getSymbolizer())).getStroke().getExpressiveRendering();
         if (expressiveStroke != null) {

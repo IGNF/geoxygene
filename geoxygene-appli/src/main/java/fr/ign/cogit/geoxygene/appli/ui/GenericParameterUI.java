@@ -33,7 +33,7 @@ import javax.swing.JComponent;
  * @author JeT
  * 
  */
-public interface ExpressiveRenderingUI {
+public interface GenericParameterUI {
 
     JComponent getGui();
 

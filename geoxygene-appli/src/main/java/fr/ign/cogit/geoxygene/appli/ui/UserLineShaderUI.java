@@ -57,7 +57,7 @@ import fr.ign.util.ui.JRecentFileChooser;
  * @author JeT
  * 
  */
-public class UserLineShaderUI implements ExpressiveRenderingUI,
+public class UserLineShaderUI implements GenericParameterUI,
         ParameterChangeListener {
 
     private final List<ParameterUI> editors = new ArrayList<ParameterUI>();

@@ -55,7 +55,7 @@ public class ExpressiveRenderingUIFactory {
      * @param descriptor
      * @return
      */
-    public static ExpressiveRenderingUI getExpressiveRenderingUI(
+    public static GenericParameterUI getExpressiveRenderingUI(
             ExpressiveRenderingDescriptor descriptor, ProjectFrame projectFrame) {
         if (descriptor == null) {
             return null;
@@ -77,7 +77,7 @@ public class ExpressiveRenderingUIFactory {
      * @param descriptor
      * @return
      */
-    public static ExpressiveRenderingUI getStrokeExpressiveRenderingUI(
+    public static GenericParameterUI getStrokeExpressiveRenderingUI(
             StrokeExpressiveRenderingDescriptor descriptor,
             ProjectFrame projectFrame) {
         if (descriptor instanceof StrokeTextureExpressiveRenderingDescriptor) {
@@ -122,7 +122,7 @@ public class ExpressiveRenderingUIFactory {
      * @param descriptor
      * @return
      */
-    public static ExpressiveRenderingUI getFillExpressiveRenderingUI(
+    public static GenericParameterUI getFillExpressiveRenderingUI(
             Fill2DDescriptor descriptor, ProjectFrame projectFrame) {
         if (descriptor instanceof GradientSubshaderDescriptor) {
             GradientSubshaderDescriptor gradientDescriptor = (GradientSubshaderDescriptor) descriptor;

@@ -63,7 +63,7 @@ import fr.ign.util.ui.SliderWithSpinner.SliderWithSpinnerModel;
  * 
  */
 public class StrokeTextureExpressiveRenderingUI implements
-        ExpressiveRenderingUI {
+        GenericParameterUI {
 
     private static final int FILE_LENGTH_DISPLAY = 50;
     private JPanel main = null;
@@ -79,7 +79,7 @@ public class StrokeTextureExpressiveRenderingUI implements
     public String brushTextureFilename = null;
     public int brushStartLength = 100;
     public int brushEndLength = 200;
-    public ExpressiveRenderingUI shaderUI = null;
+    public GenericParameterUI shaderUI = null;
     private JLabel paperFilenameLabel = null;
     private JLabel brushFilenameLabel = null;
 
@@ -129,7 +129,7 @@ public class StrokeTextureExpressiveRenderingUI implements
         this.getShaderUI().setValuesFromObject();
     }
 
-    private ExpressiveRenderingUI getShaderUI() {
+    private GenericParameterUI getShaderUI() {
         if (this.shaderUI == null) {
             this.shaderUI = ShaderUIFactory.getShaderUI(
                     this.strtex.getShaderDescriptor(), this.parentProjectFrame);
