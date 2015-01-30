@@ -7,7 +7,6 @@ import java.io.Reader;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
-import org.hamcrest.core.IsInstanceOf;
 
 import fr.ign.cogit.geoxygene.style.AbstractSymbolizer;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
