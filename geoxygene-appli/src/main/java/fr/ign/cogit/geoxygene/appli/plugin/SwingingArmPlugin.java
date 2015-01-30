@@ -106,7 +106,7 @@ public class SwingingArmPlugin implements GeOxygeneApplicationPlugin, ActionList
       }
     }
     LOGGER.error("Points added : " + list.size());
-    SwingingArmNonConvexHull.LOGGER.setLevel(Level.TRACE);
+    LOGGER.setLevel(Level.TRACE);
     SwingingArmNonConvexHull swinging = new SwingingArmNonConvexHull(list, radius);
     IGeometry characteristicShape = swinging.compute();
     // logger.error("Shape : " + characteristicShape.getClass());
