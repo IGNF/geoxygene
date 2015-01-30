@@ -37,6 +37,7 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Style;
@@ -710,18 +711,20 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
     private void validateSLD(StyledLayerDescriptor sld) {
         for (Layer layer : sld.getLayers()) {
             for (Style style : layer.getStyles()) {
-                for (Rule rule : style.getFeatureTypeStyles().get(0).getRules()) {
-                    Symbolizer symbolizer = rule.getSymbolizers().get(0);
-                    
-                    if (symbolizer instanceof InterpolationSymbolizerInterface){
-                      InterpolationSymbolizerInterface interSymbolizer = (InterpolationSymbolizerInterface)symbolizer;
-                      SymbolizerValidator validator = SymbolizerValidatorFactory
-                          .getOrCreateValidator(interSymbolizer);
-                      if (validator != null)
-                        try {
-                          validator.validate(interSymbolizer);
-                        } catch (InvalidSymbolizerException e) {
-                          logger.error(e.getStackTrace().toString());
+                for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
+                    for (Rule rule : fts.getRules()) {
+                        for (Symbolizer symbolizer : rule.getSymbolizers()){                        
+                            if (symbolizer instanceof InterpolationSymbolizerInterface){
+                              InterpolationSymbolizerInterface interSymbolizer = (InterpolationSymbolizerInterface)symbolizer;
+                              SymbolizerValidator validator = SymbolizerValidatorFactory
+                                  .getOrCreateValidator(interSymbolizer);
+                              if (validator != null)
+                                try {
+                                  validator.validate(interSymbolizer);
+                                } catch (InvalidSymbolizerException e) {
+                                  logger.error(e.getStackTrace().toString());
+                                }
+                            }
                         }
                     }
                 }
