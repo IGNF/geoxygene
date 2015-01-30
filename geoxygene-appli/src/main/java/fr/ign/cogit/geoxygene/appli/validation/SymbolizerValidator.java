@@ -73,11 +73,11 @@ public abstract class SymbolizerValidator {
         if (subStroke2 == null)
           return null;
         outStroke  = subStroke2.getColor();
-        outOpacity = subStroke2.getStrokeOpacity();
+        outOpacity = (float) (subStroke2.getStrokeOpacity() * (1.0-alpha)); 
         outWidth   = subStroke2.getStrokeWidth();
       }else if (subStroke2 == null){
         outStroke  = subStroke1.getColor();
-        outOpacity = subStroke1.getStrokeOpacity();
+        outOpacity = (float) (subStroke1.getStrokeOpacity() * alpha);
         outWidth   = subStroke1.getStrokeWidth();
       }else {
 
@@ -101,11 +101,15 @@ public abstract class SymbolizerValidator {
       
       // update non-continuous parameters
       if (alpha < 0.5f){
-        out.setStrokeLineCap(subStroke1.getStrokeLineCap());
-        out.setStrokeLineJoin(subStroke1.getStrokeLineJoin());
+          if(subStroke1 != null) {
+              out.setStrokeLineCap(subStroke1.getStrokeLineCap());
+              out.setStrokeLineJoin(subStroke1.getStrokeLineJoin());
+          }
       }else {
-        out.setStrokeLineCap(subStroke2.getStrokeLineCap());
-        out.setStrokeLineJoin(subStroke2.getStrokeLineJoin());
+          if(subStroke2 != null) {
+              out.setStrokeLineCap(subStroke2.getStrokeLineCap());
+              out.setStrokeLineJoin(subStroke2.getStrokeLineJoin());
+          }
       }
       
       return out;
@@ -125,10 +129,10 @@ public abstract class SymbolizerValidator {
         if (subFill2 == null)
           return null;
         outColor   = subFill2.getColor();
-        outOpacity = subFill2.getFillOpacity();
+        outOpacity = (float) (subFill2.getFillOpacity() * (1.0-alpha));
       }else if (subFill2 == null){
         outColor   = subFill1.getColor();
-        outOpacity = subFill1.getFillOpacity();
+        outOpacity = (float) (subFill1.getFillOpacity() * alpha);
       }else {
         outColor = Interpolation.interpolateRGB(subFill1.getColor(),
             subFill2.getColor(), alpha, interFun);
