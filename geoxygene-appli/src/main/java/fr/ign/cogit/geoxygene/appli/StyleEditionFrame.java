@@ -57,6 +57,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -93,6 +94,7 @@ import fr.ign.cogit.geoxygene.appli.panel.COGITColorChooserPanel;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.appli.ui.GenericParameterUI;
 import fr.ign.cogit.geoxygene.appli.ui.ExpressiveRenderingUIFactory;
+import fr.ign.cogit.geoxygene.appli.ui.StyleInterpolationUI;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.style.AbstractSymbolizer;
 import fr.ign.cogit.geoxygene.style.CategorizedMap;
@@ -300,6 +302,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
     private JComboBox expressiveFillComboBox;
     private final JScrollPane fillExpressiveScrollPane = new JScrollPane();
     private final JScrollPane strokeExpressiveScrollPane = new JScrollPane();
+    private final JScrollPane styleInterpolationScrollPane = new JScrollPane();
 
     /**
      * Style Edition Main Frame.
@@ -455,6 +458,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
             this.add(this.tabPane);
 
             this.addOrReplaceExpressiveRenderingUI();
+            this.addOrReplaceStyleInterpolationUI();
 
             this.addWindowListener(new WindowAdapter() {
                 @Override
@@ -560,6 +564,28 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
             }
         }
         this.infoTextArea.setText(str.toString());
+    }
+    
+    private void addOrReplaceStyleInterpolationUI() {
+        if (this.tabPane == null) {
+            throw new IllegalStateException(
+                    "this method can only be called after tabPane creation");
+        }
+        String tabTooltip = "Style Interpolation";
+        this.tabPane.remove(this.styleInterpolationScrollPane);
+        // Stroke Expressive UI
+        GenericParameterUI ui = new StyleInterpolationUI( this.layer, 
+            this.layerViewPanel.getProjectFrame().getSld(),
+            this.layerViewPanel.getProjectFrame());
+        
+        JComponent comp = ui.getGui();
+        
+        if (comp != null){
+            this.styleInterpolationScrollPane.setViewportView(comp);
+            this.tabPane.addTab(tabTooltip, null,
+                    this.styleInterpolationScrollPane, tabTooltip);            
+        }
+        
     }
 
     private void addOrReplaceExpressiveRenderingUI() {
@@ -1028,7 +1054,7 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
                 .getString("StyleEditionFrame.PolygonStroke")); //$NON-NLS-1$
         this.strokePanel.setBorder(strokeTitleBorder);
         this.strokePanel.setPreferredSize(new Dimension(420, 250));
-
+        
         this.strokeColor = ((PolygonSymbolizer) this.layer.getStyles().get(0)
                 .getSymbolizer()).getStroke().getStroke();
         this.strokeOpacity = ((PolygonSymbolizer) this.layer.getStyles().get(0)
@@ -1283,6 +1309,10 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
 
     private void updateExpressivePanel() {
         this.addOrReplaceExpressiveRenderingUI();
+    }
+    
+    private void updateInterpolationPanel() {
+        this.addOrReplaceStyleInterpolationUI();
     }
 
     public void initLine() {
