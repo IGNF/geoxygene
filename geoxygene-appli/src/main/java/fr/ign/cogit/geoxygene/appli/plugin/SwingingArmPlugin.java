@@ -56,7 +56,7 @@ import fr.ign.cogit.geoxygene.style.Layer;
  */
 public class SwingingArmPlugin implements GeOxygeneApplicationPlugin, ActionListener {
   /** Logger. */
-  static Logger                logger      = Logger.getLogger(Triangulation.class.getName());
+  private final static Logger LOGGER = Logger.getLogger(Triangulation.class.getName());
 
   private GeOxygeneApplication application = null;
 
@@ -91,7 +91,7 @@ public class SwingingArmPlugin implements GeOxygeneApplicationPlugin, ActionList
     ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
     Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
     if (selectedLayers.size() != 1) {
-      SwingingArmPlugin.logger.error("You need to select one (and only one) layer."); //$NON-NLS-1$
+      LOGGER.error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }
     Layer layer = selectedLayers.iterator().next();
@@ -105,8 +105,8 @@ public class SwingingArmPlugin implements GeOxygeneApplicationPlugin, ActionList
         list.addAll(line.coord().getList());
       }
     }
-    SwingingArmPlugin.logger.error("Points added : " + list.size());
-    SwingingArmNonConvexHull.logger.setLevel(Level.TRACE);
+    LOGGER.error("Points added : " + list.size());
+    SwingingArmNonConvexHull.LOGGER.setLevel(Level.TRACE);
     SwingingArmNonConvexHull swinging = new SwingingArmNonConvexHull(list, radius);
     IGeometry characteristicShape = swinging.compute();
     // logger.error("Shape : " + characteristicShape.getClass());
@@ -119,8 +119,8 @@ public class SwingingArmPlugin implements GeOxygeneApplicationPlugin, ActionList
     newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);
     popTriangles.setFeatureType(newFeatureTypeExterieurs);
     DataSet.getInstance().addPopulation(popTriangles);
-    SwingingArmPlugin.logger.info(popTriangles.size());
-    SwingingArmPlugin.logger.info(characteristicShape);
+    LOGGER.info(popTriangles.size());
+    LOGGER.info(characteristicShape);
     project.addFeatureCollection(popTriangles, popTriangles.getNom(), null);
   }
 }
