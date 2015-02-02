@@ -12,6 +12,7 @@ package fr.ign.cogit.geoxygene.osm.schema;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -315,6 +316,8 @@ public class OsmGeneObj extends GeneObjDefault {
     Class<?> classObj = obj.getClass();
     for (Field field : classObj.getDeclaredFields()) {
       // filter the fields to represent relations between GeneObj features
+      if (Modifier.isStatic(field.getModifiers()))
+        continue;
       if (IGeneObj.class.isAssignableFrom(field.getType()))
         continue;
       if (IGeometry.class.isAssignableFrom(field.getType()))

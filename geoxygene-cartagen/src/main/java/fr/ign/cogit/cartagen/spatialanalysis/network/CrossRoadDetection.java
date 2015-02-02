@@ -22,9 +22,11 @@ import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.PatteOie;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RondPoint;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.Ilot;
 import fr.ign.cogit.geoxygene.schemageo.api.routier.NoeudRoutier;
 import fr.ign.cogit.geoxygene.schemageo.api.routier.TronconDeRoute;
@@ -70,6 +72,15 @@ public class CrossRoadDetection {
 
   private IFeatureCollection<RondPoint> rounds;
   private IFeatureCollection<PatteOie> branchs;
+
+  public CrossRoadDetection() {
+    this.rounds = new FT_FeatureCollection<>();
+    FeatureType ft = new FeatureType();
+    ft.setGeometryType(IPolygon.class);
+    this.rounds.setFeatureType(ft);
+    this.branchs = new FT_FeatureCollection<>();
+    this.branchs.setFeatureType(ft);
+  }
 
   /**
    * Create the Geoxygene roundabouts and branching crossroads then the cartagen
@@ -124,8 +135,8 @@ public class CrossRoadDetection {
     Map<PatteOie, IBranchingCrossroad> mapForRel = new HashMap<PatteOie, IBranchingCrossroad>();
     for (PatteOie patte : this.branchs) {
       IBranchingCrossroad branch = CartagenApplication.getInstance()
-          .getCreationFactory().createBranchingCrossroad(patte,
-              dataSet.getRoads(), nodes);
+          .getCreationFactory()
+          .createBranchingCrossroad(patte, dataSet.getRoads(), nodes);
       dataSet.getBranchings().add(branch);
       mapForRel.put(patte, branch);
     }
@@ -155,8 +166,6 @@ public class CrossRoadDetection {
     IFeatureCollection<NoeudRoutier> crossroads = this.getNodesFromRoads(roads);
 
     // loop on the road blocks (that can be roundabouts or branching crossroads)
-    this.rounds = new FT_FeatureCollection<RondPoint>();
-
     for (Ilot ilot : blocks) {
       // test if the block is a roundabout
       if (RondPoint.isRoundAbout(ilot, 40000.0)) {
@@ -181,6 +190,46 @@ public class CrossRoadDetection {
       rp.addBranchingCrossRoads(this.branchs);
     }
 
+  }
+
+  /**
+   * Create the Geoxygene roundabouts and branching crossroads.
+   * @param roads
+   * @param blocks
+   * @param branchings true if you want to compute branching crossroads
+   */
+  public void detectRoundaboutsAndBranching(
+      IFeatureCollection<TronconDeRoute> roads,
+      IFeatureCollection<Ilot> blocks, boolean branchings) {
+
+    IFeatureCollection<NoeudRoutier> crossroads = this.getNodesFromRoads(roads);
+
+    // loop on the road blocks (that can be roundabouts or branching crossroads)
+    for (Ilot ilot : blocks) {
+      // test if the block is a roundabout
+      if (RondPoint.isRoundAbout(ilot, 40000.0)) {
+        // on construit le rond-point Cartagen
+        RondPoint rp = new RondPoint(ilot, roads, crossroads);
+        this.rounds.add(rp);
+      }
+    }
+
+    if (branchings) {
+      this.branchs = new FT_FeatureCollection<PatteOie>();
+      for (Ilot ilot : blocks) {
+        if (RondPoint.isRoundAbout(ilot, 40000.0)) {
+          continue;
+        }
+        if (PatteOie.isBranchingCrossRoad(ilot, 2500.0, 0.5, crossroads,
+            this.rounds)) {
+          PatteOie br = new PatteOie(ilot, roads, crossroads);
+          this.branchs.add(br);
+        }
+      }
+      for (RondPoint rp : this.rounds) {
+        rp.addBranchingCrossRoads(this.branchs);
+      }
+    }
   }
 
   /**
@@ -269,4 +318,19 @@ public class CrossRoadDetection {
     this.yAngle = yAngle;
   }
 
+  /**
+   * Get the previously computed roundabouts.
+   * @return
+   */
+  public IFeatureCollection<RondPoint> getRoundabouts() {
+    return rounds;
+  }
+
+  /**
+   * Get the previously computed branching crossroads
+   * @return
+   */
+  public IFeatureCollection<PatteOie> getBranchingCrossroads() {
+    return branchs;
+  }
 }

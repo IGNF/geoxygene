@@ -221,6 +221,8 @@ public class AttributeTable extends JDialog {
       this.attributeNames.add("FID"); //$NON-NLS-1$
       for (GF_AttributeType attribute : featureAttributes) {
         String nomAttribut = attribute.getMemberName();
+        if (nomAttribut == null)
+          continue;
         this.attributeNames.add(nomAttribut);
       }
       // On ajoute les lignes
