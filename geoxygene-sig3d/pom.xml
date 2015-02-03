@@ -192,6 +192,31 @@
 				</plugins>
 			</build>
 		</profile>
+		
+		<!-- Tests under Linux 64bits -->
+        <profile>
+            <id>lin64</id>
+            <activation>
+                <os>
+                    <family>Linux</family>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <environmentVariables>
+                                <PATH>${basedir}\lib\native_libraries\linux-amd64\</PATH>
+                            </environmentVariables>
+                            <skipTests>false</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
 		<profile>
 			<id>executable</id>
