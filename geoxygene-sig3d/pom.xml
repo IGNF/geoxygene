@@ -72,9 +72,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<environmentVariables>
-						<PATH>${basedir}\lib\native_libraries\windows-amd64\</PATH>
-					</environmentVariables>
 					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
@@ -99,7 +96,7 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<environmentVariables>
-								<PATH>${basedir}/lib/native_libraries/windows-linux-i386/</PATH>
+								<PATH>${basedir}/lib/native_libraries/linux-i386/</PATH>
 							</environmentVariables>
 							<skipTests>false</skipTests>
 							<excludes>
@@ -127,7 +124,7 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<environmentVariables>
-								<PATH>${basedir}/lib/native_libraries/windows-amd64/</PATH>
+								<PATH>${basedir}/lib/native_libraries/linux-amd64/</PATH>
 							</environmentVariables>
 							<skipTests>false</skipTests>
 							<excludes>

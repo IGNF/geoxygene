@@ -44,8 +44,8 @@ public class TestShapeFileLoader extends TestCase {
 		
 		log.info("Test for method to load shape file");
 
+		// loadAndTest("src/test/resources/Bati.shp", 470, 91482);
 		loadAndTest("src/test/resources/Bati.shp", 470, 91482);
-
 	}
 
 	@Test
