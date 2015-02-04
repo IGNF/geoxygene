@@ -123,9 +123,6 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
-							<environmentVariables>
-								<PATH>${basedir}/lib/native_libraries/linux-amd64/</PATH>
-							</environmentVariables>
 							<skipTests>false</skipTests>
 							<excludes>
 								<exclude>**/TestTetra.java</exclude>
