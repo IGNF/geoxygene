@@ -113,7 +113,7 @@
 			<id>lin64</id>
 			<activation>
 				<os>
-					<family>bzzz</family>
+					<family>unix</family>
 					<arch>amd64</arch>
 				</os>
 			</activation>
