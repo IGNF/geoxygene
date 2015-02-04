@@ -47,11 +47,11 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
-		String imageFileName = "src\\test\\resources\\pva.jpg";
+		String imageFileName = "src/test/resources/pva.jpg";
 
 		// Converting image path to URL
 
@@ -96,7 +96,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -136,7 +136,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -170,7 +170,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -205,7 +205,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -240,7 +240,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -284,7 +284,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -323,7 +323,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -361,7 +361,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -401,7 +401,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -436,7 +436,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -471,7 +471,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -514,7 +514,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -550,7 +550,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -596,7 +596,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -643,7 +643,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -678,7 +678,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;
@@ -713,7 +713,7 @@ public class TestDTM extends TestCase {
 
 		// Loading data file in constructor
 
-		String fileName = "src\\test\\resources\\mnt.asc";
+		String fileName = "src/test/resources/mnt.asc";
 		String layerName = "Digital Terrain Model";
 		boolean fill = true;
 		int exager = 1;

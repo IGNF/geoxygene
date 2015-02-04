@@ -44,7 +44,7 @@ public class TestShapeFileLoader extends TestCase {
 		
 		log.info("Test for method to load shape file");
 
-		loadAndTest("src\\test\\resources\\Bati.shp", 470, 91482);
+		loadAndTest("src/test/resources/Bati.shp", 470, 91482);
 
 	}
 
@@ -56,7 +56,7 @@ public class TestShapeFileLoader extends TestCase {
 		
 		log.info("Test for method to load shape file");
 
-		loadAndTest("src\\test\\resources\\Parcelle.shp",137,2033);
+		loadAndTest("src/test/resources/Parcelle.shp",137,2033);
 
 	}
 
@@ -68,7 +68,7 @@ public class TestShapeFileLoader extends TestCase {
 
 		log.info("Test for method to load shape file");
 		
-		loadAndTest("src\\test\\resources\\Route.shp",37,85);
+		loadAndTest("src/test/resources/Route.shp",37,85);
 
 	}
 
@@ -80,7 +80,7 @@ public class TestShapeFileLoader extends TestCase {
 		
 		log.info("Test for method to load shape file");
 
-		loadAndTest("src\\test\\resources\\Ruerennes.shp",6,15);
+		loadAndTest("src/test/resources/Ruerennes.shp",6,15);
 
 	}
 	
@@ -92,7 +92,7 @@ public class TestShapeFileLoader extends TestCase {
 		
 		log.info("Test for method to load shape file");
 
-		loadAndTest("src\\test\\resources\\projrenn.shp",19316,19316);
+		loadAndTest("src/test/resources/projrenn.shp",19316,19316);
 
 	}
 
