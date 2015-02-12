@@ -78,9 +78,9 @@
 
 		</plugins>
 	</build>
-
-	<profiles>
-			<!-- Tests under Linux 32bits -->
+	
+	    <profiles>
+    			<!-- Tests under Linux 32bits -->
 		<profile>
 			<id>lin32</id>
 			<activation>
@@ -95,9 +95,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
-							<environmentVariables>
-								<PATH>${basedir}/lib/native_libraries/linux-i386/</PATH>
-							</environmentVariables>
+        					<argLine>-Djava.library.path=${basedir}/lib/native_libraries/linux-i386</argLine>
 							<skipTests>false</skipTests>
 							<excludes>
 								<exclude>**/TestTetra.java</exclude>
@@ -123,9 +121,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
-							<environmentVariables>
-								<PATH>${basedir}/lib/native_libraries/linux-amd64/</PATH>
-							</environmentVariables>
+        					<argLine>-Djava.library.path=${basedir}/lib/native_libraries/linux-amd64</argLine>
 							<skipTests>false</skipTests>
 							<excludes>
 								<exclude>**/TestTetra.java</exclude>
@@ -152,9 +148,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
-							<environmentVariables>
-								<PATH>${basedir}\lib\native_libraries\windows-amd64\</PATH>
-							</environmentVariables>
+        					<argLine>-Djava.library.path=${basedir}/lib/native_libraries/windows-amd64</argLine>
 							<skipTests>false</skipTests>
 							<excludes>
 								<exclude>**/TestTetra.java</exclude>
@@ -180,9 +174,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
-							<environmentVariables>
-								<PATH>${basedir}\lib\native_libraries\windows-i586\</PATH>
-							</environmentVariables>
+        					<argLine>-Djava.library.path=${basedir}/lib/native_libraries/windows-i586</argLine>
 							<skipTests>false</skipTests>
 						</configuration>
 					</plugin>
@@ -191,6 +183,9 @@
 		</profile>
 		
 		
+
+
+	
 
 		<profile>
 			<id>executable</id>
