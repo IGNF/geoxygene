@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -74,6 +75,8 @@ public class ShapeFileDB extends CartAGenDB {
   @Override
   public void openFromXml(File file) throws ParserConfigurationException,
       SAXException, IOException, ClassNotFoundException {
+
+    setClasses(new ArrayList<GeographicClass>());
     // first open the XML document in order to parse it
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     DocumentBuilder db;
