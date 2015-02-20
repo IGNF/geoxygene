@@ -330,11 +330,11 @@ public class Population<Feat extends IFeature> extends
   @Override
   public IPopulation<Feat> selectionElementsProchesGenerale(
       IPopulation<Feat> pop, double dist) {
-    
+
     Population<Feat> popTemporaire = new Population<Feat>();
     Population<Feat> popResultat = new Population<Feat>(false, this.getNom(),
         this.getClasse(), true);
-    
+
     if (this.featureType != null) {
       popResultat.setFeatureType(this.featureType);
     }
@@ -346,7 +346,7 @@ public class Population<Feat extends IFeature> extends
       FT_FeatureCollection.logger
           .debug("Fin indexation " + (new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
     }
-    
+
     Iterator<Feat> itPop = pop.getElements().iterator();
     while (itPop.hasNext()) {
       Feat objet = itPop.next();
