@@ -17,10 +17,21 @@ import java.util.Stack;
 
 public class QuadtreeClutterMethod {
   private BufferedImage image;
+  /**
+   * The gray level difference threshold for considering a difference between a
+   * leaf and its neighbours.
+   */
+  private int threshold = 5;
 
   public QuadtreeClutterMethod(BufferedImage image) {
     super();
     this.image = image;
+  }
+
+  public QuadtreeClutterMethod(BufferedImage image, int threshold) {
+    super();
+    this.image = image;
+    this.threshold = threshold;
   }
 
   /**
@@ -37,7 +48,6 @@ public class QuadtreeClutterMethod {
       Stack<FeuilleQuadtree> pile, ArrayList<FeuilleQuadtree> liste) {
     int col;
     int lin;
-    int seuil = 1;
     boolean sortir = false;
 
     // parcours de l'image, comparaison de la valeur du pixel par rapport à ses
@@ -48,21 +58,21 @@ public class QuadtreeClutterMethod {
       for (lin = feuille.line1 + 1; lin < feuille.line1 + feuille.largeur - 1; lin++) {
         // si la différence est supérieure au seuil, on crée 4 feuilles enfants
         if (Math.abs((feuille.image.getRGB(col, lin) & 0xFF)
-            - (feuille.image.getRGB(col - 1, lin) & 0xFF)) > seuil
+            - (feuille.image.getRGB(col - 1, lin) & 0xFF)) > threshold
             || Math.abs((feuille.image.getRGB(col, lin) & 0xFF)
-                - (feuille.image.getRGB(col, lin - 1) & 0xFF)) > seuil
+                - (feuille.image.getRGB(col, lin - 1) & 0xFF)) > threshold
             || Math.abs((feuille.image.getRGB(col, lin) & 0xFF)
-                - (feuille.image.getRGB(col + 1, lin) & 0xFF)) > seuil
+                - (feuille.image.getRGB(col + 1, lin) & 0xFF)) > threshold
             || Math.abs((feuille.image.getRGB(col, lin) & 0xFF)
-                - (feuille.image.getRGB(col, lin + 1) & 0xFF)) > seuil
+                - (feuille.image.getRGB(col, lin + 1) & 0xFF)) > threshold
             || Math.abs((feuille.image.getRGB(col, lin) & 0xFF)
-                - (feuille.image.getRGB(col - 1, lin - 1) & 0xFF)) > seuil
+                - (feuille.image.getRGB(col - 1, lin - 1) & 0xFF)) > threshold
             || Math.abs((feuille.image.getRGB(col, lin) & 0xFF)
-                - (feuille.image.getRGB(col + 1, lin + 1) & 0xFF)) > seuil
+                - (feuille.image.getRGB(col + 1, lin + 1) & 0xFF)) > threshold
             || Math.abs((feuille.image.getRGB(col, lin) & 0xFF)
-                - (feuille.image.getRGB(col - 1, lin + 1) & 0xFF)) > seuil
+                - (feuille.image.getRGB(col - 1, lin + 1) & 0xFF)) > threshold
             || Math.abs((feuille.image.getRGB(col, lin) & 0xFF)
-                - (feuille.image.getRGB(col + 1, lin - 1) & 0xFF)) > seuil) {
+                - (feuille.image.getRGB(col + 1, lin - 1) & 0xFF)) > threshold) {
           // création des nouvelles dimensions des feuilles créées
           feuille.longueur = feuille.longueur / 2;
           feuille.largeur = feuille.largeur / 2;
@@ -102,13 +112,21 @@ public class QuadtreeClutterMethod {
     }
   }
 
-  public void Traitement_feuilles(Stack<FeuilleQuadtree> pile,
+  public void computeQuadTree(Stack<FeuilleQuadtree> pile,
       ArrayList<FeuilleQuadtree> liste) {
     while (!pile.empty()) {
       FeuilleQuadtree f;
       f = pile.pop();
       diviseFeuille(f, pile, liste);
     }
+  }
+
+  public int getSeuil() {
+    return threshold;
+  }
+
+  public void setSeuil(int seuil) {
+    this.threshold = seuil;
   }
 
 }
