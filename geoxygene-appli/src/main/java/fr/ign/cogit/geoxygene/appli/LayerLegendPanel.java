@@ -31,7 +31,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.NoninvertibleTransformException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,7 +47,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -67,12 +65,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
@@ -85,7 +81,7 @@ import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.SldListener;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
-import fr.ign.util.ui.JRecentFileChooser;
+import fr.ign.cogit.geoxygene.style.interpolation.SLDMixer;
 
 /**
  * Panel displaying layer legends.
@@ -141,7 +137,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     JButton addPostgisButton = new JButton(new ImageIcon(this.getClass()
             .getResource("/images/toolbar/database_add.png"))); //$NON-NLS-1$
     JButton loadSLDButton = new JButton(new ImageIcon(this.getClass()
-            .getResource("/images/toolbar/page_white_paintbrush.png"))); //$NON-NLS-1$
+            .getResource("/images/toolbar/page_white_paintbrush.png"))); //$NON-NLS-1$    
+    JButton loadSecondSLDButton = new JButton(new ImageIcon(this.getClass()
+            .getResource("/images/toolbar/page_white_paintbrush2.png")));//$NON-NLS-1$
 
     JButton topButton = new JButton(new ImageIcon(this.getClass().getResource(
             "/images/icons/16x16/arrow_top.png"))); //$NON-NLS-1$
@@ -224,6 +222,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
                 .getString("MainFrame.NewPgLayer"));
         this.loadSLDButton.setMargin(nullInsets);
         this.loadSLDButton.setToolTipText(I18N.getString("MainFrame.LoadSLD"));
+        this.loadSecondSLDButton.setToolTipText(I18N
+                .getString("StyleInterpolation.LoadSecondSLD"));
+        this.loadSecondSLDButton.setMargin(nullInsets);
 
         this.topButton.setMargin(nullInsets);
         this.topButton.setToolTipText(I18N.getString("LayerLegendPanel.Top"));
@@ -243,6 +244,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
         panel.add(Box.createHorizontalGlue());
         panel.add(this.addPostgisButton);
         panel.add(this.loadSLDButton);
+        panel.add(this.loadSecondSLDButton);
 
         panel.add(Box.createHorizontalGlue());
         panel.add(this.topButton);
@@ -267,6 +269,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
         this.addPostgisButton.setActionCommand("addPg"); //$NON-NLS-1$
         this.loadSLDButton.addActionListener(this);
         this.loadSLDButton.setActionCommand("addSLD"); //$NON-NLS-1$
+        this.loadSecondSLDButton.addActionListener(this);
+        this.loadSecondSLDButton.setActionCommand("addSecondSLD"); //$NON-NLS-1$
         this.topButton.addActionListener(this);
         this.topButton.setActionCommand("top"); //$NON-NLS-1$
         this.bottomButton.addActionListener(this);
@@ -740,7 +744,32 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
                 this.parent.loadSLD(file);
             } catch (Exception e1) {
                 e1.printStackTrace();
-        }       
+            }
+    }
+
+    private void displayAddSecondSLD() {
+        if (this.parent == null) {
+            LOGGER.info("Cannot load SLD, no selected project");
+            return;
+        }
+        File file = GeOxygeneEventManager.getInstance().getApplication()
+                .displayLoadSLDDialog();
+        if (file != null) {
+            StyledLayerDescriptor new_sld;
+            try {
+                new_sld = StyledLayerDescriptor.unmarshall(
+                        file.getAbsolutePath(), this.parent.getDataSet());
+
+                StyledLayerDescriptor mixSLD = SLDMixer.mix(
+                        this.parent.getSld(), new_sld);
+                this.parent.loadSLD(mixSLD, true);
+
+                this.parent.getLayerViewPanel().reset();
+                this.parent.getLayerViewPanel().repaint();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -1107,6 +1136,12 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
         }
         if (e.getActionCommand().equals("addSLD")) { //$NON-NLS-1$
             this.displayAddSLD();
+            this.layersTable.revalidate();
+            this.layersTable.repaint();
+            return;
+        }
+        if (e.getActionCommand().equals("addSecondSLD")) { //$NON-NLS-1$
+            this.displayAddSecondSLD();
             this.layersTable.revalidate();
             this.layersTable.repaint();
             return;

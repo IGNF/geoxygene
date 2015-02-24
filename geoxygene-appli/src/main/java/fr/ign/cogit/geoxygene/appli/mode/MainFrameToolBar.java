@@ -33,6 +33,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.NoninvertibleTransformException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,12 +46,15 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.style.interpolation.SLDMixer;
 
 /**
  * 
@@ -218,6 +222,44 @@ public class MainFrameToolBar implements ContainerListener, KeyListener,
         .getString("NewProjectFrame.ToolTip")); //$NON-NLS-1$
     this.toolBar.add(newProjectFrameButton);
 
+    // Add SLD interpolation button
+    this.toolBar.addSeparator();
+    JButton interpolationSecondSLDButton = new JButton();
+    interpolationSecondSLDButton.setIcon(new ImageIcon(MainFrameToolBar.class
+        .getResource("/images/toolbar/page_white_paintbrush.png")));
+    interpolationSecondSLDButton.setToolTipText(I18N
+        .getString("StyleInterpolation.LoadSecondSLD"));
+    interpolationSecondSLDButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+
+        ProjectFrame frame = MainFrameToolBar.this.getMainFrame()
+            .getSelectedProjectFrame();
+        if (frame == null) {
+          return;
+        }
+        File file = GeOxygeneEventManager.getInstance().getApplication()
+            .displayLoadSLDDialog();
+        if (file != null) {
+          StyledLayerDescriptor new_sld;
+          try {
+            new_sld = StyledLayerDescriptor.unmarshall(file.getAbsolutePath(),
+                frame.getDataSet());
+
+            StyledLayerDescriptor mixSLD = SLDMixer.mix(frame.getSld(), new_sld);
+            frame.loadSLD(mixSLD, true);
+
+            frame.getLayerViewPanel().reset();
+            frame.getLayerViewPanel().repaint();
+          } catch (Exception e1) {
+            e1.printStackTrace();
+          }
+        }
+      }
+    });
+    this.toolBar.add(interpolationSecondSLDButton);
+    // End add SLD interpolation button
+
     this.setCurrentMode(this.modes.get(2));
   }
 
@@ -313,9 +355,9 @@ public class MainFrameToolBar implements ContainerListener, KeyListener,
   }
   
   public void addMode(Mode mode) {
-	  if (this.modes != null) {
-		  this.modes.add(mode);
-	  }
+      if (this.modes != null) {
+          this.modes.add(mode);
+      }
   }
 
   /**

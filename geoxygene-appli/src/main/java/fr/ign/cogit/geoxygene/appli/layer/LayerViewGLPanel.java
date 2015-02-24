@@ -20,8 +20,6 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -41,7 +39,6 @@ import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
@@ -53,7 +50,6 @@ import org.lwjgl.opengl.GL30;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
-import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.event.CompassPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
@@ -76,7 +72,6 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilterIdentity;
-import fr.ign.cogit.geoxygene.style.interpolation.SLDMixer;
 import fr.ign.cogit.geoxygene.util.ImageComparator;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLMesh;
@@ -127,13 +122,12 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
 
     private SyncRenderingManager renderingManager = null;
     private LayerViewGLCanvas glCanvas = null; // canvas containing the GL
-                                               // context
+    // context
     private static GLSimpleComplex screenQuad; // quad drawn on the full screen
     private JToggleButton wireframeToggleButton = null;
     private JToggleButton fboToggleButton = null;
     private JToggleButton animationButton = null;
     private JToggleButton statisticsButton = null;
-    private JButton interpolationSecondSLDButton = null;
     private JButton antialiasingButton = null;
     private JButton clearCacheButton = null;
     private JButton awtComparButton = null;
@@ -202,8 +196,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .add(this.getStatisticsButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
-                .add(this.getInterpolationSecondSLDButton());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
 
@@ -234,8 +226,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 .remove(this.getAnimationButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .remove(this.getStatisticsButton());
-        this.getProjectFrame().getMainFrame().getMode().getToolBar()
-                .remove(this.getInterpolationSecondSLDButton());
         this.getProjectFrame().getMainFrame().getMode().getToolBar()
                 .revalidate();
         this.getProjectFrame().getMainFrame().getMode().getToolBar().repaint();
@@ -696,18 +686,6 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         return this.statisticsButton;
     }
 
-    private JButton getInterpolationSecondSLDButton() {
-        if (this.interpolationSecondSLDButton == null) {
-            this.interpolationSecondSLDButton = new JButton();
-            this.interpolationSecondSLDButton.setIcon(new ImageIcon(MainFrameToolBar.class
-                    .getResource("/images/toolbar/page_white_paintbrush.png")));
-            this.interpolationSecondSLDButton.setToolTipText(I18N
-                    .getString("StyleInterpolation.LoadSecondSLD"));
-            this.interpolationSecondSLDButton.addActionListener(this);
-        }
-        return this.interpolationSecondSLDButton;
-    }
-
     private JButton getAntialiasingButton() {
         if (this.antialiasingButton == null) {
             this.antialiasingButton = new JButton();
@@ -973,29 +951,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
                 this.setAntialiasing(0);
             }
             this.repaint();
-        } else if (e.getSource() == this.getInterpolationSecondSLDButton()) {
-            if (this.getProjectFrame() == null) {
-                  logger.info("Cannot load SLD, no selected project");
-                return;
-            }        
-            File file = GeOxygeneEventManager.getInstance().getApplication().displayLoadSLDDialog();
-            if (file != null){
-                StyledLayerDescriptor new_sld;
-                try {
-                    new_sld = StyledLayerDescriptor.unmarshall(
-                              file.getAbsolutePath(), this.getProjectFrame().getDataSet());
-
-                    StyledLayerDescriptor mixSLD = SLDMixer.mix(this.getSld(), new_sld);
-                    this.getProjectFrame().loadSLD(mixSLD, true);
-
-                    this.getProjectFrame().getLayerViewPanel().reset();
-                    this.getProjectFrame().getLayerViewPanel().repaint();
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-            }
-                            
-        }else {
+        } else {
             // old SLD events....
             this.repaint();
         }
