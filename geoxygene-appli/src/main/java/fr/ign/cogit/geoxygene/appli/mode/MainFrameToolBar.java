@@ -33,7 +33,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.NoninvertibleTransformException;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,15 +45,12 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.appli.GeOxygeneEventManager;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.render.texture.TextureManager;
 import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
-import fr.ign.cogit.geoxygene.style.interpolation.SLDMixer;
 
 /**
  * 
@@ -62,7 +58,7 @@ import fr.ign.cogit.geoxygene.style.interpolation.SLDMixer;
  * @author Julien Perret
  */
 public class MainFrameToolBar implements ContainerListener, KeyListener,
-    MouseListener, MouseWheelListener, MouseMotionListener {
+MouseListener, MouseWheelListener, MouseMotionListener {
 
   /** Logger. */
   static final Logger LOGGER = Logger.getLogger(MainFrameToolBar.class
@@ -95,7 +91,7 @@ public class MainFrameToolBar implements ContainerListener, KeyListener,
     // ZoomToFullExtent
     ImageIcon zoomToFullExtentIcon = new ImageIcon(
         MainFrameToolBar.class
-            .getResource("/images/toolbar/zoomToFullExtent.png"));
+        .getResource("/images/toolbar/zoomToFullExtent.png"));
     JButton zoomToFullExtentButton = new JButton(zoomToFullExtentIcon);
     zoomToFullExtentButton.addActionListener(new ActionListener() {
       @Override
@@ -139,7 +135,7 @@ public class MainFrameToolBar implements ContainerListener, KeyListener,
       }
     });
     refreshButton
-        .setToolTipText(I18N.getString("ModeSelector.refresh.ToolTip")); //$NON-NLS-1$
+    .setToolTipText(I18N.getString("ModeSelector.refresh.ToolTip")); //$NON-NLS-1$
     this.toolBar.add(refreshButton);
 
     this.toolBar.addSeparator();
@@ -152,7 +148,7 @@ public class MainFrameToolBar implements ContainerListener, KeyListener,
     // Deselection
     ImageIcon deleteSelectionIcon = new ImageIcon(
         MainFrameToolBar.class
-            .getResource("/images/icons/16x16/deselection.png"));
+        .getResource("/images/icons/16x16/deselection.png"));
     JButton deleteSelectionButton = new JButton(deleteSelectionIcon);
     deleteSelectionButton.addActionListener(new ActionListener() {
       @Override
@@ -211,7 +207,7 @@ public class MainFrameToolBar implements ContainerListener, KeyListener,
     JButton newProjectFrameButton = new JButton(
         new ImageIcon(
             MainFrameToolBar.class
-                .getResource("/images/icons/application_add.png"))); //$NON-NLS-1$
+            .getResource("/images/icons/application_add.png"))); //$NON-NLS-1$
     newProjectFrameButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -221,44 +217,6 @@ public class MainFrameToolBar implements ContainerListener, KeyListener,
     newProjectFrameButton.setToolTipText(I18N
         .getString("NewProjectFrame.ToolTip")); //$NON-NLS-1$
     this.toolBar.add(newProjectFrameButton);
-
-    // Add SLD interpolation button
-    this.toolBar.addSeparator();
-    JButton interpolationSecondSLDButton = new JButton();
-    interpolationSecondSLDButton.setIcon(new ImageIcon(MainFrameToolBar.class
-        .getResource("/images/toolbar/page_white_paintbrush.png")));
-    interpolationSecondSLDButton.setToolTipText(I18N
-        .getString("StyleInterpolation.LoadSecondSLD"));
-    interpolationSecondSLDButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-
-        ProjectFrame frame = MainFrameToolBar.this.getMainFrame()
-            .getSelectedProjectFrame();
-        if (frame == null) {
-          return;
-        }
-        File file = GeOxygeneEventManager.getInstance().getApplication()
-            .displayLoadSLDDialog();
-        if (file != null) {
-          StyledLayerDescriptor new_sld;
-          try {
-            new_sld = StyledLayerDescriptor.unmarshall(file.getAbsolutePath(),
-                frame.getDataSet());
-
-            StyledLayerDescriptor mixSLD = SLDMixer.mix(frame.getSld(), new_sld);
-            frame.loadSLD(mixSLD, true);
-
-            frame.getLayerViewPanel().reset();
-            frame.getLayerViewPanel().repaint();
-          } catch (Exception e1) {
-            e1.printStackTrace();
-          }
-        }
-      }
-    });
-    this.toolBar.add(interpolationSecondSLDButton);
-    // End add SLD interpolation button
 
     this.setCurrentMode(this.modes.get(2));
   }
@@ -353,11 +311,11 @@ public class MainFrameToolBar implements ContainerListener, KeyListener,
   public final List<Mode> getRegisteredModes() {
     return this.modes;
   }
-  
+
   public void addMode(Mode mode) {
-      if (this.modes != null) {
-          this.modes.add(mode);
-      }
+    if (this.modes != null) {
+      this.modes.add(mode);
+    }
   }
 
   /**
