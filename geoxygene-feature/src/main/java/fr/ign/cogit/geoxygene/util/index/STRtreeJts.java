@@ -1,8 +1,19 @@
+/*******************************************************************************
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.geoxygene.util.index;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.index.strtree.STRtree;
@@ -13,8 +24,14 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
-public class STRtreeJts<Feat extends IFeature> extends IndexTree<Feat> {
+/**
+ * Index spatial utilisant le STRtree de JTS. Sort-Tile-Recursive (STR)
+ * algorithm
+ * 
+ */
 
+public class STRtreeJts<Feat extends IFeature> extends IndexTree<Feat> {
+  static Logger logger = Logger.getLogger(STRtreeJts.class.getName());
   private STRtree stree;
 
   public STRtreeJts(IFeatureCollection<Feat> collection) {
@@ -28,39 +45,73 @@ public class STRtreeJts<Feat extends IFeature> extends IndexTree<Feat> {
     }
   }
 
+  /**
+   * Not currently implemented
+   */
   @Override
   public List<Object> getParametres() {
     // TODO Auto-generated method stub
+    logger.warn("Method "
+        + Thread.currentThread().getStackTrace()[1].getMethodName()
+        + " not implemented");
     return null;
   }
 
+  /**
+   * Not currently implemented
+   */
   @Override
   public boolean hasAutomaticUpdate() {
     // TODO Auto-generated method stub
+    logger.warn("Method "
+        + Thread.currentThread().getStackTrace()[1].getMethodName()
+        + " not implemented");
     return false;
   }
 
+  /**
+   * Not currently implemented
+   */
   @Override
   public void setAutomaticUpdate(boolean auto) {
     // TODO Auto-generated method stub
-
+    logger.warn("Method "
+        + Thread.currentThread().getStackTrace()[1].getMethodName()
+        + " not implemented");
   }
 
+  /**
+   * Not currently implemented
+   */
   @Override
   public void update(Feat value, int cas) {
     // TODO Auto-generated method stub
-
+    logger.warn("Method "
+        + Thread.currentThread().getStackTrace()[1].getMethodName()
+        + " not implemented");
   }
 
+  /**
+   * Not currently implemented
+   */
   @Override
   public Collection<Feat> select(IDirectPosition P, double D) {
     // TODO Auto-generated method stub
+    logger.warn("Method "
+        + Thread.currentThread().getStackTrace()[1].getMethodName()
+        + " not implemented");
     return null;
   }
 
+  /**
+   * Not currently implemented
+   */
   @Override
   public Collection<Feat> select(IEnvelope env) {
     // TODO Auto-generated method stub
+    logger.warn("Method "
+        + Thread.currentThread().getStackTrace()[1].getMethodName()
+        + " not implemented");
     return null;
   }
 
@@ -80,9 +131,15 @@ public class STRtreeJts<Feat extends IFeature> extends IndexTree<Feat> {
     return result;
   }
 
+  /**
+   * Not currently implemented
+   */
   @Override
   public Collection<Feat> select(IGeometry geometry, boolean strictlyCrosses) {
     // TODO Auto-generated method stub
+    logger.warn("Method "
+        + Thread.currentThread().getStackTrace()[1].getMethodName()
+        + " not implemented");
     return null;
   }
 
