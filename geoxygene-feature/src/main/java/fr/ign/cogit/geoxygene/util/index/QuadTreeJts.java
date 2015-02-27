@@ -149,4 +149,11 @@ public class QuadTreeJts<Feat extends IFeature> extends IndexTree<Feat> {
     this.quad = null;
   }
 
+  /**
+   * returns the tree depth, i.e the number of levels
+   * @return depth
+   */
+  public int depth() {
+    return quad.depth();
+  }
 }
