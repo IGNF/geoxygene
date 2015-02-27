@@ -27,11 +27,23 @@
 package fr.ign.cogit.geoxygene.appli.validation;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorColor;
+import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorFloat;
+import fr.ign.cogit.geoxygene.style.expressive.ParameterDescriptorInteger;
+import fr.ign.cogit.geoxygene.style.expressive.ShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
+import fr.ign.cogit.geoxygene.style.expressive.UserLineShaderDescriptor;
 import fr.ign.cogit.geoxygene.style.interpolation.InterpolationSymbolizerInterface;
 import fr.ign.cogit.geoxygene.util.math.Interpolation;
 
@@ -39,6 +51,9 @@ import fr.ign.cogit.geoxygene.util.math.Interpolation;
  * @author Nicolas Mellado
  */
 public abstract class SymbolizerValidator {
+  private static final Logger logger = Logger
+      .getLogger(SymbolizerValidator.class.getName()); // logger
+
   /**
    * @brief Exception thrown by a SymbolizerValidator when a {@link Symbolizer}
    *        is not valid
@@ -142,6 +157,28 @@ public abstract class SymbolizerValidator {
     return null;
   }
 
+  // \FIXME Delete tmp images
+  private String interpolateAddCreateTempImage(String path1, String path2,
+      double alpha, Interpolation.Functor interFun) throws IOException {
+    File outfile = File.createTempFile("tmp_image", ".png");
+
+    BufferedImage imgPaper1 = null;
+    BufferedImage imgPaper2 = null;
+    try {
+      imgPaper1 = ImageIO.read(new File(path1));
+      imgPaper2 = ImageIO.read(new File(path2));
+    } catch (IOException e) {
+    }
+    BufferedImage result = Interpolation.interpolateImage(imgPaper1, imgPaper2,
+        alpha, interFun);
+
+    ImageIO.write(result, "png", outfile);
+
+    logger.warn(outfile.getAbsolutePath());
+
+    return outfile.getAbsolutePath();
+  }
+
   private BasicTextureExpressiveRenderingDescriptor interpolateBasicTextureExpressive(
       BasicTextureExpressiveRenderingDescriptor descr1,
       BasicTextureExpressiveRenderingDescriptor descr2, double alpha,
@@ -150,13 +187,63 @@ public abstract class SymbolizerValidator {
         .getClass())
       return null;
 
-    // TODO Add texture interpolation here
-    if (descr1.getPaperTextureFilename().compareTo(
-        descr2.getPaperTextureFilename()) != 0)
-      return null;
-    if (descr1.getBrushTextureFilename().compareTo(
-        descr2.getBrushTextureFilename()) != 0)
-      return null;
+    ShaderDescriptor sdescr = null;
+
+    if (descr1.getShaderDescriptor() instanceof UserLineShaderDescriptor) {
+      UserLineShaderDescriptor usd1 = (UserLineShaderDescriptor) descr1
+          .getShaderDescriptor();
+      UserLineShaderDescriptor usd2 = (UserLineShaderDescriptor) descr2
+          .getShaderDescriptor();
+
+      if (usd1.getFilename().compareTo(usd2.getFilename()) == 0) {
+
+        UserLineShaderDescriptor ulsd = new UserLineShaderDescriptor();
+
+        if (usd1.getParameters().size() != usd2.getParameters().size()) {
+          logger
+          .error("Something really weird happened here... We should have the same number of parameters");
+        }
+
+        ulsd.setFilename(usd1.getFilename());
+        ulsd.getParameters().addAll(usd1.getParameters());
+
+        // we here assume that the parameters are defined in the same order
+        // TODO Move that to a dedicated function, checking the parameter names
+        // are well matched
+        for (int i = 0; i != usd1.getParameters().size(); i++) {
+          if (usd1.getParameters().get(i) instanceof ParameterDescriptorFloat) {
+            float val1 = ((ParameterDescriptorFloat) (usd1.getParameters()
+                .get(i))).getValue();
+            float val2 = ((ParameterDescriptorFloat) (usd2.getParameters()
+                .get(i))).getValue();
+            ((ParameterDescriptorFloat) (ulsd.getParameters().get(i)))
+            .setValue((float) Interpolation.interpolate(val1, val2, alpha,
+                interFun));
+          } else if (usd1.getParameters().get(i) instanceof ParameterDescriptorColor) {
+            Color col1 = ((ParameterDescriptorColor) (usd1.getParameters()
+                .get(i))).getValue();
+            Color col2 = ((ParameterDescriptorColor) (usd2.getParameters()
+                .get(i))).getValue();
+            ((ParameterDescriptorColor) (ulsd.getParameters().get(i)))
+            .setValue(Interpolation.interpolateRGB(col1, col2, alpha,
+                interFun));
+          } else if (usd1.getParameters().get(i) instanceof ParameterDescriptorInteger) {
+            int val1 = ((ParameterDescriptorInteger) (usd1.getParameters()
+                .get(i))).getValue();
+            int val2 = ((ParameterDescriptorInteger) (usd2.getParameters()
+                .get(i))).getValue();
+            ((ParameterDescriptorInteger) (ulsd.getParameters().get(i)))
+            .setValue((int) Interpolation.interpolate(val1, val2, alpha,
+                interFun));
+          }
+        }
+        sdescr = ulsd;
+
+      } else {
+        logger
+        .warn("Only UserLineShaderDescriptor are supported for expressive line rendering interpolation");
+      }
+    }
 
     BasicTextureExpressiveRenderingDescriptor out = new BasicTextureExpressiveRenderingDescriptor();
 
@@ -183,6 +270,42 @@ public abstract class SymbolizerValidator {
         descr2.getStrokePressure(), alpha, interFun));
     out.setSharpness(Interpolation.interpolate(descr1.getSharpness(),
         descr2.getSharpness(), alpha, interFun));
+
+    // textures
+    if (descr1.getPaperTextureFilename().compareTo(
+        descr2.getPaperTextureFilename()) != 0) {
+      String path = new String();
+      try {
+        path = this.interpolateAddCreateTempImage(
+            descr1.getPaperTextureFilename(), descr2.getPaperTextureFilename(),
+            alpha, interFun);
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      out.setPaperTextureFilename(path);
+    } else {
+      out.setPaperTextureFilename(descr1.getPaperTextureFilename());
+    }
+
+    if (descr1.getBrushTextureFilename().compareTo(
+        descr2.getBrushTextureFilename()) != 0) {
+      String path = new String();
+      try {
+        path = this.interpolateAddCreateTempImage(
+            descr1.getBrushTextureFilename(), descr2.getBrushTextureFilename(),
+            alpha, interFun);
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      out.setBrushTextureFilename(path);
+    } else {
+      out.setBrushTextureFilename(descr1.getBrushTextureFilename());
+    }
+
+    if (sdescr != null)
+      out.setShader(sdescr);
 
     return out;
   }
