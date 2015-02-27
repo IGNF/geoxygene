@@ -27,8 +27,6 @@
 
 package fr.ign.cogit.geoxygene.appli.validation;
 
-import fr.ign.cogit.geoxygene.style.Fill;
-import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.interpolation.InterpolationSymbolizerInterface;
 import fr.ign.cogit.geoxygene.style.interpolation.LineInterpolationSymbolizer;
 import fr.ign.cogit.geoxygene.util.math.Interpolation;
@@ -37,32 +35,31 @@ import fr.ign.cogit.geoxygene.util.math.Interpolation;
  * @author Nicolas Mellado
  *
  */
-public class LineInterpolationSymbolizerValidator extends
-        SymbolizerValidator {
+public class LineInterpolationSymbolizerValidator extends SymbolizerValidator {
 
-    private static Interpolation.Functor interFun = Interpolation.linearFunctor;
+  private static Interpolation.Functor interFun = Interpolation.linearFunctor;
 
-    @Override
-    public boolean validate(InterpolationSymbolizerInterface s) throws InvalidSymbolizerException {
-      System.out.print("Validating LineInterpolationSymbolizer ...");
-      System.out.flush();
+  @Override
+  public boolean validate(InterpolationSymbolizerInterface s)
+      throws InvalidSymbolizerException {
+    // System.out.print("Validating LineInterpolationSymbolizer ...");
+    // System.out.flush();
 
-        if (s == null)
-            throw new InvalidSymbolizerException("null Symbolizer ");
+    if (s == null)
+      throw new InvalidSymbolizerException("null Symbolizer ");
 
-        LineInterpolationSymbolizer symbolizer = (LineInterpolationSymbolizer) s;
+    LineInterpolationSymbolizer symbolizer = (LineInterpolationSymbolizer) s;
 
-        boolean updated = false;
+    boolean updated = false;
 
-        // need to change the update functions to return the stroke: can be null
-        // add cap and joints interpolation        
-        symbolizer.setStroke(this.interpolate(
-            symbolizer.getFirstSymbolizer().getStroke(),
-            symbolizer.getSecondSymbolizer().getStroke(), 
-            symbolizer.getAlpha(), interFun));
-         
-        System.out.println("Done");
+    // need to change the update functions to return the stroke: can be null
+    // add cap and joints interpolation
+    symbolizer.setStroke(this.interpolate(symbolizer.getFirstSymbolizer()
+        .getStroke(), symbolizer.getSecondSymbolizer().getStroke(), symbolizer
+        .getAlpha(), interFun));
 
-        return updated;
-    }
+    // System.out.println("Done");
+
+    return updated;
+  }
 }
