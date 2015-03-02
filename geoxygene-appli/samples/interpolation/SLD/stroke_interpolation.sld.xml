@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
+    <NamedLayer>
+        <Name>linear</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer linear</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LineInterpolationSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#ff0000</CssParameter>
+                            <CssParameter name="stroke-opacity">1.0</CssParameter>
+                            <CssParameter name="stroke-width">100.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                            <CssParameter name="stroke-linejoin">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                        <FirstSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                            <Stroke>
+<CssParameter name="stroke">#517d80</CssParameter>
+<CssParameter name="stroke-width">20.0</CssParameter>
+                            </Stroke>
+                            <GeometryPropertyName>geom</GeometryPropertyName>
+                            <PerpendicularOffset>0.0</PerpendicularOffset>
+                        </FirstSymbolizer>
+                        <SecondSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                            <Stroke>
+<CssParameter name="stroke">#ff0000</CssParameter>
+<CssParameter name="stroke-width">100.0</CssParameter>
+                            </Stroke>
+                            <GeometryPropertyName>geom</GeometryPropertyName>
+                            <PerpendicularOffset>0.0</PerpendicularOffset>
+                        </SecondSymbolizer>
+                        <alpha>1.0</alpha>
+                    </LineInterpolationSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+</StyledLayerDescriptor>
