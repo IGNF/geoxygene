@@ -55,6 +55,7 @@ public class ContourLine extends GeneObjLinDefault implements IContourLine {
     this.geoxObj = geoxObj;
     this.setInitialGeom(geoxObj.getGeom());
     this.setEliminated(false);
+    this.altitude = geoxObj.getValeur();
     if ((int) (this.getAltitude() / GeneralisationLegend.CN_EQUIDISTANCE_MAITRESSE)
         * GeneralisationLegend.CN_EQUIDISTANCE_MAITRESSE == this.getAltitude()) {
       this.isMaster = true;
@@ -66,6 +67,7 @@ public class ContourLine extends GeneObjLinDefault implements IContourLine {
     this.geoxObj = new CourbeDeNiveauImpl(new ChampContinuImpl(), value, line);
     this.setInitialGeom(line);
     this.setEliminated(false);
+    this.altitude = value;
     if ((int) (this.getAltitude() / GeneralisationLegend.CN_EQUIDISTANCE_MAITRESSE)
         * GeneralisationLegend.CN_EQUIDISTANCE_MAITRESSE == this.getAltitude()) {
       this.isMaster = true;
@@ -133,7 +135,7 @@ public class ContourLine extends GeneObjLinDefault implements IContourLine {
 
   @Override
   public void setAltitude(double z) {
-    this.altitude = altitude;
+    this.altitude = z;
     if (this.geoxObj != null)
       (this.geoxObj).setValeur(z);
   }

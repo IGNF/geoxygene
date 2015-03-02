@@ -67,6 +67,7 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
     JMenu clutterMenu = new JMenu("Clutter");
     JMenu textMenu = new JMenu("Text Placement");
     clutterMenu.add(new JMenuItem(new SubbandClutterAction()));
+    clutterMenu.add(new JMenuItem(new SubbandClutterWindowAction()));
     clutterMenu.addSeparator();
     clutterMenu.add(new JMenuItem(new EdgeDensityClutterAction()));
     clutterMenu.add(new JMenuItem(new EdgeDensityClutterFileAction()));
@@ -108,7 +109,7 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
         image = ImageIO.read(path);
 
         SubbandClutter main = new SubbandClutter();
-        main.appelParCanal(image);
+        System.out.println(main.appelParCanal(image));
 
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -123,6 +124,44 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
           Action.SHORT_DESCRIPTION,
           "Compute an the Subband Entropy Clutter global measure (Rosenholtz et al 2007) of the given file image");
       this.putValue(Action.NAME, "Compute Subband Entropy Clutter of the file");
+    }
+  }
+
+  class SubbandClutterWindowAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      // get the map as an image
+      GeOxygeneApplication application = CartAGenPlugin.getInstance()
+          .getApplication();
+      LayerViewPanel panel = application.getMainFrame()
+          .getSelectedProjectFrame().getLayerViewPanel();
+      Color bg = panel.getBackground();
+      BufferedImage image = new BufferedImage(panel.getWidth(),
+          panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+      Graphics2D graphics = image.createGraphics();
+      graphics.setColor(bg);
+      graphics.fillRect(0, 0, panel.getWidth(), panel.getHeight());
+      ((MultithreadedRenderingManager) panel.getRenderingManager())
+          .copyTo(graphics);
+      panel.paintOverlays(graphics);
+      graphics.dispose();
+
+      SubbandClutter main = new SubbandClutter();
+      System.out.println(main.appelParCanal(image));
+
+    }
+
+    public SubbandClutterWindowAction() {
+      super();
+      this.putValue(
+          Action.SHORT_DESCRIPTION,
+          "Compute an the Subband Entropy Clutter global measure (Rosenholtz et al 2007) of the window map");
+      this.putValue(Action.NAME,
+          "Compute Subband Entropy Clutter of the window map");
     }
   }
 
@@ -229,7 +268,7 @@ public class CartoPlugin implements GeOxygeneApplicationPlugin {
       rule.setFilter(filter);
       fts.getRules().add(rule);
       Rule rule2 = LayerFactory.createRule(IPolygon.class,
-          Color.GREEN.darker(), Color.GREEN, 0.8f, 0.8f, 1.0f);
+          Color.GREEN.darker(), Color.GREEN, 0.8f, 0.5f, 1.0f);
       rule2.setTitle("grid display true");
       Filter filter2 = new PropertyIsEqualTo(new PropertyName("value"),
           new Literal("true"));

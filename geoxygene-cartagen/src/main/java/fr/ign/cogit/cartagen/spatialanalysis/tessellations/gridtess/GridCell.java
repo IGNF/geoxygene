@@ -187,4 +187,12 @@ public class GridCell<T> extends DefaultFeature {
       return null;
   }
 
+  /**
+   * Computes the area of the cell
+   * @return
+   */
+  public double getArea() {
+    return size * size;
+  }
+
 }

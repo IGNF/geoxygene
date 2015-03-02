@@ -17,6 +17,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
@@ -48,6 +49,11 @@ public class MapLegibilityMethod {
   private boolean useOverlap = false;
   private int angularityThreshold = 40;
   private boolean useAngularity = false;
+  /**
+   * Buffer size for computing overlaps between map symbols. It is expressed in
+   * map mm.
+   */
+  private double bufferSize = 0.3;
 
   public MapLegibilityMethod(StyledLayerDescriptor sld, IEnvelope window) {
     this.sld = sld;
@@ -99,7 +105,7 @@ public class MapLegibilityMethod {
         // compute the total length of linear objects in the cell
         double lineLength = 0.0;
         for (IFeature feat : cellObjects)
-          lineLength += feat.getGeom().length();
+          lineLength += cell.getGeom().intersection(feat.getGeom()).length();
         // put the length in map cm, such as the threshold
         lineLength = lineLength / scale * 100.0;
         if (lineLength > lineLengthThreshold) {
@@ -117,7 +123,8 @@ public class MapLegibilityMethod {
         // the cell
         int nbVertices = 0;
         for (IFeature feat : cellObjects)
-          nbVertices += feat.getGeom().coord().size();
+          nbVertices += cell.getGeom().intersection(feat.getGeom()).coord()
+              .size();
         if (nbVertices > nbOfVerticesThreshold) {
           cell.setValue(false);
           System.out.println("number of vertices");
@@ -160,7 +167,19 @@ public class MapLegibilityMethod {
       if (useOverlap) {
         // compute the total overlap between objects symbols in the cell
         double overlap = 0.0;
-        // TODO
+        double buffer = bufferSize * scale / 1000.0;
+        for (IFeature feat : cellObjects) {
+          IGeometry geomBuff = feat.getGeom().buffer(buffer);
+          for (IFeature other : cellObjects) {
+            if (other.equals(feat))
+              continue;
+            IGeometry otherBuff = other.getGeom().buffer(buffer);
+            if (!otherBuff.intersects(geomBuff))
+              continue;
+            overlap += otherBuff.intersection(geomBuff).area();
+          }
+        }
+        overlap = overlap / cell.getArea();
         if (overlap > overlapThreshold) {
           cell.setValue(false);
           System.out.println("overlap");
@@ -291,6 +310,14 @@ public class MapLegibilityMethod {
 
   public void setScale(double scale) {
     this.scale = scale;
+  }
+
+  public double getBufferSize() {
+    return bufferSize;
+  }
+
+  public void setBufferSize(double bufferSize) {
+    this.bufferSize = bufferSize;
   }
 
 }
