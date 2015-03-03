@@ -10,6 +10,10 @@
 package fr.ign.cogit.carto.evaluation.clutter;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import fr.ign.cogit.cartagen.spatialanalysis.tessellations.gridtess.GridCell;
 import fr.ign.cogit.cartagen.spatialanalysis.tessellations.gridtess.GridTessellation;
@@ -31,6 +35,8 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  */
 public class MapLegibilityMethod {
 
+  private static Logger logger = Logger.getLogger(MapLegibilityMethod.class
+      .getName());
   private StyledLayerDescriptor sld;
   private IEnvelope window;
   private double scale = 25000.0;
@@ -49,6 +55,8 @@ public class MapLegibilityMethod {
   private boolean useOverlap = false;
   private int angularityThreshold = 40;
   private boolean useAngularity = false;
+  private Set<String> foregroundLayers;
+
   /**
    * Buffer size for computing overlaps between map symbols. It is expressed in
    * map mm.
@@ -58,6 +66,7 @@ public class MapLegibilityMethod {
   public MapLegibilityMethod(StyledLayerDescriptor sld, IEnvelope window) {
     this.sld = sld;
     this.window = window;
+    this.foregroundLayers = new HashSet<>();
   }
 
   /**
@@ -76,6 +85,8 @@ public class MapLegibilityMethod {
     // compute the legibility in all cells
     for (GridCell<Boolean> cell : grid.getCells()) {
       IFeatureCollection<IFeature> cellObjects = new FT_FeatureCollection<>();
+      IFeatureCollection<IFeature> foregroundObjects = new FT_FeatureCollection<>();
+      IFeatureCollection<IFeature> backgroundObjects = new FT_FeatureCollection<>();
       int nbLayers = 0;
       // first, get the objects in the cell
       for (Layer layer : sld.getLayers()) {
@@ -87,14 +98,23 @@ public class MapLegibilityMethod {
           continue;
         nbLayers++;
         cellObjects.addAll(layerObjects);
+        if (foregroundLayers.size() != 0) {
+          if (foregroundLayers.contains(layer))
+            foregroundObjects.addAll(layerObjects);
+          else
+            backgroundObjects.addAll(layerObjects);
+        }
       }
 
       // first criterion, the number of objects
       if (useNbOfObjects) {
         // compute the nb of objects in the cell
-        if (cellObjects.size() > nbOfObjectsThreshold) {
-          System.out.println("number of objects");
-          System.out.println(cellObjects.size());
+        int nbOfObjects = cellObjects.size();
+        if (foregroundLayers.size() != 0)
+          nbOfObjects = foregroundObjects.size()
+              + Math.round(backgroundObjects.size() / 2);
+        if (nbOfObjects > nbOfObjectsThreshold) {
+          logger.trace("number of objects: " + cellObjects.size());
           cell.setValue(false);
           continue;
         }
@@ -104,14 +124,24 @@ public class MapLegibilityMethod {
       if (useLineLength) {
         // compute the total length of linear objects in the cell
         double lineLength = 0.0;
-        for (IFeature feat : cellObjects)
-          lineLength += cell.getGeom().intersection(feat.getGeom()).length();
+        if (foregroundLayers.size() == 0) {
+          for (IFeature feat : cellObjects)
+            lineLength += cell.getGeom().intersection(feat.getGeom()).length();
+        } else {
+          for (IFeature feat : cellObjects) {
+            if (foregroundObjects.contains(feat))
+              lineLength += cell.getGeom().intersection(feat.getGeom())
+                  .length();
+            else
+              lineLength += cell.getGeom().intersection(feat.getGeom())
+                  .length() / 2;
+          }
+        }
         // put the length in map cm, such as the threshold
         lineLength = lineLength / scale * 100.0;
         if (lineLength > lineLengthThreshold) {
           cell.setValue(false);
-          System.out.println("line length");
-          System.out.println(lineLength);
+          logger.trace("line length: " + lineLength);
           continue;
         }
       }
@@ -122,13 +152,23 @@ public class MapLegibilityMethod {
         // compute the total number of vertices in objects geometries in
         // the cell
         int nbVertices = 0;
-        for (IFeature feat : cellObjects)
-          nbVertices += cell.getGeom().intersection(feat.getGeom()).coord()
-              .size();
+        if (foregroundLayers.size() == 0) {
+          for (IFeature feat : cellObjects)
+            nbVertices += cell.getGeom().intersection(feat.getGeom()).coord()
+                .size();
+        } else {
+          for (IFeature feat : cellObjects) {
+            if (foregroundObjects.contains(feat))
+              nbVertices += cell.getGeom().intersection(feat.getGeom()).coord()
+                  .size();
+            else
+              nbVertices += Math.round(cell.getGeom()
+                  .intersection(feat.getGeom()).coord().size() / 2);
+          }
+        }
         if (nbVertices > nbOfVerticesThreshold) {
           cell.setValue(false);
-          System.out.println("number of vertices");
-          System.out.println(nbVertices);
+          logger.trace("number of vertices: " + nbVertices);
           continue;
         }
       }
@@ -138,8 +178,7 @@ public class MapLegibilityMethod {
         // compute the number of object typess in the cell
         if (nbLayers > nbOfObjTypesThreshold) {
           cell.setValue(false);
-          System.out.println("number of object types");
-          System.out.println(nbLayers);
+          logger.trace("number of object types: " + nbLayers);
           continue;
         }
       }
@@ -157,8 +196,7 @@ public class MapLegibilityMethod {
         }
         if (angularity > angularityThreshold) {
           cell.setValue(false);
-          System.out.println("angularity");
-          System.out.println(angularity);
+          logger.trace("angularity: " + angularity);
           continue;
         }
       }
@@ -169,9 +207,14 @@ public class MapLegibilityMethod {
         double overlap = 0.0;
         double buffer = bufferSize * scale / 1000.0;
         for (IFeature feat : cellObjects) {
+          if (foregroundLayers.size() != 0 && foregroundObjects.contains(feat))
+            continue;
           IGeometry geomBuff = feat.getGeom().buffer(buffer);
           for (IFeature other : cellObjects) {
             if (other.equals(feat))
+              continue;
+            if (foregroundLayers.size() != 0
+                && foregroundObjects.contains(other))
               continue;
             IGeometry otherBuff = other.getGeom().buffer(buffer);
             if (!otherBuff.intersects(geomBuff))
@@ -182,8 +225,7 @@ public class MapLegibilityMethod {
         overlap = overlap / cell.getArea();
         if (overlap > overlapThreshold) {
           cell.setValue(false);
-          System.out.println("overlap");
-          System.out.println(overlap);
+          logger.trace("overlap: " + overlap);
           continue;
         }
       }
@@ -320,4 +362,7 @@ public class MapLegibilityMethod {
     this.bufferSize = bufferSize;
   }
 
+  public void addForegroundLayer(String layerName) {
+    this.foregroundLayers.add(layerName);
+  }
 }
