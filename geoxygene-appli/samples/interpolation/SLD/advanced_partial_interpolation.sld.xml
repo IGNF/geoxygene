@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
+    <NamedLayer>
+        <Name>test</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer test</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <PolygonInterpolationSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#bf9e0a</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                        <FirstSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                            <GeometryPropertyName>geom</GeometryPropertyName>
+                            <Fill>
+<CssParameter name="fill">#bf9e0a</CssParameter>
+<CssParameter name="fill-opacity">1.0</CssParameter>
+                            </Fill>
+                        </FirstSymbolizer>
+                        <SecondSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                            <GeometryPropertyName>geom</GeometryPropertyName>
+                            <Fill>
+<CssParameter name="fill">#7ac36a</CssParameter>
+<CssParameter name="fill-opacity">1.0</CssParameter>
+                            </Fill>
+                        </SecondSymbolizer>
+                        <alpha>0.0</alpha>
+                    </PolygonInterpolationSymbolizer>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#252525</CssParameter>
+                            <CssParameter name="stroke-opacity">1.0</CssParameter>
+                            <CssParameter name="stroke-width">0.1</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+</StyledLayerDescriptor>
