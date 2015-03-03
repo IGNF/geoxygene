@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.semantic;
 
 import java.awt.Color;
+import java.io.InputStream;
 
 import org.apache.log4j.Logger;
 
@@ -13,6 +14,7 @@ import com.vividsolutions.jts.geom.Polygon;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.sig3d.semantic.DTM;
@@ -48,6 +50,7 @@ public class DTMArea extends DTM {
     super(file, layerName, fill, exager, colorGradation);
   }
 
+
   /**
    * Same constructor as DTM
    * @param file
@@ -61,6 +64,26 @@ public class DTMArea extends DTM {
       GM_Envelope imageEnvelope) {
     super(file, layerName, fill, exager, imageFileName, imageEnvelope);
   }
+
+  public DTMArea(InputStream is, String layerName, boolean fill, int exager,
+      String imageFileName, IEnvelope imageEnvelope) {
+    super(is, layerName, fill, exager, imageFileName, imageEnvelope);
+
+  }
+
+
+  public DTMArea(String file, String layerName, boolean fill, int exager,
+      String imageFileName, IEnvelope imageEnvelope) {
+    super(file, layerName, fill, exager, imageFileName, imageEnvelope);
+
+  }
+
+
+  public DTMArea(InputStream dtmStream, String layerName, boolean fill,
+      int exager, Color[] colorShade) {
+   super(dtmStream, layerName, fill, exager, colorShade);
+  }
+
 
   /**
    * Calculate 3D area of surfacic geometries of a feature

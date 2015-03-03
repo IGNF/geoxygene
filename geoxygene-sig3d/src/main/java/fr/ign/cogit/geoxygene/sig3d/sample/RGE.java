@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.sample;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -51,8 +52,7 @@ public class RGE {
     String vecteurAplaquer = schemaFile.getPath().toString();
 
     // On récupère le MNT qui sera affiché
-    String mntFile = RGE.class.getResource("/demo3D/bdalti/echantillon38/ISERE_100_asc.asc")
-        .getPath().toString();
+    InputStream mntFile = RGE.class.getResourceAsStream("/demo3D/bdalti/echantillon38/ISERE_100_asc.asc");
     // On utilise MNTRGE extension de MNT pour cet exemple
     // Cette classe propose d'autres possibilités de plaquage des données
     MNTRGE mnt;

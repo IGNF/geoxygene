@@ -3,7 +3,10 @@ package fr.ign.cogit.geoxygene.sig3d.semantic;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 
 import javax.media.j3d.Appearance;
@@ -123,12 +126,27 @@ public class DTM extends AbstractDTMLayer {
    */
   public DTM(String file, String layerName, boolean fill, int exager,
       String imageFileName, IEnvelope imageEnvelope) {
-    super(  file, layerName, fill,  exager,   imageFileName, imageEnvelope);
-  
+    super(file, layerName, fill, exager, imageFileName, imageEnvelope);
 
-
-    
     this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
+        exager, imageFileName, imageEnvelope));
+
+  }
+
+  /**
+   *  Permet de créer un MNT en utilisant un InputStream
+   * @param is
+   * @param layerName
+   * @param fill
+   * @param exager
+   * @param imageFileName
+   * @param imageEnvelope
+   */
+  public DTM(InputStream is, String layerName, boolean fill, int exager,
+      String imageFileName, IEnvelope imageEnvelope) {
+    super("", layerName, fill, exager, imageFileName, imageEnvelope);
+
+    this.bgLayer.addChild(this.representationProcess(is, layerName, fill,
         exager, imageFileName, imageEnvelope));
 
   }
@@ -164,6 +182,18 @@ public class DTM extends AbstractDTMLayer {
 
   }
 
+  private Shape3D representationProcess(String file, String layerName,
+      boolean fill, int exager, String imageFilePath, IEnvelope imageEnvelope) {
+    try {
+      return representationProcess(new FileInputStream(file), layerName, fill,
+          exager, imageFilePath, imageEnvelope);
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return null;
+  }
+
   /**
    * Calcul l'objet Java3D associé à un MNT avec une image plaquée
    * 
@@ -175,7 +205,7 @@ public class DTM extends AbstractDTMLayer {
    * @param imageEnvelope
    * @return un objet Java3D représentant la forme du MNT
    */
-  private Shape3D representationProcess(String file, String layerName,
+  private Shape3D representationProcess(InputStream is, String layerName,
       boolean fill, int exager, String imageFilePath, IEnvelope imageEnvelope) {
 
     this.imagePath = imageFilePath;
@@ -195,9 +225,6 @@ public class DTM extends AbstractDTMLayer {
     int numligne = 0;
     int numcol = 0;
 
-    // Le fichier contenant le MNT
-    this.path = file;
-
     // Il s'agit d'une chaine contenant les informations en train d'être lu
     // dans le fichier
     String ligne;
@@ -211,8 +238,8 @@ public class DTM extends AbstractDTMLayer {
 
       // Lecture du fichier et récupèration des différentes valeurs citées
       // précédemment
-      FileReader fr = new FileReader(file);
-      BufferedReader br = new BufferedReader(fr);
+
+      BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
       ligne = br.readLine();
 
@@ -343,7 +370,7 @@ public class DTM extends AbstractDTMLayer {
           if (oldZ == this.noDataValue) {
 
             pointAncien = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * numligne), this.zMin * exager);
+                (maxy - cellsize * numligne), this.noDataValue * exager);
           } else {
 
             pointAncien = new Point3d((cellsize * numcol + shiftX),
@@ -354,8 +381,8 @@ public class DTM extends AbstractDTMLayer {
 
           if (nouvZ == this.noDataValue) {
             nouvePoint = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * (numligne + this.echantillonage)), this.zMin
-                    * exager);
+                (maxy - cellsize * (numligne + this.echantillonage)),
+                this.noDataValue * exager);
 
           } else {
             nouvePoint = new Point3d((cellsize * numcol + shiftX),
@@ -472,9 +499,27 @@ public class DTM extends AbstractDTMLayer {
   public DTM(String file, String layerName, boolean fill, int exager,
       Color[] colorGradation) {
 
-    super(file, layerName,  fill, exager, colorGradation);
-    
+    super(file, layerName, fill, exager, colorGradation);
+
     this.bgLayer.addChild(this.representationProcess(file, layerName, fill,
+        exager, colorGradation));
+
+  }
+
+  /**
+   * Permet de créer un MNT en utilisant un InputStream
+   * @param is
+   * @param layerName
+   * @param fill
+   * @param exager
+   * @param colorGradation
+   */
+  public DTM(InputStream is, String layerName, boolean fill, int exager,
+      Color[] colorGradation) {
+
+    super("", layerName, fill, exager, colorGradation);
+
+    this.bgLayer.addChild(this.representationProcess(is, layerName, fill,
         exager, colorGradation));
 
   }
@@ -508,6 +553,18 @@ public class DTM extends AbstractDTMLayer {
 
   }
 
+  private Shape3D representationProcess(String file, String layerName,
+      boolean fill, int exager, Color[] colorGradation) {
+    try {
+      return this.representationProcess(new FileInputStream(file), layerName,
+          fill, exager, colorGradation);
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return null;
+  }
+
   /**
    * Calcul l'objet 3D permettant de représenter un MNT en appliquant un
    * dégradé.
@@ -519,7 +576,7 @@ public class DTM extends AbstractDTMLayer {
    * @param colorGradation
    * @return un objet Java3D représentant la forme du MNT
    */
-  private Shape3D representationProcess(String file, String layerName,
+  private Shape3D representationProcess(InputStream is, String layerName,
       boolean fill, int exager, Color[] colorGradation) {
 
     int nbElemCouleur = colorGradation.length;
@@ -540,61 +597,18 @@ public class DTM extends AbstractDTMLayer {
 
     // Valeur indiquant l'absence de données
     this.noDataValue = Double.NaN;
-    try {
-      String ligne = "";
-      // Lecture du fichier et récupèration des différentes valeurs citées
-      // précédemment
 
-      BufferedReader br = new BufferedReader(new FileReader(file));
+    this.zMin = Double.POSITIVE_INFINITY;
+    this.zMax = Double.NEGATIVE_INFINITY;
 
-      this.zMin = Double.POSITIVE_INFINITY;
-      this.zMax = Double.NEGATIVE_INFINITY;
-
-      // on saute les 6 lignes du début
-      for (int i = 0; i < 6; i++) {
-        ligne = br.readLine();
-      }
-
-      String[] result = ligne.split(" ");
-
-      // On récupère la valeur noData
-      this.noDataValue = Double.parseDouble(result[result.length - 1]);
-
-      ligne = br.readLine();
-      while (ligne != null) {
-        result = ligne.split(" ");
-
-        int nbElem = result.length;
-
-        for (int i = 0; i < nbElem; i++) {
-
-          double valZ = Double.parseDouble(result[i]);
-
-          if (valZ == this.noDataValue) {
-            continue;
-          }
-
-          this.zMin = Math.min(valZ, this.zMin);
-          this.zMax = Math.max(valZ, this.zMax);
-        }
-
-        ligne = br.readLine();
-      }
-
-      br.close();
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
     // Il s'agit d'une chaine contenant les informations en train d'être lu
     // dans le fichier
     String ligne;
 
     try {
-
+      BufferedReader br = new BufferedReader(new InputStreamReader(is));
       // Lecture du fichier et récupèration des différentes valeurs citées
       // précédemment
-      BufferedReader br = new BufferedReader(new FileReader(file));
 
       ligne = br.readLine();
 
@@ -677,7 +691,8 @@ public class DTM extends AbstractDTMLayer {
       for (int i = 0; i < ncols; i++) {
 
         lignePred[i] = Double.parseDouble(result[i * this.echantillonage]);
-
+        this.zMin = Math.min(lignePred[i], this.zMin);
+        this.zMax = Math.max(lignePred[i], this.zMax);
       }
 
       // On passe des lignes pour sous échantillonner
@@ -707,12 +722,15 @@ public class DTM extends AbstractDTMLayer {
           double nouvZ = Double.parseDouble(result[i * this.echantillonage]);
           double oldZ = lignePred[i];
 
+          this.zMin = Math.min(nouvZ, this.zMin);
+          this.zMax = Math.max(nouvZ, this.zMax);
+
           // On crée le nouveau point
           Point3d pointAncien = null;
           if (oldZ == this.noDataValue) {
 
             pointAncien = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * numligne), this.zMin * exager);
+                (maxy - cellsize * numligne), this.noDataValue * exager);
           } else {
 
             pointAncien = new Point3d((cellsize * numcol + shiftX),
@@ -723,8 +741,8 @@ public class DTM extends AbstractDTMLayer {
 
           if (nouvZ == this.noDataValue) {
             nouvePoint = new Point3d((cellsize * numcol + shiftX),
-                (maxy - cellsize * (numligne + this.echantillonage)), this.zMin
-                    * exager);
+                (maxy - cellsize * (numligne + this.echantillonage)),
+                this.noDataValue * exager);
 
           } else {
             nouvePoint = new Point3d((cellsize * numcol + shiftX),
@@ -735,13 +753,9 @@ public class DTM extends AbstractDTMLayer {
 
           strp.setCoordinate(nbpoints, pointAncien);
 
-          strp.setColor(nbpoints, this.getColor4f(oldZ));
-
           nbpoints++;
 
           strp.setCoordinate(nbpoints, nouvePoint);
-
-          strp.setColor(nbpoints, this.getColor4f(nouvZ));
 
           nbpoints++;
           lignePred[i] = nouvZ;
@@ -756,6 +770,14 @@ public class DTM extends AbstractDTMLayer {
 
         }
 
+      }
+
+      // Assignation des couleurs.
+      for (int i = 0; i < nbpoints; i++) {
+        Point3d p = new Point3d();
+        strp.getCoordinate(i, p);
+
+        strp.setColor(i, this.getColor4f(p.getZ()));
       }
 
       br.close();

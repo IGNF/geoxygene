@@ -24,6 +24,35 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
+
+/**
+ * 
+ * This software is released under the licence CeCILL
+ * 
+ * see LICENSE.TXT
+ * 
+ * see <http://www.cecill.info/ http://www.cecill.info/
+ * 
+ * 
+ * 
+ * @copyright IGN
+ * 
+ * @author Brasebin Mickaël
+ * 
+ * @version 1.6
+ * 
+ *          Classe permettant d'afficher un MNT et de plaquer une photo Cette
+ *          classe sert avant tout pour l'affichage, il n'y a donc pas de modèle
+ *          de données derrière On peut toujours récupèrer les points des
+ *          différents triangles à l'aide du triangle strip et des différents
+ *          paramètres On peut cependant récupérer les géométries correspondant
+ *          à une zone (zone rectangle entre 2 coordonnées) 
+ *          
+ *          Class used to render
+ *          DTM from a TIN file. The DTM is displayed with an image mapped on
+ *          it or with a ColorShade. It requires a ITriangulatedSurface as input
+ * 
+ */
 public class DTMTin extends AbstractDTMLayer {
 
   double DT_OFFSETTING = 1;

@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.sample;
 
 import java.awt.Color;
+import java.io.InputStream;
 
 import fr.ign.cogit.geoxygene.sig3d.gui.MainWindow;
 import fr.ign.cogit.geoxygene.sig3d.semantic.DTM;
@@ -38,7 +39,7 @@ public class DTMDisplay {
 
         // Chemin du fichier .asc à charger
         // String mntFile = RGE.class.getResource("/demo3D/bdalti/MNT250_L93_FRANCE.ASC").getPath().toString();
-        String mntFile = RGE.class.getResource("/demo3D/bdalti/echantillon72/MNT_25M_asc.asc").getPath().toString();
+        InputStream mntFile = RGE.class.getResourceAsStream("/demo3D/bdalti/echantillon72/MNT_25M_asc.asc");
         DTM mnt;
         if (orthoPhoto) {
 

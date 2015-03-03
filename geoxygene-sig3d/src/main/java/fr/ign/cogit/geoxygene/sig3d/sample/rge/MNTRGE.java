@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.sample.rge;
 
 import java.awt.Color;
+import java.io.InputStream;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -113,6 +114,12 @@ public class MNTRGE extends DTM {
     super(fichier, nomCouche, fill, exager, degradeRGB);
   }
 
+  
+  public MNTRGE(InputStream is, String nomCouche, boolean fill, int exager,
+      Color[] degradeRGB) {
+    super(is, nomCouche, fill, exager, degradeRGB);
+  }
+
   /**
    * Fait appel au constructeur de la classe mère
    * 
@@ -126,6 +133,13 @@ public class MNTRGE extends DTM {
   public MNTRGE(String fichier, String nomCouche, boolean fill, int exager,
       String nomFichierImage, GM_Envelope empriseImage) {
     super(fichier, nomCouche, fill, exager, nomFichierImage, empriseImage);
+  }
+  
+  
+  
+  public MNTRGE(InputStream is, String nomCouche, boolean fill, int exager,
+      String nomFichierImage, GM_Envelope empriseImage) {
+    super(is, nomCouche, fill, exager, nomFichierImage, empriseImage);
   }
 
   /**
