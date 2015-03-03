@@ -89,12 +89,12 @@ public abstract class SymbolizerValidator {
       if (subStroke2 == null)
         return null;
       outStroke = subStroke2.getColor();
-      outOpacity = (float) (subStroke2.getStrokeOpacity() * (1.0 - alpha));
+      outOpacity = (float) (subStroke2.getStrokeOpacity() * alpha);
       outWidth = subStroke2.getStrokeWidth();
       outExprRendDescr = subStroke2.getExpressiveRendering();
     } else if (subStroke2 == null) {
       outStroke = subStroke1.getColor();
-      outOpacity = (float) (subStroke1.getStrokeOpacity() * alpha);
+      outOpacity = (float) (subStroke1.getStrokeOpacity() * (1.0 - alpha));
       outWidth = subStroke1.getStrokeWidth();
       outExprRendDescr = subStroke1.getExpressiveRendering();
     } else {
@@ -322,10 +322,10 @@ public abstract class SymbolizerValidator {
       if (subFill2 == null)
         return null;
       outColor = subFill2.getColor();
-      outOpacity = (float) (subFill2.getFillOpacity() * (1.0 - alpha));
+      outOpacity = (float) (subFill2.getFillOpacity() * alpha);
     } else if (subFill2 == null) {
       outColor = subFill1.getColor();
-      outOpacity = (float) (subFill1.getFillOpacity() * alpha);
+      outOpacity = (float) (subFill1.getFillOpacity() * (1.0 - alpha));
     } else {
       outColor = Interpolation.interpolateRGB(subFill1.getColor(),
           subFill2.getColor(), alpha, interFun);
