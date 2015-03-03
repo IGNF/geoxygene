@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyledLayerDescriptor xmlns:ogc="http://www.opengis.net/ogc">
+    <Background>
+        <url>./samples/expressive samples/images/canvas-bg.png</url>
+        <PaperHeightInCm>4.0</PaperHeightInCm>
+        <PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
+        <Color>#FFFFFF</Color>
+    </Background>
+    <NamedLayer>
+        <Name>linear</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer linear</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Mark>
+<WellKnownName>square</WellKnownName>
+<Fill>
+    <CssParameter name="fill">#04ba36</CssParameter>
+    <CssParameter name="fill-opacity">0.8</CssParameter>
+</Fill>
+<Stroke>
+    <CssParameter name="stroke">#028225</CssParameter>
+    <CssParameter name="stroke-opacity">0.8</CssParameter>
+    <CssParameter name="stroke-width">1.0</CssParameter>
+</Stroke>
+                            </Mark>
+                            <opacity>1.0</opacity>
+                            <Size>6.0</Size>
+                            <Rotation>
+<Literal>0</Literal>
+                            </Rotation>
+                        </Graphic>
+                    </LegendGraphic>
+                    <LineInterpolationSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">1.0</CssParameter>
+                            <CssParameter name="stroke-width">500.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                            <CssParameter name="stroke-linejoin">round</CssParameter>
+                            <ExpressiveStroke>
+<TransitionSize>200.0</TransitionSize>
+<PaperTexture>./samples/expressive samples/images/canvas-normalized.png</PaperTexture>
+<BrushTexture>/tmp/tmp_image2756796977594794147.png</BrushTexture>
+<BrushStartLength>136</BrushStartLength>
+<BrushEndLength>135</BrushEndLength>
+<BrushAspectRatio>8.0</BrushAspectRatio>
+<PaperSizeInCm>4.0</PaperSizeInCm>
+<PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
+<PaperRoughness>0.0</PaperRoughness>
+<BrushRoughness>4.853</BrushRoughness>
+<StrokePressure>3.833</StrokePressure>
+<StrokeSoftness>4.5760000000000005</StrokeSoftness>
+<UserShader>
+    <File>./samples/expressive samples/shaders/subshader1d.dlyr.glsl</File>
+    <Float name="strokeWidth" value="1.0" description="strokeWidthVariation" min="0.0" max="1.0" increment="0.01"/>
+    <Float name="paperStrength" value="1.0" description="paper strength" min="0.0" max="1.0" increment="0.01"/>
+    <Float name="brushStrength" value="1.241" description="paper strength" min="0.0" max="2.0" increment="0.01"/>
+    <Float name="brushSmoothness" value="0.483" description="" min="0.01" max="0.49" increment="0.01"/>
+</UserShader>
+                            </ExpressiveStroke>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <PerpendicularOffset>0.0</PerpendicularOffset>
+                        <FirstSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                            <Stroke>
+<CssParameter name="stroke">#000000</CssParameter>
+<CssParameter name="stroke-opacity">1.0</CssParameter>
+<CssParameter name="stroke-width">500.0</CssParameter>
+<CssParameter name="stroke-linejoin">round</CssParameter>
+<CssParameter name="stroke-linecap">round</CssParameter>
+<ExpressiveStroke>
+    <TransitionSize>200.0</TransitionSize>
+    <PaperTexture>./samples/expressive samples/images/canvas-normalized.png</PaperTexture>
+    <BrushTexture>./samples/expressive samples/images/pencil1-tiled-136-135.png</BrushTexture>
+    <BrushStartLength>136</BrushStartLength>
+    <BrushEndLength>135</BrushEndLength>
+    <BrushAspectRatio>8.0</BrushAspectRatio>
+    <PaperSizeInCm>4.0</PaperSizeInCm>
+    <PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
+    <PaperRoughness>0.0</PaperRoughness>
+    <BrushRoughness>4.853</BrushRoughness>
+    <StrokePressure>3.833</StrokePressure>
+    <StrokeSoftness>4.5760000000000005</StrokeSoftness>
+    <UserShader>
+        <File>./samples/expressive samples/shaders/subshader1d.dlyr.glsl</File>
+        <Float name="strokeWidth" value="1.0" description="strokeWidthVariation" min="0.0" max="1.0" increment="0.01"/>
+        <Float name="paperStrength" value="1.0" description="paper strength" min="0.0" max="1.0" increment="0.01"/>
+        <Float name="brushStrength" value="1.241" description="paper strength" min="0.0" max="2.0" increment="0.01"/>
+        <Float name="brushSmoothness" value="0.483" description="" min="0.01" max="0.49" increment="0.01"/>
+    </UserShader>
+</ExpressiveStroke>
+                            </Stroke>
+                            <GeometryPropertyName>geom</GeometryPropertyName>
+                            <PerpendicularOffset>0.0</PerpendicularOffset>
+                        </FirstSymbolizer>
+                        <SecondSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                            <Stroke>
+<CssParameter name="stroke">#000000</CssParameter>
+<CssParameter name="stroke-opacity">1.0</CssParameter>
+<CssParameter name="stroke-width">500.0</CssParameter>
+<CssParameter name="stroke-linejoin">round</CssParameter>
+<CssParameter name="stroke-linecap">round</CssParameter>
+<ExpressiveStroke>
+    <TransitionSize>200.0</TransitionSize>
+    <PaperTexture>./samples/expressive samples/images/canvas-normalized.png</PaperTexture>
+    <BrushTexture>./samples/expressive samples/images/pencil-acrylic-04.png</BrushTexture>
+    <BrushStartLength>136</BrushStartLength>
+    <BrushEndLength>135</BrushEndLength>
+    <BrushAspectRatio>8.0</BrushAspectRatio>
+    <PaperSizeInCm>4.0</PaperSizeInCm>
+    <PaperReferenceMapScale>100000.0</PaperReferenceMapScale>
+    <PaperRoughness>0.0</PaperRoughness>
+    <BrushRoughness>4.853</BrushRoughness>
+    <StrokePressure>3.833</StrokePressure>
+    <StrokeSoftness>4.5760000000000005</StrokeSoftness>
+    <UserShader>
+        <File>./samples/expressive samples/shaders/subshader1d.dlyr.glsl</File>
+        <Float name="strokeWidth" value="1.0" description="strokeWidthVariation" min="0.0" max="1.0" increment="0.01"/>
+        <Float name="paperStrength" value="1.0" description="paper strength" min="0.0" max="1.0" increment="0.01"/>
+        <Float name="brushStrength" value="1.241" description="paper strength" min="0.0" max="2.0" increment="0.01"/>
+        <Float name="brushSmoothness" value="0.483" description="" min="0.01" max="0.49" increment="0.01"/>
+    </UserShader>
+</ExpressiveStroke>
+                            </Stroke>
+                            <GeometryPropertyName>geom</GeometryPropertyName>
+                            <PerpendicularOffset>0.0</PerpendicularOffset>
+                        </SecondSymbolizer>
+                        <alpha>0.5</alpha>
+                    </LineInterpolationSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+</StyledLayerDescriptor>
