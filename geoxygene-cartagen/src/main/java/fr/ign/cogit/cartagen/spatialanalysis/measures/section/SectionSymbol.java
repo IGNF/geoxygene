@@ -98,6 +98,7 @@ public class SectionSymbol {
     double distance = section.distance(left);
     distance *= left ? 1 : -1;
     offsetAdjust *= left ? 1 : -1;
+    // System.out.println("distance : " + distance);
     ILineString g = JtsAlgorithms.offsetCurve(
         section.getGeom(),
         offsetAdjust + ((left ? 1 : -1) * section.getWidth() / 2 + distance)
