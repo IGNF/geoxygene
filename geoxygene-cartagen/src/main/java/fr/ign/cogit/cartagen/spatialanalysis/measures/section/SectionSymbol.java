@@ -104,7 +104,7 @@ public class SectionSymbol {
         offsetAdjust + ((left ? 1 : -1) * section.getWidth() / 2 + distance)
             * Legend.getSYMBOLISATI0N_SCALE() / 1000).get(0);
 
-    if (g.coord().get(0).distance(section.getGeom().coord().get(0)) < g
+    if (g.coord().get(0).distance(section.getGeom().coord().get(0)) > g
         .coord()
         .get(0)
         .distance(
