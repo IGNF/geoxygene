@@ -476,8 +476,11 @@ public class MorphologyTransform {
       // logger.debug(toShow);
       // }
 
-      if (multiTemp.size() == 1) {
+      if (multiTemp.size() >= 1) {
+        // TODO use convex hull instead
         toReturn = (IPolygon) multiTemp.get(0);
+      } else {
+
       }
     }
 
