@@ -62,26 +62,22 @@ public class SectionSymbol {
       ICarrierNetworkSection section) {
     // Compute the size of the buffer
     double distanceLeft = section.distance(true);
-    System.out.println(distanceLeft);
 
     ILineString l = JtsAlgorithms.offsetCurve(
         section.getGeom(),
-        (section.getWidth() / 2 + distanceLeft) / 2
+        (section.getWidth() / 2 + distanceLeft)
             * Legend.getSYMBOLISATI0N_SCALE() / 1000).get(0);
 
     // Compute the size of the buffer
     double distanceRight = section.distance(false);
-    System.out.println(distanceRight);
-
-    System.out.println(section.getWidth());
 
     ILineString r = JtsAlgorithms.offsetCurve(
         section.getGeom(),
-        -(section.getWidth() / 2 + distanceRight) / 2
+        -(section.getWidth() / 2 + distanceRight)
             * Legend.getSYMBOLISATI0N_SCALE() / 1000).get(0);
 
-    if (l.coord().get(0).distance(section.getGeom().coord().get(0)) < l.coord()
-        .get(0).distance(r.coord().get(r.coord().size() - 1))) {
+    if (l.coord().get(0).distance(r.coord().get(0)) < l.coord().get(0)
+        .distance(r.coord().get(r.coord().size() - 1))) {
       l.coord().inverseOrdre();
     }
 
@@ -89,6 +85,7 @@ public class SectionSymbol {
       l.coord().add(position);
     }
     l.coord().add(l.coord().get(0));
+
     return new GM_Polygon(l);
 
   }
