@@ -227,7 +227,7 @@ public class VisvalingamWhyatt {
         IDirectPosition pointMin = null;
         for (int pt = 1; pt < line.coord().size() - 1; ++pt) {
           IDirectPosition point = line.coord().get(pt);
-          IGeometry triangle = getTriangle(line, point);
+          IGeometry triangle = getTriangle(line, pt);
           double areaTriangle = triangle.area();
           if (areaTriangle < areaMin && !containsAnotherPoint(line, point))
             if (areaTriangle < areaTolerance) {
@@ -293,10 +293,10 @@ public class VisvalingamWhyatt {
   }
 
   // returns the triangle surrounding pt in the linestring line,
-  // using index of pt -- faster
+  // using index of pt -- faster ?
   private IPolygon getTriangle(ILineString line, int indPt) {
     IDirectPosition first = line.coord().get(indPt - 1);
-    IDirectPosition point = line.coord().get(indPt - 1);
+    IDirectPosition point = line.coord().get(indPt);
     IDirectPosition last = line.coord().get(indPt + 1);
     IPolygon triangle = GeometryFactory.buildTriangle(first, point, last);
     return triangle;
