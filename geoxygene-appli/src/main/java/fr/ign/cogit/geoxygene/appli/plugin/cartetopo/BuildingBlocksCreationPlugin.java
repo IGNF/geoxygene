@@ -47,12 +47,13 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * Building Blocks Creation plugin.
  * @author Julien Perret
  */
-public class BuildingBlocksCreationPlugin implements GeOxygeneApplicationPlugin,
-    ActionListener {
+public class BuildingBlocksCreationPlugin implements
+    GeOxygeneApplicationPlugin, ActionListener {
   /**
    * Logger.
    */
-  static Logger logger = Logger.getLogger(BuildingBlocksCreationPlugin.class.getName());
+  static Logger logger = Logger.getLogger(BuildingBlocksCreationPlugin.class
+      .getName());
 
   private GeOxygeneApplication application = null;
 
@@ -63,8 +64,8 @@ public class BuildingBlocksCreationPlugin implements GeOxygeneApplicationPlugin,
   @Override
   public final void initialize(final GeOxygeneApplication app) {
     this.application = app;
-    
- // Check if the DataMatching menu exists. If not we create it.
+
+    // Check if the DataMatching menu exists. If not we create it.
     JMenu menu = null;
     String menuName = I18N.getString("CarteTopoPlugin.CarteTopoPlugin"); //$NON-NLS-1$
     for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
@@ -79,12 +80,12 @@ public class BuildingBlocksCreationPlugin implements GeOxygeneApplicationPlugin,
     if (menu == null) {
       menu = new JMenu(menuName);
     }
-    
+
     // Add network data matching menu item to the menu.
     JMenuItem menuItem = new JMenuItem("Creation of Buildings Blocks"); //$NON-NLS-1$
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    
+
     // Refresh menu of the application
     application.getMainFrame().getMenuBar()
         .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
@@ -97,7 +98,8 @@ public class BuildingBlocksCreationPlugin implements GeOxygeneApplicationPlugin,
     Set<Layer> selectedLayers = project.getLayerLegendPanel()
         .getSelectedLayers();
     if (selectedLayers.isEmpty()) {
-      javax.swing.JOptionPane.showMessageDialog(null, "You need to select at least one layer.");
+      javax.swing.JOptionPane.showMessageDialog(null,
+          "You need to select at least one layer.");
       BuildingBlocksCreationPlugin.logger
           .error("You need to select at least one network layer."); //$NON-NLS-1$
       return;
@@ -105,8 +107,10 @@ public class BuildingBlocksCreationPlugin implements GeOxygeneApplicationPlugin,
     Collection<IFeatureCollection<? extends IFeature>> buildingCollection = new HashSet<IFeatureCollection<? extends IFeature>>();
     CarteTopo carte = new CarteTopo("Carte");
     for (Layer layer : selectedLayers) {
-      if (IPolygon.class.isAssignableFrom(layer.getFeatureCollection().getFeatureType().getGeometryType()) ||
-          IMultiSurface.class.isAssignableFrom(layer.getFeatureCollection().getFeatureType().getGeometryType())) {
+      if (IPolygon.class.isAssignableFrom(layer.getFeatureCollection()
+          .getFeatureType().getGeometryType())
+          || IMultiSurface.class.isAssignableFrom(layer.getFeatureCollection()
+              .getFeatureType().getGeometryType())) {
         buildingCollection.add(layer.getFeatureCollection());
       } else {
         carte.importClasseGeo(layer.getFeatureCollection());
@@ -152,6 +156,7 @@ public class BuildingBlocksCreationPlugin implements GeOxygeneApplicationPlugin,
 
     logger.info("Index spatial initialisé");
 
-    project.addUserLayer(carte.getPopFaces(), carte.getPopFaces().getNom(), null);
+    project.addUserLayer(carte.getPopFaces(), carte.getPopFaces().getNom(),
+        null);
   }
 }

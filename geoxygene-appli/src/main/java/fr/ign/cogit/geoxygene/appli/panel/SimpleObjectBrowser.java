@@ -24,7 +24,12 @@ import javax.swing.tree.DefaultTreeModel;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.I18N;
+import fr.ign.cogit.geoxygene.util.algo.SmallestSurroundingRectangleComputation;
 
 public class SimpleObjectBrowser extends JFrame {
 
@@ -61,13 +66,35 @@ public class SimpleObjectBrowser extends JFrame {
     for (IFeature obj : this.selectedObjs) {
       String rootName = obj.getClass().getSimpleName() + " - " + obj.getId();
       DefaultMutableTreeNode root = new DefaultMutableTreeNode(rootName);
-      // a leaf for area and length
+      // a leaf for area and length and compacity
       String areaName = "area = " + obj.getGeom().area();
       String lengthName = "length = " + obj.getGeom().length();
+      double comp = 4 * Math.PI * obj.getGeom().area() / (obj.getGeom().length()*obj.getGeom().length());
+      String compName = "compacity = " + comp;
+      double conv = obj.getGeom().area() / obj.getGeom().convexHull().area();
+      String convName = "convexity = " + conv;
+      
+      IPolygon rect = SmallestSurroundingRectangleComputation.getSSR(obj.getGeom());
+      IDirectPositionList coords = rect.coord();
+      double rLong = coords.get(0).distance(coords.get(1));
+      double rLarg = coords.get(1).distance(coords.get(2));
+      if (rLarg > rLong){
+        double t = rLong;
+        rLong = rLarg;
+        rLarg = t;
+      }
+      double allong = rLong/rLarg;
+      String allongName = "allongement = " + allong;
       DefaultMutableTreeNode areaLeaf = new DefaultMutableTreeNode(areaName);
       DefaultMutableTreeNode lengthLeaf = new DefaultMutableTreeNode(lengthName);
+      DefaultMutableTreeNode compLeaf = new DefaultMutableTreeNode(compName);
+      DefaultMutableTreeNode convLeaf = new DefaultMutableTreeNode(convName);
+      DefaultMutableTreeNode allongLeaf = new DefaultMutableTreeNode(allongName);
       root.add(areaLeaf);
       root.add(lengthLeaf);
+      root.add(compLeaf);
+      root.add(convLeaf);
+      root.add(allongLeaf);
       // leaves for vertices number and centroid coordinates
       String verticesName = "vertices number = " + obj.getGeom().coord().size();
       String centroidName = "centroid = null";

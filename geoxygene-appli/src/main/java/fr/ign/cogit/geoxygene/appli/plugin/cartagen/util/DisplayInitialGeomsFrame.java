@@ -146,6 +146,12 @@ public class DisplayInitialGeomsFrame extends JFrame implements ActionListener {
         frame.getLayerViewPanel().getRenderingManager().addLayer(layer);
       } else
         SLDUtil.removeInitialGeomDisplay(layer);
+//      IGeneObj obj;
+//      for (IFeature f: layer.getFeatureCollection()){
+//        obj = (IGeneObj) f;
+//        System.out.println(obj.getInitialGeom());
+//        System.out.println(obj.getGeom());
+//      }
     }
     frame.getLayerViewPanel().getRenderingManager().renderAll();
     // frame.getLayerViewPanel().repaint();
