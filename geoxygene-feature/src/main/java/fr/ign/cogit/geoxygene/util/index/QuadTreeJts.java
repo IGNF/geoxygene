@@ -123,6 +123,7 @@ public class QuadTreeJts<Feat extends IFeature> extends IndexTree<Feat> {
         egeox.maxY(), egeox.minY());
     List<Integer> indexes = quad.query(envelopeJts);
     Collection<Feat> result = new HashSet<Feat>();
+    // System.out.println(indexes.size());
     for (int ind : indexes) {
       Feat f = collection.get(ind);
       if (f.getGeom().intersects(geometry))
