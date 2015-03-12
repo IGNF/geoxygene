@@ -9,7 +9,6 @@
  ******************************************************************************/
 package fr.ign.cogit.geoxygene.spatial.geomengine;
 
-import fr.ign.cogit.geoxygene.api.spatial.geomengine.AbstractGeometryEngine;
 import fr.ign.cogit.geoxygene.spatial.JTSGeomFactory;
 
 public class GeometryEngine extends AbstractGeometryEngine {

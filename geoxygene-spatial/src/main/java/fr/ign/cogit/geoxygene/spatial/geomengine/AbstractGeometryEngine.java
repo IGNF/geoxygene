@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.api.spatial.geomengine;
+package fr.ign.cogit.geoxygene.spatial.geomengine;
 
 import fr.ign.cogit.geoxygene.api.spatial.AbstractGeomFactory;
 
