@@ -49,6 +49,7 @@ import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.ProjectFramePlugin;
 import fr.ign.cogit.geoxygene.appli.task.TaskManager;
 import fr.ign.cogit.geoxygene.appli.ui.Message;
+import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
 import fr.ign.util.ui.JRecentFileChooser;
 
 /**
@@ -165,9 +166,9 @@ public class GeOxygeneApplication {
     // Initialize application plugins
     this.initializeApplicationPlugins();
 
-    // initialize geometry engine
+    // initialize geometry engine to default parameters
     AbstractGeometryEngine.setGeometrie(this.properties.getGeometryEngine());
-
+    GeometryEngine.init();
   }
 
   /**
