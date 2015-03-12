@@ -38,6 +38,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.browser.ObjectBrowser;
 
+
 /**
  * 
  * This software is released under the licence CeCILL

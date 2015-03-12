@@ -4,6 +4,7 @@
 package fr.ign.cogit.geoxygene.sig3d.calculation.raycasting;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -18,6 +19,8 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.calculation.Orientation;
+import fr.ign.cogit.geoxygene.sig3d.calculation.OrientedBoundingBox;
+import fr.ign.cogit.geoxygene.sig3d.convert.geom.FromGeomToSurface;
 import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.equation.LineEquation;
 import fr.ign.cogit.geoxygene.sig3d.geometry.Box3D;
@@ -25,7 +28,9 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
+import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 
 /**
@@ -570,7 +575,119 @@ public class SphericalProjection {
     return new Orientation(alpha, beta);
 
   }
+  
 
+  public IFeatureCollection<IFeature> raffinedOrthoProjection() {
+    IFeatureCollection<IFeature> featOut = new FT_FeatureCollection<>();
+
+    this.getLFeatMapped().initSpatialIndex(Tiling.class, false);
+
+    for (IFeature feat : this.getLFeatMapped()) {
+
+      Collection<IFeature> featSelect = this.getLFeatMapped().select(
+          feat.getGeom());
+
+      while (featSelect.contains(feat)) {
+        featSelect.remove(feat);
+      }
+
+      List<IOrientableSurface> lPolOut = solveZBuffer(feat, featSelect);
+
+      for (IOrientableSurface poly : lPolOut) {
+        featOut.add(new DefaultFeature(poly));
+      }
+
+    }
+
+    return featOut;
+  }
+
+
+  private List<IOrientableSurface> solveZBuffer(IFeature feat,
+      Collection<IFeature> featSelect) {
+
+    List<IOrientableSurface> lPolOut = new ArrayList<>();
+
+    IGeometry geom = (IGeometry) feat.getGeom().clone();
+
+    OrientedBoundingBox oBB = new OrientedBoundingBox(geom);
+
+    for (IFeature featToTreat : featSelect) {
+
+      OrientedBoundingBox oBBToTest = new OrientedBoundingBox(
+          featToTreat.getGeom());
+
+      if (   oBBToTest.getzMax() -  oBBToTest.getzMin() >=  oBB.getzMax() -  oBB.getzMin()) {
+        continue;
+
+      }
+
+      // On considère qu'il est devant
+
+      IGeometry geomTemp = geom.intersection(featToTreat.getGeom());
+
+      if (geomTemp.area() < 0.001) {
+        continue;
+      }
+
+      geom = geom.difference(featToTreat.getGeom());
+
+      if (geom == null) {
+        return lPolOut;
+      }
+
+      List<IOrientableSurface> lOS = FromGeomToSurface.convertGeom(geom);
+
+      if (lOS == null || lOS.isEmpty()) {
+        return lPolOut;
+      }
+      
+
+      geom = new GM_MultiSurface<>(FromGeomToSurface.convertGeom(geom));
+
+    }
+
+    lPolOut.addAll(FromGeomToSurface.convertGeom(geom));
+
+    int nbPol = lPolOut.size();
+
+    for (int i = 0; i < nbPol; i++) {
+      IPolygon polyI = (IPolygon) lPolOut.get(i);
+
+      if (polyI.isEmpty()) {
+        lPolOut.remove(i);
+        i--;
+        nbPol--;
+        continue;
+
+      }
+
+      List<IRing> lR = new ArrayList<>();
+      lR.add(polyI.getExterior());
+
+      if (polyI.getInterior() != null) {
+        lR.addAll(polyI.getInterior());
+
+      }
+
+      for (IRing r : lR) {
+
+        if (!r.isEmpty() && r.coord().size() < 4) {
+
+          lPolOut.remove(i);
+          i--;
+          nbPol--;
+
+          break;
+        }
+
+      }
+
+    }
+
+
+    return lPolOut;
+  }
   /**
    * 
    * @return les entités plaquées en 2D en coordonnées angulaires

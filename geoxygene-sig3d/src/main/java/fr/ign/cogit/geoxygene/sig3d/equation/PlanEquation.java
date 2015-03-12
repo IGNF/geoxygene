@@ -137,7 +137,7 @@ public class PlanEquation {
 	 * @param v1 vecteur normal au plan
 	 * @param dp point contenu dans le plan
 	 */
-	public PlanEquation(Vecteur v1, DirectPosition dp) {
+	public PlanEquation(Vecteur v1, IDirectPosition dp) {
 
 		v1.normalise();
 		double a = v1.getX();
@@ -434,7 +434,7 @@ public class PlanEquation {
 				/ (coeffa * vectDirecteur.getX() + coeffb * vectDirecteur.getY() + coeffc
 						* vectDirecteur.getZ());
 
-		if (k < 0) {
+		if (Math.abs(k) < PlanEquation.EPSILON) {
 
 			return null;
 		}
