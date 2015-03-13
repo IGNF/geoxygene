@@ -434,7 +434,7 @@ public class PlanEquation {
 				/ (coeffa * vectDirecteur.getX() + coeffb * vectDirecteur.getY() + coeffc
 						* vectDirecteur.getZ());
 
-		if (Math.abs(k) < PlanEquation.EPSILON) {
+		if (k < 0) {
 
 			return null;
 		}
