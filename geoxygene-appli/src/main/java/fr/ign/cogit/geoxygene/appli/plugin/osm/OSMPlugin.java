@@ -343,7 +343,7 @@ public class OSMPlugin implements ProjectFramePlugin,
         } else if (source == browseBtn) {
           JFileChooser fc = new JFileChooser();
           fc.setFileFilter(new OsmFileFilter());
-          // fc.setCurrentDirectory(new File("src/main/resources/XML/"));
+          // fc.setCurrentDirectory(new File("src/main/resources/xml/"));
           fc.setCurrentDirectory(new File(application.getProperties()
               .getLastOpenedFile()));
           int returnVal = fc.showSaveDialog(CartagenApplication.getInstance()
