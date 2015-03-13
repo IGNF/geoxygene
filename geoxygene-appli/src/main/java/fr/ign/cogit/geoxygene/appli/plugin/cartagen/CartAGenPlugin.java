@@ -216,7 +216,7 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
     frame.getLayerViewPanel().getRenderingManager().setHandlingDeletion(true);
     StyledLayerDescriptor defaultSld = StyledLayerDescriptor
         .unmarshall(IGeneObj.class.getClassLoader().getResourceAsStream(
-            "XML/CartagenStyles.xml")); //$NON-NLS-1$
+            "xml/CartagenStyles.xml")); //$NON-NLS-1$
     CartAGenDoc.getInstance().getCurrentDataset().setSld(defaultSld);
     float opacity = 0.8f;
     float strokeWidth = 1.0f;
