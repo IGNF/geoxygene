@@ -39,7 +39,6 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.api.spatial.geomengine.AbstractGeometryEngine;
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
@@ -49,6 +48,7 @@ import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.ProjectFramePlugin;
 import fr.ign.cogit.geoxygene.appli.task.TaskManager;
 import fr.ign.cogit.geoxygene.appli.ui.Message;
+import fr.ign.cogit.geoxygene.spatial.geomengine.AbstractGeometryEngine;
 import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
 import fr.ign.util.ui.JRecentFileChooser;
 
