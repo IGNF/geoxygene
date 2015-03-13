@@ -220,7 +220,7 @@ public class DatasetGUIComponent extends JMenu {
       File file = this.docFile;
       if (this.docFile == null) {
         JFileChooser fc = new JFileChooser();
-        fc.setCurrentDirectory(new File("src/main/resources/XML/"));
+        fc.setCurrentDirectory(new File("src/main/resources/xml/"));
         fc.setFileFilter(new XMLFileFilter());
         int returnVal = fc.showOpenDialog(appl.getFrame());
         if (returnVal != JFileChooser.APPROVE_OPTION) {
@@ -302,7 +302,7 @@ public class DatasetGUIComponent extends JMenu {
       this.appl = CartagenApplication.getInstance();
       JFileChooser fc = new JFileChooser();
       fc.setCurrentDirectory(new File(DatasetGUIComponent.class
-          .getResource("/src/main/resources/XML/").getPath()
+          .getResource("/src/main/resources/xml/").getPath()
           .replaceAll("%20", " ")));
       fc.setFileFilter(new XMLFileFilter());
       int returnVal = fc.showOpenDialog(this.appl.getFrame());
@@ -421,7 +421,7 @@ public class DatasetGUIComponent extends JMenu {
       File file = doc.getXmlFile();
       if (file == null) {
         JFileChooser fc = new JFileChooser();
-        fc.setCurrentDirectory(new File("src/main/resources/XML/"));
+        fc.setCurrentDirectory(new File("src/main/resources/xml/"));
         int returnVal = fc.showSaveDialog(appl.getFrame());
         if (returnVal != JFileChooser.APPROVE_OPTION) {
           return;
