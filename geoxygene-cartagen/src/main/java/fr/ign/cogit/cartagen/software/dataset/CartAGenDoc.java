@@ -250,7 +250,7 @@ public class CartAGenDoc {
 
     // Databases
     StringBuffer xmlPath = new StringBuffer();
-    xmlPath.append("src/main/resources/XML/Cartagen_dbs/");
+    xmlPath.append("src/main/resources/xml/Cartagen_dbs/");
     Element dbsElem = xmlDoc.createElement("databases");
     root.appendChild(dbsElem);
     File dir = new File(xmlPath.toString());
