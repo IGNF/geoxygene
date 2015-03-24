@@ -7,9 +7,9 @@ public abstract class AbstractGeometryEngine {
   private static AbstractGeomFactory factory;
   private static String geometrie = "JTS";
 
-  public static AbstractGeometryEngine getInstance() {
-    return instance;
-  }
+  // public static AbstractGeometryEngine getInstance() {
+  // return instance;
+  // }
 
   protected static void setInstance(AbstractGeometryEngine instance) {
     AbstractGeometryEngine.instance = instance;
