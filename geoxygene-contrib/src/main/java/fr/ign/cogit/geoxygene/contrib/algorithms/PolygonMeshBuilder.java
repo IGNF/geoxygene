@@ -296,7 +296,7 @@ public class PolygonMeshBuilder {
 			// Niveau 2
 			ArrayList<Coordinate> POINTSUPNIV2 = generateRegularGrid(polygon, samplingResolution, xmin, xmax, ymin, ymax);
 
-			// Niveau 2
+			// Niveau 3
 			ArrayList<Coordinate> POINTSUPNIV3 = generateRegularGrid(polygon, 0.5*samplingResolution, xmin, xmax, ymin, ymax);
 
 
