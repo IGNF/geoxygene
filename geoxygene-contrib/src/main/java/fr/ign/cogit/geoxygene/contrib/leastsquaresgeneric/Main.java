@@ -12,10 +12,6 @@ package fr.ign.cogit.geoxygene.contrib.leastsquaresgeneric;
 
 
 
-
-
-
-
 //=======================================================================
 // Main class for generic least squares estimator
 // Date : 28/03/2015
