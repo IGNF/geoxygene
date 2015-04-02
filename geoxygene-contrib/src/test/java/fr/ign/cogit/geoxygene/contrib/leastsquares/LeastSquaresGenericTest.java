@@ -10,7 +10,7 @@ import org.junit.Test;
 import fr.ign.cogit.geoxygene.contrib.leastsquaresgeneric.Constraint;
 import fr.ign.cogit.geoxygene.contrib.leastsquaresgeneric.Solver;
 
-public class LeastSquaresGeneric {
+public class LeastSquaresGenericTest {
 
 
 	@Test
@@ -77,10 +77,10 @@ public class LeastSquaresGeneric {
 		T.add(2.500); D.add(0.267);
 		T.add(3.740); D.add(0.332);
 
-		
+
 		Solver solver = new Solver();
 
-		
+
 		for (int i=0; i<T.size(); i++){
 
 			double t = T.get(i);
@@ -96,21 +96,50 @@ public class LeastSquaresGeneric {
 
 		solver.setIterationsNumber(10);
 		solver.setConvergenceCriteria(0.001);
-		
+
 
 		solver.compute();
-		
+
 
 		double p1 = solver.getParameter("p1");
 		double p2 = solver.getParameter("p2");
-		
+
 		double p1Chapeau = 0.6488940374077881;
 		double p2Chapeau = 1.7899669235296043;
-		
+
 		Assert.assertEquals(p1, p1Chapeau, Math.pow(10, -6));
 		Assert.assertEquals(p2, p2Chapeau, Math.pow(10, -6));
 
 	}
 
+	@Test
+	public void test3() {
+
+		// Calcul de la moyenne
+
+		Solver solver = new Solver();
+
+		double controle = 0;
+
+		for (int i=0; i<100; i++){
+
+			double x = Math.random()*20;
+			controle += x;
+
+			solver.addConstraint(new Constraint("moyenne = "+x));
+
+		}
+
+		controle /= solver.getConstraints().size();
+
+		solver.addParameter("moyenne", 10);
+
+		solver.setIterationsNumber(10);
+
+		solver.compute();
+
+		Assert.assertEquals(solver.getParameter("moyenne"), controle, Math.pow(10, -4));
+		
+	}
 
 }
