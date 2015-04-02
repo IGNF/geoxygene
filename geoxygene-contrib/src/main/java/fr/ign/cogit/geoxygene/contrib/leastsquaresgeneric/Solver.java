@@ -51,6 +51,7 @@ public class Solver {
 	public double getParameter(int index){return parameters.getParameter(index);}
 	public String getParameterName(int index){return parameters.getParameterName(index);}
 	public int getParametersNumber(){return parameters.getParametersNumber();}
+	public int getConstraintsNumber(){return CONSTRAINTS.size();}
 	public Constraint getConstraint(int index){return CONSTRAINTS.get(index);}
 	public double getDerivationStep(){return this.h;}
 	public double getReducingFactor(){return this.f;}
@@ -58,7 +59,7 @@ public class Solver {
 	public int getDerivationOrder(){return this.order;}
 	public int getIterationsNumber(){return this.iter;}
 	public int getEffectiveIterationsNumber(){return this.iterations;}
-
+	
 
 	// -------------------------------------------------------------------
 	// Setters
@@ -227,7 +228,9 @@ public class Solver {
 			// Computing incremental matrix X
 			// -------------------------------------------------------------------
 			X = N.solve(Y);
+			
 
+			
 			// -------------------------------------------------------------------
 			// Parameters update with reducing factor
 			// -------------------------------------------------------------------
