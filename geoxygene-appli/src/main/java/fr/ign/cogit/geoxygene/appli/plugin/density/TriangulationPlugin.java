@@ -1,3 +1,15 @@
+/**
+ * 
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * 
+ * @copyright IGN
+ * 
+ */
 package fr.ign.cogit.geoxygene.appli.plugin.density;
 
 import java.awt.Color;
@@ -23,6 +35,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
+
 /**
  * Calcul et affiche la triangulation de Delauney
  * 
@@ -32,7 +45,7 @@ public class TriangulationPlugin extends DensityPlugin {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-
+    this.projectFrame = application.getMainFrame().getSelectedProjectFrame();
     IPopulation<? extends IFeature> pop = getPopulation();
 
     Vector<Population<DefaultFeature>> vectPop = new Vector<Population<DefaultFeature>>();

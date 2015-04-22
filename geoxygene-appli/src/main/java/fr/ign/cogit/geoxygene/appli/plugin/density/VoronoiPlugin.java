@@ -1,3 +1,15 @@
+/**
+ * 
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * 
+ * @copyright IGN
+ * 
+ */
 package fr.ign.cogit.geoxygene.appli.plugin.density;
 
 import java.awt.Color;
@@ -40,7 +52,7 @@ public class VoronoiPlugin extends DensityPlugin {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-
+    this.projectFrame = application.getMainFrame().getSelectedProjectFrame();
 
     IPopulation<? extends IFeature> pop = getPopulation();
     
@@ -94,7 +106,7 @@ public class VoronoiPlugin extends DensityPlugin {
     
     
     try {
-      v.write("C:\\Users\\SIMON\\Dropbox\\Ecole\\ProjetRech\\Data-Density\\Voronoi\\Voronoi.xls");
+      v.write("./data/density/Voronoi.xls");
     } catch (IOException e1) {
       JOptionPane.showMessageDialog(null, "Probleme d'ecriture du fichier", "erreur", JOptionPane.ERROR_MESSAGE);
     }

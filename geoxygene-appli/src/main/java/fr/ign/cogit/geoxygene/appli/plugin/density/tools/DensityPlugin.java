@@ -1,32 +1,44 @@
+/**
+ * 
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * 
+ * @copyright IGN
+ * 
+ */
 package fr.ign.cogit.geoxygene.appli.plugin.density.tools;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
+import fr.ign.cogit.geoxygene.appli.plugin.AbstractGeOxygeneApplicationPlugin;
 
 /**
  * Classe mere des plugins
  * 
  * @see AlphaHullPlugin, ConvexHullPlugin, GridPlugin, TriangulationPlugin, VoronoiPlugin 
+ * 
  * @author SFabry
  */
-public abstract class DensityPlugin implements GeOxygeneApplicationPlugin, ActionListener{
+public abstract class DensityPlugin extends AbstractGeOxygeneApplicationPlugin {
 
   protected final static Logger LOGGER = Logger.getLogger(DensityPlugin.class.getName());
-  public ProjectFrame projectFrame;
+
+  private final static String DENSITY_TITLE = "Density";
   
+  protected ProjectFrame projectFrame;
   
   /**
    * Initialize construit le JMenu Density et y ajoute notre plugin
@@ -34,42 +46,33 @@ public abstract class DensityPlugin implements GeOxygeneApplicationPlugin, Actio
    */
   @Override
   public void initialize(final GeOxygeneApplication application) {
+    this.application = application;
     this.projectFrame = application.getMainFrame().getSelectedProjectFrame();
-    JMenu menuExample = null;
-    String menuName = "Density";
-    for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
-      if (c instanceof JMenu) {
-        JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null
-            && aMenu.getText().equalsIgnoreCase(menuName)) {
-          menuExample = aMenu;
-        }
-      }
-    }
-    if (menuExample == null) {
-      menuExample = new JMenu(menuName);
-    }
     
     String name = this.getClass().getName();
     name = name.substring(name.lastIndexOf(".")+1, name.length()-6);
-    JMenuItem menuItem = new JMenuItem(name);
-    menuItem.addActionListener(this);
-    menuExample.add(menuItem);
-    application.getMainFrame().getMenuBar().add(menuExample, application.getMainFrame().getMenuBar().getComponentCount() - 2);
+    JMenu menuAwt = addMenu(DENSITY_TITLE, name);
+    application.getMainFrame().getMenuBar()
+      .add(menuAwt, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+    
   }
   
   /**
-   * Demande à l'utilisateur la population sur lequel appliquer le plugin, si une couche est chargee renvoie celle-ci, si plusieurs couches sont chargées, il sera demandé à l'utilisateur.
-   * @return renvoie null si il n'y a pas de couche de chargee, ou si l'utilisateur annule la selection de couche, renvoie la population sinon.
+   * Demande à l'utilisateur la population sur lequel appliquer le plugin.
+   * Si une couche est chargee renvoie celle-ci, si plusieurs couches sont chargées, il sera demandé à l'utilisateur.
+   * 
+   * @return renvoie null si il n'y a pas de couche de chargee, 
+   *    ou si l'utilisateur annule la selection de couche, renvoie la population sinon.
    */
-  public IPopulation<? extends IFeature> getPopulation(){
-    List<IPopulation<? extends IFeature>> list = projectFrame.getDataSet().getPopulations();
-    if(list.size()==0){
+  public IPopulation<? extends IFeature> getPopulation() {
+    List<IPopulation<? extends IFeature>> list = this.projectFrame.getDataSet().getPopulations();
+    
+    if (list.size() == 0) {
       JOptionPane.showMessageDialog(null, "Il faut avoir chargé au moins une couche", "erreur", JOptionPane.ERROR_MESSAGE);
       return null;
-    }else if(list.size()==1)
+    } else if (list.size() == 1) {
       return list.get(0);
-    else{
+    } else {
 
       Object[] possibilities = new Object[list.size()];
       int i = 0;
@@ -83,9 +86,11 @@ public abstract class DensityPlugin implements GeOxygeneApplicationPlugin, Actio
       if(s==null)
         return null;
 
-      for (IPopulation<? extends IFeature> p : list)
-        if(p.getNom().equals(s))
+      for (IPopulation<? extends IFeature> p : list) {
+        if(p.getNom().equals(s)) {
           return p;
+        }
+      }
       return null;
     }
   }

@@ -1,3 +1,15 @@
+/**
+ * 
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * 
+ * @copyright IGN
+ * 
+ */
 package fr.ign.cogit.geoxygene.appli.plugin.density.tools;
 
 import java.io.FileOutputStream;
@@ -33,7 +45,7 @@ public class VectPolygon extends Vector<GM_Polygon> {
   }
   
   public void write(String src) throws IOException{
-    //src = "C:\\Users\\SIMON\\Dropbox\\Ecole\\ProjetRech\\Voronoi.xls";
+    
     System.out.println(src);
     HSSFWorkbook wb = new HSSFWorkbook();
     HSSFSheet sheet = wb.createSheet("Resultats");

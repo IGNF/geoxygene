@@ -1,3 +1,15 @@
+/**
+ * 
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * 
+ * @copyright IGN
+ * 
+ */
 package fr.ign.cogit.geoxygene.appli.plugin.density;
 
 import java.awt.Color;
@@ -20,35 +32,38 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 
 
-public class ChargementPlugin extends DensityPlugin{
+public class ChargementPlugin extends DensityPlugin {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
+    this.projectFrame = application.getMainFrame().getSelectedProjectFrame();
     String path = "";
+    
     int choice = JOptionPane.showConfirmDialog(null, "Chargement rapide", "information", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
-    if(choice==2){
+    if (choice == 2) {
       return;
-    }else if(choice==0){
-      path = "C:\\Users\\Simon\\Dropbox\\Ecole\\ProjetRech\\Data-Density\\data\\4.shp";
-    } else{
-      JFileChooser fc = new JFileChooser("C:\\Users\\Simon\\Dropbox\\Ecole\\ProjetRech\\Data-Density\\data");
+    } else if (choice == 0) {
+      path = "./data/density/4.shp";
+    } else {
+      JFileChooser fc = new JFileChooser("./data/density/");
       FileNameExtensionFilter filter = new FileNameExtensionFilter("SHAPE File", "shp");
       fc.setFileFilter(filter);
       int returnVal = fc.showOpenDialog(null);
 
-      if(returnVal==JFileChooser.CANCEL_OPTION)
+      if(returnVal==JFileChooser.CANCEL_OPTION) {
         return;
-      else if(returnVal==JFileChooser.APPROVE_OPTION)
+      } else if (returnVal==JFileChooser.APPROVE_OPTION) {
         path = fc.getSelectedFile().getAbsolutePath();
+      }
     }
     
     Population<DefaultFeature> pop = new Population<DefaultFeature>("Points");
-    projectFrame.getDataSet().addPopulation(pop);
+    this.projectFrame.getDataSet().addPopulation(pop);
     
-    Layer layer = projectFrame.getSld().createLayer("Points",GM_Point.class, Color.green, Color.red, 1f, 1);
+    Layer layer = this.projectFrame.getSld().createLayer("Points",GM_Point.class, Color.green, Color.red, 1f, 1);
     layer.getSymbolizer().setUnitOfMeasurePixel();
     
-    projectFrame.getSld().add(layer);
+    this.projectFrame.getSld().add(layer);
 
     IFeatureCollection<IFeature> featCollInitiale = ShapefileReader.read(path);
     
@@ -59,7 +74,7 @@ public class ChargementPlugin extends DensityPlugin{
     }
     
     try {
-      projectFrame.getLayerViewPanel().getViewport().zoomToFullExtent();
+      this.projectFrame.getLayerViewPanel().getViewport().zoomToFullExtent();
     } catch (NoninvertibleTransformException e1) {
         e1.printStackTrace();
     }

@@ -1,3 +1,15 @@
+/**
+ * 
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * 
+ * @copyright IGN
+ * 
+ */
 package fr.ign.cogit.geoxygene.appli.plugin.density;
 
 import java.awt.Color;
@@ -14,6 +26,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.style.Layer;
+
 /**
  * Dessine l'enveloppe convex d'un semi de point
  * 
@@ -23,7 +36,7 @@ public class ConvexHullPlugin extends DensityPlugin{
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    
+    this.projectFrame = application.getMainFrame().getSelectedProjectFrame();
     IPopulation<? extends IFeature> pop = getPopulation();
     
     GM_MultiPoint agg = new GM_MultiPoint();
@@ -37,7 +50,7 @@ public class ConvexHullPlugin extends DensityPlugin{
     
     IGeometry convexHull = agg.convexHull();
     Population<DefaultFeature> pop2 = new Population<DefaultFeature>("ConvexHull");
-    projectFrame.getDataSet().addPopulation(pop2);
+    this.projectFrame.getDataSet().addPopulation(pop2);
     
     pop2.add(new DefaultFeature(convexHull));
     
