@@ -114,6 +114,30 @@ public class Parameters {
 		return getParameter(getParameterName(index));
 
 	}
+	
+	// -------------------------------------------------------------------
+	// Method to get index of a parameters from its name
+	// Input : parameter name (string)
+	// Output : parameter index (if it exists)
+	// -------------------------------------------------------------------
+	public int getIndex(String name){
+
+
+		for (int i=0; i<INDEX.size(); i++){
+				
+			if (INDEX.get(i).equals(name)){
+					
+				return i;
+					
+			}
+				
+		}
+			
+		System.out.println("Error : parameter "+name+" is not defined");
+		System.exit(0);
+		return 0;
+		
+	}
 
 
 	// -------------------------------------------------------------------
