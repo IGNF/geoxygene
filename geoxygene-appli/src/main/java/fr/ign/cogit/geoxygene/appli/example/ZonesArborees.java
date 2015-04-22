@@ -1,14 +1,23 @@
+/**
+ * 
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * 
+ * @copyright IGN
+ * 
+ */
 package fr.ign.cogit.geoxygene.appli.example;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
 
@@ -17,7 +26,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
+import fr.ign.cogit.geoxygene.appli.plugin.AbstractGeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
@@ -25,22 +34,17 @@ import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.algo.SmallestSurroundingRectangleComputation;
 
 /**
- * Centrer facilement une carte sur une longitude particulière. Très bon
- * exercice pour manipuler les géométries avec les DirectPosition
+ * Calcul zones arborees : bosquets, haies, forêts reclassées.
  * 
- * @author GBrun
+ * @author Imran Lockat
  */
-public class TestZonesArborees implements GeOxygeneApplicationPlugin,
-    ActionListener {
+public class ZonesArborees extends AbstractGeOxygeneApplicationPlugin {
 
   /** Logger. */
-  private final static Logger LOGGER = Logger.getLogger(TestZonesArborees.class
+  private final static Logger LOGGER = Logger.getLogger(ZonesArborees.class
       .getName());
 
-  /** GeOxygeneApplication */
-  private GeOxygeneApplication application = null;
 
-  // ...
   /**
    * Initialize the plugin.
    * @param application the application
@@ -49,29 +53,12 @@ public class TestZonesArborees implements GeOxygeneApplicationPlugin,
   public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
 
-    JMenu menuExample = null;
-    String menuName = "Example";
-
-    for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
-      if (c instanceof JMenu) {
-        JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null
-            && aMenu.getText().equalsIgnoreCase(menuName)) {
-          menuExample = aMenu;
-        }
-      }
-    }
-    if (menuExample == null) {
-      menuExample = new JMenu(menuName);
-    }
-
-    JMenuItem menuItem = new JMenuItem("tests zones arborees");
-
-    menuItem.addActionListener(this);
-    menuExample.add(menuItem);
+    JMenu menu = addMenu("Example", "Calcul zones arborees");
+    application.getMainFrame().getMenuBar()
+      .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
 
-  // @SuppressWarnings("unchecked")
+
   @Override
   public void actionPerformed(final ActionEvent e) {
 
@@ -82,8 +69,8 @@ public class TestZonesArborees implements GeOxygeneApplicationPlugin,
         .getSelectedLayers();
     if (selectedLayers.size() != 1) {
       javax.swing.JOptionPane.showMessageDialog(null,
-          "You need to select one (and only one) layer.");
-      TestZonesArborees.LOGGER
+          "You need to select one (and only one) layer with polygon geometry.");
+      ZonesArborees.LOGGER
           .error("You need to select one (and only one) layer.");
       return;
     }
@@ -102,7 +89,7 @@ public class TestZonesArborees implements GeOxygeneApplicationPlugin,
     popHaies.setPersistant(false);
 
     Population<DefaultFeature> popf = new Population<DefaultFeature>(
-        "foret approx " + layer.getName());
+        "Forêts " + layer.getName());
     popf.setClasse(DefaultFeature.class);
     popf.setPersistant(false);
     
@@ -137,14 +124,14 @@ public class TestZonesArborees implements GeOxygeneApplicationPlugin,
     }
     
     //test sur une haie et un bout de foret particuliere
-    for (IFeature h: popHaies){
+    /*for (IFeature h: popHaies){
       if (h.getId()== 821)
         System.out.println("haie 821 existe !");;
     }
     for (IFeature f: popf){
       if (f.getId()== 820)
         System.out.println("foret 820 existe !");;
-    }
+    }*/
 
     LOGGER.info("end of parsing: " + i + " zones etroites");
     LOGGER.info("Nombre bosquets avant reclassement : "+popBosquets.size());
@@ -158,7 +145,7 @@ public class TestZonesArborees implements GeOxygeneApplicationPlugin,
 //      IFeature foret,b,h;
 //      foret = popf.get(k);
 //      if(foret.getId()==3018)
-//        System.out.println("cette foret existe bordel a couilles !");
+//        System.out.println("cette foret existe !");
 //      //for (IFeature b: popBosquets){
 //      for (int j = 0; j < popBosquets.size(); ++j){
 //        b = popBosquets.get(j);
@@ -300,7 +287,7 @@ public class TestZonesArborees implements GeOxygeneApplicationPlugin,
 //        }      
 //      }   
 //    }
-    System.out.println();
+    
     LOGGER.info(" bosquets ** intersections: " +bidi+ " - dist < 10: "+ biddi + " - cas nop: "+ bide);
     LOGGER.info(" haies ** intersections: " +hidi+ " - dist < 10: "+ hiddi + " - cas nop: "+ hide);
     LOGGER.info("Removing " +bosquets.size()+ " bosquets and "+ haies.size()+ " haies: ");
@@ -316,8 +303,9 @@ public class TestZonesArborees implements GeOxygeneApplicationPlugin,
     LOGGER.info("Nombre haies apres reclassement : "+popHaies.size());
     LOGGER.info("Nombre element foret apres reclassement : "+popf.size());
     LOGGER.info("Nombre elements totaux apres reclassement : "+ (popHaies.size()+popBosquets.size()+popf.size()));
+    
     // test car doute sur reclassement d'une haie en forêt
-    IFeature haie = null;
+    /*IFeature haie = null;
     for (IFeature h: popHaies){
       if (h.getId()== 821)
         haie = h;
@@ -328,7 +316,8 @@ public class TestZonesArborees implements GeOxygeneApplicationPlugin,
         foret = f;
     }
     if (foret != null && haie != null)
-      System.out.println("distance couple test foret-haie : " +foret.getGeom().distance(haie.getGeom()));
+      System.out.println("distance couple test foret-haie : " +foret.getGeom().distance(haie.getGeom()));*/
+    
     // Créer les métadonnées du jeu correspondant et on l'ajoute à la population
     FeatureType newFeatureType = new FeatureType();
     newFeatureType.setGeometryType(layer.getFeatureCollection().get(0)
@@ -352,6 +341,8 @@ public class TestZonesArborees implements GeOxygeneApplicationPlugin,
     // nouvelle population
     project.getDataSet().addPopulation(popHaies);
     project.addFeatureCollection(popHaies, popHaies.getNom(), layer.getCRS());
+    
+    LOGGER.info("fin du process de calcul");
   }
   
   //classe interne pour rendre le code qui utilise 
@@ -372,11 +363,11 @@ public class TestZonesArborees implements GeOxygeneApplicationPlugin,
     // getters qui n'ont pas de sens.. Comme on voit dans le code,
     // les attributs de la classe interne sont accessibles à la classe "englobante"
     // quelles que soient leurs visibilités (ici private...)
-    public double longueur(){
+    /*public double longueur(){
       return longueur;
     }
     public double largeur(){
       return largeur;
-    }
+    }*/
   }
 }

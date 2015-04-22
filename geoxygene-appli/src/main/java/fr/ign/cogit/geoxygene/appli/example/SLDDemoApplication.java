@@ -20,23 +20,24 @@
 package fr.ign.cogit.geoxygene.appli.example;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.NoninvertibleTransformException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory;
-import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
+import fr.ign.cogit.geoxygene.appli.plugin.AbstractGeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -55,74 +56,82 @@ import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Shadow;
+import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.texture.PerlinNoiseTextureDescriptor;
 
 /**
- * Base class for GeOxygene applications.
+ * Test .
  * 
- * @author Julien Perret
+ * 
  */
-public class SLDDemoApplication implements GeOxygeneApplicationPlugin,
-        ActionListener {
+public class SLDDemoApplication extends AbstractGeOxygeneApplicationPlugin {
 
-    /**
-     * Logger.
-     */
-    static Logger logger = Logger.getLogger(SLDDemoApplication.class.getName());
+    /** Logger. */
+    static final Logger LOGGER = Logger.getLogger(SLDDemoApplication.class.getName());
 
-    private GeOxygeneApplication application = null;
+    /** Titles. */
+    static final String MENU_TITLE = "Style";
+    static final String SUBMENU_TITLE = "Démo";
+    static final String AWT_TITLE = "motifs & poncifs avec AWT";
+    static final String OGL_TITLE = "motifs & poncifs avec OpenGL";
+    static final String DERAIN_TITLE = "style Derain (OpenGL)";
+    static final String AQUARELLE_TITLE = "style Aquarelle (OpenGL)";
+    static final String TOOL_TITLE = "Barre d'outils style";
+    
     private ProjectFrame projectFrame = null;
 
     @Override
     public void initialize(final GeOxygeneApplication application) {
-        this.application = application;
+      this.application = application;
 
-        JMenu menuExample = null;
-        String menuName = "Example";
-        for (Component c : application.getMainFrame().getMenuBar()
-                .getComponents()) {
-            if (c instanceof JMenu) {
-                JMenu aMenu = (JMenu) c;
-                if (aMenu.getText() != null
-                        && aMenu.getText().equalsIgnoreCase(menuName)) {
-                    menuExample = aMenu;
-                }
-            }
-        }
-        if (menuExample == null) {
-            menuExample = new JMenu(menuName);
-        }
-
-        JMenuItem sLDDemoItem = new JMenuItem("SLDDemo");
-        sLDDemoItem.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SLDDemoApplication.this.projectFrame = application
-                        .getMainFrame().newProjectFrame(
-                                LayerViewPanelFactory.newLayerViewAwtPanel());
-
-                SLDDemoApplication.this.displayCercles();
-                SLDDemoApplication.this.projectFrame = application
-                        .getMainFrame().newProjectFrame(
-                                LayerViewPanelFactory.newLayerViewGLPanel());
-
-                SLDDemoApplication.this.displayCercles();
-            }
-        });
-
-        menuExample.add(sLDDemoItem);
-
-        this.application
-                .getMainFrame()
-                .getMenuBar()
-                .add(menuExample,
-                        this.application.getMainFrame().getMenuBar()
-                                .getComponentCount() - 1);
+      JMenu menuAwt = addSubMenu(MENU_TITLE, SUBMENU_TITLE, AWT_TITLE);
+      application.getMainFrame().getMenuBar()
+        .add(menuAwt, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+      
+      JMenu menuOgl = addSubMenu(MENU_TITLE, SUBMENU_TITLE, OGL_TITLE);
+      application.getMainFrame().getMenuBar()
+        .add(menuOgl, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+      
+      JMenu menuDerain = addSubMenu(MENU_TITLE, SUBMENU_TITLE, DERAIN_TITLE);
+      application.getMainFrame().getMenuBar()
+        .add(menuDerain, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+      
+      JMenu menuAquarelle = addSubMenu(MENU_TITLE, SUBMENU_TITLE, AQUARELLE_TITLE);
+      application.getMainFrame().getMenuBar()
+        .add(menuAquarelle, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+      
+      JMenu menuTool = addMenu(MENU_TITLE, TOOL_TITLE);
+      application.getMainFrame().getMenuBar()
+        .add(menuTool, application.getMainFrame().getMenuBar().getMenuCount() - 2);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-
+    public void actionPerformed(ActionEvent evt) {
+      Object source = evt.getSource();
+      if (source instanceof JMenuItem && ((JMenuItem)source).getText().equals(AWT_TITLE)) {
+        this.projectFrame = application
+            .getMainFrame().newProjectFrame(
+                    LayerViewPanelFactory.newLayerViewAwtPanel());
+        this.displayCercles();
+      } else if (source instanceof JMenuItem && ((JMenuItem)source).getText().equals(OGL_TITLE)) {
+        this.projectFrame = application
+            .getMainFrame().newProjectFrame(
+                    LayerViewPanelFactory.newLayerViewGLPanel());
+        this.displayCercles();  
+      } else if (source instanceof JMenuItem && ((JMenuItem)source).getText().equals(DERAIN_TITLE)) {
+        this.projectFrame = application
+            .getMainFrame().newProjectFrame(
+                    LayerViewPanelFactory.newLayerViewGLPanel());
+        this.displayDerain();
+      } else if (source instanceof JMenuItem && ((JMenuItem)source).getText().equals(AQUARELLE_TITLE)) {
+        this.projectFrame = application
+            .getMainFrame().newProjectFrame(
+                    LayerViewPanelFactory.newLayerViewGLPanel());
+        this.displayAquarelle();
+      } else if (source instanceof JMenuItem && ((JMenuItem)source).getText().equals(TOOL_TITLE)) {
+        javax.swing.JOptionPane.showMessageDialog(null,
+            "Not yet implemented.");
+      }
     }
 
     public void displayCercles() {
@@ -480,4 +489,93 @@ public class SLDDemoApplication implements GeOxygeneApplicationPlugin,
         this.projectFrame.getDataSet().addPopulation(pop);
         this.projectFrame.getSld().add(layer);
     }
+    
+    
+    public void displayAquarelle() {
+      String sldFilename = "./samples/aquarelle/aquarelle1.xml";
+      
+      /*String lieuDitHabiteFilename = "./data/72_BDTOPO_2-0_LAMB93_SHP_X062-ED111/Extrait1/LIEU_DIT_HABITE.shp";
+      File lieuDitHabitefile = new File(lieuDitHabiteFilename);
+      this.projectFrame.addLayer(lieuDitHabitefile);*/
+      
+      
+      displayExtrait1WithSld(sldFilename, "mer_OCS_100");
+    }
+    
+    public void displayDerain() {
+      String sldFilename = "./samples/derain/derain-collioure/SLD/100K_StJean_de_Luz-derain-collioure.sld.xml";
+      displayExtrait1WithSld(sldFilename, "surface_eau_OCS_100");
+    }
+    
+    
+    private void displayExtrait1WithSld(String sldFilename, String styleEau) {
+      
+      String vegetationFilename = "./data/72_BDTOPO_2-0_LAMB93_SHP_X062-ED111/Extrait1/ZONE_VEGETATION.shp";
+      File vegetationfile = new File(vegetationFilename);
+      this.projectFrame.addLayer(vegetationfile);
+      
+      String surfaceEauFilename = "./data/72_BDTOPO_2-0_LAMB93_SHP_X062-ED111/Extrait1/SURFACE_EAU.shp";
+      File surfaceEaufile = new File(surfaceEauFilename);
+      this.projectFrame.addLayer(surfaceEaufile);
+      
+      String routeFilename = "./data/72_BDTOPO_2-0_LAMB93_SHP_X062-ED111/Extrait1/ROUTE.shp";
+      File routefile = new File(routeFilename);
+      this.projectFrame.addLayer(routefile);
+      
+      String tronconEauFilename = "./data/72_BDTOPO_2-0_LAMB93_SHP_X062-ED111/Extrait1/TRONCON_COURS_EAU.shp";
+      File tronconEaufile = new File(tronconEauFilename);
+      this.projectFrame.addLayer(tronconEaufile);
+      
+      String empriseFilename = "./data/72_BDTOPO_2-0_LAMB93_SHP_X062-ED111/Extrait1/petite_emprise.shp";
+      File emprisefile = new File(empriseFilename);
+      this.projectFrame.addLayer(emprisefile);
+      
+      // 
+      File sldFile = new File(sldFilename);
+      
+      try {
+          
+        StyledLayerDescriptor new_sld = StyledLayerDescriptor.unmarshall(
+            sldFile.getAbsolutePath(), this.projectFrame.getDataSet());
+          
+        this.projectFrame.getLayerViewPanel().setViewBackground(new_sld.getBackground());
+        this.projectFrame.getSld().setBackground(new_sld.getBackground());
+        for (int i = 0; i < this.projectFrame.getLayers().size(); i++) {
+          String name = this.projectFrame.getLayers().get(i).getName();
+          LOGGER.debug(name);
+            
+          
+          if (name.equals("ZONE_VEGETATION")) {
+            this.projectFrame.getLayers().get(i).setStyles(new_sld.getLayer("vegetation_OCS_100").getStyles());
+          }
+          if (name.equals("SURFACE_EAU")) {
+            this.projectFrame.getLayers().get(i).setStyles(new_sld.getLayer(styleEau).getStyles());
+          }
+          if (name.equals("ROUTE")) {
+            this.projectFrame.getLayers().get(i).setStyles(new_sld.getLayer("routes_100").getStyles());
+          }
+          if (name.equals("TRONCON_COURS_EAU")) {
+            this.projectFrame.getLayers().get(i).setStyles(new_sld.getLayer("hydro_100").getStyles());
+          }
+          if (name.equals("LIEU_DIT_HABITE")) {
+            this.projectFrame.getLayers().get(i).setStyles(new_sld.getLayer("toponyme_droit_25_emprise_100K").getStyles());
+          }
+          if (name.equals("petite_emprise")) {
+            this.projectFrame.getLayers().get(i).setStyles(new_sld.getLayer("petite_emprise").getStyles());
+          }
+        }
+        
+        this.projectFrame.getLayerViewPanel().repaint();
+      } catch (FileNotFoundException e) {
+        LOGGER.error("SLD filename '" + sldFilename
+              + "' does not exist or is unreadable");
+      } catch (JAXBException e) {
+        LOGGER.error("Malformed SLD file '" + sldFilename + "'");
+        e.printStackTrace();
+      }
+      
+      
+    }
+    
+    
 }

@@ -24,10 +24,8 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
- * Centrer facilement une carte sur une longitude particulière. Très bon
- * exercice pour manipuler les géométries avec les DirectPosition
+ * Surfaces => Ronds
  * 
- * @author GBrun
  */
 public class TestSelection implements GeOxygeneApplicationPlugin,
     ActionListener {

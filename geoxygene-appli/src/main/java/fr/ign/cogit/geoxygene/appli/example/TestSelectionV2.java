@@ -27,7 +27,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * Reperer les quasi-cercles dans une couche de lineaires
  * 
  * 
- * @author GBrun
+ * 
  */
 public class TestSelectionV2 implements GeOxygeneApplicationPlugin,
     ActionListener {

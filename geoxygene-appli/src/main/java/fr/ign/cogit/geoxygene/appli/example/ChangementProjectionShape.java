@@ -1,16 +1,25 @@
+/**
+ * 
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * 
+ * @copyright IGN
+ * 
+ */
 package fr.ign.cogit.geoxygene.appli.example;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.NoninvertibleTransformException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
 
@@ -22,7 +31,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
-import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
+import fr.ign.cogit.geoxygene.appli.plugin.AbstractGeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -41,40 +50,19 @@ import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
  * 
  * @author GBrun
  */
-public class ChangementProjectionShape implements GeOxygeneApplicationPlugin, ActionListener {
+public class ChangementProjectionShape extends AbstractGeOxygeneApplicationPlugin {
   
   /** Logger. */
   private static final Logger LOGGER = Logger.getLogger(ChangementProjectionShape.class.getName());
   
-  private GeOxygeneApplication application = null;
-  
   @Override
   public void initialize(final GeOxygeneApplication application) {
     this.application = application;
-    
-    JMenu menuExample = null;
-    String menuName = "Example"; 
-    for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
-      if (c instanceof JMenu) {
-        JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null
-            && aMenu.getText().equalsIgnoreCase(menuName)) {
-          menuExample = aMenu;
-        }
-      }
-    }
-    if (menuExample == null) {
-      menuExample = new JMenu(menuName);
-    }
-    
-    JMenuItem cgtProjectionItem = new JMenuItem("ChangementProjectionShape");
-    cgtProjectionItem.addActionListener(this);
-    menuExample.add(cgtProjectionItem);
 
-    this.application.getMainFrame()
-        .getMenuBar()
-        .add(menuExample,
-            this.application.getMainFrame().getMenuBar().getComponentCount() - 1);
+    JMenu menu = addMenu("Example", "ChangementProjectionShape");
+    application.getMainFrame().getMenuBar()
+      .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+    
   }
   
   @SuppressWarnings("unchecked")
