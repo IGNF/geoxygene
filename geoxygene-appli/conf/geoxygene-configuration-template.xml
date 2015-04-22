@@ -17,13 +17,15 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.osm.OSMPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.osm.OSMHttpLoaderPlugin</plugin>
-    <plugin>fr.ign.cogit.geoxygene.appli.example.SLDDemoApplication</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.ResamplerPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.lenses.LensesPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.density.ChargementPlugin</plugin>
-    <plugin>fr.ign.cogit.geoxygene.appli.plugin.density.ConvexHullPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.density.AlphaHullPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.density.ConvexHullPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.density.TriangulationPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.density.VoronoiPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.density.GridPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.example.SLDDemoApplication</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.example.ZonesArborees</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.example.ChangementProjectionShape</plugin>
 </GeOxygeneApplicationProperties>
