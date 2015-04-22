@@ -19,13 +19,10 @@
 
 package fr.ign.cogit.geoxygene.appli.plugin;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Set;
 
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
 
@@ -34,20 +31,20 @@ import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.contrib.delaunay.TriangulationJTS;
-import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
  * Triangulation plugin.
+ * 
  * @author Julien Perret
  */
-public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin, ActionListener {
+public class TriangulationJTSPlugin extends AbstractGeOxygeneApplicationPlugin {
+  
   /** Logger. */
-  static Logger                logger      = Logger.getLogger(Triangulation.class.getName());
-
-  private GeOxygeneApplication application = null;
+  static final Logger LOGGER = Logger.getLogger(Triangulation.class.getName());
 
   /**
    * Initialize the plugin.
@@ -56,22 +53,8 @@ public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin, Actio
   @Override
   public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
-    JMenu menu = null;
-    for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
-      if (c instanceof JMenu) {
-        JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Triangulation")) {
-          menu = aMenu;
-        }
-      }
-    }
-    if (menu == null) {
-      menu = new JMenu("Triangulation");//$NON-NLS-1$
-    }
-    JMenuItem menuItem = new JMenuItem("TriangulationJTS" //$NON-NLS-1$
-    );
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
+    
+    JMenu menu = addMenu("Geometry Algorithms", "TriangulationJTS");
     application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
 
@@ -80,10 +63,12 @@ public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin, Actio
     ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
     Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
     if (selectedLayers.size() != 1) {
-      TriangulationJTSPlugin.logger.error("You need to select one (and only one) layer."); //$NON-NLS-1$
+      javax.swing.JOptionPane.showMessageDialog(null, "You need to select one (and only one) layer.");
+      LOGGER.error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }
     Layer layer = selectedLayers.iterator().next();
+    
     TriangulationJTS triangulation = new TriangulationJTS("TriangulationJTS");
     triangulation.importAsNodes(layer.getFeatureCollection());
     try {
@@ -91,14 +76,16 @@ public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin, Actio
     } catch (Exception e1) {
       e1.printStackTrace();
     }
+    
     Population<Face> popTriangles = new Population<Face>("Triangles");
     popTriangles.setElements(triangulation.getPopFaces().getElements());
+    
     /** créer un featuretype de jeu correspondant */
-    fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureTypeExterieurs = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    FeatureType newFeatureTypeExterieurs = new FeatureType();
     newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);
     popTriangles.setFeatureType(newFeatureTypeExterieurs);
-    DataSet.getInstance().addPopulation(popTriangles);
-    TriangulationJTSPlugin.logger.info(popTriangles);
-    project.addFeatureCollection(popTriangles, popTriangles.getNom(), null);
+    // DataSet.getInstance().addPopulation(popTriangles);
+    LOGGER.info(popTriangles);
+    project.addUserLayer(popTriangles, popTriangles.getNom(), null);
   }
 }

@@ -19,15 +19,12 @@
 
 package fr.ign.cogit.geoxygene.appli.plugin;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Level;
@@ -41,24 +38,24 @@ import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.contrib.algorithms.SwingingArmNonConvexHull;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
-import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
-import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
- * Triangulation plugin.
+ * Plugin for create non convex hull with swinging arm method.
+ * 
  * @author Julien Perret
  */
-public class SwingingArmPlugin implements GeOxygeneApplicationPlugin, ActionListener {
+public class SwingingArmPlugin extends AbstractGeOxygeneApplicationPlugin {
+  
   /** Logger. */
-  private final static Logger LOGGER = Logger.getLogger(Triangulation.class.getName());
-
-  private GeOxygeneApplication application = null;
+  private final static Logger LOGGER = Logger.getLogger(SwingingArmPlugin.class.getName());
 
   /**
    * Initialize the plugin.
@@ -67,22 +64,8 @@ public class SwingingArmPlugin implements GeOxygeneApplicationPlugin, ActionList
   @Override
   public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
-    JMenu menu = null;
-    for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
-      if (c instanceof JMenu) {
-        JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Triangulation")) {
-          menu = aMenu;
-        }
-      }
-    }
-    if (menu == null) {
-      menu = new JMenu("Triangulation");//$NON-NLS-1$
-    }
-    JMenuItem menuItem = new JMenuItem("SwingingArmNonConvexHull" //$NON-NLS-1$
-    );
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
+    
+    JMenu menu = addMenu("Geometry Algorithms", "SwingingArmNonConvexHull");
     application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
 
@@ -91,22 +74,31 @@ public class SwingingArmPlugin implements GeOxygeneApplicationPlugin, ActionList
     ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
     Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
     if (selectedLayers.size() != 1) {
+      javax.swing.JOptionPane.showMessageDialog(null, "You need to select one (and only one) layer.");
       LOGGER.error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }
     Layer layer = selectedLayers.iterator().next();
+    
     double radius = Double.parseDouble(JOptionPane.showInputDialog("radius")); //$NON-NLS-1$
     List<IDirectPosition> list = new ArrayList<IDirectPosition>();
     for (IFeature f : layer.getFeatureCollection()) {
-      GM_MultiCurve multi = (GM_MultiCurve) f.getGeom();
-      if (multi.size() > 0) {
-        ILineString line = (GM_LineString) multi.get(0);
-        line = Operateurs.echantillonePasVariable(line, radius / 2);
-        list.addAll(line.coord().getList());
+      
+      if (f.getGeom() instanceof GM_MultiCurve) {
+        GM_MultiCurve<?> multi = (GM_MultiCurve<?>) f.getGeom();
+        if (multi.size() > 0) {
+          ILineString line = (GM_LineString) multi.get(0);
+          line = Operateurs.echantillonePasVariable(line, radius / 2);
+          list.addAll(line.coord().getList());
+        }
+      } else if (f.getGeom() instanceof GM_Point) {
+        GM_Point pt = (GM_Point) f.getGeom();
+        list.add(pt.getPosition());
       }
     }
     LOGGER.error("Points added : " + list.size());
     LOGGER.setLevel(Level.TRACE);
+    
     SwingingArmNonConvexHull swinging = new SwingingArmNonConvexHull(list, radius);
     IGeometry characteristicShape = swinging.compute();
     // logger.error("Shape : " + characteristicShape.getClass());
@@ -114,13 +106,16 @@ public class SwingingArmPlugin implements GeOxygeneApplicationPlugin, ActionList
     popTriangles.setClasse(Face.class);
     popTriangles.setPersistant(false);
     popTriangles.nouvelElement(characteristicShape);
+    
     /** créer un featuretype de jeu correspondant */
-    fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureTypeExterieurs = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    FeatureType newFeatureTypeExterieurs = new FeatureType();
     newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);
     popTriangles.setFeatureType(newFeatureTypeExterieurs);
-    DataSet.getInstance().addPopulation(popTriangles);
+    
+    // DataSet.getInstance().addPopulation(popTriangles);
     LOGGER.info(popTriangles.size());
-    LOGGER.info(characteristicShape);
-    project.addFeatureCollection(popTriangles, popTriangles.getNom(), null);
+    // LOGGER.info(characteristicShape);
+    project.addUserLayer(popTriangles, popTriangles.getNom(), null);
+    
   }
 }

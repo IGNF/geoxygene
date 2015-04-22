@@ -19,13 +19,10 @@
 
 package fr.ign.cogit.geoxygene.appli.plugin;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Set;
 
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
@@ -38,17 +35,17 @@ import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.generalisation.GaussianFilter;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
- * Triangulation plugin.
+ * Gaussian Filter plugin.
  * @author Julien Perret
  */
-public class GaussianFilterPlugin implements GeOxygeneApplicationPlugin, ActionListener {
+public class GaussianFilterPlugin extends AbstractGeOxygeneApplicationPlugin {
+  
   /** Logger. */
-  static Logger                logger      = Logger.getLogger(GaussianFilterPlugin.class.getName());
-
-  private GeOxygeneApplication application = null;
+  static final Logger LOGGER = Logger.getLogger(GaussianFilterPlugin.class.getName());
 
   /**
    * Initialize the plugin.
@@ -57,22 +54,8 @@ public class GaussianFilterPlugin implements GeOxygeneApplicationPlugin, ActionL
   @Override
   public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
-    JMenu menu = null;
-    for (Component c : application.getMainFrame().getMenuBar().getComponents()) {
-      if (c instanceof JMenu) {
-        JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Curve")) { //$NON-NLS-1$
-          menu = aMenu;
-        }
-      }
-    }
-    if (menu == null) {
-      menu = new JMenu("Curve");//$NON-NLS-1$
-    }
-    JMenuItem menuItem = new JMenuItem("Gaussian Filter" //$NON-NLS-1$
-    );
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
+    
+    JMenu menu = addMenu("Geometry Algorithms", "Gaussian Filter");
     application.getMainFrame().getMenuBar().add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
   }
 
@@ -82,10 +65,12 @@ public class GaussianFilterPlugin implements GeOxygeneApplicationPlugin, ActionL
     ProjectFrame project = this.application.getMainFrame().getSelectedProjectFrame();
     Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
     if (selectedLayers.size() != 1) {
-      GaussianFilterPlugin.logger.error("You need to select one (and only one) layer."); //$NON-NLS-1$
+      javax.swing.JOptionPane.showMessageDialog(null, "You need to select one (and only one) layer.");
+      LOGGER.error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }
     Layer layer = selectedLayers.iterator().next();
+    
     double sigma = Double.parseDouble(JOptionPane.showInputDialog(GaussianFilterPlugin.this.application.getMainFrame(), "Sigma")); //$NON-NLS-1$
     Population<DefaultFeature> pop = new Population<DefaultFeature>("GaussianFilter " + layer.getName() + " " + sigma); //$NON-NLS-1$ //$NON-NLS-2$
     pop.setClasse(DefaultFeature.class);
@@ -101,11 +86,12 @@ public class GaussianFilterPlugin implements GeOxygeneApplicationPlugin, ActionL
       }
       pop.nouvelElement(GaussianFilter.gaussianFilter(line, sigma, 1));
     }
+    
     /** créer un featuretype de jeu correspondant */
-    fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    FeatureType newFeatureType = new FeatureType();
     newFeatureType.setGeometryType(ILineString.class);
     pop.setFeatureType(newFeatureType);
     project.getDataSet().addPopulation(pop);
-    project.addFeatureCollection(pop, pop.getNom(), layer.getCRS());
+    project.addUserLayer(pop, pop.getNom(), layer.getCRS());
   }
 }
