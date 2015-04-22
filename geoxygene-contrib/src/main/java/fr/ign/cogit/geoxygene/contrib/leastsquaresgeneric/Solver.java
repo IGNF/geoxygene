@@ -42,6 +42,12 @@ public class Solver {
 	// Residuals savings
 	private ArrayList<ArrayList<Double>> RESIDUALS;
 
+	// Normal equation matrix
+	private Matrix N;
+
+	// Variance factor
+	private double sigma02;
+
 	// -------------------------------------------------------------------
 	// Getters
 	// -------------------------------------------------------------------
@@ -59,7 +65,7 @@ public class Solver {
 	public int getDerivationOrder(){return this.order;}
 	public int getIterationsNumber(){return this.iter;}
 	public int getEffectiveIterationsNumber(){return this.iterations;}
-	
+
 
 	// -------------------------------------------------------------------
 	// Setters
@@ -221,16 +227,17 @@ public class Solver {
 			// -------------------------------------------------------------------
 			// Computing normal equation
 			// -------------------------------------------------------------------
-			Matrix N = A.transpose().times(P).times(A);
+			N = A.transpose().times(P).times(A).inverse();
 			Matrix Y = A.transpose().times(P).times(B);
+
 
 			// -------------------------------------------------------------------
 			// Computing incremental matrix X
 			// -------------------------------------------------------------------
-			X = N.solve(Y);
-			
+			X = N.times(Y);
 
-			
+
+
 			// -------------------------------------------------------------------
 			// Parameters update with reducing factor
 			// -------------------------------------------------------------------
@@ -267,6 +274,24 @@ public class Solver {
 
 		}
 
+		// -------------------------------------------------------------------
+		// Recovering residuals
+		// -------------------------------------------------------------------
+
+		Matrix V = new Matrix(ne, 1);
+
+		for (int i=0; i<ne; i++){
+
+			V.set(i, 0, RESIDUALS.get(i).get(RESIDUALS.get(i).size()-1));
+
+		}
+
+		// -------------------------------------------------------------------
+		// Computing variance factor
+		// -------------------------------------------------------------------
+		sigma02 = (V.transpose().times(P).times(V).get(0, 0))/(ne-np);
+
+
 	}
 
 	// -------------------------------------------------------------------
@@ -280,14 +305,26 @@ public class Solver {
 
 	}
 
+
 	// -------------------------------------------------------------------
 	// Method to get least squares final residuals
 	// Input : constraint index (integer)
 	// Output : residual in constraint index after final iteration
 	// -------------------------------------------------------------------
-	public double getFinalResidual(int index){
+	public double getResidual(int index){
 
 		return RESIDUALS.get(index).get(RESIDUALS.get(index).size()-1);
+
+	}
+	
+	// -------------------------------------------------------------------
+	// Method to get least squares final normalized (/std) residuals
+	// Input : constraint index (integer)
+	// Output : residual in constraint index after final iteration
+	// -------------------------------------------------------------------
+	public double getNormalizedResidual(int index){
+
+		return getResidual(index)/CONSTRAINTS.get(index).getStddev();
 
 	}
 
@@ -352,6 +389,124 @@ public class Solver {
 	}
 
 	// -------------------------------------------------------------------
+	// Method to get variance factor sigma 0 square
+	// Input : none
+	// Output : s02
+	// -------------------------------------------------------------------
+	public double getS02(){
+
+		return sigma02;
+
+	}
+
+	// -------------------------------------------------------------------
+	// Method to get standard deviation of estimated parameter i
+	// Input : parameter index
+	// Output : estimation standard deviation
+	// -------------------------------------------------------------------
+	public double getEstimationStd(int index){
+
+		return Math.sqrt(sigma02*N.get(index, index));
+
+	}
+
+	// -------------------------------------------------------------------
+	// Method to get variance of estimated parameter i
+	// Input : parameter index
+	// Output : estimation variance
+	// -------------------------------------------------------------------
+	public double getEstimationVariance(int index){
+
+		return sigma02*N.get(index, index);
+
+	}
+
+
+	// -------------------------------------------------------------------
+	// Method to get covariance of estimated parameters i and j
+	// Input : parameter index i and j
+	// Output : estimation covariance
+	// -------------------------------------------------------------------
+	public double getEstimationCovariance(int i, int j){
+
+		return sigma02*N.get(i, j);
+
+	}
+
+	// -------------------------------------------------------------------
+	// Method to get correlation of estimated parameters i and j
+	// Input : parameter index i and j
+	// Output : estimation standard deviation
+	// -------------------------------------------------------------------
+	public double getEstimationCorrelation(int i, int j){
+
+		double sigma_i = getEstimationStd(i);
+		double sigma_j = getEstimationStd(j);
+
+		return getEstimationCovariance(i, j)/(sigma_i*sigma_j);
+
+	}
+
+	// -------------------------------------------------------------------
+	// Method to get standard deviation of an estimated parameter
+	// Input : parameter name
+	// Output : estimation standard deviation
+	// -------------------------------------------------------------------
+	public double getEstimationStd(String name){
+
+		int index = parameters.getIndex(name);
+
+		return getEstimationStd(index);
+
+	}
+
+	// -------------------------------------------------------------------
+	// Method to get variance of an estimated parameter
+	// Input : parameter name
+	// Output : estimation variance
+	// -------------------------------------------------------------------
+	public double getEstimationVariance(String name){
+
+		int index = parameters.getIndex(name);
+
+		return getEstimationVariance(index);
+
+	}
+
+
+	// -------------------------------------------------------------------
+	// Method to get covariance of two estimated parameters
+	// Input : parameters name
+	// Output : estimation covariance
+	// -------------------------------------------------------------------
+	public double getEstimationCovariance(String name1, String name2){
+
+		int index1 = parameters.getIndex(name1);
+		int index2 = parameters.getIndex(name2);
+
+		return getEstimationCovariance(index1, index2);
+
+	}
+
+	// -------------------------------------------------------------------
+	// Method to get correlation of two estimated parameters
+	// Input : parameters name
+	// Output : estimation standard deviation
+	// -------------------------------------------------------------------
+	public double getEstimationCorrelation(String name1, String name2){
+
+		int index1 = parameters.getIndex(name1);
+		int index2 = parameters.getIndex(name2);
+
+		double sigma_1 = getEstimationStd(index1);
+		double sigma_2 = getEstimationStd(index2);
+
+		return getEstimationCovariance(index1, index2)/(sigma_1*sigma_2);
+
+	}
+
+
+	// -------------------------------------------------------------------
 	// Method to dispaly main results
 	// -------------------------------------------------------------------
 	public void displayResults(){
@@ -359,12 +514,65 @@ public class Solver {
 		System.out.println("-----------------------------");
 		System.out.println("After "+getEffectiveIterationsNumber()+" iterations");
 		System.out.println("-----------------------------");
-		
+
 		for (int i=0; i<getParametersNumber(); i++){
-			
+
 			System.out.println(parameters.getParameterName(i)+" = "+parameters.getParameter(i));
-			
+
 		}
+
+	}
+
+	// -------------------------------------------------------------------
+	// Method to dispaly full results (with statistics)
+	// -------------------------------------------------------------------
+	public void displayFullResults(){
+
+		System.out.println("-----------------------------");
+		System.out.println("After "+getEffectiveIterationsNumber()+" iterations");
+		System.out.println("-----------------------------");
+
+		for (int i=0; i<getParametersNumber(); i++){
+
+
+			double r = parameters.getParameter(i);
+
+			System.out.println(parameters.getParameterName(i)+" = "+r+" +/- "+getEstimationStd(i));
+
+		}
+
+		System.out.println("");
+
+		System.out.println("-----------------------------");
+		System.out.println("Residuals");
+		System.out.println("-----------------------------");
+
+		for (int i=0; i<getConstraintsNumber(); i++){
+
+			System.out.println("Eq "+i+" : "+getResidual(i));
+
+		}
+
+		System.out.println("");
+
+		System.out.println("-----------------------------");
+		System.out.println("Normalized residuals");
+		System.out.println("-----------------------------");
+
+		for (int i=0; i<getConstraintsNumber(); i++){
+
+			System.out.println("Eq "+i+" : "+getNormalizedResidual(i));
+
+		}
+
+		System.out.println("");
+
+		System.out.println("-----------------------------");
+		System.out.println("Unit variance factor");
+		System.out.println("-----------------------------");
+
+		System.out.println("s0² = "+sigma02);
+		System.out.println("s0 = "+Math.sqrt(sigma02));
 
 	}
 
