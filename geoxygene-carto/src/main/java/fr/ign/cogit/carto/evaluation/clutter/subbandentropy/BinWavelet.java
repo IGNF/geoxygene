@@ -90,7 +90,7 @@ public class BinWavelet {
       double denom = (double) nbPixel;
       if ((denom != 0) && ((num / denom) > 0.000000001)) {
         shanonr = shanonr + (-(hist[i][0] / denom) * Math.log10((num / denom)));
-        System.out.println(hist[i][0]);
+        logger.debug(hist[i][0]);
 
       } else if ((denom != 0) && ((num / denom) < 0.000000001)) {
         continue;

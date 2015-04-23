@@ -28,6 +28,8 @@ public class ImageBis {
     len = img.getHeight();
     width = img.getWidth();
     cell = new float[len][width][3];
+    if (img.getType() == 6)
+      cell = new float[len][width][4];
 
     // WritableRaster rast = img.getRaster();
 
@@ -37,13 +39,20 @@ public class ImageBis {
       for (int i = 0; i < len; i++) {
 
         // l++;
-        pixel = img.getRaster().getPixel(j, i, new float[3]);
-        // System.out.println(i +" "+ j+":" + pixel[0] + " - " + pixel[1] +
-        // " - " + pixel[2] );
-        cell[i][j][0] = pixel[0];
-        cell[i][j][1] = pixel[1];
-        cell[i][j][2] = pixel[2];
-
+        if (img.getType() == 5) {
+          pixel = img.getRaster().getPixel(j, i, new float[3]);
+          // System.out.println(i +" "+ j+":" + pixel[0] + " - " + pixel[1] +
+          // " - " + pixel[2] );
+          cell[i][j][0] = pixel[0];
+          cell[i][j][1] = pixel[1];
+          cell[i][j][2] = pixel[2];
+        } else if (img.getType() == 6) {
+          pixel = img.getRaster().getPixel(j, i, new float[4]);
+          cell[i][j][0] = pixel[0];
+          cell[i][j][1] = pixel[1];
+          cell[i][j][2] = pixel[2];
+          cell[i][j][3] = pixel[3];
+        }
       }// for j
     }// for i
   }

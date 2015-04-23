@@ -61,6 +61,7 @@ public class ExtendBuiltUpAreas {
 
       // iterative case, look for other relations with the new geometry
       if (iterations > 1) {
+        operation.setAreaToDetail((IPolygon) builtUp.getGeom());
         double cushionedRadius = radius;
         for (int i = 0; i < iterations; i++) {
           detailedComponents.clear();

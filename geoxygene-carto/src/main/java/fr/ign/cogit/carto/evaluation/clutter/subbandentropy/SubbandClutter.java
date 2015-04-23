@@ -338,33 +338,32 @@ public class SubbandClutter {
 
     double sha1 = wave.shanonEntro(f1, histof1);
     rendu[0] = sha1;
-    System.out.println(rendu[0]);
+    logger.debug(rendu[0]);
 
     double shah = wave.shanonEntro(fh, histofh);
     rendu[1] = shah;
-    System.out.println(rendu[1]);
+    logger.debug(rendu[1]);
 
     double sha1h = wave.shanonEntro(f1h, histof1h);
     rendu[2] = sha1h;
-    System.out.println(rendu[2]);
+    logger.debug(rendu[2]);
 
     double shah1 = wave.shanonEntro(fh1, histofh1);
     rendu[3] = shah1;
-    System.out.println(rendu[3]);
+    logger.debug(rendu[3]);
 
     double sha11 = wave.shanonEntro(f11, histof11);
     rendu[4] = sha11;
-    System.out.println(rendu[4]);
+    logger.debug(rendu[4]);
 
     double shahh = wave.shanonEntro(fhh, histofhh);
     rendu[5] = shahh;
-    System.out.println(rendu[5]);
+    logger.debug(rendu[5]);
 
     double sum = rendu[0] + rendu[1] + rendu[2] + rendu[3] + rendu[4]
         + rendu[5];
 
     logger.info("CLUTTER FINAL : " + sum);
-
     return sum;
 
   }

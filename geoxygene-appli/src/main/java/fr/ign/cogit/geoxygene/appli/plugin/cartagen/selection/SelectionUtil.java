@@ -36,6 +36,20 @@ public class SelectionUtil {
   }
 
   /**
+   * Shortcut to get the selected objects from one layer by code.
+   * @return
+   */
+  public static Set<IFeature> getSelectedObjects(GeOxygeneApplication appli,
+      String layerName) {
+    Set<IFeature> selected = new HashSet<>(appli.getMainFrame()
+        .getSelectedProjectFrame().getLayerViewPanel().getSelectedFeatures());
+    Layer layer = appli.getMainFrame().getSelectedProjectFrame()
+        .getLayer(layerName);
+    selected.retainAll(layer.getFeatureCollection());
+    return selected;
+  }
+
+  /**
    * Shortcut to get all the selected objects by code.
    * @return
    */

@@ -322,4 +322,9 @@ public class LSProximityConstraint extends LSExternalConstraint {
     return systeme;
   }
 
+  @Override
+  public double getWeightFactor() {
+    return super.getWeightFactor();
+  }
+
 }

@@ -582,4 +582,12 @@ public class Triangulation extends Graph implements ITriangulation {
     }
     return pop.envelope();
   }
+
+  @Override
+  public Set<IEdge> getEdges() {
+    Set<IEdge> edges = new HashSet<>();
+    edges.addAll(segments);
+    return edges;
+  }
+
 }

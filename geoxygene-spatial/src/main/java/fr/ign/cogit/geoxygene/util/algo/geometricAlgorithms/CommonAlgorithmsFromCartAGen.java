@@ -38,6 +38,7 @@ import java.util.Vector;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineString;
 
+import fr.ign.cogit.geoxygene.api.spatial.AbstractGeomFactory;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
@@ -60,6 +61,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineSegment;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
+import fr.ign.cogit.geoxygene.spatial.geomengine.AbstractGeometryEngine;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
@@ -203,6 +205,68 @@ public class CommonAlgorithmsFromCartAGen {
       added = true;
     }
     return new GM_LineString(pts);
+  }
+
+  /**
+   * Inserts as a new vertex a point of the given line that is not already a
+   * vertex. The point has to be on one of the rings of the polygon.
+   * @param polygon
+   * @param newVertex
+   * @return
+   */
+  public static IPolygon insertVertex(IPolygon polygon,
+      IDirectPosition newVertex) {
+    AbstractGeomFactory factory = AbstractGeometryEngine.getFactory();
+
+    if (polygon.coord().contains(newVertex))
+      return polygon;
+    IDirectPositionList pts = new DirectPositionList();
+    pts.add(polygon.coord().get(0));
+    List<Segment> segments = Segment.getSegmentList(polygon
+        .exteriorLineString());
+    boolean added = false;
+    for (int i = 0; i < segments.size(); i++) {
+      Segment seg = segments.get(i);
+      if (!seg.containsPoint(newVertex) || added) {
+        pts.add(seg.endPoint());
+        continue;
+      }
+      pts.add(newVertex);
+      pts.add(seg.endPoint());
+      added = true;
+    }
+    return factory.createIPolygon(factory.createILineString(pts));
+  }
+
+  /**
+   * Inserts as a new vertex a point of the given polygon that is not already a
+   * vertex. The point has to be on one of the rings of the polygon.
+   * @param polygon
+   * @param newVertex
+   * @param tolerance a tolerance to deal with rounding approximations.
+   * @return
+   */
+  public static IPolygon insertVertex(IPolygon polygon,
+      IDirectPosition newVertex, double tolerance) {
+    if (polygon.coord().contains(newVertex))
+      return polygon;
+    IDirectPositionList pts = new DirectPositionList();
+    pts.add(polygon.coord().get(0));
+    List<Segment> segments = Segment.getSegmentList(polygon
+        .exteriorLineString());
+    boolean added = false;
+    for (int i = 0; i < segments.size(); i++) {
+      Segment seg = segments.get(i);
+      if (!seg.containsPoint(newVertex, tolerance) || added) {
+        pts.add(seg.endPoint());
+        continue;
+      }
+      pts.add(newVertex);
+      pts.add(seg.endPoint());
+      added = true;
+    }
+    return AbstractGeometryEngine.getFactory().createIPolygon(
+        AbstractGeometryEngine.getFactory().createILineString(pts));
   }
 
   /**

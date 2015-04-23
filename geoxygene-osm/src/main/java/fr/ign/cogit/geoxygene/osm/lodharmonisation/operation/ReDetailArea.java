@@ -19,6 +19,7 @@ import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
 
 public class ReDetailArea {
   private IPolygon areaToDetail;
+
   private Collection<IGeometry> detailedComponents;
 
   public ReDetailArea(IPolygon areaToDetail,
@@ -40,9 +41,28 @@ public class ReDetailArea {
       if (areaToDetail.contains(geom))
         continue;
       IGeometry buffer = geom.buffer(radius);
-      newArea = (IPolygon) newArea.union(buffer);
+      if (!buffer.isValid())
+        continue;
+      IGeometry union = newArea.union(buffer);
+      if (union == null)
+        union = newArea.union(buffer.buffer(1.0));
+      if (union == null)
+        continue;
+      if (union instanceof IPolygon)
+        newArea = (IPolygon) union;
+      else
+        continue;
     }
     newArea = (IPolygon) CommonAlgorithms.filtreDouglasPeucker(newArea, doug);
     return newArea;
   }
+
+  public IPolygon getAreaToDetail() {
+    return areaToDetail;
+  }
+
+  public void setAreaToDetail(IPolygon areaToDetail) {
+    this.areaToDetail = areaToDetail;
+  }
+
 }

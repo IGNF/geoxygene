@@ -277,7 +277,6 @@ public class JamaEquationsSystem extends EquationsSystem {
       LSConstraint contrainte = this.getConstraints().get(i);
       Double poidsContr = poids.get(contrainte.getClass().getName());
       poidsContr *= contrainte.getWeightFactor();
-
       matricePoids.set(i, i, poidsContr.doubleValue());
     }// for i, boucle sur le vecteur des contraintes
 

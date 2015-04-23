@@ -275,25 +275,49 @@ public class ConflationScheduler extends LSScheduler {
 
         // s'il n'a pas été créé, il faut l'ajouter au bon endroit
         if (!created) {
-          ILineString newLine = CommonAlgorithmsFromCartAGen.insertVertex(
-              (ILineString) geom, ini);
-          obj.setGeom(newLine);
-          int index = newLine.coord().getList().indexOf(ini);
-          if (index == -1) {
-            // the vector is not on the line but some millimeters aside
-            // there is no need to add a LSPoint in the line
-            continue;
+          if (geom instanceof ILineString) {
+            ILineString newLine = CommonAlgorithmsFromCartAGen.insertVertex(
+                (ILineString) geom, ini);
+            obj.setGeom(newLine);
+            int index = newLine.coord().getList().indexOf(ini);
+            if (index == -1) {
+              // the vector is not on the line but some millimeters aside
+              // there is no need to add a LSPoint in the line
+              continue;
+            }
+            // on construit le nouveau point
+            LSPoint lsPt = this.construirePoint(obj, ini, index,
+                GeometryType.LINE, false, this.getSymbolWidth(obj), points);
+            lsPt.setFixed(true);
+            lsPt.setFinalPt(vector.getGeom().coord().get(1));
+
+            // on lui définit ses contraintes internes
+            lsPt.setContraintesInternes(this.getMapspec(), this);
+            points.add(lsPt);
+            listePoints.add(index, lsPt);
+            this.getMapObjPts().put(obj, listePoints);
+          } else if (geom instanceof IPolygon) {
+            IPolygon newLine = CommonAlgorithmsFromCartAGen.insertVertex(
+                (IPolygon) geom, ini);
+            obj.setGeom(newLine);
+            int index = newLine.coord().getList().indexOf(ini);
+            if (index == -1) {
+              // the vector is not on the line but some millimeters aside
+              // there is no need to add a LSPoint in the line
+              continue;
+            }
+            // on construit le nouveau point
+            LSPoint lsPt = this.construirePoint(obj, ini, index,
+                GeometryType.POLYGON, false, this.getSymbolWidth(obj), points);
+            lsPt.setFixed(true);
+            lsPt.setFinalPt(vector.getGeom().coord().get(1));
+
+            // on lui définit ses contraintes internes
+            lsPt.setContraintesInternes(this.getMapspec(), this);
+            points.add(lsPt);
+            listePoints.add(index, lsPt);
+            this.getMapObjPts().put(obj, listePoints);
           }
-          // on construit le nouveau point
-          LSPoint lsPt = this.construirePoint(obj, ini, index,
-              GeometryType.LINE, false, this.getSymbolWidth(obj), points);
-          lsPt.setFixed(true);
-          lsPt.setFinalPt(vector.getGeom().coord().get(1));
-          // on lui définit ses contraintes internes
-          lsPt.setContraintesInternes(this.getMapspec(), this);
-          points.add(lsPt);
-          listePoints.add(index, lsPt);
-          this.getMapObjPts().put(obj, listePoints);
         }
       }
     }// boucle sur les objets à du scheduler

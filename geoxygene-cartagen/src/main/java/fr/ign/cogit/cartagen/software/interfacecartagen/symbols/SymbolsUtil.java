@@ -154,8 +154,8 @@ public class SymbolsUtil {
         symbolVarName = "VAL_rte_p_4";
       }
     }
-    return new RoadSymbolResult(list
-        .getSymbolShapeIdBySymbolVarName(symbolVarName), ATT_Importance);
+    return new RoadSymbolResult(
+        list.getSymbolShapeIdBySymbolVarName(symbolVarName), ATT_Importance);
 
   }
 
@@ -317,8 +317,8 @@ public class SymbolsUtil {
 
     // WARNING (symbo incohérente) SI ON ARRIVE ICI #
 
-    return new RoadSymbolResult(list
-        .getSymbolShapeIdBySymbolVarName(symbolVarName), att_ImportanceINT);
+    return new RoadSymbolResult(
+        list.getSymbolShapeIdBySymbolVarName(symbolVarName), att_ImportanceINT);
   }
 
   /**
@@ -362,8 +362,8 @@ public class SymbolsUtil {
       symbolVarName = "VAL_escalier";
     }
 
-    return new RoadSymbolResult(list
-        .getSymbolShapeIdBySymbolVarName(symbolVarName), importance);
+    return new RoadSymbolResult(
+        list.getSymbolShapeIdBySymbolVarName(symbolVarName), importance);
   }
 
   /**
@@ -391,6 +391,9 @@ public class SymbolsUtil {
     int importance = 1;
     if (fields.get("importance") != null) {
       importance = Integer.parseInt(fields.get("importance").toString());
+    }
+    if (fields.get("IMPORTANCE") != null) {
+      importance = Integer.parseInt(fields.get("IMPORTANCE").toString());
     }
     return new RoadSymbolResult(-1, importance);
   }
