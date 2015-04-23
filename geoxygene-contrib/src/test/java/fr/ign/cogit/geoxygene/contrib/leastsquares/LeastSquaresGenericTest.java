@@ -139,7 +139,117 @@ public class LeastSquaresGenericTest {
 		solver.compute();
 
 		Assert.assertEquals(solver.getParameter("moyenne"), controle, Math.pow(10, -4));
+
+	}
+
+	@Test
+	public void test4(){
+
+		Constraint c1 = new Constraint("a = 60.27");
+		Constraint c2 = new Constraint("b = 40.54");
+		Constraint c3 = new Constraint("c = 83.12");
+		Constraint c4 = new Constraint("a+b+c = 180", true);
+
+		Solver solver = new Solver();
+
+		solver.addConstraint(c1);
+		solver.addConstraint(c2);
+		solver.addConstraint(c3);
+		solver.addConstraint(c4);
+
+		solver.addParameter("a", 1);
+		solver.addParameter("b", 1);
+		solver.addParameter("c", 1);
+
+		solver.setIterationsNumber(5);
+
+		solver.compute();
+
+
+
+		double somme = solver.getParameter("a")+solver.getParameter("b")+solver.getParameter("c");
+
+		Assert.assertEquals(somme, 180, Math.pow(10, -4));	
+
+	}
+
+	@Test
+	public void test5(){
+
+		// ------------------------------------------------------------
+		// Cercle solution
+		// ------------------------------------------------------------
+		double Xc = 120;
+		double Yc = 50;
+		double Rc = 80;
+		// ------------------------------------------------------------
+
+
+		// ------------------------------------------------------------
+		// Simulation de la mesure des points 
+		// ------------------------------------------------------------
+
+		int N = 200;
+
+		ArrayList<Double> X = new ArrayList<Double>();
+		ArrayList<Double> Y = new ArrayList<Double>();
+
+		System.out.println("M=[");
+
+		for (int i=0; i<N; i++){
+
+			double r = Rc + 3*(Math.random()-0.5)*Math.sqrt(12);
+			double t = Math.random()*2*Math.PI;
+
+			X.add(Xc+r*Math.cos(t));
+			Y.add(Yc+r*Math.sin(t));
+
+			System.out.println(X.get(i)+", "+Y.get(i));
+
+		}
+
+		System.out.println("];");
+
+		// ------------------------------------------------------------
+		// Estimation par moindres carrés
+		// ------------------------------------------------------------
+
+		Solver solver = new Solver();
+
+		for (int i=0; i<N; i++){
+
+			double x = X.get(i);
+			double y = Y.get(i);
+
+			Constraint c = new Constraint("sqrt(("+x+"-Xc)^2 + ("+y+"-Yc)^2) - Rc = 0 +/- 1.0");
+
+			solver.addConstraint(c);
+
+		}
+
+		solver.addParameter("Xc", 100);
+		solver.addParameter("Yc", 100);
+		solver.addParameter("Rc", 100);
+
+		solver.setIterationsNumber(10);
+
+		solver.compute();
+
+		solver.displayFullResults();
+
+		System.out.println("Corrélations : ");
+		System.out.println("[Xc,Yc] : "+solver.getEstimationCorrelation("Xc", "Yc"));
+		System.out.println("[Xc,Rc] : "+solver.getEstimationCorrelation("Xc", "Rc"));
+		System.out.println("[Yc,Rc] : "+solver.getEstimationCorrelation("Yc", "Rc"));
+
+		double XcChap = solver.getParameter("Xc");
+		double YcChap = solver.getParameter("Yc");
+		double RcChap = solver.getParameter("Rc");
 		
+		Assert.assertEquals(XcChap, Xc, 1);	
+		Assert.assertEquals(YcChap, Yc, 1);	
+		Assert.assertEquals(RcChap, Rc, 1);	
+
 	}
 
 }
