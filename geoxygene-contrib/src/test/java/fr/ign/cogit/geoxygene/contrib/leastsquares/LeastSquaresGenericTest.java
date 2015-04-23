@@ -145,10 +145,13 @@ public class LeastSquaresGenericTest {
 	@Test
 	public void test4(){
 
+		// Contraintes indicatives
 		Constraint c1 = new Constraint("a = 60.27");
 		Constraint c2 = new Constraint("b = 40.54");
 		Constraint c3 = new Constraint("c = 83.12");
-		Constraint c4 = new Constraint("a+b+c = 180", true);
+		
+		// Contrainte impérative
+		Constraint c4 = new Constraint("a+b+c := 180");
 
 		Solver solver = new Solver();
 
@@ -194,8 +197,6 @@ public class LeastSquaresGenericTest {
 		ArrayList<Double> X = new ArrayList<Double>();
 		ArrayList<Double> Y = new ArrayList<Double>();
 
-		System.out.println("M=[");
-
 		for (int i=0; i<N; i++){
 
 			double r = Rc + 3*(Math.random()-0.5)*Math.sqrt(12);
@@ -203,12 +204,9 @@ public class LeastSquaresGenericTest {
 
 			X.add(Xc+r*Math.cos(t));
 			Y.add(Yc+r*Math.sin(t));
-
-			System.out.println(X.get(i)+", "+Y.get(i));
-
+			
 		}
 
-		System.out.println("];");
 
 		// ------------------------------------------------------------
 		// Estimation par moindres carrés
@@ -234,13 +232,6 @@ public class LeastSquaresGenericTest {
 		solver.setIterationsNumber(10);
 
 		solver.compute();
-
-		solver.displayFullResults();
-
-		System.out.println("Corrélations : ");
-		System.out.println("[Xc,Yc] : "+solver.getEstimationCorrelation("Xc", "Yc"));
-		System.out.println("[Xc,Rc] : "+solver.getEstimationCorrelation("Xc", "Rc"));
-		System.out.println("[Yc,Rc] : "+solver.getEstimationCorrelation("Yc", "Rc"));
 
 		double XcChap = solver.getParameter("Xc");
 		double YcChap = solver.getParameter("Yc");
