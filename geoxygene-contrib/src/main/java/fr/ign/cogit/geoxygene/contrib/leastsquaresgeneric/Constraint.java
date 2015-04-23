@@ -19,7 +19,7 @@ package fr.ign.cogit.geoxygene.contrib.leastsquaresgeneric;
 //=======================================================================
 
 public class Constraint {
-	
+
 	// Type of constrait
 	private boolean type = false;
 
@@ -89,25 +89,34 @@ public class Constraint {
 	// -------------------------------------------------------------------
 	public Constraint(String expression, boolean type){
 		
+		this.type = type;
+		
+		// Découpage éventuel de ':='
+		int pos1 = expression.indexOf(":=");
+		
+		if (pos1 != -1){
+			
+			expression = expression.replace(":=", "=");
+			setImperative(true);
+			
+		}
+		
 		// Découpage éventuel de l'écart-type
-		
-		int pos = expression.indexOf("+/-");
-		
-		if (pos == -1){
-		
+		int pos2 = expression.indexOf("+/-");
+
+		if (pos2 == -1){
+
 			this.expression = expression;
-		
+
 		}
 		else{
-			
-			this.expression = expression.substring(0, pos);
-			this.stddev = Double.parseDouble(expression.substring(pos+3, expression.length()));
+
+			this.expression = expression.substring(0, pos2);
+			this.stddev = Double.parseDouble(expression.substring(pos2+3, expression.length()));
 			this.variance = stddev*stddev;
 			this.weight = 1/stddev;
-			
+
 		}
-		
-		this.type = type;
 
 		split();
 
