@@ -11,6 +11,7 @@
 package fr.ign.cogit.geoxygene.contrib.leastsquaresgeneric;
 
 
+
 //=======================================================================
 // Class to handle constraints in mathematical expressions
 // Date : 30/03/2015
@@ -18,9 +19,9 @@ package fr.ign.cogit.geoxygene.contrib.leastsquaresgeneric;
 //=======================================================================
 
 public class Constraint {
-
+	
 	// Type of constrait
-	private String type;
+	private boolean type = false;
 
 	// Mathematical expression
 	private String expression;
@@ -40,17 +41,18 @@ public class Constraint {
 	private double stddev = 1;
 
 	// Getters
-	public String getType(){return type;}
-	public String getExpression(){return expression;}
-	public ReversePolishNotation getReversePolishNotation(){return rpn;}
+	public boolean isImperative(){return type;}
+	public boolean isIndicative(){return !type;}
 	public double getRightPart(){return rightPart;}
-	public String getLeftPart(){return leftPart;}
 	public double getWeight(){return weight;}
 	public double getVariance(){return variance;}
 	public double getStddev(){return stddev;}
+	public String getExpression(){return expression;}
+	public String getLeftPart(){return leftPart;}
+	public ReversePolishNotation getReversePolishNotation(){return rpn;}
 
 	// Setters
-	public void setType(String type){this.type = type;}
+	public void setImperative(boolean type){this.type = type;}
 	public void setExpression(String expression){this.expression = expression;}
 
 	// Set weight systems
@@ -81,11 +83,30 @@ public class Constraint {
 
 	// -------------------------------------------------------------------
 	// General method to build a constraint
-	// Input : mathematical expression (string) and type (string)
+	// Input : mathematical expression (string) and type (boolean)
+	// Type = true -> imperative constraint
+	// Type = false -> indicative constraint
 	// -------------------------------------------------------------------
-	public Constraint(String expression, String type){
-
-		this.expression = expression;
+	public Constraint(String expression, boolean type){
+		
+		// Découpage éventuel de l'écart-type
+		
+		int pos = expression.indexOf("+/-");
+		
+		if (pos == -1){
+		
+			this.expression = expression;
+		
+		}
+		else{
+			
+			this.expression = expression.substring(0, pos);
+			this.stddev = Double.parseDouble(expression.substring(pos+3, expression.length()));
+			this.variance = stddev*stddev;
+			this.weight = 1/stddev;
+			
+		}
+		
 		this.type = type;
 
 		split();
@@ -95,12 +116,12 @@ public class Constraint {
 	}
 
 	// -------------------------------------------------------------------
-	// Method to build a constraint
+	// Method to build an indicative constraint
 	// Input : mathematical expression (string)
 	// -------------------------------------------------------------------
 	public Constraint(String expression){
 
-		this(expression, "generic");
+		this(expression, false);
 
 	}
 

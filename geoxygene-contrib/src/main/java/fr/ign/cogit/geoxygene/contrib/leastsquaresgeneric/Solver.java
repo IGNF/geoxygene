@@ -26,8 +26,9 @@ public class Solver {
 	// Unknown parameters
 	private Parameters parameters;
 
-	// Constraints list
+	// Constraints lists
 	private ArrayList<Constraint> CONSTRAINTS;
+	private ArrayList<Constraint> IMP_CONSTRAINTS;
 
 	// Process parameters
 	private double h;     // Numerical derivation step (default 10e-1)
@@ -51,65 +52,40 @@ public class Solver {
 	// -------------------------------------------------------------------
 	// Getters
 	// -------------------------------------------------------------------
-	public Parameters getParameters(){return parameters;}
-	public ArrayList<Constraint> getConstraints(){return CONSTRAINTS;}
-	public double getParameter(String name){return parameters.getParameter(name);}
-	public double getParameter(int index){return parameters.getParameter(index);}
-	public String getParameterName(int index){return parameters.getParameterName(index);}
 	public int getParametersNumber(){return parameters.getParametersNumber();}
-	public int getConstraintsNumber(){return CONSTRAINTS.size();}
-	public Constraint getConstraint(int index){return CONSTRAINTS.get(index);}
-	public double getDerivationStep(){return this.h;}
-	public double getReducingFactor(){return this.f;}
-	public double getConvergenceCriteria(){return this.e;}
+	public int getIndicativeConstraintsNumber(){return CONSTRAINTS.size();}
+	public int getImperativeConstraintsNumber(){return IMP_CONSTRAINTS.size();}
+	public int getConstraintsNumber(){return CONSTRAINTS.size()+IMP_CONSTRAINTS.size();}
 	public int getDerivationOrder(){return this.order;}
 	public int getIterationsNumber(){return this.iter;}
 	public int getEffectiveIterationsNumber(){return this.iterations;}
+	public double getParameter(String name){return parameters.getParameter(name);}
+	public double getParameter(int index){return parameters.getParameter(index);}
+	public double getDerivationStep(){return this.h;}
+	public double getReducingFactor(){return this.f;}
+	public double getConvergenceCriteria(){return this.e;}
+	public Constraint getConstraint(int index){return CONSTRAINTS.get(index);}
+	public String getParameterName(int index){return parameters.getParameterName(index);}
+	public Parameters getParameters(){return parameters;}
+	public ArrayList<Constraint> getConstraints(){return CONSTRAINTS;}
 
 
 	// -------------------------------------------------------------------
 	// Setters
 	// -------------------------------------------------------------------
 	public void setParameters(Parameters parameters){this.parameters = parameters;}
-	public void setConstraints(ArrayList<Constraint> constraints){this.CONSTRAINTS = constraints;}
+	public void setIndicativeConstraints(ArrayList<Constraint> constraints){this.CONSTRAINTS = constraints;}
+	public void setimperativeConstraints(ArrayList<Constraint> constraints){this.IMP_CONSTRAINTS = constraints;}
 	public void setParameter(String name, double value){parameters.setParameter(name, value);}
 	public void setParameter(int index, double value){parameters.setParameter(index, value);}
-	public void setConstraint(int index, Constraint newConstraint){CONSTRAINTS.set(index, newConstraint);}
+	public void setIndicativeConstraint(int index, Constraint newConstraint){CONSTRAINTS.set(index, newConstraint);}
+	public void setImperativeConstraint(int index, Constraint newConstraint){IMP_CONSTRAINTS.set(index, newConstraint);}
 	public void setDerivationStep(double h){this.h =h;}
 	public void setReducingFactor(double f){this.f = f;}
 	public void setConvergenceCriteria(double epsilon){this.e = epsilon;}
 	public void setDerivationOrder(int order){this.order = order;}
 	public void setIterationsNumber(int n){this.iter = n;}
 
-	// -------------------------------------------------------------------
-	// New constraints
-	// -------------------------------------------------------------------
-	public void addConstraint(Constraint constraint){
-
-		CONSTRAINTS.add(constraint); 
-		RESIDUALS.add(new ArrayList<Double>());
-
-	}
-
-
-	// -------------------------------------------------------------------
-	// New parameters
-	// -------------------------------------------------------------------
-	public void addParameter(String name, double value){
-
-		if(parameters.contains(name)){
-
-			System.out.println("Error : parameter "+name+" has already been defined");
-			System.exit(0);
-
-		}
-		else{
-
-			setParameter(name, value);
-
-		}
-
-	}
 
 	// -------------------------------------------------------------------
 	// General method to build a solver
@@ -125,8 +101,9 @@ public class Solver {
 		this.iterations = 0;
 
 		// Instanciation
-		this.CONSTRAINTS = constraints;
 		this.parameters = parameters;
+		this.CONSTRAINTS = constraints;
+		this.IMP_CONSTRAINTS = new ArrayList<Constraint>();
 
 		this.RESIDUALS = new ArrayList<ArrayList<Double>>();
 
@@ -151,18 +128,66 @@ public class Solver {
 	}
 
 	// -------------------------------------------------------------------
+	// New constraints
+	// -------------------------------------------------------------------
+	public void addConstraint(Constraint constraint){
+
+		if (constraint.isIndicative()){
+
+			CONSTRAINTS.add(constraint); 
+			RESIDUALS.add(new ArrayList<Double>());
+
+		}
+		else{
+
+			IMP_CONSTRAINTS.add(constraint); 
+
+		}
+
+	}
+
+
+	// -------------------------------------------------------------------
+	// New parameters
+	// -------------------------------------------------------------------
+	public void addParameter(String name, double value){
+
+		if(parameters.contains(name)){
+
+			System.out.println("Error : parameter "+name+" has already been defined");
+			System.exit(0);
+
+		}
+		else{
+
+			setParameter(name, value);
+
+		}
+
+	}
+
+
+	// -------------------------------------------------------------------
 	// Main method to process least squares
 	// Output : unknown variables are directly updated in 'parameters'
 	// -------------------------------------------------------------------
 	public void compute(){
 
-		int ne = CONSTRAINTS.size();                // Number of equations 
+		int ne = CONSTRAINTS.size();                // Number of  indicative equations 
+		int nc = IMP_CONSTRAINTS.size();            // Number of  imperative equations 
 		int np = parameters.getParametersNumber();  // Number of parameters
 
-		// Redundancy test
-		if (np > ne){
+		// Redundancy tests
+		if (np > ne + nc){
 
-			System.out.println("Error : number of unknown parameters ("+np+") is greater than number of constraints ("+ne+")");
+			System.out.println("Error : number of unknown parameters ("+np+") is greater than number of constraints ("+(ne+nc)+")");
+			System.exit(0);
+
+		}
+
+		if (np < nc){
+
+			System.out.println("Error : number of unknown parameters ("+np+") is smaller than number of imperative constraints ("+nc+")");
 			System.exit(0);
 
 		}
@@ -172,9 +197,15 @@ public class Solver {
 
 		// Matrices dimensions
 		Matrix A = new Matrix(ne, np);
+		Matrix C = new Matrix(nc, np);
 		Matrix X = new Matrix(np, 1);
 		Matrix B = new Matrix(ne, 1);
+		Matrix D = new Matrix(nc, 1);
 		Matrix P = new Matrix(ne, ne);
+
+		Matrix MA = new Matrix(np+nc, np+nc);
+		Matrix MB = new Matrix(np+nc, 1);
+		Matrix MX = new Matrix(np+nc, 1);
 
 		// Variables
 		Constraint constraint;
@@ -202,6 +233,24 @@ public class Solver {
 			}
 
 			// -------------------------------------------------------------------
+			// Filling Jacobian matrix C with partial derivatives dci/dxj
+			// -------------------------------------------------------------------
+			for (int i=0; i<nc; i++){
+
+				for (int j=0; j<np; j++){
+
+					constraint = IMP_CONSTRAINTS.get(i);
+					parameter = parameters.getParameterName(j);
+
+					double partialDerivative = ExpressionComputer.numericalDerivation(constraint, parameter, h, order);
+
+					C.set(i, j, partialDerivative);
+
+				}
+
+			}
+
+			// -------------------------------------------------------------------
 			// Filling matrix B with observations minus Taylor constant term
 			// -------------------------------------------------------------------
 			for (int i=0; i<ne; i++){
@@ -216,6 +265,20 @@ public class Solver {
 			}
 
 			// -------------------------------------------------------------------
+			// Filling matrix D with observations minus Taylor constant term
+			// -------------------------------------------------------------------
+			for (int i=0; i<nc; i++){
+
+				constraint = IMP_CONSTRAINTS.get(i);
+
+				double obs = constraint.getRightPart();
+				double cst = ExpressionComputer.eval(constraint);
+
+				D.set(i, 0, obs-cst);
+
+			}
+
+			// -------------------------------------------------------------------
 			// Weight matrix
 			// -------------------------------------------------------------------
 			for (int i=0; i<ne; i++){
@@ -225,16 +288,50 @@ public class Solver {
 			}
 
 			// -------------------------------------------------------------------
+			// Right and left indicative members in normal equation
+			// ------------------------------------------------------------------
+			Matrix LEFT = A.transpose().times(P).times(A);
+			Matrix RIGHT = A.transpose().times(P).times(B);
+			
+			// -------------------------------------------------------------------
+			// Total equation
+			// ------------------------------------------------------------------
+			for (int i=0; i<np; i++){
+				for (int j=0; j<np; j++){
+					MA.set(i, j, LEFT.get(i, j));
+				}
+			}
+			for (int i=np; i<np+nc; i++){
+				for (int j=0; j<np; j++){
+					MA.set(i, j, C.get(i-np, j));
+				}
+			}
+			for (int i=0; i<np; i++){
+				for (int j=np; j<np+nc; j++){
+					MA.set(i, j, C.get(j-np, i));
+				}
+			}
+			for (int i=0; i<np; i++){
+				MB.set(i, 0, RIGHT.get(i, 0));
+			}
+			for (int i=np; i<np+nc; i++){
+				MB.set(i, 0, D.get(i-np, 0));
+			}
+			
+
+			// -------------------------------------------------------------------
 			// Computing normal equation
 			// -------------------------------------------------------------------
-			N = A.transpose().times(P).times(A).inverse();
-			Matrix Y = A.transpose().times(P).times(B);
+			N = MA.inverse();
+			MX = N.times(MB);
 
 
 			// -------------------------------------------------------------------
 			// Computing incremental matrix X
 			// -------------------------------------------------------------------
-			X = N.times(Y);
+			for (int i=0; i<np; i++){
+				X.set(i, 0, MX.get(i, 0));
+			}
 
 
 
@@ -289,7 +386,7 @@ public class Solver {
 		// -------------------------------------------------------------------
 		// Computing variance factor
 		// -------------------------------------------------------------------
-		sigma02 = (V.transpose().times(P).times(V).get(0, 0))/(ne-np);
+		sigma02 = (V.transpose().times(P).times(V).get(0, 0))/(ne-np+nc);
 
 
 	}
@@ -316,7 +413,7 @@ public class Solver {
 		return RESIDUALS.get(index).get(RESIDUALS.get(index).size()-1);
 
 	}
-	
+
 	// -------------------------------------------------------------------
 	// Method to get least squares final normalized (/std) residuals
 	// Input : constraint index (integer)
@@ -528,18 +625,6 @@ public class Solver {
 	// -------------------------------------------------------------------
 	public void displayFullResults(){
 
-		System.out.println("-----------------------------");
-		System.out.println("After "+getEffectiveIterationsNumber()+" iterations");
-		System.out.println("-----------------------------");
-
-		for (int i=0; i<getParametersNumber(); i++){
-
-
-			double r = parameters.getParameter(i);
-
-			System.out.println(parameters.getParameterName(i)+" = "+r+" +/- "+getEstimationStd(i));
-
-		}
 
 		System.out.println("");
 
@@ -547,7 +632,7 @@ public class Solver {
 		System.out.println("Residuals");
 		System.out.println("-----------------------------");
 
-		for (int i=0; i<getConstraintsNumber(); i++){
+		for (int i=0; i<getIndicativeConstraintsNumber(); i++){
 
 			System.out.println("Eq "+i+" : "+getResidual(i));
 
@@ -559,7 +644,7 @@ public class Solver {
 		System.out.println("Normalized residuals");
 		System.out.println("-----------------------------");
 
-		for (int i=0; i<getConstraintsNumber(); i++){
+		for (int i=0; i<getIndicativeConstraintsNumber(); i++){
 
 			System.out.println("Eq "+i+" : "+getNormalizedResidual(i));
 
@@ -573,6 +658,19 @@ public class Solver {
 
 		System.out.println("s0² = "+sigma02);
 		System.out.println("s0 = "+Math.sqrt(sigma02));
+		
+		System.out.println("-----------------------------");
+		System.out.println("After "+getEffectiveIterationsNumber()+" iterations");
+		System.out.println("-----------------------------");
+
+		for (int i=0; i<getParametersNumber(); i++){
+
+
+			double r = parameters.getParameter(i);
+
+			System.out.println(parameters.getParameterName(i)+" = "+r+" +/- "+getEstimationStd(i));
+
+		}
 
 	}
 
