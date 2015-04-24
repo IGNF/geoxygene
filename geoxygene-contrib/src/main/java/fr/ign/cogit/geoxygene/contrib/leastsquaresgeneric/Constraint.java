@@ -88,19 +88,19 @@ public class Constraint {
 	// Type = false -> indicative constraint
 	// -------------------------------------------------------------------
 	public Constraint(String expression, boolean type){
-		
+
 		this.type = type;
-		
+
 		// Découpage éventuel de ':='
 		int pos1 = expression.indexOf(":=");
-		
+
 		if (pos1 != -1){
-			
+
 			expression = expression.replace(":=", "=");
 			setImperative(true);
-			
+
 		}
-		
+
 		// Découpage éventuel de l'écart-type
 		int pos2 = expression.indexOf("+/-");
 
@@ -119,6 +119,16 @@ public class Constraint {
 		}
 
 		split();
+
+		// left part eventuel correction
+		while ((leftPart.contains("++")) || (leftPart.contains("--")) || leftPart.contains("+-") || leftPart.contains("-+")){
+
+			leftPart = leftPart.replace("++", "+");
+			leftPart = leftPart.replace("--", "+");
+			leftPart = leftPart.replace("+-", "-");
+			leftPart = leftPart.replace("-+", "-");
+
+		}
 
 		this.rpn = new ReversePolishNotation(leftPart);
 
