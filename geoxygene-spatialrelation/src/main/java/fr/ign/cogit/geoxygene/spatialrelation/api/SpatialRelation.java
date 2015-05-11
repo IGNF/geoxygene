@@ -21,31 +21,31 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
  * @author GTouya
  * 
  */
-public interface SpatialRelation {
+public interface SpatialRelation extends IFeature {
 
-	/**
-	 * The members of the spatial relation. There are two members for common
-	 * binary relations.
-	 * 
-	 * @return
-	 */
-	public List<IFeature> getMembers();
+  /**
+   * The members of the spatial relation. There are two members for common
+   * binary relations.
+   * 
+   * @return
+   */
+  public List<IFeature> getMembers();
 
-	public Set<RelationProperty> getProperties();
+  public Set<RelationProperty> getProperties();
 
-	/**
-	 * Returns the name of the spatial relation.
-	 * 
-	 * @return
-	 */
-	public String getName();
+  /**
+   * Returns the name of the spatial relation.
+   * 
+   * @return
+   */
+  public String getName();
 
-	/**
-	 * The condition of relevance of the spatial relation (e.g. two features are
-	 * near if their relative distance is less than 10m).
-	 * 
-	 * @return
-	 */
-	public RelationExpression getConditionOfRelevance();
+  /**
+   * The condition of relevance of the spatial relation (e.g. two features are
+   * near if their relative distance is less than 10m).
+   * 
+   * @return
+   */
+  public RelationExpression getConditionOfRelevance();
 
 }
