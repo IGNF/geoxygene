@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.spatialrelation.api.AchievementMeasureOperation;
 import fr.ign.cogit.geoxygene.spatialrelation.api.BinarySpatialRelation;
 import fr.ign.cogit.geoxygene.spatialrelation.api.PredicateSpatialRelation;
@@ -28,8 +29,8 @@ import fr.ign.cogit.geoxygene.spatialrelation.properties.ConvergingPoint;
 import fr.ign.cogit.geoxygene.spatialrelation.properties.DistanceInParallelPortions;
 import fr.ign.cogit.geoxygene.spatialrelation.properties.ParallelSection;
 
-public class PartialParallelism2Lines implements BinarySpatialRelation,
-    PredicateSpatialRelation {
+public class PartialParallelism2Lines extends DefaultFeature implements
+    BinarySpatialRelation, PredicateSpatialRelation {
 
   private static final double MIN_DIST = 15.0;
   private IFeature member1, member2;
@@ -49,6 +50,7 @@ public class PartialParallelism2Lines implements BinarySpatialRelation,
     this.distance = new DistanceInParallelPortions();
     this.expression = new ThresholdExpression(MIN_DIST, SimpleOperator.EQ_INF,
         new DoubleComparator());
+    this.setGeom(null);// TODO
   }
 
   @Override
