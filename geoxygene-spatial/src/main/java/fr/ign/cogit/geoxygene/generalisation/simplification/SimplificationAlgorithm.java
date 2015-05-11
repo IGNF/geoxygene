@@ -84,8 +84,8 @@ public class SimplificationAlgorithm {
    * @param cpPlusCourt
    * @return
    */
-  private static resultatSuppressionCotePolygone suppressionCote(IPolygon poly,
-      PolygonSegment cotePolygone) {
+  protected static resultatSuppressionCotePolygone suppressionCote(
+      IPolygon poly, PolygonSegment cotePolygone) {
 
     // recupere l'anneau dont on souhaite supprimer un cote
     IRing anneau;
@@ -271,8 +271,8 @@ public class SimplificationAlgorithm {
           || coord_[0].y != coord_[coord_.length - 1].y) {
         return new resultatSuppressionCoteLigne(null, false);
       } else {
-        return new resultatSuppressionCoteLigne(new GeometryFactory()
-            .createLinearRing(coord_), true);
+        return new resultatSuppressionCoteLigne(
+            new GeometryFactory().createLinearRing(coord_), true);
       }
     }
 
@@ -358,8 +358,8 @@ public class SimplificationAlgorithm {
           || coord_[0].y != coord_[coord_.length - 1].y) {
         return new resultatSuppressionCoteLigne(null, false);
       } else {
-        return new resultatSuppressionCoteLigne(new GeometryFactory()
-            .createLinearRing(coord_), true);
+        return new resultatSuppressionCoteLigne(
+            new GeometryFactory().createLinearRing(coord_), true);
       }
 
     }
@@ -419,8 +419,8 @@ public class SimplificationAlgorithm {
           || coord_[0].y != coord_[coord_.length - 1].y) {
         return new resultatSuppressionCoteLigne(null, false);
       } else {
-        return new resultatSuppressionCoteLigne(new GeometryFactory()
-            .createLinearRing(coord_), true);
+        return new resultatSuppressionCoteLigne(
+            new GeometryFactory().createLinearRing(coord_), true);
       }
 
     }
