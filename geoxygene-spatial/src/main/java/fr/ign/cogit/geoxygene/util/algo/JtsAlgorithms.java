@@ -1252,6 +1252,44 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   /**
+   * Supprime les trous d'un polygone inférieurs à une aire minimale. Remove the
+   * holes smaller than a minimum area from a polygon .
+   * 
+   * @param poly un polygone, a polygon
+   */
+  public static Polygon supprimeTrous(Polygon poly, double minArea) {
+    List<LinearRing> holes = new ArrayList<>();
+    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+      LinearRing ring = (LinearRing) poly.getInteriorRingN(i);
+      if (ring.getArea() < minArea)
+        continue;
+      holes.add(ring);
+    }
+    LinearRing[] holesArray = new LinearRing[holes.size()];
+    for (int i = 0; i < holes.size(); i++)
+      holesArray[i] = holes.get(i);
+
+    return new Polygon((LinearRing) poly.getExteriorRing(), holesArray,
+        poly.getFactory());
+  }
+
+  /**
+   * Supprime les trous, inférieurs à une aire minimale, d'un multipolygone,
+   * i.e. supprime les trous de tous les polygones d'un multipolygone. Remove
+   * the holes smaller than area threshold from a multipolygon.
+   * @see #supprimeTrous(Polygon)
+   * @param mp un multipolyone, a multipolygon
+   */
+  public static MultiPolygon supprimeTrous(MultiPolygon mp, double minArea) {
+    Polygon[] polys = new Polygon[mp.getNumGeometries()];
+    for (int i = 0; i < mp.getNumGeometries(); i++) {
+      polys[i] = JtsAlgorithms.supprimeTrous((Polygon) mp.getGeometryN(i),
+          minArea);
+    }
+    return (new GeometryFactory()).createMultiPolygon(polys);
+  }
+
+  /**
    * Builds on offset curve for the given {@link ILineString}. A positive offset
    * builds an offset curve on the left-hand side of the reference
    * {@link ILineString}. Negative means right.

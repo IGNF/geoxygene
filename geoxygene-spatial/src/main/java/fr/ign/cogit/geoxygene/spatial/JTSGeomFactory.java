@@ -77,4 +77,9 @@ public class JTSGeomFactory implements AbstractGeomFactory {
     return new GM_Point(position);
   }
 
+  @Override
+  public IPolygon createIPolygon(IDirectPositionList coords) {
+    return new GM_Polygon(new GM_LineString(coords));
+  }
+
 }

@@ -1,18 +1,19 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.util.multicriteriadecision;
 
 import java.util.Map;
 
 /**
- * @author PTaillandier Criterion used for multiple criteria decision making
+ * @author PTaillandier
+ * @author GTouya Criterion used for multiple criteria decision making
  */
 public abstract class Criterion {
 

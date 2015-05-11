@@ -1,8 +1,7 @@
 package fr.ign.cogit.geoxygene.osm.importexport;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class OSMRelation extends PrimitiveGeomOSM {
   private TypeRelation type;
@@ -57,8 +56,8 @@ public class OSMRelation extends PrimitiveGeomOSM {
    * Get the members of this relation with the role "outer".
    * @return
    */
-  public Set<OsmRelationMember> getOuterMembers() {
-    Set<OsmRelationMember> outers = new HashSet<OsmRelationMember>();
+  public List<OsmRelationMember> getOuterMembers() {
+    List<OsmRelationMember> outers = new ArrayList<OsmRelationMember>();
     for (OsmRelationMember member : this.getMembers()) {
       if (member.getRole().equals(RoleMembre.OUTER))
         outers.add(member);
@@ -70,8 +69,8 @@ public class OSMRelation extends PrimitiveGeomOSM {
    * Get the members of this relation with the role "inner".
    * @return
    */
-  public Set<OsmRelationMember> getInnerMembers() {
-    Set<OsmRelationMember> inners = new HashSet<OsmRelationMember>();
+  public List<OsmRelationMember> getInnerMembers() {
+    List<OsmRelationMember> inners = new ArrayList<OsmRelationMember>();
     for (OsmRelationMember member : this.getMembers()) {
       if (member.getRole().equals(RoleMembre.INNER))
         inners.add(member);

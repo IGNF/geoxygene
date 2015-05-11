@@ -46,6 +46,7 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.util.CRSConversion;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMRelation.RoleMembre;
@@ -59,6 +60,8 @@ import fr.ign.cogit.geoxygene.osm.schema.OsmMapping.OsmMatching;
 import fr.ign.cogit.geoxygene.osm.schema.OsmSource;
 import fr.ign.cogit.geoxygene.osm.schema.landuse.OsmLandUseTypology;
 import fr.ign.cogit.geoxygene.osm.schema.landuse.OsmSimpleLandUseArea;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
 
 public class OSMLoader extends SwingWorker<Void, Void> {
 
@@ -525,12 +528,75 @@ public class OSMLoader extends SwingWorker<Void, Void> {
       if (rel.getTags().containsKey("type")) {
         if (rel.getTags().get("type").equals("multipolygon")) {
           OSMRelation primitive = (OSMRelation) rel.getGeom();
-          Set<OsmRelationMember> outers = primitive.getOuterMembers();
-          Set<OsmRelationMember> inners = primitive.getInnerMembers();
-          for (OsmRelationMember outer : outers) {
-            IGeneObj outerObj = mapIdObj.get(outer.getRef());
-            if (outerObj == null)
+          List<OsmRelationMember> outers = primitive.getOuterMembers();
+          List<OsmRelationMember> inners = primitive.getInnerMembers();
+          if (outers.size() > 1) {
+
+            // it means that the outer ways form the polygonal geometry
+            IDirectPositionList coords = new DirectPositionList();
+            for (OsmRelationMember outer : outers) {
+              OSMResource resource = getWayFromId(outer.getRef());
+              if (resource == null)
+                continue;
+              coords.addAll(convertor.convertOSMLine(
+                  (OSMWay) resource.getGeom(), nodes).coord());
+            }
+            IPolygon polygon = GeometryEngine.getFactory().createIPolygon(
+                coords);
+            // add inner rings to polygon
+            for (OsmRelationMember inner : inners) {
+              OSMResource resource = getWayFromId(inner.getRef());
+              if (resource == null)
+                continue;
+              IRing ring = convertor.convertOSMPolygon(
+                  (OSMWay) resource.getGeom(), nodes).getExterior();
+              if (ring.coord().size() < 4)
+                continue;
+              polygon.addInterior(ring);
+            }
+
+            // get the proper matching
+            OsmMatching matching = mapping.getMatchingFromResource(rel);
+            // create the gene obj
+            String featTypeName = (String) matching.getCartagenClass()
+                .getField("FEAT_TYPE_NAME").get(null);
+            IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) dataset
+                .getCartagenPop(
+                    dataset.getPopNameFromClass(matching.getCartagenClass()),
+                    featTypeName);
+            OsmGeoClass geoClass = new OsmGeoClass(pop.getNom(), featTypeName,
+                matching.getType());
+            dataset.getCartAGenDB().getClasses().add(geoClass);
+            OsmGeneObj obj = factory.createGeneObj(matching.getCartagenClass(),
+                rel, polygon);
+            if (obj == null)
               continue;
+            obj.setCaptureTool(rel.getCaptureTool());
+            obj.setChangeSet(rel.getChangeSet());
+            obj.setOsmId(rel.getId());
+            obj.setContributor(rel.getContributeur());
+            obj.setDate(rel.getDate());
+            obj.setSource(OsmSource.valueOfTag(rel.getSource()));
+            obj.setTags(rel.getTags());
+            obj.setVersion(rel.getVersion());
+            obj.setUid(rel.getUid());
+            pop.add(obj);
+            mapIdObj.put(rel.getId(), obj);
+            if (matching.getTag().equals("landuse")
+                && obj instanceof ISimpleLandUseArea) {
+              ((OsmSimpleLandUseArea) obj).setType(OsmLandUseTypology
+                  .valueOfTagValue(obj.getTags().get("landuse")).ordinal());
+            }
+
+          } else if (outers.size() == 1) {
+            OsmRelationMember outer = outers.iterator().next();
+            IGeneObj outerObj = mapIdObj.get(outer.getRef());
+            if (outerObj == null) {
+              // new object to create
+              // first, create the holed geometry
+              // TODO
+              continue;
+            }
             // only polygons can have inner rings
             if (!(outerObj.getGeom() instanceof IPolygon))
               continue;

@@ -25,6 +25,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
+import fr.ign.cogit.geoxygene.osm.importexport.OSMResource;
 import fr.ign.cogit.geoxygene.osm.schema.amenity.OsmHospital;
 import fr.ign.cogit.geoxygene.osm.schema.amenity.OsmSchool;
 import fr.ign.cogit.geoxygene.osm.schema.urban.OsmCemetery;
@@ -372,5 +373,23 @@ public class OsmMapping {
 
   public void setMatchings(Set<OsmMatching> matchings) {
     this.matchings = matchings;
+  }
+
+  /**
+   * Get the matching object related to an OSMResource and its tags.
+   * @param resource
+   * @return
+   */
+  public OsmMatching getMatchingFromResource(OSMResource resource) {
+    for (OsmMatching matching : matchings) {
+      for (String tag : resource.getTags().keySet()) {
+        if (matching.tag.equals(tag)) {
+          if (matching.tagValues.size() == 0
+              || matching.tagValues.contains(resource.getTags().get(tag)))
+            return matching;
+        }
+      }
+    }
+    return null;
   }
 }

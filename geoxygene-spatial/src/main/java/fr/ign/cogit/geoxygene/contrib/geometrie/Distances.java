@@ -363,10 +363,12 @@ public abstract class Distances {
   /**
    * Distance surfacique entre deux IGeometry.
    */
+  @SuppressWarnings("unchecked")
   public static double distanceSurfacique(IGeometry geom, IGeometry geom2) {
     if (geom instanceof IMultiSurface<?> || geom2 instanceof IMultiSurface<?>) {
-      return Distances.distanceSurfacique(Distances.toMultiSurface(geom),
-          Distances.toMultiSurface(geom2));
+      return Distances.distanceSurfacique(
+          (IMultiSurface<IOrientableSurface>) geom,
+          (IMultiSurface<IOrientableSurface>) geom2);
     }
     return Distances.distanceSurfacique((IPolygon) geom, (IPolygon) geom2);
   }

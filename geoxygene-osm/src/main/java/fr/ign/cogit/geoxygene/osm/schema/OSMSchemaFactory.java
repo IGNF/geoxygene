@@ -44,6 +44,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.osm.importexport.OSMNode;
@@ -247,6 +248,128 @@ public class OSMSchemaFactory extends AbstractCreationFactory {
       if (poly.coord().size() < 4)
         return null;
       return new OsmHospital(poly);
+    }
+    // TODO
+    return null;
+  }
+
+  public OsmGeneObj createGeneObj(Class<?> classObj, OSMResource resource,
+      IGeometry geom) throws Exception {
+    if (IRoadLine.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() == 1)
+        return null;
+      return (OsmGeneObj) this.createRoadLine((ILineString) geom, 0);
+    }
+    if (ICable.class.isAssignableFrom(classObj)) {
+
+      if (geom.coord().size() == 1)
+        return null;
+      return (OsmGeneObj) this.createCable((ILineString) geom);
+    }
+    if (IBuilding.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() < 4)
+        return null;
+      return (OsmGeneObj) this.createBuilding((IPolygon) geom);
+    }
+    if (ISportsField.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() < 4)
+        return null;
+      return (OsmGeneObj) this.createSportsField((IPolygon) geom);
+    }
+    if (IWaterLine.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() == 1)
+        return null;
+      return (OsmGeneObj) this.createWaterLine((ILineString) geom, 0);
+    }
+    if (IWaterArea.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() < 4)
+        return null;
+      return (OsmGeneObj) this.createWaterArea((IPolygon) geom);
+    }
+    if (IBuildPoint.class.isAssignableFrom(classObj)) {
+      return (OsmGeneObj) this.createBuildPoint((IPoint) geom);
+    }
+    if (IWaterArea.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() < 4)
+        return null;
+      return (OsmGeneObj) this.createWaterArea((IPolygon) geom);
+    }
+    if (IAirportArea.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() < 4)
+        return null;
+      return (OsmGeneObj) this.createAirportArea((IPolygon) geom);
+    }
+    if (IRunwayArea.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() < 4)
+        return null;
+      return (OsmGeneObj) this.createRunwayArea((IPolygon) geom);
+    }
+    if (IRunwayLine.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() == 1)
+        return null;
+      return (OsmGeneObj) this.createRunwayLine((ILineString) geom);
+    }
+    if (ITaxiwayArea.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() < 4)
+        return null;
+      return (OsmGeneObj) this.createTaxiwayArea((IPolygon) geom);
+    }
+    if (ITaxiwayLine.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() == 1)
+        return null;
+      return (OsmGeneObj) this.createTaxiwayLine((ILineString) geom, null);
+    }
+    if (ISimpleLandUseArea.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() < 4)
+        return null;
+      return (OsmGeneObj) this.createSimpleLandUseArea((IPolygon) geom, 0);
+    }
+    if (IPointOfInterest.class.isAssignableFrom(classObj)) {
+      return new OsmPointOfInterest((IPoint) geom);
+    }
+    if (ITreePoint.class.isAssignableFrom(classObj)) {
+      return (OsmGeneObj) this.createTreePoint((IPoint) geom);
+    }
+    if (ICycleWay.class.isAssignableFrom(classObj)) {
+      return (OsmGeneObj) this.createCycleWay((ILineString) geom);
+    }
+    if (IRailwayLine.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() == 1)
+        return null;
+      return (OsmGeneObj) this.createRailwayLine((ILineString) geom, 0);
+    }
+    if (IPathLine.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() == 1)
+        return null;
+      return (OsmGeneObj) this.createPath((ILineString) geom, 0);
+    }
+    if (IReliefElementPoint.class.isAssignableFrom(classObj)) {
+      return (OsmGeneObj) this.createReliefElementPoint((IPoint) geom);
+    }
+    if (ICoastLine.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() == 1)
+        return null;
+      return (OsmGeneObj) this.createCoastLine((ILineString) geom);
+    }
+    if (ISquareArea.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() < 4)
+        return null;
+      return (OsmGeneObj) this.createSquareArea((IPolygon) geom);
+    }
+    if (OsmCemetery.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() < 4)
+        return null;
+      return new OsmCemetery((IPolygon) geom);
+    }
+    if (OsmSchool.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() < 4)
+        return null;
+      return new OsmSchool((IPolygon) geom);
+    }
+    if (OsmHospital.class.isAssignableFrom(classObj)) {
+      if (geom.coord().size() < 4)
+        return null;
+      return new OsmHospital((IPolygon) geom);
     }
     // TODO
     return null;

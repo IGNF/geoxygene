@@ -36,6 +36,8 @@ public interface AbstractGeomFactory {
 
   public IPolygon createIPolygon(IRing ring);
 
+  public IPolygon createIPolygon(IDirectPositionList coords);
+
   public IPoint createPoint();
 
   public IPoint createPoint(IDirectPosition position);
