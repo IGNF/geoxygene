@@ -27,8 +27,8 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
- * 
  * TODO : implements Runnable ?
+ * 
  * @author Marie-Dominique Van Damme
  */
 public class PostgisReader {
@@ -36,7 +36,27 @@ public class PostgisReader {
   /** LOGGER. */
   private final static Logger LOGGER = Logger.getLogger(PostgisReader.class
       .getName());
-
+  
+  
+  /**
+   *
+   */
+  public static IPopulation<IFeature> read(Map<String, String> params,
+      String tablename, String populationName, IDataSet<?> dataset,
+      boolean initSpatialIndex) throws Exception {
+    String geomColumnName = null;
+    return read(params, tablename, populationName, dataset, initSpatialIndex, geomColumnName);
+  }
+  
+  
+  public static IPopulation<IFeature> read(Map<String, String> params,
+      String tablename, String populationName, IDataSet<?> dataset,
+      boolean initSpatialIndex, String geomColumnName) throws Exception {
+    String filter = null;
+    return read(params, tablename, populationName, dataset, initSpatialIndex, geomColumnName, filter);
+    
+  }
+  
   /**
    * 
    * 
@@ -47,8 +67,8 @@ public class PostgisReader {
    * @return
    */
   public static IPopulation<IFeature> read(Map<String, String> params,
-      String tablename, String populationName, IDataSet dataset,
-      boolean initSpatialIndex) throws Exception {
+      String tablename, String populationName, IDataSet<?> dataset,
+      boolean initSpatialIndex, String geomColumnName, String filter) throws Exception {
 
     // creation de la collection de features
     Population<IFeature> population = new Population<IFeature>(populationName);
@@ -64,7 +84,7 @@ public class PostgisReader {
 
       /** Initialise le schéma */
       PGReader reader = PostgisReader.initSchema(params, tablename,
-          schemaDefaultFeature, population, initSpatialIndex);
+          schemaDefaultFeature, population, initSpatialIndex, geomColumnName, filter);
       if (reader == null) {
         return null;
       }
@@ -73,7 +93,7 @@ public class PostgisReader {
        * Parcours de features du fichier et création de Default features
        * équivalents.
        */
-      PostgisReader.read(reader, schemaDefaultFeature, population);
+      PostgisReader.read(reader, schemaDefaultFeature, population, geomColumnName);
 
     } catch (Exception e) {
       LOGGER.log(Level.ERROR, e.toString());
@@ -95,14 +115,14 @@ public class PostgisReader {
    */
   public static PGReader initSchema(Map<String, String> params,
       String tablename, SchemaDefaultFeature schemaDefaultFeature,
-      IPopulation<IFeature> population, boolean initSpatialIndex)
+      IPopulation<IFeature> population, boolean initSpatialIndex, String geomColumnName, String filter)
       throws Exception {
 
     PGReader reader = null;
     LOGGER.log(Level.INFO, "INIT SCHEMA");
 
     try {
-      reader = new PGReader(params, tablename);
+      reader = new PGReader(params, tablename, filter);
     } catch (Exception e) {
       LOGGER.log(Level.ERROR, e.getMessage());
       throw e;
@@ -145,11 +165,19 @@ public class PostgisReader {
     }
 
     // Création d'un schéma associé au featureType
-    newFeatureType
-        .setGeometryType((reader.getShapeType() == null) ? GM_Object.class
-            : reader.getShapeType());
-    LOGGER.log(Level.TRACE, "shapeType = " + reader.getShapeType()
-        + "GeometryType" + newFeatureType.getGeometryType());
+    Class<? extends GM_Object>[] classList = reader.getShapesType();
+    
+    if (geomColumnName == null) {
+      newFeatureType.setGeometryType((classList[0] == null) ? GM_Object.class : classList[0]);
+    } else {
+      int posGeom = reader.getPositionGeomColumn(geomColumnName);
+      if (posGeom >= 0) {
+        newFeatureType.setGeometryType(classList[posGeom]);
+      } else {
+        LOGGER.log(Level.ERROR, "Not found position of geometry column");
+      }
+    }
+    LOGGER.log(Level.TRACE, "GeometryType" + newFeatureType.getGeometryType());
     schemaDefaultFeature.setFeatureType(newFeatureType);
     newFeatureType.setSchema(schemaDefaultFeature);
     schemaDefaultFeature.setAttLookup(attLookup);
@@ -172,7 +200,7 @@ public class PostgisReader {
    * @throws IOException renvoie une exception en cas d'erreur de lecture
    */
   public static void read(PGReader reader, SchemaDefaultFeature schema,
-      IPopulation<IFeature> population) throws IOException {
+      IPopulation<IFeature> population, String geomColumnName) throws IOException {
 
     for (int indexFeature = 0; indexFeature < reader.getNbFeatures(); indexFeature++) {
 
@@ -188,8 +216,20 @@ public class PostgisReader {
           LOGGER.log(Level.WARN, "null geometry for object " + indexFeature);
           LOGGER.log(Level.WARN, "NullGeometryObjectIGnored");
         } else {
-          IGeometry geometry = AdapterFactory
-              .toGM_Object(reader.geometries[indexFeature]);
+          IGeometry geometry = null;
+          if (geomColumnName == null) {
+            geometry = AdapterFactory
+                .toGM_Object(reader.geometries[indexFeature][0]);
+          } else {
+            int posGeom = reader.getPositionGeomColumn(geomColumnName);
+            if (posGeom >= 0) {
+              geometry = AdapterFactory
+                  .toGM_Object(reader.geometries[indexFeature][posGeom]);
+            } else {
+              LOGGER.log(Level.ERROR, "Not found position of geometry column");
+            }
+          }
+          
           if (!geometryType.isAssignableFrom(geometry.getClass())) {
             // LOGGER.log(Level.TRACE, "Geometry of type " +
             // geometry.getClass().getSimpleName() + " instead of "

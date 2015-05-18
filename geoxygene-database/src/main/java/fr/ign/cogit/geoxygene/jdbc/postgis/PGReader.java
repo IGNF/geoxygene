@@ -1,6 +1,5 @@
 package fr.ign.cogit.geoxygene.jdbc.postgis;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -16,6 +15,9 @@ import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeType;
+import org.opengis.feature.type.GeometryType;
+import org.opengis.filter.Filter;
+import org.geotools.filter.text.cql2.CQL;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -27,9 +29,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
- * 
- * TODO : plusieurs colonnes géométriques
- * 
+ *
  * @author Marie-Dominique Van Damme
  */
 
@@ -55,9 +55,9 @@ public class PGReader {
   Object[][] fieldValues;
   String[] fieldNames;
   Class<?>[] fieldClasses;
-  Geometry[] geometries;
-  String geomColumnName;
-  Class<? extends GM_Object> shapeType;
+  Geometry[][] geometries;
+  String[] geomColumnNames;
+  Class<? extends GM_Object>[] shapesType;
 
   CoordinateReferenceSystem localCRS;
 
@@ -65,7 +65,8 @@ public class PGReader {
    * Constructor.
    * @param params
    */
-  public PGReader(Map<String, String> connectionParameters, String name)
+  @SuppressWarnings("unchecked")
+  public PGReader(Map<String, String> connectionParameters, String name, String filterString)
       throws Exception {
 
     params = connectionParameters;
@@ -85,18 +86,34 @@ public class PGReader {
       // Exécute la requete + resultat
       SimpleFeatureSource featureSource = pgDatastore
           .getFeatureSource(tablename);
+      
       SimpleFeatureType featureType = featureSource.getSchema();
 
       // CRS
       localCRS = featureType.getCoordinateReferenceSystem();
 
       // Attributes
-      nbFields = featureType.getAttributeCount() - 1;
+      int nbGeomFields = 0;
+      for (int i = 0; i < featureType.getTypes().size(); i++) {
+        if (featureType.getTypes().get(i) instanceof GeometryType) {
+          //  AttributeType attr = featureType.getTypes().get(i);
+          // System.out.println("-- " + featureType.getTypes().get(i).getName());
+          nbGeomFields++;
+        }
+      }
+      
+      nbFields = featureType.getAttributeCount() - nbGeomFields;
       LOGGER.info("Nb fields = " + nbFields);
 
       // Fields
       // Préparation de la requête
       Query query = new Query(tablename);
+      if (filterString != null && !filterString.trim().equals("")) {
+        Filter filter = CQL.toFilter(filterString);
+        query.setFilter(filter);
+        System.out.println(query.toString());
+      }
+      
       // LOGGER.debug("Query : " + query.toString());
       SimpleFeatureCollection resFeatureCollection = featureSource
           .getFeatures(query);
@@ -114,29 +131,31 @@ public class PGReader {
       LOGGER.debug("Nb features = " + nbFeatures);
 
       fieldValues = new Object[this.nbFeatures][this.nbFields];
+      geometries = new Geometry[nbFeatures][nbGeomFields];
+      
       fieldNames = new String[this.nbFields];
       fieldClasses = new Class<?>[this.nbFields];
+      
+      geomColumnNames = new String[nbGeomFields];
+      shapesType = new Class[nbGeomFields];
 
       // Set AttributeType
       int cptField = 0;
+      int cptGeomField = 0;
       for (int i = 0; i < featureType.getTypes().size(); i++) {
-
         AttributeType type = featureType.getTypes().get(i);
-        LOGGER.log(Level.INFO, "Type = " + type.getName());
-
         if (type.getClass().getName().endsWith("GeometryTypeImpl")) {
-          geomColumnName = type.getName().toString();
-          LOGGER.log(Level.INFO, "Nom de la colonne géométrique "
-              + geomColumnName);
-
-          shapeType = PGReader.geometryType(type);
+          geomColumnNames[cptGeomField] = type.getName().toString();
+          LOGGER.log(Level.TRACE, "Nom de la colonne géométrique : "
+              + geomColumnNames[cptGeomField]);
+          shapesType[cptGeomField] = PGReader.geometryType(type);
+          cptGeomField++;
         } else {
           // Field Name
           String attributeTypeName = type.getName().toString();
           this.fieldNames[cptField] = attributeTypeName;
-          LOGGER.log(Level.TRACE, "Field " + i + " = "
+          LOGGER.log(Level.TRACE, "Field " + cptField + " = "
               + this.fieldNames[cptField]);
-
           // Field class
           fieldClasses[cptField] = type.getBinding();
           cptField++;
@@ -144,41 +163,41 @@ public class PGReader {
       }
 
       // Data
+      SimpleFeature feature = null;
       int indexFeatures = 0;
-      try {
-        geometries = new Geometry[nbFeatures];
-        FeatureIterator<SimpleFeature> reader = resFeatureCollection.features();
-        while (reader.hasNext()) {
-          SimpleFeature feature = reader.next();
-          geometries[indexFeatures] = (Geometry) feature.getDefaultGeometry();
-          cptField = 0;
-          Iterator<Property> iterator = feature.getProperties().iterator();
-          while (iterator.hasNext()) {
-            Property property = iterator.next();
-            if (!property.getName().toString().trim()
-                .equals(geomColumnName.trim())) {
-              // LOGGER.log(Level.TRACE, "Nom de l'attribut = " +
-              // property.getValue());
-              fieldValues[indexFeatures][cptField] = property.getValue();
-              cptField++;
-            }
-          }
-          indexFeatures++;
+      FeatureIterator<SimpleFeature> reader = resFeatureCollection.features();
+      while (reader.hasNext()) {
+        try {
+          feature = reader.next();
+        } catch(Exception e) {
         }
-      } catch (Exception e) {
-        LOGGER.log(Level.ERROR, "Error for geometry of object " + e.toString());
-        this.geometries[indexFeatures] = null;
-        return;
+        cptField = 0;
+        Iterator<Property> iterator = feature.getProperties().iterator();
+        while (iterator.hasNext()) {
+          Property property = iterator.next();
+          boolean isGeom = false;
+          for (int j = 0; j < this.geomColumnNames.length; j++) {
+            String geomColumnName = this.geomColumnNames[j];
+            if (property.getName().toString().trim().equals(geomColumnName.trim())) {
+              isGeom = true;
+            } 
+          }
+          if (!isGeom) {
+            fieldValues[indexFeatures][cptField] = property.getValue();
+            cptField++;
+          } else {
+            cptGeomField = getPositionGeomColumn(property.getName().toString());
+            geometries[indexFeatures][cptGeomField] = (Geometry) property.getValue();
+          }
+        }
+        indexFeatures++;
       }
 
       // shapefileReader.close();
       // dbaseFileReader.close();
 
-    } catch (IOException e) {
-      LOGGER.log(Level.ERROR, e.toString());
-      return;
     } catch (Exception e) {
-      LOGGER.log(Level.ERROR, e.toString());
+      e.printStackTrace();
       return;
     }
 
@@ -254,8 +273,8 @@ public class PGReader {
    * 
    * @return
    */
-  public Class<? extends GM_Object> getShapeType() {
-    return this.shapeType;
+  public Class<? extends GM_Object>[] getShapesType() {
+    return this.shapesType;
   }
 
   /**
@@ -288,6 +307,16 @@ public class PGReader {
    */
   public CoordinateReferenceSystem getCRS() {
     return this.localCRS;
+  }
+  
+  
+  public int getPositionGeomColumn(String geomColumnName) {
+    for (int i = 0; i < geomColumnNames.length; i++) {
+      if (geomColumnName.toUpperCase().trim().equals(geomColumnNames[i].toUpperCase().trim())) {
+        return i;
+      }
+    }
+    return -1;
   }
 
 }
