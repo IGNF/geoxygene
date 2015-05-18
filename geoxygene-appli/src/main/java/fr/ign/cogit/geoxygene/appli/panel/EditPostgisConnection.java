@@ -111,6 +111,7 @@ public class EditPostgisConnection extends JDialog implements ActionListener {
         setSize(preferredSize);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();

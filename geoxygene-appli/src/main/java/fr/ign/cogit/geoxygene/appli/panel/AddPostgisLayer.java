@@ -14,7 +14,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -53,13 +52,18 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
     private ConnectionParam connectionParam;
     
     private JPanel loadPanel = null;
-    private JPanel layerPanel = null;
+    private JPanel queryPanel = null;
+    private JPanel tablePanel = null;
+    private JPanel buttonPanel = null;
     
     /** List of connections. */
+    @SuppressWarnings("rawtypes")
     protected JComboBox connectionList;
     
-    private PgLayerTableModel modele = new PgLayerTableModel();
-    private JTable tableau;
+    private PgLayerTableModel modeleTable = new PgLayerTableModel();
+    private PgQueryTableModel modeleQuery = new PgQueryTableModel();
+    private JTable tableauTable;
+    private JTable tableauQuery;
     
     /** Different buttons. */
     private JButton connectBt;
@@ -68,8 +72,11 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
     private JButton delConnectionBt;
     
     private JButton closeBt;
-    private JButton queryBt;
     private JButton addLayerBt;
+    
+    protected JComboBox<String> tableQueryList;
+    private JButton addQueryBt;
+    
 
     /**
      * Constructor.
@@ -84,21 +91,23 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
         setTitle(I18N.getString("AddPostgisLayer.title"));
         setIconImage(new ImageIcon(
                 GeOxygeneApplication.class.getResource("/images/toolbar/database_add.png")).getImage());
-        setLocation(300, 150);
+        setLocation(300, 50);
         
         initLoadPanel();
-        initLayerPanel();
+        initTablePanel();
+        initQueryPanel();
+        initButtonPanel();
         
         // dispaly panel
         FormLayout layout = new FormLayout(
                 "20dlu, pref, 20dlu",  // colonnes
-                "10dlu, pref, pref, 20dlu");  // lignes
+                "10dlu, pref, pref, pref, pref, 20dlu");  // lignes
         getContentPane().setLayout(layout);
-        // add(loadPanel, BorderLayout.NORTH);
-        // add(layerPanel, BorderLayout.SOUTH);
         CellConstraints cc = new CellConstraints();
         add(loadPanel, cc.xy(2, 2));
-        add(layerPanel, cc.xy(2, 3));
+        add(tablePanel, cc.xy(2, 3));
+        add(queryPanel, cc.xy(2, 4));
+        add(buttonPanel, cc.xy(2, 5));
         
         pack();
         setVisible(true);
@@ -111,22 +120,24 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
         if (source == connectBt) {
             // load table with all table which contains a geom column 
             connectDB();
+        } else if (source == addQueryBt) {
+          @SuppressWarnings("unused")
+          EditPostgisQuery query = new EditPostgisQuery(this);
         } else if (source == addLayerBt) {
-            // 
             loadShape();
         } else if (source == editConnectionBt) {
-            // 
+            @SuppressWarnings("unused")
             EditPostgisConnection editPostgisConnection = new EditPostgisConnection(this, connectionParam);
-            editPostgisConnection.setSize(600, 500);
         } else if (source == closeBt) {
             dispose();
-        }
+        } 
     }
     
     /**
      * Display all connection.
      * Add, delete, edit and load for one connection.
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void initLoadPanel() {
         
         loadPanel = new JPanel();
@@ -169,44 +180,82 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
         loadPanel.add(delConnectionBt, cc.xy(8, 4));
     }
     
+    private void initButtonPanel() {
+      
+      buttonPanel = new JPanel();
+      buttonPanel.setBorder(BorderFactory.createCompoundBorder(
+              BorderFactory.createTitledBorder(""),
+              BorderFactory.createEmptyBorder(10, 0, 0, 0)));
+      
+      FormLayout layout = new FormLayout(
+              "20dlu, pref, 5dlu, pref, 5dlu, pref, 20dlu",  // colonnes
+              "10dlu, pref, 20dlu");  // lignes
+      buttonPanel.setLayout(layout);
+      CellConstraints cc = new CellConstraints();
+      
+      // Buttons
+      closeBt = new JButton(I18N.getString("AddPostgisLayer.Close"));
+      closeBt.addActionListener(this);
+      
+      addLayerBt = new JButton(I18N.getString("AddPostgisLayer.AddLayer"));
+      addLayerBt.addActionListener(this);
+      
+      // buttonPanel.add(addQueryBt, cc.xy(2, 2));
+      buttonPanel.add(addLayerBt, cc.xy(4, 2));
+      buttonPanel.add(closeBt, cc.xy(6, 2));
+    }
+    
     /**
      * Display all tables for one connection
      */
-    private void initLayerPanel() {
+    private void initTablePanel() {
         
-        layerPanel = new JPanel();
-        layerPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(""),
+        tablePanel = new JPanel();
+        tablePanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder("Table"),
                 BorderFactory.createEmptyBorder(10, 0, 0, 0)));
         FormLayout layout = new FormLayout(
-                "20dlu, 200dlu, pref, 5dlu, pref, 5dlu, pref, 20dlu",  // colonnes
-                "20dlu, pref, pref, 20dlu, pref, 30dlu");  // lignes
-        layerPanel.setLayout(layout);
+                "20dlu, pref, 20dlu",  // colonnes  200dlu, pref, 5dlu, 
+                "20dlu, pref, 120dlu, 30dlu");  // lignes
+        tablePanel.setLayout(layout);
         CellConstraints cc = new CellConstraints();
         
         // Tableau
-        // tableau = new JTable(data, rowHeader);
-        tableau = new JTable(modele);
-        // JScrollPane scrollpane = new JScrollPane(tableau);
+        tableauTable = new JTable(modeleTable);
+       
+        tablePanel.add(tableauTable.getTableHeader(), cc.xy(2, 2));
+        tablePanel.add(new JScrollPane(tableauTable), cc.xy(2, 3));
         
-        layerPanel.add(tableau.getTableHeader(), cc.xyw(2, 2, 6));
-        layerPanel.add(new JScrollPane(tableau), cc.xyw(2, 3, 6));
-        
-        // Buttons
-        closeBt = new JButton(I18N.getString("AddPostgisLayer.Close"));
-        closeBt.addActionListener(this);
-        
-        queryBt = new JButton(I18N.getString("AddPostgisLayer.Query"));
-        queryBt.addActionListener(this);
-        queryBt.setEnabled(false);
-        
-        addLayerBt = new JButton(I18N.getString("AddPostgisLayer.AddLayer"));
-        addLayerBt.addActionListener(this);
-        
-        layerPanel.add(new JLabel(""), cc.xy(2, 5));
-        layerPanel.add(addLayerBt, cc.xy(3, 5));
-        layerPanel.add(queryBt, cc.xy(5, 5));
-        layerPanel.add(closeBt, cc.xy(7, 5));
+    }
+    
+    private void initQueryPanel() {
+      queryPanel = new JPanel();
+      queryPanel.setBorder(BorderFactory.createCompoundBorder(
+          BorderFactory.createTitledBorder("Query"),
+          BorderFactory.createEmptyBorder(10, 0, 0, 0)));
+  
+      FormLayout layout = new FormLayout(
+          "20dlu, pref, 5dlu, pref, 20dlu",  // colonnes
+          "10dlu, pref, 5dlu, pref, 80dlu, 10dlu, pref, 20dlu");  // lignes
+      queryPanel.setLayout(layout);
+      CellConstraints cc = new CellConstraints();
+      
+      String[] elements = new String[]{"---"};
+      tableQueryList = new JComboBox<String>(elements);
+      queryPanel.add(tableQueryList, cc.xy(2, 2));
+      
+      addQueryBt = new JButton("Add query");
+      addQueryBt.addActionListener(this);
+      queryPanel.add(addQueryBt, cc.xy(4, 2));
+      
+      tableauQuery = new JTable(modeleQuery);
+      queryPanel.add(tableauQuery.getTableHeader(), cc.xyw(2, 4, 3));
+      queryPanel.add(new JScrollPane(tableauQuery), cc.xyw(2, 5, 3));
+      
+      // addQueryBt = new JButton("Add query");
+      // addQueryBt.addActionListener(this);
+      // queryPanel.add(addQueryBt, cc.xy(2, 5));
+      
     }
     
     /**
@@ -217,9 +266,11 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
         try {
             
             // On vide le tableau
-            for (int i = 0; i < modele.getRowCount(); i++) {
-                modele.removePgLayer(i);
+            for (int i = 0; i < modeleTable.getRowCount(); i++) {
+              modeleTable.removePgLayer(i);
             }
+            // On vide la liste déroulante
+            tableQueryList.removeAllItems();
             
             Connection connection = DriverManager.getConnection(
                     "jdbc:postgresql://" + connectionParam.getHost() + ":" + connectionParam.getPort() 
@@ -230,11 +281,14 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
             if (resultat != null && resultat.size() > 0) {
                 for (int i = 0; i < resultat.size(); i++) {
                     Map<String, String> row = resultat.get(i);
-                    modele.addPgLayer(new PgLayer(row.get("schema"), 
+                    modeleTable.addPgLayer(new PgLayer(row.get("schema"), 
                             row.get("table"), 
                             row.get("type"), 
                             row.get("geometry_colum"), 
-                            row.get("srid")));
+                            row.get("srid")
+                        ));
+                    
+                    tableQueryList.addItem(row.get("schema") + " - " + row.get("table") + " - " + row.get("geometry_colum"));
                 }
             }
             
@@ -243,14 +297,19 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
         }
     }
     
+    protected void addQuery(String schema, String table, String geomColumn, String txtQuery) {
+      this.modeleQuery.addPgLayer(new QueryLayer(schema, table, geomColumn, txtQuery));
+    }
+    
     /**
      * 
      */
     private void loadShape() {
         
         // Get the layer
-        int[] selection = tableau.getSelectedRows();
-        if (selection.length <= 0) {
+        int[] selectionTable = tableauTable.getSelectedRows();
+        int[] selectionQuery = tableauQuery.getSelectedRows();
+        if ((selectionTable.length + selectionQuery.length) <= 0) {
             javax.swing.JOptionPane.showMessageDialog(null, I18N.getString("AddPostgisLayer.OneTable"));
         } else {
         
@@ -264,19 +323,36 @@ public class AddPostgisLayer extends JDialog implements ActionListener {
             
             try {
                 
-                for (int i = 0; i < selection.length; i++) {
-                
-                    String schemaValue = modele.getValueAt(selection[i], 0).toString();
+                for (int i = 0; i < selectionTable.length; i++) {
+                    String schemaValue = modeleTable.getValueAt(selectionTable[i], 0).toString();
                     params.put("schema", schemaValue);
                     LOGGER.log(Level.DEBUG, "Chargement dans le schema : " + schemaValue);
-                    String tableValue = modele.getValueAt(selection[i], 1).toString();
+                    String tableValue = modeleTable.getValueAt(selectionTable[i], 1).toString();
                     LOGGER.log(Level.DEBUG, "Chargement de la table : " + tableValue);
+                    String geomColumnValue = modeleTable.getValueAt(selectionTable[i], 3).toString();
+                    LOGGER.log(Level.DEBUG, "Geometry column : " + geomColumnValue);
                     
-                    IPopulation<IFeature> pop = PostgisReader.read(params, tableValue, tableValue, null, false);
-                    LOGGER.log(Level.DEBUG, "Nb features = " + pop.size());
-                    
+                    IPopulation<IFeature> pop = PostgisReader.read(params, tableValue, tableValue, null, false, geomColumnValue);
                     layerLegendPanel.getLayerViewPanel().getProjectFrame().addUserLayer(pop, tableValue, null);
                 }
+                
+                for (int i = 0; i < selectionQuery.length; i++) {
+                  
+                  String schemaValue = modeleQuery.getValueAt(selectionQuery[i], 0).toString();
+                  params.put("schema", schemaValue);
+                  LOGGER.log(Level.DEBUG, "Chargement dans le schema : " + schemaValue);
+                  String tableValue = modeleQuery.getValueAt(selectionQuery[i], 1).toString();
+                  LOGGER.log(Level.DEBUG, "Chargement de la table : " + tableValue);
+                  String geomColumnValue = modeleQuery.getValueAt(selectionQuery[i], 2).toString();
+                  LOGGER.log(Level.DEBUG, "Geometry column : " + geomColumnValue);
+                  String filter = modeleQuery.getValueAt(selectionQuery[i], 3).toString();
+                  LOGGER.log(Level.DEBUG, "Filter : " + filter);
+                  
+                  IPopulation<IFeature> pop = PostgisReader.read(params, tableValue, tableValue, null, false, geomColumnValue, filter);
+                  LOGGER.log(Level.DEBUG, "Nb features = " + pop.size());
+                  
+                  layerLegendPanel.getLayerViewPanel().getProjectFrame().addUserLayer(pop, tableValue, null);
+              }
                 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -351,7 +427,8 @@ class PgLayerTableModel extends AbstractTableModel {
             I18N.getString("AddPostgisLayer.table"), 
             I18N.getString("AddPostgisLayer.type"), 
             I18N.getString("AddPostgisLayer.geometryColumn"), 
-            I18N.getString("AddPostgisLayer.srid")};
+            I18N.getString("AddPostgisLayer.srid")
+    };
  
     public PgLayerTableModel() {
         super();
@@ -400,4 +477,97 @@ class PgLayerTableModel extends AbstractTableModel {
         data.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
     }
+}
+
+class QueryLayer {
+  String schema;
+  String table;
+  String geomCol;
+  String query;
+  
+  public QueryLayer() {
+    schema = "";
+    table = "";
+    geomCol = "";
+    query = "";
+  }
+  
+  public QueryLayer(String s, String ta, String g, String q) {
+    schema = s;
+    table = ta;
+    geomCol = g;
+    query = q;
+  }
+  
+  public String getSchema() {
+    return schema;
+  }
+  public String getTable() {
+    return table;
+  }
+  public String getGeomCol() {
+    return geomCol;
+  }
+  public String getQuery() {
+      return query;
+  }
+}
+
+class PgQueryTableModel extends AbstractTableModel {
+  
+  /** Serial ID. */
+  private static final long serialVersionUID = 1L;
+
+  /** Data. */
+  private final List<QueryLayer> data = new ArrayList<QueryLayer>();;
+  
+  private final String[] rowHeader = {I18N.getString("AddPostgisLayer.schema"), 
+      I18N.getString("AddPostgisLayer.table"), 
+      I18N.getString("AddPostgisLayer.geometryColumn"), "Filter"};
+
+  public PgQueryTableModel() {
+      super();
+      // data.add(new QueryLayer());
+  }
+
+  @Override
+  public int getRowCount() {
+      return data.size();
+  }
+
+  @Override
+  public int getColumnCount() {
+      return rowHeader.length;
+  }
+
+  @Override
+  public String getColumnName(int columnIndex) {
+      return rowHeader[columnIndex];
+  }
+
+  @Override
+  public String getValueAt(int rowIndex, int columnIndex) {
+      switch(columnIndex){
+          case 0:
+              return data.get(rowIndex).getSchema();
+          case 1:
+            return data.get(rowIndex).getTable();
+          case 2:
+            return data.get(rowIndex).getGeomCol();
+          case 3:
+              return data.get(rowIndex).getQuery();
+          default:
+              return null; // Ne devrait jamais arriver
+      }
+  }
+  
+  public void addPgLayer(QueryLayer query) {
+      data.add(query);
+      fireTableRowsInserted(data.size() -1, data.size() -1);
+  }
+
+  public void removePgLayer(int rowIndex) {
+      data.remove(rowIndex);
+      fireTableRowsDeleted(rowIndex, rowIndex);
+  }
 }
