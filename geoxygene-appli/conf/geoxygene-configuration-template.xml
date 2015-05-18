@@ -13,6 +13,7 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.CharacteristicShapeJTSPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.VoronoiDiagramJTSPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.SwingingArmPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.SpatialAnalysisPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.semio.SemioPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.osm.OSMPlugin</plugin>
@@ -28,4 +29,5 @@
     <plugin>fr.ign.cogit.geoxygene.appli.example.SLDDemoApplication</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.example.ZonesArborees</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.example.ChangementProjectionShape</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.CartoPlugin</plugin>
 </GeOxygeneApplicationProperties>
