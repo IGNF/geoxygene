@@ -17,7 +17,7 @@ import fr.ign.cogit.geoxygene.sig3d.equation.LineEquation;
 import fr.ign.cogit.geoxygene.sig3d.equation.PlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.geometry.Box3D;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-*
+
 /**
  * 
  * This software is released under the licence CeCILL
