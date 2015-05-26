@@ -6,9 +6,22 @@ import fr.ign.cogit.geoxygene.spatialrelation.relation.BuildingAlongARoad;
 
 public class DistanceBuildingRoad implements RelationProperty {
 
+  // ***************
+  // PROPERTIES
+  // ***************
   private double distance;
   private BuildingAlongARoad relation;
 
+  // ***************
+  // CONSTRUCTOR
+  // ***************
+  public DistanceBuildingRoad() {
+    super();
+  }
+
+  // ***************
+  // GETTERS
+  // ***************
   @Override
   public Object getValue() {
     return distance;
@@ -19,14 +32,22 @@ public class DistanceBuildingRoad implements RelationProperty {
     return getClass().getSimpleName();
   }
 
+  public BuildingAlongARoad getRelation() {
+    return relation;
+  }
+
   @Override
   public RelationOperation getOperation() {
     // TODO Auto-generated method stub
     return null;
   }
 
-  public BuildingAlongARoad getRelation() {
-    return relation;
+  // ***************
+  // SETTERS
+  // ***************
+
+  public void setDistance(double distance) {
+    this.distance = distance;
   }
 
   public void setRelation(BuildingAlongARoad relation) {
