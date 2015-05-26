@@ -62,7 +62,7 @@ public class BuildingAlongRoadAchievement implements
         if (relation.getConditionOfAchievement().validate(
             distanceEval.getDistance())) {
           // check if there is no obstacle between the building and this road
-          if (!findObstacles(building, road)) {
+          if (!findObstacles(building, road, distanceEval.getDistance())) {
             // if (checkOrientation(building, road)) {
             // LogManager.resetConfiguration();
             distanceMin = distanceEval;
@@ -92,26 +92,47 @@ public class BuildingAlongRoadAchievement implements
     return false;
   }
 
-  public boolean findObstacles(IFeature building, IFeature road) {
+  public boolean findObstacles(IFeature building, IFeature road,
+      Double distanceBR) {
 
     JtsAlgorithms algo = new JtsAlgorithms();
     // Find the objects intersected by the spatial relation
     // create the relation link (geometry)
     IGeometry geomSR = relation.createGeom(building, road);
     // create the buffer
-    IGeometry buffer = algo.buffer(geomSR, 3);
+    IGeometry buffer = algo.buffer(geomSR, 5);
     // Find the buildings intersected
     List<IFeature> buildings = building.getFeatureCollection(0).getElements();
 
     for (IFeature buildingTest : buildings) {
+      // avoid the building himself
       if (buildingTest.getId() != building.getId()) {
-        boolean intersection = algo.intersects(buildingTest.getGeom(), buffer);
-        if (intersection == true) {
-          // System.out.println("intersection entre: "
-          // + building.getAttribute("refCleBDUni") + "  "
-          // + road.getAttribute("refCleBDUni") + " = "
-          // + buildingTest.getAttribute("refCleBDUni"));
-          return true;
+        IGeometry intersection = algo.intersection(buildingTest.getGeom(),
+            buffer);
+        if (intersection != null && intersection.area() != 0.0) {
+
+          // avoid the case : corner intersection
+          Double buildingTestArea = buildingTest.getGeom().area();
+          if (intersection.area() > (buildingTestArea * 0.2)) {
+
+            // avoid the case : building on the other side of the road
+            GeometryProximity d1 = new GeometryProximity(
+                buildingTest.getGeom(), building.getGeom());
+            if (d1.getDistance() < distanceBR) {
+
+              // avoid the case : building on the other side of the building
+              GeometryProximity d2 = new GeometryProximity(
+                  buildingTest.getGeom(), road.getGeom());
+              if (d2.getDistance() < distanceBR) {
+
+                // System.out.println("intersection entre: "
+                // + building.getAttribute("refCleBDUni") + "  "
+                // + road.getAttribute("refCleBDUni") + " = "
+                // + buildingTest.getAttribute("refCleBDUni"));
+                return true;
+              }
+            }
+          }
         }
       }
     }
