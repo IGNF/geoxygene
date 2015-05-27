@@ -319,51 +319,24 @@ public class BezierTesselator {
                 double uA = 0;
                 Point2d p1 = points[nextIndex];
                 double currentLength = VectorUtil.length(currentEdge);
-                if (currentLength > this.transitionSize * 2 + EPSILON) {
-                    double factorA = (currentLength - this.transitionSize)
-                            / currentLength;
-                    pA = new Point2d(p0.x + factorA * currentEdge.x, p0.y
-                            + factorA * currentEdge.y);
-                    uA = u0 + (u1 - u0) * factorA;
-                    this.createStraightSegment(mesh, inputLow, inputHigh, pA,
-                            currentNormal, uMax, u0, uA, outputLow, outputHigh);
-                } else {
-                    double factorA = 0.5;
-                    pA = new Point2d(p0.x + factorA * currentEdge.x, p0.y
-                            + factorA * currentEdge.y);
-                    uA = u0 + (u1 - u0) * factorA;
-                }
-
-                // create a bezier transition
+                //If the transitionSize is greater than the segment length, we automatically take a local transitionsize of half the segment length. 
+                double factorA = (this.transitionSize*2. < currentLength)? (currentLength - this.transitionSize)/ currentLength : 0.5;    
+                pA = new Point2d(p0.x + factorA * currentEdge.x, p0.y
+                      + factorA * currentEdge.y);
+                uA = u0 + (u1 - u0) * factorA;
+                //Create a straight line for the first part of the linestring segment and create the corresponding triangles.
+                this.createStraightSegment(mesh, inputLow, inputHigh, pA,
+                      currentNormal, uMax, u0, uA, outputLow, outputHigh);
+                // Create a nice Bezier turn. 
                 float u2 = uParams[currentIndex + 2];
                 double nextLength = VectorUtil.length(nextEdge);
-                double factorB = (nextLength < this.transitionSize * 2
-                        + EPSILON) ? 0.5 : this.transitionSize / nextLength;
+                double factorB = ( this.transitionSize*2.<nextLength) ? this.transitionSize / nextLength:0.5;
                 double uB = u1 + (u2 - u1) * factorB;
                 Point2d pB = new Point2d(p1.x + factorB * nextEdge.x, p1.y
                         + factorB * nextEdge.y);
-
                 this.createBezierTurn(mesh, pA, pB, edges, normals, uA, uB,
                         uMax, currentIndex, nextIndex, outputLow, outputHigh);
                 return (float) uB;
-                // double factorA = (currentLength - this.transitionSize)
-                // / VectorUtil.length(currentEdge);
-                // double factorB = this.transitionSize
-                // / VectorUtil.length(nextEdge);
-                // Point2d pA = new Point2d(p0.x + factorA * currentEdge.x,
-                // p0.y + factorA * currentEdge.y);
-                // Point2d pB = new Point2d(p1.x + factorB * nextEdge.x, p1.y
-                // + factorB * nextEdge.y);
-                // double uA = u0 + (u1 - u0) * factorA;
-                // double uB = u1 + (u2 - u1) * factorB;
-                // this.createStraightSegment(mesh, inputLow, inputHigh, pA,
-                // currentNormal, uMax, u0, uA, outputLow, outputHigh);
-                // this.createBezierTurn(mesh, pA, pB, edges, normals, uA, uB,
-                // uMax, currentIndex, nextIndex, outputLow,
-                // outputHigh);
-                // return (float) uB;
-                // }
-
             }
 
             if (previousEdge != null && nextEdge == null) {
