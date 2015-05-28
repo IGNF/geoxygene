@@ -9,8 +9,10 @@
  ******************************************************************************/
 package fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
@@ -33,6 +35,26 @@ public class SelectionUtil {
   public static Set<IFeature> getSelectedObjects(GeOxygeneApplication appli) {
     return appli.getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
         .getSelectedFeatures();
+  }
+
+  /**
+   * Shortcut to get the first of the selected objects by code.
+   * @return
+   */
+  public static IFeature getFirstSelectedObject(GeOxygeneApplication appli) {
+    Set<IFeature> features = appli.getMainFrame().getSelectedProjectFrame()
+        .getLayerViewPanel().getSelectedFeatures();
+    return features.iterator().next();
+  }
+
+  /**
+   * Shortcut to get all the selected objects by code.
+   * @return
+   */
+  public static List<IFeature> getListOfSelectedObjects(
+      GeOxygeneApplication appli) {
+    return new ArrayList<IFeature>(appli.getMainFrame()
+        .getSelectedProjectFrame().getLayerViewPanel().getSelectedFeatures());
   }
 
   /**

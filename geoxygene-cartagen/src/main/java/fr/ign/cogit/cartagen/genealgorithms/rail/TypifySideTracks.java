@@ -176,7 +176,7 @@ public class TypifySideTracks {
         for (ArcReseau arc : stroke.getFeatures()) {
           IRailwayLine rail = map.get(arc);
           if (rail != null) {
-            rail.eliminateBatch();
+            rail.eliminate();
           }
         }
       }
@@ -199,7 +199,7 @@ public class TypifySideTracks {
           for (ArcReseau arc : neighbour.getFeatures()) {
             IRailwayLine rail = map.get(arc);
             if (rail != null) {
-              rail.eliminateBatch();
+              rail.eliminate();
             }
           }
         }

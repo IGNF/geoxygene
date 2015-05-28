@@ -35,9 +35,7 @@ import fr.ign.cogit.cartagen.core.persistence.EncodedRelation;
 import fr.ign.cogit.cartagen.graph.IEdge;
 import fr.ign.cogit.cartagen.graph.IGraphLinkableFeature;
 import fr.ign.cogit.cartagen.graph.INode;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -52,7 +50,6 @@ import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
  */
 public class GeneObjDefault extends FT_Feature implements IGeneObj {
 
-  @SuppressWarnings("hiding")
   private static Logger logger = Logger.getLogger(GeneObjDefault.class
       .getName());
 
@@ -85,7 +82,8 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
    */
   @Override
   public void setInitialGeom(IGeometry initialGeom) {
-    this.initialGeom = initialGeom;
+    if (initialGeom != null)
+      this.initialGeom = (IGeometry) initialGeom.clone();
   }
 
   // Attribute eliminated and getter/setter
@@ -404,26 +402,12 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
   public void eliminate() {
     this.setEliminated(true);
     this.setDeleted(true);
-    CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects
-        .remove(this);
   }
 
   @Override
   public void cancelElimination() {
     this.setEliminated(false);
     this.setDeleted(false);
-  }
-
-  /**
-   * 
-   * {@inheritDoc}
-   * <p>
-   * 
-   */
-  @Override
-  public void eliminateBatch() {
-    this.setEliminated(true);
-    this.setDeleted(true);
   }
 
   // Attribute geneArtifacts and getter/setter
@@ -495,14 +479,6 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
    * Useful for storing a persistent identifier on the objects with shapefiles.
    * Do not use for other purposes.
    */
-  /*
-   * @Override public void setBDSupportObj(BDSupportObj bdSupportObj) {
-   * this.supportObj = bdSupportObj; }
-   * 
-   * @Override public BDSupportObj getBDSupportObj() { return this.supportObj; }
-   * 
-   * public boolean isSupportObj() { return (this.supportObj != null); }
-   */
   private int shapeId;
 
   @Override
@@ -526,7 +502,7 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
     this.antecedents = new HashSet<IGeneObj>();
     this.featureType = new FeatureType();
     this.featureType.setTypeName(IGeneObj.FEAT_TYPE_NAME);
-    this.setDbName(CartAGenDocOld.getInstance().getCurrentDataset()
+    this.setDbName(CartAGenDoc.getInstance().getCurrentDataset()
         .getCartAGenDB().getName());
     // this.setDbName("CartAGen_initial_dataset");
   }
@@ -754,21 +730,21 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
         // then, get the population related to targetEntity
         Set<IGeneObj> objectsToParse = new HashSet<IGeneObj>();
         if (!targetEntity.equals(GeneObjDefault.class)) {
-          String popName = CartAGenDocOld.getInstance().getCurrentDataset()
+          String popName = CartAGenDoc.getInstance().getCurrentDataset()
               .getPopNameFromClass(targetEntity);
           Field field = targetEntity.getField("FEAT_TYPE_NAME");
           String featType = (String) field.get(null);
-          IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDocOld
+          IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
               .getInstance().getCurrentDataset()
               .getCartagenPop(popName, featType);
           objectsToParse.addAll(pop);
         } else {
           for (Class<? extends IGeneObj> target : targetEntities) {
-            String popName = CartAGenDocOld.getInstance().getCurrentDataset()
+            String popName = CartAGenDoc.getInstance().getCurrentDataset()
                 .getPopNameFromClass(target);
             Field field = target.getField("FEAT_TYPE_NAME");
             String featType = (String) field.get(null);
-            IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDocOld
+            IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
                 .getInstance().getCurrentDataset()
                 .getCartagenPop(popName, featType);
             objectsToParse.addAll(pop);
@@ -809,11 +785,11 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
         IGeneObj obj = null;
 
         // then, get the population related to targetEntity
-        String popName = CartAGenDocOld.getInstance().getCurrentDataset()
+        String popName = CartAGenDoc.getInstance().getCurrentDataset()
             .getPopNameFromClass(targetEntity);
         Field field = targetEntity.getField("FEAT_TYPE_NAME");
         String featType = (String) field.get(null);
-        IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDocOld
+        IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
             .getInstance().getCurrentDataset()
             .getCartagenPop(popName, featType);
 
@@ -859,4 +835,12 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
   public void copyAttributes(IGeneObj obj) {
     // do not copy anything as a default method.
   }
+
+  @Override
+  public Object getAttribute(String nomAttribut) {
+    if (nomAttribut.equals("initialGeom"))
+      return this.getInitialGeom();
+    return super.getAttribute(nomAttribut);
+  }
+
 }

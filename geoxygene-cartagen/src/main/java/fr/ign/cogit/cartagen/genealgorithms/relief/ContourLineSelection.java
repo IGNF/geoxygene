@@ -87,7 +87,7 @@ public class ContourLineSelection {
     // now select the contour lines with altitude proportionnal to selectStep
     for (IContourLine contourLine : contourFeatures) {
       if ((contourLine.getAltitude() % selectStep) != 0) {
-        contourLine.eliminateBatch();
+        contourLine.eliminate();
       }
     }
   }
@@ -115,7 +115,7 @@ public class ContourLineSelection {
       if (!(index == selectionStep)) {
         for (IContourLine contourLine : contourFeatures) {
           if (contourLine.getAltitude() == altitude.doubleValue()) {
-            contourLine.eliminateBatch();
+            contourLine.eliminate();
           }
         }
       } else {

@@ -52,6 +52,7 @@ import fr.ign.cogit.geoxygene.util.XMLUtil;
  * @author Guillaume
  * 
  */
+@Deprecated
 public class CartAGenDocOld {
 
   /**

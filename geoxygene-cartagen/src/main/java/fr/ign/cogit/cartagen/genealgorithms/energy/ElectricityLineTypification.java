@@ -17,8 +17,7 @@ import java.util.Stack;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -126,9 +125,11 @@ public class ElectricityLineTypification {
   }
 
   private void enrichNetwork() {
-    NetworkEnrichment.enrichNetwork(CartAGenDocOld.getInstance()
-        .getCurrentDataset(), CartAGenDocOld.getInstance().getCurrentDataset()
-        .getElectricityNetwork(), false);
+    NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
+        .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+        .getElectricityNetwork(), false, CartAGenDoc.getInstance()
+        .getCurrentDataset().getCartAGenDB().getGeneObjImpl()
+        .getCreationFactory());
   }
 
   public class ParallelSectionsCluster {
@@ -178,19 +179,19 @@ public class ElectricityLineTypification {
         try {
           newLine = line.getGeom().difference(geom);
         } catch (Exception e) {
-          line.eliminateBatch();
+          line.eliminate();
           continue;
         }
         if (newLine == null) {
-          line.eliminateBatch();
+          line.eliminate();
           continue;
         }
         if (newLine.isEmpty()) {
-          line.eliminateBatch();
+          line.eliminate();
           continue;
         }
         if (!newLine.isValid()) {
-          line.eliminateBatch();
+          line.eliminate();
           continue;
         }
         if (newLine instanceof ILineString) {
@@ -231,7 +232,8 @@ public class ElectricityLineTypification {
               simple = new GM_LineString(cleanCoords);
             }
             // create a new feature
-            IElectricityLine newFeat = CartagenApplication.getInstance()
+            IElectricityLine newFeat = CartAGenDoc.getInstance()
+                .getCurrentDataset().getCartAGenDB().getGeneObjImpl()
                 .getCreationFactory().createElectricityLine(simple, 0);
             electricityNet.getSections().add(newFeat);
             this.components.add(newFeat);
@@ -264,7 +266,7 @@ public class ElectricityLineTypification {
       for (IElectricityLine line : cutParts) {
 
         if (!line.getGeom().isValid())
-          line.eliminateBatch();
+          line.eliminate();
 
         IGeometry inter = line.getGeom().intersection(geom);
         if (inter instanceof IPoint) {

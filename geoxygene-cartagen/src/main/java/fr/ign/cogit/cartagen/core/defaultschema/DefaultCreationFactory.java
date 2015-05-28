@@ -296,6 +296,13 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
     return new UrbanBlock(block, partition, net, geom, buildings, surroundRoads);
   }
 
+  @Override
+  public IUrbanBlock createUrbanBlock(IPolygon poly,
+      IFeatureCollection<IUrbanElement> buildings,
+      IFeatureCollection<INetworkSection> surroundRoads) {
+    return new UrbanBlock(poly, buildings, surroundRoads);
+  }
+
   // Town
 
   @Override
@@ -707,21 +714,20 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   public IWaterArea createWaterArea(SurfaceDEau geoxObj) {
     return new WaterArea(geoxObj);
   }
-  
+
   // CoastLine
-  
+
   @Override
   public ICoastLine createCoastLine(ILineString line) {
     return new CoastLine(line);
   }
-//  @Override
-//  public ICoastLine createCoastline(ILineString line) {
-//    ICoastLine coastLine = new CoastLine();
-//    coastLine.setGeom(line);
-//    return coastLine;
-//  }
 
-
+  // @Override
+  // public ICoastLine createCoastline(ILineString line) {
+  // ICoastLine coastLine = new CoastLine();
+  // coastLine.setGeom(line);
+  // return coastLine;
+  // }
 
   // /////////////////
   // RELIEF
@@ -1027,6 +1033,5 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   public IMask createMask(ILineString line) {
     return new Mask(line);
   }
-
 
 }

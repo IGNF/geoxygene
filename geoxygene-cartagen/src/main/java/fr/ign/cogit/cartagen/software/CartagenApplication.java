@@ -39,6 +39,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
+import fr.ign.cogit.cartagen.software.dataset.ShapeFileLoader;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.AbstractLayerGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationBottomPanelComplement;
@@ -72,6 +73,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * class de l'application cartagen (contient LA methode main)
  * @author JGaffuri
  */
+@Deprecated
 public class CartagenApplication {
   private static Logger logger = Logger.getLogger(CartagenApplication.class
       .getName());
@@ -232,6 +234,7 @@ public class CartagenApplication {
    * click OK, we close the application
    * @return
    */
+  @SuppressWarnings("resource")
   public static boolean hasAnotherInstance() {
     FileLock fileLock = null;
     RandomAccessFile file = null;
@@ -725,7 +728,8 @@ public class CartagenApplication {
         CartagenApplication.logger.info("buildings spatial index creation");
       }
 
-      if (dataSet.loadBuildingsFromSHP(absolutePath + "/batiment")) {
+      if (ShapeFileLoader.loadBuildingsFromSHP(absolutePath + "/batiment",
+          dataSet)) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/batiment", IBuilding.FEAT_TYPE_NAME, IPolygon.class);
@@ -735,8 +739,8 @@ public class CartagenApplication {
       progressFrame.setTextAndValue("Loading road network", 30);
       if (
 
-      dataSet.loadRoadLinesShapeFile(absolutePath + "/troncon_route",
-          sourceDlm, dataSet.getSymbols())
+      ShapeFileLoader.loadRoadLinesShapeFile(absolutePath + "/troncon_route",
+          sourceDlm, dataSet.getSymbols(), dataSet)
       /*
        * dataSet.loadRoadLinesFromSHP(absolutePath + "/troncon_route",
        * sourceDlm, dataSet.getSymbols())
@@ -750,15 +754,15 @@ public class CartagenApplication {
             + "/troncon_route", IRoadLine.FEAT_TYPE_NAME, ILineString.class);
       }
       progressFrame.setTextAndValue("Loading hydrologic network", 60);
-      if (dataSet.loadWaterLinesFromSHP(absolutePath + "/troncon_cours_eau",
-          dataSet.getSymbols())) {
+      if (ShapeFileLoader.loadWaterLinesFromSHP(absolutePath
+          + "/troncon_cours_eau", dataSet.getSymbols(), dataSet)) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/troncon_cours_eau", IWaterLine.FEAT_TYPE_NAME,
             ILineString.class);
       }
-      if (dataSet.loadWaterAreasFromSHP(absolutePath + "/surface_eau",
-          dataSet.getSymbols())) {
+      if (ShapeFileLoader.loadWaterAreasFromSHP(absolutePath + "/surface_eau",
+          dataSet.getSymbols(), dataSet)) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/surface_eau", IWaterArea.FEAT_TYPE_NAME, IPolygon.class);
@@ -766,39 +770,39 @@ public class CartagenApplication {
 
       progressFrame.setTextAndValue("Loading railo roads and electric network",
           70);
-      if (dataSet.loadRailwayLineFromSHP(absolutePath + "/troncon_voie_ferree",
-          dataSet.getSymbols(), null)) {
+      if (ShapeFileLoader.loadRailwayLineFromSHP(absolutePath
+          + "/troncon_voie_ferree", dataSet.getSymbols(), null, dataSet)) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/troncon_voie_ferree", IRailwayLine.FEAT_TYPE_NAME,
             ILineString.class);
       }
-      if (dataSet.loadElectricityLinesFromSHP(absolutePath
-          + "/troncon_electrique", dataSet.getSymbols())) {
+      if (ShapeFileLoader.loadElectricityLinesFromSHP(absolutePath
+          + "/troncon_electrique", dataSet.getSymbols(), dataSet)) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/troncon_electrique", IElectricityLine.FEAT_TYPE_NAME,
             ILineString.class);
       }
-      if (dataSet.loadContourLinesFromSHP(absolutePath + "/cn",
-          dataSet.getSymbols())) {
+      if (ShapeFileLoader.loadContourLinesFromSHP(absolutePath + "/cn",
+          dataSet.getSymbols(), dataSet)) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/cn", IContourLine.FEAT_TYPE_NAME, ILineString.class);
       }
 
       progressFrame.setTextAndValue("Loading contour lines and DTM", 90);
-      if (dataSet.loadReliefElementLinesFromSHP(absolutePath
-          + "/ligne_orographique", dataSet.getSymbols())) {
+      if (ShapeFileLoader.loadReliefElementLinesFromSHP(absolutePath
+          + "/ligne_orographique", dataSet.getSymbols(), dataSet)) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/ligne_orographique", IReliefElementLine.FEAT_TYPE_NAME,
             ILineString.class);
       }
-      dataSet.loadDEMPixelsFromSHP(absolutePath + "/mnt");
+      ShapeFileLoader.loadDEMPixelsFromSHP(absolutePath + "/mnt", dataSet);
 
-      if (dataSet.loadSpotHeightsFromSHP(absolutePath + "/point_cote",
-          dataSet.getSymbols())) {
+      if (ShapeFileLoader.loadSpotHeightsFromSHP(absolutePath + "/point_cote",
+          dataSet.getSymbols(), dataSet)) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/point_cote", ISpotHeight.FEAT_TYPE_NAME, IPoint.class);
@@ -808,7 +812,7 @@ public class CartagenApplication {
       // cartagenApplication.getDataSet().chargerZoneOccSolSHP(cheminDonnees+"/occ_sol",
       // 3.0);
 
-      if (dataSet.loadMaskFromSHP(absolutePath + "/masque")) {
+      if (ShapeFileLoader.loadMaskFromSHP(absolutePath + "/masque", dataSet)) {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/masque", IMask.FEAT_TYPE_NAME, IPolygon.class);
@@ -857,8 +861,8 @@ public class CartagenApplication {
     progressFrame.setTextAndValue("Loading road network", 0);
 
     try {
-      dataSet.loadRoadLinesFromSHP(absolutePath + "/troncon_route",
-          SourceDLM.BD_CARTO, dataSet.getSymbols());
+      ShapeFileLoader.loadRoadLinesFromSHP(absolutePath + "/troncon_route",
+          SourceDLM.BD_CARTO, dataSet.getSymbols(), dataSet);
 
     } catch (IOException e) {
       // TODO Auto-generated catch block
@@ -882,17 +886,17 @@ public class CartagenApplication {
     progressFrame.setTextAndValue("Loading road network", 0);
     ((ShapeFileDB) dataSet.getCartAGenDB()).setSystemPath(absolutePath);
     try {
-      if (dataSet.loadRoadLinesShapeFile(absolutePath
+      if (ShapeFileLoader.loadRoadLinesShapeFile(absolutePath
           + "/A_RESEAU_ROUTIER/ROUTE", SourceDLM.BD_TOPO_V2,
-          dataSet.getSymbols())) {
+          dataSet.getSymbols(), dataSet)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/A_RESEAU_ROUTIER/ROUTE", IRoadLine.FEAT_TYPE_NAME,
             ILineString.class);
       }
 
-      if (dataSet.loadPathsBDTopoV2_25FromSHP(absolutePath
+      if (ShapeFileLoader.loadPathsBDTopoV2_25FromSHP(absolutePath
           + "/A_RESEAU_ROUTIER/CHEMIN", SourceDLM.BD_TOPO_V2,
-          dataSet.getSymbols())) {
+          dataSet.getSymbols(), dataSet)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/A_RESEAU_ROUTIER/CHEMIN", IPathLine.FEAT_TYPE_NAME,
             ILineString.class);
@@ -900,29 +904,29 @@ public class CartagenApplication {
 
       progressFrame.setTextAndValue("Loading buildings", 20);
 
-      if (dataSet.loadBuildingsFromSHP(absolutePath
-          + "/E_BATI/BATI_INDIFFERENCIE")) {
+      if (ShapeFileLoader.loadBuildingsFromSHP(absolutePath
+          + "/E_BATI/BATI_INDIFFERENCIE", dataSet)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/E_BATI/BATI_INDIFFERENCIE", IBuilding.FEAT_TYPE_NAME,
             IPolygon.class);
       }
 
-      if (dataSet
-          .loadBuildingsFromSHP(absolutePath + "/E_BATI/BATI_INDUSTRIEL")) {
+      if (ShapeFileLoader.loadBuildingsFromSHP(absolutePath
+          + "/E_BATI/BATI_INDUSTRIEL", dataSet)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/E_BATI/BATI_INDUSTRIEL", IBuilding.FEAT_TYPE_NAME,
             IPolygon.class);
       }
 
-      if (dataSet.loadBuildingsFromSHP(absolutePath
-          + "/E_BATI/BATI_REMARQUABLE")) {
+      if (ShapeFileLoader.loadBuildingsFromSHP(absolutePath
+          + "/E_BATI/BATI_REMARQUABLE", dataSet)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/E_BATI/BATI_REMARQUABLE", IBuilding.FEAT_TYPE_NAME,
             IPolygon.class);
       }
 
-      dataSet.loadBuildingsFromSHP(absolutePath
-          + "/E_BATI/CONSTRUCTION_SURFACIQUE");
+      ShapeFileLoader.loadBuildingsFromSHP(absolutePath
+          + "/E_BATI/CONSTRUCTION_SURFACIQUE", dataSet);
       if (CartagenApplication.logger.isInfoEnabled()) {
         CartagenApplication.logger.info("buildings spatial index creation");
       }
@@ -931,15 +935,15 @@ public class CartagenApplication {
 
       progressFrame.setTextAndValue("Loading hydrographic network ", 60);
 
-      if (dataSet.loadWaterLinesFromSHP(absolutePath
-          + "/D_HYDROGRAPHIE/TRONCON_COURS_EAU", dataSet.getSymbols())) {
+      if (ShapeFileLoader.loadWaterLinesFromSHP(absolutePath
+          + "/D_HYDROGRAPHIE/TRONCON_COURS_EAU", dataSet.getSymbols(), dataSet)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/D_HYDROGRAPHIE/TRONCON_COURS_EAU", IWaterLine.FEAT_TYPE_NAME,
             ILineString.class);
       }
 
-      if (dataSet.loadWaterAreasFromSHP(absolutePath
-          + "/D_HYDROGRAPHIE/SURFACE_EAU", dataSet.getSymbols())) {
+      if (ShapeFileLoader.loadWaterAreasFromSHP(absolutePath
+          + "/D_HYDROGRAPHIE/SURFACE_EAU", dataSet.getSymbols(), dataSet)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/D_HYDROGRAPHIE/SURFACE_EAU", IWaterArea.FEAT_TYPE_NAME,
             IPolygon.class);
@@ -948,16 +952,17 @@ public class CartagenApplication {
       progressFrame.setTextAndValue("Loading rail roads and other networks ",
           70);
 
-      if (dataSet.loadRailwayLineFromSHP(absolutePath
+      if (ShapeFileLoader.loadRailwayLineFromSHP(absolutePath
           + "/B_VOIES_FERREES_ET_AUTRES/TRONCON_VOIE_FERREE",
-          dataSet.getSymbols(), null)) {
+          dataSet.getSymbols(), null, dataSet)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/B_VOIES_FERREES_ET_AUTRES/TRONCON_VOIE_FERREE",
             IRailwayLine.FEAT_TYPE_NAME, ILineString.class);
       }
 
-      if (dataSet.loadElectricityLinesFromSHP(absolutePath
-          + "/C_TRANSPORT_ENERGIE/LIGNE_ELECTRIQUE", dataSet.getSymbols())) {
+      if (ShapeFileLoader.loadElectricityLinesFromSHP(absolutePath
+          + "/C_TRANSPORT_ENERGIE/LIGNE_ELECTRIQUE", dataSet.getSymbols(),
+          dataSet)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/C_TRANSPORT_ENERGIE/LIGNE_ELECTRIQUE",
             IElectricityLine.FEAT_TYPE_NAME, ILineString.class);
@@ -965,15 +970,15 @@ public class CartagenApplication {
 
       progressFrame.setTextAndValue("Loading landuse", 80);
 
-      if (dataSet.loadLandUseAreasFromSHP(absolutePath
-          + "/F_VEGETATION/ZONE_VEGETATION", 1.0, 1)) {
+      if (ShapeFileLoader.loadLandUseAreasFromSHP(absolutePath
+          + "/F_VEGETATION/ZONE_VEGETATION", 1.0, 1, dataSet)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/F_VEGETATION/ZONE_VEGETATION",
             ISimpleLandUseArea.FEAT_TYPE_NAME, IPolygon.class);
       }
 
-      if (dataSet.loadLandUseAreasFromSHP(absolutePath
-          + "/I_ZONE_ACTIVITE/ZONE_ACTIVITE", 1.0, 2)) {
+      if (ShapeFileLoader.loadLandUseAreasFromSHP(absolutePath
+          + "/I_ZONE_ACTIVITE/ZONE_ACTIVITE", 1.0, 2, dataSet)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/I_ZONE_ACTIVITE/ZONE_ACTIVITE",
             ISimpleLandUseArea.FEAT_TYPE_NAME, IPolygon.class);
@@ -981,8 +986,8 @@ public class CartagenApplication {
 
       progressFrame.setTextAndValue("Loading Contour lines", 90);
 
-      if (dataSet.loadReliefElementLinesFromSHP(absolutePath
-          + "/G_OROGRAPHIE/LIGNE_OROGRAPHIQUE", dataSet.getSymbols())) {
+      if (ShapeFileLoader.loadReliefElementLinesFromSHP(absolutePath
+          + "/G_OROGRAPHIE/LIGNE_OROGRAPHIQUE", dataSet.getSymbols(), dataSet)) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/G_OROGRAPHIE/LIGNE_OROGRAPHIQUE",
             IReliefElementLine.FEAT_TYPE_NAME, ILineString.class);

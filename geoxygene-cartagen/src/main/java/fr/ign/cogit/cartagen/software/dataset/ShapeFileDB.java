@@ -9,7 +9,6 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.software.dataset;
 
-import java.awt.Cursor;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -46,7 +45,6 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationLeftPanelComplement;
 import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.CartAGenProgressBar;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
@@ -343,8 +341,6 @@ public class ShapeFileDB extends CartAGenDB {
   @Override
   public void populateDataset(int scale) {
 
-    CartagenApplication.getInstance().getFrame()
-        .setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     this.task = new OpenDatasetTask(scale, this);
     this.task.addPropertyChangeListener(CartAGenProgressBar.getInstance());
     this.task.execute();
@@ -366,37 +362,43 @@ public class ShapeFileDB extends CartAGenDB {
     this.getDataSet().setSymbols(symbols);
     try {
       if (shape.getFeatureTypeName().equals(IBuilding.FEAT_TYPE_NAME)) {
-        this.getDataSet().loadBuildingsFromSHP(shape.getPath());
+        ShapeFileLoader
+            .loadBuildingsFromSHP(shape.getPath(), this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IRoadLine.FEAT_TYPE_NAME)) {
-        this.getDataSet().loadRoadLinesFromSHP(shape.getPath(),
-            this.getSourceDLM(), symbols);
+        ShapeFileLoader.loadRoadLinesFromSHP(shape.getPath(),
+            this.getSourceDLM(), symbols, this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IWaterLine.FEAT_TYPE_NAME)) {
-        this.getDataSet().loadWaterLinesFromSHP(shape.getPath(), symbols);
+        ShapeFileLoader.loadWaterLinesFromSHP(shape.getPath(), symbols,
+            this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IWaterArea.FEAT_TYPE_NAME)) {
-        this.getDataSet().loadWaterAreasFromSHP(shape.getPath(), symbols);
+        ShapeFileLoader.loadWaterAreasFromSHP(shape.getPath(), symbols,
+            this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IRailwayLine.FEAT_TYPE_NAME)) {
-        this.getDataSet()
-            .loadRailwayLineFromSHP(shape.getPath(), symbols, null);
+        ShapeFileLoader.loadRailwayLineFromSHP(shape.getPath(), symbols, null,
+            this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IElectricityLine.FEAT_TYPE_NAME)) {
-        this.getDataSet().loadElectricityLinesFromSHP(shape.getPath(), symbols);
+        ShapeFileLoader.loadElectricityLinesFromSHP(shape.getPath(), symbols,
+            this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IContourLine.FEAT_TYPE_NAME)) {
-        this.getDataSet().loadContourLinesFromSHP(shape.getPath(), symbols);
+        ShapeFileLoader.loadContourLinesFromSHP(shape.getPath(), symbols,
+            this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IReliefElementLine.FEAT_TYPE_NAME)) {
-        this.getDataSet().loadReliefElementLinesFromSHP(shape.getPath(),
-            symbols);
+        ShapeFileLoader.loadReliefElementLinesFromSHP(shape.getPath(), symbols,
+            this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(ISpotHeight.FEAT_TYPE_NAME)) {
-        this.getDataSet().loadSpotHeightsFromSHP(shape.getPath(), symbols);
+        ShapeFileLoader.loadSpotHeightsFromSHP(shape.getPath(), symbols,
+            this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IMask.FEAT_TYPE_NAME)) {
-        this.getDataSet().loadMaskFromSHP(shape.getPath());
+        ShapeFileLoader.loadMaskFromSHP(shape.getPath(), this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(ISimpleLandUseArea.FEAT_TYPE_NAME)) {
         int type = 0;
@@ -406,7 +408,8 @@ public class ShapeFileDB extends CartAGenDB {
         if (shape.getName().equals("ZONE_ACTIVITE")) {
           type = 2;
         }
-        this.getDataSet().loadLandUseAreasFromSHP(shape.getPath(), 1.0, type);
+        ShapeFileLoader.loadLandUseAreasFromSHP(shape.getPath(), 1.0, type,
+            this.getDataSet());
       }
       // add the unique Id in the ShapeFile
       // this.addCartagenId();
@@ -430,41 +433,44 @@ public class ShapeFileDB extends CartAGenDB {
 
     try {
       if (shape.getFeatureTypeName().equals(IBuilding.FEAT_TYPE_NAME)) {
-        this.getDataSet().overwriteBuildingsFromSHP(shape.getPath());
+        ShapeFileLoader.overwriteBuildingsFromSHP(shape.getPath(),
+            this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IRoadLine.FEAT_TYPE_NAME)) {
-        this.getDataSet().overwriteRoadLinesFromSHP(shape.getPath(), 2.0,
-            this.getSourceDLM(), symbols);
+        ShapeFileLoader.overwriteRoadLinesFromSHP(shape.getPath(), 2.0,
+            this.getSourceDLM(), symbols, this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IWaterLine.FEAT_TYPE_NAME)) {
-        this.getDataSet().overwriteWaterLinesFromSHP(shape.getPath(), 2.0,
-            symbols);
+        ShapeFileLoader.overwriteWaterLinesFromSHP(shape.getPath(), 2.0,
+            symbols, this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IWaterArea.FEAT_TYPE_NAME)) {
-        this.getDataSet().overwriteWaterAreasFromSHP(shape.getPath(), 2.0,
-            symbols);
+        ShapeFileLoader.overwriteWaterAreasFromSHP(shape.getPath(), 2.0,
+            symbols, this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IRailwayLine.FEAT_TYPE_NAME)) {
-        this.getDataSet().overwriteRailwayLineFromSHP(shape.getPath(), 2.0,
-            symbols);
+        ShapeFileLoader.overwriteRailwayLineFromSHP(shape.getPath(), 2.0,
+            symbols, this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IElectricityLine.FEAT_TYPE_NAME)) {
-        this.getDataSet().overwriteElectricityLinesFromSHP(shape.getPath(),
-            2.0, symbols);
+        ShapeFileLoader.overwriteElectricityLinesFromSHP(shape.getPath(), 2.0,
+            symbols, this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IContourLine.FEAT_TYPE_NAME)) {
-        this.getDataSet().overwriteContourLinesFromSHP(shape.getPath(), 2.0,
-            symbols);
+        ShapeFileLoader.overwriteContourLinesFromSHP(shape.getPath(), 2.0,
+            symbols, this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IReliefElementLine.FEAT_TYPE_NAME)) {
-        this.getDataSet().overwriteReliefElementLinesFromSHP(shape.getPath(),
-            2.0, symbols);
+        ShapeFileLoader.overwriteReliefElementLinesFromSHP(shape.getPath(),
+            2.0, symbols, this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(ISpotHeight.FEAT_TYPE_NAME)) {
-        this.getDataSet().overwriteSpotHeightsFromSHP(shape.getPath(), symbols);
+        ShapeFileLoader.overwriteSpotHeightsFromSHP(shape.getPath(), symbols,
+            this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(IMask.FEAT_TYPE_NAME)) {
-        this.getDataSet().overwriteMaskFromSHP(shape.getPath());
+        ShapeFileLoader
+            .overwriteMaskFromSHP(shape.getPath(), this.getDataSet());
       }
 
     } catch (IOException e) {
@@ -475,7 +481,7 @@ public class ShapeFileDB extends CartAGenDB {
   @Override
   protected void triggerEnrichments() {
     CartAGenEnrichment.setOtherToFalse(this.getEnrichments());
-    CartagenApplication.getInstance().enrichData(this.getDataSet());
+    // TODO trigger enrichments;
   }
 
   public void setSystemPath(String systemPath) {
@@ -570,17 +576,7 @@ public class ShapeFileDB extends CartAGenDB {
       } catch (Exception e) {
         e.printStackTrace();
       } finally {
-        /*
-         * System.out.println("on passe"); CartagenApplication .getInstance()
-         * .getLayerGroup() .loadLayers( getDataSet(),
-         * CartagenApplication.getInstance
-         * ().getFrame().getVisuPanel().symbolisationDisplay);
-         * CartagenApplication.getInstance().getLayerGroup()
-         * .loadInterfaceWithLayers(
-         * CartagenApplication.getInstance().getFrame().getLayerManager());
-         */
         this.exit = true;
-        CartagenApplication.getInstance().initGeneralisation();
       }
       return null;
     }
@@ -588,8 +584,6 @@ public class ShapeFileDB extends CartAGenDB {
     @Override
     protected void done() {
       CartAGenProgressBar.getInstance().setVisible(false);
-      CartagenApplication.getInstance().getFrame()
-          .setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     OpenDatasetTask(int scale, ShapeFileDB dataset) {

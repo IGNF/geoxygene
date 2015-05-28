@@ -34,8 +34,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanAlignment;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationLeftPanelComplement;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.spatialanalysis.network.DeadEndGroup;
@@ -96,8 +95,8 @@ public class UrbanEnrichment {
    * @deprecated
    */
   public static void buildTowns() {
-    UrbanEnrichment.buildTowns(
-        CartAGenDocOld.getInstance().getCurrentDataset(), false);
+    UrbanEnrichment.buildTowns(CartAGenDoc.getInstance().getCurrentDataset(),
+        false);
   }
 
   /**
@@ -108,8 +107,8 @@ public class UrbanEnrichment {
    * @deprecated
    */
   public static void buildTowns(boolean buildUrbanAlignments) {
-    UrbanEnrichment.buildTowns(
-        CartAGenDocOld.getInstance().getCurrentDataset(), buildUrbanAlignments);
+    UrbanEnrichment.buildTowns(CartAGenDoc.getInstance().getCurrentDataset(),
+        buildUrbanAlignments);
   }
 
   /**
@@ -222,7 +221,8 @@ public class UrbanEnrichment {
     }
     if (union instanceof IPolygon) {
       dataset.getTowns().add(
-          CartagenApplication.getInstance().getCreationFactory()
+          CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
+              .getGeneObjImpl().getCreationFactory()
               .createTown((IPolygon) union));
     } else if (union instanceof IMultiSurface<?>) {
       IMultiSurface<?> mp = (IMultiSurface<?>) union;
@@ -231,7 +231,8 @@ public class UrbanEnrichment {
         if (UrbanEnrichment.logger.isInfoEnabled()) {
           UrbanEnrichment.logger.info("   construction ville: " + i + "/" + nb);
         }
-        ITown town = CartagenApplication.getInstance().getCreationFactory()
+        ITown town = CartAGenDoc.getInstance().getCurrentDataset()
+            .getCartAGenDB().getGeneObjImpl().getCreationFactory()
             .createTown((IPolygon) mp.get(i));
         dataset.getTowns().add(town);
         if (town.getGeom().area() < 100000.0) {
@@ -475,7 +476,7 @@ public class UrbanEnrichment {
         ITown town = factory.createTown((IPolygon) mp.get(i));
         dataset.getTowns().add(town);
         if (town.getGeom().area() < 100000.0) {
-          town.eliminateBatch();
+          town.eliminate();
         }
       }
     } else {
@@ -663,7 +664,7 @@ public class UrbanEnrichment {
       // recupere les batiments de l'ilot
 
       // recupere les batiments intersectant l'ilot
-      Collection<IBuilding> bats = CartAGenDocOld.getInstance()
+      Collection<IBuilding> bats = CartAGenDoc.getInstance()
           .getCurrentDataset().getBuildings().select(polygone);
 
       IFeatureCollection<IUrbanElement> urbanElements = new FT_FeatureCollection<IUrbanElement>();
@@ -687,8 +688,11 @@ public class UrbanEnrichment {
         }
       }
 
-      IUrbanBlock block = CartagenApplication
+      IUrbanBlock block = CartAGenDoc
           .getInstance()
+          .getCurrentDataset()
+          .getCartAGenDB()
+          .getGeneObjImpl()
           .getCreationFactory()
           .createUrbanBlock(polygone, town, urbanElements, troncons, null,
               town.getStreetNetwork());
@@ -697,7 +701,7 @@ public class UrbanEnrichment {
       // identifiant sur une même zone
       // block.setId(2 ^ town.getId() * 3 ^ compteur);
       cityBlocks.add(block);
-      CartAGenDocOld.getInstance().getCurrentDataset().getBlocks().add(block);
+      CartAGenDoc.getInstance().getCurrentDataset().getBlocks().add(block);
       if (!(buildUrbanAlignments)) {
         continue;
       }
@@ -837,6 +841,107 @@ public class UrbanEnrichment {
   }
 
   /**
+   * Builds the inner blocks of an urban area, without building any
+   * {@link ITown} object.
+   * @param area the polygon inside which blocks are created
+   * @param carteTopo
+   * @param buildUrbanAlignments
+   */
+  public static void buildBlocksInArea(IPolygon area, CartAGenDataSet dataset,
+      CarteTopo carteTopo, boolean buildUrbanAlignments) {
+
+    // parcours des faces de la carte topo
+    for (Face face : carteTopo.getPopFaces().select(area)) {
+      if (face.isInfinite()) {
+        continue;
+      }
+
+      IPolygon polygone = face.getGeometrie();
+
+      // verifie si le polygone appartient a la ville
+      if (!area.buffer(5.0).contains(polygone)) {
+        continue;
+      }
+
+      try {
+        polygone = (IPolygon) AdapterFactory.to2DGM_Object(polygone);
+      } catch (Exception e) {
+        // TownAgent.logger
+        // .error("Echec pendant la convertion de la géométrie de la zone élémentaire en 2D : "
+        // + e.getMessage());
+        // TownAgent.logger.error(polygone.toString());
+        continue;
+      }
+
+      // recupere les troncons de l'ilot
+      IFeatureCollection<INetworkSection> troncons = new FT_FeatureCollection<INetworkSection>();
+      Collection<IRoadLine> roads = new HashSet<IRoadLine>();
+
+      // parcours des arcs de la carte topo
+      List<Arc> arcs = face.getArcsDirects();
+      arcs.addAll(face.getArcsIndirects());
+      for (Arc arc : arcs) {
+        for (IFeature feature : arc.getCorrespondants()) {
+
+          // arc correspond a un defaultfeature: c'est un contour de ville
+          if (feature instanceof DefaultFeature) {
+            continue;
+          }
+
+          // c'est un troncon
+          if (feature instanceof INetworkSection) {
+            troncons.add((INetworkSection) feature);
+            if (feature instanceof IRoadLine) {
+              roads.add((IRoadLine) feature);
+            }
+          }
+        }
+      }
+
+      // recupere les batiments de l'ilot
+
+      // recupere les batiments intersectant l'ilot
+      Collection<IBuilding> bats = dataset.getBuildings().select(polygone);
+
+      IFeatureCollection<IUrbanElement> urbanElements = new FT_FeatureCollection<IUrbanElement>();
+      for (IBuilding ab : bats) {
+        // batiment totallement inclu dans ilot
+        if (polygone.contains(ab.getGeom())) {
+          urbanElements.add(ab);
+          continue;
+        }
+
+        // le batiment n'est pas totalement dans l'ilot. calcul de la part du
+        // batiment dans l'ilot
+        double taux = ab.getGeom().intersection(polygone).area()
+            / (ab.getGeom().area());
+
+        // si ce taux est suffisament grand, le batiment est considere comme
+        // appartenant a l'ilot
+        if (taux > 0.6) {
+          urbanElements.add(ab);
+          continue;
+        }
+      }
+
+      IUrbanBlock block = dataset.getCartAGenDB().getGeneObjImpl()
+          .getCreationFactory()
+          .createUrbanBlock(polygone, urbanElements, troncons);
+
+      dataset.getBlocks().add(block);
+      if (!(buildUrbanAlignments)) {
+        continue;
+      }
+
+      // calcul des alignements de batiments dans l'ilot
+      UrbanEnrichment.createUrbanAlignmentsBasedOnSections(block, dataset,
+          dataset.getCartAGenDB().getGeneObjImpl().getCreationFactory());
+
+    }
+
+  }
+
+  /**
    * Creates the urban alignments of a block from buffers around sections
    * @deprecated
    */
@@ -854,8 +959,9 @@ public class UrbanEnrichment {
         }
       }
       if (buildsAlongSection.size() > 2) {
-        IUrbanAlignment align = CartagenApplication.getInstance()
-            .getCreationFactory().createUrbanAlignment(buildsAlongSection);
+        IUrbanAlignment align = CartAGenDoc.getInstance().getCurrentDataset()
+            .getCartAGenDB().getGeneObjImpl().getCreationFactory()
+            .createUrbanAlignment(buildsAlongSection);
         structures.add(align);
       }
     }
@@ -873,7 +979,7 @@ public class UrbanEnrichment {
       for (INetworkSection section : block.getSurroundingNetwork()) {
         if (structure.getShapeLine().intersects(section.getGeom())) {
           structure.getUrbanElements().clear();
-          CartAGenDocOld.getInstance().getCurrentDataset().getUrbanAlignments()
+          CartAGenDoc.getInstance().getCurrentDataset().getUrbanAlignments()
               .remove(structure);
         } else {
           structuresAfterClean.add(structure);
@@ -1090,7 +1196,7 @@ public class UrbanEnrichment {
 
     // Destroy of the second alignment
     align2.getUrbanElements().clear();
-    CartAGenDocOld.getInstance().getCurrentDataset().getUrbanAlignments()
+    CartAGenDoc.getInstance().getCurrentDataset().getUrbanAlignments()
         .remove(align2);
 
     // Computation of the characteristics
@@ -1161,7 +1267,8 @@ public class UrbanEnrichment {
       // Current building is too large
       if (align.getUrbanElements().get(i).getGeom().area() / medianSize > 2.0) {
         if (currentPart.size() > 2) {
-          aligns.add(CartagenApplication.getInstance().getCreationFactory()
+          aligns.add(CartAGenDoc.getInstance().getCurrentDataset()
+              .getCartAGenDB().getGeneObjImpl().getCreationFactory()
               .createUrbanAlignment(currentPart));
         }
         currentPart.clear();
@@ -1172,7 +1279,8 @@ public class UrbanEnrichment {
           && align.getUrbanElements().get(i - 1).getGeom()
               .distance(align.getUrbanElements().get(i).getGeom()) > distance) {
         if (currentPart.size() > 2) {
-          aligns.add(CartagenApplication.getInstance().getCreationFactory()
+          aligns.add(CartAGenDoc.getInstance().getCurrentDataset()
+              .getCartAGenDB().getGeneObjImpl().getCreationFactory()
               .createUrbanAlignment(currentPart));
         }
         currentPart.clear();
@@ -1188,7 +1296,8 @@ public class UrbanEnrichment {
                   align.getUrbanElements().get(i).getGeom().centroid())
                   .getValeur()) < Math.PI - Math.abs(angle)) {
         if (currentPart.size() > 2) {
-          aligns.add(CartagenApplication.getInstance().getCreationFactory()
+          aligns.add(CartAGenDoc.getInstance().getCurrentDataset()
+              .getCartAGenDB().getGeneObjImpl().getCreationFactory()
               .createUrbanAlignment(currentPart));
         }
         currentPart.clear();
@@ -1203,12 +1312,13 @@ public class UrbanEnrichment {
     }
 
     if (currentPart.size() > 2) {
-      aligns.add(CartagenApplication.getInstance().getCreationFactory()
+      aligns.add(CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
+          .getGeneObjImpl().getCreationFactory()
           .createUrbanAlignment(currentPart));
     }
 
     align.getUrbanElements().clear();
-    CartAGenDocOld.getInstance().getCurrentDataset().getUrbanAlignments()
+    CartAGenDoc.getInstance().getCurrentDataset().getUrbanAlignments()
         .remove(align);
 
     return aligns;

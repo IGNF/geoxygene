@@ -18,7 +18,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.PatteOie;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RondPoint;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -128,13 +128,15 @@ public class CrossRoadDetection {
     // first the roundabouts
     for (RondPoint round : this.rounds) {
       dataSet.getRoundabouts().add(
-          CartagenApplication.getInstance().getCreationFactory()
+          CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
+              .getGeneObjImpl().getCreationFactory()
               .createRoundAbout(round, dataSet.getRoads(), nodes));
     }
     // then the branching crossroads
     Map<PatteOie, IBranchingCrossroad> mapForRel = new HashMap<PatteOie, IBranchingCrossroad>();
     for (PatteOie patte : this.branchs) {
-      IBranchingCrossroad branch = CartagenApplication.getInstance()
+      IBranchingCrossroad branch = CartAGenDoc.getInstance()
+          .getCurrentDataset().getCartAGenDB().getGeneObjImpl()
           .getCreationFactory()
           .createBranchingCrossroad(patte, dataSet.getRoads(), nodes);
       dataSet.getBranchings().add(branch);

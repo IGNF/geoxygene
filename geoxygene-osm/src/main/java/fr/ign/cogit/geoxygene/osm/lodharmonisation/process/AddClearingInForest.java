@@ -83,7 +83,7 @@ public class AddClearingInForest {
             CartAGenDoc.getInstance().getCurrentDataset().getLandUseAreas()
                 .add(newObj);
           }
-          instance.getFeature2().eliminateBatch();
+          instance.getFeature2().eliminate();
         }
       }
       // general case: the clearing is inside the forest

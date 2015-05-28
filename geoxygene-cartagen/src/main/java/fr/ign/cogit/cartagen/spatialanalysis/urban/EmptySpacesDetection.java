@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
@@ -55,14 +55,16 @@ public class EmptySpacesDetection {
         }
         if (opened instanceof IPolygon) {
           block.getEmptySpaces().add(
-              CartagenApplication.getInstance().getCreationFactory()
+              CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
+                  .getGeneObjImpl().getCreationFactory()
                   .createEmptySpace((IPolygon) opened));
         } else if (opened instanceof IMultiSurface<?>) {
           IMultiSurface<IOrientableSurface> multi = (IMultiSurface<IOrientableSurface>) opened;
           for (IOrientableSurface simple : multi.getList()) {
             if (simple.area() > sizeThreshold) {
               block.getEmptySpaces().add(
-                  CartagenApplication.getInstance().getCreationFactory()
+                  CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
+                      .getGeneObjImpl().getCreationFactory()
                       .createEmptySpace((IPolygon) simple));
             }
           }
@@ -88,14 +90,16 @@ public class EmptySpacesDetection {
         }
         if (opened instanceof IPolygon) {
           block.getEmptySpaces().add(
-              CartagenApplication.getInstance().getCreationFactory()
+              CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
+                  .getGeneObjImpl().getCreationFactory()
                   .createEmptySpace((IPolygon) opened));
         } else if (opened instanceof IMultiSurface<?>) {
           IMultiSurface<IOrientableSurface> multi = (IMultiSurface<IOrientableSurface>) opened;
           for (IOrientableSurface simple : multi.getList()) {
             if (simple.area() > sizeThreshold) {
               block.getEmptySpaces().add(
-                  CartagenApplication.getInstance().getCreationFactory()
+                  CartAGenDoc.getInstance().getCurrentDataset().getCartAGenDB()
+                      .getGeneObjImpl().getCreationFactory()
                       .createEmptySpace((IPolygon) simple));
             }
           }

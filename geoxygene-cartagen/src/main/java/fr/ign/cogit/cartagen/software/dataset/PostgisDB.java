@@ -76,7 +76,7 @@ public class PostgisDB {
     return PostgisDB.dbName;
   }
 
-  private static String userName = "imrandb";
+  private static String userName = "postgres";
 
   /**
    * @return
@@ -85,7 +85,7 @@ public class PostgisDB {
     return PostgisDB.userName;
   }
 
-  private static String motDePasse = "imrandb";
+  private static String motDePasse = "cartagen";
 
   // le SRID de la BD
   private static int srid = -1; // 27582;

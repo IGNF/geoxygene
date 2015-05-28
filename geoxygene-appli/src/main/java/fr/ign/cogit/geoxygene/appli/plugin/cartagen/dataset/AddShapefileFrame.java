@@ -20,6 +20,7 @@ import fr.ign.cogit.cartagen.software.dataset.DigitalLandscapeModel;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileClass;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
+import fr.ign.cogit.cartagen.software.dataset.ShapeFileLoader;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
@@ -114,9 +115,9 @@ public class AddShapefileFrame extends JFrame implements ActionListener {
         currentDb.addClass(new ShapeFileClass(currentDb, panel.getFile()
             .getParent(), IRailwayLine.FEAT_TYPE_NAME, ILineString.class));
         try {
-          currentDb.getDataSet().loadRailwayLineFromSHP(
-              panel.getFile().getPath(), symbols,
-              panel.getAttributeMapping().get("Sidetrack"));
+          ShapeFileLoader.loadRailwayLineFromSHP(panel.getFile().getPath(),
+              symbols, panel.getAttributeMapping().get("Sidetrack"),
+              currentDb.getDataSet());
         } catch (IOException e1) {
           e1.printStackTrace();
         }

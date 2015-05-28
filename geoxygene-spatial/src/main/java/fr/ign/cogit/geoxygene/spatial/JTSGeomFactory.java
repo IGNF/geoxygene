@@ -18,10 +18,12 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
@@ -80,6 +82,11 @@ public class JTSGeomFactory implements AbstractGeomFactory {
   @Override
   public IPolygon createIPolygon(IDirectPositionList coords) {
     return new GM_Polygon(new GM_LineString(coords));
+  }
+
+  @Override
+  public IMultiSurface<IPolygon> createMultiPolygon() {
+    return new GM_MultiSurface<IPolygon>();
   }
 
 }

@@ -27,12 +27,9 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.DatabaseView;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.GeographicClass;
@@ -82,7 +79,7 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
       "Display cartaGen right panel");
 
   /**
-   * The {@link CartAGenDocOld} document related to {@code this} plugin.
+   * The {@link CartAGenDoc} document related to {@code this} plugin.
    */
   private CartAGenDoc document;
 
@@ -116,6 +113,9 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
   private String cheminDonnees = null;
   private String cheminDonneesInitial = null;
 
+  private boolean reliefEnriched = false;
+  private boolean landuseEnriched = false;
+
   public String getCheminDonnees() {
     return this.cheminDonnees;
   }
@@ -139,8 +139,6 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
   @Override
   public void initialize(final GeOxygeneApplication application) {
     instance = this;
-    CartagenApplication.getInstance().setCreationFactory(
-        new DefaultCreationFactory());
     this.application = application;
 
     // add the right panel
@@ -342,6 +340,22 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
 
   public String getCheminFichierConfigurationGeneralisation() {
     return cheminFichierConfigurationGeneralisation;
+  }
+
+  public boolean isReliefEnriched() {
+    return reliefEnriched;
+  }
+
+  public void setReliefEnriched(boolean reliefEnriched) {
+    this.reliefEnriched = reliefEnriched;
+  }
+
+  public boolean isLanduseEnriched() {
+    return landuseEnriched;
+  }
+
+  public void setLanduseEnriched(boolean landuseEnriched) {
+    this.landuseEnriched = landuseEnriched;
   }
 
   /**

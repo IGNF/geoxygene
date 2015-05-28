@@ -99,12 +99,6 @@ public interface IGeneObj extends IGraphLinkableFeature, IFeature,
   void cancelElimination();
 
   /**
-   * Eliminate <b>this</b> in a proper manner but works in a batch mode where
-   * the frames haven't been created.
-   */
-  void eliminateBatch();
-
-  /**
    * The possible graphn linkable feature attached to the geneobj
    */
   public IGraphLinkableFeature getLinkableFeature();

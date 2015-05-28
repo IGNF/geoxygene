@@ -18,10 +18,25 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.spatialanalysis.urban.UrbanEnrichment;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
+import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.NamedLayerFactory;
+import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 public class BlockMenu extends JMenu {
 
@@ -30,6 +45,8 @@ public class BlockMenu extends JMenu {
   @SuppressWarnings("unused")
   private Logger logger = Logger.getLogger(BlockMenu.class.getName());
 
+  private JMenuItem mCreateBlocksArea = new JMenuItem(
+      new CreateBlocksInAreaAction());
   private JMenuItem mIlotSelectionnerTous = new JMenuItem(new SelectAction());
 
   public JCheckBoxMenuItem mIdIlotVoir = new JCheckBoxMenuItem("Display id");
@@ -51,6 +68,7 @@ public class BlockMenu extends JMenu {
   public BlockMenu(String title) {
     super(title);
 
+    this.add(this.mCreateBlocksArea);
     this.add(this.mIlotSelectionnerTous);
 
     this.addSeparator();
@@ -88,6 +106,70 @@ public class BlockMenu extends JMenu {
 
     public SelectAction() {
       this.putValue(Action.NAME, "Select all blocks");
+    }
+  }
+
+  private class CreateBlocksInAreaAction extends AbstractAction {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      GeOxygeneApplication appli = CartAGenPlugin.getInstance()
+          .getApplication();
+      IFeature feat = SelectionUtil.getFirstSelectedObject(appli);
+      if (feat.getGeom() instanceof IPolygon) {
+        IPolygon area = (IPolygon) feat.getGeom();
+        CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
+        // create the topological map
+        // remplit carte topo avec les troncons
+        CarteTopo carteTopo = new CarteTopo("cartetopo");
+        for (INetwork res : UrbanEnrichment.getStructuringNetworks(dataset)) {
+          if (res.getSections().size() > 0) {
+            IFeatureCollection<IFeature> sections = new FT_FeatureCollection<>();
+            sections.addAll(res.getSections().select(area.getEnvelope()));
+            carteTopo.importClasseGeo(sections, true);
+          }
+        }
+
+        // remplit carte topo avec limites de villes
+        IFeatureCollection<DefaultFeature> contours = new FT_FeatureCollection<DefaultFeature>();
+        DefaultFeature contour = new DefaultFeature();
+        contour.setGeom(area.exteriorLineString());
+        contours.add(contour);
+        carteTopo.importClasseGeo(contours, true);
+        // Set infinite face to true for face creation, because of a bug if not
+        // set.
+        // Intended to be removed when the bug is corrected
+        carteTopo.setBuildInfiniteFace(true);
+        carteTopo.creeNoeudsManquants(1.0);
+        carteTopo.fusionNoeuds(1.0);
+        carteTopo.filtreArcsDoublons();
+        carteTopo.rendPlanaire(1.0);
+        carteTopo.fusionNoeuds(1.0);
+        carteTopo.filtreArcsDoublons();
+        carteTopo.creeTopologieFaces();
+        carteTopo.getPopFaces().initSpatialIndex(Tiling.class, false);
+
+        UrbanEnrichment.buildBlocksInArea(area, dataset, carteTopo, false);
+        ProjectFrame frame = appli.getMainFrame().getSelectedProjectFrame();
+        FeatureType ft = new FeatureType();
+        ft.setNomClasse(CartAGenDataSet.BLOCKS_POP);
+        ft.setGeometryType(IPolygon.class);
+        dataset.getBlocks().setFeatureType(ft);
+
+        NamedLayerFactory factory = new NamedLayerFactory();
+        factory.setModel(frame.getSld());
+        factory.setName(CartAGenDataSet.BLOCKS_POP);
+
+        factory.setGeometryType(IPolygon.class);
+        Layer layer = factory.createLayer();
+        frame.getSld().add(layer);
+      }
+    }
+
+    public CreateBlocksInAreaAction() {
+      this.putValue(Action.NAME, "Create blocks in the selected area");
     }
   }
 

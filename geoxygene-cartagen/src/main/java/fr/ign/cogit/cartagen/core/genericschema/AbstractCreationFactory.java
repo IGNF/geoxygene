@@ -264,6 +264,15 @@ public abstract class AbstractCreationFactory {
   }
 
   @SuppressWarnings("unused")
+  public IUrbanBlock createUrbanBlock(IPolygon poly,
+      IFeatureCollection<IUrbanElement> buildings,
+      IFeatureCollection<INetworkSection> surroundRoads) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for IUrbanBlock");
+    return null;
+  }
+
+  @SuppressWarnings("unused")
   public IUrbanBlock createUrbanBlock(IPolygon poly, ITown town,
       IFeatureCollection<IUrbanElement> urbanElements,
       IFeatureCollection<INetworkSection> sections, CityPartition partition,
@@ -731,7 +740,7 @@ public abstract class AbstractCreationFactory {
         .error("Non implemented creation factory method for IWaterLine");
     return null;
   }
-  
+
   @SuppressWarnings("unused")
   public IWaterLine createWaterLine(ILineString line, int importance) {
     AbstractCreationFactory.logger

@@ -180,8 +180,8 @@ public class DatabaseView {
     uCornerElem.appendChild(yucElem);
 
     // the sld in a separate file
-    String fileName = databaseFileName.replaceAll(".xml",
-        "_sld_" + doc.getName() + ".xml");
+    String fileName = databaseFileName.replace(".xml", "_sld_" + doc.getName()
+        + ".xml");
     Element sldElem = xmlDoc.createElement("sld-file");
     n = xmlDoc.createTextNode(fileName);
     sldElem.appendChild(n);

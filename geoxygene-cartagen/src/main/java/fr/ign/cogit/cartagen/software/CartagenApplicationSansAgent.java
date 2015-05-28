@@ -23,6 +23,7 @@ import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
  * @author JGaffuri
  * 
  */
+@Deprecated
 public class CartagenApplicationSansAgent {
   private static Logger logger = Logger
       .getLogger(CartagenApplicationSansAgent.class.getName());
@@ -43,8 +44,8 @@ public class CartagenApplicationSansAgent {
     CartagenApplicationSansAgent.logger.info("End: Cartagen launched");
     CartagenApplication.getInstance().getFrameInit().lblEnd
         .setText("CartAGen has been successfully launched !");
-    CartagenApplication.getInstance().getFrameInit().isGood(
-        CartagenApplication.getInstance().getFrameInit().lblEndIcon);
+    CartagenApplication.getInstance().getFrameInit()
+        .isGood(CartagenApplication.getInstance().getFrameInit().lblEndIcon);
     CartagenApplication.getInstance().getFrameInit().buttonOK.setEnabled(true);
     CartagenApplication.getInstance().getFrameInit().repaint();
     CartagenApplication.getInstance().getFrameInit().dispose();

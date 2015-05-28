@@ -30,8 +30,7 @@ import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.urban.UrbanEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -190,26 +189,29 @@ public class NetworkEnrichment {
     for (Noeud n : net.getCarteTopo().getPopNoeuds()) {
 
       if (net.getSections().get(0) instanceof IRoadLine) {
-        IRoadNode roadNode = CartagenApplication.getInstance()
-            .getCreationFactory().createRoadNode(n);
+        IRoadNode roadNode = CartAGenDoc.getInstance().getCurrentDataset()
+            .getCartAGenDB().getGeneObjImpl().getCreationFactory()
+            .createRoadNode(n);
         IPopulation<IRoadNode> popRoad = dataset.getRoadNodes();
         popRoad.add(roadNode);
         dataset.getRoadNetwork().addNode(roadNode);
       }
 
       if (net.getSections().get(0) instanceof IWaterLine) {
-        IWaterNode waterNode = CartagenApplication.getInstance()
-            .getCreationFactory().createWaterNode(n);
-        IPopulation<IWaterNode> popWater = CartAGenDocOld.getInstance()
+        IWaterNode waterNode = CartAGenDoc.getInstance().getCurrentDataset()
+            .getCartAGenDB().getGeneObjImpl().getCreationFactory()
+            .createWaterNode(n);
+        IPopulation<IWaterNode> popWater = CartAGenDoc.getInstance()
             .getCurrentDataset().getWaterNodes();
         popWater.add(waterNode);
         dataset.getHydroNetwork().addNode(waterNode);
       }
 
       if (net.getSections().get(0) instanceof IRailwayLine) {
-        IRailwayNode railNode = CartagenApplication.getInstance()
-            .getCreationFactory().createRailwayNode(n);
-        CartAGenDocOld.getInstance().getCurrentDataset().getRailwayNetwork()
+        IRailwayNode railNode = CartAGenDoc.getInstance().getCurrentDataset()
+            .getCartAGenDB().getGeneObjImpl().getCreationFactory()
+            .createRailwayNode(n);
+        CartAGenDoc.getInstance().getCurrentDataset().getRailwayNetwork()
             .addNode(railNode);
       }
 
@@ -499,8 +501,9 @@ public class NetworkEnrichment {
         NetworkEnrichment.logger.error(polygon.toString());
         continue;
       }
-      INetworkFace netFace = CartagenApplication.getInstance()
-          .getCreationFactory().createNetworkFace(polygon);
+      INetworkFace netFace = CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartAGenDB().getGeneObjImpl().getCreationFactory()
+          .createNetworkFace(polygon);
       dataset.getFacesReseau().add(netFace);
     }
 

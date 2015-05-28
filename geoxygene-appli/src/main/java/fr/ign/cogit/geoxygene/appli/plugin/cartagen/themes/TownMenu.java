@@ -29,6 +29,7 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.selection.Sele
 import fr.ign.cogit.cartagen.spatialanalysis.urban.UrbanEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
@@ -44,10 +45,12 @@ public class TownMenu extends JMenu {
   public JCheckBoxMenuItem mIdVilleVoir = new JCheckBoxMenuItem("See id");
   public JCheckBoxMenuItem mVoirAireVille = new JCheckBoxMenuItem(
       "See town area");
+  private GeOxygeneApplication application;
 
-  public TownMenu(String title) {
+  public TownMenu(String title, GeOxygeneApplication application) {
     super(title);
 
+    this.application = application;
     this.add(this.mVilleCreer);
     this.add(this.mTownLinks);
 
@@ -59,6 +62,14 @@ public class TownMenu extends JMenu {
     this.addSeparator();
 
     this.add(new JMenuItem(new IsTownCentreAction()));
+  }
+
+  public GeOxygeneApplication getApplication() {
+    return application;
+  }
+
+  public void setApplication(GeOxygeneApplication application) {
+    this.application = application;
   }
 
   private class CreateTownAction extends AbstractAction {
@@ -74,7 +85,10 @@ public class TownMenu extends JMenu {
               "Enrichement in progress...", true);
           progressFrame.setVisible(true);
           progressFrame.setTextAndValue("Urban enrichment in progress", 0);
-          UrbanEnrichment.buildTowns();
+          UrbanEnrichment.buildTowns(CartAGenDoc.getInstance()
+              .getCurrentDataset(), false, CartAGenDoc.getInstance()
+              .getCurrentDataset().getCartAGenDB().getGeneObjImpl()
+              .getCreationFactory());
           progressFrame.setTextAndValue("Urban enrichment in progress", 100);
           CartAGenPlugin.getInstance().getApplication().getMainFrame()
               .getSelectedProjectFrame().getLayerViewPanel().repaint();

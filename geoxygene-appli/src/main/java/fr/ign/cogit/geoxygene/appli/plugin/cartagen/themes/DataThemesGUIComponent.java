@@ -11,6 +11,9 @@ package fr.ign.cogit.geoxygene.appli.plugin.cartagen.themes;
 
 import javax.swing.JMenu;
 
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
+
 public class DataThemesGUIComponent extends JMenu {
 
   private static DataThemesGUIComponent menu;
@@ -39,6 +42,7 @@ public class DataThemesGUIComponent extends JMenu {
 
   public DataThemesGUIComponent(String title) {
     super(title);
+    GeOxygeneApplication appli = CartAGenPlugin.getInstance().getApplication();
 
     this.reliefMenu = new ReliefMenu("Relief");
     this.landUseMenu = new LandUseMenu("Land Use");
@@ -46,8 +50,8 @@ public class DataThemesGUIComponent extends JMenu {
     this.hydroNetMenu = new HydroNetworkMenu("Hydro Network");
     this.buildingMenu = new BuildingMenu("Building");
     this.blockMenu = new BlockMenu("Block");
-    this.alignmentMenu = new UrbanAlignmentMenu("Urban alignment");
-    this.townMenu = new TownMenu("Town");
+    this.alignmentMenu = new UrbanAlignmentMenu("Urban alignment", appli);
+    this.townMenu = new TownMenu("Town", appli);
     this.otherMenu = new OtherThemesMenu("Other Themes");
     this.add(this.reliefMenu);
     this.add(this.landUseMenu);

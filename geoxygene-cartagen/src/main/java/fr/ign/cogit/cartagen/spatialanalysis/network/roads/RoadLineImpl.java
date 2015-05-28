@@ -32,7 +32,6 @@ public class RoadLineImpl extends TronconDeRouteImpl implements
   // //////////////////////////////////////////
 
   // All static fields //
-  @SuppressWarnings("hiding")
   private static Logger logger = Logger.getLogger(RoadLineImpl.class.getName());
   // Public fields //
 

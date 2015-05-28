@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+
 public class UrbanAlignmentMenu extends JMenu {
 
   /**
@@ -24,11 +26,22 @@ public class UrbanAlignmentMenu extends JMenu {
   @SuppressWarnings("unused")
   private Logger logger = Logger.getLogger(UrbanAlignmentMenu.class.getName());
 
+  private GeOxygeneApplication application;
+
   private JLabel mAlignmentDefault = new JLabel("        empty menu        ");
 
-  public UrbanAlignmentMenu(String title) {
+  public UrbanAlignmentMenu(String title, GeOxygeneApplication application) {
     super(title);
     this.add(this.mAlignmentDefault);
+    this.application = application;
+  }
+
+  public GeOxygeneApplication getApplication() {
+    return application;
+  }
+
+  public void setApplication(GeOxygeneApplication application) {
+    this.application = application;
   }
 
 }

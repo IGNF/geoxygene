@@ -32,7 +32,6 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.genealgorithms.polygon.Skeletonize;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.spatialanalysis.clustering.AdjacencyClustering;
 import fr.ign.cogit.cartagen.spatialanalysis.network.Stroke;
 import fr.ign.cogit.cartagen.spatialanalysis.network.StrokesNetwork;
@@ -134,7 +133,7 @@ public class AirportTypification {
    * @throws Exception
    */
   public void collapseRunways() throws Exception {
-    IPopulation<IRunwayLine> pop = CartAGenDocOld.getInstance()
+    IPopulation<IRunwayLine> pop = CartAGenDoc.getInstance()
         .getCurrentDataset().getRunwayLines();
     for (IRunwayArea runway : this.airport.getRunwayAreas()) {
       // first find the runway orientation
@@ -146,7 +145,7 @@ public class AirportTypification {
           geom, orient);
       // eliminate the runway area
       if (this.runwayAreaElim) {
-        runway.eliminateBatch();
+        runway.eliminate();
       }
       // build a new runway line
       IRunwayLine line = dataset.getCartAGenDB().getGeneObjImpl()
@@ -169,7 +168,7 @@ public class AirportTypification {
           remaining = obj;
         }
         list.add(JtsGeOxygene.makeJtsGeom(obj.getGeom()));
-        obj.eliminateBatch();
+        obj.eliminate();
         this.airport.getRunwayAreas().remove(obj);
       }
       if (remaining == null) {
@@ -195,7 +194,7 @@ public class AirportTypification {
 
       // check building size
       if (terminal.getGeom().area() < this.terminalMinArea) {
-        terminal.eliminateBatch();
+        terminal.eliminate();
         continue;
       }
       // simplify feature
@@ -213,7 +212,7 @@ public class AirportTypification {
       }
       // check apron size1
       if (taxi.getGeom().area() < this.apronMinArea) {
-        taxi.eliminateBatch();
+        taxi.eliminate();
         continue;
       }
       // simplify feature
@@ -249,7 +248,7 @@ public class AirportTypification {
       if (taxi.getType().equals(TaxiwayType.TAXIWAY)) {
         continue;
       }
-      taxi.eliminateBatch();
+      taxi.eliminate();
     }
 
     // make the multi-polygons multiple objects
@@ -346,7 +345,7 @@ public class AirportTypification {
         }
       } else {
         IPolygon iniGeom = taxi.getGeom();
-        taxi.eliminateBatch();
+        taxi.eliminate();
         // then, the taxiway feature is collapsed into a ITaxiwayLine.
         Set<ILineSegment> skeleton = Skeletonize
             .skeletonizeStraightSkeleton(iniGeom);
@@ -603,7 +602,7 @@ public class AirportTypification {
         for (ArcReseau arc : stroke.getFeatures()) {
           ITaxiwayLine way = map.get(arc);
           if (way != null) {
-            way.eliminateBatch();
+            way.eliminate();
           }
         }
       }
@@ -855,9 +854,9 @@ public class AirportTypification {
 
       // then, delete slipWay1 and slipWay2
       if (slipWay1 != null)
-        slipWay1.eliminateBatch();
+        slipWay1.eliminate();
       if (slipWay2 != null)
-        slipWay2.eliminateBatch();
+        slipWay2.eliminate();
 
       // now extend minorOutWay
       Vector2D direction = new Vector2D(minorOutWay.getGeom().coord().get(1),
@@ -983,7 +982,7 @@ public class AirportTypification {
             deviation += Math.abs(angle);
           }
           if (deviation > Math.PI / 6)
-            taxiway.eliminateBatch();
+            taxiway.eliminate();
           // count the current taxiway as treated
           treated.add(taxiway);
         }
@@ -1132,7 +1131,7 @@ public class AirportTypification {
 
       // delete slip ways
       for (IGeneObj obj : this.slipTaxiways)
-        obj.eliminateBatch();
+        obj.eliminate();
 
       if (extremity1 == null || extremity2 == null) {
         // twisted case: do nothing

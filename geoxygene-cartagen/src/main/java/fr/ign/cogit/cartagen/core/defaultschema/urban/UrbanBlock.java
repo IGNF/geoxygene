@@ -200,6 +200,27 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
     this.initialGeoxBlocks.add(this);
   }
 
+  public UrbanBlock(IPolygon poly,
+      IFeatureCollection<IUrbanElement> urbanElements,
+      IFeatureCollection<INetworkSection> sections) {
+    this.geoxObj = new IlotImpl(poly);
+    this.setInitialGeom(poly);
+    this.setEliminated(false);
+    this.emptySpaces = new HashSet<IEmptySpace>();
+    this.urbanElements = urbanElements;
+    this.surroundingNetwork = new FT_FeatureCollection<INetworkSection>();
+    this.isColored = false;
+    this.surroundingNetwork = sections;
+    this.setGeom(poly);
+    this.cityBlockGeom = poly;
+    this.aggregLevel = 0;
+    this.insideBlocks = new HashSet<IUrbanBlock>();
+    this.axes = new HashSet<CityAxis>();
+    this.neighbours = new HashSet<IUrbanBlock>();
+    this.initialGeoxBlocks = new HashSet<IUrbanBlock>();
+    this.initialGeoxBlocks.add(this);
+  }
+
   /**
    * Constructor with an additional geometry for the cityblock in case this
    * geometry is not the same as the block geometry (cityBlocks cut at city

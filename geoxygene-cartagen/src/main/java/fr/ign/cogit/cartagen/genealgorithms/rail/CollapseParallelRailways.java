@@ -141,7 +141,7 @@ public class CollapseParallelRailways {
       for (ParallelStroke stroke : group.getParallelStrokes()) {
         if (stroke.isCollapsible()) {
           for (ArcReseau arc : stroke.getStroke().getFeatures()) {
-            map.get(arc).eliminateBatch();
+            map.get(arc).eliminate();
           }
           continue;
         }
@@ -152,7 +152,7 @@ public class CollapseParallelRailways {
           // if the parallel part of the parallel stroke contains the geometry
           // of arc, arc can be removed entirely
           if (stroke.getParallelGeom().contains(arc.getGeom())) {
-            map.get(arc).eliminateBatch();
+            map.get(arc).eliminate();
             continue;
           }
 
