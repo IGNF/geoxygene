@@ -36,7 +36,6 @@ import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.xml.bind.JAXBException;
 
-import fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.DataSetZone;
@@ -93,7 +92,10 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
   private final JRadioButton rbComputed, rbFile;
 
   public ImportDataFrame2(boolean isInitial, CartAGenPlugin plugIn) {
-    super("Import Shapefile data into a new dataset");
+    super("Import Shapefile data into a new dataset "
+        + (isInitial ? "initial" : ""));
+    System.out.println("Import Shapefile data into a new dataset -- initial "
+        + isInitial);
     this.isInitial = isInitial;
     this.plugIn = plugIn;
     this.setSize(600, 300);
@@ -230,6 +232,7 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     this.getContentPane().setLayout(
         new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
     this.pack();
+    System.out.println("frame created");
   }
 
   @Override
@@ -257,14 +260,19 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     } else if (e.getActionCommand().equals("OK")) {
 
       if (!this.isInitial) {
-
+        // originally this is void
+        this.importInitialDataSet((SourceDLM) this.cbSourceDlm
+            .getSelectedItem(), Integer.parseInt(this.txtScale.getText()),
+            this.txtZone.getText(), this.txtDataset.getText(), this.txtPath
+                .getText(), this.txtExtent.getText(), this.rbFile.isSelected(),
+            this.cbType.getSelectedItem().equals("DLM"), true);
       }// end of if(!isInitial
       else {
         this.importInitialDataSet((SourceDLM) this.cbSourceDlm
             .getSelectedItem(), Integer.parseInt(this.txtScale.getText()),
             this.txtZone.getText(), this.txtDataset.getText(), this.txtPath
                 .getText(), this.txtExtent.getText(), this.rbFile.isSelected(),
-            this.cbType.getSelectedItem().equals("DLM"));
+            this.cbType.getSelectedItem().equals("DLM"), false);
 
       }
 
@@ -281,10 +289,9 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
 
   public void importInitialDataSet(SourceDLM source, int scale, String txtZone,
       String txtDataset, String filePath, String txtExtent,
-      boolean rbFileSelected, boolean dlmSelected) {
+      boolean rbFileSelected, boolean dlmSelected, boolean withEnrichment) {
     plugIn.setCheminDonneesInitial(this.filePath);
     this.setVisible(false);
-
     this.sourceDlm = source;
     this.setScale(scale);
     CartAGenDoc.getInstance().setZone(new DataSetZone(txtZone, null));
@@ -294,8 +301,10 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
       extentFile = true;
       extentClass = txtExtent;
     }
+    System.out.println(txtExtent + " " + rbFileSelected + " " + dlmSelected);
     // create the new CartAGen dataset
     ShapeFileDB database = new ShapeFileDB(this.datasetName);
+    database.setDocument(CartAGenDoc.getInstance());
     database.setSourceDLM(this.sourceDlm);
     database.setSymboScale(this.scale);
     database.setSystemPath(this.filePath);
@@ -310,10 +319,14 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
       database.setType(new DigitalCartographicModel());
     }
 
-    SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
-        SourceDLM.SPECIAL_CARTAGEN, scale);
+    // SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
+    // SourceDLM.SPECIAL_CARTAGEN, scale);
+    SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(this.sourceDlm, scale);
+
     dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
 
+    CartAGenDoc.getInstance().setInitialDataset(dataset);
+    CartAGenDoc.getInstance().setCurrentDataset(dataset);
     new CartAGenLoader(plugIn, database.getName()).loadData(this.filePath,
         this.sourceDlm, scale, dataset);
     // CartagenApplication.getInstance().loadDat(sourceDlm, scale);
@@ -325,13 +338,14 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
       e.printStackTrace();
     }
 
-    CartAGenDoc.getInstance().setInitialDataset(dataset);
+    // CartAGenDoc.getInstance().setInitialDataset(dataset);
 
-    EnrichFrame enrichFrame = EnrichFrame.getInstance();
-    enrichFrame.setDataSet(dataset);
-    enrichFrame.setFactory(new DefaultCreationFactory());
-
-    enrichFrame.setVisible(true);
+    if (withEnrichment) {
+      // EnrichFrame enrichFrame = EnrichFrame.getInstance();
+      // enrichFrame.setDataSet(dataset);
+      // enrichFrame.setFactory(new DefaultCreationFactory());
+      // enrichFrame.setVisible(true);
+    }
   }
 
   public void setScale(int scale) {
