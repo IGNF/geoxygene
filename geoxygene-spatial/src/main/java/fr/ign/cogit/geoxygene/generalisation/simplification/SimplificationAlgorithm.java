@@ -84,8 +84,8 @@ public class SimplificationAlgorithm {
    * @param cpPlusCourt
    * @return
    */
-  private static resultatSuppressionCotePolygone suppressionCote(IPolygon poly,
-      PolygonSegment cotePolygone) {
+  protected static resultatSuppressionCotePolygone suppressionCote(
+      IPolygon poly, PolygonSegment cotePolygone) {
 
     // recupere l'anneau dont on souhaite supprimer un cote
     IRing anneau;
