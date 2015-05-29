@@ -48,7 +48,8 @@ public class SymbolList {
           .newDocumentBuilder()
           .parse(
               new File(
-                  "src\\main\\java\\fr\\ign\\cogit\\cartagen\\software\\interfaceCartagen\\symbols\\SymbolsBDTopo25.xml"));
+                  //"src\\main\\java\\fr\\ign\\cogit\\cartagen\\software\\interfaceCartagen\\symbols\\SymbolsBDTopo25.xml"));
+                  "src//main//java//fr//ign//cogit//cartagen//software//interfaceCartagen//symbols//SymbolsBDTopo25.xml"));
     } catch (FileNotFoundException e) {
       SymbolList.logger.error("Fichier non trouvé: " + "SymbolsBDTopo25.xml");
       e.printStackTrace();
