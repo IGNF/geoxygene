@@ -295,7 +295,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
         this.layersTable.addKeyListener(this);
 
         Icon selectionIcon = new ImageIcon(this.getClass().getResource(
-                "/images/toolbar/pencil.png")); //$NON-NLS-1$
+                "/images/icons/16x16/selection2.png")); //$NON-NLS-1$
         Icon visibleIcon = new ImageIcon(this.getClass().getResource(
                 "/images/icons/16x16/visible.png")); //$NON-NLS-1$
         Icon symbolizeIcon = new ImageIcon(this.getClass().getResource(
