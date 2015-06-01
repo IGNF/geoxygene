@@ -243,6 +243,10 @@ MouseListener, MouseWheelListener, MouseMotionListener {
   public final JToolBar getToolBar() {
     return this.toolBar;
   }
+  
+  public final List<Mode> getModes() {
+    return this.modes;
+  }
 
   /**
    * Set the main frame.
