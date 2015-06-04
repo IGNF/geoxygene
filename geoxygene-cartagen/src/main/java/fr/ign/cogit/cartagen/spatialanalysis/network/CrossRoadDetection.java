@@ -254,7 +254,7 @@ public class CrossRoadDetection {
    * @param roads
    * @return
    */
-  private IFeatureCollection<IRoadNode> getNodesFromRoadsCartAGen(
+  public IFeatureCollection<IRoadNode> getNodesFromRoadsCartAGen(
       IFeatureCollection<IRoadLine> roads) {
     IFeatureCollection<IRoadNode> crossroads = new FT_FeatureCollection<IRoadNode>();
     for (IRoadLine road : roads) {

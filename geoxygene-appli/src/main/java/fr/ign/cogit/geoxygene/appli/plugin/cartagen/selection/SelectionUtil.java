@@ -138,4 +138,12 @@ public class SelectionUtil {
     return appli.getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
         .getSelectedFeatures().size() == 0;
   }
+
+  /**
+   * Clears the selection.
+   */
+  public static void clearSelection(GeOxygeneApplication appli) {
+    appli.getMainFrame().getSelectedProjectFrame().getLayerViewPanel()
+        .getSelectedFeatures().clear();
+  }
 }

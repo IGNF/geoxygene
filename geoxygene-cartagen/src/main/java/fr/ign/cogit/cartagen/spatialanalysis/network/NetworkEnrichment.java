@@ -642,6 +642,75 @@ public class NetworkEnrichment {
   }
 
   /**
+   * Constructs the topological map of a part of a dataset based on its
+   * structuring networks
+   * @param dataset the dataset in which to construct the network faces
+   */
+  public static CarteTopo buildNetworksTopoMap(CartAGenDataSet dataset,
+      IPolygon area) {
+
+    if (NetworkEnrichment.logger.isDebugEnabled()) {
+      NetworkEnrichment.logger.debug("Building network faces...");
+    }
+
+    // Constructs a CarteTopo (topological map) and fills it in with the
+    // network sections
+    CarteTopo carteTopo = new CarteTopo("cartetopo");
+    for (INetwork res : UrbanEnrichment.getStructuringNetworks(dataset)) {
+      if (res.getSections().size() > 0) {
+        IFeatureCollection<IFeature> sections = new FT_FeatureCollection<>();
+        for (IFeature feat : res.getSections()) {
+          if (area.intersects(feat.getGeom()))
+            sections.add(feat);
+        }
+        carteTopo.importClasseGeo(sections, true);
+      }
+    }
+
+    // Creates Nodes, etc. and makes the topological map planar, create
+    // faces
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("creating nodes");
+    }
+    carteTopo.creeNoeudsManquants(1.0);
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("merging nodes");
+    }
+    carteTopo.fusionNoeuds(1.0);
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("filtering duplicated edges");
+    }
+    carteTopo.filtreArcsDoublons();
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("making planar");
+    }
+    carteTopo.rendPlanaire(1.0);
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("merging duplicated nodes");
+    }
+    carteTopo.fusionNoeuds(1.0);
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("filtering duplicated edges");
+    }
+    carteTopo.filtreArcsDoublons();
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("creating topological faces");
+    }
+    carteTopo.creeTopologieFaces();
+    if (NetworkEnrichment.logger.isDebugEnabled()) {
+      NetworkEnrichment.logger.debug(carteTopo.getListeFaces().size()
+          + " faces found");
+    }
+    if (NetworkEnrichment.logger.isDebugEnabled()) {
+      NetworkEnrichment.logger.debug("building spatial index on faces");
+    }
+    carteTopo.getPopFaces().initSpatialIndex(Tiling.class, false);
+
+    return carteTopo;
+
+  }
+
+  /**
    * Raccorde tous les troncons analogues (semantiquement) et adjacents !! ALGO
    * TRES LONG ET AUX RESLULTATS INCERTAINS !! !! LUI PREFERER LA NOUVELLES
    * VERSION CI-DESSOUS (NOM EN ANGLAIS) !!

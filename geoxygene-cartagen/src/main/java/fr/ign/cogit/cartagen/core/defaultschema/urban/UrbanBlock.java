@@ -489,6 +489,8 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
     if (b != null) {
       return false;
     }
+    // TODO handle dual carriageways
+    // TODO handle escape crossroads
     return true;
   }
 

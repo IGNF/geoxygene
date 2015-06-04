@@ -20,6 +20,7 @@ import javax.swing.JMenuItem;
 
 import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
@@ -30,8 +31,12 @@ import fr.ign.cogit.cartagen.spatialanalysis.urban.UrbanEnrichment;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
+import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.NamedLayerFactory;
 
 public class TownMenu extends JMenu {
 
@@ -81,19 +86,39 @@ public class TownMenu extends JMenu {
       Thread th = new Thread(new Runnable() {
         @Override
         public void run() {
+          CartAGenDataSet dataset = CartAGenDoc.getInstance()
+              .getCurrentDataset();
           ProgressFrame progressFrame = new ProgressFrame(
               "Enrichement in progress...", true);
           progressFrame.setVisible(true);
           progressFrame.setTextAndValue("Urban enrichment in progress", 0);
-          UrbanEnrichment.buildTowns(CartAGenDoc.getInstance()
-              .getCurrentDataset(), false, CartAGenDoc.getInstance()
-              .getCurrentDataset().getCartAGenDB().getGeneObjImpl()
-              .getCreationFactory());
+          UrbanEnrichment.buildTowns(dataset, false, dataset.getCartAGenDB()
+              .getGeneObjImpl().getCreationFactory());
           progressFrame.setTextAndValue("Urban enrichment in progress", 100);
-          CartAGenPlugin.getInstance().getApplication().getMainFrame()
-              .getSelectedProjectFrame().getLayerViewPanel().repaint();
           progressFrame.setVisible(false);
           progressFrame = null;
+
+          ProjectFrame frame = application.getMainFrame()
+              .getSelectedProjectFrame();
+          FeatureType ft = new FeatureType();
+          ft.setNomClasse(CartAGenDataSet.BLOCKS_POP);
+          ft.setGeometryType(IPolygon.class);
+          dataset.getBlocks().setFeatureType(ft);
+          FeatureType ft2 = new FeatureType();
+          ft2.setNomClasse(CartAGenDataSet.TOWNS_POP);
+          ft2.setGeometryType(IPolygon.class);
+          dataset.getTowns().setFeatureType(ft2);
+
+          NamedLayerFactory factory = new NamedLayerFactory();
+          factory.setModel(frame.getSld());
+          factory.setName(CartAGenDataSet.BLOCKS_POP);
+
+          factory.setGeometryType(IPolygon.class);
+          Layer blockLayer = factory.createLayer();
+          factory.setName(CartAGenDataSet.TOWNS_POP);
+          Layer townLayer = factory.createLayer();
+          frame.getSld().add(blockLayer);
+          frame.getSld().add(townLayer);
         }
       });
       th.start();

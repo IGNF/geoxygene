@@ -58,6 +58,28 @@ public class SectionSymbol {
     return g;
   }
 
+  /**
+   * The geometry of the symbol on the field
+   * @return
+   */
+  public static IGeometry getSymbolExtentAtScale(INetworkSection section,
+      double scale) {
+    IGeometry g = section.getGeom().buffer(
+        section.getWidth() / 2 * scale / 1000, 10, BufferParameters.CAP_FLAT,
+        BufferParameters.JOIN_ROUND);
+    if (!(g instanceof IPolygon)) {
+      SectionSymbol.logger.warn(String.valueOf(section.getWidth()));
+      SectionSymbol.logger.warn(String.valueOf(section.getWidth() / 2 * scale
+          / 1000));
+      SectionSymbol.logger.warn(String.valueOf(section.getGeom().length()));
+      SectionSymbol.logger
+          .warn("Warning lors du calcul de l'emprise du troncon " + section
+              + ". geometrie resultat non polygone: " + g + ". geom initiale: "
+              + section.getGeom());
+    }
+    return g;
+  }
+
   public static IGeometry getSymbolExtentWithCarriedObjects(
       ICarrierNetworkSection section) {
     // Compute the size of the buffer

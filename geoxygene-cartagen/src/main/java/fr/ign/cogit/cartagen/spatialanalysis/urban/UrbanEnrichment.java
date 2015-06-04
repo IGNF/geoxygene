@@ -833,7 +833,7 @@ public class UrbanEnrichment {
 
     // ajout les blocks au reseau de rues
     // MODIF Guillaume (complete build of the street network)
-    // FIXME à virer d'ici avec précuations pour le remoner au niveau au-dessus
+    // FIXME à virer d'ici avec précuations pour le remonter au niveau au-dessus
     // (i.e. dans les méthodes aui appellent buildBlocksInTown, juste après
     // l'appel.
     town.getStreetNetwork().buildNetworkFromCityBlocks(cityBlocks);

@@ -15,8 +15,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Logger;
 import org.jfree.data.statistics.Statistics;
 
 import fr.ign.cogit.cartagen.core.defaultschema.urban.UrbanBlock;
@@ -709,7 +709,7 @@ public class StreetNetwork extends AbstractFeature {
    */
   public void limitedAggregationAlgorithm() {
     StreetNetwork.logger
-        .config("Limited block aggregation in the street network");
+        .info("Limited block aggregation in the street network");
     // first, get the city blocks to treat in the algorithm
     HashSet<IUrbanBlock> blocksToTreat;
     if (this.criteria.densBuildCrit) {
@@ -718,14 +718,14 @@ public class StreetNetwork extends AbstractFeature {
       blocksToTreat = this.getBlocksToTreat();
     }
     HashSet<IUrbanBlock> disolvableBlocks = this.getDisolvableBlocks();
-    StreetNetwork.logger.fine(blocksToTreat.size()
+    StreetNetwork.logger.trace(blocksToTreat.size()
         + " blocks to treat for aggregation");
 
     // while blocks remain to treat, continue
     while (blocksToTreat.size() > 0) {
       // first, get the best city block to treat
       IUrbanBlock block = this.getBestBlockToTreat(blocksToTreat);
-      StreetNetwork.logger.fine(block + " is the best block to treat");
+      StreetNetwork.logger.trace(block + " is the best block to treat");
       // if there is none, the algorithm is over, return.
       if (block == null) {
         return;
@@ -736,7 +736,7 @@ public class StreetNetwork extends AbstractFeature {
           disolvableBlocks);
       IUrbanBlock neigh = result.bestNeighbour;
       double neighCost = result.bestCost;
-      StreetNetwork.logger.fine(neigh + " is the best neighbour with cost "
+      StreetNetwork.logger.trace(neigh + " is the best neighbour with cost "
           + neighCost);
 
       // if cost is > than city maxCost, then the block cannot be aggregated
@@ -1259,11 +1259,11 @@ public class StreetNetwork extends AbstractFeature {
     // get the neighbour city blocks of block
     HashSet<IUrbanBlock> neighbourSet = new HashSet<IUrbanBlock>(
         block.getNeighbours());
-    StreetNetwork.logger.finer(block + " has " + neighbourSet.size()
+    StreetNetwork.logger.trace(block + " has " + neighbourSet.size()
         + " neighbours");
     // filter to keep only the disolvable neighbours
     neighbourSet.retainAll(disolvableBlocks);
-    StreetNetwork.logger.finer(neighbourSet.size()
+    StreetNetwork.logger.trace(neighbourSet.size()
         + " neighbours remain for aggregation");
     // get the City axes surrounding block
     HashSet<CityAxis> setAxes = new HashSet<CityAxis>(block.getAxes());
@@ -1274,7 +1274,11 @@ public class StreetNetwork extends AbstractFeature {
       if (!neigh.getPartition().equals(block.getPartition())) {
         continue;
       }
-      StreetNetwork.logger.finer("This neighbour " + neigh
+      // check that the union of both blocks is a polygon
+      if (!(neigh.getGeom().union(block.getGeom()) instanceof IPolygon))
+        continue;
+
+      StreetNetwork.logger.trace("This neighbour " + neigh
           + " is in the same partition");
       // get the city axes of neighbour
       HashSet<CityAxis> neighAxes = new HashSet<CityAxis>(neigh.getAxes());
@@ -1291,7 +1295,7 @@ public class StreetNetwork extends AbstractFeature {
 
       // compute the aggregation cost
       double cost = this.aggregationCostFunction(block, neigh);
-      StreetNetwork.logger.finer("Aggregation cost: " + cost);
+      StreetNetwork.logger.debug("Aggregation cost: " + cost);
       if (cost <= minCost) {
         minCost = cost;
         bestNeighbour = neigh;
@@ -1452,6 +1456,9 @@ public class StreetNetwork extends AbstractFeature {
       if (touchLimit) {
         strokesCoef *= 2.0;
       }
+
+      if (Double.isNaN(strokesCoef))
+        strokesCoef = 1.0;
     }// if(strokeCrit)
 
     // if one stroke crosses the partition and if criterion is selected,
@@ -1541,16 +1548,16 @@ public class StreetNetwork extends AbstractFeature {
     }
 
     // the final formula to compute cost
-    StreetNetwork.logger.finest("compactness: " + compactness);
-    StreetNetwork.logger.finest("coefComp: " + coefComp);
-    StreetNetwork.logger.finest("areaCoef: " + areaCoef);
-    StreetNetwork.logger.finest("coefDegree: " + coefDegree);
-    StreetNetwork.logger.finest("coefProxi: " + coefProxi);
-    StreetNetwork.logger.finest("coefInter: " + coefInter);
-    StreetNetwork.logger.finest("traffic: " + traffic);
-    StreetNetwork.logger.finest("strokesCoef: " + strokesCoef);
-    StreetNetwork.logger.finest("densCoef: " + densCoef);
-    StreetNetwork.logger.finest("densBatiments: " + densBatiments);
+    StreetNetwork.logger.debug("compactness: " + compactness);
+    StreetNetwork.logger.debug("coefComp: " + coefComp);
+    StreetNetwork.logger.debug("areaCoef: " + areaCoef);
+    StreetNetwork.logger.debug("coefDegree: " + coefDegree);
+    StreetNetwork.logger.debug("coefProxi: " + coefProxi);
+    StreetNetwork.logger.debug("coefInter: " + coefInter);
+    StreetNetwork.logger.debug("traffic: " + traffic);
+    StreetNetwork.logger.debug("strokesCoef: " + strokesCoef);
+    StreetNetwork.logger.debug("densCoef: " + densCoef);
+    StreetNetwork.logger.debug("densBatiments: " + densBatiments);
     cost = (1.0001 - compactness) * (1.0001 - compactness)
         * (1.0001 - compactness) * coefComp * areaCoef
         * Math.sqrt((coefDegree + coefProxi + coefInter) / 3.0) * (traffic + 1)
