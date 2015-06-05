@@ -12,6 +12,8 @@ package fr.ign.cogit.geoxygene.appli.plugin.cartagen;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,12 +24,15 @@ import javax.swing.JMenuBar;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.TableModel;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.DatabaseView;
@@ -38,7 +43,9 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.AbstractMainFrame;
+import fr.ign.cogit.geoxygene.appli.FloatingProjectFrame;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.TabbedProjectFrame;
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.layer.LayerFactory;
@@ -209,6 +216,58 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
       }
     }
     ProjectFrame frame = application.getMainFrame().newProjectFrame();
+    /*
+     * testoss -- change le currentdataset quand on passe d'un projectframe à
+     * l'autre
+     */
+    final ProjectFrame frameref = frame;
+    String pjfType = frame.toString().contains("Floating") ? "floating"
+        : "tabbed";
+    System.out.println("type de projectframe : " + pjfType + " -- " + frameref);
+    switch (pjfType) {
+      case "floating":
+        ((FloatingProjectFrame) frame).getInternalFrame()
+            .addInternalFrameListener(new InternalFrameAdapter() {
+              public void internalFrameActivated(InternalFrameEvent e) {
+                // System.out.println(frameref.getDataSet());
+                CartAGenDoc.getInstance().setCurrentDataset(
+                    (CartAGenDataSet) frameref.getDataSet());
+              }
+            });
+        break;
+      // FIXME ne fonctionne pas en l'état actuel
+      case "tabbed":
+        ((TabbedProjectFrame) frame).getGui().addFocusListener(
+            new FocusAdapter() {
+              public void focusGained(FocusEvent e) {
+                System.out.println("plop " + frameref.getDataSet());
+                CartAGenDoc.getInstance().setCurrentDataset(
+                    (CartAGenDataSet) frameref.getDataSet());
+              }
+            });
+    }
+    //
+    // frame.getGui().addFocusListener(new FocusAdapter() {
+    // public void focusGained(FocusEvent e) {
+    // System.out.println("gained focusss");
+    // }
+    // });
+    //
+    // frame.getGui().getRootPane().getLayeredPane()
+    // .addMouseListener(new MouseAdapter() {
+    // public void mousePressed(MouseEvent e) {
+    // System.out.println("focus fuckin' gained for");
+    // }
+    // });
+    // frame.getGui().addComponentListener(new ComponentAdapter() {
+    // public void componentResized(ComponentEvent e) {
+    // System.out.println("shown ! " + frameref.getDataSet());
+    // }
+    // });
+
+    /*
+     *
+     */
     this.mapDbFrame.put(db.getName(), frame);
     frame.getSld().setDataSet(db.getDataSet());
     frame.getLayerViewPanel().getRenderingManager().setHandlingDeletion(true);
