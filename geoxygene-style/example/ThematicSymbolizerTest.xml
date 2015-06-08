@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor version="1.0.20">
+	<NamedLayer>
+		<Name>Polygon</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Polygon</Name>
+					<ThematicSymbolizer>
+						<DiagramSymbolizer>
+							<DiagramType>piechart</DiagramType>
+							<DiagramSize>
+                                <DiagramRadius>15</DiagramRadius>
+                            </DiagramSize>
+                            <ThematicClass>
+                                <ClassValue>
+                                    <PropertyName>nb_monument</PropertyName>
+                                </ClassValue>
+					            <Fill>
+					                <CssParameter name="fill">#FFFFD4</CssParameter>
+					                <CssParameter name="fill-opacity">1.0</CssParameter>
+					            </Fill>
+                            </ThematicClass>
+                            <ThematicClass>
+                                <ClassValue>
+                                    <PropertyName>nb_bati_industriel</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#FFD4FF</CssParameter>
+                                    <CssParameter name="fill-opacity">1.0</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+						</DiagramSymbolizer>
+					</ThematicSymbolizer>
+					<PolygonSymbolizer>
+						<Fill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">2.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+</StyledLayerDescriptor>
