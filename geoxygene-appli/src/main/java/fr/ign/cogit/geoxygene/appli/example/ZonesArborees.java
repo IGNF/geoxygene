@@ -13,15 +13,17 @@
 package fr.ign.cogit.geoxygene.appli.example;
 
 import java.awt.event.ActionEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JMenu;
 
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
@@ -32,6 +34,7 @@ import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.algo.SmallestSurroundingRectangleComputation;
+import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 /**
  * Calcul zones arborees : bosquets, haies, forêts reclassées.
@@ -63,7 +66,7 @@ public class ZonesArborees extends AbstractGeOxygeneApplicationPlugin {
   public void actionPerformed(final ActionEvent e) {
 
     // On récupère la couche sélectionnée
-    ProjectFrame project = this.application.getMainFrame()
+    /*ProjectFrame project = this.application.getMainFrame()
         .getSelectedProjectFrame();
     Set<Layer> selectedLayers = project.getLayerLegendPanel()
         .getSelectedLayers();
@@ -74,7 +77,19 @@ public class ZonesArborees extends AbstractGeOxygeneApplicationPlugin {
           .error("You need to select one (and only one) layer.");
       return;
     }
-    Layer layer = selectedLayers.iterator().next();
+    Layer layer = selectedLayers.iterator().next();*/
+    
+    ProjectFrame projectFrame = this.application.getMainFrame().getSelectedProjectFrame();
+    Layer layer;
+    try {
+      URL vegetationURL = new URL("file", "", "./data/72_BDTOPO_2-0_LAMB93_SHP_X062-ED111/Extrait1/ZONE_VEGETATION.SHP");
+      IPopulation<IFeature> vegetationPop = ShapefileReader.read(vegetationURL.getPath());
+      layer = projectFrame.addUserLayer(vegetationPop, "Végétation", null);
+    } catch (MalformedURLException e1) {
+      e1.printStackTrace();
+      return;
+    }
+    
 
     // On construit une population de DefaultFeature pour les bosquets
     Population<DefaultFeature> popBosquets = new Population<DefaultFeature>(
@@ -326,21 +341,21 @@ public class ZonesArborees extends AbstractGeOxygeneApplicationPlugin {
     popf.setFeatureType(newFeatureType);
     // On ajoute au ProjectFrame la nouvelle couche créée à partir de la
     // nouvelle population
-    project.getDataSet().addPopulation(popf);
-    project.addFeatureCollection(popf, popf.getNom(), layer.getCRS());
+    projectFrame.getDataSet().addPopulation(popf);
+    projectFrame.addFeatureCollection(popf, popf.getNom(), layer.getCRS());
 
     popBosquets.setFeatureType(newFeatureType);
     // On ajoute au ProjectFrame la nouvelle couche créée à partir de la
     // nouvelle population
-    project.getDataSet().addPopulation(popBosquets);
-    project.addFeatureCollection(popBosquets, popBosquets.getNom(),
+    projectFrame.getDataSet().addPopulation(popBosquets);
+    projectFrame.addFeatureCollection(popBosquets, popBosquets.getNom(),
         layer.getCRS());
 
     popHaies.setFeatureType(newFeatureType);
     // On ajoute au ProjectFrame la nouvelle couche créée à partir de la
     // nouvelle population
-    project.getDataSet().addPopulation(popHaies);
-    project.addFeatureCollection(popHaies, popHaies.getNom(), layer.getCRS());
+    projectFrame.getDataSet().addPopulation(popHaies);
+    projectFrame.addFeatureCollection(popHaies, popHaies.getNom(), layer.getCRS());
     
     LOGGER.info("fin du process de calcul");
   }

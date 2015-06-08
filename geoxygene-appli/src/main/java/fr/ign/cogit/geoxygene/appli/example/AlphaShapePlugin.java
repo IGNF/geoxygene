@@ -14,7 +14,6 @@ package fr.ign.cogit.geoxygene.appli.example;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +25,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.LayerLegendPanel;
-import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
+import fr.ign.cogit.geoxygene.appli.plugin.AbstractGeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.contrib.algorithms.SwingingArmNonConvexHull;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -42,11 +41,11 @@ import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
  * @author MDVan-Damme
  *
  */
-public class AlphaShapePlugin implements GeOxygeneApplicationPlugin, ActionListener {
+public class AlphaShapePlugin extends AbstractGeOxygeneApplicationPlugin {
 
   @Override
   public void initialize(final GeOxygeneApplication application) {
-      // this.application = application;
+
       
       LayerLegendPanel layerLegendPanel = application.getMainFrame().getSelectedProjectFrame().getLayerLegendPanel();
           

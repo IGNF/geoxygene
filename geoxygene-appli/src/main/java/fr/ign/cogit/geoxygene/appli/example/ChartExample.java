@@ -59,6 +59,8 @@ public class ChartExample extends AbstractGeOxygeneApplicationPlugin {
     
     try {
       
+      this.application.getMainFrame().removeAllProjectFrames();
+      
       URL urlContourCommune75 = new URL("file", "", "./data/GEOFLA_COMMUNE_PARIS_LAMB93_2013/ContourCommune75.shp");
       IPopulation<IFeature> commune75Pop = ShapefileReader.read(urlContourCommune75.getFile());
       

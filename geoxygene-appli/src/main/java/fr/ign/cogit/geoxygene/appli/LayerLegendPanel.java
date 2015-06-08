@@ -1314,7 +1314,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
 
     @Override
     public void layerAdded(Layer l) {
-        LOGGER.info("layers add caught by LayerLegendPane"); //$NON-NLS-1$
+        LOGGER.trace("layers add caught by LayerLegendPane"); //$NON-NLS-1$
         this.layersTable.revalidate();
         this.layersTable.repaint();
     }
