@@ -70,13 +70,12 @@ public class SLDDemoApplication extends AbstractGeOxygeneApplicationPlugin {
     static final Logger LOGGER = Logger.getLogger(SLDDemoApplication.class.getName());
 
     /** Titles. */
-    static final String MENU_TITLE = "Style";
-    static final String SUBMENU_TITLE = "Démo";
+    static final String MENU_TITLE = "Example";
+    static final String SUBMENU_TITLE = "Style";
     static final String AWT_TITLE = "motifs & poncifs avec AWT";
     static final String OGL_TITLE = "motifs & poncifs avec OpenGL";
     static final String DERAIN_TITLE = "style Derain (OpenGL)";
     static final String AQUARELLE_TITLE = "style Aquarelle (OpenGL)";
-    static final String TOOL_TITLE = "Barre d'outils style";
     
     private ProjectFrame projectFrame = null;
 
@@ -100,9 +99,6 @@ public class SLDDemoApplication extends AbstractGeOxygeneApplicationPlugin {
       application.getMainFrame().getMenuBar()
         .add(menuAquarelle, application.getMainFrame().getMenuBar().getMenuCount() - 2);
       
-      JMenu menuTool = addMenu(MENU_TITLE, TOOL_TITLE);
-      application.getMainFrame().getMenuBar()
-        .add(menuTool, application.getMainFrame().getMenuBar().getMenuCount() - 2);
     }
 
     @Override
@@ -128,10 +124,7 @@ public class SLDDemoApplication extends AbstractGeOxygeneApplicationPlugin {
             .getMainFrame().newProjectFrame(
                     LayerViewPanelFactory.newLayerViewGLPanel());
         this.displayAquarelle();
-      } else if (source instanceof JMenuItem && ((JMenuItem)source).getText().equals(TOOL_TITLE)) {
-        javax.swing.JOptionPane.showMessageDialog(null,
-            "Not yet implemented.");
-      }
+      } 
     }
 
     public void displayCercles() {
