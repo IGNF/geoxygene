@@ -23,6 +23,7 @@ import fr.ign.cogit.cartagen.core.defaultschema.urban.UrbanBlock;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObjLin;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
+import fr.ign.cogit.cartagen.core.genericschema.road.IDualCarriageWay;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadStroke;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
@@ -101,6 +102,7 @@ public class StreetNetwork extends AbstractFeature {
   private Set<CityAxis> cityAxes;
   private Collection<IRoundAbout> roundabouts;
   private Collection<IBranchingCrossroad> branchings;
+  private Collection<IDualCarriageWay> dualCarriageways;
   private Set<IRoadStroke> strokes;
   private Set<IRoadLine> roads;
   private Set<Ilot> geoxBlocks;
@@ -133,6 +135,7 @@ public class StreetNetwork extends AbstractFeature {
       IFeatureCollection<IRoadStroke> strokes,
       IFeatureCollection<IRoundAbout> roundabouts,
       IFeatureCollection<IBranchingCrossroad> branchings,
+      IFeatureCollection<IDualCarriageWay> dualCarriageways,
       IFeatureCollection<Ilot> blocks, StreetNetworkCriterionSet criteria) {
     this.id = StreetNetwork.counter.getAndIncrement();
     this.geom = geom;
@@ -147,6 +150,7 @@ public class StreetNetwork extends AbstractFeature {
     this.geoxBlocks.addAll(blocks.select(geom));
     this.roundabouts = roundabouts.select(geom);
     this.branchings = branchings.select(geom);
+    this.dualCarriageways = dualCarriageways.select(geom);
     this.importanceThreshold = StreetNetworkParameters.importanceThreshold;
     this.buildingMinSize = GeneralisationSpecifications.AIRE_MINIMALE_BATIMENT
         * Math.pow(Legend.getSYMBOLISATI0N_SCALE(), 2.0) / 1000000.0;
@@ -235,6 +239,7 @@ public class StreetNetwork extends AbstractFeature {
       IFeatureCollection<IRoadStroke> strokes,
       IFeatureCollection<IRoundAbout> roundabouts,
       IFeatureCollection<IBranchingCrossroad> branchings,
+      IFeatureCollection<IDualCarriageWay> dualCarriageways,
       IFeatureCollection<IUrbanBlock> blocks) {
     this.id = StreetNetwork.counter.getAndIncrement();
     this.geom = geom;
@@ -251,6 +256,7 @@ public class StreetNetwork extends AbstractFeature {
     }
     this.roundabouts = roundabouts.select(geom);
     this.branchings = branchings.select(geom);
+    this.dualCarriageways = dualCarriageways.select(geom);
     this.importanceThreshold = StreetNetworkParameters.importanceThreshold;
     this.buildingMinSize = GeneralisationSpecifications.AIRE_MINIMALE_BATIMENT
         * Math.pow(Legend.getSYMBOLISATI0N_SCALE(), 2.0) / 1000000.0;
@@ -322,7 +328,8 @@ public class StreetNetwork extends AbstractFeature {
 
   public StreetNetwork(IPolygon geom, IPopulation<IRoadLine> roads,
       IPopulation<IRoadStroke> strokes, IPopulation<IRoundAbout> rounds,
-      IPopulation<IBranchingCrossroad> branchings, Population<Ilot> blocks,
+      IPopulation<IBranchingCrossroad> branchings,
+      IPopulation<IDualCarriageWay> dualCarriageways, Population<Ilot> blocks,
       StreetNetworkCriterionSet criteria) {
     this.id = StreetNetwork.counter.getAndIncrement();
     this.geom = geom;
@@ -337,6 +344,7 @@ public class StreetNetwork extends AbstractFeature {
     this.geoxBlocks.addAll(blocks.select(geom));
     this.roundabouts = rounds.select(geom);
     this.branchings = branchings.select(geom);
+    this.dualCarriageways = dualCarriageways.select(geom);
     this.importanceThreshold = StreetNetworkParameters.importanceThreshold;
     this.buildingMinSize = GeneralisationSpecifications.AIRE_MINIMALE_BATIMENT
         * Math.pow(Legend.getSYMBOLISATI0N_SCALE(), 2.0) / 1000000.0;
@@ -594,6 +602,14 @@ public class StreetNetwork extends AbstractFeature {
     return this.medArea;
   }
 
+  public Collection<IDualCarriageWay> getDualCarriageways() {
+    return dualCarriageways;
+  }
+
+  public void setDualCarriageways(Collection<IDualCarriageWay> dualCarriageways) {
+    this.dualCarriageways = dualCarriageways;
+  }
+
   // Other public methods //
   public IFeatureCollection<IRoadLine> getRoads() {
     IFeatureCollection<IRoadLine> ftroads = new FT_FeatureCollection<IRoadLine>();
@@ -609,6 +625,11 @@ public class StreetNetwork extends AbstractFeature {
 
   public Set<IRoadStroke> getStrokesSet() {
     return this.strokes;
+  }
+
+  public void setStrokes(Collection<IRoadStroke> strokes) {
+    this.strokes.clear();
+    this.strokes.addAll(strokes);
   }
 
   @Override
@@ -947,6 +968,7 @@ public class StreetNetwork extends AbstractFeature {
     // compute the density of blocks
     // *****************************************
     this.cityDensity = this.getCityBlocks().size() / this.getGeom().area();
+    logger.info("Street network density: " + this.cityDensity);
 
     // *********************************************
     // compute the maximum building density of city blocks
@@ -960,6 +982,9 @@ public class StreetNetwork extends AbstractFeature {
       totalArea += block.getGeom().area();
     }
     this.meanArea = totalArea / this.getCityBlocks().size();
+    logger.info("Street network max building density: "
+        + this.maxBuildingDensity);
+    logger.info("Street network mean block area: " + this.meanArea);
 
     // ***********************************************************
     // compute the building density distribution
@@ -986,6 +1011,7 @@ public class StreetNetwork extends AbstractFeature {
       }
       Collections.sort(list, compSurf);
       this.sMinD = list.get(nbSitDens).getGeom().area();
+      logger.info("Street network sMinD: " + this.sMinD);
     }
   }
 
@@ -994,7 +1020,7 @@ public class StreetNetwork extends AbstractFeature {
    * Instanciate the parameters of street selection on this street network.
    * 
    */
-  private void computeExternalAttributes(double costLarge, double costSmall,
+  public void computeExternalAttributes(double costLarge, double costSmall,
       double costMed, double surfLarge, double surfSmall, double surfMed) {
     // *********************************************************
     // first compute strokes mean length
@@ -1009,6 +1035,7 @@ public class StreetNetwork extends AbstractFeature {
 
     // compute list mean
     this.meanStroke = Statistics.calculateMean(lengths);
+    logger.info("Street network mean stroke length: " + this.meanStroke);
 
     // ********************************************************
     // now computes mean centralities
@@ -1034,6 +1061,11 @@ public class StreetNetwork extends AbstractFeature {
           / (new Double(localStrokes.size())).doubleValue();
       this.meanBetween = sommeInter
           / (new Double(localStrokes.size())).doubleValue();
+      logger.info("Street network mean degree centrality: " + this.meanDegree);
+      logger
+          .info("Street network mean proximity centrality: " + this.meanProxi);
+      logger.info("Street network mean betweeness centrality: "
+          + this.meanBetween);
     }
 
     // *******************************************************
@@ -1048,6 +1080,8 @@ public class StreetNetwork extends AbstractFeature {
       }
       // compute list mean
       this.meanTraffic = Statistics.calculateMean(traffics);
+      logger
+          .info("Street network mean traffic assessment: " + this.meanTraffic);
     } else {
       this.meanTraffic = 1.0;
     }
@@ -1079,6 +1113,7 @@ public class StreetNetwork extends AbstractFeature {
       this.medArea = list.get((int) Math.round(list.size() / 2.0)).getGeom()
           .area();
     }
+    logger.info("Street network median block area: " + this.medArea);
   }
 
   private Set<IUrbanBlock> getStandardBlocks() {

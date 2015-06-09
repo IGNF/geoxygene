@@ -7,10 +7,14 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.spatialanalysis.network;
+package fr.ign.cogit.cartagen.spatialanalysis.network.roads;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
@@ -19,18 +23,19 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
-import fr.ign.cogit.cartagen.spatialanalysis.network.roads.PatteOie;
-import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RondPoint;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.Ilot;
 import fr.ign.cogit.geoxygene.schemageo.api.routier.NoeudRoutier;
 import fr.ign.cogit.geoxygene.schemageo.api.routier.TronconDeRoute;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.IlotImpl;
+import fr.ign.cogit.geoxygene.util.algo.SmallestSurroundingRectangleComputation;
 
 public class CrossRoadDetection {
 
@@ -69,6 +74,19 @@ public class CrossRoadDetection {
    * value.
    */
   private double yAngle = 40.0 * java.lang.Math.PI / 180.0;
+
+  /**
+   * The maximum area of road network face to be considered as an escape
+   * crossroad. 50000.0 as default.
+   */
+  private double escapeMaxArea = 50000.0;
+
+  /**
+   * The maximum surface distance between the geometry and the MBR of the
+   * geometry of road network face to be considered as an escape crossroad. 0.2
+   * as default.
+   */
+  private double distSurfMax = 0.2;
 
   private IFeatureCollection<RondPoint> rounds;
   private IFeatureCollection<PatteOie> branchs;
@@ -334,5 +352,115 @@ public class CrossRoadDetection {
    */
   public IFeatureCollection<PatteOie> getBranchingCrossroads() {
     return branchs;
+  }
+
+  public Set<SimpleCrossRoad> classifyCrossRoads(
+      Collection<TronconDeRoute> roads) {
+    HashSet<SimpleCrossRoad> crossRoads = new HashSet<SimpleCrossRoad>();
+    // get the nodes from the roads
+    HashSet<NoeudRoutier> nodes = new HashSet<NoeudRoutier>();
+    for (TronconDeRoute road : roads) {
+      nodes.add((NoeudRoutier) road.getNoeudInitial());
+      nodes.add((NoeudRoutier) road.getNoeudFinal());
+    }
+    // loop on the nodes to classify them
+    for (NoeudRoutier node : nodes) {
+      // **********
+      // Y-Node CASE
+      // **********
+      if (YCrossRoad.isYNode(node, flatAngle / 2.0, yAngle)) {
+        // build the new Y-node
+        crossRoads.add(new YCrossRoad(node, flatAngle, yAngle));
+        continue;
+      }
+
+      // **********
+      // T-Node CASE
+      // **********
+      if (TCrossRoad.isTNode(node, flatAngle, bisAngle)) {
+        // build the new T-Node
+        crossRoads.add(new TCrossRoad(node, flatAngle, bisAngle));
+        continue;
+      }
+
+      // **********
+      // Fork-Node CASE
+      // **********
+      if (ForkCrossRoad.isForkNode(node, forkAngle, symmAngle)) {
+        // build the new fork node
+        crossRoads.add(new ForkCrossRoad(node, forkAngle, symmAngle));
+        continue;
+      }
+
+      // now the node is either a star, a cross or a standard crossroad.
+
+      // **************
+      // Cross-Node CASE
+      // **************
+      if (PlusCrossRoad.isCrossNode(node, symmCrossAngle, squareAngle)) {
+        PlusCrossRoad plusCross = new PlusCrossRoad(node, symmCrossAngle);
+        plusCross.setSquareAngle(squareAngle);
+        crossRoads.add(plusCross);
+        continue;
+      }
+
+      // **************
+      // Star-Node CASE
+      // **************
+      if (StarCrossRoad.isStarNode(node, flatAngle)) {
+        crossRoads.add(new StarCrossRoad(node, flatAngle));
+        continue;
+      }
+
+      // ******************
+      // Standard CASE
+      // ******************
+      // arrived here, the node has no particular character and is
+      // considered as standard
+      crossRoads.add(new StandardCrossRoad(node));
+
+    }
+
+    return crossRoads;
+  }
+
+  /**
+   * Find the escape crossroads from a road {@link CarteTopo}, i.e. small
+   * rectangular faces connected to at least three roads section.
+   * @param topoMap
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public Collection<Face> detectEscapeCrossroads(CarteTopo topoMap) {
+    Set<Face> escapes = new HashSet<>();
+    for (Face face : topoMap.getListeFaces()) {
+      // check that the face is small enough to be an escape crossroad
+      if (face.getGeom().area() >= escapeMaxArea)
+        continue;
+      // get the minimum bounding rectangle of the face
+      IPolygon mbr = SmallestSurroundingRectangleComputation.getSSR(face
+          .getGeom());
+      // compute the surface distance between the MBR and the face geometry
+      double surfDist = Distances.distanceSurfacique(mbr, face.getGeom());
+      if (surfDist > distSurfMax)
+        continue;
+      if (((List<Arc>) face.arcsExterieursClasses().get(0)).size() < 3)
+        continue;
+      escapes.add(face);
+    }
+
+    return escapes;
+  }
+
+  /**
+   * Find the escape crossroads from a road {@link CarteTopo} and build them as
+   * new objects.
+   * @param topoMap
+   */
+  public void DetectAndBuildEscapeCrossroads(CarteTopo topoMap) {
+    Collection<Face> escapes = detectEscapeCrossroads(topoMap);
+    for (Face face : escapes) {
+      // TODO
+    }
   }
 }

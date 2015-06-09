@@ -557,4 +557,279 @@
 			</FeatureTypeStyle>
 		</UserStyle>
 	</NamedLayer>	
+    <NamedLayer>
+        <Name>sportsFields</Name>
+        <UserStyle>
+            <Name>Style créé pour le layer terrain_de_sport_25</Name>
+            <IsDefault>false</IsDefault>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>Terrain de tennis.1</Name>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>typeSymbol</PropertyName>
+                            <Literal>TENNIS</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#527651</CssParameter>
+                            <CssParameter name="stroke-width">2.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+      			</Rule>
+    		</FeatureTypeStyle>
+    		<FeatureTypeStyle>
+      			<Rule>
+        			<Name>Bassin de natation.1</Name>
+        			<Filter>
+			           <PropertyIsEqualTo matchCase="true">
+			             <PropertyName>typeSymbol</PropertyName>
+			             <Literal>SWIMMINGPOOL</Literal>
+			           </PropertyIsEqualTo>
+			        </Filter>
+			        <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+			           <Stroke>
+			             <CssParameter name="stroke">#808080</CssParameter>
+			             <CssParameter name="stroke-width">2.0</CssParameter>
+			             <CssParameter name="stroke-linecap">round</CssParameter>
+			           </Stroke>
+			           <GeometryPropertyName>geom</GeometryPropertyName>
+			           <Fill>
+			             <CssParameter name="fill">#bed5e9</CssParameter>
+			           </Fill>
+			         </PolygonSymbolizer>
+     			</Rule>
+		    </FeatureTypeStyle>
+		    <FeatureTypeStyle>
+		    	<Rule>
+                    <Name>Terrain de sport indifférencié.1</Name>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>typeSymbol</PropertyName>
+                            <Literal>UNKNOWN</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke"/>
+                            <CssParameter name="stroke-width">2.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+		      </Rule>
+		    </FeatureTypeStyle>
+		    <FeatureTypeStyle>
+		      <Rule>
+                    <Name>Terrain de football.1</Name>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>typeSymbol</PropertyName>
+                            <Literal>FOOTBALL</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                            <CssParameter name="stroke">#527651</CssParameter>
+                            <CssParameter name="stroke-width">2.0</CssParameter>
+                            <CssParameter name="stroke-linecap">round</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+			      </Rule>
+			    </FeatureTypeStyle>
+			    <FeatureTypeStyle>
+			      <Rule>
+                    <Name>Terrain de tennis</Name>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>typeSymbol</PropertyName>
+                            <Literal>TENNIS</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Graphic>
+                            <opacity>1.0</opacity>
+                            <Size>15.0</Size>
+                            <Rotation>
+								<Literal>0</Literal>
+                            </Rotation>
+                            <ExternalGraphic>
+								<href>/symbols/scan_express_25/Tennis.svg</href>
+								<Format>svg</Format>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </PointSymbolizer>
+			       </Rule>
+			</FeatureTypeStyle>
+			<FeatureTypeStyle>
+				<Rule>
+		          <Name>Football</Name>
+		          <Filter>			
+					<PropertyIsEqualTo>
+						<PropertyName>typeSymbol</PropertyName>
+						<Literal>FOOTBALL</Literal>
+					</PropertyIsEqualTo>		
+		          </Filter>
+		          <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+		            <GeometryPropertyName>medianGeom</GeometryPropertyName>
+		            <Stroke>
+		              <CssParameter name="stroke">#527651</CssParameter>
+		              <CssParameter name="stroke-linejoin">round</CssParameter>
+		              <CssParameter name="stroke-linecap">round</CssParameter>
+		              <CssParameter name="stroke-width">2.5</CssParameter>
+		            </Stroke>
+		          </LineSymbolizer>
+        		</Rule>
+      		</FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>	
+    <NamedLayer>
+        <Name>cemeteries</Name>
+        <UserStyle>
+          <Name>Style créé pour le layer cimetiere_25</Name>
+          <Name>Style créé pour le layer cimetiere_25</Name>
+          <IsDefault>false</IsDefault>
+	      <FeatureTypeStyle>
+	        <Rule>
+	          <Name>Militaire.1</Name>
+	          <Filter>
+							<PropertyIsEqualTo>
+								<PropertyName>typeSymbol</PropertyName>
+								<Literal>MILITARY</Literal>
+							</PropertyIsEqualTo>
+	          </Filter>
+	          <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+	            <Stroke>
+	              <CssParameter name="stroke">#595959</CssParameter>
+	              <CssParameter name="stroke-width">5</CssParameter>
+	            </Stroke>
+	          </PolygonSymbolizer>
+	        </Rule>
+	      </FeatureTypeStyle>
+	      <FeatureTypeStyle>
+	        <Rule>
+	          <Name>Cimetière chrétien.1</Name>
+	          <Filter>
+							<PropertyIsEqualTo>
+								<PropertyName>typeSymbol</PropertyName>
+								<Literal>CHRISTIAN</Literal>
+							</PropertyIsEqualTo>
+	          </Filter>
+	          <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+	            <Stroke>
+	              <CssParameter name="stroke">#595959</CssParameter>
+	              <CssParameter name="stroke-width">5</CssParameter>
+	            </Stroke>
+	          </PolygonSymbolizer>
+	        </Rule>
+	      </FeatureTypeStyle>
+	      <FeatureTypeStyle>
+	        <Rule>
+	          <Name>Cimetière autre.1</Name>
+	          <Filter>
+							<PropertyIsEqualTo>
+								<PropertyName>typeSymbol</PropertyName>
+								<Literal>UNKNOWN</Literal>
+							</PropertyIsEqualTo>
+	          </Filter>
+	          <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+	            <Stroke>
+	              <CssParameter name="stroke">#595959</CssParameter>
+	              <CssParameter name="stroke-width">5</CssParameter>
+	            </Stroke>
+	          </PolygonSymbolizer>
+	        </Rule>
+	      </FeatureTypeStyle>	
+		</UserStyle>
+		<UserStyle>		  
+		   <FeatureTypeStyle>
+	        <Rule>
+	          <Name>Militaire</Name>
+	          <Filter>
+							<PropertyIsEqualTo>
+								<PropertyName>typeSymbol</PropertyName>
+								<Literal>MILITARY</Literal>
+							</PropertyIsEqualTo>
+	          </Filter>
+	          <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+	            <Fill>
+	              <GraphicFill>
+	                <Graphic>
+	                  <ExternalGraphic>
+	                    <href>/symbols/scan_express_25/Monumreligieuxcroix.png</href>
+	                    <Format>png</Format>
+	                  </ExternalGraphic>
+	                  <Size>25</Size>
+	                </Graphic>
+	              </GraphicFill>
+	            </Fill>
+	          </PolygonSymbolizer>
+	        </Rule>
+	      </FeatureTypeStyle>
+	      <FeatureTypeStyle>
+	        <Rule>
+	          <Name>Cimetière chrétien</Name>
+	          <Filter>
+						
+							<PropertyIsEqualTo>
+								<PropertyName>typeSymbol</PropertyName>
+								<Literal>CHRISTIAN</Literal>
+							</PropertyIsEqualTo>						
+	          </Filter>
+	          <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+	            <Fill>
+	              <GraphicFill>
+	                <Graphic>
+	                  <ExternalGraphic>
+	                    <href>/symbols/scan_express_25/Monumreligieuxcroix.png</href>
+	                    <Format>png</Format>
+	                  </ExternalGraphic>
+	                  <Size>25</Size>
+	                </Graphic>
+	              </GraphicFill>
+	            </Fill>
+	          </PolygonSymbolizer>
+	        </Rule>
+	      </FeatureTypeStyle>
+	      	      <FeatureTypeStyle>
+	        <Rule>
+	          <Name>Cimetière autre</Name>
+	          <Filter>
+						
+							<PropertyIsEqualTo>
+								<PropertyName>typeSymbol</PropertyName>
+								<Literal>UNKNOWN</Literal>
+							</PropertyIsEqualTo>						
+	          </Filter>
+	          <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+	            <Fill>
+	              <GraphicFill>
+	                <Graphic>
+	                  <ExternalGraphic>
+	                    <href>/symbols/scan_express_25/Monumreligieuxcroix.png</href>
+	                    <Format>png</Format>
+	                  </ExternalGraphic>
+	                  <Size>25</Size>
+	                </Graphic>
+	              </GraphicFill>
+	            </Fill>
+	          </PolygonSymbolizer>
+	        </Rule>
+	      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>    
 </StyledLayerDescriptor>

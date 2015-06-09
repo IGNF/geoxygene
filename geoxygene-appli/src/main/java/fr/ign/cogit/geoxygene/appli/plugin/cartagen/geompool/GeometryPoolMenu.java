@@ -32,11 +32,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.cartagen.core.carto.SLDUtil;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -51,10 +53,15 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.ColorEditor;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.ColorRenderer;
+import fr.ign.cogit.geoxygene.appli.plugin.cartagen.util.DisplayLayerTableModel;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.NamedLayer;
+import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 import fr.ign.cogit.geoxygene.util.algo.SmallestSurroundingRectangleComputation;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.BufferComputing;
@@ -95,6 +102,9 @@ public class GeometryPoolMenu extends JMenu {
      */
   private JMenuItem mGeomPoolAddObjects = new JMenuItem(
       new GeomPoolAddObjectsAction());
+
+  private JMenuItem mGeomPoolAddDeleted = new JMenuItem(
+      new GeomPoolAddDeletedAction());
   /**
      */
   public JCheckBoxMenuItem mGeomPoolDrawSegments = new JCheckBoxMenuItem(
@@ -121,6 +131,7 @@ public class GeometryPoolMenu extends JMenu {
 
     this.add(this.mGeomPoolEmpty);
     this.add(this.mGeomPoolAddObjects);
+    this.add(this.mGeomPoolAddDeleted);
     this.add(new JMenuItem(new AddBufferAction()));
 
     this.mGeomPoolDrawSegments.setSelected(false);
@@ -574,6 +585,148 @@ public class GeometryPoolMenu extends JMenu {
     public GeomPoolEmptyAction() {
       putValue(Action.SHORT_DESCRIPTION, "Empty the Geometry Pool");
       putValue(Action.NAME, "Empty");
+    }
+  }
+
+  /**
+   * Add the geometries of deleted objects to the geometry pool.
+   * @author GTouya
+   * 
+   */
+  class GeomPoolAddDeletedAction extends AbstractAction {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      GeomPoolAddDeletedFrame frame = new GeomPoolAddDeletedFrame();
+      frame.setVisible(true);
+    }
+
+    public GeomPoolAddDeletedAction() {
+      putValue(Action.SHORT_DESCRIPTION,
+          "Add the geometries of deleted objects to the geometry pool");
+      putValue(Action.NAME, "Add deleted objects to geometry pool");
+    }
+  }
+
+  class GeomPoolAddDeletedFrame extends JFrame implements ActionListener {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+
+    private JTable jtable;
+    private StyledLayerDescriptor sld;
+    private ProjectFrame frame;
+    private JButton okBtn, applyBtn, cancelBtn;
+    private List<Layer> layers = new ArrayList<Layer>();
+
+    GeomPoolAddDeletedFrame() {
+      super(I18N.getString("Display Deleted Features"));
+      this.frame = application.getMainFrame().getSelectedProjectFrame();
+      this.sld = frame.getSld();
+      this.setSize(300, 300);
+      this.layers.addAll(sld.getLayers());
+      Layer geomPool = sld.getLayer(CartAGenDataSet.GEOM_POOL);
+      this.layers.remove(geomPool);
+      Object[][] data = new Object[layers.size()][4];
+      for (int i = 0; i < layers.size(); i++) {
+        Layer layer = layers.get(i);
+        String name = layer.getName();
+        FeatureTypeStyle style = SLDUtil.getLayerInitialDisplay(layer);
+        boolean display = false;
+        Color color = Color.RED;
+        int width = 1;
+        if (style != null) {
+          display = true;
+          color = style.getSymbolizer().getStroke().getColor();
+          width = (int) style.getSymbolizer().getStroke().getStrokeWidth();
+        }
+        data[i] = new Object[] { name, display, color, width };
+      }
+      this.setAlwaysOnTop(true);
+
+      // setup the table
+      this.jtable = new JTable(new DisplayLayerTableModel(data));
+      jtable.setDefaultRenderer(Color.class, new ColorRenderer(true));
+      jtable.setDefaultEditor(Color.class, new ColorEditor());
+
+      // a panel for buttons
+      JPanel pButtons = new JPanel();
+      okBtn = new JButton("OK");
+      okBtn.addActionListener(this);
+      okBtn.setActionCommand("OK");
+      applyBtn = new JButton(I18N.getString("MainLabels.lblApply"));
+      applyBtn.addActionListener(this);
+      applyBtn.setActionCommand("apply");
+      cancelBtn = new JButton(I18N.getString("MainLabels.lblCancel"));
+      cancelBtn.addActionListener(this);
+      cancelBtn.setActionCommand("cancel");
+      pButtons.add(okBtn);
+      pButtons.add(applyBtn);
+      pButtons.add(cancelBtn);
+      pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
+
+      // main frame layout setup
+      this.getContentPane().add(new JScrollPane(jtable));
+      this.getContentPane().add(pButtons);
+      this.getContentPane().setLayout(
+          new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      if (arg0.getActionCommand().equals("OK")) {
+        this.displayGeoms();
+        this.dispose();
+      } else if (arg0.getActionCommand().equals("cancel")) {
+        this.dispose();
+      } else if (arg0.getActionCommand().equals("apply")) {
+        this.displayGeoms();
+      }
+    }
+
+    private void displayGeoms() {
+      if (CartAGenDoc.getInstance().getCurrentDataset() == null) {
+        if (geometryPool == null)
+          geometryPool = new GeometryPool(geomPoolLayer.getSld().getDataSet(),
+              CartAGenPlugin.getInstance().getApplication().getMainFrame()
+                  .getSelectedProjectFrame().getSld());
+      } else {
+        CartAGenDoc
+            .getInstance()
+            .getCurrentDataset()
+            .getGeometryPool()
+            .setSld(
+                CartAGenPlugin.getInstance().getApplication().getMainFrame()
+                    .getSelectedProjectFrame().getSld());
+        geometryPool = CartAGenDoc.getInstance().getCurrentDataset()
+            .getGeometryPool();
+      }
+
+      for (int i = 0; i < jtable.getRowCount(); i++) {
+        Layer layer = sld.getLayer((String) jtable.getModel().getValueAt(i, 0));
+        boolean display = (Boolean) jtable.getValueAt(i, 1);
+        if (display) {
+          for (IFeature feat : layer.getFeatureCollection()) {
+            if (feat.isDeleted()) {
+              Color color = (Color) jtable.getModel().getValueAt(i, 2);
+              Object widthVal = jtable.getModel().getValueAt(i, 3);
+              int width = 1;
+              if (widthVal instanceof String)
+                width = Integer.valueOf((String) widthVal);
+              else
+                width = (Integer) widthVal;
+              geometryPool.addFeatureToGeometryPool(feat.getGeom(), color,
+                  width);
+            }
+          }
+        }
+      }
+
+      CartAGenPlugin.getInstance().getApplication().getMainFrame()
+          .getSelectedProjectFrame().getLayerViewPanel().validate();
     }
   }
 

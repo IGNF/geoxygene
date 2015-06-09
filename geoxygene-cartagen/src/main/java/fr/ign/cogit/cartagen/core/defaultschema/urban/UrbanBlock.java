@@ -32,10 +32,12 @@ import org.hibernate.annotations.Type;
 import fr.ign.cogit.cartagen.core.defaultschema.GeneObjSurfDefault;
 import fr.ign.cogit.cartagen.core.defaultschema.hydro.WaterLine;
 import fr.ign.cogit.cartagen.core.defaultschema.road.BranchingCrossRoad;
+import fr.ign.cogit.cartagen.core.defaultschema.road.DualCarriageway;
 import fr.ign.cogit.cartagen.core.defaultschema.road.RoadLine;
 import fr.ign.cogit.cartagen.core.defaultschema.road.RoundAbout;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
+import fr.ign.cogit.cartagen.core.genericschema.road.IDualCarriageWay;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IEmptySpace;
@@ -489,7 +491,12 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
     if (b != null) {
       return false;
     }
-    // TODO handle dual carriageways
+    // handle dual carriageways
+    IDualCarriageWay d = DualCarriageway.getDualCarriageWay(this,
+        this.net.getDualCarriageways());
+    if (d != null) {
+      return false;
+    }
     // TODO handle escape crossroads
     return true;
   }

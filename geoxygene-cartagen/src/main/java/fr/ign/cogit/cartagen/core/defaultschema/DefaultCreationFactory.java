@@ -53,6 +53,7 @@ import fr.ign.cogit.cartagen.core.defaultschema.relief.ReliefTriangle;
 import fr.ign.cogit.cartagen.core.defaultschema.relief.SpotHeight;
 import fr.ign.cogit.cartagen.core.defaultschema.road.BranchingCrossRoad;
 import fr.ign.cogit.cartagen.core.defaultschema.road.BridgePoint;
+import fr.ign.cogit.cartagen.core.defaultschema.road.DualCarriageway;
 import fr.ign.cogit.cartagen.core.defaultschema.road.Interchange;
 import fr.ign.cogit.cartagen.core.defaultschema.road.Path;
 import fr.ign.cogit.cartagen.core.defaultschema.road.RoadArea;
@@ -60,12 +61,15 @@ import fr.ign.cogit.cartagen.core.defaultschema.road.RoadFacilityPoint;
 import fr.ign.cogit.cartagen.core.defaultschema.road.RoadLine;
 import fr.ign.cogit.cartagen.core.defaultschema.road.RoadNode;
 import fr.ign.cogit.cartagen.core.defaultschema.road.RoadRoute;
+import fr.ign.cogit.cartagen.core.defaultschema.road.RoadStrokeDefault;
 import fr.ign.cogit.cartagen.core.defaultschema.road.RoundAbout;
 import fr.ign.cogit.cartagen.core.defaultschema.urban.BuildArea;
 import fr.ign.cogit.cartagen.core.defaultschema.urban.BuildLine;
 import fr.ign.cogit.cartagen.core.defaultschema.urban.BuildPoint;
 import fr.ign.cogit.cartagen.core.defaultschema.urban.Building;
+import fr.ign.cogit.cartagen.core.defaultschema.urban.Cemetery;
 import fr.ign.cogit.cartagen.core.defaultschema.urban.EmptySpace;
+import fr.ign.cogit.cartagen.core.defaultschema.urban.SportsField;
 import fr.ign.cogit.cartagen.core.defaultschema.urban.Town;
 import fr.ign.cogit.cartagen.core.defaultschema.urban.UrbanAlignment;
 import fr.ign.cogit.cartagen.core.defaultschema.urban.UrbanBlock;
@@ -110,6 +114,7 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefTriangle;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
+import fr.ign.cogit.cartagen.core.genericschema.road.IDualCarriageWay;
 import fr.ign.cogit.cartagen.core.genericschema.road.IInterchange;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadArea;
@@ -117,18 +122,24 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadFacilityPoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadRoute;
+import fr.ign.cogit.cartagen.core.genericschema.road.IRoadStroke;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery.CemeteryType;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IEmptySpace;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField.SportsFieldType;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanAlignment;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.PatteOie;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RoadLineImpl;
+import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RoadStroke;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RondPoint;
 import fr.ign.cogit.cartagen.spatialanalysis.network.streets.CityPartition;
 import fr.ign.cogit.cartagen.spatialanalysis.network.streets.StreetNetwork;
@@ -325,6 +336,20 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   @Override
   public IEmptySpace createEmptySpace(IPolygon poly) {
     return new EmptySpace(poly);
+  }
+
+  // sports field
+
+  @Override
+  public ISportsField createSportsField(IPolygon poly, SportsFieldType type) {
+    return new SportsField(poly, type);
+  }
+
+  // cemetery
+
+  @Override
+  public ICemetery createCemetery(IPolygon poly, CemeteryType type) {
+    return new Cemetery(poly, type);
   }
 
   // /////////////////
@@ -526,6 +551,28 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   @Override
   public IBridgePoint createBridgePoint(IPoint point) {
     return new BridgePoint(point);
+  }
+
+  @Override
+  public IDualCarriageWay createDualCarriageways(IPolygon poly, int importance) {
+    return new DualCarriageway(poly, importance);
+  }
+
+  @Override
+  public IDualCarriageWay createDualCarriageways(IPolygon poly, int importance,
+      Collection<IRoadLine> innerRoads) {
+    return new DualCarriageway(poly, importance, innerRoads);
+  }
+
+  @Override
+  public IDualCarriageWay createDualCarriageways(IPolygon poly, int importance,
+      Collection<IRoadLine> innerRoads, Collection<IRoadLine> outerRoads) {
+    return new DualCarriageway(poly, importance, innerRoads, outerRoads);
+  }
+
+  @Override
+  public IRoadStroke createRoadStroke(ILineString geom, RoadStroke stroke) {
+    return new RoadStrokeDefault(geom, stroke);
   }
 
   // /////////////////

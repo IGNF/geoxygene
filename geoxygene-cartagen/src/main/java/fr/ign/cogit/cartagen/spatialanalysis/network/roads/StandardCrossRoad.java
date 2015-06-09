@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.spatialanalysis.network.roads;
 
@@ -19,7 +19,7 @@ public class StandardCrossRoad extends SimpleCrossRoad {
 
   public StandardCrossRoad(NoeudRoutier node) {
     super(node.getGeom());
-
+    this.setNode(node);
     this.setDegree(node.getArcsEntrants().size()
         + node.getArcsSortants().size());
     this.setCoord(node.getGeom().getPosition());

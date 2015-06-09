@@ -14,8 +14,10 @@ import java.util.List;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
@@ -44,4 +46,8 @@ public interface AbstractGeomFactory {
   public IPoint createPoint(IDirectPosition position);
 
   public IMultiSurface<IPolygon> createMultiPolygon();
+
+  public ILineSegment createLineSegment(IDirectPosition pt1, IDirectPosition pt2);
+
+  public IMultiPoint createMultiPoint();
 }

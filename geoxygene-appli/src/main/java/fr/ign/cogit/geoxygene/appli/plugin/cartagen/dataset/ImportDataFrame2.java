@@ -86,7 +86,8 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
   public static String extentClass = null;
   public static boolean extentFile = false;
 
-  private final JComboBox cbSourceDlm, cbType;
+  private final JComboBox<SourceDLM> cbSourceDlm;
+  private final JComboBox<String> cbType;
   private final JTextField txtZone, txtDataset, txtScale, txtPath, txtExtent;
   private final JButton btnBrowse;
   private final JRadioButton rbComputed, rbFile;
@@ -109,7 +110,7 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     this.txtZone.setPreferredSize(new Dimension(80, 20));
     this.txtZone.setMaximumSize(new Dimension(80, 20));
     this.txtZone.setMinimumSize(new Dimension(80, 20));
-    this.cbSourceDlm = new JComboBox(SourceDLM.values());
+    this.cbSourceDlm = new JComboBox<>(SourceDLM.values());
     this.cbSourceDlm.setPreferredSize(new Dimension(130, 20));
     this.cbSourceDlm.setMaximumSize(new Dimension(130, 20));
     this.cbSourceDlm.setMinimumSize(new Dimension(130, 20));
@@ -152,7 +153,7 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
     this.txtDataset.setPreferredSize(new Dimension(90, 20));
     this.txtDataset.setMaximumSize(new Dimension(90, 20));
     this.txtDataset.setMinimumSize(new Dimension(90, 20));
-    this.cbType = new JComboBox(new String[] { "DLM", "DCM" });
+    this.cbType = new JComboBox<>(new String[] { "DLM", "DCM" });
     this.cbType.setPreferredSize(new Dimension(90, 20));
     this.cbType.setMaximumSize(new Dimension(90, 20));
     this.cbType.setMinimumSize(new Dimension(90, 20));
@@ -327,8 +328,9 @@ public class ImportDataFrame2 extends JFrame implements ActionListener {
 
     CartAGenDoc.getInstance().setInitialDataset(dataset);
     CartAGenDoc.getInstance().setCurrentDataset(dataset);
-    new CartAGenLoader(plugIn, database.getName()).loadData(this.filePath,
-        this.sourceDlm, scale, dataset);
+    new CartAGenLoader()
+        .loadData(this.filePath, this.sourceDlm, scale, dataset);
+
     // CartagenApplication.getInstance().loadDat(sourceDlm, scale);
 
     // on crée la projectFrame associée à la BD

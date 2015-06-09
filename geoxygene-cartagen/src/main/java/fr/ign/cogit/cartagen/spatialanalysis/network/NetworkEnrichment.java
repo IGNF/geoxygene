@@ -1018,7 +1018,9 @@ public class NetworkEnrichment {
   /**
    * Recupere les impasses du reseau plus courtes qu'un certain seuil Suppose
    * d'avoir construit la topologie via la methode
-   * {@link #construireTopologie()}
+   * {@link #construireTopologie()}. Attention, il ne s'agit ici que d'impasses
+   * simples, voir {@link DeadEndGroup} pour les impasses complexes (qui sont
+   * formées par plus d'un tronçon).
    * 
    * @param longueurMin
    * @return

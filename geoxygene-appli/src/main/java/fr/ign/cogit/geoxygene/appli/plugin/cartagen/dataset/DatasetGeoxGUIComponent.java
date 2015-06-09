@@ -76,6 +76,7 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponent
 import fr.ign.cogit.cartagen.util.LastSessionParameters;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -235,13 +236,13 @@ public class DatasetGeoxGUIComponent extends JMenu {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      CartagenApplication appl = CartagenApplication.getInstance();
       File file = docFile;
       if (docFile == null) {
         JFileChooser fc = new JFileChooser();
         fc.setCurrentDirectory(new File("src/main/resources/xml/"));
         fc.setFileFilter(new XMLFileFilter());
-        int returnVal = fc.showOpenDialog(appl.getFrame());
+        int returnVal = fc.showOpenDialog(CartAGenPlugin.getInstance()
+            .getApplication().getMainFrame().getGui());
         if (returnVal != JFileChooser.APPROVE_OPTION) {
           return;
         }
@@ -321,17 +322,17 @@ public class DatasetGeoxGUIComponent extends JMenu {
     private static final long serialVersionUID = 1L;
     private CartAGenDB database;
     private int scale;
-    private CartagenApplication appl;
+    private GeOxygeneApplication appl;
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      this.appl = CartagenApplication.getInstance();
+      this.appl = CartAGenPlugin.getInstance().getApplication();
       JFileChooser fc = new JFileChooser();
       fc.setCurrentDirectory(new File(DatasetGeoxGUIComponent.class
           .getResource("/src/main/resources/xml/").getPath()
           .replaceAll("%20", " ")));
       fc.setFileFilter(new XMLFileFilter());
-      int returnVal = fc.showOpenDialog(this.appl.getFrame());
+      int returnVal = fc.showOpenDialog(this.appl.getMainFrame().getGui());
       if (returnVal != JFileChooser.APPROVE_OPTION) {
         return;
       }
@@ -390,9 +391,7 @@ public class DatasetGeoxGUIComponent extends JMenu {
       while (!((ShapeFileDB) this.database).getTask().exit) {
       }
       String systemPath = ((ShapeFileDB) this.database).getSystemPath();
-      CartagenApplication.getInstance().setCheminDonnees(systemPath);
-      this.appl.initialiserPositionGeographique(false);
-      CartagenApplication.getInstance().initGeneralisation();
+      CartAGenPlugin.getInstance().setCheminDonnees(systemPath);
 
     }
 
@@ -416,14 +415,6 @@ public class DatasetGeoxGUIComponent extends JMenu {
 
     public void setScale(int scale) {
       this.scale = scale;
-    }
-
-    public CartagenApplication getAppl() {
-      return this.appl;
-    }
-
-    public void setAppl(CartagenApplication appl) {
-      this.appl = appl;
     }
   }
 

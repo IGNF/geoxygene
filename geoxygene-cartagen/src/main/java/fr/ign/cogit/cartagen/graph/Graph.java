@@ -147,7 +147,8 @@ public class Graph implements IGraph {
    * @param oriented
    * @param linearFeatures
    */
-  public Graph(String name, boolean oriented, Set<ArcReseau> linearFeatures) {
+  public Graph(String name, boolean oriented,
+      Set<? extends ArcReseau> linearFeatures) {
     this.name = name;
     this.id = Graph.counter.incrementAndGet();
     this.oriented = oriented;

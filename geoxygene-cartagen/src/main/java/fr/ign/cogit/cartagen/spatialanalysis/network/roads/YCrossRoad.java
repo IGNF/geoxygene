@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.spatialanalysis.network.roads;
 
@@ -48,8 +48,8 @@ public class YCrossRoad extends SimpleCrossRoad {
 
       // compute the possible flat angle
       double angle = Math.abs(CommonAlgorithmsFromCartAGen.angleBetween2Lines(
-          (GM_LineString) majorRoad1.getGeom(), (GM_LineString) majorRoad2
-              .getGeom()));
+          (GM_LineString) majorRoad1.getGeom(),
+          (GM_LineString) majorRoad2.getGeom()));
       double angleDiff = Math.PI - angle;
       // test if the angle difference is greater than threshold
       if (angleDiff > flatAngle) {
@@ -58,8 +58,8 @@ public class YCrossRoad extends SimpleCrossRoad {
 
       // compute the angle with the minor road
       double angleY = Math.abs(CommonAlgorithmsFromCartAGen.angleBetween2Lines(
-          (GM_LineString) majorRoad1.getGeom(), (GM_LineString) minorRoad
-              .getGeom()));
+          (GM_LineString) majorRoad1.getGeom(),
+          (GM_LineString) minorRoad.getGeom()));
       // test if the angle is less than threshold
       if (angleY > yAngle) {
         continue;
@@ -74,7 +74,7 @@ public class YCrossRoad extends SimpleCrossRoad {
 
   public YCrossRoad(NoeudRoutier node, double flatAngle, double yAngle) {
     super(node.getGeom());
-    // set the degree
+    this.setNode(node);
     this.setDegree(node.getArcsEntrants().size()
         + node.getArcsSortants().size());
     this.setRoads(new HashSet<TronconDeRoute>());
@@ -100,8 +100,8 @@ public class YCrossRoad extends SimpleCrossRoad {
 
       // compute the possible flat angle
       double angle = Math.abs(CommonAlgorithmsFromCartAGen.angleBetween2Lines(
-          (GM_LineString) majorRoad1.getGeom(), (GM_LineString) majorRoad2
-              .getGeom()));
+          (GM_LineString) majorRoad1.getGeom(),
+          (GM_LineString) majorRoad2.getGeom()));
       double angleDiff = Math.PI - angle;
       // test if the angle difference is greater than threshold
       if (angleDiff > flatAngle) {
@@ -110,8 +110,8 @@ public class YCrossRoad extends SimpleCrossRoad {
 
       // compute the angle with the minor road
       double angleY = Math.abs(CommonAlgorithmsFromCartAGen.angleBetween2Lines(
-          (GM_LineString) majorRoad1.getGeom(), (GM_LineString) minorRoad
-              .getGeom()));
+          (GM_LineString) majorRoad1.getGeom(),
+          (GM_LineString) minorRoad.getGeom()));
       // test if the angle is less than threshold
       if (angleY > yAngle) {
         continue;

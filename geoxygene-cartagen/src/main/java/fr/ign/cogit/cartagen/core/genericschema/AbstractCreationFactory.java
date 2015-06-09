@@ -62,6 +62,7 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.ICycleWay;
+import fr.ign.cogit.cartagen.core.genericschema.road.IDualCarriageWay;
 import fr.ign.cogit.cartagen.core.genericschema.road.IInterchange;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadArea;
@@ -69,13 +70,17 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoadFacilityPoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadRoute;
+import fr.ign.cogit.cartagen.core.genericschema.road.IRoadStroke;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery.CemeteryType;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IEmptySpace;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField.SportsFieldType;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanAlignment;
@@ -83,6 +88,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.PatteOie;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RoadLineImpl;
+import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RoadStroke;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RondPoint;
 import fr.ign.cogit.cartagen.spatialanalysis.network.streets.CityPartition;
 import fr.ign.cogit.cartagen.spatialanalysis.network.streets.StreetNetwork;
@@ -331,6 +337,20 @@ public abstract class AbstractCreationFactory {
     return null;
   }
 
+  @SuppressWarnings("unused")
+  public ISportsField createSportsField(IPolygon poly, SportsFieldType type) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for ISportsField");
+    return null;
+  }
+
+  @SuppressWarnings("unused")
+  public ICemetery createCemetery(IPolygon poly, CemeteryType type) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for ICemetery");
+    return null;
+  }
+
   // /////////////////
   // NETWORK
   // /////////////////
@@ -567,6 +587,31 @@ public abstract class AbstractCreationFactory {
     return null;
   }
 
+  // dual carriageways
+
+  @SuppressWarnings("unused")
+  public IDualCarriageWay createDualCarriageways(IPolygon poly, int importance) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for IDualCarriageWay");
+    return null;
+  }
+
+  @SuppressWarnings("unused")
+  public IDualCarriageWay createDualCarriageways(IPolygon poly, int importance,
+      Collection<IRoadLine> innerRoads) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for IDualCarriageWay");
+    return null;
+  }
+
+  @SuppressWarnings("unused")
+  public IDualCarriageWay createDualCarriageways(IPolygon poly, int importance,
+      Collection<IRoadLine> innerRoads, Collection<IRoadLine> outerRoads) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for IDualCarriageWay");
+    return null;
+  }
+
   // Path
 
   @SuppressWarnings("unused")
@@ -588,6 +633,13 @@ public abstract class AbstractCreationFactory {
   public IBridgePoint createBridgePoint(IPoint point) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IBridgePoint");
+    return null;
+  }
+
+  // strokes
+  public IRoadStroke createRoadStroke(ILineString geom, RoadStroke stroke) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for IRoadStroke");
     return null;
   }
 

@@ -31,7 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 
-import fr.ign.cogit.cartagen.spatialanalysis.network.CrossRoadDetection;
+import fr.ign.cogit.cartagen.spatialanalysis.network.roads.CrossRoadDetection;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RondPoint;
 import fr.ign.cogit.cartagen.spatialanalysis.urban.UrbanAreaComputationJTS;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;

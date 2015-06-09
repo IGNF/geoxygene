@@ -3,6 +3,7 @@ package fr.ign.cogit.geoxygene.osm.importexport;
 import fr.ign.cogit.cartagen.core.genericschema.land.ITreePoint;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.road.ICycleWay;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -110,9 +111,9 @@ public class OsmDataset extends CartAGenDataSet {
    * @return
    */
   @SuppressWarnings("unchecked")
-  public IPopulation<OsmCemetery> getCemeteries() {
-    return (IPopulation<OsmCemetery>) this.getCartagenPop(
-        OsmDataset.CEMETERY_POP, OsmCemetery.FEAT_TYPE_NAME);
+  public IPopulation<ICemetery> getCemeteries() {
+    return (IPopulation<ICemetery>) this.getCartagenPop(
+        OsmDataset.CEMETERY_POP, ICemetery.FEAT_TYPE_NAME);
   }
 
   /**

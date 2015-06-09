@@ -1,15 +1,14 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.spatialanalysis.network.roads;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,10 +26,17 @@ public abstract class SimpleCrossRoad extends AbstractFeature {
     this.id = SimpleCrossRoad.counter.getAndIncrement();
   }
 
+  public SimpleCrossRoad(NoeudRoutier node) {
+    super(node.getGeom());
+    this.node = node;
+    this.id = SimpleCrossRoad.counter.getAndIncrement();
+  }
+
   private HashSet<TronconDeRoute> roads;
   private IDirectPosition coord;
   private int degree;
   private int id;
+  private NoeudRoutier node;
 
   private static AtomicInteger counter = new AtomicInteger();
 
@@ -71,78 +77,6 @@ public abstract class SimpleCrossRoad extends AbstractFeature {
     return classes;
   }
 
-  public static HashSet<SimpleCrossRoad> classifyCrossRoads(
-      Collection<TronconDeRoute> roads, double flatAngle, double bisAngle,
-      double yAngle, double symmAngle, double forkAngle, double squareAngle,
-      double symmCrossAngle) {
-    HashSet<SimpleCrossRoad> crossRoads = new HashSet<SimpleCrossRoad>();
-    // get the nodes from the roads
-    HashSet<NoeudRoutier> nodes = new HashSet<NoeudRoutier>();
-    for (TronconDeRoute road : roads) {
-      nodes.add((NoeudRoutier) road.getNoeudInitial());
-      nodes.add((NoeudRoutier) road.getNoeudFinal());
-    }
-    // loop on the nodes to classify them
-    for (NoeudRoutier node : nodes) {
-      // **********
-      // Y-Node CASE
-      // **********
-      if (YCrossRoad.isYNode(node, flatAngle / 2.0, yAngle)) {
-        // build the new Y-node
-        crossRoads.add(new YCrossRoad(node, flatAngle, yAngle));
-        continue;
-      }
-
-      // **********
-      // T-Node CASE
-      // **********
-      if (TCrossRoad.isTNode(node, flatAngle, bisAngle)) {
-        // build the new T-Node
-        crossRoads.add(new TCrossRoad(node, flatAngle, bisAngle));
-        continue;
-      }
-
-      // **********
-      // Fork-Node CASE
-      // **********
-      if (ForkCrossRoad.isForkNode(node, forkAngle, symmAngle)) {
-        // build the new fork node
-        crossRoads.add(new ForkCrossRoad(node, forkAngle, symmAngle));
-        continue;
-      }
-
-      // now the node is either a star, a cross or a standard crossroad.
-
-      // **************
-      // Cross-Node CASE
-      // **************
-      if (PlusCrossRoad.isCrossNode(node, symmCrossAngle, squareAngle)) {
-        PlusCrossRoad plusCross = new PlusCrossRoad(node, symmCrossAngle);
-        plusCross.setSquareAngle(squareAngle);
-        crossRoads.add(plusCross);
-        continue;
-      }
-
-      // **************
-      // Star-Node CASE
-      // **************
-      if (StarCrossRoad.isStarNode(node, flatAngle)) {
-        crossRoads.add(new StarCrossRoad(node, flatAngle));
-        continue;
-      }
-
-      // ******************
-      // Standard CASE
-      // ******************
-      // arrived here, the node has no particular character and is
-      // considered as standard
-      crossRoads.add(new StandardCrossRoad(node));
-
-    }
-
-    return crossRoads;
-  }
-
   public void setRoads(HashSet<TronconDeRoute> roads) {
     this.roads = roads;
   }
@@ -155,5 +89,13 @@ public abstract class SimpleCrossRoad extends AbstractFeature {
   public IFeature cloneGeom() throws CloneNotSupportedException {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  public NoeudRoutier getNode() {
+    return node;
+  }
+
+  public void setNode(NoeudRoutier node) {
+    this.node = node;
   }
 }

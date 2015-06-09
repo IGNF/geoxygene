@@ -12,6 +12,7 @@ package fr.ign.cogit.cartagen.core.genericschema.road;
 import java.util.ArrayList;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObjLin;
+import fr.ign.cogit.cartagen.spatialanalysis.network.roads.RoadStroke;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 
@@ -25,6 +26,8 @@ public interface IRoadStroke extends IGeneObjLin {
   public ILineString getGeomStroke();
 
   public ArrayList<ArcReseau> getFeatures();
+
+  public RoadStroke getRoadStroke();
 
   public static final String FEAT_TYPE_NAME = "RoadStroke"; //$NON-NLS-1$
 }

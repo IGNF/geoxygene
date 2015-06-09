@@ -707,7 +707,7 @@ public class DeadEndGroup extends GeneObjDefault implements IDeadEndGroup {
     for (INetworkSection feat : this.features) {
       complex.add(feat.getGeom());
     }
-    this.setGeom(complex.convexHull());
+    this.setGeom(complex);
   }
 
   /**

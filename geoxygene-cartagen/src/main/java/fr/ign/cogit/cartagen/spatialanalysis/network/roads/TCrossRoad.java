@@ -79,8 +79,8 @@ public class TCrossRoad extends SimpleCrossRoad {
 
       // compute the possible flat angle
       double angle = Math.abs(CommonAlgorithmsFromCartAGen.angleBetween2Lines(
-          (GM_LineString) majorRoad1.getGeom(), (GM_LineString) majorRoad2
-              .getGeom()));
+          (GM_LineString) majorRoad1.getGeom(),
+          (GM_LineString) majorRoad2.getGeom()));
       double angleDiff = Math.PI - angle;
       // test if the angle difference is greater than threshold
       if (angleDiff > flatAngle) {
@@ -107,7 +107,7 @@ public class TCrossRoad extends SimpleCrossRoad {
 
   public TCrossRoad(NoeudRoutier node, double flatAngle, double bisAngle) {
     super(node.getGeom());
-    // set the degree
+    this.setNode(node);
     this.setDegree(node.getArcsEntrants().size()
         + node.getArcsSortants().size());
     this.setRoads(new HashSet<TronconDeRoute>());

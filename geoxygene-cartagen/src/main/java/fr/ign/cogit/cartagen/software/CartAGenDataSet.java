@@ -64,6 +64,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
@@ -167,6 +168,7 @@ public class CartAGenDataSet extends DataSet {
   public static final String SPORTS_FIELDS_POP = "sportsFields";
   public static final String BUILD_AREA_POP = "buildingAreas";
   public static final String SQUARE_AREA_POP = "squareAreas";
+  public static final String CEMETERY_POP = "cemeteries";
 
   public static final String ROADS_POP = "roads";
   public static final String ROAD_NODES_POP = "roadNodes";
@@ -334,6 +336,8 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.COASTLINE_POP;
     } else if (obj instanceof ISquareArea) {
       return CartAGenDataSet.SQUARE_AREA_POP;
+    } else if (obj instanceof ICemetery) {
+      return CartAGenDataSet.CEMETERY_POP;
     }
     return null;
   }
@@ -444,6 +448,8 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.COASTLINE_POP;
     } else if (featureType.equals(ISquareArea.FEAT_TYPE_NAME)) {
       return CartAGenDataSet.SQUARE_AREA_POP;
+    } else if (featureType.equals(ICemetery.FEAT_TYPE_NAME)) {
+      return CartAGenDataSet.CEMETERY_POP;
     }
     return null;
   }
@@ -554,6 +560,8 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.COASTLINE_POP;
     } else if (ISquareArea.class.isAssignableFrom(classObj)) {
       return CartAGenDataSet.SQUARE_AREA_POP;
+    } else if (ICemetery.class.isAssignableFrom(classObj)) {
+      return CartAGenDataSet.CEMETERY_POP;
     }
     return null;
   }
@@ -1009,6 +1017,16 @@ public class CartAGenDataSet extends DataSet {
   public IPopulation<ISquareArea> getSquareAreas() {
     return (IPopulation<ISquareArea>) this.getCartagenPop(
         CartAGenDataSet.SQUARE_AREA_POP, ISquareArea.FEAT_TYPE_NAME);
+  }
+
+  /**
+   * Gets the cemeterey areas of the dataset
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<ICemetery> getCemeteries() {
+    return (IPopulation<ICemetery>) this.getCartagenPop(
+        CartAGenDataSet.CEMETERY_POP, ICemetery.FEAT_TYPE_NAME);
   }
 
   /**

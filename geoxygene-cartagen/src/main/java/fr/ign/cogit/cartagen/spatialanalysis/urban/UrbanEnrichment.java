@@ -25,6 +25,7 @@ import fr.ign.cogit.cartagen.core.genericschema.AbstractCreationFactory;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
+import fr.ign.cogit.cartagen.core.genericschema.road.IDualCarriageWay;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadStroke;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
@@ -357,6 +358,7 @@ public class UrbanEnrichment {
           new FT_FeatureCollection<IRoadStroke>(),
           new FT_FeatureCollection<IRoundAbout>(),
           new FT_FeatureCollection<IBranchingCrossroad>(),
+          new FT_FeatureCollection<IDualCarriageWay>(),
           new FT_FeatureCollection<IUrbanBlock>());
       ville.setStreetNetwork(net);
 
@@ -571,6 +573,7 @@ public class UrbanEnrichment {
           new FT_FeatureCollection<IRoadStroke>(),
           new FT_FeatureCollection<IRoundAbout>(),
           new FT_FeatureCollection<IBranchingCrossroad>(),
+          new FT_FeatureCollection<IDualCarriageWay>(),
           new FT_FeatureCollection<IUrbanBlock>());
       ville.setStreetNetwork(net);
 

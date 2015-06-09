@@ -45,6 +45,8 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationLeftPanelComplement;
 import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.CartAGenProgressBar;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
@@ -391,6 +393,18 @@ public class ShapeFileDB extends CartAGenDB {
       }
       if (shape.getFeatureTypeName().equals(IReliefElementLine.FEAT_TYPE_NAME)) {
         ShapeFileLoader.loadReliefElementLinesFromSHP(shape.getPath(), symbols,
+            this.getDataSet());
+      }
+      if (shape.getFeatureTypeName().equals(ISpotHeight.FEAT_TYPE_NAME)) {
+        ShapeFileLoader.loadSpotHeightsFromSHP(shape.getPath(), symbols,
+            this.getDataSet());
+      }
+      if (shape.getFeatureTypeName().equals(ISportsField.FEAT_TYPE_NAME)) {
+        ShapeFileLoader.loadSportsFieldsBDTFromSHP(shape.getPath(),
+            this.getDataSet());
+      }
+      if (shape.getFeatureTypeName().equals(ICemetery.FEAT_TYPE_NAME)) {
+        ShapeFileLoader.loadCemeteriesBDTFromSHP(shape.getPath(),
             this.getDataSet());
       }
       if (shape.getFeatureTypeName().equals(ISpotHeight.FEAT_TYPE_NAME)) {

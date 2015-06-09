@@ -20,27 +20,17 @@
 package fr.ign.cogit.geoxygene.appli.plugin.cartagen.util;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractCellEditor;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.border.Border;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 
 import fr.ign.cogit.cartagen.core.carto.SLDUtil;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
@@ -87,7 +77,7 @@ public class DisplayInitialGeomsFrame extends JFrame implements ActionListener {
     this.setAlwaysOnTop(true);
 
     // setup the table
-    this.jtable = new JTable(new DisplayInitTableModel(data));
+    this.jtable = new JTable(new DisplayLayerTableModel(data));
     jtable.setDefaultRenderer(Color.class, new ColorRenderer(true));
     jtable.setDefaultEditor(Color.class, new ColorEditor());
 
@@ -146,186 +136,15 @@ public class DisplayInitialGeomsFrame extends JFrame implements ActionListener {
         frame.getLayerViewPanel().getRenderingManager().addLayer(layer);
       } else
         SLDUtil.removeInitialGeomDisplay(layer);
-//      IGeneObj obj;
-//      for (IFeature f: layer.getFeatureCollection()){
-//        obj = (IGeneObj) f;
-//        System.out.println(obj.getInitialGeom());
-//        System.out.println(obj.getGeom());
-//      }
+      // IGeneObj obj;
+      // for (IFeature f: layer.getFeatureCollection()){
+      // obj = (IGeneObj) f;
+      // System.out.println(obj.getInitialGeom());
+      // System.out.println(obj.getGeom());
+      // }
     }
     frame.getLayerViewPanel().getRenderingManager().renderAll();
     // frame.getLayerViewPanel().repaint();
   }
 
-  /**
-   * The Cell editor for the column with colors.
-   * @author GTouya
-   * 
-   */
-  public class ColorEditor extends AbstractCellEditor implements
-      TableCellEditor, ActionListener {
-    /****/
-    private static final long serialVersionUID = 1L;
-    Color currentColor;
-    JButton button;
-    JColorChooser colorChooser;
-    JDialog dialog;
-    protected static final String EDIT = "edit";
-
-    public ColorEditor() {
-      // Set up the editor (from the table's point of view),
-      // which is a button.
-      // This button brings up the color chooser dialog,
-      // which is the editor from the user's point of view.
-      button = new JButton();
-      button.setActionCommand(EDIT);
-      button.addActionListener(this);
-      button.setBorderPainted(false);
-
-      // Set up the dialog that the button brings up.
-      colorChooser = new JColorChooser();
-      dialog = JColorChooser.createDialog(button, "Pick a Color", true, // modal
-          colorChooser, this, // OK button handler
-          null); // no CANCEL button handler
-    }
-
-    /**
-     * Handles events from the editor button and from the dialog's OK button.
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      if (EDIT.equals(e.getActionCommand())) {
-        // The user has clicked the cell, so
-        // bring up the dialog.
-        button.setBackground(currentColor);
-        colorChooser.setColor(currentColor);
-        dialog.setVisible(true);
-
-        // Make the renderer reappear.
-        fireEditingStopped();
-
-      } else { // User pressed dialog's "OK" button.
-        currentColor = colorChooser.getColor();
-      }
-    }
-
-    // Implement the one CellEditor method that AbstractCellEditor doesn't.
-    @Override
-    public Object getCellEditorValue() {
-      return currentColor;
-    }
-
-    // Implement the one method defined by TableCellEditor.
-    @Override
-    public Component getTableCellEditorComponent(JTable table, Object value,
-        boolean isSelected, int row, int column) {
-      currentColor = (Color) value;
-      return button;
-    }
-  }
-
-  /**
-   * The renderer for the color column
-   * @author GTouya
-   * 
-   */
-  public class ColorRenderer extends JLabel implements TableCellRenderer {
-    /****/
-    private static final long serialVersionUID = 1L;
-    Border unselectedBorder = null;
-    Border selectedBorder = null;
-    boolean isBordered = true;
-
-    public ColorRenderer(boolean isBordered) {
-      this.isBordered = isBordered;
-      setOpaque(true);
-    }
-
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object color,
-        boolean isSelected, boolean hasFocus, int row, int column) {
-      Color newColor = (Color) color;
-      setBackground(newColor);
-      if (isBordered) {
-        if (isSelected) {
-          if (selectedBorder == null) {
-            selectedBorder = BorderFactory.createMatteBorder(2, 5, 2, 5,
-                table.getSelectionBackground());
-          }
-          setBorder(selectedBorder);
-        } else {
-          if (unselectedBorder == null) {
-            unselectedBorder = BorderFactory.createMatteBorder(2, 5, 2, 5,
-                table.getBackground());
-          }
-          setBorder(unselectedBorder);
-        }
-      }
-      return this;
-    }
-  }
-
-  class DisplayInitTableModel extends AbstractTableModel {
-    /****/
-    private static final long serialVersionUID = 1L;
-    private String[] columnNames = {
-        I18N.getString("DisplayInitialGeomsFrame.column1"),
-        I18N.getString("DisplayInitialGeomsFrame.column1"),
-        I18N.getString("DisplayInitialGeomsFrame.column3"),
-        I18N.getString("DisplayInitialGeomsFrame.column4") };
-
-    private Object[][] data;
-
-    public DisplayInitTableModel(Object[][] data) {
-      super();
-      this.data = data;
-    }
-
-    @Override
-    public int getColumnCount() {
-      return columnNames.length;
-    }
-
-    @Override
-    public int getRowCount() {
-      return data.length;
-    }
-
-    @Override
-    public String getColumnName(int col) {
-      return columnNames[col];
-    }
-
-    @Override
-    public Object getValueAt(int row, int col) {
-      return data[row][col];
-    }
-
-    /*
-     * JTable uses this method to determine the default renderer/ editor for
-     * each cell. If we didn't implement this method, then the last column would
-     * contain text ("true"/"false"), rather than a check box.
-     */
-    @Override
-    public Class<?> getColumnClass(int c) {
-      return getValueAt(0, c).getClass();
-    }
-
-    @Override
-    public boolean isCellEditable(int row, int col) {
-      // Note that the data/cell address is constant,
-      // no matter where the cell appears onscreen.
-      if (col < 1) {
-        return false;
-      } else {
-        return true;
-      }
-    }
-
-    @Override
-    public void setValueAt(Object value, int row, int col) {
-      data[row][col] = value;
-      fireTableCellUpdated(row, col);
-    }
-  }
 }

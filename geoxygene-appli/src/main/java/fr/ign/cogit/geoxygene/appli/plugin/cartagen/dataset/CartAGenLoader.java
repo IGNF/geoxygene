@@ -16,6 +16,8 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
@@ -28,7 +30,6 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolsUtil;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
-import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 public class CartAGenLoader {
@@ -36,13 +37,8 @@ public class CartAGenLoader {
   private static Logger logger = Logger.getLogger(CartAGenLoader.class
       .getName());
 
-  private CartAGenPlugin appli;
-  private String dbName;
-
-  public CartAGenLoader(CartAGenPlugin appli, String dbName) {
+  public CartAGenLoader() {
     super();
-    this.appli = appli;
-    this.dbName = dbName;
   }
 
   public void loadData(String absolutePath, SourceDLM bdsource, int scale,
@@ -156,6 +152,28 @@ public class CartAGenLoader {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/masque", IMask.FEAT_TYPE_NAME, IPolygon.class);
+      }
+
+      if (ShapeFileLoader.loadLandUseAreasFromSHP(absolutePath
+          + "/zone_arboree", 0.5, 1, dataSet)) {
+        // create a new ShapeFileClass object in the CartAGen dataset
+        ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
+            + "/zone_arboree", ISimpleLandUseArea.FEAT_TYPE_NAME,
+            IPolygon.class);
+      }
+
+      if (ShapeFileLoader.loadCemeteriesBDTFromSHP(absolutePath + "/cimetiere",
+          dataSet)) {
+        // create a new ShapeFileClass object in the CartAGen dataset
+        ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
+            + "/cimetiere", ICemetery.FEAT_TYPE_NAME, IPolygon.class);
+      }
+
+      if (ShapeFileLoader.loadSportsFieldsBDTFromSHP(absolutePath
+          + "/terrain_sport", dataSet)) {
+        // create a new ShapeFileClass object in the CartAGen dataset
+        ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
+            + "/terrain_sport", ISportsField.FEAT_TYPE_NAME, IPolygon.class);
       }
 
       if (logger.isInfoEnabled()) {

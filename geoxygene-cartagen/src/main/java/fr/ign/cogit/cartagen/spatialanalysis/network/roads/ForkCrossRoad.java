@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.spatialanalysis.network.roads;
 
@@ -61,12 +61,12 @@ public class ForkCrossRoad extends SimpleCrossRoad {
       // compute the two angles with the majorRoad
       double angleSym1 = Math.PI
           - Math.abs(CommonAlgorithmsFromCartAGen.angleBetween2Lines(
-              (GM_LineString) forkRoad1.getGeom(), (GM_LineString) majorRoad
-                  .getGeom()));
+              (GM_LineString) forkRoad1.getGeom(),
+              (GM_LineString) majorRoad.getGeom()));
       double angleSym2 = Math.PI
           - Math.abs(CommonAlgorithmsFromCartAGen.angleBetween2Lines(
-              (GM_LineString) forkRoad2.getGeom(), (GM_LineString) majorRoad
-                  .getGeom()));
+              (GM_LineString) forkRoad2.getGeom(),
+              (GM_LineString) majorRoad.getGeom()));
 
       // test if the difference between the 2 angles is bigger than threshold
       double diffAngles = Math.abs(angleSym1 - angleSym2);
@@ -84,6 +84,7 @@ public class ForkCrossRoad extends SimpleCrossRoad {
 
   public ForkCrossRoad(NoeudRoutier node, double forkAngle, double symmAngle) {
     super(node.getGeom());
+    this.setNode(node);
     // set the degree
     this.setDegree(node.getArcsEntrants().size()
         + node.getArcsSortants().size());

@@ -32,6 +32,10 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ICemetery.CemeteryType;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField.SportsFieldType;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationLeftPanelComplement;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.RoadSymbolResult;
@@ -2479,9 +2483,185 @@ public class ShapeFileLoader {
     return true;
   }
 
-  // ///////////////////////////////////////
-  // RESET OF DATASET (to be improved)
-  // ///////////////////////////////////////
+  /**
+   * Charge les cimetières depuis un shapefile BD TOPO.
+   * @param chemin chemin du shapefile
+   * @throws IOException
+   */
+  public static boolean loadCemeteriesBDTFromSHP(String chemin,
+      CartAGenDataSet dataset) throws IOException {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    try {
+      ShpFiles shpf = new ShpFiles(chemin + ".shp");
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.defaultCharset());
+    } catch (FileNotFoundException e) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("fichier " + chemin + " non trouve.");
+      }
+      return false;
+    }
+
+    if (logger.isInfoEnabled()) {
+      logger.info("Loading: " + chemin);
+    }
+
+    IPopulation<ICemetery> pop = dataset.getCemeteries();
+
+    int j = 0;
+    while (shr.hasNext() && dbr.hasNext()) {
+      Record objet = shr.nextRecord();
+
+      Object[] champs = dbr.readEntry();
+      Map<String, Object> fields = new HashMap<String, Object>();
+      for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
+        fields.put(dbr.getHeader().getFieldName(i), champs[i]);
+      }
+      CemeteryType type = CemeteryType.UNKNOWN;
+      Object value = fields.get("NATURE");
+      if (value != null) {
+        String typeValue = (String) value;
+        if (typeValue.equals("Militaire"))
+          type = CemeteryType.MILITARY;
+      }
+
+      IGeometry geom = null;
+      try {
+        geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
+      } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+      }
+      if (geom instanceof IPolygon) {
+        ICemetery cemetery = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory().createCemetery((IPolygon) geom, type);
+        if (fields.containsKey("CARTAGEN_ID")) {
+          cemetery.setId((Integer) fields.get("CARTAGEN_ID"));
+        } else {
+          cemetery.setShapeId(j);
+        }
+        j++;
+        pop.add(cemetery);
+      } else if (geom instanceof IMultiSurface<?>) {
+        for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
+          ICemetery cemetery = dataset
+              .getCartAGenDB()
+              .getGeneObjImpl()
+              .getCreationFactory()
+              .createCemetery((IPolygon) ((IMultiSurface<?>) geom).get(i), type);
+          if (fields.containsKey("CARTAGEN_ID")) {
+            cemetery.setId((Integer) fields.get("CARTAGEN_ID"));
+          } else {
+            cemetery.setShapeId(j);
+          }
+          j++;
+          pop.add(cemetery);
+        }
+      } else {
+        logger
+            .error("ERREUR lors du chargement de shp " + chemin
+                + ". Type de geometrie " + geom.getClass().getName()
+                + " non gere.");
+      }
+    }
+    shr.close();
+    dbr.close();
+
+    return true;
+  }
+
+  /**
+   * Charge les terrains de sport depuis un shapefile BD TOPO.
+   * @param chemin chemin du shapefile
+   * @throws IOException
+   */
+  public static boolean loadSportsFieldsBDTFromSHP(String chemin,
+      CartAGenDataSet dataset) throws IOException {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    try {
+      ShpFiles shpf = new ShpFiles(chemin + ".shp");
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.defaultCharset());
+    } catch (FileNotFoundException e) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("fichier " + chemin + " non trouve.");
+      }
+      return false;
+    }
+
+    if (logger.isInfoEnabled()) {
+      logger.info("Loading: " + chemin);
+    }
+
+    IPopulation<ISportsField> pop = dataset.getSportsFields();
+
+    int j = 0;
+    while (shr.hasNext() && dbr.hasNext()) {
+      Record objet = shr.nextRecord();
+
+      Object[] champs = dbr.readEntry();
+      Map<String, Object> fields = new HashMap<String, Object>();
+      for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
+        fields.put(dbr.getHeader().getFieldName(i), champs[i]);
+      }
+      SportsFieldType type = SportsFieldType.UNKNOWN;
+      Object value = fields.get("NATURE");
+      if (value != null) {
+        String typeValue = (String) value;
+        if (typeValue.equals("Bassin de natation"))
+          type = SportsFieldType.SWIMMINGPOOL;
+        if (typeValue.equals("Terrain de tennis"))
+          type = SportsFieldType.TENNIS;
+      }
+
+      IGeometry geom = null;
+      try {
+        geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
+      } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+      }
+      if (geom instanceof IPolygon) {
+        ISportsField field = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory().createSportsField((IPolygon) geom, type);
+        if (fields.containsKey("CARTAGEN_ID")) {
+          field.setId((Integer) fields.get("CARTAGEN_ID"));
+        } else {
+          field.setShapeId(j);
+        }
+        j++;
+        pop.add(field);
+      } else if (geom instanceof IMultiSurface<?>) {
+        for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
+          ISportsField field = dataset
+              .getCartAGenDB()
+              .getGeneObjImpl()
+              .getCreationFactory()
+              .createSportsField((IPolygon) ((IMultiSurface<?>) geom).get(i),
+                  type);
+          if (fields.containsKey("CARTAGEN_ID")) {
+            field.setId((Integer) fields.get("CARTAGEN_ID"));
+          } else {
+            field.setShapeId(j);
+          }
+          j++;
+          pop.add(field);
+        }
+      } else {
+        logger
+            .error("ERREUR lors du chargement de shp " + chemin
+                + ". Type de geometrie " + geom.getClass().getName()
+                + " non gere.");
+      }
+    }
+    shr.close();
+    dbr.close();
+
+    return true;
+  }
+
   public static void loadOSCyclePath(String chemin, int symbolID,
       CartAGenDataSet dataset) {
     ShapefileReader shr = null;

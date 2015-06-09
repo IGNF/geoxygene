@@ -16,13 +16,17 @@ import fr.ign.cogit.geoxygene.api.spatial.AbstractGeomFactory;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineSegment;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
@@ -87,6 +91,16 @@ public class JTSGeomFactory implements AbstractGeomFactory {
   @Override
   public IMultiSurface<IPolygon> createMultiPolygon() {
     return new GM_MultiSurface<IPolygon>();
+  }
+
+  @Override
+  public ILineSegment createLineSegment(IDirectPosition pt1, IDirectPosition pt2) {
+    return new GM_LineSegment(pt1, pt2);
+  }
+
+  @Override
+  public IMultiPoint createMultiPoint() {
+    return new GM_MultiPoint();
   }
 
 }
