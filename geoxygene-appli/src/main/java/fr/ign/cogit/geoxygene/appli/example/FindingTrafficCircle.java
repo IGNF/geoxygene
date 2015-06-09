@@ -35,9 +35,6 @@ public class FindingTrafficCircle extends AbstractGeOxygeneApplicationPlugin {
   /** Logger. */
   private final static Logger LOGGER = Logger.getLogger(FindingTrafficCircle.class.getName());
 
-  /** GeOxygeneApplication */
-  private GeOxygeneApplication application = null;
-
   /**
    * Initialize the plugin.
    * @param application the application
