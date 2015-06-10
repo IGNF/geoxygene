@@ -8,11 +8,12 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 
 public class MinkowskiTest {
 
 	@Test
-	public void testSoustraction(){
+	public void testSoustraction1(){
 
 		// -------------------------------------------
 		// Polygone de vérification :
@@ -77,6 +78,177 @@ public class MinkowskiTest {
 		double ratio = innerfit.intersection(control).area()/innerfit.union(control).area();
 
 		Assert.assertEquals(ratio, 1.0, Math.pow(10, -6));
+
+	}
+	
+	@Test
+	public void testSoustraction2(){
+		
+		DirectPositionList points = new DirectPositionList();
+		DirectPositionList points2 = new DirectPositionList();
+
+		// -------------------------------------------------
+		// Cas de non connexité de A - B
+		// -------------------------------------------------
+		
+		
+		points.add(new DirectPosition(10,10));
+		points.add(new DirectPosition(15,10));
+		points.add(new DirectPosition(18,10));
+		points.add(new DirectPosition(19,13));
+		points.add(new DirectPosition(17,15));
+		points.add(new DirectPosition(14,12));
+		points.add(new DirectPosition(15,15));
+		points.add(new DirectPosition(10,15));
+		points.add(new DirectPosition(10,10)); 
+
+		points2.add(new DirectPosition(5,11));
+		points2.add(new DirectPosition(8,11));
+		points2.add(new DirectPosition(6,14));
+		points2.add(new DirectPosition(5,11));
+		
+		
+		// -------------------------------------------------
+		// Création des polygones
+		// -------------------------------------------------
+
+
+		GM_LineString lines = new GM_LineString(points);
+
+		GM_Polygon p1 = new GM_Polygon(lines);
+
+
+		GM_LineString lines2 = new GM_LineString(points2);
+
+		GM_Polygon p2 = new GM_Polygon(lines2);
+
+		// -------------------------------------------------
+		// Centre de masse du polygone B
+		// -------------------------------------------------
+
+		@SuppressWarnings("unused")
+		DirectPosition center = (DirectPosition) p2.centroid();
+
+		// -------------------------------------------------
+		// Soustraction de Minkowski S = A ⊖ B
+		// -------------------------------------------------
+		
+		@SuppressWarnings({ "rawtypes", "unused" })
+		GM_MultiSurface innerfit = (GM_MultiSurface) Minkowski.substractionOfMinkowskiFromCenter(p1, p2);
+
+		Assert.assertTrue(true);
+		
+	}
+	
+	@Test
+	public void testSoustraction3(){
+		
+		DirectPositionList points = new DirectPositionList();
+		DirectPositionList points2 = new DirectPositionList();
+
+		// -------------------------------------------------
+		// Cas de "forte" concavité de B
+		// -------------------------------------------------
+
+		points.add(new DirectPosition(10,10));
+		points.add(new DirectPosition(15,10));
+		points.add(new DirectPosition(17,12));
+		points.add(new DirectPosition(13,12));
+		points.add(new DirectPosition(13,15));
+		points.add(new DirectPosition(10,15));
+		points.add(new DirectPosition(10,10));
+
+		points2.add(new DirectPosition(5,11));
+		points2.add(new DirectPosition(9,11));
+		points2.add(new DirectPosition(9,11.3));
+		points2.add(new DirectPosition(5.3,11.3));
+		points2.add(new DirectPosition(5.3,14));
+		points2.add(new DirectPosition(5,14));
+		points2.add(new DirectPosition(5,11));
+
+		
+		// -------------------------------------------------
+		// Création des polygones
+		// -------------------------------------------------
+
+
+		GM_LineString lines = new GM_LineString(points);
+
+		GM_Polygon p1 = new GM_Polygon(lines);
+
+
+		GM_LineString lines2 = new GM_LineString(points2);
+
+		GM_Polygon p2 = new GM_Polygon(lines2);
+
+		// -------------------------------------------------
+		// Centre de masse du polygone B
+		// -------------------------------------------------
+
+		@SuppressWarnings("unused")
+		DirectPosition center = (DirectPosition) p2.centroid();
+
+		// -------------------------------------------------
+		// Soustraction de Minkowski S = A ⊖ B
+		// -------------------------------------------------
+
+		@SuppressWarnings("unused")
+		GM_Polygon innerfit = (GM_Polygon) Minkowski.substractionOfMinkowskiFromCenter(p1, p2);
+
+		Assert.assertTrue(true);
+
+	}
+	
+	@Test
+	public void testSoustraction4(){
+		
+		DirectPositionList points = new DirectPositionList();
+		DirectPositionList points2 = new DirectPositionList();
+
+		points.add(new DirectPosition(10,10));
+		points.add(new DirectPosition(15,10));
+		points.add(new DirectPosition(17,12));
+		points.add(new DirectPosition(14,12));
+		points.add(new DirectPosition(15,15));
+		points.add(new DirectPosition(10,15));
+		points.add(new DirectPosition(10,10)); 
+
+		points2.add(new DirectPosition(5,11));
+		points2.add(new DirectPosition(8,11));
+		points2.add(new DirectPosition(6,14));
+		points2.add(new DirectPosition(5,11));
+
+		
+		// -------------------------------------------------
+		// Création des polygones
+		// -------------------------------------------------
+
+
+		GM_LineString lines = new GM_LineString(points);
+
+		GM_Polygon p1 = new GM_Polygon(lines);
+
+
+		GM_LineString lines2 = new GM_LineString(points2);
+
+		GM_Polygon p2 = new GM_Polygon(lines2);
+
+		// -------------------------------------------------
+		// Centre de masse du polygone B
+		// -------------------------------------------------
+
+		@SuppressWarnings("unused")
+		DirectPosition center = (DirectPosition) p2.centroid();
+
+		// -------------------------------------------------
+		// Soustraction de Minkowski S = A ⊖ B
+		// -------------------------------------------------
+
+		@SuppressWarnings("unused")
+		GM_Polygon innerfit = (GM_Polygon) Minkowski.substractionOfMinkowskiFromCenter(p1, p2);
+
+		
+		Assert.assertTrue(true);
 
 	}
 
