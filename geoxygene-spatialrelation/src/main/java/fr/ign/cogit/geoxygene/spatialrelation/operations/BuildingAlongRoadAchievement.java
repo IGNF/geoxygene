@@ -1,21 +1,22 @@
 package fr.ign.cogit.geoxygene.spatialrelation.operations;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.LogManager;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
-import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.spatialrelation.api.AchievementMeasureOperation;
 import fr.ign.cogit.geoxygene.spatialrelation.relation.BuildingAlongARoad;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.algo.OrientationMeasure;
 import fr.ign.cogit.geoxygene.util.algo.SmallestSurroundingRectangleComputation;
-import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.measure.proximity.GeometryProximity;
 
 public class BuildingAlongRoadAchievement implements
     AchievementMeasureOperation {
@@ -46,43 +47,71 @@ public class BuildingAlongRoadAchievement implements
   // ***************
   @Override
   public void compute() {
-    // Find the closest road for this building
-    Integer i = 0;
-    Integer j = 0;
-    IFeature closestRoad = new DefaultFeature(roads.get(0).getGeom());
-    // calculate the minimum distance between building and road
-    GeometryProximity distanceMin = new GeometryProximity(building.getGeom(),
-        closestRoad.getGeom());
-    // Iterate to find the closest road
-    for (IFeature road : roads) {
-      GeometryProximity distanceEval = new GeometryProximity(
-          building.getGeom(), road.getGeom());
-      if (distanceEval.getDistance() < distanceMin.getDistance()) {
-        // check if the distance validate the relation expression
-        if (relation.getConditionOfAchievement().validate(
-            distanceEval.getDistance())) {
-          // check if there is no obstacle between the building and this road
-          if (!findObstacles(building, road, distanceEval.getDistance())) {
-            // if (checkOrientation(building, road)) {
-            // LogManager.resetConfiguration();
-            distanceMin = distanceEval;
-            closestRoad.setGeom(road.getGeom());
-            j = i;
-            // }
-          }
-        }
-      }
-      i++;
-    }
-    if (relation.getConditionOfAchievement()
-        .validate(distanceMin.getDistance())) {
-      relation.setMember2(roads.get(j));
-      relation.getDistance().setDistance(distanceMin.getDistance());
-    } else {
-      relation.setMember2(building);
-      relation.getDistance().setDistance(distanceMin.getDistance());
+
+    // prepare the buildings list for the intersections finding
+    List<IGeometry> buildingsGeom = new ArrayList<IGeometry>();
+    for (IFeature bdg : building.getFeatureCollection(0).getElements()) {
+      buildingsGeom.add(bdg.getGeom());
     }
 
+    // Find the closest road for this building
+    Integer i = 0;
+    // get the close roads (via index spatial)
+    Collection<IFeature> closeRoads = roads.getSpatialIndex().select(
+        building.getGeom(), 25);
+
+    if (closeRoads.size() == 0) {
+      relation.setMember2(building);
+      relation.getDistance().setDistance(999);
+    } else {
+      // get the default road to launch the search
+      IFeature closestRoad = closeRoads.iterator().next();
+
+      // calculate the minimum distance between building and road
+      IDirectPositionList dpCloseList = JtsAlgorithms.getClosestPoints(
+          building.getGeom(), closestRoad.getGeom());
+      Double distanceMin = dpCloseList.get(0).distance(dpCloseList.get(1));
+      // check if the closest road is the first road
+      boolean first = true;
+
+      // Iterate to find the closest road
+      for (IFeature road : closeRoads) {
+        IDirectPositionList dpEvalList = JtsAlgorithms.getClosestPoints(
+            building.getGeom(), road.getGeom());
+        Double distanceEval = dpEvalList.get(0).distance(dpEvalList.get(1));
+        if (distanceEval <= distanceMin) {
+          // check if the distance validate the relation expression : not
+          // necessary because of the spatial selection
+          if (relation.getConditionOfAchievement().validate(distanceEval)) {
+            // check if there is no obstacle between the building and this road
+            try {
+              if (!findObstacles(building, road, distanceEval, buildingsGeom)) {
+                // if (checkOrientation(building, road)) {
+                // LogManager.resetConfiguration();
+                distanceMin = distanceEval;
+                closestRoad = road;
+                first = false;
+                // }
+              }
+            } catch (Exception e) {
+              // Auto-generated catch block
+              e.printStackTrace();
+            }
+          } else {
+            distanceMin = distanceEval;
+          }
+        }
+        i++;
+      }
+
+      if (first == false) {
+        relation.setMember2(closestRoad);
+        relation.getDistance().setDistance(distanceMin);
+      } else {
+        relation.setMember2(building);
+        relation.getDistance().setDistance(998);
+      }
+    }
   }
 
   @Override
@@ -93,50 +122,29 @@ public class BuildingAlongRoadAchievement implements
   }
 
   public boolean findObstacles(IFeature building, IFeature road,
-      Double distanceBR) {
+      Double distanceBR, List<IGeometry> buildingsGeom) throws Exception {
 
-    JtsAlgorithms algo = new JtsAlgorithms();
     // Find the objects intersected by the spatial relation
     // create the relation link (geometry)
-    IGeometry geomSR = relation.createGeom(building, road);
-    // create the buffer
-    IGeometry buffer = algo.buffer(geomSR, 5);
+    IGeometry geomSR = relation.createGeom(building, road).buffer(2);
+
     // Find the buildings intersected
-    List<IFeature> buildings = building.getFeatureCollection(0).getElements();
-
-    for (IFeature buildingTest : buildings) {
-      // avoid the building himself
-      if (buildingTest.getId() != building.getId()) {
-        IGeometry intersection = algo.intersection(buildingTest.getGeom(),
-            buffer);
-        if (intersection != null && intersection.area() != 0.0) {
-
-          // avoid the case : corner intersection
-          Double buildingTestArea = buildingTest.getGeom().area();
-          if (intersection.area() > (buildingTestArea * 0.2)) {
-
-            // avoid the case : building on the other side of the road
-            GeometryProximity d1 = new GeometryProximity(
-                buildingTest.getGeom(), building.getGeom());
-            if (d1.getDistance() < distanceBR) {
-
-              // avoid the case : building on the other side of the building
-              GeometryProximity d2 = new GeometryProximity(
-                  buildingTest.getGeom(), road.getGeom());
-              if (d2.getDistance() < distanceBR) {
-
-                // System.out.println("intersection entre: "
-                // + building.getAttribute("refCleBDUni") + "  "
-                // + road.getAttribute("refCleBDUni") + " = "
-                // + buildingTest.getAttribute("refCleBDUni"));
-                return true;
-              }
-            }
-          }
-        }
+    List<IGeometry> listIntersect = new ArrayList<IGeometry>();
+    for (IGeometry g : buildingsGeom)
+      if (g.intersects(geomSR)) {
+        IGeometry inter = g.intersection(geomSR);
+        if (!(inter.isEmpty()) && inter.area() > 0.15 * g.area())
+          listIntersect.add(g);
       }
+
+    if (listIntersect.isEmpty()) {
+      return false;
+    } else {
+      // check the intersection area
+      // TODO be carefull to the false intersection (on the other side of the
+      // road and the buildings, less than 0.2% of the area...
+      return true;
     }
-    return false;
   }
 
   public double checkOrientation(IFeature building, IFeature road) {
