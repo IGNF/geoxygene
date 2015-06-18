@@ -44,22 +44,8 @@ public class BuildingAlongARoad extends DefaultFeature implements
   // CONSTRUCTOR
   // ***************
   public BuildingAlongARoad(IFeature memberToSet1, IFeature memberToSet2) {
-    // create the attribute schema
 
-    SchemaDefaultFeature schemaBR = new SchemaDefaultFeature();
-    Map<Integer, String[]> lookup = new HashMap<Integer, String[]>();
-    String[] member1Attr = { "member1", "member1" };
-    String[] member2Attr = { "member2", "member2" };
-    String[] distAttr = { "distance", "distance" };
-    String[] orientationAttr = { "orientation", "orientation" };
-    lookup.put(0, member1Attr);
-    lookup.put(1, member2Attr);
-    lookup.put(2, distAttr);
-    lookup.put(3, orientationAttr);
-
-    schemaBR.setAttLookup(lookup);
-    this.setSchema(schemaBR);
-
+    // set the properties
     this.member1 = memberToSet1;
     this.member2 = memberToSet2;
     this.distance = new DistanceBuildingRoad();
@@ -67,12 +53,29 @@ public class BuildingAlongARoad extends DefaultFeature implements
         new DoubleComparator());
     this.achievementOp = new BuildingAlongRoadAchievement(memberToSet1,
         memberToSet2.getFeatureCollection(0), this);
-    this.setGeom(createGeom(memberToSet1, this.member2));
     // Double orient =
     // this.achievementOp.checkOrientation(this.member1,this.member2);
     this.setOrientation(0.0);
-    Object[] attributes = { this.member1.getId(), this.member2.getId(),
-        this.distance.getValue(), this.orientation };
+    this.setGeom(createGeom(memberToSet1, this.member2));
+
+    // create the attribute schema
+    SchemaDefaultFeature schemaBR = new SchemaDefaultFeature();
+    Map<Integer, String[]> lookup = new HashMap<Integer, String[]>();
+    String[] member1Attr = { "member1", "member1" };
+    String[] member2Attr = { "member2", "member2" };
+    String[] distAttr = { "distance", "distance" };
+    String[] orientationAttr = { "orient", "orient" };
+    lookup.put(0, member1Attr);
+    lookup.put(1, member2Attr);
+    lookup.put(2, distAttr);
+    lookup.put(3, orientationAttr);
+    schemaBR.setAttLookup(lookup);
+    this.setSchema(schemaBR);
+
+    // set the attributes
+    Object[] attributes = { this.member1.getAttribute("refCleBDUni"),
+        this.member2.getAttribute("refCleBDUni"), this.distance.getValue(),
+        this.orientation };
     this.setAttributes(attributes);
 
   }
@@ -151,7 +154,6 @@ public class BuildingAlongARoad extends DefaultFeature implements
   // ***************
 
   public ILineString createGeom(IFeature member1, IFeature member2) {
-
     // Get the member geometry
     IGeometry buildingGeom = member1.getGeom();
     IGeometry roadGeom = member2.getGeom();
