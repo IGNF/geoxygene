@@ -27,10 +27,29 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlType;
+
 /**
  * @author JeT Blending Mode manages how layers are blended together (Screen,
  *         overlay, ...)
  */
-public interface BlendingMode {
+@XmlType(name = "BlendingMode")
+@XmlEnum(String.class)
+public enum BlendingMode {
+    Normal(1),
+    HighTone(2),
+    Multiply(3),
+    Overlay(4);
+    
+    private final int value;
+    
+    private BlendingMode(final int _v){
+        this.value = _v;
+    }
 
+    public int getValue() {
+        return value;
+    }
+    
 }

@@ -31,6 +31,7 @@ import java.io.IOException;
 
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.texture.ShaderFactory;
+import fr.ign.cogit.geoxygene.style.BlendingMode;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilterIdentity;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
@@ -40,23 +41,25 @@ import fr.ign.cogit.geoxygene.util.gl.GLSimpleVertex;
 import fr.ign.cogit.geoxygene.util.gl.GLTools;
 
 /**
- * @author JeT
+ * @author JeT, Bertrand Duménieu
  * 
  */
-public abstract class AbstractGeoxygeneBlendingMode implements
-        GeoxygeneBlendingMode {
+public class GeoxygeneBlendingModeImpl implements GeoxygeneBlendingMode {
 
     private LayerFilter filter = null;
     private LayerViewGLPanel glPanel = null;
 
+    private final String fragshader_resource_name;
+
     /**
      * @param filter
      */
-    public AbstractGeoxygeneBlendingMode(LayerFilter filter,
-            LayerViewGLPanel glPanel) {
+    public GeoxygeneBlendingModeImpl(LayerFilter filter,
+            LayerViewGLPanel glPanel, String shader_resource_name) {
         super();
         this.filter = filter;
         this.glPanel = glPanel;
+        this.fragshader_resource_name = shader_resource_name;
     }
 
     /*
@@ -90,8 +93,6 @@ public abstract class AbstractGeoxygeneBlendingMode implements
         return program;
     }
 
-    public abstract String getFragmentShaderFilename();
-
     private GLContext getGlContext() throws GLException {
         return this.glPanel.getGlContext();
     }
@@ -100,8 +101,8 @@ public abstract class AbstractGeoxygeneBlendingMode implements
      * @param worldspaceVertexShaderId
      * @throws GLException
      */
-    protected final GLProgram createProgram(String fragmentShaderFilename,
-            LayerFilter filter) throws GLException, IOException {
+    protected final GLProgram createProgram(LayerFilter filter)
+            throws GLException, IOException {
 
         // color program
         Subshader shader = null;
@@ -118,9 +119,12 @@ public abstract class AbstractGeoxygeneBlendingMode implements
         program.addVertexShader(
                 GLTools.readFileAsString(LayerViewGLPanel.screenspaceVertexShaderFilename),
                 LayerViewGLPanel.screenspaceVertexShaderFilename);
-        program.addFragmentShader(
-                GLTools.readFileAsString(this.getFragmentShaderFilename()),
-                this.getFragmentShaderFilename());
+        String shaderpath = (String) GLResourcesManager.getInstance()
+                .getResourceByName(fragshader_resource_name);
+        if (shaderpath != null) {
+            program.addFragmentShader(GLTools.readFileAsString(shaderpath),
+                    shaderpath);
+        }
         shader.configureProgram(program);
         program.addInputLocation(GLSimpleVertex.vertexUVVariableName,
                 GLSimpleVertex.vertexUVLocation);
@@ -141,8 +145,12 @@ public abstract class AbstractGeoxygeneBlendingMode implements
 
     public final GLProgramAccessor createScreenspaceBlendingAccessor(
             LayerFilter filter) {
-        return new GLProgramAccessorBlending(this.getFragmentShaderFilename(),
-                this.filter);
+        String shaderpath = (String) GLResourcesManager.getInstance()
+                .getResourceByName(fragshader_resource_name);
+        if (shaderpath != null) {
+            return new GLProgramAccessorBlending(shaderpath, this.filter);
+        }
+        return null;
 
     }
 
@@ -168,8 +176,8 @@ public abstract class AbstractGeoxygeneBlendingMode implements
         @Override
         public GLProgram getGLProgram() throws GLException {
             try {
-                return AbstractGeoxygeneBlendingMode.this.createProgram(
-                        this.fragmentShaderFilename, this.filter);
+                return GeoxygeneBlendingModeImpl.this
+                        .createProgram(this.filter);
             } catch (IOException e) {
                 throw new GLException(e);
             }
@@ -206,7 +214,7 @@ public abstract class AbstractGeoxygeneBlendingMode implements
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        AbstractGeoxygeneBlendingMode other = (AbstractGeoxygeneBlendingMode) obj;
+        GeoxygeneBlendingModeImpl other = (GeoxygeneBlendingModeImpl) obj;
         if (this.filter == null) {
             if (other.filter != null) {
                 return false;
@@ -215,6 +223,11 @@ public abstract class AbstractGeoxygeneBlendingMode implements
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String getPrefix() {
+        return fragshader_resource_name;
     }
 
 }

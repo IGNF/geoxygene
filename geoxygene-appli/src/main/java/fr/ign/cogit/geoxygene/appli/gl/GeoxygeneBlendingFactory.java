@@ -32,23 +32,39 @@ import java.util.Map;
 
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.style.BlendingMode;
-import fr.ign.cogit.geoxygene.style.BlendingModeHighTone;
-import fr.ign.cogit.geoxygene.style.BlendingModeMultiply;
-import fr.ign.cogit.geoxygene.style.BlendingModeNormal;
-import fr.ign.cogit.geoxygene.style.BlendingModeOverlay;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 import fr.ign.cogit.geoxygene.util.Pair;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 
 /**
- * @author JeT
+ * @author JeT, Bertrand Duménieu
  * 
  */
 public class GeoxygeneBlendingFactory {
 
-    private static final BlendingMode DEFAULT_BLENDING_MODE = new BlendingModeNormal();
+    private static final BlendingMode DEFAULT_BLENDING_MODE = BlendingMode.Normal;
     private static final Map<Pair<BlendingMode, LayerFilter>, GeoxygeneBlendingMode> blendingModes = new HashMap<Pair<BlendingMode, LayerFilter>, GeoxygeneBlendingMode>();
 
+    /**
+     * Blending shaders paths.
+     * TODO : this should be in a resource file, not in the source code. 
+     */
+    private static final String shader_normalblending_path = "./src/main/resources/shaders/blending-normal.frag.glsl";
+    private static final String shader_multiplyblending_path = "./src/main/resources/shaders/blending-multiply.frag.glsl";
+    private static final String shader_hightoneblending_path = "./src/main/resources/shaders/blending-hightone.frag.glsl";
+    private static final String shader_overlayblending_path = "./src/main/resources/shaders/blending-overlay.frag.glsl";
+    
+    /** register the shader resources.
+     * TODO: this should not be here. 
+     **/
+    static{
+        GLResourcesManager manager = GLResourcesManager.getInstance();
+        manager.registerResource("shadernormalblending", shader_normalblending_path, false);
+        manager.registerResource("shadermultiplyblending", shader_multiplyblending_path, false);
+        manager.registerResource("shaderhightoneblending", shader_hightoneblending_path, false);
+        manager.registerResource("shaderoverlayblending", shader_overlayblending_path, false);
+    }
+    
     /**
      * private constructor
      */
@@ -88,21 +104,15 @@ public class GeoxygeneBlendingFactory {
             return createGeoxygeneBlendingMode(DEFAULT_BLENDING_MODE, filter,
                     glPanel);
         }
-        if (blendingMode instanceof BlendingModeNormal) {
-            return new GeoxygeneBlendingModeNormal(
-                    (BlendingModeNormal) blendingMode, filter, glPanel);
-        }
-        if (blendingMode instanceof BlendingModeOverlay) {
-            return new GeoxygeneBlendingModeOverlay(
-                    (BlendingModeOverlay) blendingMode, filter, glPanel);
-        }
-        if (blendingMode instanceof BlendingModeMultiply) {
-            return new GeoxygeneBlendingModeMultiply(
-                    (BlendingModeMultiply) blendingMode, filter, glPanel);
-        }
-        if (blendingMode instanceof BlendingModeHighTone) {
-            return new GeoxygeneBlendingModeHighTone(
-                    (BlendingModeHighTone) blendingMode, filter, glPanel);
+        switch(blendingMode){
+            case Normal:
+                return new GeoxygeneBlendingModeImpl(filter, glPanel, "shadernormalblending");
+            case Multiply:
+                return new GeoxygeneBlendingModeImpl(filter, glPanel, "shadermultiplyblending");
+            case Overlay:
+                return new GeoxygeneBlendingModeImpl(filter, glPanel, "shaderoverlayblending");
+            case HighTone:
+                return new GeoxygeneBlendingModeImpl(filter, glPanel, "shaderhightoneblending");
         }
         throw new UnsupportedOperationException("Blending mode "
                 + blendingMode.getClass().getSimpleName() + " is not supported");

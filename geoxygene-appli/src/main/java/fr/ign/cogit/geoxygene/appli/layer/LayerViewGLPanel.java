@@ -90,7 +90,6 @@ import fr.ign.cogit.geoxygene.util.gl.GLTools;
  */
 public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         ActionListener {
-
     private static final String backgroundVertexShaderFilename = "./src/main/resources/shaders/bg.vert.glsl";
     private static final String backgroundFragmentShaderFilename = "./src/main/resources/shaders/bg.frag.glsl";
     private static final String gradientVertexShaderFilename = "./src/main/resources/shaders/gradient.vert.glsl";

@@ -27,23 +27,21 @@
 
 package fr.ign.cogit.geoxygene.appli.gl;
 
-import fr.ign.cogit.geoxygene.style.BlendingMode;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 import fr.ign.cogit.geoxygene.util.gl.GLException;
 import fr.ign.cogit.geoxygene.util.gl.GLProgram;
 
 /**
- * @author JeT
+ * @author JeT, Bertrand Duménieu
  * 
  */
 public interface GeoxygeneBlendingMode {
 
     public GLProgram getProgram() throws GLException;
 
-    public BlendingMode getBlendingMode();
-
     public LayerFilter getFilter();
 
     public String getPrefix();
+
 
 }
