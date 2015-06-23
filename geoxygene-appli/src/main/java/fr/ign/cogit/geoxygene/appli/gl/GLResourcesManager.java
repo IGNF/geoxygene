@@ -63,7 +63,7 @@ public class GLResourcesManager {
         this.registerResource("DICTIONARY_SCHEMA", schema_path, true);
     }
 
-    public boolean registerResource(String resource_name, Object resource,
+    public synchronized boolean  registerResource(String resource_name, Object resource,
             boolean allow_override) {
         assert (resource_name != null && resource_name != "" && resource != null);
 
@@ -106,7 +106,7 @@ public class GLResourcesManager {
         return true;
     }
 
-    public void unregisterResource(String resource_name) {
+    public synchronized void unregisterResource(String resource_name) {
         Integer uid = this.resources_names_dic.get(resource_name);
         if (uid == null) {
             logger.error("UnregisterResource : the resource " + resource_name
@@ -177,7 +177,7 @@ public class GLResourcesManager {
         }
     }
 
-    public void registerDictionary(URL dictionary_location,
+    public synchronized void registerDictionary(URL dictionary_location,
             boolean allow_override) {
         if (dictionary_location != null) {
             File dic_file = new File(dictionary_location.getPath());
