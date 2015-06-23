@@ -17,7 +17,8 @@
     <plugin>fr.ign.cogit.geoxygene.appli.example.SLDDemoApplication</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.example.ChangementProjectionShape</plugin>
     <projectPlugin>fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenProjectPlugin</projectPlugin>
-    <DefaultVisualizationType>LWJGL</DefaultVisualizationType>
+    <DefaultVisualizationType>AWT</DefaultVisualizationType>
     <ProjectFrameLayout>floating</ProjectFrameLayout>
     <DefaultLookAndFeel></DefaultLookAndFeel>
+    <ResourceDictionary>file:./src/main/resources/shaders/shaders-resources-dictionary.xml</ResourceDictionary>    
 </GeOxygeneApplicationProperties>
