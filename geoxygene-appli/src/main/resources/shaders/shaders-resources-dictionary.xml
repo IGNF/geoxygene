@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary xmlns="http://oxygene-project.sourceforge.net/schemas" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://oxygene-project.sourceforge.net/schemas resource-dic-schema.xsd">
+	<ResourceEntry>
+		<ResourceName>shader_normalblending</ResourceName>
+		<ResourceValue>./src/main/resources/shaders/blending-normal.frag.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>shader_multiplyblending</ResourceName>
+		<ResourceValue>./src/main/resources/shaders/blending-multiply.frag.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>shader_hightoneblending</ResourceName>
+		<ResourceValue>./src/main/resources/shaders/blending-hightone.frag.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>shader_overlayblending</ResourceName>
+		<ResourceValue>./src/main/resources/shaders/blending-overlay.frag.glsl</ResourceValue>
+	</ResourceEntry>
+</ResourceDictionary>

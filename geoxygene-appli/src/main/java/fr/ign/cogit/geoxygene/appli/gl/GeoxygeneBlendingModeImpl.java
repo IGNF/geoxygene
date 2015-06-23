@@ -31,7 +31,6 @@ import java.io.IOException;
 
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.texture.ShaderFactory;
-import fr.ign.cogit.geoxygene.style.BlendingMode;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilterIdentity;
 import fr.ign.cogit.geoxygene.util.gl.GLException;

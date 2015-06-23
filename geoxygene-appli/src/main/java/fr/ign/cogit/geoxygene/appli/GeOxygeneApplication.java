@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +42,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.api.MainFrame;
 import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
+import fr.ign.cogit.geoxygene.appli.gl.GLResourcesManager;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewPanelFactory.RenderingType;
@@ -161,11 +163,13 @@ public class GeOxygeneApplication {
     MainFrameMenuBar.fc.setRecents(GeOxygeneApplication.this.properties
         .getRecents());
 
+    this.initializeDefaultResourceDictionaries();
+    
     this.preloadShapefiles();
     this.preloadSld();
+    
     // Initialize application plugins
     this.initializeApplicationPlugins();
-
     // initialize geometry engine to default parameters
     AbstractGeometryEngine.setGeometrie(this.properties.getGeometryEngine());
     GeometryEngine.init();
@@ -185,7 +189,7 @@ public class GeOxygeneApplication {
     return this.taskManager;
   }
 
-  /**
+  /**.
    * Preload sld file defined in the configuration file <sld></sld>
    */
   private void preloadSld() {
@@ -354,6 +358,13 @@ public class GeOxygeneApplication {
     }
     this.properties = GeOxygeneApplicationProperties
         .unmarshall(this.propertiesFile.getFile());
+  }
+  
+  
+  private void initializeDefaultResourceDictionaries(){
+      for(URL dic_path : this.properties.getResourceDictionaries()){
+          GLResourcesManager.getInstance().registerDictionary(dic_path, false);
+      }
   }
 
   /**

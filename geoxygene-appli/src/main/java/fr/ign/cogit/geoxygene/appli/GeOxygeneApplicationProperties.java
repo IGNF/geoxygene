@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +80,9 @@ public class GeOxygeneApplicationProperties {
   // default "JTS", others to be implemented
   private String geometryEngine = "JTS";
 
+  @XmlElements(@XmlElement(name = "ResourceDictionary", type = URL.class))
+  private final List<URL> dictionaries = new ArrayList<URL>();
+  
   /**
    * Return plugin list.
    * 
@@ -192,6 +197,13 @@ public class GeOxygeneApplicationProperties {
     return this.defaultLookAndFeel;
   }
 
+  /**
+   * Return the default dictionaries paths.
+   * @return the dictionaries uris.
+   */
+  public List<URL> getResourceDictionaries(){
+      return this.dictionaries;
+  }
   /**
    * Set the default Look and Feel class name
    * 

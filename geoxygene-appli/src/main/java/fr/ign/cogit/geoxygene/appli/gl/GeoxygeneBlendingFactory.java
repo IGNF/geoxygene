@@ -46,26 +46,6 @@ public class GeoxygeneBlendingFactory {
     private static final Map<Pair<BlendingMode, LayerFilter>, GeoxygeneBlendingMode> blendingModes = new HashMap<Pair<BlendingMode, LayerFilter>, GeoxygeneBlendingMode>();
 
     /**
-     * Blending shaders paths.
-     * TODO : this should be in a resource file, not in the source code. 
-     */
-    private static final String shader_normalblending_path = "./src/main/resources/shaders/blending-normal.frag.glsl";
-    private static final String shader_multiplyblending_path = "./src/main/resources/shaders/blending-multiply.frag.glsl";
-    private static final String shader_hightoneblending_path = "./src/main/resources/shaders/blending-hightone.frag.glsl";
-    private static final String shader_overlayblending_path = "./src/main/resources/shaders/blending-overlay.frag.glsl";
-    
-    /** register the shader resources.
-     * TODO: this should not be here. 
-     **/
-    static{
-        GLResourcesManager manager = GLResourcesManager.getInstance();
-        manager.registerResource("shadernormalblending", shader_normalblending_path, false);
-        manager.registerResource("shadermultiplyblending", shader_multiplyblending_path, false);
-        manager.registerResource("shaderhightoneblending", shader_hightoneblending_path, false);
-        manager.registerResource("shaderoverlayblending", shader_overlayblending_path, false);
-    }
-    
-    /**
      * private constructor
      */
     private GeoxygeneBlendingFactory() {
@@ -104,15 +84,19 @@ public class GeoxygeneBlendingFactory {
             return createGeoxygeneBlendingMode(DEFAULT_BLENDING_MODE, filter,
                     glPanel);
         }
-        switch(blendingMode){
-            case Normal:
-                return new GeoxygeneBlendingModeImpl(filter, glPanel, "shadernormalblending");
-            case Multiply:
-                return new GeoxygeneBlendingModeImpl(filter, glPanel, "shadermultiplyblending");
-            case Overlay:
-                return new GeoxygeneBlendingModeImpl(filter, glPanel, "shaderoverlayblending");
-            case HighTone:
-                return new GeoxygeneBlendingModeImpl(filter, glPanel, "shaderhightoneblending");
+        switch (blendingMode) {
+        case Normal:
+            return new GeoxygeneBlendingModeImpl(filter, glPanel,
+                    "shader_normalblending");
+        case Multiply:
+            return new GeoxygeneBlendingModeImpl(filter, glPanel,
+                    "shader_multiplyblending");
+        case Overlay:
+            return new GeoxygeneBlendingModeImpl(filter, glPanel,
+                    "shader_overlayblending");
+        case HighTone:
+            return new GeoxygeneBlendingModeImpl(filter, glPanel,
+                    "shader_hightoneblending");
         }
         throw new UnsupportedOperationException("Blending mode "
                 + blendingMode.getClass().getSimpleName() + " is not supported");
