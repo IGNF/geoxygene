@@ -51,9 +51,9 @@ public class PolygonSquaring {
     // constructing vector from points and getting primary axe
     primaryAxe = 0;
     double normeMax = 0;
-    for (int i = 0; i < p.numPoints() - 1; ++i) {
-      vecs[i] = new Vecteur(points.get(i), points.get((i + 1) % nb_edges));
+    for (int i = 0; i < this.nb_edges; ++i) {
       System.out.println("v[" + i + "] = p" + i + "p" + (i + 1) % nb_edges);
+      vecs[i] = new Vecteur(points.get(i), points.get((i + 1) % nb_edges));
       System.out.println("vec" + i + " (" + vecs[i].getX() + " ; "
           + vecs[i].getY());
       if (vecs[i].norme() > normeMax) {
