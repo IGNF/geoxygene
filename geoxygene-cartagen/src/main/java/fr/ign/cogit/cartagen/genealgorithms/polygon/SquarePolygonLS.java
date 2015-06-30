@@ -113,10 +113,10 @@ public class SquarePolygonLS {
     this.xCurrent = y.getMatrix(0, 2 * nb_edges - 1, 0, 0);
     // Weight matrix P
     this.p = getP();
-    System.out.println("Right angles vertices : " + indicesRight);
-    System.out.println("Flat angles vertices : " + indicesFlat);
-    System.out.println("Half-Right angles vertices : " + indicesHrAig + " "
-        + indicesHrObt);
+    // System.out.println("Right angles vertices : " + indicesRight);
+    // System.out.println("Flat angles vertices : " + indicesFlat);
+    // System.out.println("Half-Right angles vertices : " + indicesHrAig + " "
+    // + indicesHrObt);
   }
 
   // return indices of points around pi
