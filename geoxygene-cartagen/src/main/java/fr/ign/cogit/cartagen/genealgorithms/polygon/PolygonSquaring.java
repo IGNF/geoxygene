@@ -30,6 +30,7 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
  * @author ILokhat
  * 
  */
+@Deprecated
 public class PolygonSquaring {
   private int nb_edges;
   private IDirectPositionList points;
