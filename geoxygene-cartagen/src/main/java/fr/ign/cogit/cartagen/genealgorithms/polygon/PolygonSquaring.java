@@ -25,8 +25,9 @@ import fr.ign.cogit.geoxygene.util.conversion.ParseException;
 import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
 /**
- * Naive Implementation of an algorithm to try to square polygons i.e when
- * angles are quasi flat, or right, then try to make them really flat or right
+ * ----Now Deprecated--- Naive Implementation of an algorithm to try to square
+ * polygons i.e when angles are quasi flat, or right, then try to make them
+ * really flat or right
  * @author ILokhat
  * 
  */
