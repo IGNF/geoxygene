@@ -11,6 +11,11 @@ package fr.ign.cogit.geoxygene.appli.plugin.cartagen.themes;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,24 +26,48 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import org.jgrapht.alg.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+
+import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
+import fr.ign.cogit.cartagen.genealgorithms.network.RoadNetworkTrafficBasedSelection;
 import fr.ign.cogit.cartagen.genealgorithms.section.CollapseRoundabout;
 import fr.ign.cogit.cartagen.genealgorithms.section.LineCurvatureSmoothing;
+import fr.ign.cogit.cartagen.graph.jgrapht.GeographicNetworkGraph;
+import fr.ign.cogit.cartagen.graph.jgrapht.GraphFactory;
+import fr.ign.cogit.cartagen.graph.jgrapht.MetricalGraphWeighter;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.GeneralisationSpecifications;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.GeometryPool;
 import fr.ign.cogit.cartagen.spatialanalysis.measures.section.SectionSymbol;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
+import fr.ign.cogit.cartagen.spatialanalysis.network.roads.AttractionPoint;
+import fr.ign.cogit.cartagen.spatialanalysis.network.roads.AttractionPointDetection;
 import fr.ign.cogit.cartagen.spatialanalysis.network.roads.CrossRoadDetection;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.appli.api.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.cartagen.selection.SelectionUtil;
+import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.generalisation.GaussianFilter;
+import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
+import fr.ign.cogit.geoxygene.style.Fill;
+import fr.ign.cogit.geoxygene.style.Graphic;
+import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.Mark;
+import fr.ign.cogit.geoxygene.style.PointSymbolizer;
+import fr.ign.cogit.geoxygene.style.Rule;
+import fr.ign.cogit.geoxygene.style.Style;
+import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.UserStyle;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.LineDensification;
 
 public class RoadNetworkMenu extends JMenu {
@@ -119,6 +148,14 @@ public class RoadNetworkMenu extends JMenu {
     this.add(this.mRoutierLissageGaussien);
     this.add(this.mRoutierFiltrageCourbe);
 
+    this.addSeparator();
+
+    JMenu selectionMenu = new JMenu("Selection");
+    selectionMenu.add(new ShowAttractionPointsAction());
+    selectionMenu.add(new ShowShortestPathsAction());
+    selectionMenu.add(new RandomTrafficSelectionAction());
+    this.add(selectionMenu);
+
   }
 
   private class EnrichRoadNetAction extends AbstractAction {
@@ -134,7 +171,8 @@ public class RoadNetworkMenu extends JMenu {
           + CartAGenDoc.getInstance().getCurrentDataset().getRoadNetwork());
       NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
           .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
-          .getRoadNetwork());
+          .getRoadNetwork(), CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartAGenDB().getGeneObjImpl().getCreationFactory());
     }
 
     public EnrichRoadNetAction() {
@@ -153,7 +191,8 @@ public class RoadNetworkMenu extends JMenu {
     @Override
     public void actionPerformed(ActionEvent e) {
       NetworkEnrichment.buildNetworkFaces(CartAGenDoc.getInstance()
-          .getCurrentDataset());
+          .getCurrentDataset(), CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartAGenDB().getGeneObjImpl().getCreationFactory());
     }
 
     public NetworkFacesAction() {
@@ -289,7 +328,9 @@ public class RoadNetworkMenu extends JMenu {
           }
           NetworkEnrichment.aggregateAnalogAdjacentSections(CartAGenDoc
               .getInstance().getCurrentDataset(), CartAGenDoc.getInstance()
-              .getCurrentDataset().getRoadNetwork());
+              .getCurrentDataset().getRoadNetwork(), CartAGenDoc.getInstance()
+              .getCurrentDataset().getCartAGenDB().getGeneObjImpl()
+              .getCreationFactory());
           if (RoadNetworkMenu.this.logger.isLoggable(Level.FINEST)) {
             RoadNetworkMenu.this.logger.finest("   final: nbTroncons="
                 + CartAGenDoc.getInstance().getCurrentDataset().getRoads()
@@ -467,6 +508,161 @@ public class RoadNetworkMenu extends JMenu {
       this.putValue(Action.SHORT_DESCRIPTION,
           "Trigger Curvature filtering algorithm on selected roads for tests");
       this.putValue(Action.NAME, "Trigger Curvature filtering");
+    }
+  }
+
+  private class ShowAttractionPointsAction extends AbstractAction {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
+      ProjectFrame pFrame = CartAGenPlugin.getInstance().getApplication()
+          .getMainFrame().getSelectedProjectFrame();
+
+      // enrich the network
+      NetworkEnrichment.buildTopology(dataset, dataset.getRoadNetwork(), false);
+
+      // find attraction points
+      AttractionPointDetection detection = new AttractionPointDetection(
+          dataset, dataset.getRoadNetwork());
+      detection.findAttractionPoints();
+      System.out.println(detection.getAttractionPoints().size()
+          + " attraction points");
+      Layer layer = pFrame.getSld().createLayer("attractionPoints",
+          IPoint.class, Color.RED);
+      // create the layer style
+      Style rawStyle = new UserStyle();
+      FeatureTypeStyle ftStyle = new FeatureTypeStyle();
+      rawStyle.getFeatureTypeStyles().add(ftStyle);
+      Rule rule = new Rule();
+      ftStyle.getRules().add(rule);
+      Color color = Color.RED;
+      PointSymbolizer symbolizer = new PointSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      Graphic graphic = new Graphic();
+      Mark mark = new Mark();
+      mark.setWellKnownName("circle");
+      Fill fill = new Fill();
+      fill.setColor(color);
+      mark.setFill(fill);
+      graphic.getMarks().add(mark);
+      symbolizer.setGraphic(graphic);
+      rule.getSymbolizers().add(symbolizer);
+      layer.getStyles().add(rawStyle);
+
+      IPopulation<IFeature> pop = new Population<>("attractionPoints");
+      pop.addAll(detection.getAttractionPoints());
+      pFrame.getSld().getDataSet().addPopulation(pop);
+      pFrame.getSld().add(layer);
+    }
+
+    public ShowAttractionPointsAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Show attraction points in a new layer");
+      this.putValue(Action.NAME, "Show attraction points");
+    }
+  }
+
+  private class ShowShortestPathsAction extends AbstractAction {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
+      ProjectFrame pFrame = CartAGenPlugin.getInstance().getApplication()
+          .getMainFrame().getSelectedProjectFrame();
+
+      // enrich the network
+      NetworkEnrichment.buildTopology(dataset, dataset.getRoadNetwork(), false);
+
+      // find attraction points
+      AttractionPointDetection detection = new AttractionPointDetection(
+          dataset, dataset.getRoadNetwork());
+      detection.findAttractionPoints();
+
+      // build the graph
+      GeographicNetworkGraph<INetworkNode, DefaultWeightedEdge, INetworkSection> graph = GraphFactory
+          .buildGeoGraphFromNetwork(dataset.getRoadNetwork(),
+              new MetricalGraphWeighter());
+      Stack<AttractionPoint> ptStack = new Stack<>();
+      ptStack.addAll(detection.getAttractionPoints());
+      Map<IRoadLine, Integer> weightMap = new HashMap<>();
+      while (!ptStack.isEmpty()) {
+        AttractionPoint initialPt = ptStack.pop();
+        Set<AttractionPoint> others = new HashSet<>();
+        others.addAll(ptStack);
+        for (AttractionPoint finalPt : others) {
+          // compute the node weight
+          int nodeWeight = initialPt.getWeight() + finalPt.getWeight();
+
+          DijkstraShortestPath<INetworkNode, DefaultWeightedEdge> shortestPathFinder = new DijkstraShortestPath<INetworkNode, DefaultWeightedEdge>(
+              graph.getGraph(), initialPt.getRoadNode(), finalPt.getRoadNode());
+          for (DefaultWeightedEdge edge : shortestPathFinder.getPathEdgeList()) {
+            INetworkSection road = graph.getFeatureFromEdge(edge);
+            if (weightMap.containsKey(road)) {
+              int weight = weightMap.get(road);
+              weightMap.put((IRoadLine) road, weight + nodeWeight);
+            } else
+              weightMap.put((IRoadLine) road, nodeWeight);
+          }
+        }
+      }
+
+      // display the wieghted roads in the geometry pool
+      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+          .getGeometryPool();
+      pool.setSld(pFrame.getSld());
+      for (IRoadLine road : weightMap.keySet()) {
+        int width = weightMap.get(road);
+        if (width > 7)
+          width = 8;
+        pool.addFeatureToGeometryPool(road.getGeom(), Color.RED, width);
+      }
+    }
+
+    public ShowShortestPathsAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Show shortest paths between attraction points in the geometry pool");
+      this.putValue(Action.NAME,
+          "Show shortest paths between attraction points");
+    }
+  }
+
+  private class RandomTrafficSelectionAction extends AbstractAction {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
+      ProjectFrame pFrame = CartAGenPlugin.getInstance().getApplication()
+          .getMainFrame().getSelectedProjectFrame();
+
+      // enrich the network
+      NetworkEnrichment.buildTopology(dataset, dataset.getRoadNetwork(), false);
+
+      RoadNetworkTrafficBasedSelection selection = new RoadNetworkTrafficBasedSelection(
+          dataset, dataset.getRoadNetwork());
+
+      // display the wieghted roads in the geometry pool
+      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+          .getGeometryPool();
+      pool.setSld(pFrame.getSld());
+      // TODO make the parameters modifiable
+      for (INetworkSection road : selection.randomTrafficBasedSelection(3,
+          0.005)) {
+        pool.addFeatureToGeometryPool(road.getGeom(), Color.RED, 3);
+      }
+    }
+
+    public RandomTrafficSelectionAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Traffic based selection with a random generation of attraction points");
+      this.putValue(Action.NAME, "Random traffic based selection");
     }
   }
 

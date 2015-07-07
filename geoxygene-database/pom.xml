@@ -177,6 +177,11 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.flickr4java</groupId>
+			<artifactId>flickr4java</artifactId>
+			<version>2.12</version>
+		</dependency>
 	</dependencies>
 
 </project>

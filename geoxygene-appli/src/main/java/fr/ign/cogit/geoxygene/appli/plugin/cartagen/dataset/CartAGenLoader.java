@@ -8,6 +8,8 @@ import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
+import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint;
+import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint.LabelCategory;
 import fr.ign.cogit.cartagen.core.genericschema.partition.IMask;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
@@ -174,6 +176,49 @@ public class CartAGenLoader {
         // create a new ShapeFileClass object in the CartAGen dataset
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
             + "/terrain_sport", ISportsField.FEAT_TYPE_NAME, IPolygon.class);
+      }
+
+      if (ShapeFileLoader.loadLabelPointsFromSHP(absolutePath
+          + "/lieu_dit_habite", dataSet, LabelCategory.LIVING_PLACE)) {
+        // create a new ShapeFileClass object in the CartAGen dataset
+        ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
+            + "/lieu_dit_habite", ILabelPoint.FEAT_TYPE_NAME, IPoint.class);
+      }
+
+      if (ShapeFileLoader.loadLabelPointsFromSHP(absolutePath
+          + "/lieu_dit_non_habite", dataSet, LabelCategory.PLACE)) {
+        // create a new ShapeFileClass object in the CartAGen dataset
+        ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
+            + "/lieu_dit_non_habite", ILabelPoint.FEAT_TYPE_NAME, IPoint.class);
+      }
+
+      if (ShapeFileLoader.loadLabelPointsFromSHP(absolutePath + "/hydronyme",
+          dataSet, LabelCategory.WATER)) {
+        // create a new ShapeFileClass object in the CartAGen dataset
+        ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
+            + "/hydronyme", ILabelPoint.FEAT_TYPE_NAME, IPoint.class);
+      }
+
+      if (ShapeFileLoader.loadLabelPointsFromSHP(absolutePath
+          + "/toponyme_communication", dataSet, LabelCategory.COMMUNICATION)) {
+        // create a new ShapeFileClass object in the CartAGen dataset
+        ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
+            + "/toponyme_communication", ILabelPoint.FEAT_TYPE_NAME,
+            IPoint.class);
+      }
+
+      if (ShapeFileLoader.loadLabelPointsFromSHP(absolutePath + "/oronyme",
+          dataSet, LabelCategory.RELIEF)) {
+        // create a new ShapeFileClass object in the CartAGen dataset
+        ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
+            + "/oronyme", ILabelPoint.FEAT_TYPE_NAME, IPoint.class);
+      }
+
+      if (ShapeFileLoader.loadLabelPointsFromSHP(absolutePath
+          + "/toponyme_divers", dataSet, LabelCategory.OTHER)) {
+        // create a new ShapeFileClass object in the CartAGen dataset
+        ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
+            + "/toponyme_divers", ILabelPoint.FEAT_TYPE_NAME, IPoint.class);
       }
 
       if (logger.isInfoEnabled()) {

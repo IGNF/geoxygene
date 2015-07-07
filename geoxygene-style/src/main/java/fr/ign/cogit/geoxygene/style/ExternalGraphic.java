@@ -21,7 +21,12 @@ package fr.ign.cogit.geoxygene.style;
 
 import java.awt.Image;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -50,6 +55,19 @@ public class ExternalGraphic {
   /** LOGGER. */
   private final static Logger LOGGER = Logger.getLogger(ExternalGraphic.class
       .getName());
+  private static Proxy proxy;
+
+  static {
+    // load the Proxy information if necessary
+    boolean required = Boolean.valueOf(ResourceBundle.getBundle("proxy")
+        .getString("required"));
+    if (required) {
+      String host = ResourceBundle.getBundle("proxy").getString("host");
+      int port = Integer.valueOf(ResourceBundle.getBundle("proxy").getString(
+          "port"));
+      proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+    }
+  }
 
   @XmlElement(name = "href")
   private String href;
@@ -108,8 +126,23 @@ public class ExternalGraphic {
         if (url == null) {
           url = new URL(this.href);
         }
-        LOGGER.trace("try to read '" + url + "'");
-        this.onlineResource = ImageIO.read(url);
+        if (url.getProtocol().equals("http")
+            || url.getProtocol().equals("https")) {
+          // Connection
+          URLConnection urlConn;
+          if (proxy != null)
+            urlConn = (URLConnection) url.openConnection(proxy);
+          else
+            urlConn = (URLConnection) url.openConnection();
+
+          // Get connection inputstream
+          InputStream is = urlConn.getInputStream();
+          LOGGER.trace("try to read '" + url + "'");
+          this.onlineResource = ImageIO.read(is);
+        } else {
+          LOGGER.trace("try to read '" + url + "'");
+          this.onlineResource = ImageIO.read(url);
+        }
       } catch (IOException e) {
         e.printStackTrace();
       } catch (Exception e) {

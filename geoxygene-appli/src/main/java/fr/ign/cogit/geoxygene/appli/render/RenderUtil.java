@@ -372,7 +372,7 @@ public final class RenderUtil {
             / node.getBounds().getHeight());
         node.setTransform(at);
         node.paint(graphics);
-      } else if (theGraphic.getFormat().contains("png") || theGraphic.getFormat().contains("gif")) { //$NON-NLS-1$
+      } else if (theGraphic.getFormat().contains("png") || theGraphic.getFormat().contains("gif") || theGraphic.getFormat().contains("jpg")) { //$NON-NLS-1$
         Image onlineImage = theGraphic.getOnlineResource();
 
         float size = symbolizer.getGraphic().getSize();
@@ -1721,54 +1721,54 @@ public final class RenderUtil {
       return;
     }
     for (DiagramSymbolizer s : symbolizer.getSymbolizers()) {
-      
+
       IDirectPosition position = symbolizer.getPoints().get(feature);
       Double size = symbolizer.getRadius().get(feature);
       if (position == null || size == null) {
         TriangulationJTS t = new TriangulationJTS("TRIANGLE"); //$NON-NLS-1$
         Chargeur.importAsNodes(feature, t);
         try {
-            t.triangule("v"); //$NON-NLS-1$
+          t.triangule("v"); //$NON-NLS-1$
         } catch (Exception e1) {
-            e1.printStackTrace();
+          e1.printStackTrace();
         }
         GM_MultiCurve<IOrientableCurve> contour = new GM_MultiCurve<IOrientableCurve>();
         if (feature.getGeom() instanceof IPolygon) {
           contour.add(((IPolygon) feature.getGeom()).exteriorLineString());
         } else {
           for (IPolygon surface : (IMultiSurface<IPolygon>) feature.getGeom()) {
-              contour.add(surface.exteriorLineString());
+            contour.add(surface.exteriorLineString());
           }
         }
         for (Arc a : t.getPopArcs()) {
-            ((IPopulation<IFeature>) DataSet.getInstance().getPopulation(
-                "Triangulation")).add(new DefaultFeature(a.getGeometrie())); //$NON-NLS-1$
+          ((IPopulation<IFeature>) DataSet.getInstance().getPopulation(
+              "Triangulation")).add(new DefaultFeature(a.getGeometrie())); //$NON-NLS-1$
         }
         double maxDistance = Double.MIN_VALUE;
         Noeud maxNode = null;
         for (Arc a : t.getPopVoronoiEdges().select(feature.getGeom())) {
-            if (!a.getGeometrie().intersectsStrictement(feature.getGeom())) {
-              ((Population<DefaultFeature>) DataSet.getInstance()
-                  .getPopulation("MedialAxis")).add(new DefaultFeature(a //$NON-NLS-1$
-                  .getGeometrie()));
-            }
+          if (!a.getGeometrie().intersectsStrictement(feature.getGeom())) {
+            ((Population<DefaultFeature>) DataSet.getInstance().getPopulation(
+                "MedialAxis")).add(new DefaultFeature(a //$NON-NLS-1$
+                .getGeometrie()));
+          }
         }
         for (Noeud n : t.getPopVoronoiVertices().select(feature.getGeom())) {
-            double d = n.getGeometrie().distance(contour);
-            if (d > maxDistance) {
-              maxDistance = d;
-              maxNode = n;
-            }
+          double d = n.getGeometrie().distance(contour);
+          if (d > maxDistance) {
+            maxDistance = d;
+            maxNode = n;
+          }
         }
         size = maxDistance;
         if (maxNode == null) {
-            return;
+          return;
         }
         position = maxNode.getGeometrie().getPosition();
         symbolizer.getPoints().put(feature, position);
         symbolizer.getRadius().put(feature, maxDistance);
       }
-      
+
       double scale = 1;
       if (symbolizer.getUnitOfMeasure() != Symbolizer.PIXEL) {
         try {
@@ -1777,8 +1777,8 @@ public final class RenderUtil {
           e.printStackTrace();
         }
       }
-      size *= scale; 
-      
+      size *= scale;
+
       Point2D point = null;
       try {
         point = viewport.toViewPoint(position);
@@ -1786,9 +1786,9 @@ public final class RenderUtil {
         e.printStackTrace();
         return;
       }
-        
+
       if (s.getDiagramType().equalsIgnoreCase("piechart")) { //$NON-NLS-1$
-        
+
         double startAngle = 0.0;
         for (ThematicClass thematicClass : s.getThematicClass()) {
           double value = ((Number) thematicClass.getClassValue().evaluate(
@@ -1812,59 +1812,73 @@ public final class RenderUtil {
       } else if (s.getDiagramType().equalsIgnoreCase("barchart")) {
         double part = 0.70;
         graphics.setColor(Color.BLACK);
-        drawArrow(graphics, (int)(point.getX() - part*size), (int)(point.getY() + part*size), (int)(point.getX() - part*size), (int)(point.getY() - part*size));
-        drawArrow(graphics, (int)(point.getX() - part*size), (int)(point.getY() + part*size), (int)(point.getX() + part*size), (int)(point.getY() + part*size));
-            
+        drawArrow(graphics, (int) (point.getX() - part * size),
+            (int) (point.getY() + part * size), (int) (point.getX() - part
+                * size), (int) (point.getY() - part * size));
+        drawArrow(graphics, (int) (point.getX() - part * size),
+            (int) (point.getY() + part * size), (int) (point.getX() + part
+                * size), (int) (point.getY() + part * size));
+
         int width = (int) (2 * part * size / (3 * s.getThematicClass().size()));
         int startX = width;
         for (ThematicClass thematicClass : s.getThematicClass()) {
-          double value = ((Number) thematicClass.getClassValue().evaluate(feature)).doubleValue();
+          double value = ((Number) thematicClass.getClassValue().evaluate(
+              feature)).doubleValue();
           int hauteur = (int) (value * 2 * part * size / 100);
           graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass
               .getFill().getColor(), opacity));
-          graphics.fillRect((int)(point.getX() - part*size) + startX, (int)(point.getY() + part*size) - hauteur, 2 * width, hauteur);
-          
+          graphics.fillRect((int) (point.getX() - part * size) + startX,
+              (int) (point.getY() + part * size) - hauteur, 2 * width, hauteur);
+
           startX += 3 * width;
         }
-      
+
       } else if (s.getDiagramType().equalsIgnoreCase("linechart")) {
-        
+
         double part = 0.70;
         graphics.setColor(Color.BLACK);
-        drawArrow(graphics, (int)(point.getX() - part*size), (int)(point.getY() + part*size), (int)(point.getX() - part*size), (int)(point.getY() - part*size));
-        drawArrow(graphics, (int)(point.getX() - part*size), (int)(point.getY() + part*size), (int)(point.getX() + part*size), (int)(point.getY() + part*size));
-            
-        /*int width = (int) (2 * part * size / s.getThematicClass().size());
-        int startX = 0;
-        for (ThematicClass thematicClass : s.getThematicClass()) {
-          double value = ((Number) thematicClass.getClassValue().evaluate(feature)).doubleValue();
-          int hauteur = (int) (value * 2 * part * size / 100);
-          graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass
-              .getFill().getColor(), opacity));
-          graphics.drawRect((int)(point.getX() - part*size) + startX, (int)(point.getY() + part*size) - hauteur, 5, 5);
-          // graphics.fillRect((int)(point.getX() - part*size) + startX, (int)(point.getY() + part*size) - hauteur, 2 * width, hauteur);
-          
-          startX += width;
-        }*/
-        
+        drawArrow(graphics, (int) (point.getX() - part * size),
+            (int) (point.getY() + part * size), (int) (point.getX() - part
+                * size), (int) (point.getY() - part * size));
+        drawArrow(graphics, (int) (point.getX() - part * size),
+            (int) (point.getY() + part * size), (int) (point.getX() + part
+                * size), (int) (point.getY() + part * size));
+
+        /*
+         * int width = (int) (2 * part * size / s.getThematicClass().size());
+         * int startX = 0; for (ThematicClass thematicClass :
+         * s.getThematicClass()) { double value = ((Number)
+         * thematicClass.getClassValue().evaluate(feature)).doubleValue(); int
+         * hauteur = (int) (value * 2 * part * size / 100);
+         * graphics.setColor(ColorUtil.getColorWithOpacity(thematicClass
+         * .getFill().getColor(), opacity));
+         * graphics.drawRect((int)(point.getX() - part*size) + startX,
+         * (int)(point.getY() + part*size) - hauteur, 5, 5); //
+         * graphics.fillRect((int)(point.getX() - part*size) + startX,
+         * (int)(point.getY() + part*size) - hauteur, 2 * width, hauteur);
+         * 
+         * startX += width; }
+         */
+
       }
     }
   }
-  
+
   private final static int ARR_SIZE = 2;
+
   private static void drawArrow(Graphics2D g1, int x1, int y1, int x2, int y2) {
     Graphics2D g = (Graphics2D) g1.create();
 
     double dx = x2 - x1, dy = y2 - y1;
     double angle = Math.atan2(dy, dx);
-    int len = (int) Math.sqrt(dx*dx + dy*dy);
+    int len = (int) Math.sqrt(dx * dx + dy * dy);
     AffineTransform at = AffineTransform.getTranslateInstance(x1, y1);
     at.concatenate(AffineTransform.getRotateInstance(angle));
     g.transform(at);
 
     // Draw horizontal arrow starting in (0, 0)
     g.drawLine(0, 0, len, 0);
-    g.fillPolygon(new int[] {len, len-ARR_SIZE, len-ARR_SIZE, len},
-                  new int[] {0, -ARR_SIZE, ARR_SIZE, 0}, 4);
+    g.fillPolygon(new int[] { len, len - ARR_SIZE, len - ARR_SIZE, len },
+        new int[] { 0, -ARR_SIZE, ARR_SIZE, 0 }, 4);
   }
 }
