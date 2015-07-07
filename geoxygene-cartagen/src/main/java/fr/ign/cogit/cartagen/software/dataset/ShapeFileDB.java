@@ -37,6 +37,8 @@ import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
+import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint;
+import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint.LabelCategory;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.partition.IMask;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
@@ -410,6 +412,21 @@ public class ShapeFileDB extends CartAGenDB {
       if (shape.getFeatureTypeName().equals(ISpotHeight.FEAT_TYPE_NAME)) {
         ShapeFileLoader.loadSpotHeightsFromSHP(shape.getPath(), symbols,
             this.getDataSet());
+      }
+      if (shape.getFeatureTypeName().equals(ILabelPoint.FEAT_TYPE_NAME)) {
+        LabelCategory category = LabelCategory.OTHER;
+        if (shape.getName().equalsIgnoreCase("LIEU_DIT_HABITE"))
+          category = LabelCategory.LIVING_PLACE;
+        if (shape.getName().equalsIgnoreCase("LIEU_DIT_NON_HABITE"))
+          category = LabelCategory.PLACE;
+        if (shape.getName().equalsIgnoreCase("ORONYME"))
+          category = LabelCategory.RELIEF;
+        if (shape.getName().equalsIgnoreCase("HYDRONYME"))
+          category = LabelCategory.WATER;
+        if (shape.getName().equalsIgnoreCase("TOPONYME_COMMUNICATION"))
+          category = LabelCategory.COMMUNICATION;
+        ShapeFileLoader.loadLabelPointsFromSHP(shape.getPath(),
+            this.getDataSet(), category);
       }
       if (shape.getFeatureTypeName().equals(IMask.FEAT_TYPE_NAME)) {
         ShapeFileLoader.loadMaskFromSHP(shape.getPath(), this.getDataSet());

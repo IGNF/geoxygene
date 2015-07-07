@@ -39,99 +39,99 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
  */
 @XmlTransient
 public interface Layer {
-    /**
-     * Renvoie la valeur de l'attribut name.
-     * 
-     * @return la valeur de l'attribut name
-     */
-    public String getName();
+  /**
+   * Renvoie la valeur de l'attribut name.
+   * 
+   * @return la valeur de l'attribut name
+   */
+  public String getName();
 
-    /**
-     * Affecte la valeur de l'attribut name.
-     * 
-     * @param name
-     *            l'attribut name à affecter
-     */
-    public void setName(String name);
+  /**
+   * Affecte la valeur de l'attribut name.
+   * 
+   * @param name l'attribut name à affecter
+   */
+  public void setName(String name);
 
-    public String getDescription();
+  public String getDescription();
 
-    public void setDescription(String description);
+  public void setDescription(String description);
 
-    /**
-     * Renvoie la valeur de l'attribut styles.
-     * 
-     * @return la valeur de l'attribut styles
-     */
-    public List<Style> getStyles();
+  /**
+   * Renvoie la valeur de l'attribut styles.
+   * 
+   * @return la valeur de l'attribut styles
+   */
+  public List<Style> getStyles();
 
-    /**
-     * Affecte la valeur de l'attribut styles.
-     * 
-     * @param styles
-     *            l'attribut styles à affecter
-     */
-    public void setStyles(List<Style> styles);
+  /**
+   * Affecte la valeur de l'attribut styles.
+   * 
+   * @param styles l'attribut styles à affecter
+   */
+  public void setStyles(List<Style> styles);
 
-    public List<Style> getActiveStyles();
+  public List<Style> getActiveStyles();
 
-    /**
-     * @return les features de la couche
-     */
-    public IFeatureCollection<? extends IFeature> getFeatureCollection();
+  /**
+   * @return les features de la couche
+   */
+  public IFeatureCollection<? extends IFeature> getFeatureCollection();
 
-    /**
-     * @return <code>true</code> if the layer is visible in the LayerViewPanel
-     *         by the user; <code>false</code> otherwise.
-     */
-    public boolean isVisible();
+  /**
+   * @return <code>true</code> if the layer is visible in the LayerViewPanel by
+   *         the user; <code>false</code> otherwise.
+   */
+  public boolean isVisible();
 
-    public void setOpacity(double opacity);
+  public void setOpacity(double opacity);
 
-    /**
-     * @param visible
-     */
-    public void setVisible(boolean visible);
+  /**
+   * @param visible
+   */
+  public void setVisible(boolean visible);
 
-    /**
-     * @return <code>true</code> if the layer is selectable by the user;
-     *         <code>false</code> otherwise.
-     */
-    public boolean isSelectable();
+  /**
+   * @return <code>true</code> if the layer is selectable by the user;
+   *         <code>false</code> otherwise.
+   */
+  public boolean isSelectable();
 
-    /**
-     * @param selectable
-     */
-    public void setSelectable(boolean selectable);
+  /**
+   * @param selectable
+   */
+  public void setSelectable(boolean selectable);
 
-    /**
-     * @return <code>true</code> if the layer is symbolized; <code>false</code>
-     *         otherwise.
-     */
-    public boolean isSymbolized();
+  /**
+   * @return <code>true</code> if the layer is symbolized; <code>false</code>
+   *         otherwise.
+   */
+  public boolean isSymbolized();
 
-    /**
-     * @param symbolized
-     */
-    public void setSymbolized(boolean symbolized);
+  /**
+   * @param symbolized
+   */
+  public void setSymbolized(boolean symbolized);
 
-    public Symbolizer getSymbolizer();
+  public Symbolizer getSymbolizer();
 
-    public String getActiveGroup();
+  public String getActiveGroup();
 
-    public void setActiveGroup(String activeGroup);
+  public void setActiveGroup(String activeGroup);
 
-    public Collection<String> getGroups();
+  public Collection<String> getGroups();
 
-    public void setCRS(CoordinateReferenceSystem crs);
+  public void setCRS(CoordinateReferenceSystem crs);
 
-    public CoordinateReferenceSystem getCRS();
+  public CoordinateReferenceSystem getCRS();
 
-    void destroy();
+  void destroy();
 
-    public ImageIcon getIcon();
+  public ImageIcon getIcon();
 
-    public void setIcon(ImageIcon image);
+  public void setIcon(ImageIcon image);
 
-    double getOpacity();
+  double getOpacity();
+
+  public StyledLayerDescriptor getSld();
 }

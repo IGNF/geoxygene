@@ -18,4 +18,33 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObjPoint;
 
 public interface ILabelPoint extends IGeneObjPoint {
   public static final String FEAT_TYPE_NAME = "LabelPoint"; //$NON-NLS-1$
+
+  /**
+   * The name of the label
+   * @return
+   */
+  public String getName();
+
+  /**
+   * The importance of the label from 1 (maximum importance) to 8 (minimum
+   * importance)
+   * @return
+   */
+  public int getImportance();
+
+  /**
+   * The nature of the label, e.g. "city"
+   * @return
+   */
+  public String getNature();
+
+  /**
+   * The category of the label.
+   * @return
+   */
+  public LabelCategory getLabelCategory();
+
+  public enum LabelCategory {
+    LIVING_PLACE, PLACE, COMMUNICATION, WATER, RELIEF, OTHER
+  }
 }

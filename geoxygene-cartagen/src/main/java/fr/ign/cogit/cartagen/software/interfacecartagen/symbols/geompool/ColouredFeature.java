@@ -64,6 +64,12 @@ public class ColouredFeature extends DefaultFeature {
   private Color symbolColour = null;
   private Color fillColour = null;
 
+  /**
+   * The name of the symbol used for point features, "cross" is the default
+   * value.
+   */
+  private String symbolName = "cross";
+
   private int widthPixels = 1;
   /**
    * A {@link Symbolisation} associated to the feature. If not null the feature
@@ -89,6 +95,14 @@ public class ColouredFeature extends DefaultFeature {
    */
   public Symbolisation getSymbolisation() {
     return this.symbolisation;
+  }
+
+  public String getSymbolName() {
+    return symbolName;
+  }
+
+  public void setSymbolName(String symbolName) {
+    this.symbolName = symbolName;
   }
 
   // //////////////////////////////////////
@@ -236,7 +250,7 @@ public class ColouredFeature extends DefaultFeature {
       symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
       Graphic graphic = new Graphic();
       Mark mark = new Mark();
-      mark.setWellKnownName("cross");
+      mark.setWellKnownName(symbolName);
       Fill fill = new Fill();
       fill.setColor(symbolColour);
       mark.setFill(fill);

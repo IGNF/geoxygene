@@ -11,6 +11,8 @@ package fr.ign.cogit.cartagen.genealgorithms.polygon;
 
 import java.util.Arrays;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.api.spatial.AbstractGeomFactory;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -33,14 +35,17 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
  */
 @Deprecated
 public class PolygonSquaring {
+
+  private static final Logger logger = Logger.getLogger(PolygonSquaring.class);
+
   private int nb_edges;
   private IDirectPositionList points;
   private double[] angles;
   private Vecteur[] vecs;
   private int primaryAxe;
   private double[] align;
-  private final double angTol = 8 * Math.PI / 180;
-  private final double correctTol = 0.6 * Math.PI / 180;
+  private double angTol = 8 * Math.PI / 180;
+  private double correctTol = 0.6 * Math.PI / 180;
 
   public PolygonSquaring(IPolygon p) {
     GeometryEngine.init();
@@ -54,10 +59,12 @@ public class PolygonSquaring {
     primaryAxe = 0;
     double normeMax = 0;
     for (int i = 0; i < this.nb_edges; ++i) {
-      System.out.println("v[" + i + "] = p" + i + "p" + (i + 1) % nb_edges);
+      if (logger.isTraceEnabled())
+        logger.trace("v[" + i + "] = p" + i + "p" + (i + 1) % nb_edges);
       vecs[i] = new Vecteur(points.get(i), points.get((i + 1) % nb_edges));
-      System.out.println("vec" + i + " (" + vecs[i].getX() + " ; "
-          + vecs[i].getY());
+      if (logger.isTraceEnabled())
+        logger
+            .trace("vec" + i + " (" + vecs[i].getX() + " ; " + vecs[i].getY());
       if (vecs[i].norme() > normeMax) {
         normeMax = vecs[i].norme();
         primaryAxe = i;
@@ -73,6 +80,12 @@ public class PolygonSquaring {
     // this.printAngles();
     align[align.length - 1] = Math.abs(vecs[align.length - 1].prodVectoriel(
         vecs[primaryAxe]).getZ());
+  }
+
+  public PolygonSquaring(IPolygon p, double angTol, double correctTol) {
+    this(p);
+    this.angTol = angTol;
+    this.correctTol = correctTol;
   }
 
   private void update() {
@@ -126,9 +139,8 @@ public class PolygonSquaring {
         if (vSquared.prodScalaire(vecs[vecToMove]) > 0)
           vSquared = vSquared.multConstante(-1);
       }
-      System.out.println("vortho : " + vSquared.getX() + " ; "
-          + vSquared.getY());
-      System.out.println("vtomov : " + vecs[vecToMove].getX() + " ; "
+      logger.trace("vortho : " + vSquared.getX() + " ; " + vSquared.getY());
+      logger.trace("vtomov : " + vecs[vecToMove].getX() + " ; "
           + vecs[vecToMove].getY());
       return vSquared;
     }
@@ -181,7 +193,7 @@ public class PolygonSquaring {
    */
   public IPolygon square() {
     // first pass : flattening quasi flat angles
-    System.out.println("first pass -- flattening angles");
+    logger.debug("first pass -- flattening angles");
     // for (int i = 0; i < angles.length; ++i) {
     // if (Math.abs((Math.PI - angles[i])) <= this.angTol
     // && Math.abs((Math.PI - angles[i])) > correctTol) {
@@ -218,15 +230,15 @@ public class PolygonSquaring {
         p.setCoordinate(p.getX() + vSquared.getX(), p.getY() + vSquared.getY());
         points.set(i, p);
         update();
-        System.out.println("Angle " + i + " now flattened " + angles[i] * 180
+        logger.trace("Angle " + i + " now flattened " + angles[i] * 180
             / Math.PI);
       }
     }
 
     // second pass right angles and half right angles
-    System.out.println("second pass");
+    logger.debug("second pass");
     for (int i = 0; i < angles.length; ++i) {
-      System.out.println("Testing point " + i + " -- Angle " + angles[i] * 180
+      logger.debug("Testing point " + i + " -- Angle " + angles[i] * 180
           / Math.PI);
       // testing pi/2 candidates
       if (Math.abs((Math.PI / 2 - angles[i])) <= this.angTol
@@ -242,7 +254,7 @@ public class PolygonSquaring {
         boolean anglePrecIsRight = Math.abs(angles[angleBefore] - Math.PI / 2) < correctTol;
         if (anglePrecIsRight && vecToMove == pointToMove)
           continue;
-        System.out.println("Calculating new pos for point " + pointToMove);
+        logger.trace("Calculating new pos for point " + pointToMove);
         Vecteur vSquared = rotateVec(90, vecToMove, vecFixed, i);
         IDirectPosition p = new DirectPosition(points.get(i).getX(), points
             .get(i).getY());
@@ -250,8 +262,8 @@ public class PolygonSquaring {
         points.set(pointToMove, p);
 
         update();
-        System.out.println("Angle " + i + " now squared " + angles[i] * 180
-            / Math.PI);
+        logger
+            .trace("Angle " + i + " now squared " + angles[i] * 180 / Math.PI);
       } // testing pi/4 candidates
       else if (Math.abs((Math.PI / 4 - angles[i])) <= this.angTol
           && Math.abs((Math.PI / 4 - angles[i])) > 0.01) {
@@ -270,15 +282,15 @@ public class PolygonSquaring {
             - angles[angleAfter]) < correctTol;
         if (angleBeforeIsRight && angleAfterIsRight)
           continue;
-        System.out.println("Calculating new pos for point " + pointToMove);
+        logger.trace("Calculating new pos for point " + pointToMove);
         Vecteur vSquared = rotateVec(45, vecToMove, vecFixed, i);
         IDirectPosition p = new DirectPosition(points.get(i).getX(), points
             .get(i).getY());
         p.setCoordinate(p.getX() + vSquared.getX(), p.getY() + vSquared.getY());
         points.set(pointToMove, p);
         update();
-        System.out.println("Angle " + i + " now half squared " + angles[i]
-            * 180 / Math.PI);
+        logger.trace("Angle " + i + " now half squared " + angles[i] * 180
+            / Math.PI);
       }
     }
     points.set(points.size() - 1, points.get(0));

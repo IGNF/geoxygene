@@ -35,41 +35,63 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 @XmlRootElement(name = "UserLayer")
 public class UserLayer extends AbstractLayer {
 
-    /*
-     * TODO revoir cette implémentation des userLayers...
-     */
-    @XmlTransient
-    IFeatureCollection<? extends IFeature> features = null;
+  @XmlTransient
+  StyledLayerDescriptor sld = null;
 
-    /**
-     * Affecte la valeur de l'attribut features.
-     * 
-     * @param features
-     *            l'attribut features à affecter
-     */
-    public void setFeatures(IFeatureCollection<? extends IFeature> features) {
-        this.features = features;
-    }
+  /*
+   * TODO revoir cette implémentation des userLayers...
+   */
+  @XmlTransient
+  IFeatureCollection<? extends IFeature> features = null;
 
-    @Override
-    public IFeatureCollection<? extends IFeature> getFeatureCollection() {
-        return this.features;
-    }
+  /**
+   * Affecte la valeur de l'attribut features.
+   * 
+   * @param features l'attribut features à affecter
+   */
+  public void setFeatures(IFeatureCollection<? extends IFeature> features) {
+    this.features = features;
+  }
 
-    public UserLayer() {
-        this.setFeatures(new FT_FeatureCollection<IFeature>());
-    }
-    public UserLayer(Layer layer) {
-        this();
-        this.setName(layer.getName());
-        this.setStyles(layer.getStyles());
-    }
-    public UserLayer(IFeatureCollection<? extends IFeature> collection, String name) {
-      this.setName(name);
-      this.setFeatures(collection);
-    }
-    @Override
-    public void destroy() {
-        this.features.clear();
-    }
+  @Override
+  public IFeatureCollection<? extends IFeature> getFeatureCollection() {
+    return this.features;
+  }
+
+  public UserLayer() {
+    this.setFeatures(new FT_FeatureCollection<IFeature>());
+  }
+
+  public UserLayer(Layer layer) {
+    this();
+    this.setName(layer.getName());
+    this.setStyles(layer.getStyles());
+  }
+
+  public UserLayer(StyledLayerDescriptor sld,
+      IFeatureCollection<? extends IFeature> collection, String name) {
+    this.setName(name);
+    this.setFeatures(collection);
+  }
+
+  @Override
+  public void destroy() {
+    this.features.clear();
+  }
+
+  /**
+   * @return the sld
+   */
+  public StyledLayerDescriptor getSld() {
+    return this.sld;
+  }
+
+  /**
+   * @param sld the sld to set
+   */
+  public final void setSld(StyledLayerDescriptor sld) {
+    this.sld = sld;
+    System.err.println("set layer " + this.getName() + " SLD = " + this.sld);
+  }
+
 }

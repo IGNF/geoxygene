@@ -23,6 +23,8 @@ import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
+import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint;
+import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint.LabelCategory;
 import fr.ign.cogit.cartagen.core.genericschema.partition.IMask;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
@@ -2860,6 +2862,99 @@ public class ShapeFileLoader {
       e.printStackTrace();
     }
 
+  }
+
+  // ///////////////////////////////////////
+  // Label Points
+  // ///////////////////////////////////////
+
+  /**
+   * Charge des toponymes depuis un shapefile.
+   * @param chemin
+   * @throws IOException
+   */
+  public static boolean loadLabelPointsFromSHP(String chemin,
+      CartAGenDataSet dataset, LabelCategory category) throws IOException {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    try {
+      ShpFiles shpf = new ShpFiles(chemin + ".shp");
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.defaultCharset());
+    } catch (FileNotFoundException e) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("fichier " + chemin + " non trouve.");
+      }
+      return false;
+    }
+
+    if (logger.isInfoEnabled()) {
+      logger.info("Loading: " + chemin);
+    }
+
+    IPopulation<ILabelPoint> pop = dataset.getLabelPoints();
+
+    int j = 0;
+    while (shr.hasNext()) {
+      Record objet = shr.nextRecord();
+
+      Object[] champs = dbr.readEntry();
+      Map<String, Object> fields = new HashMap<String, Object>();
+      for (int i = 0; i < dbr.getHeader().getNumFields(); i++) {
+        fields.put(dbr.getHeader().getFieldName(i), champs[i]);
+      }
+      // get the nature
+      String nature = "Indifferencie";
+      if (fields.containsKey("NATURE")) {
+        nature = (String) fields.get("NATURE");
+      }
+      // get the name attribute
+      String name = "";
+      if (fields.containsKey("NOM")) {
+        name = (String) fields.get("NOM");
+      }
+      // get the importance attribute
+      String importance = "8";
+      if (fields.containsKey("IMPORTANCE")) {
+        importance = (String) fields.get("IMPORTANCE");
+      }
+
+      IGeometry geom = null;
+      try {
+        geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
+      } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+      }
+
+      if (geom instanceof IPoint) {
+        ILabelPoint label = dataset
+            .getCartAGenDB()
+            .getGeneObjImpl()
+            .getCreationFactory()
+            .createLabelPoint((IPoint) geom, category, name, nature,
+                Integer.valueOf(importance));
+        if (fields.containsKey("CARTAGEN_ID")) {
+          label.setId((Integer) fields.get("CARTAGEN_ID"));
+        } else {
+          label.setShapeId(j);
+        }
+        label.setId(pop.size() + 1);
+        pop.add(label);
+
+      } else {
+        logger
+            .error("ERREUR lors du chargement de shp " + chemin
+                + ". Type de geometrie " + geom.getClass().getName()
+                + " non gere.");
+      }
+      j++;
+    }
+
+    shr.close();
+    dbr.close();
+
+    return true;
   }
 
 }

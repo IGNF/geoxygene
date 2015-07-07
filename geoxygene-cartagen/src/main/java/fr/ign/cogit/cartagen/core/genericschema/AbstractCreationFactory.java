@@ -38,6 +38,7 @@ import fr.ign.cogit.cartagen.core.genericschema.land.ILandUsePoint;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IBoundedArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint;
+import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint.LabelCategory;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscLine;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscPoint;
@@ -1156,7 +1157,8 @@ public abstract class AbstractCreationFactory {
   }
 
   @SuppressWarnings("unused")
-  public ILabelPoint createLabelPoint(IPoint point) {
+  public ILabelPoint createLabelPoint(IPoint point, LabelCategory category,
+      String name, String nature, int importance) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for ILabelPoint");
     return null;

@@ -37,6 +37,10 @@ public class LabelPoint extends GeneObjPointDefault implements ILabelPoint {
    * Associated Geoxygene schema object
    */
   private PointRepresentatifActiviteInteret geoxObj;
+  private String name;
+  private String nature;
+  private int importance;
+  private LabelCategory category;
 
   /**
    * Constructor
@@ -46,13 +50,19 @@ public class LabelPoint extends GeneObjPointDefault implements ILabelPoint {
     this.geoxObj = geoxObj;
     this.setInitialGeom(geoxObj.getGeom());
     this.setEliminated(false);
+    this.name = geoxObj.getNom();
   }
 
-  public LabelPoint(IPoint point) {
+  public LabelPoint(IPoint point, LabelCategory category, String name,
+      String nature, int importance) {
     super();
     this.geoxObj = new PointRepresentatifActiviteInteretImpl(point);
     this.setInitialGeom(point);
     this.setEliminated(false);
+    this.name = name;
+    this.category = category;
+    this.importance = importance;
+    this.nature = nature;
   }
 
   /**
@@ -94,5 +104,25 @@ public class LabelPoint extends GeneObjPointDefault implements ILabelPoint {
   @Override
   public boolean isEliminated() {
     return super.isEliminated();
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public int getImportance() {
+    return importance;
+  }
+
+  @Override
+  public String getNature() {
+    return nature;
+  }
+
+  @Override
+  public LabelCategory getLabelCategory() {
+    return category;
   }
 }

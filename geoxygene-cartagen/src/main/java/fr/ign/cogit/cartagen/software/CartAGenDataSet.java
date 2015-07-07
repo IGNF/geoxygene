@@ -1030,6 +1030,16 @@ public class CartAGenDataSet extends DataSet {
   }
 
   /**
+   * Gets the label points of the dataset
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<ILabelPoint> getLabelPoints() {
+    return (IPopulation<ILabelPoint>) this.getCartagenPop(
+        CartAGenDataSet.LABEL_PT_POP, ILabelPoint.FEAT_TYPE_NAME);
+  }
+
+  /**
    * Erases the towns of the dataset
    */
   public void eraseTowns() {

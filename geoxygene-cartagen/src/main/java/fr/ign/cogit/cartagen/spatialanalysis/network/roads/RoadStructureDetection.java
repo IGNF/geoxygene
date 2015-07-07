@@ -11,20 +11,26 @@ package fr.ign.cogit.cartagen.spatialanalysis.network.roads;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
 import org.apache.log4j.Logger;
+import org.jgrapht.alg.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedPseudograph;
 
 import fr.ign.cogit.cartagen.core.genericschema.AbstractCreationFactory;
+import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.partition.IMask;
 import fr.ign.cogit.cartagen.core.genericschema.road.IDualCarriageWay;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
-import fr.ign.cogit.cartagen.graph.Graph;
-import fr.ign.cogit.cartagen.graph.GraphPath;
+import fr.ign.cogit.cartagen.graph.jgrapht.GraphFactory;
+import fr.ign.cogit.cartagen.graph.jgrapht.MetricalGraphWeighter;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
@@ -46,6 +52,7 @@ import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schemageo.api.routier.TronconDeRoute;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.NoeudReseau;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineSegment;
 import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
 import fr.ign.cogit.geoxygene.util.algo.SmallestSurroundingRectangleComputation;
@@ -69,13 +76,17 @@ public class RoadStructureDetection {
   private final double areaLimit;
   // parameters for interchanges
   private final double distMaxClustering;
+  private final double euclMaxDist;
+  private final int clusterMinSize;
 
   public RoadStructureDetection() {
     this.concLimit = 0.8;
     this.elongLimit = 5.0;
     this.compLimit = 0.1;
     this.areaLimit = 80000.0;
-    this.distMaxClustering = 100.0;
+    this.distMaxClustering = 600.0;
+    this.euclMaxDist = 50.0;
+    this.clusterMinSize = 6;
   }
 
   // ///////////////////////////////////
@@ -601,6 +612,12 @@ public class RoadStructureDetection {
       roads.add((TronconDeRoute) feat.getGeoxObj());
     }
 
+    // map the NoeudReseau instances to the IRoadNode instances of the network
+    Map<NoeudReseau, INetworkNode> nodesMap = new HashMap<>();
+    for (INetworkNode node : dataset.getRoadNetwork().getNodes()) {
+      nodesMap.put((NoeudReseau) node.getGeoxObj(), node);
+    }
+
     // classify the simple crossroads
     CrossRoadDetection algo = new CrossRoadDetection();
     Set<SimpleCrossRoad> simples = algo.classifyCrossRoads(roads);
@@ -614,7 +631,9 @@ public class RoadStructureDetection {
     }
 
     // build a graph from the network
-    Graph graph = new Graph("interchange", false, roads);
+    WeightedPseudograph<INetworkNode, DefaultWeightedEdge> graph = GraphFactory
+        .buildGraphFromNetwork(dataset.getRoadNetwork(),
+            new MetricalGraphWeighter());
 
     // cluster the simple crossroads based on network distance
     Set<Set<SimpleCrossRoad>> clusters = new HashSet<Set<SimpleCrossRoad>>();
@@ -631,24 +650,40 @@ public class RoadStructureDetection {
         // get the features closer than a distance
         Collection<SimpleCrossRoad> closeColn = crossroads.select(feat
             .getGeom().centroid(), distMaxClustering);
+
         // now filter closeColn by network distance
         // the shortest path should also be less than distMaxClustering
         Collection<SimpleCrossRoad> toAdd = new HashSet<>();
         for (SimpleCrossRoad simple : closeColn) {
+          if (cluster.contains(simple))
+            continue;
+          if (simple.getCoord().distance2D(feature.getCoord()) < euclMaxDist) {
+            toAdd.add(simple);
+            continue;
+          }
           // compute the shortest path between feature and simple
-          GraphPath path = graph.computeDijkstraShortestPath(
-              graph.getNodeFromGeoObj(feature.getNode()),
-              graph.getNodeFromGeoObj(simple.getNode()));
-          if (path.getLength() < distMaxClustering)
+          DijkstraShortestPath<INetworkNode, DefaultWeightedEdge> shortest = new DijkstraShortestPath<>(
+              graph, nodesMap.get(feature.getNode()), nodesMap.get(simple
+                  .getNode()));
+
+          if (shortest.getPathLength() < distMaxClustering)
             toAdd.add(simple);
         }
         closeColn.removeAll(stack2);
         closeColn.removeAll(cluster);
         stack2.addAll(toAdd);
       }
-      clusters.add(cluster);
+      if (cluster.size() >= this.clusterMinSize)
+        clusters.add(cluster);
       stack.removeAll(cluster);
     }
+
+    // filter the clusters to only keep the interchanges
+    clusters = filterInterchangeClusters(clusters);
+
+    // reshape the clusters to exclude the crossroads that do not belong to the
+    // interchange
+    clusters = reshapeInterchangeClusters(clusters);
 
     // compute the extent of each cluster
     for (Set<SimpleCrossRoad> cluster : clusters) {
@@ -660,6 +695,21 @@ public class RoadStructureDetection {
 
     return interchangeExtents;
   }
+
+  private Set<Set<SimpleCrossRoad>> filterInterchangeClusters(
+      Set<Set<SimpleCrossRoad>> clusters) {
+    Set<Set<SimpleCrossRoad>> realClusters = new HashSet<>();
+    // TODO
+    return realClusters;
+  }
+
+  private Set<Set<SimpleCrossRoad>> reshapeInterchangeClusters(
+      Set<Set<SimpleCrossRoad>> clusters) {
+    Set<Set<SimpleCrossRoad>> reshapedClusters = new HashSet<>();
+    // TODO
+    return reshapedClusters;
+  }
+
   // ///////////////////////////////////
   // DETECTION OF THE REST AREAS
   // ///////////////////////////////////

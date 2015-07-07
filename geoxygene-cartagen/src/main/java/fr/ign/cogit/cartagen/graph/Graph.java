@@ -426,11 +426,13 @@ public class Graph implements IGraph {
     INode next = finalNode;
     nodeList.add(1, finalNode);
     double spWght = 0.0;
+    System.out.println("map node-prevArc: " + mapNodePrevArc);
     while (true) {
       // get the node before 'next'
       INode previousNode = mapNodePrev.get(next);
       // add the previous arc at the beginning of the list of arcs
       IEdge previousArc = mapNodePrevArc.get(next);
+      System.out.println("next node: " + next);
       spWght += previousArc.getWeight();
       arcList.add(0, previousArc);
 

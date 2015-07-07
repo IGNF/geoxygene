@@ -279,7 +279,9 @@ public class NetworkEnrichment {
           logger.debug("population " + pop.getNom());
         }
         Object[] parameters = { n };
-        pop.add(constructor.newInstance(parameters));
+        INetworkNode newNode = constructor.newInstance(parameters);
+        pop.add(newNode);
+        net.addNode(newNode);
       } catch (SecurityException e) {
         e.printStackTrace();
       } catch (NoSuchFieldException e) {

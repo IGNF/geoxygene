@@ -96,6 +96,25 @@ public class GeometryPool {
    * @param color
    */
   @SuppressWarnings("unchecked")
+  public void addPointFeatureToGeometryPool(IGeometry geom, Color color,
+      int widthPixels, String symbolName) {
+    ColouredFeature colFeat = new ColouredFeature(geom, color, widthPixels);
+    colFeat.setSymbolName(symbolName);
+    ((IPopulation<IFeature>) dataset.getPopulation(CartAGenDataSet.GEOM_POOL))
+        .add(colFeat);
+    Layer poolLayer = sld.getLayer(CartAGenDataSet.GEOM_POOL);
+    if (poolLayer == null)
+      return;
+    Style style = poolLayer.getStyles().get(0);
+    style.getFeatureTypeStyles().add(colFeat.computeFeatureStyle());
+  }
+
+  /**
+   * Add a given feature to the geometry pool with the given color.
+   * @param feat
+   * @param color
+   */
+  @SuppressWarnings("unchecked")
   public void addPolygonToGeometryPool(IPolygon geom, Color fillColor,
       Color strokeColor, int widthPixels) {
     ColouredFeature colFeat = new ColouredFeature(geom, fillColor, strokeColor,

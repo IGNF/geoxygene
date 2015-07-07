@@ -91,6 +91,7 @@ import fr.ign.cogit.cartagen.core.genericschema.land.ILandUsePoint;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IBoundedArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint;
+import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint.LabelCategory;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscLine;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscPoint;
@@ -988,8 +989,9 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   }
 
   @Override
-  public ILabelPoint createLabelPoint(IPoint point) {
-    return new LabelPoint(point);
+  public ILabelPoint createLabelPoint(IPoint point, LabelCategory category,
+      String name, String nature, int importance) {
+    return new LabelPoint(point, category, name, nature, importance);
   }
 
   @Override
