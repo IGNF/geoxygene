@@ -157,17 +157,20 @@ public class GeOxygeneApplication {
           + "'. Use default one");
     }
 
-    // set last directory used
-    MainFrameMenuBar.fc.setPreviousDirectory(new File(
-        GeOxygeneApplication.this.properties.getLastOpenedFile()));
-    MainFrameMenuBar.fc.setRecents(GeOxygeneApplication.this.properties
-        .getRecents());
-
+    try {
+      // set last directory used
+      MainFrameMenuBar.fc.setPreviousDirectory(new File(
+          GeOxygeneApplication.this.properties.getLastOpenedFile()));
+      MainFrameMenuBar.fc.setRecents(GeOxygeneApplication.this.properties
+          .getRecents());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     this.initializeDefaultResourceDictionaries();
-    
+
     this.preloadShapefiles();
     this.preloadSld();
-    
+
     // Initialize application plugins
     this.initializeApplicationPlugins();
     // initialize geometry engine to default parameters
@@ -189,8 +192,8 @@ public class GeOxygeneApplication {
     return this.taskManager;
   }
 
-  /**.
-   * Preload sld file defined in the configuration file <sld></sld>
+  /**
+   * . Preload sld file defined in the configuration file <sld></sld>
    */
   private void preloadSld() {
     final MainFrame mainFrame = this.getMainFrame();
@@ -359,12 +362,17 @@ public class GeOxygeneApplication {
     this.properties = GeOxygeneApplicationProperties
         .unmarshall(this.propertiesFile.getFile());
   }
-  
-  
-  private void initializeDefaultResourceDictionaries(){
-      for(URL dic_path : this.properties.getResourceDictionaries()){
-          GLResourcesManager.getInstance().registerDictionary(dic_path, false);
+
+  private void initializeDefaultResourceDictionaries() {
+    for (URL dic_path : this.properties.getResourceDictionaries()) {
+      URL resource = GeOxygeneApplication.class.getClassLoader().getResource(
+          dic_path.getFile());
+      if (resource == null) {
+        resource = dic_path;
       }
+      GLResourcesManager.getInstance().registerDictionary(resource,
+          false);
+    }
   }
 
   /**
