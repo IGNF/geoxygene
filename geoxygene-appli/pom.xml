@@ -33,25 +33,25 @@
 			</testResource>
 		</testResources>
 		<plugins>
-		    <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.5.3</version>
-                <executions>
-                    <execution>
-                        <id>icons-resources</id>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/resources.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.5.3</version>
+				<executions>
+					<execution>
+						<id>icons-resources</id>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/assembly/resources.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -66,6 +66,30 @@
 						<additionalClasspathElement>../geoxygene-style/src/main/resources</additionalClasspathElement>
 					</additionalClasspathElements>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.9</version>
+				<executions>
+					<execution>
+						<id>unpack-shared-resources</id>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<outputDirectory>${project.build.directory}/../data/matching-test/</outputDirectory>
+
+							<includeArtifacIds>geoxygene-ontology,geoxygene-matching</includeArtifacIds>
+							<includeGroupIds>${project.groupId}</includeGroupIds>
+							<includeClassifiers>onto,data-test-matching</includeClassifiers>
+							<excludeArtifactIds>geoxygene-api,geoxygene-contrib,evidence4j,geoxygene-feature,geoxygene-filter,geoxygene-io,geoxygene-spatial,geoxygene-util</excludeArtifactIds>
+
+							<excludeTransitive>true</excludeTransitive>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -210,12 +234,28 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>geoxygene-matching</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-matching</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-ontology</artifactId>
+			<version>${project.version}</version>
+			<classifier>onto</classifier>
+			<type>zip</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>geoxygene-matching</artifactId>
+			<version>1.7-SNAPSHOT</version>
+			<classifier>data-test-matching</classifier>
+			<type>zip</type>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-semio</artifactId>
@@ -279,13 +319,9 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-<!-- 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>geoxygene-scripting</artifactId>
-			<version>${project.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency> -->
+		<!-- <dependency> <groupId>${project.groupId}</groupId> <artifactId>geoxygene-scripting</artifactId> 
+			<version>${project.version}</version> <type>jar</type> <scope>compile</scope> 
+			</dependency> -->
 		<dependency>
 			<groupId>fr.ign.cogit</groupId>
 			<artifactId>geoxygene-osm</artifactId>
@@ -301,7 +337,7 @@
 			<artifactId>geoxygene-spatialrelation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>fr.ign.cogit</groupId>
 			<artifactId>geoxygene-carto</artifactId>
 			<version>${project.version}</version>
@@ -473,20 +509,20 @@
 			<artifactId>xstream</artifactId>
 			<version>1.3.1</version>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.10.1</version>
-        </dependency>
-        <dependency>
-            <groupId>jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.0.13</version>
-        </dependency>
-        
-		
-		
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.10.1</version>
+		</dependency>
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+
+
+
 	</dependencies>
 
 	<repositories>

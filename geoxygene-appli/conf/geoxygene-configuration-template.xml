@@ -17,11 +17,14 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.SpatialAnalysisPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.semio.SemioPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.cartagen.CartAGenPlugin</plugin>
-    <plugin>fr.ign.cogit.geoxygene.appli.plugin.osm.OSMPlugin</plugin>
-    <plugin>fr.ign.cogit.geoxygene.appli.plugin.osm.OSMHttpLoaderPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.ResamplerPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.CartoPlugin</plugin>
+    
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.lenses.LensesPlugin</plugin>
+    
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.VGIPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.osm.OSMPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.osm.OSMHttpLoaderPlugin</plugin>
     
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.density.ChargementPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.density.AlphaHullPlugin</plugin>

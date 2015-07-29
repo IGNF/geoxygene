@@ -53,7 +53,7 @@ public class CriterePanel extends JPanel implements ActionListener {
   /** Default serial ID. */
   private static final long serialVersionUID = 1L;
 
-  private EvidencePlugin evidencePlugin;
+  private EvidenceGuiProcess evidencePanel;
 
   private Collection<Source<IFeature, GeomHypothesis>> criteria;
 
@@ -90,10 +90,10 @@ public class CriterePanel extends JPanel implements ActionListener {
    * @param pFrame
    * @param c
    */
-  public CriterePanel(EvidencePlugin evidencePlugin,
+  public CriterePanel(EvidenceGuiProcess evidencePanel,
       Collection<Source<IFeature, GeomHypothesis>> c, double d) {
 
-    this.evidencePlugin = evidencePlugin;
+    this.evidencePanel = evidencePanel;
     this.criteria = c;
     this.distanceSelection = d;
 
@@ -127,8 +127,7 @@ public class CriterePanel extends JPanel implements ActionListener {
   private void initPanel() {
 
     // Liste des layers
-    List<Layer> layersDispo = evidencePlugin.getApplication().getMainFrame()
-        .getSelectedProjectFrame().getLayers();
+    List<Layer> layersDispo = evidencePanel.getProjectFrame().getLayers();
 
     // Sélection du jeu 1
     add(new JLabel("Jeu n°1 : "), cc.xy(2, 2));
@@ -358,8 +357,7 @@ public class CriterePanel extends JPanel implements ActionListener {
 
   private void updateAvailableLayers() {
     // Liste des layers
-    List<Layer> layersDispo = evidencePlugin.getApplication().getMainFrame()
-        .getSelectedProjectFrame().getLayers();
+    List<Layer> layersDispo = evidencePanel.getProjectFrame().getLayers();
 
     for (Layer layer : layersDispo) {
       comboListeJeu1.addItem(layer.getName());
@@ -371,7 +369,7 @@ public class CriterePanel extends JPanel implements ActionListener {
   public void actionPerformed(ActionEvent evt) {
     Object source = evt.getSource();
     if (source == executeQuery) {
-      evidencePlugin.runEvidenceMatching();
+      evidencePanel.runEvidenceMatching();
     } else if (source == addCritere) {
       EvidenceParamPanel dialogEvidenceParamPanel = new EvidenceParamPanel(null);
       if (dialogEvidenceParamPanel.getAction().equals("LAUNCH")) {
@@ -379,8 +377,8 @@ public class CriterePanel extends JPanel implements ActionListener {
       }
     } else if (source == matriceConfusionButton) {
       MatriceConfusionPanel matriceConfusionPanel = new MatriceConfusionPanel(
-          this.evidencePlugin.getPopLien(),
-          this.evidencePlugin.getFeatureTypeLien(), "nature1", "NATURE2");
+          this.evidencePanel.getPopLien(),
+          this.evidencePanel.getFeatureTypeLien(), "nature1", "NATURE2");
       matriceConfusionPanel.setLocation(new Point(100, 100));
     } else if (source == configLayerButton) {
       configLayer();
@@ -405,20 +403,18 @@ public class CriterePanel extends JPanel implements ActionListener {
   public void remiseAZero() {
     updateAvailableLayers();
     // supprime le layer lien
-    this.evidencePlugin.getApplication().getMainFrame()
-        .getSelectedProjectFrame()
-        .removeLayers(this.evidencePlugin.getListLayer());
+    this.evidencePanel.getProjectFrame().removeLayers(this.evidencePanel.getListLayer());
 
     // on rafraichit le tableau des liens
     Population<DefaultFeature> popLien = new Population<DefaultFeature>(false,
         "Liens", DefaultFeature.class, true);
-    popLien.setFeatureType(this.evidencePlugin.getFeatureTypeLien());
-    this.evidencePlugin.setPopLien(popLien);
-    this.evidencePlugin.initLien();
+    popLien.setFeatureType(this.evidencePanel.getFeatureTypeLien());
+    this.evidencePanel.setPopLien(popLien);
+    this.evidencePanel.initLien();
 
     // On rafraichit le debugPanel
-    this.evidencePlugin.getDebugPanel().setPopLien(popLien);
-    this.evidencePlugin.getDebugPanel().refreshLightDebug();
+    this.evidencePanel.getDebugPanel().setPopLien(popLien);
+    this.evidencePanel.getDebugPanel().refreshLightDebug();
 
     // desactive
     setEnableMatriceConfusionButton(false);
@@ -430,10 +426,8 @@ public class CriterePanel extends JPanel implements ActionListener {
    */
   private void configLayer() {
 
-    Layer layerRef = this.evidencePlugin.getApplication().getMainFrame()
-        .getSelectedProjectFrame().getLayer(getLayerNameDataset1());
-    Layer layerPoint = this.evidencePlugin.getApplication().getMainFrame()
-        .getSelectedProjectFrame().getLayer(getLayerNameDataset2());
+    Layer layerRef = this.evidencePanel.getProjectFrame().getLayer(getLayerNameDataset1());
+    Layer layerPoint = this.evidencePanel.getProjectFrame().getLayer(getLayerNameDataset2());
 
     if (!affTopo) {
 
@@ -499,15 +493,13 @@ public class CriterePanel extends JPanel implements ActionListener {
       ftStyle2.setRules(listRule2);
       layerRef.getStyles().get(0).getFeatureTypeStyles().add(ftStyle2);
 
-      this.evidencePlugin.getApplication().getMainFrame()
-          .getSelectedProjectFrame().getLayerViewPanel().repaint();
+      this.evidencePanel.getProjectFrame().getLayerViewPanel().repaint();
 
     } else {
       affTopo = false;
       layerPoint.getStyles().get(0).getFeatureTypeStyles().remove(1);
       layerRef.getStyles().get(0).getFeatureTypeStyles().remove(1);
-      this.evidencePlugin.getApplication().getMainFrame()
-          .getSelectedProjectFrame().getLayerViewPanel().repaint();
+      this.evidencePanel.getProjectFrame().getLayerViewPanel().repaint();
     }
   }
 
@@ -528,9 +520,7 @@ public class CriterePanel extends JPanel implements ActionListener {
     if (this.comboListeJeu1.getSelectedItem().toString().equals("--")) {
       return null;
     } else {
-      Layer layerJeu1 = this.evidencePlugin.getApplication().getMainFrame()
-          .getSelectedProjectFrame()
-          .getLayer(this.comboListeJeu1.getSelectedItem().toString());
+      Layer layerJeu1 =this.evidencePanel.getProjectFrame().getLayer(this.comboListeJeu1.getSelectedItem().toString());
       return (IPopulation<IFeature>) layerJeu1.getFeatureCollection();
     }
   }
@@ -540,8 +530,7 @@ public class CriterePanel extends JPanel implements ActionListener {
     if (this.comboListeJeu2.getSelectedItem().toString().equals("--")) {
       return null;
     } else {
-      Layer layerJeu2 = this.evidencePlugin.getApplication().getMainFrame()
-          .getSelectedProjectFrame()
+      Layer layerJeu2 = this.evidencePanel.getProjectFrame()
           .getLayer(this.comboListeJeu2.getSelectedItem().toString());
       return (IPopulation<IFeature>) layerJeu2.getFeatureCollection();
     }
