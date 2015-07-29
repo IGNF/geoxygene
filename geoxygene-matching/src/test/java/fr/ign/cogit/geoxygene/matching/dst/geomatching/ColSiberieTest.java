@@ -289,7 +289,7 @@ public class ColSiberieTest {
 
     // ========================================================================
   
-    WuPalmerDistance wuPalmerDistance = new WuPalmerDistance("FusionTopoCarto2.owl", "nature", "NATURE");
+    WuPalmerDistance wuPalmerDistance = new WuPalmerDistance("./data/onto/FusionTopoCarto2.owl", "nature", "NATURE");
     t = 0.6;
 
     // Fonction EstApparie

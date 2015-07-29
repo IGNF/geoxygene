@@ -87,7 +87,7 @@ public class WuPalmerSemanticSimilarity extends MesureSimilariteSemantique {
     try {
       // On charge l'ontologie 
       LOGGER.info("On charge l'ontologie.");
-      File file = new File(WuPalmerSemanticSimilarity.class.getClassLoader().getResource(filepath).getFile());
+      File file = new File(filepath);
       LOGGER.info(file.getAbsolutePath());
       ontoTopoCarto = new OntologieOWL("Onto", file.getPath());
       // ontoTopoCarto.affiche();
