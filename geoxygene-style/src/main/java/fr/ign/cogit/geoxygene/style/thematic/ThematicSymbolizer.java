@@ -47,17 +47,25 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
     }
 
     @XmlTransient
-    private final Map<IFeature, IDirectPosition> points = new HashMap<IFeature, IDirectPosition>();
+    private Map<IFeature, IDirectPosition> points = new HashMap<IFeature, IDirectPosition>();
 
     public Map<IFeature, IDirectPosition> getPoints() {
         return this.points;
     }
+    
+    public void setPoints(Map<IFeature, IDirectPosition> points) {
+      this.points = points;
+    }
 
     @XmlTransient
-    private final Map<IFeature, Double> radius = new HashMap<IFeature, Double>();
+    private Map<IFeature, Double> radius = new HashMap<IFeature, Double>();
 
     public Map<IFeature, Double> getRadius() {
         return this.radius;
+    }
+    
+    public void setRadius(Map<IFeature, Double> radius) {
+      this.radius = radius;
     }
 
     /*
