@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JMenu;
 
@@ -12,16 +14,13 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.appli.FloatingProjectFrame;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.plugin.AbstractGeOxygeneApplicationPlugin;
-import fr.ign.cogit.geoxygene.feature.DataSet;
-import fr.ign.cogit.geoxygene.feature.DefaultFeature;
-import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.filter.expression.Expression;
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
@@ -35,7 +34,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 /**
  * Utilisation des ThematicSymbolizer. 
- * Exemple des communes de paris
+ * Exemple avec les communes de paris
  * 
  * @author MDVan-Damme
  */
@@ -59,22 +58,18 @@ public class ChartExample extends AbstractGeOxygeneApplicationPlugin {
     
     try {
       
-      this.application.getMainFrame().removeAllProjectFrames();
+      // this.application.getMainFrame().removeAllProjectFrames();
+      // this.application.getMainFrame().createNewDesktop("Thematic maps");
       
       URL urlContourCommune75 = new URL("file", "", "./data/GEOFLA_COMMUNE_PARIS_LAMB93_2013/ContourCommune75.shp");
       IPopulation<IFeature> commune75Pop = ShapefileReader.read(urlContourCommune75.getFile());
       
-      FeatureType newFeatureType = new FeatureType();
-      newFeatureType.setTypeName("arc");
-      newFeatureType.setGeometryType(ILineString.class);
-      
-      Population<DefaultFeature> triangulationPop = new Population<DefaultFeature>(false, "Triangulation", DefaultFeature.class, true);
-      triangulationPop.setFeatureType(newFeatureType);
-      DataSet.getInstance().addPopulation(triangulationPop);
-      
-      Population<DefaultFeature> medialAxisPop = new Population<DefaultFeature>(false, "MedialAxis", DefaultFeature.class, true);
-      medialAxisPop.setFeatureType(newFeatureType);
-      DataSet.getInstance().addPopulation(medialAxisPop);
+      Map<IFeature, IDirectPosition> points = new HashMap<IFeature, IDirectPosition>();
+      Map<IFeature, Double> radius = new HashMap<IFeature, Double>();
+      for (IFeature feature : commune75Pop) {
+        points.put(feature, new DirectPosition((double)feature.getAttribute("POS_X"), (double)feature.getAttribute("POS_Y")));
+        radius.put(feature, (double)feature.getAttribute("RADIUS"));
+      }
       
       // Thematic class
       List<ThematicClass> themList = new ArrayList<ThematicClass>();
@@ -106,11 +101,14 @@ public class ChartExample extends AbstractGeOxygeneApplicationPlugin {
       bd.setClassValue(classValueBD);
       themList.add(bd);
       
+      // ?????
+      DiagramRadius dr = new DiagramRadius();
+      dr.setValue(0.5);
+      
       // ===============================================================================================
       //    PIE CHART
       // ===============================================================================================
       FloatingProjectFrame pieProjectFrame = (FloatingProjectFrame) this.application.getMainFrame().newProjectFrame();
-      // pieProjectFrame.getInternalFrame().setMaximum(true);
       
       Layer pieLayerCommune = pieProjectFrame.addUserLayer(commune75Pop, "PieChart", null);
       
@@ -124,14 +122,14 @@ public class ChartExample extends AbstractGeOxygeneApplicationPlugin {
       
       ThematicSymbolizer piets = new ThematicSymbolizer();
       piets.setUnitOfMeasureMetre();
+      piets.setRadius(radius);
+      piets.setPoints(points);
       List<DiagramSymbolizer> piesymbolizers = new ArrayList<DiagramSymbolizer>();
       
       DiagramSymbolizer symbolPie = new DiagramSymbolizer();
       symbolPie.setDiagramType("piechart");
       
       List<DiagramSizeElement> piels = new ArrayList<DiagramSizeElement>();
-      DiagramRadius dr = new DiagramRadius();
-      dr.setValue(0.5);
       piels.add(dr);
       symbolPie.setDiagramSize(piels);
       
@@ -157,15 +155,16 @@ public class ChartExample extends AbstractGeOxygeneApplicationPlugin {
       
       ThematicSymbolizer barts = new ThematicSymbolizer();
       barts.setUnitOfMeasureMetre();
+      barts.setRadius(radius);
+      barts.setPoints(points);
       List<DiagramSymbolizer> barsymbolizers = new ArrayList<DiagramSymbolizer>();
       
       DiagramSymbolizer symbolBar = new DiagramSymbolizer();
       symbolBar.setDiagramType("barchart");
       
       List<DiagramSizeElement> barls = new ArrayList<DiagramSizeElement>();
-      DiagramSizeElement dse = new DiagramSizeElement();
-      dse.setValue(0.5);
-      barls.add(dse);
+      // ???
+      barls.add(dr);
       symbolBar.setDiagramSize(barls);
       
       symbolBar.setThematicClass(themList);
@@ -173,6 +172,39 @@ public class ChartExample extends AbstractGeOxygeneApplicationPlugin {
       barsymbolizers.add(symbolBar);
       barts.setSymbolizers(barsymbolizers);
       barLayerCommune.getStyles().get(0).getFeatureTypeStyles().get(0).getRules().get(0).getSymbolizers().add(barts);
+      
+      // ===============================================================================================
+      //    ROSE CHART
+      // ===============================================================================================
+      FloatingProjectFrame roseProjectFrame = (FloatingProjectFrame) this.application.getMainFrame().newProjectFrame();
+      
+      Layer roseLayerCommune = roseProjectFrame.addUserLayer(commune75Pop, "RoseChart", null);
+      
+      PolygonSymbolizer polyRoseSymbolizer = (PolygonSymbolizer) roseLayerCommune.getSymbolizer();
+      polyRoseSymbolizer.setUnitOfMeasurePixel();
+      polyRoseSymbolizer.setStroke(new Stroke());
+      polyRoseSymbolizer.setFill(new Fill());
+      polyRoseSymbolizer.getStroke().setStrokeWidth(1);
+      polyRoseSymbolizer.getStroke().setStroke(new Color(0, 144, 135));
+      polyRoseSymbolizer.getFill().setColor(new Color(227, 222, 219));
+      
+      ThematicSymbolizer rosets = new ThematicSymbolizer();
+      rosets.setUnitOfMeasureMetre();
+      rosets.setRadius(radius);
+      rosets.setPoints(points);
+      List<DiagramSymbolizer> rosetsymbolizers = new ArrayList<DiagramSymbolizer>();
+      
+      DiagramSymbolizer symbolRose = new DiagramSymbolizer();
+      symbolRose.setDiagramType("rosechart");
+      
+      List<DiagramSizeElement> rosels = new ArrayList<DiagramSizeElement>();
+      rosels.add(dr);
+      symbolRose.setDiagramSize(rosels);
+      symbolRose.setThematicClass(themList);
+      rosetsymbolizers.add(symbolRose);
+      
+      rosets.setSymbolizers(rosetsymbolizers);
+      roseLayerCommune.getStyles().get(0).getFeatureTypeStyles().get(0).getRules().get(0).getSymbolizers().add(rosets);
       
       // ===============================================================================================
       //    Line CHART
@@ -216,6 +248,8 @@ public class ChartExample extends AbstractGeOxygeneApplicationPlugin {
       barProjectFrame.getLayerViewPanel().getViewport().zoomOut();
       // lineProjectFrame.getLayerViewPanel().getViewport().zoomToFullExtent();
       // lineProjectFrame.getLayerViewPanel().getViewport().zoomOut();
+      roseProjectFrame.getLayerViewPanel().getViewport().zoomToFullExtent();
+      roseProjectFrame.getLayerViewPanel().getViewport().zoomOut();
       
     } catch (Exception e) {
       e.printStackTrace();
