@@ -62,6 +62,8 @@ public interface Symbolizer {
     public boolean isLineSymbolizer();
 
     public boolean isRasterSymbolizer();
+    
+    public boolean isThematicSymbolizer();
 
     /**
      * Renvoie la valeur de l'attribut geometryPropertyName.

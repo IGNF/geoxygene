@@ -76,6 +76,11 @@ public abstract class AbstractSymbolizer implements Symbolizer {
     public boolean isTextSymbolizer() {
         return false;
     }
+    
+    @Override
+    public boolean isThematicSymbolizer() {
+        return false;
+    }
 
     @XmlElement(name = "GeometryPropertyName")
     private String geometryPropertyName = "geom"; //$NON-NLS-1$

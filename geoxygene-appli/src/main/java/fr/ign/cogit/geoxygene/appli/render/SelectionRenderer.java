@@ -135,56 +135,11 @@ public class SelectionRenderer extends AbstractLayerRenderer {
         public boolean isTextSymbolizer() {
             return false;
         }
-
-        //
-        // @Override
-        // public void paint(final IFeature feature, final Viewport viewport,
-        // final Graphics2D graphics) {
-        // if (feature.getGeom() == null) {
-        // return;
-        // }
-        // if (feature.getGeom().isPolygon() ||
-        // feature.getGeom().isMultiSurface())
-        // {
-        // graphics.setColor(SelectionRenderer.this.getFillColor());
-        // RenderUtil.fill(feature.getGeom(), viewport, graphics);
-        // }
-        // java.awt.Stroke bs = new BasicStroke(
-        // SelectionRenderer.this.getStrokeWidth(), BasicStroke.CAP_SQUARE,
-        // BasicStroke.JOIN_MITER);
-        // graphics.setColor(SelectionRenderer.this.getStrokeColor());
-        // graphics.setStroke(bs);
-        // RenderUtil.draw(feature.getGeom(), viewport, graphics);
-        // try {
-        // graphics.setStroke(new BasicStroke(1, BasicStroke.CAP_SQUARE,
-        // BasicStroke.JOIN_MITER));
-        // for (IDirectPosition position : viewport
-        // .toViewDirectPositionList(feature.getGeom().coord())) {
-        // GeneralPath shape = new GeneralPath();
-        // shape.moveTo(
-        // position.getX() - SelectionRenderer.this.getPointRadius(),
-        // position.getY() - SelectionRenderer.this.getPointRadius());
-        // shape.lineTo(
-        // position.getX() + SelectionRenderer.this.getPointRadius(),
-        // position.getY() - SelectionRenderer.this.getPointRadius());
-        // shape.lineTo(
-        // position.getX() + SelectionRenderer.this.getPointRadius(),
-        // position.getY() + SelectionRenderer.this.getPointRadius());
-        // shape.lineTo(
-        // position.getX() - SelectionRenderer.this.getPointRadius(),
-        // position.getY() + SelectionRenderer.this.getPointRadius());
-        // shape.lineTo(
-        // position.getX() - SelectionRenderer.this.getPointRadius(),
-        // position.getY() - SelectionRenderer.this.getPointRadius());
-        // graphics.setColor(SelectionRenderer.this.getStrokeColor());
-        // graphics.fill(shape);
-        // graphics.setColor(Color.black);
-        // graphics.draw(shape);
-        // }
-        // } catch (NoninvertibleTransformException e) {
-        // e.printStackTrace();
-        // }
-        // }
+        
+        @Override
+        public boolean isThematicSymbolizer() {
+            return false;
+        }
 
         @Override
         public void setGeometryPropertyName(final String geometryPropertyName) {

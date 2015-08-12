@@ -38,6 +38,11 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
     private List<DiagramSymbolizer> symbolizers = new ArrayList<DiagramSymbolizer>(
             0);
 
+    @Override
+    public boolean isThematicSymbolizer() {
+        return true;
+    }
+    
     public List<DiagramSymbolizer> getSymbolizers() {
         return this.symbolizers;
     }
