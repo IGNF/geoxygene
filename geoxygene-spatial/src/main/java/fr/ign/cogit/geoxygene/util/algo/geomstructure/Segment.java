@@ -331,20 +331,25 @@ public class Segment extends GM_LineSegment {
 
   /**
    * Checks if a point is contained by the segment using vector calculus. Point
-   * C is on segment [AB] if and only if AC and CB are colinear, with the same
-   * way and that ||AC|| < ||AB||.
+   * C is on segment [AB] if and only if AC and CB are colinear, and if C is
+   * between A and B (verified by scalar products).
    * @param point
    * @return
    */
   public boolean containsPoint(IDirectPosition point, double tolerance) {
     Vector2D vect1 = new Vector2D(startPoint(), point);
     Vector2D vect2 = new Vector2D(point, endPoint());
+    Vector2D vect3 = new Vector2D(startPoint(), endPoint());
     if (!vect1.isColinear(vect2, tolerance))
       return false;
-    if (vect1.add(vect2).norme() < vect1.norme())
+
+    double kAC = vect3.prodScalaire(vect1);
+    double kAB = vect3.prodScalaire(vect3);
+    if (kAC < 0)
       return false;
-    if (vect1.norme() > this.length())
+    if (kAC > kAB)
       return false;
+
     return true;
   }
 
@@ -358,12 +363,17 @@ public class Segment extends GM_LineSegment {
   public boolean containsPoint(IDirectPosition point) {
     Vector2D vect1 = new Vector2D(startPoint(), point);
     Vector2D vect2 = new Vector2D(point, endPoint());
+    Vector2D vect3 = new Vector2D(startPoint(), endPoint());
     if (!vect1.isColinear(vect2))
       return false;
-    if (vect1.add(vect2).norme() < vect1.norme())
+
+    double kAC = vect3.prodScalaire(vect1);
+    double kAB = vect3.prodScalaire(vect3);
+    if (kAC < 0)
       return false;
-    if (vect1.norme() > this.length())
+    if (kAC > kAB)
       return false;
+
     return true;
   }
 

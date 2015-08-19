@@ -308,15 +308,17 @@ public class PatteOie extends CarrefourComplexeImpl {
   /**
    * find the characteristic roads of the branching crossroad. The link with the
    * roundabouts has to be instanciated before to optimise the characterisation
-   * 
+   * @return true if the characterisation was OK, false if there was a problem.
    * @author GTouya
    */
-  public void characteriseBranching() {
-    this.findMainRoadIntern();
-    this.findMinorRoadExtern();
+  public boolean characteriseBranching() {
+    boolean problem = this.findMainRoadIntern();
+    if (problem)
+      return false;
+    return this.findMinorRoadExtern();
   }
 
-  private void findMainRoadIntern() {
+  private boolean findMainRoadIntern() {
     // first, case with 4 nodes
     if (this.getNoeuds().size() == 4) {
       // get the middle node
@@ -367,11 +369,15 @@ public class PatteOie extends CarrefourComplexeImpl {
 
     // then, easy case with a roundabout
     if (this.roundAbout != null) {
-      HashSet<TronconDeRoute> commons = new HashSet<TronconDeRoute>(this
-          .getRoutesInternes());
+      HashSet<TronconDeRoute> commons = new HashSet<TronconDeRoute>(
+          this.getRoutesInternes());
       commons.retainAll(this.roundAbout.getRoutesInternes());
       this.mainRoadIntern.add(commons.iterator().next());
-      return;
+
+      if (this.mainRoadIntern.size() > 0)
+        return false;
+      else
+        return true;
     }
 
     // regular case, it's the road having a flat angle with two of the external
@@ -407,6 +413,11 @@ public class PatteOie extends CarrefourComplexeImpl {
         totalMax = totalAngle;
       }
     }
+
+    if (this.mainRoadIntern.size() > 0)
+      return false;
+    else
+      return true;
   }
 
   /**
@@ -416,7 +427,7 @@ public class PatteOie extends CarrefourComplexeImpl {
    * 
    * @author GTouya
    */
-  private void findMinorRoadExtern() {
+  private boolean findMinorRoadExtern() {
     // first, case with 4 nodes
     if (this.getNoeuds().size() == 4) {
       Iterator<ArcReseau> i = this.mainRoadIntern.iterator();
@@ -430,7 +441,10 @@ public class PatteOie extends CarrefourComplexeImpl {
           break;
         }
       }
-      return;
+      if (minorRoadExtern == null)
+        return true;
+      else
+        return false;
     }
 
     // the minorRoadExtern is the external road that is not connected to
@@ -443,6 +457,11 @@ public class PatteOie extends CarrefourComplexeImpl {
         break;
       }
     }
+
+    if (minorRoadExtern == null)
+      return true;
+    else
+      return false;
   }
 
   public static PatteOie getBranchingCrossRoad(Ilot block,

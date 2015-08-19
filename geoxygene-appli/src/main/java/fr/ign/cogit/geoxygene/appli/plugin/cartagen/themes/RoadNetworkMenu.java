@@ -34,7 +34,9 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
+import fr.ign.cogit.cartagen.genealgorithms.network.RoadNetworkStrokesBasedSelection;
 import fr.ign.cogit.cartagen.genealgorithms.network.RoadNetworkTrafficBasedSelection;
+import fr.ign.cogit.cartagen.genealgorithms.section.CollapseBranchingCrossRoad;
 import fr.ign.cogit.cartagen.genealgorithms.section.CollapseRoundabout;
 import fr.ign.cogit.cartagen.genealgorithms.section.LineCurvatureSmoothing;
 import fr.ign.cogit.cartagen.graph.jgrapht.GeographicNetworkGraph;
@@ -106,6 +108,8 @@ public class RoadNetworkMenu extends JMenu {
       new DetectBranchingsAction());
   private final JMenuItem mRoutierCollapseRoundabouts = new JMenuItem(
       new CollapseRoundaboutsAction());
+  private final JMenuItem mRoutierCollapseBranchings = new JMenuItem(
+      new CollapseBranchingsAction());
   private final JMenuItem mRoutierLissageGaussien = new JMenuItem(
       new GaussianSmoothingAction());
   private final JMenuItem mRoutierFiltrageCourbe = new JMenuItem(
@@ -142,6 +146,7 @@ public class RoadNetworkMenu extends JMenu {
 
     this.add(this.mRoutierDetectBranchings);
     this.add(this.mRoutierCollapseRoundabouts);
+    this.add(this.mRoutierCollapseBranchings);
 
     this.addSeparator();
 
@@ -154,6 +159,7 @@ public class RoadNetworkMenu extends JMenu {
     selectionMenu.add(new ShowAttractionPointsAction());
     selectionMenu.add(new ShowShortestPathsAction());
     selectionMenu.add(new RandomTrafficSelectionAction());
+    selectionMenu.add(new StrokesSelectionAction());
     this.add(selectionMenu);
 
   }
@@ -399,6 +405,25 @@ public class RoadNetworkMenu extends JMenu {
     public CollapseRoundaboutsAction() {
       this.putValue(Action.SHORT_DESCRIPTION, "Collapse rounadbouts");
       this.putValue(Action.NAME, "Collapse roundabouts");
+    }
+  }
+
+  private class CollapseBranchingsAction extends AbstractAction {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
+      for (IBranchingCrossroad roundAbout : dataset.getBranchings()) {
+        CollapseBranchingCrossRoad collapseRoundabout = new CollapseBranchingCrossRoad(
+            800.0, roundAbout);
+        collapseRoundabout.collapseToPoint();
+      }
+    }
+
+    public CollapseBranchingsAction() {
+      this.putValue(Action.NAME, "Collapse branching crossroads");
     }
   }
 
@@ -652,9 +677,14 @@ public class RoadNetworkMenu extends JMenu {
       GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
           .getGeometryPool();
       pool.setSld(pFrame.getSld());
-      // TODO make the parameters modifiable
-      for (INetworkSection road : selection.randomTrafficBasedSelection(3,
-          0.005)) {
+
+      String weightValue = JOptionPane
+          .showInputDialog("minimal weight to be selected");
+      String nodeRatio = JOptionPane
+          .showInputDialog("the ratio of road nodes selected to be attractors");
+
+      for (INetworkSection road : selection.randomTrafficBasedSelection(
+          Integer.valueOf(weightValue), Double.valueOf(nodeRatio))) {
         pool.addFeatureToGeometryPool(road.getGeom(), Color.RED, 3);
       }
     }
@@ -666,4 +696,43 @@ public class RoadNetworkMenu extends JMenu {
     }
   }
 
+  private class StrokesSelectionAction extends AbstractAction {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      CartAGenDataSet dataset = CartAGenDoc.getInstance().getCurrentDataset();
+      ProjectFrame pFrame = CartAGenPlugin.getInstance().getApplication()
+          .getMainFrame().getSelectedProjectFrame();
+
+      // enrich the network
+      NetworkEnrichment.buildTopology(dataset, dataset.getRoadNetwork(), false);
+
+      RoadNetworkStrokesBasedSelection selection = new RoadNetworkStrokesBasedSelection(
+          dataset, dataset.getRoadNetwork());
+      selection.setAttributeName("importance");
+
+      // display the wieghted roads in the geometry pool
+      GeometryPool pool = CartAGenDoc.getInstance().getCurrentDataset()
+          .getGeometryPool();
+      pool.setSld(pFrame.getSld());
+
+      String minLength = JOptionPane
+          .showInputDialog("minimal length to be selected");
+      String minTs = JOptionPane
+          .showInputDialog("minimal number of T-nodes to be selected");
+
+      for (INetworkSection road : selection.strokesBasedSelection(
+          Double.valueOf(minLength), Integer.valueOf(minTs))) {
+        pool.addFeatureToGeometryPool(road.getGeom(), Color.RED, 3);
+      }
+    }
+
+    public StrokesSelectionAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Strokes based selection using stroke length and the number of T-nodes crossed");
+      this.putValue(Action.NAME, "Strokes based selection");
+    }
+  }
 }

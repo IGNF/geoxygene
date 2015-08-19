@@ -12,7 +12,6 @@ package fr.ign.cogit.geoxygene.vgi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
@@ -129,29 +128,6 @@ public class FlickRLoader {
 
   public void setSharedSecret(String sharedSecret) {
     this.sharedSecret = sharedSecret;
-  }
-
-  public static void main(final String[] args) {
-    FlickRLoader loader = new FlickRLoader("d4b5eda00cb0aa5729a984b8068661ae",
-        "9265cf056ce5c42c");
-    try {
-
-      List<FlickRFeature> photos = loader.getPhotosFromExtent(48.8439, 48.8469,
-          2.4216, 2.4287, 14);
-      System.out.println(photos.size() + " photos loaded");
-
-      loader.getPhotoLocation("18707538546");
-    } catch (FlickrException e) {
-      e.printStackTrace();
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (ParserConfigurationException e) {
-      e.printStackTrace();
-    } catch (SAXException e) {
-      e.printStackTrace();
-    }
   }
 
   public IDirectPosition getPhotoLocation(String photoId) throws IOException,

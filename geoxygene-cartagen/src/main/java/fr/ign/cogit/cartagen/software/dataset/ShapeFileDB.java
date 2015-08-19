@@ -360,7 +360,6 @@ public class ShapeFileDB extends CartAGenDB {
   @Override
   protected void load(GeographicClass geoClass, int scale) {
     ShapeFileClass shape = (ShapeFileClass) geoClass;
-
     SymbolList symbols = SymbolList.getSymbolList(SymbolsUtil.getSymbolGroup(
         this.getSourceDLM(), this.getSymboScale()));
     this.getDataSet().setSymbols(symbols);
@@ -409,10 +408,7 @@ public class ShapeFileDB extends CartAGenDB {
         ShapeFileLoader.loadCemeteriesBDTFromSHP(shape.getPath(),
             this.getDataSet());
       }
-      if (shape.getFeatureTypeName().equals(ISpotHeight.FEAT_TYPE_NAME)) {
-        ShapeFileLoader.loadSpotHeightsFromSHP(shape.getPath(), symbols,
-            this.getDataSet());
-      }
+
       if (shape.getFeatureTypeName().equals(ILabelPoint.FEAT_TYPE_NAME)) {
         LabelCategory category = LabelCategory.OTHER;
         if (shape.getName().equalsIgnoreCase("LIEU_DIT_HABITE"))
@@ -433,10 +429,11 @@ public class ShapeFileDB extends CartAGenDB {
       }
       if (shape.getFeatureTypeName().equals(ISimpleLandUseArea.FEAT_TYPE_NAME)) {
         int type = 0;
-        if (shape.getName().equals("ZONE_VEGETATION")) {
+        if (shape.getName().equalsIgnoreCase("ZONE_VEGETATION")) {
           type = 1;
-        }
-        if (shape.getName().equals("ZONE_ACTIVITE")) {
+        } else if (shape.getName().equalsIgnoreCase("ZONE_ARBOREE")) {
+          type = 1;
+        } else if (shape.getName().equalsIgnoreCase("ZONE_ACTIVITE")) {
           type = 2;
         }
         ShapeFileLoader.loadLandUseAreasFromSHP(shape.getPath(), 1.0, type,

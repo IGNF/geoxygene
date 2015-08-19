@@ -21,6 +21,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import fr.ign.cogit.cartagen.core.defaultschema.road.RoadLineWithAttributes;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea.WaterAreaNature;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint;
@@ -56,7 +57,6 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Reseau;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.BatimentImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.ferre.TronconFerreImpl;
-import fr.ign.cogit.geoxygene.schemageo.impl.hydro.SurfaceDEauImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.hydro.TronconHydrographiqueImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.relief.CourbeDeNiveauImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.relief.ElementCaracteristiqueDuReliefImpl;
@@ -1023,6 +1023,15 @@ public class ShapeFileLoader {
         fields.put(dbr.getHeader().getFieldName(i), champs[i]);
       }
 
+      WaterAreaNature nature = WaterAreaNature.UNKNOWN;
+      if (fields.containsKey("NATURE")) {
+        String value = (String) fields.get("NATURE");
+        if (value.equals("Riviere"))
+          nature = WaterAreaNature.RIVER;
+        else if (value.equals("Bassin"))
+          nature = WaterAreaNature.LAKE;
+      }
+
       IGeometry geom = null;
       try {
         geom = AdapterFactory.toGM_Object((Geometry) objet.shape());
@@ -1033,13 +1042,8 @@ public class ShapeFileLoader {
       if (geom == null) {
         continue;
       } else if (geom instanceof IPolygon) {
-        IWaterArea surf = dataset
-            .getCartAGenDB()
-            .getGeneObjImpl()
-            .getCreationFactory()
-            .createWaterArea(
-                new SurfaceDEauImpl((Reseau) dataset.getHydroNetwork()
-                    .getGeoxObj(), (IPolygon) geom));
+        IWaterArea surf = dataset.getCartAGenDB().getGeneObjImpl()
+            .getCreationFactory().createWaterArea((IPolygon) geom, nature);
         if (fields.containsKey("CARTAGEN_ID")) {
           surf.setId((Integer) fields.get("CARTAGEN_ID"));
         } else {
@@ -1049,13 +1053,8 @@ public class ShapeFileLoader {
       } else if (geom instanceof IMultiSurface<?>) {
         for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
           IPolygon polygon = (IPolygon) ((IMultiSurface<?>) geom).get(i);
-          IWaterArea surf = dataset
-              .getCartAGenDB()
-              .getGeneObjImpl()
-              .getCreationFactory()
-              .createWaterArea(
-                  new SurfaceDEauImpl((Reseau) dataset.getHydroNetwork()
-                      .getGeoxObj(), polygon));
+          IWaterArea surf = dataset.getCartAGenDB().getGeneObjImpl()
+              .getCreationFactory().createWaterArea(polygon, nature);
           if (fields.containsKey("CARTAGEN_ID")) {
             surf.setId((Integer) fields.get("CARTAGEN_ID"));
           } else {

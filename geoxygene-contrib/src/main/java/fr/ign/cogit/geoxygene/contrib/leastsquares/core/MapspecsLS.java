@@ -299,6 +299,12 @@ public class MapspecsLS {
     return this.selectedObjects;
   }
 
+  public void addSelectedObjects(Collection<? extends IFeature> selectedObjects) {
+    if (this.selectedObjects == null)
+      this.selectedObjects = new HashSet<>();
+    this.selectedObjects.addAll(selectedObjects);
+  }
+
   /**
    * True if the parameter {@link Class} instance inherits from one of the fixed
    * classes.

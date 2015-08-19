@@ -18,4 +18,10 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObjSurf;
 
 public interface IWaterArea extends IGeneObjSurf {
   public static final String FEAT_TYPE_NAME = "WaterArea"; //$NON-NLS-1$
+
+  public enum WaterAreaNature {
+    LAKE, RIVER, UNKNOWN
+  }
+
+  public WaterAreaNature getNature();
 }

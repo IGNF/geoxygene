@@ -39,6 +39,7 @@ public class WaterArea extends GeneObjSurfDefault implements IWaterArea {
    */
   private SurfaceDEau geoxObj;
   private String name;
+  private WaterAreaNature nature = WaterAreaNature.UNKNOWN;
 
   /**
    * Constructor
@@ -58,6 +59,16 @@ public class WaterArea extends GeneObjSurfDefault implements IWaterArea {
     this.setInitialGeom(poly);
     this.setEliminated(false);
     this.setName(""); //$NON-NLS-1$
+  }
+
+  public WaterArea(IPolygon poly, WaterAreaNature nature) {
+    super();
+    this.geoxObj = new SurfaceDEauImpl();
+    this.geoxObj.setGeom(poly);
+    this.setInitialGeom(poly);
+    this.setEliminated(false);
+    this.setName(""); //$NON-NLS-1$
+    this.nature = nature;
   }
 
   /**
@@ -113,6 +124,11 @@ public class WaterArea extends GeneObjSurfDefault implements IWaterArea {
   public void restoreGeoxObjects() {
     this.geoxObj = new SurfaceDEauImpl(new ReseauImpl(), this.getGeom());
     this.geoxObj.setNom(this.name);
+  }
+
+  @Override
+  public WaterAreaNature getNature() {
+    return nature;
   }
 
 }

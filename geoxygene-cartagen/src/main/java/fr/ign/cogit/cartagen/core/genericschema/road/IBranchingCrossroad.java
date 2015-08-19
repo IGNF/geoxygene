@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.core.genericschema.road;
 
@@ -18,6 +18,11 @@ import java.util.Set;
 
 public interface IBranchingCrossroad extends IComplexCrossRoad {
 
+  /**
+   * the main internal roads that can be composed of several sections if there
+   * is an intersection on the other side of the branching crossroad.
+   * @return
+   */
   public Set<IRoadLine> getMainRoadIntern();
 
   public void setMainRoadIntern(Set<IRoadLine> mainRoadIntern);

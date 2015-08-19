@@ -81,6 +81,7 @@ import fr.ign.cogit.cartagen.core.genericschema.admin.ISimpleAdminUnit;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea.WaterAreaNature;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterCourse;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterNode;
@@ -761,6 +762,11 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   @Override
   public IWaterArea createWaterArea(SurfaceDEau geoxObj) {
     return new WaterArea(geoxObj);
+  }
+
+  @Override
+  public IWaterArea createWaterArea(IPolygon poly, WaterAreaNature nature) {
+    return new WaterArea(poly, nature);
   }
 
   // CoastLine

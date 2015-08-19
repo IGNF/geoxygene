@@ -153,6 +153,10 @@ public class CrossRoadDetection {
     // then the branching crossroads
     Map<PatteOie, IBranchingCrossroad> mapForRel = new HashMap<PatteOie, IBranchingCrossroad>();
     for (PatteOie patte : this.branchs) {
+      boolean problem = patte.characteriseBranching();
+      // do not keep isolated branching crossroads with malfunctions
+      if (problem && patte.getRoundAbout() == null)
+        continue;
       IBranchingCrossroad branch = CartAGenDoc.getInstance()
           .getCurrentDataset().getCartAGenDB().getGeneObjImpl()
           .getCreationFactory()

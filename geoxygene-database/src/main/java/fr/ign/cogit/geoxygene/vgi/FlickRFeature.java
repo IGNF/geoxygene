@@ -1,9 +1,18 @@
+/*******************************************************************************
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
 package fr.ign.cogit.geoxygene.vgi;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.AbstractFeature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
 
 public class FlickRFeature extends AbstractFeature {
 
@@ -16,8 +25,9 @@ public class FlickRFeature extends AbstractFeature {
     this.longitude = longitude;
     this.latitude = latitude;
     this.setId(Long.valueOf(photo.getFlickRId()).intValue());
-    // FIXME
-    this.setGeom(new GM_Point(new DirectPosition(longitude, latitude)));
+    // FIXME handle SRIDs
+    this.setGeom(GeometryEngine.getFactory().createPoint(
+        new DirectPosition(longitude, latitude)));
   }
 
   @Override

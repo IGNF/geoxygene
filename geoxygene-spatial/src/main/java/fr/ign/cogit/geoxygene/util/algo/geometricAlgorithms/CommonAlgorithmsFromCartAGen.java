@@ -62,6 +62,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomengine.AbstractGeometryEngine;
+import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
@@ -267,6 +268,50 @@ public class CommonAlgorithmsFromCartAGen {
     }
     return AbstractGeometryEngine.getFactory().createIPolygon(
         AbstractGeometryEngine.getFactory().createILineString(pts));
+  }
+
+  /**
+   * Split the given line in two new polylines at a given point that is not
+   * necessarily a vertex. The point has to be on the line given a tolerance.
+   * @param line
+   * @param newVertex
+   * @param tolerance a tolerance to deal with rounding approximations.
+   * @return a two-dimension array with the splitted lines.
+   */
+  public static ILineString[] splitLine(ILineString line,
+      IDirectPosition splitVertex, double tolerance) {
+
+    IDirectPositionList pts1 = new DirectPositionList();
+    IDirectPositionList pts2 = new DirectPositionList();
+    pts1.add(line.startPoint());
+    List<Segment> segments = Segment.getSegmentList(line);
+    boolean line1 = true;
+    for (int i = 0; i < segments.size(); i++) {
+      Segment seg = segments.get(i);
+      if (!seg.containsPoint(splitVertex, tolerance) && line1) {
+        pts1.add(seg.endPoint());
+        continue;
+      } else if (seg.containsPoint(splitVertex, tolerance) && line1) {
+        pts1.add(splitVertex);
+        line1 = false;
+        if (!splitVertex.equals(seg.getEndPoint())) {
+          pts2.add(splitVertex);
+          pts2.add(seg.endPoint());
+        }
+        continue;
+      } else if (seg.containsPoint(splitVertex, tolerance) && !line1) {
+        pts2.add(splitVertex);
+        pts2.add(seg.endPoint());
+        continue;
+      }
+      pts2.add(seg.endPoint());
+    }
+
+    // build the lines and the array
+    ILineString[] lines = new ILineString[2];
+    lines[0] = GeometryEngine.getFactory().createILineString(pts1);
+    lines[1] = GeometryEngine.getFactory().createILineString(pts2);
+    return lines;
   }
 
   /**

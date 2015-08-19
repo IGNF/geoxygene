@@ -13,9 +13,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -36,7 +40,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.time.DateUtils;
+import org.jdesktop.swingx.JXDatePicker;
 import org.xml.sax.SAXException;
+
+import twitter4j.TwitterException;
 
 import com.flickr4java.flickr.FlickrException;
 
@@ -66,6 +74,8 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 import fr.ign.cogit.geoxygene.vgi.FlickRFeature;
 import fr.ign.cogit.geoxygene.vgi.FlickRLoader;
+import fr.ign.cogit.geoxygene.vgi.twitter.TwitterFeature;
+import fr.ign.cogit.geoxygene.vgi.twitter.TwitterLoader;
 
 public class VGIPlugin implements ProjectFramePlugin,
     GeOxygeneApplicationPlugin {
@@ -73,8 +83,12 @@ public class VGIPlugin implements ProjectFramePlugin,
   private GeOxygeneApplication application = null;
   private JCheckBoxMenuItem showPhotos;
   private final static String FLICKR_LAYER = "FlickR photos";
-  private final static String FLICKR_API_KEY = "d4b5eda00cb0aa5729a984b8068661ae";
-  private final static String FLICKR_API_SECRET = "9265cf056ce5c42c";
+  private final static String TWITTER_LAYER = "Tweets";
+  private static String FLICKR_API_KEY;
+  private static String FLICKR_API_SECRET;
+  private static String TWITTER_API_KEY, TWITTER_API_SECRET,
+      TWITTER_ACCESS_TOKEN, TWITTER_TOKEN_SECRET;
+  private static String proxyHost, proxyPort;
 
   @Override
   public void initialize(GeOxygeneApplication application) {
@@ -85,10 +99,35 @@ public class VGIPlugin implements ProjectFramePlugin,
     showPhotos = new JCheckBoxMenuItem(new ShowFlickRAction());
     flickrMenu.add(showPhotos);
     JMenu twitterMenu = new JMenu("Twitter");
+    twitterMenu.add(new JMenuItem(new LoadTwitterAction()));
     menu.add(flickrMenu);
     menu.add(twitterMenu);
     application.getMainFrame().getMenuBar()
         .add(menu, application.getMainFrame().getMenuBar().getMenuCount() - 2);
+    loadApiKeys();
+  }
+
+  /**
+   * Loads the API keys and secrets in a file in src/main/resources named
+   * vgikeys.properties. If the file does not exist or is not fully filled, the
+   * keys are left empty.
+   */
+  private void loadApiKeys() {
+    Properties properties = new Properties();
+    try {
+      properties.load(new FileInputStream(
+          "src/main/resources/vgikeys.properties"));
+      FLICKR_API_KEY = properties.getProperty("FLICKR_API_KEY");
+      FLICKR_API_SECRET = properties.getProperty("FLICKR_API_SECRET");
+      TWITTER_API_KEY = properties.getProperty("TWITTER_API_KEY");
+      TWITTER_API_SECRET = properties.getProperty("TWITTER_API_SECRET");
+      TWITTER_ACCESS_TOKEN = properties.getProperty("TWITTER_ACCESS_TOKEN");
+      TWITTER_TOKEN_SECRET = properties.getProperty("TWITTER_TOKEN_SECRET");
+      proxyHost = properties.getProperty("proxyHost");
+      proxyPort = properties.getProperty("proxyPort");
+    } catch (IOException e) {
+      // Do nothing
+    }
 
   }
 
@@ -383,4 +422,184 @@ public class VGIPlugin implements ProjectFramePlugin,
       this.putValue(Action.NAME, "Show FlickR photos");
     }
   }
+
+  class LoadTwitterFrame extends JFrame implements ActionListener {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+    private JSpinner spinLong, spinLat, spinRadius;
+    private JXDatePicker sincePicker, untilPicker;
+
+    LoadTwitterFrame() {
+      super("Load Twitter Data");
+      this.setSize(400, 500);
+      this.setAlwaysOnTop(true);
+
+      // a panel for the selection box
+      JPanel pSelBox = new JPanel();
+      spinLong = new JSpinner(new SpinnerNumberModel(2.4250, -180.0, 180.0,
+          0.0001));
+      spinLong.setMaximumSize(new Dimension(100, 20));
+      spinLong.setMinimumSize(new Dimension(100, 20));
+      spinLong.setPreferredSize(new Dimension(100, 20));
+      JSpinner.NumberEditor longmaxEditor = new JSpinner.NumberEditor(spinLong,
+          "0.0000");
+      spinLong.setEditor(longmaxEditor);
+      spinLat = new JSpinner(new SpinnerNumberModel(48.8450, -90.0, 90.0,
+          0.0001));
+      spinLat.setMaximumSize(new Dimension(100, 20));
+      spinLat.setMinimumSize(new Dimension(100, 20));
+      spinLat.setPreferredSize(new Dimension(100, 20));
+      JSpinner.NumberEditor latminEditor = new JSpinner.NumberEditor(spinLat,
+          "0.0000");
+      spinLat.setEditor(latminEditor);
+      spinRadius = new JSpinner(new SpinnerNumberModel(1.0, 0.0, 1000.0, 0.01));
+      spinRadius.setMaximumSize(new Dimension(100, 20));
+      spinRadius.setMinimumSize(new Dimension(100, 20));
+      spinRadius.setPreferredSize(new Dimension(100, 20));
+      JSpinner.NumberEditor radiusEditor = new JSpinner.NumberEditor(
+          spinRadius, "0.00");
+      spinRadius.setEditor(radiusEditor);
+
+      pSelBox.add(new JLabel("latitude: "));
+      pSelBox.add(spinLat);
+      pSelBox.add(new JLabel("longitude: "));
+      pSelBox.add(spinLong);
+      pSelBox.add(new JLabel("radius (in km): "));
+      pSelBox.add(spinRadius);
+      pSelBox.setLayout(new BoxLayout(pSelBox, BoxLayout.X_AXIS));
+
+      // a panel for the selection box
+      JPanel pDates = new JPanel();
+      Date today = new Date();
+      Date weekAgo = DateUtils.addWeeks(today, -1);
+      sincePicker = new JXDatePicker(weekAgo);
+      untilPicker = new JXDatePicker(today);
+      pDates.add(new JLabel("since: "));
+      pDates.add(sincePicker);
+      pDates.add(new JLabel("until: "));
+      pDates.add(untilPicker);
+      pDates.setLayout(new BoxLayout(pDates, BoxLayout.X_AXIS));
+
+      // a panel for the buttons
+      JPanel pButtons = new JPanel();
+      JButton btnOk = new JButton("OK");
+      btnOk.addActionListener(this);
+      btnOk.setActionCommand("ok");
+      JButton btnCancel = new JButton("Cancel");
+      btnCancel.addActionListener(this);
+      btnCancel.setActionCommand("cancel");
+      pButtons.add(btnOk);
+      pButtons.add(btnCancel);
+      pButtons.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+      pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
+
+      // layout of the frame
+      this.getContentPane().add(Box.createVerticalGlue());
+      this.getContentPane().add(pSelBox);
+      this.getContentPane().add(Box.createVerticalGlue());
+      this.getContentPane().add(pDates);
+      this.getContentPane().add(Box.createVerticalGlue());
+      this.getContentPane().add(pButtons);
+      this.getContentPane().setLayout(
+          new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+      this.pack();
+    }
+
+    private void loadData() {
+      // create the road feature collection from the selected features
+      IFeatureCollection<TwitterFeature> tweets = new FT_FeatureCollection<>();
+      FeatureType ft = new FeatureType();
+      ft.setGeometryType(IPoint.class);
+      tweets.setFeatureType(ft);
+
+      TwitterLoader loader = new TwitterLoader();
+      loader.setProxy(proxyHost, new Integer(proxyPort));
+      loader.setApiKey(TWITTER_API_KEY);
+      loader.setApiSecret(TWITTER_API_SECRET);
+      loader.setAccessToken(TWITTER_ACCESS_TOKEN);
+      loader.setTokenSecret(TWITTER_TOKEN_SECRET);
+      try {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String since = sdf.format(sincePicker.getDate());
+        String until = sdf.format(untilPicker.getDate());
+        List<TwitterFeature> features = loader.getTweetsFromLocation(
+            (Double) spinLat.getValue(), (Double) spinLong.getValue(),
+            (Double) spinRadius.getValue(), since, until);
+        tweets.addAll(features);
+      } catch (TwitterException e) {
+        e.printStackTrace();
+      }
+
+      // put the photos in a new layer
+      ProjectFrame pFrame = application.getMainFrame()
+          .getSelectedProjectFrame();
+      Layer layer = pFrame.getSld().createLayer(TWITTER_LAYER, IPoint.class,
+          Color.RED);
+      // create the layer style
+      Style rawStyle = new UserStyle();
+      FeatureTypeStyle ftStyle = new FeatureTypeStyle();
+      rawStyle.getFeatureTypeStyles().add(ftStyle);
+      Rule rule = new Rule();
+      ftStyle.getRules().add(rule);
+      Color color = Color.RED;
+      PointSymbolizer symbolizer = new PointSymbolizer();
+      symbolizer.setGeometryPropertyName("geom");
+      symbolizer.setUnitOfMeasure(Symbolizer.PIXEL);
+      Graphic graphic = new Graphic();
+      Mark mark = new Mark();
+      mark.setWellKnownName("circle");
+      Fill fill = new Fill();
+      fill.setColor(color);
+      mark.setFill(fill);
+      graphic.getMarks().add(mark);
+      symbolizer.setGraphic(graphic);
+      rule.getSymbolizers().add(symbolizer);
+      layer.getStyles().add(rawStyle);
+
+      IPopulation<IFeature> pop = new Population<>(TWITTER_LAYER);
+      pop.addAll(tweets);
+      pFrame.getSld().getDataSet().addPopulation(pop);
+      pFrame.getSld().add(layer);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (e.getActionCommand().equals("ok")) {
+        loadData();
+        this.dispose();
+      } else if (e.getActionCommand().equals("cancel")) {
+        this.dispose();
+      }
+    }
+  }
+
+  /**
+   * Load Twitter tweets in the selected area as geographical features, and
+   * creates a new layer with the features.
+   * 
+   * @author GTouya
+   * 
+   */
+  class LoadTwitterAction extends AbstractAction {
+
+    /**
+   * 
+   */
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      LoadTwitterFrame frame = new LoadTwitterFrame();
+      frame.setVisible(true);
+
+    }
+
+    public LoadTwitterAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Load Twitter data and add as a new layer");
+      this.putValue(Action.NAME, "Load Twitter data");
+    }
+  }
+
 }

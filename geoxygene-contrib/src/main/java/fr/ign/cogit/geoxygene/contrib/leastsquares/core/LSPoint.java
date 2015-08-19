@@ -460,11 +460,12 @@ public class LSPoint extends AbstractFeature {
           // on cherche les conflits
           double distance = mapspecs.getContraintesExternes().get(contrainte)
               .doubleValue();
+
           // on met la distance à l'échelle
           double dist_req = distance * sched.getMapspec().getEchelle() / 1000.0;
+
           Map<LSSpatialConflict, Set<IFeature>> conflits = this
               .rechercheConflitsTIN(dist_req, sched, autreClasse);
-
           for (LSSpatialConflict conflit : conflits.keySet()) {
             // System.out.println(conflit.distance());
             for (IFeature voisin : conflits.get(conflit)) {
@@ -506,6 +507,7 @@ public class LSPoint extends AbstractFeature {
     double dist = distance;
     dist += this.getSymbolWidth();
     dist += sched.getClassSymbolWidth(classeVoisin);
+
     // on commence par créer le set vide
     Map<LSSpatialConflict, Set<IFeature>> conflits = new HashMap<LSSpatialConflict, Set<IFeature>>();
     // on parcourt les conflits du scheduler et on garde ceux qui concernent
@@ -520,6 +522,7 @@ public class LSPoint extends AbstractFeature {
             voisinsConf.add(voisin);
           }
         }
+
         if (voisinsConf.size() != 0) {
           if (conflit.distance() <= dist) {
             conflits.put(conflit, voisinsConf);

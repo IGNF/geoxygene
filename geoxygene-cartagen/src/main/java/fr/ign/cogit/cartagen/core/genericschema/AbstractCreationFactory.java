@@ -28,6 +28,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea.WaterAreaNature;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterCourse;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterNode;
@@ -880,6 +881,13 @@ public abstract class AbstractCreationFactory {
 
   @SuppressWarnings("unused")
   public IWaterArea createWaterArea(SurfaceDEau geoxObj) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for IWaterArea");
+    return null;
+  }
+
+  @SuppressWarnings("unused")
+  public IWaterArea createWaterArea(IPolygon poly, WaterAreaNature nature) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IWaterArea");
     return null;

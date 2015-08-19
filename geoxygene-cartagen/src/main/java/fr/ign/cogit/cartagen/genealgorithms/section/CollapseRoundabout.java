@@ -15,7 +15,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoundAbout;
-import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
@@ -62,7 +62,8 @@ public class CollapseRoundabout {
     IDirectPosition centroid = this.roundabout.getGeom().centroid();
 
     // build the new road node
-    IRoadNode node = CartagenApplication.getInstance().getCreationFactory()
+    IRoadNode node = CartAGenDoc.getInstance().getCurrentDataset()
+        .getCartAGenDB().getGeneObjImpl().getCreationFactory()
         .createRoadNode(new GM_Point(centroid));
 
     // loop on the external roads to extend them
