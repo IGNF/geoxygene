@@ -29,6 +29,7 @@ package fr.ign.cogit.geoxygene.appli.gl;
 
 import java.io.IOException;
 
+import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.layer.LayerViewGLPanel;
 import fr.ign.cogit.geoxygene.appli.render.texture.ShaderFactory;
 import fr.ign.cogit.geoxygene.style.filter.LayerFilter;
@@ -118,8 +119,13 @@ public class GeoxygeneBlendingModeImpl implements GeoxygeneBlendingMode {
         program.addVertexShader(
                 GLTools.readFileAsString(LayerViewGLPanel.screenspaceVertexShaderFilename),
                 LayerViewGLPanel.screenspaceVertexShaderFilename);
-        String shaderpath = (String) GLResourcesManager.getInstance()
+        
+        //XXX Do not commit by bdumenieu
+        String resource = (String) GLResourcesManager.getInstance()
                 .getResourceByName(fragshader_resource_name);
+        String shaderpath = GeoxygeneBlendingModeImpl.class.getClassLoader().getResource(resource).getPath();
+        //XXX end Do not commit
+        
         if (shaderpath != null) {
             program.addFragmentShader(GLTools.readFileAsString(shaderpath),
                     shaderpath);

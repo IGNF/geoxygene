@@ -373,6 +373,14 @@ public class GeOxygeneApplication {
       GLResourcesManager.getInstance().registerDictionary(resource,
           false);
     }
+    
+    //XXX TODO BDUMENIEU 
+    //Load the default Shader dictionary
+    URL resource = GeOxygeneApplication.class.getClassLoader().getResource("shaders/shaders-resources-dictionary.xml");
+    GLResourcesManager.getInstance().registerDictionary(resource,
+            false);
+    //XXX TODO BDUMENIEU
+    
   }
 
   /**

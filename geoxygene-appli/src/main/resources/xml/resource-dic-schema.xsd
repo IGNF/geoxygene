@@ -1,6 +1,6 @@
-<xsd:schema version="1.0" targetNamespace="http://oxygene-project.sourceforge.net/schemas"
- 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:geox="http://oxygene-project.sourceforge.net/schemas"
+<xsd:schema version="1.0"
+	targetNamespace="http://oxygene-project.sourceforge.net/schemas"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:geox="http://oxygene-project.sourceforge.net/schemas"
 	elementFormDefault="qualified">
 	<xsd:annotation>
 		<xsd:documentation>
@@ -17,9 +17,12 @@
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element ref="geox:DictionaryProperties" minOccurs="0"
-					maxOccurs="1" />
-				<xsd:element ref="geox:ResourceEntry" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element name="Name" type="xsd:string" />
+				<xsd:element name="Description" type="xsd:string"
+					minOccurs="0" />
+				<xsd:element ref="geox:DictionaryProperties" minOccurs="0" />
+				<xsd:element ref="geox:ResourceEntry" minOccurs="0"
+					maxOccurs="unbounded" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
@@ -32,7 +35,7 @@
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="ResourcesCount" type="xsd:positiveInteger"/>
+				<xsd:element name="ResourcesCount" type="xsd:positiveInteger" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
@@ -40,14 +43,20 @@
 	<xsd:element name="ResourceEntry">
 		<xsd:annotation>
 			<xsd:documentation>
-				"ResourceEntry" is a resource referenced by the dictionary. Each resource is identified by an unique name.
+				"ResourceEntry" is a resource referenced by the dictionary. Each resource is
+				identified by an unique name.
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="ResourceName" type="xsd:string"/>
-				<xsd:element name="ResourceValue" type="xsd:string"/>
-			</xsd:sequence>			
+				<xsd:element name="Description" type="xsd:string"
+					minOccurs="0" />
+				<xsd:element name="ResourceName" type="xsd:string" />
+				<xsd:element name="ResourceValue" type="xsd:string" />
+			</xsd:sequence>
+
 		</xsd:complexType>
 	</xsd:element>
+
 </xsd:schema>
+
