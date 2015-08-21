@@ -42,6 +42,7 @@ import javax.media.jai.RenderedOp;
 import javax.swing.JPanel;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.geotools.coverage.grid.GridCoverage2D;
 
 import com.jhlabs.image.LinearColormap;
 import com.jhlabs.image.TextureFilter;
@@ -152,6 +153,7 @@ public class LayerStylesPanel extends JPanel {
                   currentColumn, currentRow, columnsWidth, rowHeight);
             } else {
               if (symbolizer.isRasterSymbolizer()) {
+                // TODO : deal with non 3-band raster, especially in GL mode
                 this.paintRaster((RasterSymbolizer) symbolizer, g2,
                     currentColumn, currentRow, columnsWidth, rowHeight);
               }
@@ -609,19 +611,33 @@ public class LayerStylesPanel extends JPanel {
    * @param rowHeight
    */
   private void paintRaster(RasterSymbolizer symbolizer, Graphics2D g2,
-      int currentColumn, int currentRow, int columnsWidth, int rowHeight) {
-    int x = currentColumn * (columnsWidth + this.margin) + this.margin;
-    int y = currentRow * (rowHeight + this.margin) + this.margin;
-    int width = columnsWidth;
-    int height = rowHeight;
-    // FIXME Pour l'instant on considère qu'il n'y a qu'un symbolizer
-    for (IFeature feature : this.layer.get().getFeatureCollection()) {
-      FT_Coverage coverage = (FT_Coverage) feature;
-      BufferedImage image = PlanarImage.wrapRenderedImage(
-          coverage.coverage().getRenderedImage()).getAsBufferedImage();
-      BufferedImage thumb = image.getSubimage(0, 0, image.getWidth() / 10,
-          image.getHeight() / 10);
-      g2.drawImage(thumb, x, y, width, height, null);
-    }
+          int currentColumn, int currentRow, int columnsWidth, int rowHeight) {
+      int x = currentColumn * (columnsWidth + this.margin) + this.margin;
+      int y = currentRow * (rowHeight + this.margin) + this.margin;
+      int width = columnsWidth;
+      int height = rowHeight;
+      // FIXME Pour l'instant on considère qu'il n'y a qu'un symbolizer
+      for (IFeature feature : this.layer.get().getFeatureCollection()) {
+          GridCoverage2D coverage = ((FT_Coverage) feature).coverage();
+          if (coverage.getNumSampleDimensions()==3) {
+              // With 3 bands, we can paint the layer in the legend with awt
+              BufferedImage image = PlanarImage.wrapRenderedImage(coverage.getRenderedImage()).getAsBufferedImage();
+              BufferedImage thumb = image.getSubimage(0, 0, image.getWidth() / 10,
+                      image.getHeight() / 10);
+              g2.drawImage(thumb, x, y, width, height, null);
+          } else {
+              // TODO    
+          }
+      }
+
+      // TODO DELETE : OLD PART
+      //  for (IFeature feature : this.layer.get().getFeatureCollection()) {
+      //  FT_Coverage coverage = (FT_Coverage) feature;
+      //  BufferedImage image = PlanarImage.wrapRenderedImage(
+      //      coverage.coverage().getRenderedImage()).getAsBufferedImage();
+      //  BufferedImage thumb = image.getSubimage(0, 0, image.getWidth() / 10,
+      //      image.getHeight() / 10);
+      //  g2.drawImage(thumb, x, y, width, height, null);
+      //}
   }
 }

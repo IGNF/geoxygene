@@ -46,6 +46,7 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL31;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -90,21 +91,24 @@ import fr.ign.cogit.geoxygene.util.gl.GLTools;
  */
 public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         ActionListener {
-    private static final String backgroundVertexShaderFilename = "./src/main/resources/shaders/bg.vert.glsl";
-    private static final String backgroundFragmentShaderFilename = "./src/main/resources/shaders/bg.frag.glsl";
-    private static final String gradientVertexShaderFilename = "./src/main/resources/shaders/gradient.vert.glsl";
-    private static final String gradientFragmentShaderFilename = "./src/main/resources/shaders/gradient.frag.glsl";
-    private static final String antialiasedFragmentShaderFilename = "./src/main/resources/shaders/antialiased.frag.glsl";
-    private static final String textScreenspaceVertexShaderFilename = "./src/main/resources/shaders/text-screenspace.vert.glsl";
-    private static final String textLayerFragmentShaderFilename = "./src/main/resources/shaders/text-layer.frag.glsl";
-    private static final String colorFragmentShaderFilename = "./src/main/resources/shaders/polygon.color.frag.glsl";
-    private static final String textureFragmentShaderFilename = "./src/main/resources/shaders/polygon.texture.frag.glsl";
-    public static final String screenspaceVertexShaderFilename = "./src/main/resources/shaders/screenspace.vert.glsl";
-    private static final String bezierFragmentShaderFilename = "./src/main/resources/shaders/bezier.frag.glsl";
-    private static final String bezierVertexShaderFilename = "./src/main/resources/shaders/bezier.vert.glsl";
-    private static final String linePaintingFragmentShaderFilename = "./src/main/resources/shaders/linepainting.frag.glsl";
-    private static final String linePaintingVertexShaderFilename = "./src/main/resources/shaders/linepainting.vert.glsl";
-    private static final String worldspaceVertexShaderFilename = "./src/main/resources/shaders/worldspace.vert.glsl";
+    private static final String backgroundVertexShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/bg.vert.glsl").getFile();
+    private static final String backgroundFragmentShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/bg.frag.glsl").getFile();
+    private static final String gradientVertexShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/gradient.vert.glsl").getFile();
+    private static final String gradientFragmentShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/gradient.frag.glsl").getFile();
+    private static final String rasterVertexShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/raster.vert.glsl").getFile();
+    private static final String rasterFragmentShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/raster.frag.glsl").getFile();
+    private static final String antialiasedFragmentShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/antialiased.frag.glsl").getFile();
+    private static final String textScreenspaceVertexShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/text-screenspace.vert.glsl").getFile();
+    private static final String textLayerFragmentShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/text-layer.frag.glsl").getFile();
+    private static final String colorFragmentShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/polygon.color.frag.glsl").getFile();
+    private static final String textureFragmentShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/polygon.texture.frag.glsl").getFile();
+    public static final String screenspaceVertexShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/screenspace.vert.glsl").getFile();
+    private static final String bezierFragmentShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/bezier.frag.glsl").getFile();
+    private static final String bezierVertexShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/bezier.vert.glsl").getFile();
+    private static final String linePaintingFragmentShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/linepainting.frag.glsl").getFile();
+    private static final String linePaintingVertexShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/linepainting.vert.glsl").getFile();
+    private static final String worldspaceVertexShaderFilename = LayerViewGLPanel.class.getClassLoader().getResource("shaders/worldspace.vert.glsl").getFile();
+
     private static final long serialVersionUID = -7181604491025859187L; // serializable
     private static final int COLORTEXTURE0_SLOT = 1;
     private static final int COLORTEXTURE1_SLOT = 2;
@@ -1073,6 +1077,9 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String gradientTextureUniformVarName = "gradientTexture";
     public static final String textureScaleFactorUniformVarName = "textureScaleFactor";
     public static final String antialiasingSizeUniformVarName = "antialiasingSize";
+    //public static final String rasterImageUniformVarName = "rasterImage";
+    public static final String bufferImageUniformVarName = "bufferImage";
+    public static final String bufferColormapUniformVarName = "bufferColormap";
 
     public static final String paperTextureUniformVarName = "paperSampler";
     public static final String brushTextureUniformVarName = "brushSampler";
@@ -1088,6 +1095,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String strokePressureUniformVarName = "strokePressure";
     public static final String sharpnessUniformVarName = "sharpness";
     public static final String bezierLineRatioUniformVarName = "bezierLineRatio";
+    public static final String timeUniformVarName = "time";
 
     public static final String basicProgramName = "Basic";
     public static final String linePaintingProgramName = "LinePainting";
@@ -1101,6 +1109,8 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String screenspaceBlendingProgramName = "ScreenspaceBlending";
     public static final String textLayerProgramName = "TextLayer";
     public static final String gradientProgramName = "GradientTexture";
+    // TODO @amasse a valider nom programme
+    public static final String rasterProgramName = "Raster";
 
     private final GLProgramAccessor basicAccessor = null;
     private GLProgramAccessor screenspaceTextureAccessor = null;
@@ -1485,6 +1495,16 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
             final ShaderDescriptor shaderDescriptor) {
         return new GLProgramAccessorGradientSubshader(shaderDescriptor);
     }
+    
+    // DEBUT ajout @amasse 27/07/2015
+    /**
+     * @return
+     */
+    public GLProgramAccessor createRasterSubshaderAccessor(
+            final ShaderDescriptor shaderDescriptor) {
+        return new GLProgramAccessorRasterSubshader(shaderDescriptor);
+    }
+    // FIN ajout @amasse 27/07/2015
 
     /**
      * @author JeT This accessor returns a program created using the given
@@ -1535,6 +1555,36 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         }
     }
 
+    // DEBUT ajout @amasse 27/05/2015
+    /**
+     * @author JeT This accessor returns a program created using the given
+     *         shader descriptor
+     */
+    private class GLProgramAccessorRasterSubshader implements
+            GLProgramAccessor {
+
+        private ShaderDescriptor descriptor = null;
+
+        /**
+         * @param program
+         */
+        public GLProgramAccessorRasterSubshader(ShaderDescriptor descriptor) {
+            super();
+            this.descriptor = descriptor;
+        }
+
+        @Override
+        public GLProgram getGLProgram() throws GLException {
+            try {
+                return LayerViewGLPanel.this
+                        .createRasterSubshaderProgram(this.descriptor);
+            } catch (IOException e) {
+                throw new GLException(e);
+            }
+        }
+    }
+    // FIN ajout @amasse 27/07/2015
+    
     /**
      * @author JeT This accessor returns a program created using the given
      *         shader descriptor
@@ -1639,6 +1689,57 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         program.addUniform(globalOpacityUniformVarName);
         program.addUniform(objectOpacityUniformVarName);
         program.addUniform(gradientTextureUniformVarName);
+        shader.declareUniforms(program);
+
+        return program;
+    }
+    
+    /**
+     * raster program use a subshader
+     */
+    private GLProgram createRasterSubshaderProgram(
+            ShaderDescriptor shaderDescriptor) throws GLException, IOException {
+        // basic program
+        Subshader shader = ShaderFactory.createShader(shaderDescriptor);
+
+        GLProgram program = new GLProgram(rasterProgramName);
+        program.addVertexShader(
+                GLTools.readFileAsString(rasterVertexShaderFilename),
+                rasterVertexShaderFilename);
+        program.addFragmentShader(
+                GLTools.readFileAsString(rasterFragmentShaderFilename),
+                rasterFragmentShaderFilename);
+        shader.configureProgram(program);
+
+        program.addInputLocation(GLSimpleVertex.vertexUVVariableName,
+                GLSimpleVertex.vertexUVLocation);
+        program.addInputLocation(GLSimpleVertex.vertexPositionVariableName,
+                GLSimpleVertex.vertexPostionLocation);
+        program.addInputLocation(GLSimpleVertex.vertexColorVariableName,
+                GLSimpleVertex.vertexColorLocation);
+        program.addUniform(m00ModelToViewMatrixUniformVarName);
+        program.addUniform(m02ModelToViewMatrixUniformVarName);
+        program.addUniform(m11ModelToViewMatrixUniformVarName);
+        program.addUniform(m12ModelToViewMatrixUniformVarName);
+
+        program.addUniform(screenWidthUniformVarName);
+        program.addUniform(screenHeightUniformVarName);
+        program.addUniform(fboWidthUniformVarName);
+        program.addUniform(fboHeightUniformVarName);
+        program.addUniform(globalOpacityUniformVarName);
+        program.addUniform(objectOpacityUniformVarName);
+
+        // TODO : temp
+        program.addUniform("typeColormap");
+        program.addUniform("nbPointsColormap");
+        program.addUniform("animate");
+        
+        program.addUniform(bufferColormapUniformVarName);
+        
+        // Time uniform, only for animation
+        program.addUniform(timeUniformVarName);
+        program.addUniform(bufferImageUniformVarName);
+
         shader.declareUniforms(program);
 
         return program;

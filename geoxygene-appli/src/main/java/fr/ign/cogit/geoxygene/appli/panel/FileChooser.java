@@ -112,11 +112,33 @@ public class FileChooser {
                 return "Road Network Text Files"; //$NON-NLS-1$
             }
         };
+        
+        // New filter, @amasse, for Raster
+        FileFilter RasterFilter = new FileFilter() {
+            @Override
+            // TODO : add other raster type, do not forget to implement the reading ...
+            public boolean accept(final File f) {
+                return (f.isFile() && (f.getAbsolutePath().endsWith(".tif") //$NON-NLS-1$
+                        || f.getAbsolutePath().endsWith(".TIF") //$NON-NLS-1$
+                        || f.getAbsolutePath().endsWith(".jpg") //$NON-NLS-1$
+                        || f.getAbsolutePath().endsWith(".JPG") //$NON-NLS-1$
+                        || f.getAbsolutePath().endsWith(".png") //$NON-NLS-1$
+                        || f.getAbsolutePath().endsWith(".PNG") //$NON-NLS-1$
+                        ) || f.isDirectory());
+            }
+
+            @Override
+            public String getDescription() {
+                return "Raster Images"; //$NON-NLS-1$
+            }
+        };
+ 
         this.fileChooser.addChoosableFileFilter(shapefileFilter);
         this.fileChooser.addChoosableFileFilter(geotiffFilter);
         this.fileChooser.addChoosableFileFilter(ascFilter);
         this.fileChooser.addChoosableFileFilter(gpsTextFilter);
         this.fileChooser.addChoosableFileFilter(roadNetworkTextFilter);
+        this.fileChooser.addChoosableFileFilter(RasterFilter);
         this.fileChooser.setFileFilter(shapefileFilter);
         this.fileChooser
                 .setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);

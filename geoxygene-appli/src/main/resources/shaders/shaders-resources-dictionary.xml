@@ -1,21 +1,134 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ResourceDictionary xmlns="http://oxygene-project.sourceforge.net/schemas" 
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://oxygene-project.sourceforge.net/schemas resource-dic-schema.xsd">
+<ResourceDictionary xmlns="http://oxygene-project.sourceforge.net/schemas"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>ShaderResources</Name>
+	<!-- Blending Modes -->
 	<ResourceEntry>
+		<Description>Normal blending mode : f(a,b)=b</Description>
 		<ResourceName>shader_normalblending</ResourceName>
-		<ResourceValue>./src/main/resources/shaders/blending-normal.frag.glsl</ResourceValue>
+		<ResourceValue>shaders/blending-normal.frag.glsl</ResourceValue>
 	</ResourceEntry>
 	<ResourceEntry>
+		<Description>Multiply blending mode : f(a,b)=a*b</Description>
 		<ResourceName>shader_multiplyblending</ResourceName>
-		<ResourceValue>./src/main/resources/shaders/blending-multiply.frag.glsl</ResourceValue>
+		<ResourceValue>shaders/blending-multiply.frag.glsl</ResourceValue>
 	</ResourceEntry>
 	<ResourceEntry>
+		<Description>HighTone blending</Description>
 		<ResourceName>shader_hightoneblending</ResourceName>
-		<ResourceValue>./src/main/resources/shaders/blending-hightone.frag.glsl</ResourceValue>
+		<ResourceValue>shaders/blending-hightone.frag.glsl</ResourceValue>
 	</ResourceEntry>
 	<ResourceEntry>
+		<Description>Overlay blending mode. Overlay combines the screen and
+			multiply blending modes.
+		</Description>
 		<ResourceName>shader_overlayblending</ResourceName>
-		<ResourceValue>./src/main/resources/shaders/blending-overlay.frag.glsl</ResourceValue>
+		<ResourceValue>shaders/blending-overlay.frag.glsl</ResourceValue>
 	</ResourceEntry>
+	<!-- Default Shaders -->
+	<ResourceEntry>
+		<ResourceName>shader_defaultsubshader1d</ResourceName>
+		<ResourceValue>shaders/subshader1d.default.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>shader_defaultsubshader2d</ResourceName>
+		<ResourceValue>shaders/subshader2d.default.glsl</ResourceValue>
+	</ResourceEntry>
+	<!-- GlobalShaders -->
+	<ResourceEntry>
+		<ResourceName>polygoncolorFragmentShader</ResourceName>
+		<ResourceValue>shaders/polygon.color.frag.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>backgroundVertexShader</ResourceName>
+		<ResourceValue>shaders/bg.vert.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>backgroundFragmentShader</ResourceName>
+		<ResourceValue>shaders/bg.frag.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>gradientVertexShader</ResourceName>
+		<ResourceValue>shaders/gradient.vert.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>gradientFragmentShader</ResourceName>
+		<ResourceValue>shaders/gradient.frag.glsl</ResourceValue>
+	</ResourceEntry>
+
+    <!-- Ajout @amasse -->
+	<ResourceEntry>
+		<ResourceName>rasterVertexShader</ResourceName>
+		<ResourceValue>shaders/raster.vert.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>rasterFragmentShader</ResourceName>
+		<ResourceValue>shaders/raster.frag.glsl</ResourceValue>
+	</ResourceEntry>
+    <!-- Fin Ajout @amasse -->
+
+	<ResourceEntry>
+		<ResourceName>antialiasedFragmentShader</ResourceName>
+		<ResourceValue>shaders/antialiased.frag.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>textScreenspaceVertexShader</ResourceName>
+		<ResourceValue>shaders/text-screenspace.vert.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>textLayerFragmentShader</ResourceName>
+		<ResourceValue>shaders/text-layer.frag.glsl</ResourceValue>
+	</ResourceEntry>
+
+	<ResourceEntry>
+		<ResourceName>textureFragmentShader</ResourceName>
+		<ResourceValue>shaders/polygon.texture.frag.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>screenspaceVertexShader</ResourceName>
+		<ResourceValue>shaders/screenspace.vert.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>bezierFragmentShader</ResourceName>
+		<ResourceValue>shaders/bezier.frag.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>bezierVertexShader</ResourceName>
+		<ResourceValue>shaders/bezier.vert.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>linePaintingFragmentShader</ResourceName>
+		<ResourceValue>shaders/linepainting.frag.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>linePaintingVertexShader</ResourceName>
+		<ResourceValue>shaders/linepainting.vert.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<Description>This shader projects the GL primitives from the
+			geographical space to the screen space
+		</Description>
+		<ResourceName>world2screenVShader</ResourceName>
+		<ResourceValue>shaders/world2screenspace.vert.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>identityVShader</ResourceName>
+		<ResourceValue>shaders/identity.vert.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>filtercontrastShader</ResourceName>
+		<ResourceValue>shaders/filterContrast.frag.glsl</ResourceValue>
+	</ResourceEntry>
+	<ResourceEntry>
+		<ResourceName>filteridentityShader</ResourceName>
+		<ResourceValue>shaders/filterIdentity.frag.glsl</ResourceValue>
+	</ResourceEntry>
+
+	<!-- Shader Descriptors -->
+	<!-- Not Yet Implemented -->
+	<!-- <ResourceEntry> <ResourceName>backgroundFragmentShader-descriptor</ResourceName> 
+		<ResourceValue>shaders/descriptors/background.frag.xml</ResourceValue> </ResourceEntry> 
+		<ResourceEntry> <ResourceName>backgroundVertexShader-descriptor</ResourceName> 
+		<ResourceValue>shaders/descriptors/background.vert.xml</ResourceValue> </ResourceEntry> -->
+
 </ResourceDictionary>

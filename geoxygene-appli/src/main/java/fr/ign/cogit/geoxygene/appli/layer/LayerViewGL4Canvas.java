@@ -20,7 +20,10 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -83,12 +86,15 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         // application without message error)
         // PixelFormat pixelFormat = new PixelFormat().withSamples(4);
         // this.setPixelFormat(pixelFormat);
+        
     }
 
     @Override
     protected void initGL() {
+        //System.out.println("initGL");
         super.initGL();
         glViewport(0, 0, this.getWidth(), this.getHeight());
+               
         // glEnable(GL13.GL_MULTISAMPLE);
     }
 
@@ -185,11 +191,15 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
                 logger.warn("canvas try to render a non initialized LayerViewGLPanel. Skip rendering.");
                 return;
             }
+            
+            // determine if the current rendering is quick or not
             boolean quickRendering = this.getParentPanel().getProjectFrame()
                     .getMainFrame().getMode().getCurrentMode()
                     .getRenderingType() != RenderingTypeMode.FINAL
                     || !this.getParentPanel().useFBO()
                     || this.getParentPanel().useWireframe();
+            
+            // If not quick rendering
             if (!quickRendering) {
                 this.getParentPanel().initializeFBO();
                 GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this
@@ -207,6 +217,8 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
                 this.drawBackground(this.getParentPanel().getCanvasWidth(),
                         this.getParentPanel().getCanvasHeight());
             }
+            
+            // Render all the layers
             this.getParentPanel().getRenderingManager().renderAll();
 
             if (!quickRendering) {
@@ -233,6 +245,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
     private void drawFBOPingPongInBackBuffer() {
         // Draw the Ping-Pong FBO into the Back Buffer
         try {
+           
             GLProgram program = this.getGlContext().setCurrentProgram(
                     LayerViewGLPanel.screenspaceAntialiasedTextureProgramName);
             this.getParentPanel().drawInBackBuffer();
@@ -242,6 +255,8 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             glDisable(GL11.GL_DEPTH_TEST);
 
             GL30.glBindVertexArray(LayerViewGLPanel.getScreenQuad().getVaoId());
+            
+            // TODO : manage global and object opacity ? 
             // program.setUniform1f(
             // LayerViewGLPanel.objectOpacityUniformVarName,
             // (float) primitive.getOverallOpacity());
@@ -291,6 +306,8 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             return;
         }
         try {
+            //System.out.println("Start of drawing background");
+            
             GLProgram program = this.getGlContext().setCurrentProgram(
                     LayerViewGLPanel.backgroundProgramName);
             if (program == null) {
@@ -366,6 +383,8 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
             glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
             GL30.glBindVertexArray(0); // unbind VAO
             GLTools.glCheckError("exiting background rendering");
+            
+           //System.out.println("Finish drawing background");
         } catch (GLException e) {
             logger.error("An error ocurred drawing background : "
                     + e.getMessage());
@@ -460,15 +479,135 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
      * 
      * @throws GLException
      */
+    
+    // New version, try to optimize this time ...
+    // TODO : do the optimization
     public void glPaintOverlays() throws GLException {
         if (this.bg == null || this.bg.getWidth() != this.getWidth()
                 || this.bg.getHeight() != this.getHeight()) {
+            
+            this.bg = new BufferedImage(this.getWidth(), this.getHeight(),
+                    BufferedImage.TYPE_4BYTE_ABGR);
+            this.bg = new BufferedImage(this.getWidth(), this.getHeight(),
+                  BufferedImage.TYPE_4BYTE_ABGR);
+            this.buffer = BufferUtils.createByteBuffer(this.bg.getWidth()
+                    * this.bg.getHeight() * 4); // 4 for RGBA, 3 for RGB
+            this.pixels = new int[this.bg.getWidth() * this.bg.getHeight()];
+        }
+        
+        Graphics2D g = this.bg.createGraphics();
+        g.setComposite(AlphaComposite.Clear);
+        g.setColor(Color.red);
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        
+        Composite fade = AlphaComposite
+                .getInstance(AlphaComposite.SRC_OVER, 1f);
+        g.setComposite(fade);
+        this.parentPanel.paintOverlays(g);
+        this.bg.getRGB(0, 0, this.bg.getWidth(), this.bg.getHeight(),
+                this.pixels, 0, this.bg.getWidth());
+        this.buffer.clear();
+        
+        // TODO : delete that crap, please 
+        // To be replaced by that, pb it is reversed and ABGR    
+        //buffer.asIntBuffer().put(IntBuffer.wrap(pixels));
+        
+        
+        for (int y = this.bg.getHeight() - 1; y >= 0; y--) {
+            for (int x = 0; x < this.bg.getWidth(); x++) {
+                int pixel = this.pixels[y * this.bg.getWidth() + x];
+                this.buffer.put((byte) (pixel >> 16 & 0xFF)); // Red component
+                this.buffer.put((byte) (pixel >> 8 & 0xFF)); // Green component
+                this.buffer.put((byte) (pixel >> 0 & 0xFF)); // Blue component
+                this.buffer.put((byte) (pixel >> 24 & 0xFF)); // Alpha
+                                                              // component.
+                // Only for RGBA
+                // System.err.println("transparency = " + (pixel >> 24 & 0xFF));
+            }
+        }
+        this.buffer.rewind();
+        g.dispose();
+        glBindTexture(GL_TEXTURE_2D, this.getOverlayTextureId());
+
+        GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S,
+                GL11.GL_REPEAT);
+        GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T,
+                GL11.GL_REPEAT);
+
+        // Setup texture scaling filtering
+        GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
+                GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,
+                GL11.GL_LINEAR);
+
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
+                GL11.GL_LINEAR);
+        GL11.glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.getWidth(),
+                this.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
+                this.buffer);
+
+        GLProgram program = this.getGlContext().setCurrentProgram(
+                LayerViewGLPanel.screenspaceAntialiasedTextureProgramName);
+
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+        GL11.glViewport(0, 0, this.getWidth(), this.getHeight());
+        GL11.glDrawBuffer(GL11.GL_BACK);
+        glEnable(GL_TEXTURE_2D);
+        glDisable(GL11.GL_POLYGON_SMOOTH);
+
+        program.setUniform1i(LayerViewGLPanel.colorTexture1UniformVarName,
+                COLORTEXTURE2_SLOT);
+        GLTools.glCheckError("Overlay bind antialiasing");
+        program.setUniform1i(LayerViewGLPanel.antialiasingSizeUniformVarName, 1);
+        GLTools.glCheckError("Overlay activate texture");
+        GL13.glActiveTexture(GL13.GL_TEXTURE0 + COLORTEXTURE2_SLOT);
+        GLTools.glCheckError("Overlay bound texture");
+        glBindTexture(GL_TEXTURE_2D, this.getOverlayTextureId());
+        GLTools.glCheckError("Overlay bound texture");
+
+        GL11.glDepthMask(false);
+        glDisable(GL11.GL_DEPTH_TEST);
+
+        GL30.glBindVertexArray(LayerViewGLPanel.getScreenQuad().getVaoId());
+
+        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
+        program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName, 1f);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
+                GL11.GL_LINEAR);
+        //
+        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+
+        GLTools.glCheckError("before Overlay drawing textured quad");
+        
+        // draw the background and legend and other stuff
+        LwjglLayerRenderer.drawComplex(LayerViewGLPanel.getScreenQuad());
+
+        // LayerViewGLPanel.getScreenQuad().setColor(new Color(1f, 1f, 1f,
+        // .5f));
+        GLTools.glCheckError("Overlay drawing textured quad");
+
+        GL30.glBindVertexArray(0); // unbind VAO
+        GLTools.glCheckError("exiting Overlay rendering");
+        glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
+
+    }
+
+
+
+
+    public void glPaintOverlays_old() throws GLException {
+        if (this.bg == null || this.bg.getWidth() != this.getWidth()
+                || this.bg.getHeight() != this.getHeight()) {
+
             this.bg = new BufferedImage(this.getWidth(), this.getHeight(),
                     BufferedImage.TYPE_4BYTE_ABGR);
             this.buffer = BufferUtils.createByteBuffer(this.bg.getWidth()
                     * this.bg.getHeight() * 4); // 4 for RGBA, 3 for RGB
             this.pixels = new int[this.bg.getWidth() * this.bg.getHeight()];
         }
+
         Graphics2D g = this.bg.createGraphics();
         g.setComposite(AlphaComposite.Clear);
         g.setColor(Color.red);
@@ -481,6 +620,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
         this.bg.getRGB(0, 0, this.bg.getWidth(), this.bg.getHeight(),
                 this.pixels, 0, this.bg.getWidth());
         this.buffer.clear();
+
         for (int y = this.bg.getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x < this.bg.getWidth(); x++) {
                 int pixel = this.pixels[y * this.bg.getWidth() + x];
@@ -488,7 +628,7 @@ public class LayerViewGL4Canvas extends LayerViewGLCanvas implements
                 this.buffer.put((byte) (pixel >> 8 & 0xFF)); // Green component
                 this.buffer.put((byte) (pixel >> 0 & 0xFF)); // Blue component
                 this.buffer.put((byte) (pixel >> 24 & 0xFF)); // Alpha
-                                                              // component.
+                // component.
                 // Only for RGBA
                 // System.err.println("transparency = " + (pixel >> 24 & 0xFF));
             }

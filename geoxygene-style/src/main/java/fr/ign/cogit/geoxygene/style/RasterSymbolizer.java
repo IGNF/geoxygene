@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlValue;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -37,9 +38,21 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
  * 
  */
 public class RasterSymbolizer extends AbstractSymbolizer {
+    @XmlTransient
+    private double opacity = 1.0d;
+    
     @XmlElement(name = "ShadedRelief")
     ShadedRelief shadedRelief = null;
-    private double opacity = 1.0d;
+    
+    @XmlElement(name="Opacity")
+    public double getOpacity() {
+        return opacity;
+    }
+    
+    public void setOpacity(double opacity) {
+        this.opacity = opacity;
+    }
+    
 
     public ShadedRelief getShadedRelief() {
         return this.shadedRelief;
@@ -60,6 +73,18 @@ public class RasterSymbolizer extends AbstractSymbolizer {
         this.colorMap = colorMap;
     }
 
+    @XmlElement(name = "ChannelSelection")
+    ChannelSelection channelSelection = null;
+    
+    public ChannelSelection getChannelSelection() {
+        return this.channelSelection;
+    }
+
+    public void setChannelSelection(ChannelSelection channelSelection) {
+        this.channelSelection = channelSelection;
+    }
+    
+    
     @Override
     public boolean isRasterSymbolizer() {
         return true;
@@ -74,13 +99,13 @@ public class RasterSymbolizer extends AbstractSymbolizer {
     @XmlTransient
     Map<IDirectPosition, Vecteur> positionMap = new HashMap<IDirectPosition, Vecteur>();
 
-    public double getOpacity() {
-        return this.opacity;
-    }
+//    public double getOpacity() {
+//        return this.opacity;
+//    }
 
-    public void setOpacity(double opacity) {
-        this.opacity = opacity;
-    }
+//    public void setOpacity(double opacity) {
+//        this.opacity = opacity;
+//    }
 
     /*
      * (non-Javadoc)

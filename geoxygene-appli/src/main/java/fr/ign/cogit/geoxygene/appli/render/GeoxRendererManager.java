@@ -41,6 +41,7 @@ import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.TextSymbolizer;
+import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.BasicTextureExpressiveRenderingDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
 import fr.ign.cogit.geoxygene.style.expressive.StrokeExpressiveRenderingDescriptor;
@@ -154,6 +155,11 @@ public class GeoxRendererManager {
 
             } else if (symbolizer.isPointSymbolizer()) {
                 // default renderer is ok
+            } else if (symbolizer.isRasterSymbolizer()) {
+                RasterSymbolizer rasterSymbolizer = (RasterSymbolizer) symbolizer;
+                
+                // create a renderer for Raster
+                renderer = new GeoxComplexRendererRaster(layerRenderer, rasterSymbolizer);               
             } else {
                 logger.error("No known association between symbolizer "
                         + symbolizer.getClass().getSimpleName()

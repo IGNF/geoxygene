@@ -30,6 +30,17 @@ public class ColorMap {
 
     @XmlElement(name = "PropertyName")
     String propertyName = null;
+    
+    @XmlElement(name = "Categorize")
+    Categorize categorize = null;
+    
+    public Categorize getCategorize() {
+        return categorize;
+    }
+    
+    public void setCategorize(Categorize categorize) {
+        this.categorize = categorize;
+    }
 
     @XmlElement(name = "Interpolate")
     Interpolate interpolate = null;
@@ -70,6 +81,7 @@ public class ColorMap {
         }
         return 0;
     }
+       
 
     private Color interpolateColor(double value, double data1, Color color1,
             double data2, Color color2) {
@@ -141,6 +153,22 @@ public class ColorMap {
             return false;
         }
         return true;
+    }
+    
+    public boolean isCategorize() {
+        if (categorize!=null) {
+            return true;
+        } else {
+            return false;
+        }      
+    }
+    
+    public boolean isInterpolate() {
+        if (interpolate!=null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

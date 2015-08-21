@@ -262,6 +262,7 @@ public final class GLTools {
                 * image.getHeight() * 4); // 4 for RGBA, 3 for RGB
 
         fillBuffer(image, pixels, buffer);
+        //displayBuffer(buffer.asIntBuffer());
 
         buffer.rewind();
 
@@ -316,6 +317,8 @@ public final class GLTools {
      * @param pixels
      * @param buffer
      */
+    
+    // TODO : seems dirty in computation time
     public static void fillBuffer(final BufferedImage image, int[] pixels,
             ByteBuffer buffer) {
         for (int y = 0; y < image.getHeight(); y++) {

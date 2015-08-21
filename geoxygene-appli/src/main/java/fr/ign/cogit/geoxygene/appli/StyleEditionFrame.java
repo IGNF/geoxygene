@@ -478,7 +478,6 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
       });
 
       // modif abdel
-
       // ajout de tabedpane
       this.add(this.tabPane, BorderLayout.CENTER);
       // creation des boutons
@@ -490,7 +489,12 @@ public class StyleEditionFrame extends JDialog implements ActionListener,
       this.buttonPanel.add(buttonValid);
       this.buttonPanel.add(buttonCancel);
       this.buttonPanel.setAlignmentX(LEFT_ALIGNMENT);
-      this.mainStylePanel.add(this.buttonPanel);
+      
+      // TODO : manage style edition for raster (interactive colormap, etc.)
+      if(!layer.getSymbolizer().isRasterSymbolizer()) {
+          this.mainStylePanel.add(this.buttonPanel);
+      }
+      
       this.buttonPanel.setAlignmentX(LEFT_ALIGNMENT);
       // ajout des boutons
       this.add(this.buttonPanel, BorderLayout.SOUTH);

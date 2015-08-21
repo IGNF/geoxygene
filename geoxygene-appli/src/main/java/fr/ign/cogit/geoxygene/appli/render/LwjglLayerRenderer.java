@@ -578,7 +578,10 @@ public class LwjglLayerRenderer extends AbstractLayerRenderer implements
             this.previousRenderer = renderer;
         }
         renderer.setFBORendering(true);
-        renderer.render(primitive, 1f);
+        // opacity restored, modif @amasse
+        renderer.render(primitive, opacity);
+        //renderer.render(primitive, 1.0f);
+        
         renderer.setFBORendering(false);
         staticPreviousRenderer = renderer;
 

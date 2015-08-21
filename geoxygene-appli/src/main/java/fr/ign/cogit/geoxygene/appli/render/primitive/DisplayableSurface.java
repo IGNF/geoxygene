@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.lwjgl.opengl.GL11;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -45,6 +46,7 @@ import fr.ign.cogit.geoxygene.appli.gl.BinaryGradientTexture;
 import fr.ign.cogit.geoxygene.appli.gl.GLComplexFactory;
 import fr.ign.cogit.geoxygene.appli.gl.GLSimpleComplex;
 import fr.ign.cogit.geoxygene.appli.gl.GLTextComplex;
+import fr.ign.cogit.geoxygene.appli.gl.RasterImage;
 import fr.ign.cogit.geoxygene.appli.render.GeoxComplexRenderer;
 import fr.ign.cogit.geoxygene.appli.render.GeoxComplexRendererBasic;
 import fr.ign.cogit.geoxygene.appli.render.GeoxRendererManager;
@@ -56,8 +58,10 @@ import fr.ign.cogit.geoxygene.appli.render.texture.TextureTask;
 import fr.ign.cogit.geoxygene.appli.task.TaskListener;
 import fr.ign.cogit.geoxygene.appli.task.TaskManager;
 import fr.ign.cogit.geoxygene.appli.task.TaskState;
+import fr.ign.cogit.geoxygene.feature.FT_Coverage;
 import fr.ign.cogit.geoxygene.style.Fill2DDescriptor;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
+import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 import fr.ign.cogit.geoxygene.style.TextSymbolizer;
 import fr.ign.cogit.geoxygene.style.expressive.GradientSubshaderDescriptor;
@@ -195,6 +199,7 @@ public class DisplayableSurface extends AbstractDisplayable {
                 complexes.addAll(fullRep);
             }
             return complexes;
+            
         } else if (this.getSymbolizer().isTextSymbolizer()) {
             TextSymbolizer symbolizer = (TextSymbolizer) this.getSymbolizer();
             GLTextComplex primitive = new GLTextComplex("toponym-"
@@ -203,6 +208,21 @@ public class DisplayableSurface extends AbstractDisplayable {
                     symbolizer, this.getLayerRenderer()));
             complexes.add(primitive);
             return complexes;
+            
+        } else if (this.getSymbolizer().isRasterSymbolizer()) {
+            // Ajout @amasse 29/07/2015
+            // Get back the symbolizer
+            RasterSymbolizer rasterSymbolizer = (RasterSymbolizer) this.getSymbolizer(); 
+
+            // Use the rasterSymbolizer for GLComplex generation
+            List<GLComplex> fullRep = this
+                    .generateWithRasterSymbolizer(rasterSymbolizer);
+
+            if (fullRep != null) {
+                complexes.addAll(fullRep);
+            }
+            return complexes;
+            // END Ajout @amasse 29/07/2015
         }
         logger.error("Surface rendering do not handle "
                 + this.getSymbolizer().getClass().getSimpleName());
@@ -290,8 +310,8 @@ public class DisplayableSurface extends AbstractDisplayable {
                     .getGradientTextureTask(
                             "GradientTexture-"
                                     + String.valueOf(this.getFeature().getId()),
-                            textureDescriptor, featureCollection,
-                            this.getViewport());
+                                    textureDescriptor, featureCollection,
+                                    this.getViewport());
         }
         try {
             TaskManager.waitForCompletion(gradientTextureTask);
@@ -309,7 +329,7 @@ public class DisplayableSurface extends AbstractDisplayable {
             gradientTextureTask.getError().printStackTrace();
             return false;
         }
-
+        
         if (gradientTextureTask.getBinaryGradientImage() != null) {
 
             return this.generateWithGradientTexture(complexes,
@@ -450,9 +470,9 @@ public class DisplayableSurface extends AbstractDisplayable {
             BasicParameterizer parameterizer = new BasicParameterizer(envelope,
                     false, true);
             parameterizer
-                    .scaleX(1. / textureDescriptor.getScaleFactor().getX());
+            .scaleX(1. / textureDescriptor.getScaleFactor().getX());
             parameterizer
-                    .scaleY(1. / textureDescriptor.getScaleFactor().getY());
+            .scaleY(1. / textureDescriptor.getScaleFactor().getY());
             // logger.debug("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ generate textured polygon with parameterizer "
             // + parameterizer + " with envelope " + envelope);
             // logger.debug("envelope = " + envelope.hashCode());
@@ -628,7 +648,7 @@ public class DisplayableSurface extends AbstractDisplayable {
      * 
      */
     private static class TextureApplyer implements
-            TaskListener<TextureTask<BasicTexture>> {
+    TaskListener<TextureTask<BasicTexture>> {
 
         private final GLSimpleComplex primitive;
 
@@ -637,8 +657,8 @@ public class DisplayableSurface extends AbstractDisplayable {
             this.primitive = primitive;
             if (textureTask.getState().isFinished()) {
                 ((BasicTexture) this.primitive.getTexture())
-                        .setTextureImage(textureTask.getTexture()
-                                .getTextureImage());
+                .setTextureImage(textureTask.getTexture()
+                        .getTextureImage());
                 textureTask.removeTaskListener(this);
             }
         }
@@ -648,10 +668,66 @@ public class DisplayableSurface extends AbstractDisplayable {
                 TaskState oldState) {
             if (task.getState().isFinished()) {
                 ((BasicTexture) this.primitive.getTexture())
-                        .setTextureImage(task.getTexture().getTextureImage());
+                .setTextureImage(task.getTexture().getTextureImage());
                 task.removeTaskListener(this);
             }
         }
 
+    }
+
+    synchronized private List<GLComplex> generateWithRasterSymbolizer(
+            RasterSymbolizer rasterSymbolizer) {
+
+        // Check : if more than 1 Collection, select the first one
+        // -> I am not okay with that, but who am i to judge ? just a developer.
+        if (this.getFeature().getFeatureCollections().size() != 1) {
+            logger.error("Feature "
+                    + this.getFeature()
+                    + " belongs to more than one feature collection, choose the first one arbitrarily");
+        }
+        
+        // Get back the feature collection an create a GLComplex list
+        IFeatureCollection<IFeature> featureCollection = this.getFeature()
+                .getFeatureCollection(0);
+        List<GLComplex> complexes = new ArrayList<GLComplex>();
+
+        // FIXME Is it really necessary ? in the content ?
+        SolidColorizer colorizer = new SolidColorizer(java.awt.Color.GREEN);
+        
+        // Get back the envelope
+        IEnvelope envelope = featureCollection.getEnvelope();
+        double minX = envelope.minX();
+        double minY = envelope.minY();
+        
+        // FIXME Is it really necessary ?
+        BasicParameterizer parameterizer = new BasicParameterizer(envelope,
+                false, true);
+        
+        // create the renderer
+        // getOrCreateSurfaceRenderer do not manage rasterSymbolizer
+        GeoxComplexRenderer renderer = GeoxRendererManager
+                .getOrCreateSurfaceRenderer(rasterSymbolizer, this.getLayerRenderer());
+
+        // Create a GLSimpleComplex object
+        GLSimpleComplex content = GLComplexFactory.createFilledPolygons(
+                this.getName() + "-texture-filled", this.polygons, colorizer,
+                parameterizer, minX, minY, renderer);
+        
+        // Useless        
+        //content.setColor(java.awt.Color.GREEN);
+        
+        // Create RasterImage and read it, once for all (the all shader life of course)
+        RasterImage rasterImage = new RasterImage();
+        rasterImage.readImage(((FT_Coverage) featureCollection.get(0)).coverage(),rasterSymbolizer);
+        content.setRasterImage(rasterImage);
+        
+        // Colormap
+        rasterImage.readColormap(rasterSymbolizer);
+        
+        content.setOverallOpacity(rasterSymbolizer.getOpacity());
+        complexes.add(content);
+
+        // return : GLComplex list
+        return complexes;
     }
 }

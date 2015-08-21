@@ -288,11 +288,18 @@ public abstract class AbstractProjectFrame implements ProjectFrame {
             if (extention.equalsIgnoreCase("shp")) { //$NON-NLS-1$
                 l = factory.createLayer(fileName, LayerType.SHAPEFILE);
             } else if (extention.equalsIgnoreCase("tif")) { //$NON-NLS-1$
+                // For the moment, we stay with GEOTIFF, will be replaced by RASTER
                 l = factory.createLayer(fileName, LayerType.GEOTIFF);
             } else if (extention.equalsIgnoreCase("asc")) { //$NON-NLS-1$
                 l = factory.createLayer(fileName, LayerType.ASC);
             } else if (extention.equalsIgnoreCase("txt")) { //$NON-NLS-1$
                 l = factory.createLayer(fileName, LayerType.TXT);
+            } else if (extention.equalsIgnoreCase("png")) {
+                // A new one, PNG Raster Images
+                l = factory.createLayer(fileName, LayerType.RASTER);
+            } else if (extention.equalsIgnoreCase("jpg")) {
+                // A new one, JPG Raster Images
+                l = factory.createLayer(fileName, LayerType.RASTER);
             }
             if (l != null) {
                 synchronized (this.sldLock) {

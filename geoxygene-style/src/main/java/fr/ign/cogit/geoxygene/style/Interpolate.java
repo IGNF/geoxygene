@@ -28,9 +28,12 @@ public class Interpolate {
         return this.interpolationPoint;
     }
 
-    public void setInterpolationPoint(
-            List<InterpolationPoint> interpolationPoint) {
+    public void setInterpolationPoint(List<InterpolationPoint> interpolationPoint) {
         this.interpolationPoint = interpolationPoint;
+    }
+    
+    public void sortInterpolationPoints() {
+        
     }
 
     /*
@@ -84,6 +87,10 @@ public class Interpolate {
             return false;
         }
         return true;
+    }
+    
+    public int getNbInterpolationPoint() {
+        return interpolationPoint.size();
     }
 
 }

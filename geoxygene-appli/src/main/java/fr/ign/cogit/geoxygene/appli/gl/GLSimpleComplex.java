@@ -78,6 +78,9 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
                                             // constructed from flattened
                                             // indicesPerType
     private Texture texture = null;
+    
+    // RasterImage, used to read and send Raster stuff to the shader
+    private RasterImage rasterImage = null;
 
     private int vaoId = -1; // VAO index
     private int vboVerticesId = -1; // VBO Vertices index
@@ -102,7 +105,6 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
                 GLSimpleVertex.vertexUVLocation, GL11.GL_FLOAT, 2, false);
         this.addInput(GLSimpleVertex.vertexColorVariableName,
                 GLSimpleVertex.vertexColorLocation, GL11.GL_FLOAT, 4, false);
-
     }
 
     /**
@@ -163,6 +165,13 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
     public Texture getTexture() {
         return this.texture;
     }
+    
+    /**
+     * @return the rasterImage
+     */
+    public RasterImage getRasterImage() {
+        return this.rasterImage;
+    }
 
     /**
      * @param texture
@@ -171,6 +180,15 @@ public class GLSimpleComplex extends AbstractGLComplex<GLSimpleVertex>
     public void setTexture(Texture texture) {
         this.texture = texture;
         this.renderingCapabilities = null;
+
+    }
+    
+    /**
+     * @param rasterImage
+     *            the rasterImage to set
+     */
+    public void setRasterImage(RasterImage rasterImage) {
+        this.rasterImage = rasterImage;
 
     }
 
