@@ -73,7 +73,7 @@ void main(void)
     if (typeColormap == 1)
     {     
         // Animation, test tide simulation
-        if(animate)
+        if(animate==1)
         {
             pixel.x = pixel.x - 4.75 + (sin( mod(time,10000) /10000.0*2*3.14116)*3.25);
         }
