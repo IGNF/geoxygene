@@ -27,7 +27,7 @@ vec4 interpolateColor(vec4 pixel)
     for(int i=0; i<nbPointsColormap-1; i++)
     {
         vec4 value_i = texelFetch(bufferColormap,ivec2(i,1),0);
-        vec4 value_i_1 = texelFetch(bufferColormap,ivec2(i+1),0);
+        vec4 value_i_1 = texelFetch(bufferColormap,ivec2(i+1,1),0);
         
         if ((pixel_value.x >= value_i.x)&&(pixel_value.x<=value_i_1.x )) 
         {
@@ -52,6 +52,25 @@ vec4 interpolateColor(vec4 pixel)
     }
 }
 
+vec4 categorizeColor(vec4 pixel) 
+{
+    vec4 pixel_value = vec4(pixel.x,pixel.x,pixel.x,pixel.x);
+    
+    if(pixel_value.x<texelFetch(bufferColormap,ivec2(0,1),0).x) {
+        return (texelFetch(bufferColormap,ivec2(0,0),0)  / vec4(255.0,255.0,255.0,255.0));
+    }  
+    
+    for(int i=1; i<nbPointsColormap; i++)
+    {        
+        if (pixel_value.x <= texelFetch(bufferColormap,ivec2(i,1),0).x)
+        {
+            return (texelFetch(bufferColormap,ivec2(i,0),0)  / vec4(255.0,255.0,255.0,255.0));    
+        }
+    }
+    return vec4(0.0,0.0,0.0,0.0);
+}
+
+
 void main(void) 
 {
     vec2 P = fragmentIn.textureUV;
@@ -62,16 +81,8 @@ void main(void)
     // Opacity
     pixel.a = pixel.a*globalOpacity*objectOpacity;
     
-    // Color Map
-    // if (pixel.r <= -10.0) pixel = vec4(1.0,0.0,0.0,1.0);
-    // else if (pixel.r <= 0.0) pixel = vec4(0.0,1.0,0.0,1.0);
-    // else if (pixel.r <= 10.0) pixel = vec4(0.0,0.0,1.0,1.0);
-    // else pixel = vec4(1.0,1.0,1.0,1.0);
-    
-
-    
-    if (typeColormap == 1)
-    {     
+    if (typeColormap == 1) {
+        // Colormap with interpolation 
         // Animation, test tide simulation
         if(animate==1)
         {
@@ -79,7 +90,16 @@ void main(void)
         }
         // color interpolation with colormap
         outColor = interpolateColor(pixel);
-     }
+     } else if ( typeColormap == 2 ) {
+        // Colormap with categorize
+        // Animation, test tide simulation
+        if(animate==1)
+        {
+            pixel.x = pixel.x - 4.75 + (sin( mod(time,10000) /10000.0*2*3.14116)*3.25);
+        }
+        outColor = categorizeColor(pixel);
+        
+     } 
      else
      {
         outColor = pixel;
