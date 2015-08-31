@@ -76,17 +76,18 @@ void main(void)
     vec2 P = fragmentIn.textureUV;
     
     // The raster goes in the rectangle 
-    vec4 pixel = texture(bufferImage,P);
-                  
-    // Opacity
-    pixel.a = pixel.a*globalOpacity*objectOpacity;
+    vec4 pixel = texture(bufferImage,P);                  
     
     if (typeColormap == 1) {
         // Colormap with interpolation 
         // Animation, test tide simulation
         if(animate==1)
         {
-            pixel.x = pixel.x - 4.75 + (sin( mod(time,10000) /10000.0*2*3.14116)*3.25);
+            //mean_height = 4.75;
+            //range = 3.25;
+            float mean_height = 0.57;
+            float range = 1.7;
+            pixel.x = pixel.x - mean_height + (sin( mod(time,10000) /10000.0*2*3.14116)*range);
         }
         // color interpolation with colormap
         outColor = interpolateColor(pixel);
@@ -103,5 +104,8 @@ void main(void)
      else
      {
         outColor = pixel;
-     }   
+     }
+     
+    // Opacity
+    outColor.a = outColor.a*globalOpacity*objectOpacity;
 }

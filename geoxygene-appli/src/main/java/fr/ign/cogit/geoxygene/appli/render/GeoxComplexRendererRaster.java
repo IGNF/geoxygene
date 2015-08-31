@@ -139,14 +139,13 @@ public class GeoxComplexRendererRaster extends AbstractGeoxComplexRenderer {
             return;
         }
 
-        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, 1f);
-        program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName,
-                (float) opacity);
+        program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, (float) opacity);
+        program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName, (float) primitive.getOverallOpacity());
         
         // TODO do that in a much gracious way
         LocalTime thisSec = LocalTime.now();
         program.setUniform1i(LayerViewGLPanel.timeUniformVarName,(int) thisSec.getMillisOfSecond()+1000*thisSec.getSecondOfMinute() );
-        program.setUniform1i("animate",0);
+        program.setUniform1i("animate",1);
         
         // colormap  
         GLTools.glCheckError("initializing colormap");
