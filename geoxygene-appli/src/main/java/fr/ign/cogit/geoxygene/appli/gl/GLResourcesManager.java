@@ -202,8 +202,10 @@ public class GLResourcesManager {
             doc.getDocumentElement().normalize();
 
             // Validate the XML against the dictionary schema.
+            // We should use XMLConstants.W3C_XML_SCHEMA_NS_URI
             SchemaFactory factory = SchemaFactory
-                    .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                    .newInstance("http://www.w3.org/2001/XMLSchema");
+            
             URL schemaPath = (URL) GLResourcesManager.getInstance()
                     .getResourceByName("DICTIONARY_SCHEMA");
             if (schemaPath == null) {
