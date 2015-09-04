@@ -139,15 +139,19 @@ public class GeoxComplexRendererRaster extends AbstractGeoxComplexRenderer {
             return;
         }
 
+        // Opacity
         program.setUniform1f(LayerViewGLPanel.objectOpacityUniformVarName, (float) opacity);
         program.setUniform1f(LayerViewGLPanel.globalOpacityUniformVarName, (float) primitive.getOverallOpacity());
         
         // TODO do that in a much gracious way
+        // TEMP time is temp, in a future, not that far, it will be possible to take a Delorean and travel in time
         LocalTime thisSec = LocalTime.now();
         program.setUniform1i(LayerViewGLPanel.timeUniformVarName,(int) thisSec.getMillisOfSecond()+1000*thisSec.getSecondOfMinute() );
-        program.setUniform1i("animate",1);
         
-        // colormap  
+        // Animation activation
+        program.setUniform1i(LayerViewGLPanel.animateUniformVarName,primitive.getRasterImage().getAnimate());
+        
+        // Colormap  
         GLTools.glCheckError("initializing colormap");
         if ((primitive.getRasterImage().getDefColormap()==true)) {
             //
@@ -165,7 +169,6 @@ public class GeoxComplexRendererRaster extends AbstractGeoxComplexRenderer {
                 + " in normal rendering");
         // this.checkCurrentProgram("normalRendering(): after setCurrentProgram");
 
-        
         // TODO : better comments than "Raster stuff"
         GLTools.glCheckError("initializing image");
         primitive.getRasterImage().initializeRendering(program.getProgramId());
@@ -188,7 +191,8 @@ public class GeoxComplexRendererRaster extends AbstractGeoxComplexRenderer {
         // this.checkCurrentProgram("normalRendering(): after drawComplex()");
         GLTools.glCheckError("direct rendering drawing class = "
                 + primitive.getClass().getSimpleName());
-
+      
+        
         if (primitive.getExpressiveRendering() != null) {
             primitive.getExpressiveRendering().finalizeRendering(program);
         }
@@ -231,5 +235,4 @@ public class GeoxComplexRendererRaster extends AbstractGeoxComplexRenderer {
     public void finalizeRendering() throws RenderingException {
         super.finalizeRendering();
     }
-
 }

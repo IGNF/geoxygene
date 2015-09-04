@@ -1095,8 +1095,10 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     public static final String strokePressureUniformVarName = "strokePressure";
     public static final String sharpnessUniformVarName = "sharpness";
     public static final String bezierLineRatioUniformVarName = "bezierLineRatio";
+    
     public static final String timeUniformVarName = "time";
-
+    public static final String animateUniformVarName = "animate";
+    
     public static final String basicProgramName = "Basic";
     public static final String linePaintingProgramName = "LinePainting";
     public static final String bezierLineProgramName = "BezierPainting";
@@ -1700,6 +1702,7 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
     private GLProgram createRasterSubshaderProgram(
             ShaderDescriptor shaderDescriptor) throws GLException, IOException {
         // basic program
+
         Subshader shader = ShaderFactory.createShader(shaderDescriptor);
 
         GLProgram program = new GLProgram(rasterProgramName);
@@ -1732,12 +1735,13 @@ public class LayerViewGLPanel extends LayerViewPanel implements ItemListener,
         // TODO : temp
         program.addUniform("typeColormap");
         program.addUniform("nbPointsColormap");
-        program.addUniform("animate");
-        
+                
         program.addUniform(bufferColormapUniformVarName);
         
         // Time uniform, only for animation
         program.addUniform(timeUniformVarName);
+        program.addUniform(animateUniformVarName);
+        
         program.addUniform(bufferImageUniformVarName);
 
         shader.declareUniforms(program);

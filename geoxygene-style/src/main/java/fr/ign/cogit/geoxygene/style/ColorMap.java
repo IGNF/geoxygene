@@ -31,6 +31,7 @@ public class ColorMap {
     @XmlElement(name = "PropertyName")
     String propertyName = null;
     
+    // ColorMap version Categorize
     @XmlElement(name = "Categorize")
     Categorize categorize = null;
     
@@ -42,9 +43,30 @@ public class ColorMap {
         this.categorize = categorize;
     }
 
+    // ColorMap version Interpolate
     @XmlElement(name = "Interpolate")
     Interpolate interpolate = null;
+    
+    public Interpolate getInterpolate() {
+        return this.interpolate;
+    }
 
+    public void setInterpolate(Interpolate interpolate) {
+        this.interpolate = interpolate;
+    }
+
+    // TODO ColorMap version Intervals
+    @XmlElement(name = "Intervals")
+    Intervals intervals = null;
+    
+    public Intervals getIntervals() {
+        return this.intervals;
+    }
+
+    public void setIntervals(Intervals intervals) {
+        this.intervals = intervals;
+    }
+    
     @XmlTransient
     public String getPropertyName() {
         return this.propertyName;
@@ -54,13 +76,7 @@ public class ColorMap {
         this.propertyName = propertyName;
     }
 
-    public Interpolate getInterpolate() {
-        return this.interpolate;
-    }
-
-    public void setInterpolate(Interpolate interpolate) {
-        this.interpolate = interpolate;
-    }
+   
 
     public int getColor(double value) {
         if (this.interpolate != null) {

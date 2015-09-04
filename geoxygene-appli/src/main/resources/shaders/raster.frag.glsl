@@ -1,23 +1,33 @@
 #version 400
 
-uniform float globalOpacity = 1;
-uniform float objectOpacity = 1;
+// Uniform
+// Image buffer
 uniform sampler2D bufferImage;
 
+// Style
+// Opacity
+uniform float globalOpacity = 1.0;
+uniform float objectOpacity = 1.0;
+
+// ColorMap
 uniform int typeColormap = 0;
 uniform int nbPointsColormap = 0;
 uniform sampler2D bufferColormap;
 
+// Animation
 uniform int time = 0;
 uniform int animate = 0;
 
+// Vertex data in
 in VertexData {
     vec4 color;
     vec2 textureUV;
 } fragmentIn;
 
+// Fragment out
 out vec4 outColor;
 
+// Interpolation function from Colormap entries
 vec4 interpolateColor(vec4 pixel) 
 {
     int prev = -1;
@@ -52,7 +62,23 @@ vec4 interpolateColor(vec4 pixel)
     }
 }
 
+// Categorize function from Colormap entries
 vec4 categorizeColor(vec4 pixel) 
+{
+    vec4 pixel_value = vec4(pixel.x,pixel.x,pixel.x,pixel.x);
+    
+    for(int i=0; i<nbPointsColormap; i++)
+    {        
+        if (pixel_value.x == texelFetch(bufferColormap,ivec2(i,1),0).x)
+        {
+            return (texelFetch(bufferColormap,ivec2(i,0),0)  / vec4(255.0,255.0,255.0,255.0));    
+        }
+    }
+    return vec4(0.0,0.0,0.0,0.0);
+}
+
+// Intervals function from Colormap entries
+vec4 intervalsColor(vec4 pixel) 
 {
     vec4 pixel_value = vec4(pixel.x,pixel.x,pixel.x,pixel.x);
     
@@ -70,42 +96,37 @@ vec4 categorizeColor(vec4 pixel)
     return vec4(0.0,0.0,0.0,0.0);
 }
 
-
+// \o/ Main program \o/
 void main(void) 
 {
+    // Image coordinates (screen)
     vec2 P = fragmentIn.textureUV;
     
     // The raster goes in the rectangle 
     vec4 pixel = texture(bufferImage,P);                  
     
+    // Animation, tides and stuffs
+    if(animate==1) {
+       float mean_height = 4.75; // 0.57;
+       float range = 3.25; // 1.5;
+       pixel.x = pixel.x - mean_height + (sin( mod(time,10000) /10000.0*2*3.14116)*range);
+    }
+    
+    // We apply the colormap 
     if (typeColormap == 1) {
         // Colormap with interpolation 
-        // Animation, test tide simulation
-        if(animate==1)
-        {
-            //mean_height = 4.75;
-            //range = 3.25;
-            float mean_height = 0.57;
-            float range = 1.7;
-            pixel.x = pixel.x - mean_height + (sin( mod(time,10000) /10000.0*2*3.14116)*range);
-        }
-        // color interpolation with colormap
         outColor = interpolateColor(pixel);
      } else if ( typeColormap == 2 ) {
         // Colormap with categorize
-        // Animation, test tide simulation
-        if(animate==1)
-        {
-            pixel.x = pixel.x - 4.75 + (sin( mod(time,10000) /10000.0*2*3.14116)*3.25);
-        }
         outColor = categorizeColor(pixel);
-        
-     } 
-     else
-     {
+     } else if ( typeColormap == 3 ) {
+        // Colormap with intervals
+        outColor = intervalsColor(pixel);
+     }
+     else {
         outColor = pixel;
      }
      
-    // Opacity
+    // Opacity (multiplication)
     outColor.a = outColor.a*globalOpacity*objectOpacity;
 }

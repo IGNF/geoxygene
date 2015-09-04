@@ -35,15 +35,14 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 
 /**
  * @author Julien Perret
+ * @author AMasse
  * 
  */
 public class RasterSymbolizer extends AbstractSymbolizer {
     @XmlTransient
     private double opacity = 1.0d;
     
-    @XmlElement(name = "ShadedRelief")
-    ShadedRelief shadedRelief = null;
-    
+    // Opacity
     @XmlElement(name="Opacity")
     public double getOpacity() {
         return opacity;
@@ -52,16 +51,8 @@ public class RasterSymbolizer extends AbstractSymbolizer {
     public void setOpacity(double opacity) {
         this.opacity = opacity;
     }
-    
 
-    public ShadedRelief getShadedRelief() {
-        return this.shadedRelief;
-    }
-
-    public void setShadedRelief(ShadedRelief shadedRelief) {
-        this.shadedRelief = shadedRelief;
-    }
-
+    // ColorMap
     @XmlElement(name = "ColorMap")
     ColorMap colorMap = null;
 
@@ -73,6 +64,7 @@ public class RasterSymbolizer extends AbstractSymbolizer {
         this.colorMap = colorMap;
     }
 
+    // ChannelSelection
     @XmlElement(name = "ChannelSelection")
     ChannelSelection channelSelection = null;
     
@@ -83,6 +75,34 @@ public class RasterSymbolizer extends AbstractSymbolizer {
     public void setChannelSelection(ChannelSelection channelSelection) {
         this.channelSelection = channelSelection;
     }
+    
+    // ShadedRelief
+    @XmlElement(name = "ShadedRelief")
+    ShadedRelief shadedRelief = null;
+    
+    public ShadedRelief getShadedRelief() {
+        return this.shadedRelief;
+    }
+
+    public void setShadedRelief(ShadedRelief shadedRelief) {
+        this.shadedRelief = shadedRelief;
+    }
+    
+    // Animate
+    @XmlTransient
+    private int animate = 0;
+    
+    @XmlElement(name = "Animate")
+    public int getAnimate() {
+        return animate;
+    }
+    
+    public void setAnimate(int animate) {
+        this.animate = animate;
+    }
+    
+    // TODO 
+    // ContrastEnhancement
     
     
     @Override
@@ -98,14 +118,6 @@ public class RasterSymbolizer extends AbstractSymbolizer {
     Map<IDirectPosition, List<GM_Triangle>> triangleMap = new HashMap<IDirectPosition, List<GM_Triangle>>();
     @XmlTransient
     Map<IDirectPosition, Vecteur> positionMap = new HashMap<IDirectPosition, Vecteur>();
-
-//    public double getOpacity() {
-//        return this.opacity;
-//    }
-
-//    public void setOpacity(double opacity) {
-//        this.opacity = opacity;
-//    }
 
     /*
      * (non-Javadoc)

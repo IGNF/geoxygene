@@ -32,10 +32,6 @@ public class Interpolate {
         this.interpolationPoint = interpolationPoint;
     }
     
-    public void sortInterpolationPoints() {
-        
-    }
-
     /*
      * (non-Javadoc)
      * 

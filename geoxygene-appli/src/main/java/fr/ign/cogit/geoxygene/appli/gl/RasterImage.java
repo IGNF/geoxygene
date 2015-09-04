@@ -105,9 +105,12 @@ public class RasterImage {
     private int size = 0; // width * height
 
     // colormap
-    boolean defColormap = false;
-    ImageColormap imageColormap = null;
+    private boolean defColormap = false;
+    private ImageColormap imageColormap = null;
       
+    // animation
+    private int animate = 0;
+    
     // Not used, not used yet ?
     private double scaleX, scaleY;
 
@@ -296,6 +299,9 @@ public class RasterImage {
         glUniform1i(GL20.glGetUniformLocation(programId,"bufferImage"),imageIndex);
         glBindTexture(GL_TEXTURE_2D, imageIndex);
         
+        // Disable texture
+        //GL11.glDisable(GL_TEXTURE_2D);
+        
         return true;
     }
 
@@ -307,7 +313,8 @@ public class RasterImage {
      */
     
     public void finalizeRendering() {
-
+        // nope
+        //GL11.glDeleteTextures(getImageId());
     }
 
 
@@ -346,9 +353,6 @@ public class RasterImage {
             
             // Buffer allocation and acquisition
             // INFO : bufferImage.order(ByteOrder.nativeOrder()); // to adjust the ByteBuffer instance's endianness to match the current platform.
-            
-            
-            
             if ((GLinternalDataType==GL11.GL_BYTE)||(GLinternalDataType==GL11.GL_UNSIGNED_BYTE)) {
                 byte[] byteData = ((DataBufferByte) image.getRenderedImage().getData().getDataBuffer()).getData();
                 bufferImage = ByteBuffer.allocateDirect(byteData.length);                
@@ -382,7 +386,10 @@ public class RasterImage {
             bufferImage.rewind();
             
             // Now, bufferImage is ok, reading is complete
-            isRead = true;             
+            isRead = true;    
+            
+            // TEMP ?? animation
+            animate = symbolizer.getAnimate();
         }
     }
     
@@ -488,7 +495,13 @@ public class RasterImage {
      * not easy to do better, because of the GL**.GL_*_* specification, especially the GL version
      */
     private int generateOptimalGLinternalFormat() {
-        if (GLinternalDataType == GL11.GL_BYTE) {
+        if (defColormap) {
+            // With a colormap, we must keep pixel information in the shader, only solution, give float to shader
+            if (nbBandsSelected == 1) return GL30.GL_R32F;
+            else if (nbBandsSelected == 2) return GL30.GL_RG32F;
+            else if (nbBandsSelected == 3) return GL30.GL_RGB32F;
+            else return GL30.GL_RGBA32F;    
+        } else if (GLinternalDataType == GL11.GL_BYTE) {
             if (nbBandsSelected == 1) return GL30.GL_R8;
             else if (nbBandsSelected == 2) return GL30.GL_RG8;
             else if (nbBandsSelected == 3) return GL11.GL_RGB8;
@@ -541,6 +554,7 @@ public class RasterImage {
         if (rasterSymbolizer.getColorMap()!=null) {
             defColormap = true;            
             if (rasterSymbolizer.getColorMap().getInterpolate()!=null) {
+                // Case of "Interpolate" code 1
                 // TODO : sort the list of points
                 
                 int nb_points = rasterSymbolizer.getColorMap().getInterpolate().getNbInterpolationPoint();
@@ -553,7 +567,8 @@ public class RasterImage {
                     imageColormap.setColor(i, 2, color.getBlue());
                     imageColormap.setColor(i, 3, color.getAlpha());
                 }
-            } else if (rasterSymbolizer.getColorMap().getCategorize()!=null) {              
+            } else if (rasterSymbolizer.getColorMap().getCategorize()!=null) {     
+                // Case of "Categorize" code 2
                 int nb_points = rasterSymbolizer.getColorMap().getCategorize().getNbCategorizePoint();
                 imageColormap = new ImageColormap(2,nb_points);
                 for (int i=0; i < nb_points; i++) {
@@ -564,6 +579,18 @@ public class RasterImage {
                     imageColormap.setColor(i, 2, color.getBlue());
                     imageColormap.setColor(i, 3, color.getAlpha());
                 }
+            } else if (rasterSymbolizer.getColorMap().getIntervals()!=null) {
+                // Case of "Interpolate" code 3
+                int nb_points = rasterSymbolizer.getColorMap().getIntervals().getNbIntervalsPoint();
+                imageColormap = new ImageColormap(3,nb_points);
+                for (int i=0; i < nb_points; i++) {
+                    imageColormap.setValue(i,(float) rasterSymbolizer.getColorMap().getIntervals().getIntervalsPoint().get(i).getData() );
+                    Color color = rasterSymbolizer.getColorMap().getIntervals().getIntervalsPoint().get(i).getColor();
+                    imageColormap.setColor(i, 0, color.getRed());
+                    imageColormap.setColor(i, 1, color.getGreen());
+                    imageColormap.setColor(i, 2, color.getBlue());
+                    imageColormap.setColor(i, 3, color.getAlpha());
+                }      
             } else {
                 // colormap defined without categorize or interpolate section
                 defColormap = false;         
@@ -576,5 +603,9 @@ public class RasterImage {
     
     public ImageColormap getImageColorMap() {
         return imageColormap;
+    }
+
+    public int getAnimate() {
+        return animate;
     }
 }
