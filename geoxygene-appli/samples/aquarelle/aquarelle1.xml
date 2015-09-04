@@ -454,7 +454,7 @@
                             <CssParameter name="stroke-width">0.5</CssParameter>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
-                        <OverlayBlending/>
+                        <BlendingMode>Overlay</BlendingMode>
                         <Fill>
                             <BasicTexture xRepeat="false" yRepeat="false">
 <Displacement x="0.0" y="0.0"/>

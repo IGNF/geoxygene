@@ -64,7 +64,7 @@
                             </ExpressiveStroke>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
-                        <OverlayBlending/>
+                        <BlendingMode>Overlay</BlendingMode>
                         <Fill>
                             <CssParameter name="fill">#c0e58c</CssParameter>
                             <CssParameter name="fill-opacity">0.0</CssParameter>
@@ -324,7 +324,7 @@
                             </ExpressiveStroke>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
-                        <OverlayBlending/>
+                       <BlendingMode>Overlay</BlendingMode>
                         <Fill>
                             <CssParameter name="fill">#c0e58c</CssParameter>
                             <CssParameter name="fill-opacity">0.0</CssParameter>
@@ -470,7 +470,7 @@
                             <CssParameter name="stroke-width">0.5</CssParameter>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
-                        <OverlayBlending/>
+                        <BlendingMode>Overlay</BlendingMode>
                         <Fill>
                             <PerlinNoiseTexture xRepeat="false" yRepeat="false">
 <Displacement x="0.0" y="0.0"/>

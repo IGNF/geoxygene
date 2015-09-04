@@ -68,7 +68,7 @@
                             </BasicTextureExpressiveRendering>
                         </Stroke>
                         <GeometryPropertyName>geom</GeometryPropertyName>
-                        <MultiplyBlending/>
+                        <BlendingMode>Multiply</BlendingMode>
                         <ContrastFilter>
                             <Contrast>1.9</Contrast>
                             <Brightness>-0.2</Brightness>
