@@ -143,7 +143,7 @@ public abstract class AbstractSymbolizer implements Symbolizer {
 //        @XmlElement(name = "MultiplyBlending", type = BlendingModeMultiply.class)}
 //            )
     @XmlElement(name = "BlendingMode")
-    private BlendingMode blendingMode = null;
+    private BlendingMode blendingMode = BlendingMode.Normal;
 
     @Override
     public BlendingMode getBlendingMode() {

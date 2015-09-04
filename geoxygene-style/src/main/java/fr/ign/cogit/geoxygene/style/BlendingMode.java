@@ -52,4 +52,19 @@ public enum BlendingMode {
         return value;
     }
     
+    public String toString(){
+    	switch (this.value) {
+		case 1:
+			return "Normal";
+		case 2:
+			return "HighTone";
+		case 3:
+			return "Multiply";
+		case 4:
+			return "Overlay";
+		default:
+			return "";
+		}
+    }
+    
 }
