@@ -186,5 +186,13 @@ public class ColorMap {
             return false;
         }
     }
+    
+    public boolean isIntervals() {
+        if (intervals!=null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

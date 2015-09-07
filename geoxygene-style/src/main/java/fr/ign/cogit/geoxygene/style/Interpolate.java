@@ -27,6 +27,10 @@ public class Interpolate {
     public List<InterpolationPoint> getInterpolationPoint() {
         return this.interpolationPoint;
     }
+    
+    public InterpolationPoint getInterpolationPoint(int index) {
+        return this.interpolationPoint.get(index);
+    }
 
     public void setInterpolationPoint(List<InterpolationPoint> interpolationPoint) {
         this.interpolationPoint = interpolationPoint;

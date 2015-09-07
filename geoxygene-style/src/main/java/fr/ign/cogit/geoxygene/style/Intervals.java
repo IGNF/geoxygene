@@ -52,6 +52,10 @@ public class Intervals {
     public List<IntervalsPoint> getIntervalsPoint() {
         return this.intervalsPoint;
     }
+    
+    public IntervalsPoint getIntervalsPoint(int index) {
+        return this.intervalsPoint.get(index);
+    }
 
     public void setIntervalsPoint(List<IntervalsPoint> intervalsPoint) {
         this.intervalsPoint = intervalsPoint;
