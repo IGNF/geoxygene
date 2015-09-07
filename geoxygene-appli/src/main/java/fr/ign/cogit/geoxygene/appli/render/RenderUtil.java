@@ -1850,6 +1850,9 @@ public final class RenderUtil {
         double angleDegre = 0;
         for (ThematicClass thematicClass : s.getThematicClass()) {
           double value = ((Number) thematicClass.getClassValue().evaluate(feature)).doubleValue();
+          if (value <= 0) {
+            value = 1;
+          } 
           int a1 = (int)angleDegre + 1;
           int a2 = pas - 2;
           int l = (int)(size - value * size / max);

@@ -23,6 +23,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 /**
  * CartogramDougenikPlugin show Dougenik algorithm
  * The plugin use it with Paris arrondissements and recensement attribute.
+ * 
  */
 public class CartogramDougenikPlugin extends AbstractGeOxygeneApplicationPlugin {
   
