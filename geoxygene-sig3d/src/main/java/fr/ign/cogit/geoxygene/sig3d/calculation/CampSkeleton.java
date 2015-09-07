@@ -215,8 +215,12 @@ public class CampSkeleton {
               lSharedEdges.add(se);
 
               // On récupère les sommets initiaux et finaux
-              Point3d p = se.getStart(f);
-              Point3d p2 = se.getEnd(f);
+              Point3d p = getStart(se, f);
+              Point3d p2 = getEnd(se, f);
+              
+              if(p == null || p2 == null){
+            	  continue;
+              }
 
               // S'agit il de sommets déjà rencontrés ?
               int indexP1 = lPoints.indexOf(p);
@@ -293,6 +297,26 @@ public class CampSkeleton {
 
   }
 
+  
+  public static Point3d getStart(SharedEdge se, Face ref )
+  {
+      if (ref == se.left)
+          return se.getStart(ref);
+      else if (ref == se.right)
+          return se.getStart(ref);
+    
+      return null;
+  }
+
+  public static Point3d getEnd (SharedEdge se, Face ref)
+  {
+      if (ref == se.left)
+          return se.getEnd(ref);
+      else if (ref == se.right)
+          return se.getEnd(ref);
+      
+      return null;
+  }
   /*
    * Conversion Geoxygene => format de la lib
    */
