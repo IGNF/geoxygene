@@ -1,4 +1,4 @@
-#version 400
+#version 330
 
 uniform float m00 = 1.; // X homothetic value in 3x3 matrix
 uniform float m02 = 0.; // X translation value in 3x3 matrix

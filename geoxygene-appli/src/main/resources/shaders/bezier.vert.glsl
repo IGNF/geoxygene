@@ -4,7 +4,7 @@
 // Bezier is associated with <ExpressiveStroke> tag in SLD (and previously <BasicTextureExpressiveRendering>
 // They only differ by how lines are tesselated. Bezier is better (smoother) than LinePainting
 // LinePainting should be now considered as deprecated 
-#version 400
+#version 330
 
 
 
