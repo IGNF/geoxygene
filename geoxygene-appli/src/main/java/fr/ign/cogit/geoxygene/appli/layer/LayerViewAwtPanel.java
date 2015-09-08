@@ -31,6 +31,9 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -40,6 +43,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -222,18 +226,62 @@ public class LayerViewAwtPanel extends LayerViewPanel {
      */
     @Override
     public void saveAsImage(String fileName) {
+        // TODO: ask for out resolution
+        int widthOut = this.getWidth();
+        int heightOut = this.getHeight();
+        
+        // To increase the resolution, we have to modify the viewport
+        
+        // TEMP
         Color bg = this.getBackground();
-        BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    
+        BufferedImage image = new BufferedImage(widthOut, heightOut, BufferedImage.TYPE_INT_ARGB);
+        
         Graphics2D graphics = image.createGraphics();
+        
+        // TEMP
         graphics.setColor(bg);
-        graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
+        graphics.fillRect(0, 0, widthOut, heightOut);
+        
+        // We have to impose a bbox !!!
         this.getRenderingManager().copyTo(graphics);
+        
+        // TODO ask to paint overlays
         this.paintOverlays(graphics);
         graphics.dispose();
         try {
             ImgUtil.saveImage(image, fileName);
         } catch (IOException e1) {
             e1.printStackTrace();
+        }
+        
+        String wld = FilenameUtils.removeExtension(fileName) + ".wld";
+        File file = new File(wld);
+
+        try {
+            // if file doesnt exists, then create it
+            if (!file.exists()) {
+                    file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(Double.toString(1.0 / this.getViewport().getModelToViewTransform().getScaleX()));
+            bw.newLine();
+            bw.write(Double.toString(0.0));
+            bw.newLine();
+            bw.write(Double.toString(0.0));
+            bw.newLine();
+            bw.write(Double.toString(1.0 / this.getViewport().getModelToViewTransform().getScaleY()));
+            bw.newLine();
+            bw.write(Double.toString(this.getViewport().getViewOrigin().getX()));
+            bw.newLine();
+            bw.write(Double.toString(this.getViewport().getViewOrigin().getY() 
+                    - (this.getHeight() / this.getViewport().getModelToViewTransform().getScaleY())));
+            bw.newLine();
+            bw.close();
+        } catch (IOException | NoninvertibleTransformException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
