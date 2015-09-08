@@ -9,9 +9,14 @@
  ******************************************************************************/
 package fr.ign.cogit.geoxygene.spatial.geomengine;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.spatial.JTSGeomFactory;
 
 public class GeometryEngine extends AbstractGeometryEngine {
+  
+  /** Logger. */
+  private final static Logger LOGGER = Logger.getLogger(GeometryEngine.class.getName());
 
   static {
     setInstance(new GeometryEngine());
@@ -24,7 +29,7 @@ public class GeometryEngine extends AbstractGeometryEngine {
         break;
       case "SOCLE":
       default:
-        System.out.println("not implemented -- reverting to JTS");
+        LOGGER.warn("not implemented -- reverting to JTS");
         setFactory(new JTSGeomFactory());
         break;
     }
@@ -32,6 +37,6 @@ public class GeometryEngine extends AbstractGeometryEngine {
 
   // method to get the static block fired
   public static void init() {
-    System.out.println(GeometryEngine.class.getName() + " initialized");
+    LOGGER.info(GeometryEngine.class.getName() + " initialized");
   }
 }
