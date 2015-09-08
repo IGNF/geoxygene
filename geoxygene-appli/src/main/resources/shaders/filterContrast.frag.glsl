@@ -1,4 +1,4 @@
-#version 400
+#version 330
 
 uniform vec4 contrast;
 uniform vec4 brightness;

@@ -5,7 +5,7 @@
 // They only differ by how lines are tesselated. Bezier is better (smoother) than LinePainting
 // LinePainting should be now considered as deprecated 
 
-#version 400
+#version 330
 
 
 uniform float m00 = 1.; // X homothetic value in 3x3 matrix

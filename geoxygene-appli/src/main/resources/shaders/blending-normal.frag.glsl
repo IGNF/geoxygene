@@ -1,4 +1,4 @@
-#version 400
+#version 330
 
 uniform sampler2D foregroundTexture;
 uniform sampler2D backgroundTexture;
