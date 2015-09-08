@@ -36,7 +36,7 @@ void main(void) {
 	
 	float aR = aA + aB * ( 1.0 - aA );
 
-	float f = multiply( xA, xB );
+	vec3 f = multiply( xA, xB );
 	resultColor = ( 1.0 - aB ) * xaA + ( 1- aA ) * xaB + aA * aB * f; 	
 	if ( aR > 0.001 ) resultColor /= aR;
 
