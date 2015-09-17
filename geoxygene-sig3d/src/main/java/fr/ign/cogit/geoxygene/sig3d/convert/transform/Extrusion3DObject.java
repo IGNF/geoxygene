@@ -302,6 +302,7 @@ public class Extrusion3DObject {
       fTemp.add(pIniZmin);
 
       fTemp.add(pIni);
+      fTemp.add(pSuiv);
 
       pIni = pSuiv;
 

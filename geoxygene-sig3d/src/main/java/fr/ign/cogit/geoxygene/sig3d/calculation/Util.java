@@ -383,7 +383,7 @@ public abstract class Util {
    * @param lOS
    * @return
    */
-  public static double volumeUnderSurface(List<IOrientableSurface> lOS) {
+  public static double volumeUnderSurface(List<? extends IOrientableSurface> lOS) {
 
     int nbContrib = lOS.size();
     double volume1 = 0;
