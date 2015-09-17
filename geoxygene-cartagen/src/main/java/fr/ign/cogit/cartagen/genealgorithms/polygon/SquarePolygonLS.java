@@ -28,7 +28,7 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 /**
  * Implementation of an algorithm to try to square polygons i.e when angles are
  * quasi flat, or right, then try to make them really flat or right using least
- * squares compensation
+ * squares adjustment.
  * @author ILokhat
  * 
  */
@@ -46,8 +46,8 @@ public class SquarePolygonLS {
   private List<Integer> indicesHrObt;
   private final int MAX_ITER = 15;
   private Matrix y, p, xCurrent;
-  private double poidsPtfFixe = 5;
-  private double poids90 = 25;
+  private double poidsPtfFixe = 1;
+  private double poids90 = 50;
   private double poids0 = 15;
   private double poids45 = 5;
   IPolygon pOriginal;
@@ -113,10 +113,6 @@ public class SquarePolygonLS {
     this.xCurrent = y.getMatrix(0, 2 * nb_edges - 1, 0, 0);
     // Weight matrix P
     this.p = getP();
-    // System.out.println("Right angles vertices : " + indicesRight);
-    // System.out.println("Flat angles vertices : " + indicesFlat);
-    // System.out.println("Half-Right angles vertices : " + indicesHrAig + " "
-    // + indicesHrObt);
   }
 
   // return indices of points around pi

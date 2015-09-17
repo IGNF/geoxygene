@@ -36,6 +36,7 @@ import javax.swing.text.SimpleAttributeSet;
 
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDocOld;
 import fr.ign.cogit.cartagen.software.dataset.DataSetZone;
 import fr.ign.cogit.cartagen.software.dataset.DigitalCartographicModel;
@@ -310,7 +311,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     database.setSourceDLM(this.sourceDlm);
     database.setSymboScale(this.scale);
     database.setSystemPath(this.filePath);
-    database.setOldDocument(CartAGenDocOld.getInstance());
+    database.setDocument(CartAGenDoc.getInstance());
     CartAGenDataSet dataset = new CartAGenDataSet();
     CartagenApplication.getInstance().getDocument()
         .addDatabase(this.datasetName, database);
@@ -357,7 +358,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
       boolean rbFileSelected, boolean dlmSelected, boolean withEnrichement) {
     this.sourceDlm = selectedItem;
     this.setScale(scale);
-    CartAGenDocOld.getInstance().setZone(new DataSetZone(txtZone, null));
+    CartAGenDoc.getInstance().setZone(new DataSetZone(txtZone, null));
     this.datasetName = txtDataset;
     this.filePath = filePath;
     if (rbFileSelected) {
@@ -373,10 +374,10 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     // Old code commented out:
     // database.setSystemPath(this.filePath);
     // End Modif Cecile
-    database.setOldDocument(CartAGenDocOld.getInstance());
+    database.setDocument(CartAGenDoc.getInstance());
     CartAGenDataSet dataset = new CartAGenDataSet();
-    CartAGenDocOld.getInstance().addDatabase(this.datasetName, database);
-    CartAGenDocOld.getInstance().setCurrentDataset(dataset);
+    CartAGenDoc.getInstance().addDatabase(this.datasetName, database);
+    CartAGenDoc.getInstance().setCurrentDataset(dataset);
     database.setDataSet(dataset);
     if (dlmSelected) {
       database.setType(new DigitalLandscapeModel());
@@ -391,7 +392,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
       // Initialise the symbolisation properties for the dataset
       SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
           SourceDLM.SPECIAL_CARTAGEN, this.scale);
-      CartAGenDocOld.getInstance().getCurrentDataset()
+      CartAGenDoc.getInstance().getCurrentDataset()
           .setSymbols(SymbolList.getSymbolList(symbGroup));
       // Copy the path of the source data into a variable of the loading
       // frame
@@ -433,24 +434,12 @@ public class ImportDataFrame extends JFrame implements ActionListener {
       this.setVisible(false);
       // loadingFrameMultiBD.setVisible(true);
       if (withEnrichement) {
-      EnrichFrameOld enrichFrame = EnrichFrameOld.getInstance();
-      enrichFrame.setVersion(2);
-      enrichFrame.setVisible(true);
-    }
+        EnrichFrameOld enrichFrame = EnrichFrameOld.getInstance();
+        enrichFrame.setVersion(2);
+        enrichFrame.setVisible(true);
+      }
 
-    CartagenApplication
-        .getInstance()
-        .getLayerGroup()
-        .loadLayers(
-            dataset,
-            CartagenApplication.getInstance().getLayerGroup().symbolisationDisplay);
-    CartagenApplication
-        .getInstance()
-        .getLayerGroup()
-        .loadInterfaceWithLayers(
-            CartagenApplication.getInstance().getFrame().getLayerManager(),
-            dataset.getSymbols());
-}
+    }
   }
 
   public void setScale(int scale) {

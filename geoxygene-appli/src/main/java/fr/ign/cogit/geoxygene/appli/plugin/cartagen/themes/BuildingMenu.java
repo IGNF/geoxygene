@@ -21,6 +21,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
+import fr.ign.cogit.cartagen.genealgorithms.polygon.PolygonSquaring;
+import fr.ign.cogit.cartagen.genealgorithms.polygon.SquarePolygonLS;
 import fr.ign.cogit.cartagen.software.GeneralisationSpecifications;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
@@ -88,6 +90,8 @@ public class BuildingMenu extends JMenu {
   private JMenuItem mEnveloppeRectAxe = new JMenuItem(
       new ToRectAxisHullAction());
   private JMenuItem mSimplification = new JMenuItem(new SimplifyAction());
+  private JMenuItem mSimpleSquaring = new JMenuItem(new SimpleSquaringAction());
+  private JMenuItem mLSSquaring = new JMenuItem(new LSSquaringAction());
 
   /**
    * Constructor a of the menu from a title.
@@ -132,6 +136,10 @@ public class BuildingMenu extends JMenu {
     this.add(this.mEnveloppeConvexe);
     this.add(this.mEnveloppeRectAxe);
     this.add(this.mSimplification);
+    JMenu mSquaring = new JMenu("Squaring algorithms");
+    mSquaring.add(this.mSimpleSquaring);
+    mSquaring.add(this.mLSSquaring);
+    this.add(mSquaring);
   }
 
   private class SelectAction extends AbstractAction {
@@ -540,4 +548,123 @@ public class BuildingMenu extends JMenu {
     }
   }
 
+  private class SimpleSquaringAction extends AbstractAction {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      Thread th = new Thread(new Runnable() {
+        @Override
+        public void run() {
+          String s = JOptionPane.showInputDialog(CartAGenPlugin.getInstance()
+              .getApplication().getMainFrame().getGui(),
+              "Angles to square (radians)", "Cartagen",
+              JOptionPane.PLAIN_MESSAGE);
+          double angTol = 8 * Math.PI / 180;
+          if (s != null && !s.isEmpty()) {
+            angTol = Double.parseDouble(s);
+          }
+          String s2 = JOptionPane.showInputDialog(CartAGenPlugin.getInstance()
+              .getApplication().getMainFrame().getGui(), "tolerance (radians)",
+              "Cartagen", JOptionPane.PLAIN_MESSAGE);
+          double correctTol = 8 * Math.PI / 180;
+          if (s2 != null && !s2.isEmpty()) {
+            correctTol = Double.parseDouble(s2);
+          }
+          for (IFeature sel : SelectionUtil.getSelectedObjects(CartAGenPlugin
+              .getInstance().getApplication())) {
+            if (sel.isDeleted()) {
+              continue;
+            }
+            if (!(sel instanceof IBuilding)) {
+              continue;
+            }
+
+            IBuilding ab = (IBuilding) sel;
+            BuildingMenu.this.logger.info("Equarrissage de " + ab);
+            if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
+              BuildingMenu.this.logger.config("Geometrie initiale: "
+                  + ab.getGeom().coord().size() + " " + ab.getGeom());
+            }
+            PolygonSquaring squaring = new PolygonSquaring(ab.getGeom(),
+                angTol, correctTol);
+            ab.setGeom(squaring.simpleSquaring());
+            if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
+              BuildingMenu.this.logger.config("Geometrie finale: "
+                  + ab.getGeom().coord().size() + " " + ab.getGeom());
+            }
+            BuildingMenu.this.logger.info(" fin");
+          }
+        }
+      });
+      th.start();
+    }
+
+    public SimpleSquaringAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Trigger Simple Squaring algorithm on selected buildings");
+      this.putValue(Action.NAME, "Trigger Simple Squaring");
+    }
+  }
+
+  private class LSSquaringAction extends AbstractAction {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      Thread th = new Thread(new Runnable() {
+        @Override
+        public void run() {
+          String s = JOptionPane.showInputDialog(CartAGenPlugin.getInstance()
+              .getApplication().getMainFrame().getGui(),
+              "Right angles tol (°)", "Cartagen", JOptionPane.PLAIN_MESSAGE);
+          double rightTol = 8.0;
+          if (s != null && !s.isEmpty()) {
+            rightTol = Double.parseDouble(s);
+          }
+          String s3 = JOptionPane.showInputDialog(CartAGenPlugin.getInstance()
+              .getApplication().getMainFrame().getGui(), "45° angles tol (°)",
+              "Cartagen", JOptionPane.PLAIN_MESSAGE);
+          double midTol = 8.0;
+          if (s3 != null && !s3.isEmpty()) {
+            midTol = Double.parseDouble(s3);
+          }
+          for (IFeature sel : SelectionUtil.getSelectedObjects(CartAGenPlugin
+              .getInstance().getApplication())) {
+            if (sel.isDeleted()) {
+              continue;
+            }
+            if (!(sel instanceof IBuilding)) {
+              continue;
+            }
+
+            IBuilding ab = (IBuilding) sel;
+            BuildingMenu.this.logger.info("Equarrissage de " + ab);
+            if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
+              BuildingMenu.this.logger.config("Geometrie initiale: "
+                  + ab.getGeom().coord().size() + " " + ab.getGeom());
+            }
+            SquarePolygonLS squaring = new SquarePolygonLS(rightTol, 0.1,
+                midTol);
+            squaring.setPolygon(ab.getGeom());
+            ab.setGeom(squaring.square());
+            if (BuildingMenu.this.logger.isLoggable(Level.CONFIG)) {
+              BuildingMenu.this.logger.config("Geometrie finale: "
+                  + ab.getGeom().coord().size() + " " + ab.getGeom());
+            }
+            BuildingMenu.this.logger.info(" fin");
+          }
+        }
+      });
+      th.start();
+    }
+
+    public LSSquaringAction() {
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Trigger Least Squares Squaring algorithm on selected buildings");
+      this.putValue(Action.NAME, "Trigger LS Squaring");
+    }
+  }
 }

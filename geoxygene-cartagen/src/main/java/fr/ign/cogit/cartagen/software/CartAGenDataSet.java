@@ -567,6 +567,118 @@ public class CartAGenDataSet extends DataSet {
   }
 
   /**
+   * Gets the feature type name from the population name.
+   * @param popName the name of the population
+   * @return
+   */
+  public String getFeatureTypeFromPopName(String popName) {
+    if (popName.equals(CartAGenDataSet.BUILDINGS_POP)) {
+      return IBuilding.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.BLOCKS_POP)) {
+      return IUrbanBlock.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.TOWNS_POP)) {
+      return ITown.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.URBAN_ALIGNMENTS_POP)) {
+      return IUrbanAlignment.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.ROADS_POP)) {
+      return IRoadLine.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.ROAD_NODES_POP)) {
+      return IRoadNode.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.PATHS_POP)) {
+      return IPathLine.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.WATER_LINES_POP)) {
+      return IWaterLine.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.WATER_NODES_POP)) {
+      return IWaterNode.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.WATER_AREAS_POP)) {
+      return IWaterArea.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.WATER_ISLAND_POP)) {
+      return IRiverSimpleIsland.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.RAILWAY_LINES_POP)) {
+      return IRailwayLine.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.ELECTRICITY_LINES_POP)) {
+      return IElectricityLine.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.CONTOUR_LINES_POP)) {
+      return IContourLine.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.RELIEF_LINES_POP)) {
+      return IReliefElementLine.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.SPOT_HEIGHTS_POP)) {
+      return ISpotHeight.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.LANDUSE_AREAS_POP)) {
+      return ISimpleLandUseArea.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.NETWORK_FACES_POP)) {
+      return INetworkFace.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.SPECIAL_POINTS_POP)) {
+      return SpecialPoint.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.ROAD_STROKES_POP)) {
+      return IRoadStroke.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.ROUNDABOUTS_POP)) {
+      return IRoundAbout.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.BRANCHINGS_POP)) {
+      return IBranchingCrossroad.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.MASK)) {
+      return IMask.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.ROAD_FACILITY_PT_POP)) {
+      return IRoadFacilityPoint.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.ROAD_AREA_POP)) {
+      return IRoadArea.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.RAILWAY_NODE_POP)) {
+      return IRailwayNode.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.TRIAGE_AREA_POP)) {
+      return ITriageArea.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.CABLE_POP)) {
+      return ICable.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.BOUNDED_AREA_POP)) {
+      return IBoundedArea.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.LABEL_PT_POP)) {
+      return ILabelPoint.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.MISC_AREA_POP)) {
+      return IMiscArea.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.MISC_LINE_POP)) {
+      return IMiscLine.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.MISC_PT_POP)) {
+      return IMiscPoint.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.AIRPORT_AREA_POP)) {
+      return IAirportArea.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.RUNWAY_AREA_POP)) {
+      return IRunwayArea.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.RUNWAY_LINE_POP)) {
+      return IRunwayLine.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.TAXIWAY_AREA_POP)) {
+      return ITaxiwayArea.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.TAXIWAY_LINE_POP)) {
+      return ITaxiwayLine.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.WATER_PT_POP)) {
+      return IWaterPoint.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.ADMIN_CAP_POP)) {
+      return IAdminCapital.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.ADMIN_UNIT_POP)) {
+      return ISimpleAdminUnit.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.ADMIN_LIMIT_POP)) {
+      return IAdminLimit.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.BUILD_PT_POP)) {
+      return IBuildPoint.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.SPORTS_FIELDS_POP)) {
+      return ISportsField.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.RELIEF_PTS_POP)) {
+      return IReliefElementPoint.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.BUILD_AREA_POP)) {
+      return IBuildArea.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.POI_POP)) {
+      return IPointOfInterest.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.BRIDGE_PT_POP)) {
+      return IBridgePoint.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.COASTLINE_POP)) {
+      return ICoastLine.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.SQUARE_AREA_POP)) {
+      return ISquareArea.FEAT_TYPE_NAME;
+    } else if (popName.equals(CartAGenDataSet.CEMETERY_POP)) {
+      return ICemetery.FEAT_TYPE_NAME;
+    }
+    return null;
+  }
+
+  /**
    * Generic getter for each population
    * @param nomPopulation
    * @param featureTypeName
@@ -597,7 +709,7 @@ public class CartAGenDataSet extends DataSet {
 
   @SuppressWarnings("unchecked")
   public IPopulation<IGeneObj> getCartagenPop(String nomPopulation) {
-    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) super
         .getPopulation(nomPopulation);
     return pop;
   }
@@ -1272,6 +1384,23 @@ public class CartAGenDataSet extends DataSet {
       // GeometryCollection geom=
       ShapefileWriter.write(coll, chemin + ".shp");
     } finally {
+    }
+  }
+
+  @Override
+  public IPopulation<? extends IFeature> getPopulation(String nomPopulation) {
+    IPopulation<? extends IFeature> pop = super.getPopulation(nomPopulation);
+    FeatureType ft = new FeatureType();
+    ft.setTypeName(this.getFeatureTypeFromPopName(nomPopulation));
+    if (pop != null) {
+      pop.setFeatureType(ft);
+      return pop;
+    } else {
+      pop = new Population<IGeneObj>();
+      pop.setNom(nomPopulation);
+      pop.setFeatureType(ft);
+      this.addPopulation(pop);
+      return pop;
     }
   }
 

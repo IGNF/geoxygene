@@ -9,31 +9,23 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.genealgorithms.polygon;
 
-import java.util.Arrays;
-
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.AbstractGeomFactory;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
-import fr.ign.cogit.geoxygene.contrib.algorithms.Equarissage;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomengine.AbstractGeometryEngine;
 import fr.ign.cogit.geoxygene.spatial.geomengine.GeometryEngine;
-import fr.ign.cogit.geoxygene.util.conversion.ParseException;
-import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
 /**
- * ----Now Deprecated--- Naive Implementation of an algorithm to try to square
- * polygons i.e when angles are quasi flat, or right, then try to make them
- * really flat or right
+ * Naive Implementation of an algorithm to try to square polygons i.e when
+ * angles are quasi flat, or right, then try to make them really flat or right
  * @author ILokhat
  * 
  */
-@Deprecated
 public class PolygonSquaring {
 
   private static final Logger logger = Logger.getLogger(PolygonSquaring.class);
@@ -46,10 +38,21 @@ public class PolygonSquaring {
   private double[] align;
   private double angTol = 8 * Math.PI / 180;
   private double correctTol = 0.6 * Math.PI / 180;
+  private IPolygon polygon;
 
   public PolygonSquaring(IPolygon p) {
     GeometryEngine.init();
-    this.points = p.exteriorCoord();
+    this.polygon = p;
+  }
+
+  public PolygonSquaring(IPolygon p, double angTol, double correctTol) {
+    this(p);
+    this.angTol = angTol;
+    this.correctTol = correctTol;
+  }
+
+  private void simpleSquaringInit() {
+    this.points = polygon.exteriorCoord();
     this.nb_edges = points.size() - 1;
     this.vecs = new Vecteur[nb_edges];
     this.angles = new double[nb_edges];
@@ -80,12 +83,6 @@ public class PolygonSquaring {
     // this.printAngles();
     align[align.length - 1] = Math.abs(vecs[align.length - 1].prodVectoriel(
         vecs[primaryAxe]).getZ());
-  }
-
-  public PolygonSquaring(IPolygon p, double angTol, double correctTol) {
-    this(p);
-    this.angTol = angTol;
-    this.correctTol = correctTol;
   }
 
   private void update() {
@@ -188,33 +185,18 @@ public class PolygonSquaring {
   }
 
   /**
-   * returns a IPolygon with its angles squared or flattened
-   * @return
+   * Naive Implementation of an algorithm to try to square polygons i.e when
+   * angles are quasi flat, or right, then try to make them really flat or
+   * right.
+   * @returna a IPolygon with its angles squared or flattened
    */
-  public IPolygon square() {
+  public IPolygon simpleSquaring() {
+    // initialisation
+    logger.debug("initialisation");
+    simpleSquaringInit();
+
     // first pass : flattening quasi flat angles
     logger.debug("first pass -- flattening angles");
-    // for (int i = 0; i < angles.length; ++i) {
-    // if (Math.abs((Math.PI - angles[i])) <= this.angTol
-    // && Math.abs((Math.PI - angles[i])) > correctTol) {
-    // int[] v = getVecsAroundPoint(i);
-    // // Trying to move smallest vector
-    // int vecToMove = v[0], vecFixed = v[1];
-    // if (vecs[v[0]].norme() > vecs[v[1]].norme()) {
-    // vecToMove = v[1];
-    // vecFixed = v[0];
-    // }
-    // Vecteur vSquared = rotateVec(0, vecToMove, vecFixed, i);
-    // IDirectPosition p = new DirectPosition(points.get(i).getX(), points
-    // .get(i).getY());
-    // p.setCoordinate(p.getX() + vSquared.getX(), p.getY() + vSquared.getY());
-    // int pointToMove = getPointToMove(i, vecToMove);
-    // points.set(pointToMove, p);
-    // update();
-    // System.out.println("Angle " + i + " now flattened " + angles[i] * 180
-    // / Math.PI);
-    // }
-    // }
 
     for (int i = 0; i < angles.length; ++i) {
       if (Math.abs((Math.PI - angles[i])) <= this.angTol
@@ -310,18 +292,4 @@ public class PolygonSquaring {
     return s;
   }
 
-  public static void main(String[] args) throws ParseException {
-    IPolygon pol = (IPolygon) WktGeOxygene
-        .makeGeOxygene("POLYGON((6.8994140625 33.97251977685998,21.0498046875 34.55362060566756,30.0146484375 34.481202780854325,31.1572265625 28.025439205006663,32.0361328125 20.912186523238866,11.8212890625 18.012169027853847,15.6884765625 22.05713201549411,8.8330078125 21.567544969022713,7.6904296875 31.75806410725305,6.8994140625 33.97251977685998))");
-    PolygonSquaring p = new PolygonSquaring(pol);
-    IPolygon pol2 = p.square();
-    System.out.println(p.asWKT());
-    System.out.println("pol1 area " + pol.area());
-    System.out.println("pol2 area " + pol2.area());
-    System.out.println("Angles : " + Arrays.toString(p.angles));
-    IPolygon pol3 = Equarissage.compute((GM_Polygon) pol);
-    System.out.println("pol3 area " + pol3.area());
-    System.out.println(pol3);
-    System.out.println(Arrays.toString(p.angles));
-  }
 }

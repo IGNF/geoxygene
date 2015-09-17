@@ -327,6 +327,7 @@ public class CartAGenPlugin implements GeOxygeneApplicationPlugin,
         application.getMainFrame().removeAllProjectFrames();
       }
     }
+
     db.getDataSet().setSld(defaultSld);
     ProjectFrame frame = application.getMainFrame().newProjectFrame();
     this.mapDbFrame.put(db.getName(), frame);

@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.continuous;
 
@@ -26,73 +26,73 @@ import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.LineDensification;
  * Implementation of a basic morphing function that maps with straight lines the
  * points at similar curvilinear coordinates.
  * 
- * @author Guillaume
- *
+ * @author Guillaume Touya
+ * 
  */
 public class BasicMorphing implements ContinuousGeneralisationMethod {
 
-    private ILineString geomIni, geomFinal;
-    private ILineString densGeomIni;
+  private ILineString geomIni, geomFinal;
+  private ILineString densGeomIni;
 
-    @Override
-    public IGeometry getGeomIni() {
-        return geomIni;
+  @Override
+  public IGeometry getGeomIni() {
+    return geomIni;
+  }
+
+  @Override
+  public IGeometry getGeomFinal() {
+    return geomFinal;
+  }
+
+  @Override
+  public IGeometry continuousGeneralisation(double t) {
+    // t must be between 0 and 1
+    if (t < 0.0)
+      return null;
+    if (t > 1.0)
+      return null;
+    // first map the vertices of geomIni densified to points in geomFin
+    Map<IDirectPosition, IDirectPosition> mapping = new HashMap<>();
+    double dist = 0.0;
+    double total = geomIni.length();
+    double totalFinal = geomFinal.length();
+    IDirectPosition prevPt = null;
+    for (IDirectPosition pt : densGeomIni.coord()) {
+      if (prevPt == null) {
+        prevPt = pt;
+        mapping.put(pt, geomFinal.startPoint());
+        continue;
+      }
+      dist += pt.distance2D(prevPt);
+      double ratio = dist / total;
+
+      // get the point at the curvilinear coordinate corresponding to
+      // ratio
+      double curvi = totalFinal * ratio;
+      IDirectPosition finalPt = Operateurs.pointEnAbscisseCurviligne(geomFinal,
+          curvi);
+      mapping.put(pt, finalPt);
+      prevPt = pt;
     }
 
-    @Override
-    public IGeometry getGeomFinal() {
-        return geomFinal;
+    // then, compute the intermediate position between each correspondant
+    IDirectPositionList coord = new DirectPositionList();
+    for (IDirectPosition pt1 : densGeomIni.coord()) {
+      IDirectPosition pt2 = mapping.get(pt1);
+      double newX = pt1.getX() + t * (pt2.getX() - pt1.getX());
+      double newY = pt1.getY() + t * (pt2.getY() - pt1.getY());
+      IDirectPosition newPt = new DirectPosition(newX, newY);
+      coord.add(newPt);
     }
+    return GeometryEngine.getFactory().createILineString(coord);
+  }
 
-    @Override
-    public IGeometry continuousGeneralisation(double t) {
-        // t must be between 0 and 1
-        if (t < 0.0)
-            return null;
-        if (t > 1.0)
-            return null;
-        // first map the vertices of geomIni densified to points in geomFin
-        Map<IDirectPosition, IDirectPosition> mapping = new HashMap<>();
-        double dist = 0.0;
-        double total = geomIni.length();
-        double totalFinal = geomFinal.length();
-        IDirectPosition prevPt = null;
-        for (IDirectPosition pt : densGeomIni.coord()) {
-            if (prevPt == null) {
-                prevPt = pt;
-                mapping.put(pt, geomFinal.startPoint());
-                continue;
-            }
-            dist += pt.distance2D(prevPt);
-            double ratio = dist / total;
+  public BasicMorphing(ILineString geomIni, ILineString geomFinal) {
+    super();
+    this.geomIni = geomIni;
+    this.geomFinal = geomFinal;
+    this.densGeomIni = LineDensification.densification2(geomIni, 2.0);
 
-            // get the point at the curvilinear coordinate corresponding to
-            // ratio
-            double curvi = totalFinal * ratio;
-            IDirectPosition finalPt = Operateurs.pointEnAbscisseCurviligne(
-                    geomFinal, curvi);
-            mapping.put(pt, finalPt);
-            prevPt = pt;
-        }
-
-        // then, compute the intermediate position between each correspondant
-        IDirectPositionList coord = new DirectPositionList();
-        for (IDirectPosition pt1 : densGeomIni.coord()) {
-            IDirectPosition pt2 = mapping.get(pt1);
-            double newX = pt1.getX() + t * (pt2.getX() - pt1.getX());
-            double newY = pt1.getY() + t * (pt2.getY() - pt1.getY());
-            IDirectPosition newPt = new DirectPosition(newX, newY);
-            coord.add(newPt);
-        }
-        return GeometryEngine.getFactory().createILineString(coord);
-    }
-
-    public BasicMorphing(ILineString geomIni, ILineString geomFinal) {
-        super();
-        this.geomIni = geomIni;
-        this.geomFinal = geomFinal;
-        this.densGeomIni = LineDensification.densification2(geomIni, 2.0);
-
-    }
+  }
 
 }

@@ -64,11 +64,6 @@ public abstract class CartAGenDB {
   /**
    * The document this database is opened in.
    */
-  private CartAGenDocOld oldDocument;
-
-  /**
-   * The document this database is opened in.
-   */
   private CartAGenDoc document;
 
   /**
@@ -285,14 +280,6 @@ public abstract class CartAGenDB {
 
   public void setType(DBType type) {
     this.type = type;
-  }
-
-  public CartAGenDocOld getOldDocument() {
-    return oldDocument;
-  }
-
-  public void setOldDocument(CartAGenDocOld document) {
-    this.oldDocument = document;
   }
 
   public SourceDLM getSourceDLM() {
