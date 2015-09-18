@@ -44,12 +44,14 @@ public class SquarePolygonLS {
   private List<Integer> indicesFlat;
   private List<Integer> indicesHrAig;
   private List<Integer> indicesHrObt;
-  private final int MAX_ITER = 15;
+  private final int MAX_ITER = 1000;
+  private final double NORM_DIFF_TOL = 0.0001;
   private Matrix y, p, xCurrent;
-  private double poidsPtfFixe = 1;
-  private double poids90 = 50;
+  private double poidsPtfFixe = 5;
+  private double poids90 = 100;
   private double poids0 = 15;
-  private double poids45 = 5;
+  private double poids45 = 10;
+  private int nbIters;
   IPolygon pOriginal;
 
   /**
@@ -69,6 +71,8 @@ public class SquarePolygonLS {
     System.out.println("flat_tol : " + flatTol);
     System.out.println("hright_tol1 : " + hrTol1);
     System.out.println("hright_tol2 : " + hrTol2);
+    System.out.println("MAX_ITER : " + MAX_ITER);
+    System.out.println("Min delta between 2 Iterations : " + NORM_DIFF_TOL);
   }
 
   /**
@@ -113,6 +117,7 @@ public class SquarePolygonLS {
     this.xCurrent = y.getMatrix(0, 2 * nb_edges - 1, 0, 0);
     // Weight matrix P
     this.p = getP();
+    // this.p.print(5, 2);
   }
 
   // return indices of points around pi
@@ -152,30 +157,24 @@ public class SquarePolygonLS {
         int indicePoint = indices.get(i);
         int[] pointsAround = getPointsAround(indicePoint);
         // df/xn = xn+1 - 2xn + xn-1
-        double df = points.get(pointsAround[0]).getX() - 2
-            * points.get(indicePoint).getX()
+        double df = points.get(pointsAround[0]).getX() - 2 * points.get(indicePoint).getX()
             + points.get(pointsAround[1]).getX();
         m.set(i, indicePoint * 2, df);
         // df/yn = yn+1 - 2yn + yn-1
-        df = points.get(pointsAround[0]).getY() - 2
-            * points.get(indicePoint).getY()
+        df = points.get(pointsAround[0]).getY() - 2 * points.get(indicePoint).getY()
             + points.get(pointsAround[1]).getY();
         m.set(i, indicePoint * 2 + 1, df);
         // df/xn-1 = -xn+1 + xn
-        df = points.get(indicePoint).getX()
-            - points.get(pointsAround[1]).getX();
+        df = points.get(indicePoint).getX() - points.get(pointsAround[1]).getX();
         m.set(i, pointsAround[0] * 2, df);
         // df/yn-1 = -yn+1 + yn
-        df = points.get(indicePoint).getY()
-            - points.get(pointsAround[1]).getY();
+        df = points.get(indicePoint).getY() - points.get(pointsAround[1]).getY();
         m.set(i, pointsAround[0] * 2 + 1, df);
         // df/xn+1 = xn - xn-1
-        df = points.get(indicePoint).getX()
-            - points.get(pointsAround[0]).getX();
+        df = points.get(indicePoint).getX() - points.get(pointsAround[0]).getX();
         m.set(i, pointsAround[1] * 2, df);
         // df/yn+1 = yn - yn-1
-        df = points.get(indicePoint).getY()
-            - points.get(pointsAround[0]).getY();
+        df = points.get(indicePoint).getY() - points.get(pointsAround[0]).getY();
         m.set(i, pointsAround[1] * 2 + 1, df);
       }
     }
@@ -190,28 +189,22 @@ public class SquarePolygonLS {
         int indicePoint = indicesFlat.get(i);
         int[] pointsAround = getPointsAround(indicePoint);
         // dg/xn
-        double dg = points.get(pointsAround[1]).getY()
-            - points.get(pointsAround[0]).getY();
+        double dg = points.get(pointsAround[1]).getY() - points.get(pointsAround[0]).getY();
         m.set(i, indicePoint * 2, dg);
         // dg/yn
-        dg = points.get(pointsAround[0]).getX()
-            - points.get(pointsAround[1]).getX();
+        dg = points.get(pointsAround[0]).getX() - points.get(pointsAround[1]).getX();
         m.set(i, indicePoint * 2 + 1, dg);
         // dg/xn-1
-        dg = points.get(indicePoint).getY()
-            - points.get(pointsAround[1]).getY();
+        dg = points.get(indicePoint).getY() - points.get(pointsAround[1]).getY();
         m.set(i, pointsAround[0] * 2, dg);
         // dg/yn-1
-        dg = points.get(pointsAround[1]).getX()
-            - points.get(indicePoint).getX();
+        dg = points.get(pointsAround[1]).getX() - points.get(indicePoint).getX();
         m.set(i, pointsAround[0] * 2 + 1, dg);
         // dg/xn+1
-        dg = points.get(pointsAround[0]).getY()
-            - points.get(indicePoint).getY();
+        dg = points.get(pointsAround[0]).getY() - points.get(indicePoint).getY();
         m.set(i, pointsAround[1] * 2, dg);
         // dg/yn+1
-        dg = points.get(indicePoint).getX()
-            - points.get(pointsAround[0]).getX();
+        dg = points.get(indicePoint).getX() - points.get(pointsAround[0]).getX();
         m.set(i, pointsAround[1] * 2 + 1, dg);
       }
     }
@@ -234,43 +227,37 @@ public class SquarePolygonLS {
     int scHr1NbRows = scalHr.getRowDimension();
     int scHr2NbRows = scalHr2.getRowDimension();
 
-    Matrix a = new Matrix(2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows
-        + scHr2NbRows, 2 * nb_edges);
+    Matrix a = new Matrix(2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows + scHr2NbRows, 2 * nb_edges);
     a.setMatrix(0, 2 * nb_edges - 1, 0, 2 * nb_edges - 1, id);
-    a.setMatrix(2 * nb_edges, 2 * nb_edges + scalNbRows - 1, 0,
-        2 * nb_edges - 1, scal);
-    a.setMatrix(2 * nb_edges + scalNbRows, 2 * nb_edges + scalNbRows
-        + crosNbRows - 1, 0, 2 * nb_edges - 1, cross);
-    a.setMatrix(2 * nb_edges + scalNbRows + crosNbRows, 2 * nb_edges
-        + scalNbRows + crosNbRows + scHr1NbRows - 1, 0, 2 * nb_edges - 1,
-        scalHr);
-    a.setMatrix(2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows, 2
-        * nb_edges + scalNbRows + crosNbRows + scHr1NbRows + scHr2NbRows - 1,
-        0, 2 * nb_edges - 1, scalHr2);
+    a.setMatrix(2 * nb_edges, 2 * nb_edges + scalNbRows - 1, 0, 2 * nb_edges - 1, scal);
+    a.setMatrix(2 * nb_edges + scalNbRows, 2 * nb_edges + scalNbRows + crosNbRows - 1, 0, 2 * nb_edges - 1, cross);
+    a.setMatrix(2 * nb_edges + scalNbRows + crosNbRows, 2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows - 1, 0,
+        2 * nb_edges - 1, scalHr);
+    a.setMatrix(2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows,
+        2 * nb_edges + scalNbRows + crosNbRows + scHr1NbRows + scHr2NbRows - 1, 0, 2 * nb_edges - 1, scalHr2);
     return a;
   }
 
   // Obs Matrix (xo yo..xn yn 0..0 cos(pi/4)..cos(pi/4) cos(3pi/4)..cos(3pi/4))
   private Matrix getY() {
-    Matrix y = new Matrix(2 * nb_edges + indicesRight.size()
-        + indicesFlat.size() + indicesHrAig.size() + indicesHrObt.size(), 1);
+    Matrix y = new Matrix(
+        2 * nb_edges + indicesRight.size() + indicesFlat.size() + indicesHrAig.size() + indicesHrObt.size(), 1);
     for (int i = 0; i < nb_edges; ++i) {
       y.set(2 * i, 0, points.get(i).getX());
       y.set((2 * i) + 1, 0, points.get(i).getY());
     }
     for (int i = 0; i < indicesHrAig.size(); ++i)
-      y.set(2 * nb_edges + indicesRight.size() + indicesFlat.size() + i, 0,
-          Math.cos(Math.PI / 4));
+      y.set(2 * nb_edges + indicesRight.size() + indicesFlat.size() + i, 0, Math.cos(Math.PI / 4));
     for (int i = 0; i < indicesHrObt.size(); ++i)
-      y.set(2 * nb_edges + indicesRight.size() + indicesFlat.size()
-          + indicesHrAig.size() + i, 0, Math.cos(Math.PI * 3 / 4));
+      y.set(2 * nb_edges + indicesRight.size() + indicesFlat.size() + indicesHrAig.size() + i, 0,
+          Math.cos(Math.PI * 3 / 4));
     return y;
   }
 
   // B = Y - S(Xcourant)
   public Matrix getB() {
-    Matrix s = new Matrix(2 * nb_edges + indicesRight.size()
-        + indicesFlat.size() + indicesHrAig.size() + indicesHrObt.size(), 1);
+    Matrix s = new Matrix(
+        2 * nb_edges + indicesRight.size() + indicesFlat.size() + indicesHrAig.size() + indicesHrObt.size(), 1);
     for (int i = 0; i < nb_edges; ++i) {
       s.set(2 * i, 0, points.get(i).getX());
       s.set((2 * i) + 1, 0, points.get(i).getY());
@@ -278,8 +265,7 @@ public class SquarePolygonLS {
     // F(i-1,i,i+1) (Xn-1 Xn).(Xn Xn+1)
     for (int i = 0; i < indicesRight.size(); ++i) {
       int[] pointsAround = getPointsAround(indicesRight.get(i));
-      s.set(2 * nb_edges + i, 0,
-          dotProduct(pointsAround[0], indicesRight.get(i), pointsAround[1]));
+      s.set(2 * nb_edges + i, 0, dotProduct(pointsAround[0], indicesRight.get(i), pointsAround[1]));
     }
     // G(i-1,i,i+1) (Xn-1 Xn)^(Xn Xn+1)
     for (int i = 0; i < indicesFlat.size(); ++i) {
@@ -296,8 +282,7 @@ public class SquarePolygonLS {
     // angles 3pi/4 (Xn-1 Xn).(Xn Xn+1)
     for (int i = 0; i < indicesHrObt.size(); ++i) {
       int[] pointsAround = getPointsAround(indicesHrObt.get(i));
-      s.set(2 * nb_edges + indicesRight.size() + indicesFlat.size()
-          + indicesHrAig.size() + i, 0,
+      s.set(2 * nb_edges + indicesRight.size() + indicesFlat.size() + indicesHrAig.size() + i, 0,
           dotProduct(pointsAround[0], indicesHrObt.get(i), pointsAround[1]));
     }
     return y.minus(s);
@@ -305,15 +290,13 @@ public class SquarePolygonLS {
 
   // Weight Matrix
   public Matrix getP() {
-    int n = 2 * nb_edges + indicesRight.size() + indicesFlat.size()
-        + indicesHrAig.size() + indicesHrObt.size();
+    int n = 2 * nb_edges + indicesRight.size() + indicesFlat.size() + indicesHrAig.size() + indicesHrObt.size();
     Matrix p = new Matrix(n, n);
     for (int i = 0; i < 2 * nb_edges; ++i)
       p.set(i, i, poidsPtfFixe);
     for (int i = 2 * nb_edges; i < 2 * nb_edges + indicesRight.size(); ++i)
       p.set(i, i, poids90);
-    for (int i = 2 * nb_edges + indicesRight.size(); i < 2 * nb_edges
-        + indicesRight.size() + indicesFlat.size(); ++i)
+    for (int i = 2 * nb_edges + indicesRight.size(); i < 2 * nb_edges + indicesRight.size() + indicesFlat.size(); ++i)
       p.set(i, i, poids0);
     for (int i = 2 * nb_edges + indicesRight.size() + indicesFlat.size(); i < n; ++i)
       p.set(i, i, poids45);
@@ -324,8 +307,7 @@ public class SquarePolygonLS {
   private Matrix computeDx() {
     Matrix a = getA();
     Matrix at = a.transpose();
-    Matrix dx = (at.times(this.p).times(a)).inverse().times(
-        at.times(p).times(getB()));
+    Matrix dx = (at.times(this.p).times(a)).inverse().times(at.times(p).times(getB()));
     return dx;
   }
 
@@ -352,7 +334,8 @@ public class SquarePolygonLS {
       setNewPoints(x);
       ++i;
       // System.out.println("epsi " + x.minus(xCurrent).normF());
-    } while (i < MAX_ITER && x.minus(xCurrent).normF() > 0.01);
+    } while (i < MAX_ITER && x.minus(xCurrent).normF() > NORM_DIFF_TOL);
+    nbIters = i;
     points.set(points.size() - 1, points.get(0));
     IDirectPositionList pointsoriginal = pOriginal.exteriorCoord();
     for (int j = 0; j < pointsoriginal.size(); ++j)
@@ -380,30 +363,52 @@ public class SquarePolygonLS {
    * @param poids0 for flat angles
    * @param poids45 for 45 degrees angles
    */
-  public void setWeights(double poidsPtfFixe, double poids90, double poids0,
-      double poids45) {
+  public void setWeights(double poidsPtfFixe, double poids90, double poids0, double poids45) {
     this.poidsPtfFixe = poidsPtfFixe;
     this.poids90 = poids90;
     this.poids0 = poids0;
     this.poids45 = poids45;
   }
 
+  public int getNbIters() {
+    return nbIters;
+  }
+
   public static void main(String[] args) throws ParseException {
     // IPolygon pol = (IPolygon) WktGeOxygene
-    // .makeGeOxygene("POLYGON((9.404296875 46.12198680728803,0.439453125 33.782799038378236,12.744140625 36.37175953328168,12.919921875 22.496316413974803,27.333984375 22.982668749764606,25.927734375 32.45786315594498,24.873046875 41.82372918453599,24.169921875 47.088076832429145,9.404296875 46.12198680728803))");
+    // .makeGeOxygene("POLYGON((9.404296875 46.12198680728803,0.439453125
+    // 33.782799038378236,12.744140625 36.37175953328168,12.919921875
+    // 22.496316413974803,27.333984375 22.982668749764606,25.927734375
+    // 32.45786315594498,24.873046875 41.82372918453599,24.169921875
+    // 47.088076832429145,9.404296875 46.12198680728803))");
+
+    IPolygon pol = (IPolygon) WktGeOxygene.makeGeOxygene(
+        "POLYGON((0.7470703125 48.94559401268371,0.9228515625 37.328235417231944,12.7001953125 36.62610836350546,23.5986328125 37.328235417231944,23.5107421875 44.615497679489586,22.5439453125 49.80395904562219,3.5870361328125 48.947037410050974,0.7470703125 48.94559401268371))");
 
     // IPolygon pol = (IPolygon) WktGeOxygene
-    // .makeGeOxygene("POLYGON((17.73193359375 35.97444964193195,13.38134765625 30.388039362855057,19.18212890625 27.543344916920233,21.59912109375 31.55606967357161,18.83056640625 31.25601313521393,21.02783203125 34.10361747133329,17.73193359375 35.97444964193195))");
-
-    IPolygon pol = (IPolygon) WktGeOxygene
-        .makeGeOxygene("POLYGON((638185.80000000004656613 6871014.59999999962747097,638188.40000000002328306 6871011.79999999981373549,638186 6871009.5,638186.80000000004656613 6871008.59999999962747097,638185 6871006.90000000037252903,638184.19999999995343387 6871007.79999999981373549,638181.69999999995343387 6871005.40000000037252903,638186.19999999995343387 6871000.90000000037252903,638187.5 6870999.59999999962747097,638197.30000000004656613 6871009.09999999962747097,638190.80000000004656613 6871015.59999999962747097,638188.80000000004656613 6871017.70000000018626451,638186.69999999995343387 6871015.40000000037252903,638185.80000000004656613 6871014.59999999962747097))");
+    // .makeGeOxygene("POLYGON((638185.80000000004656613
+    // 6871014.59999999962747097,638188.40000000002328306
+    // 6871011.79999999981373549,638186 6871009.5,638186.80000000004656613
+    // 6871008.59999999962747097,638185
+    // 6871006.90000000037252903,638184.19999999995343387
+    // 6871007.79999999981373549,638181.69999999995343387
+    // 6871005.40000000037252903,638186.19999999995343387
+    // 6871000.90000000037252903,638187.5
+    // 6870999.59999999962747097,638197.30000000004656613
+    // 6871009.09999999962747097,638190.80000000004656613
+    // 6871015.59999999962747097,638188.80000000004656613
+    // 6871017.70000000018626451,638186.69999999995343387
+    // 6871015.40000000037252903,638185.80000000004656613
+    // 6871014.59999999962747097))");
 
     SquarePolygonLS sq = new SquarePolygonLS(15, 0.11, 7);
     sq.setPolygon(pol);
     IPolygon pol2 = sq.square();
     System.out.println();
+    System.out.println("nb iters : " + sq.getNbIters());
     System.out.println(sq.asWKT());
     System.out.println("original pol area " + pol.area());
     System.out.println("squared pol area " + pol2.area());
+
   }
 }
