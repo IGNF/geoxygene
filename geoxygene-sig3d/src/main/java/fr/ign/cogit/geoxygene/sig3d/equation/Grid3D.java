@@ -12,9 +12,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.sig3d.calculation.raycasting.RayCasting;
-import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
-import fr.ign.cogit.geoxygene.sig3d.equation.LineEquation;
-import fr.ign.cogit.geoxygene.sig3d.equation.PlanEquation;
 import fr.ign.cogit.geoxygene.sig3d.geometry.Box3D;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 

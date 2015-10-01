@@ -7,15 +7,6 @@ import java.util.Map;
 
 import javax.vecmath.Point3d;
 
-import straightskeleton.Corner;
-import straightskeleton.Edge;
-import straightskeleton.Machine;
-import straightskeleton.Output;
-import straightskeleton.Output.Face;
-import straightskeleton.Output.SharedEdge;
-import straightskeleton.Skeleton;
-import utils.Loop;
-import utils.LoopL;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -31,6 +22,15 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
+import straightskeleton.Corner;
+import straightskeleton.Edge;
+import straightskeleton.Machine;
+import straightskeleton.Output;
+import straightskeleton.Output.Face;
+import straightskeleton.Output.SharedEdge;
+import straightskeleton.Skeleton;
+import utils.Loop;
+import utils.LoopL;
 
 /**
  * Squelette droit pondéré calculé d'après la librairie campskeleton.

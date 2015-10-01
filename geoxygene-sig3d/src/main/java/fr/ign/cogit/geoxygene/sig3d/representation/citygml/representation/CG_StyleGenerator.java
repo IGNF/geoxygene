@@ -20,6 +20,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.sig3d.equation.ApproximatedPlanEquation;
+import fr.ign.cogit.geoxygene.sig3d.io.XML.citygmlv2.Context;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_ParameterizedTexture;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_TexCoordList;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_TextureCoordinates;
@@ -29,7 +30,6 @@ import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.GML_Ring;
 import fr.ign.cogit.geoxygene.sig3d.representation.texture.TextureManager;
 import fr.ign.cogit.geoxygene.sig3d.util.MathConstant;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.sig3d.io.XML.citygmlv2.Context;
 
 public class CG_StyleGenerator {
 

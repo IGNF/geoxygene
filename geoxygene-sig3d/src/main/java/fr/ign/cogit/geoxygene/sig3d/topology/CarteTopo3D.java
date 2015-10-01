@@ -3,7 +3,6 @@ package fr.ign.cogit.geoxygene.sig3d.topology;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;

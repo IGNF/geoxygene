@@ -36,8 +36,6 @@ import fr.ign.cogit.geoxygene.sig3d.representation.basic.Object0d;
 import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.util.browser.ObjectBrowser;
-
 
 /**
  * 
@@ -63,265 +61,255 @@ import fr.ign.cogit.geoxygene.util.browser.ObjectBrowser;
  */
 public class Picking extends Behavior {
 
-  private final static Logger logger = Logger
-      .getLogger(Picking.class.getName());
+	private final static Logger logger = Logger.getLogger(Picking.class.getName());
 
-  /**
-   * Nom de la couche dans laquelle seront ajouté les points issus du clic droit
-   */
-  public static final String NOM_COUCHE_POINTS = "PointsCliques";
+	/**
+	 * Nom de la couche dans laquelle seront ajouté les points issus du clic
+	 * droit
+	 */
+	public static final String NOM_COUCHE_POINTS = "PointsCliques";
 
-  // Variables lié au picking (zone à "picker" et le résultat du "picking")
-  private PickCanvas pickCanvas;
+	// Variables lié au picking (zone à "picker" et le résultat du "picking")
+	private PickCanvas pickCanvas;
 
-  // Canvas rafraîchit permettant le redimensionnement de l'objet
-  private Canvas3D canvas3D;
+	// Canvas rafraîchit permettant le redimensionnement de l'objet
+	private Canvas3D canvas3D;
 
-  // variable pour récupèrer les coordonnées àcran
-  int x, y;
+	// variable pour récupèrer les coordonnées àcran
+	int x, y;
 
-  // Boolean permettant d'afficher ou non les stats de l'objet
-  public static boolean info = false;
+	// Boolean permettant d'afficher ou non les stats de l'objet
+	public static boolean info = false;
 
-  // Critère de réveil
-  private WakeupOnAWTEvent wakeupCriterion;
-  
-  
-  
-  private static boolean PICKING_IS_CTRL_PRESSED = false;
+	// Critère de réveil
+	private WakeupOnAWTEvent wakeupCriterion;
 
-  /**
-   * Crée un comportement de picking
-   * 
-   * @param canvas le canvas dans lequel est créé le picking
-   * @param scene le BranchGroup contenant les éléments à sélectionner
-   */
-  public Picking(Canvas3D canvas, BranchGroup scene) {
+	private static boolean PICKING_IS_CTRL_PRESSED = false;
 
-    this.canvas3D = canvas;
+	/**
+	 * Crée un comportement de picking
+	 * 
+	 * @param canvas
+	 *            le canvas dans lequel est créé le picking
+	 * @param scene
+	 *            le BranchGroup contenant les éléments à sélectionner
+	 */
+	public Picking(Canvas3D canvas, BranchGroup scene) {
 
-    this.pickCanvas = new PickCanvas(this.canvas3D, scene);
-    // Tolérance à partir de laquelle les objets en fonction de la distance
-    // avec la souris
-    // sera sélectionnée
-    this.pickCanvas.setTolerance(5f);
-    // Pour avoir des infos à partir des frontières de l'objet intersecté
-    this.pickCanvas.setMode(PickTool.GEOMETRY_INTERSECT_INFO);
+		this.canvas3D = canvas;
 
-    
-    //Le bouton controle est il enfoncé ?
-    KeyboardFocusManager kbm = KeyboardFocusManager
-        .getCurrentKeyboardFocusManager();
-    kbm.addKeyEventPostProcessor(new KeyEventPostProcessor() {
-      @Override
-      public boolean postProcessKeyEvent(KeyEvent e) {
-        if (e.getModifiers() == InputEvent.CTRL_MASK) {
-          if (e.getID() == KeyEvent.KEY_PRESSED) {
-            Picking.PICKING_IS_CTRL_PRESSED = true;
-          }
-        }
-        if (e.getID() == KeyEvent.KEY_RELEASED) {
-           Picking.PICKING_IS_CTRL_PRESSED = false;
-        }
-        return false;
-      }
-    });
+		this.pickCanvas = new PickCanvas(this.canvas3D, scene);
+		// Tolérance à partir de laquelle les objets en fonction de la distance
+		// avec la souris
+		// sera sélectionnée
+		this.pickCanvas.setTolerance(5f);
+		// Pour avoir des infos à partir des frontières de l'objet intersecté
+		this.pickCanvas.setMode(PickTool.GEOMETRY_INTERSECT_INFO);
 
-  }
+		// Le bouton controle est il enfoncé ?
+		KeyboardFocusManager kbm = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+		kbm.addKeyEventPostProcessor(new KeyEventPostProcessor() {
+			@Override
+			public boolean postProcessKeyEvent(KeyEvent e) {
+				if (e.getModifiers() == InputEvent.CTRL_MASK) {
+					if (e.getID() == KeyEvent.KEY_PRESSED) {
+						Picking.PICKING_IS_CTRL_PRESSED = true;
+					}
+				}
+				if (e.getID() == KeyEvent.KEY_RELEASED) {
+					Picking.PICKING_IS_CTRL_PRESSED = false;
+				}
+				return false;
+			}
+		});
 
-  @Override
-  public void initialize() {
-    // Réveil si un des boutton de la souris est pressé
-    this.wakeupCriterion = new WakeupOnAWTEvent(MouseEvent.MOUSE_CLICKED);
-    this.wakeupOn(this.wakeupCriterion);
-  }
+	}
 
-  @Override
-  public void processStimulus(Enumeration criteria) {
-    while (criteria.hasMoreElements()) {
-      WakeupCriterion wakeup = (WakeupCriterion) criteria.nextElement();
-      if (wakeup instanceof WakeupOnAWTEvent) {
-        // Les évènements souris (ici que les clicks)
-        AWTEvent[] events = ((WakeupOnAWTEvent) wakeup).getAWTEvent();
+	@Override
+	public void initialize() {
+		// Réveil si un des boutton de la souris est pressé
+		this.wakeupCriterion = new WakeupOnAWTEvent(MouseEvent.MOUSE_CLICKED);
+		this.wakeupOn(this.wakeupCriterion);
+	}
 
-        // donc un seul élément
-        for (AWTEvent e : events) {
-          try {
-            if (e instanceof MouseEvent) {
-              MouseEvent evt = (MouseEvent) e;
+	@Override
+	public void processStimulus(Enumeration criteria) {
+		while (criteria.hasMoreElements()) {
+			WakeupCriterion wakeup = (WakeupCriterion) criteria.nextElement();
+			if (wakeup instanceof WakeupOnAWTEvent) {
+				// Les évènements souris (ici que les clicks)
+				AWTEvent[] events = ((WakeupOnAWTEvent) wakeup).getAWTEvent();
 
-              // Si cet évènement est bien un évènement souris
-              if (evt.getID() == MouseEvent.MOUSE_CLICKED) {
+				// donc un seul élément
+				for (AWTEvent e : events) {
+					try {
+						if (e instanceof MouseEvent) {
+							MouseEvent evt = (MouseEvent) e;
 
-                // On procède à la sélection
-                this.pickCanvas.setShapeLocation(evt);
+							// Si cet évènement est bien un évènement souris
+							if (evt.getID() == MouseEvent.MOUSE_CLICKED) {
 
-                // Objet récupèré
-                PickResult pickResult = this.pickCanvas.pickClosest();
+								// On procède à la sélection
+								this.pickCanvas.setShapeLocation(evt);
 
-                InterfaceMap3D carte = (InterfaceMap3D) this.canvas3D
-                    .getParent();
+								// Objet récupèré
+								PickResult pickResult = this.pickCanvas.pickClosest();
 
-                // Cas du clic droit ajoute un objet ponctuel
-                // dans la couche
-                // NOM_COUCHE_POINTS
-                if (evt.getButton() == MouseEvent.BUTTON3) {
+								InterfaceMap3D carte = (InterfaceMap3D) this.canvas3D.getParent();
 
-                  if (pickResult == null) {
+								// Cas du clic droit ajoute un objet ponctuel
+								// dans la couche
+								// NOM_COUCHE_POINTS
+								if (evt.getButton() == MouseEvent.BUTTON3) {
 
-                    continue;
-                  }
+									if (pickResult == null) {
 
-                  Point3d p = pickResult.getIntersection(0)
-                      .getPointCoordinates();// pickResult.getIntersection(0).getClosestVertexCoordinates();
+										continue;
+									}
 
-                  // On récupère le point
-                  GM_Point gmPoints = new GM_Point(new DirectPosition(p.x, p.y,
-                      p.z));
+									Point3d p = pickResult.getIntersection(0).getPointCoordinates();// pickResult.getIntersection(0).getClosestVertexCoordinates();
 
-                  VectorLayer c = (VectorLayer) carte.getCurrent3DMap()
-                      .getLayer(Picking.NOM_COUCHE_POINTS);
+									// On récupère le point
+									GM_Point gmPoints = new GM_Point(new DirectPosition(p.x, p.y, p.z));
 
-                  if (c == null) {// Si la couche
-                    // NOM_COUCHE_POINTS
-                    // n'existe pas on l'ajoute
+									VectorLayer c = (VectorLayer) carte.getCurrent3DMap()
+											.getLayer(Picking.NOM_COUCHE_POINTS);
 
-                    FT_FeatureCollection<IFeature> ftColl = new FT_FeatureCollection<IFeature>();
+									if (c == null) {// Si la couche
+										// NOM_COUCHE_POINTS
+										// n'existe pas on l'ajoute
 
-                    IFeature feat = new DefaultFeature(gmPoints);
-                    feat.setRepresentation(new Object0d(feat, true, Color.RED,
-                        0.5, true));
+										FT_FeatureCollection<IFeature> ftColl = new FT_FeatureCollection<IFeature>();
 
-                    ftColl.add(feat);
+										IFeature feat = new DefaultFeature(gmPoints);
+										feat.setRepresentation(new Object0d(feat, true, Color.RED, 0.5, true));
 
-                    c = new VectorLayer(ftColl, Picking.NOM_COUCHE_POINTS);
+										ftColl.add(feat);
 
-                    carte.getCurrent3DMap().addLayer(c);
+										c = new VectorLayer(ftColl, Picking.NOM_COUCHE_POINTS);
 
-                  } else {
-                    // Sinon on la modifie
-                    VectorLayer coucheVecteur = (VectorLayer) carte
-                        .getCurrent3DMap().getLayer(Picking.NOM_COUCHE_POINTS);
+										carte.getCurrent3DMap().addLayer(c);
 
-                    coucheVecteur.get(0).setGeom(gmPoints);
-                    coucheVecteur.updateStyle(true, Color.red, 0.5, true);
-                  }
+									} else {
+										// Sinon on la modifie
+										VectorLayer coucheVecteur = (VectorLayer) carte.getCurrent3DMap()
+												.getLayer(Picking.NOM_COUCHE_POINTS);
 
-                } else {
+										coucheVecteur.get(0).setGeom(gmPoints);
+										coucheVecteur.updateStyle(true, Color.red, 0.5, true);
+									}
 
-                  // récupèration de la fenetre qui contient
-                  // l'objet sélectionné
+								} else {
 
-                  MainWindow fenetre = carte.getMainWindow();
+									// récupèration de la fenetre qui contient
+									// l'objet sélectionné
 
-                  JComponent jcomp = fenetre.getActionPanel()
-                      .getActionComponent();
-                  if (jcomp instanceof FeaturesListTable) {
-                    ((FeaturesListTable) jcomp).getSelectionModel()
-                        .clearSelection();
+									MainWindow fenetre = carte.getMainWindow();
 
-                  }
-                  // Qui je récupère?
-                  if (pickResult == null) {
+									JComponent jcomp = fenetre.getActionPanel().getActionComponent();
+									if (jcomp instanceof FeaturesListTable) {
+										((FeaturesListTable) jcomp).getSelectionModel().clearSelection();
 
-                    Picking.logger.debug("aucun objet sélectionné");
-                    
-                    if(!PICKING_IS_CTRL_PRESSED){
-                      fenetre.getInterfaceMap3D().setSelection(
-                        new FT_FeatureCollection<IFeature>());
-                    }
+									}
+									// Qui je récupère?
+									if (pickResult == null) {
 
-                  } else {
+										Picking.logger.debug("aucun objet sélectionné");
 
-                    // récupèrer le BranchGroup du
-                    // BranchGroup
-                    // de la Shape3D
-                    // A l'aide d'un scenegraphpath
-                    SceneGraphPath graph = new SceneGraphPath();
-                    graph = pickResult.getSceneGraphPath();
+										if (!PICKING_IS_CTRL_PRESSED) {
+											fenetre.getInterfaceMap3D()
+													.setSelection(new FT_FeatureCollection<IFeature>());
+										}
 
-                    // C'est le noeud du graphe de scene
-                    // contenant l'objet
-                    Object userData = graph.getNode(graph.nodeCount() - 1)
-                        .getUserData();
+									} else {
 
-                    IFeature feat = null;
-                    I3DRepresentation objRep = null;
+										// récupèrer le BranchGroup du
+										// BranchGroup
+										// de la Shape3D
+										// A l'aide d'un scenegraphpath
+										SceneGraphPath graph = new SceneGraphPath();
+										graph = pickResult.getSceneGraphPath();
 
-                    if (userData == null) {
-                      
-                      
-                      if(!PICKING_IS_CTRL_PRESSED){
-                        fenetre.getInterfaceMap3D().setSelection(new FT_FeatureCollection<IFeature>());
-                      }
-                      // On ne trouve rien on vide la
-                      // sélection
-                      continue;
-                    }
+										// C'est le noeud du graphe de scene
+										// contenant l'objet
+										Object userData = graph.getNode(graph.nodeCount() - 1).getUserData();
 
-                    // La sélection est de type
-                    // I3DRepresentation
-                    // Il doit y avoir un feature attaché
-                    if (userData instanceof I3DRepresentation) {
+										IFeature feat = null;
+										I3DRepresentation objRep = null;
 
-                      objRep = (I3DRepresentation) userData;
-                      feat = objRep.getFeature();
+										if (userData == null) {
 
-                      // Si il y a une table dans le
-                      // panneau droit, on met à jour la
-                      // sélection
-                      if (jcomp instanceof FeaturesListTable) {
+											if (!PICKING_IS_CTRL_PRESSED) {
+												fenetre.getInterfaceMap3D()
+														.setSelection(new FT_FeatureCollection<IFeature>());
+											}
+											// On ne trouve rien on vide la
+											// sélection
+											continue;
+										}
 
-                        FeaturesListTableModel model = (FeaturesListTableModel) ((FeaturesListTable) jcomp)
-                            .getModel();
+										// La sélection est de type
+										// I3DRepresentation
+										// Il doit y avoir un feature attaché
+										if (userData instanceof I3DRepresentation) {
 
-                        int ind = model.getIndex(feat);
+											objRep = (I3DRepresentation) userData;
+											feat = objRep.getFeature();
 
-                        if (ind != -1) {
+											// Si il y a une table dans le
+											// panneau droit, on met à jour la
+											// sélection
+											if (jcomp instanceof FeaturesListTable) {
 
-                          ((FeaturesListTable) jcomp).getSelectionModel()
-                              .setSelectionInterval(ind, ind);
-                        }
+												FeaturesListTableModel model = (FeaturesListTableModel) ((FeaturesListTable) jcomp)
+														.getModel();
 
-                      }
-                      // On indique l'objet comme
-                      // sélectionné
-                      
-                      if(PICKING_IS_CTRL_PRESSED){
-                        fenetre.getInterfaceMap3D().addToSelection(feat);
-                      }else{
-                        fenetre.getInterfaceMap3D().setSelection(feat);
-                        
-                      }
-                      
-                   
+												int ind = model.getIndex(feat);
 
-                    }
+												if (ind != -1) {
 
-                    if ((feat == null) || (objRep == null)) {
+													((FeaturesListTable) jcomp).getSelectionModel()
+															.setSelectionInterval(ind, ind);
+												}
 
-                      continue;
-                    }
+											}
+											// On indique l'objet comme
+											// sélectionné
 
-                    // On affiche l'ObjectBrowser si la
-                    // variable d'info est vraie.
-                    if (Picking.info) {
-                      ObjectBrowser.browse(feat);
+											if (PICKING_IS_CTRL_PRESSED) {
+												fenetre.getInterfaceMap3D().addToSelection(feat);
+											} else {
+												fenetre.getInterfaceMap3D().setSelection(feat);
 
-                    }
-                  }
+											}
 
-                }
-              }
-            }
-          } catch (Exception ex) {
+										}
 
-            ex.printStackTrace();
-          }
-        }// Boucle i
-      }
-    }
-    this.wakeupOn(this.wakeupCriterion);
-  }
+										if ((feat == null) || (objRep == null)) {
+
+											continue;
+										}
+
+										// On affiche l'ObjectBrowser si la
+										// variable d'info est vraie.
+										if (Picking.info) {
+
+											// ObjectBrowser.browse(feat);
+
+										}
+									}
+
+								}
+							}
+						}
+					} catch (Exception ex) {
+
+						ex.printStackTrace();
+					}
+				} // Boucle i
+			}
+		}
+		this.wakeupOn(this.wakeupCriterion);
+	}
 
 }

@@ -12,7 +12,6 @@ import javax.vecmath.Vector3f;
 
 import org.apache.log4j.Logger;
 
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;

@@ -10,7 +10,6 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.geometry.Box3D;
 import fr.ign.cogit.geoxygene.sig3d.representation.I3DRepresentation;
 import fr.ign.cogit.geoxygene.sig3d.representation.dynamic.Object4d;
-import fr.ign.cogit.geoxygene.sig3d.semantic.DefaultLayer;
 
 
 /**

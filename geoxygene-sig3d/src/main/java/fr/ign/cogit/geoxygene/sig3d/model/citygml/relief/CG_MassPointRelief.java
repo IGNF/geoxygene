@@ -3,8 +3,8 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.relief;
 import org.citygml4j.model.citygml.core.CityObject;
 import org.citygml4j.model.citygml.relief.MassPointRelief;
 
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 
 /**
  * 

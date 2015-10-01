@@ -334,7 +334,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>geoxygene-appli</artifactId>
+			<artifactId>geoxygene-contrib</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

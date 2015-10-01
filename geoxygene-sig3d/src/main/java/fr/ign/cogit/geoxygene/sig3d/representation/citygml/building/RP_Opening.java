@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.media.j3d.BranchGroup;
 
+import fr.ign.cogit.geoxygene.sig3d.io.XML.citygmlv2.Context;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_AbstractSurfaceData;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.building.CG_AbstractOpening;
-import fr.ign.cogit.geoxygene.sig3d.io.XML.citygmlv2.Context;
 import fr.ign.cogit.geoxygene.sig3d.representation.citygml.core.RP_CityObject;
 import fr.ign.cogit.geoxygene.sig3d.representation.citygml.representation.CG_StylePreparator;
 

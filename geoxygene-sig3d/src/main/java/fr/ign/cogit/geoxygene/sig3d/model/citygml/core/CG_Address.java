@@ -3,8 +3,8 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml.core;
 import org.citygml4j.model.citygml.core.Address;
 
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 
 /**
  * 

@@ -2,10 +2,10 @@ package fr.ign.cogit.geoxygene.sig3d.model.citygml;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.sig3d.geometry.Box3D;
-import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.core.CG_CityModel;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
 public class CG_VectorLayer extends VectorLayer {
 

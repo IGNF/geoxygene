@@ -12,11 +12,6 @@ import javax.media.j3d.TriangleArray;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 
-import net.jgeom.ext.mesh.boolop.AnySurfaceBoolOpd;
-import net.jgeom.ext.mesh.boolop.BoolopTriangled;
-import net.jgeom.ext.mesh.boolop.GeometryConverterd;
-import net.jgeom.ext.mesh.boolop.J3DBoolOp;
-
 import org.apache.log4j.Logger;
 
 import com.sun.j3d.utils.geometry.GeometryInfo;
@@ -31,6 +26,10 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
+import net.jgeom.ext.mesh.boolop.AnySurfaceBoolOpd;
+import net.jgeom.ext.mesh.boolop.BoolopTriangled;
+import net.jgeom.ext.mesh.boolop.GeometryConverterd;
+import net.jgeom.ext.mesh.boolop.J3DBoolOp;
 
 /**
  * 

@@ -11,12 +11,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 
 import org.apache.log4j.Logger;
-
-import fr.ign.cogit.geoxygene.sig3d.Messages;
 
 /**
  * 

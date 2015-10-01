@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.citygml4j.model.citygml.appearance.GeoreferencedTexture;
 
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
  * 

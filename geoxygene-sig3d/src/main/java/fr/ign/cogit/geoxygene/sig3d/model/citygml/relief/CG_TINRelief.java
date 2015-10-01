@@ -5,8 +5,8 @@ import org.citygml4j.model.citygml.relief.TINRelief;
 import org.citygml4j.model.gml.Tin;
 import org.citygml4j.model.gml.TriangulatedSurface;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_TriangulatedSurface;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.geometry.ConvertyCityGMLGeometry;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_TriangulatedSurface;
 
 /**
  * 

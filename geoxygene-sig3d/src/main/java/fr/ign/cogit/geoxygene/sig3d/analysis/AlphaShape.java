@@ -3,8 +3,6 @@ package fr.ign.cogit.geoxygene.sig3d.analysis;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;

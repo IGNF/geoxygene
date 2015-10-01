@@ -3,9 +3,9 @@ package fr.ign.cogit.geoxygene.sig3d.representation.citygml.vegetation;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.sig3d.io.XML.citygmlv2.Context;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.appearance.CG_AbstractSurfaceData;
 import fr.ign.cogit.geoxygene.sig3d.model.citygml.vegetation.CG_SolitaryVegetationObject;
-import fr.ign.cogit.geoxygene.sig3d.io.XML.citygmlv2.Context;
 import fr.ign.cogit.geoxygene.sig3d.representation.citygml.core.RP_CityObject;
 import fr.ign.cogit.geoxygene.sig3d.representation.citygml.representation.CG_StylePreparator;
 
