@@ -22,8 +22,7 @@ public final class I18N {
    * @see #BUNDLE_NAME
    * @see #getString(String)
    */
-  private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-      .getBundle(I18N.BUNDLE_NAME, Locale.getDefault());
+  private static  ResourceBundle RESOURCE_BUNDLE =  null; 
 
   /**
    * Private Default Constructor.
@@ -37,6 +36,12 @@ public final class I18N {
    */
   public static String getString(final String key) {
     try {
+    	
+    	if(RESOURCE_BUNDLE == null){
+    		RESOURCE_BUNDLE = 	ResourceBundle
+    	      .getBundle(I18N.BUNDLE_NAME, Locale.getDefault());
+    	}
+    	
       return I18N.RESOURCE_BUNDLE.getString(key);
     } catch (MissingResourceException e) {
       return '!' + key + '!';
