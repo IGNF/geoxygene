@@ -519,6 +519,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
                 StyleEditionFrame styleEditionFrame = new StyleEditionFrame(
                         LayerLegendPanel.this);
                 styleEditionFrame.setVisible(true);
+                styleEditionFrame.setLocation(100, 100);
             }
         });
         this.editSldExpertMenuItem.addActionListener(new ActionListener() {
@@ -527,6 +528,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
                 StyleEditionExpertFrame styleEditionFrame = new StyleEditionExpertFrame(
                         LayerLegendPanel.this.parent, LayerLegendPanel.this);
                 styleEditionFrame.setVisible(true);
+                styleEditionFrame.setLocation(100, 100);
             }
         });
         this.deleteMenuItem.addActionListener(new ActionListener() {
@@ -1108,6 +1110,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
             StyleEditionFrame styleEditionFrame = new StyleEditionFrame(
                     layerLegendPanel);
             styleEditionFrame.setVisible(true);
+            styleEditionFrame.setLocation(100, 100);
 
             layerLegendPanel.getSelectedLayers().iterator().next()
                     .setStyles(styleEditionFrame.getLayer().getStyles());
