@@ -353,41 +353,6 @@ public class PostgisManager {
 				lAtt = fType.getFeatureAttributes();
 				nbAttribut = lAtt.size();
 			}
-			if (lAtt != null) {
-				// On parcourt les attributs et on crée les colonnes ad hoc
-				for (int i = 0; i < nbAttribut; i++) {
-
-					GF_AttributeType att = lAtt.get(i);
-					// On créer une colonne en fonction de la correspondance
-					int intType = PostgisManager.fromJavaTypeToSQL(att.getValueType());
-					String type = "";
-					String nom_col = att.getMemberName();
-
-					if (intType == Types.VARCHAR) {
-						type = PostgisManager.SQL_STRING;
-
-					} else if (intType == Types.INTEGER) {
-						type = PostgisManager.SQL_INTEGER;
-
-					} else if (intType == Types.DOUBLE) {
-
-						type = PostgisManager.SQL_DOUBLE;
-
-					} else if (intType == Types.BOOLEAN) {
-
-						type = PostgisManager.SQL_BOOLEAN;
-
-					} else {
-						type = PostgisManager.SQL_UNKNOWN;
-					}
-
-					String sql = "ALTER table " + table + " add " + nom_col + " " + type;
-					PostgisManager.logger.info(Messages.getString("Sauvegarde.AddColum") + " : " + sql);
-
-					s.execute(sql);
-
-				}
-			}
 
 			// On ajoute les éléments
 			int nbElem = featColl.size();
@@ -529,6 +494,53 @@ public class PostgisManager {
 					+ ((GM_Object) the_geom).coordinateDimension() + ", true )";
 			// On ajoute une collonne géométrie
 			s.execute(requestGeometryColumn);
+			
+
+			GF_FeatureType fType = feat.getFeatureType();
+			
+
+			int nbAttribut = 0;
+			List<GF_AttributeType> lAtt = null;
+			if (fType.getFeatureAttributes() != null) {
+
+				lAtt = fType.getFeatureAttributes();
+				nbAttribut = lAtt.size();
+			}
+			if (lAtt != null) {
+				// On parcourt les attributs et on crée les colonnes ad hoc
+				for (int i = 0; i < nbAttribut; i++) {
+
+					GF_AttributeType att = lAtt.get(i);
+					// On créer une colonne en fonction de la correspondance
+					int intType = PostgisManager.fromJavaTypeToSQL(att.getValueType());
+					String type = "";
+					String nom_col = att.getMemberName();
+
+					if (intType == Types.VARCHAR) {
+						type = PostgisManager.SQL_STRING;
+
+					} else if (intType == Types.INTEGER) {
+						type = PostgisManager.SQL_INTEGER;
+
+					} else if (intType == Types.DOUBLE) {
+
+						type = PostgisManager.SQL_DOUBLE;
+
+					} else if (intType == Types.BOOLEAN) {
+
+						type = PostgisManager.SQL_BOOLEAN;
+
+					} else {
+						type = PostgisManager.SQL_UNKNOWN;
+					}
+
+					String sql = "ALTER table " + table + " add " + nom_col + " " + type;
+					PostgisManager.logger.info(Messages.getString("Sauvegarde.AddColum") + " : " + sql);
+
+					s.execute(sql);
+
+				}
+			}
 
 			conn.close();
 
