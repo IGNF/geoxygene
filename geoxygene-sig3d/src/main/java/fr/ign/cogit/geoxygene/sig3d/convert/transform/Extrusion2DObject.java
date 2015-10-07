@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.sig3d.convert.transform;
+    package fr.ign.cogit.geoxygene.sig3d.convert.transform;
 
 import java.util.ArrayList;
 
@@ -41,7 +41,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  * 
  * see LICENSE.TXT
  * 
- * see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/>
  * 
  * 
  * 
@@ -116,17 +116,11 @@ public class Extrusion2DObject {
 
       GM_MultiSurface<IOrientableSurface> multiS = (GM_MultiSurface<IOrientableSurface>) geom;
 
-      if (multiS.size() == 1) {
-
-        geomFinale = Extrusion2DObject.convertFromPolygon(
-            (GM_Polygon) multiS.get(0), zMin, zMax);
-
-      } else {
+ 
 
         geomFinale = Extrusion2DObject.convertFromMultiPolygon(multiS, zMin,
             zMax);
 
-      }
 
     } else if (geom instanceof ILineString) {
 
