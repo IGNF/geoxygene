@@ -348,7 +348,7 @@ public class PostgisManager {
 
             int nbAttribut = 0;
             List<GF_AttributeType> lAtt = null;
-            if (fType.getFeatureAttributes() != null) {
+            if (fType!= null && fType.getFeatureAttributes() != null) {
 
                 lAtt = fType.getFeatureAttributes();
                 nbAttribut = lAtt.size();
