@@ -595,16 +595,6 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
-
-		<repository>
-			<id>boundless</id>
-			<name>Boundless Maven Repository</name>
-			<!-- <url>http://repo.opengeo.org/</url> -->
-			<url>http://repo.boundlessgeo.com/main</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
 		<repository>
 			<id>osgeo</id>
 			<name>Open Source Geospatial Foundation Repository</name>
