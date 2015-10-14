@@ -15,7 +15,7 @@ uniform int nbPointsColormap = 0;
 uniform sampler2D bufferColormap;
 
 // Animation
-uniform int time = 0;
+uniform float time = 0.0;
 uniform int animate = 0;
 
 // Vertex data in
@@ -107,20 +107,24 @@ void main(void)
     
     // Animation, tides and stuffs
     if(animate==1) {
-       float mean_height = 4.75; // 0.57;
-       float range = 3.25; // 1.5;
-       pixel.x = pixel.x - mean_height + (sin( mod(time,10000) /10000.0*2*3.14116)*range);
+       float mean_height = 0.57; //4.75; // 0.57;
+       float range = 1.5;// 3.25; // 1.5;
+       float time_scale = 100;
+       float pi = 3.14116;
+       // TEMP, we have to get back tide information
+       //pixel.x = pixel.x - mean_height + (sin( mod(time,43200000.0) / 43200000.0 * 2.0 * pi * time_scale )*range);
+       pixel.x = pixel.x - mean_height + (sin( mod(time/4.0,10000) /10000.0 *2.0 *3.14116)*range);
+       
+       // pixel.x = pixel.x - mean_height + (sin( mod(time,10000) /10000.0*2*3.14116)*range);
     }
     
     // We apply the colormap 
+    // 1: interpolation; 2: categorize; 3: intervals
     if (typeColormap == 1) {
-        // Colormap with interpolation 
         outColor = interpolateColor(pixel);
      } else if ( typeColormap == 2 ) {
-        // Colormap with categorize
         outColor = categorizeColor(pixel);
      } else if ( typeColormap == 3 ) {
-        // Colormap with intervals
         outColor = intervalsColor(pixel);
      }
      else {

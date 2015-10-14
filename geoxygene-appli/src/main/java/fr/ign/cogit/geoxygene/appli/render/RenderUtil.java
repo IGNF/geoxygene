@@ -47,9 +47,16 @@ import javax.media.jai.RenderedOp;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.log4j.Logger;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.renderer.lite.gridcoverage2d.GridCoverageRenderer;
+import org.geotools.styling.ContrastEnhancement;
+import org.geotools.styling.SelectedChannelType;
 import org.geotools.styling.StyleBuilder;
+import org.geotools.styling.StyleFactory;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.style.ContrastMethod;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -1475,6 +1482,10 @@ public final class RenderUtil {
             Viewport viewport, Graphics2D graphics, double opacity) {
         FT_Coverage fcoverage = (FT_Coverage) obj;
         try {
+            // Geotools stuff
+            StyleFactory sf = CommonFactoryFinder.getStyleFactory();
+            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+            
             GridCoverage2D coverage = fcoverage.coverage();
 
             IEnvelope view = viewport.getEnvelopeInModelCoordinates();
@@ -1486,14 +1497,47 @@ public final class RenderUtil {
                     coverage.getCoordinateReferenceSystem(), renderEnvelope, viewport
                     .getLayerViewPanels().iterator().next().getVisibleRect(), null);
 
+            // For geotools, we create a style
             org.geotools.styling.RasterSymbolizer s = new StyleBuilder().createRasterSymbolizer();
 
-            // Opacity
+            // style: Opacity
             s.setOpacity((new FilterFactoryImpl()).literal(opacity * symbolizer.getOpacity()));
 
-            // TODO : channelSelection
-
-            // Colormap stuff
+            // Style: channelSelection
+            if(symbolizer.getChannelSelection()!=null) {
+                int numBands = coverage.getNumSampleDimensions();
+                org.geotools.styling.ChannelSelection channelSelection = null;
+         
+                
+                if(symbolizer.getChannelSelection().isGrayChannel()) {
+                    // For Grayscale selection
+                    // TODO: proper contract enhancement
+                    ContrastEnhancement ce = sf.contrastEnhancement(ff.literal(1.0),ContrastMethod.NONE);
+                    SelectedChannelType sct = sf.createSelectedChannelType(String.valueOf(symbolizer.getChannelSelection().getGrayChannel().getSourceChannelName()),ce);
+                    
+                    channelSelection = sf.channelSelection(sct);
+                } else if (symbolizer.getChannelSelection().isRGBChannels()) {
+                    // For RGB selection
+                    // TODO: proper contract enhancement
+                    ContrastEnhancement[] ce = new ContrastEnhancement[3];
+                    SelectedChannelType[] sct = new SelectedChannelType[3];
+                    
+                    for(int i=0;i<3;i++) {
+                        ce[i] = sf.contrastEnhancement(ff.literal(1.0),ContrastMethod.NONE);                       
+                    }
+                    sct[0] = sf.createSelectedChannelType(String.valueOf(symbolizer.getChannelSelection().getRedChannel().getSourceChannelName()),ce[0]);
+                    sct[1] = sf.createSelectedChannelType(String.valueOf(symbolizer.getChannelSelection().getGreenChannel().getSourceChannelName()),ce[1]);
+                    sct[2] = sf.createSelectedChannelType(String.valueOf(symbolizer.getChannelSelection().getBlueChannel().getSourceChannelName()),ce[2]);
+                                                                             
+                    channelSelection = sf.channelSelection(sct[0],sct[1],sct[2]);
+                } else {
+                    System.err.println("Error in ChannelSelection");
+                }
+                
+                s.setChannelSelection(channelSelection);
+            }
+                        
+            // Style: colormap
             // We have to adapt our Colormap (SE standard) to Geotools Colormap
             if (symbolizer.getColorMap()!=null) {
                 String[] labels = null;
@@ -1544,8 +1588,10 @@ public final class RenderUtil {
                 org.geotools.styling.ColorMap colorMap = new StyleBuilder().createColorMap(labels, quantities, colors, type);
                 s.setColorMap(colorMap);
             }
-
+         
+            // Rendering
             renderer.paint(graphics, coverage, s);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

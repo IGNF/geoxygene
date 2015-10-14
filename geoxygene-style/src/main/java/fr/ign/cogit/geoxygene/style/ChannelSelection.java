@@ -53,7 +53,7 @@ public class ChannelSelection {
     private SelectedChannelType grayChannel = null;
     
     public SelectedChannelType getGrayChannel() {
-        return redChannel;
+        return grayChannel;
     }
     
     public void setGrayChannel(SelectedChannelType grayChannel) {
