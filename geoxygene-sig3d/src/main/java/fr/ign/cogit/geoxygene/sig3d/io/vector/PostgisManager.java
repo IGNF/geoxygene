@@ -329,6 +329,25 @@ public class PostgisManager {
 
     }
 
+    /**
+     * Charge une collection dans une table géométrique à partir d'un connexion
+     * PostGIS
+     * 
+     * @param host
+     *            hote (localhost accepté)
+     * @param port
+     *            port d'écoute
+     * @param database
+     *            nom de la pase de données
+     * @param user
+     *            utilisateur
+     * @param pw
+     *            mot de passe
+     * @param table
+     *            le nom de la table que l'on souhaite charger
+     * @return les entités de la table avec les attributs renseignés. Null
+     *         renvoyé pour table non-géométriques
+     */
     public static boolean insertInGeometricTable(String host, String port, String database, String user, String pw,
             String table, IFeatureCollection<? extends IFeature> featColl) throws Exception {
 
@@ -416,6 +435,110 @@ public class PostgisManager {
         }
 
         return true;
+    }
+    
+    /**
+     * Charge une collection dans une table non-géométrique à partir d'un connexion
+     * PostGIS
+     * 
+     * @param host
+     *            hote (localhost accepté)
+     * @param port
+     *            port d'écoute
+     * @param database
+     *            nom de la pase de données
+     * @param user
+     *            utilisateur
+     * @param pw
+     *            mot de passe
+     * @param table
+     *            le nom de la table que l'on souhaite charger
+     * @return les entités de la table avec les attributs renseignés.
+     */
+    public static boolean insertInNonGeometricTable(String host, String port, String database, String user, String pw,
+        String table, IFeatureCollection<? extends IFeature> featColl) throws Exception {
+
+      // Liste des entités que l'on souhaite charger
+      java.sql.Connection conn;
+
+      try {
+          // Création des paramètres de connexion
+          String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
+          PostgisManager.logger.info(Messages.getString("PostGIS.Try") + url);
+          conn = DriverManager.getConnection(url, user, pw);
+        
+          Statement s = conn.createStatement();
+        
+          IFeature feat = featColl.get(0);
+          GF_FeatureType fType = feat.getFeatureType();
+
+          int nbAttribut = 0;
+          List<GF_AttributeType> lAtt = null;
+          if (fType!= null && fType.getFeatureAttributes() != null) {
+              lAtt = fType.getFeatureAttributes();
+              nbAttribut = lAtt.size();
+          }
+
+          // On ajoute les éléments
+          int nbElem = featColl.size();
+        
+          for (int i = 0; i < nbElem; i++) {
+              IFeature featTemp = featColl.get(i);
+            
+              String columns = " (";
+            
+              if(lAtt != null){
+                
+                for (int k = 0; k < lAtt.size(); k++) {
+                  
+                  for(GF_AttributeType nomAtt : lAtt){
+                    
+                    if(k == (lAtt.size()-1)){
+                      columns = columns + nomAtt.getMemberName() ;    
+                    } else {
+                      columns = columns + nomAtt.getMemberName() + " , ";
+                    }
+                    
+                  }
+                  
+                }
+                
+              }
+              columns = columns + ")";
+
+              String sql_insert = "insert into " + table + columns  + " VALUES(" ;
+
+              if (lAtt != null) {
+                  // On parcourt les attributs et on crée les colonnes ad hoc
+                  for (int j = 0; j < nbAttribut; j++) {
+                      GF_AttributeType att = lAtt.get(j);
+
+                      if (att.getValueType().equals(PostgisManager.GE_STRING)
+                            || att.getValueType().equals(PostgisManager.GE_OTHER)) {
+
+                          sql_insert = sql_insert + "'" + featTemp.getAttribute(att.getMemberName()) + "'";
+                      } else {
+
+                          sql_insert = sql_insert + "," + featTemp.getAttribute(att.getMemberName());
+                      }
+                  }
+              }
+              sql_insert = sql_insert + ")";
+              System.out.println(sql_insert);
+              s.execute(sql_insert);
+              PostgisManager.logger.debug(Messages.getString("Sauvegarde.AddColum") + " : " + sql_insert);
+          }
+        
+          // On ferme les connexions
+          s.close();
+          conn.close();
+          PostgisManager.logger.info(Messages.getString("PostGIS.End"));
+
+      } catch (Exception e) {
+          throw e;
+      }
+
+      return true;
     }
 
     /**
