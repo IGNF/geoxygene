@@ -169,7 +169,7 @@
 		<dependency>
 			<groupId>fr.ign.cogit</groupId>
 			<artifactId>geoxygene-util</artifactId>
-			<version>1.7-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 
