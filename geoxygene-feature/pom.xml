@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>geoxygene</artifactId>
 		<groupId>fr.ign.cogit</groupId>
-		<version>1.7-SNAPSHOT</version>
+		<version>1.7</version>
 	</parent>
 
 	<artifactId>geoxygene-feature</artifactId>
