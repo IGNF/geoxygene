@@ -251,7 +251,7 @@
 		<dependency>
 			<groupId>fr.ign.cogit</groupId>
 			<artifactId>geoxygene-matching</artifactId>
-			<version>1.7-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<classifier>data-test-matching</classifier>
 			<type>zip</type>
 			<scope>provided</scope>
