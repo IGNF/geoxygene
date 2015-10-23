@@ -79,7 +79,7 @@ public class RoofDetection {
       return null;
     }
 
-    IMultiSurface<IOrientableSurface> lOSOut = Util.detectRoof(lOS, 0.2);
+    IMultiSurface<IOrientableSurface> lOSOut = Util.detectRoof(lOS, threshold);
 
     if (facesWellOriented) {
       return lOSOut;
