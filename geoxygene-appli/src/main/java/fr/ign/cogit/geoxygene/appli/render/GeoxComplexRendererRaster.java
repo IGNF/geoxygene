@@ -145,8 +145,10 @@ public class GeoxComplexRendererRaster extends AbstractGeoxComplexRenderer {
         
         // TODO do that in a much gracious way
         // TEMP time is temp, in a future, not that far, it will be possible to take a Delorean and travel in time
+        //float time = (float) System.currentTimeMillis(); // does work
         LocalTime thisSec = LocalTime.now();
-        program.setUniform1i(LayerViewGLPanel.timeUniformVarName,(int) thisSec.getMillisOfSecond()+1000*thisSec.getSecondOfMinute() );
+        float time = (float) thisSec.getMillisOfDay();
+        program.setUniform1f(LayerViewGLPanel.timeUniformVarName,time);
         
         // Animation activation
         program.setUniform1i(LayerViewGLPanel.animateUniformVarName,primitive.getRasterImage().getAnimate());
